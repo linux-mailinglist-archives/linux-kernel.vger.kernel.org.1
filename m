@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2E01B8530
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 11:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983501B8537
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 11:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgDYJUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 05:20:19 -0400
-Received: from eu-smtp-delivery-167.mimecast.com ([146.101.78.167]:29171 "EHLO
+        id S1726349AbgDYJUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 05:20:50 -0400
+Received: from eu-smtp-delivery-167.mimecast.com ([146.101.78.167]:59755 "EHLO
         eu-smtp-delivery-167.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726035AbgDYJUR (ORCPT
+        by vger.kernel.org with ESMTP id S1726070AbgDYJUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 05:20:17 -0400
+        Sat, 25 Apr 2020 05:20:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=displaylink.com;
-        s=mimecast20151025; t=1587806413;
+        s=mimecast20151025; t=1587806415;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=B+XwVfHAYl0Uq4i3BzIu7dun0DoMd/SmauQgjNEcwZs=;
-        b=a7z3CytTFzo74lJAlqiyUqQr9jkj6q1aSApgKfkG5np3MOiAKpV1mOphgYT9cBERv7V6wG
-        1xMGpbZwJ/V3QEx6j4fnJMYh2+D0rafNAYidWWAgX0frxqPIS8l3g7+XAWAgFuktZi2iQj
-        fb7WJ0UYajIYRo9J6vZtIoWO6VDbuuc=
+        bh=GmVvTtzXLoODUU4TVuWK38eskimbMg69bAuMIbaWkZI=;
+        b=xs+q/GeDRtU8BXVIX6MOjo2YIHCZwUheTKJIBEhXLqSb2g2zdT55UfnMayRblEqEYRM9VR
+        igDA87G4SUD3QnUMY4QkWLGjxA0AHgbqT5oqOWIqP5c5IoRHeNnpwJEClWJb6R7RLq5f9i
+        JmUpO124+cpC5nYqcFGbjEwZWYGCDN8=
 Received: from EUR01-HE1-obe.outbound.protection.outlook.com
  (mail-he1eur01lp2054.outbound.protection.outlook.com [104.47.0.54]) (Using
  TLS) by relay.mimecast.com with ESMTP id
- uk-mta-233-DZt1QQsyOvi6I0Fu7kFPJA-1; Sat, 25 Apr 2020 10:20:12 +0100
-X-MC-Unique: DZt1QQsyOvi6I0Fu7kFPJA-1
+ uk-mta-233-5Fyio6hUOMKXtxiv4p6Byg-3; Sat, 25 Apr 2020 10:20:14 +0100
+X-MC-Unique: 5Fyio6hUOMKXtxiv4p6Byg-3
 Received: from VI1PR1001MB1056.EURPRD10.PROD.OUTLOOK.COM
  (2603:10a6:800:64::13) by VI1PR1001MB1056.EURPRD10.PROD.OUTLOOK.COM
  (2603:10a6:800:64::13) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Sat, 25 Apr
- 2020 09:20:10 +0000
+ 2020 09:20:11 +0000
 Received: from VI1PR1001MB1056.EURPRD10.PROD.OUTLOOK.COM
  ([fe80::8cba:c335:a57e:9dfd]) by VI1PR1001MB1056.EURPRD10.PROD.OUTLOOK.COM
  ([fe80::8cba:c335:a57e:9dfd%5]) with mapi id 15.20.2937.020; Sat, 25 Apr 2020
- 09:20:10 +0000
+ 09:20:11 +0000
 From:   vladimir.stankovic@displaylink.com
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
         mausb-host-devel@displaylink.com
-Subject: [PATCH v5 1/8] usb: Add MA-USB Host kernel module
-Date:   Sat, 25 Apr 2020 11:19:47 +0200
-Message-Id: <20200425091954.1610-2-vladimir.stankovic@displaylink.com>
+Subject: [PATCH v5 2/8] usb: mausb_host: Add link layer implementation
+Date:   Sat, 25 Apr 2020 11:19:48 +0200
+Message-Id: <20200425091954.1610-3-vladimir.stankovic@displaylink.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200425091954.1610-1-vladimir.stankovic@displaylink.com>
 References: <20200327152614.26833-1-vladimir.stankovic@displaylink.com>
@@ -52,29 +52,29 @@ X-ClientProxiedBy: LO2P265CA0131.GBRP265.PROD.OUTLOOK.COM
  (2603:10a6:800:64::13)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from raven-hp.endava.net (94.189.199.177) by LO2P265CA0131.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:9f::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Sat, 25 Apr 2020 09:20:09 +0000
+Received: from raven-hp.endava.net (94.189.199.177) by LO2P265CA0131.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:9f::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Sat, 25 Apr 2020 09:20:10 +0000
 X-Mailer: git-send-email 2.17.1
 X-Originating-IP: [94.189.199.177]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4b0836db-65de-44fe-8266-08d7e8f9da2b
+X-MS-Office365-Filtering-Correlation-Id: a3be63ca-1eb5-4d02-6f08-08d7e8f9dadc
 X-MS-TrafficTypeDiagnostic: VI1PR1001MB1056:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR1001MB10568EA15E9FF9A930D1270391D10@VI1PR1001MB1056.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:44;
+X-Microsoft-Antispam-PRVS: <VI1PR1001MB1056E2FE07EADF22E9FF989091D10@VI1PR1001MB1056.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5;
 X-Forefront-PRVS: 0384275935
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR1001MB1056.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(366004)(136003)(39840400004)(396003)(376002)(9686003)(6512007)(8936002)(66946007)(316002)(52116002)(66476007)(6666004)(5660300002)(8676002)(66556008)(81156014)(1076003)(86362001)(6486002)(478600001)(6506007)(966005)(956004)(6916009)(2906002)(4326008)(26005)(36756003)(2616005)(186003)(16526019)(107886003);DIR:OUT;SFP:1101;
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR1001MB1056.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(366004)(136003)(39840400004)(396003)(376002)(9686003)(6512007)(8936002)(66946007)(316002)(52116002)(66476007)(6666004)(5660300002)(8676002)(66556008)(81156014)(1076003)(86362001)(30864003)(6486002)(478600001)(6506007)(956004)(6916009)(2906002)(4326008)(26005)(36756003)(2616005)(186003)(16526019)(107886003);DIR:OUT;SFP:1101;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CPPBy6rahVdsp7k/k33Lec9n5m3zfFyZY7z3HPRhqwvjYRq4yEzE+IvUScJmOA6vHpmqex/nEETgYLYDShhEPumPnISho29UCUXT95vXGdptzBMVM3XC1p2kFD1ZfkHUhK4yybRSB6yoOEamBj4Fg6F/JIoqO0dVdBeSM0e7VTlcHQ+9i+XvlN+Vwl+L2LuQLplInUAoTh41qikWeoEFA/7D5nc59WI/Cpf0o4B63Jo3/uyb3VPTie4j/gAkkfCH5xTyjZKfdqrceNhlzqfYNKarUpraT58Yis5zS5zqoT8beVbyk0AtVnZV2VawEYlshe6M/I3vLeoEMNd7JKOYvDpp2LNVIKyFiqzcvdWwc3SquFmMQaTRAA/dSR5oMzub/Pxo2asyuEZga127oxF0s03FxZT8QtTPa6TKRrColspbV04AGIx3jcU9lRL8QAanfPJulEewo9qXw9kRoOpCtX8V8oUP3WYg8rIms697ChtBJF2d4IcgVDB2FM2uzv6YeN5f4rlP9R6Sl5Qty8gSnA==
-X-MS-Exchange-AntiSpam-MessageData: Jt01meGWwEZJz3RlIxQFC1i9ywXn7mPyP2LG4g22Nsdg8or5EfkATYpYMJ3x8xgwz2DYjZnfNJF5Lslm0tDrYBckyQZW4dHobQ0noUwx4HVZOFgUgj6ymue97iwhitR5h9gGaEfk9DQOCBHG1G1cZGvQImE+oTUA9zQSnmHHnSIns+GuDfR6xTkSgJ9QWIpc2+JEXaM3Cuu16K6HYpD+qB0befsWzV2SltWkWzBccq+ZGNMyyzO5MwT27IUKCIHnyIcf6wbZEDxqOWRzeH+B3Py8C3Q1GsdarEDpxG6e51mDu6gNU7ULYJl1Q8oswOdfT6BJz841tK/XAFCcWOSmldAKxycWjSLLmOHHw+daT62x0sLAeSPHBQ4TUTo5PHs90uLv4V3FXN5Pm/v9SoHSWD9b8zTSQ2jtZuYd8ohXzckce6M9HITkeC1ReZAhqlkDhXzXdvF9wZ9aGoHGhX29e2oXcCn4Lc/xkGncmV21FcF+0p61I+Bh38GEh6JNuv/neD4jX7spK+k34xlDZJonNk9LMYfUaUpOVxPtoIhqNpP0rFc6I3JDyKyHm4dkJ1gok5WuK7V1QAW/kMffux/MSpNZhBAI6w5NXJHghXZZZZRmjA3kKzjPxHHQygtF8w29xmJopPStW9oba62E/i9QCrvHfh9/9iuJ6r/hyhKsMxtY8+6xSe+UuVwMQRYqQK9JhAFmg3OJ4TWbLiERaLYdsTljBVYbLLZorMEXbLTJN0OD8tRPxa+O4ixC0zN1CWikZxlxvImrujkUoddHzOiHN/zmEHdqisBdSdew3zfbqNU=
+X-Microsoft-Antispam-Message-Info: 9QnuFvMyOehPXXUjK7ZzHXJldcAy8oxDGBuNKFBXIs2dv+WvMtdiLSpw5ItNKi0GQ644U21nV9XE9eqrkthyr3b0BMg7nVtMMFkKjw7j3PWEsjdyK5VvwKucYS0xtkiVB+a8rMZ1uXQG+YFtLPonfXHJ5dSpDrelwYheGtdo39cXDaCbPlxZC3aPztGVOB14QwGo0jDcrRyHf8ZHUWiZan8WuU61gCZz90HJFMWS5/SHXeg5Oi49v3f7uV6Mz9vjpD7HTkj+CGBKwN8H3tMcJKGksdaTblcjITaYJPJpRRMXWMw+l7bw7rW865fLrwO57t/wujWxn8ntyfg9YVAqIpHqesnnVg9DOja5Z3F+wH4CbYFLB3lehKZmxnSgfdPTjmx8RB3mzXW5XWH0nwgFkhAYiucXW/DOBQr1EF0Qyph5gWleGQIvlpi83lydZkAZ
+X-MS-Exchange-AntiSpam-MessageData: XnXdLMQrrRKj+8x3HbDJ6Lo/iNxJXPDE9KrBSxPu+tm+185Nqg50B3cDouej0mB8LGA/DtEiSsn42zROz6Y6GdSkr8wnXXNgwqHe5m6u5JCPCy74McBqS97tH9+5ARY9oNBEdYWGA5PjeUdOkoWM+HrwPbcJ7sDEa6t6N2m2atVH6unOqx8eGDFvhhy0cZIABO8KZYCsqKqmr2+uwNuTklToE0Te9YzHzv2S2/X/yJmI88+vHywlDq+Mz6rfCuzKOrWfbKJApbJauGOW3OFpPtEHbjWe843z5mEosfNf3ntF5fSwWUhP8mIC+YLYdsrs37dDFu450SNxJGBtgZ6rMJnOqGF14QBqA8YbOYTA9WLQC9352aWqa9dpJ8v2Sebgwy7wxNq7XYETijGPbcDSGQeAtnHBcPrjDh75HtFRQxSIDadKh5ANjTsqDFZbr4Vo3oegNaNoqWFqu+7Wp1l0ukvwek5787yqSJmJFB69ubt504VLzjhCvfs3PA4hgI0pDrH7SW5fEE0q8pODCwoKc5Gl+u/xsloH+V7EkjoqdxVo+QOWvoYysBvetBH1AOBSH8kTzluhlqht1OZq+lrOg2EWZ4+pNZcEt5xIg0AcV1wXT5jZ9EBXGGl8PmKuDF6S+e4vfpTB0+MQ+AwSwALmqvg42l3cLIcVeVEoEnP5GcdOm+N/0OdaMoPdk2AMseIqyj5aZgJ2oG44QlCOWgZNqNvueIvMjuGs1b8r6wrWw5/ASXaVqNGFLi23Ghjeuk4prLq9m0lGRi2yYGAIROCiQpw1F/M/FaKA/uOFOR7Q/2M=
 X-OriginatorOrg: displaylink.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b0836db-65de-44fe-8266-08d7e8f9da2b
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2020 09:20:10.2948
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3be63ca-1eb5-4d02-6f08-08d7e8f9dadc
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2020 09:20:11.4933
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a4bda75a-b444-4312-9c90-44a7c4b2c91a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m/K4Tbfn9LfHKHpSC0B3HxmbdOyeef6M0GnT+kvHmUws+3ycAGFZ56m9ia/7RNLAcX9gW/2tccybQ9LqdM3rTv3vAAdVM6TxgWi1g/1GCi1dDpz4dZQlqonXzmXbythf
+X-MS-Exchange-CrossTenant-UserPrincipalName: ghZRqlmkQhTZ+q3jf85D2Q58wOj/DL/+gGDTlVup3oP6lQN/bovX51N5Kc1MatcxnlgDyQfQQel604VoUqsn+Z4nnFPoruf3Mij7bvouhME59LkCa0xe07m38JMme0Ps
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR1001MB1056
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: displaylink.com
@@ -85,345 +85,512 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added utility macros, kernel device creation and cleanup, functions for
-handling log formatting and a placeholder module for MA-USB Host device
-driver.
+Implemented link layer using kernel sockets. Link layer
+manages network communication and provides interface for upper
+layers of MA-USB stack.
 
 Signed-off-by: Vladimir Stankovic <vladimir.stankovic@displaylink.com>
 ---
- MAINTAINERS                         |  7 +++
- drivers/usb/Kconfig                 |  2 +
- drivers/usb/Makefile                |  2 +
- drivers/usb/mausb_host/Kconfig      | 15 +++++
- drivers/usb/mausb_host/Makefile     | 12 ++++
- drivers/usb/mausb_host/mausb_core.c | 90 +++++++++++++++++++++++++++++
- drivers/usb/mausb_host/utils.c      | 85 +++++++++++++++++++++++++++
- drivers/usb/mausb_host/utils.h      | 40 +++++++++++++
- 8 files changed, 253 insertions(+)
- create mode 100644 drivers/usb/mausb_host/Kconfig
- create mode 100644 drivers/usb/mausb_host/Makefile
- create mode 100644 drivers/usb/mausb_host/mausb_core.c
- create mode 100644 drivers/usb/mausb_host/utils.c
- create mode 100644 drivers/usb/mausb_host/utils.h
+ drivers/usb/mausb_host/Makefile  |   1 +
+ drivers/usb/mausb_host/ip_link.c | 374 +++++++++++++++++++++++++++++++
+ drivers/usb/mausb_host/ip_link.h |  87 +++++++
+ 3 files changed, 462 insertions(+)
+ create mode 100644 drivers/usb/mausb_host/ip_link.c
+ create mode 100644 drivers/usb/mausb_host/ip_link.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 453fe0713e68..8b63b246ba67 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10352,6 +10352,13 @@ W:=09https://linuxtv.org
- T:=09git git://linuxtv.org/media_tree.git
- F:=09drivers/media/radio/radio-maxiradio*
-=20
-+MEDIA AGNOSTIC (MA) USB HOST DRIVER
-+M:=09Vladimir Stankovic <vladimir.stankovic@displaylink.com>
-+L:=09mausb-host-devel@displaylink.com
-+W:=09https://www.displaylink.com
-+S:=09Maintained
-+F:=09drivers/usb/mausb_host/*
-+
- MCAN MMIO DEVICE DRIVER
- M:=09Dan Murphy <dmurphy@ti.com>
- M:=09Sriram Dash <sriram.dash@samsung.com>
-diff --git a/drivers/usb/Kconfig b/drivers/usb/Kconfig
-index 275568abc670..4e92f1fa0fa5 100644
---- a/drivers/usb/Kconfig
-+++ b/drivers/usb/Kconfig
-@@ -164,6 +164,8 @@ source "drivers/usb/misc/Kconfig"
-=20
- source "drivers/usb/atm/Kconfig"
-=20
-+source "drivers/usb/mausb_host/Kconfig"
-+
- endif # USB
-=20
- source "drivers/usb/phy/Kconfig"
-diff --git a/drivers/usb/Makefile b/drivers/usb/Makefile
-index 1c1c1d659394..22d1998db0e2 100644
---- a/drivers/usb/Makefile
-+++ b/drivers/usb/Makefile
-@@ -66,3 +66,5 @@ obj-$(CONFIG_USBIP_CORE)=09+=3D usbip/
- obj-$(CONFIG_TYPEC)=09=09+=3D typec/
-=20
- obj-$(CONFIG_USB_ROLE_SWITCH)=09+=3D roles/
-+
-+obj-$(CONFIG_HOST_MAUSB)        +=3D mausb_host/
-diff --git a/drivers/usb/mausb_host/Kconfig b/drivers/usb/mausb_host/Kconfi=
-g
-new file mode 100644
-index 000000000000..a8363e7e8f97
---- /dev/null
-+++ b/drivers/usb/mausb_host/Kconfig
-@@ -0,0 +1,15 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Kernel configuration file for MA-USB Host driver.
-+#
-+# Copyright (c) 2019 - 2020 DisplayLink (UK) Ltd.
-+#
-+
-+config HOST_MAUSB
-+=09tristate "Media Agnostic (MA) USB Host Driver"
-+=09depends on USB=3Dy
-+=09help
-+=09  This is a Media Agnostic (MA) USB Host driver which enables host
-+=09  communication via MA USB protocol stack.
-+
-+=09  If this driver is compiled as a module, it will be named mausb_host.
 diff --git a/drivers/usb/mausb_host/Makefile b/drivers/usb/mausb_host/Makef=
 ile
-new file mode 100644
-index 000000000000..2e353fa0958b
---- /dev/null
+index 2e353fa0958b..19445b73b50b 100644
+--- a/drivers/usb/mausb_host/Makefile
 +++ b/drivers/usb/mausb_host/Makefile
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Makefile for DisplayLink MA-USB Host driver.
-+#
-+# Copyright (c) 2019 - 2020 DisplayLink (UK) Ltd.
-+#
-+
-+obj-$(CONFIG_HOST_MAUSB) +=3D mausb_host.o
-+mausb_host-y :=3D mausb_core.o
-+mausb_host-y +=3D utils.o
-+
-+ccflags-y +=3D -I$(srctree)/$(src)
-diff --git a/drivers/usb/mausb_host/mausb_core.c b/drivers/usb/mausb_host/m=
-ausb_core.c
+@@ -8,5 +8,6 @@
+ obj-$(CONFIG_HOST_MAUSB) +=3D mausb_host.o
+ mausb_host-y :=3D mausb_core.o
+ mausb_host-y +=3D utils.o
++mausb_host-y +=3D ip_link.o
+=20
+ ccflags-y +=3D -I$(srctree)/$(src)
+diff --git a/drivers/usb/mausb_host/ip_link.c b/drivers/usb/mausb_host/ip_l=
+ink.c
 new file mode 100644
-index 000000000000..8638dd0a4856
+index 000000000000..49b592c02210
 --- /dev/null
-+++ b/drivers/usb/mausb_host/mausb_core.c
-@@ -0,0 +1,90 @@
++++ b/drivers/usb/mausb_host/ip_link.c
+@@ -0,0 +1,374 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
 + * Copyright (c) 2019 - 2020 DisplayLink (UK) Ltd.
 + */
++#include "ip_link.h"
++
 +#include <linux/in.h>
 +#include <linux/inet.h>
-+#include <linux/init.h>
++#include <linux/jiffies.h>
 +#include <linux/kernel.h>
-+#include <linux/kobject.h>
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
 +#include <linux/net.h>
++#include <linux/skbuff.h>
++#include <linux/socket.h>
++#include <linux/workqueue.h>
++#include <net/sock.h>
++#include <net/tcp.h>
 +
 +#include "utils.h"
 +
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("DisplayLink (UK) Ltd.");
-+MODULE_VERSION(MAUSB_DRIVER_VERSION);
++static void __mausb_ip_connect(struct work_struct *work);
++static int __mausb_ip_recv(struct mausb_ip_ctx *ip_ctx);
++static void __mausb_ip_recv_work(struct work_struct *work);
++static inline void __mausb_ip_recv_ctx_clear(struct mausb_ip_recv_ctx
++=09=09=09=09=09     *recv_ctx);
++static inline void __mausb_ip_recv_ctx_free(struct mausb_ip_recv_ctx
++=09=09=09=09=09    *recv_ctx);
 +
-+static int mausb_client_connect(const char *value,
-+=09=09=09=09const struct kernel_param *kp)
++int mausb_init_ip_ctx(struct mausb_ip_ctx **ip_ctx,
++=09=09      struct net *net_ns,
++=09=09      char ip_addr[INET6_ADDRSTRLEN],
++=09=09      u16 port, void *context,
++=09=09      void (*fn_callback)(void *ctx, enum mausb_channel channel,
++=09=09=09=09=09  enum mausb_link_action act,
++=09=09=09=09=09  int status, void *data),
++=09=09      enum mausb_channel channel)
 +{
-+=09mausb_pr_info("Version=3D%s", MAUSB_DRIVER_VERSION);
++=09struct mausb_ip_ctx *ctx;
++
++=09*ip_ctx =3D kzalloc(sizeof(**ip_ctx), GFP_ATOMIC);
++=09if (!*ip_ctx)
++=09=09return -ENOMEM;
++
++=09ctx =3D *ip_ctx;
++=09ctx->client_socket =3D NULL;
++=09__mausb_ip_recv_ctx_clear(&ctx->recv_ctx);
++
++=09if (in4_pton(ip_addr, -1,
++=09=09     (u8 *)&ctx->dev_addr_in.sa_in.sin_addr.s_addr, -1,
++=09=09     NULL) =3D=3D 1) {
++=09=09ctx->dev_addr_in.sa_in.sin_family =3D AF_INET;
++=09=09ctx->dev_addr_in.sa_in.sin_port =3D htons(port);
++#if IS_ENABLED(CONFIG_IPV6)
++=09} else if (in6_pton(ip_addr, -1,
++=09=09=09    (u8 *)&ctx->dev_addr_in.sa_in6.sin6_addr.in6_u, -1,
++=09=09=09    NULL) =3D=3D 1) {
++=09=09ctx->dev_addr_in.sa_in6.sin6_family =3D AF_INET6;
++=09=09ctx->dev_addr_in.sa_in6.sin6_port =3D htons(port);
++#endif
++=09} else {
++=09=09mausb_pr_err("Invalid IP address received: address=3D%s",
++=09=09=09     ip_addr);
++=09=09kfree(ctx);
++=09=09return -EINVAL;
++=09}
++
++=09ctx->net_ns =3D net_ns;
++
++=09if (channel =3D=3D MAUSB_ISOCH_CHANNEL)
++=09=09ctx->udp =3D true;
++
++=09ctx->connect_workq =3D alloc_ordered_workqueue("connect_workq",
++=09=09=09=09=09=09     WQ_MEM_RECLAIM);
++=09if (!ctx->connect_workq) {
++=09=09kfree(ctx);
++=09=09return -ENOMEM;
++=09}
++
++=09ctx->recv_workq =3D alloc_ordered_workqueue("recv_workq", WQ_MEM_RECLAI=
+M);
++=09if (!ctx->recv_workq) {
++=09=09destroy_workqueue(ctx->connect_workq);
++=09=09kfree(ctx);
++=09=09return -ENOMEM;
++=09}
++
++=09INIT_WORK(&ctx->connect_work, __mausb_ip_connect);
++=09INIT_WORK(&ctx->recv_work, __mausb_ip_recv_work);
++
++=09ctx->channel=09 =3D channel;
++=09ctx->ctx=09 =3D context;
++=09ctx->fn_callback =3D fn_callback;
 +
 +=09return 0;
 +}
 +
-+static int mausb_client_disconnect(const char *value,
-+=09=09=09=09   const struct kernel_param *kp)
++void mausb_destroy_ip_ctx(struct mausb_ip_ctx *ip_ctx)
 +{
-+=09mausb_pr_info("Version=3D%s", MAUSB_DRIVER_VERSION);
++=09if (!ip_ctx)
++=09=09return;
 +
-+=09return 0;
++=09if (ip_ctx->connect_workq) {
++=09=09flush_workqueue(ip_ctx->connect_workq);
++=09=09destroy_workqueue(ip_ctx->connect_workq);
++=09}
++
++=09if (ip_ctx->recv_workq) {
++=09=09flush_workqueue(ip_ctx->recv_workq);
++=09=09destroy_workqueue(ip_ctx->recv_workq);
++=09}
++=09if (ip_ctx->client_socket)
++=09=09sock_release(ip_ctx->client_socket);
++=09__mausb_ip_recv_ctx_free(&ip_ctx->recv_ctx);
++
++=09kfree(ip_ctx);
 +}
 +
-+static int mausb_device_connect(const char *value,
-+=09=09=09=09const struct kernel_param *kp)
++static void __mausb_ip_set_options(struct socket *sock, bool udp)
 +{
-+=09mausb_pr_info("Version=3D%s", MAUSB_DRIVER_VERSION);
++=09u32 optval =3D 0;
++=09unsigned int optlen =3D sizeof(optval);
++=09int status =3D 0;
++=09struct __kernel_sock_timeval timeo =3D {.tv_sec =3D 0, .tv_usec =3D 500=
+000U };
++=09struct __kernel_sock_timeval send_timeo =3D {.tv_sec =3D 1, .tv_usec =
+=3D 0 };
 +
-+=09return 0;
++=09if (!udp) {
++=09=09optval =3D 1;
++=09=09status =3D kernel_setsockopt(sock, IPPROTO_TCP, TCP_NODELAY,
++=09=09=09=09=09   (char *)&optval, optlen);
++=09=09if (status < 0)
++=09=09=09mausb_pr_warn("Failed to set tcp no delay option: status=3D%d",
++=09=09=09=09      status);
++=09}
++
++=09status =3D kernel_setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO_NEW,
++=09=09=09=09   (char *)&timeo, sizeof(timeo));
++=09if (status < 0)
++=09=09mausb_pr_warn("Failed to set recv timeout option: status=3D%d",
++=09=09=09      status);
++
++=09status =3D kernel_setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO_NEW,
++=09=09=09=09   (char *)&send_timeo, sizeof(send_timeo));
++=09if (status < 0)
++=09=09mausb_pr_warn("Failed to set snd timeout option: status=3D%d",
++=09=09=09      status);
++
++=09optval =3D MAUSB_LINK_BUFF_SIZE;
++=09status  =3D kernel_setsockopt(sock, SOL_SOCKET, SO_RCVBUF,
++=09=09=09=09    (char *)&optval, optlen);
++=09if (status < 0)
++=09=09mausb_pr_warn("Failed to set recv buffer size: status=3D%d",
++=09=09=09      status);
++
++=09optval =3D MAUSB_LINK_BUFF_SIZE;
++=09status  =3D kernel_setsockopt(sock, SOL_SOCKET, SO_SNDBUF,
++=09=09=09=09    (char *)&optval, optlen);
++=09if (status < 0)
++=09=09mausb_pr_warn("Failed to set send buffer size: status=3D%d",
++=09=09=09      status);
++
++=09optval =3D MAUSB_LINK_TOS_LEVEL_EF;
++=09status  =3D kernel_setsockopt(sock, IPPROTO_IP, IP_TOS,
++=09=09=09=09    (char *)&optval, optlen);
++=09if (status < 0)
++=09=09mausb_pr_warn("Failed to set QOS: status=3D%d", status);
 +}
 +
-+static int mausb_device_disconnect(const char *value,
-+=09=09=09=09   const struct kernel_param *kp)
++static void __mausb_ip_connect(struct work_struct *work)
 +{
-+=09mausb_pr_info("Version=3D%s", MAUSB_DRIVER_VERSION);
++=09int status =3D 0;
++=09struct sockaddr *sa;
++=09int sa_size;
++=09struct mausb_ip_ctx *ip_ctx =3D container_of(work, struct mausb_ip_ctx,
++=09=09=09=09=09=09   connect_work);
++=09unsigned short int family =3D ip_ctx->dev_addr_in.sa_in.sin_family;
 +
-+=09return 0;
-+}
++=09if (!ip_ctx->udp) {
++=09=09status =3D sock_create_kern(ip_ctx->net_ns, family, SOCK_STREAM,
++=09=09=09=09=09  IPPROTO_TCP, &ip_ctx->client_socket);
++=09=09if (status < 0) {
++=09=09=09mausb_pr_err("Failed to create socket: status=3D%d",
++=09=09=09=09     status);
++=09=09=09goto callback;
++=09=09}
++=09} else {
++=09=09status =3D sock_create_kern(ip_ctx->net_ns, family, SOCK_DGRAM,
++=09=09=09=09=09  IPPROTO_UDP, &ip_ctx->client_socket);
++=09=09if (status < 0) {
++=09=09=09mausb_pr_err("Failed to create socket: status=3D%d",
++=09=09=09=09     status);
++=09=09=09goto callback;
++=09=09}
++=09}
 +
-+static const struct kernel_param_ops mausb_device_connect_ops =3D {
-+=09.set =3D mausb_device_connect
-+};
++=09__mausb_ip_set_options((struct socket *)ip_ctx->client_socket,
++=09=09=09       ip_ctx->udp);
 +
-+static const struct kernel_param_ops mausb_device_disconnect_ops =3D {
-+=09.set =3D mausb_device_disconnect
-+};
++=09if (family =3D=3D AF_INET) {
++=09=09sa =3D (struct sockaddr *)&ip_ctx->dev_addr_in.sa_in;
++=09=09sa_size =3D sizeof(ip_ctx->dev_addr_in.sa_in);
++=09=09mausb_pr_info("Connecting to %pI4:%d, status=3D%d",
++=09=09=09      &ip_ctx->dev_addr_in.sa_in.sin_addr,
++=09=09=09      htons(ip_ctx->dev_addr_in.sa_in.sin_port),
++=09=09=09      status);
++#if IS_ENABLED(CONFIG_IPV6)
++=09} else if (family =3D=3D AF_INET6) {
++=09=09sa =3D (struct sockaddr *)&ip_ctx->dev_addr_in.sa_in6;
++=09=09sa_size =3D sizeof(ip_ctx->dev_addr_in.sa_in6);
++=09=09mausb_pr_info("Connecting to %pI6c:%d, status=3D%d",
++=09=09=09      &ip_ctx->dev_addr_in.sa_in6.sin6_addr,
++=09=09=09      htons(ip_ctx->dev_addr_in.sa_in6.sin6_port),
++=09=09=09      status);
++#endif
++=09} else {
++=09=09mausb_pr_err("Wrong network family provided");
++=09=09status =3D -EINVAL;
++=09=09goto callback;
++=09}
 +
-+static const struct kernel_param_ops mausb_client_connect_ops =3D {
-+=09.set =3D mausb_client_connect
-+};
-+
-+static const struct kernel_param_ops mausb_client_disconnect_ops =3D {
-+=09.set =3D mausb_client_disconnect
-+};
-+
-+static int mausb_host_init(void)
-+{
-+=09int status =3D mausb_create_dev();
-+
-+=09mausb_pr_info("Module load. Version=3D%s", MAUSB_DRIVER_VERSION);
-+
++=09status =3D kernel_connect(ip_ctx->client_socket, sa, sa_size, O_RDWR);
 +=09if (status < 0) {
-+=09=09mausb_pr_alert("Failed to load MAUSB module!");
-+=09=09return status;
++=09=09mausb_pr_err("Failed to connect to host, status=3D%d", status);
++=09=09goto clear_socket;
 +=09}
 +
++=09queue_work(ip_ctx->recv_workq, &ip_ctx->recv_work);
++
++=09goto callback;
++
++clear_socket:
++=09sock_release(ip_ctx->client_socket);
++=09ip_ctx->client_socket =3D NULL;
++callback:
++=09ip_ctx->fn_callback(ip_ctx->ctx, ip_ctx->channel, MAUSB_LINK_CONNECT,
++=09=09=09    status, NULL);
++}
++
++void mausb_ip_connect_async(struct mausb_ip_ctx *ip_ctx)
++{
++=09queue_work(ip_ctx->connect_workq, &ip_ctx->connect_work);
++}
++
++int mausb_ip_disconnect(struct mausb_ip_ctx *ip_ctx)
++{
++=09if (ip_ctx && ip_ctx->client_socket)
++=09=09return kernel_sock_shutdown(ip_ctx->client_socket, SHUT_RDWR);
 +=09return 0;
 +}
 +
-+static void mausb_host_exit(void)
++int mausb_ip_send(struct mausb_ip_ctx *ip_ctx,
++=09=09  struct mausb_kvec_data_wrapper *wrapper)
 +{
-+=09mausb_pr_info("Module unloading started...");
-+=09mausb_cleanup_dev(1);
-+=09mausb_pr_info("Module unloaded. Version=3D%s", MAUSB_DRIVER_VERSION);
-+}
++=09struct msghdr msghd;
 +
-+module_init(mausb_host_init);
-+module_exit(mausb_host_exit);
-diff --git a/drivers/usb/mausb_host/utils.c b/drivers/usb/mausb_host/utils.=
-c
-new file mode 100644
-index 000000000000..c055b578e402
---- /dev/null
-+++ b/drivers/usb/mausb_host/utils.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2019 - 2020 DisplayLink (UK) Ltd.
-+ */
-+#include "utils.h"
-+
-+#include <linux/atomic.h>
-+#include <linux/cdev.h>
-+#include <linux/completion.h>
-+#include <linux/device.h>
-+#include <linux/fs.h>
-+#include <linux/mm.h>
-+#include <linux/slab.h>
-+#include <linux/uaccess.h>
-+
-+#define MAUSB_KERNEL_DEV_NAME "mausb_host"
-+#define MAUSB_READ_DEVICE_TIMEOUT_MS 500
-+
-+static dev_t mausb_major_kernel;
-+static struct cdev  mausb_kernel_dev;
-+static struct class *mausb_kernel_class;
-+
-+static int mausb_file_open(struct inode *inode, struct file *filp)
-+{
-+=09filp->private_data =3D NULL;
-+
-+=09return 0;
-+}
-+
-+static int mausb_file_close(struct inode *inode, struct file *filp)
-+{
-+=09kfree(filp->private_data);
-+=09filp->private_data =3D NULL;
-+
-+=09return 0;
-+}
-+
-+static const struct file_operations mausb_file_ops =3D {
-+=09.open=09 =3D mausb_file_open,
-+=09.release =3D mausb_file_close,
-+};
-+
-+int mausb_create_dev(void)
-+{
-+=09int device_created =3D 0;
-+=09int status =3D alloc_chrdev_region(&mausb_major_kernel, 0, 1,
-+=09=09=09=09=09 MAUSB_KERNEL_DEV_NAME "_proc");
-+=09if (status)
-+=09=09goto cleanup;
-+
-+=09mausb_kernel_class =3D class_create(THIS_MODULE,
-+=09=09=09=09=09  MAUSB_KERNEL_DEV_NAME "_sys");
-+=09if (!mausb_kernel_class) {
-+=09=09status =3D -ENOMEM;
-+=09=09goto cleanup;
++=09if (!ip_ctx) {
++=09=09mausb_pr_alert("Socket ctx is NULL!");
++=09=09return -EINVAL;
 +=09}
 +
-+=09if (!device_create(mausb_kernel_class, NULL, mausb_major_kernel, NULL,
-+=09=09=09   MAUSB_KERNEL_DEV_NAME "_dev")) {
-+=09=09status =3D -ENOMEM;
-+=09=09goto cleanup;
++=09memset(&msghd, 0, sizeof(msghd));
++=09msghd.msg_flags =3D MSG_WAITALL;
++
++=09return kernel_sendmsg(ip_ctx->client_socket, &msghd, wrapper->kvec,
++=09=09=09      wrapper->kvec_num, wrapper->length);
++}
++
++static inline void __mausb_ip_recv_ctx_clear(struct mausb_ip_recv_ctx *rec=
+v_ctx)
++{
++=09recv_ctx->buffer   =3D NULL;
++=09recv_ctx->left=09   =3D 0;
++=09recv_ctx->received =3D 0;
++}
++
++static inline void __mausb_ip_recv_ctx_free(struct mausb_ip_recv_ctx *recv=
+_ctx)
++{
++=09kfree(recv_ctx->buffer);
++=09__mausb_ip_recv_ctx_clear(recv_ctx);
++}
++
++static int __mausb_ip_recv(struct mausb_ip_ctx *ip_ctx)
++{
++=09struct msghdr msghd;
++=09struct kvec vec;
++=09int  status;
++=09bool peek =3D true;
++=09unsigned int optval =3D 1;
++=09struct socket *client_socket =3D (struct socket *)ip_ctx->client_socket=
+;
++
++=09/* receive with timeout of 0.5s */
++=09while (true) {
++=09=09memset(&msghd, 0, sizeof(msghd));
++=09=09if (peek) {
++=09=09=09vec.iov_base =3D ip_ctx->recv_ctx.common_hdr;
++=09=09=09vec.iov_len  =3D sizeof(ip_ctx->recv_ctx.common_hdr);
++=09=09=09msghd.msg_flags =3D MSG_PEEK;
++=09=09} else {
++=09=09=09vec.iov_base =3D
++=09=09=09    ip_ctx->recv_ctx.buffer +
++=09=09=09    ip_ctx->recv_ctx.received;
++=09=09=09vec.iov_len =3D ip_ctx->recv_ctx.left;
++=09=09=09msghd.msg_flags =3D MSG_WAITALL;
++=09=09}
++
++=09=09if (!ip_ctx->udp) {
++=09=09=09status =3D kernel_setsockopt(client_socket, IPPROTO_TCP,
++=09=09=09=09=09=09   TCP_QUICKACK,
++=09=09=09=09=09=09   (char *)&optval,
++=09=09=09=09=09=09   sizeof(optval));
++=09=09=09if (status !=3D 0) {
++=09=09=09=09mausb_pr_warn("Setting TCP_QUICKACK failed, status=3D%d",
++=09=09=09=09=09      status);
++=09=09=09}
++=09=09}
++
++=09=09status =3D kernel_recvmsg(client_socket, &msghd, &vec, 1,
++=09=09=09=09=09vec.iov_len, (int)msghd.msg_flags);
++=09=09if (status =3D=3D -EAGAIN) {
++=09=09=09return -EAGAIN;
++=09=09} else if (status <=3D 0) {
++=09=09=09mausb_pr_warn("kernel_recvmsg, status=3D%d", status);
++
++=09=09=09__mausb_ip_recv_ctx_free(&ip_ctx->recv_ctx);
++=09=09=09ip_ctx->fn_callback(ip_ctx->ctx, ip_ctx->channel,
++=09=09=09=09=09    MAUSB_LINK_RECV, status, NULL);
++=09=09=09return status;
++=09=09}
++
++=09=09mausb_pr_debug("kernel_recvmsg, status=3D%d", status);
++
++=09=09if (peek) {
++=09=09=09if ((unsigned int)status <
++=09=09=09=09=09sizeof(ip_ctx->recv_ctx.common_hdr))
++=09=09=09=09return -EAGAIN;
++=09=09=09/* length field of mausb_common_hdr */
++=09=09=09ip_ctx->recv_ctx.left =3D
++=09=09=09    *(u16 *)(&ip_ctx->recv_ctx.common_hdr[2]);
++=09=09=09ip_ctx->recv_ctx.received =3D 0;
++=09=09=09ip_ctx->recv_ctx.buffer=09  =3D
++=09=09=09    kzalloc(ip_ctx->recv_ctx.left, GFP_KERNEL);
++=09=09=09peek =3D false;
++=09=09=09if (!ip_ctx->recv_ctx.buffer) {
++=09=09=09=09ip_ctx->fn_callback(ip_ctx->ctx,
++=09=09=09=09=09=09    ip_ctx->channel,
++=09=09=09=09=09=09    MAUSB_LINK_RECV,
++=09=09=09=09=09=09    -ENOMEM, NULL);
++=09=09=09=09return -ENOMEM;
++=09=09=09}
++=09=09} else {
++=09=09=09if (status < ip_ctx->recv_ctx.left) {
++=09=09=09=09ip_ctx->recv_ctx.left -=3D (u16)status;
++=09=09=09=09ip_ctx->recv_ctx.received +=3D (u16)status;
++=09=09=09} else {
++=09=09=09=09ip_ctx->fn_callback(ip_ctx->ctx,
++=09=09=09=09=09=09    ip_ctx->channel,
++=09=09=09=09=09=09    MAUSB_LINK_RECV, status,
++=09=09=09=09=09=09    ip_ctx->recv_ctx.buffer);
++=09=09=09=09__mausb_ip_recv_ctx_clear(&ip_ctx->recv_ctx);
++=09=09=09=09peek =3D true;
++=09=09=09}
++=09=09}
 +=09}
-+=09device_created =3D 1;
-+=09cdev_init(&mausb_kernel_dev, &mausb_file_ops);
-+=09status =3D cdev_add(&mausb_kernel_dev, mausb_major_kernel, 1);
-+=09if (status)
-+=09=09goto cleanup;
-+=09return 0;
-+cleanup:
-+=09mausb_cleanup_dev(device_created);
++
 +=09return status;
 +}
 +
-+void mausb_cleanup_dev(int device_created)
++static void __mausb_ip_recv_work(struct work_struct *work)
 +{
-+=09if (device_created) {
-+=09=09device_destroy(mausb_kernel_class, mausb_major_kernel);
-+=09=09cdev_del(&mausb_kernel_dev);
-+=09}
++=09struct mausb_ip_ctx *ip_ctx =3D container_of(work, struct mausb_ip_ctx,
++=09=09=09=09=09=09   recv_work);
++=09int status =3D __mausb_ip_recv(ip_ctx);
 +
-+=09if (mausb_kernel_class)
-+=09=09class_destroy(mausb_kernel_class);
++=09if (status <=3D 0 && status !=3D -EAGAIN)
++=09=09return;
 +
-+=09unregister_chrdev_region(mausb_major_kernel, 1);
++=09queue_work(ip_ctx->recv_workq, &ip_ctx->recv_work);
 +}
-diff --git a/drivers/usb/mausb_host/utils.h b/drivers/usb/mausb_host/utils.=
-h
+diff --git a/drivers/usb/mausb_host/ip_link.h b/drivers/usb/mausb_host/ip_l=
+ink.h
 new file mode 100644
-index 000000000000..9adf4122e64d
+index 000000000000..5946151e4e4e
 --- /dev/null
-+++ b/drivers/usb/mausb_host/utils.h
-@@ -0,0 +1,40 @@
++++ b/drivers/usb/mausb_host/ip_link.h
+@@ -0,0 +1,87 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
 + * Copyright (c) 2019 - 2020 DisplayLink (UK) Ltd.
 + */
-+#ifndef __MAUSB_UTILS_H__
-+#define __MAUSB_UTILS_H__
++#ifndef __MAUSB_IP_LINK_H__
++#define __MAUSB_IP_LINK_H__
 +
-+#if defined(MAUSB_NO_LOGS)
-+#define mausb_pr_logs(...)
-+#else
-+#include <linux/printk.h>
-+#include <linux/sched.h>
-+#define mausb_pr_logs(level_str, level, log, ...)\
-+=09pr_##level_str("MAUSB " #level " [%x:%x] [%s] " log "\n",\
-+=09current->pid, current->tgid, __func__, ##__VA_ARGS__)
-+#endif /* MAUSB_NO_LOGS */
++#include <linux/inet.h>
++#include <linux/list.h>
++#include <linux/workqueue.h>
++#include <net/net_namespace.h>
 +
-+#define mausb_pr_alert(...) mausb_pr_logs(alert, 1, ##__VA_ARGS__)
++#define MAUSB_LINK_BUFF_SIZE=0916777216
++#define MAUSB_LINK_TOS_LEVEL_EF 0xB8
 +
-+#define mausb_pr_err(...) mausb_pr_logs(err, 2, ##__VA_ARGS__)
++enum mausb_link_action {
++=09MAUSB_LINK_CONNECT=09=3D 0,
++=09MAUSB_LINK_DISCONNECT=09=3D 1,
++=09MAUSB_LINK_RECV=09=09=3D 2,
++=09MAUSB_LINK_SEND=09=09=3D 3
++};
 +
-+#define mausb_pr_warn(...) mausb_pr_logs(warn, 3, ##__VA_ARGS__)
++enum mausb_channel {
++=09MAUSB_CTRL_CHANNEL  =3D 0,
++=09MAUSB_ISOCH_CHANNEL =3D 1,
++=09MAUSB_BULK_CHANNEL  =3D 2,
++=09MAUSB_INTR_CHANNEL  =3D 3,
++=09MAUSB_MGMT_CHANNEL  =3D 4
++};
 +
-+#define mausb_pr_info(...) mausb_pr_logs(info, 4, ##__VA_ARGS__)
++struct mausb_kvec_data_wrapper {
++=09struct kvec *kvec;
++=09u32    kvec_num;
++=09u32    length;
++};
 +
-+#if defined(MAUSB_LOG_VERBOSE)
-+=09#define mausb_pr_debug(...) mausb_pr_logs(debug, 5, ##__VA_ARGS__)
-+#else
-+=09#define mausb_pr_debug(...)
-+#endif /* defined(MAUSB_LOG_VERBOSE) */
++struct mausb_ip_recv_ctx {
++=09u16  left;
++=09u16  received;
++=09char *buffer;
++=09char common_hdr[12] __aligned(4);
++};
 +
-+#define MAUSB_STRINGIFY2(x) #x
-+#define MAUSB_STRINGIFY(x) MAUSB_STRINGIFY2(x)
++struct mausb_ip_ctx {
++=09struct socket=09=09*client_socket;
++=09union {
++=09=09struct sockaddr_in sa_in;
++#if IS_ENABLED(CONFIG_IPV6)
++=09=09struct sockaddr_in6 sa_in6;
++#endif
++=09} dev_addr_in;
++=09struct net=09=09*net_ns;
++=09bool=09=09=09udp;
 +
-+#define MAUSB_DRIVER_VERSION MAUSB_STRINGIFY(1.3.0.0.6f5beb53)
++=09/* Queues to schedule rx work */
++=09struct workqueue_struct=09*recv_workq;
++=09struct workqueue_struct=09*connect_workq;
++=09struct work_struct=09recv_work;
++=09struct work_struct=09connect_work;
 +
-+int mausb_create_dev(void);
-+void mausb_cleanup_dev(int device_created);
++=09struct mausb_ip_recv_ctx recv_ctx; /* recv buffer */
 +
-+#endif /* __MAUSB_UTILS_H__ */
++=09enum mausb_channel channel;
++=09void *ctx;
++=09/* callback should store task into hpal queue */
++=09void (*fn_callback)(void *ctx, enum mausb_channel channel,
++=09=09=09    enum mausb_link_action act, int status, void *data);
++};
++
++int mausb_init_ip_ctx(struct mausb_ip_ctx **ip_ctx,
++=09=09      struct net *net_ns,
++=09=09      char ip_addr[INET6_ADDRSTRLEN],
++=09=09      u16 port,
++=09=09      void *ctx,
++=09=09      void (*ctx_callback)(void *ctx,
++=09=09=09=09=09   enum mausb_channel channel,
++=09=09=09=09=09   enum mausb_link_action act,
++=09=09=09=09=09   int status, void *data),
++=09=09      enum mausb_channel channel);
++int mausb_ip_disconnect(struct mausb_ip_ctx *ip_ctx);
++int mausb_ip_send(struct mausb_ip_ctx *ip_ctx,
++=09=09  struct mausb_kvec_data_wrapper *wrapper);
++
++void mausb_destroy_ip_ctx(struct mausb_ip_ctx *ip_ctx);
++void mausb_ip_connect_async(struct mausb_ip_ctx *ip_ctx);
++
++#endif /* __MAUSB_IP_LINK_H__ */
 --=20
 2.17.1
 
