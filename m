@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F551B8A02
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 01:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5321B8A05
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 01:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgDYX3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 19:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39382 "EHLO
+        id S1726399AbgDYXas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 19:30:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726271AbgDYX3W (ORCPT
+        with ESMTP id S1726238AbgDYXas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 19:29:22 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DEEC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 16:29:21 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id j26so19601361ots.0
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 16:29:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=f1JfsNRiU9CPiPWIvBjcsKVKQf1l0VHF1PLTYDvT8K8=;
-        b=flSXw4NelAvY0rv4zAUtXF9Ou7D3SSGfpsWdAgGtY/X7kSkEpXVC5yBh+Ahgu7tiJj
-         GQjhq++KiPk2NUxQeZSLsZn+TTxnXBVdCmvP3ig4Ltma/kUjQkvSNqyFjpQH6x+3LBqk
-         2/hlpU2cvANvMQjH6ECgixPATEdtxjtvtscDrL6hQvnH4tmejJk1cZKFs93Gghsixl4G
-         qt0Xn/JYMqsL0AojQgL3qbUiJreRmWvLuY6RQ5fVjil7HSE/3rIgPYTuV4S3bSkADJgJ
-         HYEU3MaxNq6LM8ctHyqtx9IiylD5MZsm5Dt9uDy8g4WbzvceTEmnB9S5LseTsexnfnqS
-         jIPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=f1JfsNRiU9CPiPWIvBjcsKVKQf1l0VHF1PLTYDvT8K8=;
-        b=WK1j7KqsWupzbgach1Gx6ab8MD6EJW3lMuPny3f1r5e31DPPmjJy+TWunSRuaQAIR/
-         OPJE4hCiJVIdijnogbhFRCNhEAH9JmTxi5VPzHE9M9qlLhK/wOCXLjw8HimcZ3SO8dcu
-         nBl6FpVn4rQkO9hVQR3YCSeuxn3LOAPtR3reswIMFtZRrjENOwEtR6y19qaIjMO05qhu
-         JHpvbDYsymeqfqBP853sSH9RJ8MY9A96pdJxPH66Fw26RrIRX+5gmKe9wB0IXrTU8xWx
-         BcP6eFA2oUsTn6qlJiKGNdsC6iDvzpO4lmWesfAYKy3fh70YCnbihSyrDpbqMzLWdPJc
-         2UhQ==
-X-Gm-Message-State: AGi0Publ8bT0nhJHYd7fqksLuk+pbJce0vdRs1b4FDqH/jcr1Vs3DNfO
-        54rXrVvXoP20j3qrEq9HyETCq2Yi3uJDfvPYbQg=
-X-Google-Smtp-Source: APiQypL3vmaiGdD+Yuz7UM+LbU1oEjCjxeMXDzQCcBiHgSzI/v8AF/q3LdKJhQajxbX11d5435GwRFYJq6LOuNDI2XM=
-X-Received: by 2002:a05:6830:204f:: with SMTP id f15mr13119073otp.105.1587857361323;
- Sat, 25 Apr 2020 16:29:21 -0700 (PDT)
+        Sat, 25 Apr 2020 19:30:48 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD85C061A0C;
+        Sat, 25 Apr 2020 16:30:47 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 498nN26kybz9sRf;
+        Sun, 26 Apr 2020 09:30:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1587857444;
+        bh=uv3lA2XY+H/XFYmi/vOH8WtXRb5rxH0D4Y5J2qWZdGY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=LYQj7EcGN9s0+gYICyi9eeoKZUQFWk63x/WtPZ32BtG1grbg55dGoKDF5/kbwhP3Q
+         HlVYsX5RP53O+teXh6b+Ap7xPQB7gNUC6pva7r9HBY8o7uI/866IoXw1XMKwAZ5hQz
+         eJUeYpv7+b1xQduwad58nQh/dMuv6ecTUPQjlPIQegqnz6d/awFyqTOg4XidUCwvxC
+         NofsKmeyqRbM0o7vSQxXq9l7L1dU1/fUTLso5vbDAToegbTuEnTFasKAT0mBOxK90/
+         90xyS9+ct0zDNl3eP01ELB9jiv24avUXfzfWK4zs48Dul5UgXXf3rvqJuvOT/dMgCn
+         IvJ6+iPdEg9Tw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Mark Brown <broonie@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: linux-next: build failure after merge of the sound-asoc tree
+In-Reply-To: <20200423142114.GJ4808@sirena.org.uk>
+References: <20200423155539.4492a0cc@canb.auug.org.au> <20200423113041.GI4808@sirena.org.uk> <20200423230400.2cb1a285@canb.auug.org.au> <20200423142114.GJ4808@sirena.org.uk>
+Date:   Sun, 26 Apr 2020 09:30:57 +1000
+Message-ID: <87a72zgn2m.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Received: by 2002:a4a:4b43:0:0:0:0:0 with HTTP; Sat, 25 Apr 2020 16:29:20
- -0700 (PDT)
-Reply-To: sulembello879@gmail.com
-From:   Mr Suleman Bello <frankoleka77@gmail.com>
-Date:   Sat, 25 Apr 2020 16:29:20 -0700
-Message-ID: <CAHQPQhCtSE=fOrFtnV-DoLyb73gyQhjMJGY+tA3ev-Ai0KQoiw@mail.gmail.com>
-Subject: CAN I TRUST YOU?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+Mark Brown <broonie@kernel.org> writes:
+> On Thu, Apr 23, 2020 at 11:04:00PM +1000, Stephen Rothwell wrote:
+>> On Thu, 23 Apr 2020 12:30:41 +0100 Mark Brown <broonie@kernel.org> wrote:
+>
+>> > It looks like this is triggered by PowerPC not including
+>> > drivers/firmware - there are missing dependencies but it works for other
+>> > all*configs since the dependencies all get built in those.  It would be
+>> > helpful if PowerPC were fixed to include the firmware directory to
+>> > improve coverage.
+>
+>> $ git grep drivers/firmware 'arch/*/*Kconfig*'
+>> arch/arm/Kconfig:source "drivers/firmware/Kconfig"
+>> arch/arm64/Kconfig:source "drivers/firmware/Kconfig"
+>> arch/ia64/Kconfig:source "drivers/firmware/Kconfig"
+>> arch/mips/Kconfig:source "drivers/firmware/Kconfig"
+>> arch/x86/Kconfig:source "drivers/firmware/Kconfig"
+>
+>> so, sure, it works for some architectures.  We would need someone to do
+>> the work to make sure that adding drivers/firmware to all the others
+>> does not break other stuff.  Until then, please add the needed
+>> dependencies.
+>
+> I am doing that but that still doesn't mean that the architectures
+> shouldn't be updated - to me this is like the architectures that don't
+> implement standard APIs, we should fix the issues they bring up but it'd
+> be a lot less noisy to sidestep the issue.
 
-Please i want you to read this letter very carefully and i must
-apologize for berging this message into your mail box without any
-formal introduction due to the urgency and confidential of this issue
-and i know that this message will come to you as a surprise, Please
-this is not a joke and i will not like you to joke with it.I am
-Mr.Suleman Bello, a staff in African Development Bank (A.D.B)
-Ouagadougou, Burkina faso West Africa.I discovered existing dormant
-account for years. When I discovered that there had been neither
-continuation nor withdrawals from this account for this long period
-and according to the laws and constitution guiding this banking
-institution, any unserviceable account for more than (7) seven years,
-that fund will be transferred to national treasury as unclaimed fund.
+I don't think it's really like architectures that don't implement
+standard APIs.
 
-I Hoped that you will not expose or betray this trust and confident
-that i am about to extablish with you for the mutual benefit of you
-and i.I need your urgent assistance in transferring the sum of $10.5
-)million usd into your account within 7 banking days. This money has
-been dormant for years in our Bank, and The request of foreigner in
-this transaction is necessary because our late customer was a
-foreigner and a burkinabe cannot stand as next of kin to a
-foreigner.Because of the static of this transaction I want you to
-stand as the next of kin so that our bank will accord you the
-recognition and have the fund transferred to your account.
+It's more like architectures not building code they don't need, AFAICS
+none of the drivers under there can ever be used on powerpc.
 
-Upon your response, I shall then provide you with further information
-and more deities that will help you understand the transaction. I am
-expecting your urgent response to enable me inform you on how the
-business will be executed. Please I would like you to keep this
-transaction confidential and as a top secret or delete if you are not
-interested.
+Similarly we don't build drivers/acpi.
 
-Thanks
-Mr.Suleman Bello.
-N.B: PLEASE CONTACT ME THROUGH MY PRIVATE EMAIL
-( suleman_bello@yahoo.com ) SO WE CAN COMMENCE ALL ARRANGEMENTS AS
-SOON AS POSSIBLE.
+But if there's a good reason that we should be building it then I'm
+happy to take a patch adding it.
+
+cheers
