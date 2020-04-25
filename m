@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D30411B85DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 12:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE851B85F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 13:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgDYK5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 06:57:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726050AbgDYK5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 06:57:18 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726146AbgDYLIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 07:08:45 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:33303 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726107AbgDYLIo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 07:08:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587812923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3Vl9Snukidv/nh3jV4JLaaVbQqkBh6w70+8AM81+TZ8=;
+        b=jUETAH5f3+s62v7ht7y2w3cMvYILeY/CMqqCj712GVE1zwN1Goi10485Hw19kUSTXGjW90
+        BeeD8pF2J1l/Zp1741NxXg2+tPj5/lqWCTdfmx6FOLS7WLt+lRIJMM+t/U++a+AwA0yMo0
+        lIV4EW51cqKVUc3Z0/XRj0AeaCjjcWo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-FyARu1wROJScseorMlweyA-1; Sat, 25 Apr 2020 07:08:37 -0400
+X-MC-Unique: FyARu1wROJScseorMlweyA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26F5620714;
-        Sat, 25 Apr 2020 10:57:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587812237;
-        bh=ahHvZa0kV6fBVPT9PiZNAdoAVU0at8XiPcIB1IJsIuA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RJLWAhjpyWqkesSXczSZP4wjmmg7mjfrlnfwilcjybZ/lUZunCc3mjSw+FUXRsy2/
-         zDqLD76OEKs7T1iWq9h+MHzGtb38wNq8OGnmw41NvvdhpocxnagXdWBlSR2z9tbELa
-         s5jL9vxlpvjs6J4u5m41j9GHndKTtY1lkTGroQ/A=
-Date:   Sat, 25 Apr 2020 12:57:14 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oscar Carter <oscar.carter@gmx.com>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        devel@driverdev.osuosl.org, Malcolm Priestley <tvboxspy@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v2] staging: vt6656: Add formula to the vnt_rf_addpower
- function
-Message-ID: <20200425105714.GA2071664@kroah.com>
-References: <20200423170557.10401-1-oscar.carter@gmx.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A21B745F;
+        Sat, 25 Apr 2020 11:08:36 +0000 (UTC)
+Received: from treble.redhat.com (ovpn-114-29.rdu2.redhat.com [10.10.114.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BCB701ED;
+        Sat, 25 Apr 2020 11:08:32 +0000 (UTC)
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     live-patching@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Subject: [PATCH v3 00/10] livepatch,module: Remove .klp.arch and module_disable_ro()
+Date:   Sat, 25 Apr 2020 06:07:20 -0500
+Message-Id: <cover.1587812518.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423170557.10401-1-oscar.carter@gmx.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 07:05:57PM +0200, Oscar Carter wrote:
-> Use a formula to calculate the return value of the vnt_rf_addpower
-> function instead of the "if" statement with literal values for every
-> case.
-> 
-> Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-> ---
-> Changelog v1 -> v2
-> - Change the type of "base" variable from s32 to int as Dan Carpenter
->   suggested.
-> - Remove the "--" postoperator and replace with (base - 1) as Dan
->   Carpenter suggested. Also, as this expression has a minus before the
->   parenthesis, remove it an apply the minus operator changing the sign of
->   "base" and literal "1".
-> 
->  drivers/staging/vt6656/rf.c | 20 +++-----------------
->  1 file changed, 3 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
-> index 06fa8867cfa3..612fd4a59f8a 100644
-> --- a/drivers/staging/vt6656/rf.c
-> +++ b/drivers/staging/vt6656/rf.c
-> @@ -538,28 +538,14 @@ int vnt_rf_write_embedded(struct vnt_private *priv, u32 data)
-> 
->  static u8 vnt_rf_addpower(struct vnt_private *priv)
->  {
-> +	int base;
->  	s32 rssi = -priv->current_rssi;
-> 
->  	if (!rssi)
->  		return 7;
-> 
-> -	if (priv->rf_type == RF_VT3226D0) {
-> -		if (rssi < -70)
-> -			return 9;
-> -		else if (rssi < -65)
-> -			return 7;
-> -		else if (rssi < -60)
-> -			return 5;
-> -	} else {
-> -		if (rssi < -80)
-> -			return 9;
-> -		else if (rssi < -75)
-> -			return 7;
-> -		else if (rssi < -70)
-> -			return 5;
-> -	}
-> -
-> -	return 0;
-> +	base = (priv->rf_type == RF_VT3226D0) ? -60 : -70;
-> +	return (rssi < base) ? ((rssi - base + 1) / -5) * 2 + 5 : 0;
+v3:
+- klp: split klp_write_relocations() into object/section specific
+  functions [joe]
+- s390: fix plt/got writes [joe]
+- s390: remove text_mutex usage [mbenes]
+- x86: do text_poke_sync() before releasing text_mutex [peterz]
+- split x86 text_mutex changes into separate patch [mbenes]
 
-I _hate_ ? : functions, just spell this out please as a real if()
-statement.
+v2:
+- add vmlinux.ko check [peterz]
+- remove 'klp_object' forward declaration [mbenes]
+- use text_mutex [jeyu]
+- fix documentation TOC [jeyu]
+- fix s390 issues [mbenes]
+- upstream kpatch-build now supports this
+  (though it's only enabled for Linux >=3D 5.8)
 
-thanks,
+These patches add simplifications and improvements for some issues Peter
+found six months ago, as part of his non-writable text code (W^X)
+cleanups.
 
-greg k-h
+Highlights:
+
+- Remove the livepatch arch-specific .klp.arch sections, which were used
+  to do paravirt patching and alternatives patching for livepatch
+  replacement code.
+
+- Add support for jump labels in patched code.
+
+- Remove the last module_disable_ro() usage.
+
+For more background, see this thread:
+
+  https://lkml.kernel.org/r/20191021135312.jbbxsuipxldocdjk@treble
+
+This has been tested with kpatch-build integration tests and klp-convert
+selftests.
+
+Josh Poimboeuf (7):
+  livepatch: Disallow vmlinux.ko
+  livepatch: Apply vmlinux-specific KLP relocations early
+  livepatch: Prevent module-specific KLP rela sections from referencing
+    vmlinux symbols
+  s390: Change s390_kernel_write() return type to match memcpy()
+  livepatch: Remove module_disable_ro() usage
+  module: Remove module_disable_ro()
+  x86/module: Use text_mutex in apply_relocate_add()
+
+Peter Zijlstra (3):
+  livepatch: Remove .klp.arch
+  s390/module: Use s390_kernel_write() for late relocations
+  x86/module: Use text_poke() for late relocations
+
+ Documentation/livepatch/module-elf-format.rst |  15 +-
+ arch/s390/include/asm/uaccess.h               |   2 +-
+ arch/s390/kernel/module.c                     | 147 +++++++++------
+ arch/s390/mm/maccess.c                        |   9 +-
+ arch/um/kernel/um_arch.c                      |  16 ++
+ arch/x86/kernel/Makefile                      |   1 -
+ arch/x86/kernel/livepatch.c                   |  53 ------
+ arch/x86/kernel/module.c                      |  43 ++++-
+ include/linux/livepatch.h                     |  17 +-
+ include/linux/module.h                        |   2 -
+ kernel/livepatch/core.c                       | 177 +++++++++++-------
+ kernel/module.c                               |  23 +--
+ 12 files changed, 277 insertions(+), 228 deletions(-)
+ delete mode 100644 arch/x86/kernel/livepatch.c
+
+--=20
+2.21.1
+
