@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFF91B8432
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 09:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5891B8429
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 09:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgDYH2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 03:28:13 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:60194 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgDYH2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 03:28:12 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A6E9C1A06DF;
-        Sat, 25 Apr 2020 09:28:10 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 23C031A06D6;
-        Sat, 25 Apr 2020 09:28:06 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 43266402D5;
-        Sat, 25 Apr 2020 15:28:00 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ASoC: fsl_easrc: Check for null pointer before dereferencing "ctx" in fsl_easrc_hw_free()
-Date:   Sat, 25 Apr 2020 15:19:29 +0800
-Message-Id: <d23c939f1c9eeb3fce34b6c34d44e2d6156f663a.1587799355.git.shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726124AbgDYHVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 03:21:37 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:48798 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726107AbgDYHVg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 03:21:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587799295;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GLnr0m2mVETKPeWfL0iYJ5elKQI3FKKirhJwNjsAap0=;
+        b=IAw4PsmKvVqIb0sgcqESJbr1yewRHYspQhznWmWCCVYU+/7IkztRIc8b8xhS4pP2bUTP8F
+        SiiVkL3k9hNEoy5cWZe529WHUjIAIekVL19tcX7m3RubB/4BtaY1PAa9AdwUeNqhvmWViT
+        BCge8gJPr1s2EbREmxLp49hESUW2xF4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-17-IWcl8bnQNTG45zJE7g6zkg-1; Sat, 25 Apr 2020 03:21:34 -0400
+X-MC-Unique: IWcl8bnQNTG45zJE7g6zkg-1
+Received: by mail-wr1-f69.google.com with SMTP id s11so6317521wru.6
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 00:21:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GLnr0m2mVETKPeWfL0iYJ5elKQI3FKKirhJwNjsAap0=;
+        b=fQcXA4vDOMqOWgWmAQTETe98bEb5n6VxsrvUi9yChEtFMc1+nrLpW8lTPPrNlfZpF9
+         i+nxA4yIK0yI7Cze2INeJGLRtQ8f7S2yMusXo0w6uFZW03e7YmfM1mJuBeue4Qqu5YE1
+         /kmiKWxTnvzs2Qo4NTdFuIEVUo9ZCdqcqPuOX4JYldaIZsQ1pT369vewSLcEHt8mBWi0
+         kyWDpcHPGTDCdhFgu5S1EuZtY3Jsno0/EjbJeDWeti76Ym4fqdWKM6zaQvaNxgIbmrTX
+         /zlSOT66y+UO5938Ubs9+Be09K4AbeeUUXUsqQXn8MD2GNdaVnmzgWTtA/fFXafaBvo1
+         pvMQ==
+X-Gm-Message-State: AGi0Pua+phDtMehjKC+ICXAtorkJJG2h8vWQz7ht8kR76UCcidbgqdQ3
+        cMaTveoE4oc2Xe/oqZLXFwceJ35Xy4fZiJhNqO5+A3scV5WfZJkqeQ1PIbGEr4lcndjUkr3+Asp
+        I7Wis4lCvgUINxyYprLmU6mme
+X-Received: by 2002:a1c:6402:: with SMTP id y2mr14852978wmb.116.1587799284859;
+        Sat, 25 Apr 2020 00:21:24 -0700 (PDT)
+X-Google-Smtp-Source: APiQypL4JnN8XmD5Fqhx0zlOQUyNh6Q7sMfKC21sn7xaAJ7eING3tm0vPSCkfvnXY3alByn/09trCw==
+X-Received: by 2002:a05:600c:218e:: with SMTP id e14mr15366922wme.140.1587799276137;
+        Sat, 25 Apr 2020 00:21:16 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:d0a0:f143:e9e4:2926? ([2001:b07:6468:f312:d0a0:f143:e9e4:2926])
+        by smtp.gmail.com with ESMTPSA id w18sm11290918wrn.55.2020.04.25.00.21.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Apr 2020 00:21:15 -0700 (PDT)
+Subject: Re: [PATCH v2 00/22] KVM: Event fixes and cleanup
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Oliver Upton <oupton@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        wei.huang2@amd.com, cavery@redhat.com, vkuznets@redhat.com,
+        Jim Mattson <jmattson@google.com>
+References: <20200424172416.243870-1-pbonzini@redhat.com>
+ <20200424210242.GA80882@google.com> <20200424210539.GH30013@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c92b29db-14a1-21f3-5484-23e308af4e99@redhat.com>
+Date:   Sat, 25 Apr 2020 09:21:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200424210539.GH30013@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch 955ac624058f: "ASoC: fsl_easrc: Add EASRC ASoC CPU DAI
-drivers" from Apr 16, 2020, leads to the following Smatch complaint:
+On 24/04/20 23:05, Sean Christopherson wrote:
+> On Fri, Apr 24, 2020 at 09:02:42PM +0000, Oliver Upton wrote:
+>> Paolo,
+>>
+>> I've only received patches 1-9 for this series, could you resend? :)
+> 
+> Same here, I was hoping they would magically show up.
 
-sound/soc/fsl/fsl_easrc.c:1529 fsl_easrc_hw_free()
-warn: variable dereferenced before check 'ctx' (see line 1527)
+An SMTP server, in its infinite wisdom, decided that sending more than
+10 emails in a batch is "too much mail".  I sent the remaining 13
+patches now (in two batches).  Thanks for warning me!
 
-sound/soc/fsl/fsl_easrc.c
-  1526          struct fsl_asrc_pair *ctx = runtime->private_data;
-  1527          struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
-                                                      ^^^^^
-Dereference
-
-  1528
-  1529          if (ctx && (ctx_priv->ctx_streams & BIT(substream->stream))) {
-                    ^^^
-This check is too late, to prevent a NULL dereference.
-
-  1530                  ctx_priv->ctx_streams &= ~BIT(substream->stream);
-  1531                  fsl_easrc_release_context(ctx);
-
-Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_easrc.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index 97658e1f4989..20326bffab64 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1524,9 +1524,14 @@ static int fsl_easrc_hw_free(struct snd_pcm_substream *substream,
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct fsl_asrc_pair *ctx = runtime->private_data;
--	struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
-+	struct fsl_easrc_ctx_priv *ctx_priv;
- 
--	if (ctx && (ctx_priv->ctx_streams & BIT(substream->stream))) {
-+	if (!ctx)
-+		return -EINVAL;
-+
-+	ctx_priv = ctx->private;
-+
-+	if (ctx_priv->ctx_streams & BIT(substream->stream)) {
- 		ctx_priv->ctx_streams &= ~BIT(substream->stream);
- 		fsl_easrc_release_context(ctx);
- 	}
--- 
-2.21.0
+Paolo
 
