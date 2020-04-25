@@ -2,70 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70581B85DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 12:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30411B85DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 12:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726102AbgDYK43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 06:56:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35736 "EHLO mail.kernel.org"
+        id S1726131AbgDYK5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 06:57:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726050AbgDYK43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 06:56:29 -0400
+        id S1726050AbgDYK5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 06:57:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6649320714;
-        Sat, 25 Apr 2020 10:56:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26F5620714;
+        Sat, 25 Apr 2020 10:57:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587812189;
-        bh=5WUhtskZxlE9n338vkgbHZfKEH8M1JzBUBkWJZF/qo8=;
+        s=default; t=1587812237;
+        bh=ahHvZa0kV6fBVPT9PiZNAdoAVU0at8XiPcIB1IJsIuA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KoTEhf54SHrrXeIMq57jRFSwhq7z8lmvBEhiN2G45IYURC5nB2kO3riLOXxhhVS9i
-         86ZuHW9IFyzVOWxsKA2t8qYJTqTPNtB1u4n7T5TkrHfU9F5e7iLfx7i2K1F3q1S714
-         f3mV3oAuCkuhdy++lr18EtT4E9i6CFAcsl8vZ0kg=
-Date:   Sat, 25 Apr 2020 12:56:26 +0200
+        b=RJLWAhjpyWqkesSXczSZP4wjmmg7mjfrlnfwilcjybZ/lUZunCc3mjSw+FUXRsy2/
+         zDqLD76OEKs7T1iWq9h+MHzGtb38wNq8OGnmw41NvvdhpocxnagXdWBlSR2z9tbELa
+         s5jL9vxlpvjs6J4u5m41j9GHndKTtY1lkTGroQ/A=
+Date:   Sat, 25 Apr 2020 12:57:14 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Oscar Carter <oscar.carter@gmx.com>
 Cc:     Forest Bond <forest@alittletooquiet.net>,
         devel@driverdev.osuosl.org, Malcolm Priestley <tvboxspy@gmail.com>,
-        "John B. Wyatt IV" <jbwyatt4@gmail.com>,
-        linux-kernel@vger.kernel.org, Stefano Brivio <sbrivio@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
+        linux-kernel@vger.kernel.org,
         Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v3 0/2] staging: vt6656: Check the return value of
- vnt_control_out_* calls
-Message-ID: <20200425105626.GA2071483@kroah.com>
-References: <20200423153836.5582-1-oscar.carter@gmx.com>
+Subject: Re: [PATCH v2] staging: vt6656: Add formula to the vnt_rf_addpower
+ function
+Message-ID: <20200425105714.GA2071664@kroah.com>
+References: <20200423170557.10401-1-oscar.carter@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200423153836.5582-1-oscar.carter@gmx.com>
+In-Reply-To: <20200423170557.10401-1-oscar.carter@gmx.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 05:38:34PM +0200, Oscar Carter wrote:
-> This patch series checks the return value of vnt_control_out_* function
-> calls.
+On Thu, Apr 23, 2020 at 07:05:57PM +0200, Oscar Carter wrote:
+> Use a formula to calculate the return value of the vnt_rf_addpower
+> function instead of the "if" statement with literal values for every
+> case.
 > 
-> The first patch checks the return value and when necessary modify the
-> function prototype to be able to return the new checked error code.
-> 
-> The second patch removes the documentation of functions that their
-> prototype has changed as the function names are clear enought. Also,
-> the actual documentation is not correct in all cases.
-> 
+> Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
+> ---
 > Changelog v1 -> v2
-> - Remove the function's documentation instead of fix them as suggested
->   Malcolm Priestley.
+> - Change the type of "base" variable from s32 to int as Dan Carpenter
+>   suggested.
+> - Remove the "--" postoperator and replace with (base - 1) as Dan
+>   Carpenter suggested. Also, as this expression has a minus before the
+>   parenthesis, remove it an apply the minus operator changing the sign of
+>   "base" and literal "1".
 > 
-> Changelog v2 -> v3
-> - Rebase against the staging-next branch of Greg's staging tree.
+>  drivers/staging/vt6656/rf.c | 20 +++-----------------
+>  1 file changed, 3 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/staging/vt6656/rf.c b/drivers/staging/vt6656/rf.c
+> index 06fa8867cfa3..612fd4a59f8a 100644
+> --- a/drivers/staging/vt6656/rf.c
+> +++ b/drivers/staging/vt6656/rf.c
+> @@ -538,28 +538,14 @@ int vnt_rf_write_embedded(struct vnt_private *priv, u32 data)
+> 
+>  static u8 vnt_rf_addpower(struct vnt_private *priv)
+>  {
+> +	int base;
+>  	s32 rssi = -priv->current_rssi;
+> 
+>  	if (!rssi)
+>  		return 7;
+> 
+> -	if (priv->rf_type == RF_VT3226D0) {
+> -		if (rssi < -70)
+> -			return 9;
+> -		else if (rssi < -65)
+> -			return 7;
+> -		else if (rssi < -60)
+> -			return 5;
+> -	} else {
+> -		if (rssi < -80)
+> -			return 9;
+> -		else if (rssi < -75)
+> -			return 7;
+> -		else if (rssi < -70)
+> -			return 5;
+> -	}
+> -
+> -	return 0;
+> +	base = (priv->rf_type == RF_VT3226D0) ? -60 : -70;
+> +	return (rssi < base) ? ((rssi - base + 1) / -5) * 2 + 5 : 0;
 
-Are you sure?  It still doesn't apply :(
-
-Please try again.
+I _hate_ ? : functions, just spell this out please as a real if()
+statement.
 
 thanks,
 
