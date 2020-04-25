@@ -2,50 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5381B8481
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 09:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879AD1B8484
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 10:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgDYH7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 03:59:10 -0400
-Received: from verein.lst.de ([213.95.11.211]:38961 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726035AbgDYH7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 03:59:09 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id AC15E68C4E; Sat, 25 Apr 2020 09:59:06 +0200 (CEST)
-Date:   Sat, 25 Apr 2020 09:59:06 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     axboe@kernel.dk
-Cc:     yuyufen@huawei.com, tj@kernel.org, jack@suse.cz,
-        bvanassche@acm.org, tytso@mit.edu, hdegoede@redhat.com,
-        gregkh@linuxfoundation.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: bdi: fix use-after-free for dev_name(bdi->dev) v3
-Message-ID: <20200425075906.GA5250@lst.de>
-References: <20200422073851.303714-1-hch@lst.de>
+        id S1726124AbgDYIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 04:01:17 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40186 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725837AbgDYIBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 04:01:17 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 42F0316A7F9B8A4F58D8;
+        Sat, 25 Apr 2020 16:01:12 +0800 (CST)
+Received: from huawei.com (10.67.174.156) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Sat, 25 Apr 2020
+ 16:01:03 +0800
+From:   ChenTao <chentao107@huawei.com>
+To:     <perex@perex.cz>, <shawnguo@kernel.org>, <tiwai@suse.com>,
+        <s.hauer@pengutronix.de>
+CC:     <lgirdwood@gmail.co>, <ranjani.sridharan@linux.intel.com>,
+        <kai.vehmanen@linux.intel.com>, <festevam@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <chentao107@huawei.com>
+Subject: [PATCH] soc: imx8m: Make imx8m_dsp_ops static
+Date:   Sat, 25 Apr 2020 16:00:26 +0800
+Message-ID: <20200425080026.143127-1-chentao107@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200422073851.303714-1-hch@lst.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.156]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Any more comments?  Are we ready to merge this now?
+Fix the following warning:
 
-On Wed, Apr 22, 2020 at 09:38:42AM +0200, Christoph Hellwig wrote:
-> Hi all,
-> 
-> the first three patches are my take on the proposal from Yufen Yu
-> to fix the use after free of the device name of the bdi device.
-> 
-> The rest is vaguely related cleanups.
-> 
-> Changes since v2:
->  - switch vboxsf to a shorter bdi name
-> 
-> Changes since v1:
->  - use a static dev_name buffer inside struct backing_dev_info
----end quoted text---
+sound/soc/sof/imx/imx8m.c:95:20: warning:
+symbol 'imx8m_dsp_ops' was not declared. Should it be static?
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: ChenTao <chentao107@huawei.com>
+---
+ sound/soc/sof/imx/imx8m.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
+index 07451ba4efae..1a5b0f9ebac1 100644
+--- a/sound/soc/sof/imx/imx8m.c
++++ b/sound/soc/sof/imx/imx8m.c
+@@ -92,7 +92,7 @@ static void imx8m_dsp_handle_request(struct imx_dsp_ipc *ipc)
+ 	snd_sof_ipc_msgs_rx(priv->sdev);
+ }
+ 
+-struct imx_dsp_ops imx8m_dsp_ops = {
++static struct imx_dsp_ops imx8m_dsp_ops = {
+ 	.handle_reply		= imx8m_dsp_handle_reply,
+ 	.handle_request		= imx8m_dsp_handle_request,
+ };
+-- 
+2.22.0
+
