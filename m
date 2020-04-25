@@ -2,75 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218861B860D
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 13:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CBD1B860F
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 13:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726128AbgDYLJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 07:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38254 "EHLO
+        id S1726238AbgDYLLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 07:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726059AbgDYLJ6 (ORCPT
+        by vger.kernel.org with ESMTP id S1726059AbgDYLLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 07:09:58 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C09BC09B04B
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 04:09:58 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id f82so11775142ilh.8
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 04:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=TViWHe/fCibeg71RMzs+W48ldBatY/PqH+UEQJGff2s=;
-        b=tEIXixI6Et06vPH0X9z06WmRKoSUc/V/OEz4eYYebrmCbMjMFpc2HM3gnf8p41ZeL5
-         eaQsnpxJtoQwBaa/43H5cinzxSb6vV6u39ag2PeKsF26BzAU40xDgfAnOiCVjv7uZtKs
-         HRM0LXZAc6Iul03JZKJTltih+subp+g+7Igfu94vlABjCJ8WzlP8GBCwcMMF79cXYu4a
-         YBnEtgeCiStBltpaKKbbTLJcomaPzQ//PyliscxI7DTzNjb4SleNGOE9ifwH+O1ZrDzn
-         ET5JebZQ9Dp1G8lAPgDwnBGMN7imx9SHMSsWW0BNgHk4OpQlS7ospwsnncEBBaWrHJJz
-         Dlkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=TViWHe/fCibeg71RMzs+W48ldBatY/PqH+UEQJGff2s=;
-        b=TIIXLYux2ftelpROaC57l0qCWVMB4YGLGg9n4belmddZgUL8Apa1Kf03YImdiuXwAq
-         Ty4yb7NvMz8V21mUJbVIYn3z6hU+YdUrivBmEjouJk9H0oBk2efBVy1EYPVvt+qkmjCU
-         qX6LI/qbBpdp/jk9N+aZhatPxPbmrAdtuCT36aZEmHHls3dkROOuGRzYdj7iSMzzXL1B
-         LhsbPmGeb2Lhu27mljNlVNVsH+mRybW9oMryQsZ9V1esTZ5EIcJsYSsP7vF2IG1DDk6H
-         Qg+xuWMbeMcVuqOcyElbnmw6YtbbxWw2IJcGE8uxncekxOcFK/2wYxrOQIxUvmkdZ9Ak
-         8MGg==
-X-Gm-Message-State: AGi0PubskMb+EMxbWHZp6DDcEnQ6x/1qObr0d+QhNAgD0tcwH9hEmoOY
-        g+Tg8UziLF0yACGlQCEKS7L9YFK9OcyzrhESeDc=
-X-Google-Smtp-Source: APiQypLcuDcFu9duAFTBZifZ7NOSY/QYHin/N+pnbslGsvUZYpjpT4plJdYctMGmerJZD0LlgSlSysZmhtBw/RXbRzA=
-X-Received: by 2002:a92:3c56:: with SMTP id j83mr11554343ila.37.1587812996492;
- Sat, 25 Apr 2020 04:09:56 -0700 (PDT)
+        Sat, 25 Apr 2020 07:11:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD12C09B04B;
+        Sat, 25 Apr 2020 04:11:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XhkPbtyaqmMBG6aICROLPcfy5U+xk0OZN/pBlUuLuHY=; b=O5u+4P5udjw0lHyGwAIHIyJA8q
+        ytjTlNMbMxF4ZNJwIqFOEoSBxnGwcYFU6GjUmAAKDJ+si7gTkCax+kFnS/rp0flqBfaSkGJxXDGzN
+        UKAbF9lVnztuR3ea3DbP3qH+3Dj49pOJZgHSACe+4HJrA0+LnFE9bTtMAnogLiV1+IY0b2/J4MLtt
+        mpQB59fVaoUCLRdZ0BxOo2Bc75V/ApvwggSB79/NE/xE5CICVh1ZFhYhfuHsoegxQVdqszx9b9Fpf
+        Ijr3RBDx/DQrCBgpGOclmEmrTKgtgPqIcd90LHorb9f5dfzudxyFa/b5/3/6u9gE6xhSmkeNFLhIO
+        Ng05eJtg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jSIi0-0003jb-Ig; Sat, 25 Apr 2020 11:10:56 +0000
+Date:   Sat, 25 Apr 2020 04:10:56 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jose Abreu <Jose.Abreu@synopsys.com>
+Cc:     linux-scsi@vger.kernel.org, Joao Pinto <Joao.Pinto@synopsys.com>,
+        Joao Lima <Joao.Lima@synopsys.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] scsi: ufs: Allow UFS 3.0 as a valid version
+Message-ID: <20200425111056.GA3384@infradead.org>
+References: <cover.1587727756.git.Jose.Abreu@synopsys.com>
+ <5c4281080538b74ca39cedb9112ffe71bf7a80b5.1587727756.git.Jose.Abreu@synopsys.com>
 MIME-Version: 1.0
-Received: by 2002:a5e:c242:0:0:0:0:0 with HTTP; Sat, 25 Apr 2020 04:09:55
- -0700 (PDT)
-Reply-To: daoudaali2200@gmail.com
-From:   Daouda Ali <mrdaoudaali3@gmail.com>
-Date:   Sat, 25 Apr 2020 11:09:55 +0000
-Message-ID: <CA+04ALLP28GfT+BQTN+19yoWrjWW5vTWOJUDyzHi7KWk5Cb5wg@mail.gmail.com>
-Subject: INVESTMENT PROPOSAL.
-To:     daoudaali2200@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5c4281080538b74ca39cedb9112ffe71bf7a80b5.1587727756.git.Jose.Abreu@synopsys.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It=E2=80=99s my pleasure to contact you through this media because I need a=
-n
-investment assistance in your country. However I have a profitable
-investment proposal with  good interest to share with you, amounted
-the sum of (Twenty Eight Million Four Hundred Thousand United State
-Dollar ($28.400.000.00). If you  are willing to handle this project
-kindly reply urgent to enable me provide you more information about
-the investment funds and the project.
+On Fri, Apr 24, 2020 at 01:36:56PM +0200, Jose Abreu wrote:
+> Add a define for UFS version 3.0 and do not print an error message upon
+> probe when using this version.
 
-I am waiting to hear from you through this my private
-email(daoudaali2200@gmail.com) so we can proceed further.
+This doesn't really scale.  Version checks only make sense for a minimum
+supported version.  Rejecting newer versions is just a bad idea.
 
-Best Regards.
-Mr. Daouda Ali.
+> @@ -8441,7 +8441,8 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
+>  	if ((hba->ufs_version != UFSHCI_VERSION_10) &&
+>  	    (hba->ufs_version != UFSHCI_VERSION_11) &&
+>  	    (hba->ufs_version != UFSHCI_VERSION_20) &&
+> -	    (hba->ufs_version != UFSHCI_VERSION_21))
+> +	    (hba->ufs_version != UFSHCI_VERSION_21) &&
+> +	    (hba->ufs_version != UFSHCI_VERSION_30))
+
+i.e. this should become
+
+	if (hba->ufs_version < UFSHCI_VERSION_10)
+
+as an additional cleanup I think it makes more sense t use a UFSHCI_VER()
+macro similar to KERNEL_VERSION() or NVME_VS() instead of adding a new
+define for every version.
