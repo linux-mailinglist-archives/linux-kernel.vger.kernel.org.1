@@ -2,94 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0AF1B89E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 01:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DE11B8A07
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 01:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgDYXNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 19:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726238AbgDYXNk (ORCPT
+        id S1726385AbgDYXeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 19:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgDYXeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 19:13:40 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8E6C09B04F;
-        Sat, 25 Apr 2020 16:13:39 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id u15so13754201ljd.3;
-        Sat, 25 Apr 2020 16:13:39 -0700 (PDT)
+        Sat, 25 Apr 2020 19:34:01 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E63FC061A0C
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 16:34:01 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x18so16091984wrq.2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 16:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Vmbfgj+KhhWIRPQO0Y7xejCzKCfT3B/GizNa4s124Dc=;
-        b=g3DJbJBCWv485BsgVXF8GDfzccu5Psm5tUNZeup5nFWON4WGl4Gg1d1SJPl++9hzUK
-         O/UH5wrIicb/Bb+nKJKc0exlmi/XYPr6oKmEYO58rTs0qAvYKS85meiGYvTjBvbJGD3N
-         H9rO+PmxQ3HwDd7CLXe+kTqOTm7lV7g6fhYMXWcOag3UGufACtIbuaMgIeK1E7akULCe
-         QJVEktNeeh3zTjWeTDCyJTw7ubS0iqUw6fWk9wsjG6fgY9AdsBoPF9QTdTdt+7KYMSYF
-         sG6EnBXS22UKJt3ua+p2GirPNzBRrMCJial29nu240vgASd/pCcDhsnxdS5hKi3AUA49
-         xakA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GR6Zp93w2P9nAEpmtk3P+nTTTrGY8uPP/pZ5DAWZeKk=;
+        b=MdSKweh+JscsTN879u2NQv0JkN49sSglDkE7v9OyXfLIFFcZdXbEtdsD0cNjLClc/1
+         X/HHqsMuojP0QuiaBhnsJs0f8e5QIj7JL0PSBpmZPiH+12T2l7O95iVE3ii0ToxM5uPO
+         lqBKieSlOC3Cmx9ufSY+IBUbMlSNviJ/5FBbhPaflyQSpIfDksgDIfP2X9QAj9DiQlR/
+         kSak9HxW6BghvVRtNZ5ujuwIg/weqGaH71P7xYYTe6tRefRXnHQ4lfoKJ5LChKuYdspG
+         qzrH7qACTE2Jz8Y1bPmuCPlO0E41XrM4Lmuaw6RaFrR+3Nbg64tZ3BGp86A/uH1RyMb0
+         9vaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Vmbfgj+KhhWIRPQO0Y7xejCzKCfT3B/GizNa4s124Dc=;
-        b=owlKnOK/Z4Ba1MeitAwQHr16HOC9uwtwePKxX1b1cuxZ6fa+TFvIQCL7qU3E0lUYsl
-         4lJ0dQfvv/u3fd8qhjiiLBMjn3gBWWS6uJz0n/kWssFXBbJhMe2mE3syKc8S7AwSTpcx
-         l88+i60r5rRCigms/NGDKH8TTTivvNBgP08FqbSrQqUosurGb8a3VihlVa9/DWnpxDDV
-         ljUM2vRGvtt5OHgn6BlwF3hK6tFGxkYRU1SG3hA5qeIIyhtD+Lx9cWuonH8jnW7N0k/2
-         KcodBkkmrl28JhL8jAuGnzfXTGJkUDPsqWx8ssgPzYBkcFG0LY/Wvtndu7jlnqrloLob
-         H/rw==
-X-Gm-Message-State: AGi0PuYTHDjh06+ED84WnIXqNMrXFRGCspFtdWsh+QmpOrDMUVmaFKPZ
-        xIi+95Jl6q3xTkWhxRn1m3xWx1of
-X-Google-Smtp-Source: APiQypLPLLlFK6SUt122hbClzC+1jGC5XEHeRT//ouxPvHt7RAx0CUb9YTAsKvpZj4H0ruXIT3YpAQ==
-X-Received: by 2002:a2e:9990:: with SMTP id w16mr9913314lji.194.1587856417724;
-        Sat, 25 Apr 2020 16:13:37 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id o6sm6917564lja.70.2020.04.25.16.13.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Apr 2020 16:13:37 -0700 (PDT)
-Subject: Re: [RFC PATCH v10 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
-Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1587700513-28449-1-git-send-email-skomatineni@nvidia.com>
- <1587700513-28449-7-git-send-email-skomatineni@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <fd5300fd-33af-babe-95d0-9669b66a8c06@gmail.com>
-Date:   Sun, 26 Apr 2020 02:13:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        bh=GR6Zp93w2P9nAEpmtk3P+nTTTrGY8uPP/pZ5DAWZeKk=;
+        b=XbjX1Iv85hndGEnR7xpsMEiu/Z1Ba0kOIaa33lglQWHZcnl34/7FfzVcYG4Ds4xXlx
+         kaKbrbZ8SXGVxcg66VoYWFuR5ohUmnhdekM/xMUXTB2+U7PWtynhlb7jSq96coWluQIj
+         NNKi/FqQKxLkoX1DNACjn5v26ALnSZDXTxAdbh9aPlhzlR7kvh3NCGVhe255YCfZjRbb
+         gVnEUYf/TL9D6xqVgFvoRzSvNyvc/ifEsb0Q0eRq6/J6Na+xkGbnz/YY1FtDvEMRv8gQ
+         jtVTZCRfeFMMBo+8ZFhdg2GJePyj1yN1W2O7+ar78Gfs/O5LVY3j7ahiwiDThDQ8blEN
+         D2bQ==
+X-Gm-Message-State: AGi0Pubtl6kKsMKJ4VVpBVIfud+dIMlsRaasJwiLyrchdF6u1eo+O9YG
+        JiIQSZMtMkp9nn66Xo7tH44=
+X-Google-Smtp-Source: APiQypIUc0sCBKsFLqPzqpWHrlBzRSIyhcwP3/mDcDrbqAyZ55yL5C6sFnXLtGyBafxCZ0XgEsJGGA==
+X-Received: by 2002:a05:6000:12c7:: with SMTP id l7mr19840423wrx.239.1587857640288;
+        Sat, 25 Apr 2020 16:34:00 -0700 (PDT)
+Received: from josarchlaptop.nilsvital.de (pD9F5358A.dip0.t-ipconnect.de. [217.245.53.138])
+        by smtp.gmail.com with ESMTPSA id l5sm8886988wmi.22.2020.04.25.16.33.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Apr 2020 16:33:59 -0700 (PDT)
+Received: by josarchlaptop.nilsvital.de (sSMTP sendmail emulation); Sun, 26 Apr 2020 01:33:58 +0200
+From:   Johannes Hostert <jojohostert@gmail.com>
+Cc:     Johannes Hostert <jojohostert@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] vt: vt_ioctl: Add new ioctl to read vt switch lock state
+Date:   Sun, 26 Apr 2020 01:14:34 +0200
+Message-Id: <20200425231436.535671-1-jojohostert@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <1587700513-28449-7-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-24.04.2020 06:55, Sowjanya Komatineni пишет:
-> +static int __maybe_unused vi_runtime_resume(struct device *dev)
-> +{
-> +	struct tegra_vi *vi = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	ret = regulator_enable(vi->vdd);
-> +	if (ret) {
-> +		dev_err(dev, "failed to enable VDD supply: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_set_rate(vi->clk, vi->soc->vi_max_clk_hz);
-> +	if (ret) {
-> +		dev_err(dev, "failed to set vi clock rate: %d\n", ret);
-> +		goto disable_vdd;
-> +	}
+The existing ioctls VT_LOCKSWITCH and VT_UNLOCKSWITCH can be used to
+allow/disallow switching the virtual terminal. However, no mechanism
+exists that allows software to read this lock state.
 
-Isn't setting clock rate using assigned-clocks in a device-tree enough?
-Could you please clarify why this vi_max_clk_hz is needed?
+Userspace programs that try to switch to another virtual terminal
+like chvt have no mechanism to figure out whether they will be able
+to actually switch the terminal. When eg. chvt is run while terminal
+switching is disabled, it simply sleeps forever waiting for the target
+terminal to become active.
+
+This commit introduces a new ioctl VT_GETLOCKSWITCH that allows
+reading the current state of the switch lock flag. Userspace
+software can then use that flag and handle not being able to switch
+virtual terminals.
+
+Example program using this:
+
+#include <linux/vt.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <errno.h>
+#include <error.h>
+#include <unistd.h>
+const char* console_device = "/dev/tty0";
+int main(int argc, char* argv[]) {
+	int fd;
+	while ((fd = open(console_device, O_RDWR)) == -1 && errno == EINTR);
+	if (fd < 0)
+		error(1, errno, "Opening %s", console_device);
+        int ret;
+	while ((ret = ioctl(fd, VT_GETLOCKSWITCH, 1)) == -1 && errno == EINTR);
+	if (ret == -1)
+		error(1, errno, "%s: VT_GETLOCKSWITCH", console_device);
+	printf("VT switching is %s\n", ret == 1 ? "locked" : "unlocked");
+	close(fd);
+	return 0;
+}
+
+Signed-off-by: Johannes Hostert <jojohostert@gmail.com>
+---
+ drivers/tty/vt/vt_ioctl.c | 5 +++++
+ include/uapi/linux/vt.h   | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
+index daf61c28ba76..08b808e1fbf0 100644
+--- a/drivers/tty/vt/vt_ioctl.c
++++ b/drivers/tty/vt/vt_ioctl.c
+@@ -1028,6 +1028,11 @@ int vt_ioctl(struct tty_struct *tty,
+ 			return -EPERM;
+ 		vt_dont_switch = false;
+ 		break;
++	case VT_GETLOCKSWITCH:
++		if (!capable(CAP_SYS_TTY_CONFIG))
++			return -EPERM;
++		ret = vt_dont_switch ? 1 : 0;
++		break;
+ 	case VT_GETHIFONTMASK:
+ 		ret = put_user(vc->vc_hi_font_mask,
+ 					(unsigned short __user *)arg);
+diff --git a/include/uapi/linux/vt.h b/include/uapi/linux/vt.h
+index e9d39c48520a..13a1e82dfb14 100644
+--- a/include/uapi/linux/vt.h
++++ b/include/uapi/linux/vt.h
+@@ -61,6 +61,7 @@ struct vt_consize {
+ #define VT_RESIZEX      0x560A  /* set kernel's idea of screensize + more */
+ #define VT_LOCKSWITCH   0x560B  /* disallow vt switching */
+ #define VT_UNLOCKSWITCH 0x560C  /* allow vt switching */
++#define VT_GETLOCKSWITCH 0x5610  /* return vt switch lock state */
+ #define VT_GETHIFONTMASK 0x560D  /* return hi font mask */
+ 
+ struct vt_event {
+-- 
+2.26.2
+
