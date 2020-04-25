@@ -2,83 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9481B8524
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 11:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC281B8539
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 11:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726119AbgDYJSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 05:18:23 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57844 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725837AbgDYJSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 05:18:23 -0400
-IronPort-SDR: EMoVIatNoVV8QJn/Gfllh449zY/DVPWDRK8OGzoVa+4tQu7FpmCDRnVSM1fGmAQdbjzectvvLH
- vSUBIJ/AkkLQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2020 02:18:23 -0700
-IronPort-SDR: 0oOyyW0X97JuqAqE90wKs4Ch1mmAj2Sq9D/UuI0fhg3Wh0oPlPjtKxfwWnIHLPw3Wn96LxOaBi
- aw8gwALAxm0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,315,1583222400"; 
-   d="scan'208";a="281127171"
-Received: from unknown (HELO localhost) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Apr 2020 02:18:21 -0700
-Date:   Sat, 25 Apr 2020 17:20:21 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        jmattson@google.com, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 3/9] KVM: VMX: Set host/guest CET states for
- vmexit/vmentry
-Message-ID: <20200425092021.GB26221@local-michael-cet-test>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200326081847.5870-4-weijiang.yang@intel.com>
- <20200423171741.GH17824@linux.intel.com>
- <20200424143510.GH24039@local-michael-cet-test>
- <20200424144941.GC30013@linux.intel.com>
+        id S1726062AbgDYJZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 05:25:20 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57216 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgDYJZT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 05:25:19 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03P9N63I172295;
+        Sat, 25 Apr 2020 09:24:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=E4qYxCnU4PYfmFZxSvJ3HLmvAuXno1o/zIOiRjeOkwA=;
+ b=lrZti5QBahzHZKup8JYThKloqQnP953PVbwItHZDzEq8l6Dys10aCZ1JpjpOrZQwB6Ky
+ m/F5VuVJ1IB1eWQcYYuhDnrYd9+N6loSlYTV/qHSlgEkzVG25lps3AJPC/AcUIIL+rq+
+ ZaPHo6rbaFpJLI+o9/7Ir3gOCuqInOAkSBzQGqT7nBsylU0jTyG8SRNYWbJvfLD9oSuV
+ PnkaQGg0Ypwtll+UBpWMICVF0C8aYQ+7doXFD3z3+Ie0S3fJn4oJGEwQZGJDYKsioD61
+ Bf4WxOMekwVpNsS76laPFAEAO4w8N9jYq+77KIo5QWtCyVuxGLm+J1rjCcmCKOhOf7rf FA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 30mdumrj0n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 25 Apr 2020 09:24:51 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03P9MRkI134537;
+        Sat, 25 Apr 2020 09:24:50 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 30maarw53a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 25 Apr 2020 09:24:50 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03P9Okj3002586;
+        Sat, 25 Apr 2020 09:24:47 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 25 Apr 2020 02:24:46 -0700
+Date:   Sat, 25 Apr 2020 12:24:39 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Vesa =?iso-8859-1?B?SuTkc2tlbORpbmVu?= 
+        <vesa.jaaskelainen@vaisala.com>
+Cc:     op-tee@lists.trustedfirmware.org,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Rijo Thomas <Rijo-john.Thomas@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
+        Hongbo Yao <yaohongbo@huawei.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] tee: add support for session's client UUID generation
+Message-ID: <20200425092439.GT2682@kadam>
+References: <20200423151701.111231-1-vesa.jaaskelainen@vaisala.com>
+ <20200423151701.111231-2-vesa.jaaskelainen@vaisala.com>
+ <20200423173527.GP2682@kadam>
+ <29b76307-12cb-c52e-f72f-eb7c22bab012@vaisala.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200424144941.GC30013@linux.intel.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <29b76307-12cb-c52e-f72f-eb7c22bab012@vaisala.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9601 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 suspectscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004250080
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9601 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 lowpriorityscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ impostorscore=0 malwarescore=0 phishscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004250080
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 07:49:41AM -0700, Sean Christopherson wrote:
-> On Fri, Apr 24, 2020 at 10:35:10PM +0800, Yang Weijiang wrote:
-> > On Thu, Apr 23, 2020 at 10:17:41AM -0700, Sean Christopherson wrote:
-> > > On Thu, Mar 26, 2020 at 04:18:40PM +0800, Yang Weijiang wrote:
-> > > > @@ -7140,8 +7175,23 @@ static void vmx_cpuid_update(struct kvm_vcpu *vcpu)
-> > > >  	}
-> > > >  
-> > > >  	if (guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
-> > > > -	    guest_cpuid_has(vcpu, X86_FEATURE_IBT))
-> > > > +	    guest_cpuid_has(vcpu, X86_FEATURE_IBT)) {
-> > > >  		vmx_update_intercept_for_cet_msr(vcpu);
-> > > > +
-> > > > +		if (cpu_has_cet_guest_load_ctrl() && is_cet_supported(vcpu))
-> > > > +			vm_entry_controls_setbit(to_vmx(vcpu),
-> > > > +						 VM_ENTRY_LOAD_GUEST_CET_STATE);
-> > > > +		else
-> > > > +			vm_entry_controls_clearbit(to_vmx(vcpu),
-> > > > +						   VM_ENTRY_LOAD_GUEST_CET_STATE);
-> > > > +
-> > > > +		if (cpu_has_cet_host_load_ctrl() && is_cet_supported(vcpu))
-> > > > +			vm_exit_controls_setbit(to_vmx(vcpu),
-> > > > +						VM_EXIT_LOAD_HOST_CET_STATE);
-> > > > +		else
-> > > > +			vm_exit_controls_clearbit(to_vmx(vcpu),
-> > > > +						  VM_EXIT_LOAD_HOST_CET_STATE);
-> > > 
-> > > As above, I think this can be done in vmx_set_cr4().
-> > >
-> > Hmm, it's in vmx_set_cr4() in early versions, OK, will move them back.
+On Sat, Apr 25, 2020 at 09:16:57AM +0300, Vesa Jääskeläinen wrote:
+> Hi Dan,
 > 
-> Did I advise you to move them out of vmx_set_cr4()?  It's entirely possible
-> I forgot some detail since the last time I reviewed this series.
-Things are always changing, I'm willing to change any part of the patch
-before it's landed :-).
+> Thanks for comments!
+> 
+> On 2020-04-23 20:35, Dan Carpenter wrote:
+> > On Thu, Apr 23, 2020 at 06:16:59PM +0300, Vesa Jääskeläinen wrote:
+> > > +static int uuid_v5(uuid_t *uuid, const uuid_t *ns, const void *name,
+> > > +		   size_t size)
+> > > +{
+> > > +	unsigned char hash[SHA1_DIGEST_SIZE];
+> > > +	struct crypto_shash *shash = NULL;
+> > > +	struct shash_desc *desc = NULL;
+> > > +	int rc;
+> > > +
+> > > +	shash = crypto_alloc_shash("sha1", 0, 0);
+> > > +	if (IS_ERR(shash)) {
+> > > +		rc = PTR_ERR(shash);
+> > > +		pr_err("shash(sha1) allocation failed\n");
+> > > +		return rc;
+> > > +	}
+> > > +
+> > > +	desc = kzalloc(sizeof(*desc) + crypto_shash_descsize(shash),
+> > > +		       GFP_KERNEL);
+> > > +	if (IS_ERR(desc)) {
+> > 
+> > 
+> > kzalloc() returns NULL on error.
+> 
+> Err...Right. Will fix for V2. Thanks for noticing this.
+> 
+> I was probably confused by this:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/slab.h?h=v5.7-rc2#n553
+> 
+> As there is no error handling case documented for kmalloc and friends -- I
+> was just looking that as there are non-zero error cases in that referenced
+> line (ZERO_SIZE_PTR) so we need to check if pointer has error value as it
+> was with crypto_alloc_shash().
+> 
+> But looking at users of kzalloc then convention seems to be just check for
+> NULL.
+> 
+> Probably referenced code is then expected to cause page fault on error case
+> as ZERO_SIZE_PTR is not error value as such.
+
+
+Zero size buffers are not an error.  You can copy zero bytes to them or
+from them without a problem.
+
+	size = 0;
+	p = kmalloc(size, GFP_KERNEL);
+	memcpy(p, src, 0);
+	for (i = 0; i < size; i++)
+		printk("%d\n", p[i]);
+	copy_to_user(user_ptr, p, size);
+
+All that's fine and does nothing.  You should never test for
+ZERO_SIZE_PTR.  Check for "size == 0" instead.
+
+> 
+> > 
+> > > +		rc = PTR_ERR(desc);
+> > > +		goto out;
+> > 
+> > Please choose a label name so that we can tell what the goto will do
+> > like "goto free_shash;".
+> 
+> Ok. Will update for V2.
+> 
+> > > +	}
+> > > +
+> > > +	desc->tfm = shash;
+> > > +
+> > > +	rc = crypto_shash_init(desc);
+> > > +	if (rc < 0)
+> > > +		goto out2;
+> > > +
+> > > +	rc = crypto_shash_update(desc, (const u8 *)ns, sizeof(*ns));
+> > > +	if (rc < 0)
+> > > +		goto out2;
+> > > +
+> > > +	rc = crypto_shash_update(desc, (const u8 *)name, size);
+> > > +	if (rc < 0)
+> > > +		goto out2;
+> > > +
+> > > +	rc = crypto_shash_final(desc, hash);
+> > > +	if (rc < 0)
+> > > +		goto out2;
+> > > +
+> > > +	memcpy(uuid->b, hash, UUID_SIZE);
+> > > +
+> > > +	/* Tag for version 5 */
+> > > +	uuid->b[6] = (hash[6] & 0x0F) | 0x50;
+> > > +	uuid->b[8] = (hash[8] & 0x3F) | 0x80;
+> > > +
+> > > +out2:
+> > > +	kfree(desc);
+> > > +
+> > > +out:
+> > > +	crypto_free_shash(shash);
+> > > +	return rc;
+> > > +}
+> > > +
+> > > +int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
+> > > +				 const u8 connection_data[TEE_IOCTL_UUID_LEN])
+> > > +{
+> > > +	const char *application_id = NULL;
+> > > +	gid_t ns_grp = (gid_t)-1;
+> > > +	kgid_t grp = INVALID_GID;
+> > > +	char *name = NULL;
+> > > +	int rc;
+> > > +
+> > > +	if (connection_method == TEE_IOCTL_LOGIN_PUBLIC) {
+> > > +		/* Nil UUID to be passed to TEE environment */
+> > > +		uuid_copy(uuid, &uuid_null);
+> > > +		return 0;
+> > > +	}
+> > > +
+> > > +	/*
+> > > +	 * In Linux environment client UUID is based on UUIDv5.
+> > > +	 *
+> > > +	 * Determine client UUID with following semantics for 'name':
+> > > +	 *
+> > > +	 * For TEEC_LOGIN_USER:
+> > > +	 * uid=<uid>
+> > > +	 *
+> > > +	 * For TEEC_LOGIN_GROUP:
+> > > +	 * gid=<gid>
+> > > +	 *
+> > > +	 */
+> > > +
+> > > +	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
+> > > +	if (!name)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	switch (connection_method) {
+> > > +	case TEE_IOCTL_LOGIN_USER:
+> > > +		scnprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x",
+> > > +			  current_euid().val);
+> > 
+> > It doesn't make sense to use sCnprintf() instead of snprintf() if we're
+> > not going to preserve the error code.  Probably it's better to preserve
+> > the error code actually so we can avoid the strlen(name) later on.
+> 
+> Ok. I assume you meant here using snprintf where we can capture the error
+> situation of too large output string. scnprintf does not seem to have error
+> returning capabilities.
+> 
+> I assume you meant something like this:
+> 
+> name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x",
+> 		    current_euid().val);
+> if (name_len >= TEE_UUID_NS_NAME_SIZE) {
+> 	rc = -E2BIG;
+> 	goto out_free_name;
+> }
+> 
+
+None of the kernel snprintf() functions return negative error codes.
+The difference between snprintf() and scnprintf() is that snprintf()
+returns the number of bytes that would have been copied if there were
+enough space and scnprintf() returns the number of bytes which were
+*actually* copied.
+
+But if we don't care about the return code, then we should default to
+using snprintf() because it is the simpler looking function.  Always
+right the simplest code you can.
+
+regards,
+dan carpenter
+
