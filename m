@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8C51B8421
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 09:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFF91B8432
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 09:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgDYHHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 03:07:17 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60286 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbgDYHHR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 03:07:17 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 61F541C0229; Sat, 25 Apr 2020 09:07:15 +0200 (CEST)
-Date:   Sat, 25 Apr 2020 09:07:14 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Jiri Slaby <jslaby@suse.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v6 1/4] lib: new helper kstrtodev_t()
-Message-ID: <20200425070714.GA21938@amd>
-References: <20200213091600.554-1-uwe@kleine-koenig.org>
- <20200213091600.554-2-uwe@kleine-koenig.org>
- <CAHp75VcStj5sE3f0uK2deOWC=ojfx-z1fbrh6Lu6jAor9F9PgA@mail.gmail.com>
- <20200220074901.ohcrisjgd26555ya@pengutronix.de>
- <CAHp75VcxXWputX1y90t8f-c0a3dw2CHU6=ebQ+o6e8Z1GymiDw@mail.gmail.com>
- <20200220105718.eoevd3kb63zzrotu@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="J/dobhs11T7y2rNN"
-Content-Disposition: inline
-In-Reply-To: <20200220105718.eoevd3kb63zzrotu@pengutronix.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1726128AbgDYH2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 03:28:13 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:60194 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725837AbgDYH2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 03:28:12 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A6E9C1A06DF;
+        Sat, 25 Apr 2020 09:28:10 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 23C031A06D6;
+        Sat, 25 Apr 2020 09:28:06 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 43266402D5;
+        Sat, 25 Apr 2020 15:28:00 +0800 (SGT)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ASoC: fsl_easrc: Check for null pointer before dereferencing "ctx" in fsl_easrc_hw_free()
+Date:   Sat, 25 Apr 2020 15:19:29 +0800
+Message-Id: <d23c939f1c9eeb3fce34b6c34d44e2d6156f663a.1587799355.git.shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The patch 955ac624058f: "ASoC: fsl_easrc: Add EASRC ASoC CPU DAI
+drivers" from Apr 16, 2020, leads to the following Smatch complaint:
 
---J/dobhs11T7y2rNN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+sound/soc/fsl/fsl_easrc.c:1529 fsl_easrc_hw_free()
+warn: variable dereferenced before check 'ctx' (see line 1527)
 
-Hi!
+sound/soc/fsl/fsl_easrc.c
+  1526          struct fsl_asrc_pair *ctx = runtime->private_data;
+  1527          struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
+                                                      ^^^^^
+Dereference
 
-> > > > Why simple_strto*() can't be used?
-> > >
-> > > I didn't really consider it, but looking in more detail I don't like =
-it
-> > > much. Without having tried it I think simple_strtoull accepts
-> > > "1000000000000000000000000000000000000000000" returning some arbitrary
-> > > value without an error indication.
-> >=20
-> > So what? User has a lot of possibilities to shoot into the foot.
-> > Since you interpret this as device major:minor, not founding a device
-> > will be first level of error, next one when your code will try to do
-> > something out of it. It shouldn't be a problem of kstrtox generic
-> > helpers.
->=20
-> I fail to follow your argument here. In my eyes if the user writes a
-> valid major:minor it should work, and if they write an invalid one this
-> should result in an error and not a usage of a device that just happens
-> to have the major:minor that simple_strtoull happens to return for the
-> two components.
+  1528
+  1529          if (ctx && (ctx_priv->ctx_streams & BIT(substream->stream))) {
+                    ^^^
+This check is too late, to prevent a NULL dereference.
 
-Yes please. We don't allow feet shooting where it is easy to prevent,
-and that is the case here.
+  1530                  ctx_priv->ctx_streams &= ~BIT(substream->stream);
+  1531                  fsl_easrc_release_context(ctx);
 
-Best regards,
-									Pavel
+Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/fsl/fsl_easrc.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
+index 97658e1f4989..20326bffab64 100644
+--- a/sound/soc/fsl/fsl_easrc.c
++++ b/sound/soc/fsl/fsl_easrc.c
+@@ -1524,9 +1524,14 @@ static int fsl_easrc_hw_free(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_asrc_pair *ctx = runtime->private_data;
+-	struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
++	struct fsl_easrc_ctx_priv *ctx_priv;
+ 
+-	if (ctx && (ctx_priv->ctx_streams & BIT(substream->stream))) {
++	if (!ctx)
++		return -EINVAL;
++
++	ctx_priv = ctx->private;
++
++	if (ctx_priv->ctx_streams & BIT(substream->stream)) {
+ 		ctx_priv->ctx_streams &= ~BIT(substream->stream);
+ 		fsl_easrc_release_context(ctx);
+ 	}
+-- 
+2.21.0
 
---J/dobhs11T7y2rNN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl6j4aIACgkQMOfwapXb+vLLpQCeLh/gVFRj+yr45muUNQpcw4Z9
-6YcAoIQg2AjbAFlgvSuiqmW5HGqLrwmR
-=9/gs
------END PGP SIGNATURE-----
-
---J/dobhs11T7y2rNN--
