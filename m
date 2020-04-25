@@ -2,91 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034CC1B82EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 02:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 837271B82FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 25 Apr 2020 03:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbgDYA6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 24 Apr 2020 20:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgDYA6U (ORCPT
+        id S1726121AbgDYBIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 24 Apr 2020 21:08:30 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57122 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726076AbgDYBI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 24 Apr 2020 20:58:20 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3E1C09B049;
-        Fri, 24 Apr 2020 17:58:20 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id h11so4376748plr.11;
-        Fri, 24 Apr 2020 17:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tRhsjd8Am6Cw/B3NaPu2RtrW8z5YgI2PGow/Cf8kXxg=;
-        b=dQi4hRZl5mD+QtDwbquIv6+oCtUg88rS3nzeaGjlIZWmBl4sRxXWG/ZnOUoEFsUvju
-         rKBWgeSJDdK0jLS+Je9YphRfZ/m18xtzFlkxgWZnqbPzBYP3zQB/0a7ErocUGCgJbRJ/
-         kSWDGn/TU9vjjh9shuX8O++DEtPnMS/OtIfhvLiVeH/OxDprR9fgNESU4KJqZtq9ZX4Q
-         QWSuN0Thcfoc+9Rr3rKgw5UznPF3Us6SWHCWjIV7Fn34v/RZQTgBsFWtHpgvcUPtvAS3
-         4PXj5vSX3bI6v23vgYRkY56ku2ICU4LPrsVwWbzDSCVCIQN3IzG4to7bYXCBPR9lhuak
-         dddg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tRhsjd8Am6Cw/B3NaPu2RtrW8z5YgI2PGow/Cf8kXxg=;
-        b=N0Kkjk71kfZ2pGtZP2qQ1z5HuR7y0Q3NnWYzaFDnS8zpZWBOrAmRC5jwlxxjIGgmum
-         YY4GHpPiMVikC44cwgr1KuToHFhdBkX2VEkuCj9q9xWpaMKVK0EvX06/IA87qwX/48M0
-         R3GM06tmoEiF0sOS/7HSyxhqXs3TqqaftwsEI7UUqYGhPIxcrONwON6eIN7MhnmKishY
-         zGJxSGwHMZyGse+eweN7w/s7vMYe8gs3W04AH2854WvMglYemP0pFWHjJjvN4NPgiSo2
-         16WpHkfObMv0gMoH4M4BPA+yCQdheLaxeI0iMfCOXltpYXw5Xm1edZGElWKxH7LjUkpN
-         a9+w==
-X-Gm-Message-State: AGi0PuZrgllWxMlsAYO4djpXKHUwNLgDUwbZRy52kN1HXvdPWA2v5PgB
-        +AOErKk6fUfd78nIxs6DF2GiARPTxQQ=
-X-Google-Smtp-Source: APiQypK6CtV6IbJKErUbHv1LFjAU21iJSl48bdJnLBN/kxLqLYld/xUASo0Tmun9ng0GMqi2LlrIEg==
-X-Received: by 2002:a17:902:b709:: with SMTP id d9mr11843348pls.118.1587776299555;
-        Fri, 24 Apr 2020 17:58:19 -0700 (PDT)
-Received: from DennisMBP.www.tendawifi.com ([122.225.224.238])
-        by smtp.gmail.com with ESMTPSA id o9sm5672333pje.47.2020.04.24.17.58.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 Apr 2020 17:58:19 -0700 (PDT)
-From:   Richard Clark <richard.xnu.clark@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, xuesong.cxs@alibaba-inc.com,
-        richard.xnu.clark@gmail.com, Igor Russkikh <irusskikh@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH] Fix the media type of AQC100 ethernet controller in the driver
-Date:   Sat, 25 Apr 2020 08:58:11 +0800
-Message-Id: <20200425005811.13021-1-richard.xnu.clark@gmail.com>
-X-Mailer: git-send-email 2.24.1 (Apple Git-126)
+        Fri, 24 Apr 2020 21:08:29 -0400
+Received: from fsav104.sakura.ne.jp (fsav104.sakura.ne.jp [27.133.134.231])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 03P17mZV083687;
+        Sat, 25 Apr 2020 10:07:48 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav104.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp);
+ Sat, 25 Apr 2020 10:07:48 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav104.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 03P17mu8083684
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Sat, 25 Apr 2020 10:07:48 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <20200424024239.63607-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <20200425004609.GE8982@jagdpanzerIV.localdomain>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <842ff40b-a232-6098-4333-996a3033b30a@i-love.sakura.ne.jp>
+Date:   Sat, 25 Apr 2020 10:07:45 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200425004609.GE8982@jagdpanzerIV.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Aquantia AQC100 controller enables a SFP+ port, so the driver should
-configure the media type as '_TYPE_FIBRE' instead of '_TYPE_TP'.
+On 2020/04/25 9:46, Sergey Senozhatsky wrote:
+> On (20/04/24 11:42), Tetsuo Handa wrote:
+> [..]
+>> @@ -19,6 +19,7 @@ static inline int printk_get_level(const char *buffer)
+>>  		switch (buffer[1]) {
+>>  		case '0' ... '7':
+>>  		case 'c':	/* KERN_CONT */
+>> +		case 'S':       /* KERN_NO_CONSOLES */
+>>  			return buffer[1];
+>>  		}
+>>  	}
+> 
+> So this means NO_CONSOLES_AT_ALL, slow + fast ones.
 
-Signed-off-by: Richard Clark <richard.xnu.clark@gmail.com>
-Cc: Igor Russkikh <irusskikh@marvell.com>
-Cc: "David S. Miller" <davem@davemloft.net>
----
- drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Right.
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c b/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
-index 2edf137a7030..8a70ffe1d326 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_pci_func.c
-@@ -57,7 +57,7 @@ static const struct aq_board_revision_s hw_atl_boards[] = {
- 	{ AQ_DEVICE_ID_D108,	AQ_HWREV_2,	&hw_atl_ops_b0, &hw_atl_b0_caps_aqc108, },
- 	{ AQ_DEVICE_ID_D109,	AQ_HWREV_2,	&hw_atl_ops_b0, &hw_atl_b0_caps_aqc109, },
- 
--	{ AQ_DEVICE_ID_AQC100,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc107, },
-+	{ AQ_DEVICE_ID_AQC100,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc100, },
- 	{ AQ_DEVICE_ID_AQC107,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc107, },
- 	{ AQ_DEVICE_ID_AQC108,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc108, },
- 	{ AQ_DEVICE_ID_AQC109,	AQ_HWREV_ANY,	&hw_atl_ops_b1, &hw_atl_b0_caps_aqc109, },
--- 
-2.17.1
+>                                                     I wonder if this
+> wants to be NO_SLOW_CONSOLES instead. Which then brings us to the
+> next question - can this be done with per-console loglevel setting?
+
+It is difficult to define what is slow consoles. While netconsole will be
+a fast console, we can forward kernel messages via syslog daemon if desired.
+
+NO_SLOW_CONSOLES might be useful for immediate notification like panic().
+But KERN_NO_CONSOLES is not for immediate notification like panic().
+
+KERN_NO_CONSOLES is for type of messages where "saved for later analysis" is
+important but "printed for immediate notification" is not important.
+In other words, KERN_NO_CONSOLES is NOT for dying messages where "printed for
+immediate notification" is important.
 
