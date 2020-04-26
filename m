@@ -2,233 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D36CE1B9130
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 17:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961C51B9135
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 17:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726162AbgDZPf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 11:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
+        id S1726194AbgDZPge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 11:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726146AbgDZPf1 (ORCPT
+        by vger.kernel.org with ESMTP id S1726143AbgDZPgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 11:35:27 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CB6C061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 08:35:27 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id g14so21680518otg.10
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 08:35:27 -0700 (PDT)
+        Sun, 26 Apr 2020 11:36:33 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1C3C09B050
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 08:36:33 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b2so14882872ljp.4
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 08:36:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UTSGgGHjq8kp92QkvHlpZms09I8imqKy0zzF+tlAzVs=;
-        b=N2pZkcFKfYnH8MFQH1XBAgwpkBWtTWqg1Wp5m386SheDJzx/oyzGkstPWyev5lbnks
-         vdViFeava3/mHV7DbMKdozanXzme/Hb4IS0Iu9Cgmvjx44HqtrstIHlx0FvtGOvagvQk
-         oKW9FAXQq4cnifGaG6dTKWz/QFf7maWyGnWwkdxRr6jFf6s2exCq9+giNlX9Q1k9dSmx
-         wYkfkwekV8crM+CdfX8vSFWlD4jIGO+ebfJE6rv/EDazg9aBr+dj8VrfZYlBJSP8DCbp
-         Vgj6vRutX5S4eQerx4f+1+nK1xh9r9cZ4BG+nX2ba3cfyNAzv1+a002Jv2dGuZwNSD9L
-         vLTQ==
+        bh=X77CRMCQDDgdc4Bur39RULXQxF3a/MrJ/qM13TQRcl0=;
+        b=NYVYUIdXiXEUEPYYT3I/R1qAnkPPt3cT7aB7wcoSmtGOcWinkwL3B4FAZKsqUsBC+7
+         EbE20jkfrnneUQiwAC3g3XB+K72YRxyC7g9/b3z8XqRwKEs7Phsfd9nQiLH0aY5a4sPy
+         YpSzGv+bVifsrIV7RfYcYTkf/rKBasnwAMVUHprWphf0HsikZIOwrJ16GBbbvY1+ObKA
+         VGvJ+y7WwtkxvVTJTuf8cZI1zMMyyY+sqfhGajVIPN+M2rDln91qxhZ+ewxRuOrRrKJV
+         mdxDKAYaguUjc/Dg6MV3ccxQP/KAwqmIJPUqWulw+eEM1J2C6XmPJZ5zx39OHRyBhDOK
+         qXyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UTSGgGHjq8kp92QkvHlpZms09I8imqKy0zzF+tlAzVs=;
-        b=IbIhljDXoZP4o1c2K7oBwPEUGpatr/sRSwqRk8aMLS2lHBZkD6AshjOOq0HO4hmQeT
-         TAx2RNfTf7jrTQ3pyfeSMPx9ioFXYl0zL5iwJyx9yXtOsngf10kuys8FuxyIkmtUnHpx
-         IAVNyzS8mEWbyD1gHfxBD+rR4mNgrVG0UJvC5ZnuGi3P34FOvio81VB7PWFAD1Q1pg4L
-         T/iNDi+x57HsTXLHlHDmCPJoPonxERddGWmyv4qPKrvSnN2Ao83IgY4svjjMXRIna1IN
-         HGj5kdkzQ5k9xDLHtzZOvdq2bJDbFnVM9gS4PhaiXT6jj/QcVLib0Jjb5daqCUWIEScX
-         fEsQ==
-X-Gm-Message-State: AGi0PuaRERKdbbrc0J5B0eqGxD4CjCVOw3zJ7dxC8oLWml173GuJiSXN
-        qXZHmENGPqv6nqIx0O4c4yi9aaekqP5k+mKn+dsR8A==
-X-Google-Smtp-Source: APiQypLNBOzO4kpsgeeFpRJdaFaQ8h8ZKwsOveqkxyYnkjXmAPDH3ozDDLlPWcyUxvefYHZVcSlpJJ1A3+ulGOMBEBY=
-X-Received: by 2002:a05:6808:24e:: with SMTP id m14mr12552367oie.116.1587915326594;
- Sun, 26 Apr 2020 08:35:26 -0700 (PDT)
+        bh=X77CRMCQDDgdc4Bur39RULXQxF3a/MrJ/qM13TQRcl0=;
+        b=Mq/gk6ljG+4TDPpBLehddL4OykPmbfLCJVIhzjhuQ9+F2j20Cc4ZkQ4dsNJJf+7zQ4
+         EMhFFHTBYcwFSyxKQsUb6BqxiugKfbfvQR1Z4ZTA6fAWhU/OSPgDihrHg5crIxnigQjn
+         I5LsMDE0K+aOlbSwH3AM/jpLYp7hp2tf774ldlA7VSlMij2cyMOPyjjT9Pkh7oQhxTqy
+         AcY053LCpCguZNLr1bYVb1GmoMWO7Oz7UQ+HvQEFascVwj+eE+bGmRdPUXxk4Ibcwyb9
+         dRZhH69+qBtS+12knR17YenKRZrYV716IO1/nskWx/HHRKEcbkV38zqhjDR7Sy3KbsTb
+         1/8Q==
+X-Gm-Message-State: AGi0PuaEw7YFQ2hZ3jkOYVh2R1LpPOi8GCgLmz7mn+SyDsDJFUmw/ilI
+        abNICYx1ON/TTffW/UNTUlzW4yVpg+fZB5dmIZzXAQ==
+X-Google-Smtp-Source: APiQypKj/Im70RltLS80+jbqf0SqRD8efu2GTat9yvLZn+7xqD3hNXs33YaVw72fniLFc/ebyiVe0IHjroY93q9fxEE=
+X-Received: by 2002:a2e:553:: with SMTP id 80mr11651325ljf.147.1587915391895;
+ Sun, 26 Apr 2020 08:36:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200426110740.123638-1-zong.li@sifive.com> <CAAhSdy3FCdzLV-nH03T=PBxB2tdZXhRrugcC2NcoA=22qpv+Lw@mail.gmail.com>
- <CANXhq0qW9ORoZ5qc5g8ikO9QdeYX=p0fwoP8pyFFkk02a7imnw@mail.gmail.com>
- <CAAhSdy2f2-SQP6TdgxA0HM2ft3eBJd6kEkB--RH=2gUuLktXLQ@mail.gmail.com>
- <CANXhq0pDYa2QfGZX87d5gyO5V2uzA3-ttPZXf7s1EkMUcG37Cw@mail.gmail.com> <CAAhSdy188_Kkfsz2bX05T3Rr12XDNtwGiwfqaT2TFVW7auGUaw@mail.gmail.com>
-In-Reply-To: <CAAhSdy188_Kkfsz2bX05T3Rr12XDNtwGiwfqaT2TFVW7auGUaw@mail.gmail.com>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Sun, 26 Apr 2020 23:35:16 +0800
-Message-ID: <CANXhq0qGq33u34q7nhJE4GG03pZ8BBJrnusr=FgmTeJwtq-=4Q@mail.gmail.com>
-Subject: Re: [PATCH] irqchip/sifive-plic: allow many cores to handle IRQs
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        David Abdurachmanov <david.abdurachmanov@sifive.com>,
-        Marc Zyngier <maz@kernel.org>
+References: <20200423064808.10468-1-etienne.carriere@linaro.org>
+ <20200423064808.10468-2-etienne.carriere@linaro.org> <CAL_JsqKvQasaBCHC2s68WmtfwGN+t349tzmF=ySkuYz11HzksQ@mail.gmail.com>
+In-Reply-To: <CAL_JsqKvQasaBCHC2s68WmtfwGN+t349tzmF=ySkuYz11HzksQ@mail.gmail.com>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Sun, 26 Apr 2020 17:36:20 +0200
+Message-ID: <CAN5uoS-zizF_by6WDtF7j9MrGsRt1fir5w+r1cN1QNzDUf8zgQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] dt-bindings: arm: Add secure-clocks binding description
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 11:21 PM Anup Patel <anup@brainfault.org> wrote:
+On Sat, 25 Apr 2020 at 00:06, Rob Herring <robh+dt@kernel.org> wrote:
 >
-> On Sun, Apr 26, 2020 at 8:42 PM Zong Li <zong.li@sifive.com> wrote:
+> On Thu, Apr 23, 2020 at 1:49 AM Etienne Carriere
+> <etienne.carriere@linaro.org> wrote:
 > >
-> > On Sun, Apr 26, 2020 at 9:38 PM Anup Patel <anup@brainfault.org> wrote:
-> > >
-> > > +Mark Z
-> > >
-> > > On Sun, Apr 26, 2020 at 6:49 PM Zong Li <zong.li@sifive.com> wrote:
-> > > >
-> > > > On Sun, Apr 26, 2020 at 8:47 PM Anup Patel <anup@brainfault.org> wrote:
-> > > > >
-> > > > > On Sun, Apr 26, 2020 at 4:37 PM Zong Li <zong.li@sifive.com> wrote:
-> > > > > >
-> > > > > > Currently, driver forces the IRQs to be handled by only one core. This
-> > > > > > patch provides the way to enable others cores to handle IRQs if needed,
-> > > > > > so users could decide how many cores they wanted on default by boot
-> > > > > > argument.
-> > > > > >
-> > > > > > Use 'irqaffinity' boot argument to determine affinity. If there is no
-> > > > > > irqaffinity in dts or kernel configuration, use irq default affinity,
-> > > > > > so all harts would try to claim IRQ.
-> > > > > >
-> > > > > > For example, add irqaffinity=0 in chosen node to set irq affinity to
-> > > > > > hart 0. It also supports more than one harts to handle irq, such as set
-> > > > > > irqaffinity=0,3,4.
-> > > > > >
-> > > > > > You can change IRQ affinity from user-space using procfs. For example,
-> > > > > > you can make CPU0 and CPU2 serve IRQ together by the following command:
-> > > > > >
-> > > > > > echo 4 > /proc/irq/<x>/smp_affinity
-> > > > > >
-> > > > > > Signed-off-by: Zong Li <zong.li@sifive.com>
-> > > > > > ---
-> > > > > >  drivers/irqchip/irq-sifive-plic.c | 21 +++++++--------------
-> > > > > >  1 file changed, 7 insertions(+), 14 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> > > > > > index d0a71febdadc..bc1440d54185 100644
-> > > > > > --- a/drivers/irqchip/irq-sifive-plic.c
-> > > > > > +++ b/drivers/irqchip/irq-sifive-plic.c
-> > > > > > @@ -111,15 +111,12 @@ static inline void plic_irq_toggle(const struct cpumask *mask,
-> > > > > >  static void plic_irq_unmask(struct irq_data *d)
-> > > > > >  {
-> > > > > >         struct cpumask amask;
-> > > > > > -       unsigned int cpu;
-> > > > > >         struct plic_priv *priv = irq_get_chip_data(d->irq);
-> > > > > >
-> > > > > >         cpumask_and(&amask, &priv->lmask, cpu_online_mask);
-> > > > > > -       cpu = cpumask_any_and(irq_data_get_affinity_mask(d),
-> > > > > > -                                          &amask);
-> > > > > > -       if (WARN_ON_ONCE(cpu >= nr_cpu_ids))
-> > > > > > -               return;
-> > > > > > -       plic_irq_toggle(cpumask_of(cpu), d, 1);
-> > > > > > +       cpumask_and(&amask, &amask, irq_data_get_affinity_mask(d));
-> > > > > > +
-> > > > > > +       plic_irq_toggle(&amask, d, 1);
-> > > > > >  }
-> > > > > >
-> > > > > >  static void plic_irq_mask(struct irq_data *d)
-> > > > > > @@ -133,24 +130,20 @@ static void plic_irq_mask(struct irq_data *d)
-> > > > > >  static int plic_set_affinity(struct irq_data *d,
-> > > > > >                              const struct cpumask *mask_val, bool force)
-> > > > > >  {
-> > > > > > -       unsigned int cpu;
-> > > > > >         struct cpumask amask;
-> > > > > >         struct plic_priv *priv = irq_get_chip_data(d->irq);
-> > > > > >
-> > > > > >         cpumask_and(&amask, &priv->lmask, mask_val);
-> > > > > >
-> > > > > >         if (force)
-> > > > > > -               cpu = cpumask_first(&amask);
-> > > > > > +               cpumask_copy(&amask, mask_val);
-> > > > > >         else
-> > > > > > -               cpu = cpumask_any_and(&amask, cpu_online_mask);
-> > > > > > -
-> > > > > > -       if (cpu >= nr_cpu_ids)
-> > > > > > -               return -EINVAL;
-> > > > > > +               cpumask_and(&amask, &amask, cpu_online_mask);
-> > > > > >
-> > > > > >         plic_irq_toggle(&priv->lmask, d, 0);
-> > > > > > -       plic_irq_toggle(cpumask_of(cpu), d, 1);
-> > > > > > +       plic_irq_toggle(&amask, d, 1);
-> > > > > >
-> > > > > > -       irq_data_update_effective_affinity(d, cpumask_of(cpu));
-> > > > > > +       irq_data_update_effective_affinity(d, &amask);
-> > > > > >
-> > > > > >         return IRQ_SET_MASK_OK_DONE;
-> > > > > >  }
-> > > > > > --
-> > > > > > 2.26.1
-> > > > > >
-> > > > >
-> > > > > I strongly oppose (NACK) this patch due to performance reasons.
-> > > > >
-> > > > > In PLIC, if we enable an IRQ X for N CPUs then when IRQ X occurs:
-> > > > > 1) All N CPUs will take interrupt
-> > > > > 2) All N CPUs will try to read PLIC CLAIM register
-> > > > > 3) Only one of the CPUs will see IRQ X using the CLAIM register
-> > > > > but other N - 1 CPUs will see no interrupt and return back to what
-> > > > > they were doing. In other words, N - 1 CPUs will just waste CPU
-> > > > > every time IRQ X occurs.
-> > > > >
-> > > > > Example1, one Application doing heavy network traffic will
-> > > > > degrade performance of other applications because with every
-> > > > > network RX/TX interrupt N-1 CPUs will waste CPU trying to
-> > > > > process network interrupt.
-> > > > >
-> > > > > Example1, one Application doing heavy MMC/SD traffic will
-> > > > > degrade performance of other applications because with every
-> > > > > SPI read/write interrupt N-1 CPUs will waste CPU trying to
-> > > > > process it.
-> > > > >
-> > > > > In fact, the current PLIC approach is actually a performance
-> > > > > optimization. This implementation also works fine with in-kernel
-> > > > > load-balancer and user space load balancer.
-> > > > >
-> > > >
-> > > > Yes, it's exactly, I know what you pointed out. But the idea of this
-> > > > patch is just providing a way that users could enable other cores if
-> > > > they wanted, it could still enable only one core by this change. The
-> > > > purpose here is thinking of flexible use, rather than limitation.
-> > > > Maybe it would be a happy medium that we make the default case enable
-> > > > only one core? It is a good open discussion.
-> > >
-> > > Making the default case as enable only one core is just a work-around.
-> > >
-> > > As-per my understanding, if we set affinity mask of N CPUs for IRQ X
-> > > then it does not mean all N CPUs should receive IRQ X rather it means
-> > > that exactly one of the N CPUs will receive IRQ X and the IRQ receiving
-> > > CPU will be fixed (reflected by effective affinity returned by the driver).
+> > Describe how clocks property can leverage secure- property prefix
+> > for clocks handled exclusively or shared by secure and non-secure
+> > worlds.
 > >
-> > is there a case that we only bundle the IRQ to CPU0, but CPU0 is more
-> > much busy than other CPUs, and it would be better if another CPU could
-> > take the IRQ?
+> > Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+> > ---
+> >  .../devicetree/bindings/arm/secure.txt        | 19 +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/arm/secure.txt b/Documentation/devicetree/bindings/arm/secure.txt
+> > index f27bbff2c780..9bc94921f2a6 100644
+> > --- a/Documentation/devicetree/bindings/arm/secure.txt
+> > +++ b/Documentation/devicetree/bindings/arm/secure.txt
+> > @@ -53,6 +53,25 @@ Valid Secure world properties
+> >     status = "disabled";                             /* disabled in both */
+> >     status = "disabled"; secure-status = "disabled"; /* disabled in both */
+> >
+> > +- secure-clocks : specifies the Phandle list secure world shall use
+> > +  for the related clocks whereas property "clocks" specifies the
+> > +  clock Phandle list non-secure shall use for the that clocks.
+> > +  This configuration can apply for example when a hardware clock is
+> > +  shared by the 2 worlds and the hardware implements a specific interface
+> > +  for each world, i.e.:
+> > +
+> > +  clocks = <&clk DMA_NS>;      /* NS relies on clock handle DMA_NS */
+> > +  secure-clocks = <&clk DMA_S>;        /* S relies on clock handle DMA_S */
 >
-> This is a common problem across architectures.
+> The device has to know what it's clocks are for and should know if
+> some clocks are secure only.
 >
-> To tackle this, we typically run irqbalance daemon in user-space which will
-> change IRQ affinity based on CPU load.
+> > +  Another example where use of "clocks" and "secure-clocks" can apply
+> > +  is when hardware implements a clock that secure and non-secure must
+> > +  share, as a shared GPIO bank clock, and secure world relies on clock
+> > +  device driver whereas non-secure world relies on a software service
+> > +  exposed by secure world as SCMI clock device. I.e.:
+> > +
+> > +  clocks = <&scmi_clk 2>;      /* NS relies on SCMI resources */
+> > +  secure-clocks= <&clk 5>;     /* S accesses the SoC reset interfaces */
 >
-> Refer, https://linux.die.net/man/1/irqbalance
+> If you have this case, I don't think this is the solution. I don't
+> think it scales well and you probably need separate DTs. It's
+> something to solve in the system DT project.
 
-OK, thank you for the information and figuring out the issue. Let's
-stop this patch unless there are other voices.
+Acked,
+
+Thanks,
+Etienne
 
 >
-> >
-> > >
-> > > If we ignore above semantics and still provide a mechanism to target
-> > > IRQ X to N CPUs then most likely someone will try and run into
-> > > performance issues.
-> > >
-> > > Please don't go this path. The performance impact in case of Guest/VM
-> > > is even worst because PLIC is trap-n-emulated by hypervisors as MMIO
-> > > device.
-> >
-> > OK, I won't persist in that, just wanna figure out the situation.
-> >
-> > >
-> > > Regards,
-> > > Anup
->
-> Regards,
-> Anup
+> Rob
