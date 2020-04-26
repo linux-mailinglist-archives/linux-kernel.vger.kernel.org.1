@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357491B919D
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF291B9195
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726208AbgDZQTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726146AbgDZQTG (ORCPT
+        id S1726196AbgDZQQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 12:16:26 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:33943 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726143AbgDZQQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:19:06 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43222C061A0F;
-        Sun, 26 Apr 2020 09:19:06 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id e20so21834446otk.12;
-        Sun, 26 Apr 2020 09:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pj77SUe5CaP0v/pGWWFayVD62/A8i5UvOJukuyc5CVo=;
-        b=SIwT+DkVtRJGCGDj8udPoICtBFP7hrscvBQWiU0tS87Hi5Ub3I1cYpvxxILSYGE4mX
-         MlfGSgGmoKDKR+oBhDomOElD2/kvt1RWQwS8rofoR3mG9BLTlgM1Zyb+Ud4o+KY6zy3Y
-         LrWRcaznHY/gjdDzpHdFmNK2YPN/SnoAzv7eUtCZJbgVgYlIcjonkoh4AXWFMoKRaW+f
-         edblil7K6KgdjdQXccDkJuWlnZr6A0Nbl2HRRU43++iafGWFdzM3iv2CUX3Nx/HF7p8W
-         Tyi1v4Lw5TcsD8B2kMJeeuBpQePpEdWfHYh0muGgmhrqB7dtKAk8LOn0bnH9+eHzOPWD
-         /qVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pj77SUe5CaP0v/pGWWFayVD62/A8i5UvOJukuyc5CVo=;
-        b=c6CFeRWvP6i2LDnfXMrDrj+3Pen3nukJ/H69e4Ma1oey1389HQ83RUBPLHiMWSSNzO
-         XkAw4XEnhsLuSminfDqsEa6LhX6vsOeTfB47RJYsAgvXGBXBMFhourB4H2GvSdr5MhLN
-         vrbL5A4+4fELeputX76fpIXJiVyBGtxqkGupbxBShcUG5Ro+XuwWePiK6B25WXwhKfKo
-         ISoIaPbSQhPsHqyQEBtQH2lAksMnXvCRHuHwITDV2zutEv8TyXUhig+kA1tL8cGuOcOb
-         IlQb+qqYERGi6Udym3X/+yYPHi67jsuEY8U/UJcnyLkiJ2XSl9a0TXTGfITsAGqGvA7I
-         aUhg==
-X-Gm-Message-State: AGi0PuYUECRbuoBU8/IbBirbX3zHkvuSi82DZDx6QY3bzTCdthgMsg9b
-        HWxexmrxa/KgfS4gazzngqMzGe1zgg8NpJeMc99SqILD
-X-Google-Smtp-Source: APiQypJ5+V3+lSZEofKJqMAVpQSdTAk1rec+Esu8ZijtDxFh7g90i2TLV7E4NrCm5MZu1Oonan3gRu8weMxFg1oIXTo=
-X-Received: by 2002:a9d:21ca:: with SMTP id s68mr15145763otb.15.1587917945530;
- Sun, 26 Apr 2020 09:19:05 -0700 (PDT)
+        Sun, 26 Apr 2020 12:16:26 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id DE81A5C0113;
+        Sun, 26 Apr 2020 12:16:24 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 26 Apr 2020 12:16:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=RQVYJCx+9TANj3Ikx+7eZ177he
+        ek4dmBB4uSOz8PcYM=; b=gwcmGtC/Hfv8Ho/AVICzxglVJ/h680Yvx82w2TMMRr
+        KwkPgrwpThqADSKNg3ziKcS5G1GsafFGPZ6cMYPeIdOEztYdYQpYTuzt/ZLCYbl9
+        LtTLDY2EoJYw1I0a3XoTjffnIB1G9TGjz5CXOAcFAyJfVt7/iattWlOYOY++tpu5
+        thoi6waHAfpeigeoYkTGojjH3UdWdjD1tbaZAGJXEnXv/HzWpwH2h8qUd1FVjlX2
+        tPWFM5FC1v/TtJSQYKFHWsfprQDspNXQ3fW4s+uQO2k6LBPAX1QY6PCZdIL7TJ5P
+        JKbNFGMf7TTh2HjmKRIiYdXuBX9Tio63d1+BOioBbuQQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=RQVYJCx+9TANj3Ikx
+        +7eZ177heek4dmBB4uSOz8PcYM=; b=rYYLYsI0cBzxGNNyM2NtPxMIU1XuZxcfG
+        tsYkJ6ev90Q7Q9BjDPDDu2Vch76//+qEVRZem5uuXYD94mDwElT2uYLNJTQeIzd5
+        IdLhp78ItPxAJf1M5ttjLoXLoIhhb1aaaEOlbObFeA4gFYGxPElWU9Wmxzf4Ltu+
+        yQAM8ndV2CDSJ6Zo5gII13LTIxhjGWJtFmRILIr3h2BexLWXixLBiXy1dUEFaA2n
+        N2O0DgAwlrsROwcDrmXzU+tXO6uztO0zj6JDoAef1tZtpwViu/WnWLRjAv7elDNs
+        G/CrrDgfvXn4xp1HiDWINs0nReF0+3wfZBuuuX3yJqpSAeN9GdOIg==
+X-ME-Sender: <xms:2LOlXsVULnl6PxqmlouCcWtxe0rA_lWDKq-yyyffl2QY7qh_L0WfAA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrheejgddutddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucfkphepje
+    dtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:2LOlXtjTC8hs3Cru7xM5iYVrgOsfDWgJKRVbIf1dCjPMdC-WMVEJQQ>
+    <xmx:2LOlXsBgZt0slompcnvQXAm66jItiuRIgdKuwHQuA8jG_nmBTIxFfg>
+    <xmx:2LOlXjtAwhhDuTN1GVwPAlW0iE6ytGbUPpa6snlwiDx2-ka6c1F_bw>
+    <xmx:2LOlXnjX4vZ_OIEh4V7G3ytUFEMrkx232jxYfEYgU0hPIvJ36GzKSw>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BBFBE3065E34;
+        Sun, 26 Apr 2020 12:16:23 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH] dt-bindings: timer: Document allwinner,erratum-unknown1 property
+Date:   Sun, 26 Apr 2020 11:20:32 -0500
+Message-Id: <20200426162032.52220-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20200422233928.GA2816@imac> <8255d8b1-f652-9ece-67d2-68c30a5cfbac@baylibre.com>
-In-Reply-To: <8255d8b1-f652-9ece-67d2-68c30a5cfbac@baylibre.com>
-From:   Tim Lewis <elatllat@gmail.com>
-Date:   Sun, 26 Apr 2020 12:18:54 -0400
-Message-ID: <CA+3zgmsVK9Uuv947-pniByP7QJVGcVK_EgiRkFipV5CUx70sHQ@mail.gmail.com>
-Subject: Re: [PATCH v3] arm64: dts: meson: S922X: extend cpu opp-points
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     khilman@baylibre.com,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        joy.cho@hardkernel.com, tobetter <tobetter@gmail.com>,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        mark.rutland@arm.com, robh+dt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, will fix in v4.
+This arch_timer property was added in commit c950ca8c35ee
+("clocksource/drivers/arch_timer: Workaround for Allwinner A64 timer instability")
+but I omitted the device tree binding documentation. Now
+`make dtbs_check` prints the following warning for all A64 boards:
 
+timer: 'allwinner,erratum-unknown1' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-On Thu, Apr 23, 2020 at 3:40 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> On 23/04/2020 01:39, Tim Lewis wrote:
-> > HardKernel supports overclock through the addition to extra opp points
-> > in their official kernel sources for odroid-n2 [1]. Christian tested
-> > on other S922X devices with "no obvious issues". Neil thinks dvfs and
-> > thermal managementis can keep other S922X devices safe.
-> --------------/\
->           management
->
-> >
-> > [1] https://github.com/hardkernel/linux/commit/f86cd9487c7483b2a05f448b9ebacf6bd5a2ad2f
-> > Tested-by: Christian Hewitt <christianshewitt@gmail.com>
-> > Signed-off-by: Tim Lewis <elatllat@gmail.com>
-> >
-> > ---
-> >  arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi | 15 +++++++++++++++
-> >  1 files changed, 15 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
-> > index 046cc332d..1e5d0ee5d 100644
-> > --- a/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
-> > +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
-> > @@ -65,6 +65,11 @@
-> >                       opp-hz = /bits/ 64 <1896000000>;
-> >                       opp-microvolt = <981000>;
-> >               };
-> > +
-> > +             opp-1992000000 {
-> > +                     opp-hz = /bits/ 64 <1992000000>;
-> > +                     opp-microvolt = <1001000>;
-> > +             };
-> >       };
-> >
-> >       cpub_opp_table_1: opp-table-1 {
-> > @@ -120,5 +125,15 @@
-> >                       opp-hz = /bits/ 64 <1704000000>;
-> >                       opp-microvolt = <891000>;
-> >               };
-> > +
-> > +             opp-1800000000 {
-> > +                     opp-hz = /bits/ 64 <1800000000>;
-> > +                     opp-microvolt = <981000>;
-> > +             };
-> > +
-> > +             opp-1908000000 {
-> > +                     opp-hz = /bits/ 64 <1908000000>;
-> > +                     opp-microvolt = <1022000>;
-> > +             };
-> >       };
-> >  };
-> >
->
-> The patch is well formed but I can only test on Odroid-N2.
->
-> Anyway, Christian did a test other S922X boxes and it doesn't crash.
->
-> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
->
-> Neil
+Resolve this by documenting the erratum property.
+
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ Documentation/devicetree/bindings/timer/arm,arch_timer.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml b/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml
+index fa255672e8e5..cf520c7e9094 100644
+--- a/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml
++++ b/Documentation/devicetree/bindings/timer/arm,arch_timer.yaml
+@@ -51,6 +51,12 @@ properties:
+     description: If present, the timer is powered through an always-on power
+       domain, therefore it never loses context.
+ 
++  allwinner,erratum-unknown1:
++    type: boolean
++    description: Indicates the presence of an erratum found in Allwinner SoCs,
++      where reading certain values from the counter is unreliable. This also
++      affects writes to the tval register, due to the implicit counter read.
++
+   fsl,erratum-a008585:
+     type: boolean
+     description: Indicates the presence of QorIQ erratum A-008585, which says
+-- 
+2.24.1
+
