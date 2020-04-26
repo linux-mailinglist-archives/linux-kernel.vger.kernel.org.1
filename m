@@ -2,136 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6361B941B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 23:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D751B9417
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 22:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgDZVAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 17:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726188AbgDZVAO (ORCPT
+        id S1726375AbgDZU7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 16:59:40 -0400
+Received: from smtprelay0247.hostedemail.com ([216.40.44.247]:37848 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726188AbgDZU7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 17:00:14 -0400
-Received: from mo6-p02-ob.smtp.rzone.de (mo6-p02-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5302::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5713C061A0F;
-        Sun, 26 Apr 2020 14:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1587934810;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=tBYDlL7NzsOjZoE8VbUARgLNfJnA9ln8lbc1BWfhqMY=;
-        b=ioyxdgjksphjE/lgw3XV/4d4tS9NkGCZK81PjoM0Vhy1ONEL1TNPSRJdwmbLA1OzNH
-        V1EkPNj5fBScYUyfVy4WfxfAWq7n2eLTogwCSQE+Sv9pxBaw4Myxmth2q4tPnP4QzLuJ
-        sicQp+NNP0Y2cb4uiGNF2ISTAP8mfa9rBe5VwvLoegITAJ/6BnEwfRp/d7tP3nyU/1rp
-        S7VbqbTrcZ8DJ4/l+gErg52rN0+bitsgyUltsq02uy8MMNQVpOJL2rrPRdou5PKebGsX
-        puz2HrWtDc4a8yYDM1J0El7/uh1wEpBez83OkRsPIuw0lK1GG1fXbArpT/udiPXYUStl
-        Ax3w==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/PtwDOjwps="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 46.6.2 DYNA|AUTH)
-        with ESMTPSA id R0acebw3QKxSHt5
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Sun, 26 Apr 2020 22:59:28 +0200 (CEST)
-Subject: Re: [PATCH v7 01/12] dt-bindings: add img,pvrsgx.yaml for Imagination GPUs
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <9d9998cc-33bf-7d8f-658b-8d6218338135@gmail.com>
-Date:   Sun, 26 Apr 2020 22:59:28 +0200
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>,
-        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        openpvrsgx-devgroup@letux.org, letux-kernel@openphoenux.org,
-        kernel@pyra-handheld.com, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <0D48517E-8F66-4B27-953B-1C27F8A8DE0A@goldelico.com>
-References: <cover.1587760454.git.hns@goldelico.com> <3a451e360fed84bc40287678b4d6be13821cfbc0.1587760454.git.hns@goldelico.com> <9d9998cc-33bf-7d8f-658b-8d6218338135@gmail.com>
-To:     Philipp Rossak <embed3d@gmail.com>
-X-Mailer: Apple Mail (2.3124)
+        Sun, 26 Apr 2020 16:59:40 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 47561837F27B;
+        Sun, 26 Apr 2020 20:59:39 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:982:988:989:1042:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2898:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:3873:4321:5007:7903:10004:10400:10848:11026:11232:11658:11914:12043:12048:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21433:21451:21627:21772:21990:30012:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: night17_711ecb5664713
+X-Filterd-Recvd-Size: 2026
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 26 Apr 2020 20:59:37 +0000 (UTC)
+Message-ID: <93994350620b4809e515c295c55ed23aceb9c3a0.camel@perches.com>
+Subject: Re: [PATCH -next] perf script: remove unneeded conversion to bool
+From:   Joe Perches <joe@perches.com>
+To:     Zou Wei <zou_wei@huawei.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Date:   Sun, 26 Apr 2020 13:59:36 -0700
+In-Reply-To: <1587904265-865-1-git-send-email-zou_wei@huawei.com>
+References: <1587904265-865-1-git-send-email-zou_wei@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+On Sun, 2020-04-26 at 20:31 +0800, Zou Wei wrote:
+> This issue was detected by using the Coccinelle software:
+> 
+> tools/perf/builtin-script.c:3285:48-53: WARNING: conversion to bool not needed here
+> tools/perf/builtin-script.c:2839:36-41: WARNING: conversion to bool not needed here
+> 
+> The conversion to bool is unneeded, remove it
+[]
+> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+[]
+> @@ -2836,7 +2836,7 @@ static int parse_output_fields(const struct option *opt __maybe_unused,
+>  				break;
+>  		}
+>  		if (i == imax && strcmp(tok, "flags") == 0) {
+> -			print_flags = change == REMOVE ? false : true;
+> +			print_flags = change == REMOVE;
 
-> Am 26.04.2020 um 21:36 schrieb Philipp Rossak <embed3d@gmail.com>:
->=20
-> Hi Nikolaus,
->=20
-> On 24.04.20 22:34, H. Nikolaus Schaller wrote:
->> The Imagination PVR/SGX GPU is part of several SoC from
->> multiple vendors, e.g. TI OMAP, Ingenic JZ4780, Intel Poulsbo,
->> Allwinner A83 and others.
->> With this binding, we describe how the SGX processor is
->> interfaced to the SoC (registers and interrupt).
->> The interface also consists of clocks, reset, power but
->> information from data sheets is vague and some SoC integrators
->> (TI) deciced to use a PRCM wrapper (ti,sysc) which does
->> all clock, reset and power-management through registers
->> outside of the sgx register block.
->> Therefore all these properties are optional.
->> Tested by make dt_binding_check
->> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
->> ---
->>  .../devicetree/bindings/gpu/img,pvrsgx.yaml   | 150 =
-++++++++++++++++++
->>  1 file changed, 150 insertions(+)
->>  create mode 100644 =
-Documentation/devicetree/bindings/gpu/img,pvrsgx.yaml
->> diff --git a/Documentation/devicetree/bindings/gpu/img,pvrsgx.yaml =
-b/Documentation/devicetree/bindings/gpu/img,pvrsgx.yaml
->> new file mode 100644
->> index 000000000000..33a9c4c6e784
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/gpu/img,pvrsgx.yaml
->> @@ -0,0 +1,150 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/gpu/img,pvrsgx.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Imagination PVR/SGX GPU
->> +
+Read the deleted code above this again.
 
-...
+(you have inverted the logic)
 
->> +      - description: SGX544-112 based SoC
->> +        items:
->> +          - const: ti,omap4470-sgx544-112
->> +          - const: img,sgx544-112
->> +          - const: img,sgx544
->> +
->> +      - description: SGX544-115 based SoC
->> +        items:
->> +          - enum:
->> +            - allwinner,sun8i-a31-sgx544-115
->> +            - allwinner,sun8i-a31s-sgx544-115
-> those two bindings are wrong.
-> It should be allwinner,sun6i-a31-sgx544-115 and =
-allwinner,sun6i-a31s-sgx544-115. I did a copy paste error in the patches =
-that I provided for this series.
+>  			continue;
+>  		}
+>  		if (i == imax) {
+> @@ -3282,7 +3282,7 @@ static char *get_script_path(const char *script_root, const char *suffix)
+>  
+>  static bool is_top_script(const char *script_path)
+>  {
+> -	return ends_with(script_path, "top") == NULL ? false : true;
+> +	return ends_with(script_path, "top") == NULL;
 
-Ok, noted for v8.
+and here.
 
-BR and thanks,
-Nikolaus
 
