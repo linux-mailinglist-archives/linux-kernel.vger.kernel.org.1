@@ -2,104 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62E4A1B9201
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB04C1B91FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgDZRL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 13:11:56 -0400
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17718 "EHLO
-        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726151AbgDZRL4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 13:11:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1587921034; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=Yo5Lp5gpVcEH9T0DplkYcWSGVqNPmOJB8w1dulm+cUUL/qFCsLlTdzgECR+Fk3uZwq8jtbdgnYS887/J9g/bh/BTpP0AqOpw9aQYQikgO2UyCx7AsoHSjdEG46x2wxP47mzjHAkRUEYjgu7eoQRjiex2+TAWhtyWwbS1cKSma4w=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1587921034; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=3moL8OMLSDXgd7jsrnGn07s4xflMblHhr/DKN/+Jgj8=; 
-        b=ByXAtlm6lFexh/TJuMEmjkcMW8atxhm/pq49bLwMkjd486rEoYKRXk13nLvXm6Oe7DQ3JTVOG5OGZxJcqzSHMHJh4fV1+5OGlj8RHq8fAGBRPrXr5vK5F5pvAtlXEfCxCB38AHBI7DV57HlJXPK/DgPy3nntA/btnBSQ5xpzgbw=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=flygoat.com;
-        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
-        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1587921034;
-        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=3moL8OMLSDXgd7jsrnGn07s4xflMblHhr/DKN/+Jgj8=;
-        b=HyqOJRb8u/FN3VfxphaILwfF2/URAmGanE+n86+Gt1XpwWQFv2Qjd95fn69hHwl+
-        WSGExIgg8ZtTwxDp8tr9qg1/IY+uROZkVmb+DOvyFmdKuUKyxjv+OLlakCvGSS4tWeP
-        1kYdeGmLcw10Ko1Y267jxoIPn1TIZian1HP3U+dY=
-Received: from [127.0.0.1] (122.235.213.3 [122.235.213.3]) by mx.zoho.com.cn
-        with SMTPS id 1587921032291865.6888527356479; Mon, 27 Apr 2020 01:10:32 +0800 (CST)
-Date:   Mon, 27 Apr 2020 01:10:29 +0800
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Guoyun Sun <sunguoyun@loongson.cn>
-CC:     Paul Burton <paulburton@kernel.org>,
-        Daniel Silsby <dansilsby@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        TieZhu Yang <yangtiezhu@loongson.cn>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] mips/mm: Add page soft dirty tracking
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20200426165441.GA10053@alpha.franken.de>
-References: <1587460527-13986-1-git-send-email-sunguoyun@loongson.cn> <20200426165441.GA10053@alpha.franken.de>
-Message-ID: <92510286-5E77-40EB-8356-17CCA21E8391@flygoat.com>
+        id S1726230AbgDZRLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 13:11:08 -0400
+Received: from mga03.intel.com ([134.134.136.65]:17076 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726150AbgDZRLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 13:11:08 -0400
+IronPort-SDR: KEbeLrc8YTSXC+cloBmDQUwpHYN0NEc4N5+U/sttfxPEc3C3npGDFUlQ1+DZswTDnPQuzYTikj
+ PYBYBgfCAaVA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2020 10:11:07 -0700
+IronPort-SDR: +m807TE/n0OwHjvAGncuwc7pppXmJocd1+TEzOwgP6Fe+U88H4h2n0zTun0XD2zMQ8/bSVJ837
+ kXfte+XI0VJA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,320,1583222400"; 
+   d="scan'208";a="256988692"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 26 Apr 2020 10:11:06 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jSko5-000DL8-Eb; Mon, 27 Apr 2020 01:11:05 +0800
+Date:   Mon, 27 Apr 2020 01:10:31 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 53fb6e990d782ded62d7c76d566e107c03393b74
+Message-ID: <5ea5c087.EKIcQjSIt6mXM/F4%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/urgent
+branch HEAD: 53fb6e990d782ded62d7c76d566e107c03393b74  objtool: Fix infinite loop in for_offset_range()
 
+elapsed time: 518m
 
-=E4=BA=8E 2020=E5=B9=B44=E6=9C=8827=E6=97=A5 GMT+08:00 =E4=B8=8A=E5=8D=881=
-2:54:42, Thomas Bogendoerfer <tsbogend@alpha=2Efranken=2Ede> =E5=86=99=E5=
-=88=B0:
->On Tue, Apr 21, 2020 at 05:15:27PM +0800, Guoyun Sun wrote:
->> User space checkpoint and restart tool (CRIU) needs the page's change
->> to be soft tracked=2E This allows to do a pre checkpoint and then dump
->> only touched pages=2E
->>=20
->> Signed-off-by: Guoyun Sun <sunguoyun@loongson=2Ecn>
->> ---
->>  arch/mips/Kconfig                    |  1 +
->>  arch/mips/include/asm/pgtable-bits=2Eh |  8 ++++--
->>  arch/mips/include/asm/pgtable=2Eh      | 48 ++++++++++++++++++++++++++=
-++++++++--
->
->this breaks all 32bit builds where CPU support RIXI, because it overflows
->pgtable_bits=2E
+configs tested: 173
+configs skipped: 0
 
-Probably make a fixup patch to guard
-_PAGE_SOFT_DIRTY_SHIFT with
-CONFIG_HAVE_ARCH_SOFT_DIRTY
-would be a better option?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Btw: It's really selfish that only enable SOFT_DIRTY for Loongson
-but occupied a bit in pagetable for all MIPS systems=2E
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+sparc                            allyesconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             alldefconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                        generic_defconfig
+ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+xtensa                          iss_defconfig
+c6x                              allyesconfig
+xtensa                       common_defconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+nds32                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+h8300                    h8300h-sim_defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+mips                malta_kvm_guest_defconfig
+mips                         tb0287_defconfig
+mips                       capcella_defconfig
+mips                           ip32_defconfig
+mips                  decstation_64_defconfig
+mips                      loongson3_defconfig
+mips                          ath79_defconfig
+mips                        bcm63xx_defconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+mips                            ar7_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+parisc               randconfig-a001-20200426
+mips                 randconfig-a001-20200426
+alpha                randconfig-a001-20200426
+m68k                 randconfig-a001-20200426
+riscv                randconfig-a001-20200426
+nds32                randconfig-a001-20200426
+nios2                randconfig-a001-20200426
+c6x                  randconfig-a001-20200426
+h8300                randconfig-a001-20200426
+sparc64              randconfig-a001-20200426
+microblaze           randconfig-a001-20200426
+sh                   randconfig-a001-20200426
+csky                 randconfig-a001-20200426
+s390                 randconfig-a001-20200426
+xtensa               randconfig-a001-20200426
+openrisc             randconfig-a001-20200426
+i386                 randconfig-b002-20200426
+x86_64               randconfig-b001-20200426
+i386                 randconfig-b001-20200426
+i386                 randconfig-b003-20200426
+x86_64               randconfig-b003-20200426
+i386                 randconfig-c002-20200426
+i386                 randconfig-c001-20200426
+x86_64               randconfig-c002-20200426
+i386                 randconfig-c003-20200426
+x86_64               randconfig-d002-20200426
+i386                 randconfig-d002-20200426
+i386                 randconfig-d001-20200426
+i386                 randconfig-d003-20200426
+x86_64               randconfig-a001-20200426
+i386                 randconfig-a003-20200426
+x86_64               randconfig-a003-20200426
+i386                 randconfig-a002-20200426
+i386                 randconfig-a001-20200426
+x86_64               randconfig-a002-20200426
+i386                 randconfig-e003-20200426
+x86_64               randconfig-e003-20200426
+i386                 randconfig-e002-20200426
+i386                 randconfig-e001-20200426
+x86_64               randconfig-e001-20200426
+x86_64               randconfig-f002-20200426
+i386                 randconfig-f002-20200426
+x86_64               randconfig-f003-20200426
+i386                 randconfig-f003-20200426
+i386                 randconfig-f001-20200426
+x86_64               randconfig-f001-20200426
+i386                 randconfig-g003-20200426
+i386                 randconfig-g001-20200426
+x86_64               randconfig-g001-20200426
+x86_64               randconfig-g002-20200426
+i386                 randconfig-g002-20200426
+x86_64               randconfig-g003-20200426
+i386                 randconfig-h003-20200426
+x86_64               randconfig-h001-20200426
+x86_64               randconfig-h003-20200426
+x86_64               randconfig-h002-20200426
+i386                 randconfig-h001-20200426
+i386                 randconfig-h002-20200426
+sparc                randconfig-a001-20200426
+ia64                 randconfig-a001-20200426
+powerpc              randconfig-a001-20200426
+arm                  randconfig-a001-20200426
+arm64                randconfig-a001-20200426
+arc                  randconfig-a001-20200426
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-I'd suggest select HAVE_ARCH_SOFT_DIRTY for all 64BIT MIPS systems=2E
-Or provide config options to let expert users decide what feature they nee=
-d=2E
-
-Thanks=2E
-
->
->Thomas=2E
->
-
---=20
-Jiaxun Yang
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
