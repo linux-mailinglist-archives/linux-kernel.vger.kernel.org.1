@@ -2,182 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26B11B909A
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 15:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCFF1B90A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 15:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgDZNZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 09:25:30 -0400
-Received: from mail-eopbgr680111.outbound.protection.outlook.com ([40.107.68.111]:6369
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726139AbgDZNZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 09:25:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bw48v9j53O5yU0H9xEWQK1Ni1Kab5UZTadTOdx/7nzVa9X1Awz7CeQSIBDvETqCEhyKCdZMzjgTs/97JDNCstunblTKtoEJX0zCxCkt1O/WHP2CH7zjuh+wCnMYvZKt65eqrlizuL08icBtz6ZxmXRbiFWvV1JIWgwIFpZu+B8E0ZBSjTEsGA8knvQLZCsOg71Ot0KLSscs7ptAVJkNpCQzcTwnqAF5g3eUZ+WdRXNyVyzeiH3vSAuHQJ3yqh1/4UICMEROlcbWZfpChopkT5A9Tvp6x/h1szvAqX2PzvwVVaT32Q2gscgjaUiO4rHaRASDP9Wh869q2eFvbsrLq9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AzKdqpDtC3WhYGrH/yeHCe4XyUQu6d6dGlB6xrEz+1E=;
- b=W2cKYd73NC47BU9FpdAYp+LOgQTUlMAvNWNA6eioTT3TC223AUPNEXe9ok9fKXAcLkE/6uAonDoYw9Wt8hy7dG2E6J37RWTlqu6sfU4p+iaxeNR0hIACTOyciN3S4YbYvHRn/B93UHM9+CUEmvqMlB0xFZqW8Wcdzofa31vA5+DxlgpFR2oGcduRZ5mhR6jWT+rtMHdLsLmZpy3VOljIRjta59P4LT8c0m5tzeNCykt0h8xYhTF+bZLXc+wUESB0FV+BAEC85j3+z48wndC6nd8MnGu7q8bl/EOgZV61/nZRa9R5QUP2W7idGJwju9/CDMUBYIPJQskp2QzWlgovOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AzKdqpDtC3WhYGrH/yeHCe4XyUQu6d6dGlB6xrEz+1E=;
- b=P1s4kzxOmXrwW6b2Qt1ReCyNeawGsp7FCYgJ5sUUAHbjAsyPOny4EyspjsX9aJ1M13Wx43+WVJBOHY/bx5XDGZCasPVuQbYKmnonFPDg6LG4p3Ai3Rgf5OhaWAX63zbRVb4IeWxXL6mi/AoCo8TaFrmQU6kbqQaGXfrVhqm4ai8=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=weh@microsoft.com; 
-Received: from SN6PR2101MB1021.namprd21.prod.outlook.com (2603:10b6:805:8::12)
- by SN6PR2101MB1053.namprd21.prod.outlook.com (2603:10b6:805:6::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.3; Sun, 26 Apr
- 2020 13:25:26 +0000
-Received: from SN6PR2101MB1021.namprd21.prod.outlook.com
- ([fe80::a9e6:4244:f67e:c55]) by SN6PR2101MB1021.namprd21.prod.outlook.com
- ([fe80::a9e6:4244:f67e:c55%5]) with mapi id 15.20.2958.014; Sun, 26 Apr 2020
- 13:25:26 +0000
-From:   Wei Hu <weh@microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        bhelgaas@google.com, linux-hyperv@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        decui@microsoft.com, mikelley@microsoft.com
-Cc:     Wei Hu <weh@microsoft.com>
-Subject: [PATCH] PCI: pci-hyperv: Retry PCI bus D0 entry when the first attempt failed with invalid device state 0xC0000184.
-Date:   Sun, 26 Apr 2020 21:24:30 +0800
-Message-Id: <20200426132430.1756-1-weh@microsoft.com>
-X-Mailer: git-send-email 2.20.1
-Reply-To: weh@microsoft.com
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR06CA0188.apcprd06.prod.outlook.com (2603:1096:4:1::20)
- To SN6PR2101MB1021.namprd21.prod.outlook.com (2603:10b6:805:8::12)
+        id S1726156AbgDZNdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 09:33:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725876AbgDZNdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 09:33:10 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0A37D2071C;
+        Sun, 26 Apr 2020 13:33:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587907988;
+        bh=zhOlG8j2k9ooGL3hB98wIBmbEm7872tfTszggUSAgyQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FvmpOCWheE0WmP5Ch9fkaEvI2RSAX/XMDp5ylbnM3b5IHzRrnA/KbL6/lIZAzmaOH
+         GFXKQWmbf/258P19m0V80HbSdpI7gRM6iWHpwSpOX8/6IYZiuctldFxvzH+vPH1Wz8
+         +92a0JDoJLFfsbvH2jidhphmdvAJ/DQHxM9WMVC4=
+Date:   Sun, 26 Apr 2020 21:33:02 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Parthiban Nallathambi <parthiban@linumiz.com>
+Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: dts: imx6ull: add MYiR MYS-6ULX SBC
+Message-ID: <20200426133300.GE30501@dragon>
+References: <20200408184351.135716-1-parthiban@linumiz.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from weh-g1-u1904d-testwin10.corp.microsoft.com (167.220.255.49) by SG2PR06CA0188.apcprd06.prod.outlook.com (2603:1096:4:1::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Sun, 26 Apr 2020 13:25:22 +0000
-X-Mailer: git-send-email 2.20.1
-X-Originating-IP: [167.220.255.49]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 7d41bf8e-018b-49ff-20e7-08d7e9e5480d
-X-MS-TrafficTypeDiagnostic: SN6PR2101MB1053:|SN6PR2101MB1053:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR2101MB1053E71B2FA20FF8785A342ABBAE0@SN6PR2101MB1053.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-Forefront-PRVS: 03853D523D
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR2101MB1021.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(396003)(366004)(136003)(39860400002)(1076003)(3450700001)(81156014)(10290500003)(6486002)(186003)(8676002)(8936002)(956004)(16526019)(478600001)(66556008)(66476007)(66946007)(4326008)(26005)(86362001)(36756003)(82950400001)(6666004)(2906002)(316002)(5660300002)(6636002)(7696005)(2616005)(52116002)(82960400001)(107886003)(921003);DIR:OUT;SFP:1102;
-Received-SPF: None (protection.outlook.com: microsoft.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lkS8Dk9q2hqVyRrvIbFEiwCRC1X1t0P7VdN0zNE1v82a87oRiGcGT+PoLEmc4OCoMskL4MW7TquouR4GklfT2DD4HP1BILSO3L/MhpWOm1gZLnoQSfOlIkSA2fjmF4AwpUD/jSVl5KoybSyYkD3bE8prAgapTVKxLh4uBKuaoqkXhLiLQV9pte5FxVuzetGxzsim60JUoH2lChF1OLaY3BimMW+WjVtoQcpm9GvZDeLfuNAQcxcGNlF4r0JM7gx2//ftN0uXdTTgXlYwJxHWiMwIW7tdQA3HpND6PZX5P8XX4BfB7DWoyIbdekoZPN2ymek5XH/o+DPE+SPkbw0kpTEna75nj+LaCemDoCe9X+F6be9alo4b/E3Cs2r/XuSpJ06DGV2C44B5/gNYucXH6hI05uGoWKN5tEqTgp3AIQKizlj1/IwnjkEQCo41NZ9PV53L+crJpdYk2o0JTz+NjEFn/2q4M9YNQRMXVvk1t90=
-X-MS-Exchange-AntiSpam-MessageData: mUDzl7V+qyq0VUt6W8GxRCSjhU+0dY2UFmgHWDjQhrOHdmJ3uS0SApa987EwPjgXAivnN33AiGwjOynKB7AdRlc5k2ZpBFdHc8hKRS0lWKLDUuIxBVsyCJiGQ2JmV1QeEmy5yQ/g8OayNQL17WoT9Ltj0PkVbN/GQrD1Ae2li0+0mu5v+LlN4AbiUiC47agNC+0vjsiy3Do/hXPCvKzXtIatXO1pdoOY7up5+8YQbOroqfd52z/qfLGbQ0ykc5v6PaY6zmJvgW4w2cF4rrVgU8ojkVuCVN+aRdkmlcFI+YJsjaA/mIfs6+0JB0PxMHHhd8AG10xGDFrIzJ6igCqHuAy7CnX7E9EDK/39NoKbKT8lidSe5t+KgA+pJdASKzRfCUVpU6ohyymt12fdMlpcz/w3wHgKdpYf2usZjd51gmq/oBb2YAUECpyVBpcvP0noDYjwP74xJVCfUCq9LwbeRQLJ6zmAW4VK6BL23gJjwBuXNb0hgpGyifiWUnhFPUmyBxtAzrFm24AFu58NHwxlQ9exutxjWFrB8EQTMnZCBxoxA7lh1MJrAuWeM4DSNASoli7BEjKRnAaKN/Aq747gM6Usd26Lt2XgAVdnIOyijkpQf03JMzPDIfLxPE05O8Pm3u2XT7/YSn+qbDj3AGF6Zw6MBPPg1CT/JZVcrvwXSRP4U2dJ9f0bDmyDDaeOqYyKMbBUD4BbMtMiSXRVjRk9Tx0UjXGNsK4xh10tOauWBkQAFi0W9vKeuqTEchGJRrnU4DXzoDPr/7Yec3YNjpBIWZsZE1xHH4Crpc6hF2RdgGY=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d41bf8e-018b-49ff-20e7-08d7e9e5480d
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2020 13:25:26.5345
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Au/gD37T6jZ400/RH8Nn/Fsfs8xTaKUaaWmomOxe5wlyozE/L8WLC01KgLjnCJHtrLr78AzPPVqfwffkvmHLUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR2101MB1053
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408184351.135716-1-parthiban@linumiz.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the case of kdump, the PCI device was not cleanly shut down
-before the kdump kernel starts. This causes the initial
-attempt of entering D0 state in the kdump kernel to fail with
-invalid device state 0xC0000184 returned from Hyper-V host.
-When this happens, explicitly call PCI bus exit and retry to
-enter the D0 state.
+On Wed, Apr 08, 2020 at 08:43:51PM +0200, Parthiban Nallathambi wrote:
+> Add support for the MYiR imx6ULL based single board computer
+> equipped with on board 256MB NAND & RAM. The board also
+> provides expansion header for expansion board, but this
+> commit adds only support for SBC.
+> 
+> Signed-off-by: Parthiban Nallathambi <parthiban@linumiz.com>
+> ---
+>  arch/arm/boot/dts/Makefile                       |   1 +
+>  arch/arm/boot/dts/imx6ull-myir-mys-6ulx-nand.dts |  19 ++
+>  arch/arm/boot/dts/imx6ull-myir-mys-6ulx.dtsi     | 247 +++++++++++++++++++++++
+>  3 files changed, 267 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/imx6ull-myir-mys-6ulx-nand.dts
+>  create mode 100644 arch/arm/boot/dts/imx6ull-myir-mys-6ulx.dtsi
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index e8dd99201397..eab86051d782 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -612,6 +612,7 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+>  	imx6ull-14x14-evk.dtb \
+>  	imx6ull-colibri-eval-v3.dtb \
+>  	imx6ull-colibri-wifi-eval-v3.dtb \
+> +	imx6ull-myir-mys-6ulx-nand.dtb \
+>  	imx6ull-opos6uldev.dtb \
+>  	imx6ull-phytec-segin-ff-rdk-nand.dtb \
+>  	imx6ull-phytec-segin-ff-rdk-emmc.dtb \
+> diff --git a/arch/arm/boot/dts/imx6ull-myir-mys-6ulx-nand.dts b/arch/arm/boot/dts/imx6ull-myir-mys-6ulx-nand.dts
+> new file mode 100644
+> index 000000000000..6eaba8a8d7a9
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/imx6ull-myir-mys-6ulx-nand.dts
+> @@ -0,0 +1,19 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 Linumiz
+> + * Author: Parthiban Nallathambi <parthiban@linumiz.com>
+> + */
+> +
+> +/dts-v1/;
+> +#include "imx6ull.dtsi"
+> +#include "imx6ull-myir-mys-6ulx.dtsi"
+> +
+> +/ {
+> +	model = "MYiR i.MX6ULL MYS-6ULX Single Board Computer with NAND";
+> +	compatible = "myir,imx6ul-mys-6ulx-nand", "myir,imx6ul-mys-6ulx",
+> +		     "fsl,imx6ull";
 
-Also fix the PCI probe failure path to release the PCI device
-resource properly.
+Any new compatible needs to be documented.
 
-Signed-off-by: Wei Hu <weh@microsoft.com>
----
- drivers/pci/controller/pci-hyperv.c | 34 ++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+> +};
+> +
+> +&gpmi {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm/boot/dts/imx6ull-myir-mys-6ulx.dtsi b/arch/arm/boot/dts/imx6ull-myir-mys-6ulx.dtsi
+> new file mode 100644
+> index 000000000000..f0a514187c21
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/imx6ull-myir-mys-6ulx.dtsi
+> @@ -0,0 +1,247 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 Linumiz
+> + * Author: Parthiban Nallathambi <parthiban@linumiz.com>
+> + */
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/pwm/pwm.h>
+> +
+> +/ {
+> +	model = "MYiR MYS-6ULX Single Board Computer";
+> +	compatible = "myir,imx6ull-mys-6ulx", "fsl,imx6ull";
+> +
+> +	chosen {
+> +		stdout-path = &uart1;
+> +	};
+> +
+> +	regulators: regulators {
+> +		compatible = "simple-bus";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index e15022ff63e3..eb4781fa058d 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -2736,6 +2736,10 @@ static void hv_free_config_window(struct hv_pcibus_device *hbus)
- 	vmbus_free_mmio(hbus->mem_config->start, PCI_CONFIG_MMIO_LENGTH);
- }
- 
-+#define STATUS_INVALID_DEVICE_STATE		0xC0000184
-+
-+static int hv_pci_bus_exit(struct hv_device *hdev, bool hibernating);
-+
- /**
-  * hv_pci_enter_d0() - Bring the "bus" into the D0 power state
-  * @hdev:	VMBus's tracking struct for this root PCI bus
-@@ -2748,8 +2752,10 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
- 	struct pci_bus_d0_entry *d0_entry;
- 	struct hv_pci_compl comp_pkt;
- 	struct pci_packet *pkt;
-+	bool retry = true;
- 	int ret;
- 
-+enter_d0_retry:
- 	/*
- 	 * Tell the host that the bus is ready to use, and moved into the
- 	 * powered-on state.  This includes telling the host which region
-@@ -2780,6 +2786,30 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
- 		dev_err(&hdev->device,
- 			"PCI Pass-through VSP failed D0 Entry with status %x\n",
- 			comp_pkt.completion_status);
-+
-+		/*
-+		 * In certain case (Kdump) the pci device of interest was
-+		 * not cleanly shut down and resource is still held on host
-+		 * side, the host could return STATUS_INVALID_DEVICE_STATE.
-+		 * We need to explicitly request host to release the resource
-+		 * and try to enter D0 again.
-+		 */
-+		if (comp_pkt.completion_status == STATUS_INVALID_DEVICE_STATE &&
-+		    retry) {
-+			ret = hv_pci_bus_exit(hdev, true);
-+
-+			retry = false;
-+
-+			if (ret == 0) {
-+				kfree(pkt);
-+				goto enter_d0_retry;
-+			} else {
-+				dev_err(&hdev->device,
-+					"PCI bus D0 exit failed with ret %d\n",
-+					ret);
-+			}
-+		}
-+
- 		ret = -EPROTO;
- 		goto exit;
- 	}
-@@ -3136,7 +3166,7 @@ static int hv_pci_probe(struct hv_device *hdev,
- 
- 	ret = hv_pci_allocate_bridge_windows(hbus);
- 	if (ret)
--		goto free_irq_domain;
-+		goto exit_d0;
- 
- 	ret = hv_send_resources_allocated(hdev);
- 	if (ret)
-@@ -3154,6 +3184,8 @@ static int hv_pci_probe(struct hv_device *hdev,
- 
- free_windows:
- 	hv_pci_free_bridge_windows(hbus);
-+exit_d0:
-+	(void) hv_pci_bus_exit(hdev, true);
- free_irq_domain:
- 	irq_domain_remove(hbus->irq_domain);
- free_fwnode:
--- 
-2.20.1
+Drop the container node and put fixed regulator nodes directly under
+root.  Suggest to use name schema below:
 
+	regulator-xxx {
+		...
+	};
+
+Shawn
+
+> +
+> +		vdd_5v: regulator@0 {
+> +			compatible = "regulator-fixed";
+> +			regulator-name = "VDD_5V";
+> +			regulator-min-microvolt = <5000000>;
+> +			regulator-max-microvolt = <5000000>;
+> +			regulator-always-on;
+> +			regulator-boot-on;
+> +		};
+> +
+> +		vdd_3v3: regulator@1 {
+> +			compatible = "regulator-fixed";
+> +			regulator-name = "VDD_3V3";
+> +			regulator-min-microvolt = <3300000>;
+> +			regulator-max-microvolt = <3300000>;
+> +			regulator-always-on;
+> +			vin-supply = <&vdd_5v>;
+> +		};
+> +	};
+> +};
+> +
+> +&fec1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_enet1>;
+> +	phy-mode = "rmii";
+> +	phy-handle = <&ethphy0>;
+> +	phy-supply = <&vdd_3v3>;
+> +	status = "okay";
+> +
+> +	mdio: mdio {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		ethphy0: ethernet-phy@0 {
+> +			reg = <0>;
+> +			compatible = "ethernet-phy-ieee802.3-c22";
+> +			interrupt-parent = <&gpio5>;
+> +			interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
+> +			clocks = <&clks IMX6UL_CLK_ENET_REF>;
+> +			clock-names = "rmii-ref";
+> +			status = "okay";
+> +		};
+> +	};
+> +};
+> +
+> +&gpmi {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_gpmi_nand>;
+> +	nand-on-flash-bbt;
+> +	status = "disabled";
+> +};
+> +
+> +&uart1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_uart1>;
+> +	status = "okay";
+> +};
+> +
+> +&usbotg1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_usb_otg1_id>;
+> +	dr_mode = "otg";
+> +	status = "okay";
+> +};
+> +
+> +&usbotg2 {
+> +	dr_mode = "host";
+> +	disable-over-current;
+> +	status = "okay";
+> +};
+> +
+> +&usdhc1 {
+> +	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+> +	pinctrl-0 = <&pinctrl_usdhc1>;
+> +	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
+> +	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
+> +	cd-gpios = <&gpio1 19 GPIO_ACTIVE_LOW>;
+> +	no-1-8-v;
+> +	keep-power-in-suspend;
+> +	wakeup-source;
+> +	vmmc-supply = <&vdd_3v3>;
+> +	status = "okay";
+> +};
+> +
+> +&usdhc2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_usdhc2>;
+> +	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
+> +	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
+> +	bus-width = <8>;
+> +	non-removable;
+> +	keep-power-in-suspend;
+> +	vmmc-supply = <&vdd_3v3>;
+> +	status = "disabled";
+> +};
+> +
+> +&iomuxc {
+> +	pinctrl_enet1: enet1grp {
+> +		fsl,pins = <
+> +			MX6UL_PAD_GPIO1_IO06__ENET1_MDIO	0x1b0b0
+> +			MX6UL_PAD_GPIO1_IO07__ENET1_MDC		0x1b0b0
+> +			MX6UL_PAD_ENET1_RX_EN__ENET1_RX_EN	0x1b0b0
+> +			MX6UL_PAD_ENET1_RX_ER__ENET1_RX_ER	0x1b0b0
+> +			MX6UL_PAD_ENET1_RX_DATA0__ENET1_RDATA00	0x1b0b0
+> +			MX6UL_PAD_ENET1_RX_DATA1__ENET1_RDATA01	0x1b0b0
+> +			MX6UL_PAD_ENET1_TX_EN__ENET1_TX_EN	0x1b0b0
+> +			MX6UL_PAD_ENET1_TX_DATA0__ENET1_TDATA00	0x1b0b0
+> +			MX6UL_PAD_ENET1_TX_DATA1__ENET1_TDATA01	0x1b0b0
+> +			MX6UL_PAD_ENET1_TX_CLK__ENET1_REF_CLK1	0x4001b031
+> +			MX6UL_PAD_SNVS_TAMPER5__GPIO5_IO05	0x1b0b0
+> +		>;
+> +	};
+> +
+> +	pinctrl_gpmi_nand: gpminandgrp {
+> +		fsl,pins = <
+> +			MX6UL_PAD_NAND_CLE__RAWNAND_CLE		0x0b0b1
+> +			MX6UL_PAD_NAND_ALE__RAWNAND_ALE		0x0b0b1
+> +			MX6UL_PAD_NAND_WP_B__RAWNAND_WP_B	0x0b0b1
+> +			MX6UL_PAD_NAND_READY_B__RAWNAND_READY_B	0x0b000
+> +			MX6UL_PAD_NAND_CE0_B__RAWNAND_CE0_B	0x0b0b1
+> +			MX6UL_PAD_NAND_RE_B__RAWNAND_RE_B	0x0b0b1
+> +			MX6UL_PAD_NAND_WE_B__RAWNAND_WE_B	0x0b0b1
+> +			MX6UL_PAD_NAND_DATA00__RAWNAND_DATA00	0x0b0b1
+> +			MX6UL_PAD_NAND_DATA01__RAWNAND_DATA01	0x0b0b1
+> +			MX6UL_PAD_NAND_DATA02__RAWNAND_DATA02	0x0b0b1
+> +			MX6UL_PAD_NAND_DATA03__RAWNAND_DATA03	0x0b0b1
+> +			MX6UL_PAD_NAND_DATA04__RAWNAND_DATA04	0x0b0b1
+> +			MX6UL_PAD_NAND_DATA05__RAWNAND_DATA05	0x0b0b1
+> +			MX6UL_PAD_NAND_DATA06__RAWNAND_DATA06	0x0b0b1
+> +			MX6UL_PAD_NAND_DATA07__RAWNAND_DATA07	0x0b0b1
+> +		>;
+> +	};
+> +
+> +	pinctrl_uart1: uart1grp {
+> +		fsl,pins = <
+> +			MX6UL_PAD_UART1_TX_DATA__UART1_DCE_TX	0x1b0b1
+> +			MX6UL_PAD_UART1_RX_DATA__UART1_DCE_RX	0x1b0b1
+> +		>;
+> +	};
+> +
+> +	pinctrl_usb_otg1_id: usbotg1idgrp {
+> +		fsl,pins = <
+> +			MX6UL_PAD_GPIO1_IO00__ANATOP_OTG1_ID	0x17059
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc1: usdhc1grp {
+> +		fsl,pins = <
+> +			MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x17059
+> +			MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x10059
+> +			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0	0x17059
+> +			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1	0x17059
+> +			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2	0x17059
+> +			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3	0x17059
+> +			MX6UL_PAD_UART1_RTS_B__GPIO1_IO19	0x17059
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc1_100mhz: usdhc1grp100mhz {
+> +		fsl,pins = <
+> +			MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x170b9
+> +			MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x100b9
+> +			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0	0x170b9
+> +			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1	0x170b9
+> +			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2	0x170b9
+> +			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3	0x170b9
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc1_200mhz: usdhc1grp200mhz {
+> +		fsl,pins = <
+> +			MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x170f9
+> +			MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x100f9
+> +			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0	0x170f9
+> +			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1	0x170f9
+> +			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2	0x170f9
+> +			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3	0x170f9
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2: usdhc2grp {
+> +		fsl,pins = <
+> +			MX6UL_PAD_NAND_RE_B__USDHC2_CLK		0x10069
+> +			MX6UL_PAD_NAND_WE_B__USDHC2_CMD		0x17059
+> +			MX6UL_PAD_NAND_DATA00__USDHC2_DATA0	0x17059
+> +			MX6UL_PAD_NAND_DATA01__USDHC2_DATA1	0x17059
+> +			MX6UL_PAD_NAND_DATA02__USDHC2_DATA2	0x17059
+> +			MX6UL_PAD_NAND_DATA03__USDHC2_DATA3	0x17059
+> +			MX6UL_PAD_NAND_DATA04__USDHC2_DATA4	0x17059
+> +			MX6UL_PAD_NAND_DATA05__USDHC2_DATA5	0x17059
+> +			MX6UL_PAD_NAND_DATA06__USDHC2_DATA6	0x17059
+> +			MX6UL_PAD_NAND_DATA07__USDHC2_DATA7	0x17059
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
+> +		fsl,pins = <
+> +			MX6UL_PAD_NAND_RE_B__USDHC2_CLK		0x100b9
+> +			MX6UL_PAD_NAND_WE_B__USDHC2_CMD		0x170b9
+> +			MX6UL_PAD_NAND_DATA00__USDHC2_DATA0	0x170b9
+> +			MX6UL_PAD_NAND_DATA01__USDHC2_DATA1	0x170b9
+> +			MX6UL_PAD_NAND_DATA02__USDHC2_DATA2	0x170b9
+> +			MX6UL_PAD_NAND_DATA03__USDHC2_DATA3	0x170b9
+> +			MX6UL_PAD_NAND_DATA04__USDHC2_DATA4	0x170b9
+> +			MX6UL_PAD_NAND_DATA05__USDHC2_DATA5	0x170b9
+> +			MX6UL_PAD_NAND_DATA06__USDHC2_DATA6	0x170b9
+> +			MX6UL_PAD_NAND_DATA07__USDHC2_DATA7	0x170b9
+> +		>;
+> +	};
+> +
+> +	pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
+> +		fsl,pins = <
+> +			MX6UL_PAD_NAND_RE_B__USDHC2_CLK		0x100f9
+> +			MX6UL_PAD_NAND_WE_B__USDHC2_CMD		0x170f9
+> +			MX6UL_PAD_NAND_DATA00__USDHC2_DATA0	0x170f9
+> +			MX6UL_PAD_NAND_DATA01__USDHC2_DATA1	0x170f9
+> +			MX6UL_PAD_NAND_DATA02__USDHC2_DATA2	0x170f9
+> +			MX6UL_PAD_NAND_DATA03__USDHC2_DATA3	0x170f9
+> +			MX6UL_PAD_NAND_DATA04__USDHC2_DATA4	0x170f9
+> +			MX6UL_PAD_NAND_DATA05__USDHC2_DATA5	0x170f9
+> +			MX6UL_PAD_NAND_DATA06__USDHC2_DATA6	0x170f9
+> +			MX6UL_PAD_NAND_DATA07__USDHC2_DATA7	0x170f9
+> +		>;
+> +	};
+> +};
+> -- 
+> 2.11.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
