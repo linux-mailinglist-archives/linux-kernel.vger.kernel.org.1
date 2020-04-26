@@ -2,78 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814231B8F96
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 13:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3BE1B921F
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgDZL6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 07:58:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35752 "EHLO mx2.suse.de"
+        id S1726179AbgDZRh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 13:37:59 -0400
+Received: from svx.swedbn.com ([45.83.140.64]:37814 "EHLO svx.swedbn.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726125AbgDZL6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 07:58:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 2B6DEAA55;
-        Sun, 26 Apr 2020 11:58:12 +0000 (UTC)
-Subject: Re: [PATCH v3 3/3] ARM: dts: Add Caninos Loucos Labrador
-To:     Matheus Castello <matheus@castello.eng.br>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        mark.rutland@arm.com, robh+dt@kernel.org,
-        edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
-References: <20200229104358.GB19610@mani>
- <20200320035104.26139-1-matheus@castello.eng.br>
- <20200320035104.26139-4-matheus@castello.eng.br>
- <20200405065137.GC8912@Mani-XPS-13-9360>
- <df32c750-a097-9210-6e13-db7db49836b5@castello.eng.br>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Message-ID: <2dca5a4e-933c-0a43-e86f-21b55d75a586@suse.de>
-Date:   Sun, 26 Apr 2020 13:58:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726154AbgDZRh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 13:37:58 -0400
+X-Greylist: delayed 16640 seconds by postgrey-1.27 at vger.kernel.org; Sun, 26 Apr 2020 13:37:58 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=swedbn.com;
+         s=mail; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Subject:
+        To:From:Reply-To:Message-ID:Sender:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=JutZVqrXlbQMNNdnEkkw5lG9WyIgglZJJQuUuQPwNic=; b=Suo1s7ZR2Gjjxn3nymXjMvgHND
+        H7xx4v4sGhMFJHmH2kFOC7RViJ3ETaemdlX3tXmumyOkluz5/00zOV6yXxnce4zm2uWxlOFNTwDe0
+        c13FOxaZKMRVLitdSI3PgYVtcKj5XPvvpeuHeJogtYg/1EzhE+ysqiouTVPVWXSlN5SQ=;
+Received: from [188.209.52.127] (helo=WIN-UFVMAPBRAME)
+        by svx.swedbn.com with esmtpsa (TLSv1:EDH-RSA-DES-CBC3-SHA:168)
+        (Exim 4.92.3)
+        (envelope-from <info@swedbn.com>)
+        id 1jSgth-0003ew-LH
+        for linux-kernel@vger.kernel.org; Sun, 26 Apr 2020 09:00:37 -0400
+Message-ID: <0397d280-43947-a5205419415856@win-ufvmapbrame>
+Reply-To: "Stefanie Hubner" <financeprim@yandex.com>
+From:   "Stefanie Hubner" <info@swedbn.com>
+To:     linux-kernel@vger.kernel.org
+Subject: Hallo 4/26/2020  1:00:23 PM
+Date:   Sun, 26 Apr 2020 12:59:29 +0100
 MIME-Version: 1.0
-In-Reply-To: <df32c750-a097-9210-6e13-db7db49836b5@castello.eng.br>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
+X-Priority: 3
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matheus,
+Hallo linux-kernel@vger.kernel.org
 
-Am 23.04.20 um 17:20 schrieb Matheus Castello:
-> Em 4/5/20 3:51 AM, Manivannan Sadhasivam escreveu:
->> On Fri, Mar 20, 2020 at 12:51:04AM -0300, Matheus Castello wrote:
->>> Add Device Trees for Caninos Loucos Labrador CoM and base board.
->>> Based on the work of Andreas FÃ¤rber on Lemaker Guitar device tree.
->>>
->>> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
->>
->> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->>
->> Will queue the series for v5.8 once Andreas is happy with it.
-> 
-> do you have any more concerns about these patches? Let me know.
+Sehr geehrte Damen und Herren
 
-I've reviewed the preceding two patches. This one here looks okay,
+Wir gewähren Darlehen in Höhe von 20.000,00 € bis 5 Mio. € mit einem Zinssatz von 2% 
 
-Reviewed-by: Andreas FÃ¤rber <afaerber@suse.de>
+Die Zinsen und die Laufzeiten sind sehr attraktiv (2%) und in punkto Sicherheit beschränken wir uns auf das absolute 
+Minimum. Interessiert? Dann kontaktieren Sie uns doch für weitere Informationen per e-mail
 
-but see 2/3 - model here does contain M and your .dtsi is named -v2 - 
-what's the difference to v1? If it's big enough to warrant a separate 
-.dtsi, you should consider whether a versioned compatible string may be 
-needed, too (likely in addition to, not instead of a generic one). No v1 
-info on the website.
+Stefanie Hubner.
 
-Thanks,
-Andreas
-
--- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 NÃ¼rnberg, Germany
-GF: Felix ImendÃ¶rffer
-HRB 36809 (AG NÃ¼rnberg)
