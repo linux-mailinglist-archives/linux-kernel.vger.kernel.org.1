@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08F21B8FAD
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 14:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA361B8FA1
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 14:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgDZMFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 08:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
+        id S1726200AbgDZMEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 08:04:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726165AbgDZMEv (ORCPT
+        with ESMTP id S1726184AbgDZMEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 08:04:51 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DAEC09B050;
-        Sun, 26 Apr 2020 05:04:51 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id y24so17116941wma.4;
-        Sun, 26 Apr 2020 05:04:51 -0700 (PDT)
+        Sun, 26 Apr 2020 08:04:52 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843FBC061A0E;
+        Sun, 26 Apr 2020 05:04:52 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id k12so7789496wmj.3;
+        Sun, 26 Apr 2020 05:04:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Q4BM4DNbysaClY0EV6xOgF2ovMVU3sJ0+ScvdfNi5NQ=;
-        b=elO4ES6Zl1mm+m0hwviU6BmYb4hh+LOJNukPomLbcf7SS8SnTpLR7xGis+AHOwg1DT
-         Wu0dzhT4g8+dSXBWjRPGm2FdYDu2KBxP5zevMclI8pAm+yWijzazLxVeXn/wcYIdc6j3
-         nos2w6/74APgGBKOQVr1VdTqGkvGgsmQ6styreKbAIUzLomtg3hQleOfPSKegNlRXntS
-         khjVPQAxuMSoSuvbDb/Xd7WO4dH2kdJws/h0BavW7efiAafndGqzthgfuWcAm+LqxvrR
-         P/AOoIHdyY9OyMy3QcglfHD206KV0ir90VVAithplg7gGPDXO0yogXrHbho1JGDMZkJQ
-         J+1w==
+        bh=hIU92tFnbM5F4GsZxfyBvjNoAK6MdY4fHHnGiOLjInY=;
+        b=tkoO+MHUDgKE2W2y6Vwh3dRnEyCcyLv/zkEQrzs/FwHfhTpbHQP0iKeYrQ4wMLckWT
+         JIEXVvi/NI/sgohW4tyaa6rGnX6l2ql+TBtATuktrJ/V71CFJ8APzipcoiIvkGsYkXQ/
+         Hqd2YinT9n9VLspN83dS59ix5n/DfUBVV4RmpHwraP6FdMbIq+5Aml8akBG0FS1TP1S7
+         X1c9ajGo2PJ3YIlvcSHTZeibGqacs2RJxOfauMjT8ZDE8x6u0qQFXyOpYG1SWMeXJFJY
+         DlDL2IUFqZTzzSVeyw9gnRFo3GncRtxzjc+9+d1GuZWY47xt+VR5fIovX93az8Q68AgG
+         sLwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Q4BM4DNbysaClY0EV6xOgF2ovMVU3sJ0+ScvdfNi5NQ=;
-        b=X0Gm6wmSswHn1uYY0yi2zFh33iIPZnuYTAfS7wz6NRolql4odTWJ77UAsIo/Zk922i
-         PEZsMulpBZY9C8LKZusVqc9RysmxOVbUeqrloKN2bCt0amB0Y5wQTDXQQGg0PhJ3Nj86
-         LFjmEZxXPKX5LuwVb7xeXNeH2zO7WNbMW7cx0RbbRKmVtfCBqELLEDbtAjUrscZWKYNw
-         UysnzMhj0SN3Jj0Q3O4MmTgdQmk6FIvChtALoS4AUvSzw7MxTCs5FXY+Z7gokmscuw/N
-         6XvJ5DbFvrG0p83nKOmnAwZE7skq9HBVrgMrkm0MikQ+W8Vs17qnSHlz2BNMfWQ5+HFb
-         ZcHg==
-X-Gm-Message-State: AGi0PuY5/j2ae4UByo7G2hM1aMGefGpL5uuAd6b/fnSOjYPuAkB3xu5+
-        WZb0qoju8wSPIPbJrxI8RlQ=
-X-Google-Smtp-Source: APiQypJw86c/sNx95DXV8lKs4/fEZfGFlBuG6VgZQUEpXj3ZPhbvaLaZ89ziUvHrSB/ed3WVWYGD0A==
-X-Received: by 2002:a1c:b684:: with SMTP id g126mr19832432wmf.163.1587902690012;
-        Sun, 26 Apr 2020 05:04:50 -0700 (PDT)
+        bh=hIU92tFnbM5F4GsZxfyBvjNoAK6MdY4fHHnGiOLjInY=;
+        b=jdOySZmHiEVY/PfJA64uUVA1bJe/m2oy9PLrvNcarlNbjPSGFXZLLWXZ2PktW+tuKz
+         kwVsrYsiQBZajFbYCNZOA5H9vEmBnPuQqgMQUopL3N8B/OMk7wza3lSNjhSwRiE2NgEb
+         QtcgmtEUe7bnkZBzcdVfjqbDhEEsl49qhGombn6HalOgqjJEvzcaSBZpyOLm9yIBfjiH
+         5aqkdbDgvNlQ2FYMlqpb4zBtfU+WdCKG9PPVsIPtOqHbHmSuwL8UD2bLSNoByVrZMqlD
+         fORfxSa0nkBIEQiYW8oe2RXdUiNKBEXEXHanzeCuaLQrJvsxCb8vT/dMBIndCS8d0rLE
+         dtbw==
+X-Gm-Message-State: AGi0PuZXBWZYxNL3UXDEDX3HXPKotkOYjRofAildcG0fKEup5Gpr+u8K
+        wo/13kAM/7dXa+mqaThU99U=
+X-Google-Smtp-Source: APiQypJQivLKtZXp/OmZXZ5Izse0wCnqEyHEKmH7wBdtOiTI+IQ0H8Prs5Pn5dUr68966e52DjPNlw==
+X-Received: by 2002:a1c:4989:: with SMTP id w131mr21647354wma.137.1587902691211;
+        Sun, 26 Apr 2020 05:04:51 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:1f1:d0f0:59f6:22c5:d1f3:662d])
-        by smtp.gmail.com with ESMTPSA id s24sm11120026wmj.28.2020.04.26.05.04.48
+        by smtp.gmail.com with ESMTPSA id s24sm11120026wmj.28.2020.04.26.05.04.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Apr 2020 05:04:49 -0700 (PDT)
+        Sun, 26 Apr 2020 05:04:50 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -59,10 +59,11 @@ Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi <linux-sunxi@googlegroups.com>,
         Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH 3/7] arm64: dts: allwinner: a64: Add DAI node for HDMI
-Date:   Sun, 26 Apr 2020 14:04:38 +0200
-Message-Id: <20200426120442.11560-4-peron.clem@gmail.com>
+Subject: [PATCH 4/7] arm64: dts: allwinner: a64: Add HDMI audio
+Date:   Sun, 26 Apr 2020 14:04:39 +0200
+Message-Id: <20200426120442.11560-5-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200426120442.11560-1-peron.clem@gmail.com>
 References: <20200426120442.11560-1-peron.clem@gmail.com>
@@ -76,39 +77,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marcus Cooper <codekipper@gmail.com>
 
-Add the new DAI block for I2S2 which is used for HDMI audio.
+Add a simple-soundcard to link audio between HDMI and I2S.
 
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 Signed-off-by: Marcus Cooper <codekipper@gmail.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 8d10fe6d06b6..e56e1e3d4b73 100644
+index e56e1e3d4b73..08ab6b5e72a5 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -863,6 +863,20 @@
+@@ -102,6 +102,25 @@
+ 		status = "disabled";
+ 	};
+ 
++	hdmi_sound: hdmi-sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,name = "allwinner,hdmi";
++		simple-audio-card,mclk-fs = <128>;
++		simple-audio-card,frame-inversion;
++		status = "disabled";
++
++		simple-audio-card,codec {
++			sound-dai = <&hdmi>;
++		};
++
++		simple-audio-card,cpu {
++			sound-dai = <&i2s2>;
++			dai-tdm-slot-num = <2>;
++			dai-tdm-slot-width = <32>;
++		};
++	};
++
+ 	osc24M: osc24M_clk {
+ 		#clock-cells = <0>;
+ 		compatible = "fixed-clock";
+@@ -874,6 +893,7 @@
+ 			resets = <&ccu RST_BUS_I2S2>;
+ 			dma-names = "tx";
+ 			dmas = <&dma 27>;
++			allwinner,playback-channels = <8>;
  			status = "disabled";
  		};
  
-+		i2s2: i2s@1c22800 {
+@@ -1171,6 +1191,7 @@
+ 		};
+ 
+ 		hdmi: hdmi@1ee0000 {
 +			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun50i-a64-i2s",
-+				     "allwinner,sun8i-h3-i2s";
-+			reg = <0x01c22800 0x400>;
-+			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
-+			clock-names = "apb", "mod";
-+			resets = <&ccu RST_BUS_I2S2>;
-+			dma-names = "tx";
-+			dmas = <&dma 27>;
-+			status = "disabled";
-+		};
-+
- 		dai: dai@1c22c00 {
- 			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun50i-a64-codec-i2s";
+ 			compatible = "allwinner,sun50i-a64-dw-hdmi",
+ 				     "allwinner,sun8i-a83t-dw-hdmi";
+ 			reg = <0x01ee0000 0x10000>;
 -- 
 2.20.1
 
