@@ -2,64 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30271B8E03
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 10:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08EA1B8E12
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 10:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726166AbgDZIoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 04:44:20 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:53230 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726108AbgDZIoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 04:44:20 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id F313ED09628CC06D999E;
-        Sun, 26 Apr 2020 16:44:17 +0800 (CST)
-Received: from [127.0.0.1] (10.166.213.7) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Sun, 26 Apr 2020
- 16:44:16 +0800
-Subject: Re: [PATCH] i2c: busses: remove unneeded conversion to bool
-To:     Wolfram Sang <wsa@the-dreams.de>
-CC:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200420042816.18989-1-yanaijie@huawei.com>
- <20200426081652.GH1262@kunai>
-From:   Jason Yan <yanaijie@huawei.com>
-Message-ID: <bb3f98c1-e97d-7ed9-8983-a8d8a729e5ac@huawei.com>
-Date:   Sun, 26 Apr 2020 16:44:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1726141AbgDZIzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 04:55:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726108AbgDZIzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 04:55:20 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4461220700;
+        Sun, 26 Apr 2020 08:55:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587891319;
+        bh=I+BF0dVWvC9Dx4ICRolhqOlkdDoEIrBgqe/2wouDFAg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k5qpJhBHlm582Hqxj6EuPSw56og/ROWMhQxe/xlRDf9ryQ/m+ZMWgxttZB8w1nW14
+         8qItfG4TTG0aDhg/43aiqRjpnwvHG0xQ816k/Dc++o+hxNTh28HZ56bU7Ou1YVPiE7
+         9Cc7f+lmXUiKUlXvhnv/N8+G+i/T/1jbDa+5PhrQ=
+Date:   Sun, 26 Apr 2020 09:55:14 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Leslie =?UTF-8?B?SHNpYQ==?=(=?UTF-8?B?5aSP6YKm6YCyX1BlZ2F0cm9u?=)" 
+        <Leslie_Hsia@pegatroncorp.com>
+Cc:     "knaack.h@gmx.de" <knaack.h@gmx.de>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "Hermes =?UTF-8?B?SHNpZWg=?=( =?UTF-8?B?6Kyd5pe75YqtX1BlZ2F0cm9u?=)" 
+        <Hermes_Hsieh@pegatroncorp.com>,
+        "jesse.sung@canonical.com" <jesse.sung@canonical.com>
+Subject: Re: [PATCH] subsystem: Amplifier driver for TAS5805M,Texas
+ instruments
+Message-ID: <20200426095514.28aaecad@archlinux>
+In-Reply-To: <754706C925201D4896E92CCAD6B38E4401F0F6B825@PTW-EX-38.PEGA.CORP.PEGATRON>
+References: <754706C925201D4896E92CCAD6B38E4401F0F6B825@PTW-EX-38.PEGA.CORP.PEGATRON>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200426081652.GH1262@kunai>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.166.213.7]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 20 Apr 2020 06:58:17 +0000
+Leslie Hsia(=E5=A4=8F=E9=82=A6=E9=80=B2_Pegatron) <Leslie_Hsia@pegatroncorp=
+.com> wrote:
 
+>   *   Author: Leslie Hsia
+>   *   Amplifier driver for TAS5805M, initial the amplifier and set the so=
+und's parameter.
+>   *   Signed-off-by: Leslie Hsia <Leslie_Hsia@pegatroncorp.com<mailto:Les=
+lie_Hsia@pegatroncorp.com>>
+>=20
+>       -------------------------------------------------------------------=
+------------------------------
+>=20
+>   *   Hi Jonathan,
+> tas5805m only needs to be initialized via i2c port, this driver doesn't u=
+se any ALSA API,
+> so we put this driver into this path
 
-在 2020/4/26 16:16, Wolfram Sang 写道:
-> On Mon, Apr 20, 2020 at 12:28:16PM +0800, Jason Yan wrote:
->> The '>' expression itself is bool, no need to convert it to bool again.
->> This fixes the following coccicheck warning:
->>
->> drivers/i2c/busses/i2c-qup.c:960:48-53: WARNING: conversion to bool not needed here
->> drivers/i2c/busses/i2c-qup.c:962:47-52: WARNING: conversion to bool not needed here
->> drivers/i2c/busses/i2c-qup.c:1531:29-34: WARNING: conversion to bool not needed here
->> drivers/i2c/busses/i2c-qup.c:1533:29-34: WARNING: conversion to bool not needed here
->>
->> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> 
-> Applied to for-next, thanks! But please fix $subject to have the driver
-> name "qup" next time.
-> 
+I'm still unconvinced. This is very much an audio part so people
+aren't going to expect to find it in IIO.  Mark?=20
 
-OK, get it.
+Also please ensure next version of code is sent inline.  See
+Documentation/process/submitting-patches
 
-Thanks,
-Jason
+Jonathan
+
+>=20
+>=20
+>=20
+> This e-mail and its attachment may contain information that is confidenti=
+al or privileged, and are solely for the use of the individual to whom this=
+ e-mail is addressed. If you are not the intended recipient or have receive=
+d it accidentally, please immediately notify the sender by reply e-mail and=
+ destroy all copies of this email and its attachment. Please be advised tha=
+t any unauthorized use, disclosure, distribution or copying of this email o=
+r its attachment is strictly prohibited.
+>=20
+> =E6=9C=AC=E9=9B=BB=E5=AD=90=E9=83=B5=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=
+=E4=BB=B6=E5=8F=AF=E8=83=BD=E5=90=AB=E6=9C=89=E6=A9=9F=E5=AF=86=E6=88=96=E4=
+=BE=9D=E6=B3=95=E5=8F=97=E7=89=B9=E6=AE=8A=E7=AE=A1=E5=88=B6=E4=B9=8B=E8=B3=
+=87=E8=A8=8A=EF=BC=8C=E5=83=85=E4=BE=9B=E6=9C=AC=E9=9B=BB=E5=AD=90=E9=83=B5=
+=E4=BB=B6=E4=B9=8B=E5=8F=97=E6=96=87=E8=80=85=E4=BD=BF=E7=94=A8=E3=80=82=E5=
+=8F=B0=E7=AB=AF=E5=A6=82=E9=9D=9E=E6=9C=AC=E9=9B=BB=E5=AD=90=E9=83=B5=E4=BB=
+=B6=E4=B9=8B=E5=8F=97=E6=96=87=E8=80=85=E6=88=96=E8=AA=A4=E6=94=B6=E6=9C=AC=
+=E9=9B=BB=E5=AD=90=E9=83=B5=E4=BB=B6=EF=BC=8C=E8=AB=8B=E7=AB=8B=E5=8D=B3=E5=
+=9B=9E=E8=A6=86=E9=83=B5=E4=BB=B6=E9=80=9A=E7=9F=A5=E5=AF=84=E4=BB=B6=E4=BA=
+=BA=EF=BC=8C=E4=B8=A6=E9=8A=B7=E6=AF=80=E6=9C=AC=E9=9B=BB=E5=AD=90=E9=83=B5=
+=E4=BB=B6=E4=B9=8B=E6=89=80=E6=9C=89=E8=A4=87=E6=9C=AC=E5=8F=8A=E9=99=84=E4=
+=BB=B6=E3=80=82=E4=BB=BB=E4=BD=95=E6=9C=AA=E7=B6=93=E6=8E=88=E6=AC=8A=E8=80=
+=8C=E4=BD=BF=E7=94=A8=E3=80=81=E6=8F=AD=E9=9C=B2=E3=80=81=E6=95=A3=E4=BD=88=
+=E6=88=96=E8=A4=87=E8=A3=BD=E6=9C=AC=E9=9B=BB=E5=AD=90=E9=83=B5=E4=BB=B6=E6=
+=88=96=E5=85=B6=E9=99=84=E4=BB=B6=E4=B9=8B=E8=A1=8C=E7=82=BA=EF=BC=8C=E7=9A=
+=86=E5=9A=B4=E6=A0=BC=E7=A6=81=E6=AD=A2 =E3=80=82
+>=20
 
