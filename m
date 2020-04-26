@@ -2,123 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F5A1B906C
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 15:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CD11B906E
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 15:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgDZNSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 09:18:15 -0400
-Received: from mail-dm6nam11on2066.outbound.protection.outlook.com ([40.107.223.66]:6135
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725876AbgDZNSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 09:18:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RBkBHiP2BjWONxqU+dFg5nz+xnDU8TEDLa8dfSbdJrg2OkO39PF7USfNLrGSOgFcMU902ie8I8FMzI/kAdoktj6+Q3QCzqeVI7f0/iNHgy/mPFs+0G88AE2tz8vAY65EfYupwHuWFkhL4uV1ruWEsIhisC9o9I3KMsPWtGIJ//gBcq5NVpggYDYXIePApxaGhX+wzN/oLqyjxJXaCjRcFLXbXXYZNh9gkmRNqq0gdhfRnYi7mL1yLv/nJ8NqaF24/wI23etvMwheYwr1hNCbvQGAkukwSKQ/7IyRgzLdS79nAhMLdYkDU2wuEVa7iefuFAlnAsYJJHP5c5lJlFK4dw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vO6e4ZtodShY2HEZNI7EXf+JL1LgjNf7dDpoh/5teKs=;
- b=Un/KyI8wscDAxOt9lzpLfIFlqzKeUdXnpQm3YzzBSzfepOPHRKYwMhMtJeyEg8Eu+Y+xH+LFrQ1KSeBlJcFXCD5A56vi0iIxSi0UZ68Zf4Jt6iBAVQlcTw5z4Po0cy+/vQy8tocYVfI06W37BQBE30rm+wGQw7EpxxcclWSnX2qpGtZp38myBF49G9I2V2S82Dq2Z6gCXbFYGcR28GXTDoDbipvadi/plfTSmBo8xvQomDDTszpLB3IvUpHgendGtDz9bbbpFXgLV9mWzgG9GkCqqG0QDkCWDHWwqvMKShns1D1j3hBbHRz9X+ncloGPc87eNYfUNZQ8PbiQb7tcjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1726200AbgDZNTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 09:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726139AbgDZNTY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 09:19:24 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79CE9C061A0F
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 06:19:24 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id c3so21319510otp.8
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 06:19:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vO6e4ZtodShY2HEZNI7EXf+JL1LgjNf7dDpoh/5teKs=;
- b=usbEZ432eR3FJGnW/vKzN8X4T93x386InHy+tIRTeNuSMH3w2qjk8DPi/nV6/+bvxUzYJrKms+JxhvtfrziFf0EB6xCYHcZbHwg9BuQ7WXQytcpkFzwW2Ik59xoM9V9teH1ALmk5kQYoVuJ5DJUYApux81lJK+nPKthAcbT8BWo=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=Christian.Koenig@amd.com; 
-Received: from DM6PR12MB4401.namprd12.prod.outlook.com (2603:10b6:5:2a9::15)
- by DM6PR12MB3644.namprd12.prod.outlook.com (2603:10b6:5:118::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Sun, 26 Apr
- 2020 13:18:10 +0000
-Received: from DM6PR12MB4401.namprd12.prod.outlook.com
- ([fe80::7949:b580:a2d5:f766]) by DM6PR12MB4401.namprd12.prod.outlook.com
- ([fe80::7949:b580:a2d5:f766%3]) with mapi id 15.20.2937.023; Sun, 26 Apr 2020
- 13:18:10 +0000
-Subject: Re: [PATCH] drm/radeon: cleanup coding style a bit
-To:     Bernard Zhao <bernard@vivo.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-References: <20200426131244.22293-1-bernard@vivo.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <2c67e29b-df17-6ae3-cb55-af950acc022c@amd.com>
-Date:   Sun, 26 Apr 2020 15:18:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-In-Reply-To: <20200426131244.22293-1-bernard@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: AM4PR0501CA0050.eurprd05.prod.outlook.com
- (2603:10a6:200:68::18) To DM6PR12MB4401.namprd12.prod.outlook.com
- (2603:10b6:5:2a9::15)
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yYXwDqywnxQUI+vD+2dFTwtskNzX/fHxHB1snXxCfaI=;
+        b=QBM4aLepspQnmt/hCdVncb4Nm2jwa33dteodt5D4QJgrWDRjxsY/azU1+iRaS7RD5P
+         uN3BDlwcjb8od8YMXmyGkinlTdcpTo+JbWico1uGyvZd8Noji7JJmbMlD9NAA315AsJe
+         EfUP/jrsZt6l8yJLyYnF92WUbNtlsuJJhMCtvittUjnYvOr6yhqSJnJpLs/anithK/OP
+         m6SOft36UeWlCu0pGuoY3PbJDFhwwX2dRNlTrfZVp1uig2ndajCLaE3wpjHy00ntMioP
+         C+Yi0kogh04QSLfgZkBvUxAnfX9elPT6AgBz/dhhIctvM1+nLhOCcOt3aVxPZTNWPj8X
+         Kbeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yYXwDqywnxQUI+vD+2dFTwtskNzX/fHxHB1snXxCfaI=;
+        b=rUdLyhxKdCV46CBBN1POiSSseeY97QMOtTG3t/H12ywAtO/TQoR1rEw4G0GIKwskKa
+         nQw/pFX3YT1hQvtZkMkWij9Y7vtRJM9jAtd5+cFvo5dPzeUmPCQL8F4n99dJXXr/Bs8F
+         aNJ2imtTRU7rZHVc/H//y7YboynW+CDUWps/rGdCiWtKQzds/RzrdbBEV0bizDtbkaZd
+         Olg8gRwBoyakC2qJbeNn0IgvVaU8YAhUUiwsNtgXYABINQwvsabGE8P0stRSc0ToUBFO
+         ykcOf5ddHfyf+H622RD7+/Up7JHgs338HcEwjBbIBsSB1SQ98cnds+ZXC7+4QcbOFAG9
+         nCBg==
+X-Gm-Message-State: AGi0PuYo5VbGFEST84hozs9wcOs5f1vL7Ki/JcSxA0xkyCAoFwghwHDP
+        YMNmua/1mHAVlo6WSslmhhDaCjE5ew7t6xCAjAHFR5+JZsU=
+X-Google-Smtp-Source: APiQypLfr78a21DD+6mlktZjeVwVAlSQPDdwBgdv0hbHZ960IqxLv+kJOghJKo9ReWjoKv54vjdMCBzErF3UreLiBOo=
+X-Received: by 2002:aca:5651:: with SMTP id k78mr5529295oib.32.1587907163563;
+ Sun, 26 Apr 2020 06:19:23 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM4PR0501CA0050.eurprd05.prod.outlook.com (2603:10a6:200:68::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Sun, 26 Apr 2020 13:18:07 +0000
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: a005e825-5218-4a79-5cf2-08d7e9e44441
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3644:|DM6PR12MB3644:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB36449C9B670C62FB058390E283AE0@DM6PR12MB3644.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
-X-Forefront-PRVS: 03853D523D
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4401.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(39860400002)(136003)(396003)(346002)(16526019)(186003)(86362001)(66556008)(6486002)(66574012)(4326008)(66946007)(2616005)(5660300002)(66476007)(6666004)(36756003)(52116002)(316002)(81156014)(4744005)(8676002)(478600001)(8936002)(2906002)(31686004)(110136005)(31696002);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QWw2PpYyuciuVk3cGIEgeY7xzoiNe9Vi9N1N8X9t+5rv9sSiXByyl4DiuhvDsWMcnGGpHi35CLuNPR70Hi3LqTMHj4zerm3sRjHVvxyjESEXeRDuCm7pCqsnC2vsizI+i9cUhYB5vHd0Mz4BqCz7WW9F6/645Gr/EfvJA0tPrloCyWviEtwXGC0Pkhrqv/ulJiSWyidTtM6OUVVK+n030ceX+2zocSXmDbo6a1jxTEbAdQ8/UQ9jDI7t/CK7cbNtOa/9SyvVnZCfvmt1EeDFSsBtd1aLe/JYA8CyARzBRaV1Hy/kG6lpLMRneXfdIEYt2zNApOSQJox++WBhDjNr1r5w7dEnUIKPuiKjnxZRMpBS9JeYgpspD3l15h1OEV6hCYoeWFseOimOleWGz/gU4v93/zEJBV5pLBKuFTgBQvpCnM75hGz21pJrmx9Emutx
-X-MS-Exchange-AntiSpam-MessageData: aH2PeJNgiH2RMtQwUxU5tljGVHFpxDNAELO3yhrX9rqDLY12dSax1FTaw/tyBhstFc5zqDj1TGU97XBBIH3X6SxRfIA1efdbDi8PBUwY6VK05VHlo52/gqtbKVZU661FYq1j4qPTRW9Q4GyVAJGx3ZyJEtu0Q/Lq3WNDuyKDWmrGEHUGMkEw8TF1osjO8g2wkt01wkBlIIr2UrEK7retSwPtfmS5fAU8HtwCIURxeDR4brEOrQiV4oekAnoo5bjJUWVi3NbzaZzHP6pxlr4amVH/t/cqZtqQWnz59kPKA9dT4TbnEBYmS1qQ2aXSBWnr583EhHx3SGwhbMokXNorA667pEx6txcDdyZiLf3VL6ihsUSqQCtfPczrmlGSKclJ1OZyWHOX6Lx6yVLFsz+bgCWH8pfenR4ZXNCdljVDXOO5KwUJyWaBOLwwg7MB2oqrgW1Nwjy7hAs6nYr9pKV7iZgp5TgDNGEN/1rrkDpadxqp2j6WSpdS5akt91/0pclTuzjJAtlaOkswDpppEt3e42cBhk3kfc0yUjLIC8VTJpL0koaFdGYCv/KQ6lJt9xS5LfWklJEziZgWWk49d3FVF+UWtMxMVtCzIqTCQ6IYcjrmNU5RQdgnElQNPyZIIwg/QE9IrQUJrAhOPwCu0qkOOBzZMaxIbKf3lvx+aWozB/OflzM6DivZbq1Wr5y7fQWxp5hp0+z8JsuNf0U9xG5gvd7tCaH+uxyT9OG4xZyOvOjp4kzSFelxMEVGYhFOydxPW2MBkN+gdKA03/QlcLwqxHyD/yFBvPlFa9eVZEPLpgOi8qb9tPfJrcAbZmtHsQuz9AxB9+AQ+krRn4j53etfUuTKdmnYR6NA6Lgu7hD1fMQ=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a005e825-5218-4a79-5cf2-08d7e9e44441
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2020 13:18:10.5354
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5uc8ooFOhbLcM10khesAyCZrltVlneJM4MpuialKSKyo4dUQ28rE4A8Fow3qtMrc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3644
+References: <20200426110740.123638-1-zong.li@sifive.com> <CAAhSdy3FCdzLV-nH03T=PBxB2tdZXhRrugcC2NcoA=22qpv+Lw@mail.gmail.com>
+In-Reply-To: <CAAhSdy3FCdzLV-nH03T=PBxB2tdZXhRrugcC2NcoA=22qpv+Lw@mail.gmail.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Sun, 26 Apr 2020 21:19:13 +0800
+Message-ID: <CANXhq0qW9ORoZ5qc5g8ikO9QdeYX=p0fwoP8pyFFkk02a7imnw@mail.gmail.com>
+Subject: Re: [PATCH] irqchip/sifive-plic: allow many cores to handle IRQs
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        David Abdurachmanov <david.abdurachmanov@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 26.04.20 um 15:12 schrieb Bernard Zhao:
-> Maybe no need to check ws before kmalloc, kmalloc will check
-> itself, kmalloc`s logic is if ptr is NULL, kmalloc will just
-> return
+On Sun, Apr 26, 2020 at 8:47 PM Anup Patel <anup@brainfault.org> wrote:
 >
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-
-Reviewed-by: Christian König <christian.koenig@amd.com>
-
-I'm wondering why the automated scripts haven't found that one before.
-
-> ---
->   drivers/gpu/drm/radeon/atom.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+> On Sun, Apr 26, 2020 at 4:37 PM Zong Li <zong.li@sifive.com> wrote:
+> >
+> > Currently, driver forces the IRQs to be handled by only one core. This
+> > patch provides the way to enable others cores to handle IRQs if needed,
+> > so users could decide how many cores they wanted on default by boot
+> > argument.
+> >
+> > Use 'irqaffinity' boot argument to determine affinity. If there is no
+> > irqaffinity in dts or kernel configuration, use irq default affinity,
+> > so all harts would try to claim IRQ.
+> >
+> > For example, add irqaffinity=0 in chosen node to set irq affinity to
+> > hart 0. It also supports more than one harts to handle irq, such as set
+> > irqaffinity=0,3,4.
+> >
+> > You can change IRQ affinity from user-space using procfs. For example,
+> > you can make CPU0 and CPU2 serve IRQ together by the following command:
+> >
+> > echo 4 > /proc/irq/<x>/smp_affinity
+> >
+> > Signed-off-by: Zong Li <zong.li@sifive.com>
+> > ---
+> >  drivers/irqchip/irq-sifive-plic.c | 21 +++++++--------------
+> >  1 file changed, 7 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> > index d0a71febdadc..bc1440d54185 100644
+> > --- a/drivers/irqchip/irq-sifive-plic.c
+> > +++ b/drivers/irqchip/irq-sifive-plic.c
+> > @@ -111,15 +111,12 @@ static inline void plic_irq_toggle(const struct cpumask *mask,
+> >  static void plic_irq_unmask(struct irq_data *d)
+> >  {
+> >         struct cpumask amask;
+> > -       unsigned int cpu;
+> >         struct plic_priv *priv = irq_get_chip_data(d->irq);
+> >
+> >         cpumask_and(&amask, &priv->lmask, cpu_online_mask);
+> > -       cpu = cpumask_any_and(irq_data_get_affinity_mask(d),
+> > -                                          &amask);
+> > -       if (WARN_ON_ONCE(cpu >= nr_cpu_ids))
+> > -               return;
+> > -       plic_irq_toggle(cpumask_of(cpu), d, 1);
+> > +       cpumask_and(&amask, &amask, irq_data_get_affinity_mask(d));
+> > +
+> > +       plic_irq_toggle(&amask, d, 1);
+> >  }
+> >
+> >  static void plic_irq_mask(struct irq_data *d)
+> > @@ -133,24 +130,20 @@ static void plic_irq_mask(struct irq_data *d)
+> >  static int plic_set_affinity(struct irq_data *d,
+> >                              const struct cpumask *mask_val, bool force)
+> >  {
+> > -       unsigned int cpu;
+> >         struct cpumask amask;
+> >         struct plic_priv *priv = irq_get_chip_data(d->irq);
+> >
+> >         cpumask_and(&amask, &priv->lmask, mask_val);
+> >
+> >         if (force)
+> > -               cpu = cpumask_first(&amask);
+> > +               cpumask_copy(&amask, mask_val);
+> >         else
+> > -               cpu = cpumask_any_and(&amask, cpu_online_mask);
+> > -
+> > -       if (cpu >= nr_cpu_ids)
+> > -               return -EINVAL;
+> > +               cpumask_and(&amask, &amask, cpu_online_mask);
+> >
+> >         plic_irq_toggle(&priv->lmask, d, 0);
+> > -       plic_irq_toggle(cpumask_of(cpu), d, 1);
+> > +       plic_irq_toggle(&amask, d, 1);
+> >
+> > -       irq_data_update_effective_affinity(d, cpumask_of(cpu));
+> > +       irq_data_update_effective_affinity(d, &amask);
+> >
+> >         return IRQ_SET_MASK_OK_DONE;
+> >  }
+> > --
+> > 2.26.1
+> >
 >
-> diff --git a/drivers/gpu/drm/radeon/atom.c b/drivers/gpu/drm/radeon/atom.c
-> index 2c27627b6659..f15b20da5315 100644
-> --- a/drivers/gpu/drm/radeon/atom.c
-> +++ b/drivers/gpu/drm/radeon/atom.c
-> @@ -1211,8 +1211,7 @@ static int atom_execute_table_locked(struct atom_context *ctx, int index, uint32
->   	SDEBUG("<<\n");
->   
->   free:
-> -	if (ws)
-> -		kfree(ectx.ws);
-> +	kfree(ectx.ws);
->   	return ret;
->   }
->   
+> I strongly oppose (NACK) this patch due to performance reasons.
+>
+> In PLIC, if we enable an IRQ X for N CPUs then when IRQ X occurs:
+> 1) All N CPUs will take interrupt
+> 2) All N CPUs will try to read PLIC CLAIM register
+> 3) Only one of the CPUs will see IRQ X using the CLAIM register
+> but other N - 1 CPUs will see no interrupt and return back to what
+> they were doing. In other words, N - 1 CPUs will just waste CPU
+> every time IRQ X occurs.
+>
+> Example1, one Application doing heavy network traffic will
+> degrade performance of other applications because with every
+> network RX/TX interrupt N-1 CPUs will waste CPU trying to
+> process network interrupt.
+>
+> Example1, one Application doing heavy MMC/SD traffic will
+> degrade performance of other applications because with every
+> SPI read/write interrupt N-1 CPUs will waste CPU trying to
+> process it.
+>
+> In fact, the current PLIC approach is actually a performance
+> optimization. This implementation also works fine with in-kernel
+> load-balancer and user space load balancer.
+>
 
+Yes, it's exactly, I know what you pointed out. But the idea of this
+patch is just providing a way that users could enable other cores if
+they wanted, it could still enable only one core by this change. The
+purpose here is thinking of flexible use, rather than limitation.
+Maybe it would be a happy medium that we make the default case enable
+only one core? It is a good open discussion.
+
+> Regards,
+> Anup
