@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E143C1B8BA0
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 05:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02051B8BB0
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 05:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726118AbgDZDYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 23:24:41 -0400
-Received: from smtpbguseast2.qq.com ([54.204.34.130]:44348 "EHLO
-        smtpbguseast2.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725943AbgDZDYl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 23:24:41 -0400
-X-QQ-mid: bizesmtp11t1587871473t879fh72
-Received: from wuxy.bitland.com.cn (unknown [103.100.115.75])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sun, 26 Apr 2020 11:24:12 +0800 (CST)
-X-QQ-SSF: 01400000002000Z0ZM30B00A0000000
-X-QQ-FEAT: STDtK/lFkpah7mmZ8kZTATOOmbwdzlpfhSmcEuCzt/BbX3eeyOMrgDyxhhU7n
-        gWY2i5mzls1hckLHM71jlLv6CniFhddgwh5D6xVYoJlBcJeKzWa58GhiqC7XIBf/LJtxBl1
-        yv61qHVM21FUNeWQHRxY8/TTz/brNpDbHV7GtxKNItzof5I7iJM0b1hMhPs2AV6FGHQrphK
-        cjFWcT5qBJFxgk3fXoM1Dei35q4SZ9vPPUFxhwOhxhC7eftus2RGkFBKYV84WbMtm5SXasg
-        dI1StDpyD2d268ONRPo8FJbbyZiPIXz20FR/x5q2veZlSLhghjYHKjsILDjTfj/kXQYtv4T
-        IUQyy0q
-X-QQ-GoodBg: 2
-From:   wuxy@bitland.com.cn
-To:     drinkcat@chromium.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     wuxy <wuxy@bitland.corp-partner.google.com>
-Subject: [PATCH] [v3]mtd: spi-nor: winbond: add 1.8v SPI NOR Flash IDs
-Date:   Sun, 26 Apr 2020 11:24:10 +0800
-Message-Id: <20200426032410.10425-1-wuxy@bitland.com.cn>
-X-Mailer: git-send-email 2.20.1
+        id S1726140AbgDZDjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 23:39:47 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:57196 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725945AbgDZDjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 23:39:47 -0400
+X-Greylist: delayed 1025 seconds by postgrey-1.27 at vger.kernel.org; Sat, 25 Apr 2020 23:39:46 EDT
+Received: from BJHW-Mail-Ex15.internal.baidu.com (unknown [10.127.64.38])
+        by Forcepoint Email with ESMTPS id B363084C3B2F5DB7D264;
+        Sun, 26 Apr 2020 11:24:13 +0800 (CST)
+Received: from BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) by
+ BJHW-Mail-Ex15.internal.baidu.com (10.127.64.38) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1713.5; Sun, 26 Apr 2020 11:24:13 +0800
+Received: from BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) by
+ BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) with mapi id
+ 15.01.1713.004; Sun, 26 Apr 2020 11:24:13 +0800
+From:   "Li,Rongqing" <lirongqing@baidu.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Borislav Petkov" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIFtSRkNdIGt2bTogeDg2OiBlbXVsYXRlIEFQRVJG?=
+ =?utf-8?Q?/MPERF_registers?=
+Thread-Topic: [PATCH] [RFC] kvm: x86: emulate APERF/MPERF registers
+Thread-Index: AQHWGh9bZdasuQhOo023NQfHi2P1S6iH0+aAgAAbkwCAAAF0AIACzsUw
+Date:   Sun, 26 Apr 2020 03:24:13 +0000
+Message-ID: <fd2a8092edf54a85979e5781dc354690@baidu.com>
+References: <1587704935-30960-1-git-send-email-lirongqing@baidu.com>
+ <20200424100143.GZ20730@hirez.programming.kicks-ass.net>
+ <20200424144625.GB30013@linux.intel.com>
+ <CALMp9eQtSrZMRQtxa_Z5WmjayWzJYhSrpNkQbqK5b7Ufxg-cMA@mail.gmail.com>
+ <ce51d5f9-aa7b-233b-883d-802d9b00e090@redhat.com>
+In-Reply-To: <ce51d5f9-aa7b-233b-883d-802d9b00e090@redhat.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.198.27]
+x-baidu-bdmsfe-datecheck: 1_BJHW-Mail-Ex15_2020-04-26 11:24:13:665
+x-baidu-bdmsfe-viruscheck: BJHW-Mail-Ex15_GRAY_Inside_WithoutAtta_2020-04-26
+ 11:24:13:634
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:bitland.com.cn:qybgforeign:qybgforeign7
-X-QQ-Bgrelay: 1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wuxy <wuxy@bitland.corp-partner.google.com>
-
-Winbond has new 1.8V SPI NOR Flash IDs,we need to use the SPI
-flash ID in kukui series,this patch can support the new flash IDs.
-This patch copied from:https://patchwork.ozlabs.org/patch/1150756/,
-The original patch is invalid,so re-submit a new patch for this.
-
-TEST=boot to shell,get the spi information from 'dmesg'.
-
-Signed-off-by: Xingyu Wu <wuxy@bitland.corp-partner.google.com>
----
- drivers/mtd/spi-nor/winbond.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-index 17deabad57e1..cda4f8847bd6 100644
---- a/drivers/mtd/spi-nor/winbond.c
-+++ b/drivers/mtd/spi-nor/winbond.c
-@@ -61,6 +61,15 @@ static const struct flash_info winbond_parts[] = {
- 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "w25m512jv", INFO(0xef7119, 0, 64 * 1024, 1024,
- 			    SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
-+	{ "w25q64jwxxIM", INFO(0xef8017, 0, 64 * 1024, 128,
-+			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+	{ "w25q128jwxxIM", INFO(0xef8018, 0, 64 * 1024, 256,
-+			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
-+	{ "w25q256jwxxIM", INFO(0xef8019, 0, 64 * 1024, 512,
-+			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
- };
- 
- /**
--- 
-2.20.1
-
-
-
+DQoNCj4gLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0KPiDlj5Hku7bkuro6IFBhb2xvIEJvbnppbmkg
+W21haWx0bzpwYm9uemluaUByZWRoYXQuY29tXQ0KPiDlj5HpgIHml7bpl7Q6IDIwMjDlubQ05pyI
+MjXml6UgMDozMA0KPiDmlLbku7bkuro6IEppbSBNYXR0c29uIDxqbWF0dHNvbkBnb29nbGUuY29t
+PjsgU2VhbiBDaHJpc3RvcGhlcnNvbg0KPiA8c2Vhbi5qLmNocmlzdG9waGVyc29uQGludGVsLmNv
+bT4NCj4g5oqE6YCBOiBQZXRlciBaaWpsc3RyYSA8cGV0ZXJ6QGluZnJhZGVhZC5vcmc+OyBMaSxS
+b25ncWluZw0KPiA8bGlyb25ncWluZ0BiYWlkdS5jb20+OyBMS01MIDxsaW51eC1rZXJuZWxAdmdl
+ci5rZXJuZWwub3JnPjsga3ZtIGxpc3QNCj4gPGt2bUB2Z2VyLmtlcm5lbC5vcmc+OyB0aGUgYXJj
+aC94ODYgbWFpbnRhaW5lcnMgPHg4NkBrZXJuZWwub3JnPjsgSCAuDQo+IFBldGVyIEFudmluIDxo
+cGFAenl0b3IuY29tPjsgQm9yaXNsYXYgUGV0a292IDxicEBhbGllbjguZGU+OyBJbmdvIE1vbG5h
+cg0KPiA8bWluZ29AcmVkaGF0LmNvbT47IFRob21hcyBHbGVpeG5lciA8dGdseEBsaW51dHJvbml4
+LmRlPjsgSm9lcmcgUm9lZGVsDQo+IDxqb3JvQDhieXRlcy5vcmc+OyBXYW5wZW5nIExpIDx3YW5w
+ZW5nbGlAdGVuY2VudC5jb20+OyBWaXRhbHkgS3V6bmV0c292DQo+IDx2a3V6bmV0c0ByZWRoYXQu
+Y29tPg0KPiDkuLvpopg6IFJlOiBbUEFUQ0hdIFtSRkNdIGt2bTogeDg2OiBlbXVsYXRlIEFQRVJG
+L01QRVJGIHJlZ2lzdGVycw0KPiANCj4gT24gMjQvMDQvMjAgMTg6MjUsIEppbSBNYXR0c29uIHdy
+b3RlOg0KPiA+PiBBc3N1bWluZyB3ZSdyZSBnb2luZyBmb3J3YXJkIHdpdGggdGhpcywgYXQgYW4g
+YWJzb2x1dGUgbWluaW11bSB0aGUNCj4gPj4gUkRNU1JzIG5lZWQgdG8gYmUgd3JhcHBlZCB3aXRo
+IGNoZWNrcyBvbiBob3N0IF9hbmRfIGd1ZXN0IHN1cHBvcnQgZm9yDQo+ID4+IHRoZSBlbXVsYXRl
+ZCBiZWhhdmlvci4gIEdpdmVuIHRoZSBzaWduaWZpY2FudCBvdmVyaGVhZCwgdGhpcyBtaWdodA0K
+PiA+PiBldmVuIGJlIHNvbWV0aGluZyB0aGF0IHNob3VsZCByZXF1aXJlIGFuIGV4dHJhIG9wdC1p
+biBmcm9tIHVzZXJzcGFjZSB0bw0KPiBlbmFibGUuDQo+ID4NCj4gPiBJIHdvdWxkIGxpa2UgdG8g
+c2VlIHBlcmZvcm1hbmNlIGRhdGEgYmVmb3JlIGVuYWJsaW5nIHRoaXMgdW5jb25kaXRpb25hbGx5
+Lg0KPiANCj4gSSB3b3VsZG4ndCB3YW50IHRoaXMgdG8gYmUgZW5hYmxlZCB1bmNvbmRpdGlvbmFs
+bHkgYW55d2F5LCBiZWNhdXNlIHlvdSBuZWVkIHRvDQo+IHRha2UgaW50byBhY2NvdW50IGxpdmUg
+bWlncmF0aW9uIHRvIGFuZCBmcm9tIHByb2Nlc3NvcnMgdGhhdCBkbyBub3QgaGF2ZQ0KPiBBUEVS
+Ri9NUEVSRiBzdXBwb3J0Lg0KPiANCj4gUGFvbG8NCg0KSSB3aWxsIGFkZCBhIGt2bSBwYXJhbWV0
+ZXIgdG8gY29uc2lkZXIgd2hldGhlciBlbmFibGUgTVBFUkYvQVBFUkYgZW11bGF0aW9ucywgYW5k
+IG1ha2UgZGVmYXVsdCB2YWx1ZSB0byBmYWxzZQ0KDQpUaGFua3MNCg0KLUxpDQoNCg==
