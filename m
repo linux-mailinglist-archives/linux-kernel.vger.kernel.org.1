@@ -2,125 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501541B9189
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBFA1B9198
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgDZQMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:12:03 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:46465 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726144AbgDZQMC (ORCPT
+        id S1726205AbgDZQRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 12:17:02 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:56580 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbgDZQRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:12:02 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id E5B8C5C00D3;
-        Sun, 26 Apr 2020 12:12:00 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 26 Apr 2020 12:12:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=DstDy5l5rdsJcISzdP+t1d2X6d
-        9z/JjBvqVJ7i0o2xw=; b=LWezrIImXKV5NwJ6YSYinDnl9kcK1aYg0DBdgxB3mN
-        PP9CMayJ6NF1TOgIdc0MW0n75595w3H91aK1sQygeodISKszD8lTD//r5UoyiozP
-        aVz84eTEMR+9aEMFPNoiJZdHaWatsJXS6GzEc9AJ6ASi/0bCiGM244fcV2RpqpSQ
-        0xSQWY264Oywd1iR1vQ/BoWUu/2L9ZM4ML67Wfrs+JpNnQV0UCUohczExLPQieoj
-        PPxYMKD+JRb8VkOZbxIhtbF9pU0MDK/adjBq9VA34dIhJFQzrUxcADWMnCi5i0Y/
-        K1P9f2k4Ve2YumQtWw7quQA4OrkPz8Zg4NX+zWqk1n5w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=DstDy5l5rdsJcISzd
-        P+t1d2X6d9z/JjBvqVJ7i0o2xw=; b=KZ6D79+YC8NS6f5MTQmDTWis+kzyY42Q9
-        /271i3tc3M+/XcvYGzVxSZ75kTKiDnRshnLRr3Tr4uNmreq8B4DMZgZJjNSXh4q9
-        tRHvm5/xNK7ipiFPKMxBxe8lr5d8Zi5v5Kl3ZZd5RSCJ9nSQIEswBao8ZlOQwQ4L
-        o9z1uCrxu89WmhwpxSWXij8fXMeGo7/GKhv6XoNKP3umXylybv85kDOj0TBrUrXb
-        0kWmKn0bGQPzKYzAQXiezJz3htZ1X0JE3G7lNqO79/TRBEcE0DIriC5Sv7kOXdYB
-        vBuIpcyH5Ry+NBxtYOY+Uqrhf3v9MhSqr7o+6IAMoSZDPIdzVfJCw==
-X-ME-Sender: <xms:zLKlXvGduu1BG4f0Y_p6zO24-N9Xaugjvwkmb0DkiUVMBXXGZIj-mw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrheejgdellecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
-    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecukfhppeejtd
-    drudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:zLKlXjnPZpJwS3sGVc6St_4U7QIo6lkTTlzyi5gRTyljjlaEaSDvuw>
-    <xmx:zLKlXl3whgDWeGBB9fIQWcpipHr8cuTPU47aDjOb6Uq89A_UJ9ZBqA>
-    <xmx:zLKlXpzFf1pQe2ouGRLgLarcesc0MLdNdL3bkRuEZYw0-usa-Ja56Q>
-    <xmx:0LKlXp362ElMk5nDw4AFv8e_1VLp3xq5rR1obrK3b-MedR9XLT7XyA>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 780AD3280060;
-        Sun, 26 Apr 2020 12:11:56 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v2] arm64: dts: allwinner: a64: Remove unused SPDIF sound card
-Date:   Sun, 26 Apr 2020 11:16:05 -0500
-Message-Id: <20200426161605.52121-1-samuel@sholland.org>
-X-Mailer: git-send-email 2.24.1
+        Sun, 26 Apr 2020 12:17:02 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 6771C2612F5
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        Sandy Huang <hjc@rock-chips.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [PATCH] drm/rockchip: cdn-dp-core: Make cdn_dp_core_suspend/resume static
+Date:   Sun, 26 Apr 2020 18:16:53 +0200
+Message-Id: <20200426161653.7710-1-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of v5.7-rc2, Linux now prints the following message at boot:
+This fixes the following warning detected when running make with W=1
 
-  [   33.848525] platform sound_spdif: deferred probe pending
+    drivers/gpu/drm/rockchip//cdn-dp-core.c:1112:5: warning: no previous
+    prototype for ‘cdn_dp_suspend’ [-Wmissing-prototypes]
 
-This is because sound_spdif is waiting on its CPU DAI &spdif to probe,
-but &spdif is disabled in the device tree.
+    drivers/gpu/drm/rockchip//cdn-dp-core.c:1126:5: warning: no previous
+    prototype for ‘cdn_dp_resume’ [-Wmissing-prototypes]
 
-Exposure of the SPDIF pin is board-specific functionality, so the sound
-card and codec DAI belong in the individual board DTS, not the SoC DTSI.
-In fact, no in-tree A64 board DTS enables &spdif, so let's remove the
-card and DAI entirely.
-
-This reverts commit 78e071370a86473f25923e03b51cbbadacf8be0f.
-
-Signed-off-by: Samuel Holland <samuel@sholland.org>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
 
-Changes since v1:
- - Remove the node instead of disabling it
- - Also remove the codec DAI
+ drivers/gpu/drm/rockchip/cdn-dp-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
----
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 18 ------------------
- 1 file changed, 18 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 31143fe64d91..c26cc1fcaffd 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -154,24 +154,6 @@ link_codec: simple-audio-card,codec {
- 		};
- 	};
+diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+index eed594bd38d3..4fa00af89cca 100644
+--- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
++++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+@@ -1109,7 +1109,7 @@ static const struct component_ops cdn_dp_component_ops = {
+ 	.unbind = cdn_dp_unbind,
+ };
  
--	sound_spdif {
--		compatible = "simple-audio-card";
--		simple-audio-card,name = "On-board SPDIF";
--
--		simple-audio-card,cpu {
--			sound-dai = <&spdif>;
--		};
--
--		simple-audio-card,codec {
--			sound-dai = <&spdif_out>;
--		};
--	};
--
--	spdif_out: spdif-out {
--		#sound-dai-cells = <0>;
--		compatible = "linux,spdif-dit";
--	};
--
- 	timer {
- 		compatible = "arm,armv8-timer";
- 		allwinner,erratum-unknown1;
+-int cdn_dp_suspend(struct device *dev)
++static int cdn_dp_suspend(struct device *dev)
+ {
+ 	struct cdn_dp_device *dp = dev_get_drvdata(dev);
+ 	int ret = 0;
+@@ -1123,7 +1123,7 @@ int cdn_dp_suspend(struct device *dev)
+ 	return ret;
+ }
+ 
+-int cdn_dp_resume(struct device *dev)
++static int cdn_dp_resume(struct device *dev)
+ {
+ 	struct cdn_dp_device *dp = dev_get_drvdata(dev);
+ 
 -- 
-2.24.1
+2.26.2
 
