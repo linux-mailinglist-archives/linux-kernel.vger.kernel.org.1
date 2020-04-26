@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2D71B91E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C951B920C
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgDZQ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:59:37 -0400
-Received: from gateway23.websitewelcome.com ([192.185.49.219]:26856 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726165AbgDZQ7h (ORCPT
+        id S1726228AbgDZRXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 13:23:13 -0400
+Received: from gateway24.websitewelcome.com ([192.185.50.66]:37279 "EHLO
+        gateway24.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726170AbgDZRXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:59:37 -0400
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id 80E6A3D56
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 11:59:36 -0500 (CDT)
+        Sun, 26 Apr 2020 13:23:13 -0400
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway24.websitewelcome.com (Postfix) with ESMTP id DD4D5360D51
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 11:59:41 -0500 (CDT)
 Received: from br164.hostgator.com.br ([192.185.176.180])
         by cmsmtp with SMTP
-        id Skcyj8pE18vkBSkcyjsxFt; Sun, 26 Apr 2020 11:59:36 -0500
+        id Skd3jpiKkEfyqSkd3jg0Ni; Sun, 26 Apr 2020 11:59:41 -0500
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=L9IFJwn+V53zeEbUx2QDuDodLJgNgaJjo+gyedcMwIk=; b=vfRw+43jptaURSLFe+ah82hW/S
-        C48fJGnAe5lkMiyqZ5UogmGn/nkoDwZpi1hPF65+Cv3/dO47WGyLvqwU1xdt4mpgLXGZbnZecPKPY
-        NCajx1rhsNSywhB+qz/EIj7eIyFPl84gb4nXMk2+KCraTNzpGD8fo8yda/03uKY4emC8CGCmw2kea
-        jhCx2FTSpKMq1cJqC0Df0xbGTkaNpLVxBxdgYypk+N7Jjnpw74Wtl0QG+VFBavHTdOibXmkO8ewbV
-        1poJiSahbyu7M17IdjBqc21f8UH15QJlsBZod5SpkR6PZcMPf9DXdX6GEwECKp3F6RmhYCW2nBGEK
-        8GaWp5tw==;
+        bh=iLUgErvb2iXZEJQC9A6HaOt6+FbaW5Lfu+lR1NB4Zrg=; b=eQkt2S1HSzplTsCrtBZNMqkCuC
+        twrzZlgfk0cPqKM1uNowWHwJaJ7PFXCgd1AhdvR9p6pJG17u2EGxZuZEaZ92JSnGVW/LfdtI0Zjbr
+        1sNwlji5CeNlErZBrPhN7e+IfvmO1z+I7AbPEaFy+9ASdCXCVtx/zwepWkUufnkRzVespgrqmnUUU
+        GxvKHPbfJ2ewlfl24Xc+za4b0/QVgi24Pje6zUfY2AAYz9w2iB3vsKTECx4lih1uk6vyh1eu8a/iD
+        Nud34aiFU+FH9D3u/au5gx93b8vQ41kpG1YmCfo7nOTca/5m70thZhb07bicF5tsG7tlFni0sJSLU
+        ixT17a0w==;
 Received: from [191.31.197.205] (port=35482 helo=castello.castello)
         by br164.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <matheus@castello.eng.br>)
-        id 1jSkcx-001TTf-St; Sun, 26 Apr 2020 13:59:36 -0300
+        id 1jSkd3-001TTf-5q; Sun, 26 Apr 2020 13:59:41 -0300
 From:   Matheus Castello <matheus@castello.eng.br>
 To:     afaerber@suse.de, manivannan.sadhasivam@linaro.org,
         mark.rutland@arm.com, robh+dt@kernel.org
 Cc:     edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org,
-        Matheus Castello <matheus@castello.eng.br>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 2/3] dt-bindings: arm: actions: Document Caninos Loucos Labrador
-Date:   Sun, 26 Apr 2020 13:58:34 -0300
-Message-Id: <20200426165835.105970-3-matheus@castello.eng.br>
+        Matheus Castello <matheus@castello.eng.br>
+Subject: [PATCH v4 3/3] ARM: dts: Add Caninos Loucos Labrador
+Date:   Sun, 26 Apr 2020 13:58:35 -0300
+Message-Id: <20200426165835.105970-4-matheus@castello.eng.br>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200426165835.105970-1-matheus@castello.eng.br>
 References: <f9e48fba-0da8-7ba9-d44a-7909067a1df1@castello.eng.br>
  <20200426165835.105970-1-matheus@castello.eng.br>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
 X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
@@ -61,13 +61,13 @@ X-AntiAbuse: Sender Address Domain - castello.eng.br
 X-BWhitelist: no
 X-Source-IP: 191.31.197.205
 X-Source-L: No
-X-Exim-ID: 1jSkcx-001TTf-St
+X-Exim-ID: 1jSkd3-001TTf-5q
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
 X-Source-Sender: (castello.castello) [191.31.197.205]:35482
 X-Source-Auth: matheus@castello.eng.br
-X-Email-Count: 40
+X-Email-Count: 51
 X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
 X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
@@ -75,38 +75,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the documentation to add the Caninos Loucos Labrador. Labrador
-project consists of a computer on module based on the Actions Semi S500
-processor and the Labrador base board.
+Add Device Trees for Caninos Loucos Labrador CoM and base board.
+Based on the work of Andreas Färber on Lemaker Guitar device tree.
 
 Signed-off-by: Matheus Castello <matheus@castello.eng.br>
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Andreas Färber <afaerber@suse.de>
 ---
- Documentation/devicetree/bindings/arm/actions.yaml | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/Makefile                    |  1 +
+ .../arm/boot/dts/owl-s500-labrador-base-m.dts | 34 +++++++++++++++++++
+ arch/arm/boot/dts/owl-s500-labrador-v2.dtsi   | 22 ++++++++++++
+ 3 files changed, 57 insertions(+)
+ create mode 100644 arch/arm/boot/dts/owl-s500-labrador-base-m.dts
+ create mode 100644 arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
 
-diff --git a/Documentation/devicetree/bindings/arm/actions.yaml b/Documentation/devicetree/bindings/arm/actions.yaml
-index ace3fdaa8396..50dd976128dc 100644
---- a/Documentation/devicetree/bindings/arm/actions.yaml
-+++ b/Documentation/devicetree/bindings/arm/actions.yaml
-@@ -21,9 +21,14 @@ properties:
-           - const: actions,s500
-       - items:
-           - enum:
--              - lemaker,guitar-bb-rev-b # LeMaker Guitar Base Board rev. B
--          - const: lemaker,guitar
--          - const: actions,s500
-+	      - caninos,labrador-v2 # Labrador Core v2
-+	      - caninos,labrador-base-m # Labrador Base Board M v1
-+	  - const: actions,s500
-+      - items:
-+          - enum:
-+	      - lemaker,guitar-bb-rev-b # LeMaker Guitar Base Board rev. B
-+	  - const: lemaker,guitar
-+	  - const: actions,s500
-
-       # The Actions Semi S700 is a quad-core ARM Cortex-A53 SoC.
-       - items:
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index e8dd99201397..02a619d7bf2e 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -856,6 +856,7 @@ dtb-$(CONFIG_ARCH_ORION5X) += \
+ dtb-$(CONFIG_ARCH_ACTIONS) += \
+ 	owl-s500-cubieboard6.dtb \
+ 	owl-s500-guitar-bb-rev-b.dtb \
++	owl-s500-labrador-base-m.dtb \
+ 	owl-s500-sparky.dtb
+ dtb-$(CONFIG_ARCH_PRIMA2) += \
+ 	prima2-evb.dtb
+diff --git a/arch/arm/boot/dts/owl-s500-labrador-base-m.dts b/arch/arm/boot/dts/owl-s500-labrador-base-m.dts
+new file mode 100644
+index 000000000000..044568fec25e
+--- /dev/null
++++ b/arch/arm/boot/dts/owl-s500-labrador-base-m.dts
+@@ -0,0 +1,34 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Caninos Labrador Base Board
++ *
++ * Copyright (c) 2019-2020 Matheus Castello
++ */
++
++/dts-v1/;
++
++#include "owl-s500-labrador-v2.dtsi"
++
++/ {
++	model = "Caninos Labrador Base-M v1.0a";
++	compatible = "caninos,labrador-base-m", "actions,s500";
++
++	aliases {
++		serial3 = &uart3;
++	};
++
++	chosen {
++		stdout-path = "serial3:115200n8";
++	};
++
++	uart3_clk: uart3-clk {
++		compatible = "fixed-clock";
++		clock-frequency = <921600>;
++		#clock-cells = <0>;
++	};
++};
++
++&uart3 {
++	status = "okay";
++	clocks = <&uart3_clk>;
++};
+diff --git a/arch/arm/boot/dts/owl-s500-labrador-v2.dtsi b/arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
+new file mode 100644
+index 000000000000..f31def6b248a
+--- /dev/null
++++ b/arch/arm/boot/dts/owl-s500-labrador-v2.dtsi
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Caninos Labrador SoM V2
++ *
++ * Copyright (c) 2019-2020 Matheus Castello
++ */
++
++#include "owl-s500.dtsi"
++
++/ {
++	model = "Caninos Labrador Core V2.1";
++	compatible = "caninos,labrador-v2", "actions,s500";
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x80000000>;
++	};
++};
++
++&timer {
++	clocks = <&hosc>;
++};
 --
 2.25.0
 
