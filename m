@@ -2,82 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766741B8B69
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 04:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5641F1B8AD9
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 03:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgDZCo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 22:44:27 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:55099 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726090AbgDZCo1 (ORCPT
+        id S1726107AbgDZBfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 21:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725931AbgDZBff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 22:44:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587869066;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc; bh=1Ub4TaEIWvv6mJMAJ2ByKOCxG8YxO9jAjPb0FtOrhMs=;
-        b=g6IGecxCYpkXIHZAg8BFD1iQnpvD0IOoFUGcyq/m4uNcVKV8DWOvDHOFij85d61rnF5MiJ
-        DhwpHTzG3TELwtq7WAnieTOT1W1EcA6kLFogklsqW6KUe1CEtkAP5A5dSO4eemORdrULHC
-        ffhLJIBDXAuzC+mRPXvJUG4j74mTnkY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-182-JmJPCGJcPJ6S6CMuOoqBaA-1; Sat, 25 Apr 2020 22:44:21 -0400
-X-MC-Unique: JmJPCGJcPJ6S6CMuOoqBaA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E3EB80058E;
-        Sun, 26 Apr 2020 02:44:19 +0000 (UTC)
-Received: from localhost (ovpn-112-86.rdu2.redhat.com [10.10.112.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B01460CD3;
-        Sun, 26 Apr 2020 02:44:17 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.9.220-rt143
-Date:   Sun, 26 Apr 2020 01:32:28 -0000
-Message-ID: <158786474898.68412.14269797135440024836@theseus.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        Sat, 25 Apr 2020 21:35:35 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A203C061A0C
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 18:35:35 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 188so15598620wmc.2
+        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 18:35:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zMJDJfeA5eXVGIqjbISZ5/ttz+CXriZ4CrIpCaO+pAs=;
+        b=geKeVi1ESc3wgnvG5vOZQFy9X/ZWBsQpQi1t9jZr9fa0vHFfkz6AWIrjqd3uLqmbxs
+         RhWMBBY26+jaaOpEjXO3cVWxGnX/o0uJ6ZHIw8Mw5eiolk6OkaHJ8t4oFj3K/jiJdgc3
+         fEnHYvia3Bqhj/CuJIFSJGRjwD5vtyAXP/MdZZzWVo7U3/UNXPwgTeviTxr3MUPzMTBy
+         yMj36e94EeDUQg3heg7Ms4UM0bMhIiMBYV0opZFSeCYApmTPmCy0w82bwyPwmZwHoBoV
+         5ImB4NvrgtxXbN36xhVEE8haLDx4SfgRIaMa9eFRAbiohkkG0IcPP1ZUhfIlNBuy4yPF
+         n10g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zMJDJfeA5eXVGIqjbISZ5/ttz+CXriZ4CrIpCaO+pAs=;
+        b=r80njAac7MTeIlHc51nLzHRd0hBr3YB6PhxjZUOnRg02B664mjYtBXC5u4cblSYaiu
+         TlmvEluERgxyzQXBvCog2OZtuE4hlfJ5Lj3RHJ9tZcKWX7Uwr4UBEkJC9wDejB7u04vH
+         prw6TisXfDOjaK+Q2Vh2TNNqLkoJW9yslZJZBH/LJMipqcaBIOwFu6ELV26FMpHqAuUu
+         pnAq1IUdTg4tyxv2mj0msrxr1eVjssekZIUZcqEipLGlnzj9Ay1/sDm1oTohmJt6yOG5
+         jATu8dKjN5UA4wIXPq8DCydGrFpGJ2VwdX3vvAcFNGzdOwXt1Ew6PTJqO6ttOe6A8r7d
+         5nnw==
+X-Gm-Message-State: AGi0Puafj5VTpQ7XC9NkGsOcjjAwDlGNTsSMqbmJDGyZiNwXzyE+GQPg
+        r8PXOl6kQp/B6FDqVOT9vBfVKnBE/+p0eQ==
+X-Google-Smtp-Source: APiQypJE7SFdAWoHbLgBRL511YDWby4053psGjZArCo2Zm03OZhAKVCRp5Bv1FwWzBHL5Am8ZDx6XA==
+X-Received: by 2002:a05:600c:441a:: with SMTP id u26mr19757889wmn.154.1587864933945;
+        Sat, 25 Apr 2020 18:35:33 -0700 (PDT)
+Received: from localhost.localdomain ([89.208.134.182])
+        by smtp.gmail.com with ESMTPSA id e13sm5482885wrp.15.2020.04.25.18.35.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Apr 2020 18:35:33 -0700 (PDT)
+From:   Leonid Bloch <lb.workbox@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     John Stultz <john.stultz@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Stephen Boyd <sboyd@kernel.org>,
+        Leonid Bloch <lb.workbox@gmail.com>
+Subject: [PATCH] rtc: Do not sync CMOS clock when CONFIG_RTC_SYSTOHC is not set
+Date:   Sun, 26 Apr 2020 04:35:21 +0300
+Message-Id: <20200426013521.43087-1-lb.workbox@gmail.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+According to documentation in 'drivers/rtc/Kconfig', if
+'CONFIG_RTC_SYSTOHC' is set, then:
 
-I'm pleased to announce the 4.9.220-rt143 stable release.
+'''
+The system time (wall clock) will be stored in the RTC specified by
+RTC_HCTOSYS_DEVICE approximately every 11 minutes if userspace reports
+synchronized NTP status.
+'''
 
-Note that 4.9 is in maintenance mode and so has only had the stable update
-applied. No bugfixes or changes to the actual RT patchset.
+However in reality, even if 'CONFIG_RTC_SYSTOHC' is not set, the RTC
+is still sometimes synced with the system time: at least when the RTC
+driver is 'rtc_cmos', in certain situations. This commit prevents that.
 
-You can get this release via the git tree at:
+Signed-off-by: Leonid Bloch <lb.workbox@gmail.com>
+---
+ kernel/time/ntp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.9-rt
-  Head SHA1: fa4709dd0976bb6d19337941f9b0a087bc454fc6
-
-Or to build 4.9.220-rt143 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.9.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.9.220.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/patch-4.9.220-rt143.patch.xz
-
-
-You can also build from 4.9.219-rt142 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.9/incr/patch-4.9.219-rt142-rt143.patch.xz
-
-Enjoy!
-Clark
+diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+index 069ca78fb0bf..58260ca75c64 100644
+--- a/kernel/time/ntp.c
++++ b/kernel/time/ntp.c
+@@ -535,9 +535,6 @@ static void sync_rtc_clock(void)
+ 	struct timespec64 adjust, now;
+ 	int rc;
+ 
+-	if (!IS_ENABLED(CONFIG_RTC_SYSTOHC))
+-		return;
+-
+ 	ktime_get_real_ts64(&now);
+ 
+ 	adjust = now;
+@@ -613,6 +610,9 @@ static bool sync_cmos_clock(void)
+  */
+ static void sync_hw_clock(struct work_struct *work)
+ {
++	if (!IS_ENABLED(CONFIG_RTC_SYSTOHC))
++		return;
++
+ 	if (!ntp_synced())
+ 		return;
+ 
+-- 
+2.26.2
 
