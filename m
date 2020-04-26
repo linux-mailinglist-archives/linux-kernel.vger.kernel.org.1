@@ -2,141 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588721B90B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 15:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20241B90B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 15:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726163AbgDZNnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 09:43:18 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:53208 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgDZNnP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 09:43:15 -0400
-Received: by mail-il1-f197.google.com with SMTP id l9so8226956ili.19
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 06:43:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rlJAfwbPqtPWQJVZIPkomN7KJEtdzrl3Ui0y/x3Z8hs=;
-        b=KI4pz7ISn0D9f4RwP5wegczAcY30Uhbr8UHy+0LNrb3h0O64/3O9waNfkjOqyKQrNb
-         cnkpMJVf3O6NPfhH+sz6QhK3WJv6VcKMwtNE/59SCN8UlQiPiL44Qrj2tRns4QeIX3EZ
-         tbIjoxHunEFOiYRo6LkXfcDT85W+kFHJmkYzzYAKF0t46jj0e3ARLhclGNbMr3gD91TW
-         uQW9UFXoUpiWK12iNr6az7pFN5LlyDWC7BWQjfhBaSEQPWO1xMNkcCn6MIYq2yNtDhWp
-         9FJCN7sh08JRXbgFLZBgTyAzMFVPm7jfqBKSNdFNvYwOuME7yDl36NI0bHTaLRRHWTw7
-         aLRA==
-X-Gm-Message-State: AGi0PuZzfflY3YKT3MPiigNkX2aLErDLTnFKU3RChRH+8gS/0vccroVS
-        OtsKLHDSzrFv2e7yoFKHHmJ71MSt0QWC92AOwSPB31cdbPsA
-X-Google-Smtp-Source: APiQypKxs5VGnvM1qXq+lYJKi9Um6WY+7O0zommb3ly8Y5J38otFgmbS3FSL4vxdihxPch6+sK5nNtt+xHbSN3izMbjCgJLBOJWR
+        id S1726202AbgDZNqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 09:46:55 -0400
+Received: from elvis.franken.de ([193.175.24.41]:55778 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgDZNqy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 09:46:54 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jShcS-0000jA-01; Sun, 26 Apr 2020 15:46:52 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id E22A5C0301; Sun, 26 Apr 2020 15:45:31 +0200 (CEST)
+Date:   Sun, 26 Apr 2020 15:45:31 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH] MIPS: Loongson: Add support for perf tool
+Message-ID: <20200426134531.GB8299@alpha.franken.de>
+References: <1587893445-9656-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-X-Received: by 2002:a02:9642:: with SMTP id c60mr16053970jai.87.1587908593710;
- Sun, 26 Apr 2020 06:43:13 -0700 (PDT)
-Date:   Sun, 26 Apr 2020 06:43:13 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aa012505a431c7d9@google.com>
-Subject: WARNING in ib_unregister_device_queued
-From:   syzbot <syzbot+4088ed905e4ae2b0e13b@syzkaller.appspotmail.com>
-To:     dledford@redhat.com, jgg@ziepe.ca, kamalheib1@gmail.com,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        parav@mellanox.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587893445-9656-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Apr 26, 2020 at 05:30:45PM +0800, Tiezhu Yang wrote:
+> In order to use perf tool on the Loongson platform, we should enable kernel
+> support for various performance events provided by software and hardware,
+> so add CONFIG_PERF_EVENTS=y to loongson3_defconfig.
+> 
+> E.g. without this patch:
+> 
+> [loongson@localhost perf]$ ./perf list
+> 
+> List of pre-defined events (to be used in -e):
+> 
+>   duration_time                                      [Tool event]
+> 
+>   rNNN                                               [Raw hardware event descriptor]
+>   cpu/t1=v1[,t2=v2,t3 ...]/modifier                  [Raw hardware event descriptor]
+>    (see 'man perf-list' on how to encode it)
+> 
+>   mem:<addr>[/len][:access]                          [Hardware breakpoint]
+> 
+> With this patch:
+> 
+> [loongson@localhost perf]$ ./perf list
+> 
+> List of pre-defined events (to be used in -e):
+> 
+>   branch-instructions OR branches                    [Hardware event]
+>   branch-misses                                      [Hardware event]
+>   cpu-cycles OR cycles                               [Hardware event]
+>   instructions                                       [Hardware event]
+> 
+>   alignment-faults                                   [Software event]
+>   bpf-output                                         [Software event]
+>   context-switches OR cs                             [Software event]
+>   cpu-clock                                          [Software event]
+>   cpu-migrations OR migrations                       [Software event]
+>   dummy                                              [Software event]
+>   emulation-faults                                   [Software event]
+>   major-faults                                       [Software event]
+>   minor-faults                                       [Software event]
+>   page-faults OR faults                              [Software event]
+>   task-clock                                         [Software event]
+> 
+>   duration_time                                      [Tool event]
+> 
+>   L1-dcache-load-misses                              [Hardware cache event]
+>   L1-dcache-store-misses                             [Hardware cache event]
+>   L1-icache-load-misses                              [Hardware cache event]
+>   branch-load-misses                                 [Hardware cache event]
+>   branch-loads                                       [Hardware cache event]
+>   dTLB-load-misses                                   [Hardware cache event]
+>   dTLB-store-misses                                  [Hardware cache event]
+>   iTLB-load-misses                                   [Hardware cache event]
+> 
+>   rNNN                                               [Raw hardware event descriptor]
+>   cpu/t1=v1[,t2=v2,t3 ...]/modifier                  [Raw hardware event descriptor]
+>    (see 'man perf-list' on how to encode it)
+> 
+>   mem:<addr>[/len][:access]                          [Hardware breakpoint]
+> 
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/configs/loongson3_defconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-syzbot found the following crash on:
+applied to mips-next.
 
-HEAD commit:    b9663b7c net: stmmac: Enable SERDES power up/down sequence
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=166bf717e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5d351a1019ed81a2
-dashboard link: https://syzkaller.appspot.com/bug?extid=4088ed905e4ae2b0e13b
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+Thomas.
 
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+4088ed905e4ae2b0e13b@syzkaller.appspotmail.com
-
-rdma_rxe: ignoring netdev event = 10 for netdevsim0
-infiniband  yz2: set down
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 22753 at drivers/infiniband/core/device.c:1565 ib_unregister_device_queued+0x122/0x160 drivers/infiniband/core/device.c:1565
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 22753 Comm: syz-executor.5 Not tainted 5.7.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:221
- __warn.cold+0x2f/0x35 kernel/panic.c:582
- report_bug+0x27b/0x2f0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:175 [inline]
- fixup_bug arch/x86/kernel/traps.c:170 [inline]
- do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
- do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:ib_unregister_device_queued+0x122/0x160 drivers/infiniband/core/device.c:1565
-Code: fb e8 72 e2 d4 fb 48 89 ef e8 2a c3 c1 fe 48 83 c4 08 5b 5d e9 5f e2 d4 fb e8 5a e2 d4 fb 0f 0b e9 46 ff ff ff e8 4e e2 d4 fb <0f> 0b e9 6f ff ff ff 48 89 ef e8 2f a9 12 fc e9 16 ff ff ff 48 c7
-RSP: 0018:ffffc900072ef290 EFLAGS: 00010246
-RAX: 0000000000040000 RBX: ffff8880a6a24000 RCX: ffffc90013201000
-RDX: 0000000000040000 RSI: ffffffff859e51b2 RDI: ffff8880a6a24310
-RBP: 0000000000000019 R08: ffff88808d21c280 R09: ffffed1014d449bb
-R10: ffff8880a6a24dd3 R11: ffffed1014d449ba R12: 0000000000000006
-R13: ffff88805988c000 R14: 0000000000000000 R15: ffffffff8a44f8c0
- rxe_notify+0x77/0xd0 drivers/infiniband/sw/rxe/rxe_net.c:605
- notifier_call_chain+0xc0/0x230 kernel/notifier.c:83
- call_netdevice_notifiers_info net/core/dev.c:1948 [inline]
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1933
- call_netdevice_notifiers_extack net/core/dev.c:1960 [inline]
- call_netdevice_notifiers net/core/dev.c:1974 [inline]
- rollback_registered_many+0x75c/0xe70 net/core/dev.c:8828
- rollback_registered+0xf2/0x1c0 net/core/dev.c:8873
- unregister_netdevice_queue net/core/dev.c:9969 [inline]
- unregister_netdevice_queue+0x1d7/0x2b0 net/core/dev.c:9962
- unregister_netdevice include/linux/netdevice.h:2725 [inline]
- nsim_destroy+0x35/0x60 drivers/net/netdevsim/netdev.c:330
- __nsim_dev_port_del+0x144/0x1e0 drivers/net/netdevsim/dev.c:934
- nsim_dev_port_del_all+0x86/0xe0 drivers/net/netdevsim/dev.c:947
- nsim_dev_reload_destroy+0x77/0x110 drivers/net/netdevsim/dev.c:1123
- nsim_dev_reload_down+0x6e/0xd0 drivers/net/netdevsim/dev.c:703
- devlink_reload+0xbd/0x3b0 net/core/devlink.c:2797
- devlink_nl_cmd_reload+0x2f7/0x7c0 net/core/devlink.c:2832
- genl_family_rcv_msg_doit net/netlink/genetlink.c:673 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:718 [inline]
- genl_rcv_msg+0x627/0xdf0 net/netlink/genetlink.c:735
- netlink_rcv_skb+0x15a/0x410 net/netlink/af_netlink.c:2469
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:746
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x537/0x740 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x882/0xe10 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6bf/0x7e0 net/socket.c:2362
- ___sys_sendmsg+0x100/0x170 net/socket.c:2416
- __sys_sendmsg+0xec/0x1b0 net/socket.c:2449
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45c829
-Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f6fae1cac78 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004fcc00 RCX: 000000000045c829
-RDX: 0000000000000000 RSI: 0000000020000800 RDI: 0000000000000006
-RBP: 000000000078c040 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 0000000000000905 R14: 00000000004cbaab R15: 00007f6fae1cb6d4
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
