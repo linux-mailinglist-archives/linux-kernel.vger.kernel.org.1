@@ -2,124 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058621B8AFC
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 04:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B505C1B8B0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 04:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726146AbgDZCK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 22:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726101AbgDZCKz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 22:10:55 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0623EC061A0C;
-        Sat, 25 Apr 2020 19:10:55 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id f18so13900445lja.13;
-        Sat, 25 Apr 2020 19:10:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ejX76MV7B/vpfNwLttmX8i7aY8yYW3D6qvt0Zq0zF9A=;
-        b=Pert3oBZT9bm9OSxFoG7i/qdZCiH84yrHo+9RFNoMWF/ct15BLCeAyOZBW6VSCIzl5
-         8AMWA4xmw+OCHTNaroP/Ne82MMzXDsBWKd3xIkwiWZ7P3cgLCLidgLVTv+oNdLJLbwM2
-         zZcWvDfeOm11Rc2tQ57hYvT2WPHNbl9Xok/Tvl5Jql0UxSHRNhOjkqjM0/MA+bXTFcdq
-         yhEXqaTXkHoSIiTmqoEjGVFfgkhFfZyzm5hC5aB9zBchuIjP6iaw9An+xxBVweaU0gOJ
-         pDjVipSR+QtO+x5G3cIzejlr0J9mAguQWQPcVHEjU7RER9QJoDZjTtwmb8CpM0OvmqTD
-         Bxtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ejX76MV7B/vpfNwLttmX8i7aY8yYW3D6qvt0Zq0zF9A=;
-        b=tQrOa8iNRZjUlhqECUkxR3LuwHShPVWou5+0XgGV0hsSHCQAJ54036dUk+WxLvXFyB
-         t5doC44VgDalnrv0HaI8LXSBewkl89hO4wmjUrXg7X4QXTzsM/1jK3PfCG8AP8GMhpp1
-         LJuKeaxAGcHPJBKxPkwM/axzyCjy9btA5VQevHvAINv/41Wg3sKGl6sqcylB94k8LM8x
-         Bj3f6XrxQaFy2mJPomkfqun5I+vZmdEkWqBtRoiAx/UwStn7dWHWs4WBvDrh6gg9kQmk
-         Vh/C60/siwMxpY4Gm4daKZ07XEr84hmyWES5gr+1KsK8UQuB3T9rJ39lJ37YrKGmq5QO
-         6tAg==
-X-Gm-Message-State: AGi0Pub3zKEH/68S49SsYYMOXFblh0moGbZsCp988jkKUJ1H6/6rNzoZ
-        /GLCulEkuhfDcq++4GcEM6x93BI4
-X-Google-Smtp-Source: APiQypJEikJi85v3up0OBfbJN/g72TVEOllWbTiHmbtrrvjCqQd0C92gwdppBPO/ZEhkF8wo8AhBrA==
-X-Received: by 2002:a2e:8056:: with SMTP id p22mr10465457ljg.266.1587867053161;
-        Sat, 25 Apr 2020 19:10:53 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id b73sm8110124lfg.86.2020.04.25.19.10.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Apr 2020 19:10:52 -0700 (PDT)
-Subject: Re: [RFC PATCH v10 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, frankc@nvidia.com, sakari.ailus@iki.fi,
-        helen.koike@collabora.com
-Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1587700513-28449-1-git-send-email-skomatineni@nvidia.com>
- <1587700513-28449-7-git-send-email-skomatineni@nvidia.com>
- <6ca93ff9-ca59-544f-767c-4355d01a5c20@gmail.com>
- <62546d1f-eca5-06be-2bc2-e45ccd53830a@xs4all.nl>
- <50fd1016-ca8b-ec5d-e5a8-f257138b152e@gmail.com>
- <658c4232-94d9-3051-8c93-bff7046cf5f2@nvidia.com>
- <03426915-25ea-69b4-bc64-f87f3046d33f@nvidia.com>
- <aabaecc4-3494-0137-7d2b-853304bfa68b@gmail.com>
- <09f20441-fec6-7496-2edc-c69db535e441@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <61799fab-858c-8b0d-ba7d-846cd041e044@gmail.com>
-Date:   Sun, 26 Apr 2020 05:10:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726132AbgDZCPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 22:15:10 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:2901 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726092AbgDZCPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 22:15:10 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 235A67A0F8A595E4D0E7;
+        Sun, 26 Apr 2020 10:15:07 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Sun, 26 Apr 2020 10:14:59 +0800
+From:   Huazhong Tan <tanhuazhong@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>, <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>
+Subject: [PATCH V2 net-next 0/9] net: hns3: refactor for MAC table
+Date:   Sun, 26 Apr 2020 10:13:39 +0800
+Message-ID: <1587867228-9955-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <09f20441-fec6-7496-2edc-c69db535e441@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-26.04.2020 04:43, Sowjanya Komatineni пишет:
-...
->> It looks to me that at least all those hardcoded HW format IDs do not
->> match the older SoCs.
-> 
-> TPG hard coded formats are supported on prior Tegra.
-> 
-> Other supported formats are SoC dependent and  part of soc data in the
-> driver already.
+This patchset refactors the MAC table management, configure
+the MAC address asynchronously, instead of synchronously.
+Base on this change, it also refines the handle of promisc
+mode and filter table entries restoring after reset.
 
-But I don't see where that SoC-dependent definition is made in
-terga210.c. That tegra_image_format enum looks T210-specific, isn't it?
+change logs:
+V2: add patch #9 to remove an unnecessary NULL check suggested
+    by Jakub Kicinski.
 
-...
->> The driver will need to have a bit better separation if it's supposed to
->> have a common core for all SoCs. Each incompatible VI/CSI hardware
->> version should have its own kernel module.
-> 
-> currently other Tegra host1x driver (drm) also does similar. Single
-> module for all Tegra SoCs.
+Huazhong Tan (1):
+  net: hns3: remove an unnecessary check in hclge_set_umv_space()
 
-DRM driver has a proper separation of the sub-drivers where sub-driver
-won't load on unsupported hardware. The tegra-video driver should do the
-same, i.e. VI and CSI should be individual drivers (and not OPS). There
-could be a some common core, but for now it's not obvious to me what
-that core should be, maybe just the video.c.
+Jian Shen (8):
+  net: hns3: refine for unicast MAC VLAN space management
+  net: hns3: remove unnecessary parameter 'is_alloc' in
+    hclge_set_umv_space()
+  net: hns3: replace num_req_vfs with num_alloc_vport in
+    hclge_reset_umv_space()
+  net: hns3: refactor the MAC address configure
+  net: hns3: add support for dumping UC and MC MAC list
+  net: hns3: refactor the promisc mode setting
+  net: hns3: use mutex vport_lock instead of mutex umv_lock
+  net: hns3: optimize the filter table entries handling when resetting
 
-> With current tegra-video, all the v4l2 related common part of
-> implementation is same for all tegra's and only
-> tegra210.c/tegra186.c/tegra194.c will have corresponding tegra soc
-> specific vi/csi programming sequence.
+ drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h    |   5 +
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |   8 +-
+ drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c |   2 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 152 +---
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  10 +-
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |   2 +-
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c |  51 ++
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 868 ++++++++++++++++-----
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.h    |  33 +-
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c |  70 +-
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  | 368 ++++++++-
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h  |  26 +
+ 12 files changed, 1166 insertions(+), 429 deletions(-)
 
-This code shouldn't be shared within the same driver module, IMO.
+-- 
+2.7.4
 
-
->> The tegra-video should be okay, although the "video" part sounds a bit
->> too broad since video could mean a lot of things. I think downstream
->> kernel uses (or at least used) the tegra-camera name for the driver,
->> perhaps it could be a reasonable variant as well.
-> prior feedback suggests not to use camera variant instead to use video
-
-Alright, then the tegra-video should be fine.
