@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBB51B91A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD771B91AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbgDZQTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:19:47 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:45163 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726146AbgDZQTr (ORCPT
+        id S1726184AbgDZQYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 12:24:17 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:58234 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726146AbgDZQYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:19:47 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id D631D5C0108;
-        Sun, 26 Apr 2020 12:19:45 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 26 Apr 2020 12:19:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=08cZaxzjUx3KWTJnjYaSKDI0WL
-        CA0zQwamq6nPQn4BA=; b=G5828/aF5IPOjVpUeSAGbVkj4QRJ+CtHAvLIfPzpjg
-        lAcySDrltHxO0N5lb8l5+KfRbuR6yNSgkzk08vEWO837mfX3VTdAz9VNvQq6B1Aw
-        93ny0TcXtt6uCF5qNiOcHtWjlgtbKg8o7sTAWTGVUoAzChIMbnEBBuIagd/d2xXa
-        VCtRgMl+VYtFpLTj827TQMKA3N87R4wkZMTIXeBgdcwN4wxC4quPDyyb+J6BglSG
-        zLG/vUBBK1vI+yXKcsI2SoDi6Heo+TJDSVhstvlqkRhwI5QUGl9QYYx7U/0k1kFR
-        aDNoQyDibvY2/uedftS8MD7sRMM+B3jzWkQpjGPdsdJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=08cZaxzjUx3KWTJnj
-        YaSKDI0WLCA0zQwamq6nPQn4BA=; b=tNRnK53VNLGw1CRlP9uKY7OXsv4PXryXp
-        YieyKzdUsb6lNWglKdmtV/ZDOAeFq5TfQEJ6oyNFj9ulW/kXLxUKeMS6fcFrgxX1
-        LhRc3GV/Waam5R6CF2H5DFSzvezsKeqgxOMhmxgn4NN6sW6/+hmt0UWCKg3xSZfw
-        S0w1GAkNfFNlMNRT7nRQfvqg0dwRTs6j0NyMqnEEWDo/70rAiXxbwHk3Me4sduvB
-        iB+V94FaPfRK12ruN1twyFH80PjKTSslwON0HoiihB5pIGQEwzblRLx8MV9duWeD
-        /grhp2vcyQEBrn0KyHKOmzteCaDG46DyTpGyQZB45zVDVfUdX8ecg==
-X-ME-Sender: <xms:obSlXvjnBYbqsqY9ls8Hy7CgGy4hUMo9R1flmMw4C6PY6OzNkn7NSQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrheejgddutdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
-    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucfkphepje
-    dtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
-    pehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
-X-ME-Proxy: <xmx:obSlXtSw5sIBQEpiw6MCyCVcEwm9RUMU6ThAQuPdT9AaBGIToDPp2w>
-    <xmx:obSlXnjGT50zvjz0lQLb5mWwYAIYZu_Y7qhkRF4UN_VXdDblDe7Kcg>
-    <xmx:obSlXidiWACOzH8ALbl9iQj3LWrOm5VIXja5xhqtM2GcJZttF9zCkg>
-    <xmx:obSlXmu3bo8bFGj6rfG5qVHSTMis9A5myyopj7ljTKrREGOfwkemYg>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0EF183280060;
-        Sun, 26 Apr 2020 12:19:45 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH] arm64: dts: allwinner: a64: pinetab: Fix cpvdd supply name
-Date:   Sun, 26 Apr 2020 11:23:53 -0500
-Message-Id: <20200426162353.52465-1-samuel@sholland.org>
-X-Mailer: git-send-email 2.24.1
+        Sun, 26 Apr 2020 12:24:17 -0400
+Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 5c6f423f88d0ad3c; Sun, 26 Apr 2020 18:24:14 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     decui@microsoft.com
+Cc:     linux-pm@vger.kernel.org, len.brown@intel.com, pavel@ucw.cz,
+        bvanassche@acm.org, mikelley@microsoft.com, longli@microsoft.com,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        wei.liu@kernel.org, sthemmin@microsoft.com, haiyangz@microsoft.com,
+        kys@microsoft.com, stable@vger.kernel.org
+Subject: Re: [PATCH] PM: hibernate: Freeze kernel threads in software_resume()
+Date:   Sun, 26 Apr 2020 18:24:14 +0200
+Message-ID: <2420808.aENraY2TMt@kreacher>
+In-Reply-To: <20200424034016.42046-1-decui@microsoft.com>
+References: <20200424034016.42046-1-decui@microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An older version of the analog codec binding referenced the headphone
-amplifier binding as "hpvcc". However, by the time it was merged in
-commit 21dd30200e3d ("ASoC: dt-bindings: sun50i-codec-analog: Add
-headphone amp regulator supply"), the regulator reference was renamed to
-"cpvdd". This board's device tree still uses the old name, which fails
-to work at runtime, and which causes a warning from `make dtbs_check`.
-Resolve both by fixing the name.
+On Friday, April 24, 2020 5:40:16 AM CEST Dexuan Cui wrote:
+> Currently the kernel threads are not frozen in software_resume(), so
+> between dpm_suspend_start(PMSG_QUIESCE) and resume_target_kernel(),
+> system_freezable_power_efficient_wq can still try to submit SCSI
+> commands and this can cause a panic since the low level SCSI driver
+> (e.g. hv_storvsc) has quiesced the SCSI adapter and can not accept
+> any SCSI commands: https://lkml.org/lkml/2020/4/10/47
+> 
+> At first I posted a fix (https://lkml.org/lkml/2020/4/21/1318) trying
+> to resolve the issue from hv_storvsc, but with the help of
+> Bart Van Assche, I realized it's better to fix software_resume(),
+> since this looks like a generic issue, not only pertaining to SCSI.
+> 
+> Cc: Bart Van Assche <bvanassche@acm.org>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+> ---
+>  kernel/power/hibernate.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+> index 86aba8706b16..30bd28d1d418 100644
+> --- a/kernel/power/hibernate.c
+> +++ b/kernel/power/hibernate.c
+> @@ -898,6 +898,13 @@ static int software_resume(void)
+>  	error = freeze_processes();
+>  	if (error)
+>  		goto Close_Finish;
+> +
+> +	error = freeze_kernel_threads();
+> +	if (error) {
+> +		thaw_processes();
+> +		goto Close_Finish;
+> +	}
+> +
+>  	error = load_image_and_restore();
+>  	thaw_processes();
+>   Finish:
+> 
 
-Fixes: 674ef1d0a7b2 ("arm64: dts: allwinner: a64: add support for PineTab")
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied as a fix for 5.7-rc4, thanks!
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
-index 316e8a443913..dc4ab6b434f9 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
-@@ -98,7 +98,7 @@ &codec {
- };
- 
- &codec_analog {
--	hpvcc-supply = <&reg_eldo1>;
-+	cpvdd-supply = <&reg_eldo1>;
- 	status = "okay";
- };
- 
--- 
-2.24.1
+
 
