@@ -2,74 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666751B91BD
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3A11B91C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgDZQbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:31:51 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:50178 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgDZQbu (ORCPT
+        id S1726217AbgDZQcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 12:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726144AbgDZQcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:31:50 -0400
-Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id d4f95e24674149c7; Sun, 26 Apr 2020 18:31:47 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] ACPI / CPPC: Make some symbols static
-Date:   Sun, 26 Apr 2020 18:31:47 +0200
-Message-ID: <2458050.BygcShJWPJ@kreacher>
-In-Reply-To: <1587626518-97669-1-git-send-email-zou_wei@huawei.com>
-References: <1587626518-97669-1-git-send-email-zou_wei@huawei.com>
+        Sun, 26 Apr 2020 12:32:08 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8B2C061A0F
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 09:32:07 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jSkCC-0005h7-K4; Sun, 26 Apr 2020 18:31:56 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 7405C100605; Sun, 26 Apr 2020 18:31:55 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 2/2] locking/rtmutex: optimize rt_mutex_cmpxchgs
+In-Reply-To: <1587135032-188866-2-git-send-email-alex.shi@linux.alibaba.com>
+References: <1587135032-188866-1-git-send-email-alex.shi@linux.alibaba.com> <1587135032-188866-2-git-send-email-alex.shi@linux.alibaba.com>
+Date:   Sun, 26 Apr 2020 18:31:55 +0200
+Message-ID: <87k122ryx0.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, April 23, 2020 9:21:58 AM CEST Zou Wei wrote:
-> Fix the following sparse warnings:
-> 
-> drivers/acpi/cppc_acpi.c:353:20: warning: symbol 'cppc_mbox_cl' was not declared. Should it be static?
-> drivers/acpi/cppc_acpi.c:600:5: warning: symbol 'pcc_data_alloc' was not declared. Should it be static?
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  drivers/acpi/cppc_acpi.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 8b2e89c..f818400 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -350,7 +350,7 @@ static void cppc_chan_tx_done(struct mbox_client *cl, void *msg, int ret)
->  				*(u16 *)msg, ret);
->  }
->  
-> -struct mbox_client cppc_mbox_cl = {
-> +static struct mbox_client cppc_mbox_cl = {
->  	.tx_done = cppc_chan_tx_done,
->  	.knows_txdone = true,
->  };
-> @@ -597,7 +597,7 @@ bool __weak cpc_ffh_supported(void)
->   *
->   * Return: 0 for success, errno for failure
->   */
-> -int pcc_data_alloc(int pcc_ss_id)
-> +static int pcc_data_alloc(int pcc_ss_id)
->  {
->  	if (pcc_ss_id < 0 || pcc_ss_id >= MAX_PCC_SUBSPACES)
->  		return -EINVAL;
-> 
+Alex Shi <alex.shi@linux.alibaba.com> writes:
 
-Applied as 5.8-candidate material, thanks!
+> Checking l->owner first to skip time cost cmpxchgs.
 
+I don't see what that buys.
 
+It actually adds an extra conditional in the non-contended case, which
+is the case we are optimizing for.
 
+In the contended case, i.e. when l->owner != c the cmpxchg cost is
+completely irrelevant compared to the slowpath costs.
 
+>  #ifndef CONFIG_DEBUG_RT_MUTEXES
+> -# define rt_mutex_cmpxchg_acquire(l,c,n) (cmpxchg_acquire(&l->owner, c, n) == c)
+> -# define rt_mutex_cmpxchg_release(l,c,n) (cmpxchg_release(&l->owner, c, n) == c)
+> +# define rt_mutex_cmpxchg_acquire(l, c, n)	\
+> +			(l->owner == c && cmpxchg_acquire(&l->owner, c, n) == c)
+> +# define rt_mutex_cmpxchg_release(l, c, n)	\
+> +			(l->owner == c && cmpxchg_release(&l->owner, c, n) == c)
+
+This kind of micro-optimizing is more than dubious especially w/o
+numbers backing up the benefit.
+
+Thanks,
+
+        tglx
