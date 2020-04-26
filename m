@@ -2,147 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725B61B8FE9
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 14:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DD71B8FD4
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 14:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbgDZMgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 08:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725972AbgDZMgz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 08:36:55 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC7EC09B04F
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 05:36:55 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id u16so17126413wmc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 05:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=JBh22gkkftDuWjwk1TPd/NAiCHWpk9SJUUjAQeP7t1E=;
-        b=ROVy0iHE1cqI45Kv8mAcR/qxVxPLQjyDVkScDYip3VUyvfFd9cyO666gLWcTUAbawq
-         GZSoVEUE5lfZLiCoMRECws33K96tT+Jnk3zM6ldYnmcWFmqPFF8u4vQAxqGEwj/Jy5fl
-         xzTT4yfkaYqF7b2YE5F/TFOq5p2K0NV4W1OwQsmvGHvg7p0GLFmvdIeyzy1AO6aU3778
-         WGg9EBpwvpFbBwwSDSct/aQj+3L36N5Mx28T0kpw3hYfNGPuXeBCCB2XoO1v9DzGpOP8
-         ha/vG6OKpgPJU867aJzVkEsTHka03Se/59FmbrI/gRy0Ihq7zoNZU9WdAaylmEcK4xBp
-         6fGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=JBh22gkkftDuWjwk1TPd/NAiCHWpk9SJUUjAQeP7t1E=;
-        b=VIr4qdodSo+WnGmyfRD+G2oPTmoh9vqxm0VS6eUWLZVC1ixMNuCsQZSsfvzp1RAAXp
-         kv0qmBuw2Mf2w3f2vl89N82Qcs1sz18cFiRxll6kykfwcbfUDWBqnbGyiKkn3wsTKQXP
-         /bFVwdvlhEhQmfla95J2trgzzNyQ8s6Ty8uCHfa1c43xlTo9ClP6NjXKWzzb8Cy/eJf1
-         3rn/+xUgfoD/PhXO0hSuw33xvMayqsXXubIfIkZfK6JatkSgTLeRzRh+BYjkogs6nmea
-         8RCEgrU8Yd/nqhCYrXQCaLGI5cYSQ8OliezlYeZRZJ1E00uRlmINT9agg1tl8KWOw+G8
-         6PrA==
-X-Gm-Message-State: AGi0PuYoKV6FdDbrCXAAZh7SbUme6Z5FOKMbhUhqZ65jdm2N/02ugdXf
-        MMTiNAJmP+g4WLzNL1mH+76UQgix
-X-Google-Smtp-Source: APiQypLB/idfUST5xyrj4fhVSoR9xyL88dMHS3SbUwO+W2dwEUHSGlfn8Nt7esPrnXIqKf/glFt9uA==
-X-Received: by 2002:a1c:2e07:: with SMTP id u7mr20752941wmu.74.1587904613856;
-        Sun, 26 Apr 2020 05:36:53 -0700 (PDT)
-Received: from akira-laptop.home ([2a01:cb19:8b28:7600:a0b9:1c6f:cfba:2b21])
-        by smtp.gmail.com with ESMTPSA id h17sm10742381wmm.6.2020.04.26.05.36.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Apr 2020 05:36:53 -0700 (PDT)
-Message-ID: <1b002fb8caf1755b89882fd7a3bbac1565959a6d.camel@gmail.com>
-Subject: Re: [PATCH v2 1/2] Changes in w1_therm.c and adding w1_therm.h
-From:   Akira shimahara <akira215corp@gmail.com>
-To:     Greg KH <greg@kroah.com>
-Cc:     zbr@ioremap.net, linux-kernel@vger.kernel.org
-Date:   Sun, 26 Apr 2020 14:36:52 +0200
-In-Reply-To: <20200426075141.GB2100063@kroah.com>
-References: <20200423144116.GA7319@kroah.com>
-         <20200425153141.247055-1-akira215corp@gmail.com>
-         <20200426075141.GB2100063@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1726174AbgDZMcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 08:32:00 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:46318 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726137AbgDZMcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 08:32:00 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id DAC4EB289B124920F9A9;
+        Sun, 26 Apr 2020 20:31:56 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Sun, 26 Apr 2020 20:31:46 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] perf report: fix warning Comparison of 0/1 to bool variable
+Date:   Sun, 26 Apr 2020 20:38:03 +0800
+Message-ID: <1587904683-3510-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le dimanche 26 avril 2020 à 09:51 +0200, Greg KH a écrit :
-> On Sat, Apr 25, 2020 at 05:31:41PM +0200, Akira Shimahara wrote:
-> > From: Akira SHIMAHARA <akira215corp@gmail.com>
-> > 
-> > Patch for enhacement of w1_therm module. Added features :
-> >  - Bulk read : send one command for all the slaves
-> >  		on the bus to trigger temperature conversion
-> >  - Optimized conversion time regarding to device resolution
-> >  - Dedicated sysfs entry for powering read,
-> >  		resolution set/get, eeprom save/restore
-> >  - Alarms settings and reading
-> >  - Code optimization to mitigate bus traffic
-> >  		(devices information are stored to avoid
-> > 		interrogating each device every-time)
-> > 
-> > Following sysfs entry are added :
-> >  - temperature (RO) : return the temperature in 1/1000°
-> >  - ext_power (RO) : return the power status of the device
-> >  - resolution (RW) : get or set the device resolution (supported
-> > devices)
-> >  - eeprom (WO) :trigger a save or restore to/from device EEPROM
-> >  - alarms (RW) : read or write TH and TL in the device RAM
-> >  - therm_bulk_read (RW) : Attribute at master level to trigger
-> >  		bulk read and to survey the progress of devices
-> > conversions
-> >  - w1_slave has been kept for compatibility
-> > 
-> > Main motivation was to improve temperature reading speed, which
-> > depend
-> > on resolution settings of devices. The module store the powwer
-> > status and
-> > the resolution of each device so that during reading operation, no
-> > transaction is required on the bus, which improve speed.
-> > The hardware status is checked as soon as a new device is
-> > detected, 
-> > when a user change occurred, or when the corresponding sys file is 
-> > accessed by user.
-> > 
-> > The bulk read allow to trigger convserion of all devices on the bus
-> > at
-> > the same time. It will apply a strong pull up on the line if at
-> > least
-> > one device required it. The duration of the pull up is the max time
-> > required by a device on the line.
-> > 
-> > Please let me know any feedback you have on this patch.
-> > 
-> > Thanks ahead,
-> > 
-> > Signed-off-by: Akira Shimahara <akira215corp@gmail.com>
-> > ---
-> > Changes in v2:
-> >  - Adding documentation in Documentatin/ABI/testing/sysfs-driver-
-> > w1_therm
-> >  - Updating existing documentation in
-> > Documentation/w1/slaves/w1_therm.rst
-> > 
-> >  drivers/w1/slaves/w1_therm.c | 1406 ++++++++++++++++++++++++++--
-> > ------
-> >  drivers/w1/slaves/w1_therm.h |  386 ++++++++++
-> >  2 files changed, 1470 insertions(+), 322 deletions(-)
-> >  create mode 100644 drivers/w1/slaves/w1_therm.h
-> 
-> No documentation files are added here :(
-> 
+Fixes coccicheck warning:
 
-It's in the PATCH 2/2 included in the previous mail. You want me to
-merge in one commit ?. I thought it was easier for you to keep a track
-of the v1.
+tools/perf/builtin-report.c:1403:2-34: WARNING: Assignment of 0/1 to bool variable
 
-Let me know what you prefer.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ tools/perf/builtin-report.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks ahead
-
-Akira SHIMAHARA
-
-
-
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index 26d8fc2..02c09fd 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -1400,7 +1400,7 @@ int cmd_report(int argc, const char **argv)
+ 	}
+ 	if (branch_call_mode) {
+ 		callchain_param.key = CCKEY_ADDRESS;
+-		callchain_param.branch_callstack = 1;
++		callchain_param.branch_callstack = true;
+ 		symbol_conf.use_callchain = true;
+ 		callchain_register_param(&callchain_param);
+ 		if (sort_order == NULL)
+-- 
+2.6.2
 
