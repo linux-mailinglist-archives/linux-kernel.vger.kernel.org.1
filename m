@@ -2,175 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3C81B8F1B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 12:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004661B8F21
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 12:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgDZKtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 06:49:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36860 "EHLO mail.kernel.org"
+        id S1726171AbgDZKug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 06:50:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726117AbgDZKtS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 06:49:18 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1726125AbgDZKug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 06:50:36 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 434C92071C;
-        Sun, 26 Apr 2020 10:49:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B75C2071C;
+        Sun, 26 Apr 2020 10:50:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587898157;
-        bh=qYciFqm9A2mHqdOl9z5rqOecRchvTFDbHdrpz3YIxgQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ugyVltQ8Nu2syxbsAEgpUTbQzrM56SNQxUFM511q4W6laCdocVnEtqbVkRFQM1b2X
-         OxpL7b19mWufrHFOx6yNRF5fklbxVUOqmxUIy/OlhbPBO9W+IfIYz+ib1HIxuuw7Z7
-         LjyBU7+SuMITBSgojPqw0LsTbmH5TYpD10F9I92g=
-Date:   Sun, 26 Apr 2020 12:49:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB driver fixes for 5.7-rc3
-Message-ID: <20200426104915.GA2121124@kroah.com>
+        s=default; t=1587898235;
+        bh=v4fChj3LpwH4K2rCU498iCs5BoJmqy8Myo+qfvH8RkM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=u/FD5Ybr4FiV0nDtwbEJdKBTAgDw3P1AubrDhGR5u7nAwk4Hf50e0Rl+JdNY2E/Ey
+         svjQ909AvOWIwz1nGmIdrZvDVsCtvrQkbHjob+RcAnOBAqWDa7OtMeCxqVvP9UAbNe
+         5SY8gkzr4dnYCiB+8cegqYkwx59zj6RqRh4lYfC0=
+Date:   Sun, 26 Apr 2020 11:50:31 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>
+Cc:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>
+Subject: Re: [RFC PATCH 4/4] iio: Track enabled channels on a per channel
+ basis
+Message-ID: <20200426115031.2eb0bb3c@archlinux>
+In-Reply-To: <CY4PR03MB33506FD8C2BF3921FE9BA2DD99D00@CY4PR03MB3350.namprd03.prod.outlook.com>
+References: <20200424051818.6408-1-alexandru.ardelean@analog.com>
+        <20200424051818.6408-5-alexandru.ardelean@analog.com>
+        <CY4PR03MB33506FD8C2BF3921FE9BA2DD99D00@CY4PR03MB3350.namprd03.prod.outlook.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
+On Fri, 24 Apr 2020 07:51:05 +0000
+"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
 
-  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
+> > From: linux-iio-owner@vger.kernel.org <linux-iio-owner@vger.kernel.org>
+> > On Behalf Of Alexandru Ardelean
+> > Sent: Freitag, 24. April 2020 07:18
+> > To: linux-iio@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Cc: jic23@kernel.org; lars@metafoo.de; Ardelean, Alexandru
+> > <alexandru.Ardelean@analog.com>
+> > Subject: [RFC PATCH 4/4] iio: Track enabled channels on a per channel b=
+asis
+> >=20
+> > From: Lars-Peter Clausen <lars@metafoo.de>
+> >=20
+> > Now that we support multiple channels with the same scan index we can no
+> > longer use the scan mask to track which channels have been enabled.
+> > Otherwise it is not possible to enable channels with the same scan index
+> > independently.
+> >=20
+> > Introduce a new channel mask which is used instead of the scan mask to
+> > track which channels are enabled. Whenever the channel mask is changed a
+> > new scan mask is computed based on it.
+> >=20
+> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> > ---
+> >  drivers/iio/industrialio-buffer.c | 62 +++++++++++++++++++++----------
+> >  drivers/iio/inkern.c              | 19 +++++++++-
+> >  include/linux/iio/buffer_impl.h   |  3 ++
+> >  include/linux/iio/consumer.h      |  2 +
+> >  4 files changed, 64 insertions(+), 22 deletions(-)
+> >=20
+> > diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrial=
+io-buffer.c
+> > index c06691281287..1821a3e32fb3 100644
+> > --- a/drivers/iio/industrialio-buffer.c
+> > +++ b/drivers/iio/industrialio-buffer.c
+> > @@ -216,12 +216,20 @@ int iio_buffer_alloc_scanmask(struct iio_buffer
+> > *buffer,
+> >  	if (buffer->scan_mask =3D=3D NULL)
+> >  		return -ENOMEM;
+> >=20
+> > +	buffer->channel_mask =3D bitmap_zalloc(indio_dev->num_channels,
+> > +					     GFP_KERNEL);
+> > +	if (buffer->channel_mask =3D=3D NULL) {
+> > +		bitmap_free(buffer->scan_mask);
+> > +		return -ENOMEM;
+> > +	}
+> > +
+> >  	return 0;
+> >  }
+> >  EXPORT_SYMBOL_GPL(iio_buffer_alloc_scanmask);
+> >=20
+> >  void iio_buffer_free_scanmask(struct iio_buffer *buffer)
+> >  {
+> > +	bitmap_free(buffer->channel_mask);
+> >  	bitmap_free(buffer->scan_mask);
+> >  }
+> >  EXPORT_SYMBOL_GPL(iio_buffer_free_scanmask);
+> > @@ -285,7 +293,7 @@ static ssize_t iio_scan_el_show(struct device *dev,
+> >=20
+> >  	/* Ensure ret is 0 or 1. */
+> >  	ret =3D !!test_bit(to_iio_dev_attr(attr)->address,
+> > -		       indio_dev->buffer->scan_mask);
+> > +		       indio_dev->buffer->channel_mask);
+> >=20
+> >  	return sprintf(buf, "%d\n", ret);
+> >  }
+> > @@ -330,11 +338,12 @@ static bool iio_validate_scan_mask(struct iio_dev
+> > *indio_dev,
+> >   * buffers might request, hence this code only verifies that the
+> >   * individual buffers request is plausible.
+> >   */
+> > -static int iio_scan_mask_set(struct iio_dev *indio_dev,
+> > -		      struct iio_buffer *buffer, int bit)
+> > +static int iio_channel_mask_set(struct iio_dev *indio_dev,
+> > +				struct iio_buffer *buffer, int bit)
+> >  {
+> >  	const unsigned long *mask;
+> >  	unsigned long *trialmask;
+> > +	unsigned int ch;
+> >=20
+> >  	trialmask =3D bitmap_zalloc(indio_dev->masklength, GFP_KERNEL);
+> >  	if (trialmask =3D=3D NULL)
+> > @@ -343,8 +352,11 @@ static int iio_scan_mask_set(struct iio_dev
+> > *indio_dev,
+> >  		WARN(1, "Trying to set scanmask prior to registering
+> > buffer\n");
+> >  		goto err_invalid_mask;
+> >  	}
+> > -	bitmap_copy(trialmask, buffer->scan_mask, indio_dev- =20
+> > >masklength); =20
+> > -	set_bit(bit, trialmask);
+> > +
+> > +	set_bit(bit, buffer->channel_mask);
+> > +
+> > +	for_each_set_bit(ch, buffer->channel_mask, indio_dev- =20
+> > >num_channels) =20
+> > +		set_bit(indio_dev->channels[ch].scan_index, trialmask); =20
+>=20
+> So, here if the channels all have the same scan_index, we will end up wit=
+h a scan_mask which is
+> different that channel_mask, right? I saw that in our internal driver's w=
+e then just access the
+> channel_mask field directly to know what pieces/channels do we need to en=
+able prior to
+> buffering, which implies including buffer_impl.h.
+Given that we handle the demux only at the level of scan elements that won'=
+t work in general
+(even if it wasn't a horrible layering issue).
 
-are available in the Git repository at:
+>=20
+> So, for me it would make sense to compute scan_mask so that it will be th=
+e same as channel_mask
+> (hmm but that would be a problem when computing the buffer size...) and d=
+rivers can correctly use
+> ` validate_scan_mask ()` cb. Alternatively, we need to expose channel_mas=
+k either on a new cb or
+> change the ` validate_scan_mask ()` footprint.=20
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.7-rc3
+Excellent points. We need to address support for:
 
-for you to fetch changes up to 2df7405f79ce1674d73c2786fe1a8727c905d65b:
+1) available_scan_mask - if we have complicated rules on mixtures of channe=
+ls inside
+   a given buffer element.
 
-  USB: sisusbvga: Change port variable from signed to unsigned (2020-04-23 15:26:17 +0200)
+2) channel enabling though I'm sort of inclined to say that if you are usin=
+g this approach
+   you only get information on channels that make up a scan mask element.  =
+Tough luck you
+   may end up enabling more than you'd like.
 
-----------------------------------------------------------------
-USB fixes for 5.7-rc3
+It might be possible to make switch to using a channel mask but given the c=
+hannel index is
+implicit that is going to be at least a little bit nasty.
 
-Here are a number of USB driver fixes for 5.7-rc3.
+How much does it hurt to not have the ability to separately control channel=
+s within
+a given buffer element?   Userspace can enable / disable them but reality i=
+s you'll
+get data for all the channels in a buffer element if any of them are enable=
+d.
 
-Nothing huge, just the usual collection of:
-	- xhci fixes
-	- gadget driver fixes
-	- syzkaller fuzzing fixes
-	- new device ids and DT bindings
-	- new quirks added for broken devices
+Given the demux will copy the whole element anyway (don't want to waste tim=
+e doing
+masking inside an element), userspace might get these extra channels anyway=
+ if another
+consumer has enabled them.
 
-A few of the gadget driver fixes show up twice here as they were applied
-to my branch, and also by Felipe to his branch which I then pulled in as
-we got out of sync a bit.
+Jonathan
 
-All of these have been in linux-next with no reported issues.
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>=20
+> - Nuno S=C3=A1
 
-----------------------------------------------------------------
-Alan Stern (4):
-      USB: core: Fix free-while-in-use bug in the USB S-Glibrary
-      USB: hub: Fix handling of connect changes during sleep
-      USB: hub: Revert commit bd0e6c9614b9 ("usb: hub: try old enumeration scheme first for high speed devices")
-      usb-storage: Add unusual_devs entry for JMicron JMS566
-
-Andrey Konovalov (2):
-      usb: raw-gadget: fix raw_event_queue_fetch locking
-      usb: raw-gadget: fix raw_event_queue_fetch locking
-
-Badhri Jagan Sridharan (1):
-      usb: typec: tcpm: Ignore CC and vbus changes in PORT_RESET change
-
-Changming Liu (1):
-      USB: sisusbvga: Change port variable from signed to unsigned
-
-Cristian Birsan (1):
-      usb: gadget: udc: atmel: Fix vbus disconnect handling
-
-Dan Carpenter (2):
-      usb: raw-gadget: Fix copy_to/from_user() checks
-      usb: raw-gadget: Fix copy_to/from_user() checks
-
-Greg Kroah-Hartman (1):
-      Merge tag 'fixes-for-v5.7-rc2' of git://git.kernel.org/.../balbi/usb into usb-linus
-
-Hans de Goede (1):
-      usb: typec: pi3usb30532: Set switch_ / mux_desc name field to NULL
-
-Jann Horn (1):
-      USB: early: Handle AMD's spec-compliant identifiers, too
-
-Jonathan Cox (1):
-      USB: Add USB_QUIRK_DELAY_CTRL_MSG and USB_QUIRK_DELAY_INIT for Corsair K70 RGB RAPIDFIRE
-
-Mathias Nyman (3):
-      xhci: Fix handling halted endpoint even if endpoint ring appears empty
-      xhci: prevent bus suspend if a roothub port detected a over-current condition
-      xhci: Don't clear hub TT buffer on ep0 protocol stall
-
-Mauro Carvalho Chehab (1):
-      docs: dt: qcom,dwc3.txt: fix cross-reference for a converted file
-
-Naoki Kiryu (1):
-      usb: typec: altmode: Fix typec_altmode_get_partner sometimes returning an invalid pointer
-
-Nathan Chancellor (1):
-      usb: gadget: udc: bdc: Remove unnecessary NULL checks in bdc_req_complete
-
-Oliver Neukum (4):
-      UAS: no use logging any details in case of ENODEV
-      UAS: fix deadlock in error handling and PM flushing work
-      cdc-acm: close race betrween suspend() and acm_softint
-      cdc-acm: introduce a cool down
-
-Thierry Reding (1):
-      phy: tegra: Select USB_COMMON for usb_get_maximum_speed()
-
-Thinh Nguyen (4):
-      usb: dwc3: Fix GTXFIFOSIZ.TXFDEP macro name
-      usb: dwc3: gadget: Properly set maxpacket limit
-      usb: dwc3: gadget: Do link recovery for SS and SSP
-      usb: dwc3: gadget: Fix request completion check
-
-Udipto Goswami (1):
-      usb: f_fs: Clear OS Extended descriptor counts to zero in ffs_data_reset()
-
-Yoshihiro Shimoda (3):
-      dt-bindings: usb: usb-xhci: add r8a77961 support
-      dt-bindings: usb: renesas,usbhs: add r8a77961 support
-      dt-bindings: usb: renesas,usb3-peri: add r8a77961 support
-
- Documentation/admin-guide/kernel-parameters.txt    |  3 +-
- .../devicetree/bindings/usb/qcom,dwc3.txt          |  4 +-
- .../devicetree/bindings/usb/renesas,usb3-peri.yaml |  1 +
- .../devicetree/bindings/usb/renesas,usbhs.yaml     |  1 +
- Documentation/devicetree/bindings/usb/usb-xhci.txt |  3 +-
- drivers/phy/tegra/Kconfig                          |  3 +-
- drivers/usb/class/cdc-acm.c                        | 36 ++++++++--
- drivers/usb/class/cdc-acm.h                        |  5 +-
- drivers/usb/core/hub.c                             | 18 ++++-
- drivers/usb/core/message.c                         |  9 ++-
- drivers/usb/core/quirks.c                          |  4 ++
- drivers/usb/dwc3/core.h                            |  8 ++-
- drivers/usb/dwc3/gadget.c                          | 76 +++++++++++++---------
- drivers/usb/early/xhci-dbc.c                       |  8 +--
- drivers/usb/early/xhci-dbc.h                       | 18 ++++-
- drivers/usb/gadget/function/f_fs.c                 |  4 ++
- drivers/usb/gadget/legacy/raw_gadget.c             | 71 +++++++++++---------
- drivers/usb/gadget/udc/atmel_usba_udc.c            |  4 +-
- drivers/usb/gadget/udc/bdc/bdc_ep.c                |  2 +-
- drivers/usb/host/xhci-hub.c                        |  9 +++
- drivers/usb/host/xhci-ring.c                       | 46 +++++++++++--
- drivers/usb/host/xhci.c                            | 14 ++--
- drivers/usb/host/xhci.h                            |  5 +-
- drivers/usb/misc/sisusbvga/sisusb.c                | 20 +++---
- drivers/usb/misc/sisusbvga/sisusb_init.h           | 14 ++--
- drivers/usb/storage/uas.c                          | 46 ++++++++++++-
- drivers/usb/storage/unusual_devs.h                 |  7 ++
- drivers/usb/typec/bus.c                            |  5 +-
- drivers/usb/typec/mux/pi3usb30532.c                |  4 +-
- drivers/usb/typec/tcpm/tcpm.c                      | 26 ++++++++
- 30 files changed, 351 insertions(+), 123 deletions(-)
