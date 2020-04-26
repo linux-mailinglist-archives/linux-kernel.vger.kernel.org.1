@@ -2,77 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBFA1B9198
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357491B919D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgDZQRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:17:02 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:56580 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725778AbgDZQRC (ORCPT
+        id S1726208AbgDZQTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 12:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726146AbgDZQTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:17:02 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 6771C2612F5
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
-        Sandy Huang <hjc@rock-chips.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: [PATCH] drm/rockchip: cdn-dp-core: Make cdn_dp_core_suspend/resume static
-Date:   Sun, 26 Apr 2020 18:16:53 +0200
-Message-Id: <20200426161653.7710-1-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.26.2
+        Sun, 26 Apr 2020 12:19:06 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43222C061A0F;
+        Sun, 26 Apr 2020 09:19:06 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e20so21834446otk.12;
+        Sun, 26 Apr 2020 09:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pj77SUe5CaP0v/pGWWFayVD62/A8i5UvOJukuyc5CVo=;
+        b=SIwT+DkVtRJGCGDj8udPoICtBFP7hrscvBQWiU0tS87Hi5Ub3I1cYpvxxILSYGE4mX
+         MlfGSgGmoKDKR+oBhDomOElD2/kvt1RWQwS8rofoR3mG9BLTlgM1Zyb+Ud4o+KY6zy3Y
+         LrWRcaznHY/gjdDzpHdFmNK2YPN/SnoAzv7eUtCZJbgVgYlIcjonkoh4AXWFMoKRaW+f
+         edblil7K6KgdjdQXccDkJuWlnZr6A0Nbl2HRRU43++iafGWFdzM3iv2CUX3Nx/HF7p8W
+         Tyi1v4Lw5TcsD8B2kMJeeuBpQePpEdWfHYh0muGgmhrqB7dtKAk8LOn0bnH9+eHzOPWD
+         /qVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pj77SUe5CaP0v/pGWWFayVD62/A8i5UvOJukuyc5CVo=;
+        b=c6CFeRWvP6i2LDnfXMrDrj+3Pen3nukJ/H69e4Ma1oey1389HQ83RUBPLHiMWSSNzO
+         XkAw4XEnhsLuSminfDqsEa6LhX6vsOeTfB47RJYsAgvXGBXBMFhourB4H2GvSdr5MhLN
+         vrbL5A4+4fELeputX76fpIXJiVyBGtxqkGupbxBShcUG5Ro+XuwWePiK6B25WXwhKfKo
+         ISoIaPbSQhPsHqyQEBtQH2lAksMnXvCRHuHwITDV2zutEv8TyXUhig+kA1tL8cGuOcOb
+         IlQb+qqYERGi6Udym3X/+yYPHi67jsuEY8U/UJcnyLkiJ2XSl9a0TXTGfITsAGqGvA7I
+         aUhg==
+X-Gm-Message-State: AGi0PuYUECRbuoBU8/IbBirbX3zHkvuSi82DZDx6QY3bzTCdthgMsg9b
+        HWxexmrxa/KgfS4gazzngqMzGe1zgg8NpJeMc99SqILD
+X-Google-Smtp-Source: APiQypJ5+V3+lSZEofKJqMAVpQSdTAk1rec+Esu8ZijtDxFh7g90i2TLV7E4NrCm5MZu1Oonan3gRu8weMxFg1oIXTo=
+X-Received: by 2002:a9d:21ca:: with SMTP id s68mr15145763otb.15.1587917945530;
+ Sun, 26 Apr 2020 09:19:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200422233928.GA2816@imac> <8255d8b1-f652-9ece-67d2-68c30a5cfbac@baylibre.com>
+In-Reply-To: <8255d8b1-f652-9ece-67d2-68c30a5cfbac@baylibre.com>
+From:   Tim Lewis <elatllat@gmail.com>
+Date:   Sun, 26 Apr 2020 12:18:54 -0400
+Message-ID: <CA+3zgmsVK9Uuv947-pniByP7QJVGcVK_EgiRkFipV5CUx70sHQ@mail.gmail.com>
+Subject: Re: [PATCH v3] arm64: dts: meson: S922X: extend cpu opp-points
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     khilman@baylibre.com,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        joy.cho@hardkernel.com, tobetter <tobetter@gmail.com>,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        mark.rutland@arm.com, robh+dt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the following warning detected when running make with W=1
+Oops, will fix in v4.
 
-    drivers/gpu/drm/rockchip//cdn-dp-core.c:1112:5: warning: no previous
-    prototype for ‘cdn_dp_suspend’ [-Wmissing-prototypes]
 
-    drivers/gpu/drm/rockchip//cdn-dp-core.c:1126:5: warning: no previous
-    prototype for ‘cdn_dp_resume’ [-Wmissing-prototypes]
-
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
-
- drivers/gpu/drm/rockchip/cdn-dp-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-index eed594bd38d3..4fa00af89cca 100644
---- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
-+++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-@@ -1109,7 +1109,7 @@ static const struct component_ops cdn_dp_component_ops = {
- 	.unbind = cdn_dp_unbind,
- };
- 
--int cdn_dp_suspend(struct device *dev)
-+static int cdn_dp_suspend(struct device *dev)
- {
- 	struct cdn_dp_device *dp = dev_get_drvdata(dev);
- 	int ret = 0;
-@@ -1123,7 +1123,7 @@ int cdn_dp_suspend(struct device *dev)
- 	return ret;
- }
- 
--int cdn_dp_resume(struct device *dev)
-+static int cdn_dp_resume(struct device *dev)
- {
- 	struct cdn_dp_device *dp = dev_get_drvdata(dev);
- 
--- 
-2.26.2
-
+On Thu, Apr 23, 2020 at 3:40 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> On 23/04/2020 01:39, Tim Lewis wrote:
+> > HardKernel supports overclock through the addition to extra opp points
+> > in their official kernel sources for odroid-n2 [1]. Christian tested
+> > on other S922X devices with "no obvious issues". Neil thinks dvfs and
+> > thermal managementis can keep other S922X devices safe.
+> --------------/\
+>           management
+>
+> >
+> > [1] https://github.com/hardkernel/linux/commit/f86cd9487c7483b2a05f448b9ebacf6bd5a2ad2f
+> > Tested-by: Christian Hewitt <christianshewitt@gmail.com>
+> > Signed-off-by: Tim Lewis <elatllat@gmail.com>
+> >
+> > ---
+> >  arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi | 15 +++++++++++++++
+> >  1 files changed, 15 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
+> > index 046cc332d..1e5d0ee5d 100644
+> > --- a/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
+> > +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-s922x.dtsi
+> > @@ -65,6 +65,11 @@
+> >                       opp-hz = /bits/ 64 <1896000000>;
+> >                       opp-microvolt = <981000>;
+> >               };
+> > +
+> > +             opp-1992000000 {
+> > +                     opp-hz = /bits/ 64 <1992000000>;
+> > +                     opp-microvolt = <1001000>;
+> > +             };
+> >       };
+> >
+> >       cpub_opp_table_1: opp-table-1 {
+> > @@ -120,5 +125,15 @@
+> >                       opp-hz = /bits/ 64 <1704000000>;
+> >                       opp-microvolt = <891000>;
+> >               };
+> > +
+> > +             opp-1800000000 {
+> > +                     opp-hz = /bits/ 64 <1800000000>;
+> > +                     opp-microvolt = <981000>;
+> > +             };
+> > +
+> > +             opp-1908000000 {
+> > +                     opp-hz = /bits/ 64 <1908000000>;
+> > +                     opp-microvolt = <1022000>;
+> > +             };
+> >       };
+> >  };
+> >
+>
+> The patch is well formed but I can only test on Odroid-N2.
+>
+> Anyway, Christian did a test other S922X boxes and it doesn't crash.
+>
+> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+>
+> Neil
