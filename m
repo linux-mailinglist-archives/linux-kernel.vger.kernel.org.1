@@ -2,152 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFDA1B8F8F
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 13:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA1C1B8F8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 13:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgDZLvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 07:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726135AbgDZLvP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 07:51:15 -0400
-Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [IPv6:2001:19f0:6001:3633:5400:2ff:fe8c:553])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C71BC061A0E;
-        Sun, 26 Apr 2020 04:51:15 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 18F8420CE7;
-        Sun, 26 Apr 2020 11:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1587901875; bh=FIpkVgCcZIOSR5LDhY/QsB4UvPKGRBmMbi5Ln6/hcIA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QpyOxyFtVI9AhdwU/EaFyuJLre0YiMrOJR0N9E5ACBf3t3cAamMrKv1Numq1ZYnSg
-         UNd1r3qGxmz1+UjGqIPmYlXNHhxNniEg/7Q1Tngn+hkS9UYJC3JOBdcsi12mBBQZoy
-         HYY1RvPxMU9zuPuA3RL1RHBacPUF3aTZQkUxyW6t1g9NnYz/ZySf/oTuflKjsrzVgL
-         HYYKp2NFhYIQU1bMCapxhBZKH4eYLvClvEEpMMUPGHrNIhXQBa3U8J8mJISSWsdmhE
-         n94sJoMn2WP+OYWD/0pF7C80f0HHwAawkSyuq8GT4doBiZGRd5fLbpAK7k58zmCekV
-         cLW7rxDJBp5Ew==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Stephen Kitt <steve@sk2.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Daniel Silsby <dansilsby@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Allison Randal <allison@lohutok.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] MIPS: Loongson64: Enable PCI_IO_VMMAP
-Date:   Sun, 26 Apr 2020 19:47:37 +0800
-Message-Id: <20200426114806.1176629-5-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.26.0.rc2
-In-Reply-To: <20200426114806.1176629-1-jiaxun.yang@flygoat.com>
-References: <20200426114806.1176629-1-jiaxun.yang@flygoat.com>
+        id S1726295AbgDZLu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 07:50:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34706 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726131AbgDZLu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 07:50:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 000ABAB64;
+        Sun, 26 Apr 2020 11:50:24 +0000 (UTC)
+Subject: Re: [PATCH v3 2/3] dt-bindings: arm: actions: Document Caninos Loucos
+ Labrador
+To:     Matheus Castello <matheus@castello.eng.br>
+Cc:     manivannan.sadhasivam@linaro.org, mark.rutland@arm.com,
+        robh+dt@kernel.org, edgar.righi@lsitec.org.br,
+        igor.lima@lsitec.org.br, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-actions@lists.infradead.org
+References: <20200229104358.GB19610@mani>
+ <20200320035104.26139-1-matheus@castello.eng.br>
+ <20200320035104.26139-3-matheus@castello.eng.br>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Message-ID: <99c5fa14-cc2d-3692-fc6e-8e3fa77c5ab0@suse.de>
+Date:   Sun, 26 Apr 2020 13:50:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200320035104.26139-3-matheus@castello.eng.br>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Finally we are able to elegantly add I/O ports for PCI host bridge
-via devicetree with logic_pio.
++ linux-actions
 
-To deal with legacy drivers that have fixed I/O ports range we
-reserved 0x10000 in PCI_IOBASE, should be enough for i8259 i8042
-stuff.
+Am 20.03.20 um 04:51 schrieb Matheus Castello:
+> Update the documentation to add the Caninos Loucos Labrador. Labrador
+> project consists of a computer on module based on the Actions Semi S500
+> processor and the Labrador base board.
+> 
+> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
+> ---
+>   Documentation/devicetree/bindings/arm/actions.yaml | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/actions.yaml b/Documentation/devicetree/bindings/arm/actions.yaml
+> index ace3fdaa8396..1b131ceb884a 100644
+> --- a/Documentation/devicetree/bindings/arm/actions.yaml
+> +++ b/Documentation/devicetree/bindings/arm/actions.yaml
+> @@ -24,6 +24,11 @@ properties:
+>                 - lemaker,guitar-bb-rev-b # LeMaker Guitar Base Board rev. B
+>             - const: lemaker,guitar
+>             - const: actions,s500
+> +      - items:
+> +          - enum:
+> +              - caninos,labrador-bb # Caninos Loucos Labrador Base Board
+> +          - const: caninos,labrador
+> +          - const: actions,s500
+> 
+>         # The Actions Semi S700 is a quad-core ARM Cortex-A53 SoC.
+>         - items:
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/Kconfig           |  1 +
- arch/mips/include/asm/io.h  |  4 ++++
- arch/mips/loongson64/init.c | 12 ++++++++----
- arch/mips/loongson64/pci.c  |  2 +-
- 4 files changed, 14 insertions(+), 5 deletions(-)
+Now that you chose to stick with caninos rather than lsi prefix, the 
+sort order compared to lemaker remains wrong.
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 4e5308178649..1669735dacd8 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -479,6 +479,7 @@ config MACH_LOONGSON64
- 	select I8259
- 	select IRQ_MIPS_CPU
- 	select NR_CPUS_DEFAULT_64
-+	select PCI_IO_VMMAP
- 	select USE_GENERIC_EARLY_PRINTK_8250
- 	select SYS_HAS_CPU_LOONGSON64
- 	select SYS_HAS_EARLY_PRINTK
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index f15ddcd27f35..7f9716c95aa0 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -66,6 +66,10 @@
- #define PCI_IOBASE		((void __iomem *)PCI_IO_START)
- #define IOPORT_RW_BASE		PCI_IO_START
- 
-+#ifdef CONFIG_MACH_LOONGSON64
-+#define MMIO_LOWER_RESERVED	0x10000
-+#endif
-+
- #else
- 
- #define IO_SPACE_LIMIT 0xffff
-diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
-index da38944471f4..3117edbbea46 100644
---- a/arch/mips/loongson64/init.c
-+++ b/arch/mips/loongson64/init.c
-@@ -29,10 +29,6 @@ void __init prom_init(void)
- 	fw_init_cmdline();
- 	prom_init_env();
- 
--	/* init base address of io space */
--	set_io_port_base((unsigned long)
--		ioremap(LOONGSON_PCIIO_BASE, LOONGSON_PCIIO_SIZE));
--
- 	prom_init_numa_memory();
- 
- 	/* Hardcode to CPU UART 0 */
-@@ -48,5 +44,13 @@ void __init prom_free_prom_memory(void)
- 
- void __init arch_init_irq(void)
- {
-+	/*
-+	 * i8259 would access I/O space, so mapping must be done here.
-+	 * Please remove it when all drivers can be managed by logic_pio.
-+	 */
-+	ioremap_page_range(PCI_IO_START, PCI_IO_START + MMIO_LOWER_RESERVED,
-+				  LOONGSON_PCIIO_BASE,
-+				  pgprot_device(PAGE_KERNEL));
-+
- 	irqchip_init();
- }
-diff --git a/arch/mips/loongson64/pci.c b/arch/mips/loongson64/pci.c
-index a440a2725a20..7aecb88dd377 100644
---- a/arch/mips/loongson64/pci.c
-+++ b/arch/mips/loongson64/pci.c
-@@ -37,7 +37,7 @@ extern int sbx00_acpi_init(void);
- static int __init pcibios_init(void)
- {
- 
--	loongson_pci_controller.io_map_base = mips_io_port_base;
-+	loongson_pci_controller.io_map_base = IOPORT_RW_BASE;
- 	loongson_pci_mem_resource.start = loongson_sysconf.pci_mem_start_addr;
- 	loongson_pci_mem_resource.end = loongson_sysconf.pci_mem_end_addr;
- 
+Looking at https://caninosloucos.org/en/labrador-en/ there's a "CORE 
+BOARD V2.0" and a "BASE BOARD M V1.0".
+
+Assuming the v2 is not software-relevant, shouldn't the M be reflected 
+in the compatible string? For example, "caninos,labrador-core" and 
+"caninos,labrador-m"? You're free to use -bb-m of course, but no need to 
+copy LeMaker -bb naming for your board. What does your PCB say?
+
+Also note that other recent bindings have been using a description 
+attribute - not sure whether we can apply that a) to the SoM and b) to 
+the base board here. Please compare other in-tree bindings.
+
+Regards,
+Andreas
+
 -- 
-2.26.0.rc2
-
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
