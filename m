@@ -2,73 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAAC21B9125
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 17:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2B91B9132
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 17:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbgDZPYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 11:24:05 -0400
-Received: from mga11.intel.com ([192.55.52.93]:33140 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726144AbgDZPYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 11:24:04 -0400
-IronPort-SDR: Wq4YJGgG6hY8AaNEELigyNFYTOAzxaXs5Q/WCwXNBL2oi4N+7cWPf6Fgrh2dMexvKNiV1yMsJ6
- OLl4RcYhCO2g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2020 08:24:04 -0700
-IronPort-SDR: JmsvbkoBHJVoSBiAi1qGKYGCqKECjqnfcNyiAXoeiPUYvm27D424r2oCl+DHUBH2TlE0r6PKyL
- t/rFUAVfNTkg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,320,1583222400"; 
-   d="scan'208";a="281440105"
-Received: from local-michael-cet-test.sh.intel.com (HELO localhost) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Apr 2020 08:24:02 -0700
-Date:   Sun, 26 Apr 2020 23:26:01 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jmattson@google.com,
-        yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 2/9] KVM: VMX: Set guest CET MSRs per KVM and host
- configuration
-Message-ID: <20200426152600.GC29493@local-michael-cet-test.sh.intel.com>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200326081847.5870-3-weijiang.yang@intel.com>
- <20200423162749.GG17824@linux.intel.com>
- <d92b9fea-95b6-73ce-c3b5-47dad95c5d42@redhat.com>
+        id S1726182AbgDZPfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 11:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726146AbgDZPf3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 11:35:29 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E92C061A0F
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 08:35:29 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id j14so11682314lfg.9
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 08:35:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=we74QiB75BtYwlX2vu1/hk6PEpVENj5opPHAohrnsck=;
+        b=Odv9VoxY6497vkDTk3+CRrgpuyR/3DNV0ZX8s0CZ9GN4rNPbF0ZAWfH+KZM9MA8Mqj
+         lR9kQ0/xxj0SUdi0P3ul3qdJo5Fg0sktrQoC3ayiMfbpbvhfoAV7AELpoFo0TK9CslcN
+         S25kQAFoyh7iVFVHblXWMAjwsg3tdzBbYKUYPdygjdmaj5cWt6ohXnQDPgiZddm9MlZB
+         g4YLk8AGHQOuQ3xDsRBB7BH7Pvb1RjSpXjTbHsWLOr20iA6s1a8jhb7+PwyTaNqSZdxg
+         mypAVWAjp1ICtt7tdNQMoskBTF3XR7JWv3LDOUCyPIpJqqS1L6X6oLRnmIra8zqWztpW
+         8GaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=we74QiB75BtYwlX2vu1/hk6PEpVENj5opPHAohrnsck=;
+        b=Lwpb3iws+2qtrjQTEUebLiVg9CkmOo3pEZWmTrHk//N7tvqXZ8GUWWC7bydEqxq6O5
+         xUVC5p+v32iSwImsc5fLbQx7ZQ8HptaKa1KJDC6iP9ekuNTQ9PifeoZ1r1kawluBlpsY
+         EWpDZj62MgmPGh0IQx4hnEh4SX94Bbj3L6YMWRi1u+hjyqDzuIT4N8OwtoeUWWCJ8okK
+         R7CHobCOC0i8UwykklqraYovGsWq6KZStuLyaq6wt4EjGa7pCHaXMopxmjYKEWd2xc2L
+         c3rvVxo7Q4dhqGxd2hCKqsBfWCaLH3RyPhTlcUM34SrvYXQhCJlQ9bdAon53Mn5/oHEH
+         jj0w==
+X-Gm-Message-State: AGi0PubbkAjAVOzlg+s0j+G9dcKJ7icldcStvzZJkODOJ0bAavlq6/73
+        9rv+kKq3plmR9exGfuu8eiTnTgAE/xVSvpsZK066xw==
+X-Google-Smtp-Source: APiQypIQlC5Oq9kecdo1sFNy4lS8r1NT6AHD5X6gYOaNU2NmhTi6HZq5fedzF0ehDBll7oigZUvKxEholtvfWonYUMg=
+X-Received: by 2002:ac2:43c6:: with SMTP id u6mr12976089lfl.170.1587915327642;
+ Sun, 26 Apr 2020 08:35:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d92b9fea-95b6-73ce-c3b5-47dad95c5d42@redhat.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+References: <20200423064808.10468-1-etienne.carriere@linaro.org> <CAL_Jsq+zNyqcQ2xWceGLz4by=3rV=46wPyj=HcFPZ9pQPF17eg@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+zNyqcQ2xWceGLz4by=3rV=46wPyj=HcFPZ9pQPF17eg@mail.gmail.com>
+From:   Etienne Carriere <etienne.carriere@linaro.org>
+Date:   Sun, 26 Apr 2020 17:35:16 +0200
+Message-ID: <CAN5uoS9qENztJcd1b4uUMW83+o57gkWE9gEpq3Qd2YV0STA1gA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] Add examples of secure- prefixed property in documentation
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 25, 2020 at 03:26:30PM +0200, Paolo Bonzini wrote:
-> On 23/04/20 18:27, Sean Christopherson wrote:
-> >>  
-> >> +static bool is_cet_mode_allowed(struct kvm_vcpu *vcpu, u32 mode_mask)
-> > CET itself isn't a mode.  And since this ends up being an inner helper for
-> > is_cet_supported(), I think __is_cet_supported() would be the way to go.
-> > 
-> > Even @mode_mask is a bit confusing without the context of it being kernel
-> > vs. user.  The callers are very readable, e.g. I'd much prefer passing the
-> > mask as opposed to doing 'bool kernel'.  Maybe s/mode_mask/cet_mask?  That
-> > doesn't exactly make things super clear, but at least the reader knows the
-> > mask is for CET features.
-> 
-> What about is_cet_state_supported and xss_states?
+On Fri, 24 Apr 2020 at 23:59, Rob Herring <robh+dt@kernel.org> wrote:
 >
-It's good for me, I'll change them accordingly, thank you for review!
+> On Thu, Apr 23, 2020 at 1:49 AM Etienne Carriere
+> <etienne.carriere@linaro.org> wrote:
+> >
+> > Hello,
+> >
+> > This is a proposal for adding a bit of description in the DT bindings
+> > documentation of how secure- property prefix can be used for. The
+> > changes in this patch series describe that for clocks and resets properties.
+> >
+> > Documentation file arm/secure.txt already states that secure- prefix can be
+> > used for any property hence the description proposed here are not mandated.
+> > However it may be useful as explicit examples of such usage.
+>
+> It may say that, but any new property has to be documented and
+> reviewed still. I'm not sure that anything in secure.txt has actually
+> gotten used.
 
-> Paolo
-> 
-> >> +{
-> >> +	return ((supported_xss & mode_mask) &&
-> >> +		(guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
-> >> +		guest_cpuid_has(vcpu, X86_FEATURE_IBT)));
-> >> +}
+Looking at Linux kernel, U-Boot, Qemu, EDK II, that's right :)
+I guess that applies to the so-called non-secure world.
+
+>
+> You should participate in the System DT discussions in Linaro where
+> how to represent different CPUs and CPU execution environments (like
+> secure world) is being worked on.
+
+Fair, I'll get information there.
+Thank you for your prompt feedback.
+
+In the same scope, I am to post a change in the Linux DTS files.
+A change to define a new attribute mostly of interest for the secure
+world description.
+I will still post it to the LKML to get feedback about it.
+Such new bindings should still be discussed in the Linux DT ML, right?
+
+Regards,
+Etienne
+
+>
+> Rob
