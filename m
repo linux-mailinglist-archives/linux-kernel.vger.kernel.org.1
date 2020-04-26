@@ -2,268 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879B31B8CA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 07:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979DA1B8CC8
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 07:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgDZFy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 01:54:27 -0400
-Received: from mga06.intel.com ([134.134.136.31]:57441 "EHLO mga06.intel.com"
+        id S1726125AbgDZF5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 01:57:07 -0400
+Received: from mout.web.de ([212.227.15.14]:32917 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgDZFyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 01:54:24 -0400
-IronPort-SDR: pSRn4sTKqs+CzzvOCrSeldPsYyrnw/f/yZJk71/3AP69VNp9IP3UAqqgfPbGoLW6arIDB3VCbL
- 6MgTgoNg5qQA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2020 22:54:24 -0700
-IronPort-SDR: ULIPpftXlRuZVncLUHSwuauSzU7AMt8SQ3FSLW4e25oH6OANV+RbXbJFufO4yzakpq0D15kNUU
- 6n3sFI9wk+2w==
-X-IronPort-AV: E=Sophos;i="5.73,319,1583222400"; 
-   d="scan'208";a="245732999"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2020 22:54:23 -0700
-From:   ira.weiny@intel.com
-To:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org
-Subject: [PATCH 5/5] arch/kunmap_atomic: Consolidate duplicate code
-Date:   Sat, 25 Apr 2020 22:54:06 -0700
-Message-Id: <20200426055406.134198-6-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200426055406.134198-1-ira.weiny@intel.com>
-References: <20200426055406.134198-1-ira.weiny@intel.com>
+        id S1725468AbgDZF5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 01:57:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1587880612;
+        bh=injEwugg8OHM9hp03WhgiBQmv8FzKG2/4scOcHkHnBg=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=DU7Ap7+VYQ8dE8VuZVZb/qR8TWce3er27w2n4X3tQiQueBeiRXiWiPraWGgLIr0b4
+         VwgauDjYGEd7lGHdb0eeO7dnBp58pJZlQ6CQN2vjM4QtQGDAbmmMkhtce1JWeQJFQv
+         JginYHtNczBU9LYZ+neB3BtZNocRT4XuMB1luu6U=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.133.52.156]) by smtp.web.de (mrweb001
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0M5fhI-1jHohX3LNA-00xf7T; Sun, 26
+ Apr 2020 07:56:51 +0200
+Subject: Re: mm/slub: do not place freelist pointer to middle of object if
+ redzone is on
+To:     Changbin Du <changbin.du@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>
+References: <ca36745b-1939-2640-aeed-390c8c39114e@web.de>
+ <20200425235105.sye7fsbndbv24b46@mail.google.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <dc9bcaad-ee13-5359-5d99-7ecb8cb1d46b@web.de>
+Date:   Sun, 26 Apr 2020 07:56:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200425235105.sye7fsbndbv24b46@mail.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:isG7+/FvLFT00wPC8n3rPHTTacFfTdbCfAe+hDJQWErpHLiUDzB
+ JasNmP+JQ3IdEWzgSfpmEwWIWiNZVfCboP39VSVCBPQ5G52Hj16gvtfyrQb77WTAv1Bkq99
+ YtfaW3StSUEGqYjjq6+8fUlDwZcsi+YpNQWVsYnqHP5EIf79cNHYrb/Mlkow8O/EkgTrHQG
+ njFmWD8lbc0NeowHoTXvg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uzS6JyizmUY=:B+5sfz0Y2GgO4wQEJYdChX
+ EXDR0dF2RqlUNpIWOqobmxYIeWkUdkuE5vPd3bcNcTQ8NEM/rUbAIipsMLBppV5nCphYrVBuY
+ U2uWDKh+m44o36WmXK4FIYTLbqmyxFhMoOeDldHTwgyrWJCqxEnKUe6gDHmrzHoLs8ovnYc4N
+ J6nCTpwz/JKPaDvcw7p+RxKD/PpLD2skygyFqU8KOzc3UZqoOeSG5n3huWMpxEWyVVzPTX4bq
+ GkgBVntz3PGYsj9Q/gnSdA6b4FiVPM9TK2JVPI8dlkjIDRJ+YFWdU++2l5s2UmC/Y4wljVTTQ
+ vF2TucbC1S8F5l9uqlDd09NS5+pqylllyiXtCcmhUYPABOq0YfyOoOf9KRM/GculrEB1vDQR2
+ phKAkqxZwQDQ4oIkpjMEFqazZqyiP+22bJENWUFQZ4DkIh216ohowQFtraxSLEplNgZcL5ThS
+ yw0A9zEFw5DL6KjRQ61UPKNi6cxN32LJbq0ARPdD0kYqvKwt+zKfzyr9SqaxGASwPVgr2EuFJ
+ 0m/DdDo7gM0hNY43XU+gsrpR/dmyDucKpH38CgBgCpseXjmbG7N/vAHDiCooWNanPWaSAk0ZD
+ fwpMySqYKyGbffhY9ZV15S09HUGCoiYRiZaLZ85n2YRW6JeWrcLOU0M3xQv3rfetoOhg8CFuH
+ tLi60geqoF4NVcCWeWJTqRxppRvEztf27mEzMlMD45b4/V55Mmpj4dETDSZKXrT7lQFagnhFd
+ QBNk1wrwmIiYtXr+o+/e34ZBakSFpVt979SfA1VXQD2ufcaL+DChqv8VlONjU6S4snzuNi7D4
+ b9G4XrQvwmrEdEE0mSDs0RYAdk+GvvNtm+SPrD+C1MXKY0U476w1XB+v0RnREBNwh9+YOmQM2
+ o+n6eFxYwQFGsGUHxZOd0HVML21Ig2SsPfnHlk4YfUgs2FHSjHwnvodQAJp/slHxvb9BpQ+4j
+ q6pfBensTL6+QCs0PEbQn/kJ22UWCxJWuasVfDVUtsInpmlrGC45+1ePDgn1X0rz6grwl5RqL
+ fbKMDlg47BVDLnYzuKzzakEOKTLU61G1jfNGLsftJe5dCBVNh7NZVgr2QevETfVapCkvAxBlU
+ 7HSf7OEeGZyshTwj0qMdndfKN9DvT75rloJH/ZAChEVoeOvCjj2I9MPs0q6FeUIiEgNlE/9dw
+ W0RIZC2LyIKRK+krTST+5OmGtXm3aq+1rpUjXA3R+GpyCmRkqiqFwNltpxMzFfRTE5688zD4m
+ E2URbPK2nh27MIJYv
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+>>> Fixes: 3202fa62fb ("slub: relocate freelist pointer to middle of objec=
+t")
+=E2=80=A6
+> I used to give 12 charactors, but this time I lost two. :)
 
-Every single architecture (including !CONFIG_HIGHMEM) calls...
+Would you like to improve details for the change description
+also at another place?
 
-	pagefault_enable();
-	preempt_enable();
-
-... before returning from __kunmap_atomic().  Lift this code into the
-kunmap_atomic() macro.
-
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- arch/arc/mm/highmem.c                | 3 ---
- arch/arm/mm/highmem.c                | 2 --
- arch/csky/mm/highmem.c               | 5 +----
- arch/microblaze/mm/highmem.c         | 2 --
- arch/mips/mm/highmem.c               | 2 --
- arch/nds32/mm/highmem.c              | 2 --
- arch/parisc/include/asm/cacheflush.h | 2 --
- arch/powerpc/mm/highmem.c            | 2 --
- arch/sparc/mm/highmem.c              | 2 --
- arch/x86/mm/highmem_32.c             | 3 ---
- arch/xtensa/mm/highmem.c             | 3 ---
- include/linux/highmem.h              | 6 ++++--
- 12 files changed, 5 insertions(+), 29 deletions(-)
-
-diff --git a/arch/arc/mm/highmem.c b/arch/arc/mm/highmem.c
-index 1cae4b911a33..0725fc56b016 100644
---- a/arch/arc/mm/highmem.c
-+++ b/arch/arc/mm/highmem.c
-@@ -91,9 +91,6 @@ void __kunmap_atomic(void *kv)
- 
- 		kmap_atomic_idx_pop();
- 	}
--
--	pagefault_enable();
--	preempt_enable();
- }
- EXPORT_SYMBOL(__kunmap_atomic);
- 
-diff --git a/arch/arm/mm/highmem.c b/arch/arm/mm/highmem.c
-index 4a629f616a6a..4983bf18ec32 100644
---- a/arch/arm/mm/highmem.c
-+++ b/arch/arm/mm/highmem.c
-@@ -98,8 +98,6 @@ void __kunmap_atomic(void *kvaddr)
- 		/* this address was obtained through kmap_high_get() */
- 		kunmap_high(pte_page(pkmap_page_table[PKMAP_NR(vaddr)]));
- 	}
--	pagefault_enable();
--	preempt_enable();
- }
- EXPORT_SYMBOL(__kunmap_atomic);
- 
-diff --git a/arch/csky/mm/highmem.c b/arch/csky/mm/highmem.c
-index 1191f57f53ae..106fa6773084 100644
---- a/arch/csky/mm/highmem.c
-+++ b/arch/csky/mm/highmem.c
-@@ -50,7 +50,7 @@ void __kunmap_atomic(void *kvaddr)
- 	int idx;
- 
- 	if (vaddr < FIXADDR_START)
--		goto out;
-+		return;
- 
- #ifdef CONFIG_DEBUG_HIGHMEM
- 	idx = KM_TYPE_NR*smp_processor_id() + kmap_atomic_idx();
-@@ -63,9 +63,6 @@ void __kunmap_atomic(void *kvaddr)
- 	(void) idx; /* to kill a warning */
- #endif
- 	kmap_atomic_idx_pop();
--out:
--	pagefault_enable();
--	preempt_enable();
- }
- EXPORT_SYMBOL(__kunmap_atomic);
- 
-diff --git a/arch/microblaze/mm/highmem.c b/arch/microblaze/mm/highmem.c
-index 99fdf826edc2..d382c6821747 100644
---- a/arch/microblaze/mm/highmem.c
-+++ b/arch/microblaze/mm/highmem.c
-@@ -81,7 +81,5 @@ void __kunmap_atomic(void *kvaddr)
- 	local_flush_tlb_page(NULL, vaddr);
- 
- 	kmap_atomic_idx_pop();
--	pagefault_enable();
--	preempt_enable();
- }
- EXPORT_SYMBOL(__kunmap_atomic);
-diff --git a/arch/mips/mm/highmem.c b/arch/mips/mm/highmem.c
-index ba03ca75d4a1..5a3fc7e84e66 100644
---- a/arch/mips/mm/highmem.c
-+++ b/arch/mips/mm/highmem.c
-@@ -79,8 +79,6 @@ void __kunmap_atomic(void *kvaddr)
- 	}
- #endif
- 	kmap_atomic_idx_pop();
--	pagefault_enable();
--	preempt_enable();
- }
- EXPORT_SYMBOL(__kunmap_atomic);
- 
-diff --git a/arch/nds32/mm/highmem.c b/arch/nds32/mm/highmem.c
-index 4aabde586489..b8862aafa189 100644
---- a/arch/nds32/mm/highmem.c
-+++ b/arch/nds32/mm/highmem.c
-@@ -49,8 +49,6 @@ void __kunmap_atomic(void *kvaddr)
- 		ptep = pte_offset_kernel(pmd_off_k(vaddr), vaddr);
- 		set_pte(ptep, 0);
- 	}
--	pagefault_enable();
--	preempt_enable();
- }
- 
- EXPORT_SYMBOL(__kunmap_atomic);
-diff --git a/arch/parisc/include/asm/cacheflush.h b/arch/parisc/include/asm/cacheflush.h
-index 0c83644bfa5c..c8458491b9af 100644
---- a/arch/parisc/include/asm/cacheflush.h
-+++ b/arch/parisc/include/asm/cacheflush.h
-@@ -125,8 +125,6 @@ static inline void *kmap_atomic(struct page *page)
- static inline void __kunmap_atomic(void *addr)
- {
- 	flush_kernel_dcache_page_addr(addr);
--	pagefault_enable();
--	preempt_enable();
- }
- 
- #define kmap_atomic_prot(page, prot)	kmap_atomic(page)
-diff --git a/arch/powerpc/mm/highmem.c b/arch/powerpc/mm/highmem.c
-index cdf5b716801a..7dfccf519621 100644
---- a/arch/powerpc/mm/highmem.c
-+++ b/arch/powerpc/mm/highmem.c
-@@ -76,7 +76,5 @@ void __kunmap_atomic(void *kvaddr)
- 	}
- 
- 	kmap_atomic_idx_pop();
--	pagefault_enable();
--	preempt_enable();
- }
- EXPORT_SYMBOL(__kunmap_atomic);
-diff --git a/arch/sparc/mm/highmem.c b/arch/sparc/mm/highmem.c
-index 178641805567..7a99a1097f67 100644
---- a/arch/sparc/mm/highmem.c
-+++ b/arch/sparc/mm/highmem.c
-@@ -130,7 +130,5 @@ void __kunmap_atomic(void *kvaddr)
- #endif
- 
- 	kmap_atomic_idx_pop();
--	pagefault_enable();
--	preempt_enable();
- }
- EXPORT_SYMBOL(__kunmap_atomic);
-diff --git a/arch/x86/mm/highmem_32.c b/arch/x86/mm/highmem_32.c
-index 34770499b0ff..b20e81b2b833 100644
---- a/arch/x86/mm/highmem_32.c
-+++ b/arch/x86/mm/highmem_32.c
-@@ -78,9 +78,6 @@ void __kunmap_atomic(void *kvaddr)
- 		BUG_ON(vaddr >= (unsigned long)high_memory);
- 	}
- #endif
--
--	pagefault_enable();
--	preempt_enable();
- }
- EXPORT_SYMBOL(__kunmap_atomic);
- 
-diff --git a/arch/xtensa/mm/highmem.c b/arch/xtensa/mm/highmem.c
-index 38c14e0b578c..9a49263e4cd6 100644
---- a/arch/xtensa/mm/highmem.c
-+++ b/arch/xtensa/mm/highmem.c
-@@ -77,9 +77,6 @@ void __kunmap_atomic(void *kvaddr)
- 
- 		kmap_atomic_idx_pop();
- 	}
--
--	pagefault_enable();
--	preempt_enable();
- }
- EXPORT_SYMBOL(__kunmap_atomic);
- 
-diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-index eee53e151900..94145d4200ab 100644
---- a/include/linux/highmem.h
-+++ b/include/linux/highmem.h
-@@ -133,8 +133,8 @@ static inline void *kmap_atomic(struct page *page)
- 
- static inline void __kunmap_atomic(void *addr)
- {
--	pagefault_enable();
--	preempt_enable();
-+	/* Nothing to do in the CONFIG_HIGHMEM=n case as kunmap_atomic()
-+	 * handles re-enabling faults + preemption */
- }
- 
- #define kmap_atomic_pfn(pfn)	kmap_atomic(pfn_to_page(pfn))
-@@ -185,6 +185,8 @@ static inline void kmap_atomic_idx_pop(void)
- do {                                                            \
- 	BUILD_BUG_ON(__same_type((addr), struct page *));       \
- 	__kunmap_atomic(addr);                                  \
-+	pagefault_enable();                                     \
-+	preempt_enable();                                       \
- } while (0)
- 
- 
--- 
-2.25.1
-
+Regards,
+Markus
