@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D05C1B931F
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 20:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840371B9321
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 20:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgDZSnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 14:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
+        id S1726498AbgDZSnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 14:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726312AbgDZSnC (ORCPT
+        by vger.kernel.org with ESMTP id S1726410AbgDZSnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 14:43:02 -0400
+        Sun, 26 Apr 2020 14:43:01 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E57C061A0F;
-        Sun, 26 Apr 2020 11:43:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687D6C061A41;
+        Sun, 26 Apr 2020 11:43:01 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jSmEz-0007Dc-3K; Sun, 26 Apr 2020 20:42:57 +0200
+        id 1jSmEx-0007Eb-I7; Sun, 26 Apr 2020 20:42:55 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id A9D4B1C0334;
-        Sun, 26 Apr 2020 20:42:53 +0200 (CEST)
-Date:   Sun, 26 Apr 2020 18:42:53 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 33C051C0178;
+        Sun, 26 Apr 2020 20:42:55 +0200 (CEST)
+Date:   Sun, 26 Apr 2020 18:42:54 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/alternatives: Move temporary_mm helpers into C
+Subject: [tip: x86/mm] x86/tlb: Uninline __get_current_cr3_fast()
 Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
         Alexandre Chartre <alexandre.chartre@oracle.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200421092559.139069561@linutronix.de>
-References: <20200421092559.139069561@linutronix.de>
+        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200421092558.848064318@linutronix.de>
+References: <20200421092558.848064318@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158792657329.28353.15454847420595201595.tip-bot2@tip-bot2>
+Message-ID: <158792657479.28353.17566281114631962456.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,17 +52,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/mm branch of tip:
 
-Commit-ID:     9020d3956317d052cdddd43e55acdd2970344192
-Gitweb:        https://git.kernel.org/tip/9020d3956317d052cdddd43e55acdd2970344192
+Commit-ID:     8c5cc19e94703182647dfccc164e4437a04539c8
+Gitweb:        https://git.kernel.org/tip/8c5cc19e94703182647dfccc164e4437a04539c8
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 21 Apr 2020 11:20:31 +02:00
+AuthorDate:    Tue, 21 Apr 2020 11:20:28 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 24 Apr 2020 19:12:56 +02:00
+CommitterDate: Fri, 24 Apr 2020 15:55:50 +02:00
 
-x86/alternatives: Move temporary_mm helpers into C
+x86/tlb: Uninline __get_current_cr3_fast()
 
-The only user of these inlines is the text poke code and this must not be
-exposed to the world.
+cpu_tlbstate is exported because various TLB-related functions need
+access to it, but cpu_tlbstate is sensitive information which should
+only be accessed by well-contained kernel functions and not be directly
+exposed to modules.
+
+In preparation for unexporting cpu_tlbstate move __get_current_cr3_fast()
+into the x86 TLB management code.
 
 No functional change.
 
@@ -69,139 +75,71 @@ Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
 Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200421092559.139069561@linutronix.de
+Acked-by: Andy Lutomirski <luto@kernel.org>
+Link: https://lkml.kernel.org/r/20200421092558.848064318@linutronix.de
 ---
- arch/x86/include/asm/mmu_context.h | 55 +-----------------------------
- arch/x86/kernel/alternative.c      | 55 +++++++++++++++++++++++++++++-
- 2 files changed, 55 insertions(+), 55 deletions(-)
+ arch/x86/include/asm/mmu_context.h | 19 +------------------
+ arch/x86/mm/tlb.c                  | 20 ++++++++++++++++++++
+ 2 files changed, 21 insertions(+), 18 deletions(-)
 
 diff --git a/arch/x86/include/asm/mmu_context.h b/arch/x86/include/asm/mmu_context.h
-index 2985d06..4756214 100644
+index 4e55370..9608536 100644
 --- a/arch/x86/include/asm/mmu_context.h
 +++ b/arch/x86/include/asm/mmu_context.h
-@@ -215,59 +215,4 @@ static inline bool arch_vma_access_permitted(struct vm_area_struct *vma,
- 
- unsigned long __get_current_cr3_fast(void);
- 
--typedef struct {
--	struct mm_struct *mm;
--} temp_mm_state_t;
--
--/*
-- * Using a temporary mm allows to set temporary mappings that are not accessible
-- * by other CPUs. Such mappings are needed to perform sensitive memory writes
-- * that override the kernel memory protections (e.g., W^X), without exposing the
-- * temporary page-table mappings that are required for these write operations to
-- * other CPUs. Using a temporary mm also allows to avoid TLB shootdowns when the
-- * mapping is torn down.
-- *
-- * Context: The temporary mm needs to be used exclusively by a single core. To
-- *          harden security IRQs must be disabled while the temporary mm is
-- *          loaded, thereby preventing interrupt handler bugs from overriding
-- *          the kernel memory protection.
-- */
--static inline temp_mm_state_t use_temporary_mm(struct mm_struct *mm)
--{
--	temp_mm_state_t temp_state;
--
--	lockdep_assert_irqs_disabled();
--	temp_state.mm = this_cpu_read(cpu_tlbstate.loaded_mm);
--	switch_mm_irqs_off(NULL, mm, current);
--
--	/*
--	 * If breakpoints are enabled, disable them while the temporary mm is
--	 * used. Userspace might set up watchpoints on addresses that are used
--	 * in the temporary mm, which would lead to wrong signals being sent or
--	 * crashes.
--	 *
--	 * Note that breakpoints are not disabled selectively, which also causes
--	 * kernel breakpoints (e.g., perf's) to be disabled. This might be
--	 * undesirable, but still seems reasonable as the code that runs in the
--	 * temporary mm should be short.
--	 */
--	if (hw_breakpoint_active())
--		hw_breakpoint_disable();
--
--	return temp_state;
--}
--
--static inline void unuse_temporary_mm(temp_mm_state_t prev_state)
--{
--	lockdep_assert_irqs_disabled();
--	switch_mm_irqs_off(NULL, prev_state.mm, current);
--
--	/*
--	 * Restore the breakpoints if they were disabled before the temporary mm
--	 * was loaded.
--	 */
--	if (hw_breakpoint_active())
--		hw_breakpoint_restore();
--}
--
- #endif /* _ASM_X86_MMU_CONTEXT_H */
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 7867dfb..cd61797 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -783,6 +783,61 @@ void __init_or_module text_poke_early(void *addr, const void *opcode,
- 	}
+@@ -225,24 +225,7 @@ static inline bool arch_vma_access_permitted(struct vm_area_struct *vma,
+ 	return __pkru_allows_pkey(vma_pkey(vma), write);
  }
  
-+typedef struct {
-+	struct mm_struct *mm;
-+} temp_mm_state_t;
+-/*
+- * This can be used from process context to figure out what the value of
+- * CR3 is without needing to do a (slow) __read_cr3().
+- *
+- * It's intended to be used for code like KVM that sneakily changes CR3
+- * and needs to restore it.  It needs to be used very carefully.
+- */
+-static inline unsigned long __get_current_cr3_fast(void)
+-{
+-	unsigned long cr3 = build_cr3(this_cpu_read(cpu_tlbstate.loaded_mm)->pgd,
+-		this_cpu_read(cpu_tlbstate.loaded_mm_asid));
+-
+-	/* For now, be very restrictive about when this can be called. */
+-	VM_WARN_ON(in_nmi() || preemptible());
+-
+-	VM_BUG_ON(cr3 != __read_cr3());
+-	return cr3;
+-}
++unsigned long __get_current_cr3_fast(void);
+ 
+ typedef struct {
+ 	struct mm_struct *mm;
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 66f96f2..ea6f98a 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -844,6 +844,26 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+ }
+ 
+ /*
++ * This can be used from process context to figure out what the value of
++ * CR3 is without needing to do a (slow) __read_cr3().
++ *
++ * It's intended to be used for code like KVM that sneakily changes CR3
++ * and needs to restore it.  It needs to be used very carefully.
++ */
++unsigned long __get_current_cr3_fast(void)
++{
++	unsigned long cr3 = build_cr3(this_cpu_read(cpu_tlbstate.loaded_mm)->pgd,
++		this_cpu_read(cpu_tlbstate.loaded_mm_asid));
++
++	/* For now, be very restrictive about when this can be called. */
++	VM_WARN_ON(in_nmi() || preemptible());
++
++	VM_BUG_ON(cr3 != __read_cr3());
++	return cr3;
++}
++EXPORT_SYMBOL_GPL(__get_current_cr3_fast);
 +
 +/*
-+ * Using a temporary mm allows to set temporary mappings that are not accessible
-+ * by other CPUs. Such mappings are needed to perform sensitive memory writes
-+ * that override the kernel memory protections (e.g., W^X), without exposing the
-+ * temporary page-table mappings that are required for these write operations to
-+ * other CPUs. Using a temporary mm also allows to avoid TLB shootdowns when the
-+ * mapping is torn down.
-+ *
-+ * Context: The temporary mm needs to be used exclusively by a single core. To
-+ *          harden security IRQs must be disabled while the temporary mm is
-+ *          loaded, thereby preventing interrupt handler bugs from overriding
-+ *          the kernel memory protection.
-+ */
-+static inline temp_mm_state_t use_temporary_mm(struct mm_struct *mm)
-+{
-+	temp_mm_state_t temp_state;
-+
-+	lockdep_assert_irqs_disabled();
-+	temp_state.mm = this_cpu_read(cpu_tlbstate.loaded_mm);
-+	switch_mm_irqs_off(NULL, mm, current);
-+
-+	/*
-+	 * If breakpoints are enabled, disable them while the temporary mm is
-+	 * used. Userspace might set up watchpoints on addresses that are used
-+	 * in the temporary mm, which would lead to wrong signals being sent or
-+	 * crashes.
-+	 *
-+	 * Note that breakpoints are not disabled selectively, which also causes
-+	 * kernel breakpoints (e.g., perf's) to be disabled. This might be
-+	 * undesirable, but still seems reasonable as the code that runs in the
-+	 * temporary mm should be short.
-+	 */
-+	if (hw_breakpoint_active())
-+		hw_breakpoint_disable();
-+
-+	return temp_state;
-+}
-+
-+static inline void unuse_temporary_mm(temp_mm_state_t prev_state)
-+{
-+	lockdep_assert_irqs_disabled();
-+	switch_mm_irqs_off(NULL, prev_state.mm, current);
-+
-+	/*
-+	 * Restore the breakpoints if they were disabled before the temporary mm
-+	 * was loaded.
-+	 */
-+	if (hw_breakpoint_active())
-+		hw_breakpoint_restore();
-+}
-+
- __ro_after_init struct mm_struct *poking_mm;
- __ro_after_init unsigned long poking_addr;
- 
+  * arch_tlbbatch_flush() performs a full TLB flush regardless of the active mm.
+  * This means that the 'struct flush_tlb_info' that describes which mappings to
+  * flush is actually fixed. We therefore set a single fixed struct and use it in
