@@ -2,176 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26BC1B912A
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 17:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAC21B9125
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 17:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgDZPZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 11:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgDZPZU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 11:25:20 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61767C061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 08:25:20 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jSj9W-0004rs-Tl; Sun, 26 Apr 2020 17:25:07 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 541F0100605; Sun, 26 Apr 2020 17:25:06 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Fenghua Yu <fenghua.yu@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        iommu@lists.linux-foundation.org, Fenghua Yu <fenghua.yu@intel.com>
-Subject: Re: [PATCH 6/7] x86/traps: Fix up invalid PASID
-In-Reply-To: <1585596788-193989-7-git-send-email-fenghua.yu@intel.com>
-References: <1585596788-193989-1-git-send-email-fenghua.yu@intel.com> <1585596788-193989-7-git-send-email-fenghua.yu@intel.com>
-Date:   Sun, 26 Apr 2020 17:25:06 +0200
-Message-ID: <87mu6ys20d.fsf@nanos.tec.linutronix.de>
+        id S1726215AbgDZPYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 11:24:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:33140 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726144AbgDZPYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 11:24:04 -0400
+IronPort-SDR: Wq4YJGgG6hY8AaNEELigyNFYTOAzxaXs5Q/WCwXNBL2oi4N+7cWPf6Fgrh2dMexvKNiV1yMsJ6
+ OLl4RcYhCO2g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2020 08:24:04 -0700
+IronPort-SDR: JmsvbkoBHJVoSBiAi1qGKYGCqKECjqnfcNyiAXoeiPUYvm27D424r2oCl+DHUBH2TlE0r6PKyL
+ t/rFUAVfNTkg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,320,1583222400"; 
+   d="scan'208";a="281440105"
+Received: from local-michael-cet-test.sh.intel.com (HELO localhost) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 26 Apr 2020 08:24:02 -0700
+Date:   Sun, 26 Apr 2020 23:26:01 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jmattson@google.com,
+        yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH v11 2/9] KVM: VMX: Set guest CET MSRs per KVM and host
+ configuration
+Message-ID: <20200426152600.GC29493@local-michael-cet-test.sh.intel.com>
+References: <20200326081847.5870-1-weijiang.yang@intel.com>
+ <20200326081847.5870-3-weijiang.yang@intel.com>
+ <20200423162749.GG17824@linux.intel.com>
+ <d92b9fea-95b6-73ce-c3b5-47dad95c5d42@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d92b9fea-95b6-73ce-c3b5-47dad95c5d42@redhat.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fenghua Yu <fenghua.yu@intel.com> writes:
-> A #GP fault is generated when ENQCMD instruction is executed without
-> a valid PASID value programmed in.
-
-Programmed in what?
-
-> The #GP fault handler will initialize the current thread's PASID MSR.
+On Sat, Apr 25, 2020 at 03:26:30PM +0200, Paolo Bonzini wrote:
+> On 23/04/20 18:27, Sean Christopherson wrote:
+> >>  
+> >> +static bool is_cet_mode_allowed(struct kvm_vcpu *vcpu, u32 mode_mask)
+> > CET itself isn't a mode.  And since this ends up being an inner helper for
+> > is_cet_supported(), I think __is_cet_supported() would be the way to go.
+> > 
+> > Even @mode_mask is a bit confusing without the context of it being kernel
+> > vs. user.  The callers are very readable, e.g. I'd much prefer passing the
+> > mask as opposed to doing 'bool kernel'.  Maybe s/mode_mask/cet_mask?  That
+> > doesn't exactly make things super clear, but at least the reader knows the
+> > mask is for CET features.
+> 
+> What about is_cet_state_supported and xss_states?
 >
-> The following heuristic is used to avoid decoding the user instructions
-> to determine the precise reason for the #GP fault:
-> 1) If the mm for the process has not been allocated a PASID, this #GP
->    cannot be fixed.
-> 2) If the PASID MSR is already initialized, then the #GP was for some
->    other reason
-> 3) Try initializing the PASID MSR and returning. If the #GP was from
->    an ENQCMD this will fix it. If not, the #GP fault will be repeated
->    and we will hit case "2".
->
-> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+It's good for me, I'll change them accordingly, thank you for review!
 
-Just for the record I also suggested to have a proper errorcode in the
-#GP for ENQCMD and I surely did not suggest to avoid decoding the user
-instructions.
-
->  void __free_pasid(struct mm_struct *mm);
-> +bool __fixup_pasid_exception(void);
->  
->  #endif /* _ASM_X86_IOMMU_H */
-> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> index 6ef00eb6fbb9..369b5ba94635 100644
-> --- a/arch/x86/kernel/traps.c
-> +++ b/arch/x86/kernel/traps.c
-> @@ -56,6 +56,7 @@
->  #include <asm/umip.h>
->  #include <asm/insn.h>
->  #include <asm/insn-eval.h>
-> +#include <asm/iommu.h>
->  
->  #ifdef CONFIG_X86_64
->  #include <asm/x86_init.h>
-> @@ -488,6 +489,16 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
->  	return GP_CANONICAL;
->  }
->  
-> +static bool fixup_pasid_exception(void)
-> +{
-> +	if (!IS_ENABLED(CONFIG_INTEL_IOMMU_SVM))
-> +		return false;
-> +	if (!static_cpu_has(X86_FEATURE_ENQCMD))
-> +		return false;
-> +
-> +	return __fixup_pasid_exception();
-> +}
-> +
->  #define GPFSTR "general protection fault"
->  
->  dotraplinkage void do_general_protection(struct pt_regs *regs, long error_code)
-> @@ -499,6 +510,12 @@ dotraplinkage void do_general_protection(struct pt_regs *regs, long error_code)
->  	int ret;
->  
->  	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
-> +
-> +	if (user_mode(regs) && fixup_pasid_exception()) {
-> +		cond_local_irq_enable(regs);
-
-The point of this conditional irq enable _AFTER_ calling into the fixup
-function is? Also what's the reason for keeping interrupts disabled
-while calling into that function? Comments exist for a reason.
-
-> +		return;
-> +	}
-> +
->  	cond_local_irq_enable(regs);
->  
->  	if (static_cpu_has(X86_FEATURE_UMIP)) {
-> diff --git a/drivers/iommu/intel-svm.c b/drivers/iommu/intel-svm.c
-> index da718a49e91e..5ed39a022adb 100644
-> --- a/drivers/iommu/intel-svm.c
-> +++ b/drivers/iommu/intel-svm.c
-> @@ -759,3 +759,40 @@ void __free_pasid(struct mm_struct *mm)
->  	 */
->  	ioasid_free(pasid);
->  }
-> +
-> +/*
-> + * Fix up the PASID MSR if possible.
-> + *
-> + * But if the #GP was due to another reason, a second #GP might be triggered
-> + * to force proper behavior.
-> + */
-> +bool __fixup_pasid_exception(void)
-> +{
-> +	struct mm_struct *mm;
-> +	bool ret = true;
-> +	u64 pasid_msr;
-> +	int pasid;
-> +
-> +	mm = get_task_mm(current);
-
-Why do you need a reference to current->mm ?
-
-> +	/* This #GP was triggered from user mode. So mm cannot be NULL. */
-> +	pasid = mm->context.pasid;
-> +	/* Ensure this process has been bound to a PASID. */
-> +	if (!pasid) {
-> +		ret = false;
-> +		goto out;
-> +	}
-> +
-> +	/* Check to see if the PASID MSR has already been set for this task. */
-> +	rdmsrl(MSR_IA32_PASID, pasid_msr);
-> +	if (pasid_msr & MSR_IA32_PASID_VALID) {
-> +		ret = false;
-> +		goto out;
-> +	}
-> +
-> +	/* Fix up the MSR. */
-> +	wrmsrl(MSR_IA32_PASID, pasid | MSR_IA32_PASID_VALID);
-> +out:
-> +	mmput(mm);
-
-Thanks,
-
-        tglx
+> Paolo
+> 
+> >> +{
+> >> +	return ((supported_xss & mode_mask) &&
+> >> +		(guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
+> >> +		guest_cpuid_has(vcpu, X86_FEATURE_IBT)));
+> >> +}
