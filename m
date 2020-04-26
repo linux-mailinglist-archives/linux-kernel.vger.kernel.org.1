@@ -2,62 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7DD71B8FD4
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 14:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE0B1B8FED
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 14:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgDZMcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 08:32:00 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:46318 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726137AbgDZMcA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 08:32:00 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id DAC4EB289B124920F9A9;
-        Sun, 26 Apr 2020 20:31:56 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Sun, 26 Apr 2020 20:31:46 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] perf report: fix warning Comparison of 0/1 to bool variable
-Date:   Sun, 26 Apr 2020 20:38:03 +0800
-Message-ID: <1587904683-3510-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+        id S1726184AbgDZMjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 08:39:14 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:48030 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726135AbgDZMjO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 08:39:14 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0TwgoYV6_1587904745;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TwgoYV6_1587904745)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 26 Apr 2020 20:39:06 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tianjia.zhang@linux.alibaba.com
+Subject: [PATCH v3 0/7] clean up redundant 'kvm_run' parameters
+Date:   Sun, 26 Apr 2020 20:38:58 +0800
+Message-Id: <20200426123905.8336-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warning:
+In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
+structure. Earlier than historical reasons, many kvm-related function
+parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time.
+This patch does a unified cleanup of these remaining redundant parameters.
 
-tools/perf/builtin-report.c:1403:2-34: WARNING: Assignment of 0/1 to bool variable
+This series of patches has completely cleaned the architecture of
+arm64, mips, ppc, and s390 (no such redundant code on x86). Due to
+the large number of modified codes, a separate patch is made for each
+platform. On the ppc platform, there is also a redundant structure
+pointer of 'kvm_run' in 'vcpu_arch', which has also been cleaned
+separately.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- tools/perf/builtin-report.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v3 change:
+  Keep the existing `vcpu->run` in the function body unchanged.
 
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index 26d8fc2..02c09fd 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -1400,7 +1400,7 @@ int cmd_report(int argc, const char **argv)
- 	}
- 	if (branch_call_mode) {
- 		callchain_param.key = CCKEY_ADDRESS;
--		callchain_param.branch_callstack = 1;
-+		callchain_param.branch_callstack = true;
- 		symbol_conf.use_callchain = true;
- 		callchain_register_param(&callchain_param);
- 		if (sort_order == NULL)
+v2 change:
+  s390 retains the original variable name and minimizes modification.
+
+Tianjia Zhang (7):
+  KVM: s390: clean up redundant 'kvm_run' parameters
+  KVM: arm64: clean up redundant 'kvm_run' parameters
+  KVM: PPC: Remove redundant kvm_run from vcpu_arch
+  KVM: PPC: clean up redundant 'kvm_run' parameters
+  KVM: PPC: clean up redundant kvm_run parameters in assembly
+  KVM: MIPS: clean up redundant 'kvm_run' parameters
+  KVM: MIPS: clean up redundant kvm_run parameters in assembly
+
+ arch/arm64/include/asm/kvm_coproc.h      |  12 +--
+ arch/arm64/include/asm/kvm_host.h        |  11 +--
+ arch/arm64/include/asm/kvm_mmu.h         |   2 +-
+ arch/arm64/kvm/handle_exit.c             |  36 +++----
+ arch/arm64/kvm/sys_regs.c                |  13 ++-
+ arch/mips/include/asm/kvm_host.h         |  32 +------
+ arch/mips/kvm/emulate.c                  |  59 ++++--------
+ arch/mips/kvm/entry.c                    |  15 +--
+ arch/mips/kvm/mips.c                     |  14 +--
+ arch/mips/kvm/trap_emul.c                | 114 ++++++++++-------------
+ arch/mips/kvm/vz.c                       |  26 ++----
+ arch/powerpc/include/asm/kvm_book3s.h    |  16 ++--
+ arch/powerpc/include/asm/kvm_host.h      |   1 -
+ arch/powerpc/include/asm/kvm_ppc.h       |  27 +++---
+ arch/powerpc/kvm/book3s.c                |   4 +-
+ arch/powerpc/kvm/book3s.h                |   2 +-
+ arch/powerpc/kvm/book3s_64_mmu_hv.c      |  12 +--
+ arch/powerpc/kvm/book3s_64_mmu_radix.c   |   4 +-
+ arch/powerpc/kvm/book3s_emulate.c        |  10 +-
+ arch/powerpc/kvm/book3s_hv.c             |  64 ++++++-------
+ arch/powerpc/kvm/book3s_hv_nested.c      |  12 +--
+ arch/powerpc/kvm/book3s_interrupts.S     |  17 ++--
+ arch/powerpc/kvm/book3s_paired_singles.c |  72 +++++++-------
+ arch/powerpc/kvm/book3s_pr.c             |  33 ++++---
+ arch/powerpc/kvm/booke.c                 |  39 ++++----
+ arch/powerpc/kvm/booke.h                 |   8 +-
+ arch/powerpc/kvm/booke_emulate.c         |   2 +-
+ arch/powerpc/kvm/booke_interrupts.S      |   9 +-
+ arch/powerpc/kvm/bookehv_interrupts.S    |  10 +-
+ arch/powerpc/kvm/e500_emulate.c          |  15 ++-
+ arch/powerpc/kvm/emulate.c               |  10 +-
+ arch/powerpc/kvm/emulate_loadstore.c     |  32 +++----
+ arch/powerpc/kvm/powerpc.c               |  72 +++++++-------
+ arch/powerpc/kvm/trace_hv.h              |   6 +-
+ arch/s390/kvm/kvm-s390.c                 |  23 +++--
+ virt/kvm/arm/arm.c                       |   6 +-
+ virt/kvm/arm/mmio.c                      |  11 ++-
+ virt/kvm/arm/mmu.c                       |   5 +-
+ 38 files changed, 389 insertions(+), 467 deletions(-)
+
 -- 
-2.6.2
+2.17.1
 
