@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420911B920B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564DD1B9211
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726213AbgDZRW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 13:22:57 -0400
-Received: from smtprelay0016.hostedemail.com ([216.40.44.16]:60598 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725976AbgDZRW5 (ORCPT
+        id S1726191AbgDZR0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 13:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725976AbgDZR0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 13:22:57 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 0C47F100E7B40;
-        Sun, 26 Apr 2020 17:22:56 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:617:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:3873:4250:4321:5007:9040:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12555:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21451:21611:21627:21939:30012:30034:30054:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: dog92_70c4842a5302f
-X-Filterd-Recvd-Size: 2818
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 26 Apr 2020 17:22:54 +0000 (UTC)
-Message-ID: <a3faa2e1e66eb5cba91181b0b916ceba1676d5d6.camel@perches.com>
-Subject: Re: [PATCH] drivers: staging: rts5208: rtsx.c fix Unbalanced braces
- around else statement issue
-From:   Joe Perches <joe@perches.com>
-To:     John Oldman <john.oldman@polehill.co.uk>,
-        gregkh@linuxfoundation.org
-Cc:     hslester96@gmail.com, micky_ching@realsil.com.cn,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Sun, 26 Apr 2020 10:22:53 -0700
-In-Reply-To: <20200426160235.23836-1-john.oldman@polehill.co.uk>
-References: <20200426160235.23836-1-john.oldman@polehill.co.uk>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Sun, 26 Apr 2020 13:26:07 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06D2C061A0F;
+        Sun, 26 Apr 2020 10:26:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:
+        Subject:Sender:Reply-To:Cc:Content-ID:Content-Description;
+        bh=WLNcKnNwtQuBxMd6UyKxPPvsQsOYOqq9DmJGUjop6hw=; b=hv2u4SNOCFt7aUxHojfYcroFLU
+        YJenQ0tJeM4zjMuh+nUo8WpkbH2dSf7WEGud2mkJfAE1qk5xQ/WNbuEQGp/tAdvs//O0HQQnQF+Hk
+        UlIOcCerzutH6TXr6RWpgidecfs4Kz1oasQ78ptcGmIQw5V2yydLSraTMHzs/8vFLGmfSLxoPFU9E
+        QUJiNWU+nVCy/q66iiZV/gKCA2k4Zc9b5DVNQearvRQMwD3Sa9D6qEkXxaMOj+g41zvVcdWnIE05z
+        FQ7b3rWreod0vMpWRHjWmrpC2JKnOBKbgOgoJ1dMDOKsapKLal04jf3y8+w/5ShG1KaTGIKp4n7hD
+        4mi20I8Q==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jSl2Y-0008Sz-Vq; Sun, 26 Apr 2020 17:26:03 +0000
+Subject: Re: mmotm 2020-04-26-00-15 uploaded (mm/madvise.c)
+To:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        Minchan Kim <minchan@kernel.org>
+References: <20200426071602.ZmQ_9C0ql%akpm@linux-foundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bec3b7bd-0829-b430-be1a-f61da01ac4ac@infradead.org>
+Date:   Sun, 26 Apr 2020 10:26:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200426071602.ZmQ_9C0ql%akpm@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-04-26 at 17:02 +0100, John Oldman wrote:
-> Fix coding style issue
+On 4/26/20 12:16 AM, akpm@linux-foundation.org wrote:
+> The mm-of-the-moment snapshot 2020-04-26-00-15 has been uploaded to
 > 
-> Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
-> ---
->  drivers/staging/rts5208/rtsx.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+>    http://www.ozlabs.org/~akpm/mmotm/
 > 
-> diff --git a/drivers/staging/rts5208/rtsx.c b/drivers/staging/rts5208/rtsx.c
-> index be0053c795b7..ca836ca2ee81 100644
-> --- a/drivers/staging/rts5208/rtsx.c
-> +++ b/drivers/staging/rts5208/rtsx.c
-> @@ -419,10 +419,8 @@ static int rtsx_control_thread(void *__dev)
->  				chip->srb->device->id,
->  				(u8)chip->srb->device->lun);
->  			chip->srb->result = DID_BAD_TARGET << 16;
-> -		}
-> -
-> -		/* we've got a command, let's do it! */
-> -		else {
-> +		} else {
-> +			/* we've got a command, let's do it! */
->  			scsi_show_command(chip);
->  			rtsx_invoke_transport(chip->srb, chip);
->  		}
+> mmotm-readme.txt says
+> 
+> README for mm-of-the-moment:
+> 
+> http://www.ozlabs.org/~akpm/mmotm/
+> 
+> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> more than once a week.
+> 
+> You will need quilt to apply these patches to the latest Linus release (5.x
+> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+> http://ozlabs.org/~akpm/mmotm/series
+> 
+> The file broken-out.tar.gz contains two datestamp files: .DATE and
+> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+> followed by the base kernel version against which this patch series is to
+> be applied.
 
-Please look at the code blocks you are changing and
-if you are trying to fix unbalanced else blocks, do
-all the blocks, not just one of many consecutive.
+Hi,
+I'm seeing lots of build failures in mm/madvise.c.
 
-		/* reject the command if the direction indicator
-		 * is UNKNOWN
-		 */
-		if (chip->srb->sc_data_direction == DMA_BIDIRECTIONAL) {
-			dev_err(&dev->pci->dev, "UNKNOWN data direction\n");
-			chip->srb->result = DID_ERROR << 16;
-		}
+Is Minchin's patch only partially applied or is it just missing some pieces?
 
-		/* reject if target != 0 or if LUN is higher than
-		 * the maximum known LUN
-		 */
-		else if (chip->srb->device->id) {
-			dev_err(&dev->pci->dev, "Bad target number (%d:%d)\n",
-				chip->srb->device->id,
-				(u8)chip->srb->device->lun);
-			chip->srb->result = DID_BAD_TARGET << 16;
-		}
+a.  mm/madvise.c needs to #include <linux/uio.h>
 
-		else if (chip->srb->device->lun > chip->max_lun) {
-			dev_err(&dev->pci->dev, "Bad LUN (%d:%d)\n",
-				chip->srb->device->id,
-				(u8)chip->srb->device->lun);
-			chip->srb->result = DID_BAD_TARGET << 16;
-		}
+b.  looks like the sys_process_madvise() prototype in <linux/syscalls.h>
+has not been updated:
 
-		/* we've got a command, let's do it! */
-		else {
-			scsi_show_command(chip);
-			rtsx_invoke_transport(chip->srb, chip);
-		}
+In file included from ../mm/madvise.c:11:0:
+../include/linux/syscalls.h:239:18: error: conflicting types for ‘sys_process_madvise’
+  asmlinkage long sys##name(__MAP(x,__SC_DECL,__VA_ARGS__)) \
+                  ^
+../include/linux/syscalls.h:225:2: note: in expansion of macro ‘__SYSCALL_DEFINEx’
+  __SYSCALL_DEFINEx(x, sname, __VA_ARGS__)
+  ^~~~~~~~~~~~~~~~~
+../include/linux/syscalls.h:219:36: note: in expansion of macro ‘SYSCALL_DEFINEx’
+ #define SYSCALL_DEFINE6(name, ...) SYSCALL_DEFINEx(6, _##name, __VA_ARGS__)
+                                    ^~~~~~~~~~~~~~~
+../mm/madvise.c:1295:1: note: in expansion of macro ‘SYSCALL_DEFINE6’
+ SYSCALL_DEFINE6(process_madvise, int, which, pid_t, upid,
+ ^~~~~~~~~~~~~~~
+In file included from ../mm/madvise.c:11:0:
+../include/linux/syscalls.h:880:17: note: previous declaration of ‘sys_process_madvise’ was here
+ asmlinkage long sys_process_madvise(int which, pid_t pid, unsigned long start,
+                 ^~~~~~~~~~~~~~~~~~~
 
+thanks.
+-- 
+~Randy
 
