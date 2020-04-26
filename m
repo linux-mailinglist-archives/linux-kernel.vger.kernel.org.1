@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86AF1B9064
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 15:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059EF1B906D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 15:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgDZNMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 09:12:55 -0400
-Received: from mail-m17613.qiye.163.com ([59.111.176.13]:51384 "EHLO
-        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbgDZNMz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 09:12:55 -0400
-Received: from ubuntu.localdomain (unknown [157.0.31.122])
-        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id B18E64825F7;
-        Sun, 26 Apr 2020 21:12:52 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: [PATCH] drm/radeon: cleanup coding style a bit
-Date:   Sun, 26 Apr 2020 06:12:44 -0700
-Message-Id: <20200426131244.22293-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726191AbgDZNSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 09:18:25 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:59692 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725876AbgDZNSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 09:18:25 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id F0527690B6900E72B260;
+        Sun, 26 Apr 2020 21:18:22 +0800 (CST)
+Received: from huawei.com (10.175.105.27) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Sun, 26 Apr 2020
+ 21:18:13 +0800
+From:   Wu Bo <wubo40@huawei.com>
+To:     <perex@perex.cz>, <tiwai@suse.com>, <libin.yang@linux.intel.com>,
+        <kai.vehmanen@linux.intel.com>, <nmahale@nvidia.com>,
+        <aplattner@nvidia.com>, <pierre-louis.bossart@linux.intel.com>
+CC:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <liuzhiqiang26@huawei.com>, <linfeilong@huawei.com>,
+        <wubo40@huawei.com>
+Subject: [PATCH] sound:hdmi:fix without unlocked before return
+Date:   Sun, 26 Apr 2020 21:17:22 +0800
+Message-ID: <1587907042-694161-1-git-send-email-wubo40@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZTlVLS0pCQkJDTk5LT0pOWVdZKFlBSE
-        83V1ktWUFJV1kJDhceCFlBWTU0KTY6NyQpLjc#WQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NCo6Ojo6Kjg6NElCPhUIM01K
-        GjIwC0lVSlVKTkNMQktNTExJQkJLVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSUlZV1kIAVlBSkJKSzcG
-X-HM-Tid: 0a71b69e7faf93bakuwsb18e64825f7
+Content-Type: text/plain
+X-Originating-IP: [10.175.105.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maybe no need to check ws before kmalloc, kmalloc will check
-itself, kmalloc`s logic is if ptr is NULL, kmalloc will just
-return
+Fix the following coccicheck warning:
+sound/pci/hda/patch_hdmi.c:1852:2-8: preceding lock on line 1846
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
+After add sanity check to pass klockwork check,
+The spdif_mutex should be unlock before return true
+in check_non_pcm_per_cvt().
+
+Signed-off-by: Wu Bo <wubo40@huawei.com>
 ---
- drivers/gpu/drm/radeon/atom.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/pci/hda/patch_hdmi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/atom.c b/drivers/gpu/drm/radeon/atom.c
-index 2c27627b6659..f15b20da5315 100644
---- a/drivers/gpu/drm/radeon/atom.c
-+++ b/drivers/gpu/drm/radeon/atom.c
-@@ -1211,8 +1211,7 @@ static int atom_execute_table_locked(struct atom_context *ctx, int index, uint32
- 	SDEBUG("<<\n");
- 
- free:
--	if (ws)
--		kfree(ectx.ws);
-+	kfree(ectx.ws);
- 	return ret;
- }
- 
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 4eff1605..c24832b 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1848,8 +1848,10 @@ static bool check_non_pcm_per_cvt(struct hda_codec *codec, hda_nid_t cvt_nid)
+ 	/* Add sanity check to pass klockwork check.
+ 	 * This should never happen.
+ 	 */
+-	if (WARN_ON(spdif == NULL))
++	if (WARN_ON(spdif == NULL)) {
++		mutex_unlock(&codec->spdif_mutex);
+ 		return true;
++	}
+ 	non_pcm = !!(spdif->status & IEC958_AES0_NONAUDIO);
+ 	mutex_unlock(&codec->spdif_mutex);
+ 	return non_pcm;
 -- 
-2.26.2
+1.8.3.1
 
