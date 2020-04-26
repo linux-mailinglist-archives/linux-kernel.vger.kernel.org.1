@@ -2,71 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ED81B9226
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A251B9260
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgDZRlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 13:41:01 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:29302 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726154AbgDZRlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 13:41:00 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 499FZ24YmjzDY;
-        Sun, 26 Apr 2020 19:40:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1587922858; bh=JLGALo/UiOILtQBtpA+1RzP50dZmtkvUbk0MBxCAtU0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ieiRqUv2js6Xx6/zbV8hMN8z+1T9FYsNDWeCarKZS1/Oh2yvV5RLnsSV1QgE2RUHM
-         cDTbxCis/xvaoXbm0Ioxrw7hJ1B1hyMccty2yA8IxWS1qcIbtkx2AMrvGapHdHE6Ho
-         dzEGoOYZ9pCoiGlU3UrHFw0AjBNJd+ukplwczjZEtfnKVcZKZcy+JjC+gez33gZ3jB
-         okVb2isuyh31bZanGwX/fylOrAW/9902SQVaP+mfUUtp/dSnLXpspvSV+bf0QeZOTY
-         qT0r/7GecdxJCaTKVfVgYakw1Q99n0fkpIAVq3WkjJIWuGQe/pMwb/6DQgSiKfsZSV
-         GYX5vrlali/Lg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Sun, 26 Apr 2020 19:40:57 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     David Heidelberg <david@ixit.cz>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        James Chen <james.chen@emc.com.tw>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>,
-        Rob Herring <robh+dt@kernel.org>,
-        Scott Liu <scott.liu@emc.com.tw>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 05/10] input: elants: refactor
- elants_i2c_execute_command()
-Message-ID: <20200426174057.GB15436@qmqm.qmqm.pl>
-References: <cover.1587916846.git.mirq-linux@rere.qmqm.pl>
- <4e5bf76e695388d6aeefa00552675c0617c044f1.1587916846.git.mirq-linux@rere.qmqm.pl>
- <127c4cf0-9bf0-60a4-bc48-28988ae24967@gmail.com>
+        id S1726262AbgDZRnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 13:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726156AbgDZRnq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 13:43:46 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28EEC061A0F;
+        Sun, 26 Apr 2020 10:43:44 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 18so6418140pfv.8;
+        Sun, 26 Apr 2020 10:43:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rt8GUdb+NK0I2GLuxT6jzzSLX3k/QT9d+BbEeLX7M/8=;
+        b=oAww4nbwiOwJa3AnN+BW6YViVNjnWjuz1v+e79bX1TEqOWxRMKjzI0Lg8EuX58DxPv
+         BaiP1atY82h2uwvlz8ZIFIYRnrxM1hKy8un6TruMv+vWSl/tjQNoATQ899R+m8/fc5wM
+         Fhb61/ckFlyL8pcJMXH2UXnDk5KQ6WNBSzJYB9gb9OWo8IwfunUQ0ykpU+T/EqNJIWSg
+         8KkJHz8pneblijJXdckdaTW5k/tujhj5Ca9oD0qmjVstRGUWx8sqss7jgHXiERypca8n
+         f1tIgwYXZ4ixMsXrgMNrCwzKjku5qiA447R34qrkxA6dJlzpH7jbezrgi5cen91ILRmH
+         jGfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rt8GUdb+NK0I2GLuxT6jzzSLX3k/QT9d+BbEeLX7M/8=;
+        b=JzOcXX5k+CZyG+XQyV0AohmFU10dA5OBas/FT7ZWPMn7PsadjVVpEqUzD8xShFl2Lq
+         xVuCAHbxUXDJ+F9TbV3OVinnjUCbmNEcqSqMLaoydOIwxItFKBZkWg7d4N1aFXrrLUho
+         JkPjgZ05oFZ41v++9QTg0aLkyNDl+vWEFXcuz3l0MdhaB16Bmla2eocWWlJAyElSwplF
+         ZLhIga6wzuQe+7ZNfLDBXbTzsdMzJUu0X0wCescZjyGxa1eSA53x+J+p3I8GLXtiUIq9
+         B7LUcPQxEgJoQ+Ebtf9cPtzHtuQf/SkMpaP2be/l/8xeQEPulN/Sq6Uw+Nu0jnH3PU35
+         Lb1Q==
+X-Gm-Message-State: AGi0PubyjRpl1gAoMaUQq5rOiOfsfRsSqQXlGeAZHkSsZjMTJyHDZEdN
+        L/FHthWKBYSsyQeFkzcUd2LXFuAGCY5P50NgkFo=
+X-Google-Smtp-Source: APiQypLHROrKSegIPV4KGfP7cRTWUsVaUDA24uRQRvLT5mX/USml0FUmdqrJLTO/mMb2xeWemvIthlBhFYlVkb4LR34=
+X-Received: by 2002:aa7:8f26:: with SMTP id y6mr20431103pfr.36.1587923024164;
+ Sun, 26 Apr 2020 10:43:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <127c4cf0-9bf0-60a4-bc48-28988ae24967@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200426110256.218186-1-hdegoede@redhat.com> <20200426110256.218186-3-hdegoede@redhat.com>
+In-Reply-To: <20200426110256.218186-3-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 26 Apr 2020 20:43:32 +0300
+Message-ID: <CAHp75VezxOatMRyLa8DQEYOK=QT8RgD3ET_kqDp+tL9q9fJw1g@mail.gmail.com>
+Subject: Re: [PATCH 3/8] iio: light: cm32181: Handle ACPI instantiating a
+ cm32181 client on the SMBus ARA
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Kevin Tsai <ktsai@capellamicro.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 07:24:14PM +0300, Dmitry Osipenko wrote:
-> 26.04.2020 19:11, Michał Mirosław пишет:
-> > Apply some DRY-ing to elants_i2c_execute_command() callers.  This pulls
-> > polling and error printk()s into a single function.
-> > 
-> > Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> > ---
-> > v4: return 0 on success; use %pe for error code
-> > ---
-> >  drivers/input/touchscreen/elants_i2c.c | 189 +++++++++++++------------
-> >  1 file changed, 96 insertions(+), 93 deletions(-)
-> 
-> This patch doesn't apply to the recent linux-next, it needs to be rebased.
+On Sun, Apr 26, 2020 at 2:03 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>
+> Some ACPI systems list 2 I2C resources for the CM3218 sensor. On these
+> systems the first I2cSerialBus ACPI-resource points to the SMBus Alert
+> Response Address (ARA, 0x0c) and the second I2cSerialBus ACPI-resource
+> points to the actual CM3218 sensor address.
+>
+> From the ACPI/x86 side devices with more then 1 I2cSerialBus ACPI-resource
+> are handled by the drivers/platform/x86/i2c-multi-instantiate.c code.
+> This code will instantiate "cm32181" i2c_client-s for both resources.
+>
+> Add a check to cm32181_probe() for the client's address being the ARA
+> address, and in that case fail the probe with -ENODEV.
+>
+> On these ACPI systems the sensor may have a SMBus Alert asserted at boot,
+> if this is the case the sensor will not respond to any i2c_transfers on
+> its actual address until we read from the ARA register to clear the Alert.
+>
+> Therefor we must (try to) read a byte from the client with the ARA
+> register, before returning -ENODEV, so that we clear the Alert and when
+> we get called again for the client instantiated for the second
+> I2cSerialBus ACPI-resource the sensor will respond to our i2c-transfers.
+>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/iio/light/cm32181.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/drivers/iio/light/cm32181.c b/drivers/iio/light/cm32181.c
+> index fd371b36c7b3..e8be20d3902c 100644
+> --- a/drivers/iio/light/cm32181.c
+> +++ b/drivers/iio/light/cm32181.c
+> @@ -51,6 +51,8 @@
+>  #define CM32181_CALIBSCALE_RESOLUTION  1000
+>  #define MLUX_PER_LUX                   1000
+>
+> +#define SMBUS_ALERT_RESPONSE_ADDRESS   0x0c
+> +
+>  static const u8 cm32181_reg[CM32181_CONF_REG_NUM] = {
+>         CM32181_REG_ADDR_CMD,
+>  };
+> @@ -333,6 +335,20 @@ static int cm32181_probe(struct i2c_client *client,
+>         struct iio_dev *indio_dev;
+>         int ret;
+>
+> +       /*
+> +        * Some ACPI systems list 2 I2C resources for the CM3218 sensor, the
+> +        * SMBus Alert Response Address (ARA, 0x0c) and the actual I2C address.
+> +        * drivers/platform/x86/i2c-multi-instantiate.c instantiates "cm32181"
 
-I'm rebasing against for-linus brach at [1]. Will send v5 shortly.
+> +        * i2c_client-s for both resources, ignore the ARA client.
 
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git
+A nit: 'I2C clients'
+
+> +        * On these systems the sensor may have a SMBus Alert asserted at boot,
+> +        * in that case the ARA must be read to clear the Alert otherwise the
+> +        * sensor will not respond on its actual I2C address.
+> +        */
+> +       if (client->addr == SMBUS_ALERT_RESPONSE_ADDRESS) {
+> +               i2c_smbus_read_byte(client);
+> +               return -ENODEV;
+> +       }
+> +
+>         indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*cm32181));
+>         if (!indio_dev) {
+>                 dev_err(&client->dev, "devm_iio_device_alloc failed\n");
+> --
+> 2.26.0
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
