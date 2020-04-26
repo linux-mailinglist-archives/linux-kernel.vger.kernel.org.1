@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8689E1B8A3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 02:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0161B8A40
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 02:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgDZAHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 20:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        id S1726133AbgDZATz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 20:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgDZAHh (ORCPT
+        with ESMTP id S1726070AbgDZATy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 20:07:37 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B116C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 17:07:37 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o185so6702965pgo.3
-        for <linux-kernel@vger.kernel.org>; Sat, 25 Apr 2020 17:07:37 -0700 (PDT)
+        Sat, 25 Apr 2020 20:19:54 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF9AC061A0C;
+        Sat, 25 Apr 2020 17:19:54 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id t11so10806022lfe.4;
+        Sat, 25 Apr 2020 17:19:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YzMxlvsZdY3F2jNP3M1a1yilRwL8c1I8SUF9ftDT+UY=;
-        b=cp6OCDY+S7VRLhztJuHqgoNFhYIeXviwHtgxUOsIWNXgyb7fGVgCAL2gh6A4gTqqI9
-         asa8exs/QR2SJABOZVusPpmCpgjvSZQHwczndTzNXO8LZKYrbfStGYswukuMG3pRVJtX
-         W/t5k36Ps5TucWvy8DmTiHBqsdeWlAOqima0gQ+abAklDC0fb1IVC6tBtd8tWAdMxn86
-         RwkRHycg4HrMyhuv8M+Bx3V2qtv0xc9a0MjL5gaKX1LUw4Gh1156QxTE8hamJcMXVnl9
-         f/9SOLuHqEEdQ4qa0C8B9CrcGQ5m1MesyiTFD8pW7L+x0NkPeOp24BYBGy92XOdWe+8b
-         alaA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GjVFWEgrL2Ux9uVNk0g7rNZWZJTRkYADX8y42+b1M8o=;
+        b=ZC3zrU05fbizWbcQ8emn7edlFo5iDg+TzQvaZFSeyPTgMqBlTrkiO7mfTOWoeR4f7j
+         0QTnpwcVxBqJT81DSpxSbXsckT1+9keSn+Sn0K7cO/EojkNs+MYfglPs/Lry42tlHoD0
+         RDYstxLxpFSUInviPshcJun4Yq/vA3N+cAh7c0HfDYW9GoR4664ZxL5fjhpxzT1F962+
+         8HgVwtVjzr/q695NlphgLfDvLpROaOF203uHLmQ5u9TEMpar8PlzKBvEZiqfijfaqOpt
+         8+ZvE3Vqh/LJCFHP4//oo4E7I1dC+rRTmt6r76grtsvlDvhj1fKzeFk2AJcuvJ6FyQE4
+         He1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YzMxlvsZdY3F2jNP3M1a1yilRwL8c1I8SUF9ftDT+UY=;
-        b=jzg5qj1bAOm4PU7abk5LUjs3RJY1P+j4sGl7BjiaqHbkuqnBvTsFPZXdM6Y5Yt9fMC
-         MUbwZOt8EEWAAhpj0l+pKeXQDhu+6lwAQxfnWGzE7NAZUAkuX2XzAaOC6IdhKxR9cqwT
-         MVkzBC+rdQ7mPpo82lbiDKj40uJbkNWluemfd8DL0HjbMKgMctUNOCwlj/USU+vfplwQ
-         FMCEG3G/T+M6ate80QC4xI5rNMC5cLwXMobDQ2qbf2SpS97EVzK1ZYQNYmoBGPLW9YD6
-         KD831HHD472c/0MkZk6t+KHy56j8vOZH14Eo0+6MCg95S4rrMsX7eQKlIe4HegsI7S1u
-         YyVg==
-X-Gm-Message-State: AGi0PuZDNHIbl7N9NbWjviXOAmzc8Rah75Y24JClB/1NWuYfRK39bKou
-        /2drKB8kvQ+IAvni/kiJGDpjYrTp
-X-Google-Smtp-Source: APiQypKAsuFitmtwBwKxE3b9+iCnvPp7RR6x1GEzjuAnZGh4D4bTC7dGmBdoZP+Jm2BF7waQ1AxRmQ==
-X-Received: by 2002:a63:7c4:: with SMTP id 187mr5984692pgh.59.1587859656609;
-        Sat, 25 Apr 2020 17:07:36 -0700 (PDT)
-Received: from mail.google.com ([149.248.10.52])
-        by smtp.gmail.com with ESMTPSA id t188sm7747502pgc.3.2020.04.25.17.07.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Apr 2020 17:07:35 -0700 (PDT)
-Date:   Sun, 26 Apr 2020 08:07:27 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/slub: do not place freelist pointer to middle of
- object if redzone is on
-Message-ID: <20200426000727.u2gfxwfsrvme3a6b@mail.google.com>
-References: <20200425091338.24283-1-changbin.du@gmail.com>
- <202004251547.0F8E6856B@keescook>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GjVFWEgrL2Ux9uVNk0g7rNZWZJTRkYADX8y42+b1M8o=;
+        b=JTyq7qOiqgatlHFQTBOMX4BuGowEqujX4lxgX8hhAbXRzynfXRY5ggunMWzyR3rTuD
+         zztHw6KaCz9qcSwJB9PFNNBL1Rz797OmfRFCTbr4zUZBEA8qeidoG6iDl762Lqg8IGMz
+         DkwIHCvm2AMJDv9jY2XK5BjZ5EYdV+sq+fxs6J+eznBigZaCFUHLMP23SmYfhGjbS25o
+         JFNlmnygoE1cBzcl0rwrGTJVdOaOZ+jYLecGm9hqE++P/VR8TVwwQhm05kR0LBODP1SM
+         dq4wvvFUrHYFfU8zm7oF3CGQ1PFfAm33uJHCC+DbzYY2k5UAOTHKN5sFz72pvDyxg0Yc
+         qhpA==
+X-Gm-Message-State: AGi0Pua1KK2c4VF7HgNIHb+AWMkL459t6irBaQRDXL3mC2yranMtb5re
+        KzYjIlV5zm9w3gQi/XAfFOYdei4h
+X-Google-Smtp-Source: APiQypJp3zd9qElQgIFq2LZXXZ0IgoR/nbT3O3ZvVJESf2+voOmGINtB5DUPQaJyHcUCQzzka0sfdQ==
+X-Received: by 2002:a19:3848:: with SMTP id d8mr10665209lfj.44.1587860392392;
+        Sat, 25 Apr 2020 17:19:52 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id g6sm7016432ljj.78.2020.04.25.17.19.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Apr 2020 17:19:51 -0700 (PDT)
+Subject: Re: [RFC PATCH v10 6/9] media: tegra: Add Tegra210 Video input driver
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
+Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1587700513-28449-1-git-send-email-skomatineni@nvidia.com>
+ <1587700513-28449-7-git-send-email-skomatineni@nvidia.com>
+ <3155e0d2-94b0-6e0a-bf35-b3560c201039@gmail.com>
+ <fffc09d1-a25f-2d6e-83bd-f7657dd2ff16@nvidia.com>
+ <e5602c48-a73e-8e71-188d-6a53ebf8e4a4@gmail.com>
+ <f6d62dde-9ab5-7001-0ff4-93ed70cb207f@nvidia.com>
+ <6568af00-3d65-4ddb-f003-7a4161d751a0@gmail.com>
+ <f3a122b9-3600-b1eb-be4f-39be79d979a5@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <5a6f61c6-2049-fb61-3a80-e729708b3fb8@gmail.com>
+Date:   Sun, 26 Apr 2020 03:19:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202004251547.0F8E6856B@keescook>
+In-Reply-To: <f3a122b9-3600-b1eb-be4f-39be79d979a5@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
-On Sat, Apr 25, 2020 at 03:48:31PM -0700, Kees Cook wrote:
-> On Sat, Apr 25, 2020 at 05:13:38PM +0800, Changbin Du wrote:
-> > The recent kernel fails to boot when slub redzone is turned on. This is
-> > caused by commit 3202fa62fb ("slub: relocate freelist pointer to middle of
-> > object") which relocates freelist pointer to middle of object. In this
-> > case, get_track() gets a wrong address and then the redzone is overwritten.
+26.04.2020 02:44, Sowjanya Komatineni пишет:
+...
+>> How much of the T210 code could be reused by T186/194?
 > 
-> Hi! A fix for this is already in -next:
+> vi/csi are common driver where soc structure should be populated for
+> T186/T194
 > 
-> https://www.ozlabs.org/~akpm/mmotm/broken-out/slub-avoid-redzone-when-choosing-freepointer-location.patch
+> Tegra210.c can't be reused for Tegra186/t194 as programming seq is a
+> whole lot diff
 > 
-> the above doesn't disable the mitigation when using redzones, so I
-> prefer that to this suggested solution.
->
-Glade to see it's been reported. But I am sorry that your patch cannot fix it.
 
-With your fix, I suppose the layout of slub is:
-|obj-fp-obj|redzone|track|...
+How are you going to separate Tegra210/186/194 drivers from each other?
+I don't think you'll want to have one "fat" driver that covers all those
+SoCs, won't you?
 
-While get_track():
-	p = object + s->offset + sizeof(void *);
+In the end it should be three modules: tegra210-video.ko
+tegra186-video.ko tegra194-video.ko.
 
-Then we still get a wrong location. I just tested linux-next and the problem is
-still there.
-
-Is the right and left redzone good enough to protect the freepointer? If not,
-I will send a patch to fix get_track() along with your patch.
-
-> -- 
-> Kees Cook
-
--- 
-Cheers,
-Changbin Du
+Using a per-SoC OPS doesn't allow you to do that because the "root"
+driver will have to lookup OPS' code symbols of every SoC, and thus, the
+unwanted driver modules will get auto-loaded if you'll try to factor out
+the OPS into a separate driver modules.
