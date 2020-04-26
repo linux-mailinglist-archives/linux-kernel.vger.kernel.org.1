@@ -2,145 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDC91B8EEF
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 12:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFEE1B8F06
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 12:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726263AbgDZKld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 06:41:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726238AbgDZKl2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 06:41:28 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33223C061A0E;
-        Sun, 26 Apr 2020 03:41:28 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id d17so16965327wrg.11;
-        Sun, 26 Apr 2020 03:41:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=71OS66q5+Ejt0CVM9F9Xc2Ppa++y7UNFVHd3OthRIGY=;
-        b=FR+v67a5vKi3Hi1SzdTPcg1Q7Pe8jxEePGV1F1w9NbO6dK80/OuhFYLMpclxdb/1Q0
-         6DynEz+yJoNi2ER6HHZKsk62dWeWeU7eYZ2slAYA8hJ4a8zyXBqdzH5TFfqPADg6i3uN
-         1CysICUqjJ3O8dbKrljmN1MYDMv4iRUPRkDTadTa4U56L+cB2mEJ9k8SD4axMMWYib2T
-         ceRmq9WsEG3pGS1H2nX0gRri/blZg4tueISMglmoQjRoELyXziX4NZGnLzztH7hW3wRt
-         Ngrcd4mOSSnFAKzE4Gd35LQL5cPxyY8KWZFmbfEQExpo48splnDre75XOj5k7r8Q+eHD
-         S9Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=71OS66q5+Ejt0CVM9F9Xc2Ppa++y7UNFVHd3OthRIGY=;
-        b=dzXD9mxBP7TvmgOnXQkJLwKM6IVIWVxUsoHVrTx7xsU2vXIW2CXmPVpIu7FbeUDKYN
-         JZ5KkoJNCpaRmP9Q3NnZUDL/i65iTLBsqb471ZsMjAJiCihVwnCXZREpft17BLT6U6JD
-         GgD3ChN6zYz/rl+xpQJzqwXgAfuGM+k7xYKAPvj03tz0LQqC2OD7AnJhpzhOQpRVPN7O
-         RjtoZOuqWf3nxRNiDq1FmmVuKWMgAwqhmQb0xxRfumOqnvpjt60U3luI8/0Of6bCiJHu
-         zrF6vxBNSMK8Oh8ktj0lpo8LoG4VFJT5/s4eos27+8ldZVoqNBtrfY0QWK6G2kj+w+Fy
-         pNng==
-X-Gm-Message-State: AGi0Pub2haCj/Uz8RZJtNo+l+ksdefrF2iZkSSTWavz7n7zbDesFPdb8
-        akBhmQxIh1a4/t2G5Z6NIoY=
-X-Google-Smtp-Source: APiQypIrb0ZxEV1ggjSVaYJASumLobe3vmR2rfufWmAZ4oevbrbzCjEoc15o2VgveWQNLhbia1Eu4Q==
-X-Received: by 2002:a5d:574b:: with SMTP id q11mr15947218wrw.324.1587897686721;
-        Sun, 26 Apr 2020 03:41:26 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:1f1:d0f0:59f6:22c5:d1f3:662d])
-        by smtp.gmail.com with ESMTPSA id y10sm10491793wma.5.2020.04.26.03.41.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Apr 2020 03:41:26 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Marcus Cooper <codekipper@gmail.com>,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v3 7/7] arm64: dts: sun50i-h6: Add HDMI audio to H6 DTSI
-Date:   Sun, 26 Apr 2020 12:41:15 +0200
-Message-Id: <20200426104115.22630-8-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200426104115.22630-1-peron.clem@gmail.com>
-References: <20200426104115.22630-1-peron.clem@gmail.com>
+        id S1726132AbgDZKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 06:46:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726116AbgDZKq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 06:46:58 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 10F692070A;
+        Sun, 26 Apr 2020 10:46:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587898017;
+        bh=2L369ClarAU5q22Tp7/oXWac72EQxXgYsmeHOPmWQf8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=K9JR8Zjj0rJUEuU7AAR/yQN3L8Zxlf+LdnKP55SykkXdmBtjvU55C5/950SmZUGKy
+         Q2Kd33dmIivzhT3aLBwZ4AOO0eWxsrI35lXzaUptTFGQeZqgbDYOR39abaqY/TuCE2
+         h3/xmf3gy7CAheS3sjdRps1/MkcWaZ3f7A2J+YhM=
+Date:   Sun, 26 Apr 2020 12:46:55 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [GIT PULL] Driver core fixes for 5.7-rc3
+Message-ID: <20200426104655.GA2120547@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
-Add a simple-soundcard to link audio between HDMI and I2S.
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 31 ++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+are available in the Git repository at:
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-index a5ee68388bd3..558fe63739cb 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-@@ -88,6 +88,24 @@
- 			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
- 	};
- 
-+	sound_hdmi: sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,name = "allwinner-hdmi";
-+		simple-audio-card,mclk-fs = <128>;
-+		simple-audio-card,frame-inversion;
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&hdmi>;
-+		};
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s1>;
-+			dai-tdm-slot-num = <2>;
-+			dai-tdm-slot-width = <32>;
-+		};
-+	};
-+
- 	soc {
- 		compatible = "simple-bus";
- 		#address-cells = <1>;
-@@ -581,6 +599,18 @@
- 			};
- 		};
- 
-+		i2s1: i2s@5091000 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun50i-h6-i2s";
-+			reg = <0x05091000 0x1000>;
-+			interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2S1>, <&ccu CLK_I2S1>;
-+			clock-names = "apb", "mod";
-+			dmas = <&dma 4>, <&dma 4>;
-+			resets = <&ccu RST_BUS_I2S1>;
-+			dma-names = "rx", "tx";
-+		};
-+
- 		spdif: spdif@5093000 {
- 			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun50i-h6-spdif";
-@@ -711,6 +741,7 @@
- 		};
- 
- 		hdmi: hdmi@6000000 {
-+			#sound-dai-cells = <0>;
- 			compatible = "allwinner,sun50i-h6-dw-hdmi";
- 			reg = <0x06000000 0x10000>;
- 			reg-io-width = <1>;
--- 
-2.20.1
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.7-rc3
 
+for you to fetch changes up to 5a3577039cbe0bbb8e7a12d2790e23039b8a8618:
+
+  firmware_loader: revert removal of the fw_fallback_config export (2020-04-26 10:42:15 +0200)
+
+----------------------------------------------------------------
+Driver core fixes for 5.7-rc3
+
+Here are some small firmware/driver core/debugfs fixes for 5.7-rc3.
+
+The debugfs change is now possible as now the last users of
+debugfs_create_u32() have been fixed up in the different trees that got
+merged into 5.7-rc1, and I don't want it creeping back in.
+
+The firmware changes did cause a regression in linux-next, so the final
+patch here reverts part of that, re-exporting the symbol to resolve that
+issue.  All of these patches, with the exception of the final one, have
+been in linux-next with only that one reported issue.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      firmware: imx: fix compile-testing
+
+Christoph Hellwig (1):
+      firmware_loader: remove unused exports
+
+Greg Kroah-Hartman (1):
+      debugfs: remove return value of debugfs_create_u32()
+
+Luis Chamberlain (1):
+      firmware_loader: revert removal of the fw_fallback_config export
+
+ Documentation/filesystems/debugfs.rst         |  4 ++--
+ drivers/base/firmware_loader/fallback_table.c |  1 -
+ drivers/firmware/imx/Kconfig                  |  4 ++--
+ fs/debugfs/file.c                             | 15 +++------------
+ include/linux/debugfs.h                       | 12 ++++--------
+ 5 files changed, 11 insertions(+), 25 deletions(-)
