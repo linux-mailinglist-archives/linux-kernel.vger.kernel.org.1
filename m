@@ -2,155 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AC81B9223
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E65A1B9228
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726253AbgDZRki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 13:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726154AbgDZRkh (ORCPT
+        id S1726295AbgDZRlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 13:41:13 -0400
+Received: from vultr.net.flygoat.com ([149.28.68.211]:59984 "EHLO
+        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726154AbgDZRlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 13:40:37 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E580C061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 10:40:37 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id a21so15115458ljb.9
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 10:40:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dtrc1LxUXrGUTeYL+CIuPg7oi+xXAsX+zAakCRKGiTs=;
-        b=gWkMPLVnPEbeWIBml8xtUosL0GHDXmBQiDAFLjIwwAlYDi29kGpQkrjnC64dJybCS7
-         BiJ+6Syhkqkbm6+KIFNNzKiJeiMMp5xN3JWU/LjVbJIt4pWvSyvfzWxfecXPDDM7OAJ6
-         lflbEU3okvfCmduQIp/pfmXaU9P0WDZ7eJ6ic=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dtrc1LxUXrGUTeYL+CIuPg7oi+xXAsX+zAakCRKGiTs=;
-        b=eoggxDVPQ5pIx9nokYfqfw4BxcccdVYDVzGPtloXbdyMuoryc43lF9qjnyEE+kwJvg
-         zkR4BN3yxlgO68KhkeTBRGNEAR3a9K4FF5v22/AHIj5LgDo+7Wq6JaaYN7fJpVa+16Al
-         epnASu1LQ5CgHdX15rVY9xw1aVxZBGZq1psY1bZSggSF583FYgzvHgY3b2Eq92rCz5wa
-         bMEN/fA32NDHdXh5dHyNmA4ij5anx7dVNPjib8DiUdA9RZgpoX5iMkVPlYK9vPcxJA2A
-         ek3kNl7wSlrcTif5F2QTYa8SXDb3CnPzBZeDm3CHEKDN9u4DAPzSwsqXMrHH70u30IHd
-         byvg==
-X-Gm-Message-State: AGi0PubIU1SYGY+ccz1RCyeRx7LRtfy6cHVQvwFVHSpCKy5OexQvOFNP
-        B/Dj3mpwaCQWtoWg/IvIt/25NCzsg3U=
-X-Google-Smtp-Source: APiQypJXZz1gefmsjSv4+GYm32tEgusgTrhN4TOsA8RsSTOxTAZR+9EYOZ2hBZ4Sh5Y/oAo6MYrYaA==
-X-Received: by 2002:a2e:9a54:: with SMTP id k20mr10321087ljj.265.1587922834680;
-        Sun, 26 Apr 2020 10:40:34 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id k18sm11200565lfg.81.2020.04.26.10.40.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Apr 2020 10:40:33 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id y4so15134672ljn.7
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 10:40:33 -0700 (PDT)
-X-Received: by 2002:a2e:9a54:: with SMTP id k20mr10321031ljj.265.1587922833220;
- Sun, 26 Apr 2020 10:40:33 -0700 (PDT)
+        Sun, 26 Apr 2020 13:41:12 -0400
+Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 3EFD320497;
+        Sun, 26 Apr 2020 17:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1587922872; bh=CFOqPhCNifZKIhPop2Z/lA4KDKrcXNJ4tww+sR6tyHI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=itNedcZm96N+XAGkLKBAbE9PYTNjOgkB74X6QCk0HwYQULEQ96oFQTUiEHO0hKxDM
+         nwAzj9j9Y24JWZ9i10XlfwyY/LkPCDRT6P6HLVIDyD7VHrzS4gjT8m7HVi5rg0eXJe
+         40TxrUeMwtHpZiZhF9zmeb8GzcAEUTkM+bcH8l7tKuyHaR3ZX0NLpEIE+k05flZUwT
+         wRACBWPXd/aOGEnGgPOfX9vpGo3PvDqNrW2c4OyW4eXSm129FfmlkK18e8iekLhOwb
+         RLIndEhHY0l5d+vtiLTsDtjhSqwTorLfur8z/inhF754BZeZp/D09ybFxAmfpbReQi
+         ZFAjknFXvS/og==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     akpm@linux-foundation.org
+Cc:     sunguoyun@loongson.cn, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        Daniel Silsby <dansilsby@gmail.com>,
+        Dmitry Korotin <dkorotin@wavecomp.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] mips/mm: Guard SOFT_DIRTY bit with config option
+Date:   Mon, 27 Apr 2020 01:40:55 +0800
+Message-Id: <20200426174058.1181837-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
- <87ftcv1nqe.fsf@x220.int.ebiederm.org> <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
- <20200424173927.GB26802@redhat.com> <87mu6ymkea.fsf_-_@x220.int.ebiederm.org> <875zdmmj4y.fsf_-_@x220.int.ebiederm.org>
-In-Reply-To: <875zdmmj4y.fsf_-_@x220.int.ebiederm.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 26 Apr 2020 10:40:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whvktUC9VbzWLDw71BHbV4ofkkuAYsrB5Rmxnhc-=kSeQ@mail.gmail.com>
-Message-ID: <CAHk-=whvktUC9VbzWLDw71BHbV4ofkkuAYsrB5Rmxnhc-=kSeQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] rculist: Add hlist_swap_before_rcu
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 7:14 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> To support this add hlist_swap_before_rcu.  An hlist primitive that
-> will allow swaping the leading sections of two tasks.  For exchanging
-> the task pids it will just be swapping the hlist_heads of two single
-> entry lists.  But the functionality is more general.
+After guarding SOFT_DIRTY with config option, it won't occupy
+precious page table bit on systems that didn't enable SOFT_DIRTY.
 
-So I have no problems with the series now - the code is much more
-understandable. Partly because of the split-up, partly because of the
-comments, and partly because you explained the special case and why it
-was a valid thing to do...
+It can prevent page btis overflow on MIPS32R2 systems with RIXI
+enabled.
 
-However, I did start thinking about this case again.
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Reported-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/include/asm/pgtable-bits.h | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-I still don't think the "swap entry" macro is necessarily useful in
-_general_ - any time it's an actual individual entry, that swap macro
-doesn't really work.
+diff --git a/arch/mips/include/asm/pgtable-bits.h b/arch/mips/include/asm/pgtable-bits.h
+index d43fb6f8af14..e26dc41a8a68 100644
+--- a/arch/mips/include/asm/pgtable-bits.h
++++ b/arch/mips/include/asm/pgtable-bits.h
+@@ -55,7 +55,9 @@ enum pgtable_bits {
+ #if defined(CONFIG_ARCH_HAS_PTE_SPECIAL)
+ 	_PAGE_SPECIAL_SHIFT,
+ #endif
++#if defined(CONFIG_HAVE_ARCH_SOFT_DIRTY)
+ 	_PAGE_SOFT_DIRTY_SHIFT,
++#endif
+ };
+ 
+ /*
+@@ -85,7 +87,9 @@ enum pgtable_bits {
+ #if defined(CONFIG_ARCH_HAS_PTE_SPECIAL)
+ 	_PAGE_SPECIAL_SHIFT,
+ #endif
++#if defined(CONFIG_HAVE_ARCH_SOFT_DIRTY)
+ 	_PAGE_SOFT_DIRTY_SHIFT,
++#endif
+ };
+ 
+ #elif defined(CONFIG_CPU_R3K_TLB)
+@@ -101,7 +105,9 @@ enum pgtable_bits {
+ #if defined(CONFIG_ARCH_HAS_PTE_SPECIAL)
+ 	_PAGE_SPECIAL_SHIFT,
+ #endif
++#if defined(CONFIG_HAVE_ARCH_SOFT_DIRTY)
+ 	_PAGE_SOFT_DIRTY_SHIFT,
++#endif
+ 
+ 	/* Used by TLB hardware (placed in EntryLo) */
+ 	_PAGE_GLOBAL_SHIFT = 8,
+@@ -128,7 +134,9 @@ enum pgtable_bits {
+ #if defined(CONFIG_ARCH_HAS_PTE_SPECIAL)
+ 	_PAGE_SPECIAL_SHIFT,
+ #endif
++#if defined(CONFIG_HAVE_ARCH_SOFT_DIRTY)
+ 	_PAGE_SOFT_DIRTY_SHIFT,
++#endif
+ 	/* Used by TLB hardware (placed in EntryLo*) */
+ #if defined(CONFIG_CPU_HAS_RIXI)
+ 	_PAGE_NO_EXEC_SHIFT,
+@@ -155,7 +163,11 @@ enum pgtable_bits {
+ #else
+ # define _PAGE_SPECIAL		0
+ #endif
+-#define _PAGE_SOFT_DIRTY	(1 << _PAGE_SOFT_DIRTY_SHIFT)
++#if defined(CONFIG_HAVE_ARCH_SOFT_DIRTY)
++# define _PAGE_SOFT_DIRTY	(1 << _PAGE_SOFT_DIRTY_SHIFT)
++#else
++# define _PAGE_SOFT_DIRTY	0
++#endif
+ 
+ /* Used by TLB hardware (placed in EntryLo*) */
+ #if defined(CONFIG_XPA)
+-- 
+2.26.0.rc2
 
-So the only reason it works here is because you're actually swapping
-the whole list.
-
-But that, in turn, shouldn't be using that "first node" model at all,
-it should use the hlist_head. That would have made it a lot more
-obvious what is actually going on to me.
-
-Now, the comment very much talks about the head case, but the code
-still looks like it's swapping a non-head thing.
-
-I guess the code technically _works_ with "swap two list ends", but
-does that actually really make sense as an operation?
-
-So I no longer hate how this patch looks, but I wonder if we should
-just make the whole "this node is the *first* node" a bit more
-explicit in both the caller and in the swapping code.
-
-It could be as simple as replacing just the conceptual types and
-names, so instead of some "pnode1" double-indirect node pointer, we'd
-have
-
-        struct hlist_head *left_head = container_of(left->pprev,
-struct hlist_head, first);
-        struct hlist_head *right_head = container_of(right->pprev,
-struct hlist_head, first);
-
-and then the code would do
-
-        rcu_assign_pointer(right_head->first, left);
-        rcu_assign_pointer(left_head->first, right);
-        WRITE_ONCE(left->pprev,  &right_head->first);
-        WRITE_ONCE(right->pprev,  &left_head->first);
-
-which should generate the exact same code, but makes it clear that
-what we're doing is switching the whole hlist when given the first
-entries.
-
-Doesn't that make what it actually does a lot more understandable? The
-*pnode1/pnode2 games are somewhat opaque, but with that type and name
-change and using "container_of()", the code now fairly naturally reads
-as "oh, we're changing the first pointers in the list heads, and
-making the nodes point back to them" .
-
-Again - the current function _works_ with swapping two hlists in the
-middle (not two entries - it swaps the whole list starting at that
-entry!), so your current patch is in some ways "more generic". I'm
-just suggesting that the generic case doesn't make much sense, and
-that the "we know the first entries, swap the lists" actually is what
-the real use is, and writing it as such makes the code easier to
-understand.
-
-But I'm not going to insist on this, so this is more an RFC. Maybe
-people disagree, and/or have an actual use case for that "break two
-hlists in the middle, swap the ends" that I find unlikely...
-
-(NOTE: My "convert to hlist_head" code _works_ for that case too
-because the code generation is the same! But it would be really really
-confusing for that code to be used for anything but the first entry).
-
-                       Linus
