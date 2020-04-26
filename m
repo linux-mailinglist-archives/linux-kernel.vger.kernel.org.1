@@ -2,90 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135F71B9123
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 17:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF90A1B9128
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 17:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgDZPV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 11:21:59 -0400
-Received: from mga05.intel.com ([192.55.52.43]:21919 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725975AbgDZPV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 11:21:59 -0400
-IronPort-SDR: RmKVuRa1uw4cDWtWO87frShgmoj5CBkUMIv6TH0WDrxYFUTh17Z3p47NuzJez113sW/jcw2Ft2
- 5wJeBu1UUpVg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2020 08:21:59 -0700
-IronPort-SDR: qMXhH6Y5Ppw8jvrNSDZgkysrFGrNKvsu1BDnfineDYgmgqgkeGPoppM5NhhbJ6iDYO0ORtkQXQ
- Uf3vE0MNh/Zg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,320,1583222400"; 
-   d="scan'208";a="248616221"
-Received: from unknown (HELO localhost) ([10.239.159.128])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Apr 2020 08:21:57 -0700
-Date:   Sun, 26 Apr 2020 23:23:55 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
-        jmattson@google.com, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 7/9] KVM: X86: Add userspace access interface for CET
- MSRs
-Message-ID: <20200426152355.GB29493@local-michael-cet-test.sh.intel.com>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200326081847.5870-8-weijiang.yang@intel.com>
- <08457f11-f0ac-ff4b-80b7-e5380624eca0@redhat.com>
+        id S1726179AbgDZPZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 11:25:01 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:49150 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgDZPZB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 11:25:01 -0400
+Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 4bbe76b27600f444; Sun, 26 Apr 2020 17:24:59 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Todd E Brandt <todd.e.brandt@linux.intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] Revert "cpu/hotplug: Ignore pm_wakeup_pending() for disable_nonboot_cpus()"
+Date:   Sun, 26 Apr 2020 17:24:58 +0200
+Message-ID: <26038947.HFycnDbHsR@kreacher>
+In-Reply-To: <20200409112742.3581-1-qais.yousef@arm.com>
+References: <20200409112742.3581-1-qais.yousef@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08457f11-f0ac-ff4b-80b7-e5380624eca0@redhat.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 25, 2020 at 05:31:59PM +0200, Paolo Bonzini wrote:
-> On 26/03/20 09:18, Yang Weijiang wrote:
-> > There're two different places storing Guest CET states, states
-> > managed with XSAVES/XRSTORS, as restored/saved
-> > in previous patch, can be read/write directly from/to the MSRs.
-> > For those stored in VMCS fields, they're access via vmcs_read/
-> > vmcs_write.
-> > 
-> > To correctly read/write the CET MSRs, it's necessary to check
-> > whether the kernel FPU context switch happened and reload guest
-> > FPU context if needed.
+On Thursday, April 9, 2020 1:27:40 PM CEST Qais Yousef wrote:
+> This issue was fixed already by:
 > 
-> I have one question here, it may be just a misunderstanding.
+> commit d66b16f5df4b ("arm64: Don't use disable_nonboot_cpus()")
+> commit dddf3578e0d4 ("ARM: Don't use disable_nonboot_cpus()")
 > 
-> As I understand it, the PLx_SSP MSRs are only used when the current
-> privilege level changes; the processor has a hidden SSP register for the
-> current privilege level, and the SSP can be accessed via VMCS only.
->
-> These patches do not allow saving/restoring this hidden register.
-> However, this should be necessary in order to migrate the virtual
-> machine.  The simplest way to plumb this is through a KVM-specific MSR
-> in arch/x86/include/uapi/asm/kvm_para.h.  This MSR should only be
-> accessible to userspace, i.e. only if msr_info->host_initiated.
-Thanks for raising the issue!
-I checked SDM again, yes, it's neccessary to save the current SSP for
-migration case, I'll follow your advice to add it as custom MSR.
- 
-> Testing CET in the state-test selftest is a bit hard because you have to
-> set up S_CET and the shadow stack, but it would be great to have a
-> separate test similar to tools/testing/selftests/x86_64/smm_test.  It's
-> not an absolute requirement for merging, but if you can put it on your
-> todo list it would be better.
+> The only caller of disable_nonboot_cpus() is x86, which is in a proper
+> suspend/resume path and due to the reverted patch lost its ability to
+> early abort due to a pending wakeup.
 > 
-What's the purpose of the selftest? Is it just for Shadow Stack SSP
-state transitions in various cases? e.g., L0 SSP<--->L3 SSP,
-L0 SSP1<--->L0 SSP2? We now have the KVM unit-test for CET functionalities,
-i.e., Shadow Stack and Indirect Branch Tracking for user-mode, I can put the
-state test app into the todo list as current patchset is mainly for user-mode
-protection, the supervisor-mode CET protection is the next step.
+> The fix that is being reverted is arguably a better one to backport to
+> stable trees. But it highlights the confusion about using
+> disable_nonboot_cpus() API.
+> 
+> This is a preparation to remove disable_nonboot_cpus() in favor of
+> freeze_secondary_cpus().
+> 
+> This reverts commit e98eac6ff1b45e4e73f2e6031b37c256ccb5d36b.
+> 
+> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> CC: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> CC: Len Brown <len.brown@intel.com>
+> CC: Pavel Machek <pavel@ucw.cz>
+> CC: Ingo Molnar <mingo@redhat.com>
+> CC: Borislav Petkov <bp@alien8.de>
+> CC: "H. Peter Anvin" <hpa@zytor.com>
+> CC: x86@kernel.org
+> CC: Todd E Brandt <todd.e.brandt@linux.intel.com>
+> CC: linux-pm@vger.kernel.org
+> CC: linux-kernel@vger.kernel.org
+> ---
+>  include/linux/cpu.h | 12 +++---------
+>  kernel/cpu.c        |  4 ++--
+>  2 files changed, 5 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+> index beaed2dc269e..9ead281157d3 100644
+> --- a/include/linux/cpu.h
+> +++ b/include/linux/cpu.h
+> @@ -144,18 +144,12 @@ static inline void get_online_cpus(void) { cpus_read_lock(); }
+>  static inline void put_online_cpus(void) { cpus_read_unlock(); }
+>  
+>  #ifdef CONFIG_PM_SLEEP_SMP
+> -int __freeze_secondary_cpus(int primary, bool suspend);
+> -static inline int freeze_secondary_cpus(int primary)
+> -{
+> -	return __freeze_secondary_cpus(primary, true);
+> -}
+> -
+> +extern int freeze_secondary_cpus(int primary);
+>  static inline int disable_nonboot_cpus(void)
+>  {
+> -	return __freeze_secondary_cpus(0, false);
+> +	return freeze_secondary_cpus(0);
+>  }
+> -
+> -void enable_nonboot_cpus(void);
+> +extern void enable_nonboot_cpus(void);
+>  
+>  static inline int suspend_disable_secondary_cpus(void)
+>  {
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 12ae636e9cb6..30848496cbc7 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -1327,7 +1327,7 @@ void bringup_nonboot_cpus(unsigned int setup_max_cpus)
+>  #ifdef CONFIG_PM_SLEEP_SMP
+>  static cpumask_var_t frozen_cpus;
+>  
+> -int __freeze_secondary_cpus(int primary, bool suspend)
+> +int freeze_secondary_cpus(int primary)
+>  {
+>  	int cpu, error = 0;
+>  
+> @@ -1352,7 +1352,7 @@ int __freeze_secondary_cpus(int primary, bool suspend)
+>  		if (cpu == primary)
+>  			continue;
+>  
+> -		if (suspend && pm_wakeup_pending()) {
+> +		if (pm_wakeup_pending()) {
+>  			pr_info("Wakeup pending. Abort CPU freeze\n");
+>  			error = -EBUSY;
+>  			break;
+> 
 
-> Thanks,
-> 
-> Paolo
+I would do this the other way around:
+
+1. Make x86 call freeze_secondary_cpus() directly, rename
+   enable_nonboot_cpus() and drop disable_nonboot_cpus().
+2. Get rid of __freeze_secondary_cpus().
+
+
+
