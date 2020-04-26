@@ -2,65 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACB21B91E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EC41B91F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 19:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgDZQy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:54:56 -0400
-Received: from elvis.franken.de ([193.175.24.41]:56034 "EHLO elvis.franken.de"
+        id S1726177AbgDZREi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 13:04:38 -0400
+Received: from wind.enjellic.com ([76.10.64.91]:42236 "EHLO wind.enjellic.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726152AbgDZQyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:54:55 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jSkYN-00023Z-00; Sun, 26 Apr 2020 18:54:51 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 2CE3FC0325; Sun, 26 Apr 2020 18:54:42 +0200 (CEST)
-Date:   Sun, 26 Apr 2020 18:54:42 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Guoyun Sun <sunguoyun@loongson.cn>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Daniel Silsby <dansilsby@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        TieZhu Yang <yangtiezhu@loongson.cn>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] mips/mm: Add page soft dirty tracking
-Message-ID: <20200426165441.GA10053@alpha.franken.de>
-References: <1587460527-13986-1-git-send-email-sunguoyun@loongson.cn>
-MIME-Version: 1.0
+        id S1726143AbgDZREi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 13:04:38 -0400
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 03QGvrsi012077;
+        Sun, 26 Apr 2020 11:57:53 -0500
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 03QGvrY2012076;
+        Sun, 26 Apr 2020 11:57:53 -0500
+Date:   Sun, 26 Apr 2020 11:57:53 -0500
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        akpm@linux-foundation.org, dave.hansen@intel.com,
+        sean.j.christopherson@intel.com, nhorman@redhat.com,
+        npmccallum@redhat.com, haitao.huang@intel.com,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        kai.svahn@intel.com, bp@alien8.de, josh@joshtriplett.org,
+        luto@kernel.org, kai.huang@intel.com, rientjes@google.com,
+        cedric.xing@intel.com, puiterwijk@redhat.com
+Subject: Re: [PATCH v29 00/20] Intel SGX foundations
+Message-ID: <20200426165753.GA11046@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1587460527-13986-1-git-send-email-sunguoyun@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Sun, 26 Apr 2020 11:57:54 -0500 (CDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 05:15:27PM +0800, Guoyun Sun wrote:
-> User space checkpoint and restart tool (CRIU) needs the page's change
-> to be soft tracked. This allows to do a pre checkpoint and then dump
-> only touched pages.
+On Wed, Apr 22, 2020 at 12:52:56AM +0300, Jarkko Sakkinen wrote:
+
+Good day, I hope the weekend is going well for everyone.
+
+> Intel(R) SGX is a set of CPU instructions that can be used by applications
+> to set aside private regions of code and data. The code outside the enclave
+> is disallowed to access the memory inside the enclave by the CPU access
+> control.
+>
+> ... [ elided ] ..
 > 
-> Signed-off-by: Guoyun Sun <sunguoyun@loongson.cn>
-> ---
->  arch/mips/Kconfig                    |  1 +
->  arch/mips/include/asm/pgtable-bits.h |  8 ++++--
->  arch/mips/include/asm/pgtable.h      | 48 ++++++++++++++++++++++++++++++++++--
+> The current implementation requires that the firmware sets
+> IA32_SGXLEPUBKEYHASH* MSRs as writable so that ultimately the kernel can
+> decide what enclaves it wants run. The implementation does not create
+> any bottlenecks to support read-only MSRs later on.
 
-this breaks all 32bit builds where CPU support RIXI, because it overflows
-pgtable_bits.
+It seems highly unlikely that a driver implementation with any type of
+support for read-only launch control registers would ever get into the
+kernel.  All one needs to do is review the conversations that Matthew
+Garrett's lockdown patches engender to get a sense of that, ie:
 
-Thomas.
+https://lwn.net/Articles/818277/
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+As a result, the proposed SGX driver needs support for cryptographic
+policy management before it goes into the kernel.  Either the patch
+that we have offered or something equivalent.
+
+Absent that, the driver won't address the full needs of the
+development community implementing runtimes.  In addition it also
+poses security and privacy issues that are well documented in the
+literature.
+
+As an aside, for those who haven't spent the last 5+ years of their
+life working with this technology.  SGX2 hardware platforms have the
+ability to allow unrestricted code execution in enclave context.  No
+amount of LSM or IMA interventions can provide any control over that.
+
+In fact, the Confidential Computing Consortium, sponsored by none
+other then the Linux Foundation, has at its fundamental tenant, the
+notion of developing an eco-system that allows the execution of code
+and processing of data, over which, the owner or administrator of the
+platform has no visibility or control.  It would seem only logical
+that adversarial interests would indulge themseleves in those
+capabilities as well.
+
+With respect to SGX and these issues, cryptographic policy management
+is important for the same reason that 2-factor authentication is now
+considered standard practice in the security industry.
+
+We appreciate, Jarkko, that you feel that such infrastructure is
+optional, like virtualization support, and is something that can go in
+after the driver is mainlined.  As the diffstat for our patch points
+out, the proposed support has virtually no impact on the driver, the
+same cannot be said for virtualization capabilities.
+
+Moreover, adding support for key based policy management later would
+require the addition of another ioctl in order to avoid ABI
+compatibility issues.  The current initialization ioctl is best
+suited, from an engineering perspective, to support this type of
+infrastructure.  In fact, the necessary support was removed from the
+ioctl for political reasons rather then for any valid engineering
+rationale on flexible launch control platforms, particularly with our
+patch or an equivalent approach.
+
+For the benefit of the kernel community at large, I will follow up this
+e-mail with a copy of our patch for review.  In case anyone misses it,
+or it is corrupted, the patch can be pulled from the following URL:
+
+ftp://ftp.enjellic.com/pub/sgx/kernel/SFLC-current.patch
+
+We believe the patch or an equivalent approach deserves consideration
+for the following reasons:
+
+1.) It does not modify the default behavior of the driver. ie. any
+enclave will be initialized that is presented.
+
+2.) It enables needed functionality only at the discretion and control
+of the platform owner/administrator.
+
+3.) The impact on the architecture of the driver is negligible.
+
+In closing, it is important to note that the proposed SGX driver is
+not available as a module.  This effectively excludes any alternative
+implementations of the driver without replacement of the kernel at
+large.  It also means that any platform, with SGX hardware support,
+running a kernel with this driver, has the potential for the
+security/privacy issues noted above.
+
+If key based policy management is not allowed, then the driver needs
+to be re-architected to have modular support so that alternative
+implementations or the absence of any driver support are at least
+tenable.
+
+Hopefully this is a reasoned technical approach to what has been a
+long standing issue surrounding this technology.
+
+Best wishes for a productive week.
+
+Dr. Greg
+
+As always,
+Dr. Greg Wettstein, Ph.D, Worker      SGX secured infrastructure and
+Enjellic Systems Development, LLC     autonomously self-defensive
+4206 N. 19th Ave.                     platforms.
+Fargo, ND  58102
+PH: 701-281-1686                      EMAIL: greg@enjellic.com
+------------------------------------------------------------------------------
+"Opportunity is missed by most people because it is dressed in overalls
+ and looks like work."
+                                -- Thomas Edison
