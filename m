@@ -2,212 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9093E1B931E
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 20:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD011B933A
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 20:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726544AbgDZSnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 14:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
+        id S1726182AbgDZS6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 14:58:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726491AbgDZSnK (ORCPT
+        by vger.kernel.org with ESMTP id S1726165AbgDZS6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 14:43:10 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EE9C061A0F;
-        Sun, 26 Apr 2020 11:43:10 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jSmF0-0007E9-2P; Sun, 26 Apr 2020 20:42:58 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B1C041C03A9;
-        Sun, 26 Apr 2020 20:42:54 +0200 (CEST)
-Date:   Sun, 26 Apr 2020 18:42:54 -0000
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/cpu: Uninline CR4 accessors
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200421092558.939985695@linutronix.de>
-References: <20200421092558.939985695@linutronix.de>
+        Sun, 26 Apr 2020 14:58:08 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A915C061A0F
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 11:58:07 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id c21so5218741plz.4
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 11:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yuhy6+UvC2aZCI8jEGanuJkbuaQTzx/LeqqBb0/lOXs=;
+        b=GgGSQ3vkuWOePQBjt3G7TfBokCk2s9i0Z/ZhVNrUnFenlI88fwqM9v8M1DKugotU0Y
+         99U3UQGOOiSnNqKNDAOA0xouYx5rLfzGfGdlAuHMQSOoHDXN/hxL6IiIhzXCxI1QZMur
+         AhKo21zgOl/BV+gZSWV7b4BYWf4FNZg/9VE+A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yuhy6+UvC2aZCI8jEGanuJkbuaQTzx/LeqqBb0/lOXs=;
+        b=l/UlsqQ0OJDjjuQntDhbhlJ/geCXkxM6UwrjZze3+gTd+h+aulAz8qtlIoXUEryxeM
+         Qo1QkekZU+wWk81GHg/nKpGOHvFxwWnoqtN1ZAdt579FCgdffuKHan3tr67H/SdC8ATb
+         enMNsUfSBsqlr+qZtLke4dhWACc/NK5zV0+YMAYKpcC5//IxwFALMvhEaoZrmWpSItGv
+         WvkmL/CXjr9gx0CVtNKUEW3ylY05PHHXbQvNLXumoJKdkQj4wOYAXIlsTwpZ2a15d/rr
+         RAYB/GUp/VZAJRujRyrckokWMOOJB0ntMzErTxZe2moS1H1tyl5Czr4K8svAshenEGG3
+         TqvA==
+X-Gm-Message-State: AGi0Pub5b5URiBjgkZK+PUaWDAhXTEU91zXkEwSbE2o/JZ4M7YPPGFMP
+        f6lUJYysA83ZBh0d0m9/h0M8wA==
+X-Google-Smtp-Source: APiQypLHX0oiKi3Ea3EfbnPXETuY5F51bl9kiV8kC7ToakI66ch9tzV2WSIjhnTB3uhZSGFpA4QU2A==
+X-Received: by 2002:a17:90a:3086:: with SMTP id h6mr19944816pjb.49.1587927486861;
+        Sun, 26 Apr 2020 11:58:06 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id h27sm9425153pgb.90.2020.04.26.11.58.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Apr 2020 11:58:06 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH 0/5] coresight: Minor sparse and style fixes
+Date:   Sun, 26 Apr 2020 11:58:00 -0700
+Message-Id: <20200426185805.14923-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
 MIME-Version: 1.0
-Message-ID: <158792657431.28353.5998160034997742089.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/mm branch of tip:
+I got a report that kcalloc() didn't exist in coresight-cti-platform.c
+on arm builds and that looked like we didn't include very many headers
+to get prototypes of functions like kcalloc(), etc. The first patch fixes
+this problem by including the headers and then the rest of these
+patches fix minor sparse and style issues that I saw while looking
+through the coresight directory.
 
-Commit-ID:     d8f0b35331c4423e033f81f10eb5e0c7e4e1dcec
-Gitweb:        https://git.kernel.org/tip/d8f0b35331c4423e033f81f10eb5e0c7e4e1dcec
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 21 Apr 2020 11:20:29 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 24 Apr 2020 18:46:42 +02:00
+Pathes based on v5.7-rc1.
 
-x86/cpu: Uninline CR4 accessors
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com> 
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Douglas Anderson <dianders@chromium.org>
 
-cpu_tlbstate is exported because various TLB-related functions need
-access to it, but cpu_tlbstate is sensitive information which should
-only be accessed by well-contained kernel functions and not be directly
-exposed to modules.
+Stephen Boyd (5):
+  coresight: Include required headers in C files
+  coresight: Mark some functions static
+  coresight: Don't initialize variables unnecessarily
+  coresight: Initialize arg in sparse friendly way
+  coresight: Avoid casting void pointers
 
-The various CR4 accessors require cpu_tlbstate as the CR4 shadow cache
-is located there.
+ .../coresight/coresight-cti-platform.c          | 11 ++++++++---
+ .../hwtracing/coresight/coresight-cti-sysfs.c   | 17 ++++++++++++-----
+ drivers/hwtracing/coresight/coresight-cti.c     |  6 +++---
+ drivers/hwtracing/coresight/coresight-cti.h     | 10 +++++++++-
+ drivers/hwtracing/coresight/coresight-etb10.c   |  2 +-
+ drivers/hwtracing/coresight/coresight-etm3x.c   |  2 +-
+ drivers/hwtracing/coresight/coresight-etm4x.c   |  2 +-
+ .../hwtracing/coresight/coresight-platform.c    |  4 ++--
+ drivers/hwtracing/coresight/coresight-priv.h    |  9 ++++++---
+ drivers/hwtracing/coresight/coresight-tmc.c     |  2 +-
+ 10 files changed, 44 insertions(+), 21 deletions(-)
 
-In preparation for unexporting cpu_tlbstate, create a builtin function
-for manipulating CR4 and rework the various helpers to use it.
 
-No functional change.
+base-commit: 8f3d9f354286745c751374f5f1fcafee6b3f3136
+-- 
+Sent by a computer, using git, on the internet
 
- [ bp: push the export of native_write_cr4() only when CONFIG_LKTDM=m to
-   the last patch in the series. ]
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200421092558.939985695@linutronix.de
----
- arch/x86/include/asm/tlbflush.h | 36 ++++----------------------------
- arch/x86/kernel/cpu/common.c    | 23 +++++++++++++++++++-
- arch/x86/kernel/process.c       | 11 ++++++++++-
- 3 files changed, 38 insertions(+), 32 deletions(-)
-
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index 6f66d84..d804030 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -276,37 +276,25 @@ static inline bool nmi_uaccess_okay(void)
- 
- #define nmi_uaccess_okay nmi_uaccess_okay
- 
-+void cr4_update_irqsoff(unsigned long set, unsigned long clear);
-+unsigned long cr4_read_shadow(void);
-+
- /* Initialize cr4 shadow for this CPU. */
- static inline void cr4_init_shadow(void)
- {
- 	this_cpu_write(cpu_tlbstate.cr4, __read_cr4());
- }
- 
--static inline void __cr4_set(unsigned long cr4)
--{
--	lockdep_assert_irqs_disabled();
--	this_cpu_write(cpu_tlbstate.cr4, cr4);
--	__write_cr4(cr4);
--}
--
- /* Set in this cpu's CR4. */
- static inline void cr4_set_bits_irqsoff(unsigned long mask)
- {
--	unsigned long cr4;
--
--	cr4 = this_cpu_read(cpu_tlbstate.cr4);
--	if ((cr4 | mask) != cr4)
--		__cr4_set(cr4 | mask);
-+	cr4_update_irqsoff(mask, 0);
- }
- 
- /* Clear in this cpu's CR4. */
- static inline void cr4_clear_bits_irqsoff(unsigned long mask)
- {
--	unsigned long cr4;
--
--	cr4 = this_cpu_read(cpu_tlbstate.cr4);
--	if ((cr4 & ~mask) != cr4)
--		__cr4_set(cr4 & ~mask);
-+	cr4_update_irqsoff(0, mask);
- }
- 
- /* Set in this cpu's CR4. */
-@@ -329,20 +317,6 @@ static inline void cr4_clear_bits(unsigned long mask)
- 	local_irq_restore(flags);
- }
- 
--static inline void cr4_toggle_bits_irqsoff(unsigned long mask)
--{
--	unsigned long cr4;
--
--	cr4 = this_cpu_read(cpu_tlbstate.cr4);
--	__cr4_set(cr4 ^ mask);
--}
--
--/* Read the CR4 shadow. */
--static inline unsigned long cr4_read_shadow(void)
--{
--	return this_cpu_read(cpu_tlbstate.cr4);
--}
--
- /*
-  * Mark all other ASIDs as invalid, preserves the current.
-  */
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index bed0cb8..82042f4 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -387,7 +387,28 @@ set_register:
- 			  bits_missing);
- 	}
- }
--EXPORT_SYMBOL(native_write_cr4);
-+EXPORT_SYMBOL_GPL(native_write_cr4);
-+
-+void cr4_update_irqsoff(unsigned long set, unsigned long clear)
-+{
-+	unsigned long newval, cr4 = this_cpu_read(cpu_tlbstate.cr4);
-+
-+	lockdep_assert_irqs_disabled();
-+
-+	newval = (cr4 & ~clear) | set;
-+	if (newval != cr4) {
-+		this_cpu_write(cpu_tlbstate.cr4, newval);
-+		__write_cr4(newval);
-+	}
-+}
-+EXPORT_SYMBOL(cr4_update_irqsoff);
-+
-+/* Read the CR4 shadow. */
-+unsigned long cr4_read_shadow(void)
-+{
-+	return this_cpu_read(cpu_tlbstate.cr4);
-+}
-+EXPORT_SYMBOL_GPL(cr4_read_shadow);
- 
- void cr4_init(void)
- {
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 9da70b2..f2eab49 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -612,6 +612,17 @@ void speculation_ctrl_update_current(void)
- 	preempt_enable();
- }
- 
-+static inline void cr4_toggle_bits_irqsoff(unsigned long mask)
-+{
-+	unsigned long newval, cr4 = this_cpu_read(cpu_tlbstate.cr4);
-+
-+	newval = cr4 ^ mask;
-+	if (newval != cr4) {
-+		this_cpu_write(cpu_tlbstate.cr4, newval);
-+		__write_cr4(newval);
-+	}
-+}
-+
- void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
- {
- 	unsigned long tifp, tifn;
