@@ -2,114 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A871B8FA3
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 14:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933CB1B8FB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 14:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbgDZMFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 08:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbgDZME4 (ORCPT
+        id S1726206AbgDZMGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 08:06:54 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:63183 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726135AbgDZMGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 08:04:56 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD759C09B04F;
-        Sun, 26 Apr 2020 05:04:55 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x17so16372176wrt.5;
-        Sun, 26 Apr 2020 05:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=z8FDkpOterxD+ozyNdLEoNF3qT9jBBj9bIEzb2R8YME=;
-        b=fj/j+alN0ho486l2Xz+rdD9b30m8p8mXtuFuh2lwyX8YqLrZzmlPAFICA/fEmYP9up
-         txwyM/no0xzoHKZv8vLBqLNm0L6ZjHdTJR567yserWGOboO5uoweSdKKhCu1O35jbgQw
-         4/HD6uzHbX7eTVLyX7mZoqMK9hJYBOOs7EtR1EPQz+n08DG2hxoOxXKL4WTopWPRs+rk
-         fcbglCm54D1DlxcBAm1/WtqtWXIqXUSvWylf2MtfJN9xnJs7FUqIxGqTdUX2JQNBKrNT
-         gm9wqwGlHHvSd9dqp9grtSLZbWRl48ZqdQhVTvWrogeXsw5zHtGS050Fux8AsP3VCx/m
-         Ec1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=z8FDkpOterxD+ozyNdLEoNF3qT9jBBj9bIEzb2R8YME=;
-        b=tx7Y4IKPiNeIeUiF9AI3K67sX6RKHdVotx7xIgr5oZOv/VMoAyvNnhXDlugk+KGt7a
-         LFiYKXEd1/MR01bwgs/awAT5a74TXEV107/SXO20bs3lyOjswc8syAcZlzmIQguRzbIV
-         FQlyqpI47O5WQwwS9+7CwUkSUap7mTDsC7sQH1vrVM71XIGfnpbQO5lm+JvmmktPM7+m
-         di3WbAnVNdQWKpullnty8pbEMDnUE7Ur+SfVCMa4EWVXkjiVt5Qc8eIoRioEbZH2sPn8
-         h65qVQzpCnEPxILcwsLm4/0EzV0+vhHzbO6myiFGpFxEViklb6ZDGueoO1zv/SxZe6iT
-         atJA==
-X-Gm-Message-State: AGi0PuZ1aJsUuGlSTyw726TL52yP7HAMeawufAOgr6RLuGd5MTsgccHc
-        NVOCW+x+g2Q44dpga9fDQXZRFEcINmAtWw==
-X-Google-Smtp-Source: APiQypJX89nzq607NY5Wjke/a1jEcpgbysZ4fzF+10u5wlKe8WSHjdGr0Jt93SXlggAfwNVrkI4RBQ==
-X-Received: by 2002:a5d:6ad1:: with SMTP id u17mr21231497wrw.170.1587902694276;
-        Sun, 26 Apr 2020 05:04:54 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:1f1:d0f0:59f6:22c5:d1f3:662d])
-        by smtp.gmail.com with ESMTPSA id s24sm11120026wmj.28.2020.04.26.05.04.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Apr 2020 05:04:53 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH 7/7] arm64: dts: allwinner: a64: Add HDMI audio to Pine64
-Date:   Sun, 26 Apr 2020 14:04:42 +0200
-Message-Id: <20200426120442.11560-8-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200426120442.11560-1-peron.clem@gmail.com>
-References: <20200426120442.11560-1-peron.clem@gmail.com>
+        Sun, 26 Apr 2020 08:06:54 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0TwgSATO_1587902800;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TwgSATO_1587902800)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 26 Apr 2020 20:06:41 +0800
+Subject: Re: [PATCH 1/2] locking/rtmutex: Remove unused
+ rt_mutex_cmpxchg_relaxed()
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <1587135032-188866-1-git-send-email-alex.shi@linux.alibaba.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Davidlohr Bueso <dave@stgolabs.net>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <42e577e3-1509-ebb6-dd93-662575af3dac@linux.alibaba.com>
+Date:   Sun, 26 Apr 2020 20:05:21 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1587135032-188866-1-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+This 2 small patches may missed for a few time.
 
-Enable HDMI audio on Pine64.
+Is it ok to be merged?
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Signed-off-by: Cl√©ment P√©ron <peron.clem@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Thanks
+Alex
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-index 2165f238af13..c5939ba52f19 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-@@ -99,6 +99,10 @@
- 	};
- };
- 
-+&hdmi_sound {
-+	status = "okay";
-+};
-+
- &i2c1 {
- 	status = "okay";
- };
-@@ -107,6 +111,10 @@
- 	bias-pull-up;
- };
- 
-+&i2s2 {
-+	status = "okay";
-+};
-+
- &mdio {
- 	ext_rmii_phy1: ethernet-phy@1 {
- 		compatible = "ethernet-phy-ieee802.3-c22";
--- 
-2.20.1
-
+‘⁄ 2020/4/17 œ¬ŒÁ10:50, Alex Shi –¥µ¿:
+> This macro isn't interested by anyone, so remove it.
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Davidlohr Bueso <dave@stgolabs.net>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  kernel/locking/rtmutex.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+> index c9f090d64f00..cfdd5b93264d 100644
+> --- a/kernel/locking/rtmutex.c
+> +++ b/kernel/locking/rtmutex.c
+> @@ -141,7 +141,6 @@ static void fixup_rt_mutex_waiters(struct rt_mutex *lock)
+>   * set up.
+>   */
+>  #ifndef CONFIG_DEBUG_RT_MUTEXES
+> -# define rt_mutex_cmpxchg_relaxed(l,c,n) (cmpxchg_relaxed(&l->owner, c, n) == c)
+>  # define rt_mutex_cmpxchg_acquire(l,c,n) (cmpxchg_acquire(&l->owner, c, n) == c)
+>  # define rt_mutex_cmpxchg_release(l,c,n) (cmpxchg_release(&l->owner, c, n) == c)
+>  
+> @@ -202,7 +201,6 @@ static inline bool unlock_rt_mutex_safe(struct rt_mutex *lock,
+>  }
+>  
+>  #else
+> -# define rt_mutex_cmpxchg_relaxed(l,c,n)	(0)
+>  # define rt_mutex_cmpxchg_acquire(l,c,n)	(0)
+>  # define rt_mutex_cmpxchg_release(l,c,n)	(0)
+>  
+> 
