@@ -2,229 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825321B8AB3
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 03:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2E41B8AC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 03:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgDZBRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 21:17:54 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:20509 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgDZBRx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 21:17:53 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200426011749epoutp04e76796630a70f166c2f91bf4305cceee~JOcaolASy0845008450epoutp04L
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 01:17:49 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200426011749epoutp04e76796630a70f166c2f91bf4305cceee~JOcaolASy0845008450epoutp04L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1587863869;
-        bh=ZFWUN6SwqhbZKTinzJo6P5hYJfST8OnlARc+KdAxrtw=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=Tyg6WqMnph77OViEMzVDVfr1PX9BlnWY3NlIFKCQ6Uis+8BQbOv5EDf2aCoCqfRwm
-         uLBw0dN3/nldCdIcnN9LtfFoKtqYGz8gzZ8FFQjX5P6svqBsSH0E8IkzmCYqFQqiIB
-         Q5ZbtlI5jyQbPwyT3PXD0sXPeYJA1ANuRuxoM4wY=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200426011748epcas1p2bfac8646092af2f903f7a5f4c568f472~JOcZ4dTiz2184821848epcas1p2L;
-        Sun, 26 Apr 2020 01:17:48 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 498qlb1ptLzMqYkZ; Sun, 26 Apr
-        2020 01:17:47 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4C.48.04648.A31E4AE5; Sun, 26 Apr 2020 10:17:46 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200426011745epcas1p2255acdcaac77a0efc930337a2cb51aff~JOcX0Codx1719317193epcas1p2u;
-        Sun, 26 Apr 2020 01:17:45 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200426011745epsmtrp128ce6ba78e8f1929b66a10dbd69b6bbd~JOcXzCRsA0818008180epsmtrp1i;
-        Sun, 26 Apr 2020 01:17:45 +0000 (GMT)
-X-AuditID: b6c32a37-1dbff70000001228-63-5ea4e13ae040
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        17.DD.25866.931E4AE5; Sun, 26 Apr 2020 10:17:45 +0900 (KST)
-Received: from jaewon-linux.10.32.193.11 (unknown [10.253.104.82]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200426011745epsmtip1f3ce8b3e3185a0a375ab6086a5038ba5~JOcXnAx-V2682426824epsmtip1c;
-        Sun, 26 Apr 2020 01:17:45 +0000 (GMT)
-From:   Jaewon Kim <jaewon31.kim@samsung.com>
-To:     minchan@kernel.org, mgorman@suse.de, hannes@cmpxchg.org,
-        m.szyprowski@samsung.com, mina86@mina86.com, shli@fb.com,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        jaewon31.kim@gmail.com, ytk.lee@samsung.com,
-        Jaewon Kim <jaewon31.kim@samsung.com>
-Subject: [PATCH v3] mm/vmscan: count layzfree pages and fix nr_isolated_*
- mismatch
-Date:   Sun, 26 Apr 2020 10:17:18 +0900
-Message-Id: <20200426011718.30246-1-jaewon31.kim@samsung.com>
-X-Mailer: git-send-email 2.13.7
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0hTYRju82w7y1wcptWHaK1DRRnLrTk9lYugiAMVCvWni66D+1Lp7NLO
-        JplghmuozZZllKagaRfWyppmum5kXrpQiWFhZVGWpJiSokFqa9tR6t/zPu/zvM/L971iTOoU
-        RYozDRZkNjAsKQoVND5epZBv+Fybqph24VRFnVtEXfPsoE7UlwGqeGQwhHrtrRBRH90+IXW9
-        tRenzgz3A6qqwyakLo+P4NTlZqeA6qubtymMfjw0gtEl+cM43Vzei9MeV6GI9oyexukn5ycF
-        9I2pwRD6ZIML0PXPc+gxz+Lk0D1sYgZidMgsQ4Y0oy7TkK4ht+3Ubtaq4xVKuXIdlUDKDIwe
-        acgt25PlWzNZ/9akLIthrX4qmeE4MnZjotlotSBZhpGzaEhk0rEmpcK0hmP0nNWQvibNqF+v
-        VCjWqv3K/WzGxKMOzHRm5WHH3U5RHnAvLQJzxZCIg89KXHgRCBVLiSYAi+qeCvhiFMDy0mEh
-        X4wB6D3xC5u1tH3IA3zDC+Dvc99n/L8AvH/vriigEhGr4UjVaWEARxClAE40BEdhhAPAN6On
-        QgKNcGIXnPDZgmMFxHLY2PkpyEsIDSxsb/MPEvvjlsBqHxbwQmIahz3dDTi/xhZ47+TQDA6H
-        gx2zfCQccNpx3pAP4I+yesAXNgB7PcWAV6lgsaMTCyRgxCpY543l6aWwebIyKMGI+XB43CHk
-        l5DAAruUl6yAtv5xIY+j4PSf/hlMwy8/SwQBLCVSoP12OzgFosv/BVQB4AILkYnTpyNOaVL9
-        /08eEDzGmIQmcPPl9hZAiAEZJilAtalSIZPFZetbABRjZIRkn+ViqlSiY7KPILNRa7ayiGsB
-        av/rlWCRC9KM/tM2WLRK9VqVSkXFxSfEq1XkIsnZt2yqlEhnLOggQiZknvWFiOdG5gHjuTtT
-        8sqaqFxzn/29b38ElVMjRU0FrQ630udcrcBv0W9kmujXpVePlb2rtGKa+WMvJm3Xklbo7zsr
-        NvV8Pe4Jv2D7jSV0hXKHagxsd9EBLfWgOlEvM+U+3PXtaorO2pPiaVy2aCzGPWel0Lv7imyv
-        erSrOKkwZ+BtU++lV0dJAZfBKGMwM8f8BUN131iiAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHLMWRmVeSWpSXmKPExsWy7bCSnK7lwyVxBmt3mlrMWb+GzWL1Jl+L
-        7s0zGS16379isri8aw6bxb01/1kt1h65y24x+d0zRosFx1tYLZZ9fc9usWxnP4vF4/XcDjwe
-        h9+8Z/aY2PyO3WPnrLvsHptWdbJ5bPo0id3jxIzfLB7r/rxi8ujbsorRY/Ppao/Pm+QCuKK4
-        bFJSczLLUov07RK4Mr4dPM5cMFmjomf3BbYGxjWKXYycHBICJhJH7zQwdjFycQgJ7GCUWPt8
-        CTNEQkbizfmnLF2MHEC2sMThw8UQNV8ZJQ5ve8QGUsMmoC3xfsEkVpCEiMAcRomOI9/ZQBxm
-        gQmMEscnTmcFqRIWCJL419jJAmKzCKhKbLtwnwnE5hWwleg8dpQNYoO8xML/zBMYeRYwMqxi
-        lEwtKM5Nzy02LDDKSy3XK07MLS7NS9dLzs/dxAgOUi2tHYx7Vn3QO8TIxMF4iFGCg1lJhDem
-        ZFGcEG9KYmVValF+fFFpTmrxIUZpDhYlcd6vsxbGCQmkJ5akZqemFqQWwWSZODilGpjMCg58
-        3fNOdlpbj+cEeQe+u29rg5Zlv645d4T/hNKj7Lssl/jfK7nbHzHKYf3eLpHRY3jryEGbKjOZ
-        xEvaIWJKc3lnJvxYda5Zxup/6k5bi3nPp5xP61xyT+3lFp0pKW6Zzz5+sZ/anx66OvdOu+L0
-        /yHcMmcyNgqtLnooLlAv1Nor9uhO6pp7u9a8naKmxlORs2jeuVuLpC3qWkMLZmg59ds7f7AX
-        Wjv79R6na7W//k603aL8qD40f6PF3GeL3j93jDn27v/chMyw9prAHQpvWm+KFTKvVFtWIHx/
-        0Y3pbu46AbwFbfKdvZxvFx4x/99x8dH61MVbdvQvlZ0XUfDc07vV4ZkD80HHFTWyn3OVWIoz
-        Eg21mIuKEwGB3h5PwQIAAA==
-X-CMS-MailID: 20200426011745epcas1p2255acdcaac77a0efc930337a2cb51aff
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200426011745epcas1p2255acdcaac77a0efc930337a2cb51aff
-References: <CGME20200426011745epcas1p2255acdcaac77a0efc930337a2cb51aff@epcas1p2.samsung.com>
+        id S1726271AbgDZB0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 21:26:49 -0400
+Received: from mga04.intel.com ([192.55.52.120]:18604 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726070AbgDZB0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 25 Apr 2020 21:26:48 -0400
+IronPort-SDR: 4tFuMLdaWzLE4KiSPrPQtyX04RBC9HM/hYt1p3LmlLcBu+VtDGrfjf5P7+Q03OKa9H5BVQqQU3
+ QubHQMjCkaXQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2020 18:26:48 -0700
+IronPort-SDR: mUpA8lBk93toqv4aCgP6TK0pItv0j9Gm3pStZHT+sWCSZdao0q97JtDoLqPGRLwDMjKOOclfuD
+ xlA/zwvwJu2Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,318,1583222400"; 
+   d="scan'208";a="248474150"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 25 Apr 2020 18:26:47 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jSW4F-000AAJ-0n; Sun, 26 Apr 2020 09:26:47 +0800
+Date:   Sun, 26 Apr 2020 09:25:02 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:smp/core] BUILD SUCCESS
+ 58eb7b77ad01f058e523554cb7bae7272a7d2579
+Message-ID: <5ea4e2ee.0rLvRa0qtVNs1s8K%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fix nr_isolate_* mismatch problem between cma and dirty
-lazyfree page.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  smp/core
+branch HEAD: 58eb7b77ad01f058e523554cb7bae7272a7d2579  smp: Use smp_call_func_t in on_each_cpu()
 
-If try_to_unmap_one is used for reclaim and it detects a dirty lazyfree
-page, then the lazyfree page is changed to a normal anon page having
-SwapBacked by commit 802a3a92ad7a ("mm: reclaim MADV_FREE pages"). Even
-with the change, reclaim context correctly counts isolated files because
-it uses is_file_lru to distinguish file. And the change to anon is not
-happened if try_to_unmap_one is used for migration. So migration context
-like compaction also correctly counts isolated files even though it uses
-page_is_file_lru insted of is_file_lru. Recently page_is_file_cache was
-renamed to page_is_file_lru by commit 9de4f22a60f7 ("mm: code cleanup for
-MADV_FREE").
+elapsed time: 8277m
 
-But the nr_isolate_* mismatch problem happens on cma alloc. There is
-reclaim_clean_pages_from_list which is being used only by cma. It was
-introduced by commit 02c6de8d757c ("mm: cma: discard clean pages during
-contiguous allocation instead of migration") to reclaim clean file pages
-without migration. The cma alloc uses both reclaim_clean_pages_from_list
-and migrate_pages, and it uses page_is_file_lru to count isolated
-files. If there are dirty lazyfree pages allocated from cma memory
-region, the pages are counted as isolated file at the beginging but are
-counted as isolated anon after finished.
+configs tested: 198
+configs skipped: 0
 
-Mem-Info:
-Node 0 active_anon:3045904kB inactive_anon:611448kB active_file:14892kB inactive_file:205636kB unevictable:10416kB isolated(anon):0kB isolated(file):37664kB mapped:630216kB dirty:384kB writeback:0kB shmem:42576kB writeback_tmp:0kB unstable:0kB all_unreclaimable? no
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Like log above, there were too much isolated files, 37664kB, which
-triggers too_many_isolated in reclaim even when there is no actually
-isolated file in system wide. It could be reproducible by running two
-programs, writing on MADV_FREE page and doing cma alloc, respectively.
-Although isolated anon is 0, I found that the internal value of isolated
-anon was the negative value of isolated file.
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+sparc                            allyesconfig
+sh                          rsk7269_defconfig
+m68k                             allmodconfig
+powerpc                             defconfig
+ia64                                defconfig
+mips                          ath79_defconfig
+openrisc                 simple_smp_defconfig
+ia64                         bigsur_defconfig
+sparc64                          allmodconfig
+arc                              allyesconfig
+openrisc                    or1ksim_defconfig
+parisc                generic-32bit_defconfig
+riscv                               defconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+i386                             allyesconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                        generic_defconfig
+ia64                          tiger_defconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+xtensa                          iss_defconfig
+c6x                              allyesconfig
+xtensa                       common_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+m68k                       m5475evb_defconfig
+h8300                    h8300h-sim_defconfig
+arc                                 defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+mips                            ar7_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+mips                malta_kvm_guest_defconfig
+mips                         tb0287_defconfig
+mips                       capcella_defconfig
+mips                           ip32_defconfig
+mips                  decstation_64_defconfig
+mips                      loongson3_defconfig
+mips                        bcm63xx_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+parisc               randconfig-a001-20200423
+alpha                randconfig-a001-20200423
+mips                 randconfig-a001-20200423
+m68k                 randconfig-a001-20200423
+riscv                randconfig-a001-20200423
+nds32                randconfig-a001-20200423
+nios2                randconfig-a001-20200422
+h8300                randconfig-a001-20200422
+c6x                  randconfig-a001-20200422
+sparc64              randconfig-a001-20200422
+microblaze           randconfig-a001-20200422
+sh                   randconfig-a001-20200423
+csky                 randconfig-a001-20200423
+xtensa               randconfig-a001-20200423
+openrisc             randconfig-a001-20200423
+sh                   randconfig-a001-20200422
+csky                 randconfig-a001-20200422
+s390                 randconfig-a001-20200422
+xtensa               randconfig-a001-20200422
+openrisc             randconfig-a001-20200422
+i386                 randconfig-b002-20200424
+i386                 randconfig-b003-20200424
+i386                 randconfig-b001-20200424
+x86_64               randconfig-b002-20200424
+i386                 randconfig-c002-20200425
+i386                 randconfig-c001-20200425
+x86_64               randconfig-c002-20200425
+x86_64               randconfig-c001-20200425
+i386                 randconfig-c003-20200425
+x86_64               randconfig-c003-20200425
+i386                 randconfig-c002-20200424
+i386                 randconfig-c001-20200424
+x86_64               randconfig-c001-20200424
+i386                 randconfig-c003-20200424
+x86_64               randconfig-c003-20200424
+x86_64               randconfig-d001-20200424
+i386                 randconfig-d002-20200424
+i386                 randconfig-d001-20200424
+x86_64               randconfig-d003-20200424
+i386                 randconfig-d003-20200424
+x86_64               randconfig-d001-20200423
+x86_64               randconfig-d002-20200423
+i386                 randconfig-d002-20200423
+i386                 randconfig-d001-20200423
+x86_64               randconfig-d003-20200423
+i386                 randconfig-d003-20200423
+i386                 randconfig-f002-20200425
+i386                 randconfig-f003-20200425
+x86_64               randconfig-f003-20200425
+i386                 randconfig-f001-20200425
+x86_64               randconfig-f001-20200425
+x86_64               randconfig-f002-20200424
+i386                 randconfig-f002-20200424
+i386                 randconfig-f003-20200424
+x86_64               randconfig-f003-20200424
+i386                 randconfig-f001-20200424
+x86_64               randconfig-f001-20200424
+i386                 randconfig-g003-20200424
+i386                 randconfig-g001-20200424
+x86_64               randconfig-g001-20200424
+x86_64               randconfig-g002-20200424
+i386                 randconfig-g002-20200424
+x86_64               randconfig-g003-20200424
+i386                 randconfig-g003-20200422
+x86_64               randconfig-g001-20200422
+i386                 randconfig-g001-20200422
+x86_64               randconfig-g002-20200422
+i386                 randconfig-g002-20200422
+x86_64               randconfig-g003-20200422
+x86_64               randconfig-a001-20200422
+i386                 randconfig-a003-20200422
+x86_64               randconfig-a003-20200422
+i386                 randconfig-a002-20200422
+i386                 randconfig-a001-20200422
+x86_64               randconfig-a002-20200422
+i386                 randconfig-h003-20200423
+x86_64               randconfig-h002-20200423
+i386                 randconfig-h002-20200423
+i386                 randconfig-h001-20200423
+sparc                randconfig-a001-20200423
+ia64                 randconfig-a001-20200423
+arm                  randconfig-a001-20200423
+arm64                randconfig-a001-20200423
+arc                  randconfig-a001-20200423
+sparc                randconfig-a001-20200421
+ia64                 randconfig-a001-20200421
+powerpc              randconfig-a001-20200421
+arm                  randconfig-a001-20200421
+arc                  randconfig-a001-20200421
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
 
-Fix this by compensating the isolated count for both LRU lists. Count
-non-discarded lazyfree pages in shrink_page_list, then compensate the
-counted number in reclaim_clean_pages_from_list.
-
-Reported-by: Yong-Taek Lee <ytk.lee@samsung.com>
-Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
-Suggested-by: and Acked-by: Minchan Kim <minchan@kernel.org>
 ---
-v3: remove redundant PageAnon check and rename some variables
-v2: do not change logic regarding lazyfree
-    just count dirty lazyfree pages and fix the count issue
-v1: skip dirty lazyfree pages in reclaim_clean_pages_from_list
----
- include/linux/vmstat.h |  1 +
- mm/vmscan.c            | 26 ++++++++++++++++++++------
- 2 files changed, 21 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index 292485f3d24d..10cc932e209a 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -29,6 +29,7 @@ struct reclaim_stat {
- 	unsigned nr_activate[2];
- 	unsigned nr_ref_keep;
- 	unsigned nr_unmap_fail;
-+	unsigned nr_lazyfree_fail;
- };
- 
- enum writeback_stat_item {
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b06868fc4926..5c78d480db98 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1295,11 +1295,15 @@ static unsigned long shrink_page_list(struct list_head *page_list,
- 		 */
- 		if (page_mapped(page)) {
- 			enum ttu_flags flags = ttu_flags | TTU_BATCH_FLUSH;
-+			bool was_swapbacked = PageSwapBacked(page);
- 
- 			if (unlikely(PageTransHuge(page)))
- 				flags |= TTU_SPLIT_HUGE_PMD;
-+
- 			if (!try_to_unmap(page, flags)) {
- 				stat->nr_unmap_fail += nr_pages;
-+				if (!was_swapbacked && PageSwapBacked(page))
-+					stat->nr_lazyfree_fail += nr_pages;
- 				goto activate_locked;
- 			}
- 		}
-@@ -1491,8 +1495,8 @@ unsigned long reclaim_clean_pages_from_list(struct zone *zone,
- 		.priority = DEF_PRIORITY,
- 		.may_unmap = 1,
- 	};
--	struct reclaim_stat dummy_stat;
--	unsigned long ret;
-+	struct reclaim_stat stat;
-+	unsigned long nr_reclaimed;
- 	struct page *page, *next;
- 	LIST_HEAD(clean_pages);
- 
-@@ -1504,11 +1508,21 @@ unsigned long reclaim_clean_pages_from_list(struct zone *zone,
- 		}
- 	}
- 
--	ret = shrink_page_list(&clean_pages, zone->zone_pgdat, &sc,
--			TTU_IGNORE_ACCESS, &dummy_stat, true);
-+	nr_reclaimed = shrink_page_list(&clean_pages, zone->zone_pgdat, &sc,
-+			TTU_IGNORE_ACCESS, &stat, true);
- 	list_splice(&clean_pages, page_list);
--	mod_node_page_state(zone->zone_pgdat, NR_ISOLATED_FILE, -ret);
--	return ret;
-+	mod_node_page_state(zone->zone_pgdat, NR_ISOLATED_FILE, -nr_reclaimed);
-+	/*
-+	 * Since lazyfree pages are isolated from file LRU from the beginning,
-+	 * they will rotate back to anonymous LRU in the end if it failed to
-+	 * discard so isolated count will be mismatched.
-+	 * Compensate the isolated count for both LRU lists.
-+	 */
-+	mod_node_page_state(zone->zone_pgdat, NR_ISOLATED_ANON,
-+			    stat.nr_lazyfree_fail);
-+	mod_node_page_state(zone->zone_pgdat, NR_ISOLATED_FILE,
-+			    -stat.nr_lazyfree_fail);
-+	return nr_reclaimed;
- }
- 
- /*
--- 
-2.13.7
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
