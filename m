@@ -2,226 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD011B903B
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 14:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68A61B9048
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 14:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbgDZM5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 08:57:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726139AbgDZM5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 08:57:03 -0400
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726174AbgDZM7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 08:59:48 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:42187 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726146AbgDZM7q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 08:59:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1587905984;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:openpgp:openpgp;
+        bh=cS6N3dz+H92wTTUjeik0cWhJVJMk8JtsySToZ32DZB8=;
+        b=b1hZWwDcqvovp/B4plVziw8M8d1M81CA6YyEM7aWHu30eZqdLPuKZq8m23icuhdYUByfPD
+        iVYftsvse8U3/BmHAvGKDQJHBFTQmvMuKp64scTVRBrL+AkbBxxzhZOJXzNvU9j2pScbyk
+        y64eq1bRt2H8SSinPN9JVdYU+OFCS2g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-295-L1Gr5bIyNaSAU5A4TdMIqA-1; Sun, 26 Apr 2020 08:59:40 -0400
+X-MC-Unique: L1Gr5bIyNaSAU5A4TdMIqA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 424932078E;
-        Sun, 26 Apr 2020 12:57:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587905823;
-        bh=5ABxmCph/AEBhxrGHnnsoaYgeGTDosiEQu9/OEZ3qlk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QlfVQk7WG2r4dyEklMbcAMy0GMpDWSj0TEk+tRDbBehvpH18/tpJPxkkZWfOIU0Yf
-         CeM+VhrqduwkKrSgvDQOP8lAg+8RnYBV5KlQyhP5g/OpdOy0fpMYrcu6vohSDLPQ6n
-         LMe9yknOIUSB9bahxDh26QG/tauNRDkNp+7+Enjg=
-Received: by mail-io1-f51.google.com with SMTP id i3so15833954ioo.13;
-        Sun, 26 Apr 2020 05:57:03 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYU58i0aaRtrf+hh2KTnL7LbW5qrb0f0L7+B0aUN8KPyy5cMlkY
-        dxRPrOxj0iL7FeJTS8tqz0C1EwaOU/tZhWlzOjA=
-X-Google-Smtp-Source: APiQypIiVZda1qWFcNnbDaWD1+K+dFNrZADuv/KO3CsT74d7H7QAW87LPgjCZBO4uifDcG0jHoF13wH9YekC8QUHNFc=
-X-Received: by 2002:a6b:ef03:: with SMTP id k3mr16843666ioh.203.1587905822657;
- Sun, 26 Apr 2020 05:57:02 -0700 (PDT)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1CAF545F;
+        Sun, 26 Apr 2020 12:59:36 +0000 (UTC)
+Received: from thuth.remote.csb (ovpn-112-33.ams2.redhat.com [10.36.112.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 26AC460C05;
+        Sun, 26 Apr 2020 12:59:19 +0000 (UTC)
+Subject: Re: [PATCH v2 1/7] KVM: s390: clean up redundant 'kvm_run' parameters
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Cc:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org,
+        frankja@linux.ibm.com, david@redhat.com, heiko.carstens@de.ibm.com,
+        gor@linux.ibm.com, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, maz@kernel.org,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, christoffer.dall@arm.com,
+        peterx@redhat.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200422125810.34847-1-tianjia.zhang@linux.alibaba.com>
+ <20200422125810.34847-2-tianjia.zhang@linux.alibaba.com>
+ <20200422154543.2efba3dd.cohuck@redhat.com>
+ <dc5e0fa3-558b-d606-bda9-ed281cf9e9ae@de.ibm.com>
+ <20200422180403.03f60b0c.cohuck@redhat.com>
+ <5e1e126d-f1b0-196c-594b-4289d0afb9a8@linux.alibaba.com>
+ <20200423123901.72a4c6a4.cohuck@redhat.com>
+ <71344f73-c34f-a373-49d1-5d839c6be5f6@linux.alibaba.com>
+ <1d73b700-4a20-3d7a-66d1-29b5afa03f4d@de.ibm.com>
+From:   Thomas Huth <thuth@redhat.com>
+Openpgp: preference=signencrypt
+Message-ID: <73f6ecd0-ac47-eaad-0e4f-2d41c2b34450@redhat.com>
+Date:   Sun, 26 Apr 2020 14:59:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20200418104343.GA5132@amd> <DB6PR0802MB2533670AFC1473E5C5EDAD28E9D60@DB6PR0802MB2533.eurprd08.prod.outlook.com>
- <VI1PR08MB3584451F0B0B21E00ACF56A7FED70@VI1PR08MB3584.eurprd08.prod.outlook.com>
- <CAOtvUMfNgdYZF5VaqgF-51b0+KtxqgUFD6njXFX7evz1yAJc9A@mail.gmail.com>
- <CAMj1kXEGSAD2Kkjg56UhMGgjuLBSOAKJ7ZMHdzfP2szGncu-4Q@mail.gmail.com> <DB6PR0802MB25337F768E6B2DCF943AC11CE9AE0@DB6PR0802MB2533.eurprd08.prod.outlook.com>
-In-Reply-To: <DB6PR0802MB25337F768E6B2DCF943AC11CE9AE0@DB6PR0802MB2533.eurprd08.prod.outlook.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 26 Apr 2020 14:56:51 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXECTnTg+2V+oh1+ONca9mUi14CJ1QXoaktM4N2rVs_+EQ@mail.gmail.com>
-Message-ID: <CAMj1kXECTnTg+2V+oh1+ONca9mUi14CJ1QXoaktM4N2rVs_+EQ@mail.gmail.com>
-Subject: Re: Fw: Arm CryptoCell driver -- default Y, even on machines where it
- is obviously useless
-To:     Hadar Gat <Hadar.Gat@arm.com>
-Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1d73b700-4a20-3d7a-66d1-29b5afa03f4d@de.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Apr 2020 at 14:50, Hadar Gat <Hadar.Gat@arm.com> wrote:
->
-> Hi Ard,
->
-> > -----Original Message-----
-> > From: Ard Biesheuvel <ardb@kernel.org>
-> > Sent: Sunday, 19 April 2020 11:55
-> >
-> > > > > -----Original Message-----
-> > > > > From: Pavel Machek <pavel@ucw.cz>
-> > > > > Sent: Saturday, 18 April 2020 13:44
-> > > > >
-> > > > > Hi!
-> > > > >
-> > > > > I'm configuring kernel for x86, and I get offered
-> > HW_RANDOM_CCTRNG
-> > > > > with default=Y, and help text suggesting I should enable it.
-> > > > >
-> > > > > That's... two wrong suggestions, right?
-> > > > >
-> > > > > Best regards,
-> > > > > Pavel
-> > > ...
-> > > > ________________________________________
-> > > > From: Hadar Gat <Hadar.Gat@arm.com>
-> > > > Sent: Saturday, April 18, 2020 11:31 PM
-> > > >
-> > > > Hi Pavel,
-> > > > I think you got it right..
-> > > > Indeed, Arm CryptoCell CCTRNG driver couldn't be used and obviously
-> > useless if the Arm CryptoCell HW does not exist in the system.
-> > >
-> > > There's a delicate point here though - CryptoCell is an independent
-> > > hardware block, it is not tied to a particular CPU architecture.
-> > > There are SoCs with none-Arm architecture CPU using it.
-> > >
-> > > So I would say whatever the answer is, it should be the same for any
-> > > generic embedded style HW block.
-> > >
-> > > And the help text is not architecture specific anyway, is it not..?
-> > >
-> >
-> > Both the default y and and the help text are indeed incorrect. This should be
-> > fixed. We don't enable device drivers by default, and definitely not as as
-> > builtins. A conditional default m could be acceptable if the condition is
-> > sufficiently narrow.
->
-> On one hand I totally agree with that and think the default should be N.
-> On the other hand, most of the HW_RANDOM drivers set the default to HW_RANDOM
-> and it doesn't make sense to me to do something different than almost every other HW RANDOM device.
-> Do I miss something here?
->
+On 23/04/2020 13.00, Christian Borntraeger wrote:
+>=20
+>=20
+> On 23.04.20 12:58, Tianjia Zhang wrote:
+>>
+>>
+>> On 2020/4/23 18:39, Cornelia Huck wrote:
+>>> On Thu, 23 Apr 2020 11:01:43 +0800
+>>> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
+>>>
+>>>> On 2020/4/23 0:04, Cornelia Huck wrote:
+>>>>> On Wed, 22 Apr 2020 17:58:04 +0200
+>>>>> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+>>>>> =C2=A0=C2=A0
+>>>>>> On 22.04.20 15:45, Cornelia Huck wrote:
+>>>>>>> On Wed, 22 Apr 2020 20:58:04 +0800
+>>>>>>> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
+>>>>>>>> In the current kvm version, 'kvm_run' has been included in the '=
+kvm_vcpu'
+>>>>>>>> structure. Earlier than historical reasons, many kvm-related fun=
+ction
+>>>>>>>
+>>>>>>> s/Earlier than/For/ ?
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
+>>>>>>>> parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the=
+ same time.
+>>>>>>>> This patch does a unified cleanup of these remaining redundant p=
+arameters.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+>>>>>>>> ---
+>>>>>>>> =C2=A0=C2=A0 arch/s390/kvm/kvm-s390.c | 37 +++++++++++++++++++++=
++---------------
+>>>>>>>> =C2=A0=C2=A0 1 file changed, 22 insertions(+), 15 deletions(-)
+>>>>>>>>
+>>>>>>>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>>>>>>>> index e335a7e5ead7..d7bb2e7a07ff 100644
+>>>>>>>> --- a/arch/s390/kvm/kvm-s390.c
+>>>>>>>> +++ b/arch/s390/kvm/kvm-s390.c
+>>>>>>>> @@ -4176,8 +4176,9 @@ static int __vcpu_run(struct kvm_vcpu *vcp=
+u)
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return rc;
+>>>>>>>> =C2=A0=C2=A0 }
+>>>>>>>> =C2=A0=C2=A0 -static void sync_regs_fmt2(struct kvm_vcpu *vcpu, =
+struct kvm_run *kvm_run)
+>>>>>>>> +static void sync_regs_fmt2(struct kvm_vcpu *vcpu)
+>>>>>>>> =C2=A0=C2=A0 {
+>>>>>>>> +=C2=A0=C2=A0=C2=A0 struct kvm_run *kvm_run =3D vcpu->run;
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct runtime_instr_cb *ri=
+ccb;
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct gs_cb *gscb;
+>>>>>>>> =C2=A0=C2=A0 @@ -4235,7 +4236,7 @@ static void sync_regs_fmt2(st=
+ruct kvm_vcpu *vcpu, struct kvm_run *kvm_run)
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if =
+(vcpu->arch.gs_enabled) {
+>>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 current->thread.gs_cb =3D (struct gs_cb *)
+>>>>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ &vcpu->run->s.regs.gscb;
+>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ &kvm_run->s.regs.gscb;
+>>>>>>>
+>>>>>>> Not sure if these changes (vcpu->run-> =3D> kvm_run->) are really=
+ worth
+>>>>>>> it. (It seems they amount to at least as much as the changes adve=
+rtised
+>>>>>>> in the patch description.)
+>>>>>>>
+>>>>>>> Other opinions?
+>>>>>>
+>>>>>> Agreed. It feels kind of random. Maybe just do the first line (mov=
+e kvm_run from the
+>>>>>> function parameter list into the variable declaration)? Not sure i=
+f this is better.
+>>>>>> =C2=A0=20
+>>>>>
+>>>>> There's more in this patch that I cut... but I think just moving
+>>>>> kvm_run from the parameter list would be much less disruptive.
+>>>>> =C2=A0=C2=A0=20
+>>>>
+>>>> I think there are two kinds of code(`vcpu->run->` and `kvm_run->`), =
+but
+>>>> there will be more disruptive, not less.
+>>>
+>>> I just fail to see the benefit; sure, kvm_run-> is convenient, but th=
+e
+>>> current code is just fine, and any rework should be balanced against
+>>> the cost (e.g. cluttering git annotate).
+>>>
+>>
+>> cluttering git annotate ? Does it mean Fix xxxx ("comment"). Is it pos=
+sible to solve this problem by splitting this patch?
+>=20
+> No its about breaking git blame (and bugfix backports) for just a cosme=
+tic improvement.
 
-Yes. First of all, using 'default HW_RANDOM' everywhere makes no sense
-at all, but that is not your fault.
+It could be slightly more than a cosmetic improvement (depending on the
+smartness of the compiler): vcpu->run-> are two dereferences, while
+kvm_run-> is only one dereference. So it could be slightly more compact
+and faster code.
 
-If you look at drivers/char/hw_random/Kconfig, you will see that most
-drivers have additional depends lines, which means that 'default m'
-(or 'default y' in case CONFIG_HW_RANDOM=y) will only take affect if
-the dependency is fulfilled.
+ Thomas
 
-It makes no sense to enable this driver on *every* single Linux
-system, right? Especially given that many architectures do not even
-support device tree, which is a prerequisite to be able to even probe.
-
-
-
-
-drivers/char/hw_random/Kconfig-config HW_RANDOM_INTEL
-drivers/char/hw_random/Kconfig- depends on (X86 || IA64) && PCI
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_AMD
-drivers/char/hw_random/Kconfig- depends on (X86 || PPC_MAPLE) && PCI
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_ATMEL
-drivers/char/hw_random/Kconfig- depends on ARCH_AT91 && HAVE_CLK && OF
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_BCM2835
-drivers/char/hw_random/Kconfig- depends on ARCH_BCM2835 ||
-ARCH_BCM_NSP || ARCH_BCM_5301X || \
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_IPROC_RNG200
-drivers/char/hw_random/Kconfig- depends on ARCH_BCM_IPROC ||
-ARCH_BCM2835 || ARCH_BRCMSTB
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_GEODE
-drivers/char/hw_random/Kconfig- depends on X86_32 && PCI
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_N2RNG
-drivers/char/hw_random/Kconfig- depends on SPARC64
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_VIA
-drivers/char/hw_random/Kconfig- depends on X86
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_IXP4XX
-drivers/char/hw_random/Kconfig- depends on ARCH_IXP4XX
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_OMAP
-drivers/char/hw_random/Kconfig- depends on ARCH_OMAP16XX ||
-ARCH_OMAP2PLUS || ARCH_MVEBU
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_OMAP3_ROM
-drivers/char/hw_random/Kconfig- depends on ARCH_OMAP3
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_OCTEON
-drivers/char/hw_random/Kconfig- depends on CAVIUM_OCTEON_SOC
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_PASEMI
-drivers/char/hw_random/Kconfig- depends on PPC_PASEMI
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_VIRTIO
-drivers/char/hw_random/Kconfig- depends on VIRTIO
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_TX4939
-drivers/char/hw_random/Kconfig- depends on SOC_TX4939
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_MXC_RNGA
-drivers/char/hw_random/Kconfig- depends on SOC_IMX31
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_IMX_RNGC
-drivers/char/hw_random/Kconfig- depends on HAS_IOMEM && HAVE_CLK
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_NOMADIK
-drivers/char/hw_random/Kconfig- depends on ARCH_NOMADIK
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_PSERIES
-drivers/char/hw_random/Kconfig- depends on PPC64 && IBMVIO
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_POWERNV
-drivers/char/hw_random/Kconfig- depends on PPC_POWERNV
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_HISI
-drivers/char/hw_random/Kconfig- depends on HW_RANDOM && ARCH_HISI
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_HISI_V2
-drivers/char/hw_random/Kconfig- depends on HW_RANDOM && ARM64 && ACPI
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_ST
-drivers/char/hw_random/Kconfig- depends on HW_RANDOM && ARCH_STI
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_XGENE
-drivers/char/hw_random/Kconfig- depends on HW_RANDOM && ARCH_XGENE
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_STM32
-drivers/char/hw_random/Kconfig- depends on HW_RANDOM && (ARCH_STM32 ||
-COMPILE_TEST)
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_PIC32
-drivers/char/hw_random/Kconfig- depends on HW_RANDOM && MACH_PIC32
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_MESON
-drivers/char/hw_random/Kconfig- depends on HW_RANDOM
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_CAVIUM
-drivers/char/hw_random/Kconfig- depends on HW_RANDOM && PCI && (ARM64
-|| (COMPILE_TEST && 64BIT))
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_MTK
-drivers/char/hw_random/Kconfig- depends on HW_RANDOM
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_S390
-drivers/char/hw_random/Kconfig- depends on S390
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_EXYNOS
-drivers/char/hw_random/Kconfig- depends on ARCH_EXYNOS || COMPILE_TEST
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_OPTEE
-drivers/char/hw_random/Kconfig- depends on OPTEE
---
-drivers/char/hw_random/Kconfig-config HW_RANDOM_NPCM
-drivers/char/hw_random/Kconfig- depends on ARCH_NPCM || COMPILE_TEST
