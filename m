@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CD91B92F6
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 20:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650101B92F3
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 20:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbgDZShD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 14:37:03 -0400
-Received: from mail-co1nam11olkn2047.outbound.protection.outlook.com ([40.92.18.47]:24736
+        id S1726481AbgDZSg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 14:36:57 -0400
+Received: from mail-co1nam11olkn2065.outbound.protection.outlook.com ([40.92.18.65]:26569
         "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726437AbgDZSgt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 14:36:49 -0400
+        id S1726451AbgDZSgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 14:36:50 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FgdAKw9UK9Fet4vgcPx079mVOLeiE1gH2Ne7A9hJBaMLXtmlPs/psRjm7S1nQavm1fWLLM2ovFbxQf5dEIi0+4fsbHn/T4Ucxv461Dd+GoRpqw4HbnkcVvOiKhB0IV9Gsv0tI9Mhqjq//yfQd8X6OOsqI/tfF7u3KkVN2GC0X0xqnBpei3sjfv6C/9iUxnWD679zxEzGfHjrTKjfxYEce4PA/Im3RIkEqaFaPRQNKk0/RgL2wFyYnKCL/8S6Pl8NlN4VwRWmPRW6qcxKjyi5InwNufIgE1kP8CxfCxva535mlm14ECEAfcCFLMQbtTZphegXa3TrTiJQq9b7UTEx6w==
+ b=ezxdUwS3p3CknL/pHTj5WiDxztZ3U4VFHeMGh7K7qVGIJM9zthTPJKBy72WqXyHWBOuRY2AOZpJk8JkNBQGEcrvvB2WckbS7CaDI2EE+bUpdaj/7+dKIJjvM2AD5k5/ZXKpTuZ2zE3pGMUyXV7r2tNW9/eqwmk9DOMsg39Y0DTXT1P6MQ5rnUGu4ngzupjRBEtM25VcdzDAesbT7n2YQwvyCD3fVvCavZoBK7yTsBnT9W9EO9wgpv8TLeYeKKGbbsBtrKJQJp5rdKEA9EeCBCvJrFMeOlSc2v/DNNgMEtDfHfPqNNRue4KfhQ2kjQAM98N/g5eUKBdTLNlkkZwOZzQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/GoKGzDksUV+1pa4zLs/FMuMSMNxUNRuVNG96wFu6fs=;
- b=k6cUN7vprcSNLHCQmctm27HRwwk0skd9DQjO1syyoZ05vgN+ttnC+4nm3x90a/nYe/nRN+Vn4PHWFXGz1sZ/25KyR1Xr0yqTDsVKjZ0wFNtXSr3Uja92wIN1G5lrieFMURiCPguU8GPPzdfm6rry2z+s04zIEsF4xHTMgZDPQ6TCT6C07geqnf41DReQPUfJAfgAeLXfJcYLaIaZa+t8E1fcscby8wd2m1HjDtyUQoJYUoKCUKywVT4VPXIBJZxUsiVY0flTG1im8j6ZWAKVPrRiUln/JPQPkLg+/8gD5L6qqHon+vtypiijtoYMJbbKlzK3nzctTHqDs6XtVHDHLQ==
+ bh=zOSeV4eT86/g0Brn0wyPQFC8hKAx7Ey9Mne0kgl0nFs=;
+ b=Z//uwF4O8nGkBFmeyH4kpBwhRVOMjY8Em/a8udUubh0SD1JRahnCyQPR9L2I7kfgk9YIgKVg20bj22l3ymMXjLucgXS2jBKr5DVI8XnuuFARd22pPOrH63P8KJEoquG+UKDRRtjAiuLYj08TiliagVp1d6ZzSYFHM5Sm6POBziW2z9EnE1Dfu0cpUoti9deLWKSK17zcGL3RD/2OGx5F080PZ6GUAc1k3PfOezjfGbUZYrT01Gp56Vg2XSd+PuIuDzANAPSiDR0+aEevcwWBZWkES7w9lxsvY2K3q9ScoVUdJclIMnG+rnfX1RHslZ+76sJPMTyH8gOP3pni7zRXwA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=live.ca; dmarc=pass action=none header.from=live.ca; dkim=pass
  header.d=live.ca; arc=none
 Received: from CO1NAM11FT036.eop-nam11.prod.protection.outlook.com
- (2a01:111:e400:3861::41) by
- CO1NAM11HT017.eop-nam11.prod.protection.outlook.com (2a01:111:e400:3861::418)
+ (2a01:111:e400:3861::53) by
+ CO1NAM11HT190.eop-nam11.prod.protection.outlook.com (2a01:111:e400:3861::184)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.15; Sun, 26 Apr
- 2020 18:36:47 +0000
+ 2020 18:36:48 +0000
 Received: from BN6PR04MB0660.namprd04.prod.outlook.com
  (2a01:111:e400:3861::41) by CO1NAM11FT036.mail.protection.outlook.com
  (2a01:111:e400:3861::124) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.15 via Frontend
- Transport; Sun, 26 Apr 2020 18:36:47 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:6F411540C49EC7C8EF69A1D3083A3F16EC9E7F5EAE7B576A8A33AB78CAA3BB70;UpperCasedChecksum:12B53BB0BA3ED815D8CAC83D7148B4CF19C1C929596979B7C75944CFC863DA93;SizeAsReceived:7802;Count:50
+ Transport; Sun, 26 Apr 2020 18:36:48 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:0BFDB984871B69F4CDF82D49C2AC4A9C2E9268B8CEFDF7733D362178511C9931;UpperCasedChecksum:CDCBC175BA55E477A2F1205A4514F52F58F2568F9F7E2BFD62093E07E9208B65;SizeAsReceived:7807;Count:50
 Received: from BN6PR04MB0660.namprd04.prod.outlook.com
  ([fe80::ad10:4127:4bc8:76fc]) by BN6PR04MB0660.namprd04.prod.outlook.com
  ([fe80::ad10:4127:4bc8:76fc%6]) with mapi id 15.20.2937.020; Sun, 26 Apr 2020
- 18:36:47 +0000
+ 18:36:48 +0000
 From:   Jonathan Bakker <xc-racer2@live.ca>
 To:     kgene@kernel.org, krzk@kernel.org, robh+dt@kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Jonathan Bakker <xc-racer2@live.ca>
-Subject: [PATCH 12/13] arm: dts: s5pv210: Correct FIMC definitions
-Date:   Sun, 26 Apr 2020 11:36:03 -0700
-Message-ID: <BN6PR04MB0660823C87DE000BCDF36C3AA3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
+Subject: [PATCH 13/13] arm: dts: s5pv210: aries: Set MAX8998 GPIO pulls
+Date:   Sun, 26 Apr 2020 11:36:04 -0700
+Message-ID: <BN6PR04MB06605CBCAA817375BE008EB7A3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200426183604.28494-1-xc-racer2@live.ca>
 References: <20200426183604.28494-1-xc-racer2@live.ca>
@@ -55,87 +55,81 @@ Content-Type:   text/plain; charset=US-ASCII
 X-ClientProxiedBy: CO2PR05CA0096.namprd05.prod.outlook.com
  (2603:10b6:104:1::22) To BN6PR04MB0660.namprd04.prod.outlook.com
  (2603:10b6:404:d9::21)
-X-Microsoft-Original-Message-ID: <20200426183604.28494-13-xc-racer2@live.ca>
+X-Microsoft-Original-Message-ID: <20200426183604.28494-14-xc-racer2@live.ca>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from jon-hp-6570b.telus (2001:569:fb67:7300:9f89:4b96:de0b:cd14) by CO2PR05CA0096.namprd05.prod.outlook.com (2603:10b6:104:1::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.7 via Frontend Transport; Sun, 26 Apr 2020 18:36:45 +0000
+Received: from jon-hp-6570b.telus (2001:569:fb67:7300:9f89:4b96:de0b:cd14) by CO2PR05CA0096.namprd05.prod.outlook.com (2603:10b6:104:1::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.7 via Frontend Transport; Sun, 26 Apr 2020 18:36:47 +0000
 X-Mailer: git-send-email 2.20.1
-X-Microsoft-Original-Message-ID: <20200426183604.28494-13-xc-racer2@live.ca>
-X-TMN:  [T1QFinePHD3IlFiX76UppSP0EfdViUWBuaTwjBdUAaJVt+FyA6TsWKLxp/lYTxu4]
+X-Microsoft-Original-Message-ID: <20200426183604.28494-14-xc-racer2@live.ca>
+X-TMN:  [uKUguzY0MMM+H2cjqLqU88q9ORfdnLMUmXkPEF7Abtk4e/C94NGkf/O3ufpo6leo]
 X-MS-PublicTrafficType: Email
 X-IncomingHeaderCount: 50
 X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: dda40351-596f-4e81-b90f-08d7ea10c683
-X-MS-TrafficTypeDiagnostic: CO1NAM11HT017:
+X-MS-Office365-Filtering-Correlation-Id: 62b06bdd-f1a1-4f1c-03ca-08d7ea10c75a
+X-MS-TrafficTypeDiagnostic: CO1NAM11HT190:
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jwTPbk3vJnxM4R1w0zCBIC50uxU74ryWOsDsfYbFvw0po5EjUAt3py40bRejDXKc+nUoy90TaXY0RwhuTXVZ3Dk05DrwGRSX4OQdCKkll25rf8/TXdufgTAzzoaOmF+oOsnBqU/1xA/gWnF5ludzXgsbKECFr+7kKHCRIwg9OXl8J66cnEDOWiP6PKkxv74tuhuu2Ma8/PrigHsasZDAng==
+X-Microsoft-Antispam-Message-Info: vh13DoDW7bqfIIJgOK07C8B1uEm4nxSrNEWfLyy3uBfmufbgJ18hQUCYWYd/j/FWjIPhksL5LiAZjm6mxh17jiwtCReq1VLByBuyTgtqN8U+xBW18ZJnSwMIyRDF+0ZSsrm9y+ZPU5ZfEahcb75O9dC0AnEA3eKEhwcXtSTzKHs+dKGrMpVbVXPLp3S95R0ndi0TeYrNLoou39uo4KevAA==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR04MB0660.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
-X-MS-Exchange-AntiSpam-MessageData: dyXSMkztdwt/tBAH3iSlxYnlRUbnOGtQ0Anp6IiQuRNgMOcI7Mumez60n43N346TNZwBoHmxrzsav55QJUf75Q0cDRAHjqzw8sSqb7rl/Glk2P/8RiBWxM05OJ7PZdJPBqCEDewAagAKm6gQUDrZ+333t/kRuK8UXbRfUASO7I294PcK1+iidYelTHC189w+BcriV+gU8dhNR3KgAU/shg==
+X-MS-Exchange-AntiSpam-MessageData: Do2ZAQQZeArxM6o08J6Mmz10+tpqMuYMMfnItVzF5HCNxPF5R2NoW641SP5ZVpFntF6vwfK9BV0ve52Lkne5Mm8oxjf+igQXVoFLLNSOQ8mOWjANFzXdvrDf+wjMRywPDEOoa3sJiBJp2f0ZwDttzUfIbPNhcBOIsMu+T7l5g3U6Dll9vMJliZq1wTrKf9xDsOAYciib7qfxGaOkFwlrMg==
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dda40351-596f-4e81-b90f-08d7ea10c683
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2020 18:36:47.0690
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62b06bdd-f1a1-4f1c-03ca-08d7ea10c75a
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2020 18:36:48.4534
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1NAM11HT017
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1NAM11HT190
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The extended mainscaler is only available on FIMC1 and there
-are minimum pixel alignments that differ from the default.
-Additionally, the cam-if interface is available on all three
-while FIMC2 has no rotators.  The lcd-wb interface is supported
-on FIMC1.
+Make sure that the GPIOs are configured correctly
+for the interrupt (otherwise it won't fire) and disable the
+pulls on the DVS GPIOs which are outputs.
 
 Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
 ---
- arch/arm/boot/dts/s5pv210.dtsi | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/s5pv210-aries.dtsi | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/arch/arm/boot/dts/s5pv210.dtsi b/arch/arm/boot/dts/s5pv210.dtsi
-index b3b6ad2889f9..3cbf6c05f42a 100644
---- a/arch/arm/boot/dts/s5pv210.dtsi
-+++ b/arch/arm/boot/dts/s5pv210.dtsi
-@@ -626,7 +626,7 @@
- 				clock-names = "fimc",
- 						"sclk_fimc";
- 				samsung,pix-limits = <4224 8192 1920 4224>;
--				samsung,mainscaler-ext;
-+				samsung,min-pix-alignment = <16 8>;
- 				samsung,cam-if;
- 			};
+diff --git a/arch/arm/boot/dts/s5pv210-aries.dtsi b/arch/arm/boot/dts/s5pv210-aries.dtsi
+index 7e113d750b97..000f582e9a0b 100644
+--- a/arch/arm/boot/dts/s5pv210-aries.dtsi
++++ b/arch/arm/boot/dts/s5pv210-aries.dtsi
+@@ -167,6 +167,9 @@
+ 			max8998,pmic-buck2-dvs-gpio = <&gph0 5 GPIO_ACTIVE_HIGH>;
+ 			max8998,pmic-buck2-dvs-voltage = <1100000>, <1000000>;
  
-@@ -639,9 +639,11 @@
- 						<&clocks SCLK_FIMC1>;
- 				clock-names = "fimc",
- 						"sclk_fimc";
--				samsung,pix-limits = <4224 8192 1920 4224>;
- 				samsung,mainscaler-ext;
-+				samsung,min-pix-alignment = <1 1>;
-+				samsung,pix-limits = <4224 8192 1920 4224>;
- 				samsung,cam-if;
-+				samsung,lcd-wb;
- 			};
++			pinctrl-names = "default";
++			pinctrl-0 = <&pmic_dvs_pins &pmic_irq>;
++
+ 			regulators {
+ 				ldo2_reg: LDO2 {
+ 					regulator-name = "VALIVE_1.2V";
+@@ -605,6 +608,21 @@
+ 		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
+ 	};
  
- 			fimc2: fimc@fb400000 {
-@@ -653,9 +655,10 @@
- 						<&clocks SCLK_FIMC2>;
- 				clock-names = "fimc",
- 						"sclk_fimc";
--				samsung,pix-limits = <4224 8192 1920 4224>;
--				samsung,mainscaler-ext;
--				samsung,lcd-wb;
-+				samsung,pix-limits = <1920 8192 1280 1920>;
-+				samsung,min-pix-alignment = <16 8>;
-+				samsung,rotators = <0>;
-+				samsung,cam-if;
- 			};
- 		};
- 
++	pmic_dvs_pins: pmic-dvs-pins {
++		samsung,pins = "gph0-3", "gph0-4", "gph0-5";
++		samsung,pin-function = <EXYNOS_PIN_FUNC_OUTPUT>;
++		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
++		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
++		samsung,pin-val = <0>;
++	};
++
++	pmic_irq: pmic-irq {
++		samsung,pins = "gph0-7";
++		samsung,pin-function = <EXYNOS_PIN_FUNC_F>;
++		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
++		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
++	};
++
+ 	wifi_host_wake: wifi-host-wake {
+ 		samsung,pins = "gph2-4";
+ 		samsung,pin-function = <EXYNOS_PIN_FUNC_INPUT>;
 -- 
 2.20.1
 
