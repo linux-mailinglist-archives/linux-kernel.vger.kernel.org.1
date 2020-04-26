@@ -2,136 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FE51B91DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505E41B91D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgDZQwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:52:21 -0400
-Received: from gateway23.websitewelcome.com ([192.185.49.219]:13017 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726144AbgDZQwU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:52:20 -0400
-X-Greylist: delayed 1487 seconds by postgrey-1.27 at vger.kernel.org; Sun, 26 Apr 2020 12:52:20 EDT
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id 2256ACA1
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 11:27:32 -0500 (CDT)
-Received: from br164.hostgator.com.br ([192.185.176.180])
-        by cmsmtp with SMTP
-        id Sk7wjo3p8Sl8qSk7wjDrod; Sun, 26 Apr 2020 11:27:32 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=nOj2osYNQXr8K1shlwowWOqo3kkVH+1V33i1mSrzbOo=; b=hCd69Z0a5Rcuo1M10ME1Q2NPgW
-        UF4Wfuj7T5NVxEK02KOESbe0ypBal3zFywClY6U8ETSSPA4oQ5BIC2ekU08ym/i06bW0ElDx206O4
-        j6zpUiE13vw7p0IhEjrBXKkHdkTkQGDM2azno7fzsiC0qxEkn6tbkZ4vo9wDkCneWBdJSLN4nDu7L
-        3LO+xkH3PZvRDuVQqyaA9R2t1aHlFr17/1lBa0UGjj4cOgr52e+GMJazf9FvgK2rp9jd9L4zWJK5J
-        EjD7qvS1GerElJCgRF9I7v9ZcVgLjY5kI4Rb3mPMkW7PDSw2vpXLB33nwHxtE9t89exZffR0wLzyR
-        ACzZpapQ==;
-Received: from [191.31.197.205] (port=46284 helo=[192.168.15.9])
-        by br164.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <matheus@castello.eng.br>)
-        id 1jSk7v-001MdU-Ou; Sun, 26 Apr 2020 13:27:31 -0300
-Subject: Re: [PATCH v3 3/3] ARM: dts: Add Caninos Loucos Labrador
-To:     =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        mark.rutland@arm.com, robh+dt@kernel.org,
-        edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
-References: <20200229104358.GB19610@mani>
- <20200320035104.26139-1-matheus@castello.eng.br>
- <20200320035104.26139-4-matheus@castello.eng.br>
- <20200405065137.GC8912@Mani-XPS-13-9360>
- <df32c750-a097-9210-6e13-db7db49836b5@castello.eng.br>
- <2dca5a4e-933c-0a43-e86f-21b55d75a586@suse.de>
-From:   Matheus Castello <matheus@castello.eng.br>
-Message-ID: <f9e48fba-0da8-7ba9-d44a-7909067a1df1@castello.eng.br>
-Date:   Sun, 26 Apr 2020 13:27:27 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726200AbgDZQjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 12:39:40 -0400
+Received: from elvis.franken.de ([193.175.24.41]:56014 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726147AbgDZQjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 12:39:40 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jSkJd-0001xo-00; Sun, 26 Apr 2020 18:39:37 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 7EA99C0301; Sun, 26 Apr 2020 18:27:37 +0200 (CEST)
+Date:   Sun, 26 Apr 2020 18:27:37 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: Re: [PATCH v3 3/4] MIPS: VDSO: Use $(LD) instead of $(CC) to link
+ VDSO
+Message-ID: <20200426162737.GA9322@alpha.franken.de>
+References: <20200419202128.20571-1-natechancellor@gmail.com>
+ <20200423171807.29713-1-natechancellor@gmail.com>
+ <20200423171807.29713-3-natechancellor@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2dca5a4e-933c-0a43-e86f-21b55d75a586@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - castello.eng.br
-X-BWhitelist: no
-X-Source-IP: 191.31.197.205
-X-Source-L: No
-X-Exim-ID: 1jSk7v-001MdU-Ou
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.9]) [191.31.197.205]:46284
-X-Source-Auth: matheus@castello.eng.br
-X-Email-Count: 10
-X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200423171807.29713-3-natechancellor@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas,
+On Thu, Apr 23, 2020 at 10:18:06AM -0700, Nathan Chancellor wrote:
+> Currently, the VDSO is being linked through $(CC). This does not match
+> how the rest of the kernel links objects, which is through the $(LD)
+> variable.
 
-thanks for the review.
+this causes build errors for me when (cross) compiling a big endian target:
 
-Em 4/26/20 8:58 AM, Andreas Färber escreveu:
-> Hi Matheus,
-> 
-> Am 23.04.20 um 17:20 schrieb Matheus Castello:
->> Em 4/5/20 3:51 AM, Manivannan Sadhasivam escreveu:
->>> On Fri, Mar 20, 2020 at 12:51:04AM -0300, Matheus Castello wrote:
->>>> Add Device Trees for Caninos Loucos Labrador CoM and base board.
->>>> Based on the work of Andreas Färber on Lemaker Guitar device tree.
->>>>
->>>> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
->>>
->>> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
->>>
->>> Will queue the series for v5.8 once Andreas is happy with it.
->>
->> do you have any more concerns about these patches? Let me know.
-> 
-> I've reviewed the preceding two patches. This one here looks okay,
-> 
-> Reviewed-by: Andreas Färber <afaerber@suse.de>
-> 
-> but see 2/3 - model here does contain M and your .dtsi is named -v2 - 
-> what's the difference to v1? If it's big enough to warrant a separate 
-> .dtsi, you should consider whether a versioned compatible string may be 
-> needed, too (likely in addition to, not instead of a generic one). No v1 
-> info on the website.
-> 
+target is little endian
+mips64-linux-gnu-ld: arch/mips/vdso/elf.o: endianness incompatible with that of the selected emulation
+mips64-linux-gnu-ld: failed to merge target specific data of file arch/mips/vdso/elf.o
 
-The difference between v1 and v2 is the model and vendor of the DRAM and 
-storage eMMC. But that had no impact on the software.
+Thomas.
 
-Checking examples on "/Documentation/devicetree/bindings/arm/" I saw 
-that some add enum descriptions for both the base board and system on 
-module, keeping in const only the vendor prefix of the SoC. And in the 
-device tree both have the model property description. I liked this 
-example, I think I will follow it in v4.
-
-About "-bb-" in the file name and description: on PCB is written 
-"Labrador Base-M v1.0a", so with that I think it is better to leave only 
-base on the name.
-
-I will send the v4, thank you very much for the review.
-
-BR,
-Matheus Castello
-
-> Thanks,
-> Andreas
-> 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
