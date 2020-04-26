@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C81E1B8DD4
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 10:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6B61B8DDC
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 10:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726188AbgDZIQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 04:16:54 -0400
-Received: from sauhun.de ([88.99.104.3]:43276 "EHLO pokefinder.org"
+        id S1726182AbgDZIUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 04:20:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726112AbgDZIQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 04:16:54 -0400
-Received: from localhost (p54B33954.dip0.t-ipconnect.de [84.179.57.84])
-        by pokefinder.org (Postfix) with ESMTPSA id 84CD02C01E8;
-        Sun, 26 Apr 2020 10:16:52 +0200 (CEST)
-Date:   Sun, 26 Apr 2020 10:16:52 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: busses: remove unneeded conversion to bool
-Message-ID: <20200426081652.GH1262@kunai>
-References: <20200420042816.18989-1-yanaijie@huawei.com>
+        id S1726121AbgDZIUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 04:20:53 -0400
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C5D7217BA
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 08:20:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587889253;
+        bh=32JPrJrGuDRD2wkuFtj2MYt27oiR4LTyT2PFdhPaclQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0tLZar1QUA+vvcNySsyW0rfaxWr2woQV7fXM/l6uVDEwEdBMdtgw//+P20sNglhU3
+         iyD7SKLm3Iz9jffpJMcaScYEERBIum/EprF3MM1+3GfpD5aXy7yoPfl3eygBsfKVpA
+         XSP2CPssF5zHqiaYcKY2fqCuFWxFRkkcTZMUh+mk=
+Received: by mail-ej1-f50.google.com with SMTP id a2so11425437ejx.5
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 01:20:53 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYmSfSya8hSBCzEIYFyKWsSy1BfaYzYlZrhBF1ebjEJXt7D2h3V
+        zt4rpbw8ChhjFVazAFutEoRm8Tb3scGMtARFsQ==
+X-Google-Smtp-Source: APiQypIeMlhVPVvjZ/EzBhYNkJSsKB75b0ue/XkSPqE14oZvx51BpCqy/qg7FEkcuFRxAPFavqIR3TDtbcx1mHFl0LQ=
+X-Received: by 2002:a17:906:eb90:: with SMTP id mh16mr14806818ejb.201.1587889251405;
+ Sun, 26 Apr 2020 01:20:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LZFKeWUZP29EKQNE"
-Content-Disposition: inline
-In-Reply-To: <20200420042816.18989-1-yanaijie@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200420135045.27984-1-yuehaibing@huawei.com>
+In-Reply-To: <20200420135045.27984-1-yuehaibing@huawei.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sun, 26 Apr 2020 16:20:39 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__km=QZQACp8g-Qr+aWZ4r0Yp7O5j7u8ZTpDpTXXfUdNw@mail.gmail.com>
+Message-ID: <CAAOTY__km=QZQACp8g-Qr+aWZ4r0Yp7O5j7u8ZTpDpTXXfUdNw@mail.gmail.com>
+Subject: Re: [PATCH -next] drm/mediatek: Fix Kconfig warning
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        CK Hu <ck.hu@mediatek.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, YueHaibing:
 
---LZFKeWUZP29EKQNE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+YueHaibing <yuehaibing@huawei.com> =E6=96=BC 2020=E5=B9=B44=E6=9C=8820=E6=
+=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=8810:04=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> WARNING: unmet direct dependencies detected for MTK_MMSYS
+>   Depends on [n]: (ARCH_MEDIATEK [=3Dy] || COMPILE_TEST [=3Dn]) && COMMON=
+_CLK_MT8173_MMSYS [=3Dn]
+>   Selected by [y]:
+>   - DRM_MEDIATEK [=3Dy] && HAS_IOMEM [=3Dy] && DRM [=3Dy] && (ARCH_MEDIAT=
+EK [=3Dy] || ARM && COMPILE_TEST [=3Dn]) && COMMON_CLK [=3Dy] && HAVE_ARM_S=
+MCCC [=3Dy] && OF [=3Dy]
+>
+> Add missing dependcy COMMON_CLK_MT8173_MMSYS to fix this.
 
-On Mon, Apr 20, 2020 at 12:28:16PM +0800, Jason Yan wrote:
-> The '>' expression itself is bool, no need to convert it to bool again.
-> This fixes the following coccicheck warning:
->=20
-> drivers/i2c/busses/i2c-qup.c:960:48-53: WARNING: conversion to bool not n=
-eeded here
-> drivers/i2c/busses/i2c-qup.c:962:47-52: WARNING: conversion to bool not n=
-eeded here
-> drivers/i2c/busses/i2c-qup.c:1531:29-34: WARNING: conversion to bool not =
-needed here
-> drivers/i2c/busses/i2c-qup.c:1533:29-34: WARNING: conversion to bool not =
-needed here
->=20
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+From the code relationship, mediatek drm has relation with mediatek
+mmsys, and mediatek mmsys has relation with medaitek clock.
+So I think it's better that CONFIG_MTK_MMSYS select
+CONFIG_COMMON_CLK_MT8173_MMSYS.
 
-Applied to for-next, thanks! But please fix $subject to have the driver
-name "qup" next time.
+Regards,
+Chun-Kuang.
 
-
---LZFKeWUZP29EKQNE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6lQ3AACgkQFA3kzBSg
-KbbPmQ//REatWshvQZ2+D9K9K+XGNUsZXGd1r3Vhl+QLR5zlQK1pcxW5p72VHXPj
-/f7wEZqhCawEKcY6VUbBFquHyZipMoUS7DUKsZa2r0fBLjAyY5rxGc/q/tWs4iHB
-PlBvoo0XBPLAwGr54mpiFju5PHuU6kQfhA/hPp9++anIq7WJwqxT7lJf9GM7w7Tz
-/FHZkBBFONE4yN0tD0h70JiJosrvGciJ62ymkCdqOGOO2Zt7SDmT4T0EZjPijIsk
-7IX0wevyCgqZkmxdLlFlPawh+0gbyp8larSYelNQBVw58o5hGK7JeSgIa0qyZIBq
-lZ+O5eO+0pMHONdNcjIbznJXhTMXcn28u2fegpMT3ku/YS0SenJ/QoqIK80J16/a
-3avxEVxSlOYcIXf5+OH+HtL7xfZCLwtalVu2rWwcpIikJGyD2axNz0B/c9FozQHo
-Ox80wyCkRzDVvL99fo9vBJe8/MLNezlZzlpINkmPIkjNv5ZR3cYzSs0W4ckKXTjA
-ABI4lQhQstVucG070SdxF6zJInWi+su2hLBqBT5DQ7ECt1BmoWFP7YWEBOaY9z31
-KkG6BK+DaScpka0liHt1Gy85p/lXBsKY/o5F9n8/1NsUniZ9blHqju6mNfTzLEDI
-oPHxnBR9jN/+vEq5GfgHQKnCQ0hd0jLGmpzvugbLNj0KOjf9g+U=
-=ouID
------END PGP SIGNATURE-----
-
---LZFKeWUZP29EKQNE--
+>
+> Fixes: 2c758e301ed9 ("soc / drm: mediatek: Move routing control to mmsys =
+device")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/gpu/drm/mediatek/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/Kconfig b/drivers/gpu/drm/mediatek/=
+Kconfig
+> index c420f5a3d33b..4d9b5540de68 100644
+> --- a/drivers/gpu/drm/mediatek/Kconfig
+> +++ b/drivers/gpu/drm/mediatek/Kconfig
+> @@ -6,6 +6,7 @@ config DRM_MEDIATEK
+>         depends on COMMON_CLK
+>         depends on HAVE_ARM_SMCCC
+>         depends on OF
+> +       depends on COMMON_CLK_MT8173_MMSYS
+>         select DRM_GEM_CMA_HELPER
+>         select DRM_KMS_HELPER
+>         select DRM_MIPI_DSI
+> --
+> 2.17.1
+>
+>
