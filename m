@@ -2,148 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3233C1B93EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 22:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F611B93F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 22:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbgDZU1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 16:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726176AbgDZU1B (ORCPT
+        id S1726307AbgDZU2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 16:28:18 -0400
+Received: from smtprelay0208.hostedemail.com ([216.40.44.208]:50652 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726176AbgDZU2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 16:27:01 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B68C061A0F;
-        Sun, 26 Apr 2020 13:27:00 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x2so4096400pfx.7;
-        Sun, 26 Apr 2020 13:27:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vTJAHAMO4w1usv9r2nAHSyTTMt/8kF833Hejpn2JxlM=;
-        b=T82Gpc8ptWG7LSO05/xKP5AayQbZ/sxluy3IIF6ePxiLktxwR1NcI7S4/Fh5Kf8uMJ
-         2IAtNszONmRCHxApd07MJ1/u6umxPD7SEA5NA9qWxaSodQyr6i6rfAMCeNOu9ardVS1y
-         pFW96vxRkeGqoH//3ZNNaIoiRLFguw3pEoVHMhktijYKLPrxoYmg162WKhc9qmzNvKXG
-         htMHhLhtaIFDRyup/rCHRYEZAfbWl+cR5UcZKN9YAho23nfpmWYkKAWUvgfrQifQpT0O
-         STiiFB0mSPD/Y2lDNI7LHksfdneo2QKiy+rBXbJCzXzGoQGMI3FI7XBfudOHSiz00YwK
-         88bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vTJAHAMO4w1usv9r2nAHSyTTMt/8kF833Hejpn2JxlM=;
-        b=IC7QQB9l9w2EqSDU2NuiLAqNki0okTIVRf4b0fwN4cytBfye309GblIdkAMKZPDohG
-         kVTaFXqEJ65bfVujTELta5YyIH//GcgwfrFqokep8JszDTZJ5f+TPrA+Al9McbGC0i0e
-         b2cJLhEZpM4ct1G1zTsoQ54ywyyIxA1MeAB2S8nsGqbmjw4aEeXO1iajlzvh8gVNKjaf
-         9m2YSOevjdtT46zv57vCzHpxAzxtFpm/Po6F9YNFG1oySafz5vdwWt6F6L3WsiODqsmO
-         Zbtfmznx/QnRTwlsv6C48meCGzBfjg/DeLlFO4NT0+HvtlkW3pje3MScmgsRD34taCqN
-         UF+g==
-X-Gm-Message-State: AGi0PuZZ0dvm8zkqL3meH640e/d7XDTSisTvdCSb7ciDrgk3DMKYn0VR
-        ZfIonVGCU+vE0D3Nx9f2enU=
-X-Google-Smtp-Source: APiQypLyIrqWODgQRUdxnMw09DNhDjdNmLBUAU5v04X/9Ys2aG7jfmfTcPaQ3XhPbkpvF3De46nfJA==
-X-Received: by 2002:a63:5d5c:: with SMTP id o28mr20467058pgm.322.1587932819918;
-        Sun, 26 Apr 2020 13:26:59 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id q11sm3748378pfl.97.2020.04.26.13.26.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Apr 2020 13:26:59 -0700 (PDT)
-Subject: Re: INFO: rcu detected stall in wg_packet_tx_worker
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     syzbot <syzbot+0251e883fe39e7a0cb0a@syzkaller.appspotmail.com>,
-        David Miller <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        jhs@mojatatu.com,
-        =?UTF-8?B?SmnFmcOtIFDDrXJrbw==?= <jiri@resnulli.us>,
-        Krzysztof Kozlowski <krzk@kernel.org>, kuba@kernel.org,
-        kvalo@codeaurora.org, leon@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, syzkaller-bugs@googlegroups.com,
-        Thomas Gleixner <tglx@linutronix.de>, vivien.didelot@gmail.com,
-        Cong Wang <xiyou.wangcong@gmail.com>
-References: <0000000000005fd19505a4355311@google.com>
- <e40c443e-74aa-bad4-7be8-4cdddfdf3eaf@gmail.com>
- <CAHmME9ov2ae08UTzwKL7enquChzDNxpg4c=ppnJqS2QF6ZAn_Q@mail.gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <f2eb18ea-b32a-4b64-0417-9b5b2df98e33@gmail.com>
-Date:   Sun, 26 Apr 2020 13:26:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Sun, 26 Apr 2020 16:28:17 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id E605C182CED5B;
+        Sun, 26 Apr 2020 20:28:16 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3871:3872:4321:4605:5007:6119:6120:6248:7901:7903:10004:10400:10848:11026:11232:11473:11658:11914:12296:12297:12740:12760:12895:13069:13255:13311:13357:13439:14659:14721:14777:21080:21433:21524:21627:21990:30034:30054:30056:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bomb38_8261953751d37
+X-Filterd-Recvd-Size: 1958
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 26 Apr 2020 20:28:15 +0000 (UTC)
+Message-ID: <6a051ca29c9017f1c6fefc5d2894c8dd4542a208.camel@perches.com>
+Subject: Re: [PATCH v2 2/3] floppy: add defines for sizes of cmd & reply
+ buffers of floppy_raw_cmd
+From:   Joe Perches <joe@perches.com>
+To:     Denis Efremov <efremov@linux.com>, linux-block@vger.kernel.org
+Cc:     Willy Tarreau <w@1wt.eu>, Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 26 Apr 2020 13:28:14 -0700
+In-Reply-To: <20200426130728.63399-3-efremov@linux.com>
+References: <20200426130728.63399-1-efremov@linux.com>
+         <20200426130728.63399-3-efremov@linux.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-In-Reply-To: <CAHmME9ov2ae08UTzwKL7enquChzDNxpg4c=ppnJqS2QF6ZAn_Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 2020-04-26 at 16:07 +0300, Denis Efremov wrote:
+> Use FD_RAW_CMD_SIZE, FD_RAW_REPLY_SIZE defines instead of magic numbers
+> for cmd & reply buffers of struct floppy_raw_cmd. Remove local to
+> floppy.c MAX_REPLIES define, as it is now FD_RAW_REPLY_SIZE.
+> FD_RAW_CMD_FULLSIZE added as we allow command to also fill reply_count
+> and reply fields.
+[]
+> diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+[]
+> @@ -1847,7 +1846,7 @@ static void show_floppy(int fdc)
+>  			output_log[(i + output_log_pos) % OLOGSIZE].jiffies);
+>  	pr_info("last result at %lu\n", resultjiffies);
+>  	pr_info("last redo_fd_request at %lu\n", lastredo);
+> -	print_hex_dump(KERN_INFO, "", DUMP_PREFIX_NONE, 16, 1,
+> +	print_hex_dump(KERN_INFO, "", DUMP_PREFIX_NONE, FD_RAW_REPLY_SIZE, 1,
+>  		       reply_buffer, resultsize, true);
 
+FD_RAW_REPLY_SIZE happens to be 16, but it's misleading
+to use it here.
 
-On 4/26/20 12:42 PM, Jason A. Donenfeld wrote:
-> On Sun, Apr 26, 2020 at 1:40 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
->>
->>
->>
->> On 4/26/20 10:57 AM, syzbot wrote:
->>> syzbot has bisected this bug to:
->>>
->>> commit e7096c131e5161fa3b8e52a650d7719d2857adfd
->>> Author: Jason A. Donenfeld <Jason@zx2c4.com>
->>> Date:   Sun Dec 8 23:27:34 2019 +0000
->>>
->>>     net: WireGuard secure network tunnel
->>>
->>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15258fcfe00000
->>> start commit:   b2768df2 Merge branch 'for-linus' of git://git.kernel.org/..
->>> git tree:       upstream
->>> final crash:    https://syzkaller.appspot.com/x/report.txt?x=17258fcfe00000
->>> console output: https://syzkaller.appspot.com/x/log.txt?x=13258fcfe00000
->>> kernel config:  https://syzkaller.appspot.com/x/.config?x=b7a70e992f2f9b68
->>> dashboard link: https://syzkaller.appspot.com/bug?extid=0251e883fe39e7a0cb0a
->>> userspace arch: i386
->>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15f5f47fe00000
->>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11e8efb4100000
->>>
->>> Reported-by: syzbot+0251e883fe39e7a0cb0a@syzkaller.appspotmail.com
->>> Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
->>>
->>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
->>>
->>
->> I have not looked at the repro closely, but WireGuard has some workers
->> that might loop forever, cond_resched() might help a bit.
-> 
-> I'm working on this right now. Having a bit difficult of a time
-> getting it to reproduce locally...
-> 
-> The reports show the stall happening always at:
-> 
-> static struct sk_buff *
-> sfq_dequeue(struct Qdisc *sch)
-> {
->        struct sfq_sched_data *q = qdisc_priv(sch);
->        struct sk_buff *skb;
->        sfq_index a, next_a;
->        struct sfq_slot *slot;
-> 
->        /* No active slots */
->        if (q->tail == NULL)
->                return NULL;
-> 
-> next_slot:
->        a = q->tail->next;
->        slot = &q->slots[a];
-> 
-> Which is kind of interesting, because it's not like that should block
-> or anything, unless there's some kasan faulting happening.
-> 
-
-I am not really sure WireGuard is involved, the repro does not rely on it anyway.
+This use of 16 is not for FD_RAW_REPLY_SIZE, but the
+width of the line
+being dumped, and this value must be
+either 16 or 32.
 
 
