@@ -2,105 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2584B1B91DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACB21B91E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726205AbgDZQra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726143AbgDZQr3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:47:29 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492A2C061A0F;
-        Sun, 26 Apr 2020 09:47:29 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id f18so15011857lja.13;
-        Sun, 26 Apr 2020 09:47:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XIkuGkmw9unvvxymgGhCNFr2UVR4Jh5aeD7lzIpidEw=;
-        b=OM7T5Oc6RcvIDmJ0EmhtESuQbfEIF25wxn9f1W12Bqxo9LRUClCKN+3ac2TZ6J7Ll5
-         4IjORngNdQ4LmV3JE9e7YgviJsb+JyZainh9S6pcSIo3/5rufbUD9/I7eZF5zpZW3JTn
-         OPiL5U4+gKzeNw7LYJXULFiF1NOoEHjnGWVsDzbvhktbFMsOOvW9AfHNe166wu7VRoar
-         AKdz7Bor33GWkksMaLvpnyO26ib0FVcX6dwhWbAZQVb781QAF6DJD/DMjuiC174DoHt0
-         ge8V/h53Q0rwTNgSoP0cYOhyQlPHSUKh+6p+fm0AAwY+uAixbckhCOjdMKhSTtSQ7HyD
-         OFgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XIkuGkmw9unvvxymgGhCNFr2UVR4Jh5aeD7lzIpidEw=;
-        b=miRfApw1YqBDUN5Q0hWpckHcV+eq2R9+WJHaJTluHJb5LP4RE445hQMD7uTO7/WHYl
-         J+G06JA4F6djftqqgsU9Zsxbq+FFNxa42zDjNvfhb0Qgheqbpj4USUnA5MLw8AmvybPL
-         1c1dtzpA0vC0XuSPo2LerQt1UnpZP/slMEVWHBqVxUCnnnIKpGcqiQVWDP/aKRJbuIPz
-         d72q8PSL7A8xYLuMxGSiUYVXWMkZ87EIo1pVoD0JJqyGtlY5B6kcuVI/9R5I5KrNHcoQ
-         X/iYEVUKL/nsRnbgP6Y7XiUqDTdbmFxhYh045q/j+7EFWaXpkfzdLzv0paAMsB6TyvT4
-         axJw==
-X-Gm-Message-State: AGi0PuY5CO+erhEWdk2TI+PAKUoM/TdegyUcS2nkmJvp6JbFTdqO/USD
-        toQR/69Fxmw6LmCFSCgPQqAdIiXg3nKowDjwjJY=
-X-Google-Smtp-Source: APiQypK7ydtH+WbSCc6iA/8pM6MH+ukVgQxtx61oskxMnJyaHkCliwaOwxdh4t/Lob99DzKljAWXWNB8/BA1nHquj1A=
-X-Received: by 2002:a2e:7508:: with SMTP id q8mr11718876ljc.234.1587919647737;
- Sun, 26 Apr 2020 09:47:27 -0700 (PDT)
+        id S1726196AbgDZQy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 12:54:56 -0400
+Received: from elvis.franken.de ([193.175.24.41]:56034 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726152AbgDZQyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 12:54:55 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jSkYN-00023Z-00; Sun, 26 Apr 2020 18:54:51 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 2CE3FC0325; Sun, 26 Apr 2020 18:54:42 +0200 (CEST)
+Date:   Sun, 26 Apr 2020 18:54:42 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Guoyun Sun <sunguoyun@loongson.cn>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Daniel Silsby <dansilsby@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Dmitry Korotin <dkorotin@wavecomp.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Price <steven.price@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        TieZhu Yang <yangtiezhu@loongson.cn>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH] mips/mm: Add page soft dirty tracking
+Message-ID: <20200426165441.GA10053@alpha.franken.de>
+References: <1587460527-13986-1-git-send-email-sunguoyun@loongson.cn>
 MIME-Version: 1.0
-References: <20200420202643.87198-1-zenczykowski@gmail.com> <20200426163125.rnxwntthcrx5qejf@ast-mbp>
-In-Reply-To: <20200426163125.rnxwntthcrx5qejf@ast-mbp>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 26 Apr 2020 09:47:16 -0700
-Message-ID: <CAADnVQ+FM2Rb2uHPMjXnSGmQo2WMfV7f_sikADHPhnHMq0aK9w@mail.gmail.com>
-Subject: Re: [PATCH] net: bpf: add bpf_ktime_get_boot_ns()
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Network Development Mailing List 
-        <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587460527-13986-1-git-send-email-sunguoyun@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 9:31 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Apr 20, 2020 at 01:26:43PM -0700, Maciej =C5=BBenczykowski wrote:
-> > From: Maciej =C5=BBenczykowski <maze@google.com>
-> >
-> > On a device like a cellphone which is constantly suspending
-> > and resuming CLOCK_MONOTONIC is not particularly useful for
-> > keeping track of or reacting to external network events.
-> > Instead you want to use CLOCK_BOOTTIME.
-> >
-> > Hence add bpf_ktime_get_boot_ns() as a mirror of bpf_ktime_get_ns()
-> > based around CLOCK_BOOTTIME instead of CLOCK_MONOTONIC.
-> >
-> > Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
-> ...
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 755867867e57..ec567d1e6fb9 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -6009,6 +6009,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
-> >               return &bpf_tail_call_proto;
-> >       case BPF_FUNC_ktime_get_ns:
-> >               return &bpf_ktime_get_ns_proto;
-> > +     case BPF_FUNC_ktime_get_boot_ns:
-> > +             return &bpf_ktime_get_boot_ns_proto;
-> >       default:
-> >               break;
-> >       }
->
-> That part got moved into kernel/bpf/helpers.c in the mean time.
-> I fixed it up and applied. Thanks
->
-> In the future please cc bpf@vger for all bpf related patches.
+On Tue, Apr 21, 2020 at 05:15:27PM +0800, Guoyun Sun wrote:
+> User space checkpoint and restart tool (CRIU) needs the page's change
+> to be soft tracked. This allows to do a pre checkpoint and then dump
+> only touched pages.
+> 
+> Signed-off-by: Guoyun Sun <sunguoyun@loongson.cn>
+> ---
+>  arch/mips/Kconfig                    |  1 +
+>  arch/mips/include/asm/pgtable-bits.h |  8 ++++--
+>  arch/mips/include/asm/pgtable.h      | 48 ++++++++++++++++++++++++++++++++++--
 
-The order of comments for bpf_ktime_get_boot_ns
-was also incorrect.
-Most selftests were broken.
-I fixed it up as well.
+this breaks all 32bit builds where CPU support RIXI, because it overflows
+pgtable_bits.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
