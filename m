@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5C11B8B75
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 04:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8E21B8B79
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 04:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726150AbgDZCxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 25 Apr 2020 22:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42440 "EHLO
+        id S1726154AbgDZCzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 25 Apr 2020 22:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725952AbgDZCxG (ORCPT
+        by vger.kernel.org with ESMTP id S1725952AbgDZCzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 25 Apr 2020 22:53:06 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75326C061A0C;
-        Sat, 25 Apr 2020 19:53:06 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a31so3895543pje.1;
-        Sat, 25 Apr 2020 19:53:06 -0700 (PDT)
+        Sat, 25 Apr 2020 22:55:41 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CA7C061A0C;
+        Sat, 25 Apr 2020 19:55:39 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id t16so5472903plo.7;
+        Sat, 25 Apr 2020 19:55:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=1LztWkTQksezm49t04IiCw9RhUvH955q26bjVcYL2+w=;
-        b=bWN6zg77Lmi27H32TLeWao3GKLDwrMUDIOKQUuFD68yxeyXDXzM/NhPgMIvl7Uj9y3
-         9le3mMk/2ELc0Fp1WOBMNWfHowpx4PKeHLxH+2Y2EIE7gNn1CiUxoHnBT8zUAW6Taxv6
-         NwkPgt8m6R4P7mNQo1146Dn16BFUrvjXMXFe/B3tbhpeLKlHXHBkxDfuiGRQYTpSzLYj
-         0dn473lYNJPuzo7O39LCxzD7NdCzT8gV2nOsLJWCMvvZehOdaz6ezsZpxV+ccp6xeIt/
-         qyxm4oNIvYtp4q6p4HS/sATt8mI3TDOAfstLGN4KCpJOVUx1pd/v7ZvcNgYSGqJoUUda
-         ZhMg==
+        bh=asnsPXdyirP9oS05sJeDQpJdG3Yhu+JHcjQarVbK0gk=;
+        b=m/42paNYk4bTJSAgkYwKRquaje4aOyqgds2AflCUcNPSom+nmtRb/rohJdbkyrAZ4j
+         a/l5Y+caMeCjIuX8q3HTHuO9b3BvriFmpwynhXu3NQF9jj0We7IQyTxjFay4RnVe7V7N
+         i+YDgva5XOg2biHHGXlRV4FhkmvzojIDkj4DPNKiji/EIIMl8aw7Tq9PWMW621z/RLsS
+         5pMr9tQOILDYQYcetoAwwQtza6Dyjr6geiaoh4grKc1QmGUWa0P3QZhQfWa7k3txGhZR
+         5xSMr7ts/QnFBm8Q9QNmM5L6GSWn+GzJurQPoSJCRna2qxlW5aSzFIYKR9BcS6xODzGH
+         TzxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1LztWkTQksezm49t04IiCw9RhUvH955q26bjVcYL2+w=;
-        b=dUhZt+exeQbK635sf3QGliyaz3SX+NzcnmgFKHCP8Fg4x9WFVc+Yn3QKMTjGbt+Ke+
-         QH6vi5zHyW/wWtuQJC8f3zbJuah1ogbOSDogH/Qpdy92chvKtdH5Luj5BrCbUUMyBCVN
-         ANGTEX1CVBoZlMOjmn4l6i0QXccX4igEAg1PejJLsRHeyP3XvlHBw+LdyqcKkSU6ShQg
-         MShLj4jd9N02jZRgPiCkCcVhmGk0LaT3OrZ9/ngMZD0Ye6F6bNNpr6zNB0ZWXcWbjYrL
-         Szq6Lol3qfD4HYzx/0mPrnNl27Zynk0b6Fn8vWGAV67wyMg69n3FKkBq3iqyY40MkoKU
-         J6/w==
-X-Gm-Message-State: AGi0PuYLgkqoR6nsd39G1Gp0EQ58z5mWjCuh4HoGpXShMpZ6Vp+2n+ol
-        V2nfkMz1tPAfg8xT3jPS+ns=
-X-Google-Smtp-Source: APiQypInH+VVbys+8G7ngkwBV7EOSU3pXKlNLrDx/agluMsFAtugxxZrRjsYO7M6KVcArI/cpcPkHw==
-X-Received: by 2002:a17:902:dc84:: with SMTP id n4mr314861pld.281.1587869586024;
-        Sat, 25 Apr 2020 19:53:06 -0700 (PDT)
+        bh=asnsPXdyirP9oS05sJeDQpJdG3Yhu+JHcjQarVbK0gk=;
+        b=oqwwYl4eEWx4QfoeuY8/H+cw4aFbuH+/TQ2yN6/BlF/yLloxx6AhW5PYXgG+2eNDVp
+         S13OliFzKgeOzc8HqJGJk9o5Qjr7PwesOglzaZ7NQIFLSYudcoEz44YHP0jLip2qInHM
+         Ay22S3cb3bPdTcqTqO2Hs+DhaSFw3OhKBeOTa+C/psqigw7ZoRhOlg5yIllI7K4inUL9
+         ppMrDInTnNX2KX9aNYbPIIBziHqxSJs64Plmx8SteN4czJjL/RKhBIPS+mTjGwA8AMCi
+         L05OjvZLO9CYlDb7ZfdyC+65GdiKDTaImqvdwT4hdcw22200jz5G4ssC4H2UF+i36J8h
+         0sKg==
+X-Gm-Message-State: AGi0PuZ5vgFqxw/Zn+IUvemuk15otvg//+rLtaaykuJYx9hT7Y/pS3lF
+        pQAToH5glJYqs2gv3vof19E=
+X-Google-Smtp-Source: APiQypK1GdDBLwOHRoHmSNhagXQufrO/V6jYWukUGGNElpFTa7XzOuwPiJ8w5GPxjpgKb04FkBxlKg==
+X-Received: by 2002:a17:90a:a40e:: with SMTP id y14mr16047402pjp.101.1587869739112;
+        Sat, 25 Apr 2020 19:55:39 -0700 (PDT)
 Received: from localhost ([176.122.158.64])
-        by smtp.gmail.com with ESMTPSA id p1sm1609850pjf.15.2020.04.25.19.53.04
+        by smtp.gmail.com with ESMTPSA id 79sm8037252pgd.62.2020.04.25.19.55.38
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 25 Apr 2020 19:53:05 -0700 (PDT)
-Date:   Sun, 26 Apr 2020 10:53:00 +0800
+        Sat, 25 Apr 2020 19:55:38 -0700 (PDT)
+Date:   Sun, 26 Apr 2020 10:55:34 +0800
 From:   Dejin Zheng <zhengdejin5@gmail.com>
 To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Morton <akpm@osdl.org>,
         Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Yash Shah <yash.shah@sifive.com>
-Subject: Re: [PATCH] net: macb: fix an issue about leak related to system
- resources
-Message-ID: <20200426025300.GA18964@nuc8i5>
-References: <a0891e70-d39f-7822-f81a-04eb824c6fd0@web.de>
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v3] console: newport_con: fix an issue about leak related
+ system resources
+Message-ID: <20200426025534.GA19252@nuc8i5>
+References: <20f37865-5af3-5fb9-8b8f-91f9464e4af3@web.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a0891e70-d39f-7822-f81a-04eb824c6fd0@web.de>
+In-Reply-To: <20f37865-5af3-5fb9-8b8f-91f9464e4af3@web.de>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 25, 2020 at 07:00:35PM +0200, Markus Elfring wrote:
-> > A call of the function macb_init() can fail in the function
-> > fu540_c000_init. The related system resources were not released
-> > then. use devm_ioremap() to replace ioremap() for fix it.
+On Fri, Apr 24, 2020 at 06:54:41PM +0200, Markus Elfring wrote:
+> > The corresponding system resources were not released then.
 > 
 > How do you think about a wording variant like the following?
 >
@@ -85,17 +82,24 @@ and again when it is enough clear. Because it only wastes the precious
 time of the maintainer and very very little help for patch improvement.
 
 BTW, In the past week, you asked me to change the commit comments in my
-6 patches like this one. Let me return to the essence of patch, point out
-that the code problems and better solutions will be more popular.
+6 patches like this one. Let me return to the essence of patch, point
+out the code problems and better solutions will be more popular.
 
 >    Subject:
->    [PATCH v2] net: macb: Use devm_ioremap() in fu540_c000_init()
+>    [PATCH v4] console: newport_con: Fix incomplete releasing of system resources
 > 
 >    Change description:
->    A call of the macb_init() function can fail here.
->    The corresponding system resources were not released then.
->    Thus replace a call of the ioremap() function by devm_ioremap().
+>    * A call of the function do_take_over_console() can fail here.
+>      The corresponding system resources were not released then.
+>      Thus add a call of iounmap() and release_mem_region()
+>      together with the check of a failure predicate.
 > 
+>    * Add also a call of release_mem_region() for the completion
+>      of resource clean-up on device removal.
+> 
+> 
+> It can be nicer if all patch reviewers (including me) will be explicitly specified
+> as recipients for such messages, can't it?
 > 
 > Regards,
 > Markus
