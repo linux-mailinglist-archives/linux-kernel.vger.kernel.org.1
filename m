@@ -2,199 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9DB71B91AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FE51B91DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726253AbgDZQYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726146AbgDZQYV (ORCPT
+        id S1726177AbgDZQwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 12:52:21 -0400
+Received: from gateway23.websitewelcome.com ([192.185.49.219]:13017 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726144AbgDZQwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:24:21 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B29C061A0F;
-        Sun, 26 Apr 2020 09:24:21 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id y24so17605685wma.4;
-        Sun, 26 Apr 2020 09:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2FSIBGKb8N23CdS4eZEpPYbf1u7aJ6F81ThCyPR7vaM=;
-        b=bG8hqFeMjAs1s7psjEGM8VNstrlaioDV7KG0xPCw/DI7PZVuZPUNxhf92qckFSorPD
-         hSk42AoIjy+G9trimASfQAdNq6SAfJENYu1uyf6xZYuaYuqkBD0r5kOy66gdEyI6Z10M
-         83PAJq4YxvQTigibxBLbTdMkBDtnoeK2RsSzVls/pe9qbSoRd7gg55pmCpPWivCzlLbA
-         jGfBFURtU9jGa0T7Ix6gC2z/pqBhdRPeye1fJoOBsjUHQUxvjQFhwtLECQf60tPbNPX0
-         7UlsJWOAYqBljPhmRYuqKF1CZmO8/7qlAaDJg48ptdGoJSAfOQyTQxsslH8o5rVp1uQf
-         e84A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2FSIBGKb8N23CdS4eZEpPYbf1u7aJ6F81ThCyPR7vaM=;
-        b=fohdVTbCBC1GWhv16QrOZasz8Hyvg2BLwynCccqcA8ZoI+XNkDHcjMk6YdspW9Kr3o
-         9Pn2boSiXpp9ByBuQt2hNsC0NW4TcPdZwE1omKyDd18tRkrQgSxrYDKYOJec6xbRHFjV
-         yyIdQrXf/IJjo6bbQNFUsQgxWYsJ6J/n2wG3hD4eFVjD/o/e/pgYc2vQRiJh4LNxkIK0
-         I1sjDU74YNnlY0xGvrhkFA3jGKWuxrc0DKaJfk+Z8vwXtuC7EpIN8c2T8dS4pF3A+8d4
-         Dw6ZBSxxYMK0ObySGUiwfttasiMqTioKDRyOjza1NcLNTlxQ79ihAQuwFmJGLP9OKdNg
-         Oajw==
-X-Gm-Message-State: AGi0Pubb9Th3ES/UbGrCvzvAWj++nXWZVTAWJmkALrI68Sguk9Pro459
-        2fq31mZQegHcamVqUGzvZipd4+SA
-X-Google-Smtp-Source: APiQypI6O0pVSBPH3EAc6Gt9qNDpExt9txPY19Yu3FivCObpz9U34rAfzu0Mm6JHBF1p+9QkzgHDiw==
-X-Received: by 2002:a1c:c2d6:: with SMTP id s205mr22676525wmf.90.1587918259609;
-        Sun, 26 Apr 2020 09:24:19 -0700 (PDT)
-Received: from [192.168.1.23] (afcl109.neoplus.adsl.tpnet.pl. [95.49.63.109])
-        by smtp.gmail.com with ESMTPSA id e21sm18182225wrc.1.2020.04.26.09.24.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Apr 2020 09:24:19 -0700 (PDT)
-Subject: Re: [PATCH v20 03/17] leds: multicolor: Introduce a multicolor class
- definition
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200423155524.13971-1-dmurphy@ti.com>
- <20200423155524.13971-4-dmurphy@ti.com> <20200425202306.GA23926@amd>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <a19ff014-32f1-eb18-ceb6-581503821fcc@gmail.com>
-Date:   Sun, 26 Apr 2020 18:24:17 +0200
+        Sun, 26 Apr 2020 12:52:20 -0400
+X-Greylist: delayed 1487 seconds by postgrey-1.27 at vger.kernel.org; Sun, 26 Apr 2020 12:52:20 EDT
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 2256ACA1
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 11:27:32 -0500 (CDT)
+Received: from br164.hostgator.com.br ([192.185.176.180])
+        by cmsmtp with SMTP
+        id Sk7wjo3p8Sl8qSk7wjDrod; Sun, 26 Apr 2020 11:27:32 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=castello.eng.br; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=nOj2osYNQXr8K1shlwowWOqo3kkVH+1V33i1mSrzbOo=; b=hCd69Z0a5Rcuo1M10ME1Q2NPgW
+        UF4Wfuj7T5NVxEK02KOESbe0ypBal3zFywClY6U8ETSSPA4oQ5BIC2ekU08ym/i06bW0ElDx206O4
+        j6zpUiE13vw7p0IhEjrBXKkHdkTkQGDM2azno7fzsiC0qxEkn6tbkZ4vo9wDkCneWBdJSLN4nDu7L
+        3LO+xkH3PZvRDuVQqyaA9R2t1aHlFr17/1lBa0UGjj4cOgr52e+GMJazf9FvgK2rp9jd9L4zWJK5J
+        EjD7qvS1GerElJCgRF9I7v9ZcVgLjY5kI4Rb3mPMkW7PDSw2vpXLB33nwHxtE9t89exZffR0wLzyR
+        ACzZpapQ==;
+Received: from [191.31.197.205] (port=46284 helo=[192.168.15.9])
+        by br164.hostgator.com.br with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <matheus@castello.eng.br>)
+        id 1jSk7v-001MdU-Ou; Sun, 26 Apr 2020 13:27:31 -0300
+Subject: Re: [PATCH v3 3/3] ARM: dts: Add Caninos Loucos Labrador
+To:     =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        mark.rutland@arm.com, robh+dt@kernel.org,
+        edgar.righi@lsitec.org.br, igor.lima@lsitec.org.br,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
+References: <20200229104358.GB19610@mani>
+ <20200320035104.26139-1-matheus@castello.eng.br>
+ <20200320035104.26139-4-matheus@castello.eng.br>
+ <20200405065137.GC8912@Mani-XPS-13-9360>
+ <df32c750-a097-9210-6e13-db7db49836b5@castello.eng.br>
+ <2dca5a4e-933c-0a43-e86f-21b55d75a586@suse.de>
+From:   Matheus Castello <matheus@castello.eng.br>
+Message-ID: <f9e48fba-0da8-7ba9-d44a-7909067a1df1@castello.eng.br>
+Date:   Sun, 26 Apr 2020 13:27:27 -0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200425202306.GA23926@amd>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <2dca5a4e-933c-0a43-e86f-21b55d75a586@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - br164.hostgator.com.br
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - castello.eng.br
+X-BWhitelist: no
+X-Source-IP: 191.31.197.205
+X-Source-L: No
+X-Exim-ID: 1jSk7v-001MdU-Ou
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.9]) [191.31.197.205]:46284
+X-Source-Auth: matheus@castello.eng.br
+X-Email-Count: 10
+X-Source-Cap: Y2FzdGUyNDg7Y2FzdGUyNDg7YnIxNjQuaG9zdGdhdG9yLmNvbS5icg==
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi Andreas,
 
-On 4/25/20 10:23 PM, Pavel Machek wrote:
-> Hi!
-> 
-[...]
->> +	for (i = 0; i < mcled_cdev->num_colors; i++)
->> +		mcled_cdev->multicolor_info[i].color_brightness = brightness *
->> +					  mcled_cdev->multicolor_info[i].color_led_intensity /
->> +					  led_cdev->max_brightness;
-> 
-> It would be good to get this under ~80 characters. Perhaps shorter
-> identifiers would help... shortening multicolor_ to mc_?
+thanks for the review.
 
+Em 4/26/20 8:58 AM, Andreas Färber escreveu:
+> Hi Matheus,
+> 
+> Am 23.04.20 um 17:20 schrieb Matheus Castello:
+>> Em 4/5/20 3:51 AM, Manivannan Sadhasivam escreveu:
+>>> On Fri, Mar 20, 2020 at 12:51:04AM -0300, Matheus Castello wrote:
+>>>> Add Device Trees for Caninos Loucos Labrador CoM and base board.
+>>>> Based on the work of Andreas Färber on Lemaker Guitar device tree.
+>>>>
+>>>> Signed-off-by: Matheus Castello <matheus@castello.eng.br>
+>>>
+>>> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>>
+>>> Will queue the series for v5.8 once Andreas is happy with it.
+>>
+>> do you have any more concerns about these patches? Let me know.
+> 
+> I've reviewed the preceding two patches. This one here looks okay,
+> 
+> Reviewed-by: Andreas Färber <afaerber@suse.de>
+> 
+> but see 2/3 - model here does contain M and your .dtsi is named -v2 - 
+> what's the difference to v1? If it's big enough to warrant a separate 
+> .dtsi, you should consider whether a versioned compatible string may be 
+> needed, too (likely in addition to, not instead of a generic one). No v1 
+> info on the website.
+> 
 
-And color_led_intensity to led_intensity.
+The difference between v1 and v2 is the model and vendor of the DRAM and 
+storage eMMC. But that had no impact on the software.
 
-> 
->> +static ssize_t multi_led_intensity_store(struct device *dev,
->> +				struct device_attribute *intensity_attr,
->> +				const char *buf, size_t size)
->> +{
->> +	struct led_classdev *led_cdev = dev_get_drvdata(dev);
->> +	struct led_classdev_mc *mcled_cdev = lcdev_to_mccdev(led_cdev);
->> +	int nrchars, offset = 0;
->> +	int intensity_value[LED_COLOR_ID_MAX];
->> +	int i;
->> +	ssize_t ret;
->> +
->> +	mutex_lock(&led_cdev->led_access);
->> +
->> +	for (i = 0; i < mcled_cdev->num_colors; i++) {
->> +		ret = sscanf(buf + offset, "%i%n",
->> +			     &intensity_value[i], &nrchars);
->> +		if (ret != 1) {
->> +			dev_err(led_cdev->dev,
-> 
-> dev_dbg, at most. It is user-triggerable.
-> 
->> +				"Incorrect number of LEDs expected %i values intensity was not applied\n",
->> +				mcled_cdev->num_colors);
->> +			goto err_out;
-> 
-> Should not we return -ERRNO to userspace on error?
-> 
->> +		}
->> +		offset += nrchars;
->> +	}
-> 
-> This checks for "not enough" intensities. Do we need check for "too
-> many" intensities?
-> 
->> +static ssize_t multi_led_intensity_show(struct device *dev,
->> +			      struct device_attribute *intensity_attr,
->> +			      char *buf)
->> +{
->> +	struct led_classdev *led_cdev = dev_get_drvdata(dev);
->> +	struct led_classdev_mc *mcled_cdev = lcdev_to_mccdev(led_cdev);
->> +	int len = 0;
->> +	int i;
->> +
->> +	for (i = 0; i < mcled_cdev->num_colors; i++)
->> +		len += sprintf(buf + len, "%d ",
->> +			    mcled_cdev->multicolor_info[i].color_led_intensity);
->> +
->> +	len += sprintf(buf + len, "%s", "\n");
-> 
-> This will result in extra " " before end of line.
-> 
-> Please don't use "%s", "\n" to add single character. "\n" would be enough.
-> 
-> 
->> +	struct led_classdev *led_cdev = dev_get_drvdata(dev);
->> +	struct led_classdev_mc *mcled_cdev = lcdev_to_mccdev(led_cdev);
->> +	int len = 0;
->> +	int index;
->> +	int i;
->> +
->> +	for (i = 0; i < mcled_cdev->num_colors; i++) {
->> +		index = mcled_cdev->multicolor_info[i].color_index;
->> +		len += sprintf(buf + len, "%s ", led_colors[index]);
->> +	}
->> +
->> +	len += sprintf(buf + len, "%s", "\n");
-> 
-> Same here.
-> 
->> +int led_classdev_multicolor_register_ext(struct device *parent,
->> +				     struct led_classdev_mc *mcled_cdev,
->> +				     struct led_init_data *init_data)
->> +{
->> +	struct led_classdev *led_cdev;
->> +
->> +	if (!mcled_cdev)
->> +		return -EINVAL;
->> +
->> +	if (!mcled_cdev->num_colors)
->> +		return -EINVAL;
-> 
-> if (num_colors > max)... ?
-> 
->> +#ifndef __LINUX_MULTICOLOR_LEDS_H_INCLUDED
->> +#define __LINUX_MULTICOLOR_LEDS_H_INCLUDED
-> 
-> Usual style is "_LINUX_MULTICOLOR_LEDS_H".
-> 
->> +#else
->> +
->> +static inline  int led_classdev_multicolor_register_ext(struct device *parent,
-> 
-> double space after "inline".
-> 
->> +					    struct led_classdev_mc *mcled_cdev,
->> +					    struct led_init_data *init_data)
->> +{
->> +	return -EINVAL;
->> +}
-> 
-> Do we need to include these stubs? I guess it is okay to have them,
-> OTOH I'd expect drivers to depend on MULTICOLOR being available...
+Checking examples on "/Documentation/devicetree/bindings/arm/" I saw 
+that some add enum descriptions for both the base board and system on 
+module, keeping in const only the vendor prefix of the SoC. And in the 
+device tree both have the model property description. I liked this 
+example, I think I will follow it in v4.
 
-Single driver can support both monochrome and multicolor LED class,
-which is chosen basing on DT. In this regard having no-ops for LED mc
-class is justified since it is a superset of monochrome LED class.
+About "-bb-" in the file name and description: on PCB is written 
+"Labrador Base-M v1.0a", so with that I think it is better to leave only 
+base on the name.
 
--- 
-Best regards,
-Jacek Anaszewski
+I will send the v4, thank you very much for the review.
+
+BR,
+Matheus Castello
+
+> Thanks,
+> Andreas
+> 
