@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4BB1B9446
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 23:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2891B944D
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 23:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbgDZVuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 17:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48562 "EHLO
+        id S1726486AbgDZVuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 17:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbgDZVtz (ORCPT
+        with ESMTP id S1726430AbgDZVt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 17:49:55 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C7EC061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 14:49:54 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id n4so12440678ejs.11
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 14:49:54 -0700 (PDT)
+        Sun, 26 Apr 2020 17:49:57 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB25BC061A0F
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 14:49:55 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id w2so12012590edx.4
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 14:49:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloud.ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Iy5dbJ5ulEBQZnVYe4LdimJwxmRBu3H1I8kAoywkhO4=;
-        b=CNngllvg67ixykLg7cIJmP9idgw85CRV9miXlKw51shYgZp8X7u0kscny53amrBTHc
-         911VnBxmwMuOV4SMj0chVxA/OMGNGdYUJIvzcQY/1rcco/Mso860J2eU88rH1GapiEOf
-         Lk5647aRv60gkMz62Di52oIsDnE1MnHVDvMWsDKr7xXXLrfk0hSblYlNC7L9OB5nBYTz
-         0eY+qIPp8bjWHmcEmAzKTNtLyLaF3FQTM05XLfoOp5jpG4gvO9k5PW0q0qwnt/BOvI6w
-         juUApwcHoJ/i5G0Pds+09eEE7A53kzuE0TnqRhvo9v7tEzJM9ViaeYaCS4t/KJ5QCYC6
-         kcmA==
+        bh=qimnPXc/z1dTWaJyW3qhOlSkB0/PAvYb4yEUYXtkvBs=;
+        b=Gm5iEQRGXjL2eUupRJ1Bh30r73SUBX84ADcBLaYreiF3hSkQEWeKNIEUgAFgJLtLMv
+         wPfZtMjOqDacKdHwqWjWK8uVQ188OIkqVCt146DjBGGH399nUPOYIlJkSW4dfDknFdUF
+         7MZbSYWDEpgvMg69WJ+M7z5zshqFGp9auxPkebka7dLFCiHYBwsu5dsfZgALElUrvwf8
+         DMOqEwdKpZ2bPipHuh1KAjPEo3Qe2sEvSDGUJU0QwVaiR6GH/gZlDzprRcFZ2Ke6EyZ9
+         yUX9cBs8ilZZTyPKS+PUWadroC9CcJIR2cNNDoHBKSUR8zw2YRZtoZQ+7apQE5HafRd2
+         Sbfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Iy5dbJ5ulEBQZnVYe4LdimJwxmRBu3H1I8kAoywkhO4=;
-        b=gS2TwVt9fP1XH4SnrUOIU0ShIBf3p/bqA7fyfMFXjIdnomZn8GD7tvRXCF15xQfv/u
-         DprSY+DdPyGJWIBW935OrXtwnxmdbv4m1YqX9GYFddQje7tXebFm7jMvpf9p1S8Kyew/
-         2G9OTYTpZHPPed+I/o+GA9FXZ2Ic5EanCzPeO7kOyTJ4sBBxT2dnUIHf+1bhZczNtnga
-         3LpOmVd5UnLA48gcJNIBaFDb+1x5sOCsOgEI2Fm2RANDbu8RXsnA+Xp8zlxPqLb8bIRE
-         TLF9btA8IkfhzIJXqDuPHoCxzVsrD6qzSb/tZhEHIoKQ0NfB3KbulY4oFWqDbUy02A0j
-         A2qQ==
-X-Gm-Message-State: AGi0PuYCOx+D4jFaF+RoKUMePUrd312/5PG3Lfi4yAgt+WSQ7NVp/Yz2
-        C8jy4UecphXNqJKwBhuL+yTroA==
-X-Google-Smtp-Source: APiQypJatlHYD59JEc271Gli6C08LancT/2sGpWnY7Tf056t/k2L5Citpx+qKcX3OmqZHaINj2ZELA==
-X-Received: by 2002:a17:906:6856:: with SMTP id a22mr17551863ejs.115.1587937793540;
-        Sun, 26 Apr 2020 14:49:53 -0700 (PDT)
+        bh=qimnPXc/z1dTWaJyW3qhOlSkB0/PAvYb4yEUYXtkvBs=;
+        b=t1vIvw5/UMw2afz+fWLSsvnJjA15OjHo2wypOCbrTHBE7x/Oi31gR+UORfmR+n5wFg
+         Yg1W7x/cvvZAAtsrXv4iOGGJKvs2M8lUxIbLM4ddqWJ9XEPoHY3PyBvZBEsXONhgI5IW
+         3Gl9q7cPBgEPOva6ocEo6R8YLcsAUoTUnfFyf1o6btg9rDFK1+bjhLV5l4v/TH9Lek04
+         YVg3DA0XmDxk1Y3Y3Umoo0fpa3z+kh3egrBL2XtCJm0L9QRrbzC8otrTikMV5Xb/Khqo
+         9aP8lG/UCzp0w8ZvCkp34zfhzjEzig10tNpoUK/GSGx4yDDYQIPpKp6ZfAFgmjNrWuys
+         k7eA==
+X-Gm-Message-State: AGi0PuawqIAT5fA3JAKZCmxfH/KP89dm/IlIow7RjGuTkO0gssuVVEg8
+        ITz2lcusXj1D8QiHe7Fp10iedQ==
+X-Google-Smtp-Source: APiQypIxdj3EgE49EVNEoQZtKa8LHmNouU6TNbFXBP16dEsDxvsw1UYgQ/dUsGDgJvJe0Ig5v2bGJQ==
+X-Received: by 2002:a50:c3c2:: with SMTP id i2mr15735367edf.93.1587937794634;
+        Sun, 26 Apr 2020 14:49:54 -0700 (PDT)
 Received: from ls00508.pb.local ([2001:1438:4010:2540:fab1:56ff:feab:56b1])
-        by smtp.gmail.com with ESMTPSA id ce18sm2270108ejb.61.2020.04.26.14.49.52
+        by smtp.gmail.com with ESMTPSA id ce18sm2270108ejb.61.2020.04.26.14.49.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Apr 2020 14:49:52 -0700 (PDT)
+        Sun, 26 Apr 2020 14:49:54 -0700 (PDT)
 From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     hch@infradead.org, david@fromorbit.com, willy@infradead.org,
         Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net
-Subject: [RFC PATCH 7/9] ntfs: replace attach_page_buffers with set_fs_page_private
-Date:   Sun, 26 Apr 2020 23:49:23 +0200
-Message-Id: <20200426214925.10970-8-guoqing.jiang@cloud.ionos.com>
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        devel@lists.orangefs.org
+Subject: [RFC PATCH 8/9] orangefs: use set/clear_fs_page_private
+Date:   Sun, 26 Apr 2020 23:49:24 +0200
+Message-Id: <20200426214925.10970-9-guoqing.jiang@cloud.ionos.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200426214925.10970-1-guoqing.jiang@cloud.ionos.com>
 References: <20200426214925.10970-1-guoqing.jiang@cloud.ionos.com>
@@ -64,42 +65,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call the new function since attach_page_buffers will be removed.
+Since the new pair function is introduced, we can call them to clean the
+code in orangefs.
 
-Cc: Anton Altaparmakov <anton@tuxera.com>
-Cc: linux-ntfs-dev@lists.sourceforge.net
+Cc: Mike Marshall <hubcap@omnibond.com>
+Cc: Martin Brandenburg <martin@omnibond.com>
+Cc: devel@lists.orangefs.org
 Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 ---
- fs/ntfs/aops.c | 2 +-
- fs/ntfs/mft.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ fs/orangefs/inode.c | 24 ++++++------------------
+ 1 file changed, 6 insertions(+), 18 deletions(-)
 
-diff --git a/fs/ntfs/aops.c b/fs/ntfs/aops.c
-index 554b744f41bf..d8c60e5793c0 100644
---- a/fs/ntfs/aops.c
-+++ b/fs/ntfs/aops.c
-@@ -1732,7 +1732,7 @@ void mark_ntfs_record_dirty(struct page *page, const unsigned int ofs) {
- 				bh = bh->b_this_page;
- 			} while (bh);
- 			tail->b_this_page = head;
--			attach_page_buffers(page, head);
-+			set_fs_page_private(page, head);
- 		} else
- 			buffers_to_free = bh;
+diff --git a/fs/orangefs/inode.c b/fs/orangefs/inode.c
+index 12ae630fbed7..893099d36e20 100644
+--- a/fs/orangefs/inode.c
++++ b/fs/orangefs/inode.c
+@@ -64,9 +64,7 @@ static int orangefs_writepage_locked(struct page *page,
  	}
-diff --git a/fs/ntfs/mft.c b/fs/ntfs/mft.c
-index 3aac5c917afe..e61cb280aee0 100644
---- a/fs/ntfs/mft.c
-+++ b/fs/ntfs/mft.c
-@@ -504,7 +504,7 @@ int ntfs_sync_mft_mirror(ntfs_volume *vol, const unsigned long mft_no,
- 			bh = bh->b_this_page;
- 		} while (bh);
- 		tail->b_this_page = head;
--		attach_page_buffers(page, head);
-+		set_fs_page_private(page, head);
+ 	if (wr) {
+ 		kfree(wr);
+-		set_page_private(page, 0);
+-		ClearPagePrivate(page);
+-		put_page(page);
++		clear_fs_page_private(page);
  	}
- 	bh = head = page_buffers(page);
- 	BUG_ON(!bh);
+ 	return ret;
+ }
+@@ -409,9 +407,7 @@ static int orangefs_write_begin(struct file *file,
+ 	wr->len = len;
+ 	wr->uid = current_fsuid();
+ 	wr->gid = current_fsgid();
+-	SetPagePrivate(page);
+-	set_page_private(page, (unsigned long)wr);
+-	get_page(page);
++	set_fs_page_private(page, wr);
+ okay:
+ 	return 0;
+ }
+@@ -460,17 +456,13 @@ static void orangefs_invalidatepage(struct page *page,
+ 
+ 	if (offset == 0 && length == PAGE_SIZE) {
+ 		kfree((struct orangefs_write_range *)page_private(page));
+-		set_page_private(page, 0);
+-		ClearPagePrivate(page);
+-		put_page(page);
++		clear_fs_page_private(page);
+ 		return;
+ 	/* write range entirely within invalidate range (or equal) */
+ 	} else if (page_offset(page) + offset <= wr->pos &&
+ 	    wr->pos + wr->len <= page_offset(page) + offset + length) {
+ 		kfree((struct orangefs_write_range *)page_private(page));
+-		set_page_private(page, 0);
+-		ClearPagePrivate(page);
+-		put_page(page);
++		clear_fs_page_private(page);
+ 		/* XXX is this right? only caller in fs */
+ 		cancel_dirty_page(page);
+ 		return;
+@@ -537,9 +529,7 @@ static void orangefs_freepage(struct page *page)
+ {
+ 	if (PagePrivate(page)) {
+ 		kfree((struct orangefs_write_range *)page_private(page));
+-		set_page_private(page, 0);
+-		ClearPagePrivate(page);
+-		put_page(page);
++		clear_fs_page_private(page);
+ 	}
+ }
+ 
+@@ -740,9 +730,7 @@ vm_fault_t orangefs_page_mkwrite(struct vm_fault *vmf)
+ 	wr->len = PAGE_SIZE;
+ 	wr->uid = current_fsuid();
+ 	wr->gid = current_fsgid();
+-	SetPagePrivate(page);
+-	set_page_private(page, (unsigned long)wr);
+-	get_page(page);
++	set_fs_page_private(page, wr);
+ okay:
+ 
+ 	file_update_time(vmf->vma->vm_file);
 -- 
 2.17.1
 
