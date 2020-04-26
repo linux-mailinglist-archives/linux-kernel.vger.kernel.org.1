@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5A81B8E00
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 10:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30271B8E03
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 10:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgDZIn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 04:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726108AbgDZIn0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 04:43:26 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BC5C061A0C
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 01:43:26 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id c21so4861767plz.4
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 01:43:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=lEti5mpnbC1UbxdqGlQJcpNVulqyjUNdMjW16bxrEl0=;
-        b=VHCo8a7V13XVxT4JBCSo++jMBXMiAufqP8rH4qNldIrQOqBnGfL2gwOG2l3PkqtDo1
-         KKiTzaHkc0Iw3hBFwP7afdzTrp2qj2Zs3r1H+2KnOD6fTLUQPa4oerN94GlNwajpkNPn
-         7+64qXPO0Hl7bNeFFt0fI9vbhp8ta9SKQRiuHd3kRE/Hsk31b39SJR/OcPsju2zwki9Y
-         2CuHfCH9kyvDVzaojo0FbgjZ1exaZosH3gBORpMXgWocxP7Qt+2WIijwbR0iaS/uyxDG
-         SVCc3ax/Mm3RLvDcLVecDkCSQrTiJr3bVi26mKAf2yGeN3K4/lL/Y98tsoBmf7Rjt7QO
-         w7EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=lEti5mpnbC1UbxdqGlQJcpNVulqyjUNdMjW16bxrEl0=;
-        b=aCQ1SKpwXPv3O/ZtQIYslk+I48NwGKm0cHMkqip9BTTQmOp/ytzqd3fJnrggLOv+iH
-         30wqajobW77PT1itPmW4DXBsPPP6EzJyGx65QvCtaAeLYC+ICgeBO0o7+u67qGOIKPoN
-         10QJEYOOMYjg8aHNB7IVqfKNyZOmVpdTTEdOgqhxIaDhIob7ZlXzIm6bTqduQlIVJthL
-         0U4NpyM9+N6KDSamzVP0XW5z6tX9UhVh4qPNXoSl09/gpbyoDL5N/bwYTqQg0H6yxCb0
-         TYT76bEHDMvTZc2bXxHU1G+nGWopMJodBxlLlCEyl9F3hPjq9APs0nmobISvEk0kgR9y
-         CclA==
-X-Gm-Message-State: AGi0Pub1f87VHUJJVGLkGiREEWcDdgCW2fJc6Y1gE9ZXRb97ZygDOVax
-        zgWF5AqrXRcN1Qw4seec0EwuZsAzM4Q3pe1vPws=
-X-Google-Smtp-Source: APiQypLTR12fM6OvF1LjhvesEd6XOnX4BW6+cBYyUlL+Fw4vizGL9/ZHl7M2NBl1eRNWzn9TgWxmHv7cxuKYT7PBXDU=
-X-Received: by 2002:a17:90a:3441:: with SMTP id o59mr1741741pjb.185.1587890605577;
- Sun, 26 Apr 2020 01:43:25 -0700 (PDT)
+        id S1726166AbgDZIoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 04:44:20 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:53230 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726108AbgDZIoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 04:44:20 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id F313ED09628CC06D999E;
+        Sun, 26 Apr 2020 16:44:17 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.7) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Sun, 26 Apr 2020
+ 16:44:16 +0800
+Subject: Re: [PATCH] i2c: busses: remove unneeded conversion to bool
+To:     Wolfram Sang <wsa@the-dreams.de>
+CC:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200420042816.18989-1-yanaijie@huawei.com>
+ <20200426081652.GH1262@kunai>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <bb3f98c1-e97d-7ed9-8983-a8d8a729e5ac@huawei.com>
+Date:   Sun, 26 Apr 2020 16:44:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Received: by 2002:a17:90a:21ae:0:0:0:0 with HTTP; Sun, 26 Apr 2020 01:43:25
- -0700 (PDT)
-Reply-To: sgt.kayla12@gmail.com
-From:   Kayla <kaylinmanthey82@gmail.com>
-Date:   Sun, 26 Apr 2020 08:43:25 +0000
-Message-ID: <CAM0qh+8SpZbYVv8yeAXcR+BwsXi_eRf9TQ+1xCdMXxGcDCODJg@mail.gmail.com>
-Subject: Hello my dear,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200426081652.GH1262@kunai>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.213.7]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello my dear,how long should i wait before you respond to my massage
-after sending an email to you?
+
+
+在 2020/4/26 16:16, Wolfram Sang 写道:
+> On Mon, Apr 20, 2020 at 12:28:16PM +0800, Jason Yan wrote:
+>> The '>' expression itself is bool, no need to convert it to bool again.
+>> This fixes the following coccicheck warning:
+>>
+>> drivers/i2c/busses/i2c-qup.c:960:48-53: WARNING: conversion to bool not needed here
+>> drivers/i2c/busses/i2c-qup.c:962:47-52: WARNING: conversion to bool not needed here
+>> drivers/i2c/busses/i2c-qup.c:1531:29-34: WARNING: conversion to bool not needed here
+>> drivers/i2c/busses/i2c-qup.c:1533:29-34: WARNING: conversion to bool not needed here
+>>
+>> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> 
+> Applied to for-next, thanks! But please fix $subject to have the driver
+> name "qup" next time.
+> 
+
+OK, get it.
+
+Thanks,
+Jason
+
