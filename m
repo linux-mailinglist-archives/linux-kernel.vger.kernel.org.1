@@ -2,148 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5681B8F0D
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 12:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4181B8F11
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 12:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgDZKr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 06:47:28 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:30686 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726140AbgDZKr1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 06:47:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587898046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ameLghCB4urIBaiOFKoYPKuTDYVd0O7mLx3+vt0PmiM=;
-        b=RtGdzuaE78JK5sSmB/lcOufS3PvJX4I1Oy+mya/wd042UMt+bOYQNuexNevgRINu1qAgAd
-        UleMzH6eQKtYGLqPO2STRJTgx9uY6nd/7iu5MAocQ5MrPGCdA44zIAU74FWy648nY1OOR9
-        zrx2lWJtC5ck5EBrJ2imEVJiu5VOvzA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-125-qLBDTMThPXi08NF_M3g5Hg-1; Sun, 26 Apr 2020 06:47:23 -0400
-X-MC-Unique: qLBDTMThPXi08NF_M3g5Hg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726216AbgDZKrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 06:47:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726140AbgDZKre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 06:47:34 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BE8B800D24;
-        Sun, 26 Apr 2020 10:47:21 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-112-32.ams2.redhat.com [10.36.112.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A2C55D715;
-        Sun, 26 Apr 2020 10:47:19 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ACPI / scan: Create platform device for CPLM3218 ACPI nodes
-Date:   Sun, 26 Apr 2020 12:47:13 +0200
-Message-Id: <20200426104713.216896-3-hdegoede@redhat.com>
-In-Reply-To: <20200426104713.216896-1-hdegoede@redhat.com>
-References: <20200426104713.216896-1-hdegoede@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 968B32070A;
+        Sun, 26 Apr 2020 10:47:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587898053;
+        bh=JtQjnWUbwyz4+fwS23njQst6S5pkA8XEFHZr58lmIs8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GIg7YHfkXATA0ETK1WyjoQp51Ptd0CCqK8RY5z6geftyn8QQGeaMyQPCIb65ncyUk
+         9gyU+lFZz7Fb12tLDBrSPPgUEgxVn9vlnNJj4rVx96lunfm8ZAuXQ4wTnMQAWJ4Sed
+         7nrtxPFd/afNyyBrecYKbfGdsUN/Q5ExmfXWOdbo=
+Date:   Sun, 26 Apr 2020 12:47:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     devel@linuxdriverproject.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Staging/IIO driver fixes for 5.7-rc3
+Message-ID: <20200426104730.GA2120674@kroah.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some CPLM3218 ACPI nodes also put the SMBus Alert Response Address (0x0c)
-in their ACPI resource table; and they put it there as the first entry,
-here is an example from the CPLM3218 device in the DSDT of an Asus T100TA=
-:
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
- Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
- {
-     Name (SBUF, ResourceTemplate ()
-     {
-         I2cSerialBusV2 (0x000C, ControllerInitiated, 0x00061A80,
-             AddressingMode7Bit, "\\_SB.I2C3",
-             0x00, ResourceConsumer, , Exclusive,
-             )
-         I2cSerialBusV2 (0x0048, ControllerInitiated, 0x00061A80,
-             AddressingMode7Bit, "\\_SB.I2C3",
-             0x00, ResourceConsumer, , Exclusive,
-             )
-         Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive, ,, )
-         {
-             0x00000033,
-         }
-     })
-     Return (SBUF) /* \_SB_.I2C3.ALSD._CRS.SBUF */
- }
+  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
 
-The actual I2C address of the sensor in this case is the 0x48 address
-from the second resource-table entry. On some other devices
-(e.g. HP X2 Bay Trail models, Acer SW5-012) the CPLM3218 node contains
-only 1 I2C resource.
+are available in the Git repository at:
 
-Add the CPLM3218 to the I2C multi instantiate list, so that the
-i2c-multi-instantiate.c driver can handle it.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git staging-5.7-rc3
 
-Note in the case where there are 2 I2C resources we simply instatiate
-i2c-clients for both and let the cm32181 driver figure out that the
-first one is not the one it wants.
+for you to fetch changes up to 664ba5180234593b4b8517530e8198bf2f7359e2:
 
-Doing things this way is actually desirable because on devices where
-there are 2 I2C resources it seems that we first need to do a SMBus
-read of the 0x0c address before the sensor will respond to I2C transfers
-on its actual address.
+  staging: vt6656: Fix calling conditions of vnt_set_bss_mode (2020-04-23 13:47:34 +0200)
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/acpi/scan.c                          | 1 +
- drivers/platform/x86/i2c-multi-instantiate.c | 7 +++++++
- 2 files changed, 8 insertions(+)
+----------------------------------------------------------------
+Staging/IIO driver fixes for 5.7-rc3
 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 6d3448895382..937d72fc212c 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -1544,6 +1544,7 @@ static bool acpi_device_enumeration_by_parent(struc=
-t acpi_device *device)
- 	static const struct acpi_device_id i2c_multi_instantiate_ids[] =3D {
- 		{"BSG1160", },
- 		{"BSG2150", },
-+		{"CPLM3218", },
- 		{"INT33FE", },
- 		{"INT3515", },
- 		{}
-diff --git a/drivers/platform/x86/i2c-multi-instantiate.c b/drivers/platf=
-orm/x86/i2c-multi-instantiate.c
-index dcafb1a29d17..e1cdc44e6f57 100644
---- a/drivers/platform/x86/i2c-multi-instantiate.c
-+++ b/drivers/platform/x86/i2c-multi-instantiate.c
-@@ -180,6 +180,12 @@ static const struct i2c_inst_data int3515_data[]  =3D=
- {
- 	{}
- };
-=20
-+static const struct i2c_inst_data cplm3218_data[]  =3D {
-+	{ "cm32181", PASS_FWNODE },
-+	{ "cm32181", PASS_FWNODE },
-+	{}
-+};
-+
- /*
-  * Note new device-ids must also be added to i2c_multi_instantiate_ids i=
-n
-  * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-@@ -187,6 +193,7 @@ static const struct i2c_inst_data int3515_data[]  =3D=
- {
- static const struct acpi_device_id i2c_multi_inst_acpi_ids[] =3D {
- 	{ "BSG1160", (unsigned long)bsg1160_data },
- 	{ "BSG2150", (unsigned long)bsg2150_data },
-+	{ "CPLM3218", (unsigned long)cplm3218_data },
- 	{ "INT3515", (unsigned long)int3515_data },
- 	{ }
- };
---=20
-2.26.0
+Here are some small staging and IIO driver fixes for 5.7-rc3
 
+Lots of tiny things for reported issues in staging and IIO drivers,
+including a counter driver fix as well (the iio drivers seem to be tied
+to those).  Full details of the fixes are in the shortlog.
+
+All of these have been in linux-next for a while with no reported
+issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Alexandre Belloni (1):
+      iio: adc: ti-ads8344: properly byte swap value
+
+Alexandru Ardelean (2):
+      iio: adc: ad7192: fix null pointer de-reference crash during probe
+      MAINTAINERS: remove Stefan Popa's email
+
+Colin Ian King (1):
+      iio: dac: ad5770r: fix off-by-one check on maximum number of channels
+
+Fabrice Gasnier (1):
+      dt-bindings: iio: adc: stm32-adc: fix id relative path
+
+Greg Kroah-Hartman (1):
+      Merge tag 'iio-fixes-for-5.7a' of git://git.kernel.org/.../jic23/iio into staging-linus
+
+Ian Abbott (1):
+      staging: comedi: dt2815: fix writing hi byte of analog output
+
+Jean-Baptiste Maneyrol (1):
+      iio: imu: inv_mpu6050: fix suspend/resume with runtime power
+
+Lars Engebretsen (1):
+      iio: core: remove extra semi-colon from devm_iio_device_register() macro
+
+Lars-Peter Clausen (4):
+      iio: xilinx-xadc: Fix ADC-B powerdown
+      iio: xilinx-xadc: Fix clearing interrupt when enabling trigger
+      iio: xilinx-xadc: Fix sequencer configuration for aux channels in simultaneous mode
+      iio: xilinx-xadc: Make sure not exceed maximum samplerate
+
+Lary Gibaud (1):
+      iio: st_sensors: rely on odr mask to know if odr can be set
+
+Lorenzo Bianconi (3):
+      iio: imu: st_lsm6dsx: fix read misalignment on untagged FIFO
+      iio: imu: st_lsm6dsx: specify slave odr in slv_odr
+      iio: imu: st_lsm6dsx: flush hw FIFO before resetting the device
+
+Luis Mendes (1):
+      staging: gasket: Fix incongruency in handling of sysfs entries creation
+
+Malcolm Priestley (5):
+      staging: vt6656: Power save stop wake_up_count wrap around.
+      staging: vt6656: Don't set RCR_MULTICAST or RCR_BROADCAST by default.
+      staging: vt6656: Fix drivers TBTT timing counter.
+      staging: vt6656: Fix pairwise key entry save.
+      staging: vt6656: Fix calling conditions of vnt_set_bss_mode
+
+Mircea Caprioru (1):
+      iio: core: Fix handling of 'dB'
+
+Olivier Moysan (1):
+      iio: adc: stm32-adc: fix sleep in atomic context
+
+Syed Nayyar Waris (1):
+      counter: 104-quad-8: Add lock guards - generic interface
+
+Xiyu Yang (1):
+      staging: comedi: Fix comedi_device refcnt leak in comedi_open
+
+YueHaibing (1):
+      iio:ad7797: Use correct attribute_group
+
+ .../devicetree/bindings/iio/adc/st,stm32-adc.yaml  |   2 +-
+ MAINTAINERS                                        |  15 +-
+ drivers/counter/104-quad-8.c                       | 194 +++++++++++++++++----
+ drivers/iio/adc/ad7192.c                           |  63 +++++--
+ drivers/iio/adc/ad7793.c                           |   2 +-
+ drivers/iio/adc/stm32-adc.c                        |  31 +++-
+ drivers/iio/adc/ti-ads8344.c                       |   6 +-
+ drivers/iio/adc/xilinx-xadc-core.c                 |  95 +++++++---
+ drivers/iio/common/st_sensors/st_sensors_core.c    |   2 +-
+ drivers/iio/dac/ad5770r.c                          |   2 +-
+ drivers/iio/imu/inv_mpu6050/inv_mpu_core.c         |  11 +-
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx.h            |   3 +
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c     |  23 ++-
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c       |  24 ++-
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_shub.c       |  29 ++-
+ drivers/iio/industrialio-core.c                    |   7 +-
+ drivers/staging/comedi/comedi_fops.c               |   4 +-
+ drivers/staging/comedi/drivers/dt2815.c            |   3 +
+ drivers/staging/gasket/gasket_sysfs.c              |   3 +-
+ drivers/staging/gasket/gasket_sysfs.h              |   4 -
+ drivers/staging/vt6656/key.c                       |  14 +-
+ drivers/staging/vt6656/main_usb.c                  |  31 ++--
+ drivers/staging/vt6656/usbpipe.c                   |   3 +-
+ include/linux/iio/iio.h                            |   2 +-
+ 24 files changed, 429 insertions(+), 144 deletions(-)
