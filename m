@@ -2,59 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505E41B91D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0275D1B91B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 18:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgDZQjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 12:39:40 -0400
-Received: from elvis.franken.de ([193.175.24.41]:56014 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726147AbgDZQjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 12:39:40 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jSkJd-0001xo-00; Sun, 26 Apr 2020 18:39:37 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 7EA99C0301; Sun, 26 Apr 2020 18:27:37 +0200 (CEST)
-Date:   Sun, 26 Apr 2020 18:27:37 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [PATCH v3 3/4] MIPS: VDSO: Use $(LD) instead of $(CC) to link
- VDSO
-Message-ID: <20200426162737.GA9322@alpha.franken.de>
-References: <20200419202128.20571-1-natechancellor@gmail.com>
- <20200423171807.29713-1-natechancellor@gmail.com>
- <20200423171807.29713-3-natechancellor@gmail.com>
+        id S1726174AbgDZQbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 12:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726144AbgDZQba (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 12:31:30 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B317AC061A0F;
+        Sun, 26 Apr 2020 09:31:30 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id e6so6265507pjt.4;
+        Sun, 26 Apr 2020 09:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=JftPLIptlGdZQu6glQqL9kYGbquEnJgxe+P0oVuYl+k=;
+        b=R5AkkzWhmKtVHFAab9dLU+POlmMCVkok7ZkJ5yko8Grt5RGlW8ECa88J+LGU2HLF/n
+         yk7Qcu/xSrEuq/NJWrDYuURPtOj0/Vh1wagNVv3JHnqFal4AL0jEHldYZbXcrPnP5GDE
+         NgbEcoWgOpOcAFOAVws7uYyl2WmMceqwSZOObU2w9+PnUtyqNZfE0c8j3GS9majzYcLM
+         nPS2JCKJ8gi7oByY8nLXYjUUSvj/uC3fAomE4iVSGnIviQtopEKFVomaXPC2w4TfO4Iv
+         S+KwsvNi+BKJjcJGqjIPzArNNu87lyBT0k+5iewF2OxQKmFuur21VkKa23FsoXsbDn7p
+         lq1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JftPLIptlGdZQu6glQqL9kYGbquEnJgxe+P0oVuYl+k=;
+        b=bgQT+LGK/4LX2R4LtfJ+GyGiZZQ0FYerJrBE/9PX3Bpo4ayQEQWJeSU64Fz0nhUeX1
+         s263WeCQU5YUrl08wtMoFjit8elqip9BYJd8rXJJfG3BKzMZWvqkRnOnnR89ZyA+Maro
+         PE0qTsCAUsNOwAiD2WirN3KGrCm25iiRLmZZRPmKycVlqLmSMeh0m+cZKAj2jbOdxyVW
+         wJ0YpENHQPA1zYJ+Ah9UgoCGhkixsPY3yzBL8gFvsrl4IaSMjQFiNGqyECwZlLsq2JMc
+         6xQCSMqXn1TBGVo1QoFcfC1YA2jT4sV/im6qhOHIWdsBeN4SvT7CdzsVh5q4ntTD5F00
+         AngQ==
+X-Gm-Message-State: AGi0PuagXAFcIigDTYbLReWLFeVfiSx9UUZ/yV5qmlUKUo75GvwKctiI
+        /2NmyV5e70Mm2EGPENWdvxs=
+X-Google-Smtp-Source: APiQypIi/usw1t/zGxkUpQ4mu2qvt0uw/9W9UaSvCjZagIQB1lwnXigFitQliB/x2kZ1aMOJppffiA==
+X-Received: by 2002:a17:902:a40e:: with SMTP id p14mr18334010plq.297.1587918689044;
+        Sun, 26 Apr 2020 09:31:29 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:9db4])
+        by smtp.gmail.com with ESMTPSA id u12sm10307839pfc.15.2020.04.26.09.31.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Apr 2020 09:31:28 -0700 (PDT)
+Date:   Sun, 26 Apr 2020 09:31:25 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Cc:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Network Development Mailing List 
+        <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>, bpf@vger.kernel.org
+Subject: Re: [PATCH] net: bpf: add bpf_ktime_get_boot_ns()
+Message-ID: <20200426163125.rnxwntthcrx5qejf@ast-mbp>
+References: <20200420202643.87198-1-zenczykowski@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200423171807.29713-3-natechancellor@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200420202643.87198-1-zenczykowski@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 10:18:06AM -0700, Nathan Chancellor wrote:
-> Currently, the VDSO is being linked through $(CC). This does not match
-> how the rest of the kernel links objects, which is through the $(LD)
-> variable.
+On Mon, Apr 20, 2020 at 01:26:43PM -0700, Maciej Żenczykowski wrote:
+> From: Maciej Żenczykowski <maze@google.com>
+> 
+> On a device like a cellphone which is constantly suspending
+> and resuming CLOCK_MONOTONIC is not particularly useful for
+> keeping track of or reacting to external network events.
+> Instead you want to use CLOCK_BOOTTIME.
+> 
+> Hence add bpf_ktime_get_boot_ns() as a mirror of bpf_ktime_get_ns()
+> based around CLOCK_BOOTTIME instead of CLOCK_MONOTONIC.
+> 
+> Signed-off-by: Maciej Żenczykowski <maze@google.com>
+...
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 755867867e57..ec567d1e6fb9 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6009,6 +6009,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+>  		return &bpf_tail_call_proto;
+>  	case BPF_FUNC_ktime_get_ns:
+>  		return &bpf_ktime_get_ns_proto;
+> +	case BPF_FUNC_ktime_get_boot_ns:
+> +		return &bpf_ktime_get_boot_ns_proto;
+>  	default:
+>  		break;
+>  	}
 
-this causes build errors for me when (cross) compiling a big endian target:
+That part got moved into kernel/bpf/helpers.c in the mean time.
+I fixed it up and applied. Thanks
 
-target is little endian
-mips64-linux-gnu-ld: arch/mips/vdso/elf.o: endianness incompatible with that of the selected emulation
-mips64-linux-gnu-ld: failed to merge target specific data of file arch/mips/vdso/elf.o
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+In the future please cc bpf@vger for all bpf related patches.
