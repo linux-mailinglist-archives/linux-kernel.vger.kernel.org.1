@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B7D1B9312
-	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 20:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63181B932F
+	for <lists+linux-kernel@lfdr.de>; Sun, 26 Apr 2020 20:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726306AbgDZSmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 14:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47842 "EHLO
+        id S1726344AbgDZSnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 14:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726177AbgDZSmy (ORCPT
+        by vger.kernel.org with ESMTP id S1726342AbgDZSm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 14:42:54 -0400
+        Sun, 26 Apr 2020 14:42:57 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC09EC061A0F;
-        Sun, 26 Apr 2020 11:42:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1DAC061A10;
+        Sun, 26 Apr 2020 11:42:57 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jSmEs-0007Bc-Tt; Sun, 26 Apr 2020 20:42:50 +0200
+        id 1jSmEt-0007C2-Ex; Sun, 26 Apr 2020 20:42:51 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 7AC8E1C0178;
-        Sun, 26 Apr 2020 20:42:50 +0200 (CEST)
-Date:   Sun, 26 Apr 2020 18:42:49 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 122AA1C0178;
+        Sun, 26 Apr 2020 20:42:51 +0200 (CEST)
+Date:   Sun, 26 Apr 2020 18:42:50 -0000
 From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/tlb: Move __flush_tlb_all() out of line
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200421092559.740388137@linutronix.de>
-References: <20200421092559.740388137@linutronix.de>
+Subject: [tip: x86/mm] x86/tlb: Move flush_tlb_others() out of line
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@suse.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200421092559.641957686@linutronix.de>
+References: <20200421092559.641957686@linutronix.de>
 MIME-Version: 1.0
-Message-ID: <158792656994.28353.8288586181751834405.tip-bot2@tip-bot2>
+Message-ID: <158792657057.28353.13010874775801822359.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,116 +51,133 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/mm branch of tip:
 
-Commit-ID:     4b04e6c236744635eb4852bd9690172734fa0a1c
-Gitweb:        https://git.kernel.org/tip/4b04e6c236744635eb4852bd9690172734fa0a1c
+Commit-ID:     29def599b38bb8a10f48f83821dd990615300b04
+Gitweb:        https://git.kernel.org/tip/29def599b38bb8a10f48f83821dd990615300b04
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 21 Apr 2020 11:20:37 +02:00
+AuthorDate:    Tue, 21 Apr 2020 11:20:36 +02:00
 Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sun, 26 Apr 2020 18:17:31 +02:00
+CommitterDate: Sun, 26 Apr 2020 11:10:25 +02:00
 
-x86/tlb: Move __flush_tlb_all() out of line
+x86/tlb: Move flush_tlb_others() out of line
 
-Reduce the number of required exports to one and make flush_tlb_global()
-static to the TLB code.
+cpu_tlbstate is exported because various TLB-related functions need
+access to it, but cpu_tlbstate is sensitive information which should
+only be accessed by well-contained kernel functions and not be directly
+exposed to modules.
 
-flush_tlb_local() cannot be confined to the TLB code as the MTRR
-handling requires a PGE-less flush.
+As a last step, move __flush_tlb_others() out of line and hide the
+native function. The latter can be static when CONFIG_PARAVIRT is
+disabled.
 
-Suggested-by: Christoph Hellwig <hch@lst.de>
+No functional change.
+
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200421092559.740388137@linutronix.de
+Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200421092559.641957686@linutronix.de
 ---
- arch/x86/include/asm/tlbflush.h | 23 +----------------------
- arch/x86/mm/tlb.c               | 29 ++++++++++++++++++++++-------
- 2 files changed, 23 insertions(+), 29 deletions(-)
+ arch/x86/include/asm/paravirt.h |  6 ++++--
+ arch/x86/include/asm/tlbflush.h | 10 ++++------
+ arch/x86/mm/tlb.c               | 11 +++++++++--
+ 3 files changed, 17 insertions(+), 10 deletions(-)
 
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+index dcd6517..5ca5d29 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -50,6 +50,8 @@ static inline void slow_down_io(void)
+ void native_flush_tlb_local(void);
+ void native_flush_tlb_global(void);
+ void native_flush_tlb_one_user(unsigned long addr);
++void native_flush_tlb_others(const struct cpumask *cpumask,
++			     const struct flush_tlb_info *info);
+ 
+ static inline void __flush_tlb_local(void)
+ {
+@@ -66,8 +68,8 @@ static inline void __flush_tlb_one_user(unsigned long addr)
+ 	PVOP_VCALL1(mmu.flush_tlb_one_user, addr);
+ }
+ 
+-static inline void flush_tlb_others(const struct cpumask *cpumask,
+-				    const struct flush_tlb_info *info)
++static inline void __flush_tlb_others(const struct cpumask *cpumask,
++				      const struct flush_tlb_info *info)
+ {
+ 	PVOP_VCALL2(mmu.flush_tlb_others, cpumask, info);
+ }
 diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index d064ae8..7401c6c 100644
+index bbb94f0..d064ae8 100644
 --- a/arch/x86/include/asm/tlbflush.h
 +++ b/arch/x86/include/asm/tlbflush.h
-@@ -142,8 +142,8 @@ static inline unsigned long build_cr3_noflush(pgd_t *pgd, u16 asid)
+@@ -140,10 +140,14 @@ static inline unsigned long build_cr3_noflush(pgd_t *pgd, u16 asid)
+ 	return __sme_pa(pgd) | kern_pcid(asid) | CR3_NOFLUSH;
+ }
  
- struct flush_tlb_info;
- 
-+void __flush_tlb_all(void);
++struct flush_tlb_info;
++
  void flush_tlb_local(void);
--void flush_tlb_global(void);
+ void flush_tlb_global(void);
  void flush_tlb_one_user(unsigned long addr);
  void flush_tlb_one_kernel(unsigned long addr);
- void flush_tlb_others(const struct cpumask *cpumask,
-@@ -341,27 +341,6 @@ static inline void cr4_set_bits_and_update_boot(unsigned long mask)
++void flush_tlb_others(const struct cpumask *cpumask,
++		      const struct flush_tlb_info *info);
  
- extern void initialize_tlbstate_and_flush(void);
+ #ifdef CONFIG_PARAVIRT
+ #include <asm/paravirt.h>
+@@ -418,9 +422,6 @@ static inline void flush_tlb_page(struct vm_area_struct *vma, unsigned long a)
+ 	flush_tlb_mm_range(vma->vm_mm, a, a + PAGE_SIZE, PAGE_SHIFT, false);
+ }
  
--/*
-- * flush everything
-- */
--static inline void __flush_tlb_all(void)
--{
--	/*
--	 * This is to catch users with enabled preemption and the PGE feature
--	 * and don't trigger the warning in __native_flush_tlb().
--	 */
--	VM_WARN_ON_ONCE(preemptible());
+-void native_flush_tlb_others(const struct cpumask *cpumask,
+-			     const struct flush_tlb_info *info);
 -
--	if (boot_cpu_has(X86_FEATURE_PGE)) {
--		flush_tlb_global();
--	} else {
--		/*
--		 * !PGE -> !PCID (setup_pcid()), thus every flush is total.
--		 */
--		flush_tlb_local();
--	}
--}
--
- #define TLB_FLUSH_ALL	-1UL
+ static inline u64 inc_mm_tlb_gen(struct mm_struct *mm)
+ {
+ 	/*
+@@ -442,9 +443,6 @@ static inline void arch_tlbbatch_add_mm(struct arch_tlbflush_unmap_batch *batch,
+ extern void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
  
- /*
+ #ifndef CONFIG_PARAVIRT
+-#define flush_tlb_others(mask, info)	\
+-	native_flush_tlb_others(mask, info)
+-
+ #define paravirt_tlb_remove_table(tlb, page) \
+ 	tlb_remove_page(tlb, (void *)(page))
+ #endif
 diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 209799d..aabf8c7 100644
+index ad217ed..209799d 100644
 --- a/arch/x86/mm/tlb.c
 +++ b/arch/x86/mm/tlb.c
-@@ -1018,12 +1018,6 @@ STATIC_NOPV void native_flush_tlb_global(void)
- 	raw_local_irq_restore(flags);
+@@ -25,6 +25,7 @@
+ # define __flush_tlb_local		native_flush_tlb_local
+ # define __flush_tlb_global		native_flush_tlb_global
+ # define __flush_tlb_one_user(addr)	native_flush_tlb_one_user(addr)
++# define __flush_tlb_others(msk, info)	native_flush_tlb_others(msk, info)
+ #endif
+ 
+ /*
+@@ -715,8 +716,8 @@ static bool tlb_is_not_lazy(int cpu, void *data)
+ 	return !per_cpu(cpu_tlbstate.is_lazy, cpu);
  }
  
--void flush_tlb_global(void)
--{
--	__flush_tlb_global();
--}
--EXPORT_SYMBOL_GPL(flush_tlb_global);
--
- /*
-  * Flush the entire current user mapping
-  */
-@@ -1046,7 +1040,28 @@ void flush_tlb_local(void)
+-void native_flush_tlb_others(const struct cpumask *cpumask,
+-			     const struct flush_tlb_info *info)
++STATIC_NOPV void native_flush_tlb_others(const struct cpumask *cpumask,
++					 const struct flush_tlb_info *info)
  {
- 	__flush_tlb_local();
+ 	count_vm_tlb_event(NR_TLB_REMOTE_FLUSH);
+ 	if (info->end == TLB_FLUSH_ALL)
+@@ -766,6 +767,12 @@ void native_flush_tlb_others(const struct cpumask *cpumask,
+ 				(void *)info, 1, cpumask);
  }
--EXPORT_SYMBOL_GPL(flush_tlb_local);
-+
-+/*
-+ * Flush everything
-+ */
-+void __flush_tlb_all(void)
-+{
-+	/*
-+	 * This is to catch users with enabled preemption and the PGE feature
-+	 * and don't trigger the warning in __native_flush_tlb().
-+	 */
-+	VM_WARN_ON_ONCE(preemptible());
-+
-+	if (boot_cpu_has(X86_FEATURE_PGE)) {
-+		__flush_tlb_global();
-+	} else {
-+		/*
-+		 * !PGE -> !PCID (setup_pcid()), thus every flush is total.
-+		 */
-+		flush_tlb_local();
-+	}
-+}
-+EXPORT_SYMBOL_GPL(__flush_tlb_all);
  
++void flush_tlb_others(const struct cpumask *cpumask,
++		      const struct flush_tlb_info *info)
++{
++	__flush_tlb_others(cpumask, info);
++}
++
  /*
-  * arch_tlbbatch_flush() performs a full TLB flush regardless of the active mm.
+  * See Documentation/x86/tlb.rst for details.  We choose 33
+  * because it is large enough to cover the vast majority (at
