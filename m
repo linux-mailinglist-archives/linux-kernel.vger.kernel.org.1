@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE9D1B995B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1539F1B995D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgD0IFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:05:42 -0400
-Received: from mail-m17613.qiye.163.com ([59.111.176.13]:15447 "EHLO
-        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbgD0IFl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:05:41 -0400
-Received: from ubuntu.localdomain (unknown [157.0.31.122])
-        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id B9D1C48274B;
-        Mon, 27 Apr 2020 16:05:39 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Shashank Sharma <shashank.sharma@intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Bernard Zhao <bernard@vivo.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        id S1726746AbgD0IGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 04:06:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726561AbgD0IGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 04:06:06 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF6B92063A;
+        Mon, 27 Apr 2020 08:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587974766;
+        bh=zj/dt/5c6Yckt6vj2KqloJRjdxQZ9M9SfMwirnXwTA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OOt6fQ6WwTbtIjRR6IazVyZ/dpJ29bgrWHVtpS2D1cyDvdJmrC90eJzUqyFEE/Xui
+         bcorH73RJWhIdoKnpb/jlE/aPzd66uiDRGzRI7wifeMIeHlc1Y8J6PsRpSTAG+CBcq
+         DKPGfWzxC/ns3xKK3b2QoOFlEO4KyUvfV/tC2hLc=
+Date:   Mon, 27 Apr 2020 09:06:00 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nathan Huckleberry <nhuck15@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Russell King <linux@armlinux.org.uk>,
         linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH] drivers/video: cleanup coding style in video a bit
-Date:   Mon, 27 Apr 2020 01:05:23 -0700
-Message-Id: <20200427080530.3234-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.26.2
+Subject: Re: [PATCH] kbuild: remove unused AS assignment
+Message-ID: <20200427080600.GC11787@willie-the-truck>
+References: <20200427003019.2401592-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZTlVOTUhLS0tJS0lKTENCTVlXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PTI6Sgw4CDgrFkgNMjU9Dw0w
-        ThYaCjJVSlVKTkNMQkxPTE9LS05JVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSUlZV1kIAVlBSU5PTTcG
-X-HM-Tid: 0a71baab97fd93bakuwsb9d1c48274b
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427003019.2401592-1-masahiroy@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the magic numbers, add vender infoframe size macro
-like other hdmi modules.
+On Mon, Apr 27, 2020 at 09:30:19AM +0900, Masahiro Yamada wrote:
+> $(AS) is not used anywhere, hence commit aa824e0c962b ("kbuild: remove
+> AS variable") killed it.
+> 
+> Remove the left-over code in arch/{arm,arm64}/Makefile.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  arch/arm/Makefile   | 2 --
+>  arch/arm64/Makefile | 2 --
+>  2 files changed, 4 deletions(-)
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- drivers/video/hdmi.c | 2 +-
- include/linux/hdmi.h | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+Acked-by: Will Deacon <will@kernel.org>
 
-diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
-index 856a8c4e84a2..f693076f2e5f 100644
---- a/drivers/video/hdmi.c
-+++ b/drivers/video/hdmi.c
-@@ -495,7 +495,7 @@ int hdmi_vendor_infoframe_init(struct hdmi_vendor_infoframe *frame)
- 	 * value
- 	 */
- 	frame->s3d_struct = HDMI_3D_STRUCTURE_INVALID;
--	frame->length = 4;
-+	frame->length = HDMI_VENDOR_INFOFRAME_SIZE;
- 
- 	return 0;
- }
-diff --git a/include/linux/hdmi.h b/include/linux/hdmi.h
-index 9613d796cfb1..ff25aeb95ee4 100644
---- a/include/linux/hdmi.h
-+++ b/include/linux/hdmi.h
-@@ -57,6 +57,7 @@ enum hdmi_infoframe_type {
- #define HDMI_SPD_INFOFRAME_SIZE    25
- #define HDMI_AUDIO_INFOFRAME_SIZE  10
- #define HDMI_DRM_INFOFRAME_SIZE    26
-+#define HDMI_VENDOR_INFOFRAME_SIZE  4
- 
- #define HDMI_INFOFRAME_SIZE(type)	\
- 	(HDMI_INFOFRAME_HEADER_SIZE + HDMI_ ## type ## _INFOFRAME_SIZE)
--- 
-2.26.2
+(If you post the arm64 part as a separate patch, I can pick it up)
 
+Will
