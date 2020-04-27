@@ -2,97 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2701BA149
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 12:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CA01BA129
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 12:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgD0Kb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 06:31:57 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2109 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727058AbgD0Kbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 06:31:44 -0400
-Received: from lhreml726-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id 06CEB882E7E7C5ABDB47;
-        Mon, 27 Apr 2020 11:31:43 +0100 (IST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- lhreml726-chm.china.huawei.com (10.201.108.77) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 27 Apr 2020 11:31:42 +0100
-Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.160)
- by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Mon, 27 Apr 2020 12:31:41 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <rgoldwyn@suse.de>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <silviu.vlasceanu@huawei.com>,
-        <krzysztof.struczynski@huawei.com>, <stable@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v2 5/6] ima: Set again build_ima_appraise variable
-Date:   Mon, 27 Apr 2020 12:28:59 +0200
-Message-ID: <20200427102900.18887-5-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200427102900.18887-1-roberto.sassu@huawei.com>
-References: <20200427102900.18887-1-roberto.sassu@huawei.com>
+        id S1727086AbgD0K3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 06:29:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:33302 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727036AbgD0K3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 06:29:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94D601FB;
+        Mon, 27 Apr 2020 03:29:15 -0700 (PDT)
+Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BD5F3F68F;
+        Mon, 27 Apr 2020 03:29:14 -0700 (PDT)
+Date:   Mon, 27 Apr 2020 11:29:11 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Todd E Brandt <todd.e.brandt@linux.intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] Revert "cpu/hotplug: Ignore pm_wakeup_pending() for
+ disable_nonboot_cpus()"
+Message-ID: <20200427102910.b6iysyumiz5pj4sv@e107158-lin>
+References: <20200409112742.3581-1-qais.yousef@arm.com>
+ <26038947.HFycnDbHsR@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.204.65.160]
-X-ClientProxiedBy: lhreml710-chm.china.huawei.com (10.201.108.61) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <26038947.HFycnDbHsR@kreacher>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+On 04/26/20 17:24, Rafael J. Wysocki wrote:
+> I would do this the other way around:
+> 
+> 1. Make x86 call freeze_secondary_cpus() directly, rename
+>    enable_nonboot_cpus() and drop disable_nonboot_cpus().
 
-After adding the new add_rule() function in commit c52657d93b05
-("ima: refactor ima_init_policy()"), all appraisal flags are added to the
-temp_ima_appraise variable. Revert to the previous behavior instead of
-removing build_ima_appraise, to benefit from the protection offered by
-__ro_after_init.
+All of this in a single patch?
 
-The mentioned commit introduced a bug, as it makes all the flags
-modifiable, while build_ima_appraise flags can be protected with
-__ro_after_init.
+> 2. Get rid of __freeze_secondary_cpus().
 
-Changelog
+I guess you're implying to drop the revert too and manually unroll it instead.
 
-v1:
-- set build_ima_appraise instead of removing it (suggested by Mimi)
+Could do.
 
-Cc: stable@vger.kernel.org # 5.0.x
-Fixes: c52657d93b05 ("ima: refactor ima_init_policy()")
-Co-developed-by: Roberto Sassu <roberto.sassu@huawei.com>
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Signed-off-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
----
- security/integrity/ima/ima_policy.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Thanks
 
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index ea9b991f0232..ef7f68cc935e 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -643,8 +643,14 @@ static void add_rules(struct ima_rule_entry *entries, int count,
- 
- 			list_add_tail(&entry->list, &ima_policy_rules);
- 		}
--		if (entries[i].action == APPRAISE)
--			temp_ima_appraise |= ima_appraise_flag(entries[i].func);
-+		if (entries[i].action == APPRAISE) {
-+			if (entries != build_appraise_rules)
-+				temp_ima_appraise |=
-+					ima_appraise_flag(entries[i].func);
-+			else
-+				build_ima_appraise |=
-+					ima_appraise_flag(entries[i].func);
-+		}
- 	}
- }
- 
--- 
-2.17.1
-
+--
+Qais Yousef
