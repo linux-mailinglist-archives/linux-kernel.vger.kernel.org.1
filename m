@@ -2,92 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E251BA4DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8F21BA4E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgD0NiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 09:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54344 "EHLO
+        id S1727819AbgD0Nks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 09:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgD0NiS (ORCPT
+        with ESMTP id S1726721AbgD0Nkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 09:38:18 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A40C0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 06:38:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
-        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=9UoMgYzM3h0SmuuYcAun6uUW+gxC7pfA5UN/YTDR2z0=; b=B1EBJRVP47y3yK5GB9pE1YLIzA
-        ZJfigSMb5ZIUbxD8wk8m4Tssv8e7CKWZlK+bsX8y2NjDvoZWh7QeDkVQi+8uP1EK5dlxn8nL430UY
-        kbGvuGxH+7vnwXEufD71CqacdleCXtwxAI9CMCNEnUEErVPYgIHWTqJHjHgb2354bFjd3xJCMYrY/
-        EzntOhjQUJsP8bKXiGGhfJDL/3Tp9FYvGFIFN2LeMu8RjGZCEvMbGlZxIRoXQByzsEDnIN1x5NtBA
-        cKjHm7afLk4Ikb4hxknV+evmvpufJ+mbC2tpgm5Ou++L+TNGH1SIHwcnLj9cvwCoiE/6YVwsu504F
-        3DH3+E9A==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jT3xY-0000sU-2P; Mon, 27 Apr 2020 13:38:08 +0000
-Date:   Mon, 27 Apr 2020 06:38:07 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Changbin Du <changbin.du@gmail.com>
-Subject: Re: [PATCH] mm/slub: Fix incorrect checkings of s->offset
-Message-ID: <20200427133807.GF29705@bombadil.infradead.org>
-References: <20200427020212.5222-1-longman@redhat.com>
- <20200427123814.GE29705@bombadil.infradead.org>
- <891a7635-9074-d320-9571-74f584401f01@redhat.com>
- <b4d05ff7-0fe2-67d8-f2a7-6d0c2ab19408@redhat.com>
+        Mon, 27 Apr 2020 09:40:46 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807C9C0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 06:40:46 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id t14so20570163wrw.12
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 06:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MUIBi3Kz2bkUUb92RvvcEHJTqtbaNXF9Y7EBsbD5L0c=;
+        b=OLMul7nbDDFYBho4Kvdud4pdceB9b7aPn9ASElp5wj7Km258hn12H7ulg8+XahVHqS
+         D5Fnw57KJvloRVSjNdDwOpBQkCaHDgQvQoyRyeSI0t4nj3NT1ce392dR8cfqHfOuMFK1
+         Ek6mnuui/vgFuGVnDI/LUgFz3HW6ExBq3gMeaFagEdQjxzxTy/PC5RaIMz3iYJaeSmRZ
+         KXd9PT1YvkNTowH/b49ZVIWbdqwVKUloM0jaUwQceeWVl11LF8ep1KXqbqrgYo/hyuPy
+         QJTm285KkTQQ8jsfSE8RWweLyNK7EMWFzTx9Ohhs/tb6/C0TgoLvj+75ZTK7IqVpSHSE
+         mviA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MUIBi3Kz2bkUUb92RvvcEHJTqtbaNXF9Y7EBsbD5L0c=;
+        b=IVpDJO+nNq5FedHlrKIrpQ3I8xxaCAZvPCaltvLdoL+9ynGpl1leIaoe2Lcl6Rcup9
+         X45IV85wzGwlzjJv29XoTIVuFtvq6jT5JvPNzszTM2QXd1R5O7nqNHiUN7YdTXqidusw
+         mpMmRHlPjtW+Y5SX1eQmql9DQ48mD5IoUbud+ZyG696xWZN87BIQJYYFe4HMKAdMbFLX
+         /3wjugJeP8NibCuBzO13phAZyVr9HFkyNKvdwYwpUHswGhFxa6fTlTLGEGMnFwdX1gFS
+         6hdxnwYaNEj8+drte2zFqIONmpbo/l80jJ2TE9C8mr3/bdCvVOdGDihgXP6vvNEZwXXD
+         pmMQ==
+X-Gm-Message-State: AGi0PuaXOAixamND/XY0JUvYEBnx7gExHSDpMNImfOdYddTA4eTjqEQR
+        XrB+gpzf5SBql9DqkLn5Ay0=
+X-Google-Smtp-Source: APiQypJKb7lCTqNXQgytbzzPh7skR1WCcEpQCoDe8IIwh8BbQCBr+FlamFIWRbPLZVeRq/pA585TTA==
+X-Received: by 2002:adf:84c2:: with SMTP id 60mr26971075wrg.65.1587994845296;
+        Mon, 27 Apr 2020 06:40:45 -0700 (PDT)
+Received: from linuxdev2.toradex.int (31-10-206-124.static.upc.ch. [31.10.206.124])
+        by smtp.gmail.com with ESMTPSA id g186sm16290640wme.7.2020.04.27.06.40.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2020 06:40:43 -0700 (PDT)
+From:   Max Krummenacher <max.oss.09@gmail.com>
+X-Google-Original-From: Max Krummenacher <max.krummenacher@toradex.com>
+To:     Max Krummenacher <max.krummenacher@toradex.com>, soc@kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>, Olof Johansson <olof@lixom.net>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH v3 0/5] defconfig: fix changed configs and refresh
+Date:   Mon, 27 Apr 2020 15:39:58 +0200
+Message-Id: <20200427134003.45188-1-max.krummenacher@toradex.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b4d05ff7-0fe2-67d8-f2a7-6d0c2ab19408@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 09:29:41AM -0400, Waiman Long wrote:
-> On 4/27/20 9:18 AM, Waiman Long wrote:
-> > On 4/27/20 8:38 AM, Matthew Wilcox wrote:
-> > > On Sun, Apr 26, 2020 at 10:02:12PM -0400, Waiman Long wrote:
-> > > > In a couple of places in the slub memory allocator, the code uses
-> > > > "s->offset" as a check to see if the free pointer is put right
-> > > > after the
-> > > > object. That check is no longer true with commit 3202fa62fb43 ("slub:
-> > > > relocate freelist pointer to middle of object").
-> > > > 
-> > > > As a result, echoing "1" into the validate sysfs file, e.g. of dentry,
-> > > > may cause a bunch of "Freepointer corrupt" error reports to appear with
-> > > > the system in panic afterwards.
-> > > > 
-> > > > To fix it, use the check "s->offset == s->inuse" instead.
-> > > I think a little refactoring would make this more clear.
-> > > 
-> > > unsigned int track_offset(const struct kmem_cache *s)
-> > > {
-> > >     return s->inuse + (s->offset == s->inuse) ? sizeof(void *) : 0;
-> > > }
-> > 
-> > Yes, that was what I am thinking of doing in v2.
-> 
-> BTW, "+" has a higher priority than "?:". So we need a parenthesis around
-> "?:".
+Three configs have been renamed, added and/or, changed behaviour.
+Clean that by using/add the new config name.
+With the name change to DRM_SIMPLE_BRIDGE the related
+DRM_DISPLAY_CONNECTOR got introduced, enable that additionally.
 
-That seems like a good reason to not use ?:
+Then refresh the defconfig with make defconfig savedefconfig.
+The refreshed defconfig does result in a not changed .config, all removed
+config options are selected implicitly and part of .config.
 
-unsigned int track_offset(const struct kmem_cache *s)
-{
-	if (s->offset != s->inuse)
-		return s->inuse;
-	return s->inuse + sizeof(void *);
-}
+IMHO, patches 1-4 are bugfixes meant for 5.7 while patch 5 is a cleanup
+targeting 5.8.
 
-Also this needs a comment about why we're doing this ... something about
-the freelist pointer, I think?
+Applies on linux-next/master tag: next-20200424
+
+
+Changes in v3:
+- new patch: added 'arm64: defconfig: add MEDIA_PLATFORM_SUPPORT' now
+  needed for some enabled drivers or these drivers will silently not
+  be built.
+- add reviewed-by tags
+- dropped 'arm64: defconfig: PCIE_TEGRA194: follow changed config symbol name'
+  similar patch got applied
+- as requested by Arnd, added suggestion on where to apply, 5.7 vs. 5.8.
+- as requested by Arnd, amended commit message with info why some configs
+  are no longer in the defconfig.
+
+Changes in v2:
+- additional patch adding DRM_DISPLAY_CONNECTOR as recommended by Geert and Laurent
+- add reviewed-by tags
+
+Max Krummenacher (5):
+  arm64: defconfig: DRM_DUMB_VGA_DAC: follow changed config symbol name
+  arm64: defconfig: add DRM_DISPLAY_CONNECTOR
+  arm64: defconfig: ARCH_R8A7795: follow changed config symbol name
+  arm64: defconfig: add MEDIA_PLATFORM_SUPPORT
+  arm64: defconfig: refresh
+
+ arch/arm64/configs/defconfig | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
+
+-- 
+2.20.1
+
