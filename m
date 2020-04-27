@@ -2,82 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D731BA6C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB701BA6C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbgD0Oov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 10:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727077AbgD0Oot (ORCPT
+        id S1728052AbgD0OpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 10:45:23 -0400
+Received: from smtprelay0059.hostedemail.com ([216.40.44.59]:60030 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727077AbgD0OpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 10:44:49 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27D4C0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 07:44:49 -0700 (PDT)
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jT501-0005LI-NJ; Mon, 27 Apr 2020 16:44:45 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id E65B0100606; Mon, 27 Apr 2020 16:44:44 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Brian Gerst <brgerst@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Dominik Brodowski <linux@dominikbrodowski.net>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH] tracing/x86: fix trace event registration for syscalls without arguments
-In-Reply-To: <158636958997.7900.16485049455470033557.stgit@buzz>
-References: <158636958997.7900.16485049455470033557.stgit@buzz>
-Date:   Mon, 27 Apr 2020 16:44:44 +0200
-Message-ID: <87368pq97n.fsf@nanos.tec.linutronix.de>
+        Mon, 27 Apr 2020 10:45:21 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 925CE181D303C;
+        Mon, 27 Apr 2020 14:45:20 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2196:2198:2199:2200:2393:2559:2562:2731:2828:3138:3139:3140:3141:3142:3352:3622:3865:3868:3870:3871:4321:4385:5007:6119:7809:8957:10004:10400:10848:11232:11657:11658:11914:12043:12048:12297:12679:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14181:14659:14721:21080:21451:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
+X-HE-Tag: laugh55_689d99d258c14
+X-Filterd-Recvd-Size: 2256
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 27 Apr 2020 14:45:18 +0000 (UTC)
+Message-ID: <afe39d6c755dbc0d79e913b531ed12ed94ec1b13.camel@perches.com>
+Subject: Re: [PATCH v3 4/4] MAINTAINERS: Add IPK MIPI DSI Host driver entry
+From:   Joe Perches <joe@perches.com>
+To:     Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Joao Pinto <Joao.Pinto@synopsys.com>
+Date:   Mon, 27 Apr 2020 07:45:17 -0700
+In-Reply-To: <abe4ca0b0662c17212fc5107080e949f1d3377c1.1587992776.git.angelo.ribeiro@synopsys.com>
+References: <cover.1587992776.git.angelo.ribeiro@synopsys.com>
+         <abe4ca0b0662c17212fc5107080e949f1d3377c1.1587992776.git.angelo.ribeiro@synopsys.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Konstantin Khlebnikov <khlebnikov@yandex-team.ru> writes:
-
-> Syscalls without arguments now has no ABI subs, instead of that macro
-
-What is 'ABI subs'? 
-
-> SYSCALL_DEFINE0() defines __abi_sys_name as aliase to __do_sys_name.
->
-> As a result in find_syscall_meta() kallsyms_lookup() returns
-> "__do_sys_name" which does not match with declared trace event.
->
-> Also see commit 1c758a2202a6 ("tracing/x86: Update syscall trace events
-> to handle new prefixed syscall func names")
->
-> Fixes: d2b5de495ee9 ("x86/entry: Refactor SYSCALL_DEFINE0 macros")
-> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> ---
->  arch/x86/include/asm/ftrace.h |    5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-> index 85be2f506272..70b96cae5b42 100644
-> --- a/arch/x86/include/asm/ftrace.h
-> +++ b/arch/x86/include/asm/ftrace.h
-> @@ -61,11 +61,12 @@ static inline bool arch_syscall_match_sym_name(const char *sym, const char *name
->  {
->  	/*
->  	 * Compare the symbol name with the system call name. Skip the
-> -	 * "__x64_sys", "__ia32_sys" or simple "sys" prefix.
-> +	 * "__x64_sys", "__ia32_sys", "__do_sys" or simple "sys" prefix.
->  	 */
->  	return !strcmp(sym + 3, name + 3) ||
->  		(!strncmp(sym, "__x64_", 6) && !strcmp(sym + 9, name + 3)) ||
-> -		(!strncmp(sym, "__ia32_", 7) && !strcmp(sym + 10, name + 3));
-> +		(!strncmp(sym, "__ia32_", 7) && !strcmp(sym + 10, name + 3)) ||
-> +		(!strncmp(sym, "__do_sys", 8) && !strcmp(sym + 8, name + 3));
->  }
+On Mon, 2020-04-27 at 16:00 +0200, Angelo Ribeiro wrote:
+> Creates entry for Synopsys DesignWare IPK DRM driver and
+> adds myself as maintainer.
+[]
+> diff --git a/MAINTAINERS b/MAINTAINERS
+[]
+> @@ -5507,6 +5507,14 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
+>  F:	Documentation/devicetree/bindings/display/ste,mcde.txt
+>  F:	drivers/gpu/drm/mcde/
 >  
->  #ifndef COMPILE_OFFSETS
+> +DRM DRIVER FOR SYNOPSYS DESIGNWARE IPK
+> +M:	Angelo Ribeiro <angelo.ribeiro@synopsys.com>
+> +L:	dri-devel@lists.freedesktop.org
+> +S:	Maintained
+> +F:	drivers/gpu/drm/ipk/
+> +F:	Documentation/devicetree/bindings/display/ipk/
+> +T:	git git://anongit.freedesktop.org/drm/drm-misc
+
+There is now a preferred order for the entries in a section.
+
+Please use:
+
+DRM DRIVER FOR SYNOPSYS DESIGNWARE IPK
+M:	Angelo Ribeiro <angelo.ribeiro@synopsys.com>
+L:	dri-devel@lists.freedesktop.org>
+S:	Maintained
+T:	git git://anongit.freedesktop.org/drm/drm-misc
+F:	Document
+ation/devicetree/bindings/display/ipk/>
+F:	drivers/gpu/drm/ipk/
+
+
