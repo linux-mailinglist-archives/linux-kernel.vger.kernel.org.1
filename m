@@ -2,90 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144AA1BAF2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:18:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64D51BAF36
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgD0USF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 16:18:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgD0USE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:18:04 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB8ED2072D;
-        Mon, 27 Apr 2020 20:18:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588018684;
-        bh=FZznVs7DKImH4bMp84GuK30NCRT+ks2QZb0zw61Aw2o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=0dPVwJ/H9B7uUoDHVQh+JzhGMmouLB2JEnhplDQk7I3xuAgcbSFK60H1piEfCx5Sx
-         t+jKABLjlMrQXuoJB1Wv7UdopSfsHYSYtmSlzWb93RhaIDNLpcyXt7Avmd+0pazZfN
-         HbeEsAjiXXS9v7hdBuMksmtrvhaQ+taOUTUIOuQQ=
-Date:   Mon, 27 Apr 2020 13:18:02 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Sandipan Das <sandipan.osd@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S.Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Longpeng <longpeng2@huawei.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Mina Almasry <almasrymina@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>
-Subject: Re: [PATCH v3 2/4] hugetlbfs: move hugepagesz= parsing to arch
- independent code
-Message-Id: <20200427131802.3d132055a59535a0e6780e9f@linux-foundation.org>
-In-Reply-To: <b1f04f9f-fa46-c2a0-7693-4a0679d2a1ee@oracle.com>
-References: <20200417185049.275845-1-mike.kravetz@oracle.com>
-        <20200417185049.275845-3-mike.kravetz@oracle.com>
-        <7583dfcc-62d8-2a54-6eef-bcb4e01129b3@gmail.com>
-        <5a380060-38db-b690-1003-678ca0f28f07@oracle.com>
-        <b1f04f9f-fa46-c2a0-7693-4a0679d2a1ee@oracle.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726808AbgD0UTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726233AbgD0UTs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 16:19:48 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF0FC0A3BF5;
+        Mon, 27 Apr 2020 13:19:48 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id b18so18046320ilf.2;
+        Mon, 27 Apr 2020 13:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5s0loVtM5y/Mu8RlGyMY/CFHxHbkF9cVopaZY4SvPTQ=;
+        b=ncXxLCAmlixclWzEhq/0uEYcZb8gCfIM5coXjw+oWF/e3H4s9jc9aY4LN+FRI/wsCu
+         BRkHwhiGy/iIBQNPJmUMLTSIaw38f/M7pTPAZugWHyb3awEveaEVXVjPga6EbZhwM2K8
+         j1ISysOMCeqd1b8S52YbEeINikf0s8AeutF1H5GQTDLGjqs7fdq5HNhThSezPGhskRLE
+         FPbnV5p517zOHa1yPkB2wMfmMXkUO5A+rlev4jUKqwEtY8YpNUo8hGS4B3n5fSe1fmmX
+         +Z1fDTmaU3g2ooSAEWHFoe1PzsyieFyP9MwaKmU0PQ41fEzAiJz1Dm4Z+xkNeGvDhNtI
+         7msQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5s0loVtM5y/Mu8RlGyMY/CFHxHbkF9cVopaZY4SvPTQ=;
+        b=pGLrzY7At21n0fLYnURbk4orqZ+j1fbhkoFqJ/E+cEHPVCf5735BTB6ZPybd8e40Ee
+         Kh4AFZrLkPQQxX74wwMxG6lOaF9BmDlNEYzlafTwN3VRXpLdvQcFL9t/Q4VzkwcMkteF
+         XPfAwtVfMv5lfCi8w7HSpN6gqtDA+jT4FTqyT5T7XX1bAvsfy2jRy7/Yym1MZZwesqKX
+         AWZ0ngT4XlprScvxG6LPJ/Llrub8/gr2+GOp2vAeuzAp21yDVrCHx148VS0SXuV/oDJo
+         y8LjUhf/ZELWMxMlLUgA7fPB5B1BstbihQPh6d97SFymUucz6bXMDfXY+LOX05qg3qVf
+         kvRQ==
+X-Gm-Message-State: AGi0PuabxtNVe/dMk+7lHTkicn8IoMhiIrv0BgNrStVi6809iSei/+vs
+        nDzegX/3ft7uv8YNWOXVE7QLjTTzz0iWMPhBWfqdJQZA
+X-Google-Smtp-Source: APiQypJcodvqO5ddV4GOs5fTOODKYraroYyrY4HoCLMH43zF1AzNJHGUe4aarg+twLgaXOEGOlRvHJhDC1i8ZWbpLns=
+X-Received: by 2002:a92:ce08:: with SMTP id b8mr5774742ilo.69.1588018788058;
+ Mon, 27 Apr 2020 13:19:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <8d29eba045ef18c5489e122b3668afc20431f15d.1587894279.git.baolin.wang7@gmail.com>
+ <6f8ac1af5a43d6fd487dc21c052624277325e6f1.1587894279.git.baolin.wang7@gmail.com>
+In-Reply-To: <6f8ac1af5a43d6fd487dc21c052624277325e6f1.1587894279.git.baolin.wang7@gmail.com>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Mon, 27 Apr 2020 15:19:37 -0500
+Message-ID: <CABb+yY31zAr9xfS3bWC5k=94L921CyhzA7fot3eJP1WYSvNCpw@mail.gmail.com>
+Subject: Re: [RESEND PATCH v3 2/2] mailbox: sprd: Add Spreadtrum mailbox driver
+To:     Baolin Wang <baolin.wang7@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, orsonzhai@gmail.com,
+        zhang.lyra@gmail.com, Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Apr 2020 12:09:47 -0700 Mike Kravetz <mike.kravetz@oracle.com> wrote:
+On Mon, Apr 27, 2020 at 2:20 AM Baolin Wang <baolin.wang7@gmail.com> wrote:
+>
+> From: Baolin Wang <baolin.wang@unisoc.com>
+>
+> The Spreadtrum mailbox controller supports 8 channels to communicate
+> with MCUs, and it contains 2 different parts: inbox and outbox, which
+> are used to send and receive messages by IRQ mode.
+>
+> Signed-off-by: Baolin Wang <baolin.wang@unisoc.com>
+> Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+> ---
+> Changes from v2:
+>  - None.
+>
+> Changes from v1:
+>  - None
+> ---
+>  drivers/mailbox/Kconfig        |   8 +
+>  drivers/mailbox/Makefile       |   2 +
+>  drivers/mailbox/sprd-mailbox.c | 350 +++++++++++++++++++++++++++++++++
+>  3 files changed, 360 insertions(+)
+>  create mode 100644 drivers/mailbox/sprd-mailbox.c
+>
+> diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+> index 5a577a6734cf..e03f3fb5caed 100644
+> --- a/drivers/mailbox/Kconfig
+> +++ b/drivers/mailbox/Kconfig
+> @@ -236,4 +236,12 @@ config SUN6I_MSGBOX
+>           various Allwinner SoCs. This mailbox is used for communication
+>           between the application CPUs and the power management coprocessor.
+>
+> +config SPRD_MBOX
+> +       tristate "Spreadtrum Mailbox"
+> +       depends on ARCH_SPRD || COMPILE_TEST
+> +       help
+> +         Mailbox driver implementation for the Spreadtrum platform. It is used
+> +         to send message between application processors and MCU. Say Y here if
+> +         you want to build the Spreatrum mailbox controller driver.
+> +
+>  endif
+> diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
+> index 2e4364ef5c47..9caf4ede6ce0 100644
+> --- a/drivers/mailbox/Makefile
+> +++ b/drivers/mailbox/Makefile
+> @@ -50,3 +50,5 @@ obj-$(CONFIG_MTK_CMDQ_MBOX)   += mtk-cmdq-mailbox.o
+>  obj-$(CONFIG_ZYNQMP_IPI_MBOX)  += zynqmp-ipi-mailbox.o
+>
+>  obj-$(CONFIG_SUN6I_MSGBOX)     += sun6i-msgbox.o
+> +
+> +obj-$(CONFIG_SPRD_MBOX)                += sprd-mailbox.o
+> diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbox.c
+> new file mode 100644
+> index 000000000000..58e5388f190b
+> --- /dev/null
+> +++ b/drivers/mailbox/sprd-mailbox.c
+> @@ -0,0 +1,350 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Spreadtrum mailbox driver
+> + *
+> + * Copyright (c) 2020 Spreadtrum Communications Inc.
+> + */
+> +
+> +#include <linux/err.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/io.h>
+> +#include <linux/mailbox_controller.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/clk.h>
+> +
+> +#define SPRD_MBOX_ID           0x0
+> +#define SPRD_MBOX_MSG_LOW      0x4
+> +#define SPRD_MBOX_MSG_HIGH     0x8
+> +#define SPRD_MBOX_TRIGGER      0xc
+> +#define SPRD_MBOX_FIFO_RST     0x10
+> +#define SPRD_MBOX_FIFO_STS     0x14
+> +#define SPRD_MBOX_IRQ_STS      0x18
+> +#define SPRD_MBOX_IRQ_MSK      0x1c
+> +#define SPRD_MBOX_LOCK         0x20
+> +#define SPRD_MBOX_FIFO_DEPTH   0x24
+> +
+> +/* Bit and mask definiation for inbox's SPRD_MBOX_FIFO_STS register */
+> +#define SPRD_INBOX_FIFO_DELIVER_MASK           GENMASK(23, 16)
+> +#define SPRD_INBOX_FIFO_OVERLOW_MASK           GENMASK(15, 8)
+> +#define SPRD_INBOX_FIFO_DELIVER_SHIFT          16
+> +#define SPRD_INBOX_FIFO_BUSY_MASK              GENMASK(7, 0)
+> +
+> +/* Bit and mask definiation for SPRD_MBOX_IRQ_STS register */
+> +#define SPRD_MBOX_IRQ_CLR                      BIT(0)
+> +
+> +/* Bit and mask definiation for outbox's SPRD_MBOX_FIFO_STS register */
+> +#define SPRD_OUTBOX_FIFO_FULL                  BIT(0)
+> +#define SPRD_OUTBOX_FIFO_WR_SHIFT              16
+> +#define SPRD_OUTBOX_FIFO_RD_SHIFT              24
+> +#define SPRD_OUTBOX_FIFO_POS_MASK              GENMASK(7, 0)
+> +
+> +/* Bit and mask definiation for inbox's SPRD_MBOX_IRQ_MSK register */
+> +#define SPRD_INBOX_FIFO_BLOCK_IRQ              BIT(0)
+> +#define SPRD_INBOX_FIFO_OVERFLOW_IRQ           BIT(1)
+> +#define SPRD_INBOX_FIFO_DELIVER_IRQ            BIT(2)
+> +#define SPRD_INBOX_FIFO_IRQ_MASK               GENMASK(2, 0)
+> +
+> +/* Bit and mask definiation for outbox's SPRD_MBOX_IRQ_MSK register */
+> +#define SPRD_OUTBOX_FIFO_NOT_EMPTY_IRQ         BIT(0)
+> +#define SPRD_OUTBOX_FIFO_IRQ_MASK              GENMASK(4, 0)
+> +
+> +#define SPRD_MBOX_CHAN_MAX                     8
+> +
+> +struct sprd_mbox_chan {
+> +       u8                      id;
+> +       struct mbox_chan        *chan;
+> +};
+If 'id' is all you need, please assign that to mbox_chan.con_priv and
+discard the sprd_mbox_chan. That will be much simpler.
 
-> Previously, a check for hugepages_supported was added before processing
-> hugetlb command line parameters.  On some architectures such as powerpc,
-> hugepages_supported() is not set to true until after command line
-> processing.  Therefore, no hugetlb command line parameters would be
-> accepted.
-> 
-> Remove the additional checks for hugepages_supported.  In hugetlb_init,
-> print a warning if !hugepages_supported and command line parameters were
-> specified.
+> +
+> +struct sprd_mbox_priv {
+> +       struct mbox_controller  mbox;
+> +       struct device           *dev;
+> +       void __iomem            *inbox_base;
+> +       void __iomem            *outbox_base;
+> +       struct clk              *clk;
+> +       u32                     outbox_fifo_depth;
+> +
+> +       struct sprd_mbox_chan   mchan[SPRD_MBOX_CHAN_MAX];
+> +       struct mbox_chan        chan[SPRD_MBOX_CHAN_MAX];
+> +};
+> +
+.........
 
-This applies to [4/4] instead of fixing [2/4].  I guess you'll
-straighten that out in v4?
+> +
+> +static irqreturn_t sprd_mbox_inbox_isr(int irq, void *data)
+> +{
+> +       struct sprd_mbox_priv *priv = data;
+> +       struct sprd_mbox_chan *mchan;
+> +       u32 fifo_sts, send_sts, id;
+> +
+> +       fifo_sts = readl(priv->inbox_base + SPRD_MBOX_FIFO_STS);
+> +
+> +       /* Get the inbox data delivery status */
+> +       send_sts = (fifo_sts & SPRD_INBOX_FIFO_DELIVER_MASK) >>
+> +               SPRD_INBOX_FIFO_DELIVER_SHIFT;
+> +       if (!send_sts) {
+> +               dev_warn_ratelimited(priv->dev, "spurious inbox interrupt\n");
+> +               return IRQ_NONE;
+> +       }
+> +
+> +       while (send_sts) {
+> +               id = __ffs(send_sts);
+> +               send_sts &= (send_sts - 1);
+> +
+> +               mchan = &priv->mchan[id];
+> +               mbox_chan_txdone(mchan->chan, 0);
+> +       }
+> +
+> +       /* Clear FIFO delivery and overflow status */
+> +       writel(fifo_sts &
+> +              (SPRD_INBOX_FIFO_DELIVER_MASK | SPRD_INBOX_FIFO_OVERLOW_MASK),
+> +              priv->inbox_base + SPRD_MBOX_FIFO_RST);
+> +
+> +       /* Clear irq status */
+> +       writel(SPRD_MBOX_IRQ_CLR, priv->inbox_base + SPRD_MBOX_IRQ_STS);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
+> +static int sprd_mbox_send_data(struct mbox_chan *chan, void *msg)
+> +{
+> +       struct sprd_mbox_priv *priv = to_sprd_mbox_priv(chan->mbox);
+> +       struct sprd_mbox_chan *mchan = chan->con_priv;
+> +       u32 *data = msg, busy;
+> +
+> +       /*
+> +        * Check if current channel is busy or not, and we can not send data
+> +        * if current channel is busy.
+> +        */
+> +       busy = readl(priv->inbox_base + SPRD_MBOX_FIFO_STS) &
+> +               SPRD_INBOX_FIFO_BUSY_MASK;
+> +       if (busy & BIT(mchan->id)) {
+> +               dev_err(priv->dev, "Channel %d is busy\n", mchan->id);
+> +               return -EBUSY;
+> +       }
+Maybe check this before  mbox_chan_txdone(mchan->chan, 0) and avoid
+failing in send_data.
 
-btw, was
-http://lkml.kernel.org/r/CADYN=9Koefrq9H1Y82Q8nMNbeyN4tzhEfvDu5u=sVFjFZCYorA@mail.gmail.com
-addressed?
-
+Cheers!
