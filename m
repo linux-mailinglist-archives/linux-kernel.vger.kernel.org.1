@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573631BAAAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83051BAAB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgD0RE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 13:04:27 -0400
-Received: from mga04.intel.com ([192.55.52.120]:14897 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726177AbgD0RE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 13:04:27 -0400
-IronPort-SDR: gfPPhjEYOuBazB9szlvnZePeXJEr1AIXg9T31Pf4iBeRYxI6TNXm70QDt4JYm4hZIEzo57/NSv
- RWSMv9BHMc+w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 10:04:26 -0700
-IronPort-SDR: ZNs7H9Ukk8zyGkr/Our9PzDLtp6UUPJ+NIkqAv3hbZUbsuFEXt8xARyOBxSoOy8sC9ppr40C+E
- bLErdy4U/+bA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,324,1583222400"; 
-   d="scan'208";a="248928096"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
-  by fmsmga008.fm.intel.com with ESMTP; 27 Apr 2020 10:04:26 -0700
-Date:   Mon, 27 Apr 2020 10:04:26 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, jmattson@google.com,
-        yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 3/9] KVM: VMX: Set host/guest CET states for
- vmexit/vmentry
-Message-ID: <20200427170426.GH14870@linux.intel.com>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200326081847.5870-4-weijiang.yang@intel.com>
- <20200423171741.GH17824@linux.intel.com>
- <20200424143510.GH24039@local-michael-cet-test>
- <20200424144941.GC30013@linux.intel.com>
- <20200425092021.GB26221@local-michael-cet-test>
+        id S1726355AbgD0REu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 13:04:50 -0400
+Received: from smtprelay0186.hostedemail.com ([216.40.44.186]:58026 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726295AbgD0REt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 13:04:49 -0400
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave05.hostedemail.com (Postfix) with ESMTP id EE6ED180295A1;
+        Mon, 27 Apr 2020 17:04:48 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 1AE11180A734F;
+        Mon, 27 Apr 2020 17:04:48 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2538:2559:2562:2689:2828:3138:3139:3140:3141:3142:3355:3622:3865:3866:3868:3871:3872:3874:4321:4605:5007:6119:6120:6742:7875:7901:7903:7904:8603:9036:10004:10400:10848:11026:11232:11473:11658:11914:12043:12291:12296:12297:12555:12683:12740:12760:12895:12986:13255:13439:14093:14097:14659:14721:21080:21220:21451:21611:21627:21990:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: cow00_c88ad9aa571f
+X-Filterd-Recvd-Size: 4029
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 27 Apr 2020 17:04:45 +0000 (UTC)
+Message-ID: <be11c660467e8660ebbc311ec9b77b6b1b265e78.camel@perches.com>
+Subject: Re: [RESEND PATCH v3 1/1] lib/vsprintf: Add support for printing
+ V4L2 and DRM fourccs
+From:   Joe Perches <joe@perches.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-media@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>
+Date:   Mon, 27 Apr 2020 10:04:44 -0700
+In-Reply-To: <0c487ba493f4b4c0f68b3dfd23f14a080e4fb0c2.camel@perches.com>
+References: <20200427145303.29943-1-sakari.ailus@linux.intel.com>
+         <0c487ba493f4b4c0f68b3dfd23f14a080e4fb0c2.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200425092021.GB26221@local-michael-cet-test>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 25, 2020 at 05:20:21PM +0800, Yang Weijiang wrote:
-> On Fri, Apr 24, 2020 at 07:49:41AM -0700, Sean Christopherson wrote:
-> > On Fri, Apr 24, 2020 at 10:35:10PM +0800, Yang Weijiang wrote:
-> > > On Thu, Apr 23, 2020 at 10:17:41AM -0700, Sean Christopherson wrote:
-> > > > On Thu, Mar 26, 2020 at 04:18:40PM +0800, Yang Weijiang wrote:
-> > > > > @@ -7140,8 +7175,23 @@ static void vmx_cpuid_update(struct kvm_vcpu *vcpu)
-> > > > >  	}
-> > > > >  
-> > > > >  	if (guest_cpuid_has(vcpu, X86_FEATURE_SHSTK) ||
-> > > > > -	    guest_cpuid_has(vcpu, X86_FEATURE_IBT))
-> > > > > +	    guest_cpuid_has(vcpu, X86_FEATURE_IBT)) {
-> > > > >  		vmx_update_intercept_for_cet_msr(vcpu);
-> > > > > +
-> > > > > +		if (cpu_has_cet_guest_load_ctrl() && is_cet_supported(vcpu))
-> > > > > +			vm_entry_controls_setbit(to_vmx(vcpu),
-> > > > > +						 VM_ENTRY_LOAD_GUEST_CET_STATE);
-> > > > > +		else
-> > > > > +			vm_entry_controls_clearbit(to_vmx(vcpu),
-> > > > > +						   VM_ENTRY_LOAD_GUEST_CET_STATE);
-> > > > > +
-> > > > > +		if (cpu_has_cet_host_load_ctrl() && is_cet_supported(vcpu))
-> > > > > +			vm_exit_controls_setbit(to_vmx(vcpu),
-> > > > > +						VM_EXIT_LOAD_HOST_CET_STATE);
-> > > > > +		else
-> > > > > +			vm_exit_controls_clearbit(to_vmx(vcpu),
-> > > > > +						  VM_EXIT_LOAD_HOST_CET_STATE);
-> > > > 
-> > > > As above, I think this can be done in vmx_set_cr4().
-> > > >
-> > > Hmm, it's in vmx_set_cr4() in early versions, OK, will move them back.
-> > 
-> > Did I advise you to move them out of vmx_set_cr4()?  It's entirely possible
-> > I forgot some detail since the last time I reviewed this series.
-> Things are always changing, I'm willing to change any part of the patch
-> before it's landed :-).
+On Mon, 2020-04-27 at 09:02 -0700, Joe Perches wrote:
+> On Mon, 2020-04-27 at 17:53 +0300, Sakari Ailus wrote:
+> > Add a printk modifier %p4cc (for pixel format) for printing V4L2 and DRM
+> > pixel formats denoted by fourccs. The fourcc encoding is the same for both
+> > so the same implementation can be used.
+> []
+> > - Added WARN_ON_ONCE() sanity checks. Comments on these are welcome; I'd
+> >   expect them mostly be covered by the tests.
 
-I'm worried that there was a reason for requesting the logic to be moved
-out vmx_set_cr4() that I've since forgotten.  I'll see if I can dredge up
-the old mail.
+perhaps this is simpler?
+---
+ lib/vsprintf.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 7c488a..3e1dbd7 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -1721,6 +1721,46 @@ char *netdev_bits(char *buf, char *end, const void *addr,
+ 	return special_hex_number(buf, end, num, size);
+ }
+ 
++static noinline_for_stack
++char *fourcc_string(char *buf, char *end, const u32 *fourcc,
++		    struct printf_spec spec, const char *fmt)
++{
++	char output[sizeof("(xx)(xx)(xx)(xx) little-endian (0x01234567)")];
++	char *p = output;
++	int i;
++	u32 val;
++
++	if (check_pointer(&buf, end, fourcc, spec))
++		return buf;
++
++	if (fmt[1] != 'c' || fmt[2] != 'c')
++		return error_string(buf, end, "(%p4?)", spec);
++
++	val = *fourcc & ~BIT(31);
++
++	for (i = 0; i < 4; i++) {
++		unsigned char c = val >> (i * 8);
++
++		if (isascii(c) && isprint(c)) {
++			*p++ = c;
++		} else {
++			*p++ = '(';
++			p = hex_byte_pack(p, c);
++			*p++ = ')';
++		}
++	}
++
++	strcpy(p, *fourcc & BIT(31) ? "big endian" : "little endian");
++	p += strlen(p);
++	*p++ = ' ';
++	*p++ = '(';
++	p = special_hex_number(p, p + 10, val, 4);
++	*p++ = ')';
++	*p = 0;
++
++	return string(buf, end, output, spec);
++}
++
+ static noinline_for_stack
+ char *address_val(char *buf, char *end, const void *addr,
+ 		  struct printf_spec spec, const char *fmt)
+@@ -2131,6 +2171,7 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+  *       correctness of the format string and va_list arguments.
+  * - 'K' For a kernel pointer that should be hidden from unprivileged users
+  * - 'NF' For a netdev_features_t
++ * - '4cc' V4L2 or DRM FourCC code, with endianness and raw numerical value.
+  * - 'h[CDN]' For a variable-length buffer, it prints it as a hex string with
+  *            a certain separator (' ' by default):
+  *              C colon
+@@ -2223,6 +2264,8 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
+ 		return restricted_pointer(buf, end, ptr, spec);
+ 	case 'N':
+ 		return netdev_bits(buf, end, ptr, spec, fmt);
++	case '4':
++		return fourcc_string(buf, end, ptr, spec, fmt);
+ 	case 'a':
+ 		return address_val(buf, end, ptr, spec, fmt);
+ 	case 'd':
+
