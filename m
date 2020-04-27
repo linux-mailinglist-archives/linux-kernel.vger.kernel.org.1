@@ -2,74 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A281BAB63
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1471BAB6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbgD0ReN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 13:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726250AbgD0ReM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 13:34:12 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D126C0610D5;
-        Mon, 27 Apr 2020 10:34:12 -0700 (PDT)
-Received: from zn.tnic (p200300EC2F05F00014E720D2A42E8264.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:f000:14e7:20d2:a42e:8264])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726315AbgD0Rhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 13:37:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725963AbgD0Rhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 13:37:55 -0400
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 992521EC0D0B;
-        Mon, 27 Apr 2020 19:34:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1588008850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=ziGfCAfomKzl6PbHUax/kOvF/TnduRcl7QwWrxwzfCY=;
-        b=ZsJGbYySCGqBaH2Iq10RNlZKMjcnEVOSyZeQvV1kIv2eqIhM26s8sfUKFUP6etZHj/xt2j
-        qd9TsK37g3hYQiqjl1APvHcn+9dpoHgxkzo5OGcgMcBbUyd3SBES06GN8hez6eqSZsTphZ
-        S3X/3G1965IG4kL2ipTJI53+NHdtOzQ=
-Date:   Mon, 27 Apr 2020 19:34:02 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Robert Richter <rrichter@marvell.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Aristeu Rozanski <aris@redhat.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 06/10] EDAC/ghes: Remove local variable rdr_mask in
- ghes_edac_dmidecode()
-Message-ID: <20200427173402.GH11036@zn.tnic>
-References: <20200422115814.22205-1-rrichter@marvell.com>
- <20200422115814.22205-7-rrichter@marvell.com>
- <20200427070802.GA11036@zn.tnic>
- <20200427172408.GA13177@agluck-desk2.amr.corp.intel.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 27790206D9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 17:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588009074;
+        bh=CRnrGSfeXKE04SYiSfLjK47OzoOEUP1L82XDJvKWoR4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nu+Pwm8C7ZzEGBJLMJ9VwcO6z51c/SaWNuYsdGhtItHu3A+6FYmc/eXSNmTVAb2uK
+         tneA1fuX8ZfPP79F3RSubUzWXXK8kKasgds0aHFbkTeJbXUGK2foYTtQ/f6xlDFlN3
+         djowQs6+Y1171rpUGBcqSzTO520lNKT2mJFacNgE=
+Received: by mail-wr1-f53.google.com with SMTP id s10so21572166wrr.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:37:54 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaoDMbn+pkSwQX/ZDX3Sj3batRQWuVplvOGQ5PXjIFIK9n03gBn
+        tiU1NkLd81QhTHDxVESDQ3DzDr3ivhxih7TLdDRLjg==
+X-Google-Smtp-Source: APiQypK2liBn30m34/Dp/fYtTgQDcIlhKU2o3YS7OuvYuy5s6viTinmEVCuKGI6u9wjEWkrN2rR1dZgH24YAvZ+2RGI=
+X-Received: by 2002:adf:f648:: with SMTP id x8mr27923047wrp.257.1588009072661;
+ Mon, 27 Apr 2020 10:37:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200427172408.GA13177@agluck-desk2.amr.corp.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200425191032.GK21900@8bytes.org> <910AE5B4-4522-4133-99F7-64850181FBF9@amacapital.net>
+ <20200425202316.GL21900@8bytes.org> <CALCETrW2Y6UFC=zvGbXEYqpsDyBh0DSEM4NQ+L=_pp4aOd6Fuw@mail.gmail.com>
+In-Reply-To: <CALCETrW2Y6UFC=zvGbXEYqpsDyBh0DSEM4NQ+L=_pp4aOd6Fuw@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 27 Apr 2020 10:37:41 -0700
+X-Gmail-Original-Message-ID: <CALCETrXGr+o1_bKbnre8cVY14c_76m8pEf3iB_i7h+zfgE5_jA@mail.gmail.com>
+Message-ID: <CALCETrXGr+o1_bKbnre8cVY14c_76m8pEf3iB_i7h+zfgE5_jA@mail.gmail.com>
+Subject: Should SEV-ES #VC use IST? (Re: [PATCH] Allow RDTSC and RDTSCP from userspace)
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        Mike Stunes <mstunes@vmware.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <JGross@suse.com>,
+        Jiri Slaby <jslaby@suse.cz>, Kees Cook <keescook@chromium.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 10:24:08AM -0700, Luck, Tony wrote:
-> That isn't the same. The previous version checked that BOTH bits
-> 7 and 13 were set. Your version checks for either bit.
+On Sat, Apr 25, 2020 at 3:10 PM Andy Lutomirski <luto@kernel.org> wrote:
+>
+> On Sat, Apr 25, 2020 at 1:23 PM Joerg Roedel <joro@8bytes.org> wrote:
+> >
+> > On Sat, Apr 25, 2020 at 12:47:31PM -0700, Andy Lutomirski wrote:
+> > > I assume the race you mean is:
+> > >
+> > > #VC
+> > > Immediate NMI before IST gets shifted
+> > > #VC
+> > >
+> > > Kaboom.
+> > >
+> > > How are you dealing with this?  Ultimately, I think that NMI will need
+> > > to turn off IST before engaging in any funny business. Let me ponder
+> > > this a bit.
+> >
+> > Right, I dealt with that by unconditionally shifting/unshifting the #VC IST entry
+> > in do_nmi() (thanks to Davin Kaplan for the idea). It might cause
+> > one of the IST stacks to be unused during nesting, but that is fine. The
+> > stack memory for #VC is only allocated when SEV-ES is active (in an
+> > SEV-ES VM).
+>
+> Blech.  It probably works, but still, yuck.  It's a bit sad that we
+> seem to be growing more and more poorly designed happens-anywhere
+> exception types at an alarming rate.  We seem to have #NM, #MC, #VC,
+> #HV, and #DB.  This doesn't really scale.
 
-Whoops, I'm confused again. ;-\
+I have a somewhat serious question: should we use IST for #VC at all?
+As I understand it, Rome and Naples make it mandatory for hypervisors
+to intercept #DB, which means that, due to the MOV SS mess, it's sort
+of mandatory to use IST for #VC.  But Milan fixes the #DB issue, so,
+if we're running under a sufficiently sensible hypervisor, we don't
+need IST for #VC.
 
-> Looks like the original with the local variable was checking for both
-> bits set.
+So I think we have two choices:
 
-Yeah, let's leave it as it is. I prefer the rdr_mask thing.
+1. Use IST for #VC and deal with all the mess that entails.
 
-Thx.
+2. Say that we SEV-ES client support on Rome and Naples is for
+development only and do a quick boot-time check for whether #DB is
+intercepted.  (Just set TF and see what vector we get.)  If #DB is
+intercepted, print a very loud warning and refuse to boot unless some
+special sev_es.insecure_development_mode or similar option is set.
 
--- 
-Regards/Gruss,
-    Boris.
+#2 results in simpler and more robust entry code.  #1 is more secure.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+So my question is: will anyone actually use SEV-ES in production on
+Rome or Naples?  As I understand it, it's not really ready for prime
+time on those chips.  And do we care if the combination of a malicious
+hypervisor and malicious guest userspace on Milan can compromise the
+guest kernel?  I don't think SEV-ES is really mean to resist a
+concerted effort by the hypervisor to compromise the guest.
+
+--Andy
