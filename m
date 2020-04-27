@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6ABC1B9529
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 04:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 657281B9824
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 09:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgD0Cgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 22:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726398AbgD0Cgp (ORCPT
+        id S1726557AbgD0HLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 03:11:02 -0400
+Received: from mx01-bsp.telkomsigma.com ([180.250.111.16]:57110 "EHLO
+        bspproxy2.telkomsigma.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726221AbgD0HLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 22:36:45 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD9F1C061A0F;
-        Sun, 26 Apr 2020 19:36:44 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id k12so9274077wmj.3;
-        Sun, 26 Apr 2020 19:36:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aIGMIvukWB0JR+cfXy+rA7pHtSrD50jP/W65MSIyFw0=;
-        b=I3lIcaBhb86twoSNgoqT1NsiiU3+PpF0Jcck8obekQF8iTYFw/ekaYVtHZHbTkFzb6
-         r1DhUEdhRM71vdTpvnuRUHiYGYCXaX5DX1DesiURaEru3xG5y3g4b8n95H2NUFoSImFr
-         9JcyohpsbKt8yarW8TA2C4vL5iBI2CtdYjSIqiJADtS1NAa2iOoVuGPHafeoZT7g2DA+
-         PjQaHvauOQ484DlG7OZUKaGJ63Dq3Ps7CKEIm0cgnP0r7A6RwMBA8PuIqiSWizsPVsHF
-         C2nGuiN74p3D2l0jKMCFucdWgZGZGOMWsQw9mKxfZguIuJqxunh5e8AXBi4ob5R0PgHC
-         w33w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aIGMIvukWB0JR+cfXy+rA7pHtSrD50jP/W65MSIyFw0=;
-        b=gNpxtbMC1Jmx4GB/2NyZ5VPnX3sQBckYpDo0YFLq37SGAXMShfV3rF1sJnk1Nap65t
-         mTTmtiM+9JnmJ761ftpY52jQb7IZAOossQ2YA23FrCRNk59tt3B4hOW3y2qA9QObiaaA
-         /nCs+mU2ri/McDys1ntabdkiq1/OlDtOHZzJaZ9bMGpNIVifLNNS4NPrl2M1wSAURtdT
-         tCtpu8bDR8pBYHClOs5GIqUSAXJwSIPPkC55craOV8Y8WEUckECAsarHgcAdICWtaxsl
-         yHyDlgrnBI2bWD3gWXlcUKlk9RCSFd0ZJtXekICKPeXIymwoCm3KXRpOvrT63iAG6WNo
-         0GYg==
-X-Gm-Message-State: AGi0Puax8nVImTTiyitI5InQyXDoWZOZT+MFgu1iv2QEvQz7uK8T9HDe
-        F/2+lobRJBNmjxmyFtlZRDY2AJHwY57ffFJ1Kr/QKfQo
-X-Google-Smtp-Source: APiQypL0pr/s2dO3FQgXpMTObZzY0bdp17wEVkUxtYpLeHCgYpZRk0EmyZWKGJm1uIDkoAKE53Ebru7QqEtBt8EIImk=
-X-Received: by 2002:a7b:cd04:: with SMTP id f4mr22760899wmj.3.1587955003408;
- Sun, 26 Apr 2020 19:36:43 -0700 (PDT)
+        Mon, 27 Apr 2020 03:11:01 -0400
+X-Greylist: delayed 10678 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Apr 2020 03:11:00 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by bspproxy2.telkomsigma.com (Postfix) with ESMTP id 6B72A20E5B20;
+        Mon, 27 Apr 2020 09:34:18 +0700 (WIB)
+Received: from bspproxy2.telkomsigma.com ([127.0.0.1])
+        by localhost (bspproxy2.telkomsigma.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 0kt6nNm5BlFb; Mon, 27 Apr 2020 09:34:18 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by bspproxy2.telkomsigma.com (Postfix) with ESMTP id 2ABF120E5011;
+        Mon, 27 Apr 2020 09:34:18 +0700 (WIB)
+DKIM-Filter: OpenDKIM Filter v2.10.3 bspproxy2.telkomsigma.com 2ABF120E5011
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pins.co.id;
+        s=007891C6-515B-11EA-AA7F-CECF12AB3271; t=1587954858;
+        bh=EWUP43eTPVm7xD16M60X/jX8eZnTqYlbIDiyhc+PHgg=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=uHwOszRIW3EREbiqGoEpWsXCROHqvP2Yga7nylOwpW9eYaIN93iunzx/Qh4mG82I5
+         hLzSEP/9EsIV5JxWbll77g8Fd3nRjwqBnYdJ/GVvQqS3r5du1ei5tRtVuLSVWsfXq6
+         SjgN5aDL9SCwWiCIvmOy5aFSGUS/D3oakGvToAak=
+X-Virus-Scanned: amavisd-new at 
+Received: from bspproxy2.telkomsigma.com ([127.0.0.1])
+        by localhost (bspproxy2.telkomsigma.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id UXH64iLaFN3b; Mon, 27 Apr 2020 09:34:18 +0700 (WIB)
+Received: from [95.168.191.226] (unknown [95.168.191.226])
+        by bspproxy2.telkomsigma.com (Postfix) with ESMTPSA id 45DB9210560A;
+        Mon, 27 Apr 2020 09:34:11 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-References: <20200414033325.26536-1-zhang.lyra@gmail.com>
-In-Reply-To: <20200414033325.26536-1-zhang.lyra@gmail.com>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Mon, 27 Apr 2020 10:36:07 +0800
-Message-ID: <CAAfSe-uz2v7AO_pb8zOMN-2RqJ6Y6p=apTQVo=pq_oiDmmOWuA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] add mipi_csi_xx gate clocks for SC9863A
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-clk <linux-clk@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?=C3=9Cberweisung_zur_Unterst=C3=BCtzung_von_COVID-19_Pandamic?=
+To:     Recipients <victor.iring@pins.co.id>
+From:   "Mr.Wehner David M" <victor.iring@pins.co.id>
+Date:   Sun, 26 Apr 2020 19:45:22 -0700
+Reply-To: info@zbukgroupltd.info
+Message-Id: <20200427023412.45DB9210560A@bspproxy2.telkomsigma.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+B=FCro des Kopfes
+Internationaler Transfer
+Operation Zenith Bank
+(UK) Ltd LONDON United
+K=F6nigreich und Irland
+Tel.: +44 203 389 5674
+Fax: +44 704 307 1539
 
-On Tue, 14 Apr 2020 at 11:33, <zhang.lyra@gmail.com> wrote:
->
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
->
-> mipi_csi_xx clocks are used by camera sensors. These clocks cannot be
-> accessed (even read) if their parent gate clock is disabled. So this
-> patchset also add a check to parent clocks when reading these gate
-> clocks which marked with the specific flag (SPRD_GATE_NON_AON).
->
-> changes from v1:
-> * added Rob's acked-by;
->
-> Chunyan Zhang (4):
->   clk: sprd: check its parent status before reading gate clock
->   dt-bindings: clk: sprd: add mipi_csi_xx clocks for SC9863A
->   clk: sprd: add dt-bindings include for mipi_csi_xx clocks
->   clk: sprd: add mipi_csi_xx gate clocks
->
+Gru=DF,
 
-Do you have comments or could you please take this patchset to your tree?
+Ihre E-Mail-Adresse wurde in einer zuf=E4lligen Ziehung in der Zenith Bank-=
+Zentrale, International Transfer Operation in London, Gro=DFbritannien, erm=
+ittelt.
 
-Thanks,
-Chunyan
+Ich bin Mr.WEHNER DAVID M. Ein pers=F6nlicher Buchhalter des verstorbenen M=
+r. Michael Blair, der mit Shell British Petroleum zusammengearbeitet hat. H=
+err Michael Blair, ein bekannter Philanthrop, hat vor seinem Tod in einer A=
+nwaltskanzlei ein Testament abgegeben, wonach 12,5 Millionen US-Dollar (nur=
+ zw=F6lf Millionen f=FCnfhunderttausend US-Dollar) an jeden gl=FCcklichen P=
+hilanthrop oder jede gemeinn=FCtzige Organisation in =DCbersee gespendet we=
+rden sollten.
 
->  .../bindings/clock/sprd,sc9863a-clk.yaml      |  1 +
->  drivers/clk/sprd/gate.c                       |  7 ++++
->  drivers/clk/sprd/gate.h                       |  9 ++++++
->  drivers/clk/sprd/sc9863a-clk.c                | 32 +++++++++++++++++++
->  include/dt-bindings/clock/sprd,sc9863a-clk.h  |  5 +++
->  5 files changed, 54 insertions(+)
->
-> --
-> 2.20.1
->
+Die Zenith Bank Plc ist mit dem verstorbenen Michael Blair einverstanden, d=
+en Fonds an eine gl=FCckliche Person in Amerika, Europa, Asien und Afrika z=
+u spenden, um Leben und Unternehmen zu verbessern
+
+Wir haben unsere zuf=E4llige Ziehung durchgef=FChrt und Ihre E-Mail-Adresse=
+ wurde ausgew=E4hlt, um diesen Fonds als Beg=FCnstigten seines Testaments z=
+u erhalten. Bitte melden Sie sich bei mir Sobald Sie unsere E-Mail erhalten=
+ haben, um die =DCbertragung zu erm=F6glichen Die Operation weist Sie an, w=
+as als n=E4chstes zu tun ist, um diesen Fonds legal zu erhalten.
+
+Es wird empfohlen, die folgenden Angaben erneut aufzunehmen:
+
+VOLLST=C4NDIGER NAME:
+
+VOLLST=C4NDIGE KONTAKTADRESSE:
+
+TELEFON- und FAXNUMMERN:
+
+Dein,
+Herr WEHNER DAVID M.
+Leiter International Transfer Operation
+Zenith Bank (UK) Plc
