@@ -2,119 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5F51BAF8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 491991BAE86
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgD0UdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 16:33:15 -0400
-Received: from gateway20.websitewelcome.com ([192.185.4.169]:14810 "EHLO
-        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726285AbgD0UdO (ORCPT
+        id S1726552AbgD0Tyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:54:33 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58946 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbgD0Tyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:33:14 -0400
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway20.websitewelcome.com (Postfix) with ESMTP id 13D5C400C6E3B
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:28:51 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id T9hrjB1z5EfyqT9hrj11XN; Mon, 27 Apr 2020 14:46:19 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=2PhqAadEanGA6zu3GS0dpv53aeSLftBKlQlVVXlea+k=; b=gVoeX18XHnlGe6CLXThXRH9LZ
-        aKlnSZSAL85rDI3H7sG2EkU+BG476MeXYVRILj1dM5eEci4Cj+82kYaxvwwGvZbmT6SXbBLYmHK9r
-        ynot9tkadfyLT2v4IgFRnZRVcCRGXVT5NmmXa7/kaLlpuJrFYO4DFXpVVw6ZTmQ2ebDXXGUOVfgsp
-        kpXstOcY0WWLGIWxT02+ujQAZCbYJ7XEc/2PgIKbPkTkYMUYCWq+EmjQS2OndBXdoq4WjL3AFGFMF
-        wUE5UJ7ge6+FYBUYPM1w8V+rM39+DfgyXXoXDrLz7dyFPhkPssOW96105KNnNrNjIjFyopVj3vm9A
-        Sgk1HzloQ==;
-Received: from [201.162.241.110] (port=25072 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jT9hr-000yI5-F7; Mon, 27 Apr 2020 14:46:19 -0500
-Date:   Mon, 27 Apr 2020 14:50:37 -0500
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, Joe Perches <joe@perches.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH v2 1/3] mtd: lpddr: Fix bad logic in print_drs_error
-Message-ID: <3fb0e29f5b601db8be2938a01d974b00c8788501.1588016644.git.gustavo@embeddedor.com>
-References: <cover.1588016644.git.gustavo@embeddedor.com>
+        Mon, 27 Apr 2020 15:54:32 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03RJsDMO007386;
+        Mon, 27 Apr 2020 14:54:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588017253;
+        bh=dwly5aN+uAHdquqvnejrhvQPF5JgoVydz5AkBpeUbCI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=K3QM6nurhmKSBibvGWCs0BBJ8FGXQGmtn2TASc56KnQTAqVf0IG5ni6P6f52VSRzM
+         gZZIdiWq1bmYtxQG0MkSjgY5f4x8b777rx/bpX4Y4Tg+RnYbla+LWoCd4aizR16aQO
+         fBugqJ99DU6sWe/if/S3ljKYaNfit6OM5ZRjsVB4=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03RJsDBm005665;
+        Mon, 27 Apr 2020 14:54:13 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
+ Apr 2020 14:54:12 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 27 Apr 2020 14:54:12 -0500
+Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03RJsBYI080761;
+        Mon, 27 Apr 2020 14:54:11 -0500
+Subject: Re: [PATCH 4/4] remoteproc/k3-dsp: Add support for C71x DSPs
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Clement Leger <cleger@kalray.eu>,
+        Loic Pallardy <loic.pallardy@st.com>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200325204701.16862-1-s-anna@ti.com>
+ <20200325204701.16862-5-s-anna@ti.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <59ac4e15-205a-7205-d013-da91b7426688@ti.com>
+Date:   Mon, 27 Apr 2020 14:54:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1588016644.git.gustavo@embeddedor.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.241.110
-X-Source-L: No
-X-Exim-ID: 1jT9hr-000yI5-F7
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [201.162.241.110]:25072
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 25
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+In-Reply-To: <20200325204701.16862-5-s-anna@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update logic for broken test. Use a more common logging style.
+On 3/25/20 3:47 PM, Suman Anna wrote:
+> The Texas Instrument's K3 J721E SoCs have a newer next-generation
+> C71x DSP Subsystem in the MAIN voltage domain in addition to the
+> previous generation C66x DSP subsystems. The C71x DSP subsystem is
+> based on the TMS320C71x DSP CorePac module. The C71x CPU is a true
+> 64-bit machine including 64-bit memory addressing and single-cycle
+> 64-bit base arithmetic operations and supports vector signal processing
+> providing a significant lift in DSP processing power over C66x DSPs.
+> J721E SoCs use a C711 (a one-core 512-bit vector width CPU core) DSP
+> that is cache coherent with the A72 Arm cores.
+> 
+> Each subsystem has one or more Fixed/Floating-Point DSP CPUs, with 32 KB
+> of L1P Cache, 48 KB of L1D SRAM that can be configured and partitioned as
+> either RAM and/or Cache, and 512 KB of L2 SRAM configurable as either RAM
+> and/or Cache. The CorePac also includes a Matrix Multiplication Accelerator
+> (MMA), a Stream Engine (SE) and a C71x Memory Management Unit (CMMU), an
+> Interrupt Controller (INTC) and a Powerdown Management Unit (PMU) modules.
+> 
+> Update the existing K3 DSP remoteproc driver to add support for this C71x
+> DSP subsystem. The firmware loading support is provided by using the newly
+> added 64-bit ELF loader support, and is limited to images using only
+> external DDR memory at the moment. The L1D and L2 SRAMs are used as scratch
+> memory when using as RAMs, and cannot be used for loadable segments. The
+> CMMU is also not supported to begin with, and the driver is designed to
+> treat the MMU as if it is in bypass mode.
+> 
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> ---
+>   drivers/remoteproc/ti_k3_dsp_remoteproc.c | 17 +++++++++++++++++
+>   1 file changed, 17 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/ti_k3_dsp_remoteproc.c b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> index 7b712ef74611..48d26f7d5f48 100644
+> --- a/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> +++ b/drivers/remoteproc/ti_k3_dsp_remoteproc.c
+> @@ -649,6 +649,9 @@ static int k3_dsp_rproc_probe(struct platform_device *pdev)
+>   
+>   	rproc->has_iommu = false;
+>   	rproc->recovery_disabled = true;
+> +	/* C71x is a 64-bit processor, so plug in generic .sanity_check ops */
+> +	rproc->ops->sanity_check = rproc_elf_sanity_check;
+> +
 
-It appears the logic in this function is broken for the
-consecutive tests of
+Will drop this on the next version, this is no longer needed after 
+commit e29ff72b7794 ("remoteproc: remove rproc_elf32_sanity_check") 
+currently on rproc-next.
 
-        if (prog_status & 0x3)
-                ...
-        else if (prog_status & 0x2)
-                ...
-        else (prog_status & 0x1)
-                ...
+regards
+Suman
 
-Likely the first test should be
 
-        if ((prog_status & 0x3) == 0x3)
-
-Found by inspection of include files using printk.
-
-Fixes: eb3db27507f7 ("[MTD] LPDDR PFOW definition")
-Cc: stable@vger.kernel.org
-Reported-by: Joe Perches <joe@perches.com>
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
-Changes in v2:
- - None.
-
- include/linux/mtd/pfow.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
-index 122f3439e1af..c65d7a3be3c6 100644
---- a/include/linux/mtd/pfow.h
-+++ b/include/linux/mtd/pfow.h
-@@ -128,7 +128,7 @@ static inline void print_drs_error(unsigned dsr)
- 
- 	if (!(dsr & DSR_AVAILABLE))
- 		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
--	if (prog_status & 0x03)
-+	if ((prog_status & 0x03) == 0x03)
- 		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
- 						"half with 41h command\n");
- 	else if (prog_status & 0x02)
--- 
-2.26.0
+>   	kproc = rproc->priv;
+>   	kproc->rproc = rproc;
+>   	kproc->dev = dev;
+> @@ -789,6 +792,12 @@ static const struct k3_dsp_mem_data c66_mems[] = {
+>   	{ .name = "l1dram", .dev_addr = 0xf00000 },
+>   };
+>   
+> +/* C71x cores only have a L1P Cache, there are no L1P SRAMs */
+> +static const struct k3_dsp_mem_data c71_mems[] = {
+> +	{ .name = "l2sram", .dev_addr = 0x800000 },
+> +	{ .name = "l1dram", .dev_addr = 0xe00000 },
+> +};
+> +
+>   static const struct k3_dsp_dev_data c66_data = {
+>   	.mems = c66_mems,
+>   	.num_mems = ARRAY_SIZE(c66_mems),
+> @@ -796,8 +805,16 @@ static const struct k3_dsp_dev_data c66_data = {
+>   	.uses_lreset = true,
+>   };
+>   
+> +static const struct k3_dsp_dev_data c71_data = {
+> +	.mems = c71_mems,
+> +	.num_mems = ARRAY_SIZE(c71_mems),
+> +	.boot_align_addr = SZ_2M,
+> +	.uses_lreset = false,
+> +};
+> +
+>   static const struct of_device_id k3_dsp_of_match[] = {
+>   	{ .compatible = "ti,j721e-c66-dsp", .data = &c66_data, },
+> +	{ .compatible = "ti,j721e-c71-dsp", .data = &c71_data, },
+>   	{ /* sentinel */ },
+>   };
+>   MODULE_DEVICE_TABLE(of, k3_dsp_of_match);
+> 
 
