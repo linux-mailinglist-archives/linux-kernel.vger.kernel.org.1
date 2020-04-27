@@ -2,39 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6FB1BAECB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE511BAED3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgD0UIN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Apr 2020 16:08:13 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:53829 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbgD0UIM (ORCPT
+        id S1726865AbgD0UIi convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Apr 2020 16:08:38 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:53761 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726781AbgD0UIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:08:12 -0400
+        Mon, 27 Apr 2020 16:08:37 -0400
+X-Originating-IP: 91.224.148.103
 Received: from xps13 (unknown [91.224.148.103])
         (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id E1666100003;
-        Mon, 27 Apr 2020 20:08:07 +0000 (UTC)
-Date:   Mon, 27 Apr 2020 22:08:06 +0200
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 7DC6220006;
+        Mon, 27 Apr 2020 20:08:35 +0000 (UTC)
+Date:   Mon, 27 Apr 2020 22:08:34 +0200
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Marek Vasut <marex@denx.de>
-Cc:     Christophe Kerello <christophe.kerello@st.com>, richard@nod.at,
-        vigneshr@ti.com, lee.jones@linaro.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, tony@atomide.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 04/12] mtd: rawnand: stm32_fmc2: manage all errors
- cases at probe time
-Message-ID: <20200427220806.13741ec0@xps13>
-In-Reply-To: <3527f3b8-225d-6e5a-dd8a-0421d475f70b@denx.de>
-References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
-        <1586966256-29548-5-git-send-email-christophe.kerello@st.com>
-        <20200427194747.224a2402@xps13>
-        <40a9bac7-9ed4-b781-f2c2-2d90b4e82749@denx.de>
-        <20200427200848.722f4c56@xps13>
-        <3527f3b8-225d-6e5a-dd8a-0421d475f70b@denx.de>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2 1/3] mtd: lpddr: Fix bad logic in print_drs_error
+Message-ID: <20200427220834.17083b3d@xps13>
+In-Reply-To: <3fb0e29f5b601db8be2938a01d974b00c8788501.1588016644.git.gustavo@embeddedor.com>
+References: <cover.1588016644.git.gustavo@embeddedor.com>
+        <3fb0e29f5b601db8be2938a01d974b00c8788501.1588016644.git.gustavo@embeddedor.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
@@ -45,98 +38,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
+Hi Gustavo,
 
-Marek Vasut <marex@denx.de> wrote on Mon, 27 Apr 2020 21:46:44 +0200:
+"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote on Mon, 27 Apr
+2020 14:50:37 -0500:
 
-> On 4/27/20 8:08 PM, Miquel Raynal wrote:
-> [...]
-> >>>>  	/* FMC2 init routine */
-> >>>>  	stm32_fmc2_init(fmc2);
-> >>>> @@ -1997,7 +2001,7 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
-> >>>>  	/* Scan to find existence of the device */
-> >>>>  	ret = nand_scan(chip, nand->ncs);
-> >>>>  	if (ret)
-> >>>> -		goto err_scan;
-> >>>> +		goto err_dma_setup;
-> >>>>  
-> >>>>  	ret = mtd_device_register(mtd, NULL, 0);
-> >>>>  	if (ret)
-> >>>> @@ -2010,7 +2014,7 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
-> >>>>  err_device_register:
-> >>>>  	nand_cleanup(chip);
-> >>>>  
-> >>>> -err_scan:
-> >>>> +err_dma_setup:
-> >>>>  	if (fmc2->dma_ecc_ch)
-> >>>>  		dma_release_channel(fmc2->dma_ecc_ch);
-> >>>>  	if (fmc2->dma_tx_ch)
-> >>>> @@ -2021,6 +2025,7 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
-> >>>>  	sg_free_table(&fmc2->dma_data_sg);
-> >>>>  	sg_free_table(&fmc2->dma_ecc_sg);
-> >>>>  
-> >>>> +err_clk_disable:
-> >>>>  	clk_disable_unprepare(fmc2->clk);
-> >>>>  
-> >>>>  	return ret;    
-> >>>
-> >>> I didn't spot it during my earlier reviews but I really prefer using
-> >>> labels explaining what you do than having the same name of the function
-> >>> which failed. This way you don't have to rework the error path when
-> >>> you handle an additional error.
-> >>>
-> >>> So, would you mind doing this in two steps:
-> >>>
-> >>> 1/
-> >>> Replace
-> >>>
-> >>>     err_scan:
-> >>>
-> >>> with, eg.
-> >>>
-> >>>     release_dma_objs:    
-> >>
-> >> The ^err_ prefix in failpath labels is useful, since it's easily
-> >> possible to match on it with regexes ; not so much on arbitrary label name.  
-> > 
-> > I guess so, but is it actually useful to catch labels in a regex? (real
-> > question)  
+> Update logic for broken test. Use a more common logging style.
 > 
-> I find it useful to have a unified way to find those labels, e.g.
-> err_because_foo:
-> err_because_bar:
-> err_last_one:
-> is much nicer than:
-> foo_failed:
-> bar_also_failed:
-> its_total_randomness:
-
-My point being, Christophe, you can use err_ as a prefix but I think
-it's better to use:
-
-    err_do_this_cleanup
-
-than
-
-   err_this_failed
-
+> It appears the logic in this function is broken for the
+> consecutive tests of
 > 
-> > Any way I suppose catching ":\n" is already a good approximation to
-> > find labels?  
+>         if (prog_status & 0x3)
+>                 ...
+>         else if (prog_status & 0x2)
+>                 ...
+>         else (prog_status & 0x1)
+>                 ...
 > 
-> Not very practical with git grep (^err.*: works nicely though)
-
-I suppose ^.*:$ would work the same ;)
-
+> Likely the first test should be
 > 
-> >> btw would it make sense to split the first three patches of this series
-> >> into a separate series ? This rawnand part seems more like an unrelated
-> >> cleanup.  
-> > 
-> > As it seems that the MFD discussion can take longer, then I would say
-> > yes, at least for the cleanup/misc changes part.  
-> Right
+>         if ((prog_status & 0x3) == 0x3)
 > 
+> Found by inspection of include files using printk.
+> 
+> Fixes: eb3db27507f7 ("[MTD] LPDDR PFOW definition")
+> Cc: stable@vger.kernel.org
+> Reported-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> ---
+> Changes in v2:
+>  - None.
+> 
+>  include/linux/mtd/pfow.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
+> index 122f3439e1af..c65d7a3be3c6 100644
+> --- a/include/linux/mtd/pfow.h
+> +++ b/include/linux/mtd/pfow.h
+> @@ -128,7 +128,7 @@ static inline void print_drs_error(unsigned dsr)
+>  
+>  	if (!(dsr & DSR_AVAILABLE))
+>  		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
+> -	if (prog_status & 0x03)
+> +	if ((prog_status & 0x03) == 0x03)
+>  		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
+>  						"half with 41h command\n");
+>  	else if (prog_status & 0x02)
 
-Cheers,
+
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+
+Thanks,
 Miquèl
