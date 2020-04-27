@@ -2,107 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25031B9F98
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DC81B9F9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgD0JRG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Apr 2020 05:17:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726243AbgD0JRG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 05:17:06 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD93FC0610D5;
-        Mon, 27 Apr 2020 02:17:05 -0700 (PDT)
-Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1jSzss-0007Mc-CP; Mon, 27 Apr 2020 11:17:02 +0200
-Date:   Mon, 27 Apr 2020 11:17:01 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Matt Fleming <matt@codeblueprint.co.uk>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: Re: [PREEMPT_RT] 8250 IRQ lockup when flooding serial console (was
- Re: [ANNOUNCE] v5.4.28-rt19)
-Message-ID: <20200427091701.ezf4nule5hg6jziq@linutronix.de>
-References: <20200330144712.cwcz5ejal4ankeoi@linutronix.de>
- <nycvar.YEU.7.76.2004231017470.4730@gjva.wvxbf.pm>
- <nycvar.YFH.7.76.2004231111550.19713@cbobk.fhfr.pm>
- <20200423104559.rgplz6rqk6sg4kz7@linutronix.de>
- <20200423160707.hqt5wjinzcec2yig@linutronix.de>
- <20200424191945.an42attvo7pdt3qz@linutronix.de>
- <nycvar.YFH.7.76.2004242245590.19713@cbobk.fhfr.pm>
+        id S1726960AbgD0JRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 05:17:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726815AbgD0JRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 05:17:32 -0400
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D0E8D2075B;
+        Mon, 27 Apr 2020 09:17:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587979051;
+        bh=0JQfGwBPW8HjbVmB+3oeIbQiiUMVtZ8rLy7VFh6Z++Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=wFnNaMz3e85JoZrGYy0P3ue0v6+HWvyEG+x7gf1XtsPRx/14qvkvLyidqZmrJYh6y
+         3DybE5nYwAfsVLsbXy3YYIMf+hXIL9+GrYq/BJ3WR7bPiIbl/l0eUDDEG2tbIp/xPN
+         iWK73XUxIvpIbvyfbZJ6KyHK00ORj++O9r87ap1g=
+Received: by mail-lf1-f47.google.com with SMTP id m2so13175365lfo.6;
+        Mon, 27 Apr 2020 02:17:30 -0700 (PDT)
+X-Gm-Message-State: AGi0PuY0NPHUTg0GmRmwD8bmGA4C7/JaP4JdS+mECHgEWecX9IC8VJpp
+        o1XDpxQwZ5AtLUgnoRFZW4hkRf8CYpy0cHJ3KkA=
+X-Google-Smtp-Source: APiQypJtNE14qxYJUDlD1WTj8JHtL5qxZwtuov5fG7rWvNuBd12rJqXBM0FEM99dbe7wu5CMLVlzgmD7014xwvl4734=
+X-Received: by 2002:ac2:4a9d:: with SMTP id l29mr14131057lfp.4.1587979048894;
+ Mon, 27 Apr 2020 02:17:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <nycvar.YFH.7.76.2004242245590.19713@cbobk.fhfr.pm>
+References: <20200427073132.29997-3-wens@kernel.org> <684132b8-4a84-8295-474b-38ccb992bba7@gmail.com>
+In-Reply-To: <684132b8-4a84-8295-474b-38ccb992bba7@gmail.com>
+From:   Chen-Yu Tsai <wens@kernel.org>
+Date:   Mon, 27 Apr 2020 17:17:17 +0800
+X-Gmail-Original-Message-ID: <CAGb2v66Piu5_2bdqvWV3eEn2Se_y1MNKWvvYBv_J7DA-8jBhbQ@mail.gmail.com>
+Message-ID: <CAGb2v66Piu5_2bdqvWV3eEn2Se_y1MNKWvvYBv_J7DA-8jBhbQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] arm64: dts: rockchip: rk3399-roc-pc: Fix MMC
+ numbering for LED triggers
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     Chen-Yu Tsai <wens@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>, dmurphy@ti.com,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        jacek.anaszewski@gmail.com,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-leds@vger.kernel.org,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-24 22:54:51 [+0200], Jiri Kosina wrote:
-> It's still wonky; with the two hunks above on top of 5.6.4-rt3 (that's 
-> without the PASS_LIMIT adjustment) flooding the emulated serial console 
-> still emits the splat below.
-…
-> So now the endless interrupt storm comes at a different point -- exactly 
-> once IRQs get re-enabled in prb_unlock(). How we reach prb_unlock() from 
-> serial8250_tx_chars() I still have to understand. Worth involving John?
+On Mon, Apr 27, 2020 at 4:57 PM Johan Jonker <jbx6244@gmail.com> wrote:
+>
+> Hi Chen-Yu,
+>
+> > From: Chen-Yu Tsai <wens@csie.org>
+> >
+> > With SDIO now enabled, the numbering of the existing MMC host controllers
+> > gets incremented by 1, as the SDIO host is the first one.
+> >
+> > Increment the numbering of the MMC LED triggers to match.
+> >
+> > Fixes: cf3c5397835f ("arm64: dts: rockchip: Enable sdio0 and uart0 on rk3399-roc-pc-mezzanine")
+> > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> > ---
+> >  arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts | 8 ++++++++
+> >  arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi          | 4 ++--
+> >  2 files changed, 10 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts
+> > index 2acb3d500fb9..f0686fc276be 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dts
+> > @@ -38,6 +38,10 @@ vcc3v3_pcie: vcc3v3-pcie {
+> >       };
+> >  };
+> >
+> > +&diy_led {
+> > +     linux,default-trigger = "mmc2";
+> > +};
+> > +
+> >  &pcie_phy {
+> >       status = "okay";
+> >  };
+> > @@ -91,3 +95,7 @@ &uart0 {
+> >       pinctrl-0 = <&uart0_xfer &uart0_cts &uart0_rts>;
+> >       status = "okay";
+> >  };
+> > +
+> > +&yellow_led {
+> > +     linux,default-trigger = "mmc1";
+> > +};
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> > index 9f225e9c3d54..bc060ac7972d 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-roc-pc.dtsi
+> > @@ -70,14 +70,14 @@ work-led {
+> >                       linux,default-trigger = "heartbeat";
+> >               };
+> >
+>
+> > -             diy-led {
+> > +             diy_led: diy-led {
+>
+> This changes an existing nodename into something that is still not the
+> preferred way. In the current Rockchip dts there are nodenames like
+> 'work', 'yellow' that causing warnings with the command:
 
-My guess is that it is unrelated and it is simply code that
-disabled/enabled interrupts at the time the NMI was was triggered.
+This doesn't change the node name at all. It only adds a label.
+If it doesn't pass the check now, it didn't pass the check before.
 
-…
-> [   75.286440] 000: rcu: INFO: rcu_preempt self-detected stall on CPU
-> [   75.286533] 000: rcu: 	0-....: (1 GPs behind) idle=94a/1/0x4000000000000002 softirq=0/0 fqs=5167 
-> [   75.286556] 000: 	(t=21000 jiffies g=15213 q=25248)
+I just realized that the footnote I added before is gone because I
+regenerated the patches. The original footnote was something along
+the lines of:
 
-a RCU stall but it is only one GP behind :)
-My guess here would be that simply we never had the opportunity to
-perform perform a GP callbacks and nobody entered a RCU critical section
-(we were busy printing on the console the whole time).
+I opted to not change the node names nor the labels as the discussion
+had not concluded. The other reason being that people may have scripts
+or device tree overlays depending on the existing node names.
 
-So a dummy RCU section like this:
+Previously I asked the following but got no response:
 
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index f61f6f5426eff..5636123a90580 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1145,6 +1145,8 @@ static int irq_thread(void *data)
- 		migrate_enable();
- #endif
- 		wake_threads_waitq(desc);
-+		rcu_read_lock();
-+		rcu_read_unlock();
- 	}
- 
- 	/*
+    Is changing this after it has been in some kernel releases OK? Wouldn't
+    it be considered a break of sysfs ABI?
 
+    Also, is there some guideline on how to name the labels? For sunxi we've
+    been doing "${vendor}:${color}:${function}" since forever.
 
-should work given the RCU-boosting is enabled.
+    As far as I can tell, the hardware vendor [1] has no specific uses for
+    these two (red and yellow) LEDs designed in. And their GPIO lines are
+    simply labeled "DIY" (for the red one) and "YELLOW". So I'm not sure
+    if putting "our" interpretations and the default-trigger into the
+    label is wise.
 
-…
-> [  134.432670] 000: irq 4: nobody cared (try booting with the "irqpoll" option)
-> [  134.432685] 000: CPU: 0 PID: 1209 Comm: irq/4-ttyS0 Not tainted 5.6.4-rt19-00003-g5cf51e8702ad #16
-> [  134.432690] 000: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-0-ga698c89-rebuilt.suse.com 04/01/2014
+    For reference, the green one has its GPIO line labeled "WORK", and their
+    intention from [1] is to have it as some sort of power / activity indicator.
+    Hence it is named / labeled "work".
 
-yeah. again. I'm not sure if this is good or bad. The threaded
-IRQ-handler runs constantly in this scenario. The core code *thinks*
-that the handler makes no progress or is stuck and so it disables it.
-It is not so far fetched. It wouldn't happen on real hardware actual HW
-would take more time and so not "stuck" in the handler endlessly.
+    As for the node names, I think we can keep it as is for now. It's not
+    the preferred form, but there's really no need to change it either.
+    And some overlay or script might actually expect that name.
 
-In networking, we would have NAPI which then pushes the driver to the
-ksofitrqd which runs at SCHED_OTHER while here the IRQ thread runs at a
-RT priority. I don't think we should add something like this to the 8250
-driver to deal with the situation.
+> make -k ARCH=arm dtbs_check
+>
+> Could you give a generic guide line/example, so all these changes are
+> treated the same way? As if the naming follows the preferred 'led-0' line.
 
-Sebastian
+I'm not sure what you are asking for.
+
+ChenYu
+
+> >                       label = "red:diy";
+> >                       gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
+> >                       default-state = "off";
+> >                       linux,default-trigger = "mmc1";
+> >               };
+> >
+> > -             yellow-led {
+> > +             yellow_led: yellow-led {
+> >                       label = "yellow:yellow-led";
+> >                       gpios = <&gpio0 RK_PA2 GPIO_ACTIVE_HIGH>;
+> >                       default-state = "off";
+> > --
+> > 2.26.0
+>
