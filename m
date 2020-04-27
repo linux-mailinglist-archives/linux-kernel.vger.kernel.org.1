@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706571BAB02
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157CC1BAADD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726450AbgD0RSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 13:18:54 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:33570 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725963AbgD0RSy (ORCPT
+        id S1726457AbgD0RNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 13:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726274AbgD0RNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 13:18:54 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03RHIpiW064232;
-        Mon, 27 Apr 2020 12:18:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588007931;
-        bh=Ua86GDqoUOR9cTYmT2KqUary2XbhydeTyCobYIklqVA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=VYhIcg4xSZUDVJMb3PL7tgOjww0bS9ooUwZYfrd9eQNv4sz9Dkcf5OlAv4nhEqFyt
-         NhgQR2TkjVL6d2nOocQFUZpNWZBuKsehRHeI94J47be5+ur24MfQAAUEew6TnecHB4
-         ZYsCVgb1Rh1EItWpsWALBNL5BOJ4c01B2wuZG3Sk=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03RHIoiE089751
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 27 Apr 2020 12:18:50 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
- Apr 2020 12:18:50 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 27 Apr 2020 12:18:50 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03RHIoR7059853;
-        Mon, 27 Apr 2020 12:18:50 -0500
-Subject: Re: [PATCH v20 03/17] leds: multicolor: Introduce a multicolor class
- definition
-To:     Pavel Machek <pavel@ucw.cz>
-CC:     <jacek.anaszewski@gmail.com>, <linux-leds@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200423155524.13971-1-dmurphy@ti.com>
- <20200423155524.13971-4-dmurphy@ti.com> <20200425195328.GB1143@bug>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <53ee79e9-fe77-85a8-3b40-90fe78cd2680@ti.com>
-Date:   Mon, 27 Apr 2020 12:12:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 27 Apr 2020 13:13:16 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B817C0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:13:16 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id z90so14871833qtd.10
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:13:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=gq/hVuTwOmQSMneMygkOLzC97YbR5RTxhmWsHHCtD2U=;
+        b=YX8ypOO5b3tqqWT49nZ/opdp0TWXhSm4SpC9rLf3j2MuHZVTVu9xpLe/99HQIdUHVr
+         +MFb16vHQE26XQKzi/a5aJfpBDkiG1X5aUcKedCgu6D/P/XhHUyijIVppLxLc6owMgnf
+         cV7xqZcYntn+8iNsFBDtMCcE10OkYNEYcUJGECO7UzgY54qfKODT5wLfRyvq7hnYcQHL
+         Sk6Srv+koNou2ywjtFQyPVANIj3QNBhgftnawQ7doap3zL7+6OVhNd1cJ1tLrFGEDP+0
+         Nqlp8ZsKOChhhmdP8KLTWIQUgp+Z/kEkcnqfJgiY0AItXA50NYRbNE+tcQEX9UHFdETd
+         5nSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=gq/hVuTwOmQSMneMygkOLzC97YbR5RTxhmWsHHCtD2U=;
+        b=kgEjXJuIR4BNAlwG4uf7IAQE8TxUWMPj1HnXNqJNlH3EL1OtBvET4UGH+dXhNNuXLu
+         o2G/k5OtQYZEFNV8g738T5bnVkpj0kzPDI2JBvdhixsblb0S5Q3xqB9wJmC29wPEhpUC
+         dKGgsp4a7yKrwp10PV0kV07JMY3tu/wcHpcCOz9ehHQNgtCNYO2rw3+ykcHrfgqJqadR
+         /nca6vst2uy/PtZx1l89fQtOMkRkuh3YX+bTIlqPdjkokm3bzUT+K0AsvvNFqfvHLMy0
+         SePL02zNyf7IW7UHhAmZqkNcPYpwee/buXEj2S98IVoU6yRDPj4XbvxaUkO+cpArHcN+
+         uouw==
+X-Gm-Message-State: AGi0Pualw5cIA5+bXJn6ebbs9JpNSvEHPj4uMslX/0n+V7nar07evzyD
+        nAHz5Go3/1HJbowyLqC7T5BnQjsS66o=
+X-Google-Smtp-Source: APiQypKqt4zdReKZ3Ag1CmWU628rZfgL4oF5Z3XdCebXQsb5Bj8YA2x6ppVzXUH3AI/cRq75E8QZ+g==
+X-Received: by 2002:ac8:44d6:: with SMTP id b22mr24395973qto.366.1588007595342;
+        Mon, 27 Apr 2020 10:13:15 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id q57sm11571007qtj.55.2020.04.27.10.13.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2020 10:13:14 -0700 (PDT)
+Date:   Mon, 27 Apr 2020 13:13:04 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     tj@kernel.org, lizefan@huawei.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wangkefeng.wang@huawei.com,
+        linux-mm@kvack.org, guro@cmpxchg.org
+Subject: Re: memleak in cgroup
+Message-ID: <20200427171304.GC29022@cmpxchg.org>
+References: <6e4d5208-ba26-93ed-c600-4776fc620456@huawei.com>
+ <34dfdb52-6efd-7b11-07c8-9461a13b3aa4@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20200425195328.GB1143@bug>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <34dfdb52-6efd-7b11-07c8-9461a13b3aa4@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel
++cc Roman who has been looking the most at this area
 
-On 4/25/20 2:53 PM, Pavel Machek wrote:
-> Hi!
->
->> Introduce a multicolor class that groups colored LEDs
->> within a LED node.
->>
->> The multi color class groups monochrome LEDs and allows controlling two
->> aspects of the final combined color: hue and lightness. The former is
->> controlled via color_intensity file and the latter is controlled
->> via brightness file.
-> It is now multi_intensity, AFAICT.
-> 						
-Ack
-> 			Pavel
+On Mon, Apr 27, 2020 at 03:48:13PM +0800, Yang Yingliang wrote:
+> +cc linux-mm@kvack.org <mailto:linux-mm@kvack.org>
+> 
+> On 2020/4/26 19:21, Yang Yingliang wrote:
+> > Hi,
+> > 
+> > When I doing the follow test in kernel-5.7-rc2, I found mem-free is
+> > decreased
+> > 
+> > #!/bin/sh
+> > cd /sys/fs/cgroup/memory/
+> > 
+> > for((i=0;i<45;i++))
+> > do
+> >         for((j=0;j<60000;j++))
+> >         do
+> >                 mkdir /sys/fs/cgroup/memory/yyl-cg$j
+> >         done
+> >         sleep 1
+> >         ls /sys/fs/cgroup/memory/ | grep yyl | xargs rmdir
+> > done
+
+Should be easy enough to reproduce, thanks for the report. I'll try to
+take a look later this week, unless Roman beats me to it.
+
+Is this a new observation in 5.7-rc2?
+
+Can you provide /sys/fs/cgroup/unified/cgroup.stat after the test?
