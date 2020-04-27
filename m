@@ -2,202 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750A51BAD12
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6401BAD50
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgD0Sp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 14:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
+        id S1726420AbgD0S4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 14:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbgD0Sp4 (ORCPT
+        with ESMTP id S1726223AbgD0S4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 14:45:56 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB08CC0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 11:45:56 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id h11so7306314plr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 11:45:56 -0700 (PDT)
+        Mon, 27 Apr 2020 14:56:24 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF8EC0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 11:56:24 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id b18so17775637ilf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 11:56:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=IpKTFehUcXhhF7xrkmKw3CHsnpQNIE0K3A4gmdlp3lo=;
-        b=nhIHtmGNp4TbRPSohBbfR4qNvzHevCBHhmDAOE6oXYA34uwxjj3e6iS6RUCAGmlqx1
-         dB53e+WhJusL7F0AdWDOMXgqOeR0tn+x0OLgoyO96KYO461yZKfGamOTx6h32/Cw3k35
-         /tQCb0AwPKrlygPZKWDUs9edQutLDqeobySjenyqh+f66a3ZgN1qaVTpQ3cTZZGVEOI6
-         9y6uQTazFOLMpkcw2QvVHQiLaN6FswuAtDbh0nRNs+Ux9u1AT6eoUlwPExRX8MExfoTP
-         7Z860jhQDTiI4v1MRRRacnGFZ7ltYnMClnYAAORZkOPs2FgGkZk7B4pJP1iHAwL/n58m
-         JS2Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zqkytQuRqbdyIv1fNw/hFQaHmYGu4kuwrAG4aDt0KwY=;
+        b=saJPBmpcSFa8Gvk3fcBP7BcUJ0vdCttdE09MxHpW/uEu9CFjYVwWXKpV1EEM1mB0F7
+         JFDFlfW7lrpuG4de/SsT3EJ0es11Ti+ZJc0tiVi4/T1IGbRrXFDHmF+ZBdm2NQpDv+l/
+         13SOK6VVfaa+9DkL0COKwTrTcbC+UbULtctB/kvHH/4EyfpJ2bzBsFPAfxyKaZPfVVPZ
+         99EVOEKR3i+w77aASsepR7u7Nehl5B2fz4pKmrvxFgFGw/sFvtRkOyA1xtQLbHDsVofz
+         ZWeEKbLSdxqY4wWZOF9EMA0Xvh1Uls9FM+b+kXBa5SgpwKJun8A+woBS0WAllujr8kAF
+         QlJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=IpKTFehUcXhhF7xrkmKw3CHsnpQNIE0K3A4gmdlp3lo=;
-        b=HfyDaEjPyjV+Xj/30KNVR+1qBj7IdSMkdx6+6OP5MxoTQv0mDWjC92WUAHIbqiO8BG
-         VIVuO/ea+Jj65SQPk5o3O6wbMeq5x1R/qV3HRQXIeSaisM/SZZqY/87pIWfOF4XqEm1z
-         stf+OSEnWQAHu9G1psiiILkF80RO52c4LtsSBLGKAwjb0ULWkSFruGiwVUdItUcVMWBb
-         GqR407lIzajL9MFSlghspirre/vPp6MswASMjlpXCPZyHJrateQXAoUsKOQQ6Loz5LFj
-         ZvqPEnZbMlkqvWTttjhTEkvGWVRyliPQA3MBtFM3gHQklfSyd72Cr37SLa/Ypm0v6gZP
-         5HPQ==
-X-Gm-Message-State: AGi0PuYhpE/6ppzWEF9MrEJaMK90io6voyTCTadsq1xI9okT/YZU8LoV
-        VsQX3NY3CjRT28qf/NTwXbL7gaLm
-X-Google-Smtp-Source: APiQypLnRO8UgrZnYmoaFdaq5a+njOYxt8xpgk+QSZWThlwsacdjzZGuiPRvHsDWNtIHkq79h3XP4w==
-X-Received: by 2002:a17:90a:21ee:: with SMTP id q101mr103413pjc.24.1588013156229;
-        Mon, 27 Apr 2020 11:45:56 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.172.252.57])
-        by smtp.gmail.com with ESMTPSA id h197sm13541237pfe.208.2020.04.27.11.45.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Apr 2020 11:45:55 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH] mm/gup.c: Updating the documentation
-Date:   Tue, 28 Apr 2020 00:23:50 +0530
-Message-Id: <1588013630-4497-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zqkytQuRqbdyIv1fNw/hFQaHmYGu4kuwrAG4aDt0KwY=;
+        b=fpFjk/1Vz5xzvvb39AjAmxGFTy4JVADBAipCBNi2AROcDIG3Dpg7Ony4AtpavkKtji
+         zb+oG1vGIcwXKKKp4GvcquTRAwrPccD/vEleaAQJiL/9CVgciUB/fn/mHIejdsaoLJi2
+         CZ0vcu1i8rw1y3K1aktR1nBf+HzDSqjyF9sdL4FJ/MwJCLUJOltrkjvmpVEZJaOVQsXF
+         Sw3Wq3k+ZmL2utbceYFL9q+4qSiTEXkWEDNu6z0wPbmKYNpsVVfdNi7kDKZ4s28qxhvh
+         x4GY6QeTaz5uIga9LfoeYAVecgBXcn5KwMTsSRV/fdOUE+sB07yKL35RWU372V7/vi+a
+         kwYg==
+X-Gm-Message-State: AGi0PuZpuJ9X8iTsmrlr6SW9iEwXRThBWPX8If4cvd8h9GCg5XBLntHC
+        JYAsvtDN/+cTwZHjR8x9uBtRVcp+kQwNnH3dskTohQ==
+X-Google-Smtp-Source: APiQypKSjWUNccvaGaP7GIFyMyjBa2ylFPQ2+a7hXLOAZWmMk7LFoZjV2MZ6L0j5XxwlwKRKShuLGc74DMMUsDsJ/v4=
+X-Received: by 2002:a92:8587:: with SMTP id f129mr22745284ilh.75.1588013783349;
+ Mon, 27 Apr 2020 11:56:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1578789410.git.robin.murphy@arm.com> <CANAwSgSFPtdvEvacNf6DhzE2fCabgZSBNnZUf0+nQErDWpErOw@mail.gmail.com>
+ <c7345431-7585-6052-835e-d9c292978b6e@web.de>
+In-Reply-To: <c7345431-7585-6052-835e-d9c292978b6e@web.de>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Tue, 28 Apr 2020 00:26:12 +0530
+Message-ID: <CANAwSgQsMnkRyLCbgbWUGnCOzeK+4rucdMCkBGrv=Gp=Etq5JA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] mfd: RK8xx tidyup
+To:     Soeren Moch <smoch@web.de>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-rockchip@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is an attempt to update the documentation.
+Hi Soeren
 
-* Adding / removing extra * based on type of function
-static / global.
+On Tue, 28 Apr 2020 at 00:16, Soeren Moch <smoch@web.de> wrote:
+>
+>
+>
+> On 27.04.20 20:41, Anand Moon wrote:
+> > Hi Robin,
+> >
+> > On Sun, 12 Jan 2020 at 07:25, Robin Murphy <robin.murphy@arm.com> wrote:
+> >> Hi all,
+> >>
+> >> Here's a second crack at my RK805-inspired cleanup. There was a bit
+> >> of debate around v1[1], but it seems like we're now all happy that this
+> >> is a reasonable way to go. For clarity I decided to include Soeren's
+> >> patch as #1/5, but since I've rewritten most of my patches I've not
+> >> included the tested-by tags.
+> >>
+> >> Robin.
+> >>
+> > Can you re-spin this series, it seem these patches are lost.
+> >
+> These patches are already merged as
+> d8f083a302f7..42679765faf2
+>
+> Soeren
 
-* Added description for functions and their input arguments.
+Thanks for the input.
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
----
- mm/gup.c | 59 ++++++++++++++++++++++++++++++++++++++++-------------------
- 1 file changed, 40 insertions(+), 19 deletions(-)
-
-diff --git a/mm/gup.c b/mm/gup.c
-index 6076df8e..7ce796c 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -722,7 +722,7 @@ static struct page *follow_p4d_mask(struct vm_area_struct *vma,
- 	return follow_pud_mask(vma, address, p4d, flags, ctx);
- }
- 
--/**
-+/*
-  * follow_page_mask - look up a page descriptor from a user-virtual address
-  * @vma: vm_area_struct mapping @address
-  * @address: virtual address to look up
-@@ -1168,7 +1168,7 @@ static bool vma_permits_fault(struct vm_area_struct *vma,
- 	return true;
- }
- 
--/*
-+/**
-  * fixup_user_fault() - manually resolve a user page fault
-  * @tsk:	the task_struct to use for page fault accounting, or
-  *		NULL if faults are not to be recorded.
-@@ -1837,7 +1837,7 @@ static long __get_user_pages_remote(struct task_struct *tsk,
- 				       gup_flags | FOLL_TOUCH | FOLL_REMOTE);
- }
- 
--/*
-+/**
-  * get_user_pages_remote() - pin user pages in memory
-  * @tsk:	the task_struct to use for page fault accounting, or
-  *		NULL if faults are not to be recorded.
-@@ -1868,13 +1868,13 @@ static long __get_user_pages_remote(struct task_struct *tsk,
-  *
-  * Must be called with mmap_sem held for read or write.
-  *
-- * get_user_pages walks a process's page tables and takes a reference to
-- * each struct page that each user address corresponds to at a given
-+ * get_user_pages_remote walks a process's page tables and takes a reference
-+ * to each struct page that each user address corresponds to at a given
-  * instant. That is, it takes the page that would be accessed if a user
-  * thread accesses the given user virtual address at that instant.
-  *
-  * This does not guarantee that the page exists in the user mappings when
-- * get_user_pages returns, and there may even be a completely different
-+ * get_user_pages_remote returns, and there may even be a completely different
-  * page there in some cases (eg. if mmapped pagecache has been invalidated
-  * and subsequently re faulted). However it does guarantee that the page
-  * won't be freed completely. And mostly callers simply care that the page
-@@ -1886,17 +1886,17 @@ static long __get_user_pages_remote(struct task_struct *tsk,
-  * is written to, set_page_dirty (or set_page_dirty_lock, as appropriate) must
-  * be called after the page is finished with, and before put_page is called.
-  *
-- * get_user_pages is typically used for fewer-copy IO operations, to get a
-- * handle on the memory by some means other than accesses via the user virtual
-- * addresses. The pages may be submitted for DMA to devices or accessed via
-- * their kernel linear mapping (via the kmap APIs). Care should be taken to
-- * use the correct cache flushing APIs.
-+ * get_user_pages_remote is typically used for fewer-copy IO operations,
-+ * to get a handle on the memory by some means other than accesses
-+ * via the user virtual addresses. The pages may be submitted for
-+ * DMA to devices or accessed via their kernel linear mapping (via the
-+ * kmap APIs). Care should be taken to use the correct cache flushing APIs.
-  *
-  * See also get_user_pages_fast, for performance critical applications.
-  *
-- * get_user_pages should be phased out in favor of
-+ * get_user_pages_remote should be phased out in favor of
-  * get_user_pages_locked|unlocked or get_user_pages_fast. Nothing
-- * should use get_user_pages because it cannot pass
-+ * should use get_user_pages_remote because it cannot pass
-  * FAULT_FLAG_ALLOW_RETRY to handle_mm_fault.
-  */
- long get_user_pages_remote(struct task_struct *tsk, struct mm_struct *mm,
-@@ -1935,7 +1935,17 @@ static long __get_user_pages_remote(struct task_struct *tsk,
- }
- #endif /* !CONFIG_MMU */
- 
--/*
-+/**
-+ * get_user_pages() - pin user pages in memory
-+ * @start:      starting user address
-+ * @nr_pages:   number of pages from start to pin
-+ * @gup_flags:  flags modifying lookup behaviour
-+ * @pages:      array that receives pointers to the pages pinned.
-+ *              Should be at least nr_pages long. Or NULL, if caller
-+ *              only intends to ensure the pages are faulted in.
-+ * @vmas:       array of pointers to vmas corresponding to each page.
-+ *              Or NULL if the caller does not require them.
-+ *
-  * This is the same as get_user_pages_remote(), just with a
-  * less-flexible calling convention where we assume that the task
-  * and mm being operated on are the current task's and don't allow
-@@ -1958,11 +1968,7 @@ long get_user_pages(unsigned long start, unsigned long nr_pages,
- }
- EXPORT_SYMBOL(get_user_pages);
- 
--/*
-- * We can leverage the VM_FAULT_RETRY functionality in the page fault
-- * paths better by using either get_user_pages_locked() or
-- * get_user_pages_unlocked().
-- *
-+/**
-  * get_user_pages_locked() is suitable to replace the form:
-  *
-  *      down_read(&mm->mmap_sem);
-@@ -1978,6 +1984,21 @@ long get_user_pages(unsigned long start, unsigned long nr_pages,
-  *      get_user_pages_locked(tsk, mm, ..., pages, &locked);
-  *      if (locked)
-  *          up_read(&mm->mmap_sem);
-+ *
-+ * @start:      starting user address
-+ * @nr_pages:   number of pages from start to pin
-+ * @gup_flags:  flags modifying lookup behaviour
-+ * @pages:      array that receives pointers to the pages pinned.
-+ *              Should be at least nr_pages long. Or NULL, if caller
-+ *              only intends to ensure the pages are faulted in.
-+ * @locked:     pointer to lock flag indicating whether lock is held and
-+ *              subsequently whether VM_FAULT_RETRY functionality can be
-+ *              utilised. Lock must initially be held.
-+ *
-+ * We can leverage the VM_FAULT_RETRY functionality in the page fault
-+ * paths better by using either get_user_pages_locked() or
-+ * get_user_pages_unlocked().
-+ *
-  */
- long get_user_pages_locked(unsigned long start, unsigned long nr_pages,
- 			   unsigned int gup_flags, struct page **pages,
--- 
-1.9.1
-
+-Anand
