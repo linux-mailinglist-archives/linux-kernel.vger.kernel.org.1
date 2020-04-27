@@ -2,196 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0CE1BAEEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C12AE1BAF1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgD0UMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 16:12:39 -0400
-Received: from mga09.intel.com ([134.134.136.24]:27097 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgD0UMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:12:38 -0400
-IronPort-SDR: y2yfBt5icar2QeaXqxKou1J0qCBHWJJSHJ33CTeOpJiknHkxxRBC3oMVqiCIQg7esu7jim02km
- IvzJMno/tldg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 13:12:38 -0700
-IronPort-SDR: YBiqKDU6yALRocwGMfAP5WdABSpYbxOMw94dJKnOcHjyDm/PQNZwcV+8e63r+ViAUTAQzF2MWh
- 3uvOvlkaS+iA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
-   d="scan'208";a="404431049"
-Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by orsmga004.jf.intel.com with ESMTP; 27 Apr 2020 13:12:37 -0700
-Date:   Mon, 27 Apr 2020 13:11:42 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 6/7] x86/traps: Fix up invalid PASID
-Message-ID: <20200427201141.GA242333@romley-ivt3.sc.intel.com>
-References: <1585596788-193989-1-git-send-email-fenghua.yu@intel.com>
- <1585596788-193989-7-git-send-email-fenghua.yu@intel.com>
- <87mu6ys20d.fsf@nanos.tec.linutronix.de>
+        id S1726957AbgD0UN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726850AbgD0UMx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 16:12:53 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 208BFC0610D5;
+        Mon, 27 Apr 2020 13:12:52 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id u127so341685wmg.1;
+        Mon, 27 Apr 2020 13:12:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x1zonVb/BbRigHqP69T8VBwuU0bduWhkzmHUC7793dM=;
+        b=SrVJHLVxg21IVO23W2AGolBEV2fVOJXFbod/kjJ1H1wEPl5pEpJr/F/wRuYBSvaPWY
+         ebs82S2n+w7pEciImNGMDyjj8WMYy0aFXxC2/h9xMrFKDeDFD7y1GUgA+J7T65aZFtjk
+         xs+8LWL+QAjxaLOkJg9LLwL9VMN9sHcKKDqheNk8/Uv65WB4ddP3F8IGqQKJlx6szR0X
+         13rb5/Jl77mFcKUcs1VlFO8s+TDBcBnOUf+nvG3h0PwECAejKS6TUcY7YcuNV1S+a10p
+         JQO1hN/3SQkDv+hdIAHZMpeywFRqxk9wNr4gbu9Nh2EoW21Qa1Ef2IMIpI9ioWIklA9s
+         Nhlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x1zonVb/BbRigHqP69T8VBwuU0bduWhkzmHUC7793dM=;
+        b=fLtling7ZjvO2p88wh2xhe2x628x3B2NonXUWZPEAWsYjDVrfzdJmxtOBFzzHxUxBe
+         QVfJewwkUFOxVqWbo+tW7KS6EJGgIciOPD3JevWTTMsp1GkjHDZBT/dgpFdI9vRSqaXE
+         9P2oBH5sy4aUrW2cp8fHYuJJ0B2++qWciFkfPVL6BZwL6TxppWhnXBXKQKWNDFfsLfrw
+         9vimFMiiGtOqBLkG9pI5BSFKB2W6HpWoeXBmgHNatzo8Z/namT3/QCT8N9VzvGD8hk3d
+         PUGHD/vYwDR4UnE+Pzeyuj/6BHP2tWivH+S4Z35iv817TKtGgOmWKWt460P3IuX2aKF0
+         8lSg==
+X-Gm-Message-State: AGi0PubVWnzbKPW2/56X23+atzO6ZylaKvMcJuFmSRJs82v7nscomvYP
+        MSlCbH187Tbwdx3rpxMP1I70V7GxZMKGzN/0oBI=
+X-Google-Smtp-Source: APiQypLiCFtjL1zFB7OdQgYbc9SVeTlF4OAYPBx3Gc5cNaKO/YffjNVwodyP+eWjvYbcJf5NrAaZUOvwpX6rrjojCTU=
+X-Received: by 2002:a7b:c74d:: with SMTP id w13mr436755wmk.36.1588018370739;
+ Mon, 27 Apr 2020 13:12:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mu6ys20d.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200427103048.20785-1-benchuanggli@gmail.com>
+In-Reply-To: <20200427103048.20785-1-benchuanggli@gmail.com>
+From:   Vineeth Pillai <vineethrp@gmail.com>
+Date:   Mon, 27 Apr 2020 16:12:39 -0400
+Message-ID: <CAOBnfPi+ztJ7vtgQ9qcHhGKDB8QKW3F=_9MR2roQOBLfrtqbDg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: Fix no irq handler from suspend
+To:     Ben Chuang <benchuanggli@gmail.com>
+Cc:     adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?QmVuQ2h1YW5nW+iOiuaZuumHj10=?= 
+        <ben.chuang@genesyslogic.com.tw>,
+        =?UTF-8?B?UmVuaXVzQ2hlblvpmbPlu7rlro9d?= 
+        <Renius.Chen@genesyslogic.com.tw>, dflogeras2@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 05:25:06PM +0200, Thomas Gleixner wrote:
-> Fenghua Yu <fenghua.yu@intel.com> writes:
-> > A #GP fault is generated when ENQCMD instruction is executed without
-> > a valid PASID value programmed in.
-> 
-> Programmed in what?
-
-Will change to "...programmed in the PASID MSR".
-
-> 
-> > The #GP fault handler will initialize the current thread's PASID MSR.
-> >
-> > The following heuristic is used to avoid decoding the user instructions
-> > to determine the precise reason for the #GP fault:
-> > 1) If the mm for the process has not been allocated a PASID, this #GP
-> >    cannot be fixed.
-> > 2) If the PASID MSR is already initialized, then the #GP was for some
-> >    other reason
-> > 3) Try initializing the PASID MSR and returning. If the #GP was from
-> >    an ENQCMD this will fix it. If not, the #GP fault will be repeated
-> >    and we will hit case "2".
-> >
-> > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> 
-> Just for the record I also suggested to have a proper errorcode in the
-> #GP for ENQCMD and I surely did not suggest to avoid decoding the user
-> instructions.
-> 
-> >  void __free_pasid(struct mm_struct *mm);
-> > +bool __fixup_pasid_exception(void);
-> >  
-> >  #endif /* _ASM_X86_IOMMU_H */
-> > diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-> > index 6ef00eb6fbb9..369b5ba94635 100644
-> > --- a/arch/x86/kernel/traps.c
-> > +++ b/arch/x86/kernel/traps.c
-> > @@ -56,6 +56,7 @@
-> >  #include <asm/umip.h>
-> >  #include <asm/insn.h>
-> >  #include <asm/insn-eval.h>
-> > +#include <asm/iommu.h>
-> >  
-> >  #ifdef CONFIG_X86_64
-> >  #include <asm/x86_init.h>
-> > @@ -488,6 +489,16 @@ static enum kernel_gp_hint get_kernel_gp_address(struct pt_regs *regs,
-> >  	return GP_CANONICAL;
-> >  }
-> >  
-> > +static bool fixup_pasid_exception(void)
-> > +{
-> > +	if (!IS_ENABLED(CONFIG_INTEL_IOMMU_SVM))
-> > +		return false;
-> > +	if (!static_cpu_has(X86_FEATURE_ENQCMD))
-> > +		return false;
-> > +
-> > +	return __fixup_pasid_exception();
-> > +}
-> > +
-> >  #define GPFSTR "general protection fault"
-> >  
-> >  dotraplinkage void do_general_protection(struct pt_regs *regs, long error_code)
-> > @@ -499,6 +510,12 @@ dotraplinkage void do_general_protection(struct pt_regs *regs, long error_code)
-> >  	int ret;
-> >  
-> >  	RCU_LOCKDEP_WARN(!rcu_is_watching(), "entry code didn't wake RCU");
-> > +
-> > +	if (user_mode(regs) && fixup_pasid_exception()) {
-> > +		cond_local_irq_enable(regs);
-> 
-> The point of this conditional irq enable _AFTER_ calling into the fixup
-> function is? Also what's the reason for keeping interrupts disabled
-> while calling into that function? Comments exist for a reason.
-
-irq needs to be disabled because the fixup function requires to disable
-preempt in order to update the PASID MSR on the faulting CPU.
-
-Will add comments here.
-
-> 
-> > +		return;
-> > +	}
-> > +
-> >  	cond_local_irq_enable(regs);
-> >  
-> >  	if (static_cpu_has(X86_FEATURE_UMIP)) {
-> > diff --git a/drivers/iommu/intel-svm.c b/drivers/iommu/intel-svm.c
-> > index da718a49e91e..5ed39a022adb 100644
-> > --- a/drivers/iommu/intel-svm.c
-> > +++ b/drivers/iommu/intel-svm.c
-> > @@ -759,3 +759,40 @@ void __free_pasid(struct mm_struct *mm)
-> >  	 */
-> >  	ioasid_free(pasid);
-> >  }
-> > +
-> > +/*
-> > + * Fix up the PASID MSR if possible.
-> > + *
-> > + * But if the #GP was due to another reason, a second #GP might be triggered
-> > + * to force proper behavior.
-> > + */
-> > +bool __fixup_pasid_exception(void)
-> > +{
-> > +	struct mm_struct *mm;
-> > +	bool ret = true;
-> > +	u64 pasid_msr;
-> > +	int pasid;
-> > +
-> > +	mm = get_task_mm(current);
-> 
-> Why do you need a reference to current->mm ?
-
-The PASID for the address space is per mm and is stored in mm.
-To get the PASID, we need to get the mm and the pasid=mm->context.pasid.
-
-
-> 
-> > +	/* This #GP was triggered from user mode. So mm cannot be NULL. */
-> > +	pasid = mm->context.pasid;
-> > +	/* Ensure this process has been bound to a PASID. */
-> > +	if (!pasid) {
-> > +		ret = false;
-> > +		goto out;
-> > +	}
-> > +
-> > +	/* Check to see if the PASID MSR has already been set for this task. */
-> > +	rdmsrl(MSR_IA32_PASID, pasid_msr);
-> > +	if (pasid_msr & MSR_IA32_PASID_VALID) {
-> > +		ret = false;
-> > +		goto out;
-> > +	}
-> > +
-> > +	/* Fix up the MSR. */
-> > +	wrmsrl(MSR_IA32_PASID, pasid | MSR_IA32_PASID_VALID);
-> > +out:
-> > +	mmput(mm);
+Tested-by: Vineeth Pillai <vineethrp@gmail.com>
 
 Thanks,
+Vineeth
 
--Fenghua
+On Mon, Apr 27, 2020 at 6:30 AM Ben Chuang <benchuanggli@gmail.com> wrote:
+>
+> From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+>
+> The kernel prints a message similar to
+> "[   28.881959] do_IRQ: 5.36 No irq handler for vector"
+> when GL975x resumes from suspend. Implement a resume callback to fix this.
+>
+> Fixes: 31e43f31890c ("mmc: sdhci-pci-gli: Enable MSI interrupt for GL975x")
+> Co-developed-by: Renius Chen <renius.chen@genesyslogic.com.tw>
+> Signed-off-by: Renius Chen <renius.chen@genesyslogic.com.tw>
+> Tested-by: Dave Flogeras <dflogeras2@gmail.com>
+> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> ---
+>  drivers/mmc/host/sdhci-pci-gli.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+> index ce15a05f23d4..7195dd33ac3d 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -334,6 +334,18 @@ static u32 sdhci_gl9750_readl(struct sdhci_host *host, int reg)
+>         return value;
+>  }
+>
+> +#ifdef CONFIG_PM_SLEEP
+> +int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
+> +{
+> +       struct sdhci_pci_slot *slot = chip->slots[0];
+> +
+> +       pci_free_irq_vectors(slot->chip->pdev);
+> +       gli_pcie_enable_msi(slot);
+> +
+> +       return sdhci_pci_resume_host(chip);
+> +}
+> +#endif
+> +
+>  static const struct sdhci_ops sdhci_gl9755_ops = {
+>         .set_clock              = sdhci_set_clock,
+>         .enable_dma             = sdhci_pci_enable_dma,
+> @@ -348,6 +360,9 @@ const struct sdhci_pci_fixes sdhci_gl9755 = {
+>         .quirks2        = SDHCI_QUIRK2_BROKEN_DDR50,
+>         .probe_slot     = gli_probe_slot_gl9755,
+>         .ops            = &sdhci_gl9755_ops,
+> +#ifdef CONFIG_PM_SLEEP
+> +       .resume         = sdhci_pci_gli_resume,
+> +#endif
+>  };
+>
+>  static const struct sdhci_ops sdhci_gl9750_ops = {
+> @@ -366,4 +381,7 @@ const struct sdhci_pci_fixes sdhci_gl9750 = {
+>         .quirks2        = SDHCI_QUIRK2_BROKEN_DDR50,
+>         .probe_slot     = gli_probe_slot_gl9750,
+>         .ops            = &sdhci_gl9750_ops,
+> +#ifdef CONFIG_PM_SLEEP
+> +       .resume         = sdhci_pci_gli_resume,
+> +#endif
+>  };
+> --
+> 2.26.2
+>
 
+
+-- 
+Cheers,
+~Vineeth
+
+## "Its not the load that breaks you, but the way u carry it!" ##
