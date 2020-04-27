@@ -2,129 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75111BA2ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 13:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBDE1BA2FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 13:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726931AbgD0Lu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 07:50:27 -0400
-Received: from mail-bn8nam11on2046.outbound.protection.outlook.com ([40.107.236.46]:12076
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726260AbgD0Lu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 07:50:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dbbtRDq8VWL2xwfcqib2LNVzOZesT04o7UAkOmwf06TF1orrLNWpuq7yCZYhmc9V7ttfDe1owPpdpmq08RTY+J61FBSQgHxLdaBTL08Lflw0Fa8ulvjZP1t/nN83Rg5+PUzBa0ncsEqnEUIKofNtUnSv7iC9sSHANsC4ACSsy89sQpN8tpMssZxCFQ6uZPRnUzMgObexTR36kIBJdOtrXK3EuGSuaZ2nJbJ/uneQASndT/yyCkg3Pf/leXM0QLf1DjSpv9MVvUE1U6w9XKByyGg3skKrOaJ23aquwnlA7VbOcybViGqDZOAJqvLV1VkQayI3Mu1tf2L8vBEkAgY7Mw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EGnLtOC1QmyFVeiI8JAoybh2bejftHJC2AzMZW0eDqA=;
- b=L6FN123RPwqNyNji49Q/WkPsixMLJSt4DobrA+/kYYm3I1WnYwqREQ8BtxQi9awwBMmnbRd/qpxpiSZuwIxV3OGOZz1LT3Mxpj1pZ9S+/i7JD6Z31KPKXqL6FX8aQe9nTFceuT/HDuM3kpQPouoLphOml2T8HCBxFKuhGS7jFQknPZqGASZGoDtrc0nbl9uR4PGCtpUKAeai97Kf3BNUV66F/SUSQg3XM+wg0wi2dZgnA3RIzdAExMBRCff0/T0x5K+JHXASm1SykWzMu+JkroUpwwoWavpU8RyfA/ig2w2GpNqMW82h5h6YBwXIkKyd5CyPbsJfzYuLkTnkZY/sdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EGnLtOC1QmyFVeiI8JAoybh2bejftHJC2AzMZW0eDqA=;
- b=dbjPJLZSgssisorQQxPmwlJNOr3uKwO+iY76sx1xeJf9z0wYEbtIZqalzRqyXXifM8EuPEaNJ0xgxrxoroCF7oPStL1syiGqXzxc251A+IlbLqYFQkbeGqd23Uw5/AWCx3FBscyJQKmxPfPwPWkR9SlHkgGbrRIW+9TDZ5Z94Bs=
-Received: from MWHPR11MB1775.namprd11.prod.outlook.com (2603:10b6:300:10e::14)
- by MWHPR11MB2015.namprd11.prod.outlook.com (2603:10b6:300:28::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Mon, 27 Apr
- 2020 11:50:23 +0000
-Received: from MWHPR11MB1775.namprd11.prod.outlook.com
- ([fe80::81d5:b62b:3770:ffbe]) by MWHPR11MB1775.namprd11.prod.outlook.com
- ([fe80::81d5:b62b:3770:ffbe%10]) with mapi id 15.20.2937.023; Mon, 27 Apr
- 2020 11:50:23 +0000
-From:   Jerome Pouiller <Jerome.Pouiller@silabs.com>
-To:     Suraj Upadhyay <usuraj35@gmail.com>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] staging: wfx: cleanup long lines in data_tx.c
-Thread-Topic: [PATCH v4] staging: wfx: cleanup long lines in data_tx.c
-Thread-Index: AQHWGvVCTTezREStl0mnzKLBZcOww6iM3iSA
-Date:   Mon, 27 Apr 2020 11:50:23 +0000
-Message-ID: <8518467.FNpd3NTrYF@pc-42>
-References: <20200425113234.GA14492@blackclown>
-In-Reply-To: <20200425113234.GA14492@blackclown>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Jerome.Pouiller@silabs.com; 
-x-originating-ip: [82.67.86.106]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 45059969-2d0e-4e7d-7a79-08d7eaa12b9c
-x-ms-traffictypediagnostic: MWHPR11MB2015:
-x-microsoft-antispam-prvs: <MWHPR11MB2015AACBE1B596E04C1AFA4393AF0@MWHPR11MB2015.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2958;
-x-forefront-prvs: 0386B406AA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1775.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(7916004)(396003)(39850400004)(136003)(346002)(376002)(366004)(6486002)(8676002)(66476007)(33716001)(66556008)(64756008)(66446008)(6512007)(81156014)(316002)(86362001)(26005)(54906003)(66946007)(9686003)(6916009)(8936002)(186003)(66574012)(6506007)(478600001)(5660300002)(4326008)(76116006)(91956017)(2906002)(71200400001)(39026012);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: silabs.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gGHjkJjlYM5NP2GrmFr33qcQdJgvtsxvnyddn8mH1k3zfODAlnxNpyYG6TmlUCJPRtjXAioEU2Az3Yq9AZnRiR+S6VW7Fhj2MPynzK6Y0Jdm/QwhieAb5xJMjb/6aFNIVrdgHZkvnewGP6y7UFxTtrxbkuDytuplpDeQTk6FpfdEgY254otQI9LUuqMoUOznNmn5gurSvu4p5+4XtIcmPZzCU0T1i6FclruutyBGwe8d84uZ5Fj9oA5QiixLe1k4tIKhQK3MNQkwWLeUCP1kJYhteiUVEyw5+RHFBNf7vTNcuaE/ImU+wMfbJgARMA/BvmbjR6csLPbsZ+IzOeFBtuWUc176DlOvpuDBHGxPWlQtpSmxewTlLFuACKuYtuaK4y+ytRfoxFCga+xT5U0hCM4AU1zlaihC+roEGlihcwEbkUAa1lnmRbqPCuWR74QPumtKTW3Wa8ZO3ZUcZFwX8K5K9aMVUbB8B+qaKmxrLRIx3k+AxDr36awob/LihNUN
-x-ms-exchange-antispam-messagedata: lZmIoAhY/1dDXEud+CWt5Dd7ToXmnHo7xvQbI5ZIb7t5cBGYwWFGKRnc2m9ay17m9uK7zQeEy58emtLltmRgWRg2lqUJT9U/tS7WndyjKXvihfxagVxvOVOrEwDZtZi8s2NsQt3rEk6KswaO+jsunPQV4SEnmqeLg3+Tm/CCrrMnmRfHzcEtX0qr9QJk1F6u6ipNgXpov44ZjoboZSS3OaVcUHPL4q9qFIxefOYbPG/EtsGRytsrkwbYMbX/c1/zBfJFEo3QGERJzVcDA3Buq2ljx2wABiz1wn22qv/iJHK41EDVAiU5SBHR9I56u1aKwnHj0qvJ2ySiLnKk7C8yMvAdXZ+As8jOg4zkMOEQWc/pnjWTNvWNUL49FsjH7hrM8J7IUvik/7Qa7FEKqnwL/GDzk0lr+gIfR/I7qf42pBP4fab79GIcMQmMMkZkdwWIVJW97v5XjSV7nJbskxQRXSN7ov7/DXYyeC+4ajdOwn+Ws78EwNdiTaPphVLDpq6PU3dR7oeY3WSC4KvG9zEwOzElJLBpekLXlkFDv3DV32kCBlZ3BEJRU9P6bBWKjlJBRf2MGw8F/gwNtJ0VReBpwqtyjrl6JX4AYil6kle0NwlkA9NTs2/P4aNgIEy7nx1DnucSWHJrx88yxgzwlldgSDKKxnBTHdho40sSNtAgi73j2E7NNXLnwghMdWc5FaWnlccBkauT//nJuVtZHCc8DM3FvTDrHxi7iLsULusZ+CUn6Hfp8A4/6TJHyE3WbeqSaQc/uvXeBuLofVpvVVsI9cUiE6QRfrIIaSyMyEGm2wU=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <6A2DEB847822C9418087D29A1D3D10FD@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727025AbgD0Lyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 07:54:39 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:42240 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbgD0Lyi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 07:54:38 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jT2LN-00056H-AR; Mon, 27 Apr 2020 05:54:37 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jT2LM-0007g2-Ct; Mon, 27 Apr 2020 05:54:37 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
+        <87ftcv1nqe.fsf@x220.int.ebiederm.org>
+        <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
+        <20200424173927.GB26802@redhat.com>
+        <87mu6ymkea.fsf_-_@x220.int.ebiederm.org>
+        <87blnemj5t.fsf_-_@x220.int.ebiederm.org>
+        <20200426172207.GA30118@redhat.com>
+Date:   Mon, 27 Apr 2020 06:51:23 -0500
+In-Reply-To: <20200426172207.GA30118@redhat.com> (Oleg Nesterov's message of
+        "Sun, 26 Apr 2020 19:22:07 +0200")
+Message-ID: <878sihjgec.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45059969-2d0e-4e7d-7a79-08d7eaa12b9c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2020 11:50:23.8034
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hbmcLu6mOb73hLEYfj4onXntaQcNaMLJBI3pmQZHScwB4bQqo2BhtUzzx4YZJCsHm1sqVOS4KZsssRfC6nfK2A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB2015
+Content-Type: text/plain
+X-XM-SPF: eid=1jT2LM-0007g2-Ct;;;mid=<878sihjgec.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/Hy5/LYsdoQjtguvFKGpsNQj0NXSTcRnw=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4905]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Oleg Nesterov <oleg@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 490 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 11 (2.2%), b_tie_ro: 9 (1.9%), parse: 1.00 (0.2%),
+         extract_message_metadata: 3.5 (0.7%), get_uri_detail_list: 1.68
+        (0.3%), tests_pri_-1000: 3.7 (0.8%), tests_pri_-950: 1.33 (0.3%),
+        tests_pri_-900: 1.02 (0.2%), tests_pri_-90: 93 (19.0%), check_bayes:
+        92 (18.7%), b_tokenize: 8 (1.6%), b_tok_get_all: 37 (7.5%),
+        b_comp_prob: 2.2 (0.4%), b_tok_touch_all: 41 (8.5%), b_finish: 1.03
+        (0.2%), tests_pri_0: 353 (72.2%), check_dkim_signature: 1.16 (0.2%),
+        check_dkim_adsp: 4.1 (0.8%), poll_dns_idle: 0.89 (0.2%), tests_pri_10:
+        2.5 (0.5%), tests_pri_500: 12 (2.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v3 2/6] posix-cpu-timers: Use PIDTYPE_TGID to simplify the logic in lookup_task
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday 25 April 2020 13:32:34 CEST Suraj Upadhyay wrote:
-> Break lines with length over 80 characters to
-> conform to the linux coding style and refactor
-> wherever necessary.
->=20
-> Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
-> ---
->=20
-> Changes in v4:
-> 	- Added a space after declaration in wfx_get_hw_rate().
-> 	- A checkpatch warning for this commit is retained at line 75,
-> 	  to maintain uniformity in function declarations. (Reviewer
-> 	  jerome suggested).
->=20
-> Changes in v3:
->         - Changed the temporary variable name for the memzcmp statement
->           to is_used. (as suggested).
->         - Added a temporary ieee80211_supported_band variable to address
->           the problem in wfx_get_hw_rate() more efficiently. (not
->           suggested, but still).
->=20
-> Changes in v2:
->         - Introduced a temporary variable for the memzcmp statement.
->         - Addressed the checkpatch problem with wfx_get_hw_rate().
->         - Restored the function definition of wfx_tx_get_tx_parms
->           as suggested by the reviewer.
->         - Added suggested changes for req->packet_id statement.
->=20
->  drivers/staging/wfx/data_tx.c | 40 +++++++++++++++++++++++------------
->  1 file changed, 26 insertions(+), 14 deletions(-)
+Oleg Nesterov <oleg@redhat.com> writes:
 
-This patch does not contain the suggestions from Dan. However, it is
-sufficient from my personal point of view.
-
-Reviewed-by: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
+> Eric,
+>
+> I am sick today and can't read the code, but I feel this patch is not
+> right ... please correct me.
 
 
---=20
-J=E9r=F4me Pouiller
+> So, iiuc when posix_cpu_timer_create() is called and CPUCLOCK_PERTHREAD
+> is false we roughly have
+>
+> 	task = pid_task(pid, PIDTYPE_TGID);			// lookup_task()
+>
+> 	/* WINDOW */
+>
+> 	timer->it.cpu.pid = = get_task_pid(task, PIDTYPE_TGID)	// posix_cpu_timer_create()
+>
+> Now suppose that we race with mt-exec and this "task" is the old leader;
+> it can be release_task()'ed in the WINDOW above and then get_task_pid()
+> will return NULL.
+
+Except it is asking for PIDTYPE_TGID.
+
+task->signal even if it is freed (which it won't be in a mt-exec)
+is valid until after an rcu window.
+
+release_task()
+   put_task_struct_rcu_user()
+      call_rcu(..., delayed_put_task_struct())
+... rcu delay ...
+delayed_put_task_struct()
+   put_task_struct()
+      __put_task_struct()
+         put_signal_struct()
+            free_signal_struct()
+
+Which means that task->signal->pids[PIDTYPE_TGID] will remain valid even
+across mt-exec.
+
+Further the only change I have introduced is to perform this work under
+rcu_read_lock vs taking a reference to task_struct.  As the reference to
+task_struct does not prevent release_task, the situation with respect
+to races in the rest of the code does not change.
+
+Hmm....
+
+If the case instead is:
+> 	timer->it.cpu.pid = get_task_pid(task, PIDTYPE_PID)	// posix_cpu_timer_create()
+
+Which can also happen for threads in the same thread group.
+I have to agree that we can wind up with a NULL pid.
+
+And that is a brand new bug, because we didn't use to use pids.
+Sigh.
+
+
+> That is why I suggested to change lookup_task() to return "struct pid*"
+> to eliminate the pid -> task -> pid transition.
+
+Yes.  I have to agree.  Getting rid of the pid -> task -> pid transition
+looks important to close bugs like that.
+
+> Apart from the same_thread_group() check for the "thread" case we do not
+> need task_struct at all, lookup_task() can do
+>
+> 	if (thread) {
+> 		p = pid_task(pid, PIDTYPE_PID);
+> 		if (p && !same_thread_group(p, current))
+> 			pid = NULL;
+> 	} else {
+> 		... gettime check ...
+>
+> 		if (!pid_has_task(pid, PIDTYPE_TGID))
+> 			pid = NULL;
+> 	}
+>
+> 	return pid;
+>
+> No?
+
+There is also the posix_cpu_clock_get, where we immediately use the
+clock instead of create something we can use later.
+
+I want to say the gettime case is another reason to go through the whole
+transition but the code can just as easily say "pid = task_tgid(current)"
+as it can "p = current";
+
+Eric
 
