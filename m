@@ -2,130 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C60C1BB18C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EE11BB21B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 01:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgD0WfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 18:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54146 "EHLO
+        id S1726355AbgD0Xon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 19:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726251AbgD0WfK (ORCPT
+        by vger.kernel.org with ESMTP id S1726329AbgD0Xon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 18:35:10 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D077DC03C1A7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 15:35:09 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id d15so20803042wrx.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 15:35:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=tUma/eCevMjqFnqZendvJTl9iansQ/Bv8Vro/J8oVo8=;
-        b=Xzlwk2ECG6eQU5iiHfNJ8uQVaIRQCgDNyDlrNct1Oer0OMQwkwrJANZIeEqDg2cCjY
-         DVCr3gekpjqhWjPNUQlXtcMIgB7PVwcnwOITRHb0lNJb+/wbsygaoCcCHE8QWE15Thmw
-         4+gh56SLD71qAof3emN1wPIqHQ6OxH0aNp/xUPrI528wDongKT8goQ3+Hr7TEC+ADEit
-         9Olt0fq9wMVzycT8EvLS/LLpudd25ByeVbTBJXeKPS0IdkyVyEnK7hP5B3dhJZ7I7pBr
-         ZTuAEHr5G5xi1YRmUM5C+pEfP9cYPRcf7UK4QBAfWYd8x3uD3DAW/rmzepFlLBY0v818
-         Aj8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=tUma/eCevMjqFnqZendvJTl9iansQ/Bv8Vro/J8oVo8=;
-        b=KJJ9cYO/MZ/KhLwGECInZvMkpKuRGfDfdkwV2pl7AJi6eGW+jEzHzSOZ8BMJxOGILa
-         MT0YWVTT+ALUUTodDoLXJlackYnTdPc0YxCH+WRCkiGHUeayygxVwhvJh3nUXj4oIAqK
-         l8gAaZap/O9P7hicEKQ4dPgx+A+GiVONkwWna/tTg+I9Y2YT72/voV/oV1qpplRObi2a
-         dy+fJoOy+7JhBGUFz/8rbDYpAEwGydmi4HJR5IPo3tjmf9EKJkuZmrdRNg4DB5ZfTGnl
-         mfsT0W8ECsz6TRydcGEdsJYE7/NJ93ehGtFy/NuzfkFGurx/Ep+vPxN8MmSbSieTUFeL
-         IjJg==
-X-Gm-Message-State: AGi0PuYBkyHuZ9qKIfkrzHLGX7KlwhATrPW2dL8z2eAbiSVNy13SOxff
-        QThXv8c+LvXpqAo4YelB+tzKCAwm
-X-Google-Smtp-Source: APiQypI7CBmZ+FSGwa7dKJj1EfPxVTH/lPvimLcvLzXpBwAEtDMp8eEGF/kB4Oxr9KAb8qF4J2o5bQ==
-X-Received: by 2002:adf:fcc6:: with SMTP id f6mr26769822wrs.388.1588026907984;
-        Mon, 27 Apr 2020 15:35:07 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([31.154.190.6])
-        by smtp.gmail.com with ESMTPSA id s30sm22999162wrb.67.2020.04.27.15.35.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 15:35:06 -0700 (PDT)
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     linux-kernel@vger.kernel.org, oshpigelman@habana.ai,
-        ttayar@habana.ai
-Cc:     gregkh@linuxfoundation.org
-Subject: [PATCH 2/2] habanalabs: update F/W register map
-Date:   Tue, 28 Apr 2020 02:40:47 +0300
-Message-Id: <20200427234047.13249-2-oded.gabbay@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200427234047.13249-1-oded.gabbay@gmail.com>
-References: <20200427234047.13249-1-oded.gabbay@gmail.com>
+        Mon, 27 Apr 2020 19:44:43 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A67C0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 16:44:42 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jTDQE-0004J5-Fg; Tue, 28 Apr 2020 01:44:22 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id E009B100FC0; Tue, 28 Apr 2020 01:44:21 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH 5/7] x86/mmu: Allocate/free PASID
+In-Reply-To: <20200427221825.GF242333@romley-ivt3.sc.intel.com>
+References: <1585596788-193989-1-git-send-email-fenghua.yu@intel.com> <1585596788-193989-6-git-send-email-fenghua.yu@intel.com> <87pnbus3du.fsf@nanos.tec.linutronix.de> <20200427221825.GF242333@romley-ivt3.sc.intel.com>
+Date:   Tue, 28 Apr 2020 01:44:21 +0200
+Message-ID: <87d07spk8a.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the mapping to the latest one used by the Firmware. No impact on the
-driver in this update.
+Fenghua Yu <fenghua.yu@intel.com> writes:
+> On Sun, Apr 26, 2020 at 04:55:25PM +0200, Thomas Gleixner wrote:
+>> Fenghua Yu <fenghua.yu@intel.com> writes:
+>> > + +#ifdef CONFIG_INTEL_IOMMU_SVM +	int pasid;
+>> 
+>> int? It's a value which gets programmed into the MSR along with the valid 
+>> bit (bit 31) set.
+>
+> The pasid is defined as "int" in struct intel_svm and in 
+> intel_svm_bind_mm() and intel_svm_unbind_mm(). So the pasid defined in this 
+> patch follows the same type defined in those places.
 
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
----
- .../habanalabs/include/goya/goya_reg_map.h    | 44 ++++++++++---------
- 1 file changed, 23 insertions(+), 21 deletions(-)
+Which are wrong to begin with.
 
-diff --git a/drivers/misc/habanalabs/include/goya/goya_reg_map.h b/drivers/misc/habanalabs/include/goya/goya_reg_map.h
-index 844a6ff5929a..0195f62d7254 100644
---- a/drivers/misc/habanalabs/include/goya/goya_reg_map.h
-+++ b/drivers/misc/habanalabs/include/goya/goya_reg_map.h
-@@ -11,28 +11,30 @@
- /*
-  * PSOC scratch-pad registers
-  */
--#define mmCPU_PQ_BASE_ADDR_LOW			mmPSOC_GLOBAL_CONF_SCRATCHPAD_0
--#define mmCPU_PQ_BASE_ADDR_HIGH			mmPSOC_GLOBAL_CONF_SCRATCHPAD_1
--#define mmCPU_EQ_BASE_ADDR_LOW			mmPSOC_GLOBAL_CONF_SCRATCHPAD_2
--#define mmCPU_EQ_BASE_ADDR_HIGH			mmPSOC_GLOBAL_CONF_SCRATCHPAD_3
--#define mmCPU_EQ_LENGTH				mmPSOC_GLOBAL_CONF_SCRATCHPAD_4
--#define mmCPU_PQ_LENGTH				mmPSOC_GLOBAL_CONF_SCRATCHPAD_5
--#define mmCPU_EQ_CI				mmPSOC_GLOBAL_CONF_SCRATCHPAD_6
--#define mmCPU_PQ_INIT_STATUS			mmPSOC_GLOBAL_CONF_SCRATCHPAD_7
--#define mmCPU_CQ_BASE_ADDR_LOW			mmPSOC_GLOBAL_CONF_SCRATCHPAD_8
--#define mmCPU_CQ_BASE_ADDR_HIGH			mmPSOC_GLOBAL_CONF_SCRATCHPAD_9
--#define mmCPU_CQ_LENGTH				mmPSOC_GLOBAL_CONF_SCRATCHPAD_10
--#define mmCPU_CMD_STATUS_TO_HOST		mmPSOC_GLOBAL_CONF_SCRATCHPAD_23
--#define mmCPU_BOOT_ERR0				mmPSOC_GLOBAL_CONF_SCRATCHPAD_24
--#define mmCPU_BOOT_ERR1				mmPSOC_GLOBAL_CONF_SCRATCHPAD_25
--#define mmUPD_STS				mmPSOC_GLOBAL_CONF_SCRATCHPAD_26
--#define mmUPD_CMD				mmPSOC_GLOBAL_CONF_SCRATCHPAD_27
--#define mmPREBOOT_VER_OFFSET			mmPSOC_GLOBAL_CONF_SCRATCHPAD_28
--#define mmUBOOT_VER_OFFSET			mmPSOC_GLOBAL_CONF_SCRATCHPAD_29
--#define mmRDWR_TEST				mmPSOC_GLOBAL_CONF_SCRATCHPAD_30
--#define mmBTL_ID				mmPSOC_GLOBAL_CONF_SCRATCHPAD_31
-+#define mmCPU_PQ_BASE_ADDR_LOW		mmPSOC_GLOBAL_CONF_SCRATCHPAD_0
-+#define mmCPU_PQ_BASE_ADDR_HIGH		mmPSOC_GLOBAL_CONF_SCRATCHPAD_1
-+#define mmCPU_EQ_BASE_ADDR_LOW		mmPSOC_GLOBAL_CONF_SCRATCHPAD_2
-+#define mmCPU_EQ_BASE_ADDR_HIGH		mmPSOC_GLOBAL_CONF_SCRATCHPAD_3
-+#define mmCPU_EQ_LENGTH			mmPSOC_GLOBAL_CONF_SCRATCHPAD_4
-+#define mmCPU_PQ_LENGTH			mmPSOC_GLOBAL_CONF_SCRATCHPAD_5
-+#define mmCPU_EQ_CI			mmPSOC_GLOBAL_CONF_SCRATCHPAD_6
-+#define mmCPU_PQ_INIT_STATUS		mmPSOC_GLOBAL_CONF_SCRATCHPAD_7
-+#define mmCPU_CQ_BASE_ADDR_LOW		mmPSOC_GLOBAL_CONF_SCRATCHPAD_8
-+#define mmCPU_CQ_BASE_ADDR_HIGH		mmPSOC_GLOBAL_CONF_SCRATCHPAD_9
-+#define mmCPU_CQ_LENGTH			mmPSOC_GLOBAL_CONF_SCRATCHPAD_10
-+#define mmCPU_CMD_STATUS_TO_HOST	mmPSOC_GLOBAL_CONF_SCRATCHPAD_23
-+#define mmCPU_BOOT_ERR0			mmPSOC_GLOBAL_CONF_SCRATCHPAD_24
-+#define mmCPU_BOOT_ERR1			mmPSOC_GLOBAL_CONF_SCRATCHPAD_25
-+#define mmUPD_STS			mmPSOC_GLOBAL_CONF_SCRATCHPAD_26
-+#define mmUPD_CMD			mmPSOC_GLOBAL_CONF_SCRATCHPAD_27
-+#define mmPREBOOT_VER_OFFSET		mmPSOC_GLOBAL_CONF_SCRATCHPAD_28
-+#define mmUBOOT_VER_OFFSET		mmPSOC_GLOBAL_CONF_SCRATCHPAD_29
-+#define mmRDWR_TEST			mmPSOC_GLOBAL_CONF_SCRATCHPAD_30
-+#define mmBTL_ID			mmPSOC_GLOBAL_CONF_SCRATCHPAD_31
- 
--#define mmHW_STATE				mmPSOC_GLOBAL_CONF_APP_STATUS
-+#define mmHW_STATE			mmPSOC_GLOBAL_CONF_APP_STATUS
- #define mmPSOC_GLOBAL_CONF_CPU_BOOT_STATUS	mmPSOC_GLOBAL_CONF_WARM_REBOOT
-+#define mmPSOC_GLOBAL_CONF_KMD_MSG_TO_CPU	mmPSOC_GLOBAL_CONF_UBOOT_MAGIC
-+#define mmUPD_PENDING_STS		mmPSOC_GLOBAL_CONF_NON_RST_FLOPS_3
- 
- #endif /* GOYA_REG_MAP_H_ */
--- 
-2.17.1
+>> ioasid_alloc() uses ioasid_t which is
+>> 
+>> typedef unsigned int ioasid_t;
+>> 
+>> Can we please have consistent types and behaviour all over the place?
+>
+> Should I just define "pasid", "pasid_max", "flags" as "unsigned int" for
+> the new functions/code?
+>
+> Or should I also change their types to "unsigned int" in the original
+> svm code (struct intel_svm, ...bind_mm(), etc)? I'm afraid that will be
+> a lot of changes and should be in a separate preparation patch.
 
+Yes, please. The existance of non-sensical code is not an excuse to
+proliferate it.
+
+Thanks,
+
+        tglx
