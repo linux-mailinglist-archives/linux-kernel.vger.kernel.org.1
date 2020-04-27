@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482381BAA56
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 18:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4481BAA5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 18:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgD0QsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 12:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
+        id S1726271AbgD0QtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 12:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726402AbgD0QsU (ORCPT
+        with ESMTP id S1726250AbgD0QtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 12:48:20 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C02C03C1A8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 09:48:20 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id u127so401261wmg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 09:48:19 -0700 (PDT)
+        Mon, 27 Apr 2020 12:49:01 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B34C03C1A7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 09:49:01 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id y25so9269444pfn.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 09:49:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V2IKgBBGeWQaS3nKENTTI6oYzwqYmWY3/5vxajcyiRg=;
-        b=PW927SF/uC1q91VoVVYQ+1pXnGZTfNMH4wSEMOjVR2xohzu4yp9PaN8dJxdTffySOX
-         Xg90snZYIfR+VLNbsD+aeBooFQY9hW3NEw/9WC8Ikg8Ua3CdX9GPiZdqolNYOZDjbOgW
-         8nMoVwWgXPDSdBzjyuD773mLMsMK2wxXf5mig/QQUsR9SZEmYcZxvhi1gOQNi/fBDetD
-         M2sOiHVkryGE0+k9XDDGVVwPrq/CFRbfFGAFfPhRys7RrcFrr1jI8b4rEFcrFjBdPlG+
-         ClCJmIQPMDJNb+VxjUwfW0rLYaSZQtSlHUpG3wiJ9Of7PaDg2cLwtlVdadaEVGFXiIoU
-         E5bw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=SZx79zjZZHQd5ot8L6cTLZwPB/Y8WAZ3ad6NpKenT0M=;
+        b=fen7SlaYNevbM1TH0EBcPC1WP4ydnCNaXMoZYuK7i6NpHvUAd3AZAZrZdNH4jXqwIz
+         0WcMtb4nV/H9UnTgGXa3rAuo0uc+6I4Jd2tAOTmORnPJHSPz9skOz+t+jJh1ScOZy6ag
+         +LFCFHOOGAvJu11EQvpsxaSCw4UDWEzKUJd12PjOfpYBnbvGE4hrJvUde72z9qpiE/5h
+         Mbdwn2fWKKo4QkiBX71vdenRckAOGdiwDcg8lGtAOlFwOUNscQznNettnNZqnf6czdd4
+         kxHgoh8htNwXR9hSZgViiSWwTCsPVkvhayuiV1e1NQYtKY1XG/J/Y0yVNAHPvA4dsalD
+         TSxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V2IKgBBGeWQaS3nKENTTI6oYzwqYmWY3/5vxajcyiRg=;
-        b=rQFBYYZk7++fL9UkJ7gF4SCO7oV3da5pCvu2To121i7SxPt64QqH6n/BdTs33nMq5S
-         WyOBYS5w9NVi8JG5rjjTf6/AYBPmnjBabjJDXOfiUwj3HhvEdnp7IYB7jCxx6uTM+j6U
-         Au6jCiOfAS6He/zPGf2hlwJgpCw87BWxbhWBwUhFgLoal87pWnQWngTHKGX/QZSN3A+B
-         dgIqVxf9xc/KbQtvrx6B8WACRQRsT0LRP9PFB9ufY/MNZK4T/cmy5MAOiVD9NIkvWSv+
-         Ti2h+k2EVkRuJUqSH5Bucw2CBd/VtjBVbsyY7yGpx2NCae3XiLC12UXzvTFxPJH5rXwV
-         cuHg==
-X-Gm-Message-State: AGi0Pub3smNj6gP+5yHOtb4FoXsiXpubvfcXRW03GkQhSDG4FPc4iFW5
-        eNHWBi5qlznnOdwHzAuNRvx5bg==
-X-Google-Smtp-Source: APiQypKZLllr/ppZ5WEDGUG/MlZ92mT/85cNLs+v4f8ofGxIckLH3GUuN5fThqZIftzZJCB3DKPn+Q==
-X-Received: by 2002:a1c:ba09:: with SMTP id k9mr387758wmf.176.1588006098658;
-        Mon, 27 Apr 2020 09:48:18 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id r20sm15553355wmh.26.2020.04.27.09.48.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SZx79zjZZHQd5ot8L6cTLZwPB/Y8WAZ3ad6NpKenT0M=;
+        b=fXs1LKlZAokz5xJahwu+GYPk2L1UhmfGXtNmQceFYbyTpZdsYcgAlZED99xcOuPTRY
+         KIZcrLRLHmC1YBwhU15fpd398B0R50fnTXuvCJ0NMiCWE8W1FGwE+mRCD0+b1jhxNf0o
+         kBCoXABBGFGVAuJVvlgV0MdyDHqa1GWLvKR5KL1SakJsBCj1coXc2hUN3IKGP2/bKYH2
+         oMRbc0KXaKd/XSzghGDTN/A80NQzWbZYiZzK9wKx6lKUMKEm6IQOusCfFUhQ4M8I6Fhj
+         ZpS1jIINOktrOYVuWLsGv1dHPzu6lXE018zcuznv++IKarrUj3nFJVX1Ldwtl3iU+KQf
+         +cRw==
+X-Gm-Message-State: AGi0PuZr/vMjG+hseUkR+YT8cBuv7n/p3ZlTcrEcZ41qJYyFpPj7aryC
+        BVteeflVdjiwPzzxsTwRdkE=
+X-Google-Smtp-Source: APiQypKuknnx3/Wdbj59FRBYjmpKIxZDVN6ah149plUDnAvn0sICpRdc2uA9Ids2Mr0AWFsm+z5yPg==
+X-Received: by 2002:a63:6302:: with SMTP id x2mr23325827pgb.375.1588006140938;
+        Mon, 27 Apr 2020 09:49:00 -0700 (PDT)
+Received: from ubuntu.localdomain ([220.116.27.194])
+        by smtp.gmail.com with ESMTPSA id a196sm13013585pfd.184.2020.04.27.09.48.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 09:48:18 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 17:48:16 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     jason.wessel@windriver.com, gregkh@linuxfoundation.org,
-        kgdb-bugreport@lists.sourceforge.net, mingo@redhat.com,
-        hpa@zytor.com, bp@alien8.de, linux-serial@vger.kernel.org,
-        agross@kernel.org, tglx@linutronix.de, frowand.list@gmail.com,
-        bjorn.andersson@linaro.org, jslaby@suse.com,
-        catalin.marinas@arm.com, corbet@lwn.net, will@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 8/9] serial: qcom_geni_serial: Support earlycon_kgdboc
-Message-ID: <20200427164816.j4xqw3vvlgoqkmx7@holly.lan>
-References: <20200421211447.193860-1-dianders@chromium.org>
- <20200421141234.v2.8.If2deff9679a62c1ce1b8f2558a8635dc837adf8c@changeid>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200421141234.v2.8.If2deff9679a62c1ce1b8f2558a8635dc837adf8c@changeid>
+        Mon, 27 Apr 2020 09:49:00 -0700 (PDT)
+From:   youngjun <her0gyugyu@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        youngjun <her0gyugyu@gmail.com>
+Subject: [PATCH] kernfs: fix possibility of NULL pointer dereference.
+Date:   Mon, 27 Apr 2020 09:48:36 -0700
+Message-Id: <20200427164836.48765-1-her0gyugyu@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 02:14:46PM -0700, Douglas Anderson wrote:
-> Implement the read() function in the early console driver.  With
-> recent kgdb patches this allows you to use kgdb to debug fairly early
-> into the system boot.
-> 
-> We only bother implementing this if polling is enabled since kgdb
-> can't be enabled without that.
-> 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> Changes in v2: None
-> 
->  drivers/tty/serial/qcom_geni_serial.c | 32 +++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
-> index 6119090ce045..4563d152b39e 100644
-> --- a/drivers/tty/serial/qcom_geni_serial.c
-> +++ b/drivers/tty/serial/qcom_geni_serial.c
-> @@ -1090,6 +1090,36 @@ static void qcom_geni_serial_earlycon_write(struct console *con,
->  	__qcom_geni_serial_console_write(&dev->port, s, n);
->  }
->  
-> +#ifdef CONFIG_CONSOLE_POLL
-> +static int qcom_geni_serial_earlycon_read(struct console *con,
-> +					  char *s, unsigned int n)
-> +{
-> +	struct earlycon_device *dev = con->data;
-> +	struct uart_port *uport = &dev->port;
-> +	int num_read = 0;
-> +	int ch;
-> +
-> +	while (num_read < n) {
-> +		ch = qcom_geni_serial_get_char(uport);
-> +		if (ch == NO_POLL_CHAR)
-> +			break;
-> +		s[num_read++] = ch;
-> +	}
-> +
-> +	return num_read;
-> +}
-> +
-> +static void __init qcom_geni_serial_enable_early_read(struct geni_se *se,
-> +						      struct console *con)
-> +{
-> +	geni_se_setup_s_cmd(se, UART_START_READ, 0);
-> +	con->read = qcom_geni_serial_earlycon_read;
-> +}
-> +#else
-> +static inline void qcom_geni_serial_enable_early_read(struct geni_se *se,
-> +						      struct console *con) { ; }
+When dentry is negative, "kernfs_dentry_node" returns NULL.
+In this case, "kernfs_root" dereferences NULL pointer.
 
-This is pure nitpicking but since I was passing... why the ; ?
+Signed-off-by: youngjun <her0gyugyu@gmail.com>
+---
+ fs/kernfs/dir.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index 9aec80b9d7c6..02fb5cc76e33 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -1133,15 +1133,16 @@ static int kernfs_iop_mkdir(struct inode *dir, struct dentry *dentry,
+ static int kernfs_iop_rmdir(struct inode *dir, struct dentry *dentry)
+ {
+ 	struct kernfs_node *kn  = kernfs_dentry_node(dentry);
+-	struct kernfs_syscall_ops *scops = kernfs_root(kn)->syscall_ops;
++	struct kernfs_syscall_ops *scops;
+ 	int ret;
+ 
+-	if (!scops || !scops->rmdir)
+-		return -EPERM;
+-
+ 	if (!kernfs_get_active(kn))
+ 		return -ENODEV;
+ 
++	scops = kernfs_root(kn)->syscall_ops;
++	if (!scops || !scops->rmdir)
++		return -EPERM;
++
+ 	ret = scops->rmdir(kn);
+ 
+ 	kernfs_put_active(kn);
+@@ -1154,18 +1155,19 @@ static int kernfs_iop_rename(struct inode *old_dir, struct dentry *old_dentry,
+ {
+ 	struct kernfs_node *kn = kernfs_dentry_node(old_dentry);
+ 	struct kernfs_node *new_parent = new_dir->i_private;
+-	struct kernfs_syscall_ops *scops = kernfs_root(kn)->syscall_ops;
++	struct kernfs_syscall_ops *scops;
+ 	int ret;
+ 
+ 	if (flags)
+ 		return -EINVAL;
+ 
+-	if (!scops || !scops->rename)
+-		return -EPERM;
+-
+ 	if (!kernfs_get_active(kn))
+ 		return -ENODEV;
+ 
++	scops = kernfs_root(kn)->syscall_ops;
++	if (!scops || !scops->rename)
++		return -EPERM;
++
+ 	if (!kernfs_get_active(new_parent)) {
+ 		kernfs_put_active(kn);
+ 		return -ENODEV;
+-- 
+2.17.1
 
-Daniel.
