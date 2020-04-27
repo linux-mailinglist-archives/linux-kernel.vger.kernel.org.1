@@ -2,157 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0661B99E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC35D1BA694
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgD0IUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:20:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22294 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726434AbgD0IUt (ORCPT
+        id S1728069AbgD0Oio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 10:38:44 -0400
+Received: from mail1.bemta26.messagelabs.com ([85.158.142.4]:40665 "EHLO
+        mail1.bemta26.messagelabs.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727807AbgD0Oin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:20:49 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03R7XldU011092;
-        Mon, 27 Apr 2020 04:20:47 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30mhbh482f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Apr 2020 04:20:46 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03R7XwQs011724;
-        Mon, 27 Apr 2020 04:20:46 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30mhbh481m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Apr 2020 04:20:46 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03R8Je6s023801;
-        Mon, 27 Apr 2020 08:20:44 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 30mcu6ueuy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Apr 2020 08:20:44 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03R8Kf9b721342
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Apr 2020 08:20:41 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D3DF9AE051;
-        Mon, 27 Apr 2020 08:20:41 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 45D0AAE05A;
-        Mon, 27 Apr 2020 08:20:41 +0000 (GMT)
-Received: from oc3016276355.ibm.com (unknown [9.145.191.241])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Apr 2020 08:20:41 +0000 (GMT)
-Subject: Re: [PATCH v7 03/15] s390/zcrypt: driver callback to indicate
- resource in use
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     freude@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
-        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        jjherne@linux.ibm.com, fiuczy@linux.ibm.com
-References: <20200407192015.19887-1-akrowiak@linux.ibm.com>
- <20200407192015.19887-4-akrowiak@linux.ibm.com>
-From:   Pierre Morel <pmorel@linux.ibm.com>
-Message-ID: <75bcbc06-f38f-1aff-138f-5d2a2dd3f7b6@linux.ibm.com>
-Date:   Mon, 27 Apr 2020 10:20:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 27 Apr 2020 10:38:43 -0400
+Received: from [100.113.0.171] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+        by server-4.bemta.az-a.eu-central-1.aws.symcld.net id C7/AC-37389-07EE6AE5; Mon, 27 Apr 2020 14:38:40 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPIsWRWlGSWpSXmKPExsVy8MN7Xd2Cd8v
+  iDB7NZ7aYf+Qcq8XhRS8YLW5++sZqcXnXHDaLpdcvMlm07j3C7sDmsWbeGkaPnbPusntsWtXJ
+  5vF5k1wASxRrZl5SfkUCa8afW8tZC3ZqVpzfUNDAuEWpi5GLQ0hgLaNEQ1MLSxcjJ5BTKfHo/
+  R/2LkYODl6BCImF9+VBwpwCZhLLbi1jAgkLCZhK/Ow3AwmzCehIPJq5ngnEZhFQlXj84yUriC
+  0s4Ctx4Us7WFxEoFziwMeZrCCrmAWmMUrs+XiYGSTBKyAocXLmE7C1zAISEgdfvGCGOEFL4ty
+  aVYwTGHlnISmbhaRsASPTKkbLpKLM9IyS3MTMHF1DAwNdQ0NjXSBpZK6XWKWbqJdaqpucmldS
+  lAiU1UssL9YrrsxNzknRy0st2cQIDNWUQob6HYyb177XO8QoycGkJMp7cvWyOCG+pPyUyozE4
+  oz4otKc1OJDjDIcHEoSvOxvgXKCRanpqRVpmTnAuIFJS3DwKInwXgNJ8xYXJOYWZ6ZDpE4xGn
+  P83rBkETPHg6v3VjELseTl56VKifOuBSkVACnNKM2DGwSL50uMslLCvIwMDAxCPAWpRbmZJaj
+  yrxjFORiVhHnlQKbwZOaVwO17BXQKE9ApVfKLQU4pSURISTUwxUz2b3b7u2zmc8HYiYWiT+pr
+  I8ytrK3Oe0fwfxd+fchtemdLRv6V9r7UyWn1mQs0FDqmrDqX6aJ/qjf2/Lxmd1uXnbZZrlfbB
+  Uv9U/6k7g1JfHL+0jktr7jT61++Ylo7sXttnUiUc/mMJ34TM/4rnf35oOPI9DfH566MDWJ7c7
+  ZdqHHZ2hOXe94J3+/JefyMl+NB91XWzOtR09pnOZXPPMxUUNB+uOv//W1RCyVdS+OnTYhasvd
+  GnqPQjJWN3KybZ/997pSh+uDCp2PX1Walq0fbur37qLvw4X3+Fa/4HX6pK33P/VV414312bll
+  LZU83Kp7tJeENfDK8+a1+1+eOsNmw/x7e/8z/MmZoya2SImlOCPRUIu5qDgRAA5sysFiAwAA
+X-Env-Sender: roy.im.opensource@diasemi.com
+X-Msg-Ref: server-9.tower-223.messagelabs.com!1587998319!3025129!2
+X-Originating-IP: [193.240.239.45]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.50.1; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 12847 invoked from network); 27 Apr 2020 14:38:40 -0000
+Received: from unknown (HELO NB-EX-CASHUB01.diasemi.com) (193.240.239.45)
+  by server-9.tower-223.messagelabs.com with ECDHE-RSA-AES256-SHA384 encrypted SMTP; 27 Apr 2020 14:38:40 -0000
+Received: from krsrvapps-03.diasemi.com (10.95.17.51) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Mon, 27 Apr 2020 16:38:37 +0200
+Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
+ 7A5EF13F673; Mon, 27 Apr 2020 23:38:36 +0900 (KST)
+Message-ID: <4f41d01f505e35543e3840f9ad453dd7373fa91b.1587975654.git.Roy.Im@diasemi.com>
+In-Reply-To: <cover.1587975654.git.Roy.Im@diasemi.com>
+References: <cover.1587975654.git.Roy.Im@diasemi.com>
+From:   Roy Im <roy.im.opensource@diasemi.com>
+Date:   Mon, 27 Apr 2020 17:20:53 +0900
+Subject: [PATCH V12 2/3] dt-bindings: input: Add document bindings for DA7280
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Support Opensource <support.opensource@diasemi.com>,
+        <devicetree@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200407192015.19887-4-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-27_03:2020-04-24,2020-04-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- phishscore=0 adultscore=0 spamscore=0 clxscore=1011 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004270067
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add device tree binding information for DA7280 haptic driver.
+Example bindings for DA7280 are added.
+
+Reviewed-by: Rob Herring <robh@kernel.org>.
+
+Signed-off-by: Roy Im <roy.im.opensource@diasemi.com>
+
+---
+v11: No changes.
+v10: No changes.
+v9: No changes.
+v8: Updated descriptions for new properties.
+v7: No changes.
+v6: No changes.
+v5: Updated descriptions and fixed errors.
+v4: Fixed commit message, properties.
+v3: Fixed subject format.
+v2: No changes
 
 
-On 2020-04-07 21:20, Tony Krowiak wrote:
-> Introduces a new driver callback to prevent a root user from unbinding
-> an AP queue from its device driver if the queue is in use. The intent of
-> this callback is to provide a driver with the means to prevent a root user
-> from inadvertently taking a queue away from a guest and giving it to the
-> host while the guest is still using it.
+ .../devicetree/bindings/input/dlg,da7280.txt       | 109 +++++++++++++++++++++
+ 1 file changed, 109 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/dlg,da7280.txt
 
-How can we know, at this point if the guest uses or not the queue?
-Do you want to say that this prevents to take away a queue when it is 
-currently assigned to a VFIO device?
-and with a guest currently using this VFIO device?
-
-> The callback will
-> be invoked whenever a change to the AP bus's sysfs apmask or aqmask
-> attributes would result in one or more AP queues being removed from its
-> driver. If the callback responds in the affirmative for any driver
-> queried, the change to the apmask or aqmask will be rejected with a device
-> in use error.
-
-AFAIU you mean that Linux's driver's binding and unbinding mechanism is 
-not sufficient to avoid this issue because unbind can not be refused by 
-the driver.
-
-The reason why we do not want a single queue to be removed from the VFIO 
-driver is because the VFIO drivers works on a matrix, not on queues, and 
-for the matrix to be consistent it needs to acquire all queues defined 
-by the cross product of all APID and AQID assigned to the matrix.
-
-This functionality is valid for the host as for the guests and is 
-handled automatically by the firmware with the CRYCB.
-The AP bus uses QCI to retrieve the host CRYCB and build the hosts AP 
-queues.
-
-If instead to mix VFIO CRYCB matrix handling and queues at the same 
-level inside the AP bus we separate these different firmware entities in 
-two different software entities.
-
-If we make the AP bus sit above a CRYCB/Matrix bus, and in the way 
-virtualize the QCI and test AP queue instructions:
-- we can directly pass a matrix device to the guest though a VFIO matrix 
-device
-- the consistence will be automatic
-- the VFIO device and parent device will be of the same kind which would 
-make the design much more clearer.
-- there will be no need for these callback because the consistence of 
-the matrix will be guaranteed by firmware
-
-
-> 
-> For this patch, only non-default drivers will be queried. Currently,
-> there is only one non-default driver, the vfio_ap device driver.
-
-You mean that the admin may take queues away from the "default driver", 
-while the queue is in use, to give it to an other driver?
-Why is it to avoid in one way and not in the other way?
-
-> The
-> vfio_ap device driver manages AP queues passed through to one or more
-> guests
-
-I read this as if a queue may be passed to several guest...
-please, rephrase or explain.
-
-> and we don't want to unexpectedly take AP resources away from
-> guests which are most likely independently administered.
-
-When you say "independently administered", you mean as a second admin 
-inside the host, don't you?
-
-Regards,
-Pierre
-
+diff --git a/Documentation/devicetree/bindings/input/dlg,da7280.txt b/Documentation/devicetree/bindings/input/dlg,da7280.txt
+new file mode 100644
+index 0000000..e6b719d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/dlg,da7280.txt
+@@ -0,0 +1,109 @@
++Dialog Semiconductor DA7280 Haptics bindings
++
++Required properties:
++- compatible: Should be "dlg,da7280".
++- reg: Specifies the I2C slave address.
++
++- interrupt-parent : Specifies the phandle of the interrupt controller to
++  which the IRQs from DA7280 are delivered to.
++
++- dlg,actuator-type: Set Actuator type. it should be one of:
++  "LRA" - Linear Resonance Actuator type.
++  "ERM-bar" - Bar type Eccentric Rotating Mass.
++  "ERM-coin" - Coin type Eccentric Rotating Mass.
++
++- dlg,const-op-mode: Haptic operation mode for FF_CONSTANT.
++  Possible values:
++	1 - Direct register override(DRO) mode triggered by i2c(default),
++	2 - PWM data source mode controlled by PWM duty,
++- dlg,periodic-op-mode: Haptic operation mode for FF_PERIODIC.
++  Possible values:
++	1 - Register triggered waveform memory(RTWM) mode, the pattern
++	    assigned to the PS_SEQ_ID played as much times as PS_SEQ_LOOP,
++	2 - Edge triggered waveform memory(ETWM) mode, external GPI(N)
++	    control are required to enable/disable and it needs to keep
++	    device enabled by sending magnitude (X > 0),
++	    the pattern is assigned to the GPI(N)_SEQUENCE_ID below.
++	The default value is 1 for both of the operation modes.
++	For more details, please see the datasheet.
++
++- dlg,nom-microvolt: Nominal actuator voltage rating.
++  Valid values: 0 - 6000000.
++- dlg,abs-max-microvolt: Absolute actuator maximum voltage rating.
++  Valid values: 0 - 6000000.
++- dlg,imax-microamp: Actuator max current rating.
++  Valid values: 0 - 252000.
++  Default: 130000.
++- dlg,impd-micro-ohms: the impedance of the actuator in micro ohms.
++  Valid values: 0 - 1500000000.
++
++Optional properties:
++- pwms : phandle to the physical PWM(Pulse Width Modulation) device.
++  PWM properties should be named "pwms". And number of cell is different
++  for each pwm device.
++  (See Documentation/devicetree/bindings/pwm/pwm.txt
++   for further information relating to pwm properties)
++
++- dlg,ps-seq-id: the PS_SEQ_ID(pattern ID in waveform memory inside chip)
++  to play back when RTWM-MODE is enabled.
++  Valid range: 0 - 15.
++- dlg,ps-seq-loop: the PS_SEQ_LOOP, Number of times the pre-stored sequence
++  pointed to by PS_SEQ_ID or GPI(N)_SEQUENCE_ID is repeated.
++  Valid range: 0 - 15.
++- dlg,gpiN-seq-id: the GPI(N)_SEQUENCE_ID, pattern to play
++  when gpi0 is triggered, 'N' must be 0 - 2.
++  Valid range: 0 - 15.
++- dlg,gpiN-mode: the pattern mode which can select either
++  "Single-pattern" or "Multi-pattern", 'N' must be 0 - 2.
++- dlg,gpiN-polarity: gpiN polarity which can be chosen among
++  "Rising-edge", "Falling-edge" and "Both-edge",
++  'N' must be 0 - 2
++  Haptic will work by this edge option in case of ETWM mode.
++
++- dlg,resonant-freq-hz: use in case of LRA.
++  the frequency range: 50 - 300.
++  Default: 205.
++
++- dlg,bemf-sens-enable: Enable for internal loop computations.
++- dlg,freq-track-enable: Enable for resonant frequency tracking.
++- dlg,acc-enable: Enable for active acceleration.
++- dlg,rapid-stop-enable: Enable for rapid stop.
++- dlg,amp-pid-enable: Enable for the amplitude PID.
++- dlg,mem-array: Customized waveform memory(patterns) data downloaded to
++  the device during initialization. This is an array of 100 values(u8).
++
++For further information, see device datasheet.
++
++======
++
++Example:
++
++	haptics: da7280-haptics@4a {
++		compatible = "dlg,da7280";
++		reg = <0x4a>;
++		interrupt-parent = <&gpio6>;
++		interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
++		dlg,actuator-type = "LRA";
++		dlg,dlg,const-op-mode = <1>;
++		dlg,dlg,periodic-op-mode = <1>;
++		dlg,nom-microvolt = <2000000>;
++		dlg,abs-max-microvolt = <2000000>;
++		dlg,imax-microamp = <170000>;
++		dlg,resonant-freq-hz = <180>;
++		dlg,impd-micro-ohms = <10500000>;
++		dlg,freq-track-enable;
++		dlg,rapid-stop-enable;
++		dlg,mem-array = <
++ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
++ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
++ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
++ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
++ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
++ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
++ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
++ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
++ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
++ 		  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
++		>;
++
++	};
 -- 
-Pierre Morel
-IBM Lab Boeblingen
+end-of-patch for PATCH V12
+
