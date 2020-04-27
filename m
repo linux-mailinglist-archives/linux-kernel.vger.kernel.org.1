@@ -2,219 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097BD1B986D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 09:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEC91B9872
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 09:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgD0HXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 03:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
+        id S1726759AbgD0HYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 03:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgD0HXv (ORCPT
+        with ESMTP id S1726748AbgD0HYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 03:23:51 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139FEC061A0F
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 00:23:51 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x23so12936865lfq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 00:23:50 -0700 (PDT)
+        Mon, 27 Apr 2020 03:24:12 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A19C061A10
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 00:24:11 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a31so5199865pje.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 00:24:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dhfzSCFN3LuVL9FviVa2f/RqgnA5QyWgzvIluSwaqXY=;
-        b=AM6v7iFKPgywVSa8BjofQvc3E2gF0uzCMQ2OkZuVDoF//nV5Pbv3mCwFDoxRXWk2JY
-         4EtJRdQR6gSFqFdKWxbcwW/IjoObZKLUDxySI/E+xmzZvgCOwYd36b8o4+JBKFlxVCAA
-         uqLpWqHQHNQyLX7HVpGibJgPAAGurpKTozNgAueiAxjz2r7FTzkdrD9wMrbVVMSC9l8d
-         Xz/xqBiL5qIoi0c3B8Cn2vCg5X9sAhotjm6yQhOjg54l/841GT7EFVH9RdilsPWLjrpG
-         xyeWHjEuZOoD8/K1LhH7C5N+Yr8bfBEfdhoOWbaG499MI+MbDO8McZ/tHpqTtRBntjkZ
-         kRlQ==
+        d=endlessm-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XOcbyKgA0Bpvq+avYOz1rNm0o9oBZQ47QSXwocd5JDs=;
+        b=KhkIJ1jjdAjc7I6o69UtZUncp44UuyyZDD/4xfQF8CirYMTf9cJeFRIellap23PRfm
+         Ed//agPd2fbamkS4hNwvCoCC8NRPHuPKEYG7l9G4FvrsbfVqnJ8B5PFcqLUUUMxxb8yp
+         0jfEUyV0ROpnkgmchA824E5slER3IVZ4493vNeNZEtvSboA81qZ/k0P7DEKDCN4N2/7+
+         Yj+/tpZDGmES2G1MG1YAAW0FqdW/XisAk9EoRGyszIar3N9nhLwequneqKONdiSRKxsb
+         pNV5YP0VFyGcTA/cVucnh3gT7ND/v71VY3sIMVhiCUeu/m5k73fyCzeWXX/OnLWKP/Qa
+         wUuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dhfzSCFN3LuVL9FviVa2f/RqgnA5QyWgzvIluSwaqXY=;
-        b=Ec2kDnLSk/jEyDttgkXsQFNzz5unq+5YE4YVXWXZGZqJY5JYXOMA07JSxdQXhwieFt
-         iHEpyQUv++m28Bbty6vGWVpt9dVfGAa4Y6RKDGjue6yGapGCZqTN4J9iR3CVRPBK5P24
-         x/ZwR/dfNPwwhJOl3AIZ6utbs6AH3ubFl/OmgvA+Z+tU2zotLChtn038TiJg1Q/GCIzT
-         ueiCDAev+etgSwlcYH+tATDO+ZcZ9DeIbavxDbipNnOzpsSPwp2DtD+HOwtAQDmHznXZ
-         fV+PbX/khGjPd8AdG+piutlTvoIbzZY180Y62R8iNKSU1ZAT5a/+UflMFaLNPILBb/Wd
-         RGlg==
-X-Gm-Message-State: AGi0PuY4mQLCFDaVzcNcpK+QucLvjp7nhIwLuUA7VhrbDwoCcpv4E79Y
-        4kwB2lLUMm7QBMqOuyYfldFPzOnpwa9R7G+WkyA=
-X-Google-Smtp-Source: APiQypIy+IEhvM6EmXV3vVg+45MIOpCDG5Keb14lzHyKgfieTn00xug+4Uk6qZDQ/F4Cnq1OondY/kXN8Sia1X4VEiQ=
-X-Received: by 2002:ac2:53a6:: with SMTP id j6mr14517458lfh.153.1587972229546;
- Mon, 27 Apr 2020 00:23:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XOcbyKgA0Bpvq+avYOz1rNm0o9oBZQ47QSXwocd5JDs=;
+        b=baWDa3iiw97NcIh77GFeN3dzg7Vxamz5xR3uPd3Y0k0i3HBdc96R7hlOa6TPf6YWq8
+         Dh8lDDST6KNVpT9/A++GjNLNPsxM972CQYvndTxm+uzStguTvWQb2qOH9np3xXJTlyw4
+         dz/12cm5dOstzgCLgtOXf8ssGEq/dVLzqXZqngw0AG7I3iDBr3yHrpJIHV4cKWR9mNBJ
+         yOyvMKULk9TMOqfBWQdn0evaoYc8BKFe4tE2+lV9B7j/ll8iw8lJ8pgEsTWqEIPlwhNA
+         XE69tBghowu19rLfsbwz3GE/XHqEfGSNYMKhJpJ6ZQ6OcvtyOZwUcYsguy7mn2aoWF6p
+         BN5Q==
+X-Gm-Message-State: AGi0Pua7ut1lec8l19EJcnKbKLSQUEjBcF/A5RwhEPPaejLmMquBdzG7
+        CafzZSx0Rxf92EeOaRs+W7XXFA==
+X-Google-Smtp-Source: APiQypLZ1hE4GjmvgAhgyfKaFcwMZtgCX6AntRqvDptj+irvRENaKBgzUmWEYk/9JfJE78Am8sJHpA==
+X-Received: by 2002:a17:90a:252f:: with SMTP id j44mr21962732pje.9.1587972250735;
+        Mon, 27 Apr 2020 00:24:10 -0700 (PDT)
+Received: from starnight.168.95.1.1 ([150.117.130.110])
+        by smtp.googlemail.com with ESMTPSA id t3sm11570687pfq.110.2020.04.27.00.24.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2020 00:24:10 -0700 (PDT)
+From:   Jian-Hong Pan <jian-hong@endlessm.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Jian-Hong Pan <jian-hong@endlessm.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>, dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux@endlessm.com
+Subject: Re: [PATCH v2 00/91] drm/vc4: Support BCM2711 Display Pipelin
+Date:   Mon, 27 Apr 2020 15:23:42 +0800
+Message-Id: <20200427072342.5499-1-jian-hong@endlessm.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.d1e741d37e43e1ba2d2ecd93fc81d42a6df99d14.1587742492.git-series.maxime@cerno.tech>
+References: <cover.d1e741d37e43e1ba2d2ecd93fc81d42a6df99d14.1587742492.git-series.maxime@cerno.tech>
 MIME-Version: 1.0
-References: <c2fd765aa388d4510194ba02c017e39bde57c8d4.1587478171.git.baolin.wang7@gmail.com>
-In-Reply-To: <c2fd765aa388d4510194ba02c017e39bde57c8d4.1587478171.git.baolin.wang7@gmail.com>
-From:   Baolin Wang <baolin.wang7@gmail.com>
-Date:   Mon, 27 Apr 2020 15:23:38 +0800
-Message-ID: <CADBw62rJ8VYTgnW_3q4=TkCyZx2B1DHsG+oOmiph8FLsukUROQ@mail.gmail.com>
-Subject: Re: [PATCH v3] mfd: syscon: Add Spreadtrum physical regmap bus support
-To:     Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Mark Brown <broonie@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd and Lee,
+Hi Maxime,
 
-On Tue, Apr 21, 2020 at 10:13 PM Baolin Wang <baolin.wang7@gmail.com> wrote:
->
-> Some platforms such as Spreadtrum platform, define a special method to
-> update bits of the registers instead of read-modify-write, which means
-> we should use a physical regmap bus to define the reg_update_bits()
-> operation instead of the MMIO regmap bus. Thus we can register a new
-> physical regmap bus into syscon core to support this.
->
-> Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+Thanks for your V2 patch series!  I'm testing it.
 
-Do you have any comments for this patch? Thanks.
+This patch series is applied upon mainline kernel 5.7-rc2 cleanly and built.
+System can boot into console text mode, but no graphic UI.
 
-> ---
-> Changes from v2:
->  - Fix building errors without enabling CONFIG_ARCH_SPRD.
->
-> Changes from v1:
->  - Add WARN_ONCE() for seting bits and clearing bits at the same time.
->  - Remove the Spreadtrum SoC syscon driver, instead moving the regmap_bus
->  instance into syscon.c driver.
->
-> Changes from RFC v2:
->  - Drop regmap change, which was applied by Mark.
->  - Add more information about how to use set/clear.
->  - Add checking to ensure the platform is compatible with
->  using a new physical regmap bus.
->
-> Changes from RFC v1:
->  - Add new helper to registers a physical regmap bus instead of
->  using the MMIO bus.
-> ---
->  drivers/mfd/syscon.c | 83 ++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 81 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-> index 3a97816d0cba..ca91b7770e1a 100644
-> --- a/drivers/mfd/syscon.c
-> +++ b/drivers/mfd/syscon.c
-> @@ -40,6 +40,72 @@ static const struct regmap_config syscon_regmap_config = {
->         .reg_stride = 4,
->  };
->
-> +#if IS_ENABLED(CONFIG_ARCH_SPRD)
-> +#define SPRD_REG_SET_OFFSET    0x1000
-> +#define SPRD_REG_CLR_OFFSET    0x2000
-> +
-> +/*
-> + * The Spreadtrum platform defines a special set/clear method to update
-> + * registers' bits, which means it can write values to the register's SET
-> + * address (offset is 0x1000) to set bits, and write values to the register's
-> + * CLEAR address (offset is 0x2000) to clear bits.
-> + *
-> + * This set/clear method can help to remove the race of accessing the global
-> + * registers between the multiple subsystems instead of using hardware
-> + * spinlocks.
-> + *
-> + * Note: there is a potential risk when users want to set and clear bits
-> + * at the same time, since the set/clear method will always do bits setting
-> + * before bits clearing, which may cause some unexpected results if the
-> + * operation sequence is strict. Thus we recommend that do not set and
-> + * clear bits at the same time if you are not sure about the results.
-> + */
-> +static int sprd_syscon_update_bits(void *context, unsigned int reg,
-> +                                  unsigned int mask, unsigned int val)
-> +{
-> +       void __iomem *base = context;
-> +       unsigned int set, clr;
-> +
-> +       set = val & mask;
-> +       clr = ~set & mask;
-> +
-> +       if (set)
-> +               writel(set, base + reg + SPRD_REG_SET_OFFSET);
-> +
-> +       if (clr)
-> +               writel(clr, base + reg + SPRD_REG_CLR_OFFSET);
-> +
-> +       WARN_ONCE(set && clr, "%s: non-atomic update", __func__);
-> +       return 0;
-> +}
-> +
-> +static int sprd_syscon_read(void *context, unsigned int reg, unsigned int *val)
-> +{
-> +       void __iomem *base = context;
-> +
-> +       *val = readl(base + reg);
-> +       return 0;
-> +}
-> +
-> +static int sprd_syscon_write(void *context, unsigned int reg, unsigned int val)
-> +{
-> +       void __iomem *base = context;
-> +
-> +       writel(val, base + reg);
-> +       return 0;
-> +}
-> +#endif
-> +
-> +static struct regmap_bus sprd_syscon_regmap_bus = {
-> +#if IS_ENABLED(CONFIG_ARCH_SPRD)
-> +       .fast_io = true,
-> +       .reg_write = sprd_syscon_write,
-> +       .reg_read = sprd_syscon_read,
-> +       .reg_update_bits = sprd_syscon_update_bits,
-> +       .val_format_endian_default = REGMAP_ENDIAN_LITTLE,
-> +#endif
-> +};
-> +
->  static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
->  {
->         struct clk *clk;
-> @@ -50,6 +116,7 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
->         int ret;
->         struct regmap_config syscon_config = syscon_regmap_config;
->         struct resource res;
-> +       bool use_phy_regmap_bus = false;
->
->         syscon = kzalloc(sizeof(*syscon), GFP_KERNEL);
->         if (!syscon)
-> @@ -106,14 +173,26 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
->         syscon_config.val_bits = reg_io_width * 8;
->         syscon_config.max_register = resource_size(&res) - reg_io_width;
->
-> -       regmap = regmap_init_mmio(NULL, base, &syscon_config);
-> +       /*
-> +        * The Spreadtrum syscon need register a real physical regmap bus
-> +        * with new atomic bits updating operation instead of using
-> +        * read-modify-write.
-> +        */
-> +       if (IS_ENABLED(CONFIG_ARCH_SPRD) &&
-> +           of_device_is_compatible(np, "sprd,atomic-syscon")) {
-> +               use_phy_regmap_bus = true;
-> +               regmap = regmap_init(NULL, &sprd_syscon_regmap_bus, base,
-> +                                    &syscon_config);
-> +       } else {
-> +               regmap = regmap_init_mmio(NULL, base, &syscon_config);
-> +       }
->         if (IS_ERR(regmap)) {
->                 pr_err("regmap init failed\n");
->                 ret = PTR_ERR(regmap);
->                 goto err_regmap;
->         }
->
-> -       if (check_clk) {
-> +       if (!use_phy_regmap_bus && check_clk) {
->                 clk = of_clk_get(np, 0);
->                 if (IS_ERR(clk)) {
->                         ret = PTR_ERR(clk);
-> --
-> 2.17.1
->
+Get the error in vc5_hdmi_phy_init(), and full dmesg is at [1]:
 
+[    5.587543] vc4_hdmi fef00700.hdmi: Unknown register ID 46
+[    5.587700] debugfs: Directory 'fef00700.hdmi' with parent 'vc4-hdmi' already present!
+[    5.588070] vc4_hdmi fef00700.hdmi: vc4-hdmi-hifi <-> fef00700.hdmi mapping ok
+[    5.588076] vc4_hdmi fef00700.hdmi: ASoC: no DMI vendor name!
+[    5.588263] vc4-drm gpu: bound fef00700.hdmi (ops vc4_hdmi_ops)
+[    5.588299] vc4_hdmi fef05700.hdmi: Unknown register ID 46
+[    5.588373] debugfs: Directory 'vc4-hdmi' with parent 'asoc' already present!
+[    5.588673] vc4_hdmi fef05700.hdmi: vc4-hdmi-hifi <-> fef05700.hdmi mapping ok
+[    5.588677] vc4_hdmi fef05700.hdmi: ASoC: no DMI vendor name!
+[    5.588809] vc4-drm gpu: bound fef05700.hdmi (ops vc4_hdmi_ops)
+[    5.588854] vc4-drm gpu: bound fe806000.vec (ops vc4_vec_ops)
+[    5.588897] vc4-drm gpu: bound fe004000.txp (ops vc4_txp_ops)
+[    5.588934] vc4-drm gpu: bound fe400000.hvs (ops vc4_hvs_ops)
+[    5.588990] vc4-drm gpu: bound fe206000.pixelvalve (ops vc4_crtc_ops)
+[    5.589030] vc4-drm gpu: bound fe207000.pixelvalve (ops vc4_crtc_ops)
+[    5.589074] vc4-drm gpu: bound fe20a000.pixelvalve (ops vc4_crtc_ops)
+[    5.589106] vc4-drm gpu: bound fe216000.pixelvalve (ops vc4_crtc_ops)
+[    5.589145] vc4-drm gpu: bound fec12000.pixelvalve (ops vc4_crtc_ops)
+[    5.589294] checking generic (3e513000 6d8c00) vs hw (0 ffffffffffffffff)
+[    5.589297] fb0: switching to vc4drmfb from simple
+[    5.589433] Console: switching to colour dummy device 80x25
+[    5.589481] [drm] Supports vblank timestamp caching Rev 2 (21.10.2013).
+[    5.589816] [drm] Initialized vc4 0.0.0 20140616 for gpu on minor 0
+[    5.601079] ------------[ cut here ]------------
+[    5.601095] WARNING: CPU: 2 PID: 127 at drivers/gpu/drm/vc4/vc4_hdmi_phy.c:413 vc5_hdmi_phy_init+0x7ac/0x2078
+[    5.601097] Modules linked in:
+[    5.601103] CPU: 2 PID: 127 Comm: kworker/2:1 Not tainted 5.7.0-rc2-00091-ga181df59a930 #7
+[    5.601105] Hardware name: Raspberry Pi 4 Model B (DT)
+[    5.601112] Workqueue: events deferred_probe_work_func
+[    5.601116] pstate: 20000005 (nzCv daif -PAN -UAO)
+[    5.601119] pc : vc5_hdmi_phy_init+0x7ac/0x2078
+[    5.601123] lr : vc4_hdmi_encoder_enable+0x1b8/0x1ac0
+[    5.601124] sp : ffff80001217b410
+[    5.601126] x29: ffff80001217b410 x28: ffff0000ec6370f0 
+[    5.601129] x27: ffff0000f650d400 x26: 000000008a500000 
+[    5.601132] x25: ffff8000113b4ac0 x24: 0000000000002060 
+[    5.601135] x23: 000000000a500000 x22: 0000000000000300 
+[    5.601137] x21: 0000000008d9ee20 x20: ffff0000ec535080 
+[    5.601140] x19: 000000010989e7c0 x18: 0000000000000000 
+[    5.601142] x17: 0000000000000001 x16: 0000000000005207 
+[    5.601145] x15: 00004932ad293c92 x14: 0000000000000137 
+[    5.601147] x13: ffff800010015000 x12: 0000000000000001 
+[    5.601150] x11: 0000000000000001 x10: 0000000000000000 
+[    5.601152] x9 : 0000000000000000 x8 : ffff800010015038 
+[    5.601154] x7 : 0000000000000001 x6 : ffff80001217b368 
+[    5.601157] x5 : 0000000000000000 x4 : 000000000000004c 
+[    5.601159] x3 : 0000000000000000 x2 : ffff8000113b4ac0 
+[    5.601162] x1 : ffff8000120c5f44 x0 : 00000000dc8984ff 
+[    5.601164] Call trace:
+[    5.601169]  vc5_hdmi_phy_init+0x7ac/0x2078
+[    5.601172]  vc4_hdmi_encoder_enable+0x1b8/0x1ac0
+[    5.601176]  drm_atomic_helper_commit_modeset_enables+0x224/0x248
+[    5.601179]  vc4_atomic_complete_commit+0x400/0x558
+[    5.601182]  vc4_atomic_commit+0x1e0/0x200
+[    5.601185]  drm_atomic_commit+0x4c/0x60
+[    5.601190]  drm_client_modeset_commit_atomic.isra.0+0x17c/0x238
+[    5.601192]  drm_client_modeset_commit_locked+0x5c/0x198
+[    5.601195]  drm_client_modeset_commit+0x30/0x58
+[    5.601201]  drm_fb_helper_restore_fbdev_mode_unlocked+0x78/0xe0
+[    5.601204]  drm_fb_helper_set_par+0x30/0x68
+[    5.601208]  fbcon_init+0x3d4/0x598
+[    5.601212]  visual_init+0xb0/0x108
+[    5.601214]  do_bind_con_driver+0x1d0/0x3a8
+[    5.601217]  do_take_over_console+0x144/0x208
+[    5.601219]  do_fbcon_takeover+0x68/0xd8
+[    5.601222]  fbcon_fb_registered+0x100/0x118
+[    5.601226]  register_framebuffer+0x1f4/0x338
+[    5.601229]  __drm_fb_helper_initial_config_and_unlock+0x2f8/0x4a0
+[    5.601232]  drm_fbdev_client_hotplug+0xd4/0x1b0
+[    5.601235]  drm_fbdev_generic_setup+0xb0/0x130
+[    5.601238]  vc4_drm_bind+0x184/0x1a0
+[    5.601241]  try_to_bring_up_master+0x168/0x1c8
+[    5.601244]  __component_add+0xa4/0x170
+[    5.601246]  component_add+0x14/0x20
+[    5.601248]  vc4_vec_dev_probe+0x20/0x30
+[    5.601252]  platform_drv_probe+0x54/0xa8
+[    5.601254]  really_probe+0xd8/0x320
+[    5.601256]  driver_probe_device+0x58/0xf0
+[    5.601258]  __device_attach_driver+0x84/0xc8
+[    5.601263]  bus_for_each_drv+0x78/0xc8
+[    5.601265]  __device_attach+0xe4/0x140
+[    5.601267]  device_initial_probe+0x14/0x20
+[    5.601269]  bus_probe_device+0x9c/0xa8
+[    5.601271]  deferred_probe_work_func+0x74/0xb0
+[    5.601276]  process_one_work+0x1bc/0x338
+[    5.601279]  worker_thread+0x1f8/0x428
+[    5.601282]  kthread+0x138/0x158
+[    5.601286]  ret_from_fork+0x10/0x1c
+[    5.601288] ---[ end trace cfba0996218c3f3d ]---
 
--- 
-Baolin Wang
+[1]: https://gist.github.com/starnight/2236cf350737e3b0e9f05135fc7c910e
+
+Jian-Hong Pan
