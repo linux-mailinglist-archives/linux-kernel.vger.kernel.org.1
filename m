@@ -2,207 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447F61BAB3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF1F1BAB47
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgD0R30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 13:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
+        id S1726483AbgD0RaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 13:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgD0R3Z (ORCPT
+        with ESMTP id S1725980AbgD0RaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 13:29:25 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43974C03C1A7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:29:25 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id w20so18511062ljj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:29:25 -0700 (PDT)
+        Mon, 27 Apr 2020 13:30:03 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D94CC0610D5;
+        Mon, 27 Apr 2020 10:30:02 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id n11so872736pgl.9;
+        Mon, 27 Apr 2020 10:30:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SHuBjEFsXuCOnXrDPerkRVxxxGJlefJzzkBgVwYtJlA=;
-        b=QALnd6imJ7V1ZuG0QY9Bq/9Z9J1unuBZ9xPj6KDxnYPc7fE4lJB9FjEFiP03awwA3b
-         zb92lKkogwPFCwFlntiLQ99F5H75z+x8WzXhoPMhhvlWFvDQWXj2cYnZUSCLhGNeLVH3
-         Wu6HU4F6I0ezMQ/bFDI9rQDlpnTEZ3wrIJYoZQmdRPTh3pdEsoZAT47tzLqkSGDIjpQy
-         tmlUnZwLfgtwDZ69d33p8fJFSwztMFMQ7TD9ZZwVoht1dQHhyFO54Ny3fBd/zbgLm/MQ
-         W7tuhO0gvn0im4FWdXx/ffwDttk/8EC2jVjhCbp0iO8kAIYiTqIiJjT9kL0duhgGyvCF
-         UcYQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=SCLyDRiJjkisSI5+I7kNMlITwcAUmvW5WBS3LcGSTZs=;
+        b=f7u4o2sKuPfQQUUeIiWva27PcW47sExOw2ojdV1iJqO2YiekLlLQPdnrUK+CgZhhfG
+         cJ+ZgM4cPD7Y5oXHfP1JI9yj1gmTLQnN42FMZiF4iS0jQG9ocWgmH7gSirxMIvMmnn37
+         /lKlbgE9xfA929pEOUYZiTjseraB5PJQgyhO23j194oD+QjFpU1H46lSOKsyuh93rsEk
+         35afT3WPxbKMLvr22/qWiT1enHGec0iP/pL33VaHplNezHvl02oBGpKQ3YTOr3YjRB2P
+         3Ij9FTxtADBjH4qD0IK8bbqe7j3tXMbRQLrit3H3nqsBJwOQfm/2ExV+mpjsXDupHPec
+         hr1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SHuBjEFsXuCOnXrDPerkRVxxxGJlefJzzkBgVwYtJlA=;
-        b=lgaSW0YDKQtypQXKtHlZGCIX2yfp+hH+1c2GhYv7PLkkHxE5P2BQ71pN3qBgn+DnLi
-         5Tr6TUEUd5hxPf/qq2J70bF70Jqc/McOl4UEN0Eb1sFXfAHuDgv/JpTlDJTZpZRbEo5Y
-         IIsGXlJ0jzEmZ8P5SBaf7ARGeRBUnILRgu5l1qChwSuaBJgxqFeCmU53gGzl2w6Lju0E
-         6enoPlP5xaFMsp/GbmpmdHNJZ8A7wbwGHnk51OH/cl24AvxLNrQQAgcj38bmVl2yfgvG
-         OVHn2iE1C9yX9KK9ECdMSf9uxoS9NzvmvlrBBpYvkZk4fXmVaFpNct2GPcwBDr9E0GNP
-         IDHg==
-X-Gm-Message-State: AGi0PuYzSIIbgHhwPdbOQUqqfsGFmz7fMbHgIrH4HAOpyCZOYnUK1I8l
-        sPGyHn2v9CFMRQ2awg/XNgTxk94ttxBsi5svBMoElM0iRLk=
-X-Google-Smtp-Source: APiQypLRikU2kj4lwV6Hlv63XRM9RyOKCs8RknvaYiOvJdZc7VVr5C780JaTVTCUKgNwbuwUujWo/vMtAOfrKhTqrI8=
-X-Received: by 2002:a2e:87d3:: with SMTP id v19mr14032917ljj.176.1588008563374;
- Mon, 27 Apr 2020 10:29:23 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SCLyDRiJjkisSI5+I7kNMlITwcAUmvW5WBS3LcGSTZs=;
+        b=R7uAU7TZWkks+LDkh3IIMZj5nCG4o7cLnvOLpzL97aNiqilCxnxon5yTdMJZJi/IHo
+         XvV3Y7Rt5aXJohT8QV7O7jlsRbBaotSUZPb+zqNF9agioYsv40GD/muIdSekzb6U1lnC
+         b8+dGsRSCkReA4ik9wsFGmqBVf5S85h2S70gyyUYrQQDeypKRHurvzIsEW8CmFfurIZT
+         h83hNr3WHnX20dfDeBDJC+FUtCRKzJhd/U5jnssx3dYzJ4eJUowb2Wh3/3wTdo2BE5Dp
+         ie9d3ECuWuL2vliUSFnHFVL5cHyiNv4drx06YR6xpWn6Xx7kg4lLaBk6/XXFOudTByNm
+         k4/A==
+X-Gm-Message-State: AGi0PubMe62J+RXsAESdsFA7Ge0Wql/4AOfobSklCmtr6QjKxT8ElLtj
+        56OYEjJYiV41wublQrHG8uADf/rp
+X-Google-Smtp-Source: APiQypLAkvMyKxt4+GqBWPPQov4z6yuIinvDdHdu3rfRqyLGtyrl9GGPdWcRQ69bAKSDmiis+wgM8A==
+X-Received: by 2002:a63:f843:: with SMTP id v3mr24542277pgj.421.1588008601102;
+        Mon, 27 Apr 2020 10:30:01 -0700 (PDT)
+Received: from [10.69.79.32] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id ml24sm11558508pjb.48.2020.04.27.10.29.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 10:30:00 -0700 (PDT)
+Subject: Re: [PATCH -next] tty: serial: bcm63xx: fix missing clk_put() in
+ bcm63xx_uart
+To:     Jiri Slaby <jslaby@suse.cz>, Zou Wei <zou_wei@huawei.com>,
+        gregkh@linuxfoundation.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <1587472306-105155-1-git-send-email-zou_wei@huawei.com>
+ <4cd8f963-9292-faef-1e24-df90821274d6@suse.cz>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <73c4cebb-467b-e5d5-89bf-8a6fe29cf858@gmail.com>
+Date:   Mon, 27 Apr 2020 10:29:58 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200427143646.619227-1-christian.brauner@ubuntu.com>
-In-Reply-To: <20200427143646.619227-1-christian.brauner@ubuntu.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 27 Apr 2020 19:28:56 +0200
-Message-ID: <CAG48ez3eSJSODADpo=O-j9txJ=2R+EupunRvs5H9t5Wa8mvkRA@mail.gmail.com>
-Subject: Re: [PATCH] nsproxy: attach to namespaces via pidfds
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?Q?St=C3=A9phane_Graber?= <stgraber@ubuntu.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4cd8f963-9292-faef-1e24-df90821274d6@suse.cz>
+Content-Type: text/plain; charset=iso-8859-2
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 4:47 PM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
-> For quite a while we have been thinking about using pidfds to attach to
-> namespaces. This patchset has existed for about a year already but we've
-> wanted to wait to see how the general api would be received and adopted.
-> Now that more and more programs in userspace have started using pidfds
-> for process management it's time to send this one out.
 
-You can already reliably switch to a specific namespace of another
-process like this given a pidfd and the pid of the process (which, if
-you don't have it, you can get via fdinfo), right?
 
-int switch_ns_to(int pidfd, int pid, char *nstypename) {
-  char ns_path[100];
-  snprintf(ns_path, sizeof(ns_path), "/proc/%d/ns/%s", pid, nstypename);
-  int fd = open(ns_path, O_RDONLY|O_CLOEXEC);
-  int errno_after_open = errno;
+On 4/26/2020 11:19 PM, Jiri Slaby wrote:
+> On 21. 04. 20, 14:31, Zou Wei wrote:
+>> This patch fixes below error reported by coccicheck
+>>
+>> drivers/tty/serial/bcm63xx_uart.c:848:2-8: ERROR: missing clk_put;
+>> clk_get on line 842 and execution via conditional on line 846
+>>
+>> Fixes: ab4382d27412 ("tty: move drivers/serial/ to drivers/tty/serial/")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+>> ---
+>>  drivers/tty/serial/bcm63xx_uart.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/tty/serial/bcm63xx_uart.c b/drivers/tty/serial/bcm63xx_uart.c
+>> index 5674da2..ed0aa5c 100644
+>> --- a/drivers/tty/serial/bcm63xx_uart.c
+>> +++ b/drivers/tty/serial/bcm63xx_uart.c
+>> @@ -843,8 +843,10 @@ static int bcm_uart_probe(struct platform_device *pdev)
+>>  	if (IS_ERR(clk) && pdev->dev.of_node)
+>>  		clk = of_clk_get(pdev->dev.of_node, 0);
+>>  
+>> -	if (IS_ERR(clk))
+>> +	if (IS_ERR(clk)) {
+>> +		clk_put(clk);
+> 
+> Why would you want to put an erroneous clk?
 
-  if (pidfd_send_signal(pidfd, 0, NULL, 0))
-    return -1;
-
-  if (fd == -1) {
-    errno = errno_after_open;
-    return -1;
-  }
-
-  int ret = setns(fd, 0);
-  close(fd);
-  return ret;
-}
-
-> This patch makes it possible to use pidfds to attach to the namespaces
-> of another process, i.e. they can be passed as the first argument to the
-> setns() syscall. When only a single namespace type is specified the
-> semantics are equivalent to passing an nsfd.
-
-This introduces a difference in terms of security: With the old API,
-you need PTRACE_MODE_READ_FSCREDS on the task whose namespace you're
-attaching to (to dereference the link /proc/*/ns/*) *AND* whatever
-access checks the namespace itself enforces (always includes a check
-for CAP_SYS_ADMIN on the namespace). The ptrace check has the
-advantage, among other things, that it allows an LSM to see the
-relationship between the task that's accessing the namespace (subject)
-and the task whose namespace is being accessed (object).
-
-I feel slightly twitchy about this relaxation, and I'm wondering
-whether we can add a ptrace access check analogous to what you'd have
-needed via procfs.
-
-> That means
-> setns(nsfd, CLONE_NEWNET) equals setns(pidfd, CLONE_NEWNET). However,
-> when a pidfd is passed, multiple namespace flags can be specified in the
-> second setns() argument and setns() will attach the caller to all the
-> specified namespaces all at once or to none of them. If 0 is specified
-> together with a pidfd then setns() will interpret it the same way 0 is
-> interpreted together with a nsfd argument, i.e. attach to any/all
-> namespaces.
-[...]
-> Apart from significiantly reducing the number of syscalls from double
-> digit to single digit which is a decent reason post-spectre/meltdown
-> this also allows to switch to a set of namespaces atomically, i.e.
-> either attaching to all the specified namespaces succeeds or we fail.
-
-Apart from the issues I've pointed out below, I think it's worth
-calling out explicitly that with the current design, the switch will
-not, in fact, be fully atomic - the process will temporarily be in
-intermediate stages where the switches to some namespaces have
-completed while the switches to other namespaces are still pending;
-and while there will be less of these intermediate stages than before,
-it also means that they will be less explicit to userspace.
-
-[...]
-> diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
-[...]
-> +/*
-> + * Ordering is equivalent to the standard ordering used everywhere
-> + * else during unshare and process creation.
-> + */
-> +static int ns_install(struct nsproxy *nsproxy, struct pid *pid, int flags)
-> +{
-> +       int ret = 0;
-> +       struct task_struct *tsk;
-> +       struct nsproxy *nsp;
-> +
-> +       tsk = get_pid_task(pid, PIDTYPE_PID);
-> +       if (!tsk)
-> +               return -ESRCH;
-> +
-> +       get_nsproxy(tsk->nsproxy);
-> +       nsp = tsk->nsproxy;
-
-How is this correct? Are you holding any locks that protect tsk->nsproxy?
-
-> +#ifdef CONFIG_USER_NS
-> +       if (wants_ns(flags, CLONE_NEWUSER)) {
-> +               struct user_namespace *user_ns;
-> +
-> +               user_ns = get_user_ns(__task_cred(tsk)->user_ns);
-> +               ret = __ns_install(nsproxy, &user_ns->ns);
-
-If ret == 0, then at this point you've already committed the user
-namespace change *to the calling process*. The ->install handler of
-user namespaces doesn't touch the nsproxy at all.
-
-> +               put_user_ns(user_ns);
-> +       }
-> +#else
-> +       if (flags & CLONE_NEWUSER)
-> +               ret = -EINVAL;
-> +#endif
-> +
-> +       if (!ret && wants_ns(flags, CLONE_NEWNS))
-> +               ret = __ns_install(nsproxy, mnt_ns_to_common(nsp->mnt_ns));
-
-And this one might be even worse, because the mount namespace change
-itself is only stored in the nsproxy at this point, but the cwd and
-root paths have already been overwritten on the task's fs_struct.
-
-To actually make sys_set_ns() atomic, I think you'd need some
-moderately complicated prep work, splitting the ->install handlers up
-into prep work and a commit phase that can't fail.
-
-[...]
-> +#ifdef CONFIG_PID_NS
-> +       if (!ret && wants_ns(flags, CLONE_NEWPID)) {
-> +               struct pid_namespace *pidns;
-> +
-> +               pidns = task_active_pid_ns(tsk);
-> +               if (pidns) {
-> +                       get_pid_ns(pidns);
-> +                       ret = __ns_install(nsproxy, &pidns->ns);
-> +                       put_pid_ns(pidns);
-> +               }
-
-If you can't get the task's pidns, shouldn't that be an error?
-
-> +       }
-[...]
+Doh, somehow I completely missed, you are right this does not look legit.
+-- 
+Florian
