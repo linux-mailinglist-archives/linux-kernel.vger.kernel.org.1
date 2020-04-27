@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA121BAC27
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFD71BAC69
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbgD0SQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 14:16:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56193 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725963AbgD0SQ2 (ORCPT
+        id S1726530AbgD0SXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 14:23:20 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:40936 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725995AbgD0SXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 14:16:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588011387;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u5dCro9WjZmhKkCxB8zwZkWvc6RXiKYMRKmddyP7nOQ=;
-        b=CngydgbFqnA6k3wfMB2Szp0HMuY/9yRInKFqevN8js/h3vMH3dPh5DNcUWRv0OqKyBqD4z
-        wzDKPyhjjSPo1y9lwiGumyONzRDWdVjahOVBDY8wO4ZVzlx+nAmkRl1EGE46n9vRC8V05j
-        YpEPRXK6TP+VOgvf7tDN8KblDGCyzuw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-474-xqSl2fuGM_q-PCBcurqp7g-1; Mon, 27 Apr 2020 14:16:25 -0400
-X-MC-Unique: xqSl2fuGM_q-PCBcurqp7g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06C42107ACF4;
-        Mon, 27 Apr 2020 18:16:24 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-112-176.rdu2.redhat.com [10.10.112.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6EF3210013A1;
-        Mon, 27 Apr 2020 18:16:18 +0000 (UTC)
-Subject: Re: [PATCH 2/2] mm/slub: Fix slab_mutex circular locking problem in
- slab_attr_store()
-To:     Qian Cai <cai@lca.pw>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20200424151225.10966-1-longman@redhat.com>
- <20200424151225.10966-2-longman@redhat.com>
- <0A3C34CA-F514-41C2-AC3F-E5925C7C0F9A@lca.pw>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <9fee780e-2c32-bb6a-08c0-cae8fdc58e9f@redhat.com>
-Date:   Mon, 27 Apr 2020 14:16:18 -0400
+        Mon, 27 Apr 2020 14:23:19 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03RINE38113931;
+        Mon, 27 Apr 2020 13:23:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588011795;
+        bh=5OghnPjWwbHydybxjIUdOgiSz7YwnjBztLRIVw2Is3Q=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=JuG0cpohAAJR3y4mYtf5+3ljZoUjKeVucxBDh8VcLWIM/T58RTp8o5MdAZ2GhYeNP
+         gL9u0EXpAzisZNhZmeCkSaBicgGZkopYR0o9/W9aXjqYiaYBYxk2BZszN7n7tM590k
+         edNzlL9+N0VX5rbOZPdNHNLsHHnoPlY2i9OcgylE=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03RINEnR111729
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Apr 2020 13:23:14 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
+ Apr 2020 13:23:14 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 27 Apr 2020 13:23:14 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03RINEIP053931;
+        Mon, 27 Apr 2020 13:23:14 -0500
+Subject: Re: [PATCH v20 12/17] leds: lp55xx: Add multicolor framework support
+ to lp55xx
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200423155524.13971-1-dmurphy@ti.com>
+ <20200423155524.13971-13-dmurphy@ti.com>
+ <24aa265c-46ca-1643-7781-9ddbf734405b@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <4f149443-87f9-ca3f-e131-2b494cbfed84@ti.com>
+Date:   Mon, 27 Apr 2020 13:17:16 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <0A3C34CA-F514-41C2-AC3F-E5925C7C0F9A@lca.pw>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <24aa265c-46ca-1643-7781-9ddbf734405b@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Content-Transfer-Encoding: quoted-printable
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/24/20 12:16 PM, Qian Cai wrote:
->
->> On Apr 24, 2020, at 11:12 AM, Waiman Long <longman@redhat.com> wrote:
->>
->> diff --git a/mm/slub.c b/mm/slub.c
->> index 183ccc364ccf..255981180489 100644
->> --- a/mm/slub.c
->> +++ b/mm/slub.c
->> @@ -5567,13 +5567,30 @@ static ssize_t slab_attr_store(struct kobject =
-*kobj,
->> 		return -EIO;
->>
->> 	err =3D attribute->store(s, buf, len);
->> -#ifdef CONFIG_MEMCG
->> -	if (slab_state >=3D FULL && err >=3D 0 && is_root_cache(s)) {
->> -		struct kmem_cache *c;
->> +#ifdef CONFIG_MEMCG_KMEM
->> +	if (slab_state >=3D FULL && err >=3D 0 && is_root_cache(s) &&
->> +	    !list_empty(&s->memcg_params.children)) {
->> +		struct kmem_cache *c, **pcaches;
->> +		int idx, max, cnt =3D 0;
->> +		size_t size =3D s->max_attr_size;
->> +		struct memcg_cache_array *arr;
->> +
->> +		/*
->> +		 * Make atomic update to s->max_attr_size.
->> +		 */
->> +		do {
->> +			if (len <=3D size)
->> +				break;
->> +		} while (!try_cmpxchg(&s->max_attr_size, &size, len));
->>
-> try_cmpxchg() is only available on x86.
->
-> mm/slub.c: In function =E2=80=98slab_attr_store=E2=80=99:
-> mm/slub.c:5613:13: error: implicit declaration of function =E2=80=98try=
-_cmpxchg=E2=80=99; did you mean =E2=80=98xa_cmpxchg=E2=80=99? [-Werror=3D=
-implicit-function-declaration]
->     } while (!try_cmpxchg(&s->max_attr_size, &size, len));
->               ^~~~~~~~~~~
->               xa_cmpxchg
->
-Oh, sorry about that. Will fix it and send out v2.
+Jacek
 
-Cheers,
-Longman
+On 4/26/20 11:07 AM, Jacek Anaszewski wrote:
+> Hi Dan,
+>
+> One nit below.
+>
+> On 4/23/20 5:55 PM, Dan Murphy wrote:
+>> Add multicolor framework support for the lp55xx family.
+>>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   drivers/leds/Kconfig                      |   1 +
+>>   drivers/leds/leds-lp5521.c                |  14 +-
+>>   drivers/leds/leds-lp5523.c                |  14 +-
+>>   drivers/leds/leds-lp5562.c                |  13 +-
+>>   drivers/leds/leds-lp55xx-common.c         | 178 +++++++++++++++++++---
+>>   drivers/leds/leds-lp55xx-common.h         |  11 +-
+>>   drivers/leds/leds-lp8501.c                |  14 +-
+>>   include/linux/platform_data/leds-lp55xx.h |   8 +
+>>   8 files changed, 207 insertions(+), 46 deletions(-)
+>>
+> [...]
+>> diff --git a/drivers/leds/leds-lp55xx-common.h 
+>> b/drivers/leds/leds-lp55xx-common.h
+>> index b9b1041e8143..a9d7ba3f2fd1 100644
+>> --- a/drivers/leds/leds-lp55xx-common.h
+>> +++ b/drivers/leds/leds-lp55xx-common.h
+>> @@ -12,6 +12,8 @@
+>>   #ifndef _LEDS_LP55XX_COMMON_H
+>>   #define _LEDS_LP55XX_COMMON_H
+>>   +#include <linux/led-class-multicolor.h>
+>> +
+>>   enum lp55xx_engine_index {
+>>       LP55XX_ENGINE_INVALID,
+>>       LP55XX_ENGINE_1,
+>> @@ -109,6 +111,9 @@ struct lp55xx_device_config {
+>>       /* access brightness register */
+>>       int (*brightness_fn)(struct lp55xx_led *led);
+>>   +    /* perform brightness value to multiple LEDs */
+>> +    int (*multicolor_brightness_fn)(struct lp55xx_led *led);
+>
+> Isn't some word missing here? IMO it should be rephrased.
+> Maybe "write multi color brightness to hw" ?
+>
+But brightness_fn does not say write_brightness_fn so I think this would 
+look weird to add write to the function name
+
+Dan
+
 
