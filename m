@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6235E1BAA3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 18:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D66D51BAA3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 18:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726250AbgD0QpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 12:45:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725963AbgD0QpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 12:45:20 -0400
-Received: from localhost (unknown [171.76.79.70])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68DA0206D9;
-        Mon, 27 Apr 2020 16:45:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588005920;
-        bh=HQGfAja2rJ6tyBFd7iZNONvuPgYmUPhKQCqiJIZ0BlA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xzlbn+/rAZkVD3vyFds6UKBjLoLGjModPNllFHhNZDkEgS39vG+qdWwpWnbsSDskK
-         pznWxE0Uco91kl+/FLdEV9VAI8l+ezAah0yDdb0MMNqvxYyKr2SF4IGQQHBVB/hsVz
-         /LxlGZuwpTCDIfUbUsT8st6PQA2gSg8e7V2mQPMo=
-Date:   Mon, 27 Apr 2020 22:15:14 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        robh+dt@kernel.org, mark.rutland@arm.com,
-        devicetree@vger.kernel.org, John Crispin <john@phrozen.org>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: Re: [PATCH v6 1/3] phy: add driver for Qualcomm IPQ40xx USB PHY
-Message-ID: <20200427164514.GQ56386@vkoul-mobl.Dlink>
-References: <20200401163542.83278-1-robert.marko@sartura.hr>
+        id S1726275AbgD0QqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 12:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725963AbgD0QqR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 12:46:17 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6507DC09B050
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 09:46:17 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k1so21400624wrx.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 09:46:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=K+g8CFmqfjmYJhrJrB84iQ9ane1MJeR/rniO7Hj0TcQ=;
+        b=j0X8ISUfitBA/7pgF+7wgu8pr3DqkIkyLmpu2c7JYW1hSgdSSbqKuFseYFmFzggSq4
+         YBiGPvcexHTHn523bsRBKfW9983b4IPLe9iYFu6seqdh6a+UMOwsLAsEdK3HDE5DC9Wd
+         HCEwqdEC0m97fG2KxiGGXEPQtnRb2knFsV5KNAlmha64oKZiHul0yB/9FKB94Veevpez
+         g40O8b8Jc23aooitCnmdv5VCoJhzPZwGIzS3hm5EqF3fV3qM/yXIK8mZWUK+eRkE+cMv
+         q/97FOTCOwZ5ZJ3W2cRDwsU7yltn850rt7KXhyoV72KoqiqWSPLq/6tBCRXm4ElrWdni
+         gI8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=K+g8CFmqfjmYJhrJrB84iQ9ane1MJeR/rniO7Hj0TcQ=;
+        b=XpLq5GEFaAtnzf8deGKzE00dSSHT5m6WnODVRs0OYQ0S8RllrypeDxwRazIudPd1Ii
+         1EszlpkjR1GYJNPVOiLsd/0qWtCc1wc+TO7ONleEV8qZ7LDOxlu67kWRhdsZiF8b0F+6
+         KU+CSgaErK+BBcbQe1Qx9F1BBGCFJaoLq6ovFhTc6QZwxa4cbdFRc/kl4qfPFkRToVSS
+         nGB1qg1c5RkVfjQ3TiOPdT/Dm06tuH+hW2MCBNCXTHlc/r2R+vhXCRHE7raqVvvdoza9
+         61h8dt4lpvqHI9M6AmS22f1pnmsHJWixMJZ4crsJ6Km4iUBG0RXZIMsX0L0KntREv6WF
+         qnZw==
+X-Gm-Message-State: AGi0PuZSdOx//7VljV2aYVHlwywcYT6v3mUEFZWyIjknf+778t0fl0wd
+        a8sENEGoL2j79mDGJJb1Hv/wdg==
+X-Google-Smtp-Source: APiQypIeEHjLe+6L+bZvcDi8pabn6zUvT6/Fw3vHzATYAOxTOerhsjaw3lgm9cNww142ONc10a58tA==
+X-Received: by 2002:a5d:4292:: with SMTP id k18mr26970411wrq.137.1588005975964;
+        Mon, 27 Apr 2020 09:46:15 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.gmail.com with ESMTPSA id n7sm15664278wmd.11.2020.04.27.09.46.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2020 09:46:14 -0700 (PDT)
+References: <20200328003249.1248978-1-martin.blumenstingl@googlemail.com> <1jblnd2tp3.fsf@starbuckisacylon.baylibre.com> <CAFBinCDzNw6nV3oBJs6C0sssW61GERBXq39DCM22BT9zS8M31A@mail.gmail.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-mmc@vger.kernel.org, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, mark.rutland@arm.com, jianxin.pan@amlogic.com,
+        linux-kernel@vger.kernel.org, yinxin_1989@aliyun.com,
+        linux-arm-kernel@lists.infradead.org, lnykww@gmail.com
+Subject: Re: [PATCH v5 0/3] Amlogic 32-bit Meson SoC SDHC MMC controller driver
+In-reply-to: <CAFBinCDzNw6nV3oBJs6C0sssW61GERBXq39DCM22BT9zS8M31A@mail.gmail.com>
+Date:   Mon, 27 Apr 2020 18:46:12 +0200
+Message-ID: <1j8sig3mi3.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200401163542.83278-1-robert.marko@sartura.hr>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Robert,
 
-On 01-04-20, 18:35, Robert Marko wrote:
+On Mon 27 Apr 2020 at 18:23, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
 
-> +static int ipq4019_ss_phy_power_on(struct phy *_phy)
-> +{
-> +	struct ipq4019_usb_phy *phy = phy_get_drvdata(_phy);
-> +
-> +	ipq4019_ss_phy_power_off(_phy);
-> +
-> +	reset_control_deassert(phy->por_rst);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct phy_ops ipq4019_usb_ss_phy_ops = {
-> +	.power_on	= ipq4019_ss_phy_power_on,
-> +	.power_off	= ipq4019_ss_phy_power_off,
-> +};
-> +
-> +static int ipq4019_hs_phy_power_off(struct phy *_phy)
-> +{
-> +	struct ipq4019_usb_phy *phy = phy_get_drvdata(_phy);
-> +
-> +	reset_control_assert(phy->por_rst);
-> +	msleep(10);
+> Hi Jerome,
+>
+> On Mon, Apr 27, 2020 at 10:56 AM Jerome Brunet <jbrunet@baylibre.com> wrote:
+> [...]
+>> > Changes since v3 at [3]:
+>> > - split the clock bits into a separate clock controller driver because
+>> >   of two reasons: 1) it keeps the MMC controller driver mostly clean of
+>> >   the clock bits
+>>
+>> If the register is in the MMC controller register space and the MMC
+>> driver is the driver using these clocks, it is where the clocks belong.
+>> I don't get why it could be an issue ?
+>>
+>> Is the clock block is shared with another device, like on the Gx family ?
+> no, it is not shared with another device (to my knowledge).
+>
+>> > 2) the pure clock controller can use
+>> >   devm_clk_hw_register() (instead of devm_clk_register(), which is
+>> >   deprecated) and the MMC controller can act as a pure clock consumer.
+>>
+>> Why can't you use devm_clk_hw_register in an MMC driver ?
+>> Unless I missed something, it is provided by clk-provider.h, which can be
+>> included by any driver.
+> indeed, I could use devm_clk_hw_register in the MMC driver.
+> Ulfs concern was that a lot of code was needed for managing the clocks
+> and I agree with him. so this is my way of keeping those details away
+> from the MMC driver and have two separate drivers which are better to
+> understand overall.
 
-why not call ipq4019_ss_phy_power_off() here as well?
+Martin, Ulf,
 
-> +
-> +	reset_control_assert(phy->srif_rst);
-> +	msleep(10);
-> +
-> +	return 0;
-> +}
-> +
-> +static int ipq4019_hs_phy_power_on(struct phy *_phy)
-> +{
-> +	struct ipq4019_usb_phy *phy = phy_get_drvdata(_phy);
-> +
-> +	ipq4019_hs_phy_power_off(_phy);
-> +
-> +	reset_control_deassert(phy->srif_rst);
-> +	msleep(10);
-> +
-> +	reset_control_deassert(phy->por_rst);
-> +
-> +	return 0;
-> +}
-> +
-> +static struct phy_ops ipq4019_usb_hs_phy_ops = {
-> +	.power_on	= ipq4019_hs_phy_power_on,
-> +	.power_off	= ipq4019_hs_phy_power_off,
-> +};
+I understand that CCF code might seems verbose and I'm happy to help
+review it if necessary but I don't think every driver out there should
+register some kind of fake clock controller driver everytime they wish
+to use CCF API.
 
-So this is fiddling with resets, what about phy configuration and
-calibration, who take care of that?
+Yes the it might make the driver code cleaner but the overall
+architecture is harder to follow.
 
-> +static int ipq4019_usb_phy_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct resource *res;
-> +	struct phy_provider *phy_provider;
-> +	struct ipq4019_usb_phy *phy;
-> +	const struct of_device_id *match;
-> +
-> +	match = of_match_device(ipq4019_usb_phy_of_match, &pdev->dev);
-> +	if (!match)
-> +		return -ENODEV;
+CCF was made so driver from any subsystem *may* use it. Creating a
+controller for a single register is overkill. The HW architecture of
+this particular device does not justify it.
 
-you are using this to get match-data few lines below, why not use
-of_device_get_match_data() and get the match->data which you are
-interested in?
+>
+>
+> Martin
 
--- 
-~Vinod
