@@ -2,97 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CD81BA7E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0341C1BA7ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728044AbgD0PXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 11:23:35 -0400
-Received: from muru.com ([72.249.23.125]:51558 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727010AbgD0PXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 11:23:34 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 77CD88087;
-        Mon, 27 Apr 2020 15:24:20 +0000 (UTC)
-Date:   Mon, 27 Apr 2020 08:23:29 -0700
-From:   Tony Lindgren <tony@atomide.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Keerthy <j-keerthy@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Adam Ford <aford173@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 02/14] clocksource/drivers/timer-ti-dm: Add clockevent
- and clocksource support
-Message-ID: <20200427152329.GR37466@atomide.com>
-References: <20200417165519.4979-1-tony@atomide.com>
- <20200417165519.4979-3-tony@atomide.com>
- <62be90e2-7dbe-410d-4171-c0ad0cddc7a3@linaro.org>
- <20200427143144.GQ37466@atomide.com>
- <29f39839-b3ed-cac3-1dea-c137286320b1@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <29f39839-b3ed-cac3-1dea-c137286320b1@linaro.org>
+        id S1727878AbgD0PZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 11:25:02 -0400
+Received: from mailomta10-re.btinternet.com ([213.120.69.103]:40773 "EHLO
+        re-prd-fep-048.btinternet.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726539AbgD0PZC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 11:25:02 -0400
+Received: from re-prd-rgout-001.btmx-prd.synchronoss.net ([10.2.54.4])
+          by re-prd-fep-048.btinternet.com with ESMTP
+          id <20200427152459.XQQW20795.re-prd-fep-048.btinternet.com@re-prd-rgout-001.btmx-prd.synchronoss.net>;
+          Mon, 27 Apr 2020 16:24:59 +0100
+Authentication-Results: btinternet.com;
+    auth=pass (LOGIN) smtp.auth=j.oldman998@btinternet.com
+X-Originating-IP: [31.51.225.56]
+X-OWM-Source-IP: 31.51.225.56 (GB)
+X-OWM-Env-Sender: j.oldman998@btinternet.com
+X-VadeSecure-score: verdict=clean score=0/300, class=clean
+X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduhedrheelgdekiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemuceutffkvffkuffjvffgnffgvefqofdpqfgfvfenuceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofestddtredtredttdenucfhrhhomheplfhohhhnucfqlhgumhgrnhcuoehjohhhnhdrohhlughmrghnsehpohhlvghhihhllhdrtghordhukheqnecukfhppeefuddrhedurddvvdehrdehieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopehhvghnrhihrdhhohhmvgdpihhnvghtpeefuddrhedurddvvdehrdehiedpmhgrihhlfhhrohhmpeeojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqedprhgtphhtthhopeeouggvvhgvlhesughrihhvvghruggvvhdrohhsuhhoshhlrdhorhhgqedprhgtphhtthhopeeoghhrvghgkhhhsehlihhnuhigfhhouhhnuggrthhiohhnrdhorhhgqedprhgtphhtthhopeeojhhohhhnrdholhgumhgrnhesphholhgvhhhilhhlrdgtohdruhhkqedprhgtphhtthhopeeolhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgqe
+X-RazorGate-Vade-Verdict: clean 0
+X-RazorGate-Vade-Classification: clean
+Received: from henry.home (31.51.225.56) by re-prd-rgout-001.btmx-prd.synchronoss.net (5.8.340) (authenticated as j.oldman998@btinternet.com)
+        id 5E3A147D0D6A477F; Mon, 27 Apr 2020 16:24:59 +0100
+From:   John Oldman <john.oldman@polehill.co.uk>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        John Oldman <john.oldman@polehill.co.uk>
+Subject: [PATCH 1/2] drivers: staging: rts5208: rtsx.c fix Unbalanced braces around else statement issue
+Date:   Mon, 27 Apr 2020 16:24:41 +0100
+Message-Id: <20200427152442.26597-1-john.oldman@polehill.co.uk>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Daniel Lezcano <daniel.lezcano@linaro.org> [200427 15:03]:
-> On 27/04/2020 16:31, Tony Lindgren wrote:
-> > Hi,
-> > 
-> > * Daniel Lezcano <daniel.lezcano@linaro.org> [200427 09:19]:
-> >> On 17/04/2020 18:55, Tony Lindgren wrote:
-> >>> --- a/Documentation/devicetree/bindings/timer/ti,timer.txt
-> >>> +++ b/Documentation/devicetree/bindings/timer/ti,timer.txt
-> >>> @@ -14,6 +14,8 @@ Required properties:
-> >>>  			ti,omap5430-timer (applicable to OMAP543x devices)
-> >>>  			ti,am335x-timer	(applicable to AM335x devices)
-> >>>  			ti,am335x-timer-1ms (applicable to AM335x devices)
-> >>> +			ti,dmtimer-clockevent (when used as for clockevent)
-> >>> +			ti,dmtimer-clocksource (when used as for clocksource)
-> >>
-> >> Please, submit a separate patch for this.
-> >>
-> >> Before you resend as is, this will be nacked as clocksource / clockevent
-> >> is not a hardware description but a Linux thing.
-> >>
-> >> Finding a way to characterize that from the DT is an endless discussion
-> >> since years, so I suggest to use a single property for the timer eg
-> >> <ti,dmtimer> and initialize the clocksource and the clockevent in the
-> >> driver.
-> > 
-> > Hmm good point. We still need to specify which timer is a clocksource
-> > and which one a clockevent somehow.
-> > 
-> > Maybe we could have a generic properties like the clock framework such as:
-> > 
-> > assigned-system-clocksource
-> > assigned-system-clockevent
-> 
-> I think that will be the same problem :/
+Fix coding style issue
 
-Seems like other SoCs have the same issue too with multiple timers
-to configure.
+Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
+---
+ drivers/staging/rts5208/rtsx.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> Is it possible to check the interrupt for the clockevent ? A timer node
-> with the interrrupt is the clockevent, without it is a clocksource.
+diff --git a/drivers/staging/rts5208/rtsx.c b/drivers/staging/rts5208/rtsx.c
+index be0053c795b7..ca836ca2ee81 100644
+--- a/drivers/staging/rts5208/rtsx.c
++++ b/drivers/staging/rts5208/rtsx.c
+@@ -419,10 +419,8 @@ static int rtsx_control_thread(void *__dev)
+ 				chip->srb->device->id,
+ 				(u8)chip->srb->device->lun);
+ 			chip->srb->result = DID_BAD_TARGET << 16;
+-		}
+-
+-		/* we've got a command, let's do it! */
+-		else {
++		} else {
++			/* we've got a command, let's do it! */
+ 			scsi_show_command(chip);
+ 			rtsx_invoke_transport(chip->srb, chip);
+ 		}
+-- 
+2.17.1
 
-OK let's try that. So the configuration would become then:
-
-compatible = "ti,dmtimer;	/* reserved for system timers */
-/delete-property/interrupts;	/* ok so it's a clocksource */
-/delete-property/interrupts-extended;
-
-Regards,
-
-Tony
