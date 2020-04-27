@@ -2,148 +2,489 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4E41BB0B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891B11BB0B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbgD0Vni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 17:43:38 -0400
-Received: from mail-eopbgr1400110.outbound.protection.outlook.com ([40.107.140.110]:28064
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726030AbgD0Vni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 17:43:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ftSLy/Ceiy/XUMN15/KStoufX09Aed8RF98XzCsLrenBIwopFUYdYge2AqdQm/VMJW3Fk7YU0bY3OmlPuUHDRefMyk5mTU52FZKPQl6zjGWk0/H2/AXBrURZsPgtJ/wrs9QvHw+FHFl81ieN0BsAipTkHYrr8sjGj1NtAyLLT672R8L5KDoJLVuAqY1/qDEGMPkMEQUhHhhAplRu3VMmw2u5D81q0gI6Xpi/o2bHNjCrqtELl1jz551+HqZh3r8AWu9WAKJPkUkv65NdMBhoWoPEPs2Yrv1vuu/Do8EwhqoJbGzEhjBx3t8juMOThfYB3xb/tofhOx97/5ukYRE15w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eICSCz317Zmp6z9Ofv1kekiE32jgSg7nUKiaGGxhDyA=;
- b=jI6sDrX9dhMTjSAOWckPZsPMQmGegjsK4NHNpbJ/Po8JU65+nVaVcc+TFp68E0pvbYtXO09W/NQu86R7mo8xGJCAjd4+HvpJ96LumwmYUKV4S5Z2j942J7LrUdaTAaKe4v9cZ55BaMuEY8+mvzNrRELpkWV14F4cHiAcXHtHMxsLgbz8SPIMXWg0YMA0D7QJjMPZkUL/O+qCcgsi11xNMOQvZNXnt4kn97aykSQGx+PUJmZF18T3jckyQlErR+XBZhu0IQkhp/+QKe8ps7u+RFwhGJnRwqImkY4LtuNw/DYVhoN8zQlw/FVPRTUmqRpUQp5QOpL5n6e6jnUfBdxEOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eICSCz317Zmp6z9Ofv1kekiE32jgSg7nUKiaGGxhDyA=;
- b=jwTU6lnnWCTatZhS++8qX5GGyL4gUsTE+6ZXisWkJ4xkHYGuJivk7S9ygIWVMHE01Tr0rj/DyDiu/T2HAWJnRzD/aueaeHneiNg6rFN6AUE/DRxV3+Xbnm+k33yVIunKxPy/XjppafjDE5GZATqqa105WUd+uk2neCBLCa3hIkU=
-Received: from OSBPR01MB3590.jpnprd01.prod.outlook.com (20.178.97.80) by
- OSBPR01MB1493.jpnprd01.prod.outlook.com (52.134.226.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2937.13; Mon, 27 Apr 2020 21:43:34 +0000
-Received: from OSBPR01MB3590.jpnprd01.prod.outlook.com
- ([fe80::383a:9fc3:aaa4:d3b]) by OSBPR01MB3590.jpnprd01.prod.outlook.com
- ([fe80::383a:9fc3:aaa4:d3b%7]) with mapi id 15.20.2937.023; Mon, 27 Apr 2020
- 21:43:34 +0000
-From:   Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-CC:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] ARM: dts: r8a7743: Add missing compatible strings for
- iic3 node
-Thread-Topic: [PATCH] ARM: dts: r8a7743: Add missing compatible strings for
- iic3 node
-Thread-Index: AQHWHK+1m9VPteLoIEeShiDQLDt3XaiNY1uAgAAakFA=
-Date:   Mon, 27 Apr 2020 21:43:33 +0000
-Message-ID: <OSBPR01MB35901F08080A85F7EEE84E81AAAF0@OSBPR01MB3590.jpnprd01.prod.outlook.com>
-References: <1588004391-8461-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdXG_hpb==xY88vCEguc-n8kg_4vjv_Xmmh5jEGr37BPKA@mail.gmail.com>
-In-Reply-To: <CAMuHMdXG_hpb==xY88vCEguc-n8kg_4vjv_Xmmh5jEGr37BPKA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=prabhakar.mahadev-lad.rj@bp.renesas.com; 
-x-originating-ip: [193.141.220.21]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6ac8fe1c-8427-4a00-2d01-08d7eaf40925
-x-ms-traffictypediagnostic: OSBPR01MB1493:
-x-microsoft-antispam-prvs: <OSBPR01MB1493D622BE80EB226FCA3A3CAAAF0@OSBPR01MB1493.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1227;
-x-forefront-prvs: 0386B406AA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB3590.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(39860400002)(376002)(136003)(366004)(9686003)(7696005)(66556008)(4326008)(81156014)(33656002)(8936002)(6506007)(52536014)(53546011)(66946007)(66476007)(6916009)(66446008)(64756008)(8676002)(76116006)(2906002)(186003)(316002)(86362001)(26005)(5660300002)(55016002)(71200400001)(54906003)(478600001);DIR:OUT;SFP:1102;
-received-spf: None (protection.outlook.com: bp.renesas.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FkB+qOnQsYuBOVlPtX2gBrsWOcDYj927xi2O1Q7PyTCA/BdldL+vKvZBovOn3/NTC/u2aWbNyXOQlJ/HJB9/FI7DcbeQDIYou85l6REDA9UoRSmQg3xua2Q4/pyBvVc9kPNGswsHbUj8/3cVeIYoe0LMb2BBh9sJ9zRwxF5D4xmCQugifsaGPh86RE8HER6pcEJs3f8UJhCnV5I6ymlqnDKUoPHojoDPYawuyTXIfSG/HDpGKGHuuRec3vrMtlACJIrpCFriK32igc7/Q+/ZZ6nl0+G4O83adBrMdQ1Blu/FCUQ5P3oj6MPm0BP1+5u4Lesd63b44Kl+tOAGPHrFpVKMzBcaXYSAlxUnUxqRwDi4hpv/mRnSnUwm8uz5U0+1DCNkgyPneukFAv0PV4m0iYPo8RZjX+4PRep8vRD3RNBvMO+zuxA9LQWFNbPsqvn/J0DMK9+I2VhUXZI1vGJPaJsnkh/7J9DEL5IsN1NjqV9GV5jU3C66feobskNmE9EGYVwfKr1pi8aXedcxA796OA==
-x-ms-exchange-antispam-messagedata: o7dF0ANGqZghu8Rh7Whnre6iUVpwHM7y32r7cAvkcQyofkIzBqo79cRuWwdS6tBdPLoNX4APC9o2ba81/PDfMDV/joNedSERFoibylkSJe5do02UxDlemBvvANFjNZva39mpVx0g/oIe7I3mbGHUz9RWYEOcRTpvA2KbswuJOO6amRU5UY6YZxykjKURTBLd+vXArrh+IeDsFK7gMZWxpkMjplqPei/vzV3LwMd5R+qNLG8aLPNtBZEYDg5gkpcK8ZUE5TbZ7WfkBHR8sJgGxXw/32a+nBY+cUB6w00rLNF5toE9gJMGiQ2+60h+1rCHj8hVtti7NlN/5gx8SCp9OSX/Xgt6c5V3hjZ4QVE6UOY8DyDbMj6SzXgMxrslqyZzizQgz+kbLrlUTYnHggwjUHhqslKiTO0GTpjpN83SwwAwk/Ur2OWLDyRnVjbaQBVplLo3YFjI3Wcnv4r7OJRghbEgKKMRtRGFzhk6V8ceN1mrfK5S89P9MOhWTnSQQK9+3VkBfm1uSUve86sgPBK9NGIIwFFnrtBMgG3p5fzRvhKuwdB+thf1ykGljDMNj7ZVfs+Pfcl6zmNuRIczWzygRx1uqLdBPqrAY+slUYieV8JfH/uiTDP93aL83Nokxe+MwP3std++Qg5muGw9oM0dYgW4Qs8FEM2BSEbcBdw3SpkglmtgmW5OIWt9gzBh+PWIdy8sGU+uQljA4IuH24V5R42spOU1S2JgQoCs2GNgYUDJjMMxwRDQDIaoPZGCrsyAvyc3TdknIXYMO+hBmryGbB2/Pefj7C62MWZJxclvw7A=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726336AbgD0VoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 17:44:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726030AbgD0VoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 17:44:02 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5757A2070B;
+        Mon, 27 Apr 2020 21:44:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588023840;
+        bh=yEZR47UgJyhSSJO4ozelLdV+zJf+BKuMoYnPphHSyNk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YMLU3X2hFJEfyaalFFCweryUgO4Iz80lcpAhkklEhp500sievGaHw9wC/2TBIj/S3
+         5ulSjpAWi/ySHQRYLCtQZgp3tcXsWLIQSfzoGCmjl45Y0gXbUL4hZbUJ/CM0R0IDLj
+         8K7WSix9dnzgVRjETLOOH5u53rIhe/gaD3UXS4j4=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jTBXi-000IYD-JP; Mon, 27 Apr 2020 23:43:58 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-usb@vger.kernel.org
+Subject: [PATCH v3.1] docs: filesystems: convert configfs.txt to ReST
+Date:   Mon, 27 Apr 2020 23:43:56 +0200
+Message-Id: <5f005c5a846b3fd4382a24166a1ba736ff697b86.1588022310.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <c2424ec2ad4d735751434ff7f52144c44aa02d5a.1588021877.git.mchehab+huawei@kernel.org>
+References: <c2424ec2ad4d735751434ff7f52144c44aa02d5a.1588021877.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ac8fe1c-8427-4a00-2d01-08d7eaf40925
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2020 21:43:33.9977
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9Vp8JdcqSkoS3Y7C+Af5t6/2sKvN21Bm5TgJ3JIaOq7/312fZqALC8FXT9uhcjo4nr/vzD62AXARSX8r8ITmzAo1ooZ0Pe3XOACk26usn35ewsKmc7UOsMdARncFOB6M
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB1493
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgR2VlcnQsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogR2VlcnQg
-VXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4NCj4gU2VudDogMjcgQXByaWwgMjAy
-MCAyMTowMA0KPiBUbzogUHJhYmhha2FyIE1haGFkZXYgTGFkIDxwcmFiaGFrYXIubWFoYWRldi1s
-YWQucmpAYnAucmVuZXNhcy5jb20+DQo+IENjOiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0K3Jl
-bmVzYXNAZ2xpZGVyLmJlPjsgTWFnbnVzIERhbW0gPG1hZ251cy5kYW1tQGdtYWlsLmNvbT47IFJv
-YiBIZXJyaW5nIDxyb2JoK2R0QGtlcm5lbC5vcmc+Ow0KPiBMYWQgUHJhYmhha2FyIDxwcmFiaGFr
-YXIuY3NlbmdnQGdtYWlsLmNvbT47IG9wZW4gbGlzdDpPUEVOIEZJUk1XQVJFIEFORCBGTEFUVEVO
-RUQgREVWSUNFIFRSRUUgQklORElOR1MNCj4gPGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnPjsg
-TGludXgtUmVuZXNhcyA8bGludXgtcmVuZXNhcy1zb2NAdmdlci5rZXJuZWwub3JnPjsgTGludXgg
-S2VybmVsIE1haWxpbmcgTGlzdCA8bGludXgtDQo+IGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+DQo+
-IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIEFSTTogZHRzOiByOGE3NzQzOiBBZGQgbWlzc2luZyBjb21w
-YXRpYmxlIHN0cmluZ3MgZm9yIGlpYzMgbm9kZQ0KPg0KPiBIaSBQcmFiaGFrYXIsDQo+DQo+IE9u
-IE1vbiwgQXByIDI3LCAyMDIwIGF0IDY6MjAgUE0gTGFkIFByYWJoYWthcg0KPiA8cHJhYmhha2Fy
-Lm1haGFkZXYtbGFkLnJqQGJwLnJlbmVzYXMuY29tPiB3cm90ZToNCj4gPiBBZGQgbWlzc2luZyBj
-b21wYXRpYmxlIHN0cmluZ3MgInJlbmVzYXMscmNhci1nZW4yLWlpYyIgYW5kDQo+ID4gInJlbmVz
-YXMscm1vYmlsZS1paWMiIHRvIGlpYzMgbm9kZSBvZiByOGE3NzQzIFNvQy4NCj4gPg0KPiA+IFNp
-Z25lZC1vZmYtYnk6IExhZCBQcmFiaGFrYXIgPHByYWJoYWthci5tYWhhZGV2LWxhZC5yakBicC5y
-ZW5lc2FzLmNvbT4NCj4NCj4gVGhhbmtzIGZvciB5b3VyIHBhdGNoIQ0KPg0KPiA+IC0tLSBhL2Fy
-Y2gvYXJtL2Jvb3QvZHRzL3I4YTc3NDMuZHRzaQ0KPiA+ICsrKyBiL2FyY2gvYXJtL2Jvb3QvZHRz
-L3I4YTc3NDMuZHRzaQ0KPiA+IEBAIC01NTEsNyArNTUxLDkgQEANCj4gPiAgICAgICAgICAgICAg
-ICAgICAgICAgICAvKiBkb2Vzbid0IG5lZWQgcGlubXV4ICovDQo+ID4gICAgICAgICAgICAgICAg
-ICAgICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MT47DQo+ID4gICAgICAgICAgICAgICAgICAgICAg
-ICAgI3NpemUtY2VsbHMgPSA8MD47DQo+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgY29tcGF0
-aWJsZSA9ICJyZW5lc2FzLGlpYy1yOGE3NzQzIjsNCj4gPiArICAgICAgICAgICAgICAgICAgICAg
-ICBjb21wYXRpYmxlID0gInJlbmVzYXMsaWljLXI4YTc3NDMiLA0KPiA+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAicmVuZXNhcyxyY2FyLWdlbjItaWljIiwNCj4gPiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgInJlbmVzYXMscm1vYmlsZS1paWMiOw0K
-PiA+ICAgICAgICAgICAgICAgICAgICAgICAgIHJlZyA9IDwwIDB4ZTYwYjAwMDAgMCAweDQyNT47
-DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE3MyBJ
-UlFfVFlQRV9MRVZFTF9ISUdIPjsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBjbG9ja3Mg
-PSA8JmNwZyBDUEdfTU9EIDkyNj47DQo+DQo+IFRoaXMgd2FzIGludGVudGlvbmFsLCBjZnIuIGNv
-bW1pdCAwNzJiODE3NTg5YjE3NjYwICgiQVJNOiBkdHM6IHI4YTc3NDM6DQo+IFJlbW92ZSBnZW5l
-cmljIGNvbXBhdGlibGUgc3RyaW5nIGZyb20gaWljMyIpLCBhbmQgbXkgcmV2aWV3IGNvbW1lbnRz
-IG9uDQo+ICJbUEFUQ0ggMDIvMjJdIEFSTTogZHRzOiByOGE3NzQ0OiBBZGQgSTJDIGFuZCBJSUMg
-c3VwcG9ydCINCj4gKGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWRldmljZXRyZWUvQ0FN
-dUhNZFZ0MkREUUo5VWQ2aT1HV0FlV1cwVGRwRjV4aUN4dFJpdjBkWlRHQ1BFdDhBQG1haWwuZ21h
-aWwuY29tLykuDQo+DQo+IFRoZSBub3RlIGF0IHRoZSBib3R0b20gb2YgU2VjdGlvbiA0NS4xIG9m
-IHRoZSBSWi9HMSBIYXJkd2FyZSBVc2VyJ3MNCj4gTWFudWFsIHNheXM6ICJBdXRvbWF0aWMgdHJh
-bnNtaXNzaW9uIGZvciBQTUlDIGNvbnRyb2wgKERWRlMpIGlzIG5vdA0KPiBhdmFpbGFibGUgLi4u
-Ii4NCj4NCkNvbXBsZXRlbHkgbWlzc2VkIHRoYXQsIHRoYW5rIHlvdSBmb3IgcG9pbnRpbmcgaXQg
-b3V0Lg0KDQpDaGVlcnMsDQotLVByYWJoYWthcg0KDQo+IEdye29ldGplLGVldGluZ31zLA0KPg0K
-PiAgICAgICAgICAgICAgICAgICAgICAgICBHZWVydA0KPg0KPiAtLQ0KPiBHZWVydCBVeXR0ZXJo
-b2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9mIExpbnV4IGJleW9uZCBpYTMyIC0tIGdlZXJ0QGxpbnV4
-LW02OGsub3JnDQo+DQo+IEluIHBlcnNvbmFsIGNvbnZlcnNhdGlvbnMgd2l0aCB0ZWNobmljYWwg
-cGVvcGxlLCBJIGNhbGwgbXlzZWxmIGEgaGFja2VyLiBCdXQNCj4gd2hlbiBJJ20gdGFsa2luZyB0
-byBqb3VybmFsaXN0cyBJIGp1c3Qgc2F5ICJwcm9ncmFtbWVyIiBvciBzb21ldGhpbmcgbGlrZSB0
-aGF0Lg0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tIExpbnVzIFRvcnZhbGRz
-DQoNCg0KUmVuZXNhcyBFbGVjdHJvbmljcyBFdXJvcGUgR21iSCwgR2VzY2hhZWZ0c2Z1ZWhyZXIv
-UHJlc2lkZW50OiBDYXJzdGVuIEphdWNoLCBTaXR6IGRlciBHZXNlbGxzY2hhZnQvUmVnaXN0ZXJl
-ZCBvZmZpY2U6IER1ZXNzZWxkb3JmLCBBcmNhZGlhc3RyYXNzZSAxMCwgNDA0NzIgRHVlc3NlbGRv
-cmYsIEdlcm1hbnksIEhhbmRlbHNyZWdpc3Rlci9Db21tZXJjaWFsIFJlZ2lzdGVyOiBEdWVzc2Vs
-ZG9yZiwgSFJCIDM3MDggVVN0LUlETnIuL1RheCBpZGVudGlmaWNhdGlvbiBuby46IERFIDExOTM1
-MzQwNiBXRUVFLVJlZy4tTnIuL1dFRUUgcmVnLiBuby46IERFIDE0OTc4NjQ3DQo=
+- Add a SPDX header;
+- Adjust document and section titles;
+- Use copyright symbol;
+- Some whitespace fixes and new line breaks;
+- Mark literal blocks as such;
+- Add it to filesystems/index.rst.
+
+Also, as this file is alone on its own dir, and it doesn't
+seem too likely that other documents will follow it, let's
+move it to the filesystems/ root documentation dir.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+
+v3.1: Fixed the case at the document title
+
+ .../{configfs/configfs.txt => configfs.rst}   | 131 +++++++++++-------
+ Documentation/filesystems/index.rst           |   1 +
+ Documentation/iio/iio_configfs.rst            |   2 +-
+ Documentation/usb/gadget_configfs.rst         |   4 +-
+ fs/configfs/inode.c                           |   2 +-
+ fs/configfs/item.c                            |   2 +-
+ include/linux/configfs.h                      |   2 +-
+ 7 files changed, 86 insertions(+), 58 deletions(-)
+ rename Documentation/filesystems/{configfs/configfs.txt => configfs.rst} (87%)
+
+diff --git a/Documentation/filesystems/configfs/configfs.txt b/Documentation/filesystems/configfs.rst
+similarity index 87%
+rename from Documentation/filesystems/configfs/configfs.txt
+rename to Documentation/filesystems/configfs.rst
+index 16e606c11f40..f8941954c667 100644
+--- a/Documentation/filesystems/configfs/configfs.txt
++++ b/Documentation/filesystems/configfs.rst
+@@ -1,5 +1,6 @@
+-
+-configfs - Userspace-driven kernel object configuration.
++=======================================================
++Configfs - Userspace-driven Kernel Object Configuration
++=======================================================
+ 
+ Joel Becker <joel.becker@oracle.com>
+ 
+@@ -9,7 +10,8 @@ Copyright (c) 2005 Oracle Corporation,
+ 	Joel Becker <joel.becker@oracle.com>
+ 
+ 
+-[What is configfs?]
++What is configfs?
++=================
+ 
+ configfs is a ram-based filesystem that provides the converse of
+ sysfs's functionality.  Where sysfs is a filesystem-based view of
+@@ -35,10 +37,11 @@ kernel modules backing the items must respond to this.
+ Both sysfs and configfs can and should exist together on the same
+ system.  One is not a replacement for the other.
+ 
+-[Using configfs]
++Using configfs
++==============
+ 
+ configfs can be compiled as a module or into the kernel.  You can access
+-it by doing
++it by doing::
+ 
+ 	mount -t configfs none /config
+ 
+@@ -56,28 +59,29 @@ values.  Don't mix more than one attribute in one attribute file.
+ There are two types of configfs attributes:
+ 
+ * Normal attributes, which similar to sysfs attributes, are small ASCII text
+-files, with a maximum size of one page (PAGE_SIZE, 4096 on i386).  Preferably
+-only one value per file should be used, and the same caveats from sysfs apply.
+-Configfs expects write(2) to store the entire buffer at once.  When writing to
+-normal configfs attributes, userspace processes should first read the entire
+-file, modify the portions they wish to change, and then write the entire
+-buffer back.
++  files, with a maximum size of one page (PAGE_SIZE, 4096 on i386).  Preferably
++  only one value per file should be used, and the same caveats from sysfs apply.
++  Configfs expects write(2) to store the entire buffer at once.  When writing to
++  normal configfs attributes, userspace processes should first read the entire
++  file, modify the portions they wish to change, and then write the entire
++  buffer back.
+ 
+ * Binary attributes, which are somewhat similar to sysfs binary attributes,
+-but with a few slight changes to semantics.  The PAGE_SIZE limitation does not
+-apply, but the whole binary item must fit in single kernel vmalloc'ed buffer.
+-The write(2) calls from user space are buffered, and the attributes'
+-write_bin_attribute method will be invoked on the final close, therefore it is
+-imperative for user-space to check the return code of close(2) in order to
+-verify that the operation finished successfully.
+-To avoid a malicious user OOMing the kernel, there's a per-binary attribute
+-maximum buffer value.
++  but with a few slight changes to semantics.  The PAGE_SIZE limitation does not
++  apply, but the whole binary item must fit in single kernel vmalloc'ed buffer.
++  The write(2) calls from user space are buffered, and the attributes'
++  write_bin_attribute method will be invoked on the final close, therefore it is
++  imperative for user-space to check the return code of close(2) in order to
++  verify that the operation finished successfully.
++  To avoid a malicious user OOMing the kernel, there's a per-binary attribute
++  maximum buffer value.
+ 
+ When an item needs to be destroyed, remove it with rmdir(2).  An
+ item cannot be destroyed if any other item has a link to it (via
+ symlink(2)).  Links can be removed via unlink(2).
+ 
+-[Configuring FakeNBD: an Example]
++Configuring FakeNBD: an Example
++===============================
+ 
+ Imagine there's a Network Block Device (NBD) driver that allows you to
+ access remote block devices.  Call it FakeNBD.  FakeNBD uses configfs
+@@ -86,14 +90,14 @@ sysadmins use to configure FakeNBD, but somehow that program has to tell
+ the driver about it.  Here's where configfs comes in.
+ 
+ When the FakeNBD driver is loaded, it registers itself with configfs.
+-readdir(3) sees this just fine:
++readdir(3) sees this just fine::
+ 
+ 	# ls /config
+ 	fakenbd
+ 
+ A fakenbd connection can be created with mkdir(2).  The name is
+ arbitrary, but likely the tool will make some use of the name.  Perhaps
+-it is a uuid or a disk name:
++it is a uuid or a disk name::
+ 
+ 	# mkdir /config/fakenbd/disk1
+ 	# ls /config/fakenbd/disk1
+@@ -102,7 +106,7 @@ it is a uuid or a disk name:
+ The target attribute contains the IP address of the server FakeNBD will
+ connect to.  The device attribute is the device on the server.
+ Predictably, the rw attribute determines whether the connection is
+-read-only or read-write.
++read-only or read-write::
+ 
+ 	# echo 10.0.0.1 > /config/fakenbd/disk1/target
+ 	# echo /dev/sda1 > /config/fakenbd/disk1/device
+@@ -111,7 +115,8 @@ read-only or read-write.
+ That's it.  That's all there is.  Now the device is configured, via the
+ shell no less.
+ 
+-[Coding With configfs]
++Coding With configfs
++====================
+ 
+ Every object in configfs is a config_item.  A config_item reflects an
+ object in the subsystem.  It has attributes that match values on that
+@@ -130,7 +135,10 @@ appears as a directory at the top of the configfs filesystem.  A
+ subsystem is also a config_group, and can do everything a config_group
+ can.
+ 
+-[struct config_item]
++struct config_item
++==================
++
++::
+ 
+ 	struct config_item {
+ 		char                    *ci_name;
+@@ -168,7 +176,10 @@ By itself, a config_item cannot do much more than appear in configfs.
+ Usually a subsystem wants the item to display and/or store attributes,
+ among other things.  For that, it needs a type.
+ 
+-[struct config_item_type]
++struct config_item_type
++=======================
++
++::
+ 
+ 	struct configfs_item_operations {
+ 		void (*release)(struct config_item *);
+@@ -192,7 +203,10 @@ allocated dynamically will need to provide the ct_item_ops->release()
+ method.  This method is called when the config_item's reference count
+ reaches zero.
+ 
+-[struct configfs_attribute]
++struct configfs_attribute
++=========================
++
++::
+ 
+ 	struct configfs_attribute {
+ 		char                    *ca_name;
+@@ -214,7 +228,10 @@ be called whenever userspace asks for a read(2) on the attribute.  If an
+ attribute is writable and provides a ->store  method, that method will be
+ be called whenever userspace asks for a write(2) on the attribute.
+ 
+-[struct configfs_bin_attribute]
++struct configfs_bin_attribute
++=============================
++
++::
+ 
+ 	struct configfs_bin_attribute {
+ 		struct configfs_attribute	cb_attr;
+@@ -240,11 +257,12 @@ will happen for write(2). The reads/writes are bufferred so only a
+ single read/write will occur; the attributes' need not concern itself
+ with it.
+ 
+-[struct config_group]
++struct config_group
++===================
+ 
+ A config_item cannot live in a vacuum.  The only way one can be created
+ is via mkdir(2) on a config_group.  This will trigger creation of a
+-child item.
++child item::
+ 
+ 	struct config_group {
+ 		struct config_item		cg_item;
+@@ -264,7 +282,7 @@ The config_group structure contains a config_item.  Properly configuring
+ that item means that a group can behave as an item in its own right.
+ However, it can do more: it can create child items or groups.  This is
+ accomplished via the group operations specified on the group's
+-config_item_type.
++config_item_type::
+ 
+ 	struct configfs_group_operations {
+ 		struct config_item *(*make_item)(struct config_group *group,
+@@ -279,7 +297,8 @@ config_item_type.
+ 	};
+ 
+ A group creates child items by providing the
+-ct_group_ops->make_item() method.  If provided, this method is called from mkdir(2) in the group's directory.  The subsystem allocates a new
++ct_group_ops->make_item() method.  If provided, this method is called from
++mkdir(2) in the group's directory.  The subsystem allocates a new
+ config_item (or more likely, its container structure), initializes it,
+ and returns it to configfs.  Configfs will then populate the filesystem
+ tree to reflect the new item.
+@@ -296,13 +315,14 @@ upon item allocation.  If a subsystem has no work to do, it may omit
+ the ct_group_ops->drop_item() method, and configfs will call
+ config_item_put() on the item on behalf of the subsystem.
+ 
+-IMPORTANT: drop_item() is void, and as such cannot fail.  When rmdir(2)
+-is called, configfs WILL remove the item from the filesystem tree
+-(assuming that it has no children to keep it busy).  The subsystem is
+-responsible for responding to this.  If the subsystem has references to
+-the item in other threads, the memory is safe.  It may take some time
+-for the item to actually disappear from the subsystem's usage.  But it
+-is gone from configfs.
++Important:
++   drop_item() is void, and as such cannot fail.  When rmdir(2)
++   is called, configfs WILL remove the item from the filesystem tree
++   (assuming that it has no children to keep it busy).  The subsystem is
++   responsible for responding to this.  If the subsystem has references to
++   the item in other threads, the memory is safe.  It may take some time
++   for the item to actually disappear from the subsystem's usage.  But it
++   is gone from configfs.
+ 
+ When drop_item() is called, the item's linkage has already been torn
+ down.  It no longer has a reference on its parent and has no place in
+@@ -319,10 +339,11 @@ is implemented in the configfs rmdir(2) code.  ->drop_item() will not be
+ called, as the item has not been dropped.  rmdir(2) will fail, as the
+ directory is not empty.
+ 
+-[struct configfs_subsystem]
++struct configfs_subsystem
++=========================
+ 
+ A subsystem must register itself, usually at module_init time.  This
+-tells configfs to make the subsystem appear in the file tree.
++tells configfs to make the subsystem appear in the file tree::
+ 
+ 	struct configfs_subsystem {
+ 		struct config_group	su_group;
+@@ -332,17 +353,19 @@ tells configfs to make the subsystem appear in the file tree.
+ 	int configfs_register_subsystem(struct configfs_subsystem *subsys);
+ 	void configfs_unregister_subsystem(struct configfs_subsystem *subsys);
+ 
+-	A subsystem consists of a toplevel config_group and a mutex.
++A subsystem consists of a toplevel config_group and a mutex.
+ The group is where child config_items are created.  For a subsystem,
+ this group is usually defined statically.  Before calling
+ configfs_register_subsystem(), the subsystem must have initialized the
+ group via the usual group _init() functions, and it must also have
+ initialized the mutex.
+-	When the register call returns, the subsystem is live, and it
++
++When the register call returns, the subsystem is live, and it
+ will be visible via configfs.  At that point, mkdir(2) can be called and
+ the subsystem must be ready for it.
+ 
+-[An Example]
++An Example
++==========
+ 
+ The best example of these basic concepts is the simple_children
+ subsystem/group and the simple_child item in
+@@ -350,7 +373,8 @@ samples/configfs/configfs_sample.c. It shows a trivial object displaying
+ and storing an attribute, and a simple group creating and destroying
+ these children.
+ 
+-[Hierarchy Navigation and the Subsystem Mutex]
++Hierarchy Navigation and the Subsystem Mutex
++============================================
+ 
+ There is an extra bonus that configfs provides.  The config_groups and
+ config_items are arranged in a hierarchy due to the fact that they
+@@ -375,7 +399,8 @@ be in its parent's cg_children list for the same duration.  This allows
+ a subsystem to trust ci_parent and cg_children while they hold the
+ mutex.
+ 
+-[Item Aggregation Via symlink(2)]
++Item Aggregation Via symlink(2)
++===============================
+ 
+ configfs provides a simple group via the group->item parent/child
+ relationship.  Often, however, a larger environment requires aggregation
+@@ -403,7 +428,8 @@ A config_item cannot be removed while it links to any other item, nor
+ can it be removed while an item links to it.  Dangling symlinks are not
+ allowed in configfs.
+ 
+-[Automatically Created Subgroups]
++Automatically Created Subgroups
++===============================
+ 
+ A new config_group may want to have two types of child config_items.
+ While this could be codified by magic names in ->make_item(), it is much
+@@ -433,7 +459,8 @@ As a consequence of this, default groups cannot be removed directly via
+ rmdir(2).  They also are not considered when rmdir(2) on the parent
+ group is checking for children.
+ 
+-[Dependent Subsystems]
++Dependent Subsystems
++====================
+ 
+ Sometimes other drivers depend on particular configfs items.  For
+ example, ocfs2 mounts depend on a heartbeat region item.  If that
+@@ -460,9 +487,11 @@ succeeds, then heartbeat knows the region is safe to give to ocfs2.
+ If it fails, it was being torn down anyway, and heartbeat can gracefully
+ pass up an error.
+ 
+-[Committable Items]
++Committable Items
++=================
+ 
+-NOTE: Committable items are currently unimplemented.
++Note:
++     Committable items are currently unimplemented.
+ 
+ Some config_items cannot have a valid initial state.  That is, no
+ default values can be specified for the item's attributes such that the
+@@ -504,5 +533,3 @@ As rmdir(2) does not work in the "live" directory, an item must be
+ shutdown, or "uncommitted".  Again, this is done via rename(2), this
+ time from the "live" directory back to the "pending" one.  The subsystem
+ is notified by the ct_group_ops->uncommit_object() method.
+-
+-
+diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
+index a4fefb62c931..4c536e66dc4c 100644
+--- a/Documentation/filesystems/index.rst
++++ b/Documentation/filesystems/index.rst
+@@ -76,6 +76,7 @@ Documentation for filesystem implementations.
+    cifs/cifsroot
+    ceph
+    coda
++   configfs
+    cramfs
+    debugfs
+    dlmfs
+diff --git a/Documentation/iio/iio_configfs.rst b/Documentation/iio/iio_configfs.rst
+index ecbfdb3afef7..6e38cbbd2981 100644
+--- a/Documentation/iio/iio_configfs.rst
++++ b/Documentation/iio/iio_configfs.rst
+@@ -9,7 +9,7 @@ Configfs is a filesystem-based manager of kernel objects. IIO uses some
+ objects that could be easily configured using configfs (e.g.: devices,
+ triggers).
+ 
+-See Documentation/filesystems/configfs/configfs.txt for more information
++See Documentation/filesystems/configfs.rst for more information
+ about how configfs works.
+ 
+ 2. Usage
+diff --git a/Documentation/usb/gadget_configfs.rst b/Documentation/usb/gadget_configfs.rst
+index 54fb08baae22..158e48dab586 100644
+--- a/Documentation/usb/gadget_configfs.rst
++++ b/Documentation/usb/gadget_configfs.rst
+@@ -24,7 +24,7 @@ Linux provides a number of functions for gadgets to use.
+ Creating a gadget means deciding what configurations there will be
+ and which functions each configuration will provide.
+ 
+-Configfs (please see `Documentation/filesystems/configfs/*`) lends itself nicely
++Configfs (please see `Documentation/filesystems/configfs.rst`) lends itself nicely
+ for the purpose of telling the kernel about the above mentioned decision.
+ This document is about how to do it.
+ 
+@@ -354,7 +354,7 @@ the directories in general can be named at will. A group can have
+ a number of its default sub-groups created automatically.
+ 
+ For more information on configfs please see
+-`Documentation/filesystems/configfs/*`.
++`Documentation/filesystems/configfs.rst`.
+ 
+ The concepts described above translate to USB gadgets like this:
+ 
+diff --git a/fs/configfs/inode.c b/fs/configfs/inode.c
+index fd0b5dd68f9e..8bd6a883c94c 100644
+--- a/fs/configfs/inode.c
++++ b/fs/configfs/inode.c
+@@ -9,7 +9,7 @@
+  *
+  * configfs Copyright (C) 2005 Oracle.  All rights reserved.
+  *
+- * Please see Documentation/filesystems/configfs/configfs.txt for more
++ * Please see Documentation/filesystems/configfs.rst for more
+  * information.
+  */
+ 
+diff --git a/fs/configfs/item.c b/fs/configfs/item.c
+index 6e0f1fcb8a5b..704a4356f137 100644
+--- a/fs/configfs/item.c
++++ b/fs/configfs/item.c
+@@ -9,7 +9,7 @@
+  *
+  * configfs Copyright (C) 2005 Oracle.  All rights reserved.
+  *
+- * Please see the file Documentation/filesystems/configfs/configfs.txt for
++ * Please see the file Documentation/filesystems/configfs.rst for
+  * critical information about using the config_item interface.
+  */
+ 
+diff --git a/include/linux/configfs.h b/include/linux/configfs.h
+index fa9490a8874c..2e8c69b43c64 100644
+--- a/include/linux/configfs.h
++++ b/include/linux/configfs.h
+@@ -13,7 +13,7 @@
+  *
+  * configfs Copyright (C) 2005 Oracle.  All rights reserved.
+  *
+- * Please read Documentation/filesystems/configfs/configfs.txt before using
++ * Please read Documentation/filesystems/configfs.rst before using
+  * the configfs interface, ESPECIALLY the parts about reference counts and
+  * item destructors.
+  */
+-- 
+2.25.4
+
+
