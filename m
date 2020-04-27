@@ -2,98 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED911BAB27
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D54701BAB17
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgD0R01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 13:26:27 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:56411 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726493AbgD0R01 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 13:26:27 -0400
-Received: from localhost (unknown [42.111.30.142])
-        (Authenticated sender: me@yadavpratyush.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 984AF240006;
-        Mon, 27 Apr 2020 17:26:18 +0000 (UTC)
-Date:   Mon, 27 Apr 2020 22:53:36 +0530
-From:   Pratyush Yadav <me@yadavpratyush.com>
-To:     Yicong Yang <yangyicong@hisilicon.com>
-Cc:     Pratyush Yadav <p.yadav@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH v4 05/16] mtd: spi-nor: default to address width of 3 for
- configurable widths
-Message-ID: <20200427172336.ihezwq3wn75m7k3l@yadavpratyush.com>
-References: <20200424184410.8578-1-p.yadav@ti.com>
- <20200424184410.8578-6-p.yadav@ti.com>
- <6b6384ad-d37a-eea6-af29-322e83924912@hisilicon.com>
+        id S1726371AbgD0RYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 13:24:10 -0400
+Received: from mga12.intel.com ([192.55.52.136]:20457 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725980AbgD0RYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 13:24:09 -0400
+IronPort-SDR: KI+QSblsX4clCLDdctlfk6DDuBox++UdzurSoYnZku3EjXUNoWsLyQA1/iylYwVlSk/kVmA5ai
+ JLYemdJFKGJw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 10:24:09 -0700
+IronPort-SDR: t4+pw8a0fxZyPc1F3AXiaSD2C1lYZ9vgoM9lrl0bsUyiLHWf89FKzZOpBJiuDk9FkrbNPa/XTO
+ ZUAL6LBPshgw==
+X-IronPort-AV: E=Sophos;i="5.73,324,1583222400"; 
+   d="scan'208";a="458457221"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 10:24:09 -0700
+Date:   Mon, 27 Apr 2020 10:24:08 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Robert Richter <rrichter@marvell.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Aristeu Rozanski <aris@redhat.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/10] EDAC/ghes: Remove local variable rdr_mask in
+ ghes_edac_dmidecode()
+Message-ID: <20200427172408.GA13177@agluck-desk2.amr.corp.intel.com>
+References: <20200422115814.22205-1-rrichter@marvell.com>
+ <20200422115814.22205-7-rrichter@marvell.com>
+ <20200427070802.GA11036@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6b6384ad-d37a-eea6-af29-322e83924912@hisilicon.com>
+In-Reply-To: <20200427070802.GA11036@zn.tnic>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yicong,
-
-On 26/04/20 11:53AM, Yicong Yang wrote:
-> On 2020/4/25 2:43, Pratyush Yadav wrote:
-> > JESD216D.01 says that when the address width can be 3 or 4, it defaults
-> > to 3 and enters 4-byte mode when given the appropriate command. So, when
-> > we see a configurable width, default to 3 and let flash that default to
-> > 4 change it in a post-bfpt fixup.
-> >
-> > This fixes SMPT parsing for flashes with configurable address width. If
-> > the SMPT descriptor advertises variable address width, we use
-> > nor->addr_width as the address width. But since it was not set to any
-> > value from the SFDP table, the read command uses an address width of 0,
-> > resulting in an incorrect read being issued.
-> >
-> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> > ---
-> >  drivers/mtd/spi-nor/sfdp.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
-> > index f917631c8110..5cecc4ba2141 100644
-> > --- a/drivers/mtd/spi-nor/sfdp.c
-> > +++ b/drivers/mtd/spi-nor/sfdp.c
-> > @@ -460,6 +460,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
-> >  	/* Number of address bytes. */
-> >  	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
-> >  	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
-> > +	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
-> >  		nor->addr_width = 3;
-> >  		break;
+On Mon, Apr 27, 2020 at 09:08:02AM +0200, Borislav Petkov wrote:
+> >  			if (entry->type_detail & BIT(6))
+> >  				dimm->mtype = MEM_RMBS;
+> > -			else if ((entry->type_detail & rdr_mask) == rdr_mask)
+> > +			else if ((entry->type_detail & BIT(7)) &&
+> > +				 (entry->type_detail & BIT(13)))
 > 
-> Should we also assign address width to 3 in default condition. At least we should not
-> leave it uninitialized here.
+> Well, "checks some bits" doesn't make it more telling than checking a
+> descriptive name like "rdr_mask" but ok, since we're assigning MEM_RDR
+> here, it is still clear what the check does.
+> 
+> Btw, please write it like this:
+> 
+> 			else if (entry->type_detail & (BIT(7) | BIT(13)))
 
-The default condition would be taken when this field is 3. The value 3 
-is reserved, and so no current device should use this value. That said, 
-I don't see any downsides of doing so. If the value 3 means something 
-else in later revisions of the standard, this code would need to change 
-anyway. If not, we would use a relatively sane default for devices with 
-a faulty BFPT.
+That isn't the same. The previous version checked that BOTH bits
+7 and 13 were set. Your version checks for either bit.
 
-I haven't received any comments on my series so far. If end up having to
-re-roll it, I will add this change. Otherwise, I'm not sure if it is a 
-good idea to re-roll a 16-patch series for a one liner that isn't fixing 
-some major bug. In that case, maybe you can send an independent patch 
-that does this after mine is merged?
+Looks like the original with the local variable was checking for both
+bits set.
 
--- 
-Regards,
-Pratyush Yadav
+-Tony
