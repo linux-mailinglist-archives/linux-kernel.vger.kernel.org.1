@@ -2,103 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDC11BAB39
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702C61BAB13
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgD0R2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 13:28:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgD0R2O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 13:28:14 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B29C03C1A8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:28:14 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id j14so14534396lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:28:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Dq6UXDEp+CfhWskvNuEfUSYYLoNA4rRIzRZcrwo0+MY=;
-        b=x5Zqjzao8L+ufNxFV7ltgeMVwwgp9ywdXPktv0A4tuA/TaySL6cN2ioBLum7Civlu1
-         mOWqG0GZaqxC6XmB2whqvkJ6yZkI0+6/1DldT4Rf69iCuuSf0fzdh+rzwK4wQWJ9NFAQ
-         CToGTup9Wx28bgq1lK6Xy7mcBOZeXGt8wmg6wXw9RU/LEIAuwNm1SLphUKyKPYjRtniM
-         CCzKJii7PGY4MRFaNyBL2QrXRc2B2UjrogvGv7J8dalEq2ezNIRUz+aHLTni/Xm5x/ve
-         ThCVeWwgJaPSJBVccziQTvoX+uAfGA06P2WGFUEW+jeOhpkofx1dzeVWKGFdcZrbc/Vy
-         9+Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Dq6UXDEp+CfhWskvNuEfUSYYLoNA4rRIzRZcrwo0+MY=;
-        b=uBJBM06DbUrJGRgeZe5G3MhAkZTHLevNWehPe2YEbcqMHZyD+o3E5qrzK9Fx1aw1bP
-         Df9ZbFeLHhOSnQB5aR5ujDqWLkkJ8vnd3ohFbYHNWKyK/h4Ee+XUptR8SvbfDAqb4ji6
-         6HjF/XjwKdNDgib43ekuwrn/o21ct9MM7nd0MG8qxM3hJhLYtF4RJOoNbue45C5rGNy2
-         Q5h5ni6Ry8PGZYI2Wf0xEhExXOeU3ZhvaamvK8Y6jTdt7TcV2lCy65vddjzMPgPhfFii
-         3PPiJaj3gOUlX5FyIkPOk7/+UTnLtA/w4Il+qyIdiwn+iQ2uH+TUGBuZfv6vFENMK81/
-         MzPg==
-X-Gm-Message-State: AGi0PubhrPrU4JmRtSN3Gwp0CMFloBV7Ba9++BxNsDtg6RddVCYOnv4m
-        9xLmFNDMg5CQUIX5TOM8wbMjAA==
-X-Google-Smtp-Source: APiQypJWv8O+pTWo8o5RVwex9KReKqhYTkJvhJxn5WYJuBnoQNeHME9vZsTS6HDD1lhOtGRpi+iE4w==
-X-Received: by 2002:a19:5f4e:: with SMTP id a14mr16402967lfj.57.1588008492538;
-        Mon, 27 Apr 2020 10:28:12 -0700 (PDT)
-Received: from localhost (c-8c28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.140])
-        by smtp.gmail.com with ESMTPSA id c19sm8058077lfj.18.2020.04.27.10.28.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 10:28:11 -0700 (PDT)
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>
-Subject: [PATCH] memory: tegra: mark PM functions as __maybe_unused
-Date:   Mon, 27 Apr 2020 19:28:02 +0200
-Message-Id: <20200427172802.17569-1-anders.roxell@linaro.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726342AbgD0RWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 13:22:18 -0400
+Received: from mga09.intel.com ([134.134.136.24]:16998 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726244AbgD0RWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 13:22:18 -0400
+IronPort-SDR: XnyoIBCjwPCAdrEjnD6ytOlhLLm6NSINxaigEM3xC6YLXcChkoMFKxqWLZFygyq3TWBrZTTFOD
+ d2iGy37ljh4w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 10:22:17 -0700
+IronPort-SDR: cty6BTaKNAuOIqyV63AVgsffvuSJ2Go2HVrN1ezpx76NIyJffdY5+R/v/Z9EypFUyoF6tCYQ2u
+ rb+jwhftVCyw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,324,1583222400"; 
+   d="scan'208";a="246211449"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007.jf.intel.com with ESMTP; 27 Apr 2020 10:22:17 -0700
+Date:   Mon, 27 Apr 2020 10:28:18 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Auger Eric <eric.auger@redhat.com>,
+        Yi L <yi.l.liu@linux.intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "David Woodhouse" <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v11 05/10] iommu/vt-d: Add bind guest PASID support
+Message-ID: <20200427102818.5f877d53@jacob-builder>
+In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D826F9D@SHSMSX104.ccr.corp.intel.com>
+References: <1585939334-21396-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1585939334-21396-6-git-send-email-jacob.jun.pan@linux.intel.com>
+        <ab57b85b-235f-dc80-1c25-9b3d42dc5f4e@redhat.com>
+        <20200410124557.4012b99b@jacob-builder>
+        <6d9721a8-2198-5ecd-6c8b-fc43ff2ad7e1@redhat.com>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D824106@SHSMSX104.ccr.corp.intel.com>
+        <2025736d-e7f2-d746-e030-e609b2f465e2@redhat.com>
+        <20200417082839.45d6321e@jacob-builder>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D826F9D@SHSMSX104.ccr.corp.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without this, we get a couple of warnings when CONFIG_PM_SLEEP is
-disabled.
+On Fri, 17 Apr 2020 23:46:13 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
 
-../drivers/memory/tegra/tegra186.c:1578:12: warning: ‘tegra186_mc_resume’ defined but not used [-Wunused-function]
- 1578 | static int tegra186_mc_resume(struct device *dev)
-      |            ^~~~~~~~~~~~~~~~~~
-../drivers/memory/tegra/tegra186.c:1573:12: warning: ‘tegra186_mc_suspend’ defined but not used [-Wunused-function]
- 1573 | static int tegra186_mc_suspend(struct device *dev)
-      |            ^~~~~~~~~~~~~~~~~~~
+> > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > Sent: Friday, April 17, 2020 11:29 PM
+> > 
+> > On Fri, 17 Apr 2020 09:46:55 +0200
+> > Auger Eric <eric.auger@redhat.com> wrote:
+> >   
+> > > Hi Kevin,
+> > > On 4/17/20 4:45 AM, Tian, Kevin wrote:  
+> > > >> From: Auger Eric
+> > > >> Sent: Thursday, April 16, 2020 6:43 PM
+> > > >>  
+> > > > [...]  
+> > > >>>>> +	if (svm) {
+> > > >>>>> +		/*
+> > > >>>>> +		 * If we found svm for the PASID, there
+> > > >>>>> must be at
+> > > >>>>> +		 * least one device bond, otherwise svm
+> > > >>>>> should be freed.
+> > > >>>>> +		 */
+> > > >>>>> +		if (WARN_ON(list_empty(&svm->devs))) {
+> > > >>>>> +			ret = -EINVAL;
+> > > >>>>> +			goto out;
+> > > >>>>> +		}
+> > > >>>>> +
+> > > >>>>> +		for_each_svm_dev(sdev, svm, dev) {
+> > > >>>>> +			/* In case of multiple sub-devices
+> > > >>>>> of the same pdev
+> > > >>>>> +			 * assigned, we should allow
+> > > >>>>> multiple bind calls with
+> > > >>>>> +			 * the same PASID and pdev.
+> > > >>>>> +			 */
+> > > >>>>> +			sdev->users++;  
+> > > >>>> What if this is not an mdev device. Is it also allowed?  
+> > > >>> Yes. IOMMU and VT-d driver is not mdev aware. Here mdev is
+> > > >>> just an example of normal use case. You can bind the same PCI
+> > > >>> device (PF or SRIOV VF) more than once to the same PASID.
+> > > >>> Just need to unbind also.  
+> > > >>
+> > > >> I don't get the point of binding a non mdev device several
+> > > >> times with the same PASID. Do you intend to allow that at
+> > > >> userspace level or prevent this from happening in VFIO?  
+> > > >
+> > > > I feel it's better to prevent this from happening, otherwise
+> > > > VFIO also needs to track the bind count and do multiple unbinds
+> > > > at mm_exit. But it's not necessary to prevent it in VFIO. We
+> > > > can check here upon whether aux_domain is valid, and if not
+> > > > return -EBUSY.  
+> > > Ah OK. So if we can detect the case here it is even better
+> > >  
+> > I don't understand why VFIO cannot track, since it is mdev aware.
+> > if we don;t refcount the users, one mdev unbind will result unbind
+> > for all mdev under the same pdev. That may not be the right thing
+> > to do. 
+> 
+> The open here is not for mdev, which refcount is still required.
+> Eric's point is for non-mdev endpoints. It's meaningless and not
+> intuitive to allow binding a PASID multiple-times to the same device. 
+> 
+That seems contradictory. The refcount here is intended/required for sub
+devices such as mdev. Since IOMMU driver is not mdev aware, we cannot
+treat devices differently.
 
-Fixes: 177602b00641 ("memory: tegra: Add system sleep support")
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
----
- drivers/memory/tegra/tegra186.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Perhaps Yi can clarify if this case is handled within VFIO, then I can
+drop the refcount here.
 
-diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
-index 5d53f11ca7b6..e25c954dde2e 100644
---- a/drivers/memory/tegra/tegra186.c
-+++ b/drivers/memory/tegra/tegra186.c
-@@ -1570,12 +1570,12 @@ static const struct of_device_id tegra186_mc_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, tegra186_mc_of_match);
- 
--static int tegra186_mc_suspend(struct device *dev)
-+static int __maybe_unused tegra186_mc_suspend(struct device *dev)
- {
- 	return 0;
- }
- 
--static int tegra186_mc_resume(struct device *dev)
-+static int __maybe_unused tegra186_mc_resume(struct device *dev)
- {
- 	struct tegra186_mc *mc = dev_get_drvdata(dev);
- 
--- 
-2.20.1
+> Thanks
+> Kevin
 
+[Jacob Pan]
