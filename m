@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD241BA59E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D341BA593
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgD0OBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 10:01:00 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:37709 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727824AbgD0OAw (ORCPT
+        id S1727776AbgD0OAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 10:00:47 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:46510 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726786AbgD0OAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 10:00:52 -0400
-Received: from localhost ([109.41.194.26]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1N6sON-1j7g1g0Aed-018Lsx; Mon, 27 Apr 2020 16:00:23 +0200
-Date:   Mon, 27 Apr 2020 16:00:19 +0200
-From:   Andreas Klinger <ak@it-klinger.de>
-To:     jic23@kernel.org
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org,
-        tglx@linutronix.de, allison@lohutok.net, linux-iio@vger.kernel.org,
+        Mon, 27 Apr 2020 10:00:47 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 06A19C033C;
+        Mon, 27 Apr 2020 14:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1587996046; bh=np9+0SGRO5CaLrwr1Pizf5LJopqBu07ZFdqwDx9Fs1Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HIYDC723zkMlQHI8NzCRQP2ThO+woMb/tkOCy8o3bXBb1pa3DpTNV++gMeuQTfsfR
+         wQgu0wipPf792I3GgsQYeSrbY0xFR+ElX00w2CalqK+OHuFecp0L5ski6Bb8nPStux
+         q0r/JVPCI6cl1d5AhgTsZr7Z+nlB4Kqz+Mf73EGSJRw7uxsDfl4xOCxJjCF/knfFUH
+         c7KE0WaCHRqM5LNHyJKOz3S7hegB0cbr0rv7R2ukFLcf36zUXWCtLPH41aQ0xUR1Br
+         1I1ticdTJPhYnLjWANpxJsoqS6RTRtnuV4gxEJ8gKoww55MHa69rxhtiOHEPsyLTrV
+         /5FTguflHuZUw==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 2C463A005C;
+        Mon, 27 Apr 2020 14:00:41 +0000 (UTC)
+From:   Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>
+To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: bmp280: fix compensation of humidity
-Message-ID: <20200427140017.GA25402@arbad>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:tcKH7nPEyKfMcDD2F9kaxMB5SlaQQyO81sdZWyfprhBwlc8BRZ5
- CKn9SjH/HoNL2EiXPUG0olFXqFqTpIwnBQHI/cXeAGrTHFuSowrGcAatD7uiz1p9jVVuCQV
- BztvGLp6CEf5KXe6caXnuertc2S4mNiY8Rri/OhNLfzVIUrPpfEqX5AysUIfY8k3sSYe3AY
- k75pwe3lujqHkt3NSdGhg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MhHVfASsqnE=:oA/7DL60ewl/0B+eL9FqNa
- 21qi8f6W/DmlH1ebuMABZsQtGM/+PCyRbJO4VT8boGgPrAiOm7tigdBJLxBxyqcagNA/ocHdz
- HuE1aDm7gsaIC6HaBlY+jYtkxdLpf7kFU6x4S2MKK14IiKEbNMbvIv3W2Z1aa6w+/BJhiSibC
- AB5PGrlwHehYSCXjV40QtRo6QF/4iaLBWhauCqmkZ2/fLp2IccWNmA/nc3Bld0GGL+pRcS6dn
- bh+1FRo1ejHhpu7Z6GnMJGTIfaXIKPziL4Ih2gcaVswzbeBdhx0BBGFSGNJxgGD9+prZ4w8h7
- w1q4otzUD3kFi+DCwo+hxUd5RWLoWWqRFE42KS99yVHIcmemq1Rlvj00t0hCgRjMYQTmfFudL
- TDb7S2lhJSa3alkf7T6v4sH85E3K6g2AaoScS4rb4kxxHrv0QC76LM0V1XBg/9devS5kA1/8K
- /8fpjOe6ucadozFs4D1Rb7KUjh7+1UX6HbuKyPp9x2oxcb2Tm+Ut1Rin49Xoz4SwfgtXmw/s9
- vHvhvHO4pu5oLgupYXCvvC0+R+/HMONg+Jl35NUP/JZ0p9Fdy+0ABkUT9HuJtE51fzTj9dgc3
- HHR5QBAFRt1mqLCNbMpnGvupvCctccZZj/Fe23FcE0kyiUDVW1lrP0CJTIuCUnS3H55NB+crK
- SGUAc/T7B0+WAvqY8+TYXbzLoCwtDmaZTAGIN56huUkiPinndGdaQ+lhyAyym+VufAZujszyS
- X5GBAchc+kWxtaU32KQCszQ+QoBGS58LE1xlf6cVMSdZWIf4/8hdJSbPcVpHqGPeD88euZHwk
- hsgpcBnRKgH2aPcLcU/Vb1yC2YEm+rOaBZkoMvVc6u89yzMbhY/ZbgpyhA6J2U87LY3dKHx
+Cc:     Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>
+Subject: [PATCH v3 0/4] drm: Add support for IPK DSI Host Driver
+Date:   Mon, 27 Apr 2020 16:00:32 +0200
+Message-Id: <cover.1587992776.git.angelo.ribeiro@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Output of humidity compensation is limited to the range between 0 and 100
-percent. Add this to the compensation formula as described in the datasheet
-chapter 4.2.3.
+Adds support for the display subsystem in the Synopsys
+DesignWare IPK devices.
 
-Signed-off-by: Andreas Klinger <ak@it-klinger.de>
----
- drivers/iio/pressure/bmp280-core.c | 3 +++
- 1 file changed, 3 insertions(+)
+The display pipeline is limited and does not have access to memory, the
+validation is done using a VPG (Video Pattern Generator), as DPI
+stimulus for the DW MIPI DSI Host.
 
-diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-index 29c209cc1108..ac9ef1b63b07 100644
---- a/drivers/iio/pressure/bmp280-core.c
-+++ b/drivers/iio/pressure/bmp280-core.c
-@@ -271,6 +271,9 @@ static u32 bmp280_compensate_humidity(struct bmp280_data *data,
- 		+ (s32)2097152) * calib->H2 + 8192) >> 14);
- 	var -= ((((var >> 15) * (var >> 15)) >> 7) * (s32)calib->H1) >> 4;
- 
-+	var = var < 0 ? 0 : var;
-+	var = var > 419430400 ? 419430400 : var;
-+
- 	return var >> 12;
- };
- 
+A Synopsys DesignWare MIPI DSI Host v1.40 is used in the IPK device, that
+so far, is fully compatible with the driver dw-mipi-dsi.
+
+To activate the VPG use the sysfs pattern variable, assigning values from
+0 (shutdown) to 4. The usage of the VPG and the Synopsys DesignWare MIPI
+DSI Host internal video generator is mutually exclusive.
+
+The submission of this driver aims to be used as a work base for the
+submission of enhancements over the Synopsys DesignWare MIPI DSI Host.
+
+Angelo Ribeiro (4):
+  dt-bindings: display: Add IPK DSI subsystem bindings
+  drm: ipk: Add DRM driver for DesignWare IPK DSI
+  drm: ipk: Add extensions for DW MIPI DSI Host driver
+  MAINTAINERS: Add IPK MIPI DSI Host driver entry
+
+ .../bindings/display/snps,dw-ipk-dsi.yaml          | 159 ++++++
+ .../bindings/display/snps,dw-ipk-vpg.yaml          |  73 +++
+ MAINTAINERS                                        |   8 +
+ drivers/gpu/drm/Kconfig                            |   2 +
+ drivers/gpu/drm/Makefile                           |   1 +
+ drivers/gpu/drm/ipk/Kconfig                        |  22 +
+ drivers/gpu/drm/ipk/Makefile                       |   6 +
+ drivers/gpu/drm/ipk/dw-drv.c                       | 169 +++++++
+ drivers/gpu/drm/ipk/dw-ipk.h                       |  26 +
+ drivers/gpu/drm/ipk/dw-mipi-dsi-ipk.c              | 557 +++++++++++++++++++++
+ drivers/gpu/drm/ipk/dw-vpg.c                       | 412 +++++++++++++++
+ drivers/gpu/drm/ipk/dw-vpg.h                       |  48 ++
+ 12 files changed, 1483 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/snps,dw-ipk-dsi.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/snps,dw-ipk-vpg.yaml
+ create mode 100644 drivers/gpu/drm/ipk/Kconfig
+ create mode 100644 drivers/gpu/drm/ipk/Makefile
+ create mode 100644 drivers/gpu/drm/ipk/dw-drv.c
+ create mode 100644 drivers/gpu/drm/ipk/dw-ipk.h
+ create mode 100644 drivers/gpu/drm/ipk/dw-mipi-dsi-ipk.c
+ create mode 100644 drivers/gpu/drm/ipk/dw-vpg.c
+ create mode 100644 drivers/gpu/drm/ipk/dw-vpg.h
+
 -- 
-2.20.1
+2.7.4
+
