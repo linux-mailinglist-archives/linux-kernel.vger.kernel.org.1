@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9C51B9962
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9095B1B9967
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgD0IIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:08:49 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:57134 "EHLO
+        id S1726722AbgD0IIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 04:08:53 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:57136 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726407AbgD0IIt (ORCPT
+        with ESMTP id S1726349AbgD0IIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Apr 2020 04:08:49 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03R836a2062342;
-        Mon, 27 Apr 2020 08:08:28 GMT
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03R836vG062365;
+        Mon, 27 Apr 2020 08:08:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=tGgIVpxz9WUK/2JdnEOgbUU3bqCa/maRFGSs7Nj+Jk8=;
- b=S7E5OSLL0l86lbdaSDrfP4+Dt3OsQmPPILiUf2E1HadZKn8nYxyRscwYHjPU0ko+Dcd4
- t3V7MkR2vU+SlqjVZbd4RYeGNZ6faphlaM9k2VaT7+Nch/zHg7dZFZGxbpxqHntyu9ox
- Fg/1sQD7GLUaddHdBOi7Enw0zzlP0+PJ9c1uf8q/e8X4akb8La1Q2LDxGcQoDgXOw8jH
- 3r2j+bMpPooGuVtCr3Cv1/a4IkBWfJqT6IvKEcJnwdn5UiULGGOUy9Avgjc+Y/isV0Lf
- PtBM4YSqbow3cxwbQNaPFKK6WPAgYTFl9iL9cGOXoIOqOvNxMwMD8Ib4taFSpJYQJlm5 gg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 30mcmqw25g-1
+ bh=pmiQIvDNHy8LtZslPvKzGmpIjktW4EcjqDLMfhvz3as=;
+ b=gBntIUlPfp7ZOc9PxbjRQ1cnNbeACiROBnqbFKhL6yIyg4sIYo83XoMExidBXksFWgCc
+ rOQRCyufPAgSP7fHxyUa7UoS3OZLnoBjEZW1AzHfWUQGPEW7pd88LF3+YA5hXWr/4/38
+ h400e3ihcD/SBlI1ZCo3Dg2TmR/6OvFKIyq2qFA2u8vJcrh5WYCsiJ/owKm+V6vFNSfO
+ Oai8cSYzZrmWherLs/U7O7EhffwEx/yHPTQWgmu3C6yvqhckH9IeZsTmE/F/CrWaAQQb
+ mzUOUFX4Rzf2m73sakz+iN2ph0FBMQBnk69ewn+30au5Zy55297f9STJkF/uSu2nfeKy RA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 30mcmqw25h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 08:08:29 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03R882U7175098;
+        Mon, 27 Apr 2020 08:08:28 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 30mxrpuh6t-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Mon, 27 Apr 2020 08:08:28 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03R82aDF038627;
-        Mon, 27 Apr 2020 08:08:27 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 30mxpcp22r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Apr 2020 08:08:27 +0000
 Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03R88K6A003051;
-        Mon, 27 Apr 2020 08:08:20 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03R88LAB018697;
+        Mon, 27 Apr 2020 08:08:22 GMT
 Received: from mihai.localdomain (/10.153.73.25)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 27 Apr 2020 01:08:20 -0700
+        with ESMTP ; Mon, 27 Apr 2020 01:08:21 -0700
 From:   Mihai Carabas <mihai.carabas@oracle.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Mihai Carabas <mihai.carabas@oracle.com>,
@@ -47,19 +47,19 @@ Cc:     Mihai Carabas <mihai.carabas@oracle.com>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH RFC 2/3] x86: microcode: intel: process microcode metadata
-Date:   Mon, 27 Apr 2020 10:27:58 +0300
-Message-Id: <1587972479-10971-3-git-send-email-mihai.carabas@oracle.com>
+Subject: [PATCH RFC 3/3] Documentation: x86: microcode: add description for metadata file
+Date:   Mon, 27 Apr 2020 10:27:59 +0300
+Message-Id: <1587972479-10971-4-git-send-email-mihai.carabas@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1587972479-10971-1-git-send-email-mihai.carabas@oracle.com>
 References: <1587972479-10971-1-git-send-email-mihai.carabas@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9603 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 bulkscore=0 adultscore=0 phishscore=0 suspectscore=1
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004270071
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=1
+ mlxlogscore=999 malwarescore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004270072
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9603 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 clxscore=1011
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 clxscore=1015
  priorityscore=1501 suspectscore=1 impostorscore=0 adultscore=0
  malwarescore=0 bulkscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
@@ -69,132 +69,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Process the microcode metadata to see what changes are done on
-CPU feature bits.
-
-The default kernel policy imposed by is_microcode_allowed() is
-to abort any microcode late loading if there will be removed a
-feature and will continue the loading otherwise. Complex policies
-can be created in the future.
+Microcode nowadays may remove of modify certain CPU feature bits. Prior
+to this patch the kernel was blindly loading any microcode blob which might
+have caused an unrecoverable error (e.g. the kernel was executing an
+instruction that was removed). The following patches will process the
+metadata file and will know what features are being added/removed/modified
+and can take a decision on loading or not the new microcode blob.
 
 Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
 ---
- arch/x86/kernel/cpu/microcode/intel.c | 85 +++++++++++++++++++++++++++++++++++
- 1 file changed, 85 insertions(+)
+ Documentation/x86/microcode.rst | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/arch/x86/kernel/cpu/microcode/intel.c b/arch/x86/kernel/cpu/microcode/intel.c
-index a54d5e6..2ef4338 100644
---- a/arch/x86/kernel/cpu/microcode/intel.c
-+++ b/arch/x86/kernel/cpu/microcode/intel.c
-@@ -23,6 +23,7 @@
- #include <linux/firmware.h>
- #include <linux/uaccess.h>
- #include <linux/vmalloc.h>
-+#include <linux/string.h>
- #include <linux/initrd.h>
- #include <linux/kernel.h>
- #include <linux/slab.h>
-@@ -965,6 +966,81 @@ static bool is_blacklisted(unsigned int cpu)
+diff --git a/Documentation/x86/microcode.rst b/Documentation/x86/microcode.rst
+index a320d37..45e3ae8 100644
+--- a/Documentation/x86/microcode.rst
++++ b/Documentation/x86/microcode.rst
+@@ -110,6 +110,42 @@ The loading mechanism looks for microcode blobs in
+ /lib/firmware/{intel-ucode,amd-ucode}. The default distro installation
+ packages already put them there.
  
- 	return false;
- }
-+/**
-+ * is_microcode_allowed - parse and enforce policies
-+ * @firmware - metadata blob
-+ *
-+ * Parses the metadata file provided with the microcode in order to see the
-+ * changes brought in by the new blob.
-+ *
-+ * Based on the type of changes, currently it enforces the following policy: if
-+ * there is a feature being removed by the new microcode, reject the loading.
-+ *
-+ * RETURNS:
-+ * false if it rejects the microcode or true if it accepts the microcode.
-+ */
-+static bool is_microcode_allowed(const struct firmware *firmware)
-+{
-+	int ret, index, leaf, eax, ebx, ecx, edx, line_nr = 0;
-+	char *data = (char *) firmware->data;
-+	char *line;
-+	char op;
++Late loading metadata file
++==========================
 +
-+	/*
-+	 * Get each line and match it with regular expression:
-+	 * {m|c} {+|-} u32 [u32]*
-+	 *
-+	 * See section Late loading metadata file from
-+	 * Documentation/x86/microcode.rst
-+	 */
-+	while (data && (data - ((char *)(firmware->data)) < firmware->size)) {
-+		line = strsep(&data, "\n");
-+		line_nr++;
++New microcode blobs may remove or modify CPU feature bits. Prior to this
++metadata file, the microcode was blindly loaded and might have created an
++unrecoverable error (e.g. remove an instruction used currently in the kernel).
 +
-+		/*
-+		 * For each line check the first letter to see the type of
-+		 * operation done by the microcode and create a sscanf call
-+		 * the would match the rest of the line of that operation.
-+		 * If it is not a match, exist with parsing error. If it is
-+		 * a match and is a remove action (-) do not allow microcode
-+		 * to be loaded.
-+		 */
-+		switch (line[0]) {
-+		case 'c':
-+			ret = sscanf(&line[1], " %c %x %x %x %x %x %x", &op,
-+			    &index, &leaf, &eax, &ebx, &ecx, &edx);
-+			if (ret != 7)
-+				goto out_error;
-+			if (op == '-')
-+				goto out_cpuid_rem_notsupp;
-+			break;
-+		case 'm':
-+			ret = sscanf(&line[1], " %c %x", &op, &index);
-+			if (ret != 2)
-+				goto out_error;
-+			if (op == '-')
-+				goto out_msr_rem_notsupp;
-+			break;
-+		default:
-+			goto out_error;
-+		}
-+	}
++In order to improve visibility on what features a new microcode that is being
++loaded at runtime (late loading) brings in, a new metadata file is created
++together with the microcode blob. The metadata file has the same name as the
++microcode blob with a suffix of ".metadata". The metadata file respects the
++following regular expression: "{m|c} {+|-} u32 [u32]*", where "m" means MSR
++feature and "c" means a CPUID exposed feature.
 +
-+	return true;
++Here is an example of content for the metadata file::
++   m + 0x00000122
++   m - 0x00000120
++   c + 0x00000007 0x00 0x00000000 0x021cbfbb 0x00000000 0x00000000
++   c - 0x00000007 0x00 0x00000000 0x021cbfbb 0x00000000 0x00000000
 +
-+out_error:
-+	pr_warn("Microcode metadata failed parsing at line %d\n", line_nr);
-+	return false;
++The definition of the file format is as follows::
++   - each line contains an action on a CPU feature that the microcode will do
++   - the first letter specify the type of the feature
++   - the second letter specify the operation:
++   -- + - adds the feature
++   -- - - removes the feature
++   - the third letter specifies the index of the CPUID or the MSR
++   - for the CPUID case all the others parameters specifies the
++     leaf, eax, ebx, ecx and edx values
 +
-+out_msr_rem_notsupp:
-+	pr_warn("Kernel policy does not allow to remove MSR: %x\n", index);
-+	return false;
++Using this metadata file, the kernel, based on its internal policies, may
++deny a microcode update in order to ensure system stability (e.g. if an
++instruction is removed by the microcode and that instruction is still being
++used by the current code, we would drop the update as it would brake the
++system).
 +
-+out_cpuid_rem_notsupp:
-+	pr_warn("Kernel policy does not allow to remove CPUID: %x leaf: %x, eax: %x, ebx: %x, ecx: %x, edx: %x\n",
-+	    index, leaf, eax, ebx, ecx, edx);
-+	return false;
-+}
- 
- static enum ucode_state request_microcode_fw(int cpu, struct device *device,
- 					     bool refresh_fw)
-@@ -992,10 +1068,19 @@ static enum ucode_state request_microcode_fw(int cpu, struct device *device,
- 		return UCODE_NFOUND;
- 	}
- 
-+	/* Load the metadata file in memory. */
- 	if (request_firmware_direct(&meta_firmware, meta_name, device)) {
- 		pr_debug("metadata file %s load failed\n", name);
- 		pr_debug("no feature check will be done pre-loading the microcode\n");
- 	} else {
-+		/* Check the policy based on the metadata file. */
-+		if (!is_microcode_allowed(meta_firmware)) {
-+			pr_warn("kernel does not support the new microcode: %s\n",
-+			    name);
-+			release_firmware(meta_firmware);
-+			release_firmware(firmware);
-+			return UCODE_ERROR;
-+		}
- 		release_firmware(meta_firmware);
- 	}
+ Builtin microcode
+ =================
  
 -- 
 1.8.3.1
