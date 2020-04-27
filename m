@@ -2,133 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDEF1BB0D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D4A1BB141
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbgD0V44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 17:56:56 -0400
-Received: from mail-eopbgr140043.outbound.protection.outlook.com ([40.107.14.43]:64514
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726204AbgD0V4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 17:56:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gj+k0fubJhstaz77U9If1Wv1DP9fSzxxtccDrffNLD33jX2b/x227vcWzKrtp5gYThkD1wUo827xNv00RsW58TIAiUaEY6mc8QHNyH/UwVKT4vrLcj58zA9UXlBnwBylS2xVLONc3Rkw88LxOrs/PXYajszwfK8f3s+poYsG8X+E3/enu3WtnnDBLi7ZcqwmDtF6YKo8pSWMg1h8B+n1rkakPVTSnLmUU3L8wOOYjL1gzc0QhV/v24v5yPeVCL6xqhCMo/xK/GQgyvqPlbM3QoMbxo63g+pcIrBNDHhHdsbS+FYx+UV78ZxwXw9T5oLVt//ZRiXtjprTV8V40ZUJNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zcnCmuEq8aZhzVNCCtMLAgc2n0RCv7GXGhRtXIrDMmw=;
- b=KIPDqd77jCwk/mFxo6Lf/mRw/nfRjZdCP8TYxXtyN1/ok2XCrRzkPArzV4q9nfIkxM9pGrCe/i5xXhH2Z6REHqaCXH5ls2WracLy3SC0pj51EJkYtNljad7jGGg9hsGJHCI8UFsPFzTrvvcy/MXKeYnskLQdp06itnMLwlSMPWA+M6LVJWocFFUrs2vGBgbcSeQWi/96Y6U8XRhG3aj6U6FhvXtysB+lEhqA6gsdItc+j6N6NgSRjiMR5ZViRBgYrY/n1AuBAZc2qhNV5NOVfA4xbWHQNm0RflNwVkxAgZbmOsH/+CHCbAV3fpkvynOGgs1nk/ONhnbr57dO+vTEPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
- dkim=pass header.d=mellanox.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zcnCmuEq8aZhzVNCCtMLAgc2n0RCv7GXGhRtXIrDMmw=;
- b=qIbFevpERsNH4RZ4NaD/ecuA6/v7pYQGb2i7Kx8FbJKHeFZsyMKLF7kpgSyOsBFjPOqp1PzeYkwhhC+Tu6YyXqDbnoxtLehT6Js4gWREQj0hDF1IDJhnlvePROLOsAeFaZxV/qV8KPzSfsXpTfF2eUhe3bISq+lFcrkP+kaat1U=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=jgg@mellanox.com; 
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com (2603:10a6:803:44::15)
- by VI1PR05MB4399.eurprd05.prod.outlook.com (2603:10a6:803:42::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Mon, 27 Apr
- 2020 21:56:51 +0000
-Received: from VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e]) by VI1PR05MB4141.eurprd05.prod.outlook.com
- ([fe80::a47b:e3cd:7d6d:5d4e%6]) with mapi id 15.20.2937.020; Mon, 27 Apr 2020
- 21:56:51 +0000
-Date:   Mon, 27 Apr 2020 18:56:47 -0300
-From:   Jason Gunthorpe <jgg@mellanox.com>
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "megha.dey@linux.intel.com" <megha.dey@linux.intel.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Lu, Baolu" <baolu.lu@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "Lin, Jing" <jing.lin@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH RFC 00/15] Add VFIO mediated device support and IMS
- support for the idxd driver.
-Message-ID: <20200427215647.GJ13640@mellanox.com>
-References: <20200426191357.GB13640@mellanox.com>
- <20200426214355.29e19d33@x1.home>
- <20200427115818.GE13640@mellanox.com>
- <20200427071939.06aa300e@x1.home>
- <20200427132218.GG13640@mellanox.com>
- <20200427081841.18c4a994@x1.home>
- <20200427142553.GH13640@mellanox.com>
- <20200427094137.4801bfb6@w520.home>
- <20200427161625.GI13640@mellanox.com>
- <e2cbba8b-e204-42bc-44cd-ebdb6be211e3@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e2cbba8b-e204-42bc-44cd-ebdb6be211e3@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: BL0PR02CA0121.namprd02.prod.outlook.com
- (2603:10b6:208:35::26) To VI1PR05MB4141.eurprd05.prod.outlook.com
- (2603:10a6:803:44::15)
+        id S1726571AbgD0WFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 18:05:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726204AbgD0WB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 18:01:58 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49E132082E;
+        Mon, 27 Apr 2020 22:01:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588024916;
+        bh=6hICUJOm73tC7mybOqnlsNRDxZD2tv+mEL2WRMC0A40=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WYg28824GL3DwqDlANPhGsSSLnLCt+nOUarYdI+8iK8EnAlq74+LHuJNW6rd/NOH5
+         oTUvcy5e4wOKxSC4GuXp+IABhcvwc1W2XSXkjunBIJ9G3botBuK/jslIHLS2Uid7wJ
+         H5Wm1uLFOHUzoyYKgayq/3HfAxgkHCPKSiRuDjIs=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jTBp4-000Inf-FO; Tue, 28 Apr 2020 00:01:54 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        netdev@vger.kernel.org, linux-hams@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org,
+        linux-decnet-user@lists.sourceforge.net,
+        ceph-devel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-atm-general@lists.sourceforge.net, lvs-devel@vger.kernel.org
+Subject: [PATCH 00/38] net: manually convert files to ReST format - part 1
+Date:   Tue, 28 Apr 2020 00:01:15 +0200
+Message-Id: <cover.1588024424.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.68.57.212) by BL0PR02CA0121.namprd02.prod.outlook.com (2603:10b6:208:35::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Mon, 27 Apr 2020 21:56:51 +0000
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)     (envelope-from <jgg@mellanox.com>)      id 1jTBk7-0007lf-Vy; Mon, 27 Apr 2020 18:56:47 -0300
-X-Originating-IP: [142.68.57.212]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 5e899449-4b63-4798-0bc9-08d7eaf5e42f
-X-MS-TrafficTypeDiagnostic: VI1PR05MB4399:|VI1PR05MB4399:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR05MB43991448B63195E8CB9B0ACACFAF0@VI1PR05MB4399.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-Forefront-PRVS: 0386B406AA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB4141.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(366004)(39860400002)(376002)(346002)(1076003)(6916009)(2616005)(8676002)(5660300002)(478600001)(36756003)(86362001)(26005)(9746002)(7416002)(81156014)(33656002)(8936002)(316002)(186003)(4744005)(52116002)(66556008)(66946007)(9786002)(66476007)(4326008)(2906002)(54906003)(24400500001);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: mellanox.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XzBr0K52EwP6yfOti/GLN66RYiZwvM6y2r7OLpRrxqbEFIcPmSWd/fvsHjVJw06BL7HvgNmafAfw3w+pNpWzeIqt+Sk82UBQX/3HRXX9TgQQrjPUfhRZzZ1D3eWofWgObIcJsIearqtqiINe3Vi1H3gtSvwkvLc06kwkly1P55GBieQB40+NKoRviwX0BZ1tRd9mMWQ5TFUIK+E2rp6bFgkSHvQnhE0K3QJHj5LzUs8+7NZn4pvRHv6a3BwM6qLhgtoYgGU1KxXZXjftqOOWWsY1hJHXclKgsq2E7RL9iQcsngLnZhhddjpywQkat+cs7QIdCkXwDghhxUUzXfxcmD+COHxhQT/fQ8U3WG25zIU4YI9lMIlYP93xkoB52vUs5dv5nTjQTz3pRqXb6Wssp9BsQKoSkvo4zkYH37yM4zpSI06V2xcEp9DJX1vp30J/khodJoB4X1Va66G/+d+zQMRp8Mbq5BXMHN6tMJYIlKI507va7qn0GGG0l2m0W6DX
-X-MS-Exchange-AntiSpam-MessageData: HzkY/UJ4xQrPqNSS9PqTyAILONQM9/60paQtb8ySlCniFMX4lcXcrlfZTtCUAZDk3nJQ4BZmTNPGI7uA0iu1Xeuqp845hIb8MkGY6TTwt/NTno8N6TyJdDOYIHfrFn0RbOka2hctZwlUkIC+RuEPpoCNFgHjSl9Y3Xk78JDNnpqlILB93w5BRElGGpRQuKn8D5+HJucjTgGmklkggB4I3yiJnz7VHXR/fOV4reCkNrLTlqPbC4zjN7uaZnyb1vmopBfCIXVlCbWsa9m8jU1E/2filmF4euzoeIexbE7D5kRo4E/Ti2r2dUk3hx0tjIajfhGlEdBPUxbVoXZeObbI72S0ocsFsyld1OhG294vKiF+Y9oWyxkhq6Vu4hLkkvH37bGJyr1EsUacM/v8bYWqWG/e3601OkgGH048aDT+s6qJWaJY3RBVMWqPnKx1GfpVoXsIHS/nfmGduwFCrMkJ+r7qYDyD7cw7UgiocJ/UolO4S3BSt2elJioT1jxlmhGxJQ9fjl7aZC/wjq7DLsi6oqd/wlZkbeHBCz6RG/xhMvfTY4z4VNbwmMN/OpMm1YubltiAxuHSj5KwSRvXDRaz3nDFoZ4p92UtnQsXlbVwkQ1yKB41vThNQHnJHgCQAxjRU78+9CaAeopPnjbtVqRRFVzWNZ0EIZF6VrbeUIbON6I2zlgEr7bu4FDfD5xO27ZTgJNRMRFgpr4BKGqxF6YZMDjLF7dDgLTuJaN0hQv3l57Ws1gK6xrWk5guippYD5xNGLS9ydb8YaMS5lRfkabqBXesi2CWIHGXT92VHb30I+4=
-X-OriginatorOrg: Mellanox.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e899449-4b63-4798-0bc9-08d7eaf5e42f
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2020 21:56:51.7486
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CKRnfwW4fbq065noJO3E9a5fvCj/cgw2uH5dzRWBTQC9CON3ruoUGzIoPqDB9J6hiI1oD+F09woxVRGM+XGzoA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB4399
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 09:25:58AM -0700, Dave Jiang wrote:
-> > Also to avoid duplication, ie idxd proposes to have a char dev with a
-> > normal kernel driver interface and then an in-kernel emulated MMIO BAR
-> > version of that same capability for VFIO consumption.
-> 
-> The char dev interface serves user apps on host (which we will deprecate and
-> move to the UACCE framework in near future). 
+There are very few documents upstream that aren't converted upstream.
 
-The point is the char dev or UACCE framework should provide enough
-capability to implement the emulation in user space.
+This series convert part of the networking text files into ReST.
+It is part of a bigger set of patches, which were split on parts,
+in order to make reviewing task easier.
 
-Jason
+The full series (including those ones) are at:
+
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=net-docs
+
+And the documents, converted to HTML via the building system
+are at:
+
+	https://www.infradead.org/~mchehab/kernel_docs/networking/
+
+
+Mauro Carvalho Chehab (38):
+  docs: networking: convert caif files to ReST
+  docs: networking: convert 6pack.txt to ReST
+  docs: networking: convert altera_tse.txt to ReST
+  docs: networking: convert arcnet-hardware.txt to ReST
+  docs: networking: convert arcnet.txt to ReST
+  docs: networking: convert atm.txt to ReST
+  docs: networking: convert ax25.txt to ReST
+  docs: networking: convert baycom.txt to ReST
+  docs: networking: convert bonding.txt to ReST
+  docs: networking: convert cdc_mbim.txt to ReST
+  docs: networking: convert cops.txt to ReST
+  docs: networking: convert cxacru.txt to ReST
+  docs: networking: convert dccp.txt to ReST
+  docs: networking: convert dctcp.txt to ReST
+  docs: networking: convert decnet.txt to ReST
+  docs: networking: convert defza.txt to ReST
+  docs: networking: convert dns_resolver.txt to ReST
+  docs: networking: convert driver.txt to ReST
+  docs: networking: convert eql.txt to ReST
+  docs: networking: convert fib_trie.txt to ReST
+  docs: networking: convert filter.txt to ReST
+  docs: networking: convert fore200e.txt to ReST
+  docs: networking: convert framerelay.txt to ReST
+  docs: networking: convert generic-hdlc.txt to ReST
+  docs: networking: convert generic_netlink.txt to ReST
+  docs: networking: convert gen_stats.txt to ReST
+  docs: networking: convert gtp.txt to ReST
+  docs: networking: convert hinic.txt to ReST
+  docs: networking: convert ila.txt to ReST
+  docs: networking: convert ipddp.txt to ReST
+  docs: networking: convert ip_dynaddr.txt to ReST
+  docs: networking: convert iphase.txt to ReST
+  docs: networking: convert ipsec.txt to ReST
+  docs: networking: convert ip-sysctl.txt to ReST
+  docs: networking: convert ipv6.txt to ReST
+  docs: networking: convert ipvlan.txt to ReST
+  docs: networking: convert ipvs-sysctl.txt to ReST
+  docs: networking: convert kcm.txt to ReST
+
+ .../admin-guide/kernel-parameters.txt         |   10 +-
+ Documentation/admin-guide/sysctl/net.rst      |    4 +-
+ Documentation/bpf/index.rst                   |    4 +-
+ .../networking/{6pack.txt => 6pack.rst}       |   46 +-
+ .../{altera_tse.txt => altera_tse.rst}        |   87 +-
+ ...rcnet-hardware.txt => arcnet-hardware.rst} | 2169 +++++++++--------
+ .../networking/{arcnet.txt => arcnet.rst}     |  348 +--
+ Documentation/networking/{atm.txt => atm.rst} |    6 +
+ .../networking/{ax25.txt => ax25.rst}         |    6 +
+ .../networking/{baycom.txt => baycom.rst}     |  110 +-
+ .../networking/{bonding.txt => bonding.rst}   | 1275 +++++-----
+ Documentation/networking/caif/caif.rst        |    2 -
+ Documentation/networking/caif/index.rst       |   13 +
+ .../caif/{Linux-CAIF.txt => linux_caif.rst}   |   54 +-
+ Documentation/networking/caif/spi_porting.rst |  229 ++
+ Documentation/networking/caif/spi_porting.txt |  208 --
+ .../networking/{cdc_mbim.txt => cdc_mbim.rst} |   76 +-
+ Documentation/networking/cops.rst             |   80 +
+ Documentation/networking/cops.txt             |   63 -
+ .../networking/{cxacru.txt => cxacru.rst}     |   86 +-
+ .../networking/{dccp.txt => dccp.rst}         |   39 +-
+ .../networking/{dctcp.txt => dctcp.rst}       |   14 +-
+ .../networking/{decnet.txt => decnet.rst}     |   77 +-
+ .../networking/{defza.txt => defza.rst}       |    8 +-
+ .../networking/device_drivers/intel/e100.rst  |    2 +-
+ .../networking/device_drivers/intel/ixgb.rst  |    2 +-
+ .../{dns_resolver.txt => dns_resolver.rst}    |   52 +-
+ .../networking/{driver.txt => driver.rst}     |   22 +-
+ Documentation/networking/{eql.txt => eql.rst} |  445 ++--
+ .../networking/{fib_trie.txt => fib_trie.rst} |   16 +-
+ .../networking/{filter.txt => filter.rst}     |  850 ++++---
+ .../networking/{fore200e.txt => fore200e.rst} |    8 +-
+ .../{framerelay.txt => framerelay.rst}        |   21 +-
+ .../{gen_stats.txt => gen_stats.rst}          |   98 +-
+ .../{generic-hdlc.txt => generic-hdlc.rst}    |   86 +-
+ ...eneric_netlink.txt => generic_netlink.rst} |    6 +
+ Documentation/networking/{gtp.txt => gtp.rst} |   95 +-
+ .../networking/{hinic.txt => hinic.rst}       |    5 +-
+ Documentation/networking/{ila.txt => ila.rst} |   81 +-
+ Documentation/networking/index.rst            |   38 +
+ .../{ip-sysctl.txt => ip-sysctl.rst}          |  829 ++++---
+ .../{ip_dynaddr.txt => ip_dynaddr.rst}        |   29 +-
+ .../networking/{ipddp.txt => ipddp.rst}       |   13 +-
+ .../networking/{iphase.txt => iphase.rst}     |  185 +-
+ .../networking/{ipsec.txt => ipsec.rst}       |   14 +-
+ .../networking/{ipv6.txt => ipv6.rst}         |    8 +-
+ .../networking/{ipvlan.txt => ipvlan.rst}     |  159 +-
+ .../{ipvs-sysctl.txt => ipvs-sysctl.rst}      |  180 +-
+ Documentation/networking/{kcm.txt => kcm.rst} |   83 +-
+ Documentation/networking/ltpc.txt             |    2 +-
+ Documentation/networking/packet_mmap.txt      |    2 +-
+ Documentation/networking/snmp_counter.rst     |    2 +-
+ MAINTAINERS                                   |    8 +-
+ drivers/atm/Kconfig                           |    4 +-
+ drivers/net/Kconfig                           |    4 +-
+ drivers/net/appletalk/Kconfig                 |    6 +-
+ drivers/net/arcnet/Kconfig                    |    6 +-
+ drivers/net/caif/Kconfig                      |    2 +-
+ drivers/net/hamradio/Kconfig                  |   10 +-
+ drivers/net/wan/Kconfig                       |    4 +-
+ net/Kconfig                                   |    2 +-
+ net/atm/Kconfig                               |    2 +-
+ net/ax25/Kconfig                              |    6 +-
+ net/ceph/Kconfig                              |    2 +-
+ net/core/gen_stats.c                          |    2 +-
+ net/decnet/Kconfig                            |    4 +-
+ net/dns_resolver/Kconfig                      |    2 +-
+ net/dns_resolver/dns_key.c                    |    2 +-
+ net/dns_resolver/dns_query.c                  |    2 +-
+ net/ipv4/Kconfig                              |    2 +-
+ net/ipv4/icmp.c                               |    2 +-
+ net/ipv6/Kconfig                              |    2 +-
+ tools/bpf/bpf_asm.c                           |    2 +-
+ tools/bpf/bpf_dbg.c                           |    2 +-
+ 74 files changed, 4656 insertions(+), 3769 deletions(-)
+ rename Documentation/networking/{6pack.txt => 6pack.rst} (90%)
+ rename Documentation/networking/{altera_tse.txt => altera_tse.rst} (85%)
+ rename Documentation/networking/{arcnet-hardware.txt => arcnet-hardware.rst} (66%)
+ rename Documentation/networking/{arcnet.txt => arcnet.rst} (76%)
+ rename Documentation/networking/{atm.txt => atm.rst} (89%)
+ rename Documentation/networking/{ax25.txt => ax25.rst} (91%)
+ rename Documentation/networking/{baycom.txt => baycom.rst} (58%)
+ rename Documentation/networking/{bonding.txt => bonding.rst} (75%)
+ create mode 100644 Documentation/networking/caif/index.rst
+ rename Documentation/networking/caif/{Linux-CAIF.txt => linux_caif.rst} (90%)
+ create mode 100644 Documentation/networking/caif/spi_porting.rst
+ delete mode 100644 Documentation/networking/caif/spi_porting.txt
+ rename Documentation/networking/{cdc_mbim.txt => cdc_mbim.rst} (88%)
+ create mode 100644 Documentation/networking/cops.rst
+ delete mode 100644 Documentation/networking/cops.txt
+ rename Documentation/networking/{cxacru.txt => cxacru.rst} (66%)
+ rename Documentation/networking/{dccp.txt => dccp.rst} (94%)
+ rename Documentation/networking/{dctcp.txt => dctcp.rst} (89%)
+ rename Documentation/networking/{decnet.txt => decnet.rst} (87%)
+ rename Documentation/networking/{defza.txt => defza.rst} (91%)
+ rename Documentation/networking/{dns_resolver.txt => dns_resolver.rst} (89%)
+ rename Documentation/networking/{driver.txt => driver.rst} (85%)
+ rename Documentation/networking/{eql.txt => eql.rst} (62%)
+ rename Documentation/networking/{fib_trie.txt => fib_trie.rst} (96%)
+ rename Documentation/networking/{filter.txt => filter.rst} (77%)
+ rename Documentation/networking/{fore200e.txt => fore200e.rst} (94%)
+ rename Documentation/networking/{framerelay.txt => framerelay.rst} (93%)
+ rename Documentation/networking/{gen_stats.txt => gen_stats.rst} (60%)
+ rename Documentation/networking/{generic-hdlc.txt => generic-hdlc.rst} (75%)
+ rename Documentation/networking/{generic_netlink.txt => generic_netlink.rst} (64%)
+ rename Documentation/networking/{gtp.txt => gtp.rst} (79%)
+ rename Documentation/networking/{hinic.txt => hinic.rst} (97%)
+ rename Documentation/networking/{ila.txt => ila.rst} (82%)
+ rename Documentation/networking/{ip-sysctl.txt => ip-sysctl.rst} (83%)
+ rename Documentation/networking/{ip_dynaddr.txt => ip_dynaddr.rst} (65%)
+ rename Documentation/networking/{ipddp.txt => ipddp.rst} (89%)
+ rename Documentation/networking/{iphase.txt => iphase.rst} (50%)
+ rename Documentation/networking/{ipsec.txt => ipsec.rst} (90%)
+ rename Documentation/networking/{ipv6.txt => ipv6.rst} (93%)
+ rename Documentation/networking/{ipvlan.txt => ipvlan.rst} (54%)
+ rename Documentation/networking/{ipvs-sysctl.txt => ipvs-sysctl.rst} (62%)
+ rename Documentation/networking/{kcm.txt => kcm.rst} (84%)
+
+-- 
+2.25.4
+
+
