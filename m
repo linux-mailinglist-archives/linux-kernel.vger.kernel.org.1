@@ -2,203 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A0D1BA44F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5FC1BA463
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgD0NLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 09:11:22 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:6076 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727874AbgD0NLJ (ORCPT
+        id S1727812AbgD0NQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 09:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726539AbgD0NQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 09:11:09 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03RCsxp7016897;
-        Mon, 27 Apr 2020 09:10:56 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 30mn4j7e5c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Apr 2020 09:10:55 -0400
-Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 03RDAsJK010883
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Mon, 27 Apr 2020 09:10:54 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 27 Apr 2020 09:10:53 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Mon, 27 Apr 2020 09:10:53 -0400
-Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Mon, 27 Apr 2020 09:10:53 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 03RDAfUW011495;
-        Mon, 27 Apr 2020 09:10:51 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lars@metafoo.de>, <jic23@kernel.org>, <pmeerw@pmeerw.net>,
-        "Alexandru Ardelean" <alexandru.ardelean@analog.com>
-Subject: [PATCH v6 6/6] iio: core: use new common ioctl() mechanism
-Date:   Mon, 27 Apr 2020 16:11:00 +0300
-Message-ID: <20200427131100.50845-7-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200427131100.50845-1-alexandru.ardelean@analog.com>
-References: <20200427131100.50845-1-alexandru.ardelean@analog.com>
+        Mon, 27 Apr 2020 09:16:31 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0640C0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 06:16:31 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id x77so9009988pfc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 06:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition:user-agent;
+        bh=AtVxPA+abih+6PcdJSDFXbwqig8XiO36RhS1by5PBss=;
+        b=LILlQRFX1Dnxrt3IvHDJacv7N5nZv4OlIHGyXV/FpGjsp8tE6GxtNiI/scN5xIC3Q2
+         y8a1a5MHYWwNjB8I+p5PrTKCVGzrsgtCD7VOovS/dRMtYHkGSp19/O00EaM+TKxNcrYr
+         2fKUsk+ktoDCGQlla/Dg0u+ipZkHANpZ6UuaduR2eMhJf6sjcg1225atf+N28CppWOal
+         v8v277+aHseM/Vxndgm5A1akZCMw9E0w4zsn/ICMKw2zWWSnBA23F74aKK45+TeUdQwH
+         Af5MSJaUz1y3fMuWbrU+5/vsggnosc8xpPJ7cfBZDdA9uVCdljOiXV687BXZYHFqLlwG
+         DokQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition:user-agent;
+        bh=AtVxPA+abih+6PcdJSDFXbwqig8XiO36RhS1by5PBss=;
+        b=STiXcSoodRDIgoAFBJSEtDbigYiWpLZiwQLsg3b7ru2xl6iw98g6jApweuNtYAm/Ja
+         5ag5IIwqMtkTQibCEH95ZzpjxFEJ8HtpB1ZK1F6qowkHFpz6U653I0r0VROKihm0IfK8
+         5AGmj3NwxHjMMQm1lul5IWbtD7FXh7z8SHkP48tmA/63AZN3fGbS+RhcIpwp8vQSvXmW
+         TyvSZLV8PDlCp2/WKBeHGrjqHKlLWad/Pp1sgkquFPtiTYhq0R1ZHl1/cFeNTWqltxJH
+         U8F/JpHCWnN7RbgDKuy0PGe8bo6bXgm+hv4rr0h9Grz0lGU/NKxX1hm70sfyiLTPEDRF
+         hwvA==
+X-Gm-Message-State: AGi0PuY//B26qviCpl/En/mB/2jVtyMORDv75TRkWBSKNQWfKk1nIcRS
+        cT0wAyF4/Mdp78xcoJGdi38=
+X-Google-Smtp-Source: APiQypJBfyoNlmd+Mh9sw4j36gl7szCVUAGfocfbrVsjyDlr+4wCQXfC+fmTcff4TI91OKXDKDfeMw==
+X-Received: by 2002:a62:1984:: with SMTP id 126mr24088026pfz.158.1587993391213;
+        Mon, 27 Apr 2020 06:16:31 -0700 (PDT)
+Received: from udknight.localhost ([59.57.158.27])
+        by smtp.gmail.com with ESMTPSA id 185sm13127345pfv.9.2020.04.27.06.16.29
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Apr 2020 06:16:30 -0700 (PDT)
+Received: from udknight.localhost (localhost [127.0.0.1])
+        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 03RDFMmg015710;
+        Mon, 27 Apr 2020 21:15:22 +0800
+Received: (from root@localhost)
+        by udknight.localhost (8.14.9/8.14.9/Submit) id 03RDFJpB015709;
+        Mon, 27 Apr 2020 21:15:19 +0800
+Date:   Mon, 27 Apr 2020 21:15:19 +0800
+From:   Wang YanQing <udknight@gmail.com>
+To:     joe@perches.com
+Cc:     apw@canonical.com, alexei.starovoitov@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] checkpatch: add dedicated checker for 'Fixes:' tag
+Message-ID: <20200427131519.GA15664@udknight>
+Mail-Followup-To: Wang YanQing <udknight@gmail.com>, joe@perches.com,
+        apw@canonical.com, alexei.starovoitov@gmail.com,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-27_09:2020-04-24,2020-04-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 impostorscore=0 bulkscore=0 suspectscore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 mlxscore=0 spamscore=0
- malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004270114
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.7.1 (2016-10-04)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change makes use of the new centralized ioctl() mechanism. The event
-interface registers it's ioctl() handler to IIO device.
-Both the buffer & event interface call 'iio_device_ioctl()', which should
-take care of all of indio_dev's ioctl() calls.
+According to submitting-patches.rst, 'Fixes:' tag has a little
+stricter condition about the one line summary:
+"
+Do not split the tag across multiple
+lines, tags are exempt from the "wrap at 75 columns" rule in order to simplify
+parsing scripts
+"
 
-Later, we may add per-buffer ioctl() calls, and since each buffer will get
-it's own chardev, the buffer ioctl() handler will need a bit of tweaking
-for the first/legacy buffer (i.e. indio_dev->buffer).
-Also, those per-buffer ioctl() calls will not be registered with this
-mechanism.
+And the current 'Fixes:' checker in "# Check for git id commit length and
+improperly formed commit descriptions" doesn't check for invalid commit id
+length, so I think it is better to add dedicated checker for 'Fixes:' TAG.
 
-The move of the comment in this patch is intentional to show that [with
-this patch], the 'indio_dev->info' NULL check is still around, but it just
-got moved.
-
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Signed-off-by: Wang YanQing <udknight@gmail.com>
 ---
- drivers/iio/iio_core.h            |  3 ---
- drivers/iio/industrialio-buffer.c |  2 +-
- drivers/iio/industrialio-core.c   |  5 +++++
- drivers/iio/industrialio-event.c  | 19 ++++++++-----------
- 4 files changed, 14 insertions(+), 15 deletions(-)
+ scripts/checkpatch.pl | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
-index 34c3e19229d8..f68de4af2738 100644
---- a/drivers/iio/iio_core.h
-+++ b/drivers/iio/iio_core.h
-@@ -54,9 +54,6 @@ ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals);
- #ifdef CONFIG_IIO_BUFFER
- struct poll_table_struct;
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 23a001a..fbb31bc 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2820,7 +2820,7 @@ sub process {
+ 		    ($line =~ /\bcommit\s+[0-9a-f]{5,}\b/i ||
+ 		     ($line =~ /(?:\s|^)[0-9a-f]{12,40}(?:[\s"'\(\[]|$)/i &&
+ 		      $line !~ /[\<\[][0-9a-f]{12,40}[\>\]]/i &&
+-		      $line !~ /\bfixes:\s*[0-9a-f]{12,40}/i))) {
++		      $line !~ /^\s*fixes:\s*([0-9a-f]{6,40})\s*(.*)/i))) {
+ 			my $init_char = "c";
+ 			my $orig_commit = "";
+ 			my $short = 1;
+@@ -2979,6 +2979,13 @@ sub process {
+ 			}
+ 		}
  
--long iio_device_event_ioctl(struct iio_dev *indio_dev, struct file *filp,
--			    unsigned int cmd, unsigned long arg);
--
- void iio_device_buffer_attach_chrdev(struct iio_dev *indio_dev);
- 
- int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev);
-diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-index 0689c100b041..c5c5b7537e28 100644
---- a/drivers/iio/industrialio-buffer.c
-+++ b/drivers/iio/industrialio-buffer.c
-@@ -1179,7 +1179,7 @@ static long iio_buffer_ioctl(struct file *filep, unsigned int cmd,
- 	if (!buffer || !buffer->access)
- 		return -ENODEV;
- 
--	return iio_device_event_ioctl(buffer->indio_dev, filep, cmd, arg);
-+	return iio_device_ioctl(buffer->indio_dev, filep, cmd, arg);
- }
- 
- static ssize_t iio_buffer_store_enable(struct device *dev,
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index 94e7f9541e81..24c294e45502 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -1600,6 +1600,11 @@ long iio_device_ioctl(struct iio_dev *indio_dev, struct file *filp,
- 
- 	mutex_lock(&indio_dev->info_exist_lock);
- 
-+	/**
-+	 * The NULL check here is required to prevent crashing when a device
-+	 * is being removed while userspace would still have open file handles
-+	 * to try to access this device.
-+	 */
- 	if (!indio_dev->info)
- 		goto out_unlock;
- 
-diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
-index d532a689c2eb..429f1d5f3c1d 100644
---- a/drivers/iio/industrialio-event.c
-+++ b/drivers/iio/industrialio-event.c
-@@ -32,6 +32,7 @@
-  * @read_lock:		lock to protect kfifo read operations
-  * @chrdev:		associated chardev for this event
-  * @indio_dev:		IIO device to which this event interface belongs to
-+ * @ioctl_handler:	handler for event ioctl() calls
-  */
- struct iio_event_interface {
- 	wait_queue_head_t	wait;
-@@ -44,6 +45,7 @@ struct iio_event_interface {
- 
- 	struct cdev		chrdev;
- 	struct iio_dev		*indio_dev;
-+	struct iio_ioctl_handler	ioctl_handler;
- };
- 
- bool iio_event_enabled(const struct iio_event_interface *ev_int)
-@@ -261,20 +263,12 @@ static int iio_chrdev_release(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
--long iio_device_event_ioctl(struct iio_dev *indio_dev, struct file *filp,
-+static long iio_event_ioctl(struct iio_dev *indio_dev, struct file *filp,
- 			    unsigned int cmd, unsigned long arg)
- {
- 	int __user *ip = (int __user *)arg;
- 	int fd;
- 
--	/**
--	 * The NULL check here is required to prevent crashing when a device
--	 * is being removed while userspace would still have open file handles
--	 * to try to access this device.
--	 */
--	if (!indio_dev->info)
--		return -ENODEV;
--
- 	if (cmd == IIO_GET_EVENT_FD_IOCTL) {
- 		fd = iio_event_getfd(indio_dev);
- 		if (fd < 0)
-@@ -283,7 +277,7 @@ long iio_device_event_ioctl(struct iio_dev *indio_dev, struct file *filp,
- 			return -EFAULT;
- 		return 0;
- 	}
--	return -EINVAL;
-+	return IIO_IOCTL_UNHANDLED;
- }
- 
- static long iio_event_ioctl_wrapper(struct file *filp, unsigned int cmd,
-@@ -291,7 +285,7 @@ static long iio_event_ioctl_wrapper(struct file *filp, unsigned int cmd,
- {
- 	struct iio_event_interface *ev = filp->private_data;
- 
--	return iio_device_event_ioctl(ev->indio_dev, filp, cmd, arg);
-+	return iio_device_ioctl(ev->indio_dev, filp, cmd, arg);
- }
- 
- static const struct file_operations iio_event_fileops = {
-@@ -313,7 +307,10 @@ void iio_device_event_attach_chrdev(struct iio_dev *indio_dev)
- 	cdev_init(&ev->chrdev, &iio_event_fileops);
- 
- 	ev->indio_dev = indio_dev;
-+	ev->ioctl_handler.ioctl = iio_event_ioctl;
- 	indio_dev->chrdev = &ev->chrdev;
++		if ($in_commit_log && $line =~ /^\s*fixes:\s*([0-9a-f]{6,40})\s*(.*)/i) {
++		    if (length($1) != 12 || $2 !~ /^\(\"(.*)\"\)$/i) {
++				ERROR("FIXES_TAG",
++					"please use the 'Fixes:' tag with the first 12 characters of the SHA-1 ID, and the one line summary(no across multiple lines)\n" . $herecurr);
++			}
++		}
 +
-+	iio_device_ioctl_handler_register(indio_dev, &ev->ioctl_handler);
- }
+ # ignore non-hunk lines and lines being removed
+ 		next if (!$hunk_line || $line =~ /^-/);
  
- static const char * const iio_ev_type_text[] = {
 -- 
-2.17.1
-
+1.8.5.6.2.g3d8a54e.dirty
