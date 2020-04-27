@@ -2,60 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F196F1BAE5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E30BF1BAE9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgD0Tp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725919AbgD0Tp6 (ORCPT
+        id S1726764AbgD0UAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:00:54 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:48608 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726666AbgD0UAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:45:58 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25074C0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 12:45:58 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id o19so19376912qkk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 12:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=n/NmA7gt+r6P29w3aSxgdFgDP4ij/aGW5CdzVreFrAg=;
-        b=BQnQ2Dfkv0KaW4laY0Ya6HhMtXq4zlDZWVfm/k5otJoGum/s17Zu+itMK79H+Q2QHH
-         w6q2UO3sleLtfRSgbveFeiAM912G/rfAjrhthqfL4BzPCGpMArjgkKsCUpM3hPSPOA+P
-         0Waq37XRwA5kWIdc2av3Q6f2p1zXQ0Fy+M12ICHc3sMnwYwGSic5yV+yWtdz6NRHduxV
-         95lkWJz9ScBCl534Gnl+Yoxy3ak1bJGrW9cdxgnd149I78qAJiuBkNI0sb8fdT7aRCa3
-         bz+KB52S75v2FWOeG9pVrVtT5whTI384z9pQbe64I25Lf71KPR9QqLc5VzdZAwdjjhcD
-         zUSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=n/NmA7gt+r6P29w3aSxgdFgDP4ij/aGW5CdzVreFrAg=;
-        b=iHClaZIgXhNnoaavyhNaFTV0+3GRY4UEuf/tr44D0Fk0uJpZifEX/FeNE9sAlAmQrS
-         Z5xDf9uabQRS/XrokMMVl5aa1BcW4wcBKs0vuAQgh49dFGevHVmOMGXa16CcIwLjoXcb
-         ScPhv+V2IVcQjnrCOEFIfgpxV5xDC1QpO+6IFlGANpqgszod7vXoJV6IPu660gDBMrUw
-         k6ZJiFSIEAGsZ7VSLVLJVOF/fQc+4L07bB+/YyciMV0sb9SN/zzJlbFijK4gP8wBvcem
-         hSC6JyfvwW8UZDgExi9wfrjmIOx6GNZsa9AUPoGzigP1ESRpFBnKgVCHwaXTnVB/tQtZ
-         +Eng==
-X-Gm-Message-State: AGi0PuYOh7JRcgWg1uslKVPpKViJ3mcc/2yZSIaece9NfFMSWDmgVm/v
-        6cKuXQH0MybwywLpmcBylG+5/bLlZ4y+DPjFnrk=
-X-Google-Smtp-Source: APiQypJJ5xsytuCs4Z5OqSReC5FsJSlN04WYC6Cp17X1QXd8atk6PaK6prIEbVZ+RpCdhIwcRtmS21Lm7m9Mg6eU0dU=
-X-Received: by 2002:a37:a2d8:: with SMTP id l207mr23073119qke.6.1588016757424;
- Mon, 27 Apr 2020 12:45:57 -0700 (PDT)
+        Mon, 27 Apr 2020 16:00:54 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 499wcw00Whz1s0RZ;
+        Mon, 27 Apr 2020 22:00:47 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 499wcv5FBWz1r5QD;
+        Mon, 27 Apr 2020 22:00:47 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id UwhZWkhUHdp5; Mon, 27 Apr 2020 22:00:45 +0200 (CEST)
+X-Auth-Info: JMpryoad1q4gMYykW9V1aNyztGd9wWfmqkL03f1OojI=
+Received: from [IPv6:::1] (unknown [195.140.253.167])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Mon, 27 Apr 2020 22:00:45 +0200 (CEST)
+Subject: Re: [PATCH v2 04/12] mtd: rawnand: stm32_fmc2: manage all errors
+ cases at probe time
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Christophe Kerello <christophe.kerello@st.com>, richard@nod.at,
+        vigneshr@ti.com, lee.jones@linaro.org, robh+dt@kernel.org,
+        mark.rutland@arm.com, tony@atomide.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        devicetree@vger.kernel.org
+References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
+ <1586966256-29548-5-git-send-email-christophe.kerello@st.com>
+ <20200427194747.224a2402@xps13>
+ <40a9bac7-9ed4-b781-f2c2-2d90b4e82749@denx.de>
+ <20200427200848.722f4c56@xps13>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <3527f3b8-225d-6e5a-dd8a-0421d475f70b@denx.de>
+Date:   Mon, 27 Apr 2020 21:46:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Received: by 2002:ac8:dce:0:0:0:0:0 with HTTP; Mon, 27 Apr 2020 12:45:56 -0700 (PDT)
-Reply-To: Millersophia434@gmail.com
-From:   Sohia Miller <abigailbamidele18@gmail.com>
-Date:   Mon, 27 Apr 2020 19:45:56 +0000
-Message-ID: <CANp45Dv=AkS_Ut1hcPCMVyOMpxxLyet16knwtO481OKto+cgkw@mail.gmail.com>
-Subject: Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200427200848.722f4c56@xps13>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 4/27/20 8:08 PM, Miquel Raynal wrote:
+[...]
+>>>>  	/* FMC2 init routine */
+>>>>  	stm32_fmc2_init(fmc2);
+>>>> @@ -1997,7 +2001,7 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
+>>>>  	/* Scan to find existence of the device */
+>>>>  	ret = nand_scan(chip, nand->ncs);
+>>>>  	if (ret)
+>>>> -		goto err_scan;
+>>>> +		goto err_dma_setup;
+>>>>  
+>>>>  	ret = mtd_device_register(mtd, NULL, 0);
+>>>>  	if (ret)
+>>>> @@ -2010,7 +2014,7 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
+>>>>  err_device_register:
+>>>>  	nand_cleanup(chip);
+>>>>  
+>>>> -err_scan:
+>>>> +err_dma_setup:
+>>>>  	if (fmc2->dma_ecc_ch)
+>>>>  		dma_release_channel(fmc2->dma_ecc_ch);
+>>>>  	if (fmc2->dma_tx_ch)
+>>>> @@ -2021,6 +2025,7 @@ static int stm32_fmc2_probe(struct platform_device *pdev)
+>>>>  	sg_free_table(&fmc2->dma_data_sg);
+>>>>  	sg_free_table(&fmc2->dma_ecc_sg);
+>>>>  
+>>>> +err_clk_disable:
+>>>>  	clk_disable_unprepare(fmc2->clk);
+>>>>  
+>>>>  	return ret;  
+>>>
+>>> I didn't spot it during my earlier reviews but I really prefer using
+>>> labels explaining what you do than having the same name of the function
+>>> which failed. This way you don't have to rework the error path when
+>>> you handle an additional error.
+>>>
+>>> So, would you mind doing this in two steps:
+>>>
+>>> 1/
+>>> Replace
+>>>
+>>>     err_scan:
+>>>
+>>> with, eg.
+>>>
+>>>     release_dma_objs:  
+>>
+>> The ^err_ prefix in failpath labels is useful, since it's easily
+>> possible to match on it with regexes ; not so much on arbitrary label name.
+> 
+> I guess so, but is it actually useful to catch labels in a regex? (real
+> question)
+
+I find it useful to have a unified way to find those labels, e.g.
+err_because_foo:
+err_because_bar:
+err_last_one:
+is much nicer than:
+foo_failed:
+bar_also_failed:
+its_total_randomness:
+
+> Any way I suppose catching ":\n" is already a good approximation to
+> find labels?
+
+Not very practical with git grep (^err.*: works nicely though)
+
+>> btw would it make sense to split the first three patches of this series
+>> into a separate series ? This rawnand part seems more like an unrelated
+>> cleanup.
+> 
+> As it seems that the MFD discussion can take longer, then I would say
+> yes, at least for the cleanup/misc changes part.
+Right
+
 -- 
-Am Sophia , How are you and how is your day going as well
+Best regards,
+Marek Vasut
