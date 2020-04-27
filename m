@@ -2,109 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9442F1BAE8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2C41BAEAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgD0T5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:57:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726364AbgD0T5q (ORCPT
+        id S1726781AbgD0UEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:04:38 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:48220 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbgD0UEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:57:46 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308BAC0610D5;
-        Mon, 27 Apr 2020 12:57:45 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id s3so15248740eji.6;
-        Mon, 27 Apr 2020 12:57:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=GJDhC8dz1UCAtH/BxA6Y2i5c6CSS8QiVlm7CC6ceN1Q=;
-        b=di+1djngWKc+yBC2sVVRtlvVb6+ghANoyasyRkhw59rY5kpK2yn8m+5cT/EWBPGfrB
-         GDuYLd4+X4e1KRbKKeySJsNuJU0mG9bZSHX9gELo/O8G7ngaYWb6+89q/0Mpfw5RmztG
-         P5vOYApZ2rU41U0UNhigD0R5qbWi8SeZ2C9vz2ScOfqKzuFAT+ePFKkDgrzA//TTsrIN
-         BB1YJ4tNXtfMecXR+iuvRftLru3ySi98XzLTmWSSSzlaMNrDF1+uTBW1C2NBZtUOBE01
-         8bNa+HMyzrr4Cwttlqy8QSwECGILgikMpQzN14ZGPzCjpAJ1vJKURyvDw80JpzHRxDE5
-         lrgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=GJDhC8dz1UCAtH/BxA6Y2i5c6CSS8QiVlm7CC6ceN1Q=;
-        b=R5MmhZz55L6T8epSv8HZMCSv2ovJ/l5r9fpclHgDFf6+P9yyPccCcPSLPYhDKBWn3m
-         oHFZbu8D7FCWI7g4e67PHzTKTtuEd994iljIrZdMiregWXJicFco34zZSrg0v3ll6CR5
-         WyVECVVpKw0aw+Dp/RaX6RWFLtbmFZmpvB9XGqwO4ksllYQqXJVEeV9XKLig/EkVO6ha
-         /jXTjmPYj7lXra824b3ut4iCTbdUwfspq004uyjo7mBOzPzNagsRELJ+BCqe8b3bjKww
-         pMJWrcSgeAN9ecVGwWK0EtJ1i77uKd7FWxMT99CGpOPiYBRM/2Ik3yp4h2dhP3aj2Rvq
-         uydw==
-X-Gm-Message-State: AGi0Pub0blRpE0kF0MlA0G+I/JjJGLzDDt3GEbgfCvcUlY0FWO8bqhz9
-        4TeiO/qpcmcEokpxvD1LNl3upYzWa7llClR6AnGKIl//tQQ=
-X-Google-Smtp-Source: APiQypI/5x/k2ZEjeKzMnLvdY3+3lcwsOP3UmM0K9r50UkqbSjltr0j9Ig/Pn9uMY8rY/7QNMyS4rQpX/u8NmqSdeHQ=
-X-Received: by 2002:a17:907:2098:: with SMTP id pv24mr21801601ejb.22.1588017463681;
- Mon, 27 Apr 2020 12:57:43 -0700 (PDT)
+        Mon, 27 Apr 2020 16:04:37 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03RK4XHc102100;
+        Mon, 27 Apr 2020 15:04:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588017873;
+        bh=2Y/Ev7XzYFoEQhHKLIW2HCupcDSuRhsYozUQZERp1VQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=CRdZpMGhK23Qdvew92YH/f0W1vn4JxCNg4l7wt94rvPwZxhe4x3FdMU5zJLxhZpoL
+         AKYpfA7YoBHJeR3rLD/NTcCRRHXrNG+O4G9hNKL5F5dDjZQ7JCEQyDP/kT+f4wa0AB
+         Y5GyiGs5phMhjzs5Rc4zAnaOMpdKKOP//jQGrIPk=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03RK4Xgi019605;
+        Mon, 27 Apr 2020 15:04:33 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
+ Apr 2020 15:04:32 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 27 Apr 2020 15:04:32 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03RK4W6M100321;
+        Mon, 27 Apr 2020 15:04:32 -0500
+Subject: Re: [PATCH v20 12/17] leds: lp55xx: Add multicolor framework support
+ to lp55xx
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200423155524.13971-1-dmurphy@ti.com>
+ <20200423155524.13971-13-dmurphy@ti.com>
+ <24aa265c-46ca-1643-7781-9ddbf734405b@gmail.com>
+ <4f149443-87f9-ca3f-e131-2b494cbfed84@ti.com>
+ <9ebe27ee-4dc5-110a-3897-328f5bbba902@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <908edfaf-fda5-55db-a1e2-88b2bd89ebe3@ti.com>
+Date:   Mon, 27 Apr 2020 14:58:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 27 Apr 2020 21:57:33 +0200
-Message-ID: <CAFBinCBHuPLS8BDzO4Gb86TG3tNTtqmW5BSWy8jhPuN3STOTUA@mail.gmail.com>
-Subject: clk_hw.init and -EPROBE_DEFER / driver re-load
-To:     sboyd@kernel.org, linux-clk@vger.kernel.org
-Cc:     mturquette@baylibre.com, linux-kernel@vger.kernel.org,
-        jbrunet@baylibre.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9ebe27ee-4dc5-110a-3897-328f5bbba902@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Stephen et al.
+Jacek
 
-I am working on a driver for the "SDHC" controller on older Amlogic Meson SoCs.
-This has some clock controller bits built into.
-Using CCF for the whole rate management makes things a lot easier, so
-I decided to use that instead of poking register bits manually.
-The code can be seen here: [0] - but don't take it too seriously
-because I have to move some of that in the next patch revision.
+On 4/27/20 2:42 PM, Jacek Anaszewski wrote:
+> Dan,
+>
+> On 4/27/20 8:17 PM, Dan Murphy wrote:
+>> Jacek
+>>
+>> On 4/26/20 11:07 AM, Jacek Anaszewski wrote:
+>>> Hi Dan,
+>>>
+>>> One nit below.
+>>>
+>>> On 4/23/20 5:55 PM, Dan Murphy wrote:
+>>>> Add multicolor framework support for the lp55xx family.
+>>>>
+>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>>> ---
+>>>>   drivers/leds/Kconfig                      |   1 +
+>>>>   drivers/leds/leds-lp5521.c                |  14 +-
+>>>>   drivers/leds/leds-lp5523.c                |  14 +-
+>>>>   drivers/leds/leds-lp5562.c                |  13 +-
+>>>>   drivers/leds/leds-lp55xx-common.c         | 178 
+>>>> +++++++++++++++++++---
+>>>>   drivers/leds/leds-lp55xx-common.h         |  11 +-
+>>>>   drivers/leds/leds-lp8501.c                |  14 +-
+>>>>   include/linux/platform_data/leds-lp55xx.h |   8 +
+>>>>   8 files changed, 207 insertions(+), 46 deletions(-)
+>>>>
+>>> [...]
+>>>> diff --git a/drivers/leds/leds-lp55xx-common.h 
+>>>> b/drivers/leds/leds-lp55xx-common.h
+>>>> index b9b1041e8143..a9d7ba3f2fd1 100644
+>>>> --- a/drivers/leds/leds-lp55xx-common.h
+>>>> +++ b/drivers/leds/leds-lp55xx-common.h
+>>>> @@ -12,6 +12,8 @@
+>>>>   #ifndef _LEDS_LP55XX_COMMON_H
+>>>>   #define _LEDS_LP55XX_COMMON_H
+>>>>   +#include <linux/led-class-multicolor.h>
+>>>> +
+>>>>   enum lp55xx_engine_index {
+>>>>       LP55XX_ENGINE_INVALID,
+>>>>       LP55XX_ENGINE_1,
+>>>> @@ -109,6 +111,9 @@ struct lp55xx_device_config {
+>>>>       /* access brightness register */
+>>>>       int (*brightness_fn)(struct lp55xx_led *led);
+>>>>   +    /* perform brightness value to multiple LEDs */
+>>>> +    int (*multicolor_brightness_fn)(struct lp55xx_led *led);
+>>>
+>>> Isn't some word missing here? IMO it should be rephrased.
+>>> Maybe "write multi color brightness to hw" ?
+>>>
+>> But brightness_fn does not say write_brightness_fn so I think this 
+>> would look weird to add write to the function name
+>
+> I referred to the comment, not to the function name.
+> And the comment for brightness_fn is vague IMO.
+> So I propose to change both comments:
+>
+> s/access brightness register/set LED brightness/
+> s/perform brightness value to multiple LEDs/
+>   set multicolor LED brightness/
+>
+Obviously I misunderstood.  I thought that was for the preceding line of 
+code that the comment was made.
 
-I solved an "interesting" problem where I'm not sure if it works as
-intended (which is what I assumed) or if there's an actual problem (as
-suggested by Jerome).
+I will update the comment.
 
-The flow in the driver is basically:
-(the clk_hws are defined as "static" variables inside the driver)
-1) fetch related OF properties
-2) initialize and register the built-in (into the MMC controller
-driver) clock controller part
-3) initialize the MMC controller
+Dan
 
-Step 3) can fail for example because one of the regulators is not ready.
-In this case I'm de-registering the clock controller part again.
-Finally the driver returns -EPROBE_DEFER
-(so far everything is working fine)
-
-However, once the regulator (in this example) becomes ready the the
-same flow as above is being executed.
-Only this time the clock controller registration fails because
-hw->init is NULL (before it had the values which I defined in the
-driver).
-This is due to the following line in __clk_register():
-  hw->init = NULL;
-
-My way to "solve" this is to clone the clk_hws while registering the
-clock controller.
-Unfortunately this means that I can't easily use clk_hw references to
-describe the parent/child relation between these clocks.
-
-I'm not sure if my way of defining the clk_hws is wrong, there's a bug
-in CCF, this is a new feature request or something completely
-different :-)
-My motivation is to understand how I should to consider this behavior
-for my next version of the MMC controller patches.
-
-Any feedback is welcome!
-
-
-Thank you,
-Martin
-
-
-[0] https://patchwork.kernel.org/patch/11463357/
