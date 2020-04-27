@@ -2,259 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C241BAD0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77F01BAD13
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbgD0SoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 14:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726266AbgD0SoD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 14:44:03 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9327C0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 11:44:03 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id j14so21685913ybt.10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 11:44:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=tUPZR8jYBc9v0xao/MABE2wsoNahfX3099p1cY3Tx9I=;
-        b=lZIJCLa+TvQTi89lCRezZep/+7/9ZWTuSARZ1PUJMboOoDXBMqWkSqvNkma50SOQV/
-         DSvlOUH6OdjsjwrIf3+NroE6VDbQd0EBzWjoB9jv/ncM7JDj9zKofuW8Y4shDCUr/073
-         JP//OKFXcbyTo6zqlt58oGm+VtKHwZxY/Fcad3Cv/ig+1crdCTroUUn6IWcut6gtOW8o
-         2pKGYd9pd7B2+ApuCAFXVj1npCz4ulWWqbkzSCr4AYWCcHHhXofHbhXGp7yc9P1vmNdT
-         R8hjKxMO6uPGW64bRBvfxWAT8tK4lYWmEyDmxSBfAoYhVPeJvNF7iiNdj1V90i6KprO2
-         iCvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=tUPZR8jYBc9v0xao/MABE2wsoNahfX3099p1cY3Tx9I=;
-        b=fWpi+zr2ToV3/j5W9QRLBL6EnSCBBnP7XUyx39FFObpdlYFx1+6XfXjSlD/8WsnbjX
-         DNsyl5Fqu/kRhA1aGXmATj+muiPQmbp2xSV+9qcjLkRv6z9DRmm5nAfeZXijbuUBavIL
-         O4cWAWxZyuCJchFsY9bYmj8OPbnu/B91oaM7Xfywt+wayfVi8h1+DNHm/M8GsYyQAy4x
-         igijXpUBF9Kj8h7CAg9OrmbBi+Fq/49X6vwZcjssPi3md6DpzElHEkkW0KvvqCawTMw8
-         XzQrTyx0GxEQe5IItSzDsyqNvE+1LAup+yWcxCKTkMoUpKV/4BfEZ+zznWeG40eGvLxC
-         GI+A==
-X-Gm-Message-State: AGi0PuZ0yHArRQbZmIktkrx9ft8w2rod5sB3EpUo5udJp+jD9PMKrdqR
-        7CZHFeNt15PK88fh5CHA69S1aEilhOs=
-X-Google-Smtp-Source: APiQypKo+1K46gA5Mu7rAXthGEDVu9OINkjfOa7QcJ7hbSFQOr/t9jxSe52Fx9HCXlqWkoQlGh73wu3Ihkg=
-X-Received: by 2002:a25:3252:: with SMTP id y79mr38694008yby.274.1588013042905;
- Mon, 27 Apr 2020 11:44:02 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 11:43:58 -0700
-Message-Id: <20200427184358.191624-1-surenb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH 1/1] kthread: break dependency between worker->lock and task_struct->pi_lock
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     surenb@google.com
-Cc:     peterz@infradead.org, mingo@redhat.com, hannes@cmpxchg.org,
-        will@kernel.org, akpm@linux-foundation.org, tglx@linutronix.de,
-        ben.dooks@codethink.co.uk, cl@rock-chips.com, ke.wang@unisoc.com,
-        shakeelb@google.com, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1726565AbgD0Sqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 14:46:42 -0400
+Received: from mout.web.de ([212.227.15.14]:33461 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726162AbgD0Sql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 14:46:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1588013192;
+        bh=n6UuAwEQ8lGzpi0hPjL9sE87HUEm4F8XXWCeKLzXQ/Y=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=o4FLdetPhe0Npu6X4csMoh9AIih5AduEerKbhBSrV0qhXbXxzgVoe2iv0zqxcQ4LT
+         9B/tLwIvz8qQlv92FkM9N2afWSe3QjaX8iGdjHfyFqr6tTXPurqQuGsLQQgC2L7kMk
+         /VAulm3fCzic3eKUygXzq/1NmWGjqC05TKv+pKNo=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.31] ([89.12.68.2]) by smtp.web.de (mrweb001
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MdLcJ-1jjzEa3WBn-00IQSX; Mon, 27
+ Apr 2020 20:46:31 +0200
+Subject: Re: [PATCH v2 0/5] mfd: RK8xx tidyup
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-rockchip@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>
+References: <cover.1578789410.git.robin.murphy@arm.com>
+ <CANAwSgSFPtdvEvacNf6DhzE2fCabgZSBNnZUf0+nQErDWpErOw@mail.gmail.com>
+From:   Soeren Moch <smoch@web.de>
+Message-ID: <c7345431-7585-6052-835e-d9c292978b6e@web.de>
+Date:   Mon, 27 Apr 2020 20:46:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <CANAwSgSFPtdvEvacNf6DhzE2fCabgZSBNnZUf0+nQErDWpErOw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Provags-ID: V03:K1:J3sgsNO32AOu5Qc2TXlIFA83VzwJ76ohcZOv1Zmet6fdTcPtQ/0
+ 4RsP2orl2tRvBXAVaxnDzmQ3IM2ZOv8fm+IzGziq5N6kl0XWLzEWz4DvFNrGcqESyzLojyJ
+ gY2gUh5dRsFEx989CX8HE39Ee9lIZ4tE+jh7j/RX7BW0nclSCt+9TLQyW/loX28hPyHWs9W
+ 5cuz6h4q6uFbfg6y77IAg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:c+fGa3ZUgT8=:UT3/AWU+oXGeHnzZ3FIo2j
+ K2tPHD2ZbFLNXg1rI2KuYZGjUNJAP6k+OVCT1hI6KFGbnBjZ3CmInZEp5dqSMOpogCyMnynuS
+ YBB/aVfu93oZjwVd1CkBLkNWWOEux1C81qAjiseTjJyAYLryEqOGh3NIqpH/K+mE991DIuzaa
+ JnnyxWIdfQSQz5Lji3zU71EO4ZekZ31NfeL9MuNFnIaEb3kjz0sRkfEtfldqAwmasLEdaqhp/
+ hucMsbdcQ+5A2gXFS1ktt5nXtclTcvl6GxcIGbpFQoiCLNx8pJnnI7edLSGheVIL2rxD1gLVw
+ ETniqc541O35tToH1wBZPswLH0Dx5KMQ9L1W6zBOTiLYxye/voRu55t/2VGppiX7/0GUZEeAn
+ PkQjXIt4ffP3M7oNIh3RJ5yJjUQ4dFJCb89xLgxZml4MZsqRsvleIZYq9iBYvHVtmh1obr5wl
+ 1MXyICDBmBVEM5BeQpSNVoL0gkparclReq5JIpYHmeLGaYcXj0uVZ00Hvw6eA5XG3QBIsA6FK
+ 6+vEkHbwzWHt/xX8G+UvAZiNdCIBip2WrC8r2VsSQBnGtP6plLFZ88l7ttZMhdGy090tTkLYU
+ VLi7XsbnI+2bL5MgukePqqg4x5Eet32T0+8w4LCir/zL2lzA3RevfxolbOzPfHc1YdMOslTk9
+ 7dSNovxiFhuX+Qz5Pfv2Fo9B2q2XVqEB095zI+JRkb/BWWkEUGHOs04HbqbKN2QU2cpnk7LaU
+ VZ9BQs9gqO7Ho+STtFkpmSJCILAQ7Bem6UozYD2VSW3u53HsvGxNfu+DPK7I5Qg/c65Tn1FCH
+ L6d2WV3WtXFav/zhGFyAA+R4YMkSqYk0hKWP5jhw6so5IR56FCxMhy9ghZlBet4ncrfZDeKkC
+ eJNjPlFRaouTHoole5YnxqOhUnD3++UC7wsleUNHGVf6jjGtwmGx0An+/yQSqCsD64u4iLGT8
+ ZI/I5fpikUw0KWB4Q5XNzwZ5eahbr6a1/iWfPJLBFdbYKrIWWJLupQcFUydk8TX10jrB6DV1Q
+ 9wjbOcO1W0fJe6sY6sVjv61I8W7yf+7QsbnXVchYeI/YykUoeu8hoUiQcrgf0yTPOsbpC1CU0
+ v8tsC5TndhJOegqzV3/yFxjSKp2pEVWUl1M0TSytH5WlalvQKBG0ebBF2Una3a9eRnq5Ve1sD
+ GLNBvzPZITNUhq2MrY70nodfojKldmVsbQEYRe22p4oTK+Tm+XZS5ucwYJYmgrQPyMxDg=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A number of kthread-related functions indirectly take task_struct->pi_lock
-while holding worker->lock in the call chain like this:
-    spin_lock(&worker->lock)
-    kthread_insert_work
-    wake_up_process
-    try_to_wake_up
-    raw_spin_lock_irqsave(&p->pi_lock, flags)
 
-This lock dependency exists whenever kthread_insert_work is called either
-directly or indirectly via __kthread_queue_delayed_work in the following
-functions:
-    kthread_queue_work
-    kthread_delayed_work_timer_fn
-    kthread_queue_delayed_work
-    kthread_flush_work
-    kthread_mod_delayed_work
 
-This creates possibilities for circular dependencies like the one reported
-at: https://lkml.org/lkml/2020/4/24/954
-Break this lock dependency by moving task wakeup after worker->lock has
-been released.
+On 27.04.20 20:41, Anand Moon wrote:
+> Hi Robin,
+>
+> On Sun, 12 Jan 2020 at 07:25, Robin Murphy <robin.murphy@arm.com> wrote:
+>> Hi all,
+>>
+>> Here's a second crack at my RK805-inspired cleanup. There was a bit
+>> of debate around v1[1], but it seems like we're now all happy that this
+>> is a reasonable way to go. For clarity I decided to include Soeren's
+>> patch as #1/5, but since I've rewritten most of my patches I've not
+>> included the tested-by tags.
+>>
+>> Robin.
+>>
+> Can you re-spin this series, it seem these patches are lost.
+>
+These patches are already merged as
+d8f083a302f7..42679765faf2
 
-Reported-by: Ke Wang <ke.wang@unisoc.com>
-Reported-by: Shakeel Butt <shakeelb@google.com>
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Tested-by: Shakeel Butt <shakeelb@google.com>
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
- kernel/kthread.c | 44 +++++++++++++++++++++++++++++++++-----------
- 1 file changed, 33 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index bfbfa481be3a..7a93654072bb 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -9,6 +9,7 @@
- #include <uapi/linux/sched/types.h>
- #include <linux/sched.h>
- #include <linux/sched/task.h>
-+#include <linux/sched/wake_q.h>
- #include <linux/kthread.h>
- #include <linux/completion.h>
- #include <linux/err.h>
-@@ -806,14 +807,15 @@ static void kthread_insert_work_sanity_check(struct kthread_worker *worker,
- /* insert @work before @pos in @worker */
- static void kthread_insert_work(struct kthread_worker *worker,
- 				struct kthread_work *work,
--				struct list_head *pos)
-+				struct list_head *pos,
-+				struct wake_q_head *wake_q)
- {
- 	kthread_insert_work_sanity_check(worker, work);
- 
- 	list_add_tail(&work->node, pos);
- 	work->worker = worker;
- 	if (!worker->current_work && likely(worker->task))
--		wake_up_process(worker->task);
-+		wake_q_add(wake_q, worker->task);
- }
- 
- /**
-@@ -831,15 +833,19 @@ static void kthread_insert_work(struct kthread_worker *worker,
- bool kthread_queue_work(struct kthread_worker *worker,
- 			struct kthread_work *work)
- {
--	bool ret = false;
-+	DEFINE_WAKE_Q(wake_q);
- 	unsigned long flags;
-+	bool ret = false;
- 
- 	raw_spin_lock_irqsave(&worker->lock, flags);
- 	if (!queuing_blocked(worker, work)) {
--		kthread_insert_work(worker, work, &worker->work_list);
-+		kthread_insert_work(worker, work, &worker->work_list, &wake_q);
- 		ret = true;
- 	}
- 	raw_spin_unlock_irqrestore(&worker->lock, flags);
-+
-+	wake_up_q(&wake_q);
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(kthread_queue_work);
-@@ -857,6 +863,7 @@ void kthread_delayed_work_timer_fn(struct timer_list *t)
- 	struct kthread_delayed_work *dwork = from_timer(dwork, t, timer);
- 	struct kthread_work *work = &dwork->work;
- 	struct kthread_worker *worker = work->worker;
-+	DEFINE_WAKE_Q(wake_q);
- 	unsigned long flags;
- 
- 	/*
-@@ -873,15 +880,18 @@ void kthread_delayed_work_timer_fn(struct timer_list *t)
- 	/* Move the work from worker->delayed_work_list. */
- 	WARN_ON_ONCE(list_empty(&work->node));
- 	list_del_init(&work->node);
--	kthread_insert_work(worker, work, &worker->work_list);
-+	kthread_insert_work(worker, work, &worker->work_list, &wake_q);
- 
- 	raw_spin_unlock_irqrestore(&worker->lock, flags);
-+
-+	wake_up_q(&wake_q);
- }
- EXPORT_SYMBOL(kthread_delayed_work_timer_fn);
- 
- static void __kthread_queue_delayed_work(struct kthread_worker *worker,
- 					 struct kthread_delayed_work *dwork,
--					 unsigned long delay)
-+					 unsigned long delay,
-+					 struct wake_q_head *wake_q)
- {
- 	struct timer_list *timer = &dwork->timer;
- 	struct kthread_work *work = &dwork->work;
-@@ -895,7 +905,7 @@ static void __kthread_queue_delayed_work(struct kthread_worker *worker,
- 	 * on that there's no such delay when @delay is 0.
- 	 */
- 	if (!delay) {
--		kthread_insert_work(worker, work, &worker->work_list);
-+		kthread_insert_work(worker, work, &worker->work_list, wake_q);
- 		return;
- 	}
- 
-@@ -928,17 +938,21 @@ bool kthread_queue_delayed_work(struct kthread_worker *worker,
- 				unsigned long delay)
- {
- 	struct kthread_work *work = &dwork->work;
-+	DEFINE_WAKE_Q(wake_q);
- 	unsigned long flags;
- 	bool ret = false;
- 
- 	raw_spin_lock_irqsave(&worker->lock, flags);
- 
- 	if (!queuing_blocked(worker, work)) {
--		__kthread_queue_delayed_work(worker, dwork, delay);
-+		__kthread_queue_delayed_work(worker, dwork, delay, &wake_q);
- 		ret = true;
- 	}
- 
- 	raw_spin_unlock_irqrestore(&worker->lock, flags);
-+
-+	wake_up_q(&wake_q);
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(kthread_queue_delayed_work);
-@@ -967,6 +981,7 @@ void kthread_flush_work(struct kthread_work *work)
- 		KTHREAD_WORK_INIT(fwork.work, kthread_flush_work_fn),
- 		COMPLETION_INITIALIZER_ONSTACK(fwork.done),
- 	};
-+	DEFINE_WAKE_Q(wake_q);
- 	struct kthread_worker *worker;
- 	bool noop = false;
- 
-@@ -979,15 +994,18 @@ void kthread_flush_work(struct kthread_work *work)
- 	WARN_ON_ONCE(work->worker != worker);
- 
- 	if (!list_empty(&work->node))
--		kthread_insert_work(worker, &fwork.work, work->node.next);
-+		kthread_insert_work(worker, &fwork.work, work->node.next,
-+				    &wake_q);
- 	else if (worker->current_work == work)
- 		kthread_insert_work(worker, &fwork.work,
--				    worker->work_list.next);
-+				    worker->work_list.next, &wake_q);
- 	else
- 		noop = true;
- 
- 	raw_spin_unlock_irq(&worker->lock);
- 
-+	wake_up_q(&wake_q);
-+
- 	if (!noop)
- 		wait_for_completion(&fwork.done);
- }
-@@ -1065,6 +1083,7 @@ bool kthread_mod_delayed_work(struct kthread_worker *worker,
- 			      unsigned long delay)
- {
- 	struct kthread_work *work = &dwork->work;
-+	DEFINE_WAKE_Q(wake_q);
- 	unsigned long flags;
- 	int ret = false;
- 
-@@ -1083,9 +1102,12 @@ bool kthread_mod_delayed_work(struct kthread_worker *worker,
- 
- 	ret = __kthread_cancel_work(work, true, &flags);
- fast_queue:
--	__kthread_queue_delayed_work(worker, dwork, delay);
-+	__kthread_queue_delayed_work(worker, dwork, delay, &wake_q);
- out:
- 	raw_spin_unlock_irqrestore(&worker->lock, flags);
-+
-+	wake_up_q(&wake_q);
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(kthread_mod_delayed_work);
--- 
-2.26.2.303.gf8c07b1a785-goog
-
+Soeren
