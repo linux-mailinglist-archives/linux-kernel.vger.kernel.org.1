@@ -2,84 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED2E1B99EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEC21B997B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgD0IVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:21:03 -0400
-Received: from mx1.emlix.com ([188.40.240.192]:40976 "EHLO mx1.emlix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726434AbgD0IVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:21:03 -0400
-X-Greylist: delayed 573 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Apr 2020 04:21:02 EDT
-Received: from mailer.emlix.com (unknown [81.20.119.6])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id 4F4F55F75F;
-        Mon, 27 Apr 2020 10:11:28 +0200 (CEST)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org
-Subject: [PATCH v4] scripts: use pkg-config to locate libcrypto
-Date:   Mon, 27 Apr 2020 10:11:28 +0200
-Message-ID: <2278760.8Yd83Mgoko@devpool35>
-Organization: emlix GmbH
-In-Reply-To: <20538915.Wj2CyUsUYa@devpool35>
-References: <20538915.Wj2CyUsUYa@devpool35>
+        id S1726661AbgD0IMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 04:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726407AbgD0IMU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 04:12:20 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4B4C061A0F
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 01:12:20 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id u127so19352437wmg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 01:12:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=T+YOkTboZKHfrFL4WsSQSPbM8xtl93Z/+lUuYqzhRIE=;
+        b=X1PoDm3YEE4mooI1ZsYWfZ1CviWg5VxzY5SeRUbrNAHYIWEHtcRp5L+eU3M5fFBcLS
+         MPuQRlDJXKn57d6RVpHHNfU1J+jhq5nGliATjA1H8uNg79xcuqsQCQD55ljjOofx8P1H
+         1oWRAqknqWaZ87suLJMGlb/Q6y8RvYvpogRg7UryZHdmdHy5dM4BjniyCOzwxOg/Ol0J
+         GnLwI4wEYki6zVyG7biB4/pIXEf1+k6Zld2fAOt8wkJ7dNPEF0EWx6BWEsdgTT2Ek9Pt
+         6T2h2AmlRZTymQIIYNBAqlGP6OhUEGJfqBd+oMjIGiVxnhVRHl+p9/OpnPp5V/1KuBf2
+         uu9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=T+YOkTboZKHfrFL4WsSQSPbM8xtl93Z/+lUuYqzhRIE=;
+        b=r+mqRGvDIoTLveFJ9bQRMbkR9hvUTzo5LYbqe1Gr+RiCRdfLtYv1Yldul/4DaRUJWC
+         tinYodZYuvDPrDQXr5NfnZrxqoESXR3d+L5TGSsvW4bJ8YL/ta5RsJo1Ecu0awht+2hr
+         su59ts+tf4PSQ9zGp8wb7EyvMZmVyEXQpBc7jhYI8o5LXHhBdVraFjdcj+ebIf8k9QLA
+         2B4ai/o0VL8SUcaol5GL6wNuuPGmXbirOBCKPcQ4xZiZ3t2XFiFhLNTRriJsiJolsE/g
+         mkdGe9yzArkxyhib6ddIWgqxrIz3n7tpheb7WlE75EyBJhgZ/AjNfZ4mdVsgsXUbI+0r
+         EWfg==
+X-Gm-Message-State: AGi0PuY+lLFUqcQ34EeAMMOoKK1w61Zp74vbB3VZcrzwHKIaC7c0elRc
+        Y7cqNpnKQoqdEs3uzHqolW2OlA==
+X-Google-Smtp-Source: APiQypIkfjwetEKwWVZwJzkDKcIDkSLdvOjcQpMDTUop02Ywcb2M2mvrTHeqTCc7INdBIZ9tjgAhGA==
+X-Received: by 2002:a7b:c118:: with SMTP id w24mr24009648wmi.173.1587975139149;
+        Mon, 27 Apr 2020 01:12:19 -0700 (PDT)
+Received: from ?IPv6:2001:16b8:4886:8400:6d4b:554:cd7c:6b19? ([2001:16b8:4886:8400:6d4b:554:cd7c:6b19])
+        by smtp.gmail.com with ESMTPSA id c25sm13908371wmb.44.2020.04.27.01.12.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 01:12:18 -0700 (PDT)
+Subject: Re: [RFC PATCH 6/9] iomap: use set/clear_fs_page_private
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        david@fromorbit.com, willy@infradead.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org
+References: <20200426214925.10970-1-guoqing.jiang@cloud.ionos.com>
+ <20200426214925.10970-7-guoqing.jiang@cloud.ionos.com>
+ <20200427055727.GA30480@infradead.org>
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Message-ID: <c00ffe2d-0340-2598-a697-bc8bf52f3871@cloud.ionos.com>
+Date:   Mon, 27 Apr 2020 10:12:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200427055727.GA30480@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From 082ba542ca4c710dcf592a6f9233603b9275d05d Mon Sep 17 00:00:00 2001
-From: Rolf Eike Beer <eb@emlix.com>
-Date: Thu, 22 Nov 2018 16:40:49 +0100
-Subject: [PATCH 1/2] scripts: use pkg-config to locate libcrypto
+On 4/27/20 7:57 AM, Christoph Hellwig wrote:
+> FYI, you've only Cced the xfs list on this one patch.  Please Cc the
+> whole list to everyone, otherwise a person just on the xfs list has
+> no idea what your helpers added in patch 1 actually do.
 
-Otherwise build fails if the headers are not in the default location. While at
-it also ask pkg-config for the libs, with fallback to the existing value.
+Sorry, I should cc more lists for patch 1, thanks for reminder!
 
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
-Cc: stable@vger.kernel.org # 5.6.x
----
- scripts/Makefile | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/Makefile b/scripts/Makefile
-index 95ecf970c74c..35ed997e074b 100644
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -3,6 +3,11 @@
- # scripts contains sources for various helper programs used throughout
- # the kernel for the build process.
- 
-+PKG_CONFIG?= pkg-config
-+
-+CRYPTO_LIBS = $(shell $(PKG_CONFIG) --libs libcrypto 2> /dev/null || echo -lcrypto)
-+CRYPTO_CFLAGS = $(shell $(PKG_CONFIG) --cflags libcrypto 2> /dev/null)
-+
- always-$(CONFIG_BUILD_BIN2C)			+= bin2c
- always-$(CONFIG_KALLSYMS)			+= kallsyms
- always-$(BUILD_C_RECORDMCOUNT)			+= recordmcount
-@@ -14,8 +19,9 @@ always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
- 
- HOSTCFLAGS_sorttable.o = -I$(srctree)/tools/include
- HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
--HOSTLDLIBS_sign-file = -lcrypto
--HOSTLDLIBS_extract-cert = -lcrypto
-+HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
-+HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
-+HOSTLDLIBS_extract-cert = $(CRYPTO_LIBS)
- 
- ifdef CONFIG_UNWINDER_ORC
- ifeq ($(ARCH),x86_64)
--- 
-2.26.1
-
-
-
-
+Thanks,
+Guoqing
