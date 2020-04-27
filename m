@@ -2,233 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B35E1B9869
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 09:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F229B1B983C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 09:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726727AbgD0HW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 03:22:56 -0400
-Received: from mga18.intel.com ([134.134.136.126]:21447 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726407AbgD0HW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 03:22:56 -0400
-IronPort-SDR: 8Bdx+mITLVhmosy5c8Omz2S1GbTtMh0YB04ow1/9x63F2YSUQWcx2/f2wzDpypTuzW0mQMcODa
- FMNwLRYaBdPQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 00:22:55 -0700
-IronPort-SDR: /n3zHjQ+Pv2v1hw++y3auFQ6d6e26xnf/XjpUBfomwRrThcUCOblFbFkM6jCOmKvP1TnAzg0xo
- +WxG+ihL7QjQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,323,1583222400"; 
-   d="scan'208";a="458717516"
-Received: from sqa-gate.sh.intel.com (HELO clx-ap-likexu.tsp.org) ([10.239.48.212])
-  by fmsmga006.fm.intel.com with ESMTP; 27 Apr 2020 00:22:53 -0700
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Jim Mattson <jmattson@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
-Subject: [RESEND PATCH] KVM: x86/pmu: Support full width counting
-Date:   Mon, 27 Apr 2020 15:19:22 +0800
-Message-Id: <20200427071922.86257-1-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.21.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726691AbgD0HUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 03:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726460AbgD0HUJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 03:20:09 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3537C061A0F;
+        Mon, 27 Apr 2020 00:20:09 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id 18so7351509pfv.8;
+        Mon, 27 Apr 2020 00:20:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ugGlujtn3dDnrGju7ZgAZz03fv8HLSylSAJy626CBik=;
+        b=XBXMK6iZjcUJGelQ+1gU7U8NX3t0KuA8q5IEcDIUmMvXtC2PayfuYu0UZWFst9dGfW
+         JNZD5sPkgldMYKg14pO1ZpCcjBBLSkcXhPkWqxA0Dg9SKqAS1i7QUmrDSr474iySdAXl
+         dIgvFOZUvYfHbwOsVowwVp7cxo79EsinrYQXxdZQhXF93somUnEPWAKnXvUDM+F18t9k
+         K22Wtq5Kr3scNgH8d3jSySwOu99iaYN7A0wKn8QjZ9TIPC0f9pC6KI0X8MDWDP4ObFtI
+         +4UH88JeC7AKL8L0pKf/eh9Yp2Ai1kktqihfgVMQcTnNGkNAMCuLGViKGkBqEsYDzFRU
+         bGEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ugGlujtn3dDnrGju7ZgAZz03fv8HLSylSAJy626CBik=;
+        b=HA1xpxhVxSUIMbVMUgMJkXu5uMrjBjzDIc7s4kxlZIqeRkeKd+0ZXNWMW3U1EIqLaX
+         IQCgSkjyaOWVRGKu9oQkG6KkyBRE0dI5JF39DDJqeeEzgFkduB1wh8iwBcLLGREl9r9j
+         yKj+gnwM8a1qVQGv2ZiZ54AF0IHtMCvJfCFScLBuW0emnTNECy+Hcn2WEa12rUo36vkc
+         ghkuV3DbKCkUjoiiV4L14pt0imKPrbW4J49tFeyLBE+k4eV7Yf6rX9cORRVtT5VZrhcQ
+         zn2HtnRdkgiIthX2/udTjwHlq4QzdpxOYZnD4khAnVj57Qk/XLecQiSpi4lVxDWhfE6a
+         SN6A==
+X-Gm-Message-State: AGi0PuZ0xUuZEtQwOvsgI1lCSw8awdxT06wpXVW5c+vmsjFKigzfkoz2
+        nOZSMIvISDlQbpq4RExEnpU=
+X-Google-Smtp-Source: APiQypICK0qD8gD3HCpdOLGz52VlUUkN3av4Bne20ulEaJhg/t5QpoC7vtTTRxf3lF8W6MAe+tiWhA==
+X-Received: by 2002:a63:4383:: with SMTP id q125mr20393732pga.27.1587972009508;
+        Mon, 27 Apr 2020 00:20:09 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.129])
+        by smtp.gmail.com with ESMTPSA id o21sm10104124pgk.16.2020.04.27.00.20.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2020 00:20:08 -0700 (PDT)
+From:   Baolin Wang <baolin.wang7@gmail.com>
+To:     robh+dt@kernel.org, jassisinghbrar@gmail.com
+Cc:     orsonzhai@gmail.com, baolin.wang7@gmail.com, zhang.lyra@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v3 1/2] dt-bindings: mailbox: Add the Spreadtrum mailbox documentation
+Date:   Mon, 27 Apr 2020 15:19:53 +0800
+Message-Id: <8d29eba045ef18c5489e122b3668afc20431f15d.1587894279.git.baolin.wang7@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jim & Sean,
+From: Baolin Wang <baolin.wang@unisoc.com>
 
-Do you mind helping review this little feature for vPMU?
+Add the Spreadtrum mailbox documentation.
 
-The related specification in the Intel SDM is "18.2.6 Full-Width Writes to
-Performance Counter Registers" and related kernel commit is 069e0c3c40581.
-
-If there is anything needs to be improved, please let me know. 
-
-Thanks,
-Like Xu
-
-----
-
-Intel CPUs have a new alternative MSR range (starting from MSR_IA32_PMC0)
-for GP counters that allows writing the full counter width. Enable this
-range from a new capability bit (IA32_PERF_CAPABILITIES.FW_WRITE[bit 13]).
-
-The guest would query CPUID to get the counter width, and sign extends
-the counter values as needed. The traditional MSRs always limit to 32bit,
-even though the counter internally is larger (usually 48 bits).
-
-When the new capability is set, use the alternative range which do not
-have these restrictions. This lowers the overhead of perf stat slightly
-because it has to do less interrupts to accumulate the counter value.
-
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Baolin Wang <baolin.wang@unisoc.com>
+Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
 ---
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/vmx/capabilities.h | 15 +++++++++++++++
- arch/x86/kvm/vmx/pmu_intel.c    | 32 ++++++++++++++++++++++++++++----
- arch/x86/kvm/vmx/vmx.c          |  2 ++
- arch/x86/kvm/x86.c              |  8 ++++++++
- 5 files changed, 54 insertions(+), 4 deletions(-)
+Changes from v2:
+ - Add reviewed tag from Rob.
+ - Remove redundant 'minItems'.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 7cd68d1d0627..d9c48223f38d 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -486,6 +486,7 @@ struct kvm_pmu {
- 	u64 counter_bitmask[2];
- 	u64 global_ctrl_mask;
- 	u64 global_ovf_ctrl_mask;
-+	u64 perf_capabilities;
- 	u64 reserved_bits;
- 	u8 version;
- 	struct kvm_pmc gp_counters[INTEL_PMC_MAX_GENERIC];
-diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
-index 8903475f751e..f87880aaa63b 100644
---- a/arch/x86/kvm/vmx/capabilities.h
-+++ b/arch/x86/kvm/vmx/capabilities.h
-@@ -367,4 +367,19 @@ static inline bool vmx_pt_mode_is_host_guest(void)
- 	return pt_mode == PT_MODE_HOST_GUEST;
- }
- 
-+#define PMU_CAP_FW_WRITES	(1ULL << 13)
+Changes from v1:
+ - Add 'additionalProperties'.
+ - Split description for each entry.
+---
+ .../bindings/mailbox/sprd-mailbox.yaml        | 60 +++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml
+
+diff --git a/Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml b/Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml
+new file mode 100644
+index 000000000000..0f7451b42d7e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mailbox/sprd-mailbox.yaml
+@@ -0,0 +1,60 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/mailbox/sprd-mailbox.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+static inline u64 vmx_supported_perf_capabilities(void)
-+{
-+	u64 perf_cap = 0;
++title: Spreadtrum mailbox controller bindings
 +
-+	if (boot_cpu_has(X86_FEATURE_PDCM))
-+		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
++maintainers:
++  - Orson Zhai <orsonzhai@gmail.com>
++  - Baolin Wang <baolin.wang7@gmail.com>
++  - Chunyan Zhang <zhang.lyra@gmail.com>
 +
-+	/* Currently, KVM only supports Full-Width Writes. */
-+	perf_cap &= PMU_CAP_FW_WRITES;
++properties:
++  compatible:
++    enum:
++      - sprd,sc9860-mailbox
 +
-+	return perf_cap;
-+}
++  reg:
++    items:
++      - description: inbox registers' base address
++      - description: outbox registers' base address
 +
- #endif /* __KVM_X86_VMX_CAPS_H */
-diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index 7c857737b438..fde2952216dc 100644
---- a/arch/x86/kvm/vmx/pmu_intel.c
-+++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -150,6 +150,14 @@ static struct kvm_pmc *intel_rdpmc_ecx_to_pmc(struct kvm_vcpu *vcpu,
- 	return &counters[array_index_nospec(idx, num_counters)];
- }
- 
-+static inline bool fw_writes_is_enabled(struct kvm_pmu *pmu)
-+{
-+	if (!guest_cpuid_has(pmu_to_vcpu(pmu), X86_FEATURE_PDCM))
-+		return false;
++  interrupts:
++    items:
++      - description: inbox interrupt
++      - description: outbox interrupt
 +
-+	return pmu->perf_capabilities & PMU_CAP_FW_WRITES;
-+}
++  clocks:
++    maxItems: 1
 +
- static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
- {
- 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-@@ -162,10 +170,15 @@ static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
- 	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
- 		ret = pmu->version > 1;
- 		break;
-+	case MSR_IA32_PERF_CAPABILITIES:
-+		ret = guest_cpuid_has(vcpu, X86_FEATURE_PDCM);
-+		break;
- 	default:
- 		ret = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0) ||
- 			get_gp_pmc(pmu, msr, MSR_P6_EVNTSEL0) ||
--			get_fixed_pmc(pmu, msr);
-+			get_fixed_pmc(pmu, msr) ||
-+			(fw_writes_is_enabled(pmu) &&
-+				get_gp_pmc(pmu, msr, MSR_IA32_PMC0));
- 		break;
- 	}
- 
-@@ -202,8 +215,12 @@ static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, u32 msr, u64 *data)
- 	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
- 		*data = pmu->global_ovf_ctrl;
- 		return 0;
-+	case MSR_IA32_PERF_CAPABILITIES:
-+		*data = pmu->perf_capabilities;
-+		return 0;
- 	default:
--		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0))) {
-+		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
-+			(pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
- 			u64 val = pmc_read_counter(pmc);
- 			*data = val & pmu->counter_bitmask[KVM_PMC_GP];
- 			return 0;
-@@ -258,9 +275,13 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			return 0;
- 		}
- 		break;
-+	case MSR_IA32_PERF_CAPABILITIES:
-+		return 1; /* RO MSR */
- 	default:
--		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0))) {
--			if (!msr_info->host_initiated)
-+		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
-+			(pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
-+			if (!msr_info->host_initiated &&
-+				!fw_writes_is_enabled(pmu))
- 				data = (s64)(s32)data;
- 			pmc->counter += data - pmc_read_counter(pmc);
- 			if (pmc->perf_event)
-@@ -300,6 +321,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 	pmu->counter_bitmask[KVM_PMC_FIXED] = 0;
- 	pmu->version = 0;
- 	pmu->reserved_bits = 0xffffffff00200000ull;
-+	pmu->perf_capabilities = 0;
- 
- 	entry = kvm_find_cpuid_entry(vcpu, 0xa, 0);
- 	if (!entry)
-@@ -312,6 +334,8 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 		return;
- 
- 	perf_get_x86_pmu_capability(&x86_pmu);
-+	if (guest_cpuid_has(vcpu, X86_FEATURE_PDCM))
-+		pmu->perf_capabilities = vmx_supported_perf_capabilities();
- 
- 	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
- 					 x86_pmu.num_counters_gp);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 3ab6ca6062ce..24d49a11311b 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7222,6 +7222,8 @@ static __init void vmx_set_cpu_caps(void)
- 		kvm_cpu_cap_check_and_set(X86_FEATURE_INVPCID);
- 	if (vmx_pt_mode_is_host_guest())
- 		kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
-+	if (vmx_supported_perf_capabilities())
-+		kvm_cpu_cap_check_and_set(X86_FEATURE_PDCM);
- 
- 	/* PKU is not yet implemented for shadow paging. */
- 	if (enable_ept && boot_cpu_has(X86_FEATURE_OSPKE))
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 856b6fc2c2ba..25fb16eed884 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1229,6 +1229,14 @@ static const u32 msrs_to_save_all[] = {
- 	MSR_ARCH_PERFMON_EVENTSEL0 + 12, MSR_ARCH_PERFMON_EVENTSEL0 + 13,
- 	MSR_ARCH_PERFMON_EVENTSEL0 + 14, MSR_ARCH_PERFMON_EVENTSEL0 + 15,
- 	MSR_ARCH_PERFMON_EVENTSEL0 + 16, MSR_ARCH_PERFMON_EVENTSEL0 + 17,
++  clock-names:
++    items:
++      - const: enable
 +
-+	MSR_IA32_PERF_CAPABILITIES,
-+	MSR_IA32_PMC0, MSR_IA32_PMC0 + 1, MSR_IA32_PMC0 + 2,
-+	MSR_IA32_PMC0 + 3, MSR_IA32_PMC0 + 4, MSR_IA32_PMC0 + 5,
-+	MSR_IA32_PMC0 + 6, MSR_IA32_PMC0 + 7, MSR_IA32_PMC0 + 8,
-+	MSR_IA32_PMC0 + 9, MSR_IA32_PMC0 + 10, MSR_IA32_PMC0 + 11,
-+	MSR_IA32_PMC0 + 12, MSR_IA32_PMC0 + 13, MSR_IA32_PMC0 + 14,
-+	MSR_IA32_PMC0 + 15, MSR_IA32_PMC0 + 16, MSR_IA32_PMC0 + 17,
- };
- 
- static u32 msrs_to_save[ARRAY_SIZE(msrs_to_save_all)];
++  "#mbox-cells":
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - "#mbox-cells"
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    mailbox: mailbox@400a0000 {
++      compatible = "sprd,sc9860-mailbox";
++      reg = <0 0x400a0000 0 0x8000>, <0 0x400a8000 0 0x8000>;
++      #mbox-cells = <1>;
++      clock-names = "enable";
++      clocks = <&aon_gate 53>;
++      interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>, <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
++    };
++...
 -- 
-2.21.1
+2.17.1
 
