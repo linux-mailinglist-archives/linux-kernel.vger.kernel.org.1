@@ -2,232 +2,469 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318811B9F79
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDA31B9F80
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbgD0JMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 05:12:03 -0400
-Received: from mail-am6eur05on2075.outbound.protection.outlook.com ([40.107.22.75]:26479
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726892AbgD0JMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 05:12:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GwuV8kHN9pgIc3m+1q+VO2VhwrXUbbQkxnvWpOUGCkRrUn6O24ZVCPgbwtz7Afc6v1niukn9Em1/+RiHRvcBEx1y6Q0REff/zeolUuN1dpN2XXBL+Gp7ZSaHPWegxKIG2PF8lek0eYwuX7UElO/D1foNl2dtci50e6GtQbp5RgqhNOQ9UG8rDHBls7Tg43WhzGTNdtwqCyabt5NpLZDxmJkPQbbkvGXmdJh6GvApInRx4t8ON8JDW6WUescyMs3OvaIqdgyOhKXlkWi2QcTv24F5b0//Rszw9qlnahvG2x/JlcvGvxhlLsCgbvyBWpPC9p9/p3jAIrSC9OdR96+1fA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2bDnst4dXlusnhUOAxaYT/hQk/ttcqqykctvFm+W6qA=;
- b=WLEw4g88UQoewIKdDNHELAVVOb/IsADrD8RM3sb1BxZDgRKA/B9bTFwsO9vnxKF+z+7zCB+9ZVN0ncjG5GsDSzrEXV1iToTVP8tl1PUXEtlWgFvwXrUVup4eyOdKzVWKh+twefIl4N+5aW5WXYfELKUmHhBxHV4Rde+yjHdivVya78A5UzgoAm8TMR1P0O4pwBAn56Ca7/K5S5MeoiaIXr/7WCe4URpFv6wxzwOGX3GAKVdZgqJxST3mkr4N5xaWg3Qg5qyQi5NHfdf1HvaQbv4vLqE3XB2Rss53irZVwCfTTnuaw83v79atojOqyVXnNzu+GzObIE6SCTMOq/mPqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2bDnst4dXlusnhUOAxaYT/hQk/ttcqqykctvFm+W6qA=;
- b=C6T7t6dtCgjBP6jjtR2U/+Ui7KFOAjL2slDERBMU2xZgq8oTcFZ2cLyRzAFss0dG2qsJaEhUAijySfIdgH62RF5XhdskCXCJb4Hbv10j7uv4r2lPWbVmeifYwO1Hjeernsw8oBOJPqFD6NoX3hm1ntv+v/WIvMQjC7R7ddIqxvE=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR0402MB2695.eurprd04.prod.outlook.com (2603:10a6:4:95::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Mon, 27 Apr
- 2020 09:11:56 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.2937.020; Mon, 27 Apr 2020
- 09:11:56 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Aisheng Dong <aisheng.dong@nxp.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        Abel Vesa <abel.vesa@nxp.com>
-CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Anson Huang <anson.huang@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        "aford173@gmail.com" <aford173@gmail.com>,
-        Jacky Bai <ping.bai@nxp.com>, Jun Li <jun.li@nxp.com>,
-        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
-        "agx@sigxcpu.org" <agx@sigxcpu.org>,
-        "angus@akkea.ca" <angus@akkea.ca>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        Andy Duan <fugang.duan@nxp.com>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
-Subject: RE: [PATCH V2 07/10] clk: imx: add mux ops for i.MX8M composite clk
-Thread-Topic: [PATCH V2 07/10] clk: imx: add mux ops for i.MX8M composite clk
-Thread-Index: AQHV+FjOyMJp4JjxAkWF8jtS4KMMQqiLILmAgAHSuqA=
-Date:   Mon, 27 Apr 2020 09:11:56 +0000
-Message-ID: <DB6PR0402MB276047141A63BE756B9C06D988AF0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <1584008384-11578-1-git-send-email-peng.fan@nxp.com>
- <1584008384-11578-8-git-send-email-peng.fan@nxp.com>
- <AM6PR04MB4966D0EF272CAB282BF72EB580AE0@AM6PR04MB4966.eurprd04.prod.outlook.com>
-In-Reply-To: <AM6PR04MB4966D0EF272CAB282BF72EB580AE0@AM6PR04MB4966.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=peng.fan@nxp.com; 
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 7f12ddcb-ffed-4b2d-b0ae-08d7ea8b08ec
-x-ms-traffictypediagnostic: DB6PR0402MB2695:|DB6PR0402MB2695:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB6PR0402MB269586674C80866C2F87FFF988AF0@DB6PR0402MB2695.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0386B406AA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(346002)(39860400002)(366004)(396003)(376002)(64756008)(66476007)(66446008)(76116006)(186003)(52536014)(54906003)(478600001)(316002)(110136005)(2906002)(4326008)(9686003)(6506007)(86362001)(33656002)(7696005)(26005)(6636002)(71200400001)(66556008)(81156014)(8676002)(8936002)(66946007)(5660300002)(7416002)(55016002)(44832011);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tvxASt3EtIz//ewjYFigJtg+8fh6EVUb6r3HAtDHd8PhMDeq5Lk8YJUs9PVCdSU2p1xFvTsExzZMdjgSsdkz8xRB9TMsqIgpqg/94TwMN9DqXR5Rh/SuMvsQk2n6zXLeKLOkxFjciT6AmtKhQn0VlEExOfjc93E5GJh41A8qJuoIBevYTGaYLBNLNAswpY2kfHwmJDUY4lt0ceGIdsmtpuKnydYHW1cgpXoo0V48FyhYCp9rnCbQL9wsxHa3dpsmud9v3LwS4/T0L1etxKVkUFVZYCovChP2KR2umHuwhr6OJ2CqGiBQYGdX41m98USA9avnqSk4uwLx0QrmBG51X9eT005kIfkw3tzRhgZAxH/IMlIqNml5DzS4Zo1R7cYtB+abty+97oLwZfAE8wU43yqNgB38sSCXa8/Q5mqpvm0a8Lg15BDdm4j0GBHyti3J
-x-ms-exchange-antispam-messagedata: CxpJiQUijhiSScjazk4W5zOwrrdAq6LztRXuudPZNUASB8so8Mnv9TqPA3jK0UNcag7k+oPqroSVf5qymKHKpKeiaqKE5b5buhdUl1JCrbEdAPrdIWH455j2K1VcJ4DsnhW+f3jdWL3wKJ5RoIHDcp8jpAGtpfQXrorOU1pIO4enY2M3FJObHUiWEPZWrFcdA9yBH0VtJvVrjXZf3R6TZkkFwEYyHMKVlkpcRk8/MhM2BMq5BJn5A7fAcEB/PMtJDZc+bugf4z/PvnXeLPpndrf3KotOqmHbj+I0gl5eyktZWRUFc5wiLnVmOwws2kQEr91KZfPux5awt5kFHzR+u9ejZRovvsTNWDwEwoZazIvkyeHuL0GnsawQasNIbiGfqNEis9qBIBgyMNIfVOZZ3rlIZvsQ3dz+gQfDV2DokoHLEakxDSj3XFUxrJI65Ro87fb8SYU928xwznLZYQtC5fYJHCa4h3xeZZIxHEOyN+U36wbi2fQgetO7Gu4p47w4cV1T8qbr3tpObZ2AMOsZdQh22KFusLzPRSEidCQSUYYEVosKyELec2o53SiBxcLzXWl/CnjBDgh5an/N5dg+bqo7W7VZg1I/voHxgU/It6Ko4V6jVD5rQDMP1f/6FDN9+zsVW1iZWr2nvmS1KGFYJ7UI5+tFEIwb8W4nrmzhW9wJMMASlAoNc2JkqO/luP+lsF1H5noGp2QChoDQBoZs6Ioarmbr5S6prE0ROmzLbxVKbz1qwnl6XdnyfOWicgpbKMQ7IX25avo8LIG9XKoC5YTnkdpmey6Hp28PGpp5tIg=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726731AbgD0JN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 05:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726243AbgD0JN2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 05:13:28 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473C3C061BD3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 02:13:27 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id c18so737070ile.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 02:13:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=antmicro.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TliImwXH88fQJMi7PEn1RMD3rA+S3RxYctLfKQtuzNg=;
+        b=YZgA8CeHt7baozzY6wji/VhSnmX8tYa+EmWWZE6T2QlaKiz2qrSihaFjZYMLMSQoUp
+         06SlFKsG8/U7FMyUod/Xd6McMuyXArz5+SbrLfhWLwmE/j3lG9dTM3OS+hONe13uS8wn
+         oKvjScUmzahJ7LQnWJ3z2kiA7i3DZzM5euLfU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TliImwXH88fQJMi7PEn1RMD3rA+S3RxYctLfKQtuzNg=;
+        b=oT8OhXw0QFdVl17z2us5T+XfsZX2HeMm3J8vNPOQTKertNEwyljPI8bAT2SxVPoWjK
+         c222sVSJ41a27DVvVGstu/mQ/thMrCrWTE9H3tYKVeGjBRCQzSaDSNlcOq33N01LWfhs
+         IeOvnOTPB9/mzG629FMiMAJUouskJdG8GKc7R0zPn6QNivHmeuyrp90L4B6S0A1sERpm
+         i1EHRFEBu9o9SNt3usW9d2Z61uIgvHJ51H4VdZQqVHSNH+9xU0bZhKnVPiu3iftK1kmm
+         4gZH/3Pgl8PNBslk1yLjX50OdVQVSImzfb0l3enquA1CcMaWwqWYxEBHSAs7H6IVXpmL
+         9gqg==
+X-Gm-Message-State: AGi0PuYCYaG4uLGuPpYO6d3PNGMgnS9HRR2Sf23e30y9+MuIj+cHSSWP
+        1oZWAz4M9O5KyVldCgQLzkfDfA9ISkzgaeKxUoAlfg==
+X-Google-Smtp-Source: APiQypJN5XDI76v/A+E9lgcfMKlqphtg6iKR1loYPIo3bugZWnuVIMXMrJzRWYqV79tqDWjmPGIkYVAosgofYFcja7g=
+X-Received: by 2002:a92:8fc4:: with SMTP id r65mr19297602ilk.179.1587978806246;
+ Mon, 27 Apr 2020 02:13:26 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f12ddcb-ffed-4b2d-b0ae-08d7ea8b08ec
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2020 09:11:56.6448
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vRMo8rFEULDNhyKIt3XnDNdFeVVbMmSa/kXWBX9vcVvTeYSL4eDv2i7s8l166VyhZPSU+vxT+yJKRqZUVz2Tlw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2695
+References: <20200425133939.3508912-0-mholenko@antmicro.com> <20200425133939.3508912-3-mholenko@antmicro.com>
+In-Reply-To: <20200425133939.3508912-3-mholenko@antmicro.com>
+From:   Mateusz Holenko <mholenko@antmicro.com>
+Date:   Mon, 27 Apr 2020 11:13:13 +0200
+Message-ID: <CAPk366REVxz7qRfJ0dJOVPRey6+01q1JRvqANDNffYV8Lvh73g@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] drivers/soc/litex: add LiteX SoC Controller driver
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, devicetree@vger.kernel.org,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Cc:     Stafford Horne <shorne@gmail.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Filip Kokosinski <fkokosinski@antmicro.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, "Gabriel L. Somlo" <gsomlo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTdWJqZWN0OiBSRTogW1BBVENIIFYyIDA3LzEwXSBjbGs6IGlteDogYWRkIG11eCBvcHMgZm9y
-IGkuTVg4TSBjb21wb3NpdGUNCj4gY2xrDQo+IA0KPiA+IEZyb206IFBlbmcgRmFuIDxwZW5nLmZh
-bkBueHAuY29tPg0KPiA+IFNlbnQ6IFRodXJzZGF5LCBNYXJjaCAxMiwgMjAyMCA2OjIwIFBNDQo+
-ID4NCj4gPiBUaGUgQ09SRS9CVVMgcm9vdCBzbGljZSBoYXMgZm9sbG93aW5nIGRlc2lnbiwgc2lt
-cGxpZWQgZ3JhcGg6DQo+ID4gVGhlIGRpZmZlcmVuY2UgaXMgY29yZSBub3QgaGF2ZSBwcmVfZGl2
-IGJsb2NrLg0KPiA+IEEgY29tcG9zaXRlIGNvcmUvYnVzIGNsayBoYXMgOCBpbnB1dHMgZm9yIG11
-eCB0byBzZWxlY3QsIHNheWluZyBjbGtbMC03XS4NCj4gPg0KPiA+ICAgICAgICAgICAgIFNFTF9B
-ICBHQQ0KPiA+ICAgICAgICAgICAgICstLSsgICstKw0KPiA+ICAgICAgICAgICAgIHwgICstPisg
-Ky0tLS0tLSsNCj4gPiBDTEtbMC03XS0tLT4rICB8ICArLSsgICAgICB8DQo+ID4gICAgICAgIHwg
-ICAgfCAgfCAgICAgICstLS0tdi0tLSsgICAgKy0tLS0rDQo+ID4gICAgICAgIHwgICAgKy0tKyAg
-ICAgIHxwcmVfZGl2YSstLS0tPiAgICB8ICArLS0tLS0tLS0tKw0KPiA+ICAgICAgICB8ICAgICAg
-ICAgICAgICArLS0tLS0tLS0rICAgIHxtdXggKy0tK3Bvc3RfZGl2IHwNCj4gPiAgICAgICAgfCAg
-ICArLS0rICAgICAgfHByZV9kaXZiKy0tLT4rICAgIHwgICstLS0tLS0tLS0rDQo+ID4gICAgICAg
-IHwgICAgfCAgfCAgICAgICstLS0tXi0tLSsgICAgKy0tLS0rDQo+ID4gICAgICAgICstLS0+KyAg
-fCAgKy0rICAgICAgfA0KPiA+ICAgICAgICAgICAgIHwgICstPisgKy0tLS0tLSsNCj4gPiAgICAg
-ICAgICAgICArLS0rICArLSsNCj4gPiAgICAgICAgICAgICBTRUxfQiAgR0INCj4gPg0KPiA+IFRo
-ZXJlIHdpbGwgYmUgc3lzdGVtIGhhbmcsIHdoZW4gZG9pbmcgdGhlIGZvbGxvd2luZyBzdGVwczoN
-Cj4gPiAxLiBzd2l0Y2ggbXV4IGZyb20gY2xrMCB0byBjbGsxDQo+ID4gMi4gZ2F0ZSBvZmYgY2xr
-MA0KPiA+IDMuIHN3dGljaCBmcm9tIGNsazEgdG8gY2xrMiwgb3IgZ2F0ZSBvZmYgY2xrMQ0KPiA+
-DQo+ID4gU3RlcCAzIHRyaWdnZXJzIHN5c3RlbSBoYW5nLg0KPiANCj4gV2h5IFN0ZXAgMyB0cmln
-Z2VycyBzeXN0ZW0gaGFuZz8gSXMgdGhpcyBhIEhXIGxpbWl0YXRpb24/DQoNCkl0IGlzIHdoYXQg
-aGFyZHdhcmUgZGVzaWduZWQuDQoNClRoZXJlIGlzIGEgY291bnRlciBpbnNpZGUgdGhlIGNsayBy
-b290IG1vZHVsZSB0byBjaG9vc2UNClNFTF9BIG9yIFNFTF9CLiBJZiBjaG9vc2UgU0VMX0IsIHRo
-ZSBwYXJlbnQgb2YgU0VMX0IgbXVzdA0KYmUgYWN0aXZlLCBvdGhlcndpc2UgdGhlIGNoYW5nZSBm
-cm9tIFNFTF9BIHRvIFNFTF9CDQp3aWxsIGNhdXNlIGhhbmcuDQoNClNFTF9BIGFuZCBTRUxfQiBp
-cyBpbnNpZGUgdGhlIGNsb2NrIHJvb3QgbW9kdWxlLA0KSXQgaXMgbm90IGNsaydzIHNvZnR3YXJl
-IHBhcmVudEEvQi4gbWlzdW5kZXJzdGFuZA0KdGhpcyB3aWxsIG1pc3VuZGVyc3RhbmQgdGhlIHdo
-b2xlIGZpeC4NCg0KPiANCj4gPg0KPiA+IElmIHdlIHNraXAgc3RlcDIsIGtlZXAgY2xrMCBvbiwg
-c3RlcCAzIHdpbGwgbm90IHRyaWdnZXIgc3lzdGVtIGhhbmcuDQo+ID4gSG93ZXZlciB3ZSBoYXZl
-IENMS19PUFNfUEFSRU5UX0VOQUJMRSBmbGFnLCB3aGljaCB3aWxsIHVucHJlcGFyZQ0KPiA+IGRp
-c2FibGUgdGhlIGNsazAgd2hpY2ggd2lsbCBub3QgYmUgdXNlZC4NCj4gPg0KPiA+IFRvIGFkZHJl
-c3MgdGhpcyBpc3N1ZSwgd2UgY291bGQgdXNlIGZvbGxvd2luZyBzaW1wbGllZCBzb2Z0d2FyZSBm
-bG93Og0KPiA+IEFmdGVyIHRoZSBmaXJzdCB0YXJnZXQgcmVnaXN0ZXIgc2V0DQo+ID4gd2FpdCB0
-aGUgdGFyZ2V0IHJlZ2lzdGVyIHNldCBmaW5pc2hlZA0KPiA+IHNldCB0aGUgdGFyZ2V0IHJlZ2lz
-dGVyIHNldCBhZ2Fpbg0KPiA+IHdhaXQgdGhlIHRhcmdldCByZWdpc3RlciBzZXQgZmluaXNoZWQN
-Cj4gPg0KPiA+IFRoZSB1cHBlciBmbG93IHdpbGwgbWFrZSBzdXJlIFNFTF9BIGFuZCBTRUxfQiBi
-b3RoIHNldCB0aGUgbmV3IG11eCwNCj4gPiBidXQgd2l0aCBvbmx5IG9uZSBwYXRoIGdhdGUgb24u
-DQo+ID4NCj4gPiBBbmQgdGhlcmUgd2lsbCBiZSBubyBzeXN0ZW0gaGFuZyBhbnltb3JlIHdpdGgg
-c3RlcDMuDQo+IA0KPiBJcyB0aGlzIElDIHByb3Bvc2VkIHNvbHV0aW9uPw0KDQpUaGlzIGlzIHdo
-YXQgSSBwcm9wb3NlZCBhbmQgSUMgdGVhbSBjb25maXJtZWQuDQoNCj4gDQo+ID4NCj4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBQZW5nIEZhbiA8cGVuZy5mYW5AbnhwLmNvbT4NCj4gPiAtLS0NCj4gPg0KPiA+
-IFYyOg0KPiA+ICBEcm9wIHdhaXQgYWZ0ZXIgd3JpdGUsIGFkZCBvbmUgbGluZSBjb21tZW50IGZv
-ciB3cml0ZSB0d2ljZS4NCj4gPg0KPiA+ICBkcml2ZXJzL2Nsay9pbXgvY2xrLWNvbXBvc2l0ZS04
-bS5jIHwgNjINCj4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLQ0KPiA+
-ICAxIGZpbGUgY2hhbmdlZCwgNjEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+
-ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xrL2lteC9jbGstY29tcG9zaXRlLThtLmMNCj4gPiBi
-L2RyaXZlcnMvY2xrL2lteC9jbGstY29tcG9zaXRlLThtLmMNCj4gPiBpbmRleCA5OTc3MzUxOWI1
-YTUuLmVhZTAyYzE1MWNlZCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2Nsay9pbXgvY2xrLWNv
-bXBvc2l0ZS04bS5jDQo+ID4gKysrIGIvZHJpdmVycy9jbGsvaW14L2Nsay1jb21wb3NpdGUtOG0u
-Yw0KPiA+IEBAIC0yNCw2ICsyNCwxMiBAQA0KPiA+DQo+ID4gICNkZWZpbmUgUENHX0NHQ19TSElG
-VAkJMjgNCj4gPg0KPiA+ICsjZGVmaW5lIFBSRV9SRUdfT0ZGCQkweDMwDQo+ID4gKyNkZWZpbmUg
-UFJFX01VWEFfU0hJRlQJCTI0DQo+ID4gKyNkZWZpbmUgUFJFX01VWEFfTUFTSwkJMHg3DQo+ID4g
-KyNkZWZpbmUgUFJFX01VWEJfU0hJRlQJCTgNCj4gPiArI2RlZmluZSBQUkVfTVVYQl9NQVNLCQkw
-eDcNCj4gDQo+IEFyZSB0aG9zZSBtYWNyb3MgdXNlZCBzb21ld2hlcmU/DQoNClJlbW92ZSBpbiB2
-My4NCg0KPiANCj4gPiArDQo+ID4gIHN0YXRpYyB1bnNpZ25lZCBsb25nIGlteDhtX2Nsa19jb21w
-b3NpdGVfZGl2aWRlcl9yZWNhbGNfcmF0ZShzdHJ1Y3QNCj4gPiBjbGtfaHcgKmh3LA0KPiA+ICAJ
-CQkJCQl1bnNpZ25lZCBsb25nIHBhcmVudF9yYXRlKQ0KPiA+ICB7DQo+ID4gQEAgLTEyNCw2ICsx
-MzAsNTcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBjbGtfb3BzDQo+ID4gaW14OG1fY2xrX2NvbXBv
-c2l0ZV9kaXZpZGVyX29wcyA9IHsNCj4gPiAgCS5zZXRfcmF0ZSA9IGlteDhtX2Nsa19jb21wb3Np
-dGVfZGl2aWRlcl9zZXRfcmF0ZSwNCj4gPiAgfTsNCj4gPg0KPiA+ICtzdGF0aWMgdTggaW14OG1f
-Y2xrX2NvbXBvc2l0ZV9tdXhfZ2V0X3BhcmVudChzdHJ1Y3QgY2xrX2h3ICpodykgew0KPiA+ICsJ
-c3RydWN0IGNsa19tdXggKm11eCA9IHRvX2Nsa19tdXgoaHcpOw0KPiA+ICsJdTMyIHZhbDsNCj4g
-PiArDQo+ID4gKwl2YWwgPSByZWFkbChtdXgtPnJlZykgPj4gbXV4LT5zaGlmdDsNCj4gPiArCXZh
-bCAmPSBtdXgtPm1hc2s7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIGNsa19tdXhfdmFsX3RvX2luZGV4
-KGh3LCBtdXgtPnRhYmxlLCBtdXgtPmZsYWdzLCB2YWwpOyB9DQo+IA0KPiBZb3UgZG9uJ3QgaGF2
-ZSB0byByZWRlZmluaXRpb24gdGhlbSBpZiB0aGV5J3JlIHRoZSBzYW1lIGFzIGNsa19tdXhfb3Bz
-Lg0KPiBZb3UgaGF2ZSB0aGUgYWNjZXNzIHRvIGNsa19tdXhfb3BzLg0KDQpUaGlzIHdpbGwgcmVx
-dWlyZSBleHBvcnRfc3ltYm9sIG9mIGNsa19tdXhfb3BzIGNhbGxiYWNrcy4NCg0KPiANCj4gPiAr
-DQo+ID4gK3N0YXRpYyBpbnQgaW14OG1fY2xrX2NvbXBvc2l0ZV9tdXhfc2V0X3BhcmVudChzdHJ1
-Y3QgY2xrX2h3ICpodywgdTgNCj4gPiAraW5kZXgpIHsNCj4gPiArCXN0cnVjdCBjbGtfbXV4ICpt
-dXggPSB0b19jbGtfbXV4KGh3KTsNCj4gPiArCXUzMiB2YWwgPSBjbGtfbXV4X2luZGV4X3RvX3Zh
-bChtdXgtPnRhYmxlLCBtdXgtPmZsYWdzLCBpbmRleCk7DQo+ID4gKwl1bnNpZ25lZCBsb25nIGZs
-YWdzID0gMDsNCj4gPiArCXUzMiByZWc7DQo+ID4gKw0KPiA+ICsJaWYgKG11eC0+bG9jaykNCj4g
-PiArCQlzcGluX2xvY2tfaXJxc2F2ZShtdXgtPmxvY2ssIGZsYWdzKTsNCj4gPiArDQo+ID4gKwly
-ZWcgPSByZWFkbChtdXgtPnJlZyk7DQo+ID4gKwlyZWcgJj0gfihtdXgtPm1hc2sgPDwgbXV4LT5z
-aGlmdCk7DQo+ID4gKwl2YWwgPSB2YWwgPDwgbXV4LT5zaGlmdDsNCj4gPiArCXJlZyB8PSB2YWw7
-DQo+ID4gKwkvKiB3cml0ZSB0d2ljZSB0byBtYWtlIHN1cmUgU0VMX0EvQiBwb2ludCB0aGUgc2Ft
-ZSBtdXggKi8NCj4gPiArCXdyaXRlbChyZWcsIG11eC0+cmVnKTsNCj4gPiArCXdyaXRlbChyZWcs
-IG11eC0+cmVnKTsNCj4gDQo+IFdoeSB0aGlzIGFmZmVjdHMgYm90aCBTRUxfQS9CPw0KDQpUaGUg
-aW50ZXJuYWwgY291bnRlciB3aWxsIG1ha2Ugc3VyZSBib3RoIFNFTF9BL0IgcG9pbnQNCnRvIHRo
-ZSBzYW1lIG11eC4NCg0KPiBWZXJ5IHRyaWNreSBhbmQgbWF5IHdvcnRoIG1vcmUgY29tbWVudHMu
-DQoNCkFoLCBJIHRoaW5rIFJNIHNob3VsZCBiZSBjbGVhciBhYm91dCB0aGUgdGFyZ2V0IGludGVy
-ZmFjZQ0KYW5kIG5vbi10YXJnZXQgaW50ZXJmYWNlLg0KDQpXaGVuIHlvdSB3cml0ZSBvbmNlLCBz
-YXlpbmcgdXNlIFNFTF9BLCB3aGVuDQp5b3Ugd3JpdGUgdGhlIDJuZCwgdGhlIGhhcmR3YXJlIHdp
-bGwgdXNlIFNFTF9CLA0Kd2hlbiB5b3Ugd3JpdGUgM3JkLCB0aGUgaGFyZHdhcmUgd2lsbCB1c2Ug
-U0VMX0EuDQphbmQgLi4uDQoNCj4gDQo+IEJlc2lkZXMgdGhhdCwgSSdkIGxpa2UgdG8gc2VlIEFi
-ZWwncyBjb21tZW50cyBvbiB0aGlzIHBhdGNoLg0KDQoNCkFiZWwsDQoNCiBBbnkgY29tbWVudHM/
-DQoNClRoYW5rcywNClBlbmcuDQoNCj4gDQo+IFJlZ2FyZHMNCj4gQWlzaGVuZw0KPiANCj4gPiAr
-DQo+ID4gKwlpZiAobXV4LT5sb2NrKQ0KPiA+ICsJCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUobXV4
-LT5sb2NrLCBmbGFncyk7DQo+ID4gKw0KPiA+ICsJcmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+
-ID4gK3N0YXRpYyBpbnQNCj4gPiAraW14OG1fY2xrX2NvbXBvc2l0ZV9tdXhfZGV0ZXJtaW5lX3Jh
-dGUoc3RydWN0IGNsa19odyAqaHcsDQo+ID4gKwkJCQkgICAgICAgc3RydWN0IGNsa19yYXRlX3Jl
-cXVlc3QgKnJlcSkgew0KPiA+ICsJc3RydWN0IGNsa19tdXggKm11eCA9IHRvX2Nsa19tdXgoaHcp
-Ow0KPiA+ICsNCj4gPiArCXJldHVybiBjbGtfbXV4X2RldGVybWluZV9yYXRlX2ZsYWdzKGh3LCBy
-ZXEsIG11eC0+ZmxhZ3MpOyB9DQo+IA0KPiBTYW1lIGFzIGJvdmUuDQo+IA0KPiA+ICsNCj4gPiAr
-DQo+ID4gK2NvbnN0IHN0cnVjdCBjbGtfb3BzIGlteDhtX2Nsa19jb21wb3NpdGVfbXV4X29wcyA9
-IHsNCj4gPiArCS5nZXRfcGFyZW50ID0gaW14OG1fY2xrX2NvbXBvc2l0ZV9tdXhfZ2V0X3BhcmVu
-dCwNCj4gPiArCS5zZXRfcGFyZW50ID0gaW14OG1fY2xrX2NvbXBvc2l0ZV9tdXhfc2V0X3BhcmVu
-dCwNCj4gPiArCS5kZXRlcm1pbmVfcmF0ZSA9IGlteDhtX2Nsa19jb21wb3NpdGVfbXV4X2RldGVy
-bWluZV9yYXRlLA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiAgc3RydWN0IGNsa19odyAqaW14OG1fY2xr
-X2h3X2NvbXBvc2l0ZV9mbGFncyhjb25zdCBjaGFyICpuYW1lLA0KPiA+ICAJCQkJCWNvbnN0IGNo
-YXIgKiBjb25zdCAqcGFyZW50X25hbWVzLA0KPiA+ICAJCQkJCWludCBudW1fcGFyZW50cywgdm9p
-ZCBfX2lvbWVtICpyZWcsIEBAIC0xMzYsNg0KPiA+ICsxOTMsNyBAQCBzdHJ1Y3QgY2xrX2h3ICpp
-bXg4bV9jbGtfaHdfY29tcG9zaXRlX2ZsYWdzKGNvbnN0IGNoYXINCj4gPiArKm5hbWUsDQo+ID4g
-IAlzdHJ1Y3QgY2xrX2dhdGUgKmdhdGUgPSBOVUxMOw0KPiA+ICAJc3RydWN0IGNsa19tdXggKm11
-eCA9IE5VTEw7DQo+ID4gIAljb25zdCBzdHJ1Y3QgY2xrX29wcyAqZGl2aWRlcl9vcHM7DQo+ID4g
-Kwljb25zdCBzdHJ1Y3QgY2xrX29wcyAqbXV4X29wczsNCj4gPg0KPiA+ICAJbXV4ID0ga3phbGxv
-YyhzaXplb2YoKm11eCksIEdGUF9LRVJORUwpOw0KPiA+ICAJaWYgKCFtdXgpDQo+ID4gQEAgLTE1
-NywxMCArMjE1LDEyIEBAIHN0cnVjdCBjbGtfaHcNCj4gPiAqaW14OG1fY2xrX2h3X2NvbXBvc2l0
-ZV9mbGFncyhjb25zdCBjaGFyICpuYW1lLA0KPiA+ICAJCWRpdi0+c2hpZnQgPSBQQ0dfRElWX1NI
-SUZUOw0KPiA+ICAJCWRpdi0+d2lkdGggPSBQQ0dfQ09SRV9ESVZfV0lEVEg7DQo+ID4gIAkJZGl2
-aWRlcl9vcHMgPSAmY2xrX2RpdmlkZXJfb3BzOw0KPiA+ICsJCW11eF9vcHMgPSAmaW14OG1fY2xr
-X2NvbXBvc2l0ZV9tdXhfb3BzOw0KPiA+ICAJfSBlbHNlIHsNCj4gPiAgCQlkaXYtPnNoaWZ0ID0g
-UENHX1BSRURJVl9TSElGVDsNCj4gPiAgCQlkaXYtPndpZHRoID0gUENHX1BSRURJVl9XSURUSDsN
-Cj4gPiAgCQlkaXZpZGVyX29wcyA9ICZpbXg4bV9jbGtfY29tcG9zaXRlX2RpdmlkZXJfb3BzOw0K
-PiA+ICsJCW11eF9vcHMgPSAmY2xrX211eF9vcHM7DQo+ID4gIAl9DQo+ID4NCj4gPiAgCWRpdi0+
-bG9jayA9ICZpbXhfY2NtX2xvY2s7DQo+ID4gQEAgLTE3Niw3ICsyMzYsNyBAQCBzdHJ1Y3QgY2xr
-X2h3DQo+ICppbXg4bV9jbGtfaHdfY29tcG9zaXRlX2ZsYWdzKGNvbnN0DQo+ID4gY2hhciAqbmFt
-ZSwNCj4gPiAgCWdhdGUtPmxvY2sgPSAmaW14X2NjbV9sb2NrOw0KPiA+DQo+ID4gIAlodyA9IGNs
-a19od19yZWdpc3Rlcl9jb21wb3NpdGUoTlVMTCwgbmFtZSwgcGFyZW50X25hbWVzLA0KPiA+IG51
-bV9wYXJlbnRzLA0KPiA+IC0JCQltdXhfaHcsICZjbGtfbXV4X29wcywgZGl2X2h3LA0KPiA+ICsJ
-CQltdXhfaHcsIG11eF9vcHMsIGRpdl9odywNCj4gPiAgCQkJZGl2aWRlcl9vcHMsIGdhdGVfaHcs
-ICZjbGtfZ2F0ZV9vcHMsIGZsYWdzKTsNCj4gPiAgCWlmIChJU19FUlIoaHcpKQ0KPiA+ICAJCWdv
-dG8gZmFpbDsNCj4gPiAtLQ0KPiA+IDIuMTYuNA0KDQo=
+On Sat, Apr 25, 2020 at 1:42 PM Mateusz Holenko <mholenko@antmicro.com> wrote:
+>
+> From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
+>
+> This commit adds driver for the FPGA-based LiteX SoC
+> Controller from LiteX SoC builder.
+>
+> Co-developed-by: Mateusz Holenko <mholenko@antmicro.com>
+> Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
+> Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
+> ---
+>
+> Notes:
+>     Changes in v5:
+>     - removed helper accessors and used __raw_readl/__raw_writel instead
+>     - fixed checking for errors in litex_soc_ctrl_probe
+>
+>     Changes in v4:
+>     - fixed indent in Kconfig's help section
+>     - fixed copyright header
+>     - changed compatible to "litex,soc-controller"
+>     - simplified litex_soc_ctrl_probe
+>     - removed unnecessary litex_soc_ctrl_remove
+>
+>     This commit has been introduced in v3 of the patchset.
+>
+>     It includes a simplified version of common 'litex.h'
+>     header introduced in v2 of the patchset.
+>
+>  MAINTAINERS                        |   2 +
+>  drivers/soc/Kconfig                |   1 +
+>  drivers/soc/Makefile               |   1 +
+>  drivers/soc/litex/Kconfig          |  14 ++
+>  drivers/soc/litex/Makefile         |   3 +
+>  drivers/soc/litex/litex_soc_ctrl.c | 197 +++++++++++++++++++++++++++++
+>  include/linux/litex.h              |  45 +++++++
+>  7 files changed, 263 insertions(+)
+>  create mode 100644 drivers/soc/litex/Kconfig
+>  create mode 100644 drivers/soc/litex/Makefile
+>  create mode 100644 drivers/soc/litex/litex_soc_ctrl.c
+>  create mode 100644 include/linux/litex.h
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 421ede6c4f71..1afe7348353b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9820,6 +9820,8 @@ M:        Karol Gugala <kgugala@antmicro.com>
+>  M:     Mateusz Holenko <mholenko@antmicro.com>
+>  S:     Maintained
+>  F:     Documentation/devicetree/bindings/*/litex,*.yaml
+> +F:     drivers/soc/litex/litex_soc_ctrl.c
+> +F:     include/linux/litex.h
+>
+>  LIVE PATCHING
+>  M:     Josh Poimboeuf <jpoimboe@redhat.com>
+> diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
+> index 1778f8c62861..78add2a163be 100644
+> --- a/drivers/soc/Kconfig
+> +++ b/drivers/soc/Kconfig
+> @@ -9,6 +9,7 @@ source "drivers/soc/bcm/Kconfig"
+>  source "drivers/soc/fsl/Kconfig"
+>  source "drivers/soc/imx/Kconfig"
+>  source "drivers/soc/ixp4xx/Kconfig"
+> +source "drivers/soc/litex/Kconfig"
+>  source "drivers/soc/mediatek/Kconfig"
+>  source "drivers/soc/qcom/Kconfig"
+>  source "drivers/soc/renesas/Kconfig"
+> diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
+> index a39f17cea376..49bbb6ca6d95 100644
+> --- a/drivers/soc/Makefile
+> +++ b/drivers/soc/Makefile
+> @@ -14,6 +14,7 @@ obj-$(CONFIG_ARCH_GEMINI)     += gemini/
+>  obj-y                          += imx/
+>  obj-$(CONFIG_ARCH_IXP4XX)      += ixp4xx/
+>  obj-$(CONFIG_SOC_XWAY)         += lantiq/
+> +obj-$(CONFIG_LITEX_SOC_CONTROLLER) += litex/
+>  obj-y                          += mediatek/
+>  obj-y                          += amlogic/
+>  obj-y                          += qcom/
+> diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
+> new file mode 100644
+> index 000000000000..71264c0e1d6c
+> --- /dev/null
+> +++ b/drivers/soc/litex/Kconfig
+> @@ -0,0 +1,14 @@
+> +# SPDX-License_Identifier: GPL-2.0
+> +
+> +menu "Enable LiteX SoC Builder specific drivers"
+> +
+> +config LITEX_SOC_CONTROLLER
+> +       tristate "Enable LiteX SoC Controller driver"
+> +       help
+> +         This option enables the SoC Controller Driver which verifies
+> +         LiteX CSR access and provides common litex_get_reg/litex_set_reg
+> +         accessors.
+> +         All drivers that use functions from litex.h must depend on
+> +         LITEX_SOC_CONTROLLER.
+> +
+> +endmenu
+> diff --git a/drivers/soc/litex/Makefile b/drivers/soc/litex/Makefile
+> new file mode 100644
+> index 000000000000..98ff7325b1c0
+> --- /dev/null
+> +++ b/drivers/soc/litex/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License_Identifier: GPL-2.0
+> +
+> +obj-$(CONFIG_LITEX_SOC_CONTROLLER)     += litex_soc_ctrl.o
+> diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
+> new file mode 100644
+> index 000000000000..16f1625836a5
+> --- /dev/null
+> +++ b/drivers/soc/litex/litex_soc_ctrl.c
+> @@ -0,0 +1,197 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * LiteX SoC Controller Driver
+> + *
+> + * Copyright (C) 2020 Antmicro <www.antmicro.com>
+> + *
+> + */
+> +
+> +#include <linux/litex.h>
+> +#include <linux/device.h>
+> +#include <linux/errno.h>
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/printk.h>
+> +#include <linux/module.h>
+> +#include <linux/errno.h>
+> +#include <linux/io.h>
+> +
+> +/*
+> + * The parameters below are true for LiteX SoC
+> + * configured for 8-bit CSR Bus, 32-bit aligned.
+> + *
+> + * Supporting other configurations will require
+> + * extending the logic in this header.
+> + */
+> +#define LITEX_REG_SIZE             0x4
+> +#define LITEX_SUBREG_SIZE          0x1
+> +#define LITEX_SUBREG_SIZE_BIT      (LITEX_SUBREG_SIZE * 8)
+> +
+> +static DEFINE_SPINLOCK(csr_lock);
+> +
+> +/*
+> + * LiteX SoC Generator, depending on the configuration,
+> + * can split a single logical CSR (Control & Status Register)
+> + * into a series of consecutive physical registers.
+> + *
+> + * For example, in the configuration with 8-bit CSR Bus,
+> + * 32-bit aligned (the default one for 32-bit CPUs) a 32-bit
+> + * logical CSR will be generated as four 32-bit physical registers,
+> + * each one containing one byte of meaningful data.
+> + *
+> + * For details see: https://github.com/enjoy-digital/litex/issues/314
+
+This could link to the wiki
+(https://github.com/enjoy-digital/litex/wiki/CSR-Bus) directly.
+(Suggested by Gabriel Somlo <gsomlo@gmail.com>)
+
+> + *
+> + * The purpose of `litex_set_reg`/`litex_get_reg` is to implement
+> + * the logic of writing to/reading from the LiteX CSR in a single
+> + * place that can be then reused by all LiteX drivers.
+> + */
+> +void litex_set_reg(void __iomem *reg, unsigned long reg_size,
+> +                   unsigned long val)
+> +{
+> +       unsigned long shifted_data, shift, i;
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&csr_lock, flags);
+> +
+> +       for (i = 0; i < reg_size; ++i) {
+> +               shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
+> +               shifted_data = val >> shift;
+> +
+> +               __raw_writel(shifted_data, reg + (LITEX_REG_SIZE * i));
+
+As Gabriel Somlo <gsomlo@gmail.com> suggested to me, I could still use
+readl/writel/ioread/iowrite() standard functions providing memory
+barriers *and* have values in CPU native endianness by using the
+following constructs:
+
+`le32_to_cpu(readl(addr))`
+
+and
+
+`writel(cpu_to_le32(value), addr)`
+
+as le32_to_cpu/cpu_to_le32():
+- does nothing on LE CPUs and
+- reorders bytes on BE CPUs which in turn reverts swapping made by
+readl() resulting in returning the original value.
+
+> +       }
+> +
+> +       spin_unlock_irqrestore(&csr_lock, flags);
+> +}
+> +
+> +unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_size)
+> +{
+> +       unsigned long shifted_data, shift, i;
+> +       unsigned long result = 0;
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&csr_lock, flags);
+> +
+> +       for (i = 0; i < reg_size; ++i) {
+> +               shifted_data = __raw_readl(reg + (LITEX_REG_SIZE * i));
+> +
+> +               shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
+> +               result |= (shifted_data << shift);
+> +       }
+> +
+> +       spin_unlock_irqrestore(&csr_lock, flags);
+> +
+> +       return result;
+> +}
+> +
+> +static int accessors_ok;
+> +
+> +/*
+> + * Check if accessors are safe to be used by other drivers
+> + * returns true if yes - false if not
+> + */
+> +int litex_check_accessors(void)
+> +{
+> +       return accessors_ok;
+> +}
+> +
+> +#define SCRATCH_REG_OFF         0x04
+> +#define SCRATCH_REG_SIZE        4
+> +#define SCRATCH_REG_VALUE       0x12345678
+> +#define SCRATCH_TEST_VALUE      0xdeadbeef
+> +
+> +/*
+> + * Check LiteX CSR read/write access
+> + *
+> + * This function reads and writes a scratch register in order
+> + * to verify if CSR access works.
+> + *
+> + * In case any problems are detected, the driver should panic
+> + * and not set `accessors_ok` flag. As a result no other
+> + * LiteX driver should access CSR bus.
+> + *
+> + * Access to the LiteX CSR is, by design, done in CPU native
+> + * endianness. The driver should not dynamically configure
+> + * access functions when the endianness mismatch is detected.
+> + * Such situation indicates problems in the soft SoC design
+> + * and should be solved at the LiteX generator level,
+> + * not in the software.
+> + */
+> +static int litex_check_csr_access(void __iomem *reg_addr)
+> +{
+> +       unsigned long reg;
+> +
+> +       reg = litex_get_reg(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_SIZE);
+> +
+> +       if (reg != SCRATCH_REG_VALUE) {
+> +               panic("Scratch register read error! Expected: 0x%x but got: 0x%lx",
+> +                       SCRATCH_REG_VALUE, reg);
+> +               return -EINVAL;
+> +       }
+> +
+> +       litex_set_reg(reg_addr + SCRATCH_REG_OFF,
+> +               SCRATCH_REG_SIZE, SCRATCH_TEST_VALUE);
+> +       reg = litex_get_reg(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_SIZE);
+> +
+> +       if (reg != SCRATCH_TEST_VALUE) {
+> +               panic("Scratch register write error! Expected: 0x%x but got: 0x%lx",
+> +                       SCRATCH_TEST_VALUE, reg);
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* restore original value of the SCRATCH register */
+> +       litex_set_reg(reg_addr + SCRATCH_REG_OFF,
+> +               SCRATCH_REG_SIZE, SCRATCH_REG_VALUE);
+> +
+> +       /* Set flag for other drivers */
+> +       accessors_ok = 1;
+> +       pr_info("LiteX SoC Controller driver initialized");
+> +
+> +       return 0;
+> +}
+> +
+> +struct litex_soc_ctrl_device {
+> +       void __iomem *base;
+> +};
+> +
+> +static const struct of_device_id litex_soc_ctrl_of_match[] = {
+> +       {.compatible = "litex,soc-controller"},
+> +       {},
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, litex_soc_ctrl_of_match);
+> +
+> +static int litex_soc_ctrl_probe(struct platform_device *pdev)
+> +{
+> +       struct device *dev;
+> +       struct device_node *node;
+> +       struct litex_soc_ctrl_device *soc_ctrl_dev;
+> +
+> +       dev = &pdev->dev;
+> +       node = dev->of_node;
+> +       if (!node)
+> +               return -ENODEV;
+> +
+> +       soc_ctrl_dev = devm_kzalloc(dev, sizeof(*soc_ctrl_dev), GFP_KERNEL);
+> +       if (!soc_ctrl_dev)
+> +               return -ENOMEM;
+> +
+> +       soc_ctrl_dev->base = devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(soc_ctrl_dev->base))
+> +               return PTR_ERR(soc_ctrl_dev->base);
+> +
+> +       return litex_check_csr_access(soc_ctrl_dev->base);
+> +}
+> +
+> +static struct platform_driver litex_soc_ctrl_driver = {
+> +       .driver = {
+> +               .name = "litex-soc-controller",
+> +               .of_match_table = of_match_ptr(litex_soc_ctrl_of_match)
+> +       },
+> +       .probe = litex_soc_ctrl_probe,
+> +};
+> +
+> +module_platform_driver(litex_soc_ctrl_driver);
+> +MODULE_DESCRIPTION("LiteX SoC Controller driver");
+> +MODULE_AUTHOR("Antmicro <www.antmicro.com>");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/include/linux/litex.h b/include/linux/litex.h
+> new file mode 100644
+> index 000000000000..f31062436273
+> --- /dev/null
+> +++ b/include/linux/litex.h
+> @@ -0,0 +1,45 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Common LiteX header providing
+> + * helper functions for accessing CSRs.
+> + *
+> + * Implementation of the functions is provided by
+> + * the LiteX SoC Controller driver.
+> + *
+> + * Copyright (C) 2019-2020 Antmicro <www.antmicro.com>
+> + */
+> +
+> +#ifndef _LINUX_LITEX_H
+> +#define _LINUX_LITEX_H
+> +
+> +#include <linux/io.h>
+> +#include <linux/types.h>
+> +#include <linux/compiler_types.h>
+> +
+> +/*
+> + * litex_check_accessors is a function implemented in
+> + * drivers/soc/litex/litex_soc_controller.c
+> + * checking if the common LiteX CSR accessors
+> + * are safe to be used by the drivers;
+> + * returns true (1) if yes - false (0) if not
+> + *
+> + * Important: All drivers that use litex_set_reg/litex_get_reg
+> + * functions should make sure that LiteX SoC Controller driver
+> + * has verified LiteX CSRs read and write operations before
+> + * issuing any read/writes to the LiteX peripherals.
+> + *
+> + * Exemplary snippet that can be used at the beginning
+> + * of the driver's probe() function to ensure that LiteX
+> + * SoC Controller driver is properely initialized:
+> + *
+> + * if (!litex_check_accessors())
+> + *     return -EPROBE_DEFER;
+> + */
+> +int litex_check_accessors(void);
+> +
+> +void litex_set_reg(void __iomem *reg, unsigned long reg_sz, unsigned long val);
+> +
+> +unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_sz);
+> +
+> +
+> +#endif /* _LINUX_LITEX_H */
+> --
+> 2.25.1
+>
+
+
+--
+Mateusz Holenko
+Antmicro Ltd | www.antmicro.com
+Roosevelta 22, 60-829 Poznan, Poland
