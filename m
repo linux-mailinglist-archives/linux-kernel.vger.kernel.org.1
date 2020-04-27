@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5FC1BA463
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783AB1BA45E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgD0NQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 09:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50984 "EHLO
+        id S1727111AbgD0NP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 09:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726539AbgD0NQb (ORCPT
+        by vger.kernel.org with ESMTP id S1726786AbgD0NPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 09:16:31 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0640C0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 06:16:31 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x77so9009988pfc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 06:16:31 -0700 (PDT)
+        Mon, 27 Apr 2020 09:15:25 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30590C0610D5;
+        Mon, 27 Apr 2020 06:15:25 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id e25so17528337ljg.5;
+        Mon, 27 Apr 2020 06:15:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
-         :content-disposition:user-agent;
-        bh=AtVxPA+abih+6PcdJSDFXbwqig8XiO36RhS1by5PBss=;
-        b=LILlQRFX1Dnxrt3IvHDJacv7N5nZv4OlIHGyXV/FpGjsp8tE6GxtNiI/scN5xIC3Q2
-         y8a1a5MHYWwNjB8I+p5PrTKCVGzrsgtCD7VOovS/dRMtYHkGSp19/O00EaM+TKxNcrYr
-         2fKUsk+ktoDCGQlla/Dg0u+ipZkHANpZ6UuaduR2eMhJf6sjcg1225atf+N28CppWOal
-         v8v277+aHseM/Vxndgm5A1akZCMw9E0w4zsn/ICMKw2zWWSnBA23F74aKK45+TeUdQwH
-         Af5MSJaUz1y3fMuWbrU+5/vsggnosc8xpPJ7cfBZDdA9uVCdljOiXV687BXZYHFqLlwG
-         DokQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Yv+Yf1SDaIjRjfiGBc4e6L26R7Y5+CX+LAg5EicPHrE=;
+        b=VAiQfdYYK49y2ij6jlP/UkXehRD0FlOK3KIywZgntgpXPqtpipYHBUXUYysji6qI8x
+         RRCREB9Hosdaoqf9u2vCOaanQTM/FmgI1G2e0FCWnl9m9/SSioQUMPx6paQZmrmoRb3U
+         GtbzkgF//kZajx/ADE61JJ5jlytOM59igNeWj7zSXPoX20knFCYqDeDdKiAyGmVPGXjE
+         tHgcux94zLaVlWzQ2z80QubdOcPkO7C/hcozd8pqm//44A4VrhmYOTV0gVtNRcGCn9tN
+         DVyB5UUCxDSeNFewBgELpVjvFcqxMXnc8+dpbfYbNd2MS/Lg40jmJJ756LM0rgJY0Ssl
+         Hlxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:mime-version:content-disposition:user-agent;
-        bh=AtVxPA+abih+6PcdJSDFXbwqig8XiO36RhS1by5PBss=;
-        b=STiXcSoodRDIgoAFBJSEtDbigYiWpLZiwQLsg3b7ru2xl6iw98g6jApweuNtYAm/Ja
-         5ag5IIwqMtkTQibCEH95ZzpjxFEJ8HtpB1ZK1F6qowkHFpz6U653I0r0VROKihm0IfK8
-         5AGmj3NwxHjMMQm1lul5IWbtD7FXh7z8SHkP48tmA/63AZN3fGbS+RhcIpwp8vQSvXmW
-         TyvSZLV8PDlCp2/WKBeHGrjqHKlLWad/Pp1sgkquFPtiTYhq0R1ZHl1/cFeNTWqltxJH
-         U8F/JpHCWnN7RbgDKuy0PGe8bo6bXgm+hv4rr0h9Grz0lGU/NKxX1hm70sfyiLTPEDRF
-         hwvA==
-X-Gm-Message-State: AGi0PuY//B26qviCpl/En/mB/2jVtyMORDv75TRkWBSKNQWfKk1nIcRS
-        cT0wAyF4/Mdp78xcoJGdi38=
-X-Google-Smtp-Source: APiQypJBfyoNlmd+Mh9sw4j36gl7szCVUAGfocfbrVsjyDlr+4wCQXfC+fmTcff4TI91OKXDKDfeMw==
-X-Received: by 2002:a62:1984:: with SMTP id 126mr24088026pfz.158.1587993391213;
-        Mon, 27 Apr 2020 06:16:31 -0700 (PDT)
-Received: from udknight.localhost ([59.57.158.27])
-        by smtp.gmail.com with ESMTPSA id 185sm13127345pfv.9.2020.04.27.06.16.29
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Apr 2020 06:16:30 -0700 (PDT)
-Received: from udknight.localhost (localhost [127.0.0.1])
-        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 03RDFMmg015710;
-        Mon, 27 Apr 2020 21:15:22 +0800
-Received: (from root@localhost)
-        by udknight.localhost (8.14.9/8.14.9/Submit) id 03RDFJpB015709;
-        Mon, 27 Apr 2020 21:15:19 +0800
-Date:   Mon, 27 Apr 2020 21:15:19 +0800
-From:   Wang YanQing <udknight@gmail.com>
-To:     joe@perches.com
-Cc:     apw@canonical.com, alexei.starovoitov@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] checkpatch: add dedicated checker for 'Fixes:' tag
-Message-ID: <20200427131519.GA15664@udknight>
-Mail-Followup-To: Wang YanQing <udknight@gmail.com>, joe@perches.com,
-        apw@canonical.com, alexei.starovoitov@gmail.com,
-        linux-kernel@vger.kernel.org
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yv+Yf1SDaIjRjfiGBc4e6L26R7Y5+CX+LAg5EicPHrE=;
+        b=IfnAl0+WTjKP7FeVsEjs5HZzyHoHf0v0WFBt4xKLg8C/JrF7aX2AwrRaX++rwjhBzW
+         ZprjHKhWmkKiLHdbAjDl57j/vAFujH1COwjZGcGrXHrh4YQVbbVgkCVDljx6oIWjVzaY
+         1MJYib4L39MMnr7NuW8wYvuLvoC+Uctux6NJ1hLkwBWIoJ1+GQoKHQyVeWjN3bQx5EB2
+         RM5YBwnZSW6oYiTDLA4bIpLGSPSqJrpuXBh1dbMe8FT6rsAf0L3fy5FjZqDwCL7kEdBu
+         k+IXmpER3fR+/SNiLLoFbFRTbb3LJBxtepthlI13Hq0jnpVe3K+kED0jplK4JNewcVuo
+         Kp3Q==
+X-Gm-Message-State: AGi0PuYCbOQcPtHMk/tP7JwQpirHCbf7fjMNr8Hqa1SMnwk7fZgSrBeT
+        G+FaZBrcF8IHDoS5xrjkMgWfN8jV
+X-Google-Smtp-Source: APiQypKEDGP/PSN983auyZAywmLt8GSg70EdZeYAC2WFD1YAvqJ8Q5FjzS/gNq1XPeVYCcycOiNAlg==
+X-Received: by 2002:a2e:b4a5:: with SMTP id q5mr14589286ljm.58.1587993323426;
+        Mon, 27 Apr 2020 06:15:23 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id z65sm11447664lfa.37.2020.04.27.06.15.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 06:15:22 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] i2c: tegra: Better handle case where CPU0 is busy
+ for a long time
+To:     Wolfram Sang <wsa@the-dreams.de>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>, linux-i2c@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <77a31b2f-f525-ba9e-f1ae-2b474465bde4@gmail.com>
+ <470b4de4-e98a-1bdc-049e-6259ad603507@nvidia.com>
+ <d2531fc1-b452-717d-af71-19497e14ef00@gmail.com>
+ <a5198024-7273-74c4-b4f4-3a29d042bc36@nvidia.com>
+ <f8fb1f7f-2497-033e-ff2c-c86c6caa9706@gmail.com>
+ <fd1ca178-1ea3-851f-20a6-10bf00453ce3@nvidia.com>
+ <a5734f19-254e-b6bc-e791-fa1ac63f11a4@gmail.com>
+ <79f6560e-dbb5-0ae1-49f8-cf1cd95396ec@nvidia.com>
+ <20200427074837.GC3451400@ulmo>
+ <c1190858-eaea-8e94-b4d1-1cf28076c330@gmail.com>
+ <20200427103851.GB24446@kunai>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <dc2de966-81d6-6ad5-0c51-16dd28ca4165@gmail.com>
+Date:   Mon, 27 Apr 2020 16:15:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.7.1 (2016-10-04)
+In-Reply-To: <20200427103851.GB24446@kunai>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to submitting-patches.rst, 'Fixes:' tag has a little
-stricter condition about the one line summary:
-"
-Do not split the tag across multiple
-lines, tags are exempt from the "wrap at 75 columns" rule in order to simplify
-parsing scripts
-"
+27.04.2020 13:38, Wolfram Sang пишет:
+> On Mon, Apr 27, 2020 at 12:52:10PM +0300, Dmitry Osipenko wrote:
+>> 27.04.2020 10:48, Thierry Reding пишет:
+>> ...
+>>>> Maybe but all these other problems appear to have existed for sometime
+>>>> now. We need to fix all, but for the moment we need to figure out what's
+>>>> best for v5.7.
+>>>
+>>> To me it doesn't sound like we have a good handle on what exactly is
+>>> going on here and we're mostly just poking around.
+>>>
+>>> And even if things weren't working quite properly before, it sounds to
+>>> me like this patch actually made things worse.
+>>
+>> There is a plenty of time to work on the proper fix now. To me it sounds
+>> like you're giving up on fixing the root of the problem, sorry.
+> 
+> From what I understood, there were (at least) two regressions reported.
+> So, to me, it makes sense to revert the change, so for upstream users
+> everything stays "the same". Of course, this does not mean it should
+> stay like this forever and you guys can work on fixing the root causes.
+> I'll happily apply them for this release when you are confident with the
+> results.
+> 
 
-And the current 'Fixes:' checker in "# Check for git id commit length and
-improperly formed commit descriptions" doesn't check for invalid commit id
-length, so I think it is better to add dedicated checker for 'Fixes:' TAG.
+For now it's a single regression in the PCIe driver and it's actually
+not a regression, but a PCIe driver bug that needs to be fixed. The I2C
+part should be okay.
 
-Signed-off-by: Wang YanQing <udknight@gmail.com>
----
- scripts/checkpatch.pl | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 23a001a..fbb31bc 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2820,7 +2820,7 @@ sub process {
- 		    ($line =~ /\bcommit\s+[0-9a-f]{5,}\b/i ||
- 		     ($line =~ /(?:\s|^)[0-9a-f]{12,40}(?:[\s"'\(\[]|$)/i &&
- 		      $line !~ /[\<\[][0-9a-f]{12,40}[\>\]]/i &&
--		      $line !~ /\bfixes:\s*[0-9a-f]{12,40}/i))) {
-+		      $line !~ /^\s*fixes:\s*([0-9a-f]{6,40})\s*(.*)/i))) {
- 			my $init_char = "c";
- 			my $orig_commit = "";
- 			my $short = 1;
-@@ -2979,6 +2979,13 @@ sub process {
- 			}
- 		}
- 
-+		if ($in_commit_log && $line =~ /^\s*fixes:\s*([0-9a-f]{6,40})\s*(.*)/i) {
-+		    if (length($1) != 12 || $2 !~ /^\(\"(.*)\"\)$/i) {
-+				ERROR("FIXES_TAG",
-+					"please use the 'Fixes:' tag with the first 12 characters of the SHA-1 ID, and the one line summary(no across multiple lines)\n" . $herecurr);
-+			}
-+		}
-+
- # ignore non-hunk lines and lines being removed
- 		next if (!$hunk_line || $line =~ /^-/);
- 
--- 
-1.8.5.6.2.g3d8a54e.dirty
+By reverting the I2C patch, we're back to the PCIe bug being papered
+over and I don't like this. Let's just fix the PCIe driver and the
+problem is gone.. it needs to be fixed anyways.
