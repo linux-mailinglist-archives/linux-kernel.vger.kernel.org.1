@@ -2,317 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 266341B9F87
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826C01B9F8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgD0JPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 05:15:38 -0400
-Received: from mail-vi1eur05on2067.outbound.protection.outlook.com ([40.107.21.67]:29627
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726243AbgD0JPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 05:15:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IwJMlHwFsiOs3qBCu8L2nTa0+NW/mEKXSo8p7OHtVAbEyJIJI0KHgA7m3+RWk1OqAd9uHPY7QMApoXFPYBjv4Z6+x4HcQPVOIt25Mct7sPhzIj1OnJF3K2S+t52K8auDIVMNGtw1HHlhOwGizn3NgHxwsLIFzRAWNpzMbYr3pmhAq/mBxKBJytmGqrioMYriSabwe0HNWVCUO5I5z8ljfxqkdECxLNSz1YpXwaCOSK7UVVEJTb44sKJbP/z/xDtgv3fImxt5ZE+1NZZKwQdgKchJcXU1OVz4zGn8TjZnaMFHycRQWcvotdJZL8TT+oBoWdtgu4DMJPHTRo3foIVfWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rrfu7uLCPIHwdKpUbqMptb8uneWrYyA6HQKTw7rKJMg=;
- b=Cn3opcbj5ARPY/kkdLZgjEEwGE53T76ucAmi9rwkHy8+upQF1aWjsb9UBYJqOsUQTELzLM7Fl9txhbDWsazMjGFBBuxlsgCUrlA7bCSToEv7XYlX2NcBQ2nJP4RGcj/hxxTDLDeFYrsLWyEt0IO2Qa1myaAcO06NcJ+O7quafn4rRvJXB6lExV+Aj/y8QsQjTL1kh+u1E+RMzLA1AfVHKl3HeiEQawWwFB+uY3RoLkwbNyifv+EUewllJUvFaLxchyAlOHAsmXO+aZgGQO5GPMAP1WgwQDvbJ9pNbJ4H2qVmJxSZiBbhasKi4urN0PrS83A3pgGvKniRoTdsH3yigQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rrfu7uLCPIHwdKpUbqMptb8uneWrYyA6HQKTw7rKJMg=;
- b=XjnVWKxmWsmdPu/ZADMokxwzAQ46mugFu/+r35jjRTjQ+uXkoYvEPtC1j8YdX2VZZCRARmwmRm8nMgQjTg4uDDikoGtqnWMkjB920aik3AcezwcWL0JY9vcIL5VwV3m4u4sk7o8ssAkcG3zVTgTZ7RYfIwuRc2g4khxG9x/zu34=
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB6PR0402MB2759.eurprd04.prod.outlook.com (2603:10a6:4:a2::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Mon, 27 Apr
- 2020 09:15:32 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.2937.020; Mon, 27 Apr 2020
- 09:15:32 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Leonard Crestez <leonard.crestez@nxp.com>,
-        Anson Huang <anson.huang@nxp.com>
-CC:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        Abel Vesa <abel.vesa@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        "aford173@gmail.com" <aford173@gmail.com>,
-        Jacky Bai <ping.bai@nxp.com>, Jun Li <jun.li@nxp.com>,
-        "l.stach@pengutronix.de" <l.stach@pengutronix.de>,
-        "andrew.smirnov@gmail.com" <andrew.smirnov@gmail.com>,
-        "agx@sigxcpu.org" <agx@sigxcpu.org>,
-        "angus@akkea.ca" <angus@akkea.ca>,
-        "heiko@sntech.de" <heiko@sntech.de>,
-        Andy Duan <fugang.duan@nxp.com>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
-Subject: RE: [PATCH V2 07/10] clk: imx: add mux ops for i.MX8M composite clk
-Thread-Topic: [PATCH V2 07/10] clk: imx: add mux ops for i.MX8M composite clk
-Thread-Index: AQHV+FjOyMJp4JjxAkWF8jtS4KMMQqiM9zMA
-Date:   Mon, 27 Apr 2020 09:15:32 +0000
-Message-ID: <DB6PR0402MB2760726D128E4BA868F03D9488AF0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-References: <1584008384-11578-1-git-send-email-peng.fan@nxp.com>
- <1584008384-11578-8-git-send-email-peng.fan@nxp.com>
- <VI1PR04MB69418E9348D5765B4AE01D18EED00@VI1PR04MB6941.eurprd04.prod.outlook.com>
-In-Reply-To: <VI1PR04MB69418E9348D5765B4AE01D18EED00@VI1PR04MB6941.eurprd04.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=peng.fan@nxp.com; 
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f824f403-9410-4a2f-b3eb-08d7ea8b897b
-x-ms-traffictypediagnostic: DB6PR0402MB2759:|DB6PR0402MB2759:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB6PR0402MB2759E5AF64E45247934139CA88AF0@DB6PR0402MB2759.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0386B406AA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(376002)(346002)(396003)(136003)(9686003)(54906003)(5660300002)(66446008)(44832011)(53546011)(8936002)(316002)(64756008)(66556008)(6506007)(76116006)(66476007)(7696005)(8676002)(110136005)(186003)(4326008)(6636002)(26005)(86362001)(2906002)(71200400001)(7416002)(81156014)(66946007)(478600001)(55016002)(52536014)(33656002);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +fXBj24TuVrAqXAQT4nWHPdbgG1/rfxovhd+omOS6cDyJhsPadRZVMdi2yr9wl+oU+Yw9IsB+j+pMEERJ4XyCu6+9hBKM2nEo9KaGOK8EpDQraNkACWisKWw7/eqA9XL2nXfR6OfAePZtv61+o7jAL5kbZOr0zbs+ljAcqWPBtZtA1xgAW2L4nAe8kuoP+luNVp1EOo17hnVXtjS3ebx8cuCejBEUT3tuSryNdcruLVcU21PhNMJlpHeLkz/HaOz89uOGKWI4yJk+j38EpNhF/MiyVEpmSHgpvZrbgBeb5JgfsjG5rkj5ceSFn5qmUTAlVLkCE3q3XhHTbqTj7/OVof0YNDL2a1oAop+wEq8pqk+rw3549v2ZbOOSpPoZMSqF2+jH6eTRzjGTznpxFb12h5vnelMiaKzF3K0y1fzr3LQm+gLRseosDoUN1/TW/Vf
-x-ms-exchange-antispam-messagedata: SgQKyd6bdjsdVHoZE2pZxvTQhS+m/leXTTY1E69RRr3cfGRVJ25DyppBO1A9zaJsunvNkksG/lz/+7cSJ1rF0SvO6ESlERS+yuHKvNmXmTWs7QBixmz7kU7tIR1n58JumEhk3RDGuZzh5quSIMLRQdc9orSCBx0CqB06aTlofNcHsw/mQW17J3kXAaYPhXUUn/2mwXI7tSi37ToXYZwdcUsw7JWQpomcxogRJge3w78bH3qoJEhxHw14iTguArXEy9tTFDihzCvCexNmEUiM6fVAg9gIEY+CaBmvUT3mAbm2ZwJ5bQ3DUIYCbzcQ0lo/wwwj1ftU4ki+mjbRsVxi15JW6NRfX2ECjsFj2GYPK1lb5KGoB3uhcWxbaQym1n8rajwsidSfT40o55f5RCXglHFpvChjK3CtzAD4iXEIVYQaL5J0IlklYyyHLgjWYnfKtzXx6E1EJ00y7f3Ms0J655u6j9vfUxgOsQZi+laEL08fE5yPIkiUxryD/FR4eadtsUBvv6o/eiV9K8+YXcYtQtNVCo0d6VRgrP30R8ykboB14CfinC9D6sFzl8/gYsP1swa+R2+vMz+erLnyeC+Jjdja1bhiDs2NbgtUWYdlPNeapb770MPMFCr3YqDFtEl9ETt/aDqrct4AytQBQx0EJz4/Sqt8i24rY01IKlLhdWqRvlZiRazy0FRegBLbOntRPTsmiGzp62xOouE5HlVT4VjMmTEDHUnmHk7TsYSwtzV5dUHU3ZHYqFyio/JEicZstzsa9Gn5W68qsbZtnGcEiFepUjugMs/WZVzoaxJdCEg=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726906AbgD0JQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 05:16:27 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:63468 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726651AbgD0JQ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 05:16:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1587978986; x=1619514986;
+  h=to:cc:references:from:message-id:date:mime-version:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=lwBfPp01QpnUdn4rYMapglbVIlsaGzSUpEy+Zy9cY3k=;
+  b=o0UZ98qOEyc8bPfkrwGwX8ldQqiNQLUxXn+c6sdKUmxLHEQAYgbq+zvf
+   EwHx5mImxsaVyKc5W3cEp43DlNVkTCvoS72zjRVyxCiUS/OIsK94NGRd8
+   a2GMw9/d77VbGBPQGHkdRqsDFam0Pjes/W4qWhGqaug8oRU7Mx+WFO1fi
+   E=;
+IronPort-SDR: WFlepa61gd2l1oxSOfHy+HsK7AoscM0YiRAnpi6uJe4uEZ8akQABPCHaoQQlG8sY8i00hgEXby
+ eYoyymr3f3xQ==
+X-IronPort-AV: E=Sophos;i="5.73,323,1583193600"; 
+   d="scan'208";a="27524015"
+Subject: Re: [PATCH v1 00/15] Add support for Nitro Enclaves
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-87a10be6.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 27 Apr 2020 09:16:12 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2c-87a10be6.us-west-2.amazon.com (Postfix) with ESMTPS id A6EFCA17CD;
+        Mon, 27 Apr 2020 09:16:11 +0000 (UTC)
+Received: from EX13D16EUB001.ant.amazon.com (10.43.166.28) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 27 Apr 2020 09:16:11 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.253) by
+ EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 27 Apr 2020 09:16:03 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Alexander Graf <graf@amazon.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>, Balbir Singh <sblbir@amazon.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200421184150.68011-1-andraprs@amazon.com>
+ <18406322-dc58-9b59-3f94-88e6b638fe65@redhat.com>
+ <ff65b1ed-a980-9ddc-ebae-996869e87308@amazon.com>
+ <2a4a15c5-7adb-c574-d558-7540b95e2139@redhat.com>
+ <1ee5958d-e13e-5175-faf7-a1074bd9846d@amazon.com>
+ <f560aed3-a241-acbd-6d3b-d0c831234235@redhat.com>
+ <80489572-72a1-dbe7-5306-60799711dae0@amazon.com>
+ <0467ce02-92f3-8456-2727-c4905c98c307@redhat.com>
+ <5f8de7da-9d5c-0115-04b5-9f08be0b34b0@amazon.com>
+ <095e3e9d-c9e5-61d0-cdfc-2bb099f02932@redhat.com>
+ <602565db-d9a6-149a-0e1a-fe9c14a90ce7@amazon.com>
+ <fb0bfd95-4732-f3c6-4a59-7227cf50356c@redhat.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <1c3f76ac-abf2-e5aa-1e70-55c6995b5901@amazon.com>
+Date:   Mon, 27 Apr 2020 12:15:53 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f824f403-9410-4a2f-b3eb-08d7ea8b897b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2020 09:15:32.2514
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KJurb3J6R7J7hjlRVLZmBltjrSQUj9Es3cubjx2EOZYZC6IN1BcBlEd/+T066dnRvsjqmwRT6jGpWCXqqACnQQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2759
+In-Reply-To: <fb0bfd95-4732-f3c6-4a59-7227cf50356c@redhat.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.161.253]
+X-ClientProxiedBy: EX13D12UWC002.ant.amazon.com (10.43.162.253) To
+ EX13D16EUB001.ant.amazon.com (10.43.166.28)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH V2 07/10] clk: imx: add mux ops for i.MX8M composite
-> clk
->=20
-> On 2020-03-12 12:27 PM, Peng Fan wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > The CORE/BUS root slice has following design, simplied graph:
-> > The difference is core not have pre_div block.
-> > A composite core/bus clk has 8 inputs for mux to select, saying clk[0-7=
-].
-> >
-> >              SEL_A  GA
-> >              +--+  +-+
-> >              |  +->+ +------+
-> > CLK[0-7]--->+  |  +-+      |
-> >         |    |  |      +----v---+    +----+
-> >         |    +--+      |pre_diva+---->    |  +---------+
-> >         |              +--------+    |mux +--+post_div |
-> >         |    +--+      |pre_divb+--->+    |  +---------+
-> >         |    |  |      +----^---+    +----+
-> >         +--->+  |  +-+      |
-> >              |  +->+ +------+
-> >              +--+  +-+
-> >              SEL_B  GB
-> >
-> > There will be system hang, when doing the following steps:
-> > 1. switch mux from clk0 to clk1
-> > 2. gate off clk0
-> > 3. swtich from clk1 to clk2, or gate off clk1
-> >
-> > Step 3 triggers system hang.
-> >
-> > If we skip step2, keep clk0 on, step 3 will not trigger system hang.
-> > However we have CLK_OPS_PARENT_ENABLE flag, which will unprepare
-> > disable the clk0 which will not be used.
->=20
-> As far as I understand when switching from clk1 to clk2 this is done by
-> temporarily switching the rightmost SELECT mux to whatever was in the
-> spare SEL, which is essentially arbitrary from linux POV.
-
-No. The fixes in this patches has been confirmed by IC design owner
-
->=20
-> This is quite unexpected but in theory it might be desirable to use a thi=
-rd
-> parent as a fallback.
-
-No. this will make things complicated. To CCM SEL_A and SEL_B,
-it is controlled by a hardware counter. Saying you write n times to
-the target interface.
-
-The mux will use n % 2 to choose SEL_A or SEL_B. write twice
-to make sure SEL_A and SEL_B has the same value.
-
-Thanks,
-Peng.
-
->=20
-> >
-> > To address this issue, we could use following simplied software flow:
-> > After the first target register set
-> > wait the target register set finished
-> > set the target register set again
-> > wait the target register set finished
-> >
-> > The upper flow will make sure SEL_A and SEL_B both set the new mux,
-> > but with only one path gate on.
-> > And there will be no system hang anymore with step3.
->=20
-> Your fix tries to work around this scenario by always setting the mux val=
-ue in
-> SEL_A and SEL_B to the same value after each set_parent operation.
->=20
-> But what if SEL_A and SEL_B are different at linux boot time and the firs=
-t
-> reparenting is done *after* disabling unused clocks? This doesn't happen =
-for
-> A53 because it's reparented during clock provider probe but maybe this
-> scenario could be contrived if bootloader touches one of the other bus sl=
-ices.
->=20
-> It might be extra safe to assign the parent of the spare mux at the start=
- of
-> each set_parent call. This could even be done on probe and this way would=
-n't
-> have to duplicate mux_ops just to do a double write.
->=20
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> >
-> > V2:
-> >   Drop wait after write, add one line comment for write twice.
-> >
-> >   drivers/clk/imx/clk-composite-8m.c | 62
-> +++++++++++++++++++++++++++++++++++++-
-> >   1 file changed, 61 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/clk/imx/clk-composite-8m.c
-> > b/drivers/clk/imx/clk-composite-8m.c
-> > index 99773519b5a5..eae02c151ced 100644
-> > --- a/drivers/clk/imx/clk-composite-8m.c
-> > +++ b/drivers/clk/imx/clk-composite-8m.c
-> > @@ -24,6 +24,12 @@
-> >
-> >   #define PCG_CGC_SHIFT		28
-> >
-> > +#define PRE_REG_OFF		0x30
-> > +#define PRE_MUXA_SHIFT		24
-> > +#define PRE_MUXA_MASK		0x7
-> > +#define PRE_MUXB_SHIFT		8
-> > +#define PRE_MUXB_MASK		0x7
->=20
-> These are unused.
->=20
-> > +
-> >   static unsigned long imx8m_clk_composite_divider_recalc_rate(struct
-> clk_hw *hw,
-> >   						unsigned long parent_rate)
-> >   {
-> > @@ -124,6 +130,57 @@ static const struct clk_ops
-> imx8m_clk_composite_divider_ops =3D {
-> >   	.set_rate =3D imx8m_clk_composite_divider_set_rate,
-> >   };
-> >
-> > +static u8 imx8m_clk_composite_mux_get_parent(struct clk_hw *hw) {
-> > +	struct clk_mux *mux =3D to_clk_mux(hw);
-> > +	u32 val;
-> > +
-> > +	val =3D readl(mux->reg) >> mux->shift;
-> > +	val &=3D mux->mask;
-> > +
-> > +	return clk_mux_val_to_index(hw, mux->table, mux->flags, val); }
-> > +
-> > +static int imx8m_clk_composite_mux_set_parent(struct clk_hw *hw, u8
-> > +index) {
-> > +	struct clk_mux *mux =3D to_clk_mux(hw);
-> > +	u32 val =3D clk_mux_index_to_val(mux->table, mux->flags, index);
-> > +	unsigned long flags =3D 0;
-> > +	u32 reg;
-> > +
-> > +	if (mux->lock)
-> > +		spin_lock_irqsave(mux->lock, flags);
-> > +
-> > +	reg =3D readl(mux->reg);
-> > +	reg &=3D ~(mux->mask << mux->shift);
-> > +	val =3D val << mux->shift;
-> > +	reg |=3D val;
-> > +	/* write twice to make sure SEL_A/B point the same mux */
-> > +	writel(reg, mux->reg);
-> > +	writel(reg, mux->reg);
-> > +
-> > +	if (mux->lock)
-> > +		spin_unlock_irqrestore(mux->lock, flags);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int
-> > +imx8m_clk_composite_mux_determine_rate(struct clk_hw *hw,
-> > +				       struct clk_rate_request *req) {
-> > +	struct clk_mux *mux =3D to_clk_mux(hw);
-> > +
-> > +	return clk_mux_determine_rate_flags(hw, req, mux->flags); }
-> > +
-> > +
-> > +const struct clk_ops imx8m_clk_composite_mux_ops =3D {
-> > +	.get_parent =3D imx8m_clk_composite_mux_get_parent,
-> > +	.set_parent =3D imx8m_clk_composite_mux_set_parent,
-> > +	.determine_rate =3D imx8m_clk_composite_mux_determine_rate,
-> > +};
-> > +
-> >   struct clk_hw *imx8m_clk_hw_composite_flags(const char *name,
-> >   					const char * const *parent_names,
-> >   					int num_parents, void __iomem *reg, @@
-> -136,6 +193,7 @@ struct
-> > clk_hw *imx8m_clk_hw_composite_flags(const char *name,
-> >   	struct clk_gate *gate =3D NULL;
-> >   	struct clk_mux *mux =3D NULL;
-> >   	const struct clk_ops *divider_ops;
-> > +	const struct clk_ops *mux_ops;
-> >
-> >   	mux =3D kzalloc(sizeof(*mux), GFP_KERNEL);
-> >   	if (!mux)
-> > @@ -157,10 +215,12 @@ struct clk_hw
-> *imx8m_clk_hw_composite_flags(const char *name,
-> >   		div->shift =3D PCG_DIV_SHIFT;
-> >   		div->width =3D PCG_CORE_DIV_WIDTH;
-> >   		divider_ops =3D &clk_divider_ops;
-> > +		mux_ops =3D &imx8m_clk_composite_mux_ops;
-> >   	} else {
-> >   		div->shift =3D PCG_PREDIV_SHIFT;
-> >   		div->width =3D PCG_PREDIV_WIDTH;
-> >   		divider_ops =3D &imx8m_clk_composite_divider_ops;
-> > +		mux_ops =3D &clk_mux_ops;
-> >   	}
-> >
-> >   	div->lock =3D &imx_ccm_lock;
-> > @@ -176,7 +236,7 @@ struct clk_hw
-> *imx8m_clk_hw_composite_flags(const char *name,
-> >   	gate->lock =3D &imx_ccm_lock;
-> >
-> >   	hw =3D clk_hw_register_composite(NULL, name, parent_names,
-> num_parents,
-> > -			mux_hw, &clk_mux_ops, div_hw,
-> > +			mux_hw, mux_ops, div_hw,
-> >   			divider_ops, gate_hw, &clk_gate_ops, flags);
-> >   	if (IS_ERR(hw))
-> >   		goto fail;
-> >
+CgpPbiAyNS8wNC8yMDIwIDE5OjA1LCBQYW9sbyBCb256aW5pIHdyb3RlOgo+IENBVVRJT046IFRo
+aXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9yZ2FuaXphdGlvbi4gRG8g
+bm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBjYW4gY29uZmly
+bSB0aGUgc2VuZGVyIGFuZCBrbm93IHRoZSBjb250ZW50IGlzIHNhZmUuCj4KPgo+Cj4gT24gMjQv
+MDQvMjAgMjE6MTEsIEFsZXhhbmRlciBHcmFmIHdyb3RlOgo+PiBXaGF0IEkgd2FzIHNheWluZyBh
+Ym92ZSBpcyB0aGF0IG1heWJlIGNvZGUgaXMgZWFzaWVyIHRvIHRyYW5zZmVyIHRoYXQKPj4gdGhh
+biBhIC50eHQgZmlsZSB0aGF0IGdldHMgbG9zdCBzb21ld2hlcmUgaW4gdGhlIERvY3VtZW50YXRp
+b24gZGlyZWN0b3J5Cj4+IDopLgo+IHdoeW5vdGJvdGguanBnIDpECgo6KSBBbHJpZ2h0LCBJIGFk
+ZGVkIGl0IHRvIHRoZSBsaXN0LCBpbiBhZGRpdGlvbiB0byB0aGUgc2FtcGxlIHdlJ3ZlIGJlZW4g
+CnRhbGtpbmcgYmVmb3JlLCB3aXRoIHRoZSBiYXNpYyBmbG93IG9mIHRoZSBpb2N0bCBpbnRlcmZh
+Y2UgdXNhZ2UuCgo+Cj4+Pj4gVG8gYW5zd2VyIHRoZSBxdWVzdGlvbiB0aG91Z2gsIHRoZSB0YXJn
+ZXQgZmlsZSBpcyBpbiBhIG5ld2x5IGludmVudGVkCj4+Pj4gZmlsZSBmb3JtYXQgY2FsbGVkICJF
+SUYiIGFuZCBpdCBuZWVkcyB0byBiZSBsb2FkZWQgYXQgb2Zmc2V0IDB4ODAwMDAwIG9mCj4+Pj4g
+dGhlIGFkZHJlc3Mgc3BhY2UgZG9uYXRlZCB0byB0aGUgZW5jbGF2ZS4KPj4+IFdoYXQgaXMgdGhp
+cyBFSUY/Cj4+IEl0J3MganVzdCBhIHZlcnkgZHVtYiBjb250YWluZXIgZm9ybWF0IHRoYXQgaGFz
+IGEgdHJpdmlhbCBoZWFkZXIsIGEKPj4gc2VjdGlvbiB3aXRoIHRoZSBiekltYWdlIGFuZCBvbmUg
+dG8gbWFueSBzZWN0aW9ucyBvZiBpbml0cmFtZnMuCj4+Cj4+IEFzIG1lbnRpb25lZCBlYXJsaWVy
+IGluIHRoaXMgdGhyZWFkLCBpdCByZWFsbHkgaXMganVzdCAiLWtlcm5lbCIgYW5kCj4+ICItaW5p
+dHJkIiwgcGFja2VkIGludG8gYSBzaW5nbGUgYmluYXJ5IGZvciB0cmFuc21pc3Npb24gdG8gdGhl
+IGhvc3QuCj4gT2theSwgZ290IGl0LiAgU28sIGNvcnJlY3QgbWUgaWYgdGhpcyBpcyB3cm9uZywg
+dGhlIGluZm9ybWF0aW9uIHRoYXQgaXMKPiBuZWVkZWQgdG8gYm9vdCB0aGUgZW5jbGF2ZSBpczoK
+Pgo+ICogdGhlIGtlcm5lbCwgaW4gYnpJbWFnZSBmb3JtYXQKPgo+ICogdGhlIGluaXRyZAo+Cj4g
+KiBhIGNvbnNlY3V0aXZlIGFtb3VudCBvZiBtZW1vcnksIHRvIGJlIG1hcHBlZCB3aXRoCj4gS1ZN
+X1NFVF9VU0VSX01FTU9SWV9SRUdJT04KClllcywgdGhlIGtlcm5lbCBiekltYWdlLCB0aGUga2Vy
+bmVsIGNvbW1hbmQgbGluZSwgdGhlIHJhbWRpc2socykgYXJlIApwYXJ0IG9mIHRoZSBFbmNsYXZl
+IEltYWdlIEZvcm1hdCAoRUlGKTsgcGx1cyBhbiBFSUYgaGVhZGVyIGluY2x1ZGluZyAKbWV0YWRh
+dGEgc3VjaCBhcyBtYWdpYyBudW1iZXIsIGVpZiB2ZXJzaW9uLCBpbWFnZSBzaXplIGFuZCBDUkMu
+Cgo+Cj4gT2ZmIGxpc3QsIEFsZXggYW5kIEkgZGlzY3Vzc2VkIGhhdmluZyBhIHN0cnVjdCB0aGF0
+IHBvaW50cyB0byBrZXJuZWwgYW5kCj4gaW5pdHJkIG9mZiBlbmNsYXZlIG1lbW9yeSwgYW5kIGhh
+dmUgdGhlIGRyaXZlciBidWlsZCBFSUYgYXQgdGhlCj4gYXBwcm9wcmlhdGUgcG9pbnQgaW4gZW5j
+bGF2ZSBtZW1vcnkgKHRoZSA4IE1pQiBvZnNldCB0aGF0IHlvdSBtZW50aW9uZWQpLgo+Cj4gVGhp
+cyBob3dldmVyIGhhcyB0d28gZGlzYWR2YW50YWdlczoKPgo+IDEpIGhhdmluZyB0aGUga2VybmVs
+IGFuZCBpbml0cmQgbG9hZGVkIGJ5IHRoZSBwYXJlbnQgVk0gaW4gZW5jbGF2ZQo+IG1lbW9yeSBo
+YXMgdGhlIGFkdmFudGFnZSB0aGF0IHlvdSBzYXZlIG1lbW9yeSBvdXRzaWRlIHRoZSBlbmNsYXZl
+IG1lbW9yeQo+IGZvciBzb21ldGhpbmcgdGhhdCBpcyBvbmx5IG5lZWRlZCBpbnNpZGUgdGhlIGVu
+Y2xhdmUKCkhlcmUgeW91IHdhbnRlZCB0byBzYXkgZGlzYWR2YW50YWdlPyA6KSBXcnQgc2F2aW5n
+IG1lbW9yeSwgaXQncyBhYm91dCAKYWRkaXRpb25hbCBtZW1vcnkgZnJvbSB0aGUgcGFyZW50IC8g
+cHJpbWFyeSBWTSBuZWVkZWQgZm9yIGhhbmRsaW5nIHRoZSAKZW5jbGF2ZSBpbWFnZSBzZWN0aW9u
+cyAoc3VjaCBhcyB0aGUga2VybmVsLCByYW1kaXNrKSBhbmQgc2V0dGluZyB0aGUgRUlGIAphdCBh
+IGNlcnRhaW4gb2Zmc2V0IGluIGVuY2xhdmUgbWVtb3J5PwoKPgo+IDIpIGl0IGlzIGxlc3MgZXh0
+ZW5zaWJsZSAod2hhdCBpZiB5b3Ugd2FudCB0byB1c2UgUFZIIGluIHRoZSBmdXR1cmUgZm9yCj4g
+ZXhhbXBsZSkgYW5kIHB1dHMgaW4gdGhlIGRyaXZlciBwb2xpY3kgdGhhdCBzaG91bGQgYmUgaW4g
+dXNlcnNwYWNlLgo+Cj4KPiBTbyB3aHkgbm90IGp1c3Qgc3RhcnQgcnVubmluZyB0aGUgZW5jbGF2
+ZSBhdCAweGZmZmZmZmYwIGluIHJlYWwgbW9kZT8KPiBZZXMgZXZlcnlib2R5IGhhdGVzIGl0LCBi
+dXQgdGhhdCdzIHdoYXQgT1NlcyBhcmUgd3JpdHRlbiBhZ2FpbnN0LiAgSW4KPiB0aGUgc2ltcGxl
+c3QgZXhhbXBsZSwgdGhlIHBhcmVudCBlbmNsYXZlIGNhbiBsb2FkIGJ6SW1hZ2UgYW5kIGluaXRy
+ZCBhdAo+IDB4MTAwMDAgYW5kIHBsYWNlIGZpcm13YXJlIHRhYmxlcyAoTVBUYWJsZSBhbmQgRE1J
+KSBzb21ld2hlcmUgYXQKPiAweGYwMDAwOyB0aGUgZmlybXdhcmUgd291bGQganVzdCBiZSBhIGZl
+dyBtb3ZzIHRvIHNlZ21lbnQgcmVnaXN0ZXJzCj4gZm9sbG93ZWQgYnkgYSBsb25nIGptcC4KPgo+
+IElmIHlvdSB3YW50IHRvIGtlZXAgRUlGLCB3ZSBtZWFzdXJlZCBpbiBRRU1VIHRoYXQgdGhlcmUg
+aXMgbm8gbWVhc3VyYWJsZQo+IGRpZmZlcmVuY2UgYmV0d2VlbiBsb2FkaW5nIHRoZSBrZXJuZWwg
+aW4gdGhlIGhvc3QgYW5kIGRvaW5nIGl0IGluIHRoZQo+IGd1ZXN0LCBzbyBBbWF6b24gY291bGQg
+cHJvdmlkZSBhbiBFSUYgbG9hZGVyIHN0dWIgYXQgMHhmZmZmZmZmMCBmb3IKPiBiYWNrd2FyZHMg
+Y29tcGF0aWJpbGl0eS4KClRoYW5rcyBmb3IgaW5mby4KCkFuZHJhCgo+Cj4+PiBBZ2FpbiwgSSBj
+YW5ub3QgcHJvdmlkZSBhIHNlbnNpYmxlIHJldmlldyB3aXRob3V0IGV4cGxhaW5pbmcgaG93IHRv
+IHVzZQo+Pj4gYWxsIHRoaXMuICBJIHVuZGVyc3RhbmQgdGhhdCBBbWF6b24gbmVlZHMgdG8gZG8g
+cGFydCBvZiB0aGUgZGVzaWduCj4+PiBiZWhpbmQgY2xvc2VkIGRvb3JzLCBidXQgdGhpcyBzZWVt
+cyB0byBoYXZlIHRoZSByZXN1bHRlZCBpbiBpc3N1ZXMgdGhhdAo+Pj4gcmVtaW5kcyBtZSBvZiBJ
+bnRlbCdzIFNHWCBtaXNhZHZlbnR1cmVzLiBJZiBBbWF6b24gaGFzIGRlc2lnbmVkIE5FIGluIGEK
+Pj4+IHdheSB0aGF0IGlzIGluY29tcGF0aWJsZSB3aXRoIG9wZW4gc3RhbmRhcmRzLCBpdCdzIHVw
+IHRvIEFtYXpvbiB0byBmaXgKPj4gT2gsIGlmIHRoZXJlJ3MgYW55dGhpbmcgdGhhdCBjb25mbGlj
+dHMgd2l0aCBvcGVuIHN0YW5kYXJkcyBoZXJlLCBJIHdvdWxkCj4+IGxvdmUgdG8gaGVhciBpdCBp
+bW1lZGlhdGVseS4gSSBkbyBub3QgYmVsaWV2ZSBpbiBzZWN1cml0eSBieSBvYnNjdXJpdHkgIDop
+Lgo+IFRoYXQncyBncmVhdCB0byBoZWFyIQo+Cj4gUGFvbG8KPgoKCgoKQW1hem9uIERldmVsb3Bt
+ZW50IENlbnRlciAoUm9tYW5pYSkgUy5SLkwuIHJlZ2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIExh
+emFyIFN0cmVldCwgVUJDNSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9t
+YW5pYS4gUmVnaXN0ZXJlZCBpbiBSb21hbmlhLiBSZWdpc3RyYXRpb24gbnVtYmVyIEoyMi8yNjIx
+LzIwMDUuCg==
 
