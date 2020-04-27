@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119B01BB25F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 01:58:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBCB1BB237
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 01:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgD0X5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 19:57:35 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:7418 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726509AbgD0X5Y (ORCPT
+        id S1726391AbgD0X4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 19:56:49 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60628 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726253AbgD0X4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 19:57:24 -0400
-X-UUID: b87e21c10b074b3fb1a1c44fbcb711a6-20200428
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=+p2FpvDesOhvlsbH3Gp9SCnml3/2yorz5SLguxMgjUM=;
-        b=RXJuqDN5TFsanR8YXnuQZvDcfwtNiZt8nyFo1lV8Xpp4inOHi2BJDw0CyrBxUk4WkGOSeEDAyor+Dcw1u3uq+uDgojBv7E7DTA+2tqfG841Jj802mep1N0Q18JN1oCjujeiqdWA0jU8p8DneqmvgxYCjXl0nll9Lfx4xRs/OM1g=;
-X-UUID: b87e21c10b074b3fb1a1c44fbcb711a6-20200428
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <chun-hung.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 994598891; Tue, 28 Apr 2020 07:57:21 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkexhb02.mediatek.inc (172.21.101.103) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 28 Apr 2020 07:57:14 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 28 Apr 2020 07:57:13 +0800
-From:   Chun-Hung Wu <chun-hung.wu@mediatek.com>
-To:     <mirq-linux@rere.qmqm.pl>, Jonathan Hunter <jonathanh@nvidia.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Chaotian Jing <chaotian.jing@mediatek.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Pan Bian <bianpan2016@163.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Mathieu Malaterre <malat@debian.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Kuohong Wang <kuohong.wang@mediatek.com>,
-        Yong Mao <yong.mao@mediatek.com>
-CC:     <kernel-team@android.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        Chun-Hung Wu <chun-hung.wu@mediatek.com>
-Subject: [PATCH v5 5/5] dt-bindings: mmc: mediatek: Add document for mt6779
-Date:   Tue, 28 Apr 2020 07:56:08 +0800
-Message-ID: <1588031768-23677-6-git-send-email-chun-hung.wu@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1588031768-23677-1-git-send-email-chun-hung.wu@mediatek.com>
-References: <1588031768-23677-1-git-send-email-chun-hung.wu@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Mon, 27 Apr 2020 19:56:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588031808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=xqSYkkiN5zo6A8A9R6SrdTZLgFG5Vtd3h0pL6NAIaDM=;
+        b=fgb9lB1QQNEMwkcUFnXDzgRvoRAfWRK/iBUfLwBhGt3j5X6xnfvCop8JS6A7+C5vkvfyfe
+        HMh4jtH9av+fLOj0VdGBe7xtpvVhDeearTgP78q+wg+HsybkT/snufRIy5NPtHiitcP3aR
+        xFIcIKJKn4P3xbvo/eoXtbUoqIpDXCI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-23-YS63Xv_VM8-Rn4F-pZDCCA-1; Mon, 27 Apr 2020 19:56:44 -0400
+X-MC-Unique: YS63Xv_VM8-Rn4F-pZDCCA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BEC6107ACCA;
+        Mon, 27 Apr 2020 23:56:42 +0000 (UTC)
+Received: from llong.com (ovpn-112-176.rdu2.redhat.com [10.10.112.176])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 56F7760BE2;
+        Mon, 27 Apr 2020 23:56:33 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Qian Cai <cai@lca.pw>, Waiman Long <longman@redhat.com>
+Subject: [PATCH v2 0/4] mm/slub: Fix sysfs circular locking dependency
+Date:   Mon, 27 Apr 2020 19:56:17 -0400
+Message-Id: <20200427235621.7823-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIGNvbXBhdGlibGUgbm9kZSBmb3IgbXQ2Nzc5IG1tYw0KDQpTaWduZWQtb2ZmLWJ5OiBDaHVu
-LUh1bmcgV3UgPGNodW4taHVuZy53dUBtZWRpYXRlay5jb20+DQpBY2tlZC1ieTogUm9iIEhlcnJp
-bmcgPHJvYmhAa2VybmVsLm9yZz4NCi0tLQ0KIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9tbWMvbXRrLXNkLnR4dCB8IDEgKw0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigr
-KQ0KDQpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21tYy9t
-dGstc2QudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21tYy9tdGstc2Qu
-dHh0DQppbmRleCA4YTUzMmY0Li4wYzljZjZhIDEwMDY0NA0KLS0tIGEvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL21tYy9tdGstc2QudHh0DQorKysgYi9Eb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvbW1jL210ay1zZC50eHQNCkBAIC0xMiw2ICsxMiw3IEBAIFJlcXVp
-cmVkIHByb3BlcnRpZXM6DQogCSJtZWRpYXRlayxtdDgxNzMtbW1jIjogZm9yIG1tYyBob3N0IGlw
-IGNvbXBhdGlibGUgd2l0aCBtdDgxNzMNCiAJIm1lZGlhdGVrLG10ODE4My1tbWMiOiBmb3IgbW1j
-IGhvc3QgaXAgY29tcGF0aWJsZSB3aXRoIG10ODE4Mw0KIAkibWVkaWF0ZWssbXQ4NTE2LW1tYyI6
-IGZvciBtbWMgaG9zdCBpcCBjb21wYXRpYmxlIHdpdGggbXQ4NTE2DQorCSJtZWRpYXRlayxtdDY3
-NzktbW1jIjogZm9yIG1tYyBob3N0IGlwIGNvbXBhdGlibGUgd2l0aCBtdDY3NzkNCiAJIm1lZGlh
-dGVrLG10MjcwMS1tbWMiOiBmb3IgbW1jIGhvc3QgaXAgY29tcGF0aWJsZSB3aXRoIG10MjcwMQ0K
-IAkibWVkaWF0ZWssbXQyNzEyLW1tYyI6IGZvciBtbWMgaG9zdCBpcCBjb21wYXRpYmxlIHdpdGgg
-bXQyNzEyDQogCSJtZWRpYXRlayxtdDc2MjItbW1jIjogZm9yIE1UNzYyMiBTb0MNCi0tIA0KMi42
-LjQNCg==
+v2:
+ - Use regular cmpxchg() instead of x86-only try_cmpxchg() in patch 2.
+ - Add patches 3 and 4 to fix circular locking dependency showing up
+   at shutdown time.
+
+With lockdep enabled, issuing the following command to the slub sysfs
+files will cause splat about circular locking dependency to show up
+either immediately afterwards or at shutdown time.
+
+ # echo 1 > validate
+ # echo 1 > shrink
+
+This patchset fixes these lockdep splats by replacing slab_mutex with
+memcg_cache_ids_sem as well as changing some of the lock operations
+with trylock.
+
+Waiman Long (4):
+  mm, slab: Revert "extend slab/shrink to shrink all memcg caches"
+  mm/slub: Fix slab_mutex circular locking problem in slab_attr_store()
+  mm/slub: Fix another circular locking dependency in slab_attr_store()
+  mm/slub: Fix sysfs shrink circular locking dependency
+
+ include/linux/memcontrol.h     |  1 +
+ include/linux/memory_hotplug.h |  2 +
+ mm/memcontrol.c                |  5 ++
+ mm/memory_hotplug.c            |  5 ++
+ mm/slab.h                      |  1 -
+ mm/slab_common.c               | 37 -------------
+ mm/slub.c                      | 98 +++++++++++++++++++++++++++++-----
+ 7 files changed, 99 insertions(+), 50 deletions(-)
+
+-- 
+2.18.1
 
