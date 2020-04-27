@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5851BA362
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 14:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9461C1BA372
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 14:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727062AbgD0MNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 08:13:39 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47350 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726260AbgD0MNi (ORCPT
+        id S1726907AbgD0MR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 08:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbgD0MR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 08:13:38 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id E1B151C0244; Mon, 27 Apr 2020 14:13:36 +0200 (CEST)
-Date:   Mon, 27 Apr 2020 14:13:36 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: trigger: remove redundant assignment to variable
- ret
-Message-ID: <20200427121336.GB544@duo.ucw.cz>
-References: <20200420221229.99150-1-colin.king@canonical.com>
+        Mon, 27 Apr 2020 08:17:26 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA39C0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 05:17:26 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id t8so17025262uap.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 05:17:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=y2ZebS+x5nHqsS3wbIuSzSxV3Xtj4rbtwiuwhATIssI=;
+        b=t7Sfkdj5Eu0SpZg11C7jEaFiunPsBtbR5O/sq5KKtbpWEeyEXA63UjdnppsNpgSkQ+
+         MZCgxLtK4eQnw/pX8uomCAgxZcx84YkmGfqLwEbGgrafMFuC1D1yF9x2Z9LgUlWMhiRM
+         jYRTJJ7UnVQSoEXurKY2tT786Avy9C5NQsltaMbvuMXcsFQTD7Pz0nXnzNC7Zs5JTybL
+         aVU4nLRIT/VPMulKXCUNhB9csF1ObNZeTXMJCUaKsQB1dippeInxG2GSQVwfalcdWDG1
+         F//J4uWEHyNoDGTEBnYveQrrmde5kfFmCeePyPId2gqQD1o92/3CQRWIgmaaLj22IJzy
+         zmOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=y2ZebS+x5nHqsS3wbIuSzSxV3Xtj4rbtwiuwhATIssI=;
+        b=eLmVzbMvRQb3THn8pOXIlKQixtVQhxjupSWgoBZ6W7kvsRzzh76fybn2FkK9cVOe+c
+         krvn87LqCtYamJvCPgekZh6oHNwM3NlmQb3BehSL5PgA3PfLZvBHm4DQym/TQm5XPvn8
+         IkpI95MKlmwJEAOg+xjzIZzIKlobsrnV5Jc1EoZvOOE36Qhp6GwW4gcK2SaanTV5TY1S
+         jx1HYd1/kaZ9iXZ5JRIsav2tb7q7E6+STiS3TkZjYlyhuqorwmYFQaGaAYn1yOWFJMCE
+         7EAp1b51l1d/4ZMR0RqVGmu3PS3Bctdqw7Z84WeZL9SG2J075s5pSPh3aBOq1dMlO/R7
+         NNCw==
+X-Gm-Message-State: AGi0Puak7gDU/IhwasVMMTlUXc5yM/+6DWEAU8xcZSNyIQ5fILClESA3
+        1zpGJ4dPouBS36ledkyd46a5tATP2gg8fQQDrlI=
+X-Google-Smtp-Source: APiQypLw+cXQyDZzrfdSJTtVyu9UsyYxxWsjGk5pRyIUwve6kmQ3QOiMx0lGWcdy0cJUtnUJ+UyogDlEwHyCyc/WzyY=
+X-Received: by 2002:a67:c40c:: with SMTP id c12mr16418493vsk.106.1587989845795;
+ Mon, 27 Apr 2020 05:17:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="l76fUT7nc3MelDdI"
-Content-Disposition: inline
-In-Reply-To: <20200420221229.99150-1-colin.king@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:ab0:20f:0:0:0:0:0 with HTTP; Mon, 27 Apr 2020 05:17:25 -0700 (PDT)
+Reply-To: zongodaniel220@gmail.com
+From:   Zongo Daniel <ritamicheal154@gmail.com>
+Date:   Mon, 27 Apr 2020 05:17:25 -0700
+Message-ID: <CAEJxF2gqAktpP2ViMeE5V0tSkA6mx-so2B5Fxs3J5_ksgryC6w@mail.gmail.com>
+Subject: HOPEFULLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello
 
---l76fUT7nc3MelDdI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am Zongo Daniel and work with BICIAB BANK Of Burkina Faso. I have an
+important business proposal that will be of mutual benefit.
 
-On Mon 2020-04-20 23:12:29, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> The variable ret is being assigned with a value that is never read
-> and it is being updated later with a new value. The initialization is
-> redundant and can be removed.
->=20
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Please send me your direct number or your personal email so i can tell
+you more about my proposal. It is very important we communicate and
+you will be very glad with my proposition.
 
-Thanks, applied.
-								Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+Waiting your response soonest through my alternative address below:
 
---l76fUT7nc3MelDdI
-Content-Type: application/pgp-signature; name="signature.asc"
+zongodaniel220@gmail.com
 
------BEGIN PGP SIGNATURE-----
+My dearest regards.
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXqbMcAAKCRAw5/Bqldv6
-8o7rAKCm8ntQEIFtZ61dXMpp4NXClLfyAQCfZtfwQz4pO6W+FS3+iyVfQR//BYc=
-=omzN
------END PGP SIGNATURE-----
-
---l76fUT7nc3MelDdI--
+Zongo Daniel
