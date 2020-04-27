@@ -2,362 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710B41BA656
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506D41BA663
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbgD0O1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 10:27:46 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50474 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727897AbgD0O1p (ORCPT
+        id S1727985AbgD0OaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 10:30:02 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:57702 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727077AbgD0OaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 10:27:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587997663;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KH3F3rn5H3P6F15O38bSCG/8kvqeQ9K+5rygkYqN0eY=;
-        b=LBFabJFxdRZhGT9S7MU530zS6YDVesJtIi9oQlXSqR/nCDmxeIqLRVo4EUvt6PQhYLYBb3
-        zbOgMOq8G2a6Mh02LgTaabldTXF/0/OqjNRTSiV9oZx/nOc9ICumRKT8HZHvqP9V9JTdpf
-        h0Z3D9fQz/6Uu1fI24Vd3YmAlbAv7Qs=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-123--EPGGTTrM9WxS6nwSlEi3Q-1; Mon, 27 Apr 2020 10:27:41 -0400
-X-MC-Unique: -EPGGTTrM9WxS6nwSlEi3Q-1
-Received: by mail-qk1-f200.google.com with SMTP id o21so19644601qkm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 07:27:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KH3F3rn5H3P6F15O38bSCG/8kvqeQ9K+5rygkYqN0eY=;
-        b=QI3RpewVt/+ahdVcNjEwaY8J2fIbmPpOa5tUMkYrfTCJg5/0Unud+kEjuiVFb/zfK/
-         KNe7P2qjR7iyxoSV8skn6nyLLuRDrnx+CfCOGLChelaROdyb9YZSM3//5Swr2KzIK/oi
-         kumO3cRg8bW/BIJxE2O0P11ShOaudn+Ldi/zLYAy1WOaKxcxym26Dm8JksSnm5OtNzYY
-         X2pDLpvGUYDykG2yUZmO9eawjhrmWIgl15mkEnLy7uHLioPWSrsEFAhN9NcCZCS6EBii
-         762Z3VfeCCxBUoTV/Cz+weh2o+AvxeMF8OMNyTcx7Ymi7NyqJRxMrTkUQ/BH/dPedFYl
-         95TA==
-X-Gm-Message-State: AGi0PuYb4dJingWTH2JDuYttyuPqI6BBXvO7dMVnpTBNbpi3d2YXrTH0
-        kkc8bqINQ1hqyokyrMStP8CLpVroT4xhaW/A3cW6GnCQb7T0JWL/krzFzBfCq0gK6Difq9YOrqM
-        WhoYbzTH0YUA9uWxRrAD8aMeL
-X-Received: by 2002:a37:614a:: with SMTP id v71mr23179850qkb.326.1587997660697;
-        Mon, 27 Apr 2020 07:27:40 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJBahc2Fd13kBJ84o2T7mk9CjdMOq9EJyYJJL+14UprAQQVaTptKsIU4hnS0GBjnWy+NDpS2w==
-X-Received: by 2002:a37:614a:: with SMTP id v71mr23179778qkb.326.1587997659805;
-        Mon, 27 Apr 2020 07:27:39 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id w27sm10967427qtc.18.2020.04.27.07.27.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 07:27:38 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 10:27:37 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        Christophe de Dinechin <dinechin@redhat.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>
-Subject: Re: [PATCH v8 00/14] KVM: Dirty ring interface
-Message-ID: <20200427142737.GC48376@xz-x1>
-References: <20200331190000.659614-1-peterx@redhat.com>
- <20200422185155.GA3596@xz-x1>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D877A3B@SHSMSX104.ccr.corp.intel.com>
- <20200423152253.GB3596@xz-x1>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D899D8D@SHSMSX104.ccr.corp.intel.com>
- <20200424141944.GA41816@xz-x1>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D8CD4C8@SHSMSX104.ccr.corp.intel.com>
+        Mon, 27 Apr 2020 10:30:02 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-23-AKHUs2ulObCffgz2Mb-tuA-1; Mon, 27 Apr 2020 15:28:25 +0100
+X-MC-Unique: AKHUs2ulObCffgz2Mb-tuA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 27 Apr 2020 15:28:24 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 27 Apr 2020 15:28:24 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Roberto Sassu' <roberto.sassu@huawei.com>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "rgoldwyn@suse.de" <rgoldwyn@suse.de>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Silviu Vlasceanu <Silviu.Vlasceanu@huawei.com>,
+        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v2 3/6] ima: Fix ima digest hash table key calculation
+Thread-Topic: [PATCH v2 3/6] ima: Fix ima digest hash table key calculation
+Thread-Index: AQHWHH8SDZUC+XMi6UOqF9nBthnXX6iMzGEggAAOugCAACgi8A==
+Date:   Mon, 27 Apr 2020 14:28:24 +0000
+Message-ID: <5786ad88cd184e5791bc285d5cac6ecc@AcuMS.aculab.com>
+References: <20200427102900.18887-1-roberto.sassu@huawei.com>
+ <20200427102900.18887-3-roberto.sassu@huawei.com>
+ <84ecd8f2576849b29876448df66824fc@AcuMS.aculab.com>
+ <90e19242fd8445cf93728c0946c03c19@huawei.com>
+In-Reply-To: <90e19242fd8445cf93728c0946c03c19@huawei.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D8CD4C8@SHSMSX104.ccr.corp.intel.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 10:29:51AM +0000, Tian, Kevin wrote:
-> > From: Peter Xu
-> > Sent: Friday, April 24, 2020 10:20 PM
-> > 
-> > On Fri, Apr 24, 2020 at 06:01:46AM +0000, Tian, Kevin wrote:
-> > > > From: Peter Xu <peterx@redhat.com>
-> > > > Sent: Thursday, April 23, 2020 11:23 PM
-> > > >
-> > > > On Thu, Apr 23, 2020 at 06:28:43AM +0000, Tian, Kevin wrote:
-> > > > > > From: Peter Xu <peterx@redhat.com>
-> > > > > > Sent: Thursday, April 23, 2020 2:52 AM
-> > > > > >
-> > > > > > Hi,
-> > > > > >
-> > > > > > TL;DR: I'm thinking whether we should record pure GPA/GFN instead
-> > of
-> > > > > > (slot_id,
-> > > > > > slot_offset) tuple for dirty pages in kvm dirty ring to unbind
-> > > > kvm_dirty_gfn
-> > > > > > with memslots.
-> > > > > >
-> > > > > > (A slightly longer version starts...)
-> > > > > >
-> > > > > > The problem is that binding dirty tracking operations to KVM
-> > memslots is
-> > > > a
-> > > > > > restriction that needs synchronization to memslot changes, which
-> > further
-> > > > > > needs
-> > > > > > synchronization across all the vcpus because they're the consumers of
-> > > > > > memslots.
-> > > > > > E.g., when we remove a memory slot, we need to flush all the dirty
-> > bits
-> > > > > > correctly before we do the removal of the memslot.  That's actually an
-> > > > > > known
-> > > > > > defect for QEMU/KVM [1] (I bet it could be a defect for many other
-> > > > > > hypervisors...) right now with current dirty logging.  Meanwhile, even
-> > if
-> > > > we
-> > > > > > fix it, that procedure is not scale at all, and error prone to dead locks.
-> > > > > >
-> > > > > > Here memory removal is really an (still corner-cased but relatively)
-> > > > important
-> > > > > > scenario to think about for dirty logging comparing to memory
-> > additions
-> > > > &
-> > > > > > movings.  Because memory addition will always have no initial dirty
-> > page,
-> > > > > > and
-> > > > > > we don't really move RAM a lot (or do we ever?!) for a general VM
-> > use
-> > > > case.
-> > > > > >
-> > > > > > Then I went a step back to think about why we need these dirty bit
-> > > > > > information
-> > > > > > after all if the memslot is going to be removed?
-> > > > > >
-> > > > > > There're two cases:
-> > > > > >
-> > > > > >   - When the memslot is going to be removed forever, then the dirty
-> > > > > > information
-> > > > > >     is indeed meaningless and can be dropped, and,
-> > > > > >
-> > > > > >   - When the memslot is going to be removed but quickly added back
-> > with
-> > > > > > changed
-> > > > > >     size, then we need to keep those dirty bits because it's just a
-> > commmon
-> > > > > > way
-> > > > > >     to e.g. punch an MMIO hole in an existing RAM region (here I'd
-> > confess
-> > > > I
-> > > > > >     feel like using "slot_id" to identify memslot is really unfriendly
-> > syscall
-> > > > > >     design for things like "hole punchings" in the RAM address space...
-> > > > > >     However such "punch hold" operation is really needed even for a
-> > > > common
-> > > > > >     guest for either system reboots or device hotplugs, etc.).
-> > > > >
-> > > > > why would device hotplug punch a hole in an existing RAM region?
-> > > >
-> > > > I thought it could happen because I used to trace the KVM ioctls and see
-> > the
-> > > > memslot changes during driver loading.  But later when I tried to hotplug
-> > a
-> > >
-> > > Is there more detail why driver loading may lead to memslot changes?
-> > 
-> > E.g., I can observe these after Linux loads and before the prompt, which is a
-> > simplest VM with default devices on:
-> > 
-> > 41874@1587736345.192636:kvm_set_user_memory Slot#3 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.192760:kvm_set_user_memory Slot#65539 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.193884:kvm_set_user_memory Slot#3 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.193956:kvm_set_user_memory Slot#65539 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.195788:kvm_set_user_memory Slot#3 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.195838:kvm_set_user_memory Slot#65539 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.196769:kvm_set_user_memory Slot#3 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.196827:kvm_set_user_memory Slot#65539 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.197787:kvm_set_user_memory Slot#3 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.197832:kvm_set_user_memory Slot#65539 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.198777:kvm_set_user_memory Slot#3 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.198836:kvm_set_user_memory Slot#65539 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.200491:kvm_set_user_memory Slot#3 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.200537:kvm_set_user_memory Slot#65539 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.201592:kvm_set_user_memory Slot#3 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.201649:kvm_set_user_memory Slot#65539 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.202415:kvm_set_user_memory Slot#3 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.202461:kvm_set_user_memory Slot#65539 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.203169:kvm_set_user_memory Slot#3 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.203225:kvm_set_user_memory Slot#65539 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.204037:kvm_set_user_memory Slot#3 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.204083:kvm_set_user_memory Slot#65539 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.204983:kvm_set_user_memory Slot#3 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.205041:kvm_set_user_memory Slot#65539 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.205940:kvm_set_user_memory Slot#3 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.206022:kvm_set_user_memory Slot#65539 flags=0x0
-> > gpa=0xfd000000 size=0x0 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.206981:kvm_set_user_memory Slot#3 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41874@1587736345.207038:kvm_set_user_memory Slot#65539 flags=0x1
-> > gpa=0xfd000000 size=0x1000000 ua=0x7fadf6800000 ret=0
-> > 41875@1587736351.141052:kvm_set_user_memory Slot#9 flags=0x1
-> > gpa=0xa0000 size=0x10000 ua=0x7fadf6800000 ret=0
-> > 
-> > After a careful look, I noticed it's only the VGA device mostly turning slot 3
-> > off & on.  Frankly speaking I don't know why it happens to do so.
-> > 
-> > >
-> > > > device I do see that it won't...  The new MMIO regions are added only
-> > into
-> > > > 0xfe000000 for a virtio-net:
-> > > >
-> > > >   00000000fe000000-00000000fe000fff (prio 0, i/o): virtio-pci-common
-> > > >   00000000fe001000-00000000fe001fff (prio 0, i/o): virtio-pci-isr
-> > > >   00000000fe002000-00000000fe002fff (prio 0, i/o): virtio-pci-device
-> > > >   00000000fe003000-00000000fe003fff (prio 0, i/o): virtio-pci-notify
-> > > >   00000000fe840000-00000000fe84002f (prio 0, i/o): msix-table
-> > > >   00000000fe840800-00000000fe840807 (prio 0, i/o): msix-pba
-> > > >
-> > > > Does it mean that device plugging is guaranteed to not trigger RAM
-> > changes?
-> > >
-> > > I'd think so. Otherwise from guest p.o.v any device hotplug implies doing
-> > > a memory hot-unplug first then it's a bad design.
-> > 
-> > Right that's what I was confused about.  Then maybe you're right. :)
-> > 
-> > >
-> > > > I
-> > > > am really curious about what cases we need to consider in which we
-> > need to
-> > > > keep
-> > > > the dirty bits for a memory removal, and if system reset is the only case,
-> > then
-> > > > it could be even easier (because we might be able to avoid the sync in
-> > > > memory
-> > > > removal but do that once in a sys reset hook)...
-> > >
-> > > Possibly memory hot-unplug, as allowed by recent virtio-mem?
-> > 
-> > That should belong to the case where dirty bits do not matter at all after the
-> > removal, right?  I would be mostly curious about when we (1) remove a
-> > memory
-> > slot, and at the meantime (2) we still care about the dirty bits of that slot.
-> 
-> I remember one case. PCIe spec defines a resizable BAR capability, allowing
-> hardware to communicate supported resource sizes and software to set
-> an optimal size back to hardware. If such a capability is presented to guest
-> and the BAR is backed by memory, it's possible to observe a removal-and-
-> add-back scenario. However in such case, the spec requires the software 
-> to clear memory space enable bit in command register before changing 
-> the BAR size. I suppose such thing should happen at boot phase where
-> dirty bits related to old BAR size don't matter. 
-
-Good to know. Yes it makes sense to have no valid data if the driver is trying
-to decide the bar size at boot time.
-
-> 
-> > 
-> > I'll see whether I can remove the dirty bit sync in kvm_set_phys_mem(),
-> > which I
-> > think is really nasty.
-> > 
-> > >
-> > > btw VFIO faces a similar problem when unmapping a DMA range (e.g.
-> > when
-> > > vIOMMU is enabled) in dirty log phase. There could be some dirty bits
-> > which are
-> > > not retrieved when unmapping happens. VFIO chooses to return the dirty
-> > > bits in a buffer passed in the unmapping parameters. Can memslot
-> > interface
-> > > do similar thing by allowing the userspace to specify a buffer pointer to
-> > hold
-> > > whatever dirty pages recorded for the slot that is being removed?
-> > 
-> > Yes I think we can, but may not be necessary.  Actually IMHO CPU access to
-> > pages are slightly different to device DMAs in that we can do these sequence
-> > to
-> > collect the dirty bits of a slot safely:
-> > 
-> >   - mark slot as READONLY
-> >   - KVM_GET_DIRTY_LOG on the slot
-> >   - finally remove the slot
-> > 
-> > I guess VFIO cannot do that because there's no way to really "mark the
-> > region
-> > as read-only" for a device because DMA could happen and DMA would fail
-> > then
-> > when writting to a readonly slot.
-> > 
-> > On the KVM/CPU side, after we mark the slot as READONLY then the CPU
-> > writes
-> > will page fault and fallback to the QEMU userspace, then QEMU will take care
-> > of
-> > the writes (so those writes could be slow but still working) then even if we
-> > mark it READONLY it won't fail the writes but just fallback to QEMU.
-> 
-> Yes, you are right.
-> 
-> > 
-> > Btw, since we're discussing the VFIO dirty logging across memory removal...
-> > the
-> > unmapping DMA range you're talking about needs to be added back later,
-> > right?
-> 
-> pure memory removal doesn't need add-back. Or are you specifically
-> referring to removal-and-add-back case?
-
-Oh right I get the point now - VFIO unmap is different that it does not mean
-the RAM is going away, but the RAM is only not accessable any more from the
-device, so it's actually a different scenario here comparing to real memory
-removals.  Sorry I obviously missed that... :)
-
-Thanks,
-
-> 
-> > Then what if the device does DMA after the removal but before it's added
-> > back?
-> 
-> then just got IOMMU page fault, but I guess that I didn't get your real 
-> question...
-> 
-> > I think this is a more general question not for dirty logging but also for when
-> > dirty logging is not enabled - I never understand how this could be fixed with
-> > existing facilities.
-> > 
-> 
-> Thanks,
-> Kevin
-
--- 
-Peter Xu
+RnJvbTogUm9iZXJ0byBTYXNzdQ0KPiBTZW50OiAyNyBBcHJpbCAyMDIwIDEzOjUxDQouLi4NCj4g
+PiA+IC1zdGF0aWMgaW5saW5lIHVuc2lnbmVkIGxvbmcgaW1hX2hhc2hfa2V5KHU4ICpkaWdlc3Qp
+DQo+ID4gPiArc3RhdGljIGlubGluZSB1bnNpZ25lZCBpbnQgaW1hX2hhc2hfa2V5KHU4ICpkaWdl
+c3QpDQo+ID4gPiAgew0KPiA+ID4gLQlyZXR1cm4gaGFzaF9sb25nKCpkaWdlc3QsIElNQV9IQVNI
+X0JJVFMpOw0KPiA+ID4gKwlyZXR1cm4gKCoodW5zaWduZWQgaW50ICopZGlnZXN0ICUgSU1BX01F
+QVNVUkVfSFRBQkxFX1NJWkUpOw0KPiA+DQo+ID4gVGhhdCBhbG1vc3QgY2VydGFpbmx5IGlzbid0
+IHJpZ2h0Lg0KPiA+IEl0IGZhbGxzIGZvdWwgb2YgdGhlICooaW50ZWdlcl90eXBlICopcHRyIGJl
+aW5nIGFsbW9zdCBhbHdheXMgd3JvbmcuDQo+IA0KPiBJIGRpZG4ndCBmaW5kIHRoZSBwcm9ibGVt
+LiBDYW4geW91IHBsZWFzZSBleHBsYWluPw0KDQpUaGUgZ2VuZXJhbCBwcm9ibGVtIHdpdGggKihp
+bnRfdHlwZSAqKXB0ciBpcyB0aGF0IGl0IGRvZXMgY29tcGxldGVseQ0KdGhlIHdyb25nIHRoaW5n
+IGlmICdwdHInIGlzIHRoZSBhZGRyZXNzIG9mIGEgbGFyZ2VyIGludGVnZXIgdHlwZSBvbg0KYSBi
+aWctZW5kaWFuIHN5c3RlbS4NCllvdSBtYXkgYWxzbyBnZXQgYSBtaXNhbGlnbmVkIGFjY2VzcyB0
+cmFwLg0KDQpJbiB0aGlzIGNhc2UgSSBndWVzcyB0aGF0IGRpZ2VzdCBpcyBhY3R1YWxseSB1OFtT
+SEExX0RJR0VTVF9TSVpFXS4NCk1heWJlIHdoYXQgeW91IHNob3VsZCByZXR1cm4gaXM6DQoJKGRp
+Z2VzdFswXSB8IGRpZ2VzdFsxXSA8PCA4KSAlIElNQV9NRUFTVVJFX0hUQUJMRV9TSVpFOw0KYW5k
+IGNvbW1lbnQgdGhhdCB0aGVyZSBpcyBubyBwb2ludCB0YWtpbmcgYSBoYXNoIG9mIHBhcnQgb2YN
+CmEgU0hBMSBkaWdlc3QuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNp
+ZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsN
+ClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
