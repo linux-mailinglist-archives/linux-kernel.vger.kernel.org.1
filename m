@@ -2,227 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5711B9597
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 05:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F651B9607
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 06:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgD0Do0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 23:44:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726535AbgD0Do0 (ORCPT
+        id S1726266AbgD0Eeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 00:34:37 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:51267 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725890AbgD0Eeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 23:44:26 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A7CC061A0F;
-        Sun, 26 Apr 2020 20:44:25 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id i3so17301082ioo.13;
-        Sun, 26 Apr 2020 20:44:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aQq0CUnQfujiDDnJvRHgF4LcjSyfQt3UEj7L50b98/A=;
-        b=RKVWEZ2ioRL+cte2OumCaEGfBNi/Ob4AKIpk4K5KD00rj0JDK1PZIS7gzPvJXBAwXD
-         wEDKZYPg+Iwxfg3u6Qu2tHISBcIuoeMiAheln22UZOiycsdQ0HMoswEn0IMGDShJmzQk
-         1SCN3h1Ol/griaEytviyKiCcTm+lE555t9lIv5tWcUb5za9Ic35WNIaCEsYbLHrTQ1Fu
-         0l4ku6FDE+jmz7sQl3r2fP1tZYb2z9gLkiQqPBHbXGY2DfDYDrYJr2pLEETcwtCZxioW
-         tTPAGa9UZBCCSkNrIf8UWpHNoocAvTroQLIVShq/A0Z5rdQcfaDZA8EIjVuRUWnEivXS
-         UDcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aQq0CUnQfujiDDnJvRHgF4LcjSyfQt3UEj7L50b98/A=;
-        b=pwbBrk7OgiANoizUX+B2xHvHCnmvYLgwAB64yfpzkwBrc81RuzyigXUeLYB/A7Twz4
-         SyBvmm8Y8N1Nwj/LCxgAoPrjrh+luwv8P9GSNaieCWwuVIgze5jyKpsKjOBFwsvHLNhe
-         s3aZNdlVKNXLwNgQhkiTdSO8Ogu0ytw5Xjn6xLhsuSe32QcbgD1bjQr/c8jkezmBEORQ
-         2/0uiMpAKOAogLIBtEl9KDqCa+a4TS5mNxiYswuGyUKXi0ocRkglE6klSwxolUp37jWF
-         JsRXD2YlKMZExWqYEeHI3EwrdCSIvbIVeZEq0PUn/sVgGjP2A6ZgtMrDf3clu2xiv/8q
-         rXHA==
-X-Gm-Message-State: AGi0Pubuyz/Jb0dpeH+Qb8KURt20+iiMWj9ZfQTv+shS1yl+HdAtk9ht
-        Rj4bOgKoa2RtmJtqgswyzYLpFC9KC0Avrq7RaUw=
-X-Google-Smtp-Source: APiQypLX3afqSM1QWAKv61iq3HlPwMPQmqlnAsESamTCfsmhHfuQWhrkAz+NtraNDJj1UyhtF31EjwCvfUn58THeneA=
-X-Received: by 2002:a6b:7317:: with SMTP id e23mr19071605ioh.72.1587959064357;
- Sun, 26 Apr 2020 20:44:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200426123905.8336-1-tianjia.zhang@linux.alibaba.com> <20200426123905.8336-8-tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <20200426123905.8336-8-tianjia.zhang@linux.alibaba.com>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Mon, 27 Apr 2020 11:51:51 +0800
-Message-ID: <CAAhV-H7tSPFSU143ZfmgitEY1BY7MrBzwvJHve49i+ABQ9quCg@mail.gmail.com>
-Subject: Re: [PATCH v3 7/7] KVM: MIPS: clean up redundant kvm_run parameters
- in assembly
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        paulus@ozlabs.org, mpe@ellerman.id.au,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        cohuck@redhat.com, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org, hpa@zytor.com,
-        Marc Zyngier <maz@kernel.org>, james.morse@arm.com,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        christoffer.dall@arm.com, Peter Xu <peterx@redhat.com>,
-        thuth@redhat.com, kvm@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        kvmarm@lists.cs.columbia.edu,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 27 Apr 2020 00:34:36 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200427043433epoutp01be76bba031bd7102b87b3156c4f91c1d~Jkxe_26_C1296412964epoutp01j
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 04:34:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200427043433epoutp01be76bba031bd7102b87b3156c4f91c1d~Jkxe_26_C1296412964epoutp01j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1587962073;
+        bh=/g3+r/QAPR8JUeIAGeyeaVP/TnwUx6QSY+277vhgibs=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=dThLFE8Aaccd7b0vc/ZVZfoPPJoDKDYAviXsCXDv7bdtMK240fh2Ohr9tjpfKsLkX
+         bk5CL1ZD3TMNpGLYrWT5EAkgWJIjSu6qIGu3jr3orb1LdrPOcZr/6tu5ymXGQZOBQL
+         zPu+GfiXwXaL6jTzkIqyibjKRT4X90S0h3eHHBy8=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20200427043432epcas5p13fd118fa38e6d373c482721ad799c87d~Jkxdvx77-0087200872epcas5p14;
+        Mon, 27 Apr 2020 04:34:32 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        80.26.04736.8D066AE5; Mon, 27 Apr 2020 13:34:32 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200427043419epcas5p39e2a73db2dcc912df2624ee03bec1f58~JkxRhDPEB2282322823epcas5p3O;
+        Mon, 27 Apr 2020 04:34:19 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200427043419epsmtrp11e9dc77b41e1b1893192206ad4a99bb0~JkxRgT3Pc0909709097epsmtrp1H;
+        Mon, 27 Apr 2020 04:34:19 +0000 (GMT)
+X-AuditID: b6c32a4b-acbff70000001280-28-5ea660d8efb5
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        82.CF.18461.BC066AE5; Mon, 27 Apr 2020 13:34:19 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.108.92.210]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200427043418epsmtip1b5b0893b75cbe020dc4b6865b1c9b268~JkxQlk-gw3266832668epsmtip19;
+        Mon, 27 Apr 2020 04:34:18 +0000 (GMT)
+From:   Vishal Goel <vishal.goel@samsung.com>
+To:     casey@schaufler-ca.com,
+        linux-security-modulemodule@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vishal Goel <vishal.goel@samsung.com>
+Subject: [PATCH 1/1] Smack:- Remove redundant inode_smack cache since now
+ new cache is being used for inode_smack structure allocations
+Date:   Mon, 27 Apr 2020 09:42:33 +0530
+Message-Id: <1587960753-6006-1-git-send-email-vishal.goel@samsung.com>
+X-Mailer: git-send-email 1.9.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLIsWRmVeSWpSXmKPExsWy7bCmuu6NhGVxBqe3SVrc2/aLzeLyrjls
+        FstnXGKzWHf7NKMDi0ffllWMHkf3L2Lz+LxJLoA5issmJTUnsyy1SN8ugSujZW4Xe8E/9orH
+        0z8wNTBeZOti5OSQEDCR2NF3grmLkYtDSGA3o8TTk91MEM4nRokTL+6wQTjfGCX2XZrI2MXI
+        AdZyd70ARHwvo8TWNbOhir4wSizrvMQMMpdNQFuid95dJpAGEYF0icdTK0FMZgFNiQNNUSDl
+        wgKdjBJ/138AO4NFQFXi88IWMJtXwE1i5pt1jBDnyUmcPDaZFaRBQqCbXeLtjuesEAkXiUlX
+        vrFD2MISr45vgbKlJF72t7FDNLQzShydtRHKmcIo8W/fDagqe4nXzQ1MMCet36UPEZaVmHpq
+        HROIzSzAJ9H7+wkTRJxXYsc8GFtVYuqkbqgx0hKHb5xhgbA9JDpOnQWzhQRiJY4vOcg2gVF2
+        FsKGBYyMqxglUwuKc9NTi00LjPNSy/WKE3OLS/PS9ZLzczcxgiNZy3sH46ZzPocYBTgYlXh4
+        ObYvjRNiTSwrrsw9xCjBwawkwhtTsihOiDclsbIqtSg/vqg0J7X4EKM0B4uSOO8k1qsxQgLp
+        iSWp2ampBalFMFkmDk6pBsbG5J49FQ3bm4Myd77RZKnNUVHmSq8MZvc/sjaZv39yzOZ8s52+
+        J2I/CKdM3S6hNGnHy73bzt9YsuZL4gOZGbH9f9uNzsS/mcokpDpnQpwDX3Eme2xrQ1VX1bkf
+        5ZMC/nFet3B7bTO3suNBmvUK0YS0QzyXyz58Pvx0UQ2PxMql4i8qnCOnH1ViKc5INNRiLipO
+        BAArgceL4AIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKJMWRmVeSWpSXmKPExsWy7bCSnO7phGVxBk9nCljc2/aLzeLyrjls
+        FstnXGKzWHf7NKMDi0ffllWMHkf3L2Lz+LxJLoA5issmJTUnsyy1SN8ugSujZW4Xe8E/9orH
+        0z8wNTBeZOti5OCQEDCRuLteoIuRi0NIYDejxMXDXcxdjJxAcWmJJZ1v2CFsYYmV/56zQxR9
+        YpS4snsLK0iCTUBbonfeXSYQW0QgU2LCxDVgQ5kFNCUONEWB1AsLtDNKPJs3F2woi4CqxOeF
+        LWwgNq+Am8TMN+sYIRbISZw8Npl1AiPPAkaGVYySqQXFuem5xYYFhnmp5XrFibnFpXnpesn5
+        uZsYwSGhpbmDcfuqD3qHGJk4GA8xSnAwK4nwxpQsihPiTUmsrEotyo8vKs1JLT7EKM3BoiTO
+        e6NwYZyQQHpiSWp2ampBahFMlomDU6qB6SBP0eWUXzdyjp5p+ZrIFR4551n3juCQ/eHO6esE
+        9i/bnPcm5AjHXLbDP7JyXdV0drxJXtqZ4izbKNRgu0rD+vmJ//3Wq03to6altCz6zsGUaCj8
+        eP30f5E2D3ZwVL1Umtqr+mqywo3r29tjWD8d+679xu3NmYUz+mTEnqa/ZYrYWPNQvWHxzWdp
+        TgznCtwCRaXMs3NL9pfe39Mfu2rvdqVqNqUUJlWBw0Grspq7WMW6us2WfnBdfeJNvs+kd+cu
+        qEte+BOk2d4UJLEowTjQ5PZrp1nq+oZLJX42/Wb2KZ/2Wc2x9bRw2laVVVftvU5VtGydbxKa
+        GHHj72cnwwndWWcOhXNtz2Oq31zAkvxbiaU4I9FQi7moOBEAFZtYWXgCAAA=
+X-CMS-MailID: 20200427043419epcas5p39e2a73db2dcc912df2624ee03bec1f58
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200427043419epcas5p39e2a73db2dcc912df2624ee03bec1f58
+References: <CGME20200427043419epcas5p39e2a73db2dcc912df2624ee03bec1f58@epcas5p3.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Tianjia,
+Signed-off-by: Vishal Goel <vishal.goel@samsung.com>
+---
+ security/smack/smack_lsm.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-On Sun, Apr 26, 2020 at 8:40 PM Tianjia Zhang
-<tianjia.zhang@linux.alibaba.com> wrote:
->
-> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
-> structure. Earlier than historical reasons, many kvm-related function
-> parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time.
-> This patch does a unified cleanup of these remaining redundant parameters.
->
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->  arch/mips/include/asm/kvm_host.h |  4 ++--
->  arch/mips/kvm/entry.c            | 15 +++++----------
->  arch/mips/kvm/mips.c             |  3 ++-
->  arch/mips/kvm/trap_emul.c        |  2 +-
->  arch/mips/kvm/vz.c               |  2 +-
->  5 files changed, 11 insertions(+), 15 deletions(-)
->
-> diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-> index 971439297cea..db915c55166d 100644
-> --- a/arch/mips/include/asm/kvm_host.h
-> +++ b/arch/mips/include/asm/kvm_host.h
-> @@ -310,7 +310,7 @@ struct kvm_mmu_memory_cache {
->  #define KVM_MIPS_GUEST_TLB_SIZE        64
->  struct kvm_vcpu_arch {
->         void *guest_ebase;
-> -       int (*vcpu_run)(struct kvm_run *run, struct kvm_vcpu *vcpu);
-> +       int (*vcpu_run)(struct kvm_vcpu *vcpu);
->
->         /* Host registers preserved across guest mode execution */
->         unsigned long host_stack;
-> @@ -821,7 +821,7 @@ int kvm_mips_emulation_init(struct kvm_mips_callbacks **install_callbacks);
->  /* Debug: dump vcpu state */
->  int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
->
-> -extern int kvm_mips_handle_exit(struct kvm_run *run, struct kvm_vcpu *vcpu);
-> +extern int kvm_mips_handle_exit(struct kvm_vcpu *vcpu);
->
->  /* Building of entry/exception code */
->  int kvm_mips_entry_setup(void);
-> diff --git a/arch/mips/kvm/entry.c b/arch/mips/kvm/entry.c
-> index 16e1c93b484f..e3f29af3b6cd 100644
-> --- a/arch/mips/kvm/entry.c
-> +++ b/arch/mips/kvm/entry.c
-> @@ -204,7 +204,7 @@ static inline void build_set_exc_base(u32 **p, unsigned int reg)
->   * Assemble the start of the vcpu_run function to run a guest VCPU. The function
->   * conforms to the following prototype:
->   *
-> - * int vcpu_run(struct kvm_run *run, struct kvm_vcpu *vcpu);
-> + * int vcpu_run(struct kvm_vcpu *vcpu);
->   *
->   * The exit from the guest and return to the caller is handled by the code
->   * generated by kvm_mips_build_ret_to_host().
-> @@ -217,8 +217,7 @@ void *kvm_mips_build_vcpu_run(void *addr)
->         unsigned int i;
->
->         /*
-> -        * A0: run
-> -        * A1: vcpu
-> +        * A0: vcpu
->          */
->
->         /* k0/k1 not being used in host kernel context */
-> @@ -237,10 +236,10 @@ void *kvm_mips_build_vcpu_run(void *addr)
->         kvm_mips_build_save_scratch(&p, V1, K1);
->
->         /* VCPU scratch register has pointer to vcpu */
-> -       UASM_i_MTC0(&p, A1, scratch_vcpu[0], scratch_vcpu[1]);
-> +       UASM_i_MTC0(&p, A0, scratch_vcpu[0], scratch_vcpu[1]);
->
->         /* Offset into vcpu->arch */
-> -       UASM_i_ADDIU(&p, K1, A1, offsetof(struct kvm_vcpu, arch));
-> +       UASM_i_ADDIU(&p, K1, A0, offsetof(struct kvm_vcpu, arch));
->
->         /*
->          * Save the host stack to VCPU, used for exception processing
-> @@ -628,10 +627,7 @@ void *kvm_mips_build_exit(void *addr)
->         /* Now that context has been saved, we can use other registers */
->
->         /* Restore vcpu */
-> -       UASM_i_MFC0(&p, S1, scratch_vcpu[0], scratch_vcpu[1]);
-> -
-> -       /* Restore run (vcpu->run) */
-> -       UASM_i_LW(&p, S0, offsetof(struct kvm_vcpu, run), S1);
-> +       UASM_i_MFC0(&p, S0, scratch_vcpu[0], scratch_vcpu[1]);
->
->         /*
->          * Save Host level EPC, BadVaddr and Cause to VCPU, useful to process
-> @@ -793,7 +789,6 @@ void *kvm_mips_build_exit(void *addr)
->          * with this in the kernel
->          */
->         uasm_i_move(&p, A0, S0);
-> -       uasm_i_move(&p, A1, S1);
->         UASM_i_LA(&p, T9, (unsigned long)kvm_mips_handle_exit);
->         uasm_i_jalr(&p, RA, T9);
->          UASM_i_ADDIU(&p, SP, SP, -CALLFRAME_SIZ);
-I think uasm_i_move(&p, K1, S1) in kvm_mips_build_ret_from_exit() and
-UASM_i_MTC0(&p, S1, scratch_vcpu[0], scratch_vcpu[1]) in
-kvm_mips_build_ret_to_guest() should also be changed.
+diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+index 2862fc3..d0f87d4 100644
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@ -55,7 +55,6 @@
+ DEFINE_MUTEX(smack_ipv6_lock);
+ static LIST_HEAD(smk_ipv6_port_list);
+ #endif
+-static struct kmem_cache *smack_inode_cache;
+ struct kmem_cache *smack_rule_cache;
+ int smack_enabled;
+ 
+@@ -4841,15 +4840,9 @@ static __init int smack_init(void)
+ 	struct cred *cred = (struct cred *) current->cred;
+ 	struct task_smack *tsp;
+ 
+-	smack_inode_cache = KMEM_CACHE(inode_smack, 0);
+-	if (!smack_inode_cache)
+-		return -ENOMEM;
+-
+ 	smack_rule_cache = KMEM_CACHE(smack_rule, 0);
+-	if (!smack_rule_cache) {
+-		kmem_cache_destroy(smack_inode_cache);
++	if (!smack_rule_cache)
+ 		return -ENOMEM;
+-	}
+ 
+ 	/*
+ 	 * Set the security state for the initial task.
+-- 
+1.9.1
 
-> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-> index 9710477a9827..32850470c037 100644
-> --- a/arch/mips/kvm/mips.c
-> +++ b/arch/mips/kvm/mips.c
-> @@ -1186,8 +1186,9 @@ static void kvm_mips_set_c0_status(void)
->  /*
->   * Return value is in the form (errcode<<2 | RESUME_FLAG_HOST | RESUME_FLAG_NV)
->   */
-> -int kvm_mips_handle_exit(struct kvm_run *run, struct kvm_vcpu *vcpu)
-> +int kvm_mips_handle_exit(struct kvm_vcpu *vcpu)
->  {
-> +       struct kvm_run *run = vcpu->run;
->         u32 cause = vcpu->arch.host_cp0_cause;
->         u32 exccode = (cause >> CAUSEB_EXCCODE) & 0x1f;
->         u32 __user *opc = (u32 __user *) vcpu->arch.pc;
-> diff --git a/arch/mips/kvm/trap_emul.c b/arch/mips/kvm/trap_emul.c
-> index d822f3aee3dc..04c864cc356a 100644
-> --- a/arch/mips/kvm/trap_emul.c
-> +++ b/arch/mips/kvm/trap_emul.c
-> @@ -1238,7 +1238,7 @@ static int kvm_trap_emul_vcpu_run(struct kvm_vcpu *vcpu)
->          */
->         kvm_mips_suspend_mm(cpu);
->
-> -       r = vcpu->arch.vcpu_run(vcpu->run, vcpu);
-> +       r = vcpu->arch.vcpu_run(vcpu);
->
->         /* We may have migrated while handling guest exits */
->         cpu = smp_processor_id();
-> diff --git a/arch/mips/kvm/vz.c b/arch/mips/kvm/vz.c
-> index 94f1d23828e3..c5878fa0636d 100644
-> --- a/arch/mips/kvm/vz.c
-> +++ b/arch/mips/kvm/vz.c
-> @@ -3152,7 +3152,7 @@ static int kvm_vz_vcpu_run(struct kvm_vcpu *vcpu)
->         kvm_vz_vcpu_load_tlb(vcpu, cpu);
->         kvm_vz_vcpu_load_wired(vcpu);
->
-> -       r = vcpu->arch.vcpu_run(vcpu->run, vcpu);
-> +       r = vcpu->arch.vcpu_run(vcpu);
->
->         kvm_vz_vcpu_save_wired(vcpu);
->
-> --
-> 2.17.1
->
-
-Regards,
-Huacai
