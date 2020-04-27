@@ -2,127 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5291BA1AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 12:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E161BA1B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 12:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbgD0Kuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 06:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726507AbgD0Kud (ORCPT
+        id S1727026AbgD0Kvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 06:51:45 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58962 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726728AbgD0Kvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 06:50:33 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D02C0610D6;
-        Mon, 27 Apr 2020 03:50:32 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id e26so19007830wmk.5;
-        Mon, 27 Apr 2020 03:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=usvoDcQmOAQfSVCHZkaVpsS5uFVX3OgVFcU37tITmDU=;
-        b=NkYnhxaEqBz0kuLI8UFoasBYsi3X5fu7TqTP6oou5tjAhgFfVQwbbxJ8cF9PzJ24Wp
-         ngevZy52PSMUwshYEIVqoG7dw/Luk6rpiyw5/CYisM6co97UINwWjyfsaey9Cz1zvrpp
-         ekGXAnNj8RpnwEREvzz260MNx0H8Lohc5BjLm18C5KQ0Yx+wakvB5EQ0pYA7rqi98j+X
-         2lFk4aUM8hB99T5SrZU7rr741vjujrTZ1eoSvj8Mv8u5Iuz+vIgDDuKBpSrt9jEaG7mL
-         xSZwY1VXTGBXLeAKNZQjm+qIs+lDZ7JQzq9MEqheJPdFh1ZTOqhAEyJnCZQNfIzJymV1
-         MUlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=usvoDcQmOAQfSVCHZkaVpsS5uFVX3OgVFcU37tITmDU=;
-        b=mnsYaGCd0DOkEZ08p/dPrssES9Pmj8PcFvJ1voPzYMS4+gH8OTdIcfccrCBbx+EQoX
-         lZuIVUxD56MJX+rj1YiZzGYmsWRzUxWvOS7292UX83sAh1hTRGTfRGXqGPV8x1D8343u
-         GzvvqxQnFgHGCJ0qa6B2tB9rZPXMkcxBnwcG4bDKLkS5P6NXJnoYKDuhjkHsTue6ZWgW
-         5J2h124e4uqr/FawZyguCQWAbeR5DoGwzkM1PCIehujMY+ZcmlxUziwPya8tm2mmSGkv
-         2yf9A3Vu63pFiJVOoUeYPgOM9q/RLwfrFBrAeSB2q4jQT/QzBP1GfbyPvnOiHdIg32r+
-         K2xQ==
-X-Gm-Message-State: AGi0PuY5NgEaVG1Nb/xg3k21CpOk209fhLgzqBZDc6wqdD7P0+6FMhIN
-        iOkJ8VecW6w8kWIploT3PYA=
-X-Google-Smtp-Source: APiQypKBEJPhig0ZdzlTpmFNbyrFXFxDJfSJ0HQpzFOB2874Q6TduWtLpeS0K86eKEbwGPkjiGifVQ==
-X-Received: by 2002:a1c:2002:: with SMTP id g2mr24635013wmg.109.1587984631690;
-        Mon, 27 Apr 2020 03:50:31 -0700 (PDT)
-Received: from localhost (p2E5BEDBA.dip0.t-ipconnect.de. [46.91.237.186])
-        by smtp.gmail.com with ESMTPSA id l15sm14666438wmi.48.2020.04.27.03.50.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 03:50:30 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 12:50:29 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Wolfram Sang <wsa@the-dreams.de>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>, linux-i2c@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] i2c: tegra: Better handle case where CPU0 is busy
- for a long time
-Message-ID: <20200427105029.GB3464906@ulmo>
-References: <d2531fc1-b452-717d-af71-19497e14ef00@gmail.com>
- <a5198024-7273-74c4-b4f4-3a29d042bc36@nvidia.com>
- <f8fb1f7f-2497-033e-ff2c-c86c6caa9706@gmail.com>
- <fd1ca178-1ea3-851f-20a6-10bf00453ce3@nvidia.com>
- <a5734f19-254e-b6bc-e791-fa1ac63f11a4@gmail.com>
- <79f6560e-dbb5-0ae1-49f8-cf1cd95396ec@nvidia.com>
- <20200427074837.GC3451400@ulmo>
- <20200427084424.GA28817@kunai>
- <820200ce-17f3-18c0-6f79-3e582f45492d@gmail.com>
- <20200427103553.GA24446@kunai>
+        Mon, 27 Apr 2020 06:51:45 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03RApfpa004006;
+        Mon, 27 Apr 2020 05:51:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1587984702;
+        bh=Cjngpto1bdxfvbm6mcOPybZ71JNeca68YPH88ilXTZE=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=yAtqkR2QOYabchegIZi8qh8hV31s/Ijsm8pVsg4EYazDw6/FPW+iOT0W6S7mdaBqf
+         6HKyBJu9gSWCKk0Jm+/HPBjLQNi6CBPrO/lH1To6p7AJ2NVbQgfT7gdrQPPlc4dX4s
+         yDQ8urqjUarxV4zRok06Vpec9cpoDwbza+XyHJVM=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03RApfk4089452
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Apr 2020 05:51:41 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
+ Apr 2020 05:51:41 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 27 Apr 2020 05:51:41 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03RApdJC027155;
+        Mon, 27 Apr 2020 05:51:40 -0500
+Subject: Re: [PATCH 2/3] arm64: dts: ti: k3-j721e-main.dtsi: Add DSS node
+To:     Jyri Sarha <jsarha@ti.com>, Tero Kristo <t-kristo@ti.com>,
+        Nishanth Menon <nm@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200422091512.950-1-tomi.valkeinen@ti.com>
+ <20200422091512.950-2-tomi.valkeinen@ti.com>
+ <ade3a177-f060-bc40-bcc1-494093e3071d@ti.com>
+ <47b7f858-a8d9-1c3b-4dca-2cc493f6730f@ti.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
+Message-ID: <fa497e8d-7911-5f3d-cf91-347370f8edaa@ti.com>
+Date:   Mon, 27 Apr 2020 13:51:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="O5XBE6gyVG5Rl6Rj"
-Content-Disposition: inline
-In-Reply-To: <20200427103553.GA24446@kunai>
-User-Agent: Mutt/1.13.1 (2019-12-14)
+In-Reply-To: <47b7f858-a8d9-1c3b-4dca-2cc493f6730f@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27/04/2020 13:37, Jyri Sarha wrote:
+> On 27/04/2020 13:09, Tero Kristo wrote:
+>>> +        status = "disabled";
+>>
+>> Again, why disabled by default?
+>>
+> 
+> tidss device is not functional without a defined video-port. The driver
+> is not implemented in a way that it would handle a broken configuration
+> gracefully.
 
---O5XBE6gyVG5Rl6Rj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Then we need to fix it. The driver should handle the case where there are no ports defined just fine.
 
-On Mon, Apr 27, 2020 at 12:35:53PM +0200, Wolfram Sang wrote:
-> On Mon, Apr 27, 2020 at 12:07:19PM +0300, Dmitry Osipenko wrote:
-> > 27.04.2020 11:44, Wolfram Sang =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > >=20
-> > >> Wolfram, can you revert the following two patches for v5.7, please?
-> > >>
-> > >> 	8814044fe0fa i2c: tegra: Synchronize DMA before termination
-> >=20
-> > This patch has nothing to do with your trouble, why do you want to
-> > revert it?
->=20
-> I'll wait some more before pushing out, so you can discuss it.
+  Tomi
 
-Okay, let me run a quick test with that second patch still applied to
-make sure it really is harmless.
-
-Thierry
-
---O5XBE6gyVG5Rl6Rj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl6muPUACgkQ3SOs138+
-s6HeRA//R1ZgI3RIgFRMumlzLgXjk9E0ydZrGpjmIXD2Yq1hKWN7rDxl77D5X1z+
-JemdX2sML4h6JIMiXGercu0mI5SrjO0LHh7L2AYITbdRtfHVjpK4ed96NewY9CNZ
-ruYoVRDYIehUwq6jzX6aQmASBXnnrPiztYEMYqV/2SpTVLJDsAFBFcDI4VpaBpgm
-Sy/tACPUi1JYn6zn5hu96sFqOEvG6BFRwYFVRqDFG8zNWS25YoogvgnKfbL4Yr+X
-CGTw9+1iiMZ7YShdsOj9m/iQaCk8wPI4Nl10KzyEGQlsWDSfce/hcqtG6V0QZqnV
-T0z8GdrKY/o6NqX+iHcEWCySq7aTtZQ42rYKU6zu2awHgxle0a/Y4O6uw+A0CIF8
-eL3joxZcYWUG1Ns8mthGChimL8CVyioMrz7AoLyhcRv+nN6zHnAKi2ODqBFDe7HN
-0UniHlFxJosmw5CE2KtSMzigrcDib6keHaqx7j3riafDORQchOeJh3QxmnhyaO1W
-5KnB63lCx/sph1lPjgUuULp3lYQr8yJozcgTq3by5DvmEdnTNRHBo4FVI62uO2YR
-KvURjkEhTn2OOcs+X6cRTI+mum3BlGHUGMF4vg0a8LVcYYZ1kH1lhDd9ZuhPZ9I4
-CXPot1AVOsY9w//Nm5K4az98xyGkS3UbqL6SNu4psx8tMEFh6KI=
-=dg8T
------END PGP SIGNATURE-----
-
---O5XBE6gyVG5Rl6Rj--
+-- 
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
