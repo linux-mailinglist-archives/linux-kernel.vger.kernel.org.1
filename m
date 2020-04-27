@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A8F1B9975
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED2E1B99EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgD0IKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726786AbgD0IKy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:10:54 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFA2C061A0F
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 01:10:53 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s10so19401787wrr.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 01:10:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=BWFYX7PX5iVsUcqkRSw86/RtX5f51iD1D27rAVa9S5k=;
-        b=DkguBcsFj0EPiLpABgT8rwKhoHGfXC4HqjrDIcxCzC0+0m4BwZCxFQWPAH2FMMagvZ
-         aBW6P30XZ6aOwyOfyNiBuJ7klTHDbgZo8XUdPiCMQf08pnwW8WgAGS6sKgGw6RiSsJqX
-         jP4WPcJrV/j5+q7L6P/pePj7dr7fBhuHh5CC5DMrnzpJGYyDg6p5mDLUOLfCbWYD6kiw
-         kdIyZGN+TyFSjeycyhRg1ED+cIQBxHf6W1AhotvuyBgRCd38UmFZ+QCggJccxRAKZny+
-         eAz0t+8XaVoJPSl/S+rW+PpOe1/QP7/5db7dNeD3y2hn1+T6yl9oKrzmhdYwnRdEkbb1
-         99Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=BWFYX7PX5iVsUcqkRSw86/RtX5f51iD1D27rAVa9S5k=;
-        b=bivfv2s4dBVq7xwlw/s2QeN2r/dzVQVd7bCSrTnnMszU3H3zz8kTKRttAazYuGjMnI
-         +1lEC+EbhKcYcXZHmCXwnlOeFyjGZXtCZAGeP7RI4S1sZWlZsJFWNHaa0lKPvzEmUABS
-         i6H6Dz2KaSH+OSDXAcFOaCGGyLkW5Z5E7ZIaVFkZhtzJ0X6Lcyzvgs0MsWDO8fMZFiD1
-         /9BlKp049Jx3wt+aA/dZMlfVYXurp98QUNfm12HcuZZ4vgMlOnPW8guR0wBau7PB1xG8
-         8yRViwV2UdxrLK8Dxoacyml4Bhede1UGkoT+X/FeqtB7IPgXtSrJiq1HpsR1lgIa14Uw
-         gy8Q==
-X-Gm-Message-State: AGi0PuaO39xPxE/fpB8DTZMi8Sse3F4kUqNwOAgfMXcq5uA+6g7NmrlA
-        HTOwwhYU4DABFvfIurRxhtQB8w==
-X-Google-Smtp-Source: APiQypI47heGwKaekAfcdCP9TA3J1BjECdG45lBsaUSpphpeLIcAoPbP2SxOxrxltJF2SerXzSR0ew==
-X-Received: by 2002:adf:e7ca:: with SMTP id e10mr26528432wrn.18.1587975052322;
-        Mon, 27 Apr 2020 01:10:52 -0700 (PDT)
-Received: from ?IPv6:2001:16b8:4886:8400:6d4b:554:cd7c:6b19? ([2001:16b8:4886:8400:6d4b:554:cd7c:6b19])
-        by smtp.gmail.com with ESMTPSA id r20sm13918576wmh.26.2020.04.27.01.10.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2020 01:10:51 -0700 (PDT)
-Subject: Re: [RFC PATCH 5/9] f2fs: use set/clear_fs_page_private
-To:     Chao Yu <yuchao0@huawei.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     hch@infradead.org, david@fromorbit.com, willy@infradead.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20200426214925.10970-1-guoqing.jiang@cloud.ionos.com>
- <20200426214925.10970-6-guoqing.jiang@cloud.ionos.com>
- <fc48f93d-b705-4770-0fd0-8807b3a74403@huawei.com>
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Message-ID: <665e77ac-2476-ea75-5c61-eb8c2507d1cd@cloud.ionos.com>
-Date:   Mon, 27 Apr 2020 10:10:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726917AbgD0IVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 04:21:03 -0400
+Received: from mx1.emlix.com ([188.40.240.192]:40976 "EHLO mx1.emlix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726434AbgD0IVD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 04:21:03 -0400
+X-Greylist: delayed 573 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Apr 2020 04:21:02 EDT
+Received: from mailer.emlix.com (unknown [81.20.119.6])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.emlix.com (Postfix) with ESMTPS id 4F4F55F75F;
+        Mon, 27 Apr 2020 10:11:28 +0200 (CEST)
+From:   Rolf Eike Beer <eb@emlix.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org
+Subject: [PATCH v4] scripts: use pkg-config to locate libcrypto
+Date:   Mon, 27 Apr 2020 10:11:28 +0200
+Message-ID: <2278760.8Yd83Mgoko@devpool35>
+Organization: emlix GmbH
+In-Reply-To: <20538915.Wj2CyUsUYa@devpool35>
+References: <20538915.Wj2CyUsUYa@devpool35>
 MIME-Version: 1.0
-In-Reply-To: <fc48f93d-b705-4770-0fd0-8807b3a74403@huawei.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/20 4:22 AM, Chao Yu wrote:
-> On 2020/4/27 5:49, Guoqing Jiang wrote:
->> Since the new pair function is introduced, we can call them to clean the
->> code in f2fs.h.
->>
->> Cc: Jaegeuk Kim <jaegeuk@kernel.org>
->> Cc: Chao Yu <chao@kernel.org>
->> Cc: linux-f2fs-devel@lists.sourceforge.net
->> Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-> Acked-by: Chao Yu <yuchao0@huawei.com>
->
+From 082ba542ca4c710dcf592a6f9233603b9275d05d Mon Sep 17 00:00:00 2001
+From: Rolf Eike Beer <eb@emlix.com>
+Date: Thu, 22 Nov 2018 16:40:49 +0100
+Subject: [PATCH 1/2] scripts: use pkg-config to locate libcrypto
 
-Thanks for your review.
+Otherwise build fails if the headers are not in the default location. While at
+it also ask pkg-config for the libs, with fallback to the existing value.
 
-Guoqing
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Cc: stable@vger.kernel.org # 5.6.x
+---
+ scripts/Makefile | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/Makefile b/scripts/Makefile
+index 95ecf970c74c..35ed997e074b 100644
+--- a/scripts/Makefile
++++ b/scripts/Makefile
+@@ -3,6 +3,11 @@
+ # scripts contains sources for various helper programs used throughout
+ # the kernel for the build process.
+ 
++PKG_CONFIG?= pkg-config
++
++CRYPTO_LIBS = $(shell $(PKG_CONFIG) --libs libcrypto 2> /dev/null || echo -lcrypto)
++CRYPTO_CFLAGS = $(shell $(PKG_CONFIG) --cflags libcrypto 2> /dev/null)
++
+ always-$(CONFIG_BUILD_BIN2C)			+= bin2c
+ always-$(CONFIG_KALLSYMS)			+= kallsyms
+ always-$(BUILD_C_RECORDMCOUNT)			+= recordmcount
+@@ -14,8 +19,9 @@ always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
+ 
+ HOSTCFLAGS_sorttable.o = -I$(srctree)/tools/include
+ HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
+-HOSTLDLIBS_sign-file = -lcrypto
+-HOSTLDLIBS_extract-cert = -lcrypto
++HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
++HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
++HOSTLDLIBS_extract-cert = $(CRYPTO_LIBS)
+ 
+ ifdef CONFIG_UNWINDER_ORC
+ ifeq ($(ARCH),x86_64)
+-- 
+2.26.1
+
+
+
+
