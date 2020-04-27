@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E031BB036
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92021BB044
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgD0VSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 17:18:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34198 "EHLO mail.kernel.org"
+        id S1726758AbgD0VSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 17:18:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726397AbgD0VR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 17:17:27 -0400
+        id S1726402AbgD0VR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 17:17:26 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E70B122202;
+        by mail.kernel.org (Postfix) with ESMTPSA id 0169222206;
         Mon, 27 Apr 2020 21:17:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588022245;
-        bh=xxrO2m1szhSXLhg7ZVFFMsns3ZK7iqjIdInVfLVLim0=;
+        bh=aCC2d5+q6kkmzyTzHW1Z1c9uZvdVAHeqmi/gDAteOAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cg+Z31Hv2sZFBnbmCAipvwuQf400TSxzkowv7GUFAsJigZpWYjF7NrBOsGMvsm+Lz
-         nKZ1sJiRJHtgk3VbXVK5rhC+zsG54ZLiC2WG9SFgEZ2LGiXdJ4thgPzuY8gwwp1NWa
-         dBDNT44YjNi8tV5qZeqhuJVIma1Q5X5VHZSW2bm0=
+        b=IkSo/B9fkfDLSwnQur9vb9ydeX7ZLGjmp458qu7iEimWPhOPMOvEIYQdLAFkkItGS
+         I19olW++nm+HXUby1WzTUeG31IX+3W7aH4d5Zggel89pRD2julQBEh1waWKK6UmNuX
+         P92SeCYhn2ZxHTnevQvOiObljSwooFe685HjzQzo=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jTB7z-000HlM-6R; Mon, 27 Apr 2020 23:17:23 +0200
+        id 1jTB7z-000HlR-7q; Mon, 27 Apr 2020 23:17:23 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v3 22/29] docs: filesystems: convert spufs/spu_create.txt to ReST
-Date:   Mon, 27 Apr 2020 23:17:14 +0200
-Message-Id: <4d42e97d5560a79bd5dd443c592be04f9ae9a757.1588021877.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Jeremy Kerr <jk@ozlabs.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v3 23/29] docs: filesystems: convert spufs/spufs.txt to ReST
+Date:   Mon, 27 Apr 2020 23:17:15 +0200
+Message-Id: <9ca05fad12390931bc7da0fa2502d1a450a4b87f.1588021877.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1588021877.git.mchehab+huawei@kernel.org>
 References: <cover.1588021877.git.mchehab+huawei@kernel.org>
@@ -48,148 +49,182 @@ ReST format, trying to preserve a similar output after parsed.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/filesystems/index.rst           |  1 +
- Documentation/filesystems/spufs/index.rst     | 11 ++++
- .../spufs/{spu_create.txt => spu_create.rst}  | 52 ++++++++++++-------
- 3 files changed, 44 insertions(+), 20 deletions(-)
- create mode 100644 Documentation/filesystems/spufs/index.rst
- rename Documentation/filesystems/spufs/{spu_create.txt => spu_create.rst} (90%)
+ Documentation/filesystems/spufs/index.rst     |  1 +
+ .../spufs/{spufs.txt => spufs.rst}            | 59 +++++++++----------
+ MAINTAINERS                                   |  2 +-
+ 3 files changed, 30 insertions(+), 32 deletions(-)
+ rename Documentation/filesystems/spufs/{spufs.txt => spufs.rst} (95%)
 
-diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-index 30f1583015bd..36462b0a7836 100644
---- a/Documentation/filesystems/index.rst
-+++ b/Documentation/filesystems/index.rst
-@@ -106,6 +106,7 @@ Documentation for filesystem implementations.
-    ramfs-rootfs-initramfs
-    relay
-    romfs
-+   spufs/index
-    squashfs
-    sysfs
-    sysv-fs
 diff --git a/Documentation/filesystems/spufs/index.rst b/Documentation/filesystems/spufs/index.rst
-new file mode 100644
-index 000000000000..39553c6ebefd
---- /dev/null
+index 39553c6ebefd..939cf59a7d9e 100644
+--- a/Documentation/filesystems/spufs/index.rst
 +++ b/Documentation/filesystems/spufs/index.rst
-@@ -0,0 +1,11 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==============
-+SPU Filesystem
-+==============
-+
-+
-+.. toctree::
-+   :maxdepth: 1
-+
-+   spu_create
-diff --git a/Documentation/filesystems/spufs/spu_create.txt b/Documentation/filesystems/spufs/spu_create.rst
-similarity index 90%
-rename from Documentation/filesystems/spufs/spu_create.txt
-rename to Documentation/filesystems/spufs/spu_create.rst
-index 8ede5a35340f..83108c099696 100644
---- a/Documentation/filesystems/spufs/spu_create.txt
-+++ b/Documentation/filesystems/spufs/spu_create.rst
-@@ -1,18 +1,26 @@
--SPU_CREATE(2)              Linux Programmer's Manual             SPU_CREATE(2)
+@@ -8,4 +8,5 @@ SPU Filesystem
+ .. toctree::
+    :maxdepth: 1
+ 
++   spufs
+    spu_create
+diff --git a/Documentation/filesystems/spufs/spufs.txt b/Documentation/filesystems/spufs/spufs.rst
+similarity index 95%
+rename from Documentation/filesystems/spufs/spufs.txt
+rename to Documentation/filesystems/spufs/spufs.rst
+index caf36aaae804..8a42859bb100 100644
+--- a/Documentation/filesystems/spufs/spufs.txt
++++ b/Documentation/filesystems/spufs/spufs.rst
+@@ -1,12 +1,18 @@
+-SPUFS(2)                   Linux Programmer's Manual                  SPUFS(2)
 +.. SPDX-License-Identifier: GPL-2.0
  
-+==========
-+spu_create
-+==========
++=====
++spufs
++=====
  
--
--NAME
 +Name
 +====
-        spu_create - create a new spu context
  
+-NAME
+        spufs - the SPU file system
  
--SYNOPSIS
--       #include <sys/types.h>
--       #include <sys/spu.h>
-+Synopsis
-+========
- 
--       int spu_create(const char *pathname, int flags, mode_t mode);
-+       ::
  
 -DESCRIPTION
-+         #include <sys/types.h>
-+         #include <sys/spu.h>
-+
-+         int spu_create(const char *pathname, int flags, mode_t mode);
-+
 +Description
 +===========
-        The  spu_create  system call is used on PowerPC machines that implement
-        the Cell Broadband Engine Architecture in order to  access  Synergistic
-        Processor  Units (SPUs). It creates a new logical context for an SPU in
-@@ -43,13 +51,15 @@ DESCRIPTION
-        possible mode values.
++
+        The SPU file system is used on PowerPC machines that implement the Cell
+        Broadband Engine Architecture in order to access Synergistic  Processor
+        Units (SPUs).
+@@ -21,7 +27,9 @@ DESCRIPTION
+        ally add or remove files.
  
  
--RETURN VALUE
-+Return Value
-+============
-        spu_create  returns a new file descriptor. It may return -1 to indicate
-        an error condition and set errno to  one  of  the  error  codes  listed
-        below.
+-MOUNT OPTIONS
++Mount Options
++=============
++
+        uid=<uid>
+               set the user owning the mount point, the default is 0 (root).
  
- 
--ERRORS
-+Errors
-+======
-        EACCES
-               The  current  user does not have write access on the spufs mount
-               point.
-@@ -87,33 +97,35 @@ ERRORS
- 
- 
- 
--NOTES
-+Notes
-+=====
-        spu_create  is  meant  to  be used from libraries that implement a more
-        abstract interface to SPUs, not to be used from  regular  applications.
-        See  http://www.bsc.es/projects/deepcomputing/linuxoncell/ for the rec-
-        ommended libraries.
+@@ -29,7 +37,9 @@ MOUNT OPTIONS
+               set the group owning the mount point, the default is 0 (root).
  
  
 -FILES
 +Files
 +=====
-        pathname must point to a location beneath the mount point of spufs.  By
-        convention, it gets mounted in /spu.
++
+        The files in spufs mostly follow the standard behavior for regular sys-
+        tem  calls like read(2) or write(2), but often support only a subset of
+        the operations supported on regular file systems. This list details the
+@@ -125,14 +135,12 @@ FILES
+               space is available for writing.
  
  
--CONFORMING TO
-+Conforming to
-+=============
-        This call is Linux specific and only implemented by the ppc64 architec-
-        ture. Programs using this system call are not portable.
+-   /mbox_stat
+-   /ibox_stat
+-   /wbox_stat
++   /mbox_stat, /ibox_stat, /wbox_stat
+        Read-only files that contain the length of the current queue, i.e.  how
+        many  words  can  be  read  from  mbox or ibox or how many words can be
+        written to wbox without blocking.  The files can be read only in 4-byte
+        units  and  return  a  big-endian  binary integer number.  The possible
+-       operations on an open *box_stat file are:
++       operations on an open ``*box_stat`` file are:
+ 
+        read(2)
+               If a count smaller than four is requested, read returns  -1  and
+@@ -143,12 +151,7 @@ FILES
+               in EAGAIN.
  
  
--BUGS
-+Bugs
-+====
-        The code does not yet fully implement all features lined out here.
+-   /npc
+-   /decr
+-   /decr_status
+-   /spu_tag_mask
+-   /event_mask
+-   /srr0
++   /npc, /decr, /decr_status, /spu_tag_mask, /event_mask, /srr0
+        Internal  registers  of  the SPU. The representation is an ASCII string
+        with the numeric value of the next instruction to  be  executed.  These
+        can  be  used in read/write mode for debugging, but normal operation of
+@@ -157,17 +160,14 @@ FILES
+ 
+        The contents of these files are:
+ 
++       =================== ===================================
+        npc                 Next Program Counter
+-
+        decr                SPU Decrementer
+-
+        decr_status         Decrementer Status
+-
+        spu_tag_mask        MFC tag mask for SPU DMA
+-
+        event_mask          Event mask for SPU interrupts
+-
+        srr0                Interrupt Return address register
++       =================== ===================================
  
  
--AUTHOR
-+Author
-+======
-        Arnd Bergmann <arndb@de.ibm.com>
+        The   possible   operations   on   an   open  npc,  decr,  decr_status,
+@@ -206,8 +206,7 @@ FILES
+               from the data buffer, updating the value of the fpcr register.
+ 
+ 
+-   /signal1
+-   /signal2
++   /signal1, /signal2
+        The two signal notification channels of an SPU.  These  are  read-write
+        files  that  operate  on  a 32 bit word.  Writing to one of these files
+        triggers an interrupt on the SPU.  The  value  written  to  the  signal
+@@ -233,8 +232,7 @@ FILES
+               file.
+ 
+ 
+-   /signal1_type
+-   /signal2_type
++   /signal1_type, /signal2_type
+        These two files change the behavior of the signal1 and signal2  notifi-
+        cation  files.  The  contain  a numerical ASCII string which is read as
+        either "1" or "0".  In mode 0 (overwrite), the  hardware  replaces  the
+@@ -259,18 +257,17 @@ FILES
+               the previous setting.
+ 
+ 
+-EXAMPLES
++Examples
++========
+        /etc/fstab entry
+               none      /spu      spufs     gid=spu   0    0
+ 
+ 
+-AUTHORS
++Authors
++=======
+        Arnd  Bergmann  <arndb@de.ibm.com>,  Mark  Nutter <mnutter@us.ibm.com>,
+        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>
  
 -SEE ALSO
 +See Also
 +========
-        capabilities(7), close(2), spu_run(2), spufs(7)
+        capabilities(7), close(2), spu_create(2), spu_run(2), spufs(7)
 -
 -
 -
--Linux                             2005-09-28                     SPU_CREATE(2)
+-Linux                             2005-09-28                          SPUFS(2)
+diff --git a/MAINTAINERS b/MAINTAINERS
+index ff9094b9310a..3b684c061677 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15938,7 +15938,7 @@ M:	Jeremy Kerr <jk@ozlabs.org>
+ L:	linuxppc-dev@lists.ozlabs.org
+ S:	Supported
+ W:	http://www.ibm.com/developerworks/power/cell/
+-F:	Documentation/filesystems/spufs.txt
++F:	Documentation/filesystems/spufs/spufs.rst
+ F:	arch/powerpc/platforms/cell/spufs/
+ 
+ SQUASHFS FILE SYSTEM
 -- 
 2.25.4
 
