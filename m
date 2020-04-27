@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA2A1BB0A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D101BB0B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726270AbgD0ViR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 17:38:17 -0400
-Received: from mga11.intel.com ([192.55.52.93]:11912 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726259AbgD0ViQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 17:38:16 -0400
-IronPort-SDR: OAepLcrguzYCcYcVhGebqoQbMw8YphuPIaYu/iYk8PSaGGuGi6AlfDf9vc9KIqLhRyr/wJr7/E
- tVHJa4iz2EYw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 14:38:15 -0700
-IronPort-SDR: J55vk0pF84yPFVCrwNKWw1dK8bo24IMKbKbK1b3HqZGfkKQPO1BJnm1Y5aNiAd8ecyVBJ7x1jp
- JlaHbUzZhN+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
-   d="scan'208";a="246286715"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.213.181.12]) ([10.213.181.12])
-  by orsmga007.jf.intel.com with ESMTP; 27 Apr 2020 14:38:13 -0700
-Subject: Re: [PATCH RFC 01/15] drivers/base: Introduce platform_msi_ops
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     vkoul@kernel.org, megha.dey@linux.intel.com, maz@kernel.org,
-        bhelgaas@google.com, rafael@kernel.org, tglx@linutronix.de,
-        hpa@zytor.com, alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-References: <158751095889.36773.6009825070990637468.stgit@djiang5-desk3.ch.intel.com>
- <158751203294.36773.11436842117908325764.stgit@djiang5-desk3.ch.intel.com>
- <20200426070118.GA2083720@kroah.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <4223511b-8dc0-33d1-6af1-831d8bf40b3d@intel.com>
-Date:   Mon, 27 Apr 2020 14:38:12 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726303AbgD0Vnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 17:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726030AbgD0Vnl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 17:43:41 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33170C0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 14:43:41 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id a10so19192097uad.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 14:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fYuhluAGb+RQCXL4DEC1KfJRCaKA6Wi//jTTboboaoo=;
+        b=iCQowVY7qNm+2hDPTf19WoKbu9nq50bk0Nh7YjBlkpv+bHph+Gqo//W33qByKWOUi1
+         rZgz+DsGMCagrOULZIri9qiafY7b/7Mi20EIiTQ36aPWrkY935PQMkDaZKJWlkFH2M5s
+         1posC3qlpfwlLc1QA7PwzkdBm5GRxXQjT5Z7C8wmunaMy39Lfs4uA60SJ0D31hsB0gm3
+         Pz3v28kWM0vJ+s357W2dZ2sgaBwaORVbMeQCgIv/Tgh+gYEXl5XO1lAvD7NTU6d2M9Nv
+         39tn2vXG/OURY5Y4Ta2Olk7t0enCARDtf/X7MX5IMM8f7Ka1Q3QFMTKN1jvEF5toFZY7
+         SyAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fYuhluAGb+RQCXL4DEC1KfJRCaKA6Wi//jTTboboaoo=;
+        b=D8tdeuY9ujZed/XSThWKqc/5uiTvgDmLcO7VPNjzj4mxrCEWDxefNUvysN+YOO0Ohi
+         kS1+ycjVOAa47A8WJtzW2GaivLmPBPp0sQHytwg8Aa0ihH8hX4rB8HrCDhruPkzfk+7R
+         Xn0t3ocuH3D7V1dJc5nobbcviNBheA6pZMvERb6GN5k7VTxzfWbTM/Dp1nk1VtautYdH
+         DgUJC3XSY8ALMLld8b/4AhloqrWl20gnrQRRRIqu3vjm0rYxMi+mrr1BpxRAEhFKVwhO
+         VwCez0dY32UTgStNuClsM8WK0mTqpvM4XBefD6XzZlMp1mOFr9bvx6waJElVOKOpdTW+
+         PRAw==
+X-Gm-Message-State: AGi0PuZb6bSjehdT8P++iRM82/W7ZVdbsLmYbbiwjfN+raQcDGe+Lkqy
+        xwIHnmpN/R+XiVJLDYVRnldioXt3dCP+0V31qReA66aa
+X-Google-Smtp-Source: APiQypJR+mMBo+OzPqMc4x+fpJmrlgvxgdKsttw6Vv8slx44QAtGO85qE0ORgQnjrDNFhnvxXcirLSoI1Fkt2a2ne9o=
+X-Received: by 2002:a67:d710:: with SMTP id p16mr6117024vsj.240.1588023819726;
+ Mon, 27 Apr 2020 14:43:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200426070118.GA2083720@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200418231908.152212-1-eranian@google.com>
+In-Reply-To: <20200418231908.152212-1-eranian@google.com>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Mon, 27 Apr 2020 14:43:28 -0700
+Message-ID: <CABPqkBRLHx6dbMMcGv4fi-7+Suez29n0qxUCK=g+Fn41iwZBfw@mail.gmail.com>
+Subject: Re: [PATCH] perf/script: remove extraneous newline in perf_sample__fprintf_regs()
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@elte.hu,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Liang, Kan" <kan.liang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Apr 18, 2020 at 4:19 PM Stephane Eranian <eranian@google.com> wrote:
+>
+> When printing iregs, there was a double newline printed because
+> perf_sample__fprintf_regs() was printing its own and then at the
+> end of all fields, perf script was adding one.
+> This was causing blank line in the output:
+>
+> Before:
+> $ perf script -Fip,iregs
+>            401b8d ABI:2    DX:0x100    SI:0x4a8340    DI:0x4a9340
+>
+>            401b8d ABI:2    DX:0x100    SI:0x4a9340    DI:0x4a8340
+>
+>            401b8d ABI:2    DX:0x100    SI:0x4a8340    DI:0x4a9340
+>
+>            401b8d ABI:2    DX:0x100    SI:0x4a9340    DI:0x4a8340
+>
+> After:
+> $ perf script -Fip,iregs
+>            401b8d ABI:2    DX:0x100    SI:0x4a8340    DI:0x4a9340
+>            401b8d ABI:2    DX:0x100    SI:0x4a9340    DI:0x4a8340
+>            401b8d ABI:2    DX:0x100    SI:0x4a8340    DI:0x4a9340
+>
+> Signed-off-by: Stephane Eranian <eranian@google.com>
 
 
-On 4/26/2020 12:01 AM, Greg KH wrote:
-> On Tue, Apr 21, 2020 at 04:33:53PM -0700, Dave Jiang wrote:
->> From: Megha Dey <megha.dey@linux.intel.com>
->>
->> This is a preparatory patch to introduce Interrupt Message Store (IMS).
->>
->> Until now, platform-msi.c provided a generic way to handle non-PCI MSI
->> interrupts. Platform-msi uses its parent chip's mask/unmask routines
->> and only provides a way to write the message in the generating device.
->>
->> Newly creeping non-PCI complaint MSI-like interrupts (Intel's IMS for
->> instance) might need to provide a device specific mask and unmask callback
->> as well, apart from the write function.
->>
->> Hence, introduce a new structure platform_msi_ops, which would provide
->> device specific write function as well as other device specific callbacks
->> (mask/unmask).
->>
->> Signed-off-by: Megha Dey <megha.dey@linux.intel.com>
-> 
-> As this is not following the Intel-specific rules for sending me new
-> code, I am just deleting it all from my inbox.
+Ping?
 
-That is my fault. As the aggregator of the patches, I should've signed 
-off Megha's patches.
-
-> 
-> Please follow the rules you all have been given, they are specific and
-> there for a reason.  And in looking at this code, those rules are not
-> going away any time soon.
-> 
-> greg k-h
-> 
+>
+> ---
+>  tools/perf/builtin-script.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+> index 1f57a7ecdf3d0..0c0b6e807d06e 100644
+> --- a/tools/perf/builtin-script.c
+> +++ b/tools/perf/builtin-script.c
+> @@ -604,8 +604,6 @@ static int perf_sample__fprintf_regs(struct regs_dump *regs, uint64_t mask,
+>                 printed += fprintf(fp, "%5s:0x%"PRIx64" ", perf_reg_name(r), val);
+>         }
+>
+> -       fprintf(fp, "\n");
+> -
+>         return printed;
+>  }
+>
+> --
+> 2.26.1.301.g55bc3eb7cb9-goog
+>
