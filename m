@@ -2,379 +2,1221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF891BA821
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901B01BA816
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgD0PiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 11:38:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52718 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728162AbgD0PiO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 11:38:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588001892;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S6+QU/bD7wTmAh7gBgePIUFumQyjAiUTr7PDnaa7Y5E=;
-        b=XjUAhF3cXTR+wdmfGxiyUbqkV0onN4Lc90dq8Dw9cY0zPumU2PHwYKb3HaET6g+Ca7xwt8
-        mQ455HiDNxKRuOnDO76a7FScS0yE0ZkB1/D7h9mzkHzUbfp9OLT/GXV8dWgS7+a1YCEXdm
-        QAg2sC+YPY2by4pGrqyajxS3+sOQcbs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-RaatyLQqMO2D4ywpEP_U7A-1; Mon, 27 Apr 2020 11:38:10 -0400
-X-MC-Unique: RaatyLQqMO2D4ywpEP_U7A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727977AbgD0Phr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 11:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726539AbgD0Phr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 11:37:47 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34D0C1083E80;
-        Mon, 27 Apr 2020 15:38:01 +0000 (UTC)
-Received: from work-vm (ovpn-114-175.ams2.redhat.com [10.36.114.175])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3761460C19;
-        Mon, 27 Apr 2020 15:37:46 +0000 (UTC)
-Date:   Mon, 27 Apr 2020 16:37:43 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "cjia@nvidia.com" <cjia@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "libvir-list@redhat.com" <libvir-list@redhat.com>,
-        "Zhengxiao.zx@alibaba-inc.com" <Zhengxiao.zx@alibaba-inc.com>,
-        "shuangtai.tst@alibaba-inc.com" <shuangtai.tst@alibaba-inc.com>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eauger@redhat.com" <eauger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "eskultet@redhat.com" <eskultet@redhat.com>,
-        "Yang, Ziye" <ziye.yang@intel.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "pasic@linux.ibm.com" <pasic@linux.ibm.com>,
-        "aik@ozlabs.ru" <aik@ozlabs.ru>,
-        "felipe@nutanix.com" <felipe@nutanix.com>,
-        "Ken.Xue@amd.com" <Ken.Xue@amd.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
-        "dinechin@redhat.com" <dinechin@redhat.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Liu, Changpeng" <changpeng.liu@intel.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>,
-        "jonathan.davies@nutanix.com" <jonathan.davies@nutanix.com>,
-        "He, Shaopeng" <shaopeng.he@intel.com>
-Subject: Re: [PATCH v5 0/4] introduction of migration_version attribute for
- VFIO live migration
-Message-ID: <20200427153743.GK2923@work-vm>
-References: <20200417104450.2d2f2fa9.cohuck@redhat.com>
- <20200417095202.GD16688@joy-OptiPlex-7040>
- <20200417132457.45d91fe3.cohuck@redhat.com>
- <20200420012457.GE16688@joy-OptiPlex-7040>
- <20200420165600.4951ae82@w520.home>
- <20200421023718.GA12111@joy-OptiPlex-7040>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D86DF06@SHSMSX104.ccr.corp.intel.com>
- <20200422073628.GA12879@joy-OptiPlex-7040>
- <20200424191049.GU3106@work-vm>
- <20200426013628.GC12879@joy-OptiPlex-7040>
+        by mail.kernel.org (Postfix) with ESMTPSA id D4FF420661;
+        Mon, 27 Apr 2020 15:37:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588001864;
+        bh=Ddt1eY93DCtanc2wEu+EbnEWGXSAaZ5t4Q9EIPhYMAc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=0otMsyYIhDnv3jPchS0ySUeZUArfYhN38BzD+6ebdHUgl6dUd5vEmUrfdoZFkNzx8
+         ofcf3IB4zlrWTnbMQcnZHiCWhf2/Ibdw+T19gxDhe9ohWLG8TcgWXinVw299KmkAgf
+         GcIjTWP+N6swbh4FwSD2ZbR8KKz1xQWHBL+dMC1Q=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id AACBA35226DB; Mon, 27 Apr 2020 08:37:44 -0700 (PDT)
+Date:   Mon, 27 Apr 2020 08:37:44 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     kunit-dev@googlegroups.com,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] kcsan: Add test suite
+Message-ID: <20200427153744.GA7560@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200427143507.49654-1-elver@google.com>
+ <CANpmjNOv7VXv9LtWHWBx1-an+1+WxjtzDNBF+rKsOm+ybmvwog@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200426013628.GC12879@joy-OptiPlex-7040>
-User-Agent: Mutt/1.13.4 (2020-02-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CANpmjNOv7VXv9LtWHWBx1-an+1+WxjtzDNBF+rKsOm+ybmvwog@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Yan Zhao (yan.y.zhao@intel.com) wrote:
-> On Sat, Apr 25, 2020 at 03:10:49AM +0800, Dr. David Alan Gilbert wrote:
-> > * Yan Zhao (yan.y.zhao@intel.com) wrote:
-> > > On Tue, Apr 21, 2020 at 08:08:49PM +0800, Tian, Kevin wrote:
-> > > > > From: Yan Zhao
-> > > > > Sent: Tuesday, April 21, 2020 10:37 AM
-> > > > > 
-> > > > > On Tue, Apr 21, 2020 at 06:56:00AM +0800, Alex Williamson wrote:
-> > > > > > On Sun, 19 Apr 2020 21:24:57 -0400
-> > > > > > Yan Zhao <yan.y.zhao@intel.com> wrote:
-> > > > > >
-> > > > > > > On Fri, Apr 17, 2020 at 07:24:57PM +0800, Cornelia Huck wrote:
-> > > > > > > > On Fri, 17 Apr 2020 05:52:02 -0400
-> > > > > > > > Yan Zhao <yan.y.zhao@intel.com> wrote:
-> > > > > > > >
-> > > > > > > > > On Fri, Apr 17, 2020 at 04:44:50PM +0800, Cornelia Huck wrote:
-> > > > > > > > > > On Mon, 13 Apr 2020 01:52:01 -0400
-> > > > > > > > > > Yan Zhao <yan.y.zhao@intel.com> wrote:
-> > > > > > > > > >
-> > > > > > > > > > > This patchset introduces a migration_version attribute under sysfs
-> > > > > of VFIO
-> > > > > > > > > > > Mediated devices.
-> > > > > > > > > > >
-> > > > > > > > > > > This migration_version attribute is used to check migration
-> > > > > compatibility
-> > > > > > > > > > > between two mdev devices.
-> > > > > > > > > > >
-> > > > > > > > > > > Currently, it has two locations:
-> > > > > > > > > > > (1) under mdev_type node,
-> > > > > > > > > > >     which can be used even before device creation, but only for
-> > > > > mdev
-> > > > > > > > > > >     devices of the same mdev type.
-> > > > > > > > > > > (2) under mdev device node,
-> > > > > > > > > > >     which can only be used after the mdev devices are created, but
-> > > > > the src
-> > > > > > > > > > >     and target mdev devices are not necessarily be of the same
-> > > > > mdev type
-> > > > > > > > > > > (The second location is newly added in v5, in order to keep
-> > > > > consistent
-> > > > > > > > > > > with the migration_version node for migratable pass-though
-> > > > > devices)
-> > > > > > > > > >
-> > > > > > > > > > What is the relationship between those two attributes?
-> > > > > > > > > >
-> > > > > > > > > (1) is for mdev devices specifically, and (2) is provided to keep the
-> > > > > same
-> > > > > > > > > sysfs interface as with non-mdev cases. so (2) is for both mdev
-> > > > > devices and
-> > > > > > > > > non-mdev devices.
-> > > > > > > > >
-> > > > > > > > > in future, if we enable vfio-pci vendor ops, (i.e. a non-mdev device
-> > > > > > > > > is binding to vfio-pci, but is able to register migration region and do
-> > > > > > > > > migration transactions from a vendor provided affiliate driver),
-> > > > > > > > > the vendor driver would export (2) directly, under device node.
-> > > > > > > > > It is not able to provide (1) as there're no mdev devices involved.
-> > > > > > > >
-> > > > > > > > Ok, creating an alternate attribute for non-mdev devices makes sense.
-> > > > > > > > However, wouldn't that rather be a case (3)? The change here only
-> > > > > > > > refers to mdev devices.
-> > > > > > > >
-> > > > > > > as you pointed below, (3) and (2) serve the same purpose.
-> > > > > > > and I think a possible usage is to migrate between a non-mdev device and
-> > > > > > > an mdev device. so I think it's better for them both to use (2) rather
-> > > > > > > than creating (3).
-> > > > > >
-> > > > > > An mdev type is meant to define a software compatible interface, so in
-> > > > > > the case of mdev->mdev migration, doesn't migrating to a different type
-> > > > > > fail the most basic of compatibility tests that we expect userspace to
-> > > > > > perform?  IOW, if two mdev types are migration compatible, it seems a
-> > > > > > prerequisite to that is that they provide the same software interface,
-> > > > > > which means they should be the same mdev type.
-> > > > > >
-> > > > > > In the hybrid cases of mdev->phys or phys->mdev, how does a
-> > > > > management
-> > > > > > tool begin to even guess what might be compatible?  Are we expecting
-> > > > > > libvirt to probe ever device with this attribute in the system?  Is
-> > > > > > there going to be a new class hierarchy created to enumerate all
-> > > > > > possible migrate-able devices?
-> > > > > >
-> > > > > yes, management tool needs to guess and test migration compatible
-> > > > > between two devices. But I think it's not the problem only for
-> > > > > mdev->phys or phys->mdev. even for mdev->mdev, management tool needs
-> > > > > to
-> > > > > first assume that the two mdevs have the same type of parent devices
-> > > > > (e.g.their pciids are equal). otherwise, it's still enumerating
-> > > > > possibilities.
-> > > > > 
-> > > > > on the other hand, for two mdevs,
-> > > > > mdev1 from pdev1, its mdev_type is 1/2 of pdev1;
-> > > > > mdev2 from pdev2, its mdev_type is 1/4 of pdev2;
-> > > > > if pdev2 is exactly 2 times of pdev1, why not allow migration between
-> > > > > mdev1 <-> mdev2.
-> > > > 
-> > > > How could the manage tool figure out that 1/2 of pdev1 is equivalent 
-> > > > to 1/4 of pdev2? If we really want to allow such thing happen, the best
-> > > > choice is to report the same mdev type on both pdev1 and pdev2.
-> > > I think that's exactly the value of this migration_version interface.
-> > > the management tool can take advantage of this interface to know if two
-> > > devices are migration compatible, no matter they are mdevs, non-mdevs,
-> > > or mix.
-> > > 
-> > > as I know, (please correct me if not right), current libvirt still
-> > > requires manually generating mdev devices, and it just duplicates src vm
-> > > configuration to the target vm.
-> > > for libvirt, currently it's always phys->phys and mdev->mdev (and of the
-> > > same mdev type).
-> > > But it does not justify that hybrid cases should not be allowed. otherwise,
-> > > why do we need to introduce this migration_version interface and leave
-> > > the judgement of migration compatibility to vendor driver? why not simply
-> > > set the criteria to something like "pciids of parent devices are equal,
-> > > and mdev types are equal" ?
-> > > 
-> > > 
-> > > > btw mdev<->phys just brings trouble to upper stack as Alex pointed out. 
-> > > could you help me understand why it will bring trouble to upper stack?
-> > > 
-> > > I think it just needs to read src migration_version under src dev node,
-> > > and test it in target migration version under target dev node. 
-> > > 
-> > > after all, through this interface we just help the upper layer
-> > > knowing available options through reading and testing, and they decide
-> > > to use it or not.
-> > > 
-> > > > Can we simplify the requirement by allowing only mdev<->mdev and 
-> > > > phys<->phys migration? If an customer does want to migrate between a 
-> > > > mdev and phys, he could wrap physical device into a wrapped mdev 
-> > > > instance (with the same type as the source mdev) instead of using vendor 
-> > > > ops. Doing so does add some burden but if mdev<->phys is not dominant 
-> > > > usage then such tradeoff might be worthywhile...
-> > > >
-> > > If the interfaces for phys<->phys and mdev<->mdev are consistent, it makes no
-> > > difference to phys<->mdev, right?
-> > > I think the vendor string for a mdev device is something like:
-> > > "Parent PCIID + mdev type + software version", and
-> > > that for a phys device is something like:
-> > > "PCIID + software version".
-> > > as long as we don't migrate between devices from different vendors, it's
-> > > easy for vendor driver to tell if a phys device is migration compatible
-> > > to a mdev device according it supports it or not.
-> > 
-> > It surprises me that the PCIID matching is a requirement; I'd assumed
-> > with this clever mdev name setup that you could migrate between two
-> > different models in a series, or to a newer model, as long as they
-> > both supported the same mdev view.
-> > 
-> hi Dave
-> the migration_version string is transparent to userspace, and is
-> completely defined by vendor driver.
-> I put it there just as an example of how vendor driver may implement it.
-> e.g.
-> the src migration_version string is "src PCIID + src software version", 
-> then when this string is write to target migration_version node,
-> the vendor driver in the target device will compare it with its own
-> device info and software version.
-> If different models are allowed, the write just succeeds even
-> PCIIDs in src and target are different.
+On Mon, Apr 27, 2020 at 05:23:23PM +0200, Marco Elver wrote:
+> On Mon, 27 Apr 2020 at 16:35, Marco Elver <elver@google.com> wrote:
+> >
+> > This adds KCSAN test focusing on behaviour of the integrated runtime.
+> > Tests various race scenarios, and verifies the reports generated to
+> > console. Makes use of KUnit for test organization, and the Torture
+> > framework for test thread control.
+> >
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > ---
 > 
-> so, it is the vendor driver to define whether two devices are able to
-> migrate, no matter their PCIIDs, mdev types, software versions..., which
-> provides vendor driver full flexibility.
+> +KUnit devs
+> We had some discussions on how to best test sanitizer runtimes, and we
+> believe that this test is what testing sanitizer runtimes should
+> roughly look like. Note that, for KCSAN there are various additional
+> complexities like multiple threads, and report generation isn't
+> entirely deterministic (need to run some number of iterations to get
+> reports, may get multiple reports, etc.).
 > 
-> do you think it's good?
-
-Yeh that's OK; I guess it's going to need to have a big table in their
-with all the PCIIDs in.
-The alternative would be to abstract it a little; e.g. to say it's
-an Intel-gpu-core-v4  and then it would be less worried about the exact
-clock speed etc - but yes you might be right htat PCIIDs might be best
-for checking for quirks.
-
-Dave
-
-> Thanks
-> Yan
+> The main thing, however, is that we want to verify the actual output
+> (or absence of it) to console. This is what the KCSAN test does using
+> the 'console' tracepoint. Could KUnit provide some generic
+> infrastructure to check console output, like is done in the test here?
+> Right now I couldn't say what the most useful generalization of this
+> would be (without it just being a wrapper around the console
+> tracepoint), because the way I've decided to capture and then match
+> console output is quite test-specific. For now we can replicate this
+> logic on a per-test basis, but it would be extremely useful if there
+> was a generic interface that KUnit could provide in future.
 > 
-> > 
-> > > 
-> > > Thanks
-> > > Yan
-> > > > 
-> > > > > 
-> > > > > 
-> > > > > > I agree that there was a gap in the previous proposal for non-mdev
-> > > > > > devices, but I think this bring a lot of questions that we need to
-> > > > > > puzzle through and libvirt will need to re-evaluate how they might
-> > > > > > decide to pick a migration target device.  For example, I'm sure
-> > > > > > libvirt would reject any policy decisions regarding picking a physical
-> > > > > > device versus an mdev device.  Had we previously left it that only a
-> > > > > > layer above libvirt would select a target device and libvirt only tests
-> > > > > > compatibility to that target device?
-> > > > > I'm not sure if there's a layer above libvirt would select a target
-> > > > > device. but if there is such a layer (even it's human), we need to
-> > > > > provide an interface for them to know whether their decision is suitable
-> > > > > for migration. The migration_version interface provides a potential to
-> > > > > allow mdev->phys migration, even libvirt may currently reject it.
-> > > > > 
-> > > > > 
-> > > > > > We also need to consider that this expands the namespace.  If we no
-> > > > > > longer require matching types as the first level of comparison, then
-> > > > > > vendor migration strings can theoretically collide.  How do we
-> > > > > > coordinate that can't happen?  Thanks,
-> > > > > yes, it's indeed a problem.
-> > > > > could only allowing migration beteen devices from the same vendor be a
-> > > > > good
-> > > > > prerequisite?
-> > > > > 
-> > > > > Thanks
-> > > > > Yan
-> > > > > >
-> > > > > > > > > > Is existence (and compatibility) of (1) a pre-req for possible
-> > > > > > > > > > existence (and compatibility) of (2)?
-> > > > > > > > > >
-> > > > > > > > > no. (2) does not reply on (1).
-> > > > > > > >
-> > > > > > > > Hm. Non-existence of (1) seems to imply "this type does not support
-> > > > > > > > migration". If an mdev created for such a type suddenly does support
-> > > > > > > > migration, it feels a bit odd.
-> > > > > > > >
-> > > > > > > yes. but I think if the condition happens, it should be reported a bug
-> > > > > > > to vendor driver.
-> > > > > > > should I add a line in the doc like "vendor driver should ensure that the
-> > > > > > > migration compatibility from migration_version under mdev_type should
-> > > > > be
-> > > > > > > consistent with that from migration_version under device node" ?
-> > > > > > >
-> > > > > > > > (It obviously cannot be a prereq for what I called (3) above.)
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > > Does userspace need to check (1) or can it completely rely on (2), if
-> > > > > > > > > > it so chooses?
-> > > > > > > > > >
-> > > > > > > > > I think it can completely reply on (2) if compatibility check before
-> > > > > > > > > mdev creation is not required.
-> > > > > > > > >
-> > > > > > > > > > If devices with a different mdev type are indeed compatible, it
-> > > > > seems
-> > > > > > > > > > userspace can only find out after the devices have actually been
-> > > > > > > > > > created, as (1) does not apply?
-> > > > > > > > > yes, I think so.
-> > > > > > > >
-> > > > > > > > How useful would it be for userspace to even look at (1) in that case?
-> > > > > > > > It only knows if things have a chance of working if it actually goes
-> > > > > > > > ahead and creates devices.
-> > > > > > > >
-> > > > > > > hmm, is it useful for userspace to test the migration_version under mdev
-> > > > > > > type before it knows what mdev device to generate ?
-> > > > > > > like when the userspace wants to migrate an mdev device in src vm,
-> > > > > > > but it has not created target vm and the target mdev device.
-> > > > > > >
-> > > > > > > > >
-> > > > > > > > > > One of my worries is that the existence of an attribute with the
-> > > > > same
-> > > > > > > > > > name in two similar locations might lead to confusion. But maybe it
-> > > > > > > > > > isn't a problem.
-> > > > > > > > > >
-> > > > > > > > > Yes, I have the same feeling. but as (2) is for sysfs interface
-> > > > > > > > > consistency, to make it transparent to userspace tools like libvirt,
-> > > > > > > > > I guess the same name is necessary?
-> > > > > > > >
-> > > > > > > > What do we actually need here, I wonder? (1) and (2) seem to serve
-> > > > > > > > slightly different purposes, while (2) and what I called (3) have the
-> > > > > > > > same purpose. Is it important to userspace that (1) and (2) have the
-> > > > > > > > same name?
-> > > > > > > so change (1) to migration_type_version and (2) to
-> > > > > > > migration_instance_version?
-> > > > > > > But as they are under different locations, could that location imply
-> > > > > > > enough information?
-> > > > > > >
-> > > > > > >
-> > > > > > > Thanks
-> > > > > > > Yan
-> > > > > > >
-> > > > > > >
-> > > > > >
-> > > > > _______________________________________________
-> > > > > intel-gvt-dev mailing list
-> > > > > intel-gvt-dev@lists.freedesktop.org
-> > > > > https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
-> > > 
+> Thoughts?
+
+What I do in rcutorture is to run in a VM, dump the console output
+to a file, then parse that output after the run completes.  For example,
+the admittedly crude script here:
+
+	tools/testing/selftests/rcutorture/bin/parse-console.sh
+
+							Thanx, Paul
+
+> Thanks,
+> -- Marco
+> 
+> >  kernel/kcsan/Makefile     |    3 +
+> >  kernel/kcsan/kcsan-test.c | 1067 +++++++++++++++++++++++++++++++++++++
+> >  lib/Kconfig.kcsan         |   23 +-
+> >  3 files changed, 1092 insertions(+), 1 deletion(-)
+> >  create mode 100644 kernel/kcsan/kcsan-test.c
+> >
+> > diff --git a/kernel/kcsan/Makefile b/kernel/kcsan/Makefile
+> > index d4999b38d1be..14533cf24bc3 100644
+> > --- a/kernel/kcsan/Makefile
+> > +++ b/kernel/kcsan/Makefile
+> > @@ -12,3 +12,6 @@ CFLAGS_core.o := $(call cc-option,-fno-conserve-stack,) \
+> >
+> >  obj-y := core.o debugfs.o report.o
+> >  obj-$(CONFIG_KCSAN_SELFTEST) += test.o
+> > +
+> > +CFLAGS_kcsan-test.o := $(CFLAGS_KCSAN) -g -fno-omit-frame-pointer
+> > +obj-$(CONFIG_KCSAN_TEST) += kcsan-test.o
+> > diff --git a/kernel/kcsan/kcsan-test.c b/kernel/kcsan/kcsan-test.c
+> > new file mode 100644
+> > index 000000000000..04326cd5a4b2
+> > --- /dev/null
+> > +++ b/kernel/kcsan/kcsan-test.c
+> > @@ -0,0 +1,1067 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * KCSAN test with various race scenarious to test runtime behaviour. Since the
+> > + * interface with which KCSAN's reports are obtained is via the console, this is
+> > + * the output we should verify. For each test case checks the presence (or
+> > + * absence) of generated reports. Relies on 'console' tracepoint to capture
+> > + * reports as they appear in the kernel log.
+> > + *
+> > + * Makes use of KUnit for test organization, and the Torture framework for test
+> > + * thread control.
+> > + *
+> > + * Copyright (C) 2020, Google LLC.
+> > + * Author: Marco Elver <elver@google.com>
+> > + */
+> > +
+> > +#include <kunit/test.h>
+> > +#include <linux/jiffies.h>
+> > +#include <linux/kcsan-checks.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/sched.h>
+> > +#include <linux/seqlock.h>
+> > +#include <linux/spinlock.h>
+> > +#include <linux/string.h>
+> > +#include <linux/timer.h>
+> > +#include <linux/torture.h>
+> > +#include <linux/tracepoint.h>
+> > +#include <linux/types.h>
+> > +#include <trace/events/printk.h>
+> > +
+> > +/* Points to current test-case memory access "kernels". */
+> > +static void (*access_kernels[2])(void);
+> > +
+> > +static struct task_struct **threads; /* Lists of threads. */
+> > +static unsigned long end_time;       /* End time of test. */
+> > +
+> > +/* Report as observed from console. */
+> > +static struct {
+> > +       spinlock_t lock;
+> > +       int nlines;
+> > +       char lines[3][512];
+> > +} observed = {
+> > +       .lock = __SPIN_LOCK_UNLOCKED(observed.lock),
+> > +};
+> > +
+> > +/* Setup test checking loop. */
+> > +static __no_kcsan_or_inline void
+> > +begin_test_checks(void (*func1)(void), void (*func2)(void))
+> > +{
+> > +       kcsan_disable_current();
+> > +
+> > +       /*
+> > +        * Require at least as long as KCSAN_REPORT_ONCE_IN_MS, to ensure at
+> > +        * least one race is reported.
+> > +        */
+> > +       end_time = jiffies + msecs_to_jiffies(CONFIG_KCSAN_REPORT_ONCE_IN_MS + 300);
+> > +
+> > +       /* Signal start; release potential initialization of shared data. */
+> > +       smp_store_release(&access_kernels[0], func1);
+> > +       smp_store_release(&access_kernels[1], func2);
+> > +}
+> > +
+> > +/* End test checking loop. */
+> > +static __no_kcsan_or_inline bool
+> > +end_test_checks(bool stop)
+> > +{
+> > +       if (!stop && time_before(jiffies, end_time)) {
+> > +               /* Continue checking */
+> > +               return false;
+> > +       }
+> > +
+> > +       kcsan_enable_current();
+> > +       return true;
+> > +}
+> > +
+> > +/*
+> > + * Probe for console output: checks if a race was reported, and obtains observed
+> > + * lines of interest.
+> > + */
+> > +__no_kcsan
+> > +static void probe_console(void *ignore, const char *buf, size_t len)
+> > +{
+> > +       unsigned long flags;
+> > +       int nlines;
+> > +
+> > +       /*
+> > +        * Note that KCSAN reports under a global lock, so we do not risk the
+> > +        * possibility of having multiple reports interleaved. If that were the
+> > +        * case, we'd expect tests to fail.
+> > +        */
+> > +
+> > +       spin_lock_irqsave(&observed.lock, flags);
+> > +       nlines = observed.nlines;
+> > +
+> > +       if (strnstr(buf, "BUG: KCSAN: ", len) && strnstr(buf, "test_", len)) {
+> > +               /*
+> > +                * KCSAN report and related to the test.
+> > +                *
+> > +                * The provided @buf is not NUL-terminated; copy no more than
+> > +                * @len bytes and let strscpy() add the missing NUL-terminator.
+> > +                */
+> > +               strscpy(observed.lines[0], buf, min(len + 1, sizeof(observed.lines[0])));
+> > +               nlines = 1;
+> > +       } else if ((nlines == 1 || nlines == 2) && strnstr(buf, "bytes by", len)) {
+> > +               strscpy(observed.lines[nlines++], buf, min(len + 1, sizeof(observed.lines[0])));
+> > +
+> > +               if (strnstr(buf, "race at unknown origin", len)) {
+> > +                       if (WARN_ON(nlines != 2))
+> > +                               goto out;
+> > +
+> > +                       /* No second line of interest. */
+> > +                       strcpy(observed.lines[nlines++], "<none>");
+> > +               }
+> > +       }
+> > +
+> > +out:
+> > +       WRITE_ONCE(observed.nlines, nlines); /* Publish new nlines. */
+> > +       spin_unlock_irqrestore(&observed.lock, flags);
+> > +}
+> > +
+> > +/* Check if a report related to the test exists. */
+> > +__no_kcsan
+> > +static bool report_available(void)
+> > +{
+> > +       return READ_ONCE(observed.nlines) == ARRAY_SIZE(observed.lines);
+> > +}
+> > +
+> > +/* Report information we expect in a report. */
+> > +struct expect_report {
+> > +       /* Access information of both accesses. */
+> > +       struct {
+> > +               void *fn;    /* Function pointer to expected function of top frame. */
+> > +               void *addr;  /* Address of access; unchecked if NULL. */
+> > +               size_t size; /* Size of access; unchecked if @addr is NULL. */
+> > +               int type;    /* Access type, see KCSAN_ACCESS definitions. */
+> > +       } access[2];
+> > +};
+> > +
+> > +/* Check observed report matches information in @r. */
+> > +__no_kcsan
+> > +static bool report_matches(const struct expect_report *r)
+> > +{
+> > +       const bool is_assert = (r->access[0].type | r->access[1].type) & KCSAN_ACCESS_ASSERT;
+> > +       bool ret = false;
+> > +       unsigned long flags;
+> > +       typeof(observed.lines) expect;
+> > +       const char *end;
+> > +       char *cur;
+> > +       int i;
+> > +
+> > +       /* Doubled-checked locking. */
+> > +       if (!report_available())
+> > +               return false;
+> > +
+> > +       /* Generate expected report contents. */
+> > +
+> > +       /* Title */
+> > +       cur = expect[0];
+> > +       end = &expect[0][sizeof(expect[0]) - 1];
+> > +       cur += scnprintf(cur, end - cur, "BUG: KCSAN: %s in ",
+> > +                        is_assert ? "assert: race" : "data-race");
+> > +       if (r->access[1].fn) {
+> > +               char tmp[2][64];
+> > +               int cmp;
+> > +
+> > +               /* Expect lexographically sorted function names in title. */
+> > +               scnprintf(tmp[0], sizeof(tmp[0]), "%pS", r->access[0].fn);
+> > +               scnprintf(tmp[1], sizeof(tmp[1]), "%pS", r->access[1].fn);
+> > +               cmp = strcmp(tmp[0], tmp[1]);
+> > +               cur += scnprintf(cur, end - cur, "%ps / %ps",
+> > +                                cmp < 0 ? r->access[0].fn : r->access[1].fn,
+> > +                                cmp < 0 ? r->access[1].fn : r->access[0].fn);
+> > +       } else {
+> > +               scnprintf(cur, end - cur, "%pS", r->access[0].fn);
+> > +               /* The exact offset won't match, remove it. */
+> > +               cur = strchr(expect[0], '+');
+> > +               if (cur)
+> > +                       *cur = '\0';
+> > +       }
+> > +
+> > +       /* Access 1 */
+> > +       cur = expect[1];
+> > +       end = &expect[1][sizeof(expect[1]) - 1];
+> > +       if (!r->access[1].fn)
+> > +               cur += scnprintf(cur, end - cur, "race at unknown origin, with ");
+> > +
+> > +       /* Access 1 & 2 */
+> > +       for (i = 0; i < 2; ++i) {
+> > +               const char *const access_type =
+> > +                       (r->access[i].type & KCSAN_ACCESS_ASSERT) ?
+> > +                               ((r->access[i].type & KCSAN_ACCESS_WRITE) ?
+> > +                                        "assert no accesses" :
+> > +                                        "assert no writes") :
+> > +                               ((r->access[i].type & KCSAN_ACCESS_WRITE) ?
+> > +                                        "write" :
+> > +                                        "read");
+> > +               const char *const access_type_aux =
+> > +                       (r->access[i].type & KCSAN_ACCESS_ATOMIC) ?
+> > +                               " (marked)" :
+> > +                               ((r->access[i].type & KCSAN_ACCESS_SCOPED) ?
+> > +                                        " (scoped)" :
+> > +                                        "");
+> > +
+> > +               if (i == 1) {
+> > +                       /* Access 2 */
+> > +                       cur = expect[2];
+> > +                       end = &expect[2][sizeof(expect[2]) - 1];
+> > +
+> > +                       if (!r->access[1].fn) {
+> > +                               /* Dummy string if no second access is available. */
+> > +                               strcpy(cur, "<none>");
+> > +                               break;
+> > +                       }
+> > +               }
+> > +
+> > +               cur += scnprintf(cur, end - cur, "%s%s to ", access_type,
+> > +                                access_type_aux);
+> > +
+> > +               if (r->access[i].addr) /* Address is optional. */
+> > +                       cur += scnprintf(cur, end - cur, "0x%px of %zu bytes",
+> > +                                        r->access[i].addr, r->access[i].size);
+> > +       }
+> > +
+> > +       spin_lock_irqsave(&observed.lock, flags);
+> > +       if (!report_available())
+> > +               goto out; /* A new report is being captured. */
+> > +
+> > +       /* Finally match expected output to what we actually observed. */
+> > +       ret = strstr(observed.lines[0], expect[0]) &&
+> > +             /* Access info may appear in any order. */
+> > +             ((strstr(observed.lines[1], expect[1]) &&
+> > +               strstr(observed.lines[2], expect[2])) ||
+> > +              (strstr(observed.lines[1], expect[2]) &&
+> > +               strstr(observed.lines[2], expect[1])));
+> > +out:
+> > +       spin_unlock_irqrestore(&observed.lock, flags);
+> > +       return ret;
+> > +}
+> > +
+> > +/* ===== Test kernels ===== */
+> > +
+> > +static long test_sink;
+> > +static long test_var;
+> > +/* @test_array should be large enough to fall into multiple watchpoint slots. */
+> > +static long test_array[3 * PAGE_SIZE / sizeof(long)];
+> > +static struct {
+> > +       long val[8];
+> > +} test_struct;
+> > +static DEFINE_SEQLOCK(test_seqlock);
+> > +
+> > +/*
+> > + * Helper to avoid compiler optimizing out reads, and to generate source values
+> > + * for writes.
+> > + */
+> > +__no_kcsan
+> > +static noinline void sink_value(long v) { WRITE_ONCE(test_sink, v); }
+> > +
+> > +static noinline void test_kernel_read(void) { sink_value(test_var); }
+> > +
+> > +static noinline void test_kernel_write(void)
+> > +{
+> > +       test_var = READ_ONCE_NOCHECK(test_sink) + 1;
+> > +}
+> > +
+> > +static noinline void test_kernel_write_nochange(void) { test_var = 42; }
+> > +
+> > +/* Suffixed by value-change exception filter. */
+> > +static noinline void test_kernel_write_nochange_rcu(void) { test_var = 42; }
+> > +
+> > +static noinline void test_kernel_read_atomic(void)
+> > +{
+> > +       sink_value(READ_ONCE(test_var));
+> > +}
+> > +
+> > +static noinline void test_kernel_write_atomic(void)
+> > +{
+> > +       WRITE_ONCE(test_var, READ_ONCE_NOCHECK(test_sink) + 1);
+> > +}
+> > +
+> > +__no_kcsan
+> > +static noinline void test_kernel_write_uninstrumented(void) { test_var++; }
+> > +
+> > +static noinline void test_kernel_data_race(void) { data_race(test_var++); }
+> > +
+> > +static noinline void test_kernel_assert_writer(void)
+> > +{
+> > +       ASSERT_EXCLUSIVE_WRITER(test_var);
+> > +}
+> > +
+> > +static noinline void test_kernel_assert_access(void)
+> > +{
+> > +       ASSERT_EXCLUSIVE_ACCESS(test_var);
+> > +}
+> > +
+> > +#define TEST_CHANGE_BITS 0xff00ff00
+> > +
+> > +static noinline void test_kernel_change_bits(void)
+> > +{
+> > +       if (IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS)) {
+> > +               /*
+> > +                * Avoid race of unknown origin for this test, just pretend they
+> > +                * are atomic.
+> > +                */
+> > +               kcsan_nestable_atomic_begin();
+> > +               test_var ^= TEST_CHANGE_BITS;
+> > +               kcsan_nestable_atomic_end();
+> > +       } else
+> > +               WRITE_ONCE(test_var, READ_ONCE(test_var) ^ TEST_CHANGE_BITS);
+> > +}
+> > +
+> > +static noinline void test_kernel_assert_bits_change(void)
+> > +{
+> > +       ASSERT_EXCLUSIVE_BITS(test_var, TEST_CHANGE_BITS);
+> > +}
+> > +
+> > +static noinline void test_kernel_assert_bits_nochange(void)
+> > +{
+> > +       ASSERT_EXCLUSIVE_BITS(test_var, ~TEST_CHANGE_BITS);
+> > +}
+> > +
+> > +/* To check that scoped assertions do trigger anywhere in scope. */
+> > +static noinline void test_enter_scope(void)
+> > +{
+> > +       int x = 0;
+> > +
+> > +       /* Unrelated accesses to scoped assert. */
+> > +       READ_ONCE(test_sink);
+> > +       kcsan_check_read(&x, sizeof(x));
+> > +}
+> > +
+> > +static noinline void test_kernel_assert_writer_scoped(void)
+> > +{
+> > +       ASSERT_EXCLUSIVE_WRITER_SCOPED(test_var);
+> > +       test_enter_scope();
+> > +}
+> > +
+> > +static noinline void test_kernel_assert_access_scoped(void)
+> > +{
+> > +       ASSERT_EXCLUSIVE_ACCESS_SCOPED(test_var);
+> > +       test_enter_scope();
+> > +}
+> > +
+> > +static noinline void test_kernel_rmw_array(void)
+> > +{
+> > +       int i;
+> > +
+> > +       for (i = 0; i < ARRAY_SIZE(test_array); ++i)
+> > +               test_array[i]++;
+> > +}
+> > +
+> > +static noinline void test_kernel_write_struct(void)
+> > +{
+> > +       kcsan_check_write(&test_struct, sizeof(test_struct));
+> > +       kcsan_disable_current();
+> > +       test_struct.val[3]++; /* induce value change */
+> > +       kcsan_enable_current();
+> > +}
+> > +
+> > +static noinline void test_kernel_write_struct_part(void)
+> > +{
+> > +       test_struct.val[3] = 42;
+> > +}
+> > +
+> > +static noinline void test_kernel_read_struct_zero_size(void)
+> > +{
+> > +       kcsan_check_read(&test_struct.val[3], 0);
+> > +}
+> > +
+> > +static noinline void test_kernel_seqlock_reader(void)
+> > +{
+> > +       unsigned int seq;
+> > +
+> > +       do {
+> > +               seq = read_seqbegin(&test_seqlock);
+> > +               sink_value(test_var);
+> > +       } while (read_seqretry(&test_seqlock, seq));
+> > +}
+> > +
+> > +static noinline void test_kernel_seqlock_writer(void)
+> > +{
+> > +       unsigned long flags;
+> > +
+> > +       write_seqlock_irqsave(&test_seqlock, flags);
+> > +       test_var++;
+> > +       write_sequnlock_irqrestore(&test_seqlock, flags);
+> > +}
+> > +
+> > +/* ===== Test cases ===== */
+> > +
+> > +/* Simple test with normal data race. */
+> > +__no_kcsan
+> > +static void test_basic(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_write, &test_var, sizeof(test_var), KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_read, &test_var, sizeof(test_var), 0 },
+> > +               },
+> > +       };
+> > +       static const struct expect_report never = {
+> > +               .access = {
+> > +                       { test_kernel_read, &test_var, sizeof(test_var), 0 },
+> > +                       { test_kernel_read, &test_var, sizeof(test_var), 0 },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +       bool match_never = false;
+> > +
+> > +       begin_test_checks(test_kernel_write, test_kernel_read);
+> > +       do {
+> > +               match_expect |= report_matches(&expect);
+> > +               match_never = report_matches(&never);
+> > +       } while (!end_test_checks(match_never));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect);
+> > +       KUNIT_EXPECT_FALSE(test, match_never);
+> > +}
+> > +
+> > +/*
+> > + * Stress KCSAN with lots of concurrent races on different addresses until
+> > + * timeout.
+> > + */
+> > +__no_kcsan
+> > +static void test_concurrent_races(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       /* NULL will match any address. */
+> > +                       { test_kernel_rmw_array, NULL, 0, KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_rmw_array, NULL, 0, 0 },
+> > +               },
+> > +       };
+> > +       static const struct expect_report never = {
+> > +               .access = {
+> > +                       { test_kernel_rmw_array, NULL, 0, 0 },
+> > +                       { test_kernel_rmw_array, NULL, 0, 0 },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +       bool match_never = false;
+> > +
+> > +       begin_test_checks(test_kernel_rmw_array, test_kernel_rmw_array);
+> > +       do {
+> > +               match_expect |= report_matches(&expect);
+> > +               match_never |= report_matches(&never);
+> > +       } while (!end_test_checks(false));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect); /* Sanity check matches exist. */
+> > +       KUNIT_EXPECT_FALSE(test, match_never);
+> > +}
+> > +
+> > +/* Test the KCSAN_REPORT_VALUE_CHANGE_ONLY option. */
+> > +__no_kcsan
+> > +static void test_novalue_change(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_write_nochange, &test_var, sizeof(test_var), KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_read, &test_var, sizeof(test_var), 0 },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +
+> > +       begin_test_checks(test_kernel_write_nochange, test_kernel_read);
+> > +       do {
+> > +               match_expect = report_matches(&expect);
+> > +       } while (!end_test_checks(match_expect));
+> > +       if (IS_ENABLED(CONFIG_KCSAN_REPORT_VALUE_CHANGE_ONLY))
+> > +               KUNIT_EXPECT_FALSE(test, match_expect);
+> > +       else
+> > +               KUNIT_EXPECT_TRUE(test, match_expect);
+> > +}
+> > +
+> > +/*
+> > + * Test that the rules where the KCSAN_REPORT_VALUE_CHANGE_ONLY option should
+> > + * never apply work.
+> > + */
+> > +__no_kcsan
+> > +static void test_novalue_change_exception(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_write_nochange_rcu, &test_var, sizeof(test_var), KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_read, &test_var, sizeof(test_var), 0 },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +
+> > +       begin_test_checks(test_kernel_write_nochange_rcu, test_kernel_read);
+> > +       do {
+> > +               match_expect = report_matches(&expect);
+> > +       } while (!end_test_checks(match_expect));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect);
+> > +}
+> > +
+> > +/* Test that data races of unknown origin are reported. */
+> > +__no_kcsan
+> > +static void test_unknown_origin(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_read, &test_var, sizeof(test_var), 0 },
+> > +                       { NULL },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +
+> > +       begin_test_checks(test_kernel_write_uninstrumented, test_kernel_read);
+> > +       do {
+> > +               match_expect = report_matches(&expect);
+> > +       } while (!end_test_checks(match_expect));
+> > +       if (IS_ENABLED(CONFIG_KCSAN_REPORT_RACE_UNKNOWN_ORIGIN))
+> > +               KUNIT_EXPECT_TRUE(test, match_expect);
+> > +       else
+> > +               KUNIT_EXPECT_FALSE(test, match_expect);
+> > +}
+> > +
+> > +/* Test KCSAN_ASSUME_PLAIN_WRITES_ATOMIC if it is selected. */
+> > +__no_kcsan
+> > +static void test_write_write_assume_atomic(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_write, &test_var, sizeof(test_var), KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_write, &test_var, sizeof(test_var), KCSAN_ACCESS_WRITE },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +
+> > +       begin_test_checks(test_kernel_write, test_kernel_write);
+> > +       do {
+> > +               sink_value(READ_ONCE(test_var)); /* induce value-change */
+> > +               match_expect = report_matches(&expect);
+> > +       } while (!end_test_checks(match_expect));
+> > +       if (IS_ENABLED(CONFIG_KCSAN_ASSUME_PLAIN_WRITES_ATOMIC))
+> > +               KUNIT_EXPECT_FALSE(test, match_expect);
+> > +       else
+> > +               KUNIT_EXPECT_TRUE(test, match_expect);
+> > +}
+> > +
+> > +/*
+> > + * Test that data races with writes larger than word-size are always reported,
+> > + * even if KCSAN_ASSUME_PLAIN_WRITES_ATOMIC is selected.
+> > + */
+> > +__no_kcsan
+> > +static void test_write_write_struct(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_write_struct, &test_struct, sizeof(test_struct), KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_write_struct, &test_struct, sizeof(test_struct), KCSAN_ACCESS_WRITE },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +
+> > +       begin_test_checks(test_kernel_write_struct, test_kernel_write_struct);
+> > +       do {
+> > +               match_expect = report_matches(&expect);
+> > +       } while (!end_test_checks(match_expect));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect);
+> > +}
+> > +
+> > +/*
+> > + * Test that data races where only one write is larger than word-size are always
+> > + * reported, even if KCSAN_ASSUME_PLAIN_WRITES_ATOMIC is selected.
+> > + */
+> > +__no_kcsan
+> > +static void test_write_write_struct_part(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_write_struct, &test_struct, sizeof(test_struct), KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_write_struct_part, &test_struct.val[3], sizeof(test_struct.val[3]), KCSAN_ACCESS_WRITE },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +
+> > +       begin_test_checks(test_kernel_write_struct, test_kernel_write_struct_part);
+> > +       do {
+> > +               match_expect = report_matches(&expect);
+> > +       } while (!end_test_checks(match_expect));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect);
+> > +}
+> > +
+> > +/* Test that races with atomic accesses never result in reports. */
+> > +__no_kcsan
+> > +static void test_read_atomic_write_atomic(struct kunit *test)
+> > +{
+> > +       bool match_never = false;
+> > +
+> > +       begin_test_checks(test_kernel_read_atomic, test_kernel_write_atomic);
+> > +       do {
+> > +               match_never = report_available();
+> > +       } while (!end_test_checks(match_never));
+> > +       KUNIT_EXPECT_FALSE(test, match_never);
+> > +}
+> > +
+> > +/* Test that a race with an atomic and plain access result in reports. */
+> > +__no_kcsan
+> > +static void test_read_plain_atomic_write(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_read, &test_var, sizeof(test_var), 0 },
+> > +                       { test_kernel_write_atomic, &test_var, sizeof(test_var), KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ATOMIC },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +
+> > +       if (IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS))
+> > +               return;
+> > +
+> > +       begin_test_checks(test_kernel_read, test_kernel_write_atomic);
+> > +       do {
+> > +               match_expect = report_matches(&expect);
+> > +       } while (!end_test_checks(match_expect));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect);
+> > +}
+> > +
+> > +/* Zero-sized accesses should never cause data race reports. */
+> > +__no_kcsan
+> > +static void test_zero_size_access(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_write_struct, &test_struct, sizeof(test_struct), KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_write_struct, &test_struct, sizeof(test_struct), KCSAN_ACCESS_WRITE },
+> > +               },
+> > +       };
+> > +       const struct expect_report never = {
+> > +               .access = {
+> > +                       { test_kernel_write_struct, &test_struct, sizeof(test_struct), KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_read_struct_zero_size, &test_struct.val[3], 0, 0 },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +       bool match_never = false;
+> > +
+> > +       begin_test_checks(test_kernel_write_struct, test_kernel_read_struct_zero_size);
+> > +       do {
+> > +               match_expect |= report_matches(&expect);
+> > +               match_never = report_matches(&never);
+> > +       } while (!end_test_checks(match_never));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect); /* Sanity check. */
+> > +       KUNIT_EXPECT_FALSE(test, match_never);
+> > +}
+> > +
+> > +/* Test the data_race() macro. */
+> > +__no_kcsan
+> > +static void test_data_race(struct kunit *test)
+> > +{
+> > +       bool match_never = false;
+> > +
+> > +       begin_test_checks(test_kernel_data_race, test_kernel_data_race);
+> > +       do {
+> > +               match_never = report_available();
+> > +       } while (!end_test_checks(match_never));
+> > +       KUNIT_EXPECT_FALSE(test, match_never);
+> > +}
+> > +
+> > +__no_kcsan
+> > +static void test_assert_exclusive_writer(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_assert_writer, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT },
+> > +                       { test_kernel_write_nochange, &test_var, sizeof(test_var), KCSAN_ACCESS_WRITE },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +
+> > +       begin_test_checks(test_kernel_assert_writer, test_kernel_write_nochange);
+> > +       do {
+> > +               match_expect = report_matches(&expect);
+> > +       } while (!end_test_checks(match_expect));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect);
+> > +}
+> > +
+> > +__no_kcsan
+> > +static void test_assert_exclusive_access(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_assert_access, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_read, &test_var, sizeof(test_var), 0 },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +
+> > +       begin_test_checks(test_kernel_assert_access, test_kernel_read);
+> > +       do {
+> > +               match_expect = report_matches(&expect);
+> > +       } while (!end_test_checks(match_expect));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect);
+> > +}
+> > +
+> > +__no_kcsan
+> > +static void test_assert_exclusive_access_writer(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect_access_writer = {
+> > +               .access = {
+> > +                       { test_kernel_assert_access, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_assert_writer, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT },
+> > +               },
+> > +       };
+> > +       const struct expect_report expect_access_access = {
+> > +               .access = {
+> > +                       { test_kernel_assert_access, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_WRITE },
+> > +                       { test_kernel_assert_access, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_WRITE },
+> > +               },
+> > +       };
+> > +       const struct expect_report never = {
+> > +               .access = {
+> > +                       { test_kernel_assert_writer, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT },
+> > +                       { test_kernel_assert_writer, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT },
+> > +               },
+> > +       };
+> > +       bool match_expect_access_writer = false;
+> > +       bool match_expect_access_access = false;
+> > +       bool match_never = false;
+> > +
+> > +       begin_test_checks(test_kernel_assert_access, test_kernel_assert_writer);
+> > +       do {
+> > +               match_expect_access_writer |= report_matches(&expect_access_writer);
+> > +               match_expect_access_access |= report_matches(&expect_access_access);
+> > +               match_never |= report_matches(&never);
+> > +       } while (!end_test_checks(match_never));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect_access_writer);
+> > +       KUNIT_EXPECT_TRUE(test, match_expect_access_access);
+> > +       KUNIT_EXPECT_FALSE(test, match_never);
+> > +}
+> > +
+> > +__no_kcsan
+> > +static void test_assert_exclusive_bits_change(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect = {
+> > +               .access = {
+> > +                       { test_kernel_assert_bits_change, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT },
+> > +                       { test_kernel_change_bits, &test_var, sizeof(test_var),
+> > +                               KCSAN_ACCESS_WRITE | (IS_ENABLED(CONFIG_KCSAN_IGNORE_ATOMICS) ? 0 : KCSAN_ACCESS_ATOMIC) },
+> > +               },
+> > +       };
+> > +       bool match_expect = false;
+> > +
+> > +       begin_test_checks(test_kernel_assert_bits_change, test_kernel_change_bits);
+> > +       do {
+> > +               match_expect = report_matches(&expect);
+> > +       } while (!end_test_checks(match_expect));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect);
+> > +}
+> > +
+> > +__no_kcsan
+> > +static void test_assert_exclusive_bits_nochange(struct kunit *test)
+> > +{
+> > +       bool match_never = false;
+> > +
+> > +       begin_test_checks(test_kernel_assert_bits_nochange, test_kernel_change_bits);
+> > +       do {
+> > +               match_never = report_available();
+> > +       } while (!end_test_checks(match_never));
+> > +       KUNIT_EXPECT_FALSE(test, match_never);
+> > +}
+> > +
+> > +__no_kcsan
+> > +static void test_assert_exclusive_writer_scoped(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect_start = {
+> > +               .access = {
+> > +                       { test_kernel_assert_writer_scoped, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_SCOPED },
+> > +                       { test_kernel_write_nochange, &test_var, sizeof(test_var), KCSAN_ACCESS_WRITE },
+> > +               },
+> > +       };
+> > +       const struct expect_report expect_anywhere = {
+> > +               .access = {
+> > +                       { test_enter_scope, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_SCOPED },
+> > +                       { test_kernel_write_nochange, &test_var, sizeof(test_var), KCSAN_ACCESS_WRITE },
+> > +               },
+> > +       };
+> > +       bool match_expect_start = false;
+> > +       bool match_expect_anywhere = false;
+> > +
+> > +       begin_test_checks(test_kernel_assert_writer_scoped, test_kernel_write_nochange);
+> > +       do {
+> > +               match_expect_start |= report_matches(&expect_start);
+> > +               match_expect_anywhere |= report_matches(&expect_anywhere);
+> > +       } while (!end_test_checks(match_expect_start && match_expect_anywhere));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect_start);
+> > +       KUNIT_EXPECT_TRUE(test, match_expect_anywhere);
+> > +}
+> > +
+> > +__no_kcsan
+> > +static void test_assert_exclusive_access_scoped(struct kunit *test)
+> > +{
+> > +       const struct expect_report expect_start1 = {
+> > +               .access = {
+> > +                       { test_kernel_assert_access_scoped, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_WRITE | KCSAN_ACCESS_SCOPED },
+> > +                       { test_kernel_read, &test_var, sizeof(test_var), 0 },
+> > +               },
+> > +       };
+> > +       const struct expect_report expect_start2 = {
+> > +               .access = { expect_start1.access[0], expect_start1.access[0] },
+> > +       };
+> > +       const struct expect_report expect_inscope = {
+> > +               .access = {
+> > +                       { test_enter_scope, &test_var, sizeof(test_var), KCSAN_ACCESS_ASSERT | KCSAN_ACCESS_WRITE | KCSAN_ACCESS_SCOPED },
+> > +                       { test_kernel_read, &test_var, sizeof(test_var), 0 },
+> > +               },
+> > +       };
+> > +       bool match_expect_start = false;
+> > +       bool match_expect_inscope = false;
+> > +
+> > +       begin_test_checks(test_kernel_assert_access_scoped, test_kernel_read);
+> > +       end_time += msecs_to_jiffies(1000); /* This test requires a bit more time. */
+> > +       do {
+> > +               match_expect_start |= report_matches(&expect_start1) || report_matches(&expect_start2);
+> > +               match_expect_inscope |= report_matches(&expect_inscope);
+> > +       } while (!end_test_checks(match_expect_start && match_expect_inscope));
+> > +       KUNIT_EXPECT_TRUE(test, match_expect_start);
+> > +       KUNIT_EXPECT_TRUE(test, match_expect_inscope);
+> > +}
+> > +
+> > +/* Test that racing accesses in seqlock critical sections are not reported. */
+> > +__no_kcsan
+> > +static void test_seqlock_noreport(struct kunit *test)
+> > +{
+> > +       bool match_never = false;
+> > +
+> > +       begin_test_checks(test_kernel_seqlock_reader, test_kernel_seqlock_writer);
+> > +       do {
+> > +               match_never = report_available();
+> > +       } while (!end_test_checks(match_never));
+> > +       KUNIT_EXPECT_FALSE(test, match_never);
+> > +}
+> > +
+> > +/*
+> > + * Each test case is run with different numbers of threads. Until KUnit supports
+> > + * passing arguments for each test case, we encode #threads in the test case
+> > + * name (read by get_num_threads()). [The '-' was chosen as a stylistic
+> > + * preference to separate test name and #threads.]
+> > + *
+> > + * The thread counts are chosen to cover potentially interesting boundaries and
+> > + * corner cases (range 2-5), and then stress the system with larger counts.
+> > + */
+> > +#define KCSAN_KUNIT_CASE(test_name)                                            \
+> > +       { .run_case = test_name, .name = #test_name "-02" },                   \
+> > +       { .run_case = test_name, .name = #test_name "-03" },                   \
+> > +       { .run_case = test_name, .name = #test_name "-04" },                   \
+> > +       { .run_case = test_name, .name = #test_name "-05" },                   \
+> > +       { .run_case = test_name, .name = #test_name "-08" },                   \
+> > +       { .run_case = test_name, .name = #test_name "-16" }
+> > +
+> > +static struct kunit_case kcsan_test_cases[] = {
+> > +       KCSAN_KUNIT_CASE(test_basic),
+> > +       KCSAN_KUNIT_CASE(test_concurrent_races),
+> > +       KCSAN_KUNIT_CASE(test_novalue_change),
+> > +       KCSAN_KUNIT_CASE(test_novalue_change_exception),
+> > +       KCSAN_KUNIT_CASE(test_unknown_origin),
+> > +       KCSAN_KUNIT_CASE(test_write_write_assume_atomic),
+> > +       KCSAN_KUNIT_CASE(test_write_write_struct),
+> > +       KCSAN_KUNIT_CASE(test_write_write_struct_part),
+> > +       KCSAN_KUNIT_CASE(test_read_atomic_write_atomic),
+> > +       KCSAN_KUNIT_CASE(test_read_plain_atomic_write),
+> > +       KCSAN_KUNIT_CASE(test_zero_size_access),
+> > +       KCSAN_KUNIT_CASE(test_data_race),
+> > +       KCSAN_KUNIT_CASE(test_assert_exclusive_writer),
+> > +       KCSAN_KUNIT_CASE(test_assert_exclusive_access),
+> > +       KCSAN_KUNIT_CASE(test_assert_exclusive_access_writer),
+> > +       KCSAN_KUNIT_CASE(test_assert_exclusive_bits_change),
+> > +       KCSAN_KUNIT_CASE(test_assert_exclusive_bits_nochange),
+> > +       KCSAN_KUNIT_CASE(test_assert_exclusive_writer_scoped),
+> > +       KCSAN_KUNIT_CASE(test_assert_exclusive_access_scoped),
+> > +       KCSAN_KUNIT_CASE(test_seqlock_noreport),
+> > +       {},
+> > +};
+> > +
+> > +/* ===== End test cases ===== */
+> > +
+> > +/* Get number of threads encoded in test name. */
+> > +static bool __no_kcsan
+> > +get_num_threads(const char *test, int *nthreads)
+> > +{
+> > +       int len = strlen(test);
+> > +
+> > +       if (WARN_ON(len < 3))
+> > +               return false;
+> > +
+> > +       *nthreads = test[len - 1] - '0';
+> > +       *nthreads += (test[len - 2] - '0') * 10;
+> > +
+> > +       if (WARN_ON(*nthreads < 0))
+> > +               return false;
+> > +
+> > +       return true;
+> > +}
+> > +
+> > +/* Concurrent accesses from interrupts. */
+> > +__no_kcsan
+> > +static void access_thread_timer(struct timer_list *timer)
+> > +{
+> > +       static atomic_t cnt = ATOMIC_INIT(0);
+> > +       unsigned int idx;
+> > +       void (*func)(void);
+> > +
+> > +       idx = (unsigned int)atomic_inc_return(&cnt) % ARRAY_SIZE(access_kernels);
+> > +       /* Acquire potential initialization. */
+> > +       func = smp_load_acquire(&access_kernels[idx]);
+> > +       if (func)
+> > +               func();
+> > +}
+> > +
+> > +/* The main loop for each thread. */
+> > +__no_kcsan
+> > +static int access_thread(void *arg)
+> > +{
+> > +       struct timer_list timer;
+> > +       unsigned int cnt = 0;
+> > +       unsigned int idx;
+> > +       void (*func)(void);
+> > +
+> > +       timer_setup_on_stack(&timer, access_thread_timer, 0);
+> > +       do {
+> > +               if (!timer_pending(&timer))
+> > +                       mod_timer(&timer, jiffies + 1);
+> > +               else {
+> > +                       /* Iterate through all kernels. */
+> > +                       idx = cnt++ % ARRAY_SIZE(access_kernels);
+> > +                       /* Acquire potential initialization. */
+> > +                       func = smp_load_acquire(&access_kernels[idx]);
+> > +                       if (func)
+> > +                               func();
+> > +               }
+> > +       } while (!torture_must_stop());
+> > +       del_timer_sync(&timer);
+> > +       destroy_timer_on_stack(&timer);
+> > +
+> > +       torture_kthread_stopping("access_thread");
+> > +       return 0;
+> > +}
+> > +
+> > +__no_kcsan
+> > +static int test_init(struct kunit *test)
+> > +{
+> > +       unsigned long flags;
+> > +       int nthreads;
+> > +       int i;
+> > +
+> > +       spin_lock_irqsave(&observed.lock, flags);
+> > +       for (i = 0; i < ARRAY_SIZE(observed.lines); ++i)
+> > +               observed.lines[i][0] = '\0';
+> > +       observed.nlines = 0;
+> > +       spin_unlock_irqrestore(&observed.lock, flags);
+> > +
+> > +       if (!torture_init_begin((char *)test->name, 1))
+> > +               return -EBUSY;
+> > +
+> > +       if (!get_num_threads(test->name, &nthreads))
+> > +               goto err;
+> > +
+> > +       if (WARN_ON(threads))
+> > +               goto err;
+> > +
+> > +       for (i = 0; i < ARRAY_SIZE(access_kernels); ++i) {
+> > +               if (WARN_ON(access_kernels[i]))
+> > +                       goto err;
+> > +       }
+> > +
+> > +       if (!IS_ENABLED(CONFIG_PREEMPT) && nthreads > num_online_cpus() - 2) {
+> > +               nthreads = num_online_cpus() - 2;
+> > +               pr_info("%s: limiting number of threads to %d\n", test->name,
+> > +                       nthreads);
+> > +       }
+> > +
+> > +       if (nthreads) {
+> > +               threads = kcalloc(nthreads + 1, sizeof(struct task_struct *),
+> > +                                 GFP_KERNEL);
+> > +               if (WARN_ON(!threads))
+> > +                       goto err;
+> > +
+> > +               threads[nthreads] = NULL;
+> > +               for (i = 0; i < nthreads; ++i) {
+> > +                       if (torture_create_kthread(access_thread, NULL,
+> > +                                                  threads[i]))
+> > +                               goto err;
+> > +               }
+> > +       }
+> > +
+> > +       torture_init_end();
+> > +
+> > +       return 0;
+> > +
+> > +err:
+> > +       kfree(threads);
+> > +       threads = NULL;
+> > +       torture_init_end();
+> > +       return -EINVAL;
+> > +}
+> > +
+> > +__no_kcsan
+> > +static void test_exit(struct kunit *test)
+> > +{
+> > +       struct task_struct **stop_thread;
+> > +       int i;
+> > +
+> > +       if (torture_cleanup_begin())
+> > +               return;
+> > +
+> > +       for (i = 0; i < ARRAY_SIZE(access_kernels); ++i)
+> > +               WRITE_ONCE(access_kernels[i], NULL);
+> > +
+> > +       if (threads) {
+> > +               for (stop_thread = threads; *stop_thread; stop_thread++)
+> > +                       torture_stop_kthread(reader_thread, *stop_thread);
+> > +
+> > +               kfree(threads);
+> > +               threads = NULL;
+> > +       }
+> > +
+> > +       torture_cleanup_end();
+> > +}
+> > +
+> > +static struct kunit_suite kcsan_test_suite = {
+> > +       .name = "kcsan-test",
+> > +       .test_cases = kcsan_test_cases,
+> > +       .init = test_init,
+> > +       .exit = test_exit,
+> > +};
+> > +static struct kunit_suite *kcsan_test_suites[] = { &kcsan_test_suite, NULL };
+> > +
+> > +__no_kcsan
+> > +static void register_tracepoints(struct tracepoint *tp, void *ignore)
+> > +{
+> > +       check_trace_callback_type_console(probe_console);
+> > +       if (!strcmp(tp->name, "console"))
+> > +               WARN_ON(tracepoint_probe_register(tp, probe_console, NULL));
+> > +}
+> > +
+> > +__no_kcsan
+> > +static void unregister_tracepoints(struct tracepoint *tp, void *ignore)
+> > +{
+> > +       if (!strcmp(tp->name, "console"))
+> > +               tracepoint_probe_unregister(tp, probe_console, NULL);
+> > +}
+> > +
+> > +/*
+> > + * We only want to do tracepoints setup and teardown once, therefore we have to
+> > + * customize the init and exit functions and cannot rely on kunit_test_suite().
+> > + */
+> > +static int __init kcsan_test_init(void)
+> > +{
+> > +       /*
+> > +        * Because we want to be able to build the test as a module, we need to
+> > +        * iterate through all known tracepoints, since the static registration
+> > +        * won't work here.
+> > +        */
+> > +       for_each_kernel_tracepoint(register_tracepoints, NULL);
+> > +       return __kunit_test_suites_init(kcsan_test_suites);
+> > +}
+> > +
+> > +static void kcsan_test_exit(void)
+> > +{
+> > +       __kunit_test_suites_exit(kcsan_test_suites);
+> > +       for_each_kernel_tracepoint(unregister_tracepoints, NULL);
+> > +       tracepoint_synchronize_unregister();
+> > +}
+> > +
+> > +late_initcall(kcsan_test_init);
+> > +module_exit(kcsan_test_exit);
+> > +
+> > +MODULE_LICENSE("GPL v2");
+> > +MODULE_AUTHOR("Marco Elver <elver@google.com>");
+> > diff --git a/lib/Kconfig.kcsan b/lib/Kconfig.kcsan
+> > index 689b6b81f272..ea28245c6c1d 100644
+> > --- a/lib/Kconfig.kcsan
+> > +++ b/lib/Kconfig.kcsan
+> > @@ -41,7 +41,28 @@ config KCSAN_SELFTEST
+> >         bool "Perform short selftests on boot"
+> >         default y
+> >         help
+> > -         Run KCSAN selftests on boot. On test failure, causes the kernel to panic.
+> > +         Run KCSAN selftests on boot. On test failure, causes the kernel to
+> > +         panic. Recommended to be enabled, ensuring critical functionality
+> > +         works as intended.
+> > +
+> > +config KCSAN_TEST
+> > +       tristate "KCSAN test for integrated runtime behaviour"
+> > +       depends on TRACEPOINTS && KUNIT
+> > +       select TORTURE_TEST
+> > +       help
+> > +         KCSAN test focusing on behaviour of the integrated runtime. Tests
+> > +         various race scenarios, and verifies the reports generated to
+> > +         console. Makes use of KUnit for test organization, and the Torture
+> > +         framework for test thread control.
+> > +
+> > +         Each test case may run at least up to KCSAN_REPORT_ONCE_IN_MS
+> > +         milliseconds. Test run duration may be optimized by building the
+> > +         kernel and KCSAN test with KCSAN_REPORT_ONCE_IN_MS set to a lower
+> > +         than default value.
+> > +
+> > +         Say Y here if you want the test to be built into the kernel and run
+> > +         during boot; say M if you want the test to build as a module; say N
+> > +         if you are unsure.
+> >
+> >  config KCSAN_EARLY_ENABLE
+> >         bool "Early enable during boot"
 > > --
-> > Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-> > 
-> 
---
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-
+> > 2.26.2.303.gf8c07b1a785-goog
+> >
