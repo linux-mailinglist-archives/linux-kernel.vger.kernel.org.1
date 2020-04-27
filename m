@@ -2,69 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B521BAD72
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D251BAD55
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgD0TBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:01:07 -0400
-Received: from smtprelay0077.hostedemail.com ([216.40.44.77]:57564 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726680AbgD0TBH (ORCPT
+        id S1726691AbgD0S6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 14:58:09 -0400
+Received: from gateway23.websitewelcome.com ([192.185.48.104]:34680 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726302AbgD0S6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:01:07 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id D83A6100E7B48;
-        Mon, 27 Apr 2020 19:01:05 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3867:3871:4321:5007:6119:9036:10004:10400:10481:10848:11026:11658:11914:12296:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:14819:19900:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: coat03_96cc627aaf08
-X-Filterd-Recvd-Size: 1807
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 27 Apr 2020 19:01:04 +0000 (UTC)
-Message-ID: <d036dbad02241fdeb0a6400896f73ff11e98e53b.camel@perches.com>
-Subject: Re: [PATCH 2/3] mtd: lpddr: Replace printk with pr_notice
-From:   Joe Perches <joe@perches.com>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        linux-kernel@vger.kernel.org
+        Mon, 27 Apr 2020 14:58:08 -0400
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 8047C8504
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:58:06 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id T8xCjA7V9EfyqT8xCj07d8; Mon, 27 Apr 2020 13:58:06 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=RzfMdFPhf7q/zyx+Rmk6dI0yIoKjxCN+NpRpWfhaeHQ=; b=Y4Qr+iAwLN+7yQ96ZNqapVo6W
+        e9mVZErjxJaiCXC6baXIdV3whVzvEIlkU/uuOfbBHVzYGDOnJvvoeq0SAuMzukg1UXwGIkPnpoZar
+        ik6Sj0jGtmzzbI9BfcAlNlL+3vzShYVYgAY2vTyePDq0fFTtB7rBS30GSp853POIttI7+BysnDaox
+        aKl21I2snLLtqbXA69pCdjvv3Cui60NlIiSYjjbBlZCcp8oKxl5wlVqJ1qP6ZFOql3wO8txKq6oB0
+        t8Krm8rZzWzcEllhBL7+5UzSSK3eTJe0WlVPQQN7nNQB6BlcHeItLaPwd+xmydescHLNiUZudiObJ
+        e9YSY7mCA==;
+Received: from [201.162.241.110] (port=9503 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jT8xB-000Zkw-VZ; Mon, 27 Apr 2020 13:58:06 -0500
+Date:   Mon, 27 Apr 2020 14:02:22 -0500
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     linux-kernel@vger.kernel.org
 Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Date:   Mon, 27 Apr 2020 12:01:03 -0700
-In-Reply-To: <c9684a22b661fdeff9efcd5b18be01653911fc89.1588013366.git.gustavo@embeddedor.com>
+        linux-mtd@lists.infradead.org, Joe Perches <joe@perches.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH 1/3] mtd: lpddr: Fix bad logic in print_drs_error
+Message-ID: <68edaa1aa3c8b4ddecad2f093404c4693d1e2a17.1588013366.git.gustavo@embeddedor.com>
 References: <cover.1588013366.git.gustavo@embeddedor.com>
-         <c9684a22b661fdeff9efcd5b18be01653911fc89.1588013366.git.gustavo@embeddedor.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1588013366.git.gustavo@embeddedor.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.162.241.110
+X-Source-L: No
+X-Exim-ID: 1jT8xB-000Zkw-VZ
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [201.162.241.110]:9503
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 13
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-04-27 at 14:03 -0500, Gustavo A. R. Silva wrote:
-> pr_notice is preferred over printk.
+Update logic for broken test. Use a more common logging style.
 
-So is coalescing formats
+It appears the logic in this function is broken for the
+consecutive tests of
 
-? diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
-[]
-> @@ -127,31 +127,31 @@ static inline void print_drs_error(unsigned dsr)
->  	int prog_status = (dsr & DSR_RPS) >> 8;
->  
->  	if (!(dsr & DSR_AVAILABLE))
-> -		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
-> +		pr_notice("DSR.15: (0) Device not Available\n");
->  	if ((prog_status & 0x03) == 0x03)
-> -		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
-> +		pr_notice("DSR.9,8: (11) Attempt to program invalid "
->  						"half with 41h command\n");
+        if (prog_status & 0x3)
+                ...
+        else if (prog_status & 0x2)
+                ...
+        else (prog_status & 0x1)
+                ...
 
-		pr_notice("DSR.9,8: (11) Attempt to program invalid half with 41h command\n");
+Likely the first test should be
 
-etc...
+        if ((prog_status & 0x3) == 0x3)
 
+Found by inspection of include files using printk.
+
+Fixes: eb3db27507f7 ("[MTD] LPDDR PFOW definition")
+Cc: stable@vger.kernel.org
+Reported-by: Joe Perches <joe@perches.com>
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ include/linux/mtd/pfow.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
+index 122f3439e1af..c65d7a3be3c6 100644
+--- a/include/linux/mtd/pfow.h
++++ b/include/linux/mtd/pfow.h
+@@ -128,7 +128,7 @@ static inline void print_drs_error(unsigned dsr)
+ 
+ 	if (!(dsr & DSR_AVAILABLE))
+ 		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
+-	if (prog_status & 0x03)
++	if ((prog_status & 0x03) == 0x03)
+ 		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
+ 						"half with 41h command\n");
+ 	else if (prog_status & 0x02)
+-- 
+2.26.0
 
