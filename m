@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702AB1BB19E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24061BB1AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgD0Wqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 18:46:52 -0400
-Received: from mga12.intel.com ([192.55.52.136]:40986 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726403AbgD0Wqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 18:46:48 -0400
-IronPort-SDR: e7pQAc9MveTlcpyNPNaXJGOOptyMIFT/B0Ep3wJe3ZWwu8XHRwYVCSsvLbSbeQKzEibRIFFEnf
- +oskRM6UdUTw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 15:46:47 -0700
-IronPort-SDR: UHVzSlXZVdNamgJeTnygmEuXY5wBVq5RZcNSoRgPwHzzqHDm3NcyQ2wPRbh+JCVXcKjUrc6TKD
- /A5HxJvcQb8w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
-   d="scan'208";a="459025738"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.25])
-  by fmsmga006.fm.intel.com with ESMTP; 27 Apr 2020 15:46:46 -0700
-Date:   Mon, 27 Apr 2020 15:46:46 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH 6/7] x86/traps: Fix up invalid PASID
-Message-ID: <20200427224646.GA103955@otc-nc-03>
-References: <1585596788-193989-1-git-send-email-fenghua.yu@intel.com>
- <1585596788-193989-7-git-send-email-fenghua.yu@intel.com>
- <87mu6ys20d.fsf@nanos.tec.linutronix.de>
+        id S1726430AbgD0WuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 18:50:00 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54836 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726204AbgD0Wt7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 18:49:59 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RMnGKi011609;
+        Mon, 27 Apr 2020 22:49:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=1c+Qb0P6m8Bjmtsg/rPwqyaKG/hriJn7/NsqFOKcOsU=;
+ b=JwCNM8AW/dbJuvz0+/3HtR9BfLbskNfRUpOW3+MYz982eaQxZ65kNms8PG+FoHaXUhkt
+ 0WduaFWvcrVOJHLwVy/YX+9vXC4mykDD+C9KimRWTpBdcnqKYTUn7pcAbuUtvlNXYsfa
+ bd92cgXg6/YDYoT06k7tzCiSojS2EI0MU1DSAUwOVEhZWGgaUHrIwN7x/sqEb0n2Xp9u
+ XBGEwqhcEaRJA0KeECvMtNIeAbc1rL+HtcsT9PcNAffTms5BwnuR5YRXSc1vEQLi59e4
+ Cdz4NFnSBhzUSYZNqJ+aMu5EPsl7E7ySLFCY1Dv1lOuaAPdZe009Xfr2y8EREOyhzsiK 8g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30p01nk10y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 22:49:55 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RMbOC2126457;
+        Mon, 27 Apr 2020 22:49:54 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 30my0avchp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 22:49:54 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03RMnrjU022306;
+        Mon, 27 Apr 2020 22:49:53 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 27 Apr 2020 15:49:53 -0700
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     jejb@linux.ibm.com, aacraid@microsemi.com,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: aacraid: Fix some error handling paths in 'aac_probe_one()'
+Date:   Mon, 27 Apr 2020 18:49:49 -0400
+Message-Id: <158802757520.27023.14035276109176874290.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200412094039.8822-1-christophe.jaillet@wanadoo.fr>
+References: <20200412094039.8822-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87mu6ys20d.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=819 bulkscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004270185
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 clxscore=1015
+ phishscore=0 mlxlogscore=875 adultscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004270185
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas
+On Sun, 12 Apr 2020 11:40:39 +0200, Christophe JAILLET wrote:
 
-On Sun, Apr 26, 2020 at 05:25:06PM +0200, Thomas Gleixner wrote:
-> Fenghua Yu <fenghua.yu@intel.com> writes:
-> > A #GP fault is generated when ENQCMD instruction is executed without
-> > a valid PASID value programmed in.
+> If 'scsi_host_alloc()' or 'kcalloc()' fail, 'error' is known to be 0. Set
+> it explicitly to -ENOMEM instead before branching to the error handling
+> path.
 > 
-> Programmed in what?
-> 
-> > The #GP fault handler will initialize the current thread's PASID MSR.
-> >
-> > The following heuristic is used to avoid decoding the user instructions
-> > to determine the precise reason for the #GP fault:
-> > 1) If the mm for the process has not been allocated a PASID, this #GP
-> >    cannot be fixed.
-> > 2) If the PASID MSR is already initialized, then the #GP was for some
-> >    other reason
-> > 3) Try initializing the PASID MSR and returning. If the #GP was from
-> >    an ENQCMD this will fix it. If not, the #GP fault will be repeated
-> >    and we will hit case "2".
-> >
-> > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> 
-> Just for the record I also suggested to have a proper errorcode in the
-> #GP for ENQCMD and I surely did not suggest to avoid decoding the user
-> instructions.
+> While at it, axe 2 useless assignments to 'error'. These values are
+> overwridden a few lines later.
 
-We certainly discussed the possiblity of adding an error code to 
-identiy #GP due to ENQCMD with our HW architects. 
+Applied to 5.8/scsi-queue, thanks!
 
-There are only a few cases that have an error code, like move to segment
-with an invalid value for instance. There were a few but i don't
-recall that entire list. 
+[1/1] scsi: aacraid: Fix error handling paths in aac_probe_one()
+      https://git.kernel.org/mkp/scsi/c/f7854c382240
 
-Since the error code is 0 in most places, there isn't plumbing in hw to return
-this value in all cases. It appeared that due to some uarch reasons it
-wasn't as simple as it appears to /me sw kinds :-)
-
-So after some internal discussion we decided to take the current
-approach. Its possible that if the #GP was due to some other reason
-we might #GP another time. Since this wasn't perf or speed path we took
-this lazy approach. 
-
-We will keep tabs with HW folks for future consideration. 
+-- 
+Martin K. Petersen	Oracle Linux Engineering
