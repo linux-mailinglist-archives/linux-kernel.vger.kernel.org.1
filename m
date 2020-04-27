@@ -2,160 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C9C1BA300
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 13:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBD31BA2FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 13:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgD0Lyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 07:54:50 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2112 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726260AbgD0Lyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 07:54:49 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 7AEC82A367116205EBC7;
-        Mon, 27 Apr 2020 12:54:47 +0100 (IST)
-Received: from [127.0.0.1] (10.210.170.137) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 27 Apr
- 2020 12:54:44 +0100
-Subject: Re: [PATCH 3/4] lib: logic_pio: Introduce MMIO_LOWER_RESERVED
-To:     <jiaxun.yang@flygoat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-mips@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Kitt <steve@sk2.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Silsby <dansilsby@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Allison Randal <allison@lohutok.net>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Wei Xu <xuwei5@hisilicon.com>, <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>, Rob Herring <robh@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-References: <20200426114806.1176629-1-jiaxun.yang@flygoat.com>
- <20200426114806.1176629-4-jiaxun.yang@flygoat.com>
- <e84f4146-b44f-b009-0dc4-876aa551f44f@huawei.com>
- <42432F7C-D859-48B4-9547-A61BD22EFEEF@flygoat.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <e6e3331f-283d-03e8-b23e-41870b547e34@huawei.com>
-Date:   Mon, 27 Apr 2020 12:54:06 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726997AbgD0LyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 07:54:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726260AbgD0LyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 07:54:19 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 058D720644;
+        Mon, 27 Apr 2020 11:54:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1587988459;
+        bh=nZ3mD9ws68gkD063hDmlcYv/n61XV3lal2k6Vx5PZk4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mZtWC51jN5UBzwJsN47+KsV2QojadwCDn8NKR8M9kFVY0RAehRGAoLxTfSFaBheQL
+         L3tHoQyKA3GWQOUDDc7sMCOH0uuFPoQTfm5Y3C6v2k20u3c6e7zLChAhNIFWLl1VS7
+         g622ihc/MIA2Q1EiV4hfyNeJnl26cR3Hxj9Yl+24=
+Date:   Mon, 27 Apr 2020 12:54:16 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sanjay R Mehta <sanju.mehta@amd.com>
+Cc:     Nehal-bakulchandra.Shah@amd.com, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] spi: spi-amd: Add AMD SPI controller driver support
+Message-ID: <20200427115416.GA4383@sirena.org.uk>
+References: <1587844788-33997-1-git-send-email-sanju.mehta@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <42432F7C-D859-48B4-9547-A61BD22EFEEF@flygoat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.210.170.137]
-X-ClientProxiedBy: lhreml722-chm.china.huawei.com (10.201.108.73) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
+Content-Disposition: inline
+In-Reply-To: <1587844788-33997-1-git-send-email-sanju.mehta@amd.com>
+X-Cookie: If your bread is stale, make toast.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/04/2020 12:03, Jiaxun Yang wrote:
-> 
-> 
-> 于 2020年4月27日 GMT+08:00 下午6:43:09, John Garry <john.garry@huawei.com> 写到:
->> On 26/04/2020 12:47, Jiaxun Yang wrote:
->>> That would allow platforms reserve some lower address in PIO MMIO range
->>> to deal with legacy drivers with hardcoded I/O ports that can't be
->>> managed by logic_pio.
->>
->> Hi,
->>
->> Is there some reason why the logic_pio code cannot be improved to handle
->> these devices at these "fixed" addresses? Or do you have a plan to
->> improve it? We already support fixed bus address devices in the INDIRECT
->> IO region.
-> 
-> Hi,
-> 
-> The issue about "Fixed Address" is we can't control the ioport
-> That driver used to operate devices.
-> So any attempt to resolve it in logic_pio seems impossible.
-> 
-> Currently we have i8259, i8042, piix4_smbus, mc146818 rely on this assumption.
 
-Right, and from glancing at a couple of drivers you mentioned, if we 
-were to register a logic pio region for that legacy region, there does 
-not seem to be an easy place to fixup to use logic pio addresses (for 
-those devices). They use hardcoded values. However if all those drivers 
-were mips specific, you could fixup those drivers to use logic_pio 
-addresses today through some macro. But not sure on that.
+--LZvS9be/3tNcYl/X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So, going back to your change, I have a dilemma wondering whether you 
-should still register a logic pio region for the legacy region instead 
-of the carveout reservation, but ensure it is the first region 
-registered, such that logic pio address base is 0 and no translation is 
-required. At least then you have a region registered and it shows in 
-/proc/ioports, but then this whole thing becomes a bit fragile.
+On Sat, Apr 25, 2020 at 02:59:48PM -0500, Sanjay R Mehta wrote:
+> This driver supports SPI Controller for AMD SOCs.This driver
+> supports SPI operations using FIFO mode of transfer.
+>=20
+> ChangeLog v1->v2:
+> 	- Fix up to handle multiple receive transfer case.
+> 	- move chip_select in transfer_message, flag device as
+> 	  half-duplex and some cosmetic changes.
 
-Maybe Arnd or Bjorn have an opinion on this.
+As covered in submitting-patches.rst this should go after the --- so it
+doesn't appear in git.  Otherwise this looks good though, thanks!
 
-Thanks,
-John
+--LZvS9be/3tNcYl/X
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-> 
-> My plan is after getting this part merged, I'm going to work on a ISA Host bridge driver,
-> then convert device drivers into logic_pio and Devicetree based driver step by step.
-> 
-> Finally when we nologner have any legacy driver, we can safely remove this reserved
-> range.
-> 
-> Thanks.
-> 
-> 
->>
->> Carving out a region of IO space is less than ideal.
->>
->> Thanks,
->> John
->>
->>>
->>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
->>> ---
->>>    lib/logic_pio.c | 6 +++++-
->>>    1 file changed, 5 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/lib/logic_pio.c b/lib/logic_pio.c
->>> index f511a99bb389..57fff1cb7063 100644
->>> --- a/lib/logic_pio.c
->>> +++ b/lib/logic_pio.c
->>> @@ -20,6 +20,10 @@
->>>    static LIST_HEAD(io_range_list);
->>>    static DEFINE_MUTEX(io_range_mutex);
->>>    
->>> +#ifndef MMIO_LOWER_RESERVED
->>> +#define MMIO_LOWER_RESERVED	0
->>> +#endif
->>> +
->>>    /* Consider a kernel general helper for this */
->>>    #define in_range(b, first, len)        ((b) >= (first) && (b) < (first) + (len))
->>>    
->>> @@ -36,7 +40,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
->>>    	struct logic_pio_hwaddr *range;
->>>    	resource_size_t start;
->>>    	resource_size_t end;
->>> -	resource_size_t mmio_end = 0;
->>> +	resource_size_t mmio_end = MMIO_LOWER_RESERVED;
->>>    	resource_size_t iio_sz = MMIO_UPPER_LIMIT;
->>>    	int ret = 0;
->>>    
->>>
->>
-> 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6mx+cACgkQJNaLcl1U
+h9DCSQf+K699hIJlaQHPEbRacevvfybEhe6YAWmB+PKZgF7K4ukUZ4clcMlCx6d0
+duwrN/CilJv+Yl2jbvoNq1GaVH3qf2UIPysXPVWwEgWn/mEtfIp/PLR0NRz909Cz
++zThV+uuC6vLHKOGqKZdn2i2ySbTYF/X2QLDBCAV56kXEp+JG3nHJN6gITp2DJX4
++ypx8s5hLN/+HcTYrVgDqSk0YcBpzJY7W/23eWPl9+n/ALGwWiblN2wJzbJyoZ0x
+8gS30I44BYCbTm288j7vDQux+aJZGUn5S0Hlp7ZoBV6l4Gz2nOl0nX0LV4FGpruX
+sBap5hf4mhN0ZPywI+jCihC0uLgaIw==
+=zNSI
+-----END PGP SIGNATURE-----
 
+--LZvS9be/3tNcYl/X--
