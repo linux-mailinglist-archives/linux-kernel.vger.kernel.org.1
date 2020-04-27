@@ -2,85 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B9B1B994C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07DC1B997F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgD0IEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:04:07 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:35669 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgD0IEG (ORCPT
+        id S1726605AbgD0IOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 04:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgD0IOC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:04:06 -0400
-Received: by mail-ot1-f65.google.com with SMTP id e26so24752088otr.2;
-        Mon, 27 Apr 2020 01:04:04 -0700 (PDT)
+        Mon, 27 Apr 2020 04:14:02 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FBFC061A0F
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 01:14:01 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id 198so13076619lfo.7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 01:14:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=FdfIU2NSLi88tCR7YZD3MsDxdEuhmbVZJnaYrUyg/FE=;
+        b=USImTHS+2kjnjzTvZI+vUWJujyfWRDkv01ERhF34UHkbrkyZuD1txWGzcFXSWY+YDK
+         CIQAOQ2rJrPhgm8dk2ZRlT5u/vPMqogGCQJe+KL9HGR3aLw14Vo+0f8NEieK72B0Eh2c
+         UaPBxPidYjOZpx4IvXrgM4/EWxxXIjAxbDGX/+FQmOggRC+eFb9RiQ6srgiQ8n0U6uch
+         pDO5IB9Stv9HwGtgkKeOh6s7t1ADYFsA/NVZYEiMyZoxHAAZjVh6jxOboqcTBsfvbgiV
+         HRhH72dexIXWO28Mh7cHYZKjQxuNbQt5P0tGKTWSNDs1adrH/A+ONgelIHXSCEJAXl4/
+         l3NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yp9HgL6YXH1Mrs7/xb1a0hjYzru62kco8NbdEX0q47w=;
-        b=fqf2apN6rMLx+bj9WGC0vXQnzxwveZ3ahvm450ePwDSnEHZcdxPaPSr7K7Pc3mvcBO
-         e0dCwnt1oE/748jia21S+QBQaSMeSy0+TbKHw8eKGEWYBboW5CpkqZJ15j2Ik7PlwKMV
-         wo7FXsWj9vBEzlGrojdmY+/2KY97+4j+W/+4q//gv8btJtdcZ665O1uix35th7eB82zT
-         VNNN2SJTpvAwAPOQUYmTjVNgAdIIqSpzzdvgOrf0mYRZkKxR61eb5z4FuB+Y21p6DWcM
-         ozXbyoaxVLuDb/MzThOx+KxyD23Kdtl0qKjb3zIDQY3gQ47X8fpRAx+2ow+cP+VGYazo
-         847g==
-X-Gm-Message-State: AGi0Pubo0I9AvwMRJ3PgvuQgaWmhUv+DIp3TxjZZIxeV2EeJ1y1nBb/1
-        6z8VQ85jsJup41aqcJhyxM3dCnbkA8o5QDSMiDY=
-X-Google-Smtp-Source: APiQypL9L0sStSs9sZCJMMiE2Zg4MITGkAayddwxMKwHPKdmjS62MIWjUuR1BBUAExNprGCWXUObgfMmOo6mye5Vn6w=
-X-Received: by 2002:a9d:7d85:: with SMTP id j5mr16411444otn.107.1587974644288;
- Mon, 27 Apr 2020 01:04:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <1587678050-23468-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1587678050-23468-7-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1587678050-23468-7-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 27 Apr 2020 10:03:52 +0200
-Message-ID: <CAMuHMdWiQd1x7+_qJnFzNbz27CwCW9yO431pUfYATE=0rM8J-Q@mail.gmail.com>
-Subject: Re: [PATCH 06/10] dt-bindings: clock: renesas: cpg-mssr: Document
- r8a7742 binding
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FdfIU2NSLi88tCR7YZD3MsDxdEuhmbVZJnaYrUyg/FE=;
+        b=c6GjXpXkSNFiBzxXgQ8HK7jLK7ilNMh4uieAyiaI7Ew5LxVz2G8WSsIMtaGLoHB/WK
+         zTiqcACI0OLMee+7Svjkmk0nL9TXtfuqeeuOkfX+VOcEtGHYB4e6SpmJc5CpJx4e+LiP
+         ktClPbOsPERvkABd+L7jQF498mBfZ4CAZlQYN84bF8V0yXc+nlvy+ZcHVFbI5RhMrgDF
+         sARYVfaiIbnG9PEKyMqeKhGQ/QOHEQBH2CoV/i3scnmyZNNiv0rF9qScyDVhS2WK+VxR
+         OYgLmNWBpQTmYcNHQ0VGd4EwWWiMsZHgI+dyYGDG1AX4717C/eR19cJd93WHT/Y4jczx
+         1kCw==
+X-Gm-Message-State: AGi0PuaiBn1TrzyD0eOrTSqVAkVzyyrwr3GcGZx97FFDZ94PxC3xuKVn
+        zVl0NY9PtThCAeEaS6TVFSM=
+X-Google-Smtp-Source: APiQypJb8u+s2Yxiz9lf4eiIRKY3+cYu2Oqfifby+TcDNTNf2cVOtw+SmKfnqQEiTDVq3TME2jyUEQ==
+X-Received: by 2002:a19:e04a:: with SMTP id g10mr14556853lfj.164.1587975240426;
+        Mon, 27 Apr 2020 01:14:00 -0700 (PDT)
+Received: from e123311-lin.cambridge.arm.com (static-91-225-135-18.devs.futuro.pl. [91.225.135.18])
+        by smtp.gmail.com with ESMTPSA id i20sm11209907lfe.15.2020.04.27.01.13.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Apr 2020 01:13:59 -0700 (PDT)
+From:   Michal Orzel <michalorzel.eng@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, ville.syrjala@linux.intel.com,
+        chris@chris-wilson.co.uk, jose.souza@intel.com
+Cc:     Michal Orzel <michalorzel.eng@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org
+Subject: [PATCH] Remove drm_display_mode.hsync
+Date:   Mon, 27 Apr 2020 10:05:17 +0200
+Message-Id: <1587974717-14599-1-git-send-email-michalorzel.eng@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 11:41 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add binding documentation for the RZ/G1H (R8A7742) Clock Pulse Generator
-> driver.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+As suggested by the TODO list of DRM subsystem:
+-remove the member hsync of drm_display_mode
+-convert code using hsync member to use drm_mode_hsync()
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in clk-renesas-for-v5.8.
+Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+---
+ drivers/gpu/drm/drm_modes.c                  |  6 +-----
+ drivers/gpu/drm/i915/display/intel_display.c |  1 -
+ include/drm/drm_modes.h                      | 10 ----------
+ 3 files changed, 1 insertion(+), 16 deletions(-)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+index d4d6451..0340079 100644
+--- a/drivers/gpu/drm/drm_modes.c
++++ b/drivers/gpu/drm/drm_modes.c
+@@ -752,16 +752,12 @@ EXPORT_SYMBOL(drm_mode_set_name);
+  * @mode: mode
+  *
+  * Returns:
+- * @modes's hsync rate in kHz, rounded to the nearest integer. Calculates the
+- * value first if it is not yet set.
++ * @modes's hsync rate in kHz, rounded to the nearest integer.
+  */
+ int drm_mode_hsync(const struct drm_display_mode *mode)
+ {
+ 	unsigned int calc_val;
+ 
+-	if (mode->hsync)
+-		return mode->hsync;
+-
+ 	if (mode->htotal <= 0)
+ 		return 0;
+ 
+diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
+index 3468466..ec7e943 100644
+--- a/drivers/gpu/drm/i915/display/intel_display.c
++++ b/drivers/gpu/drm/i915/display/intel_display.c
+@@ -8891,7 +8891,6 @@ void intel_mode_from_pipe_config(struct drm_display_mode *mode,
+ 
+ 	mode->clock = pipe_config->hw.adjusted_mode.crtc_clock;
+ 
+-	mode->hsync = drm_mode_hsync(mode);
+ 	mode->vrefresh = drm_mode_vrefresh(mode);
+ 	drm_mode_set_name(mode);
+ }
+diff --git a/include/drm/drm_modes.h b/include/drm/drm_modes.h
+index 99134d4..7dab7f1 100644
+--- a/include/drm/drm_modes.h
++++ b/include/drm/drm_modes.h
+@@ -391,16 +391,6 @@ struct drm_display_mode {
+ 	int vrefresh;
+ 
+ 	/**
+-	 * @hsync:
+-	 *
+-	 * Horizontal refresh rate, for debug output in human readable form. Not
+-	 * used in a functional way.
+-	 *
+-	 * This value is in kHz.
+-	 */
+-	int hsync;
+-
+-	/**
+ 	 * @picture_aspect_ratio:
+ 	 *
+ 	 * Field for setting the HDMI picture aspect ratio of a mode.
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.7.4
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
