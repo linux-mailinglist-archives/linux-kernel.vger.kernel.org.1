@@ -2,148 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF061BAD83
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8271BAD52
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726633AbgD0THH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:07:07 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.91]:23659 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726315AbgD0THH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:07:07 -0400
-X-Greylist: delayed 491 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Apr 2020 15:07:06 EDT
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id DDB62103C3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 14:07:05 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id T95tjMd4KVQh0T95tjUWkL; Mon, 27 Apr 2020 14:07:05 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=FZZr/uE2hTuM5pu2r5aXLhMCx8nc6adhDHFuFcVEsyA=; b=WA1/jIwebfelRf4LEBvLyycLnu
-        DV/Lk2mdT0rMwm89mbuBPayhi7Z1kuizZM3sc0zKUjWxIg/EBCqQGsoEqA2TXU4ttL6J0ojveIFCP
-        O4q+14phcbmeFrOVmbasMNyIymsS9v7Nxbm251DiXE3MruSDx6QgKzl/kOkIGNDurXRK/9KAgI384
-        +HTdwE6usPu5/cX44OoHNi96ns2pp3MvPqgpYciB87rgqeY2ZT7mVT8hPmP14Ferkkhe/W4kmKOpU
-        hNEGE9e3it8BbPA2o7NrvbuKtQaYfaPn8OMuhbEgcc3J4eVFeAp7aCdlj6d68TDsZR/uUN9g9gcKh
-        /CJWSWJQ==;
-Received: from [201.162.241.110] (port=23532 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jT95t-000fE1-F5; Mon, 27 Apr 2020 14:07:05 -0500
-Subject: Re: [PATCH 3/3] mtd: lpddr: Move function print_drs_error to
- lpddr_cmds.c
-To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-References: <cover.1588013366.git.gustavo@embeddedor.com>
- <5cc0d2e83e971693d974235608c8d96fe94c849d.1588013366.git.gustavo@embeddedor.com>
- <ce8be38d71da0a9020a42359152dad7ee217d18c.camel@perches.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <3a6e7112-341f-6c98-70b7-0a43c3106464@embeddedor.com>
-Date:   Mon, 27 Apr 2020 14:11:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726549AbgD0S4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 14:56:33 -0400
+Received: from mga09.intel.com ([134.134.136.24]:22989 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726385AbgD0S4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 14:56:33 -0400
+IronPort-SDR: zlf9d9uYAcSATKoHyYLhhnEoQ1N3h4vEXIIY30uEE/4cv/9Gmr/IJWJm/2WqZys4ogIPJHMRGC
+ Wc8hdWEylO9w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 11:56:33 -0700
+IronPort-SDR: xS5JlL4vBwEjAeyxOBw1yzPjRI4rbG6eNCk7vvICju1Ms07GnCA27am4N65H/iXU8l9gxoyGGR
+ r7Et6egwICCQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
+   d="scan'208";a="431879622"
+Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
+  by orsmga005.jf.intel.com with ESMTP; 27 Apr 2020 11:56:32 -0700
+Subject: Re: [PATCH] firmware: stratix10-svc: Drop unnecessary checking for
+ and populating /firmware/ node
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <20200421173256.34897-1-sudeep.holla@arm.com>
+ <8ca3666f-8ff1-3c3c-d40b-81c024b37bdd@linux.intel.com>
+ <20200423081149.GB18538@bogus>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <2b2e29ec-ebbf-3ee6-acc9-3722a2fabbfb@linux.intel.com>
+Date:   Mon, 27 Apr 2020 14:12:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <ce8be38d71da0a9020a42359152dad7ee217d18c.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200423081149.GB18538@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.241.110
-X-Source-L: No
-X-Exim-ID: 1jT95t-000fE1-F5
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.241.110]:23532
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 14
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sudeep,
 
+In our dts, firmware is not under root node. You can refer to 
+arch/arm64/boot/dts/altera/socfpga_stratix10.dtsi for details.
 
-On 4/27/20 14:03, Joe Perches wrote:
-> On Mon, 2020-04-27 at 14:04 -0500, Gustavo A. R. Silva wrote:
->> Function print_drs_error is only used in drivers/mtd/lpddr/lpddr_cmds.c
->> so, better to move it there.
-> []
->> diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
-> []
->> @@ -94,6 +94,39 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
->>  }
->>  EXPORT_SYMBOL(lpddr_cmdset);
->>  
->> +static inline void print_drs_error(unsigned int dsr)
+This is why we need check and populate firmware node.
+
+Regards,
+Richard
+
+On 4/23/20 3:11 AM, Sudeep Holla wrote:
+> On Wed, Apr 22, 2020 at 04:50:00PM -0500, Richard Gong wrote:
+>> Hi Sudeep,
+>>
+>> I tried and couldn't load stratix10-svc driver with your patch on kernel
+>> 5.6.
+>>
 > 
-> There's no need for inline as it's used once.
+> What exactly do you mean by not loading stratix10-svc driver ?
+> This patch doesn't change that part, the driver should still get loaded.
+> The change may affect probing part if for some reason the devices for
+> nodes under firmware are not populated which I still can't understand.
 > 
-
-That's correct. I didn't notice that at first sight.
-
-I'll remove it in V2.
-
-Thanks
---
-Gustavo
+> Do you see any change under i/sys/devices/platform/firmware\:* with
+> and without this change ?
+> 
+> Lots of drivers removed the code similar to this patch after the Commit
+> 3aa0582fdb82 ("of: platform: populate /firmware/ node from
+> of_platform_default_populate_init()") and continue to work fine. I am
+> interested to see what is different in stratix10-svc.
+> 
+> --
+> Regards,
+> Sudeep
+> 
