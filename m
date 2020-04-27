@@ -2,175 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7A41BAE74
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5F51BAF8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgD0TuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:50:08 -0400
-Received: from mail.z3ntu.xyz ([128.199.32.197]:53132 "EHLO mail.z3ntu.xyz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725919AbgD0TuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:50:08 -0400
-Received: by mail.z3ntu.xyz (Postfix, from userid 182)
-        id 2477BC4D5F; Mon, 27 Apr 2020 19:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1588017006; bh=Tp5K0z6qXk66LE+x4u+qGGY18uOXh/OQIqEnu5hZFXg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=XgxUF9Vyf52xMS3BxfBY340LUDK+q6P4zfeGyNkRPGJKJQRuEZGKkmG0IywjstE1d
-         YVcJ9+L4y5alvyz8HYnMnGGK4DFZbOaBEAlB4W4a5FkUo1+pKkTPrO74965c1gSPvB
-         CzMwQ+WPAlGueZT+gRjdaruDvji8BV4n3DcFcQBY=
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on arch-vps
-X-Spam-Level: 
-X-Spam-Status: No, score=0.9 required=5.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        PDS_OTHER_BAD_TLD,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.4
-Received: from g550jk.localnet (80-110-124-168.cgn.dynamic.surfer.at [80.110.124.168])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 78112C4C9D;
-        Mon, 27 Apr 2020 19:49:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1588016997; bh=Tp5K0z6qXk66LE+x4u+qGGY18uOXh/OQIqEnu5hZFXg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=pbNz3UCZ4ArCYHMDrSstU3Ei+42CwaW2E6sA6fEd4B3Ds5xdLdg87gkkHJ9EOuxWv
-         mS2RG4rD+ZiBT0uF6/g0Pg0aaIWZ2wXShtqffynnT1izO8Y+ukVdAv2nsgM/fFDyHa
-         qmOYcX/5wTQ3Uo/gIOWSwWoN0t/79F4nq+fL/Pzs=
-From:   Luca Weiss <luca@z3ntu.xyz>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v3 2/2] leds: add sgm3140 driver
-Date:   Mon, 27 Apr 2020 21:49:54 +0200
-Message-ID: <318932736.Jt2qlLCP7m@g550jk>
-In-Reply-To: <20200427095102.GA21572@duo.ucw.cz>
-References: <20200421191354.1443017-1-luca@z3ntu.xyz> <20200421191354.1443017-3-luca@z3ntu.xyz> <20200427095102.GA21572@duo.ucw.cz>
+        id S1726841AbgD0UdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:33:15 -0400
+Received: from gateway20.websitewelcome.com ([192.185.4.169]:14810 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726285AbgD0UdO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 16:33:14 -0400
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id 13D5C400C6E3B
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:28:51 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id T9hrjB1z5EfyqT9hrj11XN; Mon, 27 Apr 2020 14:46:19 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=2PhqAadEanGA6zu3GS0dpv53aeSLftBKlQlVVXlea+k=; b=gVoeX18XHnlGe6CLXThXRH9LZ
+        aKlnSZSAL85rDI3H7sG2EkU+BG476MeXYVRILj1dM5eEci4Cj+82kYaxvwwGvZbmT6SXbBLYmHK9r
+        ynot9tkadfyLT2v4IgFRnZRVcCRGXVT5NmmXa7/kaLlpuJrFYO4DFXpVVw6ZTmQ2ebDXXGUOVfgsp
+        kpXstOcY0WWLGIWxT02+ujQAZCbYJ7XEc/2PgIKbPkTkYMUYCWq+EmjQS2OndBXdoq4WjL3AFGFMF
+        wUE5UJ7ge6+FYBUYPM1w8V+rM39+DfgyXXoXDrLz7dyFPhkPssOW96105KNnNrNjIjFyopVj3vm9A
+        Sgk1HzloQ==;
+Received: from [201.162.241.110] (port=25072 helo=embeddedor)
+        by gator4166.hostgator.com with esmtpa (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jT9hr-000yI5-F7; Mon, 27 Apr 2020 14:46:19 -0500
+Date:   Mon, 27 Apr 2020 14:50:37 -0500
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, Joe Perches <joe@perches.com>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH v2 1/3] mtd: lpddr: Fix bad logic in print_drs_error
+Message-ID: <3fb0e29f5b601db8be2938a01d974b00c8788501.1588016644.git.gustavo@embeddedor.com>
+References: <cover.1588016644.git.gustavo@embeddedor.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4979951.K97e9W9pSL"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1588016644.git.gustavo@embeddedor.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.162.241.110
+X-Source-L: No
+X-Exim-ID: 1jT9hr-000yI5-F7
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: (embeddedor) [201.162.241.110]:25072
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 25
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart4979951.K97e9W9pSL
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Update logic for broken test. Use a more common logging style.
 
-On Montag, 27. April 2020 11:51:02 CEST Pavel Machek wrote:
-> Hi!
-> 
-> > Add a driver for the SGMICRO SGM3140 Buck/Boost Charge Pump LED driver.
-> > 
-> > This device is controlled by two GPIO pins, one for enabling and the
-> > second one for switching between torch and flash mode.
-> > 
-> > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> 
-> Thanks, applied, but... I may remove it again.
-> 
-> > +++ b/drivers/leds/leds-sgm3140.c
-> > @@ -0,0 +1,320 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> 
-> Would you consider GPL-2+?
+It appears the logic in this function is broken for the
+consecutive tests of
 
-I don't really have a preference either way but GPL-2.0-or-later is fine for 
-me.
+        if (prog_status & 0x3)
+                ...
+        else if (prog_status & 0x2)
+                ...
+        else (prog_status & 0x1)
+                ...
 
-> 
-> > +#if IS_ENABLED(CONFIG_V4L2_FLASH_LED_CLASS)
-> > +static void sgm3140_init_v4l2_flash_config(struct sgm3140 *priv,
-> 
-> Ok.
-> 
-> > +static int sgm3140_probe(struct platform_device *pdev)
-> > +{
-> 
-> ...
-> 
-> > +	led_cdev->brightness_set_blocking = sgm3140_brightness_set;
-> > +	led_cdev->max_brightness = LED_ON;
-> 
-> Don't do this, unless you really have 255 levels of brightness.
+Likely the first test should be
 
-LED_ON is 1, so the brightness available is 0 - 1.
+        if ((prog_status & 0x3) == 0x3)
 
-> 
-> > +	/* Create V4L2 Flash subdev */
-> > +	priv->v4l2_flash = v4l2_flash_init(&pdev->dev,
-> > +					   child_node,
-> > +					   fled_cdev, NULL,
-> > +					   &v4l2_sd_cfg);
-> > +	if (IS_ERR(priv->v4l2_flash)) {
-> 
-> Does this need some #ifdef guards?
+Found by inspection of include files using printk.
 
-v4l2_flash_init has a NULL-returning version when CONFIG_V4L2_FLASH_LED_CLASS 
-is not defined (see https://elixir.bootlin.com/linux/latest/source/include/
-media/v4l2-flash-led-class.h#L166 )
+Fixes: eb3db27507f7 ("[MTD] LPDDR PFOW definition")
+Cc: stable@vger.kernel.org
+Reported-by: Joe Perches <joe@perches.com>
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+Changes in v2:
+ - None.
 
-> 
-> > +		ret = PTR_ERR(priv->v4l2_flash);
-> > +		goto err;
-> > +	}
-> > +
-> > +	return ret;
-> 
-> Should this return 0?
+ include/linux/mtd/pfow.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-ret should be 0 here, so it shouldn't matter much.
-
-> 
-> > +err:
-> > +	fwnode_handle_put(child_node);
-> > +	return ret;
-> > +}
-> 
-> Does non-error path needs handle_put, too?
-
-I don't think so, I'm passing child_node to v4l2_flash_init which then saves 
-the pointer to v4l2_subdev->fwnode. 
-
-The devm_led_classdev_flash_register_ext function also seems to store the 
-pointer (led_cdev->dev->fwnode = init_data->fwnode; in 
-led_classdev_register_ext)
-
-> 
-> Best regards,
-> 								
-	Pavel
-
-Regards,
-Luca
---nextPart4979951.K97e9W9pSL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEObrSLwgs2pG6FY/6cthDuJ1N11YFAl6nN2IACgkQcthDuJ1N
-11aAZBAA0i4n3JlvsQXSwCK/Fm8tiPmVsJPyFwa/Pt2f4xSUnBtjbBxnkdEt6MhK
-SnYIfBNZAjnTcNQeIObdGMjJ6nhMVk3zqXD8P2QfxQJL3I9izpjQv0cDsMzmFrsk
-JKjWeBCayt/AjhOU5pF48nOe6MDAzNNP+Eg1He2HMzJi43klsuRBtqadn6AzTgWz
-xaCX+BcZDdMZv+ZaJOfUkRkWVEjN2OvIRBSj3uIZMZ09+fTMSUgy26aWyxWMjMYX
-N+jqlBzVfp+UBBHcE3vwTqwlVfn4f5cNlhIAN+g9QtTAZ5/1gH7uMzIAaqZamvJp
-5ckBQvoz07051RkHmlbc5RrJf1rMuVJvnSlFw+MI5jGg7q0GmL6qTE9E8d46KT/8
-L9FV3uHJzeaos5DkGAZ40T0UmB130RzfvIpXcnq6r8dpTatduGHae1Rli8+bsTuL
-CFMywEMutthCiC9ql+FVByTlysTNRZO9V8ca3CwTFVDy90AxfjkZg5Wclo4wkE+o
-3Pj106n1C8jqfRX9dhO79LlcnG6+DOzim0+V+S78pHBPrvzQMVBLExC+VWZiia2a
-Ptk0vbKes2A6BRWWjSNFPun0X1aryXDl3gk3YAeBAN14tjMpepx8JrnzPGRpMD3a
-7rm2xshmhiGC1ncqGW8WUosoEc61IOHXZPN1Pz6osY1RXCm2zzY=
-=y4oW
------END PGP SIGNATURE-----
-
---nextPart4979951.K97e9W9pSL--
-
-
+diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
+index 122f3439e1af..c65d7a3be3c6 100644
+--- a/include/linux/mtd/pfow.h
++++ b/include/linux/mtd/pfow.h
+@@ -128,7 +128,7 @@ static inline void print_drs_error(unsigned dsr)
+ 
+ 	if (!(dsr & DSR_AVAILABLE))
+ 		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
+-	if (prog_status & 0x03)
++	if ((prog_status & 0x03) == 0x03)
+ 		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
+ 						"half with 41h command\n");
+ 	else if (prog_status & 0x02)
+-- 
+2.26.0
 
