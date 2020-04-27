@@ -2,67 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DBD1B9FE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EED81B9F4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgD0Jap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 05:30:45 -0400
-Received: from elvis.franken.de ([193.175.24.41]:57095 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726003AbgD0Jao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 05:30:44 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jT05x-0000OE-00; Mon, 27 Apr 2020 11:30:33 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 1A88FC0327; Mon, 27 Apr 2020 11:04:12 +0200 (CEST)
-Date:   Mon, 27 Apr 2020 11:04:12 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Guoyun Sun <sunguoyun@loongson.cn>,
-        Paul Burton <paulburton@kernel.org>,
-        Daniel Silsby <dansilsby@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Dmitry Korotin <dkorotin@wavecomp.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Price <steven.price@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        TieZhu Yang <yangtiezhu@loongson.cn>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] mips/mm: Add page soft dirty tracking
-Message-ID: <20200427090412.GA7286@alpha.franken.de>
-References: <1587460527-13986-1-git-send-email-sunguoyun@loongson.cn>
- <20200426165441.GA10053@alpha.franken.de>
- <QNNE9Q.WIYO7ZSN6WHE@crapouillou.net>
+        id S1726877AbgD0JFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 05:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgD0JFY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 05:05:24 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E01C061A41
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 02:05:23 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id d17so19582932wrg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 02:05:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=t0Qb3M+KoO7rshy7LxfHgJoujvSz6frs1GElCox2b5s=;
+        b=KiFPn5ig/JKiOhaz02UnaLlnM3E8H8eyZzRXSgpgUO41XBVvN2o0dl8F35rNzr5/fP
+         M6d4vtcAdWrgC2ZqKCoTgLP4AgzuIMc1qN/3l/+HxvYd1zY0rJhpp9LNNi9k1kFhlyBZ
+         ymqiZ6+D/a+5NUOtNineXVJL593LPnBbBKiTxurunGLd5ELXd8bYFwg+xhk6NNxKfTNf
+         6CBdSmQY8GKAzYPVGKG53XQ3FeoIaZXG7yq5nsIEtHFm0L9lO4N80M2L0xDLhGiegXKx
+         tigV4d7V10rfAc9U9fdzaXGRfJKJAMq7gifpJIt6BDgTeVY+pEsAGXTqg18enuabO6YL
+         UPEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=t0Qb3M+KoO7rshy7LxfHgJoujvSz6frs1GElCox2b5s=;
+        b=KiNUCGZYgaoDfiUcwDQWVCDoyAZBZcqbUzUqEv615AwUF6Df8B007Fsf64KvypLOYU
+         gGWOeF7q2vPPBIdSVig29mRXYEyz2OFUbFuVM/M1KDOPK/c1ximj7ZrOdMvR59bRYq0M
+         jOpt2xwqsGtIuIpxpTqviLedD2xkFhRLvFDK2serNL+N1kCO3mjjctAWUxYuZtXRIV0Y
+         r86c/brsArCek7K9ZscNGRb9BXu9rjrJ/ecL6qGbKKqdp1cIehtDeueUaXvtGDpc7nEM
+         gYAcuLBztiL33ClQ5K187h+WeouWtvLMyudAGty7SIOjTx+n8bz3f/aSHA/0Fka/gOtm
+         NS3A==
+X-Gm-Message-State: AGi0PuZ+qB0DtaeYB7adH6/HfshBJnMcYM4yD42FhvlpnKN5K1Qvb5/b
+        KTuECDNMaC8heIHLI+Bxq+6QeQ==
+X-Google-Smtp-Source: APiQypLpoDDhhdpdCRaX2x6X7Pxrq+PxdaeSfgMI7TOujsZcV/bIZhc1xo/+1EofweXOdW56V/D2bQ==
+X-Received: by 2002:a05:6000:11cb:: with SMTP id i11mr26886292wrx.339.1587978321185;
+        Mon, 27 Apr 2020 02:05:21 -0700 (PDT)
+Received: from dell ([2.31.163.63])
+        by smtp.gmail.com with ESMTPSA id l9sm19962876wrq.83.2020.04.27.02.05.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2020 02:05:20 -0700 (PDT)
+Date:   Mon, 27 Apr 2020 10:05:18 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Baolin Wang <baolin.wang7@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] mfd: syscon: Add Spreadtrum physical regmap bus
+ support
+Message-ID: <20200427090518.GG3559@dell>
+References: <c2fd765aa388d4510194ba02c017e39bde57c8d4.1587478171.git.baolin.wang7@gmail.com>
+ <CADBw62rJ8VYTgnW_3q4=TkCyZx2B1DHsG+oOmiph8FLsukUROQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <QNNE9Q.WIYO7ZSN6WHE@crapouillou.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADBw62rJ8VYTgnW_3q4=TkCyZx2B1DHsG+oOmiph8FLsukUROQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 07:09:26PM +0200, Paul Cercueil wrote:
-> >>  arch/mips/Kconfig                    |  1 +
-> >>  arch/mips/include/asm/pgtable-bits.h |  8 ++++--
-> >>  arch/mips/include/asm/pgtable.h      | 48
-> >>++++++++++++++++++++++++++++++++++--
-> >
-> >this breaks all 32bit builds where CPU support RIXI, because it overflows
-> >pgtable_bits.
+On Mon, 27 Apr 2020, Baolin Wang wrote:
+
+> Hi Arnd and Lee,
 > 
-> I think we'd need to make PTEs 64-bit at some point.
+> On Tue, Apr 21, 2020 at 10:13 PM Baolin Wang <baolin.wang7@gmail.com> wrote:
+> >
+> > Some platforms such as Spreadtrum platform, define a special method to
+> > update bits of the registers instead of read-modify-write, which means
+> > we should use a physical regmap bus to define the reg_update_bits()
+> > operation instead of the MMIO regmap bus. Thus we can register a new
+> > physical regmap bus into syscon core to support this.
+> >
+> > Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+> 
+> Do you have any comments for this patch? Thanks.
 
-I'm taking patches ;-) Any idea how much performance impact we might
-see by this ?
+Yes.  I'm not accepting it, sorry.
 
-Thomas.
+I'd rather you duplicate the things you need from of_syscon_register()
+in your own driver than taint this one.
+
+> > ---
+> > Changes from v2:
+> >  - Fix building errors without enabling CONFIG_ARCH_SPRD.
+> >
+> > Changes from v1:
+> >  - Add WARN_ONCE() for seting bits and clearing bits at the same time.
+> >  - Remove the Spreadtrum SoC syscon driver, instead moving the regmap_bus
+> >  instance into syscon.c driver.
+> >
+> > Changes from RFC v2:
+> >  - Drop regmap change, which was applied by Mark.
+> >  - Add more information about how to use set/clear.
+> >  - Add checking to ensure the platform is compatible with
+> >  using a new physical regmap bus.
+> >
+> > Changes from RFC v1:
+> >  - Add new helper to registers a physical regmap bus instead of
+> >  using the MMIO bus.
+> > ---
+> >  drivers/mfd/syscon.c | 83 ++++++++++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 81 insertions(+), 2 deletions(-)
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
