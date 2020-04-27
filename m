@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4481BA517
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73441BA538
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbgD0NmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 09:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728202AbgD0Nl6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 09:41:58 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6674C0610D5;
-        Mon, 27 Apr 2020 06:41:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=gzBP/5TPSgWoYnfvROGi040waenlBeLNeHeHZF/9krM=; b=uS5ZF4Y4fsPKqhBVIAb9dODmx
-        drtChwbes2kdwHDoLa75LyWIXKrhHIXZjaEQMWJIGLKFoKa2ofUeQWZmLoHx1TQkk4O/dcbHnMdA+
-        LYPgroUuuUOU3QT59FVZ3jBmpMp8BW1JrhUNHt9hb+3FD1wkQYMO2ra27rRJDqhs96xlFLcEgGUjE
-        TJtzQASnKCxW9BwvRWMS4oqO0eTivJF3RFAQRHnV8x93MiVJi117d7PjQSeRetx05riLVwzTdipI9
-        qMlbycfDIPzWea/z8VRnFf8LvRfEyDMOJuwZUbl3mGWh+kD26YT0WYL2Hhzd1PsBZ5oLsfUNg0M5a
-        LjdSx93zg==;
-Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:44630)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jT40w-000392-G1; Mon, 27 Apr 2020 14:41:38 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jT40v-0006hs-Lz; Mon, 27 Apr 2020 14:41:37 +0100
-Date:   Mon, 27 Apr 2020 14:41:37 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     linux.cj@gmail.com, Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-acpi@vger.kernel.org, Marcin Wojtas <mw@semihalf.com>,
-        Makarand Pawagi <makarand.pawagi@nxp.com>,
-        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
-        Varun Sethi <V.Sethi@nxp.com>, linux-kernel@vger.kernel.org,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [net-next PATCH v2 1/3] device property: Introduce phy related
- fwnode functions
-Message-ID: <20200427134137.GF25745@shell.armlinux.org.uk>
-References: <20200427132409.23664-1-calvin.johnson@oss.nxp.com>
- <20200427132409.23664-2-calvin.johnson@oss.nxp.com>
+        id S1728301AbgD0Nmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 09:42:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34888 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727010AbgD0Nmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 09:42:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 919B1ADB5;
+        Mon, 27 Apr 2020 13:42:50 +0000 (UTC)
+Date:   Mon, 27 Apr 2020 08:42:47 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     zohar@linux.ibm.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, silviu.vlasceanu@huawei.com,
+        krzysztof.struczynski@huawei.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] ima: Set file->f_mode instead of file->f_flags in
+ ima_calc_file_hash()
+Message-ID: <20200427134247.vcpx6gyh62seucnf@fiona>
+References: <20200427102900.18887-1-roberto.sassu@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200427132409.23664-2-calvin.johnson@oss.nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200427102900.18887-1-roberto.sassu@huawei.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 06:54:07PM +0530, Calvin Johnson wrote:
-> +/**
-> + * device_phy_find_device - For the given device, get the phy_device
-> + * @dev: Pointer to the given device
-> + *
-> + * If successful, returns a pointer to the phy_device with the embedded
-> + * struct device refcount incremented by one, or NULL on failure.
+On 12:28 27/04, Roberto Sassu wrote:
+> Commit a408e4a86b36 ("ima: open a new file instance if no read
+> permissions") tries to create a new file descriptor to calculate a file
+> digest if the file has not been opened with O_RDONLY flag. However, if a
+> new file descriptor cannot be obtained, it sets the FMODE_READ flag to
+> file->f_flags instead of file->f_mode.
+> 
+> This patch fixes this issue by replacing f_flags with f_mode as it was
+> before that commit.
 
-It probably makes sense to refer the reader to the return conditions
-for fwnode_phy_find_device() so that should fwnode_phy_find_device()
-be updated, there's no need to modify multiple locations.
+Thanks for fixing this.
 
-> + */
-> +struct phy_device *device_phy_find_device(struct device *dev)
-> +{
-> +	return fwnode_phy_find_device(dev_fwnode(dev));
-> +}
-> +EXPORT_SYMBOL_GPL(device_phy_find_device);
-> +
-> +/**
-> + * fwnode_get_phy_node - Get the phy_node using the named reference.
-> + * @fwnode: Pointer to fwnode from which phy_node has to be obtained.
-> + *
-> + * Returns pointer to the phy fwnode, or ERR_PTR. Caller is responsible to
-> + * call fwnode_handle_put() on the returned phy fwnode pointer.
-
-This one even more so - fwnode_find_reference() is in an entirely
-separate file, so the comment could well be missed.
+Reviewed-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> Changelog
+> 
+> v1:
+> - fix comment for f_mode change (suggested by Mimi)
+> - rename modified_flags variable to modified_mode (suggested by Mimi)
+> 
+> Cc: stable@vger.kernel.org # 4.20.x
+> Fixes: a408e4a86b36 ("ima: open a new file instance if no read permissions")
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>  security/integrity/ima/ima_crypto.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
+> index 5201f5ec2ce4..f3a7f4eb1fc1 100644
+> --- a/security/integrity/ima/ima_crypto.c
+> +++ b/security/integrity/ima/ima_crypto.c
+> @@ -537,7 +537,7 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
+>  	loff_t i_size;
+>  	int rc;
+>  	struct file *f = file;
+> -	bool new_file_instance = false, modified_flags = false;
+> +	bool new_file_instance = false, modified_mode = false;
+>  
+>  	/*
+>  	 * For consistency, fail file's opened with the O_DIRECT flag on
+> @@ -557,13 +557,13 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
+>  		f = dentry_open(&file->f_path, flags, file->f_cred);
+>  		if (IS_ERR(f)) {
+>  			/*
+> -			 * Cannot open the file again, lets modify f_flags
+> +			 * Cannot open the file again, lets modify f_mode
+>  			 * of original and continue
+>  			 */
+>  			pr_info_ratelimited("Unable to reopen file for reading.\n");
+>  			f = file;
+> -			f->f_flags |= FMODE_READ;
+> -			modified_flags = true;
+> +			f->f_mode |= FMODE_READ;
+> +			modified_mode = true;
+>  		} else {
+>  			new_file_instance = true;
+>  		}
+> @@ -581,8 +581,8 @@ int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash)
+>  out:
+>  	if (new_file_instance)
+>  		fput(f);
+> -	else if (modified_flags)
+> -		f->f_flags &= ~FMODE_READ;
+> +	else if (modified_mode)
+> +		f->f_mode &= ~FMODE_READ;
+>  	return rc;
+>  }
+>  
+> -- 
+> 2.17.1
+> 
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+Goldwyn
