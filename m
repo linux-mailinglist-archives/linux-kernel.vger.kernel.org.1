@@ -2,61 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9986E1BAFBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACE01BAFBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgD0UuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 16:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
+        id S1726775AbgD0Uu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726233AbgD0UuQ (ORCPT
+        by vger.kernel.org with ESMTP id S1726233AbgD0Uu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:50:16 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E09C0610D5;
-        Mon, 27 Apr 2020 13:50:16 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTAhN-00D2oe-Sy; Mon, 27 Apr 2020 20:49:54 +0000
-Date:   Mon, 27 Apr 2020 21:49:53 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] powerpc/spufs: simplify spufs core dumping
-Message-ID: <20200427204953.GY23230@ZenIV.linux.org.uk>
-References: <20200427200626.1622060-1-hch@lst.de>
- <20200427200626.1622060-2-hch@lst.de>
+        Mon, 27 Apr 2020 16:50:28 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A27C0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:50:27 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id y24so442227wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:50:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ke3+hwxZH8KWd+Y95XrVqtv4RteQ5LEwpZtFDcG+Atk=;
+        b=IOnN1OjOuDh9zOLjkGKkxsWJVoil08Ujky/Lp+q3R+5dst+fZCkQCr8Iz41c6FxUbW
+         /8ZTZ6BhfoqHsPl+GDk5ZnSQypcdqiHxXgo5xY5Iaji7tgaYWt5PCLQTuhV7XsLSyEGr
+         /nZUn6NR5cwG1Ort6Pb/z4adgQTjENylMKjyqShQ2HxoH3ag0IrZY0fIRqC1/JoePpCr
+         0e5Fp0yRWpzh7+5d84N9P+zOY2BJgPm7HQ3EHB3XO0dCwHtKlDUdpyzGtiPmsqN5qieE
+         tfSY0l1fXMD18/F5qQwX+iBiKLXDUu8iaFiH4Cy7O4rT1EPLmYZ0MZ7KulvuCu+5QS/B
+         ansQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ke3+hwxZH8KWd+Y95XrVqtv4RteQ5LEwpZtFDcG+Atk=;
+        b=Uwz3tfBKBnZMLm7UWZCprQH4MvxPEJsD6ozKVIw+LlLmk09VpFsstISrOjtAIkZV/r
+         td2JSIgPcrQKAwa+G2JBi4+XYSoDs8lyI35Kv+/T4cJEVZr4EG/Q25XyOYyiRASTqg4o
+         dixmOsc4cvBRICNSFUzApf4eTLumzjiBxvJ8LZOSlSEPWXTukNC5fkuQl73Sdrl+DyDw
+         Q6iUV5LRxGPU1nbEm8nm/sMYHUEDpRq0e80gX191Nji2ID/wxjUPS/hxNoAfBm8cY3Uf
+         xA+yKw/FmCIZI7If54phcsi9On8hc17RH5gXur4K7ana1XPoUJ5sGIz4IP/tU7tAIz/A
+         qQGw==
+X-Gm-Message-State: AGi0PubiEAxTNBD167VoSKpeSdppHNWhz7f9PNCWS83UNM8s63WNOFP9
+        3J9m0Eil2kECCgNcEJ/w1ZBurQ==
+X-Google-Smtp-Source: APiQypJEKMvI0WHo2n+3lpSes1k1Br9sMhkkcFEC+gs/5niMwjK6zkoK7ccECDRgMUXJ7QXASV7h6w==
+X-Received: by 2002:a1c:a9d3:: with SMTP id s202mr586496wme.160.1588020626330;
+        Mon, 27 Apr 2020 13:50:26 -0700 (PDT)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-135-148.adsl.proxad.net. [82.252.135.148])
+        by smtp.googlemail.com with ESMTPSA id j10sm471455wmi.18.2020.04.27.13.50.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 13:50:25 -0700 (PDT)
+Subject: Re: [PATCH 1/2] drivers/clocksource/timer-of: Remove __init markings
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Baolin Wang <baolin.wang7@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+References: <d2934f74d77c637c41d7cb98710cb5363d09e83b.1585021186.git.baolin.wang7@gmail.com>
+ <CADBw62pmiguVmuq334eskLAZ5CkrjxohW_fXNjNev+O1U15=OQ@mail.gmail.com>
+ <bd800f7b-05fd-b393-fba6-1965ba89e1b3@linaro.org>
+ <CAGETcx9da-U+dXA6sreTKJQiS3brYh3Hfh_qVYt06=3UOSmT_g@mail.gmail.com>
+ <429da47b-ad51-30eb-ff36-b05780c941ba@linaro.org>
+ <CAGETcx9sc6oWSPK=aWJ+39i9eHAyg6iOf+Xf2oVECO+g1pFjtQ@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <573b7d9e-fb5d-5c81-a981-6d965db933f3@linaro.org>
+Date:   Mon, 27 Apr 2020 22:50:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427200626.1622060-2-hch@lst.de>
+In-Reply-To: <CAGETcx9sc6oWSPK=aWJ+39i9eHAyg6iOf+Xf2oVECO+g1pFjtQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 10:06:21PM +0200, Christoph Hellwig wrote:
+On 27/04/2020 22:12, Saravana Kannan wrote:
+> On Mon, Apr 27, 2020 at 1:09 PM Daniel Lezcano
+> <daniel.lezcano@linaro.org> wrote:
+>>
+>> On 27/04/2020 21:04, Saravana Kannan wrote:
+>>> On Mon, Apr 27, 2020 at 10:13 AM Daniel Lezcano
+>>> <daniel.lezcano@linaro.org> wrote:
+>>>>
+>>>> On 13/04/2020 04:55, Baolin Wang wrote:
+>>>>> Hi Daniel,
+>>>>>
+>>>>> On Tue, Mar 24, 2020 at 1:59 PM Baolin Wang <baolin.wang7@gmail.com> wrote:
+>>>>>>
+>>>>>> From: Saravana Kannan <saravanak@google.com>
+>>>>>>
+>>>>>> This allows timer drivers to be compiled as modules.
+>>>>>>
+>>>>>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+>>>>>> Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+>>>>>
+>>>>> Do you have any comments for this patch set? Thanks.
+>>>>
+>>>> If my understanding is correct, this patch is part of the GKI picture
+>>>> where hardware drivers are converted to modules.
+>>>>
+>>>> But do we really want to convert timer drivers to modules ?
+>>>>
+>>>> Is the core time framework able to support that (eg. load + unload )
+>>>
+>>> So this will mainly be used for secondary timers that the system
+>>> supports. Not for the main one that's set up during early boot for
+>>> sched timer to work. For the primary timer during boot up, we still
+>>> expect that to be the default ARM timer and don't want/expect that to
+>>> be a module (it can't be).
+>>
+>> My question is about clockevents_config_and_register() for instance, is
+>> there a function to unregister in the core framework ?
+> 
+> We can just have these modules be "permanent" modules that can't be
+> unloaded. They just need to not implement module_exit().
 
-> @@ -1988,7 +1984,12 @@ static ssize_t spufs_mbox_info_read(struct file *file, char __user *buf,
->  	if (ret)
->  		return ret;
->  	spin_lock(&ctx->csa.register_lock);
-> -	ret = __spufs_mbox_info_read(ctx, buf, len, pos);
-> +	/* EOF if there's no entry in the mbox */
-> +	if (ctx->csa.prob.mb_stat_R & 0x0000ff) {
-> +		ret = simple_read_from_buffer(buf, len, pos,
-> +				&ctx->csa.prob.pu_mb_R,
-> +				sizeof(ctx->csa.prob.pu_mb_R));
-> +	}
->  	spin_unlock(&ctx->csa.register_lock);
->  	spu_release_saved(ctx);
+You are right.
 
-Again, this really needs fixing.  Preferably - as a separate commit preceding
-this series, so that it could be backported.  simple_read_from_buffer() is
-a blocking operation.  Yes, I understand that mainline has the same bug;
-it really does need to be fixed and having to backport this series is not
-a good idea, for obvious reasons.
+I can understand the goal of making everything as much modular as possible.
+
+But TBH, I have a bad feeling about this. Sounds like GKI will give the
+opportunity to companies to stop upstreaming their drivers and favoring
+fragmentation like what we had several years ago. Not sure it is a good
+thing, especially for upstream SoC support.
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
