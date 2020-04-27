@@ -2,61 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AA21BA407
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 14:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58751BA40F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 14:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgD0Mxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 08:53:46 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:43455 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726651AbgD0Mxq (ORCPT
+        id S1727955AbgD0MyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 08:54:17 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:30134 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727091AbgD0MyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 08:53:46 -0400
-X-IronPort-AV: E=Sophos;i="5.73,324,1583161200"; 
-   d="scan'208";a="45618953"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 27 Apr 2020 21:53:44 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id EE54D42290A8;
-        Mon, 27 Apr 2020 21:53:42 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH RESEND] cpufreq: dt: Add support for r8a7742
-Date:   Mon, 27 Apr 2020 13:53:30 +0100
-Message-Id: <1587992010-7203-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 27 Apr 2020 08:54:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587992056; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=bNxhDdEWNv8+M5j4zfOz6+JAfDWxx5aDTnOG/7aC93Y=; b=aTDoioBoFwVaa8akPSm+S5oPsjmhBIFEk/YWrsVj5+S5Jr18Al3wGVaccAT6Xl9466NgUC6N
+ 9R5B8EapKpDcqql7Cq9f40Ltu+ryqhJ0bndoJ3mx+zX0qfd5RvMEys/FUTa4dYs/m2nVuYJ+
+ GSPO+5dUnHIoOR3ok1LKc2iS0sg=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea6d5ed.7fef6158dc70-smtp-out-n04;
+ Mon, 27 Apr 2020 12:54:05 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D4893C4478C; Mon, 27 Apr 2020 12:54:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.100] (unknown [157.44.245.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jprakash)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD4DCC433CB;
+        Mon, 27 Apr 2020 12:53:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CD4DCC433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jprakash@codeaurora.org
+Subject: Re: [PATCH V2 1/3] iio: adc: Convert the QCOM SPMI ADC bindings to
+ .yaml format
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, linus.walleij@linaro.org,
+        Jonathan.Cameron@huawei.com, smohanad@codeaurora.org,
+        kgunda@codeaurora.org, aghayal@codeaurora.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, linux-iio@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+References: <1586942266-21480-1-git-send-email-jprakash@codeaurora.org>
+ <1586942266-21480-2-git-send-email-jprakash@codeaurora.org>
+ <20200418172200.58a10116@archlinux>
+From:   Jishnu Prakash <jprakash@codeaurora.org>
+Message-ID: <0e840b20-c215-f446-b467-476d913005d1@codeaurora.org>
+Date:   Mon, 27 Apr 2020 18:23:53 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200418172200.58a10116@archlinux>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the compatible strings for supporting the generic cpufreq driver on
-the Renesas RZ/G1H (R8A7742) SoC.
+Hi Jonathan
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-index cb9db16..148aa66 100644
---- a/drivers/cpufreq/cpufreq-dt-platdev.c
-+++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-@@ -53,6 +53,7 @@ static const struct of_device_id whitelist[] __initconst = {
- 	{ .compatible = "renesas,r7s72100", },
- 	{ .compatible = "renesas,r8a73a4", },
- 	{ .compatible = "renesas,r8a7740", },
-+	{ .compatible = "renesas,r8a7742", },
- 	{ .compatible = "renesas,r8a7743", },
- 	{ .compatible = "renesas,r8a7744", },
- 	{ .compatible = "renesas,r8a7745", },
--- 
-2.7.4
-
+On 4/18/2020 9:52 PM, Jonathan Cameron wrote:
+> On Wed, 15 Apr 2020 14:47:44 +0530
+> Jishnu Prakash <jprakash@codeaurora.org> wrote:
+>
+>> Convert the adc bindings from .txt to .yaml format.
+>>
+> I read patch 2 before this one for some reason but same question applies here
+> Given we are now enforcing a lot of the values explicitly are we better
+> off dropping the text description of that.  It looks to me like a potential
+> place to get out of sync given the information is a bit further down.
+I'll remove the redundant parts of the descriptions in the next post.
