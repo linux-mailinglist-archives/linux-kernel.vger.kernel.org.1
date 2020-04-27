@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B7D1BB058
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 962F51BB012
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726818AbgD0VTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 17:19:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34128 "EHLO mail.kernel.org"
+        id S1726451AbgD0VR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 17:17:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbgD0VRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 17:17:25 -0400
+        id S1726343AbgD0VR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 17:17:26 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5324721BE5;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C1A021D79;
         Mon, 27 Apr 2020 21:17:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588022244;
-        bh=lgU5kQJKALcK/8kZC7aKJ8WIXmn4TvXevTBP41xPg8w=;
+        bh=yz+D7iVuh5MZRcPLv2I33NXwj3NBarP44LcAmlrDVsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q4J4cCfqihrVC7CO2CYq5CGeorm9gdyNVZjW2EqBq6dhxHWbCcgtXbvnJvLCmHo7s
-         wjxoubYj/WumY37FO8Z899gILQvTGYGXxeWdytLjOMBeRxhSLxt019JV6n9gaboeK6
-         dRykYy7lWYEnSk7DK9GrHaF9c6d5j9OldKPo1NkM=
+        b=MAtUelUlowEBDiiYM9Tbi4nmOvT3taOzq63y3ASn44HiLFkF7zFJsKk1jL/vWAOtb
+         N4oD4bLqQ1MPW+lAIdLZI8O3dXbYB3ibpQflpK/3QbaiECAR3AkVvvWvD5bzzlTXeo
+         n395gqnZJKVekm5aKksIJd/6KNGlXC2T7O3EEh4k=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jTB7y-000HkO-IL; Mon, 27 Apr 2020 23:17:22 +0200
+        id 1jTB7y-000HkT-K7; Mon, 27 Apr 2020 23:17:22 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v3 10/29] docs: filesystems: convert devpts.txt to ReST
-Date:   Mon, 27 Apr 2020 23:17:02 +0200
-Message-Id: <4ac8f3a7edd4d817acf0d173ead7ef74fe010c6c.1588021877.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH v3 11/29] docs: filesystems: convert dnotify.txt to ReST
+Date:   Mon, 27 Apr 2020 23:17:03 +0200
+Message-Id: <b39d6430d1c28438e833f01cb4597eff78703c75.1588021877.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1588021877.git.mchehab+huawei@kernel.org>
 References: <cover.1588021877.git.mchehab+huawei@kernel.org>
@@ -46,117 +48,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 - Add a SPDX header;
 - Add a document title;
 - Some whitespace fixes and new line breaks;
-- Mark literal blocks as such;
-- Add it to filesystems/index.rst.
+- Add table markups;
+- Add it to filesystems/index.rst
 
+Acked-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/admin-guide/sysctl/kernel.rst |  2 +-
- Documentation/filesystems/devpts.rst        | 36 +++++++++++++++++++++
- Documentation/filesystems/devpts.txt        | 26 ---------------
- Documentation/filesystems/index.rst         |  1 +
- 4 files changed, 38 insertions(+), 27 deletions(-)
- create mode 100644 Documentation/filesystems/devpts.rst
- delete mode 100644 Documentation/filesystems/devpts.txt
+ .../filesystems/{dnotify.txt => dnotify.rst}          | 11 ++++++++---
+ Documentation/filesystems/index.rst                   |  1 +
+ MAINTAINERS                                           |  2 +-
+ 3 files changed, 10 insertions(+), 4 deletions(-)
+ rename Documentation/filesystems/{dnotify.txt => dnotify.rst} (90%)
 
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index fce1c059fbab..474cabfac468 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -921,7 +921,7 @@ this sysctl interface anymore.
- pty
- ===
- 
--See Documentation/filesystems/devpts.txt.
-+See Documentation/filesystems/devpts.rst.
- 
- 
- randomize_va_space
-diff --git a/Documentation/filesystems/devpts.rst b/Documentation/filesystems/devpts.rst
-new file mode 100644
-index 000000000000..a03248ddfb4c
---- /dev/null
-+++ b/Documentation/filesystems/devpts.rst
-@@ -0,0 +1,36 @@
+diff --git a/Documentation/filesystems/dnotify.txt b/Documentation/filesystems/dnotify.rst
+similarity index 90%
+rename from Documentation/filesystems/dnotify.txt
+rename to Documentation/filesystems/dnotify.rst
+index 08d575ece45d..a28a1f9ef79c 100644
+--- a/Documentation/filesystems/dnotify.txt
++++ b/Documentation/filesystems/dnotify.rst
+@@ -1,5 +1,8 @@
+-		Linux Directory Notification
+-		============================
 +.. SPDX-License-Identifier: GPL-2.0
 +
-+=====================
-+The Devpts Filesystem
-+=====================
-+
-+Each mount of the devpts filesystem is now distinct such that ptys
-+and their indicies allocated in one mount are independent from ptys
-+and their indicies in all other mounts.
-+
-+All mounts of the devpts filesystem now create a ``/dev/pts/ptmx`` node
-+with permissions ``0000``.
-+
-+To retain backwards compatibility the a ptmx device node (aka any node
-+created with ``mknod name c 5 2``) when opened will look for an instance
-+of devpts under the name ``pts`` in the same directory as the ptmx device
-+node.
-+
-+As an option instead of placing a ``/dev/ptmx`` device node at ``/dev/ptmx``
-+it is possible to place a symlink to ``/dev/pts/ptmx`` at ``/dev/ptmx`` or
-+to bind mount ``/dev/ptx/ptmx`` to ``/dev/ptmx``.  If you opt for using
-+the devpts filesystem in this manner devpts should be mounted with
-+the ``ptmxmode=0666``, or ``chmod 0666 /dev/pts/ptmx`` should be called.
-+
-+Total count of pty pairs in all instances is limited by sysctls::
-+
-+    kernel.pty.max = 4096	- global limit
-+    kernel.pty.reserve = 1024	- reserved for filesystems mounted from the initial mount namespace
-+    kernel.pty.nr		- current count of ptys
-+
-+Per-instance limit could be set by adding mount option ``max=<count>``.
-+
-+This feature was added in kernel 3.4 together with
-+``sysctl kernel.pty.reserve``.
-+
-+In kernels older than 3.4 sysctl ``kernel.pty.max`` works as per-instance limit.
-diff --git a/Documentation/filesystems/devpts.txt b/Documentation/filesystems/devpts.txt
-deleted file mode 100644
-index 9f94fe276dea..000000000000
---- a/Documentation/filesystems/devpts.txt
-+++ /dev/null
-@@ -1,26 +0,0 @@
--Each mount of the devpts filesystem is now distinct such that ptys
--and their indicies allocated in one mount are independent from ptys
--and their indicies in all other mounts.
--
--All mounts of the devpts filesystem now create a /dev/pts/ptmx node
--with permissions 0000.
--
--To retain backwards compatibility the a ptmx device node (aka any node
--created with "mknod name c 5 2") when opened will look for an instance
--of devpts under the name "pts" in the same directory as the ptmx device
--node.
--
--As an option instead of placing a /dev/ptmx device node at /dev/ptmx
--it is possible to place a symlink to /dev/pts/ptmx at /dev/ptmx or
--to bind mount /dev/ptx/ptmx to /dev/ptmx.  If you opt for using
--the devpts filesystem in this manner devpts should be mounted with
--the ptmxmode=0666, or chmod 0666 /dev/pts/ptmx should be called.
--
--Total count of pty pairs in all instances is limited by sysctls:
--kernel.pty.max = 4096		- global limit
--kernel.pty.reserve = 1024	- reserved for filesystems mounted from the initial mount namespace
--kernel.pty.nr			- current count of ptys
--
--Per-instance limit could be set by adding mount option "max=<count>".
--This feature was added in kernel 3.4 together with sysctl kernel.pty.reserve.
--In kernels older than 3.4 sysctl kernel.pty.max works as per-instance limit.
++============================
++Linux Directory Notification
++============================
+ 
+ 	   Stephen Rothwell <sfr@canb.auug.org.au>
+ 
+@@ -12,6 +15,7 @@ being delivered using signals.
+ The application decides which "events" it wants to be notified about.
+ The currently defined events are:
+ 
++	=========	=====================================================
+ 	DN_ACCESS	A file in the directory was accessed (read)
+ 	DN_MODIFY	A file in the directory was modified (write,truncate)
+ 	DN_CREATE	A file was created in the directory
+@@ -19,6 +23,7 @@ The currently defined events are:
+ 	DN_RENAME	A file in the directory was renamed
+ 	DN_ATTRIB	A file in the directory had its attributes
+ 			changed (chmod,chown)
++	=========	=====================================================
+ 
+ Usually, the application must reregister after each notification, but
+ if DN_MULTISHOT is or'ed with the event mask, then the registration will
+@@ -36,7 +41,7 @@ especially important if DN_MULTISHOT is specified.  Note that SIGRTMIN
+ is often blocked, so it is better to use (at least) SIGRTMIN + 1.
+ 
+ Implementation expectations (features and bugs :-))
+----------------------------
++---------------------------------------------------
+ 
+ The notification should work for any local access to files even if the
+ actual file system is on a remote server.  This implies that remote
 diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-index 9a7021bcb91f..10207f158a3e 100644
+index 10207f158a3e..8f26f1b91e04 100644
 --- a/Documentation/filesystems/index.rst
 +++ b/Documentation/filesystems/index.rst
-@@ -24,6 +24,7 @@ algorithms work.
-    splice
+@@ -25,6 +25,7 @@ algorithms work.
     locking
     directory-locking
-+   devpts
+    devpts
++   dnotify
  
     automount-support
+ 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7d26487c55cf..36d1fd48b6b2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5007,7 +5007,7 @@ M:	Jan Kara <jack@suse.cz>
+ R:	Amir Goldstein <amir73il@gmail.com>
+ L:	linux-fsdevel@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/filesystems/dnotify.txt
++F:	Documentation/filesystems/dnotify.rst
+ F:	fs/notify/dnotify/
+ F:	include/linux/dnotify.h
  
 -- 
 2.25.4
