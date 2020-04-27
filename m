@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CB61BAF97
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4511BAFA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgD0Uet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 16:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726205AbgD0Uet (ORCPT
+        id S1726702AbgD0Um4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:42:56 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:54826 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726364AbgD0Um4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:34:49 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB9EC0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:34:48 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a21so19085451ljb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:34:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g4dBzvzaYSmwe+gN0bTSxOguahuOK70qElh1uq5WJTY=;
-        b=uCMDj0u3BZLTUsCCRaRdr9xL9loSXFm7wGZEF7Ya1WoOmLRGy+nA1AMMNXR/ILJZVw
-         z8y4K4UI1gIuel/XaDugIU1GIeoXHJYXmAJ4/SejjNBnmMN8IxPFUZt/FnZg1mBDJnmC
-         8rkdL7wa67XKNfQhX9nVJln/EqqVnmaen/3TUFAldcbLr+xTor60OpBWNATy369XqToC
-         e3/tNcque2dmIaoRPmusn3BazbMH3ZXWjAcB/IKIMqzXaw8KsmhUm8dkDv59SBstlAca
-         whboOeW+ydNPEEjw6fPQutYz4fkfXkJ8NqlM4WJcMSF31Y/p8hOSDl05n7ZqzNrJSHFM
-         UbyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g4dBzvzaYSmwe+gN0bTSxOguahuOK70qElh1uq5WJTY=;
-        b=p7B/oYCm4rL0DPSzwATbeZsB3eM5l0nQnFO0/gX/Cr22mm+qBAfD7We/NjAI0P66Qm
-         2BNwLayqaeBtY0s0EdCV1ySNvs2krEFbkBndk2bQAf66KNr69GdgwIwR0wFLum4PEW7A
-         KKCoDAdZjAzNbbDjH5tLKDVp3nZmHvPUVdQaIeh0l16T16n2+rw24OGohHyC/wOL4PcB
-         ZEo9fs29nvYCwBMUkc3FhtuM6skmqbRf8Ib9X+pvh/cZEX3QLHkJemaFqVp//mbBvXaw
-         M2b9J4v3q7yf5HtDJLJKX3PORxXSYcjrNY76OEg6q6gPvwEEORRNzxDgR5gp1U/21+Uc
-         tctQ==
-X-Gm-Message-State: AGi0PubjugLqd6bWTsU0DRShtTSaV5H0uzmK+GPszEx4qY9GVn8mQCOs
-        MBvW2Ui5UsdOU2a+/0FT2ioEhoHnpAoqPwdB6SC8aw==
-X-Google-Smtp-Source: APiQypJ0k6z02gQOm9RJYPAfBsYkzEtyCANSfITp19EEVZRfK4V472Q83W1EunxwohzuVywk3Dyj5f6RuGciuIt8I1E=
-X-Received: by 2002:a2e:8e98:: with SMTP id z24mr15758173ljk.134.1588019686261;
- Mon, 27 Apr 2020 13:34:46 -0700 (PDT)
+        Mon, 27 Apr 2020 16:42:56 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03RKg7ao016845;
+        Mon, 27 Apr 2020 15:42:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588020127;
+        bh=lsXYqzJZ87/b6MFwb+B5fUGJvdO4PlNLviGnIO0YnAo=;
+        h=From:To:CC:Subject:Date;
+        b=noKuBg1NElWkIauG42saatFVPHdxtBT6s7C7V9rBxs1bD2QpLjquLnhOTElNvrbdb
+         pz36GfwWTSnnxJoHkFP4+VD97M4nE1PwA19O+niyJZUBTrJG6i+6QjqKGI/t5oUWq3
+         HRTL76pFRPgpFPGtefghQpe3rRaUbV1z6SxWENI8=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03RKg7Yf070719;
+        Mon, 27 Apr 2020 15:42:07 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
+ Apr 2020 15:42:07 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 27 Apr 2020 15:42:07 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03RKg7gb098139;
+        Mon, 27 Apr 2020 15:42:07 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>, <stable@vger.kernel.org>
+Subject: [PATCH] ASoC: tlv320adcx140: Fix mic gain registers
+Date:   Mon, 27 Apr 2020 15:36:08 -0500
+Message-ID: <20200427203608.7031-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200427074222.65369-1-maco@android.com> <20200427170613.GA13686@lst.de>
-In-Reply-To: <20200427170613.GA13686@lst.de>
-From:   Martijn Coenen <maco@android.com>
-Date:   Mon, 27 Apr 2020 22:34:35 +0200
-Message-ID: <CAB0TPYGZc_n-b5xtNsbJxEiqpLMqE=RcXGuy7C2vbY18mKZ6_A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] Add a new LOOP_SET_FD_AND_STATUS ioctl
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
-        Narayan Kamath <narayan@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, kernel-team@android.com,
-        linux-block <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martijn Coenen <maco@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+Fix the mic gain registers for channels 2-4.
+The incorret register was being set as it was touching the CH1 config
+registers.
 
-On Mon, Apr 27, 2020 at 7:06 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> I've just been looking over the loop driver for other reasons,
-> and noticed that setting the block size still isn't possible
-> with LOOP_SET_FD_AND_STATUS as far as I can tell.  Might that
-> be worth it?
+Fixes: 37bde5acf040 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec driver family")
+Cc: stable@vger.kernel.org
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ sound/soc/codecs/tlv320adcx140.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-That's a good point, I didn't think about it because that path is no
-longer slow in our setup, but I think it makes sense to include it.
+diff --git a/sound/soc/codecs/tlv320adcx140.c b/sound/soc/codecs/tlv320adcx140.c
+index 38897568ee96..0f713efde046 100644
+--- a/sound/soc/codecs/tlv320adcx140.c
++++ b/sound/soc/codecs/tlv320adcx140.c
+@@ -511,11 +511,11 @@ static const struct snd_soc_dapm_route adcx140_audio_map[] = {
+ static const struct snd_kcontrol_new adcx140_snd_controls[] = {
+ 	SOC_SINGLE_TLV("Analog CH1 Mic Gain Volume", ADCX140_CH1_CFG1, 2, 42, 0,
+ 			adc_tlv),
+-	SOC_SINGLE_TLV("Analog CH2 Mic Gain Volume", ADCX140_CH1_CFG2, 2, 42, 0,
++	SOC_SINGLE_TLV("Analog CH2 Mic Gain Volume", ADCX140_CH2_CFG1, 2, 42, 0,
+ 			adc_tlv),
+-	SOC_SINGLE_TLV("Analog CH3 Mic Gain Volume", ADCX140_CH1_CFG3, 2, 42, 0,
++	SOC_SINGLE_TLV("Analog CH3 Mic Gain Volume", ADCX140_CH3_CFG1, 2, 42, 0,
+ 			adc_tlv),
+-	SOC_SINGLE_TLV("Analog CH4 Mic Gain Volume", ADCX140_CH1_CFG4, 2, 42, 0,
++	SOC_SINGLE_TLV("Analog CH4 Mic Gain Volume", ADCX140_CH4_CFG1, 2, 42, 0,
+ 			adc_tlv),
+ 
+ 	SOC_SINGLE_TLV("DRE Threshold", ADCX140_DRE_CFG0, 4, 9, 0,
+-- 
+2.25.1
 
-> Also maybe an explicit direct I/O flag, and maybe
-> enough padding with a future proof flags bitmap that we can easily
-> extend it for new features if they pop up?
-
-Sounds good. I'm thinking these flags should be separate from
-LO_FLAGS_; even though there is already a LO_FLAGS_DIRECT_IO, as far
-as I can tell it can only be used to tell whether it's enabled, not to
-actually enable it. And it would just get confusing if we add more
-flags later. Maybe something like LO_FD_STATUS_FLAG_DIRECT_IO ?
-
-Thanks,
-Martijn
