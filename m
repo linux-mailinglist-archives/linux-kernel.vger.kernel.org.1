@@ -2,288 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E1831BAE6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D731BAE8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgD0TtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:49:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726205AbgD0TtT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:49:19 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23865C03C1A7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 12:49:19 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id a31so88103pje.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 12:49:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jEerkCT9TzKSUHSlKdk8mBv+MQGjDxFrB8vo7AAG6JU=;
-        b=aDNtRS5fEYc2xcdaMDa/QNBMD/BsPucouNMYbVlDpQONpV26D2tuBVwj6JPoc5/Pry
-         KdGXM5xJoeKU5AMeIf3ENbpBb8KlonA9Xry72AnuALLKcto9mCZt2tnNRy4aGMsPWfNF
-         jsOjGNOUiCnrmVh84ellq+Ju3o4+oa2iq0N4+NjBbrMsXHrJOZAJpYV6MLNtGPDq4ltU
-         rZ0asxAM31wIIcsGC+b9xDyy47396WcXJRwX++XBx09cQgLMGOEzQNMSVSkz5Z0+v/vH
-         6nn8y0dpauXUafz/9wvckLtOiO2Jas7HuErUVTf0Tao6GHYUB8h2BTtrojmEr9etkanl
-         TLhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jEerkCT9TzKSUHSlKdk8mBv+MQGjDxFrB8vo7AAG6JU=;
-        b=bPca6EFtvEI2StZJZ4Gu0IpVl1L/vD/xjY485B+POWAwdxgveoXq5+y/RHIYXjTRz2
-         cP7uT1aniSBhPVxqsoINEqzMRMyIhqLrvKX4NYNTTKyyxt8uDF70Rmeccvi2vp6UpPQT
-         p4O1KrsrRYN2dQr8i24Wv72t1UDkcrSlHAw/jUJx42hlFdnF2cCHZ7sQnLHvy3qegIzj
-         ULE+ph0WmGNOS6aFt5Bjjw3ylKTKOikRqTeBCCrTHYa/I7ZqokojtJe34uEX50x/vJ3c
-         oYYIG5rPlEi9oLsDTFUJ2mg5xUmZsAxpnIapss3sK82pxqhKkbi5Duh1eMNUPEUVl4jP
-         NGKg==
-X-Gm-Message-State: AGi0PuZen3wvAfMsT8QSirc0SxXI4XTkc2urE37znGHsmWbd6Qts8MiV
-        IRDc6m4cjRW8ycxgItaRkoezxA==
-X-Google-Smtp-Source: APiQypKoHMXhC7ldZltP3zeeHiihA+8rUs3muVExUWi1iQdL4LAmPnhL/gnjMXhSDCVSdoydpXLszw==
-X-Received: by 2002:a17:90a:d703:: with SMTP id y3mr375417pju.75.1588016958305;
-        Mon, 27 Apr 2020 12:49:18 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id 184sm13502817pfy.144.2020.04.27.12.49.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 12:49:17 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 13:49:15 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suman Anna <s-anna@ti.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: remoteproc: Add bindings for C66x DSPs
- on TI K3 SoCs
-Message-ID: <20200427194915.GA10552@xps15>
-References: <20200325201839.15896-1-s-anna@ti.com>
- <20200325201839.15896-2-s-anna@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200325201839.15896-2-s-anna@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1726609AbgD0Tzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:55:49 -0400
+Received: from mail.monom.org ([188.138.9.77]:44782 "EHLO mail.monom.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725919AbgD0Tzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 15:55:49 -0400
+Received: from mail.monom.org (localhost [127.0.0.1])
+        by filter.mynetwork.local (Postfix) with ESMTP id BD690500592;
+        Mon, 27 Apr 2020 21:55:46 +0200 (CEST)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.monom.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.5 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.2
+Received: from localhost (b9168f17.cgn.dg-w.de [185.22.143.23])
+        by mail.monom.org (Postfix) with ESMTPSA id 1C7645002C0;
+        Mon, 27 Apr 2020 21:55:46 +0200 (CEST)
+From:   Daniel Wagner <dwagner@suse.de>
+Subject: [ANNOUNCE] 4.4.220-rt196
+Date:   Mon, 27 Apr 2020 19:49:20 -0000
+Message-ID: <158801696068.26039.9162549222309574579@beryllium>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Pavel Machek <pavel@denx.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suman,
+Hello RT-list!
 
-I have started to review this set - comments will come over the next few days.
+I'm pleased to announce the 4.4.220-rt196 stable release.
 
-On Wed, Mar 25, 2020 at 03:18:37PM -0500, Suman Anna wrote:
-> Some Texas Instruments K3 family of SoCs have one of more Digital Signal
-> Processor (DSP) subsystems that are comprised of either a TMS320C66x
-> CorePac and/or a next-generation TMS320C71x CorePac processor subsystem.
-> Add the device tree bindings document for the C66x DSP devices on these
-> SoCs. The added example illustrates the DT nodes for the first C66x DSP
-> device present on the K3 J721E family of SoCs.
-> 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
->  .../bindings/remoteproc/ti,k3-dsp-rproc.yaml  | 180 ++++++++++++++++++
->  1 file changed, 180 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> new file mode 100644
-> index 000000000000..416e3abe7937
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-dsp-rproc.yaml
-> @@ -0,0 +1,180 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/remoteproc/ti,k3-dsp-rproc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: TI K3 DSP devices
-> +
-> +maintainers:
-> +  - Suman Anna <s-anna@ti.com>
-> +
-> +description: |
-> +  The TI K3 family of SoCs usually have one or more TI DSP Core sub-systems
-> +  that are used to offload some of the processor-intensive tasks or algorithms,
-> +  for achieving various system level goals.
-> +
-> +  These processor sub-systems usually contain additional sub-modules like
-> +  L1 and/or L2 caches/SRAMs, an Interrupt Controller, an external memory
-> +  controller, a dedicated local power/sleep controller etc. The DSP processor
-> +  cores in the K3 SoCs are usually either a TMS320C66x CorePac processor or a
-> +  TMS320C71x CorePac processor.
-> +
-> +  Each DSP Core sub-system is represented as a single DT node. Each node has a
-> +  number of required or optional properties that enable the OS running on the
-> +  host processor (Arm CorePac) to perform the device management of the remote
-> +  processor and to communicate with the remote processor.
-> +
-> +properties:
-> +  compatible:
-> +    const: ti,j721e-c66-dsp
-> +    description:
-> +      Use "ti,j721e-c66-dsp" for C66x DSPs on K3 J721E SoCs
-> +
-> +  reg:
-> +    description: |
-> +      Should contain an entry for each value in 'reg-names'.
-> +      Each entry should have the memory region's start address
-> +      and the size of the region, the representation matching
-> +      the parent node's '#address-cells' and '#size-cells' values.
-> +    minItems: 3
-> +    maxItems: 3
-> +
-> +  reg-names:
-> +    description: |
-> +      Should contain strings with the names of the specific internal
-> +      internal memory regions, and should be defined in this order
+This release is just an update to the new stable 4.4.215 version
+and no RT specific changes have been made.
 
-The word "internal" is found twice in a row.
+Known issues:
 
-> +    maxItems: 3
-> +    items:
-> +      - const: l2sram
-> +      - const: l1pram
-> +      - const: l1dram
-> +
-> +  ti,sci:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Should be a phandle to the TI-SCI System Controller node
-> +
-> +  ti,sci-dev-id:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: |
-> +      Should contain the TI-SCI device id corresponding to the DSP core.
-> +      Please refer to the corresponding System Controller documentation
-> +      for valid values for the DSP cores.
-> +
-> +  ti,sci-proc-ids:
-> +    description: Should contain a single tuple of <proc_id host_id>.
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +      - maxItems: 1
-> +        items:
-> +          items:
-> +            - description: TI-SCI processor id for the DSP core device
-> +            - description: TI-SCI host id to which processor control
-> +                           ownership should be transferred to
-> +
-> +  resets:
-> +    description: |
-> +      Should contain the phandle to the reset controller node
-> +      managing the resets for this device, and a reset
-> +      specifier. Please refer to the following reset bindings
-> +      for the reset argument specifier,
-> +      Documentation/devicetree/bindings/reset/ti,sci-reset.txt
-> +
-> +  firmware-name:
-> +    description: |
-> +      Should contain the name of the default firmware image
-> +      file located on the firmware search path
-> +
-> +  mboxes:
-> +    description: |
-> +      OMAP Mailbox specifier denoting the sub-mailbox, to be used for
-> +      communication with the remote processor. This property should match
-> +      with the sub-mailbox node used in the firmware image. The specifier
-> +      format is as per the bindings,
-> +      Documentation/devicetree/bindings/mailbox/omap-mailbox.txt
-> +
-> +  memory-region:
-> +    minItems: 2
-> +    description: |
-> +      phandle to the reserved memory nodes to be associated with the remoteproc
-> +      device. There should be atleast two reserved memory nodes defined - the
-> +      first one would be used for dynamic DMA allocations like vrings and vring
-> +      buffers, and the remaining ones used for the firmware image sections. The
-> +      reserved memory nodes should be carveout nodes, and should be defined as
-> +      per the bindings in
-> +      Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> +
-> +# Optional properties:
-> +# --------------------
-> +
-> +  sram:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    minItems: 1
-> +    description: |
-> +      pHandles to one or more reserved on-chip SRAM regions. The regions
+  I've updated my test setup and during all rt-tests there is now a
+  background workload running. sigwaittest with hackbench as workload is
+  able to trigger a crash on x86_64 but not on ARMv7. It's not clear if
+  this existed for a longer period already or if it's new.
 
-s/pHandle/phandle
+  [   41.148863] BUG: unable to handle kernel paging request at 00000000ffffffff
+  [   41.148871] IP: [<ffffffff8118fce3>] kmem_cache_alloc_node+0xc3/0x1e0
+  [   41.148873] PGD 0 
+  [   41.148874] Oops: 0000 [#1] PREEMPT SMP 
+  [   41.148877] Modules linked in:
+  [   41.148879] CPU: 1 PID: 4394 Comm: hackbench Not tainted 4.4.220-rt195+ #9
+  [   41.148880] Hardware name: wortmann G31M-ES2L/G31M-S2L, BIOS F10 09/29/2009
+  [   41.148881] task: ffff8800ca89a7c0 ti: ffff8800cb39c000 task.ti: ffff8800cb39c000
+  [   41.148884] RIP: 0010:[<ffffffff8118fce3>]  [<ffffffff8118fce3>] kmem_cache_alloc_node+0xc3/0x1e0
+  [   41.148885] RSP: 0018:ffff8800cb39fbd8  EFLAGS: 00010246
+  [   41.148886] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000005021c81
+  [   41.148886] RDX: 0000000005021c41 RSI: 0000000005021c41 RDI: 00000000000186e0
+  [   41.148887] RBP: ffff8800cb39fc18 R08: ffffffff8172abcb R09: 0000000000000003
+  [   41.148888] R10: 0000000000000000 R11: 0000000000000246 R12: ffff88012b001700
+  [   41.148888] R13: 00000000ffffffff R14: 00000000ffffffff R15: 00000000024004c0
+  [   41.148889] FS:  00007fe50befd740(0000) GS:ffff88012fc80000(0000) knlGS:0000000000000000
+  [   41.148890] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [   41.148891] CR2: 00000000ffffffff CR3: 00000000c8562000 CR4: 0000000000040670
+  [   41.148891] Stack:
+  [   41.148893]  ffffea0003137ec0 ffffea00031b62c0 ffffffff8172abcb 0000000000000001
+  [   41.148895]  ffff8800cb39fd00 ffff88012b001700 0000000000000000 00000000024004c0
+  [   41.148896]  ffff8800cb39fc60 ffffffff8172abcb ffffffff024200ca ffff8800cb3a0000
+  [   41.148897] Call Trace:
+  [   41.148901]  [<ffffffff8172abcb>] ? __alloc_skb+0x4b/0x1c0
+  [   41.148903]  [<ffffffff8172abcb>] __alloc_skb+0x4b/0x1c0
+  [   41.148904]  [<ffffffff8172ad9e>] alloc_skb_with_frags+0x5e/0x1d0
+  [   41.148906]  [<ffffffff8172682d>] sock_alloc_send_pskb+0x1bd/0x1e0
+  [   41.148909]  [<ffffffff81805a84>] unix_stream_sendmsg+0x244/0x390
+  [   41.148912]  [<ffffffff81722530>] sock_sendmsg+0x40/0x50
+  [   41.148914]  [<ffffffff817225bf>] sock_write_iter+0x7f/0xd0
+  [   41.148917]  [<ffffffff81199eb8>] __vfs_write+0xb8/0xf0
+  [   41.148918]  [<ffffffff8119a98a>] vfs_write+0xba/0x1d0
+  [   41.148920]  [<ffffffff8119b61f>] SyS_write+0x4f/0xd0
+  [   41.148923]  [<ffffffff8192f1ca>] entry_SYSCALL_64_fastpath+0x1e/0x93
+  [   41.148939] Code: 00 00 74 51 48 85 c0 0f 84 2c 01 00 00 49 63 54 24 1c 31 f6 4c 89 ef e8 9c c7 1e 00 eb 37 49 63 44 24 20 49 8b 3c 24 48 8d 4a 40 <49> 8b 5c 05 00 4c 89 e8 65 48 0f c7 0f 0f 94 c0 84 c0 0f 84 64 
+  [   41.148940] RIP  [<ffffffff8118fce3>] kmem_cache_alloc_node+0xc3/0x1e0
+  [   41.148941]  RSP <ffff8800cb39fbd8>
+  [   41.148941] CR2: 00000000ffffffff
+  [   41.384003] ---[ end trace 0000000000000002 ]---
 
-Thanks,
-Mathieu
 
-> +      should be defined as child nodes of the respective SRAM node, and
-> +      should be defined as per the generic bindings in,
-> +      Documentation/devicetree/bindings/sram/sram.yaml
-> +
-> +required:
-> + - compatible
-> + - reg
-> + - reg-names
-> + - ti,sci
-> + - ti,sci-dev-id
-> + - ti,sci-proc-ids
-> + - resets
-> + - firmware-name
-> + - mboxes
-> + - memory-region
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +
-> +    //Example: J721E SoC
-> +    /* DSP Carveout reserved memory nodes */
-> +    reserved-memory {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +        ranges;
-> +
-> +        c66_0_dma_memory_region: c66-dma-memory@a6000000 {
-> +            compatible = "shared-dma-pool";
-> +            reg = <0x00 0xa6000000 0x00 0x100000>;
-> +            no-map;
-> +        };
-> +
-> +        c66_0_memory_region: c66-memory@a6100000 {
-> +            compatible = "shared-dma-pool";
-> +            reg = <0x00 0xa6100000 0x00 0xf00000>;
-> +            no-map;
-> +        };
-> +    };
-> +
-> +    cbass_main: interconnect@100000 {
-> +        compatible = "simple-bus";
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +        ranges = <0x4d 0x80800000 0x4d 0x80800000 0x00 0x00800000>, /* C66_0 */
-> +                 <0x4d 0x81800000 0x4d 0x81800000 0x00 0x00800000>; /* C66_1 */
-> +
-> +        /* J721E C66_0 DSP node */
-> +        c66_0: dsp@4d80800000 {
-> +            compatible = "ti,j721e-c66-dsp";
-> +            reg = <0x4d 0x80800000 0x00 0x00048000>,
-> +                  <0x4d 0x80e00000 0x00 0x00008000>,
-> +                  <0x4d 0x80f00000 0x00 0x00008000>;
-> +            reg-names = "l2sram", "l1pram", "l1dram";
-> +            ti,sci = <&dmsc>;
-> +            ti,sci-dev-id = <142>;
-> +            ti,sci-proc-ids = <0x03 0xFF>;
-> +            resets = <&k3_reset 142 1>;
-> +            firmware-name = "j7-c66_0-fw";
-> +            memory-region = <&c66_0_dma_memory_region>,
-> +                            <&c66_0_memory_region>;
-> +            mboxes = <&mailbox0_cluster3 &mbox_c66_0>;
-> +        };
-> +    };
-> -- 
-> 2.23.0
-> 
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v4.4-rt
+  Head SHA1: 2a1573bd8805c11aa1cce2998bc55396633e596b
+
+Or to build 4.4.220-rt196 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.4.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.4.220.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/patch-4.4.220-rt196.patch.xz
+
+
+You can also build from 4.4.215-rt192 by applying the incremental patch:
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/incr/patch-4.4.215-rt192-rt196.patch.xz
+
+Enjoy!
+Daniel
