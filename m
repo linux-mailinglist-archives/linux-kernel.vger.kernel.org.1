@@ -2,84 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9EB1BA923
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303591BA92C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728439AbgD0PtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 11:49:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727006AbgD0PtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 11:49:21 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728450AbgD0Put (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 11:50:49 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24664 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727073AbgD0Put (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 11:50:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588002648;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=m4LhHtyrKd+39y/Gc4fHI3CQInRvTn8zsnj+tp4DOSw=;
+        b=dOIq3hqb/Joy3xSWitmtAr4P5Vhpq+GLkJQ3xy5cKO8qyCukO7Ts6J03IkiFqgYonphpnS
+        qRNDbWDHeCZTOSgP8bJuuozMhXhxF9LZyoKVSmolZHwCU/cAtDTSyea5elUqJ54D+JwG0L
+        KbW2ycs6mUxg3ZEW+Tm5h8/IElfsPp4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-0-6MWkl_NIyhUHcVk8NCHQ-1; Mon, 27 Apr 2020 11:50:44 -0400
+X-MC-Unique: 0-6MWkl_NIyhUHcVk8NCHQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D14AA2064C;
-        Mon, 27 Apr 2020 15:49:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588002561;
-        bh=OyNRz7IsAlS0ADmWwL2MYfrE+apa1uCaMYPWIt9UIwY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zuPT42M9YmX7VY+ZqbSHQJlDBEhAbUdK/fU9+MY5pk67ORz/B6t/sh8QSXFh9EW7I
-         VhPsjXizWfkuGmL4VqxU8NDRMneAvln8B5V7AQ+iVqoCrvkCAMyr4s3U6CyyRzc9Mf
-         z64rzqlXvUVNJBcs3qLmLUwZWaXtC57e/anzudpQ=
-Date:   Mon, 27 Apr 2020 18:49:17 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86 <x86@kernel.org>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/apic: Fix circular locking dependency between
- console and hrtimer locks
-Message-ID: <20200427154917.GF134660@unreal>
-References: <20200407170925.1775019-1-leon@kernel.org>
- <20200414054836.GA956407@unreal>
- <20200414062454.GA84326@gmail.com>
- <20200414070502.GR334007@unreal>
- <87v9llosax.fsf@nanos.tec.linutronix.de>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF5B445F;
+        Mon, 27 Apr 2020 15:50:41 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-114-38.ams2.redhat.com [10.36.114.38])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C6D3760BEC;
+        Mon, 27 Apr 2020 15:50:38 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v2 1/8] iio: light: cm32181: Add some extra register defines
+Date:   Mon, 27 Apr 2020 17:50:30 +0200
+Message-Id: <20200427155037.218390-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v9llosax.fsf@nanos.tec.linutronix.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 05:35:18PM +0200, Thomas Gleixner wrote:
-> Leon Romanovsky <leon@kernel.org> writes:
-> > But if we are talking about other weirdnesses, I have another splat in my
-> > QEMU machine, which is different, but from the same code area.
->
-> It's a completely different code area, really. This triggers in
-> deactivate_slab().
->
-> > [    1.383968] ACPI: Added _OSI(Module Device)
-> > [    1.385684] ACPI: Added _OSI(Processor Device)
-> > [    1.389345] ACPI: Added _OSI(3.0 _SCP Extensions)
-> > [    1.389345] ACPI: Added _OSI(Processor Aggregator Device)
-> > [    1.393454] ACPI: Added _OSI(Linux-Dell-Video)
-> > [    1.394920] ACPI: Added _OSI(Linux-Lenovo-NV-HDMI-Audio)
-> > [    1.396481] ACPI: Added _OSI(Linux-HPI-Hybrid-Graphics)
-> > [    1.793418] ACPI: 1 ACPI AML tables successfully acquired and loaded
-> > [    1.845452]
-> > [    1.846768] =============================
-> > [    1.849293] [ BUG: Invalid wait context ]
->
-> Do you have CONFIG_PROVE_RAW_LOCK_NESTING enabled? If yes, please
-> disable it. The Kconfig option explains that this will trigger
-> splats.
+These come from a newer version of cm32181.c, which is floating around
+the net, with a copyright of:
 
-Yes, I have it enabled.
+ * Copyright (C) 2014 Capella Microsystems Inc.
+ * Author: Kevin Tsai <ktsai@capellamicro.com>
+ *
+ * This program is free software; you can redistribute it and/or modify i=
+t
+ * under the terms of the GNU General Public License version 2, as publis=
+hed
+ * by the Free Software Foundation.
 
-Thanks for the tip.
+Note that this removes the bogus CM32181_CMD_ALS_ENABLE define, there
+is no enable bit, only a disable bit and enabled is the absence of
+being disabled.
 
->
-> If not, then this is mysterious but has absolutely nothing to do with
-> the other thing. It's also completely unrelated to ACPI ...
->
-> Thanks,
->
->         tglx
+This is a preparation patch for adding support for the older
+CM3218 model of the light sensor.
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/iio/light/cm32181.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/iio/light/cm32181.c b/drivers/iio/light/cm32181.c
+index 5f4fb5674fa0..ee386afe811e 100644
+--- a/drivers/iio/light/cm32181.c
++++ b/drivers/iio/light/cm32181.c
+@@ -18,6 +18,9 @@
+=20
+ /* Registers Address */
+ #define CM32181_REG_ADDR_CMD		0x00
++#define CM32181_REG_ADDR_WH		0x01
++#define CM32181_REG_ADDR_WL		0x02
++#define CM32181_REG_ADDR_TEST		0x03
+ #define CM32181_REG_ADDR_ALS		0x04
+ #define CM32181_REG_ADDR_STATUS		0x06
+ #define CM32181_REG_ADDR_ID		0x07
+@@ -26,9 +29,13 @@
+ #define CM32181_CONF_REG_NUM		0x01
+=20
+ /* CMD register */
+-#define CM32181_CMD_ALS_ENABLE		0x00
+-#define CM32181_CMD_ALS_DISABLE		0x01
+-#define CM32181_CMD_ALS_INT_EN		0x02
++#define CM32181_CMD_ALS_DISABLE		BIT(0)
++#define CM32181_CMD_ALS_INT_EN		BIT(1)
++#define CM32181_CMD_ALS_THRES_WINDOW	BIT(2)
++
++#define CM32181_CMD_ALS_PERS_SHIFT	4
++#define CM32181_CMD_ALS_PERS_MASK	(0x03 << CM32181_CMD_ALS_PERS_SHIFT)
++#define CM32181_CMD_ALS_PERS_DEFAULT	(0x01 << CM32181_CMD_ALS_PERS_SHIFT=
+)
+=20
+ #define CM32181_CMD_ALS_IT_SHIFT	6
+ #define CM32181_CMD_ALS_IT_MASK		(0x0F << CM32181_CMD_ALS_IT_SHIFT)
+@@ -82,7 +89,7 @@ static int cm32181_reg_init(struct cm32181_chip *cm3218=
+1)
+ 		return -ENODEV;
+=20
+ 	/* Default Values */
+-	cm32181->conf_regs[CM32181_REG_ADDR_CMD] =3D CM32181_CMD_ALS_ENABLE |
++	cm32181->conf_regs[CM32181_REG_ADDR_CMD] =3D
+ 			CM32181_CMD_ALS_IT_DEFAULT | CM32181_CMD_ALS_SM_DEFAULT;
+ 	cm32181->calibscale =3D CM32181_CALIBSCALE_DEFAULT;
+=20
+--=20
+2.26.0
+
