@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6401BAD50
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A613D1BAD60
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgD0S4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 14:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726223AbgD0S4Y (ORCPT
+        id S1726746AbgD0S7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 14:59:20 -0400
+Received: from smtprelay0161.hostedemail.com ([216.40.44.161]:59244 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726260AbgD0S7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 14:56:24 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF8EC0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 11:56:24 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id b18so17775637ilf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 11:56:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zqkytQuRqbdyIv1fNw/hFQaHmYGu4kuwrAG4aDt0KwY=;
-        b=saJPBmpcSFa8Gvk3fcBP7BcUJ0vdCttdE09MxHpW/uEu9CFjYVwWXKpV1EEM1mB0F7
-         JFDFlfW7lrpuG4de/SsT3EJ0es11Ti+ZJc0tiVi4/T1IGbRrXFDHmF+ZBdm2NQpDv+l/
-         13SOK6VVfaa+9DkL0COKwTrTcbC+UbULtctB/kvHH/4EyfpJ2bzBsFPAfxyKaZPfVVPZ
-         99EVOEKR3i+w77aASsepR7u7Nehl5B2fz4pKmrvxFgFGw/sFvtRkOyA1xtQLbHDsVofz
-         ZWeEKbLSdxqY4wWZOF9EMA0Xvh1Uls9FM+b+kXBa5SgpwKJun8A+woBS0WAllujr8kAF
-         QlJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zqkytQuRqbdyIv1fNw/hFQaHmYGu4kuwrAG4aDt0KwY=;
-        b=fpFjk/1Vz5xzvvb39AjAmxGFTy4JVADBAipCBNi2AROcDIG3Dpg7Ony4AtpavkKtji
-         zb+oG1vGIcwXKKKp4GvcquTRAwrPccD/vEleaAQJiL/9CVgciUB/fn/mHIejdsaoLJi2
-         CZ0vcu1i8rw1y3K1aktR1nBf+HzDSqjyF9sdL4FJ/MwJCLUJOltrkjvmpVEZJaOVQsXF
-         Sw3Wq3k+ZmL2utbceYFL9q+4qSiTEXkWEDNu6z0wPbmKYNpsVVfdNi7kDKZ4s28qxhvh
-         x4GY6QeTaz5uIga9LfoeYAVecgBXcn5KwMTsSRV/fdOUE+sB07yKL35RWU372V7/vi+a
-         kwYg==
-X-Gm-Message-State: AGi0PuZpuJ9X8iTsmrlr6SW9iEwXRThBWPX8If4cvd8h9GCg5XBLntHC
-        JYAsvtDN/+cTwZHjR8x9uBtRVcp+kQwNnH3dskTohQ==
-X-Google-Smtp-Source: APiQypKSjWUNccvaGaP7GIFyMyjBa2ylFPQ2+a7hXLOAZWmMk7LFoZjV2MZ6L0j5XxwlwKRKShuLGc74DMMUsDsJ/v4=
-X-Received: by 2002:a92:8587:: with SMTP id f129mr22745284ilh.75.1588013783349;
- Mon, 27 Apr 2020 11:56:23 -0700 (PDT)
+        Mon, 27 Apr 2020 14:59:20 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 437DD182CF668;
+        Mon, 27 Apr 2020 18:59:19 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:421:599:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1605:1711:1730:1747:1777:1792:2393:2525:2553:2565:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4605:5007:6117:7901:8527:9025:10004:10400:10848:11232:11658:11914:12043:12297:12555:12740:12760:12895:13161:13229:13439:14181:14659:14721:21080:21433:21627:21939:21987:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: price03_8b5bd9a9cf130
+X-Filterd-Recvd-Size: 4152
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf09.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 27 Apr 2020 18:59:17 +0000 (UTC)
+Message-ID: <16b209d0b0c8034db62f8d4d0a260a00f0aa5d5e.camel@perches.com>
+Subject: Re: [PATCH] xfs: Use the correct style for SPDX License Identifier
+From:   Joe Perches <joe@perches.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Nishad Kamdar <nishadkamdar@gmail.com>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 27 Apr 2020 11:59:16 -0700
+In-Reply-To: <20200427183629.GA20158@kroah.com>
+References: <20200425133504.GA11354@nishad> <20200427155617.GY6749@magnolia>
+         <20200427172959.GB3936841@kroah.com>
+         <515362d10c06567f35f0d5b7c3f2e121769fb04b.camel@perches.com>
+         <20200427174611.GA4035548@kroah.com>
+         <791a97d5d4dfd11af533a0bbd6ae27d1a2d479ee.camel@perches.com>
+         <20200427183629.GA20158@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-References: <cover.1578789410.git.robin.murphy@arm.com> <CANAwSgSFPtdvEvacNf6DhzE2fCabgZSBNnZUf0+nQErDWpErOw@mail.gmail.com>
- <c7345431-7585-6052-835e-d9c292978b6e@web.de>
-In-Reply-To: <c7345431-7585-6052-835e-d9c292978b6e@web.de>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Tue, 28 Apr 2020 00:26:12 +0530
-Message-ID: <CANAwSgQsMnkRyLCbgbWUGnCOzeK+4rucdMCkBGrv=Gp=Etq5JA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/5] mfd: RK8xx tidyup
-To:     Soeren Moch <smoch@web.de>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-rockchip@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Soeren
+On Mon, 2020-04-27 at 20:36 +0200, Greg Kroah-Hartman wrote:
+> On Mon, Apr 27, 2020 at 11:01:38AM -0700, Joe Perches wrote:
+> > On Mon, 2020-04-27 at 19:46 +0200, Greg Kroah-Hartman wrote:
+> > > On Mon, Apr 27, 2020 at 10:41:58AM -0700, Joe Perches wrote:
+> > > > On Mon, 2020-04-27 at 19:29 +0200, Greg Kroah-Hartman wrote:
+[]
+> > > > > I thought we were supposed to use 'GPL-2.0-or-newer' because 'GPL-2.0+'
+> > > > > > is deprecated in some newer version of the SPDX standard?
+> > > > > > 
+> > > > > > <shrug>
+> > > > > 
+> > > > > The kernel follows the "older" SPDX standard, but will accept either,
+> > > > > it's up to the author.  It is all documented in LICENSES/ if people
+> > > > > really want to make sure.
+> > > > 
+> > > > I think the kernel should prefer the "newer" SPDX standard
+> > > > for any/all changes to these lines.
+> > > > ---
+> > > >  LICENSES/preferred/GPL-2.0 | 8 ++++----
+> > > >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > > > 
+> > > > diff --git a/LICENSES/preferred/GPL-2.0 b/LICENSES/preferred/GPL-2.0
+> > > > index ff0812..c50f93 100644
+> > > > --- a/LICENSES/preferred/GPL-2.0
+> > > > +++ b/LICENSES/preferred/GPL-2.0
+> > > > @@ -8,13 +8,13 @@ Usage-Guide:
+> > > >    tag/value pairs into a comment according to the placement
+> > > >    guidelines in the licensing rules documentation.
+> > > >    For 'GNU General Public License (GPL) version 2 only' use:
+> > > > -    SPDX-License-Identifier: GPL-2.0
+> > > > -  or
+> > > >      SPDX-License-Identifier: GPL-2.0-only
+> > > > +  or the deprecated alternative
+> > > > +    SPDX-License-Identifier: GPL-2.0
+> > > >    For 'GNU General Public License (GPL) version 2 or any later version' use:
+> > > > -    SPDX-License-Identifier: GPL-2.0+
+> > > > -  or
+> > > >      SPDX-License-Identifier: GPL-2.0-or-later
+> > > > +  or the deprecated alternative
+> > > > +    SPDX-License-Identifier: GPL-2.0+
+> > > >  License-Text:
+> > > 
+> > > At the moment, I do not, as the current ones are not "depreciated" at
+> > > all.
+> > 
+> > https://spdx.org/licenses/
+> > 
+> > shows the GPL-2.0 and GPL-2.0+ as deprecated.
+> > 
+> > https://spdx.org/licenses/GPL-2.0.html
+> > https://spdx.org/licenses/GPL-2.0+.html
+> > 
+> 
+> Again, we are not using the "new" version of the SPDX specification just
+> yet.  We started out using one specific version, let's get the whole
+> kernel converted first before worrying about trying to keep up with
+> their newer releases please.  We still have a ways to go...
 
-On Tue, 28 Apr 2020 at 00:16, Soeren Moch <smoch@web.de> wrote:
->
->
->
-> On 27.04.20 20:41, Anand Moon wrote:
-> > Hi Robin,
-> >
-> > On Sun, 12 Jan 2020 at 07:25, Robin Murphy <robin.murphy@arm.com> wrote:
-> >> Hi all,
-> >>
-> >> Here's a second crack at my RK805-inspired cleanup. There was a bit
-> >> of debate around v1[1], but it seems like we're now all happy that this
-> >> is a reasonable way to go. For clarity I decided to include Soeren's
-> >> patch as #1/5, but since I've rewritten most of my patches I've not
-> >> included the tested-by tags.
-> >>
-> >> Robin.
-> >>
-> > Can you re-spin this series, it seem these patches are lost.
-> >
-> These patches are already merged as
-> d8f083a302f7..42679765faf2
->
-> Soeren
+It seems you refer to yourself using the majestic plural.
 
-Thanks for the input.
+There's already ~80% use of SPDX-License-Identifier and the
+-only versions are already about 25% of the existing uses.
 
--Anand
+There's no real reason not to prefer the latest versions
+over the deprecated ones.
+
+
