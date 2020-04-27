@@ -2,59 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1D81BAD88
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB931BAD8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgD0TIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgD0TIC (ORCPT
+        id S1726587AbgD0TJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:09:47 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:21956 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726420AbgD0TJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:08:02 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A72FC0610D5;
-        Mon, 27 Apr 2020 12:08:02 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id A35C015D59E0D;
-        Mon, 27 Apr 2020 12:08:01 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 12:08:00 -0700 (PDT)
-Message-Id: <20200427.120800.2048743248471906857.davem@davemloft.net>
-To:     christophe.jaillet@wanadoo.fr
-Cc:     fthain@telegraphics.com.au, tsbogend@alpha.franken.de,
-        jgarzik@pobox.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] net/sonic: Fix a resource leak in an error handling
- path in 'jazz_sonic_probe()'
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200427061803.53857-1-christophe.jaillet@wanadoo.fr>
-References: <20200427061803.53857-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+        Mon, 27 Apr 2020 15:09:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588014585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fQf0JdKn9fSmRfZbYIguzX8UAvoKyiiMf06OglslXog=;
+        b=NpwnMS8Ka/M0/qMumYd8zdwuw3KYblvQaWyjeL1AX5BqCcRJ8so1hzGlz/C6ez4YQUNUbB
+        lEsQ2+FcWkHRwjsJRBrBv9jX0Urv1m0z5u7vXSFp17iuzRXRjS9jdUmW8WmZ58tgdlchuH
+        kpFbsjJL61PwpXbI/iNtkOq9wMLLATY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-VacSErgFOA6KOodZkj3-FQ-1; Mon, 27 Apr 2020 15:09:43 -0400
+X-MC-Unique: VacSErgFOA6KOodZkj3-FQ-1
+Received: by mail-wr1-f69.google.com with SMTP id s11so11009144wru.6
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 12:09:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fQf0JdKn9fSmRfZbYIguzX8UAvoKyiiMf06OglslXog=;
+        b=LBD6gvaq0gnd9i1Vsgc72BZjyKWBsAapHGeHTCtYEt3u1eIoB2uw7Ftjqo27iP7rIV
+         DXMt7OFs/0BE/gKgjPAknX1Go5K9i2T73o+8r7ak4I6gi02mKU0SIYG+ciNcbN8IwQzo
+         Xhnk+zt863DxrgxdlMPGpiAyn0FTUrReIg7p48THWVdRO2zsMFXrDgqWXwztHsUgWGnS
+         0tuxGybw+0HJ41/lRXg2PXSD3aVCz8HPKKPmE2wdZ7Wyzh1Bb7nXeXUx7vKio/1CbcV8
+         NjUVPQJXb80WSx4kSdHTITjzA+Qqa91fG7iQk7DJkKKg/AZbgbGrju3xyA4Rkv7raKC1
+         GpMQ==
+X-Gm-Message-State: AGi0PuZzyOUQy88PAx71bdx5pfMJZXgKdNwamIoeB83xsQ8C7uZYfJkj
+        ACIGjY4LOpnTgW3eLySfheoVa7dIwr+KhMJ75hqkKBJTRfl4egrzCXqPqw7zlhQwgvUzz6ZExH7
+        M+U7h20gZ8mFCLOieHRpa2UQ/
+X-Received: by 2002:a1c:dc55:: with SMTP id t82mr219660wmg.12.1588014582461;
+        Mon, 27 Apr 2020 12:09:42 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIZYNBAaiKQGOrg9835xWa2K0IRaCFS4dqVqf5n883HYptUYcWCRGPxH1I/rZd0YeqpukeqPA==
+X-Received: by 2002:a1c:dc55:: with SMTP id t82mr219645wmg.12.1588014582249;
+        Mon, 27 Apr 2020 12:09:42 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ac19:d1fb:3f5f:d54f? ([2001:b07:6468:f312:ac19:d1fb:3f5f:d54f])
+        by smtp.gmail.com with ESMTPSA id n2sm22714476wrq.74.2020.04.27.12.09.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 12:09:41 -0700 (PDT)
+Subject: Re: [PATCH] KVM: VMX: Use accessor to read vmcs.INTR_INFO when
+ handling exception
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200427171837.22613-1-sean.j.christopherson@intel.com>
+ <8123dc4b-a449-a92c-85a1-c255fa2bbbca@redhat.com>
+ <20200427173241.GJ14870@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3bad600c-71e6-c094-59a4-f82144adddb4@redhat.com>
+Date:   Mon, 27 Apr 2020 21:09:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200427173241.GJ14870@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 27 Apr 2020 12:08:01 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Date: Mon, 27 Apr 2020 08:18:03 +0200
+On 27/04/20 19:32, Sean Christopherson wrote:
+> No, I missed this case in the original patch, and the other fix was for
+> incorrect sizing of an exit_qual variable.
 
-> A call to 'dma_alloc_coherent()' is hidden in 'sonic_alloc_descriptors()',
-> called from 'sonic_probe1()'.
-> 
-> This is correctly freed in the remove function, but not in the error
-> handling path of the probe function.
-> Fix it and add the missing 'dma_free_coherent()' call.
-> 
-> While at it, rename a label in order to be slightly more informative.
-> 
-> Fixes: efcce839360f ("[PATCH] macsonic/jazzsonic network drivers update")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Nevermind, I applied it twice and I got an "Already applied" message on
+the second invocation.
 
-Applied, thanks.
