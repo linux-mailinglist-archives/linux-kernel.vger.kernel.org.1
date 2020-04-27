@@ -2,109 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3491BB11D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE9B1BB163
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgD0WEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 18:04:04 -0400
-Received: from mail-eopbgr700095.outbound.protection.outlook.com ([40.107.70.95]:8888
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726377AbgD0WEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 18:04:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fwtbqctPHdjjntNnzQjNGfCoybwgghT82g6bgptP8RQL6FGLamkyCEs+DgIi6+gK3T7MfuwwI0BVXSHa3EIzVyNCokKzBnRxYDOllLCxaKQhc36In+ze2n3S2g+fTlEINdwXsIN0kjWv30RtiBGxIXw6dZMu9s+2vjJSxxHpaakpa6bz/RtJlQiR89EHWZ3gCm2lkLAHSj2jOFC5sVtvbBgZItHEVWmMeGFkkuf5giUGrH9+yKemOVOFWA9liNAl6CP+od4cbLtREUfaZg2Y9guDrFwFUgIHPTJLuQ/8/Tz5dcs6MSuXb16X9UYpWO9Ii6HWHrs/oOv7duvw1VEw5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fyVaGdAVd3ZcAA9S86IjWSY51LH4+kE8Af80x+SSG/c=;
- b=hFPe8VTHzzyz9GPwF2zIe99fDIqrL9o8MzqpL9gwUY0nnKUzcAxkvEaRfDg5dMYeHtU1TPuYVYPNekKNH1trsCOfoVGdfAXMCBOWRauwUtYiGRCna8YVBURSae3EAE4XMflN2rxMmdRly0dPevd/3dEMnlXnwTCYazyOlom6nPMEG/JWO17Nx8rAwkC51GexPxYgqV1lhBfqsBeEwwbai0hx8g2H5KGh0P635akp1Bkt8PzHINH+3DOhpic1qK6JhV4dBzRc+Yd0yG3ilF+U1QgPjGl6EYaZCKbzlZdsf1JfZTt4jP+yYGAmA7CoU/ROcyV3PJRqu4bx/xvrymvaqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fyVaGdAVd3ZcAA9S86IjWSY51LH4+kE8Af80x+SSG/c=;
- b=Uyb+S4TF8FL8TX2/C5GFH6BQwIMQngaRn6ip8SGPNMzRg6F/S0u8nW9K4FDeRIS96Yfn3BwVKkTLCu4tGpPwU1+7E4Ru1aRvZM51CIt/1qeVeOQ05GQnogCd7hIiLvBbrdNEXbRCs5kutEStW6ZM9GI3wn5BbMOr5rsuyXxAcwU=
-Received: from CH2PR21MB1511.namprd21.prod.outlook.com (2603:10b6:610:88::24)
- by CH2PR21MB1432.namprd21.prod.outlook.com (2603:10b6:610:84::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.2; Mon, 27 Apr
- 2020 22:03:58 +0000
-Received: from CH2PR21MB1511.namprd21.prod.outlook.com
- ([fe80::35cf:633b:4836:674e]) by CH2PR21MB1511.namprd21.prod.outlook.com
- ([fe80::35cf:633b:4836:674e%9]) with mapi id 15.20.2979.005; Mon, 27 Apr 2020
- 22:03:58 +0000
-From:   Steve MacLean <Steve.MacLean@microsoft.com>
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Francois Saint-Jacques <fsaintjacques@gmail.com>
-CC:     "eranian@google.com" <eranian@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH v3] perf inject --jit: Remove //anon mmap
- events
-Thread-Topic: [EXTERNAL] Re: [PATCH v3] perf inject --jit: Remove //anon mmap
- events
-Thread-Index: AQHVvaj2LRXwQIFSU0aPphN9jUHHyqfRREQAgLz/fEA=
-Date:   Mon, 27 Apr 2020 22:03:58 +0000
-Message-ID: <CH2PR21MB1511DC522EBE2E19C8185FE8F7AF0@CH2PR21MB1511.namprd21.prod.outlook.com>
-References: <CABNn7+pYPSfduacOATcKT1X_=qs70i7Bc8pELXDahY7BoB9_wQ@mail.gmail.com>
- <20191229155112.GA21785@krava>
-In-Reply-To: <20191229155112.GA21785@krava>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=stmaclea@microsoft.com;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-04-27T22:03:57.3964788Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=3c4c1af4-6fb1-4315-bf8f-633d69333f0a;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Steve.MacLean@microsoft.com; 
-x-originating-ip: [24.163.126.65]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: a466e4fd-5079-4a9a-2f66-08d7eaf6e305
-x-ms-traffictypediagnostic: CH2PR21MB1432:
-x-microsoft-antispam-prvs: <CH2PR21MB1432D948F4263B7C27B6C792F7AF0@CH2PR21MB1432.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-forefront-prvs: 0386B406AA
-received-spf: None (protection.outlook.com: microsoft.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: V/mt+FYhNk5fWNDX69k6XRr+yPt2kT/tOZWM0bnCi/jH8TlyQE1Mex+Bs3pMrVS5JvZKf65UjeE2o6w9isP6ptJf94uvdOnsaBt+bjAQ3EdqyyZlnXe8vo04Ix+UgB+mPuKSqV/S93Fa02ZSv1/3Sc7rVbHlFoBwvfcJM634sjUR9dm4jpV1fKF8RvTgoR12KdOg2ygNc6OiHmJzKj1XgebzR9lvN4q4fyqH161EPfbDciJpBRTW5v4ZHAWpw+38Si+1azvA/HI9vzaVMCMf7wUesYBIEYRvOdB56RSba5orDz3HsGSmLp0ff/sXcRcQnuTHg3mDqKjSnzAE6k2qJ5+zOwpxYouAEJ7jW5rVOu6N6p5ADsxFQG4DGnXVrCfnGzCKbixqVMQPUDyQz2vrHF18Ytj5yu9tfvI4plUel77wrfDr23rf/Y7+OtEHreOK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR21MB1511.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(376002)(39860400002)(396003)(366004)(346002)(82960400001)(33656002)(82950400001)(2906002)(7696005)(52536014)(64756008)(66446008)(66946007)(66556008)(66476007)(9686003)(76116006)(4326008)(55016002)(8990500004)(6506007)(8936002)(26005)(186003)(110136005)(86362001)(5660300002)(8676002)(558084003)(10290500003)(71200400001)(478600001)(54906003)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: n04RHv2ItyUwtiYT92M2s3n+zUxBQIq9GrCGRBSWGD99hWG8WozNoivy4ci9tcSRlEuzlsr3XXrt4vjnzLDJhw8YsBpuB4vv3v2Uh9cZ/VH4uuzjww7jrLMCdKE/wMD+d4WsZ7bHjQCYePLyAlpYLediaDcX7gQEreWuRKzTLQqgZqxgrKrjCivps9FlLKfMTs050QpzqkflXX6aGY9NGWJHaH1Wo4wokNW/mTYlQjCBYRUVVMQPCdLT+ureqy0HMXenXi0Y8n8Fl0JyMy8NprMcCsD1/f/WWKTrUP9Nz5++476dvgamYEcWqYWM5vVkMJs1J0/klScQ5dUXaTGhZZaKVGzDdtGuNU5t6ChsvGsctMK/kYTpURnLH5AFispKLwfJLSucB4GJwekiRca7EOpCZSsxHUTn5+rb7Op1RLjpZEIlzt9wjDdQYDAwMEj1qZlWozX+Tw6b8M8ICjWhttoit2Xci/DC08JYxECjNwEZWskvOkZJyKd4+BHcohTjn7Cd9ivTDQK/+W4jCHgCH5uPljs3xGLlnCHumRVH4pm74u/AWfrg0p8Cy+aQlV3qkF1rM+Xg0wRkast/SaDkQI5ozNmkQP4mXqscfiJTVF5MOyfJAm9MHH5SrmIgRYAk6TN0cATQ0yrzLbW88kOxzz/2j+yPOBVIR1Ovz18GBGzu8iys3+vxmK7vVXRCJjecUfpAPCWqJBkQmBRNfEGBZfpwqfynqTwPFNKLkKs37jzJGk3YoqEfMNXWTLP7L2rGri2VbsY0yMicJA09+petNA+ALrKcPsOSuzKco7+wxg0=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726359AbgD0WKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 18:10:15 -0400
+Received: from mga12.intel.com ([192.55.52.136]:39101 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725998AbgD0WKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 18:10:15 -0400
+IronPort-SDR: 4IgImb9eeXIXsX+CdTVjqbzEgGB/LQQtUS3HqsNj4flh4yOr8DnFb9lu0kXFf1BDA/RVMnEMdR
+ /yp8TkGPftsA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 15:10:14 -0700
+IronPort-SDR: zk2osSBPECmbC1ZmEcTq5wzrxSe1rXQgzH6ja1obCgFWlrP3XyfUhXZoJ5yx7RRdl2ptnPnRhc
+ jJp0QEf8k0Qw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
+   d="scan'208";a="458553248"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 27 Apr 2020 15:10:13 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jTBx6-000EM5-M0; Tue, 28 Apr 2020 06:10:12 +0800
+Date:   Tue, 28 Apr 2020 06:09:24 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 77b688f7c29f537395be3a34cd807fd6580e8f7f
+Message-ID: <5ea75814.mdNJ2b8pP3QI6a+D%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a466e4fd-5079-4a9a-2f66-08d7eaf6e305
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2020 22:03:58.6557
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PBmonRXUjjV4Q3UoV8uUgFP3jRAaQTu5FMvAtOS2Ki62fkaFMJyTKoXTV3u5IWmeIhghEOB19J3vu6H/tGCing==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR21MB1432
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> it's simple enough to revert in case there's any issue
->
-> thanks,
-> jirka
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: 77b688f7c29f537395be3a34cd807fd6580e8f7f  Merge branch 'x86/boot'
 
-Can we go ahead and merge this?
+elapsed time: 813m
 
+configs tested: 169
+configs skipped: 0
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+sparc                            allyesconfig
+h8300                    h8300h-sim_defconfig
+c6x                              allyesconfig
+ia64                              allnoconfig
+i386                             alldefconfig
+openrisc                 simple_smp_defconfig
+mips                  decstation_64_defconfig
+riscv                            allyesconfig
+um                             i386_defconfig
+riscv                             allnoconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                        generic_defconfig
+ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+xtensa                          iss_defconfig
+xtensa                       common_defconfig
+openrisc                    or1ksim_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+arc                                 defconfig
+arc                              allyesconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+mips                malta_kvm_guest_defconfig
+mips                         tb0287_defconfig
+mips                       capcella_defconfig
+mips                           ip32_defconfig
+mips                      loongson3_defconfig
+mips                          ath79_defconfig
+mips                        bcm63xx_defconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+mips                            ar7_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+parisc               randconfig-a001-20200427
+alpha                randconfig-a001-20200427
+mips                 randconfig-a001-20200427
+m68k                 randconfig-a001-20200427
+riscv                randconfig-a001-20200427
+nds32                randconfig-a001-20200427
+nios2                randconfig-a001-20200427
+c6x                  randconfig-a001-20200427
+h8300                randconfig-a001-20200427
+sparc64              randconfig-a001-20200427
+microblaze           randconfig-a001-20200427
+sh                   randconfig-a001-20200427
+csky                 randconfig-a001-20200427
+xtensa               randconfig-a001-20200427
+openrisc             randconfig-a001-20200427
+i386                 randconfig-b003-20200427
+i386                 randconfig-b002-20200427
+x86_64               randconfig-b001-20200427
+i386                 randconfig-b001-20200427
+x86_64               randconfig-b002-20200427
+x86_64               randconfig-b003-20200427
+i386                 randconfig-c002-20200427
+i386                 randconfig-c001-20200427
+x86_64               randconfig-c002-20200427
+x86_64               randconfig-c001-20200427
+i386                 randconfig-c003-20200427
+x86_64               randconfig-c003-20200427
+x86_64               randconfig-d001-20200427
+x86_64               randconfig-d002-20200427
+i386                 randconfig-d002-20200427
+i386                 randconfig-d001-20200427
+x86_64               randconfig-d003-20200427
+i386                 randconfig-d003-20200427
+i386                 randconfig-e003-20200427
+x86_64               randconfig-e002-20200427
+x86_64               randconfig-e003-20200427
+i386                 randconfig-e002-20200427
+i386                 randconfig-e001-20200427
+x86_64               randconfig-e001-20200427
+i386                 randconfig-a003-20200427
+i386                 randconfig-a001-20200427
+i386                 randconfig-a002-20200427
+x86_64               randconfig-a002-20200427
+i386                 randconfig-g003-20200427
+i386                 randconfig-g001-20200427
+x86_64               randconfig-g001-20200427
+i386                 randconfig-g002-20200427
+x86_64               randconfig-g003-20200427
+i386                 randconfig-h003-20200427
+x86_64               randconfig-h002-20200427
+i386                 randconfig-h002-20200427
+i386                 randconfig-h001-20200427
+ia64                 randconfig-a001-20200428
+powerpc              randconfig-a001-20200428
+arm64                randconfig-a001-20200428
+sparc                randconfig-a001-20200427
+ia64                 randconfig-a001-20200427
+arm                  randconfig-a001-20200427
+arm64                randconfig-a001-20200427
+arc                  randconfig-a001-20200427
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
