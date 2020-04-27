@@ -2,88 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96501BA6FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5DB1BA708
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbgD0OzP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Apr 2020 10:55:15 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:55742 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727010AbgD0OzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 10:55:14 -0400
-Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.53])
-        by Forcepoint Email with ESMTP id A4C13DB0F1E6D0AEA991;
-        Mon, 27 Apr 2020 22:55:10 +0800 (CST)
-Received: from DGGEML422-HUB.china.huawei.com (10.1.199.39) by
- DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Mon, 27 Apr 2020 22:55:10 +0800
-Received: from DGGEML523-MBX.china.huawei.com ([169.254.4.80]) by
- dggeml422-hub.china.huawei.com ([10.1.199.39]) with mapi id 14.03.0487.000;
- Mon, 27 Apr 2020 22:55:04 +0800
-From:   Fengtiantian <fengtiantian@huawei.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        "open list:NETWORKING [GENERAL" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     "Huangweidong (C)" <weidong.huang@huawei.com>
-Subject: Fix vlan header offset in __skb_flow_dissect
-Thread-Topic: Fix vlan header offset in __skb_flow_dissect
-Thread-Index: AdYcltlLAUkerg4YRUKhy1eOb6UWJQ==
-Date:   Mon, 27 Apr 2020 14:55:03 +0000
-Message-ID: <2A6E6328DF026B458DBF90B38941F981871794C2@DGGEML523-MBX.china.huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.173.242.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1728126AbgD0O4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 10:56:03 -0400
+Received: from v6.sk ([167.172.42.174]:60332 "EHLO v6.sk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726651AbgD0O4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 10:56:02 -0400
+Received: from localhost (v6.sk [IPv6:::1])
+        by v6.sk (Postfix) with ESMTP id 49CE4610A7;
+        Mon, 27 Apr 2020 14:55:30 +0000 (UTC)
+Date:   Mon, 27 Apr 2020 16:55:27 +0200
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] mfd: Add ENE KB3930 Embedded Controller driver
+Message-ID: <20200427145527.GA71654@furthur.local>
+References: <20200424221123.106527-1-lkundrak@v3.sk>
+ <20200427064824.GB3559@dell>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427064824.GB3559@dell>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We use the openvswitch 2.7.0 and find the issue when ovs use
-the skb_get_hash() to get the hash of QinQ skb. Because the
-__skb_flow_dissect() get the wrong vlan protocol headers.
+On Mon, Apr 27, 2020 at 07:48:24AM +0100, Lee Jones wrote:
+> On Sat, 25 Apr 2020, Lubomir Rintel wrote:
+> 
+> > Hi,
+> > 
+> > please take a look at the following patch set and consider applying it
+> > to the MFD tree. It a new driver with DT binding documentation changes,
+> > utilized by the LED driver submitted here:
+> > 
+> > https://lore.kernel.org/lkml/20200424220240.106055-1-lkundrak@v3.sk/
+> 
+> What is this?  The subject suggests this is a cover-letter for a
+> patch-set, but the patches are not attached to it.  If this is the
+> case, please ensure that you send it --threaded using
+> 
+>  `git send-email`
+> 
+> If it's just a random plea to go look at some set posted onto a
+> mailing list without me on Cc, then no.  Please send the set again,
+> properly, with me listed as a recipient.
 
-Someone report bonding driver has the same issue use the
-__skb_flow_dissect() to count hash in bond_xmit_hash:
-https://lore.kernel.org/netdev/00a5d09f-a23e-661f-60c0-
-75fba6227451@huawei.com/T/.
+It indeed is a cover letter for a patch set, it had the patches chained to
+it, with you as a recipient, and it was sent with git send-email. If you
+haven't recevied them then I have no idea why. I do apologize in case it's
+my fault.
 
-Because in netif_receive_skb, the skb_network_header points
-to vlan head, but in dev_hard_start_xmit, the skb_network_header
-points to IP header. So use the skb_network_offset to get the
-vlan head is not reliable.
+Perhaps your spam filter dropped them? In that case I'm wondering what
+could bump the spam score for the patches, but not the cover letter.
+In any case, the archive received them:
 
-Should we use the skb_mac_offset instead the skb_network_offset
-to get the vlan head when proto is ETH_P_8021AD or ETH_P_8021Q?
+https://lore.kernel.org/lkml/20200424221123.106527-1-lkundrak@v3.sk/
 
-Signed-off-by: Feng tiantian <fengtiantian@huawei.com>
----
- net/core/flow_dissector.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+I wouldn't mind resending the messages, but I'd prefer to understand
+what happened to them first.
 
-diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-index 415b95f..9a77d5d 100644
---- a/net/core/flow_dissector.c
-+++ b/net/core/flow_dissector.c
-@@ -629,6 +629,13 @@ bool __skb_flow_dissect(const struct sk_buff *skb,
- 			 skb->vlan_proto : skb->protocol;
- 		nhoff = skb_network_offset(skb);
- 		hlen = skb_headlen(skb);
-+
-+		if (proto == htons(ETH_P_8021AD) ||
-+		    proto == htons(ETH_P_8021Q)) {
-+			if (skb_mac_header_was_set(skb))
-+				nhoff = skb_mac_offset(skb) + ETH_HLEN;
-+		}
-+
- #if IS_ENABLED(CONFIG_NET_DSA)
- 		if (unlikely(skb->dev && netdev_uses_dsa(skb->dev))) {
- 			const struct dsa_device_ops *ops;
--- 
-1.8.3.1
-
+Lubo
