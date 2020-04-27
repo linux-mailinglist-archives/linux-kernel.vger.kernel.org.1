@@ -2,232 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DE21BA540
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E612A1BA53D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727872AbgD0NnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 09:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727850AbgD0Nkw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 09:40:52 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A41C0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 06:40:51 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id z6so20564513wml.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 06:40:51 -0700 (PDT)
+        id S1727934AbgD0NlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 09:41:03 -0400
+Received: from mail-mw2nam12on2071.outbound.protection.outlook.com ([40.107.244.71]:6160
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727891AbgD0Nk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 09:40:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H0FdVpvTLIEF2LHXTihCnLnNKe+eethvUByky+EZ9S5TjFzB7d9SHrgMdqh/pJaKno7PUMg0puC2wFnJ0PW3ZGgpAF81FRBXHmCCnjZNAlDSjhc131zz2QF7wirpasPwalR8/3RsfOwzS6k61LPEWyuKYYTgtAbmzsrhR8o4lf4LstO+2WfdssSwLdRnIAK0kU6P8VFa9fsRQIBf3TNzqEnrtZIzCwrDE089scP3hGKsk7MLeQxANcB9ftAccXFmWB+7a8lRpckqAguLOT+e8bSHnvs8Eb2ypkp0FtaoR2o1/ItmSyzE83dFNEgYj3MZAJ9hDCor4dLwE/4+h8LWLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5jomDLASj8OFo3W7VpdAFAZG01W9DMmD+hzN6H1SUW4=;
+ b=d5pv5vqQbADIctKbT5gUgGQqs2mxAxxAM59lVLCFsd9T/k3wIv1Q5dtEwhUx7Q7KYeJBwOwzWWNEHztTRqEff3l3R8Y9JO7pe8CVHFNf3vqHucjcSv2P5lki5+TQ4wDr38scT1vd5zIUWs6R5QI7pVLZVvMuz1DNr9VSAB+riVZD/zPUb5q/Y4MyLx0CUB0c2pHokb9olLp6vA/HTim7D4+mD09BPaPR2abnTlYuVI/vRR2DuB1jONQ1GzsLv/NOlKSDbAEky8yrGGFttc/WevpPns2TASjPxxLbJuMn+eUA4o5qI96q2BzsMk5wzDlNe5sfiyLnc/UTVGRHClry8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
+ dkim=pass header.d=silabs.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fxv3PIQcPscEviJfWYwjHAEJidH2zqP2QWZmt0qarzY=;
-        b=hPJ2XSuHEDxk5xa92BEbmuxK1uUmRUUlrHAPlW1S4fKju8pKVB86jqQq0Op75Hjnoi
-         fSgmA/am90EQl9boTQpfwfYSt/kVuQEZGVKSsaWPUn3GboMljKWlrYNfFQVZ3K+u4zsj
-         i/rVjbS61Uhy+jj2PSTwp47AaGoqL5SyXJL+H/Cyz4gGtREkdbS4LfGifodVE6hd/NSj
-         oR7C/99LtIC9WGs8s2/bgAchF5ms3xXKrDE/e00QjeLI4PpUxcEz7cFj2knXjgjSScbW
-         iHLXuTNopFFK6BYJA+UTISpj2ZAPgoJM2XyvEskkCSOrhfzrSHug6AOo+E524OzJwqvB
-         uTTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fxv3PIQcPscEviJfWYwjHAEJidH2zqP2QWZmt0qarzY=;
-        b=eIBl2c1HpOpyhK4e9McC6l01U9Qkh2fx9cIo4BOOoFoLNuXnRkmmf9DuNdDMp8sjOY
-         BqJEz7Y/HeP0QSng2zY8mnsL8UI+C2PDz1Lqf/hSyoiPo+zRQ/8fsHUB8iK1uZ6cEYYD
-         gBXs1MIg5U71fDisNxr2gy5K1Cbx/S4EZvRrkLi0lm0K02gwcmrWCKXHFZEDLJb/vAxd
-         B2WybQ3hK64GZNGeZhZsPHbzr3be2NcTVRsbfEtBJz0yduxhoAM2VX6HyqTrDvGQSeTW
-         oXqRXbcKk2pEyCtu/XY7oGH8QQhDdcYS7+VkqaCyQL9RyGA5H644RlWCW21w6CR1aNIC
-         3bbA==
-X-Gm-Message-State: AGi0PubKekHEII4ev1dh5OA4dKsnK1XFQ5bt6+lc9Y4Sq1zDyDj5FDux
-        wtuqj+LZ+0iFNntL5ghGpto=
-X-Google-Smtp-Source: APiQypKwGdK4AFvzGTiKeu3mcjDu4XTYIpvdPfsk8IS/9AHapOYmM6EgUL1lOCyFZTn1RjXD7vZOMw==
-X-Received: by 2002:a1c:f615:: with SMTP id w21mr25239830wmc.183.1587994850577;
-        Mon, 27 Apr 2020 06:40:50 -0700 (PDT)
-Received: from linuxdev2.toradex.int (31-10-206-124.static.upc.ch. [31.10.206.124])
-        by smtp.gmail.com with ESMTPSA id g186sm16290640wme.7.2020.04.27.06.40.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 06:40:49 -0700 (PDT)
-From:   Max Krummenacher <max.oss.09@gmail.com>
-X-Google-Original-From: Max Krummenacher <max.krummenacher@toradex.com>
-To:     Max Krummenacher <max.krummenacher@toradex.com>, soc@kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Olof Johansson <olof@lixom.net>,
-        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH v3 5/5] arm64: defconfig: refresh
-Date:   Mon, 27 Apr 2020 15:40:03 +0200
-Message-Id: <20200427134003.45188-6-max.krummenacher@toradex.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200427134003.45188-1-max.krummenacher@toradex.com>
-References: <20200427134003.45188-1-max.krummenacher@toradex.com>
+ d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5jomDLASj8OFo3W7VpdAFAZG01W9DMmD+hzN6H1SUW4=;
+ b=jkTjoFe6KezYX/6v87axnnGUOapgjmBXaYBx1Uy33AyxpmfmZIFxdaIjkH09FTrsy0r+s8OnCJtVPI+pSd372ZNdfbncErAldcdl/hs2+dokVLw9nL20Rn0wpcf808z6R0QoJ1egjsfLu3HOgI9ph84KrwJh/BDQGYF7mlCRYjs=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Jerome.Pouiller@silabs.com; 
+Received: from MWHPR11MB1775.namprd11.prod.outlook.com (2603:10b6:300:10e::14)
+ by MWHPR11MB1424.namprd11.prod.outlook.com (2603:10b6:300:26::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Mon, 27 Apr
+ 2020 13:40:57 +0000
+Received: from MWHPR11MB1775.namprd11.prod.outlook.com
+ ([fe80::81d5:b62b:3770:ffbe]) by MWHPR11MB1775.namprd11.prod.outlook.com
+ ([fe80::81d5:b62b:3770:ffbe%10]) with mapi id 15.20.2937.023; Mon, 27 Apr
+ 2020 13:40:56 +0000
+From:   Jerome Pouiller <Jerome.Pouiller@silabs.com>
+To:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>
+Subject: [PATCH 00/17] staging: wfx: misc fixes
+Date:   Mon, 27 Apr 2020 15:40:14 +0200
+Message-Id: <20200427134031.323403-1-Jerome.Pouiller@silabs.com>
+X-Mailer: git-send-email 2.26.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-ClientProxiedBy: PR0P264CA0232.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1e::28) To MWHPR11MB1775.namprd11.prod.outlook.com
+ (2603:10b6:300:10e::14)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc-42.home (2a01:e35:2435:66a0:544b:f17b:7ae8:fb7) by PR0P264CA0232.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1e::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Mon, 27 Apr 2020 13:40:53 +0000
+X-Mailer: git-send-email 2.26.1
+X-Originating-IP: [2a01:e35:2435:66a0:544b:f17b:7ae8:fb7]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 56e85698-4ba1-4533-ae88-08d7eab09ce0
+X-MS-TrafficTypeDiagnostic: MWHPR11MB1424:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR11MB1424FE57FE0B5DBBC7B444D793AF0@MWHPR11MB1424.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 0386B406AA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1775.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(39850400004)(376002)(346002)(396003)(366004)(8886007)(66476007)(66556008)(4326008)(81156014)(86362001)(8936002)(6486002)(52116002)(6666004)(6506007)(5660300002)(16526019)(6512007)(1076003)(478600001)(8676002)(36756003)(186003)(2616005)(54906003)(107886003)(66574012)(2906002)(316002)(66946007);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: silabs.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iGu2oAFrK1SRQ5oJfserogiHhOfg+jYCs4ffOHu0jwHGOAq3Ylnwyi9/3x9KLC9a07/rYKuHcScbDe4Wx9QYjb74646osf8AFJWwqNQPGGT3//PWEQrNUZMmOkGx5z7IIMUfGEdRZSpqAQAgcUer31pn81EVkJxuiVCCA3N5OzmJgnU9sEfU+DojdVR7H7JagIA9HLfSOT3HkNRZZ6spMFTMHd/aUMis+WDGLgs21SFssFiDWEtiOprxl4jUyzOD6IYvmrm6nVDyd03OeglVX4+V4xgwg8yF9mMFONvK9xkD2KQmW01jztSfrJpk0ksgnIkhKnqDViwFNnDYzs9wTeccU0vk7FktaFYECnlypZKgR/TCAK4InE2fSxcHzuxUumxzTYTWCM8YmGtt24J1KUqNWSUOSo+RyL7I8VjiVRDEZyJ0YLLzUPMeB+Pht65R
+X-MS-Exchange-AntiSpam-MessageData: aukgPg2f3SdKh/sXxE3eEgwjX/L2KRPfmTfw6l2Atfp5hV7RgpUsf4kv0E9HWi3J1u2I/1ZVOgNAebRnW8C5BDo8UYACju/iy9pmIbdajnVA/TiAUR99BlPInNUfSA0KdfsbdN9O8k+Y1jZvTznI+eUPOUEWzed+VyxfDes/16sLwswEBxU6B7Pc8xoacHSa7bEMhQXi8MPd+6X8y/gBFh2bEQpV+SYkjiHSbrCPu/CylaECXyX9anKBRQmA+YJW1hduTYvW+o1YpkLZY+kmW2wcIewVALGNDQx1QMWQb634XBGkDAFsLIsvKjwnmJxnFtxMdkqh8WvBbTnXhua3BTIkVq9WRZLsHCZpv+54/yFclXXdkafJrxBmehjV958xTvbyZE0FD+an4Fq1JRAF9Z9eVaDOHSplq0in2G9xWAO94UapQ39GZ6UIg5+31WDijs9r2QqNCyNuk9RN/MiyyYOJfAgYhNXODdNhEWzlFclPMJVWj0dFkhJhqnioZwxwg3126AXZxBjXwbKhTTacawkeaAUfwE3zW7RIqct7LnHpIiPiuWx3vpBmZbGmk+Lv0NOrPbT+ENFxbddEFaYJY/rNU8A7WFdsjvkhbPhgeLuzzNf49up/5PKXG348ugShyLGsY/lOUr+Sa0x/meSoyPhRKQgpO5rOd9iZ2Z1nfIZOA6TJwNlkC9oF7FhQg5s+8fe42TPXgIEkxP9Epu17tdRlVoPD50InkTkhge43z3xwJ+xVdrZNvU5JSQ6nykS8tKExAwfCfGYkzp12B1LJDwwHFjsHhUxg6ESgRYiSpcT8mfMHHyGKHUD4GOOj7bA+OV39us+oKa4gw72r7IzHPM88rno8/EDYHyfAjeMjaQQ=
+X-OriginatorOrg: silabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56e85698-4ba1-4533-ae88-08d7eab09ce0
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2020 13:40:56.6077
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eF/lpqfxNlxCieVWsnenBW4GcOiMworRo4JWNMhouZ9jpTILNXje3IxBWuLaznWu322VNSV95KB3FQG+/3b7Yw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1424
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refresh with make defconfig savedefconfig. The resulting .config before
-and after this patch are identical.
-
-Eight configs moved to a different line.
-Four configs get selected by other configs and are present in the
-resulting .config:
-    FSL_MC_BUS=y
-    MEDIA_CONTROLLER=y
-    VIDEO_V4L2_SUBDEV_API=y
-    SDM_GCC_845=y
-One config is selected by other configs but moves from module to kernel
-built-in:
-    USB_CONN_GPIO=m
-
-Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
-
----
-
-Changes in v3:
-- add reviewed-by tags
-- dropped 'arm64: defconfig: PCIE_TEGRA194: follow changed config symbol name'
-  similar patch got applied
-- as requested by Arnd, added suggestion on where to apply, 5.7 vs. 5.8.
-- as requested by Arnd, amended commit message with info why some configs
-  are no longer in the defconfig.
-
-Changes in v2:
-- add reviewed-by tags
-
- arch/arm64/configs/defconfig | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 472aa82b9feee..fae25f4d7d5d3 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -166,9 +166,9 @@ CONFIG_QRTR_SMD=m
- CONFIG_QRTR_TUN=m
- CONFIG_BPF_JIT=y
- CONFIG_CAN=m
-+CONFIG_CAN_FLEXCAN=m
- CONFIG_CAN_RCAR=m
- CONFIG_CAN_RCAR_CANFD=m
--CONFIG_CAN_FLEXCAN=m
- CONFIG_BT=m
- CONFIG_BT_HIDP=m
- # CONFIG_BT_HS is not set
-@@ -203,20 +203,19 @@ CONFIG_PCI_HOST_THUNDER_ECAM=y
- CONFIG_PCIE_ROCKCHIP_HOST=m
- CONFIG_PCIE_BRCMSTB=m
- CONFIG_PCI_LAYERSCAPE=y
--CONFIG_PCIE_LAYERSCAPE_GEN4=y
- CONFIG_PCI_HISI=y
- CONFIG_PCIE_QCOM=y
- CONFIG_PCIE_ARMADA_8K=y
- CONFIG_PCIE_KIRIN=y
- CONFIG_PCIE_HISI_STB=y
- CONFIG_PCIE_TEGRA194_HOST=m
-+CONFIG_PCIE_LAYERSCAPE_GEN4=y
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_FW_LOADER_USER_HELPER=y
- CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
- CONFIG_HISILICON_LPC=y
- CONFIG_SIMPLE_PM_BUS=y
--CONFIG_FSL_MC_BUS=y
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
-@@ -496,10 +495,10 @@ CONFIG_SENSORS_INA3221=m
- CONFIG_THERMAL_GOV_POWER_ALLOCATOR=y
- CONFIG_CPU_THERMAL=y
- CONFIG_THERMAL_EMULATION=y
--CONFIG_QORIQ_THERMAL=m
--CONFIG_SUN8I_THERMAL=y
- CONFIG_IMX_SC_THERMAL=m
- CONFIG_IMX8MM_THERMAL=m
-+CONFIG_QORIQ_THERMAL=m
-+CONFIG_SUN8I_THERMAL=y
- CONFIG_ROCKCHIP_THERMAL=m
- CONFIG_RCAR_THERMAL=y
- CONFIG_RCAR_GEN3_THERMAL=y
-@@ -567,13 +566,12 @@ CONFIG_MEDIA_CAMERA_SUPPORT=y
- CONFIG_MEDIA_ANALOG_TV_SUPPORT=y
- CONFIG_MEDIA_DIGITAL_TV_SUPPORT=y
- CONFIG_MEDIA_SDR_SUPPORT=y
--CONFIG_MEDIA_CONTROLLER=y
--CONFIG_VIDEO_V4L2_SUBDEV_API=y
- CONFIG_MEDIA_PLATFORM_SUPPORT=y
- # CONFIG_DVB_NET is not set
- CONFIG_MEDIA_USB_SUPPORT=y
- CONFIG_USB_VIDEO_CLASS=m
- CONFIG_V4L_PLATFORM_DRIVERS=y
-+CONFIG_VIDEO_QCOM_CAMSS=m
- CONFIG_VIDEO_RCAR_CSI2=m
- CONFIG_VIDEO_RCAR_VIN=m
- CONFIG_VIDEO_SUN6I_CSI=m
-@@ -586,7 +584,6 @@ CONFIG_VIDEO_RENESAS_FCP=m
- CONFIG_VIDEO_RENESAS_VSP1=m
- CONFIG_SDR_PLATFORM_DRIVERS=y
- CONFIG_VIDEO_RCAR_DRIF=m
--CONFIG_VIDEO_QCOM_CAMSS=m
- CONFIG_DRM=m
- CONFIG_DRM_I2C_NXP_TDA998X=m
- CONFIG_DRM_MALI_DISPLAY=m
-@@ -614,10 +611,10 @@ CONFIG_DRM_MSM=m
- CONFIG_DRM_TEGRA=m
- CONFIG_DRM_PANEL_LVDS=m
- CONFIG_DRM_PANEL_SIMPLE=m
--CONFIG_DRM_SIMPLE_BRIDGE=m
- CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
- CONFIG_DRM_DISPLAY_CONNECTOR=m
- CONFIG_DRM_SII902X=m
-+CONFIG_DRM_SIMPLE_BRIDGE=m
- CONFIG_DRM_THINE_THC63LVD1024=m
- CONFIG_DRM_TI_SN65DSI86=m
- CONFIG_DRM_I2C_ADV7511=m
-@@ -665,7 +662,6 @@ CONFIG_SND_SOC_WSA881X=m
- CONFIG_SND_SIMPLE_CARD=m
- CONFIG_SND_AUDIO_GRAPH_CARD=m
- CONFIG_I2C_HID=m
--CONFIG_USB_CONN_GPIO=m
- CONFIG_USB=y
- CONFIG_USB_OTG=y
- CONFIG_USB_XHCI_HCD=y
-@@ -800,15 +796,14 @@ CONFIG_QCOM_A53PLL=y
- CONFIG_QCOM_CLK_APCS_MSM8916=y
- CONFIG_QCOM_CLK_SMD_RPM=y
- CONFIG_QCOM_CLK_RPMH=y
--CONFIG_IPQ_GCC_8074=y
- CONFIG_IPQ_GCC_6018=y
-+CONFIG_IPQ_GCC_8074=y
- CONFIG_MSM_GCC_8916=y
- CONFIG_MSM_GCC_8994=y
- CONFIG_MSM_MMCC_8996=y
- CONFIG_MSM_GCC_8998=y
- CONFIG_QCS_GCC_404=y
- CONFIG_SDM_CAMCC_845=m
--CONFIG_SDM_GCC_845=y
- CONFIG_SDM_GPUCC_845=y
- CONFIG_SDM_DISPCC_845=y
- CONFIG_SM_GCC_8150=y
-@@ -937,10 +932,10 @@ CONFIG_FPGA_REGION=m
- CONFIG_OF_FPGA_REGION=m
- CONFIG_TEE=y
- CONFIG_OPTEE=y
-+CONFIG_MUX_MMIO=y
- CONFIG_SLIMBUS=m
- CONFIG_SLIM_QCOM_CTRL=m
- CONFIG_SLIM_QCOM_NGD_CTRL=m
--CONFIG_MUX_MMIO=y
- CONFIG_EXT2_FS=y
- CONFIG_EXT3_FS=y
- CONFIG_EXT4_FS_POSIX_ACL=y
--- 
-2.20.1
-
+RnJvbTogSsOpcsO0bWUgUG91aWxsZXIgPGplcm9tZS5wb3VpbGxlckBzaWxhYnMuY29tPgoKTm90
+aGluZyB2ZXJ5IGV4Y2l0aW5nIGluIHRoaXMgc2VyaWVzLiBJdCBzdXBwb3J0cyB0aGUgY2FzZSB3
+aGVyZSBkZXZpY2UKcmVwb3J0cyB0byBiZSB0b28gaG90LCBmaXhlcyBhIGZldyBjb3JuZXIgY2Fz
+ZXMgYW5kIG1ha2VzIHNvbWUgY29zbWV0aWMKY2hhbmdlcy4KCkrDqXLDtG1lIFBvdWlsbGVyICgx
+Nyk6CiAgc3RhZ2luZzogd2Z4OiBmaXggKGZ1dHVyZSkgVERMUyBzdXBwb3J0CiAgc3RhZ2luZzog
+d2Z4OiBjaGFuZ2UgdGhlIGZpZWxkIGNoaXBfZnJvemVuIGludG8gYSBib29sZWFuCiAgc3RhZ2lu
+Zzogd2Z4OiBtYXJrIGNoaXAgZnJvemVuIG9uIGVycm9yIGluZGljYXRpb24KICBzdGFnaW5nOiB3
+Zng6IGZpeCBzdXBwb3J0IGZvciBBUCB0aGF0IGRvIG5vdCBzdXBwb3J0IFBTLVBvbGwKICBzdGFn
+aW5nOiB3Zng6IGZpeCBDQUIgc2VudCBhdCB0aGUgd3JvbmcgdGltZQogIHN0YWdpbmc6IHdmeDog
+YWRkIHN1cHBvcnQgZm9yICdkZXZpY2UgdG9vIGhvdCcgaW5kaWNhdGlvbgogIHN0YWdpbmc6IHdm
+eDogYWRkIGFuIGV4cGxpY2l0IHdhcm5pbmcgd2hlbiBjaGlwIGRldGVjdCB0b28gaGlnaAogICAg
+dGVtcGVyYXR1cmUKICBzdGFnaW5nOiB3Zng6IGZpeCBoaWdoZXN0IFJ4IHZhbHVlIGRlY2xhcmVk
+IGluCiAgICBpZWVlODAyMTFfc3VwcG9ydGVkX2JhbmQKICBzdGFnaW5nOiB3Zng6IGZpeCBvdmVy
+ZmxvdyBpbiBmcmFtZSBjb3VudGVycwogIHN0YWdpbmc6IHdmeDogZml4IHRoZSB3YXJuaW5nICJp
+bmNvbnNpc3RlbnQgbm90aWZpY2F0aW9uIgogIHN0YWdpbmc6IHdmeDogZml4IGRvdWJsZSBpbml0
+IG9mIHR4X3BvbGljeV91cGxvYWRfd29yawogIHN0YWdpbmc6IHdmeDogc2hvdyBjb3VudGVycyBv
+ZiBhbGwgaW50ZXJmYWNlcwogIHN0YWdpbmc6IHdmeDogYWxzbyBzaG93IHVubmFtZWQgY291bnRl
+cnMgZmllbGRzCiAgc3RhZ2luZzogd2Z4OiB1cGRhdGUgbGlzdCBvZiBrbm93biBtZXNzYWdlcyBp
+biB0cmFjZXBvaW50cwogIHN0YWdpbmc6IHdmeDogZml4IG1lc3NhZ2VzIG5hbWVzIGluIHRyYWNl
+cG9pbnRzCiAgc3RhZ2luZzogd2Z4OiBmaXggZGlzcGxheSBvZiBleGNlcHRpb24gaW5kaWNhdGlv
+bgogIHN0YWdpbmc6IHdmeDogdXBkYXRlIGxpc3Qgb2YgZXJyb3JzCgogZHJpdmVycy9zdGFnaW5n
+L3dmeC9kYXRhX3R4LmMgICAgICAgICB8ICAxOCArKy0KIGRyaXZlcnMvc3RhZ2luZy93ZngvZGF0
+YV90eC5oICAgICAgICAgfCAgIDEgKwogZHJpdmVycy9zdGFnaW5nL3dmeC9kZWJ1Zy5jICAgICAg
+ICAgICB8ICAzMSArKysrLS0KIGRyaXZlcnMvc3RhZ2luZy93ZngvaGlmX2FwaV9nZW5lcmFsLmgg
+fCAgMzkgKysrKy0tLQogZHJpdmVycy9zdGFnaW5nL3dmeC9oaWZfcnguYyAgICAgICAgICB8IDE1
+MSArKysrKysrKysrKysrKysrKy0tLS0tLS0tLQogZHJpdmVycy9zdGFnaW5nL3dmeC9oaWZfdHgu
+YyAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9zdGFnaW5nL3dmeC9oaWZfdHhfbWliLmMgICAg
+ICB8ICAgNiArLQogZHJpdmVycy9zdGFnaW5nL3dmeC9oaWZfdHhfbWliLmggICAgICB8ICAgMiAr
+LQogZHJpdmVycy9zdGFnaW5nL3dmeC9tYWluLmMgICAgICAgICAgICB8ICAgNCArLQogZHJpdmVy
+cy9zdGFnaW5nL3dmeC9xdWV1ZS5jICAgICAgICAgICB8ICAgMiArLQogZHJpdmVycy9zdGFnaW5n
+L3dmeC9zdGEuYyAgICAgICAgICAgICB8ICA1MSArKysrKysrLS0KIGRyaXZlcnMvc3RhZ2luZy93
+Zngvc3RhLmggICAgICAgICAgICAgfCAgIDQgKy0KIGRyaXZlcnMvc3RhZ2luZy93ZngvdHJhY2Vz
+LmggICAgICAgICAgfCAgMTUgKystCiBkcml2ZXJzL3N0YWdpbmcvd2Z4L3dmeC5oICAgICAgICAg
+ICAgIHwgICA1ICstCiAxNCBmaWxlcyBjaGFuZ2VkLCAyMjggaW5zZXJ0aW9ucygrKSwgMTAzIGRl
+bGV0aW9ucygtKQoKLS0gCjIuMjYuMQoK
