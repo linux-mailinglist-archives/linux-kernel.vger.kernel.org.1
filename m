@@ -2,86 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8EC1BAE3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8F81BAE3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgD0Tmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:42:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51328 "EHLO mail.kernel.org"
+        id S1726805AbgD0Tmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:42:50 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:46476 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726384AbgD0Tmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:42:42 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B71652078C;
-        Mon, 27 Apr 2020 19:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588016562;
-        bh=pHSFHwxnqBXxHCqPQAkxUYpCjZ/3lJQClrx+8qthDWQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BF4/l8XrQ02299gpcli0FvwYPMF2hN3ZsowBym+oFxLCbmSBv6c8XKoMoCpSUs1mZ
-         vLIh3Da+bxY+s/o+fJHms7WltoegzNJwopJah4TrVT7ox2ZS8JuHiDXeMfsgI8/UYZ
-         lVmACC6y+QfktaRHOt+ND6M6DoBoUgRMxPoCw4LQ=
-Date:   Mon, 27 Apr 2020 12:42:41 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Zong Li <zong.li@sifive.com>
-Cc:     Will Deacon <will@kernel.org>, linux-mm@kvack.org,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, catalin.marinas@arm.com,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 1/4] mm: add DEBUG_WX support
-Message-Id: <20200427124241.28adefc19cfddcf83f75d03c@linux-foundation.org>
-In-Reply-To: <CANXhq0rW5j+uAymXbfsND9AXHYvM+fPUX9YYYRVXY-Y1u6yo0Q@mail.gmail.com>
-References: <cover.1587455584.git.zong.li@sifive.com>
-        <23980cd0f0e5d79e24a92169116407c75bcc650d.1587455584.git.zong.li@sifive.com>
-        <20200427074915.GA11787@willie-the-truck>
-        <CANXhq0rW5j+uAymXbfsND9AXHYvM+fPUX9YYYRVXY-Y1u6yo0Q@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725919AbgD0Tmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 15:42:49 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1jT9eR-00008e-D4; Mon, 27 Apr 2020 21:42:47 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] arm64: dts: rockchip: remove #sound-dai-cells from &i2s1 node of rk3399-pinebook-pro.dts
+Date:   Mon, 27 Apr 2020 21:42:46 +0200
+Message-Id: <158801655764.50670.4654854118288471887.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200424155600.24254-1-jbx6244@gmail.com>
+References: <20200424155600.24254-1-jbx6244@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Apr 2020 16:47:47 +0800 Zong Li <zong.li@sifive.com> wrote:
-
-> > > +       This is useful for discovering cases where the kernel is leaving
-> > > +       W+X mappings after applying NX, as such mappings are a security risk.
-> > > +       This check also includes UXN, which should be set on all kernel
-> > > +       mappings.
-> >
-> > "UXN" is the name of a bit in the arm64 page-table descriptors, so this
-> > should be reworded now that it's in generic help text.
-> >
+On Fri, 24 Apr 2020 17:55:59 +0200, Johan Jonker wrote:
+> The '#sound-dai-cells' property is already defined in rk3399.dtsi
+> at the 'i2s1' node, so remove it from the '&i2s1' node in
+> 'rk3399-pinebook-pro.dts'.
 > 
-> It's exactly. Sorry for missing the statement.
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> Hi Andrew,
-> Shall I send a next version patch to fix it? It should be "This is
-> useful for discovering cases where the kernel is leaving W+X mappings
-> after applying NX, as such mappings are a security risk." here.
+> [...]
 
-I'll add this:
+Applied, thanks!
 
---- a/mm/Kconfig.debug~mm-add-debug_wx-support-fix
-+++ a/mm/Kconfig.debug
-@@ -128,8 +128,8 @@ config DEBUG_WX
- 	help
- 	  Generate a warning if any W+X mappings are found at boot.
- 
--	  This is useful for discovering cases where the kernel is leaving
--	  W+X mappings after applying NX, as such mappings are a security risk.
-+	  This is useful for discovering cases where the kernel is leaving W+X
-+	  mappings after applying NX, as such mappings are a security risk.
- 	  This check also includes UXN, which should be set on all kernel
- 	  mappings.
- 
-_
+[1/2] arm64: dts: rockchip: remove #sound-dai-cells from &i2s1 node of rk3399-pinebook-pro.dts
+      commit: e565dd298c6bc9f53f0b07d96b019e000777c1fe
+[2/2] arm64: dts: rockchip: remove #sound-dai-cells from &spdif node of rk3399-hugsun-x99.dts
+      commit: de70083cbaabb86c282f421b070b041236ba6f4b
 
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
