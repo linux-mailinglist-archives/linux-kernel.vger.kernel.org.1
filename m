@@ -2,199 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C381BAB2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B6D1BAB25
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgD0R0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 13:26:42 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:39610 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726262AbgD0R0m (ORCPT
+        id S1726484AbgD0R0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 13:26:19 -0400
+Received: from mail.efficios.com ([167.114.26.124]:37564 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726204AbgD0R0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 13:26:42 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RHNNun032176;
-        Mon, 27 Apr 2020 17:25:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=2uE+mNBlryTX8hj4mQm6UWx/K31ONdvabCMIKOLtOyU=;
- b=xTCYIbf7r5dai610kYmRfslwcsdHMEa6nYuPYmpMy+7WUkM9840zuWRmT2v1MiaH6Cad
- +fYWXCh8PyDfm6g+dIyG7BXcw3P9PeZXXougO6mlOLOylsBzYtMAlZzBzlRJJatu4I9N
- /AveFv2IyJQslCKqyCxuN+21YY9yrbN47PRg98fdwJ2kPrlLeXvj0DTMFDZB9ZWRvRM7
- Ed+D9rxwrxjP3D1PFlRuVFcuOx+bDZYZm4iIaDJw0NmlAZ9XtPZO6joC0Rr+di/qtUTo
- oTv+6hlYH5+uyVoe6FV6yxjUAbpvIRv9bN/idQ6mOzjti7KgZTFrdQJIrHma1+l6CzbV yA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 30p2p00ddv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Apr 2020 17:25:18 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RHMbqg085782;
-        Mon, 27 Apr 2020 17:25:18 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 30mxpdrdfm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Apr 2020 17:25:18 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03RHP5vx008462;
-        Mon, 27 Apr 2020 17:25:05 GMT
-Received: from [192.168.2.157] (/71.63.128.209)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 27 Apr 2020 10:25:05 -0700
-Subject: Re: [PATCH v3 2/4] hugetlbfs: move hugepagesz= parsing to arch
- independent code
-To:     Sandipan Das <sandipan.osd@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S.Miller" <davem@davemloft.net>,
+        Mon, 27 Apr 2020 13:26:19 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 15F5E25AB7F;
+        Mon, 27 Apr 2020 13:26:18 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id vyE-AKT5Yyo9; Mon, 27 Apr 2020 13:26:17 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 8011B25B48F;
+        Mon, 27 Apr 2020 13:26:17 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 8011B25B48F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1588008377;
+        bh=4CDxUYdzmcopBG0/OPLT4vxX3lvaRe8HqEPYDfAllDQ=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=fGHnEnyfSSb1yhiMxCDx0oZgEYV7FBFlcvAxf3Y+/oM4mN0ueOWrwr9eyVq5a+rT0
+         +jRqi2+IuSsNW7PiQUOCthc1gu6lsMhpt4S9wN8XY47UTud9Uj4kWlRRiv1/kKd83d
+         WfVU9pUuiZ8wziBtMZuif2X4tYwfD1JKYFcJrdji1/vADYlf4QrQtWUBSVzI/TEgYE
+         aYs8yCCsxnT/LbXA67n+s6q0fG1k1m8Kdfm5lwZaVKMdShD/Vlvj5/B+uiSQk97nyD
+         Rqih1UJZ6d+b4YkqlmOwfWPIcItLjJKHmNtwB8S3FE3DwcZkTKgL1NeAi/aPedKwY2
+         RfOXugXFWnwug==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Zj3X43GAeTna; Mon, 27 Apr 2020 13:26:17 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 6031B25B336;
+        Mon, 27 Apr 2020 13:26:17 -0400 (EDT)
+Date:   Mon, 27 Apr 2020 13:26:17 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Florian Weimer <fw@deneb.enyo.de>
+Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        carlos <carlos@redhat.com>, Rich Felker <dalias@libc.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Will Deacon <will.deacon@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ben Maurer <bmaurer@fb.com>, Dave Watson <davejwatson@fb.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Longpeng <longpeng2@huawei.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Mina Almasry <almasrymina@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200417185049.275845-1-mike.kravetz@oracle.com>
- <20200417185049.275845-3-mike.kravetz@oracle.com>
- <7583dfcc-62d8-2a54-6eef-bcb4e01129b3@gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <5a380060-38db-b690-1003-678ca0f28f07@oracle.com>
-Date:   Mon, 27 Apr 2020 10:25:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Paul <paulmck@linux.vnet.ibm.com>, Paul Turner <pjt@google.com>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>
+Message-ID: <2102127737.70791.1588008377292.JavaMail.zimbra@efficios.com>
+In-Reply-To: <87zhawvphv.fsf@mid.deneb.enyo.de>
+References: <20200326155633.18236-1-mathieu.desnoyers@efficios.com> <20200326155633.18236-6-mathieu.desnoyers@efficios.com> <87ees9z417.fsf@mid.deneb.enyo.de> <284293396.70630.1588005648556.JavaMail.zimbra@efficios.com> <87zhawvphv.fsf@mid.deneb.enyo.de>
+Subject: Re: [PATCH glibc 5/9] glibc: Perform rseq(2) registration at C
+ startup and thread creation (v17)
 MIME-Version: 1.0
-In-Reply-To: <7583dfcc-62d8-2a54-6eef-bcb4e01129b3@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 bulkscore=0 adultscore=0 phishscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004270142
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1011
- bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004270142
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3918 (ZimbraWebClient - FF75 (Linux)/8.8.15_GA_3895)
+Thread-Topic: glibc: Perform rseq(2) registration at C startup and thread creation (v17)
+Thread-Index: NB5tGkGbwSwj6uwD4kCQxwPloIWw0w==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/26/20 10:04 PM, Sandipan Das wrote:
-> Hi Mike,
-> 
-> On 18/04/20 12:20 am, Mike Kravetz wrote:
->> Now that architectures provide arch_hugetlb_valid_size(), parsing
->> of "hugepagesz=" can be done in architecture independent code.
->> Create a single routine to handle hugepagesz= parsing and remove
->> all arch specific routines.  We can also remove the interface
->> hugetlb_bad_size() as this is no longer used outside arch independent
->> code.
+
+
+----- On Apr 27, 2020, at 12:54 PM, Florian Weimer fw@deneb.enyo.de wrote:
+
+> * Mathieu Desnoyers:
+>=20
+>>>> +#include <sys/syscall.h>
+>>>> +#include <stdint.h>
+>>>> +#include <kernel-features.h>
+>>>> +#include <sys/rseq.h>
+>>>> +
+>>>> +__thread struct rseq __rseq_abi =3D {
+>>>> +  .cpu_id =3D RSEQ_CPU_ID_UNINITIALIZED,
+>>>> +};
+>>>=20
+>>> { should go onto its own line.
 >>
->> This also provides consistent behavior of hugetlbfs command line
->> options.  The hugepagesz= option should only be specified once for
->> a specific size, but some architectures allow multiple instances.
->> This appears to be more of an oversight when code was added by some
->> architectures to set up ALL huge pages sizes.
+>> OK
 >>
->> [...]
+>>> I'd also add attribute_tls_model_ie,
+>>> also it's implied by the declaration in the header.
 >>
->> diff --git a/arch/powerpc/mm/hugetlbpage.c b/arch/powerpc/mm/hugetlbpage.c
->> index de54d2a37830..2c3fa0a7787b 100644
->> --- a/arch/powerpc/mm/hugetlbpage.c
->> +++ b/arch/powerpc/mm/hugetlbpage.c
->> @@ -589,21 +589,6 @@ static int __init add_huge_page_size(unsigned long long size)
->>  	return 0;
->>  }
->>  
->> -static int __init hugepage_setup_sz(char *str)
->> -{
->> -	unsigned long long size;
->> -
->> -	size = memparse(str, &str);
->> -
->> -	if (add_huge_page_size(size) != 0) {
->> -		hugetlb_bad_size();
->> -		pr_err("Invalid huge page size specified(%llu)\n", size);
->> -	}
->> -
->> -	return 1;
->> -}
->> -__setup("hugepagesz=", hugepage_setup_sz);
->> -
->> [...]
-> 
-> This isn't working as expected on powerpc64.
-> 
->   [    0.000000] Kernel command line: root=UUID=dc7b49cf-95a2-4996-8e7d-7c64ddc7a6ff hugepagesz=16G hugepages=2 
->   [    0.000000] HugeTLB: huge pages not supported, ignoring hugepagesz = 16G
->   [    0.000000] HugeTLB: huge pages not supported, ignoring hugepages = 2
->   [    0.284177] HugeTLB registered 16.0 MiB page size, pre-allocated 0 pages
->   [    0.284182] HugeTLB registered 16.0 GiB page size, pre-allocated 0 pages
->   [    2.585062]     hugepagesz=16G
->   [    2.585063]     hugepages=2
-> 
-> The "huge pages not supported" messages are under a !hugepages_supported()
-> condition which checks if HPAGE_SHIFT is non-zero. On powerpc64, HPAGE_SHIFT
-> comes from the hpage_shift variable. At this point, it is still zero and yet
-> to be set. Hence the check fails. The reason being hugetlbpage_init_default(),
-> which sets hpage_shift, it now called after hugepage_setup_sz().
+>> This contradicts feedback I received from Szabolcs Nagy in September 201=
+9:
+>>
+>> https://public-inbox.org/libc-alpha/c58d4d6e-f22a-f5d9-e23a-5bd72cec1a86=
+@arm.com/
+>>
+>> "note that libpthread.so is built with -ftls-model=3Dinitial-exec
+>>
+>> (and if it wasn't then you'd want to put the attribute on the
+>> declaration in the internal header file, not on the definition,
+>> so the actual tls accesses generate the right code)"
+>>
+>> In the context of his feedback, __rseq_abi was defined within
+>> nptl/pthread_create.c.
+>> It is now defined in sysdeps/unix/sysv/linux/rseq-sym.c, which is built =
+into the
+>> csu which AFAIU ends up in libc.so. His comment still applies though, be=
+cause
+>> libc.so is also built with -ftls-model=3Dinitial-exec.
+>>
+>> So should I apply the "initial-exec" TLS model only to the __rseq_abi
+>> declaration, or is it preferred to apply it to both the declaration
+>> and the definition ?
+>=20
+> I do not have a strong preference here.  Technically, the declaration
+> in the header file should be enough.
 
-Thanks for catching this Sandipan.
+OK, so I'll just keep the attribute on the declaration in the header.
 
-In the new arch independent version of hugepages_setup, I added the following
-code in patch 4 off this series:
+>=20
+>>>> diff --git a/sysdeps/unix/sysv/linux/sys/rseq.h
+>>>> b/sysdeps/unix/sysv/linux/sys/rseq.h
+>>>> new file mode 100644
+>>>> index 0000000000..503dce4cac
+>>>> --- /dev/null
+>>>> +++ b/sysdeps/unix/sysv/linux/sys/rseq.h
+>>>> @@ -0,0 +1,186 @@
+>>>=20
+>>> I think there is some value in making this header compatible with
+>>> inclusion from the assembler (including constants for the relevant
+>>> struct offsets), but that can be a later change.
+>>
+>> Agreed. By "later", do you mean before merging the patch, between
+>> merge of the patch and next glibc release, or for a subsequent glibc
+>> release ?
+>=20
+> It can happen some time after merging the patch, preferably for this
+> release.  But I don't think it's release-critical.
 
-> +static int __init hugepages_setup(char *s)
->  {
->  	unsigned long *mhp;
->  	static unsigned long *last_mhp;
->  
-> +	if (!hugepages_supported()) {
-> +		pr_warn("HugeTLB: huge pages not supported, ignoring hugepages = %s\n", s);
-> +		return 0;
-> +	}
-> +
->  	if (!parsed_valid_hugepagesz) {
+OK
 
-In fact, I added it to the beginning of all the hugetlb command line parsing
-routines.  My 'thought' was to warn early if hugetlb pages were not supported.
-Previously, the first check for hugepages_supported() was in hugetlb_init()
-which ran after hugetlbpage_init_default().
+>=20
+>>>> +/* struct rseq is aligned on 4 * 8 bytes to ensure it is always
+>>>> +   contained within a single cache-line.
+>>>> +
+>>>> +   A single struct rseq per thread is allowed.  */
+>>>> +struct rseq
+>>>> +  {
+>>>> +    /* Restartable sequences cpu_id_start field. Updated by the
+>>>> +       kernel. Read by user-space with single-copy atomicity
+>>>> +       semantics. This field should only be read by the thread which
+>>>> +       registered this data structure. Aligned on 32-bit. Always
+>>>=20
+>>> What does =E2=80=9CAligned on 32-bit=E2=80=9D mean in this context?  Do=
+ you mean to
+>>> reference 32-*byte* alignment here?
+>>
+>> No. I really mean 32-bit (4-byte). Being aligned on 32-byte guarantees t=
+hat
+>> this field is aligned at least on 4-byte. This is required by single-cop=
+y
+>> atomicity semantics.
+>>
+>> Should I update this comment to state "Aligned on 4-byte" instead ?
+>=20
+> I think this is implied by all Linux ABIs.  And the explicit alignment
+> specification for struct rseq makes the alignment 32 bytes.
 
-The easy solution is to remove all the hugepages_supported() checks from
-command line parsing routines and rely on the later check in hugetlb_init().
+Unless a structure ends up being packed, which is of course not the case
+here.
 
-Another reason for adding those early checks was to possibly prevent the
-preallocation of gigantic pages at command line parsing time.   Gigantic
-pages are allocated at command line parsing time as they need to be allocated
-with the bootmem allocator.  My concern is that there could be some strange
-configuration where !hugepages_supported(), yet we allocate gigantic pages
-from bootmem that can not be used or freeed later.
+I would prefer to keep the comment about 32-bit alignment requirement on
+the specific fields, because the motivation for alignment requirement is
+much more strict for fields (correctness) than the motivation for alignment
+of the structure (performance).
 
-powerpc is the only architecture which has it's own alloc_bootmem_huge_page
-routine.  So, it handles this potential issue.
+>=20
+>>>> +    /* Restartable sequences rseq_cs field.
+>>>> +
+>>>> +       Contains NULL when no critical section is active for the curre=
+nt
+>>>> +       thread, or holds a pointer to the currently active struct rseq=
+_cs.
+>>>> +
+>>>> +       Updated by user-space, which sets the address of the currently
+>>>> +       active rseq_cs at the beginning of assembly instruction sequen=
+ce
+>>>> +       block, and set to NULL by the kernel when it restarts an assem=
+bly
+>>>> +       instruction sequence block, as well as when the kernel detects=
+ that
+>>>> +       it is preempting or delivering a signal outside of the range
+>>>> +       targeted by the rseq_cs. Also needs to be set to NULL by user-=
+space
+>>>> +       before reclaiming memory that contains the targeted struct rse=
+q_cs.
+>>>> +
+>>>> +       Read and set by the kernel. Set by user-space with single-copy
+>>>> +       atomicity semantics. This field should only be updated by the
+>>>> +       thread which registered this data structure. Aligned on 64-bit=
+.  */
+>>>> +    union {
+>>>> +      uint64_t ptr64;
+>>>> +#ifdef __LP64__
+>>>> +      uint64_t ptr;
+>>>> +#else
+>>>> +      struct {
+>>>> +#if (defined(__BYTE_ORDER) && (__BYTE_ORDER =3D=3D __BIG_ENDIAN)) ||
+>>>> defined(__BIG_ENDIAN)
+>>>> +        uint32_t padding; /* Initialized to zero.  */
+>>>> +        uint32_t ptr32;
+>>>> +#else /* LITTLE */
+>>>> +        uint32_t ptr32;
+>>>> +        uint32_t padding; /* Initialized to zero.  */
+>>>> +#endif /* ENDIAN */
+>>>> +      } ptr;
+>>>> +#endif
+>>>> +    } rseq_cs;
+>>>=20
+>>> Are these conditionals correct for x32?
+>>
+>> Let's see. With x86 gcc:
+>>
+>> -m64: (__x86_64__ && __LP64__)
+>> -m32: (__i386__)
+>> -mx32: (__x86_64__ && __ILP32__)
+>>
+>> So with "#ifdef __LP64__" we specifically target 64-bit pointers. The re=
+st
+>> falls into the "else" case, which expects 32-bit pointers. Considering t=
+hat
+>> x32 has 32-bit pointers, I don't see any issue here.
+>=20
+> Does the kernel have a separate 32-bit entry point for rseq on x32?
+> If not, it will expect the 64-bit struct layout.
 
-I'll send out a fix shortly.
--- 
-Mike Kravetz
+No, there is a single entry point into rseq covering all of 32-bit, 64-bit =
+and x32.
+We achieve this by ensuring the layout of the linux/rseq.h structures
+uses the union representation for pointers. Therefore, the kernel does not =
+care
+whether it reads a pointer from a 32-bit or 64-bit process. This is becomin=
+g the
+preferred way to design Linux kernel ABIs nowadays.
+
+>=20
+>> We don't mind that user-space uses that pointer, but we never want the k=
+ernel
+>> to touch that pointer rather than the 32/64-bit-aware fields. One possib=
+ility
+>> would be to do:
+>>
+>>     union
+>>       {
+>>         uint64_t ptr64;
+>> #ifdef __LP64__
+>>         uint64_t ptr;
+>> #else
+>>         struct
+>>           {
+>> #if (defined (__BYTE_ORDER) && (__BYTE_ORDER =3D=3D __BIG_ENDIAN)) || de=
+fined
+>> (__BIG_ENDIAN)
+>>             uint32_t padding; /* Initialized to zero.  */
+>>             uint32_t ptr32;
+>> #else /* LITTLE */
+>>             uint32_t ptr32;
+>>             uint32_t padding; /* Initialized to zero.  */
+>> #endif /* ENDIAN */
+>>           } ptr;
+>> #endif
+>>
+>> #ifndef __KERNEL__
+>>      const struct rseq_cs *uptr;
+>> #endif
+>>       } rseq_cs;
+>>
+>> in the union, so only user-space can see that field. Thoughts ?
+>=20
+> I think this depends on where the x32 question lands.
+
+x32 should not be an issue as explained above, so I'm very open to
+add this "uptr" for user-space only.
+
+Thanks,
+
+Mathieu
+
+
+--=20
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
