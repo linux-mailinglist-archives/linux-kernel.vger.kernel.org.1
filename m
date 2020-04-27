@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC361B9995
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D1C1B99DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgD0ISe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726407AbgD0ISd (ORCPT
+        id S1726909AbgD0ITr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 04:19:47 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:44305 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726710AbgD0ITq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:18:33 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7354EC061A10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 01:18:33 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k12so9919538wmj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 01:18:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=nexsKNIAawz43xJ/+27exH8imkbeH1NfQDDNoT4uP+g=;
-        b=M7xEpjZ3CessG+SINts/wDYLCwIEjZ4vyzamIT03NbDgDQXm+ZOncvEv2SnYwT6aIg
-         t1+8LpZogfYOGM8hM5Tz6Yf5qJLRMrGdBROuGvMxDi/Q8ktk52fOF/q+xl0y73qhm5HI
-         zftiw88FUwfmzj4EAsz+nQmqhzhCSc5x+MtGROadcU381AyVJwfq6DqCQIXzcyw738r1
-         XqZzFXY1oZkg3bNwEJOXnfmxWG0/2pzBnQV4HNPIJeJixxQ5Vfe1k05lhwbd8/Eqm9yr
-         /H2yQ+EOYTGig1gCYO+lUKlIlLkypKs9QMQZyixX30bsql7iQpFbenJF2PG2FMxU3oIR
-         TvRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=nexsKNIAawz43xJ/+27exH8imkbeH1NfQDDNoT4uP+g=;
-        b=WenyGEX9jw0NWm0zqffEZ/yhfRt/PGxn60kQCwuMoHjneJ7PwY+ibX9t4hv1HJi+zb
-         WGBN41bK8XPGXsvwkOKp7GIxbNe77XBjoGMqQqEc3UU0u76UE6cCueGv+nGxVm6HvlxT
-         +qQjmqRdFnbCHrpDdDtAmGqfQmOrNXHvUVpKyWKzltlTfDuwHquuOq+M2jLHqBLTfOlH
-         kGp4JhEH44PGroM5hRLwAuDlGP2QpVYhPoq/h15stqulWyT4RLn0EZNwjvpqhfudmuy4
-         6Y6lX/NX0kGJSD3v8WTtAc4DGjRm/omcYHvmjU2q+oKerhY4URUzWDvYceicSehyK83X
-         ioug==
-X-Gm-Message-State: AGi0PubTkR/Os4K2UB4GaynrLxzUoKcFddUl7cismVkVg/Jaf77M1fLv
-        zF92XZ+A4eq0Dr37lmlS1/+iAA==
-X-Google-Smtp-Source: APiQypLDYwqKL13+uGJEVkrYOMe2jJVaaMrDZ7cNTTbGJGhFOHOdAk1CPY8M9TMIs5nGg5KfyVuhdQ==
-X-Received: by 2002:a1c:1d4b:: with SMTP id d72mr23965375wmd.19.1587975512127;
-        Mon, 27 Apr 2020 01:18:32 -0700 (PDT)
-Received: from ?IPv6:2001:16b8:4886:8400:6d4b:554:cd7c:6b19? ([2001:16b8:4886:8400:6d4b:554:cd7c:6b19])
-        by smtp.gmail.com with ESMTPSA id p16sm19639474wro.21.2020.04.27.01.18.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2020 01:18:31 -0700 (PDT)
-Subject: Re: [RFC PATCH 8/9] orangefs: use set/clear_fs_page_private
-To:     Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@infradead.org, Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        devel@lists.orangefs.org
-References: <20200426214925.10970-1-guoqing.jiang@cloud.ionos.com>
- <20200426214925.10970-9-guoqing.jiang@cloud.ionos.com>
- <20200426222455.GB2005@dread.disaster.area>
- <20200427001234.GB29705@bombadil.infradead.org>
- <20200427022709.GC2005@dread.disaster.area>
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Message-ID: <ac7728a0-c184-214a-70a9-ae219db72331@cloud.ionos.com>
-Date:   Mon, 27 Apr 2020 10:18:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 27 Apr 2020 04:19:46 -0400
+Received: from mail-lf1-f43.google.com ([209.85.167.43]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MzQwa-1jFhIm3dU8-00vMhr; Mon, 27 Apr 2020 10:19:44 +0200
+Received: by mail-lf1-f43.google.com with SMTP id f8so13062817lfe.12;
+        Mon, 27 Apr 2020 01:19:44 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZ85yEie7SI4mXbpUNxbNq/kyBtKnIm2qtWiwp4PS/aZbZjsbIB
+        qKx6tBrOml2/5Cj0EZldo2UdoQ+QzqXYZfMHX9w=
+X-Google-Smtp-Source: APiQypKq+e3NC+Rf8KzaYonKc9dxCoJqQRrJrRG2Yg0jxksCGlJ48uH8hPHx64NKuyd+sZ0TBuXz/6X9HC2EUJLCFf0=
+X-Received: by 2002:a19:4b90:: with SMTP id y138mr14393819lfa.39.1587975584363;
+ Mon, 27 Apr 2020 01:19:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200427022709.GC2005@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <1587966099-28139-1-git-send-email-hadar.gat@arm.com>
+ <1587966099-28139-3-git-send-email-hadar.gat@arm.com> <CAMj1kXGwVZiGbsT2NwWTyka0FVZnQcmfMSeoBKD03PdC=fRZeA@mail.gmail.com>
+ <DB6PR0802MB25334429B7DD333780E7BABBE9AF0@DB6PR0802MB2533.eurprd08.prod.outlook.com>
+In-Reply-To: <DB6PR0802MB25334429B7DD333780E7BABBE9AF0@DB6PR0802MB2533.eurprd08.prod.outlook.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 27 Apr 2020 10:19:28 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1LYAESnePbwbn7x7x=2MCTWUNZVmmoiuv+_-J2ntFGmA@mail.gmail.com>
+Message-ID: <CAK8P3a1LYAESnePbwbn7x7x=2MCTWUNZVmmoiuv+_-J2ntFGmA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] hwrng: cctrng - change default to n
+To:     Hadar Gat <Hadar.Gat@arm.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ofir Drang <Ofir.Drang@arm.com>, nd <nd@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:JZk1rY2QBY2t6QRgHFCvHTZYoKOBY6GwFBii/ryiTzIpqlx/XN6
+ Fng27KvbkdMXSsM9mBVlxKMWNMy7nSJUEu2Os7Wqwp9quhCHInVvvA7LCN91eun4KjNrDfD
+ xpl3Ookw2O3m8kkrHDyhnHjS/4ufKvsnVIF4MhA+rYsrSfgW5mCLa0yNJzB6mg127ZlWZLB
+ f8pkb5W3vJgpjdgGMpyhg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8QlHj3zZLkY=:NYM1FTY3EEbenHMb1D71Mn
+ i4LDcgNURbhhEgVvEBn+cZ5WBI/5/go8lcoMuCr0wTNT+RXxBc6yLT5RhOSjVyNjrcF6nBxV5
+ EQIHs2w1awPkIiUTwdDfo2521UUXqYXpzW7OMymAoRHIFH+ltaNzCb5VMjqygcG5z8/k234vo
+ 2cAlLBlGMMWlJbCzu2OPL5bsr0fzsMTvJroh+JjlgpiSBihIvIUwkP6QGJugLgfzbbZxAxMIa
+ u5EH2XB7EiNJsip7pkFu/HgIkAIuTdaHfhZSiCliTI+MRAsDpawc++SfgcvD+O28n+YeSNaJN
+ BBo6S5gXvv+p3Abf7U2lp9UyiNf0+7Orcf/XzbYPIBKRbd+snuxQUhbwkYjUgTGyTTahqoyug
+ CgKgsBWvR5UJzVNFE9TCGKKerTaE4umLUAOdUkU8bDmkRoBUe8pVvzUMABMdIiyVEVjlifsvd
+ RcleteP27G7ZYoh5wH31wPr7g8q8Yb1wTCP6Tw2GVSB55s2rp2nedEnNYHPZ5A7Rmhjm9oRHd
+ JE0JZszm6fWq5TnGSF4q5+MUWoxLTx1bqAnBRAZoCd3qiwrSdJ6tCki0f7vkhZrDCxD0hxbyj
+ oqG4CTF2485vo6RsF8v6klv3FDDHIehf0sLf4By7k/gsbKWCXjOYhs0HW7+TdJgVcwLUqaLxp
+ 5fNk0tqDYDKsFFBJ7MJYyr0DJpeeHINuhf/JLgwGyuc3VLz3m+mrKR/sxYkIBUUVC1Y4AMW2F
+ +6dwHVdd2UxiZCE0sx3EnagPJdDIjEHinl9ZAdDwawnPkrpfOyf7IUvTc5PBHrZ2AO01OPFq/
+ YBBORCIsHqbQ9YetLJ3UXvkIqegUYKlCnRx+NrVQHZB7J2dLkA=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mattew and Dave,
+On Mon, Apr 27, 2020 at 9:26 AM Hadar Gat <Hadar.Gat@arm.com> wrote:
+> > -----Original Message-----
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> > > +       default n
+> >
+> > 'default n' is the default so you can just remove the line
+>
+> Is this a guideline or just optional?
+> Personally I like things to be explicit and if allowed I prefer to keep this line.
 
-On 4/27/20 4:27 AM, Dave Chinner wrote:
-> On Sun, Apr 26, 2020 at 05:12:34PM -0700, Matthew Wilcox wrote:
->> On Mon, Apr 27, 2020 at 08:24:55AM +1000, Dave Chinner wrote:
->>>> @@ -460,17 +456,13 @@ static void orangefs_invalidatepage(struct page *page,
->>>>   
->>>>   	if (offset == 0 && length == PAGE_SIZE) {
->>>>   		kfree((struct orangefs_write_range *)page_private(page));
->>>> -		set_page_private(page, 0);
->>>> -		ClearPagePrivate(page);
->>>> -		put_page(page);
->>>> +		clear_fs_page_private(page);
->>> Ditto:
->>> 		wr = clear_fs_page_private(page);
->>> 		kfree(wr);
->> You don't want to be as succinct as the btrfs change you suggested?
->>
->> 		kfree(clear_fs_page_private(page));
-> That could be done, yes. I was really just trying to point out the
-> use after free that was occurring here rather than write compact
-> code...
+It's a common convention, and we have had patches in the past that
+mass-removed those lines. I'd also just leave it out. It is generally well
+understood that all options default to 'n' unless specified otherwise.
 
-Really appreciate for your review, thanks.
-
-Best Regards,
-Guoqing
+        Arnd
