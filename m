@@ -2,105 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212D81B94DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 03:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327D71B94F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 03:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726425AbgD0BQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 21:16:33 -0400
-Received: from mga11.intel.com ([192.55.52.93]:62678 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726323AbgD0BQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 21:16:32 -0400
-IronPort-SDR: Lv/v2Jhj0NyWAobklZlghw3MydTkknmxfhC7JeS1RSQhe+MFITHVsWvc2aHAnd5si+epKjfCQu
- IEveEu/quQnw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2020 18:16:31 -0700
-IronPort-SDR: ZrrKsQ6Zur3/bE2CO6sc6Wdv34dqrhqrjSlpkUGUwoboNwAHWFqd68hpZ33zjqX/g7EQHldNW4
- L627f0bj0fUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,321,1583222400"; 
-   d="scan'208";a="336090274"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by orsmga001.jf.intel.com with ESMTP; 26 Apr 2020 18:16:31 -0700
-Date:   Sun, 26 Apr 2020 18:16:30 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH 4/5] arch/kmap_atomic: Consolidate duplicate code
-Message-ID: <20200427011630.GC135929@iweiny-DESK2.sc.intel.com>
-References: <20200426055406.134198-1-ira.weiny@intel.com>
- <20200426055406.134198-5-ira.weiny@intel.com>
- <20200426072642.GB22024@infradead.org>
+        id S1726435AbgD0Bav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 21:30:51 -0400
+Received: from mail-eopbgr1320101.outbound.protection.outlook.com ([40.107.132.101]:52549
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726186AbgD0Bav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 21:30:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MRIEYz2Zl/8TCxzix8ph9kUhQ1Ok6YHM8z+JT4PD0/NL1PPUrQbw79HqzWwgj5oLFVpjJUNQjNjyzQwnCjUqkpMvWOYSrm8AqHvGnDlg6OWb2RobQGt1azY8dpKCnGmQqHEZMTmjQ91b35/MopdBz0qHWh4ZOjTNmpzEogaCBK5HA5vr8rYiAomqF/5yYecbjZF7pQrTjhgkk28gbTSBYRIK3HA8V6fnSJQVzkE6OMa4P+GXHxlxzJZrJXSRZlHlk/BfwwWHa9o+GjXLfVrux7XUU+RYhrAN+r9jLZ9NPz/UZcLa7PKRXY06wW+EVxUTd1WP03L+l3zFblAryHD2Cg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9KlVgls7mQBl21xmNcaiSFxN+Q8k0FQscSo25zoAPig=;
+ b=BPcQ4cBf5VLyZzyqyF+glP04VAo+ruDrpczu6BSAnyhco7V3JH/K4beXLU07BUBGymQQ6UdFnlm6TapI8eVVtgdeXNjQyIeumspIzy26j5ZEdPvIioRBUlHj1MVlYhGaCngHRS1jrGLSyvOV27jNDh8R8yYnSt2zGaRijx+wbR4I6ksKgJba9A9Qy9yvNPiZgov/Txvq3I4CRblBv5Y4eKyh8PlpFH6lN16Me4XBtEjJL2L+Q1JUeBLaGFFKUpyWiBRiDKtkcEtFFFbPDqYWrGm/qXbsQyKwQJuUNPHCYc6RDa/vKWT5NjJRbBEZPtG8+pb2hL2l8nFYqzmGu90IeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9KlVgls7mQBl21xmNcaiSFxN+Q8k0FQscSo25zoAPig=;
+ b=W87/CutOMMZVxiK0azgfAvkV/zXFiEjlhmCzQPYHy61qwINJc1YIw5BbXfDcJIFHHMoWM+GYntREPP4xlZpDppJN4JtFJ6dRf5Hh8eGfeMuq6jF70d8IdUT7Hw2nK03L9K5YkRY3vT/xYzfSj6/QLfrMBX9qMuZ1xQ0RozHoDI0=
+Received: from HK0P153MB0273.APCP153.PROD.OUTLOOK.COM (2603:1096:203:b2::12)
+ by HK0P153MB0162.APCP153.PROD.OUTLOOK.COM (2603:1096:203:1a::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.3; Mon, 27 Apr
+ 2020 01:30:46 +0000
+Received: from HK0P153MB0273.APCP153.PROD.OUTLOOK.COM
+ ([fe80::2d07:e045:9d5b:898a]) by HK0P153MB0273.APCP153.PROD.OUTLOOK.COM
+ ([fe80::2d07:e045:9d5b:898a%2]) with mapi id 15.20.2979.003; Mon, 27 Apr 2020
+ 01:30:46 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Wei Hu <weh@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: RE: [PATCH] PCI: pci-hyperv: Retry PCI bus D0 entry when the first
+ attempt failed with invalid device state 0xC0000184.
+Thread-Topic: [PATCH] PCI: pci-hyperv: Retry PCI bus D0 entry when the first
+ attempt failed with invalid device state 0xC0000184.
+Thread-Index: AdYcMgJHryrU7gmlQyiwFGNu7UeS/g==
+Date:   Mon, 27 Apr 2020 01:30:45 +0000
+Message-ID: <HK0P153MB02735AD2E3CD36271AED1527BFAF0@HK0P153MB0273.APCP153.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=decui@microsoft.com;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-04-27T01:30:43.7737160Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a0228ed3-54f4-4c22-8c18-610ea6f4dab3;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=decui@microsoft.com; 
+x-originating-ip: [2601:600:a280:7f70:39c4:9d02:a54c:22b3]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: cf3af2a9-edb4-4c40-c9b1-08d7ea4a9c0c
+x-ms-traffictypediagnostic: HK0P153MB0162:|HK0P153MB0162:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK0P153MB016224E66A58D127AC2E5EC4BFAF0@HK0P153MB0162.APCP153.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0386B406AA
+received-spf: None (protection.outlook.com: microsoft.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: EZlsibC9LO2ralGz9iT+segVZTDsisyQWAfN5gk/1zAAnCnMNl3hZu2v5uLPqwVCiifZueArrKRzyLoLe5Fs4+c/Hk3H0s9SJ8VzOxeOLKAFfu3Crd7NBHFBU7Lkpji/Szh+RyPkS3l+p2gX5kPOxF045f/oUR0IMJ7Rw7nXCVCVUb20xIXAJeeeD0CXWuu1mRQxZXyMJ90xx9Ao84Byc/KevtrFHogZeg9XRDuzSZlBN6cXvL4O+Zfuh/f5FmOLULsEFURaRsRws2bJc7ASlgdfIHy8ub8fhbVbXJdNEpmtXS5y1Y8s2mq1ikRKOwFhZt3xEZ0suQ9TRoIHbBLuYJ/1SzVhXelnWMuGNzxhl0knnnhWpZaAbHZgewSq3d7QViidaoi4/46oCvkkeU5pKEmcv9/pdQnAuSUbirtxK7Hb+2GuF0ykxSuOruGTy89Mc4awyg51AKxwC+nZ6yt/BTtqryrySe1L6DNUV4EPHBk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0P153MB0273.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(376002)(346002)(39860400002)(136003)(396003)(186003)(6636002)(10290500003)(71200400001)(55016002)(8990500004)(5660300002)(9686003)(110136005)(478600001)(8676002)(86362001)(66556008)(82960400001)(82950400001)(66446008)(64756008)(66476007)(52536014)(76116006)(66946007)(6506007)(53546011)(7696005)(8936002)(316002)(2906002)(33656002)(921003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: prPHT2t2+BkDiy2YHLv02YYMp4zzdQWR5GuVVSILiDaMiiWy3Zqlim+09x1i0VORSQ6R4mn4f1CH38UoNJGsZndfm7Zx09CrtNp59ZaEiRSE0Y19O/Nq5aTZvGKKFz4VItbDf2a0BCX6kGp/kjjydSzHK2K0JYIG43q8o5GuKBUJGoEytDIP3AKR8JgQYajmDWfzscEtsZVBvR2yhWkeXLS2YEY/l/CJWEItNyGiisX+vNCnMVAUjH4vdt9mJbfPchVwBO+KUlSuECF8IbHuHgJUfR6fO0rG4yreg3T+XRHJg/xz6FjyXkr0NF/weOOGUHVJ1WRgctCBStDMmt64gBW0la251clWPJA2XTzp/TnLGiXjB98zyW9DUFnl0JFwsFP94gCizWqGsQIKlxRFeHTYhrYTFM219NjA+UPmz9tpm9722zthPAMmGkBJf5E7L39zeR8QZmuypSnJvXKXrIg9xxqPWoxYh5IxW1zyCSQHqI+68WwBgAS91bkSXszxLzzAdrKwZ55mayh4ZOyG7FoXfiT+n+3RTLsVM9bV+uWa61dlJLjWSiWNic3iPikwRdqN62uIOXQCIVIvazmY0TIodWfIcTjkdJ15KNKYJfmvmVFud4iqwG+N89EFuhiDfePwUFHScxmc2rnA46a+hKLHMynz7XwNZvLZD1oFO3mz/WfsPMkcka5mQJ/phIL2UlwRb3FI54lJ3KzGSiQfr/BFsMEwIIPYEA7FRnYuMtx9nCn+5ZKYpDGNMLZZfY7V8PXypRFXjLv5QeVk8yuCRgvEFGIBpQjwYbvZuBykArjep5ZZyrSChT76Dgrlb9oMrk8VVesMABhPce6NEvRqmzdVfRtLjZ5fO6dtI3IB3Xs=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200426072642.GB22024@infradead.org>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cf3af2a9-edb4-4c40-c9b1-08d7ea4a9c0c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2020 01:30:45.7900
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ep3dBlGTurfSEsM661W97VI4MwAMy0JDlmYipSvenPfiGd/Jj7E+QRIR+aFGN3vxiMXuOelnISPDMnS7es8fnw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0P153MB0162
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 12:26:42AM -0700, Christoph Hellwig wrote:
-> > diff --git a/arch/arc/mm/highmem.c b/arch/arc/mm/highmem.c
-> > index 4db13a6b9f3b..1cae4b911a33 100644
-> > --- a/arch/arc/mm/highmem.c
-> > +++ b/arch/arc/mm/highmem.c
-> > @@ -53,11 +53,10 @@ void *kmap_atomic(struct page *page)
-> >  {
-> >  	int idx, cpu_idx;
-> >  	unsigned long vaddr;
-> > +	void *addr = kmap_atomic_fast(page);
-> >  
-> > -	preempt_disable();
-> > -	pagefault_disable();
-> > -	if (!PageHighMem(page))
-> > -		return page_address(page);
-> > +	if (addr)
-> > +		return addr;
-> 
-> Wouldn't it make sense to just move kmap_atomic itelf to common code,
-> and call out to a kmap_atomic_high for the highmem case, following the
-> scheme in kmap?
->
+> From: Wei Hu <weh@microsoft.com>
+> Sent: Sunday, April 26, 2020 6:25 AM
+> Subject: [PATCH] PCI: pci-hyperv: Retry PCI bus D0 entry when the first a=
+ttempt
+> failed with invalid device state 0xC0000184.
 
-Sure I do like that symmetry between the calls.
+The title looks too long. :-)
+Ideally it should be shorter than 75 chars. I suggest the part=20
+"with invalid device state 0xC0000184. " should be removed.
 
->
-> Same for the unmap side.
+> +#define STATUS_INVALID_DEVICE_STATE		0xC0000184
+> +
+> +static int hv_pci_bus_exit(struct hv_device *hdev, bool hibernating);
 
-FWIW that would simply be renaming  __kunmap_atomic() to kunmap_atomic_high()
+Should we change the name of the parameter 'hibernating'?
 
->
-> That might require to support
-> kmap_atomic_prot everywhere first, which sounds like a really good
-> idea anyway, and would avoid the need for strange workaround in drm.
+>  /**
+>   * hv_pci_enter_d0() - Bring the "bus" into the D0 power state
+>   * @hdev:	VMBus's tracking struct for this root PCI bus
+> @@ -2748,8 +2752,10 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
+>  	struct pci_bus_d0_entry *d0_entry;
+>  	struct hv_pci_compl comp_pkt;
+>  	struct pci_packet *pkt;
+> +	bool retry =3D true;
+>  	int ret;
+>=20
+> +enter_d0_retry:
+>  	/*
+>  	 * Tell the host that the bus is ready to use, and moved into the
+>  	 * powered-on state.  This includes telling the host which region
+> @@ -2780,6 +2786,30 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
+>  		dev_err(&hdev->device,
+>  			"PCI Pass-through VSP failed D0 Entry with status %x\n",
+>  			comp_pkt.completion_status);
+> +
+> +		/*
+> +		 * In certain case (Kdump) the pci device of interest was
+> +		 * not cleanly shut down and resource is still held on host
+> +		 * side, the host could return STATUS_INVALID_DEVICE_STATE.
+> +		 * We need to explicitly request host to release the resource
+> +		 * and try to enter D0 again.
+> +		 */
+> +		if (comp_pkt.completion_status =3D=3D STATUS_INVALID_DEVICE_STATE
+> &&
+> +		    retry) {
 
-Having a kmap_atomic_prot() seems like a good idea.  But I'm not exactly sure
-why CONFIG_x86 is being called out specifically in the DRM code?
+Maybe it's better to just retry for any error in comp_pkt.completion_status=
+?
+Just in case the host returns a slightly different error code in future.
 
-Ira
-
+Thanks,
+-- Dexuan
