@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634FA1BB1D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 01:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32171BB1F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 01:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgD0XJB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Apr 2020 19:09:01 -0400
-Received: from mga01.intel.com ([192.55.52.88]:25350 "EHLO mga01.intel.com"
+        id S1726303AbgD0XVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 19:21:06 -0400
+Received: from mga14.intel.com ([192.55.52.115]:55740 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726204AbgD0XJB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 19:09:01 -0400
-IronPort-SDR: CiSfXrGRg+4mUdBJPOZkvSR9tyBN/5TucfUyfXzeXV5k4b9ZNHzWTa0K9Nd1yItJ8n2PFWo39A
- 6smOxR4ykdzg==
+        id S1726244AbgD0XVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 19:21:06 -0400
+IronPort-SDR: 60Fyd8lDUnZDjcSukgwnHnbSVivkZXpKzrQ6ykQraJycxBhdNVdZivI6HChTX5bmC8AYK/+paC
+ 3u9WkTA73qtg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 16:09:01 -0700
-IronPort-SDR: p9W4QCXJcDwYX9ymVbBmEOs/thB1bW7Wf5XfRDODzBOs0MSN6Se7K/rqOUjFRHQIV1cSz84MpT
- jDZ5yQRfCNpA==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 16:21:05 -0700
+IronPort-SDR: 9ft+PHVy2iFsvJsAlNi+avj5wS1ZQbS4GIq2K94JuxX2lZvjjlELcQSj3ZFsaA2Vo4nSWtMpAS
+ eIr39KkcTeHQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
-   d="scan'208";a="260896169"
-Received: from orsmsx108.amr.corp.intel.com ([10.22.240.6])
-  by orsmga006.jf.intel.com with ESMTP; 27 Apr 2020 16:09:00 -0700
-Received: from orsmsx163.amr.corp.intel.com (10.22.240.88) by
- ORSMSX108.amr.corp.intel.com (10.22.240.6) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Mon, 27 Apr 2020 16:09:00 -0700
-Received: from orsmsx115.amr.corp.intel.com ([169.254.4.83]) by
- ORSMSX163.amr.corp.intel.com ([169.254.9.133]) with mapi id 14.03.0439.000;
- Mon, 27 Apr 2020 16:09:00 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Raj, Ashok" <ashok.raj@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-Subject: RE: [PATCH 6/7] x86/traps: Fix up invalid PASID
-Thread-Topic: [PATCH 6/7] x86/traps: Fix up invalid PASID
-Thread-Index: AQHWBtMhyjaBsrFNmEyApZQ4dM/Yo6iMJWwAgAINuwD//41J4A==
-Date:   Mon, 27 Apr 2020 23:08:59 +0000
-Message-ID: <3908561D78D1C84285E8C5FCA982C28F7F6070AA@ORSMSX115.amr.corp.intel.com>
-References: <1585596788-193989-1-git-send-email-fenghua.yu@intel.com>
- <1585596788-193989-7-git-send-email-fenghua.yu@intel.com>
- <87mu6ys20d.fsf@nanos.tec.linutronix.de> <20200427224646.GA103955@otc-nc-03>
-In-Reply-To: <20200427224646.GA103955@otc-nc-03>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.139]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
+   d="scan'208";a="293691443"
+Received: from coffy.sc.intel.com ([10.3.79.166])
+  by orsmga008.jf.intel.com with ESMTP; 27 Apr 2020 16:21:04 -0700
+From:   Jithu Joseph <jithu.joseph@intel.com>
+To:     dvhart@infradead.org, andy@infradead.org
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maurice.ma@intel.com, ravi.p.rangarajan@intel.com,
+        sean.v.kelley@intel.com, kuo-lang.tseng@intel.com,
+        Jithu Joseph <jithu.joseph@intel.com>
+Subject: [PATCH v3 0/1] platform/x86: Add Slim Bootloader firmware update support
+Date:   Mon, 27 Apr 2020 16:15:13 -0700
+Message-Id: <20200427231514.24777-1-jithu.joseph@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Just for the record I also suggested to have a proper errorcode in the
-> #GP for ENQCMD and I surely did not suggest to avoid decoding the user
-> instructions.
+v3 addresses review comment from Andy Shevchenko to v2.
 
-Thomas,
+Changes in v3
+ - Renamed the driver file to intel-wmi-sbl-fw-update.c. This resulted in
+   various changes like:
+    - renaming, reordering the driver entry in Makefile and Kconfig
+    - renaming, reordering the MAINTAINERS file entry
+    - renamed the ABI file
+    - renaming few data structures and wmi_driver entries to reflect the
+      new name
 
-Is the heuristic to avoid decoding the user instructions OK (you are just pointing
-out that you should not be given credit for this part of the idea)?
+v2 Upstream submission is available here:
+https://lore.kernel.org/lkml/20200423224222.29730-1-jithu.joseph@intel.com
 
-Or are you saying that you'd like to see the instruction checked to see that it
-was an ENQCMD?
 
--Tony
+From v2 submission:
 
- 
+v1 Upstream submission is available here:
+https://lore.kernel.org/lkml/20200420194405.8281-1-jithu.joseph@intel.com
+
+v2 primarily addresses review comments from Andy Shevchenko to v1. 
+
+Changes in v2
+ - Rebased on top of tag: v5.7-rc2
+ - Added ABI documentation file
+ - Changed the ordering of SBL entry in Makefile and Kconfig
+ - Replaced kstrtobool() with kstrtouint() for user input processing
+ - Added DocLink: tag to annottate weblink in commit message
+ - Minor edits to commit message in p1/1
+ - Style related changes
+
+From v1 submission:
+
+Slim Bootloader(SBL) [see link below] is a small open-source boot
+firmware, designed for running on certain Intel platforms. SBL can be
+thought-of as fulfilling the role of a minimal BIOS
+implementation, i.e initializing the hardware and booting
+Operating System.
+
+This driver creates sysfs interfaces which allows user space entities
+to trigger update of SBL firmware.
+
+Acknowledgment: Initial draft of the driver code was authored by
+Maurice Ma <maurice.ma@intel.com>
+
+DocLink: https://slimbootloader.github.io
+
+Jithu Joseph (1):
+  platform/x86: Add Slim Bootloader firmware update signaling driver
+
+ .../sysfs-platform-intel-wmi-sbl-fw-update    |  12 ++
+ MAINTAINERS                                   |   7 +
+ drivers/platform/x86/Kconfig                  |  10 ++
+ drivers/platform/x86/Makefile                 |   1 +
+ .../platform/x86/intel-wmi-sbl-fw-update.c    | 145 ++++++++++++++++++
+ 5 files changed, 175 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-intel-wmi-sbl-fw-update
+ create mode 100644 drivers/platform/x86/intel-wmi-sbl-fw-update.c
+
+
+base-commit: ae83d0b416db002fe95601e7f97f64b59514d936
+-- 
+2.17.1
+
