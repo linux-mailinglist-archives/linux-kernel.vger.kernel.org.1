@@ -2,163 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973B11BB23D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 01:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 428EF1BB240
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 01:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726445AbgD0X4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 19:56:54 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54344 "EHLO
+        id S1726468AbgD0X5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 19:57:14 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54376 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726307AbgD0X4w (ORCPT
+        by vger.kernel.org with ESMTP id S1726355AbgD0X5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 19:56:52 -0400
+        Mon, 27 Apr 2020 19:57:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588031811;
+        s=mimecast20190719; t=1588031832;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=qCIbPd4z+LsfKk+IqgZJljs6Wparbj+tB3otWihkQ10=;
-        b=Bx3jM5Mcv+ejkUcUJsMHp79kfoeQ1CXgBM2qcLexgKkcbfv0crGVy2cIzoYIv9XjS7PV7X
-        11Bq/FxJpXNOhv6UsiY53pOrChnuycYdYdaXvxluVITKJ5nSNJaHpPkZu8/f+uh9XfaITA
-        HPhXhABHKa0paY6B7YFgFVsdq9FelbM=
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TX3l/PsIBBKAEBFp9II7hFHKmsTrVNvxgpKGxnEg3zs=;
+        b=LlkDOFKKSF9tfS0L3MVHmnU6/9z8orRFb6HM3Zac80QGiZl21VEBMp+2Rpy+0pb03+tRkY
+        wlGTMAsvWw0RSh9SkZa13wnUuvrAYdzlnIUuXEooosnZ1qfJ/Q5aklzKtqDrK4A9wHCwLm
+        FJedj46nVj9cs0b7mr62Qqou6DLFxu0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-116-t_m2IxUVOyyRbN5EYA7WrQ-1; Mon, 27 Apr 2020 19:56:49 -0400
-X-MC-Unique: t_m2IxUVOyyRbN5EYA7WrQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-314-V-bSCE4gMoyiC7kkAoz9Zg-1; Mon, 27 Apr 2020 19:57:08 -0400
+X-MC-Unique: V-bSCE4gMoyiC7kkAoz9Zg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E899C180F12C;
-        Mon, 27 Apr 2020 23:56:47 +0000 (UTC)
-Received: from llong.com (ovpn-112-176.rdu2.redhat.com [10.10.112.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A89D60C81;
-        Mon, 27 Apr 2020 23:56:46 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Qian Cai <cai@lca.pw>, Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking dependency
-Date:   Mon, 27 Apr 2020 19:56:21 -0400
-Message-Id: <20200427235621.7823-5-longman@redhat.com>
-In-Reply-To: <20200427235621.7823-1-longman@redhat.com>
-References: <20200427235621.7823-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36668107ACCA;
+        Mon, 27 Apr 2020 23:57:07 +0000 (UTC)
+Received: from localhost.localdomain.com (vpn2-54-127.bne.redhat.com [10.64.54.127])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B9E960300;
+        Mon, 27 Apr 2020 23:57:04 +0000 (UTC)
+From:   Gavin Shan <gshan@redhat.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, mark.rutland@arm.com,
+        steve.capper@arm.com, catalin.marinas@arm.com, broonie@kernel.org,
+        will@kernel.org, shan.gavin@gmail.com
+Subject: [PATCH v2] arm64/kernel: Fix range on invalidating dcache for boot page tables
+Date:   Tue, 28 Apr 2020 09:57:00 +1000
+Message-Id: <20200427235700.112220-1-gshan@redhat.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A lockdep splat is observed by echoing "1" to the shrink sysfs file
-and then shutting down the system:
+Prior to commit 8eb7e28d4c642c31 ("arm64/mm: move runtime pgds to
+rodata"), idmap_pgd_dir, tramp_pg_dir, reserved_ttbr0, swapper_pg_dir,
+and init_pg_dir were contiguous at the end of the kernel image. The
+maintenance at the end of __create_page_tables assumed these were
+contiguous, and affected everything from the start of idmap_pg_dir
+to the end of init_pg_dir.
 
-[  167.473392] Chain exists of:
-[  167.473392]   kn->count#279 --> mem_hotplug_lock.rw_sem --> slab_mutex
-[  167.473392]
-[  167.484323]  Possible unsafe locking scenario:
-[  167.484323]
-[  167.490273]        CPU0                    CPU1
-[  167.494825]        ----                    ----
-[  167.499376]   lock(slab_mutex);
-[  167.502530]                                lock(mem_hotplug_lock.rw_sem);
-[  167.509356]                                lock(slab_mutex);
-[  167.515044]   lock(kn->count#279);
-[  167.518462]
-[  167.518462]  *** DEADLOCK ***
+That commit moved all but init_pg_dir into the .rodata section, with
+other data placed between idmap_pg_dir and init_pg_dir, but did not
+update the maintenance. Hence the maintenance is performed on much
+more data than necessary (but as the bootloader previously made this
+clean to the PoC there is no functional problem).
 
-It is because of the get_online_cpus() and get_online_mems() calls in
-kmem_cache_shrink() invoked via the shrink sysfs file. To fix that, we
-have to use trylock to get the memory and cpu hotplug read locks. Since
-hotplug events are rare, it should be fine to refuse a kmem caches
-shrink operation when some hotplug events are in progress.
+As we only alter idmap_pg_dir, and init_pg_dir, we only need to perform
+maintenance for these. As the other dirs are in .rodata, the bootloader
+will have initialised them as expected and cleaned them to the PoC. The
+kernel will initialize them as necessary after enabling the MMU.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
+This patch reworks the maintenance to only cover the idmap_pg_dir and
+init_pg_dir to avoid this unnecessary work.
+
+Signed-off-by: Gavin Shan <gshan@redhat.com>
 ---
- include/linux/memory_hotplug.h |  2 ++
- mm/memory_hotplug.c            |  5 +++++
- mm/slub.c                      | 19 +++++++++++++++----
- 3 files changed, 22 insertions(+), 4 deletions(-)
+v2: Include the suggested commit log    (Mark Rutland)
+    Improved comments and code          (Mark Rutland)
+---
+ arch/arm64/include/asm/pgtable.h |  1 +
+ arch/arm64/kernel/head.S         | 12 +++++++++---
+ arch/arm64/kernel/vmlinux.lds.S  |  1 +
+ 3 files changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index 93d9ada74ddd..4ec4b0a2f0fa 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -231,6 +231,7 @@ extern void get_page_bootmem(unsigned long ingo, struct page *page,
- 
- void get_online_mems(void);
- void put_online_mems(void);
-+int  tryget_online_mems(void);
- 
- void mem_hotplug_begin(void);
- void mem_hotplug_done(void);
-@@ -274,6 +275,7 @@ static inline int try_online_node(int nid)
- 
- static inline void get_online_mems(void) {}
- static inline void put_online_mems(void) {}
-+static inline int  tryget_online_mems(void) { return 1; }
- 
- static inline void mem_hotplug_begin(void) {}
- static inline void mem_hotplug_done(void) {}
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index fc0aad0bc1f5..38f9ccec9259 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -59,6 +59,11 @@ void get_online_mems(void)
- 	percpu_down_read(&mem_hotplug_lock);
- }
- 
-+int tryget_online_mems(void)
-+{
-+	return percpu_down_read_trylock(&mem_hotplug_lock);
-+}
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pg=
+table.h
+index 8c20e2bd6287..5caff09c6a3a 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -457,6 +457,7 @@ extern pgd_t init_pg_dir[PTRS_PER_PGD];
+ extern pgd_t init_pg_end[];
+ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+ extern pgd_t idmap_pg_dir[PTRS_PER_PGD];
++extern pgd_t idmap_pg_end[];
+ extern pgd_t tramp_pg_dir[PTRS_PER_PGD];
+=20
+ extern void set_swapper_pgd(pgd_t *pgdp, pgd_t pgd);
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index 57a91032b4c2..32f5ecbec0ea 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -394,13 +394,19 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+=20
+ 	/*
+ 	 * Since the page tables have been populated with non-cacheable
+-	 * accesses (MMU disabled), invalidate the idmap and swapper page
+-	 * tables again to remove any speculatively loaded cache lines.
++	 * accesses (MMU disabled), invalidate those tables again to
++	 * remove any speculatively loaded cache lines.
+ 	 */
++	dmb	sy
 +
- void put_online_mems(void)
- {
- 	percpu_up_read(&mem_hotplug_lock);
-diff --git a/mm/slub.c b/mm/slub.c
-index cf2114ca27f7..c4977ac3271b 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -5343,10 +5343,20 @@ static ssize_t shrink_show(struct kmem_cache *s, char *buf)
- static ssize_t shrink_store(struct kmem_cache *s,
- 			const char *buf, size_t length)
- {
--	if (buf[0] == '1')
--		kmem_cache_shrink(s);
--	else
-+	if (buf[0] != '1')
- 		return -EINVAL;
+ 	adrp	x0, idmap_pg_dir
++	adrp	x1, idmap_pg_end
++	sub	x1, x1, x0
++	bl	__inval_dcache_area
 +
-+	if (!cpus_read_trylock())
-+		return -EBUSY;
-+	if (!tryget_online_mems()) {
-+		length = -EBUSY;
-+		goto cpus_unlock_out;
-+	}
-+	kasan_cache_shrink(s);
-+	__kmem_cache_shrink(s);
-+	put_online_mems();
-+cpus_unlock_out:
-+	cpus_read_unlock();
- 	return length;
- }
- SLAB_ATTR(shrink);
-@@ -5654,7 +5664,8 @@ static ssize_t slab_attr_store(struct kobject *kobj,
- 
- 		for (idx = 0; idx < cnt; idx++) {
- 			c = pcaches[idx];
--			attribute->store(c, buf, len);
-+			if (attribute->store(c, buf, len) == -EBUSY)
-+				err = -EBUSY;
- 			percpu_ref_put(&c->memcg_params.refcnt);
- 		}
- 		kfree(pcaches);
--- 
-2.18.1
++	adrp	x0, init_pg_dir
+ 	adrp	x1, init_pg_end
+ 	sub	x1, x1, x0
+-	dmb	sy
+ 	bl	__inval_dcache_area
+=20
+ 	ret	x28
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.=
+lds.S
+index 497f9675071d..94402aaf5f5c 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -139,6 +139,7 @@ SECTIONS
+=20
+ 	idmap_pg_dir =3D .;
+ 	. +=3D IDMAP_DIR_SIZE;
++	idmap_pg_end =3D .;
+=20
+ #ifdef CONFIG_UNMAP_KERNEL_AT_EL0
+ 	tramp_pg_dir =3D .;
+--=20
+2.23.0
 
