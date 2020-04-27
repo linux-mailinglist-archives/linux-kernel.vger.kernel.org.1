@@ -2,103 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B646E1BB191
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBACE1BB1A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726303AbgD0Wkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 18:40:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726262AbgD0Wkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 18:40:52 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D8742075E;
-        Mon, 27 Apr 2020 22:40:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588027251;
-        bh=CC6rMEFyGSKGcmYNdgrkgIArdM9m2XSVKnBpMMN2Afc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=M1Bzf7imQ9+pFeCE+KA+cbdSB5d1Q5QGQB9MnKaltdtd5VWtUvFW7fQAnmE0URwl5
-         3BA6ohXMoMglNl9UZcTo0fBye8BSMjujqHnJjVYOuU0KjCzBVzKwaD+JYsXxpLWgrr
-         AEvVdCbCW82EWkeE0LLaMEaXsLBh2Bd66+0Ooopg=
-Date:   Mon, 27 Apr 2020 15:40:50 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 2/7] signal: factor copy_siginfo_to_external32 from
- copy_siginfo_to_user32
-Message-Id: <20200427154050.e431ad7fb228610cc6b95973@linux-foundation.org>
-In-Reply-To: <20200426074039.GA31501@lst.de>
-References: <20200421154204.252921-1-hch@lst.de>
-        <20200421154204.252921-3-hch@lst.de>
-        <20200425214724.a9a00c76edceff7296df7874@linux-foundation.org>
-        <20200426074039.GA31501@lst.de>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726467AbgD0Wsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 18:48:41 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38596 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726204AbgD0Wsk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 18:48:40 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RMgMxr003933;
+        Mon, 27 Apr 2020 22:48:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=pKFgRX6d5w2uEwX24diTeOL/7/mmULPy7AZ+rAdkL+w=;
+ b=jhxjU7Cho0JPwo5yxwWthzriIOcFeZLrDWxPjEzIMtp+90rv1bKQ+AyfDUg0gfCIjRDV
+ YsHKy5BNP+1G2m/JQLJOESdCo3IQrK6iC3mdQjOZWA5AKLiq/tnlfEd1HGhwboFF1FW9
+ r/yI3g+wzTtqiEoldWvmnIsCTpuyR1r8+KnQkZiBzoLCfv7Kg00kmgHdDn9nbtJwIWwP
+ 0DBuA9GS3IMkHV6T7KSJAkYcfm3jAWc5Ec+v4t1yOhC2RCuDbHN8XZEC6BW5eOSvnAV0
+ HHspe/9dBN1EoK1V2TfNb+8ZsRggjN9I1AmW8GjpYxnCZHbvy4BdWNOgYLTsdSHy1CKS EQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 30p2p01vva-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 22:48:32 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RMciTW113021;
+        Mon, 27 Apr 2020 22:46:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 30mxpe95vn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 22:46:31 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03RMkUTd010592;
+        Mon, 27 Apr 2020 22:46:30 GMT
+Received: from [192.168.2.157] (/71.63.128.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 27 Apr 2020 15:46:30 -0700
+Subject: Re: [PATCH] [RFC]hugetlbfs: Get unmapped area below
+ TASK_UNMAPPED_BASE for hugetlbfs
+To:     Shijie Hu <hushijie3@huawei.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        nixiaoming@huawei.com, wangxu72@huawei.com,
+        wangkefeng.wang@huawei.com, yangerkun@huawei.com,
+        wangle6@huawei.com, cg.chen@huawei.com
+References: <20200427111036.74983-1-hushijie3@huawei.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <68031cc2-e6dc-52ee-9bdc-ffb9e154fb1c@oracle.com>
+Date:   Mon, 27 Apr 2020 15:46:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200427111036.74983-1-hushijie3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=983 malwarescore=0
+ mlxscore=0 bulkscore=0 adultscore=0 phishscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004270185
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1011
+ bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004270185
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Apr 2020 09:40:39 +0200 Christoph Hellwig <hch@lst.de> wrote:
-
-> On Sat, Apr 25, 2020 at 09:47:24PM -0700, Andrew Morton wrote:
-> > I looked at fixing it but surely this sort of thing:
-> > 
-> > 
-> > int copy_siginfo_to_user32(struct compat_siginfo __user *to,
-> > 			   const struct kernel_siginfo *from)
-> > #if defined(CONFIG_X86_X32_ABI) || defined(CONFIG_IA32_EMULATION)
-> > {
-> > 	return __copy_siginfo_to_user32(to, from, in_x32_syscall());
-> > }
-> > int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
-> > 			     const struct kernel_siginfo *from, bool x32_ABI)
-> > #endif
-> > {
-> > 	...
-> > 
-> > 
-> > is too ugly to live?
+On 4/27/20 4:10 AM, Shijie Hu wrote:
+> In 32-bit programs, the address space is limited. When the normal mmap
+> consumes the space above TASK_UNMAPPED_BASE on legacy mode, it can still
+> successfully obtain unmapped area below TASK_UNMAPPED_BASE, but mmap or
+> shmat for huge pages will fail. This seems "not fair".
 > 
-> I fixed it up in my earlier versions, but Eric insisted to keep it,
-> which is why I switched to his version given that he is the defacto
-> signal.c maintainer.
+> When the request for huge pages fails, fall back to reuse mmap_min_addr
+> ~ TASK_UNMAPPED_BASE for hugetlbfs.
+
+Just curious.  Have you actually seeing a problem with this code, or is
+the reason for the proposed change just the result of code inspection?  I ask
+because many architectures have their own version of hugetlb_get_unmapped_area.
+So, if you are seeing this issue it would be interesting to know what
+architecture you are running.
+
+The routine hugetlb_get_unmapped_area has not changed much since this first
+git version.  I suspect this is because it is mostly unused.
+
+I noticed that hugetlb_get_unmapped_area is one of only a few places in arch
+independent code calling vm_unmapped_area().  The other callers are arch
+independent fall back routines for arch_get_unmapped_area* routines.  If we
+move forward with changes to this routine, would it make more sense to use
+the arch_get_unmapped_area* routines instead of calling vm_unmapped_area
+directly?  This would take advantage of any arch specific if it exists.
+
+-- 
+Mike Kravetz
+
 > 
-> Here is what I would have preferred:
+> Signed-off-by: Shijie Hu <hushijie3@huawei.com>
+> ---
+>  fs/hugetlbfs/inode.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
 > 
-> https://www.spinics.net/lists/kernel/msg3473847.html
-> https://www.spinics.net/lists/kernel/msg3473840.html
-> https://www.spinics.net/lists/kernel/msg3473843.html
-
-OK, but that doesn't necessitate the above monstrosity?  How about
-
-static int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
-			     const struct kernel_siginfo *from, bool x32_ABI)
-{
-	struct compat_siginfo new;
-	copy_siginfo_to_external32(&new, from);
-	...
-}
-
-int copy_siginfo_to_user32(struct compat_siginfo __user *to,
-			   const struct kernel_siginfo *from)
-{
-#if defined(CONFIG_X86_X32_ABI) || defined(CONFIG_IA32_EMULATION)
-	return __copy_siginfo_to_user32(to, from, in_x32_syscall());
-#else
-	return __copy_siginfo_to_user32(to, from, 0);
-#endif
-}
-
-Or something like that - I didn't try very hard.  We know how to do
-this stuff, and surely this thing isn't how!
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index aff8642f0c2e..0f5997394aaa 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -224,7 +224,21 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+>  	info.high_limit = TASK_SIZE;
+>  	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
+>  	info.align_offset = 0;
+> -	return vm_unmapped_area(&info);
+> +	addr = vm_unmapped_area(&info);
+> +
+> +	/*
+> +	 * A failed request for huge pages very likely causes application
+> +	 * failure, so fall back to the top-down function here.
+> +	 */
+> +	if (unlikely(offset_in_page(addr))) {
+> +		VM_BUG_ON(addr != -ENOMEM);
+> +		info.flags = VM_UNMAPPED_AREA_TOPDOWN;
+> +		info.low_limit = max(PAGE_SIZE, mmap_min_addr);
+> +		info.high_limit = TASK_UNMAPPED_BASE;
+> +		addr = vm_unmapped_area(&info);
+> +	}
+> +
+> +	return addr;
+>  }
+>  #endif
+>  
+> 
