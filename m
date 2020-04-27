@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19EB1BA597
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FE11BA59F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727908AbgD0OAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 10:00:50 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:55950 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727808AbgD0OAs (ORCPT
+        id S1727983AbgD0OBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 10:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727933AbgD0OAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 10:00:48 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Mon, 27 Apr 2020 10:00:52 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB8AC0610D5;
+        Mon, 27 Apr 2020 07:00:51 -0700 (PDT)
+Received: from zn.tnic (p200300EC2F05F000ACB29DFFDE7AC3C9.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:f000:acb2:9dff:de7a:c3c9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 0EB2F401B3;
-        Mon, 27 Apr 2020 14:00:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1587996048; bh=TvL6zgUoy3Ma93zOu8++mMy1EHgdvRORz8x84bfFDmM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=Y2BXpQb1pNCWanopEuRgGyuC9Hyv3CNXzfHVjFMXgxbZq181l13fJ1mPrZY3nX+v/
-         caPdSdCuzMyF7ubAkxexP5q9nQ1VMu1dBeQi/Pmqe9Vwy+6Vg3HK+fqdBT5mRvnecV
-         nXhBtQ/UTN1Tv3d4c2d9+qvZOTlUr2dXfJ/6nbjmY34Twmbd1OVWC9VXR4sQ4pGl1i
-         4vNTDqY3eMalrNEVz9U7ndbWfBHd/UC1DLWchVrqr/UnWZ08hPlE3TnVVLyDhSqq8n
-         gsqhWb4lvi94BeZHzofioQb5bIZwKYwfvKinVHcFZmvcUk93MvUk0+t4AT9qzyBg3+
-         G5ogLAeTtLsjQ==
-Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 6B4D8A006D;
-        Mon, 27 Apr 2020 14:00:45 +0000 (UTC)
-From:   Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>
-To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        Joao Pinto <Joao.Pinto@synopsys.com>
-Subject: [PATCH v3 4/4] MAINTAINERS: Add IPK MIPI DSI Host driver entry
-Date:   Mon, 27 Apr 2020 16:00:36 +0200
-Message-Id: <abe4ca0b0662c17212fc5107080e949f1d3377c1.1587992776.git.angelo.ribeiro@synopsys.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1587992776.git.angelo.ribeiro@synopsys.com>
-References: <cover.1587992776.git.angelo.ribeiro@synopsys.com>
-In-Reply-To: <cover.1587992776.git.angelo.ribeiro@synopsys.com>
-References: <cover.1587992776.git.angelo.ribeiro@synopsys.com>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 051BC1EC0D21;
+        Mon, 27 Apr 2020 16:00:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1587996050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=gQyJ11P5tivvLKUDiEhjBf0KP30jTDiuWezjtD55r5k=;
+        b=o5I+3Fo2V/A1ngZQovDfjFGfYcSHt3DEtamirS28hpdqSZcbVvoee+Wfc78mxWcFySh7p2
+        ckyceC3H4UoG0f1kaKF65y/TnkYlKxIrnv+AV7lXlC6YQDsU8tEBcJq54+EdP7ewHsiFyk
+        QsP0skNBlv4+k5e8A8bD8K3fnhNZQxg=
+Date:   Mon, 27 Apr 2020 16:00:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Robert Richter <rrichter@marvell.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Aristeu Rozanski <aris@redhat.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 07/10] EDAC/ghes: Cleanup struct ghes_edac_dimm_fill,
+ rename it to ghes_dimm_fill
+Message-ID: <20200427135923.GF11036@zn.tnic>
+References: <20200422115814.22205-1-rrichter@marvell.com>
+ <20200422115814.22205-8-rrichter@marvell.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200422115814.22205-8-rrichter@marvell.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Creates entry for Synopsys DesignWare IPK DRM driver and
-adds myself as maintainer.
+On Wed, Apr 22, 2020 at 01:58:11PM +0200, Robert Richter wrote:
+> The struct is used to store temporary data for the dmidecode callback.
+> Clean this up a bit:
+> 
+>  1) Rename member count to index since this is what it is used for.
+> 
+>  2) Move code close to ghes_edac_dmidecode() where it is used.
+> 
+>  3) While at it, use edac_get_dimm_by_index().
+> 
+> Signed-off-by: Robert Richter <rrichter@marvell.com>
+> ---
+>  drivers/edac/ghes_edac.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
 
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-Cc: Joao Pinto <jpinto@synopsys.com>
-Signed-off-by: Angelo Ribeiro <angelo.ribeiro@synopsys.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Ok except the commit title is wrong. And yes, pls keep it "dimm_fill" -
+short and sweet and without yet another "ghes" in the name. :)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ad29107..9f4ee9c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5507,6 +5507,14 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/devicetree/bindings/display/ste,mcde.txt
- F:	drivers/gpu/drm/mcde/
- 
-+DRM DRIVER FOR SYNOPSYS DESIGNWARE IPK
-+M:	Angelo Ribeiro <angelo.ribeiro@synopsys.com>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+F:	drivers/gpu/drm/ipk/
-+F:	Documentation/devicetree/bindings/display/ipk/
-+T:	git git://anongit.freedesktop.org/drm/drm-misc
-+
- DRM DRIVER FOR TDFX VIDEO CARDS
- S:	Orphan / Obsolete
- F:	drivers/gpu/drm/tdfx/
+Thx.
+
 -- 
-2.7.4
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
