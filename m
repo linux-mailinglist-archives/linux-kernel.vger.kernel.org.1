@@ -2,22 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D882C1BAD80
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF061BAD83
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgD0TGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:06:20 -0400
-Received: from gateway23.websitewelcome.com ([192.185.48.104]:13612 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726549AbgD0TGU (ORCPT
+        id S1726633AbgD0THH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:07:07 -0400
+Received: from gateway31.websitewelcome.com ([192.185.144.91]:23659 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726315AbgD0THH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:06:20 -0400
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id 417F69EA3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 14:06:19 -0500 (CDT)
+        Mon, 27 Apr 2020 15:07:07 -0400
+X-Greylist: delayed 491 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Apr 2020 15:07:06 EDT
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id DDB62103C3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 14:07:05 -0500 (CDT)
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with SMTP
-        id T959j8qacSl8qT959jYNj6; Mon, 27 Apr 2020 14:06:19 -0500
+        id T95tjMd4KVQh0T95tjUWkL; Mon, 27 Apr 2020 14:07:05 -0500
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
@@ -25,26 +26,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/58bSLWDDjzcT2tctTT4jLGloRKm4Hg0aZzs/rxPU5M=; b=IX5ru19HgOo45+YLXdG5xp7hn+
-        jtd/UfqU9FzoYjS1ov7orVAZNooQfanRT7IHGrTmPOuMsBkD+BCfV00LuNjMypmZM7p+BDkt/ONfT
-        2sUUZKBY7tvHv2WCscmUQt88qZUpBqEDdhra1BNVLtOx8YpoV7Xu+xv76ykfiY74Fi4JZjJwXmrf6
-        IFPDG2cvWUxhW7vfw3+anQ9gVAyFhJJcW5+DVTVcVe8qXxkqt/gcTp1ydNM7dZs/J5OFdU4YZWIbD
-        +lhrSIKgyBbE2KoPx7QYXDmY+ysLLAv7t1aLQin7uq7TFx6XddIpTYkgZrCUBGgeSD3HHJL1XiTUq
-        A+jRTUPA==;
-Received: from [201.162.241.110] (port=23674 helo=[192.168.43.132])
+        bh=FZZr/uE2hTuM5pu2r5aXLhMCx8nc6adhDHFuFcVEsyA=; b=WA1/jIwebfelRf4LEBvLyycLnu
+        DV/Lk2mdT0rMwm89mbuBPayhi7Z1kuizZM3sc0zKUjWxIg/EBCqQGsoEqA2TXU4ttL6J0ojveIFCP
+        O4q+14phcbmeFrOVmbasMNyIymsS9v7Nxbm251DiXE3MruSDx6QgKzl/kOkIGNDurXRK/9KAgI384
+        +HTdwE6usPu5/cX44OoHNi96ns2pp3MvPqgpYciB87rgqeY2ZT7mVT8hPmP14Ferkkhe/W4kmKOpU
+        hNEGE9e3it8BbPA2o7NrvbuKtQaYfaPn8OMuhbEgcc3J4eVFeAp7aCdlj6d68TDsZR/uUN9g9gcKh
+        /CJWSWJQ==;
+Received: from [201.162.241.110] (port=23532 helo=[192.168.43.132])
         by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1jT958-000euX-NC; Mon, 27 Apr 2020 14:06:18 -0500
-Subject: Re: [PATCH 2/3] mtd: lpddr: Replace printk with pr_notice
+        id 1jT95t-000fE1-F5; Mon, 27 Apr 2020 14:07:05 -0500
+Subject: Re: [PATCH 3/3] mtd: lpddr: Move function print_drs_error to
+ lpddr_cmds.c
 To:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
 Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         linux-mtd@lists.infradead.org
 References: <cover.1588013366.git.gustavo@embeddedor.com>
- <c9684a22b661fdeff9efcd5b18be01653911fc89.1588013366.git.gustavo@embeddedor.com>
- <d036dbad02241fdeb0a6400896f73ff11e98e53b.camel@perches.com>
+ <5cc0d2e83e971693d974235608c8d96fe94c849d.1588013366.git.gustavo@embeddedor.com>
+ <ce8be38d71da0a9020a42359152dad7ee217d18c.camel@perches.com>
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Autocrypt: addr=gustavo@embeddedor.com; keydata=
  xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
@@ -89,12 +91,12 @@ Autocrypt: addr=gustavo@embeddedor.com; keydata=
  YJWH93PN+ZUh6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9eh
  GZEO3+gCDFmKrjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrS
  VtSixD1uOgytAP7RWS474w==
-Message-ID: <67c4b34d-019d-e4c9-ebd2-3a8477470048@embeddedor.com>
-Date:   Mon, 27 Apr 2020 14:10:36 -0500
+Message-ID: <3a6e7112-341f-6c98-70b7-0a43c3106464@embeddedor.com>
+Date:   Mon, 27 Apr 2020 14:11:22 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <d036dbad02241fdeb0a6400896f73ff11e98e53b.camel@perches.com>
+In-Reply-To: <ce8be38d71da0a9020a42359152dad7ee217d18c.camel@perches.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -106,13 +108,13 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 201.162.241.110
 X-Source-L: No
-X-Exim-ID: 1jT958-000euX-NC
+X-Exim-ID: 1jT95t-000fE1-F5
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.241.110]:23674
+X-Source-Sender: ([192.168.43.132]) [201.162.241.110]:23532
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
+X-Email-Count: 14
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
@@ -122,30 +124,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 4/27/20 14:01, Joe Perches wrote:
-> On Mon, 2020-04-27 at 14:03 -0500, Gustavo A. R. Silva wrote:
->> pr_notice is preferred over printk.
-> 
-> So is coalescing formats
-> 
-> ? diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
+On 4/27/20 14:03, Joe Perches wrote:
+> On Mon, 2020-04-27 at 14:04 -0500, Gustavo A. R. Silva wrote:
+>> Function print_drs_error is only used in drivers/mtd/lpddr/lpddr_cmds.c
+>> so, better to move it there.
 > []
->> @@ -127,31 +127,31 @@ static inline void print_drs_error(unsigned dsr)
->>  	int prog_status = (dsr & DSR_RPS) >> 8;
+>> diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
+> []
+>> @@ -94,6 +94,39 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
+>>  }
+>>  EXPORT_SYMBOL(lpddr_cmdset);
 >>  
->>  	if (!(dsr & DSR_AVAILABLE))
->> -		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
->> +		pr_notice("DSR.15: (0) Device not Available\n");
->>  	if ((prog_status & 0x03) == 0x03)
->> -		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
->> +		pr_notice("DSR.9,8: (11) Attempt to program invalid "
->>  						"half with 41h command\n");
+>> +static inline void print_drs_error(unsigned int dsr)
 > 
-> 		pr_notice("DSR.9,8: (11) Attempt to program invalid half with 41h command\n");
+> There's no need for inline as it's used once.
 > 
 
-I didn't want to mess with the rest of format, because some maintainers
-don't like that. If Miquel is OK with that, I can fix that up, too.
+That's correct. I didn't notice that at first sight.
+
+I'll remove it in V2.
 
 Thanks
 --
