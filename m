@@ -2,125 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EE31B96E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 08:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C991B96E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 08:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726357AbgD0GAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 02:00:47 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:18019 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726237AbgD0GAq (ORCPT
+        id S1726569AbgD0GBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 02:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726221AbgD0GBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 02:00:46 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587967246; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=NMpBrJ+MWAxIYH4EAuywwnTikdBRWVUi+Ksjf8AeqQo=; b=XOIoBjSvslRPA+sRuwGSfK+qcW+VtCAgY7VmBChCdHchdnae1tSHv5L0wo2UosbMgKwGv67n
- VCALHaM0+UQ2IVVwkI0iLW6vfhwArkn0v0eHFcgwJuTEgyrxAtyuEMoWbNAdkt8kdeGavqna
- zxbOaUaq5hlUI4S0aNgR+kxXtsU=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea674fd.7f18450cdab0-smtp-out-n05;
- Mon, 27 Apr 2020 06:00:29 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 54CCAC433BA; Mon, 27 Apr 2020 06:00:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from sayalil-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sayalil)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 09865C433D2;
-        Mon, 27 Apr 2020 06:00:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 09865C433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sayalil@codeaurora.org
-From:   Sayali Lokhande <sayalil@codeaurora.org>
-To:     jaegeuk@kernel.org, yuchao0@huawei.com,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     stummala@codeaurora.org, linux-kernel@vger.kernel.org,
-        Sayali Lokhande <sayalil@codeaurora.org>
-Subject: [PATCH V2] f2fs: Avoid double lock for cp_rwsem during checkpoint
-Date:   Mon, 27 Apr 2020 11:30:04 +0530
-Message-Id: <1587967204-24824-1-git-send-email-sayalil@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        Mon, 27 Apr 2020 02:01:40 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED9DC061A0F
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 23:01:40 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id 71so13338142qtc.12
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 23:01:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QGFl2uS3f+5RhP1jpZPcJAcfmonJZTFWwEebr4DUxFY=;
+        b=UyRo4nU5c3POIrn+bZNVgt6vTDruBvL+THYSpR5jUEZZLvf83LrK3lhS32ufRmvIuZ
+         j+p0QDq8tiRsO/i7/BbTZt+KQnXxVxGMIcXKxLkgYnTHILV/QflQyc3LOUCSX/j8RH9B
+         HqjbXO3I7wsSKeQBXxBxS6w/Lqlwgw3tUuFnaj/+EkR7nnxhgiS0rjU1y/MyrHrnYdAa
+         z3m9Gu1qnyQ9j2RHohDO9UfdkJlg62SgSkrBc5g7LfpEcLqpwxvb29YXpNsnBUHi3XYQ
+         nK4zBoGZFxPKFm3/6Rw8+ToQ98up3xbuv0qg1BFYyuT4g04WSLG+ELflaQcjzRES2Uv7
+         ZjQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QGFl2uS3f+5RhP1jpZPcJAcfmonJZTFWwEebr4DUxFY=;
+        b=LvdQ6aqNXOzLorvD335rOY4IugElnjNKskIHpw2qF3iQx9pFhuoOHuP1i4wpUPpiqs
+         raNQ7Jg1MQC4kjzIV1jcsUymazDK1MRovSc6U8O/e9ekJkk9gEnwOtNOfpeUnJDg9rQ5
+         6q9qS4P4ulBOguXCdna+PaXUWBw4DdxVlKW8lR+M4BYvuTp/36F0g+PGBpvVsEFzo6PX
+         orFJQSwUkGaZ6kPOiT+VvbJaQkqQX4DMnDf0BWneIVjWEQqIS/2pnXl+ghi8LRTe9BcL
+         JCMkSBP7rdz3g2axyCXZZRlbk+NERvSiwagbL//NJW5g/A2N5072iatrIzJv5dG8bdaL
+         xYCA==
+X-Gm-Message-State: AGi0PuZ1crSGo25rp/xcgX+EmxNvHpQSqMTqGHQ+KSgGOis3JGj0Ofyv
+        F7RPTgw8m858fI5Vk0nSC7rZ78PB37FthX5ZKC0Iaw==
+X-Google-Smtp-Source: APiQypLsDEJUKDwWhUb0HcitD6LTYrZxucNft/F+aO2VwcOAWSNRFoEXi3bGQvQKjWbUhypkIAgG5fdIBm8Q2V74QlI=
+X-Received: by 2002:ac8:22ad:: with SMTP id f42mr20964483qta.292.1587967298448;
+ Sun, 26 Apr 2020 23:01:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <1587711246-27226-1-git-send-email-shengjiu.wang@nxp.com> <20200424091533.GA8856@Asurada>
+In-Reply-To: <20200424091533.GA8856@Asurada>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Mon, 27 Apr 2020 14:01:27 +0800
+Message-ID: <CAA+D8AMgenpGapp3fbZVvswPOKDLZXZE0KaPK7Js41xSDhG9wQ@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_esai: Remove the tasklet
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There could be a scenario where f2fs_sync_node_pages gets
-called during checkpoint, which in turn tries to flush
-inline data and calls iput(). This results in deadlock as
-iput() tries to hold cp_rwsem, which is already held at the
-beginning by checkpoint->block_operations().
+On Fri, Apr 24, 2020 at 5:17 PM Nicolin Chen <nicoleotsuka@gmail.com> wrote:
+>
+> On Fri, Apr 24, 2020 at 02:54:06PM +0800, Shengjiu Wang wrote:
+> > Remove tasklet for it may cause the reset operation
+> > can't be handled immediately, then there will be
+> > endless xrun interrupt.
+>
+> The reset routine is really long and expensive, so not sure
+> if it'd be good to do it completely inside HW ISR. Have you
+> tried to clear xEIE bits to disable xrun interrupts, before
+> scheduling the tasklet? If that does not solve the problem,
+> we may go for this change.
 
-Call stack :
+Good idea, will send v2
 
-Thread A		Thread B
-f2fs_write_checkpoint()
-- block_operations(sbi)
- - f2fs_lock_all(sbi);
-  - down_write(&sbi->cp_rwsem);
-
-                        - open()
-                         - igrab()
-                        - write() write inline data
-                        - unlink()
-- f2fs_sync_node_pages()
- - if (is_inline_node(page))
-  - flush_inline_data()
-   - ilookup()
-     page = f2fs_pagecache_get_page()
-     if (!page)
-      goto iput_out;
-     iput_out:
-
-    - iput()
-       iput(inode);
-       - f2fs_evict_inode()
-        - f2fs_truncate_blocks()
-         - f2fs_lock_op()
-           - down_read(&sbi->cp_rwsem);
-
-Signed-off-by: Sayali Lokhande <sayalil@codeaurora.org>
----
- fs/f2fs/checkpoint.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index 5ba649e..97b6378 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -1219,21 +1219,19 @@ static int block_operations(struct f2fs_sb_info *sbi)
- 		goto retry_flush_quotas;
- 	}
- 
--retry_flush_nodes:
- 	down_write(&sbi->node_write);
- 
- 	if (get_pages(sbi, F2FS_DIRTY_NODES)) {
- 		up_write(&sbi->node_write);
-+		up_write(&sbi->node_change);
-+		f2fs_unlock_all(sbi);
- 		atomic_inc(&sbi->wb_sync_req[NODE]);
- 		err = f2fs_sync_node_pages(sbi, &wbc, false, FS_CP_NODE_IO);
- 		atomic_dec(&sbi->wb_sync_req[NODE]);
--		if (err) {
--			up_write(&sbi->node_change);
--			f2fs_unlock_all(sbi);
-+		if (err)
- 			goto out;
--		}
- 		cond_resched();
--		goto retry_flush_nodes;
-+		goto retry_flush_quotas;
- 	}
- 
- 	/*
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+best regards
+wang shengjiu
