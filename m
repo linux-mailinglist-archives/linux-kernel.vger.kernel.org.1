@@ -2,309 +2,379 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3081BA813
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF891BA821
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgD0Phh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 11:37:37 -0400
-Received: from mail-eopbgr80085.outbound.protection.outlook.com ([40.107.8.85]:54851
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726539AbgD0Phg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 11:37:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RBam9hUiDUl/eP4yI3FXB/b1p7r+LX+AAgTk49uqzMLwI6AunNBIvZ5uV36CowD/vfRbQK7AXOaW8ItQmZ4ua7Hke10nn1QeFRG/A20l9JbEIfFjvEUKjErha8HF0TFurlYuJgabrN8DXVxRrbVx03bSwFCzwiTby0W29HnFpKUoaliTfB1QZ7GBiC1WT6Ef+DDQQN/NnfTWfpvqyBPiZYCkaEVBWeUzyuMg8lJrP1QzgnYunJNZYMXCexXaE0n/ow0jkCRFz1K2Zk16Ls8+HvEcQTIrPvzrmXqrLBO8ZBvrxukS4V1mqCXNa1MP4NFo1r82D7izVIxil4DO18o74w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KjdDD1B4z00BZSP4rr95hVf4X1kJwKrb5TUMHDOlZKM=;
- b=HsboLFSJsyPEnp7m9mYqzyc3s95nd2Age8YPmwR0r/Iu33c/spGRgznGyD0LfQm3xLatNFtfUaFxxahDFEVklySMGyMtz7ndTY5SeWHfXbjrIL4tGjarkFXIpzVQqVhLIzDqCFIOnbdiA390Nlt8TIVE+pmtczPJS45s8/U3QbUeDmPKH86zMrxaW91Lbq7WIZeIo3Bm/PXmCookE8g8piI5/YD9DpscwcRubPhhxRpBKyW92vm9Y7eBlG9x8csvTSBMsItZRKuy9FvGyvvvNGM2EukvEok+GlsgEgmoKBJeDu51r7iESvmYHpe2L6m3JoTLZbpOd05BjyeJXQwPjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KjdDD1B4z00BZSP4rr95hVf4X1kJwKrb5TUMHDOlZKM=;
- b=O8pku9JQIZT3g1fDm6Qb4GXnUgTXgN0jVcGYnt5iZXXeQ0ttp46jX5ceU0tCVZHHhchnS6fcqghHqvVHh+GIok8chh21acoNpmcqPBeMOYkRM+RDHNfGLlyzSvi8trOjUsWvIhjIC5x1e33yCZedHU4yon6MFGRbhSULBwA7d14=
-Received: from AM6PR04MB5047.eurprd04.prod.outlook.com (2603:10a6:20b:8::18)
- by AM6PR04MB5928.eurprd04.prod.outlook.com (2603:10a6:20b:a3::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Mon, 27 Apr
- 2020 15:37:32 +0000
-Received: from AM6PR04MB5047.eurprd04.prod.outlook.com
- ([fe80::892f:a8ac:4633:6d9c]) by AM6PR04MB5047.eurprd04.prod.outlook.com
- ([fe80::892f:a8ac:4633:6d9c%6]) with mapi id 15.20.2937.020; Mon, 27 Apr 2020
- 15:37:32 +0000
-From:   Jacky Bai <ping.bai@nxp.com>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Abel Vesa <abel.vesa@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-CC:     Aisheng Dong <aisheng.dong@nxp.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] soc: imx: Add power domain driver support for i.mx8m
- family
-Thread-Topic: [PATCH] soc: imx: Add power domain driver support for i.mx8m
- family
-Thread-Index: AQHWHKRmvLRPlucGJkaqSuocoLwuLaiNEsIAgAABEQA=
-Date:   Mon, 27 Apr 2020 15:37:31 +0000
-Message-ID: <AM6PR04MB504745F6EB1FB17F6DBDD9A387AF0@AM6PR04MB5047.eurprd04.prod.outlook.com>
-References: <1587999532-30006-1-git-send-email-abel.vesa@nxp.com>
- <0d301ed303faea4895d30b682133ec5c9d44bd8b.camel@pengutronix.de>
-In-Reply-To: <0d301ed303faea4895d30b682133ec5c9d44bd8b.camel@pengutronix.de>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=ping.bai@nxp.com; 
-x-originating-ip: [114.218.248.107]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 0d7b6eea-5b2d-49e1-9712-08d7eac0e6a0
-x-ms-traffictypediagnostic: AM6PR04MB5928:|AM6PR04MB5928:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB59285D048AB44B3ABFF01CA087AF0@AM6PR04MB5928.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-forefront-prvs: 0386B406AA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5047.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(39860400002)(376002)(366004)(346002)(76116006)(53546011)(86362001)(66946007)(186003)(6506007)(52536014)(81156014)(110136005)(54906003)(71200400001)(66476007)(64756008)(30864003)(66556008)(316002)(8676002)(478600001)(66446008)(8936002)(7696005)(2906002)(33656002)(5660300002)(55016002)(9686003)(4326008)(26005);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: nxp.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pR3nA9ct1XkqkAc0Jb6Ccnbphka5DkS3enU4zFYdhn5OIO/Y8wZnJhTXZ7xDvoXCPlMOS9Hgo31MpxXyBqrgOe0KdP9udQtrOl5+FgbptXni0pL5y3jcL8lXcES0gYVUiR4M3WMeFqfMsCArEcs8w0exkUsCgyZtlA4In/CDq+J2BmMr6C6TuIj1EM7s56HfGJqEDaDWvyeka1CmNMNrzJ67g2tijVYdxcJHEFE+fjNhHCa28Cd91HoIRojlzN5u6jjt98HeFz8NHPE0l6ssqzHaeuL2T5HIZ9uRHmTgyAsGW75WJfkoabn39RmFzrj53+YWOpUFod5hIL6oI9L6ULoTPiyOi+tIEoWjzOyNjvFoC6/0SAjGuLwb7xj4TjJitQBokqzVjx942NLDdZHTWIrpdYit/uTXpz54JEOzpIAmJyddsTRBFy3waHnSjzlk
-x-ms-exchange-antispam-messagedata: kO6YsZnGsCbryVN510b5kCRov3LIyJ4cAxN+jEXMnsxaKIIuY2iOx/Jj7dzkzaH6HxKpiYZ3kTb/DDHp5t7lfqSGbFee9TTBcMt95e/C6EsSwrl5V0Ju8uFQFEeebftijZBJavwrcxCDx7N9bDXlVEf5os8C06QNaTmobRAY1D+MHQii/E8VVGph0HpK+oY7JUsD7eLmdeMIyHncoxrUCwktRNVzwegl0emSRnmOC5w0GGnNNzb4qm/TLaddoF8JSHVcXJM268DsWqg0fxOaRmU+nvLvfjNQkq/Iccv7K11XhFuHrTeEkrTi6THN3XqoQVasCFwL9HmlKt37g7mXd4MBZ8vYPCGomGi5A5R8ZwQOap05gLmwDwO6gXqUxgHTn16SPFyObBZDrOQClZaPlHYg53CGZtC/824AbDkOLwXpzu3gZxtXgT3JBcEcGWxZSW2X7be1Dts0bSg4S5Owy689+kICx35ZQqQXmCKCAqlECBbkwy1/vnLu0AhK2C2HWOppn4XTWNsA+cM81vBnz6IObtzZQtyJ/dIiZaD7xil3bZDa9bxOvdyfgw8oHXn3q7iLePRKmbe4rThju0MCzJuxQfqVPfwJSgb4o4CFQnlU4C8GJvvx3FWtbb21j0HwEqVxWiqSCjUCSITtoqCcriqXenehTImDCO6gPVZymNSZJulImpsrt4t5l7V3X0HvLH3CVLU70RZWZeuiTcdG2ETuduLdd8e/50r2vIIB5O7+ADsSQJO+xknLFtGDe8OF8oFOA1Dl1kfrVJGUjH0Hvs2IP+PKojzLXOaXjSTa96QzGz7GbbHjoagXtlxRA5oy
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728193AbgD0PiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 11:38:15 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:52718 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728162AbgD0PiO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 11:38:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588001892;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=S6+QU/bD7wTmAh7gBgePIUFumQyjAiUTr7PDnaa7Y5E=;
+        b=XjUAhF3cXTR+wdmfGxiyUbqkV0onN4Lc90dq8Dw9cY0zPumU2PHwYKb3HaET6g+Ca7xwt8
+        mQ455HiDNxKRuOnDO76a7FScS0yE0ZkB1/D7h9mzkHzUbfp9OLT/GXV8dWgS7+a1YCEXdm
+        QAg2sC+YPY2by4pGrqyajxS3+sOQcbs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-RaatyLQqMO2D4ywpEP_U7A-1; Mon, 27 Apr 2020 11:38:10 -0400
+X-MC-Unique: RaatyLQqMO2D4ywpEP_U7A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34D0C1083E80;
+        Mon, 27 Apr 2020 15:38:01 +0000 (UTC)
+Received: from work-vm (ovpn-114-175.ams2.redhat.com [10.36.114.175])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3761460C19;
+        Mon, 27 Apr 2020 15:37:46 +0000 (UTC)
+Date:   Mon, 27 Apr 2020 16:37:43 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "cjia@nvidia.com" <cjia@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "libvir-list@redhat.com" <libvir-list@redhat.com>,
+        "Zhengxiao.zx@alibaba-inc.com" <Zhengxiao.zx@alibaba-inc.com>,
+        "shuangtai.tst@alibaba-inc.com" <shuangtai.tst@alibaba-inc.com>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eauger@redhat.com" <eauger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "eskultet@redhat.com" <eskultet@redhat.com>,
+        "Yang, Ziye" <ziye.yang@intel.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "pasic@linux.ibm.com" <pasic@linux.ibm.com>,
+        "aik@ozlabs.ru" <aik@ozlabs.ru>,
+        "felipe@nutanix.com" <felipe@nutanix.com>,
+        "Ken.Xue@amd.com" <Ken.Xue@amd.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
+        "dinechin@redhat.com" <dinechin@redhat.com>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "Liu, Changpeng" <changpeng.liu@intel.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wang, Zhi A" <zhi.a.wang@intel.com>,
+        "jonathan.davies@nutanix.com" <jonathan.davies@nutanix.com>,
+        "He, Shaopeng" <shaopeng.he@intel.com>
+Subject: Re: [PATCH v5 0/4] introduction of migration_version attribute for
+ VFIO live migration
+Message-ID: <20200427153743.GK2923@work-vm>
+References: <20200417104450.2d2f2fa9.cohuck@redhat.com>
+ <20200417095202.GD16688@joy-OptiPlex-7040>
+ <20200417132457.45d91fe3.cohuck@redhat.com>
+ <20200420012457.GE16688@joy-OptiPlex-7040>
+ <20200420165600.4951ae82@w520.home>
+ <20200421023718.GA12111@joy-OptiPlex-7040>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D86DF06@SHSMSX104.ccr.corp.intel.com>
+ <20200422073628.GA12879@joy-OptiPlex-7040>
+ <20200424191049.GU3106@work-vm>
+ <20200426013628.GC12879@joy-OptiPlex-7040>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d7b6eea-5b2d-49e1-9712-08d7eac0e6a0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Apr 2020 15:37:31.8849
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lC9LfbKmjt3AY/q0Hhkn+fPrZxH85jA2yHLITMS3cBEvOHfZ6a9gAQu9Mb8YmkmiE5MSMhvf0ltLYWMIz+Tb/w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5928
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200426013628.GC12879@joy-OptiPlex-7040>
+User-Agent: Mutt/1.13.4 (2020-02-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBMdWNhcyBTdGFjaCA8bC5zdGFj
-aEBwZW5ndXRyb25peC5kZT4NCj4gU2VudDogTW9uZGF5LCBBcHJpbCAyNywgMjAyMCAxMToxMSBQ
-TQ0KPiBUbzogQWJlbCBWZXNhIDxhYmVsLnZlc2FAbnhwLmNvbT47IEphY2t5IEJhaSA8cGluZy5i
-YWlAbnhwLmNvbT47IFNoYXduDQo+IEd1byA8c2hhd25ndW9Aa2VybmVsLm9yZz47IFNhc2NoYSBI
-YXVlciA8a2VybmVsQHBlbmd1dHJvbml4LmRlPjsgTGlhbQ0KPiBHaXJkd29vZCA8bGdpcmR3b29k
-QGdtYWlsLmNvbT47IE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4NCj4gQ2M6IEFpc2hl
-bmcgRG9uZyA8YWlzaGVuZy5kb25nQG54cC5jb20+OyBkbC1saW51eC1pbXgNCj4gPGxpbnV4LWlt
-eEBueHAuY29tPjsgbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBMaW51eCBL
-ZXJuZWwNCj4gTWFpbGluZyBMaXN0IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnPg0KPiBT
-dWJqZWN0OiBSZTogW1BBVENIXSBzb2M6IGlteDogQWRkIHBvd2VyIGRvbWFpbiBkcml2ZXIgc3Vw
-cG9ydCBmb3IgaS5teDhtDQo+IGZhbWlseQ0KPiANCj4gQW0gTW9udGFnLCBkZW4gMjcuMDQuMjAy
-MCwgMTc6NTggKzAzMDAgc2NocmllYiBBYmVsIFZlc2E6DQo+ID4gRnJvbTogSmFja3kgQmFpIDxw
-aW5nLmJhaUBueHAuY29tPg0KPiA+DQo+ID4gVGhlIGkuTVg4TSBmYW1pbHkgaXMgYSBzZXQgb2Yg
-TlhQIHByb2R1Y3QgZm9jdXMgb24gZGVsaXZlcmluZyB0aGUNCj4gPiBsYXRlc3QgYW5kIGdyZWF0
-ZXN0IHZpZGVvIGFuZCBhdWRpbyBleHBlcmllbmNlIGNvbWJpbmluZw0KPiA+IHN0YXRlLW9mLXRo
-ZS1hcnQgbWVkaWEtc3BlY2lmaWMgZmVhdHVyZXMgd2l0aCBoaWdoLXBlcmZvcm1hbmNlDQo+ID4g
-cHJvY2Vzc2luZyB3aGlsZSBvcHRpbWl6ZWQgZm9yIGxvd2VzdCBwb3dlciBjb25zdW1wdGlvbi4N
-Cj4gPg0KPiA+IGkuTVg4TVEsIGkuTVg4TU0sIGkuTVg4TU4sIGV2ZW4gdGhlIGZ1cnR1cmUgaS5N
-WDhNUCBhcmUgYWxsIGJlbG9uZyB0bw0KPiA+IHRoaXMgZmFtaWx5LiBBIEdQQyBtb2R1bGUgaXMg
-dXNlZCB0byBtYW5hZ2UgYWxsIHRoZSBQVSBwb3dlciBkb21haW4NCj4gPiBvbi9vZmYuIEJ1dCB0
-aGUgc2l0dWF0aW9uIGlzIHRoYXQgdGhlIG51bWJlciBvZiBwb3dlciBkb21haW5zICYgdGhlDQo+
-ID4gcG93ZXIgdXAgc2VxdWVuY2UgaGFzIHNpZ25pZmljYXRlIGRpZmZlcmVuY2Ugb24gdGhvc2Ug
-U29Dcy4gRXZlbiBvbg0KPiA+IHRoZSBzYW1lIFNvQy4gVGhlIHBvd2VyIHVwIHNlcXVlbmNlIHN0
-aWxsIGhhcyBiaWcgZGlmZmVyZW5jZS4gSXQgbWFrZXMNCj4gPiB1cyBoYXJkIHRvIHJldXNlIHRo
-ZSBHUEN2MiBkcml2ZXIgdG8gY292ZXIgdGhlIHdob2xlIGkuTVg4TSBmYW1pbHkuDQo+ID4gRWFj
-aCB0aW1lIGEgbmV3IFNvQyBpcyBzdXBwb3J0ZWQgaW4gdGhlIG1haW5saW5lIGtlcm5lbCwgd2Ug
-bmVlZCB0bw0KPiA+IG1vZGlmeSB0aGUgR1BDdjIgZHJpdmVyIHRvIHN1cHBvcnQgaXQuIFdlIG5l
-ZWQgdG8gYWRkIG9yIG1vZGlmeQ0KPiA+IGh1bmRyZWQgbGluZXMgb2YgY29kZSBpbiB3b3JzdCBj
-YXNlLg0KPiA+IEl0IGlzIGEgYmFkIHByYWN0aWNlIGZvciB0aGUgZHJpdmVyIG1haW50YWluYWJp
-bGl0eS4NCj4gPg0KPiA+IFRoaXMgZHJpdmVyIGFkZCBhIG1vcmUgZ2VuZXJpYyBwb3dlciBkb21h
-aW4gZHJpdmVyIHRoYXQgdGhlIGFjdHVhbA0KPiA+IHBvd2VyIG9uL29mZiBpcyBkb25lIGJ5IFRG
-LUEgY29kZS4gdGhlIGFic3RyYWN0aW9uIGdpdmUgdXMgdGhlDQo+ID4gcG9zc2liaWxpdHkgdGhh
-dCB1c2luZyBvbmUgZHJpdmVyIHRvIGNvdmVyIHRoZSB3aG9sZSBpLk1YOE0gZmFtaWx5IGluDQo+
-ID4ga2VybmVsIHNpZGUuDQo+ID4NCj4gDQo+IEFnYWluOiB3aGF0IGRvZXMgdGhpcyBkcml2ZXIg
-YnJpbmcgdG8gdGhlIHRhYmxlLCBvdGhlciB0aGFuIG1vdmluZyBhIGZyYWN0aW9uIG9mDQo+IHRo
-ZSBwb3dlciBkb21haW4gZnVuY3Rpb25hbGl0eSBpbnRvIHRoZSBmaXJtd2FyZT8NCj4gDQo+IFRo
-ZSBkaXNjdXNzaW9ucyBvbiB0aGUgbGFzdCBzdWJtaXNzaW9ucyBvZiB0aGlzIGRyaXZlciBhbHJl
-YWR5IGVzdGFibGlzaGVkIHRoYXQNCj4gd2UgY2FuJ3QgbW92ZSBhbGwgZnVuY3Rpb25hbGl0eSBm
-b3IgdGhlIHBvd2VyIGRvbWFpbnMgaW50byB0aGUgZmlybXdhcmUsIGFzDQo+IGNvbnRyb2xsaW5n
-IHJlZ3VsYXRvcnMgaXMgcHJvYmFibHkgbm90IGVhc3kgdG8gZG8gZnJvbSB0aGlzIGNvbnRleHQu
-IEFsc28gdGhlDQo+IFRGLUEgc2lkZSBpbXBsZW1lbnRhdGlvbiBvZiB0aGlzIGRyaXZlciBpcyAi
-aW50ZXJlc3RpbmciIElNSE8sIGl0IGRvZXMgc3R1ZmYgbGlrZQ0KPiBhY2Nlc3NpbmcgdGhlIGNs
-b2NrIGNvbnRyb2xsZXIgcmVnaXN0ZXJzIHdpdGhvdXQgYW55IGxvY2tpbmcgb3Igb3RoZXIgbWVh
-bnMgb2YNCj4gbXV0dWFsIGV4Y2x1c2lvbiB3aXRoIHRoZSBMaW51eCBrZXJuZWwgY2xvY2sgY29u
-dHJvbGxlciBkcml2ZXIuDQo+IA0KDQpUaGUgY2xvY2sgaGFuZGxpbmcgaXMgaW4ga2VybmVsIHNp
-ZGUgdGhyb3VnaCBDQ0YsIG5vdCBpbiBBVEYuIFNlZSB0aGUgcGF0Y2ggYmVsb3cuDQoNCj4gV2h5
-IGNhbid0IHdlIGp1c3QgZXh0ZW5kIHRoZSBleGlzdGluZyBHUEN2MiBkcml2ZXIgd2l0aCBzdXBw
-b3J0IGZvciB0aGUgb3RoZXINCj4gaS5NWDhNIGZhbWlseSBtZW1iZXJzPw0KPiANCg0KVGhlIHJl
-YXNvbiB0aGF0IHdoeSBJIGRvbuKAmXQgbGlrZSB0byBleHRlbmQgdGhlIEdQQ3YyIGlzIHRoYXQg
-d2hlbiBkb2luZyBkb21haW4gb24vb2ZmLA0KV2UgbmVlZCB0byBhY2Nlc3Mgc29tZSBzcGVjaWFs
-IGNvbnRyb2wgcmVnaXN0ZXIgaW4gZWFjaCBkb21haW4gJiBkbyBzb21lIHNwZWNpYWwgZmxvdywN
-ClRoZXNlIGNvbnRyb2wgcmVnaXN0ZXIobWVkaWFtaXggYmxvY2sgY29udHJvbCwgdnB1bWl4IGJs
-b2NrIGNvbnRyb2wpIGlzIG5vdCBpbiBHUEMNCm1vZHVsZSdzIGFkZHJlc3MgcmFuZ2UuIE5vIGJl
-bmVmaXQgdG8gcmV1c2UgdGhlIEdQQ3YyLiBPbmx5IGJyaW5nIGNvbXBsZXhpdHkgdG8gdGhlDQpH
-UEN2MiBkcml2ZXIgZWFjaCB0aW1lIGEgbmV3IFNvQyBpcyBhZGRlZC4NCg0KWWVzLCB0aGUgaS5N
-WDhNIHBvd2VyIGRvbWFpbiBzdXBwb3J0IGhhcyBiZWVuIHBlbmRpbmcgZm9yIGEgd2hpbGUuIEFS
-TSBndXlzIHJlamVjdGVkIHRoaXMgcGF0Y2hzZXQNCmJlY2F1c2UgdGhleSBzdWdnZXN0IHVzIHRv
-IHVzZSBTQ01JIHJhdGhlciB0aGFuIFNpUC4gQnV0IFNDTUkgaXMgb25seSBwYXJ0aWFsIHN1aXRh
-YmxlIGZvciBvdXINCmNhc2UuDQoNCkJSDQpKYWNreSBCYWkNCj4gUmVnYXJkcywNCj4gTHVjYXMN
-Cj4gDQo+ID4gU2lnbmVkLW9mZi1ieTogSmFja3kgQmFpIDxwaW5nLmJhaUBueHAuY29tPg0KPiA+
-IFNpZ25lZC1vZmYtYnk6IEFiZWwgVmVzYSA8YWJlbC52ZXNhQG54cC5jb20+DQo+ID4gLS0tDQo+
-ID4gIGRyaXZlcnMvc29jL2lteC9LY29uZmlnICAgICAgICAgICAgfCAgIDYgKw0KPiA+ICBkcml2
-ZXJzL3NvYy9pbXgvTWFrZWZpbGUgICAgICAgICAgIHwgICAxICsNCj4gPiAgZHJpdmVycy9zb2Mv
-aW14L2lteDhtX3BtX2RvbWFpbnMuYyB8IDIyNA0KPiArKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrDQo+ID4gIGluY2x1ZGUvc29jL2lteC9pbXhfc2lwLmggICAgICAgICAgfCAg
-MTIgKysNCj4gPiAgNCBmaWxlcyBjaGFuZ2VkLCAyNDMgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVh
-dGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zb2MvaW14L2lteDhtX3BtX2RvbWFpbnMuYw0KPiA+ICBj
-cmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9zb2MvaW14L2lteF9zaXAuaA0KPiA+DQo+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvc29jL2lteC9LY29uZmlnIGIvZHJpdmVycy9zb2MvaW14L0tjb25m
-aWcgaW5kZXgNCj4gPiBkNTE1ZDJjLi43ODM3MTk5IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMv
-c29jL2lteC9LY29uZmlnDQo+ID4gKysrIGIvZHJpdmVycy9zb2MvaW14L0tjb25maWcNCj4gPiBA
-QCAtMjcsNCArMjcsMTAgQEAgY29uZmlnIFNPQ19JTVg4TQ0KPiA+ICAJICBzdXBwb3J0LCBpdCB3
-aWxsIHByb3ZpZGUgdGhlIFNvQyBpbmZvIGxpa2UgU29DIGZhbWlseSwNCj4gPiAgCSAgSUQgYW5k
-IHJldmlzaW9uIGV0Yy4NCj4gPg0KPiA+ICtjb25maWcgSU1YOE1fUE1fRE9NQUlOUw0KPiA+ICsJ
-Ym9vbCAiaS5NWDhNIFBNIGRvbWFpbnMiDQo+ID4gKwlkZXBlbmRzIG9uIEFSQ0hfTVhDIHx8IChD
-T01QSUxFX1RFU1QgJiYgT0YpDQo+ID4gKwlkZXBlbmRzIG9uIFBNDQo+ID4gKwlzZWxlY3QgUE1f
-R0VORVJJQ19ET01BSU5TDQo+ID4gKw0KPiA+ICBlbmRtZW51DQo+ID4gZGlmZiAtLWdpdCBhL2Ry
-aXZlcnMvc29jL2lteC9NYWtlZmlsZSBiL2RyaXZlcnMvc29jL2lteC9NYWtlZmlsZSBpbmRleA0K
-PiA+IDEwM2UyYzkuLmEyMmUyNGIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9zb2MvaW14L01h
-a2VmaWxlDQo+ID4gKysrIGIvZHJpdmVycy9zb2MvaW14L01ha2VmaWxlDQo+ID4gQEAgLTMsMyAr
-Myw0IEBAIG9iai0kKENPTkZJR19IQVZFX0lNWF9HUEMpICs9IGdwYy5vDQo+ID4gIG9iai0kKENP
-TkZJR19JTVhfR1BDVjJfUE1fRE9NQUlOUykgKz0gZ3BjdjIubw0KPiA+ICBvYmotJChDT05GSUdf
-U09DX0lNWDhNKSArPSBzb2MtaW14OG0ubw0KPiA+ICBvYmotJChDT05GSUdfSU1YX1NDVV9TT0Mp
-ICs9IHNvYy1pbXgtc2N1Lm8NCj4gPiArb2JqLSQoQ09ORklHX0lNWDhNX1BNX0RPTUFJTlMpICs9
-IGlteDhtX3BtX2RvbWFpbnMubw0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9pbXgvaW14
-OG1fcG1fZG9tYWlucy5jDQo+ID4gYi9kcml2ZXJzL3NvYy9pbXgvaW14OG1fcG1fZG9tYWlucy5j
-DQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwMC4uY2UwNmEwNQ0K
-PiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9kcml2ZXJzL3NvYy9pbXgvaW14OG1fcG1fZG9t
-YWlucy5jDQo+ID4gQEAgLTAsMCArMSwyMjQgQEANCj4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50
-aWZpZXI6IEdQTC0yLjANCj4gPiArLyoNCj4gPiArICogQ29weXJpZ2h0IDIwMTkgTlhQLg0KPiA+
-ICsgKi8NCj4gPiArDQo+ID4gKyNpbmNsdWRlIDxsaW51eC9hcm0tc21jY2MuaD4NCj4gPiArI2lu
-Y2x1ZGUgPGxpbnV4L2Nsay5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4NCj4gPiAr
-I2luY2x1ZGUgPGxpbnV4L2lvLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCj4g
-PiArI2luY2x1ZGUgPGxpbnV4L29mLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9vZl9hZGRyZXNz
-Lmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCj4gPiArI2luY2x1
-ZGUgPGxpbnV4L3BtX2RvbWFpbi5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvcmVndWxhdG9yL2Nv
-bnN1bWVyLmg+DQo+ID4gKw0KPiA+ICsjaW5jbHVkZSA8c29jL2lteC9pbXhfc2lwLmg+DQo+ID4g
-Kw0KPiA+ICsjZGVmaW5lIE1BWF9DTEtfTlVNCTYNCj4gPiArI2RlZmluZSB0b19pbXg4bV9wbV9k
-b21haW4oX2dlbnBkKSBjb250YWluZXJfb2YoX2dlbnBkLCBzdHJ1Y3QNCj4gPiAraW14OG1fcG1f
-ZG9tYWluLCBwZCkNCj4gPiArDQo+ID4gKw0KPiA+ICtzdHJ1Y3QgaW14OG1fcG1fZG9tYWluIHsN
-Cj4gPiArCXN0cnVjdCBkZXZpY2UgKmRldjsNCj4gPiArCXN0cnVjdCBnZW5lcmljX3BtX2RvbWFp
-biBwZDsNCj4gPiArCXUzMiBkb21haW5faW5kZXg7DQo+ID4gKwlzdHJ1Y3QgY2xrICpjbGtbTUFY
-X0NMS19OVU1dOw0KPiA+ICsJdW5zaWduZWQgaW50IG51bV9jbGtzOw0KPiA+ICsJc3RydWN0IHJl
-Z3VsYXRvciAqcmVnOw0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArZW51bSBpbXg4bV9wbV9kb21haW5f
-c3RhdGUgew0KPiA+ICsJUERfU1RBVEVfT0ZGLA0KPiA+ICsJUERfU1RBVEVfT04sDQo+ID4gK307
-DQo+ID4gKw0KPiA+ICtzdGF0aWMgREVGSU5FX01VVEVYKGdwY19wZF9tdXRleCk7DQo+ID4gKw0K
-PiA+ICtzdGF0aWMgaW50IGlteDhtX3BkX3Bvd2VyX29uKHN0cnVjdCBnZW5lcmljX3BtX2RvbWFp
-biAqZ2VucGQpIHsNCj4gPiArCXN0cnVjdCBpbXg4bV9wbV9kb21haW4gKmRvbWFpbiA9IHRvX2lt
-eDhtX3BtX2RvbWFpbihnZW5wZCk7DQo+ID4gKwlzdHJ1Y3QgYXJtX3NtY2NjX3JlcyByZXM7DQo+
-ID4gKwlpbnQgaW5kZXgsIHJldCA9IDA7DQo+ID4gKw0KPiA+ICsJLyogcG93ZXIgb24gdGhlIGV4
-dGVybmFsIHN1cHBseSAqLw0KPiA+ICsJaWYgKCFJU19FUlIoZG9tYWluLT5yZWcpKSB7DQo+ID4g
-KwkJcmV0ID0gcmVndWxhdG9yX2VuYWJsZShkb21haW4tPnJlZyk7DQo+ID4gKwkJaWYgKHJldCkg
-ew0KPiA+ICsJCQlkZXZfd2Fybihkb21haW4tPmRldiwgImZhaWxlZCB0byBwb3dlciB1cCB0aGUg
-cmVnJWRcbiIsIHJldCk7DQo+ID4gKwkJCXJldHVybiByZXQ7DQo+ID4gKwkJfQ0KPiA+ICsJfQ0K
-PiA+ICsNCj4gPiArCS8qIGVuYWJsZSB0aGUgbmVjZXNzYXJ5IGNsa3MgbmVlZGVkIGJ5IHRoZSBw
-b3dlciBkb21haW4gKi8NCj4gPiArCWlmIChkb21haW4tPm51bV9jbGtzKSB7DQo+ID4gKwkJZm9y
-IChpbmRleCA9IDA7IGluZGV4IDwgZG9tYWluLT5udW1fY2xrczsgaW5kZXgrKykNCj4gPiArCQkJ
-Y2xrX3ByZXBhcmVfZW5hYmxlKGRvbWFpbi0+Y2xrW2luZGV4XSk7DQo+ID4gKwl9DQo+ID4gKw0K
-PiA+ICsJbXV0ZXhfbG9jaygmZ3BjX3BkX211dGV4KTsNCj4gPiArCWFybV9zbWNjY19zbWMoSU1Y
-X1NJUF9HUEMsIElNWF9TSVBfQ09ORklHX0dQQ19QTV9ET01BSU4sDQo+IGRvbWFpbi0+ZG9tYWlu
-X2luZGV4LA0KPiA+ICsJCSAgICAgIFBEX1NUQVRFX09OLCAwLCAwLCAwLCAwLCAmcmVzKTsNCj4g
-PiArCW11dGV4X3VubG9jaygmZ3BjX3BkX211dGV4KTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gMDsN
-Cj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIGludCBpbXg4bV9wZF9wb3dlcl9vZmYoc3RydWN0
-IGdlbmVyaWNfcG1fZG9tYWluICpnZW5wZCkgew0KPiA+ICsJc3RydWN0IGlteDhtX3BtX2RvbWFp
-biAqZG9tYWluID0gdG9faW14OG1fcG1fZG9tYWluKGdlbnBkKTsNCj4gPiArCXN0cnVjdCBhcm1f
-c21jY2NfcmVzIHJlczsNCj4gPiArCWludCBpbmRleCwgcmV0ID0gMDsNCj4gPiArDQo+ID4gKwlt
-dXRleF9sb2NrKCZncGNfcGRfbXV0ZXgpOw0KPiA+ICsJYXJtX3NtY2NjX3NtYyhJTVhfU0lQX0dQ
-QywgSU1YX1NJUF9DT05GSUdfR1BDX1BNX0RPTUFJTiwNCj4gZG9tYWluLT5kb21haW5faW5kZXgs
-DQo+ID4gKwkJICAgICAgUERfU1RBVEVfT0ZGLCAwLCAwLCAwLCAwLCAmcmVzKTsNCj4gPiArCW11
-dGV4X3VubG9jaygmZ3BjX3BkX211dGV4KTsNCj4gPiArDQo+ID4gKwkvKiBwb3dlciBvZmYgdGhl
-IGV4dGVybmFsIHN1cHBseSAqLw0KPiA+ICsJaWYgKCFJU19FUlIoZG9tYWluLT5yZWcpKSB7DQo+
-ID4gKwkJcmV0ID0gcmVndWxhdG9yX2Rpc2FibGUoZG9tYWluLT5yZWcpOw0KPiA+ICsJCWlmIChy
-ZXQpIHsNCj4gPiArCQkJZGV2X3dhcm4oZG9tYWluLT5kZXYsICJmYWlsZWQgdG8gcG93ZXIgb2Zm
-IHRoZSByZWclZFxuIiwNCj4gcmV0KTsNCj4gPiArCQkJcmV0dXJuIHJldDsNCj4gPiArCQl9DQo+
-ID4gKwl9DQo+ID4gKw0KPiA+ICsJLyogZGlzYWJsZSBjbGtzIHdoZW4gcG93ZXIgZG9tYWluIGlz
-IG9mZiAqLw0KPiA+ICsJaWYgKGRvbWFpbi0+bnVtX2Nsa3MpIHsNCj4gPiArCQlmb3IgKGluZGV4
-ID0gMDsgaW5kZXggPCBkb21haW4tPm51bV9jbGtzOyBpbmRleCsrKQ0KPiA+ICsJCQljbGtfZGlz
-YWJsZV91bnByZXBhcmUoZG9tYWluLT5jbGtbaW5kZXhdKTsNCj4gPiArCX0NCj4gPiArDQo+ID4g
-KwlyZXR1cm4gcmV0Ow0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGljIGludCBpbXg4bV9wZF9n
-ZXRfY2xvY2tzKHN0cnVjdCBpbXg4bV9wbV9kb21haW4gKmRvbWFpbikgew0KPiA+ICsJaW50IGks
-IHJldDsNCj4gPiArDQo+ID4gKwlmb3IgKGkgPSAwOyA7IGkrKykgew0KPiA+ICsJCXN0cnVjdCBj
-bGsgKmNsayA9IG9mX2Nsa19nZXQoZG9tYWluLT5kZXYtPm9mX25vZGUsIGkpOw0KPiA+ICsJCWlm
-IChJU19FUlIoY2xrKSkNCj4gPiArCQkJYnJlYWs7DQo+ID4gKwkJaWYgKGkgPj0gTUFYX0NMS19O
-VU0pIHsNCj4gPiArCQkJZGV2X2Vycihkb21haW4tPmRldiwgIm1vcmUgdGhhbiAlZCBjbG9ja3Nc
-biIsDQo+ID4gKwkJCQlNQVhfQ0xLX05VTSk7DQo+ID4gKwkJCXJldCA9IC1FSU5WQUw7DQo+ID4g
-KwkJCWdvdG8gY2xrX2VycjsNCj4gPiArCQl9DQo+ID4gKwkJZG9tYWluLT5jbGtbaV0gPSBjbGs7
-DQo+ID4gKwl9DQo+ID4gKwlkb21haW4tPm51bV9jbGtzID0gaTsNCj4gPiArDQo+ID4gKwlyZXR1
-cm4gMDsNCj4gPiArDQo+ID4gK2Nsa19lcnI6DQo+ID4gKwl3aGlsZSAoaS0tKQ0KPiA+ICsJCWNs
-a19wdXQoZG9tYWluLT5jbGtbaV0pOw0KPiA+ICsNCj4gPiArCXJldHVybiByZXQ7DQo+ID4gK30N
-Cj4gPiArDQo+ID4gK3N0YXRpYyB2b2lkIGlteDhtX3BkX3B1dF9jbG9ja3Moc3RydWN0IGlteDht
-X3BtX2RvbWFpbiAqZG9tYWluKSB7DQo+ID4gKwlpbnQgaTsNCj4gPiArDQo+ID4gKwlmb3IgKGkg
-PSBkb21haW4tPm51bV9jbGtzIC0gMTsgaSA+PSAwOyBpLS0pDQo+ID4gKwkJY2xrX3B1dChkb21h
-aW4tPmNsa1tpXSk7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgb2Zf
-ZGV2aWNlX2lkIGlteDhtX3BtX2RvbWFpbl9pZHNbXSA9IHsNCj4gPiArCXsuY29tcGF0aWJsZSA9
-ICJmc2wsaW14OG0tcG0tZG9tYWluIn0sDQo+ID4gKwl7fSwNCj4gPiArfTsNCj4gPiArDQo+ID4g
-K3N0YXRpYyBpbnQgaW14OG1fcG1fZG9tYWluX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2Ug
-KnBkZXYpIHsNCj4gPiArCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZwZGV2LT5kZXY7DQo+ID4gKwlz
-dHJ1Y3QgZGV2aWNlX25vZGUgKm5wID0gZGV2LT5vZl9ub2RlOw0KPiA+ICsJc3RydWN0IGlteDht
-X3BtX2RvbWFpbiAqZG9tYWluOw0KPiA+ICsJc3RydWN0IG9mX3BoYW5kbGVfYXJncyBwYXJlbnQs
-IGNoaWxkOw0KPiA+ICsJaW50IHJldDsNCj4gPiArDQo+ID4gKwlkb21haW4gPSBkZXZtX2t6YWxs
-b2MoZGV2LCBzaXplb2YoKmRvbWFpbiksIEdGUF9LRVJORUwpOw0KPiA+ICsJaWYgKCFkb21haW4p
-DQo+ID4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ID4gKw0KPiA+ICsJY2hpbGQubnAgPSBucDsNCj4g
-PiArCWRvbWFpbi0+ZGV2ID0gZGV2Ow0KPiA+ICsNCj4gPiArCXJldCA9IG9mX3Byb3BlcnR5X3Jl
-YWRfc3RyaW5nKG5wLCAiZG9tYWluLW5hbWUiLCAmZG9tYWluLT5wZC5uYW1lKTsNCj4gPiArCWlm
-IChyZXQpIHsNCj4gPiArCQlkZXZfZXJyKGRldiwgImZhaWxlZCB0byBnZXQgdGhlIGRvbWFpbiBu
-YW1lXG4iKTsNCj4gPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwly
-ZXQgPSBvZl9wcm9wZXJ0eV9yZWFkX3UzMihucCwgImRvbWFpbi1pbmRleCIsDQo+ICZkb21haW4t
-PmRvbWFpbl9pbmRleCk7DQo+ID4gKwlpZiAocmV0KSB7DQo+ID4gKwkJZGV2X2VycihkZXYsICJm
-YWlsZWQgdG8gZ2V0IHRoZSBkb21haW4gaW5kZXhcbiIpOw0KPiA+ICsJCXJldHVybiAtRUlOVkFM
-Ow0KPiA+ICsJfQ0KPiA+ICsNCj4gPiArCWRvbWFpbi0+cmVnID0gZGV2bV9yZWd1bGF0b3JfZ2V0
-X29wdGlvbmFsKGRldiwgInBvd2VyIik7DQo+ID4gKwlpZiAoSVNfRVJSKGRvbWFpbi0+cmVnKSkg
-ew0KPiA+ICsJCWlmIChQVFJfRVJSKGRvbWFpbi0+cmVnKSAhPSAtRU5PREVWKSB7DQo+ID4gKwkJ
-CWlmIChQVFJfRVJSKGRvbWFpbi0+cmVnKSAhPSAtRVBST0JFX0RFRkVSKQ0KPiA+ICsJCQkJZGV2
-X2VycihkZXYsICJmYWlsZWQgdG8gZ2V0IGRvbWFpbidzIHJlZ3VsYXRvclxuIik7DQo+ID4gKwkJ
-CXJldHVybiBQVFJfRVJSKGRvbWFpbi0+cmVnKTsNCj4gPiArCQl9DQo+ID4gKwl9DQo+ID4gKw0K
-PiA+ICsJcmV0ID0gaW14OG1fcGRfZ2V0X2Nsb2Nrcyhkb21haW4pOw0KPiA+ICsJaWYgKHJldCkg
-ew0KPiA+ICsJCWlmIChyZXQgIT0gLUVQUk9CRV9ERUZFUikNCj4gPiArCQkJZGV2X2VycihkZXYs
-ICJmYWlsZWQgdG8gZ2V0IGRvbWFpbidzIGNsb2Nrc1xuIik7DQo+ID4gKwkJcmV0dXJuIHJldDsN
-Cj4gPiArCX0NCj4gPiArDQo+ID4gKwlkb21haW4tPnBkLnBvd2VyX29mZiA9IGlteDhtX3BkX3Bv
-d2VyX29mZjsNCj4gPiArCWRvbWFpbi0+cGQucG93ZXJfb24gPSBpbXg4bV9wZF9wb3dlcl9vbjsN
-Cj4gPiArDQo+ID4gKwlwbV9nZW5wZF9pbml0KCZkb21haW4tPnBkLCBOVUxMLCB0cnVlKTsNCj4g
-PiArDQo+ID4gKwlyZXQgPSBvZl9nZW5wZF9hZGRfcHJvdmlkZXJfc2ltcGxlKG5wLCAmZG9tYWlu
-LT5wZCk7DQo+ID4gKwlpZiAocmV0KSB7DQo+ID4gKwkJZGV2X2VycihkZXYsICJmYWlsZWQgdG8g
-YWRkIHRoZSBkb21haW4gcHJvdmlkZXJcbiIpOw0KPiA+ICsJCXBtX2dlbnBkX3JlbW92ZSgmZG9t
-YWluLT5wZCk7DQo+ID4gKwkJaW14OG1fcGRfcHV0X2Nsb2Nrcyhkb21haW4pOw0KPiA+ICsJCXJl
-dHVybiByZXQ7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJLyogYWRkIGl0IGFzIHN1YmRvbWFpbiBp
-ZiBuZWNlc3NhcnkgKi8NCj4gPiArCWlmICghb2ZfcGFyc2VfcGhhbmRsZV93aXRoX2FyZ3MobnAs
-ICJwYXJlbnQtZG9tYWlucyIsDQo+ID4gKwkJCSIjcG93ZXItZG9tYWluLWNlbGxzIiwgMCwgJnBh
-cmVudCkpIHsNCj4gPiArCQlyZXQgPSBvZl9nZW5wZF9hZGRfc3ViZG9tYWluKCZwYXJlbnQsICZj
-aGlsZCk7DQo+ID4gKwkJb2Zfbm9kZV9wdXQocGFyZW50Lm5wKTsNCj4gPiArDQo+ID4gKwkJaWYg
-KHJldCA8IDApIHsNCj4gPiArCQkJZGV2X2RiZyhkZXYsICJmYWlsZWQgdG8gYWRkIHRoZSBzdWJk
-b21haW46ICVzOiAlZCIsDQo+ID4gKwkJCQlkb21haW4tPnBkLm5hbWUsIHJldCk7DQo+ID4gKwkJ
-CW9mX2dlbnBkX2RlbF9wcm92aWRlcihucCk7DQo+ID4gKwkJCXBtX2dlbnBkX3JlbW92ZSgmZG9t
-YWluLT5wZCk7DQo+ID4gKwkJCWlteDhtX3BkX3B1dF9jbG9ja3MoZG9tYWluKTsNCj4gPiArCQkJ
-cmV0dXJuIGRyaXZlcl9kZWZlcnJlZF9wcm9iZV9jaGVja19zdGF0ZShkZXYpOw0KPiA+ICsJCX0N
-Cj4gPiArCX0NCj4gPiArDQo+ID4gKwlyZXR1cm4gMDsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3Rh
-dGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgaW14OG1fcG1fZG9tYWluX2RyaXZlciA9IHsNCj4g
-PiArCS5kcml2ZXIgPSB7DQo+ID4gKwkJLm5hbWUJPSAiaW14OG1fcG1fZG9tYWluIiwNCj4gPiAr
-CQkub3duZXIJPSBUSElTX01PRFVMRSwNCj4gPiArCQkub2ZfbWF0Y2hfdGFibGUgPSBpbXg4bV9w
-bV9kb21haW5faWRzLA0KPiA+ICsJfSwNCj4gPiArCS5wcm9iZSA9IGlteDhtX3BtX2RvbWFpbl9w
-cm9iZSwNCj4gPiArfTsNCj4gPiArbW9kdWxlX3BsYXRmb3JtX2RyaXZlcihpbXg4bV9wbV9kb21h
-aW5fZHJpdmVyKTsNCj4gPiArDQo+ID4gK01PRFVMRV9BVVRIT1IoIk5YUCIpOw0KPiA+ICtNT0RV
-TEVfREVTQ1JJUFRJT04oIk5YUCBpLk1YOE0gcG93ZXIgZG9tYWluIGRyaXZlciIpOw0KPiA+ICtN
-T0RVTEVfTElDRU5TRSgiR1BMIHYyIik7DQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvc29jL2lt
-eC9pbXhfc2lwLmggYi9pbmNsdWRlL3NvYy9pbXgvaW14X3NpcC5oIG5ldw0KPiA+IGZpbGUgbW9k
-ZSAxMDA2NDQgaW5kZXggMDAwMDAwMDAuLjZiOTZiMzMNCj4gPiAtLS0gL2Rldi9udWxsDQo+ID4g
-KysrIGIvaW5jbHVkZS9zb2MvaW14L2lteF9zaXAuaA0KPiA+IEBAIC0wLDAgKzEsMTIgQEANCj4g
-PiArLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAgKi8NCj4gPiArLyoNCj4gPiAr
-ICogQ29weXJpZ2h0IDIwMTkgTlhQDQo+ID4gKyAqLw0KPiA+ICsNCj4gPiArI2lmbmRlZiBfX0lN
-WF9TSVBfSF9fDQo+ID4gKyNkZWZpbmUgX19JTVhfU0lQX0hfXw0KPiA+ICsNCj4gPiArI2RlZmlu
-ZSBJTVhfU0lQX0dQQwkJCTB4QzIwMDAwMDANCj4gPiArI2RlZmluZSBJTVhfU0lQX0NPTkZJR19H
-UENfUE1fRE9NQUlOCTB4MDMNCj4gPiArDQo+ID4gKyNlbmRpZiAvKiBfX0lNWF9TSVBfSF9fICov
-DQoNCg==
+* Yan Zhao (yan.y.zhao@intel.com) wrote:
+> On Sat, Apr 25, 2020 at 03:10:49AM +0800, Dr. David Alan Gilbert wrote:
+> > * Yan Zhao (yan.y.zhao@intel.com) wrote:
+> > > On Tue, Apr 21, 2020 at 08:08:49PM +0800, Tian, Kevin wrote:
+> > > > > From: Yan Zhao
+> > > > > Sent: Tuesday, April 21, 2020 10:37 AM
+> > > > > 
+> > > > > On Tue, Apr 21, 2020 at 06:56:00AM +0800, Alex Williamson wrote:
+> > > > > > On Sun, 19 Apr 2020 21:24:57 -0400
+> > > > > > Yan Zhao <yan.y.zhao@intel.com> wrote:
+> > > > > >
+> > > > > > > On Fri, Apr 17, 2020 at 07:24:57PM +0800, Cornelia Huck wrote:
+> > > > > > > > On Fri, 17 Apr 2020 05:52:02 -0400
+> > > > > > > > Yan Zhao <yan.y.zhao@intel.com> wrote:
+> > > > > > > >
+> > > > > > > > > On Fri, Apr 17, 2020 at 04:44:50PM +0800, Cornelia Huck wrote:
+> > > > > > > > > > On Mon, 13 Apr 2020 01:52:01 -0400
+> > > > > > > > > > Yan Zhao <yan.y.zhao@intel.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > > This patchset introduces a migration_version attribute under sysfs
+> > > > > of VFIO
+> > > > > > > > > > > Mediated devices.
+> > > > > > > > > > >
+> > > > > > > > > > > This migration_version attribute is used to check migration
+> > > > > compatibility
+> > > > > > > > > > > between two mdev devices.
+> > > > > > > > > > >
+> > > > > > > > > > > Currently, it has two locations:
+> > > > > > > > > > > (1) under mdev_type node,
+> > > > > > > > > > >     which can be used even before device creation, but only for
+> > > > > mdev
+> > > > > > > > > > >     devices of the same mdev type.
+> > > > > > > > > > > (2) under mdev device node,
+> > > > > > > > > > >     which can only be used after the mdev devices are created, but
+> > > > > the src
+> > > > > > > > > > >     and target mdev devices are not necessarily be of the same
+> > > > > mdev type
+> > > > > > > > > > > (The second location is newly added in v5, in order to keep
+> > > > > consistent
+> > > > > > > > > > > with the migration_version node for migratable pass-though
+> > > > > devices)
+> > > > > > > > > >
+> > > > > > > > > > What is the relationship between those two attributes?
+> > > > > > > > > >
+> > > > > > > > > (1) is for mdev devices specifically, and (2) is provided to keep the
+> > > > > same
+> > > > > > > > > sysfs interface as with non-mdev cases. so (2) is for both mdev
+> > > > > devices and
+> > > > > > > > > non-mdev devices.
+> > > > > > > > >
+> > > > > > > > > in future, if we enable vfio-pci vendor ops, (i.e. a non-mdev device
+> > > > > > > > > is binding to vfio-pci, but is able to register migration region and do
+> > > > > > > > > migration transactions from a vendor provided affiliate driver),
+> > > > > > > > > the vendor driver would export (2) directly, under device node.
+> > > > > > > > > It is not able to provide (1) as there're no mdev devices involved.
+> > > > > > > >
+> > > > > > > > Ok, creating an alternate attribute for non-mdev devices makes sense.
+> > > > > > > > However, wouldn't that rather be a case (3)? The change here only
+> > > > > > > > refers to mdev devices.
+> > > > > > > >
+> > > > > > > as you pointed below, (3) and (2) serve the same purpose.
+> > > > > > > and I think a possible usage is to migrate between a non-mdev device and
+> > > > > > > an mdev device. so I think it's better for them both to use (2) rather
+> > > > > > > than creating (3).
+> > > > > >
+> > > > > > An mdev type is meant to define a software compatible interface, so in
+> > > > > > the case of mdev->mdev migration, doesn't migrating to a different type
+> > > > > > fail the most basic of compatibility tests that we expect userspace to
+> > > > > > perform?  IOW, if two mdev types are migration compatible, it seems a
+> > > > > > prerequisite to that is that they provide the same software interface,
+> > > > > > which means they should be the same mdev type.
+> > > > > >
+> > > > > > In the hybrid cases of mdev->phys or phys->mdev, how does a
+> > > > > management
+> > > > > > tool begin to even guess what might be compatible?  Are we expecting
+> > > > > > libvirt to probe ever device with this attribute in the system?  Is
+> > > > > > there going to be a new class hierarchy created to enumerate all
+> > > > > > possible migrate-able devices?
+> > > > > >
+> > > > > yes, management tool needs to guess and test migration compatible
+> > > > > between two devices. But I think it's not the problem only for
+> > > > > mdev->phys or phys->mdev. even for mdev->mdev, management tool needs
+> > > > > to
+> > > > > first assume that the two mdevs have the same type of parent devices
+> > > > > (e.g.their pciids are equal). otherwise, it's still enumerating
+> > > > > possibilities.
+> > > > > 
+> > > > > on the other hand, for two mdevs,
+> > > > > mdev1 from pdev1, its mdev_type is 1/2 of pdev1;
+> > > > > mdev2 from pdev2, its mdev_type is 1/4 of pdev2;
+> > > > > if pdev2 is exactly 2 times of pdev1, why not allow migration between
+> > > > > mdev1 <-> mdev2.
+> > > > 
+> > > > How could the manage tool figure out that 1/2 of pdev1 is equivalent 
+> > > > to 1/4 of pdev2? If we really want to allow such thing happen, the best
+> > > > choice is to report the same mdev type on both pdev1 and pdev2.
+> > > I think that's exactly the value of this migration_version interface.
+> > > the management tool can take advantage of this interface to know if two
+> > > devices are migration compatible, no matter they are mdevs, non-mdevs,
+> > > or mix.
+> > > 
+> > > as I know, (please correct me if not right), current libvirt still
+> > > requires manually generating mdev devices, and it just duplicates src vm
+> > > configuration to the target vm.
+> > > for libvirt, currently it's always phys->phys and mdev->mdev (and of the
+> > > same mdev type).
+> > > But it does not justify that hybrid cases should not be allowed. otherwise,
+> > > why do we need to introduce this migration_version interface and leave
+> > > the judgement of migration compatibility to vendor driver? why not simply
+> > > set the criteria to something like "pciids of parent devices are equal,
+> > > and mdev types are equal" ?
+> > > 
+> > > 
+> > > > btw mdev<->phys just brings trouble to upper stack as Alex pointed out. 
+> > > could you help me understand why it will bring trouble to upper stack?
+> > > 
+> > > I think it just needs to read src migration_version under src dev node,
+> > > and test it in target migration version under target dev node. 
+> > > 
+> > > after all, through this interface we just help the upper layer
+> > > knowing available options through reading and testing, and they decide
+> > > to use it or not.
+> > > 
+> > > > Can we simplify the requirement by allowing only mdev<->mdev and 
+> > > > phys<->phys migration? If an customer does want to migrate between a 
+> > > > mdev and phys, he could wrap physical device into a wrapped mdev 
+> > > > instance (with the same type as the source mdev) instead of using vendor 
+> > > > ops. Doing so does add some burden but if mdev<->phys is not dominant 
+> > > > usage then such tradeoff might be worthywhile...
+> > > >
+> > > If the interfaces for phys<->phys and mdev<->mdev are consistent, it makes no
+> > > difference to phys<->mdev, right?
+> > > I think the vendor string for a mdev device is something like:
+> > > "Parent PCIID + mdev type + software version", and
+> > > that for a phys device is something like:
+> > > "PCIID + software version".
+> > > as long as we don't migrate between devices from different vendors, it's
+> > > easy for vendor driver to tell if a phys device is migration compatible
+> > > to a mdev device according it supports it or not.
+> > 
+> > It surprises me that the PCIID matching is a requirement; I'd assumed
+> > with this clever mdev name setup that you could migrate between two
+> > different models in a series, or to a newer model, as long as they
+> > both supported the same mdev view.
+> > 
+> hi Dave
+> the migration_version string is transparent to userspace, and is
+> completely defined by vendor driver.
+> I put it there just as an example of how vendor driver may implement it.
+> e.g.
+> the src migration_version string is "src PCIID + src software version", 
+> then when this string is write to target migration_version node,
+> the vendor driver in the target device will compare it with its own
+> device info and software version.
+> If different models are allowed, the write just succeeds even
+> PCIIDs in src and target are different.
+> 
+> so, it is the vendor driver to define whether two devices are able to
+> migrate, no matter their PCIIDs, mdev types, software versions..., which
+> provides vendor driver full flexibility.
+> 
+> do you think it's good?
+
+Yeh that's OK; I guess it's going to need to have a big table in their
+with all the PCIIDs in.
+The alternative would be to abstract it a little; e.g. to say it's
+an Intel-gpu-core-v4  and then it would be less worried about the exact
+clock speed etc - but yes you might be right htat PCIIDs might be best
+for checking for quirks.
+
+Dave
+
+> Thanks
+> Yan
+> 
+> > 
+> > > 
+> > > Thanks
+> > > Yan
+> > > > 
+> > > > > 
+> > > > > 
+> > > > > > I agree that there was a gap in the previous proposal for non-mdev
+> > > > > > devices, but I think this bring a lot of questions that we need to
+> > > > > > puzzle through and libvirt will need to re-evaluate how they might
+> > > > > > decide to pick a migration target device.  For example, I'm sure
+> > > > > > libvirt would reject any policy decisions regarding picking a physical
+> > > > > > device versus an mdev device.  Had we previously left it that only a
+> > > > > > layer above libvirt would select a target device and libvirt only tests
+> > > > > > compatibility to that target device?
+> > > > > I'm not sure if there's a layer above libvirt would select a target
+> > > > > device. but if there is such a layer (even it's human), we need to
+> > > > > provide an interface for them to know whether their decision is suitable
+> > > > > for migration. The migration_version interface provides a potential to
+> > > > > allow mdev->phys migration, even libvirt may currently reject it.
+> > > > > 
+> > > > > 
+> > > > > > We also need to consider that this expands the namespace.  If we no
+> > > > > > longer require matching types as the first level of comparison, then
+> > > > > > vendor migration strings can theoretically collide.  How do we
+> > > > > > coordinate that can't happen?  Thanks,
+> > > > > yes, it's indeed a problem.
+> > > > > could only allowing migration beteen devices from the same vendor be a
+> > > > > good
+> > > > > prerequisite?
+> > > > > 
+> > > > > Thanks
+> > > > > Yan
+> > > > > >
+> > > > > > > > > > Is existence (and compatibility) of (1) a pre-req for possible
+> > > > > > > > > > existence (and compatibility) of (2)?
+> > > > > > > > > >
+> > > > > > > > > no. (2) does not reply on (1).
+> > > > > > > >
+> > > > > > > > Hm. Non-existence of (1) seems to imply "this type does not support
+> > > > > > > > migration". If an mdev created for such a type suddenly does support
+> > > > > > > > migration, it feels a bit odd.
+> > > > > > > >
+> > > > > > > yes. but I think if the condition happens, it should be reported a bug
+> > > > > > > to vendor driver.
+> > > > > > > should I add a line in the doc like "vendor driver should ensure that the
+> > > > > > > migration compatibility from migration_version under mdev_type should
+> > > > > be
+> > > > > > > consistent with that from migration_version under device node" ?
+> > > > > > >
+> > > > > > > > (It obviously cannot be a prereq for what I called (3) above.)
+> > > > > > > >
+> > > > > > > > >
+> > > > > > > > > > Does userspace need to check (1) or can it completely rely on (2), if
+> > > > > > > > > > it so chooses?
+> > > > > > > > > >
+> > > > > > > > > I think it can completely reply on (2) if compatibility check before
+> > > > > > > > > mdev creation is not required.
+> > > > > > > > >
+> > > > > > > > > > If devices with a different mdev type are indeed compatible, it
+> > > > > seems
+> > > > > > > > > > userspace can only find out after the devices have actually been
+> > > > > > > > > > created, as (1) does not apply?
+> > > > > > > > > yes, I think so.
+> > > > > > > >
+> > > > > > > > How useful would it be for userspace to even look at (1) in that case?
+> > > > > > > > It only knows if things have a chance of working if it actually goes
+> > > > > > > > ahead and creates devices.
+> > > > > > > >
+> > > > > > > hmm, is it useful for userspace to test the migration_version under mdev
+> > > > > > > type before it knows what mdev device to generate ?
+> > > > > > > like when the userspace wants to migrate an mdev device in src vm,
+> > > > > > > but it has not created target vm and the target mdev device.
+> > > > > > >
+> > > > > > > > >
+> > > > > > > > > > One of my worries is that the existence of an attribute with the
+> > > > > same
+> > > > > > > > > > name in two similar locations might lead to confusion. But maybe it
+> > > > > > > > > > isn't a problem.
+> > > > > > > > > >
+> > > > > > > > > Yes, I have the same feeling. but as (2) is for sysfs interface
+> > > > > > > > > consistency, to make it transparent to userspace tools like libvirt,
+> > > > > > > > > I guess the same name is necessary?
+> > > > > > > >
+> > > > > > > > What do we actually need here, I wonder? (1) and (2) seem to serve
+> > > > > > > > slightly different purposes, while (2) and what I called (3) have the
+> > > > > > > > same purpose. Is it important to userspace that (1) and (2) have the
+> > > > > > > > same name?
+> > > > > > > so change (1) to migration_type_version and (2) to
+> > > > > > > migration_instance_version?
+> > > > > > > But as they are under different locations, could that location imply
+> > > > > > > enough information?
+> > > > > > >
+> > > > > > >
+> > > > > > > Thanks
+> > > > > > > Yan
+> > > > > > >
+> > > > > > >
+> > > > > >
+> > > > > _______________________________________________
+> > > > > intel-gvt-dev mailing list
+> > > > > intel-gvt-dev@lists.freedesktop.org
+> > > > > https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
+> > > 
+> > --
+> > Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+> > 
+> 
+--
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
+
