@@ -2,84 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ACAE1B950E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 04:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE2D1B9517
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 04:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726487AbgD0CKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 22:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726084AbgD0CKx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 22:10:53 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308CCC061A0F;
-        Sun, 26 Apr 2020 19:10:53 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id m18so23639915otq.9;
-        Sun, 26 Apr 2020 19:10:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4N0tzn6HxWCVKhbcP3iPrPzqWqbdVMDQSlnfjcrFqNo=;
-        b=Hl5k9q5ukoi3szf18rgUOm17uhLI9srrE7wVvHse+gpzS+zBzRST8NQCHhV5LvGtKM
-         FuJRIQlamx0E48HcHe6y8OIsWlt46/5MGyHVSa9+FtTO5p1zQVDDWiHSYXxlB6SjitK9
-         nt/a+y5ZgdHXhYOh3+ChcRoHW3tM0HQuqS/IKFlXquKuRrBAL1gyA7t09BMAhdZWoCKc
-         yNIvBR9DevGIMOe33mjjW1Sij6Nidm3IHW/MSkSq4oSaYvhk7ydRLgr+jX4LWgpwDY+H
-         lYV5O4QfbF0ena7beBiIGjmeOhhQ5xo7VFIM+dDlKgpwJEsp8Z6iKQJ1j1LXgWrxmCwU
-         rhJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4N0tzn6HxWCVKhbcP3iPrPzqWqbdVMDQSlnfjcrFqNo=;
-        b=PCusTttDt3v/6Ovgr2NrBTWcKgWHBwwMYetcEXvpJJEr8rmetiCAnu2kJxSBo6XJ5O
-         vKhlRZr98o2u254RhO+k/NDZOPp2PydYkeNZb86qT7nC+FbgWpOL1MgowTrJ3nf6e9Yj
-         HsViDhi6yYYZa04+K7jUUvIgypBZst3YUVpJ9yptzYUr96KYxHrxoVvSIeM7vceOZVR1
-         D5zw+sjJp1yabxU+xRVnztL4XOshwLBdEGNOE7UL56pXjfR3QElwCOszf7+CxD6HjMYf
-         YdtKXhvn135J4DZ4NEoA1cd0/fJPW/lSvXgunIqzCfum8Ep+SQ8unSMUiWsqKuW54HOn
-         ZFpg==
-X-Gm-Message-State: AGi0PuYoVdSSaRv6kVnIW/F1NW+d/K5QPfa3FJIHGrC7jOJTZv0qr0C9
-        yHI9SS/roP3pFipzhZdG5rk=
-X-Google-Smtp-Source: APiQypJrYOdevGlvw/kgcnt9kU19pHmd/u7nQtNhqmbnRNON7LpqS2Fr1a/gxig/Gh3i9GdvpiRZUQ==
-X-Received: by 2002:aca:c6ca:: with SMTP id w193mr14030066oif.165.1587953452299;
-        Sun, 26 Apr 2020 19:10:52 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id s10sm3589988otd.69.2020.04.26.19.10.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 26 Apr 2020 19:10:51 -0700 (PDT)
-Date:   Sun, 26 Apr 2020 19:10:50 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nathan Huckleberry <nhuck15@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: remove unused AS assignment
-Message-ID: <20200427021050.GA27787@ubuntu-s3-xlarge-x86>
-References: <20200427003019.2401592-1-masahiroy@kernel.org>
+        id S1726400AbgD0CRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 22:17:42 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3307 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726234AbgD0CRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 22:17:42 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 7F4CD604439C8E50E61F;
+        Mon, 27 Apr 2020 10:17:40 +0800 (CST)
+Received: from [127.0.0.1] (10.166.213.7) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Mon, 27 Apr 2020
+ 10:17:29 +0800
+Subject: Re: [PATCH] staging: rtl8723bs: remove set but not used
+ 'pregistrypriv'
+To:     <gregkh@linuxfoundation.org>, <hariprasad.kelam@gmail.com>,
+        <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>
+CC:     Hulk Robot <hulkci@huawei.com>
+References: <20200426094334.24346-1-yanaijie@huawei.com>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <d141d9e7-5310-672a-9ffd-6be1b448261a@huawei.com>
+Date:   Mon, 27 Apr 2020 10:17:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427003019.2401592-1-masahiroy@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200426094334.24346-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.213.7]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 09:30:19AM +0900, Masahiro Yamada wrote:
-> $(AS) is not used anywhere, hence commit aa824e0c962b ("kbuild: remove
-> AS variable") killed it.
-> 
-> Remove the left-over code in arch/{arm,arm64}/Makefile.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Sorry, it has already been fixed by YueHaibing. Please ignore this.
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+在 2020/4/26 17:43, Jason Yan 写道:
+> Fix the following gcc warning:
+> 
+> drivers/staging/rtl8723bs/hal/sdio_halinit.c:547:24: warning: variable
+> ‘pregistrypriv’ set but not used [-Wunused-but-set-variable]
+>    struct registry_priv *pregistrypriv;
+>                          ^~~~~~~~~~~~~
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>   drivers/staging/rtl8723bs/hal/sdio_halinit.c | 4 ----
+>   1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/hal/sdio_halinit.c b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
+> index 7853af53051d..e42d8c18e1ae 100644
+> --- a/drivers/staging/rtl8723bs/hal/sdio_halinit.c
+> +++ b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
+> @@ -544,13 +544,9 @@ static void _InitRetryFunction(struct adapter *padapter)
+>   
+>   static void HalRxAggr8723BSdio(struct adapter *padapter)
+>   {
+> -	struct registry_priv *pregistrypriv;
+>   	u8 valueDMATimeout;
+>   	u8 valueDMAPageCount;
+>   
+> -
+> -	pregistrypriv = &padapter->registrypriv;
+> -
+>   	valueDMATimeout = 0x06;
+>   	valueDMAPageCount = 0x06;
+>   
+> 
+
