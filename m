@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D802F1BA43E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB261BA43F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbgD0NJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 09:09:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46824 "EHLO mail.kernel.org"
+        id S1727813AbgD0NJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 09:09:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726651AbgD0NJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 09:09:20 -0400
+        id S1726651AbgD0NJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 09:09:31 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4AB032072D;
-        Mon, 27 Apr 2020 13:09:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C8B92076A;
+        Mon, 27 Apr 2020 13:09:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587992959;
-        bh=RMGtcuq9poVdZOs8i7AlANrnvmz1YVBx+61b4lQ+NlU=;
+        s=default; t=1587992971;
+        bh=oLAkO5I8sHm5bFau0W6wglLolrcnVrPC69eOGnt+QRI=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=18PqGg0U4x8bsr3mYRoxNY2EOchx4rM0d4uMWf33pwI2Mrnf+PB6I93E023rf+xBc
-         v4e5SaKR30XDPNYw7TYhvyfFG1Dl1E85Odlw5MQltqiknTLUb+eWR7Ynz/+JOR3jjj
-         X4ga4Tn+VQ/uh8xTkbEoZHOCq1dIkyh1NO0sUBX4=
-Date:   Mon, 27 Apr 2020 14:09:17 +0100
+        b=q8QVKDZ2XFWhQVe8XrBElgPdWbNSB/mPsB/EtEAY/fsNZUWHkGoSwNxNgCpFdzXuX
+         A77egwRNVRGTk6YcumRlqeC/pd0sFhQsh72VkAG47P+3Tccru9bvrEX+5FvtUSl4iu
+         lFCjr8QtrWI+DQzbGYlTHol8cWJjr0ckRxoiVTJI=
+Date:   Mon, 27 Apr 2020 14:09:28 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     rafael.j.wysocki@intel.com, peter.ujfalusi@ti.com, perex@perex.cz,
-        alsa-devel@alsa-project.org, tglx@linutronix.de, tiwai@suse.com,
-        Jason Yan <yanaijie@huawei.com>, linux-omap@vger.kernel.org,
-        jarkko.nikula@bitmer.com, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com
-In-Reply-To: <20200426094238.23914-1-yanaijie@huawei.com>
-References: <20200426094238.23914-1-yanaijie@huawei.com>
-Subject: Re: [PATCH] ASoC: ti: remove comparison to bool in omap_mcbsp_dai_set_dai_fmt()
-Message-Id: <158799293954.30174.6898589997938617808.b4-ty@kernel.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>, perex@perex.cz,
+        tiwai@suse.com, lgirdwood@gmail.com
+Cc:     Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+In-Reply-To: <20200427091145.4268-1-tangbin@cmss.chinamobile.com>
+References: <20200427091145.4268-1-tangbin@cmss.chinamobile.com>
+Subject: Re: [PATCH] ASoC: hisilicon: Use IS_ERR() instead of IS_ERR_OR_NULL()
+Message-Id: <158799293954.30174.15623611340968433375.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Apr 2020 17:42:38 +0800, Jason Yan wrote:
-> Fix the following coccicheck warning:
+On Mon, 27 Apr 2020 17:11:45 +0800, Tang Bin wrote:
+> In the function hi6210_i2s_probe(), devm_clk_get() doesn't return NULL.
+> Thus use IS_ERR() to validate the return value instead of IS_ERR_OR_NULL().
 > 
-> sound/soc/ti/omap-mcbsp.c:1188:5-11: WARNING: Comparison to bool
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
+>  sound/soc/hisilicon/hi6210-i2s.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
 > [...]
 
@@ -55,8 +56,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: ti: remove comparison to bool in omap_mcbsp_dai_set_dai_fmt()
-      commit: 1597bfbfdb3c6e97ad0f63abedc2a26d6c1850c7
+[1/1] ASoC: hisilicon: Use IS_ERR() instead of IS_ERR_OR_NULL()
+      commit: e782ddbb0873d4d96bda890b295130696e0739fc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
