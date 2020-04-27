@@ -2,124 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8121B95A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 05:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5711B9597
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 05:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgD0Dt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 23:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
+        id S1726559AbgD0Do0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 23:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726391AbgD0Dt4 (ORCPT
+        by vger.kernel.org with ESMTP id S1726535AbgD0Do0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 23:49:56 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7FCC061A41
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 20:49:55 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id w3so6476972plz.5
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 20:49:55 -0700 (PDT)
+        Sun, 26 Apr 2020 23:44:26 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A7CC061A0F;
+        Sun, 26 Apr 2020 20:44:25 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id i3so17301082ioo.13;
+        Sun, 26 Apr 2020 20:44:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3BQtmdkZTOxoTu8cuntZt9I/+ptcn4gko9UOiotLnjE=;
-        b=we4uRc/H1yVjarr8WAv+iWDbCOBVbG8JDbGr3TEceAesV9+p6UtdP85GbQrANodFxJ
-         UiQvQou8pt7sJXJZyVlNlatZIwFCM0ggFaPxrsp1YCLHAzJD+N+lKhx4owfVILvK4vdG
-         MYuTBNi+M4YiiOYicEZc2R5s6J0184RvUUMknTefc9Rb4EiZrsr+CIyzHdLOwllnSxpM
-         RgnJgQE/o9NRtLPwS+yXMtoXLSeVIrI7dzOjQsTWay7alfb9vx7R4wA1f/BqCCIH9yRD
-         7IkJeSEFabtvNck0wvH47c5jznVZnvUxI0blskYH1L7kpeGdFGsQ8/OhoM3xlaTYV6IO
-         i+fA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aQq0CUnQfujiDDnJvRHgF4LcjSyfQt3UEj7L50b98/A=;
+        b=RKVWEZ2ioRL+cte2OumCaEGfBNi/Ob4AKIpk4K5KD00rj0JDK1PZIS7gzPvJXBAwXD
+         wEDKZYPg+Iwxfg3u6Qu2tHISBcIuoeMiAheln22UZOiycsdQ0HMoswEn0IMGDShJmzQk
+         1SCN3h1Ol/griaEytviyKiCcTm+lE555t9lIv5tWcUb5za9Ic35WNIaCEsYbLHrTQ1Fu
+         0l4ku6FDE+jmz7sQl3r2fP1tZYb2z9gLkiQqPBHbXGY2DfDYDrYJr2pLEETcwtCZxioW
+         tTPAGa9UZBCCSkNrIf8UWpHNoocAvTroQLIVShq/A0Z5rdQcfaDZA8EIjVuRUWnEivXS
+         UDcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3BQtmdkZTOxoTu8cuntZt9I/+ptcn4gko9UOiotLnjE=;
-        b=U5udXdXh1gpE1585QvujjNVw6qT+y397tDJt7b1tBv2RVgYWZnHFnW/7b2yOaAjja5
-         AdS9nNCrdE+sd/aRqVrkS1dIsciffMq6C6+UOJGfBU9C9DileFUqXZe78oXSGfgvaAp8
-         B3SOEL47XprB83JdswUvZlOwUXw0zehWzm0R0GQjb1ICXJAVCrK/sCftdzoroD0mpKrz
-         EXqXYSJAClGDzJzt5T9wyA5mYgS99QqKnXS49VvZj2I8cKHZu/fpieVtTAiMfkkTA32f
-         IGfgtY/2YcSdqrpNVUybjchA/FXWS60E6dDK282ftAyd3P9rGURoutuQcOY3bKYO4yEg
-         cuMw==
-X-Gm-Message-State: AGi0PubWfjdFw9kP0uzieSwvo3BhVWx4ZJzHgnEyJEJ7uShL8qW76Ho4
-        FqR1brSP0XIYI4Vyl/hYgsNNdg==
-X-Google-Smtp-Source: APiQypK5szD7hM+jQL1hCAEBBB1/SOG/vc4lsjbXV3dcq+ENgZR7btz7XbIj75d4suuJOOA2ZPJugQ==
-X-Received: by 2002:a17:90a:12c3:: with SMTP id b3mr22498072pjg.57.1587959394422;
-        Sun, 26 Apr 2020 20:49:54 -0700 (PDT)
-Received: from localhost ([122.171.118.46])
-        by smtp.gmail.com with ESMTPSA id j13sm10069756pje.1.2020.04.26.20.49.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Apr 2020 20:49:53 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 09:19:51 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     ansuelsmth@gmail.com
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Viresh Kumar' <vireshk@kernel.org>,
-        'Andy Gross' <agross@kernel.org>,
-        'Bjorn Andersson' <bjorn.andersson@linaro.org>,
-        'Ilia Lin' <ilia.lin@kernel.org>, 'Nishanth Menon' <nm@ti.com>,
-        'Stephen Boyd' <sboyd@kernel.org>,
-        "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
-        'Sricharan R' <sricharan@codeaurora.org>,
-        'linux-arm-msm' <linux-arm-msm@vger.kernel.org>,
-        "'open list:THERMAL'" <linux-pm@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: R: [PATCH v2 2/2] dt-bindings: opp: Fix wrong binding in
- qcom-nvmem-cpufreq
-Message-ID: <20200427034951.xrk5ja3pg4anbg4s@vireshk-i7>
-References: <20200422201216.10593-1-ansuelsmth@gmail.com>
- <20200422201216.10593-2-ansuelsmth@gmail.com>
- <CAL_JsqLUbM7ed2q7so4Uibiz2URRg1juoGRExy9Ta3J-LWAFow@mail.gmail.com>
- <087301d61a86$68b6f950$3a24ebf0$@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aQq0CUnQfujiDDnJvRHgF4LcjSyfQt3UEj7L50b98/A=;
+        b=pwbBrk7OgiANoizUX+B2xHvHCnmvYLgwAB64yfpzkwBrc81RuzyigXUeLYB/A7Twz4
+         SyBvmm8Y8N1Nwj/LCxgAoPrjrh+luwv8P9GSNaieCWwuVIgze5jyKpsKjOBFwsvHLNhe
+         s3aZNdlVKNXLwNgQhkiTdSO8Ogu0ytw5Xjn6xLhsuSe32QcbgD1bjQr/c8jkezmBEORQ
+         2/0uiMpAKOAogLIBtEl9KDqCa+a4TS5mNxiYswuGyUKXi0ocRkglE6klSwxolUp37jWF
+         JsRXD2YlKMZExWqYEeHI3EwrdCSIvbIVeZEq0PUn/sVgGjP2A6ZgtMrDf3clu2xiv/8q
+         rXHA==
+X-Gm-Message-State: AGi0Pubuyz/Jb0dpeH+Qb8KURt20+iiMWj9ZfQTv+shS1yl+HdAtk9ht
+        Rj4bOgKoa2RtmJtqgswyzYLpFC9KC0Avrq7RaUw=
+X-Google-Smtp-Source: APiQypLX3afqSM1QWAKv61iq3HlPwMPQmqlnAsESamTCfsmhHfuQWhrkAz+NtraNDJj1UyhtF31EjwCvfUn58THeneA=
+X-Received: by 2002:a6b:7317:: with SMTP id e23mr19071605ioh.72.1587959064357;
+ Sun, 26 Apr 2020 20:44:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <087301d61a86$68b6f950$3a24ebf0$@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20200426123905.8336-1-tianjia.zhang@linux.alibaba.com> <20200426123905.8336-8-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20200426123905.8336-8-tianjia.zhang@linux.alibaba.com>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Mon, 27 Apr 2020 11:51:51 +0800
+Message-ID: <CAAhV-H7tSPFSU143ZfmgitEY1BY7MrBzwvJHve49i+ABQ9quCg@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] KVM: MIPS: clean up redundant kvm_run parameters
+ in assembly
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        paulus@ozlabs.org, mpe@ellerman.id.au,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org, hpa@zytor.com,
+        Marc Zyngier <maz@kernel.org>, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        christoffer.dall@arm.com, Peter Xu <peterx@redhat.com>,
+        thuth@redhat.com, kvm@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        kvmarm@lists.cs.columbia.edu,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-04-20, 00:19, ansuelsmth@gmail.com wrote:
-> > On Wed, Apr 22, 2020 at 3:12 PM Ansuel Smith <ansuelsmth@gmail.com>
-> > wrote:
-> > >
-> > > Update binding to new generic name "operating-points-v2-qcom-cpu"
-> > >
-> > > Fixes: a8811ec764f9 ("cpufreq: qcom: Add support for krait based socs")
-> > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/opp/qcom-nvmem-cpufreq.txt | 2
-> > +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/opp/qcom-nvmem-
-> > cpufreq.txt b/Documentation/devicetree/bindings/opp/qcom-nvmem-
-> > cpufreq.txt
-> > > index 64f07417ecfb..537e1774f589 100644
-> > > --- a/Documentation/devicetree/bindings/opp/qcom-nvmem-cpufreq.txt
-> > > +++ b/Documentation/devicetree/bindings/opp/qcom-nvmem-
-> > cpufreq.txt
-> > > @@ -19,7 +19,7 @@ In 'cpu' nodes:
-> > >
-> > >  In 'operating-points-v2' table:
-> > >  - compatible: Should be
-> > > -       - 'operating-points-v2-kryo-cpu' for apq8096, msm8996, msm8974,
-> > > +       - 'operating-points-v2-qcom-cpu' for apq8096, msm8996,
-> > msm8974,
-> > >                                              apq8064, ipq8064, msm8960 and ipq8074.
-> > 
-> > This is not how you fix the backwards compatibility issue pointed out
-> > on the Fixes reference.
-> > 
-> > Rob
-> 
-> Sorry but can you give some directive? Should I use the old binding and change
-> the driver to use it instead of the new one (and drop it) ?
+Hi, Tianjia,
 
-It is not about the name of the binding, you can rename it to whatever
-you want. The kernel needs to keep supporting all the previous
-bindings, so we can keep on changing the kernel but keep the same
-bootloader (with earlier bindings).
+On Sun, Apr 26, 2020 at 8:40 PM Tianjia Zhang
+<tianjia.zhang@linux.alibaba.com> wrote:
+>
+> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
+> structure. Earlier than historical reasons, many kvm-related function
+> parameters retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time.
+> This patch does a unified cleanup of these remaining redundant parameters.
+>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> ---
+>  arch/mips/include/asm/kvm_host.h |  4 ++--
+>  arch/mips/kvm/entry.c            | 15 +++++----------
+>  arch/mips/kvm/mips.c             |  3 ++-
+>  arch/mips/kvm/trap_emul.c        |  2 +-
+>  arch/mips/kvm/vz.c               |  2 +-
+>  5 files changed, 11 insertions(+), 15 deletions(-)
+>
+> diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
+> index 971439297cea..db915c55166d 100644
+> --- a/arch/mips/include/asm/kvm_host.h
+> +++ b/arch/mips/include/asm/kvm_host.h
+> @@ -310,7 +310,7 @@ struct kvm_mmu_memory_cache {
+>  #define KVM_MIPS_GUEST_TLB_SIZE        64
+>  struct kvm_vcpu_arch {
+>         void *guest_ebase;
+> -       int (*vcpu_run)(struct kvm_run *run, struct kvm_vcpu *vcpu);
+> +       int (*vcpu_run)(struct kvm_vcpu *vcpu);
+>
+>         /* Host registers preserved across guest mode execution */
+>         unsigned long host_stack;
+> @@ -821,7 +821,7 @@ int kvm_mips_emulation_init(struct kvm_mips_callbacks **install_callbacks);
+>  /* Debug: dump vcpu state */
+>  int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
+>
+> -extern int kvm_mips_handle_exit(struct kvm_run *run, struct kvm_vcpu *vcpu);
+> +extern int kvm_mips_handle_exit(struct kvm_vcpu *vcpu);
+>
+>  /* Building of entry/exception code */
+>  int kvm_mips_entry_setup(void);
+> diff --git a/arch/mips/kvm/entry.c b/arch/mips/kvm/entry.c
+> index 16e1c93b484f..e3f29af3b6cd 100644
+> --- a/arch/mips/kvm/entry.c
+> +++ b/arch/mips/kvm/entry.c
+> @@ -204,7 +204,7 @@ static inline void build_set_exc_base(u32 **p, unsigned int reg)
+>   * Assemble the start of the vcpu_run function to run a guest VCPU. The function
+>   * conforms to the following prototype:
+>   *
+> - * int vcpu_run(struct kvm_run *run, struct kvm_vcpu *vcpu);
+> + * int vcpu_run(struct kvm_vcpu *vcpu);
+>   *
+>   * The exit from the guest and return to the caller is handled by the code
+>   * generated by kvm_mips_build_ret_to_host().
+> @@ -217,8 +217,7 @@ void *kvm_mips_build_vcpu_run(void *addr)
+>         unsigned int i;
+>
+>         /*
+> -        * A0: run
+> -        * A1: vcpu
+> +        * A0: vcpu
+>          */
+>
+>         /* k0/k1 not being used in host kernel context */
+> @@ -237,10 +236,10 @@ void *kvm_mips_build_vcpu_run(void *addr)
+>         kvm_mips_build_save_scratch(&p, V1, K1);
+>
+>         /* VCPU scratch register has pointer to vcpu */
+> -       UASM_i_MTC0(&p, A1, scratch_vcpu[0], scratch_vcpu[1]);
+> +       UASM_i_MTC0(&p, A0, scratch_vcpu[0], scratch_vcpu[1]);
+>
+>         /* Offset into vcpu->arch */
+> -       UASM_i_ADDIU(&p, K1, A1, offsetof(struct kvm_vcpu, arch));
+> +       UASM_i_ADDIU(&p, K1, A0, offsetof(struct kvm_vcpu, arch));
+>
+>         /*
+>          * Save the host stack to VCPU, used for exception processing
+> @@ -628,10 +627,7 @@ void *kvm_mips_build_exit(void *addr)
+>         /* Now that context has been saved, we can use other registers */
+>
+>         /* Restore vcpu */
+> -       UASM_i_MFC0(&p, S1, scratch_vcpu[0], scratch_vcpu[1]);
+> -
+> -       /* Restore run (vcpu->run) */
+> -       UASM_i_LW(&p, S0, offsetof(struct kvm_vcpu, run), S1);
+> +       UASM_i_MFC0(&p, S0, scratch_vcpu[0], scratch_vcpu[1]);
+>
+>         /*
+>          * Save Host level EPC, BadVaddr and Cause to VCPU, useful to process
+> @@ -793,7 +789,6 @@ void *kvm_mips_build_exit(void *addr)
+>          * with this in the kernel
+>          */
+>         uasm_i_move(&p, A0, S0);
+> -       uasm_i_move(&p, A1, S1);
+>         UASM_i_LA(&p, T9, (unsigned long)kvm_mips_handle_exit);
+>         uasm_i_jalr(&p, RA, T9);
+>          UASM_i_ADDIU(&p, SP, SP, -CALLFRAME_SIZ);
+I think uasm_i_move(&p, K1, S1) in kvm_mips_build_ret_from_exit() and
+UASM_i_MTC0(&p, S1, scratch_vcpu[0], scratch_vcpu[1]) in
+kvm_mips_build_ret_to_guest() should also be changed.
 
--- 
-viresh
+> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+> index 9710477a9827..32850470c037 100644
+> --- a/arch/mips/kvm/mips.c
+> +++ b/arch/mips/kvm/mips.c
+> @@ -1186,8 +1186,9 @@ static void kvm_mips_set_c0_status(void)
+>  /*
+>   * Return value is in the form (errcode<<2 | RESUME_FLAG_HOST | RESUME_FLAG_NV)
+>   */
+> -int kvm_mips_handle_exit(struct kvm_run *run, struct kvm_vcpu *vcpu)
+> +int kvm_mips_handle_exit(struct kvm_vcpu *vcpu)
+>  {
+> +       struct kvm_run *run = vcpu->run;
+>         u32 cause = vcpu->arch.host_cp0_cause;
+>         u32 exccode = (cause >> CAUSEB_EXCCODE) & 0x1f;
+>         u32 __user *opc = (u32 __user *) vcpu->arch.pc;
+> diff --git a/arch/mips/kvm/trap_emul.c b/arch/mips/kvm/trap_emul.c
+> index d822f3aee3dc..04c864cc356a 100644
+> --- a/arch/mips/kvm/trap_emul.c
+> +++ b/arch/mips/kvm/trap_emul.c
+> @@ -1238,7 +1238,7 @@ static int kvm_trap_emul_vcpu_run(struct kvm_vcpu *vcpu)
+>          */
+>         kvm_mips_suspend_mm(cpu);
+>
+> -       r = vcpu->arch.vcpu_run(vcpu->run, vcpu);
+> +       r = vcpu->arch.vcpu_run(vcpu);
+>
+>         /* We may have migrated while handling guest exits */
+>         cpu = smp_processor_id();
+> diff --git a/arch/mips/kvm/vz.c b/arch/mips/kvm/vz.c
+> index 94f1d23828e3..c5878fa0636d 100644
+> --- a/arch/mips/kvm/vz.c
+> +++ b/arch/mips/kvm/vz.c
+> @@ -3152,7 +3152,7 @@ static int kvm_vz_vcpu_run(struct kvm_vcpu *vcpu)
+>         kvm_vz_vcpu_load_tlb(vcpu, cpu);
+>         kvm_vz_vcpu_load_wired(vcpu);
+>
+> -       r = vcpu->arch.vcpu_run(vcpu->run, vcpu);
+> +       r = vcpu->arch.vcpu_run(vcpu);
+>
+>         kvm_vz_vcpu_save_wired(vcpu);
+>
+> --
+> 2.17.1
+>
+
+Regards,
+Huacai
