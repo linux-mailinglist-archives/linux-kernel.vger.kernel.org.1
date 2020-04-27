@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9444A1B94CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 02:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA431B9766
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 08:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgD0Azf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 20:55:35 -0400
-Received: from mga14.intel.com ([192.55.52.115]:33395 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726227AbgD0Azf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 20:55:35 -0400
-IronPort-SDR: y4WE4L952xMqiCFELUzg2zzPeGRZ+t1+5MC6epbUTXDl9i8xOZjOYit1OHWX/Kz8Jg28ffV8r5
- hx/PMDBBl0Rg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Apr 2020 17:55:34 -0700
-IronPort-SDR: S+TmcF8itKGuPoD1D0X8UmVSUnSPDOSPwFvoZTNhIZ6AsfZ6+xu6JwdlhR0ZwFXW4S+XERmA7K
- 1iqWZ3m2QNsA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,321,1583222400"; 
-   d="scan'208";a="281525098"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.23])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Apr 2020 17:55:33 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Wei Yang <richard.weiyang@gmail.com>
-Cc:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v2] mm/swapfile.c: simplify the scan loop in scan_swap_map_slots()
-References: <20200422214111.19370-1-richard.weiyang@gmail.com>
-        <87d07y2181.fsf@yhuang-dev.intel.com>
-        <20200423131507.2rgrk3okh42oo6gh@master>
-        <87r1wdzlm5.fsf@yhuang-dev.intel.com>
-        <20200425003012.uuqh547feq3kz4y5@master>
-        <87tv17xdfk.fsf@yhuang-dev.intel.com>
-        <20200426211958.m7aheswirqaj2nte@master>
-Date:   Mon, 27 Apr 2020 08:55:33 +0800
-In-Reply-To: <20200426211958.m7aheswirqaj2nte@master> (Wei Yang's message of
-        "Sun, 26 Apr 2020 21:19:58 +0000")
-Message-ID: <87d07tycfu.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1726664AbgD0G0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 02:26:35 -0400
+Received: from mail1.bemta25.messagelabs.com ([46.226.52.115]:51656 "EHLO
+        mail1.bemta25.messagelabs.com" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726339AbgD0G0e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 02:26:34 -0400
+Received: from [100.112.198.136] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+        by server-4.bemta.az-b.eu-west-1.aws.symcld.net id F5/35-51957-61B76AE5; Mon, 27 Apr 2020 06:26:30 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPIsWRWlGSWpSXmKPExsVy8MN7XV2x6mV
+  xBtOe8VrMOd/CYtG8eD2bxaqF19gsLu+aw2bx/lMnk8X/PTvYHdg8tqy8yeTRcuQtq8emVZ1s
+  HvvnrmH3+LxJLoA1ijUzLym/IoE1Y+qXKWwFlzgrnlxVamA8ydHFyMUhJLCWUWLDoi2sXYycQ
+  E6lxLKjTcwgNq9AhMSZe9fAbE4BM4kV614zQdSYSmy/tYEdxGYT0JF4NHM9WJxFQFWia9sqMF
+  tYIFViw+NHbCALRAQuMko8efyHDSTBLBAnMathOSvEAkGJkzOfsEDEJSQOvnjBDLFAS+LcmlW
+  MExh5ZyEpm4WkbAEj0ypGi6SizPSMktzEzBxdQwMDXUNDI11DS3NdQzMTvcQq3SS91FLd8tTi
+  El1DvcTyYr3iytzknBS9vNSSTYzAsE0pOLpkB+O25e/1DjFKcjApifLqxS6LE+JLyk+pzEgsz
+  ogvKs1JLT7EKMPBoSTB+7oSKCdYlJqeWpGWmQOMIZi0BAePkghvKUiat7ggMbc4Mx0idYpRl2
+  Pn0XmLmIVY8vLzUqXEeZWrgIoEQIoySvPgRsDi+RKjrJQwLyMDA4MQT0FqUW5mCar8K0ZxDkY
+  lYd5JIKt4MvNK4Da9AjqCCeiIKvnFIEeUJCKkpBqYyhh7Hj49xCHw+OKLD98fiHAnuG6f4xX3
+  0bb4wzLpEqY5mULiUvNcc3Y+NK563n02lfHTlbl3fsl/bUxf9839dFrF37de+iXb+/TU9JKS/
+  qx7XHH+a9SFVDE/4d2Lb/z+fOxUebh8/uFnD6vsQl8ab7VrYj053b4s8V62osKfqNynSpMrzA
+  WbZ2tH1zBtqHq3flPZilknF0x/K3RJL4010k6Xa9dV6T8PlZgcYm3vLvY92VddK6NovZPVlvN
+  W82uVmF3nPr639PDTyme3PvHy7hqWF+VyHWv5M0Ndk/Y/Kcv1O3R7UoljwMtW1mDL3GnOPea3
+  UnSX3E982ajifUL8qvVazpu+zs/q/j3fJZutxFKckWioxVxUnAgALgikj2IDAAA=
+X-Env-Sender: roy.im.opensource@diasemi.com
+X-Msg-Ref: server-19.tower-292.messagelabs.com!1587968789!3549008!1
+X-Originating-IP: [193.240.239.45]
+X-SYMC-ESS-Client-Auth: outbound-route-from=pass
+X-StarScan-Received: 
+X-StarScan-Version: 9.50.1; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 23370 invoked from network); 27 Apr 2020 06:26:30 -0000
+Received: from unknown (HELO NB-EX-CASHUB01.diasemi.com) (193.240.239.45)
+  by server-19.tower-292.messagelabs.com with ECDHE-RSA-AES256-SHA384 encrypted SMTP; 27 Apr 2020 06:26:30 -0000
+Received: from krsrvapps-03.diasemi.com (10.95.17.51) by
+ NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
+ 14.3.468.0; Mon, 27 Apr 2020 08:26:29 +0200
+Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
+ DD0B413F670; Mon, 27 Apr 2020 15:26:27 +0900 (KST)
+Message-ID: <3e4e181ae9b25b51298b90be43396f46c91e2ea9.1587949032.git.Roy.Im@diasemi.com>
+In-Reply-To: <cover.1587949032.git.Roy.Im@diasemi.com>
+References: <cover.1587949032.git.Roy.Im@diasemi.com>
+From:   Roy Im <roy.im.opensource@diasemi.com>
+Date:   Mon, 27 Apr 2020 09:57:11 +0900
+Subject: [RESEND PATCH V11 1/3] MAINTAINERS: da7280 updates to the Dialog
+ Semiconductor search terms
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Rob Herring <robh@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Support Opensource <support.opensource@diasemi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Yang <richard.weiyang@gmail.com> writes:
+This patch adds the da7280 bindings doc and driver to the Dialog
+Semiconductor support list.
 
-> On Sun, Apr 26, 2020 at 09:07:11AM +0800, Huang, Ying wrote:
->>Wei Yang <richard.weiyang@gmail.com> writes:
->>
->>> On Fri, Apr 24, 2020 at 10:02:58AM +0800, Huang, Ying wrote:
->>>>Wei Yang <richard.weiyang@gmail.com> writes:
->>>>
->>> [...]
->>>>>>
->>>>>>if "offset > si->highest_bit" is true and "offset < scan_base" is true,
->>>>>>scan_base need to be returned.
->>>>>>
->>>>>
->>>>> When this case would happen in the original code?
->>>>
->>>>In the original code, the loop can still stop.
->>>>
->>>
->>> Sorry, I don't get your point yet.
->>>
->>> In original code, there are two separate loops
->>>
->>>     while (++offset <= si->highest_bit) {
->>>     }
->>>
->>>     while (offset < scan_base) {
->>>     }
->>>
->>> And for your condition, (offset > highest_bit) && (offset < scan_base), which
->>> terminates the first loop and fits the second loop well.
->>>
->>> Not sure how this condition would stop the loop in original code?
->>
->>Per my understanding, in your code, if some other task changes
->>si->highest_bit to be less than scan_base in parallel.  The loop may
->>cannot stop.
->
-> When (offset > scan_base), (offset >  si->highest_bit) means offset will be
-> set to si->lowest_bit.
->
-> When (offset < scan_base), next_offset() would always increase offset till
-> offset is scan_base.
->
-> Sorry, I didn't catch your case. Would you minding giving more detail?
+Signed-off-by: Roy Im <roy.im.opensource@diasemi.com>
 
-Don't think in single thread model.  There's no lock to prevent other
-tasks to change si->highest_bit simultaneously.  For example, task B may
-change si->highest_bit to be less than scan_base in task A.
+---
+v11: No changes.
+v10: No changes.
+v9: No changes.
+v8: No changes.
+v7: No changes.
+v6: No changes.
+v5: No changes.
+v4: No changes.
+v3: No changes.
+v2: No changes.
 
-Best Regards,
-Huang, Ying
 
->>
->>Best Regards,
->>Huang, Ying
->>
->>>>Best Regards,
->>>>Huang, Ying
->>>>
->>>>>>Again, the new code doesn't make it easier to find this kind of issues.
->>>>>>
->>>>>>Best Regards,
->>>>>>Huang, Ying
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b816a45..e63e550 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4944,6 +4944,7 @@ S:	Supported
+ W:	http://www.dialog-semiconductor.com/products
+ F:	Documentation/devicetree/bindings/input/da90??-onkey.txt
+ F:	Documentation/devicetree/bindings/mfd/da90*.txt
++F:	Documentation/devicetree/bindings/input/dlg,da72??.txt
+ F:	Documentation/devicetree/bindings/regulator/da92*.txt
+ F:	Documentation/devicetree/bindings/regulator/slg51000.txt
+ F:	Documentation/devicetree/bindings/sound/da[79]*.txt
+@@ -4954,6 +4955,7 @@ F:	drivers/gpio/gpio-da90??.c
+ F:	drivers/hwmon/da90??-hwmon.c
+ F:	drivers/iio/adc/da91??-*.c
+ F:	drivers/input/misc/da90??_onkey.c
++F:	drivers/input/misc/da72??.[ch]
+ F:	drivers/input/touchscreen/da9052_tsi.c
+ F:	drivers/leds/leds-da90??.c
+ F:	drivers/mfd/da903x.c
+-- 
+end-of-patch for RESEND PATCH V11
+
