@@ -2,76 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2BA1BA7C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD85A1BA7D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbgD0PTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 11:19:02 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:29818 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726539AbgD0PTC (ORCPT
+        id S1728108AbgD0PVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 11:21:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:20595 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727768AbgD0PVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 11:19:02 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03RFAqlC011627;
-        Mon, 27 Apr 2020 08:18:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : subject : to
- : cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pfpt0818;
- bh=1n5BME1175zjfULitjxL66IOLBQPkaYi0RPRwyq6Z1E=;
- b=kLohteW2kVDxk0VGyEn2oPofm6mol7wr24DU6+Qq9NMunPGOCRYop1p1jq1muMtEJ2Lb
- njOo7BxB/MvRZd2RuxfJuxSMLdAfQSeN/PcJtwR3tgHSGg2V5xrBNsTBWAkMw0Zr2vPE
- UzFV4TdpH/IRhUu2OzVQLls1HaRdZkVfIVmSSf2zPgnDgbvBrkUecFlCrfMJ10sSu1HK
- 9Mvlc3XP6lZqO2hJ1E3iMZIQCUrZbILBnzmkXxFTS3tnG3ZAhLyQ6G1eI8pLdc11lW9T
- 5tHGILw8JCqqkhbLCZ8XlIPMLatNMlegeVm8P6yRj4IgyVrpxBsXQF3KjhaGb8sYO+HI vQ== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 30mmqmfnk5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 27 Apr 2020 08:18:55 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 27 Apr
- 2020 08:18:53 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 27 Apr 2020 08:18:53 -0700
-Received: from [10.193.46.2] (unknown [10.193.46.2])
-        by maili.marvell.com (Postfix) with ESMTP id 9AB1D3F703F;
-        Mon, 27 Apr 2020 08:18:51 -0700 (PDT)
-From:   Igor Russkikh <irusskikh@marvell.com>
-Subject: Re: [EXT] [PATCH] Fix the media type of AQC100 ethernet controller in
- the driver
-To:     Richard Clark <richard.xnu.clark@gmail.com>,
-        <netdev@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <xuesong.cxs@alibaba-inc.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20200425005811.13021-1-richard.xnu.clark@gmail.com>
-Message-ID: <3fbc3da2-cfd3-f1bf-dd04-3304d4aa8211@marvell.com>
-Date:   Mon, 27 Apr 2020 18:18:49 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:76.0) Gecko/20100101
- Thunderbird/76.0
+        Mon, 27 Apr 2020 11:21:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588000870;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=t0zUuDSHC2LYYJLNAsloYEAAqSEOkEn10YRd/wXdi+k=;
+        b=SfZ0IZheyMg6ghHTswOQGdrY+Rpys1Mi/KkEVLlbxCDRtBaItNqwp/1tLm81F1R0dUNVwE
+        vZ7R8h9VNwMlVmM/DrOIszdygHdadb3hcjGsOpvO71bnsyupfDTxgC8IYYkElvOa5CiaO/
+        +RFALVW2+XmKzEB6dGNJY7orxCdqWy4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-J_d3VEOKM5ir-kRT5Ibnew-1; Mon, 27 Apr 2020 11:21:08 -0400
+X-MC-Unique: J_d3VEOKM5ir-kRT5Ibnew-1
+Received: by mail-wr1-f69.google.com with SMTP id m5so10645633wru.15
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 08:21:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t0zUuDSHC2LYYJLNAsloYEAAqSEOkEn10YRd/wXdi+k=;
+        b=O+uVF3WJVPac43qIH+46tddB+QMFcD3WgKL3YYeZwmPM4y5aGCc41rPBCxo6OqCv5p
+         cTeZPCAbu0/lDA1Y38679vjuKZ7DqnBHo1Np25lJxn/VIlAuSmAx6chuoi0uGe0gBXOd
+         hsoUZEIOWgJd9vIXDeuNU9wH+DhF1ckXEPlgaaJRkBAWdnLhEhjdcgyGQL1bdSthWOqK
+         m8YBWF0qa7zuCunCl3G9hWHvUtzrStcmk4xaW5OEyTV28sSiL2Slk8GUb37gvWqJOTdH
+         CBzZFIZDHpsHST6vlmD2NJU9bIwaCqWhiBBhumxRPQwMPKr/k5lB80T6SBAxuyYPsdrV
+         2ezA==
+X-Gm-Message-State: AGi0PuaJ2bTEQvbEIkilsj0mzj3wtMcQYevfAfgvCrbRU5fvyob1tFV1
+        MU0mx0FlNI+uUalzGyZX5lROorCQ0LKczghmr/Ktxl5HElPLVV1YQgCEQpXY6RdA1Thgf9YThpr
+        zF4DhdyzsniB9fmZZMj0Epjf7
+X-Received: by 2002:a1c:b445:: with SMTP id d66mr38649wmf.187.1588000867454;
+        Mon, 27 Apr 2020 08:21:07 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIZ5/J/wN/0wkBkOIE/TjfFJ5VeKIYdPSnC6DlZr/llDxsorbTrSb9AdWnEjmL3w4GukHw2OQ==
+X-Received: by 2002:a1c:b445:: with SMTP id d66mr38611wmf.187.1588000867197;
+        Mon, 27 Apr 2020 08:21:07 -0700 (PDT)
+Received: from steredhat (host108-207-dynamic.49-79-r.retail.telecomitalia.it. [79.49.207.108])
+        by smtp.gmail.com with ESMTPSA id r3sm22637536wrx.72.2020.04.27.08.21.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2020 08:21:06 -0700 (PDT)
+Date:   Mon, 27 Apr 2020 17:21:03 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     davem@davemloft.net, Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Jorgen Hansen <jhansen@vmware.com>,
+        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-hyperv@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net-next 0/3] vsock: support network namespace
+Message-ID: <20200427152103.r65new4r342crfs6@steredhat>
+References: <20200116172428.311437-1-sgarzare@redhat.com>
+ <20200427142518.uwssa6dtasrp3bfc@steredhat>
+ <20200427102828-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200425005811.13021-1-richard.xnu.clark@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-27_11:2020-04-27,2020-04-27 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427102828-mutt-send-email-mst@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> The Aquantia AQC100 controller enables a SFP+ port, so the driver should
-> configure the media type as '_TYPE_FIBRE' instead of '_TYPE_TP'.
+On Mon, Apr 27, 2020 at 10:31:57AM -0400, Michael S. Tsirkin wrote:
+> On Mon, Apr 27, 2020 at 04:25:18PM +0200, Stefano Garzarella wrote:
+> > Hi David, Michael, Stefan,
+> > I'm restarting to work on this topic since Kata guys are interested to
+> > have that, especially on the guest side.
+> > 
+> > While working on the v2 I had few doubts, and I'd like to have your
+> > suggestions:
+> > 
+> >  1. netns assigned to the device inside the guest
+> > 
+> >    Currently I assigned this device to 'init_net'. Maybe it is better
+> >    if we allow the user to decide which netns assign to the device
+> >    or to disable this new feature to have the same behavior as before
+> >    (host reachable from any netns).
+> >    I think we can handle this in the vsock core and not in the single
+> >    transports.
+> > 
+> >    The simplest way that I found, is to add a new
+> >    IOCTL_VM_SOCKETS_ASSIGN_G2H_NETNS to /dev/vsock to enable the feature
+> >    and assign the device to the same netns of the process that do the
+> >    ioctl(), but I'm not sure it is clean enough.
+> > 
+> >    Maybe it is better to add new rtnetlink messages, but I'm not sure if
+> >    it is feasible since we don't have a netdev device.
+> > 
+> >    What do you suggest?
 > 
-> Signed-off-by: Richard Clark <richard.xnu.clark@gmail.com>
-> Cc: Igor Russkikh <irusskikh@marvell.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
+> Maybe /dev/vsock-netns here too, like in the host?
+> 
 
-Acked-by: Igor Russkikh <irusskikh@marvell.com>
+I'm not sure I get it.
 
-Thanks, Richard, looks like that was a typo.
+In the guest, /dev/vsock is only used to get the CID assigned to the
+guest through an ioctl().
 
-Regards,
-  Igor
+In the virtio-vsock case, the guest transport is loaded when it is discovered
+on the PCI bus, so we need a way to "move" it to a netns or to specify
+which netns should be used when it is probed.
+
+> 
+> > 
+> >  2. netns assigned in the host
+> > 
+> >     As Michael suggested, I added a new /dev/vhost-vsock-netns to allow
+> >     userspace application to use this new feature, leaving to
+> >     /dev/vhost-vsock the previous behavior (guest reachable from any
+> >     netns).
+> > 
+> >     I like this approach, but I had these doubts:
+> > 
+> >     - I need to allocate a new minor for that device (e.g.
+> >       VHOST_VSOCK_NETNS_MINOR) or is there an alternative way that I can
+> >       use?
+> 
+> Not that I see. I agree it's a bit annoying. I'll think about it a bit.
+> 
+
+Thanks for that!
+An idea that I had, was to add a new ioctl to /dev/vhost-vsock to enable
+the netns support, but I'm not sure it is a clean approach.
+
+> >     - It is vhost-vsock specific, should we provide something handled in
+> >       the vsock core, maybe centralizing the CID allocation and adding a
+> >       new IOCTL or rtnetlink message like for the guest side?
+> >       (maybe it could be a second step, and for now we can continue with
+> >       the new device)
+> > 
+
+Thanks,
+Stefano
+
