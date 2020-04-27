@@ -2,94 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEE11BAF7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658291BAF8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgD0Uax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 16:30:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726205AbgD0Uaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:30:52 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04AD7206D4;
-        Mon, 27 Apr 2020 20:30:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588019452;
-        bh=3OaU0s347QfqeFqIzMECGLi3g6NTgnY6bjs+lqsqumo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WqOkTOeEGwBaKAM+DhtEkIARd8K6PGThTZPLzxxNPuk0yjqwzqWZ/yv2BR3ViUPTQ
-         G9Z5skn6CjwjQesmvO+yI62J2raArApqb0KUyhxrZPBZhp8Q5p3/UmRQTZZxD7iSFH
-         sTaegxf/bjyaKpzRobuOVZ1rqVDWIGjnViFb8NwQ=
-Date:   Mon, 27 Apr 2020 13:30:51 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     David Rientjes <rientjes@google.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [patch] mm, oom: stop reclaiming if GFP_ATOMIC will start
- failing soon
-Message-Id: <20200427133051.b71f961c1bc53a8e72c4f003@linux-foundation.org>
-In-Reply-To: <alpine.DEB.2.22.394.2004261959310.80211@chino.kir.corp.google.com>
-References: <alpine.DEB.2.22.394.2004241347310.70176@chino.kir.corp.google.com>
-        <20200425172706.26b5011293e8dc77b1dccaf3@linux-foundation.org>
-        <alpine.DEB.2.22.394.2004261959310.80211@chino.kir.corp.google.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726788AbgD0Ucr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:32:47 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:37984 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726285AbgD0Ucr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 16:32:47 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RKSxCl029276;
+        Mon, 27 Apr 2020 20:31:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=pOSG25qvqUqJ+z4S02r79fZiwo4gUeQybxg3JDBq6Zg=;
+ b=HKzbYVZxairCzE7vdE2FUh+lRMalt1IgLwG62EZZLOrMDDiweMek4V/UQKTaD29jB+C3
+ HhaguVAewckdZLwW+JeHsLxuqK7OFCyqGT+eNZPRqE8MoeyZG6xifNaVeevVI8zPyTph
+ ecCkoVkAHGETiAylhjR5pXlAj6mQud8KB6cpUlp/3MArilZtrPgR8MPcKO0Qb8Lz7CC8
+ qvVF13zrUX6sIfBnQhl9touKGipc7jilcG/GzjtjNfH6zyFs5dGhUwjoqsGGawh/jxvj
+ rMXwCVFCCNaS5tC7N5Om8J27L1gCUE+1yL1IG9QLgGAFv8Yp3z4fnrNipQSt7lbsVwlC Xw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 30nucfuxfs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 20:31:14 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RKRqKn111291;
+        Mon, 27 Apr 2020 20:31:14 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 30mxwwwt96-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 20:31:13 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03RKV9QE002577;
+        Mon, 27 Apr 2020 20:31:09 GMT
+Received: from [192.168.2.157] (/71.63.128.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 27 Apr 2020 13:31:09 -0700
+Subject: Re: [PATCH v3 2/4] hugetlbfs: move hugepagesz= parsing to arch
+ independent code
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Sandipan Das <sandipan.osd@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S.Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Longpeng <longpeng2@huawei.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mina Almasry <almasrymina@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>
+References: <20200417185049.275845-1-mike.kravetz@oracle.com>
+ <20200417185049.275845-3-mike.kravetz@oracle.com>
+ <7583dfcc-62d8-2a54-6eef-bcb4e01129b3@gmail.com>
+ <5a380060-38db-b690-1003-678ca0f28f07@oracle.com>
+ <b1f04f9f-fa46-c2a0-7693-4a0679d2a1ee@oracle.com>
+ <20200427131802.3d132055a59535a0e6780e9f@linux-foundation.org>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <b34270b7-fa9b-ce2c-20bc-84279ce6ea59@oracle.com>
+Date:   Mon, 27 Apr 2020 13:31:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200427131802.3d132055a59535a0e6780e9f@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 bulkscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004270166
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004270166
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Apr 2020 20:12:58 -0700 (PDT) David Rientjes <rientjes@google.com> wrote:
-
-> > > blockable allocations and then queue a worker to asynchronously oom kill
-> > > if it finds watermarks to be sufficiently low as well.
-> > > 
-> > 
-> > Well, what's really going on here?
-> > 
-> > Is networking potentially consuming an unbounded amount of memory?  If
-> > so, then killing a process will just cause networking to consume more
-> > memory then hit against the same thing.  So presumably the answer is
-> > "no, the watermarks are inappropriately set for this workload".
-> > 
-> > So would it not be sensible to dynamically adjust the watermarks in
-> > response to this condition?  Maintain a larger pool of memory for these
-> > allocations?  Or possibly push back on networking and tell it to reduce
-> > its queue sizes?  So that stuff doesn't keep on getting oom-killed?
-> > 
+On 4/27/20 1:18 PM, Andrew Morton wrote:
+> On Mon, 27 Apr 2020 12:09:47 -0700 Mike Kravetz <mike.kravetz@oracle.com> wrote:
 > 
-> No - that would actually make the problem worse.
+>> Previously, a check for hugepages_supported was added before processing
+>> hugetlb command line parameters.  On some architectures such as powerpc,
+>> hugepages_supported() is not set to true until after command line
+>> processing.  Therefore, no hugetlb command line parameters would be
+>> accepted.
+>>
+>> Remove the additional checks for hugepages_supported.  In hugetlb_init,
+>> print a warning if !hugepages_supported and command line parameters were
+>> specified.
 > 
-> Today, per-zone min watermarks dictate when user allocations will loop or 
-> oom kill.  should_reclaim_retry() currently loops if reclaim has succeeded 
-> in the past few tries and we should be able to allocate if we are able to 
-> reclaim the amount of memory that we think we can.
-> 
-> The issue is that this supposes that looping to reclaim more will result 
-> in more free memory.  That doesn't always happen if there are concurrent 
-> memory allocators.
-> 
-> GFP_ATOMIC allocators can access below these per-zone watermarks.  So the 
-> issue is that per-zone free pages stays between ALLOC_HIGH watermarks 
-> (the watermark that GFP_ATOMIC allocators can allocate to) and min 
-> watermarks.  We never reclaim enough memory to get back to min watermarks 
-> because reclaim cannot keep up with the amount of GFP_ATOMIC allocations.
+> This applies to [4/4] instead of fixing [2/4].  I guess you'll
+> straighten that out in v4?
 
-But there should be an upper bound upon the total amount of in-flight
-GFP_ATOMIC memory at any point in time?  These aren't like pagecache
-which will take more if we give it more.  Setting the various
-thresholds appropriately should ensure that blockable allocations don't
-get their memory stolen by GPP_ATOMIC allocations?
+Yes.
 
-I took a look at doing a quick-fix for the
-direct-reclaimers-get-their-stuff-stolen issue about a million years
-ago.  I don't recall where it ended up.  It's pretty trivial for the
-direct reclaimer to free pages into current->reclaimed_pages and to
-take a look in there on the allocation path, etc.  But it's only
-practical for order-0 pages.
+> btw, was
+> http://lkml.kernel.org/r/CADYN=9Koefrq9H1Y82Q8nMNbeyN4tzhEfvDu5u=sVFjFZCYorA@mail.gmail.com
+> addressed?
 
+Yes, you pulled a patch into your tree to address this.
+hugetlbfs-remove-hugetlb_add_hstate-warning-for-existing-hstate-fix.patch
+
+I'll send out a v4 with both these issues addressed.  Would like to wait
+until receiving confirmation from someone who can test on powerpc.
+-- 
+Mike Kravetz
