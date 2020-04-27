@@ -2,249 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C4D1BAC8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C519F1BAC0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgD0S0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 14:26:05 -0400
-Received: from gateway22.websitewelcome.com ([192.185.47.100]:25436 "EHLO
-        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726162AbgD0S0F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 14:26:05 -0400
-X-Greylist: delayed 1236 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Apr 2020 14:26:03 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway22.websitewelcome.com (Postfix) with ESMTP id 25E897F37
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:05:26 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id T88Ejdc6LAGTXT88EjwSjh; Mon, 27 Apr 2020 13:05:26 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=YO/ZEFUeNMND48D5WMalVPzLhs8hz8EAhwiXufKHxFs=; b=i7mq7G6xxay3QoEF1EVwXZR1CU
-        H6BWBRMRa8Z7USHKcjMhyeRwzSrFKRsexH4IAQOLFn9ybt2wzxuuiaiWdxGQ/5xBn1QiIRvIs/uil
-        Zuxlbv+naVuDTpbuoa+sOS6pY9cQhWpoY1XazaTqSiPv3kYEFdo3q8n+SNa7OnztIs3lDwgRJFYIj
-        x60NBj2UQDZ2wmqR6YIUdQYNHbrlSV6ONFAhU+dsaF938aJRGleQtz9MYEKFHk98lOcqpjPDFB4GL
-        az4cXljIYSDb94/+ixqAI22YIERpmDZ8l3yVVFlTvGAtQf2be8+FkZ60GByHN0DbrbBerh3tTBw9p
-        6ALqZCeQ==;
-Received: from [201.162.241.110] (port=24934 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jT88D-000BBs-Nk; Mon, 27 Apr 2020 13:05:25 -0500
-Subject: Re: [RFC PATCH] mtd: lpddr: Fix bad logic in print_drs_error
-To:     Joe Perches <joe@perches.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <2e19547dcec386b47923211896f43053b60ebc60.camel@perches.com>
- <20200427152913.47a48b46@xps13>
- <e2c8b5ea654600ac36949f8f0621913ceaf96ddc.camel@perches.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <ec299851-687c-ee15-2d1c-18687588b74a@embeddedor.com>
-Date:   Mon, 27 Apr 2020 13:09:43 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726315AbgD0SK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 14:10:56 -0400
+Received: from mga03.intel.com ([134.134.136.65]:33437 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725995AbgD0SKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 14:10:55 -0400
+IronPort-SDR: Cr2qcAYLXeFLjmMsMH/gKkHw90+P/5bdOo299Km3loBxnj68/BxL0nah3wW4K+BgYev6Yl2SON
+ r2RCdz9XMuNg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 11:10:55 -0700
+IronPort-SDR: gV6505nVR9Uf00DxSwVzlwBzUTwspCl7aZaDPS1ZznM26yKSLJnV+rAvnIZvi5+atxE0vHrfcb
+ Otm0GQkrNr+Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
+   d="scan'208";a="292583458"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by fmsmga002.fm.intel.com with ESMTP; 27 Apr 2020 11:10:54 -0700
+Date:   Mon, 27 Apr 2020 11:10:54 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Kevin Tian <kevin.tian@intel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Christophe de Dinechin <dinechin@redhat.com>,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>
+Subject: Re: [PATCH v8 03/14] KVM: X86: Don't track dirty for
+ KVM_SET_[TSS_ADDR|IDENTITY_MAP_ADDR]
+Message-ID: <20200427181054.GL14870@linux.intel.com>
+References: <20200331190000.659614-1-peterx@redhat.com>
+ <20200331190000.659614-4-peterx@redhat.com>
+ <20200423203944.GS17824@linux.intel.com>
+ <20200424152151.GB41816@xz-x1>
 MIME-Version: 1.0
-In-Reply-To: <e2c8b5ea654600ac36949f8f0621913ceaf96ddc.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.241.110
-X-Source-L: No
-X-Exim-ID: 1jT88D-000BBs-Nk
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.241.110]:24934
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424152151.GB41816@xz-x1>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Apr 24, 2020 at 11:21:51AM -0400, Peter Xu wrote:
+> On Thu, Apr 23, 2020 at 01:39:44PM -0700, Sean Christopherson wrote:
+> > On Tue, Mar 31, 2020 at 02:59:49PM -0400, Peter Xu wrote:
+> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > > index 1b6d9ac9533c..faa702c4d37b 100644
+> > > --- a/arch/x86/kvm/x86.c
+> > > +++ b/arch/x86/kvm/x86.c
+> > > @@ -9791,7 +9791,32 @@ void kvm_arch_sync_events(struct kvm *kvm)
+> > >  	kvm_free_pit(kvm);
+> > >  }
+> > >  
+> > > -int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
+> > > +#define  ERR_PTR_USR(e)  ((void __user *)ERR_PTR(e))
+> > 
+> > Heh, my first thought when reading the below code was "cool, I didn't know
+> > there was ERR_PTR_USR!".  This probably should be in include/linux/err.h,
+> > or maybe a new arch specific implementation if it's not universally safe.
+> 
+> Yeah, I just wanted to avoid introducing things in common headers before I'm
+> sure it'll be used in the rest of the world..  We can always replace them with
+> a global definition when it comes.
 
-It seems that this fix should be tagged for -stable.
+Gotcha.
 
-I can create a three-patch series for this (as Miquel suggested), starting
-with the patch that fix the wrong condition, so it can be ported to
--stable, separately.
+> > An alternative, which looks enticing given that proper user variants will
+> > be a bit of an explosion, would be to do:
+> > 
+> >   static void *____x86_set_memory_region(...)
+> >   {
+> > 	<actual function>
+> >   }
+> > 
+> >   void __user *__x86_set_memory_region(...)
+> >   {
+> > 	return (void __user *)____x86_set_memory_region(...);
+> >   }
+> > 
+> > A second alternative would be to return an "unsigned long", i.e. force the
+> > one function that actually accesses the hva to do the cast.  I think I like
+> > this option the best as it would minimize the churn in
+> > __x86_set_memory_region().  Callers can use IS_ERR_VALUE() to detect failure.
+> 
+> If you won't mind, I would prefer a 2nd opinion (maybe Paolo?) so we can
+> consolidate the idea before I change them... (I would for sure still prefer the
+> current approach for simplicity since after all I don't have strong opionion..)
 
-I'll include you Reported-by, Joe.
+Definitely makes sense for Paolo to weigh in.
 
-Thanks
---
-Gustavo
+> > > +/**
+> > > + * __x86_set_memory_region: Setup KVM internal memory slot
+> > > + *
+> > > + * @kvm: the kvm pointer to the VM.
+> > > + * @id: the slot ID to setup.
+> > > + * @gpa: the GPA to install the slot (unused when @size == 0).
+> > > + * @size: the size of the slot. Set to zero to uninstall a slot.
+> > > + *
+> > > + * This function helps to setup a KVM internal memory slot.  Specify
+> > > + * @size > 0 to install a new slot, while @size == 0 to uninstall a
+> > > + * slot.  The return code can be one of the following:
+> > > + *
+> > > + *   HVA:           on success (uninstall will return a bogus HVA)
+> > 
+> > I think it's important to call out that it returns '0' on uninstall, e.g.
+> > otherwise it's not clear how a caller can detect failure.
+> 
+> It will "return (0xdeadull << 48)" as you proposed in abbed4fa94f6? :-)
+> 
+> Frankly speaking I always preferred zero but that's just not true any more
+> after above change.  This also reminded me that maybe we should also return the
+> same thing at [1] below.
 
-On 4/27/20 12:33, Joe Perches wrote:
-> On Mon, 2020-04-27 at 15:29 +0200, Miquel Raynal wrote:
->> Hi Joe,
+Ah, I was looking at this code:
+
+	if (!slot || !slot->npages)
+		return 0;
+
+That means deletion returns different success values for "deletion was a
+nop" and "deletion was successful".  The nop path should probably return
+(or fill in) "(unsigned long)(0xdeadull << 48)" as well.
+
+> > > + *   -errno:        on error
+> > > + *
+> > > + * The caller should always use IS_ERR() to check the return value
+> > > + * before use.  Note, the KVM internal memory slots are guaranteed to
+> > > + * remain valid and unchanged until the VM is destroyed, i.e., the
+> > > + * GPA->HVA translation will not change.  However, the HVA is a user
+> > > + * address, i.e. its accessibility is not guaranteed, and must be
+> > > + * accessed via __copy_{to,from}_user().
+> > > + */
+> > > +void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
+> > > +				      u32 size)
+> > >  {
+> > >  	int i, r;
+> > >  	unsigned long hva, uninitialized_var(old_npages);
+> > > @@ -9800,12 +9825,12 @@ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
+> > >  
+> > >  	/* Called with kvm->slots_lock held.  */
+> > >  	if (WARN_ON(id >= KVM_MEM_SLOTS_NUM))
+> > > -		return -EINVAL;
+> > > +		return ERR_PTR_USR(-EINVAL);
+> > >  
+> > >  	slot = id_to_memslot(slots, id);
+> > >  	if (size) {
+> > >  		if (slot && slot->npages)
+> > > -			return -EEXIST;
+> > > +			return ERR_PTR_USR(-EEXIST);
+> > >  
+> > >  		/*
+> > >  		 * MAP_SHARED to prevent internal slot pages from being moved
+> > > @@ -9814,10 +9839,10 @@ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
+> > >  		hva = vm_mmap(NULL, 0, size, PROT_READ | PROT_WRITE,
+> > >  			      MAP_SHARED | MAP_ANONYMOUS, 0);
+> > >  		if (IS_ERR((void *)hva))
+> > 
+> > IS_ERR_VALUE() can be used to avoid the double cast.
 > 
-> Hello Miquel.
+> Agreed.  But it's a context cleanup, so I normally will keep it as is (or use a
+> standalone patch).
 > 
->> Joe Perches <joe@perches.com> wrote on Mon, 30 Mar 2020 12:56:59 -0700:
->>
->>> Update logic for broken test.
->>> Use a more common logging style.
->>>
->>> Miscellanea:
->>>
->>> o Coalesce formats
->>>
->>> Signed-off-by: Joe Perches <joe@perches.com>
->>> ---
->>>
->>> Found by inspection of include files using printk.
->>>
->>> It appears the logic in this function is broken for the
->>> consecutive tests of
->>>
->>> 	if (prog_status & 0x3)
->>> 		...
->>> 	else if (prog_status & 0x2)
->>> 		...
->>> 	else (prog_status & 0x1)
->>> 		...
->>>
->>> Likely the first test should be
->>>
->>> 	if ((prog_status & 0x3) == 0x3)
->>
->> I had a hard time understanding the patch just with the commit log, I
->> think the above text is as important.
->>
->> In fact, would you mind doing the printk->pr_notice in a first patch,
->> and fix the wrong condition in a separate change?
->>
->>> And this function is only used in drivers/mtd/lpddr/lpddr_cmds.c
->>> perhaps it should be moved there.
->>
->> Agreed, do not hesitate to move the function as suggested in a third
->> patch.
+> > 
+> > > -			return PTR_ERR((void *)hva);
+> > > +			return (void __user *)hva;
+> > 
+> > If we still want to go down the route of ERR_PTR_USR, then an ERR_CAST_USR
+> > seems in order.
 > 
-> You are the maintainer here no?
+> Sure.  But I'll still keep it kvm-only if you won't mind...
 > 
-> I think you (or perhaps the author Alexey Korolev but he hasn't
-> been active in a decade) should be doing all this.
+> > 
+> > >  	} else {
+> > >  		if (!slot || !slot->npages)
+> > > -			return 0;
+> > > +			return ERR_PTR_USR(0);
 > 
-> I just identified the logic defect.
+> [1]
 > 
->>>  include/linux/mtd/pfow.h | 31 ++++++++++++++-----------------
->>>  1 file changed, 14 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
->>> index 122f343..1c08e75 100644
->>> --- a/include/linux/mtd/pfow.h
->>> +++ b/include/linux/mtd/pfow.h
->>> @@ -127,31 +127,28 @@ static inline void print_drs_error(unsigned dsr)
->>>  	int prog_status = (dsr & DSR_RPS) >> 8;
->>>  
->>>  	if (!(dsr & DSR_AVAILABLE))
->>> -		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
->>> -	if (prog_status & 0x03)
->>> -		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
->>> -						"half with 41h command\n");
->>> +		pr_notice("DSR.15: (0) Device not Available\n");
->>> +
->>> +	if ((prog_status & 0x03) == 0x03)
->>> +		pr_notice("DSR.9,8: (11) Attempt to program invalid half with 41h command\n");
->>>  	else if (prog_status & 0x02)
->>> -		printk(KERN_NOTICE"DSR.9,8: (10) Object Mode Program attempt "
->>> -					"in region with Control Mode data\n");
->>> +		pr_notice("DSR.9,8: (10) Object Mode Program attempt in region with Control Mode data\n");
->>>  	else if (prog_status &  0x01)
->>> -		printk(KERN_NOTICE"DSR.9,8: (01) Program attempt in region "
->>> -						"with Object Mode data\n");
->>> +		pr_notice("DSR.9,8: (01) Program attempt in region with Object Mode data\n");
->>> +
->>>  	if (!(dsr & DSR_READY_STATUS))
->>> -		printk(KERN_NOTICE"DSR.7: (0) Device is Busy\n");
->>> +		pr_notice("DSR.7: (0) Device is Busy\n");
->>>  	if (dsr & DSR_ESS)
->>> -		printk(KERN_NOTICE"DSR.6: (1) Erase Suspended\n");
->>> +		pr_notice("DSR.6: (1) Erase Suspended\n");
->>>  	if (dsr & DSR_ERASE_STATUS)
->>> -		printk(KERN_NOTICE"DSR.5: (1) Erase/Blank check error\n");
->>> +		pr_notice("DSR.5: (1) Erase/Blank check error\n");
->>>  	if (dsr & DSR_PROGRAM_STATUS)
->>> -		printk(KERN_NOTICE"DSR.4: (1) Program Error\n");
->>> +		pr_notice("DSR.4: (1) Program Error\n");
->>>  	if (dsr & DSR_VPPS)
->>> -		printk(KERN_NOTICE"DSR.3: (1) Vpp low detect, operation "
->>> -					"aborted\n");
->>> +		pr_notice("DSR.3: (1) Vpp low detect, operation aborted\n");
->>>  	if (dsr & DSR_PSS)
->>> -		printk(KERN_NOTICE"DSR.2: (1) Program suspended\n");
->>> +		pr_notice("DSR.2: (1) Program suspended\n");
->>>  	if (dsr & DSR_DPS)
->>> -		printk(KERN_NOTICE"DSR.1: (1) Aborted Erase/Program attempt "
->>> -					"on locked block\n");
->>> +		pr_notice("DSR.1: (1) Aborted Erase/Program attempt on locked block\n");
->>>  }
->>>  #endif /* __LINUX_MTD_PFOW_H */
->>>
->>>
->>
->> Thanks,
->> Miquèl
+> > 
+> > "return ERR_PTR_USR(NULL)" or "return NULL" would be more intuitive.  Moot
+> > point if the return is changed to "unsigned long".
+> 
+> ERR_PTR_USR() takes a "long".  I can use ERR_CAST_USR(NULL) if you prefer me to
+> explicitly use NULL.
+> 
+> Thanks,
+> 
+> -- 
+> Peter Xu
 > 
