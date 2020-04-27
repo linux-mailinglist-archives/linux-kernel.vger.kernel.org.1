@@ -2,70 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5DB1BA708
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C871BA704
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbgD0O4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 10:56:03 -0400
-Received: from v6.sk ([167.172.42.174]:60332 "EHLO v6.sk"
+        id S1728098AbgD0Ozx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 10:55:53 -0400
+Received: from verein.lst.de ([213.95.11.211]:48764 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726651AbgD0O4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 10:56:02 -0400
-Received: from localhost (v6.sk [IPv6:::1])
-        by v6.sk (Postfix) with ESMTP id 49CE4610A7;
-        Mon, 27 Apr 2020 14:55:30 +0000 (UTC)
-Date:   Mon, 27 Apr 2020 16:55:27 +0200
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] mfd: Add ENE KB3930 Embedded Controller driver
-Message-ID: <20200427145527.GA71654@furthur.local>
-References: <20200424221123.106527-1-lkundrak@v3.sk>
- <20200427064824.GB3559@dell>
+        id S1726651AbgD0Ozw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 10:55:52 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E836468C7B; Mon, 27 Apr 2020 16:55:48 +0200 (CEST)
+Date:   Mon, 27 Apr 2020 16:55:48 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Martijn Coenen <maco@android.com>
+Cc:     axboe@kernel.dk, hch@lst.de, ming.lei@redhat.com,
+        narayan@google.com, zezeozue@google.com, kernel-team@android.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maco@google.com, bvanassche@acm.org, Chaitanya.Kulkarni@wdc.com,
+        jaegeuk@kernel.org
+Subject: Re: [PATCH v3 4/9] loop: Refactor loop_set_status() size
+ calculation
+Message-ID: <20200427145548.GD5490@lst.de>
+References: <20200427074222.65369-1-maco@android.com> <20200427074222.65369-5-maco@android.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200427064824.GB3559@dell>
+In-Reply-To: <20200427074222.65369-5-maco@android.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 07:48:24AM +0100, Lee Jones wrote:
-> On Sat, 25 Apr 2020, Lubomir Rintel wrote:
+On Mon, Apr 27, 2020 at 09:42:17AM +0200, Martijn Coenen wrote:
+> figure_loop_size() calculates the loop size based on the passed in
+> parameters, but at the same time it updates the offset and sizelimit
+> parameters in the loop device configuration. That is a somewhat
+> unexpected side effect of a function with this name, and it is only only
+> needed by one of the two callers of this function - loop_set_status().
 > 
-> > Hi,
-> > 
-> > please take a look at the following patch set and consider applying it
-> > to the MFD tree. It a new driver with DT binding documentation changes,
-> > utilized by the LED driver submitted here:
-> > 
-> > https://lore.kernel.org/lkml/20200424220240.106055-1-lkundrak@v3.sk/
+> Move the lo_offset and lo_sizelimit assignment back into loop_set_status(),
+> and use the newly factored out functions to validate and apply the newly
+> calculated size. This allows us to get rid of figure_loop_size in a
+> follow-up commit.
 > 
-> What is this?  The subject suggests this is a cover-letter for a
-> patch-set, but the patches are not attached to it.  If this is the
-> case, please ensure that you send it --threaded using
-> 
->  `git send-email`
-> 
-> If it's just a random plea to go look at some set posted onto a
-> mailing list without me on Cc, then no.  Please send the set again,
-> properly, with me listed as a recipient.
 
-It indeed is a cover letter for a patch set, it had the patches chained to
-it, with you as a recipient, and it was sent with git send-email. If you
-haven't recevied them then I have no idea why. I do apologize in case it's
-my fault.
+Looks good,
 
-Perhaps your spam filter dropped them? In that case I'm wondering what
-could bump the spam score for the patches, but not the cover letter.
-In any case, the archive received them:
-
-https://lore.kernel.org/lkml/20200424221123.106527-1-lkundrak@v3.sk/
-
-I wouldn't mind resending the messages, but I'd prefer to understand
-what happened to them first.
-
-Lubo
+Reviewed-by: Christoph Hellwig <hch@lst.de>
