@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B651BA544
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042471BA54E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727951AbgD0NoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 09:44:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60758 "EHLO mail.kernel.org"
+        id S1728057AbgD0NqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 09:46:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37476 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727834AbgD0NoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 09:44:12 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A25B206B6;
-        Mon, 27 Apr 2020 13:44:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587995052;
-        bh=OhxRsSwwdvnGxdpaeF4FzeJ/8kd+1iigCwEMEzTAriA=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=b/spQsEs9VVzo3Kdr0A9ZLsBkBHmawqed3tSX6DJ3TLn/CcAHoS3m2q2UcWkVhu3T
-         SPec862zYs/vJjVWrhth2UKYCna5yxChwTIzCKwKCHx03Wfjrv/18KT3Y8HsX71lcg
-         iMOSVJwmPKRiWrBHIw9y+yQ7So4KryOoD8x4ooMg=
-Date:   Mon, 27 Apr 2020 14:44:09 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Iskren Chernev <iskren.chernev@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-In-Reply-To: <20200425125335.2674534-1-iskren.chernev@gmail.com>
-References: <20200425125335.2674534-1-iskren.chernev@gmail.com>
-Subject: Re: [PATCH] regulator: max77826: Remove erroneous additionalProperties
-Message-Id: <158799504950.16924.8566981464657105053.b4-ty@kernel.org>
+        id S1726539AbgD0NqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 09:46:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 5345EABB2;
+        Mon, 27 Apr 2020 13:46:13 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1D9F3DA781; Mon, 27 Apr 2020 15:45:28 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.7-rc4
+Date:   Mon, 27 Apr 2020 15:45:28 +0200
+Message-Id: <cover.1587992189.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Apr 2020 15:53:35 +0300, Iskren Chernev wrote:
-> In this particular location additionalProperties actually declares a property
-> named `additionalProperties` instead of specifying there should be no other
-> properties.
-> 
-> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-> ---
-> Fix bindings documentation for max77826 regulator as discussed in
-> https://lore.kernel.org/lkml/20200413164440.1138178-1-iskren.chernev@gmail.com/T/#m9e9904560e68bcd98980fa0e68fe190525033af6
-> 
-> [...]
+Hi,
 
-Applied to
+please pull the following branch with regression fixes and some stable
+material. Thanks.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-5.8
+* regression fixes:
+  * transaction leak when deleting unused block group
+  * log cleanup after transaction abort
 
-Thanks!
+* fix block group leak when removing fails
 
-[1/1] regulator: max77826: Remove erroneous additionalProperties
-      commit: 48dd1a7938e37d6d6414a20266394f858b37f10a
+* transaction leak if relocation recovery fails
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+* fix SPDX header
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+----------------------------------------------------------------
+The following changes since commit aec7db3b13a07d515c15ada752a7287a44a79ea0:
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+  btrfs: fix setting last_trans for reloc roots (2020-04-17 15:20:08 +0200)
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+are available in the Git repository at:
 
-Thanks,
-Mark
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.7-rc3-tag
+
+for you to fetch changes up to 1402d17dfd9657be0da8458b2079d03c2d61c86a:
+
+  btrfs: fix transaction leak in btrfs_recover_relocation (2020-04-23 17:24:56 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (1):
+      btrfs: fix memory leak of transaction when deleting unused block group
+
+Josef Bacik (1):
+      btrfs: drop logs when we've aborted a transaction
+
+Nishad Kamdar (1):
+      btrfs: discard: Use the correct style for SPDX License Identifier
+
+Xiyu Yang (2):
+      btrfs: fix block group leak when removing fails
+      btrfs: fix transaction leak in btrfs_recover_relocation
+
+ fs/btrfs/block-group.c | 20 ++++++++++++++------
+ fs/btrfs/discard.h     |  2 +-
+ fs/btrfs/disk-io.c     | 36 ++++++++++++++++++++++++++++++++----
+ fs/btrfs/relocation.c  |  1 +
+ 4 files changed, 48 insertions(+), 11 deletions(-)
