@@ -2,79 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CB11BB189
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B646E1BB191
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbgD0WbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 18:31:06 -0400
-Received: from ozlabs.org ([203.11.71.1]:40529 "EHLO ozlabs.org"
+        id S1726303AbgD0Wkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 18:40:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgD0WbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 18:31:06 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1726262AbgD0Wkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 18:40:52 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 499zyH209Zz9sSJ;
-        Tue, 28 Apr 2020 08:31:02 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1588026664;
-        bh=Fmq+8t9RaqoJ3RMhYnZhT/UZrui38TFUaHdcDwHmSXM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=IDd6i+8xv6sUQVUZB7/PZgG30RrejdZIUhOlVe7N/rvsb44gbbP5eQEPGNT4rV8GK
-         N3qb930qW4xbJMru2+tH+qUHpnI/5Ios9s37t8ujEsR5SvvbeK/NBXNd2ACng1gkgj
-         LvmN3TxT+lQLvMg/krdgrIfqze3bXH6WO8VZzoypRInFWsXbgPSmmOI8pOr9HLJJ7c
-         7CVoHtT5XpvhqVnjdG5eG+6jh7sAHzJMaRzG7arkulMdqt8k1bn+Q3JLDL+uzcU2Kb
-         XYlkdtzpH5yi8v3AUEYKmbKvmVmkF3HAOxInycbUCkzDq8iRJQVULRYrzY2TMv6OMS
-         M2X9kUiajp9/Q==
-Date:   Tue, 28 Apr 2020 08:31:01 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Simon Wunderlich <sw@simonwunderlich.de>
-Subject: linux-next: Signed-off-by missing for commit in the net-next tree
-Message-ID: <20200428083101.5b9868a7@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/L.aB7SFndVmGJmjjAwEBrOL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D8742075E;
+        Mon, 27 Apr 2020 22:40:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588027251;
+        bh=CC6rMEFyGSKGcmYNdgrkgIArdM9m2XSVKnBpMMN2Afc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=M1Bzf7imQ9+pFeCE+KA+cbdSB5d1Q5QGQB9MnKaltdtd5VWtUvFW7fQAnmE0URwl5
+         3BA6ohXMoMglNl9UZcTo0fBye8BSMjujqHnJjVYOuU0KjCzBVzKwaD+JYsXxpLWgrr
+         AEvVdCbCW82EWkeE0LLaMEaXsLBh2Bd66+0Ooopg=
+Date:   Mon, 27 Apr 2020 15:40:50 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 2/7] signal: factor copy_siginfo_to_external32 from
+ copy_siginfo_to_user32
+Message-Id: <20200427154050.e431ad7fb228610cc6b95973@linux-foundation.org>
+In-Reply-To: <20200426074039.GA31501@lst.de>
+References: <20200421154204.252921-1-hch@lst.de>
+        <20200421154204.252921-3-hch@lst.de>
+        <20200425214724.a9a00c76edceff7296df7874@linux-foundation.org>
+        <20200426074039.GA31501@lst.de>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/L.aB7SFndVmGJmjjAwEBrOL
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, 26 Apr 2020 09:40:39 +0200 Christoph Hellwig <hch@lst.de> wrote:
 
-Hi all,
+> On Sat, Apr 25, 2020 at 09:47:24PM -0700, Andrew Morton wrote:
+> > I looked at fixing it but surely this sort of thing:
+> > 
+> > 
+> > int copy_siginfo_to_user32(struct compat_siginfo __user *to,
+> > 			   const struct kernel_siginfo *from)
+> > #if defined(CONFIG_X86_X32_ABI) || defined(CONFIG_IA32_EMULATION)
+> > {
+> > 	return __copy_siginfo_to_user32(to, from, in_x32_syscall());
+> > }
+> > int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+> > 			     const struct kernel_siginfo *from, bool x32_ABI)
+> > #endif
+> > {
+> > 	...
+> > 
+> > 
+> > is too ugly to live?
+> 
+> I fixed it up in my earlier versions, but Eric insisted to keep it,
+> which is why I switched to his version given that he is the defacto
+> signal.c maintainer.
+> 
+> Here is what I would have preferred:
+> 
+> https://www.spinics.net/lists/kernel/msg3473847.html
+> https://www.spinics.net/lists/kernel/msg3473840.html
+> https://www.spinics.net/lists/kernel/msg3473843.html
 
-Commit
+OK, but that doesn't necessitate the above monstrosity?  How about
 
-  26893e7e928e ("batman-adv: Utilize prandom_u32_max for random [0, max) va=
-lues")
+static int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+			     const struct kernel_siginfo *from, bool x32_ABI)
+{
+	struct compat_siginfo new;
+	copy_siginfo_to_external32(&new, from);
+	...
+}
 
-is missing a Signed-off-by from its committer.
+int copy_siginfo_to_user32(struct compat_siginfo __user *to,
+			   const struct kernel_siginfo *from)
+{
+#if defined(CONFIG_X86_X32_ABI) || defined(CONFIG_IA32_EMULATION)
+	return __copy_siginfo_to_user32(to, from, in_x32_syscall());
+#else
+	return __copy_siginfo_to_user32(to, from, 0);
+#endif
+}
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/L.aB7SFndVmGJmjjAwEBrOL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6nXSUACgkQAVBC80lX
-0Gx6gQf/WwwbJl7R+0Ioil7+8DiVO0tSe4xC3ZT83di0ATNyyu9LPTgBbacOBmV+
-q8Ve5qIupUj/CwSOCjP54Xs+6DmrjQ3eVvYGchOiUy1cL0Ulk14Et9dOZAwayf0p
-aOHT/+On8xnFQY1Si+kF+NmGkDQyNQyaiLqeymwcScfxxFEODB6/j/0e2h9O/+bU
-h0ldcwVKfTOXvsgqIhIWctRxzbO5AWr/I8T614kGTxvuBKY6oUckfKfq3eFFm7l0
-NYfzzBhTXKMYoY0eshqofnqy8XQExP9jUGZJxMHni7QTOEAYUzZZwlvaPRYOMLow
-As5vCeANhBQJtjoxBiKLvU7SzbwzMQ==
-=UzbV
------END PGP SIGNATURE-----
-
---Sig_/L.aB7SFndVmGJmjjAwEBrOL--
+Or something like that - I didn't try very hard.  We know how to do
+this stuff, and surely this thing isn't how!
