@@ -2,146 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F821B9FB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198521B9F89
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726956AbgD0JU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 05:20:26 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:47810 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726921AbgD0JU0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 05:20:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1587979224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/iT1ZSnr3VWE3x+uDoNEdTmOq69Ly4M18udfvhiGRxU=;
-        b=fU2qFLIVjumrmw7xos7/exRxGz6GpCU0ZvGkVjJwXqcaEtPB+jxXhVpLvVSFqvINqgBCP4
-        jfDRuMLRbDmYmtGbVPpdsJ4hky26X0eRdiA67fTCABEI+EnEIB+dxQdm/+c/edNrxfi/L+
-        AB/L7i/kqDXI6mA/SfglVFi/SBL3EXE=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-477-vf9I_EiANEWjwRIES3QGig-1; Mon, 27 Apr 2020 05:20:22 -0400
-X-MC-Unique: vf9I_EiANEWjwRIES3QGig-1
-Received: by mail-wr1-f70.google.com with SMTP id r17so10227247wrg.19
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 02:20:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/iT1ZSnr3VWE3x+uDoNEdTmOq69Ly4M18udfvhiGRxU=;
-        b=PUAYxKXg7cSnTZUtT59Q00qRBpkHPrBVBUWwKqc3nJ2BftOWkLo1rYrUUZROm1wiFf
-         qNWBJgzbrh9D5qKE+qwbKAmrB3LjtbgHzm8GVU2dbaRpcNWOgX4vyya28Jbu6ei/GOMM
-         bJBkVP7cDPEmCx7u3bNbxUhN6GyZI1RS9vje/oAoDs1v/7HtLqLL66WzqWy0nmVqGKFn
-         mLl8QM6dcetlAwFu19RICb2+kdkSq2vzw12FAiN8ddhoQdcFGYLwvQc5Jr489pIPZijr
-         Db97Z68XIDw1HCjSzP6cCyTpfxwwMbJk9ckMQ23ZkkHL81nmtIwsWoUov8PuA8QCH6BV
-         nxRg==
-X-Gm-Message-State: AGi0Pubmf/hi0iZzWM+wwOZhcKs5yTyU11Ni4fZwGHTQGlrNUiiPPDGW
-        oKjnvCesHXj3IVRh0gtFP2GQXI8u1HNwUatNdmLEoVcTG0aBEc7J2cgD3WCO5lk7SzNJ17S47ue
-        e7JPqvphYPSqlPWgVLgeYg19D
-X-Received: by 2002:a7b:c147:: with SMTP id z7mr26867139wmi.52.1587979221561;
-        Mon, 27 Apr 2020 02:20:21 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJLxRMCB8YEXW9YDI2OLkrBugUH83i4IlZL7wCtXLgz+NY/798+oztf6oqjhyKDB3I0p2eFUw==
-X-Received: by 2002:a7b:c147:: with SMTP id z7mr26867111wmi.52.1587979221336;
-        Mon, 27 Apr 2020 02:20:21 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id j13sm20977689wrq.24.2020.04.27.02.20.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 02:20:20 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 05:20:17 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Richard Earnshaw <Richard.Earnshaw@arm.com>,
-        Sudeep Dutt <sudeep.dutt@intel.com>,
-        Ashutosh Dixit <ashutosh.dixit@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jason Wang <jasowang@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        KVM list <kvm@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH v4] vhost: disable for OABI
-Message-ID: <20200427051918-mutt-send-email-mst@kernel.org>
-References: <20200420143229.245488-1-mst@redhat.com>
- <CAMuHMdWaG5EUsbTOMPkj4i50D40T0TLRvB6g-Y8Dj4C0v7KTqQ@mail.gmail.com>
+        id S1726897AbgD0JPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 05:15:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:60446 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726243AbgD0JPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 05:15:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0302F1FB;
+        Mon, 27 Apr 2020 02:15:41 -0700 (PDT)
+Received: from [192.168.0.21] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7A7443F68F;
+        Mon, 27 Apr 2020 02:15:39 -0700 (PDT)
+Subject: Re: [PATCH] coresight: dynamic-replicator: Fix handling of multiple
+ connections
+To:     saiprakash.ranjan@codeaurora.org, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org
+Cc:     swboyd@chromium.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20200426143725.18116-1-saiprakash.ranjan@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <cf5852e9-c3c1-3d31-46f0-0370719947ab@arm.com>
+Date:   Mon, 27 Apr 2020 10:20:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWaG5EUsbTOMPkj4i50D40T0TLRvB6g-Y8Dj4C0v7KTqQ@mail.gmail.com>
+In-Reply-To: <20200426143725.18116-1-saiprakash.ranjan@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 08:45:22AM +0200, Geert Uytterhoeven wrote:
-> Hi Michael,
+On 04/26/2020 03:37 PM, Sai Prakash Ranjan wrote:
+> Since commit 30af4fb619e5 ("coresight: dynamic-replicator:
+> Handle multiple connections"), we do not make sure that
+> the other port is disabled when the dynamic replicator is
+> enabled. This is seen to cause the CPU hardlockup atleast
+> on SC7180 SoC with the following topology when enabling ETM
+> with ETR as the sink via sysfs. Since there is no trace id
+> logic in coresight yet to make use of multiple sinks in
+> parallel for different trace sessions, disable the other
+> port when one port is turned on.
 > 
-> Thanks for your patch!
+>         etm0_out
+> 	  |
+>     apss_funnel_in0
+>            |
+>    apss_merge_funnel_in
+>            |
+>        funnel1_in4
+> 	  |
+>     merge_funnel_in1
+> 	  |
+>      swao_funnel_in
+>            |
+>          etf_in
+> 	  |
+>    swao_replicator_in
+>            |
+>     replicator_in
+> 	  |
+>          etr_in
 > 
-> On Mon, Apr 20, 2020 at 5:13 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > vhost is currently broken on the some ARM configs.
-> >
-> > The reason is that the ring element addresses are passed between
-> > components with different alignments assumptions. Thus, if
-> > guest selects a pointer and host then gets and dereferences
-> > it, then alignment assumed by the host's compiler might be
-> > greater than the actual alignment of the pointer.
-> > compiler on the host from assuming pointer is aligned.
-> >
-> > This actually triggers on ARM with -mabi=apcs-gnu - which is a
-> > deprecated configuration. With this OABI, compiler assumes that
-> > all structures are 4 byte aligned - which is stronger than
-> > virtio guarantees for available and used rings, which are
-> > merely 2 bytes. Thus a guest without -mabi=apcs-gnu running
-> > on top of host with -mabi=apcs-gnu will be broken.
-> >
-> > The correct fix is to force alignment of structures - however
-> > that is an intrusive fix that's best deferred until the next release.
-> >
-> > We didn't previously support such ancient systems at all - this surfaced
-> > after vdpa support prompted removing dependency of vhost on
-> > VIRTULIZATION. So for now, let's just add something along the lines of
-> >
-> >         depends on !ARM || AEABI
-> >
-> > to the virtio Kconfig declaration, and add a comment that it has to do
-> > with struct member alignment.
-> >
-> > Note: we can't make VHOST and VHOST_RING themselves have
-> > a dependency since these are selected. Add a new symbol for that.
+>    Kernel panic - not syncing: Watchdog detected hard LOCKUP on cpu 0
+>    CPU: 7 PID: 0 Comm: swapper/7 Tainted: G S  B             5.4.25 #100
+>    Hardware name: Qualcomm Technologies, Inc. SC7180 IDP (DT)
+>    Call trace:
+>     dump_backtrace+0x0/0x188
+>     show_stack+0x20/0x2c
+>     dump_stack+0xdc/0x144
+>     panic+0x168/0x370
+>     arch_seccomp_spec_mitigate+0x0/0x14
+>     watchdog_timer_fn+0x68/0x290
+>     __hrtimer_run_queues+0x264/0x498
+>     hrtimer_interrupt+0xf0/0x22c
+>     arch_timer_handler_phys+0x40/0x50
+>     handle_percpu_devid_irq+0x8c/0x158
+>     __handle_domain_irq+0x84/0xc4
+>     gic_handle_irq+0x100/0x1c4
+>     el1_irq+0xbc/0x180
+>     arch_cpu_idle+0x3c/0x5c
+>     default_idle_call+0x1c/0x38
+>     do_idle+0x100/0x280
+>     cpu_startup_entry+0x24/0x28
+>     secondary_start_kernel+0x15c/0x170
+>    SMP: stopping secondary CPUs
 > 
-> Adding the dependencies to VHOST and VHOST_RING themselves is indeed not
-> sufficient.  But IMHO you should still add VHOST_DPN dependencies t
->  these two symbols, so any driver selecting them without fulfilling the
-> VHOST_DPN dependency will trigger a Kconfig warning.  Else the
-> issue will be ignored silently.
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> Tested-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+> Changes since RFC:
+>   * Reworded commit text and included the topology on SC7180.
 
-Good point.
-For now I'm trying to just get rid of this work around.
-If I can't I will add the suggested change.
-Thanks!
 
-> > We should be able to drop this dependency down the road.
-> >
-> > Fixes: 20c384f1ea1a0bc7 ("vhost: refine vhost and vringh kconfig")
-> > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> > Suggested-by: Richard Earnshaw <Richard.Earnshaw@arm.com>
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>   .../hwtracing/coresight/coresight-replicator.c    | 15 ++++++++++-----
+>   1 file changed, 10 insertions(+), 5 deletions(-)
 > 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+> index e7dc1c31d20d..f4eaa38f8f43 100644
+> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+> @@ -66,14 +66,16 @@ static int dynamic_replicator_enable(struct replicator_drvdata *drvdata,
+>   				     int inport, int outport)
+>   {
+>   	int rc = 0;
+> -	u32 reg;
+> +	u32 reg0, reg1;
+>   
+>   	switch (outport) {
+>   	case 0:
+> -		reg = REPLICATOR_IDFILTER0;
+> +		reg0 = REPLICATOR_IDFILTER0;
+> +		reg1 = REPLICATOR_IDFILTER1;
+>   		break;
+>   	case 1:
+> -		reg = REPLICATOR_IDFILTER1;
+> +		reg0 = REPLICATOR_IDFILTER1;
+> +		reg1 = REPLICATOR_IDFILTER0;
+>   		break;
+>   	default:
+>   		WARN_ON(1);
+> @@ -87,8 +89,11 @@ static int dynamic_replicator_enable(struct replicator_drvdata *drvdata,
+>   		rc = coresight_claim_device_unlocked(drvdata->base);
+>   
+>   	/* Ensure that the outport is enabled. */
+> -	if (!rc)
+> -		writel_relaxed(0x00, drvdata->base + reg);
+> +	if (!rc) {
+> +		writel_relaxed(0x00, drvdata->base + reg0);
+> +		writel_relaxed(0xff, drvdata->base + reg1);
+> +	}
+> +
 
+This is not sufficient. You must prevent another session trying to
+enable the other port of the replicator as this could silently fail
+the "on-going" session. Not ideal. Fail the attempt to enable a port
+if the other port is active. You could track this in software and
+fail early.
+
+Suzuki
