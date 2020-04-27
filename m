@@ -2,100 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CB61BA462
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1851BA46A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbgD0NQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 09:16:25 -0400
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:40362 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726539AbgD0NQZ (ORCPT
+        id S1727837AbgD0NRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 09:17:35 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:5673 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726953AbgD0NRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 09:16:25 -0400
-Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 775452E12B2;
-        Mon, 27 Apr 2020 16:16:22 +0300 (MSK)
-Received: from sas2-32987e004045.qloud-c.yandex.net (sas2-32987e004045.qloud-c.yandex.net [2a02:6b8:c08:b889:0:640:3298:7e00])
-        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id tNwr2AI5mi-GLHaneK1;
-        Mon, 27 Apr 2020 16:16:22 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1587993382; bh=xBhakYh3mD/x09iVGdm+GWvc9Gudb+FRDfRu28dcZVg=;
-        h=In-Reply-To:Message-ID:Date:References:To:From:Subject:Cc;
-        b=LfbpGRCeVoujIWmWwoY6QgsWJb09RtwsujJNbyYlrROYQzjzSj7iyj2Gg4b7ly7Kz
-         8Vb1kjUCiLVkZ955ce1QcQcfqCa0gbejH6IGVxI91DTSgjoiWuAKkCP+/2PjNqAZxC
-         bd2DIF3vs1s26h8pfCGfp6J7XEUC6KgPJNi7OVfM=
-Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:7208::1:1])
-        by sas2-32987e004045.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id YdlPsTsS3A-GKWmTCqs;
-        Mon, 27 Apr 2020 16:16:21 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH] tracing/x86: fix trace event registration for syscalls
- without arguments
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-To:     Brian Gerst <brgerst@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-References: <158636958997.7900.16485049455470033557.stgit@buzz>
-Message-ID: <adafb601-d1e7-b95b-ae31-fa3844a48851@yandex-team.ru>
-Date:   Mon, 27 Apr 2020 16:16:20 +0300
+        Mon, 27 Apr 2020 09:17:33 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ea6daf40001>; Mon, 27 Apr 2020 06:15:32 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 27 Apr 2020 06:17:33 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 27 Apr 2020 06:17:33 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 27 Apr
+ 2020 13:17:33 +0000
+Received: from [10.26.73.54] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 27 Apr
+ 2020 13:17:21 +0000
+Subject: Re: [PATCH] backlight: lp855x: Ensure regulators are disabled on
+ probe failure
+To:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>
+CC:     Milo Kim <milo.kim@ti.com>, Jingoo Han <jingoohan1@gmail.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>
+References: <20200224140748.2182-1-jonathanh@nvidia.com>
+ <20200224143732.rreev3ypou26hvx3@holly.lan>
+ <6ec74817-968b-ab5e-6566-56bbb9b67599@nvidia.com>
+ <20200316090546.5eufi423ahstz6v3@holly.lan>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <b57f3ef0-8d14-c0bf-524c-9ec0d6334e0c@nvidia.com>
+Date:   Mon, 27 Apr 2020 14:17:12 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <158636958997.7900.16485049455470033557.stgit@buzz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
+In-Reply-To: <20200316090546.5eufi423ahstz6v3@holly.lan>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1587993332; bh=PWx8n+kYRA1n2vodVtlcl5MSgTdEhqLiiBItjXVs/nA=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=CkD/p2YTdNlyTddyE4uATk7emVK+mMQlRmf80wOjePk8J8B+ueUTzoMvVB7PLQXuo
+         g/QXkFsyAPpDPOV35S7mZ5eMG4M7kgwDwBM4COJeOzO/Cn0np4hQBGWR43y1VwYJNz
+         PDuiYuyNsBPd0A93YpPj7xqhM50Dk4MrkMIPrT+5vZL+G8nHzxpu77Um5w9dx29y/m
+         NaKV9q0/e4ssVmWBd8u7R8J9jlVNGRmiDPS3c81vZO5fg3N/yQpJFzIt/TGp0NivH1
+         bEG8ZC/FdDe6RMspv+7QFzEuOnOS0CoRobI7uP9xj6vQqNbgkramjx7F48lkg0rdmR
+         FYgjRnNBKQQnA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bump, bug still present in 5.7.0-rc3
+Hi Lee,
 
-root@kernel0:~# uname -r
-5.7.0-rc3-test
+On 16/03/2020 09:05, Daniel Thompson wrote:
+> On Fri, Mar 13, 2020 at 02:16:16PM +0000, Jon Hunter wrote:
+>> Hi Lee, Daniel,
+>>
+>> On 24/02/2020 14:37, Daniel Thompson wrote:
+>>> On Mon, Feb 24, 2020 at 02:07:48PM +0000, Jon Hunter wrote:
+>>>> If probing the LP885x backlight fails after the regulators have been
+>>>> enabled, then the following warning is seen when releasing the
+>>>> regulators ...
+>>>>
+>>>>  WARNING: CPU: 1 PID: 289 at drivers/regulator/core.c:2051 _regulator_put.part.28+0x158/0x160
+>>>>  Modules linked in: tegra_xudc lp855x_bl(+) host1x pwm_tegra ip_tables x_tables ipv6 nf_defrag_ipv6
+>>>>  CPU: 1 PID: 289 Comm: systemd-udevd Not tainted 5.6.0-rc2-next-20200224 #1
+>>>>  Hardware name: NVIDIA Jetson TX1 Developer Kit (DT)
+>>>>
+>>>>  ...
+>>>>
+>>>> Fix this by ensuring that the regulators are disabled, if enabled, on
+>>>> probe failure.
+>>>>
+>>>> Finally, ensure that the vddio regulator is disabled in the driver
+>>>> remove handler.
+>>>>
+>>>> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+>>>
+>>> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+>> I received a bounce from Milo's email and so I am not sure that his
+>> email address is still valid.
+>>
+>> Can either of you pick this up?
+> 
+> Lee generally starts to hoover up patches about this stage in the dev
+> cycle so I'd expect this to move fairly soon.
 
-root@kernel0:~# ls -d /sys/kernel/tracing/events/syscalls/sys_enter_{sync,fsync}
-ls: cannot access '/sys/kernel/tracing/events/syscalls/sys_enter_sync': No such file or directory
-/sys/kernel/tracing/events/syscalls/sys_enter_fsync
+Does not look like this ever got picked up. Please let me know if you
+can queue this one. Note it still applies cleanly to -next.
 
-On 08/04/2020 21.13, Konstantin Khlebnikov wrote:
-> Syscalls without arguments now has no ABI subs, instead of that macro
-> SYSCALL_DEFINE0() defines __abi_sys_name as aliase to __do_sys_name.
-> 
-> As a result in find_syscall_meta() kallsyms_lookup() returns
-> "__do_sys_name" which does not match with declared trace event.
-> 
-> Also see commit 1c758a2202a6 ("tracing/x86: Update syscall trace events
-> to handle new prefixed syscall func names")
-> 
-> Fixes: d2b5de495ee9 ("x86/entry: Refactor SYSCALL_DEFINE0 macros")
-> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> ---
->   arch/x86/include/asm/ftrace.h |    5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-> index 85be2f506272..70b96cae5b42 100644
-> --- a/arch/x86/include/asm/ftrace.h
-> +++ b/arch/x86/include/asm/ftrace.h
-> @@ -61,11 +61,12 @@ static inline bool arch_syscall_match_sym_name(const char *sym, const char *name
->   {
->   	/*
->   	 * Compare the symbol name with the system call name. Skip the
-> -	 * "__x64_sys", "__ia32_sys" or simple "sys" prefix.
-> +	 * "__x64_sys", "__ia32_sys", "__do_sys" or simple "sys" prefix.
->   	 */
->   	return !strcmp(sym + 3, name + 3) ||
->   		(!strncmp(sym, "__x64_", 6) && !strcmp(sym + 9, name + 3)) ||
-> -		(!strncmp(sym, "__ia32_", 7) && !strcmp(sym + 10, name + 3));
-> +		(!strncmp(sym, "__ia32_", 7) && !strcmp(sym + 10, name + 3)) ||
-> +		(!strncmp(sym, "__do_sys", 8) && !strcmp(sym + 8, name + 3));
->   }
->   
->   #ifndef COMPILE_OFFSETS
-> 
+Jon
+
+-- 
+nvpublic
