@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB94A1B97D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 08:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A171B97D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 08:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgD0G6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 02:58:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726539AbgD0G6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 02:58:31 -0400
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 722B4217BA;
-        Mon, 27 Apr 2020 06:58:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587970710;
-        bh=BH25q4ox23BW3FKdKWlrgv6GNAblqqJelLmOgAaRXfE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=KN3VthEga1Dlobi7MKNVeKkx35ynJB0XYaV7ISXyuLI7xev2jzkE2PiTAcOJGKck8
-         OOapEHynwz0QiOh8knh0pEywgvwIONTP/7CRxHObodn/D/mrxr/e11D3m/xeZkdVuK
-         C3yX5JmdxcTrrl+JMESOX9Rwuvmzhz6CXcfaWkH4=
-Received: by mail-il1-f173.google.com with SMTP id m5so7443407ilj.10;
-        Sun, 26 Apr 2020 23:58:30 -0700 (PDT)
-X-Gm-Message-State: AGi0PualtMOTlEN/xSs0HyD04ua9Epzti94pBSOZzristTOqjHTG0Cb4
-        ysoZHaDO4+Ca2O0/lxcQlCpEO5xoLN8/mdju/Vs=
-X-Google-Smtp-Source: APiQypLYJKvvsGMLuuLQKHPaoSK2vexjk9mfhROlFt2OzJZ+PerIxGaNFu2HXVpq6ZZKwTR5ejj64dtjHoSK8bQQZCk=
-X-Received: by 2002:a92:607:: with SMTP id x7mr18076185ilg.218.1587970709786;
- Sun, 26 Apr 2020 23:58:29 -0700 (PDT)
+        id S1726706AbgD0G7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 02:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbgD0G7O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 02:59:14 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBCBC061A41
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 23:59:14 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id g35so4587094uad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 23:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p75ZI/P1vAKdvQGL/dkDYNcJX48p538uaKviA/7sw78=;
+        b=R/yZNbJ/FXJTeWHoBM/VGrSujsjvdbo2k6YfYwGCyStA4w4Vu+3r6pSliy3CmjHCY9
+         SfTABC9U26Iuir75W2uhDMbjYrKuCe5gUJz+hjZT/9SPfNH7Wq+s6evzjQF/O4AlxycF
+         7sWy9vdMYVW9+yX3/Mj1hq8Cq3GpFlBCf+O/f2/OrfpFFZM2dIPGtKvQdDFpzz+h3cRb
+         YxUtXuByeXDj0ep4IIuVfFOTzrd8fJuc5IhLadjFSz8WuRsGOpPAvfFz5aPQ12iGPdpR
+         +6r3h9+BxdYKM75iYz3wwyH0hWBh//y4y7f8slVNxEbN4lNLXnntUxChGWyVjmNjp1tw
+         oeLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p75ZI/P1vAKdvQGL/dkDYNcJX48p538uaKviA/7sw78=;
+        b=IEK7nANllqvXCg5QbqnkL2koKAtjxEke6/uGzW9Jt2tBDm/V4sP08BOsCluMBnI9cg
+         w4c6MDowpjYhS9sOfLbgY+p8BJDBQwLnSfoXuv8joe0RejNdNgeD//tOZgqq8V1Ll9jq
+         RwPaRMafkFXAuX7cX1AxhMzsn+SruIucLcanuhEvmnebvqHJk/J/5Cnc9nja1S44ezti
+         0DjV7aglIkzerFUhfCqQY7VJw1+yCsdGLZNVLMSqtjYME5MBo3jpviHee3N1rV2fEQFu
+         D3lZ52I0bM7+f4/gLk7Wy/QtaALR5RZ/nRMpsJ7GChtVbTRF0sBRqcp/Udq126cM8cIP
+         Cgug==
+X-Gm-Message-State: AGi0PubDD3kkfc4nqhPHkIM+nHJcUy5QneRp3aYBKDOq9DNBYWN9TBsK
+        tcdPn25mneTsPKIRiAMXUdj4qbbfpJbZIaFwyQKNqw==
+X-Google-Smtp-Source: APiQypLgdu94xf46n59WAXNWbtQ/etKr47I9IXWtRxhdXwH7gOWdeXqlB5oxfaZVEhk0xe+ABAYpaedqjH2ouRHKL5s=
+X-Received: by 2002:a67:11c4:: with SMTP id 187mr15068680vsr.34.1587970753925;
+ Sun, 26 Apr 2020 23:59:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <1587966099-28139-1-git-send-email-hadar.gat@arm.com> <1587966099-28139-2-git-send-email-hadar.gat@arm.com>
-In-Reply-To: <1587966099-28139-2-git-send-email-hadar.gat@arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 27 Apr 2020 08:58:18 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHN1qzoP9YNmrFcTJRncJE88Jyp_MS_9XrdAiY9v6DAyw@mail.gmail.com>
-Message-ID: <CAMj1kXHN1qzoP9YNmrFcTJRncJE88Jyp_MS_9XrdAiY9v6DAyw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] hwrng: cctrng - Add dependency on OF
-To:     Hadar Gat <hadar.gat@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+References: <20200328003249.1248978-1-martin.blumenstingl@googlemail.com> <CAFBinCDCv-zNf1FX+8FHMxcNdJ_69yog+O_=QPz3Fzryg3ynAw@mail.gmail.com>
+In-Reply-To: <CAFBinCDCv-zNf1FX+8FHMxcNdJ_69yog+O_=QPz3Fzryg3ynAw@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 27 Apr 2020 08:58:37 +0200
+Message-ID: <CAPDyKFqNgS4JGRqMDeMgguAHd11W_OpzxyKDjaWoTUXUdc6fwg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] Amlogic 32-bit Meson SoC SDHC MMC controller driver
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jianxin Pan <jianxin.pan@amlogic.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Ofir Drang <ofir.drang@arm.com>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lnykww@gmail.com, yinxin_1989@aliyun.com,
+        Jerome Brunet <jbrunet@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Apr 2020 at 07:42, Hadar Gat <hadar.gat@arm.com> wrote:
+On Sat, 25 Apr 2020 at 22:27, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
 >
-> The cctrng is unusable on non-DT systems so we should depend
-> on it.
+> Hi Ulf,
 >
-> Signed-off-by: Hadar Gat <hadar.gat@arm.com>
-> ---
->  drivers/char/hw_random/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Sat, Mar 28, 2020 at 1:33 AM Martin Blumenstingl
+> <martin.blumenstingl@googlemail.com> wrote:
+> [...]
+> > Martin Blumenstingl (3):
+> >   dt-bindings: mmc: Document the Amlogic Meson SDHC MMC host controller
+> >   clk: meson: add a driver for the Meson8/8b/8m2 SDHC clock controller
+> >   mmc: host: meson-mx-sdhc: new driver for the Amlogic Meson SDHC host
+> I have Rob's reviewed-by for the dt-bindings patch and three
+> tested-by's for the MMC driver in patch #3 (which means that patch #2
+> was implicitly tested as well)
+> I tried to answer all your previous questions where possible, but for
+> some of your questions I simply don't have an answer.
 >
-> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-> index 0c99735..df2d001 100644
-> --- a/drivers/char/hw_random/Kconfig
-> +++ b/drivers/char/hw_random/Kconfig
-> @@ -476,7 +476,7 @@ config HW_RANDOM_KEYSTONE
->
->  config HW_RANDOM_CCTRNG
->         tristate "Arm CryptoCell True Random Number Generator support"
-> -       depends on HAS_IOMEM
-> +       depends on HAS_IOMEM & OF
+> is there anything from your side which is holding this driver back
+> from being merged?
 
-Does your driver in fact depend on CONFIG_HAS_IOMEM ?
+Apologize for the delay. I will have a look asap.
 
->         default HW_RANDOM
->         help
->           This driver provides support for the True Random Number
-> --
-> 2.7.4
 >
+> +Cc Jerome, because he is the maintainer of the Amlogic clock
+> controller drivers - where this series adds another one, so we need to
+> coordinate where patches go.
+
+It seems like you may need to resend the series so the clock
+maintainers (Stephen and Jerome) can get a look as well.
+
+Perhaps it's better if the series is queued together - and can help to
+do that, but then I need acks from Stephen/Jerome for the clock patch.
+
+Kind regards
+Uffe
