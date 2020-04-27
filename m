@@ -2,75 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8076C1BAEA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9442F1BAE8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgD0UCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 16:02:50 -0400
-Received: from mga03.intel.com ([134.134.136.65]:39874 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725919AbgD0UCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:02:50 -0400
-IronPort-SDR: xyhOBZkl21/qbGBfznK57qFUK7MTGpmCEXRCe6DtBqlNBSkNub++q9R9llCcrFOYEty5E9I9ue
- c56ONvCzCJcA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 13:02:49 -0700
-IronPort-SDR: GjYAFcoCqlm+a4DLVaIJAvUAkzUxehDUWIlKKkNGv15CoC9Gjm0QebAmw4Fh+1XvSlidfKCs59
- jTk3opP0EgeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
-   d="scan'208";a="458979574"
-Received: from coffy.sc.intel.com ([10.3.79.166])
-  by fmsmga006.fm.intel.com with ESMTP; 27 Apr 2020 13:02:49 -0700
-Message-ID: <01620c87bb6aa7870854ae1e23ec7bd379a058de.camel@intel.com>
-Subject: Re: [PATCH v2 0/1] platform/x86: Add Slim Bootloader firmware
- update support
-From:   Jithu Joseph <jithu.joseph@intel.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        maurice.ma@intel.com, ravi.p.rangarajan@intel.com,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        kuo-lang.tseng@intel.com, jithu.joseph@intel.com
-Date:   Mon, 27 Apr 2020 12:57:05 -0700
-In-Reply-To: <CAHp75Vezc9-vTSVsTE=ce_2XRPfFVT2gHwZhwqZiRX8M=sdmmg@mail.gmail.com>
-References: <20200423224222.29730-1-jithu.joseph@intel.com>
-         <CAHp75VcqV3e8ecAUX+dr9h-bE+1XJ_71hJRA1b9XdouJJLD2ZA@mail.gmail.com>
-         <CAHp75Vezc9-vTSVsTE=ce_2XRPfFVT2gHwZhwqZiRX8M=sdmmg@mail.gmail.com>
+        id S1726666AbgD0T5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726364AbgD0T5q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 15:57:46 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308BAC0610D5;
+        Mon, 27 Apr 2020 12:57:45 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id s3so15248740eji.6;
+        Mon, 27 Apr 2020 12:57:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=GJDhC8dz1UCAtH/BxA6Y2i5c6CSS8QiVlm7CC6ceN1Q=;
+        b=di+1djngWKc+yBC2sVVRtlvVb6+ghANoyasyRkhw59rY5kpK2yn8m+5cT/EWBPGfrB
+         GDuYLd4+X4e1KRbKKeySJsNuJU0mG9bZSHX9gELo/O8G7ngaYWb6+89q/0Mpfw5RmztG
+         P5vOYApZ2rU41U0UNhigD0R5qbWi8SeZ2C9vz2ScOfqKzuFAT+ePFKkDgrzA//TTsrIN
+         BB1YJ4tNXtfMecXR+iuvRftLru3ySi98XzLTmWSSSzlaMNrDF1+uTBW1C2NBZtUOBE01
+         8bNa+HMyzrr4Cwttlqy8QSwECGILgikMpQzN14ZGPzCjpAJ1vJKURyvDw80JpzHRxDE5
+         lrgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=GJDhC8dz1UCAtH/BxA6Y2i5c6CSS8QiVlm7CC6ceN1Q=;
+        b=R5MmhZz55L6T8epSv8HZMCSv2ovJ/l5r9fpclHgDFf6+P9yyPccCcPSLPYhDKBWn3m
+         oHFZbu8D7FCWI7g4e67PHzTKTtuEd994iljIrZdMiregWXJicFco34zZSrg0v3ll6CR5
+         WyVECVVpKw0aw+Dp/RaX6RWFLtbmFZmpvB9XGqwO4ksllYQqXJVEeV9XKLig/EkVO6ha
+         /jXTjmPYj7lXra824b3ut4iCTbdUwfspq004uyjo7mBOzPzNagsRELJ+BCqe8b3bjKww
+         pMJWrcSgeAN9ecVGwWK0EtJ1i77uKd7FWxMT99CGpOPiYBRM/2Ik3yp4h2dhP3aj2Rvq
+         uydw==
+X-Gm-Message-State: AGi0Pub0blRpE0kF0MlA0G+I/JjJGLzDDt3GEbgfCvcUlY0FWO8bqhz9
+        4TeiO/qpcmcEokpxvD1LNl3upYzWa7llClR6AnGKIl//tQQ=
+X-Google-Smtp-Source: APiQypI/5x/k2ZEjeKzMnLvdY3+3lcwsOP3UmM0K9r50UkqbSjltr0j9Ig/Pn9uMY8rY/7QNMyS4rQpX/u8NmqSdeHQ=
+X-Received: by 2002:a17:907:2098:: with SMTP id pv24mr21801601ejb.22.1588017463681;
+ Mon, 27 Apr 2020 12:57:43 -0700 (PDT)
+MIME-Version: 1.0
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Mon, 27 Apr 2020 21:57:33 +0200
+Message-ID: <CAFBinCBHuPLS8BDzO4Gb86TG3tNTtqmW5BSWy8jhPuN3STOTUA@mail.gmail.com>
+Subject: clk_hw.init and -EPROBE_DEFER / driver re-load
+To:     sboyd@kernel.org, linux-clk@vger.kernel.org
+Cc:     mturquette@baylibre.com, linux-kernel@vger.kernel.org,
+        jbrunet@baylibre.com
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-04-27 at 13:03 +0300, Andy Shevchenko wrote:
-> 
-> 
-> We use a bit different template for module names
-> 
-> vendor-...-wmi
-> 
-> (yes, with exception to TBT)
-> 
-> I would like to rename sbl_fwu_wmi to something like this:
-> 
-> intel-wmi-sbl-fw-update
-> 
-> What do you think?
+Hello Stephen et al.
 
-Yes I think it is better to rename this driver to intel-wmi-sbl-fw-
-update as you suggested, given many drivers follow vendor-wmi-*
-pattern. Thanks for pointing this out.
+I am working on a driver for the "SDHC" controller on older Amlogic Meson SoCs.
+This has some clock controller bits built into.
+Using CCF for the whole rate management makes things a lot easier, so
+I decided to use that instead of poking register bits manually.
+The code can be seen here: [0] - but don't take it too seriously
+because I have to move some of that in the next patch revision.
 
-I will send v3 which addresses this.
+I solved an "interesting" problem where I'm not sure if it works as
+intended (which is what I assumed) or if there's an actual problem (as
+suggested by Jerome).
 
-Thanks
-Jithu
+The flow in the driver is basically:
+(the clk_hws are defined as "static" variables inside the driver)
+1) fetch related OF properties
+2) initialize and register the built-in (into the MMC controller
+driver) clock controller part
+3) initialize the MMC controller
 
+Step 3) can fail for example because one of the regulators is not ready.
+In this case I'm de-registering the clock controller part again.
+Finally the driver returns -EPROBE_DEFER
+(so far everything is working fine)
+
+However, once the regulator (in this example) becomes ready the the
+same flow as above is being executed.
+Only this time the clock controller registration fails because
+hw->init is NULL (before it had the values which I defined in the
+driver).
+This is due to the following line in __clk_register():
+  hw->init = NULL;
+
+My way to "solve" this is to clone the clk_hws while registering the
+clock controller.
+Unfortunately this means that I can't easily use clk_hw references to
+describe the parent/child relation between these clocks.
+
+I'm not sure if my way of defining the clk_hws is wrong, there's a bug
+in CCF, this is a new feature request or something completely
+different :-)
+My motivation is to understand how I should to consider this behavior
+for my next version of the MMC controller patches.
+
+Any feedback is welcome!
+
+
+Thank you,
+Martin
+
+
+[0] https://patchwork.kernel.org/patch/11463357/
