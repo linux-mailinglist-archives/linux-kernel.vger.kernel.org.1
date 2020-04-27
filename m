@@ -2,143 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4041BAF87
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BC71BAF84
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgD0UcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 16:32:19 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:19878 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726676AbgD0UcT (ORCPT
+        id S1726661AbgD0UcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:32:14 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:56598 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726205AbgD0UcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:32:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588019538; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=kNapMrLPfWyqq3saA7ayYBf3t2HHIt3ns1o+JIh4q4U=; b=qnXdkfkfZOFa3nvemiYARZmiIdcTAUMBrs10zuLH6On6bXGj+VWUyV7vl17CDmSr5qhQvyV7
- 11Bl68HoEJGVJKUPQDh7fsSGJTj/JfqGcIzdzG9SWWqrooEto1nMhqELyEoT3asllByApzhP
- FtVj3fJdIE0J+LnbH0Fyd//kMqY=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea7413d.7f0d1ef71030-smtp-out-n03;
- Mon, 27 Apr 2020 20:31:57 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BEBEFC4478F; Mon, 27 Apr 2020 20:31:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.110.78.22] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Mon, 27 Apr 2020 16:32:14 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C2DA4C433D2;
-        Mon, 27 Apr 2020 20:31:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C2DA4C433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH] phy: qcom-snps: Add runtime suspend and resume handlers
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1587662818-4461-1-git-send-email-wcheng@codeaurora.org>
- <20200427165919.GR56386@vkoul-mobl.Dlink>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <4ce39b01-ddf3-7a5b-9ac4-659ff4362fcd@codeaurora.org>
-Date:   Mon, 27 Apr 2020 13:31:55 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 263748046C;
+        Mon, 27 Apr 2020 22:32:10 +0200 (CEST)
+Date:   Mon, 27 Apr 2020 22:32:08 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Joe Perches <joe@perches.com>, devicetree@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Adrian Ratiu <adrian.ratiu@collabora.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>
+Subject: Re: [PATCH] get_maintainer: Add email addresses from .yaml files
+Message-ID: <20200427203208.GA3312@ravnborg.org>
+References: <87d082jtfn.fsf@collabora.com>
+ <20200420175909.GA5810@ravnborg.org>
+ <CAL_JsqJXa8QxQmLfkCO8_SSsgYm2nTFW1J6wx4bGbZgAy8Sxog@mail.gmail.com>
+ <9a32f150f85f851d04afd148b2a9a5cf203f7ce1.camel@perches.com>
+ <7beaedfd63017973b910dd21cac13ecb42dbe503.camel@perches.com>
+ <20200427055755.GA21898@ravnborg.org>
+ <79ade7bc8ce57ef11f94011bad1842372c61fdd7.camel@perches.com>
+ <20200427130448.74b75c3a6c91e5ede31542e4@linux-foundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20200427165919.GR56386@vkoul-mobl.Dlink>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200427130448.74b75c3a6c91e5ede31542e4@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=MOBOZvRl c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=8nJEP1OIZ-IA:10 a=L2k0239gBzhLS6eM0JoA:9 a=wPNLvfGTeEIA:10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andrew.
 
-
-On 4/27/2020 9:59 AM, Vinod Koul wrote:
-> On 23-04-20, 10:26, Wesley Cheng wrote:
+> The patch assumes that we have
 > 
->> +static int qcom_snps_hsphy_suspend(struct qcom_snps_hsphy *hsphy)
->> +{
->> +	if (hsphy->suspended)
->> +		return 0;
->> +
->> +	dev_dbg(&hsphy->phy->dev, "Suspend QCOM SNPS PHY, mode = %d \n", hsphy->mode);
->> +
->> +	if (hsphy->mode == PHY_MODE_USB_HOST) {
->> +		/* Enable auto-resume to meet remote wakeup timing */
->> +		qcom_snps_hsphy_write_mask(hsphy->base, USB2_PHY_USB_PHY_HS_PHY_CTRL2,
->> +										USB2_AUTO_RESUME, USB2_AUTO_RESUME);
->> +		usleep_range(500, 1000);
->> +		qcom_snps_hsphy_write_mask(hsphy->base, USB2_PHY_USB_PHY_HS_PHY_CTRL2,
->> +										0, USB2_AUTO_RESUME);
-> 
-> Kernel has a coding guideline where we try to "stick" to 80 char limit
-> and is sometimes okay like debug logs. Above is not okay. Please fix it
-> and run ./scripts/checkpatch.pl --strict on your patch and fix all
-> errors. Warning and checks at your discretion using common sense. When
-> in doubt do ask :)
-> 
+> -	    if ($file_emails) {
+> -		my @poss_addr = $text =~ m$[A-Za-z_-_\"\' \,\.\+-]*\s*[\,]*\s*[\(\<\{]{0,1}[A-Za-z0-9_\.\+-]+\@[A-Za-z0-9\.-]+\.[A-Za-z0-9]+[\)\>\}]{0,1}$g;
+> -		push(@file_emails, clean_file_emails(@poss_addr));
+> -	    }
 
-Hi Vinod,
+If you look in the original mail it has:
+> -             my @poss_addr = $text =~ m$[A-Za-zÀ-ÿ
 
-Thanks for the input.  I do run the checkpatch script before sending
-patches, and addressing the errors.  However, seems this was tagged as a
-warning instead.  Will keep in mind to address as many warnings as I can
-as well.
+So somehow "À-ÿ" is silently converted to _-_ when the patch is saved or
+processed by further tools.
 
->> +	}
->> +
->> +	clk_disable_unprepare(hsphy->cfg_ahb_clk);
->> +	hsphy->suspended = true;
-> 
-> why do you need to track this?
-> 
+Strange, maybe an encoding thing of the mail?
 
-More for debug purposes in case the RPM state becomes out of sync with
-the expected PHY state.  We've seen some situations during PM
-suspend/resume testing where our RPM routines aren't executed, as PM
-will disable RPM briefly.  It would be nice to be able to catch these
-situations after collecting our crash dumps.
-
->> +
->> +	return 0;
->> +}
->> +
->> +static int qcom_snps_hsphy_resume(struct qcom_snps_hsphy *hsphy)
->> +{
->> +	int ret = 0;
-> 
-> superfluous init..
-> 
-
-Agreed.
-
->>  static int qcom_snps_hsphy_probe(struct platform_device *pdev)
->>  {
->>  	struct device *dev = &pdev->dev;
->> @@ -251,6 +333,14 @@ static int qcom_snps_hsphy_probe(struct platform_device *pdev)
->>  		return ret;
->>  	}
->>  
->> +	pm_runtime_set_active(dev);
->> +	pm_runtime_enable(dev);
-> 
-> would it not make sense to enable this after pjy in initialized?
-> 
-
-Not sure we want to put this in the phy_init() callback, as we can't
-guarantee how the driver registering the PHY will use it. It'll put the
-requirement of having to call phy_exit() for every phy_init() sequence,
-in order to avoid unbalanced disable_depth warnings from the RPM driver.
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+	Sam
