@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B938A1BAF77
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEE11BAF7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgD0U2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 16:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726205AbgD0U2A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:28:00 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7BFC0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:28:00 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id l19so19057610lje.10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:27:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ai+rmEpn02qg4BdEO/ZE6kOX/94j7td8pRB+ptKEnVM=;
-        b=O1lgqypRxFfC+vFZsk3/9/KPI2PcZLA1mM/B20gc8yvnWS47pxSazg3digWF06v8IL
-         RKAAvSH2pMe/bStrBhAr1F9weq0Mr/w01Euy1dRvf3JlL/YV1rIWnHbyzEnsfoJAv5qf
-         C2xIbuvQvx9oklaGI3hdIGJx3zSFp3Uf5kvuY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ai+rmEpn02qg4BdEO/ZE6kOX/94j7td8pRB+ptKEnVM=;
-        b=l0XoAEH6iOBGYfDRJaVuHfVtceI/RUIhpJ4dMwc1glgHQ9JIkbXsNdM0cm7/xoNHAH
-         z8In7/blGQtbwUberfgLLHXPcJzhnx//aSSuHnnd0BUfAH14pKUEqZgua8fTa3fzcUxF
-         4FzTu88XYLSGPBAy4gnAluVjncl94jKmidhYksqnILsS9b9KBOrsYuOm8hBtG1xeDRJ6
-         YuOv83tD2/DkwnHPmDgWp1yXJ8gSEWftZVSdYIaCC80fjEjF6EQbHfArMq2wyjZBHJ4u
-         FtLjKjVRyHkonoCagPS5DHOc2oETGZnVQQaIU8zDViiSrDWL14zAvzmOcL2DKXQv9+Bo
-         aDag==
-X-Gm-Message-State: AGi0PuYsrYz7jMJhvWt7C+FoI9aLxhpG++BCCVCnP+31dGe+qFInQOBT
-        EJjAZSKWfvZeYAZ2I9TXXAdDyEHFm6E=
-X-Google-Smtp-Source: APiQypL6C59oVRZAwRVZ1iwn5u2WFSib7mGWYznCCB43lrnBtTU4zfT+7B9pOspvhk4EFGkCCQT60g==
-X-Received: by 2002:a2e:2245:: with SMTP id i66mr15634106lji.191.1588019277860;
-        Mon, 27 Apr 2020 13:27:57 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id m15sm5631294lji.21.2020.04.27.13.27.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2020 13:27:57 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id e25so19076343ljg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:27:56 -0700 (PDT)
-X-Received: by 2002:a2e:3017:: with SMTP id w23mr15585804ljw.150.1588019276500;
- Mon, 27 Apr 2020 13:27:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
- <87ftcv1nqe.fsf@x220.int.ebiederm.org> <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
- <20200424173927.GB26802@redhat.com> <87mu6ymkea.fsf_-_@x220.int.ebiederm.org>
- <875zdmmj4y.fsf_-_@x220.int.ebiederm.org> <CAHk-=whvktUC9VbzWLDw71BHbV4ofkkuAYsrB5Rmxnhc-=kSeQ@mail.gmail.com>
- <878sihgfzh.fsf@x220.int.ebiederm.org>
-In-Reply-To: <878sihgfzh.fsf@x220.int.ebiederm.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 27 Apr 2020 13:27:40 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjSM9mgsDuX=ZTy2L+S7wGrxZMcBn054As_Jyv8FQvcvQ@mail.gmail.com>
-Message-ID: <CAHk-=wjSM9mgsDuX=ZTy2L+S7wGrxZMcBn054As_Jyv8FQvcvQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] rculist: Add hlist_swap_before_rcu
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726486AbgD0Uax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:30:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726205AbgD0Uaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 16:30:52 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 04AD7206D4;
+        Mon, 27 Apr 2020 20:30:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588019452;
+        bh=3OaU0s347QfqeFqIzMECGLi3g6NTgnY6bjs+lqsqumo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WqOkTOeEGwBaKAM+DhtEkIARd8K6PGThTZPLzxxNPuk0yjqwzqWZ/yv2BR3ViUPTQ
+         G9Z5skn6CjwjQesmvO+yI62J2raArApqb0KUyhxrZPBZhp8Q5p3/UmRQTZZxD7iSFH
+         sTaegxf/bjyaKpzRobuOVZ1rqVDWIGjnViFb8NwQ=
+Date:   Mon, 27 Apr 2020 13:30:51 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [patch] mm, oom: stop reclaiming if GFP_ATOMIC will start
+ failing soon
+Message-Id: <20200427133051.b71f961c1bc53a8e72c4f003@linux-foundation.org>
+In-Reply-To: <alpine.DEB.2.22.394.2004261959310.80211@chino.kir.corp.google.com>
+References: <alpine.DEB.2.22.394.2004241347310.70176@chino.kir.corp.google.com>
+        <20200425172706.26b5011293e8dc77b1dccaf3@linux-foundation.org>
+        <alpine.DEB.2.22.394.2004261959310.80211@chino.kir.corp.google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 7:32 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Would hlists_swap_heads_rcu be noticably better?
+On Sun, 26 Apr 2020 20:12:58 -0700 (PDT) David Rientjes <rientjes@google.com> wrote:
 
-Edited out most of the rest because I think we're in agreement and
-it's not a huge deal.
+> > > blockable allocations and then queue a worker to asynchronously oom kill
+> > > if it finds watermarks to be sufficiently low as well.
+> > > 
+> > 
+> > Well, what's really going on here?
+> > 
+> > Is networking potentially consuming an unbounded amount of memory?  If
+> > so, then killing a process will just cause networking to consume more
+> > memory then hit against the same thing.  So presumably the answer is
+> > "no, the watermarks are inappropriately set for this workload".
+> > 
+> > So would it not be sensible to dynamically adjust the watermarks in
+> > response to this condition?  Maintain a larger pool of memory for these
+> > allocations?  Or possibly push back on networking and tell it to reduce
+> > its queue sizes?  So that stuff doesn't keep on getting oom-killed?
+> > 
+> 
+> No - that would actually make the problem worse.
+> 
+> Today, per-zone min watermarks dictate when user allocations will loop or 
+> oom kill.  should_reclaim_retry() currently loops if reclaim has succeeded 
+> in the past few tries and we should be able to allocate if we are able to 
+> reclaim the amount of memory that we think we can.
+> 
+> The issue is that this supposes that looping to reclaim more will result 
+> in more free memory.  That doesn't always happen if there are concurrent 
+> memory allocators.
+> 
+> GFP_ATOMIC allocators can access below these per-zone watermarks.  So the 
+> issue is that per-zone free pages stays between ALLOC_HIGH watermarks 
+> (the watermark that GFP_ATOMIC allocators can allocate to) and min 
+> watermarks.  We never reclaim enough memory to get back to min watermarks 
+> because reclaim cannot keep up with the amount of GFP_ATOMIC allocations.
 
-And yes, I think it might be nice to just call it "swap_heads()" and
-make the naming match what the user wants, so that people who don't
-care about the implementation can just guess from the function name.
+But there should be an upper bound upon the total amount of in-flight
+GFP_ATOMIC memory at any point in time?  These aren't like pagecache
+which will take more if we give it more.  Setting the various
+thresholds appropriately should ensure that blockable allocations don't
+get their memory stolen by GPP_ATOMIC allocations?
 
-But I also think that by now it's mostly bikeshedding, and I'm
-probably also now biased by the fact that I have looked at that code
-and read your explanations so it's all fresh in my mind.
+I took a look at doing a quick-fix for the
+direct-reclaimers-get-their-stuff-stolen issue about a million years
+ago.  I don't recall where it ended up.  It's pretty trivial for the
+direct reclaimer to free pages into current->reclaimed_pages and to
+take a look in there on the allocation path, etc.  But it's only
+practical for order-0 pages.
 
-A year from now, when I've forgotten the details, who knows which part
-I'd find confusing? ;)
-
-               Linus
