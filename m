@@ -2,66 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475901BAC55
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B811BAC5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 20:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgD0SU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 14:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726228AbgD0SU5 (ORCPT
+        id S1726364AbgD0SWS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Apr 2020 14:22:18 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:42851 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgD0SWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 14:20:57 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4524AC0610D5;
-        Mon, 27 Apr 2020 11:20:57 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 14F2C15D54880;
-        Mon, 27 Apr 2020 11:20:55 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 11:20:54 -0700 (PDT)
-Message-Id: <20200427.112054.486660514927430577.davem@davemloft.net>
-To:     xiyuyang19@fudan.edu.cn
-Cc:     andrew.hendry@gmail.com, kuba@kernel.org, tanxin.ctf@gmail.com,
-        gregkh@linuxfoundation.org, allison@lohutok.net,
-        tglx@linutronix.de, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yuanxzhang@fudan.edu.cn, kjlu@umn.edu
-Subject: Re: [PATCH v2] net/x25: Fix x25_neigh refcnt leak when x25
- disconnect
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1587819994-40137-1-git-send-email-xiyuyang19@fudan.edu.cn>
-References: <1587819994-40137-1-git-send-email-xiyuyang19@fudan.edu.cn>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 27 Apr 2020 11:20:55 -0700 (PDT)
+        Mon, 27 Apr 2020 14:22:18 -0400
+X-Originating-IP: 91.224.148.103
+Received: from xps13 (unknown [91.224.148.103])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 6483A20005;
+        Mon, 27 Apr 2020 18:22:13 +0000 (UTC)
+Date:   Mon, 27 Apr 2020 20:22:12 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Christophe Kerello <christophe.kerello@st.com>
+Cc:     <richard@nod.at>, <vigneshr@ti.com>, <lee.jones@linaro.org>,
+        <robh+dt@kernel.org>, <mark.rutland@arm.com>, <tony@atomide.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>, <marex@denx.de>
+Subject: Re: [PATCH v2 06/12] mtd: rawnand: stm32_fmc2: use FMC2_TIMEOUT_MS
+ for timeouts
+Message-ID: <20200427202212.0235d987@xps13>
+In-Reply-To: <1586966256-29548-7-git-send-email-christophe.kerello@st.com>
+References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
+        <1586966256-29548-7-git-send-email-christophe.kerello@st.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Date: Sat, 25 Apr 2020 21:06:25 +0800
+Hi Christophe,
 
-> x25_connect() invokes x25_get_neigh(), which returns a reference of the
-> specified x25_neigh object to "x25->neighbour" with increased refcnt.
-> 
-> When x25 connect success and returns, the reference still be hold by
-> "x25->neighbour", so the refcount should be decreased in
-> x25_disconnect() to keep refcount balanced.
-> 
-> The reference counting issue happens in x25_disconnect(), which forgets
-> to decrease the refcnt increased by x25_get_neigh() in x25_connect(),
-> causing a refcnt leak.
-> 
-> Fix this issue by calling x25_neigh_put() before x25_disconnect()
-> returns.
-> 
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Christophe Kerello <christophe.kerello@st.com> wrote on Wed, 15 Apr
+2020 17:57:30 +0200:
 
-Applied.
+> This patch removes the constant FMC2_TIMEOUT_US.
+> FMC2_TIMEOUT_MS is set to 5 seconds and this constant is used
+> each time that we need to wait (except when the timeout value
+> is set by the framework)
+> 
+> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+> ---
+>  drivers/mtd/nand/raw/stm32_fmc2_nand.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> index ab53314..f159c39 100644
+> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
+> @@ -37,8 +37,7 @@
+>  /* Max ECC buffer length */
+>  #define FMC2_MAX_ECC_BUF_LEN		(FMC2_BCHDSRS_LEN * FMC2_MAX_SG)
+>  
+> -#define FMC2_TIMEOUT_US			1000
+> -#define FMC2_TIMEOUT_MS			1000
+> +#define FMC2_TIMEOUT_MS			5000
+>  
+>  /* Timings */
+>  #define FMC2_THIZ			1
+> @@ -525,9 +524,9 @@ static int stm32_fmc2_ham_calculate(struct nand_chip *chip, const u8 *data,
+>  	u32 sr, heccr;
+>  	int ret;
+>  
+> -	ret = readl_relaxed_poll_timeout(fmc2->io_base + FMC2_SR,
+> -					 sr, sr & FMC2_SR_NWRF, 10,
+> -					 FMC2_TIMEOUT_MS);
+> +	ret = readl_relaxed_poll_timeout_atomic(fmc2->io_base + FMC2_SR,
+> +						sr, sr & FMC2_SR_NWRF, 1,
+> +						1000 * FMC2_TIMEOUT_MS);
+
+Is the _atomic suffix needed here? If yes it would deserve a separate
+patch with Fixes/Stable tags.
+
+>  	if (ret) {
+>  		dev_err(fmc2->dev, "ham timeout\n");
+>  		return ret;
+> @@ -1315,7 +1314,7 @@ static int stm32_fmc2_waitrdy(struct nand_chip *chip, unsigned long timeout_ms)
+>  	/* Check if there is no pending requests to the NAND flash */
+>  	if (readl_relaxed_poll_timeout_atomic(fmc2->io_base + FMC2_SR, sr,
+>  					      sr & FMC2_SR_NWRF, 1,
+> -					      FMC2_TIMEOUT_US))
+> +					      1000 * FMC2_TIMEOUT_MS))
+>  		dev_warn(fmc2->dev, "Waitrdy timeout\n");
+>  
+>  	/* Wait tWB before R/B# signal is low */
+
+You change the timeouts from 1ms to 5s.
+
+Maybe 5s is a little bit too much IMHO but we don't really care as this
+is a timeout. However 1ms is tight. If you are changing this value
+because it triggers error (eg. when the machine is loaded), then it is
+a fix and should appear like it.
+
+Thanks,
+Miquèl
