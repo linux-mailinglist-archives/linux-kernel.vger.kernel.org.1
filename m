@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F66E1B9A03
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA8F1B99F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgD0IXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:23:01 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:34789 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726003AbgD0IXB (ORCPT
+        id S1726781AbgD0IWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 04:22:12 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:13555 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgD0IWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:23:01 -0400
-X-IronPort-AV: E=Sophos;i="5.73,323,1583161200"; 
-   d="scan'208";a="45816403"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie5.idc.renesas.com with ESMTP; 27 Apr 2020 17:22:59 +0900
-Received: from renesas-VirtualBox.ree.adwin.renesas.com (unknown [172.29.51.26])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id BC8874017274;
-        Mon, 27 Apr 2020 17:22:55 +0900 (JST)
-From:   Gareth Williams <gareth.williams.jx@renesas.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Gareth Williams <gareth.williams.jx@renesas.com>,
-        Phil Edworthy <phil.edworthy@renesas.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] drm/panel: simple: Add Newhaven ATXL#-CTP panel
-Date:   Mon, 27 Apr 2020 09:21:49 +0100
-Message-Id: <1587975709-2092-4-git-send-email-gareth.williams.jx@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1587975709-2092-1-git-send-email-gareth.williams.jx@renesas.com>
-References: <1587975709-2092-1-git-send-email-gareth.williams.jx@renesas.com>
+        Mon, 27 Apr 2020 04:22:10 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.3]) by rmmx-syy-dmz-app04-12004 (RichMail) with SMTP id 2ee45ea69624d8a-77155; Mon, 27 Apr 2020 16:21:56 +0800 (CST)
+X-RM-TRANSID: 2ee45ea69624d8a-77155
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.25.154.146])
+        by rmsmtp-syy-appsvr02-12002 (RichMail) with SMTP id 2ee25ea6961f1f8-765f6;
+        Mon, 27 Apr 2020 16:21:55 +0800 (CST)
+X-RM-TRANSID: 2ee25ea6961f1f8-765f6
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: [PATCH] crypto: bcm - Use the defined variable to clean code
+Date:   Mon, 27 Apr 2020 16:22:18 +0800
+Message-Id: <20200427082218.12372-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds support for the Newhaven ATXL#-CTP panel used by the
-Renesas RZ/N1 Demo Board.
+Use the defined variable "dev" to make the code cleaner.
 
-Signed-off-by: Gareth Williams <gareth.williams.jx@renesas.com>
+Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- drivers/gpu/drm/panel/panel-simple.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/crypto/bcm/cipher.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 5a93c4e..0b57b0e 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -2021,6 +2021,30 @@ static const struct panel_desc newhaven_nhd_43_480272ef_atxl = {
- 		     DRM_BUS_FLAG_SYNC_DRIVE_POSEDGE,
- };
+diff --git a/drivers/crypto/bcm/cipher.c b/drivers/crypto/bcm/cipher.c
+index 99ece630f..d748ee0a6 100644
+--- a/drivers/crypto/bcm/cipher.c
++++ b/drivers/crypto/bcm/cipher.c
+@@ -4717,7 +4717,7 @@ static int spu_dt_read(struct platform_device *pdev)
  
-+static const struct display_timing newhaven_nhd_50_800480tf_atxl_timing = {
-+	.pixelclock = { 33300000, 33400000, 33500000 },
-+	.hactive = { 800, 800, 800 },
-+	.hfront_porch = { 40, 40, 40 },
-+	.hback_porch = { 88, 88, 88 },
-+	.hsync_len = { 1, 1, 1 },
-+	.vactive = { 480, 480, 480 },
-+	.vfront_porch = { 13, 13, 13 },
-+	.vback_porch = { 32, 32, 32 },
-+	.vsync_len = { 3, 3, 3 },
-+	.flags = DISPLAY_FLAGS_HSYNC_HIGH | DISPLAY_FLAGS_VSYNC_HIGH,
-+};
-+
-+static const struct panel_desc newhaven_nhd_50_800480tf_atxl = {
-+		.timings = &newhaven_nhd_50_800480tf_atxl_timing,
-+		.num_timings = 1,
-+		.bpc = 8,
-+		.size = {
-+			.width = 400,
-+			.height = 300,
-+		},
-+		.bus_flags = DRM_BUS_FLAG_DE_HIGH,
-+};
-+
- static const struct display_timing nlt_nl192108ac18_02d_timing = {
- 	.pixelclock = { 130000000, 148350000, 163000000 },
- 	.hactive = { 1920, 1920, 1920 },
-@@ -2964,6 +2988,9 @@ static const struct of_device_id platform_of_match[] = {
- 		.compatible = "newhaven,nhd-4.3-480272ef-atxl",
- 		.data = &newhaven_nhd_43_480272ef_atxl,
- 	}, {
-+		.compatible = "newhaven,nhd-5.0-800480tf-atxl",
-+		.data = &newhaven_nhd_50_800480tf_atxl,
-+	}, {
- 		.compatible = "nlt,nl192108ac18-02d",
- 		.data = &nlt_nl192108ac18_02d,
- 	}, {
+ 	matched_spu_type = of_device_get_match_data(dev);
+ 	if (!matched_spu_type) {
+-		dev_err(&pdev->dev, "Failed to match device\n");
++		dev_err(dev, "Failed to match device\n");
+ 		return -ENODEV;
+ 	}
+ 
+@@ -4731,7 +4731,7 @@ static int spu_dt_read(struct platform_device *pdev)
+ 		spu->reg_vbase[i] = devm_ioremap_resource(dev, spu_ctrl_regs);
+ 		if (IS_ERR(spu->reg_vbase[i])) {
+ 			err = PTR_ERR(spu->reg_vbase[i]);
+-			dev_err(&pdev->dev, "Failed to map registers: %d\n",
++			dev_err(dev, "Failed to map registers: %d\n",
+ 				err);
+ 			spu->reg_vbase[i] = NULL;
+ 			return err;
+@@ -4757,7 +4757,7 @@ static int bcm_spu_probe(struct platform_device *pdev)
+ 	if (err < 0)
+ 		goto failure;
+ 
+-	err = spu_mb_init(&pdev->dev);
++	err = spu_mb_init(dev);
+ 	if (err < 0)
+ 		goto failure;
+ 
+@@ -4766,7 +4766,7 @@ static int bcm_spu_probe(struct platform_device *pdev)
+ 	else if (spu->spu_type == SPU_TYPE_SPU2)
+ 		iproc_priv.bcm_hdr_len = 0;
+ 
+-	spu_functions_register(&pdev->dev, spu->spu_type, spu->spu_subtype);
++	spu_functions_register(dev, spu->spu_type, spu->spu_subtype);
+ 
+ 	spu_counters_init();
+ 
 -- 
-2.7.4
+2.20.1.windows.1
+
+
 
