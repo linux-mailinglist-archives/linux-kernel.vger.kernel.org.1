@@ -2,136 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAE81BAE51
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F196F1BAE5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgD0Tow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
+        id S1726486AbgD0Tp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726205AbgD0Tow (ORCPT
+        by vger.kernel.org with ESMTP id S1725919AbgD0Tp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:44:52 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B9EFC0610D5;
-        Mon, 27 Apr 2020 12:44:51 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id s10so14454413edy.9;
-        Mon, 27 Apr 2020 12:44:51 -0700 (PDT)
+        Mon, 27 Apr 2020 15:45:58 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25074C0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 12:45:58 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id o19so19376912qkk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 12:45:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VQcsbuP3pB8CDC+cItJJV21Dnh5PuIRR4nPKttHGjzE=;
-        b=otJ/1XsxOtfHp14bHd8Kf93q9ptKtRm3hglsJawWMzxNHKYCD7z6ECVnscbS/vBVha
-         Zs0kLO2wdbw68nXZrww0yrjzXzy++SVTTkfKjR+ovO1otx1+cGbTyeruo2DDg0bJrb2K
-         /1lk1vT5EhWAFPpVmqCweZ7vf5ZgmEuzHwCe7focxGC0MWEXvhLb+q5NBFzpRnWcTNWh
-         XEvqoHCsoVjLAMeFAwBsLrDGX41nzUvanE6tM370s5f4+IZl5CFfYCvEdjIv44JBjrK1
-         q0YpwfJ50+lUfdzfPcXiUwiryMAQY8+BXLGb54Y/dLv/7ruwUlDi36CBtdHTZYZrvUf7
-         u0Qw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=n/NmA7gt+r6P29w3aSxgdFgDP4ij/aGW5CdzVreFrAg=;
+        b=BQnQ2Dfkv0KaW4laY0Ya6HhMtXq4zlDZWVfm/k5otJoGum/s17Zu+itMK79H+Q2QHH
+         w6q2UO3sleLtfRSgbveFeiAM912G/rfAjrhthqfL4BzPCGpMArjgkKsCUpM3hPSPOA+P
+         0Waq37XRwA5kWIdc2av3Q6f2p1zXQ0Fy+M12ICHc3sMnwYwGSic5yV+yWtdz6NRHduxV
+         95lkWJz9ScBCl534Gnl+Yoxy3ak1bJGrW9cdxgnd149I78qAJiuBkNI0sb8fdT7aRCa3
+         bz+KB52S75v2FWOeG9pVrVtT5whTI384z9pQbe64I25Lf71KPR9QqLc5VzdZAwdjjhcD
+         zUSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VQcsbuP3pB8CDC+cItJJV21Dnh5PuIRR4nPKttHGjzE=;
-        b=GxksCuHzilDeMek4I5O0xxjEhBNgPQi1KiavkGqfh30BwqyQ7EetqwcABqvYC2jXkj
-         A63r7AI3HYtYgjnAXXNWTdyBQEGscgc1XackiFdATymcliMpP2M8bkXW5I7NszcqeGZd
-         ocs/Qhyr146aguf8zB+6caofWmD0VPDGin6Y+FaLqm01PpdwlR+NHbcGJje4krl+oDmr
-         CJCBJCK/Q1JPtxHEGUUSxNo6unwAh0HCGubQZ/R2NDgZ5rttOgaA9zGjNjjy/P2AvDaN
-         tOC6EFTozP//XezFaohkQD8zkFXk1yZDsMC4sJKIjGuDm34O35MjROEPQ59JKaHPsoLe
-         p4DQ==
-X-Gm-Message-State: AGi0PubIsjWHjadwQ9FhSKxA4lbkx9DxJIKE5PkJKLHordmCc6+2lWPb
-        ATr/4D0WGCt7dYSuz9vnNu1AAMjCNHbHmVTz66w=
-X-Google-Smtp-Source: APiQypKdvwLdxCF/E1pxaH6di+8W+pTb7+5wMbfJFWXAgXSq3W+jSu6jwARdIVsNAY136N7lf7NMNpJEjCTrQ7cHC7k=
-X-Received: by 2002:a50:f61c:: with SMTP id c28mr18663659edn.365.1588016690108;
- Mon, 27 Apr 2020 12:44:50 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=n/NmA7gt+r6P29w3aSxgdFgDP4ij/aGW5CdzVreFrAg=;
+        b=iHClaZIgXhNnoaavyhNaFTV0+3GRY4UEuf/tr44D0Fk0uJpZifEX/FeNE9sAlAmQrS
+         Z5xDf9uabQRS/XrokMMVl5aa1BcW4wcBKs0vuAQgh49dFGevHVmOMGXa16CcIwLjoXcb
+         ScPhv+V2IVcQjnrCOEFIfgpxV5xDC1QpO+6IFlGANpqgszod7vXoJV6IPu660gDBMrUw
+         k6ZJiFSIEAGsZ7VSLVLJVOF/fQc+4L07bB+/YyciMV0sb9SN/zzJlbFijK4gP8wBvcem
+         hSC6JyfvwW8UZDgExi9wfrjmIOx6GNZsa9AUPoGzigP1ESRpFBnKgVCHwaXTnVB/tQtZ
+         +Eng==
+X-Gm-Message-State: AGi0PuYOh7JRcgWg1uslKVPpKViJ3mcc/2yZSIaece9NfFMSWDmgVm/v
+        6cKuXQH0MybwywLpmcBylG+5/bLlZ4y+DPjFnrk=
+X-Google-Smtp-Source: APiQypJJ5xsytuCs4Z5OqSReC5FsJSlN04WYC6Cp17X1QXd8atk6PaK6prIEbVZ+RpCdhIwcRtmS21Lm7m9Mg6eU0dU=
+X-Received: by 2002:a37:a2d8:: with SMTP id l207mr23073119qke.6.1588016757424;
+ Mon, 27 Apr 2020 12:45:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200328003249.1248978-1-martin.blumenstingl@googlemail.com>
- <20200328003249.1248978-4-martin.blumenstingl@googlemail.com> <CAPDyKFqsG4kyABmxn__gAbe4fBmuZ=4mdFpRaCL0ih7QZEhwzQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFqsG4kyABmxn__gAbe4fBmuZ=4mdFpRaCL0ih7QZEhwzQ@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Mon, 27 Apr 2020 21:44:39 +0200
-Message-ID: <CAFBinCCr2yk5WOG_Y7E14ekpkOsyurkCfYBO0DOWg1MSjvxaTw@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] mmc: host: meson-mx-sdhc: new driver for the
- Amlogic Meson SDHC host
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jianxin Pan <jianxin.pan@amlogic.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lnykww@gmail.com, yinxin_1989@aliyun.com
+Received: by 2002:ac8:dce:0:0:0:0:0 with HTTP; Mon, 27 Apr 2020 12:45:56 -0700 (PDT)
+Reply-To: Millersophia434@gmail.com
+From:   Sohia Miller <abigailbamidele18@gmail.com>
+Date:   Mon, 27 Apr 2020 19:45:56 +0000
+Message-ID: <CANp45Dv=AkS_Ut1hcPCMVyOMpxxLyet16knwtO481OKto+cgkw@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf,
-
-thank you for looking into this!
-
-On Mon, Apr 27, 2020 at 9:20 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-[...]
-> > +static void meson_mx_sdhc_wait_cmd_ready(struct mmc_host *mmc)
-> > +{
-> > +       struct meson_mx_sdhc_host *host = mmc_priv(mmc);
-> > +       u32 stat, esta;
-> > +       int ret;
-> > +
-> > +       ret = regmap_read_poll_timeout(host->regmap, MESON_SDHC_STAT, stat,
-> > +                                      !(stat & MESON_SDHC_STAT_CMD_BUSY), 1,
-> > +                                      100000);
->
-> Please use defines for timeout values.
-I'll take care of this here and all other places which you have found
-
-[...]
-> > +       if (cmd->data)
-> > +               host->platform->set_pdma(mmc);
-> > +
-> > +       if (host->platform->wait_before_send)
-> > +               host->platform->wait_before_send(mmc);
-> > +
-> > +       regmap_write(host->regmap, MESON_SDHC_SEND, send);
->
-> Isn't there a configurable timeout to set for the command?
->
-> I mean the driver sets mmc->max_busy_timeout to 30s in ->probe(), but
-> can the timeout be configured to a lower value?
-there's MESON_SDHC_CTRL_RX_TIMEOUT and MESON_SDHC_CTRL_RX_PERIOD
-here's what the datasheet has to say about them:
-- rx_timeout(cmd or wcrc Receiving Timeout, default 64)
-- rc_period(Period between response/cmd and default next cmd,default
-8) - I'm not even sure if this is related somehow
-
-if you have a specific test-case for me to provoke these timeouts I
-can try playing around with these values
-otherwise we have to ask Jianxin and see whether he can get some
-information about this from the internal team at Amlogic
-
-[...]
-> > +       mmc->caps |= MMC_CAP_ERASE | MMC_CAP_HW_RESET;
->
-> Should you also set MMC_CAP_WAIT_WHILE_BUSY? It sounded like the
-> driver supported this.
-I can try setting it.
-From our previous discussion (on the meson-mx-sdio driver) I have
-learned that eMMC will be a good test-case for it ;-)
-
-[...]
-> FYI: I left out all comments related to the clock provider
-> initialization. I think it makes better sense to review that code,
-> after you have converted to use the devm_clk_hw_register() and avoid
-> registering a separate driver for it.
-yes, that makes sense
-I expect the code to be easier since it'll be one big driver with the
-next version (so no more platform device allocation, etc.)
-
-> Other than the minor comments, this looks good to me.
-great - it would be great if this could finally make it into v5.8
-
-
-Martin
+-- 
+Am Sophia , How are you and how is your day going as well
