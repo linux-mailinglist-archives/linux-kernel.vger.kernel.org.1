@@ -2,304 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAA11BA795
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A71F1BA7A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727888AbgD0PN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 11:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728234AbgD0PNx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 11:13:53 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FBAC03C1A8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 08:13:53 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id 72so26758659otu.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 08:13:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JyOOuDBdhDHCyrtMWupVwHA7jGZfK6Hra8xOfCJhk28=;
-        b=cVBs97ebH2wPdx+Zc1P9Bai9A1CcFRrGPxxCFhYEmXu29eCFYh2ixJV0w1Q9gR859h
-         6M3fMQrDGCtv7zhp6nyOzsMB6bTpYVUtUrtVYBq20H9FL1pEfQ+L7S47FflJO9aF1bhe
-         uWyyIYcDjZLwNFGia2v8KqgzIS4JjE0d3NgkFZh5w9iwT+TK80fUpRO3CdqLUk8KD444
-         gvc7eRQ+gARdNBANSJXlbtPyCV/FIFGdPOixWe07ihJlFUH3kHu9nTcPYHEm1+JKFOS8
-         AI6gWEeuMvsgH+tU33TPTmW7AJk/K6HJvNyZrOgmuQZ10V3ru1nhyTLbNXcsmj4LHImp
-         noXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JyOOuDBdhDHCyrtMWupVwHA7jGZfK6Hra8xOfCJhk28=;
-        b=oHpZUGVuQ5I9L5J7bdHP3IuIR2EIlZSgGdFHFSBkP2WVQIgxZaxyhFzp3alhFxptQ6
-         ieFF7Uflx7/TcMAUmXKqbBWJO2OCWOM3mFVQ0ud0HS8ZNIEyaydndNR4hDTV8HwU+ES0
-         hG21apOfnUXdhydlUoM99i3GaGV9zz0E5UcpARuPfJiKfOusQqy8P7l23VTpRZglw2r1
-         x8a5oTLjjeI84Zm3xckxuk/iJtrIxAoNtsivNw9j9iMTfjZfYiLNE9c3UohAQa7KnWU1
-         OHLkDIA0ZV0v80fy21K+iyYIxdObSIndYcVDLrMXU0CoAnYaJvMf3Wz9nu8ghl9NeCCx
-         NYJw==
-X-Gm-Message-State: AGi0PuYgJb1rXApGt26O/BvOzdclHYr+mjZBuEZazgpivno1rbpz2VAX
-        GhU0+Tje+T+LdAVl628jq4OlELOBamNvcORSkEcoJw==
-X-Google-Smtp-Source: APiQypJT8+obI+JM5Kf9FL9d3dn4801RIOxgtgQe+uH23FuQU10gMaRw40e/70Zbe4CMStqd+6go7h7Ai1urT28IZqo=
-X-Received: by 2002:aca:843:: with SMTP id 64mr17065470oii.56.1588000433147;
- Mon, 27 Apr 2020 08:13:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200408110816.2712841-1-robert.foss@linaro.org>
- <20200408110816.2712841-2-robert.foss@linaro.org> <20200415160729.GA4438@bogus>
- <20200415162110.bmorj4u4hkqohqjx@pengutronix.de>
-In-Reply-To: <20200415162110.bmorj4u4hkqohqjx@pengutronix.de>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 27 Apr 2020 17:13:42 +0200
-Message-ID: <CAG3jFysg34=HJ7xefuAKw4Uq6W0POm5TsJmzQku6WwkhH_j=-w@mail.gmail.com>
-Subject: Re: [PATCH v7 1/3] media: dt-bindings: ov8856: Document YAML bindings
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     Rob Herring <robh@kernel.org>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
+        id S1728261AbgD0POG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 11:14:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:36874 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728252AbgD0POD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 11:14:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA71A31B;
+        Mon, 27 Apr 2020 08:14:02 -0700 (PDT)
+Received: from [10.57.33.170] (unknown [10.57.33.170])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9BCC3F68F;
+        Mon, 27 Apr 2020 08:14:00 -0700 (PDT)
+Subject: Re: [PATCH v2 2/3] arm64: dts: rockchip: rk3399-roc-pc: Fix MMC
+ numbering for LED triggers
+To:     Johan Jonker <jbx6244@gmail.com>, Chen-Yu Tsai <wens@kernel.org>
+Cc:     devicetree <devicetree@vger.kernel.org>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        Pavel Machek <pavel@ucw.cz>,
         linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>, jacek.anaszewski@gmail.com,
+        linux-leds@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        dmurphy@ti.com
+References: <20200427073132.29997-3-wens@kernel.org>
+ <684132b8-4a84-8295-474b-38ccb992bba7@gmail.com>
+ <CAGb2v66Piu5_2bdqvWV3eEn2Se_y1MNKWvvYBv_J7DA-8jBhbQ@mail.gmail.com>
+ <65d15254-08da-895c-1a0c-ef6ce231b620@gmail.com>
+ <CAGb2v65fGYguNoksq5Dyx3HTKeYg+U82TiQSL+NO8AUcQJQj5w@mail.gmail.com>
+ <74a984fc-ce57-211b-936c-2d77e2e642bb@gmail.com>
+ <a81840d3-813b-51b5-767c-e0d9d270200e@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <94e7671f-2d11-b2f7-e049-b90893c61ab2@arm.com>
+Date:   Mon, 27 Apr 2020 16:13:59 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <a81840d3-813b-51b5-767c-e0d9d270200e@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020 at 18:21, Marco Felsch <m.felsch@pengutronix.de> wrote:
->
-> On 20-04-15 11:07, Rob Herring wrote:
-> > On Wed, Apr 08, 2020 at 01:08:14PM +0200, Robert Foss wrote:
-> > > From: Dongchun Zhu <dongchun.zhu@mediatek.com>
-> > >
-> > > This patch adds documentation of device tree in YAML schema for the
-> > > OV8856 CMOS image sensor.
-> > >
-> > > Signed-off-by: Dongchun Zhu <dongchun.zhu@mediatek.com>
-> > > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> > > ---
-> > >
-> > > - Changes since v6:
-> > >   * Marco: remove qcom specifics from DT example
-> > >
-> > > - Changes since v5:
-> > >   * Add assigned-clocks and assigned-clock-rates
-> > >   * robher: dt-schema errors
-> > >
-> > > - Changes since v4:
-> > >   * Fabio: Change reset-gpio to GPIO_ACTIVE_LOW, explain in description
-> > >   * Add clock-lanes property to example
-> > >   * robher: Fix syntax error in devicetree example
-> > >
-> > > - Changes since v3:
-> > >   * robher: Fix syntax error
-> > >   * robher: Removed maxItems
-> > >   * Fixes yaml 'make dt-binding-check' errors
-> > >
-> > > - Changes since v2:
-> > >   Fixes comments from from Andy, Tomasz, Sakari, Rob.
-> > >   * Convert text documentation to YAML schema.
-> > >
-> > > - Changes since v1:
-> > >   Fixes comments from Sakari, Tomasz
-> > >   * Add clock-frequency and link-frequencies in DT
-> > >
-> > >  .../devicetree/bindings/media/i2c/ov8856.yaml | 143 ++++++++++++++++++
-> > >  MAINTAINERS                                   |   1 +
-> > >  2 files changed, 144 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> > > new file mode 100644
-> > > index 000000000000..96bef5403d7e
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> > > @@ -0,0 +1,143 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > +# Copyright (c) 2019 MediaTek Inc.
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/media/i2c/ov8856.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Omnivision OV8856 CMOS Sensor Device Tree Bindings
-> > > +
-> > > +maintainers:
-> > > +  - Ben Kao <ben.kao@intel.com>
-> > > +  - Dongchun Zhu <dongchun.zhu@mediatek.com>
-> > > +
-> > > +description: |-
-> > > +  The Omnivision OV8856 is a high performance, 1/4-inch, 8 megapixel, CMOS
-> > > +  image sensor that delivers 3264x2448 at 30fps. It provides full-frame,
-> > > +  sub-sampled, and windowed 10-bit MIPI images in various formats via the
-> > > +  Serial Camera Control Bus (SCCB) interface. This chip is programmable
-> > > +  through I2C and two-wire SCCB. The sensor output is available via CSI-2
-> > > +  serial data output (up to 4-lane).
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: ovti,ov8856
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  clocks:
-> > > +    maxItems: 1
-> > > +
-> > > +  clock-names:
-> > > +    description:
-> > > +      Input clock for the sensor.
-> > > +    items:
-> > > +      - const: xvclk
-> > > +
-> > > +  assigned-clocks:
-> > > +    description:
-> > > +      Input clock for the sensor.
-> > > +
-> > > +  assigned-clock-rates:
-> > > +    description:
-> > > +      Frequency of the xvclk clock in Hertz.
-> >
-> > These 2 should have a 'maxItems: 1'
->
-> Don't know why those properties are needed here.. IMHO this shouldn't be
-> part of the binding or at least it should be optional and not required.
-> All we need is the clocks and the clock-names property.
+On 2020-04-27 3:12 pm, Johan Jonker wrote:
+> Hi,
+> 
+>>> So for fixing up the LED node names, we'd probably want the following:
+>>>
+>>>      diy_led: led-0
+>>>      yellow_led: led-1
+>>>      work_led: led-2
+> 
+> Change proposal for led nodes to comply with preexisting dts.
+> Does this work?
+> 
+> diy_led: led_0: led-0
+> yellow_led: led_1: led-1
+> work_led: led_2: led-2
 
-Thanks Marco, I'll make it optional for the next revision.
+Yuck, why?
 
->
-> > > +  dovdd-supply:
-> > > +    description:
-> > > +      Definition of the regulator used as interface power supply.
-> > > +
-> > > +  avdd-supply:
-> > > +    description:
-> > > +      Definition of the regulator used as analog power supply.
-> > > +
-> > > +  dvdd-supply:
-> > > +    description:
-> > > +      Definition of the regulator used as digital power supply.
-> > > +
-> > > +  reset-gpios:
-> > > +    description:
-> > > +      The phandle and specifier for the GPIO that controls sensor reset.
-> > > +      This corresponds to the hardware pin XSHUTDOWN which is physically
-> > > +      active low.
-> > > +
-> > > +  port:
-> > > +    type: object
-> > > +    additionalProperties: false
-> > > +    description:
-> > > +      A node containing input and output port nodes with endpoint definitions
-> >
-> > Only an output, right?
-> >
-> > > +      as documented in
-> > > +      Documentation/devicetree/bindings/media/video-interfaces.txt
-> > > +
-> > > +    properties:
-> > > +      endpoint:
-> > > +        type: object
-> > > +
-> > > +        properties:
-> > > +          clock-lanes:
-> > > +            maxItems: 1
-> > > +
-> > > +          data-lanes:
-> > > +            maxItems: 1
-> > > +
-> > > +          remote-endpoint: true
-> > > +
-> > > +        required:
-> > > +          - clock-lanes
-> > > +          - data-lanes
-> > > +          - remote-endpoint
-> > > +
-> > > +    required:
-> > > +      - endpoint
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - clocks
-> > > +  - clock-names
-> > > +  - assigned-clocks
-> > > +  - assigned-clock-rates
-> > > +  - dovdd-supply
-> > > +  - avdd-supply
-> > > +  - dvdd-supply
-> > > +  - reset-gpios
-> > > +  - port
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/gpio/gpio.h>
-> > > +
-> > > +    i2c {
-> > > +        #address-cells = <1>;
-> > > +        #size-cells = <0>;
-> > > +
-> > > +        ov8856: camera@10 {
-> > > +            compatible = "ovti,ov8856";
-> > > +            reg = <0x10>;
-> > > +
-> > > +            reset-gpios = <&pio 111 GPIO_ACTIVE_LOW>;
-> > > +            pinctrl-names = "default";
-> > > +            pinctrl-0 = <&clk_24m_cam>;
-> > > +
-> > > +            clocks = <&cam_osc>;
-> > > +            clock-names = "xvclk";
-> > > +            assigned-clocks = <&cam_osc>;
-> > > +            assigned-clock-rates = <19200000>;
-> > > +
-> > > +            avdd-supply = <&mt6358_vcama2_reg>;
-> > > +            dvdd-supply = <&mt6358_vcamd_reg>;
-> > > +            dovdd-supply = <&mt6358_vcamio_reg>;
-> > > +
-> > > +            port {
-> > > +                wcam_out: endpoint {
-> > > +                    remote-endpoint = <&mipi_in_wcam>;
-> > > +                    clock-lanes = <0>;
-> > > +                    data-lanes = <1 2 3 4>;
-> > > +                    link-frequencies = /bits/ 64 <360000000 180000000>;
-> > > +                };
-> > > +            };
-> > > +        };
-> > > +    };
-> > > +...
-> > > \ No newline at end of file
-> >
-> > ^^^
-> >
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index 534a8dc4f84a..3f35c6e9700a 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -12465,6 +12465,7 @@ L:  linux-media@vger.kernel.org
-> > >  T: git git://linuxtv.org/media_tree.git
-> > >  S: Maintained
-> > >  F: drivers/media/i2c/ov8856.c
-> > > +F: Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> > >
-> > >  OMNIVISION OV9650 SENSOR DRIVER
-> > >  M: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > > --
-> > > 2.25.1
-> > >
-> >
->
-> --
-> Pengutronix e.K.                           |                             |
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Labels are simply human-readable source annotations for the sake of 
+referencing nodes more easily. Meaningful label names - that correlate 
+to SoC or board components, schematic names, or physical labels on the 
+board/device - make the DT sources easier to read, review, and maintain. 
+There are a handful of cases where one node might have multiple labels, 
+e.g. if two logical supply nets come from the same regulator on certain 
+board variants, but there is zero point in defining redundant labels 
+that just meaninglessly echo the DT's own structure.
+
+> blue: led_0: led-0
+> 
+> A check does not give any warnings.
+
+I should hope not. Labels are there to be consumed by DT compilers (and 
+whatever symbolic overlay handlers count as... DT linkers, maybe?) - 
+they have no business being within the scope of the bindings that define 
+a contract for system software consuming the final DTB.
+
+Robin.
+
+> make -k ARCH=arm dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/leds/leds-gpio.yaml
+> 
+>>
+>> That doesn't look pretty either.
+>> Would like to hear the maintainers view on how to handle other cases
+>> without 'led' like for example 'blue' for mk808.
+>>
+> 
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+> 
