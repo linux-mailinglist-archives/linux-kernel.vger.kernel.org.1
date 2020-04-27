@@ -2,103 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42781B9A66
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017A01B9A88
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbgD0Ih5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:37:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:59986 "EHLO foss.arm.com"
+        id S1726854AbgD0In3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 04:43:29 -0400
+Received: from mga12.intel.com ([192.55.52.136]:49908 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725899AbgD0Ih4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:37:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3265A139F;
-        Mon, 27 Apr 2020 01:37:56 -0700 (PDT)
-Received: from dell3630.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EB86C3F68F;
-        Mon, 27 Apr 2020 01:37:51 -0700 (PDT)
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Wei Wang <wvw@google.com>, Quentin Perret <qperret@google.com>,
-        Alessio Balsini <balsini@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] sched/deadline: Implement fallback mechanism for !fit case
-Date:   Mon, 27 Apr 2020 10:37:09 +0200
-Message-Id: <20200427083709.30262-7-dietmar.eggemann@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200427083709.30262-1-dietmar.eggemann@arm.com>
-References: <20200427083709.30262-1-dietmar.eggemann@arm.com>
+        id S1725899AbgD0In3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 04:43:29 -0400
+IronPort-SDR: gZMDhj3txVAvBelQflZGM/EKR/qVI0OBXeMWu1SA1+bQZN6B/9jt/06aWtCBf7icwjnF6QzB1I
+ QL1OByV/JKkQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 01:43:28 -0700
+IronPort-SDR: VemkF1BSfDr8+m1vWMNfQ9oiEJlrq/vAWoJMxvZNd9BMuLKnpgsOHprvrTtmARAJkjF4V+W02A
+ +lmcugod51rA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,323,1583222400"; 
+   d="scan'208";a="431673859"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+  by orsmga005.jf.intel.com with ESMTP; 27 Apr 2020 01:43:18 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Ben Zhang <benzh@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Brent Lu <brent.lu@intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] add channel constraint for BDW machine drivers
+Date:   Mon, 27 Apr 2020 16:37:15 +0800
+Message-Id: <1587976638-29806-1-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Abeni <luca.abeni@santannapisa.it>
+The machine driver bdw-rt5650 (for Google buddy) supports 2 or 4-channel
+recording while other two drivers support only 2-channel recording. HW
+constraints are implemented to reflect the hardware limitation on BDW
+platform.
 
-When a task has a runtime that cannot be served within the scheduling
-deadline by any of the idle CPU (later_mask) the task is doomed to miss
-its deadline.
+Brent Lu (3):
+  ASoC: bdw-rt5677: channel constraint support
+  ASoC: bdw-rt5650: channel constraint support
+  ASoC: broadwell: channel constraint support
 
-This can happen since the SCHED_DEADLINE admission control guarantees
-only bounded tardiness and not the hard respect of all deadlines.
-In this case try to select the idle CPU with the largest CPU capacity
-to minimize tardiness.
+ sound/soc/intel/boards/bdw-rt5650.c | 34 ++++++++++++++++++++++++++++++++++
+ sound/soc/intel/boards/bdw-rt5677.c | 33 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/boards/broadwell.c  | 33 +++++++++++++++++++++++++++++++++
+ 3 files changed, 100 insertions(+)
 
-Signed-off-by: Luca Abeni <luca.abeni@santannapisa.it>
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
----
- kernel/sched/cpudeadline.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/sched/cpudeadline.c b/kernel/sched/cpudeadline.c
-index 8630f2a40a3f..b6c7a0bc0880 100644
---- a/kernel/sched/cpudeadline.c
-+++ b/kernel/sched/cpudeadline.c
-@@ -121,19 +121,30 @@ int cpudl_find(struct cpudl *cp, struct task_struct *p,
- 
- 	if (later_mask &&
- 	    cpumask_and(later_mask, cp->free_cpus, p->cpus_ptr)) {
--		int cpu;
-+		unsigned long cap, max_cap = 0;
-+		int cpu, max_cpu = -1;
- 
- 		if (!static_branch_unlikely(&sched_asym_cpucapacity))
- 			return 1;
- 
- 		/* Ensure the capacity of the CPUs fits the task. */
- 		for_each_cpu(cpu, later_mask) {
--			if (!dl_task_fits_capacity(p, cpu))
-+			if (!dl_task_fits_capacity(p, cpu)) {
- 				cpumask_clear_cpu(cpu, later_mask);
-+
-+				cap = capacity_orig_of(cpu);
-+
-+				if (cap > max_cap) {
-+					max_cap = cap;
-+					max_cpu = cpu;
-+				}
-+			}
- 		}
- 
--		if (!cpumask_empty(later_mask))
--			return 1;
-+		if (cpumask_empty(later_mask))
-+			cpumask_set_cpu(max_cpu, later_mask);
-+
-+		return 1;
- 	} else {
- 		int best_cpu = cpudl_maximum(cp);
- 
 -- 
-2.17.1
+2.7.4
 
