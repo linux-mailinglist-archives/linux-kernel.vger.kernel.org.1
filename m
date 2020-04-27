@@ -2,68 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0C01B95CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 06:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02BB41B960A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 06:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbgD0EWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 00:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726178AbgD0EWb (ORCPT
+        id S1726484AbgD0EfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 00:35:23 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:39416 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725890AbgD0EfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 00:22:31 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F2FC061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 21:22:31 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id c16so15443522ilr.3
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 21:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=bLspSYpHKIimJS6Zp/uEGn7y8GrbBdjIhm9L26EtwFg=;
-        b=SBVyyawrukvHeePnwPt0tZH8LtxHz/zGBNPHyqFK/jobmgU/8IRw32vRmM589hBVcA
-         5+TleXNbvssVvCV1UqAUksOk2N86qHJdU4kXN4pOs4e3wwRDKPnJB3++Vp1W5Km4cBVx
-         WZ6L9vOYPnNXMpdiU1WKtHx7Q7jcXU/yaXnVUxgvnUzgi2A+4BslynzyBpanJ/NOritN
-         fmqM5ce1M4nfh2TcE3eXEG5uk1wEN0B61OLeqDaG+cGukrDCwbSgW6SSXFL+5oJBA03c
-         22lBew1zJsLquBwM/g/VE1kx2Sa6DceDumDec5D48EFRqKPtMJcuqcPfw1ydReG3A+fu
-         iNLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=bLspSYpHKIimJS6Zp/uEGn7y8GrbBdjIhm9L26EtwFg=;
-        b=p/Y0qRb6gk2D6kfSqn5P1Y9M9roXOY2p7necGu5MoBN6UM0ys+JkwDrwdFjFGEJKqT
-         dhd4Q5cW3AzX1fWt81CdAkhUs98mzS8y/FZcB5TIezK+xHmfcrXCMAWzuqE/Oge+UYsU
-         sTcSmrrFOHT2/i7MzYBX4NtSbihM0/NymhE9t974tH/sTBwUtg6JDGLa0JNrC1zPUqLt
-         xotyQAlSaHWpKZNAvFkCYlzJfPLno4Q1pY5UT04PcpUUBS+hcFNiSmQuacQGtdll3pIO
-         2wvyBe7SztnrRvFlp37Ex1ztpYR4q7nWN7yxhh3c+gjpBfi3volhM2NyjHSUW81nNTda
-         Uy9g==
-X-Gm-Message-State: AGi0PuYr2fi0tK51ekq7TzNR2wbeknDbVHoOtmj5XrhhHCjqXbJxYVzH
-        u5JvV6pyvTQCXvWdH5MkKTqoq4EAdXS2s2M1yAg=
-X-Google-Smtp-Source: APiQypKStDUP3VyGHvX94Ef/WFaHXPAuX6Xg0aUOhQlNrOuhbxfWU8RzyuwhiBV9KFC9vIS/ACqSglmaYuNDCAkMqRw=
-X-Received: by 2002:a92:dc43:: with SMTP id x3mr20541036ilq.102.1587961351213;
- Sun, 26 Apr 2020 21:22:31 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a92:a185:0:0:0:0:0 with HTTP; Sun, 26 Apr 2020 21:22:30
- -0700 (PDT)
-Reply-To: ps.a.ecowasnepad@gmail.com
-From:   Mark Boa <suwabamorg@gmail.com>
-Date:   Sun, 26 Apr 2020 21:22:30 -0700
-Message-ID: <CAC7Sc8s66re1seL2vQjfitsRc-5YfTU13FK8HvQdGFTn647r=g@mail.gmail.com>
-Subject: Good Day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 27 Apr 2020 00:35:22 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=38;SR=0;TI=SMTPD_---0TwkAhWy_1587962114;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0TwkAhWy_1587962114)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 27 Apr 2020 12:35:14 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     pbonzini@redhat.com, tsbogend@alpha.franken.de, paulus@ozlabs.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        cohuck@redhat.com, heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
+        chenhuacai@gmail.com
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tianjia.zhang@linux.alibaba.com
+Subject: [PATCH v4 0/7] clean up redundant 'kvm_run' parameters
+Date:   Mon, 27 Apr 2020 12:35:07 +0800
+Message-Id: <20200427043514.16144-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Soliciting Your Consent,
+In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
+structure. For historical reasons, many kvm-related function parameters
+retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time. This
+patch does a unified cleanup of these remaining redundant parameters.
 
-I am confirming if you received my previous email regarding you having
-the same Surname with my late client. Who, leaving in
-your name in his last will of testament a huge sum of money. Please
-email me for more information.
-Regards,
-Attorney Mark Boa.
-Contact Email: ps.a.ecowasnepad@gmail.com
+This series of patches has completely cleaned the architecture of
+arm64, mips, ppc, and s390 (no such redundant code on x86). Due to
+the large number of modified codes, a separate patch is made for each
+platform. On the ppc platform, there is also a redundant structure
+pointer of 'kvm_run' in 'vcpu_arch', which has also been cleaned
+separately.
+
+---
+v4 change:
+  mips: fixes two errors in entry.c.
+
+v3 change:
+  Keep the existing `vcpu->run` in the function body unchanged.
+
+v2 change:
+  s390 retains the original variable name and minimizes modification.
+
+Tianjia Zhang (7):
+  KVM: s390: clean up redundant 'kvm_run' parameters
+  KVM: arm64: clean up redundant 'kvm_run' parameters
+  KVM: PPC: Remove redundant kvm_run from vcpu_arch
+  KVM: PPC: clean up redundant 'kvm_run' parameters
+  KVM: PPC: clean up redundant kvm_run parameters in assembly
+  KVM: MIPS: clean up redundant 'kvm_run' parameters
+  KVM: MIPS: clean up redundant kvm_run parameters in assembly
+
+ arch/arm64/include/asm/kvm_coproc.h      |  12 +--
+ arch/arm64/include/asm/kvm_host.h        |  11 +--
+ arch/arm64/include/asm/kvm_mmu.h         |   2 +-
+ arch/arm64/kvm/handle_exit.c             |  36 +++----
+ arch/arm64/kvm/sys_regs.c                |  13 ++-
+ arch/mips/include/asm/kvm_host.h         |  32 +------
+ arch/mips/kvm/emulate.c                  |  59 ++++--------
+ arch/mips/kvm/entry.c                    |  21 ++---
+ arch/mips/kvm/mips.c                     |  14 +--
+ arch/mips/kvm/trap_emul.c                | 114 ++++++++++-------------
+ arch/mips/kvm/vz.c                       |  26 ++----
+ arch/powerpc/include/asm/kvm_book3s.h    |  16 ++--
+ arch/powerpc/include/asm/kvm_host.h      |   1 -
+ arch/powerpc/include/asm/kvm_ppc.h       |  27 +++---
+ arch/powerpc/kvm/book3s.c                |   4 +-
+ arch/powerpc/kvm/book3s.h                |   2 +-
+ arch/powerpc/kvm/book3s_64_mmu_hv.c      |  12 +--
+ arch/powerpc/kvm/book3s_64_mmu_radix.c   |   4 +-
+ arch/powerpc/kvm/book3s_emulate.c        |  10 +-
+ arch/powerpc/kvm/book3s_hv.c             |  64 ++++++-------
+ arch/powerpc/kvm/book3s_hv_nested.c      |  12 +--
+ arch/powerpc/kvm/book3s_interrupts.S     |  17 ++--
+ arch/powerpc/kvm/book3s_paired_singles.c |  72 +++++++-------
+ arch/powerpc/kvm/book3s_pr.c             |  33 ++++---
+ arch/powerpc/kvm/booke.c                 |  39 ++++----
+ arch/powerpc/kvm/booke.h                 |   8 +-
+ arch/powerpc/kvm/booke_emulate.c         |   2 +-
+ arch/powerpc/kvm/booke_interrupts.S      |   9 +-
+ arch/powerpc/kvm/bookehv_interrupts.S    |  10 +-
+ arch/powerpc/kvm/e500_emulate.c          |  15 ++-
+ arch/powerpc/kvm/emulate.c               |  10 +-
+ arch/powerpc/kvm/emulate_loadstore.c     |  32 +++----
+ arch/powerpc/kvm/powerpc.c               |  72 +++++++-------
+ arch/powerpc/kvm/trace_hv.h              |   6 +-
+ arch/s390/kvm/kvm-s390.c                 |  23 +++--
+ virt/kvm/arm/arm.c                       |   6 +-
+ virt/kvm/arm/mmio.c                      |  11 ++-
+ virt/kvm/arm/mmu.c                       |   5 +-
+ 38 files changed, 392 insertions(+), 470 deletions(-)
+
+-- 
+2.17.1
+
