@@ -2,98 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1FD1BA7B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B278A1BA7C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 17:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727947AbgD0PRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 11:17:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726539AbgD0PRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 11:17:51 -0400
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4147D206E9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 15:17:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588000671;
-        bh=GAViimdK4fDnDt6xwfFThdx7LtwYD225IliGLg41saw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=d9vkwjdTTR1LayfIUQrZuuh0K8KI99nJUoUy105Kssj/DAN830gEcpyL3PBNgNSqd
-         LzDFnZXBB+KXfYurOZEnrJo9s3Li/U6qtBlzToQnjeH0pqXNOA+fdrFTHa2tD7TP4R
-         BlYkUFvg+kwbDXojJlh2j4Ft7aQn2rxhe+asm4y0=
-Received: by mail-qk1-f178.google.com with SMTP id q7so6214121qkf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 08:17:51 -0700 (PDT)
-X-Gm-Message-State: AGi0PubQHOhdV86cncq9JnrDi8c08i00W5yKKqn23PH56PUMPik2Mut8
-        VyHY2xyEyxL+QJMmCevKXt2JhYRn37jBoUmzFQ==
-X-Google-Smtp-Source: APiQypJ8mFL+gjW5lKQgC6uwov2MJioYazUfFzUC1Buo0mAtWaA7rKgJG7DMRtEDKmm77diSPGR4BCMAcO05vMTTojk=
-X-Received: by 2002:a37:61cd:: with SMTP id v196mr22311959qkb.393.1588000670247;
- Mon, 27 Apr 2020 08:17:50 -0700 (PDT)
+        id S1728242AbgD0PTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 11:19:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40256 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726539AbgD0PTQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 11:19:16 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03REYsO2070456;
+        Mon, 27 Apr 2020 11:19:15 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mfhd35ee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Apr 2020 11:19:15 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03REZsou075191;
+        Mon, 27 Apr 2020 11:19:15 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mfhd35db-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Apr 2020 11:19:14 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03RFAKWU001097;
+        Mon, 27 Apr 2020 15:19:12 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 30mcu6v3ty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Apr 2020 15:19:12 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03RFI1KG65798558
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 15:18:01 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C520CA405B;
+        Mon, 27 Apr 2020 15:19:09 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1CF5BA405C;
+        Mon, 27 Apr 2020 15:19:09 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.84.115])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Apr 2020 15:19:09 +0000 (GMT)
+Date:   Mon, 27 Apr 2020 17:17:39 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Harald Freudenberger <freude@linux.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
+        pmorel@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, jjherne@linux.ibm.com, fiuczy@linux.ibm.com
+Subject: Re: [PATCH v7 01/15] s390/vfio-ap: store queue struct in hash table
+ for quick access
+Message-ID: <20200427171739.76291a74.pasic@linux.ibm.com>
+In-Reply-To: <d15b4a8e-66eb-e4ce-c8ac-6885519940aa@linux.ibm.com>
+References: <20200407192015.19887-1-akrowiak@linux.ibm.com>
+        <20200407192015.19887-2-akrowiak@linux.ibm.com>
+        <20200424055732.7663896d.pasic@linux.ibm.com>
+        <d15b4a8e-66eb-e4ce-c8ac-6885519940aa@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20200424222740.16259-1-afd@ti.com>
-In-Reply-To: <20200424222740.16259-1-afd@ti.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 27 Apr 2020 10:17:37 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+4mf6QHX27knoHTXA4vnsC3swuvAH7zK1DpyaV-p_qbw@mail.gmail.com>
-Message-ID: <CAL_Jsq+4mf6QHX27knoHTXA4vnsC3swuvAH7zK1DpyaV-p_qbw@mail.gmail.com>
-Subject: Re: [PATCH] misc: sram: Add dma-heap-export reserved SRAM area type
-To:     "Andrew F. Davis" <afd@ti.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linaro-mm-sig@lists.linaro.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-27_10:2020-04-27,2020-04-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ phishscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 impostorscore=0 clxscore=1015 priorityscore=1501
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004270123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 5:27 PM Andrew F. Davis <afd@ti.com> wrote:
->
-> This new export type exposes to userspace the SRAM area as a DMA-Heap,
-> this allows for allocations as DMA-BUFs that can be consumed by various
-> DMA-BUF supporting devices.
->
-> Signed-off-by: Andrew F. Davis <afd@ti.com>
-> ---
->  .../devicetree/bindings/sram/sram.yaml        |   8 +
+On Mon, 27 Apr 2020 15:05:23 +0200
+Harald Freudenberger <freude@linux.ibm.com> wrote:
 
-Separate patch and needs to go to DT list...
+> On 24.04.20 05:57, Halil Pasic wrote:
+> > On Tue,  7 Apr 2020 15:20:01 -0400
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >  
+> >> Rather than looping over potentially 65535 objects, let's store the
+> >> structures for caching information about queue devices bound to the
+> >> vfio_ap device driver in a hash table keyed by APQN.  
+> > @Harald:
+> > Would it make sense to make the efficient lookup of an apqueue base
+> > on its APQN core AP functionality instead of each driver figuring it out
+> > on it's own?
+> >
+> > If I'm not wrong the zcrypt device/driver(s) must the problem of
+> > looking up a queue based on its APQN as well.
+> >
+> > For instance struct ep11_cprb has a target_id filed
+> > (arch/s390/include/uapi/asm/zcrypt.h).
+> >
+> > Regards,
+> > Halil  
+> 
+> Hi Halil
+> 
+> no, the zcrypt drivers don't have this problem. They build up their own device object which
+> includes a pointer to the base ap device.
 
->  drivers/misc/Kconfig                          |   7 +
->  drivers/misc/Makefile                         |   1 +
->  drivers/misc/sram-dma-heap.c                  | 243 ++++++++++++++++++
->  drivers/misc/sram.c                           |  20 +-
->  drivers/misc/sram.h                           |  17 ++
->  6 files changed, 292 insertions(+), 4 deletions(-)
->  create mode 100644 drivers/misc/sram-dma-heap.c
->
-> diff --git a/Documentation/devicetree/bindings/sram/sram.yaml b/Documentation/devicetree/bindings/sram/sram.yaml
-> index 7b83cc6c9bfa..b8e33c8d205d 100644
-> --- a/Documentation/devicetree/bindings/sram/sram.yaml
-> +++ b/Documentation/devicetree/bindings/sram/sram.yaml
-> @@ -105,6 +105,14 @@ patternProperties:
->            manipulation of the page attributes.
->          type: boolean
->
-> +      dma-heap-export:
-> +        description:
-> +          Similar to 'pool' and 'export' this region will be exported for use
-> +          by drivers, devices, and userspace using the DMA-Heaps framework.
-> +          NOTE: This region must be page aligned on start and end in order to
-> +          properly allow manipulation of the page attributes.
-> +        type: boolean
+I'm a bit confused. Doesn't your code loop first trough the ap_card
+objects to find the APID portion of the APQN, and then loop the queue
+list of the matching card to find the right ap_queue object? Or did I
+miss something? Isn't that what _zcrypt_send_ep11_cprb() does? Can you
+point me to the code that avoids the lookup (by apqn) for zcrypt?
 
-Though I'm not sure this should be in DT. You have to change your
-firmware to enable a new kernel feature? We also already have 'export'
-which sounds like the same function. Or 'pool' though reading the
-description, I don't really understand it's use.
 
-What combination of all 3 of these options would be valid?
+If you look at the new function of vfio_ap_get_queue(unsigned long apqn)
+it basically about finding the queue based on the apqn, with the
+difference that it is vfio specific.
 
-Rob
+Regards,
+Halil
+
+> 
+> However, this is not a big issue, as the ap_bus holds a list of ap_card objects and within each
+> ap_card object there exists a list of ap_queues.
+
+
+
+
