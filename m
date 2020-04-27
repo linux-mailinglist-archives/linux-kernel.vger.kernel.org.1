@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962F51BB012
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C151BB015
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgD0VR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 17:17:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34126 "EHLO mail.kernel.org"
+        id S1726487AbgD0VRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 17:17:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726343AbgD0VR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726345AbgD0VR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Apr 2020 17:17:26 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C1A021D79;
+        by mail.kernel.org (Postfix) with ESMTPSA id 6120021D7A;
         Mon, 27 Apr 2020 21:17:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588022244;
-        bh=yz+D7iVuh5MZRcPLv2I33NXwj3NBarP44LcAmlrDVsA=;
+        bh=4pAbzzpH6EZIjIi1XnXxu1a3Gby82p04jEk2ogqNkYo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MAtUelUlowEBDiiYM9Tbi4nmOvT3taOzq63y3ASn44HiLFkF7zFJsKk1jL/vWAOtb
-         N4oD4bLqQ1MPW+lAIdLZI8O3dXbYB3ibpQflpK/3QbaiECAR3AkVvvWvD5bzzlTXeo
-         n395gqnZJKVekm5aKksIJd/6KNGlXC2T7O3EEh4k=
+        b=J453DxI+iLLgSlD+YiGP67LzY+Hw9G3fFuxTIvGGYo9H+waj96wkJcqKsd2R3Ag7P
+         /pzys8qmT3C7/fcICZtx2cFVN9cT4NwDdwT3EZ1zOb9ukNlBwZ93u+twwcQPz8AWKA
+         yCc1ZshTgxq05YtA6CCf525AtLq5c8A9BUDsuQNI=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jTB7y-000HkT-K7; Mon, 27 Apr 2020 23:17:22 +0200
+        id 1jTB7y-000HkY-M3; Mon, 27 Apr 2020 23:17:22 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH v3 11/29] docs: filesystems: convert dnotify.txt to ReST
-Date:   Mon, 27 Apr 2020 23:17:03 +0200
-Message-Id: <b39d6430d1c28438e833f01cb4597eff78703c75.1588021877.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v3 12/29] docs: filesystems: convert fiemap.txt to ReST
+Date:   Mon, 27 Apr 2020 23:17:04 +0200
+Message-Id: <9182d49ffca7a0580e32ab24ecf5f8cc8d8924af.1588021877.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1588021877.git.mchehab+huawei@kernel.org>
 References: <cover.1588021877.git.mchehab+huawei@kernel.org>
@@ -46,87 +44,262 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 - Add a SPDX header;
-- Add a document title;
 - Some whitespace fixes and new line breaks;
-- Add table markups;
-- Add it to filesystems/index.rst
+- Mark literal blocks as such;
+- Add it to filesystems/index.rst.
 
-Acked-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../filesystems/{dnotify.txt => dnotify.rst}          | 11 ++++++++---
- Documentation/filesystems/index.rst                   |  1 +
- MAINTAINERS                                           |  2 +-
- 3 files changed, 10 insertions(+), 4 deletions(-)
- rename Documentation/filesystems/{dnotify.txt => dnotify.rst} (90%)
+ .../filesystems/{fiemap.txt => fiemap.rst}    | 133 +++++++++---------
+ Documentation/filesystems/index.rst           |   1 +
+ 2 files changed, 69 insertions(+), 65 deletions(-)
+ rename Documentation/filesystems/{fiemap.txt => fiemap.rst} (70%)
 
-diff --git a/Documentation/filesystems/dnotify.txt b/Documentation/filesystems/dnotify.rst
-similarity index 90%
-rename from Documentation/filesystems/dnotify.txt
-rename to Documentation/filesystems/dnotify.rst
-index 08d575ece45d..a28a1f9ef79c 100644
---- a/Documentation/filesystems/dnotify.txt
-+++ b/Documentation/filesystems/dnotify.rst
-@@ -1,5 +1,8 @@
--		Linux Directory Notification
--		============================
+diff --git a/Documentation/filesystems/fiemap.txt b/Documentation/filesystems/fiemap.rst
+similarity index 70%
+rename from Documentation/filesystems/fiemap.txt
+rename to Documentation/filesystems/fiemap.rst
+index ac87e6fda842..2a572e7edc08 100644
+--- a/Documentation/filesystems/fiemap.txt
++++ b/Documentation/filesystems/fiemap.rst
+@@ -1,3 +1,5 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
-+============================
-+Linux Directory Notification
-+============================
+ ============
+ Fiemap Ioctl
+ ============
+@@ -10,9 +12,9 @@ returns a list of extents.
+ Request Basics
+ --------------
  
- 	   Stephen Rothwell <sfr@canb.auug.org.au>
+-A fiemap request is encoded within struct fiemap:
++A fiemap request is encoded within struct fiemap::
  
-@@ -12,6 +15,7 @@ being delivered using signals.
- The application decides which "events" it wants to be notified about.
- The currently defined events are:
+-struct fiemap {
++  struct fiemap {
+ 	__u64	fm_start;	 /* logical offset (inclusive) at
+ 				  * which to start mapping (in) */
+ 	__u64	fm_length;	 /* logical length of mapping which
+@@ -23,7 +25,7 @@ struct fiemap {
+ 	__u32	fm_extent_count; /* size of fm_extents array (in) */
+ 	__u32	fm_reserved;
+ 	struct fiemap_extent fm_extents[0]; /* array of mapped extents (out) */
+-};
++  };
  
-+	=========	=====================================================
- 	DN_ACCESS	A file in the directory was accessed (read)
- 	DN_MODIFY	A file in the directory was modified (write,truncate)
- 	DN_CREATE	A file was created in the directory
-@@ -19,6 +23,7 @@ The currently defined events are:
- 	DN_RENAME	A file in the directory was renamed
- 	DN_ATTRIB	A file in the directory had its attributes
- 			changed (chmod,chown)
-+	=========	=====================================================
  
- Usually, the application must reregister after each notification, but
- if DN_MULTISHOT is or'ed with the event mask, then the registration will
-@@ -36,7 +41,7 @@ especially important if DN_MULTISHOT is specified.  Note that SIGRTMIN
- is often blocked, so it is better to use (at least) SIGRTMIN + 1.
+ fm_start, and fm_length specify the logical range within the file
+@@ -51,12 +53,12 @@ nothing to prevent the file from changing between calls to FIEMAP.
  
- Implementation expectations (features and bugs :-))
-----------------------------
-+---------------------------------------------------
+ The following flags can be set in fm_flags:
  
- The notification should work for any local access to files even if the
- actual file system is on a remote server.  This implies that remote
+-* FIEMAP_FLAG_SYNC
+-If this flag is set, the kernel will sync the file before mapping extents.
++FIEMAP_FLAG_SYNC
++  If this flag is set, the kernel will sync the file before mapping extents.
+ 
+-* FIEMAP_FLAG_XATTR
+-If this flag is set, the extents returned will describe the inodes
+-extended attribute lookup tree, instead of its data tree.
++FIEMAP_FLAG_XATTR
++  If this flag is set, the extents returned will describe the inodes
++  extended attribute lookup tree, instead of its data tree.
+ 
+ 
+ Extent Mapping
+@@ -75,18 +77,18 @@ complete the requested range and will not have the FIEMAP_EXTENT_LAST
+ flag set (see the next section on extent flags).
+ 
+ Each extent is described by a single fiemap_extent structure as
+-returned in fm_extents.
++returned in fm_extents::
+ 
+-struct fiemap_extent {
+-	__u64	fe_logical;  /* logical offset in bytes for the start of
+-			      * the extent */
+-	__u64	fe_physical; /* physical offset in bytes for the start
+-			      * of the extent */
+-	__u64	fe_length;   /* length in bytes for the extent */
+-	__u64	fe_reserved64[2];
+-	__u32	fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
+-	__u32	fe_reserved[3];
+-};
++    struct fiemap_extent {
++	    __u64	fe_logical;  /* logical offset in bytes for the start of
++				* the extent */
++	    __u64	fe_physical; /* physical offset in bytes for the start
++				* of the extent */
++	    __u64	fe_length;   /* length in bytes for the extent */
++	    __u64	fe_reserved64[2];
++	    __u32	fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
++	    __u32	fe_reserved[3];
++    };
+ 
+ All offsets and lengths are in bytes and mirror those on disk.  It is valid
+ for an extents logical offset to start before the request or its logical
+@@ -114,26 +116,27 @@ worry about all present and future flags which might imply unaligned
+ data. Note that the opposite is not true - it would be valid for
+ FIEMAP_EXTENT_NOT_ALIGNED to appear alone.
+ 
+-* FIEMAP_EXTENT_LAST
+-This is generally the last extent in the file. A mapping attempt past
+-this extent may return nothing. Some implementations set this flag to
+-indicate this extent is the last one in the range queried by the user
+-(via fiemap->fm_length).
++FIEMAP_EXTENT_LAST
++  This is generally the last extent in the file. A mapping attempt past
++  this extent may return nothing. Some implementations set this flag to
++  indicate this extent is the last one in the range queried by the user
++  (via fiemap->fm_length).
+ 
+-* FIEMAP_EXTENT_UNKNOWN
+-The location of this extent is currently unknown. This may indicate
+-the data is stored on an inaccessible volume or that no storage has
+-been allocated for the file yet.
++FIEMAP_EXTENT_UNKNOWN
++  The location of this extent is currently unknown. This may indicate
++  the data is stored on an inaccessible volume or that no storage has
++  been allocated for the file yet.
+ 
+-* FIEMAP_EXTENT_DELALLOC
+-  - This will also set FIEMAP_EXTENT_UNKNOWN.
+-Delayed allocation - while there is data for this extent, its
+-physical location has not been allocated yet.
++FIEMAP_EXTENT_DELALLOC
++  This will also set FIEMAP_EXTENT_UNKNOWN.
+ 
+-* FIEMAP_EXTENT_ENCODED
+-This extent does not consist of plain filesystem blocks but is
+-encoded (e.g. encrypted or compressed).  Reading the data in this
+-extent via I/O to the block device will have undefined results.
++  Delayed allocation - while there is data for this extent, its
++  physical location has not been allocated yet.
++
++FIEMAP_EXTENT_ENCODED
++  This extent does not consist of plain filesystem blocks but is
++  encoded (e.g. encrypted or compressed).  Reading the data in this
++  extent via I/O to the block device will have undefined results.
+ 
+ Note that it is *always* undefined to try to update the data
+ in-place by writing to the indicated location without the
+@@ -145,32 +148,32 @@ unmounted, and then only if the FIEMAP_EXTENT_ENCODED flag is
+ clear; user applications must not try reading or writing to the
+ filesystem via the block device under any other circumstances.
+ 
+-* FIEMAP_EXTENT_DATA_ENCRYPTED
+-  - This will also set FIEMAP_EXTENT_ENCODED
+-The data in this extent has been encrypted by the file system.
++FIEMAP_EXTENT_DATA_ENCRYPTED
++  This will also set FIEMAP_EXTENT_ENCODED
++  The data in this extent has been encrypted by the file system.
+ 
+-* FIEMAP_EXTENT_NOT_ALIGNED
+-Extent offsets and length are not guaranteed to be block aligned.
++FIEMAP_EXTENT_NOT_ALIGNED
++  Extent offsets and length are not guaranteed to be block aligned.
+ 
+-* FIEMAP_EXTENT_DATA_INLINE
++FIEMAP_EXTENT_DATA_INLINE
+   This will also set FIEMAP_EXTENT_NOT_ALIGNED
+-Data is located within a meta data block.
++  Data is located within a meta data block.
+ 
+-* FIEMAP_EXTENT_DATA_TAIL
++FIEMAP_EXTENT_DATA_TAIL
+   This will also set FIEMAP_EXTENT_NOT_ALIGNED
+-Data is packed into a block with data from other files.
++  Data is packed into a block with data from other files.
+ 
+-* FIEMAP_EXTENT_UNWRITTEN
+-Unwritten extent - the extent is allocated but its data has not been
+-initialized.  This indicates the extent's data will be all zero if read
+-through the filesystem but the contents are undefined if read directly from
+-the device.
++FIEMAP_EXTENT_UNWRITTEN
++  Unwritten extent - the extent is allocated but its data has not been
++  initialized.  This indicates the extent's data will be all zero if read
++  through the filesystem but the contents are undefined if read directly from
++  the device.
+ 
+-* FIEMAP_EXTENT_MERGED
+-This will be set when a file does not support extents, i.e., it uses a block
+-based addressing scheme.  Since returning an extent for each block back to
+-userspace would be highly inefficient, the kernel will try to merge most
+-adjacent blocks into 'extents'.
++FIEMAP_EXTENT_MERGED
++  This will be set when a file does not support extents, i.e., it uses a block
++  based addressing scheme.  Since returning an extent for each block back to
++  userspace would be highly inefficient, the kernel will try to merge most
++  adjacent blocks into 'extents'.
+ 
+ 
+ VFS -> File System Implementation
+@@ -179,23 +182,23 @@ VFS -> File System Implementation
+ File systems wishing to support fiemap must implement a ->fiemap callback on
+ their inode_operations structure. The fs ->fiemap call is responsible for
+ defining its set of supported fiemap flags, and calling a helper function on
+-each discovered extent:
++each discovered extent::
+ 
+-struct inode_operations {
++  struct inode_operations {
+        ...
+ 
+        int (*fiemap)(struct inode *, struct fiemap_extent_info *, u64 start,
+                      u64 len);
+ 
+ ->fiemap is passed struct fiemap_extent_info which describes the
+-fiemap request:
++fiemap request::
+ 
+-struct fiemap_extent_info {
++  struct fiemap_extent_info {
+ 	unsigned int fi_flags;		/* Flags as passed from user */
+ 	unsigned int fi_extents_mapped;	/* Number of mapped extents */
+ 	unsigned int fi_extents_max;	/* Size of fiemap_extent array */
+ 	struct fiemap_extent *fi_extents_start;	/* Start of fiemap_extent array */
+-};
++  };
+ 
+ It is intended that the file system should not need to access any of this
+ structure directly. Filesystem handlers should be tolerant to signals and return
+@@ -203,9 +206,9 @@ EINTR once fatal signal received.
+ 
+ 
+ Flag checking should be done at the beginning of the ->fiemap callback via the
+-fiemap_check_flags() helper:
++fiemap_check_flags() helper::
+ 
+-int fiemap_check_flags(struct fiemap_extent_info *fieinfo, u32 fs_flags);
++  int fiemap_check_flags(struct fiemap_extent_info *fieinfo, u32 fs_flags);
+ 
+ The struct fieinfo should be passed in as received from ioctl_fiemap(). The
+ set of fiemap flags which the fs understands should be passed via fs_flags. If
+@@ -216,10 +219,10 @@ ioctl_fiemap().
+ 
+ 
+ For each extent in the request range, the file system should call
+-the helper function, fiemap_fill_next_extent():
++the helper function, fiemap_fill_next_extent()::
+ 
+-int fiemap_fill_next_extent(struct fiemap_extent_info *info, u64 logical,
+-			    u64 phys, u64 len, u32 flags, u32 dev);
++  int fiemap_fill_next_extent(struct fiemap_extent_info *info, u64 logical,
++			      u64 phys, u64 len, u32 flags, u32 dev);
+ 
+ fiemap_fill_next_extent() will use the passed values to populate the
+ next free extent in the fm_extents array. 'General' extent flags will
 diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-index 10207f158a3e..8f26f1b91e04 100644
+index 8f26f1b91e04..c571112746f3 100644
 --- a/Documentation/filesystems/index.rst
 +++ b/Documentation/filesystems/index.rst
-@@ -25,6 +25,7 @@ algorithms work.
-    locking
+@@ -26,6 +26,7 @@ algorithms work.
     directory-locking
     devpts
-+   dnotify
+    dnotify
++   fiemap
  
     automount-support
- 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7d26487c55cf..36d1fd48b6b2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5007,7 +5007,7 @@ M:	Jan Kara <jack@suse.cz>
- R:	Amir Goldstein <amir73il@gmail.com>
- L:	linux-fsdevel@vger.kernel.org
- S:	Maintained
--F:	Documentation/filesystems/dnotify.txt
-+F:	Documentation/filesystems/dnotify.rst
- F:	fs/notify/dnotify/
- F:	include/linux/dnotify.h
  
 -- 
 2.25.4
