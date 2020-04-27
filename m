@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0777E1BAA4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 18:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBD41BAA59
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 18:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgD0QrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 12:47:13 -0400
-Received: from mail.efficios.com ([167.114.26.124]:45496 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbgD0QrM (ORCPT
+        id S1726430AbgD0QsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 12:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726404AbgD0QsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 12:47:12 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3828A25ABA2;
-        Mon, 27 Apr 2020 12:47:11 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 6kZC_M8qLWLq; Mon, 27 Apr 2020 12:47:11 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E626125A555;
-        Mon, 27 Apr 2020 12:47:10 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E626125A555
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1588006030;
-        bh=SCR0YXx7Ksd6h99vRKL/EL/KUijBXa/Pxw+bu0rC7s0=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=XzBc9jheMqKkakYI4T8Slk1bFyXwnehB7UObX8kVXkYJLfX08xI5Z2kv2y36y68X8
-         WXVLBPxJ01RijyBeP+yZKKGD8DEaU1SJgIaYf+NJXhF5iWXoQLV8wJBdyKUSJukUVQ
-         q4BhuocKu/3vgKQbbraPbhhe6FGkG+wgtv2DNFX6REUe8FdibYsSl0Khh5mz3N6bgc
-         u6og0JGtglLEc9jUicZfuET+mo84zxJ2X8Tn5K7iItHkFDSFOerkZBDIF4hjqpudlb
-         upqYZBGiSBjMjq4xV7p6klXNqaEDq4OAmcArVPTeOlx2VKGS4SW7BACoriYacfbkje
-         xkHQNPDkyw3Tg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id pxMlmkdvfxuZ; Mon, 27 Apr 2020 12:47:10 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id D4F4825A551;
-        Mon, 27 Apr 2020 12:47:10 -0400 (EDT)
-Date:   Mon, 27 Apr 2020 12:47:10 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Florian Weimer <fw@deneb.enyo.de>
-Cc:     libc-alpha <libc-alpha@sourceware.org>,
-        Carlos O'Donell <carlos@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ben Maurer <bmaurer@fb.com>, Dave Watson <davejwatson@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul <paulmck@linux.vnet.ibm.com>, Paul Turner <pjt@google.com>,
-        Joseph Myers <joseph@codesourcery.com>
-Message-ID: <1660640739.70637.1588006030777.JavaMail.zimbra@efficios.com>
-In-Reply-To: <87ftcpxhpw.fsf@mid.deneb.enyo.de>
-References: <20200326155633.18236-1-mathieu.desnoyers@efficios.com> <20200326155633.18236-6-mathieu.desnoyers@efficios.com> <87ftcpxhpw.fsf@mid.deneb.enyo.de>
-Subject: Re: [PATCH glibc 5/9] glibc: Perform rseq(2) registration at C
- startup and thread creation (v17)
+        Mon, 27 Apr 2020 12:48:22 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6655EC03C1A7;
+        Mon, 27 Apr 2020 09:48:21 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id z25so27289881otq.13;
+        Mon, 27 Apr 2020 09:48:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nAyf44/4YFerP6DJWfqRXTjmOvbL2XaDORjOFH9i/rI=;
+        b=qHJgEUdJIcVHT9XThDUGjp4X3Z1xHboytYlAyasNY5XMV9a3mT6fXN692D7wxqUNl9
+         cnpqXLhr4lk5FbifZ9/L95vsbCX/d8b9DZLaRZIQbXO0Oslt7oXt3u70DII/49zxOorW
+         Ub2kN/8xdeJpNK/4q4Hgtwj6QyMzE6fhi7nahBMD1zx42M75/oTciu5i5qmQMbe/lbsm
+         97bFAI09fZTLbzqBVayqRqMKdpcFXree90j7HM4vwiy8jPqsLcfSRGHJ9yxerQlC/8JL
+         I8pX64NTIDIvc9IP+azVyYP7jfs6aq9X8I5dbsJogb7yBaiwpoSi02cQdvzralDA1CBz
+         JQ8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nAyf44/4YFerP6DJWfqRXTjmOvbL2XaDORjOFH9i/rI=;
+        b=dTlklMWfmhc89aXDYGbBb1Ji6m9OUFRIwougu4VNwbCa9hfEFzi4L+CMDR55OIIVLA
+         SJBLKGwe8eawRJhvK66AkY8GgvEpaBBQihL7pP9diu2hIUAeKNPFnoLTwINHVs+mEeim
+         olr6eO4RgA34nlXXqPgaKqP1uDLYzR1fImimpaDPrTNiJ4xWuAd1gRoAn2p9k1rftaLB
+         ZGOXlt5EhTf6FGpT5NcIJiS182mj7NhoV8JIe67XzzLfzd9UqRGrpOyMxIDospnW1iNE
+         O6wFN8xZzOtZU+5vr5gJRxXKIKXfCV5/x0kwzJUGJ6Jos01/mYGMLg+Kd5HFw7JDTeq4
+         r5PQ==
+X-Gm-Message-State: AGi0PuYpTPcoKXqv82RWA8+AjPhuhjeYb0ARr/B9GcVzNU6m19ca3J5K
+        Zzq7LPF+dSH7LazG7McnN8Fpgh2dmOqQ/JTiSTk=
+X-Google-Smtp-Source: APiQypI6eE1PRMGPPRVRi0P78QJf4KmHjGzbOMv5jJZl19CHYq3n4JYMcF7smsbV/VRtNFlp/scmHNAe5K6QyjReMxo=
+X-Received: by 2002:aca:4e10:: with SMTP id c16mr16536872oib.140.1588006100850;
+ Mon, 27 Apr 2020 09:48:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3918 (ZimbraWebClient - FF75 (Linux)/8.8.15_GA_3895)
-Thread-Topic: glibc: Perform rseq(2) registration at C startup and thread creation (v17)
-Thread-Index: +/FwB08aOPyK5lJHGmbcAUAOKgI6cw==
+References: <20200326200634.222009-1-dancol@google.com> <20200401213903.182112-1-dancol@google.com>
+ <CAKOZueuu=bGt4O0xjiV=9_PC_8Ey8pa3NjtJ7+O-nHCcYbLnEg@mail.gmail.com>
+ <alpine.LRH.2.21.2004230253530.12318@namei.org> <6fcc0093-f154-493e-dc11-359b44ed57ce@schaufler-ca.com>
+ <3ffd699d-c2e7-2bc3-eecc-b28457929da9@schaufler-ca.com> <8bef5acd-471e-0288-ad85-72601c3a2234@schaufler-ca.com>
+In-Reply-To: <8bef5acd-471e-0288-ad85-72601c3a2234@schaufler-ca.com>
+From:   Stephen Smalley <stephen.smalley.work@gmail.com>
+Date:   Mon, 27 Apr 2020 12:48:09 -0400
+Message-ID: <CAEjxPJ66ZZKfAUPnUjQiraNJO0h=T3OTY2qTVPuXrWG9va1-2g@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] SELinux support for anonymous inodes and UFFD
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Daniel Colascione <dancol@google.com>,
+        James Morris <jmorris@namei.org>,
+        Tim Murray <timmurray@google.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Paul Moore <paul@paul-moore.com>,
+        Nick Kralevich <nnk@google.com>,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        John Johansen <john.johansen@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 27, 2020, at 7:59 AM, Florian Weimer fw@deneb.enyo.de wrote:
+On Mon, Apr 27, 2020 at 12:19 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>
+> On 4/23/2020 3:24 PM, Casey Schaufler wrote:
+> > On 4/22/2020 10:12 AM, Casey Schaufler wrote:
+> >> On 4/22/2020 9:55 AM, James Morris wrote:
+> >>> On Mon, 13 Apr 2020, Daniel Colascione wrote:
+> >>>
+> >>>> On Wed, Apr 1, 2020 at 2:39 PM Daniel Colascione <dancol@google.com> wrote:
+> >>>>> Changes from the fourth version of the patch:
+> >>>> Is there anything else that needs to be done before merging this patch series?
+> > Do you have a test case that exercises this feature?
+>
+> I haven't heard anything back. What would cause this code to be executed?
 
-> * Mathieu Desnoyers via Libc-alpha:
-> 
->> diff --git a/elf/libc_early_init.c b/elf/libc_early_init.c
->> index 1ac66d895d..30466afea0 100644
->> --- a/elf/libc_early_init.c
->> +++ b/elf/libc_early_init.c
->> @@ -18,10 +18,13 @@
->>  
->>  #include <ctype.h>
->>  #include <libc-early-init.h>
->> +#include <rseq-internal.h>
->>  
->>  void
->>  __libc_early_init (void)
->>  {
->>    /* Initialize ctype data.  */
->>    __ctype_init ();
->> +  /* Register rseq ABI to the kernel.   */
->> +  (void) rseq_register_current_thread ();
->>  }
-> 
-> I think the registration must be restricted to the primary namespace.
-> Otherwise, LD_AUDIT will register the area to the secondary libc (in
-> the audit module), not the primary libc for the entire process.
-> 
-> I think the easiest way to implement this for now is a flag argument
-> for __libc_early_init (as the upstream __libc_multiple_libcs is not
-> entirely accurate).  I will submit a patch.
-
-OK, once I get the patch, I will pick it up in my series.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+See https://lore.kernel.org/selinux/513f6230-1fb3-dbb5-5f75-53cd02b91b28@tycho.nsa.gov/
+for example.
