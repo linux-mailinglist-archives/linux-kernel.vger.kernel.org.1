@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39981B9A93
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 048F31B9AAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbgD0Ioi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:44:38 -0400
-Received: from sauhun.de ([88.99.104.3]:55736 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726507AbgD0Ioi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:44:38 -0400
-Received: from localhost (p54B330D3.dip0.t-ipconnect.de [84.179.48.211])
-        by pokefinder.org (Postfix) with ESMTPSA id 7BB3B2C1F66;
-        Mon, 27 Apr 2020 10:44:30 +0200 (CEST)
-Date:   Mon, 27 Apr 2020 10:44:24 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jon Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>, linux-i2c@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] i2c: tegra: Better handle case where CPU0 is busy
- for a long time
-Message-ID: <20200427084424.GA28817@kunai>
-References: <6f07e5c8-7916-7ea2-2fe7-d05f8f011471@nvidia.com>
- <77a31b2f-f525-ba9e-f1ae-2b474465bde4@gmail.com>
- <470b4de4-e98a-1bdc-049e-6259ad603507@nvidia.com>
- <d2531fc1-b452-717d-af71-19497e14ef00@gmail.com>
- <a5198024-7273-74c4-b4f4-3a29d042bc36@nvidia.com>
- <f8fb1f7f-2497-033e-ff2c-c86c6caa9706@gmail.com>
- <fd1ca178-1ea3-851f-20a6-10bf00453ce3@nvidia.com>
- <a5734f19-254e-b6bc-e791-fa1ac63f11a4@gmail.com>
- <79f6560e-dbb5-0ae1-49f8-cf1cd95396ec@nvidia.com>
- <20200427074837.GC3451400@ulmo>
+        id S1726834AbgD0Ism (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 04:48:42 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:3131 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726700AbgD0Isj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 04:48:39 -0400
+X-IronPort-AV: E=Sophos;i="5.73,323,1583164800"; 
+   d="scan'208";a="90547651"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 27 Apr 2020 16:48:31 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id B686750A9991;
+        Mon, 27 Apr 2020 16:37:48 +0800 (CST)
+Received: from G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Mon, 27 Apr 2020 16:48:31 +0800
+Received: from localhost.localdomain (10.167.225.141) by
+ G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Mon, 27 Apr 2020 16:48:30 +0800
+From:   Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>
+CC:     <linux-mm@kvack.org>, <linux-fsdevel@vger.kernel.org>,
+        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>,
+        <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
+Subject: [RFC PATCH 0/8] dax: Add a dax-rmap tree to support reflink
+Date:   Mon, 27 Apr 2020 16:47:42 +0800
+Message-ID: <20200427084750.136031-1-ruansy.fnst@cn.fujitsu.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EVF5PPMfhYS0aIcm"
-Content-Disposition: inline
-In-Reply-To: <20200427074837.GC3451400@ulmo>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: B686750A9991.AE152
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset is a try to resolve the shared 'page cache' problem for
+fsdax.
 
---EVF5PPMfhYS0aIcm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In order to track multiple mappings and indexes on one page, I
+introduced a dax-rmap rb-tree to manage the relationship.  A dax entry
+will be associated more than once if is shared.  At the second time we
+associate this entry, we create this rb-tree and store its root in
+page->private(not used in fsdax).  Insert (->mapping, ->index) when
+dax_associate_entry() and delete it when dax_disassociate_entry().
+
+We can iterate the dax-rmap rb-tree before any other operations on
+mappings of files.  Such as memory-failure and rmap.
+
+Same as before, I borrowed and made some changes on Goldwyn's patchsets.
+These patches makes up for the lack of CoW mechanism in fsdax.
+
+The rests are dax & reflink support for xfs.
+
+(Rebased to 5.7-rc2)
 
 
-> Wolfram, can you revert the following two patches for v5.7, please?
->=20
-> 	8814044fe0fa i2c: tegra: Synchronize DMA before termination
-> 	a900aeac2537 i2c: tegra: Better handle case where CPU0 is busy for a lon=
-g time
+Shiyang Ruan (8):
+  fs/dax: Introduce dax-rmap btree for reflink
+  mm: add dax-rmap for memory-failure and rmap
+  fs/dax: Introduce dax_copy_edges() for COW
+  fs/dax: copy data before write
+  fs/dax: replace mmap entry in case of CoW
+  fs/dax: dedup file range to use a compare function
+  fs/xfs: handle CoW for fsdax write() path
+  fs/xfs: support dedupe for fsdax
 
-Sure, will do!
+ fs/dax.c               | 343 +++++++++++++++++++++++++++++++++++++----
+ fs/ocfs2/file.c        |   2 +-
+ fs/read_write.c        |  11 +-
+ fs/xfs/xfs_bmap_util.c |   6 +-
+ fs/xfs/xfs_file.c      |  10 +-
+ fs/xfs/xfs_iomap.c     |   3 +-
+ fs/xfs/xfs_iops.c      |  11 +-
+ fs/xfs/xfs_reflink.c   |  79 ++++++----
+ include/linux/dax.h    |  11 ++
+ include/linux/fs.h     |   9 +-
+ mm/memory-failure.c    |  63 ++++++--
+ mm/rmap.c              |  54 +++++--
+ 12 files changed, 498 insertions(+), 104 deletions(-)
+
+-- 
+2.26.2
 
 
---EVF5PPMfhYS0aIcm
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6mm2QACgkQFA3kzBSg
-KbZKvA//T8VF+I+iFRYvMUP35zvYy0e2X+hF4RVng1lOryMdvyvXMYsvHyGwfSUo
-7sENz8AbjNMJs1fXWCR/foCEzIEBcg6XX9S1DJSVHXi+v+7P8sZ+ND0FyVo/W54F
-CzLXFEsty3RcBEOTKIycIe3p5tGz4Wb66cGJgMgJG1t6Mvn9/drjySdAUiosHH7O
-hKiKV1x1EiQJR0r9s6drkUgVv2hSq2SzW5yoQUn6Hm9vRqoawOO+ruVWBDETZOCz
-6A+9Ctxmo5oqhDXOI5otUK43ueuDDIZPmxhz3Piaq8BRCwqz2ej1gZq9hNky8/NY
-3UxIs9/Iw7TCyeAhLfdFNE+jSKzVlcrPK3nIHL+HhXnrSakYdt4DuWf0emTIMaoJ
-D2a7BC78rYF+znZgUMhXEssiKVx0g9KdG6MKVW4X+LU+pqYc0a3LVse8R6T8vU62
-Mom3ztoB1NQ0VFffwgq3i+Nx03N0l6u3P+sqOEa6iJcvnjqypB3BNYT12Vb9v0zc
-bb0NBYgzEAz7PnpP3ZxrdCu/AGHel25WbcAo3/erIphDJUHcl7te/WpEKig+HUob
-3asgO/41xAEB9LfogMNndxT+XnG1qS/fy4UJ2e1Un+JVI0iJ93PCew0LB2EZ/FN5
-L1q1bUi+wtPqY/leZydAvVrlGuIgPQBmtyybiTYRQAbhlVeyFvc=
-=gV9r
------END PGP SIGNATURE-----
-
---EVF5PPMfhYS0aIcm--
