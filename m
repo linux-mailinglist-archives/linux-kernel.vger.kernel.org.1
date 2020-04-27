@@ -2,126 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDED21B98FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 09:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6781B98F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 09:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgD0Hs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 03:48:59 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:41689 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbgD0Hsq (ORCPT
+        id S1726658AbgD0Hsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 03:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725785AbgD0Hsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 03:48:46 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200427074844euoutp0124d1987075d3a25ceef2eb09db280bad~JnbBmDUbc0841708417euoutp018
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 07:48:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200427074844euoutp0124d1987075d3a25ceef2eb09db280bad~JnbBmDUbc0841708417euoutp018
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1587973724;
-        bh=16c85UL1fH0B0UINKqjhEjmvKTup4PQjtl3nu9iR4gE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uJwbz9XH0NT6euuoozLt4Dcs4V3dR/lDByWmmaSTMT6U0FhxUtVHBC7ktHoZ3RpjF
-         2TNvR293uiqlsEBOXHXEYwBvT6nez9Lq2JXibsLzsgBmtEfizay2dAzkX/+wQOpdaN
-         6WDBOzKyofBrxwOZd7ywJxB5OTUPPpK6YJWpenSs=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200427074844eucas1p2981455a070a5aef8fc15b3eb848297a3~JnbBIjM0x0183601836eucas1p2I;
-        Mon, 27 Apr 2020 07:48:44 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id FB.1D.60679.B5E86AE5; Mon, 27
-        Apr 2020 08:48:43 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200427074843eucas1p1a3a265df0c7f14b0aaec25eb65daf606~JnbA3Z4u90341903419eucas1p1w;
-        Mon, 27 Apr 2020 07:48:43 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200427074843eusmtrp156023f0b462c0cae30620ccbf6e281a7~JnbA2Rm4C0061900619eusmtrp1U;
-        Mon, 27 Apr 2020 07:48:43 +0000 (GMT)
-X-AuditID: cbfec7f4-0e5ff7000001ed07-4e-5ea68e5b3882
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id C9.1A.07950.B5E86AE5; Mon, 27
-        Apr 2020 08:48:43 +0100 (BST)
-Received: from AMDC2765.digital.local (unknown [106.120.51.73]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200427074843eusmtip2032e3d382bbc91c2a1b6d85dc80f4046~JnbAVdxcK0786807868eusmtip2S;
-        Mon, 27 Apr 2020 07:48:43 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Subject: [PATCH 4/4] ASoC: wm8994: Silence warnings during deferred probe
-Date:   Mon, 27 Apr 2020 09:48:32 +0200
-Message-Id: <20200427074832.22134-5-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200427074832.22134-1-m.szyprowski@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmleLIzCtJLcpLzFFi42LZduzned2YvmVxBsdYLK5cPMRkMfXhEzaL
-        K62bGC3ufz3KaPHtSgeTxeVdc9gs1h65y27x+f1+VovDb9pZHTg9NnxuYvPYOesuu8emVZ1s
-        Hneu7WHzmD7nP6NH35ZVjB6fN8kFsEdx2aSk5mSWpRbp2yVwZSy+e5m1YBdbxZ6bJ5gaGNew
-        djFyckgImEi8f/OPvYuRi0NIYAWjxK85DWwQzhdGiUnb+hkhnM+MEt9fzgRq4QBrefDDGyK+
-        nFFiz7ZFrHAdp/8fZwSZyyZgKNH1tosNxBYRiJNYvngBE0gRs8AvRonPnzYxgUwSFvCUWD43
-        EaSGRUBV4lTrNhYQm1fAVuL+xXYmiPvkJVZvOMAMUs4pYCexcLobyBgJgX52iZcnpzNBHOQi
-        8fJwCES5sMSr41vYIWwZidOTe1gg6psZJR6eW8sO4fQwSlxumsEIUWUtcefcLzaQQcwCmhLr
-        d+lDhB0lNr/dxw4xn0/ixltBkDAzkDlp23RmiDCvREebEES1msSs4+vg1h68cAmqxENi+uxI
-        kLCQwERGifl/iicwys9CWLWAkXEVo3hqaXFuemqxUV5quV5xYm5xaV66XnJ+7iZGYBI5/e/4
-        lx2Mu/4kHWIU4GBU4uHl2L40Tog1say4MvcQowQHs5II76OMZXFCvCmJlVWpRfnxRaU5qcWH
-        GKU5WJTEeY0XvYwVEkhPLEnNTk0tSC2CyTJxcEo1MEYaXeUPldGVPpY09YaC75YeIR51xQ/K
-        TWHhLJEetqeyZtz5xKXQZRx8Mp5x8a7uVXc+iDgXyR5u1Hm37J/4UkOdJBZrt2MnNi1vUJ14
-        yCjKZX1CR1tLmb+XWk71c2YW+Z0p015b/rZlXXvomk6y6BJzobULz0XPTV9jvyFSN+Tnxuzu
-        5OvXlViKMxINtZiLihMBFCEqlB4DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHLMWRmVeSWpSXmKPExsVy+t/xe7rRfcviDN5v07G4cvEQk8XUh0/Y
-        LK60bmK0uP/1KKPFtysdTBaXd81hs1h75C67xef3+1ktDr9pZ3Xg9NjwuYnNY+esu+wem1Z1
-        snncubaHzWP6nP+MHn1bVjF6fN4kF8AepWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hs
-        HmtlZKqkb2eTkpqTWZZapG+XoJex+O5l1oJdbBV7bp5gamBcw9rFyMEhIWAi8eCHdxcjF4eQ
-        wFJGiX2PdrB1MXICxWUkTk5rYIWwhSX+XOsCiwsJfGKUOPxOGMRmEzCU6HoLERcRSJA4tLyF
-        GWQQs8A/Rol3j24ygywQFvCUWD43EaSGRUBV4lTrNhYQm1fAVuL+xXYmiPnyEqs3HAAr5xSw
-        k1g43Q1ila3Ex+9vmScw8i1gZFjFKJJaWpybnltspFecmFtcmpeul5yfu4kRGNbbjv3csoOx
-        613wIUYBDkYlHl6O7UvjhFgTy4orcw8xSnAwK4nwPspYFifEm5JYWZValB9fVJqTWnyI0RTo
-        ponMUqLJ+cCYyyuJNzQ1NLewNDQ3Njc2s1AS5+0QOBgjJJCeWJKanZpakFoE08fEwSnVwJhm
-        Xft1alvU5r0FH/JT7mwSu1CSuo+jZmnoxDUP5KXdZdOBfuDYkDAjm/WoaUu+1b9vzKn5ew6H
-        rq9tU30U1aj9b26e5QPzz1X619f1Tc6VWBHx78dPm2ffF8R9aK6SenD0u9ur13v3aXvv3qv3
-        c8W1k2qTP255k7rxEsc+vZSlb64s+F48XUGJpTgj0VCLuag4EQAAPcU/gQIAAA==
-X-CMS-MailID: 20200427074843eucas1p1a3a265df0c7f14b0aaec25eb65daf606
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200427074843eucas1p1a3a265df0c7f14b0aaec25eb65daf606
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200427074843eucas1p1a3a265df0c7f14b0aaec25eb65daf606
-References: <20200427074832.22134-1-m.szyprowski@samsung.com>
-        <CGME20200427074843eucas1p1a3a265df0c7f14b0aaec25eb65daf606@eucas1p1.samsung.com>
+        Mon, 27 Apr 2020 03:48:41 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88EAC061A0F;
+        Mon, 27 Apr 2020 00:48:40 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id d15so17675788wrx.3;
+        Mon, 27 Apr 2020 00:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ykXrmH4eSp0lHQxOKpg8eyJKQJcyO1JQD5mT6efAflk=;
+        b=AnOZDOpsgAeWPgZxk3V6/dCZNFwCY/j5llSevfYQXGFxKBG3I/CMCk8t1S9VSNoqcY
+         hl8EoO26MUaPwv3ndjPJatIziugH5mTzeYWYjVhU1U3hJQnZgFEMSCyCF9Y+t7+9tkaI
+         Fn0nStQlSQ8PoJmuIVheLGoh9FlhHuUSabQL7lt4hL1JxsaOj3MPhgtIBjyxARBfBoHa
+         rwgDF8raeWiCWPY/EXLQ4QoUOlvvEN6IvK/SGjzuN/GvMj4Kk0llYh/xqFUdDRrb0VW+
+         c3ldtWhISc6kQr6FLkR+6bLxZGsLtwRXsTat4GR1Oz8zX9FpOWnOcSopD5OlF7o6uWxT
+         COAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ykXrmH4eSp0lHQxOKpg8eyJKQJcyO1JQD5mT6efAflk=;
+        b=sSiwlFZq/ixqw8pl2eomYnyEvsY2GeydwVc5A+MQLFl69iZ3W/BfEvn+be0aW2OJGX
+         e/vjBmzs/9NVN1krp9TQhxuVWbdLtk5Re4o+2zDP0RxZOR16pZTlkgGnHvrHzP4J6+qD
+         7p6t76P4uYH+5JskmDbcw0U7dkiqawmxnin/eiERhEni5Jis55TAEftAW/64gPfF7auO
+         J8iUxUqfCrDMAFsvRmzsyuFLq9+sJAxt9FVOr8mSo0A5PHBX99RmOrIYOWBPw54UYUJ2
+         t8LBx0PoEMMtH2vJ8ljjc5Bqxfpgzolg4469eX0qFJzlek+i1XlLDXRwIl5ALS650RRa
+         V6xQ==
+X-Gm-Message-State: AGi0PuZ23Ta/KW6WGAkw3Qi6+AKJau5DXGDImSDFcT2vizEiPzOB8m7l
+        rpjZVlLt4vAOZcJfgoKh7qI=
+X-Google-Smtp-Source: APiQypLr4pMzeVYP4oKRwidwWpS/8tfvK74Y8iLP/UR5diqSW/Ip7nQvQA645SUPQxdfR8mfEZCrOw==
+X-Received: by 2002:adf:fc4f:: with SMTP id e15mr26149257wrs.415.1587973719735;
+        Mon, 27 Apr 2020 00:48:39 -0700 (PDT)
+Received: from localhost (p2E5BEDBA.dip0.t-ipconnect.de. [46.91.237.186])
+        by smtp.gmail.com with ESMTPSA id c1sm20626643wrc.4.2020.04.27.00.48.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2020 00:48:38 -0700 (PDT)
+Date:   Mon, 27 Apr 2020 09:48:37 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Wolfram Sang <wsa@the-dreams.de>
+Cc:     Jon Hunter <jonathanh@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>, linux-i2c@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] i2c: tegra: Better handle case where CPU0 is busy
+ for a long time
+Message-ID: <20200427074837.GC3451400@ulmo>
+References: <bba0a93a-8ec4-eda6-97f3-fb2ab0b9b503@gmail.com>
+ <6f07e5c8-7916-7ea2-2fe7-d05f8f011471@nvidia.com>
+ <77a31b2f-f525-ba9e-f1ae-2b474465bde4@gmail.com>
+ <470b4de4-e98a-1bdc-049e-6259ad603507@nvidia.com>
+ <d2531fc1-b452-717d-af71-19497e14ef00@gmail.com>
+ <a5198024-7273-74c4-b4f4-3a29d042bc36@nvidia.com>
+ <f8fb1f7f-2497-033e-ff2c-c86c6caa9706@gmail.com>
+ <fd1ca178-1ea3-851f-20a6-10bf00453ce3@nvidia.com>
+ <a5734f19-254e-b6bc-e791-fa1ac63f11a4@gmail.com>
+ <79f6560e-dbb5-0ae1-49f8-cf1cd95396ec@nvidia.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4ZLFUWh1odzi/v6L"
+Content-Disposition: inline
+In-Reply-To: <79f6560e-dbb5-0ae1-49f8-cf1cd95396ec@nvidia.com>
+User-Agent: Mutt/1.13.1 (2019-12-14)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't confuse user with meaningless warning about the failure in getting
-clocks in case of deferred probe.
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
----
- sound/soc/codecs/wm8994.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+--4ZLFUWh1odzi/v6L
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 55d0b9be6ff0..7426df1f806c 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -4593,7 +4593,8 @@ static int wm8994_probe(struct platform_device *pdev)
- 	ret = devm_clk_bulk_get_optional(pdev->dev.parent, ARRAY_SIZE(wm8994->mclk),
- 					 wm8994->mclk);
- 	if (ret < 0) {
--		dev_err(&pdev->dev, "Failed to get clocks: %d\n", ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(&pdev->dev, "Failed to get clocks: %d\n", ret);
- 		return ret;
- 	}
- 
--- 
-2.17.1
+On Fri, Apr 24, 2020 at 04:19:25PM +0100, Jon Hunter wrote:
+>=20
+> On 24/04/2020 15:45, Dmitry Osipenko wrote:
+> > 24.04.2020 10:10, Jon Hunter =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > ...
+> >>> Could you please clarify why pm_runtime_get_sync() can't be used by t=
+he
+> >>> I2C driver's in NOIRQ phase?
+> >>
+> >> Yes take a look at commit 1e2ef05bb8cf ("PM: Limit race conditions
+> >> between runtime PM and system sleep (v2)").
+> >=20
+> > I2C driver now uses irq-safe RPM since ede2299f7 ("i2c: tegra: Support
+> > atomic transfers"), and thus, the RPM's workqueue shouldn't be a
+> > problem. I guess RPM should work fine in this case, don't you think so?
+>=20
+> I was testing, and I did not see it using atomic transfers. I can
+> confirm if the RPM callbacks are called or not, but I did not think so.
+> However, let me confirm.
+>=20
+> >>> Yes, keeping PCI regulators always-enabled should be a good immediate
+> >>> solution.
+> >>
+> >> I was thinking about that, and I am not sure it is. I don't think that
+> >> the failure to send the I2C command should break suspend.
+> >=20
+> > It shouldn't, but looks like it should be a separate problem.
+>=20
+> Maybe but all these other problems appear to have existed for sometime
+> now. We need to fix all, but for the moment we need to figure out what's
+> best for v5.7.
 
+To me it doesn't sound like we have a good handle on what exactly is
+going on here and we're mostly just poking around.
+
+And even if things weren't working quite properly before, it sounds to
+me like this patch actually made things worse.
+
+Given all that, I think the best course of action at this point is to
+revert for v5.7 and prevent this from spreading[0]. After that we need
+to look at fixing the regulator issues and make sure that suspend/resume
+actually works properly and without errors. After that we should have a
+better chance of isolating why exactly this patch fails.
+
+Wolfram, can you revert the following two patches for v5.7, please?
+
+	8814044fe0fa i2c: tegra: Synchronize DMA before termination
+	a900aeac2537 i2c: tegra: Better handle case where CPU0 is busy for a long =
+time
+
+Thanks,
+Thierry
+
+[0]: https://lkml.org/lkml/2020/4/24/498
+
+--4ZLFUWh1odzi/v6L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl6mjlEACgkQ3SOs138+
+s6GuPA//YCI4iiRaXv/ZB4BV/jq0WNLoCvWW1RIunKE3zf6VZ6DTdT29DXUZXEx+
+5e0ruCZPLzlF5m2hF5TGYlRJcsimli2K5QolOi2Mn0ROxPF2Lso1FKwtFrGhJwdB
+22oUXuUDjeIPdTl7EQHEoaVcGPSVfxIWJOJoyQKK3WSpirU1NFkWJLIx5S8xpcMd
+E5MdrQVZVvVjFYETLy3e8cbvW8AzwA+TBsls03/UszuORf4GJXCjQHEQKRrb8Ouw
+Av4zI4C3pIgdlj5pEsUCbkAQOMtwEgiezoiedZKVj3RpQtLVR3ntmB7S9Em1ra0N
++4MkeSKcoPULYZgnmikrtY2H+ok14axoqN2aQROiGNcytggWEbsqyaKErrHzlq72
+RCNAeplgBsy9h2AoeWEfIqTy+bApoMX4QkVlOCxyCIn4Z0nbSta1MGjN+QHbX1L3
+atmaTITY2aGc6G74tMMkPBgvIYY2hgLoZc05jBY8P3fKNgj56tAAwCJ4Bx9OLMsS
+k5VchUOnHoCS5MefRBpQh4ikFOzXgpFzqYNphBxOk1YeRGZU9Xg6Vm4be31aRHdY
+hf1QocwpWOuhdNjzL/mCU+TiIDJv8/27YTXE/lMFRRhCyZ4oXcIq0VUMFyCerDgH
+K7RmwFiB54pxeOBHBRYFOfgSi51TCv4du9+AHL7J+7IXEkjf/MM=
+=MOEg
+-----END PGP SIGNATURE-----
+
+--4ZLFUWh1odzi/v6L--
