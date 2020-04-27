@@ -2,91 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F271BADC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BF51BADD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgD0TVH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Apr 2020 15:21:07 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:30599 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgD0TVH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:21:07 -0400
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 276A0240003;
-        Mon, 27 Apr 2020 19:21:03 +0000 (UTC)
-Date:   Mon, 27 Apr 2020 21:21:02 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/3] mtd: lpddr: Replace printk with pr_notice
-Message-ID: <20200427212102.2de1105a@xps13>
-In-Reply-To: <c324eed2e6c76fd0157969c69e463e7e7b9ba144.camel@perches.com>
-References: <cover.1588013366.git.gustavo@embeddedor.com>
-        <c9684a22b661fdeff9efcd5b18be01653911fc89.1588013366.git.gustavo@embeddedor.com>
-        <d036dbad02241fdeb0a6400896f73ff11e98e53b.camel@perches.com>
-        <67c4b34d-019d-e4c9-ebd2-3a8477470048@embeddedor.com>
-        <c324eed2e6c76fd0157969c69e463e7e7b9ba144.camel@perches.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726552AbgD0TYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:24:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726023AbgD0TYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 15:24:21 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE77B2078C;
+        Mon, 27 Apr 2020 19:24:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588015460;
+        bh=Vp0vnRvKFg1r1dD6nYGeZLym1g/qiYVKG/3/dYtACSI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ARK9w/7v+ttJmUZ8ezHZ3hnJkjbfAfH6DY8lhhhFAlCzT6Ml+1GrZMnA8IirtO/no
+         B/j1PZ2ONXnGLAlEz7o+/REseF4JTijbD4eu00/c8xGSp32iifSa8vqJv1r5lKFiJC
+         GmDIm0lfcj+2i9NN46J6w+TedGgSoNUQJFjjKl18=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A050D35227CC; Mon, 27 Apr 2020 12:24:20 -0700 (PDT)
+Date:   Mon, 27 Apr 2020 12:24:20 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Maddie Stone <maddiestone@google.com>,
+        Marco Elver <elver@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kernel-team <kernel-team@android.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [RFC PATCH 03/21] list: Annotate lockless list primitives with
+ data_race()
+Message-ID: <20200427192420.GL7560@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200324153643.15527-1-will@kernel.org>
+ <20200324153643.15527-4-will@kernel.org>
+ <20200324165128.GS20696@hirez.programming.kicks-ass.net>
+ <CAG48ez2WJo5+wqWi1nxstR=WWyseVfZPMnpdDBsZKW5G+Tt3KQ@mail.gmail.com>
+ <20200324213200.GA21176@willie-the-truck>
+ <20200330231315.GZ19865@paulmck-ThinkPad-P72>
+ <20200424173932.GK21141@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424173932.GK21141@willie-the-truck>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
-
-Joe Perches <joe@perches.com> wrote on Mon, 27 Apr 2020 12:15:02 -0700:
-
-> On Mon, 2020-04-27 at 14:10 -0500, Gustavo A. R. Silva wrote:
+On Fri, Apr 24, 2020 at 06:39:33PM +0100, Will Deacon wrote:
+> On Mon, Mar 30, 2020 at 04:13:15PM -0700, Paul E. McKenney wrote:
+> > On Tue, Mar 24, 2020 at 09:32:01PM +0000, Will Deacon wrote:
+> > > [mutt crashed while I was sending this; apologies if you receive it twice]
+> > > 
+> > > On Tue, Mar 24, 2020 at 05:56:15PM +0100, Jann Horn wrote:
+> > > > On Tue, Mar 24, 2020 at 5:51 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > > > On Tue, Mar 24, 2020 at 03:36:25PM +0000, Will Deacon wrote:
+> > > > > > diff --git a/include/linux/list.h b/include/linux/list.h
+> > > > > > index 4fed5a0f9b77..4d9f5f9ed1a8 100644
+> > > > > > --- a/include/linux/list.h
+> > > > > > +++ b/include/linux/list.h
+> > > > > > @@ -279,7 +279,7 @@ static inline int list_is_last(const struct list_head *list,
+> > > > > >   */
+> > > > > >  static inline int list_empty(const struct list_head *head)
+> > > > > >  {
+> > > > > > -     return READ_ONCE(head->next) == head;
+> > > > > > +     return data_race(READ_ONCE(head->next) == head);
+> > > > > >  }
+> > > > >
+> > > > > list_empty() isn't lockless safe, that's what we have
+> > > > > list_empty_careful() for.
+> > > > 
+> > > > That thing looks like it could also use some READ_ONCE() sprinkled in...
+> > > 
+> > > Crikey, how did I miss that? I need to spend some time understanding the
+> > > ordering there.
+> > > 
+> > > So it sounds like the KCSAN splats relating to list_empty() and loosely
+> > > referred to by 1c97be677f72 ("list: Use WRITE_ONCE() when adding to lists
+> > > and hlists") are indicative of real bugs and we should actually restore
+> > > list_empty() to its former glory prior to 1658d35ead5d ("list: Use
+> > > READ_ONCE() when testing for empty lists"). Alternatively, assuming
+> > > list_empty_careful() does what it says on the tin, we could just make that
+> > > the default.
 > > 
-> > On 4/27/20 14:01, Joe Perches wrote:  
-> > > On Mon, 2020-04-27 at 14:03 -0500, Gustavo A. R. Silva wrote:  
-> > > > pr_notice is preferred over printk.  
-> > > 
-> > > So is coalescing formats
-> > > 
-> > > ? diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
-> > > []  
-> > > > @@ -127,31 +127,31 @@ static inline void print_drs_error(unsigned dsr)
-> > > >  	int prog_status = (dsr & DSR_RPS) >> 8;
-> > > >  
-> > > >  	if (!(dsr & DSR_AVAILABLE))
-> > > > -		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
-> > > > +		pr_notice("DSR.15: (0) Device not Available\n");
-> > > >  	if ((prog_status & 0x03) == 0x03)
-> > > > -		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
-> > > > +		pr_notice("DSR.9,8: (11) Attempt to program invalid "
-> > > >  						"half with 41h command\n");  
-> > > 
-> > > 		pr_notice("DSR.9,8: (11) Attempt to program invalid half with 41h command\n");
-> > >   
-> > 
-> > I didn't want to mess with the rest of format, because some maintainers
-> > don't like that. If Miquel is OK with that, I can fix that up, too.  
+> > The list_empty_careful() function (suitably annotated) returns false if
+> > the list is non-empty, including when it is in the process of becoming
+> > either empty or non-empty.  It would be fine for the lockless use cases
+> > I have come across.
 > 
-> He should.  Coalescing is part of coding-style.
+> Hmm, I had a look at the implementation and I'm not at all convinced that
+> it's correct. First of all, the comment above it states:
 > 
-> "never break user-visible strings such as printk messages"
-> 
-> cheers, Joe
-> 
+>  * NOTE: using list_empty_careful() without synchronization
+>  * can only be safe if the only activity that can happen
+>  * to the list entry is list_del_init(). Eg. it cannot be used
+>  * if another CPU could re-list_add() it.
 
-I suppose Gustavo meant that there are maintainers in the community
-(and I am part of it) that do not like when people fix style issues
-aside their own changes -specifically without writing it in commit
-logs. But in this situation I think s/printk(KEN_NOTICE/pr_notice(/
-needs the second line to be re-aligned with the first one. While
-touching it, it seems reasonable to also fix this style issue and avoid
-keeping broken strings.
+Huh.  This thing is unchanged since 2.6.12-rc2, back in 2005:
 
-Thanks,
-Miquèl
+static inline int list_empty_careful(const struct list_head *head)
+{
+	struct list_head *next = head->next;
+	return (next == head) && (next == head->prev);
+}
+
+I can imagine compiler value-caching optimizations that would cause
+trouble, for example, if a previous obsolete fetch from head->prev was
+lying around in a register, causing this function to say "not empty" when
+it was in fact empty.  Of course, if obsolete values for both head->next
+and head->prev were lying around, pretty much anything could happen.
+
+> but it seems that people disregard this note and instead use it as a
+> general-purpose lockless test, taking a lock and rechecking if it returns
+> non-empty. It would also mean we'd have to keep the WRITE_ONCE() in
+> INIT_LIST_HEAD, which is something that I've been trying to remove.
+> 
+> In the face of something like a concurrent list_add(); list_add_tail()
+> sequence, then the tearing writes to the head->{prev,next} pointers could
+> cause list_empty_careful() to indicate that the list is momentarily empty.
+> 
+> I've started looking at whether we can use a NULL next pointer to indicate
+> an empty list, which might allow us to kill the __list_del_clearprev() hack
+> at the same time, but I've not found enough time to really get my teeth into
+> it yet.
+
+In the delete-only case, I kind of get it, other than the potential for
+optimization.  Once the list becomes empty, it will forever remain empty.
+And the additional test of head->prev avoids this returning true while the
+deletion is half done (again, aside from the potential for optimization).
+
+If insertions are allowed, the thing I haven't quite figured out yet is
+what is being gained by the additional check of head->prev.  After all,
+if updates are not excluded, the return value can become obsolete
+immediately anyhow.  Yes, it could be used as a heuristic, but it could
+report empty immediately before a list_add(), so there would need to
+either be a careful wakeup protocol or a periodic poll of the list.
+
+Or am I missing a trick here?
+
+							Thanx, Paul
