@@ -2,243 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7799C1BA051
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68101BA056
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726972AbgD0JsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 05:48:25 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:60934 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726604AbgD0JsW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 05:48:22 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0TwoMATP_1587980897;
-Received: from JosephdeMacBook-Pro.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0TwoMATP_1587980897)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 27 Apr 2020 17:48:18 +0800
-Subject: Re: [PATCH] ocfs2: mount shared volume without ha stack
-To:     Gang He <ghe@suse.com>, mark@fasheh.com, jlbec@evilplan.org
-Cc:     linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        akpm@linux-foundation.org
-References: <20200423053300.22661-1-ghe@suse.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <ec4f098b-f043-85d5-6717-66c4f611146d@linux.alibaba.com>
-Date:   Mon, 27 Apr 2020 17:48:17 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200423053300.22661-1-ghe@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726982AbgD0JtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 05:49:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:60936 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726349AbgD0JtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 05:49:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8923C1FB;
+        Mon, 27 Apr 2020 02:49:22 -0700 (PDT)
+Received: from ssg-dev-vb.arm.com (E111385.Arm.com [10.50.65.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69D903F68F;
+        Mon, 27 Apr 2020 02:49:19 -0700 (PDT)
+From:   Hadar Gat <hadar.gat@arm.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hadar Gat <hadar.gat@arm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ofir Drang <ofir.drang@arm.com>
+Subject: [PATCH v2 0/3] hwrng: cctrng kconfig updates
+Date:   Mon, 27 Apr 2020 12:49:03 +0300
+Message-Id: <1587980946-363-1-git-send-email-hadar.gat@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gang,
+Some fixes in Kconfig for cctrng:
+ + add missing dependency on OF
+ + change default to 'n'
+ + improve inaccurate help description
 
-On 2020/4/23 13:33, Gang He wrote:
-> Usually we create and use a ocfs2 shared volume on the top of
-> ha stack. For pcmk based ha stack, which includes DLM, corosync
-> and pacemaker services.
-> The customers complained they could not mount existent ocfs2
-> volume in the single node without ha stack, e.g. single node
-> backup/restore scenario.
-> Like this case, the customers just want to access the data
-> from the existent ocfs2 volume quickly, but do not want to
-> restart or setup ha stack.
-> Then, I'd like to add a mount option "nocluster", if the users
-> use this option to mount a ocfs2 shared volume, the whole mount
-> will not depend on the ha related services. the command will mount
-> the existent ocfs2 volume directly (like local mount), for avoiding
-> setup the ha stack.
-> 
-> Signed-off-by: Gang He <ghe@suse.com>
-> ---
->  fs/ocfs2/ocfs2.h    |  4 +++-
->  fs/ocfs2/slot_map.c | 46 ++++++++++++++++++++++++++-------------------
->  fs/ocfs2/super.c    | 21 +++++++++++++++++++++
->  3 files changed, 51 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/ocfs2/ocfs2.h b/fs/ocfs2/ocfs2.h
-> index 9150cfa4df7d..ee5d98516212 100644
-> --- a/fs/ocfs2/ocfs2.h
-> +++ b/fs/ocfs2/ocfs2.h
-> @@ -279,6 +279,7 @@ enum ocfs2_mount_options
->  	OCFS2_MOUNT_JOURNAL_ASYNC_COMMIT = 1 << 15,  /* Journal Async Commit */
->  	OCFS2_MOUNT_ERRORS_CONT = 1 << 16, /* Return EIO to the calling process on error */
->  	OCFS2_MOUNT_ERRORS_ROFS = 1 << 17, /* Change filesystem to read-only on error */
-> +	OCFS2_MOUNT_NOCLUSTER = 1 << 18, /* No cluster aware filesystem mount */
->  };
->  
->  #define OCFS2_OSB_SOFT_RO	0x0001
-> @@ -673,7 +674,8 @@ static inline int ocfs2_cluster_o2cb_global_heartbeat(struct ocfs2_super *osb)
->  
->  static inline int ocfs2_mount_local(struct ocfs2_super *osb)
->  {
-> -	return (osb->s_feature_incompat & OCFS2_FEATURE_INCOMPAT_LOCAL_MOUNT);
-> +	return ((osb->s_feature_incompat & OCFS2_FEATURE_INCOMPAT_LOCAL_MOUNT)
-> +		|| (osb->s_mount_opt & OCFS2_MOUNT_NOCLUSTER));
+v2 changes:
+  + remove unneeded depends on HW_RANDOM.
+  + remove unneeded line 'default n' in order to follow the convention.
+  + in help description changed to: If unsure, say 'N'
 
-Could we set the feature bit when mount with "nocluster"?
+Hadar Gat (3):
+  hwrng: cctrng - Add dependency on OF
+  hwrng: cctrng - change default to n
+  hwrng: cctrng - update help description
 
->  }
->  
->  static inline int ocfs2_uses_extended_slot_map(struct ocfs2_super *osb)
-> diff --git a/fs/ocfs2/slot_map.c b/fs/ocfs2/slot_map.c
-> index 8caeceeaeda7..4da0e4b1e79b 100644
-> --- a/fs/ocfs2/slot_map.c
-> +++ b/fs/ocfs2/slot_map.c
-> @@ -254,14 +254,16 @@ static int __ocfs2_find_empty_slot(struct ocfs2_slot_info *si,
->  	int i, ret = -ENOSPC;
->  
->  	if ((preferred >= 0) && (preferred < si->si_num_slots)) {
-> -		if (!si->si_slots[preferred].sl_valid) {
-> +		if (!si->si_slots[preferred].sl_valid ||
-> +		    !si->si_slots[preferred].sl_node_num) {
+ drivers/char/hw_random/Kconfig | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Why specially handle node num 0 here?
-It seems breaks original logic.
+-- 
+2.7.4
 
->  			ret = preferred;
->  			goto out;
->  		}
->  	}
->  
->  	for(i = 0; i < si->si_num_slots; i++) {
-> -		if (!si->si_slots[i].sl_valid) {
-> +		if (!si->si_slots[i].sl_valid ||
-> +		    !si->si_slots[i].sl_node_num) {
->  			ret = i;
->  			break;
->  		}
-> @@ -456,24 +458,30 @@ int ocfs2_find_slot(struct ocfs2_super *osb)
->  	spin_lock(&osb->osb_lock);
->  	ocfs2_update_slot_info(si);
->  
-> -	/* search for ourselves first and take the slot if it already
-> -	 * exists. Perhaps we need to mark this in a variable for our
-> -	 * own journal recovery? Possibly not, though we certainly
-> -	 * need to warn to the user */
-> -	slot = __ocfs2_node_num_to_slot(si, osb->node_num);
-> -	if (slot < 0) {
-> -		/* if no slot yet, then just take 1st available
-> -		 * one. */
-> -		slot = __ocfs2_find_empty_slot(si, osb->preferred_slot);
-> +	if (ocfs2_mount_local(osb))
-> +		/* use slot 0 directly in local mode */
-> +		slot = 0;
-
-Could you please elaborate more why we need this?
-
-Thanks,
-Joseph
-
-> +	else {
-> +		/* search for ourselves first and take the slot if it already
-> +		 * exists. Perhaps we need to mark this in a variable for our
-> +		 * own journal recovery? Possibly not, though we certainly
-> +		 * need to warn to the user */
-> +		slot = __ocfs2_node_num_to_slot(si, osb->node_num);
->  		if (slot < 0) {
-> -			spin_unlock(&osb->osb_lock);
-> -			mlog(ML_ERROR, "no free slots available!\n");
-> -			status = -EINVAL;
-> -			goto bail;
-> -		}
-> -	} else
-> -		printk(KERN_INFO "ocfs2: Slot %d on device (%s) was already "
-> -		       "allocated to this node!\n", slot, osb->dev_str);
-> +			/* if no slot yet, then just take 1st available
-> +			 * one. */
-> +			slot = __ocfs2_find_empty_slot(si, osb->preferred_slot);
-> +			if (slot < 0) {
-> +				spin_unlock(&osb->osb_lock);
-> +				mlog(ML_ERROR, "no free slots available!\n");
-> +				status = -EINVAL;
-> +				goto bail;
-> +			}
-> +		} else
-> +			printk(KERN_INFO "ocfs2: Slot %d on device (%s) was "
-> +			       "already allocated to this node!\n",
-> +			       slot, osb->dev_str);
-> +	}
->  
->  	ocfs2_set_slot(si, slot, osb->node_num);
->  	osb->slot_num = slot;
-> diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-> index ac61eeaf3837..71ea9ce71a6b 100644
-> --- a/fs/ocfs2/super.c
-> +++ b/fs/ocfs2/super.c
-> @@ -175,6 +175,7 @@ enum {
->  	Opt_dir_resv_level,
->  	Opt_journal_async_commit,
->  	Opt_err_cont,
-> +	Opt_nocluster,
->  	Opt_err,
->  };
->  
-> @@ -208,6 +209,7 @@ static const match_table_t tokens = {
->  	{Opt_dir_resv_level, "dir_resv_level=%u"},
->  	{Opt_journal_async_commit, "journal_async_commit"},
->  	{Opt_err_cont, "errors=continue"},
-> +	{Opt_nocluster, "nocluster"},
->  	{Opt_err, NULL}
->  };
->  
-> @@ -619,6 +621,13 @@ static int ocfs2_remount(struct super_block *sb, int *flags, char *data)
->  		goto out;
->  	}
->  
-> +	tmp = OCFS2_MOUNT_NOCLUSTER;
-> +	if ((osb->s_mount_opt & tmp) != (parsed_options.mount_opt & tmp)) {
-> +		ret = -EINVAL;
-> +		mlog(ML_ERROR, "Cannot change nocluster option on remount\n");
-> +		goto out;
-> +	}
-> +
->  	tmp = OCFS2_MOUNT_HB_LOCAL | OCFS2_MOUNT_HB_GLOBAL |
->  		OCFS2_MOUNT_HB_NONE;
->  	if ((osb->s_mount_opt & tmp) != (parsed_options.mount_opt & tmp)) {
-> @@ -859,6 +868,7 @@ static int ocfs2_verify_userspace_stack(struct ocfs2_super *osb,
->  	}
->  
->  	if (ocfs2_userspace_stack(osb) &&
-> +	    !(osb->s_mount_opt & OCFS2_MOUNT_NOCLUSTER) &&
->  	    strncmp(osb->osb_cluster_stack, mopt->cluster_stack,
->  		    OCFS2_STACK_LABEL_LEN)) {
->  		mlog(ML_ERROR,
-> @@ -1139,6 +1149,11 @@ static int ocfs2_fill_super(struct super_block *sb, void *data, int silent)
->  	       osb->s_mount_opt & OCFS2_MOUNT_DATA_WRITEBACK ? "writeback" :
->  	       "ordered");
->  
-> +	if ((osb->s_mount_opt & OCFS2_MOUNT_NOCLUSTER) &&
-> +	   !(osb->s_feature_incompat & OCFS2_FEATURE_INCOMPAT_LOCAL_MOUNT))
-> +		printk(KERN_NOTICE "ocfs2: The shared device (%s) is mounted "
-> +		       "without cluster aware mode.\n", osb->dev_str);
-> +
->  	atomic_set(&osb->vol_state, VOLUME_MOUNTED);
->  	wake_up(&osb->osb_mount_event);
->  
-> @@ -1445,6 +1460,9 @@ static int ocfs2_parse_options(struct super_block *sb,
->  		case Opt_journal_async_commit:
->  			mopt->mount_opt |= OCFS2_MOUNT_JOURNAL_ASYNC_COMMIT;
->  			break;
-> +		case Opt_nocluster:
-> +			mopt->mount_opt |= OCFS2_MOUNT_NOCLUSTER;
-> +			break;
->  		default:
->  			mlog(ML_ERROR,
->  			     "Unrecognized mount option \"%s\" "
-> @@ -1556,6 +1574,9 @@ static int ocfs2_show_options(struct seq_file *s, struct dentry *root)
->  	if (opts & OCFS2_MOUNT_JOURNAL_ASYNC_COMMIT)
->  		seq_printf(s, ",journal_async_commit");
->  
-> +	if (opts & OCFS2_MOUNT_NOCLUSTER)
-> +		seq_printf(s, ",nocluster");
-> +
->  	return 0;
->  }
->  
-> 
