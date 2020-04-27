@@ -2,92 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0821B9561
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 05:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A711B956E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 05:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726432AbgD0DYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Apr 2020 23:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726340AbgD0DX7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Apr 2020 23:23:59 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA17C061A0F
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 20:23:58 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id r14so8298485pfg.2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Apr 2020 20:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xWkCJL3ctEryrbpWSg1ZW6IULUBwZBfg8eB/8pm3+7E=;
-        b=v2KaYSRs8N2hD0nieI0w08EXyDPWoLe4COZyE7HRChzl3kk2KlxnlR9/ayKKIt2Nox
-         5fw1ezQt5PUHNWdnEtjvuqE3MNkT3hID/9F+gopT/FrZwof2LDyAA0d/O8HN/JSE4HD3
-         e4SDrx/vBfSetkevP/62uKDMx+x3qiPM1M1ur4qzByYaAJJ5jBNMArzPXnA5bcH+8D6H
-         pzvv0IcgY5C+ucVgtEPSny5SVGs49Wqkn/smAE0DuBGa+f8Mk1n6KyqHKxe1bI7jvsBQ
-         Pbe6ueykP4Tb7p4IRB1DBEqWyG9yGlGiGCqYR1GxEAduWyXmczBmSGjQb4FCzzQdhWhu
-         CBxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xWkCJL3ctEryrbpWSg1ZW6IULUBwZBfg8eB/8pm3+7E=;
-        b=iDlNn5B0jFodgryDlOQoQfYMuOF8tY0SL8bwjUAZD0Qq09939HGs/eEBMba2IJ4F1O
-         2lvY9attBGwHlQXUrevhvEnF8LnFlIucQ8LQKLScG/X7bTdQ4blW2urz0YdphomQcY/h
-         NNdN9aUrnFqAeEDRtebg5ldZAJ41KET6aJvOj3p70xxfgSAvJxhEG7zG4DIOOyRfYGW5
-         ocvmwMPBc9NW6s+u7ZUhIKbegoCJfzPOfkVPCOU9ocbKvYlhxzr4i87kKWNm4CIdLemY
-         +auZbeWqRksvvkgh3h9ahRTYtI0Jc1rOBCUfSRyGDYUPILlG4OcA4pfxZQQckDunPBgU
-         TCNA==
-X-Gm-Message-State: AGi0Pubjgq4x6eg8XPhaK6OdGN7LX9JCbl6ukIy0btU6A70bJCF3tx90
-        RmItQr3t9WxlFOBgn8/VUtRptQ==
-X-Google-Smtp-Source: APiQypKrxJvDhiMk2y9+AUkvCg8JM75d5D7xWjTbRzsfAW37wFRws1/5oaDMIVvRDiB+49yL3tHFRQ==
-X-Received: by 2002:aa7:9891:: with SMTP id r17mr8410841pfl.5.1587957837798;
-        Sun, 26 Apr 2020 20:23:57 -0700 (PDT)
-Received: from Smcdef-MBP.local.net ([103.136.220.68])
-        by smtp.gmail.com with ESMTPSA id n69sm10076439pjc.8.2020.04.26.20.23.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Apr 2020 20:23:57 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mingo@kernel.org, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de
-Cc:     linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH RESEND] sched/fair: add __init to sched_init_granularity functions
-Date:   Mon, 27 Apr 2020 11:23:38 +0800
-Message-Id: <20200427032338.73743-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1726565AbgD0DYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Apr 2020 23:24:41 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:34438 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726535AbgD0DYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 26 Apr 2020 23:24:31 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id CF798AA9AC01DCEB5063;
+        Mon, 27 Apr 2020 11:24:29 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Mon, 27 Apr 2020
+ 11:24:18 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <wambui.karugax@gmail.com>,
+        <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH 4/7] staging: rtl8723bs: core: remove set but not used 'algthm'
+Date:   Mon, 27 Apr 2020 11:23:39 +0800
+Message-ID: <20200427032342.27211-5-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200427032342.27211-1-yanaijie@huawei.com>
+References: <20200427032342.27211-1-yanaijie@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function sched_init_granularity() is only called from __init
-functions, so mark it __init as well.
+Fix the following gcc warning:
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:1087:33: warning: variable
+‘algthm’ set but not used [-Wunused-but-set-variable]
+  unsigned int seq, len, status, algthm, offset;
+                                 ^~~~~~
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1141c7e77564d..6f05843c76d7d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -191,7 +191,7 @@ static void update_sysctl(void)
- #undef SET_SYSCTL
- }
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 8f9da1d49343..5adc3dad8d7c 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -1084,7 +1084,7 @@ unsigned int OnAuth(struct adapter *padapter, union recv_frame *precv_frame)
  
--void sched_init_granularity(void)
-+void __init sched_init_granularity(void)
+ unsigned int OnAuthClient(struct adapter *padapter, union recv_frame *precv_frame)
  {
- 	update_sysctl();
- }
+-	unsigned int	seq, len, status, algthm, offset;
++	unsigned int	seq, len, status, offset;
+ 	unsigned char *p;
+ 	unsigned int	go2asoc = 0;
+ 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
+@@ -1103,7 +1103,6 @@ unsigned int OnAuthClient(struct adapter *padapter, union recv_frame *precv_fram
+ 
+ 	offset = (GetPrivacy(pframe)) ? 4 : 0;
+ 
+-	algthm	= le16_to_cpu(*(__le16 *)((SIZE_PTR)pframe + WLAN_HDR_A3_LEN + offset));
+ 	seq	= le16_to_cpu(*(__le16 *)((SIZE_PTR)pframe + WLAN_HDR_A3_LEN + offset + 2));
+ 	status	= le16_to_cpu(*(__le16 *)((SIZE_PTR)pframe + WLAN_HDR_A3_LEN + offset + 4));
+ 
 -- 
-2.11.0
+2.21.1
 
