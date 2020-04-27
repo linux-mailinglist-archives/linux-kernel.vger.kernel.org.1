@@ -2,67 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0941BA401
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 14:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813CC1BA40A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 14:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727945AbgD0MxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 08:53:14 -0400
-Received: from verein.lst.de ([213.95.11.211]:47815 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727029AbgD0MxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 08:53:13 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 49F0A68CF0; Mon, 27 Apr 2020 14:53:11 +0200 (CEST)
-Date:   Mon, 27 Apr 2020 14:53:10 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Becker <jlbec@evilplan.org>, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 08/29] docs: filesystems: convert configfs.txt to
- ReST
-Message-ID: <20200427125310.GC31904@lst.de>
-References: <cover.1587487612.git.mchehab+huawei@kernel.org> <278a9befc98b49ea866c9b687d070c70cde20628.1587487612.git.mchehab+huawei@kernel.org> <20200421165534.GA16511@lst.de> <20200421170223.GP5820@bombadil.infradead.org> <20200421172337.GA18305@lst.de> <20200421165317.277f52ee@lwn.net>
+        id S1727950AbgD0Mx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 08:53:58 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:34031 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727827AbgD0Mx6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 08:53:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1587992037; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=oHj/1Cte/kqSnw6BUUytxEkRvBSBwIKK808zQI9LFHE=; b=v9d95XPMH07vO2JNK4XScQv0yYFMZLzP2u2VJ4CCkyXqErcp6AcLxfVXMGHQYbN90S7v74Sq
+ rOXry1DUA1bMKUdjkDwgkpZbEgIRI535z1WfMFLLg7IaivZbckZRCwFd6cE0Ov2Rblngn+2i
+ NTsDR4pDH7nN+X/DctZ0/BeCOdE=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea6d5d3.7fb15c300340-smtp-out-n04;
+ Mon, 27 Apr 2020 12:53:39 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 30ECAC44793; Mon, 27 Apr 2020 12:53:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.100] (unknown [157.44.245.37])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jprakash)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D7B24C433CB;
+        Mon, 27 Apr 2020 12:53:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D7B24C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jprakash@codeaurora.org
+Subject: Re: [PATCH V2 1/3] iio: adc: Convert the QCOM SPMI ADC bindings to
+ .yaml format
+To:     Rob Herring <robh@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mka@chromium.org, linus.walleij@linaro.org,
+        Jonathan.Cameron@huawei.com, smohanad@codeaurora.org,
+        kgunda@codeaurora.org, aghayal@codeaurora.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mark Rutland <mark.rutland@arm.com>, linux-iio@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+References: <1586942266-21480-1-git-send-email-jprakash@codeaurora.org>
+ <1586942266-21480-2-git-send-email-jprakash@codeaurora.org>
+ <20200416204241.GA14143@bogus>
+From:   Jishnu Prakash <jprakash@codeaurora.org>
+Message-ID: <b41fc1ea-1047-6305-bf58-fd8d4d72282d@codeaurora.org>
+Date:   Mon, 27 Apr 2020 18:23:27 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20200416204241.GA14143@bogus>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200421165317.277f52ee@lwn.net>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 04:53:17PM -0600, Jonathan Corbet wrote:
-> > It wasn't entirely uncommon, but that's not really the point.  The
-> > Problem is all the weird ".." or "::" annotations that really kill
-> > the flow, or things like "|copy|" that have no reason to exist.
-> 
-> This sounds sort of like "my markup is good, yours is bad", honestly.  If
-> somebody were trying to add bracketed headings to a new document, I
-> suspect we'd get similar complaints.
+Hi Rob
 
-Not really.  It is a "less markup is better". 
+I can see the first error:Â  "....chosen node must be at root node" from 
+'make dt_binding_check' even without my patch applied, so it does not 
+seem related. I will fix the second error in the next post.
 
-> The markup can certainly be toned down.  If you don't like |copy|, it can
-> just as easily remain "(c)" or become ©, or just go away entirely.  That
-> would get rid of the ".. include:: <isonum.txt>" line too.  I would
-> happily make a rule that we don't bother with markup like |copy|
-> anywhere in the kernel docs.
-
-That is a good start.
-
-> The SPDX line is supposed to exist in all files, of course.
-
-No problem with that.  I'll happily take a SPDX patch any time.
-
-> If Mauro does that, can you live with "::" to mark a literal block?  It
-> doesn't seem like a whole lot of noise...?
-
-That is in fact one of my favourite pet pevees with the whole RST
-thing.
+On 4/17/2020 2:12 AM, Rob Herring wrote:
+> On Wed, 15 Apr 2020 14:47:44 +0530, Jishnu Prakash wrote:
+>> Convert the adc bindings from .txt to .yaml format.
+>>
+>> Signed-off-by: Jishnu Prakash <jprakash@codeaurora.org>
+>> ---
+>>   .../devicetree/bindings/iio/adc/qcom,spmi-vadc.txt | 173 -------------
+>>   .../bindings/iio/adc/qcom,spmi-vadc.yaml           | 288 +++++++++++++++++++++
+>>   2 files changed, 288 insertions(+), 173 deletions(-)
+>>   delete mode 100644 Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.txt
+>>   create mode 100644 Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.yaml
+>>
+> My bot found errors running 'make dt_binding_check' on your patch:
+>
+> Documentation/devicetree/bindings/display/simple-framebuffer.example.dts:21.16-37.11: Warning (chosen_node_is_root): /example-0/chosen: chosen node must be at root node
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.example.dt.yaml: adc@3100: 'adc-chan@0x39', 'adc-chan@0x9', 'adc-chan@0xa', 'adc-chan@0xe', 'adc-chan@0xf' do not match any of the regexes: '.*-names$', '.*-supply$', '^#.*-cells$', '^#[a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}$', '^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$', '^__.*__$', 'pinctrl-[0-9]+'
+>
+> See https://patchwork.ozlabs.org/patch/1271025
+>
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure dt-schema is up to date:
+>
+> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+>
+> Please check and re-submit.
