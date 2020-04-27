@@ -2,115 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B486E1BA58B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD241BA59E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727886AbgD0N6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 09:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726879AbgD0N6g (ORCPT
+        id S1727975AbgD0OBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 10:01:00 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:37709 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727824AbgD0OAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 09:58:36 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77888C0610D5;
-        Mon, 27 Apr 2020 06:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=HI+hXdef3teFcq3aFHJ+lNQ36+H/xnayzEP1cLz139A=; b=m8KykkkylWdoseBY1n/gsoqEh
-        KVFTqlhC0kFSp30GS16jUkbUZq7hRIIFETkZzuGl9kBqK2RTa4RTpC3CXJ9+Rj7Y2/iLhSK6XgT3N
-        ScefK7wtt9WxTxKjVKBC1wqYSRrECSrlLe9tbgSH1oytOZq2pylhi5zsVzFC+5p4NpsqR+RUNxT9D
-        XtUWUAj78s5iuppoliNlc9owGzJlBFNQSFZrqSOPfgOik+W8NN+vB08RqRaYtuQPZwCNiRbA7SqBY
-        h1PR2wiMjIpCXZqlGIY/VXWn7lBiRbKH5zdlKb0HDEBtgr2ibt+ebxHGba7DtaX29ZXB3ypvrWRYi
-        E6rLzrZ9Q==;
-Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:44642)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jT4H7-0003EQ-Ql; Mon, 27 Apr 2020 14:58:22 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jT4H6-0006iG-Q0; Mon, 27 Apr 2020 14:58:20 +0100
-Date:   Mon, 27 Apr 2020 14:58:20 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     linux.cj@gmail.com, Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-acpi@vger.kernel.org, Marcin Wojtas <mw@semihalf.com>,
-        Makarand Pawagi <makarand.pawagi@nxp.com>,
-        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
-        Varun Sethi <V.Sethi@nxp.com>, linux-kernel@vger.kernel.org,
-        Pankaj Bansal <pankaj.bansal@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [net-next PATCH v2 0/3] Introduce new APIs to support phylink
- and phy layers
-Message-ID: <20200427135820.GH25745@shell.armlinux.org.uk>
-References: <20200427132409.23664-1-calvin.johnson@oss.nxp.com>
+        Mon, 27 Apr 2020 10:00:52 -0400
+Received: from localhost ([109.41.194.26]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1N6sON-1j7g1g0Aed-018Lsx; Mon, 27 Apr 2020 16:00:23 +0200
+Date:   Mon, 27 Apr 2020 16:00:19 +0200
+From:   Andreas Klinger <ak@it-klinger.de>
+To:     jic23@kernel.org
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org,
+        tglx@linutronix.de, allison@lohutok.net, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: bmp280: fix compensation of humidity
+Message-ID: <20200427140017.GA25402@arbad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200427132409.23664-1-calvin.johnson@oss.nxp.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Provags-ID: V03:K1:tcKH7nPEyKfMcDD2F9kaxMB5SlaQQyO81sdZWyfprhBwlc8BRZ5
+ CKn9SjH/HoNL2EiXPUG0olFXqFqTpIwnBQHI/cXeAGrTHFuSowrGcAatD7uiz1p9jVVuCQV
+ BztvGLp6CEf5KXe6caXnuertc2S4mNiY8Rri/OhNLfzVIUrPpfEqX5AysUIfY8k3sSYe3AY
+ k75pwe3lujqHkt3NSdGhg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MhHVfASsqnE=:oA/7DL60ewl/0B+eL9FqNa
+ 21qi8f6W/DmlH1ebuMABZsQtGM/+PCyRbJO4VT8boGgPrAiOm7tigdBJLxBxyqcagNA/ocHdz
+ HuE1aDm7gsaIC6HaBlY+jYtkxdLpf7kFU6x4S2MKK14IiKEbNMbvIv3W2Z1aa6w+/BJhiSibC
+ AB5PGrlwHehYSCXjV40QtRo6QF/4iaLBWhauCqmkZ2/fLp2IccWNmA/nc3Bld0GGL+pRcS6dn
+ bh+1FRo1ejHhpu7Z6GnMJGTIfaXIKPziL4Ih2gcaVswzbeBdhx0BBGFSGNJxgGD9+prZ4w8h7
+ w1q4otzUD3kFi+DCwo+hxUd5RWLoWWqRFE42KS99yVHIcmemq1Rlvj00t0hCgRjMYQTmfFudL
+ TDb7S2lhJSa3alkf7T6v4sH85E3K6g2AaoScS4rb4kxxHrv0QC76LM0V1XBg/9devS5kA1/8K
+ /8fpjOe6ucadozFs4D1Rb7KUjh7+1UX6HbuKyPp9x2oxcb2Tm+Ut1Rin49Xoz4SwfgtXmw/s9
+ vHvhvHO4pu5oLgupYXCvvC0+R+/HMONg+Jl35NUP/JZ0p9Fdy+0ABkUT9HuJtE51fzTj9dgc3
+ HHR5QBAFRt1mqLCNbMpnGvupvCctccZZj/Fe23FcE0kyiUDVW1lrP0CJTIuCUnS3H55NB+crK
+ SGUAc/T7B0+WAvqY8+TYXbzLoCwtDmaZTAGIN56huUkiPinndGdaQ+lhyAyym+VufAZujszyS
+ X5GBAchc+kWxtaU32KQCszQ+QoBGS58LE1xlf6cVMSdZWIf4/8hdJSbPcVpHqGPeD88euZHwk
+ hsgpcBnRKgH2aPcLcU/Vb1yC2YEm+rOaBZkoMvVc6u89yzMbhY/ZbgpyhA6J2U87LY3dKHx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 06:54:06PM +0530, Calvin Johnson wrote:
-> Following functions are defined:
->   phylink_fwnode_phy_connect()
->   phylink_device_phy_connect()
->   fwnode_phy_find_device()
->   device_phy_find_device()
->   fwnode_get_phy_node()
-> 
-> First two help in connecting phy to phylink instance.
-> Next two help in finding a phy on a mdiobus.
-> Last one helps in getting phy_node from a fwnode.
-> 
-> Changes in v2:
->   move phy code from base/property.c to net/phy/phy_device.c
->   replace acpi & of code to get phy-handle with fwnode_find_reference
->   replace of_ and acpi_ code with generic fwnode to get phy-handle.
-> 
-> Calvin Johnson (3):
->   device property: Introduce phy related fwnode functions
->   net: phy: alphabetically sort header includes
->   phylink: Introduce phylink_fwnode_phy_connect()
+Output of humidity compensation is limited to the range between 0 and 100
+percent. Add this to the compensation formula as described in the datasheet
+chapter 4.2.3.
 
-Thanks for this, but there's more work that needs to be done here.  I
-also think that we must have an ack from ACPI people before this can be
-accepted - you are in effect proposing a new way for representing PHYs
-in ACPI.
+Signed-off-by: Andreas Klinger <ak@it-klinger.de>
+---
+ drivers/iio/pressure/bmp280-core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> 
->  drivers/net/phy/phy_device.c | 83 ++++++++++++++++++++++++++++++------
->  drivers/net/phy/phylink.c    | 68 +++++++++++++++++++++++++++++
->  include/linux/phy.h          |  3 ++
->  include/linux/phylink.h      |  6 +++
->  4 files changed, 146 insertions(+), 14 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
-> 
-
+diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+index 29c209cc1108..ac9ef1b63b07 100644
+--- a/drivers/iio/pressure/bmp280-core.c
++++ b/drivers/iio/pressure/bmp280-core.c
+@@ -271,6 +271,9 @@ static u32 bmp280_compensate_humidity(struct bmp280_data *data,
+ 		+ (s32)2097152) * calib->H2 + 8192) >> 14);
+ 	var -= ((((var >> 15) * (var >> 15)) >> 7) * (s32)calib->H1) >> 4;
+ 
++	var = var < 0 ? 0 : var;
++	var = var > 419430400 ? 419430400 : var;
++
+ 	return var >> 12;
+ };
+ 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+2.20.1
