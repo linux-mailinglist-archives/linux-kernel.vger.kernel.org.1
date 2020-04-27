@@ -2,265 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC831BAD68
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9263F1BAD6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgD0TAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48574 "EHLO
+        id S1726789AbgD0TAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:00:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726260AbgD0TAD (ORCPT
+        with ESMTP id S1726688AbgD0TAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:00:03 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93ADC0610D5;
-        Mon, 27 Apr 2020 12:00:02 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id a2so15095484ejx.5;
-        Mon, 27 Apr 2020 12:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ysq+lYr7LTBndMy6YgqJpqGJhtw6V84HyMC0bkjoYNk=;
-        b=t+DXpkd4RSv2lcX+2xwpvAnzDAiRlhqjZQYmF2cfE8A/8eWSFGvigPuZ8cW/Rd1rpA
-         hI2hK+5vHAg8yqcj6C6udFCG5OKUwWg4aJFn1odGj3wI1F9g0mbSQ8NAw3kCSTi0g4Ek
-         BsjCO95npV6LGlnRS9iiw2JRp/8AT/FHZaAYzyinQiNoIyxVWzfTq+7ASuSA/dg5cP3o
-         +smxhGDxdi2UZA7rC8fMQpUSDMcf0QKZqXb9klHFpX+3i9KAu58xnDgOYWBb6gi0G+U3
-         rGNFmxp8iH8iENPAtKatAwhfWW+lxd7vIzHDYVhjBmRhN89Ir/lelT9SueqJB7UzeXS2
-         HjCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ysq+lYr7LTBndMy6YgqJpqGJhtw6V84HyMC0bkjoYNk=;
-        b=Tn5e+IBen0BNYD2uonbmvIKz1LIjxj/KIY4xfUO7Vr/Nj5xZ/HxdWUh8dKAPI6xM58
-         9zDb0uu9JZUTBuBeWdEHBaxAwEov29LrUMV1j11WH9Y5rdGLwB5s9EjrD8so0XWmPwt4
-         CHFF3Z+CijNPNteWq3X/AgnjhUktfAv4hYfBvgr/l8F1UfppfQXVi40Bs/mKxlYgI23b
-         OcAL1LOVo239EfZw72zB8OStmrNYD+YH3dKPnBYxTOJPMKm4xQ2nKzL2kCLlD8t88f8y
-         gzxE/p7dbrpp+rzD9Xug6UQtl7OnBeN0tHP4uTo01Trv1h2MBpCXjsnZyKCowXuS5TYV
-         4pkA==
-X-Gm-Message-State: AGi0PubVCWq0F/u4mDtK2b1Rwej5IhjaPbODYsAX7mVznd6xPJhrFQE7
-        61rCVb3xiou05e2QDlUfEGNKPGm2r+SMGkFPE3M=
-X-Google-Smtp-Source: APiQypJtTYT311/FuxT+06XbdTrc9BUfR8HcpzgeYLkQomTdgTN76FEPKij2GG62CJynV2Ahs6lkbNWnm3G3ArAAIcs=
-X-Received: by 2002:a17:906:7fd7:: with SMTP id r23mr20630680ejs.32.1588014001407;
- Mon, 27 Apr 2020 12:00:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200424181642.32084-1-pop.adrian61@gmail.com> <20200427064910.GC3559@dell>
-In-Reply-To: <20200427064910.GC3559@dell>
-From:   Adrian Pop <pop.adrian61@gmail.com>
-Date:   Mon, 27 Apr 2020 21:59:59 +0300
-Message-ID: <CAP-HsdQOyWrz+Y7gR9jrNjX09NCYB1EWK7swMQDZ-v-VJLGRMw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm: dt-bindings: mfd: stm32f-rcc: Add missing DSI clock
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Mon, 27 Apr 2020 15:00:37 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E71F1C0610D5;
+        Mon, 27 Apr 2020 12:00:36 -0700 (PDT)
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jT8z9-0004q5-0k; Mon, 27 Apr 2020 21:00:07 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id E95AB100606; Mon, 27 Apr 2020 21:00:05 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 06/16] irqchip: add sl28cpld interrupt controller support
+In-Reply-To: <87f141bce0a4fda04b550647306be296@walle.cc>
+References: <20200423174543.17161-1-michael@walle.cc> <20200423174543.17161-7-michael@walle.cc> <87pnbtqhr1.fsf@nanos.tec.linutronix.de> <87f141bce0a4fda04b550647306be296@walle.cc>
+Date:   Mon, 27 Apr 2020 21:00:05 +0200
+Message-ID: <87sggopxe2.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 9:49 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Fri, 24 Apr 2020, Adrian Pop wrote:
->
-> > Add missing clock.
-> >
-> > Signed-off-by: Adrian Pop <pop.adrian61@gmail.com>
-> > ---
-> >  include/dt-bindings/mfd/stm32f7-rcc.h | 1 +
-> >  1 file changed, 1 insertion(+)
->
-> I assume patch 2 depends on this?
+Michael,
 
-Yes, second patch depends on this.
-
+Michael Walle <michael@walle.cc> writes:
+> Am 2020-04-27 13:40, schrieb Thomas Gleixner:
+>>> +
+>>> +	ret = devm_regmap_add_irq_chip(&pdev->dev, irqchip->regmap, irq,
+>>> +				       IRQF_SHARED | IRQF_ONESHOT, 0,
+>> 
+>> What's the point of IRQF_SHARED | IRQF_ONESHOT here?
 >
-> If so, where is it?  Why isn't it in my inbox?
->
+> IRQF_SHARED because this interrupt is shared with all the blocks
+> which can generate interrupts, i.e. the GPIO contollers.
 
-Here it is:
+Why are people still designing hardware with shared interrupts? Shared
+interrupts are broken by design and that's well known for decades.
 
-STM32f769-disco features a 4" MIPI DSI display: add support for it.
+> IRQF_ONESHOT, because its is a threaded interrupt with no primary
+> handler. But I just noticed, that regmap-irq will also set the
+> IRQF_ONESHOT. But that the commit 09cadf6e088b ("regmap-irq:
+> set IRQF_ONESHOT flag to ensure IRQ request") reads like it is
+> just there to be sure. So I don't know if it should also be set
+> here.
 
-Signed-off-by: Adrian Pop <pop.adrian61@gmail.com>
----
- arch/arm/boot/dts/stm32f746.dtsi      | 34 ++++++++++++++++++
- arch/arm/boot/dts/stm32f769-disco.dts | 50 +++++++++++++++++++++++++++
- 2 files changed, 84 insertions(+)
+Ok. Wasn't aware of that magic threaded interrupt connection.
 
-diff --git a/arch/arm/boot/dts/stm32f746.dtsi b/arch/arm/boot/dts/stm32f746=
-.dtsi
-index 93c063796780..202bb6edc9f1 100644
---- a/arch/arm/boot/dts/stm32f746.dtsi
-+++ b/arch/arm/boot/dts/stm32f746.dtsi
-@@ -48,6 +48,19 @@ / {
-        #address-cells =3D <1>;
-        #size-cells =3D <1>;
+Thanks,
 
-+       reserved-memory {
-+               #address-cells =3D <1>;
-+               #size-cells =3D <1>;
-+               ranges;
-+
-+               linux,dma {
-+                       compatible =3D "shared-dma-pool";
-+                       linux,dma-default;
-+                       no-map;
-+                       size =3D <0x10F000>;
-+               };
-+       };
-+
-        clocks {
-                clk_hse: clk-hse {
-                        #clock-cells =3D <0>;
-@@ -75,6 +88,27 @@ clk_i2s_ckin: clk-i2s-ckin {
-        };
-
-        soc {
-+               ltdc: display-controller@40016800 {
-+                       compatible =3D "st,stm32-ltdc";
-+                       reg =3D <0x40016800 0x200>;
-+                       interrupts =3D <88>, <89>;
-+                       resets =3D <&rcc STM32F7_APB2_RESET(LTDC)>;
-+                       clocks =3D <&rcc 1 CLK_LCD>;
-+                       clock-names =3D "lcd";
-+                       status =3D "disabled";
-+               };
-+
-+               dsi: dsi@40016c00 {
-+                       compatible =3D "st,stm32-dsi";
-+                       reg =3D <0x40016c00 0x800>;
-+                       interrupts =3D <98>;
-+                       clocks =3D <&rcc 1 CLK_F769_DSI>, <&clk_hse>;
-+                       clock-names =3D "pclk", "ref";
-+                       resets =3D <&rcc STM32F7_APB2_RESET(DSI)>;
-+                       reset-names =3D "apb";
-+                       status =3D "disabled";
-+               };
-+
-                timer2: timer@40000000 {
-                        compatible =3D "st,stm32-timer";
-                        reg =3D <0x40000000 0x400>;
-diff --git a/arch/arm/boot/dts/stm32f769-disco.dts
-b/arch/arm/boot/dts/stm32f769-disco.dts
-index 1626e00bb2cb..30ebbc193e82 100644
---- a/arch/arm/boot/dts/stm32f769-disco.dts
-+++ b/arch/arm/boot/dts/stm32f769-disco.dts
-@@ -153,3 +153,53 @@ &usbotg_hs {
-        pinctrl-names =3D "default";
-        status =3D "okay";
- };
-+
-+&dsi {
-+       #address-cells =3D <1>;
-+       #size-cells =3D <0>;
-+       status =3D "okay";
-+
-+       ports {
-+               #address-cells =3D <1>;
-+               #size-cells =3D <0>;
-+
-+               port@0 {
-+                       reg =3D <0>;
-+                       dsi_in: endpoint {
-+                               remote-endpoint =3D <&ltdc_out_dsi>;
-+                       };
-+               };
-+
-+               port@1 {
-+                       reg =3D <1>;
-+                       dsi_out: endpoint {
-+                               remote-endpoint =3D <&dsi_in_panel>;
-+                       };
-+               };
-+
-+       };
-+
-+       panel: panel {
-+               compatible =3D "orisetech,otm8009a";
-+               reg =3D <0>; /* dsi virtual channel (0..3) */
-+               reset-gpios =3D <&gpioj 15 GPIO_ACTIVE_LOW>;
-+               status =3D "okay";
-+
-+               port {
-+                       dsi_in_panel: endpoint {
-+                               remote-endpoint =3D <&dsi_out>;
-+                       };
-+               };
-+       };
-+};
-+
-+&ltdc {
-+       dma-ranges;
-+       status =3D "okay";
-+
-+       port {
-+               ltdc_out_dsi: endpoint {
-+                       remote-endpoint =3D <&dsi_in>;
-+               };
-+       };
-+};
---
-
-> > diff --git a/include/dt-bindings/mfd/stm32f7-rcc.h b/include/dt-binding=
-s/mfd/stm32f7-rcc.h
-> > index a90f3613c584..ba5cb7456ee4 100644
-> > --- a/include/dt-bindings/mfd/stm32f7-rcc.h
-> > +++ b/include/dt-bindings/mfd/stm32f7-rcc.h
-> > @@ -107,6 +107,7 @@
-> >  #define STM32F7_RCC_APB2_SAI1                22
-> >  #define STM32F7_RCC_APB2_SAI2                23
-> >  #define STM32F7_RCC_APB2_LTDC                26
-> > +#define STM32F7_RCC_APB2_DSI         27
-> >
-> >  #define STM32F7_APB2_RESET(bit)      (STM32F7_RCC_APB2_##bit + (0x24 *=
- 8))
-> >  #define STM32F7_APB2_CLOCK(bit)      (STM32F7_RCC_APB2_##bit + 0xA0)
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Linaro Services Technical Lead
-> Linaro.org =E2=94=82 Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
-
-On Mon, Apr 27, 2020 at 9:49 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Fri, 24 Apr 2020, Adrian Pop wrote:
->
-> > Add missing clock.
-> >
-> > Signed-off-by: Adrian Pop <pop.adrian61@gmail.com>
-> > ---
-> >  include/dt-bindings/mfd/stm32f7-rcc.h | 1 +
-> >  1 file changed, 1 insertion(+)
->
-> I assume patch 2 depends on this?
->
-> If so, where is it?  Why isn't it in my inbox?
->
-> > diff --git a/include/dt-bindings/mfd/stm32f7-rcc.h b/include/dt-binding=
-s/mfd/stm32f7-rcc.h
-> > index a90f3613c584..ba5cb7456ee4 100644
-> > --- a/include/dt-bindings/mfd/stm32f7-rcc.h
-> > +++ b/include/dt-bindings/mfd/stm32f7-rcc.h
-> > @@ -107,6 +107,7 @@
-> >  #define STM32F7_RCC_APB2_SAI1                22
-> >  #define STM32F7_RCC_APB2_SAI2                23
-> >  #define STM32F7_RCC_APB2_LTDC                26
-> > +#define STM32F7_RCC_APB2_DSI         27
-> >
-> >  #define STM32F7_APB2_RESET(bit)      (STM32F7_RCC_APB2_##bit + (0x24 *=
- 8))
-> >  #define STM32F7_APB2_CLOCK(bit)      (STM32F7_RCC_APB2_##bit + 0xA0)
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Linaro Services Technical Lead
-> Linaro.org =E2=94=82 Open source software for ARM SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+        tglx
