@@ -2,78 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF491BAD9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1D81BAD88
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgD0TMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:12:45 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:46452 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgD0TMp (ORCPT
+        id S1726691AbgD0TIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726315AbgD0TIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:12:45 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03RJCfei126800;
-        Mon, 27 Apr 2020 14:12:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588014761;
-        bh=jRcgf5XdMQaZw49wtJzlSVjIEPTTwfQwyL6oaWcmdTg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=H/lTZBMXaC/GFQF+1zgoRg0376pP1z2bN2dXM/lScy4ZRucmtVh2j1UpzcBnDMnby
-         WAheAMkriNgXQYNk9WTGR0Z4+mPjKFnisHgellVlcDmqqpDTKnIVi60GVL8HdldcFr
-         kcLZq7m5QBVoYs98kc6vFjWaW8z6hEg8hdG35M6U=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03RJCfCi052652
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 27 Apr 2020 14:12:41 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
- Apr 2020 14:12:41 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 27 Apr 2020 14:12:40 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03RJCeAC070544;
-        Mon, 27 Apr 2020 14:12:40 -0500
-Subject: Re: [PATCH v20 10/17] ARM: dts: ste-href: Add reg property to the
- LP5521 channel nodes
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-References: <20200423155524.13971-1-dmurphy@ti.com>
- <20200423155524.13971-11-dmurphy@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <1d7bba6a-e038-c367-3d5a-ef5758616301@ti.com>
-Date:   Mon, 27 Apr 2020 14:06:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200423155524.13971-11-dmurphy@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        Mon, 27 Apr 2020 15:08:02 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A72FC0610D5;
+        Mon, 27 Apr 2020 12:08:02 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id A35C015D59E0D;
+        Mon, 27 Apr 2020 12:08:01 -0700 (PDT)
+Date:   Mon, 27 Apr 2020 12:08:00 -0700 (PDT)
+Message-Id: <20200427.120800.2048743248471906857.davem@davemloft.net>
+To:     christophe.jaillet@wanadoo.fr
+Cc:     fthain@telegraphics.com.au, tsbogend@alpha.franken.de,
+        jgarzik@pobox.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] net/sonic: Fix a resource leak in an error handling
+ path in 'jazz_sonic_probe()'
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200427061803.53857-1-christophe.jaillet@wanadoo.fr>
+References: <20200427061803.53857-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 27 Apr 2020 12:08:01 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Date: Mon, 27 Apr 2020 08:18:03 +0200
 
-On 4/23/20 10:55 AM, Dan Murphy wrote:
-> Add the reg property to each channel node.  This update is
-> to accomodate the multicolor framework.  In addition to the
-> accomodation this allows the LEDs to be placed on any channel
-> and allow designs to skip channels as opposed to requiring
-> sequential order.
->
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> CC: Linus Walleij <linus.walleij@linaro.org>
-> Acked-by: Pavel Machek <pavel@ucw.cz>
+> A call to 'dma_alloc_coherent()' is hidden in 'sonic_alloc_descriptors()',
+> called from 'sonic_probe1()'.
+> 
+> This is correctly freed in the remove function, but not in the error
+> handling path of the probe function.
+> Fix it and add the missing 'dma_free_coherent()' call.
+> 
+> While at it, rename a label in order to be slightly more informative.
+> 
+> Fixes: efcce839360f ("[PATCH] macsonic/jazzsonic network drivers update")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Pavel is asking for a review and if ok your ack
-
-Dan
-
+Applied, thanks.
