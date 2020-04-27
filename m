@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45391BAADF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAD31BAB0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgD0RNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 13:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726228AbgD0RNh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 13:13:37 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386F5C0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:13:36 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id d15so19845303wrx.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:13:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8R9bSwl/J7P81nQdPOmr5lSfIYOo3b9iphlZL1wJKPg=;
-        b=qv7q+HQ9kd3Dp+kLeQad/wlNiJsl+g/jLf4HnqCrRUKpNwAbV+opyHaaNEQH4KiHKl
-         Lo33OkY9dOw93RQnOyrX3q5DORMB0ITRh1ce9C0iYNrQX8F1YWN7g4JaPl6SvlwKjbI7
-         NSn2ITENeZ7r/dZmxJCyerVFZfJ1t0pcSix/GrJfpOfGn55TNsPjFGvVpsfn74jRPMGP
-         IHl/WxA7apNHrNOO48NBKtL8WyvlbJZuqcQJEA3sY9zPdFe7IMaW1pkGy8hgv5qk9kAP
-         uau4t5HQxt1/Ib4iRAZ3squd0EKnm9+MTlqCAKkEgCEvA9BrsTUCHS9PwIqcYJ1kTCES
-         uHBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8R9bSwl/J7P81nQdPOmr5lSfIYOo3b9iphlZL1wJKPg=;
-        b=rw3bnGbghBsVFfbO+r0QlEbMkPgoqlgbsnxb2jMxWyg4pF3PW8yp1Hrsr66dSqX/ty
-         0GgE3vpHoAtRVdCmEvv/hQnC06Ge7ZPZRjDWsSN5TmvFm5MkBwubxxf3lW/n1VsufVSH
-         lJvDdQVv2CxgdUwUAJL9R/uAikG8dyaacf8LwgLTShy2LopjT+IIDkXfWvtuTrv4y9Rq
-         k5F2dCXC7RCfqSkUFVt+dpHdoDPUZolS6r16fh+Y7v5isZOsmodlIBVfh0ikAbGZOgVz
-         veJhLf72txwVDZxEGS9vAlgwVCuFyHfrtyM5Kn9ABlWPYCSvp/YTJsnlkAlMp8sOKrwl
-         aVhw==
-X-Gm-Message-State: AGi0PuaZinSIQwP428txuOj/qPJGBNgjv8J+TZjKDoAZIUoga5PE6Zue
-        6USv+xfUe6pq+1yT7tAOBoj35A==
-X-Google-Smtp-Source: APiQypInI7PA6UMX/pE+l61c+qeNhBE9E5JGRoT2thPBw7qsKMmvL0f4I+1BW5nT1/OkMyBbQdmqKQ==
-X-Received: by 2002:a5d:694a:: with SMTP id r10mr28527069wrw.228.1588007614805;
-        Mon, 27 Apr 2020 10:13:34 -0700 (PDT)
-Received: from [192.168.0.41] (lns-bzn-59-82-252-135-148.adsl.proxad.net. [82.252.135.148])
-        by smtp.googlemail.com with ESMTPSA id y10sm15924202wma.5.2020.04.27.10.13.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2020 10:13:34 -0700 (PDT)
-Subject: Re: [PATCH 1/2] drivers/clocksource/timer-of: Remove __init markings
-To:     Baolin Wang <baolin.wang7@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-References: <d2934f74d77c637c41d7cb98710cb5363d09e83b.1585021186.git.baolin.wang7@gmail.com>
- <CADBw62pmiguVmuq334eskLAZ5CkrjxohW_fXNjNev+O1U15=OQ@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <bd800f7b-05fd-b393-fba6-1965ba89e1b3@linaro.org>
-Date:   Mon, 27 Apr 2020 19:13:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CADBw62pmiguVmuq334eskLAZ5CkrjxohW_fXNjNev+O1U15=OQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726479AbgD0RTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 13:19:49 -0400
+Received: from mga04.intel.com ([192.55.52.120]:16042 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726315AbgD0RTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 13:19:48 -0400
+IronPort-SDR: rJQgkN/LdUERr20+0hnTk8iBbVovLBVUypL0ArdAAF5nVgEmnuqoG5h+yz1R6/LrNrxPLZ6f2m
+ APs7Akr2QUnA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 10:19:48 -0700
+IronPort-SDR: DADqqs2VzvU4RMSSL6T60L9KHe4i0BJ0rYCBdBIHkENHyPdaStM4QkMLCKL6kggUXRPd4ZJut5
+ q69mUwJ6AJ1w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,324,1583222400"; 
+   d="scan'208";a="458932342"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Apr 2020 10:19:45 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Ben Zhang <benzh@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Brent Lu <brent.lu@intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/3] ASoC: bdw-rt5650: add channel constraint
+Date:   Tue, 28 Apr 2020 01:13:33 +0800
+Message-Id: <1588007614-25061-3-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1588007614-25061-1-git-send-email-brent.lu@intel.com>
+References: <1588007614-25061-1-git-send-email-brent.lu@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/04/2020 04:55, Baolin Wang wrote:
-> Hi Daniel,
-> 
-> On Tue, Mar 24, 2020 at 1:59 PM Baolin Wang <baolin.wang7@gmail.com> wrote:
->>
->> From: Saravana Kannan <saravanak@google.com>
->>
->> This allows timer drivers to be compiled as modules.
->>
->> Signed-off-by: Saravana Kannan <saravanak@google.com>
->> Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
-> 
-> Do you have any comments for this patch set? Thanks.
+BDW boards using this machine driver supports only 2 or 4-channel capture.
+Implement a constraint to enforce it.
 
-If my understanding is correct, this patch is part of the GKI picture
-where hardware drivers are converted to modules.
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+---
+ sound/soc/intel/boards/bdw-rt5650.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-But do we really want to convert timer drivers to modules ?
-
-Is the core time framework able to support that (eg. load + unload )
-
-
+diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
+index af2f502..a97e912 100644
+--- a/sound/soc/intel/boards/bdw-rt5650.c
++++ b/sound/soc/intel/boards/bdw-rt5650.c
+@@ -162,6 +162,34 @@ static int bdw_rt5650_rtd_init(struct snd_soc_pcm_runtime *rtd)
+ }
+ #endif
+ 
++static const unsigned int channels[] = {
++	2, 4,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
++	.count = ARRAY_SIZE(channels),
++	.list = channels,
++	.mask = 0,
++};
++
++static int bdw_rt5650_fe_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	/* Board supports stereo and quad configurations for capture */
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++		return 0;
++
++	runtime->hw.channels_max = 4;
++	return snd_pcm_hw_constraint_list(runtime, 0,
++					  SNDRV_PCM_HW_PARAM_CHANNELS,
++					  &constraints_channels);
++}
++
++static const struct snd_soc_ops bdw_rt5650_fe_ops = {
++	.startup = bdw_rt5650_fe_startup,
++};
++
+ static int bdw_rt5650_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct bdw_rt5650_priv *bdw_rt5650 =
+@@ -234,6 +262,7 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+ 		.name = "System PCM",
+ 		.stream_name = "System Playback",
+ 		.dynamic = 1,
++		.ops = &bdw_rt5650_fe_ops,
+ #if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
+ 		.init = bdw_rt5650_rtd_init,
+ #endif
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.7.4
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
