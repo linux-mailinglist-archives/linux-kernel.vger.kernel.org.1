@@ -2,173 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA231BADC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B2D1BAD7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgD0TUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:20:42 -0400
-Received: from gateway34.websitewelcome.com ([192.185.148.196]:24932 "EHLO
-        gateway34.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726315AbgD0TUj (ORCPT
+        id S1726456AbgD0TFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726315AbgD0TFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:20:39 -0400
-X-Greylist: delayed 1472 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Apr 2020 15:20:38 EDT
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway34.websitewelcome.com (Postfix) with ESMTP id 49C0C3E3F5D
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 14:00:08 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id T8zAjA9qXEfyqT8zAj09wt; Mon, 27 Apr 2020 14:00:08 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=LDbKFNJfmPWOJIgfBqIvSGHMQbRoOTKIi2anasyc6tw=; b=JfNK8pjbssL3lNb0vv9UdYv9v
-        hiX8dXffE8UhzXW2S2HU7Qs41TIDKP2ZdViBxYZ73yauclJZaFfSLtefSRGsOLK1zTZkDGzzYMcJ8
-        m6liiH5yHzmCEoA+jqd4ZbT3cV5ZN0qJ3oa/I43/3g+OOzpNgMRr2muwA+IfXup5tZVQDm4jvRLnQ
-        /5yrvszHQx2BtTq5HjjVUIVwEoPvXU/22jA9pts+v+bW1QgsqTurKzV28Vr21keQAGrhfjzptG5e6
-        yqLH0UEk2TVb3FdOy4BAnVQ/Gi/+g86JLJfLWnZL+k19qvfE8mS0/2wtCywL1ZezOQcEjWzD8Vsjg
-        KsdzFk7BQ==;
-Received: from [201.162.241.110] (port=3231 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jT8z9-000anI-Lu; Mon, 27 Apr 2020 14:00:07 -0500
-Date:   Mon, 27 Apr 2020 14:04:25 -0500
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, Joe Perches <joe@perches.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH 3/3] mtd: lpddr: Move function print_drs_error to lpddr_cmds.c
-Message-ID: <5cc0d2e83e971693d974235608c8d96fe94c849d.1588013366.git.gustavo@embeddedor.com>
-References: <cover.1588013366.git.gustavo@embeddedor.com>
+        Mon, 27 Apr 2020 15:05:15 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DCEC0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 12:05:13 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id z25so28116650otq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 12:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nYjwD1cgAWi1h+FC9EQC7XuePn+s5PWM+1lGoIZAVCc=;
+        b=c08JIixJpwm3AnUT4Q9UksVmigA3X3foOTQBV6lbJRWOn5Z3K81IaclNk9s814fOuq
+         AshvqmDnrLSI2OXna8H/Jg0rEGzqWqR3nMJjjp0KeP0ZeDEe5+YIhIYrNY6QXZNSoJZX
+         56q8SFCinQ5mlQ465vQ3UMXSrG/wyIWcDFYrKGivbJ9T9fXvROOkvouGfRWEcF9D/oIQ
+         kKeUv/zOARkRlYNSQXxV+atfykVqURXgfoBqgM9W90IIerOpDlYZnffCLtM6TJtHcLIN
+         ggGeLNmCDUOuKgEX80BY2Yu0RB8aSOWaqP51g4Jemc/d+inCU68Iw1/lZNLv+YuQL5lR
+         KP0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nYjwD1cgAWi1h+FC9EQC7XuePn+s5PWM+1lGoIZAVCc=;
+        b=J8iVaMmrQU5i5lILf51uzJVj/1he+hECpHrb3CfUn5p+tY0RMLtLqEUrtnC6NYC+Nu
+         552eDbfaqDfinYP9O+yIjDZ7CegEpLoiYm4y9djl6dZ1hpHf8LMwuybKlMO57xODr3LV
+         rMXNK9TZXcJ9RGwR/NR0DFie83MkgrKSVLJYbqsiAi7pLV4JCFCvFBargB85w79N6K98
+         NPdFq2+kcjSAqGyTnX3BFRmmqh4KSLbF01S3KN+PvpPaR6dPWR8VuI5gZO2cZZjEq9JI
+         mK+nkioomKVAu5TWEzOaIpaQiVj+VvV9FR74EZG/AZtpnWFOt+npnxF+YYTIfKy7aMpy
+         U3+Q==
+X-Gm-Message-State: AGi0PuZuW4BBl8t5DSDopVkXN/I9B7T7/VK9hSaZnVVp1DGPPW2jVdld
+        VHqlpB0T1g/oKI8t0I6/Ja0jVDOVg+okST4QpC3ozA==
+X-Google-Smtp-Source: APiQypKRsDULSiHYguXY/SspKgeNcy0w4pMmN9hPoGc7kJJm4stawBrL4awYMuu//cDz3DiM2/YDhdKwJFHPeuGlt04=
+X-Received: by 2002:a9d:2622:: with SMTP id a31mr20759634otb.231.1588014312538;
+ Mon, 27 Apr 2020 12:05:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1588013366.git.gustavo@embeddedor.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.241.110
-X-Source-L: No
-X-Exim-ID: 1jT8z9-000anI-Lu
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [201.162.241.110]:3231
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 1
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <d2934f74d77c637c41d7cb98710cb5363d09e83b.1585021186.git.baolin.wang7@gmail.com>
+ <CADBw62pmiguVmuq334eskLAZ5CkrjxohW_fXNjNev+O1U15=OQ@mail.gmail.com> <bd800f7b-05fd-b393-fba6-1965ba89e1b3@linaro.org>
+In-Reply-To: <bd800f7b-05fd-b393-fba6-1965ba89e1b3@linaro.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 27 Apr 2020 12:04:36 -0700
+Message-ID: <CAGETcx9da-U+dXA6sreTKJQiS3brYh3Hfh_qVYt06=3UOSmT_g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drivers/clocksource/timer-of: Remove __init markings
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Baolin Wang <baolin.wang7@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function print_drs_error is only used in drivers/mtd/lpddr/lpddr_cmds.c
-so, better to move it there.
+On Mon, Apr 27, 2020 at 10:13 AM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+> On 13/04/2020 04:55, Baolin Wang wrote:
+> > Hi Daniel,
+> >
+> > On Tue, Mar 24, 2020 at 1:59 PM Baolin Wang <baolin.wang7@gmail.com> wrote:
+> >>
+> >> From: Saravana Kannan <saravanak@google.com>
+> >>
+> >> This allows timer drivers to be compiled as modules.
+> >>
+> >> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >> Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+> >
+> > Do you have any comments for this patch set? Thanks.
+>
+> If my understanding is correct, this patch is part of the GKI picture
+> where hardware drivers are converted to modules.
+>
+> But do we really want to convert timer drivers to modules ?
+>
+> Is the core time framework able to support that (eg. load + unload )
 
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/mtd/lpddr/lpddr_cmds.c | 33 +++++++++++++++++++++++++++++++++
- include/linux/mtd/pfow.h       | 32 --------------------------------
- 2 files changed, 33 insertions(+), 32 deletions(-)
+So this will mainly be used for secondary timers that the system
+supports. Not for the main one that's set up during early boot for
+sched timer to work. For the primary timer during boot up, we still
+expect that to be the default ARM timer and don't want/expect that to
+be a module (it can't be).
 
-diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
-index fb1cbc9a2870..2675032984f9 100644
---- a/drivers/mtd/lpddr/lpddr_cmds.c
-+++ b/drivers/mtd/lpddr/lpddr_cmds.c
-@@ -94,6 +94,39 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
- }
- EXPORT_SYMBOL(lpddr_cmdset);
- 
-+static inline void print_drs_error(unsigned int dsr)
-+{
-+	int prog_status = (dsr & DSR_RPS) >> 8;
-+
-+	if (!(dsr & DSR_AVAILABLE))
-+		pr_notice("DSR.15: (0) Device not Available\n");
-+	if ((prog_status & 0x03) == 0x03)
-+		pr_notice("DSR.9,8: (11) Attempt to program invalid "
-+						"half with 41h command\n");
-+	else if (prog_status & 0x02)
-+		pr_notice("DSR.9,8: (10) Object Mode Program attempt "
-+					"in region with Control Mode data\n");
-+	else if (prog_status &  0x01)
-+		pr_notice("DSR.9,8: (01) Program attempt in region "
-+						"with Object Mode data\n");
-+	if (!(dsr & DSR_READY_STATUS))
-+		pr_notice("DSR.7: (0) Device is Busy\n");
-+	if (dsr & DSR_ESS)
-+		pr_notice("DSR.6: (1) Erase Suspended\n");
-+	if (dsr & DSR_ERASE_STATUS)
-+		pr_notice("DSR.5: (1) Erase/Blank check error\n");
-+	if (dsr & DSR_PROGRAM_STATUS)
-+		pr_notice("DSR.4: (1) Program Error\n");
-+	if (dsr & DSR_VPPS)
-+		pr_notice("DSR.3: (1) Vpp low detect, operation "
-+					"aborted\n");
-+	if (dsr & DSR_PSS)
-+		pr_notice("DSR.2: (1) Program suspended\n");
-+	if (dsr & DSR_DPS)
-+		pr_notice("DSR.1: (1) Aborted Erase/Program attempt "
-+					"on locked block\n");
-+}
-+
- static int wait_for_ready(struct map_info *map, struct flchip *chip,
- 		unsigned int chip_op_time)
- {
-diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
-index b1fe2bbfdb04..7b57c36878cc 100644
---- a/include/linux/mtd/pfow.h
-+++ b/include/linux/mtd/pfow.h
-@@ -122,36 +122,4 @@ static inline void send_pfow_command(struct map_info *map,
- 			map->pfow_base + PFOW_COMMAND_EXECUTE);
- }
- 
--static inline void print_drs_error(unsigned dsr)
--{
--	int prog_status = (dsr & DSR_RPS) >> 8;
--
--	if (!(dsr & DSR_AVAILABLE))
--		pr_notice("DSR.15: (0) Device not Available\n");
--	if ((prog_status & 0x03) == 0x03)
--		pr_notice("DSR.9,8: (11) Attempt to program invalid "
--						"half with 41h command\n");
--	else if (prog_status & 0x02)
--		pr_notice("DSR.9,8: (10) Object Mode Program attempt "
--					"in region with Control Mode data\n");
--	else if (prog_status &  0x01)
--		pr_notice("DSR.9,8: (01) Program attempt in region "
--						"with Object Mode data\n");
--	if (!(dsr & DSR_READY_STATUS))
--		pr_notice("DSR.7: (0) Device is Busy\n");
--	if (dsr & DSR_ESS)
--		pr_notice("DSR.6: (1) Erase Suspended\n");
--	if (dsr & DSR_ERASE_STATUS)
--		pr_notice("DSR.5: (1) Erase/Blank check error\n");
--	if (dsr & DSR_PROGRAM_STATUS)
--		pr_notice("DSR.4: (1) Program Error\n");
--	if (dsr & DSR_VPPS)
--		pr_notice("DSR.3: (1) Vpp low detect, operation "
--					"aborted\n");
--	if (dsr & DSR_PSS)
--		pr_notice("DSR.2: (1) Program suspended\n");
--	if (dsr & DSR_DPS)
--		pr_notice("DSR.1: (1) Aborted Erase/Program attempt "
--					"on locked block\n");
--}
- #endif /* __LINUX_MTD_PFOW_H */
--- 
-2.26.0
-
+-Saravana
