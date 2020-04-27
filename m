@@ -2,184 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5DB1BAB46
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2DC1BAB4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgD0RaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 13:30:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725980AbgD0RaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 13:30:02 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8224206D9;
-        Mon, 27 Apr 2020 17:30:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588008601;
-        bh=ZdSG41fFUlbC/UHMat4zJ2C7QtQ3OkJpXWPhWLCwozw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E6nTa2bR+ycpBp1H1A9OnuHkKwx/PwOvQkehou+5mBKQoMtScpAGilGmZhWaOHpcU
-         iVNXFzB1eQL8jTiCLd3i9fzlbf3zEZRjI3nGvvDH9tyA+CFa+6VJXkI7r5l7C4XVFG
-         DHRRgEW+jV01RgqTIg9PrtCSi3PQ+BOYJoZchWs8=
-Date:   Mon, 27 Apr 2020 19:29:59 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Nishad Kamdar <nishadkamdar@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Joe Perches <joe@perches.com>, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xfs: Use the correct style for SPDX License Identifier
-Message-ID: <20200427172959.GB3936841@kroah.com>
-References: <20200425133504.GA11354@nishad>
- <20200427155617.GY6749@magnolia>
+        id S1726498AbgD0Raf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 13:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726260AbgD0Rae (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 13:30:34 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1A9C03C1A7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:30:34 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id u189so17498605ilc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:30:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WAmnZAQqsfdyDzhsu6wAOJW6mDvNQHToHiDwv+tvXL0=;
+        b=rM6jBlbJF1p0rjqRj7enKn0xq7UtAq83W7/SMdsqwx7j8hmwJeU36VtGxm8+GhlYgi
+         Ve6dpPf9g/k7UAXG5Kz3hp4z6YzgMyETLRyzSpcdDp9PkOJjRsWZGuyxr1Guxa1Qgx5h
+         9HsDiljnE8iqsOYg9kr3Nl0Y+4k6JN3ZLOUNhj4aKH1LQtSMaK9Zmf8fLI2E78lgUGHz
+         Rd/Gk7s4nR2oYB/JsvK/t2tZ4Pk9T0UC45bJ22686Gnmk1YPYfR5ss4L+L95lXOsU5ev
+         WlZvRr3Z3PaNGYEQoz8EazMzdRqDlGQ/y/xmK9Z8BLvfiiLjQv1f3l6cJNPklESdAKt9
+         c2WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WAmnZAQqsfdyDzhsu6wAOJW6mDvNQHToHiDwv+tvXL0=;
+        b=fQhfXwV5KMI/Q6I8bhySUOWIyJW4VmkvEm3ii8SYKUQJrRXOgUUeVK/2XvETahDhOD
+         csddwWGkKiEzoGHknIW4WctttXajZnrXje2i4pPpGDEY3Fkr3ijnJMoKICCjQpqgYux7
+         OdHGnIVOmvobCEGM0JAZ1FwGTDBILKT+8kNwT0j2iXf70ird0JexvwnOkpK6z5InIs61
+         Ld2JsFHB/5E2RXCS17yMTZbLv9w2K2BmG7nTwALTwqf+ji8X6q+PbImC5OLcTQZuIqJK
+         lxm6K4f71VzCyBgBHhub7o56FHMfoU6Zod66hKjzMpWg3oYSOnT5SOOSzmgPN0depS4l
+         qQTA==
+X-Gm-Message-State: AGi0PuYaC3xwgunUW020Yv+Os+IuZHo/wrZcJzkO3kG2NPQclUXFAjZ7
+        I5MA/Hm0kuv9NfofHPsm6nAet/iGk51PnwuyrMgt0fwp
+X-Google-Smtp-Source: APiQypLYGcoWKQQgcyvEo8F50ZL+lo84Kee1KKs7UcdGmTDiIyOyUYlVajqWTGznlrcpj+c81fTJlOxSHfqZrkYwiqE=
+X-Received: by 2002:a92:da4e:: with SMTP id p14mr22191527ilq.296.1588008633445;
+ Mon, 27 Apr 2020 10:30:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427155617.GY6749@magnolia>
+References: <1587704935-30960-1-git-send-email-lirongqing@baidu.com>
+ <20200424100143.GZ20730@hirez.programming.kicks-ass.net> <20200424144625.GB30013@linux.intel.com>
+ <CALMp9eQtSrZMRQtxa_Z5WmjayWzJYhSrpNkQbqK5b7Ufxg-cMA@mail.gmail.com>
+ <ce51d5f9-aa7b-233b-883d-802d9b00e090@redhat.com> <fd2a8092edf54a85979e5781dc354690@baidu.com>
+In-Reply-To: <fd2a8092edf54a85979e5781dc354690@baidu.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Mon, 27 Apr 2020 10:30:22 -0700
+Message-ID: <CALMp9eQrGuqzy_ZRu+qU3A7PRkoi8JHWFRpm---cMhp9+J4j8A@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] kvm: x86: emulate APERF/MPERF registers
+To:     "Li,Rongqing" <lirongqing@baidu.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 08:56:18AM -0700, Darrick J. Wong wrote:
-> On Sat, Apr 25, 2020 at 07:05:09PM +0530, Nishad Kamdar wrote:
-> > This patch corrects the SPDX License Identifier style in
-> > header files related to XFS File System support.
-> > For C header files Documentation/process/license-rules.rst
-> > mandates C-like comments (opposed to C source files where
-> > C++ style should be used).
-> > 
-> > Changes made by using a script provided by Joe Perches here:
-> > https://lkml.org/lkml/2019/2/7/46.
-> > 
-> > Suggested-by: Joe Perches <joe@perches.com>
-> > Signed-off-by: Nishad Kamdar <nishadkamdar@gmail.com>
-> > ---
-> >  fs/xfs/kmem.h                      | 2 +-
-> >  fs/xfs/libxfs/xfs_ag_resv.h        | 2 +-
-> >  fs/xfs/libxfs/xfs_alloc.h          | 2 +-
-> >  fs/xfs/libxfs/xfs_alloc_btree.h    | 2 +-
-> >  fs/xfs/libxfs/xfs_attr.h           | 2 +-
-> >  fs/xfs/libxfs/xfs_attr_leaf.h      | 2 +-
-> >  fs/xfs/libxfs/xfs_attr_remote.h    | 2 +-
-> >  fs/xfs/libxfs/xfs_attr_sf.h        | 2 +-
-> >  fs/xfs/libxfs/xfs_bit.h            | 2 +-
-> >  fs/xfs/libxfs/xfs_bmap.h           | 2 +-
-> >  fs/xfs/libxfs/xfs_bmap_btree.h     | 2 +-
-> >  fs/xfs/libxfs/xfs_btree.h          | 2 +-
-> >  fs/xfs/libxfs/xfs_da_btree.h       | 2 +-
-> >  fs/xfs/libxfs/xfs_da_format.h      | 2 +-
-> >  fs/xfs/libxfs/xfs_defer.h          | 2 +-
-> >  fs/xfs/libxfs/xfs_dir2.h           | 2 +-
-> >  fs/xfs/libxfs/xfs_dir2_priv.h      | 2 +-
-> >  fs/xfs/libxfs/xfs_errortag.h       | 2 +-
-> >  fs/xfs/libxfs/xfs_format.h         | 2 +-
-> >  fs/xfs/libxfs/xfs_fs.h             | 2 +-
-> >  fs/xfs/libxfs/xfs_health.h         | 2 +-
-> >  fs/xfs/libxfs/xfs_ialloc.h         | 2 +-
-> >  fs/xfs/libxfs/xfs_ialloc_btree.h   | 2 +-
-> >  fs/xfs/libxfs/xfs_inode_buf.h      | 2 +-
-> >  fs/xfs/libxfs/xfs_inode_fork.h     | 2 +-
-> >  fs/xfs/libxfs/xfs_log_format.h     | 2 +-
-> >  fs/xfs/libxfs/xfs_log_recover.h    | 2 +-
-> >  fs/xfs/libxfs/xfs_quota_defs.h     | 2 +-
-> >  fs/xfs/libxfs/xfs_refcount.h       | 2 +-
-> >  fs/xfs/libxfs/xfs_refcount_btree.h | 2 +-
-> >  fs/xfs/libxfs/xfs_rmap.h           | 2 +-
-> >  fs/xfs/libxfs/xfs_rmap_btree.h     | 2 +-
-> >  fs/xfs/libxfs/xfs_sb.h             | 2 +-
-> >  fs/xfs/libxfs/xfs_shared.h         | 2 +-
-> >  fs/xfs/libxfs/xfs_trans_resv.h     | 2 +-
-> >  fs/xfs/libxfs/xfs_trans_space.h    | 2 +-
-> >  fs/xfs/libxfs/xfs_types.h          | 2 +-
-> >  fs/xfs/mrlock.h                    | 2 +-
-> >  fs/xfs/scrub/bitmap.h              | 2 +-
-> >  fs/xfs/scrub/btree.h               | 2 +-
-> >  fs/xfs/scrub/common.h              | 2 +-
-> >  fs/xfs/scrub/dabtree.h             | 2 +-
-> >  fs/xfs/scrub/health.h              | 2 +-
-> >  fs/xfs/scrub/repair.h              | 2 +-
-> >  fs/xfs/scrub/scrub.h               | 2 +-
-> >  fs/xfs/scrub/trace.h               | 2 +-
-> >  fs/xfs/scrub/xfs_scrub.h           | 2 +-
-> >  fs/xfs/xfs.h                       | 2 +-
-> >  fs/xfs/xfs_acl.h                   | 2 +-
-> >  fs/xfs/xfs_aops.h                  | 2 +-
-> >  fs/xfs/xfs_bmap_item.h             | 2 +-
-> >  fs/xfs/xfs_bmap_util.h             | 2 +-
-> >  fs/xfs/xfs_buf.h                   | 2 +-
-> >  fs/xfs/xfs_buf_item.h              | 2 +-
-> >  fs/xfs/xfs_dquot.h                 | 2 +-
-> >  fs/xfs/xfs_dquot_item.h            | 2 +-
-> >  fs/xfs/xfs_error.h                 | 2 +-
-> >  fs/xfs/xfs_export.h                | 2 +-
-> >  fs/xfs/xfs_extent_busy.h           | 2 +-
-> >  fs/xfs/xfs_extfree_item.h          | 2 +-
-> >  fs/xfs/xfs_filestream.h            | 2 +-
-> >  fs/xfs/xfs_fsmap.h                 | 2 +-
-> >  fs/xfs/xfs_fsops.h                 | 2 +-
-> >  fs/xfs/xfs_icache.h                | 2 +-
-> >  fs/xfs/xfs_icreate_item.h          | 2 +-
-> >  fs/xfs/xfs_inode.h                 | 2 +-
-> >  fs/xfs/xfs_inode_item.h            | 2 +-
-> >  fs/xfs/xfs_ioctl.h                 | 2 +-
-> >  fs/xfs/xfs_ioctl32.h               | 2 +-
-> >  fs/xfs/xfs_iomap.h                 | 2 +-
-> >  fs/xfs/xfs_iops.h                  | 2 +-
-> >  fs/xfs/xfs_itable.h                | 2 +-
-> >  fs/xfs/xfs_linux.h                 | 2 +-
-> >  fs/xfs/xfs_log.h                   | 2 +-
-> >  fs/xfs/xfs_log_priv.h              | 2 +-
-> >  fs/xfs/xfs_mount.h                 | 2 +-
-> >  fs/xfs/xfs_mru_cache.h             | 2 +-
-> >  fs/xfs/xfs_ondisk.h                | 2 +-
-> >  fs/xfs/xfs_qm.h                    | 2 +-
-> >  fs/xfs/xfs_quota.h                 | 2 +-
-> >  fs/xfs/xfs_refcount_item.h         | 2 +-
-> >  fs/xfs/xfs_reflink.h               | 2 +-
-> >  fs/xfs/xfs_rmap_item.h             | 2 +-
-> >  fs/xfs/xfs_rtalloc.h               | 2 +-
-> >  fs/xfs/xfs_stats.h                 | 2 +-
-> >  fs/xfs/xfs_super.h                 | 2 +-
-> >  fs/xfs/xfs_symlink.h               | 2 +-
-> >  fs/xfs/xfs_sysctl.h                | 2 +-
-> >  fs/xfs/xfs_sysfs.h                 | 2 +-
-> >  fs/xfs/xfs_trace.h                 | 2 +-
-> >  fs/xfs/xfs_trans.h                 | 2 +-
-> >  fs/xfs/xfs_trans_priv.h            | 2 +-
-> >  92 files changed, 92 insertions(+), 92 deletions(-)
-> > 
-> > diff --git a/fs/xfs/kmem.h b/fs/xfs/kmem.h
-> > index 6143117770e9..fc87ea9f6843 100644
-> > --- a/fs/xfs/kmem.h
-> > +++ b/fs/xfs/kmem.h
-> > @@ -1,4 +1,4 @@
-> > -// SPDX-License-Identifier: GPL-2.0
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> >  /*
-> >   * Copyright (c) 2000-2005 Silicon Graphics, Inc.
-> >   * All Rights Reserved.
-> > diff --git a/fs/xfs/libxfs/xfs_ag_resv.h b/fs/xfs/libxfs/xfs_ag_resv.h
-> > index c0352edc8e41..f3fd0ee9a7f7 100644
-> > --- a/fs/xfs/libxfs/xfs_ag_resv.h
-> > +++ b/fs/xfs/libxfs/xfs_ag_resv.h
-> > @@ -1,4 +1,4 @@
-> > -// SPDX-License-Identifier: GPL-2.0+
-> > +/* SPDX-License-Identifier: GPL-2.0+ */
-> 
-> I thought we were supposed to use 'GPL-2.0-or-newer' because 'GPL-2.0+'
-> is deprecated in some newer version of the SPDX standard?
-> 
-> <shrug>
+On Sat, Apr 25, 2020 at 8:24 PM Li,Rongqing <lirongqing@baidu.com> wrote:
+>
+>
+>
+> > -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
+> > =E5=8F=91=E4=BB=B6=E4=BA=BA: Paolo Bonzini [mailto:pbonzini@redhat.com]
+> > =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2020=E5=B9=B44=E6=9C=8825=E6=97=
+=A5 0:30
+> > =E6=94=B6=E4=BB=B6=E4=BA=BA: Jim Mattson <jmattson@google.com>; Sean Ch=
+ristopherson
+> > <sean.j.christopherson@intel.com>
+> > =E6=8A=84=E9=80=81: Peter Zijlstra <peterz@infradead.org>; Li,Rongqing
+> > <lirongqing@baidu.com>; LKML <linux-kernel@vger.kernel.org>; kvm list
+> > <kvm@vger.kernel.org>; the arch/x86 maintainers <x86@kernel.org>; H .
+> > Peter Anvin <hpa@zytor.com>; Borislav Petkov <bp@alien8.de>; Ingo Molna=
+r
+> > <mingo@redhat.com>; Thomas Gleixner <tglx@linutronix.de>; Joerg Roedel
+> > <joro@8bytes.org>; Wanpeng Li <wanpengli@tencent.com>; Vitaly Kuznetsov
+> > <vkuznets@redhat.com>
+> > =E4=B8=BB=E9=A2=98: Re: [PATCH] [RFC] kvm: x86: emulate APERF/MPERF reg=
+isters
+> >
+> > On 24/04/20 18:25, Jim Mattson wrote:
+> > >> Assuming we're going forward with this, at an absolute minimum the
+> > >> RDMSRs need to be wrapped with checks on host _and_ guest support fo=
+r
+> > >> the emulated behavior.  Given the significant overhead, this might
+> > >> even be something that should require an extra opt-in from userspace=
+ to
+> > enable.
+> > >
+> > > I would like to see performance data before enabling this uncondition=
+ally.
+> >
+> > I wouldn't want this to be enabled unconditionally anyway, because you =
+need to
+> > take into account live migration to and from processors that do not hav=
+e
+> > APERF/MPERF support.
+> >
+> > Paolo
+>
+> I will add a kvm parameter to consider whether enable MPERF/APERF emulati=
+ons, and make default value to false
 
-The kernel follows the "older" SPDX standard, but will accept either,
-it's up to the author.  It is all documented in LICENSES/ if people
-really want to make sure.
-
-thanks,
-
-greg k-h
+Wouldn't it be better to add a per-VM capability to enable this feature?
