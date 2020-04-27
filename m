@@ -2,132 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 124911BADCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C017B1BAD78
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 21:03:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgD0TWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 15:22:54 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.219]:45646 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726315AbgD0TWx (ORCPT
+        id S1726741AbgD0TDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 15:03:33 -0400
+Received: from smtprelay0217.hostedemail.com ([216.40.44.217]:46360 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726420AbgD0TDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 15:22:53 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id E3A5A874D4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 13:58:54 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id T8xyjG5jJXVkQT8xyjQ3YG; Mon, 27 Apr 2020 13:58:54 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=FOyZfRjZPBxCQvfUPqDeaCbaMtJlKN1+CtCYhi/tOSY=; b=suFuGCVs7RyNqaM33tnxUFAe1
-        E9/FZswXv79NEBrCUMlg+x8b5aiKCsRMAPlskamQJ0gt8W1BVzPU0DpeCqpM4x+VczB5fFSj9GJID
-        QfBIrvRhuF2NRXDviV22fgJ9PfwNC2GrMhTUzLdJbQa8EH0YepiP3AIGZ5NCF6TGv58uqFSq4zvGO
-        Rp+53roCuI0kwbwx5db+RZqYJx65HNkdzyMu/PIvyhC8qMcxDstLThQ2huGoni0XNoY3/6gcGwsFn
-        zQoogUs07/TtLRq893oytfDNK9/t4cSg2fG4dDzoqFZh0YhORdF6Oh7Qr+HBQGbhqwvFlvE2kW8Tv
-        BR+OQ6FDw==;
-Received: from [201.162.241.110] (port=5852 helo=embeddedor)
-        by gator4166.hostgator.com with esmtpa (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jT8xy-000a5x-D5; Mon, 27 Apr 2020 13:58:54 -0500
-Date:   Mon, 27 Apr 2020 14:03:12 -0500
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     linux-kernel@vger.kernel.org
+        Mon, 27 Apr 2020 15:03:33 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id B39EF837F27E;
+        Mon, 27 Apr 2020 19:03:32 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3867:3870:3871:3872:4321:5007:10004:10400:10481:10848:11026:11232:11658:11914:12043:12296:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14659:14721:19900:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: tub42_1ecb9cba3653a
+X-Filterd-Recvd-Size: 1529
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 27 Apr 2020 19:03:31 +0000 (UTC)
+Message-ID: <ce8be38d71da0a9020a42359152dad7ee217d18c.camel@perches.com>
+Subject: Re: [PATCH 3/3] mtd: lpddr: Move function print_drs_error to
+ lpddr_cmds.c
+From:   Joe Perches <joe@perches.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        linux-kernel@vger.kernel.org
 Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, Joe Perches <joe@perches.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH 2/3] mtd: lpddr: Replace printk with pr_notice
-Message-ID: <c9684a22b661fdeff9efcd5b18be01653911fc89.1588013366.git.gustavo@embeddedor.com>
+        linux-mtd@lists.infradead.org
+Date:   Mon, 27 Apr 2020 12:03:30 -0700
+In-Reply-To: <5cc0d2e83e971693d974235608c8d96fe94c849d.1588013366.git.gustavo@embeddedor.com>
 References: <cover.1588013366.git.gustavo@embeddedor.com>
+         <5cc0d2e83e971693d974235608c8d96fe94c849d.1588013366.git.gustavo@embeddedor.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1588013366.git.gustavo@embeddedor.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.241.110
-X-Source-L: No
-X-Exim-ID: 1jT8xy-000a5x-D5
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (embeddedor) [201.162.241.110]:5852
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 19
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pr_notice is preferred over printk.
+On Mon, 2020-04-27 at 14:04 -0500, Gustavo A. R. Silva wrote:
+> Function print_drs_error is only used in drivers/mtd/lpddr/lpddr_cmds.c
+> so, better to move it there.
+[]
+> diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
+[]
+> @@ -94,6 +94,39 @@ struct mtd_info *lpddr_cmdset(struct map_info *map)
+>  }
+>  EXPORT_SYMBOL(lpddr_cmdset);
+>  
+> +static inline void print_drs_error(unsigned int dsr)
 
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- include/linux/mtd/pfow.h | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+There's no need for inline as it's used once.
 
-diff --git a/include/linux/mtd/pfow.h b/include/linux/mtd/pfow.h
-index c65d7a3be3c6..b1fe2bbfdb04 100644
---- a/include/linux/mtd/pfow.h
-+++ b/include/linux/mtd/pfow.h
-@@ -127,31 +127,31 @@ static inline void print_drs_error(unsigned dsr)
- 	int prog_status = (dsr & DSR_RPS) >> 8;
- 
- 	if (!(dsr & DSR_AVAILABLE))
--		printk(KERN_NOTICE"DSR.15: (0) Device not Available\n");
-+		pr_notice("DSR.15: (0) Device not Available\n");
- 	if ((prog_status & 0x03) == 0x03)
--		printk(KERN_NOTICE"DSR.9,8: (11) Attempt to program invalid "
-+		pr_notice("DSR.9,8: (11) Attempt to program invalid "
- 						"half with 41h command\n");
- 	else if (prog_status & 0x02)
--		printk(KERN_NOTICE"DSR.9,8: (10) Object Mode Program attempt "
-+		pr_notice("DSR.9,8: (10) Object Mode Program attempt "
- 					"in region with Control Mode data\n");
- 	else if (prog_status &  0x01)
--		printk(KERN_NOTICE"DSR.9,8: (01) Program attempt in region "
-+		pr_notice("DSR.9,8: (01) Program attempt in region "
- 						"with Object Mode data\n");
- 	if (!(dsr & DSR_READY_STATUS))
--		printk(KERN_NOTICE"DSR.7: (0) Device is Busy\n");
-+		pr_notice("DSR.7: (0) Device is Busy\n");
- 	if (dsr & DSR_ESS)
--		printk(KERN_NOTICE"DSR.6: (1) Erase Suspended\n");
-+		pr_notice("DSR.6: (1) Erase Suspended\n");
- 	if (dsr & DSR_ERASE_STATUS)
--		printk(KERN_NOTICE"DSR.5: (1) Erase/Blank check error\n");
-+		pr_notice("DSR.5: (1) Erase/Blank check error\n");
- 	if (dsr & DSR_PROGRAM_STATUS)
--		printk(KERN_NOTICE"DSR.4: (1) Program Error\n");
-+		pr_notice("DSR.4: (1) Program Error\n");
- 	if (dsr & DSR_VPPS)
--		printk(KERN_NOTICE"DSR.3: (1) Vpp low detect, operation "
-+		pr_notice("DSR.3: (1) Vpp low detect, operation "
- 					"aborted\n");
- 	if (dsr & DSR_PSS)
--		printk(KERN_NOTICE"DSR.2: (1) Program suspended\n");
-+		pr_notice("DSR.2: (1) Program suspended\n");
- 	if (dsr & DSR_DPS)
--		printk(KERN_NOTICE"DSR.1: (1) Aborted Erase/Program attempt "
-+		pr_notice("DSR.1: (1) Aborted Erase/Program attempt "
- 					"on locked block\n");
- }
- #endif /* __LINUX_MTD_PFOW_H */
--- 
-2.26.0
 
