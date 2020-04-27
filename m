@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC46C1BB027
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8065D1BB02C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 23:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgD0VR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 17:17:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34210 "EHLO mail.kernel.org"
+        id S1726609AbgD0VSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 17:18:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726412AbgD0VR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 17:17:28 -0400
+        id S1726410AbgD0VR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 17:17:27 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 258612222A;
+        by mail.kernel.org (Postfix) with ESMTPSA id 2832C2222B;
         Mon, 27 Apr 2020 21:17:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588022245;
-        bh=GPH6dsgPIHXze49Zrhyo4dTiwhqFaCAXRAs3Zi+NpLs=;
+        bh=RFGUcCVxrgv5mUyJOaax4cRxjCGpLehPRqP0Yl9mXSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yDAweM4MJ69ihTiA3yTTzV8U6j+nV/KfZwYOwt/CqhESrSBPiyKItzE4iXUjYglx4
-         kl0nV6ikGtOWjBBOAzWywdZ1niq6YRkfWg3O3+bmkkMz9BQuoFmuQmSAbOFNdf2DgE
-         Z2ztfRMEKzLc4L32InKRPPwL4z+CsdSCBM/JgTmo=
+        b=T0ItBSHQVBLtokQpLSmNwKyDtx6tXki0321irqjcj5nRqxGn/tskT3Ye2e0BgX1Er
+         GeIPPFYnS+dmmSJjy2Mx8rHukToQ41mMFsDJmBnwxLpLceotd0MJSqHwDncbggBfa/
+         x1oBUbMYj6k+xNep5LYBAWOQCkyfOx53c3S0E8N4=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jTB7z-000Hlq-DE; Mon, 27 Apr 2020 23:17:23 +0200
+        id 1jTB7z-000Hlv-E7; Mon, 27 Apr 2020 23:17:23 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org
-Subject: [PATCH v3 28/29] docs: filesystems: convert xfs-self-describing-metadata.txt to ReST
-Date:   Mon, 27 Apr 2020 23:17:20 +0200
-Message-Id: <7c26b200e12cfc07b9bd379612452d845a8d1474.1588021877.git.mchehab+huawei@kernel.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>, linux-usb@vger.kernel.org
+Subject: [PATCH v3 29/29] docs: filesystems: convert configfs.txt to ReST
+Date:   Mon, 27 Apr 2020 23:17:21 +0200
+Message-Id: <c2424ec2ad4d735751434ff7f52144c44aa02d5a.1588021877.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1588021877.git.mchehab+huawei@kernel.org>
 References: <cover.1588021877.git.mchehab+huawei@kernel.org>
@@ -47,306 +48,435 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 - Add a SPDX header;
 - Adjust document and section titles;
+- Use copyright symbol;
 - Some whitespace fixes and new line breaks;
 - Mark literal blocks as such;
 - Add it to filesystems/index.rst.
 
+Also, as this file is alone on its own dir, and it doesn't
+seem too likely that other documents will follow it, let's
+move it to the filesystems/ root documentation dir.
+
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
+ .../{configfs/configfs.txt => configfs.rst}   | 131 +++++++++++-------
  Documentation/filesystems/index.rst           |   1 +
- ...a.txt => xfs-self-describing-metadata.rst} | 182 +++++++++---------
- MAINTAINERS                                   |   2 +-
- 3 files changed, 94 insertions(+), 91 deletions(-)
- rename Documentation/filesystems/{xfs-self-describing-metadata.txt => xfs-self-describing-metadata.rst} (83%)
+ Documentation/iio/iio_configfs.rst            |   2 +-
+ Documentation/usb/gadget_configfs.rst         |   4 +-
+ fs/configfs/inode.c                           |   2 +-
+ fs/configfs/item.c                            |   2 +-
+ include/linux/configfs.h                      |   2 +-
+ 7 files changed, 86 insertions(+), 58 deletions(-)
+ rename Documentation/filesystems/{configfs/configfs.txt => configfs.rst} (87%)
 
-diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-index 24d122ab4b39..a4fefb62c931 100644
---- a/Documentation/filesystems/index.rst
-+++ b/Documentation/filesystems/index.rst
-@@ -119,4 +119,5 @@ Documentation for filesystem implementations.
-    virtiofs
-    vfat
-    xfs-delayed-logging-design
-+   xfs-self-describing-metadata
-    zonefs
-diff --git a/Documentation/filesystems/xfs-self-describing-metadata.txt b/Documentation/filesystems/xfs-self-describing-metadata.rst
-similarity index 83%
-rename from Documentation/filesystems/xfs-self-describing-metadata.txt
-rename to Documentation/filesystems/xfs-self-describing-metadata.rst
-index 8db0121d0980..51cdafe01ab1 100644
---- a/Documentation/filesystems/xfs-self-describing-metadata.txt
-+++ b/Documentation/filesystems/xfs-self-describing-metadata.rst
-@@ -1,8 +1,11 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+============================
- XFS Self Describing Metadata
------------------------------
-+============================
+diff --git a/Documentation/filesystems/configfs/configfs.txt b/Documentation/filesystems/configfs.rst
+similarity index 87%
+rename from Documentation/filesystems/configfs/configfs.txt
+rename to Documentation/filesystems/configfs.rst
+index 16e606c11f40..851d475798f7 100644
+--- a/Documentation/filesystems/configfs/configfs.txt
++++ b/Documentation/filesystems/configfs.rst
+@@ -1,5 +1,6 @@
+-
+-configfs - Userspace-driven kernel object configuration.
++=======================================================
++Configfs - Userspace-driven Kernel oOject Configuration
++=======================================================
  
- Introduction
--------------
-+============
+ Joel Becker <joel.becker@oracle.com>
  
- The largest scalability problem facing XFS is not one of algorithmic
- scalability, but of verification of the filesystem structure. Scalabilty of the
-@@ -34,7 +37,7 @@ required for basic forensic analysis of the filesystem structure.
+@@ -9,7 +10,8 @@ Copyright (c) 2005 Oracle Corporation,
+ 	Joel Becker <joel.becker@oracle.com>
  
  
- Self Describing Metadata
--------------------------
-+========================
- 
- One of the problems with the current metadata format is that apart from the
- magic number in the metadata block, we have no other way of identifying what it
-@@ -142,7 +145,7 @@ modification occurred between the corruption being written and when it was
- detected.
- 
- Runtime Validation
--------------------
-+==================
- 
- Validation of self-describing metadata takes place at runtime in two places:
- 
-@@ -183,18 +186,18 @@ error occurs during this process, the buffer is again marked with a EFSCORRUPTED
- error for the higher layers to catch.
- 
- Structures
------------
-+==========
- 
--A typical on-disk structure needs to contain the following information:
-+A typical on-disk structure needs to contain the following information::
- 
--struct xfs_ondisk_hdr {
--        __be32  magic;		/* magic number */
--        __be32  crc;		/* CRC, not logged */
--        uuid_t  uuid;		/* filesystem identifier */
--        __be64  owner;		/* parent object */
--        __be64  blkno;		/* location on disk */
--        __be64  lsn;		/* last modification in log, not logged */
--};
-+    struct xfs_ondisk_hdr {
-+	    __be32  magic;		/* magic number */
-+	    __be32  crc;		/* CRC, not logged */
-+	    uuid_t  uuid;		/* filesystem identifier */
-+	    __be64  owner;		/* parent object */
-+	    __be64  blkno;		/* location on disk */
-+	    __be64  lsn;		/* last modification in log, not logged */
-+    };
- 
- Depending on the metadata, this information may be part of a header structure
- separate to the metadata contents, or may be distributed through an existing
-@@ -214,24 +217,24 @@ level of information is generally provided. For example:
- 	  well. hence the additional metadata headers change the overall format
- 	  of the metadata.
- 
--A typical buffer read verifier is structured as follows:
-+A typical buffer read verifier is structured as follows::
- 
--#define XFS_FOO_CRC_OFF		offsetof(struct xfs_ondisk_hdr, crc)
-+    #define XFS_FOO_CRC_OFF		offsetof(struct xfs_ondisk_hdr, crc)
- 
--static void
--xfs_foo_read_verify(
--	struct xfs_buf	*bp)
--{
--       struct xfs_mount *mp = bp->b_mount;
-+    static void
-+    xfs_foo_read_verify(
-+	    struct xfs_buf	*bp)
-+    {
-+	struct xfs_mount *mp = bp->b_mount;
- 
--        if ((xfs_sb_version_hascrc(&mp->m_sb) &&
--             !xfs_verify_cksum(bp->b_addr, BBTOB(bp->b_length),
--					XFS_FOO_CRC_OFF)) ||
--            !xfs_foo_verify(bp)) {
--                XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
--                xfs_buf_ioerror(bp, EFSCORRUPTED);
--        }
--}
-+	    if ((xfs_sb_version_hascrc(&mp->m_sb) &&
-+		!xfs_verify_cksum(bp->b_addr, BBTOB(bp->b_length),
-+					    XFS_FOO_CRC_OFF)) ||
-+		!xfs_foo_verify(bp)) {
-+		    XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
-+		    xfs_buf_ioerror(bp, EFSCORRUPTED);
-+	    }
-+    }
- 
- The code ensures that the CRC is only checked if the filesystem has CRCs enabled
- by checking the superblock of the feature bit, and then if the CRC verifies OK
-@@ -239,83 +242,83 @@ by checking the superblock of the feature bit, and then if the CRC verifies OK
- 
- The verifier function will take a couple of different forms, depending on
- whether the magic number can be used to determine the format of the block. In
--the case it can't, the code is structured as follows:
-+the case it can't, the code is structured as follows::
- 
--static bool
--xfs_foo_verify(
--	struct xfs_buf		*bp)
--{
--        struct xfs_mount	*mp = bp->b_mount;
--        struct xfs_ondisk_hdr	*hdr = bp->b_addr;
-+    static bool
-+    xfs_foo_verify(
-+	    struct xfs_buf		*bp)
-+    {
-+	    struct xfs_mount	*mp = bp->b_mount;
-+	    struct xfs_ondisk_hdr	*hdr = bp->b_addr;
- 
--        if (hdr->magic != cpu_to_be32(XFS_FOO_MAGIC))
--                return false;
-+	    if (hdr->magic != cpu_to_be32(XFS_FOO_MAGIC))
-+		    return false;
- 
--        if (!xfs_sb_version_hascrc(&mp->m_sb)) {
--		if (!uuid_equal(&hdr->uuid, &mp->m_sb.sb_uuid))
--			return false;
--		if (bp->b_bn != be64_to_cpu(hdr->blkno))
--			return false;
--		if (hdr->owner == 0)
--			return false;
--	}
-+	    if (!xfs_sb_version_hascrc(&mp->m_sb)) {
-+		    if (!uuid_equal(&hdr->uuid, &mp->m_sb.sb_uuid))
-+			    return false;
-+		    if (bp->b_bn != be64_to_cpu(hdr->blkno))
-+			    return false;
-+		    if (hdr->owner == 0)
-+			    return false;
-+	    }
- 
--	/* object specific verification checks here */
-+	    /* object specific verification checks here */
- 
--        return true;
--}
-+	    return true;
-+    }
- 
- If there are different magic numbers for the different formats, the verifier
--will look like:
-+will look like::
- 
--static bool
--xfs_foo_verify(
--	struct xfs_buf		*bp)
--{
--        struct xfs_mount	*mp = bp->b_mount;
--        struct xfs_ondisk_hdr	*hdr = bp->b_addr;
-+    static bool
-+    xfs_foo_verify(
-+	    struct xfs_buf		*bp)
-+    {
-+	    struct xfs_mount	*mp = bp->b_mount;
-+	    struct xfs_ondisk_hdr	*hdr = bp->b_addr;
- 
--        if (hdr->magic == cpu_to_be32(XFS_FOO_CRC_MAGIC)) {
--		if (!uuid_equal(&hdr->uuid, &mp->m_sb.sb_uuid))
--			return false;
--		if (bp->b_bn != be64_to_cpu(hdr->blkno))
--			return false;
--		if (hdr->owner == 0)
--			return false;
--	} else if (hdr->magic != cpu_to_be32(XFS_FOO_MAGIC))
--		return false;
-+	    if (hdr->magic == cpu_to_be32(XFS_FOO_CRC_MAGIC)) {
-+		    if (!uuid_equal(&hdr->uuid, &mp->m_sb.sb_uuid))
-+			    return false;
-+		    if (bp->b_bn != be64_to_cpu(hdr->blkno))
-+			    return false;
-+		    if (hdr->owner == 0)
-+			    return false;
-+	    } else if (hdr->magic != cpu_to_be32(XFS_FOO_MAGIC))
-+		    return false;
- 
--	/* object specific verification checks here */
-+	    /* object specific verification checks here */
- 
--        return true;
--}
-+	    return true;
-+    }
- 
- Write verifiers are very similar to the read verifiers, they just do things in
--the opposite order to the read verifiers. A typical write verifier:
-+the opposite order to the read verifiers. A typical write verifier::
- 
--static void
--xfs_foo_write_verify(
--	struct xfs_buf	*bp)
--{
--	struct xfs_mount	*mp = bp->b_mount;
--	struct xfs_buf_log_item	*bip = bp->b_fspriv;
-+    static void
-+    xfs_foo_write_verify(
-+	    struct xfs_buf	*bp)
-+    {
-+	    struct xfs_mount	*mp = bp->b_mount;
-+	    struct xfs_buf_log_item	*bip = bp->b_fspriv;
- 
--	if (!xfs_foo_verify(bp)) {
--		XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
--		xfs_buf_ioerror(bp, EFSCORRUPTED);
--		return;
--	}
-+	    if (!xfs_foo_verify(bp)) {
-+		    XFS_CORRUPTION_ERROR(__func__, XFS_ERRLEVEL_LOW, mp, bp->b_addr);
-+		    xfs_buf_ioerror(bp, EFSCORRUPTED);
-+		    return;
-+	    }
- 
--	if (!xfs_sb_version_hascrc(&mp->m_sb))
--		return;
-+	    if (!xfs_sb_version_hascrc(&mp->m_sb))
-+		    return;
- 
- 
--	if (bip) {
--		struct xfs_ondisk_hdr	*hdr = bp->b_addr;
--		hdr->lsn = cpu_to_be64(bip->bli_item.li_lsn);
--	}
--	xfs_update_cksum(bp->b_addr, BBTOB(bp->b_length), XFS_FOO_CRC_OFF);
--}
-+	    if (bip) {
-+		    struct xfs_ondisk_hdr	*hdr = bp->b_addr;
-+		    hdr->lsn = cpu_to_be64(bip->bli_item.li_lsn);
-+	    }
-+	    xfs_update_cksum(bp->b_addr, BBTOB(bp->b_length), XFS_FOO_CRC_OFF);
-+    }
- 
- This will verify the internal structure of the metadata before we go any
- further, detecting corruptions that have occurred as the metadata has been
-@@ -324,7 +327,7 @@ update the LSN field (when it was last modified) and calculate the CRC on the
- metadata. Once this is done, we can issue the IO.
- 
- Inodes and Dquots
-------------------
+-[What is configfs?]
++What is configfs?
 +=================
  
- Inodes and dquots are special snowflakes. They have per-object CRC and
- self-identifiers, but they are packed so that there are multiple objects per
-@@ -347,4 +350,3 @@ XXX: inode unlinked list modification doesn't recalculate the inode CRC! None of
- the unlinked list modifications check or update CRCs, neither during unlink nor
- log recovery. So, it's gone unnoticed until now. This won't matter immediately -
- repair will probably complain about it - but it needs to be fixed.
+ configfs is a ram-based filesystem that provides the converse of
+ sysfs's functionality.  Where sysfs is a filesystem-based view of
+@@ -35,10 +37,11 @@ kernel modules backing the items must respond to this.
+ Both sysfs and configfs can and should exist together on the same
+ system.  One is not a replacement for the other.
+ 
+-[Using configfs]
++Using configfs
++==============
+ 
+ configfs can be compiled as a module or into the kernel.  You can access
+-it by doing
++it by doing::
+ 
+ 	mount -t configfs none /config
+ 
+@@ -56,28 +59,29 @@ values.  Don't mix more than one attribute in one attribute file.
+ There are two types of configfs attributes:
+ 
+ * Normal attributes, which similar to sysfs attributes, are small ASCII text
+-files, with a maximum size of one page (PAGE_SIZE, 4096 on i386).  Preferably
+-only one value per file should be used, and the same caveats from sysfs apply.
+-Configfs expects write(2) to store the entire buffer at once.  When writing to
+-normal configfs attributes, userspace processes should first read the entire
+-file, modify the portions they wish to change, and then write the entire
+-buffer back.
++  files, with a maximum size of one page (PAGE_SIZE, 4096 on i386).  Preferably
++  only one value per file should be used, and the same caveats from sysfs apply.
++  Configfs expects write(2) to store the entire buffer at once.  When writing to
++  normal configfs attributes, userspace processes should first read the entire
++  file, modify the portions they wish to change, and then write the entire
++  buffer back.
+ 
+ * Binary attributes, which are somewhat similar to sysfs binary attributes,
+-but with a few slight changes to semantics.  The PAGE_SIZE limitation does not
+-apply, but the whole binary item must fit in single kernel vmalloc'ed buffer.
+-The write(2) calls from user space are buffered, and the attributes'
+-write_bin_attribute method will be invoked on the final close, therefore it is
+-imperative for user-space to check the return code of close(2) in order to
+-verify that the operation finished successfully.
+-To avoid a malicious user OOMing the kernel, there's a per-binary attribute
+-maximum buffer value.
++  but with a few slight changes to semantics.  The PAGE_SIZE limitation does not
++  apply, but the whole binary item must fit in single kernel vmalloc'ed buffer.
++  The write(2) calls from user space are buffered, and the attributes'
++  write_bin_attribute method will be invoked on the final close, therefore it is
++  imperative for user-space to check the return code of close(2) in order to
++  verify that the operation finished successfully.
++  To avoid a malicious user OOMing the kernel, there's a per-binary attribute
++  maximum buffer value.
+ 
+ When an item needs to be destroyed, remove it with rmdir(2).  An
+ item cannot be destroyed if any other item has a link to it (via
+ symlink(2)).  Links can be removed via unlink(2).
+ 
+-[Configuring FakeNBD: an Example]
++Configuring FakeNBD: an Example
++===============================
+ 
+ Imagine there's a Network Block Device (NBD) driver that allows you to
+ access remote block devices.  Call it FakeNBD.  FakeNBD uses configfs
+@@ -86,14 +90,14 @@ sysadmins use to configure FakeNBD, but somehow that program has to tell
+ the driver about it.  Here's where configfs comes in.
+ 
+ When the FakeNBD driver is loaded, it registers itself with configfs.
+-readdir(3) sees this just fine:
++readdir(3) sees this just fine::
+ 
+ 	# ls /config
+ 	fakenbd
+ 
+ A fakenbd connection can be created with mkdir(2).  The name is
+ arbitrary, but likely the tool will make some use of the name.  Perhaps
+-it is a uuid or a disk name:
++it is a uuid or a disk name::
+ 
+ 	# mkdir /config/fakenbd/disk1
+ 	# ls /config/fakenbd/disk1
+@@ -102,7 +106,7 @@ it is a uuid or a disk name:
+ The target attribute contains the IP address of the server FakeNBD will
+ connect to.  The device attribute is the device on the server.
+ Predictably, the rw attribute determines whether the connection is
+-read-only or read-write.
++read-only or read-write::
+ 
+ 	# echo 10.0.0.1 > /config/fakenbd/disk1/target
+ 	# echo /dev/sda1 > /config/fakenbd/disk1/device
+@@ -111,7 +115,8 @@ read-only or read-write.
+ That's it.  That's all there is.  Now the device is configured, via the
+ shell no less.
+ 
+-[Coding With configfs]
++Coding With configfs
++====================
+ 
+ Every object in configfs is a config_item.  A config_item reflects an
+ object in the subsystem.  It has attributes that match values on that
+@@ -130,7 +135,10 @@ appears as a directory at the top of the configfs filesystem.  A
+ subsystem is also a config_group, and can do everything a config_group
+ can.
+ 
+-[struct config_item]
++struct config_item
++==================
++
++::
+ 
+ 	struct config_item {
+ 		char                    *ci_name;
+@@ -168,7 +176,10 @@ By itself, a config_item cannot do much more than appear in configfs.
+ Usually a subsystem wants the item to display and/or store attributes,
+ among other things.  For that, it needs a type.
+ 
+-[struct config_item_type]
++struct config_item_type
++=======================
++
++::
+ 
+ 	struct configfs_item_operations {
+ 		void (*release)(struct config_item *);
+@@ -192,7 +203,10 @@ allocated dynamically will need to provide the ct_item_ops->release()
+ method.  This method is called when the config_item's reference count
+ reaches zero.
+ 
+-[struct configfs_attribute]
++struct configfs_attribute
++=========================
++
++::
+ 
+ 	struct configfs_attribute {
+ 		char                    *ca_name;
+@@ -214,7 +228,10 @@ be called whenever userspace asks for a read(2) on the attribute.  If an
+ attribute is writable and provides a ->store  method, that method will be
+ be called whenever userspace asks for a write(2) on the attribute.
+ 
+-[struct configfs_bin_attribute]
++struct configfs_bin_attribute
++=============================
++
++::
+ 
+ 	struct configfs_bin_attribute {
+ 		struct configfs_attribute	cb_attr;
+@@ -240,11 +257,12 @@ will happen for write(2). The reads/writes are bufferred so only a
+ single read/write will occur; the attributes' need not concern itself
+ with it.
+ 
+-[struct config_group]
++struct config_group
++===================
+ 
+ A config_item cannot live in a vacuum.  The only way one can be created
+ is via mkdir(2) on a config_group.  This will trigger creation of a
+-child item.
++child item::
+ 
+ 	struct config_group {
+ 		struct config_item		cg_item;
+@@ -264,7 +282,7 @@ The config_group structure contains a config_item.  Properly configuring
+ that item means that a group can behave as an item in its own right.
+ However, it can do more: it can create child items or groups.  This is
+ accomplished via the group operations specified on the group's
+-config_item_type.
++config_item_type::
+ 
+ 	struct configfs_group_operations {
+ 		struct config_item *(*make_item)(struct config_group *group,
+@@ -279,7 +297,8 @@ config_item_type.
+ 	};
+ 
+ A group creates child items by providing the
+-ct_group_ops->make_item() method.  If provided, this method is called from mkdir(2) in the group's directory.  The subsystem allocates a new
++ct_group_ops->make_item() method.  If provided, this method is called from
++mkdir(2) in the group's directory.  The subsystem allocates a new
+ config_item (or more likely, its container structure), initializes it,
+ and returns it to configfs.  Configfs will then populate the filesystem
+ tree to reflect the new item.
+@@ -296,13 +315,14 @@ upon item allocation.  If a subsystem has no work to do, it may omit
+ the ct_group_ops->drop_item() method, and configfs will call
+ config_item_put() on the item on behalf of the subsystem.
+ 
+-IMPORTANT: drop_item() is void, and as such cannot fail.  When rmdir(2)
+-is called, configfs WILL remove the item from the filesystem tree
+-(assuming that it has no children to keep it busy).  The subsystem is
+-responsible for responding to this.  If the subsystem has references to
+-the item in other threads, the memory is safe.  It may take some time
+-for the item to actually disappear from the subsystem's usage.  But it
+-is gone from configfs.
++Important:
++   drop_item() is void, and as such cannot fail.  When rmdir(2)
++   is called, configfs WILL remove the item from the filesystem tree
++   (assuming that it has no children to keep it busy).  The subsystem is
++   responsible for responding to this.  If the subsystem has references to
++   the item in other threads, the memory is safe.  It may take some time
++   for the item to actually disappear from the subsystem's usage.  But it
++   is gone from configfs.
+ 
+ When drop_item() is called, the item's linkage has already been torn
+ down.  It no longer has a reference on its parent and has no place in
+@@ -319,10 +339,11 @@ is implemented in the configfs rmdir(2) code.  ->drop_item() will not be
+ called, as the item has not been dropped.  rmdir(2) will fail, as the
+ directory is not empty.
+ 
+-[struct configfs_subsystem]
++struct configfs_subsystem
++=========================
+ 
+ A subsystem must register itself, usually at module_init time.  This
+-tells configfs to make the subsystem appear in the file tree.
++tells configfs to make the subsystem appear in the file tree::
+ 
+ 	struct configfs_subsystem {
+ 		struct config_group	su_group;
+@@ -332,17 +353,19 @@ tells configfs to make the subsystem appear in the file tree.
+ 	int configfs_register_subsystem(struct configfs_subsystem *subsys);
+ 	void configfs_unregister_subsystem(struct configfs_subsystem *subsys);
+ 
+-	A subsystem consists of a toplevel config_group and a mutex.
++A subsystem consists of a toplevel config_group and a mutex.
+ The group is where child config_items are created.  For a subsystem,
+ this group is usually defined statically.  Before calling
+ configfs_register_subsystem(), the subsystem must have initialized the
+ group via the usual group _init() functions, and it must also have
+ initialized the mutex.
+-	When the register call returns, the subsystem is live, and it
++
++When the register call returns, the subsystem is live, and it
+ will be visible via configfs.  At that point, mkdir(2) can be called and
+ the subsystem must be ready for it.
+ 
+-[An Example]
++An Example
++==========
+ 
+ The best example of these basic concepts is the simple_children
+ subsystem/group and the simple_child item in
+@@ -350,7 +373,8 @@ samples/configfs/configfs_sample.c. It shows a trivial object displaying
+ and storing an attribute, and a simple group creating and destroying
+ these children.
+ 
+-[Hierarchy Navigation and the Subsystem Mutex]
++Hierarchy Navigation and the Subsystem Mutex
++============================================
+ 
+ There is an extra bonus that configfs provides.  The config_groups and
+ config_items are arranged in a hierarchy due to the fact that they
+@@ -375,7 +399,8 @@ be in its parent's cg_children list for the same duration.  This allows
+ a subsystem to trust ci_parent and cg_children while they hold the
+ mutex.
+ 
+-[Item Aggregation Via symlink(2)]
++Item Aggregation Via symlink(2)
++===============================
+ 
+ configfs provides a simple group via the group->item parent/child
+ relationship.  Often, however, a larger environment requires aggregation
+@@ -403,7 +428,8 @@ A config_item cannot be removed while it links to any other item, nor
+ can it be removed while an item links to it.  Dangling symlinks are not
+ allowed in configfs.
+ 
+-[Automatically Created Subgroups]
++Automatically Created Subgroups
++===============================
+ 
+ A new config_group may want to have two types of child config_items.
+ While this could be codified by magic names in ->make_item(), it is much
+@@ -433,7 +459,8 @@ As a consequence of this, default groups cannot be removed directly via
+ rmdir(2).  They also are not considered when rmdir(2) on the parent
+ group is checking for children.
+ 
+-[Dependent Subsystems]
++Dependent Subsystems
++====================
+ 
+ Sometimes other drivers depend on particular configfs items.  For
+ example, ocfs2 mounts depend on a heartbeat region item.  If that
+@@ -460,9 +487,11 @@ succeeds, then heartbeat knows the region is safe to give to ocfs2.
+ If it fails, it was being torn down anyway, and heartbeat can gracefully
+ pass up an error.
+ 
+-[Committable Items]
++Committable Items
++=================
+ 
+-NOTE: Committable items are currently unimplemented.
++Note:
++     Committable items are currently unimplemented.
+ 
+ Some config_items cannot have a valid initial state.  That is, no
+ default values can be specified for the item's attributes such that the
+@@ -504,5 +533,3 @@ As rmdir(2) does not work in the "live" directory, an item must be
+ shutdown, or "uncommitted".  Again, this is done via rename(2), this
+ time from the "live" directory back to the "pending" one.  The subsystem
+ is notified by the ct_group_ops->uncommit_object() method.
 -
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0a4d2fefe5f2..25dcb5ce2417 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18591,7 +18591,7 @@ T:	git git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
- F:	Documentation/ABI/testing/sysfs-fs-xfs
- F:	Documentation/admin-guide/xfs.rst
- F:	Documentation/filesystems/xfs-delayed-logging-design.rst
--F:	Documentation/filesystems/xfs-self-describing-metadata.txt
-+F:	Documentation/filesystems/xfs-self-describing-metadata.rst
- F:	fs/xfs/
- F:	include/uapi/linux/dqblk_xfs.h
- F:	include/uapi/linux/fsmap.h
+-
+diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
+index a4fefb62c931..4c536e66dc4c 100644
+--- a/Documentation/filesystems/index.rst
++++ b/Documentation/filesystems/index.rst
+@@ -76,6 +76,7 @@ Documentation for filesystem implementations.
+    cifs/cifsroot
+    ceph
+    coda
++   configfs
+    cramfs
+    debugfs
+    dlmfs
+diff --git a/Documentation/iio/iio_configfs.rst b/Documentation/iio/iio_configfs.rst
+index ecbfdb3afef7..6e38cbbd2981 100644
+--- a/Documentation/iio/iio_configfs.rst
++++ b/Documentation/iio/iio_configfs.rst
+@@ -9,7 +9,7 @@ Configfs is a filesystem-based manager of kernel objects. IIO uses some
+ objects that could be easily configured using configfs (e.g.: devices,
+ triggers).
+ 
+-See Documentation/filesystems/configfs/configfs.txt for more information
++See Documentation/filesystems/configfs.rst for more information
+ about how configfs works.
+ 
+ 2. Usage
+diff --git a/Documentation/usb/gadget_configfs.rst b/Documentation/usb/gadget_configfs.rst
+index 54fb08baae22..158e48dab586 100644
+--- a/Documentation/usb/gadget_configfs.rst
++++ b/Documentation/usb/gadget_configfs.rst
+@@ -24,7 +24,7 @@ Linux provides a number of functions for gadgets to use.
+ Creating a gadget means deciding what configurations there will be
+ and which functions each configuration will provide.
+ 
+-Configfs (please see `Documentation/filesystems/configfs/*`) lends itself nicely
++Configfs (please see `Documentation/filesystems/configfs.rst`) lends itself nicely
+ for the purpose of telling the kernel about the above mentioned decision.
+ This document is about how to do it.
+ 
+@@ -354,7 +354,7 @@ the directories in general can be named at will. A group can have
+ a number of its default sub-groups created automatically.
+ 
+ For more information on configfs please see
+-`Documentation/filesystems/configfs/*`.
++`Documentation/filesystems/configfs.rst`.
+ 
+ The concepts described above translate to USB gadgets like this:
+ 
+diff --git a/fs/configfs/inode.c b/fs/configfs/inode.c
+index fd0b5dd68f9e..8bd6a883c94c 100644
+--- a/fs/configfs/inode.c
++++ b/fs/configfs/inode.c
+@@ -9,7 +9,7 @@
+  *
+  * configfs Copyright (C) 2005 Oracle.  All rights reserved.
+  *
+- * Please see Documentation/filesystems/configfs/configfs.txt for more
++ * Please see Documentation/filesystems/configfs.rst for more
+  * information.
+  */
+ 
+diff --git a/fs/configfs/item.c b/fs/configfs/item.c
+index 6e0f1fcb8a5b..704a4356f137 100644
+--- a/fs/configfs/item.c
++++ b/fs/configfs/item.c
+@@ -9,7 +9,7 @@
+  *
+  * configfs Copyright (C) 2005 Oracle.  All rights reserved.
+  *
+- * Please see the file Documentation/filesystems/configfs/configfs.txt for
++ * Please see the file Documentation/filesystems/configfs.rst for
+  * critical information about using the config_item interface.
+  */
+ 
+diff --git a/include/linux/configfs.h b/include/linux/configfs.h
+index fa9490a8874c..2e8c69b43c64 100644
+--- a/include/linux/configfs.h
++++ b/include/linux/configfs.h
+@@ -13,7 +13,7 @@
+  *
+  * configfs Copyright (C) 2005 Oracle.  All rights reserved.
+  *
+- * Please read Documentation/filesystems/configfs/configfs.txt before using
++ * Please read Documentation/filesystems/configfs.rst before using
+  * the configfs interface, ESPECIALLY the parts about reference counts and
+  * item destructors.
+  */
 -- 
 2.25.4
 
