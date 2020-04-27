@@ -2,155 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2F11BB1B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376721BB1BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 00:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgD0Wvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 18:51:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbgD0Wvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 18:51:35 -0400
-Received: from localhost (mobile-166-175-187-210.mycingular.net [166.175.187.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5260020661;
-        Mon, 27 Apr 2020 22:51:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588027894;
-        bh=whRFNUD4BZPg0hJwHb5jAU8zt3B+MFfDdFnuCfCh21Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=jbJ+hBWbFaPZLAZpJBho1x6SwnoZZdRmb11ZCOfY2HQAirKqK3Ud5K3Tc2P/CEHxq
-         YfIhwWgwPQzTeUCIK4Wz08oScj7EyiAqznu4rK0Hp9AVonP8uSBxI/HxMtjBtLKEKg
-         /QFWHJDSaVjtDIOGeZy74eppVI0aTWQr0pZCSHyU=
-Date:   Mon, 27 Apr 2020 17:51:32 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Wei Hu <weh@microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, decui@microsoft.com,
-        mikelley@microsoft.com
-Subject: Re: [PATCH] PCI: pci-hyperv: Retry PCI bus D0 entry when the first
- attempt failed with invalid device state 0xC0000184.
-Message-ID: <20200427225132.GA9339@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200426132430.1756-1-weh@microsoft.com>
+        id S1726307AbgD0W5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 18:57:13 -0400
+Received: from baldur.buserror.net ([165.227.176.147]:37686 "EHLO
+        baldur.buserror.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726204AbgD0W5N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 18:57:13 -0400
+Received: from [2601:449:8480:af0:12bf:48ff:fe84:c9a0]
+        by baldur.buserror.net with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <oss@buserror.net>)
+        id 1jTCeO-00063X-4Q; Mon, 27 Apr 2020 17:54:56 -0500
+Message-ID: <4da39cdb0bb2b6a840c15560c4144e788f57fee4.camel@buserror.net>
+From:   Scott Wood <oss@buserror.net>
+To:     Rob Herring <robh@kernel.org>, Wang Wenhu <wenhu.wang@vivo.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, kernel@vivo.com,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Randy Dunlap <rdunlap@infradead.org>
+Date:   Mon, 27 Apr 2020 17:54:53 -0500
+In-Reply-To: <CAL_JsqK3fpM_tUjHvAMbNzf_nry_iORLXaQBFC8xDK+mxhHDRQ@mail.gmail.com>
+References: <20200420030538.101696-1-wenhu.wang@vivo.com>
+         <CAL_JsqK3fpM_tUjHvAMbNzf_nry_iORLXaQBFC8xDK+mxhHDRQ@mail.gmail.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2601:449:8480:af0:12bf:48ff:fe84:c9a0
+X-SA-Exim-Rcpt-To: robh@kernel.org, wenhu.wang@vivo.com, gregkh@linuxfoundation.org, arnd@arndb.de, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, kernel@vivo.com, christophe.leroy@c-s.fr, mpe@ellerman.id.au, rdunlap@infradead.org
+X-SA-Exim-Mail-From: oss@buserror.net
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on baldur.localdomain
+X-Spam-Level: 
+X-Spam-Status: No, score=-17.5 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE autolearn=ham autolearn_force=no version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  -15 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        * -1.5 GREYLIST_ISWHITE The incoming server has been whitelisted for
+        *      this recipient and sender
+Subject: Re: [PATCH v2,RESEND] misc: new driver sram_uapi for user level
+ SRAM access
+X-SA-Exim-Version: 4.2.1 (built Tue, 02 Aug 2016 21:08:31 +0000)
+X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pay attention to the changelog history and make yours match:
-
-  $ git log --oneline drivers/pci/controller/pci-hyperv.c
-  1cf106d93245 ("PCI: hv: Introduce hv_msi_entry")
-  61bfd920abbf ("PCI: hv: Move retarget related structures into tlfs header")
-  b00f80fcfaa0 ("PCI: hv: Move hypercall related definitions into tlfs header")
-  067fb6c97e7e ("PCI: hv: Replace zero-length array with flexible-array member")
-  999dd956d838 ("PCI: hv: Add support for protocol 1.3 and support PCI_BUS_RELATIONS2")
-  f9ad0f361cf3 ("PCI: hv: Decouple the func definition in hv_dr_state from VSP message")
-  42c3d41832ef ("PCI: hv: Add missing kfree(hbus) in hv_pci_probe()'s error handling path")
-  e658a4fea8ef ("PCI: hv: Remove unnecessary type casting from kzalloc")
-
-No period at end of subject.
-
-On Sun, Apr 26, 2020 at 09:24:30PM +0800, Wei Hu wrote:
-> In the case of kdump, the PCI device was not cleanly shut down
-> before the kdump kernel starts. This causes the initial
-> attempt of entering D0 state in the kdump kernel to fail with
-> invalid device state 0xC0000184 returned from Hyper-V host.
-> When this happens, explicitly call PCI bus exit and retry to
-> enter the D0 state.
+On Mon, 2020-04-27 at 09:13 -0500, Rob Herring wrote:
+> On Sun, Apr 19, 2020 at 10:06 PM Wang Wenhu <wenhu.wang@vivo.com> wrote:
+> > 
+> > A generic User-Kernel interface that allows a misc device created
+> > by it to support file-operations of ioctl and mmap to access SRAM
+> > memory from user level. Different kinds of SRAM alloction and free
+> > APIs could be registered by specific SRAM hardware level driver to
+> > the available list and then be chosen by users to allocate and map
+> > SRAM memory from user level.
+> > 
+> > It is extremely helpful for the user space applications that require
+> > high performance memory accesses, such as embedded networking devices
+> > that would process data in user space, and PowerPC e500 is a case.
+> > 
+> > Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+> > Cc: Scott Wood <oss@buserror.net>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: linuxppc-dev@lists.ozlabs.org
+> > ---
+> > Changes since v1: addressed comments from Arnd
+> >  * Changed the ioctl cmd definitions using _IO micros
+> >  * Export interfaces for HW-SRAM drivers to register apis to available
+> > list
+> >  * Modified allocation alignment to PAGE_SIZE
+> >  * Use phys_addr_t as type of SRAM resource size and offset
+> >  * Support compat_ioctl
+> >  * Misc device name:sram
+> > 
+> > Note: From this on, the SRAM_UAPI driver is independent to any hardware
+> > drivers, so I would only commit the patch itself as v2, while the v1 of
+> > it was wrapped together with patches for Freescale L2-Cache-SRAM device.
+> > Then after, I'd create patches for Freescale L2-Cache-SRAM device as
+> > another series.
 > 
-> Also fix the PCI probe failure path to release the PCI device
-> resource properly.
-
-This sounds like two separate fixes that should be in separate
-patches?
-
-> Signed-off-by: Wei Hu <weh@microsoft.com>
-> ---
->  drivers/pci/controller/pci-hyperv.c | 34 ++++++++++++++++++++++++++++-
->  1 file changed, 33 insertions(+), 1 deletion(-)
+> There's work to add SRAM support to dma-buf heaps[1]. Take a look and
+> see if that works for you.
 > 
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> index e15022ff63e3..eb4781fa058d 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -2736,6 +2736,10 @@ static void hv_free_config_window(struct hv_pcibus_device *hbus)
->  	vmbus_free_mmio(hbus->mem_config->start, PCI_CONFIG_MMIO_LENGTH);
->  }
->  
-> +#define STATUS_INVALID_DEVICE_STATE		0xC0000184
-> +
-> +static int hv_pci_bus_exit(struct hv_device *hdev, bool hibernating);
-> +
->  /**
->   * hv_pci_enter_d0() - Bring the "bus" into the D0 power state
->   * @hdev:	VMBus's tracking struct for this root PCI bus
-> @@ -2748,8 +2752,10 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
->  	struct pci_bus_d0_entry *d0_entry;
->  	struct hv_pci_compl comp_pkt;
->  	struct pci_packet *pkt;
-> +	bool retry = true;
->  	int ret;
->  
-> +enter_d0_retry:
->  	/*
->  	 * Tell the host that the bus is ready to use, and moved into the
->  	 * powered-on state.  This includes telling the host which region
-> @@ -2780,6 +2786,30 @@ static int hv_pci_enter_d0(struct hv_device *hdev)
->  		dev_err(&hdev->device,
->  			"PCI Pass-through VSP failed D0 Entry with status %x\n",
->  			comp_pkt.completion_status);
-> +
-> +		/*
-> +		 * In certain case (Kdump) the pci device of interest was
-> +		 * not cleanly shut down and resource is still held on host
-> +		 * side, the host could return STATUS_INVALID_DEVICE_STATE.
-> +		 * We need to explicitly request host to release the resource
-> +		 * and try to enter D0 again.
-> +		 */
-> +		if (comp_pkt.completion_status == STATUS_INVALID_DEVICE_STATE &&
-> +		    retry) {
-> +			ret = hv_pci_bus_exit(hdev, true);
-> +
-> +			retry = false;
-> +
-> +			if (ret == 0) {
-> +				kfree(pkt);
-> +				goto enter_d0_retry;
-> +			} else {
-> +				dev_err(&hdev->device,
-> +					"PCI bus D0 exit failed with ret %d\n",
-> +					ret);
-> +			}
-> +		}
-> +
->  		ret = -EPROTO;
->  		goto exit;
->  	}
-> @@ -3136,7 +3166,7 @@ static int hv_pci_probe(struct hv_device *hdev,
->  
->  	ret = hv_pci_allocate_bridge_windows(hbus);
->  	if (ret)
-> -		goto free_irq_domain;
-> +		goto exit_d0;
->  
->  	ret = hv_send_resources_allocated(hdev);
->  	if (ret)
-> @@ -3154,6 +3184,8 @@ static int hv_pci_probe(struct hv_device *hdev,
->  
->  free_windows:
->  	hv_pci_free_bridge_windows(hbus);
-> +exit_d0:
-> +	(void) hv_pci_bus_exit(hdev, true);
->  free_irq_domain:
->  	irq_domain_remove(hbus->irq_domain);
->  free_fwnode:
-> -- 
-> 2.20.1
+> Rob
 > 
+> [1] https://lore.kernel.org/lkml/20200424222740.16259-1-afd@ti.com/
+> 
+
+The dma heap API itself (what makes it specific to DMA, rather than any
+special-purpose allocator?) seems like it could be what we're looking for. 
+The issue with drivers/misc/sram.c is that it seems like its main purpose is
+to get sram description from the device tree, but this sram isn't static (it's
+a reconfiguration of L2 cache into SRAM mode) and thus can't be described by
+mmio-sram.
+
+-Scott
+
+
