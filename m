@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0518F1BAF5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497101BAF71
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 22:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726983AbgD0UXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 16:23:44 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:56722 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726942AbgD0UXm (ORCPT
+        id S1726788AbgD0U1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 16:27:17 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:38562 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726233AbgD0U1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 16:23:42 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RKNZI3146115;
-        Mon, 27 Apr 2020 20:23:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=gJg86o4qkIqkS+1E64wnRb83FVark41cnwWmAjm6xus=;
- b=rf906eRbxnkMrg0shfSwKv1IyDXd58Tuku1eKgQw+ZIBU6QpU4P6xeXzykEpGQZd5Ko5
- OfSFaxGkFsWzH6N6MspNeakRx5+iOzPgEjVHbyLLtfR3tvZqbn7FlnhHfbQUZQemfQH7
- irI9QsGWfgwPWwSTX1zmkAHGtfIMRppTR9Byns0ktPdCqXbliw3OPzWExIBjqnK9oexm
- e9lrKiD640CXUX5LZ+HMxlYcXnFWtYQriLwQ6bHy/W3LwSNIO3aSSZajevEcxzOnZrKv
- 6tc02p2SwpBTQnAqtzekF4nj6GxvE2gtUD9CUL2t+UP8b5xHDPzisidBSk9rMNt2p26K GA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 30p01nje6k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Apr 2020 20:23:35 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03RKBpYv060342;
-        Mon, 27 Apr 2020 20:21:35 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 30mxwwwfx3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Apr 2020 20:21:34 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03RKLXDU006431;
-        Mon, 27 Apr 2020 20:21:33 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 27 Apr 2020 13:21:33 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     linux-kernel@vger.kernel.org, sebaddel@cisco.com,
-        jejb@linux.ibm.com, linux-scsi@vger.kernel.org, kartilak@cisco.com,
-        Jason Yan <yanaijie@huawei.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] scsi: snic: make snic_io_exch_ver_cmpl_handler() void
-Date:   Mon, 27 Apr 2020 16:21:22 -0400
-Message-Id: <158777063304.4076.1514687099923506496.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200418070615.11603-1-yanaijie@huawei.com>
-References: <20200418070615.11603-1-yanaijie@huawei.com>
+        Mon, 27 Apr 2020 16:27:16 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jTALP-0002P1-Fx; Mon, 27 Apr 2020 14:27:11 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jTALO-0000RH-Fn; Mon, 27 Apr 2020 14:27:11 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
+        <87ftcv1nqe.fsf@x220.int.ebiederm.org>
+        <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
+        <20200424173927.GB26802@redhat.com>
+        <87mu6ymkea.fsf_-_@x220.int.ebiederm.org>
+        <87r1w8ete7.fsf@x220.int.ebiederm.org>
+Date:   Mon, 27 Apr 2020 15:23:57 -0500
+In-Reply-To: <87r1w8ete7.fsf@x220.int.ebiederm.org> (Eric W. Biederman's
+        message of "Mon, 27 Apr 2020 12:21:52 -0500")
+Message-ID: <87v9lkbrtu.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 bulkscore=0
- suspectscore=0 mlxlogscore=635 phishscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004270164
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 clxscore=1015
- phishscore=0 mlxlogscore=690 adultscore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004270165
+Content-Type: text/plain
+X-XM-SPF: eid=1jTALO-0000RH-Fn;;;mid=<87v9lkbrtu.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+rFpxBVGQYkwi+81h5QUMxWKfMmzPUaw8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4827]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Oleg Nesterov <oleg@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 563 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 4.2 (0.7%), b_tie_ro: 3.0 (0.5%), parse: 0.63
+        (0.1%), extract_message_metadata: 9 (1.5%), get_uri_detail_list: 0.55
+        (0.1%), tests_pri_-1000: 11 (2.0%), tests_pri_-950: 1.06 (0.2%),
+        tests_pri_-900: 0.81 (0.1%), tests_pri_-90: 390 (69.4%), check_bayes:
+        389 (69.2%), b_tokenize: 3.7 (0.7%), b_tok_get_all: 254 (45.1%),
+        b_comp_prob: 1.25 (0.2%), b_tok_touch_all: 127 (22.6%), b_finish: 0.83
+        (0.1%), tests_pri_0: 136 (24.2%), check_dkim_signature: 0.35 (0.1%),
+        check_dkim_adsp: 2.3 (0.4%), poll_dns_idle: 0.89 (0.2%), tests_pri_10:
+        1.74 (0.3%), tests_pri_500: 5 (0.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v3] proc: Ensure we see the exit of each process tid exactly
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Apr 2020 15:06:15 +0800, Jason Yan wrote:
+ebiederm@xmission.com (Eric W. Biederman) writes:
+> Take a good look over the code base and see if I can see any more
+> issues like was found in next_tgid and repost the core patches.
 
-> This function do not need a return value and no users use it's return
-> value. So we can make it void.
-> 
-> This also fixes the coccicheck warning:
-> 
-> drivers/scsi/snic/snic_ctl.c:163:5-8: Unneeded variable: "ret". Return
-> "0" on line 228
-> 
-> [...]
+Oleg,
 
-Applied to 5.8/scsi-queue, thanks!
+I am reading through kernel/ptrace.c and I am seeing a lot of:
 
-[1/1] scsi: snic: Make snic_io_exch_ver_cmpl_handler() return void
-      https://git.kernel.org/mkp/scsi/c/6942d531e2d2
+	spin_lock(&child->sighand->siglock);
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+In places where I don't see anything guaranteeing the child is stopped
+such as ptrace_freeze_traced.  Are all of those places safe or
+do some of the need to be transformed into lock_task_sighand in
+case the process is current running?
+
+I might just be reading the code to quickly and missing what keeps the
+code from executing exec and changing sighand.
+
+Eric
