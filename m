@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33631B9F94
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8151BA04A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 11:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726940AbgD0JQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 05:16:59 -0400
-Received: from mail-oo1-f68.google.com ([209.85.161.68]:42251 "EHLO
-        mail-oo1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726243AbgD0JQ6 (ORCPT
+        id S1726770AbgD0JrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 05:47:19 -0400
+Received: from 60-251-196-230.HINET-IP.hinet.net ([60.251.196.230]:19828 "EHLO
+        ironport.ite.com.tw" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726003AbgD0JrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 05:16:58 -0400
-Received: by mail-oo1-f68.google.com with SMTP id e18so3701406oot.9;
-        Mon, 27 Apr 2020 02:16:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R1QrTa/K0bMQ+b9dlA4C9LjJ8AunxEcf6O025vwbEug=;
-        b=OEftM6hzuJM+4Rn28Kfir2LnsXa7WUBlrLODjIzssnA12dA0lOXDWUNu5Vo5dOG9BC
-         Q1YYesO8qHVS1pqAlmKIG2pQwRm+rJQUC3kH1l3Dl6M4LWPMOsb2ucuaTh1JHum7s7Pv
-         RfVQKgUxapOIZ/eL/xm1c1DxNR0vHDU6c5s9Pfix7uizWZ1qpbjsAT0ymtkKfuQxXTQ3
-         Csv49/gHkm6qsBFgJlJ4x25gJgUee4+Za0SXcCjTs8uaEGOg/QetC7tVko3zaIYnXXJJ
-         MgyUzmjpefOqyN9CYY2xgeeHB14EFwsbAxIc9NdW9t74lUBT/rgpEGnUsgFNayN5rRqa
-         7Xxg==
-X-Gm-Message-State: AGi0Pub2e7bvzl2gmjY2k0gBqXzqBl0UecZ/lewDACBoN/uA9xNpAIOk
-        ZeO7KNL68XnMzOlyraK33gmFMFWKIsCxAvJSBu8=
-X-Google-Smtp-Source: APiQypIJzSvNvEo1tYanaXMvgtTGblhKVBrP3rfeg0g85mtYT3VODWtMnFtSr9Hn+6l6aAPSGDtmk70AKFPX4WR0Z1o=
-X-Received: by 2002:a4a:d44a:: with SMTP id p10mr11810739oos.11.1587979017681;
- Mon, 27 Apr 2020 02:16:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <1587678050-23468-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1587678050-23468-10-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1587678050-23468-10-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 27 Apr 2020 11:16:46 +0200
-Message-ID: <CAMuHMdXyE+y00HCqS-2SnmVgeaeVQ2f6cKLKrm2njSi=V85+Nw@mail.gmail.com>
-Subject: Re: [PATCH 09/10] ARM: shmobile: r8a7742: Basic SoC support
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Marian-Cristian Rotariu 
-        <marian-cristian.rotariu.rb@bp.renesas.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
+        Mon, 27 Apr 2020 05:47:18 -0400
+X-Greylist: delayed 911 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Apr 2020 05:47:17 EDT
+IronPort-SDR: 03tNGgORm4fYJDbu4RNLVwBLIPVqQqd9fHfvk56lkvOModc0w26hJvlRnmRqBNxqFJ+g0Mmyrj
+ 12/d/rTrCqgg==
+Received: from unknown (HELO mse.ite.com.tw) ([192.168.35.30])
+  by ironport.ite.com.tw with ESMTP; 27 Apr 2020 17:32:05 +0800
+Received: from CSBMAIL1.internal.ite.com.tw (csbmail1.internal.ite.com.tw [192.168.65.58])
+        by mse.ite.com.tw with ESMTP id 03R9W1f1045929;
+        Mon, 27 Apr 2020 17:32:01 +0800 (GMT-8)
+        (envelope-from allen.chen@ite.com.tw)
+Received: from allen-VirtualBox.internal.ite.com.tw (192.168.70.14) by
+ CSBMAIL1.internal.ite.com.tw (192.168.65.58) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1713.5; Mon, 27 Apr 2020 17:32:00 +0800
+From:   allen <allen.chen@ite.com.tw>
+CC:     Allen Chen <allen.chen@ite.com.tw>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Jau-Chih Tseng <Jau-Chih.Tseng@ite.com.tw>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH v9 0/3] IT6505 cover letter
+Date:   Mon, 27 Apr 2020 17:16:51 +0800
+Message-ID: <1587979103-5630-1-git-send-email-allen.chen@ite.com.tw>
+X-Mailer: git-send-email 1.9.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [192.168.70.14]
+X-ClientProxiedBy: CSBMAIL1.internal.ite.com.tw (192.168.65.58) To
+ CSBMAIL1.internal.ite.com.tw (192.168.65.58)
+X-TM-SNTS-SMTP: FF59412277EA3E11F0A6463377A2F20CD0C999F653F3C73A7397EFBC782DDE7E2000:8
+X-MAIL: mse.ite.com.tw 03R9W1f1045929
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 11:41 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add minimal support for the RZ/G1H (R8A7742) SoC.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+The IT6505 is a high-performance DisplayPort 1.1a transmitter, fully compliant with DisplayPort 1.1a, HDCP 1.3 specifications. The IT6505 supports color depth of up to 36 bits (12 bits/color) and ensures robust transmission of high-quality uncompressed video content, along with uncompressed and compressed digital audio content.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.8.
+This series contains document bindings, revert commit, add vendor prefix, Kconfig to control the function enable or not.
 
-Gr{oetje,eeting}s,
+Allen Chen (1):
+  WIP: drm/bridge: add it6505 driver
 
-                        Geert
+allen (2):
+  dt-bindings: Add vendor prefix for ITE Tech. Inc.
+  WIP: dt-bindings: Add binding for IT6505.
+
+ .../bindings/display/bridge/ite,it6505.yaml        |   91 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |    2 +-
+ drivers/gpu/drm/bridge/Kconfig                     |    7 +
+ drivers/gpu/drm/bridge/Makefile                    |    1 +
+ drivers/gpu/drm/bridge/ite-it6505.c                | 3136 ++++++++++++++++++++
+ 5 files changed, 3236 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
+ create mode 100644 drivers/gpu/drm/bridge/ite-it6505.c
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+1.9.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
