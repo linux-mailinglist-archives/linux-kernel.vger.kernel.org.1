@@ -2,71 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1F01B967B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 07:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0302B1B968F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 07:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgD0F0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 01:26:24 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:44470 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726172AbgD0F0Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 01:26:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1587965184; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=unnUbNzOiNi4DCP+2MtOogJBUgOZSGHdqUj3TJFnSdQ=; b=gxjWm4TBMVi8zbP80bSjFxhj4Xt+EFkuwqLZjfkKUEqBnjNyi7fhFY5VwJedPeC3tsCmuzxm
- BS3gd+EJQUmLHJ8esPIhiI82iO7GGBKrBqycmqoxrIb0lq4urmQ0hqJ/z7gM0i8zYaMNuDjg
- u21+LSbwa4RgELEVh+eYmcekT+c=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea66cfb.7fa3de1a97a0-smtp-out-n05;
- Mon, 27 Apr 2020 05:26:19 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E815CC433F2; Mon, 27 Apr 2020 05:26:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 61305C433CB;
-        Mon, 27 Apr 2020 05:26:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 61305C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     John Oldman <john.oldman@polehill.co.uk>
-Cc:     m@bues.ch, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] :ssb sprom.c: Fixed block comments coding style issues
-References: <20200424175043.16261-1-john.oldman@polehill.co.uk>
-Date:   Mon, 27 Apr 2020 08:26:15 +0300
-In-Reply-To: <20200424175043.16261-1-john.oldman@polehill.co.uk> (John
-        Oldman's message of "Fri, 24 Apr 2020 18:50:43 +0100")
-Message-ID: <87wo61ijns.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1726548AbgD0Fev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 01:34:51 -0400
+Received: from verein.lst.de ([213.95.11.211]:45434 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726178AbgD0Feu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 01:34:50 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 20B2C68CEE; Mon, 27 Apr 2020 07:34:47 +0200 (CEST)
+Date:   Mon, 27 Apr 2020 07:34:46 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 5/5] sysctl: pass kernel pointers to ->proc_handler
+Message-ID: <20200427053446.GA15905@lst.de>
+References: <20200424064338.538313-1-hch@lst.de> <20200424064338.538313-6-hch@lst.de> <20200424190650.GA72647@rdna-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200424190650.GA72647@rdna-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John Oldman <john.oldman@polehill.co.uk> writes:
+On Fri, Apr 24, 2020 at 12:06:50PM -0700, Andrey Ignatov wrote:
+> > -
+> > -#ifdef CONFIG_UCLAMP_TASK
+> 
+> Decided to skim through the patch one last time to double-check the fix
+> from previous iteration and found that this ifdef got lost below.
+> 
+> > -extern int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+> > -				       void __user *buffer, size_t *lenp,
+> > -				       loff_t *ppos);
+> > -#endif
 
-> Fixed coding style issues
->
-> Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
-> ---
->  drivers/ssb/sprom.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-
-The title prefix should be "ssb: ", I'll fix it during commit.
-
--- 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+There is no need for ifdefs around prototypes that aren't used.
