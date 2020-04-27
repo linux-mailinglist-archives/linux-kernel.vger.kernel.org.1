@@ -2,80 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C0A1BA20C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 13:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB6C1BA1FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 13:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgD0LMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 07:12:19 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58656 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726589AbgD0LMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 07:12:18 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 23D26B7D0142531E8707;
-        Mon, 27 Apr 2020 19:12:17 +0800 (CST)
-Received: from host-suse12sp4.huawei.com (10.67.133.23) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 27 Apr 2020 19:12:07 +0800
-From:   Shijie Hu <hushijie3@huawei.com>
-To:     <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <nixiaoming@huawei.com>, <wangxu72@huawei.com>,
-        <wangkefeng.wang@huawei.com>, <yangerkun@huawei.com>,
-        <wangle6@huawei.com>, <cg.chen@huawei.com>
-Subject: [PATCH] [RFC]hugetlbfs: Get unmapped area below TASK_UNMAPPED_BASE for hugetlbfs
-Date:   Mon, 27 Apr 2020 19:10:36 +0800
-Message-ID: <20200427111036.74983-1-hushijie3@huawei.com>
-X-Mailer: git-send-email 2.12.3
+        id S1727021AbgD0LKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 07:10:53 -0400
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:56741 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726987AbgD0LKw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 07:10:52 -0400
+Received: from localhost.localdomain ([92.148.159.11])
+        by mwinf5d13 with ME
+        id XnAl2200P0F2omL03nAman; Mon, 27 Apr 2020 13:10:51 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 27 Apr 2020 13:10:51 +0200
+X-ME-IP: 92.148.159.11
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     okaya@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        vkoul@kernel.org, dan.j.williams@intel.com
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] dmaengine: qcom_hidma: Simplify error handling path in hidma_probe
+Date:   Mon, 27 Apr 2020 13:10:43 +0200
+Message-Id: <20200427111043.70218-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.133.23]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 32-bit programs, the address space is limited. When the normal mmap
-consumes the space above TASK_UNMAPPED_BASE on legacy mode, it can still
-successfully obtain unmapped area below TASK_UNMAPPED_BASE, but mmap or
-shmat for huge pages will fail. This seems "not fair".
+There is no need to call 'hidma_debug_uninit()' in the error handling
+path. 'hidma_debug_init()' has not been called yet.
 
-When the request for huge pages fails, fall back to reuse mmap_min_addr
-~ TASK_UNMAPPED_BASE for hugetlbfs.
-
-Signed-off-by: Shijie Hu <hushijie3@huawei.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- fs/hugetlbfs/inode.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ drivers/dma/qcom/hidma.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index aff8642f0c2e..0f5997394aaa 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -224,7 +224,21 @@ hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
- 	info.high_limit = TASK_SIZE;
- 	info.align_mask = PAGE_MASK & ~huge_page_mask(h);
- 	info.align_offset = 0;
--	return vm_unmapped_area(&info);
-+	addr = vm_unmapped_area(&info);
-+
-+	/*
-+	 * A failed request for huge pages very likely causes application
-+	 * failure, so fall back to the top-down function here.
-+	 */
-+	if (unlikely(offset_in_page(addr))) {
-+		VM_BUG_ON(addr != -ENOMEM);
-+		info.flags = VM_UNMAPPED_AREA_TOPDOWN;
-+		info.low_limit = max(PAGE_SIZE, mmap_min_addr);
-+		info.high_limit = TASK_UNMAPPED_BASE;
-+		addr = vm_unmapped_area(&info);
-+	}
-+
-+	return addr;
- }
- #endif
+diff --git a/drivers/dma/qcom/hidma.c b/drivers/dma/qcom/hidma.c
+index 411f91fde734..87490e125bc3 100644
+--- a/drivers/dma/qcom/hidma.c
++++ b/drivers/dma/qcom/hidma.c
+@@ -897,7 +897,6 @@ static int hidma_probe(struct platform_device *pdev)
+ 	if (msi)
+ 		hidma_free_msis(dmadev);
  
+-	hidma_debug_uninit(dmadev);
+ 	hidma_ll_uninit(dmadev->lldev);
+ dmafree:
+ 	if (dmadev)
 -- 
-2.12.3
+2.25.1
 
