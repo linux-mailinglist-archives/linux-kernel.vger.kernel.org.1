@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794571BA5FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4561BA606
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728059AbgD0ONV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 10:13:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727059AbgD0ONV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 10:13:21 -0400
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CAD32063A
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 14:13:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1587996800;
-        bh=Xg8u6B1gRKJJyhc2ghpbZWMsF25bOlRNgkDeAPMsyhQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=osEHPWYdXxkYQ78QupC0ZbxmDHM4nKIFYj+hceaPPcun89vocxPgKHy9Qq40zoUbk
-         QrSGQhV62SZsNwG4VYijAjgIkna3Zq5CZv8uSHXvJpUm0nEf2beyNZ5DWzkUmgTNml
-         Q4e1Vc2b+Xxgtf65Jn47m5wnj59udKDIW1tjL3uk=
-Received: by mail-qt1-f176.google.com with SMTP id x12so13785235qts.9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 07:13:20 -0700 (PDT)
-X-Gm-Message-State: AGi0PubIF6YXTfdX4GnVJSw1Pd26mPUtiDnstmb8CcUf6rarSzqnP6so
-        wRCw2HSPTfPmP2buFcsolyAQgIVLiNWAQ/kS+w==
-X-Google-Smtp-Source: APiQypIvO+0zNT12ohswoL68dXvl6sO1zbOdn5h7ZevGpjPFRFXJndduPs3pSHS2ibmtQnJF8M8fsotgSW9W3De7vbk=
-X-Received: by 2002:ac8:7cba:: with SMTP id z26mr23458821qtv.143.1587996798916;
- Mon, 27 Apr 2020 07:13:18 -0700 (PDT)
+        id S1727909AbgD0OOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 10:14:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727022AbgD0OOH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 10:14:07 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD9FC0610D5;
+        Mon, 27 Apr 2020 07:14:01 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id e25so17749316ljg.5;
+        Mon, 27 Apr 2020 07:14:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=c8AQHsY8ZQ/Cy5ox+15xpqyPDPV+NimT+CSsM7t46b8=;
+        b=jKmNNWFSSc0A+hrf0/miuC1saeKkdkKxFkjuCaz6KszE1dWOL4SG/dtwnvNsiKPGG9
+         Fw/q7Pc7C/NdJboPhNNix+UpX+vUFdNI7js7qd9uzv1Xg6171itAIkCHhZyT6JktIhMg
+         ITdaJO+B2uRDYaD2+ns1L1swGRHFL71FHbdenW62hS2dZMnMS49P8sdDkLIukLXh3x0F
+         nAofB8q3yhkDjR3siVOTyYPp4wkt/bXIN4kpUFwCgU9H8UCOTqHF+TCGQeIvEbP+/n9H
+         W/vU/+Eu7rNzHUJC2O6nscxUYK6R0vG4xqqUSAOI4e1FwHtLWe7eBZ9eGEnd2CZC2iG7
+         ji4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c8AQHsY8ZQ/Cy5ox+15xpqyPDPV+NimT+CSsM7t46b8=;
+        b=bbWXCHhR167Weqgtl+IDSP1xLsYRQEdRdFJMfv3XeeWmEBjETrn/ZOpEyb+8bC0QkQ
+         lbenuxxp8FoBJNH4vaedWY4JAlpLO+2GPbFaP39f7idDTpzdJFwznPp47CzY6YlizgkE
+         6X5DKBrCQUs9KOQqNTPNP/wIXEl3HbC1cNTyyYglIdX7mV6Rh0FPgHQ8abKxuZKMrcyb
+         EU8gWWfluxwr1PbL+dPdQwrk+zY0O9+x+sNinqVOcMWJZhHECRiG3CkKZBuHK25RYOVW
+         XTzqehyfCnJbOPmCoeGwNrubTavg98Z0gkcVGcGKzx3eunBVeRpsGJ33CFWkKxhWxtn/
+         H+9Q==
+X-Gm-Message-State: AGi0PuZJgxvM6HoPbDh4ls5y1kkmU2BMv8tAwPJ0J27Xay9MFsOUBirp
+        PTxY+gCtbf9dBGxrBUeaK05GCXfh
+X-Google-Smtp-Source: APiQypLQ1p5oqGSd3NEfGBRNduxXuo5WMn3UkrOaMJAYOZKqqlSyVGqBXzsslANjxprUFF8WOc8IEA==
+X-Received: by 2002:a2e:760c:: with SMTP id r12mr13970197ljc.139.1587996839234;
+        Mon, 27 Apr 2020 07:13:59 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id d13sm5568421ljc.14.2020.04.27.07.13.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 07:13:57 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] i2c: tegra: Better handle case where CPU0 is busy
+ for a long time
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>
+Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200324191217.1829-1-digetx@gmail.com>
+ <20200324191217.1829-2-digetx@gmail.com>
+ <1e259e22-c300-663a-e537-18d854e0f478@nvidia.com>
+ <f59ba318-8e99-c486-fa4d-1ee28a7b203d@gmail.com>
+ <b01cec76-bb39-9fb5-8f6e-4023c075e6b3@gmail.com>
+ <8cd085e1-f9fd-6ec0-9f7a-d5463f176a63@nvidia.com>
+ <db1132ce-53a8-371c-98e0-cb7cd91d5c7d@gmail.com>
+ <fa344989-4cce-0d2c-dc93-4ca546823160@nvidia.com>
+ <bba0a93a-8ec4-eda6-97f3-fb2ab0b9b503@gmail.com>
+ <6f07e5c8-7916-7ea2-2fe7-d05f8f011471@nvidia.com>
+ <77a31b2f-f525-ba9e-f1ae-2b474465bde4@gmail.com>
+ <470b4de4-e98a-1bdc-049e-6259ad603507@nvidia.com>
+ <d2531fc1-b452-717d-af71-19497e14ef00@gmail.com>
+ <a5198024-7273-74c4-b4f4-3a29d042bc36@nvidia.com>
+ <da5985f4-44b3-336d-207d-4c0388806f95@gmail.com>
+Message-ID: <5fc71168-e4ac-11f6-dbf1-e80f4fae8d1a@gmail.com>
+Date:   Mon, 27 Apr 2020 17:13:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200420030538.101696-1-wenhu.wang@vivo.com>
-In-Reply-To: <20200420030538.101696-1-wenhu.wang@vivo.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 27 Apr 2020 09:13:06 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK3fpM_tUjHvAMbNzf_nry_iORLXaQBFC8xDK+mxhHDRQ@mail.gmail.com>
-Message-ID: <CAL_JsqK3fpM_tUjHvAMbNzf_nry_iORLXaQBFC8xDK+mxhHDRQ@mail.gmail.com>
-Subject: Re: [PATCH v2,RESEND] misc: new driver sram_uapi for user level SRAM access
-To:     Wang Wenhu <wenhu.wang@vivo.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, kernel@vivo.com,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Scott Wood <oss@buserror.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <da5985f4-44b3-336d-207d-4c0388806f95@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 19, 2020 at 10:06 PM Wang Wenhu <wenhu.wang@vivo.com> wrote:
->
-> A generic User-Kernel interface that allows a misc device created
-> by it to support file-operations of ioctl and mmap to access SRAM
-> memory from user level. Different kinds of SRAM alloction and free
-> APIs could be registered by specific SRAM hardware level driver to
-> the available list and then be chosen by users to allocate and map
-> SRAM memory from user level.
->
-> It is extremely helpful for the user space applications that require
-> high performance memory accesses, such as embedded networking devices
-> that would process data in user space, and PowerPC e500 is a case.
->
-> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-> Cc: Scott Wood <oss@buserror.net>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Cc: linuxppc-dev@lists.ozlabs.org
-> ---
-> Changes since v1: addressed comments from Arnd
->  * Changed the ioctl cmd definitions using _IO micros
->  * Export interfaces for HW-SRAM drivers to register apis to available list
->  * Modified allocation alignment to PAGE_SIZE
->  * Use phys_addr_t as type of SRAM resource size and offset
->  * Support compat_ioctl
->  * Misc device name:sram
->
-> Note: From this on, the SRAM_UAPI driver is independent to any hardware
-> drivers, so I would only commit the patch itself as v2, while the v1 of
-> it was wrapped together with patches for Freescale L2-Cache-SRAM device.
-> Then after, I'd create patches for Freescale L2-Cache-SRAM device as
-> another series.
+27.04.2020 15:46, Dmitry Osipenko пишет:
+> 23.04.2020 13:56, Jon Hunter пишет:
+>>>> So I think that part of the problem already existed prior to these
+>>>> patches. Without your patches I see ...
+>>>>
+>>>> [   59.543528] tegra-i2c 7000d000.i2c: i2c transfer timed out
+>>>> [   59.549036] vdd_sata,avdd_plle: failed to disable
+>>>> [   59.553778] Failed to disable avdd-plle: -110
+>>>> [   59.558150] tegra-pcie 3000.pcie: failed to disable regulators: -110
+>>> Does this I2C timeout happen with my patches? Could you please post full
+>>> logs of an older and the recent kernel versions?
+>> I believe that it does, but I need to check.
+>>
+> 
+> Jon, could you please confirm that you're seeing those regulator-disable
+> errors with my patch? I don't see those errors in yours original log [1].
+> 
+> [1]
+> https://lore.kernel.org/lkml/1e259e22-c300-663a-e537-18d854e0f478@nvidia.com/
+> 
+> Again, could you please post the *full* logs?
+> 
+> If regulator's disabling was "failing" before without my patch because
+> of the I2C interrupt being force-disabled during of NOIRQ phase, and now
+> regulator's disabling succeeds with my patch because IRQ is manually
+> handled after the timeout, then this could be bad. It means that
+> regulator was actually getting disabled, but I2C driver was timing out
+> because interrupt couldn't be handled in NOIRQ phase, which should
+> result in a dead PCIe on a resume from suspend since regulator's core
+> thinks that regulator is enabled (I2C said it failed to disable), while
+> it is actually disabled.
+> 
+> Do you have anything plugged into the PCIe slot in yours testing farm?
+> It wouldn't surprise me if the plugged card isn't functional after
+> resume from suspend on a stable kernels.
+> 
 
-There's work to add SRAM support to dma-buf heaps[1]. Take a look and
-see if that works for you.
+I actually now see that interrupt is not allowed to be enabled during
+the NOIRQ phase:
 
-Rob
+https://elixir.bootlin.com/linux/v5.7-rc3/source/kernel/irq/manage.c#L640
 
-[1] https://lore.kernel.org/lkml/20200424222740.16259-1-afd@ti.com/
+it should be worthwhile to turn it into a WARN_ON.
