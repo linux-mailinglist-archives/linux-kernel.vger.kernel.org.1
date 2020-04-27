@@ -2,179 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8631BAA45
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 18:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9530A1BAA4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 18:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgD0QqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 12:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgD0QqY (ORCPT
+        id S1726372AbgD0QrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 12:47:03 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:10846 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726204AbgD0Qq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 12:46:24 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87D1C03C1A8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 09:46:23 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id d17so21373198wrg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 09:46:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AFi2Ya3qM5IG+jnvqV1yuZyqNjUjwvEPZevqNfZVj0Y=;
-        b=h89b6fSsTBUeL/XipyElSwPh022ivI7iy5S/qxb+B/YEFMXucgbgOPMaB5I8zHmo3G
-         LRWpG0yPHRoPm6hWulcNTa8EZpmSU1ehlxrUGamES39kPwX8I0j/A+0KZg7hPbEs+0ks
-         HANPmqjxSzMVM627SPxh1zTvoq9vHdnqsYVlJLIsHlzUsz3AmLrZdNJaY2bMEyz4RN+E
-         NUpREb4sDwp8b2vh1zjq7PTy4S4t+pYLtsg99Q5g3VduUeMbXnv7Nu100uduQeC6sixW
-         KMe2/BjTYwmqPbUi0wUvp7QccKp6gT4ao065bGV2099c9BJ1ORrE1ANzXHHED1u/7sCf
-         qvnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AFi2Ya3qM5IG+jnvqV1yuZyqNjUjwvEPZevqNfZVj0Y=;
-        b=TRnnvGb/aR4imP2BlgduSLe8mvTUcOJ8BL/8JS9fQw6qhsCFY+g/TIosf+T/gib7fe
-         wXHZzvmx8GINYsCfLEkgnDZaHX0r9gAg/Oz7v8aXMhRsMsAIihhf3F8NtSHGwofuAt5k
-         /a3Cm59fghzR9FgPmXead5LveFDv4OjOcjy8fgwZpL3HqBVx/X2bHg1zznh3DjOJ7i7r
-         +OV8NYHCNVFvRnuR5Fn8b7I5uZHYxQglEiyJo/+rtWpQm/Ye9VP96bRaniI8qCVp8E1c
-         ns9vGKFxFJcoc3ijtgzrFLhT0vKgrZ+d60nNfm3lEKzBvJ/TJTD6KuMYJaSRC1kCMzTO
-         fBiQ==
-X-Gm-Message-State: AGi0PuZ+n7rClP/lP5QZTuwXoZtQFb8CaF1j97bbltSJmQr2ET5Uc1k1
-        5wqiMaZSu39WZv0uKwOHL+w44g==
-X-Google-Smtp-Source: APiQypJ51FxUeaZo6yUU8t+LqTak9jj4U50akJER7m2MFUmNuUtXtokVlL35B4R3u3x89HQbdmY3Ng==
-X-Received: by 2002:adf:e944:: with SMTP id m4mr27910229wrn.366.1588005982418;
-        Mon, 27 Apr 2020 09:46:22 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id x18sm21079430wrs.11.2020.04.27.09.46.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 09:46:21 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 17:46:19 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     jason.wessel@windriver.com, gregkh@linuxfoundation.org,
-        kgdb-bugreport@lists.sourceforge.net, mingo@redhat.com,
-        hpa@zytor.com, bp@alien8.de, linux-serial@vger.kernel.org,
-        agross@kernel.org, tglx@linutronix.de, frowand.list@gmail.com,
-        bjorn.andersson@linaro.org, jslaby@suse.com,
-        catalin.marinas@arm.com, corbet@lwn.net, will@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>, Juergen Gross <jgross@suse.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 7/9] Documentation: kgdboc: Document new
- earlycon_kgdboc parameter
-Message-ID: <20200427164619.kw4mihmoxmxzjk66@holly.lan>
-References: <20200421211447.193860-1-dianders@chromium.org>
- <20200421141234.v2.7.I7d5eb42c6180c831d47aef1af44d0b8be3fac559@changeid>
-MIME-Version: 1.0
+        Mon, 27 Apr 2020 12:46:58 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03RGkjMU009345;
+        Mon, 27 Apr 2020 09:46:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=hSLr8FXv0jFcZkOEHE8DKu2DgGOKpc0hynYpQ0wigrE=;
+ b=WTyK3e3cI/KUoQj9jquRJY6pZF1ap0724FYHmlCNrcZlfaDPMMuQNSy0Z3FtbFHglUIS
+ RSq7tpCyGlxeKwDSMwAKC/YEtU7ZmIRZd0W/mZKve1/6ormYprsmHLCbnrCeysVIQu22
+ Fh6wmvh4a84wGRZNC4WiLF98PXqSfkoUYgs= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30n515s1d1-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 27 Apr 2020 09:46:50 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Mon, 27 Apr 2020 09:46:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y07cGUF3kCq9kroA+JaetdwY3KbFR3LUDqXk9vfLjWEnhXT3FkSZ4PiUraqedqYkomLg++jAY42qq51IVXfz+oNLEsT24E34OUKEKEpQOuKjdmD/tvzur8WZPOONjCNidc7c/LvifPRsltwtLi8hWvoq+P1K3IIFgsb0+DrPJlUggEBXrGQ/DIHu5Mu0MONqiztQJ+jHHzJjYKiPR679VXo2PvY7DOMm5oR+3+0FEE1TzV88l5B8WXCTqXOqNOIST7S/FeWr3/JUmmsCdZWYQG5QHL1C1bNGawSk/duRDzEWmwlGtKS4joWnLFiFGBaUIU6DmCyUZHWimUMDadF1Rg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hSLr8FXv0jFcZkOEHE8DKu2DgGOKpc0hynYpQ0wigrE=;
+ b=aRYhxdYQZxQWok7TtPGwW0vH5MccGRxRqaT6qeYMXQgoKgopb7BCz3jr5L+z0wFXcXnx37gvQi/riGIZV2PUdi+ysY8RXojQGdUcDllzg2dRdDA1T55LSHYnejb74gHPzTk8zbD9L7iDXUj5ipW27a0QV0clrXH3oj8uoUBNAyfSuw8xuyT4shDndn5nx3HdsiZXZy9/ByQcnpKlnvDHCKc/b88+9O0TphfMBfEsh4iFcCXv2HqFP11BLhSFwZT4ePaCe6kkDmAfh8EFzBxMqCVLQyLHq6rn0aqi095xn/RJSgEcY7UVIEVpYzsw0qwxbgLOzU6e5DFmIa9/uvkGhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hSLr8FXv0jFcZkOEHE8DKu2DgGOKpc0hynYpQ0wigrE=;
+ b=AlTs/gbzC6BI3Zs2WodSxWBH5SlJTHaHElwBA9kSr50zp2cX6AMyVlyKAui/Jjva7FqG9qBItxPZzFTXECGAoRCQqTPWMNjXp0SJrXOGMy0sltKRiElRmfer1JqpzYpMLmSigIcuHfIaU8IRvDhO3YtPVcRpmyrPafBpMETzqA0=
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2552.namprd15.prod.outlook.com (2603:10b6:a03:14c::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Mon, 27 Apr
+ 2020 16:46:44 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.2937.023; Mon, 27 Apr 2020
+ 16:46:44 +0000
+Date:   Mon, 27 Apr 2020 09:46:38 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Christopher Lameter <cl@linux.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 04/19] mm: slub: implement SLUB version of
+ obj_to_index()
+Message-ID: <20200427164638.GC114719@carbon.DHCP.thefacebook.com>
+References: <20200422204708.2176080-1-guro@fb.com>
+ <20200422204708.2176080-5-guro@fb.com>
+ <alpine.DEB.2.21.2004222349280.20021@www.lameter.com>
+ <20200423000530.GA63356@carbon.lan>
+ <alpine.DEB.2.21.2004250208500.7624@www.lameter.com>
+ <20200425024625.GA107755@carbon.lan>
+ <alpine.DEB.2.21.2004271618340.27701@www.lameter.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200421141234.v2.7.I7d5eb42c6180c831d47aef1af44d0b8be3fac559@changeid>
+In-Reply-To: <alpine.DEB.2.21.2004271618340.27701@www.lameter.com>
+X-ClientProxiedBy: CO2PR05CA0080.namprd05.prod.outlook.com
+ (2603:10b6:102:2::48) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:3b72) by CO2PR05CA0080.namprd05.prod.outlook.com (2603:10b6:102:2::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.12 via Frontend Transport; Mon, 27 Apr 2020 16:46:43 +0000
+X-Originating-IP: [2620:10d:c090:400::5:3b72]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 84164830-3219-466d-7c6f-08d7eaca914a
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2552:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB25523E5322FF34EE85855996BEAF0@BYAPR15MB2552.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0386B406AA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(39860400002)(396003)(366004)(376002)(86362001)(54906003)(316002)(33656002)(478600001)(9686003)(2906002)(5660300002)(52116002)(55016002)(4326008)(6506007)(7696005)(966005)(8676002)(81156014)(186003)(6666004)(16526019)(1076003)(66556008)(66476007)(66946007)(6916009)(8936002);DIR:OUT;SFP:1102;
+Received-SPF: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Hr2htDgolf2hQTmkOYFB2YAlnXqWM+17NVAEBz0YSuFemRhP3SQchWvq/coggI42QUywOrdMXjoug0fq+wZYYgxkNNzRF+0BbZXKSqNNlrzWKImQHzui0o3/6ZBRZAV0x8GkPY4b3Q/nTjr1gj8eGxDmvuqmuXCckLPIlM6S5dSv8roZMOyUDB5KznVMcLuIa6G+iInK79M5waM1Jf1UGPfOkSZYpgtx0EGDAGTictGwMESlzW7TZhJWok2SHMAU4WQSH/LpBSjKi+q6uuv27XAon8fcHn764Nv2t/m6QaPehi5b1JMj5Ght10ZRFNcJdGjsropM3YR7pUGoYzhD/oif4qzsW+YaNkbnkJWI9HRFpMi1OpgfKLO5AAr/rx0WIY8RtJ4JI4g+ljvXOZRpVBMScijhQBtQiufbl0nyXm66BcwcMB1aAzQK8sCG7f+UDEhRSk7Ovmdm4X54pDfwwkKygpt6jHJVa1X7IF5QkZ7GcDRGkDtnt82Z/U3Nds8TGOBBW22GRE5p7vxoBiZ0SQ==
+X-MS-Exchange-AntiSpam-MessageData: IU6JiuLMoltv2LiZ/F9g4onN0rZOpF6cUQ1fuHazaBuu/ydd2c46qypCIBQ++3SNwt9j8KE4CCB7yvYLeN3mKsoeVkkDQsJKX6wLkUcqXP4WgknTCZPJL6LtooGSNg5gQu0rBRztXpI0DdczT9noi8y/Jt90XR36surpv2x9zCbONoL0i/HDANoN69spZkmRtGhHrU+B2cFw8bAsvG3GQ5TQCZt4AEDsdPxbC7uNZPaLMHRq7rP8odsPB0faY1eYZKk5U+rOMuNU00LD6AUOkW2GKdbe2HzftuxIf1E1tXHCoxITv1r9PIpKVf3SvAcVh/2Kpu4ZxFa8WantE5BbVgi3e5j76zKx74ywtDAt5d/OShfwZFbk8xhlOrxSldMzvKBFWkeeYC2gWuqxg6AUwuL5z6SWC9na/myIDdWv5SsiKWXsq0VSqhvgvaw0PkB2yZWSdcAmvJrqT9nNVapi/Fcn8HiB1VdQFaPyDnR4kpn9BJ282jF9cGobfAK/a+khGDEl7DxDEQx9dQjE+QkRSNCzD2IXr/UMYDswdoLKKPa5/DFV/j9HQIxp/aN5iE7XdsjBNqRTk9NrS6DDbmzl3kh2uwvHzp/swkKGtJct8yHvlYVRvLsiwKnEpzEm1gjA6ETYvaedH8OfIxbijeIWESuMcoYO/Yqtl9wpVU/cwCDXPivXI5lOz45aXbmYFmZEaw5VxlCpPo0nPxjQRPtsDy4gnoIt3TY/L4lPVVgUvBhL0zCZAA2pOevWkZpdNmxa/30nlFrl1Ycnu73N9kKG0sbt5StYqB8yNtheHnofOR8A/YtMJpWlHWhYqxMqq4sah2SfkNNn0CHf05H825Z3zQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84164830-3219-466d-7c6f-08d7eaca914a
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2020 16:46:44.0144
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NMKVBsCGtRxjV8wQ4f8Zo+O7b5WlzcHl6LWI+T+hg2UPc0E8yGXkzodlE5WgTMJZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2552
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-27_12:2020-04-27,2020-04-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
+ malwarescore=0 impostorscore=0 clxscore=1015 spamscore=0
+ lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004270137
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 21, 2020 at 02:14:45PM -0700, Douglas Anderson wrote:
-> The recent patch ("kgdboc: Add earlycon_kgdboc to support early kgdb
-> using boot consoles") adds a new kernel command line parameter.
-> Document it.
+On Mon, Apr 27, 2020 at 04:21:01PM +0000, Christoph Lameter wrote:
+> On Fri, 24 Apr 2020, Roman Gushchin wrote:
 > 
-> Note that the patch adding the feature does some comparing/contrasting
-> of "earlycon_kgdboc" vs. the existing "ekgdboc".  See that patch for
-> more details, but briefly "ekgdboc" can be used _instead_ of "kgdboc"
-> and just makes "kgdboc" do its normal initialization early (only works
-> if your tty driver is already ready).  The new "earlycon_kgdboc" works
-> in combination with "kgdboc" and is backed by boot consoles.
+> > > The patch seems to only use it for setup and debugging? It is used for
+> > > every "accounted" allocation???? Where? And what is an "accounted"
+> > > allocation?
+> > >
+> > >
+> >
+> > Please, take a look at the whole series:
+> > https://lore.kernel.org/linux-mm/20200422204708.2176080-1-guro@fb.com/T/#t
+> >
+> > I'm sorry, I had to cc you directly for the whole thing. Your feedback
+> > will be highly appreciated.
+> >
+> > It's used to calculate the offset of the memcg pointer for every slab
+> > object which is charged to a memory cgroup. So it must be quite hot.
 > 
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
 > 
-> Changes in v2: None
+> Ahh... Thanks. I just looked at it.
 > 
->  .../admin-guide/kernel-parameters.txt         | 20 +++++++++++++++++++
->  Documentation/dev-tools/kgdb.rst              | 14 +++++++++++++
->  2 files changed, 34 insertions(+)
+> You need this because you have a separate structure attached to a page
+> that tracks membership of the slab object to the cgroup. This is used to
+> calculate the offset into that array....
 > 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index f2a93c8679e8..588625ec2993 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -1132,6 +1132,22 @@
->  			address must be provided, and the serial port must
->  			already be setup and configured.
->  
-> +	earlycon_kgdboc=	[KGDB,HW]
-> +			If the boot console provides the ability to read
-> +			characters and can work in polling mode, you can use
-> +			this parameter to tell kgdb to use it as a backend
-> +			until the normal console is registered. Intended to
-> +			be used together with the kgdboc parameter which
-> +			specifies the normal console to transition to.
-> +
-> +			The the name of the early console should be specified
-> +			as the value of this parameter. Note that the name of
-> +			the early console might be different than the tty
-> +			name passed to kgdboc. If only one boot console with
-> +			a read() function is enabled it's OK to leave the
-> +			value blank and the first boot console that implements
-> +			read() will be picked.
+> Why do you need this? Just slap a pointer to the cgroup as additional
+> metadata onto the slab object. Is that not much simpler, safer and faster?
+> 
 
-There's no need for the "If only one boot console with a read()
-funcuiton is enabled" here,
+So, the problem is that not all slab objects are accounted, and sometimes
+we don't know if advance if they are accounted or not (with the current semantics
+of __GFP_ACCOUNT and SLAB_ACCOUNT flags). So we either have to increase
+the size of ALL slab objects, either create a pair of slab caches for each size.
 
-Seeing this in alphabetic order in this patch it also crosses my mind
-that kgdboc_earlycon might be a better name so that is sorts closer
-to the other kgdb options. This is a kgdboc feature that uses earlycon
-not an earlycon feature that uses kgdboc.
+The first option is not that cheap in terms of the memory overhead. Especially
+for those who disable cgroups using a boot-time option.
+The second should be fine, but it will be less simple in terms of the code complexity
+(in comparison to the final result of the current proposal).
 
+I'm not strictly against of either approach, but I'd look for a broader consensus
+on what's the best approach here.
 
-> +
->  	earlyprintk=	[X86,SH,ARM,M68k,S390]
->  			earlyprintk=vga
->  			earlyprintk=sclp
-> @@ -1190,6 +1206,10 @@
->  			This is designed to be used in conjunction with
->  			the boot argument: earlyprintk=vga
->  
-> +			This parameter works in place of the kgdboc parameter
-> +			but can only be used if the backing tty is available
-> +			very early in the boot process.
-> +
-
-I wonder if pragmatic advice is more useful:
-
-  For early debugging via a serial port see earlycon_kgdboc instead.
-
->  	edd=		[EDD]
->  			Format: {"off" | "on" | "skip[mbr]"}
->  
-> diff --git a/Documentation/dev-tools/kgdb.rst b/Documentation/dev-tools/kgdb.rst
-> index d38be58f872a..c0b321403d9a 100644
-> --- a/Documentation/dev-tools/kgdb.rst
-> +++ b/Documentation/dev-tools/kgdb.rst
-> @@ -274,6 +274,20 @@ don't like this are to hack gdb to send the :kbd:`SysRq-G` for you as well as
->  on the initial connect, or to use a debugger proxy that allows an
->  unmodified gdb to do the debugging.
->  
-> +Kernel parameter: ``earlycon_kgdboc``
-> +-------------------------------------
-> +
-> +If you specify the kernel parameter ``earlycon_kgdboc`` and your serial
-> +driver registers a boot console that supports polling (doesn't need
-> +interrupts and implements a nonblocking read() function) kgdb will attempt
-> +to work using the boot console until it can transition to the regular
-> +tty driver specified by the ``kgdboc`` parameter.
-> +
-> +Normally there is only one boot console (especially that implements the
-> +read() function) so just adding ``earlycon_kgdboc`` on its own is
-> +sufficient to make this work.  If you have more than one boot console you
-> +can add the boot console's name to differentiate.
-> +
-
-I think we need an example here. The example in the patch header for
-the previous patch was useful (at least for me).
-
-
-Daniel.
+Thanks!
