@@ -2,175 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B2D1BA70A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2CB1BA70F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 16:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728133AbgD0O4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 10:56:38 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:47982 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726292AbgD0O4h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 10:56:37 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03REuOBh029789;
-        Mon, 27 Apr 2020 09:56:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1587999384;
-        bh=UEsfDCcC12u8kEtyrbhJBsJHQvBqswEYfnAlcI1spAQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=c/pZhRaD2+RrxULUdemv0lplz4qerGagKE+IeHPUDzVGoqJ2w0jdttAQ7R4ICQxgs
-         VdN1aiW1hqGA0RClcCXzfJzNPpNHPmPhMakw3I7lzDEHoweWW58jrAP2rcbz/vrxNT
-         2cbh0vhvWWTTWDOt+ujIt+PpFiauw8QWyTwg78WM=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03REuOIw068719
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 27 Apr 2020 09:56:24 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 27
- Apr 2020 09:56:24 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 27 Apr 2020 09:56:24 -0500
-Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03REuLaV099887;
-        Mon, 27 Apr 2020 09:56:22 -0500
-Subject: Re: [CRASH] crypto: omap: kernel panic when modprobing tcrypt
-To:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        LABBE Corentin <clabbe@baylibre.com>
-CC:     linux-omap <linux-omap@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        id S1728159AbgD0O4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 10:56:51 -0400
+Received: from mail-eopbgr130053.outbound.protection.outlook.com ([40.107.13.53]:9185
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727771AbgD0O4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 10:56:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M1qhAExW/B2qAj591iWKiO3seLgmgJwj7OKzTpeZNZFijnYRbxD7lKMsPH89EsOR0J6mTvgCRaiAVrQw5W8xWLrziJhKhddnVE+650RgJ3hKwf+0dS9xUgO0/QCLzpz3N2Fj8loXQdE3xJxtw1Se+l2aRAXoQIv9shFQmtJDLNZTdz1mWxyrOLfA4sLuWK/MGvwkwWHaCPVumPCqAstREc6u7jjqpfHsmzWOOP0YH/132xo9HH+6ZR6lmXisXWk6NmyAvz79h1Q7Y8o+1AqySGgfTVRsPETg8a3Dj7OLzlrCGS525gcqBOgG8CHeLuV3XdO+2Gx+iEOSQq0/wMG5nA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3RqTidZ/al2c0fdcVeXocP9OcDBd6e+WEYScpD5GaXs=;
+ b=ZEysBDVBeTr1Yl4ZLOEj6LcwzTQwRafsokhiO3EODfXaQNqYAltzdJnzeaaEQhMcxlzxAtFd1utR4OWawAL5XdnIRFfoio5fB9nvGQN9V2BpFM+SfG2h4hUNMC7Yr/cPte3XgmIzM2JpWU+TaDkzEWTy0f6B6bc4CCpt+FirpnutF2fCcTi/2JmjM2pEq0xT8C0/Eiwae4I5Y0FpAvy/07lQ8FytNtIJMmCJA2Onn1a4yA155VOzkCov8A413xfph1PyTEvglVihgfP5AkzdEb/G/fBITrAEvGFmrsWcPQbqauevIRuo1vBTdVRm+3lbkj7Qs79iE3SU4rHPqFMJXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3RqTidZ/al2c0fdcVeXocP9OcDBd6e+WEYScpD5GaXs=;
+ b=J2Q5b6qDdaQdIt+ogi7c237H2GuZKc7+0J4XCu+0mijAuBFfpJkJv3eRpaOHYiqQ/pK2Dkv/1P9bHvnfe49PBje/sJCHaoUlhYacCCCA2+bpPtT8UmzIRZLuxjCExgx0I3CdsTj0VSGejswOoUII8wwJiHwh5r8lvFlrbxATVYQ=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=calvin.johnson@oss.nxp.com; 
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com (2603:10a6:208:130::22)
+ by AM0PR04MB5844.eurprd04.prod.outlook.com (2603:10a6:208:12a::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Mon, 27 Apr
+ 2020 14:56:46 +0000
+Received: from AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::c4fe:d4a4:f0e1:a75b]) by AM0PR04MB5636.eurprd04.prod.outlook.com
+ ([fe80::c4fe:d4a4:f0e1:a75b%4]) with mapi id 15.20.2937.020; Mon, 27 Apr 2020
+ 14:56:46 +0000
+Date:   Mon, 27 Apr 2020 20:26:33 +0530
+From:   Calvin Johnson <calvin.johnson@oss.nxp.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     linux.cj@gmail.com, Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        linux-acpi@vger.kernel.org, Marcin Wojtas <mw@semihalf.com>,
+        Makarand Pawagi <makarand.pawagi@nxp.com>,
+        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
+        Varun Sethi <V.Sethi@nxp.com>, linux-kernel@vger.kernel.org,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, <dmitry.kasatkin@nokia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200123085312.GA24255@Red>
- <f8bdce6e-9dff-6dbf-e084-c5508b5493e5@ti.com> <20200220195221.GA17341@Red>
- <CAKv+Gu-8pGa7QODPKQv_BAqWiq14X=YN4+43Mw6SX2pDK2fLrg@mail.gmail.com>
- <20200223202308.GA28683@Red>
- <CAKv+Gu9LHEe0Z3CT32uigftpQKenxj_nngcKCrU7D3kMGxozzA@mail.gmail.com>
-From:   Tero Kristo <t-kristo@ti.com>
-Message-ID: <9f066194-4835-071e-3f7d-a416c1c2474c@ti.com>
-Date:   Mon, 27 Apr 2020 17:56:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [net-next PATCH v2 0/3] Introduce new APIs to support phylink
+ and phy layers
+Message-ID: <20200427145633.GA28011@lsv03152.swis.in-blr01.nxp.com>
+References: <20200427132409.23664-1-calvin.johnson@oss.nxp.com>
+ <20200427135820.GH25745@shell.armlinux.org.uk>
+ <20200427143238.GA26436@lsv03152.swis.in-blr01.nxp.com>
+ <20200427144806.GI25745@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427144806.GI25745@shell.armlinux.org.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: SG2PR01CA0165.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:28::21) To AM0PR04MB5636.eurprd04.prod.outlook.com
+ (2603:10a6:208:130::22)
 MIME-Version: 1.0
-In-Reply-To: <CAKv+Gu9LHEe0Z3CT32uigftpQKenxj_nngcKCrU7D3kMGxozzA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from lsv03152.swis.in-blr01.nxp.com (14.142.151.118) by SG2PR01CA0165.apcprd01.prod.exchangelabs.com (2603:1096:4:28::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Mon, 27 Apr 2020 14:56:40 +0000
+X-Originating-IP: [14.142.151.118]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ad4eadc1-f557-475d-92c8-08d7eabb3498
+X-MS-TrafficTypeDiagnostic: AM0PR04MB5844:|AM0PR04MB5844:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR04MB58443087DFBCB1E82A4CDFD2D2AF0@AM0PR04MB5844.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 0386B406AA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5636.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(39860400002)(346002)(136003)(376002)(366004)(8676002)(33656002)(55016002)(9686003)(86362001)(66476007)(5660300002)(16526019)(6506007)(55236004)(478600001)(26005)(8936002)(186003)(66556008)(66946007)(1006002)(6666004)(6916009)(7416002)(956004)(54906003)(52116002)(966005)(2906002)(316002)(81156014)(44832011)(1076003)(7696005)(4326008)(110426005);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: oss.nxp.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ahq1pFWeBQwyHcXjJwjtfDQ//ysn2jg1KX/PplN0TAhYWThu68FxO+zBViHk1zvMABFaYlPxcTO9Ki3xksbAB+JZ8ENX8Hcz/zyiv8hgsIVU+xRkxrOSCdqMiBT3gTe0fF19sJMzxLHwH8/D/RIsEQ4mTToyVB9pqLm2fF1G8xlVVWuYCZCXneGItlk5mRf9lYPHS3PQxjDqHR5braBsogZmwI71y3Vq+q5Mv4QE5dK15rZhEKFIfPVWc7IXT+DSWcoTJa3reRQ1ltxXRujiwb3WvGalCsXMyOWgOg4mmz5RO6GY1hTIJlgvlTZzuH/bQTD0OnjrGLiQn2qB24GP9uWIW8/9svS9mdFfEfX2EWUD7dxggHoFxidUrfCbqH8aC/FYrChaesw9r3nyD19ui5Df4/T+FOixDK2cFN7RnRdVhnQumwDyQ1iZ/JGBGtVcCY6EWJYPeAKn2YFz4ANL442vMnqMSFjTXZ2QxVoOvSq9k1OfdTZSdbgdZ2S9RRDDg/D3292aLx/4hheyYTxJjaG4lmwWDAaiWTZ76WjS+V5UYKYQsNeDFj0Uu5zvskM2eLUKMEGo2B+BryMql+VBmA==
+X-MS-Exchange-AntiSpam-MessageData: PYyRQNrI8XqwAQN7f0GfmJqBm5TCvFJJ7A8Sgrvyif19+de78CZ66qMJwcrC+mhFJ9O2W1piAvKqWyMKiZcHeysCCzWVwXIbSvTnZSxwhHew8VMX4uX63/YgKtSLDkluaHolJZYsnNxo7k+pvAbWfgRbtWSQecIWzXhsloksHe1pxBHHL4H8GKw+zdtgaAAMqy0ZfGGcD+RHgXUxBWWPuK0qHW00KvF4PRn0i+Pve+BPzBeC0OeOKo5dJn8AbCfAw0VxLyRuUdBxu4rCGwvUHB72zNcdJCHjdss/SNjyuEAjqj7HJVlt6/4IgvnrmN6VCAZPyeSU3mRc4pg7Bhvm/JEFhsoNXDm0WAqHZHmkdMrnuGyAhosDea4R+8rgfvi8Q+CIuPW9xGLd4IWite2zYy10z9fP1EVH4nL4twgA7x5baNN62xS9hdeGczGAZnEbwxJQV+Vu7MlJn8Rpmq/G9Nw7PacBK3Ue9ewrGlwuYNL9fiVeWTBkYMJgy13A10ChzIQ9Pks0NJ0Dc8uZQ3B9dvo8bfxobqEDdkC6ZIxcLBlRqDLbGHYNZKRe/CkclemD7fX518uMXbnQpEjRhU0F7YkfVTTKd3ioTKEG09av8s5w0kFG1W4AygBHpn+dAdX48zdJxYCvGXrQ3tge4rHmsqRwGVbTHQfWwcA45P7t6jfAycvXcxe1XiozHPsTk/zZdHZcaQ294rRdkMWXKccdcKH+vZCkiSusKvnbuU3lX6leR+VZKA5MU0VWRRb8Hjuyy5zvyc1DjOpKbAE2PIeYFdpNZYL3kZPaDXY8SH8R4lU=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad4eadc1-f557-475d-92c8-08d7eabb3498
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2020 14:56:46.3030
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WNhuCWXclNBvSWjTKQSmNYqa1vjnOe/BnDQdARGU9NPMnz2iUxCZxdxZ/txGMvlN7ZXG7THXHV9SxRWj2gNNoA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB5844
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/02/2020 22:34, Ard Biesheuvel wrote:
-> On Sun, 23 Feb 2020 at 21:23, LABBE Corentin <clabbe@baylibre.com> wrote:
->>
->> On Thu, Feb 20, 2020 at 10:13:06PM +0100, Ard Biesheuvel wrote:
->>> On Thu, 20 Feb 2020 at 20:52, LABBE Corentin <clabbe@baylibre.com> wrote:
->>>>
->>>> On Thu, Jan 23, 2020 at 01:59:21PM +0200, Tero Kristo wrote:
->>>>> Hi,
->>>>>
->>>>> Linux-next has huge pile of fixes in place for omap-crypto, so I would
->>>>> not recommend testing any older kernels. You are saying -next crashes in
->>>>> similar manner though? TI internal kernel has couple of additional fixes
->>>>> against 5.4 stable, but can't see why those would help on this. If you
->>>>> have spare time, you could try it out though [1].
->>>>>
->>>>> Today's next doesn't compile for me at all for some reason (some tooling
->>>>> failure) so can't really test it myself right now.
->>>>>
->>>>> -Tero
->>>>>
->>>>> [1]
->>>>> https://git.ti.com/cgit/ti-linux-kernel/ti-linux-kernel/log/?h=ti-linux-5.4.y
->>>>>
->>>>
->>>> I have tested this branch and loading tcrypt lead to a kernel panic
->>>
->>> Hi Corentin,
->>>
->>> It would be helpful if you could paste the entire error message.
->>>
->>
->> Hello
->>
->> I dont understand, the following trace is the entire error message I get on the console.
->>
+On Mon, Apr 27, 2020 at 03:48:07PM +0100, Russell King - ARM Linux admin wrote:
+> On Mon, Apr 27, 2020 at 08:02:38PM +0530, Calvin Johnson wrote:
+> > On Mon, Apr 27, 2020 at 02:58:20PM +0100, Russell King - ARM Linux admin wrote:
+> > > On Mon, Apr 27, 2020 at 06:54:06PM +0530, Calvin Johnson wrote:
+> > > > Following functions are defined:
+> > > >   phylink_fwnode_phy_connect()
+> > > >   phylink_device_phy_connect()
+> > > >   fwnode_phy_find_device()
+> > > >   device_phy_find_device()
+> > > >   fwnode_get_phy_node()
+> > > > 
+> > > > First two help in connecting phy to phylink instance.
+> > > > Next two help in finding a phy on a mdiobus.
+> > > > Last one helps in getting phy_node from a fwnode.
+> > > > 
+> > > > Changes in v2:
+> > > >   move phy code from base/property.c to net/phy/phy_device.c
+> > > >   replace acpi & of code to get phy-handle with fwnode_find_reference
+> > > >   replace of_ and acpi_ code with generic fwnode to get phy-handle.
+> > > > 
+> > > > Calvin Johnson (3):
+> > > >   device property: Introduce phy related fwnode functions
+> > > >   net: phy: alphabetically sort header includes
+> > > >   phylink: Introduce phylink_fwnode_phy_connect()
+> > > 
+> > > Thanks for this, but there's more work that needs to be done here.  I
+> > > also think that we must have an ack from ACPI people before this can be
+> > > accepted - you are in effect proposing a new way for representing PHYs
+> > > in ACPI.
+> > 
+> > Thanks for your review.
+> > 
+> > Agree that we need an ack from ACPI people.
+> > However, I don't think it is a completely new way as similar acpi approach to
+> > get phy-handle is already in place.
+> > Please see this:
+> > https://elixir.bootlin.com/linux/v5.7-rc3/source/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c#L832
 > 
-> There should be a line before this that gives the kind of error and
-> the faulting address
-
-I just dug out my omap4 board and gave it a test with 5.7-rc1. I can't 
-see any of these failures. Crypto self tests are passing, and also 
-tcrypt tests are passing just fine.
-
--Tero
-
+> That was added by:
 > 
+> commit 8089a96f601bdfe3e1b41d14bb703aafaf1b8f34
+> Author: Iyappan Subramanian <isubramanian@apm.com>
+> Date:   Mon Jul 25 17:12:41 2016 -0700
 > 
->>>
->>>> [  105.664062] Internal error: Oops: 17 [#1] SMP ARM
->>>> [  105.668792] Modules linked in: vmac xcbc streebog_generic sm3_generic sha3_generic crct10dif_generic crct10dif_common seed rmd320 rmd256 rmd160 rmd128 cts ccm salsa20_generic camellia_generic fcrypt pcbc tgr192 anubis wp512 khazad tea michael_mic arc4 libarc4 cast6_generic cast5_generic cast_common sha512_arm sha512_generic cfb ofb ux500_cryp aes_arm serpent_generic lrw twofish_generic twofish_common blowfish_generic blowfish_common md4 tcrypt(+) ghash_generic gf128mul gcm sha256_generic libsha256 hmac md5 des_generic ctr sha1_arm_neon sha1_arm phy_generic aes_arm_bs crypto_simd cryptd sha1_generic omap_aes_driver omap_sham omap2430 ehci_omap omap_des omap_crypto libdes phy_twl6030_usb musb_hdrc
->>>> [  105.730743] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.4.20-00513-gd274af0de6bd #2
->>>> [  105.730743] Hardware name: Generic OMAP4 (Flattened Device Tree)
->>>> [  105.745849] PC is at omap_sham_finish_req+0x10/0x190 [omap_sham]
->>>> [  105.745880] LR is at omap_sham_done_task+0x58/0x118 [omap_sham]
->>>> [  105.757843] pc : [<bf04d054>]    lr : [<bf04d63c>]    psr: 20000113
->>>> [  105.764129] sp : c1701da8  ip : 00000000  fp : ffffe000
->>>> [  105.769378] r10: c557b268  r9 : 00000040  r8 : c167d100
->>>> [  105.774627] r7 : c1894b44  r6 : 00000000  r5 : c5622200  r4 : 00000000
->>>> [  105.781188] r3 : 00000008  r2 : 000002b3  r1 : 00000000  r0 : c5622200
->>>> [  105.781188] Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
->>>> [  105.787750] Control: 10c5387d  Table: 854d004a  DAC: 00000051
->>>> [  105.787750] Process swapper/0 (pid: 0, stack limit = 0xd5fffd75)
->>>> [  105.806701] Stack: (0xc1701da8 to 0xc1702000)
->>>> [  105.806701] 1da0:                   c557b240 00000000 ef55b318 c1894b44 c167d100 bf04d63c
->>>> [  105.819305] 1dc0: 00000000 c528bab8 c557b264 00000000 ef55b318 c034d8c8 c5544040 00000006
->>>> [  105.827514] 1de0: c1701efc c1703098 00000007 00000040 00000006 ffffe000 c1894b44 00000100
->>>> [  105.827514] 1e00: c1703080 c0302298 c1704e48 00000001 c1672388 c167d100 c1704e6c 0000000a
->>>> [  105.827514] 1e20: c1672314 ffffb416 c1703d00 c0f07470 00200002 eea7a668 00000000 ffffe000
->>>> [  105.852142] 1e40: 00000000 00000000 00000001 ee824000 fa241100 c18ec14c 00000000 c034e018
->>>> [  105.860351] 1e60: c167d098 c039be58 c1705528 c1774e04 fa24010c fa240100 c1701ea0 c06e816c
->>>> [  105.860351] 1e80: c0c98518 60000113 ffffffff c1701ed4 ef5655b0 c1700000 c18ec14c c0301a8c
->>>> [  105.876800] 1ea0: 00000000 c170e1e8 2dee9000 00000050 c170e1e8 00000000 00000000 c1895418
->>>> [  105.885009] 1ec0: ef5655b0 00000000 c18ec14c 00000000 ee6b2800 c1701ef0 c0c984f0 c0c98518
->>>> [  105.885009] 1ee0: 60000113 ffffffff 00000051 00000000 9a103e82 00000018 9a0fc74d 00000018
->>>> [  105.901428] 1f00: 00000018 c167c5a8 ef569b40 c529a5c4 ef5655b0 c170e1e8 ffffffff ffff0000
->>>> [  105.909637] 1f20: ffffe000 c18ec14c c529a580 c0c9ae0c 00000002 c1704e6c fe687d92 ef5655b0
->>>> [  105.909637] 1f40: c170e1e8 00000002 00000001 ef5655b0 c1704e48 c167c5a8 c170e1e8 c0c989b4
->>>> [  105.926086] 1f60: ffffe000 c1704e6c c1704eb0 c03770ec c18944b2 00000002 01000000 f99d40c3
->>>> [  105.934295] 1f80: c15dea3c 000000cd c18a0594 00000001 c18a0540 00000000 00000001 c15dea3c
->>>> [  105.934295] 1fa0: ef585280 c037741c c1704e48 c1500ea8 ffffffff ffffffff 00000000 c1500664
->>>> [  105.934295] 1fc0: 00000000 c15dea3c f99844d7 00000000 00000000 c1500330 00000051 10c0387d
->>>> [  105.958923] 1fe0: 00000ae7 83f00000 411fc092 10c5387d 00000000 00000000 00000000 00000000
->>>> [  105.967163] [<bf04d054>] (omap_sham_finish_req [omap_sham]) from [<bf04d63c>] (omap_sham_done_task+0x58/0x118 [omap_sham])
->>>> [  105.978271] [<bf04d63c>] (omap_sham_done_task [omap_sham]) from [<c034d8c8>] (tasklet_action_common.constprop.5+0x70/0x174)
->>>> [  105.978271] [<c034d8c8>] (tasklet_action_common.constprop.5) from [<c0302298>] (__do_softirq+0x130/0x3b4)
->>>> [  105.999053] [<c0302298>] (__do_softirq) from [<c034e018>] (irq_exit+0xcc/0xd8)
->>>> [  106.006317] [<c034e018>] (irq_exit) from [<c039be58>] (__handle_domain_irq+0x60/0xb4)
->>>> [  106.014190] [<c039be58>] (__handle_domain_irq) from [<c06e816c>] (gic_handle_irq+0x58/0x9c)
->>>> [  106.022613] [<c06e816c>] (gic_handle_irq) from [<c0301a8c>] (__irq_svc+0x6c/0x90)
->>>> [  106.022613] Exception stack(0xc1701ea0 to 0xc1701ee8)
->>>> [  106.022613] 1ea0: 00000000 c170e1e8 2dee9000 00000050 c170e1e8 00000000 00000000 c1895418
->>>> [  106.043395] 1ec0: ef5655b0 00000000 c18ec14c 00000000 ee6b2800 c1701ef0 c0c984f0 c0c98518
->>>> [  106.043395] 1ee0: 60000113 ffffffff
->>>> [  106.055114] [<c0301a8c>] (__irq_svc) from [<c0c98518>] (cpuidle_enter_state+0x180/0x5b8)
->>>> [  106.063262] [<c0c98518>] (cpuidle_enter_state) from [<c0c9ae0c>] (cpuidle_enter_state_coupled+0x144/0x3c8)
->>>> [  106.072967] [<c0c9ae0c>] (cpuidle_enter_state_coupled) from [<c0c989b4>] (cpuidle_enter+0x50/0x54)
->>>> [  106.081970] [<c0c989b4>] (cpuidle_enter) from [<c03770ec>] (do_idle+0x218/0x294)
->>>> [  106.081970] [<c03770ec>] (do_idle) from [<c037741c>] (cpu_startup_entry+0x18/0x1c)
->>>> [  106.097015] [<c037741c>] (cpu_startup_entry) from [<c1500ea8>] (start_kernel+0x480/0x4b0)
->>>> [  106.097015] Code: e92d41f0 e1a05000 e5904040 e1a06001 (e59430bc)
->>>> [  106.111358] ---[ end trace 53e3b1ecd80eac62 ]---
->>>> [  106.115997] Kernel panic - not syncing: Fatal exception in interrupt
->>>> [  106.115997] SMP: failed to stop secondary CPUs
->>>> [  106.115997] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
+>     drivers: net: xgene: Add backward compatibility
+> 
+>     This patch adds xgene_enet_check_phy_hanlde() function that checks whether
+>     MDIO driver is probed successfully and sets pdata->mdio_driver to true.
+>     If MDIO driver is not probed, ethernet driver falls back to backward
+>     compatibility mode.
+> 
+>     Since enum xgene_enet_cmd is used by MDIO driver, removing this from
+>     ethernet driver.
+> 
+>     Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
+>     Tested-by: Fushen Chen <fchen@apm.com>
+>     Tested-by: Toan Le <toanle@apm.com>
+>     Signed-off-by: David S. Miller <davem@davemloft.net>
+> 
+> The commit message says nothing about adding ACPI stuff, and searching
+> the 'net for the posting of this patch seems to suggest that it wasn't
+> obviously copied to any ACPI people:
+> 
+>     https://lists.openwall.net/netdev/2016/07/26/11
+> 
+> Annoyingly, searching for:
+> 
+>     "drivers: net: xgene: Add backward compatibility" site:lore.kernel.org
+> 
+> doesn't find it on lore, so can't get the full headers and therefore
+> addresses.
+> 
+> So, yes, there's another driver using it, but the ACPI folk probably
+> never got a look-in on that instance.  Even if they had been copied,
+> the patch description is probably sufficiently poor that they wouldn't
+> have read the patch.
+> 
+> I'd say there's questions over whether ACPI people will find this an
+> acceptable approach.
+> 
+> Given that your patch moves this from one driver to a subsystem thing,
+> it needs to be ratified by ACPI people, because it's effectively
+> becoming a standardised way to represent a PHY in ACPI.
+> 
+Thanks for digging deep. Makes sense to me.
+Will wait for ACPI response.
 
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+Regards
+Calvin
