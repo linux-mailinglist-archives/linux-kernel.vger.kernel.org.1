@@ -2,60 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B2D1BA9C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 18:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F73F1BA9C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 18:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728405AbgD0QFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 12:05:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38966 "EHLO mail.kernel.org"
+        id S1728217AbgD0QGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 12:06:23 -0400
+Received: from mga05.intel.com ([192.55.52.43]:8556 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726185AbgD0QFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 12:05:48 -0400
-Received: from localhost (unknown [171.76.79.70])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5547205C9;
-        Mon, 27 Apr 2020 16:05:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588003548;
-        bh=YDqfBQ5wST77dFIwfCuEmRqFbRXErmX0b5wHi05B4vg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u9iXdN2b1kMrsbi6D5R7l3ad8DUziDatl/mXJbkZPMYZGdqbJ1of5kwTae5YaxFr1
-         +vVU2O7OJY7LHSbO24ztrE0TfP2w9lKPMZJlYf2JJAOXyWTSLIjboxp2yFyUFVwROX
-         9ma+Zq3K2de5eNZ4nWS60kbP+LIlTwgeFLwme+FU=
-Date:   Mon, 27 Apr 2020 21:35:43 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
+        id S1726185AbgD0QGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 12:06:23 -0400
+IronPort-SDR: z02/zrHjM/G6rUnKQoMtXt7HhW1CMfB5TQtKNfYYVFcCCzlZmv2c2Mjm+/uFfRC/vWojyvc/v1
+ lTXCJElIDurg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 09:06:22 -0700
+IronPort-SDR: b01dvZ9KFoBL+qpbsGAzdTYnopKrQZ8+lhXmHHjPNgel+wtCMg/Bin2YPgQbRw4AGbXxJm9p/b
+ QvKU9QwaQRWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,324,1583222400"; 
+   d="scan'208";a="293579355"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.174.92]) ([10.249.174.92])
+  by orsmga008.jf.intel.com with ESMTP; 27 Apr 2020 09:06:20 -0700
+Subject: Re: [RFC PATCH 1/3] kvm: x86: Rename KVM_DEBUGREG_RELOAD to
+ KVM_DEBUGREG_NEED_RELOAD
+To:     Peter Xu <peterx@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        kvm@vger.kernel.org, Nadav Amit <namit@cs.technion.ac.il>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] dmaengine: tegra-apb: Ensure that clock is enabled
- during of DMA synchronization
-Message-ID: <20200427160543.GH56386@vkoul-mobl.Dlink>
-References: <20200426190835.21950-1-digetx@gmail.com>
+References: <20200416101509.73526-1-xiaoyao.li@intel.com>
+ <20200416101509.73526-2-xiaoyao.li@intel.com>
+ <20200423190941.GN17824@linux.intel.com> <20200424202103.GA48376@xz-x1>
+ <f1c0ba71-1c5b-a5b7-3123-7ab36a5c5c74@redhat.com>
+ <20200427143732.GD48376@xz-x1>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <3cc6471b-13da-832f-18d8-6db840b5ac47@intel.com>
+Date:   Tue, 28 Apr 2020 00:06:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200426190835.21950-1-digetx@gmail.com>
+In-Reply-To: <20200427143732.GD48376@xz-x1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-04-20, 22:08, Dmitry Osipenko wrote:
-> DMA synchronization hook checks whether interrupt is raised by testing
-> corresponding bit in a hardware status register, and thus, clock should
-> be enabled in this case, otherwise CPU may hang if synchronization is
-> invoked while Runtime PM is in suspended state. This patch resumes the RPM
-> during of the DMA synchronization process in order to avoid potential
-> problems. It is a minor clean up of a previous commit, no real problem is
-> fixed by this patch because currently RPM is always in a resumed state
-> while DMA is synchronized, although this may change in the future.
+On 4/27/2020 10:37 PM, Peter Xu wrote:
+> On Sat, Apr 25, 2020 at 09:48:17AM +0200, Paolo Bonzini wrote:
+>> On 24/04/20 22:21, Peter Xu wrote:
+>>> But then shouldn't DIRTY be set as long as KVM_DEBUGREG_BP_ENABLED is set every
+>>> time before vmenter?  Then it'll somehow go back to switch_db_regs, iiuc...
+>>>
+>>> IIUC RELOAD actually wants to say "reload only for this iteration", that's why
+>>> it's cleared after each reload.  So maybe...  RELOAD_ONCE?
+>>>
+>>> (Btw, do we have debug regs tests somewhere no matter inside guest or with
+>>>   KVM_SET_GUEST_DEBUG?)
+>>
+>> What about KVM_DEBUGREG_EFF_DB_DIRTY?
+> 
+> The problem is iiuc we always reload eff_db[] no matter which bit in
+> switch_db_regs is set, so this may still not clearly identify this bit from the
+> rest of the two bits...
+> 
+> Actually I think eff_db[] is a bit confusing here in that it can be either the
+> host specified dbreg values or the guest specified depends on the dynamic value
+> of KVM_GUESTDBG_USE_HW_BP.
+> 
+> I am thinking maybe it's clearer to have host_db[] and guest_db[], then only
+> until vmenter do we load either of them by:
 
-Applied, thanks
+host_db[] is somewhat misleading, how about user_db[] (just like user_fpu)
 
--- 
-~Vinod
+>    if (KVM_GUESTDBG_USE_HW_BP)
+>      load(host_db[]);
+>    else
+>      load(gueet_db[]);
+> 
+> Then each db[] will be very clear on what's the data is about.  And we don't
+> need to check KVM_GUESTDBG_USE_HW_BP every time when accessing eff_db[].
+> 
+
