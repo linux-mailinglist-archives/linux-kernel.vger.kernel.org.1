@@ -2,140 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640C01BAB1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447F61BAB3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 19:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgD0RYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 13:24:41 -0400
-Received: from gateway31.websitewelcome.com ([192.185.143.38]:23818 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725995AbgD0RYk (ORCPT
+        id S1726454AbgD0R30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 13:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbgD0R3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 13:24:40 -0400
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 3282D2DFC6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 12:24:39 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id T7Ulj6xjISl8qT7UljWW3f; Mon, 27 Apr 2020 12:24:39 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=YEOHhLTFQXiSJAW1rJkS5UQlnPLskYI2gwu0A2R9AWw=; b=TwPKwsY4KtMOMjCUUxS3NrmDTt
-        nww05R9sojO/xfwYmr4OJuvr0tE/IymoplKmGy3P0HlnE1DFjW6xGFfrcZNrVYh8h/cMUmfJ2yJXf
-        mpgetgnEoYD0aAkjEyNd54wY63E3OLjfUfuzHbmHPm5Eu7+cFDNP2k6vLz9f4+r0vBM0DNCGfDkmy
-        WJ7LDRb0zampbUwSMpWJ8gB67wMejEFnob67mH//RhBCfMKHmqHGs7oskae9EFKym+u4WwfangJ/w
-        mBUZT5A1mYStGtqtGrdVxxR29zlrQtzOmrW68wuBl++22XHSdh20JC19zlpi3rMMzNWaWTnAnCM6h
-        bLzG4mbA==;
-Received: from [201.162.241.110] (port=14206 helo=[192.168.43.132])
-        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1jT7Uk-004EeF-RB; Mon, 27 Apr 2020 12:24:39 -0500
-Subject: Re: [PATCH] objtool: orc_gen: Fix memory leak in create_orc_entry
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-References: <20200427133533.GA20830@embeddedor>
- <20200427144439.rrywv56mjfypupgh@treble>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Autocrypt: addr=gustavo@embeddedor.com; keydata=
- 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
- VtSixD1uOgytAP7RWS474w==
-Message-ID: <88631822-874a-2c26-6661-5ee12c4f72eb@embeddedor.com>
-Date:   Mon, 27 Apr 2020 12:28:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 27 Apr 2020 13:29:25 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43974C03C1A7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:29:25 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w20so18511062ljj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 10:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SHuBjEFsXuCOnXrDPerkRVxxxGJlefJzzkBgVwYtJlA=;
+        b=QALnd6imJ7V1ZuG0QY9Bq/9Z9J1unuBZ9xPj6KDxnYPc7fE4lJB9FjEFiP03awwA3b
+         zb92lKkogwPFCwFlntiLQ99F5H75z+x8WzXhoPMhhvlWFvDQWXj2cYnZUSCLhGNeLVH3
+         Wu6HU4F6I0ezMQ/bFDI9rQDlpnTEZ3wrIJYoZQmdRPTh3pdEsoZAT47tzLqkSGDIjpQy
+         tmlUnZwLfgtwDZ69d33p8fJFSwztMFMQ7TD9ZZwVoht1dQHhyFO54Ny3fBd/zbgLm/MQ
+         W7tuhO0gvn0im4FWdXx/ffwDttk/8EC2jVjhCbp0iO8kAIYiTqIiJjT9kL0duhgGyvCF
+         UcYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SHuBjEFsXuCOnXrDPerkRVxxxGJlefJzzkBgVwYtJlA=;
+        b=lgaSW0YDKQtypQXKtHlZGCIX2yfp+hH+1c2GhYv7PLkkHxE5P2BQ71pN3qBgn+DnLi
+         5Tr6TUEUd5hxPf/qq2J70bF70Jqc/McOl4UEN0Eb1sFXfAHuDgv/JpTlDJTZpZRbEo5Y
+         IIsGXlJ0jzEmZ8P5SBaf7ARGeRBUnILRgu5l1qChwSuaBJgxqFeCmU53gGzl2w6Lju0E
+         6enoPlP5xaFMsp/GbmpmdHNJZ8A7wbwGHnk51OH/cl24AvxLNrQQAgcj38bmVl2yfgvG
+         OVHn2iE1C9yX9KK9ECdMSf9uxoS9NzvmvlrBBpYvkZk4fXmVaFpNct2GPcwBDr9E0GNP
+         IDHg==
+X-Gm-Message-State: AGi0PuYzSIIbgHhwPdbOQUqqfsGFmz7fMbHgIrH4HAOpyCZOYnUK1I8l
+        sPGyHn2v9CFMRQ2awg/XNgTxk94ttxBsi5svBMoElM0iRLk=
+X-Google-Smtp-Source: APiQypLRikU2kj4lwV6Hlv63XRM9RyOKCs8RknvaYiOvJdZc7VVr5C780JaTVTCUKgNwbuwUujWo/vMtAOfrKhTqrI8=
+X-Received: by 2002:a2e:87d3:: with SMTP id v19mr14032917ljj.176.1588008563374;
+ Mon, 27 Apr 2020 10:29:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200427144439.rrywv56mjfypupgh@treble>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.162.241.110
-X-Source-L: No
-X-Exim-ID: 1jT7Uk-004EeF-RB
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.43.132]) [201.162.241.110]:14206
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+References: <20200427143646.619227-1-christian.brauner@ubuntu.com>
+In-Reply-To: <20200427143646.619227-1-christian.brauner@ubuntu.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 27 Apr 2020 19:28:56 +0200
+Message-ID: <CAG48ez3eSJSODADpo=O-j9txJ=2R+EupunRvs5H9t5Wa8mvkRA@mail.gmail.com>
+Subject: Re: [PATCH] nsproxy: attach to namespaces via pidfds
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        =?UTF-8?Q?St=C3=A9phane_Graber?= <stgraber@ubuntu.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Josh,
+On Mon, Apr 27, 2020 at 4:47 PM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+> For quite a while we have been thinking about using pidfds to attach to
+> namespaces. This patchset has existed for about a year already but we've
+> wanted to wait to see how the general api would be received and adopted.
+> Now that more and more programs in userspace have started using pidfds
+> for process management it's time to send this one out.
 
-On 4/27/20 09:44, Josh Poimboeuf wrote:
-> On Mon, Apr 27, 2020 at 08:35:33AM -0500, Gustavo A. R. Silva wrote:
->> In case memory resources for rela were allocated, release them before
->> return.
->>
->> Addresses-Coverity-ID: 1462331 ("Resource leak")
->> Fixes: e81e07244325 ("objtool: Support Clang non-section symbols in ORC generation")
->> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> 
-> Hi Gustavo,
-> 
-> For performance reasons, our policy is to allow memory leaks in error
-> and exit paths.  So you may want to turn off Coverity resource leak
-> checking for objtool.
-> 
+You can already reliably switch to a specific namespace of another
+process like this given a pidfd and the pid of the process (which, if
+you don't have it, you can get via fdinfo), right?
 
-Got it. That's good to know.
+int switch_ns_to(int pidfd, int pid, char *nstypename) {
+  char ns_path[100];
+  snprintf(ns_path, sizeof(ns_path), "/proc/%d/ns/%s", pid, nstypename);
+  int fd = open(ns_path, O_RDONLY|O_CLOEXEC);
+  int errno_after_open = errno;
 
-Thank you.
---
-Gustavo
+  if (pidfd_send_signal(pidfd, 0, NULL, 0))
+    return -1;
+
+  if (fd == -1) {
+    errno = errno_after_open;
+    return -1;
+  }
+
+  int ret = setns(fd, 0);
+  close(fd);
+  return ret;
+}
+
+> This patch makes it possible to use pidfds to attach to the namespaces
+> of another process, i.e. they can be passed as the first argument to the
+> setns() syscall. When only a single namespace type is specified the
+> semantics are equivalent to passing an nsfd.
+
+This introduces a difference in terms of security: With the old API,
+you need PTRACE_MODE_READ_FSCREDS on the task whose namespace you're
+attaching to (to dereference the link /proc/*/ns/*) *AND* whatever
+access checks the namespace itself enforces (always includes a check
+for CAP_SYS_ADMIN on the namespace). The ptrace check has the
+advantage, among other things, that it allows an LSM to see the
+relationship between the task that's accessing the namespace (subject)
+and the task whose namespace is being accessed (object).
+
+I feel slightly twitchy about this relaxation, and I'm wondering
+whether we can add a ptrace access check analogous to what you'd have
+needed via procfs.
+
+> That means
+> setns(nsfd, CLONE_NEWNET) equals setns(pidfd, CLONE_NEWNET). However,
+> when a pidfd is passed, multiple namespace flags can be specified in the
+> second setns() argument and setns() will attach the caller to all the
+> specified namespaces all at once or to none of them. If 0 is specified
+> together with a pidfd then setns() will interpret it the same way 0 is
+> interpreted together with a nsfd argument, i.e. attach to any/all
+> namespaces.
+[...]
+> Apart from significiantly reducing the number of syscalls from double
+> digit to single digit which is a decent reason post-spectre/meltdown
+> this also allows to switch to a set of namespaces atomically, i.e.
+> either attaching to all the specified namespaces succeeds or we fail.
+
+Apart from the issues I've pointed out below, I think it's worth
+calling out explicitly that with the current design, the switch will
+not, in fact, be fully atomic - the process will temporarily be in
+intermediate stages where the switches to some namespaces have
+completed while the switches to other namespaces are still pending;
+and while there will be less of these intermediate stages than before,
+it also means that they will be less explicit to userspace.
+
+[...]
+> diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
+[...]
+> +/*
+> + * Ordering is equivalent to the standard ordering used everywhere
+> + * else during unshare and process creation.
+> + */
+> +static int ns_install(struct nsproxy *nsproxy, struct pid *pid, int flags)
+> +{
+> +       int ret = 0;
+> +       struct task_struct *tsk;
+> +       struct nsproxy *nsp;
+> +
+> +       tsk = get_pid_task(pid, PIDTYPE_PID);
+> +       if (!tsk)
+> +               return -ESRCH;
+> +
+> +       get_nsproxy(tsk->nsproxy);
+> +       nsp = tsk->nsproxy;
+
+How is this correct? Are you holding any locks that protect tsk->nsproxy?
+
+> +#ifdef CONFIG_USER_NS
+> +       if (wants_ns(flags, CLONE_NEWUSER)) {
+> +               struct user_namespace *user_ns;
+> +
+> +               user_ns = get_user_ns(__task_cred(tsk)->user_ns);
+> +               ret = __ns_install(nsproxy, &user_ns->ns);
+
+If ret == 0, then at this point you've already committed the user
+namespace change *to the calling process*. The ->install handler of
+user namespaces doesn't touch the nsproxy at all.
+
+> +               put_user_ns(user_ns);
+> +       }
+> +#else
+> +       if (flags & CLONE_NEWUSER)
+> +               ret = -EINVAL;
+> +#endif
+> +
+> +       if (!ret && wants_ns(flags, CLONE_NEWNS))
+> +               ret = __ns_install(nsproxy, mnt_ns_to_common(nsp->mnt_ns));
+
+And this one might be even worse, because the mount namespace change
+itself is only stored in the nsproxy at this point, but the cwd and
+root paths have already been overwritten on the task's fs_struct.
+
+To actually make sys_set_ns() atomic, I think you'd need some
+moderately complicated prep work, splitting the ->install handlers up
+into prep work and a commit phase that can't fail.
+
+[...]
+> +#ifdef CONFIG_PID_NS
+> +       if (!ret && wants_ns(flags, CLONE_NEWPID)) {
+> +               struct pid_namespace *pidns;
+> +
+> +               pidns = task_active_pid_ns(tsk);
+> +               if (pidns) {
+> +                       get_pid_ns(pidns);
+> +                       ret = __ns_install(nsproxy, &pidns->ns);
+> +                       put_pid_ns(pidns);
+> +               }
+
+If you can't get the task's pidns, shouldn't that be an error?
+
+> +       }
+[...]
