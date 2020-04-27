@@ -2,143 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34C61B99B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179691B9A3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgD0ITN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 04:19:13 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34542 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726854AbgD0ITI (ORCPT
+        id S1726760AbgD0Iag convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Apr 2020 04:30:36 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:15282 "EHLO
+        SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726003AbgD0Iag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 04:19:08 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: aratiu)
-        with ESMTPSA id A74082A098C
-From:   Adrian Ratiu <adrian.ratiu@collabora.com>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-imx@nxp.com,
-        kernel@collabora.com, linux-stm32@st-md-mailman.stormreply.com,
-        Adrian Pop <pop.adrian61@gmail.com>,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: [PATCH v8 10/10] drm: bridge: dw-mipi-dsi: fix bad register field offsets
-Date:   Mon, 27 Apr 2020 11:19:52 +0300
-Message-Id: <20200427081952.3536741-11-adrian.ratiu@collabora.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200427081952.3536741-1-adrian.ratiu@collabora.com>
-References: <20200427081952.3536741-1-adrian.ratiu@collabora.com>
+        Mon, 27 Apr 2020 04:30:36 -0400
+X-Greylist: delayed 601 seconds by postgrey-1.27 at vger.kernel.org; Mon, 27 Apr 2020 04:30:35 EDT
+Subject: Re: [patch] mm, oom: stop reclaiming if GFP_ATOMIC will start failing
+ soon
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>
+CC:     Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <alpine.DEB.2.22.394.2004241347310.70176@chino.kir.corp.google.com>
+ <20200425172706.26b5011293e8dc77b1dccaf3@linux-foundation.org>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <7726e8a8-8390-cee8-3480-4e68bf26f08a@sony.com>
+Date:   Mon, 27 Apr 2020 10:20:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200425172706.26b5011293e8dc77b1dccaf3@linux-foundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=Nc2YKFL4 c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=IkcTkHD0fZMA:10 a=cl8xLZFz6L8A:10 a=1XWaLZrsAAAA:8 a=_KWB5BKwUhRobCCBmOoA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the DSI Host Registers sections available in the IMX,
-STM and RK ref manuals for 1.01, 1.30 and 1.31, the register fields
-are smaller or bigger than what's coded in the driver, leading to
-r/w in reserved spaces which might cause undefined behaviours.
-
-Tested-by: Adrian Pop <pop.adrian61@gmail.com>
-Tested-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
----
-New in v6.
----
- drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 46 +++++++++----------
- 1 file changed, 23 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-index 0903ec37289dd..bf22b04761fdf 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-@@ -316,7 +316,7 @@ struct dw_mipi_dsi_variant {
- static const struct dw_mipi_dsi_variant dw_mipi_dsi_v130_v131_layout = {
- 	.cfg_dpi_color_coding =		REG_FIELD(DSI_DPI_COLOR_CODING, 0, 3),
- 	.cfg_dpi_18loosely_en =		REG_FIELD(DSI_DPI_COLOR_CODING, 8, 8),
--	.cfg_dpi_vid =			REG_FIELD(DSI_DPI_VCID, 0, 2),
-+	.cfg_dpi_vid =			REG_FIELD(DSI_DPI_VCID, 0, 1),
- 	.cfg_dpi_vsync_active_low =	REG_FIELD(DSI_DPI_CFG_POL, 1, 1),
- 	.cfg_dpi_hsync_active_low =	REG_FIELD(DSI_DPI_CFG_POL, 2, 2),
- 	.cfg_cmd_mode_ack_rqst_en =	REG_FIELD(DSI_CMD_MODE_CFG, 1, 1),
-@@ -325,29 +325,29 @@ static const struct dw_mipi_dsi_variant dw_mipi_dsi_v130_v131_layout = {
- 	.cfg_cmd_mode_dcs_sw_sr_en =	REG_FIELD(DSI_CMD_MODE_CFG, 16, 18),
- 	.cfg_cmd_mode_dcs_lw_en =	REG_FIELD(DSI_CMD_MODE_CFG, 19, 19),
- 	.cfg_cmd_mode_max_rd_pkt_size =	REG_FIELD(DSI_CMD_MODE_CFG, 24, 24),
--	.cfg_cmd_mode_en =		REG_FIELD(DSI_MODE_CFG, 0, 31),
--	.cfg_cmd_pkt_status =		REG_FIELD(DSI_CMD_PKT_STATUS, 0, 31),
--	.cfg_vid_mode_en =		REG_FIELD(DSI_MODE_CFG, 0, 31),
-+	.cfg_cmd_mode_en =		REG_FIELD(DSI_MODE_CFG, 0, 0),
-+	.cfg_cmd_pkt_status =		REG_FIELD(DSI_CMD_PKT_STATUS, 0, 6),
-+	.cfg_vid_mode_en =		REG_FIELD(DSI_MODE_CFG, 0, 0),
- 	.cfg_vid_mode_type =		REG_FIELD(DSI_VID_MODE_CFG, 0, 1),
- 	.cfg_vid_mode_low_power =	REG_FIELD(DSI_VID_MODE_CFG, 8, 13),
- 	.cfg_vid_mode_vpg_en =		REG_FIELD(DSI_VID_MODE_CFG, 16, 16),
- 	.cfg_vid_mode_vpg_horiz =	REG_FIELD(DSI_VID_MODE_CFG, 24, 24),
--	.cfg_vid_pkt_size =		REG_FIELD(DSI_VID_PKT_SIZE, 0, 10),
--	.cfg_vid_hsa_time =		REG_FIELD(DSI_VID_HSA_TIME, 0, 31),
--	.cfg_vid_hbp_time =		REG_FIELD(DSI_VID_HBP_TIME, 0, 31),
--	.cfg_vid_hline_time =		REG_FIELD(DSI_VID_HLINE_TIME, 0, 31),
--	.cfg_vid_vsa_time =		REG_FIELD(DSI_VID_VSA_LINES, 0, 31),
--	.cfg_vid_vbp_time =		REG_FIELD(DSI_VID_VBP_LINES, 0, 31),
--	.cfg_vid_vfp_time =		REG_FIELD(DSI_VID_VFP_LINES, 0, 31),
--	.cfg_vid_vactive_time =		REG_FIELD(DSI_VID_VACTIVE_LINES, 0, 31),
-+	.cfg_vid_pkt_size =		REG_FIELD(DSI_VID_PKT_SIZE, 0, 13),
-+	.cfg_vid_hsa_time =		REG_FIELD(DSI_VID_HSA_TIME, 0, 11),
-+	.cfg_vid_hbp_time =		REG_FIELD(DSI_VID_HBP_TIME, 0, 11),
-+	.cfg_vid_hline_time =		REG_FIELD(DSI_VID_HLINE_TIME, 0, 14),
-+	.cfg_vid_vsa_time =		REG_FIELD(DSI_VID_VSA_LINES, 0, 9),
-+	.cfg_vid_vbp_time =		REG_FIELD(DSI_VID_VBP_LINES, 0, 9),
-+	.cfg_vid_vfp_time =		REG_FIELD(DSI_VID_VFP_LINES, 0, 9),
-+	.cfg_vid_vactive_time =		REG_FIELD(DSI_VID_VACTIVE_LINES, 0, 13),
- 	.cfg_phy_txrequestclkhs =	REG_FIELD(DSI_LPCLK_CTRL, 0, 0),
--	.cfg_phy_bta_time =		REG_FIELD(DSI_BTA_TO_CNT, 0, 31),
--	.cfg_phy_max_rd_time =		REG_FIELD(DSI_PHY_TMR_CFG, 0, 15),
-+	.cfg_phy_bta_time =		REG_FIELD(DSI_BTA_TO_CNT, 0, 15),
-+	.cfg_phy_max_rd_time =		REG_FIELD(DSI_PHY_TMR_CFG, 0, 14),
- 	.cfg_phy_lp2hs_time =		REG_FIELD(DSI_PHY_TMR_CFG, 16, 23),
- 	.cfg_phy_hs2lp_time =		REG_FIELD(DSI_PHY_TMR_CFG, 24, 31),
--	.cfg_phy_max_rd_time_v131 =	REG_FIELD(DSI_PHY_TMR_RD_CFG, 0, 15),
--	.cfg_phy_lp2hs_time_v131 =	REG_FIELD(DSI_PHY_TMR_CFG, 0, 15),
--	.cfg_phy_hs2lp_time_v131 =	REG_FIELD(DSI_PHY_TMR_CFG, 16, 31),
-+	.cfg_phy_max_rd_time_v131 =	REG_FIELD(DSI_PHY_TMR_RD_CFG, 0, 14),
-+	.cfg_phy_lp2hs_time_v131 =	REG_FIELD(DSI_PHY_TMR_CFG, 0, 9),
-+	.cfg_phy_hs2lp_time_v131 =	REG_FIELD(DSI_PHY_TMR_CFG, 16, 25),
- 	.cfg_phy_clklp2hs_time =	REG_FIELD(DSI_PHY_TMR_LPCLK_CFG, 0, 15),
- 	.cfg_phy_clkhs2lp_time =	REG_FIELD(DSI_PHY_TMR_LPCLK_CFG, 16, 31),
- 	.cfg_phy_testclr =		REG_FIELD(DSI_PHY_TST_CTRL0, 0, 0),
-@@ -361,11 +361,11 @@ static const struct dw_mipi_dsi_variant dw_mipi_dsi_v130_v131_layout = {
- 	.cfg_pckhdl_cfg =		REG_FIELD(DSI_PCKHDL_CFG, 0, 4),
- 	.cfg_hstx_timeout_counter =	REG_FIELD(DSI_TO_CNT_CFG, 16, 31),
- 	.cfg_lprx_timeout_counter =	REG_FIELD(DSI_TO_CNT_CFG, 0, 15),
--	.cfg_int_stat0 =		REG_FIELD(DSI_INT_ST0, 0, 31),
--	.cfg_int_stat1 =		REG_FIELD(DSI_INT_ST1, 0, 31),
--	.cfg_int_mask0 =		REG_FIELD(DSI_INT_MSK0, 0, 31),
--	.cfg_int_mask1 =		REG_FIELD(DSI_INT_MSK1, 0, 31),
--	.cfg_gen_hdr =			REG_FIELD(DSI_GEN_HDR, 0, 31),
-+	.cfg_int_stat0 =		REG_FIELD(DSI_INT_ST0, 0, 20),
-+	.cfg_int_stat1 =		REG_FIELD(DSI_INT_ST1, 0, 12),
-+	.cfg_int_mask0 =		REG_FIELD(DSI_INT_MSK0, 0, 20),
-+	.cfg_int_mask1 =		REG_FIELD(DSI_INT_MSK1, 0, 12),
-+	.cfg_gen_hdr =			REG_FIELD(DSI_GEN_HDR, 0, 23),
- 	.cfg_gen_payload =		REG_FIELD(DSI_GEN_PLD_DATA, 0, 31),
- };
- 
-@@ -382,7 +382,7 @@ static const struct dw_mipi_dsi_variant dw_mipi_dsi_v101_layout = {
- 	.cfg_cmd_mode_gen_lw_en =	REG_FIELD(DSI_CMD_MODE_CFG, 11, 11),
- 	.cfg_cmd_mode_dcs_lw_en =	REG_FIELD(DSI_CMD_MODE_CFG, 12, 12),
- 	.cfg_cmd_mode_ack_rqst_en =	REG_FIELD(DSI_CMD_MODE_CFG_V101, 13, 13),
--	.cfg_cmd_pkt_status =		REG_FIELD(DSI_CMD_PKT_STATUS_V101, 0, 14),
-+	.cfg_cmd_pkt_status =		REG_FIELD(DSI_CMD_PKT_STATUS_V101, 0, 6),
- 	.cfg_vid_mode_en =		REG_FIELD(DSI_VID_MODE_CFG_V101, 0, 0),
- 	.cfg_vid_mode_type =		REG_FIELD(DSI_VID_MODE_CFG_V101, 1, 2),
- 	.cfg_vid_mode_low_power =	REG_FIELD(DSI_VID_MODE_CFG_V101, 3, 8),
--- 
-2.26.0
+On 4/26/20 2:27 AM, Andrew Morton wrote:
+> On Fri, 24 Apr 2020 13:48:06 -0700 (PDT) David Rientjes <rientjes@google.com> wrote:
+>
+>> If GFP_ATOMIC allocations will start failing soon because the amount of
+>> free memory is substantially under per-zone min watermarks, it is better
+>> to oom kill a process rather than continue to reclaim.
+>>
+>> This intends to significantly reduce the number of page allocation
+>> failures that are encountered when the demands of user and atomic
+>> allocations overwhelm the ability of reclaim to keep up.  We can see this
+>> with a high ingress of networking traffic where memory allocated in irq
+>> context can overwhelm the ability to reclaim fast enough such that user
+>> memory consistently loops.  In that case, we have reclaimable memory, and
+> "user memory allocation", I assume?  Or maybe "blockable memory
+> allocatoins".
+>
+>> reclaiming is successful, but we've fully depleted memory reserves that
+>> are allowed for non-blockable allocations.
+>>
+>> Commit 400e22499dd9 ("mm: don't warn about allocations which stall for
+>> too long") removed evidence of user allocations stalling because of this,
+>> but the situation can apply anytime we get "page allocation failures"
+>> where reclaim is happening but per-zone min watermarks are starved:
+>>
+>> Node 0 Normal free:87356kB min:221984kB low:416984kB high:611984kB active_anon:123009936kB inactive_anon:67647652kB active_file:429612kB inactive_file:209980kB unevictable:112348kB writepending:260kB present:198180864kB managed:195027624kB mlocked:81756kB kernel_stack:24040kB pagetables:11460kB bounce:0kB free_pcp:940kB local_pcp:96kB free_cma:0kB
+>> lowmem_reserve[]: 0 0 0 0
+>> Node 1 Normal free:105616kB min:225568kB low:423716kB high:621864kB active_anon:122124196kB inactive_anon:74112696kB active_file:39172kB inactive_file:103696kB unevictable:204480kB writepending:180kB present:201326592kB managed:198174372kB mlocked:204480kB kernel_stack:11328kB pagetables:3680kB bounce:0kB free_pcp:1140kB local_pcp:0kB free_cma:0kB
+>> lowmem_reserve[]: 0 0 0 0
+>>
+>> Without this patch, there is no guarantee that user memory allocations
+>> will ever be successful when non-blockable allocations overwhelm the
+>> ability to get above per-zone min watermarks.
+>>
+>> This doesn't solve page allocation failures entirely since it's a
+>> preemptive measure based on watermarks that requires concurrent blockable
+>> allocations to trigger the oom kill.  To complete solve page allocation
+>> failures, it would be possible to do the same watermark check for non-
+>> blockable allocations and then queue a worker to asynchronously oom kill
+>> if it finds watermarks to be sufficiently low as well.
+>>
+> Well, what's really going on here?
+>
+> Is networking potentially consuming an unbounded amount of memory?  If
+> so, then killing a process will just cause networking to consume more
+> memory then hit against the same thing.  So presumably the answer is
+> "no, the watermarks are inappropriately set for this workload".
+>
+> So would it not be sensible to dynamically adjust the watermarks in
+> response to this condition?  Maintain a larger pool of memory for these
+> allocations?  Or possibly push back on networking and tell it to reduce
+> its queue sizes?  So that stuff doesn't keep on getting oom-killed?
+>
+I think I seen similar issues when dma-buf allocate a lot.  But that is on older kernels and out of tree.
+So networking is maybe not the only cause. dma-buf are used a lot for camera stuff in android.
 
