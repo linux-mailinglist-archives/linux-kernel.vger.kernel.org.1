@@ -2,135 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363951BA557
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111961BA57F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 15:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgD0NsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 09:48:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:35770 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727056AbgD0NsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 09:48:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EB9D31B;
-        Mon, 27 Apr 2020 06:48:21 -0700 (PDT)
-Received: from [10.37.12.144] (unknown [10.37.12.144])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 28FE63F305;
-        Mon, 27 Apr 2020 06:48:19 -0700 (PDT)
-Subject: Re: [PATCH] coresight: dynamic-replicator: Fix handling of multiple
- connections
-To:     mike.leach@linaro.org
-Cc:     saiprakash.ranjan@codeaurora.org, mathieu.poirier@linaro.org,
-        swboyd@chromium.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20200426143725.18116-1-saiprakash.ranjan@codeaurora.org>
- <cf5852e9-c3c1-3d31-46f0-0370719947ab@arm.com>
- <CAJ9a7VgF3-Hdc7KSw9gVBeXSDHNguhqVhp60oK2XhCtr3DhDqg@mail.gmail.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <84918e7d-c933-3fa1-a61e-0615d4b3cf2c@arm.com>
-Date:   Mon, 27 Apr 2020 14:53:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1727844AbgD0N4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 09:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726786AbgD0N4u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 09:56:50 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955C1C0610D5;
+        Mon, 27 Apr 2020 06:56:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=X25jyGvf8DYeBAr/a+VcEJFJMS/q5ACVY5cjQsA4fy0=; b=T0rTi2zvQXK8xCQhYxuQfs54m
+        i9rr/1cdUrZyGp0FIw7aRsnPGwlKrO/mdlcOYG+Nd1bhApf/6T2kn9TIrba98S2XhVbymjcOCoU1/
+        9pDbAZoA41MEeIQh0uefD+IJR3z6Hfv8E/AkqRWXztRA9iZttbgJK6iy3RMXIO42lgcZ4ETxw7E0J
+        Km3X1ohVjHNNyT1A1BwQtZq+mo4Zav8NB7YjZt5TqSlcrdrjgmdXWNlaL6FmXzjmDN5rUASFhg45c
+        00Qlf7hYRbyOAUx57fNjm2ciWmkOZGP5MxSkUeKJBzT+4K9qFBi3XEsfcRNjRC2+iMuUF5QTiPHve
+        PlmhtgqGg==;
+Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:52154)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jT4FI-0003DY-TO; Mon, 27 Apr 2020 14:56:29 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jT4FD-0006i8-Qk; Mon, 27 Apr 2020 14:56:23 +0100
+Date:   Mon, 27 Apr 2020 14:56:23 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     linux.cj@gmail.com, Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        linux-acpi@vger.kernel.org, Marcin Wojtas <mw@semihalf.com>,
+        Makarand Pawagi <makarand.pawagi@nxp.com>,
+        "Rajesh V . Bikkina" <rajesh.bikkina@nxp.com>,
+        Varun Sethi <V.Sethi@nxp.com>, linux-kernel@vger.kernel.org,
+        Pankaj Bansal <pankaj.bansal@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [net-next PATCH v2 3/3] phylink: Introduce
+ phylink_fwnode_phy_connect()
+Message-ID: <20200427135623.GG25745@shell.armlinux.org.uk>
+References: <20200427132409.23664-1-calvin.johnson@oss.nxp.com>
+ <20200427132409.23664-4-calvin.johnson@oss.nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJ9a7VgF3-Hdc7KSw9gVBeXSDHNguhqVhp60oK2XhCtr3DhDqg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427132409.23664-4-calvin.johnson@oss.nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/27/2020 10:45 AM, Mike Leach wrote:
-> HI,
+On Mon, Apr 27, 2020 at 06:54:09PM +0530, Calvin Johnson wrote:
+> Define phylink_fwnode_phy_connect() to connect phy specified by
+> a fwnode to a phylink instance. Additionally,
+> phylink_device_phy_connect() is defined to connect phy specified
+> by a device to a phylink instance.
 > 
-> On Mon, 27 Apr 2020 at 10:15, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->>
->> On 04/26/2020 03:37 PM, Sai Prakash Ranjan wrote:
->>> Since commit 30af4fb619e5 ("coresight: dynamic-replicator:
->>> Handle multiple connections"), we do not make sure that
->>> the other port is disabled when the dynamic replicator is
->>> enabled. This is seen to cause the CPU hardlockup atleast
->>> on SC7180 SoC with the following topology when enabling ETM
->>> with ETR as the sink via sysfs. Since there is no trace id
->>> logic in coresight yet to make use of multiple sinks in
->>> parallel for different trace sessions, disable the other
->>> port when one port is turned on.
->>>
->>>          etm0_out
->>>          |
->>>      apss_funnel_in0
->>>             |
->>>     apss_merge_funnel_in
->>>             |
->>>         funnel1_in4
->>>          |
->>>      merge_funnel_in1
->>>          |
->>>       swao_funnel_in
->>>             |
->>>           etf_in
->>>          |
->>>     swao_replicator_in
->>>             |
->>>      replicator_in
->>>          |
->>>           etr_in
->>>
->>>     Kernel panic - not syncing: Watchdog detected hard LOCKUP on cpu 0
->>>     CPU: 7 PID: 0 Comm: swapper/7 Tainted: G S  B             5.4.25 #100
->>>     Hardware name: Qualcomm Technologies, Inc. SC7180 IDP (DT)
->>>     Call trace:
->>>      dump_backtrace+0x0/0x188
->>>      show_stack+0x20/0x2c
->>>      dump_stack+0xdc/0x144
->>>      panic+0x168/0x370
->>>      arch_seccomp_spec_mitigate+0x0/0x14
->>>      watchdog_timer_fn+0x68/0x290
->>>      __hrtimer_run_queues+0x264/0x498
->>>      hrtimer_interrupt+0xf0/0x22c
->>>      arch_timer_handler_phys+0x40/0x50
->>>      handle_percpu_devid_irq+0x8c/0x158
->>>      __handle_domain_irq+0x84/0xc4
->>>      gic_handle_irq+0x100/0x1c4
->>>      el1_irq+0xbc/0x180
->>>      arch_cpu_idle+0x3c/0x5c
->>>      default_idle_call+0x1c/0x38
->>>      do_idle+0x100/0x280
->>>      cpu_startup_entry+0x24/0x28
->>>      secondary_start_kernel+0x15c/0x170
->>>     SMP: stopping secondary CPUs
->>>
->>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->>> Tested-by: Stephen Boyd <swboyd@chromium.org>
-
-
->>
->> This is not sufficient. You must prevent another session trying to
->> enable the other port of the replicator as this could silently fail
->> the "on-going" session. Not ideal. Fail the attempt to enable a port
->> if the other port is active. You could track this in software and
->> fail early.
->>
->> Suzuki
+> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+> ---
 > 
-> While I have no issue in principle with not enabling a path to a sink
-> that is not in use - indeed in some cases attaching to unused sinks
-> can cause back-pressure that slows throughput (cf TPIU) - I am
-> concerned that this modification is masking an underlying issue with
-> the platform in question.
+> Changes in v2:
+>   replace of_ and acpi_ code with generic fwnode to get phy-handle.
 > 
-> Should we decide to enable the diversion of different IDs to different
-> sinks or allow different sessions go to different sinks, then this has
-> potential to fail on the SC7180 SoC - and it will be difficult in
-> future to associate a problem with this discussion.
+>  drivers/net/phy/phylink.c | 68 +++++++++++++++++++++++++++++++++++++++
+>  include/linux/phylink.h   |  6 ++++
+>  2 files changed, 74 insertions(+)
+> 
+> diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+> index 0f23bec431c1..5eab1eadded7 100644
+> --- a/drivers/net/phy/phylink.c
+> +++ b/drivers/net/phy/phylink.c
+> @@ -961,6 +961,74 @@ int phylink_connect_phy(struct phylink *pl, struct phy_device *phy)
+>  }
+>  EXPORT_SYMBOL_GPL(phylink_connect_phy);
+>  
+> +/**
+> + * phylink_fwnode_phy_connect() - connect the PHY specified in the fwnode.
+> + * @pl: a pointer to a &struct phylink returned from phylink_create()
+> + * @fwnode: a pointer to a &struct fwnode_handle.
+> + * @flags: PHY-specific flags to communicate to the PHY device driver
+> + *
+> + * Connect the phy specified @fwnode to the phylink instance specified
+> + * by @pl. Actions specified in phylink_connect_phy() will be
+> + * performed.
+> + *
+> + * Returns 0 on success or a negative errno.
+> + */
+> +int phylink_fwnode_phy_connect(struct phylink *pl,
+> +			       struct fwnode_handle *fwnode,
+> +			       u32 flags)
+> +{
+> +	struct fwnode_handle *phy_fwnode;
+> +	struct phy_device *phy_dev;
+> +	int ret = 0;
+> +
+> +	/* Fixed links and 802.3z are handled without needing a PHY */
+> +	if (pl->cfg_link_an_mode == MLO_AN_FIXED ||
+> +	    (pl->cfg_link_an_mode == MLO_AN_INBAND &&
+> +	     phy_interface_mode_is_8023z(pl->link_interface)))
+> +		return 0;
+> +
+> +	phy_fwnode = fwnode_get_phy_node(fwnode);
+> +	if ((IS_ERR_OR_NULL(phy_fwnode)) && (pl->cfg_link_an_mode == MLO_AN_PHY))
 
-Mike,
+According to your documentation for fwnode_get_phy_node(), it can't
+return NULL.  So, use of IS_ERR_OR_NULL() is incorrect here.  Please
+also eliminate the unnecessary parens to match the style in the rest
+of this file.
 
-I think thats a good point.
-Sai, please could we narrow down this to the real problem and may be
-work around it for the "device" ? Do we know which sink is causing the
-back pressure ? We could then push the "work around" to the replicator
-it is connected to.
+> +		return -ENODEV;
 
-Suzuki
+If fwnode_get_phy_node() returns an error pointer, shouldn't you be
+propagating that error here?
+
+> +
+> +	phy_dev = fwnode_phy_find_device(phy_fwnode);
+> +	fwnode_handle_put(phy_fwnode);
+> +	if (!phy_dev)
+> +		return -ENODEV;
+> +
+> +	ret = phy_attach_direct(pl->netdev, phy_dev, flags,
+> +				pl->link_interface);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = phylink_bringup_phy(pl, phy_dev, pl->link_config.interface);
+> +	if (ret)
+> +		phy_detach(phy_dev);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(phylink_fwnode_phy_connect);
+> +
+> +/**
+> + * phylink_device_phy_connect() - connect the PHY specified by the device.
+> + * @pl: a pointer to a &struct phylink returned from phylink_create()
+> + * @dev: a pointer to a &struct device.
+> + * @flags: PHY-specific flags to communicate to the PHY device driver
+> + *
+> + * Connect the phy specified by the device to the phylink instance specified
+> + * by @pl. Actions specified in phylink_connect_phy() will be
+> + * performed.
+> + *
+> + * Returns 0 on success or a negative errno.
+> + */
+> +int phylink_device_phy_connect(struct phylink *pl,
+> +			       struct device *dev,
+> +			       u32 flags)
+> +{
+> +	return phylink_fwnode_phy_connect(pl, dev_fwnode(dev), flags);
+> +}
+> +EXPORT_SYMBOL_GPL(phylink_device_phy_connect);
+
+If this has any users, I think this should be an inline function in
+phylink.h - it's just a helper after all.  If it doesn't then it should
+just be dropped.
+
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
