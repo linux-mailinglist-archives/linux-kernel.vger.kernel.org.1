@@ -2,283 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B252E1B988C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 09:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7060B1B9970
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Apr 2020 10:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgD0H0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 03:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726685AbgD0H0u (ORCPT
+        id S1726802AbgD0IKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 04:10:43 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:58904 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726003AbgD0IKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 03:26:50 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33B0C0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 00:26:48 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id x18so19210276wrq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 00:26:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=REsNWJFhGHkYdNp6uSDWtGMh4mD2RMBDMNXtan+gWIc=;
-        b=y6lolgbWbIjibS0k2DZwbMu9IhLLA/Q1+5YPGsQ0VMTlpMCgfMMpCBqC1Z9oQ9V5Xz
-         1sWBinJaUKGAihPUZPFY3rlf9BFT3AObzjJwss7B5O3Nzu7skbTVK8XPFb1Dyp9Isl4j
-         IphzvC/ITzqb4VWc7vxeKv1TXxbqJfSzWmsV7Kh06CyOsDZDP5MFFHSOclkE/5h2h5Dy
-         rrx9XWHk4Jg+FFvxpsLmYSXFSfFYyZ9zYKKd8hJkp/zfQLPkXl7tNjZDuT4L+WWbsOlA
-         TkDRy0vJ63E5HQ9r/zA9OqZNwaYzdw3uFm+t9lhxnlHZt2lS0OOtQgNmZvRcczaksk6U
-         S2IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=REsNWJFhGHkYdNp6uSDWtGMh4mD2RMBDMNXtan+gWIc=;
-        b=fu1eMeALsTo1B682919Hd/7bPnghzeB0m4N0H82H3Ccifn0W5BQmCf2P26UgbZRRn2
-         OCvwTJpr5HDW3Fo0+WKYm1qiO4vDoSAhQJkIKM802DEJpsqMUndnOHPS8p4kQfkZ0AS3
-         HdH7lPCBUS/Md6gsjjWdWJHzFgcdTlFXuqdaopnsoXDNHDWz1Ta32cUPpT3WzXGqUOZJ
-         WbBXQvCTLnP4iUXmeCwq/XC/2sMZ/N508uQidlH9D3RB3aFXu9G19Dqlw0d5JKO3IXO2
-         /S1PLUgeAgGsCGpuqaTKg8kifHJy3diTl9QnX6iO8778CFUREMLqOa+AT4rcFf2jpM79
-         a4+g==
-X-Gm-Message-State: AGi0PubF9u+nTgE1cN+6TwYeBCKC8SOpqnq9DKHmmES6wGmlQhdC8+k0
-        1lMYbArk67+oPmVmnj3/Bu7nbg==
-X-Google-Smtp-Source: APiQypKoocBwU3Ift+kayLrttVgX080iHAs2xcy/58Ymq9mcLr92w1rV9fJaFpQx4LTHnYzOcp3oIA==
-X-Received: by 2002:a5d:574b:: with SMTP id q11mr20276374wrw.324.1587972407272;
-        Mon, 27 Apr 2020 00:26:47 -0700 (PDT)
-Received: from dell ([2.31.163.63])
-        by smtp.gmail.com with ESMTPSA id x13sm15123749wmc.5.2020.04.27.00.26.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 00:26:46 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 08:26:44 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Saravanan Sekar <sravanhome@gmail.com>
-Cc:     andy.shevchenko@gmail.com, robh+dt@kernel.org, jic23@kernel.org,
-        knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        sre@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH v9 2/6] mfd: mp2629: Add support for mps battery charger
-Message-ID: <20200427072644.GE3559@dell>
-References: <20200415162030.16414-1-sravanhome@gmail.com>
- <20200415162030.16414-3-sravanhome@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200415162030.16414-3-sravanhome@gmail.com>
+        Mon, 27 Apr 2020 04:10:43 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03R896uw078562;
+        Mon, 27 Apr 2020 08:10:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=V3dV4HI5/iBpkFy0uWsc3l23+oYkKV87jXoYnULnNi8=;
+ b=IVeRpo0myI/VzgHl/s1tcU8crZNOCsO3OPPm0GXeGOggql2mDJKyACe/6nSoewt9mKoa
+ 3zSSX3PghqlC3dCi018qHus8qkrXH7zuPuY1ADaqJFoAYx10c+LRsEQCf/aSDEQbaE8e
+ CVW29U3bmDPH6Jpid0z5Bvxk1l+aLaeAA8xBrNYlZr+7pVjcWijEYSi42eFiodWGn4tR
+ oZ3EW+b5EAMzBt86YxtAn+E5Oc4i9qst9366IXipYC2MJZMksvYc6mhxLqUQVxX1970U
+ xVzOerfo7hVE1+U7OtYVUUKf+mMJR8qKU0rIX0j5uyUtnrBWTpn3CVwd5fb7A/3o7aTD Qw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30mcmqw2eh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 08:10:29 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03R871Lu172217;
+        Mon, 27 Apr 2020 08:08:28 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 30my08nbq5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Apr 2020 08:08:28 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03R88Ie3018689;
+        Mon, 27 Apr 2020 08:08:18 GMT
+Received: from mihai.localdomain (/10.153.73.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 27 Apr 2020 01:08:18 -0700
+From:   Mihai Carabas <mihai.carabas@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mihai Carabas <mihai.carabas@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: [PATCH RFC] Microcode late loading feature identification
+Date:   Mon, 27 Apr 2020 10:27:56 +0300
+Message-Id: <1587972479-10971-1-git-send-email-mihai.carabas@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9603 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004270072
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9603 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 clxscore=1015
+ priorityscore=1501 suspectscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004270072
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Apr 2020, Saravanan Sekar wrote:
+This RFC patch set aims to provide a way to identify the modifications
+brought in by the new microcode updated at runtime (aka microcode late
+loading). This was debated last year and this patch set implements
+point #1 from Thomas Gleixner's idea:
+https://lore.kernel.org/lkml/alpine.DEB.2.21.1909062237580.1902@nanos.tec.linutronix.de/
 
-> mp2629 is a highly-integrated switching-mode battery charge management
-> device for single-cell Li-ion or Li-polymer battery.
-> 
-> Add MFD core enables chip access for ADC driver for battery readings,
-> and a power supply battery-charger driver
-> 
-> Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
-> ---
->  drivers/mfd/Kconfig        |  9 ++++
->  drivers/mfd/Makefile       |  2 +
->  drivers/mfd/mp2629.c       | 86 ++++++++++++++++++++++++++++++++++++++
->  include/linux/mfd/mp2629.h | 19 +++++++++
->  4 files changed, 116 insertions(+)
->  create mode 100644 drivers/mfd/mp2629.c
->  create mode 100644 include/linux/mfd/mp2629.h
-> 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 3c547ed575e6..85be799795aa 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -434,6 +434,15 @@ config MFD_MC13XXX_I2C
->  	help
->  	  Select this if your MC13xxx is connected via an I2C bus.
->  
-> +config MFD_MP2629
-> +	tristate "Monolithic power system MP2629 ADC and Battery charger"
+This patch set has the following patches:
 
-"Power Systems"
+- patch 1 is introducing a new metadata file that comes with the microcode
+(provided by the CPU manufacture) that describes what modifications are
+done by loading the new microcode
 
-> +	depends on I2C
-> +	select REGMAP_I2C
-> +	help
-> +	  Select this option to enable support for monolithic power system
+- patch 2 parses the metadata file and is verifying it against kernel
+policy. In this patch, as an RFC, as a kernel policy, it was imposed
+the rule of not allowing to remove any feature. If so, it won't be
+loaded a new microcode. The policy can be further extended and describe
+in different ways
 
-"Monolithic Power Systems"
+- patch 3 adds the documentation of the metadata file format
 
-> +	  battery charger. This provides ADC, thermal, battery charger power
 
-"thermal and battery"
+How to test:
 
-> +	  management functions on the systems.
+- place metadata file in /lib/firmware/intel-ucode/ together with the
+microcode blob:
 
-What does "on the systems" mean?
+[root@ovs108 ~]# ls -l /lib/firmware/intel-ucode
+total 96
+-rw-r--r--.   1 root root 34816 Mar 11 00:27 06-55-04
+-rw-r--r--.   1 root root    84 Mar 25 03:13 06-55-04.metadata
 
-I would just drop that part.
+The microcode blob can be taken from the microcode_ctl package.
 
->  config MFD_MXS_LRADC
->  	tristate "Freescale i.MX23/i.MX28 LRADC"
->  	depends on ARCH_MXS || COMPILE_TEST
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index f935d10cbf0f..d6c210f96d02 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -170,6 +170,8 @@ obj-$(CONFIG_MFD_MAX8925)	+= max8925.o
->  obj-$(CONFIG_MFD_MAX8997)	+= max8997.o max8997-irq.o
->  obj-$(CONFIG_MFD_MAX8998)	+= max8998.o max8998-irq.o
->  
-> +obj-$(CONFIG_MFD_MP2629)	+= mp2629.o
-> +
->  pcf50633-objs			:= pcf50633-core.o pcf50633-irq.o
->  obj-$(CONFIG_MFD_PCF50633)	+= pcf50633.o
->  obj-$(CONFIG_PCF50633_ADC)	+= pcf50633-adc.o
-> diff --git a/drivers/mfd/mp2629.c b/drivers/mfd/mp2629.c
-> new file mode 100644
-> index 000000000000..46242b1cdf24
-> --- /dev/null
-> +++ b/drivers/mfd/mp2629.c
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * MP2629 parent driver for ADC and battery charger
-> + *
-> + * Copyright 2020 Monolithic Power Systems, Inc
-> + *
-> + * Author: Saravanan Sekar <sravanhome@gmail.com>
-> + */
-> +
-> +#include <linux/i2c.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mfd/core.h>
-> +#include <linux/mfd/mp2629.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-> +
-> +enum {
-> +	MP2629_MFD_ADC,
-> +	MP2629_MFD_CHARGER,
-> +	MP2629_MFD_MAX
-> +};
+- after installing the kernel and rebooting the machine run "dracut -f
+--no-early-microcode" to create an initramfs without the microcode (and
+avoid early loading)
 
-Why do you need this?  I think it can be dropped.
+- reboot
 
-> +static const struct mfd_cell mp2629mfd[] = {
+- after rebooting issue: echo 1 > /sys/devices/system/cpu/microcode/reload
 
-Drop the "mfd" part of "mp2629mfd".
+[root@ovs108 ~]# cat /lib/firmware/intel-ucode/06-55-04.metadata
+m - 0x00000122
+c + 0x00000007 0x00 0x00000000 0x021cbfbb 0x00000000 0x00000000
 
-You can call it "mp2629_cell" if you like.
+[root@ovs108 ~]# echo 1 > /sys/devices/system/cpu/microcode/reload
+[root@ovs108 ~]# dmesg | tail -2
+[ 1285.729841] microcode: Kernel policy does not allow to remove MSR: 122
+[ 1285.737144] microcode: kernel does not support the new microcode: intel-ucode/06-55-04
 
-> +	[MP2629_MFD_ADC] = {
-> +		.name = "mp2629_adc",
-> +		.of_compatible = "mps,mp2629_adc",
-> +	},
-> +	[MP2629_MFD_CHARGER] = {
-> +		.name = "mp2629_charger",
-> +		.of_compatible = "mps,mp2629_charger",
-> +	}
-> +};
-> +
-> +static const struct regmap_config mp2629_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.max_register = 0x17,
+[root@ovs108 ~]# cat /lib/firmware/intel-ucode/06-55-04.metadata
+m + 0x00000122
+c + 0x00000007 0x00 0x00000000 0x021cbfbb 0x00000000 0x00000000
+[root@ovs108 ~]# echo 1 > /sys/devices/system/cpu/microcode/reload
+[root@ovs108 ~]# dmesg | tail -10
+[ 1220.212415] microcode: updated to revision 0x2000065, date = 2019-09-05
+[ 1220.212645] microcode: Reload completed, microcode revision: 0x2000065
 
-Best to define the registers in an enum and call the last one
-MP2629_MAX_REG or similar.
+Mihai Carabas (3):
+  x86: microcode: intel: read microcode metadata file
+  x86: microcode: intel: process microcode metadata
+  Documentation: x86: microcode: add description for metadata file
 
-> +};
-> +
-> +static int mp2629_probe(struct i2c_client *client)
-> +{
-> +	struct mp2629_info *ddata;
-
-Either change "info" to "ddata", or drop it completely.
-
-> +	int ret;
-> +
-> +	ddata = devm_kzalloc(&client->dev, sizeof(*ddata), GFP_KERNEL);
-> +	if (!ddata)
-> +		return -ENOMEM;
-> +
-> +	ddata->dev = &client->dev;
-> +	i2c_set_clientdata(client, ddata);
-> +
-> +	ddata->regmap = devm_regmap_init_i2c(client, &mp2629_regmap_config);
-> +	if (IS_ERR(ddata->regmap)) {
-> +		dev_err(ddata->dev, "Failed to allocate regmap!\n");
-
-No need for the exclamation mark.
-
-> +		return PTR_ERR(ddata->regmap);
-> +	}
-> +
-> +	ret = devm_mfd_add_devices(ddata->dev, PLATFORM_DEVID_NONE, mp2629mfd,
-
-Why NONE over AUTO?
-
-> +				ARRAY_SIZE(mp2629mfd), NULL,
-> +				0, NULL);
-> +	if (ret)
-> +		dev_err(ddata->dev, "Failed to register sub-devices %d\n", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct of_device_id mp2629_of_match[] = {
-> +	{ .compatible = "mps,mp2629"},
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, mp2629_of_match);
-> +
-> +static struct i2c_driver mp2629_driver = {
-> +	.driver = {
-> +		.name = "mp2629",
-> +		.of_match_table = mp2629_of_match,
-> +	},
-> +	.probe_new	= mp2629_probe,
-> +};
-> +module_i2c_driver(mp2629_driver);
-> +
-> +MODULE_AUTHOR("Saravanan Sekar <sravanhome@gmail.com>");
-> +MODULE_DESCRIPTION("MP2629 Battery charger parent driver");
-> +MODULE_LICENSE("GPL");
-> diff --git a/include/linux/mfd/mp2629.h b/include/linux/mfd/mp2629.h
-> new file mode 100644
-> index 000000000000..06985e41fc6f
-> --- /dev/null
-> +++ b/include/linux/mfd/mp2629.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-> +/*
-> + * register definitions for MP2629 charger
-
-"Register"
-
-Although there aren't any register definitions in here?
-
-> + * Copyright 2020 Monolithic Power Systems, Inc
-> + */
-> +
-> +#ifndef __MP2629_H__
-> +#define __MP2629_H__
-> +
-> +#include <linux/device.h>
-> +#include <linux/regmap.h>
-> +
-> +struct mp2629_info {
-> +	struct device *dev;
-> +	struct regmap *regmap;
-> +};
-> +
-> +#endif
+ Documentation/x86/microcode.rst       | 36 +++++++++++++
+ arch/x86/kernel/cpu/microcode/intel.c | 97 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 133 insertions(+)
 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+1.8.3.1
+
