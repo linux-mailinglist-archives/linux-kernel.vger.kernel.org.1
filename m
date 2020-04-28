@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD7B1BBDD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9901BBDFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgD1Mpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 08:45:54 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25689 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726764AbgD1Mpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:45:53 -0400
-IronPort-SDR: ITh+OnsDVeDP/TbJ6XA/qJXUjHEDdvC9FXOLN18GtmPHVhXSUBop2V1IK2fUbTmNaIuk29MwOE
- kj1Yfq++fqOg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 05:45:52 -0700
-IronPort-SDR: TP/uYczxk/lwtQIzH/+Zyl5uqP030jf1kAkw25vGqAYSII1wYmovbE/eUDO84cwwMYEz7zYIli
- glcT10kijuRw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,327,1583222400"; 
-   d="scan'208";a="459221981"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga006.fm.intel.com with ESMTP; 28 Apr 2020 05:45:46 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jTPcS-003YlK-Qg; Tue, 28 Apr 2020 15:45:48 +0300
-Date:   Tue, 28 Apr 2020 15:45:48 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH v3 02/16] mfd: mfd-core: Don't overwrite the dma_mask of
- the child device
-Message-ID: <20200428124548.GS185537@smile.fi.intel.com>
-References: <20200423174543.17161-1-michael@walle.cc>
- <20200423174543.17161-3-michael@walle.cc>
+        id S1726898AbgD1MrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 08:47:14 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:53584 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726620AbgD1MrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 08:47:12 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 39AEF243388146992167;
+        Tue, 28 Apr 2020 20:47:07 +0800 (CST)
+Received: from huawei.com (10.175.105.27) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Apr 2020
+ 20:46:56 +0800
+From:   Wu Bo <wubo40@huawei.com>
+To:     <jlayton@kernel.org>, <sage@redhat.com>, <idryomov@gmail.com>
+CC:     <ceph-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liuzhiqiang26@huawei.com>, <linfeilong@huawei.com>,
+        <wubo40@huawei.com>
+Subject: [PATCH] fs/ceph:fix double unlock in handle_cap_export()
+Date:   Tue, 28 Apr 2020 20:46:02 +0800
+Message-ID: <1588077962-353994-1-git-send-email-wubo40@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423174543.17161-3-michael@walle.cc>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
+X-Originating-IP: [10.175.105.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 07:45:29PM +0200, Michael Walle wrote:
-> Commit cdfee5623290 ("driver core: initialize a default DMA mask for
-> platform device") initialize the DMA of a platform device. But if the
-> parent doesn't have a dma_mask set, for example if it's an I2C device,
-> the dma_mask of the child platform device will be set to zero again.
-> Which leads to many "DMA mask not set" warnings, if the MFD cell has the
-> of_compatible property set.
+If the ceph_mdsc_open_export_target_session() return fails,
+should add a lock to avoid twice unlocking.
+Because the lock will be released at the retry or out_unlock tag. 
 
-I'm wondering why parent doesn't have it.
-I remember we have explicit patches in the past for buses such as PCI and AMBA
-to set default DMA mask for all physical devices on the respective bus, of
-course they can individually override it later.
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+---
+ fs/ceph/caps.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
-So, this seems to me a paper over the real issue (absence of default DMA mask
-where it's needed) and devices should explicitly define it if they disagree
-with default.
-
-If I'm wrong, you really need elaborate commit message much better.
-
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index 185db76..b5a62a8 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -3731,22 +3731,24 @@ static void handle_cap_export(struct inode *inode, struct ceph_mds_caps *ex,
+ 
+ 	/* open target session */
+ 	tsession = ceph_mdsc_open_export_target_session(mdsc, target);
+-	if (!IS_ERR(tsession)) {
+-		if (mds > target) {
+-			mutex_lock(&session->s_mutex);
+-			mutex_lock_nested(&tsession->s_mutex,
+-					  SINGLE_DEPTH_NESTING);
+-		} else {
+-			mutex_lock(&tsession->s_mutex);
+-			mutex_lock_nested(&session->s_mutex,
+-					  SINGLE_DEPTH_NESTING);
+-		}
+-		new_cap = ceph_get_cap(mdsc, NULL);
+-	} else {
++	if (IS_ERR(tsession)) {
+ 		WARN_ON(1);
+ 		tsession = NULL;
+ 		target = -1;
++		mutex_lock(&session->s_mutex);
++		goto out_unlock;
++	}
++
++	if (mds > target) {
++		mutex_lock(&session->s_mutex);
++		mutex_lock_nested(&tsession->s_mutex,
++					SINGLE_DEPTH_NESTING);
++	} else {
++		mutex_lock(&tsession->s_mutex);
++		mutex_lock_nested(&session->s_mutex,
++					SINGLE_DEPTH_NESTING);
+ 	}
++	new_cap = ceph_get_cap(mdsc, NULL);
+ 	goto retry;
+ 
+ out_unlock:
 -- 
-With Best Regards,
-Andy Shevchenko
-
+1.8.3.1
 
