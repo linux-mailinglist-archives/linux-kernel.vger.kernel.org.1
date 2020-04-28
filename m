@@ -2,124 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DABC1BE1C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322F11BC4F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgD2Ox2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726484AbgD2Ox1 (ORCPT
+        id S1728370AbgD1QTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 12:19:14 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:19090 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728035AbgD1QTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:53:27 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D05C03C1AD;
-        Wed, 29 Apr 2020 07:53:27 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 145so1162776pfw.13;
-        Wed, 29 Apr 2020 07:53:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=0ZRCFqU303/twN8hVJ5hqfcmrbnv34m+1dUf1S5stNk=;
-        b=aOYnwekw+Ep61qJAMEnkw1HpeaNpSpUiVZAODecFZzn3FmNASj/FNznKgfNWegoS60
-         Yx5v1NGzv3S/cPXEc3ALlBzUihHvwDLvBYDf17ffCaRVDrXS7RuTipnW8sDa30ggxmse
-         RxoTryFRRFriEs7NCReUY3zAzzqEf45PXnZxoAn9U33LHz7Y/EXsLGugPMvi1SoSxEqq
-         WjhhGe5oRPVT2bScL/FE/cnQ1Q3Ib8s4lq/Dm0vMqw9KXRs1rHPyQ7f9yl8eiLOl1YIb
-         k+wLFh11qK0RwlCEPBLxcBsPeEylR5cfU3rJWCmg4L/vfq9U6d9G6fHsv3rHNlf8jPL7
-         ofNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=0ZRCFqU303/twN8hVJ5hqfcmrbnv34m+1dUf1S5stNk=;
-        b=a0i++ZttpGzhTov6BWEBpoZ8GNv933+x4sUKPNbacyDy/S2AEN4BksqR0xDkYtu8WV
-         Dn9wyIZUBTtvQkfOe+qdsdrNmPBYnJ0QJo0hCgPLofepm/CeLIxoyff47JxqZlfDBjGP
-         2Lf51Q0Cra81G9TaC2nSxax/aW+Q2TvRYAkSgHjmaZIJy7xNAT4uiImkPrD6aJ/7jrlT
-         Otc9BTZxB8Dd6DEHzYrfFY8VZWtZoLdxFsyBYNjqkONfPsOJA8+nfQ593hIYMQ87uRVM
-         jPFLvCnpxCOKFGNve47vMMtP5jDdlagDiqgLuPzgNhPIb3N2xLuktonwYvkAnApyGGgF
-         Lvew==
-X-Gm-Message-State: AGi0PuYLitqG4rOy0CCuuNRbkOFogbIeq1xKaicigL7EOlkBusQaw1mN
-        2FvpMyE4yagGPhCnOeYTU0Y=
-X-Google-Smtp-Source: APiQypII7p7aNkIJuh7yMUE3jid684h7H+f5nYDkdRXBk7Yp8huPtWwgw135zQbdhJ8i10Nsn1nMGA==
-X-Received: by 2002:aa7:951b:: with SMTP id b27mr35415299pfp.2.1588172007216;
-        Wed, 29 Apr 2020 07:53:27 -0700 (PDT)
-Received: from udknight.localhost ([59.57.158.27])
-        by smtp.gmail.com with ESMTPSA id y24sm1243603pfn.211.2020.04.29.07.53.25
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 29 Apr 2020 07:53:26 -0700 (PDT)
-Received: from udknight.localhost (localhost [127.0.0.1])
-        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 03SGIdPj000709;
-        Wed, 29 Apr 2020 00:18:39 +0800
-Received: (from root@localhost)
-        by udknight.localhost (8.14.9/8.14.9/Submit) id 03SGIVsG000694;
-        Wed, 29 Apr 2020 00:18:31 +0800
-Date:   Wed, 29 Apr 2020 00:18:31 +0800
-From:   Wang YanQing <udknight@gmail.com>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Matteo Croce <mcroce@redhat.com>
-Subject: Re: [PATCH v3] checkpatch: add dedicated checker for 'Fixes:' tag
-Message-ID: <20200428161831.GB30042@udknight>
-Mail-Followup-To: Wang YanQing <udknight@gmail.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Matteo Croce <mcroce@redhat.com>
-References: <20200428020223.GA28074@udknight>
- <38e1a926-53a6-bda6-cb07-2614f4c682ba@web.de>
+        Tue, 28 Apr 2020 12:19:13 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03SGITG3027589;
+        Tue, 28 Apr 2020 18:19:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=bTVST/vGOCmW9bqsQcFABvpaPEN0vNzqWpWCEdlwQXI=;
+ b=o5xNUOnnP+HFLIMHhJf+r0D+yWKLgEeTptyByrWCw8QKDKw598JlqNeLWDC2Lm+aaUha
+ XXMOO3HsED0yZyDyRNjzkqTywML48r/AjC3fEtZPIposCqm5gn2lYY59JHirmiq0OSU/
+ g+iGDZAV4cjw2k1QbacNG8M6OGj1nQfTbVFODeFVlLtoufNujKGhFxE4mp9s/d6EIMoh
+ v3aEbGkRniNXFC1xzAj7SbQRWRu34cdjXScHKJPl2bJqroG1kmUEUfmLUFXKkdWnveTt
+ 9mFuJaXJltxdNfj8ol8vMFxrNSLkKPvMjiBJV3wpx7TnHFRHN8fbRNz4D8cguBfn/Dc1 rw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30n4j5w465-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Apr 2020 18:19:03 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 27FE510002A;
+        Tue, 28 Apr 2020 18:19:02 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 102C02BF9CE;
+        Tue, 28 Apr 2020 18:19:02 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.47) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Apr
+ 2020 18:19:00 +0200
+Subject: Re: [PATCH v3 01/14] remoteproc: Make core operations optional
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <bjorn.andersson@linaro.org>, <ohad@wizery.com>
+CC:     <loic.pallardy@st.com>, <s-anna@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <corbet@lwn.net>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200424200135.28825-1-mathieu.poirier@linaro.org>
+ <20200424200135.28825-2-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <ff9254d9-6a17-cae5-9f41-2c60303a38ec@st.com>
+Date:   Tue, 28 Apr 2020 18:18:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <38e1a926-53a6-bda6-cb07-2614f4c682ba@web.de>
-User-Agent: Mutt/1.7.1 (2016-10-04)
+In-Reply-To: <20200424200135.28825-2-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG5NODE1.st.com (10.75.127.13) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-28_11:2020-04-28,2020-04-28 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 12:52:59PM +0200, Markus Elfring wrote:
-> > And there is no 'Fixes:' tag format checker in checkpatch
-> 
-> I have taken another look at corresponding implementation details.
-> Will programming challenges get any more attention?
-> 
-> 
-> > to check the commit id length too,
-> 
-> The mentioned script contains the following information.
-> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/scripts/checkpatch.pl?id=b240f960afb900e59112ebcfa5a759bb0a85a14e#n2818
-> 
-> # Check for git id commit length and improperly formed commit descriptions
-> 
-> 
-> > so let's add dedicated checker to check these conditions for 'Fixes:' tag.
-> 
-> How do you think about to reconsider the usage of the word “checker”
-> at specific places?
+Hi Mathieu,
 
-Yes, I will use the word "check" only in later version.
+On 4/24/20 10:01 PM, Mathieu Poirier wrote:
+> When synchronizing with a remote processor, it is entirely possible that
+> the remoteproc core is not the life cycle manager.  In such a case core
+> operations don't exist and should not be called.
+
+What about ops in remote_core.c?
+Applying the series, seems that at least rproc->ops->panic rproc->ops->da_to_va 
+can be called tested with undefined ops structure.
+
+Regards, 
+
+Arnaud
 
 > 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/remoteproc/remoteproc_internal.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> > +		    my $id = '0123456789ab';
-> > +		    my $orig_desc = "commit description";
+> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+> index b389dc79da81..59fc871743c7 100644
+> --- a/drivers/remoteproc/remoteproc_internal.h
+> +++ b/drivers/remoteproc/remoteproc_internal.h
+> @@ -67,7 +67,7 @@ rproc_find_carveout_by_name(struct rproc *rproc, const char *name, ...);
+>  static inline
+>  int rproc_fw_sanity_check(struct rproc *rproc, const struct firmware *fw)
+>  {
+> -	if (rproc->ops->sanity_check)
+> +	if (rproc->ops && rproc->ops->sanity_check)
+>  		return rproc->ops->sanity_check(rproc, fw);
+>  
+>  	return 0;
+> @@ -76,7 +76,7 @@ int rproc_fw_sanity_check(struct rproc *rproc, const struct firmware *fw)
+>  static inline
+>  u64 rproc_get_boot_addr(struct rproc *rproc, const struct firmware *fw)
+>  {
+> -	if (rproc->ops->get_boot_addr)
+> +	if (rproc->ops && rproc->ops->get_boot_addr)
+>  		return rproc->ops->get_boot_addr(rproc, fw);
+>  
+>  	return 0;
+> @@ -85,7 +85,7 @@ u64 rproc_get_boot_addr(struct rproc *rproc, const struct firmware *fw)
+>  static inline
+>  int rproc_load_segments(struct rproc *rproc, const struct firmware *fw)
+>  {
+> -	if (rproc->ops->load)
+> +	if (rproc->ops && rproc->ops->load)
+>  		return rproc->ops->load(rproc, fw);
+>  
+>  	return -EINVAL;
+> @@ -93,7 +93,7 @@ int rproc_load_segments(struct rproc *rproc, const struct firmware *fw)
+>  
+>  static inline int rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
+>  {
+> -	if (rproc->ops->parse_fw)
+> +	if (rproc->ops && rproc->ops->parse_fw)
+>  		return rproc->ops->parse_fw(rproc, fw);
+>  
+>  	return 0;
+> @@ -103,7 +103,7 @@ static inline
+>  int rproc_handle_rsc(struct rproc *rproc, u32 rsc_type, void *rsc, int offset,
+>  		     int avail)
+>  {
+> -	if (rproc->ops->handle_rsc)
+> +	if (rproc->ops && rproc->ops->handle_rsc)
+>  		return rproc->ops->handle_rsc(rproc, rsc_type, rsc, offset,
+>  					      avail);
+>  
+> @@ -114,7 +114,7 @@ static inline
+>  struct resource_table *rproc_find_loaded_rsc_table(struct rproc *rproc,
+>  						   const struct firmware *fw)
+>  {
+> -	if (rproc->ops->find_loaded_rsc_table)
+> +	if (rproc->ops && rproc->ops->find_loaded_rsc_table)
+>  		return rproc->ops->find_loaded_rsc_table(rproc, fw);
+>  
+>  	return NULL;
 > 
-> * Do you try to extend the existing software analysis approach “GIT_COMMIT_ID”?
-> 
-> * Would you like to avoid the development of duplicate Perl code?
-
-Fixes: lines don't need to have a "commit" prefix before the commit id, the description
-in normal commit id could across multiple lines, and we don't need to consider the
-$commit_log_possible_stack_dump for 'Fixes:' tag line. I mean it will make the GIT_COMMIT_ID
-code become harder to read and maintain.
-
-> 
-> Regards,
-> Markus
