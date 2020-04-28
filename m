@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5AF1BB6D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17471BB6DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgD1Gf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 02:35:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51536 "EHLO mail.kernel.org"
+        id S1726404AbgD1Gg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 02:36:59 -0400
+Received: from ozlabs.org ([203.11.71.1]:37115 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726284AbgD1GfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 02:35:25 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726284AbgD1Gg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 02:36:59 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A29A62051A;
-        Tue, 28 Apr 2020 06:35:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588055725;
-        bh=k7tWYJkX8W/ar65FHR8zYw4w5XEC1lW5qZA/g/JFiVQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RLvjilNyud8QmW8Zo6v4xSzQMp3+7zg1YPyGm3NJfs1m53OGfuIN8LHS3kLa34I8u
-         mFGoMiGe40IoDUty2S2Be/jWbYiITLWJoj0MlxlSKIznTT8Cd76+3O0D3J9hU+VUEr
-         2dPDqSPXqvJeAz5EE2o1W49OslkvXFUv0MPKgNRY=
-Date:   Tue, 28 Apr 2020 08:35:22 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     jeyu@kernel.org, corbet@lwn.net, rdunlap@infradead.org,
-        mchehab+samsung@kernel.org, tglx@linutronix.de,
-        akpm@linux-foundation.org, pawan.kumar.gupta@linux.intel.com,
-        jgross@suse.com, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3] module: Allow to disable modsign in kernel cmdline
-Message-ID: <20200428063522.GA990431@kroah.com>
-References: <20200428060008.50417-1-tianjia.zhang@linux.alibaba.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49BBkx4j90z9sRY;
+        Tue, 28 Apr 2020 16:36:57 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588055817;
+        bh=t0hxpspnXqRTaTDCuFjnvDSG2327Z+2CcoYz+C0uNZU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UB1LjpM3C5BDyexRnezg1pK9D//5CbDSIL9sJxBB6mJtzxmiKRdLHMtcw7z5xVHsB
+         dHjFpGhD99yj/Qrj1SUypEoM86u5xR4vVVrbplslMsls6DcB3LfJ5+6KzNbEin/bV1
+         n12cgULlljSSGT576z6kugr1xIv7S19GSVT6FDO95Rk3O+yL28FTOjs75BbufqX/mQ
+         Oy9JTzp3rqO14cV1JoMsCtP48ZfSD+dRHOgyHvHuo0aqdstIJVwCqO//VG+NiNVepK
+         9DwOdKDZhcL5LGdkfdKh3QAG7hiPea8I1qxvpJvmsKLyxRz61N6HoX6XifahTzXpRQ
+         28pw04/vLVLrw==
+Date:   Tue, 28 Apr 2020 16:36:55 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrej Picej <andpicej@gmail.com>
+Subject: linux-next: build failure after merge of the hwmon-staging tree
+Message-ID: <20200428163655.28eeeae0@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428060008.50417-1-tianjia.zhang@linux.alibaba.com>
+Content-Type: multipart/signed; boundary="Sig_/MlvelvNSwKCtzHzKy6q7BCA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 02:00:08PM +0800, Tianjia Zhang wrote:
-> This option allows to disable modsign completely at the beginning,
-> and turn off by set the kernel cmdline `no_modsig_enforce` when
-> `CONFIG_MODULE_SIG_FORCE` is enabled.
-> 
-> Yet another change allows to always show the current status of
-> modsign through `/sys/module/module/parameters/sig_enforce`.
-> 
-> Signed-off-by: Jia Zhang <zhang.jia@linux.alibaba.com>
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
-> 
-> v3 change:
->   Beautify the document description according to the recommendation.
-> 
-> v2 change:
->   document this new option.
-> 
->  Documentation/admin-guide/kernel-parameters.txt | 6 ++++++
->  kernel/module.c                                 | 8 ++++++++
->  2 files changed, 14 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 7bc83f3d9bdf..b30f013fb8c5 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -3190,6 +3190,12 @@
->  	noirqdebug	[X86-32] Disables the code which attempts to detect and
->  			disable unhandled interrupt sources.
->  
-> +	no_modsig_enforce
-> +			[KNL] When CONFIG_MODULE_SIG_FORCE is set, this option
-> +			allows to disable modsign completely at the beginning.
-> +			This means that modules without (valid) signatures will
-> +			be loaded successfully.
-> +
+--Sig_/MlvelvNSwKCtzHzKy6q7BCA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So now we have module.sig_enforce and this one?  That feels really
-confusing, why can't you just use the existing option?
+Hi all,
 
-And why would you want to allow the bootloader to override a kernel
-build option like this?  That feels risky.
+After merging the hwmon-staging tree, today's linux-next build (powerpc
+allyesconfig) failed like this:
 
-thanks,
+drivers/hwmon/lm70.c: In function 'lm70_probe':
+drivers/hwmon/lm70.c:186:34: error: 'lm70_acpi_ids' undeclared (first use i=
+n this function); did you mean 'lm70_of_ids'?
+  186 |   acpi_match =3D acpi_match_device(lm70_acpi_ids, &spi->dev);
+      |                                  ^~~~~~~~~~~~~
+      |                                  lm70_of_ids
 
-greg k-h
+Caused by commit
+
+  02b925a9104d ("hwmon: (lm70) Add support for ACPI")
+
+CONFIG_ACPI is not set.
+
+I have reverted that commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/MlvelvNSwKCtzHzKy6q7BCA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6nzwcACgkQAVBC80lX
+0Gx1XAgAoUuHMnuMoz9SwvbULeeIWTzw3g/uUallchZFIyYdyuFJyziz3/URr2aj
+5XTDpRp2xiEyAp12d7EMNvjP+YreN+TzIVbTKv2tKXIgCqgjMPbsJYFLeaZFwh0v
+8SmBd2OkgbciSi4u/sWyQ/iLyW27pVpz16y5LXS12xN2fdS6jdvt3YcAHI/nxxGB
+mIg6P0wiT1lJq2qsNfOFJUxXNWhsjqYlI2ShZJxErXa8ZeCzFlRbvkGekC1K8xFK
+HXEDbyFuqxnt8GhDH5SIilKiGpLjRqoeh8I3cHX5XgASyAIQt+f/r08ZahICgXJr
+KKANzVoTo+1yOMhod5Vb4tHlKgSfGQ==
+=373Y
+-----END PGP SIGNATURE-----
+
+--Sig_/MlvelvNSwKCtzHzKy6q7BCA--
