@@ -2,63 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE401BB386
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380D71BB38C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726415AbgD1BmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 21:42:15 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3316 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726233AbgD1BmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 21:42:14 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 86376842198694EC7F6D;
-        Tue, 28 Apr 2020 09:42:12 +0800 (CST)
-Received: from [10.166.212.221] (10.166.212.221) by smtp.huawei.com
- (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 28 Apr
- 2020 09:42:07 +0800
-Subject: Re: [PATCH] net: phy: bcm54140: Make a bunch of functions static
-To:     David Miller <davem@davemloft.net>
-CC:     <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <linux-kernel@vger.kernel.org>
-References: <20200425084944.152130-1-chentao107@huawei.com>
- <20200427.111459.2101842326845678002.davem@davemloft.net>
-From:   "chentao (AS)" <chentao107@huawei.com>
-Message-ID: <2ce96c08-c238-62e4-334e-11797bc74725@huawei.com>
-Date:   Tue, 28 Apr 2020 09:42:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726346AbgD1BrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 21:47:12 -0400
+Received: from mga06.intel.com ([134.134.136.31]:30711 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726264AbgD1BrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 21:47:12 -0400
+IronPort-SDR: 3k1w4RYi2o+1b8HmbTiH1yXkJvKfpKCGr7Fxwl8qR+kejPu/MDbxkhWs5enP7qr58Y8U5x4f6n
+ QM1+0AWaijig==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 18:47:11 -0700
+IronPort-SDR: HHrSf2zNwP3Z3RdFg6IPqorcVVnRcv8CQUZlxIpElwsFxEhIW4hgKIVeSHPlUpIKgKgfaU1bzD
+ H6EaVfMXZcxA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
+   d="scan'208";a="367345195"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.212.128]) ([10.254.212.128])
+  by fmsmga001.fm.intel.com with ESMTP; 27 Apr 2020 18:47:09 -0700
+Cc:     Joerg Roedel <joro@8bytes.org>, baolu.lu@linux.intel.com,
+        ashok.raj@intel.com, jacob.jun.pan@linux.intel.com,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] iommu/vt-d: Add page request draining support
+To:     kevin.tian@intel.com
+References: <20200422080611.15689-1-baolu.lu@linux.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <714e0552-ae31-fa4a-76fe-d3c38e064e0a@linux.intel.com>
+Date:   Tue, 28 Apr 2020 09:47:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200427.111459.2101842326845678002.davem@davemloft.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200422080611.15689-1-baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.166.212.221]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks a lot, i will resubmit the patch.
+Hi Kevin,
 
-On 2020/4/28 2:14, David Miller wrote:
-> From: ChenTao <chentao107@huawei.com>
-> Date: Sat, 25 Apr 2020 16:49:44 +0800
->
->> Fix the following warning:
->>
->> drivers/net/phy/bcm54140.c:663:5: warning:
->> symbol 'bcm54140_did_interrupt' was not declared. Should it be static?
->> drivers/net/phy/bcm54140.c:672:5: warning:
->> symbol 'bcm54140_ack_intr' was not declared. Should it be static?
->> drivers/net/phy/bcm54140.c:684:5: warning:
->> symbol 'bcm54140_config_intr' was not declared. Should it be static?
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: ChenTao <chentao107@huawei.com>
-> The appropriate mailing list for networking changes is netdev@vger.kernel.org
-> so please resubmit this there.
->
-> Thank you.
-> .
+On 2020/4/22 16:06, Lu Baolu wrote:
+> When a PASID is stopped or terminated, there can be pending PRQs
+> (requests that haven't received responses) in the software and
+> remapping hardware. The pending page requests must be drained
+> so that the pasid could be reused. The chapter 7.10 in the VT-d
+> specification specifies the software steps to drain pending page
+> requests and responses.
+> 
+> This includes two parts:
+>   - PATCH 1/4 ~ 2/4: refactor the qi_submit_sync() to support multiple
+>     descriptors per submission which will be used in the following
+>     patch.
+>   - PATCH 3/4 ~ 4/4: add page request drain support after a pasid entry
+>     is torn down.
+> 
+> Please help to review.
+> 
+> Best regards,
+> baolu
+> 
+> Change log:
+>   v2->v3:
+>    - Address Kevin's review comments
+>      - Squash the first 2 patches together;
+>      - The prq thread is serialized, no need to consider reentrance;
+>      - Ensure no new-coming prq before drain prq in queue;
+>      - Handle page request overflow case.
+
+Very appreciated for your review comments.
+
+How about these changes? Any comments?
+
+Best regards,
+baolu
