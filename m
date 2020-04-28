@@ -2,272 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017D41BB2BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 02:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3691BB2E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 02:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgD1AWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 20:22:05 -0400
-Received: from mga06.intel.com ([134.134.136.31]:25937 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726493AbgD1AWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 20:22:02 -0400
-IronPort-SDR: SF3QyLq5YT64BxRjhMkIBus8Oc1yRnHbHpcjUqk64jOWqoDnLPX9B49DCwLlEzEyMygy/3Rqpm
- gHAbsIxeJ9ZA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 17:21:54 -0700
-IronPort-SDR: Hq63tgAjB3f5Hpl2MxK6vDBrnRddUjyobkO3euXTviZ77LYTmNl1wB/azwRVOmuKmOwUr7j0pb
- FaNKIImWdCQQ==
-X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
-   d="scan'208";a="458590536"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 17:21:53 -0700
-From:   ira.weiny@intel.com
-To:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jeff Moyer <jmoyer@redhat.com>,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: [PATCH V11 11/11] fs/xfs: Update xfs_ioctl_setattr_dax_invalidate()
-Date:   Mon, 27 Apr 2020 17:21:42 -0700
-Message-Id: <20200428002142.404144-12-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200428002142.404144-1-ira.weiny@intel.com>
-References: <20200428002142.404144-1-ira.weiny@intel.com>
+        id S1726257AbgD1A3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 20:29:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726016AbgD1A3G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 20:29:06 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90918C0610D5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 17:29:06 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id i16so18600959ils.12
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 17:29:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Z3XKyHxAG7IUAvzD9JfBuXDfdRYbv9qqPO6eeYSrFk=;
+        b=ORd7/HnRA28Oya0GJjq9fEZBcHElM84CebAGT4i17uPekgJx2dJnHcDe0AwBvb+NwJ
+         BvxTMdG5eJHN2Arut0iXak3+TVVQqJZNkMADD5eTou0O/biFl0+XHSQu6YchIsvOdfPQ
+         Qa6vAx0Zx4tx9ZNlgdiSSCrcDooIBRmJTN/4T7cwnMmBIT6c5uzfXDjkwAu3GXtFrFXc
+         7/121vdRAmQ/izha0afgQbXyNncGbFsL79Zvd6Ncxp7hzKli0XC3Vv5abDouCS49QWDy
+         tBwlGrb3lEgcEy4V8pJ9Q8s8kw1ox5zPvbzuTaA3xItOcGLUu42+DqABWJNOboJG3iNH
+         glVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Z3XKyHxAG7IUAvzD9JfBuXDfdRYbv9qqPO6eeYSrFk=;
+        b=CEz99Cc0FJQ1r3Ej7WguxL2qvnBUv1jbcFOaERqp3W7OjGTsalz0GmwULnCbxv+Q2r
+         V2xl1qvOdoOfo9S/FevH+nMRpCYrwmzXXxbMJpUJviqfDomC+uCcldpm4R0Gjfl/CL5+
+         YAGLIMHo4+K/6LT5f+3YF+Su4N7roCgFEr/8COlJ12DzNBlEvHTF2IWRwXOkSBcRPQUH
+         ez+V610EG2Lyk1MHvx2FqwQnMjQ1ZIQfef5ls1NV6hhT6ckDbo8L2D0rOnomAO3t9hK9
+         2HpgoZ5eMQh//tsh534mPFyfEGre3WYEXmHgXVyUgR6ZXKynjXMl5yQYpndXNnEEorEk
+         5bfw==
+X-Gm-Message-State: AGi0PuYf+YTT73nOKCJaqojxTZOyDgaL0KfVc/m+KTwiDt/yWahLxBrb
+        6brx+NYJSaDHF0oXZH/+vmAXPF9OJsvagGY+JPBKeQ==
+X-Google-Smtp-Source: APiQypKNcYUgCo9BYCsRgOoS0qjiW7kuAUtuQNqf8nOHc8HFG6NxKxozTIoOpNtW1E0Z1daC2YmA8D+pFaUvVC9fUa0=
+X-Received: by 2002:a92:d8ca:: with SMTP id l10mr23867156ilo.118.1588033745597;
+ Mon, 27 Apr 2020 17:29:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200427165917.31799-1-pbonzini@redhat.com>
+In-Reply-To: <20200427165917.31799-1-pbonzini@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Mon, 27 Apr 2020 17:28:54 -0700
+Message-ID: <CALMp9eTBs=deSYu1=CMLwZcO8HTpGM2JsgDxvFR1Y220tdUQ3w@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: handle wrap around 32-bit address space
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, everdox@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Mon, Apr 27, 2020 at 9:59 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> KVM is not handling the case where EIP wraps around the 32-bit address
+> space (that is, outside long mode).  This is needed both in vmx.c
+> and in emulate.c.  SVM with NRIPS is okay, but it can still print
+> an error to dmesg due to integer overflow.
+>
+> Reported-by: Nick Peterson <everdox@gmail.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/emulate.c |  2 ++
+>  arch/x86/kvm/svm/svm.c |  3 ---
+>  arch/x86/kvm/vmx/vmx.c | 15 ++++++++++++---
+>  3 files changed, 14 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+> index bddaba9c68dd..de5476f8683e 100644
+> --- a/arch/x86/kvm/emulate.c
+> +++ b/arch/x86/kvm/emulate.c
+> @@ -5798,6 +5798,8 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
+>         }
+>
+>         ctxt->eip = ctxt->_eip;
+> +       if (ctxt->mode != X86EMUL_MODE_PROT64)
+> +               ctxt->eip = (u32)ctxt->_eip;
+>
+>  done:
+>         if (rc == X86EMUL_PROPAGATE_FAULT) {
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 8f8fc65bfa3e..d5e72b22bc87 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -319,9 +319,6 @@ static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
+>                 if (!kvm_emulate_instruction(vcpu, EMULTYPE_SKIP))
+>                         return 0;
+>         } else {
+> -               if (svm->next_rip - kvm_rip_read(vcpu) > MAX_INST_SIZE)
+> -                       pr_err("%s: ip 0x%lx next 0x%llx\n",
+> -                              __func__, kvm_rip_read(vcpu), svm->next_rip);
+>                 kvm_rip_write(vcpu, svm->next_rip);
+>         }
+>         svm_set_interrupt_shadow(vcpu, 0);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 3ab6ca6062ce..ed1ffc8a727b 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -1556,7 +1556,7 @@ static int vmx_rtit_ctl_check(struct kvm_vcpu *vcpu, u64 data)
+>
+>  static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
+>  {
+> -       unsigned long rip;
+> +       unsigned long rip, orig_rip;
+>
+>         /*
+>          * Using VMCS.VM_EXIT_INSTRUCTION_LEN on EPT misconfig depends on
+> @@ -1568,8 +1568,17 @@ static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
+>          */
+>         if (!static_cpu_has(X86_FEATURE_HYPERVISOR) ||
+>             to_vmx(vcpu)->exit_reason != EXIT_REASON_EPT_MISCONFIG) {
+> -               rip = kvm_rip_read(vcpu);
+> -               rip += vmcs_read32(VM_EXIT_INSTRUCTION_LEN);
+> +               orig_rip = kvm_rip_read(vcpu);
+> +               rip = orig_rip + vmcs_read32(VM_EXIT_INSTRUCTION_LEN);
+> +#ifdef CONFIG_X86_64
+> +               /*
+> +                * We need to mask out the high 32 bits of RIP if not in 64-bit
+> +                * mode, but just finding out that we are in 64-bit mode is
+> +                * quite expensive.  Only do it if there was a carry.
+> +                */
+> +               if (unlikely(((rip ^ orig_rip) >> 31) == 3) && !is_64_bit_mode(vcpu))
 
-Because of the separation of FS_XFLAG_DAX from S_DAX and the delayed
-setting of S_DAX, data invalidation no longer needs to happen when
-FS_XFLAG_DAX is changed.
+Is it actually possible to wrap around 0 without getting a segment
+limit violation, or is it only possible to wrap *to* 0 (i.e. rip==1ull
+<< 32)?
 
-Change xfs_ioctl_setattr_dax_invalidate() to be
-xfs_ioctl_dax_check_set_cache() and alter the code to reflect the new
-functionality.
-
-Furthermore, we no longer need the locking so we remove the join_flags
-logic.
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-Changes from V10:
-	adjust for renamed d_mark_dontcache() function
-
-Changes from V9:
-	Change name of function to xfs_ioctl_setattr_prepare_dax()
-
-Changes from V8:
-	Change name of function to xfs_ioctl_dax_check_set_cache()
-	Update commit message
-	Fix bit manipulations
-
-Changes from V7:
-	Use new flag_inode_dontcache()
-	Skip don't cache if mount over ride is active.
-
-Changes from v6:
-	Fix completely broken implementation and update commit message.
-	Use the new VFS layer I_DONTCACHE to facilitate inode eviction
-	and S_DAX changing on drop_caches
-
-Changes from v5:
-	New patch
----
- fs/xfs/xfs_ioctl.c | 108 +++++++++------------------------------------
- 1 file changed, 20 insertions(+), 88 deletions(-)
-
-diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-index 104495ac187c..ff474f2c9acf 100644
---- a/fs/xfs/xfs_ioctl.c
-+++ b/fs/xfs/xfs_ioctl.c
-@@ -1245,64 +1245,26 @@ xfs_ioctl_setattr_xflags(
- 	return 0;
- }
- 
--/*
-- * If we are changing DAX flags, we have to ensure the file is clean and any
-- * cached objects in the address space are invalidated and removed. This
-- * requires us to lock out other IO and page faults similar to a truncate
-- * operation. The locks need to be held until the transaction has been committed
-- * so that the cache invalidation is atomic with respect to the DAX flag
-- * manipulation.
-- */
--static int
--xfs_ioctl_setattr_dax_invalidate(
-+static void
-+xfs_ioctl_setattr_prepare_dax(
- 	struct xfs_inode	*ip,
--	struct fsxattr		*fa,
--	int			*join_flags)
-+	struct fsxattr		*fa)
- {
--	struct inode		*inode = VFS_I(ip);
--	struct super_block	*sb = inode->i_sb;
--	int			error;
--
--	*join_flags = 0;
--
--	/*
--	 * It is only valid to set the DAX flag on regular files and
--	 * directories on filesystems where the block size is equal to the page
--	 * size. On directories it serves as an inherited hint so we don't
--	 * have to check the device for dax support or flush pagecache.
--	 */
--	if (fa->fsx_xflags & FS_XFLAG_DAX) {
--		struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
--
--		if (!bdev_dax_supported(target->bt_bdev, sb->s_blocksize))
--			return -EINVAL;
--	}
--
--	/* If the DAX state is not changing, we have nothing to do here. */
--	if ((fa->fsx_xflags & FS_XFLAG_DAX) && IS_DAX(inode))
--		return 0;
--	if (!(fa->fsx_xflags & FS_XFLAG_DAX) && !IS_DAX(inode))
--		return 0;
-+	struct xfs_mount	*mp = ip->i_mount;
-+	struct inode            *inode = VFS_I(ip);
- 
- 	if (S_ISDIR(inode->i_mode))
--		return 0;
--
--	/* lock, flush and invalidate mapping in preparation for flag change */
--	xfs_ilock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
--	error = filemap_write_and_wait(inode->i_mapping);
--	if (error)
--		goto out_unlock;
--	error = invalidate_inode_pages2(inode->i_mapping);
--	if (error)
--		goto out_unlock;
--
--	*join_flags = XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL;
--	return 0;
-+		return;
- 
--out_unlock:
--	xfs_iunlock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
--	return error;
-+	if ((mp->m_flags & XFS_MOUNT_DAX_ALWAYS) ||
-+	    (mp->m_flags & XFS_MOUNT_DAX_NEVER))
-+		return;
- 
-+	if (((fa->fsx_xflags & FS_XFLAG_DAX) &&
-+	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)) ||
-+	    (!(fa->fsx_xflags & FS_XFLAG_DAX) &&
-+	     (ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)))
-+		d_mark_dontcache(inode);
- }
- 
- /*
-@@ -1310,17 +1272,10 @@ xfs_ioctl_setattr_dax_invalidate(
-  * have permission to do so. On success, return a clean transaction and the
-  * inode locked exclusively ready for further operation specific checks. On
-  * failure, return an error without modifying or locking the inode.
-- *
-- * The inode might already be IO locked on call. If this is the case, it is
-- * indicated in @join_flags and we take full responsibility for ensuring they
-- * are unlocked from now on. Hence if we have an error here, we still have to
-- * unlock them. Otherwise, once they are joined to the transaction, they will
-- * be unlocked on commit/cancel.
-  */
- static struct xfs_trans *
- xfs_ioctl_setattr_get_trans(
--	struct xfs_inode	*ip,
--	int			join_flags)
-+	struct xfs_inode	*ip)
- {
- 	struct xfs_mount	*mp = ip->i_mount;
- 	struct xfs_trans	*tp;
-@@ -1337,8 +1292,7 @@ xfs_ioctl_setattr_get_trans(
- 		goto out_unlock;
- 
- 	xfs_ilock(ip, XFS_ILOCK_EXCL);
--	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL | join_flags);
--	join_flags = 0;
-+	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
- 
- 	/*
- 	 * CAP_FOWNER overrides the following restrictions:
-@@ -1359,8 +1313,6 @@ xfs_ioctl_setattr_get_trans(
- out_cancel:
- 	xfs_trans_cancel(tp);
- out_unlock:
--	if (join_flags)
--		xfs_iunlock(ip, join_flags);
- 	return ERR_PTR(error);
- }
- 
-@@ -1486,7 +1438,6 @@ xfs_ioctl_setattr(
- 	struct xfs_dquot	*pdqp = NULL;
- 	struct xfs_dquot	*olddquot = NULL;
- 	int			code;
--	int			join_flags = 0;
- 
- 	trace_xfs_ioctl_setattr(ip);
- 
-@@ -1510,18 +1461,9 @@ xfs_ioctl_setattr(
- 			return code;
- 	}
- 
--	/*
--	 * Changing DAX config may require inode locking for mapping
--	 * invalidation. These need to be held all the way to transaction commit
--	 * or cancel time, so need to be passed through to
--	 * xfs_ioctl_setattr_get_trans() so it can apply them to the join call
--	 * appropriately.
--	 */
--	code = xfs_ioctl_setattr_dax_invalidate(ip, fa, &join_flags);
--	if (code)
--		goto error_free_dquots;
-+	xfs_ioctl_setattr_prepare_dax(ip, fa);
- 
--	tp = xfs_ioctl_setattr_get_trans(ip, join_flags);
-+	tp = xfs_ioctl_setattr_get_trans(ip);
- 	if (IS_ERR(tp)) {
- 		code = PTR_ERR(tp);
- 		goto error_free_dquots;
-@@ -1651,7 +1593,6 @@ xfs_ioc_setxflags(
- 	struct fsxattr		fa;
- 	struct fsxattr		old_fa;
- 	unsigned int		flags;
--	int			join_flags = 0;
- 	int			error;
- 
- 	if (copy_from_user(&flags, arg, sizeof(flags)))
-@@ -1668,18 +1609,9 @@ xfs_ioc_setxflags(
- 	if (error)
- 		return error;
- 
--	/*
--	 * Changing DAX config may require inode locking for mapping
--	 * invalidation. These need to be held all the way to transaction commit
--	 * or cancel time, so need to be passed through to
--	 * xfs_ioctl_setattr_get_trans() so it can apply them to the join call
--	 * appropriately.
--	 */
--	error = xfs_ioctl_setattr_dax_invalidate(ip, &fa, &join_flags);
--	if (error)
--		goto out_drop_write;
-+	xfs_ioctl_setattr_prepare_dax(ip, &fa);
- 
--	tp = xfs_ioctl_setattr_get_trans(ip, join_flags);
-+	tp = xfs_ioctl_setattr_get_trans(ip);
- 	if (IS_ERR(tp)) {
- 		error = PTR_ERR(tp);
- 		goto out_drop_write;
--- 
-2.25.1
-
+> +                       rip = (u32)rip;
+> +#endif
+>                 kvm_rip_write(vcpu, rip);
+>         } else {
+>                 if (!kvm_emulate_instruction(vcpu, EMULTYPE_SKIP))
+> --
+> 2.18.2
+>
