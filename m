@@ -2,64 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8547D1BBC15
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F4C1BBC1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbgD1LOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 07:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726574AbgD1LOQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726764AbgD1LOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 07:14:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726590AbgD1LOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Apr 2020 07:14:16 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9510C03C1A9;
-        Tue, 28 Apr 2020 04:14:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Z+2cHsAhwOcwa/ZOru5Iyu559NSgRTBiKbey/voC8u8=; b=nIyNbar6GQ2gfHkkoUVhjswdA8
-        Vkwis7Zk1JPnkr1oXjqfrAthCSBE1dcsEZHAGvSeAMEZXOEGEaU9ODVZ0BE/qRQWfW8sq/3X6uARA
-        asc0G24RG36WSB4dHiVq/3rXfqsnY5iKDhlMjfJlqCrKKDhDh6ORdOVQDti48qO5nzcpPZywR2MCO
-        EyC4qcxNpUwymMgQiGoSnY+uivQ9/bdOqOiIiucHyDujj5d4Po652GcaUO4eeDEVucor+8IbdJrnh
-        PV92NQ3xzaLTRs8ar9EuIBJ/yRZk9WTpdosuE4NxDu+LzeW84kI2tH/yfayOfP2FPmiSlcCyVzJHr
-        SxuOYjFg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTOBf-0006yn-Vr; Tue, 28 Apr 2020 11:14:03 +0000
-Date:   Tue, 28 Apr 2020 04:14:03 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Wei Yongjun <weiyongjun1@huawei.com>
-Cc:     Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Waiman Long <longman@redhat.com>,
-        Manfred Spraul <manfred@colorfullife.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH -next] ipc: use GFP_ATOMIC under spin lock
-Message-ID: <20200428111403.GJ29705@bombadil.infradead.org>
-References: <20200428034736.27850-1-weiyongjun1@huawei.com>
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BC04206F0;
+        Tue, 28 Apr 2020 11:14:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588072455;
+        bh=6DTJndgItc1WFWhpZyZ1xM0bC2J9mb3KRo6Obnb4WmI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q3qb34E4bp44JWa6pDDT90Gk7LeUH02t8lh2VwWR1c9Oaw66ERl/dzd5ezZl4DCtW
+         iQ7bTY9xXuwovratP2T6vv33tNHxFYnVfCJtej/koTp/bP7CscKrtfOXwKt0MfSfKv
+         P6BAeAhkD7oshYsng08lhA2nUgKNAdqTdFkr9aZs=
+Date:   Tue, 28 Apr 2020 12:14:13 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCH 4/4] ASoC: wm8994: Silence warnings during deferred probe
+Message-ID: <20200428111413.GD5677@sirena.org.uk>
+References: <20200427074832.22134-1-m.szyprowski@samsung.com>
+ <CGME20200427074843eucas1p1a3a265df0c7f14b0aaec25eb65daf606@eucas1p1.samsung.com>
+ <20200427074832.22134-5-m.szyprowski@samsung.com>
+ <20200427112202.GB4272@sirena.org.uk>
+ <20200428103638.GP3559@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="M38YqGLZlgb6RLPS"
 Content-Disposition: inline
-In-Reply-To: <20200428034736.27850-1-weiyongjun1@huawei.com>
+In-Reply-To: <20200428103638.GP3559@dell>
+X-Cookie: Eschew obfuscation.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 03:47:36AM +0000, Wei Yongjun wrote:
-> The function ipc_id_alloc() is called from ipc_addid(), in which
-> a spin lock is held, so we should use GFP_ATOMIC instead.
-> 
-> Fixes: de5738d1c364 ("ipc: convert ipcs_idr to XArray")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
-I see why you think that, but it's not true.  Yes, we hold a spinlock, but
-the spinlock is in an object which is not reachable from any other CPU.
-So it's not possible to deadlock.  This probably confuses all kinds
-of automated checkers, and I should probably rewrite the code to not
-acquire the new spinlock until we're already holding the xa_lock.
+--M38YqGLZlgb6RLPS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Converting to GFP_ATOMIC is completely wrong.
+On Tue, Apr 28, 2020 at 11:36:38AM +0100, Lee Jones wrote:
+> On Mon, 27 Apr 2020, Mark Brown wrote:
+
+> > This completely eliminates the diagnostics which means that if the clock
+> > isn't there the user is a bit stuck trying to work out what's missing.
+> > There should still be a diagnostic.
+
+> The driver won't defer forever though.  The final pass should fail
+> with a different error.  At which point the error will be released to
+> the system log, no?
+
+One of the really common cases is that someone forgot to build the
+driver for the dependency so it'll just defer forever waiting for
+something that never loads.
+
+--M38YqGLZlgb6RLPS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6oEAQACgkQJNaLcl1U
+h9BdrQf+NCklPpWwravEIRIAH1rwyigfjx2trNsyl7yEA2AwXk8z7UPMlVo/5tAx
+U6MrMNyYDvWsAgZVED3Xd20d7R/7M9+E7vg/73nnG4GIsQSbx1CGxfkaovbmWGWl
+jGsqydTS7K3eMMSq2WiwiwfJW6qtX2ah3KWNM/hOkxzzxfkYoBY4whG+0AMJzwzZ
+X+ciwLknAY2GiigH3viTy0t9vrAJZq8JpsbLrxzlh55YYPmM9sCfwN9Vi5bCfuet
+pbGBfCGj4puRpt9bXB0fcO9q34kGsmGVG0cz/BcNc/hGM4y5xSYbGGeBTAPB0Qg0
+3VfbJLNHhewSONj2A74OCuxVJqG47A==
+=4bNe
+-----END PGP SIGNATURE-----
+
+--M38YqGLZlgb6RLPS--
