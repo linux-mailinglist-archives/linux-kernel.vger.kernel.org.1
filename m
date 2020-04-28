@@ -2,67 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48BD1BBFFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 205441BBFD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbgD1NkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 09:40:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36440 "EHLO mail.kernel.org"
+        id S1727931AbgD1NjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 09:39:17 -0400
+Received: from mga07.intel.com ([134.134.136.100]:52757 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726889AbgD1NkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 09:40:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC285206D7;
-        Tue, 28 Apr 2020 13:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588081213;
-        bh=z6FwCpZc4bewQTILO5ed54oDlhcVRcQNbY1dTaBbd6I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cVkICW4Z7Gqg9PFeTpJx749wpYdzY1xShHb2yMmN+xaT45MjnilFD+afecPd9dSto
-         sCzuyHDpAkyNOtqJYSPbwgTSTHwvuxcIZn0gS4NvHa860NVVh5lfoqvwLdsHACsIrT
-         W/NEXMgeOvEPPtZv63J1pgPB/026WMACNMYwLFKI=
-Date:   Tue, 28 Apr 2020 15:40:10 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     John Oldman <john.oldman@polehill.co.uk>
-Cc:     devel@driverdev.osuosl.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] Staging: mt7621-dma: mtk-hsdma.c: Fix Missing a blank
- line after declarations
-Message-ID: <20200428134010.GA1374852@kroah.com>
-References: <20200426161319.23941-1-john.oldman@polehill.co.uk>
- <20200426170719.GA2138855@kroah.com>
- <CA+JojbpBAkBHqZ3RUXjf-u-j9DUoS_m5oYwHQ=AWWp7qWQ8G-g@mail.gmail.com>
+        id S1727823AbgD1NjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 09:39:16 -0400
+IronPort-SDR: ekGBMTww8ZRmfOlk49gepsTc+L15t84rxS9haT6VPFsBjVb44y9Eto8ekB0vIDJwt1cgU+d8S2
+ 6v+oSN5/npHA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 06:39:15 -0700
+IronPort-SDR: xKFpk/LY3rt43qQlURN33PtK48Ij6dtPcHD6+OEkjS5NgVRS7+hp1aeP0K3yC3KsXc5G97+Gcc
+ xyaE0EbSTzsQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,327,1583222400"; 
+   d="scan'208";a="302710365"
+Received: from unknown (HELO localhost) ([10.239.159.128])
+  by FMSMGA003.fm.intel.com with ESMTP; 28 Apr 2020 06:39:12 -0700
+Date:   Tue, 28 Apr 2020 21:41:07 +0800
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
+        jmattson@google.com, yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH v11 7/9] KVM: X86: Add userspace access interface for CET
+ MSRs
+Message-ID: <20200428134107.GA23937@local-michael-cet-test>
+References: <20200326081847.5870-1-weijiang.yang@intel.com>
+ <20200326081847.5870-8-weijiang.yang@intel.com>
+ <08457f11-f0ac-ff4b-80b7-e5380624eca0@redhat.com>
+ <20200426152355.GB29493@local-michael-cet-test.sh.intel.com>
+ <f6f8cedf-26ce-70b4-2906-02806698d81b@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+JojbpBAkBHqZ3RUXjf-u-j9DUoS_m5oYwHQ=AWWp7qWQ8G-g@mail.gmail.com>
+In-Reply-To: <f6f8cedf-26ce-70b4-2906-02806698d81b@redhat.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 02:21:25PM +0100, John Oldman wrote:
-> I was not so happy about this one, even though I went and committed it.
+On Mon, Apr 27, 2020 at 04:04:28PM +0200, Paolo Bonzini wrote:
+> On 26/04/20 17:23, Yang Weijiang wrote:
+> > What's the purpose of the selftest? Is it just for Shadow Stack SSP
+> > state transitions in various cases? e.g., L0 SSP<--->L3 SSP,
+> > L0 SSP1<--->L0 SSP2?
 > 
-> Without the blank line checkpatch reports:
+> No, it checks that the whole state can be extracted and restored from a
+> running VM.  For example, it would have caught immediately that the
+> current SSP could not be saved and restored.
 > 
-> WARNING: Missing a blank line after declarations
-> #160: FILE: drivers/staging/mt7621-dma/mtk-hsdma.c:160:
-> + struct tasklet_struct task;
-> + volatile unsigned long chan_issued;
+> > We now have the KVM unit-test for CET functionalities,
+> > i.e., Shadow Stack and Indirect Branch Tracking for user-mode, I can put the
+> > state test app into the todo list as current patchset is mainly for user-mode
+> > protection, the supervisor-mode CET protection is the next step.
 > 
-> So I dumly inserted a blank line to silence checkpatch.
+> What are the limitations?  Or are you referring to the unit test?
+>
+I'm referring to the unit test, I enabled basic CET function test to verify
+if SHSTK/IBT is supported with current platform and KVM, but didn't cover
+what you mentioned above. OK, I put the state
+self-test to my todo list. Thank you for the reminder.
 
-As checkpatch is just a simple script, it is not always right, don't
-blindly follow it.
-
-> In hindsight maybe a false positive, blank lines in a struct might not be
-> helpful.
-
-It can be, but not here.
-
-thanks,
-
-greg k-h
+> Paolo
