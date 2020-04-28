@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F7D1BC20D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37B41BC215
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgD1Oz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:55:59 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:58836 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727775AbgD1Oz6 (ORCPT
+        id S1727995AbgD1O5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:57:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727108AbgD1O5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:55:58 -0400
+        Tue, 28 Apr 2020 10:57:35 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B787C03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 07:57:33 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id r17so17139784lff.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 07:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1588085757; x=1619621757;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=3MZHNktipicg4cEO4n/1/kC9uDxKkqzTZ+Cu+s8r1wc=;
-  b=ql4jS1g+WucsYlhNDnE3cVYKN5CgMcIlV61FKkME9zO1tuRq2Iy9Medw
-   Htsay9IixfahArcvwgJQGMbsHXmn7NhLgTiEVpUvAGtxRG6PDEpiD6X9j
-   X4bK6I83FVme222kiUszYwIofrfd99oBHm+bqaQ8qlPEv5ZPcV1Q3gMds
-   I=;
-IronPort-SDR: LtBqlManQCsvUv43fuj2bj3eOiHr7DJQKk7vzdvSfqUyRaVQDSiM4d7qOF231/mk08ZZzXWy+o
- ret79dK04ojw==
-X-IronPort-AV: E=Sophos;i="5.73,328,1583193600"; 
-   d="scan'208";a="29085930"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 28 Apr 2020 14:55:42 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id C9A00A1D11;
-        Tue, 28 Apr 2020 14:55:41 +0000 (UTC)
-Received: from EX13D06EUC004.ant.amazon.com (10.43.164.101) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 28 Apr 2020 14:55:41 +0000
-Received: from EX13D28EUC001.ant.amazon.com (10.43.164.4) by
- EX13D06EUC004.ant.amazon.com (10.43.164.101) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 28 Apr 2020 14:55:40 +0000
-Received: from EX13D28EUC001.ant.amazon.com ([10.43.164.4]) by
- EX13D28EUC001.ant.amazon.com ([10.43.164.4]) with mapi id 15.00.1497.006;
- Tue, 28 Apr 2020 14:55:40 +0000
-From:   "Agroskin, Shay" <shayagr@amazon.com>
-To:     Gavin Shan <gshan@redhat.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Belgazal, Netanel" <netanel@amazon.com>,
-        "Kiyanovski, Arthur" <akiyano@amazon.com>,
-        "Tzalik, Guy" <gtzalik@amazon.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "shan.gavin@gmail.com" <shan.gavin@gmail.com>,
-        "agrosshay@gmail.com" <agrosshay@gmail.com>
-Subject: Re: [PATCH v2] net/ena: Fix build warning in ena_xdp_set()
-Thread-Topic: [PATCH v2] net/ena: Fix build warning in ena_xdp_set()
-Thread-Index: AQHWHW0VNHFzEvmdV0OlJCS/s0Kxaw==
-Date:   Tue, 28 Apr 2020 14:55:40 +0000
-Message-ID: <87r1w7fymt.fsf@amazon.com>
-References: <20200428044945.123511-1-gshan@redhat.com>
-In-Reply-To: <20200428044945.123511-1-gshan@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.160.65]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <43391DA55B808C4FBD13B1ED09C84B85@amazon.com>
-Content-Transfer-Encoding: base64
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9pYldvLV/gVCwLCXJG2H7I1itLEQ+WPd52A+pM1rS5s=;
+        b=S9/mpZk6b0C8kH1z/+2Hb/MyGg1vdMdXEy2TANzfwGjfT2+7Q8xLLOkZFKhxYCDyW7
+         eSiY44+1bweYxGxOKKvfYbSIKiubGLJl7aY1r3hYAQaN/yt0WqXp6Dy7JgMCUrt1iBhq
+         XCP26NXykRimBGkPPqdb7VeNein9tJ6U0rwjQ69mjBkr4d/vBuSIKVhLC3rgGc23ThqR
+         rYQ/qk3Cy/uS4fmm9bzAtm45h1YuDjcs54cwSK716jsdXDjviOgWWkyHCh3b7Rnvj9vo
+         PL57x1DNaqvZQAi6lmANu4XuyT+/chIaFYQdIEQnF7h73929k097NwCLVpmRmUoeY+tW
+         FHTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9pYldvLV/gVCwLCXJG2H7I1itLEQ+WPd52A+pM1rS5s=;
+        b=pNd3OOZUkx2+0EMkd9Syr5B096mRL5L1KB/8GT7/48rTp9rOR6ppdPeccKT6lR4yEX
+         THlzfgnk2y4aKA+cZCg6l8zkbCpHyVK2qIoFGxtN6bjLS7vZVwRyGhQVLTs5SVGlHmh3
+         KoBrYeh+VwzDQP7a8PigxH/q9FaXAJcbWwlwOfN8bk/plR5P0HHjQso3X7UObLnUUKvU
+         IpTcOg2+TUB5mIGh9NrIS6Hb0xeSrQk4QaPJAKkoVpa5MSB3nUVDj4Q9H/dLMfHJoylu
+         inDnlzqEq7sXzH7kRAz007W2xzI3kPoDN5lYuS/Cjxyz8EV533E2rR/Ndq6MAFohCezt
+         f+XQ==
+X-Gm-Message-State: AGi0Pua6cwzYp6vU8DDId+HwR5buvyzy2Z750sO07DZ9I01CXPHSoKrI
+        /lUYlee6oM2ajsT/lToaOOwIBkg26zy4yZ2zqWPeng==
+X-Google-Smtp-Source: APiQypL5GJ29gOUynll/hdbbuwXoU4xD+j2nR/v1vFlTgeAng8OTy3G9J0eh3+8HNK5w1oKRGEkYRCBtwbX87dtudlc=
+X-Received: by 2002:ac2:4546:: with SMTP id j6mr19867267lfm.203.1588085851962;
+ Tue, 28 Apr 2020 07:57:31 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200427074222.65369-1-maco@android.com> <20200427170613.GA13686@lst.de>
+ <CAB0TPYGZc_n-b5xtNsbJxEiqpLMqE=RcXGuy7C2vbY18mKZ6_A@mail.gmail.com> <20200428070200.GC18754@lst.de>
+In-Reply-To: <20200428070200.GC18754@lst.de>
+From:   Martijn Coenen <maco@android.com>
+Date:   Tue, 28 Apr 2020 16:57:21 +0200
+Message-ID: <CAB0TPYF4yHwXTG2xb5yci9-KJiT5=VbwWz9yj+uyBwb2rSi8Rg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/9] Add a new LOOP_SET_FD_AND_STATUS ioctl
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
+        Narayan Kamath <narayan@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, kernel-team@android.com,
+        linux-block <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martijn Coenen <maco@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpHYXZpbiBTaGFuIDxnc2hhbkByZWRoYXQuY29tPiB3cml0ZXM6DQoNCj4gVGhpcyBmaXhlcyB0
-aGUgZm9sbG93aW5nIGJ1aWxkIHdhcm5pbmcgaW4gZW5hX3hkcF9zZXQoKSwgd2hpY2ggaXMNCj4g
-b2JzZXJ2ZWQgb24gYWFyY2g2NCB3aXRoIDY0S0IgcGFnZSBzaXplLg0KPg0KPiAgICBJbiBmaWxl
-IGluY2x1ZGVkIGZyb20gLi9pbmNsdWRlL25ldC9pbmV0X3NvY2suaDoxOSwNCj4gICAgICAgZnJv
-bSAuL2luY2x1ZGUvbmV0L2lwLmg6MjcsDQo+ICAgICAgIGZyb20gZHJpdmVycy9uZXQvZXRoZXJu
-ZXQvYW1hem9uL2VuYS9lbmFfbmV0ZGV2LmM6NDY6DQo+ICAgIGRyaXZlcnMvbmV0L2V0aGVybmV0
-L2FtYXpvbi9lbmEvZW5hX25ldGRldi5jOiBJbiBmdW5jdGlvbiAgICAgICAgIFwNCj4gICAg4oCY
-ZW5hX3hkcF9zZXTigJk6ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIFwNCj4gICAgZHJpdmVycy9uZXQvZXRoZXJuZXQvYW1hem9uL2VuYS9lbmFfbmV0
-ZGV2LmM6NTU3OjY6IHdhcm5pbmc6ICAgICAgXA0KPiAgICBmb3JtYXQg4oCYJWx14oCZICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0KPiAgICBl
-eHBlY3RzIGFyZ3VtZW50IG9mIHR5cGUg4oCYbG9uZyB1bnNpZ25lZCBpbnTigJksIGJ1dCBhcmd1
-bWVudCA0ICAgICAgXA0KPiAgICBoYXMgdHlwZSDigJhpbnTigJkgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0KPiAgICBbLVdmb3JtYXQ9XSAiRmFp
-bGVkIHRvIHNldCB4ZHAgcHJvZ3JhbSwgdGhlIGN1cnJlbnQgTVRVICglZCkgaXMgICBcDQo+ICAg
-IGxhcmdlciB0aGFuIHRoZSBtYXhpbXVtIGFsbG93ZWQgTVRVICglbHUpIHdoaWxlIHhkcCBpcyBv
-biIsDQo+DQo+IFNpZ25lZC1vZmYtYnk6IEdhdmluIFNoYW4gPGdzaGFuQHJlZGhhdC5jb20+DQo+
-IC0tLQ0KPiB2MjogTWFrZSBFTkFfUEFHRV9TSVpFIHRvIGJlICJ1bnNpZ25lZCBsb25nIiBhbmQg
-dmVyaWZ5IG9uIGFhcmNoNjQNCj4gICAgIHdpdGggNEtCIG9yIDY0S0IgcGFnZSBzaXplIGNvbmZp
-Z3VyYXRpb24NCj4gLS0tDQo+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9hbWF6b24vZW5hL2VuYV9u
-ZXRkZXYuaCB8IDIgKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxl
-dGlvbigtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvYW1hem9uL2Vu
-YS9lbmFfbmV0ZGV2LmggYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9hbWF6b24vZW5hL2VuYV9uZXRk
-ZXYuaA0KPiBpbmRleCA5N2RmZDBjNjdlODQuLjllMTg2MGQ4MTkwOCAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy9uZXQvZXRoZXJuZXQvYW1hem9uL2VuYS9lbmFfbmV0ZGV2LmgNCj4gKysrIGIvZHJp
-dmVycy9uZXQvZXRoZXJuZXQvYW1hem9uL2VuYS9lbmFfbmV0ZGV2LmgNCj4gQEAgLTY5LDcgKzY5
-LDcgQEANCj4gICAqIDE2a0IuDQo+ICAgKi8NCj4gICNpZiBQQUdFX1NJWkUgPiBTWl8xNksNCj4g
-LSNkZWZpbmUgRU5BX1BBR0VfU0laRSBTWl8xNksNCj4gKyNkZWZpbmUgRU5BX1BBR0VfU0laRSAo
-X0FDKFNaXzE2SywgVUwpKQ0KPiAgI2Vsc2UNCj4gICNkZWZpbmUgRU5BX1BBR0VfU0laRSBQQUdF
-X1NJWkUNCj4gICNlbmRpZg0KDQp0aGFua3MgZm9yIHRoaXMgZml4DQoNCkFja2VkLWJ5OiBTaGF5
-IEFncm9za2luIDxzaGF5YWdyQGFtYXpvbi5jb20+
+On Tue, Apr 28, 2020 at 9:02 AM Christoph Hellwig <hch@lst.de> wrote:
+> I think reusing LO_FLAGS_DIRECT_IO makes sense to me - we have 32
+> flags in the existing flags field (at least for loop_info64), so
+> we might as well use the field and the flags.  Then we need flags
+> validation in that we don't accept new flags through the old
+> interface, and the new one validates that no unknown flags are passed.
+>
+> E.g. in the LOOP_SET_STATUS / LOOP_SET_STATUS64 handler do:
+>
+>         lo->lo_flags &= ~(LO_LEGACY_FLAGS);
+>
+
+mmm, I thought lo_flags was read-only in LOOP_SET_STATUS(64):
+
+     __u32              lo_flags;                    /* ioctl r/o */
+
+but it looks LO_FLAGS_AUTOCLEAR is writable:
+
+ if ((lo->lo_flags & LO_FLAGS_AUTOCLEAR) !=
+               (info->lo_flags & LO_FLAGS_AUTOCLEAR))
+                  lo->lo_flags ^= LO_FLAGS_AUTOCLEAR;
+
+and it allows requesting a partition scan. It makes sense to maintain
+that behavior, but what about LO_FLAGS_DIRECT_IO? I think you're
+proposing LOOP_SET_STATUS(64) should keep ignoring that like it used
+to?
+
+Thanks,
+Martijn
+
+> and then in the main function reject anything not known.
+>
+> And then maybe add something like 64 bytes of padding to the end of the
+> new structure, so that we can use flags to expand to it.
