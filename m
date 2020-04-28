@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4761BB86B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 10:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C2B1BB88B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 10:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgD1IGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 04:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgD1IGH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 04:06:07 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47F6C03C1A9;
-        Tue, 28 Apr 2020 01:06:05 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id a21so20458518ljb.9;
-        Tue, 28 Apr 2020 01:06:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=e/ZfrxrHaYp4ZY3rObwWUQUSJ2Md/wwi7RL79f3Bw7g=;
-        b=DmPwSr7xJlCyMCcEaFZybSuG7ZAcfiJwG34dztFSi3q5fNbsj8VzbwMLnIQ6mmWMAW
-         5esvm2E5nriVmjw3lwhHrjGYII8gFN9PclS9ZJTllscECVx/+nL1VfL9yLftlXca4vnz
-         hz1ht8NerFYx1CjyLpCsBkstnqGMIZM4VxRmr3ZQbf8GcmFfaUjgMjDS36exqvzZzSM8
-         6ZN46nbAdhZsR6y7/F0ALFyhLNPLPbQbZCRgt/fFeTUhDZHrTZAPs5p3jwqepaBA8d8p
-         baXAXMtaxcAmPZSerfJF1Voseb5pehgY7bJgt5DNtPlZwhiD0uTAuT0c6ZTS7dMq+6vT
-         HBgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e/ZfrxrHaYp4ZY3rObwWUQUSJ2Md/wwi7RL79f3Bw7g=;
-        b=BZcKtEYsr/3MViHD4TXZLxZ3hwfWISkL2b96FV8EJ/bdxY/BcfoSnWiuJPBuNM122C
-         JavIczOH9bmpe/uhaLoYuWSx26wQ/iUek7zfl2bWK6+HOPsj3MvP7gIFwT5oW+an9xlb
-         PnldkZgdVZGpwKYpUP9gkMtthqM6GPMtsPPkh8fw5bsf5EH70xmj3LQOGzNMP/5Gmpez
-         KgCJkUBDJajZvmtMc6YUOQyRuysdSU+pczHqgy5GB3E95JUg2pX+YtsCT85qeHIVuiwY
-         NPYJHOvLCwuOIxwhhurQ6sBXQBkALcktf1xolUNCAbOMdE3U9y8yHG+oNqxuVuWqdz+I
-         RAFg==
-X-Gm-Message-State: AGi0PuYkfmG8UyBBLcr+xUjB0bKOlKNAXJtUI/p21TTwEKX/s7EVJaes
-        7NKCgDMt9CW9D6lkNis4FkQ=
-X-Google-Smtp-Source: APiQypI2pEdiPylKtG2Ev1FBU5piF1Pn+Gc4EEL7/7yFhPJGVS68CpPOD8Thq3mqNDJCz5aHdkYNcQ==
-X-Received: by 2002:a2e:b0c5:: with SMTP id g5mr16867541ljl.203.1588061164257;
-        Tue, 28 Apr 2020 01:06:04 -0700 (PDT)
-Received: from curiosity (ip-195-182-157-78.clients.cmk.ru. [195.182.157.78])
-        by smtp.gmail.com with ESMTPSA id k18sm16064282lfg.81.2020.04.28.01.06.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 01:06:03 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 11:10:31 +0300
-From:   Sergey Matyukevich <geomatsi@gmail.com>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wireless <linux-wireless@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mac80211-next tree
-Message-ID: <20200428081031.GA4287@curiosity>
-References: <20200428122930.51b6a9c2@canb.auug.org.au>
- <c3922c972277ff627c0308a94dfe3f25ba3b333f.camel@sipsolutions.net>
- <20200428072543.GA2630@curiosity>
- <baae77876a4b73de83aa6dcc27257da231777c22.camel@sipsolutions.net>
- <20200428074527.GA3912@curiosity>
- <40afd04ed8fb49088268e7d3316d3fef9aa8dbd9.camel@sipsolutions.net>
+        id S1726859AbgD1IMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 04:12:08 -0400
+Received: from mga07.intel.com ([134.134.136.100]:37322 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726377AbgD1IMH (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 04:12:07 -0400
+IronPort-SDR: 0poBhdi0rYNzEaBvQvnJqCYVFKlSZ/Ts+fSLr+3tSBXd+LSPzZo79Qt7vW7AsaDVkevY6YUi1c
+ melUb7mZ8pDQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 01:12:07 -0700
+IronPort-SDR: p6uL65FR6K2pBsp4oSQqb134PAzW4lmTvjQIr2lhUAMVCvwW+liwaxlbqufGpI3TEx0RMMwdty
+ LyahBMuVwX1w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,327,1583222400"; 
+   d="scan'208";a="367427673"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.151]) ([10.238.4.151])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Apr 2020 01:12:05 -0700
+Subject: Re: [PATCH v3 2/7] perf util: Create streams for managing top N
+ hottest callchains
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20200420010451.24405-1-yao.jin@linux.intel.com>
+ <20200420010451.24405-3-yao.jin@linux.intel.com>
+ <20200427101052.GB1457790@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <3ecf60b3-1304-4a33-1bec-52eb580c0a00@linux.intel.com>
+Date:   Tue, 28 Apr 2020 16:12:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <40afd04ed8fb49088268e7d3316d3fef9aa8dbd9.camel@sipsolutions.net>
+In-Reply-To: <20200427101052.GB1457790@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Looks good. But I have a couple of questions:
-> > 
-> > - why cleanup vif->mgmt_frame_reg in wilc_mac_open ?
-> 
-> Otherwise wilc_update_mgmt_frame_registrations() will think there are no
-> changes whatsoever, and do nothing.
-> 
-> > - previously wilc_wfi_p2p_rx was called only for PROBE_REQ and ACTION,
-> >   now it will be called for all the other registred frames as well
-> 
-> 
-> Huh, good catch. How about this?
-> 
-> https://p.sipsolutions.net/51183f5492f05ea6.txt
+Hi Jiri,
 
-Ok, this one looks good to me.
+On 4/27/2020 6:10 PM, Jiri Olsa wrote:
+> On Mon, Apr 20, 2020 at 09:04:46AM +0800, Jin Yao wrote:
+>> We think the stream is a callchain which is aggregated by the LBR
+>> records from samples. By browsing the stream, we can understand
+>> the code flow.
+>>
+>> The struct callchain_node represents one callchain and we use the
+>> callchain_node->hit to measure the hot level of this callchain.
+>> Higher is hotter.
+>>
+>> Since in perf data file, there may be many callchains so we just
+>> need to focus on the top N hottest callchains. N is a user defined
+>> parameter or just a predefined default value.
+>>
+>> This patch saves the top N hottest callchains in 'struct stream_node'
+>> type array, which is defined in a per event 'struct callchain_streams'.
+>>
+>> So now we can get the per-event top N hottest callchains.
+>>
+>>   v2:
+>>   ---
+>>   Use zfree in free_evsel_streams().
+>>
+>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>> ---
+>>   tools/perf/util/callchain.c | 122 ++++++++++++++++++++++++++++++++++++
+>>   tools/perf/util/callchain.h |  16 +++++
+>>   2 files changed, 138 insertions(+)
+> 
+> SNIP
+> 
+> could this and all the other related code moved to separated object
+> like streams.c or such.. I think also the stuff from patch 1 could
+> go there, as it's specific only to this streams code
+> 
+> jirka
+> 
 
-Regards,
-Sergey
+That's fine. I will move the related codes to a new streams.c/streams.h.
+
+Thanks
+Jin Yao
