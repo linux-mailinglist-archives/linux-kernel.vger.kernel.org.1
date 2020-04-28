@@ -2,162 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83E61BC514
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2558C1BC51A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728354AbgD1QXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 12:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728085AbgD1QXr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 12:23:47 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDA5C03C1AB;
-        Tue, 28 Apr 2020 09:23:47 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id k6so23626268iob.3;
-        Tue, 28 Apr 2020 09:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=j6RRU0nrN7yUPwoTU3WwW56lws6VJ5/MsTtHloArhl0=;
-        b=AVPckYKwTeUisgWMXpahkhhvCC0B7KCgpPE6LKFrZcDSoFrpV7e9aReBGpKH/Fomx2
-         PLRSSFlRLBDnumFZpkYSJNBW/iSoL66EK4Cbx/t/yziGMfC8r3ByxTf0S3KvMExFrzSx
-         vdKXUJHTDxbvPYE1oBg8rw9hS6mGMi8XDuL8qFWYlM2vEI7CqPGHgRHRobFo2FQk1dPC
-         ywpr8WEhqy7y5oD97LeDunmNnuC9DvGi+ZiQ5xnJtgP+8OaMiRBlE+O83DUh4XBKkvU1
-         ZQaT87Awc6BKGbQNEB4qwY81/wY/6KsXMMrB1lAh/Y3Ms521kx9LE+r7lyl1+LUz1DMF
-         pu/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=j6RRU0nrN7yUPwoTU3WwW56lws6VJ5/MsTtHloArhl0=;
-        b=RTsdgq3rGOnNjRbZAzJ2OzLOhlPE4Gkf0W+db0SLPaanL/rr90h14Gpqx89bEQEmPq
-         fvvobLua2Qo5xqpl4MFtOim5iA1NzqTpAVTDyVgfWQ7D/0QDOA7fmkvDiepdGaAGkCtU
-         iNWcHSqDbR436KOC36SilEYJBfX3nF6+23yrPcu4uuzaFpd3ODtn2dlyNxXRjtzbJlC/
-         HyxjcpQkE/vwWAfBZSGmtviczyvGpq+FkwFeWPc4737tcd0SEoE4LM3eq6MthxQ5hdhX
-         3Gva893lxQNdLFOl/ydxf871QxZYWvomiwqTHEznFPAIm9fRR1zYzczPFmwlBOrhKFYu
-         x+aQ==
-X-Gm-Message-State: AGi0PuZBSKR3x96yHvXBAcI20G/jFT23v2j6s4xUOCs9Tr6acB/JUYP3
-        m2lQHna0mE5vzAaWyCSEhrp5oZG0NoRk/kYogGk=
-X-Google-Smtp-Source: APiQypJOl6MpBa2BRYe8Hr+y09c1rJYJoKiTY9WejKqf4GN+4FJ4o0seuR6Q1T+jNayBJixEcXKBGhrTo0lIBL1OtX0=
-X-Received: by 2002:a02:a004:: with SMTP id a4mr25699613jah.18.1588091027057;
- Tue, 28 Apr 2020 09:23:47 -0700 (PDT)
+        id S1728322AbgD1QZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 12:25:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727920AbgD1QZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 12:25:10 -0400
+Received: from linux-8ccs.fritz.box (p3EE2CE96.dip0.t-ipconnect.de [62.226.206.150])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A65A206D8;
+        Tue, 28 Apr 2020 16:25:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588091109;
+        bh=OfzuQfCr95V52OJ0ynUHWXMas+ESmMauGDE883x1Bok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gMjWzoDa4nFQZBB9EN5J1uwi75ghkxF7M4Aru0k1+9JBSbD5YiUY7ixisqmdNNmdP
+         +/IaMJB0obmdWB9vYrQLHTmjuHS9ewBCWv1jERNvvdYAGcIpeYy2Ud2BYCJJlB/uFb
+         TqVgTgbwwpWbFXpZBJkALYZgFrK5anTqVX+yT7Pw=
+Date:   Tue, 28 Apr 2020 18:25:05 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH v3 09/10] module: Remove module_disable_ro()
+Message-ID: <20200428162505.GA12860@linux-8ccs.fritz.box>
+References: <cover.1587812518.git.jpoimboe@redhat.com>
+ <33089a8ffb2e724cecfa51d72887ae9bf70354f9.1587812518.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-References: <20200428142629.8950-1-peron.clem@gmail.com> <98246e5d-ebef-bcb5-f0b8-d74b3834b835@arm.com>
-In-Reply-To: <98246e5d-ebef-bcb5-f0b8-d74b3834b835@arm.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Tue, 28 Apr 2020 18:23:35 +0200
-Message-ID: <CAJiuCcco0d_UoWeHqh6oc0rFNAMFynXjLRQ6APsT0WBh7m+GQg@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [PATCH v2] arm64: dts: allwinner: h6: Use dummy
- regulator for Tanix TX6
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Piotr Oniszczuk <warpme@o2.pl>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <33089a8ffb2e724cecfa51d72887ae9bf70354f9.1587812518.git.jpoimboe@redhat.com>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
-
-On Tue, 28 Apr 2020 at 17:21, Robin Murphy <robin.murphy@arm.com> wrote:
++++ Josh Poimboeuf [25/04/20 06:07 -0500]:
+>module_disable_ro() has no more users.  Remove it.
 >
-> On 2020-04-28 3:26 pm, Cl=C3=A9ment P=C3=A9ron wrote:
-> > Tanix TX6 has a fixed regulator. As DVFS is instructed to change
-> > voltage to meet OPP table, the DVFS is not working as expected.
->
-> Hmm, isn't that really a bug in the DVFS code? I guess it's just blindly
-> propagating -EINVAL from the fixed regulators not implementing
-> set_voltage, but AFAICS it has no real excuse not to be cleverer and
-> still allow switching frequency as long as the voltage *is* high enough
-> for the given OPP. I wonder how well it works if the regulator is
-> programmable but shared with other consumers... that case probably can't
-> be hacked around in DT.
+>Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+>Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Like you, I thought that the DVFS was clever enough to understand this
-but guess not..
+Hm, I guess this means we can also remove the module_enable_ro() stubs
+in module.h and make it a static function again (like the other
+module_enable_* functions) as there are no more outside users. I have to
+remind myself after this patchset is merged :-)
 
-Maybe they are some cases where you don't want to leave the voltage high an=
-d
-reduce the frequency. But I don't know such case.
-
-Regards,
-Clement
-
-
-
-
->
-> Robin.
->
-> > Avoid to introduce a new dedicated OPP Table where voltage are
-> > equals to the fixed regulator as it will only duplicate all the OPPs.
-> > Instead remove the fixed regulator so the DVFS framework will create
-> > dummy regulator and will have the same behavior.
-> >
-> > Add some comments to explain this in the device-tree.
-> >
-> > Reported-by: Piotr Oniszczuk <warpme@o2.pl>
-> > Fixes: add1e27fb703 ("arm64: dts: allwinner: h6: Enable CPU opp tables =
-for Tanix TX6")
-> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> > ---
-> >   .../boot/dts/allwinner/sun50i-h6-tanix-tx6.dts | 18 ++++++++++++++++-=
--
-> >   1 file changed, 16 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts b/ar=
-ch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
-> > index be81330db14f..3e96fcb317ea 100644
-> > --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
-> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-tanix-tx6.dts
-> > @@ -48,7 +48,15 @@
-> >   };
-> >
-> >   &cpu0 {
-> > -     cpu-supply =3D <&reg_vdd_cpu_gpu>;
-> > +     /*
-> > +      * Don't specify the CPU regulator, as it's a fixed
-> > +      * regulator DVFS will not work as it is intructed
-> > +      * to reach a voltage which can't be reached.
-> > +      * Not specifying a regulator will create a dummy
-> > +      * regulator allowing all OPPs.
-> > +      *
-> > +      * cpu-supply =3D <&reg_vdd_cpu_gpu>;
-> > +      */
-> >   };
-> >
-> >   &de {
-> > @@ -68,7 +76,13 @@
-> >   };
-> >
-> >   &gpu {
-> > -     mali-supply =3D <&reg_vdd_cpu_gpu>;
-> > +     /*
-> > +      * Don't specify the GPU regulator, see comment
-> > +      * above for the CPU supply.
-> > +      *
-> > +      * mali-supply =3D <&reg_vdd_cpu_gpu>;
-> > +      */
-> > +
-> >       status =3D "okay";
-> >   };
-> >
-> >
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to linux-sunxi+unsubscribe@googlegroups.com.
-> To view this discussion on the web, visit https://groups.google.com/d/msg=
-id/linux-sunxi/98246e5d-ebef-bcb5-f0b8-d74b3834b835%40arm.com.
+Jessica
