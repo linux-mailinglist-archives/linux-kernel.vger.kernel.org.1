@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B0D1BC9F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FAC1BCA4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731373AbgD1SoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:44:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37166 "EHLO mail.kernel.org"
+        id S1731259AbgD1Ssr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:48:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731358AbgD1SoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:44:15 -0400
+        id S1730749AbgD1Skh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:40:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 305DA206D6;
-        Tue, 28 Apr 2020 18:44:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87BDF20575;
+        Tue, 28 Apr 2020 18:40:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099454;
-        bh=Nv00CSXHSYZ2jzF94Kj6ncrK6XLUFRa3xNn2PDJj00E=;
+        s=default; t=1588099237;
+        bh=Qyc+upMyRK5hOlTaziOgUPCg9cJpCHKiPXD7yWXZ/XM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lDlXTesosdyG/ZsmifjJThoFLEW7RKcH+BgvrfEcUOeVu0ymSGT44GLH18U87ryEs
-         DTDTnVUKC+8+NbiyIOg0y2u9jvqZEDAsHIZc4YWkFNS7metUO7UQKOIYjYSdRIeAXV
-         ie91wg9f27kFH/53CID8fKr4H8j2EHhN6uSPIR3k=
+        b=DaypICs7jIkT+JJc67Ct1srmClvyyZA3P+sbPQ2OSz/3XjodRXseRkrMgHkvtd2Zf
+         b0lQE/GqOy9rmSzQ+wGMRp7VOHM0T/8rOGa5NdBWWSDCMaBtKpdRR4BswaEpav5gQm
+         d6VBkzqDA1JwK/kmNFr8uFgA00cDqn3qppWCUpRc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kazuhiro Fujita <kazuhiro.fujita.jg@renesas.com>,
-        Hao Bui <hao.bui.yg@renesas.com>,
-        KAZUMI HARADA <kazumi.harada.rh@renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 5.4 157/168] serial: sh-sci: Make sure status register SCxSR is read in correct sequence
+        stable@vger.kernel.org, Malcolm Priestley <tvboxspy@gmail.com>
+Subject: [PATCH 4.19 119/131] staging: vt6656: Fix drivers TBTT timing counter.
 Date:   Tue, 28 Apr 2020 20:25:31 +0200
-Message-Id: <20200428182251.024775394@linuxfoundation.org>
+Message-Id: <20200428182240.182426008@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,51 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kazuhiro Fujita <kazuhiro.fujita.jg@renesas.com>
+From: Malcolm Priestley <tvboxspy@gmail.com>
 
-commit 3dc4db3662366306e54ddcbda4804acb1258e4ba upstream.
+commit 09057742af98a39ebffa27fac4f889dc873132de upstream.
 
-For SCIF and HSCIF interfaces the SCxSR register holds the status of
-data that is to be read next from SCxRDR register, But where as for
-SCIFA and SCIFB interfaces SCxSR register holds status of data that is
-previously read from SCxRDR register.
+The drivers TBTT counter is not synchronized with mac80211 timestamp.
 
-This patch makes sure the status register is read depending on the port
-types so that errors are caught accordingly.
+Reorder the functions and use vnt_update_next_tbtt to do the final
+synchronize.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Kazuhiro Fujita <kazuhiro.fujita.jg@renesas.com>
-Signed-off-by: Hao Bui <hao.bui.yg@renesas.com>
-Signed-off-by: KAZUMI HARADA <kazumi.harada.rh@renesas.com>
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/1585333048-31828-1-git-send-email-kazuhiro.fujita.jg@renesas.com
+Fixes: c15158797df6 ("staging: vt6656: implement TSF counter")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Malcolm Priestley <tvboxspy@gmail.com>
+Link: https://lore.kernel.org/r/375d0b25-e8bc-c8f7-9b10-6cc705d486ee@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/sh-sci.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/staging/vt6656/main_usb.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -873,9 +873,16 @@ static void sci_receive_chars(struct uar
- 				tty_insert_flip_char(tport, c, TTY_NORMAL);
- 		} else {
- 			for (i = 0; i < count; i++) {
--				char c = serial_port_in(port, SCxRDR);
-+				char c;
+--- a/drivers/staging/vt6656/main_usb.c
++++ b/drivers/staging/vt6656/main_usb.c
+@@ -740,12 +740,15 @@ static void vnt_bss_info_changed(struct
+ 			vnt_mac_reg_bits_on(priv, MAC_REG_TFTCTL,
+ 					    TFTCTL_TSFCNTREN);
  
--				status = serial_port_in(port, SCxSR);
-+				if (port->type == PORT_SCIF ||
-+				    port->type == PORT_HSCIF) {
-+					status = serial_port_in(port, SCxSR);
-+					c = serial_port_in(port, SCxRDR);
-+				} else {
-+					c = serial_port_in(port, SCxRDR);
-+					status = serial_port_in(port, SCxSR);
-+				}
- 				if (uart_handle_sysrq_char(port, c)) {
- 					count--; i--;
- 					continue;
+-			vnt_adjust_tsf(priv, conf->beacon_rate->hw_value,
+-				       conf->sync_tsf, priv->current_tsf);
+-
+ 			vnt_mac_set_beacon_interval(priv, conf->beacon_int);
+ 
+ 			vnt_reset_next_tbtt(priv, conf->beacon_int);
++
++			vnt_adjust_tsf(priv, conf->beacon_rate->hw_value,
++				       conf->sync_tsf, priv->current_tsf);
++
++			vnt_update_next_tbtt(priv,
++					     conf->sync_tsf, conf->beacon_int);
+ 		} else {
+ 			vnt_clear_current_tsf(priv);
+ 
 
 
