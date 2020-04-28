@@ -2,122 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6F91BB346
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1282A1BB34F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726279AbgD1BLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 21:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726233AbgD1BLj (ORCPT
+        id S1726379AbgD1BQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 21:16:28 -0400
+Received: from vultr.net.flygoat.com ([149.28.68.211]:60258 "EHLO
+        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726233AbgD1BQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 21:11:39 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A028EC03C1A8;
-        Mon, 27 Apr 2020 18:11:37 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d184so9882585pfd.4;
-        Mon, 27 Apr 2020 18:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iv9VG1ml9YtdubxTkSVKWnfhCAm26tdpMZmL56nVCYc=;
-        b=en/JylFl8KERUCoB06g3lH9RTFt6u/pTLuDKe6cjSmoQ/jz0G8pmGFKwYMOT4X0fn3
-         EEwjVaRfYwGFygNhQZNxFnWQ4y4K/g7TQwr9HCUw/YaW66/Yb44ptlT8uiXlxypxao6D
-         3TE/MngCCXMHbpwafPDK9jg0BRrVuet52wxuH7uC/n2PUKW4AgpNT5F2nwrg2xSmVWlT
-         ji7pfJhI8LHCfbV2mRBtMXEK0yM1yoKgwcA+S2NFJyYQgi52v88JaqEISqezul0Um9FO
-         yrzvSZMH3W/YAyogV070gXVIo7aa3GqChkh7WZYanrXfTGbOE7BJQqdfOpq7bz6KJ8uP
-         2PiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iv9VG1ml9YtdubxTkSVKWnfhCAm26tdpMZmL56nVCYc=;
-        b=paimORPPK4KqHMQf2TILNf1p1RdM36kX9TfLErX9Y862pik1aK5VDw2DF9+f7RN727
-         AoUanG/DFFB7yBAzPKyzwMCXDx6bZ+d4dsCGKNNIsLnysAe2wxakTra09PVymf5fjTGn
-         sU2AyHElDWNWSwCzX5d28wVxewU16fdapfuE8QIv/dDKQWd06fFFN61ltXFaf2JDuQDG
-         8MTd3y43O0LL/v4QJeFuItJl+vNcW6Ovsp3f0Cg+eLpycmetF9sdDV07Y20+CU710dhC
-         OZYcfwxUrGVhB1l1ruXmaET+/Bm/VUB9gLCS+RZBZT+khWOBMpcDgASTQ+ynSVKwOqVK
-         io3w==
-X-Gm-Message-State: AGi0PuaiEg4ezBIVoy250MIulRdoUg2c2NWfJxauB2jfGcYxWKWCP4KL
-        1moJNay8xvtFbuez150so+A=
-X-Google-Smtp-Source: APiQypJB9eoHpfKd85W5XG6LcAJS6p+QLoEsa2/CGJqTZyMNhrDTGELNXXx6D+FPslZDHI2wzSjwmQ==
-X-Received: by 2002:a63:4c08:: with SMTP id z8mr25135272pga.175.1588036296910;
-        Mon, 27 Apr 2020 18:11:36 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
-        by smtp.gmail.com with ESMTPSA id 138sm13429682pfz.31.2020.04.27.18.11.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 18:11:36 -0700 (PDT)
-Date:   Mon, 27 Apr 2020 18:11:34 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Evan Green <evgreen@chromium.org>
-Cc:     stable@vger.kernel.org,
-        Nick Desaulniers <nick.desaulniers@gmail.com>,
-        Allison Randal <allison@lohutok.net>,
-        Andrew Duggan <aduggan@synaptics.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Enrico Weigelt <info@metux.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: synaptics-rmi4 - Really fix attn_data
- use-after-free
-Message-ID: <20200428011134.GV125362@dtor-ws>
-References: <20200427145537.1.Ic8f898e0147beeee2c005ee7b20f1aebdef1e7eb@changeid>
+        Mon, 27 Apr 2020 21:16:27 -0400
+Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id D7F792049E;
+        Tue, 28 Apr 2020 01:16:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1588036582; bh=YpbKFu2GtHuJRM3elJ1UDPWZ42z5iYMpD3wZVprdR/8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KpvpSpyyHeInj2hqGchbkiq09c63G1ENf9haGk7dFZPGammg8EawvRr/YwVlxJooX
+         kxJlHf0Y9TGG5/uFX8jLJU1WPUgMA7/Fdfiysfm54tYp0n737kCdNQ+cVlewm+RDLo
+         /bmg6AcNc4aNmPuvfyPhxBE7ppHaiZsPgYb3o/GWd57D07ndZ/IX0MBMekLGjnJdkB
+         PpM1TQmjDeUQj/ECZAjncTEvhB9NyobtCgmrIvCiEvWlYX2H8wkz4PzQr2jhEiaw26
+         Ej+bD6lnA6cHQTeF91p+x/9LE15Xd8+YrQ7lX54Axpmd7x0hB8L0prOpVwbCCp8fDg
+         xZ+shF5SWa8mg==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Paul Burton <paulburton@kernel.org>, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/5] Loongson PCI Generic Driver 
+Date:   Tue, 28 Apr 2020 09:14:15 +0800
+Message-Id: <20200428011429.1852081-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200427060551.1372591-1-jiaxun.yang@flygoat.com>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427145537.1.Ic8f898e0147beeee2c005ee7b20f1aebdef1e7eb@changeid>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 02:55:48PM -0700, Evan Green wrote:
-> Fix a use-after-free noticed by running with KASAN enabled. If
-> rmi_irq_fn() is run twice in a row, then rmi_f11_attention() (among
-> others) will end up reading from drvdata->attn_data.data, which was
-> freed and left dangling in rmi_irq_fn().
-> 
-> Commit 55edde9fff1a ("Input: synaptics-rmi4 - prevent UAF reported by
-> KASAN") correctly identified and analyzed this bug. However the attempted
-> fix only NULLed out a local variable, missing the fact that
-> drvdata->attn_data is a struct, not a pointer.
-> 
-> NULL out the correct pointer in the driver data to prevent the attention
-> functions from copying from it.
-> 
-> Fixes: 55edde9fff1a ("Input: synaptics-rmi4 - prevent UAF reported by KASAN")
-> Fixes: b908d3cd812a ("Input: synaptics-rmi4 - allow to add attention data")
-> 
-> Signed-off-by: Evan Green <evgreen@chromium.org>
-> 
-> Cc: stable@vger.kernel.org
-> Cc: Nick Desaulniers <nick.desaulniers@gmail.com>
+Hi,
 
-Ugh, this is all kind of ugly, but I guess that's what we have now.
-Applied, thank you.
+This series converts Loongson PCI into a generic PCI controller
+driver and adds support for LS2K SoC and LS7A PCH's PCI support.
 
-> ---
-> 
->  drivers/input/rmi4/rmi_driver.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/rmi4/rmi_driver.c b/drivers/input/rmi4/rmi_driver.c
-> index 190b9974526bb..c18e1a25bca6e 100644
-> --- a/drivers/input/rmi4/rmi_driver.c
-> +++ b/drivers/input/rmi4/rmi_driver.c
-> @@ -205,7 +205,7 @@ static irqreturn_t rmi_irq_fn(int irq, void *dev_id)
->  
->  	if (count) {
->  		kfree(attn_data.data);
-> -		attn_data.data = NULL;
-> +		drvdata->attn_data.data = NULL;
->  	}
->  
->  	if (!kfifo_is_empty(&drvdata->attn_fifo))
-> -- 
-> 2.24.1
-> 
+Is it possible to let patch 1~3 go through PCI tree and patch
+4~5 go through MIPS tree?
+
+Thanks.
+
+v6: Drop first the patch of previous versions. Driver code clean-ups
+according to rob's suggestion.
+
+It looks like I had a wrong impression on generic IO port handeling
+and now the issue has been fixed, I implemented PCI_IOBASE for MIPS[1].
+Now the address is uniform here.
+
+[1]: https://patchwork.kernel.org/cover/11510499/
+
+v7: Fix some minor issues.
+
+Jiaxun Yang (5):
+  PCI: Don't disable decoding when mmio_always_on is set
+  PCI: Add Loongson PCI Controller support
+  dt-bindings: Document Loongson PCI Host Controller
+  MIPS: DTS: Loongson64: Add PCI Controller Node
+  MIPS: Loongson64: Switch to generic PCI driver
+
+ .../devicetree/bindings/pci/loongson.yaml     |  62 +++++
+ arch/mips/Kconfig                             |   1 +
+ arch/mips/boot/dts/loongson/rs780e-pch.dtsi   |  12 +
+ arch/mips/loongson64/Makefile                 |   2 +-
+ arch/mips/loongson64/vbios_quirk.c            |  29 ++
+ arch/mips/pci/Makefile                        |   1 -
+ arch/mips/pci/fixup-loongson3.c               |  71 -----
+ arch/mips/pci/ops-loongson3.c                 | 116 --------
+ drivers/pci/controller/Kconfig                |  10 +
+ drivers/pci/controller/Makefile               |   1 +
+ drivers/pci/controller/pci-loongson.c         | 251 ++++++++++++++++++
+ drivers/pci/probe.c                           |   2 +-
+ 12 files changed, 368 insertions(+), 190 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/loongson.yaml
+ create mode 100644 arch/mips/loongson64/vbios_quirk.c
+ delete mode 100644 arch/mips/pci/fixup-loongson3.c
+ delete mode 100644 arch/mips/pci/ops-loongson3.c
+ create mode 100644 drivers/pci/controller/pci-loongson.c
 
 -- 
-Dmitry
+2.26.0.rc2
+
