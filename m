@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3DB1BCB30
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E47C1BCB4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729560AbgD1Sza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:55:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48766 "EHLO mail.kernel.org"
+        id S1730112AbgD1Sz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:55:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729822AbgD1Scd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:32:33 -0400
+        id S1729234AbgD1Sb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:31:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07EDF21707;
-        Tue, 28 Apr 2020 18:32:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C35420B80;
+        Tue, 28 Apr 2020 18:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098753;
-        bh=zh32gu6edzyBPgmvjXBu7eEBDvax85StJXrJqTDHdcM=;
+        s=default; t=1588098717;
+        bh=soMyHZTRdotEhdGqYAHn3eNEg3IDW8qhDnFBz1nc1Vc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YGXDb7w5/7NsroINKJ3O44uYiYFi0HCB+StcUOcoIRRtHnKWeYm3V+/Pv+lg+Qt2P
-         A1Y1/ktZdsMlyMV+WRRrEjSAXX/p3Y2sS733V4sOZ0pK6ua2YjOyNXBI8kqTWireTS
-         Opi5z3SXeoV5GT9OR4nM//bLSmw8z8XTigE4QLmk=
+        b=HEqk5rfvl4s63TcX2BULfHDR55dhntsj/FG29dbUjOWqSWKjan48SIe2FehPciL4w
+         jsNmx+FsGCZOhh8gL8PGHkYGkFft03NiaqantWNq5Vx0Huz/5jtLjN+qQt2G02+OcQ
+         e1tpd7La64QjTiu9N9JVK/nu7tYnTtsrHv7FD0aM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Ahern <dsahern@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrey Ignatov <rdna@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 080/167] libbpf: Only check mode flags in get_xdp_id
-Date:   Tue, 28 Apr 2020 20:24:16 +0200
-Message-Id: <20200428182235.076509927@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 045/131] kvm: fix compilation on aarch64
+Date:   Tue, 28 Apr 2020 20:24:17 +0200
+Message-Id: <20200428182230.701874652@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ahern <dsahern@gmail.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit 257d7d4f0e69f5e8e3d38351bdcab896719dba04 ]
+commit c011d23ba046826ccf8c4a4a6c1d01c9ccaa1403 upstream.
 
-The commit in the Fixes tag changed get_xdp_id to only return prog_id
-if flags is 0, but there are other XDP flags than the modes - e.g.,
-XDP_FLAGS_UPDATE_IF_NOEXIST. Since the intention was only to look at
-MODE flags, clear other ones before checking if flags is 0.
+Commit e45adf665a53 ("KVM: Introduce a new guest mapping API", 2019-01-31)
+introduced a build failure on aarch64 defconfig:
 
-Fixes: f07cbad29741 ("libbpf: Fix bpf_get_link_xdp_id flags handling")
-Signed-off-by: David Ahern <dsahern@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrey Ignatov <rdna@fb.com>
+$ make -j$(nproc) ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- O=out defconfig \
+                Image.gz
+...
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:
+    In function '__kvm_map_gfn':
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:1763:9: error:
+    implicit declaration of function 'memremap'; did you mean 'memset_p'?
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:1763:46: error:
+    'MEMREMAP_WB' undeclared (first use in this function)
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:
+    In function 'kvm_vcpu_unmap':
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:1795:3: error:
+    implicit declaration of function 'memunmap'; did you mean 'vm_munmap'?
+
+because these functions are declared in <linux/io.h> rather than <asm/io.h>,
+and the former was being pulled in already on x86 but not on aarch64.
+
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[bwh: Backported to 4.19: adjust context]
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/netlink.c | 2 ++
- 1 file changed, 2 insertions(+)
+ virt/kvm/kvm_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-index 6d47345a310bd..c364e4be5e6eb 100644
---- a/tools/lib/bpf/netlink.c
-+++ b/tools/lib/bpf/netlink.c
-@@ -289,6 +289,8 @@ int bpf_get_link_xdp_info(int ifindex, struct xdp_link_info *info,
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index ec1479abb29de..4a5ea263edf62 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -52,9 +52,9 @@
+ #include <linux/sort.h>
+ #include <linux/bsearch.h>
+ #include <linux/kthread.h>
++#include <linux/io.h>
  
- static __u32 get_xdp_id(struct xdp_link_info *info, __u32 flags)
- {
-+	flags &= XDP_FLAGS_MODES;
-+
- 	if (info->attach_mode != XDP_ATTACHED_MULTI && !flags)
- 		return info->prog_id;
- 	if (flags & XDP_FLAGS_DRV_MODE)
+ #include <asm/processor.h>
+-#include <asm/io.h>
+ #include <asm/ioctl.h>
+ #include <linux/uaccess.h>
+ #include <asm/pgtable.h>
 -- 
 2.20.1
 
