@@ -2,277 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65E21BCF6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 00:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B051BCF63
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 00:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726577AbgD1WG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 18:06:29 -0400
-Received: from retiisi.org.uk ([95.216.213.190]:42994 "EHLO
-        hillosipuli.retiisi.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726256AbgD1WG3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 18:06:29 -0400
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id 96AD3634C8F;
-        Wed, 29 Apr 2020 01:05:29 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1jTYM5-00028u-1o; Wed, 29 Apr 2020 01:05:29 +0300
-Date:   Wed, 29 Apr 2020 01:05:29 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Maxime Ripard <maxime@cerno.tech>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Tomasz Figa <tfiga@chromium.org>
-Subject: Re: [PATCH v8 v5 1/3] media: dt-bindings: ov8856: Document YAML
- bindings
-Message-ID: <20200428220528.GX934@valkosipuli.retiisi.org.uk>
-References: <20200428180718.1609826-1-robert.foss@linaro.org>
+        id S1726847AbgD1WEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 18:04:37 -0400
+Received: from mga02.intel.com ([134.134.136.20]:13558 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725934AbgD1WEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 18:04:36 -0400
+IronPort-SDR: 7A9YF1c+TMb08MV2ZPgmy8qz+pw8Qq+9b0zRE8tOS/xdX++yaj8t+GwIeHvTtgEk64eeinNX8p
+ LawRfEUrDuoQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 15:04:36 -0700
+IronPort-SDR: l7M6V/bjnoYBNCtL9HPR7FeFyttpjX6WR+y0CL4huH55MgwCiaTD7IbXtPAVPJfcbTZ2xSJSQ3
+ cTZUntqq7+Wg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
+   d="scan'208";a="282292044"
+Received: from psera2-dell24.ra.intel.com ([10.54.154.157])
+  by fmsmga004.fm.intel.com with ESMTP; 28 Apr 2020 15:04:36 -0700
+Date:   Tue, 28 Apr 2020 15:06:07 -0700 (PDT)
+From:   matthew.gerlach@linux.intel.com
+X-X-Sender: lab@psera2-dell24.ra.intel.com
+To:     Xu Yilun <yilun.xu@intel.com>
+cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mdf@kernel.org
+Subject: Re: How to update a piece of flash for FPGA firmware?
+In-Reply-To: <20200428050135.GA27416@yilunxu-OptiPlex-7050>
+Message-ID: <alpine.LFD.2.21.2004281434001.59524@psera2-dell24.ra.intel.com>
+References: <20200428050135.GA27416@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428180718.1609826-1-robert.foss@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
+Hi Yilun,
 
-Thanks for the update. Some small matters below.
+You raise some very interesting questions. Please see
+my comments below.
 
-On Tue, Apr 28, 2020 at 08:07:16PM +0200, Robert Foss wrote:
-> From: Dongchun Zhu <dongchun.zhu@mediatek.com>
-> 
-> This patch adds documentation of device tree in YAML schema for the
-> OV8856 CMOS image sensor.
-> 
-> Signed-off-by: Dongchun Zhu <dongchun.zhu@mediatek.com>
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
-> 
-> - Changes since v7:
->   * Marco: Make 'port' property optional
->   * Maxime & Sakari: Add 'link-frequencies' property to dt binding
->   * robher: Improve description for 'port' property
-> 
-> - Changes since v6:
->   * Marco: remove qcom specifics from DT example
->    
-> - Changes since v5:
->   * Add assigned-clocks and assigned-clock-rates
->   * robher: dt-schema errors
-> 
-> - Changes since v4:
->   * Fabio: Change reset-gpio to GPIO_ACTIVE_LOW, explain in description
->   * Add clock-lanes property to example
->   * robher: Fix syntax error in devicetree example
-> 
-> - Changes since v3:
->   * robher: Fix syntax error
->   * robher: Removed maxItems
->   * Fixes yaml 'make dt-binding-check' errors
-> 
-> - Changes since v2:
->   Fixes comments from from Andy, Tomasz, Sakari, Rob.
->   * Convert text documentation to YAML schema.
-> 
-> - Changes since v1:
->   Fixes comments from Sakari, Tomasz
->   * Add clock-frequency and link-frequencies in DT
-> 
->  .../devicetree/bindings/media/i2c/ov8856.yaml | 140 ++++++++++++++++++
->  MAINTAINERS                                   |   1 +
->  2 files changed, 141 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> new file mode 100644
-> index 000000000000..f78d3eae81cb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> @@ -0,0 +1,140 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright (c) 2019 MediaTek Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/ov8856.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Omnivision OV8856 CMOS Sensor Device Tree Bindings
-> +
-> +maintainers:
-> +  - Ben Kao <ben.kao@intel.com>
-> +  - Dongchun Zhu <dongchun.zhu@mediatek.com>
+Matthew
 
-I guess Dongchun would be the maintainer for these bindings, not Ben.
-Please also cc Ben in the next version.
+On Tue, 28 Apr 2020, Xu Yilun wrote:
 
-> +
-> +description: |-
-> +  The Omnivision OV8856 is a high performance, 1/4-inch, 8 megapixel, CMOS
-> +  image sensor that delivers 3264x2448 at 30fps. It provides full-frame,
-> +  sub-sampled, and windowed 10-bit MIPI images in various formats via the
-> +  Serial Camera Control Bus (SCCB) interface. This chip is programmable
-> +  through I2C and two-wire SCCB. The sensor output is available via CSI-2
-> +  serial data output (up to 4-lane).
-> +
-> +properties:
-> +  compatible:
-> +    const: ovti,ov8856
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    description:
-> +      Input clock for the sensor.
-> +    items:
-> +      - const: xvclk
-> +
-> +  clock-frequency:
-> +    description:
-> +      Frequency of the xvclk clock in Hertz.
-> +
-> +  dovdd-supply:
-> +    description:
-> +      Definition of the regulator used as interface power supply.
-> +
-> +  avdd-supply:
-> +    description:
-> +      Definition of the regulator used as analog power supply.
-> +
-> +  dvdd-supply:
-> +    description:
-> +      Definition of the regulator used as digital power supply.
-> +
-> +  reset-gpios:
-> +    description:
-> +      The phandle and specifier for the GPIO that controls sensor reset.
-> +      This corresponds to the hardware pin XSHUTDOWN which is physically
-> +      active low.
-> +
-> +  port:
-> +    type: object
-> +    additionalProperties: false
-> +    description:
-> +      A node containing an output port node with an endpoint definition
-> +      as documented in
-> +      Documentation/devicetree/bindings/media/video-interfaces.txt
-> +
-> +    properties:
-> +      endpoint:
-> +        type: object
-> +
-> +        properties:
-> +          clock-lanes:
+> Hi,
+>
+> I wonder if an updating of FPGA Flash (but cannot reload) could be
+> implemented as fpga-mgr?
+>
+> I have the pcie based FPGA card. The bitstream for FPGA static region is
+> stored on flash chip. Board will load the bitstream to FPGA on system
+> power cycle. The flash chip could be accessed through "PCIE -> ... ->
+> Flash update engine -> Flash". So the update of the FPGA static region is
+> basicly updating the flash chip through PCIE and rebooting system.
 
-Does the sensor support lane reordering? If not, please omit this.
+I think you mean power cycle when you say "rebooting system" above, but
+your point is worth highlighting.  During this flash update the
+FPGA is actually fully configured and running its application.  Typically,
+during a fpga-mgr update of the static region or partial reconfiguration
+region, the actual contents of the fpga region is "changing" during the 
+update.
 
-> +            maxItems: 1
-> +
-> +          data-lanes:
-> +            maxItems: 1
+>
+> Should I implement the flash update engine as a fpga-mgr device? On one
+> hand it is just a flash write, FPGA functionality is actually not
+> changed before reboot. Does fpga-mgr requires bitstream takes function
+> immediately after write_complete()? On the other hand, the flash write
+> do affects FPGA static region on next boot. Operating on the
+> corresponding fpga region makes kernel fully aware of what is being
+> done.
 
-Hmm. The example has four lanes. Do I miss something?
+When an fpga-mgr is used in a device tree overlay flow, one gains
+the benefit the enumeration of the nodes in the overlay after the
+update has completed.
 
-> +
-> +          link-frequencies:
-> +            maxItems: 1
+>
+> Actually the FPGA card do has the capability to reload bitstream at
+> runtime. But it will cause the whole PCIE device lost, static region is
+> also destroyed. We need to rescan PCI to get it back. So I think
+> basically this is the same case as system reboot from FPGA's
+> perspective.
 
-The number of items in link-frequencies should not be limited to one
-either.
+Yes, on those cards that have the ability to power cycle themselves (i.e. 
+fully reconfigure the FPGA from flash), the PCIe connection to the card
+is broken because of a surprise link down PCIe error.  As you say a PCI 
+rescan (i.e. re-enumeration of the entire card) is required.  Since
+the card has to be re-scanned at the PCI level anyway, there may not be 
+much benefit to using the fpga-mgr in this flow.
 
-> +
-> +          remote-endpoint: true
-> +
-> +        required:
-> +          - clock-lanes
-> +          - data-lanes
-> +          - remote-endpoint
-> +          - link-frequencies
-> +
-> +    required:
-> +      - endpoint
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - clock-frequency
-> +  - dovdd-supply
-> +  - avdd-supply
-> +  - dvdd-supply
-> +  - reset-gpios
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        ov8856: camera@10 {
-> +            compatible = "ovti,ov8856";
-> +            reg = <0x10>;
-> +
-> +            reset-gpios = <&pio 111 GPIO_ACTIVE_LOW>;
-> +            pinctrl-names = "default";
-> +            pinctrl-0 = <&clk_24m_cam>;
-> +
-> +            clocks = <&cam_osc>;
-> +            clock-names = "xvclk";
-> +            clock-frequency = <19200000>;
-> +
-> +            avdd-supply = <&mt6358_vcama2_reg>;
-> +            dvdd-supply = <&mt6358_vcamd_reg>;
-> +            dovdd-supply = <&mt6358_vcamio_reg>;
-> +
-> +            port {
-> +                wcam_out: endpoint {
-> +                    remote-endpoint = <&mipi_in_wcam>;
-> +                    clock-lanes = <0>;
-> +                    data-lanes = <1 2 3 4>;
-> +                    link-frequencies = /bits/ 64 <360000000 180000000>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +...
-> \ No newline at end of file
+I wonder if these kinds of more disruptive updates are better suited to 
+something firmware updates rather than fpga updates?
 
-^
-
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 26f281d9f32a..84b262afd13d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12489,6 +12489,7 @@ L:	linux-media@vger.kernel.org
->  S:	Maintained
->  T:	git git://linuxtv.org/media_tree.git
->  F:	drivers/media/i2c/ov8856.c
-> +F:	Documentation/devicetree/bindings/media/i2c/ov8856.yaml
->  
->  OMNIVISION OV9640 SENSOR DRIVER
->  M:	Petr Cvek <petrcvekcz@gmail.com>
-
--- 
-Kind regards,
-
-Sakari Ailus
+>
+> Thanks
+> Yilun
+>
