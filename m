@@ -2,471 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345251BC3A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12AEB1BC3B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgD1P2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 11:28:49 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:39929 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728319AbgD1P2r (ORCPT
+        id S1728529AbgD1PaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 11:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727931AbgD1PaK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 11:28:47 -0400
-Received: by mail-ot1-f68.google.com with SMTP id m13so33225373otf.6;
-        Tue, 28 Apr 2020 08:28:45 -0700 (PDT)
+        Tue, 28 Apr 2020 11:30:10 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949E4C03C1AD
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 08:30:08 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x18so25135995wrq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 08:30:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gauwVclIV+e8Frz/1f+prutYjm++yrOKvLzkWVUtHsU=;
+        b=HC/NX2E1Y8aQY5lBYYTkrizcrUkGhE3ln0zPxPZvsH3BzzL+7cQb/4oXhOsmUWU4TD
+         bgD6Sv4Cr/2mGu/VyEjEpr8Sauw9uUk/tJC26h3OKMS2/Tlgfdh1JqejVzJTd/x4Q3W6
+         8WlHf2T89qV4t8QhwiHcUGlOQDEFXHcoGBteeonTjK8/8BPiRU5iX1EXmaZGiGOF7D1K
+         6R7l/yx+AMDCWppcRyKD3+IwFer8eiAZWCWgoTiACin86X7ZTaNALd7KXRUjHswsJqLu
+         csj1DAwx65NZegZ7EeZ6CkXSSwLu6Ztp+JKrXKuFBcf4UMemXwzUzSu3YVIQfGQUNXFC
+         Cyqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PDx5jSzTsCF689zZbvPvqEwU7yEVo/oW97Fw3UfxxAY=;
-        b=kReoxhAfromfn1h+8pq4B7IfKMQ+jg3tii0cugNIYjS31w6GVxW0lKfa3OlualxsUK
-         uFvRj+fiUFfx48KtzgmnWKlpZ9u9dhM+zeW2EL9Ys2Zjqd+m24bUp7rFzT7BcrDzOoO7
-         bNjaB02xgn38igagL1T6KabYF4mVJxrqCfKeskfzEnz4k092o2INDo2FyYSV3avgHjSa
-         4pwNoSoOemhqkKrFOHhyQ2kVFowKMHEajPVj7WA0bPBgOVVpnLpNoJcUoYd3dmzZx0yY
-         8ZzO5UxksKaOujtKdIzc0Diz4VWy17P+k70lOyTQzL4vfCacylZzF30qXPGd8AUtqwBO
-         Z70Q==
-X-Gm-Message-State: AGi0PuY8duAIDolQCOsPESE7ist/IfBIL3SNLGXWtbFotooVbxRr7wrx
-        0MpsZKDfAGPJluS3H9K5DA==
-X-Google-Smtp-Source: APiQypI1+V6ijrabaoJRFCeP9BSkzW0+lnNg3NiBmQRtiFLKcMQ63saeVwoR/e6u9BLbebXsQEUExA==
-X-Received: by 2002:a9d:2dc1:: with SMTP id g59mr4199552otb.288.1588087724813;
-        Tue, 28 Apr 2020 08:28:44 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n184sm4890728oih.58.2020.04.28.08.28.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 08:28:44 -0700 (PDT)
-Received: (nullmailer pid 25689 invoked by uid 1000);
-        Tue, 28 Apr 2020 15:28:43 -0000
-Date:   Tue, 28 Apr 2020 10:28:43 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Christophe Kerello <christophe.kerello@st.com>
-Cc:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        lee.jones@linaro.org, mark.rutland@arm.com, tony@atomide.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        devicetree@vger.kernel.org, marex@denx.de
-Subject: Re: [PATCH v2 01/12] dt-bindings: mfd: stm32-fmc2: add STM32 FMC2
- controller documentation
-Message-ID: <20200428152843.GA8088@bogus>
-References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
- <1586966256-29548-2-git-send-email-christophe.kerello@st.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gauwVclIV+e8Frz/1f+prutYjm++yrOKvLzkWVUtHsU=;
+        b=DsT7ESHrNYLKkUUSiYKstP9ppJV8A+R1r7PXRSaJfGUHUyHZimAhBCL5FBF6NTV94F
+         +SFW8w2kCGSiObr/O2hC+3bnU48L8zjh3LYhzSL8pgDJ8IJsqPYNUf8sqcilRwM1VHlu
+         SozWCFniL5AXLE337P/o1rKPLjDoH78GFUqzkO/iBYeI/E4irPVnKo3J6oCXSK37X0jp
+         aA77iJHoPVS/4NRuHjDG3a7pegrn/VCFf7f5fcKTnHpOTuGTW7Fulx6F7cq/9oMpxB77
+         kI79iom3VDXJ8mqc5CLNuh3DAlzAXRuK+oAcjgR/6rAxtqa9/3xgKLm5bJWvR4a2mhWd
+         AaUw==
+X-Gm-Message-State: AGi0PuYwwlEWeFMd8963eoJYqfPx1l9xzxeyocZWun/6362kLmHaQ4Z6
+        tiJ33ag9ZqDpfVwoW5y+/Eam/KzKf3I=
+X-Google-Smtp-Source: APiQypJTmBcHpbtsW21xaYaE/ehqyHTbUvunr6RDFNGCkwj49JdUj43sxWA/wG6e27gOTlrZLuNl5w==
+X-Received: by 2002:adf:fc4f:: with SMTP id e15mr34026835wrs.415.1588087806772;
+        Tue, 28 Apr 2020 08:30:06 -0700 (PDT)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-135-148.adsl.proxad.net. [82.252.135.148])
+        by smtp.googlemail.com with ESMTPSA id s14sm3905547wme.33.2020.04.28.08.30.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Apr 2020 08:30:06 -0700 (PDT)
+Subject: Re: [PATCH v3 3/4] thermal/drivers/cpuidle_cooling: Change the
+ registration function
+To:     Lukasz Luba <lukasz.luba@arm.com>, rui.zhang@intel.com
+Cc:     amit.kucheria@verdurent.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        "open list:THERMAL/CPU_COOLING" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200414220837.9284-1-daniel.lezcano@linaro.org>
+ <20200414220837.9284-3-daniel.lezcano@linaro.org>
+ <4a8483a5-b481-5e97-9d03-f1ad3ae163d5@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <88ae483d-2239-5af6-7ba1-2c5e7acb4042@linaro.org>
+Date:   Tue, 28 Apr 2020 17:30:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586966256-29548-2-git-send-email-christophe.kerello@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <4a8483a5-b481-5e97-9d03-f1ad3ae163d5@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 15, 2020 at 05:57:25PM +0200, Christophe Kerello wrote:
-> This patch adds the documentation of the device tree bindings for the STM32
-> FMC2 controller.
+
+Hi Lukasz,
+
+On 28/04/2020 17:20, Lukasz Luba wrote:
+> Hi Daniel,
 > 
-> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> ---
->  .../devicetree/bindings/mfd/st,stm32-fmc2.yaml     | 370 +++++++++++++++++++++
->  1 file changed, 370 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/st,stm32-fmc2.yaml
+> I have checked the patches and run them on Juno.
+> Please find my comments below.
+
+thanks a lot for the review and the testing.
+
+
+
+> On 4/14/20 11:08 PM, Daniel Lezcano wrote:
+>> Today, there is no user for the cpuidle cooling device. The targetted
+>> platform is ARM and ARM64.
+>>
+>> The cpuidle and the cpufreq cooling device are based on the device tree.
+>>
+>> As the cpuidle cooling device can have its own configuration depending
+>> on the platform and the available idle states. The DT node description
+>> will give the optional properties to set the cooling device up.
+>>
+>> Do no longer rely on the CPU node which is prone to error and will
+>> lead to a confusion in the DT because the cpufreq cooling device is
+>> also using it. Let initialize the cpuidle cooling device with the DT
+>> binding.
+>>
+>> This was tested on:
+>>   - hikey960
+>>   - hikey6220
+>>   - rock960
+>>   - db845c
+>>
+>> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>> ---
+>>   drivers/thermal/cpuidle_cooling.c | 58 +++++++++++++++++++++++++------
+>>   include/linux/cpu_cooling.h       |  7 ----
+>>   2 files changed, 47 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/drivers/thermal/cpuidle_cooling.c
+>> b/drivers/thermal/cpuidle_cooling.c
+>> index 0bb843246f59..b2c81c427f05 100644
+>> --- a/drivers/thermal/cpuidle_cooling.c
+>> +++ b/drivers/thermal/cpuidle_cooling.c
+>> @@ -10,6 +10,7 @@
+>>   #include <linux/err.h>
+>>   #include <linux/idle_inject.h>
+>>   #include <linux/idr.h>
+>> +#include <linux/of_device.h>
+>>   #include <linux/slab.h>
+>>   #include <linux/thermal.h>
+>>   @@ -154,22 +155,25 @@ static struct thermal_cooling_device_ops
+>> cpuidle_cooling_ops = {
+>>   };
+>>     /**
+>> - * cpuidle_of_cooling_register - Idle cooling device initialization
+>> function
+>> + * __cpuidle_cooling_register: register the cooling device
+>>    * @drv: a cpuidle driver structure pointer
+>> - * @np: a node pointer to a device tree cooling device node
+>> + * @np: a device node structure pointer used for the thermal binding
+>>    *
+>> - * This function is in charge of creating a cooling device per cpuidle
+>> - * driver and register it to thermal framework.
+>> + * This function is in charge of allocating the cpuidle cooling device
+>> + * structure, the idle injection, initialize them and register the
+>> + * cooling device to the thermal framework.
+>>    *
+>> - * Return: zero on success, or negative value corresponding to the
+>> - * error detected in the underlying subsystems.
+>> + * Return: zero on success, a negative value returned by one of the
+>> + * underlying subsystem in case of error
+>>    */
+>> -int cpuidle_of_cooling_register(struct device_node *np,
+>> -                struct cpuidle_driver *drv)
+>> +static int __cpuidle_cooling_register(struct device_node *np,
+>> +                      struct cpuidle_driver *drv)
+>>   {
+>>       struct idle_inject_device *ii_dev;
+>>       struct cpuidle_cooling_device *idle_cdev;
+>>       struct thermal_cooling_device *cdev;
+>> +    unsigned int idle_duration_us = TICK_USEC;
+>> +    unsigned int latency_us = UINT_MAX;
+>>       char dev_name[THERMAL_NAME_LENGTH];
+>>       int id, ret;
+>>   @@ -191,7 +195,11 @@ int cpuidle_of_cooling_register(struct
+>> device_node *np,
+>>           goto out_id;
+>>       }
+>>   -    idle_inject_set_duration(ii_dev, TICK_USEC, TICK_USEC);
+>> +    of_property_read_u32(np, "duration", &idle_duration_us);
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/st,stm32-fmc2.yaml b/Documentation/devicetree/bindings/mfd/st,stm32-fmc2.yaml
-> new file mode 100644
-> index 0000000..0ce1340
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/st,stm32-fmc2.yaml
-> @@ -0,0 +1,370 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/st,stm32-fmc2.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: STMicroelectronics Flexible Memory Controller 2 (FMC2) Bindings
-> +
-> +description: |
-> +  The FMC2 functional block makes the interface with: synchronous and
-> +  asynchronous static devices (such as PSNOR, PSRAM or other memory-mapped
-> +  peripherals) and NAND flash memories.
-> +  Its main purposes are:
-> +    - to translate AXI transactions into the appropriate external device
-> +      protocol
-> +    - to meet the access time requirements of the external devices
-> +  All external devices share the addresses, data and control signals with the
-> +  controller. Each external device is accessed by means of a unique Chip
-> +  Select. The FMC2 performs only one access at a time to an external device.
-> +
-> +maintainers:
-> +  - Christophe Kerello <christophe.kerello@st.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: st,stm32mp1-fmc2
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 1
-> +
-> +  ranges: true
-> +
-> +patternProperties:
-> +  "^ebi(@.*)?":
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        const: st,stm32mp1-fmc2-ebi
-> +
-> +      "#address-cells":
-> +        const: 2
-> +
-> +      "#size-cells":
-> +        const: 1
-> +
-> +      ranges: true
-> +
-> +    patternProperties:
-> +      "^[a-zA-Z]*-ebi@[a-f0-9,]*$":
-
-These nodes should be named based on the device connected and we can be 
-a bit more precise on the unit-address:
-
-"@[0-9a-f],[0-9a-f]+$"
-
-Adjust for how many chip selects there are. 15 seems unlikely.
-
-> +        type: object
-> +
-> +        properties:
-> +          reg:
-> +            maxItems: 1
-> +
-> +          st,fmc2_ebi_cs_transaction_type:
-
-s/_/-/
-
-And for the rest of the vendor properties...
-
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +              - minimum: 0
-> +                maximum: 11
-> +            description: |
-> +                         Select one of the transactions type supported
-> +                           0: Asynchronous mode 1 SRAM/FRAM
-> +                           1: Asynchronous mode 1 PSRAM.
-> +                           2: Asynchronous mode A SRAM/FRAM.
-> +                           3: Asynchronous mode A PSRAM.
-> +                           4: Asynchronous mode 2 NOR.
-> +                           5: Asynchronous mode B NOR.
-> +                           6: Asynchronous mode C NOR.
-> +                           7: Asynchronous mode D NOR.
-> +                           8: Synchronous read synchronous write PSRAM.
-> +                           9: Synchronous read asynchronous write PSRAM.
-> +                           10: Synchronous read synchronous write NOR.
-> +                           11: Synchronous read asynchronous write NOR.
-> +
-> +          st,fmc2_ebi_cs_cclk_enable:
-> +            $ref: /schemas/types.yaml#/definitions/flag
-> +            description: Continuous clock enable (first bank must be configured
-> +                         in synchronous mode). The FMC_CLK is generated continuously
-> +                         during asynchronous and synchronous access. By default, the
-> +                         FMC_CLK is only generated during synchronous access.
-> +
-> +          st,fmc2_ebi_cs_mux_enable:
-> +            $ref: /schemas/types.yaml#/definitions/flag
-> +            description: Address/Data multiplexed on databus (valid only with
-> +                         NOR and PSRAM transactions type). By default, Address/Data are
-> +                         not multiplexed.
-> +
-> +          st,fmc2_ebi_cs_buswidth:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +              - enum: [ 8, 16 ]
-> +              - default: 16
-> +            description: Data bus width
-> +
-> +          st,fmc2_ebi_cs_waitpol_high:
-> +            $ref: /schemas/types.yaml#/definitions/flag
-> +            description: Wait signal polarity (NWAIT signal active high).
-> +                         By default, NWAIT is active low.
-> +
-> +          st,fmc2_ebi_cs_waitcfg_enable:
-> +            $ref: /schemas/types.yaml#/definitions/flag
-> +            description: The NWAIT signal indicates wheither the data from the
-> +                         device are valid or if a wait state must be inserted when
-> +                         accessing the device in synchronous mode. By default, the NWAIT
-> +                         signal is active one data cycle before wait state.
-> +
-> +          st,fmc2_ebi_cs_wait_enable:
-> +            $ref: /schemas/types.yaml#/definitions/flag
-> +            description: The NWAIT signal is enabled (its level is taken into
-> +                         account after the programmed latency period to insert wait states
-> +                         if asserted). By default, the NWAIT signal is disabled.
-> +
-> +          st,fmc2_ebi_cs_asyncwait_enable:
-> +            $ref: /schemas/types.yaml#/definitions/flag
-> +            description: The NWAIT signal is taken into account during
-> +                         asynchronous transactions. By default, the NWAIT signal is not
-> +                         taken into account during asynchronous transactions.
-> +
-> +          st,fmc2_ebi_cs_cpsize:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +              - enum: [ 0, 128, 256, 512, 1024 ]
-> +              - default: 0
-> +            description: CRAM page size. The controller splits the burst access
-> +                         when the memory page is reached. By default, no burst split when
-> +                         crossing page boundary.
-> +
-> +          st,fmc2_ebi_cs_byte_lane_setup:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property configures the byte lane setup timing
-> +                         defined in ns from NBLx low to Chip Select NEx low.
-
-If units are nsec, then use the standard unit suffixes. Then you don't 
-need to define the type either.
-
-> +
-> +          st,fmc2_ebi_cs_address_setup:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the duration of the address
-> +                         setup phase in ns used for asynchronous read/write transactions.
-> +
-> +          st,fmc2_ebi_cs_address_hold:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the duration of the address
-> +                         hold phase in ns used for asynchronous multiplexed
-> +                         read/write transactions.
-> +
-> +          st,fmc2_ebi_cs_data_setup:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the duration of the data
-> +                         setup phase in ns used for asynchronous read/write transactions.
-> +
-> +          st,fmc2_ebi_cs_bus_turnaround:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the delay between the end of
-> +                         current read/write transaction and the next transaction.
-> +
-> +          st,fmc2_ebi_cs_data_hold:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the duration of the data
-> +                         hold phase in ns used for asynchronous read/write transactions.
-> +
-> +          st,fmc2_ebi_cs_clk_period:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the FMC_CLK output signal period in ns.
-> +
-> +          st,fmc2_ebi_cs_data_latency:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the data latency before reading or writing
-> +                         the first data. This timing is expressed in FMC_CLK periods.
-> +
-> +          st,fmc2_ebi_cs_write_address_setup:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the duration of the address
-> +                         setup phase in ns used for asynchronous write transactions.
-> +
-> +          st,fmc2_ebi_cs_write_address_hold:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the duration of the address hold phase in
-> +                         ns used for asynchronous multiplexed write transactions.
-> +
-> +          st,fmc2_ebi_cs_write_data_setup:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the duration of the data setup phase in
-> +                         ns used for asynchronous write transactions.
-> +
-> +          st,fmc2_ebi_cs_write_bus_turnaround:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the delay between the end of current
-> +                         write transaction and the next transaction.
-> +
-> +          st,fmc2_ebi_cs_write_data_hold:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the duration of the data hold phase
-> +                         in ns used for asynchronous write transactions.
-> +
-> +          st,fmc2_ebi_cs_max_low_pulse:
-> +            allOf:
-> +              - $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: This property defines the maximum chip select low pulse duration
-> +                         in ns for synchronous transactions. When this timing reaches 0,
-> +                         the controller splits the current access, toggles NE to allow
-> +                         device refresh and restarts a new access.
-> +
-> +        required:
-> +          - reg
-> +          - st,fmc2_ebi_cs_transaction_type
-> +
-> +    additionalProperties: false
-> +
-> +    required:
-> +      - compatible
-> +      - "#address-cells"
-> +      - "#size-cells"
-> +      - ranges
-> +
-> +  nand-controller:
-> +    allOf:
-> +      - $ref: "../mtd/nand-controller.yaml#"
-> +
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        const: st,stm32mp1-fmc2-nand
-> +
-> +      reg:
-> +        items:
-> +          - description: Chip select 0 data
-> +          - description: Chip select 0 command
-> +          - description: Chip select 0 address space
-> +          - description: Chip select 1 data
-> +          - description: Chip select 1 command
-> +          - description: Chip select 1 address space
-> +
-> +      interrupts:
-> +        maxItems: 1
-> +
-> +      dmas:
-> +        items:
-> +          - description: tx DMA channel
-> +          - description: rx DMA channel
-> +          - description: ecc DMA channel
-> +
-> +      dma-names:
-> +        items:
-> +          - const: tx
-> +          - const: rx
-> +          - const: ecc
-> +
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +    patternProperties:
-> +      "^nand@[a-f0-9]$":
-> +        type: object
-> +
-> +        properties:
-> +          nand-ecc-step-size:
-> +            const: 512
-> +
-> +          nand-ecc-strength:
-> +            enum: [1, 4 ,8 ]
-> +
-> +    additionalProperties: false
-> +
-> +    required:
-> +      - "#address-cells"
-> +      - "#size-cells"
-> +      - compatible
-> +      - reg
-> +      - interrupts
-> +
-> +  additionalProperties: false
-
-Wrong indentation. You are defining a DT property called 
-'additionalProperties'. You need 2 of these at 0 and 4 spaces 
-indentation. I have a check for this error in dt-schema pending.
-
-> +
-> +required:
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - ranges
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/stm32mp1-clks.h>
-> +    #include <dt-bindings/reset/stm32mp1-resets.h>
-> +    fmc@58002000 {
-> +      #address-cells = <1>;
-> +      #size-cells = <1>;
-> +      compatible = "st,stm32mp1-fmc2";
-> +      reg = <0x58002000 0x1000>;
-> +      clocks = <&rcc FMC_K>;
-> +      resets = <&rcc FMC_R>;
-> +      ranges;
-> +
-> +      ebi@0 {
-> +        #address-cells = <2>;
-> +        #size-cells = <1>;
-> +        compatible = "st,stm32mp1-fmc2-ebi";
-> +        ranges = <0 0 0x60000000 0x4000000>,
-> +                 <1 0 0x64000000 0x4000000>,
-> +                 <2 0 0x68000000 0x4000000>,
-> +                 <3 0 0x6c000000 0x4000000>;
-> +
-> +        psram-ebi@0,0 {
-> +          compatible = "mtd-ram";
-> +          reg = <0 0x00000000 0x100000>;
-> +          bank-width = <2>;
-> +
-> +          st,fmc2_ebi_cs_transaction_type = <1>;
-> +          st,fmc2_ebi_cs_address_setup = <60>;
-> +          st,fmc2_ebi_cs_data_setup = <30>;
-> +          st,fmc2_ebi_cs_bus_turnaround = <5>;
-> +        };
-> +      };
-> +
-> +      nand-controller@1 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        compatible = "st,stm32mp1-fmc2-nand";
-> +        reg = <0x80000000 0x1000>,
-> +              <0x88010000 0x1000>,
-> +              <0x88020000 0x1000>,
-> +              <0x81000000 0x1000>,
-> +              <0x89010000 0x1000>,
-> +              <0x89020000 0x1000>;
-> +        interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
-> +        dmas = <&mdma1 20 0x2 0x12000a02 0x0 0x0>,
-> +               <&mdma1 20 0x2 0x12000a08 0x0 0x0>,
-> +               <&mdma1 21 0x2 0x12000a0a 0x0 0x0>;
-> +        dma-names = "tx", "rx", "ecc";
-> +
-> +        nand@0 {
-> +          reg = <0>;
-> +          nand-on-flash-bbt;
-> +          #address-cells = <1>;
-> +          #size-cells = <1>;
-> +        };
-> +      };
-> +    };
-> +
-> +...
-> -- 
-> 1.9.1
+> This probably is 'duration-us' according to DT bindings.
 > 
+>> +    of_property_read_u32(np, "latency", &latency_us);
+> 
+> the same here s/latency/exit-latency-us/
+> 
+>> +
+>> +    idle_inject_set_duration(ii_dev, TICK_USEC, idle_duration_us);
+>> +    idle_inject_set_latency(ii_dev, latency_us);
+>>         idle_cdev->ii_dev = ii_dev;
+>>   @@ -204,6 +212,9 @@ int cpuidle_of_cooling_register(struct
+>> device_node *np,
+>>           goto out_unregister;
+>>       }
+>>   +    pr_info("%s: Idle injection set with idle duration=%u,
+>> latency=%u\n",
+>> +        dev_name, idle_duration_us, latency_us);
+> 
+> 1. It is more like a 'debug' rather than 'info', I would change it.
+> 2. This is going to be printed for every CPU which has the
+> 'thermal-idle' feature in DT. For platforms with many CPUs, it's a lot
+> of log entries
+> 
+>> +
+>>       return 0;
+>>     out_unregister:
+>> @@ -221,12 +232,37 @@ int cpuidle_of_cooling_register(struct
+>> device_node *np,
+>>    * @drv: a cpuidle driver structure pointer
+>>    *
+>>    * This function is in charge of creating a cooling device per cpuidle
+>> - * driver and register it to thermal framework.
+>> + * driver and register it to the thermal framework.
+>>    *
+>>    * Return: zero on success, or negative value corresponding to the
+>>    * error detected in the underlying subsystems.
+>>    */
+>>   int cpuidle_cooling_register(struct cpuidle_driver *drv)
+>>   {
+>> -    return cpuidle_of_cooling_register(NULL, drv);
+>> +    struct device_node *cooling_node;
+>> +    struct device_node *cpu_node;
+>> +    int cpu, ret;
+>> +
+>> +    for_each_cpu(cpu, drv->cpumask) {
+>> +
+>> +        cpu_node = of_cpu_device_node_get(cpu);
+>> +
+>> +        cooling_node = of_get_child_by_name(cpu_node, "idle-thermal");
+> 
+> In DT binding this is 'thermal-idle'.
+> 
+>> +
+>> +        of_node_put(cpu_node);
+>> +
+>> +        if (!cooling_node)
+>> +            continue;
+> 
+> This 'continue' is suspicious because it won't tell if there was no
+> node "idle-thermal" but still the function will return 0. This was
+> my case when I tried to enable it on Juno.
+> 
+> Maybe a debug print that the node hasn't been found would be a
+> good idea. Or somehow return different value than 0 taking into
+> account that every CPU was skipped.
+> 
+>> +
+>> +        ret = __cpuidle_cooling_register(cooling_node, drv);
+>> +
+>> +        of_node_put(cooling_node);
+>> +
+>> +        if (ret)
+>> +            return ret;
+>> +
+>> +        cooling_node = NULL;
+>> +    }
+>> +
+>> +    return 0;
+>>   }
+>> diff --git a/include/linux/cpu_cooling.h b/include/linux/cpu_cooling.h
+>> index 65501d8f9778..4d7b4a303327 100644
+>> --- a/include/linux/cpu_cooling.h
+>> +++ b/include/linux/cpu_cooling.h
+>> @@ -64,18 +64,11 @@ struct cpuidle_driver;
+>>     #ifdef CONFIG_CPU_IDLE_THERMAL
+>>   int cpuidle_cooling_register(struct cpuidle_driver *drv);
+>> -int cpuidle_of_cooling_register(struct device_node *np,
+>> -                struct cpuidle_driver *drv);
+>>   #else /* CONFIG_CPU_IDLE_THERMAL */
+>>   static inline int cpuidle_cooling_register(struct cpuidle_driver *drv)
+>>   {
+>>       return 0;
+>>   }
+>> -static inline int cpuidle_of_cooling_register(struct device_node *np,
+>> -                          struct cpuidle_driver *drv)
+>> -{
+>> -    return 0;
+>> -}
+>>   #endif /* CONFIG_CPU_IDLE_THERMAL */
+>>     #endif /* __CPU_COOLING_H__ */
+>>
+> 
+> Apart from that, looks good to me.
+> 
+> Regards,
+> Lukasz
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
