@@ -2,130 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563B81BBEA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B5E1BBEA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgD1NMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 09:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        id S1726903AbgD1NMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 09:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726785AbgD1NMG (ORCPT
+        with ESMTP id S1726785AbgD1NMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 09:12:06 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA362C03C1A9;
-        Tue, 28 Apr 2020 06:12:05 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x2so6950157pfx.7;
-        Tue, 28 Apr 2020 06:12:05 -0700 (PDT)
+        Tue, 28 Apr 2020 09:12:41 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC58C03C1A9;
+        Tue, 28 Apr 2020 06:12:41 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id d3so3061920pgj.6;
+        Tue, 28 Apr 2020 06:12:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QY6myh2Pbs2C9PZFWtJrxYe9xeu5bPk92DtEEgzJ9PU=;
-        b=p1CIaXBa6jbtnD4pxqBpOM+KmW3HNVZ8XxHooyFDVvpLCPHQctJB43RB0PfDugQFSM
-         fuiuSZxh2h8/B9giQEmv0u6wW4X1vARujgvHj3ipUagNBeSbKSzKIeG2SvYLoc5A1rEL
-         9EWQ7Xpd6ZAKrJIDiKp2hI6RvjP1pO35nvkMaKuWJtN+slLeIZLnuEFw8PECWABykSx4
-         mKLIRifGuMwQWkEHPemS6TQNbU0ipm/2VgOpHlaYKI3zoBNi3SW2zSTPW3xiBezZwbHk
-         wJroKSNyyMRPDQTKmVCAj7k4/KPI05h8h84RDIScjlPc6SiBb4OCFc2mGk7zmakbGZEK
-         rNrA==
+        h=sender:subject:to:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wRpIAnjBj3BxWlmS8yDTp7J5iO9oX58HgHE3/exT8fM=;
+        b=NpO/5tlgC7mnEvKYyI3rVMPcRlJDm54VZXo52W/FQOfU+WQLZisS6gAZhFfQU2B69A
+         WsEFOGjDfNXigEXo8g2itAFrzILwmKYiVCk37PxCf9sOSu0LMuFOihgG0oZZBwgrGg4F
+         6PvjDANoAxXVN/v/JhV1Gm9wamSNOJYxHCpozfwsBob7j8Mm2AU46BZwMvu/e3vTsTOg
+         zWVjeyYimmaNeXeiIb9W/ZrNwaiBNKg2wbr5NsvApdC+CIEVnWtNy4PJ6ucOL7V7AdN2
+         1fag8QBTj9ZVgPLn1Swk6YBzxH1z4UdxehC68v9l8gqFqeYm0D2fpSX+1bbLosrXTgBg
+         sNQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QY6myh2Pbs2C9PZFWtJrxYe9xeu5bPk92DtEEgzJ9PU=;
-        b=Tt+uPjMCKd0WN7tvy13UpiE9kG1VIWhwYS2VNTUDJzvlG4ieUqdN4BdEI57dh+knZ3
-         uaVI3vl4MY/Xazvhh94OyB4V5xHzqlpfsSLbv0rHNHh7IQouu9tovrR0G2YiKHsn0Rcc
-         6fBqRVwmvSjJ/fJmjbBN7Aoci7jdp6dby8bNNFxAAWkp7NtFWxkdqe2wSZJ26jXXX0Y2
-         U0Fz42kiuSaWq54MyFUta6rsluf5OsRxFYUkQCo5zyBh1Y3DgayPc7dNU9IvyyCbOrR0
-         dM/YrydyoFgrb/0pqCHR3zyqtMNsbAmjgak77sIKH7f7nZwPWUl4vBsXMBouaTQ5IyhE
-         2VRA==
-X-Gm-Message-State: AGi0PubI3yzbc1B1iGcSlAF1cCo98Y952aNaOvkLEWnfBfb9F738PhRe
-        q9mSS04icEZ9a1/C2+0o8vQ=
-X-Google-Smtp-Source: APiQypIeTHTeMX+TBQ6Cq0KUxAlhefQNCkaRhSHaB4ffN8vwrX2Hm82JksCtGAZ0NIO7OcLpPSejgQ==
-X-Received: by 2002:a63:585c:: with SMTP id i28mr27952797pgm.363.1588079525423;
-        Tue, 28 Apr 2020 06:12:05 -0700 (PDT)
-Received: from localhost ([89.208.244.169])
-        by smtp.gmail.com with ESMTPSA id x10sm13152720pgq.79.2020.04.28.06.12.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Apr 2020 06:12:05 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 21:11:59 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, yash.shah@sifive.com,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <Claudiu.Beznea@microchip.com>
-Subject: Re: [PATCH net v1] net: macb: fix an issue about leak related system
- resources
-Message-ID: <20200428131159.GA2128@nuc8i5>
-References: <20200425125737.5245-1-zhengdejin5@gmail.com>
- <CAHp75VceH08X5oWSCXhx8O0Bsx9u=Tm+DVQowG+mC3Vs2=ruVQ@mail.gmail.com>
- <20200428032453.GA32072@nuc8i5>
- <acdfcb8d-9079-1340-09d5-2c10383f9c26@microchip.com>
+        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=wRpIAnjBj3BxWlmS8yDTp7J5iO9oX58HgHE3/exT8fM=;
+        b=g6PKU81hEMZVeJYD2g3tKcDIFkLhqDfd+/14Xp/TldeoXnY4wOsYwJWQ3sUNzKZITy
+         zG+WJnVL5ZaFSTPWHNDgNc48hHolLKNKQsDsy+J7mY75ECbkrYSqzyOTzMLt4Q8VMjVi
+         t93Qk8tq+pE/YELjfTLNYx4YnKvLPBjaesScp3Lxa28DZjPSOsnbNyjSqugdJunNKLkH
+         JaFV9PPGXNMTKBvzAWJHJKe4KxbZ93GJK6BSrwbVRFHJIBTvQDMtr4LtPcJReim1JCmj
+         MdgpwBpgrizwld9ydRDGgPDgKcKX1vb5kedEDDKb/hAqcMCRh/fU+A7hvp6vpO3YyF4V
+         PVXQ==
+X-Gm-Message-State: AGi0PuYxgvkmO2dsObexId7+ag7/m8av4caPkzX57s0JZx9mIAsDmD/4
+        ZTDAHq8wnP+Trf6FivALtQX+9JUz
+X-Google-Smtp-Source: APiQypKbNSLJdYfPq/Pn/Sng2o0qABCnfEmLJ2efMU1M8dagxFWybQ2u6BtLjsGG+YjFQy5RPCmShw==
+X-Received: by 2002:aa7:9302:: with SMTP id 2mr29293722pfj.256.1588079560700;
+        Tue, 28 Apr 2020 06:12:40 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id y3sm2262738pjb.41.2020.04.28.06.12.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Apr 2020 06:12:39 -0700 (PDT)
+Subject: Re: [PATCH] watchdog: riowd: remove unneeded semicolon
+To:     Jason Yan <yanaijie@huawei.com>, wim@linux-watchdog.org,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200428063333.2743-1-yanaijie@huawei.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <4e4a7471-fbe5-3012-6874-431606674457@roeck-us.net>
+Date:   Tue, 28 Apr 2020 06:12:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <acdfcb8d-9079-1340-09d5-2c10383f9c26@microchip.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200428063333.2743-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 10:42:56AM +0200, Nicolas Ferre wrote:
-> On 28/04/2020 at 05:24, Dejin Zheng wrote:
-> > On Mon, Apr 27, 2020 at 01:33:41PM +0300, Andy Shevchenko wrote:
-> > > On Sat, Apr 25, 2020 at 3:57 PM Dejin Zheng <zhengdejin5@gmail.com> wrote:
-> > > > 
-> > > > A call of the function macb_init() can fail in the function
-> > > > fu540_c000_init. The related system resources were not released
-> > > > then. use devm_ioremap() to replace ioremap() for fix it.
-> > > > 
-> > > 
-> > > Why not to go further and convert to use devm_platform_ioremap_resource()?
-> > > 
-> > devm_platform_ioremap_resource() will call devm_request_mem_region(),
-> > and here did not do it.
+On 4/27/20 11:33 PM, Jason Yan wrote:
+> Fix the following coccicheck warning:
 > 
-> And what about devm_platform_get_and_ioremap_resource()? This would
-> streamline this whole fu540_c000_init() function.
->
-Nicolas, the function devm_platform_get_and_ioremap_resource() will also
-call devm_request_mem_region(), after call it, These IO addresses will
-be monopolized by this driver. the devm_ioremap() and ioremap() are not
-do this. if this IO addresses will be shared with the other driver, call
-devm_platform_get_and_ioremap_resource() may be fail.
+> drivers/watchdog/riowd.c:144:2-3: Unneeded semicolon
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-BR,
-Dejin
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-> Regards,
->   Nicolas
+> ---
+>  drivers/watchdog/riowd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > > > Fixes: c218ad559020ff9 ("macb: Add support for SiFive FU540-C000")
-> > > > Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > > > Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-> > > > ---
-> > > >   drivers/net/ethernet/cadence/macb_main.c | 2 +-
-> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-> > > > index a0e8c5bbabc0..edba2eb56231 100644
-> > > > --- a/drivers/net/ethernet/cadence/macb_main.c
-> > > > +++ b/drivers/net/ethernet/cadence/macb_main.c
-> > > > @@ -4178,7 +4178,7 @@ static int fu540_c000_init(struct platform_device *pdev)
-> > > >          if (!res)
-> > > >                  return -ENODEV;
-> > > > 
-> > > > -       mgmt->reg = ioremap(res->start, resource_size(res));
-> > > > +       mgmt->reg = devm_ioremap(&pdev->dev, res->start, resource_size(res));
-> > > >          if (!mgmt->reg)
-> > > >                  return -ENOMEM;
-> > > > 
+> diff --git a/drivers/watchdog/riowd.c b/drivers/watchdog/riowd.c
+> index dc3c06a92f93..1b9a6dc8f982 100644
+> --- a/drivers/watchdog/riowd.c
+> +++ b/drivers/watchdog/riowd.c
+> @@ -141,7 +141,7 @@ static long riowd_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  
+>  	default:
+>  		return -EINVAL;
+> -	};
+> +	}
+>  
+>  	return 0;
+>  }
 > 
-> 
-> -- 
-> Nicolas Ferre
+
