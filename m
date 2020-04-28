@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A09D1BCA89
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413CA1BC9AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731011AbgD1St4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:49:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58434 "EHLO mail.kernel.org"
+        id S1731302AbgD1Snv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:43:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730114AbgD1Sjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:39:35 -0400
+        id S1731278AbgD1Sns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:43:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B407F20575;
-        Tue, 28 Apr 2020 18:39:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 53CE420730;
+        Tue, 28 Apr 2020 18:43:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099175;
-        bh=KG1cImSwXekqFidNv5mdI71r3HLK0YV8Gz0vgep1UU0=;
+        s=default; t=1588099427;
+        bh=aA6z5Im+fckIqDKy07hv31qtqVKsbkx6P9lhSktTShc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uw2xZR3XL/5yj0gv9dHbxzZchIEmWVZJ8v3gLp1hdWoMaxmzXWu3pDVNxDlUlc4Nr
-         HWcPva3gVlNv0TApuDLJ9kfdAScQsA+HBF31Yx9AXXaqzc6CwddEHCeNG0QGg/GI4V
-         wQsDta49FVmRsmUkKMKeAh6B20nJIfVitIH54w84=
+        b=ad0e4e2gSOfp1gLFzwiwXvHyItMxvXmqzS6ignJOiafIR1LkSDA2AMAJvsSUoPPU3
+         kQUQVTbgMecsb8+UU043BrHFDwicYc0jgpAjSdv+oiCXOxOn6T69aGNXkuSa4/Qidg
+         Bjr8om+R1pVAdgPEP6LovFbt8n4wLJjbz6FdxHVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.19 109/131] iwlwifi: pcie: actually release queue memory in TVQM
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 5.4 147/168] UAS: no use logging any details in case of ENODEV
 Date:   Tue, 28 Apr 2020 20:25:21 +0200
-Message-Id: <20200428182238.887373109@linuxfoundation.org>
+Message-Id: <20200428182250.173811338@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,47 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit b98b33d5560a2d940f3b80f6768a6177bf3dfbc0 upstream.
+commit 5963dec98dc52d52476390485f07a29c30c6a582 upstream.
 
-The iwl_trans_pcie_dyn_txq_free() function only releases the frames
-that may be left on the queue by calling iwl_pcie_gen2_txq_unmap(),
-but doesn't actually free the DMA ring or byte-count tables for the
-queue. This leads to pretty large memory leaks (at least before my
-queue size improvements), in particular in monitor/sniffer mode on
-channel hopping since this happens on every channel change.
+Once a device is gone, the internal state does not matter anymore.
+There is no need to spam the logs.
 
-This was also now more evident after the move to a DMA pool for the
-byte count tables, showing messages such as
-
-  BUG iwlwifi:bc (...): Objects remaining in iwlwifi:bc on __kmem_cache_shutdown()
-
-This fixes https://bugzilla.kernel.org/show_bug.cgi?id=206811.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Fixes: 6b35ff91572f ("iwlwifi: pcie: introduce a000 TX queues management")
-Cc: stable@vger.kernel.org # v4.14+
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20200417100405.f5f4c4193ec1.Id5feebc9b4318041913a9c89fc1378bb5454292c@changeid
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Cc: stable <stable@vger.kernel.org>
+Fixes: 326349f824619 ("uas: add dead request list")
+Link: https://lore.kernel.org/r/20200415141750.811-1-oneukum@suse.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c |    3 +++
+ drivers/usb/storage/uas.c |    3 +++
  1 file changed, 3 insertions(+)
 
---- a/drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c
-@@ -1231,6 +1231,9 @@ void iwl_trans_pcie_dyn_txq_free(struct
+--- a/drivers/usb/storage/uas.c
++++ b/drivers/usb/storage/uas.c
+@@ -190,6 +190,9 @@ static void uas_log_cmd_state(struct scs
+ 	struct uas_cmd_info *ci = (void *)&cmnd->SCp;
+ 	struct uas_cmd_info *cmdinfo = (void *)&cmnd->SCp;
  
- 	iwl_pcie_gen2_txq_unmap(trans, queue);
- 
-+	iwl_pcie_gen2_txq_free_memory(trans, trans_pcie->txq[queue]);
-+	trans_pcie->txq[queue] = NULL;
++	if (status == -ENODEV) /* too late */
++		return;
 +
- 	IWL_DEBUG_TX_QUEUES(trans, "Deactivate queue %d\n", queue);
- }
- 
+ 	scmd_printk(KERN_INFO, cmnd,
+ 		    "%s %d uas-tag %d inflight:%s%s%s%s%s%s%s%s%s%s%s%s ",
+ 		    prefix, status, cmdinfo->uas_tag,
 
 
