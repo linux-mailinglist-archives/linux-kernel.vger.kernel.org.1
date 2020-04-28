@@ -2,87 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C85B81BB505
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 06:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965651BB50E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 06:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgD1EQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 00:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgD1EQl (ORCPT
+        id S1726337AbgD1EUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 00:20:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29364 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725803AbgD1EUH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 00:16:41 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6ABDC03C1AC
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 21:16:41 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id c21so7018042plz.4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 21:16:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zcgS21itL78D0fddZORH8FPW/WTSqwnt4JvHvdMFx7M=;
-        b=ufQlri23Hn5ru/QSTcDsigIaefd5C8Jo5G5DkNvJRr4nSLBva7mhaxr6KHKCH3qeTx
-         /Bc79XJKqxu+ihH4ya/wTgZdOnZywUMQ1JP7qtjss5SWsvyAH7Su9xWwd49NLWmbd4hS
-         5qxZMnb5z7V+twQp5imipUmU2MwThi/RgGG4LLd33jcXNPiI3vy1tgAjd6etrFwyYWwF
-         P/AKKwj6SjqwCUMWQctIla27pnCn3KxHWUkk7i8YF/UbPyEBHrHtiKng33yKzHJuHywy
-         nb3BfPt+Z520YNe/axeSo8pf1paBOXEafEZqqdtGssUlVesX3uOgJ+u4mn66VmcGpgHA
-         pJfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zcgS21itL78D0fddZORH8FPW/WTSqwnt4JvHvdMFx7M=;
-        b=mdH8qk7zfEYNfXMS7gUWJgpdzQRFnW55Aub1KTtG4/nD4ymaiYYR+51sFPv29Vcsl0
-         qjgw7nG1hBm43/dgSnWY0cOxn0x3aZjEdgwc9WcIA9TRD2CWhSYXS3g5WkkP1L7tUE89
-         /MekYy94oNdDQccap8hecYgwBJN/eJCfQw6xlmCTMXblM+wqbCeTwSf2z+t6PGAauwPF
-         UYHB9+zRZ7V8BjE//7VEBFgsWeBo9xyapT6g0c64mqRMoKEaKNsYJeRTqXYtuxY3UsDb
-         oyqEEaNqGrO9+TZ+T0tkNq25tQuA3VWv3gDjRhch3G1RdP00HhC5rOct6Bc2rKk/w3zE
-         yerw==
-X-Gm-Message-State: AGi0Pub4DIwtSm1mSoHEPyLtf13HuSrq+7gFMBPq38YUj80J4bMtAt85
-        rkSqMCNyYwq6ce6FzW5CO/ZxWQ==
-X-Google-Smtp-Source: APiQypLHi61r4xiv8wVJwGtp90je7+VC7t1lXTr4tVyxSHVN84FrrQP9s5jjTw2j/zSh39NDp6sR0A==
-X-Received: by 2002:a17:90a:690b:: with SMTP id r11mr2630271pjj.119.1588047401459;
-        Mon, 27 Apr 2020 21:16:41 -0700 (PDT)
-Received: from localhost ([122.171.118.46])
-        by smtp.gmail.com with ESMTPSA id f30sm752667pje.29.2020.04.27.21.16.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Apr 2020 21:16:40 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 09:46:36 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     Peng Fan <peng.fan@nxp.com>, kernelci@groups.io,
-        Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Fabio Estevam <festevam@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: next/master bisection: baseline.dmesg.alert on imx8mn-ddr4-evk
-Message-ID: <20200428041636.loakok7yfqg3hcsl@vireshk-i7>
-References: <5ea44ff8.1c69fb81.f246c.d02d@mx.google.com>
- <8af4842d-d576-fd6f-ac6b-2ef3482742b7@collabora.com>
+        Tue, 28 Apr 2020 00:20:07 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03S44aiX124128;
+        Tue, 28 Apr 2020 00:17:28 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30pd53g8rh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Apr 2020 00:17:28 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03S47gjm130005;
+        Tue, 28 Apr 2020 00:17:27 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30pd53g8pd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Apr 2020 00:17:26 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03S45tWP018939;
+        Tue, 28 Apr 2020 04:17:24 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 30mcu58gsm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Apr 2020 04:17:24 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03S4HLNp41943218
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 04:17:21 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 79F1911C052;
+        Tue, 28 Apr 2020 04:17:21 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6834611C04A;
+        Tue, 28 Apr 2020 04:17:14 +0000 (GMT)
+Received: from [9.199.43.234] (unknown [9.199.43.234])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 28 Apr 2020 04:17:14 +0000 (GMT)
+Subject: Re: [PATCH v3 2/4] hugetlbfs: move hugepagesz= parsing to arch
+ independent code
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S.Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Longpeng <longpeng2@huawei.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mina Almasry <almasrymina@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200417185049.275845-1-mike.kravetz@oracle.com>
+ <20200417185049.275845-3-mike.kravetz@oracle.com>
+ <7583dfcc-62d8-2a54-6eef-bcb4e01129b3@gmail.com>
+ <5a380060-38db-b690-1003-678ca0f28f07@oracle.com>
+ <b1f04f9f-fa46-c2a0-7693-4a0679d2a1ee@oracle.com>
+From:   Sandipan Das <sandipan@linux.ibm.com>
+Message-ID: <9c82a0b1-db0e-9b34-88a1-bc810d6b5eec@linux.ibm.com>
+Date:   Tue, 28 Apr 2020 09:47:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8af4842d-d576-fd6f-ac6b-2ef3482742b7@collabora.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <b1f04f9f-fa46-c2a0-7693-4a0679d2a1ee@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-27_17:2020-04-27,2020-04-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ suspectscore=0 phishscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999
+ bulkscore=0 lowpriorityscore=0 clxscore=1011 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004280027
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-04-20, 14:00, Guillaume Tucker wrote:
-> Please see the bisection report below about a boot failure.
+Hi Mike,
+
+On 28/04/20 12:39 am, Mike Kravetz wrote:
+> On 4/27/20 10:25 AM, Mike Kravetz wrote:
+>> On 4/26/20 10:04 PM, Sandipan Das wrote:
+>>> On 18/04/20 12:20 am, Mike Kravetz wrote:
+>>>> Now that architectures provide arch_hugetlb_valid_size(), parsing
+>>>> of "hugepagesz=" can be done in architecture independent code.
+>>>
+>>> This isn't working as expected on powerpc64.
+>>>
+>>>   [    0.000000] Kernel command line: root=UUID=dc7b49cf-95a2-4996-8e7d-7c64ddc7a6ff hugepagesz=16G hugepages=2 
+>>>   [    0.000000] HugeTLB: huge pages not supported, ignoring hugepagesz = 16G
+>>>   [    0.000000] HugeTLB: huge pages not supported, ignoring hugepages = 2
+>>>   [    0.284177] HugeTLB registered 16.0 MiB page size, pre-allocated 0 pages
+>>>   [    0.284182] HugeTLB registered 16.0 GiB page size, pre-allocated 0 pages
+>>>   [    2.585062]     hugepagesz=16G
+>>>   [    2.585063]     hugepages=2
+>>>
+>>
+>> In the new arch independent version of hugepages_setup, I added the following
+>> code in patch 4 off this series:
+>>
+>>> +	if (!hugepages_supported()) {
+>>> +		pr_warn("HugeTLB: huge pages not supported, ignoring hugepages = %s\n", s);
+>>> +		return 0;
+>>> +	}
+>>> +
+>>
+>> The easy solution is to remove all the hugepages_supported() checks from
+>> command line parsing routines and rely on the later check in hugetlb_init().
 > 
-> Reports aren't automatically sent to the public while we're
-> trialing new bisection features on kernelci.org but this one
-> looks valid.
+> Here is a patch to address the issue.  Sorry, as my series breaks all hugetlb
+> command line processing on powerpc.
+> 
+> Sandipan, can you test the following patch?
+> 
 
-@Peng: I have dropped your patch now, please resend it once you have
-fixed the issue.
+The following patch does fix the issue. Thanks.
 
--- 
-viresh
+Tested-by: Sandipan Das <sandipan@linux.ibm.com>
+
+
+> From 480fe2847361e2a85aeec1fb39fe643bb7100a07 Mon Sep 17 00:00:00 2001
+> From: Mike Kravetz <mike.kravetz@oracle.com>
+> Date: Mon, 27 Apr 2020 11:37:30 -0700
+> Subject: [PATCH] hugetlbfs: fix changes to command line processing
+> 
+> Previously, a check for hugepages_supported was added before processing
+> hugetlb command line parameters.  On some architectures such as powerpc,
+> hugepages_supported() is not set to true until after command line
+> processing.  Therefore, no hugetlb command line parameters would be
+> accepted.
+> 
+> Remove the additional checks for hugepages_supported.  In hugetlb_init,
+> print a warning if !hugepages_supported and command line parameters were
+> specified.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>  mm/hugetlb.c | 20 ++++----------------
+>  1 file changed, 4 insertions(+), 16 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 1075abdb5717..5548e8851b93 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -3212,8 +3212,11 @@ static int __init hugetlb_init(void)
+>  {
+>  	int i;
+>  
+> -	if (!hugepages_supported())
+> +	if (!hugepages_supported()) {
+> +		if (hugetlb_max_hstate || default_hstate_max_huge_pages)
+> +			pr_warn("HugeTLB: huge pages not supported, ignoring associated command-line parameters\n");
+>  		return 0;
+> +	}
+>  
+>  	/*
+>  	 * Make sure HPAGE_SIZE (HUGETLB_PAGE_ORDER) hstate exists.  Some
+> @@ -3315,11 +3318,6 @@ static int __init hugepages_setup(char *s)
+>  	unsigned long *mhp;
+>  	static unsigned long *last_mhp;
+>  
+> -	if (!hugepages_supported()) {
+> -		pr_warn("HugeTLB: huge pages not supported, ignoring hugepages = %s\n", s);
+> -		return 0;
+> -	}
+> -
+>  	if (!parsed_valid_hugepagesz) {
+>  		pr_warn("HugeTLB: hugepages=%s does not follow a valid hugepagesz, ignoring\n", s);
+>  		parsed_valid_hugepagesz = true;
+> @@ -3372,11 +3370,6 @@ static int __init hugepagesz_setup(char *s)
+>  	struct hstate *h;
+>  
+>  	parsed_valid_hugepagesz = false;
+> -	if (!hugepages_supported()) {
+> -		pr_warn("HugeTLB: huge pages not supported, ignoring hugepagesz = %s\n", s);
+> -		return 0;
+> -	}
+> -
+>  	size = (unsigned long)memparse(s, NULL);
+>  
+>  	if (!arch_hugetlb_valid_size(size)) {
+> @@ -3424,11 +3417,6 @@ static int __init default_hugepagesz_setup(char *s)
+>  	unsigned long size;
+>  
+>  	parsed_valid_hugepagesz = false;
+> -	if (!hugepages_supported()) {
+> -		pr_warn("HugeTLB: huge pages not supported, ignoring default_hugepagesz = %s\n", s);
+> -		return 0;
+> -	}
+> -
+>  	if (parsed_default_hugepagesz) {
+>  		pr_err("HugeTLB: default_hugepagesz previously specified, ignoring %s\n", s);
+>  		return 0;
+> 
