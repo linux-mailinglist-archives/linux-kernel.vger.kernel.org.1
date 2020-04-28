@@ -2,122 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078471BB376
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4301A1BB38A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgD1BeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 21:34:13 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3315 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726233AbgD1BeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 21:34:12 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id D0A9999B00C42AE7E8BD;
-        Tue, 28 Apr 2020 09:34:09 +0800 (CST)
-Received: from [10.65.58.147] (10.65.58.147) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Apr 2020
- 09:34:07 +0800
-Subject: Re: [PATCH v4 05/16] mtd: spi-nor: default to address width of 3 for
- configurable widths
-To:     Pratyush Yadav <me@yadavpratyush.com>
-References: <20200424184410.8578-1-p.yadav@ti.com>
- <20200424184410.8578-6-p.yadav@ti.com>
- <6b6384ad-d37a-eea6-af29-322e83924912@hisilicon.com>
- <20200427172336.ihezwq3wn75m7k3l@yadavpratyush.com>
-CC:     Pratyush Yadav <p.yadav@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Sekhar Nori <nsekhar@ti.com>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <f6a593ab-8685-18e0-04c8-25edd1cab11a@hisilicon.com>
-Date:   Tue, 28 Apr 2020 09:34:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1726335AbgD1Boc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 21:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726264AbgD1Bob (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 21:44:31 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C5FC03C1A8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 18:44:31 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id r7so15193385edo.11
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 18:44:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6dLKuml1l37VsUNUL7W3+8Plw3oZZU13zk85vygbzVU=;
+        b=Bd+HoaOQxYuuh8Zf1OdODQuVSh84RUl4JQmlzGerUyQmf8yQo21wChRkbSt91VRbi7
+         rW7nVLys2SsQX2Zyf0eFgqihojc0YmFDp8m/iu9CZyEhvrn1ELZTebPjm+Ei/dLS9xRA
+         fQg/tEt3Rd0+Q259PEVjDGKRpewOS/+lcY8FU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6dLKuml1l37VsUNUL7W3+8Plw3oZZU13zk85vygbzVU=;
+        b=OFEa9D0TR44hd2nxsFuPrP2BC6pvFEAzJMitRQ68VEpT8VU0yoNxRtmdn4ZGfHgK1U
+         y3ymkmp9qclKpeIcfBKAxhLgyqKyqd5ntl5GIyi7RAb1xZE7Ym6zSmmbxGQW8fQ2sI37
+         d96oNJ/FQ5Io69470SvCHxgclsbXp9h6eNRYaeaqbKKQ2IKq2cp9PB7i4PD2LyEYuPkZ
+         FxkRvZ54pRvvUYUtmPn/wO0EDWa3DumRBHibQ/N1/UxVYsmzWkgwpHUK1o2N+f83AC+C
+         g1jVRuzgDPUr5I484Sv3n77RGc7Z0WBhYY11OrIp6LSV7vs6hrzHwJBsK8//eCHAjKRs
+         76SA==
+X-Gm-Message-State: AGi0PuZ0vhGhhjQ+0BD7teCE/r9JdIWHJSQEqKeNw2LVml4vMv2adkWe
+        gjvi0DP/9zYzaqw0STHkGd2U9HTCkJk=
+X-Google-Smtp-Source: APiQypImgvMU7CXHZH0GN68HjQ+4686vzh9ZabejfYlMM6csZNqh+vZZAj/tT/cDTcbDNiNEEu8xqA==
+X-Received: by 2002:a50:9b53:: with SMTP id a19mr21482394edj.104.1588038269964;
+        Mon, 27 Apr 2020 18:44:29 -0700 (PDT)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
+        by smtp.gmail.com with ESMTPSA id a15sm134933eds.50.2020.04.27.18.44.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 18:44:29 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id a8so15219881edv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 18:44:29 -0700 (PDT)
+X-Received: by 2002:a05:6512:14a:: with SMTP id m10mr17156490lfo.152.1588037812064;
+ Mon, 27 Apr 2020 18:36:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200427172336.ihezwq3wn75m7k3l@yadavpratyush.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.65.58.147]
-X-CFilter-Loop: Reflected
+References: <20200426130100.306246-1-hagen@jauu.net> <20200426163430.22743-1-hagen@jauu.net>
+ <20200427170826.mdklazcrn4xaeafm@wittgenstein> <CAG48ez0hskhN7OkxwHX-Bo5HGboJaVEk8udFukkTgiC=43ixcw@mail.gmail.com>
+ <87zhawdc6w.fsf@x220.int.ebiederm.org> <20200427185929.GA1768@laniakea>
+ <CAK8P3a2Ux1pDZEBjgRSPMJXvwUAvbPastX2ynVVC2iPTTDK_ow@mail.gmail.com>
+ <20200427201303.tbiipopeapxofn6h@wittgenstein> <20200428004546.mlpwixgms2ekpfdm@yavin.dot.cyphar.com>
+In-Reply-To: <20200428004546.mlpwixgms2ekpfdm@yavin.dot.cyphar.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 27 Apr 2020 18:36:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wga3O=BoKZXR27-CDnAFareWcMxXhpWerwtCffdaH6_ow@mail.gmail.com>
+Message-ID: <CAHk-=wga3O=BoKZXR27-CDnAFareWcMxXhpWerwtCffdaH6_ow@mail.gmail.com>
+Subject: Re: [RFC v2] ptrace, pidfd: add pidfd_ptrace syscall
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hagen Paul Pfeifer <hagen@jauu.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Brian Gerst <brgerst@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratyush,
-
-
-On 2020/4/28 1:23, Pratyush Yadav wrote:
-> Hi Yicong,
+On Mon, Apr 27, 2020 at 5:46 PM Aleksa Sarai <cyphar@cyphar.com> wrote:
 >
-> On 26/04/20 11:53AM, Yicong Yang wrote:
->> On 2020/4/25 2:43, Pratyush Yadav wrote:
->>> JESD216D.01 says that when the address width can be 3 or 4, it defaults
->>> to 3 and enters 4-byte mode when given the appropriate command. So, when
->>> we see a configurable width, default to 3 and let flash that default to
->>> 4 change it in a post-bfpt fixup.
->>>
->>> This fixes SMPT parsing for flashes with configurable address width. If
->>> the SMPT descriptor advertises variable address width, we use
->>> nor->addr_width as the address width. But since it was not set to any
->>> value from the SFDP table, the read command uses an address width of 0,
->>> resulting in an incorrect read being issued.
->>>
->>> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
->>> ---
->>>  drivers/mtd/spi-nor/sfdp.c | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/mtd/spi-nor/sfdp.c b/drivers/mtd/spi-nor/sfdp.c
->>> index f917631c8110..5cecc4ba2141 100644
->>> --- a/drivers/mtd/spi-nor/sfdp.c
->>> +++ b/drivers/mtd/spi-nor/sfdp.c
->>> @@ -460,6 +460,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->>>  	/* Number of address bytes. */
->>>  	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
->>>  	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:
->>> +	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
->>>  		nor->addr_width = 3;
->>>  		break;
->> Should we also assign address width to 3 in default condition. At least we should not
->> leave it uninitialized here.
-> The default condition would be taken when this field is 3. The value 3 
-> is reserved, and so no current device should use this value. That said, 
-> I don't see any downsides of doing so. If the value 3 means something 
-> else in later revisions of the standard, this code would need to change 
-> anyway. If not, we would use a relatively sane default for devices with 
-> a faulty BFPT.
+> I agree. It would be a shame to add a new ptrace syscall and not take
+> the opportunity to fix the multitude of problems with the existing API.
+> But that's a Pandora's box which we shouldn't open unless we want to
+> wait a long time to get an API everyone is okay with -- a pretty high
+> price to just get pidfds support in ptrace.
 
-The purpose is to set one possible value which may be used later in parsing smpt.
-In current driver, if we do nothing with the post-bfpt fixup, then the width will
-be unset. Otherwise, maybe the width can also be set in spi_nor_smpt_addr_width()
+We should really be very very careful with some "smarter ptrace".
+We've had _so_ many security issues with ptrace that it's not even
+funny.
 
-    default:
-   +    if (!nor->addr_width)
-   +        nor->addr_width = 3;
-        return nor->addr_width;
+And that's ignoring all the practical issues we've had.
 
-But set when parsing bfpt seems more reasonable.
+I would definitely not want to have anything that looks like ptrace AT
+ALL using pidfd. If we have a file descriptor to specify the target
+process, then we should probably take advantage of that file
+descriptor to actually make it more of a asynchronous interface that
+doesn't cause the kinds of deadlocks that we've had with ptrace.
 
-> I haven't received any comments on my series so far. If end up having to
-> re-roll it, I will add this change. Otherwise, I'm not sure if it is a 
-> good idea to re-roll a 16-patch series for a one liner that isn't fixing 
-> some major bug. In that case, maybe you can send an independent patch 
-> that does this after mine is merged?
+The synchronous nature of ptrace() means that not only do we have
+those nasty deadlocks, it's also very very expensive to use. It also
+has some other fundamental problems, like the whole "take over parent"
+and the SIGCHLD behavior.
 
-Fine. :)
+It also is hard to ptrace a ptracer. Which is annoying when you're
+debugging gdb or strace or whatever.
 
-Regards,
-Yicong
+So I think the thing to do is ask the gdb (and strace) people if they
+have any _very_ particular painpoints that we could perhaps help with.
 
+And then very carefully think things through and not repeat all the
+mistakes ptrace did.
 
+I'm not very optimistic.
 
+              Linus
