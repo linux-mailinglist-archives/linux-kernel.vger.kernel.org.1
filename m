@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1B31BC867
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C660A1BCA2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgD1ScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:32:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48242 "EHLO mail.kernel.org"
+        id S1730744AbgD1SrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:47:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729785AbgD1ScM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:32:12 -0400
+        id S1731063AbgD1SmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:42:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D9A52076A;
-        Tue, 28 Apr 2020 18:32:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C26320575;
+        Tue, 28 Apr 2020 18:42:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098731;
-        bh=ntRI2d4t5d8LgNQWaIoeisCkG2w01XL6Yg21Sgy5huY=;
+        s=default; t=1588099329;
+        bh=n9OSzAOIsvEWYv3sAheV6vBFUKxRjlQxE4m3TbbWGOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NVrMz3PRiU9C8SF4iwEJtdBovd1Uhhy0WmyGoNV+eOMwnea18/kD3pyX5FON1FTXE
-         S8018meIhKRafDrZagrVHVFQc5YOcxVU4DxHMalNwCRT3rHw8ADAjXF4mcYBmFnquA
-         0OtWPYIBjv5U4hIfMI0NAhLjj78ZqtZ+k9wMeNP4=
+        b=UoU/YrjRC4i3oAuHYZJphY8MoVkeKHlZ4cGqYay79iLzU7BYOuUAgvru3IrGH3AbY
+         yoy+SCK2anPNkgoHODu2AbBUn+/3tI6c0zaO0rWJhQ8BN6i1t48AMk1SH+kuN8C9v8
+         yqg5cmlwmgcKxONxOpiHlcaVKB280hDEDt0Pw6RI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.6 104/167] ALSA: hda/realtek - Fix unexpected init_amp override
-Date:   Tue, 28 Apr 2020 20:24:40 +0200
-Message-Id: <20200428182238.321518380@linuxfoundation.org>
+        stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Martin Kelly <martin@martingkelly.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 107/168] tools/vm: fix cross-compile build
+Date:   Tue, 28 Apr 2020 20:24:41 +0200
+Message-Id: <20200428182245.977504170@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Lucas Stach <l.stach@pengutronix.de>
 
-commit 67791202c5e069cf2ba51db0718d56c634709e78 upstream.
+commit cf01699ee220c38099eb3e43ce3d10690c8b7060 upstream.
 
-The commit 1c76aa5fb48d ("ALSA: hda/realtek - Allow skipping
-spec->init_amp detection") changed the way to assign spec->init_amp
-field that specifies the way to initialize the amp.  Along with the
-change, the commit also replaced a few fixups that set spec->init_amp
-in HDA_FIXUP_ACT_PROBE with HDA_FIXUP_ACT_PRE_PROBE.  This was rather
-aligning to the other fixups, and not supposed to change the actual
-behavior.
+Commit 7ed1c1901fe5 ("tools: fix cross-compile var clobbering") moved
+the setup of the CC variable to tools/scripts/Makefile.include to make
+the behavior consistent across all the tools Makefiles.
 
-However, this change turned out to cause a regression on FSC S7020,
-which hit exactly the above.  The reason was that there is still one
-place that overrides spec->init_amp after HDA_FIXUP_ACT_PRE_PROBE
-call, namely in alc_ssid_check().
+As the vm tools missed the include we end up with the wrong CC in a
+cross-compiling evironment.
 
-This patch fixes the regression by adding the proper spec->init_amp
-override check, i.e. verifying whether it's still ALC_INIT_UNDEFINED.
-
-Fixes: 1c76aa5fb48d ("ALSA: hda/realtek - Allow skipping spec->init_amp detection")
+Fixes: 7ed1c1901fe5 (tools: fix cross-compile var clobbering)
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Martin Kelly <martin@martingkelly.com>
 Cc: <stable@vger.kernel.org>
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207329
-Link: https://lore.kernel.org/r/20200418190639.10082-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: http://lkml.kernel.org/r/20200416104748.25243-1-l.stach@pengutronix.de
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ tools/vm/Makefile |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -789,9 +789,11 @@ static void alc_ssid_check(struct hda_co
- {
- 	if (!alc_subsystem_id(codec, ports)) {
- 		struct alc_spec *spec = codec->spec;
--		codec_dbg(codec,
--			  "realtek: Enable default setup for auto mode as fallback\n");
--		spec->init_amp = ALC_INIT_DEFAULT;
-+		if (spec->init_amp == ALC_INIT_UNDEFINED) {
-+			codec_dbg(codec,
-+				  "realtek: Enable default setup for auto mode as fallback\n");
-+			spec->init_amp = ALC_INIT_DEFAULT;
-+		}
- 	}
- }
+--- a/tools/vm/Makefile
++++ b/tools/vm/Makefile
+@@ -1,6 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # Makefile for vm tools
+ #
++include ../scripts/Makefile.include
++
+ TARGETS=page-types slabinfo page_owner_sort
  
+ LIB_DIR = ../lib/api
 
 
