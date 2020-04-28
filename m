@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0C51BC84D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CE71BCB98
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728581AbgD1SbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:31:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46796 "EHLO mail.kernel.org"
+        id S1729718AbgD1S6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:58:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729661AbgD1SbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:31:20 -0400
+        id S1729382AbgD1S3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:29:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0E9021744;
-        Tue, 28 Apr 2020 18:31:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73E0820757;
+        Tue, 28 Apr 2020 18:29:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098680;
-        bh=zDU983lV9ssarBU6MRZRTDQZ3hKmpKdpJadL0LcKvcA=;
+        s=default; t=1588098577;
+        bh=MPhBk2aXHqgv91j67B1ChdciQB186ig6fgBa5Q4UlzU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Up501uDOD1pwupw5K9IVlm43XNk2vrd6UUU+4Xs18CgQsHuy+hR4r00S8p9hjtOm9
-         eXDf+OQBKdAvdbcMqs6EWiSxjjVXSsyZYhe6lcJBFxjnwPClHwscAbz/O71gUXye0Q
-         yQo1Ip1Wu8j6OfJ3iSZHzK1WpJNkHMrKQGTLC4us=
+        b=Lwef6vvDpfADJh/DMgSuEefIW3VjJ7TreX633MBcv+lg04B3xYr95TiiAO4zqtaPT
+         kNpnVLmknUknPeZ90/5L2JvyILLLzv4mPOAGrwxraSwRjnX+UFp+Ekg+itcugyo+5b
+         jyGxatvzbJ3Fp4JaCwBMv2+ycbawkPRd2WJ/SGZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Bob Liu <bob.liu@oracle.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Cengiz Can <cengiz@kernel.wtf>, Jens Axboe <axboe@kernel.dk>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 040/131] blktrace: fix dereference after null check
+        stable@vger.kernel.org,
+        Johnathan Smithinovic <johnathan.smithinovic@gmx.at>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 076/167] ALSA: hda: Remove ASUS ROG Zenith from the blacklist
 Date:   Tue, 28 Apr 2020 20:24:12 +0200
-Message-Id: <20200428182230.107725743@linuxfoundation.org>
+Message-Id: <20200428182234.567917963@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,68 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cengiz Can <cengiz@kernel.wtf>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 153031a301bb07194e9c37466cfce8eacb977621 upstream.
+[ Upstream commit a8cf44f085ac12c0b5b8750ebb3b436c7f455419 ]
 
-There was a recent change in blktrace.c that added a RCU protection to
-`q->blk_trace` in order to fix a use-after-free issue during access.
+The commit 3c6fd1f07ed0 ("ALSA: hda: Add driver blacklist") added a
+new blacklist for the devices that are known to have empty codecs, and
+one of the entries was ASUS ROG Zenith II (PCI SSID 1043:874f).
+However, it turned out that the very same PCI SSID is used for the
+previous model that does have the valid HD-audio codecs and the change
+broke the sound on it.
 
-However the change missed an edge case that can lead to dereferencing of
-`bt` pointer even when it's NULL:
+This patch reverts the corresponding entry as a temporary solution.
+Although Zenith II and co will see get the empty HD-audio bus again,
+it'd be merely resource wastes and won't affect the functionality,
+so it's no end of the world.  We'll need to address this later,
+e.g. by either switching to DMI string matching or using PCI ID &
+SSID pairs.
 
-Coverity static analyzer marked this as a FORWARD_NULL issue with CID
-1460458.
-
-```
-/kernel/trace/blktrace.c: 1904 in sysfs_blk_trace_attr_store()
-1898            ret = 0;
-1899            if (bt == NULL)
-1900                    ret = blk_trace_setup_queue(q, bdev);
-1901
-1902            if (ret == 0) {
-1903                    if (attr == &dev_attr_act_mask)
->>>     CID 1460458:  Null pointer dereferences  (FORWARD_NULL)
->>>     Dereferencing null pointer "bt".
-1904                            bt->act_mask = value;
-1905                    else if (attr == &dev_attr_pid)
-1906                            bt->pid = value;
-1907                    else if (attr == &dev_attr_start_lba)
-1908                            bt->start_lba = value;
-1909                    else if (attr == &dev_attr_end_lba)
-```
-
-Added a reassignment with RCU annotation to fix the issue.
-
-Fixes: c780e86dd48 ("blktrace: Protect q->blk_trace with RCU")
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Bob Liu <bob.liu@oracle.com>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Cengiz Can <cengiz@kernel.wtf>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Fixes: 3c6fd1f07ed0 ("ALSA: hda: Add driver blacklist")
+Reported-by: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200419071926.22683-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/pci/hda/hda_intel.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 99f6cdbf2f540..6cea8bbca03cb 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1893,8 +1893,11 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
- 	}
- 
- 	ret = 0;
--	if (bt == NULL)
-+	if (bt == NULL) {
- 		ret = blk_trace_setup_queue(q, bdev);
-+		bt = rcu_dereference_protected(q->blk_trace,
-+				lockdep_is_held(&q->blk_trace_mutex));
-+	}
- 
- 	if (ret == 0) {
- 		if (attr == &dev_attr_act_mask)
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index f41d8b7864c1e..af21e9583c0d3 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2076,7 +2076,6 @@ static void pcm_mmap_prepare(struct snd_pcm_substream *substream,
+  * should be ignored from the beginning.
+  */
+ static const struct snd_pci_quirk driver_blacklist[] = {
+-	SND_PCI_QUIRK(0x1043, 0x874f, "ASUS ROG Zenith II / Strix", 0),
+ 	SND_PCI_QUIRK(0x1462, 0xcb59, "MSI TRX40 Creator", 0),
+ 	SND_PCI_QUIRK(0x1462, 0xcb60, "MSI TRX40", 0),
+ 	{}
 -- 
 2.20.1
 
