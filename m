@@ -2,297 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CFB1BC421
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80201BC409
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:49:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgD1PxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 11:53:09 -0400
-Received: from mx-relay32-hz1.antispameurope.com ([94.100.133.208]:49691 "EHLO
-        mx-relay32-hz1.antispameurope.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728224AbgD1PxJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 11:53:09 -0400
-X-Greylist: delayed 318 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Apr 2020 11:53:07 EDT
-Received: from mailgw1.iis.fraunhofer.de ([153.96.172.4]) by mx-relay32-hz1.antispameurope.com;
- Tue, 28 Apr 2020 17:47:47 +0200
-Received: from mail.iis.fraunhofer.de (mail03.iis.fhg.de [153.96.171.212])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailgw1.iis.fraunhofer.de (Postfix) with ESMTPS id 5753B2400081;
-        Tue, 28 Apr 2020 17:47:43 +0200 (CEST)
-Received: from mail01.iis.fhg.de (2001:638:a0a:1111:fd91:8c2a:e4a5:e74e) by
- mail03.iis.fhg.de (2001:638:a0a:1111:314f:f22c:4a37:b25a) with Microsoft SMTP
- Server (TLS) id 15.0.1395.4; Tue, 28 Apr 2020 17:47:42 +0200
-Received: from mail01.iis.fhg.de ([fe80::fd91:8c2a:e4a5:e74e]) by
- mail01.iis.fhg.de ([fe80::fd91:8c2a:e4a5:e74e%12]) with mapi id
- 15.00.1395.000; Tue, 28 Apr 2020 17:47:43 +0200
-From:   "Stahl, Manuel" <manuel.stahl@iis-extern.fraunhofer.de>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "hjk@linutronix.de" <hjk@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "sojkam1@fel.cvut.cz" <sojkam1@fel.cvut.cz>
-Subject: Re: [PATCH v4] Add new uio device for PCI with dynamic memory
- allocation
-Thread-Topic: [PATCH v4] Add new uio device for PCI with dynamic memory
- allocation
-Thread-Index: AQHWFA15mQXQpLHKR0emWdXVXY2Gm6iOf4GAgAAfkIA=
-Date:   Tue, 28 Apr 2020 15:47:42 +0000
-Message-ID: <6e93bbcb4ba85b4cc143aa8e3e7254071b3c8bdb.camel@iis-extern.fraunhofer.de>
-References: <1507296707.2915.14.camel@iis-extern.fraunhofer.de>
-         <20200416163830.30623-1-manuel.stahl@iis-extern.fraunhofer.de>
-         <20200428135443.GA1437053@kroah.com>
-In-Reply-To: <20200428135443.GA1437053@kroah.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [153.96.171.210]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D39F72C96BB4444ABA239FB076F618CD@iis.fhg.de>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-cloud-security-sender: manuel.stahl@iis-extern.fraunhofer.de
-X-cloud-security-recipient: linux-kernel@vger.kernel.org
-X-cloud-security-crypt: load encryption module
-X-cloud-security-Virusscan: CLEAN
-X-cloud-security-disclaimer: This E-Mail was scanned by E-Mailservice on mx-relay32-hz1.antispameurope.com with 77CD98C539A
-X-cloud-security-connect: mailgw1.iis.fraunhofer.de[153.96.172.4], TLS=1, IP=153.96.172.4
-X-cloud-security: scantime:.2623
+        id S1728182AbgD1PtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 11:49:15 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:46564 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727860AbgD1PtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 11:49:15 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 198831A0041;
+        Tue, 28 Apr 2020 17:49:13 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F239E1A002E;
+        Tue, 28 Apr 2020 17:49:12 +0200 (CEST)
+Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id E774A2030C;
+        Tue, 28 Apr 2020 17:49:11 +0200 (CEST)
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx <linux-imx@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Subject: [PATCH v6 0/3] crypto: engine - support for parallel and batch requests
+Date:   Tue, 28 Apr 2020 18:49:02 +0300
+Message-Id: <1588088945-9067-1-git-send-email-iuliana.prodan@nxp.com>
+X-Mailer: git-send-email 2.1.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRGksIDIwMjAtMDQtMjggYXQgMTU6NTQgKzAyMDAsIGdyZWcgay1oIHdyb3RlOg0KPiBPbiBU
-aHUsIEFwciAxNiwgMjAyMCBhdCAwNjozODozMFBNICswMjAwLCBNYW51ZWwgU3RhaGwgd3JvdGU6
-DQo+ID4gVGhpcyBkZXZpY2UgY29tYmluZXMgdGhlIHVpb19wY2lfZ2VuZXJpYyBkcml2ZXIgYW5k
-IHRoZSB1aW9fZG1lbV9nZW5pcnENCj4gPiBkcml2ZXIgc2luY2UgUENJIHVzZXMgYSBzbGlnaHRs
-eSBkaWZmZXJlbnQgQVBJIGZvciBpbnRlcnJ1cHRzLg0KPiA+IEEgZml4ZWQgbnVtYmVyIG9mIERN
-QSBjYXBhYmxlIG1lbW9yeSByZWdpb25zIGNhbiBiZSBkZWZpbmVkIHVzaW5nIHRoZQ0KPiA+IG1v
-ZHVsZSBwYXJhbWV0ZXIgImRtZW1fc2l6ZXMiLiBUaGUgbWVtb3J5IGlzIG5vdCBhbGxvY2F0ZWQg
-dW50aWwgdGhlIHVpbw0KPiA+IGRldmljZSBmaWxlIGlzIG9wZW5lZCBmb3IgdGhlIGZpcnN0IHRp
-bWUuIFdoZW4gdGhlIGRldmljZSBmaWxlIGlzIGNsb3NlZCwNCj4gPiB0aGUgYWxsb2NhdGVkIG1l
-bW9yeSBibG9jayBpcyBmcmVlZC4gUGh5c2ljYWwgKERNQSkgYWRkcmVzc2VzIGZvciB0aGUNCj4g
-PiBkeW5hbWljIHJlZ2lvbnMgYXJlIHByb3ZpZGVkIHRvIHRoZSB1c2Vyc3BhY2UgdmlhDQo+ID4g
-L3N5cy9jbGFzcy91aW8vdWlvWC9tYXBzL21hcFkvYWRkcg0KPiA+IFdoZW4gbm8gcHJvY2Vzc2Vz
-IGFyZSBob2xkaW5nIHRoZSBkZXZpY2UgZmlsZSBvcGVuLCB0aGUgYWRkcmVzcyByZXR1cm5lZA0K
-PiA+IHRvIHVzZXJzcGFjZSBpcyBETUFfRVJST1JfQ09ERS4NCj4gPiANCj4gPiBTaWduZWQtb2Zm
-LWJ5OiBNYW51ZWwgU3RhaGwgPG1hbnVlbC5zdGFobEBpaXMuZnJhdW5ob2Zlci5kZT4NCj4gPiAt
-LS0NCj4gPiAgTUFJTlRBSU5FUlMgICAgICAgICAgICAgICAgICAgICAgIHwgICA2ICsNCj4gPiAg
-ZHJpdmVycy91aW8vS2NvbmZpZyAgICAgICAgICAgICAgIHwgICA5ICsNCj4gPiAgZHJpdmVycy91
-aW8vTWFrZWZpbGUgICAgICAgICAgICAgIHwgICAxICsNCj4gPiAgZHJpdmVycy91aW8vdWlvX3Bj
-aV9kbWVtX2dlbmlycS5jIHwgMzUxICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiA+
-ICA0IGZpbGVzIGNoYW5nZWQsIDM2NyBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEw
-MDY0NCBkcml2ZXJzL3Vpby91aW9fcGNpX2RtZW1fZ2VuaXJxLmMNCj4gDQo+IFdoYXQgY2hhbmdl
-ZCBmcm9tIHByZXZpb3VzIHZlcnNpb25zPyAgQWx3YXlzIHB1dCB0aGF0IGJlbG93IHRoZSAtLS0N
-Cj4gbGluZS4NCg0KT25seSByZWJhc2VkIHRvIHRoZSBsYXRlc3Qga2VybmVsIHZlcnNpb24gYW5k
-IGluY29ycG9yYXRlZCBjaGFuZ2VzIGZyb20gdWlvX3BjaV9nZW5lcmljIGFuZCB1aW9fZG1lbV9n
-ZW5pcnEuDQpObyByZWNvbW1lbmRhdGlvbnMgd2VyZSBtYWRlIGFib3V0IG90aGVyIHJlcXVpcmVk
-IGNoYW5nZXMsIHRoZSBkaXNjdXNzaW9uIHN0b3BwZWQgYWJvdXQgdGhlIGZhY3QgaWYgc3VjaCBh
-IGRyaXZlciAoVUlPIHdpdGggRE1BKSBzaG91bGQgYmUgYWxsb3dlZCBhdCBhbGwuIEZvciBtZSBz
-dWNoIGEgZHJpdmVyIGFsbG93cyBtZSB0byBxdWlja2x5DQp0ZXN0IGRpZmZlcmVudCBGUEdBIGRl
-c2lnbnMgb24gY29tcHV0ZXJzIHRoYXQgZG9uJ3QgaGF2ZSBzcGVjaWZpYyBzZWN1cml0eSByZXF1
-aXJlbWVudHMuDQoNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvTUFJTlRBSU5FUlMgYi9NQUlOVEFJ
-TkVSUw0KPiA+IGluZGV4IGU2NGU1ZGIzMTQ5Ny4uNDQ2OTMxNTMwZGJjIDEwMDY0NA0KPiA+IC0t
-LSBhL01BSU5UQUlORVJTDQo+ID4gKysrIGIvTUFJTlRBSU5FUlMNCj4gPiBAQCAtNzE0OSw2ICs3
-MTQ5LDEyIEBAIEw6CWt2bUB2Z2VyLmtlcm5lbC5vcmcNCj4gPiAgUzoJU3VwcG9ydGVkDQo+ID4g
-IEY6CWRyaXZlcnMvdWlvL3Vpb19wY2lfZ2VuZXJpYy5jDQo+ID4gIA0KPiA+ICtHRU5FUklDIFVJ
-TyBEUklWRVIgRk9SIFBDSSBERVZJQ0VTIFdJVEggRE1BDQo+ID4gK006CSJNYW51ZWwgU3RhaGwi
-IDxtYW51ZWwuc3RhaGxAaWlzLmZyYXVuaG9mZXIuZGU+DQo+ID4gK0w6CWt2bUB2Z2VyLmtlcm5l
-bC5vcmcNCj4gPiArUzoJU3VwcG9ydGVkDQo+ID4gK0Y6CWRyaXZlcnMvdWlvL3Vpb19wY2lfZG1l
-bV9nZW5pcnEuYw0KPiA+ICsNCj4gPiAgR0VORVJJQyBWRFNPIExJQlJBUlkNCj4gPiAgTToJQW5k
-eSBMdXRvbWlyc2tpIDxsdXRvQGtlcm5lbC5vcmc+DQo+ID4gIE06CVRob21hcyBHbGVpeG5lciA8
-dGdseEBsaW51dHJvbml4LmRlPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Vpby9LY29uZmln
-IGIvZHJpdmVycy91aW8vS2NvbmZpZw0KPiA+IGluZGV4IDIwMmVlODFjZmMyYi4uMGQzZjhhMDFl
-Yzc0IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvdWlvL0tjb25maWcNCj4gPiArKysgYi9kcml2
-ZXJzL3Vpby9LY29uZmlnDQo+ID4gQEAgLTk0LDYgKzk0LDE1IEBAIGNvbmZpZyBVSU9fUENJX0dF
-TkVSSUMNCj4gPiAgCSAgcHJpbWFyaWx5LCBmb3IgdmlydHVhbGl6YXRpb24gc2NlbmFyaW9zLg0K
-PiA+ICAJICBJZiB5b3UgY29tcGlsZSB0aGlzIGFzIGEgbW9kdWxlLCBpdCB3aWxsIGJlIGNhbGxl
-ZCB1aW9fcGNpX2dlbmVyaWMuDQo+ID4gIA0KPiA+ICtjb25maWcgVUlPX1BDSV9ETUVNX0dFTklS
-UQ0KPiA+ICsJdHJpc3RhdGUgIkdlbmVyaWMgZHJpdmVyIGZvciBQQ0kgMi4zIGFuZCBQQ0kgRXhw
-cmVzcyBjYXJkcyB3aXRoIERNQSINCj4gPiArCWRlcGVuZHMgb24gUENJDQo+ID4gKwloZWxwDQo+
-ID4gKwkgIEdlbmVyaWMgZHJpdmVyIHRoYXQgeW91IGNhbiBiaW5kLCBkeW5hbWljYWxseSwgdG8g
-YW55DQo+ID4gKwkgIFBDSSAyLjMgY29tcGxpYW50IGFuZCBQQ0kgRXhwcmVzcyBjYXJkLiBJdCBp
-cyB1c2VmdWwNCj4gPiArCSAgZm9yIEZQR0FzIHdpdGggRE1BIGNhcGFiaWxpdHkgY29ubmVjdGVk
-IHZpYSBQQ0kuDQo+ID4gKwkgIElmIHlvdSBjb21waWxlIHRoaXMgYXMgYSBtb2R1bGUsIGl0IHdp
-bGwgYmUgY2FsbGVkIHVpb19wY2lfZG1lbV9nZW5pcnEuDQo+ID4gKw0KPiA+ICBjb25maWcgVUlP
-X05FVFgNCj4gPiAgCXRyaXN0YXRlICJIaWxzY2hlciBOZXRYIENhcmQgZHJpdmVyIg0KPiA+ICAJ
-ZGVwZW5kcyBvbiBQQ0kNCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy91aW8vTWFrZWZpbGUgYi9k
-cml2ZXJzL3Vpby9NYWtlZmlsZQ0KPiA+IGluZGV4IGMyODVkZDJhNDUzOS4uMjAyZDZiZmRkNWFh
-IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvdWlvL01ha2VmaWxlDQo+ID4gKysrIGIvZHJpdmVy
-cy91aW8vTWFrZWZpbGUNCj4gPiBAQCAtNiw2ICs2LDcgQEAgb2JqLSQoQ09ORklHX1VJT19ETUVN
-X0dFTklSUSkJKz0gdWlvX2RtZW1fZ2VuaXJxLm8NCj4gPiAgb2JqLSQoQ09ORklHX1VJT19BRUMp
-CSs9IHVpb19hZWMubw0KPiA+ICBvYmotJChDT05GSUdfVUlPX1NFUkNPUzMpCSs9IHVpb19zZXJj
-b3MzLm8NCj4gPiAgb2JqLSQoQ09ORklHX1VJT19QQ0lfR0VORVJJQykJKz0gdWlvX3BjaV9nZW5l
-cmljLm8NCj4gPiArb2JqLSQoQ09ORklHX1VJT19QQ0lfRE1FTV9HRU5JUlEpCSs9IHVpb19wY2lf
-ZG1lbV9nZW5pcnEubw0KPiA+ICBvYmotJChDT05GSUdfVUlPX05FVFgpCSs9IHVpb19uZXR4Lm8N
-Cj4gPiAgb2JqLSQoQ09ORklHX1VJT19QUlVTUykgICAgICAgICArPSB1aW9fcHJ1c3Mubw0KPiA+
-ICBvYmotJChDT05GSUdfVUlPX01GNjI0KSAgICAgICAgICs9IHVpb19tZjYyNC5vDQo+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvdWlvL3Vpb19wY2lfZG1lbV9nZW5pcnEuYyBiL2RyaXZlcnMvdWlv
-L3Vpb19wY2lfZG1lbV9nZW5pcnEuYw0KPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+ID4gaW5k
-ZXggMDAwMDAwMDAwMDAwLi5iZTFiZGNjNTUyZmUNCj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysr
-IGIvZHJpdmVycy91aW8vdWlvX3BjaV9kbWVtX2dlbmlycS5jDQo+ID4gQEAgLTAsMCArMSwzNTEg
-QEANCj4gPiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjANCj4gPiArLyogdWlv
-X3BjaV9nZW5lcmljIC0gZ2VuZXJpYyBVSU8gZHJpdmVyIGZvciBQQ0kgMi4zIGRldmljZXMgd2l0
-aCBETUEgbWVtb3J5DQo+ID4gKyAqDQo+ID4gKyAqIENvcHlyaWdodCAoQykgMjAxNiBGcmF1bmhv
-ZmVyIElJUw0KPiA+ICsgKiBBdXRob3I6IE1hbnVlbCBTdGFobCA8bWFudWVsLnN0YWhsQGlpcy5m
-cmF1bmhvZmVyLmRlPg0KPiA+ICsgKg0KPiA+ICsgKiBCYXNlZCBvbiB1aW9fcGNpX2dlbmVyaWMu
-YyBieSBNaWNoYWVsIFMuIFRzaXJraW4NCj4gPiArICogYW5kIHVpb19kbWVtX2dlbmlycS5jIGJ5
-IERhbWlhbiBIb2Jzb24tR2FyY2lhLg0KPiA+ICsgKg0KPiA+ICsgKiBTaW5jZSB0aGUgZHJpdmVy
-IGRvZXMgbm90IGRlY2xhcmUgYW55IGRldmljZSBpZHMsIHlvdSBtdXN0IGFsbG9jYXRlDQo+ID4g
-KyAqIGlkIGFuZCBiaW5kIHRoZSBkZXZpY2UgdG8gdGhlIGRyaXZlciB5b3Vyc2VsZi4gIEZvciBl
-eGFtcGxlOg0KPiA+ICsgKg0KPiA+ICsgKiAjIGVjaG8gIjgwODYgMTBmNSIgPiAvc3lzL2J1cy9w
-Y2kvZHJpdmVycy91aW9fcGNpX2RtZW1fZ2VuaXJxL25ld19pZA0KPiA+ICsgKiAjIGVjaG8gLW4g
-MDAwMDowMDoxOS4wID4gL3N5cy9idXMvcGNpL2RyaXZlcnMvZTEwMDBlL3VuYmluZA0KPiA+ICsg
-KiAjIGVjaG8gLW4gMDAwMDowMDoxOS4wID4gL3N5cy9idXMvcGNpL2RyaXZlcnMvdWlvX3BjaV9k
-bWVtX2dlbmlycS9iaW5kDQo+ID4gKyAqICMgbHMgLWwgL3N5cy9idXMvcGNpL2RldmljZXMvMDAw
-MDowMDoxOS4wL2RyaXZlcg0KPiA+ICsgKiAuLi4vMDAwMDowMDoxOS4wL2RyaXZlciAtPiAuLi8u
-Li8uLi9idXMvcGNpL2RyaXZlcnMvdWlvX3BjaV9kbWVtX2dlbmlycQ0KPiA+ICsgKg0KPiA+ICsg
-KiBPciB1c2UgYSBtb2Rwcm9iZSBhbGlhczoNCj4gPiArICogIyBhbGlhcyBwY2k6djAwMDAxMEVF
-ZDAwMDAxMDAwc3Yqc2Qqc2MqaSogdWlvX3BjaV9kbWVtX2dlbmlycQ0KPiA+ICsgKg0KPiA+ICsg
-KiBEcml2ZXIgd29uJ3QgYmluZCB0byBkZXZpY2VzIHdoaWNoIGRvIG5vdCBzdXBwb3J0IHRoZSBJ
-bnRlcnJ1cHQgRGlzYWJsZSBCaXQNCj4gPiArICogaW4gdGhlIGNvbW1hbmQgcmVnaXN0ZXIuIEFs
-bCBkZXZpY2VzIGNvbXBsaWFudCB0byBQQ0kgMi4zIChjaXJjYSAyMDAyKSBhbmQNCj4gPiArICog
-YWxsIGNvbXBsaWFudCBQQ0kgRXhwcmVzcyBkZXZpY2VzIHNob3VsZCBzdXBwb3J0IHRoaXMgYml0
-Lg0KPiA+ICsgKg0KPiA+ICsgKiBUaGUgRE1BIG1hc2sgYml0cyBhbmQgc2l6ZXMgb2YgZHluYW1p
-YyByZWdpb25zIGFyZSBkZXJpdmVkIGZyb20gbW9kdWxlDQo+ID4gKyAqIHBhcmFtZXRlcnMuDQo+
-ID4gKyAqDQo+ID4gKyAqIFRoZSBmb3JtYXQgZm9yIHNwZWNpZnlpbmcgZHluYW1pYyByZWdpb24g
-c2l6ZXMgaW4gbW9kdWxlIHBhcmFtZXRlcnMNCj4gPiArICogaXMgYXMgZm9sbG93czoNCj4gPiAr
-ICoNCj4gPiArICogdWlvX3BjaV9kbWVtX2dlbmlycS5kbWVtX3NpemVzIDo9IDx1aW9fZG1lbV9z
-aXplc19kZWY+Wzs8dWlvX2RtZW1fc2l6ZXNfZGVmPl0NCj4gPiArICogPHVpb19kbWVtX3NpemVz
-X2RlZj4gICAgICAgICAgIDo9IDxwY2lfaWQ+OjxzaXplPlssPHNpemU+XQ0KPiA+ICsgKiA8cGNp
-X2lkPiAgICAgICAgICAgICAgICAgICAgICAgOj0gPHZlbmRvcj46PGRldmljZT4NCj4gPiArICog
-PHNpemU+ICAgICAgICAgICAgICAgICAgICAgICAgIDo9IHN0YW5kYXJkIGxpbnV4IG1lbXNpemUN
-Cj4gPiArICoNCj4gPiArICogRXhhbXBsZXM6DQo+ID4gKyAqDQo+ID4gKyAqIDEpIFVJTyBkbWVt
-IGRldmljZSB3aXRoIDMgZHluYW1pYyByZWdpb25zOg0KPiA+ICsgKiB1aW9fcGNpX2RtZW1fZ2Vu
-aXJxLmRtZW1fc2l6ZXM9ODA4NjoxMGY1OjRLLDE2Syw0TQ0KPiA+ICsgKg0KPiA+ICsgKiAyKSBU
-d28gVUlPIGRtZW0gZGV2aWNlcyB3aXRoIGRpZmZlcmVudCBudW1iZXIgb2YgZHluYW1pYyByZWdp
-b25zOg0KPiA+ICsgKiB1aW9fcGNpX2RtZW1fZ2VuaXJxLmRtZW1fc2l6ZXM9ODA4NjoxMGY1OjRL
-LDE2Syw0TTsxMjM0OjAwMDE6OEsNCj4gDQo+IE1vZHVsZSBwYXJhbWV0ZXJzIGFyZSBob3JyaWQs
-IGFyZSB5b3Ugc3VyZSB0aGVyZSBpcyBubyBvdGhlciB3YXk/DQo+IA0KPiANCj4gPiArICovDQo+
-ID4gKw0KPiA+ICsjaW5jbHVkZSA8bGludXgvZGV2aWNlLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51
-eC9tb2R1bGUuaD4NCj4gPiArI2luY2x1ZGUgPGxpbnV4L3BjaS5oPg0KPiA+ICsjaW5jbHVkZSA8
-bGludXgvc2xhYi5oPg0KPiA+ICsjaW5jbHVkZSA8bGludXgvdWlvX2RyaXZlci5oPg0KPiA+ICsj
-aW5jbHVkZSA8bGludXgvYml0b3BzLmg+DQo+ID4gKyNpbmNsdWRlIDxsaW51eC9pbnRlcnJ1cHQu
-aD4NCj4gPiArI2luY2x1ZGUgPGxpbnV4L3N0cmluZ2lmeS5oPg0KPiA+ICsjaW5jbHVkZSA8bGlu
-dXgvZG1hLW1hcHBpbmcuaD4NCj4gPiArDQo+ID4gKyNkZWZpbmUgRFJJVkVSX1ZFUlNJT04gICIw
-LjAxLjAiDQo+ID4gKyNkZWZpbmUgRFJJVkVSX0FVVEhPUiAgICJNYW51ZWwgU3RhaGwgPG1hbnVl
-bC5zdGFobEBpaXMuZnJhdW5ob2Zlci5kZT4iDQo+ID4gKyNkZWZpbmUgRFJJVkVSX0RFU0MgIkdl
-bmVyaWMgVUlPIGRyaXZlciBmb3IgUENJIDIuMyBkZXZpY2VzIHdpdGggRE1BIG1lbW9yeSINCj4g
-PiArI2RlZmluZSBEUklWRVJfTkFNRSAidWlvX3BjaV9kbWVtX2dlbmlycSINCj4gPiArI2RlZmlu
-ZSBETUVNX01BUF9FUlJPUiAofjApDQo+ID4gKw0KPiA+ICtzdHJ1Y3QgdWlvX3BjaV9kbWVtX2Rl
-diB7DQo+ID4gKwlzdHJ1Y3QgdWlvX2luZm8gaW5mbzsNCj4gPiArCXN0cnVjdCBwY2lfZGV2ICpw
-ZGV2Ow0KPiA+ICsJdm9pZCAqZG1lbV9yZWdpb25fdmFkZHJbTUFYX1VJT19NQVBTXTsNCj4gPiAr
-CXVuc2lnbmVkIGludCByZWZjbnQ7DQo+ID4gKwlzdHJ1Y3QgbXV0ZXggYWxsb2NfbG9jazsgLyog
-bXV0ZXggZm9yIGRtZW1fcmVnaW9uX3ZhZGRyIGFuZCByZWZjbnQgKi8NCj4gPiArfTsNCj4gPiAr
-DQo+ID4gK3N0YXRpYyBpbmxpbmUgc3RydWN0IHVpb19wY2lfZG1lbV9kZXYgKg0KPiA+ICt0b191
-aW9fcGNpX2RtZW1fZGV2KHN0cnVjdCB1aW9faW5mbyAqaW5mbykNCj4gPiArew0KPiA+ICsJcmV0
-dXJuIGNvbnRhaW5lcl9vZihpbmZvLCBzdHJ1Y3QgdWlvX3BjaV9kbWVtX2RldiwgaW5mbyk7DQo+
-ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQgb3BlbihzdHJ1Y3QgdWlvX2luZm8gKmluZm8s
-IHN0cnVjdCBpbm9kZSAqaW5vZGUpDQo+ID4gK3sNCj4gPiArCXN0cnVjdCB1aW9fcGNpX2RtZW1f
-ZGV2ICpwcml2ID0gdG9fdWlvX3BjaV9kbWVtX2RldihpbmZvKTsNCj4gPiArCXN0cnVjdCB1aW9f
-bWVtICp1aW9tZW07DQo+ID4gKwlpbnQgZG1lbV9yZWdpb24gPSAwOw0KPiA+ICsNCj4gPiArCXVp
-b21lbSA9ICZwcml2LT5pbmZvLm1lbVtkbWVtX3JlZ2lvbl07DQo+ID4gKw0KPiA+ICsJbXV0ZXhf
-bG9jaygmcHJpdi0+YWxsb2NfbG9jayk7DQo+ID4gKwl3aGlsZSAoIXByaXYtPnJlZmNudCAmJiB1
-aW9tZW0gPCAmcHJpdi0+aW5mby5tZW1bTUFYX1VJT19NQVBTXSkgew0KPiA+ICsJCXZvaWQgKmFk
-ZHI7DQo+ID4gKw0KPiA+ICsJCWlmICghdWlvbWVtLT5zaXplKQ0KPiA+ICsJCQlicmVhazsNCj4g
-PiArDQo+ID4gKwkJYWRkciA9IGRtYV9hbGxvY19jb2hlcmVudCgmcHJpdi0+cGRldi0+ZGV2LCB1
-aW9tZW0tPnNpemUsDQo+ID4gKwkJCQkJICAoZG1hX2FkZHJfdCAqKSZ1aW9tZW0tPmFkZHIsDQo+
-ID4gKwkJCQkJICBHRlBfS0VSTkVMKTsNCj4gPiArCQlpZiAoIWFkZHIpDQo+ID4gKwkJCXVpb21l
-bS0+YWRkciA9IERNRU1fTUFQX0VSUk9SOw0KPiA+ICsNCj4gPiArCQlwcml2LT5kbWVtX3JlZ2lv
-bl92YWRkcltkbWVtX3JlZ2lvbisrXSA9IGFkZHI7DQo+ID4gKwkJKyt1aW9tZW07DQo+ID4gKwl9
-DQo+ID4gKwlpZiAocGNpX2NoZWNrX2FuZF9tYXNrX2ludHgocHJpdi0+cGRldikpDQo+ID4gKwkJ
-ZGV2X2luZm8oJnByaXYtPnBkZXYtPmRldiwgIkZvdW5kIHBlbmRpbmcgaW50ZXJydXB0Iik7DQo+
-ID4gKw0KPiA+ICsJaWYgKCFwcml2LT5yZWZjbnQpDQo+ID4gKwkJcGNpX3NldF9tYXN0ZXIocHJp
-di0+cGRldik7DQo+ID4gKw0KPiA+ICsJcHJpdi0+cmVmY250Kys7DQo+ID4gKw0KPiA+ICsJbXV0
-ZXhfdW5sb2NrKCZwcml2LT5hbGxvY19sb2NrKTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gMDsNCj4g
-PiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIGludCByZWxlYXNlKHN0cnVjdCB1aW9faW5mbyAqaW5m
-bywgc3RydWN0IGlub2RlICppbm9kZSkNCj4gPiArew0KPiA+ICsJc3RydWN0IHVpb19wY2lfZG1l
-bV9kZXYgKnByaXYgPSB0b191aW9fcGNpX2RtZW1fZGV2KGluZm8pOw0KPiA+ICsJc3RydWN0IHVp
-b19tZW0gKnVpb21lbTsNCj4gPiArCWludCBkbWVtX3JlZ2lvbiA9IDA7DQo+ID4gKw0KPiA+ICsJ
-dWlvbWVtID0gJnByaXYtPmluZm8ubWVtW2RtZW1fcmVnaW9uXTsNCj4gPiArDQo+ID4gKwltdXRl
-eF9sb2NrKCZwcml2LT5hbGxvY19sb2NrKTsNCj4gPiArDQo+ID4gKwlwcml2LT5yZWZjbnQtLTsN
-Cj4gPiArCXdoaWxlICghcHJpdi0+cmVmY250ICYmIHVpb21lbSA8ICZwcml2LT5pbmZvLm1lbVtN
-QVhfVUlPX01BUFNdKSB7DQo+ID4gKwkJaWYgKCF1aW9tZW0tPnNpemUpDQo+ID4gKwkJCWJyZWFr
-Ow0KPiA+ICsJCWlmIChwcml2LT5kbWVtX3JlZ2lvbl92YWRkcltkbWVtX3JlZ2lvbl0pIHsNCj4g
-PiArCQkJZG1hX2ZyZWVfY29oZXJlbnQoJnByaXYtPnBkZXYtPmRldiwgdWlvbWVtLT5zaXplLA0K
-PiA+ICsJCQkJCSAgcHJpdi0+ZG1lbV9yZWdpb25fdmFkZHJbZG1lbV9yZWdpb25dLA0KPiA+ICsJ
-CQkJCSAgdWlvbWVtLT5hZGRyKTsNCj4gPiArCQl9DQo+ID4gKwkJdWlvbWVtLT5hZGRyID0gRE1F
-TV9NQVBfRVJST1I7DQo+ID4gKwkJKytkbWVtX3JlZ2lvbjsNCj4gPiArCQkrK3Vpb21lbTsNCj4g
-PiArCX0NCj4gPiArCWlmIChwY2lfY2hlY2tfYW5kX21hc2tfaW50eChwcml2LT5wZGV2KSkNCj4g
-PiArCQlkZXZfaW5mbygmcHJpdi0+cGRldi0+ZGV2LCAiRm91bmQgcGVuZGluZyBpbnRlcnJ1cHQi
-KTsNCj4gPiArDQo+ID4gKwlpZiAoIXByaXYtPnJlZmNudCkNCj4gPiArCQlwY2lfY2xlYXJfbWFz
-dGVyKHByaXYtPnBkZXYpOw0KPiA+ICsNCj4gPiArCW11dGV4X3VubG9jaygmcHJpdi0+YWxsb2Nf
-bG9jayk7DQo+ID4gKwlyZXR1cm4gMDsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIGludCBk
-bWVtX21tYXAoc3RydWN0IHVpb19pbmZvICppbmZvLCBzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZt
-YSkNCj4gPiArew0KPiA+ICsJc3RydWN0IHVpb19wY2lfZG1lbV9kZXYgKmdkZXYgPSB0b191aW9f
-cGNpX2RtZW1fZGV2KGluZm8tPnByaXYpOw0KPiA+ICsJc3RydWN0IHVpb19tZW0gKnVpb21lbTsN
-Cj4gPiArCWludCBtaSA9IHZtYS0+dm1fcGdvZmY7DQo+ID4gKw0KPiA+ICsJaWYgKG1pID49IE1B
-WF9VSU9fTUFQUykNCj4gPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPiArDQo+ID4gKwl1aW9tZW0g
-PSAmaW5mby0+bWVtW21pXTsNCj4gPiArCWlmICh1aW9tZW0tPm1lbXR5cGUgIT0gVUlPX01FTV9Q
-SFlTKQ0KPiA+ICsJCXJldHVybiAtRUlOVkFMOw0KPiA+ICsJaWYgKCF1aW9tZW0tPnNpemUpDQo+
-ID4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gKw0KPiA+ICsJLyogRE1BIGFkZHJlc3MgKi8NCj4g
-PiArCXZtYS0+dm1fcGdvZmYgPSAwOw0KPiA+ICsJcmV0dXJuIGRtYV9tbWFwX2NvaGVyZW50KCZn
-ZGV2LT5wZGV2LT5kZXYsIHZtYSwNCj4gPiArCQkJCSBnZGV2LT5kbWVtX3JlZ2lvbl92YWRkcltt
-aV0sDQo+ID4gKwkJCQkgdWlvbWVtLT5hZGRyLCB1aW9tZW0tPnNpemUpOw0KPiA+ICt9DQo+ID4g
-Kw0KPiA+ICsvKiBJbnRlcnJ1cHQgaGFuZGxlci4gUmVhZC9tb2RpZnkvd3JpdGUgdGhlIGNvbW1h
-bmQgcmVnaXN0ZXIgdG8gZGlzYWJsZSB0aGUNCj4gPiArICogaW50ZXJydXB0Lg0KPiA+ICsgKi8N
-Cj4gPiArc3RhdGljIGlycXJldHVybl90IGlycWhhbmRsZXIoaW50IGlycSwgc3RydWN0IHVpb19p
-bmZvICppbmZvKQ0KPiA+ICt7DQo+ID4gKwlzdHJ1Y3QgdWlvX3BjaV9kbWVtX2RldiAqZ2RldiA9
-IHRvX3Vpb19wY2lfZG1lbV9kZXYoaW5mbyk7DQo+ID4gKw0KPiA+ICsJaWYgKCFwY2lfY2hlY2tf
-YW5kX21hc2tfaW50eChnZGV2LT5wZGV2KSkNCj4gPiArCQlyZXR1cm4gSVJRX05PTkU7DQo+ID4g
-Kw0KPiA+ICsJLyogVUlPIGNvcmUgd2lsbCBzaWduYWwgdGhlIHVzZXIgcHJvY2Vzcy4gKi8NCj4g
-PiArCXJldHVybiBJUlFfSEFORExFRDsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIHVuc2ln
-bmVkIGludCB1aW9fZG1lbV9kbWFfYml0cyA9IDMyOw0KPiA+ICtzdGF0aWMgY2hhciB1aW9fZG1l
-bV9zaXplc1syNTZdOw0KPiA+ICsNCj4gPiArc3RhdGljIGludCBwYXJzZV9kbWVtX2VudHJpZXMo
-c3RydWN0IHBjaV9kZXYgKnBkZXYsDQo+ID4gKwkJCSAgICAgIGNvbnN0IHN0cnVjdCBwY2lfZGV2
-aWNlX2lkICppZCwNCj4gPiArCQkJICAgICAgc3RydWN0IHVpb19wY2lfZG1lbV9kZXYgKmdkZXYp
-DQo+ID4gK3sNCj4gPiArCWludCByZXQ7DQo+ID4gKwl1MzIgcmVnaW9ucyA9IDA7DQo+ID4gKwl1
-MzIgdmVuZG9yLCBkZXZpY2U7DQo+ID4gKwljaGFyICpzLCAqdG9rLCAqc2l6ZXMgPSBOVUxMOw0K
-PiA+ICsJdW5zaWduZWQgbG9uZyBsb25nIHNpemU7DQo+ID4gKwlzdHJ1Y3QgdWlvX21lbSAqdWlv
-bWVtOw0KPiA+ICsJY2hhciAqIGNvbnN0IGJ1ZiA9IGtzdHJkdXAodWlvX2RtZW1fc2l6ZXMsIEdG
-UF9LRVJORUwpOw0KPiA+ICsNCj4gPiArCWlmICghYnVmKQ0KPiA+ICsJCXJldHVybiAtRU5PTUVN
-Ow0KPiA+ICsNCj4gPiArCS8qIEZpbmQtb3V0IHN0YXJ0IGFuZCBlbmQgb2Ygc2l6ZXMgbGlzdCAq
-Lw0KPiA+ICsJcyA9IGJ1ZjsNCj4gPiArCXdoaWxlICgqcyAhPSAnXDAnKSB7DQo+ID4gKwkJc2l6
-ZXMgPSBOVUxMOw0KPiA+ICsJCXRvayA9IHN0cnNlcCgmcywgIjoiKTsNCj4gPiArCQlpZiAoIXRv
-aykNCj4gPiArCQkJYnJlYWs7DQo+ID4gKwkJcmV0ID0ga3N0cnRvdTMyKHRvaywgMTYsICZ2ZW5k
-b3IpOw0KPiA+ICsJCWlmIChyZXQpDQo+ID4gKwkJCWJyZWFrOw0KPiA+ICsJCXRvayA9IHN0cnNl
-cCgmcywgIjoiKTsNCj4gPiArCQlpZiAoIXRvaykNCj4gPiArCQkJYnJlYWs7DQo+ID4gKwkJcmV0
-ID0ga3N0cnRvdTMyKHRvaywgMTYsICZkZXZpY2UpOw0KPiA+ICsJCWlmIChyZXQpDQo+ID4gKwkJ
-CWJyZWFrOw0KPiA+ICsJCXNpemVzID0gc3Ryc2VwKCZzLCAiOyIpOw0KPiA+ICsJCWlmICh2ZW5k
-b3IgPT0gaWQtPnZlbmRvciAmJiBkZXZpY2UgPT0gaWQtPmRldmljZSkNCj4gPiArCQkJYnJlYWs7
-DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJbWVtc2V0KGdkZXYtPmluZm8ubWVtLCAwLCBzaXplb2Yo
-Z2Rldi0+aW5mby5tZW0pKTsNCj4gPiArCWlmIChzaXplcykgew0KPiA+ICsJCWRldl9pbmZvKCZw
-ZGV2LT5kZXYsICJSZWdpb25zOiAlc1xuIiwgc2l6ZXMpOw0KPiANCj4gV2hlbiBkcml2ZXJzIGFy
-ZSB3b3JraW5nLCB0aGV5IHNob3VsZCBub3Qgc3BpdCBvdXQgYW55IG1lc3NhZ2VzLCBtYWtlDQo+
-IHRoaXMsIGFuZCB0aGUgb3RoZXIgZGV2X2luZm8oKSBjYWxscyBpbiBoZXJlLCBkZXZfZGJnKCkg
-YXQgdGhlIG1vc3QuDQo+IA0KPiA+ICsNCj4gPiArCQkvKiBQYXJzZSBkeW5hbWljIHJlZ2lvbnMg
-ZnJvbSBzaXplcyBsaXN0ICovDQo+ID4gKwkJcmVnaW9ucyA9IDA7DQo+ID4gKwkJc2l6ZSA9IDA7
-DQo+ID4gKwkJcyA9IHNpemVzOw0KPiA+ICsJCXdoaWxlIChzICYmIChyZWdpb25zIDwgTUFYX1VJ
-T19NQVBTKSkgew0KPiA+ICsJCQl0b2sgPSBzdHJzZXAoJnMsICIsIik7DQo+ID4gKwkJCWlmICgh
-dG9rKQ0KPiA+ICsJCQkJYnJlYWs7DQo+ID4gKw0KPiA+ICsJCQlzaXplID0gbWVtcGFyc2UodG9r
-LCBOVUxMKTsNCj4gPiArCQkJaWYgKHNpemUpIHsNCj4gPiArCQkJCXVpb21lbSA9ICZnZGV2LT5p
-bmZvLm1lbVtyZWdpb25zXTsNCj4gPiArCQkJCXVpb21lbS0+bWVtdHlwZSA9IFVJT19NRU1fUEhZ
-UzsNCj4gPiArCQkJCS8qIFdpbGwgYmUgYWxsb2NhdGVkIGluIG9wZW4oKSBjYWxsICovDQo+ID4g
-KwkJCQl1aW9tZW0tPmFkZHIgPSBETUVNX01BUF9FUlJPUjsNCj4gPiArCQkJCXVpb21lbS0+c2l6
-ZSA9IHNpemU7DQo+ID4gKwkJCQlyZWdpb25zKys7DQo+ID4gKwkJCX0NCj4gPiArCQl9DQo+ID4g
-KwkJaWYgKHMpDQo+ID4gKwkJCWRldl93YXJuKCZwZGV2LT5kZXYsICJkZXZpY2UgaGFzIG1vcmUg
-dGhhbiAiDQo+ID4gKwkJCQkJX19zdHJpbmdpZnkoTUFYX1VJT19NQVBTKQ0KPiA+ICsJCQkJCSIg
-ZHluYW1pYyBtZW1vcnkgcmVnaW9ucy5cbiIpOw0KPiA+ICsJfQ0KPiA+ICsJZGV2X2luZm8oJnBk
-ZXYtPmRldiwgIkZvdW5kICVkIHJlZ2lvbnNcbiIsIHJlZ2lvbnMpOw0KPiA+ICsNCj4gPiArCWtm
-cmVlKGJ1Zik7DQo+ID4gKwlyZXR1cm4gcmV0Ow0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMg
-aW50IHByb2JlKHN0cnVjdCBwY2lfZGV2ICpwZGV2LCBjb25zdCBzdHJ1Y3QgcGNpX2RldmljZV9p
-ZCAqaWQpDQo+ID4gK3sNCj4gPiArCXN0cnVjdCB1aW9fcGNpX2RtZW1fZGV2ICpnZGV2Ow0KPiA+
-ICsJaW50IGVycjsNCj4gPiArDQo+ID4gKwlkZXZfaW5mbygmcGRldi0+ZGV2LCAiUHJvYmUgJXMg
-Zm9yICUwNHg6JTA0eFxuIiwgRFJJVkVSX05BTUUsDQo+ID4gKwkJIGlkLT52ZW5kb3IsIGlkLT5k
-ZXZpY2UpOw0KPiA+ICsNCj4gPiArCWVyciA9IHBjaV9lbmFibGVfZGV2aWNlKHBkZXYpOw0KPiA+
-ICsJaWYgKGVycikgew0KPiA+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgIiVzOiBwY2lfZW5hYmxl
-X2RldmljZSBmYWlsZWQ6ICVkXG4iLA0KPiA+ICsJCQlfX2Z1bmNfXywgZXJyKTsNCj4gDQo+IF9f
-ZnVuY19fIGlzIG5vdCBuZWVkZWQgZm9yIGFueSBkZXZfKiBjYWxsLg0KPiANCj4gPiArCQlyZXR1
-cm4gZXJyOw0KPiA+ICsJfQ0KPiA+ICsJcGNpX3NldF9tYXN0ZXIocGRldik7DQo+ID4gKw0KPiA+
-ICsJZGV2X2luZm8oJnBkZXYtPmRldiwgIkxlZ2FjeSBJUlE6ICVpIiwgcGRldi0+aXJxKTsNCj4g
-DQo+IEFnYWluLCByZW1vdmUsIGJlIHF1aWV0IDopDQoNClVzZSBkZXZfZGJnKCkgb3IgcmVtb3Zl
-IGNvbXBsZXRlbHk/DQoNCkJlc3QgcmVnYXJkcywNCk1hbnVlbCBTdGFobA0K
+Added support for executing multiple, independent or not, requests
+for crypto engine based on a retry mechanism. If hardware was unable
+to execute a backlog request, enqueue it back in front of crypto-engine
+queue, to keep the order of requests.
+
+Now do_one_request() returns:
+>= 0: hardware executed the request successfully;
+< 0: this is the old error path. If hardware has support for retry
+mechanism, the backlog request is put back in front of crypto-engine
+queue. For backwards compatibility, if the retry support is not available,
+the crypto-engine will work as before.
+If hardware queue is full (-ENOSPC), requeue request regardless
+of MAY_BACKLOG flag.
+If hardware throws any other error code (like -EIO, -EINVAL,
+-ENOMEM, etc.) only MAY_BACKLOG requests are enqueued back into
+crypto-engine's queue, since the others can be dropped.
+
+If hardware supports batch requests, crypto-engine can handle this use-case
+through do_batch_requests callback.
+
+Since, these new features, cannot be supported by all hardware,
+the crypto-engine framework is backward compatible:
+- by using the crypto_engine_alloc_init function, to initialize
+crypto-engine, the new callback is NULL and retry mechanism is
+disabled, so crypto-engine will work as before these changes;
+- to support multiple requests, in parallel, retry_support variable
+must be set on true, in driver. 
+- to support batch requests, do_batch_requests callback must be
+implemented in driver, to execute a batch of requests. The link
+between the requests, is expected to be done in driver, in
+do_one_request(). 
+
+---
+Changes since V5:
+- updated, in algapi, the crypto_enqueue_request_head function to
+enqueue requests regardless of backlog flag;
+- requeue request based on the error code returned by do_one_request().
+
+Changes since V4:
+- added, in algapi a function to add a request in front of queue;
+- added a retry mechanism: if hardware is unable to execute
+a backlog request, enqueue it back in front of crypto-engine
+queue, to keep the order of requests.
+
+Changes since V3:
+- removed can_enqueue_hardware callback and added a start-stop
+mechanism based on the on the return value of do_one_request().
+
+Changes since V2:
+- readded cur_req in crypto-engine, to keep, the exact behavior as before
+these changes, if can_enqueue_more is not implemented: send requests
+to hardware, _one-by-one_, on crypto_pump_requests, and complete it,
+on crypto_finalize_request, and so on.
+- do_batch_requests is available only with can_enqueue_more.
+
+Changes since V1:
+- changed the name of can_enqueue_hardware callback to can_enqueue_more, and
+the argument of this callback to crypto_engine structure (for cases when more
+than ore crypto-engine is used).
+- added a new patch with support for batch requests.
+
+Changes since V0 (RFC):
+- removed max_no_req and no_req, as the number of request that can be
+processed in parallel;
+- added a new callback, can_enqueue_more, to check whether the hardware
+can process a new request.
+
+
+Iuliana Prodan (3):
+  crypto: algapi - create function to add request in front of queue
+  crypto: engine - support for parallel requests based on retry
+    mechanism
+  crypto: engine - support for batch requests
+
+ crypto/algapi.c         |   8 +++
+ crypto/crypto_engine.c  | 171 +++++++++++++++++++++++++++++++++++++++---------
+ include/crypto/algapi.h |   2 +
+ include/crypto/engine.h |  15 ++++-
+ 4 files changed, 164 insertions(+), 32 deletions(-)
+
+-- 
+2.1.0
+
