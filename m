@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3401BC1C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036A41BC1D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgD1OuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:50:10 -0400
-Received: from mga18.intel.com ([134.134.136.126]:62133 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728094AbgD1OuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:50:03 -0400
-IronPort-SDR: PR1dPZPySpVR2UiMRdyxMDS84NGYYsCxM1YD0cWj/jJG5dbDURJvGlN9g49tzp9R9uYMhYT1v5
- pv2Wcq0c2iDQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 07:50:02 -0700
-IronPort-SDR: TIm9BnP5eTWiaT9SoCeMc1+yPT6amVcHlv8tmFBZ2L8njNT66dS/UjZGIRiR3nyY1Lyov1WfuY
- QLWN1Mr2JzFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
-   d="scan'208";a="292873815"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Apr 2020 07:49:56 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jTRYc-003Zjk-TU; Tue, 28 Apr 2020 17:49:58 +0300
-Date:   Tue, 28 Apr 2020 17:49:58 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 05/16] mfd: Add support for Kontron sl28cpld
- management controller
-Message-ID: <20200428144958.GZ185537@smile.fi.intel.com>
-References: <20200423174543.17161-1-michael@walle.cc>
- <20200423174543.17161-6-michael@walle.cc>
- <20200428125049.GU185537@smile.fi.intel.com>
- <5e2d486077f9e2ce8bd9b171cf806fd9@walle.cc>
+        id S1728201AbgD1Ou0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:50:26 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:19212 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727888AbgD1OuX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 10:50:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588085423; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=840my3Iu6yk+BC/Y1oTomASSkMJd5a+KJg6tqb2LL6I=; b=R291xHrzNWgk48QpPdUgknUupLvopI8GdtrGbl7tjZpqHT47Fu+fGIHwQwmyzb+XUNUAoy7K
+ tdxR2HNcQfolLjWRSA2wN0jiAAgOWGJGVmVhi3w25uqIbFCn2qkvxoS/X6OmXpkxN/vAD7UV
+ q7OfTFXUAQfVok5yVl5J6qGSLo4=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea8429f.7f95c61e3148-smtp-out-n02;
+ Tue, 28 Apr 2020 14:50:07 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C0BD0C4478C; Tue, 28 Apr 2020 14:50:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AF802C43637;
+        Tue, 28 Apr 2020 14:50:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AF802C43637
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v2 3/8] bus: mhi: core: Read transfer length from an event
+ properly
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>, mani@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hemantk@codeaurora.org
+References: <1588042766-17496-1-git-send-email-bbhatt@codeaurora.org>
+ <1588042766-17496-4-git-send-email-bbhatt@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <cbd0698d-52ca-fad6-a658-e6e0009bde66@codeaurora.org>
+Date:   Tue, 28 Apr 2020 08:50:04 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e2d486077f9e2ce8bd9b171cf806fd9@walle.cc>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1588042766-17496-4-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 04:43:24PM +0200, Michael Walle wrote:
-> Am 2020-04-28 14:50, schrieb Andy Shevchenko:
-> > On Thu, Apr 23, 2020 at 07:45:32PM +0200, Michael Walle wrote:
-> > > This patch adds core support for the board management controller found
-> > > on the SMARC-sAL28 board. It consists of the following functions:
-> > >  - watchdog
-> > >  - GPIO controller
-> > >  - PWM controller
-> > >  - fan sensor
-> > >  - interrupt controller
-> > 
-> > ...
-> > 
-> > >  obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
-> > > 
-> > >  obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
-> > > +
-> > > +obj-$(CONFIG_MFD_SL28CPLD)	+= sl28cpld.o
-> > 
-> > Perhaps keep an order?
+On 4/27/2020 8:59 PM, Bhaumik Bhatt wrote:
+> From: Hemant Kumar <hemantk@codeaurora.org>
 > 
-> I don't see any order in that makefile. Looked to me like every new
-> file was added at the end.
+> When MHI Driver receives an EOT event, it reads xfer_len from the
+> event in the last TRE. The value is under control of the MHI device
+> and never validated by Host MHI driver. The value should never be
+> larger than the real size of the buffer but a malicious device can
+> set the value 0xFFFF as maximum. This causes device to memory
 
-Okay, just didn't note from above context.
+The device will overflow, or the driver?
+
+> overflow (both read or write). Fix this issue by reading minimum of
+> transfer length from event and the buffer length provided.
+> 
+> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>   drivers/bus/mhi/core/main.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+> index 1ccd4cc..3d468d9 100644
+> --- a/drivers/bus/mhi/core/main.c
+> +++ b/drivers/bus/mhi/core/main.c
+> @@ -521,7 +521,10 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+>   				mhi_cntrl->unmap_single(mhi_cntrl, buf_info);
+>   
+>   			result.buf_addr = buf_info->cb_buf;
+> -			result.bytes_xferd = xfer_len;
+> +
+> +			/* truncate to buf len if xfer_len is larger */
+> +			result.bytes_xferd =
+> +				min_t(u16, xfer_len, buf_info->len);
+>   			mhi_del_ring_element(mhi_cntrl, buf_ring);
+>   			mhi_del_ring_element(mhi_cntrl, tre_ring);
+>   			local_rp = tre_ring->rp;
+> 
+
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
