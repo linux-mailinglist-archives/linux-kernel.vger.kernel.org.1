@@ -2,88 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76041BC0A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D720F1BC0AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728083AbgD1OHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:07:04 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:46484 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727891AbgD1OHC (ORCPT
+        id S1728103AbgD1OIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbgD1OIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:07:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588082821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EalMZto1mc2jYDESRAloX1UBpj60CFWLwUGGzQdq+d4=;
-        b=Cqvf7PgM9Sx0kBAqxrqGZhwTJph1/KXXlayRiBpQgh6js4qLELNRtIjH78cZ/WrZ6ZBtJZ
-        HyLpg2ej849lQt56znB/C0L47dTeQNsdKXd0jYuIjMUs66gppmzJ6RlE68aykknhb3zjr9
-        GJT6myKMqYeUG/dcuSD426lUTctjxrQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503-sUfjVckgPIqi01aWVs2SQw-1; Tue, 28 Apr 2020 10:06:57 -0400
-X-MC-Unique: sUfjVckgPIqi01aWVs2SQw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55CFD1899522;
-        Tue, 28 Apr 2020 14:06:55 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-118-148.rdu2.redhat.com [10.10.118.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 50B1819C58;
-        Tue, 28 Apr 2020 14:06:49 +0000 (UTC)
-Subject: Re: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking
- dependency
-To:     Qian Cai <cai@lca.pw>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <dbbfe685-7374-9a96-b7c2-684142746e30@redhat.com>
- <28BB8A1C-CFDF-4F5A-8686-537C3CE04818@lca.pw>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <56327de0-fa44-d5f3-2409-69cf2b97a209@redhat.com>
-Date:   Tue, 28 Apr 2020 10:06:49 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Tue, 28 Apr 2020 10:08:04 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11DFC03C1A9;
+        Tue, 28 Apr 2020 07:08:04 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id d24so8411490pll.8;
+        Tue, 28 Apr 2020 07:08:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=94emFmHhVMLIqH1FnfHLBqh0QPdARlrRgQOBWYDXeAE=;
+        b=puXUkMQbAty4Yv7dMOIf2jzoS877pDwF6IeR1EERCAHCNdy9VaWtBvmmRmL1Mu6+7U
+         PP7cz5IHH3mL7BOJ6ubcFLmDN8ZOuVvGcCu1Go82Aow6rSJhay3T1BqrW7kq6Eb2ZtY4
+         pq/uzqHg5R/WWSPPdzATgdD3VoWd9OTN5Dyqbxa15Qs3DqTlKvoFrha5/JW4a3bILRSA
+         +l1vKHWvom7tTLiT9jjl3+uNW8M5WOosRSDs23W23OZHVjwR9QAKvizaMtk6leuKUDQa
+         OAfvlfMLZIRlVyilvcjEUZyn2zhY4PKDCRNkA2yC/XYuutRsYiolZy9GKKiWq8eMpQul
+         TPUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=94emFmHhVMLIqH1FnfHLBqh0QPdARlrRgQOBWYDXeAE=;
+        b=o5a0k2zzfAqfbyVvfRXMj146uSMuFTwQCBBpZP6XKlSd8Qx/m9MfUbv1ifUWeAmkYn
+         c/nt3dEJja5mOtF2iyKepyi9SXseBi8W+O//YgyZ0lUiW+yzNmAjCcnNr0GQWDvZiLBC
+         XS4/hoPSdCyQ0FJV10JTQWI6MnDloy8xy0hdPJ+jqyW84nBfPXhxNboreaY10A8PsIPn
+         IXEOLv/PJ6xKDEelDmjOrpEPbAlb+xtmI79S/DPJWe/KbI2Er/SkBgYzGvyJOmyWfYNr
+         40yQbqMHJU3K1a1F/9JLeAdoc6S7XhH9Exm5jSxOS+tq3gS+dLlTD2y8n5HNwHbIiePm
+         YWFQ==
+X-Gm-Message-State: AGi0PuaVLcNnybrBHwpUfW5IED4VOJAn9I1yYjI95961JqlIMsp4QaeP
+        OwwFG+jQLJfpyIz/JEfXkRU=
+X-Google-Smtp-Source: APiQypJgrauW/p2udBB1X6xYkg9rZreD+vk4+9m5imQck8Tum/C6ra7aq+Cb5WCgnqNP5m15S+Ytyw==
+X-Received: by 2002:a17:90a:d985:: with SMTP id d5mr5258141pjv.171.1588082884438;
+        Tue, 28 Apr 2020 07:08:04 -0700 (PDT)
+Received: from udknight.localhost ([59.57.158.27])
+        by smtp.gmail.com with ESMTPSA id m24sm13057604pgn.91.2020.04.28.07.08.03
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Apr 2020 07:08:03 -0700 (PDT)
+Received: from udknight.localhost (localhost [127.0.0.1])
+        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 03SE6tUb030545;
+        Tue, 28 Apr 2020 22:06:55 +0800
+Received: (from root@localhost)
+        by udknight.localhost (8.14.9/8.14.9/Submit) id 03SE6nQT030543;
+        Tue, 28 Apr 2020 22:06:49 +0800
+Date:   Tue, 28 Apr 2020 22:06:49 +0800
+From:   Wang YanQing <udknight@gmail.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>
+Subject: Re: [PATCH v3] checkpatch: add dedicated checker for 'Fixes:' tag
+Message-ID: <20200428140649.GA30042@udknight>
+Mail-Followup-To: Wang YanQing <udknight@gmail.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>
+References: <20200428020223.GA28074@udknight>
+ <35069ae9-cdb4-4728-5e94-6d863dd2721c@web.de>
 MIME-Version: 1.0
-In-Reply-To: <28BB8A1C-CFDF-4F5A-8686-537C3CE04818@lca.pw>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <35069ae9-cdb4-4728-5e94-6d863dd2721c@web.de>
+User-Agent: Mutt/1.7.1 (2016-10-04)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/20 10:11 PM, Qian Cai wrote:
+On Tue, Apr 28, 2020 at 08:21:37AM +0200, Markus Elfring wrote:
+> > ...
+> > Do not split the tag across multiple
+> > lines, tags are exempt from the "wrap at 75 columns" rule in order to simplify
+> > parsing scripts
+> > ...
+> 
+> I suggest to reformat the quotation.
+> 
+> “…
+> Do not split the tag across multiple lines, tags are exempt from
+> the "wrap at 75 columns" rule in order to simplify parsing scripts.
+> …”
+> 
+> 
+> > And there is no 'Fixes:' tag format checker in checkpatch to check
+> > the commit id length too, so let's add dedicated checker to check
+> > these conditions for 'Fixes:' tag.
+> 
+> It seems that there are further challenges to consider for an imperative wording
+> in such a change description.
+> 
+> How do you think about the following wording variant?
+> 
+>    The script “checkpatch.pl” did not provide a check for the commit
+>    identification length. Thus add a dedicated check.
+> 
+> 
+> >  v2-v3
+> 
+> I would find a shorter version identification (without the arrow)
+> also sufficient.
+> 
+> 
+> >  1:No modification to GIT_COMMIT_ID checker.
+> 
+> Would you like to add a space character for the item enumeration?
+> 
+> 
+> >    I make a mistake previously, …
+> 
+> Would you like to use the word “made” here?
+> 
+> 
+> > +		    my $id = '0123456789ab';
+> > +		    my $orig_desc = "commit description";
+> 
+> How much do these variable initialisations matter?
 >
->> On Apr 27, 2020, at 9:39 PM, Waiman Long <longman@redhat.com> wrote:
->>
->> The sequence that was prevented by this patch is "kn->count --> mem_ho=
-tplug_lock.rwsem". This sequence isn't directly in the splat. Once this l=
-ink is broken, the 3-lock circular loop cannot be formed. Maybe I should =
-modify the commit log to make this point more clear.
-> I don=E2=80=99t know what you are talking about. Once trylock succeed o=
-nce, you will have kn->count =E2=80=94> cpu/memory_hotplug_lock.
+
+Well! Thanks and you are right,  I will fix them in next version.
+
+> 
+> > +			$lines = 0 if ($1 =~ /^\(\"(?:.*)\"\)$/i);
+> 
+> I wonder why you see a need to use a non-capturing group in such
+> a regular expression (when no alternatives were specified there).
+
+I guess it is a better perl programming practice that use non-capturing group always when
+you don't need to use the '$' to access it, it will make code a little faster I guess.
+
+> 
+> 
+> > +				ERROR("FIXES_TAG",
+> > +					"Please use 'Fixes:' tag with commit description style '<12+ chars of sha1> (\"<title line>\")', and the title line doesn't across multiple lines - ie: '$fixes_tag_fmt'\n" . $herecurr);
+> 
+> * Would we like to support any other quotation characters around
+>   the commit summary?
 >
-Trylock is handled differently from lockdep's perspective as trylock can=20
-failed. When trylock succeeds, the critical section is executed. As long=20
-as it doesn't try to acquire another lock in the circular chain, the=20
-execution will finish at some point and release the lock. On the other=20
-hand, if another task has already held all those locks, the trylock will=20
-fail and held locks should be released. Again, no deadlock will happen.
 
-Regards,
-Longman
+I think we don't need now and people could patch it easily when
+we need others in future:)
 
+> * I propose to split the error message.
+>   May it become multi-line?
+
+Yes
+
+> 
+> * How do you think about another wording variant?
+> 
+>   The title must be specified as a single line (without line breaks).
+>
+
+Ok
+
+> * Would you like to point questionable commit titles out?
+> 
+> Regards,
+> Markus
+
+No, I think your previous wording variant is clear enough.
+
+Thanks again! 
