@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE731BC805
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7771BC930
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729237AbgD1S2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:28:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41544 "EHLO mail.kernel.org"
+        id S1730324AbgD1Sja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:39:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729216AbgD1S2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:28:34 -0400
+        id S1730034AbgD1SjZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:39:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E450120B80;
-        Tue, 28 Apr 2020 18:28:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBB7A20730;
+        Tue, 28 Apr 2020 18:39:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098514;
-        bh=Ue9oNTy9Oq40zi5GBiH7Z4hIpfAqI/nfYyVazPMhCy0=;
+        s=default; t=1588099165;
+        bh=oejTAAoP9GYkwSOZhVRStKNLtfzkpCadGE700Kd+gpY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b2Q2SnlwF+EirikAGMYe/p2KiCiValU7wb9UxZ6Ao88UGqRfaUOgmbiutIvIG1A08
-         jdHN24Nq+vqYQ7q9PoJDUxza80G+PXTuRxhEAbzS7JQ4F4di0/7ZR6rGmM9PtsVuSh
-         FwuhSD+Fi61xahlDOtHcjgQjgvBx+j6qB2J8eUs0=
+        b=pRrplQTt2VqDQjc2ACICGcgK2V1Zy7LH1dG5x6Boq+elzYTTpZOYIKydWyT4N7cJc
+         CbNqIR4m2iHE04CYD0Qea/nZMuKIOen3zWn/WPpZi65nfJqplyiSqcD4jka9/aqw3a
+         nQMCMGZbaHGxAXYPMyHIpynn/dCAzcuCoDGCOaow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Ahern <dsahern@gmail.com>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 064/167] vrf: Fix IPv6 with qdisc and xfrm
-Date:   Tue, 28 Apr 2020 20:24:00 +0200
-Message-Id: <20200428182233.057420544@linuxfoundation.org>
+Subject: [PATCH 5.4 067/168] net: stmmac: dwmac-meson8b: Add missing boundary to RGMII TX clock array
+Date:   Tue, 28 Apr 2020 20:24:01 +0200
+Message-Id: <20200428182240.399985080@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +44,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ahern <dsahern@gmail.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit a53c102872ad6e34e1518e25899dc9498c27f8b1 ]
+[ Upstream commit f0212a5ebfa6cd789ab47666b9cc169e6e688732 ]
 
-When a qdisc is attached to the VRF device, the packet goes down the ndo
-xmit function which is setup to send the packet back to the VRF driver
-which does a lookup to send the packet out. The lookup in the VRF driver
-is not considering xfrm policies. Change it to use ip6_dst_lookup_flow
-rather than ip6_route_output.
+Running with KASAN on a VIM3L systems leads to the following splat
+when probing the Ethernet device:
 
-Fixes: 35402e313663 ("net: Add IPv6 support to VRF device")
-Signed-off-by: David Ahern <dsahern@gmail.com>
+==================================================================
+BUG: KASAN: global-out-of-bounds in _get_maxdiv+0x74/0xd8
+Read of size 4 at addr ffffa000090615f4 by task systemd-udevd/139
+CPU: 1 PID: 139 Comm: systemd-udevd Tainted: G            E     5.7.0-rc1-00101-g8624b7577b9c #781
+Hardware name: amlogic w400/w400, BIOS 2020.01-rc5 03/12/2020
+Call trace:
+ dump_backtrace+0x0/0x2a0
+ show_stack+0x20/0x30
+ dump_stack+0xec/0x148
+ print_address_description.isra.12+0x70/0x35c
+ __kasan_report+0xfc/0x1d4
+ kasan_report+0x4c/0x68
+ __asan_load4+0x9c/0xd8
+ _get_maxdiv+0x74/0xd8
+ clk_divider_bestdiv+0x74/0x5e0
+ clk_divider_round_rate+0x80/0x1a8
+ clk_core_determine_round_nolock.part.9+0x9c/0xd0
+ clk_core_round_rate_nolock+0xf0/0x108
+ clk_hw_round_rate+0xac/0xf0
+ clk_factor_round_rate+0xb8/0xd0
+ clk_core_determine_round_nolock.part.9+0x9c/0xd0
+ clk_core_round_rate_nolock+0xf0/0x108
+ clk_core_round_rate_nolock+0xbc/0x108
+ clk_core_set_rate_nolock+0xc4/0x2e8
+ clk_set_rate+0x58/0xe0
+ meson8b_dwmac_probe+0x588/0x72c [dwmac_meson8b]
+ platform_drv_probe+0x78/0xd8
+ really_probe+0x158/0x610
+ driver_probe_device+0x140/0x1b0
+ device_driver_attach+0xa4/0xb0
+ __driver_attach+0xcc/0x1c8
+ bus_for_each_dev+0xf4/0x168
+ driver_attach+0x3c/0x50
+ bus_add_driver+0x238/0x2e8
+ driver_register+0xc8/0x1e8
+ __platform_driver_register+0x88/0x98
+ meson8b_dwmac_driver_init+0x28/0x1000 [dwmac_meson8b]
+ do_one_initcall+0xa8/0x328
+ do_init_module+0xe8/0x368
+ load_module+0x3300/0x36b0
+ __do_sys_finit_module+0x120/0x1a8
+ __arm64_sys_finit_module+0x4c/0x60
+ el0_svc_common.constprop.2+0xe4/0x268
+ do_el0_svc+0x98/0xa8
+ el0_svc+0x24/0x68
+ el0_sync_handler+0x12c/0x318
+ el0_sync+0x158/0x180
+
+The buggy address belongs to the variable:
+ div_table.63646+0x34/0xfffffffffffffa40 [dwmac_meson8b]
+
+Memory state around the buggy address:
+ ffffa00009061480: fa fa fa fa 00 00 00 01 fa fa fa fa 00 00 00 00
+ ffffa00009061500: 05 fa fa fa fa fa fa fa 00 04 fa fa fa fa fa fa
+>ffffa00009061580: 00 03 fa fa fa fa fa fa 00 00 00 00 00 00 fa fa
+                                                             ^
+ ffffa00009061600: fa fa fa fa 00 01 fa fa fa fa fa fa 01 fa fa fa
+ ffffa00009061680: fa fa fa fa 00 01 fa fa fa fa fa fa 04 fa fa fa
+==================================================================
+
+Digging into this indeed shows that the clock divider array is
+lacking a final fence, and that the clock subsystems goes in the
+weeds. Oh well.
+
+Let's add the empty structure that indicates the end of the array.
+
+Fixes: bd6f48546b9c ("net: stmmac: dwmac-meson8b: Fix the RGMII TX delay on Meson8b/8m2 SoCs")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/vrf.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/vrf.c
-+++ b/drivers/net/vrf.c
-@@ -188,8 +188,8 @@ static netdev_tx_t vrf_process_v6_outbou
- 	fl6.flowi6_proto = iph->nexthdr;
- 	fl6.flowi6_flags = FLOWI_FLAG_SKIP_NH_OIF;
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+@@ -119,6 +119,7 @@ static int meson8b_init_rgmii_tx_clk(str
+ 		{ .div = 5, .val = 5, },
+ 		{ .div = 6, .val = 6, },
+ 		{ .div = 7, .val = 7, },
++		{ /* end of array */ }
+ 	};
  
--	dst = ip6_route_output(net, NULL, &fl6);
--	if (dst == dst_null)
-+	dst = ip6_dst_lookup_flow(net, NULL, &fl6, NULL);
-+	if (IS_ERR(dst) || dst == dst_null)
- 		goto err;
- 
- 	skb_dst_drop(skb);
+ 	clk_configs = devm_kzalloc(dev, sizeof(*clk_configs), GFP_KERNEL);
 
 
