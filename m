@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811061BC7CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446101BCBE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728836AbgD1S0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:26:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38460 "EHLO mail.kernel.org"
+        id S1729360AbgD1TBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:01:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728813AbgD1S0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:26:45 -0400
+        id S1728823AbgD1S0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:26:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B657208E0;
-        Tue, 28 Apr 2020 18:26:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B609C20B80;
+        Tue, 28 Apr 2020 18:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098404;
-        bh=Yb0dT5Mf5FCK4nJCMD4GNxe6Lfw8RlG4lpvc3T+67PM=;
+        s=default; t=1588098407;
+        bh=x+3uj04gfbt089WFQK1mEWtg4dmCnvjijoKeHZ4uEF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TlgnK7ggbDW/6WxDThMjoyCxtNvHxQKel5QPI1RUWUOz9jd3CJMkNEgow9LlTGpUC
-         fD3sNZcFeoMoSU7qU3FafYLUuL/f47xfR6MG6MBwVNc8CPK4yr1DvGQScHNlI0DWEh
-         +ewPvKL1q9DlL9WxgD4swJnAM5W+aqy0xKJ/4Rp4=
+        b=MsWp0hCqAxXCw1bsQtxak04G5NC3IT9YUo1Mxg3Uho3jCTLtMSdXD6PxoTyu0k+Ef
+         VgILxd9H3lB0ghuT5gHF3h6WRmoOChhXuqQ/Yu7LVCQa8/bVLLQL7zc7IaVHoj1CKB
+         /mP+aDmsf17KTFG77LzTnuw3rUa1QHMGrxp29Cd4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 026/167] block: fix busy device checking in blk_drop_partitions
-Date:   Tue, 28 Apr 2020 20:23:22 +0200
-Message-Id: <20200428182228.490342408@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Farman <farman@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 027/167] s390/cio: generate delayed uevent for vfio-ccw subchannels
+Date:   Tue, 28 Apr 2020 20:23:23 +0200
+Message-Id: <20200428182228.628059238@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
 References: <20200428182225.451225420@linuxfoundation.org>
@@ -43,36 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Cornelia Huck <cohuck@redhat.com>
 
-[ Upstream commit d3ef5536274faf89e626276b833be122a16bdb81 ]
+[ Upstream commit 2bc55eaeb88d30accfc1b6ac2708d4e4b81ca260 ]
 
-bd_super is only set by get_tree_bdev and mount_bdev, and thus not by
-other openers like btrfs or the XFS realtime and log devices, as well as
-block devices directly opened from user space.  Check bd_openers
-instead.
+The common I/O layer delays the ADD uevent for subchannels and
+delegates generating this uevent to the individual subchannel
+drivers. The vfio-ccw I/O subchannel driver, however, did not
+do that, and will not generate an ADD uevent for subchannels
+that had not been bound to a different driver (or none at all,
+which also triggers the uevent).
 
-Fixes: 77032ca66f86 ("Return EBUSY from BLKRRPART for mounted whole-dev fs")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Generate the ADD uevent at the end of the probe function if
+uevents were still suppressed for the device.
+
+Message-Id: <20200327124503.9794-3-cohuck@redhat.com>
+Fixes: 63f1934d562d ("vfio: ccw: basic implementation for vfio_ccw driver")
+Reviewed-by: Eric Farman <farman@linux.ibm.com>
+Signed-off-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/partition-generic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/s390/cio/vfio_ccw_drv.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/block/partition-generic.c b/block/partition-generic.c
-index 564fae77711df..5f3b2a959aa51 100644
---- a/block/partition-generic.c
-+++ b/block/partition-generic.c
-@@ -468,7 +468,7 @@ int blk_drop_partitions(struct gendisk *disk, struct block_device *bdev)
+diff --git a/drivers/s390/cio/vfio_ccw_drv.c b/drivers/s390/cio/vfio_ccw_drv.c
+index e401a3d0aa570..339a6bc0339b0 100644
+--- a/drivers/s390/cio/vfio_ccw_drv.c
++++ b/drivers/s390/cio/vfio_ccw_drv.c
+@@ -167,6 +167,11 @@ static int vfio_ccw_sch_probe(struct subchannel *sch)
+ 	if (ret)
+ 		goto out_disable;
  
- 	if (!disk_part_scan_enabled(disk))
- 		return 0;
--	if (bdev->bd_part_count || bdev->bd_super)
-+	if (bdev->bd_part_count || bdev->bd_openers)
- 		return -EBUSY;
- 	res = invalidate_partition(disk, 0);
- 	if (res)
++	if (dev_get_uevent_suppress(&sch->dev)) {
++		dev_set_uevent_suppress(&sch->dev, 0);
++		kobject_uevent(&sch->dev.kobj, KOBJ_ADD);
++	}
++
+ 	VFIO_CCW_MSG_EVENT(4, "bound to subchannel %x.%x.%04x\n",
+ 			   sch->schid.cssid, sch->schid.ssid,
+ 			   sch->schid.sch_no);
 -- 
 2.20.1
 
