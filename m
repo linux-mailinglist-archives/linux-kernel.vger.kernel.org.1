@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0EF1BC914
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5166D1BC919
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730232AbgD1Si0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:38:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56842 "EHLO mail.kernel.org"
+        id S1730651AbgD1Sii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:38:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730219AbgD1SiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:38:23 -0400
+        id S1730632AbgD1Sia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:38:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC4D72085B;
-        Tue, 28 Apr 2020 18:38:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 027B72076A;
+        Tue, 28 Apr 2020 18:38:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099102;
-        bh=wtqI/g9Pa7thEIBev7QK2KGUrwesgzWnQWSAGQ6GSDE=;
+        s=default; t=1588099109;
+        bh=0lPXiegyr/iApzt/uCz1N5w1u3DCYeQHzxUA3HwEud8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AkXEuJz/2bXivCbI/MAHjiKJzcS4arV6kUxVz4Lzb58Ncw1ZNwPMu5aBV7C8L8mwK
-         Os2+KyoOGxLWvnYuISF2BW91QX37xCEMS5WhUv/k9SyO0QVdLJcD0OZXnUkM4djIjO
-         I3Ptp2tEyoD3YpqIgXYMpGrZeHITYuIu9PCU3YMc=
+        b=PRNNCXH4sf8cap2bxy4EAeNG7R1HN7k54rsi41GLcUpj0FNFNtmMe5dFbzRdL5Uj9
+         GDaEr8yrBHr8ddY4nh8vNAjDiXYigyKIzTmPYIztjT1Qx/u5OuI7QwydHZLMhp7rjB
+         jgGoptR+WuVRXXHjTwaLAuUCqNfkHs8BC2r2mJfo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.6 155/167] xhci: Dont clear hub TT buffer on ep0 protocol stall
-Date:   Tue, 28 Apr 2020 20:25:31 +0200
-Message-Id: <20200428182245.176380797@linuxfoundation.org>
+        Kazuhiro Fujita <kazuhiro.fujita.jg@renesas.com>,
+        Hao Bui <hao.bui.yg@renesas.com>,
+        KAZUMI HARADA <kazumi.harada.rh@renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 5.6 156/167] serial: sh-sci: Make sure status register SCxSR is read in correct sequence
+Date:   Tue, 28 Apr 2020 20:25:32 +0200
+Message-Id: <20200428182245.315652758@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
 References: <20200428182225.451225420@linuxfoundation.org>
@@ -43,68 +47,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Kazuhiro Fujita <kazuhiro.fujita.jg@renesas.com>
 
-commit 8f97250c21f0cf36434bf5b7ddf4377406534cd1 upstream.
+commit 3dc4db3662366306e54ddcbda4804acb1258e4ba upstream.
 
-The default control endpoint ep0 can return a STALL indicating the
-device does not support the control transfer requests. This is called
-a protocol stall and does not halt the endpoint.
+For SCIF and HSCIF interfaces the SCxSR register holds the status of
+data that is to be read next from SCxRDR register, But where as for
+SCIFA and SCIFB interfaces SCxSR register holds status of data that is
+previously read from SCxRDR register.
 
-xHC behaves a bit different. Its internal endpoint state will always
-be halted on any stall, even if the device side of the endpiont is not
-halted. So we do need to issue the reset endpoint command to clear the
-xHC host intenal endpoint halt state, but should not request the HS hub
-to clear the TT buffer unless device side of endpoint is halted.
+This patch makes sure the status register is read depending on the port
+types so that errors are caught accordingly.
 
-Clearing the hub TT buffer at protocol stall caused ep0 to become
-unresponsive for some FS/LS devices behind HS hubs, and class drivers
-failed to set the interface due to timeout:
-
-usb 1-2.1: 1:1: usb_set_interface failed (-110)
-
-Fixes: ef513be0a905 ("usb: xhci: Add Clear_TT_Buffer")
-Cc: <stable@vger.kernel.org> # v5.3
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200421140822.28233-4-mathias.nyman@linux.intel.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Kazuhiro Fujita <kazuhiro.fujita.jg@renesas.com>
+Signed-off-by: Hao Bui <hao.bui.yg@renesas.com>
+Signed-off-by: KAZUMI HARADA <kazumi.harada.rh@renesas.com>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/1585333048-31828-1-git-send-email-kazuhiro.fujita.jg@renesas.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci-ring.c |   16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/tty/serial/sh-sci.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -1872,7 +1872,6 @@ static void xhci_cleanup_halted_endpoint
- 		ep->ep_state |= EP_HARD_CLEAR_TOGGLE;
- 		xhci_cleanup_stalled_ring(xhci, slot_id, ep_index, stream_id,
- 					  td);
--		xhci_clear_hub_tt_buffer(xhci, td, ep);
- 	}
- 	xhci_ring_cmd_db(xhci);
- }
-@@ -1993,11 +1992,18 @@ static int finish_td(struct xhci_hcd *xh
- 	if (trb_comp_code == COMP_STALL_ERROR ||
- 		xhci_requires_manual_halt_cleanup(xhci, ep_ctx,
- 						trb_comp_code)) {
--		/* Issue a reset endpoint command to clear the host side
--		 * halt, followed by a set dequeue command to move the
--		 * dequeue pointer past the TD.
--		 * The class driver clears the device side halt later.
-+		/*
-+		 * xhci internal endpoint state will go to a "halt" state for
-+		 * any stall, including default control pipe protocol stall.
-+		 * To clear the host side halt we need to issue a reset endpoint
-+		 * command, followed by a set dequeue command to move past the
-+		 * TD.
-+		 * Class drivers clear the device side halt from a functional
-+		 * stall later. Hub TT buffer should only be cleared for FS/LS
-+		 * devices behind HS hubs for functional stalls.
- 		 */
-+		if ((ep_index != 0) || (trb_comp_code != COMP_STALL_ERROR))
-+			xhci_clear_hub_tt_buffer(xhci, td, ep);
- 		xhci_cleanup_halted_endpoint(xhci, slot_id, ep_index,
- 					ep_ring->stream_id, td, EP_HARD_RESET);
- 	} else {
+--- a/drivers/tty/serial/sh-sci.c
++++ b/drivers/tty/serial/sh-sci.c
+@@ -870,9 +870,16 @@ static void sci_receive_chars(struct uar
+ 				tty_insert_flip_char(tport, c, TTY_NORMAL);
+ 		} else {
+ 			for (i = 0; i < count; i++) {
+-				char c = serial_port_in(port, SCxRDR);
++				char c;
+ 
+-				status = serial_port_in(port, SCxSR);
++				if (port->type == PORT_SCIF ||
++				    port->type == PORT_HSCIF) {
++					status = serial_port_in(port, SCxSR);
++					c = serial_port_in(port, SCxRDR);
++				} else {
++					c = serial_port_in(port, SCxRDR);
++					status = serial_port_in(port, SCxSR);
++				}
+ 				if (uart_handle_sysrq_char(port, c)) {
+ 					count--; i--;
+ 					continue;
 
 
