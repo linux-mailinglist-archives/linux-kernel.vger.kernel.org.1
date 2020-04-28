@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CED91BC90C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 269A71BCADE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730602AbgD1SiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:38:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
+        id S1730615AbgD1Swt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:52:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730564AbgD1SiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:38:08 -0400
+        id S1729468AbgD1Sfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:35:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF7122076A;
-        Tue, 28 Apr 2020 18:38:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABCD620B80;
+        Tue, 28 Apr 2020 18:35:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099087;
-        bh=IZgABO1LPc/syRa3S24HgemmK6nBaVBYnir7vQoZ+Kw=;
+        s=default; t=1588098947;
+        bh=gK5xCfOTtlvMjatEd51C5fLvcPSYeylI2SDKRJmuCCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iDyuv85yyLGpXhvO8L0Khhgh4sG63g4mf7NZm9NxW4PCpAJg8I/c7lchRTHUZQm3z
-         99vrWWxm+uOKNJvkA2TT4oUE8uEfO7QsoTRt7/U1FP2H21qYUHp13YJFphmCP0XnT1
-         4UH6DgEBdKRUH4yF2gWSF3WjcR+kyr5wxbrcCM+k=
+        b=1eap1wBsYLIzp1G4VNh6aPGJlPVomhqtivLKkk7ZaqvVzMfW4in+fLr3FVJQfD7tk
+         7dqmIhYOht2qYkEhgIt/bTZe6LygXAbKgbi7LuH54v5uzdzh8Ijz/M+JBWYViBXFFk
+         PAZwQbp6E1Uvj+OR63J1BUcmVfgrTJD3RUTSYNXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 095/131] ALSA: hda/realtek - Fix unexpected init_amp override
-Date:   Tue, 28 Apr 2020 20:25:07 +0200
-Message-Id: <20200428182236.981454800@linuxfoundation.org>
+        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.6 132/167] powerpc/8xx: Fix STRICT_KERNEL_RWX startup test failure
+Date:   Tue, 28 Apr 2020 20:25:08 +0200
+Message-Id: <20200428182242.111611060@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
 
-commit 67791202c5e069cf2ba51db0718d56c634709e78 upstream.
+commit b61c38baa98056d4802ff5be5cfb979efc2d0f7a upstream.
 
-The commit 1c76aa5fb48d ("ALSA: hda/realtek - Allow skipping
-spec->init_amp detection") changed the way to assign spec->init_amp
-field that specifies the way to initialize the amp.  Along with the
-change, the commit also replaced a few fixups that set spec->init_amp
-in HDA_FIXUP_ACT_PROBE with HDA_FIXUP_ACT_PRE_PROBE.  This was rather
-aligning to the other fixups, and not supposed to change the actual
-behavior.
+WRITE_RO lkdtm test works.
 
-However, this change turned out to cause a regression on FSC S7020,
-which hit exactly the above.  The reason was that there is still one
-place that overrides spec->init_amp after HDA_FIXUP_ACT_PRE_PROBE
-call, namely in alc_ssid_check().
+But when selecting CONFIG_DEBUG_RODATA_TEST, the kernel reports
+	rodata_test: test data was not read only
 
-This patch fixes the regression by adding the proper spec->init_amp
-override check, i.e. verifying whether it's still ALC_INIT_UNDEFINED.
+This is because when rodata test runs, there are still old entries
+in TLB.
 
-Fixes: 1c76aa5fb48d ("ALSA: hda/realtek - Allow skipping spec->init_amp detection")
-Cc: <stable@vger.kernel.org>
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207329
-Link: https://lore.kernel.org/r/20200418190639.10082-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Flush TLB after setting kernel pages RO or NX.
+
+Fixes: d5f17ee96447 ("powerpc/8xx: don't disable large TLBs with CONFIG_STRICT_KERNEL_RWX")
+Cc: stable@vger.kernel.org # v5.1+
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/485caac75f195f18c11eb077b0031fdd2bb7fb9e.1587361039.git.christophe.leroy@c-s.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/powerpc/mm/nohash/8xx.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -801,9 +801,11 @@ static void alc_ssid_check(struct hda_co
- {
- 	if (!alc_subsystem_id(codec, ports)) {
- 		struct alc_spec *spec = codec->spec;
--		codec_dbg(codec,
--			  "realtek: Enable default setup for auto mode as fallback\n");
--		spec->init_amp = ALC_INIT_DEFAULT;
-+		if (spec->init_amp == ALC_INIT_UNDEFINED) {
-+			codec_dbg(codec,
-+				  "realtek: Enable default setup for auto mode as fallback\n");
-+			spec->init_amp = ALC_INIT_DEFAULT;
-+		}
+--- a/arch/powerpc/mm/nohash/8xx.c
++++ b/arch/powerpc/mm/nohash/8xx.c
+@@ -185,6 +185,7 @@ void mmu_mark_initmem_nx(void)
+ 			mmu_mapin_ram_chunk(etext8, einittext8, PAGE_KERNEL);
+ 		}
  	}
++	_tlbil_all();
  }
  
+ #ifdef CONFIG_STRICT_KERNEL_RWX
+@@ -199,6 +200,8 @@ void mmu_mark_rodata_ro(void)
+ 				      ~(LARGE_PAGE_SIZE_8M - 1)));
+ 	mmu_patch_addis(&patch__dtlbmiss_romem_top, -__pa(_sinittext));
+ 
++	_tlbil_all();
++
+ 	/* Update page tables for PTDUMP and BDI */
+ 	mmu_mapin_ram_chunk(0, sinittext, __pgprot(0));
+ 	mmu_mapin_ram_chunk(0, etext, PAGE_KERNEL_ROX);
 
 
