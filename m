@@ -2,113 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2081BC0A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4EA1BC0B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgD1OHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726939AbgD1OHd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:07:33 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF47C03C1A9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 07:07:32 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id k12so17352043qtm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 07:07:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Fy9ivS8QPPwiuCK+doJtcNxxWhUNoFRKbiicEk8ESXs=;
-        b=m03V7Bqnrzc7u1hOHNegLX/D6uRA6iSn20RxNU8QvJ1QFKsSaD70QJ6n/s/UyarsFJ
-         rS4XcjYTl/K8wPVQmsqZcwGaYD4DEF96z+keAqbELkFqDS54ADd792WseZXN6fmhZjdK
-         D2hC44IoUKWdnBAHvC5M60WEYESwUu1VZofGFOKhASI+hQkhe9zsHZWNSdgUyJHHj9IU
-         jBU0JJsSzE8KiMpymNT5HJRvRE8knYzVWS+0PdOCFmaciO0iQSVK5de5Rbf3CztawIBI
-         CdsaCr46/lqDnOLgGy9KBM4Sz16Nusr1wxAiubc5Qq7sqPrR7bFG3qVDFZzxPdIE6WuI
-         tBmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Fy9ivS8QPPwiuCK+doJtcNxxWhUNoFRKbiicEk8ESXs=;
-        b=pA8BFrTpV30uPcxDd4QAlF31FUBTei5kVZacjAAUcFQ9CgE+0Jh57c1oKsTfKxKHBH
-         deyKxeIgB2ZrHJxpzM8JLrVM8pDhvG7GNj6xslZYbLpkiLVr0HqTnFBk2DKR12rBfKa2
-         4+YaQDPCSkCghNvRyyQgCxrbM/sAbNFw7obBG4ApFOC39OflM/mKKSeb9oCCuQmI5/CS
-         qWK2z7SaTuetp9hIp0n0UqHp7LxSDk67gL4GMVjP/V5fmr2nhuEzE8gNLZ6LEIVAS4HH
-         WFLxc1Yrq0tRUY3sF521oW1h8rWUmY9ivSCU6ESgA2EihH3oHt6yL9+aXqGdjtJsVjoA
-         m6PQ==
-X-Gm-Message-State: AGi0PuYcZPGAq3qDBVGwobToRjZsJxWnFf/Yz6zPqwvEpBkuYHIqDnbS
-        BO7IJUqxvkbzgxNRLIckXohJ39j3s+c=
-X-Google-Smtp-Source: APiQypL8JVVgXn1Z0K37nLLf+jtFxuaUMdsGklwooOQS8IA68vzDHPI0GpgPkHQUdRDPsQEeiTjwEQ==
-X-Received: by 2002:ac8:65cc:: with SMTP id t12mr28186660qto.310.1588082850656;
-        Tue, 28 Apr 2020 07:07:30 -0700 (PDT)
-Received: from [192.168.1.10] (c-66-30-119-151.hsd1.ma.comcast.net. [66.30.119.151])
-        by smtp.gmail.com with ESMTPSA id 29sm13492497qkr.109.2020.04.28.07.07.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Apr 2020 07:07:29 -0700 (PDT)
-Subject: Re: [PATCH 1/3] KVM: x86/mmu: Tweak PSE hugepage handling to avoid 2M
- vs 4M conundrum
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200428005422.4235-1-sean.j.christopherson@intel.com>
- <20200428005422.4235-2-sean.j.christopherson@intel.com>
-From:   Barret Rhoden <brho@google.com>
-Message-ID: <3e60b34b-e160-2052-3066-c29867ccef64@google.com>
-Date:   Tue, 28 Apr 2020 10:07:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1728111AbgD1OIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:08:17 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:52108 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726868AbgD1OIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 10:08:16 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 49BNlc73xQz2n;
+        Tue, 28 Apr 2020 16:08:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1588082894; bh=3kjocTgjQohJ4pvumUVIZjNBlHYyJdLbO1K0n36TMPo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lIb50WEiUjQ2fPMkU753BcaE+htplcmVRe983VwDjhi35EgHzj11pC1UYmDAPaUVX
+         3BOEUavVG3oJhGVCF5L+mGEFnWiBgdRWO3rh0lZMbWSROCB44wo665XLsF6tXv4IXV
+         NKwkABYOkU/wsNRXX/oqCzvvHd8zjSVFasWKoOro8lE9btxtAiy33SDZhmj/nFSfdl
+         aGVNa5yhLJARq9lfPFugz8ayT0vbqs1Lt+dWTPEV3Nu5iAqlYaB6rw/NbdQx7pezLW
+         YKClsBolqx5rHC3IBO8BPNYZyqPZKG/s9nDWMA40G1jUryT7HKoXFuoavaf1XaQ6YX
+         NAXm1OVsR17lQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+Date:   Tue, 28 Apr 2020 16:08:11 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     David Heidelberg <david@ixit.cz>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        James Chen <james.chen@emc.com.tw>,
+        Johnny Chuang <johnny.chuang@emc.com.tw>,
+        Scott Liu <scott.liu@emc.com.tw>,
+        Linux Input <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 10/10] dt-bindings: input: touchscreen: elants_i2c:
+ convert to YAML
+Message-ID: <20200428140811.GA4355@qmqm.qmqm.pl>
+References: <cover.1587916846.git.mirq-linux@rere.qmqm.pl>
+ <222105a9c09ac85f0c03224ef7acb8a6d6e237d5.1587916846.git.mirq-linux@rere.qmqm.pl>
+ <CAL_JsqLtvKgZYeb8xqT1nXa1Xja2Dxr6PBKixD6tN50cZ2xH5g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200428005422.4235-2-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqLtvKgZYeb8xqT1nXa1Xja2Dxr6PBKixD6tN50cZ2xH5g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/20 8:54 PM, Sean Christopherson wrote:
-> Change the PSE hugepage handling in walk_addr_generic() to fire on any
-> page level greater than PT_PAGE_TABLE_LEVEL, a.k.a. PG_LEVEL_4K.  PSE
-> paging only has two levels, so "== 2" and "> 1" are functionally the
-> seam, i.e. this is a nop.
-   ^ s/seam/same/
+On Mon, Apr 27, 2020 at 04:14:15PM -0500, Rob Herring wrote:
+> On Sun, Apr 26, 2020 at 11:11 AM Micha³ Miros³aw
+> <mirq-linux@rere.qmqm.pl> wrote:
+> >
+> > From: David Heidelberg <david@ixit.cz>
+> >
+> > Convert elants_i2c.txt DT binding to YAML and put into correct directory.
+> 
+> Resend to the DT list or this won't be in my review queue. Looks okay
+> from a quick scan.
 
-Barret
+Hi Rob,
 
-> 
-> A future patch will drop KVM's PT_*_LEVEL enums in favor of the kernel's
-> PG_LEVEL_* enums, at which point "walker->level == PG_LEVEL_2M" is
-> semantically incorrect (though still functionally ok).
-> 
-> No functional change intended.
-> 
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->   arch/x86/kvm/mmu/paging_tmpl.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> index efec7d27b8c5..ca39bd315f70 100644
-> --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> @@ -436,7 +436,7 @@ static int FNAME(walk_addr_generic)(struct guest_walker *walker,
->   	gfn = gpte_to_gfn_lvl(pte, walker->level);
->   	gfn += (addr & PT_LVL_OFFSET_MASK(walker->level)) >> PAGE_SHIFT;
->   
-> -	if (PTTYPE == 32 && walker->level == PT_DIRECTORY_LEVEL && is_cpuid_PSE36())
-> +	if (PTTYPE == 32 && walker->level > PT_PAGE_TABLE_LEVEL && is_cpuid_PSE36())
->   		gfn += pse36_gfn_delta(pte);
->   
->   	real_gpa = mmu->translate_gpa(vcpu, gfn_to_gpa(gfn), access, &walker->fault);
-> 
+This is the same patch that David already sent to the list about
+a week ago [1].  Do you need it resent? (Whole patchset or just the patch?)
 
+[1] https://lore.kernel.org/linux-devicetree/20200423173253.711725-2-david@ixit.cz/
+
+Best Regards,
+Micha³ Miros³aw
