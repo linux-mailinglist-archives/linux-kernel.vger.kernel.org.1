@@ -2,119 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 885851BCEDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206371BCEE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgD1Vgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:36:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59529 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726272AbgD1Vgj (ORCPT
+        id S1725934AbgD1VhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:37:11 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:37929 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726282AbgD1VhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:36:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588109798;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VxNwBZUZ2kN7UJQo+O+guQfCddd05dL5E51oV8I0MCk=;
-        b=RPH9rvFlHeOn3EKLgpYsTT6wtP8XBnl8E+VDJYJNk3nfAxvLyk0JYiEzgkgFMQA8tr5ebm
-        mOjYPaZPrLMsDGFooIlH1NyKPYlF97vtwnT1OJjYwrby3KPYeVTjzw12qD3OEkCwIL1vMq
-        ZzGHcjalJL1tXrtErK6M0zlvjthNB6w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-sDMcUIM7OkuVg8DCyCAglg-1; Tue, 28 Apr 2020 17:36:35 -0400
-X-MC-Unique: sDMcUIM7OkuVg8DCyCAglg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DC98107B7CD;
-        Tue, 28 Apr 2020 21:36:33 +0000 (UTC)
-Received: from krava (ovpn-112-36.ams2.redhat.com [10.36.112.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 829215C1BE;
-        Tue, 28 Apr 2020 21:36:30 +0000 (UTC)
-Date:   Tue, 28 Apr 2020 23:36:27 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>, Ingo Molnar <mingo@elte.hu>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Tue, 28 Apr 2020 17:37:09 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1Mo7if-1ioQaP0hbP-00phAH; Tue, 28 Apr 2020 23:36:50 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Rajneesh Bhardwaj <rajneesh.bhardwaj@intel.com>,
+        Vishwanath Somayaji <vishwanath.somayaji@intel.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Gayatri Kammela <gayatri.kammela@intel.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Chen Zhou <chenzhou10@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "David E. Box" <david.e.box@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Rajat Jain <rajatja@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "bibo,mao" <bibo.mao@intel.com>,
-        "Ziqian SUN (Zamir)" <zsun@redhat.com>, stable@vger.kernel.org
-Subject: Re: [PATCHv2] kretprobe: Prevent triggering kretprobe from within
- kprobe_flush_task
-Message-ID: <20200428213627.GI1476763@krava>
-References: <20200409184451.GG3309111@krava>
- <20200409201336.GH3309111@krava>
- <20200410093159.0d7000a08fd76c2eaf1398f8@kernel.org>
- <20200414160338.GE208694@krava>
- <20200415090507.GG208694@krava>
- <20200416105506.904b7847a1b621b75463076d@kernel.org>
- <20200416091320.GA322899@krava>
- <20200416224250.7a53fb581e50aa32df75a0cf@kernel.org>
- <20200416143104.GA400699@krava>
- <20200417163810.ffe5c9145eae281fc493932c@kernel.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nishad Kamdar <nishadkamdar@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: intel_pmc_core: avoid unused-function warnings
+Date:   Tue, 28 Apr 2020 23:36:38 +0200
+Message-Id: <20200428213648.3629501-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200417163810.ffe5c9145eae281fc493932c@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:nvNU/HDnyd33t01OiWL2I6dmE6u7w9oJnm8AAqtxowJeqKhvQqw
+ haXaJX3ywsdYR3AiMt+DPphtMU8g2kfqr6aHeEMyOQZZGE5dPzUqOu2osXRe0uLC3C0VOMz
+ HzWqotj1SsW3Y/AvXF/P95eaHSZICk/8ENTuDVyEeSjfaf7YOqvLqao5ml281iy5MyH+Ksq
+ BcbAGEs2BAPst60ge+MUg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3jBJdqlr6ro=:83ZkR/dO+GI/5JLxYRofra
+ PMNHMSM1p4DgHgv6TawQA7/2OIZLJ83xhjBifRvVkYFDYDfOIlwP3V8WQULv8spF7VFEX1YcC
+ SQ7hOvblO4759ek641nhlE8yuhyDClhcAsH8Qqys53wd1rOTEAd5XoLn7SBt492N7vgNx9oxR
+ gu1mdiYKgviFj9sLkGf+2q1nW3wLTaVOO8z6BFgwS+zIabtvMlDwyk6ReB0GhqiqDO/Uys3EE
+ ATNsBLWpPTPcmo1IEWN0gx/lWFJ22WtCWEbn+2oN7VQy4l19rAp9nDdjn8lTcHR30nFKPCPs0
+ NyRafXoBqS3FyWYolEC8zDfrusNEbJopW6G+2Xqou2Ja3HF97jaPEULV1IQBtkP8H+OTa8wl7
+ h95hNSOy3K8B5YOLPvd3RbP9KU0exb+rMEIDvjycxLQOlnl6JTYo1PLIS6qtqh6Ghn+JQckfB
+ btsS6GtDim+atapsQuVLcUVYJMtYz0OKSDpmDkrY4ISYK9Oc6TSbi1yDWAZB1f0FnXcuecZoo
+ kxdHtKo1CNWaHTrQKkc0/8axUjW6j5Pgj5C5bqrTzqZDX/xhOd1CEVlZxpFtfPOX/5nUtnRT8
+ S4fXSiQHIqYF3QrZ5TiuGxLfK6OEx9LnTWpbW8ulN3zBYxeone9N6hLt20y0py6JeQYHBfLD1
+ jS2Z5LbPr/urw7cskvGVDq1wFZ+Kx/HQeD6pg5zof0X4eNgNaXzVKlvltmnhbVAUSkc+Y5OuR
+ /jHphW1EPpLm5gw723MqJSMPYtXN7/QHU2zLp5jG/awnoiJJ/6IYTiZJhZqfXjrJtwogCoXRP
+ 7q90t4JZky2DWlWef3ZSymSG6x4TPKJEL5x81YV6UXtoWEczBE=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 04:38:10PM +0900, Masami Hiramatsu wrote:
+When both CONFIG_DEBUG_FS and CONFIG_PM_SLEEP are disabled, the
+functions that got moved out of the #ifdef section now cause
+a warning:
 
-SNIP
+drivers/platform/x86/intel_pmc_core.c:654:13: error: 'pmc_core_lpm_display' defined but not used [-Werror=unused-function]
+  654 | static void pmc_core_lpm_display(struct pmc_dev *pmcdev, struct device *dev,
+      |             ^~~~~~~~~~~~~~~~~~~~
+drivers/platform/x86/intel_pmc_core.c:617:13: error: 'pmc_core_slps0_display' defined but not used [-Werror=unused-function]
+  617 | static void pmc_core_slps0_display(struct pmc_dev *pmcdev, struct device *dev,
+      |             ^~~~~~~~~~~~~~~~~~~~~~
 
-> > 
-> > The code within the kretprobe handler checks for probe reentrancy,
-> > so we won't trigger any _raw_spin_lock_irqsave probe in there.
-> > 
-> > The problem is in outside kprobe_flush_task, where we call:
-> > 
-> >   kprobe_flush_task
-> >     kretprobe_table_lock
-> >       raw_spin_lock_irqsave
-> >         _raw_spin_lock_irqsave
-> > 
-> > where _raw_spin_lock_irqsave triggers the kretprobe and installs
-> > kretprobe_trampoline handler on _raw_spin_lock_irqsave return.
-> > 
-> > The kretprobe_trampoline handler is then executed with already
-> > locked kretprobe_table_locks, and first thing it does is to
-> > lock kretprobe_table_locks ;-) the whole lockup path like:
-> > 
-> >   kprobe_flush_task
-> >     kretprobe_table_lock
-> >       raw_spin_lock_irqsave
-> >         _raw_spin_lock_irqsave ---> probe triggered, kretprobe_trampoline installed
-> > 
-> >         ---> kretprobe_table_locks locked
-> > 
-> >         kretprobe_trampoline
-> >           trampoline_handler
-> >             kretprobe_hash_lock(current, &head, &flags);  <--- deadlock
-> > 
-> > Adding kprobe_busy_begin/end helpers that mark code with fake
-> > probe installed to prevent triggering of another kprobe within
-> > this code.
-> > 
-> > Using these helpers in kprobe_flush_task, so the probe recursion
-> > protection check is hit and the probe is never set to prevent
-> > above lockup.
-> > 
-> 
-> Thanks Jiri!
-> 
-> Ingo, could you pick this up?
+Rather than add even more #ifdefs here, remove them entirely and
+let the compiler work it out, it can actually get rid of all the
+debugfs calls without problems as long as the struct member is
+there.
 
-Ingo, any chance you could take this one?
+The two PM functions just need a __maybe_unused annotations to avoid
+another warning instead of the #ifdef.
 
-thanks,
-jirka
+Fixes: aae43c2bcdc1 ("platform/x86: intel_pmc_core: Relocate pmc_core_*_display() to outside of CONFIG_DEBUG_FS")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/platform/x86/intel_pmc_core.c | 18 ++----------------
+ drivers/platform/x86/intel_pmc_core.h |  2 --
+ 2 files changed, 2 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+index a130859ec49e..7c8bdab078cf 100644
+--- a/drivers/platform/x86/intel_pmc_core.c
++++ b/drivers/platform/x86/intel_pmc_core.c
+@@ -692,7 +692,6 @@ static void pmc_core_lpm_display(struct pmc_dev *pmcdev, struct device *dev,
+ 	kfree(lpm_regs);
+ }
+ 
+-#if IS_ENABLED(CONFIG_DEBUG_FS)
+ static bool slps0_dbg_latch;
+ 
+ static inline u8 pmc_core_reg_read_byte(struct pmc_dev *pmcdev, int offset)
+@@ -1133,15 +1132,6 @@ static void pmc_core_dbgfs_register(struct pmc_dev *pmcdev)
+ 				    &pmc_core_substate_l_sts_regs_fops);
+ 	}
+ }
+-#else
+-static inline void pmc_core_dbgfs_register(struct pmc_dev *pmcdev)
+-{
+-}
+-
+-static inline void pmc_core_dbgfs_unregister(struct pmc_dev *pmcdev)
+-{
+-}
+-#endif /* CONFIG_DEBUG_FS */
+ 
+ static const struct x86_cpu_id intel_pmc_core_ids[] = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_L,		&spt_reg_map),
+@@ -1260,13 +1250,11 @@ static int pmc_core_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+-
+ static bool warn_on_s0ix_failures;
+ module_param(warn_on_s0ix_failures, bool, 0644);
+ MODULE_PARM_DESC(warn_on_s0ix_failures, "Check and warn for S0ix failures");
+ 
+-static int pmc_core_suspend(struct device *dev)
++static __maybe_unused int pmc_core_suspend(struct device *dev)
+ {
+ 	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
+ 
+@@ -1318,7 +1306,7 @@ static inline bool pmc_core_is_s0ix_failed(struct pmc_dev *pmcdev)
+ 	return false;
+ }
+ 
+-static int pmc_core_resume(struct device *dev)
++static __maybe_unused int pmc_core_resume(struct device *dev)
+ {
+ 	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
+ 	const struct pmc_bit_map **maps = pmcdev->map->lpm_sts;
+@@ -1348,8 +1336,6 @@ static int pmc_core_resume(struct device *dev)
+ 	return 0;
+ }
+ 
+-#endif
+-
+ static const struct dev_pm_ops pmc_core_pm_ops = {
+ 	SET_LATE_SYSTEM_SLEEP_PM_OPS(pmc_core_suspend, pmc_core_resume)
+ };
+diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
+index 0d50b2402abe..5eae55d80226 100644
+--- a/drivers/platform/x86/intel_pmc_core.h
++++ b/drivers/platform/x86/intel_pmc_core.h
+@@ -282,9 +282,7 @@ struct pmc_dev {
+ 	u32 base_addr;
+ 	void __iomem *regbase;
+ 	const struct pmc_reg_map *map;
+-#if IS_ENABLED(CONFIG_DEBUG_FS)
+ 	struct dentry *dbgfs_dir;
+-#endif /* CONFIG_DEBUG_FS */
+ 	int pmc_xram_read_bit;
+ 	struct mutex lock; /* generic mutex lock for PMC Core */
+ 
+-- 
+2.26.0
 
