@@ -2,346 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5241B1BB6B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA901BB6A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgD1Gdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 02:33:45 -0400
-Received: from vultr.net.flygoat.com ([149.28.68.211]:60582 "EHLO
-        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726616AbgD1Gdk (ORCPT
+        id S1726548AbgD1GdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 02:33:20 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5820 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726256AbgD1GdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 02:33:40 -0400
-Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
-        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 51FB620CE2;
-        Tue, 28 Apr 2020 06:33:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
-        t=1588055620; bh=lPC7IWuM+BGqp7NmvItdlak1lEGxcpeLXEliyaseLhg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p8HVUqdc4JhndV8J5n4jEPvfyK4+5/IcCwkHhMFv56ZudotRgoiMlwGRJYPwwoQ4l
-         bNypg+e36v5U7QSpnn15MlQBBF86VPjCMQvNrlQFuePoPurW4hWwAUHHS6usQBb4Ed
-         AWfC5/ngLMmNV0ZX5K48ZALtDPIZIIYiwVtW6S4bKwpCqYATyDFg5Xz3FUNa9Q+oa4
-         Ef3Gdqtz0cgMYaOM0Qhzo6GXnqbTdAoVeS3/31GIB9KOQs5AME4qRqVvwtGTcyT+va
-         h6znJIsIllw7EREMyo8FjdsFAOx+UDLElPtfblQvp8cd0ZYZcME7ALamn3YcGKT9La
-         +3xtnJkfpv+1Q==
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     maz@kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: [PATCH v2 3/6] irqchip: Add Loongson PCH PIC controller
-Date:   Tue, 28 Apr 2020 14:32:42 +0800
-Message-Id: <20200428063247.2223499-3-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.26.0.rc2
-In-Reply-To: <20200428063247.2223499-1-jiaxun.yang@flygoat.com>
-References: <20200422142428.1249684-1-jiaxun.yang@flygoat.com>
- <20200428063247.2223499-1-jiaxun.yang@flygoat.com>
+        Tue, 28 Apr 2020 02:33:19 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03S61ctt084369;
+        Tue, 28 Apr 2020 02:32:54 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mh330rns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Apr 2020 02:32:54 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03S62l5f088216;
+        Tue, 28 Apr 2020 02:32:54 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mh330rnc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Apr 2020 02:32:53 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03S6VpCv002840;
+        Tue, 28 Apr 2020 06:32:53 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma05wdc.us.ibm.com with ESMTP id 30mcu69jxg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Apr 2020 06:32:52 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03S6Wq5K15991286
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 06:32:52 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6372FAE05C;
+        Tue, 28 Apr 2020 06:32:52 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 347E7AE060;
+        Tue, 28 Apr 2020 06:32:44 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.55.78])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 28 Apr 2020 06:32:43 +0000 (GMT)
+Subject: Re: [PATCH v8 0/7] powerpc/perf: Add json file metric support for the
+ hv_24x7 socket/chip level events
+To:     acme@kernel.org, linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
+        sukadev@linux.vnet.ibm.com
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        anju@linux.vnet.ibm.com, maddy@linux.vnet.ibm.com,
+        ravi.bangoria@linux.ibm.com, peterz@infradead.org,
+        yao.jin@linux.intel.com, ak@linux.intel.com, jolsa@kernel.org,
+        kan.liang@linux.intel.com, jmario@redhat.com,
+        alexander.shishkin@linux.intel.com, mingo@kernel.org,
+        paulus@ozlabs.org, namhyung@kernel.org, mpetlan@redhat.com,
+        gregkh@linuxfoundation.org, benh@kernel.crashing.org,
+        mamatha4@linux.vnet.ibm.com, mark.rutland@arm.com,
+        tglx@linutronix.de
+References: <20200401203340.31402-1-kjain@linux.ibm.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <fa31bc42-d34c-c788-0109-350d769b51ce@linux.ibm.com>
+Date:   Tue, 28 Apr 2020 12:02:42 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200401203340.31402-1-kjain@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-28_02:2020-04-27,2020-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
+ phishscore=0 suspectscore=0 clxscore=1015 impostorscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004280046
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This controller appears on Loongson LS7A family of PCH to transform
-interrupts from devices into HyperTransport vectorized interrrupts
-and send them to procrssor's HT vector controller.
+Hi Arnaldo,
+	Please let me know if there any changes required in this patchset,
+as some of its patches are still not part of your perf/core tree.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
-v2:
-	- Style clean-ups
-	- Use IRQ_FASTEOI_HIERARCHY_HANDLERS
-	- Move lock into bitclr & bitset
-	- Make loongson,pic-base-vec as required property
----
- drivers/irqchip/Kconfig                |   9 +
- drivers/irqchip/Makefile               |   1 +
- drivers/irqchip/irq-loongson-pch-pic.c | 245 +++++++++++++++++++++++++
- 3 files changed, 255 insertions(+)
- create mode 100644 drivers/irqchip/irq-loongson-pch-pic.c
+Thanks,
+Kajol Jain
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index de4564e2ea88..5524a621638c 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -540,4 +540,13 @@ config LOONGSON_HTVEC
- 	help
- 	  Support for the Loongson3 HyperTransport Interrupt Vector Controller.
- 
-+config LOONGSON_PCH_PIC
-+	bool "Loongson PCH PIC Controller"
-+	depends on MACH_LOONGSON64 || COMPILE_TEST
-+	default MACH_LOONGSON64
-+	select IRQ_DOMAIN_HIERARCHY
-+	select IRQ_FASTEOI_HIERARCHY_HANDLERS
-+	help
-+	  Support for the Loongson PCH PIC Controller.
-+
- endmenu
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 74561879f5a7..acc72331cec8 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -108,3 +108,4 @@ obj-$(CONFIG_TI_SCI_INTA_IRQCHIP)	+= irq-ti-sci-inta.o
- obj-$(CONFIG_LOONGSON_LIOINTC)		+= irq-loongson-liointc.o
- obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
- obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
-+obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
-diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
-new file mode 100644
-index 000000000000..9b4605873b2a
---- /dev/null
-+++ b/drivers/irqchip/irq-loongson-pch-pic.c
-@@ -0,0 +1,245 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (C) 2020, Jiaxun Yang <jiaxun.yang@flygoat.com>
-+ *  Loongson PCH PIC support
-+ */
-+
-+#define pr_fmt(fmt) "pch-pic: " fmt
-+
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqdomain.h>
-+#include <linux/kernel.h>
-+#include <linux/platform_device.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <linux/of_platform.h>
-+
-+/* Registers */
-+#define PCH_PIC_MASK		0x20
-+#define PCH_PIC_HTMSI_EN	0x40
-+#define PCH_PIC_EDGE		0x60
-+#define PCH_PIC_CLR		0x80
-+#define PCH_PIC_AUTO0		0xc0
-+#define PCH_PIC_AUTO1		0xe0
-+#define PCH_INT_ROUTE(irq)	(0x100 + irq)
-+#define PCH_INT_HTVEC(irq)	(0x200 + irq)
-+#define PCH_PIC_POL		0x3e0
-+
-+#define PIC_COUNT_PER_REG	32
-+#define PIC_REG_COUNT		2
-+#define PIC_COUNT		(PIC_COUNT_PER_REG * PIC_REG_COUNT)
-+#define PIC_REG_IDX(irq_id)	((irq_id) / PIC_COUNT_PER_REG)
-+#define PIC_REG_BIT(irq_id)	((irq_id) % PIC_COUNT_PER_REG)
-+
-+struct pch_pic {
-+	void __iomem		*base;
-+	struct irq_domain	*pic_domain;
-+	u32			ht_vec_base;
-+	raw_spinlock_t		pic_lock;
-+};
-+
-+static void pch_pic_bitset(struct pch_pic *priv, int offset, int bit)
-+{
-+	void __iomem *addr = priv->base + offset + PIC_REG_IDX(bit) * 4;
-+	unsigned long flags;
-+	u32 reg;
-+
-+	raw_spin_lock_irqsave(&priv->pic_lock, flags);
-+	reg = readl(addr);
-+	reg |= BIT(PIC_REG_BIT(bit));
-+	writel(reg, addr);
-+	raw_spin_unlock_irqrestore(&priv->pic_lock, flags);
-+}
-+
-+static void pch_pic_bitclr(struct pch_pic *priv, int offset, int bit)
-+{
-+	void __iomem *addr = priv->base + offset + PIC_REG_IDX(bit) * 4;
-+	unsigned long flags;
-+	u32 reg;
-+
-+	raw_spin_lock_irqsave(&priv->pic_lock, flags);
-+	reg = readl(addr);
-+	reg &= ~BIT(PIC_REG_BIT(bit));
-+	writel(reg, addr);
-+	raw_spin_unlock_irqrestore(&priv->pic_lock, flags);
-+}
-+
-+static void pch_pic_eoi_irq(struct irq_data *d)
-+{
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+	u32 idx = PIC_REG_IDX(d->hwirq);
-+
-+	writel(BIT(PIC_REG_BIT(d->hwirq)),
-+			priv->base + PCH_PIC_CLR + idx * 4);
-+}
-+
-+static void pch_pic_mask_irq(struct irq_data *d)
-+{
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+
-+	pch_pic_bitset(priv, PCH_PIC_MASK, d->hwirq);
-+	irq_chip_mask_parent(d);
-+}
-+
-+static void pch_pic_unmask_irq(struct irq_data *d)
-+{
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+
-+	pch_pic_bitclr(priv, PCH_PIC_MASK, d->hwirq);
-+	irq_chip_unmask_parent(d);
-+}
-+
-+static int pch_pic_set_type(struct irq_data *d, unsigned int type)
-+{
-+	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+	int ret = 0;
-+
-+	switch (type) {
-+	case IRQ_TYPE_EDGE_RISING:
-+		pch_pic_bitset(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitclr(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	case IRQ_TYPE_EDGE_FALLING:
-+		pch_pic_bitset(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitset(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	case IRQ_TYPE_LEVEL_HIGH:
-+		pch_pic_bitclr(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitclr(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	case IRQ_TYPE_LEVEL_LOW:
-+		pch_pic_bitclr(priv, PCH_PIC_EDGE, d->hwirq);
-+		pch_pic_bitset(priv, PCH_PIC_POL, d->hwirq);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+static struct irq_chip pch_pic_irq_chip = {
-+	.name			= "PCH PIC",
-+	.irq_mask		= pch_pic_mask_irq,
-+	.irq_unmask		= pch_pic_unmask_irq,
-+	.irq_ack		= irq_chip_ack_parent,
-+	.irq_eoi		= pch_pic_eoi_irq,
-+	.irq_set_affinity	= irq_chip_set_affinity_parent,
-+	.irq_set_type		= pch_pic_set_type,
-+};
-+
-+static int pch_pic_alloc(struct irq_domain *domain, unsigned int virq,
-+			      unsigned int nr_irqs, void *arg)
-+{
-+	struct pch_pic *priv = domain->host_data;
-+	struct irq_fwspec fwspec;
-+	unsigned long hwirq;
-+	unsigned int type;
-+	int err;
-+
-+	irq_domain_translate_twocell(domain, arg, &hwirq, &type);
-+
-+	fwspec.fwnode = domain->parent->fwnode;
-+	fwspec.param_count = 1;
-+	fwspec.param[0] = hwirq + priv->ht_vec_base;
-+
-+	err = irq_domain_alloc_irqs_parent(domain, virq, 1, &fwspec);
-+	if (err)
-+		return err;
-+
-+	irq_domain_set_info(domain, virq, hwirq,
-+			    &pch_pic_irq_chip, priv,
-+			    handle_fasteoi_ack_irq, NULL, NULL);
-+	irq_set_probe(virq);
-+
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops pch_pic_domain_ops = {
-+	.translate	= irq_domain_translate_twocell,
-+	.alloc		= pch_pic_alloc,
-+	.free		= irq_domain_free_irqs_parent,
-+};
-+
-+static void pch_pic_reset(struct pch_pic *priv)
-+{
-+	int i;
-+
-+	for (i = 0; i < PIC_COUNT; i++) {
-+		/* Write vectore ID */
-+		writeb(priv->ht_vec_base + i, priv->base + PCH_INT_HTVEC(i));
-+		/* Hardcode route to HT0 Lo */
-+		writeb(1, priv->base + PCH_INT_ROUTE(i));
-+	}
-+
-+	for (i = 0; i < PIC_REG_COUNT; i++) {
-+		/* Clear IRQ cause registers, mask all interrupts */
-+		writel_relaxed(0xFFFFFFFF, priv->base + PCH_PIC_MASK + 4 * i);
-+		writel_relaxed(0xFFFFFFFF, priv->base + PCH_PIC_CLR + 4 * i);
-+		/* Clear auto bounce, we don't need that */
-+		writel_relaxed(0, priv->base + PCH_PIC_AUTO0 + 4 * i);
-+		writel_relaxed(0, priv->base + PCH_PIC_AUTO1 + 4 * i);
-+		/* Enable HTMSI transformer */
-+		writel_relaxed(0xFFFFFFFF, priv->base + PCH_PIC_HTMSI_EN + 4 * i);
-+	}
-+}
-+
-+static int pch_pic_of_init(struct device_node *node,
-+				struct device_node *parent)
-+{
-+	struct pch_pic *priv;
-+	struct irq_domain *parent_domain;
-+	int err;
-+
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	raw_spin_lock_init(&priv->pic_lock);
-+	priv->base = of_iomap(node, 0);
-+	if (!priv->base) {
-+		err = -ENOMEM;
-+		goto free_priv;
-+	}
-+
-+	parent_domain = irq_find_host(parent);
-+	if (!parent_domain) {
-+		pr_err("Failed to find the parent domain\n");
-+		err = -ENXIO;
-+		goto iounmap_base;
-+	}
-+
-+	if (of_property_read_u32(node, "loongson,pic-base-vec",
-+				&priv->ht_vec_base)) {
-+		pr_err("Failed to determine pic-base-vec\n");
-+		err = -EINVAL;
-+		goto iounmap_base;
-+	}
-+
-+	priv->pic_domain = irq_domain_create_hierarchy(parent_domain, 0,
-+						     PIC_COUNT,
-+						     of_node_to_fwnode(node),
-+						     &pch_pic_domain_ops,
-+						     priv);
-+	if (!priv->pic_domain) {
-+		pr_err("Failed to create IRQ domain\n");
-+		err = -ENOMEM;
-+		goto iounmap_base;
-+	}
-+
-+	pch_pic_reset(priv);
-+
-+	return 0;
-+
-+iounmap_base:
-+	iounmap(priv->base);
-+free_priv:
-+	kfree(priv);
-+
-+	return err;
-+}
-+
-+IRQCHIP_DECLARE(pch_pic, "loongson,pch-pic-1.0", pch_pic_of_init);
--- 
-2.26.0.rc2
-
+On 4/2/20 2:03 AM, Kajol Jain wrote:
+> Patchset adds json file metric support for the hv_24x7 socket/chip level
+> events. "hv_24x7" pmu interface events needs system dependent parameter
+> like socket/chip/core. For example, hv_24x7 chip level events needs
+> specific chip-id to which the data is requested should be added as part
+> of pmu events.
+> 
+> So to enable JSON file support to "hv_24x7" interface, patchset reads
+> total number of sockets details in sysfs under 
+> "/sys/devices/hv_24x7/interface/".
+> 
+> Second patch of the patchset adds expr_scanner_ctx object to hold user
+> data for the expr scanner, which can be used to hold runtime parameter.
+> 
+> Patch 4 & 6 of the patchset handles perf tool plumbing needed to replace
+> the "?" character in the metric expression to proper value and hv_24x7
+> json metric file for different Socket/chip resources.
+> 
+> Patch set also enable Hz/hz prinitg for --metric-only option to print
+> metric data for bus frequency.
+> 
+> Applied and tested all these patches cleanly on top of jiri's flex changes
+> with the changes done by Kan Liang for "Support metric group constraint"
+> patchset and made required changes.
+> 
+> Also apply this patch on top of the fix patch send earlier
+> for printing metric name incase overlapping events.
+> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=perf/core&id=37cd7f65bf71a48f25eeb6d9be5dacb20d008ea6
+> 
+> Changelog:
+> v7 -> v8
+> - Add test case for testing parsing of "?" in metric expression
+> - Reaname variables name to runtime
+> 
+> v6 -> v7
+> - Spit patchset into two patch series one for kernel changes and other
+>   for tool side changes.
+> - Made changes Suggested by Jiri, including rather then reading runtime
+>   parameter from metric name, actually add it in structure egroup and
+>   metric_expr.
+> - As we don't need to read runtime parameter from metric name,
+>   now I am not appending it and rather just printing it in
+>   generic_metric function.
+> 
+> Kernel Side changes patch series: https://lkml.org/lkml/2020/3/27/58
+> 
+> v5 -> v6
+> - resolve compilation issue due to rearranging patch series.
+> - Rather then adding new function to take careof case for runtime param
+>   in metricgroup__add_metric, using metricgroup__add_metric_param itself
+>   for that work.
+> - Address some optimization suggested like using directly file path
+>   rather then adding new macro in header.c
+> - Change commit message on patch where we are adding "?" support
+>   by adding simple example.
+> 
+> v4 -> v5
+> - Using sysfs__read_int instead of sysfs__read_ull while reading
+>   parameter value in powerpc/util/header.c file.
+> 
+> - Using asprintf rather then malloc and sprintf 
+>   Suggested by Arnaldo Carvalho de Melo
+> 
+> - Break patch 6 from previous version to two patch,
+>   - One to add refactor current "metricgroup__add_metric" function
+>     and another where actually "?" handling infra added.
+> 
+> - Add expr__runtimeparam as part of 'expr_scanner_ctx' struct
+>   rather then making it global variable. Thanks Jiri for
+>   adding this structure to hold user data for the expr scanner.
+> 
+> - Add runtime param as agrugement to function 'expr__find_other'
+>   and 'expr__parse' and made changes on references accordingly.
+> 
+> v3 -> v4
+> - Apply these patch on top of Kan liang changes.
+>   As suggested by Jiri.
+> 
+> v2 -> v3
+> - Remove setting  event_count to 0 part in function 'h_24x7_event_read'
+>   with comment rather then adding 0 to event_count value.
+>   Suggested by: Sukadev Bhattiprolu
+> 
+> - Apply tool side changes require to replace "?" on Jiri's flex patch
+>   series and made all require changes to make it compatible with added
+>   flex change.
+> 
+> v1 -> v2
+> - Rename hv-24x7 metric json file as nest_metrics.json
+> 
+> Jiri Olsa (2):
+>   perf expr: Add expr_ prefix for parse_ctx and parse_id
+>   perf expr: Add expr_scanner_ctx object
+> 
+> Kajol Jain (5):
+>   perf/tools: Refactoring metricgroup__add_metric function
+>   perf/tools: Enhance JSON/metric infrastructure to handle "?"
+>   perf/tests/expr: Added test for runtime param in metric expression
+>   tools/perf: Enable Hz/hz prinitg for --metric-only option
+>   perf/tools/pmu-events/powerpc: Add hv_24x7 socket/chip level metric
+>     events
+> 
+>  tools/perf/arch/powerpc/util/header.c         |  8 ++
+>  .../arch/powerpc/power9/nest_metrics.json     | 19 +++++
+>  tools/perf/tests/expr.c                       | 20 +++--
+>  tools/perf/util/expr.c                        | 25 +++---
+>  tools/perf/util/expr.h                        | 19 +++--
+>  tools/perf/util/expr.l                        | 37 ++++++---
+>  tools/perf/util/expr.y                        |  6 +-
+>  tools/perf/util/metricgroup.c                 | 78 +++++++++++++------
+>  tools/perf/util/metricgroup.h                 |  2 +
+>  tools/perf/util/stat-display.c                |  2 -
+>  tools/perf/util/stat-shadow.c                 | 19 +++--
+>  11 files changed, 164 insertions(+), 71 deletions(-)
+>  create mode 100644 tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
+> 
