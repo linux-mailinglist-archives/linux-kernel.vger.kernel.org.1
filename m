@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39C31BCC33
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503731BCC38
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbgD1TTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 15:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
+        id S1729102AbgD1TUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:20:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728490AbgD1TTi (ORCPT
+        by vger.kernel.org with ESMTP id S1729019AbgD1TTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 15:19:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCA2C035493
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 12:19:38 -0700 (PDT)
+        Tue, 28 Apr 2020 15:19:53 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4973DC03C1AD
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 12:19:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=vRZfYVt90Tna9hvcYDWq0QfZ3RiArT47vEsslpQCWE8=; b=tOXt9GViT1bU8Lq0ZIKcfcDlmw
-        OybM28XWBaBbIIC4aNUOlUqWWGaUSiTGvOTqIHvOczMlYqHTbapHi+BB6yvMI73WUIkoE3WPX6Qr5
-        2rCrJgTu3t2NTEkNsUFAy5GZBm+c/ZXuahZu/RlWUJg/VZ3sxBne6llOJxR/bqovHeKjh0n/etcn2
-        KMXPGCt78b8TjOuhnDUrW+ReiXOuopt+xxpQxB57WEvzF/RoTrtVEWkevIJWk/Cm+jhftr/XTPZJu
-        CH8R7/i0D0DqWCTGmMmmKmBnJkfYNDP5SPcNZFDWfrcBFg3Mwu18ZZBbrFVbUlOrHF/tZipug4hvB
-        Y1N0b7jg==;
+        bh=5YgQtQCUtVGS9kzMe6SLPbJYLmwHlRLif9PX8QeAZ8E=; b=e0NKFa83sllsU/D7m3gvoZkVWy
+        iXZwRKz8WoSxJYaEn3g4g8DHVZOZ+3+WLSav+Ak8o2zsP3AZfeZD41nC/kS2lnYCFoDFi+pejUnLk
+        xt9RJCHjPoFUzCHIZkNhgzkFBVvHHnonOSFfJhqpd2KNXOGL1du0bex8L8ct6Yu0NOn6MDRpxsRJH
+        x8yR7aTvtPMrzHNVeNC9PCa8655Yn6tKOkl9GhENNs8EqQtKxxNkjI7oCWAFoMeS4M+LP5+ZWqetw
+        00559xhAFWCPDiq0jP05NRoVmI/TvUfCdI1XpyYFdUIPfdDVQl74QWezxw1XQaW6IKh+vL4JiWnvx
+        KeEN5khQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTVlS-0006WG-1N; Tue, 28 Apr 2020 19:19:30 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTVlR-0007l1-MR; Tue, 28 Apr 2020 19:19:30 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C59D430796B;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BF8EF30794F;
         Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id A384423CFDE42; Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
-Message-Id: <20200428191700.091696925@infradead.org>
+        id A8B2523CFDE43; Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
+Message-Id: <20200428191700.151623523@infradead.org>
 User-Agent: quilt/0.65
-Date:   Tue, 28 Apr 2020 21:11:13 +0200
+Date:   Tue, 28 Apr 2020 21:11:14 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
 Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
         tglx@linutronix.de, x86@kernel.org, mbenes@suse.cz,
-        peterz@infradead.org, arnd@arndb.de
-Subject: [PATCH v2 12/14] x86: Simplify retpoline declaration
+        peterz@infradead.org
+Subject: [PATCH v2 13/14] x86: Change {JMP,CALL}_NOSPEC argument
 References: <20200428191101.886208539@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,124 +52,266 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because of how KSYM works, we need one declaration per line. Seeing
-how we're going to be doubling the amount of retpoline symbols,
-simplify the machinery in order to avoid having to copy/paste even
-more.
+In order to change the {JMP,CALL}_NOSPEC macros to call out-of-line
+versions of the retpoline magic, we need to remove the '%' from the
+argument, such that we can paste it onto symbol names.
 
-Cc: arnd@arndb.de
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/include/asm/GEN-for-each-reg.h |   25 ++++++++++++++++++++++
- arch/x86/include/asm/asm-prototypes.h   |   28 +++++++------------------
- arch/x86/lib/retpoline.S                |   35 +++++++++++++-------------------
- 3 files changed, 48 insertions(+), 40 deletions(-)
+ arch/x86/crypto/aesni-intel_asm.S            |    4 ++--
+ arch/x86/crypto/camellia-aesni-avx-asm_64.S  |    2 +-
+ arch/x86/crypto/camellia-aesni-avx2-asm_64.S |    2 +-
+ arch/x86/crypto/crc32c-pcl-intel-asm_64.S    |   26 +++++++++++++-------------
+ arch/x86/entry/entry_32.S                    |    6 +++---
+ arch/x86/entry/entry_64.S                    |    2 +-
+ arch/x86/include/asm/nospec-branch.h         |   16 ++++++++--------
+ arch/x86/kernel/ftrace_32.S                  |    2 +-
+ arch/x86/kernel/ftrace_64.S                  |    4 ++--
+ arch/x86/lib/checksum_32.S                   |    4 ++--
+ arch/x86/platform/efi/efi_stub_64.S          |    2 +-
+ 11 files changed, 35 insertions(+), 35 deletions(-)
 
---- /dev/null
-+++ b/arch/x86/include/asm/GEN-for-each-reg.h
-@@ -0,0 +1,25 @@
-+#ifdef CONFIG_64BIT
-+GEN(rax)
-+GEN(rbx)
-+GEN(rcx)
-+GEN(rdx)
-+GEN(rsi)
-+GEN(rdi)
-+GEN(rbp)
-+GEN(r8)
-+GEN(r9)
-+GEN(r10)
-+GEN(r11)
-+GEN(r12)
-+GEN(r13)
-+GEN(r14)
-+GEN(r15)
-+#else
-+GEN(eax)
-+GEN(ebx)
-+GEN(ecx)
-+GEN(edx)
-+GEN(esi)
-+GEN(edi)
-+GEN(ebp)
-+#endif
---- a/arch/x86/include/asm/asm-prototypes.h
-+++ b/arch/x86/include/asm/asm-prototypes.h
-@@ -17,24 +17,12 @@ extern void cmpxchg8b_emu(void);
- #endif
+--- a/arch/x86/crypto/aesni-intel_asm.S
++++ b/arch/x86/crypto/aesni-intel_asm.S
+@@ -2758,7 +2758,7 @@ SYM_FUNC_START(aesni_xts_crypt8)
+ 	pxor INC, STATE4
+ 	movdqu IV, 0x30(OUTP)
  
+-	CALL_NOSPEC %r11
++	CALL_NOSPEC r11
+ 
+ 	movdqu 0x00(OUTP), INC
+ 	pxor INC, STATE1
+@@ -2803,7 +2803,7 @@ SYM_FUNC_START(aesni_xts_crypt8)
+ 	_aesni_gf128mul_x_ble()
+ 	movups IV, (IVP)
+ 
+-	CALL_NOSPEC %r11
++	CALL_NOSPEC r11
+ 
+ 	movdqu 0x40(OUTP), INC
+ 	pxor INC, STATE1
+--- a/arch/x86/crypto/camellia-aesni-avx-asm_64.S
++++ b/arch/x86/crypto/camellia-aesni-avx-asm_64.S
+@@ -1228,7 +1228,7 @@ SYM_FUNC_START_LOCAL(camellia_xts_crypt_
+ 	vpxor 14 * 16(%rax), %xmm15, %xmm14;
+ 	vpxor 15 * 16(%rax), %xmm15, %xmm15;
+ 
+-	CALL_NOSPEC %r9;
++	CALL_NOSPEC r9;
+ 
+ 	addq $(16 * 16), %rsp;
+ 
+--- a/arch/x86/crypto/camellia-aesni-avx2-asm_64.S
++++ b/arch/x86/crypto/camellia-aesni-avx2-asm_64.S
+@@ -1339,7 +1339,7 @@ SYM_FUNC_START_LOCAL(camellia_xts_crypt_
+ 	vpxor 14 * 32(%rax), %ymm15, %ymm14;
+ 	vpxor 15 * 32(%rax), %ymm15, %ymm15;
+ 
+-	CALL_NOSPEC %r9;
++	CALL_NOSPEC r9;
+ 
+ 	addq $(16 * 32), %rsp;
+ 
+--- a/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
++++ b/arch/x86/crypto/crc32c-pcl-intel-asm_64.S
+@@ -75,7 +75,7 @@
+ 
+ .text
+ SYM_FUNC_START(crc_pcl)
+-#define    bufp		%rdi
++#define    bufp		rdi
+ #define    bufp_dw	%edi
+ #define    bufp_w	%di
+ #define    bufp_b	%dil
+@@ -105,9 +105,9 @@ SYM_FUNC_START(crc_pcl)
+ 	## 1) ALIGN:
+ 	################################################################
+ 
+-	mov     bufp, bufptmp		# rdi = *buf
+-	neg     bufp
+-	and     $7, bufp		# calculate the unalignment amount of
++	mov     %bufp, bufptmp		# rdi = *buf
++	neg     %bufp
++	and     $7, %bufp		# calculate the unalignment amount of
+ 					# the address
+ 	je      proc_block		# Skip if aligned
+ 
+@@ -123,13 +123,13 @@ SYM_FUNC_START(crc_pcl)
+ do_align:
+ 	#### Calculate CRC of unaligned bytes of the buffer (if any)
+ 	movq    (bufptmp), tmp		# load a quadward from the buffer
+-	add     bufp, bufptmp		# align buffer pointer for quadword
++	add     %bufp, bufptmp		# align buffer pointer for quadword
+ 					# processing
+-	sub     bufp, len		# update buffer length
++	sub     %bufp, len		# update buffer length
+ align_loop:
+ 	crc32b  %bl, crc_init_dw 	# compute crc32 of 1-byte
+ 	shr     $8, tmp			# get next byte
+-	dec     bufp
++	dec     %bufp
+ 	jne     align_loop
+ 
+ proc_block:
+@@ -169,10 +169,10 @@ SYM_FUNC_START(crc_pcl)
+ 	xor     crc2, crc2
+ 
+ 	## branch into array
+-	lea	jump_table(%rip), bufp
+-	movzxw  (bufp, %rax, 2), len
+-	lea	crc_array(%rip), bufp
+-	lea     (bufp, len, 1), bufp
++	lea	jump_table(%rip), %bufp
++	movzxw  (%bufp, %rax, 2), len
++	lea	crc_array(%rip), %bufp
++	lea     (%bufp, len, 1), %bufp
+ 	JMP_NOSPEC bufp
+ 
+ 	################################################################
+@@ -218,9 +218,9 @@ LABEL crc_ %i
+ 	## 4) Combine three results:
+ 	################################################################
+ 
+-	lea	(K_table-8)(%rip), bufp		# first entry is for idx 1
++	lea	(K_table-8)(%rip), %bufp		# first entry is for idx 1
+ 	shlq    $3, %rax			# rax *= 8
+-	pmovzxdq (bufp,%rax), %xmm0		# 2 consts: K1:K2
++	pmovzxdq (%bufp,%rax), %xmm0		# 2 consts: K1:K2
+ 	leal	(%eax,%eax,2), %eax		# rax *= 3 (total *24)
+ 	subq    %rax, tmp			# tmp -= rax*24
+ 
+--- a/arch/x86/entry/entry_32.S
++++ b/arch/x86/entry/entry_32.S
+@@ -816,7 +816,7 @@ SYM_CODE_START(ret_from_fork)
+ 
+ 	/* kernel thread */
+ 1:	movl	%edi, %eax
+-	CALL_NOSPEC %ebx
++	CALL_NOSPEC ebx
+ 	/*
+ 	 * A kernel thread is allowed to return here after successfully
+ 	 * calling do_execve().  Exit to userspace to complete the execve()
+@@ -1501,7 +1501,7 @@ SYM_CODE_START_LOCAL_NOALIGN(common_exce
+ 
+ 	TRACE_IRQS_OFF
+ 	movl	%esp, %eax			# pt_regs pointer
+-	CALL_NOSPEC %edi
++	CALL_NOSPEC edi
+ 	jmp	ret_from_exception
+ SYM_CODE_END(common_exception_read_cr2)
+ 
+@@ -1522,7 +1522,7 @@ SYM_CODE_START_LOCAL_NOALIGN(common_exce
+ 
+ 	TRACE_IRQS_OFF
+ 	movl	%esp, %eax			# pt_regs pointer
+-	CALL_NOSPEC %edi
++	CALL_NOSPEC edi
+ 	jmp	ret_from_exception
+ SYM_CODE_END(common_exception)
+ 
+--- a/arch/x86/entry/entry_64.S
++++ b/arch/x86/entry/entry_64.S
+@@ -349,7 +349,7 @@ SYM_CODE_START(ret_from_fork)
+ 	/* kernel thread */
+ 	UNWIND_HINT_EMPTY
+ 	movq	%r12, %rdi
+-	CALL_NOSPEC %rbx
++	CALL_NOSPEC rbx
+ 	/*
+ 	 * A kernel thread is allowed to return here after successfully
+ 	 * calling do_execve().  Exit to userspace to complete the execve()
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -118,22 +118,22 @@
+ .macro JMP_NOSPEC reg:req
  #ifdef CONFIG_RETPOLINE
--#ifdef CONFIG_X86_32
--#define INDIRECT_THUNK(reg) extern asmlinkage void __x86_indirect_thunk_e ## reg(void);
--#else
--#define INDIRECT_THUNK(reg) extern asmlinkage void __x86_indirect_thunk_r ## reg(void);
--INDIRECT_THUNK(8)
--INDIRECT_THUNK(9)
--INDIRECT_THUNK(10)
--INDIRECT_THUNK(11)
--INDIRECT_THUNK(12)
--INDIRECT_THUNK(13)
--INDIRECT_THUNK(14)
--INDIRECT_THUNK(15)
--#endif
--INDIRECT_THUNK(ax)
--INDIRECT_THUNK(bx)
--INDIRECT_THUNK(cx)
--INDIRECT_THUNK(dx)
--INDIRECT_THUNK(si)
--INDIRECT_THUNK(di)
--INDIRECT_THUNK(bp)
-+
-+#define DECL_INDIRECT_THUNK(reg) \
-+	extern asmlinkage void __x86_indirect_thunk_ ## reg (void);
-+
-+#undef GEN
-+#define GEN(reg) DECL_INDIRECT_THUNK(reg)
-+#include <asm/GEN-for-each-reg.h>
-+
- #endif /* CONFIG_RETPOLINE */
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -24,25 +24,20 @@ SYM_FUNC_END(__x86_indirect_thunk_\reg)
-  * only see one instance of "__x86_indirect_thunk_\reg" rather
-  * than one per register with the correct names. So we do it
-  * the simple and nasty way...
-+ *
-+ * Worse, you can only have a single EXPORT_SYMBOL per line,
-+ * and CPP can't insert newlines, so we have to repeat everything
-+ * at least twice.
-  */
--#define __EXPORT_THUNK(sym) _ASM_NOKPROBE(sym); EXPORT_SYMBOL(sym)
--#define EXPORT_THUNK(reg) __EXPORT_THUNK(__x86_indirect_thunk_ ## reg)
--#define GENERATE_THUNK(reg) THUNK reg ; EXPORT_THUNK(reg)
+ 	ANNOTATE_NOSPEC_ALTERNATIVE
+-	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *\reg),	\
+-		__stringify(RETPOLINE_JMP \reg), X86_FEATURE_RETPOLINE,	\
+-		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *\reg), X86_FEATURE_RETPOLINE_AMD
++	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *%\reg),	\
++		__stringify(RETPOLINE_JMP %\reg), X86_FEATURE_RETPOLINE,\
++		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), X86_FEATURE_RETPOLINE_AMD
+ #else
+-	jmp	*\reg
++	jmp	*%\reg
+ #endif
+ .endm
  
--GENERATE_THUNK(_ASM_AX)
--GENERATE_THUNK(_ASM_BX)
--GENERATE_THUNK(_ASM_CX)
--GENERATE_THUNK(_ASM_DX)
--GENERATE_THUNK(_ASM_SI)
--GENERATE_THUNK(_ASM_DI)
--GENERATE_THUNK(_ASM_BP)
--#ifdef CONFIG_64BIT
--GENERATE_THUNK(r8)
--GENERATE_THUNK(r9)
--GENERATE_THUNK(r10)
--GENERATE_THUNK(r11)
--GENERATE_THUNK(r12)
--GENERATE_THUNK(r13)
--GENERATE_THUNK(r14)
--GENERATE_THUNK(r15)
--#endif
-+#define __EXPORT_THUNK(sym)	_ASM_NOKPROBE(sym); EXPORT_SYMBOL(sym)
-+#define EXPORT_THUNK(reg)	__EXPORT_THUNK(__x86_indirect_thunk_ ## reg)
-+
-+#undef GEN
-+#define GEN(reg) THUNK reg
-+#include <asm/GEN-for-each-reg.h>
-+
-+#undef GEN
-+#define GEN(reg) EXPORT_THUNK(reg)
-+#include <asm/GEN-for-each-reg.h>
-+
+ .macro CALL_NOSPEC reg:req
+ #ifdef CONFIG_RETPOLINE
+ 	ANNOTATE_NOSPEC_ALTERNATIVE
+-	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; call *\reg),	\
+-		__stringify(RETPOLINE_CALL \reg), X86_FEATURE_RETPOLINE,\
+-		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; call *\reg), X86_FEATURE_RETPOLINE_AMD
++	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; call *%\reg),\
++		__stringify(RETPOLINE_CALL %\reg), X86_FEATURE_RETPOLINE,\
++		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; call *%\reg), X86_FEATURE_RETPOLINE_AMD
+ #else
+-	call	*\reg
++	call	*%\reg
+ #endif
+ .endm
+ 
+--- a/arch/x86/kernel/ftrace_32.S
++++ b/arch/x86/kernel/ftrace_32.S
+@@ -189,5 +189,5 @@ SYM_CODE_END(ftrace_graph_caller)
+ 	movl	%eax, %ecx
+ 	popl	%edx
+ 	popl	%eax
+-	JMP_NOSPEC %ecx
++	JMP_NOSPEC ecx
+ #endif
+--- a/arch/x86/kernel/ftrace_64.S
++++ b/arch/x86/kernel/ftrace_64.S
+@@ -301,7 +301,7 @@ SYM_INNER_LABEL(ftrace_stub, SYM_L_GLOBA
+ 	 * function tracing is enabled.
+ 	 */
+ 	movq ftrace_trace_function, %r8
+-	CALL_NOSPEC %r8
++	CALL_NOSPEC r8
+ 	restore_mcount_regs
+ 
+ 	jmp fgraph_trace
+@@ -338,6 +338,6 @@ SYM_CODE_START(return_to_handler)
+ 	movq 8(%rsp), %rdx
+ 	movq (%rsp), %rax
+ 	addq $24, %rsp
+-	JMP_NOSPEC %rdi
++	JMP_NOSPEC rdi
+ SYM_CODE_END(return_to_handler)
+ #endif
+--- a/arch/x86/lib/checksum_32.S
++++ b/arch/x86/lib/checksum_32.S
+@@ -153,7 +153,7 @@ SYM_FUNC_START(csum_partial)
+ 	negl %ebx
+ 	lea 45f(%ebx,%ebx,2), %ebx
+ 	testl %esi, %esi
+-	JMP_NOSPEC %ebx
++	JMP_NOSPEC ebx
+ 
+ 	# Handle 2-byte-aligned regions
+ 20:	addw (%esi), %ax
+@@ -436,7 +436,7 @@ SYM_FUNC_START(csum_partial_copy_generic
+ 	andl $-32,%edx
+ 	lea 3f(%ebx,%ebx), %ebx
+ 	testl %esi, %esi 
+-	JMP_NOSPEC %ebx
++	JMP_NOSPEC ebx
+ 1:	addl $64,%esi
+ 	addl $64,%edi 
+ 	SRC(movb -32(%edx),%bl)	; SRC(movb (%edx),%bl)
+--- a/arch/x86/platform/efi/efi_stub_64.S
++++ b/arch/x86/platform/efi/efi_stub_64.S
+@@ -21,7 +21,7 @@ SYM_FUNC_START(__efi_call)
+ 	mov %r8, %r9
+ 	mov %rcx, %r8
+ 	mov %rsi, %rcx
+-	CALL_NOSPEC %rdi
++	CALL_NOSPEC rdi
+ 	leave
+ 	ret
+ SYM_FUNC_END(__efi_call)
 
 
