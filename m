@@ -2,96 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362A01BC62F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68121BC631
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbgD1RHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 13:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58974 "EHLO
+        id S1728313AbgD1RKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 13:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727929AbgD1RHh (ORCPT
+        with ESMTP id S1726406AbgD1RKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 13:07:37 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33BE3C03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:07:36 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id h4so8725097ljg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:07:36 -0700 (PDT)
+        Tue, 28 Apr 2020 13:10:24 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5693EC03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:10:24 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id h6so17585835lfc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:10:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qndSSY39gjmwARBk0gMZpVxJGZXAdDCTZw9QYK8z9Zc=;
-        b=K+RzLPalq2YYOUqS4dRehI3hWyV9pRDYFPkf3L3pugPSaBhI5tGJkgZMAGNOjZj3S9
-         FDYVRNA83t8OPlXj8nWhnPp6lWZp70q5PBtj50bLcrIXhtsqZC8Jg5Q8iTaP60LnXJQe
-         OguBrTIAsNFF4ezd6qplm3mFAj26zIrAmEKgY=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=hcdO585ed6dhWyG//gXm3cGKsbtOyJyZqsLOBSwj2N8=;
+        b=W41tP+JQzdv74uPdFblFj8+m0F8K5wRcvv6oCdjjnmR+B+CUicjNUvh34vFCxEB/Jf
+         ALqzJ7RQLed/rJV/1aag5O65NzBsemSdRq6AMqBBXIsDD4DIrMNZ7lqERk0bxpB65r16
+         EvaRgIbEma5uDXoPW1hvvHNLqUMu/9fW9U7r6OkbODrXfXeWN+Zvmii6hLBcEAI6FBOD
+         8W55jA9aXTMLVizPuyAhn1r1vFHVP2dSvVAIe2uDCKscUVy3m36m0NKW9M0KcU0xg64q
+         3FHp4Cehg8jB5fvgpKixnNF6wpSYecWuzLnlEVsUkv2Gi32oh+9k2PopFu9gkFZDEtO/
+         NwFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qndSSY39gjmwARBk0gMZpVxJGZXAdDCTZw9QYK8z9Zc=;
-        b=kPI/B+KoKEmteJN2t8+2URY2hrAETFcdeLlhgA2Ho3ZYV73roP1ZxgNowDHJhNsu6G
-         vbPt8W7QWN4oseHemIg+oVd9PoDe1fvF69mXCnkzICCgKzpM8Tm1KgfNjLSd+uMWJgJV
-         6LQ1DiHcczR7rJecs4Hxo+cRzCX74rMTmOXyZe3GiLufpy9k3Ho1v7Xl7wwve5nVhxj1
-         q2X2+H7g/i05Yej1+oUavQRyoApmh3NNnCnHFYbT+Aak5iQ3pLeRN3QDWyUO9NF5FOA7
-         Y1Qon3cm6Jp4cAaKbvfXy4ds3jUmYlhizCQc1Yjd4DnY0dUfDcGS0lc7rKQxERt8YzEJ
-         Iofg==
-X-Gm-Message-State: AGi0PubcgUc0BESBLlCmSgz1gBuk1ApCX2exn6XsPGXW0UcIO3ImFTx4
-        kWgNA2CjQ2AGU3bRO46laXEVNF9uSW0=
-X-Google-Smtp-Source: APiQypIRT99D4wdrPx7xmAR2L5OB6QppHJg3emkSfsR0CJo7PaTgzpmdS1v/FuI4CMzh1LzYdaF1xQ==
-X-Received: by 2002:a2e:9596:: with SMTP id w22mr19110126ljh.9.1588093653926;
-        Tue, 28 Apr 2020 10:07:33 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id 137sm15016462lfa.48.2020.04.28.10.07.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Apr 2020 10:07:32 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id b2so22233613ljp.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:07:32 -0700 (PDT)
-X-Received: by 2002:a05:651c:319:: with SMTP id a25mr16990262ljp.209.1588093651890;
- Tue, 28 Apr 2020 10:07:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <AM6PR03MB5170F924EA69A81D79BD0929E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=whMKC5F-=QQP=fCNRuTF+ZGiNtLEKvx7KekpK1JtrwDhw@mail.gmail.com>
- <CAHk-=whJ8khGBqfqh6ZmHsKjcyyBLm5xgkgLW_AC_=82iFBWoQ@mail.gmail.com>
- <AM6PR03MB51700B243E34BF4A59FF33CFE4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
- <87imi8nzlw.fsf@x220.int.ebiederm.org> <CAHk-=wgh4zts+3hdkGzHLJ6pBGumcJ=23gRbMfubDrLstis2Bg@mail.gmail.com>
- <CAHk-=whKHpERyVv2-C+kxq9KV_mJPW3hkGDpn6f4yOvs+au8SA@mail.gmail.com>
- <20200411182043.GA3136@redhat.com> <CAHk-=wgwXpKepChGi4ZhQVxZxD0ic8s2CDXvUmqBTMaKGz-fjg@mail.gmail.com>
- <20200412195049.GA23824@redhat.com> <CAHk-=wiDwR+6ugYaKEGHfYteLF+NH5xu=T7uuUTkK9y-hr6zow@mail.gmail.com>
- <AM6PR03MB51708CF53D8A02086427DAC2E4AC0@AM6PR03MB5170.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB51708CF53D8A02086427DAC2E4AC0@AM6PR03MB5170.eurprd03.prod.outlook.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 28 Apr 2020 10:07:15 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi_zr9dwX3UBYvgkmm6eVQfRP50orryJ6ZVAxuFqdSG5A@mail.gmail.com>
-Message-ID: <CAHk-=wi_zr9dwX3UBYvgkmm6eVQfRP50orryJ6ZVAxuFqdSG5A@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
-To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=hcdO585ed6dhWyG//gXm3cGKsbtOyJyZqsLOBSwj2N8=;
+        b=m3YsonujuoMX1RWHK3NikR44aChkkBh1JX5ikc5ZT9FDjIW2qsy3fECwiNecerC0RG
+         oYI6OtModr1pcrEIYmYHXG+VVg9XCcQb5kKTV2wOi81mIlpP0kMqz6E1mWhgnYh8S4Vh
+         JDuBQEC2yOG6LDMLIchwgmshGXEt8wt/+/HRcVYZYEu20J+l49gloMCJAqvx3uLOXnIL
+         ItKYLlYw9aH4v6zk2oDE2EEa93/0JoqrmSyE8KBRekC53M5BU1f2ckpuOjrmDqTF3xrj
+         szjFwc0vsGouFdzMK66ecMW9NwxdfWFUxK5/Xua/DxkxucqP6IDvzuaRuYRYOsKV2I9m
+         PsXA==
+X-Gm-Message-State: AGi0PuZKWBiNBdXDaeiksU2nHPc1uFXdyDyxKH2CS8mQ8F+OjDrYCc0a
+        wstba+dvl15W2futDP8ZIO+xFg9Ob30Y8gbw
+X-Google-Smtp-Source: APiQypIKj7K3jOpFa7ZhGvD1rD2Zy1rtxIlXdZBdq4XuYfv6p6653ZaPjJmlXsWzFPezTKtGBSHOPQ==
+X-Received: by 2002:a19:ee18:: with SMTP id g24mr1708261lfb.67.1588093822773;
+        Tue, 28 Apr 2020 10:10:22 -0700 (PDT)
+Received: from e123311-lin.cambridge.arm.com (static-91-225-135-18.devs.futuro.pl. [91.225.135.18])
+        by smtp.gmail.com with ESMTPSA id v2sm13064703ljv.86.2020.04.28.10.10.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Apr 2020 10:10:22 -0700 (PDT)
+From:   Michal Orzel <michalorzel.eng@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     Michal Orzel <michalorzel.eng@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org
+Subject: [PATCH] drm: Replace drm_modeset_lock/unlock_all with DRM_MODESET_LOCK_ALL_* helpers
+Date:   Tue, 28 Apr 2020 19:10:04 +0200
+Message-Id: <1588093804-30446-1-git-send-email-michalorzel.eng@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 7:56 PM Bernd Edlinger
-<bernd.edlinger@hotmail.de> wrote:
->
-> was this resolved meanwhile?
+As suggested by the TODO list for the kernel DRM subsystem, replace
+the deprecated functions that take/drop modeset locks with new helpers.
 
-No. I think the tentative plan is to just apply Oleg's "don't wait for
-zombie threads with cred_guard_mutex held" patch, hopefully with that
-de_thread() moved into install_exec_creds() (right after the dropping
-of the locks).
+Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+---
+ drivers/gpu/drm/drm_mode_object.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-But since it's arguably a user-level bug, and not a regression by any
-means, it's not been exactly urgent. I suspect I'd like Oleg to
-perhaps decide to take the patch up again.
+diff --git a/drivers/gpu/drm/drm_mode_object.c b/drivers/gpu/drm/drm_mode_object.c
+index 35c2719..901b078 100644
+--- a/drivers/gpu/drm/drm_mode_object.c
++++ b/drivers/gpu/drm/drm_mode_object.c
+@@ -402,12 +402,13 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
+ {
+ 	struct drm_mode_obj_get_properties *arg = data;
+ 	struct drm_mode_object *obj;
++	struct drm_modeset_acquire_ctx ctx;
+ 	int ret = 0;
+ 
+ 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+ 		return -EOPNOTSUPP;
+ 
+-	drm_modeset_lock_all(dev);
++	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+ 
+ 	obj = drm_mode_object_find(dev, file_priv, arg->obj_id, arg->obj_type);
+ 	if (!obj) {
+@@ -427,7 +428,7 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
+ out_unref:
+ 	drm_mode_object_put(obj);
+ out:
+-	drm_modeset_unlock_all(dev);
++	DRM_MODESET_LOCK_ALL_END(ctx, ret);
+ 	return ret;
+ }
+ 
+@@ -449,12 +450,13 @@ static int set_property_legacy(struct drm_mode_object *obj,
+ {
+ 	struct drm_device *dev = prop->dev;
+ 	struct drm_mode_object *ref;
++	struct drm_modeset_acquire_ctx ctx;
+ 	int ret = -EINVAL;
+ 
+ 	if (!drm_property_change_valid_get(prop, prop_value, &ref))
+ 		return -EINVAL;
+ 
+-	drm_modeset_lock_all(dev);
++	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+ 	switch (obj->type) {
+ 	case DRM_MODE_OBJECT_CONNECTOR:
+ 		ret = drm_connector_set_obj_prop(obj, prop, prop_value);
+@@ -468,7 +470,7 @@ static int set_property_legacy(struct drm_mode_object *obj,
+ 		break;
+ 	}
+ 	drm_property_change_valid_put(prop, ref);
+-	drm_modeset_unlock_all(dev);
++	DRM_MODESET_LOCK_ALL_END(ctx, ret);
+ 
+ 	return ret;
+ }
+-- 
+2.7.4
 
-              Linus
