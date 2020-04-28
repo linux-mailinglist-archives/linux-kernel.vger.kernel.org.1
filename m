@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6051BCA83
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB8E1BCB83
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731499AbgD1Ste (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59130 "EHLO mail.kernel.org"
+        id S1729321AbgD1S3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:29:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730762AbgD1SkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:40:08 -0400
+        id S1728712AbgD1S3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:29:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F02E620575;
-        Tue, 28 Apr 2020 18:40:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 898BD208E0;
+        Tue, 28 Apr 2020 18:29:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099207;
-        bh=Ue9oNTy9Oq40zi5GBiH7Z4hIpfAqI/nfYyVazPMhCy0=;
+        s=default; t=1588098551;
+        bh=j9sdgf05W3pEdBzaJjyGLMM/zKtfpyU1LqRL9WdZ+3s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rZNWitJl4nnVaOf2EPWz4EvTrMKmF4Ck6EDMP7JP9U3EgJQptBQ7KF09+nVPYQcrc
-         9p+uY0lcJ8oDaOCyA+kXuczcn0Bpz87E5zwprqU7KZyqq7SBHqZuDPxxYZDBrd+/1I
-         TeUz6xDBjEoxApzgatez8YpSj1o9ICiB/XCIg7yI=
+        b=gJnwlIzPyfAw6jT8EYm+VdZ+tGhZeywYEQyhVyKhZds1BIvsX0bM/T2JEzL3FoWv+
+         oUrUV32csHD1ydUswIOFf7aiBjWED5FMGAG75eLf8Ol9sQuxb2GY+JrtZihJhQmcU+
+         gnoUS11uczj5MsxdznT5rO6LnAPiR5ptpupBMpws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Ahern <dsahern@gmail.com>,
+        stable@vger.kernel.org, Sabrina Dubroca <sd@queasysnail.net>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 073/168] vrf: Fix IPv6 with qdisc and xfrm
+Subject: [PATCH 5.6 071/167] geneve: use the correct nlattr array in NL_SET_ERR_MSG_ATTR
 Date:   Tue, 28 Apr 2020 20:24:07 +0200
-Message-Id: <20200428182241.291061422@linuxfoundation.org>
+Message-Id: <20200428182233.921860950@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ahern <dsahern@gmail.com>
+From: Sabrina Dubroca <sd@queasysnail.net>
 
-[ Upstream commit a53c102872ad6e34e1518e25899dc9498c27f8b1 ]
+[ Upstream commit 9a7b5b50de8a764671ba1800fe4c52d3b7013901 ]
 
-When a qdisc is attached to the VRF device, the packet goes down the ndo
-xmit function which is setup to send the packet back to the VRF driver
-which does a lookup to send the packet out. The lookup in the VRF driver
-is not considering xfrm policies. Change it to use ip6_dst_lookup_flow
-rather than ip6_route_output.
+IFLA_GENEVE_* attributes are in the data array, which is correctly
+used when fetching the value, but not when setting the extended
+ack. Because IFLA_GENEVE_MAX < IFLA_MAX, we avoid out of bounds
+array accesses, but we don't provide a pointer to the invalid
+attribute to userspace.
 
-Fixes: 35402e313663 ("net: Add IPv6 support to VRF device")
-Signed-off-by: David Ahern <dsahern@gmail.com>
+Fixes: a025fb5f49ad ("geneve: Allow configuration of DF behaviour")
+Signed-off-by: Sabrina Dubroca <sd@queasysnail.net>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/vrf.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/geneve.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/vrf.c
-+++ b/drivers/net/vrf.c
-@@ -188,8 +188,8 @@ static netdev_tx_t vrf_process_v6_outbou
- 	fl6.flowi6_proto = iph->nexthdr;
- 	fl6.flowi6_flags = FLOWI_FLAG_SKIP_NH_OIF;
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -1207,7 +1207,7 @@ static int geneve_validate(struct nlattr
+ 		enum ifla_geneve_df df = nla_get_u8(data[IFLA_GENEVE_DF]);
  
--	dst = ip6_route_output(net, NULL, &fl6);
--	if (dst == dst_null)
-+	dst = ip6_dst_lookup_flow(net, NULL, &fl6, NULL);
-+	if (IS_ERR(dst) || dst == dst_null)
- 		goto err;
- 
- 	skb_dst_drop(skb);
+ 		if (df < 0 || df > GENEVE_DF_MAX) {
+-			NL_SET_ERR_MSG_ATTR(extack, tb[IFLA_GENEVE_DF],
++			NL_SET_ERR_MSG_ATTR(extack, data[IFLA_GENEVE_DF],
+ 					    "Invalid DF attribute");
+ 			return -EINVAL;
+ 		}
 
 
