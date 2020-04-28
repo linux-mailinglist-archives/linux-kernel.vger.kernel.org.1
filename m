@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CB61BC896
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB861BCBF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730012AbgD1Sd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:33:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50526 "EHLO mail.kernel.org"
+        id S1729217AbgD1TBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:01:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729244AbgD1Sdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:33:55 -0400
+        id S1728754AbgD1S0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:26:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CF2D21835;
-        Tue, 28 Apr 2020 18:33:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D078208E0;
+        Tue, 28 Apr 2020 18:26:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098834;
-        bh=/wjEcidzZHShNwnxxS64gx2IXXTX7QTd31cbCKTc5lE=;
+        s=default; t=1588098390;
+        bh=zcJtmfhcKpw/H11ES2lD9L7QUnOKJ0if8zjxjDQ4Yok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PpKfX6BOmFerVQ9MfEPI85t70FJSgCLBlmkhQjeoF/h15Rdpuvuj+1OH/C4nkFAMx
-         FE83PaxLgIt//O4RTlBq0JHtEhaUUDMoC8NA8kS4vy4+KHolZRwIFyw4sbENvsQBjd
-         yhgDv1oO4U6iu7TapsapFe0mVYzdeIIetfzhx/gY=
+        b=GDmmbpHSV+RrZn5HrsV4CZnvh6fJWw17IlWdZlk+CyEEa6eQVRZAHWHry40na80aP
+         0MGMjWLwFz7DsGajiC9MyEcQuKl0l/eSBU4vdsRt4G7InAm7K19SwQ3k+k3qEXhh9Y
+         9wxWNzE2fTrxZ7ecUmkU/0RqbdRhc8Bkh6+qu85w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
-        Keith Busch <kbusch@kernel.org>,
-        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 021/168] nvme: fix deadlock caused by ANA update wrong locking
-Date:   Tue, 28 Apr 2020 20:23:15 +0200
-Message-Id: <20200428182234.379628339@linuxfoundation.org>
+        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 020/167] dma-direct: fix data truncation in dma_direct_get_required_mask()
+Date:   Tue, 28 Apr 2020 20:23:16 +0200
+Message-Id: <20200428182227.715678847@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,70 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sagi Grimberg <sagi@grimberg.me>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-[ Upstream commit 657f1975e9d9c880fa13030e88ba6cc84964f1db ]
+[ Upstream commit cdcda0d1f8f4ab84efe7cd9921c98364398aefd7 ]
 
-The deadlock combines 4 flows in parallel:
-- ns scanning (triggered from reconnect)
-- request timeout
-- ANA update (triggered from reconnect)
-- I/O coming into the mpath device
+The upper 32-bit physical address gets truncated inadvertently
+when dma_direct_get_required_mask() invokes phys_to_dma_direct().
+This results in dma_addressing_limited() return incorrect value
+when used in platforms with LPAE enabled.
+Fix it here by explicitly type casting 'max_pfn' to phys_addr_t
+in order to prevent overflow of intermediate value while evaluating
+'(max_pfn - 1) << PAGE_SHIFT'.
 
-(1) ns scanning triggers disk revalidation -> update disk info ->
-    freeze queue -> but blocked, due to (2)
-
-(2) timeout handler reference the g_usage_counter - > but blocks in
-    the transport .timeout() handler, due to (3)
-
-(3) the transport timeout handler (indirectly) calls nvme_stop_queue() ->
-    which takes the (down_read) namespaces_rwsem - > but blocks, due to (4)
-
-(4) ANA update takes the (down_write) namespaces_rwsem -> calls
-    nvme_mpath_set_live() -> which synchronize the ns_head srcu
-    (see commit 504db087aacc) -> but blocks, due to (5)
-
-(5) I/O came into nvme_mpath_make_request -> took srcu_read_lock ->
-    direct_make_request > blk_queue_enter -> but blocked, due to (1)
-
-==> the request queue is under freeze -> deadlock.
-
-The fix is making ANA update take a read lock as the namespaces list
-is not manipulated, it is just the ns and ns->head that are being
-updated (which is protected with the ns->head lock).
-
-Fixes: 0d0b660f214dc ("nvme: add ANA support")
-Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/multipath.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/dma/direct.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index aed6354cb2717..56caddeabb5e5 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -510,7 +510,7 @@ static int nvme_update_ana_state(struct nvme_ctrl *ctrl,
- 	if (!nr_nsids)
- 		return 0;
+diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+index ac7956c38f693..4b24275e306a4 100644
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -39,7 +39,8 @@ static inline struct page *dma_direct_to_page(struct device *dev,
  
--	down_write(&ctrl->namespaces_rwsem);
-+	down_read(&ctrl->namespaces_rwsem);
- 	list_for_each_entry(ns, &ctrl->namespaces, list) {
- 		unsigned nsid = le32_to_cpu(desc->nsids[n]);
+ u64 dma_direct_get_required_mask(struct device *dev)
+ {
+-	u64 max_dma = phys_to_dma_direct(dev, (max_pfn - 1) << PAGE_SHIFT);
++	phys_addr_t phys = (phys_addr_t)(max_pfn - 1) << PAGE_SHIFT;
++	u64 max_dma = phys_to_dma_direct(dev, phys);
  
-@@ -521,7 +521,7 @@ static int nvme_update_ana_state(struct nvme_ctrl *ctrl,
- 		if (++n == nr_nsids)
- 			break;
- 	}
--	up_write(&ctrl->namespaces_rwsem);
-+	up_read(&ctrl->namespaces_rwsem);
- 	return 0;
+ 	return (1ULL << (fls64(max_dma) - 1)) * 2 - 1;
  }
- 
 -- 
 2.20.1
 
