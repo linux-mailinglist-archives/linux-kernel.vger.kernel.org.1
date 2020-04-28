@@ -2,115 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FDA1BBC41
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9FF1BBC46
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgD1LRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 07:17:16 -0400
-Received: from mail-eopbgr750058.outbound.protection.outlook.com ([40.107.75.58]:2736
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726345AbgD1LRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 07:17:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kMWWeQKFxFVUnZrPGzCXrvuqbWAWro6ljvim0vPSxKEIIn8pwZ8yuw/NosIJQA46384qNHYXchpjFvuuRUuWzh6G3ms9RFyvLnYmBDyc6rOj/AMTFPX2gIVIJs3Rc6HY8sRBKkT2EMaiNsc+ooHNmX6ooR9hTtfTKglpIURLAnQ3vqcpth0/eGyXJCFFOO29dirnox1GVMTkFwK6YJbVrAgSrqNY1dKoVShg2a2VYiQHZ1R3lciIo3fcfKibgGo25D0AYoZQSfcHV3KBNpLyi4Wfcn8DlJNKAxsWKAV618/IgXoue/FdkvGHmoh05rFrCaxAq08emvop1fMrgBbVcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vlXsg5y99bP88jZsA05ekSXbyLV+K3+CRPQ04r0YxdA=;
- b=PKYZRgE6HrnSJztS7DF96ZBhU/KN2vwmQk1XChEE3ZQSuIflekrS9uTyqFmrFqwXUSUhIich8AQ7k63tv0IvagdVBCoe/GrRSAxUrWaCMe391sYdE0O+9/p+q9IAKrMMYpG0pNwcyx6JIjyGbuWYP6rs3ObEbQcXsKaoEzC3K8TSixRpMj11qX8qJIt7f7bxc79/sulMQCz4+t3So/ngCo9xYI59XMT9yfTy+5qPC+zNnjGNNjJxJsHML4/wX4oWzUV0ZErbvztWQB7gMW/3tqB8wzAGnTFyQcSuoUyJ/fY8QEdRo1Kthh/WaxzIgznJLhQ3z6Gn76jo4OMWUshUTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sifive.com; dmarc=pass action=none header.from=sifive.com;
- dkim=pass header.d=sifive.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vlXsg5y99bP88jZsA05ekSXbyLV+K3+CRPQ04r0YxdA=;
- b=gIOzlfEW6ojnS0cZnn+NKM042GT/my6EDYQTdw503/nhF6NFrzp7GiLyhDwTJrrQi0FrGPKUuKpx4bKN78uyVP2xd88ELMHJufB32AjSOc/gDy2T4xgtR/3eHQGUlW5jYHViuSZLKLgZaPJXZ609E++nrREnwvC2lUwMcK58Bps=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=sifive.com;
-Received: from BN8PR13MB2611.namprd13.prod.outlook.com (2603:10b6:408:81::17)
- by BN8PR13MB2737.namprd13.prod.outlook.com (2603:10b6:408:88::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.12; Tue, 28 Apr
- 2020 11:17:10 +0000
-Received: from BN8PR13MB2611.namprd13.prod.outlook.com
- ([fe80::c129:8fca:5ed:8929]) by BN8PR13MB2611.namprd13.prod.outlook.com
- ([fe80::c129:8fca:5ed:8929%6]) with mapi id 15.20.2958.014; Tue, 28 Apr 2020
- 11:17:10 +0000
-From:   Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-To:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        robh+dt@kernel.org
-Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com, atish.patra@wdc.com,
-        devicetree@vger.kernel.org,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-Subject: [RFC PATCH 4/4] dt-bindings: net: phy: extend dt binding for VSC8541 ethernet-phy
-Date:   Tue, 28 Apr 2020 04:16:48 -0700
-Message-Id: <1588072608-7747-5-git-send-email-sagar.kadam@sifive.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588072608-7747-1-git-send-email-sagar.kadam@sifive.com>
-References: <1588072608-7747-1-git-send-email-sagar.kadam@sifive.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BY5PR13CA0032.namprd13.prod.outlook.com
- (2603:10b6:a03:180::45) To BN8PR13MB2611.namprd13.prod.outlook.com
- (2603:10b6:408:81::17)
+        id S1726662AbgD1LSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 07:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726481AbgD1LSp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 07:18:45 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DD2C03C1A9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:18:45 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1jTOG9-0000Qb-Kt; Tue, 28 Apr 2020 13:18:41 +0200
+Received: from afa by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <afa@pengutronix.de>)
+        id 1jTOG8-0006u4-TX; Tue, 28 Apr 2020 13:18:40 +0200
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel@pengutronix.de, ceggers@arri.de,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH v3 0/2] nvmem: skip nodes with compatibles other than "nvmem-cell"
+Date:   Tue, 28 Apr 2020 13:18:25 +0200
+Message-Id: <20200428111829.2215-1-a.fatoum@pengutronix.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from gamma07.internal.sifive.com (64.62.193.194) by BY5PR13CA0032.namprd13.prod.outlook.com (2603:10b6:a03:180::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2958.9 via Frontend Transport; Tue, 28 Apr 2020 11:17:09 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [64.62.193.194]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 58b9bdea-920e-43c8-2df9-08d7eb65b1cc
-X-MS-TrafficTypeDiagnostic: BN8PR13MB2737:
-X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN8PR13MB2737D3B982CF3CD16AB5302399AC0@BN8PR13MB2737.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-Forefront-PRVS: 0387D64A71
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR13MB2611.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(396003)(376002)(39850400004)(366004)(136003)(186003)(2616005)(52116002)(16526019)(7696005)(2906002)(86362001)(36756003)(26005)(107886003)(4326008)(5660300002)(66946007)(81156014)(956004)(66476007)(6666004)(66556008)(478600001)(316002)(8676002)(6486002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6RceVEMrliac0AWB2yYqQN1yG/nWwA5qfKUhelUi6KnusEkH1d0UiL8RZND7nmAzivYa2Lt/H92HEbnvCye2WEa5WEJbg3Y1mq7+oJnb4bi0oXajpDq+SCUQNMf3p+PtWplrOG3D/iLoXnT+uYE6CRMqrkVjQOcO/BcFy1PY4LVuuM2qoG0HFPCDkn7ZTMViHaYOmnHKsDGktrmdfUICElOeKj6pl5ClBjzFX0qtRJsbslEsXvQeLlaqA/7eDjD8nYaPSEQo4X645nbb0EaOEy8I6wCJ7f5/OJuCX9VFxI/b8qzFRYCoKfziSyyGgaI68uxMUPo3G83acEa5yr2YUGQf55xzdIucrbAXSubTjJ1EJj1qhfjJDi3RIrsAalXTyLvxECDsGJOubFj4tt0ssb0zoflU9E/0ABZXKQ1Wm1Qlu/PKCRnwVOPFnXeJGh5t
-X-MS-Exchange-AntiSpam-MessageData: /H9eNdMF2t/7MeFPdAshoBxfvm0eXfGNoPgUz+som8nXvrkdqLlboJfjXFrY76Gb+nYb0fAcRAsUg94nU1zypSHk5/qwRT9HtIJKARnlX8zQgB/QXexmltATEhPWWChTD0QuUuLRtWUMYp2jL2S1huZMUjiAVjOhSoFdxpV5GOf6oGCcqbfIEzDLAylT7SQ9dzJ3SqJVkq1uvXcUA8ANuKmG3RbzYIDz2HN6AaYQd6exRED9CWb3XBFrryaqnkbhdQ0aHRIIhHxjuUkjIxpEkYac4dXizjY6BXL4L5AEmamTgVjMuNJmjMMeZDfpNJhF7oZ9KIdt2KVtb7kdYFv1gDaOso74WxTrUi1ew+aohBCgvh7GgCWqrTmKDT2wY5c44LyBtz3nvXJbGH72gpXqVGjL65zEbX/qK+dIuAw8YdqLTKmJHoa+sV/9PLIRqmtp2YZOazxd7q7TeGtyvrXiDFBeeKz5OGVHQd+vf9dra8a2/st44Rn5nUEXUOy0EIj6lMP0A2SEhWwT+Wn0WAN2GQG3OlfAVsJZfvs69nz1GhxOnuQfc0uFmb3LBekN8a2nfyFZM1BVipe1LNfN6nHsMGm/I6jPlk0Obg9EK3hovdVeBZHRbxHn3WWd3jBwDmWhdfR/lhtKCxz4TIW1+lTea13r/y6XdWIn0x7vz5He/ueFZCNZmqXdRaIFcwTTnykfr4qDruDDrxCygarT0gqjUOf7Ugd2Fk6RF7hopCDghvly1hi9KuAVMBA18cdV67eqHikrNGpU2RVYzXxwEvpbWHiAeFb6wI0lGKg5cTaWVkM=
-X-OriginatorOrg: sifive.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58b9bdea-920e-43c8-2df9-08d7eb65b1cc
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2020 11:17:10.5775
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b6QHR7mJ2HvMJFs/EL9IacAXBBrSN5dbqmdMn3zK1gqpVDr02/mppclnSdCDD6DJ/9Vhh/VsNbCHJKvU+U6ZdQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR13MB2737
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: afa@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding a OUI (Organizationally Unique Identifier) for VSC8541-01
-device to dt node requires a corresponding dt-binding entry as well
-so that checkpatch doesn't complain with a warning:
+The nvmem cell binding applies to all objects which match "^.*@[0-9a-f]+$",
+without taking a compatible into account. This precludes extension of e.g.
+eeprom nodes by any child nodes other than nvmem. Consider following example:
 
-DT compatible string "ethernet-phy-id0007.0771" appears un-documented
+	eeprom@0 {
+		reg = <0 64>;
+		#address-cells = <1>;
+		#size-cells = <1>;
 
-Here extend the existing dt binding of VSC8531 device to include
-VSC8541 device example.
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+			bits = <64 64 64>; /* to verify it's skipped */
 
-Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
----
- Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt | 3 +++
- 1 file changed, 3 insertions(+)
+			part@0 {
+				reg = <0x00 16>;
+			};
+		};
 
-diff --git a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
-index 5ff37c6..774448a 100644
---- a/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
-+++ b/Documentation/devicetree/bindings/net/mscc-phy-vsc8531.txt
-@@ -68,3 +68,6 @@ Example:
-                 vsc8531,led-0-mode	= <LINK_1000_ACTIVITY>;
-                 vsc8531,led-1-mode	= <LINK_100_ACTIVITY>;
-         };
-+        vsc8541_0: ethernet-phy@0 {
-+                compatible = "ethernet-phy-id0007.0771";
-+	};
+		no-cell@10 {
+			compatible = "not-nvmem-cell";
+			reg = <0x10 4>;
+			bits = <64 64 64>; /* to verify it's skipped */
+		};
+
+		cell-old@14 {
+			reg = <0x14 0x2>;
+		};
+
+		cell-new@16 {
+			compatible = "nvmem-cell";
+			reg = <0x16 4>;
+		};
+	};
+
+Without this series, the NVMEM driver interprets all direct children of eeprom@0
+as NVMEM cells and driver probe fails, because the partitions node lacks a reg
+property, e.g.:
+
+  nvmem 0-00000: nvmem: invalid reg on /eeprom@0
+
+Running dtbs_check on the snippet will skip partitions (it doesn't match above
+regex), but will flag no-cell@10 and cell-new@16 as invalid.
+
+With this series applied, the driver will skip partitions and no-cell@10,
+because they have a compatible but it's not "nvmem-cell".
+Both cell-old@14 and cell-new@16 will be interpreted as cells.
+
+Likewise, running dtbs_check on the snippet will skip partitions (compatible
+doesn't match and regex doesn't either) and no-cell@10, but accept the other two.
+
+This series resolves an existing clash between this nvmem-cell binding and
+the barebox bootloader binding that extends the fixed-partitions MTD
+binding to EEPROMs[1]. It's also a building block for getting nvmem cells and
+partitions in MTD devices to co-exist in the same device tree node[2].
+
+The changes are backwards-compatible, because, per binding, a compatible
+property in a cell node was so far invalid. More details in the commit
+messages.
+
+[1]: https://www.mail-archive.com/barebox@lists.infradead.org/msg33944.html
+[2]: https://patchwork.ozlabs.org/patch/890741/
+
+v2 -> v3:
+  - use optional compatible property to weed out nodes instead of name
+  - extend binding documentation (Srini)
+v1 -> v2:
+  - use ->full_name instead of ->name as to not break existing correct
+    cells (Christian)
+
+Cheers,
+Ahmad Fatoum (2):
+  dt-bindings: nvmem: skip nodes with compatibles other than
+    "nvmem-cell"
+  nvmem: core: skip nodes with compatibles other than "nvmem-cell"
+
+ Documentation/devicetree/bindings/nvmem/nvmem.yaml | 14 +++++++++++++-
+ drivers/nvmem/core.c                               |  4 ++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
+
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 -- 
-2.7.4
+2.26.2
 
