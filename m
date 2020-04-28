@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8771BC87A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4A61BCC00
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729869AbgD1Sc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:32:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49120 "EHLO mail.kernel.org"
+        id S1729442AbgD1TBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:01:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729858AbgD1Scx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:32:53 -0400
+        id S1728652AbgD1S0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:26:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62B8321841;
-        Tue, 28 Apr 2020 18:32:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 221352085B;
+        Tue, 28 Apr 2020 18:26:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098770;
-        bh=zxMAMCUGege0v8kJLkpgkDzKu7rKYEby4bGm0U/va+I=;
+        s=default; t=1588098368;
+        bh=xb3clEcraXNK9Wyslkxot44BRE3EY7gzX0hft+tPgbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qgFgEV7g1sJGBEzXYAs6K8O763aK+RYY5fCw4Kni6oENUQnRAjqmCSbzLW5tA5bCx
-         W+D1uhAnC2kEnAWRPXktRbNJ9czON0JRxz+Cw+pnaiNgFI+4Wtbmw5oqM0VsiZuWAW
-         4XWmh7P3A/99M7xVxYNcV1tp1rdW8HrIygQR9RRA=
+        b=2RFJ/TSjVYAMRD/GwYDvuayw2V3dUBKualubBgBE6G+dw1q6rl71WCEzcgg2+04oT
+         FeiZ2V013c9vm78IR8k8y3x1IDIRWvMYbAZFg953pIQ9EuuJAESs2Rc9FArp9p2QZ1
+         VTg8uOspFLq0iFzfCp/5NlblYFq5vrGHqlV7FiVw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 013/168] scsi: libfc: If PRLI rejected, move rport to PLOGI state
-Date:   Tue, 28 Apr 2020 20:23:07 +0200
-Message-Id: <20200428182233.372529129@linuxfoundation.org>
+Subject: [PATCH 5.6 012/167] pwm: rcar: Fix late Runtime PM enablement
+Date:   Tue, 28 Apr 2020 20:23:08 +0200
+Message-Id: <20200428182226.762089564@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,43 +48,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javed Hasan <jhasan@marvell.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 45e544bfdab2014d11c7595b8ccc3c4715a09015 ]
+[ Upstream commit 1451a3eed24b5fd6a604683f0b6995e0e7e16c79 ]
 
-If PRLI reject code indicates "rejected status", move rport state machine
-back to PLOGI state.
+Runtime PM should be enabled before calling pwmchip_add(), as PWM users
+can appear immediately after the PWM chip has been added.
+Likewise, Runtime PM should be disabled after the removal of the PWM
+chip.
 
-Link: https://lore.kernel.org/r/20200327060208.17104-2-skashyap@marvell.com
-Signed-off-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: ed6c1476bf7f16d5 ("pwm: Add support for R-Car PWM Timer")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libfc/fc_rport.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/pwm/pwm-rcar.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/libfc/fc_rport.c b/drivers/scsi/libfc/fc_rport.c
-index da6e97d8dc3bb..6bb8917b99a19 100644
---- a/drivers/scsi/libfc/fc_rport.c
-+++ b/drivers/scsi/libfc/fc_rport.c
-@@ -1208,9 +1208,15 @@ static void fc_rport_prli_resp(struct fc_seq *sp, struct fc_frame *fp,
- 		rjt = fc_frame_payload_get(fp, sizeof(*rjt));
- 		if (!rjt)
- 			FC_RPORT_DBG(rdata, "PRLI bad response\n");
--		else
-+		else {
- 			FC_RPORT_DBG(rdata, "PRLI ELS rejected, reason %x expl %x\n",
- 				     rjt->er_reason, rjt->er_explan);
-+			if (rjt->er_reason == ELS_RJT_UNAB &&
-+			    rjt->er_explan == ELS_EXPL_PLOGI_REQD) {
-+				fc_rport_enter_plogi(rdata);
-+				goto out;
-+			}
-+		}
- 		fc_rport_error_retry(rdata, FC_EX_ELS_RJT);
+diff --git a/drivers/pwm/pwm-rcar.c b/drivers/pwm/pwm-rcar.c
+index 2685577b6dd45..7ab9eb6616d95 100644
+--- a/drivers/pwm/pwm-rcar.c
++++ b/drivers/pwm/pwm-rcar.c
+@@ -229,24 +229,28 @@ static int rcar_pwm_probe(struct platform_device *pdev)
+ 	rcar_pwm->chip.base = -1;
+ 	rcar_pwm->chip.npwm = 1;
+ 
++	pm_runtime_enable(&pdev->dev);
++
+ 	ret = pwmchip_add(&rcar_pwm->chip);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to register PWM chip: %d\n", ret);
++		pm_runtime_disable(&pdev->dev);
+ 		return ret;
  	}
  
+-	pm_runtime_enable(&pdev->dev);
+-
+ 	return 0;
+ }
+ 
+ static int rcar_pwm_remove(struct platform_device *pdev)
+ {
+ 	struct rcar_pwm_chip *rcar_pwm = platform_get_drvdata(pdev);
++	int ret;
++
++	ret = pwmchip_remove(&rcar_pwm->chip);
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 
+-	return pwmchip_remove(&rcar_pwm->chip);
++	return ret;
+ }
+ 
+ static const struct of_device_id rcar_pwm_of_table[] = {
 -- 
 2.20.1
 
