@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DE71BB616
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 07:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBE61BB61A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 07:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbgD1FxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 01:53:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726258AbgD1FxB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 01:53:01 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F1EC03C1A9;
-        Mon, 27 Apr 2020 22:53:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=9XovULq8rJCuWXmFB4aDWCVuT48qS2yZ0ltStjBj4hM=; b=aCpdTrXL5xBMuDBIgagmp2g9ZQ
-        9aord42KwraiUSaEVoMLiPpaH6zjsWyRuEDa2eNLtNNtFecX9lc9xnoKg/elNnxSmtyjht7evkfqp
-        5jhC9NxXS4u/e94nSa87KnXf7J/TlD6xFel1PGwXXqepI6XDXwQ5dNJrsJhMVSdMD7JyV1x5La7P3
-        fv6FJMXX2dWE/kk3Zs1Intp9acSgOVu4GpSw+HZcRpNqs1DFT+3WF0Oh9KPJYcFjkFmPdt2b/XkGf
-        NaRhjRbDUCsfOfLmFkrgUapwKQvl12tG7ca329qjaeptall/qjs0VlzIFEOiI2c8bJLII0FEIUuZ0
-        f9FJAP/g==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTJAw-0001r9-SN; Tue, 28 Apr 2020 05:52:58 +0000
-Subject: Re: [PATCH v2] module: Allow to disable modsign in kernel cmdline
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>, jeyu@kernel.org,
-        corbet@lwn.net, mchehab+samsung@kernel.org, tglx@linutronix.de,
-        akpm@linux-foundation.org, gregkh@linuxfoundation.org,
-        pawan.kumar.gupta@linux.intel.com, jgross@suse.com
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20200428050523.47253-1-tianjia.zhang@linux.alibaba.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <aff03dbb-a1a3-c95e-1c24-60279b14970a@infradead.org>
-Date:   Mon, 27 Apr 2020 22:52:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726445AbgD1Fy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 01:54:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:46122 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726210AbgD1Fy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 01:54:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0CE5731B;
+        Mon, 27 Apr 2020 22:54:27 -0700 (PDT)
+Received: from [10.163.70.197] (unknown [10.163.70.197])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA1F83F73D;
+        Mon, 27 Apr 2020 22:54:19 -0700 (PDT)
+Subject: Re: [mm/debug] fa6726c1e7: kernel_BUG_at_include/linux/mm.h
+To:     Christophe Leroy <christophe.leroy@c-s.fr>, Qian Cai <cai@lca.pw>
+Cc:     kernel test robot <lkp@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+References: <096a07fc-4525-feb6-5658-40bcffbd0a58@arm.com>
+ <D30E4C88-408A-438B-803B-D9F8F82D87A7@lca.pw>
+ <b3e5d138-9e14-826c-82c9-2cec9bd41ca5@c-s.fr>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <9e9091b9-6918-d0af-dd92-3bdc0e29a4d5@arm.com>
+Date:   Tue, 28 Apr 2020 11:23:51 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20200428050523.47253-1-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <b3e5d138-9e14-826c-82c9-2cec9bd41ca5@c-s.fr>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 4/27/20 10:05 PM, Tianjia Zhang wrote:
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 7bc83f3d9bdf..00ed7566959f 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -3190,6 +3190,12 @@
->  	noirqdebug	[X86-32] Disables the code which attempts to detect and
->  			disable unhandled interrupt sources.
->  
-> +	no_modsig_enforce
-> +			[KNL] When CONFIG_MODULE_SIG_FORCE is set, this option
-> +			allows to disable modsign completely at the beginning.
-> +			This means that modules without (valid) signatures will
-> +			success to load.
-
-			succeed to load.
-
-			succeed in loading.
-
-			load successfully.
-I prefer this one.....  ^^^^^^^^^^^^^^^^^^^^^
-
-			be loaded successfully.
 
 
-> +
->  	no_timer_check	[X86,APIC] Disables the code which tests for
->  			broken timer IRQ sources.
->  
+On 04/28/2020 10:54 AM, Christophe Leroy wrote:
+> 
+> 
+> Le 28/04/2020 à 04:51, Qian Cai a écrit :
+>>
+>>
+>>> On Apr 27, 2020, at 10:35 PM, Anshuman Khandual <Anshuman.Khandual@arm.com> wrote:
+>>>
+>>> Letting CONFIG_DEBUG_VM_PGTABLE enabled via CONFIG_EXPERT for unsupported
+>>> platforms i.e without ARCH_HAS_DEBUG_VM_PGTABLE, was a conscious decision
+>>> meant to expand it's adaptability and coverage without requiring any code
+>>> (i.e Kconfig) change. The easier it is to enable the test on unsupported
+>>> platforms right now, more folks are likely to try it out thus increasing
+>>> it's probability to get fixed on those platforms. That is a valid enough
+>>> reason to have CONFIG_EXPERT based enablement method, IMHO. Also even with
+>>> CONFIG_EXPERT set, CONFIG_DEBUG_VM_PGTABLE does not get enabled by default
+>>> automatically.
+>>
+>> No, I am talking about PAE. There is a distinction between known broken that nobody cares (like arm32) and in-progress/unknown status (like s390).
+>>
+>> Also, it is not very nice to introduce regressions for robots when testing PAE because they always select CONFIG__EXPERT and CONFIG_DEBUG_VM.
+>>
+> 
+> Having CONFIG_EXPERT and CONFIG_DEBUG_VM is not enough to get CONFIG_DEBUG_VM_PGTABLE set to yes.
 
-thanks.
--- 
-~Randy
+Not automatically, that is right. But it can be set if required. Seems like
+the testing robots can and will test with each and every config whether they
+are enabled by default or not. So if we really need to prevent all possible
+testing robot regressions, X86_PAE needs to be disabled completely.
 
+> 
+> By default, CONFIG_DEBUG_VM_PGTABLE is set to no when ARCH_HAS_DEBUG_VM_PGTABLE is not set.
+
+That is true. There is a slight change in the rules, making it explicit yes
+only when both ARCH_HAS_DEBUG_VM_PGTABLE and DEBUG_VM are enabled.
+
++config DEBUG_VM_PGTABLE
++	bool "Debug arch page table for semantics compliance"
++	depends on MMU
++	depends on !IA64 && !ARM
++	depends on ARCH_HAS_DEBUG_VM_PGTABLE || EXPERT
++	default y if ARCH_HAS_DEBUG_VM_PGTABLE && DEBUG_VM
++	help
+
+The default is really irrelevant as the config option can be set explicitly.
