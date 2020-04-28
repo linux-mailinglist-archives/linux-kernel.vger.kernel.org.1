@@ -2,177 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4FD1BCFC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 00:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDAB1BCFBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 00:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgD1WSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 18:18:46 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:53283 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726498AbgD1WSn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 18:18:43 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588112322; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=/oDvchi+lsIgrnwnrgDaZ6FiJ5AHvT7Z1ttGX9bYM2c=; b=viNPGZpV6+0+plAhh1rBzI55i8tQeUItVKs34lc6XqPYYaWvlbZU5CM4inntU9ImsE5ctYkB
- 6VXqtX9xdp0wUVe82QG8Y7ITulBRK3cSC0r86kvVYCMaXhmJ/7cKyNVnY8c/QEiXh/iWHGYh
- hMjPAwJrZF+eWwJGDS/+rRVIg1A=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea8abb8.7f19c84bad88-smtp-out-n04;
- Tue, 28 Apr 2020 22:18:32 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C98A2C433BA; Tue, 28 Apr 2020 22:18:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B08ABC432C2;
-        Tue, 28 Apr 2020 22:18:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B08ABC432C2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
-From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
-To:     linux-remoteproc@vger.kernel.org, bjorn.andersson@linaro.org
-Cc:     ohad@wizery.com, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH v3 2/2] remoteproc: qcom: Add notification types to SSR
-Date:   Tue, 28 Apr 2020 15:16:09 -0700
-Message-Id: <1588112169-29447-3-git-send-email-rishabhb@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1588112169-29447-1-git-send-email-rishabhb@codeaurora.org>
-References: <1588112169-29447-1-git-send-email-rishabhb@codeaurora.org>
+        id S1726412AbgD1WST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 18:18:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:59982 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725934AbgD1WSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 18:18:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F1811FB;
+        Tue, 28 Apr 2020 15:18:18 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E8A73F305;
+        Tue, 28 Apr 2020 15:18:16 -0700 (PDT)
+References: <20200428184050.6501-1-john.stultz@linaro.org>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v2] serial: amba-pl011: Make sure we initialize the port.lock spinlock
+In-reply-to: <20200428184050.6501-1-john.stultz@linaro.org>
+Date:   Tue, 28 Apr 2020 23:18:14 +0100
+Message-ID: <jhjd07rs195.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Siddharth Gupta <sidgup@codeaurora.org>
 
-The SSR subdevice only adds callback for the unprepare event. Add callbacks
-for unprepare, start and prepare events. The client driver for a particular
-remoteproc might be interested in knowing the status of the remoteproc
-while undergoing SSR, not just when the remoteproc has finished shutting
-down.
+On 28/04/20 19:40, John Stultz wrote:
+> Valentine reported seeing:
+>
+> [    3.626638] INFO: trying to register non-static key.
+> [    3.626639] the code is fine but needs lockdep annotation.
+> [    3.626640] turning off the locking correctness validator.
+> [    3.626644] CPU: 7 PID: 51 Comm: kworker/7:1 Not tainted 5.7.0-rc2-00115-g8c2e9790f196 #116
+> [    3.626646] Hardware name: HiKey960 (DT)
+> [    3.626656] Workqueue: events deferred_probe_work_func
+> [    3.632476] sd 0:0:0:0: [sda] Optimal transfer size 8192 bytes not a multiple of physical block size (16384 bytes)
+> [    3.640220] Call trace:
+> [    3.640225]  dump_backtrace+0x0/0x1b8
+> [    3.640227]  show_stack+0x20/0x30
+> [    3.640230]  dump_stack+0xec/0x158
+> [    3.640234]  register_lock_class+0x598/0x5c0
+> [    3.640235]  __lock_acquire+0x80/0x16c0
+> [    3.640236]  lock_acquire+0xf4/0x4a0
+> [    3.640241]  _raw_spin_lock_irqsave+0x70/0xa8
+> [    3.640245]  uart_add_one_port+0x388/0x4b8
+> [    3.640248]  pl011_register_port+0x70/0xf0
+> [    3.640250]  pl011_probe+0x184/0x1b8
+> [    3.640254]  amba_probe+0xdc/0x180
+> [    3.640256]  really_probe+0xe0/0x338
+> [    3.640257]  driver_probe_device+0x60/0xf8
+> [    3.640259]  __device_attach_driver+0x8c/0xd0
+> [    3.640260]  bus_for_each_drv+0x84/0xd8
+> [    3.640261]  __device_attach+0xe4/0x140
+> [    3.640263]  device_initial_probe+0x1c/0x28
+> [    3.640265]  bus_probe_device+0xa4/0xb0
+> [    3.640266]  deferred_probe_work_func+0x7c/0xb8
+> [    3.640269]  process_one_work+0x2c0/0x768
+> [    3.640271]  worker_thread+0x4c/0x498
+> [    3.640272]  kthread+0x14c/0x158
+> [    3.640275]  ret_from_fork+0x10/0x1c
+>
+> Which seems to be due to the fact that after allocating the uap
+> structure, nothing initializes the spinlock.
+>
+> Its a little confusing, as uart_port_spin_lock_init() is one
+> place where the lock is supposed to be initialized, but it has
+> an exception for the case where the port is a console.
+>
+> This makes it seem like a deeper fix is needed to properly
+> register the console, but I'm not sure what that entails, and
+> Andy suggested that this approach is less invasive.
+>
+> Thus, this patch resolves the issue by initializing the spinlock
+> in the driver, and resolves the resulting warning.
+>
 
-Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
----
- drivers/remoteproc/qcom_common.c      | 46 +++++++++++++++++++++++++++++++++--
- include/linux/remoteproc/qcom_rproc.h | 14 +++++++++++
- 2 files changed, 58 insertions(+), 2 deletions(-)
+Agreed with all of the above!
 
-diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
-index 7cd17be..0d91cf3 100644
---- a/drivers/remoteproc/qcom_common.c
-+++ b/drivers/remoteproc/qcom_common.c
-@@ -197,7 +197,7 @@ struct rproc_notif_info *find_notif_info(const char *name)
-  *
-  * This registers the @nb notifier block as part the notifier chain for a
-  * remoteproc associated with @name. The notifier block's callback
-- * will be invoked when the particular remote processor is stopped.
-+ * will be invoked when the particular remote processor is started/stopped.
-  */
- void *qcom_register_ssr_notifier(const char *name, struct notifier_block *nb)
- {
-@@ -239,6 +239,44 @@ int qcom_unregister_ssr_notifier(void *notify, struct notifier_block *nb)
- }
- EXPORT_SYMBOL_GPL(qcom_unregister_ssr_notifier);
- 
-+static int ssr_notify_prepare(struct rproc_subdev *subdev)
-+{
-+	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-+	struct rproc_notif_data data = {
-+		.name = ssr->info->name,
-+		.crashed = false,
-+	};
-+
-+	srcu_notifier_call_chain(&ssr->info->notifier_list,
-+				 RPROC_BEFORE_POWERUP, &data);
-+	return 0;
-+}
-+
-+static int ssr_notify_start(struct rproc_subdev *subdev)
-+{
-+	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-+	struct rproc_notif_data data = {
-+		.name = ssr->info->name,
-+		.crashed = false,
-+	};
-+
-+	srcu_notifier_call_chain(&ssr->info->notifier_list,
-+				 RPROC_AFTER_POWERUP, &data);
-+	return 0;
-+}
-+
-+static void ssr_notify_stop(struct rproc_subdev *subdev, bool crashed)
-+{
-+	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-+	struct rproc_notif_data data = {
-+		.name = ssr->info->name,
-+		.crashed = crashed,
-+	};
-+
-+	srcu_notifier_call_chain(&ssr->info->notifier_list,
-+				 RPROC_BEFORE_SHUTDOWN, &data);
-+}
-+
- static void ssr_notify_unprepare(struct rproc_subdev *subdev)
- {
- 	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-@@ -247,7 +285,8 @@ static void ssr_notify_unprepare(struct rproc_subdev *subdev)
- 		.crashed = false,
- 	};
- 
--	srcu_notifier_call_chain(&ssr->info->notifier_list, 0, &data);
-+	srcu_notifier_call_chain(&ssr->info->notifier_list,
-+				 RPROC_AFTER_SHUTDOWN, &data);
- }
- 
- 
-@@ -282,6 +321,9 @@ void qcom_add_ssr_subdev(struct rproc *rproc, struct qcom_rproc_ssr *ssr,
- 	}
- 	mutex_unlock(&rproc_notif_lock);
- 	ssr->info = info;
-+	ssr->subdev.prepare = ssr_notify_prepare;
-+	ssr->subdev.start = ssr_notify_start;
-+	ssr->subdev.stop = ssr_notify_stop;
- 	ssr->subdev.unprepare = ssr_notify_unprepare;
- 
- 	rproc_add_subdev(rproc, &ssr->subdev);
-diff --git a/include/linux/remoteproc/qcom_rproc.h b/include/linux/remoteproc/qcom_rproc.h
-index 3dc65c0..567c1f9 100644
---- a/include/linux/remoteproc/qcom_rproc.h
-+++ b/include/linux/remoteproc/qcom_rproc.h
-@@ -5,6 +5,20 @@
- 
- #if IS_ENABLED(CONFIG_QCOM_RPROC_COMMON)
- 
-+/**
-+ * enum rproc_notif_type - Different stages of remoteproc notifications
-+ * @RPROC_BEFORE_SHUTDOWN:	unprepare stage of  remoteproc
-+ * @RPROC_AFTER_SHUTDOWN:	stop stage of  remoteproc
-+ * @RPROC_BEFORE_POWERUP:	prepare stage of  remoteproc
-+ * @RPROC_AFTER_POWERUP:	start stage of  remoteproc
-+ */
-+enum rproc_notif_type {
-+	RPROC_BEFORE_SHUTDOWN,
-+	RPROC_AFTER_SHUTDOWN,
-+	RPROC_BEFORE_POWERUP,
-+	RPROC_AFTER_POWERUP,
-+};
-+
- struct rproc_notif_data {
- 	const char *name;
- 	bool crashed;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Reviewed-and-tested-by: Valentin Schneider <valentin.schneider@arm.com>
+
+Thanks to both of you, John & Andy.
+
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jiri Slaby <jslaby@suse.com>
+> Cc: linux-serial@vger.kernel.org
+> Reported-by: Valentin Schneider <valentin.schneider@arm.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+> v2: Added extra context in the commit message
+> ---
+>  drivers/tty/serial/amba-pl011.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+> index 2296bb0f9578..458fc3d9d48c 100644
+> --- a/drivers/tty/serial/amba-pl011.c
+> +++ b/drivers/tty/serial/amba-pl011.c
+> @@ -2575,6 +2575,7 @@ static int pl011_setup_port(struct device *dev, struct uart_amba_port *uap,
+>       uap->port.has_sysrq = IS_ENABLED(CONFIG_SERIAL_AMBA_PL011_CONSOLE);
+>       uap->port.flags = UPF_BOOT_AUTOCONF;
+>       uap->port.line = index;
+> +	spin_lock_init(&uap->port.lock);
+>
+>       amba_ports[index] = uap;
