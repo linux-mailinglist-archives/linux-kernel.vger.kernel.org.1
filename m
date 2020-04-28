@@ -2,124 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3C81BCCC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C181BCCD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729074AbgD1Tzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 15:55:33 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32375 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728713AbgD1Tzd (ORCPT
+        id S1729297AbgD1T6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:58:14 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:42674 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728559AbgD1T6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 15:55:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588103732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wnxZ+MGYIfVpjNWWL77weyCkpT6dVXtZj0ovH4iODX0=;
-        b=ZHBKioGqC5fOCm5B1qPXXuR3/rNRn5UkalmvK5gxaOizZYUluRG+NyWiYzAJH8F5cdYbEr
-        cZYmv6un7wO5bcJTQTMh/1VT/uBQxKyb7E6Z+6vscRMOc7tq4SfSY2j67N2kqKjpJPv+w/
-        Us0Z812GAm4EzxK91HfrsOoPuWJ1Je8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-79-sRF5gptWPbqB8tamEeScuw-1; Tue, 28 Apr 2020 15:55:28 -0400
-X-MC-Unique: sRF5gptWPbqB8tamEeScuw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37B41187661D;
-        Tue, 28 Apr 2020 19:55:27 +0000 (UTC)
-Received: from treble (ovpn-112-209.rdu2.redhat.com [10.10.112.209])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0B45A60638;
-        Tue, 28 Apr 2020 19:55:25 +0000 (UTC)
-Date:   Tue, 28 Apr 2020 14:55:24 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     alexandre.chartre@oracle.com, linux-kernel@vger.kernel.org,
-        jthierry@redhat.com, tglx@linutronix.de, x86@kernel.org,
-        mbenes@suse.cz, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2 02/14] objtool: Fix ORC vs alternatives
-Message-ID: <20200428195524.iidaw7vjrnyrq72l@treble>
-References: <20200428191101.886208539@infradead.org>
- <20200428191659.499074346@infradead.org>
+        Tue, 28 Apr 2020 15:58:14 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SJrp4B001622;
+        Tue, 28 Apr 2020 19:58:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=fgVW8SHlL4lo+HxxlLz7Gr/ftUNHzPDePQJYvyyrBI4=;
+ b=kxvn03Qcj77WKcY+oCnkzbE133TkmTB5xUfqKzOiKDKPtM8JYr5FTFTykSLs80QP5loP
+ i4ZDn+GZWw09SkJOERPGEniHA0LmQTZREao0ypUmcLamJUgU8kApDaoJl2CSRqzL/0EJ
+ pCgCJo8SMDgqn0z2i413gk7zMFA82a6opg1BJYb1rL25ShA/Z4M1+H4iED7ubC5z2qKU
+ 6fcp/x5CL3bxl0wlh9kLOy6eOWdfJfok6rpGsPA6aFNhF+JmoVW79vL5GnchWKvv9718
+ IllIoBefAQcgtXrFa3g7Gn9GFjTxO0U3Sspnx9A9pej0RdJzotn65MH13yRTz6UokuvX qQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 30p2p07gbe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 19:58:08 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SJqfKu164941;
+        Tue, 28 Apr 2020 19:56:08 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 30mxpgv1yb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 19:56:08 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03SJu6sf008267;
+        Tue, 28 Apr 2020 19:56:06 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 28 Apr 2020 12:56:06 -0700
+Date:   Tue, 28 Apr 2020 22:56:00 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Suraj Upadhyay <usuraj35@gmail.com>
+Cc:     Jerome Pouiller <Jerome.Pouiller@silabs.com>,
+        devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] staging: wfx: cleanup long lines in data_tx.c
+Message-ID: <20200428195600.GN2014@kadam>
+References: <20200425113234.GA14492@blackclown>
+ <8518467.FNpd3NTrYF@pc-42>
+ <20200427115827.GA3214@blackclown>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200428191659.499074346@infradead.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200427115827.GA3214@blackclown>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 bulkscore=0 adultscore=0 phishscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004280156
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1015
+ bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004280156
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 09:11:03PM +0200, Peter Zijlstra wrote:
-> Jann reported that (for instance) entry_64.o:general_protection has
-> very odd ORC data:
+On Mon, Apr 27, 2020 at 05:28:27PM +0530, Suraj Upadhyay wrote:
+> On Mon, Apr 27, 2020 at 11:50:23AM +0000, Jerome Pouiller wrote:
+> > On Saturday 25 April 2020 13:32:34 CEST Suraj Upadhyay wrote:
+> > > Break lines with length over 80 characters to
+> > > conform to the linux coding style and refactor
+> > > wherever necessary.
+> > > 
+> > > Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
+> > > ---
+> > > 
+> > > Changes in v4:
+> > > 	- Added a space after declaration in wfx_get_hw_rate().
+> > > 	- A checkpatch warning for this commit is retained at line 75,
+> > > 	  to maintain uniformity in function declarations. (Reviewer
+> > > 	  jerome suggested).
+> > > 
+> > > Changes in v3:
+> > >         - Changed the temporary variable name for the memzcmp statement
+> > >           to is_used. (as suggested).
+> > >         - Added a temporary ieee80211_supported_band variable to address
+> > >           the problem in wfx_get_hw_rate() more efficiently. (not
+> > >           suggested, but still).
+> > > 
+> > > Changes in v2:
+> > >         - Introduced a temporary variable for the memzcmp statement.
+> > >         - Addressed the checkpatch problem with wfx_get_hw_rate().
+> > >         - Restored the function definition of wfx_tx_get_tx_parms
+> > >           as suggested by the reviewer.
+> > >         - Added suggested changes for req->packet_id statement.
+> > > 
+> > >  drivers/staging/wfx/data_tx.c | 40 +++++++++++++++++++++++------------
+> > >  1 file changed, 26 insertions(+), 14 deletions(-)
+> > 
+> > This patch does not contain the suggestions from Dan. However, it is
+> > sufficient from my personal point of view.
 > 
->   0000000000000f40 <general_protection>:
->   #######sp:sp+8 bp:(und) type:iret end:0
->     f40:       90                      nop
->   #######sp:(und) bp:(und) type:call end:0
->     f41:       90                      nop
->     f42:       90                      nop
->   #######sp:sp+8 bp:(und) type:iret end:0
->     f43:       e8 a8 01 00 00          callq  10f0 <error_entry>
->   #######sp:sp+0 bp:(und) type:regs end:0
->     f48:       f6 84 24 88 00 00 00    testb  $0x3,0x88(%rsp)
->     f4f:       03
->     f50:       74 00                   je     f52 <general_protection+0x12>
->     f52:       48 89 e7                mov    %rsp,%rdi
->     f55:       48 8b 74 24 78          mov    0x78(%rsp),%rsi
->     f5a:       48 c7 44 24 78 ff ff    movq   $0xffffffffffffffff,0x78(%rsp)
->     f61:       ff ff
->     f63:       e8 00 00 00 00          callq  f68 <general_protection+0x28>
->     f68:       e9 73 02 00 00          jmpq   11e0 <error_exit>
->   #######sp:(und) bp:(und) type:call end:0
->     f6d:       0f 1f 00                nopl   (%rax)
+> Yes, I considered them but thought it would be bad to introduce a new
+> variable at every iteration of the for-loop.
 > 
-> Note the entry at 0xf41. Josh found this was the result of commit:
-> 
->   764eef4b109a ("objtool: Rewrite alt->skip_orig")
-> 
-> Due to the early return in validate_branch() we no longer set
-> insn->cfi of the original instruction stream (the NOPs at 0xf41 and
-> 0xf42) and we'll end up with the above weirdness.
-> 
-> In other discussions we realized alternatives should be ORC invariant;
-> that is, due to there being only a single ORC table, it must be valid
-> for all alternatives. The easiest way to ensure this is to not allow
-> any stack modifications in alternatives.
-> 
-> When we enforce this latter observation, we get the property that the
-> whole alternative must have the same CFI, which we can employ to fix
-> the former report.
-> 
-> Fixes: 764eef4b109a ("objtool: Rewrite alt->skip_orig")
-> Reported-by: Jann Horn <jannh@google.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  tools/objtool/Documentation/stack-validation.txt |    7 ++++
->  tools/objtool/check.c                            |   34 ++++++++++++++++++++++-
->  2 files changed, 40 insertions(+), 1 deletion(-)
-> 
-> --- a/tools/objtool/Documentation/stack-validation.txt
-> +++ b/tools/objtool/Documentation/stack-validation.txt
-> @@ -315,6 +315,13 @@ they mean, and suggestions for how to fi
->        function tracing inserts additional calls, which is not obvious from the
->        sources).
->  
-> +10. file.o: warning: func()+0x5c: alternative modifies stack
-> +
-> +    This means that an alternative includes instructions that modify the
-> +    stack. The problem is that there is only one ORC unwind table, this means
-> +    that the ORC unwind entries must be valid for each of the alternatives.
-> +    The easiest way to enforce this is to ensure alternative do not contain
 
-"alternatives"
+It's not bad at all.  I don't know why someone would think that.
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-
--- 
-Josh
+regards,
+dan carpenter
 
