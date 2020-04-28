@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11841BCA8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813101BCA49
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730834AbgD1SuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57138 "EHLO mail.kernel.org"
+        id S1730915AbgD1Ssh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:48:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730648AbgD1Sih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:38:37 -0400
+        id S1730830AbgD1Skw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:40:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A5B820575;
-        Tue, 28 Apr 2020 18:38:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45E7F2085B;
+        Tue, 28 Apr 2020 18:40:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099116;
-        bh=qb+tFqZAtb67ysg/oJZrMRY528CyQDiR23V3cBnmGUY=;
+        s=default; t=1588099251;
+        bh=glYgs9FgqC4xgBUSZin2yYaQha2n/GDDZawSkrR6aHU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n71KqZDHR5u5fTUscyznokA/loYctbbiSzvGUw0BD27hVWeUULDGT4cf/BYOx+z75
-         O6Ib7/6acrUBG+NuZeuMzOHCJx6EapeTxKDzgvQLlIGEJewHlvlBt3/Ptu3ADNPW1+
-         jfk3RqCxjyQv1IhcO2fjPGsusBinJ3A2xESdE24E=
+        b=jWqcaPW+Y+dxfmebIpKMsnlFdG4a2wndLc7AF0R54x/Kl8alS6UnNWPH7D8OjLrz3
+         m3KCPXE2Hl8fpPS21TfunCFGelVNhVOEwlhlgFBTZt4aHlMFt4wS+PdWBoJDRDwd6L
+         nEXUFyBfto4hx7g3mBks9LKh2liHma4C4bu7QlJQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: [PATCH 5.6 157/167] Revert "serial: uartps: Fix uartps_major handling"
-Date:   Tue, 28 Apr 2020 20:25:33 +0200
-Message-Id: <20200428182245.440171669@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Jonas Karlsson <jonas.karlsson@actia.se>
+Subject: [PATCH 4.19 122/131] cdc-acm: close race betrween suspend() and acm_softint
+Date:   Tue, 28 Apr 2020 20:25:34 +0200
+Message-Id: <20200428182240.549257748@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Simek <michal.simek@xilinx.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit 2e01911b7cf7aa07a304a809eca1b11a4bd35859 upstream.
+commit 0afccd7601514c4b83d8cc58c740089cc447051d upstream.
 
-This reverts commit 5e9bd2d70ae7c00a95a22994abf1eef728649e64.
+Suspend increments a counter, then kills the URBs,
+then kills the scheduled work. The scheduled work, however,
+may reschedule the URBs. Fix this by having the work
+check the counter.
 
-As Johan says, this driver needs a lot more work and these changes are
-only going in the wrong direction:
-    https://lkml.kernel.org/r/20190523091839.GC568@localhost
-
-Reported-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/310999ab5342f788a7bc1b0e68294d4f052cad07.1585905873.git.michal.simek@xilinx.com
+Tested-by: Jonas Karlsson <jonas.karlsson@actia.se>
+Link: https://lore.kernel.org/r/20200415151358.32664-1-oneukum@suse.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/xilinx_uartps.c |    8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ drivers/usb/class/cdc-acm.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/tty/serial/xilinx_uartps.c
-+++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -1576,6 +1576,7 @@ static int cdns_uart_probe(struct platfo
- 		goto err_out_id;
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -563,14 +563,14 @@ static void acm_softint(struct work_stru
+ 	struct acm *acm = container_of(work, struct acm, work);
+ 
+ 	if (test_bit(EVENT_RX_STALL, &acm->flags)) {
+-		if (!(usb_autopm_get_interface(acm->data))) {
++		smp_mb(); /* against acm_suspend() */
++		if (!acm->susp_count) {
+ 			for (i = 0; i < acm->rx_buflimit; i++)
+ 				usb_kill_urb(acm->read_urbs[i]);
+ 			usb_clear_halt(acm->dev, acm->in);
+ 			acm_submit_read_urbs(acm, GFP_KERNEL);
+-			usb_autopm_put_interface(acm->data);
++			clear_bit(EVENT_RX_STALL, &acm->flags);
+ 		}
+-		clear_bit(EVENT_RX_STALL, &acm->flags);
  	}
  
-+	uartps_major = cdns_uart_uart_driver->tty_driver->major;
- 	cdns_uart_data->cdns_uart_driver = cdns_uart_uart_driver;
- 
- 	/*
-@@ -1706,7 +1707,6 @@ static int cdns_uart_probe(struct platfo
- 		console_port = NULL;
- #endif
- 
--	uartps_major = cdns_uart_uart_driver->tty_driver->major;
- 	cdns_uart_data->cts_override = of_property_read_bool(pdev->dev.of_node,
- 							     "cts-override");
- 	return 0;
-@@ -1768,12 +1768,6 @@ static int cdns_uart_remove(struct platf
- 		console_port = NULL;
- #endif
- 
--	/* If this is last instance major number should be initialized */
--	mutex_lock(&bitmap_lock);
--	if (bitmap_empty(bitmap, MAX_UART_INSTANCES))
--		uartps_major = 0;
--	mutex_unlock(&bitmap_lock);
--
- 	uart_unregister_driver(cdns_uart_data->cdns_uart_driver);
- 	return rc;
- }
+ 	if (test_and_clear_bit(EVENT_TTY_WAKEUP, &acm->flags))
 
 
