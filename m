@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBF61BB68E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEED1BB696
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726343AbgD1Gaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 02:30:55 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47194 "EHLO huawei.com"
+        id S1726426AbgD1Gbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 02:31:47 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:48782 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725917AbgD1Gay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 02:30:54 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id AB858D75664823F5A24B;
-        Tue, 28 Apr 2020 14:30:49 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Apr 2020
- 14:30:39 +0800
+        id S1726337AbgD1Gbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 02:31:47 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id EFF1AB7B043C4871D755;
+        Tue, 28 Apr 2020 14:31:44 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Apr 2020
+ 14:31:35 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <evan.quan@amd.com>, <alexander.deucher@amd.com>,
-        <christian.koenig@amd.com>, <David1.Zhou@amd.com>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
+To:     <harry.wentland@amd.com>, <sunpeng.li@amd.com>,
+        <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
+        <David1.Zhou@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <Anthony.Koo@amd.com>, <amd-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
 CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] drm/amdgpu/smu10: remove duplicate assignment of smu10_hwmgr_funcs members
-Date:   Tue, 28 Apr 2020 14:30:03 +0800
-Message-ID: <20200428063003.24687-1-yanaijie@huawei.com>
+Subject: [PATCH] drm/amd/display: remove duplicate assignment of dcn21_funcs members
+Date:   Tue, 28 Apr 2020 14:31:01 +0800
+Message-ID: <20200428063101.25556-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -38,38 +38,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct member 'asic_setup' was assigned twice, let's remove one:
+Fix the following coccicheck warning:
 
-static const struct pp_hwmgr_func smu10_hwmgr_funcs = {
-	......
-	.asic_setup = NULL,
-	......
-	.asic_setup = smu10_setup_asic_task,
-	......
-};
-
-This fixes the following coccicheck warning:
-
-drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c:1357:52-53:
-asic_setup: first occurrence line 1360, second occurrence line 1388
+drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c:31:51-52:
+exit_optimized_pwr_state: first occurrence line 86, second occurrence
+line 92
+drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c:31:51-52:
+optimize_pwr_state: first occurrence line 85, second occurrence line 91
+drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c:31:51-52:
+set_cursor_attribute: first occurrence line 71, second occurrence line
+89
+drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c:31:51-52:
+set_cursor_position: first occurrence line 70, second occurrence line 88
+drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c:31:51-52:
+set_cursor_sdr_white_level: first occurrence line 72, second occurrence
+line 90
 
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
-index 1cc30f750c26..4f8c1b85e688 100644
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/smu10_hwmgr.c
-@@ -1357,7 +1357,6 @@ static int smu10_asic_reset(struct pp_hwmgr *hwmgr, enum SMU_ASIC_RESET_MODE mod
- static const struct pp_hwmgr_func smu10_hwmgr_funcs = {
- 	.backend_init = smu10_hwmgr_backend_init,
- 	.backend_fini = smu10_hwmgr_backend_fini,
--	.asic_setup = NULL,
- 	.apply_state_adjust_rules = smu10_apply_state_adjust_rules,
- 	.force_dpm_level = smu10_dpm_force_dpm_level,
- 	.get_power_state_size = smu10_get_power_state_size,
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c
+index 8410a6305a9a..fe64bcb49456 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_init.c
+@@ -85,11 +85,6 @@ static const struct hw_sequencer_funcs dcn21_funcs = {
+ 	.optimize_pwr_state = dcn21_optimize_pwr_state,
+ 	.exit_optimized_pwr_state = dcn21_exit_optimized_pwr_state,
+ 	.get_vupdate_offset_from_vsync = dcn10_get_vupdate_offset_from_vsync,
+-	.set_cursor_position = dcn10_set_cursor_position,
+-	.set_cursor_attribute = dcn10_set_cursor_attribute,
+-	.set_cursor_sdr_white_level = dcn10_set_cursor_sdr_white_level,
+-	.optimize_pwr_state = dcn21_optimize_pwr_state,
+-	.exit_optimized_pwr_state = dcn21_exit_optimized_pwr_state,
+ 	.power_down = dce110_power_down,
+ };
+ 
 -- 
 2.21.1
 
