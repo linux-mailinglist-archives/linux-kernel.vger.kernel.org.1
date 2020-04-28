@@ -2,142 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449BA1BCEA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10DA1BCEA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbgD1V3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:29:24 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:44177 "EHLO
+        id S1726543AbgD1V3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:29:36 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:49389 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgD1V3X (ORCPT
+        with ESMTP id S1725934AbgD1V3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:29:23 -0400
+        Tue, 28 Apr 2020 17:29:35 -0400
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1M3UhO-1jU5ja2dxi-000fbP; Tue, 28 Apr 2020 23:27:56 +0200
+ (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MowOm-1ipG1f4B2s-00qQ8m; Tue, 28 Apr 2020 23:28:50 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
+To:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
         Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: SOF: sort out Kconfig, again
-Date:   Tue, 28 Apr 2020 23:27:36 +0200
-Message-Id: <20200428212752.2901778-1-arnd@arndb.de>
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: fsl_easrc: mark PM functions __maybe_unused
+Date:   Tue, 28 Apr 2020 23:28:08 +0200
+Message-Id: <20200428212847.2926376-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:8d7WZ3UBhWpvVPatHjhGkfsTe799EeMmt2kakU1SILlE+Boi8JB
- 2TfmLPolDBGYzmbr3Yno8gLoI+2IK035iR0LCwe1FAmFuobAdsepBIkcpYqlYgax5ACVuex
- BGiDnHlwlsqW7vSHLv20SbOdT6TEtexpnidSwU5d4AunnND0maUcQu6+BQ42oXEn9T/bWNe
- 0JVj/r7tK7Ux78fglAMYA==
+X-Provags-ID: V03:K1:g/lhTMinUlzKjoBIslu8GiMzNGRtNXY/jrd3tcEcByZM7OBbtB4
+ ni0GNMk8eCslNsbQoe99tiGfiOdXiREgzjYzJbkoU6Gk+JZ4JeO5sI2qj8P4KGpZT9P+Qpv
+ OP3lNJVvxL9erFHGc981EEpzkjD0ZH4y9R0sxGfaYsFoMgqhsVLURA0ObNL/JoA4VJawBEQ
+ 5h4lwzodX+tMpvTYcnD/Q==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WvmTsyeNvCQ=:+pPOAQ1B7e8cgF5lZXL9vR
- AV22EdfqUTx2IPCOF5strs645hcHwIhAqY7J7wWwuobCW5hDdl0AngGnX7FJspnZnjegkrt2E
- RmD6/LNADCHxJSUPTqNAKmCZMRs5C5oEsGfLQ4S5+1i3B5jwR83pojGofRG2KonqBp+PQogZ/
- PJ76AC4wMLbAoudpCmN2AhZ56qTajfBaZKm0EPyPuF4BMapfAJ+3fpg+2ThssSqTdS6QhVH3X
- JXWKHebYIyuec84E+TkN/7zMCC4mzRp3S14HC9j/msgVL82IO6kBzDJBPqYcGQaktntpFs1E0
- UREoIKK4vZoyZbMjCuOY/XPm+BL2WakVX7I2vcuiV4zxVmVZWMx867aIodGfIfLUqOAIxl21d
- VzFTMP0BEeJtXhzaLFPYwgPl/PyoLYL7eCNieKKV9A38vtenhz8JzvwSuS2FVYacMXkNEVQEN
- Jdul6s9nst/hq8t7BtXJgFFaU3erH4AZbnj7ZqYckElD5nM4naktKQthw9CFOd2EdQoQP0ZC7
- hF6m/JE4PzxF3YX/pV8bsJrGNzoNSCJb4VUe9CAlPEiebv8tuUwPNrnrmHsw1f3amgWRHm7Y7
- fha9JwYcW2lOjlNSIalKXM1tYG2lpk04lmCKBnivI5JUzyBwXGcCkUl3U1h3WFDWiorQM7mgv
- j53SadC4DntEqIUENeoBK769K10vJLdDz8rtd9t5DXuxSJdx0Uto9LpFm/gKFohRqueOR654x
- tyByEJPuc+7C1bS9fDLIltl45IhTkIe6d+F4/srj7Px7uCwukODTvnxpR4c5bXI8DfbsJBhjC
- NJ8U4aGwH60t84BKXw5NKXImAnQcWYfTIA0izfoNj0lFbO8Ffw=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oBdNdq+NZP4=:b+wToa9B5rVpLOXSchgxRB
+ 6JY0FVY34Rhc/GAf+tjSYKy4MXV4qaTgTG6dYN5wSPegJebeSwS27m7aZuVQ2p0V0JvHtZlM2
+ CZAdNivvwKyM8DqbHTmeOP8Ws3J6nV9hEySSUhGRlXBzi58wIqlk6I7aKeV++u1eXpQXarLWP
+ Y4WeHJ5mJJpfoSBgECD62/Zw40cdE8e4wSNjxd7gqdjHEqP836JTXitS+jN7wYNRGORmEF900
+ wiqiRd+7+LlP6OzSZzmAMWJ1AVFeRys93KH7Zr443pSex6o5J7I2MP3+DOOQDUH2JNq2oNJsK
+ 2PRFyvv0TxXvwbbxCxNLyYd+BE9QIp2qp2drXnC0Zo6k38X0hyIwYBOLGtnmMf2OQh3Ej2UR/
+ BCCkSgysFjYNvrcPfRa7nmL3iz6KznihwJRTK+xLt2O6260HCIaDPAMQZQ6yAJwtaQaGltI5G
+ gU7rRMRvOZ4jbBsj9TJpYh1EhjBuOy4kfHaf/X7++BoQmxYGNcO1/pukW8WHEbtprO/aFGwFz
+ q5CWlPa6aRn7YY/S58jjmBQQBlPJJ6jXSKK2/mixiYwJujqPAc2q5JrMk6rFUdwTot1xfe58e
+ pfG+CFfKV8UF/KDG1ONndrFM48axdxESV5ixK3Q+0mQaXFsHjZBglGRHxmsPuJ1fcuQUaxI+C
+ eDJ2InmaQ4R26ibq7h3Bciv8hZurL2Hu/GvN74+utBermv8ICEKLI5EKwkadkfIfMx2pajs0d
+ /BnMA4iVnSHHe4tP+6d7IMw65Yywf9QYytTzzNb/FMoaD+VnesyzDykKjEdRSat74JWPLxLOx
+ jvcfhBtX3IIJoZYEHghRrBDMSt0Vbn+431jQTOXs6VwECwR+FQ=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The imx8 config keeps causing issues:
+ifdefs are hard, and in this driver the suspend/resume functions are
+the only callers of some other helpers that trigger a harmless warning
+when CONFIG_PM is disabled:
 
-WARNING: unmet direct dependencies detected for SND_SOC_SOF_IMX8M
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=m] && SND_SOC_SOF_TOPLEVEL [=y] && SND_SOC_SOF_IMX_TOPLEVEL [=y] && IMX_DSP [=n]
-  Selected by [m]:
-  - SND_SOC_SOF_IMX_OF [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=m] && SND_SOC_SOF_TOPLEVEL [=y] && SND_SOC_SOF_IMX_TOPLEVEL [=y] && SND_SOC_SOF_IMX8M_SUPPORT [=y]
+sound/soc/fsl/fsl_easrc.c:1807:12: warning: 'fsl_easrc_get_firmware' defined but not used [-Wunused-function]
+ 1807 | static int fsl_easrc_get_firmware(struct fsl_asrc *easrc)
+      |            ^~~~~~~~~~~~~~~~~~~~~~
+sound/soc/fsl/fsl_easrc.c:303:12: warning: 'fsl_easrc_resampler_config' defined but not used [-Wunused-function]
+  303 | static int fsl_easrc_resampler_config(struct fsl_asrc *easrc)
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is complicated by two drivers having dependencies on both
-platform specific drivers and the SND_SOC_SOF_OF framework code,
-and using an somewhat obscure method to build them the same way
-as the SOC_SOF_OF symbol (built-in or modular).
+Remove the #ifdef and just mark the callers as __maybe_unused to
+suppress the warnings altogether.
 
-My solution now ensures that the two drivers can only be enabled
-when the dependencies are met:
-
-- When the platform specific drivers are built-in, everything is
-  fine, as SOC_SOF_OF is either =y or =m
-
-- When both are loadable modules, it also works, both for Kconfig
-  and at runtime
-
-- When the hardware drivers are loadable modules or disabled, and
-  SOC_SOF_OF=y, prevent the IMX_SOF_OF drivers from being turned on,
-  as this would be broken.
-
-It seems that this is just an elaborate way to describe two tristate
-symbols that have straight dependencies, but maybe I'm missing some
-subtle point. It seems to always build for me now.
-
-Fixes: fe57a92c8858 ("ASoC: SOF: Add missing dependency on IMX_SCU")
-Fixes: afb93d716533 ("ASoC: SOF: imx: Add i.MX8M HW support")
-Fixes: cb0312f61c3e ("ASoC: SOF: imx: fix undefined reference issue")
+Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/sof/imx/Kconfig | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_easrc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
-index f76660e91382..66684d7590f4 100644
---- a/sound/soc/sof/imx/Kconfig
-+++ b/sound/soc/sof/imx/Kconfig
-@@ -21,7 +21,8 @@ config SND_SOC_SOF_IMX_OF
+diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
+index 20326bffab64..c6b5eb2d2af7 100644
+--- a/sound/soc/fsl/fsl_easrc.c
++++ b/sound/soc/fsl/fsl_easrc.c
+@@ -1997,8 +1997,7 @@ static int fsl_easrc_remove(struct platform_device *pdev)
+ 	return 0;
+ }
  
- config SND_SOC_SOF_IMX8_SUPPORT
- 	bool "SOF support for i.MX8"
--	depends on IMX_SCU
-+	depends on IMX_SCU=y || IMX_SCU=SND_SOC_SOF_IMX_OF
-+	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_IMX_OF
- 	help
- 	  This adds support for Sound Open Firmware for NXP i.MX8 platforms
- 	  Say Y if you have such a device.
-@@ -29,14 +30,13 @@ config SND_SOC_SOF_IMX8_SUPPORT
+-#ifdef CONFIG_PM
+-static int fsl_easrc_runtime_suspend(struct device *dev)
++static __maybe_unused int fsl_easrc_runtime_suspend(struct device *dev)
+ {
+ 	struct fsl_asrc *easrc = dev_get_drvdata(dev);
+ 	struct fsl_easrc_priv *easrc_priv = easrc->private;
+@@ -2015,7 +2014,7 @@ static int fsl_easrc_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
  
- config SND_SOC_SOF_IMX8
- 	tristate
--	depends on IMX_SCU
--	select IMX_DSP
- 	help
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level
+-static int fsl_easrc_runtime_resume(struct device *dev)
++static __maybe_unused int fsl_easrc_runtime_resume(struct device *dev)
+ {
+ 	struct fsl_asrc *easrc = dev_get_drvdata(dev);
+ 	struct fsl_easrc_priv *easrc_priv = easrc->private;
+@@ -2094,7 +2093,6 @@ static int fsl_easrc_runtime_resume(struct device *dev)
+ 	clk_disable_unprepare(easrc->mem_clk);
+ 	return ret;
+ }
+-#endif /* CONFIG_PM */
  
- config SND_SOC_SOF_IMX8M_SUPPORT
- 	bool "SOF support for i.MX8M"
-+	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_OF
- 	help
- 	  This adds support for Sound Open Firmware for NXP i.MX8M platforms
- 	  Say Y if you have such a device.
-@@ -44,7 +44,6 @@ config SND_SOC_SOF_IMX8M_SUPPORT
- 
- config SND_SOC_SOF_IMX8M
- 	tristate
--	depends on IMX_DSP
- 	help
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level
+ static const struct dev_pm_ops fsl_easrc_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(fsl_easrc_runtime_suspend,
 -- 
 2.26.0
 
