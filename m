@@ -2,97 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2E01BCF41
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7CB1BCF38
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgD1V6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:58:31 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:59571 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726364AbgD1V6b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:58:31 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1M433w-1jTYEw1kga-00087w; Tue, 28 Apr 2020 23:58:06 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rob Herring <robh@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] acpi: avoid uninialized-variable warning
-Date:   Tue, 28 Apr 2020 23:55:57 +0200
-Message-Id: <20200428215804.48481-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+        id S1726783AbgD1V4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:56:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:59696 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726363AbgD1V4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 17:56:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 687ED31B;
+        Tue, 28 Apr 2020 14:56:17 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 17FF33F305;
+        Tue, 28 Apr 2020 14:56:15 -0700 (PDT)
+References: <20200428050242.17717-1-swood@redhat.com> <20200428050242.17717-4-swood@redhat.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Scott Wood <swood@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Rik van Riel <riel@surriel.com>,
+        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Subject: Re: [RFC PATCH 3/3] sched,rt: break out of load balancing if an RT task appears
+In-reply-to: <20200428050242.17717-4-swood@redhat.com>
+Date:   Tue, 28 Apr 2020 22:56:13 +0100
+Message-ID: <jhjees7s29u.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:UioHM7Mj+0Eo0lESm9cPbfkNKElkE5FMMWyONEoJUL+MKkYiYil
- oFmRQoS00WIFOIRokjNgrOqfgyz+XZriPo4zilWeliotO9S216I/cUxqpEmo2dh5CZGDKCS
- 9U9ZGSAOV5LRyV+xcupEmhAsnbvLiU+fUCaM1Ky1ouQVgw2NeL6Jxhwk2V4XGc3/PVefbyE
- C/tpE041GA1fONZ4EGXEg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:cvniJsNKSy0=:5TtgRtaldRNY5gEaxEUgyV
- TsLJswhqx9Rrt16rpyK+XAOskon0V4l9A5tlxioAw3pOJ0NukBjJqdEMwc+sqTo3s+wxvoSh5
- wZ8mireBKdITbU+2gXsXjqtmDmg6lTkvtf4k3Pk8Zd/V4k3k5Ne1i8JZdtAiVK9XdWwjZ8EhA
- Hy/4QfZkmnLK5sLJKOZ0ee6RI2a2vRPnkgzQth9cf9aaAii6EtNY3tdrAp0oWihzADADePcol
- DyFrn6EwEyBlzawwvT3di6zIY7qsaLZ6Y62RgNiuDvwb0mX1cIKrz/ZYZ3ZO2B0MQ5qMyNqku
- R0+4dcEhmzA3SRDEejgpErvQeUQf/K7yl33TcmaiGmR2jiU5A16IKrH/FHHtOKvZYYKYGqvzb
- bHIfWeRtFSzlPmQxFJ6ACepqCV+SgvMi20+fjlWhYo8claiKAqq6REucizeCPN6AiYIsZflLw
- oS/LnV3g7dw1oHCAstVwigFpFZAH7xLMkB0EMj+6FmwLfzaMaQ+6iN4PmVnqnmb/+Fud77XPO
- pOnjWYUwgwY64tVx6rHSTGIsF/tacQkbdiwAy47jT/n4pCnWRdXDh11A4TKAJmGjQRxyk2iR9
- wYuE32CYEeA1nLYrJOAuVhRlH5Dx27esK/X7F/wOQnaHJVBkT0z11+OqucfP6WSCGvyhD80Xi
- 8v13g8uGsC8W1NNpidgz2b30o6AS7Mu4OzzaaDE0Y2tb2EvcY71W+B5TVv/2sV1JHNFb53kmm
- ymyNn76swXp5C3NXGyajcLdb8xkP5W9fbCFpwjjKikABlKvItV1sMFnNDK/S8LnK/2UPHQPth
- MllxHZHqBfzknC7kbWgeHH6rof/qredVGu9j/ZJdO3n0QM8YLw=
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Older compilers like gcc-4.8 produce a bogus warning here
 
-In file included from include/linux/compiler_types.h:68:0,
-                 from <command-line>:0:
-drivers/acpi/property.c: In function 'acpi_data_prop_read':
-include/linux/compiler-gcc.h:75:45: error: 'obj' may be used uninitialized in this function [-Werror=maybe-uninitialized]
- #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
-                                             ^
-drivers/acpi/property.c:934:27: note: 'obj' was declared here
-  const union acpi_object *obj;
-                           ^
+On 28/04/20 06:02, Scott Wood wrote:
+> From: Rik van Riel <riel@redhat.com>
+>
+> Bugzilla: 1331562
+>
+> The CFS load balancer can take a little while, to the point of
+> it having a special LBF_NEED_BREAK flag, when the task moving
+> code takes a breather.
+>
+> However, at that point it will jump right back in to load balancing,
+> without checking whether the CPU has gained any runnable real time
+> (or deadline) tasks.
+>
+> Only idle_balance used to check for runnable real time tasks on a
+> CPU. This patch moves that check into a separate inline function,
+> and calls that function in load_balance, at approximately the same
+> granularity that LBF_NEED_BREAK happens.
+>
+> Besides breaking out of load_balance, this patch also clears
+> continue_balancing, in order for rebalance_domains to break out
+> of its loop when a realtime task becomes runnable.
+>
+> Signed-off-by: Rik van Riel <riel@redhat.com>
+> Reported-by: Clark Williams <williams@redhat.com>
+> Signed-off-by: Clark Williams <williams@redhat.com>
+> ---
+>  kernel/sched/fair.c  | 19 +++++++++++++++++--
+>  kernel/sched/sched.h |  6 ++++++
+>  2 files changed, 23 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index dfde7f0ce3db..e7437e4e40b4 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9394,6 +9400,10 @@ static int should_we_balance(struct lb_env *env)
+>       struct sched_group *sg = env->sd->groups;
+>       int cpu, balance_cpu = -1;
+>
+> +	/* Run the realtime task now; load balance later. */
+> +	if (rq_has_runnable_rt_task(env->dst_rq))
+> +		return 0;
+> +
 
-Ensure the output is always initialized even when returning an error
-to avoid the warning.
+I have a feeling this isn't very nice to CFS tasks, since we would now
+"waste" load-balance attempts if they happen to coincide with an RT task
+being runnable.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/acpi/property.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On your 72 CPUs machine, the system-wide balance happens (at best) every
+72ms if you have idle time, every ~2300ms otherwise (every balance
+CPU gets to try to balance however, so it's not as horrible as I'm making
+it sound). This is totally worst-case scenario territory, and you'd hope
+newidle_balance() could help here and there (as it isn't gated by any
+balance interval).
 
-diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
-index e601c4511a8b..3aa71daeb0b4 100644
---- a/drivers/acpi/property.c
-+++ b/drivers/acpi/property.c
-@@ -587,8 +587,10 @@ static int acpi_data_get_property_array(const struct acpi_device_data *data,
- 	int ret, i;
- 
- 	ret = acpi_data_get_property(data, name, ACPI_TYPE_PACKAGE, &prop);
--	if (ret)
-+	if (ret && obj) {
-+		*obj = NULL;
- 		return ret;
-+	}
- 
- 	if (type != ACPI_TYPE_ANY) {
- 		/* Check that all elements are of correct type. */
--- 
-2.26.0
+Still, even for a single rq, postponing a system-wide balance for a
+full balance interval (i.e. ~2 secs worst case here) just because we had a
+single RT task running when we tried to balance seems a bit much.
 
+It may be possible to hack something to detect those cases and reset the
+interval to "now" when e.g. dequeuing the last RT task (& after having
+previously aborted a load-balance due to RT/DL/foobar).
+
+>       /*
+>        * Ensure the balancing environment is consistent; can happen
+>        * when the softirq triggers 'during' hotplug.
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 3d97c51544d7..a2a01dfd2bea 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1878,6 +1878,12 @@ static inline struct cpuidle_state *idle_get_state(struct rq *rq)
+>
+>       return rq->idle_state;
+>  }
+> +
+> +/* Is there a task of a high priority class? */
+> +static inline bool rq_has_runnable_rt_task(struct rq *rq)
+> +{
+> +	return unlikely(rq->nr_running != rq->cfs.h_nr_running);
+
+Seeing as that can be RT, DL or stopper, that name is somewhat misleading.
+
+> +}
+>  #else
+>  static inline void idle_set_state(struct rq *rq,
+>                                 struct cpuidle_state *idle_state)
