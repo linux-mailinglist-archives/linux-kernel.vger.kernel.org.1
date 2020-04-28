@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17F801BC8C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C687B1BC981
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730243AbgD1SfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:35:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52454 "EHLO mail.kernel.org"
+        id S1731092AbgD1SmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:42:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729747AbgD1SfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:35:21 -0400
+        id S1731094AbgD1SmU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:42:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9DA52085B;
-        Tue, 28 Apr 2020 18:35:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E691520575;
+        Tue, 28 Apr 2020 18:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098920;
-        bh=bGN3qTLQWcJfrAbyI9zM15kesyXi4jIvWrkQPhcsTbo=;
+        s=default; t=1588099339;
+        bh=55mYeuL65ps/03lsNcaO7IyFEfSSoYetTTKsWBdFxtY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lgc1JuWXA42ihzvz24AHojWFDvtVNE+VRH0JY0RU4Sq/Nq8tH86M9Wsl4F2O/jo2S
-         LTn2EScPSLIj4R+MPeeAIm8WwIqF99OIa5wCDSOqtYHi3E/nEi1OcFsojyp1S7mFPK
-         HNBtDFQ79v2Lf1tcNgW4VlU7uWHULtVCU/F2UJ58=
+        b=1xjM92VD3RQyTx+mJVgcYArpTVgeh6p+J/vd8qINkPcF0zOQ7N05HCtaV+cVK+TLN
+         ZAPdvqXeuuBHbw3ROEx3oXWZ5Ib2V1DxwsA4V2CS06U9hzTIzdFHlQY7LlDhESx+48
+         Zfp82+Z5jLRCYR2mkuq9ZPAcVGwpX5+QrWIMvt1g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 073/131] KEYS: Avoid false positive ENOMEM error on key read
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 111/168] ALSA: hda/hdmi: Add module option to disable audio component binding
 Date:   Tue, 28 Apr 2020 20:24:45 +0200
-Message-Id: <20200428182234.112222628@linuxfoundation.org>
+Message-Id: <20200428182246.581944342@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,169 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Waiman Long <longman@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 4f0882491a148059a52480e753b7f07fc550e188 ]
+commit b392350ec3f229ad9603d3816f753479e441d99a upstream.
 
-By allocating a kernel buffer with a user-supplied buffer length, it
-is possible that a false positive ENOMEM error may be returned because
-the user-supplied length is just too large even if the system do have
-enough memory to hold the actual key data.
+As the recent regression showed, we want sometimes to turn off the
+audio component binding just for debugging.  This patch adds the
+module option to control it easily without compilation.
 
-Moreover, if the buffer length is larger than the maximum amount of
-memory that can be returned by kmalloc() (2^(MAX_ORDER-1) number of
-pages), a warning message will also be printed.
+Fixes: ade49db337a9 ("ALSA: hda/hdmi - Allow audio component for AMD/ATI and Nvidia HDMI")
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207223
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200415162523.27499-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-To reduce this possibility, we set a threshold (PAGE_SIZE) over which we
-do check the actual key length first before allocating a buffer of the
-right size to hold it. The threshold is arbitrary, it is just used to
-trigger a buffer length check. It does not limit the actual key length
-as long as there is enough memory to satisfy the memory request.
-
-To further avoid large buffer allocation failure due to page
-fragmentation, kvmalloc() is used to allocate the buffer so that vmapped
-pages can be used when there is not a large enough contiguous set of
-pages available for allocation.
-
-In the extremely unlikely scenario that the key keeps on being changed
-and made longer (still <= buflen) in between 2 __keyctl_read_key()
-calls, the __keyctl_read_key() calling loop in keyctl_read_key() may
-have to be iterated a large number of times, but definitely not infinite.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/keys/internal.h | 12 +++++++++
- security/keys/keyctl.c   | 58 +++++++++++++++++++++++++++++-----------
- 2 files changed, 55 insertions(+), 15 deletions(-)
+ sound/pci/hda/patch_hdmi.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/security/keys/internal.h b/security/keys/internal.h
-index a02742621c8d3..eb50212fbbf84 100644
---- a/security/keys/internal.h
-+++ b/security/keys/internal.h
-@@ -20,6 +20,8 @@
- #include <linux/keyctl.h>
- #include <linux/refcount.h>
- #include <linux/compat.h>
-+#include <linux/mm.h>
-+#include <linux/vmalloc.h>
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -57,6 +57,10 @@ MODULE_PARM_DESC(static_hdmi_pcm, "Don't
+ #define is_cherryview(codec) ((codec)->core.vendor_id == 0x80862883)
+ #define is_valleyview_plus(codec) (is_valleyview(codec) || is_cherryview(codec))
  
- struct iovec;
++static bool enable_acomp = true;
++module_param(enable_acomp, bool, 0444);
++MODULE_PARM_DESC(enable_acomp, "Enable audio component binding (default=yes)");
++
+ struct hdmi_spec_per_cvt {
+ 	hda_nid_t cvt_nid;
+ 	int assigned;
+@@ -2550,6 +2554,11 @@ static void generic_acomp_init(struct hd
+ {
+ 	struct hdmi_spec *spec = codec->spec;
  
-@@ -305,4 +307,14 @@ static inline void key_check(const struct key *key)
- 
- #endif
- 
-+/*
-+ * Helper function to clear and free a kvmalloc'ed memory object.
-+ */
-+static inline void __kvzfree(const void *addr, size_t len)
-+{
-+	if (addr) {
-+		memset((void *)addr, 0, len);
-+		kvfree(addr);
++	if (!enable_acomp) {
++		codec_info(codec, "audio component disabled by module option\n");
++		return;
 +	}
-+}
- #endif /* _INTERNAL_H */
-diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
-index 4b6a084e323b5..c07c2e2b24783 100644
---- a/security/keys/keyctl.c
-+++ b/security/keys/keyctl.c
-@@ -330,7 +330,7 @@ long keyctl_update_key(key_serial_t id,
- 	payload = NULL;
- 	if (plen) {
- 		ret = -ENOMEM;
--		payload = kmalloc(plen, GFP_KERNEL);
-+		payload = kvmalloc(plen, GFP_KERNEL);
- 		if (!payload)
- 			goto error;
- 
-@@ -351,7 +351,7 @@ long keyctl_update_key(key_serial_t id,
- 
- 	key_ref_put(key_ref);
- error2:
--	kzfree(payload);
-+	__kvzfree(payload, plen);
- error:
- 	return ret;
- }
-@@ -772,7 +772,8 @@ long keyctl_read_key(key_serial_t keyid, char __user *buffer, size_t buflen)
- 	struct key *key;
- 	key_ref_t key_ref;
- 	long ret;
--	char *key_data;
-+	char *key_data = NULL;
-+	size_t key_data_len;
- 
- 	/* find the key first */
- 	key_ref = lookup_user_key(keyid, 0, 0);
-@@ -823,24 +824,51 @@ can_read_key:
- 	 * Allocating a temporary buffer to hold the keys before
- 	 * transferring them to user buffer to avoid potential
- 	 * deadlock involving page fault and mmap_sem.
-+	 *
-+	 * key_data_len = (buflen <= PAGE_SIZE)
-+	 *		? buflen : actual length of key data
-+	 *
-+	 * This prevents allocating arbitrary large buffer which can
-+	 * be much larger than the actual key length. In the latter case,
-+	 * at least 2 passes of this loop is required.
- 	 */
--	key_data = kmalloc(buflen, GFP_KERNEL);
-+	key_data_len = (buflen <= PAGE_SIZE) ? buflen : 0;
-+	for (;;) {
-+		if (key_data_len) {
-+			key_data = kvmalloc(key_data_len, GFP_KERNEL);
-+			if (!key_data) {
-+				ret = -ENOMEM;
-+				goto key_put_out;
-+			}
-+		}
- 
--	if (!key_data) {
--		ret = -ENOMEM;
--		goto key_put_out;
--	}
--	ret = __keyctl_read_key(key, key_data, buflen);
-+		ret = __keyctl_read_key(key, key_data, key_data_len);
 +
-+		/*
-+		 * Read methods will just return the required length without
-+		 * any copying if the provided length isn't large enough.
-+		 */
-+		if (ret <= 0 || ret > buflen)
-+			break;
-+
-+		/*
-+		 * The key may change (unlikely) in between 2 consecutive
-+		 * __keyctl_read_key() calls. In this case, we reallocate
-+		 * a larger buffer and redo the key read when
-+		 * key_data_len < ret <= buflen.
-+		 */
-+		if (ret > key_data_len) {
-+			if (unlikely(key_data))
-+				__kvzfree(key_data, key_data_len);
-+			key_data_len = ret;
-+			continue;	/* Allocate buffer */
-+		}
- 
--	/*
--	 * Read methods will just return the required length without
--	 * any copying if the provided length isn't large enough.
--	 */
--	if (ret > 0 && ret <= buflen) {
- 		if (copy_to_user(buffer, key_data, ret))
- 			ret = -EFAULT;
-+		break;
- 	}
--	kzfree(key_data);
-+	__kvzfree(key_data, key_data_len);
- 
- key_put_out:
- 	key_put(key);
--- 
-2.20.1
-
+ 	spec->port2pin = port2pin;
+ 	setup_drm_audio_ops(codec, ops);
+ 	if (!snd_hdac_acomp_init(&codec->bus->core, &spec->drm_audio_ops,
 
 
