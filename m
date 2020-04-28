@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81E41BC952
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1896D1BC8D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730941AbgD1Skb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:40:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57806 "EHLO mail.kernel.org"
+        id S1729377AbgD1SgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:36:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728628AbgD1SjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:39:04 -0400
+        id S1730344AbgD1SgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:36:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33FFB20575;
-        Tue, 28 Apr 2020 18:39:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35C90208E0;
+        Tue, 28 Apr 2020 18:36:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099143;
-        bh=0sOTq4s30ooeuz5sbfz4jOZfhxiqi4UmbeG8VQrVoww=;
+        s=default; t=1588098966;
+        bh=pPWSAVZuifoUZ2jm5X/KEw5fQZuk+oSpyd1hqiwzJmk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DDwbKPRjpFjUA3dqNsQtWm1fqhAt04CVeid5qgmiROAqEtzqfiVsN6rV8DZ4aR+W8
-         8D2JZ2qxkdtz3Es3tVV/4QhahVan11+bQAGtIzc1KbsB5wN6JiOJiy0YvcheUSXGzy
-         +Xj7zjMwbtoHtoOL72wgwS4m566LZSYbml0Keqoc=
+        b=fASaxovU7S81jfrAfOYQcDVGzIS4kUNRVg5sG7lOFq+1vSfKjgma0PPdaKb2iNjx7
+         RSKyf5mBm2LqFG9uwJMbnahHXxMWApg9ivlkerN7ir9cpxUXb6fJrvMldHNCY/HG49
+         E646biUcgrvI1ox487Hm/1C+tr7Getdsa7Hv5WPk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: [PATCH 5.6 137/167] vt: dont use kmalloc() for the unicode screen buffer
-Date:   Tue, 28 Apr 2020 20:25:13 +0200
-Message-Id: <20200428182242.833106263@linuxfoundation.org>
+        stable@vger.kernel.org, Malcolm Priestley <tvboxspy@gmail.com>
+Subject: [PATCH 5.6 138/167] staging: vt6656: Dont set RCR_MULTICAST or RCR_BROADCAST by default.
+Date:   Tue, 28 Apr 2020 20:25:14 +0200
+Message-Id: <20200428182242.988631767@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
 References: <20200428182225.451225420@linuxfoundation.org>
@@ -43,56 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Pitre <nico@fluxnic.net>
+From: Malcolm Priestley <tvboxspy@gmail.com>
 
-commit 9a98e7a80f95378c9ee0c644705e3b5aa54745f1 upstream.
+commit 0f8240bfc070033a4823b19883efd3d38c7735cc upstream.
 
-Even if the actual screen size is bounded in vc_do_resize(), the unicode
-buffer is still a little more than twice the size of the glyph buffer
-and may exceed MAX_ORDER down the kmalloc() path. This can be triggered
-from user space.
+mac80211/users control whether multicast is on or off don't enable it by default.
 
-Since there is no point having a physically contiguous buffer here,
-let's avoid the above issue as well as reducing pressure on high order
-allocations by using vmalloc() instead.
+Fixes an issue when multicast/broadcast is always on allowing other beacons through
+in power save.
 
-Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
-Cc: <stable@vger.kernel.org>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://lore.kernel.org/r/nycvar.YSQ.7.76.2003282214210.2671@knanqh.ubzr
+Fixes: db8f37fa3355 ("staging: vt6656: mac80211 conversion: main_usb add functions...")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Malcolm Priestley <tvboxspy@gmail.com>
+Link: https://lore.kernel.org/r/2c24c33d-68c4-f343-bd62-105422418eac@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/vt/vt.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/staging/vt6656/main_usb.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -81,6 +81,7 @@
- #include <linux/errno.h>
- #include <linux/kd.h>
- #include <linux/slab.h>
-+#include <linux/vmalloc.h>
- #include <linux/major.h>
- #include <linux/mm.h>
- #include <linux/console.h>
-@@ -350,7 +351,7 @@ static struct uni_screen *vc_uniscr_allo
- 	/* allocate everything in one go */
- 	memsize = cols * rows * sizeof(char32_t);
- 	memsize += rows * sizeof(char32_t *);
--	p = kmalloc(memsize, GFP_KERNEL);
-+	p = vmalloc(memsize);
- 	if (!p)
- 		return NULL;
- 
-@@ -366,7 +367,7 @@ static struct uni_screen *vc_uniscr_allo
- 
- static void vc_uniscr_set(struct vc_data *vc, struct uni_screen *new_uniscr)
+--- a/drivers/staging/vt6656/main_usb.c
++++ b/drivers/staging/vt6656/main_usb.c
+@@ -817,15 +817,11 @@ static void vnt_configure(struct ieee802
  {
--	kfree(vc->vc_uni_screen);
-+	vfree(vc->vc_uni_screen);
- 	vc->vc_uni_screen = new_uniscr;
- }
+ 	struct vnt_private *priv = hw->priv;
+ 	u8 rx_mode = 0;
+-	int rc;
+ 
+ 	*total_flags &= FIF_ALLMULTI | FIF_OTHER_BSS | FIF_BCN_PRBRESP_PROMISC;
+ 
+-	rc = vnt_control_in(priv, MESSAGE_TYPE_READ, MAC_REG_RCR,
+-			    MESSAGE_REQUEST_MACREG, sizeof(u8), &rx_mode);
+-
+-	if (!rc)
+-		rx_mode = RCR_MULTICAST | RCR_BROADCAST;
++	vnt_control_in(priv, MESSAGE_TYPE_READ, MAC_REG_RCR,
++		       MESSAGE_REQUEST_MACREG, sizeof(u8), &rx_mode);
+ 
+ 	dev_dbg(&priv->usb->dev, "rx mode in = %x\n", rx_mode);
  
 
 
