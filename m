@@ -2,65 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6A41BC576
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649E21BC581
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728343AbgD1QmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 12:42:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728084AbgD1Ql7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 12:41:59 -0400
-Received: from linux-8ccs.fritz.box (p3EE2CE96.dip0.t-ipconnect.de [62.226.206.150])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5321C206D6;
-        Tue, 28 Apr 2020 16:41:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588092119;
-        bh=Vvggmw/f87wJwwqcO00zpB4XAFeguB9nPxLBdxzSiWU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LVSPZw3itszoxEpvAzvTZ+ytG/GUhHhiSMC0d7+aJsOoXi2kpWiu7Ww0mOyeo3jtH
-         H6+jVbCP+YkPtisGCGzxelfBoG+J4e81A0vaX5iQ9NdMeXbQfeWRK1SLv1SHqxN2qN
-         iCgdUMfvJkBBZLrpOSA0fNmJcwaEaZ/SEhvIdxoU=
-Date:   Tue, 28 Apr 2020 18:41:55 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH v3 09/10] module: Remove module_disable_ro()
-Message-ID: <20200428164155.GB12860@linux-8ccs.fritz.box>
-References: <cover.1587812518.git.jpoimboe@redhat.com>
- <33089a8ffb2e724cecfa51d72887ae9bf70354f9.1587812518.git.jpoimboe@redhat.com>
- <20200428162505.GA12860@linux-8ccs.fritz.box>
- <20200428163602.77t6s2qeh4xeacdq@treble>
+        id S1728467AbgD1Qmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 12:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728106AbgD1Qmw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 12:42:52 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F215EC03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 09:42:51 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id n4so17752261ejs.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 09:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y34gdr8oiGfvII8h6ZtZVDiqiMwD2EZedv3EJCzGWlY=;
+        b=maOaOzmZtckBS7Rj0h+gutu2QHc3znF9tqd05omFsVTffYUQcgDF34mLFDzS8GkXoi
+         3K3jsG/xrqVJUaE5Le1yH5iVvF0zRlCgzmVTohcpFUTxtgUSpBekhq/HNnel8GPXrmnF
+         pVsWabHGv8u0yjOTisBCWpdR0CN1N0mJKjJ+cv2hGo94QW3yOrZZlJ+bX8w1qB1KJyQV
+         2H3f9GaamNYf4Qcvj1dtrfJt9iNRzsAr3gjr7Zxe53M95qxaqnju0AG1gWpXuVJALX3x
+         j17bD0dSX9GRB/NUvXp4AwBVTzCsT2N611NxaG14M5APMI3gnFZp1HxGzGvLhTXvMrDO
+         gPaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y34gdr8oiGfvII8h6ZtZVDiqiMwD2EZedv3EJCzGWlY=;
+        b=sGDgVFJU3AtUnvxLAgFE4KPpRlGTH6uFS2dfy2v2nijZgGw+rSKEMIeSbE1Pt/l6Az
+         sX/YG6/35YzK5MD4bs7joayuhlcvnKd6hqwewFxECOHILVtIcvCmLHNOiG1JSwp5sXpy
+         q/Atq65/eEHiqTwtK7RJ5l4wYKFsoMSBsmE4pIpvd2uS4S2IM43icuTYym5eXoJbpOCL
+         RfIJZaQn+BdMYnIQEGDDJ40fVkgywN2fkwXzBoRZ8fDsaYgqhReaGFiySgyCXE8giv1t
+         0Q+7XPGtPGKUkjgbh2duteuC7sXLLSIUEefN2yYSubKJ41hM3cIm/7OF9WFBYKXXyw1T
+         35Sg==
+X-Gm-Message-State: AGi0PubaWaeMbkmAeXunGSYYKUeO+oXnyb8S+OsB2ojm2ZfhCf6fKk2Q
+        uebDdosSL6pOOuv7zFT2TWCDXX3Z4BdDO+6jnFo=
+X-Google-Smtp-Source: APiQypLvpZPfzun+J0YihXBvkkbH1EJjdB1GYaQH9AhZAaBAgge1ys9/K8kEiJivo2HQeboWLVIsx9ny3WBZ0Gxiri8=
+X-Received: by 2002:a17:906:2d4a:: with SMTP id e10mr26158324eji.222.1588092170642;
+ Tue, 28 Apr 2020 09:42:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200428163602.77t6s2qeh4xeacdq@treble>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200425080026.143127-1-chentao107@huawei.com>
+In-Reply-To: <20200425080026.143127-1-chentao107@huawei.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Tue, 28 Apr 2020 19:42:38 +0300
+Message-ID: <CAEnQRZA3g-AE-PE7yiKn0XpfWURV9wm=ztbtvyCoYnNv8G9O0Q@mail.gmail.com>
+Subject: Re: [PATCH] soc: imx8m: Make imx8m_dsp_ops static
+To:     ChenTao <chentao107@huawei.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Shawn Guo <shawnguo@kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Liam Girdwood <lgirdwood@gmail.co>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        kai.vehmanen@linux.intel.com, Fabio Estevam <festevam@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Josh Poimboeuf [28/04/20 11:36 -0500]:
->On Tue, Apr 28, 2020 at 06:25:05PM +0200, Jessica Yu wrote:
->> +++ Josh Poimboeuf [25/04/20 06:07 -0500]:
->> > module_disable_ro() has no more users.  Remove it.
->> >
->> > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
->> > Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->>
->> Hm, I guess this means we can also remove the module_enable_ro() stubs
->> in module.h and make it a static function again (like the other
->> module_enable_* functions) as there are no more outside users. I have to
->> remind myself after this patchset is merged :-)
+On Sat, Apr 25, 2020 at 11:03 AM ChenTao <chentao107@huawei.com> wrote:
 >
->Ah, true.  I'm respinning the patch set anyway, I can just add this as a
->another patch.
+> Fix the following warning:
+>
+> sound/soc/sof/imx/imx8m.c:95:20: warning:
+> symbol 'imx8m_dsp_ops' was not declared. Should it be static?
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: ChenTao <chentao107@huawei.com>
 
-That would be great. Thanks!
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 
+Can you please resend (picking Acked-by/Reviewed-by tags) and
+as Kai said add:
+
+To: Mark Brown (broonie@kernel.org
+Cc: alsa-devel@alsa-project.org
