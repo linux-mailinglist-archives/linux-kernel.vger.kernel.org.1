@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F79E1BC81B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D8A1BC954
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729362AbgD1S3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43336 "EHLO mail.kernel.org"
+        id S1730952AbgD1Ski (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:40:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729369AbgD1S3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:29:34 -0400
+        id S1730927AbgD1Sk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:40:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95D3C20BED;
-        Tue, 28 Apr 2020 18:29:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 71A8E20575;
+        Tue, 28 Apr 2020 18:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098573;
-        bh=7BTCKefDT84d2/S2Tue3QMduXeDM7kTMjbqZL7HrA/E=;
+        s=default; t=1588099226;
+        bh=b7xoRuxmnBYbOV63CMPj6fTSw2HyOLsSsZO2WNLHGqY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G850iyVJeX3hCRJS83fo1BayE5Mi/fFlKRNYkskpqB5Xm691jCuyk7nQQig+84tjV
-         IpOZb5X6niuXAqdCNntLFSDB6CYl62R7T3d2EJt28EZDsUEUWrNp0FPAZa3EgLNjGX
-         mlPZKl0My496yhLmLtl+Eoj7yv1gQTEIY0JeUnV0=
+        b=Pa3tijgGu3wdRWZ6UlbsM0ChLzherog9/S9kEjyt3KX8XTSD8L4EIQ+GBowwzZYA6
+         5WbBv7Pwg3PoOXtnfe559w6FPzDXHSxTXSbiBx6hMpa9iB7gFA8hBGmlJV2GSTOgwc
+         IkzGiuKb2rv59EzPh/hWc7IEMo0IB++qzM65RhFA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 075/167] KEYS: Avoid false positive ENOMEM error on key read
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 077/168] net: dsa: b53: Rework ARL bin logic
 Date:   Tue, 28 Apr 2020 20:24:11 +0200
-Message-Id: <20200428182234.441830864@linuxfoundation.org>
+Message-Id: <20200428182241.875461551@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,169 +43,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Waiman Long <longman@redhat.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 4f0882491a148059a52480e753b7f07fc550e188 ]
+[ Upstream commit 6344dbde6a27d10d16246d734b968f84887841e2 ]
 
-By allocating a kernel buffer with a user-supplied buffer length, it
-is possible that a false positive ENOMEM error may be returned because
-the user-supplied length is just too large even if the system do have
-enough memory to hold the actual key data.
+When asking the ARL to read a MAC address, we will get a number of bins
+returned in a single read. Out of those bins, there can essentially be 3
+states:
 
-Moreover, if the buffer length is larger than the maximum amount of
-memory that can be returned by kmalloc() (2^(MAX_ORDER-1) number of
-pages), a warning message will also be printed.
+- all bins are full, we have no space left, and we can either replace an
+  existing address or return that full condition
 
-To reduce this possibility, we set a threshold (PAGE_SIZE) over which we
-do check the actual key length first before allocating a buffer of the
-right size to hold it. The threshold is arbitrary, it is just used to
-trigger a buffer length check. It does not limit the actual key length
-as long as there is enough memory to satisfy the memory request.
+- the MAC address was found, then we need to return its bin index and
+  modify that one, and only that one
 
-To further avoid large buffer allocation failure due to page
-fragmentation, kvmalloc() is used to allocate the buffer so that vmapped
-pages can be used when there is not a large enough contiguous set of
-pages available for allocation.
+- the MAC address was not found and we have a least one bin free, we use
+  that bin index location then
 
-In the extremely unlikely scenario that the key keeps on being changed
-and made longer (still <= buflen) in between 2 __keyctl_read_key()
-calls, the __keyctl_read_key() calling loop in keyctl_read_key() may
-have to be iterated a large number of times, but definitely not infinite.
+The code would unfortunately fail on all counts.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1da6df85c6fb ("net: dsa: b53: Implement ARL add/del/dump operations")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/keys/internal.h | 12 +++++++++
- security/keys/keyctl.c   | 58 +++++++++++++++++++++++++++++-----------
- 2 files changed, 55 insertions(+), 15 deletions(-)
+ drivers/net/dsa/b53/b53_common.c |   30 ++++++++++++++++++++++++++----
+ drivers/net/dsa/b53/b53_regs.h   |    3 +++
+ 2 files changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/security/keys/internal.h b/security/keys/internal.h
-index ba3e2da14ceff..6d0ca48ae9a50 100644
---- a/security/keys/internal.h
-+++ b/security/keys/internal.h
-@@ -16,6 +16,8 @@
- #include <linux/keyctl.h>
- #include <linux/refcount.h>
- #include <linux/compat.h>
-+#include <linux/mm.h>
-+#include <linux/vmalloc.h>
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -1450,6 +1450,7 @@ static int b53_arl_read(struct b53_devic
+ 			u16 vid, struct b53_arl_entry *ent, u8 *idx,
+ 			bool is_valid)
+ {
++	DECLARE_BITMAP(free_bins, B53_ARLTBL_MAX_BIN_ENTRIES);
+ 	unsigned int i;
+ 	int ret;
  
- struct iovec;
+@@ -1457,6 +1458,8 @@ static int b53_arl_read(struct b53_devic
+ 	if (ret)
+ 		return ret;
  
-@@ -349,4 +351,14 @@ static inline void key_check(const struct key *key)
++	bitmap_zero(free_bins, dev->num_arl_entries);
++
+ 	/* Read the bins */
+ 	for (i = 0; i < dev->num_arl_entries; i++) {
+ 		u64 mac_vid;
+@@ -1468,16 +1471,24 @@ static int b53_arl_read(struct b53_devic
+ 			   B53_ARLTBL_DATA_ENTRY(i), &fwd_entry);
+ 		b53_arl_to_entry(ent, mac_vid, fwd_entry);
  
- #endif
+-		if (!(fwd_entry & ARLTBL_VALID))
++		if (!(fwd_entry & ARLTBL_VALID)) {
++			set_bit(i, free_bins);
+ 			continue;
++		}
+ 		if ((mac_vid & ARLTBL_MAC_MASK) != mac)
+ 			continue;
+ 		if (dev->vlan_enabled &&
+ 		    ((mac_vid >> ARLTBL_VID_S) & ARLTBL_VID_MASK) != vid)
+ 			continue;
+ 		*idx = i;
++		return 0;
+ 	}
  
-+/*
-+ * Helper function to clear and free a kvmalloc'ed memory object.
-+ */
-+static inline void __kvzfree(const void *addr, size_t len)
-+{
-+	if (addr) {
-+		memset((void *)addr, 0, len);
-+		kvfree(addr);
-+	}
-+}
- #endif /* _INTERNAL_H */
-diff --git a/security/keys/keyctl.c b/security/keys/keyctl.c
-index 106e16f9006b4..5e01192e222a0 100644
---- a/security/keys/keyctl.c
-+++ b/security/keys/keyctl.c
-@@ -339,7 +339,7 @@ long keyctl_update_key(key_serial_t id,
- 	payload = NULL;
- 	if (plen) {
- 		ret = -ENOMEM;
--		payload = kmalloc(plen, GFP_KERNEL);
-+		payload = kvmalloc(plen, GFP_KERNEL);
- 		if (!payload)
- 			goto error;
- 
-@@ -360,7 +360,7 @@ long keyctl_update_key(key_serial_t id,
- 
- 	key_ref_put(key_ref);
- error2:
--	kzfree(payload);
-+	__kvzfree(payload, plen);
- error:
- 	return ret;
++	if (bitmap_weight(free_bins, dev->num_arl_entries) == 0)
++		return -ENOSPC;
++
++	*idx = find_first_bit(free_bins, dev->num_arl_entries);
++
+ 	return -ENOENT;
  }
-@@ -827,7 +827,8 @@ long keyctl_read_key(key_serial_t keyid, char __user *buffer, size_t buflen)
- 	struct key *key;
- 	key_ref_t key_ref;
- 	long ret;
--	char *key_data;
-+	char *key_data = NULL;
-+	size_t key_data_len;
  
- 	/* find the key first */
- 	key_ref = lookup_user_key(keyid, 0, 0);
-@@ -878,24 +879,51 @@ can_read_key:
- 	 * Allocating a temporary buffer to hold the keys before
- 	 * transferring them to user buffer to avoid potential
- 	 * deadlock involving page fault and mmap_sem.
-+	 *
-+	 * key_data_len = (buflen <= PAGE_SIZE)
-+	 *		? buflen : actual length of key data
-+	 *
-+	 * This prevents allocating arbitrary large buffer which can
-+	 * be much larger than the actual key length. In the latter case,
-+	 * at least 2 passes of this loop is required.
- 	 */
--	key_data = kmalloc(buflen, GFP_KERNEL);
-+	key_data_len = (buflen <= PAGE_SIZE) ? buflen : 0;
-+	for (;;) {
-+		if (key_data_len) {
-+			key_data = kvmalloc(key_data_len, GFP_KERNEL);
-+			if (!key_data) {
-+				ret = -ENOMEM;
-+				goto key_put_out;
-+			}
-+		}
+@@ -1507,10 +1518,21 @@ static int b53_arl_op(struct b53_device
+ 	if (op)
+ 		return ret;
  
--	if (!key_data) {
--		ret = -ENOMEM;
--		goto key_put_out;
--	}
--	ret = __keyctl_read_key(key, key_data, buflen);
-+		ret = __keyctl_read_key(key, key_data, key_data_len);
-+
-+		/*
-+		 * Read methods will just return the required length without
-+		 * any copying if the provided length isn't large enough.
-+		 */
-+		if (ret <= 0 || ret > buflen)
-+			break;
-+
-+		/*
-+		 * The key may change (unlikely) in between 2 consecutive
-+		 * __keyctl_read_key() calls. In this case, we reallocate
-+		 * a larger buffer and redo the key read when
-+		 * key_data_len < ret <= buflen.
-+		 */
-+		if (ret > key_data_len) {
-+			if (unlikely(key_data))
-+				__kvzfree(key_data, key_data_len);
-+			key_data_len = ret;
-+			continue;	/* Allocate buffer */
-+		}
- 
--	/*
--	 * Read methods will just return the required length without
--	 * any copying if the provided length isn't large enough.
--	 */
--	if (ret > 0 && ret <= buflen) {
- 		if (copy_to_user(buffer, key_data, ret))
- 			ret = -EFAULT;
+-	/* We could not find a matching MAC, so reset to a new entry */
+-	if (ret) {
++	switch (ret) {
++	case -ENOSPC:
++		dev_dbg(dev->dev, "{%pM,%.4d} no space left in ARL\n",
++			addr, vid);
++		return is_valid ? ret : 0;
++	case -ENOENT:
++		/* We could not find a matching MAC, so reset to a new entry */
++		dev_dbg(dev->dev, "{%pM,%.4d} not found, using idx: %d\n",
++			addr, vid, idx);
+ 		fwd_entry = 0;
+-		idx = 1;
++		break;
++	default:
++		dev_dbg(dev->dev, "{%pM,%.4d} found, using idx: %d\n",
++			addr, vid, idx);
 +		break;
  	}
--	kzfree(key_data);
-+	__kvzfree(key_data, key_data_len);
  
- key_put_out:
- 	key_put(key);
--- 
-2.20.1
-
+ 	memset(&ent, 0, sizeof(ent));
+--- a/drivers/net/dsa/b53/b53_regs.h
++++ b/drivers/net/dsa/b53/b53_regs.h
+@@ -323,6 +323,9 @@
+ #define   ARLTBL_STATIC			BIT(15)
+ #define   ARLTBL_VALID			BIT(16)
+ 
++/* Maximum number of bin entries in the ARL for all switches */
++#define B53_ARLTBL_MAX_BIN_ENTRIES	4
++
+ /* ARL Search Control Register (8 bit) */
+ #define B53_ARL_SRCH_CTL		0x50
+ #define B53_ARL_SRCH_CTL_25		0x20
 
 
