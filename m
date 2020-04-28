@@ -2,72 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 205441BBFD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F2E1BC008
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727931AbgD1NjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 09:39:17 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52757 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727823AbgD1NjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 09:39:16 -0400
-IronPort-SDR: ekGBMTww8ZRmfOlk49gepsTc+L15t84rxS9haT6VPFsBjVb44y9Eto8ekB0vIDJwt1cgU+d8S2
- 6v+oSN5/npHA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 06:39:15 -0700
-IronPort-SDR: xKFpk/LY3rt43qQlURN33PtK48Ij6dtPcHD6+OEkjS5NgVRS7+hp1aeP0K3yC3KsXc5G97+Gcc
- xyaE0EbSTzsQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,327,1583222400"; 
-   d="scan'208";a="302710365"
-Received: from unknown (HELO localhost) ([10.239.159.128])
-  by FMSMGA003.fm.intel.com with ESMTP; 28 Apr 2020 06:39:12 -0700
-Date:   Tue, 28 Apr 2020 21:41:07 +0800
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Yang Weijiang <weijiang.yang@intel.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
-        jmattson@google.com, yu.c.zhang@linux.intel.com
-Subject: Re: [PATCH v11 7/9] KVM: X86: Add userspace access interface for CET
- MSRs
-Message-ID: <20200428134107.GA23937@local-michael-cet-test>
-References: <20200326081847.5870-1-weijiang.yang@intel.com>
- <20200326081847.5870-8-weijiang.yang@intel.com>
- <08457f11-f0ac-ff4b-80b7-e5380624eca0@redhat.com>
- <20200426152355.GB29493@local-michael-cet-test.sh.intel.com>
- <f6f8cedf-26ce-70b4-2906-02806698d81b@redhat.com>
+        id S1726940AbgD1NmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 09:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726798AbgD1NmH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 09:42:07 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DD6C03C1A9;
+        Tue, 28 Apr 2020 06:42:07 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id t3so21786970qkg.1;
+        Tue, 28 Apr 2020 06:42:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=40SvGlOE0IEfpxKbtfMncI3PVEjNw5dMSinR4i3iCOw=;
+        b=fZQWwv3NQ/GClOErKC1hUzhMog1m5IyoLRAU3h18l+CW8e/aKb2gQarNIoU43G+YFZ
+         LoRTSQeoiPA6jtQJ4tY10DuZHhgp35Fk+qKdzWRlnQ0DK4/GfVtiLaO3V7iN3zZ/Uykp
+         qFdFvm1imsc5aD+QVOQwNYJtJievHyn/WaR6txBr5FPwk2anG6lI1yvhGftQMCBjBDox
+         8UEMTpjRe5UOsjNhFRNXQgTuRuE37NZk27tNwqS+apEtqnajZ3CaUN5YaSgxSpO0sAIz
+         YixgoioUlkVk9logeCO9QOvV9KfUYQTstzLByLOMPQ5SsH/bx5P1zuthPoui3LdDuZSH
+         hSJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=40SvGlOE0IEfpxKbtfMncI3PVEjNw5dMSinR4i3iCOw=;
+        b=bn/1PoNDMPNYA1dKkNmEpE3M0cZ5AJ3FSaEtpMSDQ3kPhVCSGw9971+/QdmSqr5swT
+         Hj/7q/YrZ3zGF5ZH6yOWeDU8UriOcVO3O7KW5ynVWvv+psFJaq/+yB+O28bejx529B8k
+         fYLyQPbLrYnjn5yvPO89QEoG7/byPO9lmtwjngfEOo6wQnZmN4jFxgpy90BHDx5Ehr8F
+         4ZyS9wSOZUmNdOxcY1GRvNGGAypxExLSLHKSHsnx8R9viDdQaYiphOmcqyzJ182ZGAj6
+         gZ2mvdZbzc1KB951LW7nSZkxiZGHKQADDHDM55/yQlOxek88Rey/oW8iZHxyNnKt8A4U
+         e73A==
+X-Gm-Message-State: AGi0Pua40EwYMNnqp3xdaUjc6nxZiM7HCDR6dK6uUWX/Ux1KUzmMxAfY
+        vbEqgl84LDAS/Gu7XoBQUvZDDwHVtVNjQwFHq0I=
+X-Google-Smtp-Source: APiQypLSDVhAO3AdccM9OiKNjeTryZc/HruX0l5p1r9XPaahQ1kopW0gAi8ndd/Qy9b+GDkA3rmE78eQgTJUCQsIfqI=
+X-Received: by 2002:a37:9e94:: with SMTP id h142mr26023649qke.56.1588081326668;
+ Tue, 28 Apr 2020 06:42:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6f8cedf-26ce-70b4-2906-02806698d81b@redhat.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+References: <1588077962-353994-1-git-send-email-wubo40@huawei.com>
+In-Reply-To: <1588077962-353994-1-git-send-email-wubo40@huawei.com>
+From:   "Yan, Zheng" <ukernel@gmail.com>
+Date:   Tue, 28 Apr 2020 21:41:55 +0800
+Message-ID: <CAAM7YAnWM4oHgwBNXQWY5BOMDmZ9Pbqdd7N0DDedTO6HxQQeqg@mail.gmail.com>
+Subject: Re: [PATCH] fs/ceph:fix double unlock in handle_cap_export()
+To:     Wu Bo <wubo40@huawei.com>
+Cc:     Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        liuzhiqiang26@huawei.com, linfeilong@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 04:04:28PM +0200, Paolo Bonzini wrote:
-> On 26/04/20 17:23, Yang Weijiang wrote:
-> > What's the purpose of the selftest? Is it just for Shadow Stack SSP
-> > state transitions in various cases? e.g., L0 SSP<--->L3 SSP,
-> > L0 SSP1<--->L0 SSP2?
-> 
-> No, it checks that the whole state can be extracted and restored from a
-> running VM.  For example, it would have caught immediately that the
-> current SSP could not be saved and restored.
-> 
-> > We now have the KVM unit-test for CET functionalities,
-> > i.e., Shadow Stack and Indirect Branch Tracking for user-mode, I can put the
-> > state test app into the todo list as current patchset is mainly for user-mode
-> > protection, the supervisor-mode CET protection is the next step.
-> 
-> What are the limitations?  Or are you referring to the unit test?
+On Tue, Apr 28, 2020 at 8:50 PM Wu Bo <wubo40@huawei.com> wrote:
 >
-I'm referring to the unit test, I enabled basic CET function test to verify
-if SHSTK/IBT is supported with current platform and KVM, but didn't cover
-what you mentioned above. OK, I put the state
-self-test to my todo list. Thank you for the reminder.
+> If the ceph_mdsc_open_export_target_session() return fails,
+> should add a lock to avoid twice unlocking.
+> Because the lock will be released at the retry or out_unlock tag.
+>
 
-> Paolo
+at retry label, i_ceph_lock get locked. I don't see how i_ceph_lock
+can get double unlock
+
+> Signed-off-by: Wu Bo <wubo40@huawei.com>
+> ---
+>  fs/ceph/caps.c | 26 ++++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
+>
+> diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+> index 185db76..b5a62a8 100644
+> --- a/fs/ceph/caps.c
+> +++ b/fs/ceph/caps.c
+> @@ -3731,22 +3731,24 @@ static void handle_cap_export(struct inode *inode, struct ceph_mds_caps *ex,
+>
+>         /* open target session */
+>         tsession = ceph_mdsc_open_export_target_session(mdsc, target);
+> -       if (!IS_ERR(tsession)) {
+> -               if (mds > target) {
+> -                       mutex_lock(&session->s_mutex);
+> -                       mutex_lock_nested(&tsession->s_mutex,
+> -                                         SINGLE_DEPTH_NESTING);
+> -               } else {
+> -                       mutex_lock(&tsession->s_mutex);
+> -                       mutex_lock_nested(&session->s_mutex,
+> -                                         SINGLE_DEPTH_NESTING);
+> -               }
+> -               new_cap = ceph_get_cap(mdsc, NULL);
+> -       } else {
+> +       if (IS_ERR(tsession)) {
+>                 WARN_ON(1);
+>                 tsession = NULL;
+>                 target = -1;
+> +               mutex_lock(&session->s_mutex);
+> +               goto out_unlock;
+> +       }
+> +
+> +       if (mds > target) {
+> +               mutex_lock(&session->s_mutex);
+> +               mutex_lock_nested(&tsession->s_mutex,
+> +                                       SINGLE_DEPTH_NESTING);
+> +       } else {
+> +               mutex_lock(&tsession->s_mutex);
+> +               mutex_lock_nested(&session->s_mutex,
+> +                                       SINGLE_DEPTH_NESTING);
+>         }
+> +       new_cap = ceph_get_cap(mdsc, NULL);
+>         goto retry;
+>
+>  out_unlock:
+> --
+> 1.8.3.1
+>
