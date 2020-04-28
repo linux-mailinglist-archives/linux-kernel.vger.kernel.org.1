@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2551BCAE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4131BC877
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731095AbgD1SxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:53:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52590 "EHLO mail.kernel.org"
+        id S1729860AbgD1Scx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:32:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730234AbgD1Sf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:35:28 -0400
+        id S1729853AbgD1Sct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:32:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C9C120B1F;
-        Tue, 28 Apr 2020 18:35:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0199421775;
+        Tue, 28 Apr 2020 18:32:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098927;
-        bh=oevnvzzVhtIAe0+tk50HMNaYqv+LWDbIkC5nIJcDM04=;
+        s=default; t=1588098768;
+        bh=uwHpq0c4se3+HxWbMzyYSyeGaIC4RLN0iuO/eA7PMvA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fb4WMNOkyYLIEvC0gdqixuJ9TzqRRUti5nJwyOIChRY6naS3wgKDfD/dSRSBlGuxD
-         aywTU70Wu1gCGP8ZafiErcWWsc/o/Esu6Uw5wZXeJGp+4nrjKakncMiqToTIZJMufs
-         gNbbWcGqSkr6tCdw9fmBwuWOQsYUprCR48hzbI7E=
+        b=IoyMSh/F5eAgBPcdmTjV3AC0n3ac8Xgzvj2Mc8470/F3XAHxSVDZUqxYGR4SnpNa3
+         /bQQg1F9e6tMwh3covIh0O+7xBUJBc4GRo0xT6ToreIdhDA2UZU6uJBx/Qvb0SjtRz
+         tYZYyYx69IPlU5AzBWmIcKRD75nyp0HO6uxF6Urk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Vishal Kulkarni <vishal@chelsio.com>
-Subject: [PATCH 4.19 053/131] cxgb4: fix adapter crash due to wrong MC size
-Date:   Tue, 28 Apr 2020 20:24:25 +0200
-Message-Id: <20200428182231.629366722@linuxfoundation.org>
+        stable@vger.kernel.org, Manoj Malviya <manojmalviya@chelsio.com>,
+        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 054/131] cxgb4: fix large delays in PTP synchronization
+Date:   Tue, 28 Apr 2020 20:24:26 +0200
+Message-Id: <20200428182231.757495996@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
 References: <20200428182224.822179290@linuxfoundation.org>
@@ -43,79 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vishal Kulkarni <vishal@chelsio.com>
+From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 
-[ Upstream commit ce222748078592afb51b810dc154531aeba4f512 ]
+[ Upstream commit bd019427bf3623ee3c7d2845cf921bbf4c14846c ]
 
-In the absence of MC1, the size calculation function
-cudbg_mem_region_size() was returing wrong MC size and
-resulted in adapter crash. This patch adds new argument
-to cudbg_mem_region_size() which will have actual size
-and returns error to caller in the absence of MC1.
+Fetching PTP sync information from mailbox is slow and can take
+up to 10 milliseconds. Reduce this unnecessary delay by directly
+reading the information from the corresponding registers.
 
-Fixes: a1c69520f785 ("cxgb4: collect MC memory dump")
-Signed-off-by: Vishal Kulkarni <vishal@chelsio.com>"
+Fixes: 9c33e4208bce ("cxgb4: Add PTP Hardware Clock (PHC) support")
+Signed-off-by: Manoj Malviya <manojmalviya@chelsio.com>
+Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c |   27 ++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c |   27 +++++--------------------
+ drivers/net/ethernet/chelsio/cxgb4/t4_regs.h   |    3 ++
+ 2 files changed, 9 insertions(+), 21 deletions(-)
 
---- a/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c
-@@ -1065,9 +1065,9 @@ static void cudbg_t4_fwcache(struct cudb
- 	}
- }
- 
--static unsigned long cudbg_mem_region_size(struct cudbg_init *pdbg_init,
--					   struct cudbg_error *cudbg_err,
--					   u8 mem_type)
-+static int cudbg_mem_region_size(struct cudbg_init *pdbg_init,
-+				 struct cudbg_error *cudbg_err,
-+				 u8 mem_type, unsigned long *region_size)
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
+@@ -311,32 +311,17 @@ static int cxgb4_ptp_adjtime(struct ptp_
+  */
+ static int cxgb4_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
  {
- 	struct adapter *padap = pdbg_init->adap;
- 	struct cudbg_meminfo mem_info;
-@@ -1076,15 +1076,23 @@ static unsigned long cudbg_mem_region_si
+-	struct adapter *adapter = (struct adapter *)container_of(ptp,
+-				   struct adapter, ptp_clock_info);
+-	struct fw_ptp_cmd c;
++	struct adapter *adapter = container_of(ptp, struct adapter,
++					       ptp_clock_info);
+ 	u64 ns;
+-	int err;
  
- 	memset(&mem_info, 0, sizeof(struct cudbg_meminfo));
- 	rc = cudbg_fill_meminfo(padap, &mem_info);
--	if (rc)
-+	if (rc) {
-+		cudbg_err->sys_err = rc;
- 		return rc;
-+	}
+-	memset(&c, 0, sizeof(c));
+-	c.op_to_portid = cpu_to_be32(FW_CMD_OP_V(FW_PTP_CMD) |
+-				     FW_CMD_REQUEST_F |
+-				     FW_CMD_READ_F |
+-				     FW_PTP_CMD_PORTID_V(0));
+-	c.retval_len16 = cpu_to_be32(FW_CMD_LEN16_V(sizeof(c) / 16));
+-	c.u.ts.sc = FW_PTP_SC_GET_TIME;
+-
+-	err = t4_wr_mbox(adapter, adapter->mbox, &c, sizeof(c), &c);
+-	if (err < 0) {
+-		dev_err(adapter->pdev_dev,
+-			"PTP: %s error %d\n", __func__, -err);
+-		return err;
+-	}
++	ns = t4_read_reg(adapter, T5_PORT_REG(0, MAC_PORT_PTP_SUM_LO_A));
++	ns |= (u64)t4_read_reg(adapter,
++			       T5_PORT_REG(0, MAC_PORT_PTP_SUM_HI_A)) << 32;
  
- 	cudbg_t4_fwcache(pdbg_init, cudbg_err);
- 	rc = cudbg_meminfo_get_mem_index(padap, &mem_info, mem_type, &mc_idx);
--	if (rc)
-+	if (rc) {
-+		cudbg_err->sys_err = rc;
- 		return rc;
-+	}
-+
-+	if (region_size)
-+		*region_size = mem_info.avail[mc_idx].limit -
-+			       mem_info.avail[mc_idx].base;
- 
--	return mem_info.avail[mc_idx].limit - mem_info.avail[mc_idx].base;
+ 	/* convert to timespec*/
+-	ns = be64_to_cpu(c.u.ts.tm);
+ 	*ts = ns_to_timespec64(ns);
+-
+-	return err;
 +	return 0;
  }
  
- static int cudbg_collect_mem_region(struct cudbg_init *pdbg_init,
-@@ -1092,7 +1100,12 @@ static int cudbg_collect_mem_region(stru
- 				    struct cudbg_error *cudbg_err,
- 				    u8 mem_type)
- {
--	unsigned long size = cudbg_mem_region_size(pdbg_init, cudbg_err, mem_type);
-+	unsigned long size = 0;
-+	int rc;
-+
-+	rc = cudbg_mem_region_size(pdbg_init, cudbg_err, mem_type, &size);
-+	if (rc)
-+		return rc;
+ /**
+--- a/drivers/net/ethernet/chelsio/cxgb4/t4_regs.h
++++ b/drivers/net/ethernet/chelsio/cxgb4/t4_regs.h
+@@ -1896,6 +1896,9 @@
  
- 	return cudbg_read_fw_mem(pdbg_init, dbg_buff, mem_type, size,
- 				 cudbg_err);
+ #define MAC_PORT_CFG2_A 0x818
+ 
++#define MAC_PORT_PTP_SUM_LO_A 0x990
++#define MAC_PORT_PTP_SUM_HI_A 0x994
++
+ #define MPS_CMN_CTL_A	0x9000
+ 
+ #define COUNTPAUSEMCRX_S    5
 
 
