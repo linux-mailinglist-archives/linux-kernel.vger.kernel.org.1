@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E121BC865
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0901BC7DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbgD1ScO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:32:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48182 "EHLO mail.kernel.org"
+        id S1728947AbgD1S1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:27:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729776AbgD1ScJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:32:09 -0400
+        id S1728919AbgD1S1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:27:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 949242076A;
-        Tue, 28 Apr 2020 18:32:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 647E520BED;
+        Tue, 28 Apr 2020 18:27:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098729;
-        bh=0ai72RUas7AA88Oaqv4xlYhEj4QfUyXkTPaK6hfLJes=;
+        s=default; t=1588098431;
+        bh=Agzc/Ytq7wcrS0tRGzK7u1Nb+yTiJQUNi1nRpquZG7A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kX0I9lJabdBMj+ofTF0QhQOowaYnwKxL1s/UFyfiL+Xt/PhTo+AYM6DhkYKN80x5x
-         md4AVo1ZMxAB137WzjOCavi6icsBirmT202DSRXl4pWP+mU4rl1iBaRC+q4/nkxOUI
-         mZLnfRV/ZWJFdAEWrempCNjkQXxCyE28Yc59i9no=
+        b=lV1ucB91K55PIVFwyLGz3nl2LJSZOwdVgfwxDWgYvSpUqGGwywSwdRfkyliGv9sO+
+         GMPSYPpaZnekv+re5MEggFWJYu+FBjpDbHauZHvKhDGWyvdutNe81q0xkobwtu3ugf
+         rE/2Bj5WBSuxFmyM7mGWwDGIc3YqFMXdnPK1A7cM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        stable@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 005/168] arm64: Fake the IminLine size on systems affected by Neoverse-N1 #1542419
-Date:   Tue, 28 Apr 2020 20:22:59 +0200
-Message-Id: <20200428182232.362254984@linuxfoundation.org>
+Subject: [PATCH 5.6 004/167] scsi: lpfc: Fix kasan slab-out-of-bounds error in lpfc_unreg_login
+Date:   Tue, 28 Apr 2020 20:23:00 +0200
+Message-Id: <20200428182225.899865710@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,70 +45,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Morse <james.morse@arm.com>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit ee9d90be9ddace01b7fb126567e4b539fbe1f82f ]
+[ Upstream commit 38503943c89f0bafd9e3742f63f872301d44cbea ]
 
-Systems affected by Neoverse-N1 #1542419 support DIC so do not need to
-perform icache maintenance once new instructions are cleaned to the PoU.
-For the errata workaround, the kernel hides DIC from user-space, so that
-the unnecessary cache maintenance can be trapped by firmware.
+The following kasan bug was called out:
 
-To reduce the number of traps, produce a fake IminLine value based on
-PAGE_SIZE.
+ BUG: KASAN: slab-out-of-bounds in lpfc_unreg_login+0x7c/0xc0 [lpfc]
+ Read of size 2 at addr ffff889fc7c50a22 by task lpfc_worker_3/6676
+ ...
+ Call Trace:
+ dump_stack+0x96/0xe0
+ ? lpfc_unreg_login+0x7c/0xc0 [lpfc]
+ print_address_description.constprop.6+0x1b/0x220
+ ? lpfc_unreg_login+0x7c/0xc0 [lpfc]
+ ? lpfc_unreg_login+0x7c/0xc0 [lpfc]
+ __kasan_report.cold.9+0x37/0x7c
+ ? lpfc_unreg_login+0x7c/0xc0 [lpfc]
+ kasan_report+0xe/0x20
+ lpfc_unreg_login+0x7c/0xc0 [lpfc]
+ lpfc_sli_def_mbox_cmpl+0x334/0x430 [lpfc]
+ ...
 
-Signed-off-by: James Morse <james.morse@arm.com>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: James Morse <james.morse@arm.com>
+When processing the completion of a "Reg Rpi" login mailbox command in
+lpfc_sli_def_mbox_cmpl, a call may be made to lpfc_unreg_login. The vpi is
+extracted from the completing mailbox context and passed as an input for
+the next. However, the vpi stored in the mailbox command context is an
+absolute vpi, which for SLI4 represents both base + offset.  When used with
+a non-zero base component, (function id > 0) this results in an
+out-of-range access beyond the allocated phba->vpi_ids array.
+
+Fix by subtracting the function's base value to get an accurate vpi number.
+
+Link: https://lore.kernel.org/r/20200322181304.37655-2-jsmart2021@gmail.com
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/cache.h | 3 ++-
- arch/arm64/kernel/traps.c      | 8 +++++++-
- 2 files changed, 9 insertions(+), 2 deletions(-)
+ drivers/scsi/lpfc/lpfc_sli.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/include/asm/cache.h b/arch/arm64/include/asm/cache.h
-index 43da6dd295920..806e9dc2a852a 100644
---- a/arch/arm64/include/asm/cache.h
-+++ b/arch/arm64/include/asm/cache.h
-@@ -11,6 +11,7 @@
- #define CTR_L1IP_MASK		3
- #define CTR_DMINLINE_SHIFT	16
- #define CTR_IMINLINE_SHIFT	0
-+#define CTR_IMINLINE_MASK	0xf
- #define CTR_ERG_SHIFT		20
- #define CTR_CWG_SHIFT		24
- #define CTR_CWG_MASK		15
-@@ -18,7 +19,7 @@
- #define CTR_DIC_SHIFT		29
- 
- #define CTR_CACHE_MINLINE_MASK	\
--	(0xf << CTR_DMINLINE_SHIFT | 0xf << CTR_IMINLINE_SHIFT)
-+	(0xf << CTR_DMINLINE_SHIFT | CTR_IMINLINE_MASK << CTR_IMINLINE_SHIFT)
- 
- #define CTR_L1IP(ctr)		(((ctr) >> CTR_L1IP_SHIFT) & CTR_L1IP_MASK)
- 
-diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-index 465f0a0f8f0ab..4e3e9d9c81517 100644
---- a/arch/arm64/kernel/traps.c
-+++ b/arch/arm64/kernel/traps.c
-@@ -470,9 +470,15 @@ static void ctr_read_handler(unsigned int esr, struct pt_regs *regs)
- 	int rt = ESR_ELx_SYS64_ISS_RT(esr);
- 	unsigned long val = arm64_ftr_reg_user_value(&arm64_ftr_reg_ctrel0);
- 
--	if (cpus_have_const_cap(ARM64_WORKAROUND_1542419))
-+	if (cpus_have_const_cap(ARM64_WORKAROUND_1542419)) {
-+		/* Hide DIC so that we can trap the unnecessary maintenance...*/
- 		val &= ~BIT(CTR_DIC_SHIFT);
- 
-+		/* ... and fake IminLine to reduce the number of traps. */
-+		val &= ~CTR_IMINLINE_MASK;
-+		val |= (PAGE_SHIFT - 2) & CTR_IMINLINE_MASK;
-+	}
-+
- 	pt_regs_write_reg(regs, rt, val);
- 
- 	arm64_skip_faulting_instruction(regs, AARCH64_INSN_SIZE);
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 64002b0cb02d4..5939ea0e3b1eb 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -2511,6 +2511,8 @@ lpfc_sli_def_mbox_cmpl(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ 	    !pmb->u.mb.mbxStatus) {
+ 		rpi = pmb->u.mb.un.varWords[0];
+ 		vpi = pmb->u.mb.un.varRegLogin.vpi;
++		if (phba->sli_rev == LPFC_SLI_REV4)
++			vpi -= phba->sli4_hba.max_cfg_param.vpi_base;
+ 		lpfc_unreg_login(phba, vpi, rpi, pmb);
+ 		pmb->vport = vport;
+ 		pmb->mbox_cmpl = lpfc_sli_def_mbox_cmpl;
 -- 
 2.20.1
 
