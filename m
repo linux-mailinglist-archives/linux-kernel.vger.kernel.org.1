@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0E71BCAEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B99E1BC8BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728877AbgD1SfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:35:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51958 "EHLO mail.kernel.org"
+        id S1730216AbgD1SfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:35:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729675AbgD1Se6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:34:58 -0400
+        id S1728668AbgD1SfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:35:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E746D20B80;
-        Tue, 28 Apr 2020 18:34:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC07420575;
+        Tue, 28 Apr 2020 18:35:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098898;
-        bh=fO5FI66FHgg+VlGZoyzKaqaj94B5cozUzaWJZwEdd3M=;
+        s=default; t=1588098908;
+        bh=ENd1jNNo5OkQqzs81452LlPPJZkaniS6ivTo+Kng45o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d41LW8Ucw0wCuFFW7L1HI8Zk6LI3g8z/QB7GM/V8dj47w1M/tD1bHs2n0CWpZCcEM
-         ANk3A2vWll+Ft7GDHGGMBTbPGVbnvhhQqtct5luIWlsiiHTXmx2+85RezgxnuyiF9x
-         yoKcH8NoRLVblP0QEc9pgYX6NUIRk6bW7wKBBtLs=
+        b=zlKj/voj70zTcETokcR3BKufhjDuAa8/3mZGgm9oRSUNTvBmjduNW3CVt0WZpwI6v
+         5XTw+Y7B4SxQWeFMmCSxfFrMo6UmZ2r75jLf3x4PGYpLMuK5IrRDtEr8TXac1wnDcw
+         Fm9+9ee0FvZTwgoS9TD9AZ1vKkGv1q5kOHhJUYQw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Ilan Peer <ilan.peer@intel.com>,
         Luca Coelho <luciano.coelho@intel.com>,
         Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.6 126/167] iwlwifi: mvm: limit maximum queue appropriately
-Date:   Tue, 28 Apr 2020 20:25:02 +0200
-Message-Id: <20200428182241.265898742@linuxfoundation.org>
+Subject: [PATCH 5.6 127/167] iwlwifi: mvm: Do not declare support for ACK Enabled Aggregation
+Date:   Tue, 28 Apr 2020 20:25:03 +0200
+Message-Id: <20200428182241.412541212@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
 References: <20200428182225.451225420@linuxfoundation.org>
@@ -44,76 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Ilan Peer <ilan.peer@intel.com>
 
-commit e5b72e3bc4763152e24bf4b8333bae21cc526c56 upstream.
+commit 38af8d5a90a8c3b41ff0484855e24bd55b43ce9d upstream.
 
-Due to some hardware issues, queue 31 isn't usable on devices that have
-32 queues (7000, 8000, 9000 families), which is correctly reflected in
-the configuration and TX queue initialization.
+As this was not supposed to be enabled to begin with.
 
-However, the firmware API and queue allocation code assumes that there
-are 32 queues, and if something actually attempts to use #31 this leads
-to a NULL-pointer dereference since it's not allocated.
-
-Fix this by limiting to 31 in the IWL_MVM_DQA_MAX_DATA_QUEUE, and also
-add some code to catch this earlier in the future, if the configuration
-changes perhaps.
-
-Cc: stable@vger.kernel.org # v4.9+
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Ilan Peer <ilan.peer@intel.com>
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20200417100405.98a79be2db6a.I3a4af6b03b87a6bc18db9b1ff9a812f397bee1fc@changeid
+Link: https://lore.kernel.org/r/iwlwifi.20200417100405.53dbc3c6c36b.Idfe118546b92cc31548b2211472a5303c7de5909@changeid
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/intel/iwlwifi/fw/api/txq.h |    6 +++---
- drivers/net/wireless/intel/iwlwifi/mvm/sta.c    |    5 +++++
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/net/wireless/intel/iwlwifi/fw/api/txq.h
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/api/txq.h
-@@ -8,7 +8,7 @@
-  * Copyright(c) 2007 - 2014 Intel Corporation. All rights reserved.
-  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
-  * Copyright(c) 2016 - 2017 Intel Deutschland GmbH
-- * Copyright(c) 2019 Intel Corporation
-+ * Copyright(c) 2019 - 2020 Intel Corporation
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of version 2 of the GNU General Public License as
-@@ -31,7 +31,7 @@
-  * Copyright(c) 2005 - 2014 Intel Corporation. All rights reserved.
-  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
-  * Copyright(c) 2016 - 2017 Intel Deutschland GmbH
-- * Copyright(c) 2019 Intel Corporation
-+ * Copyright(c) 2019 - 2020 Intel Corporation
-  * All rights reserved.
-  *
-  * Redistribution and use in source and binary forms, with or without
-@@ -99,7 +99,7 @@ enum iwl_mvm_dqa_txq {
- 	IWL_MVM_DQA_MAX_MGMT_QUEUE = 8,
- 	IWL_MVM_DQA_AP_PROBE_RESP_QUEUE = 9,
- 	IWL_MVM_DQA_MIN_DATA_QUEUE = 10,
--	IWL_MVM_DQA_MAX_DATA_QUEUE = 31,
-+	IWL_MVM_DQA_MAX_DATA_QUEUE = 30,
- };
- 
- enum iwl_mvm_tx_fifo {
---- a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-@@ -722,6 +722,11 @@ static int iwl_mvm_find_free_queue(struc
- 
- 	lockdep_assert_held(&mvm->mutex);
- 
-+	if (WARN(maxq >= mvm->trans->trans_cfg->base_params->num_of_queues,
-+		 "max queue %d >= num_of_queues (%d)", maxq,
-+		 mvm->trans->trans_cfg->base_params->num_of_queues))
-+		maxq = mvm->trans->trans_cfg->base_params->num_of_queues - 1;
-+
- 	/* This should not be hit with new TX path */
- 	if (WARN_ON(iwl_mvm_has_new_tx_api(mvm)))
- 		return -ENOSPC;
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
+@@ -532,8 +532,7 @@ static struct ieee80211_sband_iftype_dat
+ 					IEEE80211_HE_MAC_CAP1_TF_MAC_PAD_DUR_16US |
+ 					IEEE80211_HE_MAC_CAP1_MULTI_TID_AGG_RX_QOS_8,
+ 				.mac_cap_info[2] =
+-					IEEE80211_HE_MAC_CAP2_32BIT_BA_BITMAP |
+-					IEEE80211_HE_MAC_CAP2_ACK_EN,
++					IEEE80211_HE_MAC_CAP2_32BIT_BA_BITMAP,
+ 				.mac_cap_info[3] =
+ 					IEEE80211_HE_MAC_CAP3_OMI_CONTROL |
+ 					IEEE80211_HE_MAC_CAP3_MAX_AMPDU_LEN_EXP_VHT_2,
+@@ -617,8 +616,7 @@ static struct ieee80211_sband_iftype_dat
+ 					IEEE80211_HE_MAC_CAP1_TF_MAC_PAD_DUR_16US |
+ 					IEEE80211_HE_MAC_CAP1_MULTI_TID_AGG_RX_QOS_8,
+ 				.mac_cap_info[2] =
+-					IEEE80211_HE_MAC_CAP2_BSR |
+-					IEEE80211_HE_MAC_CAP2_ACK_EN,
++					IEEE80211_HE_MAC_CAP2_BSR,
+ 				.mac_cap_info[3] =
+ 					IEEE80211_HE_MAC_CAP3_OMI_CONTROL |
+ 					IEEE80211_HE_MAC_CAP3_MAX_AMPDU_LEN_EXP_VHT_2,
 
 
