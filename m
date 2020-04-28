@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79371BC8D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954821BCB04
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730327AbgD1Sf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:35:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53292 "EHLO mail.kernel.org"
+        id S1729877AbgD1SdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:33:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730313AbgD1Sf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:35:57 -0400
+        id S1729861AbgD1Scx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:32:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7655B208E0;
-        Tue, 28 Apr 2020 18:35:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD5992076A;
+        Tue, 28 Apr 2020 18:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098956;
-        bh=Lyfl/MOteIG0m0E5CqO/jTwVMM3cqUchcghye7D9lCY=;
+        s=default; t=1588098773;
+        bh=Au1q+YxF5wXpGR9tG9DyL2Nn00oGiow5jjlqbZMVauA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jQsGWtxZwIxG2ja9jK4Fvr3DXP5ox2JrpLVoy0AIxYdOMDg5dJK9RJcErIL/U6EdK
-         NZ32L46omcGxluXffS589yGqKal0Pfpzy9rTOkZfjNC3LviWs9DanJo0TtPp0Q9yki
-         xqiUhCK+6/d+WwNJd9sG9jkocVvuLg0BMPGVONqg=
+        b=ZSGCaMJXb2E5e3/XxKG6oCIGft6ZhIzkiS12w8zvCdI27h3/zSqPNKctrfuAx0TFg
+         zwgOP9ydyigVZF+An+LXCs9jr6x/kOU6tXpLO6oLPvRqdkn6knihKGSBTnfxbTrxON
+         ab93zFO2p52CVXbhmlLVLKY+fmgDfOe65H4Tn07A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
         Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: [PATCH 5.6 109/167] tpm/tpm_tis: Free IRQ if probing fails
-Date:   Tue, 28 Apr 2020 20:24:45 +0200
-Message-Id: <20200428182238.950853009@linuxfoundation.org>
+Subject: [PATCH 5.6 110/167] tpm: fix wrong return value in tpm_pcr_extend
+Date:   Tue, 28 Apr 2020 20:24:46 +0200
+Message-Id: <20200428182239.092034139@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
 References: <20200428182225.451225420@linuxfoundation.org>
@@ -43,48 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-commit b160c94be5d2816b62c8ac338605668304242959 upstream.
+commit 29cb79795e324a8b65e7891d76f8f6ca911ba440 upstream.
 
-Call disable_interrupts() if we have to revert to polling in order not to
-unnecessarily reserve the IRQ for the life-cycle of the driver.
+For the algorithm that does not match the bank, a positive
+value EINVAL is returned here. I think this is a typo error.
+It is necessary to return an error value.
 
-Cc: stable@vger.kernel.org # 4.5.x
-Reported-by: Hans de Goede <hdegoede@redhat.com>
-Fixes: e3837e74a06d ("tpm_tis: Refactor the interrupt setup")
+Cc: stable@vger.kernel.org # 5.4.x
+Fixes: 9f75c8224631 ("KEYS: trusted: correctly initialize digests and fix locking issue")
+Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/char/tpm/tpm_tis_core.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/char/tpm/tpm-interface.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/char/tpm/tpm_tis_core.c
-+++ b/drivers/char/tpm/tpm_tis_core.c
-@@ -433,6 +433,9 @@ static void disable_interrupts(struct tp
- 	u32 intmask;
- 	int rc;
+--- a/drivers/char/tpm/tpm-interface.c
++++ b/drivers/char/tpm/tpm-interface.c
+@@ -323,7 +323,7 @@ int tpm_pcr_extend(struct tpm_chip *chip
  
-+	if (priv->irq == 0)
-+		return;
-+
- 	rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
- 	if (rc < 0)
- 		intmask = 0;
-@@ -1062,9 +1065,12 @@ int tpm_tis_core_init(struct device *dev
- 		if (irq) {
- 			tpm_tis_probe_irq_single(chip, intmask, IRQF_SHARED,
- 						 irq);
--			if (!(chip->flags & TPM_CHIP_FLAG_IRQ))
-+			if (!(chip->flags & TPM_CHIP_FLAG_IRQ)) {
- 				dev_err(&chip->dev, FW_BUG
- 					"TPM interrupt not working, polling instead\n");
-+
-+				disable_interrupts(chip);
-+			}
- 		} else {
- 			tpm_tis_probe_irq(chip, intmask);
+ 	for (i = 0; i < chip->nr_allocated_banks; i++) {
+ 		if (digests[i].alg_id != chip->allocated_banks[i].alg_id) {
+-			rc = EINVAL;
++			rc = -EINVAL;
+ 			goto out;
  		}
+ 	}
 
 
