@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC801BC1F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542B21BC1F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgD1OxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727775AbgD1OxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:53:04 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8064AC03C1AB;
-        Tue, 28 Apr 2020 07:53:03 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id p8so10428563pgi.5;
-        Tue, 28 Apr 2020 07:53:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/JpZ0+eTyvNRtNOYk4xxR3kczphsAY370jAlUixwt7E=;
-        b=UAyjAIan1d3dX0IGuqchgOq9ZJxc+1lIdjWmNns+yfgfuI9rJ8BpOvKq6w9S7tvB9B
-         lLaadMowzbiCMvG5JRaPPT2L/hk97E2Cg9e4glNhJTGWIm+SHU5YSb5eT6eALpNuFKv+
-         8T6aN/cfUtXyX8sOwX+1abnlj8Z829PzZdUvcpNTyOG1GHxna/TV2gSedASndyIQykIX
-         0ykK1jTkLm79a1tXkNpPGC/DUaHIjN33R4XY7YM+jCm5hR4Wmc8Ddv9htBSpxXJy2Mlq
-         jLZ6JOvN4eRgZ5K/dnQ5gnQS+KPQOz7GBtYYq+8sjKPZBXDeL/bZJUBif8PmCgmMhpzr
-         vW8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/JpZ0+eTyvNRtNOYk4xxR3kczphsAY370jAlUixwt7E=;
-        b=Nxis812MwUoBqc0tNuiVc/ZCBgCTZNJrWM9dmQ6Rykyc+Szub0kNGinGz9e4qDS7iF
-         8evWgKeUZnXKw8RzBA5CdNLBZCzvpgRaZ/FDUr76bcH1+JEMIPHhf86DTTVuknx1FIwM
-         SNAQ9qI3MeOotmhidPO3PB50hFrq09u5sSBoue96mva1r4hmXWR+wFblS44g5qYaW+RD
-         f8cuozJq316svSTLqBXyCT9BXmCAY1VplEovKkdo/zbqoQp/gDLh5hTRCbfxtVA7UrSY
-         8UHjeFZ3fSKuiJg5NJzAyvWochdj/aDsPziK/LgNlliixwUNwYPdz9Fb4sy9lwqtGkjf
-         YnIQ==
-X-Gm-Message-State: AGi0PuYFhtO1FOPHDTpPtRREC7ZT/C5ojnY7t/03xAin78de55KUaiUw
-        taqBbb1mGufR3XdJ9gvbqwc=
-X-Google-Smtp-Source: APiQypLZPibccVXPkfV9YKUx6XHMdVSQdB9T6nrvmqRSAJTVcXZudPqtpdseKkYT4ifhgZWyy3MFng==
-X-Received: by 2002:a62:7515:: with SMTP id q21mr31848066pfc.1.1588085582953;
-        Tue, 28 Apr 2020 07:53:02 -0700 (PDT)
-Received: from localhost ([89.208.244.169])
-        by smtp.gmail.com with ESMTPSA id bg6sm2223231pjb.21.2020.04.28.07.53.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Apr 2020 07:53:02 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 22:52:57 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, yash.shah@sifive.com,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <Claudiu.Beznea@microchip.com>
-Subject: Re: [PATCH net v1] net: macb: fix an issue about leak related system
- resources
-Message-ID: <20200428145257.GA3622@nuc8i5>
-References: <20200425125737.5245-1-zhengdejin5@gmail.com>
- <CAHp75VceH08X5oWSCXhx8O0Bsx9u=Tm+DVQowG+mC3Vs2=ruVQ@mail.gmail.com>
- <20200428032453.GA32072@nuc8i5>
- <acdfcb8d-9079-1340-09d5-2c10383f9c26@microchip.com>
- <20200428131159.GA2128@nuc8i5>
- <CAHp75VdAuo=UiTa+xJ8qFqbxqHVeL_M6nahhzXKbGHqvovoKMA@mail.gmail.com>
+        id S1728117AbgD1Oxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:53:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727775AbgD1Oxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 10:53:37 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 936FB205C9;
+        Tue, 28 Apr 2020 14:53:36 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 10:53:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Julien Grall <julien.grall@arm.com>,
+        Daniel Wagner <wagi@monom.org>, John Kacur <jkacur@redhat.com>
+Subject: Re: [PATCH -rt] hrtimer: fix logic for when grabbing
+ softirq_expiry_lock can be elided
+Message-ID: <20200428105335.16011a4a@gandalf.local.home>
+In-Reply-To: <20200428144026.5882-1-rasmus.villemoes@prevas.dk>
+References: <20200428144026.5882-1-rasmus.villemoes@prevas.dk>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdAuo=UiTa+xJ8qFqbxqHVeL_M6nahhzXKbGHqvovoKMA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 05:04:32PM +0300, Andy Shevchenko wrote:
-> On Tue, Apr 28, 2020 at 4:12 PM Dejin Zheng <zhengdejin5@gmail.com> wrote:
-> > On Tue, Apr 28, 2020 at 10:42:56AM +0200, Nicolas Ferre wrote:
-> > > On 28/04/2020 at 05:24, Dejin Zheng wrote:
-> > > > On Mon, Apr 27, 2020 at 01:33:41PM +0300, Andy Shevchenko wrote:
-> > > > > On Sat, Apr 25, 2020 at 3:57 PM Dejin Zheng <zhengdejin5@gmail.com> wrote:
-> > > > > >
-> > > > > > A call of the function macb_init() can fail in the function
-> > > > > > fu540_c000_init. The related system resources were not released
-> > > > > > then. use devm_ioremap() to replace ioremap() for fix it.
-> > > > > >
-> > > > >
-> > > > > Why not to go further and convert to use devm_platform_ioremap_resource()?
-> > > > >
-> > > > devm_platform_ioremap_resource() will call devm_request_mem_region(),
-> > > > and here did not do it.
-> > >
-> > > And what about devm_platform_get_and_ioremap_resource()? This would
-> > > streamline this whole fu540_c000_init() function.
-> > >
-> > Nicolas, the function devm_platform_get_and_ioremap_resource() will also
-> > call devm_request_mem_region(), after call it, These IO addresses will
-> > be monopolized by this driver. the devm_ioremap() and ioremap() are not
-> > do this. if this IO addresses will be shared with the other driver, call
-> > devm_platform_get_and_ioremap_resource() may be fail.
-> 
-> I guess request region is a right thing to do. If driver is sharing
-> this IO region with something else, it is a delayed bomb attack and
-> has to be fixed.
-> 
->
-I did encounter IO address sharing, for example, some registers are shared
-by both PHY and USB controllers on Tegra SoCs. See link[1] for details.
-If many people think that devm_request_mem_region() should be added
-here, I will send patch v2 and convert to use
-devm_platform_ioremap_resource(). Thanks very much!
+On Tue, 28 Apr 2020 16:40:26 +0200
+Rasmus Villemoes <rasmus.villemoes@prevas.dk> wrote:
 
-link[1]: https://patchwork.ozlabs.org/project/linux-tegra/patch/20200127135841.17935-1-zhengdejin5@gmail.com/
+> Commit
+> 
+>   hrtimer: Add a missing bracket and hide `migration_base' on !SMP
+> 
+> which is 47b6de0b7f22 in 5.2-rt and 40aae5708e7a in 4.19-rt,
+> inadvertently changed the logic from base != &migration_base to base
+> == &migration_base.
+> 
+> On !CONFIG_SMP, the effect was to effectively always elide this
+> lock/unlock pair (since is_migration_base() is unconditionally false),
+> which for me consistently causes lockups during reboot, and reportedly
+> also often causes a hang during boot.
+> 
+> Adding this logical negation (or, what is effectively the same thing
+> on !CONFIG_SMP, reverting the above commit as well as "hrtimer:
+> Prevent using hrtimer_grab_expiry_lock() on migration_base") fixes
+> that lockup.
+> 
+> Fixes: 40aae5708e7a (hrtimer: Add a missing bracket and hide `migration_base' on !SMP) # 4.19-rt
+> Fixes: 47b6de0b7f22 (hrtimer: Add a missing bracket and hide `migration_base' on !SMP) # 5.2-rt
+> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+> ---
+> Something like this? I wasn't sure what Fixes: tag(s) to include, if
+> any. It's quite possible the same fix is needed on earlier -rt
+> kernels, I didn't check.
+> 
+>  kernel/time/hrtimer.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+> index e54a95de8b79..c3966c090246 100644
+> --- a/kernel/time/hrtimer.c
+> +++ b/kernel/time/hrtimer.c
+> @@ -953,7 +953,7 @@ void hrtimer_grab_expiry_lock(const struct hrtimer *timer)
+>  {
+>  	struct hrtimer_clock_base *base = READ_ONCE(timer->base);
+>  
+> -	if (timer->is_soft && is_migration_base(base)) {
+> +	if (timer->is_soft && !is_migration_base(base)) {
 
-BR,
-Dejin
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+That was my sloppiness in not seeing that 5.2-rt had == and 4.19 had !=.
+
+Thanks for tracking this down!
+
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+-- Steve
+
+>  		spin_lock(&base->cpu_base->softirq_expiry_lock);
+>  		spin_unlock(&base->cpu_base->softirq_expiry_lock);
+>  	}
+
