@@ -2,289 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD301BC1AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F491BC1B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbgD1OtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:49:04 -0400
-Received: from mail-oln040092253033.outbound.protection.outlook.com ([40.92.253.33]:3040
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727079AbgD1OtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:49:03 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fz6+cpVkuTFV1k2o6s8jaQFZMyToykktLrPdupbJQ2disbH8Q0ZAHDZo8zNADUptkQblyH9vNh/3bdutAof32HY1Bnt/a0JTSoE/s5RMeV248m8pInWdzhX0NfbDnxa3eXRnLwsnmCdK2R4vB56V2yv9MUA5MZj57zxlOYfkgbJC6oeokdAZzavKSXCICw3hhou3lBs2KMXzvl6+NrIqBcrz19nPuV05gZlA/D7aJ7dBs7rq9j71ZMQDwfbo23XAu34cSqwX5VRZiLd0ZhquYR2LwxmBQ0gwHfsVqFLblWAkclpSyIWE7bt5zeCzSA/XnWvF1MKk/3No/nbqWiJ9xQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YVqU5JkLLeC2WjHRol2wioZoDNGeMioAk7wAvRzT030=;
- b=gP2KuT5liQWEo878IyPMIMNRyUENmI726zNASkLQu6Ha+BJkkA1nTWTViCqqa/YaKHz8ALqXkKdWeAsINrcpRHoVwZ/hu/uF8MvVoWzCurC4ylX3n9unZXQWDQjjsXC8PiRChGctChX6C1QYjJVqS8AojivMnvE6BHw+2XDR5pIEVbN9Cyue6KEt58gXThwrRwDzwWzcszTrBovsHVT/n6FOInVWtLFEspte/Iwz4klf6k4eh3iYuMxJ5s3LW7RUSSH91yJIFaHgqxuQaa+bJ/Im2XCqnCPmundOPIjPIiQeAKREqjjzxk4v3r7QQID+f2FFCBTp4nBfIyrdd3DXnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=outlook.com.au; dmarc=pass action=none
- header.from=outlook.com.au; dkim=pass header.d=outlook.com.au; arc=none
-Received: from SG2APC01FT046.eop-APC01.prod.protection.outlook.com
- (2a01:111:e400:7ebd::51) by
- SG2APC01HT045.eop-APC01.prod.protection.outlook.com (2a01:111:e400:7ebd::264)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.15; Tue, 28 Apr
- 2020 14:48:55 +0000
-Received: from PSXP216MB0438.KORP216.PROD.OUTLOOK.COM (10.152.250.53) by
- SG2APC01FT046.mail.protection.outlook.com (10.152.251.145) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2937.15 via Frontend Transport; Tue, 28 Apr 2020 14:48:55 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:51EDA924EE5575836B2BE8E89D68A30908D9B850C57A44654175E43D00B0DCAA;UpperCasedChecksum:5800F732756826CCE29519EA3F0C8B1F67387221CD5E5A76FB26774C131BABEC;SizeAsReceived:8515;Count:48
-Received: from PSXP216MB0438.KORP216.PROD.OUTLOOK.COM
- ([fe80::21f1:20fb:d1f:8e25]) by PSXP216MB0438.KORP216.PROD.OUTLOOK.COM
- ([fe80::21f1:20fb:d1f:8e25%7]) with mapi id 15.20.2958.019; Tue, 28 Apr 2020
- 14:48:55 +0000
-Date:   Tue, 28 Apr 2020 22:48:45 +0800
-From:   Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        "Zhou, David(ChunMing)" <David1.Zhou@amd.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Takashi Iwai <tiwai@suse.com>, Lukas Wunner <lukas@wunner.de>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>
-Subject: Re: [PATCH 0/1] Fiji GPU audio register timeout when in BACO state
-Message-ID: <PSXP216MB043899DC52E6C6BF728D77CD80AC0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
-References: <PSXP216MB0438D2AF96CE0D4F83F48C4D80AE0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
- <MN2PR12MB4488E4909C1488FB507E0BF5F7AF0@MN2PR12MB4488.namprd12.prod.outlook.com>
- <s5ho8rdnems.wl-tiwai@suse.de>
- <PSXP216MB04387BF6B5F8DA84749E5D6F80AF0@PSXP216MB0438.KORP216.PROD.OUTLOOK.COM>
- <CADnq5_M=QEqxuCKjb_qZvFSvwM5eLEFfsepxYYXoouFoe5bn7A@mail.gmail.com>
- <s5h4kt4ojrf.wl-tiwai@suse.de>
- <CADnq5_MMQ5_MjEg=bkJJGMJP53RjB3yxvOW0nUDeWxzg3Q0pVQ@mail.gmail.com>
- <s5hv9lkm49n.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hv9lkm49n.wl-tiwai@suse.de>
-X-ClientProxiedBy: MEXPR01CA0122.ausprd01.prod.outlook.com
- (2603:10c6:200:2c::31) To PSXP216MB0438.KORP216.PROD.OUTLOOK.COM
- (2603:1096:300:d::20)
-X-Microsoft-Original-Message-ID: <20200428144845.GA1547@nicholas-dell-linux>
+        id S1728037AbgD1Otf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:49:35 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:59215 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727079AbgD1Otf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 10:49:35 -0400
+Received: from mail-lf1-f49.google.com ([209.85.167.49]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MAxLT-1jIlMa1wHh-00BIxw for <linux-kernel@vger.kernel.org>; Tue, 28 Apr
+ 2020 16:49:33 +0200
+Received: by mail-lf1-f49.google.com with SMTP id l11so17140785lfc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 07:49:33 -0700 (PDT)
+X-Gm-Message-State: AGi0PubepukpLjKJFCSyfJ563YSPYd7H8rRgVWmWkzjb58eexCUTPCRY
+        9KtD5uEkrc5Zha1tZQYlF60Qc9B4XpIwymPmBqY=
+X-Google-Smtp-Source: APiQypIgn/QnLQwwzv7K+EAOxxIYujQot/0Ahzey/nbfu4xUbJGAphNWjW9wOhBQ9sygb9FZ/D5ga4QVIdAT7/Icn5g=
+X-Received: by 2002:ac2:4466:: with SMTP id y6mr19644722lfl.125.1588085372765;
+ Tue, 28 Apr 2020 07:49:32 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from nicholas-dell-linux (2001:44b8:605f:11:45ec:d37e:a989:bf24) by MEXPR01CA0122.ausprd01.prod.outlook.com (2603:10c6:200:2c::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Tue, 28 Apr 2020 14:48:51 +0000
-X-Microsoft-Original-Message-ID: <20200428144845.GA1547@nicholas-dell-linux>
-X-TMN:  [IUGqIC7/Zv7twGS6RVxoYzVam1CA7NZrEjvBBgbRbB98FB2DWIA8dbv+bvNICPsO]
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 48
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 8e4b4306-4dba-4988-ebed-08d7eb8345db
-X-MS-TrafficTypeDiagnostic: SG2APC01HT045:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dCk4q+BikjfVpAHuBnEjPOxoOji2VyGkIKuZw2/4FJYAAUwW9kI2QkomRGL3hgcH5FSy1RXWLXDnTdpDgWa4HM9ilSB+gbTPxdCp+bsBQ0cPOY9OGEPtXrd8Po0kjYKzHvVkISz2IymFM0qIqfkU6Rc9NfIe+G1W8wcZbaU2NOAOy5WEez5Ci8ixHVFxW63jwyHy4uesfg1ubaShO5Y6yQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:PSXP216MB0438.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
-X-MS-Exchange-AntiSpam-MessageData: xcdHaXoakmq/JoXDcjPo742TnHoCTzPmZnYYGDCesfAVzWzUUAH4lceZ+WKDDBEy0q31E2ecfGAEM9CeHqH5/m6fLxXCdDalpm3mElZcC3LCzukmmxvB3CnRgPM7PM/xvcFyv5IiehgmeAfQB4k32CTf4QPVl0szzdu4c6AYEYTyy0hnCBLVF4RP1om/Fru13/rHzUbzny1+NtClaUYsUg==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e4b4306-4dba-4988-ebed-08d7eb8345db
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2020 14:48:54.9904
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2APC01HT045
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 28 Apr 2020 16:49:15 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2qLJkokMGt48JRky=WUeAbJRuNmoD1oqfWdrGSC6y1LA@mail.gmail.com>
+Message-ID: <CAK8P3a2qLJkokMGt48JRky=WUeAbJRuNmoD1oqfWdrGSC6y1LA@mail.gmail.com>
+Subject: Remaining randconfig objtool warnings, linux-next-20200428
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:nYMxGuIre/Wd8c/2NBLGKpZuVT+GzEVFc93a0m6I7HNaGHA3czI
+ xszTIYFCQ+4UyzNwsjRngR1OgCS+uJ+SbUnEzWPOgO4fF840+LSzq/kmfRhtaWTltdmQEIv
+ /yYoBys2zs704mWFXXAnhiVP4AESWMej2LcBXoy2VktqT5dZOoiLOrCkCbp/mFbEHJG8G0B
+ +PSr8lQ6bvMRojA6raurw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rF1lpXrjtDI=:w8b0vWpAyEEzNnTNleLykq
+ 0VioRhnZl22WZIax/VEGD2P29va9C48U20OkUOa1Cm2aoRD3W28bppUjJXshxBp9SBWtHKDcK
+ jq/XQ6K1imje/gAAu9uSItlimcc8ChB4uTxbrdq6CwdlYZQ40SdiAZE8eksdHF/hDmehf+uOb
+ OqsYW6OdF6YtH7lE0GiKzDKoWt2mo+Fh8ii+dquSqBoZ2pmij6nnecquZvjRxLWgbAOOLx+vZ
+ z8oXefhUJTUJVLyKS/d464ctyuNl1W5l8jIf/pUJvlHrYYLkbVyAobEqZFve3S5kvvGAumuyA
+ jEKJrb3rsTd6rkpPg7nCnfl82PJ51mnWgQ+rQ7PZT9A1B1MtPeuFdFdaIYFYrR8QMvNCax6Vr
+ Ocb0UnnHDeGjQWVc4+//10oU62++F9lOY2Dl0BWpemQO9oYC9TQs0LxUyViJBL/YU+VRjv6c7
+ SdXa2d+zxhwIc36UknfNZtR6inI8fUhuxLtAK7ktJnfOQspdsojQA3cCvM8Oqa3uvvbQw3UCm
+ M8RtWyjYekh3SVCykPtFdytVJymqrSdqZ+u9xYJWA1kZG2o6BwotCJOMNRGjqsENfccNWwQET
+ pON+3cbP5EG5cVQcm5XPJ6mORyqC17UraW2Ai3XHbamf49HAS0DWoOQmo677YEFd37zcKFK/6
+ pg5EBMzrHCbRz4EZRHq9Eb9qm22468bbyPvNnPj7i9LWjDTljUSqEJOlitc3AQkHQWT+lo1B1
+ EcF7B46dXLWoqPdI6UzhuYUE4utGiXoIRNyTMuZ+Gc5wMoYcEuB1oWEVyUGthXpVL2GRsbpqa
+ 2tfb0LDLrZXcjke5L7uygCXC+MyJ8V8Gg8KletQvyZZNSixK8U=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 09:57:24AM +0200, Takashi Iwai wrote:
-> On Mon, 27 Apr 2020 20:43:54 +0200,
-> Alex Deucher wrote:
-> > 
-> > On Mon, Apr 27, 2020 at 2:39 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > On Mon, 27 Apr 2020 20:28:12 +0200,
-> > > Alex Deucher wrote:
-> > > >
-> > > > On Mon, Apr 27, 2020 at 2:07 PM Nicholas Johnson
-> > > > <nicholas.johnson-opensource@outlook.com.au> wrote:
-> > > > >
-> > > > > On Mon, Apr 27, 2020 at 05:15:55PM +0200, Takashi Iwai wrote:
-> > > > > > On Mon, 27 Apr 2020 16:22:21 +0200,
-> > > > > > Deucher, Alexander wrote:
-> > > > > > >
-> > > > > > > [AMD Public Use]
-> > > > > > >
-> > > > > > > > -----Original Message-----
-> > > > > > > > From: Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
-> > > > > > > > Sent: Sunday, April 26, 2020 12:02 PM
-> > > > > > > > To: linux-kernel@vger.kernel.org
-> > > > > > > > Cc: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian
-> > > > > > > > <Christian.Koenig@amd.com>; Zhou, David(ChunMing)
-> > > > > > > > <David1.Zhou@amd.com>; Nicholas Johnson <nicholas.johnson-
-> > > > > > > > opensource@outlook.com.au>
-> > > > > > > > Subject: [PATCH 0/1] Fiji GPU audio register timeout when in BACO state
-> > > > > > > >
-> > > > > > > > Hi all,
-> > > > > > > >
-> > > > > > > > Since Linux v5.7-rc1 / commit 4fdda2e66de0 ("drm/amdgpu/runpm: enable
-> > > > > > > > runpm on baco capable VI+ asics"), my AMD R9 Nano has been using runpm /
-> > > > > > > > BACO. You can tell visually when it sleeps, because the fan on the graphics
-> > > > > > > > card is switched off to save power. It did not spin down the fan in v5.6.x.
-> > > > > > > >
-> > > > > > > > This is great (I love it), except that when it is sleeping, the PCIe audio function
-> > > > > > > > of the GPU has issues if anything tries to access it. You get dmesg errors such
-> > > > > > > > as these:
-> > > > > > > >
-> > > > > > > > snd_hda_intel 0000:08:00.1: spurious response 0x0:0x0, last cmd=0x170500
-> > > > > > > > snd_hda_intel 0000:08:00.1: azx_get_response timeout, switching to polling
-> > > > > > > > mode: last cmd=0x001f0500 snd_hda_intel 0000:08:00.1: No response from
-> > > > > > > > codec, disabling MSI: last cmd=0x001f0500 snd_hda_intel 0000:08:00.1: No
-> > > > > > > > response from codec, resetting bus: last cmd=0x001f0500
-> > > > > > > > snd_hda_codec_hdmi hdaudioC1D0: Unable to sync register 0x2f0d00. -11
-> > > > > > > >
-> > > > > > > > The above is with the Fiji XT GPU at 0000:08:00.0 in a Thunderbolt enclosure
-> > > > > > > > (not that Thunderbolt should affect it, but I feel I should mention it just in
-> > > > > > > > case). I dropped a lot of duplicate dmesg lines, as some of them repeated a
-> > > > > > > > lot of times before the driver gave up.
-> > > > > > > >
-> > > > > > > > I offer this patch to disable runpm for Fiji while a fix is found, if you decide
-> > > > > > > > that is the best approach. Regardless, I will gladly test any patches you come
-> > > > > > > > up with instead and confirm that the above issue has been fixed.
-> > > > > > > >
-> > > > > > > > I cannot tell if any other GPUs are affected. The only other cards to which I
-> > > > > > > > have access are a couple of AMD R9 280X (Tahiti XT), which use radeon driver
-> > > > > > > > instead of amdgpu driver.
-> > > > > > >
-> > > > > > > Adding a few more people.  Do you know what is accessing the audio?  The audio should have a dependency on the GPU device.  The GPU won't enter runtime pm until the audio has entered runtime pm and vice versa on resume. Please attach a copy of your dmesg output and lspci output.
-> > > > >
-> > > > > pci 0000:08:00.1: D0 power state depends on 0000:08:00.0
-> > > > > The above must be the dependency of which you speak from dmesg.
-> > > > >
-> > > > > Accessing the audio? I did not have a single method for triggering it.
-> > > > > Sometimes it happened on shutdown. Sometimes when restarting gdm.
-> > > > > Sometimes when playing with audio settings in Cinnamon Desktop. But most
-> > > > > often when changing displays. It might have something to do with the
-> > > > > audio device associated with a monitor being created when the monitor is
-> > > > > found. If an audio device is created, then pulseaudio might touch it.
-> > > > > Sorry, this is a very verbose "not quite sure".
-> > > > >
-> > > > > To trigger the bug, this time I did the following:
-> > > > >
-> > > > > 1. Boot laptop without Fiji and log in
-> > > > >
-> > > > > 2. Attach Fiji via Thunderbolt (no displays attached to Fiji) and
-> > > > > approve Thunderbolt device
-> > > > >
-> > > > > 3. Log in again because the session gets killed when GPU is hot-added
-> > > > >
-> > > > > 4. Wait for Fiji to fall asleep (fan stops)
-> > > > >
-> > > > > 5. Open "dmesg -w" on laptop display
-> > > > >
-> > > > > 6. Attach display to DisplayPort on Fiji (it should still stay asleep)
-> > > > >
-> > > > > 7. Do WindowsKey+P to activate external display. The error appears in
-> > > > > dmesg window that instant.
-> > > > >
-> > > > > Could it be a race condition when waking the card up?
-> > > > >
-> > > > > I cannot get the graphics card fan to spin down if the Thunderbolt
-> > > > > enclosure is attached at boot time. It only does it if hot-added.
-> > > > >
-> > > > > If you think it will help, I can take out the Fiji and put it in a test
-> > > > > rig and try to replicate the issue without Thunderbolt, but it looks
-> > > > > like it will not spin the fan down if Fiji is attached at boot time.
-> > > > >
-> > > > > Question, why would the fan not spin down if Fiji is attached at boot
-> > > > > time, and how would one make the said fan turn off? Aside from being
-> > > > > useful for pinning down the audio register issue, I would like to make
-> > > > > sure the power savings are realised whenever the GPU is not being used.
-> > > >
-> > > > Presumably something is using the device.  Maybe a framebuffer console
-> > > > or X?  Or maybe the something like tlp has disabled runtime pm on your
-> > > > device?  You can see the current status by reading the files in
-> > > > /sys/class/drm/cardX/device/power/ .  Replace cardX with card0, card1,
-> > > > etc. depending on which device is the radeon card.
-I had card1 = Fiji stuck awake and card2 = Fiji asleep (both in separate 
-Thunderbolt enclosures).
+I noticed the number of objtool warnings in randconfig kernels have gone down
+ recently, maybe it's possible to eliminate the remaining ones?
 
-The sysfs values in /sys/class/drm/card{0,1}/device/power/ were the 
-same.
+Here are the ones I ran into recently, using gcc-9.3:
 
-The powertop utility did not help in "tunables" tab.
+==> build/x86/0x3D2B5D6D_defconfig/log <==
+arch/x86/kvm/vmx/vmx.o: warning: objtool:
+vmx_handle_exit_irqoff()+0x24: unreachable instruction
 
-I compiled kernel without fbcon and it still did it.
+==> build/x86/0xE0F2ACFF_defconfig/log <==
+kernel/time/posix-stubs.o: warning: objtool:
+__x64_sys_timer_create()+0x23: sibling call from callable instruction
+with modified stack frame
 
-But moving from Arch to Ubuntu changed the behaviour. I am still 
-investigating.
+==> build/x86/0xFD7B7323_defconfig/log <==
+arch/x86/entry/entry_64.o: warning: objtool: .entry.text+0x991:
+unreachable instruction
 
-> > > >
-> > > > FWIW, I have a fiji board in a desktop system and it worked fine when
-> > > > this code was enabled.
-> > >
-> > > Is the new DC code used for Fiji boards?  IIRC, the audio component
-> > > binding from amdgpu is enabled only for DC, and without the audio
-> > > component binding the runtime PM won't be linked up, hence you can't
-> > > power up GPU from the audio side access automatically.
-> > >
-> > 
-> > Yes, DC is enabled by default for all cards with runtime pm enabled.
-> 
-> OK, thanks, I found that amdgpu got bound via component in the dmesg
-> output, too:
-> 
-> [   21.294927] snd_hda_intel 0000:08:00.1: bound 0000:08:00.0 (ops amdgpu_dm_audio_component_bind_ops [amdgpu])
-> 
-> This is the place soon after amdgpu driver gets initialized.
-> Then we see later another initialization phase:
-> 
-> [   26.904127] rfkill: input handler enabled
-> [   37.264152] [drm] PCIE GART of 1024M enabled (table at 0x000000F400000000).
-> 
-> here shows 10 seconds between them.  Then, it complained something:
-> 
-> 
-> [   37.363287] [drm] UVD initialized successfully.
-> [   37.473340] [drm] VCE initialized successfully.
-> [   37.477942] amdgpu 0000:08:00.0: [drm] Cannot find any crtc or sizes
+==> build/x86/0x2EA4CE4F_defconfig/log <==
+kernel/kcov.o: warning: objtool: write_comp_data()+0x1b: call to
+check_kcov_mode() with UACCESS enabled
+kernel/kcov.o: warning: objtool: __sanitizer_cov_trace_pc()+0x15: call
+to check_kcov_mode() with UACCESS enabled
 
-The above would be me hitting WindowsKey+P to change screens, but with 
-no DisplayPort attached to Fiji, hence it unable to find crtc.
+==> build/x86/0x500B1B82_defconfig/log <==
+kernel/bpf/core.o: warning: objtool: ___bpf_prog_run()+0x1269: call
+without frame pointer save/setup
 
-> 
-> ... and go further, and hitting HD-audio error:
-> 
-That would be me having attached the DisplayPort and done WindowsKey+P 
-again.
+==> build/x86/0x7942F24A_defconfig/log <==
+samples/ftrace/ftrace-direct.o: warning: objtool: .text+0x0:
+unreachable instruction
+samples/ftrace/ftrace-direct-too.o: warning: objtool: .text+0x0:
+unreachable instruction
+samples/ftrace/ftrace-direct-modify.o: warning: objtool: .text+0x0:
+unreachable instruction
 
-> 
-> [   38.936624] [drm] fb mappable at 0x4B0696000
-> [   38.936626] [drm] vram apper at 0x4B0000000
-> [   38.936626] [drm] size 33177600
-> [   38.936627] [drm] fb depth is 24
-> [   38.936627] [drm]    pitch is 15360
-> [   38.936673] amdgpu 0000:08:00.0: fb1: amdgpudrmfb frame buffer device
-> [   40.092223] snd_hda_intel 0000:08:00.1: azx_get_response timeout, switching to polling mode: last cmd=0x00170500
-> 
-> After this point, HD-audio communication was screwed up.
-> 
-> This lastcmd in the above message is AC_SET_POWER_STATE verb for the
-> root node to D0, so the very first command to power up the codec. 
-> The rest commands are also about the power up of each node, so the
-> whole error indicate that the power up at runtime resume failed.
-> 
-> So, this looks to me as if the device gets runtime-resumed at the bad
-> moment?
-It does. However, this is not going to be easy to pin down.
+I've uploaded the .config and .o files for each one to
+https://drive.google.com/open?id=0B_XQwQ5KlfJAbUtrTVJaRmJIZUk
+Let me know if you need any additional information.
 
-I moved from Arch to Ubuntu, and it behaves differently. I cannot 
-trigger the bug in Ubuntu. Plus, it puts the GPUs asleep, even if 
-attached at boot, unlike Arch. I will continue to try to trigger it. But 
-even if this is a problem with the Linux distribution, it should not be 
-able to trigger a kernel mode bug, so we should persist with finding it.
+Note that I used a modified linux-next tree (including many build
+fixes) for creating
+these, some of them may not actually happen with mainline or unpatched
+linux-next
+kernels.
 
-Regards,
-Nicholas
-
-> 
-> 
-> thanks,
-> 
-> Takashi
+        Arnd
