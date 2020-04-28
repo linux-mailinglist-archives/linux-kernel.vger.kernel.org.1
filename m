@@ -2,109 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADCF1BC19A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0008B1BC1A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728083AbgD1OoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:44:24 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:18713 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728073AbgD1OoX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:44:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588085063; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=nQ1Rk345+B1CzRfg7oYPjHw4VBZBtZklp4KplnRGW8k=; b=l4SgabZeZzq+FuRbVP8PcHTFavDyObLnBemPIhxXc+gaZxbaG4zwoXCGJARJHv6Nds8GyBS/
- Tml3QxzY9fcFK6C3F1iLvq6QaInH/0vip8vqpNzRrFBMl8BV5vjMgdDZDhLrHV1QFTZy0Ifd
- J3Cas3davqGD7AYBn8KKG7fAlCc=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea84142.7ff0eeb10ae8-smtp-out-n03;
- Tue, 28 Apr 2020 14:44:18 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7AF56C433F2; Tue, 28 Apr 2020 14:44:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727918AbgD1Opp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:45:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727079AbgD1Opp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 10:45:45 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F980C433CB;
-        Tue, 28 Apr 2020 14:44:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7F980C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v2 2/8] bus: mhi: core: Add range check for channel id
- received in event ring
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>, mani@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hemantk@codeaurora.org
-References: <1588042766-17496-1-git-send-email-bbhatt@codeaurora.org>
- <1588042766-17496-3-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <5dfa3617-644c-42c3-0dfe-4f9f4a6d5ded@codeaurora.org>
-Date:   Tue, 28 Apr 2020 08:44:15 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        by mail.kernel.org (Postfix) with ESMTPSA id B85F1206B9;
+        Tue, 28 Apr 2020 14:45:44 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 10:45:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Xiao Yang <yangx.jy@cn.fujitsu.com>
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH] kernel/trace: Stop and wait for kthread on preempt irq
+ module unload
+Message-ID: <20200428104543.3926eaaf@gandalf.local.home>
+In-Reply-To: <20200428104409.0995ceb0@gandalf.local.home>
+References: <20200424223630.224895-1-joel@joelfernandes.org>
+        <5EA80319.7080005@cn.fujitsu.com>
+        <20200428104409.0995ceb0@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1588042766-17496-3-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/2020 8:59 PM, Bhaumik Bhatt wrote:
-> From: Hemant Kumar <hemantk@codeaurora.org>
+On Tue, 28 Apr 2020 10:44:09 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Tue, 28 Apr 2020 18:19:05 +0800
+> Xiao Yang <yangx.jy@cn.fujitsu.com> wrote:
 > 
-> MHI data completion handler function reads channel id from event
-> ring element. Value is under the control of MHI devices and can be
-> any value between 0 and 255. In order to prevent out of bound access
-> add a bound check against the max channel supported by controller
-> and skip processing of that event ring element.
+> > Hi Joel,
+> > 
+> > Thanks for your quick fix.
+> > 
+> > Unfortunately, it fixes my original panic but introduces other
+> > issues(two wanings and one panic) on my arm64 vm, as below:
+> >  
 > 
-> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->   drivers/bus/mhi/core/main.c | 4 ++++
->   1 file changed, 4 insertions(+)
+> Does the following on top of Joel's patch fix it?
 > 
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 23154f1..1ccd4cc 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -827,6 +827,9 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
->   		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
->   
->   		chan = MHI_TRE_GET_EV_CHID(local_rp);
-> +		if (WARN_ON(chan >= mhi_cntrl->max_chan))
-> +			goto next_event;
+> -- Steve
+> 
+> diff --git a/kernel/trace/preemptirq_delay_test.c b/kernel/trace/preemptirq_delay_test.c
+> index 1c28ca20e30b..6d9131ae7e8c 100644
+> --- a/kernel/trace/preemptirq_delay_test.c
+> +++ b/kernel/trace/preemptirq_delay_test.c
+> @@ -113,15 +113,27 @@ static int preemptirq_delay_run(void *data)
+>  
+>  	for (i = 0; i < s; i++)
+>  		(testfuncs[i])(i);
 > +
->   		mhi_chan = &mhi_cntrl->mhi_chan[chan];
->   
->   		if (likely(type == MHI_PKT_TYPE_TX_EVENT)) {
-> @@ -837,6 +840,7 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
->   			event_quota--;
->   		}
->   
-> +next_event:
->   		mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
->   		local_rp = ev_ring->rp;
->   		dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-> 
+> +	while (!kthread_should_stop()) {
+> +		schedule();
+> +		set_current_state(TASK_INTERRUPTIBLE);
+> +	}
+> +
+> +	__set_current_state(TASK_RUNNING);
+> +
+>  	return 0;
+>  }
+>  
 
-It looks like the same issue exists in mhi_process_ctrl_ev_ring(), and 
-thus some form of this solution needs to be applied there as well. 
-Would you please fix that too?
 
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+The below isn't needed, as the return does check IS_ERR().
+
+-- Steve
+
+>  static struct task_struct *preemptirq_start_test(void)
+>  {
+> +	struct task_struct *task;
+>  	char task_name[50];
+>  
+>  	snprintf(task_name, sizeof(task_name), "%s_test", test_mode);
+> -	return kthread_run(preemptirq_delay_run, NULL, task_name);
+> +	task = kthread_run(preemptirq_delay_run, NULL, task_name);
+> +	if (IS_ERR(task))
+> +		return NULL;
+> +	return task;
+>  }
+>  
+>  
+>  
+
