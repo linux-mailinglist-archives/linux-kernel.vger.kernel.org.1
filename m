@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8751BC950
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807801BCA8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730930AbgD1Sk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:40:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58158 "EHLO mail.kernel.org"
+        id S1731341AbgD1SuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:50:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730792AbgD1SjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:39:21 -0400
+        id S1729425AbgD1Sj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:39:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BB0920575;
-        Tue, 28 Apr 2020 18:39:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B57220730;
+        Tue, 28 Apr 2020 18:39:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099160;
-        bh=OTy+X93/6mEgX405aLqjp2EVUhch7boNXPNfKUUVmU0=;
+        s=default; t=1588099167;
+        bh=//zB9eqmKRDD9KoFjetW5pHJ9mI7Z88mNkGSqKAfTK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QTIBQHc6D3a9r/cTVcd1+cIyAYYdAqLQH/IU6OjV8ohPiTNiycNIPGhIaXOiMFv62
-         8v193TUvSc6Tbt1GqUBPsrr5RUqliShnqxuqiDC8q1/cFME4RHMz0QFJVxGB/UOsPf
-         frzRpxvVVCnlf8aOZtmY6j9Tgy/yQqklEW5YdvZ8=
+        b=jeaBgQ5BMHsT0j0dIG112Pk5wmU+ZhY0uDcmLwDYQPS3gH82HBGYow5jr1qR4AGHm
+         PTZx9Q56zxTQKpwe39ViI5c+02eYTCUSOMHbW8n0RG9Mzlef1SC+uFvBFLxxV6wXKK
+         IGNhVRmNZ8A0vAelzLn5Zb20AH54dRPgi5GhqVH8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 4.19 107/131] audit: check the length of userspace generated audit records
-Date:   Tue, 28 Apr 2020 20:25:19 +0200
-Message-Id: <20200428182238.626181804@linuxfoundation.org>
+        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 108/131] ASoC: dapm: fixup dapm kcontrol widget
+Date:   Tue, 28 Apr 2020 20:25:20 +0200
+Message-Id: <20200428182238.752484549@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
 References: <20200428182224.822179290@linuxfoundation.org>
@@ -44,38 +43,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Gyeongtaek Lee <gt82.lee@samsung.com>
 
-commit 763dafc520add02a1f4639b500c509acc0ea8e5b upstream.
+commit ebf1474745b4373fdde0fcf32d9d1f369b50b212 upstream.
 
-Commit 756125289285 ("audit: always check the netlink payload length
-in audit_receive_msg()") fixed a number of missing message length
-checks, but forgot to check the length of userspace generated audit
-records.  The good news is that you need CAP_AUDIT_WRITE to submit
-userspace audit records, which is generally only given to trusted
-processes, so the impact should be limited.
+snd_soc_dapm_kcontrol widget which is created by autodisable control
+should contain correct on_val, mask and shift because it is set when the
+widget is powered and changed value is applied on registers by following
+code in dapm_seq_run_coalesced().
 
+		mask |= w->mask << w->shift;
+		if (w->power)
+			value |= w->on_val << w->shift;
+		else
+			value |= w->off_val << w->shift;
+
+Shift on the mask in dapm_kcontrol_data_alloc() is removed to prevent
+double shift.
+And, on_val in dapm_kcontrol_set_value() is modified to get correct
+value in the dapm_seq_run_coalesced().
+
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
 Cc: stable@vger.kernel.org
-Fixes: 756125289285 ("audit: always check the netlink payload length in audit_receive_msg()")
-Reported-by: syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Link: https://lore.kernel.org/r/000001d61537$b212f620$1638e260$@samsung.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/audit.c |    3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/soc-dapm.c |   20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -1331,6 +1331,9 @@ static int audit_receive_msg(struct sk_b
- 	case AUDIT_FIRST_USER_MSG2 ... AUDIT_LAST_USER_MSG2:
- 		if (!audit_enabled && msg_type != AUDIT_USER_AVC)
- 			return 0;
-+		/* exit early if there isn't at least one character to print */
-+		if (data_len < 2)
-+			return -EINVAL;
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -410,7 +410,7 @@ static int dapm_kcontrol_data_alloc(stru
  
- 		err = audit_filter(msg_type, AUDIT_FILTER_USER);
- 		if (err == 1) { /* match or error */
+ 			memset(&template, 0, sizeof(template));
+ 			template.reg = e->reg;
+-			template.mask = e->mask << e->shift_l;
++			template.mask = e->mask;
+ 			template.shift = e->shift_l;
+ 			template.off_val = snd_soc_enum_item_to_val(e, 0);
+ 			template.on_val = template.off_val;
+@@ -536,8 +536,22 @@ static bool dapm_kcontrol_set_value(cons
+ 	if (data->value == value)
+ 		return false;
+ 
+-	if (data->widget)
+-		data->widget->on_val = value;
++	if (data->widget) {
++		switch (dapm_kcontrol_get_wlist(kcontrol)->widgets[0]->id) {
++		case snd_soc_dapm_switch:
++		case snd_soc_dapm_mixer:
++		case snd_soc_dapm_mixer_named_ctl:
++			data->widget->on_val = value & data->widget->mask;
++			break;
++		case snd_soc_dapm_demux:
++		case snd_soc_dapm_mux:
++			data->widget->on_val = value >> data->widget->shift;
++			break;
++		default:
++			data->widget->on_val = value;
++			break;
++		}
++	}
+ 
+ 	data->value = value;
+ 
 
 
