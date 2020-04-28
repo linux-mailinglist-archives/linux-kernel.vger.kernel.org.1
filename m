@@ -2,117 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96FB1BBA98
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 12:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C631BBAA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 12:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgD1KDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 06:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726932AbgD1KDh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 06:03:37 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248C6C03C1A9;
-        Tue, 28 Apr 2020 03:03:37 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t7so2250913plr.0;
-        Tue, 28 Apr 2020 03:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B47MWor82gS9pbzIegeM3QuLFmWB3mDHdrQ9VL++afI=;
-        b=nrCK7SnAoBKnsW47PH6KdJVngh2wmddILURXMBln553biX696/xlswk8+NI/1huiq/
-         WAUd13XaNPT/agYm3VF4fXKbJDWG2CXvOKTe/7X6KnmC67lkkTGb6oO9b8PedRKHbEyT
-         RBYDscitMQ+Fim7G2Qx0nNTXy395hfXXdkDJx6rwMp82tLUu6EgmS42LAB2EFi6EUUJY
-         hZBaNewYyMTmdIQJi2G6WImQvKHZbwoMXlQ+JxOqT5KOB9VF2CDqhSf8SVh7O+vRfusT
-         nmVdC4HGEPmKO9VbnnAlKgKC+Z6lWj4eDnq4he3J0IkVJwyyP/1BmKICCYoD45iQ70WB
-         unTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B47MWor82gS9pbzIegeM3QuLFmWB3mDHdrQ9VL++afI=;
-        b=tvo+MWeeBOE7cVHhTUdaX5IoTUirn4YIPMvmQlQ42hSubkdrAQITNX0guJvj6Z8aBD
-         wL4P5f7EtXTsCiliZrh7sTjyoaGkHcPPQUyrrzk6BKKgT7YXBJr1z0UODW/hdfikFxkY
-         xUEwkYFcRx1fIt9kVTV3ERrnbKdTdGb0OyTpbbLsw7g79i03xJvL5z73FKOCvKP0I+pa
-         lPot7i0K8nMUunWh344bH69737e8/FBQe7CIu7ilCpyBtqxC39db8bUobfoQMGtl/4qy
-         OBsirPKTi6RpGrQC/8WMDOAGs0TkWVT2dVBQUqhGQoxVGkcdVVDnwDo8Fh2wgMiLClTU
-         QJAg==
-X-Gm-Message-State: AGi0PuawYZpu+qHAbm9fOYwZmuGQWbM7sjjxdmeCqzrOB7ShB7hkJYRQ
-        vppuKjhyMXKHtf3mXDDTvu1AdKtswh0OZ1as8Oo=
-X-Google-Smtp-Source: APiQypI5K60dAdHo8M/GOcGL+EVrmv/aPEuWFNph9FWRnFIr9C0KmKwQlz6TD7ILooulyHou0b63fJIotf/Kz9lrtlo=
-X-Received: by 2002:a17:90a:224b:: with SMTP id c69mr4246982pje.8.1588068216432;
- Tue, 28 Apr 2020 03:03:36 -0700 (PDT)
+        id S1727859AbgD1KEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 06:04:38 -0400
+Received: from lnfm1.sai.msu.ru ([93.180.26.255]:49917 "EHLO lnfm1.sai.msu.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727107AbgD1KEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 06:04:37 -0400
+Received: from dragon.sai.msu.ru (dragon.sai.msu.ru [93.180.26.172])
+        by lnfm1.sai.msu.ru (8.14.1/8.12.8) with ESMTP id 03SA3tiw019532;
+        Tue, 28 Apr 2020 13:04:00 +0300
+Received: from oak.local (unknown [188.123.231.186])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by dragon.sai.msu.ru (Postfix) with ESMTPSA id 1C034EB39;
+        Tue, 28 Apr 2020 13:03:56 +0300 (MSK)
+From:   "Matwey V. Kornilov" <matwey@sai.msu.ru>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/ZYNQ
+        ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Cc:     matwey.kornilov@gmail.com,
+        "Matwey V. Kornilov" <matwey@sai.msu.ru>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/ZYNQ
+        ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2] ARM: dts: zynq: Fix ethernet PHY for v5 schematics
+Date:   Tue, 28 Apr 2020 13:03:49 +0300
+Message-Id: <20200428100350.12699-1-matwey@sai.msu.ru>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <752db40d-5aed-4a97-a050-bc1376547f87@xilinx.com>
+References: <752db40d-5aed-4a97-a050-bc1376547f87@xilinx.com>
 MIME-Version: 1.0
-References: <20200423220056.29450-1-john.stultz@linaro.org>
- <jhj1rodyeu1.mognet@arm.com> <CALAqxLW+CBMxj_5gCF5yLcX8dhM7Fg6oOL-zot0ZZT6PW6R04g@mail.gmail.com>
- <jhj1ro9bzhg.mognet@arm.com> <CAHp75VeE_J-GE9o6QVxBk6RJ2fjSwATfR1etaT0CXCgAiidjPQ@mail.gmail.com>
- <jhjimhkrnw1.mognet@arm.com>
-In-Reply-To: <jhjimhkrnw1.mognet@arm.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 28 Apr 2020 13:03:25 +0300
-Message-ID: <CAHp75VfJCVh0HRw4G8o0603XEJe6LdUnvrrugxgU0oyOWRCBPA@mail.gmail.com>
-Subject: Re: [RFC][PATCH] serial: amba-pl011: Make sure we initialize the
- port.lock spinlock
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 11:54 AM Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
->
-> On 27/04/20 10:02, Andy Shevchenko wrote:
-> >> I did a tiny bit of git spelunking; I found a commit that changed
-> >> uart_console_enabled() into uart_console() within
-> >> uart_port_spin_lock_init():
-> >>
-> >>   a3cb39d258ef ("serial: core: Allow detach and attach serial device for console")
-> >>
-> >> Reverting just that one change in uart_port_spin_lock_init() seems to go
-> >> fine on both Juno & HiKey960, but I think that doesn't play well with the
-> >> rest of the aforementioned commit. I think that this initial (index, line)
-> >> tuple is to blame, though I've added Andy in Cc just in case.
-> >
-> > The above mentioned commit reveals the issue in the code which doesn't
-> > register console properly.
-> >
-> > See what I put in 0f87aa66e8c31 ("serial: sunhv: Initialize lock for
-> > non-registered console").
->
-> Thanks for the pointer. I'm still a puzzled as to why it goes fine on one
-> board and not on another, but at this point I don't have any better
-> suggestion than the unconditional init.
+There are at least two different versions existing for MYIR Zturn:
 
-My patch relied on the behaviour of 8250 [1] and that comment (near to
-spin lock initialization routine).
-It seems AMBA UART drivers unconditionally assign consoles ([2], [3])
-without registering it properly at console_initcall().
+ * v4 schematics has Atheros AR8035 PHY at 0b000
+     http://www.myirtech.com/download/Zynq7000/Z-TURNBOARD_schematic.pdf
+ * v5 schematics has Micrel KSZ9031 PHY at 0b011
+     v5 schematics available at DVD disk supplied with the board
 
-Least invasive fix is what John's patch does, but real fix is to do
-something like 8250 does.
+Specify both PHYs to make ethernet interface working for any board
+revision. This commit relies on of_mdiobus_register() behavior.
+When phy-handle is missed, every nested PHY node is considered,
+while ENODEVs are ignored.
 
-So, the rule of thumb is simple: if we assign console to the port we
-must initialize the lock even if we are not registering console.
-I dunno the history of different behaviours among drivers and what
-change(s) brought us to the messy spin lock initialization code in
-them.
+Before the patch:
 
-[1]: https://elixir.bootlin.com/linux/v5.7-rc3/source/drivers/tty/serial/8250/8250_core.c#L684
-[2]: https://elixir.bootlin.com/linux/v5.7-rc3/source/drivers/tty/serial/amba-pl010.c#L691
-[3]: https://elixir.bootlin.com/linux/v5.7-rc3/source/drivers/tty/serial/amba-pl011.c#L2496
+[   28.295002] macb e000b000.ethernet eth0: Could not attach PHY (-19)
 
+After the patch:
+
+[   28.257365] macb e000b000.ethernet eth0: PHY [e000b000.ethernet-ffffffff:00] driver [Micrel KSZ9031 Gigabit PHY] (irq=POLL)
+[   28.257384] macb e000b000.ethernet eth0: configuring for phy/rgmii-id link mode
+
+Signed-off-by: Matwey V. Kornilov <matwey@sai.msu.ru>
+---
+Changes since v1:
+ - reworded commit message
+
+ arch/arm/boot/dts/zynq-zturn.dts | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/boot/dts/zynq-zturn.dts b/arch/arm/boot/dts/zynq-zturn.dts
+index 5ec616ebca08..07da9cf60d02 100644
+--- a/arch/arm/boot/dts/zynq-zturn.dts
++++ b/arch/arm/boot/dts/zynq-zturn.dts
+@@ -67,10 +67,17 @@
+ &gem0 {
+ 	status = "okay";
+ 	phy-mode = "rgmii-id";
+-	phy-handle = <&ethernet_phy>;
+ 
+-	ethernet_phy: ethernet-phy@0 {
+-		reg = <0x0>;
++	ethernet-phy@0 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <0>;
++		max-speed = <1000>;
++	};
++
++	ethernet-phy@3 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <3>;
++		max-speed = <1000>;
+ 	};
+ };
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.16.4
+
