@@ -2,75 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FD21BCF8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 00:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE1F1BCF98
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 00:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgD1WNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 18:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50538 "EHLO
+        id S1726828AbgD1WOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 18:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726256AbgD1WNt (ORCPT
+        by vger.kernel.org with ESMTP id S1726256AbgD1WOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 18:13:49 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C29C03C1AD
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 15:13:49 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id k23so61084ios.5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 15:13:49 -0700 (PDT)
+        Tue, 28 Apr 2020 18:14:40 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24953C03C1AC;
+        Tue, 28 Apr 2020 15:14:40 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id r66so4586179oie.5;
+        Tue, 28 Apr 2020 15:14:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nt1cm16K5Y36Xh/ags5IlFDGPPNWI9tqZabQEk0lerk=;
-        b=Pnjpc69a03aDBq/qhh2OAOK7R1vgOqgfEJpswJa4LrY0v9Mh4scs+TIZeMJ0a6XMen
-         LhdW4Q9sQnXEozRdiuE07iBai0lTC9DGkjZ/rl5ODoasbAjHr7+Fo18rj5zn7s+40gNz
-         iAvuQe2iImsfmV+sc1Ksjpa0s9JUBBMGSVGq0564FHWLONLCkA+bl7Hjy0c89Dvw9pSY
-         LVU2xYmjBErDnRx3hFdMNDEX1aSi7sffi2hbUCTOAHzDMdm1pKnLo86JPq3gPdZfZAqY
-         CP7PHW4+A/cda9B40s2k9nWBNneJLIKMn+i7aY7Q4zJGS8399VEZVJjtKcNxd9cc6MX1
-         kzqQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gw3ps5zK5zSBmyFNg+4aZWNwqGcQxCszeQ7AAe08xO4=;
+        b=L6F2pSLPacUX4g7U4s6bRzuld1CoTBW3Ns51VdsVOAEJZ9rQ9425HNqX1kytVKz5To
+         nuzMdNnvjpGEfifWSKGwOsbeAA/0BJhyXUZey8iaKZggTpm2qqVunJO573wpy2f/wMTd
+         9cYXLtvujxctil4qXyMAPh09sQq3oytorEZ7F2LSiTYN/469GcXS1PTskBUkwjO6n0rH
+         W2hSGZAV3xjEwTmg0MoYFQyYUfTJuvjtznnA1ryRsPnDYENeL2RYMzHbYFXEstbGw+s9
+         0dLUB6C26kQE8W7xq9LlxLWb6EXKqpaRqI15eHsXRR/Jp++gWJYXCj/Sd+P0Cuvn917c
+         s3Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nt1cm16K5Y36Xh/ags5IlFDGPPNWI9tqZabQEk0lerk=;
-        b=ogW++vleImXORWkZn+ULthxMqLC4Dab+jdDrx6MAmIRZBw3jloca0Rt0AKuX0Zrq2H
-         7kT8cGCmmxTUvwCVDio6VQ//kWaXmUYXIFnoxKTiIQpTdadxCUUjVgO9K8q4J9qqqupZ
-         ou6IB0nw5dcLuQlF5tOr7QfThP3T0H4aNSwpm1UpkY0+aBot6cdQOBlQkDM+rOZQuOVn
-         MAQ49BQKyX4A8nYXSe0XJcQ1IV3bg0IBTUT+V0bH0wN1sHcWaphwC5Dyz1ax/BPnh2qc
-         hKQyc1TdNMZLVtfFGPfkvaQvPBKh5wSMwJZk6bT8+SehUXAjt3MCjFvLa5+hUW0dUOe8
-         c69g==
-X-Gm-Message-State: AGi0PuZxWDi1eXw00W2dpMRfNBRe44qZGlzyeWQs9EWbEmBR0S9duWNN
-        JL7Unaj9vF87UuV+UpOI08mGgt7l1KfrujJZ26zB+A==
-X-Google-Smtp-Source: APiQypKr1XjkmQooE/lzZ/u45HwY4nKIHKWQktaVIhq1vSY/3xMLN9btT4nz5s5h8EBpad7gV6FTGcaNJpohL6Cfzxg=
-X-Received: by 2002:a05:6638:bd0:: with SMTP id g16mr27868146jad.48.1588112028205;
- Tue, 28 Apr 2020 15:13:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gw3ps5zK5zSBmyFNg+4aZWNwqGcQxCszeQ7AAe08xO4=;
+        b=rGiIqxaMm1IX+DQ6IgzP4YjZT9yVeNePrKNgwG+wFbrfE45csNhupBgAynCns9HRVY
+         gxw7KAPOP2lPpptcBoXM9NFaeLnv+vZu/GySW4BFTZj04aVForSClukAy51YbinNqMHY
+         uv4ylm7LlmZibyzhJGU1voWyiu6FePhM/SGbiaR9R4ZxaN/rCYDOCAYC3gvGnklIzQrr
+         66gGnLJ8DZb8UpOGGutnzMzXKuq1yC0Evz/VEMBkro7x7GHEVzJgUh0gMDO/Uj1OqOlN
+         pHKH9Yenaf+/6jbD7HjIreojs5TlErjbrsmx1LzfX/98ItlUmIW9MLqkHy1z0V6SVGqE
+         gy3Q==
+X-Gm-Message-State: AGi0PubiekXwILRNjK0hhzHUIQLJt4PTs8vyAxfuzGw425fp6rMtM8Jt
+        O/kIO2GQp3Y5bsAF486tiz4=
+X-Google-Smtp-Source: APiQypJOnY6xzEk2rpHlRPmZ6OxrjFYXKeipZIv5+JdWRu9Qnm8bSt8qkw8qqy1zQIg1YXY38o5/sg==
+X-Received: by 2002:aca:cdd3:: with SMTP id d202mr4448886oig.162.1588112079435;
+        Tue, 28 Apr 2020 15:14:39 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id 186sm5267476ooi.30.2020.04.28.15.14.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 15:14:38 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH v5 0/5] Allow ld.lld to link the MIPS VDSO
+Date:   Tue, 28 Apr 2020 15:14:14 -0700
+Message-Id: <20200428221419.2530697-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200423171807.29713-1-natechancellor@gmail.com>
+References: <20200423171807.29713-1-natechancellor@gmail.com>
 MIME-Version: 1.0
-References: <20200423022550.15113-1-sean.j.christopherson@intel.com> <20200423022550.15113-14-sean.j.christopherson@intel.com>
-In-Reply-To: <20200423022550.15113-14-sean.j.christopherson@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 28 Apr 2020 15:13:37 -0700
-Message-ID: <CALMp9eQ0hpZ8MBmCCEXQHKFxyeFzRbJ3+OmaTe2cMwtkp2AKGA@mail.gmail.com>
-Subject: Re: [PATCH 13/13] KVM: VMX: Use vmx_get_rflags() to query RFLAGS in vmx_interrupt_blocked()
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oliver Upton <oupton@google.com>,
-        Peter Shier <pshier@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 7:26 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Use vmx_get_rflags() instead of manually reading vmcs.GUEST_RFLAGS when
-> querying RFLAGS.IF so that multiple checks against interrupt blocking in
-> a single run loop only require a single VMREAD.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
+Hi all,
+
+This series allows ld.lld to properly and completely link the MIPS vDSO.
+
+Patch 1 adds ld.lld support to Kconfig so that we can avoid certain
+ld.bfd checks.
+
+Patch 2 moves disabling of the VDSO to Kconfig. This allows us to avoid
+a warning with LD=ld.lld during the clean phase, when we do not have
+access to CONFIG_LD_IS_LLD.
+
+Patch 3 prepares for the shift from $(CC) to $(LD) and is probably a
+worthwhile change aside from this series because GCC 4.6 is the minimum
+version allowed to build the kernel.
+
+Patch 4 does the actual shift from $(CC) to $(LD) to link the VDSO.
+
+Patch 5 allows LD=ld.lld to build the VDSO fully through Kconfig.
+
+I have build tested 32r2_defconfig, 32r2el_defconfig, 64r2_defconfig,
+and 64r2el_defconfig with GCC and 32r2el_defconfig and
+malta_kvm_guest_defconfig with clang. There is a separate issue with the
+64-bit configs (https://github.com/ClangBuiltLinux/linux/issues/884) and
+ld.lld does not support the triple OUTPUT_FORMAT linker script macro so
+32r2_defconfig errors out in a manner similar to GCC without patch 3:
+https://github.com/llvm/llvm-project/blob/46a75436f811d0e6a2c76c669140a7e9471cd2a3/lld/ELF/ScriptParser.cpp#L430
+TODO: File an LLVM bug upstream
+
+Please let me know if there are any issues!
+
+Cheers,
+Nathan
+
+
