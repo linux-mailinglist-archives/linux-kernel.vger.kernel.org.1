@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E40BA1BCC9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5AF1BCC96
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729211AbgD1TpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 15:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
+        id S1729063AbgD1Tox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728703AbgD1TpG (ORCPT
+        by vger.kernel.org with ESMTP id S1728986AbgD1Tow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 15:45:06 -0400
+        Tue, 28 Apr 2020 15:44:52 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31496C03C1AB;
-        Tue, 28 Apr 2020 12:45:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2B8C03C1AC;
+        Tue, 28 Apr 2020 12:44:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=T8agJxb4IwqImSnO8W+YeAMbB96/Oa7Sp3n9OTt3YWU=; b=GHGkkrl+HBs+2LQSqRpsdT6JfF
-        M/PUxOHG3byVoIUq0XeTMQmnnC9zMGZ78djBKgw+Q9M77jF+yaMEtNX033DS3Uuw8qTro0J+Zz9bn
-        uzZxfJUCeDIhAhVAAk3H16VGWUZq9ZnnBAf5rs9YVXy1zZxIcz6oCM69w4UCdDI6Z9Q0bEGDzw+ou
-        OB/h+5znCegKEqWeaXauqwo58kAAZexAvjNjC9S8XdW6tQTjmn7ErAKdkLkQJzcozxAzPfQvOcUvy
-        RRdOQG8kLvK/fYijtpTp4asZ3utwdJDA0ZrCNB25ZtRd/G9KRGU7Y2OjZ9jbcLjvOxqSMGGf23LON
-        CtWrTAjQ==;
+        bh=M4UWeVD1aiN0w304dAdjToeSDD+jrmpQN+yIxabjhn8=; b=s/qXru4uMFH5VaWHC1OJZxpdzW
+        KeYszvg733nHAjNHTibtOGKEAjMi6q+kRfoc0l94abgczc3N3jigTc1K+DkEC8tR3aixDaGv6kLFR
+        igyYaP+qhO2iXdjH2k4zrXSiMHg9G8r5J8gLDsf/4oY67296N/kHAOPu2tJASHR+OzUFKqB0k6+1O
+        XP7F607JbUKJESNj4gYNIKW84rMFyI+rrYhNTZIcB835hxoRMYIe2uN3ULt8mIlvdjwNEjdK1RS0/
+        Q41YqjvelbZfSnz+qEpjgp2MB0eY3qbMRWQkScZeztV7m/nl6MguX7ACoaK83UKfuQSNLW3eoaGRC
+        F8NMwPwA==;
 Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTW9z-0005uk-2o; Tue, 28 Apr 2020 19:44:51 +0000
+        id 1jTW9z-0005uo-43; Tue, 28 Apr 2020 19:44:51 +0000
 From:   Matthew Wilcox <willy@infradead.org>
 To:     linux-mm@kvack.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -36,9 +36,9 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Russell King <linux@armlinux.org.uk>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 6/7] mm: Set pt_mm in PTE constructor
-Date:   Tue, 28 Apr 2020 12:44:48 -0700
-Message-Id: <20200428194449.22615-7-willy@infradead.org>
+Subject: [PATCH 7/7] mm: Set pt_mm in PMD constructor
+Date:   Tue, 28 Apr 2020 12:44:49 -0700
+Message-Id: <20200428194449.22615-8-willy@infradead.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200428194449.22615-1-willy@infradead.org>
 References: <20200428194449.22615-1-willy@infradead.org>
@@ -56,206 +56,139 @@ debugging and lay the foundation for handling hardware errors in page
 tables more gracefully.  It also opens up the possibility for adding
 more sanity checks in the future.
 
+Also set and clear the PageTable bit so that we know these are page tables.
+
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- arch/arc/include/asm/pgalloc.h      | 2 +-
- arch/arm/mm/mmu.c                   | 2 +-
- arch/arm64/mm/mmu.c                 | 2 +-
- arch/m68k/include/asm/mcf_pgalloc.h | 2 +-
- arch/m68k/mm/motorola.c             | 2 +-
- arch/openrisc/include/asm/pgalloc.h | 2 +-
- arch/powerpc/mm/pgtable-frag.c      | 2 +-
- arch/s390/mm/pgalloc.c              | 2 +-
- arch/sparc/mm/init_64.c             | 2 +-
- arch/sparc/mm/srmmu.c               | 2 +-
- arch/xtensa/include/asm/pgalloc.h   | 2 +-
- include/asm-generic/pgalloc.h       | 2 +-
- include/linux/mm.h                  | 5 ++++-
- 13 files changed, 16 insertions(+), 13 deletions(-)
+ arch/arm64/include/asm/pgalloc.h   |  2 +-
+ arch/arm64/mm/mmu.c                |  2 +-
+ arch/powerpc/mm/book3s64/pgtable.c |  2 +-
+ arch/s390/include/asm/pgalloc.h    |  2 +-
+ arch/x86/include/asm/pgalloc.h     |  2 +-
+ arch/x86/mm/pgtable.c              |  2 +-
+ include/linux/mm.h                 | 13 +++++++++++--
+ 7 files changed, 17 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arc/include/asm/pgalloc.h b/arch/arc/include/asm/pgalloc.h
-index b747f2ec2928..5f6b1f3bc2a2 100644
---- a/arch/arc/include/asm/pgalloc.h
-+++ b/arch/arc/include/asm/pgalloc.h
-@@ -108,7 +108,7 @@ pte_alloc_one(struct mm_struct *mm)
- 		return 0;
- 	memzero((void *)pte_pg, PTRS_PER_PTE * sizeof(pte_t));
- 	page = virt_to_page(pte_pg);
--	if (!pgtable_pte_page_ctor(page)) {
-+	if (!pgtable_pte_page_ctor(page, mm)) {
+diff --git a/arch/arm64/include/asm/pgalloc.h b/arch/arm64/include/asm/pgalloc.h
+index 172d76fa0245..920da9c5786c 100644
+--- a/arch/arm64/include/asm/pgalloc.h
++++ b/arch/arm64/include/asm/pgalloc.h
+@@ -30,7 +30,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
+ 	page = alloc_page(gfp);
+ 	if (!page)
+ 		return NULL;
+-	if (!pgtable_pmd_page_ctor(page)) {
++	if (!pgtable_pmd_page_ctor(page, mm)) {
  		__free_page(page);
- 		return 0;
+ 		return NULL;
  	}
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index e5275bfbe695..9c16c45570ba 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -707,7 +707,7 @@ static void *__init late_alloc(unsigned long sz, struct mm_struct *mm)
- {
- 	void *ptr = (void *)__get_free_pages(GFP_PGTABLE_KERNEL, get_order(sz));
- 
--	if (!ptr || !pgtable_pte_page_ctor(virt_to_page(ptr)))
-+	if (!ptr || !pgtable_pte_page_ctor(virt_to_page(ptr), mm))
- 		BUG();
- 	return ptr;
- }
 diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 69ecc83c3be0..c706bed1e496 100644
+index c706bed1e496..b7bdde1990be 100644
 --- a/arch/arm64/mm/mmu.c
 +++ b/arch/arm64/mm/mmu.c
-@@ -381,7 +381,7 @@ static phys_addr_t pgd_pgtable_alloc(int shift, struct mm_struct *mm)
- 	 * folded, and if so pgtable_pmd_page_ctor() becomes nop.
- 	 */
+@@ -383,7 +383,7 @@ static phys_addr_t pgd_pgtable_alloc(int shift, struct mm_struct *mm)
  	if (shift == PAGE_SHIFT)
--		BUG_ON(!pgtable_pte_page_ctor(phys_to_page(pa)));
-+		BUG_ON(!pgtable_pte_page_ctor(phys_to_page(pa), mm));
+ 		BUG_ON(!pgtable_pte_page_ctor(phys_to_page(pa), mm));
  	else if (shift == PMD_SHIFT)
- 		BUG_ON(!pgtable_pmd_page_ctor(phys_to_page(pa)));
+-		BUG_ON(!pgtable_pmd_page_ctor(phys_to_page(pa)));
++		BUG_ON(!pgtable_pmd_page_ctor(phys_to_page(pa), mm));
  
-diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
-index bc1228e00518..369a3523e834 100644
---- a/arch/m68k/include/asm/mcf_pgalloc.h
-+++ b/arch/m68k/include/asm/mcf_pgalloc.h
-@@ -50,7 +50,7 @@ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
- 
+ 	return pa;
+ }
+diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
+index e0bb69c616e4..9fda5287c197 100644
+--- a/arch/powerpc/mm/book3s64/pgtable.c
++++ b/arch/powerpc/mm/book3s64/pgtable.c
+@@ -297,7 +297,7 @@ static pmd_t *__alloc_for_pmdcache(struct mm_struct *mm)
+ 	page = alloc_page(gfp);
  	if (!page)
  		return NULL;
--	if (!pgtable_pte_page_ctor(page)) {
-+	if (!pgtable_pte_page_ctor(page, mm)) {
- 		__free_page(page);
+-	if (!pgtable_pmd_page_ctor(page)) {
++	if (!pgtable_pmd_page_ctor(page, mm)) {
+ 		__free_pages(page, 0);
  		return NULL;
  	}
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index 7743480be0cf..6bb7c9f348ad 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -137,7 +137,7 @@ void *get_pointer_table(int type, struct mm_struct *mm)
- 			 * m68k doesn't have SPLIT_PTE_PTLOCKS for not having
- 			 * SMP.
- 			 */
--			pgtable_pte_page_ctor(virt_to_page(page));
-+			pgtable_pte_page_ctor(virt_to_page(page, mm));
- 		}
- 
- 		mmu_page_ctor(page);
-diff --git a/arch/openrisc/include/asm/pgalloc.h b/arch/openrisc/include/asm/pgalloc.h
-index da12a4c38c4b..1a80dfc928b5 100644
---- a/arch/openrisc/include/asm/pgalloc.h
-+++ b/arch/openrisc/include/asm/pgalloc.h
-@@ -75,7 +75,7 @@ static inline struct page *pte_alloc_one(struct mm_struct *mm)
- 	if (!pte)
+diff --git a/arch/s390/include/asm/pgalloc.h b/arch/s390/include/asm/pgalloc.h
+index 74a352f8c0d1..bebad4e5d42a 100644
+--- a/arch/s390/include/asm/pgalloc.h
++++ b/arch/s390/include/asm/pgalloc.h
+@@ -86,7 +86,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long vmaddr)
+ 	if (!table)
  		return NULL;
- 	clear_page(page_address(pte));
--	if (!pgtable_pte_page_ctor(pte)) {
-+	if (!pgtable_pte_page_ctor(pte, mm)) {
- 		__free_page(pte);
+ 	crst_table_init(table, _SEGMENT_ENTRY_EMPTY);
+-	if (!pgtable_pmd_page_ctor(virt_to_page(table))) {
++	if (!pgtable_pmd_page_ctor(virt_to_page(table), mm)) {
+ 		crst_table_free(mm, table);
  		return NULL;
  	}
-diff --git a/arch/powerpc/mm/pgtable-frag.c b/arch/powerpc/mm/pgtable-frag.c
-index ee4bd6d38602..59a8c85e01ac 100644
---- a/arch/powerpc/mm/pgtable-frag.c
-+++ b/arch/powerpc/mm/pgtable-frag.c
-@@ -61,7 +61,7 @@ static pte_t *__alloc_for_ptecache(struct mm_struct *mm, int kernel)
- 		page = alloc_page(PGALLOC_GFP | __GFP_ACCOUNT);
- 		if (!page)
- 			return NULL;
--		if (!pgtable_pte_page_ctor(page)) {
-+		if (!pgtable_pte_page_ctor(page, mm)) {
- 			__free_page(page);
- 			return NULL;
- 		}
-diff --git a/arch/s390/mm/pgalloc.c b/arch/s390/mm/pgalloc.c
-index 498c98a312f4..0363828749e2 100644
---- a/arch/s390/mm/pgalloc.c
-+++ b/arch/s390/mm/pgalloc.c
-@@ -208,7 +208,7 @@ unsigned long *page_table_alloc(struct mm_struct *mm)
- 	page = alloc_page(GFP_KERNEL);
+diff --git a/arch/x86/include/asm/pgalloc.h b/arch/x86/include/asm/pgalloc.h
+index 29aa7859bdee..33514f0a9e79 100644
+--- a/arch/x86/include/asm/pgalloc.h
++++ b/arch/x86/include/asm/pgalloc.h
+@@ -96,7 +96,7 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
+ 	page = alloc_pages(gfp, 0);
  	if (!page)
  		return NULL;
--	if (!pgtable_pte_page_ctor(page)) {
-+	if (!pgtable_pte_page_ctor(page, mm)) {
- 		__free_page(page);
+-	if (!pgtable_pmd_page_ctor(page)) {
++	if (!pgtable_pmd_page_ctor(page, mm)) {
+ 		__free_pages(page, 0);
  		return NULL;
  	}
-diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
-index 1cf0d666dea3..d2cc80828415 100644
---- a/arch/sparc/mm/init_64.c
-+++ b/arch/sparc/mm/init_64.c
-@@ -2928,7 +2928,7 @@ pgtable_t pte_alloc_one(struct mm_struct *mm)
- 	struct page *page = alloc_page(GFP_KERNEL | __GFP_ZERO);
- 	if (!page)
- 		return NULL;
--	if (!pgtable_pte_page_ctor(page)) {
-+	if (!pgtable_pte_page_ctor(page, mm)) {
- 		free_unref_page(page);
- 		return NULL;
- 	}
-diff --git a/arch/sparc/mm/srmmu.c b/arch/sparc/mm/srmmu.c
-index b7c94de70cca..019ff2019b55 100644
---- a/arch/sparc/mm/srmmu.c
-+++ b/arch/sparc/mm/srmmu.c
-@@ -382,7 +382,7 @@ pgtable_t pte_alloc_one(struct mm_struct *mm)
- 	if ((pte = (unsigned long)pte_alloc_one_kernel(mm)) == 0)
- 		return NULL;
- 	page = pfn_to_page(__nocache_pa(pte) >> PAGE_SHIFT);
--	if (!pgtable_pte_page_ctor(page)) {
-+	if (!pgtable_pte_page_ctor(page, mm)) {
- 		__free_page(page);
- 		return NULL;
- 	}
-diff --git a/arch/xtensa/include/asm/pgalloc.h b/arch/xtensa/include/asm/pgalloc.h
-index 1d38f0e755ba..43cc05255832 100644
---- a/arch/xtensa/include/asm/pgalloc.h
-+++ b/arch/xtensa/include/asm/pgalloc.h
-@@ -55,7 +55,7 @@ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
- 	if (!pte)
- 		return NULL;
- 	page = virt_to_page(pte);
--	if (!pgtable_pte_page_ctor(page)) {
-+	if (!pgtable_pte_page_ctor(page, mm)) {
- 		__free_page(page);
- 		return NULL;
- 	}
-diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
-index 73f7421413cb..24c2d6e194fb 100644
---- a/include/asm-generic/pgalloc.h
-+++ b/include/asm-generic/pgalloc.h
-@@ -63,7 +63,7 @@ static inline pgtable_t __pte_alloc_one(struct mm_struct *mm, gfp_t gfp)
- 	pte = alloc_page(gfp);
- 	if (!pte)
- 		return NULL;
--	if (!pgtable_pte_page_ctor(pte)) {
-+	if (!pgtable_pte_page_ctor(pte, mm)) {
- 		__free_page(pte);
- 		return NULL;
- 	}
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index f5f46737aea0..8f4255662c5a 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -229,7 +229,7 @@ static int preallocate_pmds(struct mm_struct *mm, pmd_t *pmds[], int count)
+ 		pmd_t *pmd = (pmd_t *)__get_free_page(gfp);
+ 		if (!pmd)
+ 			failed = true;
+-		if (pmd && !pgtable_pmd_page_ctor(virt_to_page(pmd))) {
++		if (pmd && !pgtable_pmd_page_ctor(virt_to_page(pmd), mm)) {
+ 			free_page((unsigned long)pmd);
+ 			pmd = NULL;
+ 			failed = true;
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 5a323422d783..2a98eebeba91 100644
+index 2a98eebeba91..e2924d900fc5 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -2157,11 +2157,13 @@ static inline void pgtable_init(void)
- 	pgtable_cache_init();
+@@ -2216,11 +2216,14 @@ static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
+ 	return ptlock_ptr(pmd_to_page(pmd));
  }
  
--static inline bool pgtable_pte_page_ctor(struct page *page)
+-static inline bool pgtable_pmd_page_ctor(struct page *page)
 +static inline
-+bool pgtable_pte_page_ctor(struct page *page, struct mm_struct *mm)
++bool pgtable_pmd_page_ctor(struct page *page, struct mm_struct *mm)
  {
- 	if (!ptlock_init(page))
- 		return false;
- 	__SetPageTable(page);
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	page->pmd_huge_pte = NULL;
+ #endif
++	__SetPageTable(page);
 +	page->pt_mm = mm;
- 	inc_zone_page_state(page, NR_PAGETABLE);
- 	return true;
- }
-@@ -2170,6 +2172,7 @@ static inline void pgtable_pte_page_dtor(struct page *page)
- {
- 	ptlock_free(page);
- 	__ClearPageTable(page);
-+	page->pt_mm = NULL;
- 	dec_zone_page_state(page, NR_PAGETABLE);
+ 	return ptlock_init(page);
  }
  
+@@ -2229,6 +2232,8 @@ static inline void pgtable_pmd_page_dtor(struct page *page)
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	VM_BUG_ON_PAGE(page->pmd_huge_pte, page);
+ #endif
++	__ClearPageTable(page);
++	page->pt_mm = NULL;
+ 	ptlock_free(page);
+ }
+ 
+@@ -2241,7 +2246,11 @@ static inline spinlock_t *pmd_lockptr(struct mm_struct *mm, pmd_t *pmd)
+ 	return &mm->page_table_lock;
+ }
+ 
+-static inline bool pgtable_pmd_page_ctor(struct page *page) { return true; }
++static inline
++bool pgtable_pmd_page_ctor(struct page *page, struct mm_struct *mm)
++{
++	return true;
++}
+ static inline void pgtable_pmd_page_dtor(struct page *page) {}
+ 
+ #define pmd_huge_pte(mm, pmd) ((mm)->pmd_huge_pte)
 -- 
 2.26.2
 
