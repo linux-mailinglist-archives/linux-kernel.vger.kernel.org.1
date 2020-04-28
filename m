@@ -2,124 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D731BC6FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95971BC703
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728525AbgD1Rqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 13:46:51 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35190 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727074AbgD1Rqv (ORCPT
+        id S1728555AbgD1Rrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 13:47:36 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35964 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728448AbgD1Rrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 13:46:51 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03SHZ0T7018100;
-        Tue, 28 Apr 2020 13:46:44 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 30pjmjf4tq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Apr 2020 13:46:44 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03SHepiB028904;
-        Tue, 28 Apr 2020 17:46:42 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 30mcu592aa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Apr 2020 17:46:42 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03SHkeYk26280154
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Apr 2020 17:46:40 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B02811C06E;
-        Tue, 28 Apr 2020 17:46:40 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E9DBE11C05E;
-        Tue, 28 Apr 2020 17:46:38 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.80.198.90])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 28 Apr 2020 17:46:38 +0000 (GMT)
-Message-ID: <1588095998.5195.49.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 6/6] ima: Fix return value of ima_write_policy()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, silviu.vlasceanu@huawei.com,
-        krzysztof.struczynski@huawei.com, stable@vger.kernel.org
-Date:   Tue, 28 Apr 2020 13:46:38 -0400
-In-Reply-To: <20200427103128.19229-1-roberto.sassu@huawei.com>
-References: <20200427102900.18887-1-roberto.sassu@huawei.com>
-         <20200427103128.19229-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-28_12:2020-04-28,2020-04-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- adultscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004280130
+        Tue, 28 Apr 2020 13:47:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588096055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kOFPHV7djE4yN9kYV8UD0gGJJiH5LnVp4DiGRU8Fo5A=;
+        b=gFKbfGdCh1Z64PKvgJSvefSb6pGFuAt0tytp7bmRRVBy+Fj1GfLdTzGZjonAwA8zeq4Yyl
+        IAtScYrvTkAuzvK5yyWBzI3ihbLmckt44nRxLeBqnyQBBnxWLNPJsDViSIwYw+AWHethzB
+        SGkGDWKgYx4jm5SeGgAiDogQWrfDQwM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-171-mgItoDWaM8OIFHsVd-tPRw-1; Tue, 28 Apr 2020 13:47:33 -0400
+X-MC-Unique: mgItoDWaM8OIFHsVd-tPRw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD4221008549;
+        Tue, 28 Apr 2020 17:47:31 +0000 (UTC)
+Received: from sandy.ghostprotocols.net (unknown [10.3.128.36])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3D664579A9;
+        Tue, 28 Apr 2020 17:47:31 +0000 (UTC)
+Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
+        id 3264D169; Tue, 28 Apr 2020 14:47:27 -0300 (BRT)
+Date:   Tue, 28 Apr 2020 14:47:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Zou Wei <zou_wei@huawei.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] tools lib traceevent: Remove unneeded semicolon
+Message-ID: <20200428174727.GB2711@redhat.com>
+References: <1588065121-71236-1-git-send-email-zou_wei@huawei.com>
+ <20200428091915.7bead67f@gandalf.local.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428091915.7bead67f@gandalf.local.home>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roberto,
-
-On Mon, 2020-04-27 at 12:31 +0200, Roberto Sassu wrote:
-> This patch fixes the return value of ima_write_policy() when a new policy
-> is directly passed to IMA and the current policy requires appraisal of the
-> file containing the policy. Currently, if appraisal is not in ENFORCE mode,
-> ima_write_policy() returns 0 and leads user space applications to an
-> endless loop. Fix this issue by denying the operation regardless of the
-> appraisal mode.
+Em Tue, Apr 28, 2020 at 09:19:15AM -0400, Steven Rostedt escreveu:
+> On Tue, 28 Apr 2020 17:12:01 +0800
+> Zou Wei <zou_wei@huawei.com> wrote:
 > 
-> Changelog
+> > Fixes coccicheck warning:
+> > 
+> >  tools/lib/traceevent/kbuffer-parse.c:441:2-3: Unneeded semicolon
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> > ---
+> >  tools/lib/traceevent/kbuffer-parse.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/lib/traceevent/kbuffer-parse.c b/tools/lib/traceevent/kbuffer-parse.c
+> > index b887e74..27f3b07 100644
+> > --- a/tools/lib/traceevent/kbuffer-parse.c
+> > +++ b/tools/lib/traceevent/kbuffer-parse.c
+> > @@ -438,7 +438,7 @@ void *kbuffer_translate_data(int swap, void *data, unsigned int *size)
+> >  	case KBUFFER_TYPE_TIME_EXTEND:
+> >  	case KBUFFER_TYPE_TIME_STAMP:
+> >  		return NULL;
+> > -	};
+> > +	}
 > 
-> v1:
-> - deny the operation in all cases (suggested by Mimi, Krzysztof)
-
-Relatively recently, people have moved away from including the
-"Changelog" in the upstream commit. (I'm removing them now.)  
-
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > 
-> Cc: stable@vger.kernel.org # 4.10.x
-> Fixes: 19f8a84713edc ("ima: measure and appraise the IMA policy itself")
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Arnaldo, can you take this?
 
-Without the Changelog, the only way of acknowledging people's
-contributions is by including their tags.  Krzysztof, did you want to
-add your "Reviewed-by" tag?
-
-> ---
-
-People have started putting the Changelog or any comments immediately
-below the separator "---" here.
-
-thanks,
-
-Mimi
-
->  security/integrity/ima/ima_fs.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+Sure, applied.
+ 
+> Thanks!
 > 
-> diff --git a/security/integrity/ima/ima_fs.c b/security/integrity/ima/ima_fs.c
-> index 8b030a1c5e0d..e3fcad871861 100644
-> --- a/security/integrity/ima/ima_fs.c
-> +++ b/security/integrity/ima/ima_fs.c
-> @@ -338,8 +338,7 @@ static ssize_t ima_write_policy(struct file *file, const char __user *buf,
->  		integrity_audit_msg(AUDIT_INTEGRITY_STATUS, NULL, NULL,
->  				    "policy_update", "signed policy required",
->  				    1, 0);
-> -		if (ima_appraise & IMA_APPRAISE_ENFORCE)
-> -			result = -EACCES;
-> +		result = -EACCES;
->  	} else {
->  		result = ima_parse_add_rule(data);
->  	}
+> -- Steve
+> 
+> >  
+> >  	*size = length;
+> >  
 
