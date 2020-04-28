@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2153D1BC98F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC8D1BC880
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731160AbgD1Smy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:42:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34998 "EHLO mail.kernel.org"
+        id S1729917AbgD1SdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:33:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731152AbgD1Smt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:42:49 -0400
+        id S1729426AbgD1SdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:33:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8379420575;
-        Tue, 28 Apr 2020 18:42:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 06238217D8;
+        Tue, 28 Apr 2020 18:33:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099369;
-        bh=gYpCN2E60RoWYWQQNwY8vf9911kUG5TcfdItDCLSNYU=;
+        s=default; t=1588098790;
+        bh=W4u/u1Pg5aMK8lhV+BTineHOApTtkYzKLpyEP9u2H64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pjtsHJUfyKuGN+4Og5OFwWSv3OwaaBbQoGUxcsOE3YKaqEPGVS9l07FGC/VssvwII
-         hQbiHlkavvYPjOlcArU6xCh4Wt/sEzCctYo9ysTtxWU6sEFCA8OhHY/yfMdZjBjz+w
-         KlG0ej4loy4UnDWbkKjxnUnrrwgm63xDQTkcfuIk=
+        b=TDBdqV7sFJ1eT79FcWGIuwLQvC0g/wNIMYbqgFchx3XAZtLuPoubPyEC1x51NJ1Ug
+         E99ZrUr6WF9C6qd6zbTew7VdIICRt6GiGxEi+zjcv5zc//csngL9MsvJ8/c5Ims6Qp
+         hYOL8hDRhTEoVXHwK9InbGNqPlcf875l28g/QajI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Changming Liu <liu.changm@northeastern.edu>
-Subject: [PATCH 5.4 095/168] USB: sisusbvga: Change port variable from signed to unsigned
+        stable@vger.kernel.org,
+        syzbot+5035b1f9dc7ea4558d5a@syzkaller.appspotmail.com,
+        Taehee Yoo <ap420073@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 057/131] macvlan: fix null dereference in macvlan_device_event()
 Date:   Tue, 28 Apr 2020 20:24:29 +0200
-Message-Id: <20200428182244.335896795@linuxfoundation.org>
+Message-Id: <20200428182232.152139569@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,128 +45,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changming Liu <liu.changm@northeastern.edu>
+From: Taehee Yoo <ap420073@gmail.com>
 
-commit 2df7405f79ce1674d73c2786fe1a8727c905d65b upstream.
+[ Upstream commit 4dee15b4fd0d61ec6bbd179238191e959d34cf7a ]
 
-Change a bunch of arguments of wrapper functions which pass signed
-integer to an unsigned integer which might cause undefined behaviors
-when sign integer overflow.
+In the macvlan_device_event(), the list_first_entry_or_null() is used.
+This function could return null pointer if there is no node.
+But, the macvlan module doesn't check the null pointer.
+So, null-ptr-deref would occur.
 
-Signed-off-by: Changming Liu <liu.changm@northeastern.edu>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/BL0PR06MB45482D71EA822D75A0E60A2EE5D50@BL0PR06MB4548.namprd06.prod.outlook.com
+      bond0
+        |
+   +----+-----+
+   |          |
+macvlan0   macvlan1
+   |          |
+ dummy0     dummy1
+
+The problem scenario.
+If dummy1 is removed,
+1. ->dellink() of dummy1 is called.
+2. NETDEV_UNREGISTER of dummy1 notification is sent to macvlan module.
+3. ->dellink() of macvlan1 is called.
+4. NETDEV_UNREGISTER of macvlan1 notification is sent to bond module.
+5. __bond_release_one() is called and it internally calls
+   dev_set_mac_address().
+6. dev_set_mac_address() calls the ->ndo_set_mac_address() of macvlan1,
+   which is macvlan_set_mac_address().
+7. macvlan_set_mac_address() calls the dev_set_mac_address() with dummy1.
+8. NETDEV_CHANGEADDR of dummy1 is sent to macvlan module.
+9. In the macvlan_device_event(), it calls list_first_entry_or_null().
+At this point, dummy1 and macvlan1 were removed.
+So, list_first_entry_or_null() will return NULL.
+
+Test commands:
+    ip netns add nst
+    ip netns exec nst ip link add bond0 type bond
+    for i in {0..10}
+    do
+        ip netns exec nst ip link add dummy$i type dummy
+	ip netns exec nst ip link add macvlan$i link dummy$i \
+		type macvlan mode passthru
+	ip netns exec nst ip link set macvlan$i master bond0
+    done
+    ip netns del nst
+
+Splat looks like:
+[   40.585687][  T146] general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] SMP DEI
+[   40.587249][  T146] KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+[   40.588342][  T146] CPU: 1 PID: 146 Comm: kworker/u8:2 Not tainted 5.7.0-rc1+ #532
+[   40.589299][  T146] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[   40.590469][  T146] Workqueue: netns cleanup_net
+[   40.591045][  T146] RIP: 0010:macvlan_device_event+0x4e2/0x900 [macvlan]
+[   40.591905][  T146] Code: 00 00 00 00 00 fc ff df 80 3c 06 00 0f 85 45 02 00 00 48 89 da 48 b8 00 00 00 00 00 fc ff d2
+[   40.594126][  T146] RSP: 0018:ffff88806116f4a0 EFLAGS: 00010246
+[   40.594783][  T146] RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+[   40.595653][  T146] RDX: 0000000000000000 RSI: ffff88806547ddd8 RDI: ffff8880540f1360
+[   40.596495][  T146] RBP: ffff88804011a808 R08: fffffbfff4fb8421 R09: fffffbfff4fb8421
+[   40.597377][  T146] R10: ffffffffa7dc2107 R11: 0000000000000000 R12: 0000000000000008
+[   40.598186][  T146] R13: ffff88804011a000 R14: ffff8880540f1000 R15: 1ffff1100c22de9a
+[   40.599012][  T146] FS:  0000000000000000(0000) GS:ffff888067800000(0000) knlGS:0000000000000000
+[   40.600004][  T146] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   40.600665][  T146] CR2: 00005572d3a807b8 CR3: 000000005fcf4003 CR4: 00000000000606e0
+[   40.601485][  T146] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   40.602461][  T146] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   40.603443][  T146] Call Trace:
+[   40.603871][  T146]  ? nf_tables_dump_setelem+0xa0/0xa0 [nf_tables]
+[   40.604587][  T146]  ? macvlan_uninit+0x100/0x100 [macvlan]
+[   40.605212][  T146]  ? __module_text_address+0x13/0x140
+[   40.605842][  T146]  notifier_call_chain+0x90/0x160
+[   40.606477][  T146]  dev_set_mac_address+0x28e/0x3f0
+[   40.607117][  T146]  ? netdev_notify_peers+0xc0/0xc0
+[   40.607762][  T146]  ? __module_text_address+0x13/0x140
+[   40.608440][  T146]  ? notifier_call_chain+0x90/0x160
+[   40.609097][  T146]  ? dev_set_mac_address+0x1f0/0x3f0
+[   40.609758][  T146]  dev_set_mac_address+0x1f0/0x3f0
+[   40.610402][  T146]  ? __local_bh_enable_ip+0xe9/0x1b0
+[   40.611071][  T146]  ? bond_hw_addr_flush+0x77/0x100 [bonding]
+[   40.611823][  T146]  ? netdev_notify_peers+0xc0/0xc0
+[   40.612461][  T146]  ? bond_hw_addr_flush+0x77/0x100 [bonding]
+[   40.613213][  T146]  ? bond_hw_addr_flush+0x77/0x100 [bonding]
+[   40.613963][  T146]  ? __local_bh_enable_ip+0xe9/0x1b0
+[   40.614631][  T146]  ? bond_time_in_interval.isra.31+0x90/0x90 [bonding]
+[   40.615484][  T146]  ? __bond_release_one+0x9f0/0x12c0 [bonding]
+[   40.616230][  T146]  __bond_release_one+0x9f0/0x12c0 [bonding]
+[   40.616949][  T146]  ? bond_enslave+0x47c0/0x47c0 [bonding]
+[   40.617642][  T146]  ? lock_downgrade+0x730/0x730
+[   40.618218][  T146]  ? check_flags.part.42+0x450/0x450
+[   40.618850][  T146]  ? __mutex_unlock_slowpath+0xd0/0x670
+[   40.619519][  T146]  ? trace_hardirqs_on+0x30/0x180
+[   40.620117][  T146]  ? wait_for_completion+0x250/0x250
+[   40.620754][  T146]  bond_netdev_event+0x822/0x970 [bonding]
+[   40.621460][  T146]  ? __module_text_address+0x13/0x140
+[   40.622097][  T146]  notifier_call_chain+0x90/0x160
+[   40.622806][  T146]  rollback_registered_many+0x660/0xcf0
+[   40.623522][  T146]  ? netif_set_real_num_tx_queues+0x780/0x780
+[   40.624290][  T146]  ? notifier_call_chain+0x90/0x160
+[   40.624957][  T146]  ? netdev_upper_dev_unlink+0x114/0x180
+[   40.625686][  T146]  ? __netdev_adjacent_dev_unlink_neighbour+0x30/0x30
+[   40.626421][  T146]  ? mutex_is_locked+0x13/0x50
+[   40.627016][  T146]  ? unregister_netdevice_queue+0xf2/0x240
+[   40.627663][  T146]  unregister_netdevice_many.part.134+0x13/0x1b0
+[   40.628362][  T146]  default_device_exit_batch+0x2d9/0x390
+[   40.628987][  T146]  ? unregister_netdevice_many+0x40/0x40
+[   40.629615][  T146]  ? dev_change_net_namespace+0xcb0/0xcb0
+[   40.630279][  T146]  ? prepare_to_wait_exclusive+0x2e0/0x2e0
+[   40.630943][  T146]  ? ops_exit_list.isra.9+0x97/0x140
+[   40.631554][  T146]  cleanup_net+0x441/0x890
+[ ... ]
+
+Fixes: e289fd28176b ("macvlan: fix the problem when mac address changes for passthru mode")
+Reported-by: syzbot+5035b1f9dc7ea4558d5a@syzkaller.appspotmail.com
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/misc/sisusbvga/sisusb.c      |   20 ++++++++++----------
- drivers/usb/misc/sisusbvga/sisusb_init.h |   14 +++++++-------
- 2 files changed, 17 insertions(+), 17 deletions(-)
+ drivers/net/macvlan.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/misc/sisusbvga/sisusb.c
-+++ b/drivers/usb/misc/sisusbvga/sisusb.c
-@@ -1199,18 +1199,18 @@ static int sisusb_read_mem_bulk(struct s
- /* High level: Gfx (indexed) register access */
+--- a/drivers/net/macvlan.c
++++ b/drivers/net/macvlan.c
+@@ -1676,7 +1676,7 @@ static int macvlan_device_event(struct n
+ 						struct macvlan_dev,
+ 						list);
  
- #ifdef CONFIG_USB_SISUSBVGA_CON
--int sisusb_setreg(struct sisusb_usb_data *sisusb, int port, u8 data)
-+int sisusb_setreg(struct sisusb_usb_data *sisusb, u32 port, u8 data)
- {
- 	return sisusb_write_memio_byte(sisusb, SISUSB_TYPE_IO, port, data);
- }
+-		if (macvlan_sync_address(vlan->dev, dev->dev_addr))
++		if (vlan && macvlan_sync_address(vlan->dev, dev->dev_addr))
+ 			return NOTIFY_BAD;
  
--int sisusb_getreg(struct sisusb_usb_data *sisusb, int port, u8 *data)
-+int sisusb_getreg(struct sisusb_usb_data *sisusb, u32 port, u8 *data)
- {
- 	return sisusb_read_memio_byte(sisusb, SISUSB_TYPE_IO, port, data);
- }
- #endif
- 
--int sisusb_setidxreg(struct sisusb_usb_data *sisusb, int port,
-+int sisusb_setidxreg(struct sisusb_usb_data *sisusb, u32 port,
- 		u8 index, u8 data)
- {
- 	int ret;
-@@ -1220,7 +1220,7 @@ int sisusb_setidxreg(struct sisusb_usb_d
- 	return ret;
- }
- 
--int sisusb_getidxreg(struct sisusb_usb_data *sisusb, int port,
-+int sisusb_getidxreg(struct sisusb_usb_data *sisusb, u32 port,
- 		u8 index, u8 *data)
- {
- 	int ret;
-@@ -1230,7 +1230,7 @@ int sisusb_getidxreg(struct sisusb_usb_d
- 	return ret;
- }
- 
--int sisusb_setidxregandor(struct sisusb_usb_data *sisusb, int port, u8 idx,
-+int sisusb_setidxregandor(struct sisusb_usb_data *sisusb, u32 port, u8 idx,
- 		u8 myand, u8 myor)
- {
- 	int ret;
-@@ -1245,7 +1245,7 @@ int sisusb_setidxregandor(struct sisusb_
- }
- 
- static int sisusb_setidxregmask(struct sisusb_usb_data *sisusb,
--		int port, u8 idx, u8 data, u8 mask)
-+		u32 port, u8 idx, u8 data, u8 mask)
- {
- 	int ret;
- 	u8 tmp;
-@@ -1258,13 +1258,13 @@ static int sisusb_setidxregmask(struct s
- 	return ret;
- }
- 
--int sisusb_setidxregor(struct sisusb_usb_data *sisusb, int port,
-+int sisusb_setidxregor(struct sisusb_usb_data *sisusb, u32 port,
- 		u8 index, u8 myor)
- {
- 	return sisusb_setidxregandor(sisusb, port, index, 0xff, myor);
- }
- 
--int sisusb_setidxregand(struct sisusb_usb_data *sisusb, int port,
-+int sisusb_setidxregand(struct sisusb_usb_data *sisusb, u32 port,
- 		u8 idx, u8 myand)
- {
- 	return sisusb_setidxregandor(sisusb, port, idx, myand, 0x00);
-@@ -2785,8 +2785,8 @@ static loff_t sisusb_lseek(struct file *
- static int sisusb_handle_command(struct sisusb_usb_data *sisusb,
- 		struct sisusb_command *y, unsigned long arg)
- {
--	int	retval, port, length;
--	u32	address;
-+	int	retval, length;
-+	u32	port, address;
- 
- 	/* All our commands require the device
- 	 * to be initialized.
---- a/drivers/usb/misc/sisusbvga/sisusb_init.h
-+++ b/drivers/usb/misc/sisusbvga/sisusb_init.h
-@@ -812,17 +812,17 @@ static const struct SiS_VCLKData SiSUSB_
- int SiSUSBSetMode(struct SiS_Private *SiS_Pr, unsigned short ModeNo);
- int SiSUSBSetVESAMode(struct SiS_Private *SiS_Pr, unsigned short VModeNo);
- 
--extern int sisusb_setreg(struct sisusb_usb_data *sisusb, int port, u8 data);
--extern int sisusb_getreg(struct sisusb_usb_data *sisusb, int port, u8 * data);
--extern int sisusb_setidxreg(struct sisusb_usb_data *sisusb, int port,
-+extern int sisusb_setreg(struct sisusb_usb_data *sisusb, u32 port, u8 data);
-+extern int sisusb_getreg(struct sisusb_usb_data *sisusb, u32 port, u8 * data);
-+extern int sisusb_setidxreg(struct sisusb_usb_data *sisusb, u32 port,
- 			    u8 index, u8 data);
--extern int sisusb_getidxreg(struct sisusb_usb_data *sisusb, int port,
-+extern int sisusb_getidxreg(struct sisusb_usb_data *sisusb, u32 port,
- 			    u8 index, u8 * data);
--extern int sisusb_setidxregandor(struct sisusb_usb_data *sisusb, int port,
-+extern int sisusb_setidxregandor(struct sisusb_usb_data *sisusb, u32 port,
- 				 u8 idx, u8 myand, u8 myor);
--extern int sisusb_setidxregor(struct sisusb_usb_data *sisusb, int port,
-+extern int sisusb_setidxregor(struct sisusb_usb_data *sisusb, u32 port,
- 			      u8 index, u8 myor);
--extern int sisusb_setidxregand(struct sisusb_usb_data *sisusb, int port,
-+extern int sisusb_setidxregand(struct sisusb_usb_data *sisusb, u32 port,
- 			       u8 idx, u8 myand);
- 
- void sisusb_delete(struct kref *kref);
+ 		break;
 
 
