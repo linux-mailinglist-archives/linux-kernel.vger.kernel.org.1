@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1F01BC847
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E2A1BC811
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729618AbgD1SbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:31:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46220 "EHLO mail.kernel.org"
+        id S1729338AbgD1S3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:29:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729588AbgD1Sa7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:30:59 -0400
+        id S1729331AbgD1S3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:29:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3054A20B80;
-        Tue, 28 Apr 2020 18:30:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED36D20B80;
+        Tue, 28 Apr 2020 18:29:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098658;
-        bh=mdH9Iw+tpsIVT6b8XCff/ERcE3qWDEk3zy2/+emkh6s=;
+        s=default; t=1588098558;
+        bh=VCDnRq6KNn8pBZy4kFj3bnJQnDEccmaJeGcDMIiba5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gkfT2QG9JD7pfmwFyT3DKF3we5Hphay0ZXNWOIa/6GS+EXMp/1xhalCzw3v+bhG68
-         E+GNV1UJQ3g+y4wM1xyHgSqF2/9UcIoMITkICfQ5tnrhW1EkdQ7xx88dMBXjnB9dhe
-         mRtETCxXgjPIWexazi6r5LRzjFnsf+FHatUqytMU=
+        b=DGkelCfxd5ZXDgOnIIhOh2isyVDeyyqPwhH7VnbEonqXECrWuQCaQg3Fd2n/LGudL
+         nrLRP9FRyAhkZhr9sGOvqiRctG0MlikPR0o4zOOVM8uDyvuIrR3dSMS6HXPw7J9MS5
+         LrgunHFzwOwayd4dool5d4ksH2QzSOQym9kb8+FU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 036/131] PCI/ASPM: Allow re-enabling Clock PM
+        stable@vger.kernel.org, David Ahern <dsahern@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 072/167] xfrm: Always set XFRM_TRANSFORMED in xfrm{4,6}_output_finish
 Date:   Tue, 28 Apr 2020 20:24:08 +0200
-Message-Id: <20200428182229.618808952@linuxfoundation.org>
+Message-Id: <20200428182234.043027809@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,74 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: David Ahern <dsahern@gmail.com>
 
-[ Upstream commit 35efea32b26f9aacc99bf07e0d2cdfba2028b099 ]
+[ Upstream commit 0c922a4850eba2e668f73a3f1153196e09abb251 ]
 
-Previously Clock PM could not be re-enabled after being disabled by
-pci_disable_link_state() because clkpm_capable was reset.  Change this by
-adding a clkpm_disable field similar to aspm_disable.
+IPSKB_XFRM_TRANSFORMED and IP6SKB_XFRM_TRANSFORMED are skb flags set by
+xfrm code to tell other skb handlers that the packet has been passed
+through the xfrm output functions. Simplify the code and just always
+set them rather than conditionally based on netfilter enabled thus
+making the flag available for other users.
 
-Link: https://lore.kernel.org/r/4e8a66db-7d53-4a66-c26c-f0037ffaa705@gmail.com
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: David Ahern <dsahern@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/pcie/aspm.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ net/ipv4/xfrm4_output.c |    2 --
+ net/ipv6/xfrm6_output.c |    2 --
+ 2 files changed, 4 deletions(-)
 
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index af79a7168677d..db2efa219028c 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -67,6 +67,7 @@ struct pcie_link_state {
- 	u32 clkpm_capable:1;		/* Clock PM capable? */
- 	u32 clkpm_enabled:1;		/* Current Clock PM state */
- 	u32 clkpm_default:1;		/* Default Clock PM state by BIOS */
-+	u32 clkpm_disable:1;		/* Clock PM disabled */
- 
- 	/* Exit latencies */
- 	struct aspm_latency latency_up;	/* Upstream direction exit latency */
-@@ -164,8 +165,11 @@ static void pcie_set_clkpm_nocheck(struct pcie_link_state *link, int enable)
- 
- static void pcie_set_clkpm(struct pcie_link_state *link, int enable)
+--- a/net/ipv4/xfrm4_output.c
++++ b/net/ipv4/xfrm4_output.c
+@@ -58,9 +58,7 @@ int xfrm4_output_finish(struct sock *sk,
  {
--	/* Don't enable Clock PM if the link is not Clock PM capable */
--	if (!link->clkpm_capable)
-+	/*
-+	 * Don't enable Clock PM if the link is not Clock PM capable
-+	 * or Clock PM is disabled
-+	 */
-+	if (!link->clkpm_capable || link->clkpm_disable)
- 		enable = 0;
- 	/* Need nothing if the specified equals to current state */
- 	if (link->clkpm_enabled == enable)
-@@ -195,7 +199,8 @@ static void pcie_clkpm_cap_init(struct pcie_link_state *link, int blacklist)
- 	}
- 	link->clkpm_enabled = enabled;
- 	link->clkpm_default = enabled;
--	link->clkpm_capable = (blacklist) ? 0 : capable;
-+	link->clkpm_capable = capable;
-+	link->clkpm_disable = blacklist ? 1 : 0;
+ 	memset(IPCB(skb), 0, sizeof(*IPCB(skb)));
+ 
+-#ifdef CONFIG_NETFILTER
+ 	IPCB(skb)->flags |= IPSKB_XFRM_TRANSFORMED;
+-#endif
+ 
+ 	return xfrm_output(sk, skb);
  }
+--- a/net/ipv6/xfrm6_output.c
++++ b/net/ipv6/xfrm6_output.c
+@@ -111,9 +111,7 @@ int xfrm6_output_finish(struct sock *sk,
+ {
+ 	memset(IP6CB(skb), 0, sizeof(*IP6CB(skb)));
  
- static bool pcie_retrain_link(struct pcie_link_state *link)
-@@ -1106,10 +1111,9 @@ static void __pci_disable_link_state(struct pci_dev *pdev, int state, bool sem)
- 		link->aspm_disable |= ASPM_STATE_L1;
- 	pcie_config_aspm_link(link, policy_to_aspm_state(link));
+-#ifdef CONFIG_NETFILTER
+ 	IP6CB(skb)->flags |= IP6SKB_XFRM_TRANSFORMED;
+-#endif
  
--	if (state & PCIE_LINK_STATE_CLKPM) {
--		link->clkpm_capable = 0;
--		pcie_set_clkpm(link, 0);
--	}
-+	if (state & PCIE_LINK_STATE_CLKPM)
-+		link->clkpm_disable = 1;
-+	pcie_set_clkpm(link, policy_to_clkpm_state(link));
- 	mutex_unlock(&aspm_lock);
- 	if (sem)
- 		up_read(&pci_bus_sem);
--- 
-2.20.1
-
+ 	return xfrm_output(sk, skb);
+ }
 
 
