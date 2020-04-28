@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9B51BC8CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5984B1BC99D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729488AbgD1Sfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:35:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52730 "EHLO mail.kernel.org"
+        id S1731223AbgD1SnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:43:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730268AbgD1Sfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:35:32 -0400
+        id S1730677AbgD1SnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:43:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 115DE20B1F;
-        Tue, 28 Apr 2020 18:35:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB03420575;
+        Tue, 28 Apr 2020 18:43:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098932;
-        bh=rBjYhz4tebMF76RZq8sdFFmdhFBtKxzNe4YRzXvRD2U=;
+        s=default; t=1588099398;
+        bh=ugpQGowmrdGqDF/Za+uAAbijYTd/pjVCPMzzaCQ76Q8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1/Mxz28oLnzds1CTciHS/RycVW1akD2SGMJRJ7HEx5YvJUXTR348ltNlcalrY5HbM
-         r3wOHtffptd58k7KAaHjgR9K8v+NSuEwRHEnJduJQ3eGUJULFpDM9E77QPfQg9RzWj
-         2hpkkx0KnvNjS3UNrmjny9aykacwc/LbvxEzXDZ0=
+        b=inywvsVRCCbRhBIGDfuR4Yx1nWA9yNaKU1z+Q+4HW8j9ABEGTkLkb6wy6FTLcLRIG
+         G6jsYLJTzfqreCxQQAuvomElq1HyKfb9sBwR8nbBe9O2YmkdgwuOauOZe1mwD5bHYX
+         z/hQeBprHzVH2IfWz7TzrOsZV0aH/bm2o8IUTXs4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Steve French <stfrench@microsoft.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Aurelien Aptel <aaptel@suse.com>
-Subject: [PATCH 5.6 130/167] cifs: fix uninitialised lease_key in open_shroot()
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 5.4 132/168] iwlwifi: mvm: fix inactive TID removal return value usage
 Date:   Tue, 28 Apr 2020 20:25:06 +0200
-Message-Id: <20200428182241.828129804@linuxfoundation.org>
+Message-Id: <20200428182248.726858027@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@cjr.nz>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 0fe0781f29dd8ab618999e6bda33c782ebbdb109 upstream.
+commit e6d419f943318e2b903e380dfd52a8dda6db3021 upstream.
 
-SMB2_open_init() expects a pre-initialised lease_key when opening a
-file with a lease, so set pfid->lease_key prior to calling it in
-open_shroot().
+The function iwl_mvm_remove_inactive_tids() returns bool, so we
+should just check "if (ret)", not "if (ret >= 0)" (which would
+do nothing useful here). We obviously therefore cannot use the
+return value of the function for the free_queue, we need to use
+the queue (i) we're currently dealing with instead.
 
-This issue was observed when performing some DFS failover tests and
-the lease key was never randomly generated.
-
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-CC: Stable <stable@vger.kernel.org>
+Cc: stable@vger.kernel.org # v5.4+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20200417100405.9d862ed72535.I9e27ccc3ee3c8855fc13682592b571581925dfbd@changeid
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/smb2ops.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/mvm/sta.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -693,6 +693,11 @@ int open_shroot(unsigned int xid, struct
- 	if (smb3_encryption_required(tcon))
- 		flags |= CIFS_TRANSFORM_REQ;
- 
-+	if (!server->ops->new_lease_key)
-+		return -EIO;
-+
-+	server->ops->new_lease_key(pfid);
-+
- 	memset(rqst, 0, sizeof(rqst));
- 	resp_buftype[0] = resp_buftype[1] = CIFS_NO_BUFFER;
- 	memset(rsp_iov, 0, sizeof(rsp_iov));
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
+@@ -1169,9 +1169,9 @@ static int iwl_mvm_inactivity_check(stru
+ 						   inactive_tid_bitmap,
+ 						   &unshare_queues,
+ 						   &changetid_queues);
+-		if (ret >= 0 && free_queue < 0) {
++		if (ret && free_queue < 0) {
+ 			queue_owner = sta;
+-			free_queue = ret;
++			free_queue = i;
+ 		}
+ 		/* only unlock sta lock - we still need the queue info lock */
+ 		spin_unlock_bh(&mvmsta->lock);
 
 
