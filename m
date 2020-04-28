@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5891BCDEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633041BCE09
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbgD1U7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 16:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
+        id S1727803AbgD1VAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726827AbgD1U7k (ORCPT
+        by vger.kernel.org with ESMTP id S1726543AbgD1U7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Apr 2020 16:59:40 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC37C03C1AC;
-        Tue, 28 Apr 2020 13:59:38 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e25so239066ljg.5;
-        Tue, 28 Apr 2020 13:59:38 -0700 (PDT)
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166F8C03C1AD;
+        Tue, 28 Apr 2020 13:59:40 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id w20so268365ljj.0;
+        Tue, 28 Apr 2020 13:59:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/hjFgrHN/AobfDhCW7uHxtGVQp6m3WKcxFSvew6M5pw=;
-        b=mTgjdo+bMst6VnOjdPMHNcx3tuDQ+BDhhX1LfQSV21Z7Uad2qAHdhz6tArXTjHtGWl
-         ryL105FvQsaXCwDc/qECPQ3udl9XQdUVbLE0LAdDz63i47h/7cb7vjI+6eqoIUP0xKsr
-         g5zCswt3KHkAUxPHoA63BYFFGiLwPCNe3NeSZ0/96qaiby/d5cHjc1x6xI+B4aFyLBRx
-         RofJAnQaSKp63kKtqXQ8yj2WYWRRnTdUpWISvo4OIJNJRF8RMuhGfOhhr+D1Nd1Vbgq5
-         gCRPyRachrNlHGaNEzoS7iOonxh8Ti62fbG8mG+5pWVItXTa0pw/kOk8udN/D99y03Ju
-         9JVg==
+        bh=KpPRWZDvG8CgK8dZKCEsG9Emj5dGIpU0eqSTK3oTu4U=;
+        b=Jp/cGmJks3FbPmO6cnSdkivz7OJHf87NIdc550TYVUo5oyct/fknb8SeQgG/Wa6AvT
+         j1s4N78U0TRqqfWCoy4Cnwkj6gYaJjhBPoPA4SDXFmJLkSgX/GEs/heihzFRtuULBLuR
+         ydXaywn1Lar7YFPryFl7cTeTeik4WiCd59r+Y9nk9wFiAtp1oezC4vFzgKC81AgGdBDL
+         STIicmNXYpDyWAknzGXu+U4RdBzyt0gcZaLuVfHNt3i11xsecqtZeCVI8ivDe15kcRl0
+         qrTiYkXv2wP3a7zEMIu2PMB0JHWoYrUnSoEO4DbpVVTeg46tQ5FPN0LKzJqMmpMJ/Mzu
+         a/yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/hjFgrHN/AobfDhCW7uHxtGVQp6m3WKcxFSvew6M5pw=;
-        b=b6XhbX5nHvRfB8Sh/YIwc3h3YREBphG7mat3tXbmFvcPHA5xUQYAcWE02k++sCGQTz
-         ian9KMI+tWDrNDT0LtRCizaX38GSI47N+Sx11wCvurZ0VQKmML/rISdfSQsD+iW+zUWz
-         Q7JT4C4EzcE6s0JGRxdTUqRM3/K9XEJyExYTFt+6ajtWevmvy4i79dm7n+0UY13RWn0D
-         r1eb8Iq8gqf/MlkNGiWGPYbc8fU7AO0xCZmpNPZ5vlT7InqkqIsNoCd9IA/UkOibE4sI
-         W2Mq7XnbLPBOutvIYC7Pwm1oEv0tObTBoan0JnlxCHh58/uGdq5VuFFrU3tTPDEWLOBZ
-         m80g==
-X-Gm-Message-State: AGi0Puba3TFtjONon7WTgWa45wgy9AxROmWYs6qKVJwz6Hsge1TN/A+3
-        ja0Ib5kJcEamZeMEMvdda1igTiURfd1E7A==
-X-Google-Smtp-Source: APiQypLbRFLIsVOfuz0lNkpuDjqlP3snMnoaGJKNyj3Wqv3N49M2dESfMr2LkQ60hBGlniDH8cEjaA==
-X-Received: by 2002:a2e:9b0f:: with SMTP id u15mr18548017lji.272.1588107577075;
-        Tue, 28 Apr 2020 13:59:37 -0700 (PDT)
+        bh=KpPRWZDvG8CgK8dZKCEsG9Emj5dGIpU0eqSTK3oTu4U=;
+        b=ei8ubK1yia5i+lRLBR53cn6PrcLlmuMi5shZMPPvSvzqonWXfoPYVd/eNftHICYMnV
+         cvtDR9QdCc4+6UqTBjxHPK63uCCJOGpgEWpmdwJ82YomA96OmHNOJ5edKi1gwzNfwOwe
+         dVlDexfV+hMWBRbtIGG0ORGZcmES6pHN1ewT4Fq9w5Fpu8+ViJSZHhNX6SLn7+/oi4XP
+         srs3a+o8BP2qMosjR49FrDEaQA0ObsRh2/bWbwdV5oce+2LHR6PQzyEJsvRkjM2urCv2
+         ycyHEfAaS1jkx68di7IwNJ0KLB/3jW/gBK7XvCd/VtnuF/9RsBut2qz2mPtE8QbXLMK1
+         twTg==
+X-Gm-Message-State: AGi0PuaYgnRDIYArX45ev/T86GhsTKjFp8sCLq140dfbn5gYXa9MQDl0
+        jwQXV0mvbqUneLPl27wIpcbXd9cPjSee1A==
+X-Google-Smtp-Source: APiQypIK0yNKxQMrJ+FmeTtM1yEhM2Bk+cTVBWd0YgRswTk8U0gkkBZkwM/NPoG1ukrhwMQjsmSyPQ==
+X-Received: by 2002:a2e:9713:: with SMTP id r19mr19379545lji.89.1588107578198;
+        Tue, 28 Apr 2020 13:59:38 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.35
+        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 13:59:36 -0700 (PDT)
+        Tue, 28 Apr 2020 13:59:37 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -56,10 +56,11 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 07/24] rcu/tree: move locking/unlocking to separate functions
-Date:   Tue, 28 Apr 2020 22:58:46 +0200
-Message-Id: <20200428205903.61704-8-urezki@gmail.com>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 08/24] rcu/tree: Use static initializer for krc.lock
+Date:   Tue, 28 Apr 2020 22:58:47 +0200
+Message-Id: <20200428205903.61704-9-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200428205903.61704-1-urezki@gmail.com>
 References: <20200428205903.61704-1-urezki@gmail.com>
@@ -70,71 +71,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce two helpers to lock and unlock an access to the
-per-cpu "kfree_rcu_cpu" structure. The reason is to make
-kfree_call_rcu() function to be more readable.
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
+The per-CPU variable is initialized at runtime in
+kfree_rcu_batch_init(). This function is invoked before
+'rcu_scheduler_active' is set to 'RCU_SCHEDULER_RUNNING'.
+After the initialisation, '->initialized' is to true.
+
+The raw_spin_lock is only acquired if '->initialized' is
+set to true. The worqueue item is only used if 'rcu_scheduler_active'
+set to RCU_SCHEDULER_RUNNING which happens after initialisation.
+
+Use a static initializer for krc.lock and remove the runtime
+initialisation of the lock. Since the lock can now be always
+acquired, remove the '->initialized' check.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ kernel/rcu/tree.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index eebd7f627794..bc6c2bc8fa32 100644
+index bc6c2bc8fa32..89e9ca3f4e3e 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2925,6 +2925,27 @@ debug_rcu_bhead_unqueue(struct kfree_rcu_bulk_data *bhead)
- #endif
- }
+@@ -2892,7 +2892,7 @@ struct kfree_rcu_cpu_work {
+  * @lock: Synchronize access to this structure
+  * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
+  * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
+- * @initialized: The @lock and @rcu_work fields have been initialized
++ * @initialized: The @rcu_work fields have been initialized
+  *
+  * This is a per-CPU structure.  The reason that it is not included in
+  * the rcu_data structure is to permit this code to be extracted from
+@@ -2912,7 +2912,9 @@ struct kfree_rcu_cpu {
+ 	int count;
+ };
  
-+static inline struct kfree_rcu_cpu *
-+krc_this_cpu_lock(unsigned long *flags)
-+{
-+	struct kfree_rcu_cpu *krcp;
-+
-+	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
-+	krcp = this_cpu_ptr(&krc);
-+	if (likely(krcp->initialized))
-+		raw_spin_lock(&krcp->lock);
-+
-+	return krcp;
-+}
-+
-+static inline void
-+krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
-+{
-+	if (likely(krcp->initialized))
-+		raw_spin_unlock(&krcp->lock);
-+	local_irq_restore(flags);
-+}
-+
- /*
-  * This function is invoked in workqueue context after a grace period.
-  * It frees all the objects queued on ->bhead_free or ->head_free.
-@@ -3150,11 +3171,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+-static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
++static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
++	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
++};
+ 
+ static __always_inline void
+ debug_rcu_bhead_unqueue(struct kfree_rcu_bulk_data *bhead)
+@@ -2930,10 +2932,9 @@ krc_this_cpu_lock(unsigned long *flags)
+ {
  	struct kfree_rcu_cpu *krcp;
- 	void *ptr;
  
--	local_irq_save(flags);	/* For safely calling this_cpu_ptr(). */
--	krcp = this_cpu_ptr(&krc);
--	if (krcp->initialized)
+-	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
++	local_irq_save(*flags);	/* For safely calling this_cpu_ptr(). */
+ 	krcp = this_cpu_ptr(&krc);
+-	if (likely(krcp->initialized))
 -		raw_spin_lock(&krcp->lock);
--
-+	krcp = krc_this_cpu_lock(&flags);
- 	ptr = (void *)head - (unsigned long)func;
++	raw_spin_lock(&krcp->lock);
  
- 	/* Queue the object but don't yet schedule the batch. */
-@@ -3185,9 +3202,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	}
- 
- unlock_return:
--	if (krcp->initialized)
--		raw_spin_unlock(&krcp->lock);
--	local_irq_restore(flags);
-+	krc_this_cpu_unlock(krcp, flags);
+ 	return krcp;
  }
- EXPORT_SYMBOL_GPL(kfree_call_rcu);
+@@ -2941,8 +2942,7 @@ krc_this_cpu_lock(unsigned long *flags)
+ static inline void
+ krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
+ {
+-	if (likely(krcp->initialized))
+-		raw_spin_unlock(&krcp->lock);
++	raw_spin_unlock(&krcp->lock);
+ 	local_irq_restore(flags);
+ }
  
+@@ -4168,7 +4168,6 @@ static void __init kfree_rcu_batch_init(void)
+ 	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+-		raw_spin_lock_init(&krcp->lock);
+ 		for (i = 0; i < KFREE_N_BATCHES; i++) {
+ 			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+ 			krcp->krw_arr[i].krcp = krcp;
 -- 
 2.20.1
 
