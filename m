@@ -2,155 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66FC1BC333
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5534C1BC365
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728835AbgD1PXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 11:23:01 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18888 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728263AbgD1PXA (ORCPT
+        id S1728786AbgD1PZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 11:25:18 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50609 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728606AbgD1PZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 11:23:00 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ea84a120000>; Tue, 28 Apr 2020 08:21:54 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 28 Apr 2020 08:22:59 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 28 Apr 2020 08:22:59 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Apr
- 2020 15:22:59 +0000
-Received: from [10.2.165.152] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Apr
- 2020 15:22:58 +0000
-Subject: Re: [RFC PATCH v1 3/5] media: tegra-video: Move PM runtime handle to
- streaming
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>
-CC:     <linux-media@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1588047650-29402-1-git-send-email-skomatineni@nvidia.com>
- <1588047650-29402-4-git-send-email-skomatineni@nvidia.com>
- <631390cb-9aff-0e3f-6c39-81d6c565987e@gmail.com>
- <3ef69413-a606-b475-f530-d5534760b73b@nvidia.com>
- <2b334095-fadb-bf0a-f7a8-62fc798c2bd2@gmail.com>
- <18a7b095-7f0f-7819-c786-7e011cfd14ed@nvidia.com>
- <ce31e273-f424-f13e-5cd6-0db2589a2a10@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <5741d5d3-e474-e23c-4841-809df5760067@nvidia.com>
-Date:   Tue, 28 Apr 2020 08:22:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 28 Apr 2020 11:25:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588087516;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5MtNMEGePoQeOLLhuNO9qh1Kt/0hKDl+pM06audhEQE=;
+        b=WCY45wgp9MZIZV24aw9O+CsRNmRMo8keKh+JMd1j/59gLURvnQGv76CVhborwEt5cN+W1Y
+        G45B7+zH4NOTsJxMZZfvbbENQzeHlV3k/+HwK9Cj+i/q80Zb51N/m6nuFVFky5yqOjFsot
+        QSAW1AgtwD7m21TU/IiXNlFc4rfivPE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-67-oaZ_Z8BoMbC0ijO3_-1-lw-1; Tue, 28 Apr 2020 11:25:13 -0400
+X-MC-Unique: oaZ_Z8BoMbC0ijO3_-1-lw-1
+Received: by mail-wm1-f72.google.com with SMTP id 14so997682wmo.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 08:25:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5MtNMEGePoQeOLLhuNO9qh1Kt/0hKDl+pM06audhEQE=;
+        b=OSshChdr+SmoMY0BxhOkXqWvi++mQEiOa6livSK1isirTdecjvFbU0ghFPtaXYels7
+         RewImknqScacdT2xZWgElxHgTKYRKuLeP1znJ+YQU7pNvGkhV8cxote5s5i6TWJTkNwI
+         FTznypFz6aAbzrYPRzyMrm6fu7jNHmheU28Fhwgv9I6RpY5Bq+BoNxH38l15XqjWfhaY
+         cOiJ95ClMP2/dkxTRBhXzqq63/ppOs9wjzRxMoE9te73yLa2N3HeD69SSFOtcOE403dE
+         CRoSMcEYW6qtOIKB+ZtLRCUxKWOzC/6WuXthDlEdqpoL6X6+KC2rDJoemmgF8jpB9MMS
+         wi6w==
+X-Gm-Message-State: AGi0PubQIc7TbMZ8lURtdDaVESSQLZeKIiX7A2BJ2m18CJ0XGs07LMJ0
+        EezP1rSkQSK4a70GkSHxCv9EgDHYJGMTpGE/A2tGc6YVKwQWyh7rri7I8i+h0XqRg2zeJ6e31/M
+        gouhtR9PElhqzgAS3YamdwjLq
+X-Received: by 2002:a1c:66d5:: with SMTP id a204mr5197820wmc.69.1588087512165;
+        Tue, 28 Apr 2020 08:25:12 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIJdX3FBeU0e1jJbzapSQEZb33vOn2eVbDhxsWqrn0qFTot27aYfiyyqxJOctswjaoqI4z3Xg==
+X-Received: by 2002:a1c:66d5:: with SMTP id a204mr5197790wmc.69.1588087511757;
+        Tue, 28 Apr 2020 08:25:11 -0700 (PDT)
+Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
+        by smtp.gmail.com with ESMTPSA id a205sm3990772wmh.29.2020.04.28.08.25.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 08:25:10 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 11:25:07 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, linux-block@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, Stefano Garzarella <sgarzare@redhat.com>,
+        Lance Digby <ldigby@redhat.com>
+Subject: Re: [PATCH v2] virtio-blk: handle block_device_operations callbacks
+ after hot unplug
+Message-ID: <20200428110515-mutt-send-email-mst@kernel.org>
+References: <20200428143009.107645-1-stefanha@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <ce31e273-f424-f13e-5cd6-0db2589a2a10@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1588087314; bh=AkjfhPNmeEPLibPX6tD4XOxStK0A8MLP7iHxDB8Tsbc=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=iSzLyT80me+v4+s5FSTpDKbJmGj7E7420aLNOgfqVC1JsyRRUrsiijEMOlSItbyBu
-         1+mROXzhb4Vpj6PX+LB/s8f07KbTlos5N5QtXxkYoFFKouA6ueBC1gxZ0/khCtHEE3
-         TagMqfGqPbQeCUpjOFYGYry6ZG45TO0gODklxcbSa6pkKuLA1+fTbxXHnSD8CRmOF9
-         79Bdnxph46CqPBJZPy94hPHK8C1Da4pqWJ6TKW/Qix36rbEFRrX/Ghw5Okt45gftVq
-         okAllTBtMk6Z1+FQMGHoWVQDsPsQU8RQ1uKqL/2YChjk+4966Ni43jzhXhLuH7QOkF
-         zoZboamtJbXjw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428143009.107645-1-stefanha@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 28, 2020 at 03:30:09PM +0100, Stefan Hajnoczi wrote:
+> A userspace process holding a file descriptor to a virtio_blk device can
+> still invoke block_device_operations after hot unplug.  For example, a
+> program that has /dev/vdb open can call ioctl(HDIO_GETGEO) after hot
+> unplug to invoke virtblk_getgeo().
 
-On 4/28/20 8:15 AM, Dmitry Osipenko wrote:
-> External email: Use caution opening links or attachments
->
->
-> 28.04.2020 18:08, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> On 4/28/20 7:59 AM, Dmitry Osipenko wrote:
->>> External email: Use caution opening links or attachments
->>>
->>>
->>> 28.04.2020 17:51, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>> On 4/28/20 6:59 AM, Dmitry Osipenko wrote:
->>>>> External email: Use caution opening links or attachments
->>>>>
->>>>>
->>>>> 28.04.2020 07:20, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>>>> diff --git a/drivers/staging/media/tegra-video/csi.c
->>>>>> b/drivers/staging/media/tegra-video/csi.c
->>>>>> index b3dd0c3..29ccdae 100644
->>>>>> --- a/drivers/staging/media/tegra-video/csi.c
->>>>>> +++ b/drivers/staging/media/tegra-video/csi.c
->>>>>> @@ -272,8 +272,25 @@ static int tegra_csi_s_stream(struct v4l2_subde=
-v
->>>>>> *subdev, int enable)
->>>>>>          struct tegra_vi_channel *chan =3D
->>>>>> v4l2_get_subdev_hostdata(subdev);
->>>>>>          struct tegra_csi_channel *csi_chan =3D to_csi_chan(subdev);
->>>>>>          struct tegra_csi *csi =3D csi_chan->csi;
->>>>>> +     int ret;
->>>>>> +
->>>>>> +     if (enable && atomic_add_return(1, &csi->clk_refcnt) =3D=3D 1)=
- {
->>>>>> +             ret =3D pm_runtime_get_sync(csi->dev);
->>>>>> +             if (ret < 0) {
->>>>>> +                     dev_err(csi->dev,
->>>>>> +                             "failed to get runtime PM: %d\n", ret)=
-;
->>>>>> +                     pm_runtime_put_noidle(csi->dev);
-> Why this pm_runtime_put_noidle() is needed? This should be wrong, please
-> remove it.
 
-pm_runtime_get_sync() increments power.usage_count prior to rpm_resume
+which causes what? a use after free?
 
-if rpm_resume fails it does not decrement usage_count.
+> 
+> Introduce a reference count in struct virtio_blk so that its lifetime
+> covers both virtio_driver probe/remove and block_device_operations
+> open/release users.  This ensures that block_device_operations functions
+> like virtblk_getgeo() can safely access struct virtio_blk.
+> 
+> Add remove_mutex to prevent block_device_operations functions from
+> accessing vblk->vdev during virtblk_remove() and let the safely check
 
-So to balance count on failure, calling pm_runtime_put_noidle()
+let the -> let them?
 
->
->>>>>> +                     atomic_dec(&csi->clk_refcnt);
->>>>>> +                     return ret;
->>>>>> +             }
->>>>>> +     }
->>>>>> +
->>>>>> +     ret =3D csi->ops->csi_streaming(csi_chan, chan->pg_mode, enabl=
-e);
->>>>>>
->>>>>> -     return csi->ops->csi_streaming(csi_chan, chan->pg_mode, enable=
-);
->>>>>> +     if ((ret < 0 || !enable) &&
->>>>>> atomic_dec_and_test(&csi->clk_refcnt))
->>>>>> +             pm_runtime_put_sync(csi->dev);
->>>>> Runtime PM maintains its own refcount, why these
->>>>> clk_refcnt/power_on_refcnt are needed?
->>>> Streaming is per channel and we can't turn power/clocks off while othe=
-r
->>>> channels may still be running.
->>>>
->>> All channels use the same CSI device. You should remove the custom
->>> refcounting.
->>>
->>> BTW, next time you'll really need to do refcounting, use the generic
->>> kref.
->> Before channel stream we enable power/clocks and after streaming we stop=
-.
->>
->> So without refcount, on stream stop of any of the channel RPM put turns
->> power/clock but other channels will still be streaming.
->>
-> Runtime PM uses its own refcounting. Please consult the RPM code and
-> documentation.
->
-> https://elixir.bootlin.com/linux/v5.7-rc3/source/include/linux/pm_runtime=
-.h#L78
-> https://elixir.bootlin.com/linux/v5.7-rc3/source/drivers/base/power/runti=
-me.c#L1079
-Got it. Will remove refcount for RPM put/get
+> for !vblk->vdev after virtblk_remove() returns.
+> 
+> Switching to a reference count also solves the vd_index_ida leak where
+> vda, vdb, vdc, etc indices were lost when the device was hot unplugged
+> while the block device was still open.
+
+Can you move this statement up so we list both issues (use after free
+and leak) upfront, then discuss the fix?
+
+> 
+> Reported-by: Lance Digby <ldigby@redhat.com>
+> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> ---
+> If someone has a simpler solution please let me know.  I looked at
+> various approaches including reusing device_lock(&vblk->vdev.dev) but
+> they were more complex and extending the lifetime of virtio_device after
+> remove() has been called seems questionable.
+> ---
+>  drivers/block/virtio_blk.c | 85 ++++++++++++++++++++++++++++++++++----
+>  1 file changed, 77 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> index 93468b7c6701..3dd53b445cc1 100644
+> --- a/drivers/block/virtio_blk.c
+> +++ b/drivers/block/virtio_blk.c
+> @@ -44,6 +44,13 @@ struct virtio_blk {
+>  	/* Process context for config space updates */
+>  	struct work_struct config_work;
+>  
+> +	/*
+> +	 * Tracks references from block_device_operations open/release and
+> +	 * virtio_driver probe/remove so this object can be freed once no
+> +	 * longer in use.
+> +	 */
+> +	refcount_t refs;
+> +
+>  	/* What host tells us, plus 2 for header & tailer. */
+>  	unsigned int sg_elems;
+>  
+> @@ -53,6 +60,9 @@ struct virtio_blk {
+>  	/* num of vqs */
+>  	int num_vqs;
+>  	struct virtio_blk_vq *vqs;
+> +
+> +	/* Provides mutual exclusion with virtblk_remove(). */
+
+This is not the best way to document access rules.
+Which fields does this protect, exactly?
+I think it's just vdev. Right?
+Pls add to the comment.
+
+> +	struct mutex remove_mutex;
+>  };
+>  
+>  struct virtblk_req {
+> @@ -295,10 +305,54 @@ static int virtblk_get_id(struct gendisk *disk, char *id_str)
+>  	return err;
+>  }
+>  
+> +static void virtblk_get(struct virtio_blk *vblk)
+> +{
+> +	refcount_inc(&vblk->refs);
+> +}
+> +
+> +static void virtblk_put(struct virtio_blk *vblk)
+> +{
+> +	if (refcount_dec_and_test(&vblk->refs)) {
+> +		ida_simple_remove(&vd_index_ida, vblk->index);
+> +		mutex_destroy(&vblk->remove_mutex);
+> +		kfree(vblk);
+> +	}
+> +}
+> +
+> +static int virtblk_open(struct block_device *bd, fmode_t mode)
+> +{
+> +	struct virtio_blk *vblk = bd->bd_disk->private_data;
+> +	int ret = -ENXIO;
+
+
+It's more common to do
+
+	int ret = 0;
+
+and on error:
+	ret = -ENXIO;
+
+
+let's do this.
+
+
+> +
+> +	mutex_lock(&vblk->remove_mutex);
+> +
+> +	if (vblk->vdev) {
+> +		virtblk_get(vblk);
+> +		ret = 0;
+> +	}
+
+I prefer
+	else
+		ret = -ENXIO
+
+here.
+
+
+> +
+> +	mutex_unlock(&vblk->remove_mutex);
+> +	return ret;
+> +}
+> +
+> +static void virtblk_release(struct gendisk *disk, fmode_t mode)
+> +{
+> +	struct virtio_blk *vblk = disk->private_data;
+> +
+> +	virtblk_put(vblk);
+> +}
+> +
+>  /* We provide getgeo only to please some old bootloader/partitioning tools */
+>  static int virtblk_getgeo(struct block_device *bd, struct hd_geometry *geo)
+>  {
+>  	struct virtio_blk *vblk = bd->bd_disk->private_data;
+> +	int ret = -ENXIO;
+
+It's more common to do
+
+	int ret = 0;
+
+and on error:
+	ret = -ENXIO;
+
+
+let's do this.
+
+> +
+> +	mutex_lock(&vblk->remove_mutex);
+> +
+> +	if (!vblk->vdev) {
+> +		goto out;
+> +	}
+
+
+single lines are not supposed to use {}.
+if you add ret = -ENXIO here then it won't be a single line anymore
+though.
+
+>  
+>  	/* see if the host passed in geometry config */
+>  	if (virtio_has_feature(vblk->vdev, VIRTIO_BLK_F_GEOMETRY)) {
+> @@ -314,11 +368,17 @@ static int virtblk_getgeo(struct block_device *bd, struct hd_geometry *geo)
+>  		geo->sectors = 1 << 5;
+>  		geo->cylinders = get_capacity(bd->bd_disk) >> 11;
+>  	}
+> -	return 0;
+> +
+> +	ret = 0;
+> +out:
+> +	mutex_unlock(&vblk->remove_mutex);
+> +	return ret;
+>  }
+>  
+>  static const struct block_device_operations virtblk_fops = {
+>  	.owner  = THIS_MODULE,
+> +	.open = virtblk_open,
+> +	.release = virtblk_release,
+>  	.getgeo = virtblk_getgeo,
+>  };
+>  
+> @@ -655,6 +715,10 @@ static int virtblk_probe(struct virtio_device *vdev)
+>  		goto out_free_index;
+>  	}
+>  
+> +	/* This reference is dropped in virtblk_remove(). */
+> +	refcount_set(&vblk->refs, 1);
+> +	mutex_init(&vblk->remove_mutex);
+> +
+>  	vblk->vdev = vdev;
+>  	vblk->sg_elems = sg_elems;
+>  
+> @@ -820,8 +884,12 @@ static int virtblk_probe(struct virtio_device *vdev)
+>  static void virtblk_remove(struct virtio_device *vdev)
+>  {
+>  	struct virtio_blk *vblk = vdev->priv;
+> -	int index = vblk->index;
+> -	int refc;
+> +
+> +	/*
+> +	 * Virtqueue processing is stopped safely here but mutual exclusion is
+> +	 * needed for block_device_operations.
+> +	 */
+> +	mutex_lock(&vblk->remove_mutex);
+>  
+>  	/* Make sure no work handler is accessing the device. */
+>  	flush_work(&vblk->config_work);
+> @@ -834,15 +902,16 @@ static void virtblk_remove(struct virtio_device *vdev)
+>  	/* Stop all the virtqueues. */
+>  	vdev->config->reset(vdev);
+>  
+> -	refc = kref_read(&disk_to_dev(vblk->disk)->kobj.kref);
+> +	/* Virtqueue are stopped, nothing can use vblk->vdev anymore. */
+
+Virtqueues?
+
+> +	vblk->vdev = NULL;
+> +
+>  	put_disk(vblk->disk);
+>  	vdev->config->del_vqs(vdev);
+>  	kfree(vblk->vqs);
+> -	kfree(vblk);
+>  
+> -	/* Only free device id if we don't have any users */
+> -	if (refc == 1)
+> -		ida_simple_remove(&vd_index_ida, index);
+> +	mutex_unlock(&vblk->remove_mutex);
+> +
+> +	virtblk_put(vblk);
+>  }
+>  
+>  #ifdef CONFIG_PM_SLEEP
+> -- 
+> 2.25.3
+> 
+
