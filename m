@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A561BCACC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC6B1BC81F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730402AbgD1Sgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:36:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54218 "EHLO mail.kernel.org"
+        id S1729405AbgD1S3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:29:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730387AbgD1Sgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:36:41 -0400
+        id S1729397AbgD1S3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:29:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4A4152085B;
-        Tue, 28 Apr 2020 18:36:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 622F420730;
+        Tue, 28 Apr 2020 18:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099000;
-        bh=5rg1mbDvVPgqk2qdN1TJwA1lpQ8pvGe+EL4GcEoRhmI=;
+        s=default; t=1588098582;
+        bh=mbsr4pUywiBf3efxDxkiIZhl7JcP3EsZbHgjH0OG9wA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WUF11odStdhHw88SkrjapEZ+MaR9kYCSHLPx3XE3b/yGrpMNaU7wd0ddjhHD5raoe
-         ID2+cBbxRaX8Ysek4VyM1D5BT3K4ovmC9HD9ZYJ0jFgb9G0XEniNGf5u0C1td7ko8D
-         Kga9PNYB7FVFQgDYGTz0mCdS9RcQktdQnOH3fcQo=
+        b=LRQ3TPNd/GUm3wnSnmTwvPdkK4UF5R4ulnUkgR9oSQLpTLdMKTDJ1/aGPOq8PLQhx
+         aywGA8cUab4DeoN3rqS6fEf87zf9+mg/tYcZgWnyxBaf3Er6KSdv9/xNy8ekAYrxFn
+         Bw8DrdQS7HrS1Y7WgT6AJYAbY3aEjoEO+3S3Q734=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yongqiang Sun <yongqiang.sun@amd.com>,
-        Tony Cheng <Tony.Cheng@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 044/168] drm/amd/display: Not doing optimize bandwidth if flip pending.
-Date:   Tue, 28 Apr 2020 20:23:38 +0200
-Message-Id: <20200428182237.448944669@linuxfoundation.org>
+Subject: [PATCH 5.6 043/167] xhci: Finetune host initiated USB3 rootport link suspend and resume
+Date:   Tue, 28 Apr 2020 20:23:39 +0200
+Message-Id: <20200428182230.539895373@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,71 +44,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongqiang Sun <yongqiang.sun@amd.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit 9941b8129030c9202aaf39114477a0e58c0d6ffc ]
+[ Upstream commit ceca49382ac20e06ce04c21279c7f2868c4ec1d4 ]
 
-[Why]
-In some scenario like 1366x768 VSR enabled connected with a 4K monitor
-and playing 4K video in clone mode, underflow will be observed due to
-decrease dppclk when previouse surface scan isn't finished
+Depending on the current link state the steps to resume the link to U0
+varies. The normal case when a port is suspended (U3) we set the link
+to U0 and wait for a port event when U3exit completed and port moved to
+U0.
 
-[How]
-In this use case, surface flip is switching between 4K and 1366x768,
-1366x768 needs smaller dppclk, and when decrease the clk and previous
-surface scan is for 4K and scan isn't done, underflow will happen.  Not
-doing optimize bandwidth in case of flip pending.
+If the port is in U1/U2, then no event is issued, just set link to U0
 
-Signed-off-by: Yongqiang Sun <yongqiang.sun@amd.com>
-Reviewed-by: Tony Cheng <Tony.Cheng@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+If port is in Resume or Recovery state then the device has already
+initiated resume, and this host initiated resume is racing against it.
+Port event handler for device initiated resume will set link to U0,
+just wait for the port to reach U0 before returning.
+
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20200312144517.1593-9-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/usb/host/xhci-hub.c | 36 +++++++++++++++++++++++++-----------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 71c574d1e8be2..2028dc017f7a0 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -1182,6 +1182,26 @@ bool dc_commit_state(struct dc *dc, struct dc_state *context)
- 	return (result == DC_OK);
- }
+diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
+index 02f52d4f74df8..a9c87eb8951e8 100644
+--- a/drivers/usb/host/xhci-hub.c
++++ b/drivers/usb/host/xhci-hub.c
+@@ -1307,20 +1307,34 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
+ 				goto error;
+ 			}
  
-+static bool is_flip_pending_in_pipes(struct dc *dc, struct dc_state *context)
-+{
-+	int i;
-+	struct pipe_ctx *pipe;
-+
-+	for (i = 0; i < MAX_PIPES; i++) {
-+		pipe = &context->res_ctx.pipe_ctx[i];
-+
-+		if (!pipe->plane_state)
-+			continue;
-+
-+		/* Must set to false to start with, due to OR in update function */
-+		pipe->plane_state->status.is_flip_pending = false;
-+		dc->hwss.update_pending_status(pipe);
-+		if (pipe->plane_state->status.is_flip_pending)
-+			return true;
-+	}
-+	return false;
-+}
-+
- bool dc_post_update_surfaces_to_stream(struct dc *dc)
- {
- 	int i;
-@@ -1192,6 +1212,9 @@ bool dc_post_update_surfaces_to_stream(struct dc *dc)
++			/*
++			 * set link to U0, steps depend on current link state.
++			 * U3: set link to U0 and wait for u3exit completion.
++			 * U1/U2:  no PLC complete event, only set link to U0.
++			 * Resume/Recovery: device initiated U0, only wait for
++			 * completion
++			 */
+ 			if (link_state == USB_SS_PORT_LS_U0) {
+-				if ((temp & PORT_PLS_MASK) == XDEV_U0)
+-					break;
++				u32 pls = temp & PORT_PLS_MASK;
++				bool wait_u0 = false;
  
- 	post_surface_trace(dc);
- 
-+	if (is_flip_pending_in_pipes(dc, context))
-+		return true;
-+
- 	for (i = 0; i < dc->res_pool->pipe_count; i++)
- 		if (context->res_ctx.pipe_ctx[i].stream == NULL ||
- 		    context->res_ctx.pipe_ctx[i].plane_state == NULL) {
+-				if (!((temp & PORT_PLS_MASK) == XDEV_U1 ||
+-				    (temp & PORT_PLS_MASK) == XDEV_U2 ||
+-				    (temp & PORT_PLS_MASK) == XDEV_U3)) {
+-					xhci_warn(xhci, "Can only set port %d to U0 from U state\n",
+-							wIndex);
+-					goto error;
++				/* already in U0 */
++				if (pls == XDEV_U0)
++					break;
++				if (pls == XDEV_U3 ||
++				    pls == XDEV_RESUME ||
++				    pls == XDEV_RECOVERY) {
++					wait_u0 = true;
++					reinit_completion(&bus_state->u3exit_done[wIndex]);
++				}
++				if (pls <= XDEV_U3) /* U1, U2, U3 */
++					xhci_set_link_state(xhci, ports[wIndex],
++							    USB_SS_PORT_LS_U0);
++				if (!wait_u0) {
++					if (pls > XDEV_U3)
++						goto error;
++					break;
+ 				}
+-				reinit_completion(&bus_state->u3exit_done[wIndex]);
+-				xhci_set_link_state(xhci, ports[wIndex],
+-						    USB_SS_PORT_LS_U0);
+ 				spin_unlock_irqrestore(&xhci->lock, flags);
+ 				if (!wait_for_completion_timeout(&bus_state->u3exit_done[wIndex],
+ 								 msecs_to_jiffies(100)))
 -- 
 2.20.1
 
