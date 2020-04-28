@@ -2,168 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40201BC19E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16CDC1BC18C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgD1Oo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728073AbgD1Oo2 (ORCPT
+        id S1727981AbgD1On2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:43:28 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:41983 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727124AbgD1On1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:44:28 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D35BC03C1AB;
-        Tue, 28 Apr 2020 07:44:28 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id d17so10440975pgo.0;
-        Tue, 28 Apr 2020 07:44:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JsDPihDIradvM9f3uLrw4TfW583mPkxAjR22PUFbNgw=;
-        b=jTNPxSCiyyU0KwKpMbzpSBK4KSkGIk8o1pSKZtwukGLG41ZvNmsGS5VxBVhVsXGGF7
-         Y579jbF3hrNbZ7t1P/5xtvo5AJaAr94aSqIKKfTOhKjt/e6f05fj7IdqJid8ZnP22XVM
-         pn6dgX1n6cfBOj/wurixACb9gk78J0ilz3cGFS/Sc8bDALFKLmlhU+jpiC+3BfbfDuHz
-         Bkpu3URvpdyo02dAiXPfAS/XR6NkkKmJEdbtj+MRgdbQv3uax5VN7GgP/lJnbEzhySLw
-         4Mw3gfGC7C5yOgpCKfIstwyEn3QLP6PcjXUa3qIBeXOm/PioypwSCoM7U9945lbZx6sg
-         n0nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JsDPihDIradvM9f3uLrw4TfW583mPkxAjR22PUFbNgw=;
-        b=l1btFeE5e/v3ppKB8a1Az9uqw653vJaB+KnBB9vq35uyPxhaR366hNMK4TtgUz43rw
-         X+WwirM+zstrIuh6w3X3FZgvvch2NEjjv1S+fpDZQ5qZL1cvEf/gus0HM9eHknKn/6SZ
-         O3B4+0AysitpPfknCVaC25tXe6Uxs09DqXv45LvHXyQJx7isocS7xbPC8Cy8m0TMst4c
-         hlXwwduVGEc32xWcjmlYSzwKf8nsu/IqN0T/w4TZOCDEBu1u6/AwWx0159y+ZPUxYUNe
-         PI8HUuvICCpNUYjyLCqTDyyvzm+KKEnk5RlMKawAt+C52p93DJ2Xvz4j8YaBz0fJKEQM
-         D1Fw==
-X-Gm-Message-State: AGi0PubW9GKxrWLJ3WzhkBoPrkM5iGwsdLNAsKetgS9MsCivZARoQYXj
-        U93VXZzlrbCoAGPHcUmkKrU=
-X-Google-Smtp-Source: APiQypL3iX01wY2OqSHGJMR8Y4yXNEIVYUlcFdcIISd34gE2G8qCPiXj1wmuiQETuwl5OGVPQq8Yag==
-X-Received: by 2002:a63:6f07:: with SMTP id k7mr29916217pgc.274.1588085067622;
-        Tue, 28 Apr 2020 07:44:27 -0700 (PDT)
-Received: from varodek.localdomain ([2401:4900:40f3:10a2:97c1:b981:9f1:d7d0])
-        by smtp.gmail.com with ESMTPSA id d203sm15053203pfd.79.2020.04.28.07.44.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 07:44:26 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Shannon Nelson <snelson@pensando.io>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        netdev@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        linux-kernel-mentees@lists.linuxfoundation.org, rjw@rjwysocki.net
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, skhan@linuxfoundation.org
-Subject: [Linux-kernel-mentees] [PATCH v2 2/2] realtek/8139cp: Remove Legacy Power Management
-Date:   Tue, 28 Apr 2020 20:13:14 +0530
-Message-Id: <20200428144314.24533-3-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428144314.24533-1-vaibhavgupta40@gmail.com>
-References: <20200428144314.24533-1-vaibhavgupta40@gmail.com>
+        Tue, 28 Apr 2020 10:43:27 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id D244A23E35;
+        Tue, 28 Apr 2020 16:43:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1588085004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xV8UmXfmKOCo8rfAL1DHuYOW1sEqi/rRvTk8GPWV4YM=;
+        b=dD/b1QybujEq1dnyH/G+lR91pdkgakvlBONpoZS6Xx7NNwYvvX3uFX0eVIbX5Ds7xdM5UZ
+        RxA4N3EXfDOCrKes3GUVj3mPYLA/re4CjAOlkJReUFK95YBLArORW9GADSg5lD02r7drlK
+        3LJQ0MRP5dWCdxqidl4b8Nj4TampY60=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 28 Apr 2020 16:43:24 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v3 05/16] mfd: Add support for Kontron sl28cpld management
+ controller
+In-Reply-To: <20200428125049.GU185537@smile.fi.intel.com>
+References: <20200423174543.17161-1-michael@walle.cc>
+ <20200423174543.17161-6-michael@walle.cc>
+ <20200428125049.GU185537@smile.fi.intel.com>
+Message-ID: <5e2d486077f9e2ce8bd9b171cf806fd9@walle.cc>
+X-Sender: michael@walle.cc
+User-Agent: Roundcube Webmail/1.3.10
+X-Spamd-Bar: +
+X-Spam-Level: *
+X-Rspamd-Server: web
+X-Spam-Status: No, score=1.40
+X-Spam-Score: 1.40
+X-Rspamd-Queue-Id: D244A23E35
+X-Spamd-Result: default: False [1.40 / 15.00];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[dt];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[];
+         RCPT_COUNT_TWELVE(0.00)[24];
+         NEURAL_HAM(-0.00)[-0.819];
+         RCVD_COUNT_ZERO(0.00)[0];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,linaro.org,baylibre.com,kernel.org,suse.com,roeck-us.net,gmail.com,pengutronix.de,linux-watchdog.org,nxp.com,linutronix.de,lakedaemon.net,linuxfoundation.org];
+         MID_RHS_MATCH_FROM(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upgrade power management from legacy to generic using dev_pm_ops.
+Am 2020-04-28 14:50, schrieb Andy Shevchenko:
+> On Thu, Apr 23, 2020 at 07:45:32PM +0200, Michael Walle wrote:
+>> This patch adds core support for the board management controller found
+>> on the SMARC-sAL28 board. It consists of the following functions:
+>>  - watchdog
+>>  - GPIO controller
+>>  - PWM controller
+>>  - fan sensor
+>>  - interrupt controller
+> 
+> ...
+> 
+>>  obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
+>> 
+>>  obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
+>> +
+>> +obj-$(CONFIG_MFD_SL28CPLD)	+= sl28cpld.o
+> 
+> Perhaps keep an order?
 
-Add "__maybe_unused" attribute to resume() and susend() callbacks
-definition to suppress compiler warnings.
+I don't see any order in that makefile. Looked to me like every new
+file was added at the end.
 
-Generic callback requires an argument of type "struct device*". Hence,
-convert it to "struct net_device*" using "dev_get_drv_data()" to use
-it in the callback.
+> 
+> ...
+> 
+>> +	return devm_mfd_add_devices(dev, -1, sl28cpld_devs,
+> 
+> -1 has its own definition.
 
-Most of the cleaning part is to remove pci_save_state(),
-pci_set_power_state(), etc power management function calls.
+ok, I'll replace that by PLATFORM_DEVID_NONE.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/net/ethernet/realtek/8139cp.c | 25 +++++++------------------
- 1 file changed, 7 insertions(+), 18 deletions(-)
+Thanks,
+-michael
 
-diff --git a/drivers/net/ethernet/realtek/8139cp.c b/drivers/net/ethernet/realtek/8139cp.c
-index 60d342f82fb3..4f2fb1393966 100644
---- a/drivers/net/ethernet/realtek/8139cp.c
-+++ b/drivers/net/ethernet/realtek/8139cp.c
-@@ -2054,10 +2054,9 @@ static void cp_remove_one (struct pci_dev *pdev)
- 	free_netdev(dev);
- }
- 
--#ifdef CONFIG_PM
--static int cp_suspend (struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused cp_suspend(struct device *device)
- {
--	struct net_device *dev = pci_get_drvdata(pdev);
-+	struct net_device *dev = dev_get_drvdata(device);
- 	struct cp_private *cp = netdev_priv(dev);
- 	unsigned long flags;
- 
-@@ -2075,16 +2074,12 @@ static int cp_suspend (struct pci_dev *pdev, pm_message_t state)
- 
- 	spin_unlock_irqrestore (&cp->lock, flags);
- 
--	pci_save_state(pdev);
--	pci_enable_wake(pdev, pci_choose_state(pdev, state), cp->wol_enabled);
--	pci_set_power_state(pdev, pci_choose_state(pdev, state));
--
- 	return 0;
- }
- 
--static int cp_resume (struct pci_dev *pdev)
-+static int __maybe_unused cp_resume(struct device *device)
- {
--	struct net_device *dev = pci_get_drvdata (pdev);
-+	struct net_device *dev = dev_get_drvdata(device);
- 	struct cp_private *cp = netdev_priv(dev);
- 	unsigned long flags;
- 
-@@ -2093,10 +2088,6 @@ static int cp_resume (struct pci_dev *pdev)
- 
- 	netif_device_attach (dev);
- 
--	pci_set_power_state(pdev, PCI_D0);
--	pci_restore_state(pdev);
--	pci_enable_wake(pdev, PCI_D0, 0);
--
- 	/* FIXME: sh*t may happen if the Rx ring buffer is depleted */
- 	cp_init_rings_index (cp);
- 	cp_init_hw (cp);
-@@ -2111,7 +2102,6 @@ static int cp_resume (struct pci_dev *pdev)
- 
- 	return 0;
- }
--#endif /* CONFIG_PM */
- 
- static const struct pci_device_id cp_pci_tbl[] = {
-         { PCI_DEVICE(PCI_VENDOR_ID_REALTEK,     PCI_DEVICE_ID_REALTEK_8139), },
-@@ -2120,15 +2110,14 @@ static const struct pci_device_id cp_pci_tbl[] = {
- };
- MODULE_DEVICE_TABLE(pci, cp_pci_tbl);
- 
-+static SIMPLE_DEV_PM_OPS(cp_pm_ops, cp_suspend, cp_resume);
-+
- static struct pci_driver cp_driver = {
- 	.name         = DRV_NAME,
- 	.id_table     = cp_pci_tbl,
- 	.probe        =	cp_init_one,
- 	.remove       = cp_remove_one,
--#ifdef CONFIG_PM
--	.resume       = cp_resume,
--	.suspend      = cp_suspend,
--#endif
-+	.driver.pm    = &cp_pm_ops,
- };
- 
- module_pci_driver(cp_driver);
--- 
-2.26.2
-
+> 
+>> +				    ARRAY_SIZE(sl28cpld_devs), NULL,
+>> +				    i2c->irq, NULL);
+>> +}
