@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127091BC963
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9071BC826
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730970AbgD1SlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:41:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60628 "EHLO mail.kernel.org"
+        id S1729444AbgD1SaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:30:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730834AbgD1SlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:41:06 -0400
+        id S1729438AbgD1S36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:29:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3E69208E0;
-        Tue, 28 Apr 2020 18:41:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BDDC208E0;
+        Tue, 28 Apr 2020 18:29:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099266;
-        bh=NJbMw6Pbe7+GENnJqQLQX7O3iLztQDGPrtaFnqPW2d4=;
+        s=default; t=1588098597;
+        bh=0hifaQ70lRgCF0KppeNRWFQqEOv1Xs9uccMIclWC6eo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0OM2fHpJ/T2oy37I1dpNCLsVjMYFOQ3VTB88ExSVoatIrf/W3mS94VvLvl7iMuc7I
-         +1U1YsPZcTG5PtV100QZ9ZDK6ECRHqSWqN4MvuRjdI9XuvvG6UUDdEe3dbfhEBISzP
-         ICB6SEWxzHGxU16QWallu18ey9RKyewvMHG3IHkU=
+        b=h0Sgfx7223I8w78xfrhJ6oM5yfeBzE0xFnRi9lZIoDOeMevTmVnAJkoVYHKMXGvcS
+         8f9EgGGr2tKnJcdOq56jIraSQHwDEhQWQX4BXXj5pv2HKj/isEIKPMEY140mbgrrmQ
+         hX/Hz55iwGIiedfRaiTZnqdTKFEp3mP6iCHnkVIQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johnathan Smithinovic <johnathan.smithinovic@gmx.at>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 084/168] ALSA: hda: Remove ASUS ROG Zenith from the blacklist
+        stable@vger.kernel.org, Mario Tesi <mario.tesi@st.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Vitor Soares <vitor.soares@synopsys.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.6 082/167] iio: imu: st_lsm6dsx: flush hw FIFO before resetting the device
 Date:   Tue, 28 Apr 2020 20:24:18 +0200
-Message-Id: <20200428182242.840957653@linuxfoundation.org>
+Message-Id: <20200428182235.365728512@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +46,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit a8cf44f085ac12c0b5b8750ebb3b436c7f455419 ]
+commit 3a63da26db0a864134f023f088d41deacd509997 upstream.
 
-The commit 3c6fd1f07ed0 ("ALSA: hda: Add driver blacklist") added a
-new blacklist for the devices that are known to have empty codecs, and
-one of the entries was ASUS ROG Zenith II (PCI SSID 1043:874f).
-However, it turned out that the very same PCI SSID is used for the
-previous model that does have the valid HD-audio codecs and the change
-broke the sound on it.
+flush hw FIFO before device reset in order to avoid possible races
+on interrupt line 1. If the first interrupt line is asserted during
+hw reset the device will work in I3C-only mode (if it is supported)
 
-This patch reverts the corresponding entry as a temporary solution.
-Although Zenith II and co will see get the empty HD-audio bus again,
-it'd be merely resource wastes and won't affect the functionality,
-so it's no end of the world.  We'll need to address this later,
-e.g. by either switching to DMI string matching or using PCI ID &
-SSID pairs.
+Fixes: 801a6e0af0c6 ("iio: imu: st_lsm6dsx: add support to LSM6DSO")
+Fixes: 43901008fde0 ("iio: imu: st_lsm6dsx: add support to LSM6DSR")
+Reported-by: Mario Tesi <mario.tesi@st.com>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Reviewed-by: Vitor Soares <vitor.soares@synopsys.com>
+Tested-by: Vitor Soares <vitor.soares@synopsys.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 3c6fd1f07ed0 ("ALSA: hda: Add driver blacklist")
-Reported-by: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200419071926.22683-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/hda_intel.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c |   24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 72bbfeddea24a..dd77b9ffe5fd9 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2024,7 +2024,6 @@ static void pcm_mmap_prepare(struct snd_pcm_substream *substream,
-  * should be ignored from the beginning.
-  */
- static const struct snd_pci_quirk driver_blacklist[] = {
--	SND_PCI_QUIRK(0x1043, 0x874f, "ASUS ROG Zenith II / Strix", 0),
- 	SND_PCI_QUIRK(0x1462, 0xcb59, "MSI TRX40 Creator", 0),
- 	SND_PCI_QUIRK(0x1462, 0xcb60, "MSI TRX40", 0),
- 	{}
--- 
-2.20.1
-
+--- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
++++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+@@ -2036,11 +2036,21 @@ static int st_lsm6dsx_init_hw_timer(stru
+ 	return 0;
+ }
+ 
+-static int st_lsm6dsx_init_device(struct st_lsm6dsx_hw *hw)
++static int st_lsm6dsx_reset_device(struct st_lsm6dsx_hw *hw)
+ {
+ 	const struct st_lsm6dsx_reg *reg;
+ 	int err;
+ 
++	/*
++	 * flush hw FIFO before device reset in order to avoid
++	 * possible races on interrupt line 1. If the first interrupt
++	 * line is asserted during hw reset the device will work in
++	 * I3C-only mode (if it is supported)
++	 */
++	err = st_lsm6dsx_flush_fifo(hw);
++	if (err < 0 && err != -ENOTSUPP)
++		return err;
++
+ 	/* device sw reset */
+ 	reg = &hw->settings->reset;
+ 	err = regmap_update_bits(hw->regmap, reg->addr, reg->mask,
+@@ -2059,6 +2069,18 @@ static int st_lsm6dsx_init_device(struct
+ 
+ 	msleep(50);
+ 
++	return 0;
++}
++
++static int st_lsm6dsx_init_device(struct st_lsm6dsx_hw *hw)
++{
++	const struct st_lsm6dsx_reg *reg;
++	int err;
++
++	err = st_lsm6dsx_reset_device(hw);
++	if (err < 0)
++		return err;
++
+ 	/* enable Block Data Update */
+ 	reg = &hw->settings->bdu;
+ 	err = regmap_update_bits(hw->regmap, reg->addr, reg->mask,
 
 
