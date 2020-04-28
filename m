@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8AA1BC835
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E191BC882
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729508AbgD1Sa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:30:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45136 "EHLO mail.kernel.org"
+        id S1729927AbgD1SdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:33:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729499AbgD1SaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:30:24 -0400
+        id S1729907AbgD1SdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:33:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3AD021707;
-        Tue, 28 Apr 2020 18:30:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FD1221835;
+        Tue, 28 Apr 2020 18:33:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098624;
-        bh=WD3yPOcNBz5ao0L7Opx2owCe6PDhH1jhqWizIZim2uw=;
+        s=default; t=1588098792;
+        bh=s48c0xA9AWOzYkT8z8qRtALlO98KGhNl0F4y/Xz6oqw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E0HLcIB41+0hUzAA1KRekI/IYVQxoDuOUy62nCZeWVxA9AGmZLgqXFQ9uYXuwkSNO
-         OO3sbeXaoYiRCJmtkLkOmE5ccH+rxRg+PJ5IQrDRfUsCGYmLPApQuaXV/azyQ/rZah
-         91r0f47gw+yvvUDxdWBezKwTYeI9xQqiKxewC2fo=
+        b=HocLgYQS5bGdUopXnrmfiNZ0Ab8qIgET6or/iuVp34VoyBzxoLdhi39E3n2gf6Z6L
+         k/OkaDplaLIEWh6pOH5dF9qagCQIOVjxmaxyn/x1M8/RHvTnQzRVYsBjJEEG7AI+nt
+         BvwicFOD+p+w3TUa3OZCsGHlphR6lWoVF2/0ZO30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.6 087/167] iio: xilinx-xadc: Fix clearing interrupt when enabling trigger
+        stable@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 051/131] x86/KVM: Make sure KVM_VCPU_FLUSH_TLB flag is not missed
 Date:   Tue, 28 Apr 2020 20:24:23 +0200
-Message-Id: <20200428182235.965806499@linuxfoundation.org>
+Message-Id: <20200428182231.389944621@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +47,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
-commit f954b098fbac4d183219ce5b42d76d6df2aed50a upstream.
+commit b043138246a41064527cf019a3d51d9f015e9796 upstream.
 
-When enabling the trigger and unmasking the end-of-sequence (EOS) interrupt
-the EOS interrupt should be cleared from the status register. Otherwise it
-is possible that it was still set from a previous capture. If that is the
-case the interrupt would fire immediately even though no conversion has
-been done yet and stale data is being read from the device.
+There is a potential race in record_steal_time() between setting
+host-local vcpu->arch.st.steal.preempted to zero (i.e. clearing
+KVM_VCPU_PREEMPTED) and propagating this value to the guest with
+kvm_write_guest_cached(). Between those two events the guest may
+still see KVM_VCPU_PREEMPTED in its copy of kvm_steal_time, set
+KVM_VCPU_FLUSH_TLB and assume that hypervisor will do the right
+thing. Which it won't.
 
-The old code only clears the interrupt if the interrupt was previously
-unmasked. Which does not make much sense since the interrupt is always
-masked at this point and in addition masking the interrupt does not clear
-the interrupt from the status register. So the clearing needs to be done
-unconditionally.
+Instad of copying, we should map kvm_steal_time and that will
+guarantee atomicity of accesses to @preempted.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Fixes: bdc8cda1d010 ("iio:adc: Add Xilinx XADC driver")
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This is part of CVE-2019-3016.
 
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Reviewed-by: Joao Martins <joao.m.martins@oracle.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[bwh: Backported to 4.19: No tracepoint in record_steal_time().]
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/xilinx-xadc-core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/x86.c | 49 +++++++++++++++++++++++++++-------------------
+ 1 file changed, 29 insertions(+), 20 deletions(-)
 
---- a/drivers/iio/adc/xilinx-xadc-core.c
-+++ b/drivers/iio/adc/xilinx-xadc-core.c
-@@ -674,7 +674,7 @@ static int xadc_trigger_set_state(struct
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 6916f46909ab0..d77822e03ff6b 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -2397,43 +2397,45 @@ static void kvm_vcpu_flush_tlb(struct kvm_vcpu *vcpu, bool invalidate_gpa)
  
- 	spin_lock_irqsave(&xadc->lock, flags);
- 	xadc_read_reg(xadc, XADC_AXI_REG_IPIER, &val);
--	xadc_write_reg(xadc, XADC_AXI_REG_IPISR, val & XADC_AXI_INT_EOS);
-+	xadc_write_reg(xadc, XADC_AXI_REG_IPISR, XADC_AXI_INT_EOS);
- 	if (state)
- 		val |= XADC_AXI_INT_EOS;
- 	else
+ static void record_steal_time(struct kvm_vcpu *vcpu)
+ {
++	struct kvm_host_map map;
++	struct kvm_steal_time *st;
++
+ 	if (!(vcpu->arch.st.msr_val & KVM_MSR_ENABLED))
+ 		return;
+ 
+-	if (unlikely(kvm_read_guest_cached(vcpu->kvm, &vcpu->arch.st.stime,
+-		&vcpu->arch.st.steal, sizeof(struct kvm_steal_time))))
++	/* -EAGAIN is returned in atomic context so we can just return. */
++	if (kvm_map_gfn(vcpu, vcpu->arch.st.msr_val >> PAGE_SHIFT,
++			&map, &vcpu->arch.st.cache, false))
+ 		return;
+ 
++	st = map.hva +
++		offset_in_page(vcpu->arch.st.msr_val & KVM_STEAL_VALID_BITS);
++
+ 	/*
+ 	 * Doing a TLB flush here, on the guest's behalf, can avoid
+ 	 * expensive IPIs.
+ 	 */
+-	if (xchg(&vcpu->arch.st.steal.preempted, 0) & KVM_VCPU_FLUSH_TLB)
++	if (xchg(&st->preempted, 0) & KVM_VCPU_FLUSH_TLB)
+ 		kvm_vcpu_flush_tlb(vcpu, false);
+ 
+-	if (vcpu->arch.st.steal.version & 1)
+-		vcpu->arch.st.steal.version += 1;  /* first time write, random junk */
++	vcpu->arch.st.steal.preempted = 0;
+ 
+-	vcpu->arch.st.steal.version += 1;
++	if (st->version & 1)
++		st->version += 1;  /* first time write, random junk */
+ 
+-	kvm_write_guest_cached(vcpu->kvm, &vcpu->arch.st.stime,
+-		&vcpu->arch.st.steal, sizeof(struct kvm_steal_time));
++	st->version += 1;
+ 
+ 	smp_wmb();
+ 
+-	vcpu->arch.st.steal.steal += current->sched_info.run_delay -
++	st->steal += current->sched_info.run_delay -
+ 		vcpu->arch.st.last_steal;
+ 	vcpu->arch.st.last_steal = current->sched_info.run_delay;
+ 
+-	kvm_write_guest_cached(vcpu->kvm, &vcpu->arch.st.stime,
+-		&vcpu->arch.st.steal, sizeof(struct kvm_steal_time));
+-
+ 	smp_wmb();
+ 
+-	vcpu->arch.st.steal.version += 1;
++	st->version += 1;
+ 
+-	kvm_write_guest_cached(vcpu->kvm, &vcpu->arch.st.stime,
+-		&vcpu->arch.st.steal, sizeof(struct kvm_steal_time));
++	kvm_unmap_gfn(vcpu, &map, &vcpu->arch.st.cache, true, false);
+ }
+ 
+ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+@@ -3272,18 +3274,25 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+ 
+ static void kvm_steal_time_set_preempted(struct kvm_vcpu *vcpu)
+ {
++	struct kvm_host_map map;
++	struct kvm_steal_time *st;
++
+ 	if (!(vcpu->arch.st.msr_val & KVM_MSR_ENABLED))
+ 		return;
+ 
+ 	if (vcpu->arch.st.steal.preempted)
+ 		return;
+ 
+-	vcpu->arch.st.steal.preempted = KVM_VCPU_PREEMPTED;
++	if (kvm_map_gfn(vcpu, vcpu->arch.st.msr_val >> PAGE_SHIFT, &map,
++			&vcpu->arch.st.cache, true))
++		return;
++
++	st = map.hva +
++		offset_in_page(vcpu->arch.st.msr_val & KVM_STEAL_VALID_BITS);
++
++	st->preempted = vcpu->arch.st.steal.preempted = KVM_VCPU_PREEMPTED;
+ 
+-	kvm_write_guest_offset_cached(vcpu->kvm, &vcpu->arch.st.stime,
+-			&vcpu->arch.st.steal.preempted,
+-			offsetof(struct kvm_steal_time, preempted),
+-			sizeof(vcpu->arch.st.steal.preempted));
++	kvm_unmap_gfn(vcpu, &map, &vcpu->arch.st.cache, true, true);
+ }
+ 
+ void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+-- 
+2.20.1
+
 
 
