@@ -2,112 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70341BCDD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AB81BCDD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbgD1U6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 16:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
+        id S1726634AbgD1U6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 16:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726636AbgD1U6h (ORCPT
+        by vger.kernel.org with ESMTP id S1726344AbgD1U6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 16:58:37 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D86C03C1AC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 13:58:37 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id rh22so18392501ejb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 13:58:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OSzO1rJO0R184LhoOiiy43Vbf5CZ5lYIXfcp6IiNMuk=;
-        b=fW8/VJuKoPUP7uviDlRt5iWPklR6159dL8OqPXAYkQt9jT0QXQH20Vj9C11FGoyFvc
-         OmLtFM7kkC1koJGiB6xpfGZtZ5KQla2TT0FJ0a62xNBnSaBDE5mcnxixIXf215wOmA2x
-         bz5s03577i+7pt7SX5d+h4+D+TvfNRIGHm5exgfywa5JPZAkLGGlYKVJ1xOOXfp4y32z
-         H/OOSJvk+DvAC9eCBwXFeQ72VKvf6z6DSYPHye8eGQW9zYal4Z7bSHNJMbnI/Ugqef1v
-         U6385QbNHByFEDZBtIQhEEYNiVIsvaguzMhSGX7AJ6VGb7NALY801/q3RB/Dl4z90Kza
-         Ej5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OSzO1rJO0R184LhoOiiy43Vbf5CZ5lYIXfcp6IiNMuk=;
-        b=nci4K0bmrQkfgOw9J7branEgAC+U6jwDcE2vm/xUURCLTw4qvNdLWqfLp4lCodp3Jf
-         C2ck+/vK9wmXvwGSgDPPCGbQ68AhZct11xOb6gpqMQ90be03Ise8aGTamFXZVIQooCZ4
-         IO2naSjFSsv8h3swMFdbgWIjTiOh6f3ypGUbeO5Jgxwdz8I2HqkT1r6hX1yGuzQA/Pbl
-         l9ipIRmW11SqeE6KxhEzdXgh3424wY9k2QAfweJJkpW9xSjit+3ScYOoOppiYfJFrNI3
-         eS4PAjySXlTh2ds0SPTSLVakUiRio/QOYP58AdPukMxbKYsZpQ6P7bVBcTm+LBpkm8z+
-         lb/A==
-X-Gm-Message-State: AGi0PuYoPTeDmkeWOYh4Z6Gecr6OURq1FtUVx0hp6H9WGeuYNSmszRmo
-        HWCJu/59tBYXbGgPpg0alfiRYM7vjbOnmz6rMSwqEw==
-X-Google-Smtp-Source: APiQypIDmIaYEXVfqX5Ab4PeJvhjul4YnZzP2xIfW1kiZtODLOShV6xLWrmLPJ+wBx6xyCCV+2sKrWG5awxiNEHaSK4=
-X-Received: by 2002:a17:906:5918:: with SMTP id h24mr27104025ejq.210.1588107515478;
- Tue, 28 Apr 2020 13:58:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200428181010.170568-1-swboyd@chromium.org> <20200428181010.170568-3-swboyd@chromium.org>
-In-Reply-To: <20200428181010.170568-3-swboyd@chromium.org>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Tue, 28 Apr 2020 21:58:24 +0100
-Message-ID: <CAJ9a7VjJpZWMJFkwxwnc=w8p1cemx-vM7yrWWWEHp_ThjkJoSA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] coresight: Avoid casting void pointers
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Joe Perches <joe@perches.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 28 Apr 2020 16:58:32 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638FCC03C1AC;
+        Tue, 28 Apr 2020 13:58:32 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id C32C0120F52B8;
+        Tue, 28 Apr 2020 13:58:31 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 13:58:30 -0700 (PDT)
+Message-Id: <20200428.135830.274833516409783023.davem@davemloft.net>
+To:     gshan@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netanel@amazon.com, akiyano@amazon.com, gtzalik@amazon.com,
+        shan.gavin@gmail.com
+Subject: Re: [PATCH v2] net/ena: Fix build warning in ena_xdp_set()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200428044945.123511-1-gshan@redhat.com>
+References: <20200428044945.123511-1-gshan@redhat.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=iso-8859-7
+Content-Transfer-Encoding: base64
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 28 Apr 2020 13:58:32 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by mike.leach@linaro.org
-
-On Tue, 28 Apr 2020 at 19:10, Stephen Boyd <swboyd@chromium.org> wrote:
->
-> We don't need to cast void pointers, such as the amba_id data. Assign to
-> a local variable to make the code prettier and also return NULL instead
-> of 0 to make sparse happy.
->
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Reviewed-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->
-> Thanks Joe for finding my thinko!
->
->  drivers/hwtracing/coresight/coresight-priv.h | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-> index 5a36f0f50899..36c943ae94d5 100644
-> --- a/drivers/hwtracing/coresight/coresight-priv.h
-> +++ b/drivers/hwtracing/coresight/coresight-priv.h
-> @@ -215,9 +215,12 @@ cti_remove_assoc_from_csdev(struct coresight_device *csdev) {}
->  /* extract the data value from a UCI structure given amba_id pointer. */
->  static inline void *coresight_get_uci_data(const struct amba_id *id)
->  {
-> -       if (id->data)
-> -               return ((struct amba_cs_uci_id *)(id->data))->data;
-> -       return 0;
-> +       struct amba_cs_uci_id *uci_id = id->data;
-> +
-> +       if (!uci_id)
-> +               return NULL;
-> +
-> +       return uci_id->data;
->  }
->
->  void coresight_release_platform_data(struct coresight_device *csdev,
-> --
-> Sent by a computer, using git, on the internet
->
-
-
--- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+RnJvbTogR2F2aW4gU2hhbiA8Z3NoYW5AcmVkaGF0LmNvbT4NCkRhdGU6IFR1ZSwgMjggQXByIDIw
+MjAgMTQ6NDk6NDUgKzEwMDANCg0KPiBUaGlzIGZpeGVzIHRoZSBmb2xsb3dpbmcgYnVpbGQgd2Fy
+bmluZyBpbiBlbmFfeGRwX3NldCgpLCB3aGljaCBpcw0KPiBvYnNlcnZlZCBvbiBhYXJjaDY0IHdp
+dGggNjRLQiBwYWdlIHNpemUuDQo+IA0KPiAgICBJbiBmaWxlIGluY2x1ZGVkIGZyb20gLi9pbmNs
+dWRlL25ldC9pbmV0X3NvY2suaDoxOSwNCj4gICAgICAgZnJvbSAuL2luY2x1ZGUvbmV0L2lwLmg6
+MjcsDQo+ICAgICAgIGZyb20gZHJpdmVycy9uZXQvZXRoZXJuZXQvYW1hem9uL2VuYS9lbmFfbmV0
+ZGV2LmM6NDY6DQo+ICAgIGRyaXZlcnMvbmV0L2V0aGVybmV0L2FtYXpvbi9lbmEvZW5hX25ldGRl
+di5jOiBJbiBmdW5jdGlvbiAgICAgICAgIFwNCj4gICAgoWVuYV94ZHBfc2V0ojogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0KPiAgICBkcml2ZXJz
+L25ldC9ldGhlcm5ldC9hbWF6b24vZW5hL2VuYV9uZXRkZXYuYzo1NTc6Njogd2FybmluZzogICAg
+ICBcDQo+ICAgIGZvcm1hdCChJWx1oiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIFwNCj4gICAgZXhwZWN0cyBhcmd1bWVudCBvZiB0eXBlIKFsb25n
+IHVuc2lnbmVkIGludKIsIGJ1dCBhcmd1bWVudCA0ICAgICAgXA0KPiAgICBoYXMgdHlwZSChaW50
+oiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcDQo+
+ICAgIFstV2Zvcm1hdD1dICJGYWlsZWQgdG8gc2V0IHhkcCBwcm9ncmFtLCB0aGUgY3VycmVudCBN
+VFUgKCVkKSBpcyAgIFwNCj4gICAgbGFyZ2VyIHRoYW4gdGhlIG1heGltdW0gYWxsb3dlZCBNVFUg
+KCVsdSkgd2hpbGUgeGRwIGlzIG9uIiwNCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEdhdmluIFNoYW4g
+PGdzaGFuQHJlZGhhdC5jb20+DQo+IC0tLQ0KPiB2MjogTWFrZSBFTkFfUEFHRV9TSVpFIHRvIGJl
+ICJ1bnNpZ25lZCBsb25nIiBhbmQgdmVyaWZ5IG9uIGFhcmNoNjQNCj4gICAgIHdpdGggNEtCIG9y
+IDY0S0IgcGFnZSBzaXplIGNvbmZpZ3VyYXRpb24NCg0KQXBwbGllZCwgdGhhbmsgeW91Lg0K
