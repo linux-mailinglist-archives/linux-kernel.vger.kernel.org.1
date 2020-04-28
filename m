@@ -2,289 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81471BBCC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6931BBCDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgD1LqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 07:46:23 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3325 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726285AbgD1LqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 07:46:22 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id BF27A4D8058AFB411182;
-        Tue, 28 Apr 2020 19:46:16 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 28 Apr 2020 19:46:07 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <john.johansen@canonical.com>, <jmorris@namei.org>,
-        <serge@hallyn.com>
-CC:     <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] apparmor: Use true and false for bool variable
-Date:   Tue, 28 Apr 2020 19:52:21 +0800
-Message-ID: <1588074741-73393-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1726595AbgD1LzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 07:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726505AbgD1LzJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 07:55:09 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71060C03C1A9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:55:09 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id f13so24249141wrm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:55:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ARhS0rwZ8Alb5Jm0pWQp/cHnoFN2jrQ1u7lV5uPkaIQ=;
+        b=yqPfDDwKZw7djhVzl5OuNoaqC8fFv5dibuLQEe4/NGADPAlpc7ia3b3xNCHs277nOD
+         wobBmC1791F6rWiuwhRrV7BlcpsOZmcc0G0/Ghtu/3/pHzPjOyjq1H7u6J/lXXj6OFle
+         v3jZNOLjPoTZfcyPMGwk0cOi0XLAIE5RWhhAyJ3mmMvFXr+lnUjTDaIK508DjlYcZrqU
+         xhMFB1SFDD1sXHMgx2smoIRPKC00GOPr+XD2nD5FtI8p0M1eUq1Qswzttk87OJ7/aE3x
+         RMU6ytLyZs3AMfJ/nP0lKwosL0Lnsy2a3A7C6RD8BQ+DDqvtGR7diSF28B6etB0H1pXZ
+         i5Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ARhS0rwZ8Alb5Jm0pWQp/cHnoFN2jrQ1u7lV5uPkaIQ=;
+        b=LLAl0FAcX4pUc8Wo1sYIEwspgKNtFQKR6AsOmwr2ta1D+Fy4M7Sn7Dg0dmYJbAdijq
+         utBjq0UGgx4HnEOtRLZARe0TPIG68i/grWpYWLCX+SuCuG2CB2ggZvLcwRAQhWU1jk5C
+         uE7EmE+RLE6cx3OB8s3dzqvv7SJ4pcQtIotFBZid80COS5kLMVumdNStcChewZ2vh8I1
+         C8qWqaKj1fwaBUgR9349mp77mxIlTuQWdmM+7otvJFm4iV0gka0EIIWKekY5d47IvpoY
+         77UsgY/NQxNon/zUiIy46FmlHQKU2T8YSWAPWmL8154w6PKPab1n5WNv7CEfQLzKUnJN
+         n6iw==
+X-Gm-Message-State: AGi0Pubd/yVZdgCPZTy6af05decwxJqc1V0z4OTkuqgj6HQhJqlBeZVY
+        vI8hJBb5NRQAD/Wwx9kqnMheenwcSpU=
+X-Google-Smtp-Source: APiQypLd2NSu0mYIXkv6YI6YC6iYQ4qBfQuvzN3jUInvrcXe/1U8kye3GPBhq/k3JVYMUwXYHLtPPQ==
+X-Received: by 2002:a5d:544f:: with SMTP id w15mr35097664wrv.77.1588074907763;
+        Tue, 28 Apr 2020 04:55:07 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id r2sm3091066wmg.2.2020.04.28.04.55.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Apr 2020 04:55:07 -0700 (PDT)
+Subject: Re: [PATCH] nvmem: ensure sysfs writes handle write-protect pin
+To:     Michael Auchter <michael.auchter@ni.com>
+Cc:     Khouloud Touil <ktouil@baylibre.com>, linux-kernel@vger.kernel.org
+References: <20200427183914.333587-1-michael.auchter@ni.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <4fa69067-8993-1819-abb5-3ce718e17d36@linaro.org>
+Date:   Tue, 28 Apr 2020 12:55:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200427183914.333587-1-michael.auchter@ni.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warnings:
 
-security/apparmor/file.c:162:9-10: WARNING: return of 0/1 in function 'is_deleted' with return type bool
-security/apparmor/file.c:362:9-10: WARNING: return of 0/1 in function 'xindex_is_subset' with return type bool
-security/apparmor/policy_unpack.c:246:9-10: WARNING: return of 0/1 in function 'unpack_X' with return type bool
-security/apparmor/policy_unpack.c:292:9-10: WARNING: return of 0/1 in function 'unpack_nameX' with return type bool
-security/apparmor/policy_unpack.c:646:8-9: WARNING: return of 0/1 in function 'unpack_rlimits' with return type bool
-security/apparmor/policy_unpack.c:604:8-9: WARNING: return of 0/1 in function 'unpack_secmark' with return type bool
-security/apparmor/policy_unpack.c:538:8-9: WARNING: return of 0/1 in function 'unpack_trans_table' with return type bool
-security/apparmor/policy_unpack.c:327:9-10: WARNING: return of 0/1 in function 'unpack_u32' with return type bool
-security/apparmor/policy_unpack.c:345:9-10: WARNING: return of 0/1 in function 'unpack_u64' with return type bool
-security/apparmor/policy_unpack.c:309:9-10: WARNING: return of 0/1 in function 'unpack_u8' with return type bool
-security/apparmor/policy_unpack.c:568:8-9: WARNING: return of 0/1 in function 'unpack_xattrs' with return type bool
-security/apparmor/policy_unpack.c:1007:10-11: WARNING: return of 0/1 in function 'verify_dfa_xindex' with return type bool
-security/apparmor/policy_unpack.c:997:9-10: WARNING: return of 0/1 in function 'verify_xindex' with return type bool
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- security/apparmor/file.c          | 12 ++++-----
- security/apparmor/policy_unpack.c | 54 +++++++++++++++++++--------------------
- 2 files changed, 33 insertions(+), 33 deletions(-)
+On 27/04/2020 19:39, Michael Auchter wrote:
+> Commit 2a127da461a9d8d97782d6e82b227041393eb4d2 added support for
+> handling write-protect pins to the nvmem core, and commit
+> 1c89074bf85068d1b86f2e0f0c2110fdd9b83c9f retrofitted the at24 driver to
+> use this support.
+> 
+> These changes broke write() on the nvmem sysfs attribute for eeproms
+> which utilize a write-protect pin, as the write callback invokes the
+> nvmem device's reg_write callback directly which no longer handles
+> changing the state of the write-protect pin.
+> 
+> Change the read and write callbacks for the sysfs attribute to invoke
+> nvmme_reg_read/nvmem_reg_write helpers which handle this, rather than
+> calling reg_read/reg_write directly.
+> 
+> Signed-off-by: Michael Auchter <michael.auchter@ni.com>
+> ---
+>   drivers/nvmem/core.c | 52 ++++++++++++++++++++++----------------------
+>   1 file changed, 26 insertions(+), 26 deletions(-)
+> 
 
-diff --git a/security/apparmor/file.c b/security/apparmor/file.c
-index f1caf36..9a2d14b 100644
---- a/security/apparmor/file.c
-+++ b/security/apparmor/file.c
-@@ -154,13 +154,13 @@ int aa_audit_file(struct aa_profile *profile, struct aa_perms *perms,
-  * is_deleted - test if a file has been completely unlinked
-  * @dentry: dentry of file to test for deletion  (NOT NULL)
-  *
-- * Returns: %1 if deleted else %0
-+ * Returns: true if deleted else false
-  */
- static inline bool is_deleted(struct dentry *dentry)
- {
- 	if (d_unlinked(dentry) && d_backing_inode(dentry)->i_nlink == 0)
--		return 1;
--	return 0;
-+		return true;
-+	return false;
- }
- 
- static int path_name(const char *op, struct aa_label *label,
-@@ -353,15 +353,15 @@ int aa_path_perm(const char *op, struct aa_label *label,
-  * this is done as part of the subset test, where a hardlink must have
-  * a subset of permissions that the target has.
-  *
-- * Returns: %1 if subset else %0
-+ * Returns: true if subset else false
-  */
- static inline bool xindex_is_subset(u32 link, u32 target)
- {
- 	if (((link & ~AA_X_UNSAFE) != (target & ~AA_X_UNSAFE)) ||
- 	    ((link & AA_X_UNSAFE) && !(target & AA_X_UNSAFE)))
--		return 0;
-+		return false;
- 
--	return 1;
-+	return true;
- }
- 
- static int profile_path_link(struct aa_profile *profile,
-diff --git a/security/apparmor/policy_unpack.c b/security/apparmor/policy_unpack.c
-index 2dfe078..b67322a 100644
---- a/security/apparmor/policy_unpack.c
-+++ b/security/apparmor/policy_unpack.c
-@@ -243,11 +243,11 @@ static size_t unpack_u16_chunk(struct aa_ext *e, char **chunk)
- static bool unpack_X(struct aa_ext *e, enum aa_code code)
- {
- 	if (!inbounds(e, 1))
--		return 0;
-+		return false;
- 	if (*(u8 *) e->pos != code)
--		return 0;
-+		return false;
- 	e->pos++;
--	return 1;
-+	return true;
- }
- 
- /**
-@@ -261,10 +261,10 @@ static bool unpack_X(struct aa_ext *e, enum aa_code code)
-  * name element in the stream.  If @name is NULL any name element will be
-  * skipped and only the typecode will be tested.
-  *
-- * Returns 1 on success (both type code and name tests match) and the read
-+ * Returns true on success (both type code and name tests match) and the read
-  * head is advanced past the headers
-  *
-- * Returns: 0 if either match fails, the read head does not move
-+ * Returns: false if either match fails, the read head does not move
-  */
- static bool unpack_nameX(struct aa_ext *e, enum aa_code code, const char *name)
- {
-@@ -289,11 +289,11 @@ static bool unpack_nameX(struct aa_ext *e, enum aa_code code, const char *name)
- 
- 	/* now check if type code matches */
- 	if (unpack_X(e, code))
--		return 1;
-+		return true;
- 
- fail:
- 	e->pos = pos;
--	return 0;
-+	return false;
- }
- 
- static bool unpack_u8(struct aa_ext *e, u8 *data, const char *name)
-@@ -306,12 +306,12 @@ static bool unpack_u8(struct aa_ext *e, u8 *data, const char *name)
- 		if (data)
- 			*data = get_unaligned((u8 *)e->pos);
- 		e->pos += sizeof(u8);
--		return 1;
-+		return true;
- 	}
- 
- fail:
- 	e->pos = pos;
--	return 0;
-+	return false;
- }
- 
- static bool unpack_u32(struct aa_ext *e, u32 *data, const char *name)
-@@ -324,12 +324,12 @@ static bool unpack_u32(struct aa_ext *e, u32 *data, const char *name)
- 		if (data)
- 			*data = le32_to_cpu(get_unaligned((__le32 *) e->pos));
- 		e->pos += sizeof(u32);
--		return 1;
-+		return true;
- 	}
- 
- fail:
- 	e->pos = pos;
--	return 0;
-+	return false;
- }
- 
- static bool unpack_u64(struct aa_ext *e, u64 *data, const char *name)
-@@ -342,12 +342,12 @@ static bool unpack_u64(struct aa_ext *e, u64 *data, const char *name)
- 		if (data)
- 			*data = le64_to_cpu(get_unaligned((__le64 *) e->pos));
- 		e->pos += sizeof(u64);
--		return 1;
-+		return true;
- 	}
- 
- fail:
- 	e->pos = pos;
--	return 0;
-+	return false;
- }
- 
- static size_t unpack_array(struct aa_ext *e, const char *name)
-@@ -472,7 +472,7 @@ static struct aa_dfa *unpack_dfa(struct aa_ext *e)
-  * @e: serialized data extent information  (NOT NULL)
-  * @profile: profile to add the accept table to (NOT NULL)
-  *
-- * Returns: 1 if table successfully unpacked
-+ * Returns: true if table successfully unpacked
-  */
- static bool unpack_trans_table(struct aa_ext *e, struct aa_profile *profile)
- {
-@@ -535,12 +535,12 @@ static bool unpack_trans_table(struct aa_ext *e, struct aa_profile *profile)
- 		if (!unpack_nameX(e, AA_STRUCTEND, NULL))
- 			goto fail;
- 	}
--	return 1;
-+	return true;
- 
- fail:
- 	aa_free_domain_entries(&profile->file.trans);
- 	e->pos = saved_pos;
--	return 0;
-+	return false;
- }
- 
- static bool unpack_xattrs(struct aa_ext *e, struct aa_profile *profile)
-@@ -565,11 +565,11 @@ static bool unpack_xattrs(struct aa_ext *e, struct aa_profile *profile)
- 			goto fail;
- 	}
- 
--	return 1;
-+	return true;
- 
- fail:
- 	e->pos = pos;
--	return 0;
-+	return false;
- }
- 
- static bool unpack_secmark(struct aa_ext *e, struct aa_profile *profile)
-@@ -601,7 +601,7 @@ static bool unpack_secmark(struct aa_ext *e, struct aa_profile *profile)
- 			goto fail;
- 	}
- 
--	return 1;
-+	return true;
- 
- fail:
- 	if (profile->secmark) {
-@@ -613,7 +613,7 @@ static bool unpack_secmark(struct aa_ext *e, struct aa_profile *profile)
- 	}
- 
- 	e->pos = pos;
--	return 0;
-+	return false;
- }
- 
- static bool unpack_rlimits(struct aa_ext *e, struct aa_profile *profile)
-@@ -643,11 +643,11 @@ static bool unpack_rlimits(struct aa_ext *e, struct aa_profile *profile)
- 		if (!unpack_nameX(e, AA_STRUCTEND, NULL))
- 			goto fail;
- 	}
--	return 1;
-+	return true;
- 
- fail:
- 	e->pos = pos;
--	return 0;
-+	return false;
- }
- 
- static u32 strhash(const void *data, u32 len, u32 seed)
-@@ -994,8 +994,8 @@ static bool verify_xindex(int xindex, int table_size)
- 	xtype = xindex & AA_X_TYPE_MASK;
- 	index = xindex & AA_X_INDEX_MASK;
- 	if (xtype == AA_X_TABLE && index >= table_size)
--		return 0;
--	return 1;
-+		return false;
-+	return true;
- }
- 
- /* verify dfa xindexes are in range of transition tables */
-@@ -1004,11 +1004,11 @@ static bool verify_dfa_xindex(struct aa_dfa *dfa, int table_size)
- 	int i;
- 	for (i = 0; i < dfa->tables[YYTD_ID_ACCEPT]->td_lolen; i++) {
- 		if (!verify_xindex(dfa_user_xindex(dfa, i), table_size))
--			return 0;
-+			return false;
- 		if (!verify_xindex(dfa_other_xindex(dfa, i), table_size))
--			return 0;
-+			return false;
- 	}
--	return 1;
-+	return true;
- }
- 
- /**
--- 
-2.6.2
+Applied fixes tag:
+  Fixes: 2a127da461a9 ("nvmem: add support for the write-protect pin")
 
+
+--srini
