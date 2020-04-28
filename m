@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DFD1BB907
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 10:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9574D1BB90F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 10:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgD1InE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 04:43:04 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:35424 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726573AbgD1InD (ORCPT
+        id S1726454AbgD1Ipi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 04:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726271AbgD1Ipi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 04:43:03 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 5CE801C0265; Tue, 28 Apr 2020 10:43:02 +0200 (CEST)
-Date:   Tue, 28 Apr 2020 10:43:01 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v20 02/17] leds: Add multicolor ID to the color ID list
-Message-ID: <20200428084301.GC20640@amd>
-References: <20200423155524.13971-1-dmurphy@ti.com>
- <20200423155524.13971-3-dmurphy@ti.com>
- <20200425195242.GA1143@bug>
- <003891b8-a697-6d55-3862-5773e23a466a@ti.com>
+        Tue, 28 Apr 2020 04:45:38 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB43AC03C1A9;
+        Tue, 28 Apr 2020 01:45:37 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id b18so19490805ilf.2;
+        Tue, 28 Apr 2020 01:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6kCsx7wAGrjx+68NCUXouJOmxNELyFgrhEYo7Fq+h8c=;
+        b=C+tarnSyrkRFmLdjp00BVNxJrJ0ECb6qa8qLWQHwCmOTyQKvszlum4fa/JNc2wjjEQ
+         +xod5yiVp1QO2KOfl2oB5irbr2SxB1lONwU9NFwP/GVoQK452rohz+Q27cDd51v5ESBr
+         o5o0Pf89nKmNRXSF5FRg83HaXgylmKkDtxIE5JZBmF3ndhcgE2JUwhNuu4shMoirplEn
+         th9NtWOdp9DrrexTI8ZYXwbrGtkpzqCV4p7DRs3dGB6awr7IqzUWq0bZzC76VzI+malR
+         o2WLy2MsCHkCTERhB23oyWJRGOPYzFah7aFeoVR6Lefrng956pbiQ24iXrswaR1gJRvn
+         xrgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6kCsx7wAGrjx+68NCUXouJOmxNELyFgrhEYo7Fq+h8c=;
+        b=Q7sQI8vKxLpp3slJo3uQZRYSC1PErSOgxrWYlZSjoYnL6gN6z4FEdp7iRebLiFfNpg
+         KH6Jo/UfXWBZIGIVouA9ftBKWBPtEuGveBVLa3WBc53Yag2/wkkknuNO80dHZSWDtTua
+         R2KhLJZkMBv1cQOMblS8bzYV6uAOklw16/41hJp5cQM1+lvl6pQ6Gsmxhmn8EQmpfxlH
+         swu5Raww9li5RaEXE15kzu1RGeYS/Lq5LqUiCCyZ8bIxqiNBiiLeKmmiFT7PDStE4KU2
+         DnZ/rhVqXRz/KQ3MIeSHWUgX3ZuDXAWTT1R7GBj5Qd6A2juv7Gx2L6SrwmGhnJzMlhBb
+         VXRg==
+X-Gm-Message-State: AGi0PuYi+hJLFylJGyZ4Oer2sP79iUP7iGgf10EfWpQTQRMTFPp3iTAC
+        jwEwc8/LbYtPHEOi9CI8+J6JyI1NjWA459YCDWA=
+X-Google-Smtp-Source: APiQypIkK7jh6sesRljWxwYK1L0SgBoutO7PcaD6mBLQhY4xPsDiYxUKbG/slHl1xbUFXGsowlIYhRXsrV13Ijtvcss=
+X-Received: by 2002:a05:6e02:111:: with SMTP id t17mr23744535ilm.59.1588063537068;
+ Tue, 28 Apr 2020 01:45:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="qtZFehHsKgwS5rPz"
-Content-Disposition: inline
-In-Reply-To: <003891b8-a697-6d55-3862-5773e23a466a@ti.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200426121709.1216-1-peron.clem@gmail.com> <20200428075156.65okklrupingiza6@gilmour.lan>
+In-Reply-To: <20200428075156.65okklrupingiza6@gilmour.lan>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Tue, 28 Apr 2020 10:45:26 +0200
+Message-ID: <CAJiuCcdnGW+jC8NQPWaE_fSEaNfrCcLhkmy3-L-ZXQmgQdsEKw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: allwinner: h6: Use dedicated CPU OPP table
+ for Tanix TX6
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Piotr Oniszczuk <warpme@o2.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Maxime,
 
---qtZFehHsKgwS5rPz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, 28 Apr 2020 at 09:52, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> On Sun, Apr 26, 2020 at 02:17:09PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
+> > Tanix TX6 has a fixed regulator. As DVFS is instructed to change
+> > voltage to meet OPP table. The DVFS is not working as expected.
+> >
+> > Introduce a dedicated OPP Table where voltage are equals to
+> > the fixed regulator.
+> >
+> > Reported-by: Piotr Oniszczuk <warpme@o2.pl>
+> > Fixes: add1e27fb703 ("arm64: dts: allwinner: h6: Enable CPU opp tables =
+for Tanix TX6")
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+>
+> I'm not really a big fan of duplicating the OPPs, since that would make a=
+n
+> update of those very likely to be overlooked for that particular board (a=
+nd
+> since it's a board that not a lot of people have, it would be harder to n=
+otice
+> too).
+>
+> IIRC, removing the cpu-supply property should work as well?
+Yes it would works also the OPP will provide a dummy regulator.
 
-On Mon 2020-04-27 12:12:18, Dan Murphy wrote:
-> Pavel
->=20
-> On 4/25/20 2:52 PM, Pavel Machek wrote:
-> >On Thu 2020-04-23 10:55:09, Dan Murphy wrote:
-> >>Add a new color ID that is declared as MULTICOLOR as with the
-> >>multicolor framework declaring a definitive color is not accurate
-> >>as the node can contain multiple colors.
-> >>
-> >>Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> >Please merge with previous patch, and you can keep reviews.
->=20
-> Not sure we should do that.=A0 The previous patches deals directly with t=
-he
-> bindings and this is code.
->=20
-> I thought the rule was to keep bindings and code separated.
->=20
-> It made sense to squash the bindings header patch to the bindings document
-> patch but it does not make sense to squash this patch to the bindings.
->=20
-> Please let me know if you want me to proceed with the squash.
+But as it has been introduced and there is a cpu regulator in the real life=
+.
+I thought it was a bit a hack to just remove it but as you wish.
 
-Well, OTOH it seems wrong to have array that is only
-half-initialized... But it is not a big deal.
+Regards,
+Clement
 
-Best regards,
-								Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
 
---qtZFehHsKgwS5rPz
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl6n7JUACgkQMOfwapXb+vKOxQCffeMiLO16ErCjGnPSc4HtSVu3
-Bm0An1e04aRx8T6MkLO1cxxUF3Lr2skC
-=iN50
------END PGP SIGNATURE-----
-
---qtZFehHsKgwS5rPz--
+>
+> Maxime
