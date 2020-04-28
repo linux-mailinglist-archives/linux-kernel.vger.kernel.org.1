@@ -2,83 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82B91BCD9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D401BCDA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgD1UmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 16:42:03 -0400
-Received: from mga12.intel.com ([192.55.52.136]:56480 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbgD1UmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 16:42:02 -0400
-IronPort-SDR: hS4L0avMnzi/CbwJb8gTD4tJER3pe08Dhr0lXaZ4WaeQfg/4Q8F+8ekoDI6EtMnf/LCIo+hQsY
- psN73Cm86GrQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 13:42:01 -0700
-IronPort-SDR: xagcZJWK38zXxA6Ieuy00Ct62Fx2wWHz9vTb6SOF2J+n3Zp70Y7WRrXkYEqW+/S3sb23RIPidX
- V9CDHy8qkx/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
-   d="scan'208";a="246625188"
-Received: from jpan9-mobl2.amr.corp.intel.com (HELO localhost) ([10.212.240.17])
-  by orsmga007.jf.intel.com with SMTP; 28 Apr 2020 13:42:00 -0700
-Date:   Tue, 28 Apr 2020 13:42:00 -0700
-From:   "Jacob Pan (Jun)" <jacob.jun.pan@intel.com>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        jacob.jun.pan@intel.com
-Subject: Re: [PATCH 5/7] x86/mmu: Allocate/free PASID
-Message-ID: <20200428134200.000010f7@intel.com>
-In-Reply-To: <3908561D78D1C84285E8C5FCA982C28F7F608BE9@ORSMSX115.amr.corp.intel.com>
-References: <1585596788-193989-1-git-send-email-fenghua.yu@intel.com>
-        <1585596788-193989-6-git-send-email-fenghua.yu@intel.com>
-        <87pnbus3du.fsf@nanos.tec.linutronix.de>
-        <20200428112113.000033bd@intel.com>
-        <87tv13o306.fsf@nanos.tec.linutronix.de>
-        <3908561D78D1C84285E8C5FCA982C28F7F608BE9@ORSMSX115.amr.corp.intel.com>
-Organization: intel
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726547AbgD1UnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 16:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726318AbgD1UnZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 16:43:25 -0400
+Received: from mail-vk1-xa41.google.com (mail-vk1-xa41.google.com [IPv6:2607:f8b0:4864:20::a41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7869C03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 13:43:23 -0700 (PDT)
+Received: by mail-vk1-xa41.google.com with SMTP id b14so60362vkk.10
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 13:43:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/OSHGWesGAjIQKdOPpoKsn+XeE0l9RMqKCT+tPNC2z4=;
+        b=zX6Iakul0LkrFXuvvK6fla1W/wqCi4+6Vv0VkHkIeJuwdsqVxPwZCn+2bPbmUGyx3Y
+         uYs65uOc8V43C8V26+c/UCnzteqOdMsTRnrxVnbkx3ZHHV9QnkIK781R6AkXe7E/Kbf0
+         ldnBZ5ISzENYyaHpx0zxsAtR0fK/y8OvXL1S85GHBhf3wKSJC/tuBGpBQtuJNsK9Bn6E
+         HEr3RomC/5KSQOWnug5HoXnpEJywQXpW3BMxvYaqrm0WkB5Fyxsd4oY9fAEQ4BF2n/6s
+         igsVJwKx55OfcDMhhmHTE1jTAA0zImbzD4u4NmBTT3qPePwldQT09+gE9wFhTPowWYvt
+         GJcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/OSHGWesGAjIQKdOPpoKsn+XeE0l9RMqKCT+tPNC2z4=;
+        b=lgJwLW282NkG5aBPermr4irTtN5Dt7fHGcpD0ewiSeRIf4trSFF7Fg8FHt5gFAOU9Z
+         KeyJpR6PxQ1pFghORwECMhqqVXMkNnSoU6DUSVxRe1+KO1nnGzkbWMr+AhqHuA48dyaj
+         vdI2aknn3ggChN9nm44kZzYLWownBn3Hsy655NKpNcr9cyqapDjWVFicozxDHiekV6yo
+         PZjI83Wv9pbKboOvkA55WC+z5qaw15m0aajawMmzrX80/UAihe4bafbDQxTrhd3TUyFQ
+         Jp5XPwQtnQLwd7mqzxp+coTvIuWVTLFrL1YGhtCyZzEg0QVHK8fyo6+2XM7NcZI0F/C5
+         eiAg==
+X-Gm-Message-State: AGi0PuYWyPORCEK1hHKdPHTcG461Me67M9RksD2qlgfb5mHcSHsOZzZ4
+        Mffkb5YOpkYhYL/N5h/ZQaiSwwvSPAGP3+Rq5qeJMA==
+X-Google-Smtp-Source: APiQypKCUKt3jJ4sj9lTa6XBBwThMQqjqJzLuTpJ4h/WRkAacfQ6QQbfN6+a9FmS4vKfBKHCvunkUWb/88bEQfn0/Zw=
+X-Received: by 2002:a1f:2a13:: with SMTP id q19mr10178790vkq.73.1588106602833;
+ Tue, 28 Apr 2020 13:43:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1587477544-20052-1-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <1587477544-20052-1-git-send-email-Anson.Huang@nxp.com>
+From:   Amit Kucheria <amit.kucheria@verdurent.com>
+Date:   Wed, 29 Apr 2020 02:12:47 +0530
+Message-ID: <CAHLCerM0w=Zc0seb6u0f2=wpsObuv4O9fZiKaZJbS7ojDgx7EA@mail.gmail.com>
+Subject: Re: [PATCH V3] dt-bindings: thermal: Convert i.MX8MM to json-schema
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+        Fabio Estevam <festevam@gmail.com>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        lakml <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <Linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Apr 2020 12:07:25 -0700
-"Luck, Tony" <tony.luck@intel.com> wrote:
+On Tue, Apr 21, 2020 at 7:37 PM Anson Huang <Anson.Huang@nxp.com> wrote:
+>
+> Convert the i.MX8MM thermal binding to DT schema format using json-schema
+>
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 
-> > If fd release cleans up then how should there be something in
-> > flight at the final mmdrop?  
-> 
-> ENQCMD from the user is only synchronous in that it lets the user
-> know their request has been added to a queue (or not).  Execution of
-> the request may happen later (if the device is busy working on
-> requests for other users).  The request will take some time to
-> complete. Someone told me the theoretical worst case once, which I've
-> since forgotten, but it can be a long time.
-> 
-> So the driver needs to use flush/drain operations to make sure all
-> the in-flight work has completed before releasing/re-using the PASID.
-> 
-Are you suggesting we should let driver also hold a reference of the
-PASID?
+Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
 
-> -Tony
 
+> ---
+> Changes since V2:
+>         - drop unnecessary description for reg/clocks;
+>         - improve compatible;
+>         - use thermal-sensor as node name.
+> ---
+>  .../devicetree/bindings/thermal/imx8mm-thermal.txt | 15 ------
+>  .../bindings/thermal/imx8mm-thermal.yaml           | 58 ++++++++++++++++++++++
+>  2 files changed, 58 insertions(+), 15 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
+>  create mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
+> deleted file mode 100644
+> index 3629d3c..0000000
+> --- a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
+> +++ /dev/null
+> @@ -1,15 +0,0 @@
+> -* Thermal Monitoring Unit (TMU) on Freescale i.MX8MM SoC
+> -
+> -Required properties:
+> -- compatible : Must be "fsl,imx8mm-tmu" or "fsl,imx8mp-tmu".
+> -- reg : Address range of TMU registers.
+> -- clocks : TMU's clock source.
+> -- #thermal-sensor-cells : Should be 0 or 1. See ./thermal.txt for a description.
+> -
+> -Example:
+> -tmu: tmu@30260000 {
+> -       compatible = "fsl,imx8mm-tmu";
+> -       reg = <0x30260000 0x10000>;
+> -       clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
+> -       #thermal-sensor-cells = <0>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+> new file mode 100644
+> index 0000000..3885287
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+> @@ -0,0 +1,58 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/thermal/imx8mm-thermal.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP i.MX8M Mini Thermal Binding
+> +
+> +maintainers:
+> +  - Anson Huang <Anson.Huang@nxp.com>
+> +
+> +description: |
+> +  i.MX8MM has TMU IP to allow temperature measurement, there are
+> +  currently two distinct major versions of the IP that is supported
+> +  by a single driver. The IP versions are named v1 and v2, v1 is
+> +  for i.MX8MM which has ONLY 1 sensor, v2 is for i.MX8MP which has
+> +  2 sensors.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,imx8mm-tmu
+> +      - fsl,imx8mp-tmu
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  "#thermal-sensor-cells":
+> +    description: |
+> +      Number of cells required to uniquely identify the thermal
+> +      sensors, 0 for ONLY one sensor and 1 for multiple sensors.
+> +    enum:
+> +      - 0
+> +      - 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - '#thermal-sensor-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/imx8mm-clock.h>
+> +
+> +    thermal-sensor@30260000 {
+> +         compatible = "fsl,imx8mm-tmu";
+> +         reg = <0x30260000 0x10000>;
+> +         clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
+> +         #thermal-sensor-cells = <0>;
+> +    };
+> +
+> +...
+> --
+> 2.7.4
+>
