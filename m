@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3B41BB382
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080531BB388
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgD1Bj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 21:39:56 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:43371 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726259AbgD1Bj4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 21:39:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588037995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AWt0oKx+pB01zuowl3HYopTA8sOUDIn9j7BD+UlNWuQ=;
-        b=Ouxne/IIEAnH0KL7fRqf8jqXc+MyoCV+MG/DFOHJ2JUOiZWOuIpHSckKTXcIFMkQAxrB7G
-        58ELjB7iHbLsKus6uw70DYwyKKInSklS92JQ/pOnZKSYmGcT+mpp5ETiS+GfH5pZN24O8Y
-        1qHmFOMifiyQz0FKGI+wCgOVSAFj2ss=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-369--721LIx2PCSItKIXH4hrrA-1; Mon, 27 Apr 2020 21:39:53 -0400
-X-MC-Unique: -721LIx2PCSItKIXH4hrrA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A52B835B40;
-        Tue, 28 Apr 2020 01:39:50 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-112-176.rdu2.redhat.com [10.10.112.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F8A4196AE;
-        Tue, 28 Apr 2020 01:39:44 +0000 (UTC)
-Subject: Re: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking
- dependency
-To:     Qian Cai <cai@lca.pw>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20200427235621.7823-5-longman@redhat.com>
- <55509F31-A503-4148-B209-B4D062AD0ED7@lca.pw>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <dbbfe685-7374-9a96-b7c2-684142746e30@redhat.com>
-Date:   Mon, 27 Apr 2020 21:39:44 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726421AbgD1Bmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 21:42:38 -0400
+Received: from mga03.intel.com ([134.134.136.65]:57706 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726233AbgD1Bmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 21:42:37 -0400
+IronPort-SDR: jxaxRLu3ixZ7zKRr/XrgmHS4AAOFDTcrEjVJnXbK0O5cucvjKvcRSMBZdx85vGgnA71d8XMCGf
+ Nx0OlxmZdx6w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 18:42:37 -0700
+IronPort-SDR: jn1D6iq8F5mz1mLTds+sdIp7tINSGh5x8Ij+JJyia6owDohAM9DKNBy0anSgto3PNrJBH2qeCr
+ NePpoCGaskLQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
+   d="scan'208";a="292701662"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 27 Apr 2020 18:42:33 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jTFGa-000Ciw-Sl; Tue, 28 Apr 2020 09:42:32 +0800
+Date:   Tue, 28 Apr 2020 09:41:35 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Syed Nayyar Waris <syednwaris@gmail.com>, akpm@linux-foundation.org
+Cc:     kbuild-all@lists.01.org, andriy.shevchenko@linux.intel.com,
+        vilhelm.gray@gmail.com, rrichter@marvell.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] gpio: thunderx: Utilize for_each_set_clump macro
+Message-ID: <202004280926.S92wb0O8%lkp@intel.com>
+References: <9c5e25b982728467c5c681876d0e60e49dedb5fb.1587840670.git.syednwaris@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <55509F31-A503-4148-B209-B4D062AD0ED7@lca.pw>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c5e25b982728467c5c681876d0e60e49dedb5fb.1587840670.git.syednwaris@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/27/20 8:13 PM, Qian Cai wrote:
->
->> On Apr 27, 2020, at 7:56 PM, Waiman Long <longman@redhat.com> wrote:
->>
->> A lockdep splat is observed by echoing "1" to the shrink sysfs file
->> and then shutting down the system:
->>
->> [  167.473392] Chain exists of:
->> [  167.473392]   kn->count#279 --> mem_hotplug_lock.rw_sem --> slab_mu=
-tex
->> [  167.473392]
->> [  167.484323]  Possible unsafe locking scenario:
->> [  167.484323]
->> [  167.490273]        CPU0                    CPU1
->> [  167.494825]        ----                    ----
->> [  167.499376]   lock(slab_mutex);
->> [  167.502530]                                lock(mem_hotplug_lock.rw=
-_sem);
->> [  167.509356]                                lock(slab_mutex);
->> [  167.515044]   lock(kn->count#279);
->> [  167.518462]
->> [  167.518462]  *** DEADLOCK ***
->>
->> It is because of the get_online_cpus() and get_online_mems() calls in
->> kmem_cache_shrink() invoked via the shrink sysfs file. To fix that, we
->> have to use trylock to get the memory and cpu hotplug read locks. Sinc=
-e
->> hotplug events are rare, it should be fine to refuse a kmem caches
->> shrink operation when some hotplug events are in progress.
-> I don=E2=80=99t understand how trylock could prevent a splat. The funda=
-mental issue is that in sysfs slab store case, the locking order (once tr=
-ylock succeed) is,
->
-> kn->count =E2=80=94> cpu/memory_hotplug
->
-> But we have the existing reverse chain everywhere.
->
-> cpu/memory_hotplug =E2=80=94> slab_mutex =E2=80=94> kn->count
->
-The sequence that was prevented by this patch is "kn->count -->=20
-mem_hotplug_lock.rwsem". This sequence isn't directly in the splat. Once=20
-this link is broken, the 3-lock circular loop cannot be formed. Maybe I=20
-should modify the commit log to make this point more clear.
+Hi Syed,
 
-Cheers,
-Longman
+Thank you for the patch! Perhaps something to improve:
+
+[auto build test WARNING on gpio/for-next]
+[also build test WARNING on linus/master asm-generic/master v5.7-rc3 next-20200424]
+[cannot apply to xlnx/master]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Syed-Nayyar-Waris/Introduce-the-for_each_set_clump-macro/20200427-184103
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git for-next
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-191-gc51a0382-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
 
 
+sparse warnings: (new ones prefixed by >>)
+
+>> drivers/gpio/gpio-thunderx.c:284:9: sparse: sparse: incorrect type in argument 1 (different type sizes) @@    expected unsigned long *clump @@    got unsigunsigned long *clump @@
+>> drivers/gpio/gpio-thunderx.c:284:9: sparse:    expected unsigned long *clump
+>> drivers/gpio/gpio-thunderx.c:284:9: sparse:    got unsigned long long *
+>> drivers/gpio/gpio-thunderx.c:284:9: sparse: sparse: incorrect type in argument 1 (different type sizes) @@    expected unsigned long *clump @@    got unsigunsigned long *clump @@
+>> drivers/gpio/gpio-thunderx.c:284:9: sparse:    expected unsigned long *clump
+>> drivers/gpio/gpio-thunderx.c:284:9: sparse:    got unsigned long long *
+
+vim +284 drivers/gpio/gpio-thunderx.c
+
+   272	
+   273	static void thunderx_gpio_set_multiple(struct gpio_chip *chip,
+   274					       unsigned long *mask,
+   275					       unsigned long *bits)
+   276	{
+   277		int bank;
+   278		u64 set_bits, clear_bits, gpio_mask;
+   279		const unsigned long bank_size = 64;
+   280		unsigned long offset;
+   281	
+   282		struct thunderx_gpio *txgpio = gpiochip_get_data(chip);
+   283	
+ > 284		for_each_set_clump(offset, gpio_mask, mask, chip->ngpio, bank_size) {
+   285			bank = offset / bank_size;
+   286			set_bits = bits[bank] & gpio_mask;
+   287			clear_bits = ~bits[bank] & gpio_mask;
+   288			writeq(set_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO_TX_SET);
+   289			writeq(clear_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO_TX_CLR);
+   290		}
+   291	}
+   292	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
