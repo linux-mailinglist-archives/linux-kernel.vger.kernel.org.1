@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FCD1BCF3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7952E1BCF30
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgD1V4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:56:47 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:47642 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgD1V4r (ORCPT
+        id S1726738AbgD1VyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:54:25 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:44633 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgD1VyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:56:47 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jTYDe-0006CL-8g; Tue, 28 Apr 2020 15:56:46 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jTYDd-0003Kw-J2; Tue, 28 Apr 2020 15:56:46 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
-        <87ftcv1nqe.fsf@x220.int.ebiederm.org>
-        <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
-        <20200424173927.GB26802@redhat.com>
-        <87mu6ymkea.fsf_-_@x220.int.ebiederm.org>
-        <875zdmmj4y.fsf_-_@x220.int.ebiederm.org>
-        <CAHk-=whvktUC9VbzWLDw71BHbV4ofkkuAYsrB5Rmxnhc-=kSeQ@mail.gmail.com>
-        <878sihgfzh.fsf@x220.int.ebiederm.org>
-        <CAHk-=wjSM9mgsDuX=ZTy2L+S7wGrxZMcBn054As_Jyv8FQvcvQ@mail.gmail.com>
-        <87sggnajpv.fsf_-_@x220.int.ebiederm.org>
-        <20200428180540.GB29960@redhat.com>
-        <87mu6v70in.fsf_-_@x220.int.ebiederm.org>
-Date:   Tue, 28 Apr 2020 16:53:31 -0500
-In-Reply-To: <87mu6v70in.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Tue, 28 Apr 2020 16:39:44 -0500")
-Message-ID: <87zhav5lb8.fsf_-_@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 28 Apr 2020 17:54:24 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1N6LIF-1j5YGB1AzJ-016ghU; Tue, 28 Apr 2020 23:54:10 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/bridge: fix stack usage warning on old gcc
+Date:   Tue, 28 Apr 2020 23:53:54 +0200
+Message-Id: <20200428215408.4111675-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jTYDd-0003Kw-J2;;;mid=<87zhav5lb8.fsf_-_@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/9SFOGLrwqMnM+GMHpEChkArNfTp8VniM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.8 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,TR_Symld_Words,T_TooManySym_01,T_TooManySym_02,
-        T_TooManySym_03,XMGappySubj_01 autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 TR_Symld_Words too many words that have symbols inside
-        *  0.5 XMGappySubj_01 Very gappy subject
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;LKML <linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 259 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.9 (1.5%), b_tie_ro: 2.7 (1.1%), parse: 0.71
-        (0.3%), extract_message_metadata: 8 (3.3%), get_uri_detail_list: 0.70
-        (0.3%), tests_pri_-1000: 11 (4.2%), tests_pri_-950: 1.00 (0.4%),
-        tests_pri_-900: 0.79 (0.3%), tests_pri_-90: 90 (34.8%), check_bayes:
-        89 (34.4%), b_tokenize: 3.9 (1.5%), b_tok_get_all: 5 (2.1%),
-        b_comp_prob: 1.17 (0.5%), b_tok_touch_all: 76 (29.3%), b_finish: 0.70
-        (0.3%), tests_pri_0: 134 (51.6%), check_dkim_signature: 0.37 (0.1%),
-        check_dkim_adsp: 2.2 (0.8%), poll_dns_idle: 0.87 (0.3%), tests_pri_10:
-        1.76 (0.7%), tests_pri_500: 5 (2.1%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH v1 3/4] exec: Remove BUG_ON(has_group_leader_pid)
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:iHy77Rgu9/Qf8z+D5jGM8zx0JRD4tfbl7zP0c3hDGD/7Ft21SO3
+ I4IsJ+jGm/bVAWJqL1Rgf8I2wrapU26otg4sIofhMQb4XOZnwxaw31TkmIbV3Vlrbsbo54Q
+ P/dVYkN3nJTFgE7FH/ZOxI7PtDR5ElP19dDF4HjIELGFelpb9qmkGN6N5JtO+SltH/uj40E
+ u1b00TzYaa+Jebr1QgvEA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:L/hkBWoUTWU=:bxdNUJcDA92RjQs7Q9QheM
+ QaDyFm0mRKkwmCMy1a0hjVZpquNsrPNbdFKl//hzhASrhSfI+Gheh2b0astjApDRPCLgxrswt
+ egURzEGVfCqKE10n/8+Y0APtrnX9MjRb7pbHdZVcK7w7Xpo9ahfsmcibn8HczBc4ut3ICeuRL
+ Hy35WFSdVEC7Yj0EXPEiMwHCWuYB0UTm7KZ6ep2c97qg0En0DB9eFytqqJdXtnd0Nc1TkQxwv
+ iCO5wTaDNlt7ybbZzSVA6eH6XMri1zKO6wHdMESMbk5TtTAebz4qzanlBB1IIcuWJkPkTBFMo
+ ux7nSD03mSQtQmz4IQJjfG0aIi6d2NGNyM2zT3dRPcwQyUfHwLfqRal9QHpQhtZR7O7Kq2ZvT
+ bGoxwqZ8LjCMh3Yrj+/NN0iUb5k6fN9LfFHHTj3k0P8r2GiWuWmcni+XzGH8/9M20QsdzHlju
+ Q1VrxfFhXeEQn7o08nEaCNa9YuTeyEPCe73nmLw6dFh1Kzlm5IvhOXaOQ68hKZLG/qx2wic1b
+ V+KeQDH2Du2SrZ3r4fne5t63amyneyrMRXS5PGb8GNqvnIsUCjha0m+tjhtj5AZUdhMVybTGC
+ miRpldWtpPTjOXvaeWCsUH4NUHisorKza7HhxubccmW9QrsaJpffPL17Y1Sk+F2sMZZACDYBp
+ 4JwBe/Opi/K/ccx2Rqn39JOiLjXw08FdevcWgFiiYMhyXaKfGZCtz48KSwaUUft1ewrKPNwTI
+ mmccUZrDPDF68mtgKgpGYBywesmUvDkM1XfwO3vGd6ScMzcAPZ4ZP72ajdmC82zxH3Zh6ln2D
+ bp+nQsgzlJTgITvS11vzPCFG7qC3L+ShsNvVbGGHQCjcV43nEA=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some older versions of gcc badly optimize code that passes
+an inline function argument into another function by reference,
+causing huge stack usage:
 
-With the introduction of exchange_tids thread_group_leader and
-has_group_leader_pid have become equivalent.  Further at this point in the
-code a thread group has exactly two threads, the previous thread_group_leader
-that is waiting to be reaped and tsk.  So we know it is impossible for tsk to
-be the thread_group_leader.
+drivers/gpu/drm/bridge/tc358768.c: In function 'tc358768_bridge_pre_enable':
+drivers/gpu/drm/bridge/tc358768.c:840:1: error: the frame size of 2256 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
 
-This is also the last user of has_group_leader_pid so removing this check
-will allow has_group_leader_pid to be removed.
+Use a temporary variable as a workaround and add a comment pointing
+to the gcc bug.
 
-So remove the "BUG_ON(has_group_leader_pid)" that will never fire.
-
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Fixes: ff1ca6397b1d ("drm/bridge: Add tc358768 driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- fs/exec.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/gpu/drm/bridge/tc358768.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 9b60f927afd7..6ab1c19d84fa 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1176,7 +1176,6 @@ static int de_thread(struct task_struct *tsk)
- 		tsk->start_boottime = leader->start_boottime;
+diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+index 1b39e8d37834..6650fe4cfc20 100644
+--- a/drivers/gpu/drm/bridge/tc358768.c
++++ b/drivers/gpu/drm/bridge/tc358768.c
+@@ -178,6 +178,8 @@ static int tc358768_clear_error(struct tc358768_priv *priv)
  
- 		BUG_ON(!same_thread_group(leader, tsk));
--		BUG_ON(has_group_leader_pid(tsk));
- 		/*
- 		 * An exec() starts a new thread group with the
- 		 * TGID of the previous thread group. Rehash the
+ static void tc358768_write(struct tc358768_priv *priv, u32 reg, u32 val)
+ {
++	/* work around https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81715 */
++	int tmpval = val;
+ 	size_t count = 2;
+ 
+ 	if (priv->error)
+@@ -187,7 +189,7 @@ static void tc358768_write(struct tc358768_priv *priv, u32 reg, u32 val)
+ 	if (reg < 0x100 || reg >= 0x600)
+ 		count = 1;
+ 
+-	priv->error = regmap_bulk_write(priv->regmap, reg, &val, count);
++	priv->error = regmap_bulk_write(priv->regmap, reg, &tmpval, count);
+ }
+ 
+ static void tc358768_read(struct tc358768_priv *priv, u32 reg, u32 *val)
 -- 
-2.20.1
+2.26.0
 
