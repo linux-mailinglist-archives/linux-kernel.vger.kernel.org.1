@@ -2,124 +2,565 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FBE1BCC1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B589B1BCC13
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728875AbgD1TIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 15:08:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39451 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728736AbgD1TIE (ORCPT
+        id S1728759AbgD1THI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:07:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728564AbgD1THH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 15:08:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588100882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vO4Cm8UdLpQ7CoyazjBPlfiZT+UDKaWc4FxUCYgXU0w=;
-        b=E4/lGb36j6Tz2eo4j0XZipXSPU/PHYjBX21E1Ssr32iSAlN2+gIY//WOgb/kUli19WI4I8
-        8MCQ6FS7x1FZ+aRGY9wMy/oDq2pgKVW4DLtyyRt3M/NqywWlt7tY8jTJWzeaZTkhRVsRho
-        7KK0KnRA74SL9wB2lgRV6cTVHYNThtE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-jYGlPKQCNoOI6Dqqt4M9zQ-1; Tue, 28 Apr 2020 15:07:58 -0400
-X-MC-Unique: jYGlPKQCNoOI6Dqqt4M9zQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2CFCC18FE861;
-        Tue, 28 Apr 2020 19:07:55 +0000 (UTC)
-Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 759FE5D71E;
-        Tue, 28 Apr 2020 19:07:53 +0000 (UTC)
-Date:   Tue, 28 Apr 2020 13:07:52 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [regression?] Re: [PATCH v6 06/12] mm/gup: track FOLL_PIN pages
-Message-ID: <20200428130752.75c153bd@w520.home>
-In-Reply-To: <20200428174957.GV26002@ziepe.ca>
-References: <20200211001536.1027652-1-jhubbard@nvidia.com>
-        <20200211001536.1027652-7-jhubbard@nvidia.com>
-        <20200424121846.5ee2685f@w520.home>
-        <5b901542-d949-8d7e-89c7-f8d5ee20f6e9@nvidia.com>
-        <20200424141548.5afdd2bb@w520.home>
-        <665ffb48-d498-90f4-f945-997a922fc370@nvidia.com>
-        <20200428105455.30343fb4@w520.home>
-        <20200428174957.GV26002@ziepe.ca>
+        Tue, 28 Apr 2020 15:07:07 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E00AC03C1AB;
+        Tue, 28 Apr 2020 12:07:07 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id 16BD82A1F7E
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Adrian Pop <pop.adrian61@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Martyn Welch <martyn.welch@collabora.com>,
+        Sjoerd Simons <sjoerd.simons@collabora.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        linux-rockchip@lists.infradead.org, linux-imx@nxp.com,
+        Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+        kernel@collabora.com, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Emil Velikov <emil.velikov@collabora.com>
+Subject: Re: [PATCH v7 4/8] drm: imx: Add i.MX 6 MIPI DSI host platform driver
+In-Reply-To: <20200428143030.GN3456981@phenom.ffwll.local>
+References: <20200421161610.1501827-1-adrian.ratiu@collabora.com>
+ <20200421161610.1501827-5-adrian.ratiu@collabora.com>
+ <20200422010727.GM5983@pendragon.ideasonboard.com>
+ <20200428143030.GN3456981@phenom.ffwll.local>
+Date:   Tue, 28 Apr 2020 22:08:04 +0300
+Message-ID: <87pnbrig2z.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; format=flowed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Apr 2020 14:49:57 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
+Hi Daniel,
 
-> On Tue, Apr 28, 2020 at 10:54:55AM -0600, Alex Williamson wrote:
-> >  static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
-> >  {
-> >  	struct vfio_pci_device *vdev = device_data;
-> > @@ -1253,8 +1323,14 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
-> >  	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> >  	vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
-> >  
-> > +	vma->vm_ops = &vfio_pci_mmap_ops;
-> > +
-> > +#if 1
-> > +	return 0;
-> > +#else
-> >  	return remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-> > -			       req_len, vma->vm_page_prot);
-> > +			       vma->vm_end - vma->vm_start, vma->vm_page_prot);  
+On Tue, 28 Apr 2020, Daniel Vetter <daniel@ffwll.ch> wrote:
+> On Wed, Apr 22, 2020 at 04:07:27AM +0300, Laurent Pinchart 
+> wrote: 
+>> Hi Adrian,  On Tue, Apr 21, 2020 at 07:16:06PM +0300, Adrian 
+>> Ratiu wrote: 
+>> > This adds support for the Synopsis DesignWare MIPI DSI v1.01 
+>> > host controller which is embedded in i.MX 6 SoCs.   Based on 
+>> > following patches, but updated/extended to work with existing 
+>> > support found in the kernel:  - drm: imx: Support Synopsys 
+>> > DesignWare MIPI DSI host controller 
+>> >   Signed-off-by: Liu Ying <Ying.Liu@freescale.com> 
+>> >  Cc: Fabio Estevam <festevam@gmail.com> Cc: Enric Balletbo 
+>> > Serra <eballetbo@gmail.com> Reviewed-by: Emil Velikov 
+>> > <emil.velikov@collabora.com> Tested-by: Adrian Pop 
+>> > <pop.adrian61@gmail.com> Tested-by: Arnaud Ferraris 
+>> > <arnaud.ferraris@collabora.com> Signed-off-by: Sjoerd Simons 
+>> > <sjoerd.simons@collabora.com> Signed-off-by: Martyn Welch 
+>> > <martyn.welch@collabora.com> Signed-off-by: Adrian Ratiu 
+>> > <adrian.ratiu@collabora.com> --- Changes since v6: 
+>> >   - Replaced custom noop encoder with the simple drm encoder 
+>> >   (Enric) - Added CONFIG_DRM_IMX6_MIPI_DSI depends on 
+>> >   CONFIG_OF (Enric) - Dropped imx_mipi_dsi_register() because 
+>> >   now it only creates the dummy encoder which can easily be 
+>> >   done directly in imx_dsi_bind() 
+>> >  Changes since v5: 
+>> >   - Reword to remove unrelated device tree patch mention 
+>> >   (Fabio) - Move pllref_clk enable/disable to bind/unbind 
+>> >   (Ezequiel) - Fix freescale.com -> nxp.com email addresses 
+>> >   (Fabio) - Also added myself as module author (Fabio) - Use 
+>> >   DRM_DEV_* macros for consistency, print more error msg 
+>> >  Changes since v4: 
+>> >   - Split off driver-specific configuration of phy timings 
+>> >   due to new upstream API.  - Move regmap infrastructure 
+>> >   logic to separate commit (Ezequiel) - Move dsi v1.01 layout 
+>> >   addition to a separate commit (Ezequiel) - Minor warnings 
+>> >   and driver name fixes 
+>> >  Changes since v3: 
+>> >   - Renamed platform driver to reflect it's i.MX6 
+>> >   only. (Fabio) 
+>> >  Changes since v2: 
+>> >   - Fixed commit tags. (Emil) 
+>> >  Changes since v1: 
+>> >   - Moved register definitions & regmap initialization into 
+>> >   bridge module. Platform drivers get the regmap via 
+>> >   plat_data after calling the bridge probe. (Emil) 
+>> > --- 
+>> >  drivers/gpu/drm/imx/Kconfig            |   8 + 
+>> >  drivers/gpu/drm/imx/Makefile           |   1 + 
+>> >  drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c | 391 
+>> >  +++++++++++++++++++++++++ 3 files changed, 400 insertions(+) 
+>> >  create mode 100644 drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c 
+>> >  diff --git a/drivers/gpu/drm/imx/Kconfig 
+>> > b/drivers/gpu/drm/imx/Kconfig index 
+>> > 207bf7409dfba..0dffc72df7922 100644 --- 
+>> > a/drivers/gpu/drm/imx/Kconfig +++ 
+>> > b/drivers/gpu/drm/imx/Kconfig @@ -39,3 +39,11 @@ config 
+>> > DRM_IMX_HDMI 
+>> >  	depends on DRM_IMX help Choose this if you want to use 
+>> >  HDMI on i.MX6. 
+>> > + +config DRM_IMX6_MIPI_DSI +	tristate "Freescale i.MX6 
+>> > DRM MIPI DSI" +	select DRM_DW_MIPI_DSI +	depends on 
+>> > DRM_IMX +	depends on OF +	help +	  Choose this if you want 
+>> > to use MIPI DSI on i.MX6.  diff --git 
+>> > a/drivers/gpu/drm/imx/Makefile b/drivers/gpu/drm/imx/Makefile 
+>> > index 21cdcc2faabc8..9a7843c593478 100644 --- 
+>> > a/drivers/gpu/drm/imx/Makefile +++ 
+>> > b/drivers/gpu/drm/imx/Makefile @@ -9,3 +9,4 @@ 
+>> > obj-$(CONFIG_DRM_IMX_TVE) += imx-tve.o 
+>> >  obj-$(CONFIG_DRM_IMX_LDB) += imx-ldb.o 
+>> >  obj-$(CONFIG_DRM_IMX_HDMI) += dw_hdmi-imx.o 
+>> > +obj-$(CONFIG_DRM_IMX6_MIPI_DSI) += dw_mipi_dsi-imx6.o diff 
+>> > --git a/drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c 
+>> > b/drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c new file mode 100644 
+>> > index 0000000000000..f8a0a4fe16e21 --- /dev/null +++ 
+>> > b/drivers/gpu/drm/imx/dw_mipi_dsi-imx6.c @@ -0,0 +1,391 @@ 
+>> > +// SPDX-License-Identifier: GPL-2.0+ +/* + * i.MX6 drm 
+>> > driver - MIPI DSI Host Controller + * + * Copyright (C) 
+>> > 2011-2015 Freescale Semiconductor, Inc.  + * Copyright (C) 
+>> > 2019-2020 Collabora, Ltd.  + */ + +#include <linux/clk.h> 
+>> > +#include <linux/component.h> +#include <linux/mfd/syscon.h> 
+>> > +#include <linux/mfd/syscon/imx6q-iomuxc-gpr.h> +#include 
+>> > <linux/module.h> +#include <linux/of_device.h> +#include 
+>> > <linux/regmap.h> +#include <linux/videodev2.h> +#include 
+>> > <drm/bridge/dw_mipi_dsi.h> +#include <drm/drm_crtc_helper.h> 
+>> > +#include <drm/drm_mipi_dsi.h> +#include <drm/drm_of.h> 
+>> > +#include <drm/drm_print.h> + +#include "imx-drm.h" + 
+>> > +#define DSI_PWR_UP			0x04 +#define 
+>> > RESET				0 +#define POWERUP 
+>> > BIT(0) + +#define DSI_PHY_IF_CTRL			0x5c 
+>> > +#define PHY_IF_CTRL_RESET		0x0 + +#define 
+>> > DSI_PHY_TST_CTRL0		0x64 +#define PHY_TESTCLK 
+>> > BIT(1) +#define PHY_UNTESTCLK			0 +#define 
+>> > PHY_TESTCLR			BIT(0) +#define 
+>> > PHY_UNTESTCLR			0 + +#define 
+>> > DSI_PHY_TST_CTRL1		0x68 +#define PHY_TESTEN 
+>> > BIT(16) +#define PHY_UNTESTEN			0 +#define 
+>> > PHY_TESTDOUT(n)			(((n) & 0xff) << 8) 
+>> > +#define PHY_TESTDIN(n)			(((n) & 0xff) << 
+>> > 0) + +struct imx_mipi_dsi { +	struct drm_encoder 
+>> > encoder; +	struct device *dev; +	struct regmap *mux_sel; + 
+>> > struct dw_mipi_dsi *mipi_dsi; +	struct clk *pllref_clk; + 
+>> > +	void __iomem *base; +	unsigned int lane_mbps; +}; + 
+>> > +struct dphy_pll_testdin_map { +	unsigned int max_mbps; + 
+>> > u8 testdin; +}; + +/* The table is based on 27MHz DPHY pll 
+>> > reference clock. */ +static const struct dphy_pll_testdin_map 
+>> > dptdin_map[] = { +	{160, 0x04}, {180, 0x24}, {200, 0x44}, 
+>> > {210, 0x06}, +	{240, 0x26}, {250, 0x46}, {270, 0x08}, 
+>> > {300, 0x28}, +	{330, 0x48}, {360, 0x2a}, {400, 0x4a}, 
+>> > {450, 0x0c}, +	{500, 0x2c}, {550, 0x0e}, {600, 0x2e}, 
+>> > {650, 0x10}, +	{700, 0x30}, {750, 0x12}, {800, 0x32}, 
+>> > {850, 0x14}, +	{900, 0x34}, {950, 0x54}, {1000, 0x74} +}; 
+>> > + +static inline struct imx_mipi_dsi *enc_to_dsi(struct 
+>> > drm_encoder *enc) +{ +	return container_of(enc, struct 
+>> > imx_mipi_dsi, encoder); +} + +static void 
+>> > imx_mipi_dsi_set_ipu_di_mux(struct imx_mipi_dsi *dsi, int 
+>> > ipu_di) +{ +	regmap_update_bits(dsi->mux_sel, 
+>> > IOMUXC_GPR3, + 
+>> > IMX6Q_GPR3_MIPI_MUX_CTL_MASK, +			   ipu_di 
+>> > << IMX6Q_GPR3_MIPI_MUX_CTL_SHIFT); +} + +static bool 
+>> > imx_mipi_dsi_encoder_mode_fixup(struct drm_encoder *encoder, 
+>> > +					    const struct 
+>> > drm_display_mode *mode, + 
+>> > struct drm_display_mode *adj_mode) +{ +	return true; +} + 
+>> > +static int imx_mipi_dsi_encoder_atomic_check(struct 
+>> > drm_encoder *encoder, + 
+>> > struct drm_crtc_state *crtc_state, + 
+>> > struct drm_connector_state *conn) +{ +	struct 
+>> > imx_crtc_state *imx_crtc_state = 
+>> > to_imx_crtc_state(crtc_state); + +	/* The following values 
+>> > are taken from dw_hdmi_imx_atomic_check */ + 
+>> > imx_crtc_state->bus_format = MEDIA_BUS_FMT_RGB888_1X24; + 
+>> > imx_crtc_state->di_hsync_pin = 2; + 
+>> > imx_crtc_state->di_vsync_pin = 3; + +	return 0; +} 
+>>  No encoder functions please. This should be a bridge driver, 
+>> the encoder should be created by the i.MX display controller 
+>> driver itself. As that would require quite a bit of refactoring 
+>> I'm OK having an encoder here for the meantime, but it should 
+>> be a dummy one, without any operation. 
 > 
-> The remap_pfn_range here is what tells get_user_pages this is a
-> non-struct page mapping:
+> +1 on this, came to say the same. This seems to duplicate the 
+> dw-hdmi design, where the code organization is a bit a mess, 
+> with some parts in drm/bridge, and some parts in each drm_device 
+> driver. Plus drm_encoder in there on top. 
 > 
-> 	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
+> If we want to continue with the drm_bridge abstraction for these 
+> kind of drivers then imo we need: 
 > 
-> Which has to be set when the VMA is created, they shouldn't be
-> modified during fault.
+> - to make drm_bridge the actual abstraction, no leaking 
+> back&forth between 
+>   the bridge chip and the overall drm_device side of things. 
+> 
+> - move _all_ dw-mipi-dsi related code into drm/bridge 
+> 
+> - for the platform specific binding stuff I think 
+> drm/bridge/dw-mipi-dsi 
+>   directory, which contains the main driver, plus a file each 
+>   for the imx/stm/whatever platform bindings sounds like a 
+>   reasonable layout. 
+> 
+> If that doesn't work, then I think dw-mipi-dsi isn't really a 
+> bridge driver with clear encapsulation, but instead should be 
+> structured as a helper library to implement a drm_encoder. And 
+> no drm_bridge. 
+> 
+> And yes the exact same problem exists with dw-hdmi. That's the 
+> reason why I've started to look into these, it's not really a 
+> code pattern we should repeat imo.
 
-Aha, thanks Jason!  So fundamentally, pin_user_pages_remote() should
-never have been faulting in this vma since the pages are non-struct
-page backed.  Maybe I was just getting lucky before this commit.  For a
-VM_PFNMAP, vaddr_get_pfn() only needs pin_user_pages_remote() to return
-error and the vma information that we setup in vfio_pci_mmap().  We
-only need the fault handler to trigger for user access, which is what I
-see with this change.  That should work for me.
+The code structure you propose should be doable and I was actually 
+thinking of something like it when writing the cover letter for v8 
+of this series, about how to consolidate the Synopsis DW MIPI DSI 
+logic at the same time while consolidating the rest of imx drivers 
+to unify their simple encoder management.
 
-> Also the vma code above looked a little strange to me, if you do send
-> something like this cc me and I can look at it. I did some work like
-> this for rdma a while ago..
+Thank you for fleshing it out! It's very helpful :)
 
-Cool, I'll do that.  I'd like to be able to zap the vmas from user
-access at a later point and I have doubts that I'm holding the
-refs/locks that I need to for that.  Thanks,
+BTW have you seen what I did with the bridge in v8 for the imx6 
+driver?  [1]
 
-Alex
+What I'd like to avoid is feature creep in this patch series which 
+is about adding the imx6 driver, because I think moving the logic 
+and refactoring all the drivers is a separate issue and already 
+this series is big and increasing.
 
+So would you be ok with merging the imx6 mipi dsi driver with its 
+dw-mipi-dsi regamp rework and doing the refactoring to consolidate 
+all the bridge logic in a separate patch series which also 
+includes moving the rockchip and stm encoder logic to a 
+drm_bridge?
+
+Or would you like me to do this consolidation rework in advance 
+just for the new imx6 mipi-dsi driver in this series and tackle 
+the rest of drivers in a separate patch series?
+
+@Laurent, do you also have suggestions how to proceed?
+
+[1] 
+https://lore.kernel.org/linux-arm-kernel/20200427081952.3536741-1-adrian.ratiu@collabora.com/
+
+Thank you,
+Adrian
+
+>
+> Cheers, Daniel
+>
+>> 
+>> > +
+>> > +static void imx_mipi_dsi_encoder_commit(struct drm_encoder *encoder)
+>> > +{
+>> > +	struct imx_mipi_dsi *dsi = enc_to_dsi(encoder);
+>> > +	int mux = drm_of_encoder_active_port_id(dsi->dev->of_node, encoder);
+>> > +
+>> > +	imx_mipi_dsi_set_ipu_di_mux(dsi, mux);
+>> > +}
+>> > +
+>> > +static void imx_mipi_dsi_encoder_disable(struct drm_encoder *encoder)
+>> > +{
+>> > +}
+>> > +
+>> > +static const struct drm_encoder_helper_funcs imx_mipi_dsi_encoder_helpers = {
+>> > +	.mode_fixup = imx_mipi_dsi_encoder_mode_fixup,
+>> > +	.commit = imx_mipi_dsi_encoder_commit,
+>> > +	.disable = imx_mipi_dsi_encoder_disable,
+>> > +	.atomic_check = imx_mipi_dsi_encoder_atomic_check,
+>> > +};
+>> > +
+>> > +static enum drm_mode_status imx_mipi_dsi_mode_valid(void *priv_data,
+>> > +					const struct drm_display_mode *mode)
+>> > +{
+>> > +	/*
+>> > +	 * The VID_PKT_SIZE field in the DSI_VID_PKT_CFG
+>> > +	 * register is 11-bit.
+>> > +	 */
+>> > +	if (mode->hdisplay > 0x7ff)
+>> > +		return MODE_BAD_HVALUE;
+>> > +
+>> > +	/*
+>> > +	 * The V_ACTIVE_LINES field in the DSI_VTIMING_CFG
+>> > +	 * register is 11-bit.
+>> > +	 */
+>> > +	if (mode->vdisplay > 0x7ff)
+>> > +		return MODE_BAD_VVALUE;
+>> > +
+>> > +	return MODE_OK;
+>> > +}
+>> > +
+>> > +
+>> > +static unsigned int max_mbps_to_testdin(unsigned int max_mbps)
+>> > +{
+>> > +	unsigned int i;
+>> > +
+>> > +	for (i = 0; i < ARRAY_SIZE(dptdin_map); i++)
+>> > +		if (dptdin_map[i].max_mbps == max_mbps)
+>> > +			return dptdin_map[i].testdin;
+>> > +
+>> > +	return -EINVAL;
+>> > +}
+>> > +
+>> > +static inline void dsi_write(struct imx_mipi_dsi *dsi, u32 reg, u32 val)
+>> > +{
+>> > +	writel(val, dsi->base + reg);
+>> > +}
+>> > +
+>> > +static int imx_mipi_dsi_phy_init(void *priv_data)
+>> > +{
+>> > +	struct imx_mipi_dsi *dsi = priv_data;
+>> > +	int testdin;
+>> > +
+>> > +	testdin = max_mbps_to_testdin(dsi->lane_mbps);
+>> > +	if (testdin < 0) {
+>> > +		DRM_DEV_ERROR(dsi->dev,
+>> > +			      "failed to get testdin for %dmbps lane clock\n",
+>> > +			      dsi->lane_mbps);
+>> > +		return testdin;
+>> > +	}
+>> > +
+>> > +	dsi_write(dsi, DSI_PHY_IF_CTRL, PHY_IF_CTRL_RESET);
+>> > +	dsi_write(dsi, DSI_PWR_UP, POWERUP);
+>> > +
+>> > +	dsi_write(dsi, DSI_PHY_TST_CTRL0, PHY_UNTESTCLK | PHY_UNTESTCLR);
+>> > +	dsi_write(dsi, DSI_PHY_TST_CTRL1, PHY_TESTEN | PHY_TESTDOUT(0) |
+>> > +		  PHY_TESTDIN(0x44));
+>> > +	dsi_write(dsi, DSI_PHY_TST_CTRL0, PHY_TESTCLK | PHY_UNTESTCLR);
+>> > +	dsi_write(dsi, DSI_PHY_TST_CTRL0, PHY_UNTESTCLK | PHY_UNTESTCLR);
+>> > +	dsi_write(dsi, DSI_PHY_TST_CTRL1, PHY_UNTESTEN | PHY_TESTDOUT(0) |
+>> > +		  PHY_TESTDIN(testdin));
+>> > +	dsi_write(dsi, DSI_PHY_TST_CTRL0, PHY_TESTCLK | PHY_UNTESTCLR);
+>> > +	dsi_write(dsi, DSI_PHY_TST_CTRL0, PHY_UNTESTCLK | PHY_UNTESTCLR);
+>> > +
+>> > +	return 0;
+>> > +}
+>> > +
+>> > +static int imx_mipi_dsi_get_lane_mbps(void *priv_data,
+>> > +				      const struct drm_display_mode *mode,
+>> > +				      unsigned long mode_flags, u32 lanes,
+>> > +				      u32 format, unsigned int *lane_mbps)
+>> > +{
+>> > +	struct imx_mipi_dsi *dsi = priv_data;
+>> > +	int bpp;
+>> > +	unsigned int i, target_mbps, mpclk;
+>> > +	unsigned long pllref;
+>> > +
+>> > +	bpp = mipi_dsi_pixel_format_to_bpp(format);
+>> > +	if (bpp < 0) {
+>> > +		DRM_DEV_ERROR(dsi->dev, "failed to get bpp for format %d: %d\n",
+>> > +			      format, bpp);
+>> > +		return bpp;
+>> > +	}
+>> > +
+>> > +	pllref = clk_get_rate(dsi->pllref_clk);
+>> > +	if (pllref != 27000000)
+>> > +		DRM_WARN("DSI pllref_clk not set to 27Mhz\n");
+>> > +
+>> > +	mpclk = DIV_ROUND_UP(mode->clock, MSEC_PER_SEC);
+>> > +	if (mpclk) {
+>> > +		/* take 1/0.7 blanking overhead into consideration */
+>> > +		target_mbps = (mpclk * (bpp / lanes) * 10) / 7;
+>> > +	} else {
+>> > +		DRM_DEV_ERROR(dsi->dev, "use default 1Gbps DPHY pll clock\n");
+>> > +		target_mbps = 1000;
+>> > +	}
+>> > +
+>> > +	DRM_DEV_DEBUG(dsi->dev, "target pllref_clk frequency is %uMbps\n",
+>> > +		      target_mbps);
+>> > +
+>> > +	for (i = 0; i < ARRAY_SIZE(dptdin_map); i++) {
+>> > +		if (target_mbps < dptdin_map[i].max_mbps) {
+>> > +			*lane_mbps = dptdin_map[i].max_mbps;
+>> > +			dsi->lane_mbps = *lane_mbps;
+>> > +			DRM_DEV_DEBUG(dsi->dev,
+>> > +				      "real pllref_clk frequency is %uMbps\n",
+>> > +				      *lane_mbps);
+>> > +			return 0;
+>> > +		}
+>> > +	}
+>> > +
+>> > +	DRM_DEV_ERROR(dsi->dev, "DPHY clock frequency %uMbps is out of range\n",
+>> > +		      target_mbps);
+>> > +
+>> > +	return -EINVAL;
+>> > +}
+>> > +
+>> > +static int
+>> > +dw_mipi_dsi_phy_get_timing(void *priv_data, unsigned int lane_mbps,
+>> > +			   struct dw_mipi_dsi_dphy_timing *timing)
+>> > +{
+>> > +	timing->clk_hs2lp = 0x40;
+>> > +	timing->clk_lp2hs = 0x40;
+>> > +	timing->data_hs2lp = 0x40;
+>> > +	timing->data_lp2hs = 0x40;
+>> > +
+>> > +	return 0;
+>> > +}
+>> > +
+>> > +static const struct dw_mipi_dsi_phy_ops dw_mipi_dsi_imx6_phy_ops = {
+>> > +	.init = imx_mipi_dsi_phy_init,
+>> > +	.get_lane_mbps = imx_mipi_dsi_get_lane_mbps,
+>> > +	.get_timing = dw_mipi_dsi_phy_get_timing,
+>> > +};
+>> > +
+>> > +static struct dw_mipi_dsi_plat_data imx6q_mipi_dsi_drv_data = {
+>> > +	.max_data_lanes = 2,
+>> > +	.mode_valid = imx_mipi_dsi_mode_valid,
+>> > +	.phy_ops = &dw_mipi_dsi_imx6_phy_ops,
+>> > +};
+>> > +
+>> > +static const struct of_device_id imx_dsi_dt_ids[] = {
+>> > +	{
+>> > +		.compatible = "fsl,imx6q-mipi-dsi",
+>> > +		.data = &imx6q_mipi_dsi_drv_data,
+>> > +	},
+>> > +	{ /* sentinel */ }
+>> > +};
+>> > +MODULE_DEVICE_TABLE(of, imx_dsi_dt_ids);
+>> > +
+>> > +static int imx_mipi_dsi_bind(struct device *dev, struct device *master,
+>> > +			     void *data)
+>> > +{
+>> > +	struct imx_mipi_dsi *dsi = dev_get_drvdata(dev);
+>> > +	struct drm_device *drm = data;
+>> > +	int ret;
+>> > +
+>> > +	ret = clk_prepare_enable(dsi->pllref_clk);
+>> > +	if (ret) {
+>> > +		DRM_DEV_ERROR(dev, "Failed to enable pllref_clk: %d\n", ret);
+>> > +		return ret;
+>> > +	}
+>> > +
+>> > +	ret = imx_drm_create_encoder(drm, &dsi->encoder, dsi->dev->of_node);
+>> > +	if (ret) {
+>> > +		DRM_DEV_ERROR(dsi->dev, "failed to create drm encoder\n");
+>> > +		return ret;
+>> > +	}
+>> > +
+>> > +	drm_encoder_helper_add(&dsi->encoder, &imx_mipi_dsi_encoder_helpers);
+>> > +
+>> > +	ret = dw_mipi_dsi_bind(dsi->mipi_dsi, &dsi->encoder);
+>> > +	if (ret) {
+>> > +		DRM_DEV_ERROR(dev, "Failed to bind: %d\n", ret);
+>> > +		return ret;
+>> > +	}
+>> > +
+>> > +	return 0;
+>> > +}
+>> > +
+>> > +static void imx_mipi_dsi_unbind(struct device *dev, struct device *master,
+>> > +				void *data)
+>> > +{
+>> > +	struct imx_mipi_dsi *dsi = dev_get_drvdata(dev);
+>> > +
+>> > +	dw_mipi_dsi_unbind(dsi->mipi_dsi);
+>> > +
+>> > +	clk_disable_unprepare(dsi->pllref_clk);
+>> > +}
+>> > +
+>> > +static const struct component_ops imx_mipi_dsi_ops = {
+>> > +	.bind	= imx_mipi_dsi_bind,
+>> > +	.unbind	= imx_mipi_dsi_unbind,
+>> > +};
+>> > +
+>> > +static int imx_mipi_dsi_probe(struct platform_device *pdev)
+>> > +{
+>> > +	struct device *dev = &pdev->dev;
+>> > +	const struct of_device_id *of_id = of_match_device(imx_dsi_dt_ids, dev);
+>> > +	struct dw_mipi_dsi_plat_data *pdata = (struct dw_mipi_dsi_plat_data *) of_id->data;
+>> > +	struct imx_mipi_dsi *dsi;
+>> > +	struct resource *res;
+>> > +	int ret;
+>> > +
+>> > +	dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
+>> > +	if (!dsi)
+>> > +		return -ENOMEM;
+>> > +
+>> > +	dsi->dev = dev;
+>> > +
+>> > +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> > +	dsi->base = devm_ioremap_resource(dev, res);
+>> > +	if (IS_ERR(dsi->base)) {
+>> > +		ret = PTR_ERR(dsi->base);
+>> > +		DRM_DEV_ERROR(dev, "Unable to get dsi registers: %d\n", ret);
+>> > +		return ret;
+>> > +	}
+>> > +
+>> > +	dsi->pllref_clk = devm_clk_get(dev, "ref");
+>> > +	if (IS_ERR(dsi->pllref_clk)) {
+>> > +		ret = PTR_ERR(dsi->pllref_clk);
+>> > +		DRM_DEV_ERROR(dev, "Unable to get pllref_clk: %d\n", ret);
+>> > +		return ret;
+>> > +	}
+>> > +
+>> > +	dsi->mux_sel = syscon_regmap_lookup_by_phandle(dev->of_node, "fsl,gpr");
+>> > +	if (IS_ERR(dsi->mux_sel)) {
+>> > +		ret = PTR_ERR(dsi->mux_sel);
+>> > +		DRM_DEV_ERROR(dev, "Failed to get GPR regmap: %d\n", ret);
+>> > +		return ret;
+>> > +	}
+>> > +
+>> > +	dev_set_drvdata(dev, dsi);
+>> > +
+>> > +	imx6q_mipi_dsi_drv_data.base = dsi->base;
+>> > +	imx6q_mipi_dsi_drv_data.priv_data = dsi;
+>> > +
+>> > +	dsi->mipi_dsi = dw_mipi_dsi_probe(pdev, pdata);
+>> > +	if (IS_ERR(dsi->mipi_dsi)) {
+>> > +		ret = PTR_ERR(dsi->mipi_dsi);
+>> > +		DRM_DEV_ERROR(dev, "Failed to probe DW DSI host: %d\n", ret);
+>> > +		goto err_clkdisable;
+>> > +	}
+>> > +
+>> > +	return component_add(&pdev->dev, &imx_mipi_dsi_ops);
+>> > +
+>> > +err_clkdisable:
+>> > +	clk_disable_unprepare(dsi->pllref_clk);
+>> > +	return ret;
+>> > +}
+>> > +
+>> > +static int imx_mipi_dsi_remove(struct platform_device *pdev)
+>> > +{
+>> > +	component_del(&pdev->dev, &imx_mipi_dsi_ops);
+>> > +	return 0;
+>> > +}
+>> > +
+>> > +static struct platform_driver imx_mipi_dsi_driver = {
+>> > +	.probe		= imx_mipi_dsi_probe,
+>> > +	.remove		= imx_mipi_dsi_remove,
+>> > +	.driver		= {
+>> > +		.of_match_table = imx_dsi_dt_ids,
+>> > +		.name	= "dw-mipi-dsi-imx6",
+>> > +	},
+>> > +};
+>> > +module_platform_driver(imx_mipi_dsi_driver);
+>> > +
+>> > +MODULE_DESCRIPTION("i.MX6 MIPI DSI host controller driver");
+>> > +MODULE_AUTHOR("Liu Ying <victor.liu@nxp.com>");
+>> > +MODULE_AUTHOR("Adrian Ratiu <adrian.ratiu@collabora.com>");
+>> > +MODULE_LICENSE("GPL");
+>> > -- 
+>> > 2.26.0
+>> > 
+>> 
+>> -- 
+>> Regards,
+>> 
+>> Laurent Pinchart
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
