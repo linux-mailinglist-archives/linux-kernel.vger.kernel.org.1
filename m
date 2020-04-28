@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163B51BD060
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 01:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC191BD062
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 01:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgD1XGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 19:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
+        id S1726556AbgD1XHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 19:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726042AbgD1XGL (ORCPT
+        by vger.kernel.org with ESMTP id S1726343AbgD1XHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 19:06:11 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1754CC03C1AC;
-        Tue, 28 Apr 2020 16:06:11 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id h69so61955pgc.8;
-        Tue, 28 Apr 2020 16:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Yfsu/HSVVo+whNCvC7+Ad36YiKxlRRbH+oE2CArsBNI=;
-        b=drvtRa/kVGPe/aGSIjXSD9XyPXWVpkKs8v0NGIJRIeq0cfYpCU2nE9RAh5ODw0FmRB
-         xaH1nECe0JgrAtP7wHkgnHewqaSYaN/NYANr71mBUGSIClhZ9RS4Abiq56ewW/9e249U
-         x9dehzR5P6PhL4jFEJ9B7en4B/wJHwUk2CNar9pYYQ5QuBKjO4wmzuM5jHdOZj+DWhsi
-         CynBJCzvHcg6ODi0v4Y++EmJDyTnmozP4PWhb8fHfYciL4ZuT3MmnMyfW4a0jPxn/+kM
-         z1kIQzi7sqVC9wYCHB3oKE8NnFLtp3MjrWsZq37Wn+cGgwGsMxycueJOmxQvyCSTfBhe
-         DvGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Yfsu/HSVVo+whNCvC7+Ad36YiKxlRRbH+oE2CArsBNI=;
-        b=YD4xilVW9tuFWOYyT4jXk5jYHQeZ4x2JaIx8DTu4IsTyPZSnbMyMGd7uv4z5240glD
-         eknBgZMXaxyFj37vVHcwbxaTh1KAAOuAmHXqVEeWOFtdfya6E4ju/RxCU93VhHyI3rX2
-         3OGJKmLeRBD96ClYXG88DzKKxBtMJlBiKEOBJWQkRHMEgMMgyQ6J34oUnUKl1Oup7BaQ
-         A/6lGBxSw6MqyGUpNApVoxkNPJEkATQHk/3jz2QripJbnwSvQYl+JolESg5DS9BtWg86
-         sqZLqckjT3DO2nCedfwDkW0PcMq+7tBTNyLErHxasuDe1bAcOPdF6zFSxrei1ssZGCCZ
-         fhAw==
-X-Gm-Message-State: AGi0PuZZqXSL8nWlmDsRpdmLYgRkkJLoNvCfsS1+3GuAAzrn4olRva8h
-        T822JQeTOTG0E2XwN3gOzsg9cm/7
-X-Google-Smtp-Source: APiQypLOWlhkTwuTmHHzRTzkVYPWGkmTUt5uGv6P0rMwfKPHIy6FzFca7LYYW4VSuMLkyfnl7isIWA==
-X-Received: by 2002:a62:e80e:: with SMTP id c14mr31075459pfi.83.1588115170425;
-        Tue, 28 Apr 2020 16:06:10 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
-        by smtp.gmail.com with ESMTPSA id f70sm15983495pfa.17.2020.04.28.16.06.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 16:06:09 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 16:06:07 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the
- input-current tree
-Message-ID: <20200428230607.GW125362@dtor-ws>
-References: <20200428182441.3deea12a@canb.auug.org.au>
+        Tue, 28 Apr 2020 19:07:17 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107C4C03C1AC;
+        Tue, 28 Apr 2020 16:07:17 -0700 (PDT)
+Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id B422B22723;
+        Wed, 29 Apr 2020 01:07:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1588115235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RuIlJe7q91kbRfUFyFHuTZvDGPzeGw7lX3B08JZ9cs4=;
+        b=ThQ/YsLSZQNc5xvjIZTnYPsrH9t6TKxsiUAHyrHwRb6PpdI0tNcw/GxcxTtUm3lZUJMRUy
+        cfe2IP70dupTjlRUGWC0ILfay6eSJOwqkbutLOKLPaib8q5lNHVts8PK7fKgZ/0B0YcnZs
+        V1G/Encshd6uQpr4TLt3s6wQMt5vIOc=
+From:   Michael Walle <michael@walle.cc>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH net-next v2 1/4] net: phy: bcm54140: use genphy_soft_reset()
+Date:   Wed, 29 Apr 2020 01:06:56 +0200
+Message-Id: <20200428230659.7754-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428182441.3deea12a@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: ++++++
+X-Spam-Level: ******
+X-Rspamd-Server: web
+X-Spam-Status: Yes, score=6.40
+X-Spam-Score: 6.40
+X-Rspamd-Queue-Id: B422B22723
+X-Spamd-Result: default: False [6.40 / 15.00];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         DKIM_SIGNED(0.00)[];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         MID_CONTAINS_FROM(1.00)[];
+         RCVD_COUNT_ZERO(0.00)[0];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:31334, ipnet:2a02:810c:8000::/33, country:DE];
+         FREEMAIL_CC(0.00)[lunn.ch,gmail.com,armlinux.org.uk,davemloft.net,walle.cc];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Set the .soft_reset() op to be sure there will be a reset even if there
+is no hardware reset line registered.
 
-On Tue, Apr 28, 2020 at 06:24:41PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Commit
-> 
->   f4dec2d61609 ("Revert "Input: i8042 - add ThinkPad S230u to i8042 nomux list"")
-> 
-> is missing a Signed-off-by from its author and committer.
-> 
-> Reverts are commits as well ...
+Signed-off-by: Michael Walle <michael@walle.cc>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+changes since v1:
+ - added reviewed-by tags
 
-Yes, but they lack creative content IMO. In any case, I do not rewind
-for-linus branch, so it will have to stay as it is.
+ drivers/net/phy/bcm54140.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks.
-
+diff --git a/drivers/net/phy/bcm54140.c b/drivers/net/phy/bcm54140.c
+index 7341f0126cc4..eb5dbacc1253 100644
+--- a/drivers/net/phy/bcm54140.c
++++ b/drivers/net/phy/bcm54140.c
+@@ -862,6 +862,7 @@ static struct phy_driver bcm54140_drivers[] = {
+ 		.probe		= bcm54140_probe,
+ 		.suspend	= genphy_suspend,
+ 		.resume		= genphy_resume,
++		.soft_reset	= genphy_soft_reset,
+ 		.get_tunable	= bcm54140_get_tunable,
+ 		.set_tunable	= bcm54140_set_tunable,
+ 	},
 -- 
-Dmitry
+2.20.1
+
