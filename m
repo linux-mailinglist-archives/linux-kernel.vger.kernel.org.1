@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE391BC82F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47781BC803
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729479AbgD1SaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:30:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
+        id S1729229AbgD1S2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:28:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729464AbgD1SaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:30:10 -0400
+        id S1729197AbgD1S2a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:28:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 609462137B;
-        Tue, 28 Apr 2020 18:30:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 18A23208E0;
+        Tue, 28 Apr 2020 18:28:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098609;
-        bh=S5579T0/eEWJ0+afvsFWAkNck1Ara5B0uHZdI68kixg=;
+        s=default; t=1588098509;
+        bh=vQ8mnsbIeQGU8T6YGyNGLmDK4xoJW8U7rXdjDlh5rUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uyIiab80qjhP/D9z94B5zcsOzRxhlIt1S6Za3qq4IdxJQ1HFLHSdAFYKd9AXUwrD/
-         5aKmK6t7HD2Pv+tEmNS3bZV++gCT0qWBe3MkiYWKZeCcx3pKhZpBQEUuz0XjHYZd3i
-         cyjpDqgLIJOI2MJgN9BW1uNGwr1VecIv1c0NWn28=
+        b=0u7zjgOwIcs4LEGQm7X0w1NrjbQYHPfAmlV3Q68tqnUVooQPHRQPPxsgD+Np48r5N
+         cykrylxv0qeqLZAsqLSAtyx41pHwjnAZUIfJU1/+Au5sH7HzcaYo9aWn3m0JIdG+Fg
+         H9aYmB3LWySqmXZirhHGcx+DgM6/Pj+lJO0reGd8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 027/131] pwm: renesas-tpu: Fix late Runtime PM enablement
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 063/167] tipc: Fix potential tipc_node refcnt leak in tipc_rcv
 Date:   Tue, 28 Apr 2020 20:23:59 +0200
-Message-Id: <20200428182228.532438041@linuxfoundation.org>
+Message-Id: <20200428182232.923942002@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,63 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit d5a3c7a4536e1329a758e14340efd0e65252bd3d ]
+[ Upstream commit de058420767df21e2b6b0f3bb36d1616fb962032 ]
 
-Runtime PM should be enabled before calling pwmchip_add(), as PWM users
-can appear immediately after the PWM chip has been added.
-Likewise, Runtime PM should always be disabled after the removal of the
-PWM chip, even if the latter failed.
+tipc_rcv() invokes tipc_node_find() twice, which returns a reference of
+the specified tipc_node object to "n" with increased refcnt.
 
-Fixes: 99b82abb0a35b073 ("pwm: Add Renesas TPU PWM driver")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+When tipc_rcv() returns or a new object is assigned to "n", the original
+local reference of "n" becomes invalid, so the refcount should be
+decreased to keep refcount balanced.
+
+The issue happens in some paths of tipc_rcv(), which forget to decrease
+the refcnt increased by tipc_node_find() and will cause a refcnt leak.
+
+Fix this issue by calling tipc_node_put() before the original object
+pointed by "n" becomes invalid.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pwm/pwm-renesas-tpu.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ net/tipc/node.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pwm/pwm-renesas-tpu.c b/drivers/pwm/pwm-renesas-tpu.c
-index 29267d12fb4c9..9c7962f2f0aa4 100644
---- a/drivers/pwm/pwm-renesas-tpu.c
-+++ b/drivers/pwm/pwm-renesas-tpu.c
-@@ -423,16 +423,17 @@ static int tpu_probe(struct platform_device *pdev)
- 	tpu->chip.base = -1;
- 	tpu->chip.npwm = TPU_CHANNEL_MAX;
- 
-+	pm_runtime_enable(&pdev->dev);
-+
- 	ret = pwmchip_add(&tpu->chip);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "failed to register PWM chip\n");
-+		pm_runtime_disable(&pdev->dev);
- 		return ret;
+--- a/net/tipc/node.c
++++ b/net/tipc/node.c
+@@ -2037,6 +2037,7 @@ void tipc_rcv(struct net *net, struct sk
+ 		n = tipc_node_find_by_id(net, ehdr->id);
  	}
+ 	tipc_crypto_rcv(net, (n) ? n->crypto_rx : NULL, &skb, b);
++	tipc_node_put(n);
+ 	if (!skb)
+ 		return;
  
- 	dev_info(&pdev->dev, "TPU PWM %d registered\n", tpu->pdev->id);
+@@ -2089,7 +2090,7 @@ rcv:
+ 	/* Check/update node state before receiving */
+ 	if (unlikely(skb)) {
+ 		if (unlikely(skb_linearize(skb)))
+-			goto discard;
++			goto out_node_put;
+ 		tipc_node_write_lock(n);
+ 		if (tipc_node_check_state(n, skb, bearer_id, &xmitq)) {
+ 			if (le->link) {
+@@ -2118,6 +2119,7 @@ rcv:
+ 	if (!skb_queue_empty(&xmitq))
+ 		tipc_bearer_xmit(net, bearer_id, &xmitq, &le->maddr, n);
  
--	pm_runtime_enable(&pdev->dev);
--
- 	return 0;
- }
- 
-@@ -442,12 +443,10 @@ static int tpu_remove(struct platform_device *pdev)
- 	int ret;
- 
- 	ret = pwmchip_remove(&tpu->chip);
--	if (ret)
--		return ret;
- 
- 	pm_runtime_disable(&pdev->dev);
- 
--	return 0;
-+	return ret;
- }
- 
- #ifdef CONFIG_OF
--- 
-2.20.1
-
++out_node_put:
+ 	tipc_node_put(n);
+ discard:
+ 	kfree_skb(skb);
 
 
