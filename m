@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B331BB39A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 240CD1BB397
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgD1BtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 21:49:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:44470 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726261AbgD1BtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 21:49:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D80230E;
-        Mon, 27 Apr 2020 18:49:22 -0700 (PDT)
-Received: from [10.163.70.197] (unknown [10.163.70.197])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A02363F305;
-        Mon, 27 Apr 2020 18:49:14 -0700 (PDT)
-Subject: Re: [mm/debug] fa6726c1e7: kernel_BUG_at_include/linux/mm.h
-To:     kernel test robot <lkp@intel.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Qian Cai <cai@lca.pw>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>,
+        id S1726369AbgD1BtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 21:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726261AbgD1BtD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 21:49:03 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2499CC03C1A8;
+        Mon, 27 Apr 2020 18:49:03 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id a31so426893pje.1;
+        Mon, 27 Apr 2020 18:49:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VjlmInaD+CunQni2gwfodUVCdw5wBkcVV++SAKGDNm8=;
+        b=TMYpTRpZpgzQQDLuoRXsivuHFnJ3XWrpG2C4ZITMWd/5oh0i2Znf5NqQ7fqOkDgDpF
+         yN2ifB8qy33yYemkK1J0Obs96WwYHPwRXwCGRReufe6J67kiKKQIiqjYvzPw5YyPIgg7
+         j9RmdRt39k3xuue47Pm2I8drGtaFUblkQF4ukd9PS+36BU3hZxxKBIxt1hlFpm3Cf8xA
+         38QpgdLaGab8FnQVjsUc9I7ShA731CpqWUnzD/9W7FivUdiKRV6pA96Hl5DRWOm/SffF
+         EeK4hIUOFv2IOIUxZdn1RyJjYTFEn/aK7i95uwKD2BNMweQKRf1CGLBjavDulW9HzbWu
+         gQMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VjlmInaD+CunQni2gwfodUVCdw5wBkcVV++SAKGDNm8=;
+        b=lZQJHBOsPnQdB9wdMwxQplzgY0f/wXBg0g/2z8wAtWxG4DtDWUEeO5FaedEAqMbKBU
+         7UaLQxZ8O5B9c/gxe/4fyQPsbxc8zthsrKe4t3cgI0eeAV6WL4N4vkBU2spjz5SmT1pw
+         ddV8eP9WGt5ZQ1JeWYzbuRQSD0hrzvhn9FfjBSKc3HXlX/yR7r6r6YJeH7WJbcNG+wCo
+         XOT7ijlM+N//lWSIQoNF9Oyta+hVHEAjog2+N/aLsH3HG4TeoeXZA2Opzej8YQSi1s3h
+         aVwZa5Tld8MAnObJXUSc5Y/pWk41ZI6FBq76oPzxZjoVsb7qCa3k9/MWzW2WTtqlDl2f
+         tgwA==
+X-Gm-Message-State: AGi0PuaL1xiS2IEig/kDx9mkJ25a/HED8fz/BCFlyDzwDM1FdR0cvyUY
+        flrhHzSFL+sAFFweOan2R5E=
+X-Google-Smtp-Source: APiQypKW1jBhkcPIj1dIcDXG+vS4AuDRosNuBrsHzNoEKEhSnJE2syPk/CzYimYRQy8CXCNfjwstvg==
+X-Received: by 2002:a17:90a:690b:: with SMTP id r11mr1983059pjj.119.1588038542547;
+        Mon, 27 Apr 2020 18:49:02 -0700 (PDT)
+Received: from gnu-cfl-2.localdomain (c-69-181-90-243.hsd1.ca.comcast.net. [69.181.90.243])
+        by smtp.gmail.com with ESMTPSA id 4sm14173285pff.18.2020.04.27.18.49.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2020 18:49:01 -0700 (PDT)
+Received: from gnu-cfl-2.localdomain (localhost [IPv6:::1])
+        by gnu-cfl-2.localdomain (Postfix) with ESMTP id 9054BC02BB;
+        Mon, 27 Apr 2020 18:49:00 -0700 (PDT)
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>, Arnd Bergmann <arnd@arndb.de>,
+        linux-arch@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <20200427140706.GC5770@shao2-debian>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <51dcbcbf-6020-6672-05b0-5bb10c6292b5@arm.com>
-Date:   Tue, 28 Apr 2020 07:18:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Kees Cook <keescook@chromium.org>,
+        Borislav Petkov <bp@suse.de>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 1/2] powerpc: Discard .rela* sections if CONFIG_RELOCATABLE is undefined
+Date:   Mon, 27 Apr 2020 18:48:59 -0700
+Message-Id: <20200428014900.407098-1-hjl.tools@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <20200427140706.GC5770@shao2-debian>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+arch/powerpc/kernel/vmlinux.lds.S has
 
+        DISCARDS
+        /DISCARD/ : {
+                *(*.EMB.apuinfo)
+                *(.glink .iplt .plt .rela* .comment)
+                *(.gnu.version*)
+                *(.gnu.attributes)
+                *(.eh_frame)
+        }
 
-On 04/27/2020 07:37 PM, kernel test robot wrote:
-> 
-> [   10.263354] kernel BUG at include/linux/mm.h:699!
-> [   10.264320] invalid opcode: 0000 [#1] SMP
-> [   10.264872] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc2-00230-gfa6726c1e7f01 #2
-> [   10.265928] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> [   10.267074] EIP: __free_pages+0x4f/0x62
-> [   10.267615] Code: 85 ff 74 0e 89 fa 89 f0 e8 83 ed ff ff 5b 5e 5f 5d c3 89 f0 e8 57 ff ff ff 5b 5e 5f 5d c3 ba fc 86 fc c1 89 f0 e8 ff 2e fe ff <0f> 0b 0f b6 cb ba ff ff ff ff 89 f0 e8 07 8f 01 00 eb bf 55 89 e5
-> [   10.270098] EAX: 0000003e EBX: ee800000 ECX: 00000000 EDX: c0068000
-> [   10.270925] ESI: eece0640 EDI: c016d020 EBP: c0071f10 ESP: c0071f04
-> [   10.271786] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
-> [   10.272724] CR0: 80050033 CR2: b7d6467d CR3: 023d0000 CR4: 000006b0
-> [   10.273572] Call Trace:
-> [   10.273912]  free_pages+0x3d/0x43
-> [   10.274367]  pgd_free+0xea/0x11b
-> [   10.274807]  __mmdrop+0x3c/0xc7
-> [   10.275237]  ? __free_pages+0x3e/0x62
-> [   10.275761]  debug_vm_pgtable+0x411/0x419
-> [   10.276305]  ? rest_init+0x23c/0x23c
-> [   10.276767]  kernel_init+0x15/0xf4
-> [   10.277208]  ? schedule_tail_wrapper+0x9/0xc
-> [   10.277756]  ret_from_fork+0x2e/0x38
-> [   10.278217] Modules linked in: stm_p_basic
-> [   10.278776] ---[ end trace b838f89424113a3a ]---
-This is an unsupported (enabled via CONFIG_EXPERT) X86 platform (CONFIG_X86_PAE)
-and is known to fail. The latest (V17) patch had moved the test invocation into
-a late_initcall() per Linus thus pushing down any possible failures (like this)
-after early boot. Please ignore this report.
+Since .rela* sections are needed when CONFIG_RELOCATABLE is defined,
+change to discard .rela* sections if CONFIG_RELOCATABLE is undefined.
 
-Apart from this X86_PAE based config, no other platform failures have reported
-so far. Assuming that this test robot does have a good platform coverage, the
-CONFIG_EXPERT method of enabling CONFIG_DEBUG_VM_PGTABLE should help in getting
-more platform coverage for this test.
+Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+---
+ arch/powerpc/kernel/vmlinux.lds.S | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-- Anshuman
+diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
+index 31a0f201fb6f..4ba07734a210 100644
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -366,9 +366,12 @@ SECTIONS
+ 	DISCARDS
+ 	/DISCARD/ : {
+ 		*(*.EMB.apuinfo)
+-		*(.glink .iplt .plt .rela* .comment)
++		*(.glink .iplt .plt .comment)
+ 		*(.gnu.version*)
+ 		*(.gnu.attributes)
+ 		*(.eh_frame)
++#ifndef CONFIG_RELOCATABLE
++		*(.rela*)
++#endif
+ 	}
+ }
+-- 
+2.25.4
+
