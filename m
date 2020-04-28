@@ -2,160 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE711BC2E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0BA1BC2D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbgD1PTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 11:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728431AbgD1PSS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 11:18:18 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E994C03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 08:18:17 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id k12so3221853wmj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 08:18:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EEU0pxcPFX3KP87PwUmGj9xWjqHNRrDzTBDgsvo+zrE=;
-        b=KTinRLzrNGkjErt0YFPfEjur37+mTjuuNFWKuMYjujj75gJo4JuKBWlLUFpqe21kD8
-         PuGx+XNt9x1outfQa8IQhPFA/zyJi9Ca7Qi5Fkgsb1ZfMD/D/oCBsFlKJqopuqj7OfS6
-         k6tEL0y3Ta8cAOVsRinPJEt7/3vwn6tTL45Tg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=EEU0pxcPFX3KP87PwUmGj9xWjqHNRrDzTBDgsvo+zrE=;
-        b=SnP/ret7vbKkH7egufwuQoSQJ/GeRP12d1OTtACCZStcHcxZFmiEftAMpqF5PaveBn
-         utF9grD8K/C2lQ8oC53o26RH1Xuf9MaNlpkDZda6onlYswWTb7lpcN8+29YoxotKGmU1
-         Y8XJPGUwn0oCdjNnPxvDMA1hfBnUAPxrrwZfKbqOBM3RasnqQITxU7948TbtRlEUMKi+
-         wj/s5pApqd407/Pv3viC//PQZvYssfnN1rkzG0dKN/Zy4mQvLajjseS2cAfw3mALOw//
-         q+2osxF7mDXdNJuoZZWPo+tPFNucpUHiLqozRNKFaun06w0c2V62BuNBfIO5vPBctPwt
-         llJg==
-X-Gm-Message-State: AGi0PubaFI74Io32iA2a6AaErfJg19DH2vBi0OWn2G7QvPluV8P6rAJm
-        HC6Y02sOqnJBqAr0PPooBjZWHg==
-X-Google-Smtp-Source: APiQypKaVyMHjzYLTLGIxk+gUvL3MgOQUtvKn1okwXGtKQJUbFiYSWur99gy5wbOdKi7ODJQCqZVMA==
-X-Received: by 2002:a1c:ed04:: with SMTP id l4mr5193048wmh.93.1588087095920;
-        Tue, 28 Apr 2020 08:18:15 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f83sm3728864wmf.42.2020.04.28.08.18.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 08:18:15 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 17:18:13 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Michal Orzel <michalorzel.eng@gmail.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, ville.syrjala@linux.intel.com,
-        chris@chris-wilson.co.uk, jose.souza@intel.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH] Remove drm_display_mode.hsync
-Message-ID: <20200428151813.GW3456981@phenom.ffwll.local>
-Mail-Followup-To: Michal Orzel <michalorzel.eng@gmail.com>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        ville.syrjala@linux.intel.com, chris@chris-wilson.co.uk,
-        jose.souza@intel.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-References: <1587974717-14599-1-git-send-email-michalorzel.eng@gmail.com>
+        id S1728488AbgD1PTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 11:19:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728476AbgD1PSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 11:18:24 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6158721D7E;
+        Tue, 28 Apr 2020 15:18:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588087103;
+        bh=9oQXKzUc/g5RDIdNHtQ174HwUol535uO19Er/7MH5yw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xcp870w9uUfWNAP5Q279qYhxIPzCRshrYgFnamYTozhK+oloqXxKG+YBbR7ToARB+
+         OQBaqZz1emiEUG2oQO4j5PPdf2AJQMuFqOVLI30sp6OaLbd0nO6qyn3eHHMGoISqIj
+         GQ6C69MgmQ/+WBhMltBfpIDeF5rVyQuNGPHpxDG0=
+Date:   Tue, 28 Apr 2020 16:18:16 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Paul Elliott <paul.elliott@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Amit Kachhap <amit.kachhap@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        "H . J . Lu " <hjl.tools@gmail.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>, Jann Horn <jannh@google.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Kristina =?utf-8?Q?Mart=C5=A1enko?= <kristina.martsenko@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Florian Weimer <fweimer@redhat.com>,
+        Sudakshina Das <sudi.das@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v10 00/13] arm64: Branch Target Identification support
+Message-ID: <20200428151815.GB12697@willie-the-truck>
+References: <20200316165055.31179-1-broonie@kernel.org>
+ <20200422154436.GJ4898@sirena.org.uk>
+ <20200422162954.GF3585@gaia>
+ <20200428132804.GF6791@willie-the-truck>
+ <20200428151205.GH5677@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1587974717-14599-1-git-send-email-michalorzel.eng@gmail.com>
-X-Operating-System: Linux phenom 5.3.0-3-amd64 
+In-Reply-To: <20200428151205.GH5677@sirena.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 10:05:17AM +0200, Michal Orzel wrote:
-> As suggested by the TODO list of DRM subsystem:
-> -remove the member hsync of drm_display_mode
-> -convert code using hsync member to use drm_mode_hsync()
+On Tue, Apr 28, 2020 at 04:12:05PM +0100, Mark Brown wrote:
+> On Tue, Apr 28, 2020 at 02:28:05PM +0100, Will Deacon wrote:
 > 
-> Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
-
-I think Ville has a bunch of patches doing this, we might have some
-overlap :-/ Adding Ville.
-
-Please sync with him and get either of these patches reviewed.
-
-Thanks, Daniel
-
-> ---
->  drivers/gpu/drm/drm_modes.c                  |  6 +-----
->  drivers/gpu/drm/i915/display/intel_display.c |  1 -
->  include/drm/drm_modes.h                      | 10 ----------
->  3 files changed, 1 insertion(+), 16 deletions(-)
+> > I'm happy either way, but it would be nice to base other BTI patches on
+> > top of this branch. Mark -- is it easier for you to refresh the series
+> > against v5.7-rc3, or leave it like it is? Please just let me know either
+> > way.
 > 
-> diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
-> index d4d6451..0340079 100644
-> --- a/drivers/gpu/drm/drm_modes.c
-> +++ b/drivers/gpu/drm/drm_modes.c
-> @@ -752,16 +752,12 @@ EXPORT_SYMBOL(drm_mode_set_name);
->   * @mode: mode
->   *
->   * Returns:
-> - * @modes's hsync rate in kHz, rounded to the nearest integer. Calculates the
-> - * value first if it is not yet set.
-> + * @modes's hsync rate in kHz, rounded to the nearest integer.
->   */
->  int drm_mode_hsync(const struct drm_display_mode *mode)
->  {
->  	unsigned int calc_val;
->  
-> -	if (mode->hsync)
-> -		return mode->hsync;
-> -
->  	if (mode->htotal <= 0)
->  		return 0;
->  
-> diff --git a/drivers/gpu/drm/i915/display/intel_display.c b/drivers/gpu/drm/i915/display/intel_display.c
-> index 3468466..ec7e943 100644
-> --- a/drivers/gpu/drm/i915/display/intel_display.c
-> +++ b/drivers/gpu/drm/i915/display/intel_display.c
-> @@ -8891,7 +8891,6 @@ void intel_mode_from_pipe_config(struct drm_display_mode *mode,
->  
->  	mode->clock = pipe_config->hw.adjusted_mode.crtc_clock;
->  
-> -	mode->hsync = drm_mode_hsync(mode);
->  	mode->vrefresh = drm_mode_vrefresh(mode);
->  	drm_mode_set_name(mode);
->  }
-> diff --git a/include/drm/drm_modes.h b/include/drm/drm_modes.h
-> index 99134d4..7dab7f1 100644
-> --- a/include/drm/drm_modes.h
-> +++ b/include/drm/drm_modes.h
-> @@ -391,16 +391,6 @@ struct drm_display_mode {
->  	int vrefresh;
->  
->  	/**
-> -	 * @hsync:
-> -	 *
-> -	 * Horizontal refresh rate, for debug output in human readable form. Not
-> -	 * used in a functional way.
-> -	 *
-> -	 * This value is in kHz.
-> -	 */
-> -	int hsync;
-> -
-> -	/**
->  	 * @picture_aspect_ratio:
->  	 *
->  	 * Field for setting the HDMI picture aspect ratio of a mode.
-> -- 
-> 2.7.4
-> 
+> It's probably easier for me if you just use the existing branch, I've
+> already got a branch based on a merge down.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Okey doke, I'll funnel that in the direction of linux-next then. It does
+mean that any subsequent patches for 5.8 that depend on BTI will need to
+be based on this branch, so as long as you're ok with that then it's fine
+by me (since I won't be able to apply patches if they refer to changes
+introduced in the recent merge window).
+
+Will
