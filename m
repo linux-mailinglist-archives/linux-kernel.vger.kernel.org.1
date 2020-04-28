@@ -2,83 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAFA1BBA17
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 11:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E511BB9F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 11:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgD1JmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 05:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726486AbgD1JmH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 05:42:07 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1BAC03C1A9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 02:42:06 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f11so16155387ljp.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 02:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WT6mF0IwJRAWJibfVj6jkV3JG6t831H/TM7wsxX5kmk=;
-        b=Oc8uD1mS503FcEMlkUqEA6u5te4rKpMM/UsnhiU+pzKrxq6vCg8ReWomPx9ySZjDJr
-         +Upu1NQfJO+9N/qO+diiboHKlAuEJqt9aZ34HX/ZsPFxm7O5vOSC3B8Rwi2sfl2TcR45
-         oq9TMx8Y30Anq/gkwzDocYWGUdVgj9/lmWha+za55Aoq9wVaZP22v4DdjzkOAP0plN1V
-         KumbSL9f451cSixc4MIxZOBdo+1+k+YAMuF1d2Svjh8djlHUICTmr/SGlky8XOl49+Cb
-         Pf1WGvOF+fGJjYSzYy2u403Vg+4dsi6C5uSxe2QqlhAJlD48Vqs+BiUvJuRW0EFZ7g3H
-         VMlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WT6mF0IwJRAWJibfVj6jkV3JG6t831H/TM7wsxX5kmk=;
-        b=NBZM/bFcdcnnvuukg/NvgpGF1wJIcAz72KscIXie20g1bGm6AJgNJbOu72pvlPxbCy
-         wT+YTB7T3ri/7EfF0vmI+kzAQg1kLkxh0T6REd+5br1PcKBEE8IScZ0k5aLdaZFIjCLN
-         7mjg0Ex5gW6PnAd8hVSTypQpxyxhJgxXqELLVvQ9fnegCK13hcBHfRQAe2fiEJjVPKP0
-         oTDHby9vSfAd8/mzO3sF4cNLXK9QPhJF6nK/SjxF739LmgcK1VkSgZDVlehk4ACF/chN
-         ev5FA/CcFCUE+x+6wl4P8A/AkBhksR+Ne2uQ5wDDj+5AIdKkyFqLuT9uAVHNvNAD7T18
-         4PvQ==
-X-Gm-Message-State: AGi0PuZANLwvmMrMJWrpGElCQsFbgYsR73i3dsi2Uc8X8ifQ8Vr++0Cl
-        fEsqSn/GJiRH9bNX0j8IJKh2+uuSyxJnPhLpzJJHRQ==
-X-Google-Smtp-Source: APiQypJWdiCBwLqc2g8Irmc7/w41rf19eHaus5+KTPDZiZJ8NEqF3rSuv3WOFk23DG+Abnjohh4H216Y6yGgj84RaY4=
-X-Received: by 2002:a2e:2ac2:: with SMTP id q185mr8261669ljq.125.1588066924774;
- Tue, 28 Apr 2020 02:42:04 -0700 (PDT)
+        id S1727026AbgD1JhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 05:37:11 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3323 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726477AbgD1JhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 05:37:11 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9BE3D3B50836C88B459B;
+        Tue, 28 Apr 2020 17:37:08 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Apr 2020 17:36:59 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <trenn@suse.com>, <shuah@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] cpupower: Remove unneeded semicolon
+Date:   Tue, 28 Apr 2020 17:43:15 +0800
+Message-ID: <1588066995-71840-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-References: <20200417073455.42146-1-yanaijie@huawei.com>
-In-Reply-To: <20200417073455.42146-1-yanaijie@huawei.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 28 Apr 2020 11:41:53 +0200
-Message-ID: <CACRpkdZv4W3LVxRqDx2EaqATW7a-dhZeDjzoa2iQu+dDtpkfww@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: nomadik: ab8505: remove unused 'gpio50_a_1_pins'
-To:     Jason Yan <yanaijie@huawei.com>,
-        Patrice CHOTARD <patrice.chotard@st.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 9:08 AM Jason Yan <yanaijie@huawei.com> wrote:
+Fixes coccicheck warnings:
 
-> Fix the following gcc warning:
->
-> drivers/pinctrl/nomadik/pinctrl-ab8505.c:137:23: warning:
-> =E2=80=98gpio50_a_1_pins=E2=80=99 defined but not used [-Wunused-const-va=
-riable=3D]
->  static const unsigned gpio50_a_1_pins[] =3D { AB8505_PIN_L4 };
->                        ^~~~~~~~~~~~~~~
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+tools/power/cpupower/utils/cpupower-info.c:65:2-3: Unneeded semicolon
+tools/power/cpupower/utils/cpupower-set.c:75:2-3: Unneeded semicolon
+tools/power/cpupower/utils/idle_monitor/amd_fam14h_idle.c:120:2-3: Unneeded semicolon
+tools/power/cpupower/utils/idle_monitor/cpuidle_sysfs.c:175:2-3: Unneeded semicolon
+tools/power/cpupower/utils/idle_monitor/cpuidle_sysfs.c:56:2-3: Unneeded semicolon
+tools/power/cpupower/utils/idle_monitor/cpuidle_sysfs.c:75:2-3: Unneeded semicolon
+tools/power/cpupower/utils/idle_monitor/hsw_ext_idle.c:82:2-3: Unneeded semicolon
+tools/power/cpupower/utils/idle_monitor/nhm_idle.c:94:2-3: Unneeded semicolon
+tools/power/cpupower/utils/idle_monitor/snb_idle.c:80:2-3: Unneeded semicolon
 
-This should not be deleted, it should be used. I will send an alternative
-patch with you as Reported-by.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ tools/power/cpupower/utils/cpupower-info.c                | 2 +-
+ tools/power/cpupower/utils/cpupower-set.c                 | 2 +-
+ tools/power/cpupower/utils/idle_monitor/amd_fam14h_idle.c | 2 +-
+ tools/power/cpupower/utils/idle_monitor/cpuidle_sysfs.c   | 6 +++---
+ tools/power/cpupower/utils/idle_monitor/hsw_ext_idle.c    | 2 +-
+ tools/power/cpupower/utils/idle_monitor/nhm_idle.c        | 2 +-
+ tools/power/cpupower/utils/idle_monitor/snb_idle.c        | 2 +-
+ 7 files changed, 9 insertions(+), 9 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/tools/power/cpupower/utils/cpupower-info.c b/tools/power/cpupower/utils/cpupower-info.c
+index d3755ea..0ba61a2 100644
+--- a/tools/power/cpupower/utils/cpupower-info.c
++++ b/tools/power/cpupower/utils/cpupower-info.c
+@@ -62,7 +62,7 @@ int cmd_info(int argc, char **argv)
+ 		default:
+ 			print_wrong_arg_exit();
+ 		}
+-	};
++	}
+ 
+ 	if (!params.params)
+ 		params.params = 0x7;
+diff --git a/tools/power/cpupower/utils/cpupower-set.c b/tools/power/cpupower/utils/cpupower-set.c
+index 3cca6f7..052044d 100644
+--- a/tools/power/cpupower/utils/cpupower-set.c
++++ b/tools/power/cpupower/utils/cpupower-set.c
+@@ -72,7 +72,7 @@ int cmd_set(int argc, char **argv)
+ 		default:
+ 			print_wrong_arg_exit();
+ 		}
+-	};
++	}
+ 
+ 	if (!params.params)
+ 		print_wrong_arg_exit();
+diff --git a/tools/power/cpupower/utils/idle_monitor/amd_fam14h_idle.c b/tools/power/cpupower/utils/idle_monitor/amd_fam14h_idle.c
+index 20f4634..5edd35b 100644
+--- a/tools/power/cpupower/utils/idle_monitor/amd_fam14h_idle.c
++++ b/tools/power/cpupower/utils/idle_monitor/amd_fam14h_idle.c
+@@ -117,7 +117,7 @@ static int amd_fam14h_get_pci_info(struct cstate *state,
+ 		break;
+ 	default:
+ 		return -1;
+-	};
++	}
+ 	return 0;
+ }
+ 
+diff --git a/tools/power/cpupower/utils/idle_monitor/cpuidle_sysfs.c b/tools/power/cpupower/utils/idle_monitor/cpuidle_sysfs.c
+index a65f7d0..8b42c2f 100644
+--- a/tools/power/cpupower/utils/idle_monitor/cpuidle_sysfs.c
++++ b/tools/power/cpupower/utils/idle_monitor/cpuidle_sysfs.c
+@@ -53,7 +53,7 @@ static int cpuidle_start(void)
+ 			dprint("CPU %d - State: %d - Val: %llu\n",
+ 			       cpu, state, previous_count[cpu][state]);
+ 		}
+-	};
++	}
+ 	return 0;
+ }
+ 
+@@ -72,7 +72,7 @@ static int cpuidle_stop(void)
+ 			dprint("CPU %d - State: %d - Val: %llu\n",
+ 			       cpu, state, previous_count[cpu][state]);
+ 		}
+-	};
++	}
+ 	return 0;
+ }
+ 
+@@ -172,7 +172,7 @@ static struct cpuidle_monitor *cpuidle_register(void)
+ 		cpuidle_cstates[num].id = num;
+ 		cpuidle_cstates[num].get_count_percent =
+ 			cpuidle_get_count_percent;
+-	};
++	}
+ 
+ 	/* Free this at program termination */
+ 	previous_count = malloc(sizeof(long long *) * cpu_count);
+diff --git a/tools/power/cpupower/utils/idle_monitor/hsw_ext_idle.c b/tools/power/cpupower/utils/idle_monitor/hsw_ext_idle.c
+index 97ad323..55e55b6 100644
+--- a/tools/power/cpupower/utils/idle_monitor/hsw_ext_idle.c
++++ b/tools/power/cpupower/utils/idle_monitor/hsw_ext_idle.c
+@@ -79,7 +79,7 @@ static int hsw_ext_get_count(enum intel_hsw_ext_id id, unsigned long long *val,
+ 		break;
+ 	default:
+ 		return -1;
+-	};
++	}
+ 	if (read_msr(cpu, msr, val))
+ 		return -1;
+ 	return 0;
+diff --git a/tools/power/cpupower/utils/idle_monitor/nhm_idle.c b/tools/power/cpupower/utils/idle_monitor/nhm_idle.c
+index 1142711..16eaf00 100644
+--- a/tools/power/cpupower/utils/idle_monitor/nhm_idle.c
++++ b/tools/power/cpupower/utils/idle_monitor/nhm_idle.c
+@@ -91,7 +91,7 @@ static int nhm_get_count(enum intel_nhm_id id, unsigned long long *val,
+ 		break;
+ 	default:
+ 		return -1;
+-	};
++	}
+ 	if (read_msr(cpu, msr, val))
+ 		return -1;
+ 
+diff --git a/tools/power/cpupower/utils/idle_monitor/snb_idle.c b/tools/power/cpupower/utils/idle_monitor/snb_idle.c
+index df8b223..811d63a 100644
+--- a/tools/power/cpupower/utils/idle_monitor/snb_idle.c
++++ b/tools/power/cpupower/utils/idle_monitor/snb_idle.c
+@@ -77,7 +77,7 @@ static int snb_get_count(enum intel_snb_id id, unsigned long long *val,
+ 		break;
+ 	default:
+ 		return -1;
+-	};
++	}
+ 	if (read_msr(cpu, msr, val))
+ 		return -1;
+ 	return 0;
+-- 
+2.6.2
+
