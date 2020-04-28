@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B81A1BC9B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210171BC903
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731345AbgD1SoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:44:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36878 "EHLO mail.kernel.org"
+        id S1728773AbgD1Shr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731043AbgD1SoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:44:00 -0400
+        id S1730059AbgD1Shl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:37:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DBEC20575;
-        Tue, 28 Apr 2020 18:43:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEE2320575;
+        Tue, 28 Apr 2020 18:37:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099440;
-        bh=HeabiI4uD4dp79Bv+pZyRsBAqEpam7rN3r8uS81K5XU=;
+        s=default; t=1588099060;
+        bh=HoZ1jmKaAFJOPrM4P+ug3uY8Rfr2dLp6MGHRka+OT7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rjWWlTM7LAl9SwewWsaSjs0CmuAGdaXnA9Y/0oRY9xftJ4O97fhM+ZL5yeLdfYrM3
-         yanWNicY4L0VbUPpcLv5b1rXR82AZA3Dd6R8USvhU0SD3wHytHq0gKFtxx5ewZU0c7
-         buSL0Eg5Uo5jxjkKK0ywEA6RiSfsNWr0xT4eJVHM=
+        b=EdgjTTom0IfPvoBfYUIFm/cJO745p3cDZTPNT8tLB4cJj+el9txpQ28PCmz543BVV
+         Y409toJhntwur5CEbCEC98gtU+7U74/jWnEMVHrvdbVoHKdEPoSH6S425tRDEHqCLp
+         SIGi8vDwB34SQqFHgAClD++h5r8BVqPLDd+btyuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Badhri Jagan Sridharan <badhri@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 5.4 152/168] usb: typec: tcpm: Ignore CC and vbus changes in PORT_RESET change
+        stable@vger.kernel.org, Udipto Goswami <ugoswami@codeaurora.org>,
+        Sriharsha Allenki <sallenki@codeaurora.org>,
+        Manu Gautam <mgautam@codeaurora.org>
+Subject: [PATCH 5.6 150/167] usb: f_fs: Clear OS Extended descriptor counts to zero in ffs_data_reset()
 Date:   Tue, 28 Apr 2020 20:25:26 +0200
-Message-Id: <20200428182250.636796981@linuxfoundation.org>
+Message-Id: <20200428182244.534530387@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,93 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Badhri Jagan Sridharan <badhri@google.com>
+From: Udipto Goswami <ugoswami@codeaurora.org>
 
-commit 901789745a053286e0ced37960d44fa60267b940 upstream.
+commit 1c2e54fbf1da5e5445a0ab132c862b02ccd8d230 upstream.
 
-After PORT_RESET, the port is set to the appropriate
-default_state. Ignore processing CC changes here as this
-could cause the port to be switched into sink states
-by default.
+For userspace functions using OS Descriptors, if a function also supplies
+Extended Property descriptors currently the counts and lengths stored in
+the ms_os_descs_ext_prop_{count,name_len,data_len} variables are not
+getting reset to 0 during an unbind or when the epfiles are closed. If
+the same function is re-bound and the descriptors are re-written, this
+results in those count/length variables to monotonically increase
+causing the VLA allocation in _ffs_func_bind() to grow larger and larger
+at each bind/unbind cycle and eventually fail to allocate.
 
-echo source > /sys/class/typec/port0/port_type
+Fix this by clearing the ms_os_descs_ext_prop count & lengths to 0 in
+ffs_data_reset().
 
-Before:
-[  154.528547] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms
-[  154.528560] CC1: 0 -> 0, CC2: 3 -> 0 [state PORT_RESET, polarity 0, disconnected]
-[  154.528564] state change PORT_RESET -> SNK_UNATTACHED
-
-After:
-[  151.068814] pending state change PORT_RESET -> PORT_RESET_WAIT_OFF @ 100 ms [rev3 NONE_AMS]
-[  151.072440] CC1: 3 -> 0, CC2: 0 -> 0 [state PORT_RESET, polarity 0, disconnected]
-[  151.172117] state change PORT_RESET -> PORT_RESET_WAIT_OFF [delayed 100 ms]
-[  151.172136] pending state change PORT_RESET_WAIT_OFF -> SRC_UNATTACHED @ 870 ms [rev3 NONE_AMS]
-[  152.060106] state change PORT_RESET_WAIT_OFF -> SRC_UNATTACHED [delayed 870 ms]
-[  152.060118] Start toggling
-
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20200402215947.176577-1-badhri@google.com
+Fixes: f0175ab51993 ("usb: gadget: f_fs: OS descriptors support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Udipto Goswami <ugoswami@codeaurora.org>
+Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
+Reviewed-by: Manu Gautam <mgautam@codeaurora.org>
+Link: https://lore.kernel.org/r/20200402044521.9312-1-sallenki@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/typec/tcpm/tcpm.c |   26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/usb/gadget/function/f_fs.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -3768,6 +3768,14 @@ static void _tcpm_cc_change(struct tcpm_
- 		 */
- 		break;
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -1813,6 +1813,10 @@ static void ffs_data_reset(struct ffs_da
+ 	ffs->state = FFS_READ_DESCRIPTORS;
+ 	ffs->setup_state = FFS_NO_SETUP;
+ 	ffs->flags = 0;
++
++	ffs->ms_os_descs_ext_prop_count = 0;
++	ffs->ms_os_descs_ext_prop_name_len = 0;
++	ffs->ms_os_descs_ext_prop_data_len = 0;
+ }
  
-+	case PORT_RESET:
-+	case PORT_RESET_WAIT_OFF:
-+		/*
-+		 * State set back to default mode once the timer completes.
-+		 * Ignore CC changes here.
-+		 */
-+		break;
-+
- 	default:
- 		if (tcpm_port_is_disconnected(port))
- 			tcpm_set_state(port, unattached_state(port), 0);
-@@ -3829,6 +3837,15 @@ static void _tcpm_pd_vbus_on(struct tcpm
- 	case SRC_TRY_DEBOUNCE:
- 		/* Do nothing, waiting for sink detection */
- 		break;
-+
-+	case PORT_RESET:
-+	case PORT_RESET_WAIT_OFF:
-+		/*
-+		 * State set back to default mode once the timer completes.
-+		 * Ignore vbus changes here.
-+		 */
-+		break;
-+
- 	default:
- 		break;
- 	}
-@@ -3882,10 +3899,19 @@ static void _tcpm_pd_vbus_off(struct tcp
- 	case PORT_RESET_WAIT_OFF:
- 		tcpm_set_state(port, tcpm_default_state(port), 0);
- 		break;
-+
- 	case SRC_TRY_WAIT:
- 	case SRC_TRY_DEBOUNCE:
- 		/* Do nothing, waiting for sink detection */
- 		break;
-+
-+	case PORT_RESET:
-+		/*
-+		 * State set back to default mode once the timer completes.
-+		 * Ignore vbus changes here.
-+		 */
-+		break;
-+
- 	default:
- 		if (port->pwr_role == TYPEC_SINK &&
- 		    port->attached)
+ 
 
 
