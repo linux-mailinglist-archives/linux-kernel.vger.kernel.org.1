@@ -2,72 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E741BD088
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 01:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCB11BD08A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 01:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbgD1XRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 19:17:07 -0400
-Received: from smtprelay0092.hostedemail.com ([216.40.44.92]:40440 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726386AbgD1XRH (ORCPT
+        id S1726364AbgD1XTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 19:19:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725853AbgD1XTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 19:17:07 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 35322182CED28;
-        Tue, 28 Apr 2020 23:17:06 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2560:2563:2682:2685:2731:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:8957:8985:9025:10004:10400:10848:11232:11658:11914:12043:12297:12438:12555:12679:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21611:21627:21811:30012:30054:30070:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: body11_780e320e03c1f
-X-Filterd-Recvd-Size: 1981
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 28 Apr 2020 23:17:04 +0000 (UTC)
-Message-ID: <a2d7dbae193800ce430321d3fcc71ab5d1a5ed03.camel@perches.com>
-Subject: Re: [PATCH v3] checkpatch: add dedicated checker for 'Fixes:' tag
-From:   Joe Perches <joe@perches.com>
-To:     Wang YanQing <udknight@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andy Whitcroft <apw@canonical.com>, Markus.Elfring@web.de,
-        mcroce@redhat.com
-Date:   Tue, 28 Apr 2020 16:17:03 -0700
-In-Reply-To: <b452dc29fb553fa5993b90131dcdbc04ed87532e.camel@perches.com>
-References: <20200428020223.GA28074@udknight>
-         <b452dc29fb553fa5993b90131dcdbc04ed87532e.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Tue, 28 Apr 2020 19:19:04 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A2AC03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 16:19:03 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id r14so147388pfg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 16:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=FWNfpESHIrlctB2dwl7YeVqe4k+1KC/hfdOSv4N2eR8=;
+        b=ecrgQDUmQiUgqDqwxETkiJePKv2EZR71UqZ9A84VugZwjknEAWph5SiAv5NhixbCng
+         eynRkZ8Ma2qc+i1UaVy1ckfXtdrIoV1EgVftjP4j99SNksNBqxzaAHUK3aJwGRiIXCto
+         U6QnZtpIXQHYhadvi8pytCZfuo6/J8fAWsLr7rFN8ItfrFNIxGLylVoISldnyS1tB+ir
+         PCriSOdN/CwZs2USicquS3FSceLULBSapI/Qdy6Xydh9/2+DYlbZgc5UX6qfEnVVuAex
+         ITeC/TPVs8Snl2AGfHNGg2J01813+B29VRNgSRW00ENKhzhWCqB9ZPbuExF1Crbddo1m
+         E/Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FWNfpESHIrlctB2dwl7YeVqe4k+1KC/hfdOSv4N2eR8=;
+        b=cDL6YS7CQm6LyP+rQ/pg9bMnTIY5Fom64Ct01dRYrGLLMfJOJlUvMmNuy4KV2UFhYn
+         ZDO2Fd9UThSw8MASYziJoIpHBGEVPXtYdoas6bJlsFaRQVT6gLqVvlFIjywkPxAhyi0Y
+         JlD9kUizfJRa1l8S+CY49S3Wun6Bf33eSfPNyJogijcC0+R+7X2pVlnsx/FCgfHY4q11
+         1VXakXrZ/zWUTQ9SfoKBkQIra9XY725Af1mxm3ylR4oAHJEZd9Hq8qz1Mt56jFENIo1b
+         KyaP+wNQUhCTcUoNdvb25ALbLBc09MRtEq02S2UD30h2eqDmqzL1viFCAN/j3of2Ty/N
+         EuGQ==
+X-Gm-Message-State: AGi0PuYAxl+Vd+60gN96vBe+Jk5gQO6IG6lY9j/WFp/dl46N8unDG+rG
+        cgvtOWjuprxtW2XVOcAqp5w=
+X-Google-Smtp-Source: APiQypIsQwaRVm+rnDHnYJWxfmVDzcf1uVAMlK3kn5ex4yb+paZ+2dveupiR6/HRuvuW5PP3MLcMbQ==
+X-Received: by 2002:a65:6704:: with SMTP id u4mr31348658pgf.263.1588115942389;
+        Tue, 28 Apr 2020 16:19:02 -0700 (PDT)
+Received: from mail.google.com ([149.248.10.52])
+        by smtp.gmail.com with ESMTPSA id w69sm16017529pff.168.2020.04.28.16.18.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 16:19:01 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 07:18:55 +0800
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Changbin Du <changbin.du@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: mm/slub: do not place freelist pointer to middle of object if
+ redzone is on
+Message-ID: <20200428231855.5czf4penpbowliz6@mail.google.com>
+References: <ca36745b-1939-2640-aeed-390c8c39114e@web.de>
+ <20200425235105.sye7fsbndbv24b46@mail.google.com>
+ <dc9bcaad-ee13-5359-5d99-7ecb8cb1d46b@web.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dc9bcaad-ee13-5359-5d99-7ecb8cb1d46b@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-28 at 09:10 -0700, Joe Perches wrote:
-> On Tue, 2020-04-28 at 10:02 +0800, Wang YanQing wrote:
-> > According to submitting-patches.rst, 'Fixes:' tag has a little
-> > stricter condition about the one line summary:
-> > ...
-> > Do not split the tag across multiple
-> > lines, tags are exempt from the "wrap at 75 columns" rule in order to simplify
-> > parsing scripts
-> > ...
-> > 
-> > And there is no 'Fixes:' tag format checker in checkpatch to check
-> > the commit id length too, so let's add dedicated checker to check
-> > these conditions for 'Fixes:' tag.
+On Sun, Apr 26, 2020 at 07:56:43AM +0200, Markus Elfring wrote:
+> >>> Fixes: 3202fa62fb ("slub: relocate freelist pointer to middle of object")
+> …
+> > I used to give 12 charactors, but this time I lost two. :)
 > 
-> There's no need to duplicate functionality like this.
-> Put this additional Fixes: logic into the existing block.
-> 
-> (and don't take advise from Markus too seriously when it
-> comes to English grammar or wording.  He is not an arbiter
-> of taste for this code)
-> 
+> Would you like to improve details for the change description
+> also at another place?
+>
+Waiman just posted another fix for this issue. Let's use that patch instead.
+Thanks.
 
-btw:  I suggested this patch last year.
+> Regards,
+> Markus
 
-https://lore.kernel.org/lkml/40bfc40958fca6e2cc9b86101153aa0715fac4f7.camel@perches.com/
-
-
+-- 
+Cheers,
+Changbin Du
