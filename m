@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A38F1BC9F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81E41BC952
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730748AbgD1SoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:44:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37114 "EHLO mail.kernel.org"
+        id S1730941AbgD1Skb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:40:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730893AbgD1SoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:44:12 -0400
+        id S1728628AbgD1SjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:39:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B6276206A1;
-        Tue, 28 Apr 2020 18:44:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 33FFB20575;
+        Tue, 28 Apr 2020 18:39:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099452;
+        s=default; t=1588099143;
         bh=0sOTq4s30ooeuz5sbfz4jOZfhxiqi4UmbeG8VQrVoww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xLnXpAlWM9u5hJDryipAltZMvujqMnP9M9wHU9TZVQhWBkI6Q4WML8ufntiC+BhP0
-         mL8ZOuVNRJVkeEqi74xQSIZC4nwE000aDTACqHrTue/T4NgJoTUuxHV82MrgdCgfdu
-         HHPWfouODG5kgYabZlnppzdUhETDiBLnyQmPENi4=
+        b=DDwbKPRjpFjUA3dqNsQtWm1fqhAt04CVeid5qgmiROAqEtzqfiVsN6rV8DZ4aR+W8
+         8D2JZ2qxkdtz3Es3tVV/4QhahVan11+bQAGtIzc1KbsB5wN6JiOJiy0YvcheUSXGzy
+         +Xj7zjMwbtoHtoOL72wgwS4m566LZSYbml0Keqoc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
         Sam Ravnborg <sam@ravnborg.org>
-Subject: [PATCH 5.4 139/168] vt: dont use kmalloc() for the unicode screen buffer
+Subject: [PATCH 5.6 137/167] vt: dont use kmalloc() for the unicode screen buffer
 Date:   Tue, 28 Apr 2020 20:25:13 +0200
-Message-Id: <20200428182249.373313755@linuxfoundation.org>
+Message-Id: <20200428182242.833106263@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
