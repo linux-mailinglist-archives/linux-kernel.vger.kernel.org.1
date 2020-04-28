@@ -2,208 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA901BB6A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F811BB6BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgD1GdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 02:33:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:5820 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726256AbgD1GdT (ORCPT
+        id S1726669AbgD1Gdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 02:33:47 -0400
+Received: from vultr.net.flygoat.com ([149.28.68.211]:60594 "EHLO
+        vultr.net.flygoat.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgD1Gdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 02:33:19 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03S61ctt084369;
-        Tue, 28 Apr 2020 02:32:54 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30mh330rns-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Apr 2020 02:32:54 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03S62l5f088216;
-        Tue, 28 Apr 2020 02:32:54 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30mh330rnc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Apr 2020 02:32:53 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03S6VpCv002840;
-        Tue, 28 Apr 2020 06:32:53 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma05wdc.us.ibm.com with ESMTP id 30mcu69jxg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Apr 2020 06:32:52 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03S6Wq5K15991286
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Apr 2020 06:32:52 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6372FAE05C;
-        Tue, 28 Apr 2020 06:32:52 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 347E7AE060;
-        Tue, 28 Apr 2020 06:32:44 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.55.78])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue, 28 Apr 2020 06:32:43 +0000 (GMT)
-Subject: Re: [PATCH v8 0/7] powerpc/perf: Add json file metric support for the
- hv_24x7 socket/chip level events
-To:     acme@kernel.org, linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        sukadev@linux.vnet.ibm.com
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        anju@linux.vnet.ibm.com, maddy@linux.vnet.ibm.com,
-        ravi.bangoria@linux.ibm.com, peterz@infradead.org,
-        yao.jin@linux.intel.com, ak@linux.intel.com, jolsa@kernel.org,
-        kan.liang@linux.intel.com, jmario@redhat.com,
-        alexander.shishkin@linux.intel.com, mingo@kernel.org,
-        paulus@ozlabs.org, namhyung@kernel.org, mpetlan@redhat.com,
-        gregkh@linuxfoundation.org, benh@kernel.crashing.org,
-        mamatha4@linux.vnet.ibm.com, mark.rutland@arm.com,
-        tglx@linutronix.de
-References: <20200401203340.31402-1-kjain@linux.ibm.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <fa31bc42-d34c-c788-0109-350d769b51ce@linux.ibm.com>
-Date:   Tue, 28 Apr 2020 12:02:42 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 28 Apr 2020 02:33:44 -0400
+Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 7CDC320CDC;
+        Tue, 28 Apr 2020 06:33:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1588055624; bh=GFn3tLYEcmzd/L7zYYKa9VLN4d+R7mYnKJ2CLoxhCiQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=m/PmyQfB/W3OsIIyZlfjB52uoj+N/DTglrBnLsdDjwR4YSF4w6VFL6mRG0uh7JLrz
+         nFKnmEp1MFuKxcT/cz8aGDH7CRRPZT/c6gh2RjhWyAb0MZ4NiTHY7tKXJ4c0JyK6Sm
+         dXAqzuWu1u3rj8QNT2KOXhUy84OKFHhS8CUdBHCX9C/RAoSWoPNq7VJCbZxQKMv4Mt
+         nZrPX50CaGMv1lJOerkHY0es/UnFvH+6zU652+2UMOQ1JSMUtUeZROz022zZIQ0rjL
+         RBW6K6rzsyH79Kn2ywsnYyYifcFoBiCH0asPeJ2w4Wi8Ng3mWMA0joAee26MPuh16m
+         q3kvBaiUHkwlA==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     maz@kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: [PATCH v2 4/6] dt-bindings: interrupt-controller: Add Loongson PCH PIC
+Date:   Tue, 28 Apr 2020 14:32:43 +0800
+Message-Id: <20200428063247.2223499-4-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200428063247.2223499-1-jiaxun.yang@flygoat.com>
+References: <20200422142428.1249684-1-jiaxun.yang@flygoat.com>
+ <20200428063247.2223499-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200401203340.31402-1-kjain@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-28_02:2020-04-27,2020-04-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
- phishscore=0 suspectscore=0 clxscore=1015 impostorscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004280046
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
-	Please let me know if there any changes required in this patchset,
-as some of its patches are still not part of your perf/core tree.
+Add binding for Loongson PCH PIC Controller.
 
-Thanks,
-Kajol Jain
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+--
+v2:
+	- Fix naming
+	- Mark loongson,pic-base-vec as required
+---
+ .../loongson,pch-pic.yaml                     | 56 +++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,pch-pic.yaml
 
-On 4/2/20 2:03 AM, Kajol Jain wrote:
-> Patchset adds json file metric support for the hv_24x7 socket/chip level
-> events. "hv_24x7" pmu interface events needs system dependent parameter
-> like socket/chip/core. For example, hv_24x7 chip level events needs
-> specific chip-id to which the data is requested should be added as part
-> of pmu events.
-> 
-> So to enable JSON file support to "hv_24x7" interface, patchset reads
-> total number of sockets details in sysfs under 
-> "/sys/devices/hv_24x7/interface/".
-> 
-> Second patch of the patchset adds expr_scanner_ctx object to hold user
-> data for the expr scanner, which can be used to hold runtime parameter.
-> 
-> Patch 4 & 6 of the patchset handles perf tool plumbing needed to replace
-> the "?" character in the metric expression to proper value and hv_24x7
-> json metric file for different Socket/chip resources.
-> 
-> Patch set also enable Hz/hz prinitg for --metric-only option to print
-> metric data for bus frequency.
-> 
-> Applied and tested all these patches cleanly on top of jiri's flex changes
-> with the changes done by Kan Liang for "Support metric group constraint"
-> patchset and made required changes.
-> 
-> Also apply this patch on top of the fix patch send earlier
-> for printing metric name incase overlapping events.
-> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=perf/core&id=37cd7f65bf71a48f25eeb6d9be5dacb20d008ea6
-> 
-> Changelog:
-> v7 -> v8
-> - Add test case for testing parsing of "?" in metric expression
-> - Reaname variables name to runtime
-> 
-> v6 -> v7
-> - Spit patchset into two patch series one for kernel changes and other
->   for tool side changes.
-> - Made changes Suggested by Jiri, including rather then reading runtime
->   parameter from metric name, actually add it in structure egroup and
->   metric_expr.
-> - As we don't need to read runtime parameter from metric name,
->   now I am not appending it and rather just printing it in
->   generic_metric function.
-> 
-> Kernel Side changes patch series: https://lkml.org/lkml/2020/3/27/58
-> 
-> v5 -> v6
-> - resolve compilation issue due to rearranging patch series.
-> - Rather then adding new function to take careof case for runtime param
->   in metricgroup__add_metric, using metricgroup__add_metric_param itself
->   for that work.
-> - Address some optimization suggested like using directly file path
->   rather then adding new macro in header.c
-> - Change commit message on patch where we are adding "?" support
->   by adding simple example.
-> 
-> v4 -> v5
-> - Using sysfs__read_int instead of sysfs__read_ull while reading
->   parameter value in powerpc/util/header.c file.
-> 
-> - Using asprintf rather then malloc and sprintf 
->   Suggested by Arnaldo Carvalho de Melo
-> 
-> - Break patch 6 from previous version to two patch,
->   - One to add refactor current "metricgroup__add_metric" function
->     and another where actually "?" handling infra added.
-> 
-> - Add expr__runtimeparam as part of 'expr_scanner_ctx' struct
->   rather then making it global variable. Thanks Jiri for
->   adding this structure to hold user data for the expr scanner.
-> 
-> - Add runtime param as agrugement to function 'expr__find_other'
->   and 'expr__parse' and made changes on references accordingly.
-> 
-> v3 -> v4
-> - Apply these patch on top of Kan liang changes.
->   As suggested by Jiri.
-> 
-> v2 -> v3
-> - Remove setting  event_count to 0 part in function 'h_24x7_event_read'
->   with comment rather then adding 0 to event_count value.
->   Suggested by: Sukadev Bhattiprolu
-> 
-> - Apply tool side changes require to replace "?" on Jiri's flex patch
->   series and made all require changes to make it compatible with added
->   flex change.
-> 
-> v1 -> v2
-> - Rename hv-24x7 metric json file as nest_metrics.json
-> 
-> Jiri Olsa (2):
->   perf expr: Add expr_ prefix for parse_ctx and parse_id
->   perf expr: Add expr_scanner_ctx object
-> 
-> Kajol Jain (5):
->   perf/tools: Refactoring metricgroup__add_metric function
->   perf/tools: Enhance JSON/metric infrastructure to handle "?"
->   perf/tests/expr: Added test for runtime param in metric expression
->   tools/perf: Enable Hz/hz prinitg for --metric-only option
->   perf/tools/pmu-events/powerpc: Add hv_24x7 socket/chip level metric
->     events
-> 
->  tools/perf/arch/powerpc/util/header.c         |  8 ++
->  .../arch/powerpc/power9/nest_metrics.json     | 19 +++++
->  tools/perf/tests/expr.c                       | 20 +++--
->  tools/perf/util/expr.c                        | 25 +++---
->  tools/perf/util/expr.h                        | 19 +++--
->  tools/perf/util/expr.l                        | 37 ++++++---
->  tools/perf/util/expr.y                        |  6 +-
->  tools/perf/util/metricgroup.c                 | 78 +++++++++++++------
->  tools/perf/util/metricgroup.h                 |  2 +
->  tools/perf/util/stat-display.c                |  2 -
->  tools/perf/util/stat-shadow.c                 | 19 +++--
->  11 files changed, 164 insertions(+), 71 deletions(-)
->  create mode 100644 tools/perf/pmu-events/arch/powerpc/power9/nest_metrics.json
-> 
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-pic.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-pic.yaml
+new file mode 100644
+index 000000000000..92a8cd0ce23b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,pch-pic.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/interrupt-controller/loongson,pch-pic.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Loongson PCH PIC Controller
++
++maintainers:
++  - Jiaxun Yang <jiaxun.yang@flygoat.com>
++
++allOf:
++  - $ref: /schemas/interrupt-controller.yaml#
++
++description: |
++  This interrupt controller is found in the Loongson LS7A family of PCH for
++  transforming interrupts from on-chip devices into HyperTransport vectorized
++  interrupts.
++
++properties:
++  compatible:
++    const: loongson,pch-pic-1.0
++
++  reg:
++    maxItems: 1
++
++  loongson,pic-base-vec:
++    $ref: '/schemas/types.yaml#/definitions/uint32'
++    description: |
++      u32 value of the base of parent HyperTransport vector allocated
++      to PCH PIC.
++
++  interrupt-controller: true
++
++  '#interrupt-cells':
++    const: 2
++
++required:
++  - compatible
++  - reg
++  - loongson,pic-base-vec
++  - interrupt-controller
++  - '#interrupt-cells'
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    pic: interrupt-controller@10000000 {
++      compatible = "loongson,pch-pic-1.0";
++      reg = <0x10000000 0x400>;
++      interrupt-controller;
++      #interrupt-cells = <2>;
++      loongson,pic-base-vec = <64>;
++      interrupt-parent = <&htvec>;
++    };
++...
+-- 
+2.26.0.rc2
+
