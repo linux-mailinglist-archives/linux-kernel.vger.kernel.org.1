@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136401BBC6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE871BBC71
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgD1Lah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 07:30:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726419AbgD1Lag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 07:30:36 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99138206A1;
-        Tue, 28 Apr 2020 11:30:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588073436;
-        bh=bmn/QeL07kN6ZF+drWtdbMskzMxoYTgWWIqxwCRdXf4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QXN7mTggzYM5iyN9EKtU2t26wDOabguc6BJyfL9I9ZktUFES2RtQ9TuYb3oSdKyGJ
-         h9SKy7kOhvpYLmygqhauu4Ndgh/XXWktuuTitkA5oIm7y+SidIvmVZ/jNqIM4m5+sV
-         /8R2NSjfbzEFBH4knAeFN8+52tqfm+s60t0W5LpM=
-Date:   Tue, 28 Apr 2020 12:30:33 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Leslie =?utf-8?B?SHNpYSjlpI/pgqbpgLJfUGVnYXRyb24p?= 
-        <Leslie_Hsia@pegatroncorp.com>
-Cc:     "knaack.h@gmx.de" <knaack.h@gmx.de>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        id S1726683AbgD1La7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 07:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726645AbgD1La6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 07:30:58 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FB9C03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:30:58 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 18so10540047pfx.6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:30:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=7mluZ8A4I9xD33tssLfMPlz8TFvmTBj7H//FiLCwMKQ=;
+        b=Uzz6rxf2M+0uA0gqifTALGQks4hWRLyGGLFFT02xEl0ZpUVciIXpgIq1gLWPdfAZ5N
+         5yy8L64gbdCHAqkLOXIH5OnuIedLJ0Zvhv4fpsYM5iQjhPkeQpNIfXRz1NH0+UW3dx8y
+         svQWYO809ihQXo7WeYTtvcjEPZYLHdfasSMCPzy4ko0SYKhoEDGD80hzwFffKVrcwfhC
+         14f6c1qi+Xuk4D31slGnBdu3nOYteQ3OBHuc/WX2rWNVW0jfDoIL2mKF9BW41MfZJseD
+         HUldHwkxqtRtPIdRaoZgIcOHdCxjGOTYUJvwvRnPM6eSB1zdDNrZ8UQuBshdv3hpvnsC
+         H1CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=7mluZ8A4I9xD33tssLfMPlz8TFvmTBj7H//FiLCwMKQ=;
+        b=jCLpRSwOuuF1qqL5dRu8DGemt289FEXFVWsi22ADGuPbAzMECVpo4ch45b7ae07Sbc
+         D3XVPpO99sJ/aqouybsAAkKGbpOUPOOtEmQd1lYATAndmxEwO+gmbJHBDOB5Jkaqxrc3
+         Gxn3sG/0xixyCiy5/BQuQvcneZ8IIpCs/goCffDerYscL+x9S1cPLfU2GyugCrGp2BLM
+         NrKxEARXqLhr8BZhnX3UocxxuRaMYV5criSEg8Mfi/p1cBH7/1PhQ3i2a8oZ7E+KOnxv
+         vHerrfsGjcHOpNVOagnkJVpqZt9nffxGm8cwnT36dJ/tmPVxVM3pkLKUgKOlE2VxxjMt
+         qGLA==
+X-Gm-Message-State: AGi0PuZib4348+BymoepwaSC4gHEJ5OW1uki/u3wsL8wEF1LbgucdwQ1
+        wo4oDyD4WvNbcerPvnkstL+c
+X-Google-Smtp-Source: APiQypL9Kkbnieket+vePrygfOB6d5NB7/ZBGTCpfca9KeSGImCWXC/JlcXcQDHRS2TXxne/Tg0jMw==
+X-Received: by 2002:aa7:94a3:: with SMTP id a3mr29670332pfl.101.1588073457999;
+        Tue, 28 Apr 2020 04:30:57 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:816:a859:6d8a:8338:74e:a3d1])
+        by smtp.gmail.com with ESMTPSA id y25sm13511710pgc.36.2020.04.28.04.30.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 28 Apr 2020 04:30:57 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 17:00:49 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Jason Yan <yanaijie@huawei.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hermes =?utf-8?B?SHNpZWgo6Kyd5pe75YqtX1BlZ2F0cm9uKQ==?= 
-        <Hermes_Hsieh@pegatroncorp.com>,
-        "jesse.sung@canonical.com" <jesse.sung@canonical.com>,
-        "jic23@kernel.org" <jic23@kernel.org>
-Subject: Re: [PATCH] subsystem: Amplifier driver for TAS5805M,Texas
- instruments
-Message-ID: <20200428113033.GE5677@sirena.org.uk>
-References: <754706C925201D4896E92CCAD6B38E4401F0F733E3@PTW-EX-37.PEGA.CORP.PEGATRON>
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH] pinctrl: remove unused 'pwm37_pins'
+Message-ID: <20200428113049.GA5259@Mani-XPS-13-9360>
+References: <20200417092112.12303-1-yanaijie@huawei.com>
+ <CACRpkdb5Ozz_MKAUDoyOxdnu_NkN72vRu=ZY7j_Lb5uMAiS3SA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bi5JUZtvcfApsciF"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <754706C925201D4896E92CCAD6B38E4401F0F733E3@PTW-EX-37.PEGA.CORP.PEGATRON>
-X-Cookie: Eschew obfuscation.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdb5Ozz_MKAUDoyOxdnu_NkN72vRu=ZY7j_Lb5uMAiS3SA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 28, 2020 at 11:58:01AM +0200, Linus Walleij wrote:
+> On Fri, Apr 17, 2020 at 10:54 AM Jason Yan <yanaijie@huawei.com> wrote:
+> 
+> > Fix the following gcc warning:
+> >
+> > drivers/pinctrl/pinctrl-bm1880.c:263:27: warning: ‘pwm37_pins’ defined
+> > but not used [-Wunused-const-variable=]
+> >  static const unsigned int pwm37_pins[] = { 110 };
+> >                            ^~~~~~~~~~
+> >
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> 
+> I'm sceptic about this. I think PWM37 exists and just need to be
+> properly defined.
+> 
+> Mani will know the right solution to this.
+> 
 
---bi5JUZtvcfApsciF
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sorry for missing this thread before. The original patch didn't land in my
+inbox.
 
-On Tue, Apr 28, 2020 at 10:43:18AM +0000, Leslie Hsia(=E5=A4=8F=E9=82=A6=E9=
-=80=B2_Pegatron) wrote:
->   *   Author: Leslie Hsia
->   *   Amplifier driver for TAS5805M, initial the amplifier and set the so=
-und parameter.
->   *   Signed-off-by: Leslie Hsia <Leslie_Hsia@pegatroncorp.com<mailto:Les=
-lie_Hsia@pegatroncorp.com>>
+Anyway the issue is, pwm37 is not added to BM1880_PINCTRL_GRP. So the proper
+fix would be to add it.
 
-Please follow the patch submission process that is described in
-Documentation/process/submitting-patches.rst in the kernel source.  Take
-a look at other submissions on the list and follow a similar process.
-There also appear to be both IIO and ASoC drivers in there which is at
-best a bit weird.
+Jason, will you be able to send a patch for adding it? Otherwise I'll do that.
 
-Having done a quick scan through your code it doesn't actually seem to
-integrate with the subsystem at all (there's no
-snd_soc_register_codec())=20
+Thanks,
+Mani
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
-
---bi5JUZtvcfApsciF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6oE9gACgkQJNaLcl1U
-h9CBNwf9GnZKlT7pJP/Ffhe6NYK62tVJxbnR+kIljUUaRAdSQyXtO0R54DP6U890
-CZoGgcrPIG+TYwY+mFJ29DaTKGVWGlkoXsEQi4kECGmKLKTH3lfY698eXGqJM4WZ
-TplTUGDbl1n08WOpqdLeX1XdEXM+LHqBAAG7KmNgk/MYFFnVN0QMADONgtAW/6SW
-vfyMttbzzRAOYGZ5wUsnL6+O1qShCElLKOzhcIj+3XDD+rt+iejwrq0hd1CUndWY
-Zd7ENnySP+KAtk4pYfr0UbjNzdSbKDnQgLEiRFNoCHizBF/+28O0PslkVKSgAjpQ
-2TGhh2N0R+7r03DW5Kpuj7U6xxPZvQ==
-=n/8D
------END PGP SIGNATURE-----
-
---bi5JUZtvcfApsciF--
+> Yours,
+> Linus Walleij
