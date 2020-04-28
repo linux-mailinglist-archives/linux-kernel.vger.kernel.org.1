@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09191BCB8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080A71BC944
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729903AbgD1S54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:57:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44020 "EHLO mail.kernel.org"
+        id S1730896AbgD1SkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:40:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729417AbgD1S3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:29:55 -0400
+        id S1730759AbgD1SkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:40:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B208820730;
-        Tue, 28 Apr 2020 18:29:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 77A1920575;
+        Tue, 28 Apr 2020 18:40:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098595;
-        bh=MwHKcYOjOGrxhsjnuqmIHb0rD2QYw2+Z9yeGtyMvrDA=;
+        s=default; t=1588099204;
+        bh=oQzH92Nu3rnEIWIs/DPXqzVb2aXpghGfFLFQYUmobTQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yx60kg3/M2mKy1Rq/QbdydXvj+eMqIewHI++0/2RoB95sp2lxXDDu47/MM82VymEe
-         rtR1DNnH4l47ixszYCwlJLDuoveihjDjI3eBGaGfJy0QJt4nFJpJa3IZV7yS56VXvs
-         NQZBPjRpJdknFnDciVGsemN3T3SkTsGiic7tyPUo=
+        b=lw6Kx6JgFMgrP9HCIciZu89Sz4ZrL95//fU7jmy+dgzCotq4cioiWjY6v6Sdkb6Tl
+         TuNsmZioYpr091gfMzXBJZ/xmtQ4cs8JbuzITNtXFF2Iey1DQln/3GvLQsHNcH6v5X
+         nyE34t08tEZYnp7ignXWsOz4XQy4I94NBNVQZ6Pc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boris Fiuczynski <fiuczy@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 024/131] s390/cio: avoid duplicated ADD uevents
-Date:   Tue, 28 Apr 2020 20:23:56 +0200
-Message-Id: <20200428182228.151593060@linuxfoundation.org>
+        stable@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 063/168] net: bcmgenet: correct per TX/RX ring statistics
+Date:   Tue, 28 Apr 2020 20:23:57 +0200
+Message-Id: <20200428182239.895987908@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,65 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cornelia Huck <cohuck@redhat.com>
+From: Doug Berger <opendmb@gmail.com>
 
-[ Upstream commit 05ce3e53f375295c2940390b2b429e506e07655c ]
+[ Upstream commit a6d0b83f25073bdf08b8547aeff961a62c6ab229 ]
 
-The common I/O layer delays the ADD uevent for subchannels and
-delegates generating this uevent to the individual subchannel
-drivers. The io_subchannel driver will do so when the associated
-ccw_device has been registered -- but unconditionally, so more
-ADD uevents will be generated if a subchannel has been unbound
-from the io_subchannel driver and later rebound.
+The change to track net_device_stats per ring to better support SMP
+missed updating the rx_dropped member.
 
-To fix this, only generate the ADD event if uevents were still
-suppressed for the device.
+The ndo_get_stats method is also needed to combine the results for
+ethtool statistics (-S) before filling in the ethtool structure.
 
-Fixes: fa1a8c23eb7d ("s390: cio: Delay uevents for subchannels")
-Message-Id: <20200327124503.9794-2-cohuck@redhat.com>
-Reported-by: Boris Fiuczynski <fiuczy@linux.ibm.com>
-Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
-Reviewed-by: Boris Fiuczynski <fiuczy@linux.ibm.com>
-Signed-off-by: Cornelia Huck <cohuck@redhat.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 37a30b435b92 ("net: bcmgenet: Track per TX/RX rings statistics")
+Signed-off-by: Doug Berger <opendmb@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/s390/cio/device.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/s390/cio/device.c b/drivers/s390/cio/device.c
-index 1540229a37bba..c9bc9a6bd73b7 100644
---- a/drivers/s390/cio/device.c
-+++ b/drivers/s390/cio/device.c
-@@ -827,8 +827,10 @@ static void io_subchannel_register(struct ccw_device *cdev)
- 	 * Now we know this subchannel will stay, we can throw
- 	 * our delayed uevent.
- 	 */
--	dev_set_uevent_suppress(&sch->dev, 0);
--	kobject_uevent(&sch->dev.kobj, KOBJ_ADD);
-+	if (dev_get_uevent_suppress(&sch->dev)) {
-+		dev_set_uevent_suppress(&sch->dev, 0);
-+		kobject_uevent(&sch->dev.kobj, KOBJ_ADD);
-+	}
- 	/* make it known to the system */
- 	ret = ccw_device_add(cdev);
- 	if (ret) {
-@@ -1036,8 +1038,11 @@ static int io_subchannel_probe(struct subchannel *sch)
- 		 * Throw the delayed uevent for the subchannel, register
- 		 * the ccw_device and exit.
- 		 */
--		dev_set_uevent_suppress(&sch->dev, 0);
--		kobject_uevent(&sch->dev.kobj, KOBJ_ADD);
-+		if (dev_get_uevent_suppress(&sch->dev)) {
-+			/* should always be the case for the console */
-+			dev_set_uevent_suppress(&sch->dev, 0);
-+			kobject_uevent(&sch->dev.kobj, KOBJ_ADD);
-+		}
- 		cdev = sch_get_cdev(sch);
- 		rc = ccw_device_add(cdev);
- 		if (rc) {
--- 
-2.20.1
-
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -995,6 +995,8 @@ static void bcmgenet_get_ethtool_stats(s
+ 	if (netif_running(dev))
+ 		bcmgenet_update_mib_counters(priv);
+ 
++	dev->netdev_ops->ndo_get_stats(dev);
++
+ 	for (i = 0; i < BCMGENET_STATS_LEN; i++) {
+ 		const struct bcmgenet_stats *s;
+ 		char *p;
+@@ -3204,6 +3206,7 @@ static struct net_device_stats *bcmgenet
+ 	dev->stats.rx_packets = rx_packets;
+ 	dev->stats.rx_errors = rx_errors;
+ 	dev->stats.rx_missed_errors = rx_errors;
++	dev->stats.rx_dropped = rx_dropped;
+ 	return &dev->stats;
+ }
+ 
 
 
