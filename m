@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4531A1BC9D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012861BC8AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731074AbgD1SmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:42:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33696 "EHLO mail.kernel.org"
+        id S1730074AbgD1Seh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:34:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731058AbgD1SmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:42:00 -0400
+        id S1730124AbgD1SeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:34:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8769420730;
-        Tue, 28 Apr 2020 18:41:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C686B20575;
+        Tue, 28 Apr 2020 18:34:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099320;
-        bh=BHS3e/jKJugNA1/jaut3g7kvGJk+OFVAbUw+Z9klqcM=;
+        s=default; t=1588098864;
+        bh=IIHuiSG62cTjBNaOc+hdNDInlDXsuKMm0wNQmaLg8KQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pvHwQHdNrlVszqJ1uyHw8a9HfT6dd8XcRb8A5+TPT4oS3kaGf9xp+EUu8obInSJLG
-         bpxbK5RY+1WyNe1+V32AvN6NYCgPlD+owSo+VhmOSKhwfkAC3D6a1JpKOOoS7xNqo1
-         NLJM8lUHZlMvmRGgrV/t/SeAhNsisO9ad7jMRBNI=
+        b=RHCbNs3bfAxz+ND0w8EytayCxLNMrGn7E+hfyQjbyPDhKj5hCBHJ0oIUOJ3jJKMPv
+         WXkLIYdsRz6FXIRnAZn3iQCtdO/tgLYyk+M2xMS2yjnLQQ62O2fVW/tfbDDi+jZQji
+         WA6WAtgCpJAkC/T1Nu+FwARRB67n+0N9COgv9C8o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luis Mendes <luis.p.mendes@gmail.com>
-Subject: [PATCH 5.4 103/168] staging: gasket: Fix incongruency in handling of sysfs entries creation
-Date:   Tue, 28 Apr 2020 20:24:37 +0200
-Message-Id: <20200428182245.401671082@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 066/131] net: dsa: b53: Lookup VID in ARL searches when VLAN is enabled
+Date:   Tue, 28 Apr 2020 20:24:38 +0200
+Message-Id: <20200428182233.240764787@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Mendes <luis.p.mendes@gmail.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit 9195d762042b0e5e4ded63606b4b30a93cba4400 upstream.
+[ Upstream commit 2e97b0cd1651a270f3a3fcf42115c51f3284c049 ]
 
-Fix incongruency in handling of sysfs entries creation.
-This issue could cause invalid memory accesses, by not properly
-detecting the end of the sysfs attributes array.
+When VLAN is enabled, and an ARL search is issued, we also need to
+compare the full {MAC,VID} tuple before returning a successful search
+result.
 
-Fixes: 84c45d5f3bf1 ("staging: gasket: Replace macro __ATTR with __ATTR_NULL")
-Signed-off-by: Luis Mendes <luis.p.mendes@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200403151534.20753-1-luis.p.mendes@gmail.com
+Fixes: 1da6df85c6fb ("net: dsa: b53: Implement ARL add/del/dump operations")
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/staging/gasket/gasket_sysfs.c |    3 +--
- drivers/staging/gasket/gasket_sysfs.h |    4 ----
- 2 files changed, 1 insertion(+), 6 deletions(-)
+ drivers/net/dsa/b53/b53_common.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/staging/gasket/gasket_sysfs.c
-+++ b/drivers/staging/gasket/gasket_sysfs.c
-@@ -228,8 +228,7 @@ int gasket_sysfs_create_entries(struct d
+--- a/drivers/net/dsa/b53/b53_common.c
++++ b/drivers/net/dsa/b53/b53_common.c
+@@ -1284,6 +1284,9 @@ static int b53_arl_read(struct b53_devic
+ 			continue;
+ 		if ((mac_vid & ARLTBL_MAC_MASK) != mac)
+ 			continue;
++		if (dev->vlan_enabled &&
++		    ((mac_vid >> ARLTBL_VID_S) & ARLTBL_VID_MASK) != vid)
++			continue;
+ 		*idx = i;
  	}
  
- 	mutex_lock(&mapping->mutex);
--	for (i = 0; strcmp(attrs[i].attr.attr.name, GASKET_ARRAY_END_MARKER);
--		i++) {
-+	for (i = 0; attrs[i].attr.attr.name != NULL; i++) {
- 		if (mapping->attribute_count == GASKET_SYSFS_MAX_NODES) {
- 			dev_err(device,
- 				"Maximum number of sysfs nodes reached for device\n");
---- a/drivers/staging/gasket/gasket_sysfs.h
-+++ b/drivers/staging/gasket/gasket_sysfs.h
-@@ -30,10 +30,6 @@
-  */
- #define GASKET_SYSFS_MAX_NODES 196
- 
--/* End markers for sysfs struct arrays. */
--#define GASKET_ARRAY_END_TOKEN GASKET_RESERVED_ARRAY_END
--#define GASKET_ARRAY_END_MARKER __stringify(GASKET_ARRAY_END_TOKEN)
--
- /*
-  * Terminator struct for a gasket_sysfs_attr array. Must be at the end of
-  * all gasket_sysfs_attribute arrays.
 
 
