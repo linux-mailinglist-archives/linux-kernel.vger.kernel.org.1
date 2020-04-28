@@ -2,143 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D401BBAAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 12:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50E51BBAB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 12:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgD1KFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 06:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S1727921AbgD1KGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 06:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727103AbgD1KFs (ORCPT
+        by vger.kernel.org with ESMTP id S1727066AbgD1KGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 06:05:48 -0400
+        Tue, 28 Apr 2020 06:06:36 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30D5C03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 03:05:47 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id d17so23939910wrg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 03:05:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A2BC03C1A9;
+        Tue, 28 Apr 2020 03:06:35 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j2so23936730wrs.9;
+        Tue, 28 Apr 2020 03:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=lfm90FlfDh8o3M3yvP99/SV8PXnzx+NxtpWbePydH4k=;
-        b=qqX6J2EMEVt8r4xC+OrCy2/tUswVLa9s3ms1vvctEDSrG713MYTkg2HQ8f6y2XTo7j
-         fOk04o+o8GLoQ28PhzDd3kXsb0nPnsrELb3fJbvbqfw/CxRMPs33DWoi/wCYQiCM/7Uu
-         SZ+Q/9Ri3QEU9cLbMAuqU4vx2JI6nH+6F9XoFKu5XxiSxgfL+Co+9E01BOoP2KShDD9c
-         o4Lf0/s8dIlNJ/cophFhENgBKpYRQCwzi+NAKmJ7iwyZOvjHfRgx9JVHRNBwSRygfn4Z
-         Naf6PIZqw1f3zQTnnVKjuA7ZfhrKS3VI1uXgrS8GSOFfUd+07jSPOwMp1Lw3QJQBMsfY
-         Rn3A==
+         :content-disposition:in-reply-to:user-agent;
+        bh=0NOPRK0/Yhwkuu7bUSlcqL6G+yespVTHDJSREMkCqog=;
+        b=JBPK9JRz84aiA4FcjeQVa53YeTll/0vLhduBNuC3BPHjAnaQOq7/fsfSZF1NRBO3bg
+         QVIUP/tGpw902ClCUlNYJ/bIM/zNzsjlO+9tJ7MMdj9g13G2WtacQjl5EE/jkArnzt/g
+         aiXnVUgjppZ9tNo1b5GOy7ntnOYoLnbkUO4EnxbaZydD5zLl90y0i8eE9VIMvcCe4Gsa
+         GbAlVSRjddGK6Ifuc+gpk1JZlWUURMG8rjbd4nKhEZNEjfrFGFZ+ljO+ZUx+ACVw6UGx
+         4l/fW9Jp/+pA6/w650L/X6mBx5Lh9sdxsxDsY3nCViD5oxji1y6NjrsSiIlJu0zCt8cO
+         afdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=lfm90FlfDh8o3M3yvP99/SV8PXnzx+NxtpWbePydH4k=;
-        b=iezL/d7jdIIVaA3rqed1B8RL+x+DCjoL5OyE1a/C82fiQii9QsKFUqqfggOdX9ZwyS
-         SzZxwXQI3cnfYY7UMEXO5G2/emepNIjfiSSP66i66iz6WpjGnTb8R3fyYkCLYFOolkNY
-         4bVunJ2fLrTwaRaJiQI2lsPXUTYMf1KFb9WBY56sIXQhsWhuBcWlmiwRUlIGQtc6yQDX
-         O8n7F90Bk7bKaBiXluoO2FhqasGGWSuPDXylJWmICIzBNLyIxfAJvxKTOu5q3sPcZzOX
-         K39pnUBEKHBK+SobS+TFpF6ySbURiA/EeRaA0/eDTw4Pb30b/inXThe6Qn1hF5Aku0Oh
-         vGjw==
-X-Gm-Message-State: AGi0PuYCWCdIop6pcMo2An3l2UNYCek4noLAPCxgJ1wm3GbQrTg9e1mQ
-        kJsHd7gsuUYKomWqM7HWo9aiQg==
-X-Google-Smtp-Source: APiQypIb33Cq75mhGYIS7D20rHoXkVvluX6WO+VDKzYFS5XGKuc0f5tjJ0c7cus8hXhiHUvXj6ZVGw==
-X-Received: by 2002:adf:e5c8:: with SMTP id a8mr35254777wrn.56.1588068346456;
-        Tue, 28 Apr 2020 03:05:46 -0700 (PDT)
-Received: from dell ([2.31.163.63])
-        by smtp.gmail.com with ESMTPSA id s18sm26293024wra.94.2020.04.28.03.05.45
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0NOPRK0/Yhwkuu7bUSlcqL6G+yespVTHDJSREMkCqog=;
+        b=G7Uu13NrWM9ltqKKcAahMXQX0awHY+RVbTrIdjgX/J4jCJm8Nmx0Ioskna8cay25Lk
+         TTJjsqVyiI4NJfh8CY+ycKJlHfzjxd29+C/rRdZP3ugXOGuwX5u8Gv+pE8D5IsJSPMHd
+         Cv3U4Zrhle/6imKxumPCYmoLPKahJlJbwpkP9bOmyQOY3tVOQNujHJmeloz72ygT0LXf
+         EQ3l8F2E6tihewGMq/OL8uLrIdYrSyWYnSp9crRb6owkaLx8U3h+afKHc7n9upGUUhly
+         O8yQOAH4bLUUaWywGQ7dYnlkHXhpc9BBPsDmqwqYr/3/S7r+1jF2gRVH/qhW2R+62xwY
+         Ba0g==
+X-Gm-Message-State: AGi0PuY1ZsLrPoW5jiFyJV/RZ75z4aYjT/KzXBtYWcutIiwfQ0J6OFLQ
+        pb6LRNQ/CWRuz70ajMADGuCmbGkD
+X-Google-Smtp-Source: APiQypJi5ZpL1icthw5cAYkTdZLk7nsvaXcwbZzuN4qQcwQWsTAh/CP1Xwvu/LGQvYzH+4s95ERlog==
+X-Received: by 2002:adf:ab1b:: with SMTP id q27mr34705138wrc.220.1588068394689;
+        Tue, 28 Apr 2020 03:06:34 -0700 (PDT)
+Received: from localhost (p2E5BEDBA.dip0.t-ipconnect.de. [46.91.237.186])
+        by smtp.gmail.com with ESMTPSA id t20sm3201391wmi.2.2020.04.28.03.06.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 03:05:45 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 11:05:38 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dilip Kota <eswara.kota@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, kishon@ti.com,
-        devicetree@vger.kernel.org, arnd@arndb.de, robh@kernel.org,
-        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
-        chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com,
-        yixin.zhu@intel.com
-Subject: Re: [RESEND PATCH v6 1/4] mfd: syscon: Add fwnode_to_regmap
-Message-ID: <20200428100538.GM3559@dell>
-References: <cover.1585889042.git.eswara.kota@linux.intel.com>
- <9c58aeb1561f28f302921d54aee75942545c4971.1585889042.git.eswara.kota@linux.intel.com>
- <20200417093551.GH2167633@dell>
- <d5b7eb87-7468-a1c4-bf19-d676c8e9c49d@linux.intel.com>
+        Tue, 28 Apr 2020 03:06:33 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 12:06:32 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nagarjuna Kristam <nkristam@nvidia.com>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org, jonathanh@nvidia.com,
+        mark.rutland@arm.com, robh+dt@kernel.org, kishon@ti.com,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 4/8] phy: tegra: xusb: Add USB2 pad power control
+ support for Tegra210
+Message-ID: <20200428100632.GD3592148@ulmo>
+References: <1586939108-10075-1-git-send-email-nkristam@nvidia.com>
+ <1586939108-10075-5-git-send-email-nkristam@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wLAMOaPNJ0fu1fTG"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d5b7eb87-7468-a1c4-bf19-d676c8e9c49d@linux.intel.com>
+In-Reply-To: <1586939108-10075-5-git-send-email-nkristam@nvidia.com>
+User-Agent: Mutt/1.13.1 (2019-12-14)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 21 Apr 2020, Dilip Kota wrote:
 
-> 
-> On 4/17/2020 5:35 PM, Lee Jones wrote:
-> > On Mon, 06 Apr 2020, Dilip Kota wrote:
-> > 
-> > > Traverse regmap handle entry from firmware node handle.
-> > > 
-> > > Signed-off-by: Dilip Kota <eswara.kota@linux.intel.com>
-> > > ---
-> > > Changes on v5:
-> > >    No changes
-> > > Changes on v5:
-> > >    No changes
-> > > 
-> > > Changes on v4:
-> > >    No changes
-> > > 
-> > >   drivers/mfd/syscon.c       | 8 ++++++++
-> > >   include/linux/mfd/syscon.h | 6 ++++++
-> > >   2 files changed, 14 insertions(+)
-> > > 
-> > > diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-> > > index 3a97816d0cba..e085c50816b9 100644
-> > > --- a/drivers/mfd/syscon.c
-> > > +++ b/drivers/mfd/syscon.c
-> > > @@ -178,6 +178,14 @@ struct regmap *device_node_to_regmap(struct device_node *np)
-> > >   }
-> > >   EXPORT_SYMBOL_GPL(device_node_to_regmap);
-> > > +struct regmap *fwnode_to_regmap(struct fwnode_handle *fwnode)
-> > > +{
-> > > +	struct device_node *np = to_of_node(fwnode);
-> > You are assuming that the fwnode was Device Tree pointer.
-> > 
-> > The point of a fwnode is that it could be one of multiple types.
-> > 
-> > What if it was a pointer to an ACPI property?
-> Yes, i missed to check in other perspective. Thanks for pointing it.
-> While going through the System control driver to address the query, i
-> noticed that System Control
-> driver is talking with 'of' framework only. (No ACPI)
-> 
-> So, i think to add a defensive check and return error pointer if
-> 'to_of_node' returns NULL
-> As System control Driver cannot talk with ACPI, so fwnode_to_regmap() cannot
-> talk and return error.
-> 
-> Or, the other option is removing the 'fwnode_to_regmap()' definition itself,
-> to avoid confusion as fwnode can
-> point to 'OF', 'ACPI'or 'swnode'.
-> 
-> But, i feel return error for ACPI or oother, looks better because
-> 'device_node' has fwnode pointer. And provide description
-> in the header file, mentioning function is success for 'OF' and returns
-> error for the rest.
+--wLAMOaPNJ0fu1fTG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't think this patch adds much to be honest.
+On Wed, Apr 15, 2020 at 01:55:04PM +0530, Nagarjuna Kristam wrote:
+> Add USB2 pad power on and off API's for TEgra210 and provide its control
 
-Better to just do:
+"Tegra210"
 
-    device_node_get_regmap(to_of_node(fwnode), false);
+> via soc ops. It can be used by operations like charger detect to power on
+> and off USB2 pad if needed.
+>=20
+> Signed-off-by: Nagarjuna Kristam <nkristam@nvidia.com>
+> ---
+> V2:
+>  - Patch re-based.
+> ---
+>  drivers/phy/tegra/xusb-tegra210.c | 190 ++++++++++++++++++++++++++------=
+------
+>  1 file changed, 133 insertions(+), 57 deletions(-)
 
-... from the call site I think.
+Again, is there any particular reason why this has to be done with a
+custom API rather than just passing the UTMI PHY to the charging code?
 
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thierry
+
+--wLAMOaPNJ0fu1fTG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl6oACgACgkQ3SOs138+
+s6F9KQ/+M3fL7+wFt2a7E9qXFb9sgMBGcZ60bYeJG5FVGV2Rs3Ec9cPx1cvmJqnG
+esMRcnr6qzKuZtSt+5aoA1q7wRDqrjAFdt4y1KUl8/hjKhqOO/K+/mWXRFem+9HZ
+SDMi2IfNwizsGojMftpg9LXZgJVsr9tI01etxAeJ0xfBtoQSyCtoXfbCXWuTi58E
+KpvwuzpgbK0LAADwTxmwmijgZ8OFHve1AHoT8Ye0cWhXGKWBZLM9hkYaEhPXWYNH
+9ZKzZuzf69ovCNcdJZUOelo4mVGWqwZpYj8z+Kxl+6G4bWE437M3bCHS7q0Ffsda
+34uLaJehBT+UeN6FsVbPbvsy7kUjEs9fPC12zk43ThMg1msgXE661QDU7U7N4d6j
+BgzW6800Ae12vMC1rmLSL1QtfeW9/EUjw7LX0krTOBkJ/Lz8PpWybN2dtkDb3vLJ
+crKgw8jMm08K0/1wAL+McPymKHZLn5UoOupBgyj2bLBM5nXolX3F3yABEW45+7Ur
+djmeUddxwOoR/+ceoDz5tSLDEJ8tR1m636wL+Ao2Zu97jPKCP+R05fOax/qPNdOw
+oCjzAeY14cr3zSwUdKCUmg/f8lLGb+Py36xF7HyO75TY1ZaW5DWpkfKWwtfZwvEF
+8khdnwwHo6oZhnHCy+trucc3Wkyb+IYFQL3b18uzH3YaigPbr/g=
+=tXcG
+-----END PGP SIGNATURE-----
+
+--wLAMOaPNJ0fu1fTG--
