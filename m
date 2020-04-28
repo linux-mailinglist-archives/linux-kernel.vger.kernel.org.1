@@ -2,270 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5441BBD42
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF411BBD60
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgD1MQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 08:16:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726361AbgD1MQG (ORCPT
+        id S1726829AbgD1MUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 08:20:09 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:52580 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726645AbgD1MUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:16:06 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26FFC03C1A9;
-        Tue, 28 Apr 2020 05:16:05 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id o19so21465790qkk.5;
-        Tue, 28 Apr 2020 05:16:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/CyG+WTf+dXmRiZgHANqF7vfFxqYy9PAxScdpe98obY=;
-        b=t/W4//CvSUCbcjEPxP8gaEmozqGleS74+dEqYREKTNtFMGxUg7v2m3nYHQWTZRLbTU
-         dZzxTMdgmjUxwCREqNdSsW5nTndydqErADUjUYmVOnAU0bCiXMe7Lj1YENkdUKSWttY2
-         YWTS/WMD8V0eJX1DO8+fnTmyftPp6Nv6dlm5ybWFGcNaqccv7EaHyLP+SEHOZFYS2Ryk
-         ljGCz5Q6OFatA7ONoIwQ1a/AajhmxSyMzLQWdQXB/abQRDeQHkEkn8IU6GNRSFJ3fqOA
-         KqZcgSSOwbTYieY/4vu2E+yvI6Nh6x8mpgJBqVr8jXAaLiyVwOYarNGAYfZPCZNeQI4c
-         eoFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/CyG+WTf+dXmRiZgHANqF7vfFxqYy9PAxScdpe98obY=;
-        b=Zj98sOTSah9aWbHryc38/7hEY6UsQdPz2xeXwtR4LMCavyq577HYcwFlwaQX7IsjpM
-         39k+7CpsQxk7uPASbZkr88ZBYp8LokSdDpsS/7ICSM7vp469gkhZG2ZZftK74GWX5DR+
-         84s+oHSsh0kk+k0OtG3JjQx2/JwlzTXioxpMvampTW1AT5PaYcHzg3cZ2tQsBnnLy0Qd
-         eJ53m/QwO7OT6xJ+8XZtJYKqX1VzI4rB5mkD/ankyaFPM7TxNaKA0rdzS/lLhRt9vz6r
-         3ngIwmGgmovJpueOdYEiFoB1Yfdzkh6imBFJe/W8yWdaLdVoc+qJESWKqGfZNGbuPVHq
-         n7Lg==
-X-Gm-Message-State: AGi0PubQVUH400SksVCWjv+Xf6s4SiKJ/F1oVw444Le8B3xpC2qo+tg/
-        3zjuHHNqp4u4lQ9d0oGrHt8=
-X-Google-Smtp-Source: APiQypLGSSz4oSNBkXHOfHwl+J5ID5xI5eDajPcwk8y9JnC7KhY3t+d8GSf+A0vnK/0E5pe7vcG/wA==
-X-Received: by 2002:a37:a909:: with SMTP id s9mr26932723qke.327.1588076165024;
-        Tue, 28 Apr 2020 05:16:05 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id l9sm13193693qth.60.2020.04.28.05.16.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 05:16:04 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BEF28409A3; Tue, 28 Apr 2020 09:16:01 -0300 (-03)
-Date:   Tue, 28 Apr 2020 09:16:01 -0300
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
+        Tue, 28 Apr 2020 08:20:09 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jTPDT-0006cz-Aw; Tue, 28 Apr 2020 06:19:59 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jTPDS-00016K-Gn; Tue, 28 Apr 2020 06:19:59 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Wang Nan <wangnan0@huawei.com>
-Subject: Re: [PATCH 7/7] perf record: Introduce --switch-output-event
-Message-ID: <20200428121601.GB2245@kernel.org>
-References: <20200427211935.25789-1-acme@kernel.org>
- <20200427211935.25789-8-acme@kernel.org>
- <20200428094839.GD1476763@krava>
+        "Paul E. McKenney" <paulmck@kernel.org>
+References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
+        <87ftcv1nqe.fsf@x220.int.ebiederm.org>
+        <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
+        <20200424173927.GB26802@redhat.com>
+        <87mu6ymkea.fsf_-_@x220.int.ebiederm.org>
+        <875zdmmj4y.fsf_-_@x220.int.ebiederm.org>
+        <CAHk-=whvktUC9VbzWLDw71BHbV4ofkkuAYsrB5Rmxnhc-=kSeQ@mail.gmail.com>
+        <878sihgfzh.fsf@x220.int.ebiederm.org>
+        <CAHk-=wjSM9mgsDuX=ZTy2L+S7wGrxZMcBn054As_Jyv8FQvcvQ@mail.gmail.com>
+Date:   Tue, 28 Apr 2020 07:16:44 -0500
+In-Reply-To: <CAHk-=wjSM9mgsDuX=ZTy2L+S7wGrxZMcBn054As_Jyv8FQvcvQ@mail.gmail.com>
+        (Linus Torvalds's message of "Mon, 27 Apr 2020 13:27:40 -0700")
+Message-ID: <87sggnajpv.fsf_-_@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428094839.GD1476763@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
+X-XM-SPF: eid=1jTPDS-00016K-Gn;;;mid=<87sggnajpv.fsf_-_@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+Ca6+ElOCctvOcWA7bIRbvwRUv+5ClZTc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4485]
+        *  0.7 XMSubLong Long Subject
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 378 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 11 (2.9%), b_tie_ro: 9 (2.5%), parse: 0.99 (0.3%),
+         extract_message_metadata: 3.4 (0.9%), get_uri_detail_list: 1.18
+        (0.3%), tests_pri_-1000: 4.0 (1.0%), tests_pri_-950: 1.26 (0.3%),
+        tests_pri_-900: 1.02 (0.3%), tests_pri_-90: 115 (30.4%), check_bayes:
+        113 (30.0%), b_tokenize: 7 (1.8%), b_tok_get_all: 17 (4.5%),
+        b_comp_prob: 2.3 (0.6%), b_tok_touch_all: 83 (22.0%), b_finish: 1.12
+        (0.3%), tests_pri_0: 219 (58.0%), check_dkim_signature: 0.62 (0.2%),
+        check_dkim_adsp: 2.5 (0.7%), poll_dns_idle: 0.73 (0.2%), tests_pri_10:
+        2.7 (0.7%), tests_pri_500: 12 (3.1%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH v4 0/2] proc: Ensure we see the exit of each process tid exactly
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Apr 28, 2020 at 11:48:39AM +0200, Jiri Olsa escreveu:
-> On Mon, Apr 27, 2020 at 06:19:35PM -0300, Arnaldo Carvalho de Melo wrote:
-> 
-> SNIP
-> 
-> > ---
-> >  tools/perf/Documentation/perf-record.txt | 13 ++++++++
-> >  tools/perf/builtin-record.c              | 40 +++++++++++++++++++++---
-> >  2 files changed, 49 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-> > index 6e8b4649307c..561ef55743e2 100644
-> > --- a/tools/perf/Documentation/perf-record.txt
-> > +++ b/tools/perf/Documentation/perf-record.txt
-> > @@ -556,6 +556,19 @@ overhead. You can still switch them on with:
-> >  
-> >    --switch-output --no-no-buildid  --no-no-buildid-cache
-> >  
-> > +--switch-output-event::
-> > +Events that will cause the switch of the perf.data file, auto-selecting
-> > +--switch-output=signal, the results are similar as internally the side band
-> > +thread will also send a SIGUSR2 to the main one.
-> > +
-> > +Uses the same syntax as --event, it will just not be recorded, serving only to
-> > +switch the perf.data file as soon as the --switch-output event is processed by
-> > +a separate sideband thread.
-> > +
-> > +This sideband thread is also used to other purposes, like processing the
-> > +PERF_RECORD_BPF_EVENT records as they happen, asking the kernel for extra BPF
-> > +information, etc.
-> 
-> first I thought we should follow the --switch-output 'xxx' way,
-> but then you need to specify an event, so I guess --switch-output-event
-> is better
 
-Yeah, otherwise we'd have to play a bit more tricky games with
---switch-output parsing, to support something like:
+In the work to remove proc_mnt I noticed that we were calling
+proc_flush_task now proc_flush_pid possibly multiple times for the same
+pid because of how de_thread works.
 
---switch-output=event(event_desc_str)
+This is a bare minimal patchset to sort out de_thread, by introducing
+exchange_tids and the helper of exchange_tids hlists_swap_heads_rcu.
 
-and pass that event_desc_str to parse_events_option_new_evlist(), do you
-think that sounds better?
- 
-> > +
-> >  --switch-max-files=N::
-> >  
-> >  When rotating perf.data with --switch-output, only keep N files.
-> > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> > index ed2244847400..8ff5eaec26e9 100644
-> > --- a/tools/perf/builtin-record.c
-> > +++ b/tools/perf/builtin-record.c
-> > @@ -87,6 +87,7 @@ struct record {
-> >  	struct evlist	*evlist;
-> >  	struct perf_session	*session;
-> >  	struct evlist		*sb_evlist;
-> > +	pthread_t		thread_id;
-> >  	int			realtime_prio;
-> >  	bool			no_buildid;
-> >  	bool			no_buildid_set;
-> > @@ -1436,6 +1437,13 @@ static int record__synthesize(struct record *rec, bool tail)
-> >  	return err;
-> >  }
-> >  
-> > +static int record__process_signal_event(union perf_event *event __maybe_unused, void *data)
-> > +{
-> > +	struct record *rec = data;
-> > +	pthread_kill(rec->thread_id, SIGUSR2);
-> > +	return 0;
-> > +}
-> > +
-> >  static int __cmd_record(struct record *rec, int argc, const char **argv)
-> >  {
-> >  	int err;
-> > @@ -1580,12 +1588,24 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
-> >  		goto out_child;
-> >  	}
-> >  
-> > -	if (!opts->no_bpf_event) {
-> > -		rec->sb_evlist = evlist__new();
-> > +	if (rec->sb_evlist != NULL) {
-> > +		/*
-> > +		 * We get here if --switch-output-event populated the
-> > +		 * sb_evlist, so associate a callback that will send a SIGUSR2
-> > +		 * to the main thread.
-> > +		 */
-> > +		evlist__set_cb(rec->sb_evlist, record__process_signal_event, rec);
-> > +		rec->thread_id = pthread_self();
-> > +	}
-> >  
-> > +	if (!opts->no_bpf_event) {
-> >  		if (rec->sb_evlist == NULL) {
-> > -			pr_err("Couldn't create side band evlist.\n.");
-> > -			goto out_child;
-> > +			rec->sb_evlist = evlist__new();
-> > +
-> > +			if (rec->sb_evlist == NULL) {
-> > +				pr_err("Couldn't create side band evlist.\n.");
-> > +				goto out_child;
-> > +			}
-> >  		}
-> >  
-> >  		if (evlist__add_bpf_sb_event(rec->sb_evlist, &session->header.env)) {
-> 
-> it's getting bigger, I wonder we should put all the sb_* setup in
-> separated functions like sb_start/sb_stop
+The actual call of exchange_tids should be slowpath so I have
+prioritized readability over getting every last drop of performance.
 
-Well, the rec->thread_id = pthread_self(); part is just for reusing a
-'perf record' specific mechanism, what to do when the event appears in
-the side band thread ring buffer, the evlist__set_cb() also is related
-to that, moving thread_id to evlist seems too much at this time.
+I have also read through a bunch of the code to see if I could find
+anything that would be affected by this change.  Users of
+has_group_leader_pid were a good canidates.  But I also looked at other
+cases that might have a pid->task->pid transition.  I ignored other
+sources of races with de_thread and exec as those are preexisting.
 
-> > @@ -2179,10 +2199,19 @@ static int switch_output_setup(struct record *rec)
-> >  	};
-> >  	unsigned long val;
-> >  
-> > +	/*
-> > +	 * If we're using --switch-output-events, then we imply its 
-> > +	 * --switch-output=signal, as we'll send a SIGUSR2 from the side band
-> > +	 *  thread to its parent.
-> > +	 */
-> > +	if (rec->sb_evlist != NULL)
-> > +		goto do_signal;
-> > +
-> >  	if (!s->set)
-> >  		return 0;
- 
-> hum, it looks like this jump is not necessay and can be avoided
-> by some bool checks.. could we add some bool when --switch-output-event
-> is used, so we don't depend on wether rec->sb_evlist was allocated for
-> whatever reason?
+I found a close call with send_signals user of task_active_pid_ns, but
+all pids of a thread group are guaranteeds to be in the same pid
+namespace so there is not a problem.
 
-If rec->sb_evlist is NULL, then there was no --switch-output-event
-passed... The only advantage in adding the complexity below would be if
-we had rec->switch_output_event_set which would clarify that sb_evlist
-is not used only for --switch-output-event, to make things clearer.
+I found a few pieces of debugging code that do:
 
-And this still leaves us with the jump, otherwise we would have to test
-it twice, right?
+	task = pid_task(pid, PIDTYPE_PID);
+        if (task) {
+        	printk("%u\n", task->pid);
+        }
 
-I think I'll separate the patch adding OPT_CALLBACK_SET(), then fold the
-switch_output_event_set addition to builtin-record, ok?
+But I can't see how we care if it happens at the wrong moment that
+task->pid might not match pid_nr(pid);
 
-- Arnaldo
+Similarly because the code in posix-cpu-timers goes pid->task->pid it
+feels like there should be a problem.  But as the code that works with
+PIDTYPE_PID is only available within the thread group, and as de_thread
+kills all of the other threads before it makes any changes of this
+kind the race can not happen.
 
-diff --git a/tools/lib/subcmd/parse-options.h b/tools/lib/subcmd/parse-options.h
-index af9def589863..d2414144eb8c 100644
---- a/tools/lib/subcmd/parse-options.h
-+++ b/tools/lib/subcmd/parse-options.h
-@@ -151,6 +151,8 @@ struct option {
- 	{ .type = OPTION_CALLBACK, .short_name = (s), .long_name = (l), .value = (v), .argh = "time", .help = (h), .callback = parse_opt_approxidate_cb }
- #define OPT_CALLBACK(s, l, v, a, h, f) \
- 	{ .type = OPTION_CALLBACK, .short_name = (s), .long_name = (l), .value = (v), .argh = (a), .help = (h), .callback = (f) }
-+#define OPT_CALLBACK_SET(s, l, v, os, a, h, f) \
-+	{ .type = OPTION_CALLBACK, .short_name = (s), .long_name = (l), .value = (v), .argh = (a), .help = (h), .callback = (f), .set = check_vtype(os, bool *)}
- #define OPT_CALLBACK_NOOPT(s, l, v, a, h, f) \
- 	{ .type = OPTION_CALLBACK, .short_name = (s), .long_name = (l), .value = (v), .argh = (a), .help = (h), .callback = (f), .flags = PARSE_OPT_NOARG }
- #define OPT_CALLBACK_DEFAULT(s, l, v, a, h, f, d) \
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 8ff5eaec26e9..7a6a89972691 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -89,6 +89,7 @@ struct record {
- 	struct evlist		*sb_evlist;
- 	pthread_t		thread_id;
- 	int			realtime_prio;
-+	bool			switch_output_event_set;
- 	bool			no_buildid;
- 	bool			no_buildid_set;
- 	bool			no_buildid_cache;
-@@ -2204,7 +2205,7 @@ static int switch_output_setup(struct record *rec)
- 	 * --switch-output=signal, as we'll send a SIGUSR2 from the side band
- 	 *  thread to its parent.
- 	 */
--	if (rec->sb_evlist != NULL)
-+	if (rec->switch_output_event_set)
- 		goto do_signal;
- 
- 	if (!s->set)
-@@ -2469,9 +2470,9 @@ static struct option __record_options[] = {
- 			  &record.switch_output.set, "signal or size[BKMG] or time[smhd]",
- 			  "Switch output when receiving SIGUSR2 (signal) or cross a size or time threshold",
- 			  "signal"),
--	OPT_CALLBACK(0, "switch-output-event", &record.sb_evlist, "switch output event",
--		     "switch output event selector. use 'perf list' to list available events",
--		     parse_events_option_new_evlist),
-+	OPT_CALLBACK_SET(0, "switch-output-event", &record.sb_evlist, &record.switch_output_event_set, "switch output event",
-+			 "switch output event selector. use 'perf list' to list available events",
-+			 parse_events_option_new_evlist),
- 	OPT_INTEGER(0, "switch-max-files", &record.switch_output.num_files,
- 		   "Limit number of switch output generated files"),
- 	OPT_BOOLEAN(0, "dry-run", &dry_run,
+In short I don't think this change will introduce any regressions.
+
+Eric W. Biederman (2):
+      rculist: Add hlists_swap_heads_rcu
+      proc: Ensure we see the exit of each process tid exactly once
+
+ fs/exec.c               |  5 +----
+ include/linux/pid.h     |  1 +
+ include/linux/rculist.h | 21 +++++++++++++++++++++
+ kernel/pid.c            | 19 +++++++++++++++++++
+ 4 files changed, 42 insertions(+), 4 deletions(-)
+
+Eric
