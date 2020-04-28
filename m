@@ -2,87 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27781BB9AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 11:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BEE1BB996
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 11:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbgD1JS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 05:18:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726896AbgD1JS2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 05:18:28 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682A4C03C1A9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 02:18:28 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id e6so861197pjt.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 02:18:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=0Em04UA/LNcN7O3epZlicZOW4v1ayywcrAiq1IjpMWU=;
-        b=o0eS6a4YlVDqCMQbAdFr0rhFPJcOI8la8r53buSeaYmNpOKs8r8Tvo3vz9HHoFR+JN
-         Nrn4KVLGdSOp85P0eyBHBNSh/4Eu4Po/8mk+tX1DJ4ZiPW8nUm0e9DXzxwTU0PqmvDxQ
-         qLXrl2kADSlWYMA64s9Tez4ysJj9k8pZpR6n05U5iC8J/n759jdexaygbjD37rHsfQMQ
-         eHsVeF9rBcNDNO2LUPrHB+c4MnbiG8hB7fl//IfUPuP0rXUdWhk8NuWjvvgozdv7ScCR
-         /olLOXqpPKBDAA5118tMMJ2xbVk/WHuBi7wQgLUjE0u3S4v7CeQTZ2TqPJjGsWYuXij9
-         x/4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=0Em04UA/LNcN7O3epZlicZOW4v1ayywcrAiq1IjpMWU=;
-        b=qJibWxn+A5waTb8PqqWM5TGTUJ3OwrAyTW36WAu1sdJgrqB1ug/MX+Xa+hkHZ3Ey3U
-         TRXLMk1mnzFBjn9x1wFmLjh8Ta5njx+383RvS9s5IjsdeMzcES9jPObWYzBeCNCJUlos
-         EHMzVakKkqu5j7usQhsp+hp2+gVzGhNZ2/774N2FqbI4e5KHCbNwE5bMXCEE4kw1htFW
-         zsmhmmDkx3rwKi6bz04fQTP5dAbyAUKsbVVCAC6kH5ZXmq2hxkTXOgmUUF0hAh+ArcVk
-         t+qkK/y7Bmd3ZmQvy0YQsQbQszf//bRT22Za+QnW4BpgpskMa7cqgfGrJmrF4U9Gw8uI
-         fypA==
-X-Gm-Message-State: AGi0Pub+0hw2pBYkdzrDXYZ/pX2wP6ZPePWl/uebcJK3O7fdtUNZI0Yy
-        36XaifeH3nPmBY6L7buBCyA=
-X-Google-Smtp-Source: APiQypJOdw+4aGwEWl/mmpSmW0vaZMwfXEkiOnl4FJ8NhqKoLoOePed07PmfAtklxOt3OY2h7RUL7w==
-X-Received: by 2002:a17:902:6b4a:: with SMTP id g10mr6134305plt.141.1588065508022;
-        Tue, 28 Apr 2020 02:18:28 -0700 (PDT)
-Received: from software.domain.org (28.144.92.34.bc.googleusercontent.com. [34.92.144.28])
-        by smtp.gmail.com with ESMTPSA id m7sm14853596pfb.48.2020.04.28.02.18.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Apr 2020 02:18:27 -0700 (PDT)
-From:   Liangliang Huang <huanglllzu@gmail.com>
-X-Google-Original-From: Liangliang Huang <huangll@lemote.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Huacai Chen <chenhuacai@gmail.com>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        linux-kernel@vger.kernel.org, Liangliang Huang <huangll@lemote.com>
-Subject: [PATCH] include/bitmap.h: add the type of the nbits parameter in bitmap_empty()
-Date:   Tue, 28 Apr 2020 17:18:11 +0800
-Message-Id: <1588065491-27292-1-git-send-email-huangll@lemote.com>
-X-Mailer: git-send-email 2.7.0
+        id S1726962AbgD1JMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 05:12:39 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3363 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726462AbgD1JMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 05:12:39 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 6869499AD9B950E77A03;
+        Tue, 28 Apr 2020 17:12:37 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Apr 2020 17:12:30 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] perf tools: Remove unneeded semicolon
+Date:   Tue, 28 Apr 2020 17:18:43 +0800
+Message-ID: <1588065523-71423-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The type of parameter in bitmap_empty() is lack. In order to
-keep context consistent, so add the type of the parameter in
-bitmap_empty().
+Fixes coccicheck warnings:
 
-Signed-off-by: Liangliang Huang <huangll@lemote.com>
+tools/perf/builtin-diff.c:1565:2-3: Unneeded semicolon
+tools/perf/builtin-lock.c:778:2-3: Unneeded semicolon
+tools/perf/builtin-mem.c:126:2-3: Unneeded semicolon
+tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c:555:2-3: Unneeded semicolon
+tools/perf/util/ordered-events.c:317:2-3: Unneeded semicolon
+tools/perf/util/synthetic-events.c:1131:2-3: Unneeded semicolon
+tools/perf/util/trace-event-read.c:78:2-3: Unneeded semicolon
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- include/linux/bitmap.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/builtin-diff.c                               | 2 +-
+ tools/perf/builtin-lock.c                               | 2 +-
+ tools/perf/builtin-mem.c                                | 2 +-
+ tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c | 2 +-
+ tools/perf/util/ordered-events.c                        | 2 +-
+ tools/perf/util/synthetic-events.c                      | 2 +-
+ tools/perf/util/trace-event-read.c                      | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index 99058eb..768f7b7 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -379,7 +379,7 @@ static inline int bitmap_subset(const unsigned long *src1,
- 		return __bitmap_subset(src1, src2, nbits);
+diff --git a/tools/perf/builtin-diff.c b/tools/perf/builtin-diff.c
+index c94a002..59d40f0 100644
+--- a/tools/perf/builtin-diff.c
++++ b/tools/perf/builtin-diff.c
+@@ -1562,7 +1562,7 @@ hpp__entry_pair(struct hist_entry *he, struct hist_entry *pair,
+ 
+ 	default:
+ 		BUG_ON(1);
+-	};
++	}
  }
  
--static inline int bitmap_empty(const unsigned long *src, unsigned nbits)
-+static inline int bitmap_empty(const unsigned long *src, unsigned int nbits)
- {
- 	if (small_const_nbits(nbits))
- 		return ! (*src & BITMAP_LAST_WORD_MASK(nbits));
+ static void
+diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+index 474dfd5..543d82f 100644
+--- a/tools/perf/builtin-lock.c
++++ b/tools/perf/builtin-lock.c
+@@ -775,7 +775,7 @@ static void dump_threads(void)
+ 		pr_info("%10d: %s\n", st->tid, thread__comm_str(t));
+ 		node = rb_next(node);
+ 		thread__put(t);
+-	};
++	}
+ }
+ 
+ static void dump_map(void)
+diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+index a13f581..68a7eb8 100644
+--- a/tools/perf/builtin-mem.c
++++ b/tools/perf/builtin-mem.c
+@@ -123,7 +123,7 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+ 
+ 		rec_argv[i++] = "-e";
+ 		rec_argv[i++] = perf_mem_events__name(j);
+-	};
++	}
+ 
+ 	if (all_user)
+ 		rec_argv[i++] = "--all-user";
+diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
+index 0ccf10a..4ce1099 100644
+--- a/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
++++ b/tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c
+@@ -552,7 +552,7 @@ static int intel_pt_do_get_packet(const unsigned char *buf, size_t len,
+ 		break;
+ 	default:
+ 		break;
+-	};
++	}
+ 
+ 	if (!(byte & BIT(0))) {
+ 		if (byte == 0)
+diff --git a/tools/perf/util/ordered-events.c b/tools/perf/util/ordered-events.c
+index 359db2b..48c8f60 100644
+--- a/tools/perf/util/ordered-events.c
++++ b/tools/perf/util/ordered-events.c
+@@ -314,7 +314,7 @@ static int __ordered_events__flush(struct ordered_events *oe, enum oe_flush how,
+ 	case OE_FLUSH__NONE:
+ 	default:
+ 		break;
+-	};
++	}
+ 
+ 	pr_oe_time(oe->next_flush, "next_flush - ordered_events__flush PRE  %s, nr_events %u\n",
+ 		   str[how], oe->nr_events);
+diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
+index 9d4aa95..2523be6 100644
+--- a/tools/perf/util/synthetic-events.c
++++ b/tools/perf/util/synthetic-events.c
+@@ -1128,7 +1128,7 @@ void cpu_map_data__synthesize(struct perf_record_cpu_map_data *data, struct perf
+ 		synthesize_mask((struct perf_record_record_cpu_map *)data->data, map, max);
+ 	default:
+ 		break;
+-	};
++	}
+ }
+ 
+ static struct perf_record_cpu_map *cpu_map_event__new(struct perf_cpu_map *map)
+diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-event-read.c
+index 8593d3c..f507dff 100644
+--- a/tools/perf/util/trace-event-read.c
++++ b/tools/perf/util/trace-event-read.c
+@@ -75,7 +75,7 @@ static void skip(int size)
+ 		r = size > BUFSIZ ? BUFSIZ : size;
+ 		do_read(buf, r);
+ 		size -= r;
+-	};
++	}
+ }
+ 
+ static unsigned int read4(struct tep_handle *pevent)
 -- 
-2.7.0
+2.6.2
 
