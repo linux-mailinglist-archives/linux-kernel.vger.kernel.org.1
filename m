@@ -2,140 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4B41BCCE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316431BCCF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgD1UDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 16:03:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbgD1UDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 16:03:37 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DC3022070B;
-        Tue, 28 Apr 2020 20:03:36 +0000 (UTC)
-Date:   Tue, 28 Apr 2020 16:03:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Stephen Kitt <steve@sk2.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] docs: sysctl/kernel: document ftrace entries
-Message-ID: <20200428160335.1d1cee9c@gandalf.local.home>
-In-Reply-To: <20200428124133.0fbaf7c5@lwn.net>
-References: <20200423183651.15365-1-steve@sk2.org>
-        <20200423183651.15365-2-steve@sk2.org>
-        <20200428124133.0fbaf7c5@lwn.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1726391AbgD1UFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 16:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726180AbgD1UFq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 16:05:46 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF73C03C1AB;
+        Tue, 28 Apr 2020 13:05:46 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id DB60A1210A3F1;
+        Tue, 28 Apr 2020 13:05:45 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 13:05:45 -0700 (PDT)
+Message-Id: <20200428.130545.1878103691480474686.davem@davemloft.net>
+To:     dmurphy@ti.com
+Cc:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, afd@ti.com
+Subject: Re: [PATCH net v2 2/2] net: phy: DP83TC811: Fix WoL in config init
+ to be disabled
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200427212112.25368-3-dmurphy@ti.com>
+References: <20200427212112.25368-1-dmurphy@ti.com>
+        <20200427212112.25368-3-dmurphy@ti.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 28 Apr 2020 13:05:46 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Apr 2020 12:41:33 -0600
-Jonathan Corbet <corbet@lwn.net> wrote:
+From: Dan Murphy <dmurphy@ti.com>
+Date: Mon, 27 Apr 2020 16:21:12 -0500
 
-> On Thu, 23 Apr 2020 20:36:50 +0200
-> Stephen Kitt <steve@sk2.org> wrote:
-> 
-> > Based on the ftrace documentation, the tp_printk boot parameter
-> > documentation, and the implementation in kernel/trace/trace.c.
-> > 
-> > Signed-off-by: Stephen Kitt <steve@sk2.org>  
-> 
-> This one could benefit from an ack from Steve (CC'd).  Also one other
+> +		return phy_write_mmd(phydev, DP83822_DEVADDR,
+                                             ^^^^^^^^^^^^^^^^
 
-Thanks! I verified that the documentation is correct.
+Please don't submit patches that have not even had a conversation with
+the compiler.
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+This register define only exists in dp83822.c and you are trying to use
+it in dp83tc811.c
 
--- Steve
+If this doesn't compile, how did you do functional testing of this
+change?
 
+If you compile tested these changes against a tree other than the 'net'
+tree, please don't do that.
 
-
-> little nit below:
-> 
-> >  Documentation/admin-guide/sysctl/kernel.rst | 50 +++++++++++++++++++++
-> >  1 file changed, 50 insertions(+)
-> > 
-> > diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-> > index 82bfd5892663..d4bbdaf96ebc 100644
-> > --- a/Documentation/admin-guide/sysctl/kernel.rst
-> > +++ b/Documentation/admin-guide/sysctl/kernel.rst
-> > @@ -265,6 +265,27 @@ domain names are in general different. For a detailed discussion
-> >  see the ``hostname(1)`` man page.
-> >  
-> >  
-> > +ftrace_dump_on_oops
-> > +===================
-> > +
-> > +Determines whether ``ftrace_dump()`` should be called on an oops (or
-> > +kernel panic). This will output the contents of the ftrace buffers to
-> > +the console.  This is very useful for capturing traces that lead to
-> > +crashes and outputing it to a serial console.
-> > +
-> > += ===================================================
-> > +0 Disabled (default).
-> > +1 Dump buffers of all CPUs.
-> > +2 Dump the buffer of the CPU that triggered the oops.
-> > += ===================================================
-> > +
-> > +
-> > +ftrace_enabled, stack_tracer_enabled
-> > +====================================
-> > +
-> > +See :doc:`/trace/ftrace`.
-> > +
-> > +
-> >  hardlockup_all_cpu_backtrace
-> >  ============================
-> >  
-> > @@ -1191,6 +1212,35 @@ If a value outside of this range is written to ``threads-max`` an
-> >  ``EINVAL`` error occurs.
-> >  
-> >  
-> > +traceoff_on_warning
-> > +===================
-> > +
-> > +When set, disables tracing (see :doc:`/trace/ftrace`) when a
-> > +``WARN()`` is hit.
-> > +
-> > +
-> > +tracepoint_printk
-> > +=================
-> > +
-> > +When tracepoints are sent to printk() (enabled by the ``tp_printk``
-> > +boot parameter), this entry provides runtime control::
-> > +
-> > +    echo 0 > /proc/sys/kernel/tracepoint_printk
-> > +
-> > +will stop tracepoints from being sent to printk(), and
-> > +
-> > +::  
-> 
-> I would just make that ", and::" and avoid the separate line.
-> 
-> > +
-> > +    echo 1 > /proc/sys/kernel/tracepoint_printk
-> > +
-> > +will send them to printk() again.
-> > +
-> > +This only works if the kernel was booted with ``tp_printk`` enabled.
-> > +
-> > +See :doc:`/admin-guide/kernel-parameters` and
-> > +:doc:`/trace/boottime-trace`.
-> > +
-> > +
-> >  unknown_nmi_panic
-> >  =================
-> >    
-> 
-> Thanks,
-> 
-> jon
-
+Thanks.
