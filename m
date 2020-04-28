@@ -2,75 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258961BB888
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 10:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4761BB86B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 10:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgD1IMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 04:12:01 -0400
-Received: from smtpout1.mo803.mail-out.ovh.net ([79.137.123.219]:44325 "EHLO
-        smtpout1.mo803.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726442AbgD1IMB (ORCPT
+        id S1726634AbgD1IGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 04:06:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726253AbgD1IGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 04:12:01 -0400
-Received: from pro2.mail.ovh.net (unknown [10.108.1.145])
-        by mo803.mail-out.ovh.net (Postfix) with ESMTPS id BD66F4FEFD68;
-        Tue, 28 Apr 2020 10:11:59 +0200 (CEST)
-Received: from localhost (89.70.31.203) by DAG2EX1.emp2.local (172.16.2.11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Tue, 28 Apr
- 2020 10:11:59 +0200
-Date:   Tue, 28 Apr 2020 10:10:30 +0200
-From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
-        <jic23@kernel.org>
-Subject: Re: [PATCH 5/6] dt-bindings: iio: scd30: add device binding file
-Message-ID: <20200428081030.GC6908@arch>
-References: <20200422141135.86419-1-tomasz.duszynski@octakon.com>
- <20200422141135.86419-6-tomasz.duszynski@octakon.com>
- <20200427212826.GA25672@bogus>
+        Tue, 28 Apr 2020 04:06:07 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47F6C03C1A9;
+        Tue, 28 Apr 2020 01:06:05 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a21so20458518ljb.9;
+        Tue, 28 Apr 2020 01:06:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e/ZfrxrHaYp4ZY3rObwWUQUSJ2Md/wwi7RL79f3Bw7g=;
+        b=DmPwSr7xJlCyMCcEaFZybSuG7ZAcfiJwG34dztFSi3q5fNbsj8VzbwMLnIQ6mmWMAW
+         5esvm2E5nriVmjw3lwhHrjGYII8gFN9PclS9ZJTllscECVx/+nL1VfL9yLftlXca4vnz
+         hz1ht8NerFYx1CjyLpCsBkstnqGMIZM4VxRmr3ZQbf8GcmFfaUjgMjDS36exqvzZzSM8
+         6ZN46nbAdhZsR6y7/F0ALFyhLNPLPbQbZCRgt/fFeTUhDZHrTZAPs5p3jwqepaBA8d8p
+         baXAXMtaxcAmPZSerfJF1Voseb5pehgY7bJgt5DNtPlZwhiD0uTAuT0c6ZTS7dMq+6vT
+         HBgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e/ZfrxrHaYp4ZY3rObwWUQUSJ2Md/wwi7RL79f3Bw7g=;
+        b=BZcKtEYsr/3MViHD4TXZLxZ3hwfWISkL2b96FV8EJ/bdxY/BcfoSnWiuJPBuNM122C
+         JavIczOH9bmpe/uhaLoYuWSx26wQ/iUek7zfl2bWK6+HOPsj3MvP7gIFwT5oW+an9xlb
+         PnldkZgdVZGpwKYpUP9gkMtthqM6GPMtsPPkh8fw5bsf5EH70xmj3LQOGzNMP/5Gmpez
+         KgCJkUBDJajZvmtMc6YUOQyRuysdSU+pczHqgy5GB3E95JUg2pX+YtsCT85qeHIVuiwY
+         NPYJHOvLCwuOIxwhhurQ6sBXQBkALcktf1xolUNCAbOMdE3U9y8yHG+oNqxuVuWqdz+I
+         RAFg==
+X-Gm-Message-State: AGi0PuYkfmG8UyBBLcr+xUjB0bKOlKNAXJtUI/p21TTwEKX/s7EVJaes
+        7NKCgDMt9CW9D6lkNis4FkQ=
+X-Google-Smtp-Source: APiQypI2pEdiPylKtG2Ev1FBU5piF1Pn+Gc4EEL7/7yFhPJGVS68CpPOD8Thq3mqNDJCz5aHdkYNcQ==
+X-Received: by 2002:a2e:b0c5:: with SMTP id g5mr16867541ljl.203.1588061164257;
+        Tue, 28 Apr 2020 01:06:04 -0700 (PDT)
+Received: from curiosity (ip-195-182-157-78.clients.cmk.ru. [195.182.157.78])
+        by smtp.gmail.com with ESMTPSA id k18sm16064282lfg.81.2020.04.28.01.06.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 01:06:03 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 11:10:31 +0300
+From:   Sergey Matyukevich <geomatsi@gmail.com>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wireless <linux-wireless@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mac80211-next tree
+Message-ID: <20200428081031.GA4287@curiosity>
+References: <20200428122930.51b6a9c2@canb.auug.org.au>
+ <c3922c972277ff627c0308a94dfe3f25ba3b333f.camel@sipsolutions.net>
+ <20200428072543.GA2630@curiosity>
+ <baae77876a4b73de83aa6dcc27257da231777c22.camel@sipsolutions.net>
+ <20200428074527.GA3912@curiosity>
+ <40afd04ed8fb49088268e7d3316d3fef9aa8dbd9.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200427212826.GA25672@bogus>
-X-Originating-IP: [89.70.31.203]
-X-ClientProxiedBy: DAG1EX2.emp2.local (172.16.2.2) To DAG2EX1.emp2.local
- (172.16.2.11)
-X-Ovh-Tracer-Id: 16523425560079719618
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedriedugddtudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkfhggtggujghisehttdertddttdejnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecuffhomhgrihhnpehoiihlrggsshdrohhrghdpghhithhhuhgsrdgtohhmnecukfhppedtrddtrddtrddtpdekledrjedtrdefuddrvddtfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehjihgtvdefsehkvghrnhgvlhdrohhrgh
+In-Reply-To: <40afd04ed8fb49088268e7d3316d3fef9aa8dbd9.camel@sipsolutions.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 04:28:26PM -0500, Rob Herring wrote:
-> On Wed, 22 Apr 2020 16:11:34 +0200, Tomasz Duszynski wrote:
-> > Add SCD30 sensor binding file.
-> >
-> > Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
-> > ---
-> >  .../iio/chemical/sensirion,scd30.yaml         | 71 +++++++++++++++++++
-> >  1 file changed, 71 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.yaml
-> >
->
-> My bot found errors running 'make dt_binding_check' on your patch:
->
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.example.dt.yaml: scd30@61: 'interrupt-parrent' does not match any of the regexes: 'pinctrl-[0-9]+'
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/chemical/sensirion,scd30.example.dt.yaml: scd30: 'interrupt-parrent' does not match any of the regexes: 'pinctrl-[0-9]+'
+> > Looks good. But I have a couple of questions:
+> > 
+> > - why cleanup vif->mgmt_frame_reg in wilc_mac_open ?
+> 
+> Otherwise wilc_update_mgmt_frame_registrations() will think there are no
+> changes whatsoever, and do nothing.
+> 
+> > - previously wilc_wfi_p2p_rx was called only for PROBE_REQ and ACTION,
+> >   now it will be called for all the other registred frames as well
+> 
+> 
+> Huh, good catch. How about this?
+> 
+> https://p.sipsolutions.net/51183f5492f05ea6.txt
 
-Well, a typo here.
+Ok, this one looks good to me.
 
->
-> See https://patchwork.ozlabs.org/patch/1275131
->
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure dt-schema is up to date:
->
-> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
->
-> Please check and re-submit.
+Regards,
+Sergey
