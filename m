@@ -2,115 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D131BD014
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 00:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963491BD01E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 00:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgD1Wdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 18:33:46 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:60780 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726515AbgD1Wdp (ORCPT
+        id S1726312AbgD1Wk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 18:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725934AbgD1Wk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 18:33:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588113224;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cfynA1GS9zoR/R+KpFpTNVmup6mUfUXSRebr4yyqKDI=;
-        b=TuyorktZyDcRWUXloJrwe0Tfg64aII8VJRRHGeZ7Q0S25MVyibDWaF3gEyOjN4K+wMjpDb
-        Qjo7k0Xjm14fv1Ipu6YQuZUKAJuYc7Cacjf9UTBe0tsuwHZA1f4hgnb8f4el6MBqkSY1vZ
-        p1aM7ASFIRlh8OEPe4lA/BtEsJ9Sv9Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-6hJ8-lZdOYewsG-HbLb0OQ-1; Tue, 28 Apr 2020 18:33:40 -0400
-X-MC-Unique: 6hJ8-lZdOYewsG-HbLb0OQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A04DA108BD0F;
-        Tue, 28 Apr 2020 22:33:38 +0000 (UTC)
-Received: from ovpn-112-24.phx2.redhat.com (ovpn-112-24.phx2.redhat.com [10.3.112.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 50009600D2;
-        Tue, 28 Apr 2020 22:33:37 +0000 (UTC)
-Message-ID: <fa406883f0eace37fe7f658814e29f82a4f0addf.camel@redhat.com>
-Subject: Re: [RFC PATCH 3/3] sched,rt: break out of load balancing if an RT
- task appears
-From:   Scott Wood <swood@redhat.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Rik van Riel <riel@surriel.com>,
-        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Date:   Tue, 28 Apr 2020 17:33:36 -0500
-In-Reply-To: <jhjees7s29u.mognet@arm.com>
-References: <20200428050242.17717-1-swood@redhat.com>
-         <20200428050242.17717-4-swood@redhat.com> <jhjees7s29u.mognet@arm.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+        Tue, 28 Apr 2020 18:40:58 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDCEC03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 15:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HJdjM6hc/E5y5M8zC0wbxXTzzjSAkyAfUmtMmm1JBag=; b=kXsV8HlThp4SOvMMpYcmP6AX5C
+        zTAH51K8oM31QfgjDT8lmDNLisqNBFuBaRx0EvcJbMRaxG21sK+7rKiNYonYNUBBuydXvocRMLrOk
+        s8kXHbdGnnkqFgJpH30ENQ6cDBnPvLsrLAuUKkJD2kw0G0Re6TOoN2XvbMvbMESPT/At5grFKCRDn
+        WFSSiI/vc+eopDVjtj+c/BBDXWOXsqgDeKMdulei64KHijZB4Bbt5ChyugGU+3q7dP7HXotg9pH04
+        2K5GI6apWbE/Pqt78uDJYZMe1HLgAN/1BeG6nw2EUEY8nqfqu25w7Z+XbTzZxaCqgxPcjLb1T6GE3
+        g1P/O6Mg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTYu5-00046l-Bc; Tue, 28 Apr 2020 22:40:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 285CD300739;
+        Wed, 29 Apr 2020 00:40:36 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 115BA286F1E25; Wed, 29 Apr 2020 00:40:36 +0200 (CEST)
+Date:   Wed, 29 Apr 2020 00:40:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>
+Subject: Re: [PATCH] objtool: Fix infinite loop in find_jump_table()
+Message-ID: <20200428224035.GD16027@hirez.programming.kicks-ass.net>
+References: <378b51c9d9c894dc3294bc460b4b0869e950b7c5.1588110291.git.jpoimboe@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <378b51c9d9c894dc3294bc460b4b0869e950b7c5.1588110291.git.jpoimboe@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-28 at 22:56 +0100, Valentin Schneider wrote:
-> On 28/04/20 06:02, Scott Wood wrote:
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index dfde7f0ce3db..e7437e4e40b4 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -9394,6 +9400,10 @@ static int should_we_balance(struct lb_env *env)
-> >       struct sched_group *sg = env->sd->groups;
-> >       int cpu, balance_cpu = -1;
-> > 
-> > +	/* Run the realtime task now; load balance later. */
-> > +	if (rq_has_runnable_rt_task(env->dst_rq))
-> > +		return 0;
-> > +
+On Tue, Apr 28, 2020 at 04:45:16PM -0500, Josh Poimboeuf wrote:
+> Kristen found a hang in objtool when building with -ffunction-sections.
 > 
-> I have a feeling this isn't very nice to CFS tasks, since we would now
-> "waste" load-balance attempts if they happen to coincide with an RT task
-> being runnable.
->
-> On your 72 CPUs machine, the system-wide balance happens (at best) every
-> 72ms if you have idle time, every ~2300ms otherwise (every balance
-> CPU gets to try to balance however, so it's not as horrible as I'm making
-> it sound). This is totally worst-case scenario territory, and you'd hope
-> newidle_balance() could help here and there (as it isn't gated by any
-> balance interval).
+> It was caused by evergreen_pcie_gen2_enable.cold() being laid out
+> immediately before evergreen_pcie_gen2_enable().  Since their "pfunc" is
+> always the same, find_jump_table() got into an infinite loop because it
+> didn't recognize the boundary between the two functions.
 > 
-> Still, even for a single rq, postponing a system-wide balance for a
-> full balance interval (i.e. ~2 secs worst case here) just because we had a
-> single RT task running when we tried to balance seems a bit much.
+> Fix that with a new prev_insn_same_sym() helper, which doesn't cross
+> subfunction boundaries.
 > 
-> It may be possible to hack something to detect those cases and reset the
-> interval to "now" when e.g. dequeuing the last RT task (& after having
-> previously aborted a load-balance due to RT/DL/foobar).
+> Reported-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Yeah, some way to retry at an appropriate time after aborting a rebalance
-would be good.
-
-
-> > +
-> > +/* Is there a task of a high priority class? */
-> > +static inline bool rq_has_runnable_rt_task(struct rq *rq)
-> > +{
-> > +	return unlikely(rq->nr_running != rq->cfs.h_nr_running);
-> 
-> Seeing as that can be RT, DL or stopper, that name is somewhat misleading.
-
-rq_has_runnable_rt_dl_task()?  Or is there some term that unambiguously
-encompasses both?
-
--Scott
-
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
