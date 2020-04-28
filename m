@@ -2,170 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980381BCA2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BA91BC7CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730355AbgD1Srs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:47:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33270 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729775AbgD1Slk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:41:40 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 283FC2076A;
-        Tue, 28 Apr 2020 18:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099300;
-        bh=hR2xFyMklUsgvm7Lpdse90FWVnFI6b1YvMiQ4fPId0I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ey96uNbDjqQiT0hiTJ2u3EGR3S1ghY8TH4nv4McCTvP2MyoLKVGr66kyqOqxDPn/A
-         ekDqL1kCoqmLtbkSUX9E1nxVUitlZHUl5VXpsHnKJvF9qoNcQO06pub5qorx0vNcUY
-         gbHP/cC/M5J4L/t43XtJiOReekUv618zHUrwLuWc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: [PATCH 4.19 131/131] s390/mm: fix page table upgrade vs 2ndary address mode accesses
-Date:   Tue, 28 Apr 2020 20:25:43 +0200
-Message-Id: <20200428182241.844668589@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728826AbgD1S0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728791AbgD1S0k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:26:40 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0A8C03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:26:40 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id u16so3977509wmc.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:26:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=UefID2OlDLM7XATtSz3mUqUNERRjSOJzh4SyUlDrdHk=;
+        b=fv22xKHyOHTuLkg2qiGirsFBU8GgmId83+5knRJI3ydB77UUfZnOQLl2IPJwBd8Cn0
+         XAFIqD+eY3wN8GeHQaKHks5K+pqC/P5KTWCZ8yKyOkcZ0KE8nLyWPaTNSXSx/A5phVBN
+         4nvE4lcoWNruCSqXzVJoTXE3Sb9SMDUe6yi7M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=UefID2OlDLM7XATtSz3mUqUNERRjSOJzh4SyUlDrdHk=;
+        b=Pq1M2HOCUMpCV4GFTClhsj3oYpMUzpEeVtSavaWq/vX7OldqTIiVfjXcA9EVNCPf9c
+         foXrM0h5sAXpFmbh69bmPD/vZQy77ZJCY6z5QmMBtrAJzrTfjvA+ug6W8U7/ZaldIUqe
+         GssyCJKzELTknFFVU+DCsNTuyuSrvTiKzM5wUEMQB1fRZvODMTQH2+WvQp4Pj32QIzyC
+         AYI0rkVled6SjF0pdMErz2MWP/dYZoqTIWxpjLV0o6EmmvToIsisqnP+cDGGSUv78bp/
+         LgIPtOHgnKDECFTaY+85GPPD/ofpEXP5OuuUAqg2oHndb0TY2xo/Q7+FBLI4X+dxoF2q
+         savw==
+X-Gm-Message-State: AGi0PuYyywvYZnV35xWtjzJUld0qFWYpE7NSesBD3thKlFNy7vPbxisa
+        zIq7gEW3kNgFOJQrFTqyOHUGZQ==
+X-Google-Smtp-Source: APiQypLHoWk0qTwfpysUzM0q8vA2b+q+WLZCal3lFGsR0gVIyDEiREhK+8Cbm3Rdke/9HeCCnL2MFw==
+X-Received: by 2002:a1c:7415:: with SMTP id p21mr5807501wmc.93.1588098398739;
+        Tue, 28 Apr 2020 11:26:38 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:56e1:adff:fe3f:49ed])
+        by smtp.gmail.com with ESMTPSA id q187sm4316031wma.41.2020.04.28.11.26.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 11:26:37 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 19:26:37 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] mm: memcontrol: memory.{low,min} reclaim fix & cleanup
+Message-ID: <cover.1588092152.git.chris@chrisdown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Borntraeger <borntraeger@de.ibm.com>
+This series contains a fix for a edge case in my earlier protection
+calculation patches, and a patch to make the area overall a little more
+robust to hopefully help avoid this in future.
 
-commit 316ec154810960052d4586b634156c54d0778f74 upstream.
+Chris Down (1):
+  mm, memcg: Decouple e{low,min} state mutations from protection checks
 
-A page table upgrade in a kernel section that uses secondary address
-mode will mess up the kernel instructions as follows:
+Yafang Shao (1):
+  mm: memcontrol: memory.low reclaim fix & cleanup
 
-Consider the following scenario: two threads are sharing memory.
-On CPU1 thread 1 does e.g. strnlen_user().  That gets to
-        old_fs = enable_sacf_uaccess();
-        len = strnlen_user_srst(src, size);
-and
-                "   la    %2,0(%1)\n"
-                "   la    %3,0(%0,%1)\n"
-                "   slgr  %0,%0\n"
-                "   sacf  256\n"
-                "0: srst  %3,%2\n"
-in strnlen_user_srst().  At that point we are in secondary space mode,
-control register 1 points to kernel page table and instruction fetching
-happens via c1, rather than usual c13.  Interrupts are not disabled, for
-obvious reasons.
+ include/linux/memcontrol.h | 48 +++++++++++++++++++++++++++++---------
+ mm/memcontrol.c            | 43 ++++++++++++++++------------------
+ mm/vmscan.c                | 17 ++++----------
+ 3 files changed, 61 insertions(+), 47 deletions(-)
 
-On CPU2 thread 2 does MAP_FIXED mmap(), forcing the upgrade of page table
-from 3-level to e.g. 4-level one.  We'd allocated new top-level table,
-set it up and now we hit this:
-                notify = 1;
-                spin_unlock_bh(&mm->page_table_lock);
-        }
-        if (notify)
-                on_each_cpu(__crst_table_upgrade, mm, 0);
-OK, we need to actually change over to use of new page table and we
-need that to happen in all threads that are currently running.  Which
-happens to include the thread 1.  IPI is delivered and we have
-static void __crst_table_upgrade(void *arg)
-{
-        struct mm_struct *mm = arg;
-
-        if (current->active_mm == mm)
-                set_user_asce(mm);
-        __tlb_flush_local();
-}
-run on CPU1.  That does
-static inline void set_user_asce(struct mm_struct *mm)
-{
-        S390_lowcore.user_asce = mm->context.asce;
-OK, user page table address updated...
-        __ctl_load(S390_lowcore.user_asce, 1, 1);
-... and control register 1 set to it.
-        clear_cpu_flag(CIF_ASCE_PRIMARY);
-}
-
-IPI is run in home space mode, so it's fine - insns are fetched
-using c13, which always points to kernel page table.  But as soon
-as we return from the interrupt, previous PSW is restored, putting
-CPU1 back into secondary space mode, at which point we no longer
-get the kernel instructions from the kernel mapping.
-
-The fix is to only fixup the control registers that are currently in use
-for user processes during the page table update.  We must also disable
-interrupts in enable_sacf_uaccess to synchronize the cr and
-thread.mm_segment updates against the on_each-cpu.
-
-Fixes: 0aaba41b58bc ("s390: remove all code using the access register mode")
-Cc: stable@vger.kernel.org # 4.15+
-Reported-by: Al Viro <viro@zeniv.linux.org.uk>
-Reviewed-by: Gerald Schaefer <gerald.schaefer@de.ibm.com>
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- arch/s390/lib/uaccess.c |    4 ++++
- arch/s390/mm/pgalloc.c  |   16 ++++++++++++++--
- 2 files changed, 18 insertions(+), 2 deletions(-)
-
---- a/arch/s390/lib/uaccess.c
-+++ b/arch/s390/lib/uaccess.c
-@@ -64,10 +64,13 @@ mm_segment_t enable_sacf_uaccess(void)
- {
- 	mm_segment_t old_fs;
- 	unsigned long asce, cr;
-+	unsigned long flags;
- 
- 	old_fs = current->thread.mm_segment;
- 	if (old_fs & 1)
- 		return old_fs;
-+	/* protect against a concurrent page table upgrade */
-+	local_irq_save(flags);
- 	current->thread.mm_segment |= 1;
- 	asce = S390_lowcore.kernel_asce;
- 	if (likely(old_fs == USER_DS)) {
-@@ -83,6 +86,7 @@ mm_segment_t enable_sacf_uaccess(void)
- 		__ctl_load(asce, 7, 7);
- 		set_cpu_flag(CIF_ASCE_SECONDARY);
- 	}
-+	local_irq_restore(flags);
- 	return old_fs;
- }
- EXPORT_SYMBOL(enable_sacf_uaccess);
---- a/arch/s390/mm/pgalloc.c
-+++ b/arch/s390/mm/pgalloc.c
-@@ -72,8 +72,20 @@ static void __crst_table_upgrade(void *a
- {
- 	struct mm_struct *mm = arg;
- 
--	if (current->active_mm == mm)
--		set_user_asce(mm);
-+	/* we must change all active ASCEs to avoid the creation of new TLBs */
-+	if (current->active_mm == mm) {
-+		S390_lowcore.user_asce = mm->context.asce;
-+		if (current->thread.mm_segment == USER_DS) {
-+			__ctl_load(S390_lowcore.user_asce, 1, 1);
-+			/* Mark user-ASCE present in CR1 */
-+			clear_cpu_flag(CIF_ASCE_PRIMARY);
-+		}
-+		if (current->thread.mm_segment == USER_DS_SACF) {
-+			__ctl_load(S390_lowcore.user_asce, 7, 7);
-+			/* enable_sacf_uaccess does all or nothing */
-+			WARN_ON(!test_cpu_flag(CIF_ASCE_SECONDARY));
-+		}
-+	}
- 	__tlb_flush_local();
- }
- 
-
+--
+2.26.2
 
