@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68121BC631
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D971BC638
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728313AbgD1RKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 13:10:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
+        id S1728422AbgD1RLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 13:11:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726406AbgD1RKY (ORCPT
+        with ESMTP id S1726406AbgD1RLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 13:10:24 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5693EC03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:10:24 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id h6so17585835lfc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:10:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=hcdO585ed6dhWyG//gXm3cGKsbtOyJyZqsLOBSwj2N8=;
-        b=W41tP+JQzdv74uPdFblFj8+m0F8K5wRcvv6oCdjjnmR+B+CUicjNUvh34vFCxEB/Jf
-         ALqzJ7RQLed/rJV/1aag5O65NzBsemSdRq6AMqBBXIsDD4DIrMNZ7lqERk0bxpB65r16
-         EvaRgIbEma5uDXoPW1hvvHNLqUMu/9fW9U7r6OkbODrXfXeWN+Zvmii6hLBcEAI6FBOD
-         8W55jA9aXTMLVizPuyAhn1r1vFHVP2dSvVAIe2uDCKscUVy3m36m0NKW9M0KcU0xg64q
-         3FHp4Cehg8jB5fvgpKixnNF6wpSYecWuzLnlEVsUkv2Gi32oh+9k2PopFu9gkFZDEtO/
-         NwFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=hcdO585ed6dhWyG//gXm3cGKsbtOyJyZqsLOBSwj2N8=;
-        b=m3YsonujuoMX1RWHK3NikR44aChkkBh1JX5ikc5ZT9FDjIW2qsy3fECwiNecerC0RG
-         oYI6OtModr1pcrEIYmYHXG+VVg9XCcQb5kKTV2wOi81mIlpP0kMqz6E1mWhgnYh8S4Vh
-         JDuBQEC2yOG6LDMLIchwgmshGXEt8wt/+/HRcVYZYEu20J+l49gloMCJAqvx3uLOXnIL
-         ItKYLlYw9aH4v6zk2oDE2EEa93/0JoqrmSyE8KBRekC53M5BU1f2ckpuOjrmDqTF3xrj
-         szjFwc0vsGouFdzMK66ecMW9NwxdfWFUxK5/Xua/DxkxucqP6IDvzuaRuYRYOsKV2I9m
-         PsXA==
-X-Gm-Message-State: AGi0PuZKWBiNBdXDaeiksU2nHPc1uFXdyDyxKH2CS8mQ8F+OjDrYCc0a
-        wstba+dvl15W2futDP8ZIO+xFg9Ob30Y8gbw
-X-Google-Smtp-Source: APiQypIKj7K3jOpFa7ZhGvD1rD2Zy1rtxIlXdZBdq4XuYfv6p6653ZaPjJmlXsWzFPezTKtGBSHOPQ==
-X-Received: by 2002:a19:ee18:: with SMTP id g24mr1708261lfb.67.1588093822773;
-        Tue, 28 Apr 2020 10:10:22 -0700 (PDT)
-Received: from e123311-lin.cambridge.arm.com (static-91-225-135-18.devs.futuro.pl. [91.225.135.18])
-        by smtp.gmail.com with ESMTPSA id v2sm13064703ljv.86.2020.04.28.10.10.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Apr 2020 10:10:22 -0700 (PDT)
-From:   Michal Orzel <michalorzel.eng@gmail.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
-Cc:     Michal Orzel <michalorzel.eng@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org
-Subject: [PATCH] drm: Replace drm_modeset_lock/unlock_all with DRM_MODESET_LOCK_ALL_* helpers
-Date:   Tue, 28 Apr 2020 19:10:04 +0200
-Message-Id: <1588093804-30446-1-git-send-email-michalorzel.eng@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 28 Apr 2020 13:11:19 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B06C03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:11:19 -0700 (PDT)
+Received: from zn.tnic (p200300EC2F0EA500329C23FFFEA6A903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:a500:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7548A1EC08B1;
+        Tue, 28 Apr 2020 19:11:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1588093877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=fj9s0PGCai8z0Zl6HkQgze+Ss5VBqYSUyC3ZhcMckuY=;
+        b=pC8OsfeaHkGv8Cvq7ZCtmAt6oghQP/xqfPRVDnOIkKjbKqhHrH9nz5kutYRH94CFQrEo0E
+        YYA53XgYO6f5JpUzi4WztIv5x3/0Crq2O2js6XhpYiCCe2+F+zmK8UyfVdnbgLrCKwHOhy
+        +obFEo0x5Hm9g1h9T9rnWnRxfHkZwHA=
+Date:   Tue, 28 Apr 2020 19:11:08 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: Re: [PATCH v3 01/10] x86/fpu/xstate: Rename validate_xstate_header()
+ to validate_user_xstate_header()
+Message-ID: <20200428171107.GC11272@zn.tnic>
+References: <20200328164307.17497-1-yu-cheng.yu@intel.com>
+ <20200328164307.17497-2-yu-cheng.yu@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200328164307.17497-2-yu-cheng.yu@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As suggested by the TODO list for the kernel DRM subsystem, replace
-the deprecated functions that take/drop modeset locks with new helpers.
+On Sat, Mar 28, 2020 at 09:42:58AM -0700, Yu-cheng Yu wrote:
+> From: Fenghua Yu <fenghua.yu@intel.com>
+> 
+> The function validate_xstate_header() validates an xstate header coming
+> from userspace (PTRACE or sigreturn).  To make it clear, rename it to
+> validate_user_xstate_header().
 
-Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
----
- drivers/gpu/drm/drm_mode_object.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+For the next time: patch version history like this here:
 
-diff --git a/drivers/gpu/drm/drm_mode_object.c b/drivers/gpu/drm/drm_mode_object.c
-index 35c2719..901b078 100644
---- a/drivers/gpu/drm/drm_mode_object.c
-+++ b/drivers/gpu/drm/drm_mode_object.c
-@@ -402,12 +402,13 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
- {
- 	struct drm_mode_obj_get_properties *arg = data;
- 	struct drm_mode_object *obj;
-+	struct drm_modeset_acquire_ctx ctx;
- 	int ret = 0;
- 
- 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
- 		return -EOPNOTSUPP;
- 
--	drm_modeset_lock_all(dev);
-+	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
- 
- 	obj = drm_mode_object_find(dev, file_priv, arg->obj_id, arg->obj_type);
- 	if (!obj) {
-@@ -427,7 +428,7 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
- out_unref:
- 	drm_mode_object_put(obj);
- out:
--	drm_modeset_unlock_all(dev);
-+	DRM_MODESET_LOCK_ALL_END(ctx, ret);
- 	return ret;
- }
- 
-@@ -449,12 +450,13 @@ static int set_property_legacy(struct drm_mode_object *obj,
- {
- 	struct drm_device *dev = prop->dev;
- 	struct drm_mode_object *ref;
-+	struct drm_modeset_acquire_ctx ctx;
- 	int ret = -EINVAL;
- 
- 	if (!drm_property_change_valid_get(prop, prop_value, &ref))
- 		return -EINVAL;
- 
--	drm_modeset_lock_all(dev);
-+	DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
- 	switch (obj->type) {
- 	case DRM_MODE_OBJECT_CONNECTOR:
- 		ret = drm_connector_set_obj_prop(obj, prop, prop_value);
-@@ -468,7 +470,7 @@ static int set_property_legacy(struct drm_mode_object *obj,
- 		break;
- 	}
- 	drm_property_change_valid_put(prop, ref);
--	drm_modeset_unlock_all(dev);
-+	DRM_MODESET_LOCK_ALL_END(ctx, ret);
- 
- 	return ret;
- }
+> v3:
+> - Change validate_xstate_header_from_user() to validate_user_xstate_header().
+
+... goes ...
+
+> 
+> Suggested-by: Dave Hansen <dave.hansen@intel.com>
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Reviewed-by: Borislav Petkov <bp@suse.de>
+> ---
+
+<--- ... here so that, when someone applies the patch, the version
+history doesn't become part of the commit message.
+
+Thx.
+
 -- 
-2.7.4
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
