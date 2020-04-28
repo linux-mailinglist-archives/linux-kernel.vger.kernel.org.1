@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7611BCE00
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C19A1BCE04
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgD1VAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38802 "EHLO
+        id S1727116AbgD1VAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727065AbgD1VAA (ORCPT
+        by vger.kernel.org with ESMTP id S1726968AbgD1VAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:00:00 -0400
+        Tue, 28 Apr 2020 17:00:01 -0400
 Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D25C03C1AC;
-        Tue, 28 Apr 2020 13:59:58 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id h4so188967ljg.12;
-        Tue, 28 Apr 2020 13:59:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CB7C03C1AD;
+        Tue, 28 Apr 2020 13:59:59 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id g4so258820ljl.2;
+        Tue, 28 Apr 2020 13:59:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KoBD39TIcEF5om4wxAY9WABo2MzBmQNw/jZQCSmQt+E=;
-        b=pYZBp9n19gsVOTGoO/Sk3hIwSChUFPAuqtoXgQSXrtWfKsilDS0sALg+vhbnSbxvGu
-         VdobfSf7hyqLliIrSIaj0t9nu3iDqeFBds26B81XwdubbvYQCcjAnz1LX5w/82X1wPx0
-         i3WUHABqC94YnY2H4OpAR8l9zs8RfZn6Xxytlj/3Enc9gvzbOpi6Q9ZfrZjnEg2AK2Y7
-         bjxMx8yDoA4Lqo7Q/heylOx3S3xZqCXtya9oCmVVbX/kuQPaw+5HEq0pOfIC0iO4wlE3
-         CLAlOGXVfDTxBH8OKQS/IzkGrNB2gypGnYJx6H2v/aWX4ISqOJiSpDNvKf1FVizYkmOf
-         SUQA==
+        bh=sBXzHuBlNIiG5WL15rHVAeI2UeCimXr5JALsutUTg9Y=;
+        b=UYukFqdvOw/RYQ+Em+r2cvMx8ideTgu8rhd+I9bYqLwxcbgu9vNXU3uaca55s732ym
+         CrEQXN6x38a8DRsG2xFDMK4jMsgvDPwo5MBF0NBh/mZ4wod0iMehj046iiSrKLhDhxTD
+         OLv6OW+1XR9USm3IGF083IXEWzo5J8uRc39cB1SyQZ5W9JXESO9ihoIFmDJaTahQ8jis
+         vjc9UkiSGkqOJqqtzYOpN6RBPV6P3Df43fHcETpcrBu2P0GzMYBv4gsYLtHb74LY7+/s
+         InJNpW48Iukvavept/9+c6OE54pG3/uqM0Sl1LdoqWfgWT5ZBgHdYawwx2PKGzYxu77m
+         pjMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KoBD39TIcEF5om4wxAY9WABo2MzBmQNw/jZQCSmQt+E=;
-        b=MLMgo6VYzHqnffnx71wEQ2u2FIFS3bCoSz0gqB8eHtZzucNT8fd0oTx+plEMXOPYSH
-         LFWnTChfl8d8jSuraD5p/Zf2vpVjmZbJ9sKt/k88eytO1/4O0hWMWXTc2+vPMpljlYJN
-         c2g6VdarA1eENe19iuxxQzeHGy4hjhYRqE7EjOU49gg31mqpKAfxOGXcPu8Yw/kmQEzj
-         sTDxCjP9bvqkKb39yj/YPatgzMLugXC0kzxMDyd1WUuY7g29fBBz9HM14/coXtiOYu8G
-         9rjkbaVlFs7d2IeBU2jwKEftdWU46mxue/qZy0TD1g+rwG7oUQaQQnjXzVT4KVInE6sw
-         L8/A==
-X-Gm-Message-State: AGi0PuYYjv9Yw/kBz8P1b667hnALx409XEqA8QslhFGZk4LNA7H2QCCB
-        BGiDv3zZTysfrw4t1taGTN5dvRQRRS0BMQ==
-X-Google-Smtp-Source: APiQypJZR1Ec3ulELhNCGSHkNwXT2m0NQRhUCSqyh7Fi0d8nw8f+9QCfLPXaFRVdPqbaxBXapCWV3w==
-X-Received: by 2002:a2e:3012:: with SMTP id w18mr19191207ljw.55.1588107596479;
-        Tue, 28 Apr 2020 13:59:56 -0700 (PDT)
+        bh=sBXzHuBlNIiG5WL15rHVAeI2UeCimXr5JALsutUTg9Y=;
+        b=mCeesFEXcKo1A4RYTt502imsIpmJnFX9kI96NXLHYJju0DSy6c20yPwp6DNztG5Xab
+         FSBYYOrzVysPp0H68Cbjdq4wpRAJ5jGmPtaFfF5Q4YbcxNcFOs7s/gZg4145jMlT3zyn
+         TdeeXoytG7S7liaGcJIn3TPI6UwhQanVozbEmKTVd11rej6zvHfq3+pJ1GMeOHuARJZn
+         JuDsgYrlo3chvaejcq6kHTqJ7xBzn9zCXKWrx+c1r0JqcjFVs5nm8b8pVJLB5YDPcK5k
+         p0zOu2P04KMdz4S8UTWQNYKYhQbxapvz9C195qV8/B1eduFYTe21uxyIOnP3pz2+lX3T
+         y0WA==
+X-Gm-Message-State: AGi0Pubatzrmr7bBJEnLviMckSwrEKagTaiX+vxZEjg1YUSH9voZwVcE
+        lLK5DGOcWebRoACoaHeiPdraPzLsmmgOYA==
+X-Google-Smtp-Source: APiQypKbwyjmz7XAKZZaGzDhUO4GGzDo1hAKGgC0IXSPp5QF7iC3hAYqf7fmKiCv2L6QXg614yuycw==
+X-Received: by 2002:ac2:5dc6:: with SMTP id x6mr20373376lfq.108.1588107597607;
+        Tue, 28 Apr 2020 13:59:57 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.52
+        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 13:59:53 -0700 (PDT)
+        Tue, 28 Apr 2020 13:59:57 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -57,9 +57,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 20/24] rcu/tree: Make kvfree_rcu() tolerate any alignment
-Date:   Tue, 28 Apr 2020 22:58:59 +0200
-Message-Id: <20200428205903.61704-21-urezki@gmail.com>
+Subject: [PATCH 21/24] rcu/tiny: move kvfree_call_rcu() out of header
+Date:   Tue, 28 Apr 2020 22:59:00 +0200
+Message-Id: <20200428205903.61704-22-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200428205903.61704-1-urezki@gmail.com>
 References: <20200428205903.61704-1-urezki@gmail.com>
@@ -70,52 +70,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Move inlined kvfree_call_rcu() function out of the
+header file. This step is a preparation for head-less
+support.
 
-Handle cases where the the object being kvfree_rcu()'d is not aligned by
-2-byte boundaries.
-
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ include/linux/rcutiny.h | 6 +-----
+ kernel/rcu/tiny.c       | 6 ++++++
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 501cac02146d..649bad7ad0f0 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2877,6 +2877,9 @@ struct kvfree_rcu_bulk_data {
- #define KVFREE_BULK_MAX_ENTR \
- 	((PAGE_SIZE - sizeof(struct kvfree_rcu_bulk_data)) / sizeof(void *))
+diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
+index 0c6315c4a0fe..7eb66909ae1b 100644
+--- a/include/linux/rcutiny.h
++++ b/include/linux/rcutiny.h
+@@ -34,11 +34,7 @@ static inline void synchronize_rcu_expedited(void)
+ 	synchronize_rcu();
+ }
  
-+/* Encoding the offset of a fake rcu_head to indicate the head is a wrapper. */
-+#define RCU_HEADLESS_KFREE BIT(31)
+-static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+-{
+-	call_rcu(head, func);
+-}
+-
++void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
+ void rcu_qs(void);
+ 
+ static inline void rcu_softirq_qs(void)
+diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
+index aa897c3f2e92..508c82faa45c 100644
+--- a/kernel/rcu/tiny.c
++++ b/kernel/rcu/tiny.c
+@@ -177,6 +177,12 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
+ }
+ EXPORT_SYMBOL_GPL(call_rcu);
+ 
++void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
++{
++	call_rcu(head, func);
++}
++EXPORT_SYMBOL_GPL(kvfree_call_rcu);
 +
- /**
-  * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
-  * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
-@@ -3078,9 +3081,9 @@ static void kfree_rcu_work(struct work_struct *work)
- 		next = head->next;
- 
- 		/* We tag the headless object, if so adjust offset. */
--		headless = (((unsigned long) head - offset) & BIT(0));
-+		headless = !!(offset & RCU_HEADLESS_KFREE);
- 		if (headless)
--			offset -= 1;
-+			offset &= ~(RCU_HEADLESS_KFREE);
- 
- 		ptr = (void *) head - offset;
- 
-@@ -3356,7 +3359,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 			 * that has to be freed as well as dynamically
- 			 * attached wrapper/head.
- 			 */
--			func = (rcu_callback_t) (sizeof(unsigned long *) + 1);
-+			func = (rcu_callback_t)(sizeof(unsigned long *) | RCU_HEADLESS_KFREE);
- 		}
- 
- 		head->func = func;
+ void __init rcu_init(void)
+ {
+ 	open_softirq(RCU_SOFTIRQ, rcu_process_callbacks);
 -- 
 2.20.1
 
