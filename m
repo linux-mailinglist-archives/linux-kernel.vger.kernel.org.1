@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F93B1BC9A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A61D1BC851
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731279AbgD1Snn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:43:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36224 "EHLO mail.kernel.org"
+        id S1729688AbgD1Sbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731260AbgD1Snl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:43:41 -0400
+        id S1729182AbgD1Sba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:31:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E56AE20575;
-        Tue, 28 Apr 2020 18:43:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D93A42186A;
+        Tue, 28 Apr 2020 18:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099420;
-        bh=uXlG7zY2R4nQkPMFSwhbfOPelFo9eV73KDF2pnAMz+E=;
+        s=default; t=1588098690;
+        bh=vpnBgYOMkZl24zZAF+Gw4N8jzNY5K3OYGZBkJNrDpe0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RVtBiVaaXw/YQIjSrLNdXMN6IQEJeLrEHZI/vMydC5IsuTgGH3W8A2sWp6UubuAjF
-         06RbelcwO+uQ/gdncXF77ewoneUh/0wjiEjtW9a2wwppJjppDJB8ptgEuBFVs0eBn6
-         vpOnCBu1Z3g1dM8Dkl6foM5QOm3ZdaTbcgO8QAxM=
+        b=iIO335iqsjWcbbdtLSEIUIuCtuYyDKbEcPa+rVCJeZxV8rczGtLLsY9I02ryqLTia
+         3bf4FOefCnLrjSLCzyhwSRTRJOWtMG0ecb1mDyAGYvPjl2hzogopK7zOUi/mPgtRdm
+         4smG5jnP36pwnkvh8AXUEtzF2vd6An8sRKKIr8NI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Amit Singh Tomar <amittomer25@gmail.com>
-Subject: [PATCH 5.4 101/168] tty: serial: owl: add "much needed" clk_prepare_enable()
+        stable@vger.kernel.org,
+        Matthew Ruffell <matthew.ruffell@canonical.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Wise <pabs3@bonedaddy.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 099/167] coredump: fix null pointer dereference on coredump
 Date:   Tue, 28 Apr 2020 20:24:35 +0200
-Message-Id: <20200428182245.145709355@linuxfoundation.org>
+Message-Id: <20200428182237.696357713@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +49,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amit Singh Tomar <amittomer25@gmail.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
-commit abf42d2f333b21bf8d33b2fbb8a85fa62037ac01 upstream.
+commit db973a7289dad24e6c017dcedc6aee886579dc3a upstream.
 
-commit 8ba92cf59335 ("arm64: dts: actions: s700: Add Clock Management Unit")
-breaks the UART on Cubieboard7-lite (based on S700 SoC), This is due to the
-fact that generic clk routine clk_disable_unused() disables the gate clks,
-and that in turns disables OWL UART (but UART driver never enables it). To
-prove this theory, Andre suggested to use "clk_ignore_unused" in kernel
-commnd line and it worked (Kernel happily lands into RAMFS world :)).
+If the core_pattern is set to "|" and any process segfaults then we get
+a null pointer derefernce while trying to coredump. The call stack shows:
 
-This commit fix this up by adding clk_prepare_enable().
+    RIP: do_coredump+0x628/0x11c0
 
-Fixes: 8ba92cf59335 ("arm64: dts: actions: s700: Add Clock Management Unit")
-Signed-off-by: Amit Singh Tomar <amittomer25@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1587067917-1400-1-git-send-email-amittomer25@gmail.com
+When the core_pattern has only "|" there is no use of trying the
+coredump and we can check that while formating the corename and exit
+with an error.
+
+After this change I get:
+
+    format_corename failed
+    Aborting core
+
+Fixes: 315c69261dd3 ("coredump: split pipe command whitespace before expanding template")
+Reported-by: Matthew Ruffell <matthew.ruffell@canonical.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Paul Wise <pabs3@bonedaddy.net>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200416194612.21418-1-sudipm.mukherjee@gmail.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/owl-uart.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ fs/coredump.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/tty/serial/owl-uart.c
-+++ b/drivers/tty/serial/owl-uart.c
-@@ -680,6 +680,12 @@ static int owl_uart_probe(struct platfor
- 		return PTR_ERR(owl_port->clk);
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -211,6 +211,8 @@ static int format_corename(struct core_n
+ 			return -ENOMEM;
+ 		(*argv)[(*argc)++] = 0;
+ 		++pat_ptr;
++		if (!(*pat_ptr))
++			return -ENOMEM;
  	}
  
-+	ret = clk_prepare_enable(owl_port->clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "could not enable clk\n");
-+		return ret;
-+	}
-+
- 	owl_port->port.dev = &pdev->dev;
- 	owl_port->port.line = pdev->id;
- 	owl_port->port.type = PORT_OWL;
-@@ -712,6 +718,7 @@ static int owl_uart_remove(struct platfo
- 
- 	uart_remove_one_port(&owl_uart_driver, &owl_port->port);
- 	owl_uart_ports[pdev->id] = NULL;
-+	clk_disable_unprepare(owl_port->clk);
- 
- 	return 0;
- }
+ 	/* Repeat as long as we have more pattern to process and more output
 
 
