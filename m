@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE241BCDE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C64D51BCDEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgD1U7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 16:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38698 "EHLO
+        id S1726828AbgD1U7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 16:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726764AbgD1U7c (ORCPT
+        by vger.kernel.org with ESMTP id S1726789AbgD1U7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 16:59:32 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576C5C03C1AC;
-        Tue, 28 Apr 2020 13:59:32 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id e25so238403ljg.5;
-        Tue, 28 Apr 2020 13:59:32 -0700 (PDT)
+        Tue, 28 Apr 2020 16:59:35 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF77CC03C1AC;
+        Tue, 28 Apr 2020 13:59:33 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id b2so244318ljp.4;
+        Tue, 28 Apr 2020 13:59:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=VbhSWD62l8JNzTfQeyAoSUlyMJCSOqg1BrQPjTRkMk4=;
-        b=lUSGgt+CcioWbfGLfJs6ugC+Qsrh1jSAzKgYq+RqTEJ21PFv8tQASSylCGa3PsVbnY
-         Qbu76q5eTVYVtQnCst4OOtW3BlwytMXJWb+FeiUODQpsMPCiLZgDtu394oLx3qGFh7ro
-         CUV0dDmlU2XxAMYHQI4Iaz5+oMKXtr10rhPCmkBZRvY5UTTkNFQPY9dtPCQASLAKSgpw
-         k79dHaNBrymsYKNqoM41Bh4gmnO22eY5dnHBGtSZ2n8G2cPbYpP+IP3MuBpoa2Vbj82P
-         SRpq3tfsb9HM1/p3VUJqqfJs4WInmGwQPVyQhTibtyUcbpA1vCW1XkZURvjniAH8QJSV
-         JoEg==
+        bh=tNVlKJMZgR8fQGfjNMGlZb0HEXGPqeGS+UCAapReQEQ=;
+        b=OomEXmvEimxM1FQU4RZxUQQ6SUm/0rWP04XnM3tyK2N2EVh5hEe+B/wMbpSMFBO2a9
+         zfvlE9oG69hOjkwDFfbhn04b0dqQhaPQy92gtamKdDddFXpGJDjR9LDP+4SvN088uTqd
+         NN6OYVKWiMckLURyeMjSjqHjcvw0JBhne90WJ384rFV9oE0z5/6+C/NnQNc1krfDkLA7
+         DJxLLSbGJOr+kvsKBrxkNkuec+OX1hgRGUPxQbLAUysbTLkm0JAI2Uyu/sWJAuIKOWgd
+         F8mQ4JZhQa2Fqd1JAKFuF9bJC8vT4eyTlM9tV9lfACk02DBS0Ayjt9+uDFljqVo1Ne2T
+         BJsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VbhSWD62l8JNzTfQeyAoSUlyMJCSOqg1BrQPjTRkMk4=;
-        b=FF7luBItHwJ9WCFio7q/pdd963cYwotKbOh56CGAlavzvSnUmQ6ZAxfJt/MTrzeE3s
-         rMUZ/gG3pbyMMCeR25rbP0P8RxYuQTameJubdrQ3IU2Gfh0NMW5J+ga6oGtTANkUzif4
-         EMJ9YzusEUVSpMh0lkaA4HLi5SiQmqojgmxV7GfbjRrGZFo+BFyf2fcK4Q8L7PY2KrJK
-         KI4mH5xAGTVqt/AzyJB83DnWz8Efp9iVoyKvAbAb9fh5y1HOFRvQ34EmcfTlL2OEm2dC
-         emUHGZNthnxnqr+SWXR10NRwn7V/7EjRIyDJc4c4wsykewWkLMwTjUSsNsT2N8O9ope+
-         15iA==
-X-Gm-Message-State: AGi0Publ9NWQv6HsEJ1f2rg1yK8KFkU8ZHa8YSN6RDfzHHSVE89a3fAz
-        NUOcexUzdBEeyjmXn1q2P/HBTSoXyRkuNg==
-X-Google-Smtp-Source: APiQypKKGOVXhlmChW4BhBJ3iFPhuFW9qb1gS4bvnz1pm04t1mdMolucRbZxXE4S2RJ5qLuMNAg/SQ==
-X-Received: by 2002:a05:651c:28c:: with SMTP id b12mr18386730ljo.167.1588107570458;
-        Tue, 28 Apr 2020 13:59:30 -0700 (PDT)
+        bh=tNVlKJMZgR8fQGfjNMGlZb0HEXGPqeGS+UCAapReQEQ=;
+        b=ivgwpI/Eo2rfxk2YmQYlaOQBrTVyktUJRMYTBn07K8BlbV3DaNw7IfHJ134dZXfh6l
+         A5CmHPKe1zefVwYnnPSkFxml5npqwaePlkjXWopks+Bjcs+rfTgx7TvALz5Ji7K+5FKU
+         hSOtfFVs/z4zl55NxzUyz9UGjQOfwjIVj8O+/zWNhfRMqFXZ6FI6jUOVzKSGxBlr2V9R
+         liLCap88mGTHdcl7MChto1tsJvsC9ke7a0Q5YyM+iv1Emj0L8b9p/C9C3ExAIH6XiLVV
+         l0A6elNglUBFX9yUNgl3g2jMlZnLrb0xU+kBWRixUJ7YwRkj1topwF3P4oOtTbo1zJgq
+         N91A==
+X-Gm-Message-State: AGi0PuaqhlZgMQz7a23AfdZItjC1KmRzN2sRf0rxbE3Agid7BGMyaxfG
+        wUUJZIlblCkcEdBSp7yJk9r4A3XbaIGwjQ==
+X-Google-Smtp-Source: APiQypLM6AK8jKHmA2nJzuwDkDwYvmAhNNN+CNoOBiRU/u2OgnsIOG3G2+TrSv7A9npS7PRZThXzUA==
+X-Received: by 2002:a19:f614:: with SMTP id x20mr20240048lfe.84.1588107571728;
+        Tue, 28 Apr 2020 13:59:31 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.26
+        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 13:59:26 -0700 (PDT)
+        Tue, 28 Apr 2020 13:59:31 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -56,11 +56,10 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Matthew Wilcox <willy@infradead.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 02/24] rcu/tree: Skip entry into the page allocator for PREEMPT_RT
-Date:   Tue, 28 Apr 2020 22:58:41 +0200
-Message-Id: <20200428205903.61704-3-urezki@gmail.com>
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH 03/24] rcu/tree: Use consistent style for comments
+Date:   Tue, 28 Apr 2020 22:58:42 +0200
+Message-Id: <20200428205903.61704-4-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200428205903.61704-1-urezki@gmail.com>
 References: <20200428205903.61704-1-urezki@gmail.com>
@@ -73,48 +72,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-To keep kfree_rcu() path working on raw non-preemptible sections,
-prevent the optional entry into the allocator as it uses sleeping locks.
-In fact, even if the caller of kfree_rcu() is preemptible, this path
-still is not, as krcp->lock is a raw spinlock as done in previous
-patches. With additional page pre-allocation in the works, hitting this
-return is going to be much less likely soon so just prevent it for now
-so that PREEMPT_RT does not break. Note that page allocation here is an
-optimization and skipping it still makes kfree_rcu() work.
+Simple clean up of comments in kfree_rcu() code to keep it consistent
+with majority of commenting styles.
 
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
-Co-developed-by: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Uladzislau Rezki <urezki@gmail.com>
 Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ kernel/rcu/tree.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index cf68d3d9f5b8..cd61649e1b00 100644
+index cd61649e1b00..1487af8e11e8 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3092,6 +3092,18 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
- 		if (!bnode) {
- 			WARN_ON_ONCE(sizeof(struct kfree_rcu_bulk_data) > PAGE_SIZE);
+@@ -3043,15 +3043,15 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+ 					  unsigned long flags)
+ {
+-	// Attempt to start a new batch.
++	/* Attempt to start a new batch. */
+ 	krcp->monitor_todo = false;
+ 	if (queue_kfree_rcu_work(krcp)) {
+-		// Success! Our job is done here.
++		/* Success! Our job is done here. */
+ 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 		return;
+ 	}
  
-+			/*
-+			 * To keep this path working on raw non-preemptible
-+			 * sections, prevent the optional entry into the
-+			 * allocator as it uses sleeping locks. In fact, even
-+			 * if the caller of kfree_rcu() is preemptible, this
-+			 * path still is not, as krcp->lock is a raw spinlock.
-+			 * With additional page pre-allocation in the works,
-+			 * hitting this return is going to be much less likely.
-+			 */
-+			if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+				return false;
-+
- 			bnode = (struct kfree_rcu_bulk_data *)
- 				__get_free_page(GFP_NOWAIT | __GFP_NOWARN);
- 		}
+-	// Previous RCU batch still in progress, try again later.
++	/* Previous RCU batch still in progress, try again later. */
+ 	krcp->monitor_todo = true;
+ 	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+ 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+@@ -3151,14 +3151,14 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	unsigned long flags;
+ 	struct kfree_rcu_cpu *krcp;
+ 
+-	local_irq_save(flags);	// For safely calling this_cpu_ptr().
++	local_irq_save(flags);	/* For safely calling this_cpu_ptr(). */
+ 	krcp = this_cpu_ptr(&krc);
+ 	if (krcp->initialized)
+ 		raw_spin_lock(&krcp->lock);
+ 
+-	// Queue the object but don't yet schedule the batch.
++	/* Queue the object but don't yet schedule the batch. */
+ 	if (debug_rcu_head_queue(head)) {
+-		// Probable double kfree_rcu(), just leak.
++		/* Probable double kfree_rcu(), just leak. */
+ 		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
+ 			  __func__, head);
+ 		goto unlock_return;
+@@ -3176,7 +3176,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 
+ 	WRITE_ONCE(krcp->count, krcp->count + 1);
+ 
+-	// Set timer to drain after KFREE_DRAIN_JIFFIES.
++	/* Set timer to drain after KFREE_DRAIN_JIFFIES. */
+ 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
+ 	    !krcp->monitor_todo) {
+ 		krcp->monitor_todo = true;
+@@ -3722,7 +3722,7 @@ int rcutree_offline_cpu(unsigned int cpu)
+ 
+ 	rcutree_affinity_setting(cpu, cpu);
+ 
+-	// nohz_full CPUs need the tick for stop-machine to work quickly
++	/* nohz_full CPUs need the tick for stop-machine to work quickly */
+ 	tick_dep_set(TICK_DEP_BIT_RCU);
+ 	return 0;
+ }
 -- 
 2.20.1
 
