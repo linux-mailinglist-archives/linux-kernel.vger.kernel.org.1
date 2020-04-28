@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9071BC826
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924ED1BCB7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729444AbgD1SaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:30:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44124 "EHLO mail.kernel.org"
+        id S1729452AbgD1SaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:30:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729438AbgD1S36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:29:58 -0400
+        id S1729438AbgD1SaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:30:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BDDC208E0;
-        Tue, 28 Apr 2020 18:29:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DB9F20730;
+        Tue, 28 Apr 2020 18:30:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098597;
-        bh=0hifaQ70lRgCF0KppeNRWFQqEOv1Xs9uccMIclWC6eo=;
+        s=default; t=1588098602;
+        bh=1Fj3PTj5oghOrjkoXDbSvlZzFgLk4RdKysNplhgIQxs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h0Sgfx7223I8w78xfrhJ6oM5yfeBzE0xFnRi9lZIoDOeMevTmVnAJkoVYHKMXGvcS
-         8f9EgGGr2tKnJcdOq56jIraSQHwDEhQWQX4BXXj5pv2HKj/isEIKPMEY140mbgrrmQ
-         hX/Hz55iwGIiedfRaiTZnqdTKFEp3mP6iCHnkVIQ=
+        b=TB7Vm05XfXkcEdHw2DUbD9b0WHeohrlJTfbmOPNHYYGqOB8A7eDdhf3b+Buv3MxPl
+         6Yk2q4Hl7aW9LLdUw5XNkw9LnlUZd0oHfaYruVGpVB9JXtdZE5eQ3O+PU4rHr1b1Uw
+         6WX984KzDKc6hlKCJ7x8rndtTV109CGpUe4egtpg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mario Tesi <mario.tesi@st.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Vitor Soares <vitor.soares@synopsys.com>,
+        stable@vger.kernel.org, Lary Gibaud <yarl-baudig@mailoo.org>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.6 082/167] iio: imu: st_lsm6dsx: flush hw FIFO before resetting the device
-Date:   Tue, 28 Apr 2020 20:24:18 +0200
-Message-Id: <20200428182235.365728512@linuxfoundation.org>
+Subject: [PATCH 5.6 083/167] iio: st_sensors: rely on odr mask to know if odr can be set
+Date:   Tue, 28 Apr 2020 20:24:19 +0200
+Message-Id: <20200428182235.492788197@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
 References: <20200428182225.451225420@linuxfoundation.org>
@@ -46,71 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Lary Gibaud <yarl-baudig@mailoo.org>
 
-commit 3a63da26db0a864134f023f088d41deacd509997 upstream.
+commit e450e07c14abae563ad13b064cbce9fdccc6bc8d upstream.
 
-flush hw FIFO before device reset in order to avoid possible races
-on interrupt line 1. If the first interrupt line is asserted during
-hw reset the device will work in I3C-only mode (if it is supported)
+Indeed, relying on addr being not 0 cannot work because some device have
+their register to set odr at address 0. As a matter of fact, if the odr
+can be set, then there is a mask.
 
-Fixes: 801a6e0af0c6 ("iio: imu: st_lsm6dsx: add support to LSM6DSO")
-Fixes: 43901008fde0 ("iio: imu: st_lsm6dsx: add support to LSM6DSR")
-Reported-by: Mario Tesi <mario.tesi@st.com>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Reviewed-by: Vitor Soares <vitor.soares@synopsys.com>
-Tested-by: Vitor Soares <vitor.soares@synopsys.com>
+Sensors with ODR register at address 0 are: lsm303dlh, lsm303dlhc, lsm303dlm
+
+Fixes: 7d245172675a ("iio: common: st_sensors: check odr address value in st_sensors_set_odr()")
+Signed-off-by: Lary Gibaud <yarl-baudig@mailoo.org>
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c |   24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ drivers/iio/common/st_sensors/st_sensors_core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-+++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-@@ -2036,11 +2036,21 @@ static int st_lsm6dsx_init_hw_timer(stru
- 	return 0;
- }
+--- a/drivers/iio/common/st_sensors/st_sensors_core.c
++++ b/drivers/iio/common/st_sensors/st_sensors_core.c
+@@ -79,7 +79,7 @@ int st_sensors_set_odr(struct iio_dev *i
+ 	struct st_sensor_odr_avl odr_out = {0, 0};
+ 	struct st_sensor_data *sdata = iio_priv(indio_dev);
  
--static int st_lsm6dsx_init_device(struct st_lsm6dsx_hw *hw)
-+static int st_lsm6dsx_reset_device(struct st_lsm6dsx_hw *hw)
- {
- 	const struct st_lsm6dsx_reg *reg;
- 	int err;
+-	if (!sdata->sensor_settings->odr.addr)
++	if (!sdata->sensor_settings->odr.mask)
+ 		return 0;
  
-+	/*
-+	 * flush hw FIFO before device reset in order to avoid
-+	 * possible races on interrupt line 1. If the first interrupt
-+	 * line is asserted during hw reset the device will work in
-+	 * I3C-only mode (if it is supported)
-+	 */
-+	err = st_lsm6dsx_flush_fifo(hw);
-+	if (err < 0 && err != -ENOTSUPP)
-+		return err;
-+
- 	/* device sw reset */
- 	reg = &hw->settings->reset;
- 	err = regmap_update_bits(hw->regmap, reg->addr, reg->mask,
-@@ -2059,6 +2069,18 @@ static int st_lsm6dsx_init_device(struct
- 
- 	msleep(50);
- 
-+	return 0;
-+}
-+
-+static int st_lsm6dsx_init_device(struct st_lsm6dsx_hw *hw)
-+{
-+	const struct st_lsm6dsx_reg *reg;
-+	int err;
-+
-+	err = st_lsm6dsx_reset_device(hw);
-+	if (err < 0)
-+		return err;
-+
- 	/* enable Block Data Update */
- 	reg = &hw->settings->bdu;
- 	err = regmap_update_bits(hw->regmap, reg->addr, reg->mask,
+ 	err = st_sensors_match_odr(sdata->sensor_settings, odr, &odr_out);
 
 
