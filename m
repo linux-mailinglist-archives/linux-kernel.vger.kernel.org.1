@@ -2,76 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EAD1BC025
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B8B1BC02A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgD1NtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 09:49:12 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:41056 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726798AbgD1NtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 09:49:12 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 1C32781411DE4945C840;
-        Tue, 28 Apr 2020 21:49:09 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 28 Apr 2020 21:49:02 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] stm class: dummy_stm: fix error return code in dummy_stm_init()
-Date:   Tue, 28 Apr 2020 13:50:19 +0000
-Message-ID: <20200428135019.78920-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727085AbgD1Nuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 09:50:46 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:60117 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726871AbgD1Nuq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 09:50:46 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 7C86A68A;
+        Tue, 28 Apr 2020 09:50:44 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 28 Apr 2020 09:50:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=4iAZAo8TV910VLKndZ5Wk9WKzuI
+        ARrXA2SHPPX+ivMs=; b=sWE34aPsKoEhvAvsNx6TDGAHBMXKKikJSzYRGkUHg8w
+        mFef2xGfaSY0hLeh4H/1xIVQwjYoPdRlRWZ0vQ8uPesLLytqysvxFiYI+Tyuttoe
+        23CjL2YBsWp/9Jz1plx9NH8Q6Iv8cd7Vdnj+7Ra+OgDWhxSDCzL1aWsSbctJoP6e
+        8e0ZErOy42owcsjzGEXrWglV7tY2WdKyyqzgoWXk2aXgcjUXUqBufXtRW2Cm2Noo
+        cC/uGOjmB77N40IOhlNuQbiEp9/6TU95nj8lOIchTe0xht50om4C1bAt0oEgQazW
+        KdgP4pBJYe8ABZmu48I9IIre0ZyOtDAhKpBnwG6XDSw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=4iAZAo
+        8TV910VLKndZ5Wk9WKzuIARrXA2SHPPX+ivMs=; b=hVmCUKbWPfnl2YIzTa4hEs
+        ofc+8FVBBXEeSEArgjnGJTnzcdQDwVFWJB3LPpL65+aJ7sCzN9W7lc2DaPm1Zp2C
+        w+AD3pNt65ra32K43ajZSjxhrmNEp1wuqOD5FPq7uDw+dOWEmCD5J3XYqNXVB6Gu
+        ZGw1vsPXo9oboaHhpg2HpepA0uKDajAwlzBaDx0D8di60R2KcvMz0VzZUGb0Sz55
+        zPVgeBkGLyoQKfiWLYQNrxzG5TRk0kzYR6Karl72zoz8NWrMsLiSIbr6g35mmJEb
+        dJx0uWKXvMqEVNv2B1BjsyiiU3OP9yN2TGVmwyLv/RR+f1CvydUtq53LTFFnE3sA
+        ==
+X-ME-Sender: <xms:szSoXspECv2ZMBzZNr5zIHvZnhS-qfmAQhYWYU5CS2I8MdGcqgSjGg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedriedugdeilecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
+    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:szSoXucwlkqZ27aA4XRiG9WDDJo4416B0FhhR0PBtfqSHaIZAg5oPg>
+    <xmx:szSoXsmVJ-GmWQd__p_Hm7AjNZbiNPnCS3oaWn2L0T71TnYAmrxh0g>
+    <xmx:szSoXtaZZwSkglEMDDgagVpkIA2CgKl5lxF6J8umJKpaLCZPWf1UZg>
+    <xmx:tDSoXrZfdMeE1aAqgGQE3LInrs5bbZ6VEhqJFj9rVKwZbY3wJQK-HQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D1531328005A;
+        Tue, 28 Apr 2020 09:50:42 -0400 (EDT)
+Date:   Tue, 28 Apr 2020 15:50:41 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Eric Anholt <eric@anholt.net>, dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Subject: Re: [PATCH v2 04/91] firmware: rpi: Only create clocks device if we
+ don't have a node for it
+Message-ID: <20200428135041.zg5h454fkc5wgxp3@gilmour.lan>
+References: <cover.d1e741d37e43e1ba2d2ecd93fc81d42a6df99d14.1587742492.git-series.maxime@cerno.tech>
+ <b181d867cb9523e1877a3dfd258bafde2988024f.1587742492.git-series.maxime@cerno.tech>
+ <4842d1b72192bb7c461a2d50c8798f178da964e0.camel@suse.de>
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tdisr6odiqdkp6jx"
+Content-Disposition: inline
+In-Reply-To: <4842d1b72192bb7c461a2d50c8798f178da964e0.camel@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return error code -ENOMEM from the error handling case instead
-of 0(ret can be overwritted to 0 in for loop).
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/hwtracing/stm/dummy_stm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+--tdisr6odiqdkp6jx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/hwtracing/stm/dummy_stm.c b/drivers/hwtracing/stm/dummy_stm.c
-index 38528ffdc0b3..36d32e7afb35 100644
---- a/drivers/hwtracing/stm/dummy_stm.c
-+++ b/drivers/hwtracing/stm/dummy_stm.c
-@@ -68,7 +68,7 @@ static int dummy_stm_link(struct stm_data *data, unsigned int master,
- 
- static int dummy_stm_init(void)
- {
--	int i, ret = -ENOMEM;
-+	int i, ret;
- 
- 	if (nr_dummies < 0 || nr_dummies > DUMMY_STM_MAX)
- 		return -EINVAL;
-@@ -80,8 +80,10 @@ static int dummy_stm_init(void)
- 
- 	for (i = 0; i < nr_dummies; i++) {
- 		dummy_stm[i].name = kasprintf(GFP_KERNEL, "dummy_stm.%d", i);
--		if (!dummy_stm[i].name)
-+		if (!dummy_stm[i].name) {
-+			ret = -ENOMEM;
- 			goto fail_unregister;
-+		}
- 
- 		dummy_stm[i].sw_start		= master_min;
- 		dummy_stm[i].sw_end		= master_max;
+Hi Nicolas,
 
+On Mon, Apr 27, 2020 at 01:24:14PM +0200, Nicolas Saenz Julienne wrote:
+> Hi Maxime,
+>=20
+> On Fri, 2020-04-24 at 17:33 +0200, Maxime Ripard wrote:
+> > The firmware clocks driver was previously probed through a platform_dev=
+ice
+> > created by the firmware driver.
+> >=20
+> > Since we will now have a node for that clocks driver, we need to create=
+ the
+> > device only in the case where there's no node for it already.
+> >=20
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > ---
+> >  drivers/firmware/raspberrypi.c | 17 +++++++++++++++--
+> >  1 file changed, 15 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberr=
+ypi.c
+> > index da26a584dca0..1874f41b007c 100644
+> > --- a/drivers/firmware/raspberrypi.c
+> > +++ b/drivers/firmware/raspberrypi.c
+> > @@ -210,6 +210,15 @@ rpi_register_hwmon_driver(struct device *dev, stru=
+ct
+> > rpi_firmware *fw)
+> > =20
+> >  static void rpi_register_clk_driver(struct device *dev)
+> >  {
+> > +	/*
+> > +	 * Earlier DTs don't have a node for the firmware clocks but
+> > +	 * rely on us creating a platform device by hand. If we do
+> > +	 * have a node for the firmware clocks, just bail out here.
+> > +	 */
+> > +	if (of_get_compatible_child(dev->of_node,
+> > +				    "raspberrypi,firmware-clocks"))
+> > +		return;
+> > +
+> >  	rpi_clk =3D platform_device_register_data(dev, "raspberrypi-clk",
+> >  						-1, NULL, 0);
+> >  }
+> > @@ -262,8 +271,12 @@ static int rpi_firmware_remove(struct platform_dev=
+ice
+> > *pdev)
+> > =20
+> >  	platform_device_unregister(rpi_hwmon);
+> >  	rpi_hwmon =3D NULL;
+> > -	platform_device_unregister(rpi_clk);
+> > -	rpi_clk =3D NULL;
+> > +
+> > +	if (rpi_clk) {
+>=20
+> rpi_clk, being a static global variable, will be zeroed by default. So, i=
+f you
+> don't register the platform device, rpi_clk is going to be NULL, which yo=
+u're
+> allowed to feed platform_device_unregister(), so no need to be extra care=
+ful.
 
+Indeed, I'll fix that up.
 
+Thanks!
+Maxime
+
+--tdisr6odiqdkp6jx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXqg0sQAKCRDj7w1vZxhR
+xbQ1AP9u2PkigXhbvMvsCOEqNwJ8D7x0AE8RyRBsAh+1uyg8kgEApwI7mCx3Oyv0
+OKLPLIDceoiTcYK3Qs3FCOaUJ+9WKgs=
+=W0Du
+-----END PGP SIGNATURE-----
+
+--tdisr6odiqdkp6jx--
