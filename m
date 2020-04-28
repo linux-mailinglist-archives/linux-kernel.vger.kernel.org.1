@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635461BC9FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22591BC932
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730730AbgD1Sor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:44:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37724 "EHLO mail.kernel.org"
+        id S1730739AbgD1Sje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:39:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731478AbgD1Sol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:44:41 -0400
+        id S1730866AbgD1Sja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:39:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1758320575;
-        Tue, 28 Apr 2020 18:44:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D058E2076A;
+        Tue, 28 Apr 2020 18:39:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099481;
-        bh=PN4jNn1Z7lHaLyEx2Q1Lay4Up6Z1l3Ol4zb6ZLUoIsA=;
+        s=default; t=1588099170;
+        bh=9k/FokKsItlcC8TX5V0v7MIKCzs80FLIquJdVEOPSF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cFlSbV0gUBcTNjxwHCV/l7FBebdlualTzRYDFNaT0Yz5zmWYeuiKNJyzn7pfYoDrA
-         ltiLwYfDtll/kywAIMPwVJhaQnbYOXcFMzv06M+drVdkRVOE5zlTe8HXtSlBh39VxE
-         jsIZyc+TOHdrkxmn7ibOWLIf8R09i57zApbpXx3g=
+        b=UsBGJsHW8TV3eTlVCat7qbGDqGphtNw4QQePidLlzNWVdx9S3WDH7TVlQw5gWMLZM
+         TZXtBw6qkEagh14iiinZG9KwQ8XL43sSXNOZ3GebGw0WgVHvTvP18nL5+ZiByUURaR
+         Ke0OYQsAESz8QqEzsQJYpOWM6znDkinu3+AeK5wc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Subject: [PATCH 5.4 167/168] compat: ARM64: always include asm-generic/compat.h
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.6 165/167] powerpc/kuap: PPC_KUAP_DEBUG should depend on PPC_KUAP
 Date:   Tue, 28 Apr 2020 20:25:41 +0200
-Message-Id: <20200428182251.735456158@linuxfoundation.org>
+Message-Id: <20200428182246.485806480@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 556d687a4ccd54ab50a721ddde42c820545effd9 upstream.
+commit 61da50b76b62fd815aa82d853bf82bf4f69568f5 upstream.
 
-In order to use compat_* type defininitions in device drivers
-outside of CONFIG_COMPAT, move the inclusion of asm-generic/compat.h
-ahead of the #ifdef.
+Currently you can enable PPC_KUAP_DEBUG when PPC_KUAP is disabled,
+even though the former has not effect without the latter.
 
-All other architectures already do this.
+Fix it so that PPC_KUAP_DEBUG can only be enabled when PPC_KUAP is
+enabled, not when the platform could support KUAP (PPC_HAVE_KUAP).
 
-Acked-by: Will Deacon <will@kernel.org>
-Reviewed-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+Fixes: 890274c2dc4c ("powerpc/64s: Implement KUAP for Radix MMU")
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200301111738.22497-1-mpe@ellerman.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/include/asm/compat.h |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/powerpc/platforms/Kconfig.cputype |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm64/include/asm/compat.h
-+++ b/arch/arm64/include/asm/compat.h
-@@ -4,6 +4,9 @@
-  */
- #ifndef __ASM_COMPAT_H
- #define __ASM_COMPAT_H
-+
-+#include <asm-generic/compat.h>
-+
- #ifdef CONFIG_COMPAT
+--- a/arch/powerpc/platforms/Kconfig.cputype
++++ b/arch/powerpc/platforms/Kconfig.cputype
+@@ -397,7 +397,7 @@ config PPC_KUAP
  
- /*
-@@ -13,8 +16,6 @@
- #include <linux/sched.h>
- #include <linux/sched/task_stack.h>
- 
--#include <asm-generic/compat.h>
--
- #define COMPAT_USER_HZ		100
- #ifdef __AARCH64EB__
- #define COMPAT_UTS_MACHINE	"armv8b\0\0"
+ config PPC_KUAP_DEBUG
+ 	bool "Extra debugging for Kernel Userspace Access Protection"
+-	depends on PPC_HAVE_KUAP && (PPC_RADIX_MMU || PPC_32)
++	depends on PPC_KUAP && (PPC_RADIX_MMU || PPC_32)
+ 	help
+ 	  Add extra debugging for Kernel Userspace Access Protection (KUAP)
+ 	  If you're unsure, say N.
 
 
