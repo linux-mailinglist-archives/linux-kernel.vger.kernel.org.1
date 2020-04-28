@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04351BBCF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E811BBD11
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgD1MC3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Apr 2020 08:02:29 -0400
-Received: from albireo.enyo.de ([37.24.231.21]:47708 "EHLO albireo.enyo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgD1MC3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:02:29 -0400
-Received: from [172.17.203.2] (helo=deneb.enyo.de)
-        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1jTOwI-0000kx-RO; Tue, 28 Apr 2020 12:02:14 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1jTOwI-0003qD-Mx; Tue, 28 Apr 2020 14:02:14 +0200
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        carlos <carlos@redhat.com>, Rich Felker <dalias@libc.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ben Maurer <bmaurer@fb.com>, Dave Watson <davejwatson@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul <paulmck@linux.vnet.ibm.com>, Paul Turner <pjt@google.com>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>
-Subject: Re: [PATCH glibc 5/9] glibc: Perform rseq(2) registration at C startup and thread creation (v17)
-References: <20200326155633.18236-1-mathieu.desnoyers@efficios.com>
-        <20200326155633.18236-6-mathieu.desnoyers@efficios.com>
-        <87ees9z417.fsf@mid.deneb.enyo.de>
-        <284293396.70630.1588005648556.JavaMail.zimbra@efficios.com>
-        <87zhawvphv.fsf@mid.deneb.enyo.de>
-        <2102127737.70791.1588008377292.JavaMail.zimbra@efficios.com>
-Date:   Tue, 28 Apr 2020 14:02:14 +0200
-In-Reply-To: <2102127737.70791.1588008377292.JavaMail.zimbra@efficios.com>
-        (Mathieu Desnoyers's message of "Mon, 27 Apr 2020 13:26:17 -0400
-        (EDT)")
-Message-ID: <87ftcnrf7d.fsf@mid.deneb.enyo.de>
+        id S1726794AbgD1MH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 08:07:27 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:58576 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgD1MHZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 08:07:25 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SC3SLM037296;
+        Tue, 28 Apr 2020 12:06:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=OSf6jYhMrgn/dtTnYSI73L6/78HrXWbkBlk67OBSPnA=;
+ b=rO+Phk3amJ6wJjrSEgneLJoNdCOWQEChKG8r8NYnFFIEcRQh+MJSJkmsknbCkKd2H5Dx
+ ke9TGc7Avzv6OaYyC2rfBqo30QZ47ubVU14ZDYQWPvfuthALUDbfhJp1D8zXGJmbev5P
+ EjR8fSc9c/KBJXUQADZZur+ram+UBeV7SxiyDrJA2xc7F5lhrQ/2QmfuWp1fyaatlVYp
+ 5Co6yfDSUUZhzlDsOnhmoCuK45U3TPLZmXQqqpQnTp0r2DsV9D05OnHpq0Af6TfEs793
+ G7GfRNfx76JLBlIXEBHZtIgXrwgU9YJrprYYxmrmkEnOqiIf7pWB1pFGg8JRL32a/BPM 8w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 30p2p04qng-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 12:06:57 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SC2AoX004893;
+        Tue, 28 Apr 2020 12:04:56 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 30mxwyk421-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 12:04:56 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03SC4rdL001889;
+        Tue, 28 Apr 2020 12:04:53 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 28 Apr 2020 05:04:52 -0700
+Date:   Tue, 28 Apr 2020 15:04:45 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Rylan Dmello <mail@rylan.coffee>,
+        Kaaira Gupta <kgupta@es.iitr.ac.in>
+Cc:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        netdev@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, Benjamin Poirier <bpoirier@suse.com>,
+        Jiri Pirko <jpirko@redhat.com>
+Subject: Re: [PATCH 1/3] staging: qlge: Remove unnecessary parentheses around
+ struct field
+Message-ID: <20200428120445.GB2014@kadam>
+References: <cover.1587959245.git.mail@rylan.coffee>
+ <4dea7a7fae6a56c51cc19228b82a3c230029f54b.1587959245.git.mail@rylan.coffee>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4dea7a7fae6a56c51cc19228b82a3c230029f54b.1587959245.git.mail@rylan.coffee>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=25 spamscore=0 bulkscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004280097
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1011
+ bulkscore=0 adultscore=7 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004280097
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mathieu Desnoyers:
+On Mon, Apr 27, 2020 at 12:14:11AM -0400, Rylan Dmello wrote:
+> Remove unnecessary parentheses around a struct field accessor that
+> causes a build failure when QL_DEV_DUMP is set.
+> 
+> Signed-off-by: Rylan Dmello <mail@rylan.coffee>
 
->>>>> +/* struct rseq is aligned on 4 * 8 bytes to ensure it is always
->>>>> +   contained within a single cache-line.
->>>>> +
->>>>> +   A single struct rseq per thread is allowed.  */
->>>>> +struct rseq
->>>>> +  {
->>>>> +    /* Restartable sequences cpu_id_start field. Updated by the
->>>>> +       kernel. Read by user-space with single-copy atomicity
->>>>> +       semantics. This field should only be read by the thread which
->>>>> +       registered this data structure. Aligned on 32-bit. Always
->>>> 
->>>> What does “Aligned on 32-bit” mean in this context?  Do you mean to
->>>> reference 32-*byte* alignment here?
->>>
->>> No. I really mean 32-bit (4-byte). Being aligned on 32-byte guarantees that
->>> this field is aligned at least on 4-byte. This is required by single-copy
->>> atomicity semantics.
->>>
->>> Should I update this comment to state "Aligned on 4-byte" instead ?
->> 
->> I think this is implied by all Linux ABIs.  And the explicit alignment
->> specification for struct rseq makes the alignment 32 bytes.
->
-> Unless a structure ends up being packed, which is of course not the case
-> here.
->
-> I would prefer to keep the comment about 32-bit alignment requirement on
-> the specific fields, because the motivation for alignment requirement is
-> much more strict for fields (correctness) than the motivation for alignment
-> of the structure (performance).
+Add a Fixes tag.
 
-But the correctness is already enforced by the compiler, so I fail to
-see point of mentioning this in the comment.
+Fixes: 67e6cf7338e1 ("staging: qlge: add braces around macro arguments")
 
-Anyway, I don't want to make a big deal of it.  Please leave it in if
-you think it is ehlpful.
+regards,
+dan carpenter
 
-> x32 should not be an issue as explained above, so I'm very open to
-> add this "uptr" for user-space only.
-
-Okay, then please use anonymous unions and structs as necessary, to
-ensure that the uptr field can be reached on all platforms in the same
-way.
