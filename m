@@ -2,93 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5806C1BC636
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E431BC63A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728365AbgD1RLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 13:11:13 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:37204 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726406AbgD1RLN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 13:11:13 -0400
-Received: by mail-ot1-f68.google.com with SMTP id z17so33997457oto.4;
-        Tue, 28 Apr 2020 10:11:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hVsio4H/oSnPDCyfgcZlb6vT+XD+cHvZt/co039yHbU=;
-        b=IdRylEu6tUJq/KdFhwKVcBA7AZSSGbcs7gmdie4A8Yv3uvFyxqXtH1G2NrYElVWSNA
-         DflKhtWufCEF++diScg388aa5HthBfehFr4X4WlbMieKSDbnMBITkbF4jUld5A8i1IZU
-         VufRR8IcoSWo0PxEmYRShNS+kGF2iIgH5bGMsiwtII8sT8ddFt2h5TrD4Ml+RXejt4zq
-         5TJaK6Av9+ccyxL3ji/8D6qrq4YdDv2M4JjbwkPDzpkAOlNIdKzyoWjdvBris7oAj7Ch
-         Dc3bdIG4LJG61VKX52eshvhtdrZ4JSID1wM5Rj+QGsgxHi5+PM+uzHdyYpp7SusTwSF0
-         YWfQ==
-X-Gm-Message-State: AGi0PuaY+5ECX70nTWoHa7aMS6OjGYg3Uw+x+dXygU6CxlZ1F9Csa1Ss
-        4xNDQ7qd7dvEFd4QEtGOE244KeE=
-X-Google-Smtp-Source: APiQypL5LYB310e5RfdI4OFUNdaauACf0iYH252jmLvr9lS4LTJGLVCD65VVy46gj29dK/eDZwlyMg==
-X-Received: by 2002:a05:6808:109:: with SMTP id b9mr3594132oie.143.1588093872479;
-        Tue, 28 Apr 2020 10:11:12 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f21sm2485415oig.41.2020.04.28.10.11.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 10:11:11 -0700 (PDT)
-Received: (nullmailer pid 17717 invoked by uid 1000);
-        Tue, 28 Apr 2020 17:11:10 -0000
-Date:   Tue, 28 Apr 2020 12:11:10 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-team@android.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] of: property: Don't retry device_link_add() upon
- failure
-Message-ID: <20200428171110.GA17616@bogus>
-References: <20200416205838.161894-1-saravanak@google.com>
+        id S1728462AbgD1RLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 13:11:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:55814 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726406AbgD1RLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 13:11:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3FC6430E;
+        Tue, 28 Apr 2020 10:11:30 -0700 (PDT)
+Received: from [10.57.33.170] (unknown [10.57.33.170])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0ADD3F305;
+        Tue, 28 Apr 2020 10:11:27 -0700 (PDT)
+Subject: Re: Audio sound card name [was [PATCH 4/7] arm64: dts: allwinner:
+ a64: Add HDMI audio]
+To:     =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     devicetree <devicetree@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20200426120442.11560-1-peron.clem@gmail.com>
+ <20200426120442.11560-5-peron.clem@gmail.com>
+ <20200428080020.35qcuylwq2ylmubu@gilmour.lan>
+ <CAJiuCcc2LQ4L36KSfO8iLVFBUO6k+zsZFX+_Ovm_10PoWO4AsA@mail.gmail.com>
+ <20200428160417.6q5oab2guaumhhwi@gilmour.lan>
+ <CAJiuCccFFUJJzXwygLQbDK4fGJ61p72Hv7vj3WVP-=z=J1Yj0Q@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <031ee5d3-8a30-82ee-76db-c0e8a1073046@arm.com>
+Date:   Tue, 28 Apr 2020 18:11:26 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200416205838.161894-1-saravanak@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAJiuCccFFUJJzXwygLQbDK4fGJ61p72Hv7vj3WVP-=z=J1Yj0Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Apr 2020 13:58:38 -0700, Saravana Kannan wrote:
-> When of_link_to_phandle() was implemented initially, there was no way to
-> tell if device_link_add() was failing because the supplier device hasn't
-> been parsed yet, hasn't been added yet, the links were creating a cycle,
-> etc. Some of these were transient errors that'd go away at a later
-> point.
+On 2020-04-28 5:49 pm, Clément Péron wrote:
+> Hi Mark, Rob,
 > 
-> However, with the current set of improved checks, if device_link_add()
-> fails, it'll only be for permanent errors like cycles or out-of-memory
-> errors.
+> On Tue, 28 Apr 2020 at 18:04, Maxime Ripard <maxime@cerno.tech> wrote:
+>>
+>> On Tue, Apr 28, 2020 at 10:54:00AM +0200, Clément Péron wrote:
+>>> Hi Maxime,
+>>>
+>>> On Tue, 28 Apr 2020 at 10:00, Maxime Ripard <maxime@cerno.tech> wrote:
+>>>>
+>>>> On Sun, Apr 26, 2020 at 02:04:39PM +0200, Clément Péron wrote:
+>>>>> From: Marcus Cooper <codekipper@gmail.com>
+>>>>>
+>>>>> Add a simple-soundcard to link audio between HDMI and I2S.
+>>>>>
+>>>>> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+>>>>> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+>>>>> Signed-off-by: Clément Péron <peron.clem@gmail.com>
+>>>>> ---
+>>>>>   arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 21 +++++++++++++++++++
+>>>>>   1 file changed, 21 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+>>>>> index e56e1e3d4b73..08ab6b5e72a5 100644
+>>>>> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+>>>>> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+>>>>> @@ -102,6 +102,25 @@
+>>>>>                status = "disabled";
+>>>>>        };
+>>>>>
+>>>>> +     hdmi_sound: hdmi-sound {
+>>>>> +             compatible = "simple-audio-card";
+>>>>> +             simple-audio-card,format = "i2s";
+>>>>> +             simple-audio-card,name = "allwinner,hdmi";
+>>>>
+>>>> I'm not sure what the usual card name should be like though. I would assume that
+>>>> this should be something specific enough so that you're able to differentiate
+>>>> between boards / SoC so that the userspace can choose a different configuration
+>>>> based on it?
+>>>
+>>> I really don't know what we should use here,
+>>> I just have a look at other SoC:
+>>> rk3328: "HDMI"
+>>> rk3399: "hdmi-sound"
+>>> r8a774c0-cat874: "CAT874 HDMI sound"
+>>>
+>>> But maybe it's time to introduce proper name:
+>>> What about :
+>>> pat
+>>> sun50i-h6-hdmi
+>>
+>> It's pretty much what we've been using for the other sound cards we have, so it
+>> makes sense to me.
 > 
-> Also, with the addition of DL_FLAG_SYNC_STATE_ONLY flag [1] to device
-> links, all the valid dependency cycles due to "proxy" device links
-> (needed for correctness of sync_state() device callback) will never fail
-> device_link_add() due to cycles.
+> I have a question regarding the simple-audio-card,name.
+> In this patch, I would like to introduce a simple-audio-card for the
+> Allwinner A64 HDMI.
 > 
-> So, continuing to retry failing device links (by returning -EAGAIN) is
-> no longer useful. At worst, it prevents platforms from setting
-> fw_devlink=on (or better) because it prevents proper boot up. So, let's
-> not do that anymore.
-> 
-> [1] - https://lore.kernel.org/lkml/20191028220027.251605-1-saravanak@google.com/
-> Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  drivers/of/property.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+> What should be the preferred name for this sound card?
+> "sun50i-a64-hdmi" ? "allwinner, sun50i-a64-hdmi" ?
 
-Applied, thanks.
+I can at least speak for RK3328, and the reasoning there was that as the 
+user looking at what `aplay -l` says, I don't give a hoot about what the 
+SoC may be called, I see two cards and I want to know, with the least 
+amount of uncertainty, which one will make the sound come out of the 
+port that's labelled "HDMI" on the box ;)
 
-Rob
+Robin.
