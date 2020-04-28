@@ -2,118 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C621BCC10
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605E61BCC08
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728887AbgD1TFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 15:05:20 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:35112 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728777AbgD1TFT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 15:05:19 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SIwkx8029355;
-        Tue, 28 Apr 2020 19:05:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=4nI+wEGFfrdWDDzaHjo9Ldz40UivhTylcpIh/VH8/r0=;
- b=Wlm/MYlJnPlyZyAL6CSOUDbfC3MspXPq8LL+QC+hPmOivWaB72JP1ox2ymQ+KjytVycQ
- xA0v3QnrN8ukgnKowqvIBNSSIMvZ1laqia6+wBoSbxLoERyXZtf61i1GRP6Sesg8iWp6
- rxKVCHwCF9qyN/2CUnTvti59iV3cjPFsM2XWrbRIyDHwlhtTS8Y9ZGblNpXx8KN+jnPh
- 2svHv9yi9jKdxO5bPGi2784mVlECmys4hDafDrq7ismJdCHtdG9cx1LcU2R1DbBqXB7a
- SYSy8GLqV0jsUP7BGk9XvR0WuwxQLia1fS6CYkKWx9+5lfEFkxCgN9Ww3vVBIZM8heIU OA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 30nucg1v19-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Apr 2020 19:05:14 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SIvuWv121231;
-        Tue, 28 Apr 2020 19:03:13 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 30mxx0gu9h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Apr 2020 19:03:13 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03SJ3Coa027361;
-        Tue, 28 Apr 2020 19:03:12 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 28 Apr 2020 12:03:12 -0700
-Date:   Tue, 28 Apr 2020 22:03:06 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     Suraj Upadhyay <usuraj35@gmail.com>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] staging: wfx: cleanup long lines in data_tx.c
-Message-ID: <20200428190306.GM2014@kadam>
-References: <20200425113234.GA14492@blackclown>
- <8518467.FNpd3NTrYF@pc-42>
+        id S1728657AbgD1TDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:03:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728539AbgD1TDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 15:03:39 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 026DE206A1;
+        Tue, 28 Apr 2020 19:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588100619;
+        bh=bq2Ry7YDkP+guG9GE3lk3Dcu/BwjlgDRMOvlmkR2+eQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lLB3Ve5xabIMRXaegfagjdTWWG43N/8nmRHntZYu70H60rCKCV3vU/GdI2n2BvTaS
+         lW0S43bFHpqRpx9D538wBW3u1yc01q3/io20bIYYf1aL7j0Cqxh1IwlDDbNpBrR2KG
+         XPcZGzsIchhPJ7LuggGodw6Tbo90pvYhrinJV+IY=
+Date:   Tue, 28 Apr 2020 21:03:37 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     sathyanarayanan.kuppuswamy@linux.intel.com
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] drivers: base: Fix NULL pointer exception in
+ __platform_driver_probe()
+Message-ID: <20200428190337.GA1719585@kroah.com>
+References: <20200408214003.3356-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8518467.FNpd3NTrYF@pc-42>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 bulkscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004280150
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004280150
+In-Reply-To: <20200408214003.3356-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 11:50:23AM +0000, Jerome Pouiller wrote:
-> On Saturday 25 April 2020 13:32:34 CEST Suraj Upadhyay wrote:
-> > Break lines with length over 80 characters to
-> > conform to the linux coding style and refactor
-> > wherever necessary.
-> > 
-> > Signed-off-by: Suraj Upadhyay <usuraj35@gmail.com>
-> > ---
-> > 
-> > Changes in v4:
-> > 	- Added a space after declaration in wfx_get_hw_rate().
-> > 	- A checkpatch warning for this commit is retained at line 75,
-> > 	  to maintain uniformity in function declarations. (Reviewer
-> > 	  jerome suggested).
-> > 
-> > Changes in v3:
-> >         - Changed the temporary variable name for the memzcmp statement
-> >           to is_used. (as suggested).
-> >         - Added a temporary ieee80211_supported_band variable to address
-> >           the problem in wfx_get_hw_rate() more efficiently. (not
-> >           suggested, but still).
-> > 
-> > Changes in v2:
-> >         - Introduced a temporary variable for the memzcmp statement.
-> >         - Addressed the checkpatch problem with wfx_get_hw_rate().
-> >         - Restored the function definition of wfx_tx_get_tx_parms
-> >           as suggested by the reviewer.
-> >         - Added suggested changes for req->packet_id statement.
-> > 
-> >  drivers/staging/wfx/data_tx.c | 40 +++++++++++++++++++++++------------
-> >  1 file changed, 26 insertions(+), 14 deletions(-)
+On Wed, Apr 08, 2020 at 02:40:03PM -0700, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > 
-> This patch does not contain the suggestions from Dan. However, it is
-> sufficient from my personal point of view.
+> If platform bus driver registration is failed then,
 
-Yeah.  It's fine.  It wasn't 100% cut and paste from my suggestions but
-it did address the stuff I cared about.  Thanks!
+How is your platform driver registration failing?  What caused that, is
+it an in-kernel problem with something?  How can it be triggered?
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+thanks,
 
-regards,
-dan carpenter
-
+greg k-h
