@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914D31BC8DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3FF1BC800
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730380AbgD1Sg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:36:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53728 "EHLO mail.kernel.org"
+        id S1728663AbgD1S2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:28:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730369AbgD1SgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:36:19 -0400
+        id S1729192AbgD1S21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:28:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CA5B20730;
-        Tue, 28 Apr 2020 18:36:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC69B2085B;
+        Tue, 28 Apr 2020 18:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098978;
-        bh=hVGd1XVXIQixtTCRrA9xVPLTqm8xr2yA0JSWE2QJe5Y=;
+        s=default; t=1588098507;
+        bh=9RzJxy4Upa/s9eKqiIKMjlPo8dJwUDtbafz0tltfjg4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YdmLdoNbH5rGjLvIzjirr4YUeSpd6lkRncOzyGACKtvKzRywEgPHYn46FFKvAv77h
-         1APf155bI3qzDp4Wl8VR6k84zG20YTC2ImtiC+M5mVGyUTOSSRbJG1mz/pC4SWsYYO
-         bhC2NjAwatk7pAToacCNaymwsDM66qavgwIK1bKs=
+        b=umbcx7PdMr6emy1hkFlMB5NkJ5kXsQl5iLUUP+u+FhlQ0YrKQ1o0UgyWYJPCGgjrY
+         NTUJWvnnWMq2C42mDEYSwMprgR23fl6eYb8EQsTmPazxPOn9DpyadLWsHrCpUmgBYo
+         WzlCRL6PQJZxFVUgswhUyeAltVvXRsiwuhV2yOH8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 041/168] xhci: Ensure link state is U3 after setting USB_SS_PORT_LS_U3
-Date:   Tue, 28 Apr 2020 20:23:35 +0200
-Message-Id: <20200428182237.018243861@linuxfoundation.org>
+        stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.19 004/131] crypto: mxs-dcp - make symbols sha1_null_hash and sha256_null_hash static
+Date:   Tue, 28 Apr 2020 20:23:36 +0200
+Message-Id: <20200428182225.921213644@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,54 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit eb002726fac7cefb98ff39ddb89e150a1c24fe85 ]
+commit ce4e45842de3eb54b8dd6e081765d741f5b92b56 upstream.
 
-The xHCI spec doesn't specify the upper bound of U3 transition time. For
-some devices 20ms is not enough, so we need to make sure the link state
-is in U3 before further actions.
+Fixes the following sparse warnings:
 
-I've tried to use U3 Entry Capability by setting U3 Entry Enable in
-config register, however the port change event for U3 transition
-interrupts the system suspend process.
+drivers/crypto/mxs-dcp.c:39:15: warning:
+ symbol 'sha1_null_hash' was not declared. Should it be static?
+drivers/crypto/mxs-dcp.c:43:15: warning:
+ symbol 'sha256_null_hash' was not declared. Should it be static?
 
-For now let's use the less ideal method by polling PLS.
-
-[use usleep_range(), and shorten the delay time while polling -Mathias]
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200312144517.1593-7-mathias.nyman@linux.intel.com
+Fixes: c709eebaf5c5 ("crypto: mxs-dcp - Fix SHA null hashes and output length")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/usb/host/xhci-hub.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/crypto/mxs-dcp.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
-index af92b2576fe91..712cd44f05ace 100644
---- a/drivers/usb/host/xhci-hub.c
-+++ b/drivers/usb/host/xhci-hub.c
-@@ -1322,7 +1322,16 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
- 			xhci_set_link_state(xhci, ports[wIndex], link_state);
+--- a/drivers/crypto/mxs-dcp.c
++++ b/drivers/crypto/mxs-dcp.c
+@@ -37,11 +37,11 @@
+  * Null hashes to align with hw behavior on imx6sl and ull
+  * these are flipped for consistency with hw output
+  */
+-const uint8_t sha1_null_hash[] =
++static const uint8_t sha1_null_hash[] =
+ 	"\x09\x07\xd8\xaf\x90\x18\x60\x95\xef\xbf"
+ 	"\x55\x32\x0d\x4b\x6b\x5e\xee\xa3\x39\xda";
  
- 			spin_unlock_irqrestore(&xhci->lock, flags);
--			msleep(20); /* wait device to enter */
-+			if (link_state == USB_SS_PORT_LS_U3) {
-+				int retries = 16;
-+
-+				while (retries--) {
-+					usleep_range(4000, 8000);
-+					temp = readl(ports[wIndex]->addr);
-+					if ((temp & PORT_PLS_MASK) == XDEV_U3)
-+						break;
-+				}
-+			}
- 			spin_lock_irqsave(&xhci->lock, flags);
- 
- 			temp = readl(ports[wIndex]->addr);
--- 
-2.20.1
-
+-const uint8_t sha256_null_hash[] =
++static const uint8_t sha256_null_hash[] =
+ 	"\x55\xb8\x52\x78\x1b\x99\x95\xa4"
+ 	"\x4c\x93\x9b\x64\xe4\x41\xae\x27"
+ 	"\x24\xb9\x6f\x99\xc8\xf4\xfb\x9a"
 
 
