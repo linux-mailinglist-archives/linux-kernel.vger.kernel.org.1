@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EFB1BCC37
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC211BCC35
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729082AbgD1TT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 15:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
+        id S1729027AbgD1TTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:19:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728977AbgD1TTv (ORCPT
+        by vger.kernel.org with ESMTP id S1728956AbgD1TTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 15:19:51 -0400
+        Tue, 28 Apr 2020 15:19:50 -0400
 Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D550C03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 12:19:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413B9C03C1AD
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 12:19:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=IQ7X3Fo5RYyl4BVwXbzl8zEN5+FmXEnjyhxrg7RmT84=; b=oIg0czH4cafBNpm002T+tkGkZG
-        4aZ98ArC+Ib7D1blCpoaxSwm4HdDNanRDf2rxMRsnA4pP57SwQnJAA9lWUMxKsbc1Jf0vmBAXrQSt
-        9g/Yw7Dmq7RxdvUcidmjNmgCNUsuHx3bnBU98PTAtPyI/Ft+/GF274mfr0abaDvrfdgGOEvGqh/v3
-        Zo0/oQ2cqu/L/4zlDfGCC6/QzjCJeZb2MWqZODVhYaWqhMtop2DB9jOwR3AgS25VJVHPjE3UW8DAI
-        yV8tHVsDk3A/Oll/YlelblTknXsweX8aLaB0qTL9Dh4QLlMr7itBdQJkY+SjycHvAFluLDZC+iYwW
-        J4eYlEZQ==;
+        bh=5ZRP2prB3+4lkffpS1QqktaqknTbNafSKFsaH4UcQQ4=; b=iGk7+i0iQoW+1UqJb2JYN+zafy
+        sXngHyPQav1rnMjZYqSILWwNrLpui4uiMGt/UMsix3WlIR1jB4uQZAHrXdpHJ36sUoxZaDQvFXfbQ
+        TTga4nPbELLWe0YmxYLZrN49abCFFyvYul7qi+lCSDFKdgKBGqNZwafs14Vhs7j/CIxD4DKB+Vc1R
+        J7Z2b5qxHB56COcy/547/Pi/QhJbS9ZHPmcMbW4GmlAAXIvsQ4mp4cVwWMtQL9Wd0aD2e8KLan1L8
+        AiFetYahkb2ytkbypdwJ+Lj39NMM7sthZt9rCGPO/Lo7cI1xLd9PdH/HiorbycRGf7T/62kToz3yq
+        DOueq7bg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTVlR-0007kz-WA; Tue, 28 Apr 2020 19:19:30 +0000
+        id 1jTVlR-0007l0-M6; Tue, 28 Apr 2020 19:19:30 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BAA28307770;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BDB9330793E;
         Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 9536F25D01316; Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
-Message-Id: <20200428191659.913283807@infradead.org>
+        id 9A55E25D01319; Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
+Message-Id: <20200428191659.972514813@infradead.org>
 User-Agent: quilt/0.65
-Date:   Tue, 28 Apr 2020 21:11:10 +0200
+Date:   Tue, 28 Apr 2020 21:11:11 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
 Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
         tglx@linutronix.de, x86@kernel.org, mbenes@suse.cz,
         peterz@infradead.org
-Subject: [PATCH v2 09/14] objtool: Move the IRET hack into the arch decoder
+Subject: [PATCH v2 10/14] objtool: Add support for intra-function calls
 References: <20200428191101.886208539@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,133 +52,195 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miroslav Benes <mbenes@suse.cz>
+From: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-Quoting Julien:
+Change objtool to support intra-function calls. On x86, an intra-function
+call is represented in objtool as a push onto the stack (of the return
+address), and a jump to the destination address. That way the stack
+information is correctly updated and the call flow is still accurate.
 
-  "And the other suggestion is my other email was that you don't even
-  need to add INSN_EXCEPTION_RETURN. You can keep IRET as
-  INSN_CONTEXT_SWITCH by default and x86 decoder lookups the symbol
-  conaining an iret. If it's a function symbol, it can just set the type
-  to INSN_OTHER so that it caries on to the next instruction after
-  having handled the stack_op."
-
-Suggested-by: Julien Thierry <jthierry@redhat.com>
-Signed-off-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200414103618.12657-4-alexandre.chartre@oracle.com
 ---
- tools/objtool/arch.h            |    1 -
- tools/objtool/arch/x86/decode.c |   28 ++++++++++++++++++----------
- tools/objtool/check.c           |   11 -----------
- tools/objtool/elf.c             |    4 ++--
- tools/objtool/elf.h             |    2 +-
- 5 files changed, 21 insertions(+), 25 deletions(-)
+ include/linux/frame.h                            |   11 +++
+ tools/objtool/Documentation/stack-validation.txt |    8 ++
+ tools/objtool/arch/x86/decode.c                  |    8 ++
+ tools/objtool/check.c                            |   79 +++++++++++++++++++++--
+ 4 files changed, 102 insertions(+), 4 deletions(-)
 
---- a/tools/objtool/arch.h
-+++ b/tools/objtool/arch.h
-@@ -19,7 +19,6 @@ enum insn_type {
- 	INSN_CALL,
- 	INSN_CALL_DYNAMIC,
- 	INSN_RETURN,
--	INSN_EXCEPTION_RETURN,
- 	INSN_CONTEXT_SWITCH,
- 	INSN_BUG,
- 	INSN_NOP,
+--- a/include/linux/frame.h
++++ b/include/linux/frame.h
+@@ -15,9 +15,20 @@
+ 	static void __used __section(.discard.func_stack_frame_non_standard) \
+ 		*__func_stack_frame_non_standard_##func = func
+ 
++/*
++ * This macro indicates that the following intra-function call is valid.
++ * Any non-annotated intra-function call will cause objtool to issue a warning.
++ */
++#define ANNOTATE_INTRA_FUNCTION_CALL				\
++	999:							\
++	.pushsection .discard.intra_function_calls;		\
++	.long 999b;						\
++	.popsection;
++
+ #else /* !CONFIG_STACK_VALIDATION */
+ 
+ #define STACK_FRAME_NON_STANDARD(func)
++#define ANNOTATE_INTRA_FUNCTION_CALL
+ 
+ #endif /* CONFIG_STACK_VALIDATION */
+ 
+--- a/tools/objtool/Documentation/stack-validation.txt
++++ b/tools/objtool/Documentation/stack-validation.txt
+@@ -323,6 +323,14 @@ they mean, and suggestions for how to fi
+     The easiest way to enforce this is to ensure alternative do not contain
+     any ORC entries, which in turn implies the above constraint.
+ 
++11. file.o: warning: unannotated intra-function call
++
++   This warning means that a direct call is done to a destination which
++   is not at the beginning of a function. If this is a legit call, you
++   can remove this warning by putting the ANNOTATE_INTRA_FUNCTION_CALL
++   directive right before the call.
++
++
+ If the error doesn't seem to make sense, it could be a bug in objtool.
+ Feel free to ask the objtool maintainer for help.
+ 
 --- a/tools/objtool/arch/x86/decode.c
 +++ b/tools/objtool/arch/x86/decode.c
-@@ -94,6 +94,7 @@ int arch_decode_instruction(const struct
- 		      rex_x = 0, modrm = 0, modrm_mod = 0, modrm_rm = 0,
- 		      modrm_reg = 0, sib = 0;
- 	struct stack_op *op = NULL;
-+	struct symbol *sym;
+@@ -496,6 +496,14 @@ int arch_decode_instruction(const struct
  
- 	x86_64 = is_x86_64(elf);
- 	if (x86_64 == -1)
-@@ -469,17 +470,24 @@ int arch_decode_instruction(const struct
+ 	case 0xe8:
+ 		*type = INSN_CALL;
++		/*
++		 * For the impact on the stack, a CALL behaves like
++		 * a PUSH of an immediate value (the return address).
++		 */
++		ADD_OP(op) {
++			op->src.type = OP_SRC_CONST;
++			op->dest.type = OP_DEST_PUSH;
++		}
  		break;
  
- 	case 0xcf: /* iret */
--		*type = INSN_EXCEPTION_RETURN;
--
--		ADD_OP(op) {
--			/* add $40, %rsp */
--			op->src.type = OP_SRC_ADD;
--			op->src.reg = CFI_SP;
--			op->src.offset = 5*8;
--			op->dest.type = OP_DEST_REG;
--			op->dest.reg = CFI_SP;
-+		/*
-+		 * Handle sync_core(), which has an IRET to self.
-+		 * All other IRET are in STT_NONE entry code.
-+		 */
-+		sym = find_symbol_containing(sec, offset);
-+		if (sym && sym->type == STT_FUNC) {
-+			ADD_OP(op) {
-+				/* add $40, %rsp */
-+				op->src.type = OP_SRC_ADD;
-+				op->src.reg = CFI_SP;
-+				op->src.offset = 5*8;
-+				op->dest.type = OP_DEST_REG;
-+				op->dest.reg = CFI_SP;
-+			}
-+			break;
- 		}
--		break;
-+
-+		/* fallthrough */
- 
- 	case 0xca: /* retf */
- 	case 0xcb: /* retf */
+ 	case 0xfc:
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -2308,17 +2308,6 @@ static int validate_branch(struct objtoo
- 
- 			break;
- 
--		case INSN_EXCEPTION_RETURN:
--			/*
--			 * This handles x86's sync_core() case, where we use an
--			 * IRET to self. All 'normal' IRET instructions are in
--			 * STT_NOTYPE entry symbols.
--			 */
--			if (func)
--				break;
--
--			return 0;
--
- 		case INSN_CONTEXT_SWITCH:
- 			if (func && (!next_insn || !next_insn->hint)) {
- 				WARN_FUNC("unsupported instruction in callable function",
---- a/tools/objtool/elf.c
-+++ b/tools/objtool/elf.c
-@@ -61,7 +61,7 @@ static void rb_add(struct rb_root *tree,
- 	rb_insert_color(node, tree);
+@@ -692,6 +692,16 @@ static int add_jump_destinations(struct
+ 	return 0;
  }
  
--static struct rb_node *rb_find_first(struct rb_root *tree, const void *key,
-+static struct rb_node *rb_find_first(const struct rb_root *tree, const void *key,
- 			       int (*cmp)(const void *key, const struct rb_node *))
- {
- 	struct rb_node *node = tree->rb_node;
-@@ -189,7 +189,7 @@ struct symbol *find_func_by_offset(struc
- 	return NULL;
++static void remove_insn_ops(struct instruction *insn)
++{
++	struct stack_op *op, *tmp;
++
++	list_for_each_entry_safe(op, tmp, &insn->stack_ops, list) {
++		list_del(&op->list);
++		free(op);
++	}
++}
++
+ /*
+  * Find the destination instructions for all calls.
+  */
+@@ -717,10 +727,7 @@ static int add_call_destinations(struct
+ 				continue;
+ 
+ 			if (!insn->call_dest) {
+-				WARN_FUNC("unsupported intra-function call",
+-					  insn->sec, insn->offset);
+-				if (retpoline)
+-					WARN("If this is a retpoline, please patch it in with alternatives and annotate it with ANNOTATE_NOSPEC_ALTERNATIVE.");
++				WARN_FUNC("unannotated intra-function call", insn->sec, insn->offset);
+ 				return -1;
+ 			}
+ 
+@@ -743,6 +750,15 @@ static int add_call_destinations(struct
+ 			}
+ 		} else
+ 			insn->call_dest = rela->sym;
++
++		/*
++		 * Whatever stack impact regular CALLs have, should be undone
++		 * by the RETURN of the called function.
++		 *
++		 * Annotated intra-function calls retain the stack_ops but
++		 * are converted to JUMP, see read_intra_function_calls().
++		 */
++		remove_insn_ops(insn);
+ 	}
+ 
+ 	return 0;
+@@ -1422,6 +1438,57 @@ static int read_instr_hints(struct objto
+ 	return 0;
  }
  
--struct symbol *find_symbol_containing(struct section *sec, unsigned long offset)
-+struct symbol *find_symbol_containing(const struct section *sec, unsigned long offset)
++static int read_intra_function_calls(struct objtool_file *file)
++{
++	struct instruction *insn;
++	struct section *sec;
++	struct rela *rela;
++
++	sec = find_section_by_name(file->elf, ".rela.discard.intra_function_calls");
++	if (!sec)
++		return 0;
++
++	list_for_each_entry(rela, &sec->rela_list, list) {
++		unsigned long dest_off;
++
++		if (rela->sym->type != STT_SECTION) {
++			WARN("unexpected relocation symbol type in %s",
++			     sec->name);
++			return -1;
++		}
++
++		insn = find_insn(file, rela->sym->sec, rela->addend);
++		if (!insn) {
++			WARN("bad .discard.intra_function_call entry");
++			return -1;
++		}
++
++		if (insn->type != INSN_CALL) {
++			WARN_FUNC("intra_function_call not a direct call",
++				  insn->sec, insn->offset);
++			return -1;
++		}
++
++		/*
++		 * Treat intra-function CALLs as JMPs, but with a stack_op.
++		 * See add_call_destinations(), which strips stack_ops from
++		 * normal CALLs.
++		 */
++		insn->type = INSN_JUMP_UNCONDITIONAL;
++
++		dest_off = insn->offset + insn->len + insn->immediate;
++		insn->jump_dest = find_insn(file, insn->sec, dest_off);
++		if (!insn->jump_dest) {
++			WARN_FUNC("can't find call dest at %s+0x%lx",
++				  insn->sec, insn->offset,
++				  insn->sec->name, dest_off);
++			return -1;
++		}
++	}
++
++	return 0;
++}
++
+ static void mark_rodata(struct objtool_file *file)
  {
- 	struct rb_node *node;
+ 	struct section *sec;
+@@ -1477,6 +1544,10 @@ static int decode_sections(struct objtoo
+ 	if (ret)
+ 		return ret;
  
---- a/tools/objtool/elf.h
-+++ b/tools/objtool/elf.h
-@@ -124,7 +124,7 @@ struct section *find_section_by_name(con
- struct symbol *find_func_by_offset(struct section *sec, unsigned long offset);
- struct symbol *find_symbol_by_offset(struct section *sec, unsigned long offset);
- struct symbol *find_symbol_by_name(const struct elf *elf, const char *name);
--struct symbol *find_symbol_containing(struct section *sec, unsigned long offset);
-+struct symbol *find_symbol_containing(const struct section *sec, unsigned long offset);
- struct rela *find_rela_by_dest(const struct elf *elf, struct section *sec, unsigned long offset);
- struct rela *find_rela_by_dest_range(const struct elf *elf, struct section *sec,
- 				     unsigned long offset, unsigned int len);
++	ret = read_intra_function_calls(file);
++	if (ret)
++		return ret;
++
+ 	ret = add_call_destinations(file);
+ 	if (ret)
+ 		return ret;
 
 
