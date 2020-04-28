@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9971BCB75
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F4E1BC934
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729528AbgD1S5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:57:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45042 "EHLO mail.kernel.org"
+        id S1730731AbgD1Sjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:39:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729491AbgD1SaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:30:22 -0400
+        id S1730870AbgD1Sjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:39:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DE9F2076A;
-        Tue, 28 Apr 2020 18:30:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 489A62085B;
+        Tue, 28 Apr 2020 18:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098621;
-        bh=LJPNTG9+CksbqGWw/Lw0H/aPHnvQKgLfs3lHpxgohkI=;
+        s=default; t=1588099172;
+        bh=PDn7z5TjoQE7tSSAS//QLkvjBMmkHUo1fAqHroZxP34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ofhWtR5qzdFtMnB0haR+s6JV0dzbfnNPPERlBXm3vMl82OXucIfZczWw24YbBps2k
-         nUF/C866P+0z8HrUlqHoA2m6wuKRRUcZ27sYrZh+axr7Zi64LN6pwgksOHNBFdUASr
-         WTjU0uBS4Hp9BGg6X9KS/ECeDRtiJHvzOCiWRu7w=
+        b=BwYCF2tSlzcr9YfYkG+h5IAiCqqpH79QJ+zdSh7jVCQAF1LL6l21COd5luJ2iJOaK
+         LbCsAIeKAhDKVVqfFvL0If+ufr8ag4HYXXTh7qylSasY+wShSoSjYjaQYTpkvwOFYD
+         rt977W2+aKsKqbJY17Mw9SeoHnDgd+/kyoHvBRVY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 029/131] perf/core: Disable page faults when getting phys address
-Date:   Tue, 28 Apr 2020 20:24:01 +0200
-Message-Id: <20200428182228.805413119@linuxfoundation.org>
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 068/168] net/x25: Fix x25_neigh refcnt leak when receiving frame
+Date:   Tue, 28 Apr 2020 20:24:02 +0200
+Message-Id: <20200428182240.523297736@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,71 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit d3296fb372bf7497b0e5d0478c4e7a677ec6f6e9 ]
+[ Upstream commit f35d12971b4d814cdb2f659d76b42f0c545270b6 ]
 
-We hit following warning when running tests on kernel
-compiled with CONFIG_DEBUG_ATOMIC_SLEEP=y:
+x25_lapb_receive_frame() invokes x25_get_neigh(), which returns a
+reference of the specified x25_neigh object to "nb" with increased
+refcnt.
 
- WARNING: CPU: 19 PID: 4472 at mm/gup.c:2381 __get_user_pages_fast+0x1a4/0x200
- CPU: 19 PID: 4472 Comm: dummy Not tainted 5.6.0-rc6+ #3
- RIP: 0010:__get_user_pages_fast+0x1a4/0x200
- ...
- Call Trace:
-  perf_prepare_sample+0xff1/0x1d90
-  perf_event_output_forward+0xe8/0x210
-  __perf_event_overflow+0x11a/0x310
-  __intel_pmu_pebs_event+0x657/0x850
-  intel_pmu_drain_pebs_nhm+0x7de/0x11d0
-  handle_pmi_common+0x1b2/0x650
-  intel_pmu_handle_irq+0x17b/0x370
-  perf_event_nmi_handler+0x40/0x60
-  nmi_handle+0x192/0x590
-  default_do_nmi+0x6d/0x150
-  do_nmi+0x2f9/0x3c0
-  nmi+0x8e/0xd7
+When x25_lapb_receive_frame() returns, local variable "nb" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
 
-While __get_user_pages_fast() is IRQ-safe, it calls access_ok(),
-which warns on:
+The reference counting issue happens in one path of
+x25_lapb_receive_frame(). When pskb_may_pull() returns false, the
+function forgets to decrease the refcnt increased by x25_get_neigh(),
+causing a refcnt leak.
 
-  WARN_ON_ONCE(!in_task() && !pagefault_disabled())
+Fix this issue by calling x25_neigh_put() when pskb_may_pull() returns
+false.
 
-Peter suggested disabling page faults around __get_user_pages_fast(),
-which gets rid of the warning in access_ok() call.
-
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20200407141427.3184722-1-jolsa@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: cb101ed2c3c7 ("x25: Handle undersized/fragmented skbs")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/events/core.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ net/x25/x25_dev.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 8c70ee23fbe91..00fb2fe92c4d6 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6411,9 +6411,12 @@ static u64 perf_virt_to_phys(u64 virt)
- 		 * Try IRQ-safe __get_user_pages_fast first.
- 		 * If failed, leave phys_addr as 0.
- 		 */
--		if ((current->mm != NULL) &&
--		    (__get_user_pages_fast(virt, 1, 0, &p) == 1))
--			phys_addr = page_to_phys(p) + virt % PAGE_SIZE;
-+		if (current->mm != NULL) {
-+			pagefault_disable();
-+			if (__get_user_pages_fast(virt, 1, 0, &p) == 1)
-+				phys_addr = page_to_phys(p) + virt % PAGE_SIZE;
-+			pagefault_enable();
-+		}
+--- a/net/x25/x25_dev.c
++++ b/net/x25/x25_dev.c
+@@ -115,8 +115,10 @@ int x25_lapb_receive_frame(struct sk_buf
+ 		goto drop;
+ 	}
  
- 		if (p)
- 			put_page(p);
--- 
-2.20.1
-
+-	if (!pskb_may_pull(skb, 1))
++	if (!pskb_may_pull(skb, 1)) {
++		x25_neigh_put(nb);
+ 		return 0;
++	}
+ 
+ 	switch (skb->data[0]) {
+ 
 
 
