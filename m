@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87591BC91C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123941BC905
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730665AbgD1Sio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:38:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57172 "EHLO mail.kernel.org"
+        id S1730552AbgD1Shx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:37:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729936AbgD1Sij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:38:39 -0400
+        id S1730544AbgD1Shu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:37:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB5E920575;
-        Tue, 28 Apr 2020 18:38:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AFD7620575;
+        Tue, 28 Apr 2020 18:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099119;
-        bh=aLkelBpeaUGa3Ws4vfD7/WVsuk/HkvmPey6pJ3eLsJI=;
+        s=default; t=1588099070;
+        bh=nZOTCztkrvm3VQFpmLiXSlzVzJMlPmcb9EM8YgnLKNc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eAChhUM6utFDBRW3fT9jUOhttJVLCZNV0wc0Uf+6N5T/KjUU+Y/e/YnIRafVLo+vK
-         +Zu+PHT4X3Ozn37ra511qjRJPNLqS3wbLbTYo25lLU1tTq8uQnf+ZdbtaKnOLqUygZ
-         TWfxQzy+pZysq8j15JfnSUCStExVjjUx3XQDC1pA=
+        b=iLibpF3oB31lNDOGQ9+HDkdr3Seck4eVuxyHIFSxZKnfESXab5FK+7yPcwrC12ZGD
+         1tpY82dYkfQfhd3gka6nsVVbQKoXn9FS6SmpPwR/NPSI6Em8dBShZy9cE2Qnb1MYT7
+         ogX+Qtgj0pVqsWYh464dFG6JY5CBJ3p+unYFgwcs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Subject: [PATCH 4.19 099/131] tpm/tpm_tis: Free IRQ if probing fails
-Date:   Tue, 28 Apr 2020 20:25:11 +0200
-Message-Id: <20200428182237.557113757@linuxfoundation.org>
+        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>
+Subject: [PATCH 5.6 136/167] vt: dont hardcode the mem allocation upper bound
+Date:   Tue, 28 Apr 2020 20:25:12 +0200
+Message-Id: <20200428182242.697621873@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,48 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+From: Nicolas Pitre <nico@fluxnic.net>
 
-commit b160c94be5d2816b62c8ac338605668304242959 upstream.
+commit 2717769e204e83e65b8819c5e2ef3e5b6639b270 upstream.
 
-Call disable_interrupts() if we have to revert to polling in order not to
-unnecessarily reserve the IRQ for the life-cycle of the driver.
+The code in vc_do_resize() bounds the memory allocation size to avoid
+exceeding MAX_ORDER down the kzalloc() call chain and generating a
+runtime warning triggerable from user space. However, not only is it
+unwise to use a literal value here, but MAX_ORDER may also be
+configurable based on CONFIG_FORCE_MAX_ZONEORDER.
+Let's use KMALLOC_MAX_SIZE instead.
 
-Cc: stable@vger.kernel.org # 4.5.x
-Reported-by: Hans de Goede <hdegoede@redhat.com>
-Fixes: e3837e74a06d ("tpm_tis: Refactor the interrupt setup")
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Note that prior commit bb1107f7c605 ("mm, slab: make sure that
+KMALLOC_MAX_SIZE will fit into MAX_ORDER") the KMALLOC_MAX_SIZE value
+could not be relied upon.
+
+Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
+Cc: <stable@vger.kernel.org> # v4.10+
+Link: https://lore.kernel.org/r/nycvar.YSQ.7.76.2003281702410.2671@knanqh.ubzr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/char/tpm/tpm_tis_core.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/tty/vt/vt.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/char/tpm/tpm_tis_core.c
-+++ b/drivers/char/tpm/tpm_tis_core.c
-@@ -437,6 +437,9 @@ static void disable_interrupts(struct tp
- 	u32 intmask;
- 	int rc;
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1206,7 +1206,7 @@ static int vc_do_resize(struct tty_struc
+ 	if (new_cols == vc->vc_cols && new_rows == vc->vc_rows)
+ 		return 0;
  
-+	if (priv->irq == 0)
-+		return;
-+
- 	rc = tpm_tis_read32(priv, TPM_INT_ENABLE(priv->locality), &intmask);
- 	if (rc < 0)
- 		intmask = 0;
-@@ -984,9 +987,12 @@ int tpm_tis_core_init(struct device *dev
- 		if (irq) {
- 			tpm_tis_probe_irq_single(chip, intmask, IRQF_SHARED,
- 						 irq);
--			if (!(chip->flags & TPM_CHIP_FLAG_IRQ))
-+			if (!(chip->flags & TPM_CHIP_FLAG_IRQ)) {
- 				dev_err(&chip->dev, FW_BUG
- 					"TPM interrupt not working, polling instead\n");
-+
-+				disable_interrupts(chip);
-+			}
- 		} else {
- 			tpm_tis_probe_irq(chip, intmask);
- 		}
+-	if (new_screen_size > (4 << 20))
++	if (new_screen_size > KMALLOC_MAX_SIZE)
+ 		return -EINVAL;
+ 	newscreen = kzalloc(new_screen_size, GFP_USER);
+ 	if (!newscreen)
 
 
