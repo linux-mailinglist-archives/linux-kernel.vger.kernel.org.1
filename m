@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95971BC703
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995251BC714
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728555AbgD1Rrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 13:47:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35964 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728448AbgD1Rrg (ORCPT
+        id S1728584AbgD1RuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 13:50:16 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:38252 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728557AbgD1RuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 13:47:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588096055;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kOFPHV7djE4yN9kYV8UD0gGJJiH5LnVp4DiGRU8Fo5A=;
-        b=gFKbfGdCh1Z64PKvgJSvefSb6pGFuAt0tytp7bmRRVBy+Fj1GfLdTzGZjonAwA8zeq4Yyl
-        IAtScYrvTkAuzvK5yyWBzI3ihbLmckt44nRxLeBqnyQBBnxWLNPJsDViSIwYw+AWHethzB
-        SGkGDWKgYx4jm5SeGgAiDogQWrfDQwM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-mgItoDWaM8OIFHsVd-tPRw-1; Tue, 28 Apr 2020 13:47:33 -0400
-X-MC-Unique: mgItoDWaM8OIFHsVd-tPRw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 28 Apr 2020 13:50:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588096214; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Reply-To: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=RU7G35ytN1BEFIjXJLTsdCsbIgjwEPp3gbageUwxBUA=; b=uHXUgMQFCKzNWvCslqSJ3mgoYDLvUikTrnKow3d296SFYBVV5HKdJi39+I2Xudja7EUJBo91
+ 3eet8ltre2BN/Hrg4ItHQFTQ0A18ebgeiQzGX0PdhUtBUMZ5bWa0k3V1cuP7rqw3UXTkfR6l
+ r6InaRzNTr8tjgO0h5GuKC9Xz18=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea86cc8.7fdb739bb7d8-smtp-out-n02;
+ Tue, 28 Apr 2020 17:50:00 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6A3E8C44792; Tue, 28 Apr 2020 17:50:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from quicinc.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD4221008549;
-        Tue, 28 Apr 2020 17:47:31 +0000 (UTC)
-Received: from sandy.ghostprotocols.net (unknown [10.3.128.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3D664579A9;
-        Tue, 28 Apr 2020 17:47:31 +0000 (UTC)
-Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
-        id 3264D169; Tue, 28 Apr 2020 14:47:27 -0300 (BRT)
-Date:   Tue, 28 Apr 2020 14:47:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Zou Wei <zou_wei@huawei.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] tools lib traceevent: Remove unneeded semicolon
-Message-ID: <20200428174727.GB2711@redhat.com>
-References: <1588065121-71236-1-git-send-email-zou_wei@huawei.com>
- <20200428091915.7bead67f@gandalf.local.home>
+        (Authenticated sender: svaddagi)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B39A3C433D2;
+        Tue, 28 Apr 2020 17:49:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B39A3C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vatsa@codeaurora.org
+Date:   Tue, 28 Apr 2020 23:19:52 +0530
+From:   Srivatsa Vaddagiri <vatsa@codeaurora.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     konrad.wilk@oracle.com, jasowang@redhat.com,
+        jan.kiszka@siemens.com, will@kernel.org,
+        stefano.stabellini@xilinx.com, iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, tsoni@codeaurora.org,
+        pratikp@codeaurora.org, christoffer.dall@arm.com,
+        alex.bennee@linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] virtio: Add bounce DMA ops
+Message-ID: <20200428174952.GA5097@quicinc.com>
+Reply-To: Srivatsa Vaddagiri <vatsa@codeaurora.org>
+References: <1588073958-1793-1-git-send-email-vatsa@codeaurora.org>
+ <1588073958-1793-6-git-send-email-vatsa@codeaurora.org>
+ <20200428121232-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200428091915.7bead67f@gandalf.local.home>
-X-Url:  http://acmel.wordpress.com
-User-Agent: Mutt/1.5.20 (2009-12-10)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200428121232-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Apr 28, 2020 at 09:19:15AM -0400, Steven Rostedt escreveu:
-> On Tue, 28 Apr 2020 17:12:01 +0800
-> Zou Wei <zou_wei@huawei.com> wrote:
-> 
-> > Fixes coccicheck warning:
-> > 
-> >  tools/lib/traceevent/kbuffer-parse.c:441:2-3: Unneeded semicolon
-> > 
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> > ---
-> >  tools/lib/traceevent/kbuffer-parse.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/lib/traceevent/kbuffer-parse.c b/tools/lib/traceevent/kbuffer-parse.c
-> > index b887e74..27f3b07 100644
-> > --- a/tools/lib/traceevent/kbuffer-parse.c
-> > +++ b/tools/lib/traceevent/kbuffer-parse.c
-> > @@ -438,7 +438,7 @@ void *kbuffer_translate_data(int swap, void *data, unsigned int *size)
-> >  	case KBUFFER_TYPE_TIME_EXTEND:
-> >  	case KBUFFER_TYPE_TIME_STAMP:
-> >  		return NULL;
-> > -	};
-> > +	}
-> 
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> 
-> Arnaldo, can you take this?
+* Michael S. Tsirkin <mst@redhat.com> [2020-04-28 12:17:57]:
 
-Sure, applied.
- 
-> Thanks!
-> 
-> -- Steve
-> 
-> >  
-> >  	*size = length;
-> >  
+> Okay, but how is all this virtio specific?  For example, why not allow
+> separate swiotlbs for any type of device?
+> For example, this might make sense if a given device is from a
+> different, less trusted vendor.
 
+Is swiotlb commonly used for multiple devices that may be on different trust
+boundaries (and not behind a hardware iommu)? If so, then yes it sounds like a
+good application of multiple swiotlb pools.
+
+> All this can then maybe be hidden behind the DMA API.
+
+Won't we still need some changes to virtio to make use of its own pool (to
+bounce buffers)? Something similar to its own DMA ops proposed in this patch?
+
+> > +void virtio_bounce_set_dma_ops(struct virtio_device *vdev)
+> > +{
+> > +	if (!bounce_buf_paddr)
+> > +		return;
+> > +
+> > +	set_dma_ops(vdev->dev.parent, &virtio_dma_ops);
+> 
+> 
+> I don't think DMA API maintainers will be happy with new users
+> of set_dma_ops.
+
+Is there an alternate API that is more preffered?
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
