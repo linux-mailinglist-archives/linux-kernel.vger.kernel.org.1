@@ -2,408 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE661BB6D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F70E1BB6D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgD1GfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 02:35:10 -0400
-Received: from mx.socionext.com ([202.248.49.38]:22330 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbgD1GfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 02:35:08 -0400
-Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 28 Apr 2020 15:35:04 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 55141180105;
-        Tue, 28 Apr 2020 15:35:04 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Tue, 28 Apr 2020 15:35:04 +0900
-Received: from plum.e01.socionext.com (unknown [10.213.132.32])
-        by kinkan.css.socionext.com (Postfix) with ESMTP id F1BCC1A01BB;
-        Tue, 28 Apr 2020 15:35:03 +0900 (JST)
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Subject: [PATCH 3/3] dt-bindings: phy: Convert UniPhier USB3-PHY conroller to json-schema
-Date:   Tue, 28 Apr 2020 15:34:50 +0900
-Message-Id: <1588055690-13200-3-git-send-email-hayashi.kunihiko@socionext.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588055690-13200-1-git-send-email-hayashi.kunihiko@socionext.com>
-References: <1588055690-13200-1-git-send-email-hayashi.kunihiko@socionext.com>
+        id S1726509AbgD1Gfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 02:35:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38588 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726329AbgD1Gfj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 02:35:39 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03S6W4Lp104832;
+        Tue, 28 Apr 2020 02:35:23 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mggu1gp3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Apr 2020 02:35:23 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03S6W9rV105188;
+        Tue, 28 Apr 2020 02:35:22 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mggu1gnj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Apr 2020 02:35:22 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03S6ZGSl005355;
+        Tue, 28 Apr 2020 06:35:21 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03dal.us.ibm.com with ESMTP id 30mcu782ca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Apr 2020 06:35:21 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03S6ZKTi28770688
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 06:35:21 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DA355AE063;
+        Tue, 28 Apr 2020 06:35:20 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 912A1AE060;
+        Tue, 28 Apr 2020 06:35:14 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.55.78])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 28 Apr 2020 06:35:14 +0000 (GMT)
+Subject: Re: [PATCH v2 06/11] perf expr: parse numbers as doubles
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Haiyan Song <haiyanx.song@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        John Garry <john.garry@huawei.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Clarke <pc@us.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>
+References: <20200422220430.254014-1-irogers@google.com>
+ <20200422220430.254014-7-irogers@google.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <503a44a7-85a8-012e-1559-bfd735b61ec0@linux.ibm.com>
+Date:   Tue, 28 Apr 2020 12:05:13 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20200422220430.254014-7-irogers@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-28_02:2020-04-27,2020-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ suspectscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 phishscore=0
+ bulkscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004280051
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the UniPhier USB3-PHY controller for SS/HS to DT schema format.
 
-Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
----
- .../phy/socionext,uniphier-usb3hs-phy.yaml         | 104 +++++++++++++++++++++
- .../phy/socionext,uniphier-usb3ss-phy.yaml         |  97 +++++++++++++++++++
- .../bindings/phy/uniphier-usb3-hsphy.txt           |  69 --------------
- .../bindings/phy/uniphier-usb3-ssphy.txt           |  58 ------------
- 4 files changed, 201 insertions(+), 127 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/phy/socionext,uniphier-usb3hs-phy.yaml
- create mode 100644 Documentation/devicetree/bindings/phy/socionext,uniphier-usb3ss-phy.yaml
- delete mode 100644 Documentation/devicetree/bindings/phy/uniphier-usb3-hsphy.txt
- delete mode 100644 Documentation/devicetree/bindings/phy/uniphier-usb3-ssphy.txt
 
-diff --git a/Documentation/devicetree/bindings/phy/socionext,uniphier-usb3hs-phy.yaml b/Documentation/devicetree/bindings/phy/socionext,uniphier-usb3hs-phy.yaml
-new file mode 100644
-index 0000000..a92a034
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/socionext,uniphier-usb3hs-phy.yaml
-@@ -0,0 +1,104 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/socionext,uniphier-usb3hs-phy.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Socionext UniPhier USB3 High-Speed (HS) PHY
-+
-+description: |
-+  This describes the devicetree bindings for PHY interfaces built into
-+  USB3 controller implemented on Socionext UniPhier SoCs.
-+  Although the controller includes High-Speed PHY and Super-Speed PHY,
-+  this describes about High-Speed PHY.
-+
-+maintainers:
-+  - Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - socionext,uniphier-pro5-usb3-hsphy
-+      - socionext,uniphier-pxs2-usb3-hsphy
-+      - socionext,uniphier-ld20-usb3-hsphy
-+      - socionext,uniphier-pxs3-usb3-hsphy
-+
-+  reg:
-+    description: PHY register region (offset and length)
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  clocks:
-+    minItems: 1
-+    maxItems: 2
-+
-+  clock-names:
-+    oneOf:
-+      - const: link          # for PXs2
-+      - items:               # for PXs3
-+        - const: link
-+        - const: phy
-+
-+  resets:
-+    maxItems: 2
-+
-+  reset-names:
-+    items:
-+      - const: link
-+      - const: phy
-+
-+  vbus-supply:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: A phandle to the regulator for USB VBUS
-+
-+  nvmem-cells:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description:
-+      Phandles to nvmem cell that contains the trimming data.
-+      Available only for HS-PHY implemented on LD20 and PXs3, and
-+      if unspecified, default value is used.
-+
-+  nvmem-cell-names:
-+    items:
-+      - const: rterm
-+      - const: sel_t
-+      - const: hs_i
-+    description:
-+      Should be the following names, which correspond to each nvmem-cells.
-+      All of the 3 parameters associated with the above names are
-+      required for each port, if any one is omitted, the trimming data
-+      of the port will not be set at all.
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#phy-cells"
-+  - clocks
-+  - clock-names
-+  - resets
-+  - reset-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    usb-glue@65b00000 {
-+        compatible = "socionext,uniphier-ld20-dwc3-glue", "simple-mfd";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges = <0 0x65b00000 0x400>;
-+
-+        usb_hsphy0: hs-phy@200 {
-+            compatible = "socionext,uniphier-ld20-usb3-hsphy";
-+            reg = <0x200 0x10>;
-+            #phy-cells = <0>;
-+            clock-names = "link", "phy";
-+            clocks = <&sys_clk 14>, <&sys_clk 16>;
-+            reset-names = "link", "phy";
-+            resets = <&sys_rst 14>, <&sys_rst 16>;
-+            vbus-supply = <&usb_vbus0>;
-+            nvmem-cell-names = "rterm", "sel_t", "hs_i";
-+            nvmem-cells = <&usb_rterm0>, <&usb_sel_t0>, <&usb_hs_i0>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/phy/socionext,uniphier-usb3ss-phy.yaml b/Documentation/devicetree/bindings/phy/socionext,uniphier-usb3ss-phy.yaml
-new file mode 100644
-index 0000000..ed67707
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/socionext,uniphier-usb3ss-phy.yaml
-@@ -0,0 +1,97 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/socionext,uniphier-usb3ss-phy.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Socionext UniPhier USB3 Super-Speed (SS) PHY
-+
-+description: |
-+  This describes the devicetree bindings for PHY interfaces built into
-+  USB3 controller implemented on Socionext UniPhier SoCs.
-+  Although the controller includes High-Speed PHY and Super-Speed PHY,
-+  this describes about Super-Speed PHY.
-+
-+maintainers:
-+  - Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - socionext,uniphier-pro4-usb3-ssphy
-+      - socionext,uniphier-pro5-usb3-ssphy
-+      - socionext,uniphier-pxs2-usb3-ssphy
-+      - socionext,uniphier-ld20-usb3-ssphy
-+      - socionext,uniphier-pxs3-usb3-ssphy
-+
-+  reg:
-+    description: PHY register region (offset and length)
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  clocks:
-+    minItems: 2
-+    maxItems: 3
-+
-+  clock-names:
-+    oneOf:
-+      - items:             # for Pro4, Pro5
-+        - const: gio
-+        - const: link
-+      - items:             # for PXs3 with phy-ext
-+        - const: link
-+        - const: phy
-+        - const: phy-ext
-+      - items:             # for others
-+        - const: link
-+        - const: phy
-+
-+  resets:
-+    maxItems: 2
-+
-+  reset-names:
-+    oneOf:
-+      - items:              # for Pro4,Pro5
-+        - const: gio
-+        - const: link
-+      - items:              # for others
-+        - const: link
-+        - const: phy
-+
-+  vbus-supply:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: A phandle to the regulator for USB VBUS
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#phy-cells"
-+  - clocks
-+  - clock-names
-+  - resets
-+  - reset-names
-+  - vbus-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    usb-glue@65b00000 {
-+        compatible = "socionext,uniphier-ld20-dwc3-glue",
-+                     "simple-mfd";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges = <0 0x65b00000 0x400>;
-+
-+        usb_ssphy0: ss-phy@300 {
-+            compatible = "socionext,uniphier-ld20-usb3-ssphy";
-+            reg = <0x300 0x10>;
-+            #phy-cells = <0>;
-+            clock-names = "link", "phy";
-+            clocks = <&sys_clk 14>, <&sys_clk 16>;
-+            reset-names = "link", "phy";
-+            resets = <&sys_rst 14>, <&sys_rst 16>;
-+            vbus-supply = <&usb_vbus0>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/phy/uniphier-usb3-hsphy.txt b/Documentation/devicetree/bindings/phy/uniphier-usb3-hsphy.txt
-deleted file mode 100644
-index 093d4f0..0000000
---- a/Documentation/devicetree/bindings/phy/uniphier-usb3-hsphy.txt
-+++ /dev/null
-@@ -1,69 +0,0 @@
--Socionext UniPhier USB3 High-Speed (HS) PHY
--
--This describes the devicetree bindings for PHY interfaces built into
--USB3 controller implemented on Socionext UniPhier SoCs.
--Although the controller includes High-Speed PHY and Super-Speed PHY,
--this describes about High-Speed PHY.
--
--Required properties:
--- compatible: Should contain one of the following:
--    "socionext,uniphier-pro5-usb3-hsphy" - for Pro5 SoC
--    "socionext,uniphier-pxs2-usb3-hsphy" - for PXs2 SoC
--    "socionext,uniphier-ld20-usb3-hsphy" - for LD20 SoC
--    "socionext,uniphier-pxs3-usb3-hsphy" - for PXs3 SoC
--- reg: Specifies offset and length of the register set for the device.
--- #phy-cells: Should be 0.
--- clocks: A list of phandles to the clock gate for USB3 glue layer.
--	According to the clock-names, appropriate clocks are required.
--- clock-names: Should contain the following:
--    "gio", "link" - for Pro5 SoC
--    "phy", "phy-ext", "link" - for PXs3 SoC, "phy-ext" is optional.
--    "phy", "link" - for others
--- resets: A list of phandles to the reset control for USB3 glue layer.
--	According to the reset-names, appropriate resets are required.
--- reset-names: Should contain the following:
--    "gio", "link" - for Pro5 SoC
--    "phy", "link" - for others
--
--Optional properties:
--- vbus-supply: A phandle to the regulator for USB VBUS.
--- nvmem-cells: Phandles to nvmem cell that contains the trimming data.
--	Available only for HS-PHY implemented on LD20 and PXs3, and
--	if unspecified, default value is used.
--- nvmem-cell-names: Should be the following names, which correspond to
--	each nvmem-cells.
--	All of the 3 parameters associated with the following names are
--	required for each port, if any one is omitted, the trimming data
--	of the port will not be set at all.
--    "rterm", "sel_t", "hs_i" - Each cell name for phy parameters
--
--Refer to phy/phy-bindings.txt for the generic PHY binding properties.
--
--Example:
--
--	usb-glue@65b00000 {
--		compatible = "socionext,uniphier-ld20-dwc3-glue",
--			     "simple-mfd";
--		#address-cells = <1>;
--		#size-cells = <1>;
--		ranges = <0 0x65b00000 0x400>;
--
--		usb_vbus0: regulator {
--			...
--		};
--
--		usb_hsphy0: hs-phy@200 {
--			compatible = "socionext,uniphier-ld20-usb3-hsphy";
--			reg = <0x200 0x10>;
--			#phy-cells = <0>;
--			clock-names = "link", "phy";
--			clocks = <&sys_clk 14>, <&sys_clk 16>;
--			reset-names = "link", "phy";
--			resets = <&sys_rst 14>, <&sys_rst 16>;
--			vbus-supply = <&usb_vbus0>;
--			nvmem-cell-names = "rterm", "sel_t", "hs_i";
--			nvmem-cells = <&usb_rterm0>, <&usb_sel_t0>,
--				      <&usb_hs_i0>;
--		};
--		...
--	};
-diff --git a/Documentation/devicetree/bindings/phy/uniphier-usb3-ssphy.txt b/Documentation/devicetree/bindings/phy/uniphier-usb3-ssphy.txt
-deleted file mode 100644
-index 9df2bc2..0000000
---- a/Documentation/devicetree/bindings/phy/uniphier-usb3-ssphy.txt
-+++ /dev/null
-@@ -1,58 +0,0 @@
--Socionext UniPhier USB3 Super-Speed (SS) PHY
--
--This describes the devicetree bindings for PHY interfaces built into
--USB3 controller implemented on Socionext UniPhier SoCs.
--Although the controller includes High-Speed PHY and Super-Speed PHY,
--this describes about Super-Speed PHY.
--
--Required properties:
--- compatible: Should contain one of the following:
--    "socionext,uniphier-pro4-usb3-ssphy" - for Pro4 SoC
--    "socionext,uniphier-pro5-usb3-ssphy" - for Pro5 SoC
--    "socionext,uniphier-pxs2-usb3-ssphy" - for PXs2 SoC
--    "socionext,uniphier-ld20-usb3-ssphy" - for LD20 SoC
--    "socionext,uniphier-pxs3-usb3-ssphy" - for PXs3 SoC
--- reg: Specifies offset and length of the register set for the device.
--- #phy-cells: Should be 0.
--- clocks: A list of phandles to the clock gate for USB3 glue layer.
--	According to the clock-names, appropriate clocks are required.
--- clock-names:
--    "gio", "link" - for Pro4 and Pro5 SoC
--    "phy", "phy-ext", "link" - for PXs3 SoC, "phy-ext" is optional.
--    "phy", "link" - for others
--- resets: A list of phandles to the reset control for USB3 glue layer.
--	According to the reset-names, appropriate resets are required.
--- reset-names:
--    "gio", "link" - for Pro4 and Pro5 SoC
--    "phy", "link" - for others
--
--Optional properties:
--- vbus-supply: A phandle to the regulator for USB VBUS.
--
--Refer to phy/phy-bindings.txt for the generic PHY binding properties.
--
--Example:
--
--	usb-glue@65b00000 {
--		compatible = "socionext,uniphier-ld20-dwc3-glue",
--			     "simple-mfd";
--		#address-cells = <1>;
--		#size-cells = <1>;
--		ranges = <0 0x65b00000 0x400>;
--
--		usb_vbus0: regulator {
--			...
--		};
--
--		usb_ssphy0: ss-phy@300 {
--			compatible = "socionext,uniphier-ld20-usb3-ssphy";
--			reg = <0x300 0x10>;
--			#phy-cells = <0>;
--			clock-names = "link", "phy";
--			clocks = <&sys_clk 14>, <&sys_clk 16>;
--			reset-names = "link", "phy";
--			resets = <&sys_rst 14>, <&sys_rst 16>;
--			vbus-supply = <&usb_vbus0>;
--		};
--		...
--	};
--- 
-2.7.4
+On 4/23/20 3:34 AM, Ian Rogers wrote:
+> This is expected in expr.y and metrics use floating point values such as
+> x86 broadwell IFetch_Line_Utilization.
+> 
+> Fixes: 26226a97724d (perf expr: Move expr lexer to flex)
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/expr.l | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/perf/util/expr.l b/tools/perf/util/expr.l
+> index 95bcf3629edf..0efda2ce2766 100644
+> --- a/tools/perf/util/expr.l
+> +++ b/tools/perf/util/expr.l
+> @@ -10,12 +10,12 @@
+>  char *expr_get_text(yyscan_t yyscanner);
+>  YYSTYPE *expr_get_lval(yyscan_t yyscanner);
+>  
+> -static int __value(YYSTYPE *yylval, char *str, int base, int token)
+> +static double __value(YYSTYPE *yylval, char *str, int token)
+>  {
+> -	u64 num;
+> +	double num;
+>  
+>  	errno = 0;
+> -	num = strtoull(str, NULL, base);
+> +	num = strtod(str, NULL);
+>  	if (errno)
+>  		return EXPR_ERROR;
+>  
+> @@ -23,12 +23,12 @@ static int __value(YYSTYPE *yylval, char *str, int base, int token)
+>  	return token;
+>  }
+>  
+> -static int value(yyscan_t scanner, int base)
+> +static int value(yyscan_t scanner)
+>  {
+>  	YYSTYPE *yylval = expr_get_lval(scanner);
+>  	char *text = expr_get_text(scanner);
+>  
+> -	return __value(yylval, text, base, NUMBER);
+> +	return __value(yylval, text, NUMBER);
+>  }
+>  
+>  /*
+> @@ -68,7 +68,7 @@ static int str(yyscan_t scanner, int token)
+>  }
+>  %}
+>  
+> -number		[0-9]+
+> +number		[0-9]*\.?[0-9]+
+>  
+Acked By: Kajol Jain <kjain@linux.ibm.com>
 
+Thanks,
+Kajol Jain
+
+>  sch		[-,=]
+>  spec		\\{sch}
+> @@ -92,7 +92,7 @@ min		{ return MIN; }
+>  if		{ return IF; }
+>  else		{ return ELSE; }
+>  #smt_on		{ return SMT_ON; }
+> -{number}	{ return value(yyscanner, 10); }
+> +{number}	{ return value(yyscanner); }
+>  {symbol}	{ return str(yyscanner, ID); }
+>  "|"		{ return '|'; }
+>  "^"		{ return '^'; }
+> 
