@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D835E1BC875
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DFC1BC860
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729848AbgD1Scq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:32:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48910 "EHLO mail.kernel.org"
+        id S1728749AbgD1ScH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:32:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729354AbgD1Scl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:32:41 -0400
+        id S1729767AbgD1ScE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:32:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C81721707;
-        Tue, 28 Apr 2020 18:32:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD55F2076A;
+        Tue, 28 Apr 2020 18:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098760;
-        bh=kOV7JqRDnFkxVT6LtsTvnIEUm78zYiAZ1wZkelLJWgw=;
+        s=default; t=1588098724;
+        bh=I/JYkXwokIC/zsc2l0WbpaKJZM0psZOWtk/Q6kuTBEw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zewUpDqPZ9UQhPNo/esxjpC3nD2MxnNp+ywCDhNHHuAWUoC/8wiS/mDZhsX/1l5rQ
-         v3q09jnYC6roTiDDLg/dYYvvIB850/hm7g3/YPApXdPKmu6t+P2vg+UJu5amvTP7QK
-         0dtCuiJZbj4fqiKAxvz3zOC1OZA5s+4n/zn8lUkk=
+        b=LDEmyGQE/aOmQIvaRraNbCIg1XVxKzmHlfzBfpANydowXjDV+v0109LxEBsZ4vcXy
+         QTZr3imkM6BiKHAgel08U9brhtDVpYp6K09bflm9OpQSdjSlRbKz0TEajEzrzZLcH8
+         n+ikT1afzADcIXX40MgD/uoP+TuV7d+dMgC9Z5wE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars Engebretsen <lars@engebretsen.ch>,
-        Stable@vger.kernel.org,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.6 081/167] iio: core: remove extra semi-colon from devm_iio_device_register() macro
-Date:   Tue, 28 Apr 2020 20:24:17 +0200
-Message-Id: <20200428182235.220522218@linuxfoundation.org>
+        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 046/131] kvm: fix compilation on s390
+Date:   Tue, 28 Apr 2020 20:24:18 +0200
+Message-Id: <20200428182230.811099100@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,34 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars Engebretsen <lars@engebretsen.ch>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit a07479147be03d2450376ebaff9ea1a0682f25d6 upstream.
+commit d30b214d1d0addb7b2c9c78178d1501cd39a01fb upstream.
 
-This change removes the semi-colon from the devm_iio_device_register()
-macro which seems to have been added by accident.
+s390 does not have memremap, even though in this particular case it
+would be useful.
 
-Fixes: 63b19547cc3d9 ("iio: Use macro magic to avoid manual assign of driver_module")
-Signed-off-by: Lars Engebretsen <lars@engebretsen.ch>
-Cc: <Stable@vger.kernel.org>
-Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/iio/iio.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ virt/kvm/kvm_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/include/linux/iio/iio.h
-+++ b/include/linux/iio/iio.h
-@@ -598,7 +598,7 @@ void iio_device_unregister(struct iio_de
-  * 0 on success, negative error number on failure.
-  */
- #define devm_iio_device_register(dev, indio_dev) \
--	__devm_iio_device_register((dev), (indio_dev), THIS_MODULE);
-+	__devm_iio_device_register((dev), (indio_dev), THIS_MODULE)
- int __devm_iio_device_register(struct device *dev, struct iio_dev *indio_dev,
- 			       struct module *this_mod);
- void devm_iio_device_unregister(struct device *dev, struct iio_dev *indio_dev);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 4a5ea263edf62..f99b99b77a486 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1722,8 +1722,10 @@ static int __kvm_map_gfn(struct kvm_memory_slot *slot, gfn_t gfn,
+ 	if (pfn_valid(pfn)) {
+ 		page = pfn_to_page(pfn);
+ 		hva = kmap(page);
++#ifdef CONFIG_HAS_IOMEM
+ 	} else {
+ 		hva = memremap(pfn_to_hpa(pfn), PAGE_SIZE, MEMREMAP_WB);
++#endif
+ 	}
+ 
+ 	if (!hva)
+-- 
+2.20.1
+
 
 
