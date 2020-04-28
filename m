@@ -2,151 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9022C1BB398
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3ED41BB39F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgD1BtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 21:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
+        id S1726309AbgD1ByL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 21:54:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726261AbgD1BtE (ORCPT
+        by vger.kernel.org with ESMTP id S1726251AbgD1ByL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 21:49:04 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCB4C03C1A8;
-        Mon, 27 Apr 2020 18:49:03 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id 18so9911032pfx.6;
-        Mon, 27 Apr 2020 18:49:03 -0700 (PDT)
+        Mon, 27 Apr 2020 21:54:11 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD95DC03C1A8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 18:54:10 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id k8so15870647ejv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 18:54:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vloW/Le5uTQWcHYDSa4UBFwJd+x/1yJE7+IrW0Uir68=;
-        b=tMY7Nqx0yqobkZe58YFhx1OG8yv4pf1IV9qs+bvamO0ssZ2DNHnvG9NWFBdyJ9zDhq
-         3NhdKMcuGNglY0QeMweyW3U2rebJhB5xvUW03S8hTpb2axpkIL4LmSie7xv3Bz62ZwM1
-         2BMffB9lJb7ZswTHs481noJ5CUOIo//yGyCBf6lVS0VEEeSowKcgM/eOn9EdY2nFKUkq
-         OuxDgnm0HxCUwwMHMvGyGKQwpiGmQzpwRM23EMdJHC83mqrQ09+TuyCh8iShhOD/Uad0
-         QE8Zuj8UnFf0Ani8mhF33kVeWYBepv5F7VAhs2ZOz2yfKR8tuVrSbpNaAa/3885mDRi5
-         uMAw==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q5tYdGjSsZlu5Ne+dsC8P4f1ZDRmzcjVVvV9xH9KECg=;
+        b=mtPP7ztM8aHi21wYH8FHLeYnqI6H4zToRQjs46GgQDe0r3XY70D438jCjjf8kovPvE
+         d24Bd6f9zUDF6ucZTLQNM4FXghTJB85YvfXwleSdI9xBIrV9fyezSxqtgzw6IrSAg/6g
+         w/2xxHpV6y/40Kh3b2CwHgkWr7VxcJXKHlHyB51J2DWkK+MFlr9xkcFGlVKITCItQ75Y
+         x35BwPT/7jNT2fOJVjUN/9dRmSnFmAsoeNNxFxke7Xibs1WHyutb4WzQWRRU15jYCNk5
+         YgC/+Bl5PEUfskXms5dSe5gtVx14hIo5c5zZx8uH9gCtaCZ41i8b/iCMF7O8RINkF5if
+         Xo4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vloW/Le5uTQWcHYDSa4UBFwJd+x/1yJE7+IrW0Uir68=;
-        b=jUR5FBaq2ssqcdUdivAQRrt8U1CLt8wuGaUdmhKNKx9/wBqIfpDDiIfoXSOeSZXsFg
-         MmDszkS+1Gpq0FYZyRqIP2sziK5/9M4ePEyQJjGoARWjyAN+8mTbk66poQru6vUJNY53
-         5MmmOF3A+Na4j84KQRGKPtWX9zCQyD6DD3oCOwdof/4OTkZuKVTHOHlemXHRCrswmmQg
-         8t95UqH47eTE+KDX00EGSmEtAd3ci5xEODzOkYA+SgNA3MeExjHp5yYy+1tJUT0wJaoQ
-         Fe9gYr/E2KwN9fZib8R+535lyRRAU/7mpci+trU8PcApsVkim6kJXCz5E6QAvCd7lira
-         iB0g==
-X-Gm-Message-State: AGi0Pub3IUMxANSAUC6/uvRbRSviNAmgWGO/GR41vSWrFkEqsTsZkB0o
-        gBgmmGXncnyaOpPYJYYCu8k=
-X-Google-Smtp-Source: APiQypIrs/KyEZGo9isIYbNHduvrckXj0XCrJMMoQhBOT/pJSBv9dMK3h8aO2de9vySF1HvRt3aMWg==
-X-Received: by 2002:a63:f958:: with SMTP id q24mr6909810pgk.338.1588038542846;
-        Mon, 27 Apr 2020 18:49:02 -0700 (PDT)
-Received: from gnu-cfl-2.localdomain (c-69-181-90-243.hsd1.ca.comcast.net. [69.181.90.243])
-        by smtp.gmail.com with ESMTPSA id t188sm11667641pgb.80.2020.04.27.18.49.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2020 18:49:01 -0700 (PDT)
-Received: from gnu-cfl-2.localdomain (localhost [IPv6:::1])
-        by gnu-cfl-2.localdomain (Postfix) with ESMTP id 9E060C034D;
-        Mon, 27 Apr 2020 18:49:00 -0700 (PDT)
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@suse.de>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 2/2] Discard .note.gnu.property sections in generic NOTES
-Date:   Mon, 27 Apr 2020 18:49:00 -0700
-Message-Id: <20200428014900.407098-2-hjl.tools@gmail.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200428014900.407098-1-hjl.tools@gmail.com>
-References: <20200428014900.407098-1-hjl.tools@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q5tYdGjSsZlu5Ne+dsC8P4f1ZDRmzcjVVvV9xH9KECg=;
+        b=QWG/6cUzwC6KYNyIrlbJTC5pMUdtOkqaugcY/K+ckJQgzSGST+aSh5XGlPMFjqf8wy
+         /3/S3NWrsxKfPo+Hp0QmKCGJp9nb2RsIWihMpP/dNejp5E3mo2EWl7DDFJ5kF3uMybMK
+         nL1LPaxNfdB5kss1HW+vtU1c+tSSBFiMXl2FTr0P+e30Q3Lt9NC2T8yY2xVw7lgi9AON
+         FY32P0k1/7M5B8vSUwVzKaL3CxnN35uS4CEaGgz2G1W2GWEev74w+i0xpEVIXnHo4oeP
+         uKjMTOLbuKl3Q89IGIOb19navRcBNsKxvW+COUl0jSnFKTYTj8kzaolnuI4tjpfjNZ0k
+         avfA==
+X-Gm-Message-State: AGi0PuZlOK59+0UqCNvFAHqt97qH5I/QXQNUsUzZkGmiNxi49MD0Pw3F
+        krymUkH8Ayu/eUFoB9lRypwg/PYwJ4eEdwfRbPUm
+X-Google-Smtp-Source: APiQypKo+7RBQ8YXfiTLN9hjP7+5SV5BdEn0N9W2Mh9Ys+ZswbMHotR74NT4i1pnxP61KnKPrrcWQZJyUzimj1vKfuk=
+X-Received: by 2002:a17:906:f106:: with SMTP id gv6mr23076033ejb.271.1588038849206;
+ Mon, 27 Apr 2020 18:54:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CACT4Y+YTi4JCFRqOB9rgA22S+6xxTo87X41hj6Tdfro8K3ef7g@mail.gmail.com>
+ <CAHC9VhQs6eJpX4oMrhBiDap-HhEsBBgmYWEou=ZH60YiA__T7w@mail.gmail.com>
+ <CACT4Y+b8HiV6KFuAPysZD=5hmyO4QisgxCKi4DHU3CfMPSP=yg@mail.gmail.com>
+ <171b1244748.27df.85c95baa4474aabc7814e68940a78392@paul-moore.com> <CACT4Y+b43uGr-44TVT9eTu_Lh=8CkKXJdSxz6tB9+BjRe9WF1A@mail.gmail.com>
+In-Reply-To: <CACT4Y+b43uGr-44TVT9eTu_Lh=8CkKXJdSxz6tB9+BjRe9WF1A@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 27 Apr 2020 21:53:57 -0400
+Message-ID: <CAHC9VhR9CN5RzuUonhhFs+L07jt7DWJbDYicf6NEu0z05MpA4g@mail.gmail.com>
+Subject: Re: selinux_netlink_send changes program behavior
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     David Miller <davem@davemloft.net>, kuba@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the command-line option, -mx86-used-note=yes, the x86 assembler
-in binutils 2.32 and above generates a program property note in a note
-section, .note.gnu.property, to encode used x86 ISAs and features.  But
-kernel linker script only contains a single NOTE segment:
+On Sat, Apr 25, 2020 at 8:01 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> On Sat, Apr 25, 2020 at 1:42 PM Paul Moore <paul@paul-moore.com> wrote:
+> > >> On Fri, Apr 24, 2020 at 4:27 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > >>> Hi SELinux maintainers,
+> > >>>
+> > >>> We've hit a case where a developer wasn't able to reproduce a kernel
+> > >>> bug, it turned out to be a difference in behavior between SELinux and
+> > >>> non-SELinux kernels.
+> > >>> Condensed version: a program does sendmmsg on netlink socket with 2
+> > >>> mmsghdr's, first is completely empty/zeros, second contains some
+> > >>> actual payload. Without SELinux the first mmsghdr is treated as no-op
+> > >>> and the kernel processes the second one (triggers bug). However the
+> > >>> SELinux hook does:
+> > >>>
+> > >>> static int selinux_netlink_send(struct sock *sk, struct sk_buff *skb)
+> > >>> {
+> > >>> if (skb->len < NLMSG_HDRLEN) {
+> > >>>  err = -EINVAL;
+> > >>>  goto out;
+> > >>> }
+> > >>>
+> > >>> and fails processing on the first empty mmsghdr (does not happen
+> > >>> without SELinux).
+> > >>>
+> > >>> Is this difference in behavior intentional/acceptable/should be fixed?
+> > >>
+> > >> From a practical perspective, SELinux is always going to need to do a
+> > >> length check as it needs to peek into the netlink message header for
+> > >> the message type so it can map that to the associated SELinux
+> > >> permissions.  So in that sense, the behavior is intentional and
+> > >> desired; however from a bug-for-bug compatibility perspective ... not
+> > >> so much.
+> > >>
+> > >> Ultimately, my it's-Friday-and-it's-been-a-long-week-ending-in-a-long-day
+> > >> thought is that this was a buggy operation to begin with and the bug
+> > >> was just caught in different parts of the kernel, depending on how it
+> > >> was configured.  It may not be ideal, but I can think of worse things
+> > >> (and arguably SELinux is doing the Right Thing).
+> > >
+> > > +netlink maintainers for intended semantics of empty netlink messages
+> > >
+> > > If it's a bug, or intended behavior depends on the intended
+> > > behavior... which I assume is not documented anywhere officially.
+> >
+> > Your original email gave the impression that there was a big in the non-SELinux case; if that is not the case my response changes.
+>
+>
+> There is no bug... Well, there is a crash, but it is somewhere in the
+> routing subsystem and is caused by the contents of the second netlink
+> message. This is totally unrelated to this SELinux check and that
+> crash is totally reproducible with SELinux as well if we just don't
+> send the first empty message.
+> The crux is really a difference in behavior in SELinux and non-SELinux cases.
 
-PHDRS {
- text PT_LOAD FLAGS(5);
- data PT_LOAD FLAGS(6);
- percpu PT_LOAD FLAGS(6);
- init PT_LOAD FLAGS(7);
- note PT_NOTE FLAGS(0);
-}
-SECTIONS
-{
-...
- .notes : AT(ADDR(.notes) - 0xffffffff80000000) { __start_notes = .; KEEP(*(.not
-e.*)) __stop_notes = .; } :text :note
-...
-}
+We're taking a closer look from the SELinux side of things.
 
-The NOTE segment generated by kernel linker script is aligned to 4 bytes.
-But .note.gnu.property section must be aligned to 8 bytes on x86-64 and
-we get
-
-[hjl@gnu-skx-1 linux]$ readelf -n vmlinux
-
-Displaying notes found in: .notes
-  Owner                Data size Description
-  Xen                  0x00000006 Unknown note type: (0x00000006)
-   description data: 6c 69 6e 75 78 00
-  Xen                  0x00000004 Unknown note type: (0x00000007)
-   description data: 32 2e 36 00
-  xen-3.0              0x00000005 Unknown note type: (0x006e6558)
-   description data: 08 00 00 00 03
-readelf: Warning: note with invalid namesz and/or descsz found at offset 0x50
-readelf: Warning:  type: 0xffffffff, namesize: 0x006e6558, descsize:
-0x80000000, alignment: 8
-[hjl@gnu-skx-1 linux]$
-
-Since note.gnu.property section in kernel image is never used, this patch
-discards .note.gnu.property sections in kernel linker script by adding
-
-/DISCARD/ : {
-  *(.note.gnu.property)
-}
-
-before kernel NOTE segment in generic NOTES.
-
-Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- include/asm-generic/vmlinux.lds.h | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 71e387a5fe90..95cd678428f4 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -833,7 +833,14 @@
- #define TRACEDATA
- #endif
- 
-+/*
-+ * Discard .note.gnu.property sections which are unused and have
-+ * different alignment requirement from kernel note sections.
-+ */
- #define NOTES								\
-+	/DISCARD/ : {							\
-+		*(.note.gnu.property)					\
-+	}								\
- 	.notes : AT(ADDR(.notes) - LOAD_OFFSET) {			\
- 		__start_notes = .;					\
- 		KEEP(*(.note.*))					\
 -- 
-2.25.4
-
+paul moore
+www.paul-moore.com
