@@ -2,206 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A211BC6AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BDE1BC69F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbgD1R3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 13:29:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22812 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728540AbgD1R3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 13:29:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588094985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SgJQcSK6eEoH1/P5II7XvVifG0Bg4C73XG6IT0CFhZk=;
-        b=YixUwvPkuViqLrCheTzEISsqz7m6nF+fFdO6ZAKJ9cC07rjJBrn77fo445dAk/wgvVAGm0
-        hkYTQ4C73LDdVQ5fH0OBdHxvV5QPXdFsvE1xbAUpvcdpqHDA6PhidM2Q9tww3NuE0cAol/
-        JDpB2Qh9olEYsqXD/OKCjYkEx3lfaJM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-RkifAn5GP4WdiMVbXceFig-1; Tue, 28 Apr 2020 13:29:41 -0400
-X-MC-Unique: RkifAn5GP4WdiMVbXceFig-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728490AbgD1R3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 13:29:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728462AbgD1R3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 13:29:20 -0400
+Received: from localhost (mobile-166-175-187-210.mycingular.net [166.175.187.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB326835B41;
-        Tue, 28 Apr 2020 17:29:39 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-114-62.ams2.redhat.com [10.36.114.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5087F5C1D4;
-        Tue, 28 Apr 2020 17:29:37 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v3 04/11] iio: light: cm32181: Add support for the CM3218
-Date:   Tue, 28 Apr 2020 19:29:16 +0200
-Message-Id: <20200428172923.567806-4-hdegoede@redhat.com>
-In-Reply-To: <20200428172923.567806-1-hdegoede@redhat.com>
-References: <20200428172923.567806-1-hdegoede@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 38D1C2085B;
+        Tue, 28 Apr 2020 17:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588094959;
+        bh=KVlfB6OONnLYWB6zTD4NzqP3muDeWV4yVUIppLNLLR4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MxwYE2w2lKs5eDKpwbNX8Fs+0pJ2GijfEqIhf7nzZ8rNyGiqrQMqA93fspMHjHEQy
+         Gw+tm+13xO0WK8HHvcXokteJtLGtgYcWO7MhuD9yqRTerZnvx93JLJfSxb/V0s16tO
+         KFYuby1C0slOe4Y0mFMyK52Kj6NclZLuIfB8arWs=
+Date:   Tue, 28 Apr 2020 12:29:17 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc:     Shannon Nelson <snelson@pensando.io>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        netdev@vger.kernel.org, bjorn@helgaas.com,
+        linux-kernel-mentees@lists.linuxfoundation.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, skhan@linuxfoundation.org
+Subject: Re: [Linux-kernel-mentees] [PATCH v2 2/2] realtek/8139cp: Remove
+ Legacy Power Management
+Message-ID: <20200428172917.GA177492@google.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428144314.24533-3-vaibhavgupta40@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the CM3218 which is an older version of the
-CM32181.
+On Tue, Apr 28, 2020 at 08:13:14PM +0530, Vaibhav Gupta wrote:
+> Upgrade power management from legacy to generic using dev_pm_ops.
+> 
+> Add "__maybe_unused" attribute to resume() and susend() callbacks
+> definition to suppress compiler warnings.
+> 
+> Generic callback requires an argument of type "struct device*". Hence,
+> convert it to "struct net_device*" using "dev_get_drv_data()" to use
+> it in the callback.
+> 
+> Most of the cleaning part is to remove pci_save_state(),
+> pci_set_power_state(), etc power management function calls.
+> 
+> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> ---
+>  drivers/net/ethernet/realtek/8139cp.c | 25 +++++++------------------
+>  1 file changed, 7 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/realtek/8139cp.c b/drivers/net/ethernet/realtek/8139cp.c
+> index 60d342f82fb3..4f2fb1393966 100644
+> --- a/drivers/net/ethernet/realtek/8139cp.c
+> +++ b/drivers/net/ethernet/realtek/8139cp.c
+> @@ -2054,10 +2054,9 @@ static void cp_remove_one (struct pci_dev *pdev)
+>  	free_netdev(dev);
+>  }
+>  
+> -#ifdef CONFIG_PM
+> -static int cp_suspend (struct pci_dev *pdev, pm_message_t state)
+> +static int __maybe_unused cp_suspend(struct device *device)
+>  {
+> -	struct net_device *dev = pci_get_drvdata(pdev);
+> +	struct net_device *dev = dev_get_drvdata(device);
+>  	struct cp_private *cp = netdev_priv(dev);
+>  	unsigned long flags;
+>  
+> @@ -2075,16 +2074,12 @@ static int cp_suspend (struct pci_dev *pdev, pm_message_t state)
+>  
+>  	spin_unlock_irqrestore (&cp->lock, flags);
+>  
+> -	pci_save_state(pdev);
+> -	pci_enable_wake(pdev, pci_choose_state(pdev, state), cp->wol_enabled);
 
-This is based on a newer version of cm32181.c, with a copyright of:
+This one is a little more interesting because it relies on the driver
+state (cp->wol_enabled).  IIUC, the corresponding pci_enable_wake() in
+the generic path is in pci_prepare_to_sleep() (called from
+pci_pm_suspend_noirq()).
 
- * Copyright (C) 2014 Capella Microsystems Inc.
- * Author: Kevin Tsai <ktsai@capellamicro.com>
- *
- * This program is free software; you can redistribute it and/or modify i=
-t
- * under the terms of the GNU General Public License version 2, as publis=
-hed
- * by the Free Software Foundation.
+But of course the generic path doesn't look at cp->wol_enabled.  It
+looks at device_may_wakeup(), but I don't know whether there's a
+connection between that and cp->wol_enabled.
 
-Which is floating around on the net in various places, but the changes
-from this newer version never made it upstream.
-
-This was tested on an Asus T100TA and an Asus T100CHI, which both come
-with the CM3218 variant of the light sensor.
-
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/iio/light/cm32181.c | 48 +++++++++++++++++++++++++++----------
- 1 file changed, 36 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/iio/light/cm32181.c b/drivers/iio/light/cm32181.c
-index 6fc0a753c499..065bc7a11f84 100644
---- a/drivers/iio/light/cm32181.c
-+++ b/drivers/iio/light/cm32181.c
-@@ -55,15 +55,24 @@ static const u8 cm32181_reg[CM32181_CONF_REG_NUM] =3D=
- {
- 	CM32181_REG_ADDR_CMD,
- };
-=20
--static const int als_it_bits[] =3D {12, 8, 0, 1, 2, 3};
--static const int als_it_value[] =3D {25000, 50000, 100000, 200000, 40000=
-0,
--	800000};
-+/* CM3218 Family */
-+static const int cm3218_als_it_bits[] =3D { 0, 1, 2, 3 };
-+static const int cm3218_als_it_values[] =3D { 100000, 200000, 400000, 80=
-0000 };
-+
-+/* CM32181 Family */
-+static const int cm32181_als_it_bits[] =3D { 12, 8, 0, 1, 2, 3 };
-+static const int cm32181_als_it_values[] =3D {
-+	25000, 50000, 100000, 200000, 400000, 800000
-+};
-=20
- struct cm32181_chip {
- 	struct i2c_client *client;
- 	struct mutex lock;
- 	u16 conf_regs[CM32181_CONF_REG_NUM];
- 	int calibscale;
-+	int num_als_it;
-+	const int *als_it_bits;
-+	const int *als_it_values;
- };
-=20
- /**
-@@ -85,8 +94,21 @@ static int cm32181_reg_init(struct cm32181_chip *cm321=
-81)
- 		return ret;
-=20
- 	/* check device ID */
--	if ((ret & 0xFF) !=3D 0x81)
-+	switch (ret & 0xFF) {
-+	case 0x18: /* CM3218 */
-+		cm32181->num_als_it =3D ARRAY_SIZE(cm3218_als_it_bits);
-+		cm32181->als_it_bits =3D cm3218_als_it_bits;
-+		cm32181->als_it_values =3D cm3218_als_it_values;
-+		break;
-+	case 0x81: /* CM32181 */
-+	case 0x82: /* CM32182, fully compat. with CM32181 */
-+		cm32181->num_als_it =3D ARRAY_SIZE(cm32181_als_it_bits);
-+		cm32181->als_it_bits =3D cm32181_als_it_bits;
-+		cm32181->als_it_values =3D cm32181_als_it_values;
-+		break;
-+	default:
- 		return -ENODEV;
-+	}
-=20
- 	/* Default Values */
- 	cm32181->conf_regs[CM32181_REG_ADDR_CMD] =3D
-@@ -121,9 +143,9 @@ static int cm32181_read_als_it(struct cm32181_chip *c=
-m32181, int *val2)
- 	als_it =3D cm32181->conf_regs[CM32181_REG_ADDR_CMD];
- 	als_it &=3D CM32181_CMD_ALS_IT_MASK;
- 	als_it >>=3D CM32181_CMD_ALS_IT_SHIFT;
--	for (i =3D 0; i < ARRAY_SIZE(als_it_bits); i++) {
--		if (als_it =3D=3D als_it_bits[i]) {
--			*val2 =3D als_it_value[i];
-+	for (i =3D 0; i < cm32181->num_als_it; i++) {
-+		if (als_it =3D=3D cm32181->als_it_bits[i]) {
-+			*val2 =3D cm32181->als_it_values[i];
- 			return IIO_VAL_INT_PLUS_MICRO;
- 		}
- 	}
-@@ -146,14 +168,14 @@ static int cm32181_write_als_it(struct cm32181_chip=
- *cm32181, int val)
- 	u16 als_it;
- 	int ret, i, n;
-=20
--	n =3D ARRAY_SIZE(als_it_value);
-+	n =3D cm32181->num_als_it;
- 	for (i =3D 0; i < n; i++)
--		if (val <=3D als_it_value[i])
-+		if (val <=3D cm32181->als_it_values[i])
- 			break;
- 	if (i >=3D n)
- 		i =3D n - 1;
-=20
--	als_it =3D als_it_bits[i];
-+	als_it =3D cm32181->als_it_bits[i];
- 	als_it <<=3D CM32181_CMD_ALS_IT_SHIFT;
-=20
- 	mutex_lock(&cm32181->lock);
-@@ -265,11 +287,12 @@ static int cm32181_write_raw(struct iio_dev *indio_=
-dev,
- static ssize_t cm32181_get_it_available(struct device *dev,
- 			struct device_attribute *attr, char *buf)
- {
-+	struct cm32181_chip *cm32181 =3D iio_priv(dev_to_iio_dev(dev));
- 	int i, n, len;
-=20
--	n =3D ARRAY_SIZE(als_it_value);
-+	n =3D cm32181->num_als_it;
- 	for (i =3D 0, len =3D 0; i < n; i++)
--		len +=3D sprintf(buf + len, "0.%06u ", als_it_value[i]);
-+		len +=3D sprintf(buf + len, "0.%06u ", cm32181->als_it_values[i]);
- 	return len + sprintf(buf + len, "\n");
- }
-=20
-@@ -345,6 +368,7 @@ static int cm32181_probe(struct i2c_client *client)
- }
-=20
- static const struct of_device_id cm32181_of_match[] =3D {
-+	{ .compatible =3D "capella,cm3218" },
- 	{ .compatible =3D "capella,cm32181" },
- 	{ }
- };
---=20
-2.26.0
-
+> -	pci_set_power_state(pdev, pci_choose_state(pdev, state));
+> -
+>  	return 0;
+>  }
+>  
+> -static int cp_resume (struct pci_dev *pdev)
+> +static int __maybe_unused cp_resume(struct device *device)
+>  {
+> -	struct net_device *dev = pci_get_drvdata (pdev);
+> +	struct net_device *dev = dev_get_drvdata(device);
+>  	struct cp_private *cp = netdev_priv(dev);
+>  	unsigned long flags;
+>  
+> @@ -2093,10 +2088,6 @@ static int cp_resume (struct pci_dev *pdev)
+>  
+>  	netif_device_attach (dev);
+>  
+> -	pci_set_power_state(pdev, PCI_D0);
+> -	pci_restore_state(pdev);
+> -	pci_enable_wake(pdev, PCI_D0, 0);
+> -
+>  	/* FIXME: sh*t may happen if the Rx ring buffer is depleted */
+>  	cp_init_rings_index (cp);
+>  	cp_init_hw (cp);
+> @@ -2111,7 +2102,6 @@ static int cp_resume (struct pci_dev *pdev)
+>  
+>  	return 0;
+>  }
+> -#endif /* CONFIG_PM */
+>  
+>  static const struct pci_device_id cp_pci_tbl[] = {
+>          { PCI_DEVICE(PCI_VENDOR_ID_REALTEK,     PCI_DEVICE_ID_REALTEK_8139), },
+> @@ -2120,15 +2110,14 @@ static const struct pci_device_id cp_pci_tbl[] = {
+>  };
+>  MODULE_DEVICE_TABLE(pci, cp_pci_tbl);
+>  
+> +static SIMPLE_DEV_PM_OPS(cp_pm_ops, cp_suspend, cp_resume);
+> +
+>  static struct pci_driver cp_driver = {
+>  	.name         = DRV_NAME,
+>  	.id_table     = cp_pci_tbl,
+>  	.probe        =	cp_init_one,
+>  	.remove       = cp_remove_one,
+> -#ifdef CONFIG_PM
+> -	.resume       = cp_resume,
+> -	.suspend      = cp_suspend,
+> -#endif
+> +	.driver.pm    = &cp_pm_ops,
+>  };
+>  
+>  module_pci_driver(cp_driver);
+> -- 
+> 2.26.2
+> 
