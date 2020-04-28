@@ -2,130 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9812E1BBCE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDD81BBCEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgD1L50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 07:57:26 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:48194 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726505AbgD1L50 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 07:57:26 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SBrfwl005143;
-        Tue, 28 Apr 2020 11:57:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=KHi6fvaD2uJvu2rcnQ4wc0VGBk37Fi+D8Jgv6syjzbg=;
- b=R9IFHoc2PgFLX0WlZrlJPbJRE/DD/bv+X/Oom16IvazmwUOPi4oO+JLHh8g+2jLJnMUm
- XkeisqmUIH4RsAyj7eP6bDkrgO2+L/cNJuOnjdbWwiQkCeYQLImpn/nO2J9vnOVPL7JS
- kdnZSSzWQMVL3jHpb/Bt0Ekg9CXK6PZEQnlpq9otssivt5536CzG5H09rhnZVEx7Wl2j
- LdQkOVk2JQfW0wNRxuhaFfJzcvWC58dNNikE+bmRVR4gDagTV5uXMtjdjU88iiQhMpwX
- /65eF3Mi9Jf4zg1VsqUUuKWkOfEhCAcmjc3n1eBuUTKPA9yZIfuG9sPa8k4j3X0+f0za Zw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 30p2p04p6k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Apr 2020 11:57:21 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SBgxLQ153203;
-        Tue, 28 Apr 2020 11:55:20 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 30my0cvxv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Apr 2020 11:55:20 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03SBtHQ3011532;
-        Tue, 28 Apr 2020 11:55:18 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 28 Apr 2020 04:55:17 -0700
-Date:   Tue, 28 Apr 2020 14:55:10 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     richard.gong@linux.intel.com, gregkh@linuxfoundation.org,
-        atull@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] firmware: stratix10-svc: Fix some error handling paths
- in 'stratix10_svc_drv_probe()'
-Message-ID: <20200428115510.GA2014@kadam>
-References: <20200426190307.40840-1-christophe.jaillet@wanadoo.fr>
+        id S1726763AbgD1L7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 07:59:38 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:47126 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726448AbgD1L7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 07:59:37 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 48A6B4B1FA591B78CE11;
+        Tue, 28 Apr 2020 19:59:34 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Apr 2020 19:59:24 +0800
+From:   Huazhong Tan <tanhuazhong@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <yisen.zhuang@huawei.com>,
+        <linuxarm@huawei.com>, <kuba@kernel.org>,
+        Yonglong Liu <liuyonglong@huawei.com>,
+        Huazhong Tan <tanhuazhong@huawei.com>
+Subject: [PATCH net-next] net: hns3: adds support for reading module eeprom info
+Date:   Tue, 28 Apr 2020 19:58:25 +0800
+Message-ID: <1588075105-52158-1-git-send-email-tanhuazhong@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200426190307.40840-1-christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
- suspectscore=2 adultscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004280096
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9604 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1011
- bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- mlxscore=0 suspectscore=2 mlxlogscore=999 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004280096
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 09:03:07PM +0200, Christophe JAILLET wrote:
-> If an error occurs after calling 'kfifo_alloc()', the allocated memory
-> should be freed with 'kfifo_free()', as already done in the remove
-> function.
-> 
-> Fixes: b5dc75c915cd ("firmware: stratix10-svc: extend svc to support new RSU features")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/firmware/stratix10-svc.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
-> index d5f0769f3761..cc9df9589195 100644
-> --- a/drivers/firmware/stratix10-svc.c
-> +++ b/drivers/firmware/stratix10-svc.c
-> @@ -1043,24 +1043,31 @@ static int stratix10_svc_drv_probe(struct platform_device *pdev)
->  
->  	/* add svc client device(s) */
->  	svc = devm_kzalloc(dev, sizeof(*svc), GFP_KERNEL);
-> -	if (!svc)
-> -		return -ENOMEM;
-> +	if (!svc) {
-> +		ret = -ENOMEM;
-> +		goto err_free_kfifo;
-> +	}
->  
->  	svc->stratix10_svc_rsu = platform_device_alloc(STRATIX10_RSU, 0);
->  	if (!svc->stratix10_svc_rsu) {
->  		dev_err(dev, "failed to allocate %s device\n", STRATIX10_RSU);
-> -		return -ENOMEM;
-> +		ret = -ENOMEM;
-> +		goto err_free_kfifo;
->  	}
->  
->  	ret = platform_device_add(svc->stratix10_svc_rsu);
->  	if (ret) {
->  		platform_device_put(svc->stratix10_svc_rsu);
+From: Yonglong Liu <liuyonglong@huawei.com>
 
-Why not move this to the unwind code as well and do "goto put_platform;"?
+This patch adds support for reading the optical module eeprom
+info via "ethtool -m".
 
-regards,
-dan carpenter
+Signed-off-by: Yonglong Liu <liuyonglong@huawei.com>
+Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
+---
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |   4 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c |  79 ++++++++++++++++
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h |  15 +++
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 102 +++++++++++++++++++++
+ 4 files changed, 200 insertions(+)
 
-> -		return ret;
-> +		goto err_free_kfifo;
->  	}
->  	dev_set_drvdata(dev, svc);
->  
->  	pr_info("Intel Service Layer Driver Initialized\n");
->  
-> +	return 0;
-> +
-> +err_free_kfifo:
-> +	kfifo_free(&controller->svc_fifo);
->  	return ret;
->  }
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+index 6291aa9..5602bf2 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+@@ -374,6 +374,8 @@ struct hnae3_ae_dev {
+  *   Set the max tx rate of specified vf.
+  * set_vf_mac
+  *   Configure the default MAC for specified VF
++ * get_module_eeprom
++ *   Get the optical module eeprom info.
+  */
+ struct hnae3_ae_ops {
+ 	int (*init_ae_dev)(struct hnae3_ae_dev *ae_dev);
+@@ -548,6 +550,8 @@ struct hnae3_ae_ops {
+ 	int (*set_vf_rate)(struct hnae3_handle *handle, int vf,
+ 			   int min_tx_rate, int max_tx_rate, bool force);
+ 	int (*set_vf_mac)(struct hnae3_handle *handle, int vf, u8 *p);
++	int (*get_module_eeprom)(struct hnae3_handle *handle, u32 offset,
++				 u32 len, u8 *data);
+ };
+ 
+ struct hnae3_dcb_ops {
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+index 4d9c85f..8364e1b 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
+@@ -12,6 +12,16 @@ struct hns3_stats {
+ 	int stats_offset;
+ };
+ 
++#define HNS3_MODULE_TYPE_QSFP		0x0C
++#define HNS3_MODULE_TYPE_QSFP_P		0x0D
++#define HNS3_MODULE_TYPE_QSFP_28	0x11
++#define HNS3_MODULE_TYPE_SFP		0x03
++
++struct hns3_sfp_type {
++	u8 type;
++	u8 ext_type;
++};
++
+ /* tqp related stats */
+ #define HNS3_TQP_STAT(_string, _member)	{			\
+ 	.stats_string = _string,				\
+@@ -1386,6 +1396,73 @@ static int hns3_set_fecparam(struct net_device *netdev,
+ 	return ops->set_fec(handle, fec_mode);
+ }
+ 
++static int hns3_get_module_info(struct net_device *netdev,
++				struct ethtool_modinfo *modinfo)
++{
++#define HNS3_SFF_8636_V1_3 0x03
++
++	struct hnae3_handle *handle = hns3_get_handle(netdev);
++	const struct hnae3_ae_ops *ops = handle->ae_algo->ops;
++	struct hns3_sfp_type sfp_type;
++	int ret;
++
++	if (handle->pdev->revision == 0x20 || !ops->get_module_eeprom)
++		return -EOPNOTSUPP;
++
++	memset(&sfp_type, 0, sizeof(sfp_type));
++	ret = ops->get_module_eeprom(handle, 0, sizeof(sfp_type) / sizeof(u8),
++				     (u8 *)&sfp_type);
++	if (ret)
++		return ret;
++
++	switch (sfp_type.type) {
++	case HNS3_MODULE_TYPE_SFP:
++		modinfo->type = ETH_MODULE_SFF_8472;
++		modinfo->eeprom_len = ETH_MODULE_SFF_8472_LEN;
++		break;
++	case HNS3_MODULE_TYPE_QSFP:
++		modinfo->type = ETH_MODULE_SFF_8436;
++		modinfo->eeprom_len = ETH_MODULE_SFF_8436_MAX_LEN;
++		break;
++	case HNS3_MODULE_TYPE_QSFP_P:
++		if (sfp_type.ext_type < HNS3_SFF_8636_V1_3) {
++			modinfo->type = ETH_MODULE_SFF_8436;
++			modinfo->eeprom_len = ETH_MODULE_SFF_8436_MAX_LEN;
++		} else {
++			modinfo->type = ETH_MODULE_SFF_8636;
++			modinfo->eeprom_len = ETH_MODULE_SFF_8636_MAX_LEN;
++		}
++		break;
++	case HNS3_MODULE_TYPE_QSFP_28:
++		modinfo->type = ETH_MODULE_SFF_8636;
++		modinfo->eeprom_len = ETH_MODULE_SFF_8636_MAX_LEN;
++		break;
++	default:
++		netdev_err(netdev, "Optical module unknown: %#x\n",
++			   sfp_type.type);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int hns3_get_module_eeprom(struct net_device *netdev,
++				  struct ethtool_eeprom *ee, u8 *data)
++{
++	struct hnae3_handle *handle = hns3_get_handle(netdev);
++	const struct hnae3_ae_ops *ops = handle->ae_algo->ops;
++
++	if (handle->pdev->revision == 0x20 || !ops->get_module_eeprom)
++		return -EOPNOTSUPP;
++
++	if (!ee->len)
++		return -EINVAL;
++
++	memset(data, 0, ee->len);
++
++	return ops->get_module_eeprom(handle, ee->offset, ee->len, data);
++}
++
+ #define HNS3_ETHTOOL_COALESCE	(ETHTOOL_COALESCE_USECS |		\
+ 				 ETHTOOL_COALESCE_USE_ADAPTIVE |	\
+ 				 ETHTOOL_COALESCE_RX_USECS_HIGH |	\
+@@ -1449,6 +1526,8 @@ static const struct ethtool_ops hns3_ethtool_ops = {
+ 	.set_msglevel = hns3_set_msglevel,
+ 	.get_fecparam = hns3_get_fecparam,
+ 	.set_fecparam = hns3_set_fecparam,
++	.get_module_info = hns3_get_module_info,
++	.get_module_eeprom = hns3_get_module_eeprom,
+ };
+ 
+ void hns3_ethtool_set_ops(struct net_device *netdev)
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
+index 90e422ef..9a9d752 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.h
+@@ -270,6 +270,8 @@ enum hclge_opcode_type {
+ 	HCLGE_OPC_M7_COMPAT_CFG		= 0x701A,
+ 
+ 	/* SFP command */
++	HCLGE_OPC_GET_SFP_EEPROM	= 0x7100,
++	HCLGE_OPC_GET_SFP_EXIST		= 0x7101,
+ 	HCLGE_OPC_GET_SFP_INFO		= 0x7104,
+ 
+ 	/* Error INT commands */
+@@ -1054,6 +1056,19 @@ struct hclge_firmware_compat_cmd {
+ 	u8 rsv[20];
+ };
+ 
++#define HCLGE_SFP_INFO_CMD_NUM	6
++#define HCLGE_SFP_INFO_BD0_LEN	20
++#define HCLGE_SFP_INFO_BDX_LEN	24
++#define HCLGE_SFP_INFO_MAX_LEN \
++	(HCLGE_SFP_INFO_BD0_LEN + \
++	(HCLGE_SFP_INFO_CMD_NUM - 1) * HCLGE_SFP_INFO_BDX_LEN)
++
++struct hclge_sfp_info_bd0_cmd {
++	__le16 offset;
++	__le16 read_len;
++	u8 data[HCLGE_SFP_INFO_BD0_LEN];
++};
++
+ int hclge_cmd_init(struct hclge_dev *hdev);
+ static inline void hclge_write_reg(void __iomem *base, u32 reg, u32 value)
+ {
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+index e2fec83..71a54dd 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -11119,6 +11119,107 @@ static void hclge_sync_promisc_mode(struct hclge_dev *hdev)
+ 	}
+ }
+ 
++static bool hclge_module_existed(struct hclge_dev *hdev)
++{
++	struct hclge_desc desc;
++	u32 existed;
++	int ret;
++
++	hclge_cmd_setup_basic_desc(&desc, HCLGE_OPC_GET_SFP_EXIST, true);
++	ret = hclge_cmd_send(&hdev->hw, &desc, 1);
++	if (ret) {
++		dev_err(&hdev->pdev->dev,
++			"failed to get SFP exist state, ret = %d\n", ret);
++		return false;
++	}
++
++	existed = le32_to_cpu(desc.data[0]);
++
++	return existed != 0;
++}
++
++/* need 6 bds(total 140 bytes) in one reading
++ * return the number of bytes actually read, 0 means read failed.
++ */
++static u16 hclge_get_sfp_eeprom_info(struct hclge_dev *hdev, u32 offset,
++				     u32 len, u8 *data)
++{
++	struct hclge_desc desc[HCLGE_SFP_INFO_CMD_NUM];
++	struct hclge_sfp_info_bd0_cmd *sfp_info_bd0;
++	u16 read_len;
++	u16 copy_len;
++	int ret;
++	int i;
++
++	/* setup all 6 bds to read module eeprom info. */
++	for (i = 0; i < HCLGE_SFP_INFO_CMD_NUM; i++) {
++		hclge_cmd_setup_basic_desc(&desc[i], HCLGE_OPC_GET_SFP_EEPROM,
++					   true);
++
++		/* bd0~bd4 need next flag */
++		if (i < HCLGE_SFP_INFO_CMD_NUM - 1)
++			desc[i].flag |= cpu_to_le16(HCLGE_CMD_FLAG_NEXT);
++	}
++
++	/* setup bd0, this bd contains offset and read length. */
++	sfp_info_bd0 = (struct hclge_sfp_info_bd0_cmd *)desc[0].data;
++	sfp_info_bd0->offset = cpu_to_le16((u16)offset);
++	read_len = min_t(u16, len, HCLGE_SFP_INFO_MAX_LEN);
++	sfp_info_bd0->read_len = cpu_to_le16(read_len);
++
++	ret = hclge_cmd_send(&hdev->hw, desc, i);
++	if (ret) {
++		dev_err(&hdev->pdev->dev,
++			"failed to get SFP eeprom info, ret = %d\n", ret);
++		return 0;
++	}
++
++	/* copy sfp info from bd0 to out buffer. */
++	copy_len = min_t(u16, len, HCLGE_SFP_INFO_BD0_LEN);
++	memcpy(data, sfp_info_bd0->data, copy_len);
++	read_len = copy_len;
++
++	/* copy sfp info from bd1~bd5 to out buffer if needed. */
++	for (i = 1; i < HCLGE_SFP_INFO_CMD_NUM; i++) {
++		if (read_len >= len)
++			return read_len;
++
++		copy_len = min_t(u16, len - read_len, HCLGE_SFP_INFO_BDX_LEN);
++		memcpy(data + read_len, desc[i].data, copy_len);
++		read_len += copy_len;
++	}
++
++	return read_len;
++}
++
++static int hclge_get_module_eeprom(struct hnae3_handle *handle, u32 offset,
++				   u32 len, u8 *data)
++{
++	struct hclge_vport *vport = hclge_get_vport(handle);
++	struct hclge_dev *hdev = vport->back;
++	u32 read_len = 0;
++	u16 data_len;
++
++	if (hdev->hw.mac.media_type != HNAE3_MEDIA_TYPE_FIBER)
++		return -EOPNOTSUPP;
++
++	if (!hclge_module_existed(hdev))
++		return -ENXIO;
++
++	while (read_len < len) {
++		data_len = hclge_get_sfp_eeprom_info(hdev,
++						     offset + read_len,
++						     len - read_len,
++						     data + read_len);
++		if (!data_len)
++			return -EIO;
++
++		read_len += data_len;
++	}
++
++	return 0;
++}
++
+ static const struct hnae3_ae_ops hclge_ops = {
+ 	.init_ae_dev = hclge_init_ae_dev,
+ 	.uninit_ae_dev = hclge_uninit_ae_dev,
+@@ -11211,6 +11312,7 @@ static const struct hnae3_ae_ops hclge_ops = {
+ 	.set_vf_trust = hclge_set_vf_trust,
+ 	.set_vf_rate = hclge_set_vf_rate,
+ 	.set_vf_mac = hclge_set_vf_mac,
++	.get_module_eeprom = hclge_get_module_eeprom,
+ };
+ 
+ static struct hnae3_ae_algo ae_algo = {
+-- 
+2.7.4
 
