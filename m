@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2577C1BC8B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF141BC86A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729695AbgD1Sez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:34:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51728 "EHLO mail.kernel.org"
+        id S1729029AbgD1ScZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:32:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730163AbgD1Ses (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:34:48 -0400
+        id S1729797AbgD1ScT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:32:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1348420B80;
-        Tue, 28 Apr 2020 18:34:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EC9321775;
+        Tue, 28 Apr 2020 18:32:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098888;
-        bh=MP26A2OBUbs1cuhWFwrMTOSqGEDpkxHbfaCiIF/p9fA=;
+        s=default; t=1588098738;
+        bh=/jrAPI4wNWGF4M34LSkLZCDiQzxw+bs9kZbI0SIKvp0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GhuNTvEMUS/NqmqoP9ZbVXFOw7dJl+12acMawK4KGnjPl/dn2wrTzdPkX53HexBGI
-         W4IAGxJ7cIanoHl5dkQqiYQe5a8T0nOkjGrNYB56F5G881PeI+ALspxatI4kezLTqm
-         a6rietua5JgKM5E+aEifAgOelYQuBhahyleTpfb8=
+        b=jNiihdIp/S73ZfU1cINb912Jz8h2vXTXy+m8vTINfAPB7YBDP4blbu+9ZGCYXE/OK
+         IyDDSXLPCQiMr2F3xts5swlNL0u53rHCtpIGwlx+rhkfMTS1icjQ3hJ1Z2VREsJS1/
+         j/ROCv5uE93BqwtttLE2YiFmxkqY7WByIST6jQm0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 069/131] net: dsa: b53: b53_arl_rw_op() needs to select IVL or SVL
+        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.6 105/167] ALSA: hda/realtek - Add new codec supported for ALC245
 Date:   Tue, 28 Apr 2020 20:24:41 +0200
-Message-Id: <20200428182233.601917296@linuxfoundation.org>
+Message-Id: <20200428182238.435565977@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Kailang Yang <kailang@realtek.com>
 
-[ Upstream commit 64fec9493f7dc9bdd7233bcfe98985c45bd0e3c1 ]
+commit 7fbdcd8301a84c09cebfa64f1317a6dafeec9188 upstream.
 
-Flip the IVL_SVL_SELECT bit correctly based on the VLAN enable status,
-the default is to perform Shared VLAN learning instead of Individual
-learning.
+Enable new codec supported for ALC245.
 
-Fixes: 1da6df85c6fb ("net: dsa: b53: Implement ARL add/del/dump operations")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/8c0804738b2c42439f59c39c8437817f@realtek.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/dsa/b53/b53_common.c |    4 ++++
- drivers/net/dsa/b53/b53_regs.h   |    1 +
- 2 files changed, 5 insertions(+)
 
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -1253,6 +1253,10 @@ static int b53_arl_rw_op(struct b53_devi
- 		reg |= ARLTBL_RW;
- 	else
- 		reg &= ~ARLTBL_RW;
-+	if (dev->vlan_enabled)
-+		reg &= ~ARLTBL_IVL_SVL_SELECT;
-+	else
-+		reg |= ARLTBL_IVL_SVL_SELECT;
- 	b53_write8(dev, B53_ARLIO_PAGE, B53_ARLTBL_RW_CTRL, reg);
- 
- 	return b53_arl_op_wait(dev);
---- a/drivers/net/dsa/b53/b53_regs.h
-+++ b/drivers/net/dsa/b53/b53_regs.h
-@@ -292,6 +292,7 @@
- /* ARL Table Read/Write Register (8 bit) */
- #define B53_ARLTBL_RW_CTRL		0x00
- #define    ARLTBL_RW			BIT(0)
-+#define    ARLTBL_IVL_SVL_SELECT	BIT(6)
- #define    ARLTBL_START_DONE		BIT(7)
- 
- /* MAC Address Index Register (48 bit) */
+---
+ sound/pci/hda/patch_realtek.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -369,6 +369,7 @@ static void alc_fill_eapd_coef(struct hd
+ 	case 0x10ec0233:
+ 	case 0x10ec0235:
+ 	case 0x10ec0236:
++	case 0x10ec0245:
+ 	case 0x10ec0255:
+ 	case 0x10ec0256:
+ 	case 0x10ec0257:
+@@ -8073,6 +8074,7 @@ static int patch_alc269(struct hda_codec
+ 		spec->gen.mixer_nid = 0;
+ 		break;
+ 	case 0x10ec0215:
++	case 0x10ec0245:
+ 	case 0x10ec0285:
+ 	case 0x10ec0289:
+ 		spec->codec_variant = ALC269_TYPE_ALC215;
+@@ -9334,6 +9336,7 @@ static const struct hda_device_id snd_hd
+ 	HDA_CODEC_ENTRY(0x10ec0234, "ALC234", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0235, "ALC233", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0236, "ALC236", patch_alc269),
++	HDA_CODEC_ENTRY(0x10ec0245, "ALC245", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0255, "ALC255", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0256, "ALC256", patch_alc269),
+ 	HDA_CODEC_ENTRY(0x10ec0257, "ALC257", patch_alc269),
 
 
