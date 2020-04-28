@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6951BC7F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7722C1BC7FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729138AbgD1S2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:28:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40332 "EHLO mail.kernel.org"
+        id S1729215AbgD1S2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:28:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729096AbgD1S14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:27:56 -0400
+        id S1729180AbgD1S2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:28:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6151A20B80;
-        Tue, 28 Apr 2020 18:27:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB645208E0;
+        Tue, 28 Apr 2020 18:28:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098475;
-        bh=K+Mwk65K/La2MVoY7m+jquMfV89IRWr8P72jJHI8WZ0=;
+        s=default; t=1588098502;
+        bh=HDRVvxIprPJMsOxeeV4IKZ2/E6oVS200w4vIvpWIuqY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cymiya41KNRl6bt6JyDD38V47N/rTsJH8ExtcXSbp+pIVGBQdcgutghckhWwAe/kF
-         ARmZZjCF8DDH0td0LSmZyqvgirJwYOQcilgIRGx0MhADdFJGwaLVn6eufq6KbCM7/s
-         c+AtF9MyEeVhHt3Wrmz6D5V34hMLilmnJ3nO2K2k=
+        b=qr4mlk4hlhocIlm3sFNgTzX/u+VWt8W5h4NzNW52+upQdMykWFmYZmGl1BSutx972
+         s2liOkWJZICkyItZ9q4XcaSNXzjehSvyMZgnht5kAwGp7w13V0BtLOlelqYaW7lUJu
+         PDvxw1BvCQ40d9CrpUTOx9MB/J03cJ8ehS3y0QXM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Aric Cyr <Aric.Cyr@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 038/167] drm/amd/display: Calculate scaling ratios on every medium/full update
-Date:   Tue, 28 Apr 2020 20:23:34 +0200
-Message-Id: <20200428182229.943561352@linuxfoundation.org>
+Subject: [PATCH 5.6 039/167] ASoC: Intel: bytcr_rt5640: Add quirk for MPMAN MPWIN895CL tablet
+Date:   Tue, 28 Apr 2020 20:23:35 +0200
+Message-Id: <20200428182230.059324414@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
 References: <20200428182225.451225420@linuxfoundation.org>
@@ -47,67 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 3bae20137cae6c03f58f96c0bc9f3d46f0bc17d4 ]
+[ Upstream commit c8b78f24c1247b7bd0882885c672d9dec5800bc6 ]
 
-[Why]
-If a plane isn't being actively enabled or disabled then DC won't
-always recalculate scaling rects and ratios for the primary plane.
+The MPMAN MPWIN895CL tablet almost fully works with out default settings.
+The only problem is that it has only 1 speaker so any sounds only playing
+on the right channel get lost.
 
-This results in only a partial or corrupted rect being displayed on
-the screen instead of scaling to fit the screen.
+Add a quirk for this model using the default settings + MONO_SPEAKER.
 
-[How]
-Add back the logic to recalculate the scaling rects into
-dc_commit_updates_for_stream since this is the expected place to
-do it in DC.
-
-This was previously removed a few years ago to fix an underscan issue
-but underscan is still functional now with this change - and it should
-be, since this is only updating to the latest plane state getting passed
-in.
-
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Reviewed-by: Aric Cyr <Aric.Cyr@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200405133726.24154-1-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index fc25600107050..188e51600070b 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -2349,7 +2349,7 @@ void dc_commit_updates_for_stream(struct dc *dc,
- 	enum surface_update_type update_type;
- 	struct dc_state *context;
- 	struct dc_context *dc_ctx = dc->ctx;
--	int i;
-+	int i, j;
- 
- 	stream_status = dc_stream_get_status(stream);
- 	context = dc->current_state;
-@@ -2387,6 +2387,17 @@ void dc_commit_updates_for_stream(struct dc *dc,
- 
- 		copy_surface_update_to_plane(surface, &srf_updates[i]);
- 
-+		if (update_type >= UPDATE_TYPE_MED) {
-+			for (j = 0; j < dc->res_pool->pipe_count; j++) {
-+				struct pipe_ctx *pipe_ctx =
-+					&context->res_ctx.pipe_ctx[j];
-+
-+				if (pipe_ctx->plane_state != surface)
-+					continue;
-+
-+				resource_build_scaling_params(pipe_ctx);
-+			}
-+		}
- 	}
- 
- 	copy_stream_update_to_stream(dc, context, stream, stream_update);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 6bd9ae813be28..d14d5f7db1689 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -591,6 +591,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		/* MPMAN MPWIN895CL */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "MPMAN"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "MPWIN8900CL"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{	/* MSI S100 tablet */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
 -- 
 2.20.1
 
