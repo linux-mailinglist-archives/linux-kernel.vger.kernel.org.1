@@ -2,71 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD4B1BCA3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873281BC971
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731108AbgD1SsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:48:17 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:33261 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730645AbgD1SlG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:41:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588099265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2JvJAM5p12RcumIJnmGpEzfcPG1ShzjNWymeqXsNBPQ=;
-        b=QaeipvLqHfELP3LhF6d1X+GJiGkD8l89y2zd6KQh4W1KC/Z25xtVvlDN9EDBA96UcpHn2m
-        5CLbGoU+r8WtT04A6jN25CSzzWaWh3qDJTNl9nAHQ0Ecs7DsaPtnA97KoSuCDBtJQqVvzZ
-        7POmfgEYt2oUIL4K98yc0p8xu+poHAs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-hojDiYcrPpK329HM2OBAGw-1; Tue, 28 Apr 2020 14:41:01 -0400
-X-MC-Unique: hojDiYcrPpK329HM2OBAGw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1730407AbgD1Slk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:41:40 -0400
+Received: from ms.lwn.net ([45.79.88.28]:41422 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730995AbgD1Sle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:41:34 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0110B107ACCA;
-        Tue, 28 Apr 2020 18:41:01 +0000 (UTC)
-Received: from virtlab710.virt.lab.eng.bos.redhat.com (virtlab710.virt.lab.eng.bos.redhat.com [10.19.152.252])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6DC085C1BD;
-        Tue, 28 Apr 2020 18:41:00 +0000 (UTC)
-From:   Cathy Avery <cavery@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com
-Subject: [PATCH kvm-unit-tests] svm: Fix nmi hlt test to fail test correctly
-Date:   Tue, 28 Apr 2020 14:41:00 -0400
-Message-Id: <20200428184100.5426-1-cavery@redhat.com>
+        by ms.lwn.net (Postfix) with ESMTPSA id 47A0744A;
+        Tue, 28 Apr 2020 18:41:34 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 12:41:33 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Stephen Kitt <steve@sk2.org>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/3] docs: sysctl/kernel: document ftrace entries
+Message-ID: <20200428124133.0fbaf7c5@lwn.net>
+In-Reply-To: <20200423183651.15365-2-steve@sk2.org>
+References: <20200423183651.15365-1-steve@sk2.org>
+        <20200423183651.15365-2-steve@sk2.org>
+Organization: LWN.net
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The last test does not return vmmcall on fail resulting
-in passing the entire test.
+On Thu, 23 Apr 2020 20:36:50 +0200
+Stephen Kitt <steve@sk2.org> wrote:
 
-Signed-off-by: Cathy Avery <cavery@redhat.com>
----
- x86/svm_tests.c | 1 +
- 1 file changed, 1 insertion(+)
+> Based on the ftrace documentation, the tp_printk boot parameter
+> documentation, and the implementation in kernel/trace/trace.c.
+> 
+> Signed-off-by: Stephen Kitt <steve@sk2.org>
 
-diff --git a/x86/svm_tests.c b/x86/svm_tests.c
-index 2b84e4d..65008ba 100644
---- a/x86/svm_tests.c
-+++ b/x86/svm_tests.c
-@@ -1480,6 +1480,7 @@ static void nmi_hlt_test(struct svm_test *test)
-     if (!nmi_fired) {
-         report(nmi_fired, "intercepted pending NMI not dispatched");
-         set_test_stage(test, -1);
-+        vmmcall();
-     }
-=20
-     set_test_stage(test, 3);
---=20
-2.20.1
+This one could benefit from an ack from Steve (CC'd).  Also one other
+little nit below:
 
+>  Documentation/admin-guide/sysctl/kernel.rst | 50 +++++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index 82bfd5892663..d4bbdaf96ebc 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -265,6 +265,27 @@ domain names are in general different. For a detailed discussion
+>  see the ``hostname(1)`` man page.
+>  
+>  
+> +ftrace_dump_on_oops
+> +===================
+> +
+> +Determines whether ``ftrace_dump()`` should be called on an oops (or
+> +kernel panic). This will output the contents of the ftrace buffers to
+> +the console.  This is very useful for capturing traces that lead to
+> +crashes and outputing it to a serial console.
+> +
+> += ===================================================
+> +0 Disabled (default).
+> +1 Dump buffers of all CPUs.
+> +2 Dump the buffer of the CPU that triggered the oops.
+> += ===================================================
+> +
+> +
+> +ftrace_enabled, stack_tracer_enabled
+> +====================================
+> +
+> +See :doc:`/trace/ftrace`.
+> +
+> +
+>  hardlockup_all_cpu_backtrace
+>  ============================
+>  
+> @@ -1191,6 +1212,35 @@ If a value outside of this range is written to ``threads-max`` an
+>  ``EINVAL`` error occurs.
+>  
+>  
+> +traceoff_on_warning
+> +===================
+> +
+> +When set, disables tracing (see :doc:`/trace/ftrace`) when a
+> +``WARN()`` is hit.
+> +
+> +
+> +tracepoint_printk
+> +=================
+> +
+> +When tracepoints are sent to printk() (enabled by the ``tp_printk``
+> +boot parameter), this entry provides runtime control::
+> +
+> +    echo 0 > /proc/sys/kernel/tracepoint_printk
+> +
+> +will stop tracepoints from being sent to printk(), and
+> +
+> +::
+
+I would just make that ", and::" and avoid the separate line.
+
+> +
+> +    echo 1 > /proc/sys/kernel/tracepoint_printk
+> +
+> +will send them to printk() again.
+> +
+> +This only works if the kernel was booted with ``tp_printk`` enabled.
+> +
+> +See :doc:`/admin-guide/kernel-parameters` and
+> +:doc:`/trace/boottime-trace`.
+> +
+> +
+>  unknown_nmi_panic
+>  =================
+>  
+
+Thanks,
+
+jon
