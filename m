@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDCA1BC7E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6608A1BCB85
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729066AbgD1S1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:27:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39930 "EHLO mail.kernel.org"
+        id S1729347AbgD1S3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:29:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729026AbgD1S1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:27:39 -0400
+        id S1729335AbgD1S3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:29:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77596214AF;
-        Tue, 28 Apr 2020 18:27:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6751020757;
+        Tue, 28 Apr 2020 18:29:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098458;
-        bh=/7QBwKfyFaGo2/A27oj+RtU0qplo/5qvvtiZVFK3pMA=;
+        s=default; t=1588098560;
+        bh=fgAPi6SmobpQ+fTyTrbXH1oguShDvqB2QYogzj2mDg0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aBxVapo+/6mSwnE9IT+hqAOSf6D/swB/IwgwwqsfCSF9SEpdzlL9kSGIYMGpmcXbk
-         JFYB8+Hh/DZuXZjrhMNAw3jGtVcKwY3XAyGuh2BJsxtIuRGHO8h7D4vs1E/LIMnpLJ
-         k2tv+caPsF8Fre6+LX29PIPA02Ni5xSbdZbbBOQE=
+        b=oXNa5uDRbw0TouwcQZuemhoy8b9FuwmOK++cCw+rL4t4WdIhDTHAH6THzcKeRNX8Z
+         /BUPxQrpOc+XTFaebR6i2SFH3KGsRrrPxkI0PwX4grUaZV9L08ek6oxToQGAnGQS/e
+         SY+0qKJsx4VTBQulVhAEVRIt0835g4UXnlsnEpPI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 049/167] macsec: avoid to set wrong mtu
-Date:   Tue, 28 Apr 2020 20:23:45 +0200
-Message-Id: <20200428182231.256018680@linuxfoundation.org>
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 014/131] ceph: return ceph_mdsc_do_request() errors from __get_parent()
+Date:   Tue, 28 Apr 2020 20:23:46 +0200
+Message-Id: <20200428182226.973973467@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,64 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-[ Upstream commit 7f327080364abccf923fa5a5b24e038eb0ba1407 ]
+[ Upstream commit c6d50296032f0b97473eb2e274dc7cc5d0173847 ]
 
-When a macsec interface is created, the mtu is calculated with the lower
-interface's mtu value.
-If the mtu of lower interface is lower than the length, which is needed
-by macsec interface, macsec's mtu value will be overflowed.
-So, if the lower interface's mtu is too low, macsec interface's mtu
-should be set to 0.
+Return the error returned by ceph_mdsc_do_request(). Otherwise,
+r_target_inode ends up being NULL this ends up returning ENOENT
+regardless of the error.
 
-Test commands:
-    ip link add dummy0 mtu 10 type dummy
-    ip link add macsec0 link dummy0 type macsec
-    ip link show macsec0
-
-Before:
-    11: macsec0@dummy0: <BROADCAST,MULTICAST,M-DOWN> mtu 4294967274
-After:
-    11: macsec0@dummy0: <BROADCAST,MULTICAST,M-DOWN> mtu 0
-
-Fixes: c09440f7dcb3 ("macsec: introduce IEEE 802.1AE driver")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/macsec.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ fs/ceph/export.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/net/macsec.c
-+++ b/drivers/net/macsec.c
-@@ -3658,11 +3658,11 @@ static int macsec_newlink(struct net *ne
- 			  struct netlink_ext_ack *extack)
- {
- 	struct macsec_dev *macsec = macsec_priv(dev);
-+	rx_handler_func_t *rx_handler;
-+	u8 icv_len = DEFAULT_ICV_LEN;
- 	struct net_device *real_dev;
--	int err;
-+	int err, mtu;
- 	sci_t sci;
--	u8 icv_len = DEFAULT_ICV_LEN;
--	rx_handler_func_t *rx_handler;
+diff --git a/fs/ceph/export.c b/fs/ceph/export.c
+index 3c59ad180ef0b..4cfe1154d4c72 100644
+--- a/fs/ceph/export.c
++++ b/fs/ceph/export.c
+@@ -151,6 +151,11 @@ static struct dentry *__get_parent(struct super_block *sb,
  
- 	if (!tb[IFLA_LINK])
- 		return -EINVAL;
-@@ -3681,7 +3681,11 @@ static int macsec_newlink(struct net *ne
- 
- 	if (data && data[IFLA_MACSEC_ICV_LEN])
- 		icv_len = nla_get_u8(data[IFLA_MACSEC_ICV_LEN]);
--	dev->mtu = real_dev->mtu - icv_len - macsec_extra_len(true);
-+	mtu = real_dev->mtu - icv_len - macsec_extra_len(true);
-+	if (mtu < 0)
-+		dev->mtu = 0;
-+	else
-+		dev->mtu = mtu;
- 
- 	rx_handler = rtnl_dereference(real_dev->rx_handler);
- 	if (rx_handler && rx_handler != macsec_handle_frame)
+ 	req->r_num_caps = 1;
+ 	err = ceph_mdsc_do_request(mdsc, NULL, req);
++	if (err) {
++		ceph_mdsc_put_request(req);
++		return ERR_PTR(err);
++	}
++
+ 	inode = req->r_target_inode;
+ 	if (inode)
+ 		ihold(inode);
+-- 
+2.20.1
+
 
 
