@@ -2,115 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB611BB814
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 09:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70B61BB81E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 09:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726649AbgD1HwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 03:52:02 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:48727 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726253AbgD1HwB (ORCPT
+        id S1726748AbgD1Hw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 03:52:57 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:25769 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgD1Hwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 03:52:01 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7FAB65C0242;
-        Tue, 28 Apr 2020 03:52:00 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 28 Apr 2020 03:52:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=V3F6bgU0rAXVY56HsN7kHIpWzuM
-        aEzjdPUeTPKOkaG0=; b=GN//1xQTf4yXhNpbQP8Zc9xxWk2xJ56RdOw6PKZoz9o
-        +E8qbi3XzM/0l5NjjHGni9L2JYmrL71d5+SWiI/VvGkYqFQAEFCqMzAEgYMvWGCJ
-        NhoM6XnhWHQ5evKR2/xaZHPoeJF4qwHYmNNwblSeeIyJInBEX/HXnUJvV5+GDNFT
-        KjMxIqx1mDMJhHPCAclkzhoCbTfHyP7f/lj088nx0ZizFngGObQk0I54AJLv/v/k
-        YRiEGE3DjWi2iUk3hYwrOVSORWaEDtUu7BlI0OrWr3I4wDblqrQg7oEO+GPO4rAd
-        bJcog3vcMQj5jPcfRMszK10HMsDg5mEx08DRLJ0RM/g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=V3F6bg
-        U0rAXVY56HsN7kHIpWzuMaEzjdPUeTPKOkaG0=; b=MRBAYWKAjvaFWz3YsE0ku/
-        DkNYdH2W8vHcXBjxUqP6lV+gftTI7UB/s+QWKzSlGq3RKYPCPk+skGoMf+jxjugq
-        BfFKkE4o612wolzPCWp2o65mvUlrYZZ6sx6ZVXK+T4Q+CdUt1Ul0ywawrfwhhm+d
-        EvyYYEsPoLnOrnoRVEMS4zplri9bo/QguB0tcCA/U8m6SP6cZK/wBZ0HWJ6Gs9cW
-        4qpN3RyasCDP/zGEPFDic/5S4iza6HI5hSReB2L1+/E6HNVHnYwSNnDwcNRnLdc4
-        HB+t0kZUiYQxwTuQpL/2GcxSC+1fDzYShOm9ATWLZL9X3wosb/9cjRQWarRc+EKA
-        ==
-X-ME-Sender: <xms:n-CnXihsqEnrGJ6OHdfqI_LaCGXt45oS_PVy6mlP6a6yrTJhkF7hAA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedriedtgdduvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecukfhppeeltd
-    drkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
-    lhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:n-CnXn7wEhWJJmoj2mTVuVT6nrrfmoj7LMLFO5iVC1NnxQ9k9YiiRw>
-    <xmx:n-CnXnqqdU2Zd_WRJhmy0R8kMIBsbva2BWQZE_w2_QFHiXUR4LhUHg>
-    <xmx:n-CnXtUBXrMLAiP5tEIrcxRbmhyynOGVX28lmk21_fGKmDn9idb2AA>
-    <xmx:oOCnXoRNxVwYOm0wyWwXdWGslFkNT-bOA2RcB8C18LI9WcdK8zyvRw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 025DA3280068;
-        Tue, 28 Apr 2020 03:51:58 -0400 (EDT)
-Date:   Tue, 28 Apr 2020 09:51:56 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-sunxi <linux-sunxi@googlegroups.com>,
-        Piotr Oniszczuk <warpme@o2.pl>
-Subject: Re: [PATCH] arm64: dts: allwinner: h6: Use dedicated CPU OPP table
- for Tanix TX6
-Message-ID: <20200428075156.65okklrupingiza6@gilmour.lan>
-References: <20200426121709.1216-1-peron.clem@gmail.com>
+        Tue, 28 Apr 2020 03:52:54 -0400
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 03S7qc6L011853
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 16:52:39 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 03S7qc6L011853
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1588060359;
+        bh=QPAQvrairyv/g99zYJPMQ7WDBrdaFd2bW853qF/5aXc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=weNGx2Z6XS22im/pq2oCo5m4ZGkjz8I6CaacYx34oPH/F0fcfs4tQmQg0YKNLqQy0
+         E3jeQgZrr+7lp8hJ7D0A1s2fBFDrfO3C696AmbP7raL6yn3Elj9cPJNL0eOwR/ohM4
+         9Ku3EZj2XI5yPnj2zzYnXLSazlNklCTtH5Q8/WrPOIqRQB16cz0Rolto0tWmqisGBy
+         VyIJWJ4Qr6UivZSvpHdj9FEKM/4i2TNbpDks/VBcW2T5FKoZJs2SbOle6eez2idkt2
+         TL0vpcH0B2aIWM/B9nHbqLcZ+359ObscbHcnVMX/+1fCi5W7qfwktuetTP5QVOVO3i
+         /3w1Tk6RuZQpQ==
+X-Nifty-SrcIP: [209.85.222.49]
+Received: by mail-ua1-f49.google.com with SMTP id b6so6609399uak.6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 00:52:38 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaH7mxTv9T7KIMEXjwzLG8mUJR/blGXTa9LjaBreV+7w0RYNAxl
+        yV7KoOQAFm1Yf/EdzkDk/wIqshgz8wRXtWB+8Tw=
+X-Google-Smtp-Source: APiQypJb1/OJIWgvmQ4YLflHEvxCw5scmVMbfuEMCiQcthiRE4P93Oeyk61i9y3G9miJ3m+3ZNzrMfNEvCp9s68eGo4=
+X-Received: by 2002:ab0:cd:: with SMTP id 71mr18483445uaj.109.1588060357644;
+ Tue, 28 Apr 2020 00:52:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hy3utu7gd5xuclrb"
-Content-Disposition: inline
-In-Reply-To: <20200426121709.1216-1-peron.clem@gmail.com>
+References: <20200425080343.GA2048673@kroah.com> <20200426024436.7534-1-xujialu@vimux.org>
+In-Reply-To: <20200426024436.7534-1-xujialu@vimux.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 28 Apr 2020 16:52:01 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS3P2uCOnE3zX59QKOg7SgtS25j-1VXdHE32vrDyCA2_A@mail.gmail.com>
+Message-ID: <CAK7LNAS3P2uCOnE3zX59QKOg7SgtS25j-1VXdHE32vrDyCA2_A@mail.gmail.com>
+Subject: Re: [PATCH] scripts: gtags_files_generator.sh
+To:     xujialu <xujialu@vimux.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Apr 26, 2020 at 11:48 AM xujialu <xujialu@vimux.org> wrote:
+>
+> Add a script to generate a more precise gtags.files from *.cmd files.
+>
+> For navigating linux sources, it will be more efficient if gtags/cscope
+> just collects source files that needed for compilation. The kernel
+> makefiles already create *.cmd files that contain the files we needed,
+> then just extracts files list from them and into gtags.files cause it's
+> the the default name list file for gtags.
 
---hy3utu7gd5xuclrb
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 26, 2020 at 02:17:09PM +0200, Cl=E9ment P=E9ron wrote:
-> Tanix TX6 has a fixed regulator. As DVFS is instructed to change
-> voltage to meet OPP table. The DVFS is not working as expected.
->=20
-> Introduce a dedicated OPP Table where voltage are equals to
-> the fixed regulator.
->=20
-> Reported-by: Piotr Oniszczuk <warpme@o2.pl>
-> Fixes: add1e27fb703 ("arm64: dts: allwinner: h6: Enable CPU opp tables fo=
-r Tanix TX6")
-> Signed-off-by: Cl=E9ment P=E9ron <peron.clem@gmail.com>
+This is unneeded.
 
-I'm not really a big fan of duplicating the OPPs, since that would make an
-update of those very likely to be overlooked for that particular board (and
-since it's a board that not a lot of people have, it would be harder to not=
-ice
-too).
+scripts/tags.sh supports COMPILED_SOURCE=1
+to collect tags only from compiled sources.
 
-IIRC, removing the cpu-supply property should work as well?
+Please do not reinvent the wheel
+to achieve similar things.
 
-Maxime
 
---hy3utu7gd5xuclrb
-Content-Type: application/pgp-signature; name="signature.asc"
+$ time make COMPILED_SOURCE=1 gtags
+  GEN     gtags
 
------BEGIN PGP SIGNATURE-----
+real 0m7.623s
+user 0m7.459s
+sys 0m1.124s
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXqfgnAAKCRDj7w1vZxhR
-xcKQAQCy9iRfHhgQB0zjFFyIcVr+pNkJu/NoOpUwGHC8OFi59QD/b/ffdd2k2+Gp
-1HaeNUO40UjzCAvU3mSLTulZyrAF0Q8=
-=TWTU
------END PGP SIGNATURE-----
 
---hy3utu7gd5xuclrb--
+is fine for me.
+
+If the existing code is problematic,
+we need to improve it,
+not add the second one.
+
+
+
+
+
+>
+> make defconfig
+> make
+> scripts/gtags_files_generator.sh
+> gtags [-f gtags.files]
+>
+> Enjoy with vim+gtags. :)
+>
+> Here is a log for comparison with 'make gtags':
+>
+> $ time make ARCH=arm cscope
+>   GEN     cscope
+>
+> real    1m20.600s
+> user    1m36.004s
+> sys     0m8.192s
+> $ wc -l cscope.files
+> 31201 cscope.files              #collected too many files we don't care
+>
+> $ time ./scripts/gtags_files_generator.sh
+>
+> Succeed, 3716 gtags.files listed!
+>
+> real    0m1.593s                #collected files only we care
+> user    0m1.704s
+> sys     0m0.256s
+>                                 #collected also dts and dtsi
+
+
+Why do you need to collect dts and dtsi?
+
+
+
+
+
+
+
+> $ grep dts gtags.files
+> arch/arm/boot/dts/xxxxxx-clocks.dtsi
+> arch/arm/boot/dts/xxxxxx.dtsi
+> arch/arm/boot/dts/xxxxxxxx.dts
+> arch/arm/boot/dts/xxxxxxxx.dtsi
+>
+> Signed-off-by: xujialu <xujialu@vimux.org>
+> ---
+>  scripts/gtags_files_generator.sh | 48 ++++++++++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>  create mode 100755 scripts/gtags_files_generator.sh
+>
+> diff --git a/scripts/gtags_files_generator.sh b/scripts/gtags_files_generator.sh
+> new file mode 100755
+> index 000000000000..04698d9234a7
+> --- /dev/null
+> +++ b/scripts/gtags_files_generator.sh
+> @@ -0,0 +1,48 @@
+> +#!/bin/bash -e
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Author: xujialu <xujialu@vimux.org>
+> +#
+> +# A script for generating gtags.files after compilation.
+> +#
+> +# Usage:
+> +#      make defconfig
+> +#      make
+> +#      scripts/gtags_files_generator.sh
+> +#      gtags [-f gtags.files]
+> +
+> +
+> +gtags_files_list()
+> +{
+> +       ls ${AUTOCONF_H} $(realpath -e --relative-to=. \
+> +               $(find ${KBUILD_OUTPUT} -name "*$1.cmd" -exec \
+> +               grep -Poh '(?(?=^source_.* \K).*|(?=^  \K\S).*(?= \\))' {} \+ |
+> +               awk '!a[$0]++' | sed "s,^,${KBUILD_OUTPUT},") |
+> +               sed -e '/\.\./d' | awk '!a[$0]++'
+> +       )
+> +}
+> +
+> +gtags_files_generator()
+> +{
+> +       GTAGS_FILES=$PWD/gtags.files
+> +
+> +       echo && [ $# = 1 ] && cd $1
+> +
+> +       SYSTEM_MAP=$(find -name System.map -print -quit)
+> +
+> +       [ -z "${SYSTEM_MAP}" ] && echo "Failed, please compile first!" && exit 1
+> +
+> +       KBUILD_OUTPUT=${SYSTEM_MAP%/*}/
+> +       KBUILD_OUTPUT=${KBUILD_OUTPUT#*/}
+> +
+> +       AUTOCONF_H=${KBUILD_OUTPUT}include/generated/autoconf.h
+> +
+> +       grep Configuration ${AUTOCONF_H} | sed 's/ \* //'
+> +       gtags_files_list > ${GTAGS_FILES}
+> +
+> +       echo && [ $# = 1 ] && sed -i "s|^|$1|" ${GTAGS_FILES}
+> +
+> +       echo "Succeed, $(wc -l ${GTAGS_FILES}) listed!"
+> +}
+> +
+> +gtags_files_generator $1 2>/dev/null
+> --
+> 2.20.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
