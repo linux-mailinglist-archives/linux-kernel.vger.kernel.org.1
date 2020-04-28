@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED091BC9CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE391BC82F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730425AbgD1Sl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:41:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33500 "EHLO mail.kernel.org"
+        id S1729479AbgD1SaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:30:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731035AbgD1Slv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:41:51 -0400
+        id S1729464AbgD1SaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:30:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7AFB20575;
-        Tue, 28 Apr 2020 18:41:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 609462137B;
+        Tue, 28 Apr 2020 18:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099310;
-        bh=N/8ImIDdPOEXmtj/+HjjuFy7WgAl9RTHoLobDrIcL0s=;
+        s=default; t=1588098609;
+        bh=S5579T0/eEWJ0+afvsFWAkNck1Ara5B0uHZdI68kixg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TGsRFRLMwrjq4gYOA3qdrf4mAkbDktDZCWDfR2Y186gqm65nG3CroZquhqVsnlmfn
-         FKMxtOOF2CzPkYJUB2UFQH7cf0Tmc4nTKKp685WbxRYSRHalTi6MApamRONA22+j2J
-         eKMZ+i6QMhLQlTvkuQSAA7c6xLJpLV2sx52WPFiU=
+        b=uyIiab80qjhP/D9z94B5zcsOzRxhlIt1S6Za3qq4IdxJQ1HFLHSdAFYKd9AXUwrD/
+         5aKmK6t7HD2Pv+tEmNS3bZV++gCT0qWBe3MkiYWKZeCcx3pKhZpBQEUuz0XjHYZd3i
+         cyjpDqgLIJOI2MJgN9BW1uNGwr1VecIv1c0NWn28=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 065/168] net: netrom: Fix potential nr_neigh refcnt leak in nr_add_node
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 027/131] pwm: renesas-tpu: Fix late Runtime PM enablement
 Date:   Tue, 28 Apr 2020 20:23:59 +0200
-Message-Id: <20200428182240.157722691@linuxfoundation.org>
+Message-Id: <20200428182228.532438041@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit d03f228470a8c0a22b774d1f8d47071e0de4f6dd ]
+[ Upstream commit d5a3c7a4536e1329a758e14340efd0e65252bd3d ]
 
-nr_add_node() invokes nr_neigh_get_dev(), which returns a local
-reference of the nr_neigh object to "nr_neigh" with increased refcnt.
+Runtime PM should be enabled before calling pwmchip_add(), as PWM users
+can appear immediately after the PWM chip has been added.
+Likewise, Runtime PM should always be disabled after the removal of the
+PWM chip, even if the latter failed.
 
-When nr_add_node() returns, "nr_neigh" becomes invalid, so the refcount
-should be decreased to keep refcount balanced.
-
-The issue happens in one normal path of nr_add_node(), which forgets to
-decrease the refcnt increased by nr_neigh_get_dev() and causes a refcnt
-leak. It should decrease the refcnt before the function returns like
-other normal paths do.
-
-Fix this issue by calling nr_neigh_put() before the nr_add_node()
-returns.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 99b82abb0a35b073 ("pwm: Add Renesas TPU PWM driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netrom/nr_route.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/pwm/pwm-renesas-tpu.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/net/netrom/nr_route.c
-+++ b/net/netrom/nr_route.c
-@@ -208,6 +208,7 @@ static int __must_check nr_add_node(ax25
- 		/* refcount initialized at 1 */
- 		spin_unlock_bh(&nr_node_list_lock);
+diff --git a/drivers/pwm/pwm-renesas-tpu.c b/drivers/pwm/pwm-renesas-tpu.c
+index 29267d12fb4c9..9c7962f2f0aa4 100644
+--- a/drivers/pwm/pwm-renesas-tpu.c
++++ b/drivers/pwm/pwm-renesas-tpu.c
+@@ -423,16 +423,17 @@ static int tpu_probe(struct platform_device *pdev)
+ 	tpu->chip.base = -1;
+ 	tpu->chip.npwm = TPU_CHANNEL_MAX;
  
-+		nr_neigh_put(nr_neigh);
- 		return 0;
++	pm_runtime_enable(&pdev->dev);
++
+ 	ret = pwmchip_add(&tpu->chip);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to register PWM chip\n");
++		pm_runtime_disable(&pdev->dev);
+ 		return ret;
  	}
- 	nr_node_lock(nr_node);
+ 
+ 	dev_info(&pdev->dev, "TPU PWM %d registered\n", tpu->pdev->id);
+ 
+-	pm_runtime_enable(&pdev->dev);
+-
+ 	return 0;
+ }
+ 
+@@ -442,12 +443,10 @@ static int tpu_remove(struct platform_device *pdev)
+ 	int ret;
+ 
+ 	ret = pwmchip_remove(&tpu->chip);
+-	if (ret)
+-		return ret;
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ #ifdef CONFIG_OF
+-- 
+2.20.1
+
 
 
