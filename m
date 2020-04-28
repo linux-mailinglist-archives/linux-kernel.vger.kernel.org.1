@@ -2,66 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA801BC5AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8721BC54D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728510AbgD1Qq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 12:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        id S1728446AbgD1Qes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 12:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728293AbgD1Qq6 (ORCPT
+        with ESMTP id S1728425AbgD1Qer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 12:46:58 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F237BC03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 09:46:57 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id e2so17732708eje.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 09:46:57 -0700 (PDT)
+        Tue, 28 Apr 2020 12:34:47 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CCAC03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 09:34:46 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id b13so33726435oti.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 09:34:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lHXIK5KG4MM6NL6ZnqDyJCo1++3O5tMDxa0Oox/FCk0=;
-        b=Qu+2TQv0OYiYE16287sogB8uDjS8JZz9MFHDIwMmE4QWXix8Yj3Rir/mLPwz00RjUg
-         hnk6uNKaE0hzn5zlYIZTWKFCs2u3Lk4U9c8hgRG4h/3lWuPoDD91flVvK19N8QzMsCzs
-         vJ6aDNedAL1ptIzuTwxhsiNW9/aiFum9pNkTk=
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=X1mxB9/IGko7NMD61SzKMJ6N+5CrxseMyS9QSJMcFa8=;
+        b=P2gmUuJe0DstX2vgN0Ni/w0KtohF47LJu+m1YD6o2MhJph3OhDGfCMX3kfeuPbTe6s
+         +Yx0QUbqeydOQ7R9iA0uzl5gRF2b46ZUrZE1tz5dUwhCkrn6Wp65KngYgrgw9k2qoKUw
+         4obGgXJ1hfdWjXXkqPhUc4iVmGZxStY0gNQW4KHPmLkDJlbIjwZ3EhBTRWL+sFFAN+Rs
+         ZBByFIr1qhZi1+pPihwU9diWqs6QNuinXSD2vV5/DGmcbo0Zu25+jRTDpN2P5m9mhnvY
+         XdwSXghIW/jo0xnd2AUb2IRHi853sVeYids/nMK3z0Opm82c3EuBnpHHJT1418slgMnI
+         EuNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lHXIK5KG4MM6NL6ZnqDyJCo1++3O5tMDxa0Oox/FCk0=;
-        b=Mpg84VHDhllpicR0qpWSh1OJSchjGlzKYqkLvmxHqSu93iwoPa8kGfdSPEyqnkRW4O
-         zGKNken+2MJ0YLMk0kGR6dRC4oEBQAbEoN1E5F2aNZjBoEBHCRVurODalegnu1kh6gzV
-         2Ny9Ioc+LgyDDy3RhVsWF1ruINrs8zV7m4aSSjRqRDeopTdLjPLhODXCGkR+eh8pRI9P
-         ag1xE1iPEN0N00/a3FDxOBJbGU0y5FQoFHXb+qzOEKRGLjCBWoZpx2DqQ27kb++VnrQC
-         xSvZUufRIV2ggt+GOHsJxURbnYGgFY8z1L6cs7sqto9hOVNdxXFjN0oAv+PknbKsbR/i
-         H6Rg==
-X-Gm-Message-State: AGi0PuYcb4HPPXNKruH2bfZa4uJmlpicU7u3lMHkOdVp+0ASEBhzRQr+
-        1HVBRlpPy9bvOny3MJ+O1rOQYzJqmlo=
-X-Google-Smtp-Source: APiQypLHGz+2/bjKHfeRHjP/I/QpclJ3IINPAXyZXEbhIhL9ymLEd5rY0XdrpOVjbhyVuji5154r8w==
-X-Received: by 2002:a17:906:d0da:: with SMTP id bq26mr24781564ejb.344.1588092416307;
-        Tue, 28 Apr 2020 09:46:56 -0700 (PDT)
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
-        by smtp.gmail.com with ESMTPSA id d18sm299566eds.15.2020.04.28.09.46.55
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X1mxB9/IGko7NMD61SzKMJ6N+5CrxseMyS9QSJMcFa8=;
+        b=VUAw537sOanTTeTWHD+vcTw1Amms8xR3lPzwfWeMhDU5lINPJSi86zoKWlTn8VrWTm
+         tyZpJQZvuDZolvWnnaTv6IuvA/rnGPit9B37u9SK9/C2Ae5DLJr1DKt+ZTpC7zkhDXke
+         FM5PkoBTaUhNBH8QrNhhHxZcbtSmH7Ju9ier0YMXaYlkXs1L7gn6QRMO/YBqF7/4bG/c
+         lHLFtizP2x8jLczL8El1zOYx3XDWaDFTr39wypue1AutCzZnTkcpbix9QiSno90Q/tBC
+         AhP8Mjjyh69xuvKJ0p8cEngRapSKNxAkgfJFbNQHOAHl2P0EBTXW7BulObqMtsNzUwjz
+         XILQ==
+X-Gm-Message-State: AGi0Pubfei75c90TXPFpwVo/ooeet4eIZFp+JNi2kD+vz7VdssQgLD1k
+        c2ikaPTDYxOpaBGVHMgEFfgYMA==
+X-Google-Smtp-Source: APiQypK7FGUPYjGAbHu5QdczGaQL/SoEhm4DO+FUVP6o2Q54EXAlIjTFWetkuIZfSnB6op9lww1WyQ==
+X-Received: by 2002:a05:6830:108b:: with SMTP id y11mr22380696oto.88.1588091685653;
+        Tue, 28 Apr 2020 09:34:45 -0700 (PDT)
+Received: from [192.168.86.21] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id t5sm5171612oor.36.2020.04.28.09.34.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Apr 2020 09:46:56 -0700 (PDT)
-Received: by mail-ed1-f50.google.com with SMTP id s10so16923458edy.9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 09:46:55 -0700 (PDT)
-X-Received: by 2002:a19:240a:: with SMTP id k10mr19924040lfk.30.1588092037785;
- Tue, 28 Apr 2020 09:40:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200428032745.133556-1-jannh@google.com> <20200428032745.133556-3-jannh@google.com>
- <CAHk-=wjSYTpTH0X8EcGGJD84tsJS62BN3tC6NfzmjvXdSkFVxg@mail.gmail.com> <94141fbb-9559-1851-54c1-cdc5fc529a1a@landley.net>
-In-Reply-To: <94141fbb-9559-1851-54c1-cdc5fc529a1a@landley.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 28 Apr 2020 09:40:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg2uw09tJMKTooQBr=AJPzzLTaq95b+SSS513Gm0gy5sw@mail.gmail.com>
-Message-ID: <CAHk-=wg2uw09tJMKTooQBr=AJPzzLTaq95b+SSS513Gm0gy5sw@mail.gmail.com>
-Subject: Re: [PATCH 2/5] coredump: Fix handling of partial writes in dump_emit()
-To:     Rob Landley <rob@landley.net>
-Cc:     Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Tue, 28 Apr 2020 09:34:45 -0700 (PDT)
+Subject: Re: [PATCH 2/5] coredump: Fix handling of partial writes in
+ dump_emit()
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Christoph Hellwig <hch@lst.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux-MM <linux-mm@kvack.org>,
@@ -77,28 +69,42 @@ Cc:     Jann Horn <jannh@google.com>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Rich Felker <dalias@libc.org>,
         Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20200428032745.133556-1-jannh@google.com>
+ <20200428032745.133556-3-jannh@google.com>
+ <CAHk-=wjSYTpTH0X8EcGGJD84tsJS62BN3tC6NfzmjvXdSkFVxg@mail.gmail.com>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <94141fbb-9559-1851-54c1-cdc5fc529a1a@landley.net>
+Date:   Tue, 28 Apr 2020 11:40:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=wjSYTpTH0X8EcGGJD84tsJS62BN3tC6NfzmjvXdSkFVxg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 9:34 AM Rob Landley <rob@landley.net> wrote:
->
-> Writes to a local filesystem should never be short unless disk full/error.
+On 4/27/20 10:35 PM, Linus Torvalds wrote:
+> On Mon, Apr 27, 2020 at 8:28 PM Jann Horn <jannh@google.com> wrote:
+>>
+>> After a partial write, we have to update the input buffer pointer.
+> 
+> Interesting. It seems this partial write case never triggers (except
+> for actually killing the core-dump).
+> 
+> Or did you find a case where it actually matters?
+> 
+> Your fix is obviously correct, but it also makes me go "that function
+> clearly never actually worked for partial writes, maybe we shouldn't
+> even bother?"
 
-Well, that code is definitely supposed to also write to pipes.
+Writes to a local filesystem should never be short unless disk full/error.
 
-But it also has "was I interrupted" logic, which stops the core dump.
+Once upon a time this was yet another thing that NFS could break that no other
+filesystem would break, but I dunno about now? (I think the page cache collates
+it and defers the flush until the error can't be reported back anyway?)
 
-So short writes can very much happen, it's just that they also imply
-that the core dump should be aborted.
-
-So the loop seems to be unnecessary. The situations where short writes
-can happen are all the same situations where we want to abort anyway,
-so the loop count should probably always be just one.
-
-The same would go for any potential network filesystem with the
-traditional NFS intr-like behavior.
-
-            Linus
+Rob
