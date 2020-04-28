@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF511BCED5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E56B1BCEDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgD1VgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:36:09 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:60941 "EHLO
+        id S1726814AbgD1Vg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:36:57 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:34859 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgD1VgJ (ORCPT
+        with ESMTP id S1726282AbgD1Vg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:36:09 -0400
+        Tue, 28 Apr 2020 17:36:56 -0400
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1N0FE1-1jIE0M3Npv-00xHPb; Tue, 28 Apr 2020 23:35:53 +0200
+ (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1McY0L-1itOfZ46RB-00d2eD; Tue, 28 Apr 2020 23:36:21 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: add missing v4l2 dependencies
-Date:   Tue, 28 Apr 2020 23:35:37 +0200
-Message-Id: <20200428213552.3538767-1-arnd@arndb.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, Dave Jones <dsj@fb.com>,
+        Jann Horn <jannh@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/unwind/orc: fix unused function warnings
+Date:   Tue, 28 Apr 2020 23:36:09 +0200
+Message-Id: <20200428213618.3587684-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:iocJEcgLvReQSOfV5oCNDw3ndfKYeCb9qcL1xqElP+KWoh87nHl
- TRguru1TSsOAPOLE2gJItg5HqVXfWdB34vz+QYeE/AquNBsdLBvqDhTM4tR1HwJ6Ya5dmSQ
- W5EZP5EZteLSemlbW3BOQ1GD9fcg2vkZ69ExSMwMyk97/IX36Iu+TPzodMXjIRNsBqrc6oj
- RBqkDjWqusHIabZrbb5jg==
+X-Provags-ID: V03:K1:iaNq6q+5ghuiuu58m8LDk4FJ+tg9i4IQrI1GyGElrpxuId1+22D
+ VIJiaE0zxaYhdSTSSgu49Ibry/VJtOUnMokgybPHRnmeb4iQg5lq+4qLD/vmYTyMG652DBt
+ 28850mZsR3dd5y+U+XK1EzFAtbaERUrGATv9Z0zrbwrRzfU3+SDZ/VZ80OkTLiBh0AxJcn3
+ 2XS8/InY1dUCo8N2tlrxw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bEiWZKhOr88=:zHmMbDt3VJvx7hVB6ZJSDI
- 9EcqcsjKsfFNOQAXOy2LXH/l+NzQZlpnB5Uw/FNoD4jwe/7a6Y3FCsPuYYs7fLPwdo03R/bWF
- 7+uZ8lMhPxwpsTlYjGN0/mLBqRwimm8lwWq7LIMPVuRp1LoYuouy/O8zx8TxW4/Sb3eQ4EmSO
- gH1TjlV/fE/7wkCuTk0BkEYy/+iCwikpwbpLM0eyy7LCaPFq2Ay+3KJkxsZttkYXLZkCJpbGT
- Xe/1tcg02MwkVwl2YYUNAdWTjnPLtrgSidYU2xXi9240EuUQ8oReL3sMsskmjzioE3kBZFUL+
- k6VlbuI2bbBl4hi/zrC7DSpHO6WVbSaFNP0CZgxRvOk8mV7GYOl6q+HY1argLsbWbZcMpH1ri
- bhg87YBia4GK3pw4YZaufw/IP4oXNTc5xQwZ+sw/8g9t/D5TZb/jtca7+tR4hNlEPzpvGwmhA
- 93nPPQcPimThaiSbt5CgR5ku0r1jS4Yz9jTXLBwflGgRsoL6YydoV8NFIFVK3eoksxBq0A4Ak
- 7k6rvkwWZb7AtC2soP5BR4PNdHbXgbAifF0/dS8JPnJkNLq/Ga4q9tZvzxDgO2e7e3ViVcNZm
- cC/UjzoemHepc95bMf3UC+CALsgVUQdzAi+6tDawg4baP1Ru2G8Tr0fp7aoD0Q1VifwGtOXPf
- YK1lNJju8kiQVZBh0ahRM/GnV8Q89/I/hVxbtKInzHg5o4xbzI6GLfXI3uOPMTky+7u5v6mrp
- 1hf2yY1KofC9gsIhw6Yzsv1shMF4Vppts/g33JWpuPyCwtW+jA/XvXn974O/jn6lowglxQCXS
- 3xc5q+IhS4kvx3Xtftbs0dxev53/h6YrGWehJs/U2kk/7MTlrI=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:R+m5ze29tqA=:QpckBXBwcVg6O2gB5XStoB
+ S9blV3NsPizSTRkCf5W+GX+x9x0x/1v3//L7vSYIs1YmyNIHrqprfPIunPHC4vywjPlRGKHbj
+ qlh0lzf7YV0hkzi/XRFAwcvQj0JGK9XXOgiCg2KrMhpgXEbXuFZFzwHaKM/x8j4aJn+uuoNW8
+ XOm3HH9dqTc3ffosO2QO079AimD8a3epjFxdj5H5rzlva15pkgrkKv6UaoT2gozSuCgUPJ7Ld
+ puXDIsXzcBGZWmB3GNO4proSD8HI1NG3Q7gFEBm5HQKQ1zJ1XSgnr5v69Zm9FRsX+iHW/AtGM
+ Oes1f+uuvfgh5ZGl0g1KNCujKpLQfCt2JxpF6uRujHbyp9dFm6JnIYceVg3dl6JxsOOH3NucZ
+ EGWWaejChg4hT27AlFQZzYrqtepOIvpe5DmBZSvY5Gz5hwD3SsOJdGdFcL2K5lb92IoKa/CTS
+ zq6GX1CJ7KQdp/TtYLGkGM2s3Js8HEi3noyxaZbnVZPXAu4hRZSvs5tfz7yXyQsvj8oJ3Y9W1
+ MQqEKJgEOFLrrDp5A9kW7NwK+c678TOW0p7fK9MGovBCnR3xFR8ELNEe12RON7B8rgUb5AiEc
+ mDPrbihkJcw1SxC3cJnP/tIxkYN89y/x2AD2WF9ZDp4t4CNSu22tLuteva3GnuLdM5mubiEwj
+ wKWpuA+Dbi7IMIyIAvNfLw8mJbSOhkuaBOPMsZwstdfDAaghglLyMv6iqgVhhVNBW5sM0SD4n
+ npgA4vJzNjH6yy4Znvkuo/NoLm/+bs1q88ZDv/lEKlgD9ovLWu3nDkGYrHS3LxDov79ACGp7/
+ YbWokPONatvrA/NsD/3kWwXxXXdI4ht2ZD53DiOqeVdahYgCpg=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few Kconfig warnings showed up recently, pointing to missing
-CONFIG_VIDEO_V4L2 dependencies, e.g.:
+Without CONFIG_MODULES, these two variables are unused:
 
-WARNING: unmet direct dependencies detected for DVB_RTL2832_SDR
-  Depends on [n]: MEDIA_SUPPORT [=y] && MEDIA_DIGITAL_TV_SUPPORT [=y] && DVB_CORE [=y] && I2C [=y] && I2C_MUX [=y] && VIDEO_V4L2 [=n] && MEDIA_SDR_SUPPORT [=y] && USB [=y]
-  Selected by [y]:
-  - DVB_USB_RTL28XXU [=y] && USB [=y] && MEDIA_SUPPORT [=y] && MEDIA_USB_SUPPORT [=y] && I2C [=y] && MEDIA_DIGITAL_TV_SUPPORT [=y] && DVB_USB_V2 [=y] && I2C_MUX [=y] && MEDIA_SUBDRV_AUTOSELECT [=y] && MEDIA_SDR_SUPPORT [=y]
+arch/x86/kernel/unwind_orc.c:29:26: error: 'cur_orc_table' defined but not used [-Werror=unused-variable]
+   29 | static struct orc_entry *cur_orc_table = __start_orc_unwind;
+      |                          ^~~~~~~~~~~~~
+arch/x86/kernel/unwind_orc.c:28:13: error: 'cur_orc_ip_table' defined but not used [-Werror=unused-variable]
+   28 | static int *cur_orc_ip_table = __start_orc_unwind_ip;
+      |             ^~~~~~~~~~~~~~~~
 
-WARNING: unmet direct dependencies detected for MEDIA_TUNER_FC2580
-  Depends on [n]: (MEDIA_ANALOG_TV_SUPPORT [=y] || MEDIA_DIGITAL_TV_SUPPORT [=y] || MEDIA_RADIO_SUPPORT [=y] || MEDIA_SDR_SUPPORT [=y]) && MEDIA_SUPPORT [=y] && I2C [=y] && VIDEO_V4L2 [=n]
-  Selected by [y]:
-  - DVB_USB_AF9035 [=y] && USB [=y] && MEDIA_SUPPORT [=y] && MEDIA_USB_SUPPORT [=y] && I2C [=y] && MEDIA_DIGITAL_TV_SUPPORT [=y] && DVB_USB_V2 [=y] && MEDIA_SUBDRV_AUTOSELECT [=y]
+Move them into the #ifdef section.
 
-WARNING: unmet direct dependencies detected for VIDEO_OV7670
-  Depends on [n]: MEDIA_SUPPORT [=y] && I2C [=y] && VIDEO_V4L2 [=n]
-  Selected by [y]:
-  - VIDEO_VIA_CAMERA [=y] && MEDIA_SUPPORT [=y] && MEDIA_PLATFORM_SUPPORT [=y] && V4L_PLATFORM_DRIVERS [=y] && FB_VIA [=y]
-
-Some of these apparently stem from a recently added dependency
-in the tuner drivers, but I don't know where the VIDEO_VIA_CAMERA
-warning got added.
-
-Fixes: 4bdbff4da405 ("media: tuners: Kconfig: add some missing VIDEO_V4L2 dependencies")
+Fixes: 153eb2223c79 ("x86/unwind/orc: Convert global variables to static")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-I'm not completely convinced the previous patch (4bdbff4da405) was
-going in the right direction, it's possible that we should instead
-revert that and fix the other problem in a different way.
----
- drivers/media/platform/Kconfig       | 1 +
- drivers/media/usb/dvb-usb-v2/Kconfig | 2 ++
- 2 files changed, 3 insertions(+)
+ arch/x86/kernel/unwind_orc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index b1ac9c6c9cdb..994ecd71da8a 100644
---- a/drivers/media/platform/Kconfig
-+++ b/drivers/media/platform/Kconfig
-@@ -15,6 +15,7 @@ source "drivers/media/platform/marvell-ccic/Kconfig"
- config VIDEO_VIA_CAMERA
- 	tristate "VIAFB camera controller support"
- 	depends on FB_VIA
-+	depends on VIDEO_V4L2 # for VIDEO_OV7670
- 	select VIDEOBUF2_DMA_SG
- 	select VIDEO_OV7670
- 	help
-diff --git a/drivers/media/usb/dvb-usb-v2/Kconfig b/drivers/media/usb/dvb-usb-v2/Kconfig
-index ff0ae64424c4..0b48b4af38ba 100644
---- a/drivers/media/usb/dvb-usb-v2/Kconfig
-+++ b/drivers/media/usb/dvb-usb-v2/Kconfig
-@@ -33,6 +33,7 @@ config DVB_USB_AF9015
- config DVB_USB_AF9035
- 	tristate "Afatech AF9035 DVB-T USB2.0 support"
- 	depends on DVB_USB_V2
-+	depends on VIDEO_V4L2 # for MEDIA_TUNER_*
- 	select DVB_AF9033
- 	select MEDIA_TUNER_TUA9001 if MEDIA_SUBDRV_AUTOSELECT
- 	select MEDIA_TUNER_FC0011 if MEDIA_SUBDRV_AUTOSELECT
-@@ -132,6 +133,7 @@ config DVB_USB_MXL111SF
- config DVB_USB_RTL28XXU
- 	tristate "Realtek RTL28xxU DVB USB support"
- 	depends on DVB_USB_V2 && I2C_MUX
-+	depends on VIDEO_V4L2 # for MEDIA_TUNER_*
- 	select DVB_MN88472 if MEDIA_SUBDRV_AUTOSELECT
- 	select DVB_MN88473 if MEDIA_SUBDRV_AUTOSELECT
- 	select DVB_CXD2841ER if MEDIA_SUBDRV_AUTOSELECT
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index 0ebc11a8bb45..ea8f2aba663f 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -25,8 +25,6 @@ static bool orc_init __ro_after_init;
+ static unsigned int lookup_num_blocks __ro_after_init;
+ 
+ static DEFINE_MUTEX(sort_mutex);
+-static int *cur_orc_ip_table = __start_orc_unwind_ip;
+-static struct orc_entry *cur_orc_table = __start_orc_unwind;
+ 
+ static inline unsigned long orc_ip(const int *ip)
+ {
+@@ -191,6 +189,8 @@ static struct orc_entry *orc_find(unsigned long ip)
+ }
+ 
+ #ifdef CONFIG_MODULES
++static int *cur_orc_ip_table = __start_orc_unwind_ip;
++static struct orc_entry *cur_orc_table = __start_orc_unwind;
+ 
+ static void orc_sort_swap(void *_a, void *_b, int size)
+ {
 -- 
 2.26.0
 
