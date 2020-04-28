@@ -2,69 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70311BBC0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8547D1BBC15
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgD1LOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 07:14:03 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:57219 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726345AbgD1LOD (ORCPT
+        id S1726743AbgD1LOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 07:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbgD1LOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 07:14:03 -0400
-X-UUID: c62f71651e3a431db2fbf7d954c71397-20200428
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=nKbWdvgE69UgAIWRhz8Xhz29+ME91EZp8ag1O4EUF1I=;
-        b=N1doBf06WgcrGgUbjWtPf4QqDR5h1IRl8xOMnDGyAqqrCWSx6Q9sd4slmfU63ejNhfL5dtxz+Cm+z7k6shYBZDGo5fs9UJrqsfkkdN1NNuARGMI7YQ7KNIXuKOPkQs4lNozz+QMECMB97K4ioj0GYVTbEvHOcKdKwEBzMtBnWK4=;
-X-UUID: c62f71651e3a431db2fbf7d954c71397-20200428
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1692452524; Tue, 28 Apr 2020 19:13:59 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 28 Apr 2020 19:13:56 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 28 Apr 2020 19:13:54 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>
-CC:     <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v1 4/4] scsi: ufs-mediatek: enable WriteBooster capability
-Date:   Tue, 28 Apr 2020 19:13:55 +0800
-Message-ID: <20200428111355.1776-5-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200428111355.1776-1-stanley.chu@mediatek.com>
-References: <20200428111355.1776-1-stanley.chu@mediatek.com>
+        Tue, 28 Apr 2020 07:14:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9510C03C1A9;
+        Tue, 28 Apr 2020 04:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Z+2cHsAhwOcwa/ZOru5Iyu559NSgRTBiKbey/voC8u8=; b=nIyNbar6GQ2gfHkkoUVhjswdA8
+        Vkwis7Zk1JPnkr1oXjqfrAthCSBE1dcsEZHAGvSeAMEZXOEGEaU9ODVZ0BE/qRQWfW8sq/3X6uARA
+        asc0G24RG36WSB4dHiVq/3rXfqsnY5iKDhlMjfJlqCrKKDhDh6ORdOVQDti48qO5nzcpPZywR2MCO
+        EyC4qcxNpUwymMgQiGoSnY+uivQ9/bdOqOiIiucHyDujj5d4Po652GcaUO4eeDEVucor+8IbdJrnh
+        PV92NQ3xzaLTRs8ar9EuIBJ/yRZk9WTpdosuE4NxDu+LzeW84kI2tH/yfayOfP2FPmiSlcCyVzJHr
+        SxuOYjFg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTOBf-0006yn-Vr; Tue, 28 Apr 2020 11:14:03 +0000
+Date:   Tue, 28 Apr 2020 04:14:03 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Waiman Long <longman@redhat.com>,
+        Manfred Spraul <manfred@colorfullife.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH -next] ipc: use GFP_ATOMIC under spin lock
+Message-ID: <20200428111403.GJ29705@bombadil.infradead.org>
+References: <20200428034736.27850-1-weiyongjun1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: DA7935DAFEBA11123D058F63C971BD710252B278E9CA6897AC8AC4BD89FB46B02000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428034736.27850-1-weiyongjun1@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RW5hYmxlIFdyaXRlQm9vc3RlciBjYXBhYmlsaXR5IG9uIE1lZGlhVGVrIFVGUyBwbGF0Zm9ybXMu
-DQoNClNpZ25lZC1vZmYtYnk6IFN0YW5sZXkgQ2h1IDxzdGFubGV5LmNodUBtZWRpYXRlay5jb20+
-DQotLS0NCiBkcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jIHwgMyArKysNCiAxIGZpbGUg
-Y2hhbmdlZCwgMyBpbnNlcnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZz
-L3Vmcy1tZWRpYXRlay5jIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KaW5kZXgg
-NjczYzE2NTk2ZmIyLi4xNWI5YzQyMGEzYTUgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3Njc2kvdWZz
-L3Vmcy1tZWRpYXRlay5jDQorKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jDQpA
-QCAtMjYzLDYgKzI2Myw5IEBAIHN0YXRpYyBpbnQgdWZzX210a19pbml0KHN0cnVjdCB1ZnNfaGJh
-ICpoYmEpDQogCS8qIEVuYWJsZSBjbG9jay1nYXRpbmcgKi8NCiAJaGJhLT5jYXBzIHw9IFVGU0hD
-RF9DQVBfQ0xLX0dBVElORzsNCiANCisJLyogRW5hYmxlIFdyaXRlQm9vc3RlciAqLw0KKwloYmEt
-PmNhcHMgfD0gVUZTSENEX0NBUF9XQl9FTjsNCisNCiAJLyoNCiAJICogdWZzaGNkX3ZvcHNfaW5p
-dCgpIGlzIGludm9rZWQgYWZ0ZXINCiAJICogdWZzaGNkX3NldHVwX2Nsb2NrKHRydWUpIGluIHVm
-c2hjZF9oYmFfaW5pdCgpIHRodXMNCi0tIA0KMi4xOC4wDQo=
+On Tue, Apr 28, 2020 at 03:47:36AM +0000, Wei Yongjun wrote:
+> The function ipc_id_alloc() is called from ipc_addid(), in which
+> a spin lock is held, so we should use GFP_ATOMIC instead.
+> 
+> Fixes: de5738d1c364 ("ipc: convert ipcs_idr to XArray")
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 
+I see why you think that, but it's not true.  Yes, we hold a spinlock, but
+the spinlock is in an object which is not reachable from any other CPU.
+So it's not possible to deadlock.  This probably confuses all kinds
+of automated checkers, and I should probably rewrite the code to not
+acquire the new spinlock until we're already holding the xa_lock.
+
+Converting to GFP_ATOMIC is completely wrong.
