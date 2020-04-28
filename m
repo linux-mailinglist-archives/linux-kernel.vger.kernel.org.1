@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746861BC3E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7036A1BC3E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728191AbgD1Pk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 11:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47556 "EHLO mail.kernel.org"
+        id S1728300AbgD1PlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 11:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728133AbgD1Pk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 11:40:56 -0400
+        id S1728212AbgD1PlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 11:41:01 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22D4D206C0;
-        Tue, 28 Apr 2020 15:40:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21E21206D7;
+        Tue, 28 Apr 2020 15:41:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588088455;
-        bh=UwOEbjuqqZnNh4bPD15G3mJ8BwNUK3zuC+NFaXG/Wis=;
+        s=default; t=1588088461;
+        bh=m3hQm8gosMVcEzwy0eRzhmbhb9xpXvL9MpTX2D3IkBg=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=w3N52jYR2mcAMUn0+EKOk0EMrIElOdRAwiiSyJI3ihKNop9LbAETyeJVJzf0O97gm
-         1bIO0GPYRulEi2FuLf242QJnLmxgxbkvwVdT0FY7y4iZcDJSXK2M47h/HVfqb0VtML
-         1OAfpVXA5yM7Bmk6uCMQEhe26h848wq4NdrJOyuA=
-Date:   Tue, 28 Apr 2020 16:40:53 +0100
+        b=lxqkJh4chgjEtNIOCO5x/UqvWUOjcx7z/KGvdDrwKEPx5xYj89TjLuQtxgx9vSnf3
+         JQpSUSWGQCA4GNDypq6TfgEbaSst2iifF5p6g6iGna7Hc6dNofOzy33E5pUF6cGRau
+         OoOM72nLdxg0zm7JV5OwUMd4A9CE+CduxQtzEB4c=
+Date:   Tue, 28 Apr 2020 16:40:59 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, Dan Murphy <dmurphy@ti.com>, perex@perex.cz,
-        tiwai@suse.com
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        stable@vger.kernel.org
-In-Reply-To: <20200427203608.7031-1-dmurphy@ti.com>
-References: <20200427203608.7031-1-dmurphy@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320adcx140: Fix mic gain registers
-Message-Id: <158808845301.38316.11380096383404552191.b4-ty@kernel.org>
+To:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+Cc:     kjlu@umn.edu, yuanxzhang@fudan.edu.cn,
+        Xin Tan <tanxin.ctf@gmail.com>
+In-Reply-To: <1587818916-38730-1-git-send-email-xiyuyang19@fudan.edu.cn>
+References: <1587818916-38730-1-git-send-email-xiyuyang19@fudan.edu.cn>
+Subject: Re: [PATCH] ASoC: davinci-mcasp: Fix dma_chan refcnt leak when getting dma type
+Message-Id: <158808845301.38316.4295335202430928614.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Apr 2020 15:36:08 -0500, Dan Murphy wrote:
-> Fix the mic gain registers for channels 2-4.
-> The incorret register was being set as it was touching the CH1 config
-> registers.
+On Sat, 25 Apr 2020 20:48:35 +0800, Xiyu Yang wrote:
+> davinci_mcasp_get_dma_type() invokes dma_request_chan(), which returns a
+> reference of the specified dma_chan object to "chan" with increased
+> refcnt.
 > 
-> Fixes: 37bde5acf040 ("ASoC: tlv320adcx140: Add the tlv320adcx140 codec driver family")
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> Cc: stable@vger.kernel.org
+> When davinci_mcasp_get_dma_type() returns, local variable "chan" becomes
+> invalid, so the refcount should be decreased to keep refcount balanced.
 > 
 > [...]
 
@@ -55,8 +57,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: tlv320adcx140: Fix mic gain registers
-      commit: be8499c48f115b912f5747c420f66a5e2c31defe
+[1/1] ASoC: davinci-mcasp: Fix dma_chan refcnt leak when getting dma type
+      commit: a697ae6ea56e23397341b027098c1b11d9ab13da
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
