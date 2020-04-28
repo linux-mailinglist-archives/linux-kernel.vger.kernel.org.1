@@ -2,146 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2DA1BB64F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8F41BB659
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 08:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgD1GNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 02:13:00 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:55710 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726258AbgD1GNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 02:13:00 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 49BBCF0Xcfz9tyF2;
-        Tue, 28 Apr 2020 08:12:57 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=COI23NhG; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 4r37Lc1vIQHO; Tue, 28 Apr 2020 08:12:57 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 49BBCD5PjBz9tyF4;
-        Tue, 28 Apr 2020 08:12:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1588054376; bh=+ZMvexP9svzyr579SUVlBPFWwl34Ct5wXGNoazNmR9o=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=COI23NhGwCF/YQ1hVnxHFehdbXTfVgF+9IMqnFRwHbTKNg89yheUHYWiE5bHfeR8Y
-         QNkH8xUxOSoNI6VghNO/uOjspN/Kjxy4op9Xp++mM93Wx/UR/sB4G24b0Y9mE5sYqJ
-         rdKZ5HnUVbv+Yu8AHr4k3x/HVFKbGP6c7I5KrBLc=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A7D808B7ED;
-        Tue, 28 Apr 2020 08:12:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id gL1unGRV9f8Z; Tue, 28 Apr 2020 08:12:57 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 19AF18B75F;
-        Tue, 28 Apr 2020 08:12:56 +0200 (CEST)
-Subject: Re: [mm/debug] fa6726c1e7: kernel_BUG_at_include/linux/mm.h
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Qian Cai <cai@lca.pw>
-Cc:     kernel test robot <lkp@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <096a07fc-4525-feb6-5658-40bcffbd0a58@arm.com>
- <D30E4C88-408A-438B-803B-D9F8F82D87A7@lca.pw>
- <b3e5d138-9e14-826c-82c9-2cec9bd41ca5@c-s.fr>
- <9e9091b9-6918-d0af-dd92-3bdc0e29a4d5@arm.com>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Message-ID: <018a6f32-5cf6-b38c-7b8c-78b6e5c2d98d@c-s.fr>
-Date:   Tue, 28 Apr 2020 08:12:48 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726420AbgD1GPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 02:15:42 -0400
+Received: from twhmllg4.macronix.com ([211.75.127.132]:24391 "EHLO
+        TWHMLLG4.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgD1GPm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 02:15:42 -0400
+Received: from twhfm1p2.macronix.com (twhfmlp2.macronix.com [172.17.20.92])
+        by TWHMLLG4.macronix.com with ESMTP id 03S6EUUt046234;
+        Tue, 28 Apr 2020 14:14:30 +0800 (GMT-8)
+        (envelope-from masonccyang@mxic.com.tw)
+Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
+        by Forcepoint Email with ESMTP id 213FFAD9CBDD7EF05409;
+        Tue, 28 Apr 2020 14:14:31 +0800 (CST)
+In-Reply-To: <20200427175536.2mmei2fy6f7bg6jm@yadavpratyush.com>
+References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw> <20200421092328.129308f6@collabora.com> <20200427175536.2mmei2fy6f7bg6jm@yadavpratyush.com>
+To:     "Pratyush Yadav" <me@yadavpratyush.com>
+Cc:     "Boris Brezillon" <boris.brezillon@collabora.com>,
+        broonie@kernel.org, juliensu@mxic.com.tw,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-spi@vger.kernel.org, miquel.raynal@bootlin.com,
+        "Pratyush Yadav" <p.yadav@ti.com>, richard@nod.at,
+        tudor.ambarus@microchip.com, vigneshr@ti.com
+Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
 MIME-Version: 1.0
-In-Reply-To: <9e9091b9-6918-d0af-dd92-3bdc0e29a4d5@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+X-KeepSent: 18214CA5:6A9B2B30-48258558:001D894C;
+ type=4; name=$KeepSent
+X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
+Message-ID: <OF18214CA5.6A9B2B30-ON48258558.001D894C-48258558.002249E0@mxic.com.tw>
+From:   masonccyang@mxic.com.tw
+Date:   Tue, 28 Apr 2020 14:14:31 +0800
+X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
+ 2020/04/28 PM 02:14:31,
+        Serialize complete at 2020/04/28 PM 02:14:31
+Content-Type: text/plain; charset="US-ASCII"
+X-MAIL: TWHMLLG4.macronix.com 03S6EUUt046234
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hi Pratyush,
 
-Le 28/04/2020 à 07:53, Anshuman Khandual a écrit :
+> > On Tue, 21 Apr 2020 14:39:42 +0800
+> > Mason Yang <masonccyang@mxic.com.tw> wrote:
+> > 
+> > > Hello,
+> > > 
+> > > This is repost of patchset from Boris Brezillon's
+> > > [RFC,00/18] mtd: spi-nor: Proposal for 8-8-8 mode support [1].
+> > 
+> > I only quickly went through the patches you sent and saying it's a
+> > repost of the RFC is a bit of a lie. You completely ignored the state
+> > tracking I was trying to do to avoid leaving the flash in 8D mode when
+> > suspending/resetting the board, and I think that part is crucial. If I
+> > remember correctly, we already had this discussion so I must say I'm a
+> > bit disappointed.
+> > 
+> > Can you sync with Pratyush? I think his series [1] is better in that 
+it
+> > tries to restore the flash in single-SPI mode before suspend (it's
+> > missing the shutdown case, but that can be easily added I think). Of
+> > course that'd be even better to have proper state tracking at the SPI
+> > NOR level.
 > 
+> Hi Mason,
 > 
-> On 04/28/2020 10:54 AM, Christophe Leroy wrote:
->>
->>
->> Le 28/04/2020 à 04:51, Qian Cai a écrit :
->>>
->>>
->>>> On Apr 27, 2020, at 10:35 PM, Anshuman Khandual <Anshuman.Khandual@arm.com> wrote:
->>>>
->>>> Letting CONFIG_DEBUG_VM_PGTABLE enabled via CONFIG_EXPERT for unsupported
->>>> platforms i.e without ARCH_HAS_DEBUG_VM_PGTABLE, was a conscious decision
->>>> meant to expand it's adaptability and coverage without requiring any code
->>>> (i.e Kconfig) change. The easier it is to enable the test on unsupported
->>>> platforms right now, more folks are likely to try it out thus increasing
->>>> it's probability to get fixed on those platforms. That is a valid enough
->>>> reason to have CONFIG_EXPERT based enablement method, IMHO. Also even with
->>>> CONFIG_EXPERT set, CONFIG_DEBUG_VM_PGTABLE does not get enabled by default
->>>> automatically.
->>>
->>> No, I am talking about PAE. There is a distinction between known broken that nobody cares (like arm32) and in-progress/unknown status (like s390).
->>>
->>> Also, it is not very nice to introduce regressions for robots when testing PAE because they always select CONFIG__EXPERT and CONFIG_DEBUG_VM.
->>>
->>
->> Having CONFIG_EXPERT and CONFIG_DEBUG_VM is not enough to get CONFIG_DEBUG_VM_PGTABLE set to yes.
-> 
-> Not automatically, that is right. But it can be set if required. Seems like
-> the testing robots can and will test with each and every config whether they
-> are enabled by default or not. So if we really need to prevent all possible
-> testing robot regressions, X86_PAE needs to be disabled completely.
-> 
->>
->> By default, CONFIG_DEBUG_VM_PGTABLE is set to no when ARCH_HAS_DEBUG_VM_PGTABLE is not set.
-> 
-> That is true. There is a slight change in the rules, making it explicit yes
-> only when both ARCH_HAS_DEBUG_VM_PGTABLE and DEBUG_VM are enabled.
-> 
-> +config DEBUG_VM_PGTABLE
-> +	bool "Debug arch page table for semantics compliance"
-> +	depends on MMU
-> +	depends on !IA64 && !ARM
-> +	depends on ARCH_HAS_DEBUG_VM_PGTABLE || EXPERT
-> +	default y if ARCH_HAS_DEBUG_VM_PGTABLE && DEBUG_VM
-> +	help
-> 
-> The default is really irrelevant as the config option can be set explicitly.
-> 
+> I posted a re-roll of my series here [0]. Could you please base your 
+> changes on top of it? Let me know if the series is missing something you 
 
-Yes but Qian was saying: "Also, it is not very nice to introduce 
-regressions for robots when testing PAE because they always select 
-CONFIG__EXPERT and CONFIG_DEBUG_VM"
+> need.
+> 
+> [0]  
+https://lore.kernel.org/linux-mtd/20200424184410.8578-1-p.yadav@ti.com/
 
-Here we see that the said regression is not introduced because they 
-select CONFIG__EXPERT and CONFIG_DEBUG_VM. This is because the robots 
-explicitely select DEBUG_VM_PGTABLE.
 
-Christophe
+Our mx25uw51245g supports BFPT DWORD-18,19 and 20 data and xSPI profile 
+1.0,
+and it comply with BFPT DWORD-19, octal mode enable sequences by write CFG 
+Reg2 
+with instruction 0x72. Therefore, I can't apply your patches.
+
+I quickly went through your patches but can't reply them in each your 
+patches.
+
+i.e,.
+1) [v4,03/16] spi: spi-mem: allow specifying a command's extension
+
+-                                u8 opcode;
++                                u16 opcode;
+
+big/little Endian issue, right? 
+why not just u8 ext_opcode;
+No any impact for exist code and actually only xSPI device use extension 
+command.
+
+
+2) [v4,08/16] mtd: spi-nor: parse xSPI Profile 1.0 table
+
+need extract more data from xSPI profile 1.0 table and no other specific 
+setting. 
+
+
+3) [v4,11/16] mtd: spi-nor: enable octal DTR mode when possible
+
++static int spi_nor_octal_dtr_enable(struct spi_nor *nor, bool enable)
++{
++                int ret;
++
++                if (!nor->params->octal_dtr_enable)
++                                return 0;
++
++                if (!(spi_nor_get_protocol_width(nor->read_proto) == 8 ||
++                      spi_nor_get_protocol_width(nor->write_proto) == 8))
++                                return 0;
++
++                ret = nor->params->octal_dtr_enable(nor, enable);
++                if (ret)
++                                return ret;
++
++                if (enable)
++                                nor->reg_proto = SNOR_PROTO_8_8_8_DTR;
++                else
++                                nor->reg_proto = SNOR_PROTO_1_1_1;
++
++                return 0;
++}
++
+
+it seems you enable device in Octal mode after SPI-NOR Framework is 
+already
+in Octal protocol.
+Driver should set device by SPI 1-1-1 mode to enter Octal mode and then 
+setup
+Read/PP command and protocol by spi_nor_set_read/pp_setting() for Octal 
+mode,
+right ?
+
+
+thanks & best regards,
+Mason
+
+
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information 
+and/or personal data, which is protected by applicable laws. Please be 
+reminded that duplication, disclosure, distribution, or use of this e-mail 
+(and/or its attachments) or any part thereof is prohibited. If you receive 
+this e-mail in error, please notify us immediately and delete this mail as 
+well as its attachment(s) from your system. In addition, please be 
+informed that collection, processing, and/or use of personal data is 
+prohibited unless expressly permitted by personal data protection laws. 
+Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
+
+
+============================================================================
+
+CONFIDENTIALITY NOTE:
+
+This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
+
+Macronix International Co., Ltd.
+
+=====================================================================
+
