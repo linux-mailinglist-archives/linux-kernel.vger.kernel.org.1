@@ -2,103 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B051BCF63
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 00:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94291BCF6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 00:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgD1WEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 18:04:37 -0400
-Received: from mga02.intel.com ([134.134.136.20]:13558 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725934AbgD1WEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 18:04:36 -0400
-IronPort-SDR: 7A9YF1c+TMb08MV2ZPgmy8qz+pw8Qq+9b0zRE8tOS/xdX++yaj8t+GwIeHvTtgEk64eeinNX8p
- LawRfEUrDuoQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 15:04:36 -0700
-IronPort-SDR: l7M6V/bjnoYBNCtL9HPR7FeFyttpjX6WR+y0CL4huH55MgwCiaTD7IbXtPAVPJfcbTZ2xSJSQ3
- cTZUntqq7+Wg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
-   d="scan'208";a="282292044"
-Received: from psera2-dell24.ra.intel.com ([10.54.154.157])
-  by fmsmga004.fm.intel.com with ESMTP; 28 Apr 2020 15:04:36 -0700
-Date:   Tue, 28 Apr 2020 15:06:07 -0700 (PDT)
-From:   matthew.gerlach@linux.intel.com
-X-X-Sender: lab@psera2-dell24.ra.intel.com
-To:     Xu Yilun <yilun.xu@intel.com>
-cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mdf@kernel.org
-Subject: Re: How to update a piece of flash for FPGA firmware?
-In-Reply-To: <20200428050135.GA27416@yilunxu-OptiPlex-7050>
-Message-ID: <alpine.LFD.2.21.2004281434001.59524@psera2-dell24.ra.intel.com>
-References: <20200428050135.GA27416@yilunxu-OptiPlex-7050>
+        id S1726384AbgD1WHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 18:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726272AbgD1WHu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 18:07:50 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A94C03C1AD
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 15:07:50 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id c16so521686ilr.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 15:07:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tO+DbU6KByMbcPRw+6fwaWiCfeYN7nbol6e4reDVW4I=;
+        b=KO6SmP63VTyTeoVjCJWFexYShARMTWk/xWvofiwo+kHGO9i/UDgHdyyCCoXkK4QH5l
+         ZjT1dkx6I6kmN3S/hKj8qJ9eEDqbmeIL8Po8V0gxgReZgJ6c3LBUv3FMiZ3ofGbtnJJw
+         eDZUCwiRljta71iiCpa4A+H2PO2athl9CEgH0UX8soxSGvvZUo1I89OmlyUQXN8S33KW
+         Oph7WTf1SgbMsQBJGiy1esxg+6s2gw1w4AsWiTpwNFAxfH0phtZLPXk2dyYXiIh4f+v3
+         sEll7nAgPDTmrwiBwjWMcbaHtVNYHOWYMHIxQJHuyow+P3uPA7awaSWg6BdysGz3NyCN
+         sKdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tO+DbU6KByMbcPRw+6fwaWiCfeYN7nbol6e4reDVW4I=;
+        b=uJV8A+cNuk0+Say2DD4lgVkeB965DdHfKg2PxVE/Nt0zCV36u0MQyV8TM/b3fjBFpQ
+         Oue56WruimbAwBVtLVKNGD3BvlHHsrkPQ0Cw6sAi6bMIZz00U8TKOD4vn+ZF6L4Kzn4y
+         X+gwSvkfCAlqbAJbXqbLDv8sfVVQarjlO5AgMxwDDgs3uwfrn2JTTu3VQMgp0ft4K8Ot
+         VYg8oeTKkKhTFvk4emm1r2zg6YS51xNH5v2m2wEEV/nsOVpF/oRf5aiS2aBS2IX6YJV3
+         FgyFMloEkWlS4+26CET6KQADOCvvYWbaU6uf/CSjav45sUY4zmpxXra41ibxKTC5hWzW
+         Mrxw==
+X-Gm-Message-State: AGi0PuYPXBSE+tBXPNCc/IRynRSSCZYXBD0FDjPYHHhT0HQCwdlkclTH
+        iNDH9EEz4/NQVbIGxquSALIcv3EzPJQkLQmWkeIkUA==
+X-Google-Smtp-Source: APiQypKs0cmslzkJ3/IcooJcMOg8zkJMwhBrgReyRcwYDpGk5UtUrhKE6RN9vlWUAMwJZzxOofrOHp1/2jrvavOGpIk=
+X-Received: by 2002:a92:d186:: with SMTP id z6mr27561585ilz.119.1588111669486;
+ Tue, 28 Apr 2020 15:07:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+References: <20200423022550.15113-1-sean.j.christopherson@intel.com> <20200423022550.15113-12-sean.j.christopherson@intel.com>
+In-Reply-To: <20200423022550.15113-12-sean.j.christopherson@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 28 Apr 2020 15:07:38 -0700
+Message-ID: <CALMp9eQybxs+Zq66uAfVz3bc=571V7H8YVEhm7AuftpcZ5NLRw@mail.gmail.com>
+Subject: Re: [PATCH 11/13] KVM: VMX: Use vmx_interrupt_blocked() directly from vmx_handle_exit()
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oliver Upton <oupton@google.com>,
+        Peter Shier <pshier@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yilun,
-
-You raise some very interesting questions. Please see
-my comments below.
-
-Matthew
-
-On Tue, 28 Apr 2020, Xu Yilun wrote:
-
-> Hi,
+On Wed, Apr 22, 2020 at 7:26 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
 >
-> I wonder if an updating of FPGA Flash (but cannot reload) could be
-> implemented as fpga-mgr?
+> Use vmx_interrupt_blocked() instead of bouncing through
+> vmx_interrupt_allowed() when handling edge cases in vmx_handle_exit().
+> The nested_run_pending check in vmx_interrupt_allowed() should never
+> evaluate true in the VM-Exit path.
 >
-> I have the pcie based FPGA card. The bitstream for FPGA static region is
-> stored on flash chip. Board will load the bitstream to FPGA on system
-> power cycle. The flash chip could be accessed through "PCIE -> ... ->
-> Flash update engine -> Flash". So the update of the FPGA static region is
-> basicly updating the flash chip through PCIE and rebooting system.
-
-I think you mean power cycle when you say "rebooting system" above, but
-your point is worth highlighting.  During this flash update the
-FPGA is actually fully configured and running its application.  Typically,
-during a fpga-mgr update of the static region or partial reconfiguration
-region, the actual contents of the fpga region is "changing" during the 
-update.
-
+> Hoist the WARN in handle_invalid_guest_state() up to vmx_handle_exit()
+> to enforce the above assumption for the !enable_vnmi case, and to detect
+> any other potential bugs with nested VM-Enter.
 >
-> Should I implement the flash update engine as a fpga-mgr device? On one
-> hand it is just a flash write, FPGA functionality is actually not
-> changed before reboot. Does fpga-mgr requires bitstream takes function
-> immediately after write_complete()? On the other hand, the flash write
-> do affects FPGA static region on next boot. Operating on the
-> corresponding fpga region makes kernel fully aware of what is being
-> done.
-
-When an fpga-mgr is used in a device tree overlay flow, one gains
-the benefit the enumeration of the nodes in the overlay after the
-update has completed.
-
->
-> Actually the FPGA card do has the capability to reload bitstream at
-> runtime. But it will cause the whole PCIE device lost, static region is
-> also destroyed. We need to rescan PCI to get it back. So I think
-> basically this is the same case as system reboot from FPGA's
-> perspective.
-
-Yes, on those cards that have the ability to power cycle themselves (i.e. 
-fully reconfigure the FPGA from flash), the PCIe connection to the card
-is broken because of a surprise link down PCIe error.  As you say a PCI 
-rescan (i.e. re-enumeration of the entire card) is required.  Since
-the card has to be re-scanned at the PCI level anyway, there may not be 
-much benefit to using the fpga-mgr in this flow.
-
-I wonder if these kinds of more disruptive updates are better suited to 
-something firmware updates rather than fpga updates?
-
->
-> Thanks
-> Yilun
->
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
