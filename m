@@ -2,202 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B0E1BC69E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2661BC6A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbgD1R3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 13:29:18 -0400
-Received: from mga11.intel.com ([192.55.52.93]:17496 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728022AbgD1R3S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 13:29:18 -0400
-IronPort-SDR: IWKNWzn1INJii2d/787ba0UOU0YmRN56ICq1vgvh80swa9v6QMnf3JWGhLBCdRMvdnjvbECca0
- VdD6jsloPp1Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 10:29:17 -0700
-IronPort-SDR: YAPcPEdbQc+Gb7FcELvHmj3R9QtJgAGc/iaX2bCs1XcQ4FDIzQ4EaCpkwwzR4yqF6fGtxTGN3e
- seeL6jPFWInw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
-   d="scan'208";a="293928944"
-Received: from orsmsx105.amr.corp.intel.com ([10.22.225.132])
-  by orsmga008.jf.intel.com with ESMTP; 28 Apr 2020 10:29:17 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX105.amr.corp.intel.com (10.22.225.132) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 28 Apr 2020 10:29:16 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 28 Apr 2020 10:29:16 -0700
-Received: from ORSEDG001.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 28 Apr 2020 10:29:16 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.103)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Tue, 28 Apr 2020 10:29:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aSCB87zbIJZqJXfdnBnDtcNFZeRrmR+5zLOl5tE1CHBTUR5g+++rwzvy7Q0x3Tfr9qDk5ThyBdCEjyWzM7FjGMOj4bPeJ1Joxt4VxkhHiQKYGJSYEYO9NNDF/Ne2WtOJvA802DthtOelyargGRBkoo+iqRG3GB4ahmxbVWAdYyF6pz45f8qFFY0ewFKlWjnSDzuiE12qGHMOEBOkNk8mvoIB3sKSlmcHGeqwWEX/xjYdx4E51b4i9Br6olRHFWo61mEu1INcGi/KHvzkhY3nJBmwtZ0L13Xa2RGMMe3XQCgF5Ow93hzfC5BKRcImWvaHJYA9Iuw1N6rfI1tn9eSiDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UgOwVG4MVUnA9SKhbaMo8mlvmPGEFkhuV/AWRFnGvlo=;
- b=XIro00H6F/OJxfjTHhfDxlBBpjaLZV0abOdiHcq+95UWsbADJl6+tdbJxdI/SWEJ5TMWgCV7z3/22eVp+1uYeZeGh3iUHdnEubu2/WBrNSZoRTDSv7k+4/vD5K0inh/+jmVT5FnG38xUhsamiZGLrehSYn86nUhOm0m0PibrgGGvJTw+DcSrRBOUJwN6vKHYxmEajYF2cbmqWKgVFZAK+tFOAAY859jQTR4iYAN/W4671G9YYmycebl5QKbQXAsF3mj1iwYW4dUYofbimG4eoxR2GOo8JLAlk4CiZaHWN9J4aatIkGzKwddc43k99bAsb8DiodKMbivKkHSIfXMOGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UgOwVG4MVUnA9SKhbaMo8mlvmPGEFkhuV/AWRFnGvlo=;
- b=o2L95dSgQvkn1ERBdLQ4wbbKkwIr0hddfYKwKpAd01GAANvzrl/qM0HLE3nn7JC9iXxlZOj+Lr92/IcazvZapE8QrKnVcWXiNF7Q9mZ+I2HJgA/nzUWytZbYm9iXRAJFvPBBARVHjuRJGM1pyWRG22AcjK4ho/NHjuOA1I3PjoM=
-Received: from BN6PR1101MB2132.namprd11.prod.outlook.com
- (2603:10b6:405:5b::22) by BN6PR1101MB2242.namprd11.prod.outlook.com
- (2603:10b6:405:58::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Tue, 28 Apr
- 2020 17:29:08 +0000
-Received: from BN6PR1101MB2132.namprd11.prod.outlook.com
- ([fe80::344b:59bc:1455:37a6]) by BN6PR1101MB2132.namprd11.prod.outlook.com
- ([fe80::344b:59bc:1455:37a6%11]) with mapi id 15.20.2937.026; Tue, 28 Apr
- 2020 17:29:08 +0000
-From:   "Lu, Brent" <brent.lu@intel.com>
-To:     =?utf-8?B?QW1hZGV1c3ogU8WCYXdpxYRza2k=?= 
-        <amadeuszx.slawinski@linux.intel.com>,
-        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC:     Kate Stewart <kstewart@linuxfoundation.org>,
-        Richard Fontana <rfontana@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Jie Yang" <yang.jie@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>
-Subject: RE: [PATCH] ASoC: Intel: sst: ipc command timeout
-Thread-Topic: [PATCH] ASoC: Intel: sst: ipc command timeout
-Thread-Index: AQHWDxGPcERmvVi2FUaZ0GDzXVeqv6h4uesAgAAAnRCAAFQWgIAEY1sggAkDsACACG0YUA==
-Date:   Tue, 28 Apr 2020 17:29:08 +0000
-Message-ID: <BN6PR1101MB2132D23B042284DDA667642A97AC0@BN6PR1101MB2132.namprd11.prod.outlook.com>
-References: <1586506705-3194-1-git-send-email-brent.lu@intel.com>
- <4f495cf1-4740-cf3b-196f-cc850c503b43@linux.intel.com>
- <BN6PR1101MB21328B6F4147640D07F9E40A97DA0@BN6PR1101MB2132.namprd11.prod.outlook.com>
- <c8309abf-cbfb-a3db-5aa7-2e2f748a6d34@intel.com>
- <BN6PR1101MB21328C54E66082227B9F497A97D50@BN6PR1101MB2132.namprd11.prod.outlook.com>
- <5e84c48c-a5d1-b2ff-c197-5efa478c5916@linux.intel.com>
-In-Reply-To: <5e84c48c-a5d1-b2ff-c197-5efa478c5916@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.2.0.6
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [36.230.209.79]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e697d8a3-4bfd-4b8d-0098-08d7eb99a87f
-x-ms-traffictypediagnostic: BN6PR1101MB2242:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN6PR1101MB2242E09934E435DCEA44C09E97AC0@BN6PR1101MB2242.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0387D64A71
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR1101MB2132.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(39860400002)(136003)(396003)(376002)(366004)(55016002)(9686003)(8676002)(2906002)(66556008)(7416002)(26005)(8936002)(186003)(52536014)(64756008)(66476007)(76116006)(478600001)(66946007)(66446008)(316002)(6506007)(7696005)(54906003)(110136005)(5660300002)(86362001)(33656002)(71200400001)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: opOEUjMhcqXmoELYVJWLX0FEXrq/C4t3ne7YTQ4s4RGYmqflmVLGOOz/PJNdiHet0CfibtKUk90R5onxNnWeTjcaomtnA1lCHNOipY3K52/XuquxCWd/vl2m6qyAzocPHb0OECqo3Ytbw+kG0Mr8zK6dp5cqnhEPhH/VyeF7gpivvCnYmIe981YDDrHLGg0WX9MFNLLIxQxwty0gMtJkGf6ubajrPdRcbpdL9ho8EfWSjLrWw9xhSYpkSJ21zazxP6ygoc4gZemS47nnRhqhfFBRwnT1piwlBrelxIvO0TFGza9JdghauE2uqs3iRroPIBhwU4UvYqBnOi1e5+1wR6/YgJ8+h+YPKO/w3WOmTwj1zw9nVL8hgEq+L/RgJgS1So5PbQ6NhJkGQdi/uO9ZNL7iFYS7bpFnfNXxNMNlD+s3VOlzwPN/VWQ1V1ZmPBu3
-x-ms-exchange-antispam-messagedata: JqUIoj8SO3e1HfISpnf045IDgi5AgPP0AIYNqAAFO6Lr8zT04QzSooWIlmcoZsi9b6ZmUPunIRG+JJw2kNX5G7npDwG3rTC7aye+wUhT0I1O5xtpUV2xOXXMyy+oLK+8neGTGseBvPezB51+gN/G6LHJ8cZJyKcCb2w8j/rAVzCcVw4Cx/LtBLmX8ikpGq5Hlxj4IchC4HU9UU3sK70oZAI6Hv9jCt2pBlHr3S97JQhqY66/0490xnA7Gw20r1wNpfHuntwv0WDELEHidAPpNhGcqypP/r32qn1N/KIzsED6fyNgJ/wwiCra7OeVq1WliSo+QoX0qkp11OjA8ZyAxnJh0xF2R008RKj4MgYSYamDThWrXPBkvUTDRXVR0IkWi6viG9hvQG9HXC/WsNvWgsNw1PliKYDx3iChIskXoQgbApUBmb8LHm9lAStHEB8ysrEqRPiqgaSSALyuiZhW9c15Jc91p84ptbwMAiSEzL5r3cXImikSgI2ujXTQBnJ/lJQEESQg1VYrcniiHMLeZWsD2g4+roNhSBm/gc9vgx8af4Jfqwt5mPzEMVvGH9FheEqyXsZX993uqJo8GxC24CRabi6I5B8QO/64yX7c9BxvIWHJ5Av8pfIu7PEpxq1FkeiunlA/bfH21t70WfjJYxb6e0N0NaCGoPKbPLJLj7D/LmcnFMEwHMxMDPc6m5DwN+rt032z5cpRXy99RGJdGfqe7iZSdEA+X9OAFOJqd5sK6fHVEQiQaPPMRh7CuFauVb+xMbNnx+gb5H03JdtqJmfhaxXx89r/FiOjEMBePc8=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1728511AbgD1R3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 13:29:37 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:45454 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728462AbgD1R3g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 13:29:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588094975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ua1iWH5acCeIcm+qZwgP19KY7BJbDjRWNsiRUuQwRiU=;
+        b=TcwaLeoyIthLz/ik3k8017HrEEwzDgXIoxZWA0W+rFHZ+DSyfivXWCGR102R/Esa9dMTdk
+        ahAGicegCXNpttRIjJ5JVDDan6NgvZAlPm6ICpU77d/MowSWYQarigci0rEgz2G1oA1dvQ
+        j7amoLwMg2HTtCRYbGUtJp4SjhOaoJk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-mKmWBTEaMoW-QRUatY1bxQ-1; Tue, 28 Apr 2020 13:29:31 -0400
+X-MC-Unique: mKmWBTEaMoW-QRUatY1bxQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9B0C8BF366;
+        Tue, 28 Apr 2020 17:29:28 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-114-62.ams2.redhat.com [10.36.114.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 742F05C1D4;
+        Tue, 28 Apr 2020 17:29:25 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org
+Subject: [PATCH v3 01/11] iio: light: cm32181: Switch to new style i2c-driver probe function
+Date:   Tue, 28 Apr 2020 19:29:13 +0200
+Message-Id: <20200428172923.567806-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: e697d8a3-4bfd-4b8d-0098-08d7eb99a87f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Apr 2020 17:29:08.2415
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: o7P5bVa/EKEE8Py/C9lHSLJ7Sk8tFtzWB/ImguGcFdaHYL79hG60BAP/4KeX3qtzAEKzfv+Ri0AyyiXLtS5EJQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1101MB2242
-X-OriginatorOrg: intel.com
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gSSd2ZSBsb29rZWQgYXQgdGhlIGNvZGUgYW5kIGJ5dF9pc19kc3BfYnVzeSBzZWVtcyBz
-dXNwaWNpb3VzIHRvIG1lLg0KPiBDYW4geW91IGNoZWNrIGlmIGZvbGxvd2luZyBjaGFuZ2UgZml4
-ZXMgcHJvYmxlbSBmb3IgeW91Og0KPiANCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9i
-YXl0cmFpbC9zc3QtYmF5dHJhaWwtaXBjLmMNCj4gYi9zb3VuZC9zb2MvaW50ZWwvYmF5dHJhaWwv
-c3N0LWJheXRyYWlsLWlwYy5jDQo+IGluZGV4IDc0Mjc0YmQzOGY3YS4uMzQ3NDZmZDg3MWIwIDEw
-MDY0NA0KPiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvYmF5dHJhaWwvc3N0LWJheXRyYWlsLWlwYy5j
-DQo+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9iYXl0cmFpbC9zc3QtYmF5dHJhaWwtaXBjLmMNCj4g
-QEAgLTY2Niw4ICs2NjYsOCBAQCBzdGF0aWMgYm9vbCBieXRfaXNfZHNwX2J1c3koc3RydWN0IHNz
-dF9kc3AgKmRzcCkNCj4gICB7DQo+ICAgICAgICAgIHU2NCBpcGN4Ow0KPiANCj4gLSAgICAgICBp
-cGN4ID0gc3N0X2RzcF9zaGltX3JlYWRfdW5sb2NrZWQoZHNwLCBTU1RfSVBDWCk7DQo+IC0gICAg
-ICAgcmV0dXJuIChpcGN4ICYgKFNTVF9JUENYX0JVU1kgfCBTU1RfSVBDWF9ET05FKSk7DQo+ICsg
-ICAgICAgaXBjeCA9IHNzdF9kc3Bfc2hpbV9yZWFkNjRfdW5sb2NrZWQoZHNwLCBTU1RfSVBDWCk7
-DQo+ICsgICAgICAgcmV0dXJuIChpcGN4ICYgKFNTVF9CWVRfSVBDWF9CVVNZIHwgU1NUX0JZVF9J
-UENYX0RPTkUpKTsNCj4gICB9DQo+IA0KPiAgIGludCBzc3RfYnl0X2RzcF9pbml0KHN0cnVjdCBk
-ZXZpY2UgKmRldiwgc3RydWN0IHNzdF9wZGF0YSAqcGRhdGEpDQo+IA0KPiBXZSBzZWVtIHRvIHRy
-ZWF0IFNTVF9JUENYIGFzIDMyIGJpdCByZWdpc3RlciBpbnN0ZWFkIG9mIDY0IG9uZSwgd2hpY2gg
-bWF5DQo+IGV4cGxhaW4gd3JvbmcgYmVoYXZpb3VyLiAoU3BlY2lmaWNhdGlvbiBzYXlzIGl0IGlz
-IDY0IGJpdCByZWdpc3RlcikuDQo+IA0KPiBUaGFua3MsDQo+IEFtYWRldXN6DQoNCkhpIEFtYWRl
-dXN6LA0KDQpUaGUgcGF0Y2ggZG9lcyBub3Qgd29yayBidXQgSSBtYW5hZ2VkIHRvIGNyZWF0ZSBh
-IHdvcmthcm91bmQganVzdCBmb3INCnJlZmVyZW5jZS4gU3RpbGwgZG9uJ3Qga25vdyB3aHkgZmly
-c3QgcmVhZCBpbiBzc3RfYnl0X2lycV90aHJlYWQgcmV0dXJucw0KaW5jb3JyZWN0IHZhbHVlLg0K
-DQpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL2JheXRyYWlsL3NzdC1iYXl0cmFpbC1pcGMu
-YyBiL3NvdW5kL3NvYy9pbnRlbC9iYXl0cmFpbC9zc3QtYmF5dHJhaWwtaXBjLmMNCmluZGV4IDVi
-YmFhNjY3YmVjMS4uNTZjNTU3Y2I3MjJkIDEwMDY0NA0KLS0tIGEvc291bmQvc29jL2ludGVsL2Jh
-eXRyYWlsL3NzdC1iYXl0cmFpbC1pcGMuYw0KKysrIGIvc291bmQvc29jL2ludGVsL2JheXRyYWls
-L3NzdC1iYXl0cmFpbC1pcGMuYw0KQEAgLTEyLDYgKzEyLDcgQEANCiAgKiBtb3JlIGRldGFpbHMu
-DQogICovDQoNCisjZGVmaW5lIERFQlVHDQogI2luY2x1ZGUgPGxpbnV4L3R5cGVzLmg+DQogI2lu
-Y2x1ZGUgPGxpbnV4L2tlcm5lbC5oPg0KICNpbmNsdWRlIDxsaW51eC9saXN0Lmg+DQpAQCAtMzEz
-LDcgKzMxNCw3IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCBzc3RfYnl0X2lycV90aHJlYWQoaW50IGly
-cSwgdm9pZCAqY29udGV4dCkNCiAgICAgICAgc3RydWN0IHNzdF9kc3AgKnNzdCA9IChzdHJ1Y3Qg
-c3N0X2RzcCAqKSBjb250ZXh0Ow0KICAgICAgICBzdHJ1Y3Qgc3N0X2J5dCAqYnl0ID0gc3N0X2Rz
-cF9nZXRfdGhyZWFkX2NvbnRleHQoc3N0KTsNCiAgICAgICAgc3RydWN0IHNzdF9nZW5lcmljX2lw
-YyAqaXBjID0gJmJ5dC0+aXBjOw0KLSAgICAgICB1NjQgaGVhZGVyOw0KKyAgICAgICB1NjQgaGVh
-ZGVyLCBtYXNrLCBvbGQsIG5ldzsNCiAgICAgICAgdW5zaWduZWQgbG9uZyBmbGFnczsNCg0KICAg
-ICAgICBzcGluX2xvY2tfaXJxc2F2ZSgmc3N0LT5zcGlubG9jaywgZmxhZ3MpOw0KQEAgLTMzMiwx
-MCArMzMzLDMyIEBAIHN0YXRpYyBpcnFyZXR1cm5fdCBzc3RfYnl0X2lycV90aHJlYWQoaW50IGly
-cSwgdm9pZCAqY29udGV4dCkNCiAgICAgICAgICAgICAgICAgKiBwcm9jZXNzZWQgdGhlIG1lc3Nh
-Z2UgYW5kIGNhbiBhY2NlcHQgbmV3LiBDbGVhciBkYXRhIHBhcnQNCiAgICAgICAgICAgICAgICAg
-KiBvZiB0aGUgaGVhZGVyDQogICAgICAgICAgICAgICAgICovDQotICAgICAgICAgICAgICAgc3N0
-X2RzcF9zaGltX3VwZGF0ZV9iaXRzNjRfdW5sb2NrZWQoc3N0LCBTU1RfSVBDRCwNCi0gICAgICAg
-ICAgICAgICAgICAgICAgIFNTVF9CWVRfSVBDRF9ET05FIHwgU1NUX0JZVF9JUENEX0JVU1kgfA0K
-LSAgICAgICAgICAgICAgICAgICAgICAgSVBDX0hFQURFUl9EQVRBKElQQ19IRUFERVJfREFUQV9N
-QVNLKSwNCi0gICAgICAgICAgICAgICAgICAgICAgIFNTVF9CWVRfSVBDRF9ET05FKTsNCisgICAg
-ICAgICAgICAgICAvKiBpbmxpbmUgdGhlIHNzdF9kc3Bfc2hpbV91cGRhdGVfYml0czY0X3VubG9j
-a2VkIGZ1bmN0aW9uICovDQorICAgICAgICAgICAgICAgbWFzayA9IFNTVF9CWVRfSVBDRF9ET05F
-IHwgU1NUX0JZVF9JUENEX0JVU1kgfA0KKyAgICAgICAgICAgICAgICAgICAgICAgSVBDX0hFQURF
-Ul9EQVRBKElQQ19IRUFERVJfREFUQV9NQVNLKTsNCisgICAgICAgICAgICAgICBvbGQgPSBzc3Rf
-ZHNwX3NoaW1fcmVhZDY0X3VubG9ja2VkKHNzdCwgU1NUX0lQQ0QpOw0KKyAgICAgICAgICAgICAg
-IG5ldyA9IChvbGQgJiAofm1hc2spKSB8IChTU1RfQllUX0lQQ0RfRE9ORSAmIG1hc2spOw0KKw0K
-KyAgICAgICAgICAgICAgIGlmIChvbGQgIT0gbmV3KQ0KKyAgICAgICAgICAgICAgICAgICAgICAg
-c3N0X2RzcF9zaGltX3dyaXRlNjRfdW5sb2NrZWQoc3N0LCBTU1RfSVBDRCwgbmV3KTsNCisNCisg
-ICAgICAgICAgICAgICAvKg0KKyAgICAgICAgICAgICAgICAqIHdvcmthcm91bmQsIGdpdmUgaXQg
-YSBzZWNvbmQgY2hhbmNlIGlmIHRoZSBTU1RfSVBDRA0KKyAgICAgICAgICAgICAgICAqIGNoYW5n
-ZXMNCisgICAgICAgICAgICAgICAgKi8NCisgICAgICAgICAgICAgICBpZiAob2xkICE9IGhlYWRl
-cikgew0KKyAgICAgICAgICAgICAgICAgICAgICAgZGV2X2RiZyhpcGMtPmRldiwgIiVzOiBoZWFk
-ZXIgMHglbGx4IG9sZCAweCVsbHhcbiIsDQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IF9fZnVuY19fLCBoZWFkZXIsIG9sZCk7DQorICAgICAgICAgICAgICAgICAgICAgICBpZiAob2xk
-ICYgU1NUX0JZVF9JUENEX0JVU1kpIHsNCisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-aWYgKG9sZCAmIElQQ19OT1RJRklDQVRJT04pIHsNCisgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAvKiBtZXNzYWdlIGZyb20gQURTUCAqLw0KKyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHNzdF9ieXRfcHJvY2Vzc19ub3RpZmljYXRpb24oYnl0LCAm
-ZmxhZ3MpOw0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB9IGVsc2Ugew0KKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8qIHJlcGx5IGZyb20gQURTUCAqLw0K
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNzdF9ieXRfcHJvY2Vzc19y
-ZXBseShieXQsIG9sZCk7DQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0NCisgICAg
-ICAgICAgICAgICAgICAgICAgIH0NCisgICAgICAgICAgICAgICB9DQogICAgICAgICAgICAgICAg
-LyogdW5tYXNrIG1lc3NhZ2UgcmVxdWVzdCBpbnRlcnJ1cHRzICovDQogICAgICAgICAgICAgICAg
-c3N0X2RzcF9zaGltX3VwZGF0ZV9iaXRzNjRfdW5sb2NrZWQoc3N0LCBTU1RfSU1SWCwNCiAgICAg
-ICAgICAgICAgICAgICAgICAgIFNTVF9CWVRfSU1SWF9SRVFVRVNULCAwKTsNCg==
+Switch to the new style i2c-driver probe_new probe function and drop the
+unnecessary i2c_device_id table (we do not have any old style board files
+using this).
+
+This is a preparation patch for adding ACPI binding support.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+Changes in v3:
+- This is a new patch in v3 of this patch-set
+---
+ drivers/iio/light/cm32181.c | 15 +++------------
+ 1 file changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/iio/light/cm32181.c b/drivers/iio/light/cm32181.c
+index 5f4fb5674fa0..cc57190a24cb 100644
+--- a/drivers/iio/light/cm32181.c
++++ b/drivers/iio/light/cm32181.c
+@@ -294,8 +294,7 @@ static const struct iio_info cm32181_info =3D {
+ 	.attrs			=3D &cm32181_attribute_group,
+ };
+=20
+-static int cm32181_probe(struct i2c_client *client,
+-			const struct i2c_device_id *id)
++static int cm32181_probe(struct i2c_client *client)
+ {
+ 	struct cm32181_chip *cm32181;
+ 	struct iio_dev *indio_dev;
+@@ -316,7 +315,7 @@ static int cm32181_probe(struct i2c_client *client,
+ 	indio_dev->channels =3D cm32181_channels;
+ 	indio_dev->num_channels =3D ARRAY_SIZE(cm32181_channels);
+ 	indio_dev->info =3D &cm32181_info;
+-	indio_dev->name =3D id->name;
++	indio_dev->name =3D dev_name(&client->dev);
+ 	indio_dev->modes =3D INDIO_DIRECT_MODE;
+=20
+ 	ret =3D cm32181_reg_init(cm32181);
+@@ -338,13 +337,6 @@ static int cm32181_probe(struct i2c_client *client,
+ 	return 0;
+ }
+=20
+-static const struct i2c_device_id cm32181_id[] =3D {
+-	{ "cm32181", 0 },
+-	{ }
+-};
+-
+-MODULE_DEVICE_TABLE(i2c, cm32181_id);
+-
+ static const struct of_device_id cm32181_of_match[] =3D {
+ 	{ .compatible =3D "capella,cm32181" },
+ 	{ }
+@@ -356,8 +348,7 @@ static struct i2c_driver cm32181_driver =3D {
+ 		.name	=3D "cm32181",
+ 		.of_match_table =3D of_match_ptr(cm32181_of_match),
+ 	},
+-	.id_table       =3D cm32181_id,
+-	.probe		=3D cm32181_probe,
++	.probe_new	=3D cm32181_probe,
+ };
+=20
+ module_i2c_driver(cm32181_driver);
+--=20
+2.26.0
+
