@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6171BC96C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8AA1BC835
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730996AbgD1Slb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:41:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33020 "EHLO mail.kernel.org"
+        id S1729508AbgD1Sa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:30:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730360AbgD1Sl2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:41:28 -0400
+        id S1729499AbgD1SaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:30:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E77CA2085B;
-        Tue, 28 Apr 2020 18:41:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3AD021707;
+        Tue, 28 Apr 2020 18:30:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099288;
-        bh=H7suLBITTIhAykDKLx/yQbiP5B4ZnhVwA8JTaHI6O6U=;
+        s=default; t=1588098624;
+        bh=WD3yPOcNBz5ao0L7Opx2owCe6PDhH1jhqWizIZim2uw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RV+eNNQb+XEUzyO82gFWNBlclUE2BCMgodPRmdjsVJtjQc8nKgL6QuqF+QPnfncJz
-         gqU1TVnA3PUYbSVfgBt4FS4+aKZN+dix0WDZ/hELPrBBtK47JyYEJ9qoxDGMhSVw55
-         CSbPOTHPe0Guc8sM/eso8+D+M4VtkSQKAeFkPLVE=
+        b=E0HLcIB41+0hUzAA1KRekI/IYVQxoDuOUy62nCZeWVxA9AGmZLgqXFQ9uYXuwkSNO
+         OO3sbeXaoYiRCJmtkLkOmE5ccH+rxRg+PJ5IQrDRfUsCGYmLPApQuaXV/azyQ/rZah
+         91r0f47gw+yvvUDxdWBezKwTYeI9xQqiKxewC2fo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lary Gibaud <yarl-baudig@mailoo.org>,
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 088/168] iio: st_sensors: rely on odr mask to know if odr can be set
-Date:   Tue, 28 Apr 2020 20:24:22 +0200
-Message-Id: <20200428182243.459800577@linuxfoundation.org>
+Subject: [PATCH 5.6 087/167] iio: xilinx-xadc: Fix clearing interrupt when enabling trigger
+Date:   Tue, 28 Apr 2020 20:24:23 +0200
+Message-Id: <20200428182235.965806499@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lary Gibaud <yarl-baudig@mailoo.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-commit e450e07c14abae563ad13b064cbce9fdccc6bc8d upstream.
+commit f954b098fbac4d183219ce5b42d76d6df2aed50a upstream.
 
-Indeed, relying on addr being not 0 cannot work because some device have
-their register to set odr at address 0. As a matter of fact, if the odr
-can be set, then there is a mask.
+When enabling the trigger and unmasking the end-of-sequence (EOS) interrupt
+the EOS interrupt should be cleared from the status register. Otherwise it
+is possible that it was still set from a previous capture. If that is the
+case the interrupt would fire immediately even though no conversion has
+been done yet and stale data is being read from the device.
 
-Sensors with ODR register at address 0 are: lsm303dlh, lsm303dlhc, lsm303dlm
+The old code only clears the interrupt if the interrupt was previously
+unmasked. Which does not make much sense since the interrupt is always
+masked at this point and in addition masking the interrupt does not clear
+the interrupt from the status register. So the clearing needs to be done
+unconditionally.
 
-Fixes: 7d245172675a ("iio: common: st_sensors: check odr address value in st_sensors_set_odr()")
-Signed-off-by: Lary Gibaud <yarl-baudig@mailoo.org>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Fixes: bdc8cda1d010 ("iio:adc: Add Xilinx XADC driver")
 Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/common/st_sensors/st_sensors_core.c |    2 +-
+ drivers/iio/adc/xilinx-xadc-core.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/common/st_sensors/st_sensors_core.c
-+++ b/drivers/iio/common/st_sensors/st_sensors_core.c
-@@ -80,7 +80,7 @@ int st_sensors_set_odr(struct iio_dev *i
- 	struct st_sensor_odr_avl odr_out = {0, 0};
- 	struct st_sensor_data *sdata = iio_priv(indio_dev);
+--- a/drivers/iio/adc/xilinx-xadc-core.c
++++ b/drivers/iio/adc/xilinx-xadc-core.c
+@@ -674,7 +674,7 @@ static int xadc_trigger_set_state(struct
  
--	if (!sdata->sensor_settings->odr.addr)
-+	if (!sdata->sensor_settings->odr.mask)
- 		return 0;
- 
- 	err = st_sensors_match_odr(sdata->sensor_settings, odr, &odr_out);
+ 	spin_lock_irqsave(&xadc->lock, flags);
+ 	xadc_read_reg(xadc, XADC_AXI_REG_IPIER, &val);
+-	xadc_write_reg(xadc, XADC_AXI_REG_IPISR, val & XADC_AXI_INT_EOS);
++	xadc_write_reg(xadc, XADC_AXI_REG_IPISR, XADC_AXI_INT_EOS);
+ 	if (state)
+ 		val |= XADC_AXI_INT_EOS;
+ 	else
 
 
