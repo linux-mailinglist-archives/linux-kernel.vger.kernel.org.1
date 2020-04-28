@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A591BC8FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75E61BCBA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729260AbgD1Sh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:37:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55366 "EHLO mail.kernel.org"
+        id S1730137AbgD1S6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730016AbgD1ShV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:37:21 -0400
+        id S1729294AbgD1S3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:29:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5817A20730;
-        Tue, 28 Apr 2020 18:37:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DFAB20730;
+        Tue, 28 Apr 2020 18:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099040;
-        bh=5uFJuwjoC3VC0PyMXFwFPVXasdTIrZhH+bj1G/wKsGU=;
+        s=default; t=1588098543;
+        bh=e3Ix0CKQnO2vFrhw8s5qjaLhbJuDinvzEZLMlqEOCsc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mRq2nb0CeTplkQwaGCSZ+qtfZujxIDWW96MBy/A7tiHDeTd8me9OD1W3bnwSD+AyK
-         fERe4KM1/mPWTMmX2VaP3IJylSFUqNYpizBQKE/U6mgJKwZBNG7CVew2EK8Xiyz8Sa
-         4gdgC7nv8VqnhHhEKh8+Z22S6f7AsgiDJt/1F72g=
+        b=ak4nOytHKWYQyUfIygc+xSZ5r+RTxULAW7Tv1zRjktzLiii9qKvhmFNGXo9/K85VQ
+         2kThyHmNhh0pprbZcj0OyjxY6c98dKsQr8SuXm4628wYOi8rBdu/p2m03QrKpU8BnZ
+         9L83P1CF3oB8dTdWeVO8W5DYrmUMSAw051fD8MAA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Tero Kristo <t-kristo@ti.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 049/168] tracing/selftests: Turn off timeout setting
+Subject: [PATCH 4.19 011/131] watchdog: reset last_hw_keepalive time at start
 Date:   Tue, 28 Apr 2020 20:23:43 +0200
-Message-Id: <20200428182238.091774270@linuxfoundation.org>
+Message-Id: <20200428182226.602808871@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,33 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Tero Kristo <t-kristo@ti.com>
 
-[ Upstream commit b43e78f65b1d35fd3e13c7b23f9b64ea83c9ad3a ]
+[ Upstream commit 982bb70517aef2225bad1d802887b733db492cc0 ]
 
-As the ftrace selftests can run for a long period of time, disable the
-timeout that the general selftests have. If a selftest hangs, then it
-probably means the machine will hang too.
+Currently the watchdog core does not initialize the last_hw_keepalive
+time during watchdog startup. This will cause the watchdog to be pinged
+immediately if enough time has passed from the system boot-up time, and
+some types of watchdogs like K3 RTI does not like this.
 
-Link: https://lore.kernel.org/r/alpine.LSU.2.21.1911131604170.18679@pobox.suse.cz
+To avoid the issue, setup the last_hw_keepalive time during watchdog
+startup.
 
-Suggested-by: Miroslav Benes <mbenes@suse.cz>
-Tested-by: Miroslav Benes <mbenes@suse.cz>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20200302200426.6492-3-t-kristo@ti.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/ftrace/settings | 1 +
+ drivers/watchdog/watchdog_dev.c | 1 +
  1 file changed, 1 insertion(+)
- create mode 100644 tools/testing/selftests/ftrace/settings
 
-diff --git a/tools/testing/selftests/ftrace/settings b/tools/testing/selftests/ftrace/settings
-new file mode 100644
-index 0000000000000..e7b9417537fbc
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/settings
-@@ -0,0 +1 @@
-+timeout=0
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index e64aa88e99dab..10b2090f3e5e7 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -264,6 +264,7 @@ static int watchdog_start(struct watchdog_device *wdd)
+ 	if (err == 0) {
+ 		set_bit(WDOG_ACTIVE, &wdd->status);
+ 		wd_data->last_keepalive = started_at;
++		wd_data->last_hw_keepalive = started_at;
+ 		watchdog_update_worker(wdd);
+ 	}
+ 
 -- 
 2.20.1
 
