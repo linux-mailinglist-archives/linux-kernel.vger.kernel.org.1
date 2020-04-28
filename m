@@ -2,153 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74631BBAAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 12:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822601BBAB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 12:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgD1KFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 06:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49042 "EHLO
+        id S1727919AbgD1KFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 06:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727107AbgD1KFM (ORCPT
+        by vger.kernel.org with ESMTP id S1727820AbgD1KFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 06:05:12 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45C2C03C1A9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 03:05:12 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k12so2058324wmj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 03:05:12 -0700 (PDT)
+        Tue, 28 Apr 2020 06:05:48 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511E5C03C1AC;
+        Tue, 28 Apr 2020 03:05:48 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 72so31654171otu.1;
+        Tue, 28 Apr 2020 03:05:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l+k7yFMhMisNWSRZhvrwWfroBahbWYYcttXSTYKeIwQ=;
-        b=jibHKywqEOHP7s5Uq17E8ygefJpPB+KB36cR9akz/wwH6GF74Ovy8y7nrJQgKD/v86
-         +ADgY4xegjPKGLTcL6BJ0oyxEBc/3ebLDa6cz/R1bKVedxmKa2fGhgObMZIWZ0aSYDV9
-         qIlGzv7MRvovl3lA5TeZpfsQe5hz34ij7dOQw=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=c+huRrl4EMmwLtCydWHPHBwimIQQrSdcPSmlbyOi6ak=;
+        b=ZXQcasNbkucSaQmXTrTSqX7pZUJO2euHRVM05NZzm5TApUC2RLi8uiPoeIXyaeakg8
+         L6s31m697YGtYuo/2tuzhQkt/Hsy+AUjb3rLu2rA2YL9iaQdgRGY1ARTmpQzgheJxVnE
+         HQNWIkhgPajVwvSY9z8CelokxtaWqOuE1qSh8YZJPRyZpIMxiZBOATTvk3UAbwlSuS5W
+         ZlyX+NpB4hN6Y/BZE5qqAAFDLA4OdVFtwAC+PUqFzLBItCIEvDcdfjXhJI/iNXjDuNXE
+         qdnmr8vMnZbJWcm17PQsuhSwhQK9dGIFV696cp8pZJhMh/ImQAJlIebRToOXiZaAa84c
+         DbIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=l+k7yFMhMisNWSRZhvrwWfroBahbWYYcttXSTYKeIwQ=;
-        b=nq02ZieKS0OLfQ/diBePwp+ou8+dUj7QMkDnfqp1TcWNfU6WQkCwJ8iekFOIi8QLB2
-         abMfKHmJc9A0wt3uHU7BzTiT0btkr2s3YFmMjx9UCLX4nIy/D9U90FnWPNyeu/yrvV55
-         L7euDK49P3l4Yv7aO8fkjpbl1ofl9lF3mcO0pCdl49Rly9kd5N7nL0cPlw5NwchBWIZH
-         IBJzRxTPAKZBu+JY0wzPv+sw2jZodPX1fCtF204UlNb+p5GoIhiA5u0Nxb70+95xR9Hl
-         dmQOyj9JK1DBLc2r3Cp/TfkvBXH8EjgaEsuMO9okAW3UbHyc402bBdHNi2uD29qE8KAr
-         Jwog==
-X-Gm-Message-State: AGi0PuZgEdF5/xMxibrZiFr5m9bQNURY76NutNNW+L3a/SeTd0fCTtG3
-        kFgvcz780VigkTEloWrGcO5U8g==
-X-Google-Smtp-Source: APiQypKQTCBtHEwl9qfvTCZEBaYghpXpXAL7yjy18ziiEevrdg+jQUjp5/w1QV7rvuqsCLOMh3LRRQ==
-X-Received: by 2002:a1c:dc8b:: with SMTP id t133mr3745031wmg.117.1588068311327;
-        Tue, 28 Apr 2020 03:05:11 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id 138sm2786040wmb.14.2020.04.28.03.05.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 03:05:10 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 12:05:08 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Xin Ji <xji@analogixsemi.com>, devel@driverdev.osuosl.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        lkml <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Sheng Pan <span@analogixsemi.com>
-Subject: Re: [PATCH v7 2/2] drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to
- DP bridge driver
-Message-ID: <20200428100508.GD3456981@phenom.ffwll.local>
-Mail-Followup-To: Nicolas Boichat <drinkcat@chromium.org>,
-        Xin Ji <xji@analogixsemi.com>, devel@driverdev.osuosl.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        lkml <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Sheng Pan <span@analogixsemi.com>
-References: <cover.1582529411.git.xji@analogixsemi.com>
- <a81adcf2e79d440edcb7b3989f31efcb80a6e9ff.1582529411.git.xji@analogixsemi.com>
- <CANMq1KBfB6tXFqYGvr=8fV_bpCV5GbVHeEbRs+fuaZba65-OPw@mail.gmail.com>
- <20200424065124.GA31922@xin-VirtualBox>
- <CANMq1KBJ6f74aNAr8BwC3wz8MEeJzwXOQE44gv6C=DNzYmUWCQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=c+huRrl4EMmwLtCydWHPHBwimIQQrSdcPSmlbyOi6ak=;
+        b=Cr2xU40lhFKrmfJD0zLp60qiCoJsq2ZquVSVnmOdvf8BA2ZIYQB9YqUcjm473D5KYP
+         5IiUjz58cJnqXc56OlRuANwX7SuR6SBPwMyongl/9gTCEGlKVCyK8Vbfkxbld6uD06No
+         5sMy8Y6CMhZwMoypdASyWzSfzR/5/V6KA0RohSEIZCuExBP1dyeLCEeBo5xEk3LBSsRz
+         KvgjaASVK/pDShfdQnhpHTk8EqJqL11si95STgwHd3vXjr9LX0UF0xMQMEDUVEJsTIyV
+         FD4kjyKvZ/MgtDStosAs5AjVIBPqBbvn3uSdhNMxqTUFpDW6iCsm66+24U8k4keJ1S4p
+         yacA==
+X-Gm-Message-State: AGi0PuaN3pDhZZbHChzbKbbkFiTKUgJmdoN8QvaIIRVXX4uI0NpKff1D
+        QGdU2hEkPvKJBQ2KAj4cK0B/iRf2SHvCSc9fGzg=
+X-Google-Smtp-Source: APiQypKYwyvKoAhMChnqsyAy72r1GF1221YvLClrEKSSr7ORzSXuco0AdOhukG42X8AkRT3b27d0+Yk1YWS/WZFqPdw=
+X-Received: by 2002:a9d:810:: with SMTP id 16mr21332951oty.56.1588068347645;
+ Tue, 28 Apr 2020 03:05:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANMq1KBJ6f74aNAr8BwC3wz8MEeJzwXOQE44gv6C=DNzYmUWCQ@mail.gmail.com>
-X-Operating-System: Linux phenom 5.3.0-3-amd64 
+References: <1588055009-12677-1-git-send-email-wanpengli@tencent.com>
+ <1588055009-12677-7-git-send-email-wanpengli@tencent.com> <15150824.2a36.171c0394538.Coremail.linxl3@wangsu.com>
+In-Reply-To: <15150824.2a36.171c0394538.Coremail.linxl3@wangsu.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Tue, 28 Apr 2020 18:05:37 +0800
+Message-ID: <CANRm+Cw0=JU5eJayQ0XM7n2e+q8a8dzHusqtsfNjmWTNai9phg@mail.gmail.com>
+Subject: Re: [PATCH v4 6/7] KVM: X86: TSCDEADLINE MSR emulation fastpath
+To:     =?UTF-8?B?5p6X6ZGr6b6Z?= <linxl3@wangsu.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Haiwei Li <lihaiwei@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 08:12:04PM +0800, Nicolas Boichat wrote:
-> On Fri, Apr 24, 2020 at 2:51 PM Xin Ji <xji@analogixsemi.com> wrote:
-> >
-> > On Thu, Apr 23, 2020 at 07:55:15PM +0800, Nicolas Boichat wrote:
-> > > Hi,
-> > >
-> > > Just commenting on the mode_fixup function that was added in v7.
-> > >
-> > [snip]
-> > > > +       /*
-> > > > +        * once illegal timing detected, use default HFP, HSYNC, HBP
-> > > > +        */
-> > > > +       if (hblanking < HBLANKING_MIN || (hfp < HP_MIN && hbp < HP_MIN)) {
-> > >
-> > > should this be adj_hblanking/adj_hfp/adj_hbp?
-> > NO, need check original HFP and HBP, if they are not legal, driver need
-> > set default value to adj_hsync, adj_hfp, adj_hbp.
-> > >
-> > > > +               adj_hsync = SYNC_LEN_DEF;
-> > > > +               adj_hfp = HFP_HBP_DEF;
-> > > > +               adj_hbp = HFP_HBP_DEF;
-> > > > +               vref = adj->clock * 1000 / (adj->htotal * adj->vtotal);
-> > > > +               if (hblanking < HBLANKING_MIN) {
-> > > > +                       delta_adj = HBLANKING_MIN - hblanking;
-> > > > +                       adj_clock = vref * delta_adj * adj->vtotal;
-> > > > +                       adj->clock += DIV_ROUND_UP(adj_clock, 1000);
-> > > > +               } else {
-> > > > +                       delta_adj = hblanking - HBLANKING_MIN;
-> > > > +                       adj_clock = vref * delta_adj * adj->vtotal;
-> > > > +                       adj->clock -= DIV_ROUND_UP(adj_clock, 1000);
-> > > > +               }
-> > > > +
-> > > > +               DRM_WARN("illegal hblanking timing, use default.\n");
-> > > > +               DRM_WARN("hfp(%d),hbp(%d),hsync(%d).\n", hfp, hbp, hsync);
-> > >
-> > > How likely is it that this mode is going to work? Can you just return
-> > > false here to reject the mode?
-> > We want to set the default minimal Hblancking value, then it may display,
-> > otherwise. If we just return false, there is no display for sure.
-> 
-> Right, understand your argument. I'm pondering if it's not just better
-> to reject the mode rather than trying a timing that is definitely
-> quite different from what the monitor was asking for. No super strong
-> opinion, I'll let other people on the list weigh in.
+On Tue, 28 Apr 2020 at 17:59, =E6=9E=97=E9=91=AB=E9=BE=99 <linxl3@wangsu.co=
+m> wrote:
+>
+> On Tuesday, 28 Apr 2020 at 14:23, Wanpeng Li <kernellwp@gmail.com> wrote:
+> &gt;
+> &gt; From: Wanpeng Li <wanpengli@tencent.com>
+> &gt;
+> &gt; This patch implements tscdealine msr emulation fastpath, after wrmsr
+> &gt; tscdeadline vmexit, handle it as soon as possible and vmentry immedi=
+ately
+> &gt; without checking various kvm stuff when possible.
+> &gt;
+> &gt; Tested-by: Haiwei Li <lihaiwei@tencent.com>
+> &gt; Cc: Haiwei Li <lihaiwei@tencent.com>
+> &gt; Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> &gt; ---
+> &gt;  arch/x86/kvm/lapic.c   | 18 ++++++++++++------
+> &gt;  arch/x86/kvm/vmx/vmx.c | 12 ++++++++----
+> &gt;  arch/x86/kvm/x86.c     | 30 ++++++++++++++++++++++++------
+> &gt;  3 files changed, 44 insertions(+), 16 deletions(-)
+> &gt;
+> &gt; diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> &gt; index 38f7dc9..3589237 100644
+> &gt; --- a/arch/x86/kvm/lapic.c
+> &gt; +++ b/arch/x86/kvm/lapic.c
+> &gt; @@ -1593,7 +1593,7 @@ static void kvm_apic_inject_pending_timer_irqs=
+(struct kvm_lapic *apic)
+> &gt;    }
+> &gt;  }
+> &gt;
+> &gt; -static void apic_timer_expired(struct kvm_lapic *apic)
+> &gt; +static void apic_timer_expired(struct kvm_lapic *apic, bool from_ti=
+mer_fn)
+> &gt;  {
+> &gt;    struct kvm_vcpu *vcpu =3D apic-&gt;vcpu;
+> &gt;    struct kvm_timer *ktimer =3D &amp;apic-&gt;lapic_timer;
+> &gt; @@ -1604,6 +1604,12 @@ static void apic_timer_expired(struct kvm_lap=
+ic *apic)
+> &gt;    if (apic_lvtt_tscdeadline(apic) || ktimer-&gt;hv_timer_in_use)
+> &gt;            ktimer-&gt;expired_tscdeadline =3D ktimer-&gt;tscdeadline=
+;
+> &gt;
+> &gt; +  if (!from_timer_fn &amp;&amp; vcpu-&gt;arch.apicv_active) {
+> &gt; +          WARN_ON(kvm_get_running_vcpu() !=3D vcpu);
+> &gt; +          kvm_apic_inject_pending_timer_irqs(apic);
+> &gt; +          return;
+> &gt; +  }
+> &gt; +
+> &gt;    if (kvm_use_posted_timer_interrupt(apic-&gt;vcpu)) {
+> &gt;            if (apic-&gt;lapic_timer.timer_advance_ns)
+> &gt;                    __kvm_wait_lapic_expire(vcpu);
+> &gt; @@ -1643,7 +1649,7 @@ static void start_sw_tscdeadline(struct kvm_la=
+pic *apic)
+> &gt;            expire =3D ktime_sub_ns(expire, ktimer-&gt;timer_advance_=
+ns);
+> &gt;            hrtimer_start(&amp;ktimer-&gt;timer, expire, HRTIMER_MODE=
+_ABS_HARD);
+> &gt;    } else
+> &gt; -          apic_timer_expired(apic);
+> &gt; +          apic_timer_expired(apic, false);
+> &gt;
+> &gt;    local_irq_restore(flags);
+> &gt;  }
+> &gt; @@ -1751,7 +1757,7 @@ static void start_sw_period(struct kvm_lapic *=
+apic)
+> &gt;
+> &gt;    if (ktime_after(ktime_get(),
+> &gt;                    apic-&gt;lapic_timer.target_expiration)) {
+> &gt; -          apic_timer_expired(apic);
+> &gt; +          apic_timer_expired(apic, false);
+> &gt;
+> &gt;            if (apic_lvtt_oneshot(apic))
+> &gt;                    return;
+> &gt; @@ -1813,7 +1819,7 @@ static bool start_hv_timer(struct kvm_lapic *a=
+pic)
+> &gt;            if (atomic_read(&amp;ktimer-&gt;pending)) {
+> &gt;                    cancel_hv_timer(apic);
+> &gt;            } else if (expired) {
+> &gt; -                  apic_timer_expired(apic);
+> &gt; +                  apic_timer_expired(apic, false);
+> &gt;                    cancel_hv_timer(apic);
+> &gt;            }
+> &gt;    }
+> &gt; @@ -1863,7 +1869,7 @@ void kvm_lapic_expired_hv_timer(struct kvm_vcp=
+u *vcpu)
+> &gt;            goto out;
+> &gt;    WARN_ON(swait_active(&amp;vcpu-&gt;wq));
+> &gt;    cancel_hv_timer(apic);
+> &gt; -  apic_timer_expired(apic);
+> &gt; +  apic_timer_expired(apic, false);
+> &gt;
+> &gt;    if (apic_lvtt_period(apic) &amp;&amp; apic-&gt;lapic_timer.period=
+) {
+> &gt;            advance_periodic_target_expiration(apic);
+> &gt; @@ -2369,7 +2375,7 @@ static enum hrtimer_restart apic_timer_fn(stru=
+ct hrtimer *data)
+> &gt;    struct kvm_timer *ktimer =3D container_of(data, struct kvm_timer,=
+ timer);
+> &gt;    struct kvm_lapic *apic =3D container_of(ktimer, struct kvm_lapic,=
+ lapic_timer);
+> &gt;
+> &gt; -  apic_timer_expired(apic);
+> &gt; +  apic_timer_expired(apic, true);
+> &gt;
+> &gt;    if (lapic_is_periodic(apic)) {
+> &gt;            advance_periodic_target_expiration(apic);
+> &gt; diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> &gt; index ce19b0e..bb5c4f1 100644
+> &gt; --- a/arch/x86/kvm/vmx/vmx.c
+> &gt; +++ b/arch/x86/kvm/vmx/vmx.c
+> &gt; @@ -5994,7 +5994,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vc=
+pu, fastpath_t exit_fastpath)
+> &gt;    if (exit_fastpath =3D=3D EXIT_FASTPATH_SKIP_EMUL_INS) {
+> &gt;            kvm_skip_emulated_instruction(vcpu);
+> Can we move this kvm_skip_emulated_instruction to handle_fastpath_set_msr=
+_irqoff? This will keep the style consistent.
 
-Yeah mode_fixup is supposed to be used to adjust the mode in intermediate
-stages (e.g. if you go from progressive to interlaced only at the end of
-your pipeline or something like that). It's not meant for adjusting the
-mode yout actually put out through a hdmi or dp connector. For fixed
-panels adjusting modes to fit the panel is also fairly common, but not for
-external outputs.
+It can have other users sooner or later.
 
-Since this is a DP bridge I'd say no adjusting, just reject what doesn't
-fit.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+    Wanpeng
