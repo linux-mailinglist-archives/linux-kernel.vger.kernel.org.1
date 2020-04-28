@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A9E1BC873
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1151BCAEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729041AbgD1Scm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:32:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48816 "EHLO mail.kernel.org"
+        id S1730226AbgD1SxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729827AbgD1Scg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:32:36 -0400
+        id S1728668AbgD1SfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:35:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6AD4720B80;
-        Tue, 28 Apr 2020 18:32:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A65C20575;
+        Tue, 28 Apr 2020 18:35:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098755;
-        bh=UcH5qtw59qTuXTBw6ECJdi8TpzL+afl6G6oGjx9V0XA=;
+        s=default; t=1588098913;
+        bh=EYt52b9E92ZkXpFxMfyto0IaW2Zy5DKRUYWYXpRHGIQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xYblkT0Rra2pjdwFZBpiU6pV3PPwRw7mnCq2L4JF2vpatFcXEUXsjKw+rcnyDFrhj
-         EyqH/GQ4uyDJ+LMh54nTMaFnTi7WNnCFy4o7afp9+YEbZ8qwU+kkwMk5yaFhDOltK7
-         eHmNLI0K2X4BOkI5L097rhpfP/PNqtG6zgy/2Nns=
+        b=UFIOYxm51xLaYNQUSwUleAGGkOd2TeDJH7NRKAzZmx0Q89j5l2xw8nnt6F9VwqD0w
+         BSTv6I1z/ov4irGXlojfqsEzIJP8sfGyu7zSK3SfrIuyyJsXUWHlC/Q+xO548zXR9S
+         qnnBG1wjAUHOJAq80lB9mwsF+VwLRuo1kATw6y64=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.6 107/167] ALSA: usb-audio: Fix usb audio refcnt leak when getting spdif
-Date:   Tue, 28 Apr 2020 20:24:43 +0200
-Message-Id: <20200428182238.696554233@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Ido Schimmel <idosch@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 072/131] mlxsw: Fix some IS_ERR() vs NULL bugs
+Date:   Tue, 28 Apr 2020 20:24:44 +0200
+Message-Id: <20200428182233.999492732@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,58 +44,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 59e1947ca09ebd1cae147c08c7c41f3141233c84 upstream.
+[ Upstream commit c391eb8366ae052d571bb2841f1ccb4d39f3ceb8 ]
 
-snd_microii_spdif_default_get() invokes snd_usb_lock_shutdown(), which
-increases the refcount of the snd_usb_audio object "chip".
+The mlxsw_sp_acl_rulei_create() function is supposed to return an error
+pointer from mlxsw_afa_block_create().  The problem is that these
+functions both return NULL instead of error pointers.  Half the callers
+expect NULL and half expect error pointers so it could lead to a NULL
+dereference on failure.
 
-When snd_microii_spdif_default_get() returns, local variable "chip"
-becomes invalid, so the refcount should be decreased to keep refcount
-balanced.
+This patch changes both of them to return error pointers and changes all
+the callers which checked for NULL to check for IS_ERR() instead.
 
-The reference counting issue happens in several exception handling paths
-of snd_microii_spdif_default_get(). When those error scenarios occur
-such as usb_ifnum_to_if() returns NULL, the function forgets to decrease
-the refcnt increased by snd_usb_lock_shutdown(), causing a refcnt leak.
-
-Fix this issue by jumping to "end" label when those error scenarios
-occur.
-
-Fixes: 447d6275f0c2 ("ALSA: usb-audio: Add sanity checks for endpoint accesses")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1587617711-13200-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 4cda7d8d7098 ("mlxsw: core: Introduce flexible actions support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Ido Schimmel <idosch@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- sound/usb/mixer_quirks.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlxsw/core_acl_flex_actions.c |    4 ++--
+ drivers/net/ethernet/mellanox/mlxsw/spectrum2_acl_tcam.c    |    4 ++--
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_acl.c          |    3 ++-
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_mr_tcam.c      |    4 ++--
+ 4 files changed, 8 insertions(+), 7 deletions(-)
 
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -1508,11 +1508,15 @@ static int snd_microii_spdif_default_get
+--- a/drivers/net/ethernet/mellanox/mlxsw/core_acl_flex_actions.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/core_acl_flex_actions.c
+@@ -316,7 +316,7 @@ struct mlxsw_afa_block *mlxsw_afa_block_
  
- 	/* use known values for that card: interface#1 altsetting#1 */
- 	iface = usb_ifnum_to_if(chip->dev, 1);
--	if (!iface || iface->num_altsetting < 2)
--		return -EINVAL;
-+	if (!iface || iface->num_altsetting < 2) {
-+		err = -EINVAL;
-+		goto end;
-+	}
- 	alts = &iface->altsetting[1];
--	if (get_iface_desc(alts)->bNumEndpoints < 1)
--		return -EINVAL;
-+	if (get_iface_desc(alts)->bNumEndpoints < 1) {
-+		err = -EINVAL;
-+		goto end;
-+	}
- 	ep = get_endpoint(alts, 0)->bEndpointAddress;
+ 	block = kzalloc(sizeof(*block), GFP_KERNEL);
+ 	if (!block)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
+ 	INIT_LIST_HEAD(&block->resource_list);
+ 	block->afa = mlxsw_afa;
  
- 	err = snd_usb_ctl_msg(chip->dev,
+@@ -344,7 +344,7 @@ err_second_set_create:
+ 	mlxsw_afa_set_destroy(block->first_set);
+ err_first_set_create:
+ 	kfree(block);
+-	return NULL;
++	return ERR_PTR(-ENOMEM);
+ }
+ EXPORT_SYMBOL(mlxsw_afa_block_create);
+ 
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum2_acl_tcam.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum2_acl_tcam.c
+@@ -88,8 +88,8 @@ static int mlxsw_sp2_acl_tcam_init(struc
+ 	 * to be written using PEFA register to all indexes for all regions.
+ 	 */
+ 	afa_block = mlxsw_afa_block_create(mlxsw_sp->afa);
+-	if (!afa_block) {
+-		err = -ENOMEM;
++	if (IS_ERR(afa_block)) {
++		err = PTR_ERR(afa_block);
+ 		goto err_afa_block;
+ 	}
+ 	err = mlxsw_afa_block_continue(afa_block);
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_acl.c
+@@ -442,7 +442,8 @@ mlxsw_sp_acl_rulei_create(struct mlxsw_s
+ 
+ 	rulei = kzalloc(sizeof(*rulei), GFP_KERNEL);
+ 	if (!rulei)
+-		return NULL;
++		return ERR_PTR(-ENOMEM);
++
+ 	rulei->act_block = mlxsw_afa_block_create(acl->mlxsw_sp->afa);
+ 	if (IS_ERR(rulei->act_block)) {
+ 		err = PTR_ERR(rulei->act_block);
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_mr_tcam.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_mr_tcam.c
+@@ -199,8 +199,8 @@ mlxsw_sp_mr_tcam_afa_block_create(struct
+ 	int err;
+ 
+ 	afa_block = mlxsw_afa_block_create(mlxsw_sp->afa);
+-	if (!afa_block)
+-		return ERR_PTR(-ENOMEM);
++	if (IS_ERR(afa_block))
++		return afa_block;
+ 
+ 	err = mlxsw_afa_block_append_allocated_counter(afa_block,
+ 						       counter_index);
 
 
