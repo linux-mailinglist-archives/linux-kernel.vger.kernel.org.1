@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646911BB395
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B331BB39A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726318AbgD1Bsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 21:48:51 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:45346 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726233AbgD1Bsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 21:48:50 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 7CD90498ED7D8EB6A524;
-        Tue, 28 Apr 2020 09:48:48 +0800 (CST)
-Received: from huawei.com (10.67.174.156) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Apr 2020
- 09:48:41 +0800
-From:   ChenTao <chentao107@huawei.com>
-To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>
-CC:     <linux@armlinux.org.uk>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chentao107@huawei.com>
-Subject: [PATCH-next] net: phy: bcm54140: Make a bunch of functions static
-Date:   Tue, 28 Apr 2020 09:48:04 +0800
-Message-ID: <20200428014804.54944-1-chentao107@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S1726406AbgD1BtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 21:49:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:44470 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726261AbgD1BtX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 21:49:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D80230E;
+        Mon, 27 Apr 2020 18:49:22 -0700 (PDT)
+Received: from [10.163.70.197] (unknown [10.163.70.197])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A02363F305;
+        Mon, 27 Apr 2020 18:49:14 -0700 (PDT)
+Subject: Re: [mm/debug] fa6726c1e7: kernel_BUG_at_include/linux/mm.h
+To:     kernel test robot <lkp@intel.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Qian Cai <cai@lca.pw>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+References: <20200427140706.GC5770@shao2-debian>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <51dcbcbf-6020-6672-05b0-5bb10c6292b5@arm.com>
+Date:   Tue, 28 Apr 2020 07:18:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.156]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200427140706.GC5770@shao2-debian>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following warning:
 
-drivers/net/phy/bcm54140.c:663:5: warning:
-symbol 'bcm54140_did_interrupt' was not declared. Should it be static?
-drivers/net/phy/bcm54140.c:672:5: warning:
-symbol 'bcm54140_ack_intr' was not declared. Should it be static?
-drivers/net/phy/bcm54140.c:684:5: warning:
-symbol 'bcm54140_config_intr' was not declared. Should it be static?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: ChenTao <chentao107@huawei.com>
----
- drivers/net/phy/bcm54140.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On 04/27/2020 07:37 PM, kernel test robot wrote:
+> 
+> [   10.263354] kernel BUG at include/linux/mm.h:699!
+> [   10.264320] invalid opcode: 0000 [#1] SMP
+> [   10.264872] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.7.0-rc2-00230-gfa6726c1e7f01 #2
+> [   10.265928] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
+> [   10.267074] EIP: __free_pages+0x4f/0x62
+> [   10.267615] Code: 85 ff 74 0e 89 fa 89 f0 e8 83 ed ff ff 5b 5e 5f 5d c3 89 f0 e8 57 ff ff ff 5b 5e 5f 5d c3 ba fc 86 fc c1 89 f0 e8 ff 2e fe ff <0f> 0b 0f b6 cb ba ff ff ff ff 89 f0 e8 07 8f 01 00 eb bf 55 89 e5
+> [   10.270098] EAX: 0000003e EBX: ee800000 ECX: 00000000 EDX: c0068000
+> [   10.270925] ESI: eece0640 EDI: c016d020 EBP: c0071f10 ESP: c0071f04
+> [   10.271786] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00010286
+> [   10.272724] CR0: 80050033 CR2: b7d6467d CR3: 023d0000 CR4: 000006b0
+> [   10.273572] Call Trace:
+> [   10.273912]  free_pages+0x3d/0x43
+> [   10.274367]  pgd_free+0xea/0x11b
+> [   10.274807]  __mmdrop+0x3c/0xc7
+> [   10.275237]  ? __free_pages+0x3e/0x62
+> [   10.275761]  debug_vm_pgtable+0x411/0x419
+> [   10.276305]  ? rest_init+0x23c/0x23c
+> [   10.276767]  kernel_init+0x15/0xf4
+> [   10.277208]  ? schedule_tail_wrapper+0x9/0xc
+> [   10.277756]  ret_from_fork+0x2e/0x38
+> [   10.278217] Modules linked in: stm_p_basic
+> [   10.278776] ---[ end trace b838f89424113a3a ]---
+This is an unsupported (enabled via CONFIG_EXPERT) X86 platform (CONFIG_X86_PAE)
+and is known to fail. The latest (V17) patch had moved the test invocation into
+a late_initcall() per Linus thus pushing down any possible failures (like this)
+after early boot. Please ignore this report.
 
-diff --git a/drivers/net/phy/bcm54140.c b/drivers/net/phy/bcm54140.c
-index 7341f0126cc4..c009ac2856a5 100644
---- a/drivers/net/phy/bcm54140.c
-+++ b/drivers/net/phy/bcm54140.c
-@@ -660,7 +660,7 @@ static int bcm54140_config_init(struct phy_device *phydev)
- 				  BCM54140_RDB_C_PWR_ISOLATE, 0);
- }
- 
--int bcm54140_did_interrupt(struct phy_device *phydev)
-+static int bcm54140_did_interrupt(struct phy_device *phydev)
- {
- 	int ret;
- 
-@@ -669,7 +669,7 @@ int bcm54140_did_interrupt(struct phy_device *phydev)
- 	return (ret < 0) ? 0 : ret;
- }
- 
--int bcm54140_ack_intr(struct phy_device *phydev)
-+static int bcm54140_ack_intr(struct phy_device *phydev)
- {
- 	int reg;
- 
-@@ -681,7 +681,7 @@ int bcm54140_ack_intr(struct phy_device *phydev)
- 	return 0;
- }
- 
--int bcm54140_config_intr(struct phy_device *phydev)
-+static int bcm54140_config_intr(struct phy_device *phydev)
- {
- 	struct bcm54140_priv *priv = phydev->priv;
- 	static const u16 port_to_imr_bit[] = {
--- 
-2.22.0
+Apart from this X86_PAE based config, no other platform failures have reported
+so far. Assuming that this test robot does have a good platform coverage, the
+CONFIG_EXPERT method of enabling CONFIG_DEBUG_VM_PGTABLE should help in getting
+more platform coverage for this test.
 
+- Anshuman
