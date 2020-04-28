@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CE91BC09B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1992C1BC092
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbgD1OGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:06:51 -0400
-Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:61561 "EHLO
-        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726942AbgD1OGt (ORCPT
+        id S1727981AbgD1OGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726942AbgD1OGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:06:49 -0400
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Apr 2020 19:36:44 +0530
-Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 28 Apr 2020 19:36:30 +0530
-Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
-        id E81E728DA; Tue, 28 Apr 2020 19:36:29 +0530 (IST)
-From:   Sandeep Maheswaram <sanm@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>
-Subject: [PATCH v6 4/4] phy: qcom-qmp: Add QMP V3 USB3 PHY support for SC7180
-Date:   Tue, 28 Apr 2020 19:36:15 +0530
-Message-Id: <1588082775-19959-5-git-send-email-sanm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588082775-19959-1-git-send-email-sanm@codeaurora.org>
-References: <1588082775-19959-1-git-send-email-sanm@codeaurora.org>
+        Tue, 28 Apr 2020 10:06:30 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4CBC03C1A9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 07:06:29 -0700 (PDT)
+Received: from ramsan ([IPv6:2a02:1810:ac12:ed60:d03f:8af3:4e83:6587])
+        by albert.telenet-ops.be with bizsmtp
+        id YE6S2200U27aUyk06E6S0e; Tue, 28 Apr 2020 16:06:26 +0200
+Received: from geert (helo=localhost)
+        by ramsan with local-esmtp (Exim 4.90_1)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1jTQsU-0003Ly-B4; Tue, 28 Apr 2020 16:06:26 +0200
+Date:   Tue, 28 Apr 2020 16:06:26 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] media: place CEC menu before MEDIA_SUPPORT
+In-Reply-To: <32565659d6778e92bd9ac7d17622149bd95973c5.1586944045.git.mchehab+huawei@kernel.org>
+Message-ID: <alpine.DEB.2.21.2004281600310.12370@ramsan.of.borg>
+References: <cover.1586944045.git.mchehab+huawei@kernel.org> <32565659d6778e92bd9ac7d17622149bd95973c5.1586944045.git.mchehab+huawei@kernel.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding QMP v3 USB3 PHY support for SC7180.
-Adding only usb phy reset in the list to avoid
-reset of DP block.
+ 	Hi Mauro,
 
-Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/phy/qualcomm/phy-qcom-qmp.c | 38 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+On Wed, 15 Apr 2020, Mauro Carvalho Chehab wrote:
+> The only item that opens at the CEC Kconfig menu is related
+> to Remote Controller. Also, its support should not depend on
+> media support, so it makes sense to keep both RC and CEC together.
+>
+> After this change, the main media menus that are visible
+> under "Device Drivers" menu are:
+>
+> 	<*> Remote Controller support  --->
+> 	[ ] HDMI CEC RC integration (NEW)
+> 	< > HDMI CEC drivers
+> 	<M> Multimedia support  --->
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-index c190406..d9d3e2f 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-@@ -1458,6 +1458,10 @@ static const char * const msm8996_usb3phy_reset_l[] = {
- 	"phy", "common",
- };
- 
-+static const char * const sc7180_usb3phy_reset_l[] = {
-+	"phy",
-+};
-+
- static const char * const sdm845_pciephy_reset_l[] = {
- 	"phy",
- };
-@@ -1671,6 +1675,37 @@ static const struct qmp_phy_cfg qmp_v3_usb3phy_cfg = {
- 	.is_dual_lane_phy	= true,
- };
- 
-+static const struct qmp_phy_cfg sc7180_usb3phy_cfg = {
-+	.type			= PHY_TYPE_USB3,
-+	.nlanes			= 1,
-+
-+	.serdes_tbl		= qmp_v3_usb3_serdes_tbl,
-+	.serdes_tbl_num		= ARRAY_SIZE(qmp_v3_usb3_serdes_tbl),
-+	.tx_tbl			= qmp_v3_usb3_tx_tbl,
-+	.tx_tbl_num		= ARRAY_SIZE(qmp_v3_usb3_tx_tbl),
-+	.rx_tbl			= qmp_v3_usb3_rx_tbl,
-+	.rx_tbl_num		= ARRAY_SIZE(qmp_v3_usb3_rx_tbl),
-+	.pcs_tbl		= qmp_v3_usb3_pcs_tbl,
-+	.pcs_tbl_num		= ARRAY_SIZE(qmp_v3_usb3_pcs_tbl),
-+	.clk_list		= qmp_v3_phy_clk_l,
-+	.num_clks		= ARRAY_SIZE(qmp_v3_phy_clk_l),
-+	.reset_list		= sc7180_usb3phy_reset_l,
-+	.num_resets		= ARRAY_SIZE(sc7180_usb3phy_reset_l),
-+	.vreg_list		= qmp_phy_vreg_l,
-+	.num_vregs		= ARRAY_SIZE(qmp_phy_vreg_l),
-+	.regs			= qmp_v3_usb3phy_regs_layout,
-+
-+	.start_ctrl		= SERDES_START | PCS_START,
-+	.pwrdn_ctrl		= SW_PWRDN,
-+
-+	.has_pwrdn_delay	= true,
-+	.pwrdn_delay_min	= POWER_DOWN_DELAY_US_MIN,
-+	.pwrdn_delay_max	= POWER_DOWN_DELAY_US_MAX,
-+
-+	.has_phy_dp_com_ctrl	= true,
-+	.is_dual_lane_phy	= true,
-+};
-+
- static const struct qmp_phy_cfg qmp_v3_usb3_uniphy_cfg = {
- 	.type			= PHY_TYPE_USB3,
- 	.nlanes			= 1,
-@@ -2516,6 +2551,9 @@ static const struct of_device_id qcom_qmp_phy_of_match_table[] = {
- 		.compatible = "qcom,ipq8074-qmp-pcie-phy",
- 		.data = &ipq8074_pciephy_cfg,
- 	}, {
-+		.compatible = "qcom,sc7180-qmp-usb3-phy",
-+		.data = &sc7180_usb3phy_cfg,
-+	}, {
- 		.compatible = "qcom,sdm845-qhp-pcie-phy",
- 		.data = &sdm845_qhp_pciephy_cfg,
- 	}, {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Thanks for your patch, which is now commit 46d2a3b964ddbe63 ("media:
+place CEC menu before MEDIA_SUPPORT") in media/master.
 
+> --- a/drivers/media/cec/Kconfig
+> +++ b/drivers/media/cec/Kconfig
+> @@ -11,3 +20,14 @@ config CEC_PIN_ERROR_INJ
+> 	depends on CEC_PIN && DEBUG_FS
+> 	help
+> 	  This option enables CEC error injection using debugfs.
+> +
+> +config MEDIA_CEC_SUPPORT
+> +	bool
+> +	prompt "HDMI CEC drivers"
+
+This is now visible in a media-less and head-less kernel...
+
+> +	default y if !MEDIA_SUPPORT_FILTER
+
+... and in that case even defaults to y:
+
+     $ grep MEDIA .config
+     CONFIG_MEDIA_CEC_SUPPORT=y
+     # CONFIG_MEDIA_SUPPORT is not set
+
+Is that intentional?
+
+> +	help
+> +	  Enable support for HDMI CEC (Consumer Electronics Control),
+> +	  which is an optional HDMI feature.
+> +
+> +	  Say Y when you have an HDMI receiver, transmitter or a USB CEC
+> +	  adapter that supports HDMI CEC.
+> --
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
