@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9E11BB935
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 10:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8CB1BB968
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 11:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgD1Iww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 04:52:52 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3362 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726402AbgD1Iww (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 04:52:52 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id CB51EBCED245C65FC3FC;
-        Tue, 28 Apr 2020 16:52:49 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 28 Apr 2020 16:52:43 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] perf c2c: Remove unneeded semicolon
-Date:   Tue, 28 Apr 2020 16:58:56 +0800
-Message-ID: <1588064336-70456-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1726946AbgD1JBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 05:01:31 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:27061 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726271AbgD1JB3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 05:01:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588064489; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=f7lCdIiB/qVorimyirKN/0oeBUQed5wtFKoPcb4m7Fs=;
+ b=w/NNnyO09UlpHN0hHooHZKjZPPRpAxXK4i96ROootmI2D1O1ZCTB3f2ndf7knzETseWtczf/
+ feT+5r7kGvJIazklO3uAmy/OcNm+4/1Pgkecc0IYyac5MY4Eql1bvHFQeCpWSiJ6qB/d0utR
+ z5w0xKZKf6NVPe5n3yjfslT13wQ=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea7f0e5.7f6a879263e8-smtp-out-n01;
+ Tue, 28 Apr 2020 09:01:25 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9F50CC432C2; Tue, 28 Apr 2020 09:01:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F44AC433F2;
+        Tue, 28 Apr 2020 09:01:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0F44AC433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ssb: sprom: fix block comments coding style issues
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200424175043.16261-1-john.oldman@polehill.co.uk>
+References: <20200424175043.16261-1-john.oldman@polehill.co.uk>
+To:     John Oldman <john.oldman@polehill.co.uk>
+Cc:     m@bues.ch, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        John Oldman <john.oldman@polehill.co.uk>
+User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20200428090125.9F50CC432C2@smtp.codeaurora.org>
+Date:   Tue, 28 Apr 2020 09:01:25 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warnings:
+John Oldman <john.oldman@polehill.co.uk> wrote:
 
- tools/perf/builtin-c2c.c:1712:2-3: Unneeded semicolon
- tools/perf/builtin-c2c.c:1928:2-3: Unneeded semicolon
- tools/perf/builtin-c2c.c:2962:2-3: Unneeded semicolon
+> Fixed coding style issues
+> 
+> Signed-off-by: John Oldman <john.oldman@polehill.co.uk>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- tools/perf/builtin-c2c.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Patch applied to wireless-drivers-next.git, thanks.
 
-diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index 0d544c4..0e14c18 100644
---- a/tools/perf/builtin-c2c.c
-+++ b/tools/perf/builtin-c2c.c
-@@ -1709,7 +1709,7 @@ static struct c2c_dimension *get_dimension(const char *name)
- 
- 		if (!strcmp(dim->name, name))
- 			return dim;
--	};
-+	}
- 
- 	return NULL;
- }
-@@ -1925,7 +1925,7 @@ static bool he__display(struct hist_entry *he, struct c2c_stats *stats)
- 		FILTER_HITM(tot_hitm);
- 	default:
- 		break;
--	};
-+	}
- 
- #undef FILTER_HITM
- 
-@@ -2959,7 +2959,7 @@ static int perf_c2c__record(int argc, const char **argv)
- 
- 		rec_argv[i++] = "-e";
- 		rec_argv[i++] = perf_mem_events__name(j);
--	};
-+	}
- 
- 	if (all_user)
- 		rec_argv[i++] = "--all-user";
+2aad9f81d34c ssb: sprom: fix block comments coding style issues
+
 -- 
-2.6.2
+https://patchwork.kernel.org/patch/11509841/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
