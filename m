@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6091BC993
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16D71BCAAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731181AbgD1SnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:43:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
+        id S1730439AbgD1ShF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:37:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731166AbgD1Sm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:42:56 -0400
+        id S1729011AbgD1ShB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:37:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C67462085B;
-        Tue, 28 Apr 2020 18:42:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5D8C20730;
+        Tue, 28 Apr 2020 18:37:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099376;
-        bh=MfnMWtZZy4UlrU6mRR+o4ZqcxjwM4uZgbP+GXH38zyM=;
+        s=default; t=1588099021;
+        bh=Xy0Pb3mWqIHhg/PXjixWdwwLdI7XClHMTohy2S+A2Ic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQimQWyIjNO5WzZe6GUevzKFwFA4bpi0bPlh3GhKsQ6tBupqM7f8mlPelBMw1cEcw
-         PiJQa2qjwJQ0J9pxD24DcRcaz/jz0CHoF+LHadKREB471Q3c5TmdRbJKd3A6LSzwCp
-         RAS6Gb25B1TndSwOODBevSVOJbHMVXce2VgdlFZU=
+        b=LxXSyKWiM64tXy3xMw8j17mvfzhq/9tPVjpEyVKQ9rg4Swoy2+fE3OVvVmgtbBNWk
+         ik7j1Wfe8Rkq/fKhUBOCKROXfUB5pUowTnl4IT1U23Y1Zy9n37bf2MCBZu1ZhPkVEL
+         pRZuguzDQ+p/OF6LTa+bbwyMmVuLi5tsM+PcdcmY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.4 124/168] audit: check the length of userspace generated audit records
+        stable@vger.kernel.org, Jonathan Cox <jonathan@jdcox.net>
+Subject: [PATCH 4.19 086/131] USB: Add USB_QUIRK_DELAY_CTRL_MSG and USB_QUIRK_DELAY_INIT for Corsair K70 RGB RAPIDFIRE
 Date:   Tue, 28 Apr 2020 20:24:58 +0200
-Message-Id: <20200428182248.031809709@linuxfoundation.org>
+Message-Id: <20200428182235.759008665@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,38 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Jonathan Cox <jonathan@jdcox.net>
 
-commit 763dafc520add02a1f4639b500c509acc0ea8e5b upstream.
+commit be34a5854b4606bd7a160ad3cb43415d623596c7 upstream.
 
-Commit 756125289285 ("audit: always check the netlink payload length
-in audit_receive_msg()") fixed a number of missing message length
-checks, but forgot to check the length of userspace generated audit
-records.  The good news is that you need CAP_AUDIT_WRITE to submit
-userspace audit records, which is generally only given to trusted
-processes, so the impact should be limited.
+The Corsair K70 RGB RAPIDFIRE needs the USB_QUIRK_DELAY_INIT and
+USB_QUIRK_DELAY_CTRL_MSG to function or it will randomly not
+respond on boot, just like other Corsair keyboards
 
-Cc: stable@vger.kernel.org
-Fixes: 756125289285 ("audit: always check the netlink payload length in audit_receive_msg()")
-Reported-by: syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Jonathan Cox <jonathan@jdcox.net>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200410212427.2886-1-jonathan@jdcox.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/audit.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/core/quirks.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -1325,6 +1325,9 @@ static int audit_receive_msg(struct sk_b
- 	case AUDIT_FIRST_USER_MSG2 ... AUDIT_LAST_USER_MSG2:
- 		if (!audit_enabled && msg_type != AUDIT_USER_AVC)
- 			return 0;
-+		/* exit early if there isn't at least one character to print */
-+		if (data_len < 2)
-+			return -EINVAL;
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -430,6 +430,10 @@ static const struct usb_device_id usb_qu
+ 	/* Corsair K70 LUX */
+ 	{ USB_DEVICE(0x1b1c, 0x1b36), .driver_info = USB_QUIRK_DELAY_INIT },
  
- 		err = audit_filter(msg_type, AUDIT_FILTER_USER);
- 		if (err == 1) { /* match or error */
++	/* Corsair K70 RGB RAPDIFIRE */
++	{ USB_DEVICE(0x1b1c, 0x1b38), .driver_info = USB_QUIRK_DELAY_INIT |
++	  USB_QUIRK_DELAY_CTRL_MSG },
++
+ 	/* MIDI keyboard WORLDE MINI */
+ 	{ USB_DEVICE(0x1c75, 0x0204), .driver_info =
+ 			USB_QUIRK_CONFIG_INTF_STRINGS },
 
 
