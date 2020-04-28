@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5984B1BC99D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104701BC8CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731223AbgD1SnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:43:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35590 "EHLO mail.kernel.org"
+        id S1730291AbgD1Sfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:35:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730677AbgD1SnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:43:18 -0400
+        id S1730282AbgD1Sfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:35:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB03420575;
-        Tue, 28 Apr 2020 18:43:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 570C5208E0;
+        Tue, 28 Apr 2020 18:35:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099398;
-        bh=ugpQGowmrdGqDF/Za+uAAbijYTd/pjVCPMzzaCQ76Q8=;
+        s=default; t=1588098939;
+        bh=Wne1lGHm5fLp7dteREIRd/Gq4Hp6cnYH6GeIBgaZwjA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=inywvsVRCCbRhBIGDfuR4Yx1nWA9yNaKU1z+Q+4HW8j9ABEGTkLkb6wy6FTLcLRIG
-         G6jsYLJTzfqreCxQQAuvomElq1HyKfb9sBwR8nbBe9O2YmkdgwuOauOZe1mwD5bHYX
-         z/hQeBprHzVH2IfWz7TzrOsZV0aH/bm2o8IUTXs4=
+        b=16qJiHGKEsqrImNkdTKkLhRh7zu0henXNPQNgO3RN+0+8/CzrLIOzmvbcTe2iVsw9
+         sMd9s1yPTffc7xnD5AEp4ujiP3tWNfQwYsOzTJAAhCTv/9zQt8STbj7Cxu8QikDhOZ
+         wp9zYy6nIN86kkfLV2T6AAqhUsGdKfKhz93Pfotg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.4 132/168] iwlwifi: mvm: fix inactive TID removal return value usage
-Date:   Tue, 28 Apr 2020 20:25:06 +0200
-Message-Id: <20200428182248.726858027@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Clemens Gruber <clemens.gruber@pqgruber.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Roland Hieber <rhi@pengutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 5.6 131/167] ARM: imx: provide v7_cpu_resume() only on ARM_CPU_SUSPEND=y
+Date:   Tue, 28 Apr 2020 20:25:07 +0200
+Message-Id: <20200428182241.968838486@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +46,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-commit e6d419f943318e2b903e380dfd52a8dda6db3021 upstream.
+commit f1baca8896ae18e12c45552a4c4ae2086aa7e02c upstream.
 
-The function iwl_mvm_remove_inactive_tids() returns bool, so we
-should just check "if (ret)", not "if (ret >= 0)" (which would
-do nothing useful here). We obviously therefore cannot use the
-return value of the function for the free_queue, we need to use
-the queue (i) we're currently dealing with instead.
+512a928affd5 ("ARM: imx: build v7_cpu_resume() unconditionally")
+introduced an unintended linker error for i.MX6 configurations that have
+ARM_CPU_SUSPEND=n which can happen if neither CONFIG_PM, CONFIG_CPU_IDLE,
+nor ARM_PSCI_FW are selected.
 
-Cc: stable@vger.kernel.org # v5.4+
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20200417100405.9d862ed72535.I9e27ccc3ee3c8855fc13682592b571581925dfbd@changeid
+Fix this by having v7_cpu_resume() compiled only when cpu_resume() it
+calls is available as well.
+
+The C declaration for the function remains unguarded to avoid future code
+inadvertently using a stub and introducing a regression to the bug the
+original commit fixed.
+
+Cc: <stable@vger.kernel.org>
+Fixes: 512a928affd5 ("ARM: imx: build v7_cpu_resume() unconditionally")
+Reported-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Tested-by: Roland Hieber <rhi@pengutronix.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/sta.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/mach-imx/Makefile |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/sta.c
-@@ -1169,9 +1169,9 @@ static int iwl_mvm_inactivity_check(stru
- 						   inactive_tid_bitmap,
- 						   &unshare_queues,
- 						   &changetid_queues);
--		if (ret >= 0 && free_queue < 0) {
-+		if (ret && free_queue < 0) {
- 			queue_owner = sta;
--			free_queue = ret;
-+			free_queue = i;
- 		}
- 		/* only unlock sta lock - we still need the queue info lock */
- 		spin_unlock_bh(&mvmsta->lock);
+--- a/arch/arm/mach-imx/Makefile
++++ b/arch/arm/mach-imx/Makefile
+@@ -91,8 +91,10 @@ AFLAGS_suspend-imx6.o :=-Wa,-march=armv7
+ obj-$(CONFIG_SOC_IMX6) += suspend-imx6.o
+ obj-$(CONFIG_SOC_IMX53) += suspend-imx53.o
+ endif
++ifeq ($(CONFIG_ARM_CPU_SUSPEND),y)
+ AFLAGS_resume-imx6.o :=-Wa,-march=armv7-a
+ obj-$(CONFIG_SOC_IMX6) += resume-imx6.o
++endif
+ obj-$(CONFIG_SOC_IMX6) += pm-imx6.o
+ 
+ obj-$(CONFIG_SOC_IMX1) += mach-imx1.o
 
 
