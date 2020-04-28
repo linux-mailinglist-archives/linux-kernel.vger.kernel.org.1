@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECB71BBCF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5DAE1BBD13
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgD1MCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 08:02:35 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:14877 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726505AbgD1MCf (ORCPT
+        id S1726812AbgD1MH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 08:07:59 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:59314 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726448AbgD1MH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:02:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588075354; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: Date: References: In-Reply-To: Subject: Cc:
- To: From: Sender; bh=YxH+2DR7vWFpUoIHziSKBV2f45z4/gOayRfRydsyFKo=; b=l2f2Pl9X/Qx100kbUFDwto9l2nFytVzKBimIfapweTvvfyxzOTMHK3oCeTLNStGiNq/YTPAu
- jcY/Ft9k90PKd8c1N3TRGI+ET3GkyULJ2MNkEmcB4ti73UvdPRpCGj1d6rgcfzuM/yQRAJgi
- F69ljJUnm8Ve+Dnh8MhBhAY3rzk=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea81b20.7f91eb17bbc8-smtp-out-n04;
- Tue, 28 Apr 2020 12:01:36 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BC9DBC43637; Tue, 28 Apr 2020 12:01:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E244DC433D2;
-        Tue, 28 Apr 2020 12:01:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E244DC433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Sven Eckelmann <sven@narfation.org>
-Cc:     ath10k@lists.infradead.org,
-        Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-        Simon Wunderlich <sw@simonwunderlich.de>,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Greear <greearb@candelatech.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Linus =?utf-8?Q?L=C3=BCssing?= <ll@simonwunderlich.de>,
-        mail@adrianschmutzler.de
-Subject: Re: [PATCH] ath10k: increase rx buffer size to 2048
-In-Reply-To: <3097447.aZuNXRJysd@sven-edge> (Sven Eckelmann's message of "Sat,
-        25 Apr 2020 13:14:42 +0200")
-References: <20200205191043.21913-1-linus.luessing@c0d3.blue>
-        <3300912.TRQvxCK2vZ@bentobox> <3097447.aZuNXRJysd@sven-edge>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-Date:   Tue, 28 Apr 2020 15:01:28 +0300
-Message-ID: <87blnblsyv.fsf@codeaurora.org>
+        Tue, 28 Apr 2020 08:07:59 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03SC7sED071334;
+        Tue, 28 Apr 2020 07:07:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588075674;
+        bh=J604Nen4LCpyCHe23MsZVFIHdXnxQhSRkwuocVy4/78=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=pnAJk7U/aPphnf50wlKIH31/1/sVCQoGPzWiub3z32N7fExrLrx8Nq9U2nILA8OMc
+         kKDXArkyRJojQsS1ljmNeK39rWS/H6ci59d71Y+/3/2EuwzugMqjpjB59w2yHf8H80
+         iOE28jZ+SbILFAloP/EsVo4GzipNXb5fvH06y/aI=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03SC7sPa087544
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 28 Apr 2020 07:07:54 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
+ Apr 2020 07:07:54 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 28 Apr 2020 07:07:54 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03SC7sev008231;
+        Tue, 28 Apr 2020 07:07:54 -0500
+Subject: Re: [PATCH v20 02/17] leds: Add multicolor ID to the color ID list
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     <jacek.anaszewski@gmail.com>, <linux-leds@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200423155524.13971-1-dmurphy@ti.com>
+ <20200423155524.13971-3-dmurphy@ti.com> <20200425195242.GA1143@bug>
+ <003891b8-a697-6d55-3862-5773e23a466a@ti.com> <20200428084301.GC20640@amd>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <1166f584-8889-df61-393c-f240b7c3c041@ti.com>
+Date:   Tue, 28 Apr 2020 07:02:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200428084301.GC20640@amd>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sven Eckelmann <sven@narfation.org> writes:
+Pavel
 
-> On Wednesday, 1 April 2020 09:00:49 CEST Sven Eckelmann wrote:
->> On Wednesday, 5 February 2020 20:10:43 CEST Linus L=C3=BCssing wrote:
->> > From: Linus L=C3=BCssing <ll@simonwunderlich.de>
->> >=20
->> > Before, only frames with a maximum size of 1528 bytes could be
->> > transmitted between two 802.11s nodes.
->> >=20
->> > For batman-adv for instance, which adds its own header to each frame,
->> > we typically need an MTU of at least 1532 bytes to be able to transmit
->> > without fragmentation.
->> >=20
->> > This patch now increases the maxmimum frame size from 1528 to 1656
->> > bytes.
->> [...]
->>=20
->> @Kalle, I saw that this patch was marked as deferred [1] but I couldn't =
-find=20
->> any mail why it was done so. It seems like this currently creates real w=
-orld=20
->> problems - so would be nice if you could explain shortly what is current=
-ly=20
->> blocking its acceptance.
->
-> Ping?
+On 4/28/20 3:43 AM, Pavel Machek wrote:
+> On Mon 2020-04-27 12:12:18, Dan Murphy wrote:
+>> Pavel
+>>
+>> On 4/25/20 2:52 PM, Pavel Machek wrote:
+>>> On Thu 2020-04-23 10:55:09, Dan Murphy wrote:
+>>>> Add a new color ID that is declared as MULTICOLOR as with the
+>>>> multicolor framework declaring a definitive color is not accurate
+>>>> as the node can contain multiple colors.
+>>>>
+>>>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>>> Please merge with previous patch, and you can keep reviews.
+>> Not sure we should do that.  The previous patches deals directly with the
+>> bindings and this is code.
+>>
+>> I thought the rule was to keep bindings and code separated.
+>>
+>> It made sense to squash the bindings header patch to the bindings document
+>> patch but it does not make sense to squash this patch to the bindings.
+>>
+>> Please let me know if you want me to proceed with the squash.
+> Well, OTOH it seems wrong to have array that is only
+> half-initialized... But it is not a big deal.
 
-Sorry for the delay, my plan was to first write some documentation about
-different hardware families but haven't managed to do that yet.
+I will squash it into the previous patch as you asked.  Like you said it 
+is not a big deal.
 
-My problem with this patch is that I don't know what hardware and
-firmware versions were tested, so it needs analysis before I feel safe
-to apply it. The ath10k hardware families are very different that even
-if a patch works perfectly on one ath10k hardware it could still break
-badly on another one.
+Dan
 
-What makes me faster to apply ath10k patches is to have comprehensive
-analysis in the commit log. This shows me the patch author has
-considered about all hardware families, not just the one he is testing
-on, and that I don't need to do the analysis myself.
-
---=20
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
