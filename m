@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EC91BCAE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B48ED1BCAE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729808AbgD1SxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:53:05 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:11416 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730821AbgD1SxC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:53:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588099981; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=FsLzJHNr0VXH8rbASHfDq+8KzuyxXUdIT4i76FNX04c=; b=a71ArMo06QJdB9V+/nO5fIcm2lrL56Bd3tPgFg2e5GDrB1X1Se7Xt13LFW2xD2a6hyPr2Mqj
- vzx2xZXGd8TXiBP2keNmaOyQYR4eEh3GY9KvDyRFuZbAyU9FHAYZMpOMfP9JyLQXYXOs07Ph
- KzT2azdD6jn0AfjONuA/0HcSS64=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea87b75.7f167c8cb148-smtp-out-n02;
- Tue, 28 Apr 2020 18:52:37 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ABADCC44791; Tue, 28 Apr 2020 18:52:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731103AbgD1SxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:53:16 -0400
+Received: from ms.lwn.net ([45.79.88.28]:41470 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729503AbgD1SxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:53:13 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 47788C44791;
-        Tue, 28 Apr 2020 18:52:35 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 47788C44791
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v3 1/6] bus: mhi: core: Make sure to powerdown if
- mhi_sync_power_up fails
-To:     Jeffrey Hugo <jhugo@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        by ms.lwn.net (Postfix) with ESMTPSA id 6E7352D6;
+        Tue, 28 Apr 2020 18:53:13 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 12:53:12 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         linux-kernel@vger.kernel.org
-References: <1588003153-13139-1-git-send-email-jhugo@codeaurora.org>
- <1588003153-13139-2-git-send-email-jhugo@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <330fe8ab-5ae3-12f1-0298-0c18bfc7ace9@codeaurora.org>
-Date:   Tue, 28 Apr 2020 11:52:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+Subject: Re: [PATCH 0/5] More changes for sphinx-pre-install script
+Message-ID: <20200428125312.1bfb20f4@lwn.net>
+In-Reply-To: <cover.1587478901.git.mchehab+huawei@kernel.org>
+References: <cover.1587478901.git.mchehab+huawei@kernel.org>
+Organization: LWN.net
 MIME-Version: 1.0
-In-Reply-To: <1588003153-13139-2-git-send-email-jhugo@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 21 Apr 2020 16:31:04 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-
-On 4/27/20 8:59 AM, Jeffrey Hugo wrote:
-> Powerdown is necessary if mhi_sync_power_up fails due to a timeout, to
-> clean up the resources.  Otherwise a BUG could be triggered when
-> attempting to clean up MSIs because the IRQ is still active from a
-> request_irq().
+> As asked, I changed the sphinx-pre-install script to print a different message
+> for the PDF minimal recommended version. This change itself was easy,
+> but, while testing the patch, I noticed some new weird behaviors when python
+> venv is used.
 > 
-> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
-> ---
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+> Basically, when using python venv, the venv environment will contain python
+> itself. So, an attempt to create a new virtual environment to upgrade a version
+> fails (at least here with Fedora 31). As I didn't notice this behavior before,
+> maybe the problem was due to some Fedora upgrade.
+> 
+> In any case, the approach I took should be generic enough to work past eventual
+> distro packaging differences.
+> 
+> -
+> 
+> At the end,  instead of a single patch, I ended needing to fix some other stuff, 
+> for this to work better. Oh well...
+> 
+> The good news is that, at the cost of a slicely more complex logic, the script
+> should now detect if a virtual environment works and to recommend activating
+> a newer environment if it exists (instead of recommending to reinstall a
+> venv using the name of an already-existing directory).
+> 
+> Mauro Carvalho Chehab (5):
+>   scripts: sphinx-pre-install: only ask to activate valid venvs
+>   scripts: sphinx-pre-install: change the warning for version < 2.4.4
+>   scripts: sphinx-pre-install: change recommendation text if venv exists
+>   scripts: sphinx-pre-install: fix a bug when using with venv
+>   scripts: sphinx-pre-install: change the output order
 
+Series applied, thanks.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+jon
