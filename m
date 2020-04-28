@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3D31BCAD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1450C1BC806
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731002AbgD1SwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:52:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54036 "EHLO mail.kernel.org"
+        id S1729247AbgD1S2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:28:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729631AbgD1Sge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:36:34 -0400
+        id S1728683AbgD1S2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:28:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 025A320575;
-        Tue, 28 Apr 2020 18:36:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 55E6720BED;
+        Tue, 28 Apr 2020 18:28:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098993;
-        bh=mbsr4pUywiBf3efxDxkiIZhl7JcP3EsZbHgjH0OG9wA=;
+        s=default; t=1588098516;
+        bh=KJZZUMnaScaKKkoBLATWqgCIiHq3IBMc/5/i548oEgY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wiN1zUt2A7fFXda2P9cyS+mgleWgn5vf/7Dv7Mt+GIzQrLgkZNCVveXCxW1PX2AIk
-         tvcxrgImrQ7GCETAI6fs0wnkeCzFkDpnyYS5ewRznsExmAn6QbMfQMeQYiTRk8N+HJ
-         aSjWSqGLLpv9+2ElJA0LUawBA9RiUcaP/f4NPlBI=
+        b=ym3raZQgHxOPAFIqUlwFTk0Ne+dgFE22slFgNnGTSGWcluHvA7p1JcUP+kjKVFStb
+         FgeIiImtSY29bWekkkq+Mg+Ufr6zIkJZ6EsJO3XvsLLKCTZSEbd9bNL2j945wMEeTB
+         3+EDtaqqkFNlEFciix0DoaOfi7FF4jn4L9uc/r4E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        stable@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        James Morse <james.morse@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 043/168] xhci: Finetune host initiated USB3 rootport link suspend and resume
-Date:   Tue, 28 Apr 2020 20:23:37 +0200
-Message-Id: <20200428182237.291490232@linuxfoundation.org>
+Subject: [PATCH 4.19 006/131] arm64: Add part number for Neoverse N1
+Date:   Tue, 28 Apr 2020 20:23:38 +0200
+Message-Id: <20200428182226.086088112@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,80 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Marc Zyngier <marc.zyngier@arm.com>
 
-[ Upstream commit ceca49382ac20e06ce04c21279c7f2868c4ec1d4 ]
+[ Upstream commit 0cf57b86859c49381addb3ce47be70aadf5fd2c0 ]
 
-Depending on the current link state the steps to resume the link to U0
-varies. The normal case when a port is suspended (U3) we set the link
-to U0 and wait for a port event when U3exit completed and port moved to
-U0.
+New CPU, new part number. You know the drill.
 
-If the port is in U1/U2, then no event is issued, just set link to U0
-
-If port is in Resume or Recovery state then the device has already
-initiated resume, and this host initiated resume is racing against it.
-Port event handler for device initiated resume will set link to U0,
-just wait for the port to reach U0 before returning.
-
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200312144517.1593-9-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+Signed-off-by: Will Deacon <will.deacon@arm.com>
+Signed-off-by: James Morse <james.morse@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci-hub.c | 36 +++++++++++++++++++++++++-----------
- 1 file changed, 25 insertions(+), 11 deletions(-)
+ arch/arm64/include/asm/cputype.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/usb/host/xhci-hub.c b/drivers/usb/host/xhci-hub.c
-index 02f52d4f74df8..a9c87eb8951e8 100644
---- a/drivers/usb/host/xhci-hub.c
-+++ b/drivers/usb/host/xhci-hub.c
-@@ -1307,20 +1307,34 @@ int xhci_hub_control(struct usb_hcd *hcd, u16 typeReq, u16 wValue,
- 				goto error;
- 			}
+diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
+index fa770c070fddf..3cd936b1c79c1 100644
+--- a/arch/arm64/include/asm/cputype.h
++++ b/arch/arm64/include/asm/cputype.h
+@@ -80,6 +80,7 @@
+ #define ARM_CPU_PART_CORTEX_A35		0xD04
+ #define ARM_CPU_PART_CORTEX_A55		0xD05
+ #define ARM_CPU_PART_CORTEX_A76		0xD0B
++#define ARM_CPU_PART_NEOVERSE_N1	0xD0C
  
-+			/*
-+			 * set link to U0, steps depend on current link state.
-+			 * U3: set link to U0 and wait for u3exit completion.
-+			 * U1/U2:  no PLC complete event, only set link to U0.
-+			 * Resume/Recovery: device initiated U0, only wait for
-+			 * completion
-+			 */
- 			if (link_state == USB_SS_PORT_LS_U0) {
--				if ((temp & PORT_PLS_MASK) == XDEV_U0)
--					break;
-+				u32 pls = temp & PORT_PLS_MASK;
-+				bool wait_u0 = false;
+ #define APM_CPU_PART_POTENZA		0x000
  
--				if (!((temp & PORT_PLS_MASK) == XDEV_U1 ||
--				    (temp & PORT_PLS_MASK) == XDEV_U2 ||
--				    (temp & PORT_PLS_MASK) == XDEV_U3)) {
--					xhci_warn(xhci, "Can only set port %d to U0 from U state\n",
--							wIndex);
--					goto error;
-+				/* already in U0 */
-+				if (pls == XDEV_U0)
-+					break;
-+				if (pls == XDEV_U3 ||
-+				    pls == XDEV_RESUME ||
-+				    pls == XDEV_RECOVERY) {
-+					wait_u0 = true;
-+					reinit_completion(&bus_state->u3exit_done[wIndex]);
-+				}
-+				if (pls <= XDEV_U3) /* U1, U2, U3 */
-+					xhci_set_link_state(xhci, ports[wIndex],
-+							    USB_SS_PORT_LS_U0);
-+				if (!wait_u0) {
-+					if (pls > XDEV_U3)
-+						goto error;
-+					break;
- 				}
--				reinit_completion(&bus_state->u3exit_done[wIndex]);
--				xhci_set_link_state(xhci, ports[wIndex],
--						    USB_SS_PORT_LS_U0);
- 				spin_unlock_irqrestore(&xhci->lock, flags);
- 				if (!wait_for_completion_timeout(&bus_state->u3exit_done[wIndex],
- 								 msecs_to_jiffies(100)))
+@@ -107,6 +108,7 @@
+ #define MIDR_CORTEX_A35 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A35)
+ #define MIDR_CORTEX_A55 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A55)
+ #define MIDR_CORTEX_A76 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A76)
++#define MIDR_NEOVERSE_N1 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_N1)
+ #define MIDR_THUNDERX	MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX)
+ #define MIDR_THUNDERX_81XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_81XX)
+ #define MIDR_THUNDERX_83XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_83XX)
 -- 
 2.20.1
 
