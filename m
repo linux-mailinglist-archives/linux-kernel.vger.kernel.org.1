@@ -2,156 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AEE1BCD2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0101BCD2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgD1UMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 16:12:39 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43069 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726377AbgD1UMi (ORCPT
+        id S1726512AbgD1UNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 16:13:34 -0400
+Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:37938 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726279AbgD1UNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 16:12:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588104756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2OKswG1ruzns5I21UqjqGNJ9iohxx9gNx+0J1CK9CTA=;
-        b=WgEGuEKVS4fUG4sg4ICaCchkpY5wCkZ/+eSp17CEc1eS2TbdzUR0XAf69qXRKPKzLR114r
-        hMMfcKsCWKDblMMhHbhqbiAs4abHP4nvjT4ImF2cXYqou++xgAgyYwdPhiQcw9jyYIEDgp
-        2GuSk9xgWNY4ofC75UR/5Ej0k3tQbBE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-493-z8QR-YRYPemkXjd5Mb2htQ-1; Tue, 28 Apr 2020 16:12:28 -0400
-X-MC-Unique: z8QR-YRYPemkXjd5Mb2htQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF0171895A28;
-        Tue, 28 Apr 2020 20:12:25 +0000 (UTC)
-Received: from w520.home (ovpn-112-162.phx2.redhat.com [10.3.112.162])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 037E9648D6;
-        Tue, 28 Apr 2020 20:12:23 +0000 (UTC)
-Date:   Tue, 28 Apr 2020 14:12:23 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-doc@vger.kernel.org
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [regression?] Re: [PATCH v6 06/12] mm/gup: track FOLL_PIN pages
-Message-ID: <20200428141223.5b1653db@w520.home>
-In-Reply-To: <20200428192251.GW26002@ziepe.ca>
-References: <20200211001536.1027652-1-jhubbard@nvidia.com>
-        <20200211001536.1027652-7-jhubbard@nvidia.com>
-        <20200424121846.5ee2685f@w520.home>
-        <5b901542-d949-8d7e-89c7-f8d5ee20f6e9@nvidia.com>
-        <20200424141548.5afdd2bb@w520.home>
-        <665ffb48-d498-90f4-f945-997a922fc370@nvidia.com>
-        <20200428105455.30343fb4@w520.home>
-        <20200428174957.GV26002@ziepe.ca>
-        <20200428130752.75c153bd@w520.home>
-        <20200428192251.GW26002@ziepe.ca>
+        Tue, 28 Apr 2020 16:13:33 -0400
+Received: from [192.168.1.41] ([92.148.159.11])
+        by mwinf5d23 with ME
+        id YLDV220080F2omL03LDVBg; Tue, 28 Apr 2020 22:13:31 +0200
+X-ME-Helo: [192.168.1.41]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 28 Apr 2020 22:13:31 +0200
+X-ME-IP: 92.148.159.11
+Subject: Re: [PATCH] firmware: stratix10-svc: Fix some error handling paths in
+ 'stratix10_svc_drv_probe()'
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     richard.gong@linux.intel.com, gregkh@linuxfoundation.org,
+        atull@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20200426190307.40840-1-christophe.jaillet@wanadoo.fr>
+ <20200428115510.GA2014@kadam>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <f812994a-3de7-00d7-5f06-2e819d8be3f3@wanadoo.fr>
+Date:   Tue, 28 Apr 2020 22:13:28 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200428115510.GA2014@kadam>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Apr 2020 16:22:51 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
+Le 28/04/2020 à 13:55, Dan Carpenter a écrit :
+> On Sun, Apr 26, 2020 at 09:03:07PM +0200, Christophe JAILLET wrote:
+>> If an error occurs after calling 'kfifo_alloc()', the allocated memory
+>> should be freed with 'kfifo_free()', as already done in the remove
+>> function.
+>>
+>> Fixes: b5dc75c915cd ("firmware: stratix10-svc: extend svc to support new RSU features")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   drivers/firmware/stratix10-svc.c | 15 +++++++++++----
+>>   1 file changed, 11 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
+>> index d5f0769f3761..cc9df9589195 100644
+>> --- a/drivers/firmware/stratix10-svc.c
+>> +++ b/drivers/firmware/stratix10-svc.c
+>> @@ -1043,24 +1043,31 @@ static int stratix10_svc_drv_probe(struct platform_device *pdev)
+>>   
+>>   	/* add svc client device(s) */
+>>   	svc = devm_kzalloc(dev, sizeof(*svc), GFP_KERNEL);
+>> -	if (!svc)
+>> -		return -ENOMEM;
+>> +	if (!svc) {
+>> +		ret = -ENOMEM;
+>> +		goto err_free_kfifo;
+>> +	}
+>>   
+>>   	svc->stratix10_svc_rsu = platform_device_alloc(STRATIX10_RSU, 0);
+>>   	if (!svc->stratix10_svc_rsu) {
+>>   		dev_err(dev, "failed to allocate %s device\n", STRATIX10_RSU);
+>> -		return -ENOMEM;
+>> +		ret = -ENOMEM;
+>> +		goto err_free_kfifo;
+>>   	}
+>>   
+>>   	ret = platform_device_add(svc->stratix10_svc_rsu);
+>>   	if (ret) {
+>>   		platform_device_put(svc->stratix10_svc_rsu);
+> Why not move this to the unwind code as well and do "goto put_platform;"?
 
-> On Tue, Apr 28, 2020 at 01:07:52PM -0600, Alex Williamson wrote:
-> > On Tue, 28 Apr 2020 14:49:57 -0300
-> > Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >   
-> > > On Tue, Apr 28, 2020 at 10:54:55AM -0600, Alex Williamson wrote:  
-> > > >  static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
-> > > >  {
-> > > >  	struct vfio_pci_device *vdev = device_data;
-> > > > @@ -1253,8 +1323,14 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
-> > > >  	vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-> > > >  	vma->vm_pgoff = (pci_resource_start(pdev, index) >> PAGE_SHIFT) + pgoff;
-> > > >  
-> > > > +	vma->vm_ops = &vfio_pci_mmap_ops;
-> > > > +
-> > > > +#if 1
-> > > > +	return 0;
-> > > > +#else
-> > > >  	return remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-> > > > -			       req_len, vma->vm_page_prot);
-> > > > +			       vma->vm_end - vma->vm_start, vma->vm_page_prot);    
-> > > 
-> > > The remap_pfn_range here is what tells get_user_pages this is a
-> > > non-struct page mapping:
-> > > 
-> > > 	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP;
-> > > 
-> > > Which has to be set when the VMA is created, they shouldn't be
-> > > modified during fault.  
-> > 
-> > Aha, thanks Jason!  So fundamentally, pin_user_pages_remote() should
-> > never have been faulting in this vma since the pages are non-struct
-> > page backed.   
-> 
-> gup should not try to pin them.. I think the VM will still call fault
-> though, not sure from memory?
+Sure, I'll send a V2.
 
-Hmm, at commit 3faa52c03f44 the behavior is that I don't see a fault on
-pin, maybe that's a bug.  But trying to rebase to current top of tree,
-now my DMA mapping gets an -EFAULT, so something is still funky :-\
+CJ
 
-> > Maybe I was just getting lucky before this commit.  For a
-> > VM_PFNMAP, vaddr_get_pfn() only needs pin_user_pages_remote() to return
-> > error and the vma information that we setup in vfio_pci_mmap().  
-> 
-> I've written on this before, vfio should not be passing pages to the
-> iommu that it cannot pin eg it should not touch VM_PFNMAP vma's in the
-> first place.
-> 
-> It is a use-after-free security issue the way it is..
 
-Where is the user after free?  Here I'm trying to map device mmio space
-through the iommu, which we need to enable p2p when the user owns
-multiple devices.  The device is owned by the user, bound to vfio-pci,
-and can't be unbound while the user has it open.  The iommu mappings
-are torn down on release.  I guess I don't understand the problem.
-
-> > only need the fault handler to trigger for user access, which is what I
-> > see with this change.  That should work for me.
-> >   
-> > > Also the vma code above looked a little strange to me, if you do send
-> > > something like this cc me and I can look at it. I did some work like
-> > > this for rdma a while ago..  
-> > 
-> > Cool, I'll do that.  I'd like to be able to zap the vmas from user
-> > access at a later point and I have doubts that I'm holding the
-> > refs/locks that I need to for that.  Thanks,  
-> 
-> Check rdma_umap_ops, it does what you described (actually it replaces
-> them with 0 page, but along the way it zaps too).
-
-Ok, thanks,
-
-Alex
+> regards,
+> dan carpenter
+>
+>> -		return ret;
+>> +		goto err_free_kfifo;
+>>   	}
+>>   	dev_set_drvdata(dev, svc);
+>>   
+>>   	pr_info("Intel Service Layer Driver Initialized\n");
+>>   
+>> +	return 0;
+>> +
+>> +err_free_kfifo:
+>> +	kfifo_free(&controller->svc_fifo);
+>>   	return ret;
+>>   }
+>
 
