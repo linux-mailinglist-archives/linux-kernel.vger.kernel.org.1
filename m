@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64D51BCDEC
+	by mail.lfdr.de (Postfix) with ESMTP id 589601BCDEB
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgD1U7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 16:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
+        id S1726816AbgD1U7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 16:59:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726789AbgD1U7f (ORCPT
+        by vger.kernel.org with ESMTP id S1726788AbgD1U7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Apr 2020 16:59:35 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF77CC03C1AC;
-        Tue, 28 Apr 2020 13:59:33 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id b2so244318ljp.4;
-        Tue, 28 Apr 2020 13:59:33 -0700 (PDT)
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E90C03C1AD;
+        Tue, 28 Apr 2020 13:59:34 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a21so189725ljj.11;
+        Tue, 28 Apr 2020 13:59:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tNVlKJMZgR8fQGfjNMGlZb0HEXGPqeGS+UCAapReQEQ=;
-        b=OomEXmvEimxM1FQU4RZxUQQ6SUm/0rWP04XnM3tyK2N2EVh5hEe+B/wMbpSMFBO2a9
-         zfvlE9oG69hOjkwDFfbhn04b0dqQhaPQy92gtamKdDddFXpGJDjR9LDP+4SvN088uTqd
-         NN6OYVKWiMckLURyeMjSjqHjcvw0JBhne90WJ384rFV9oE0z5/6+C/NnQNc1krfDkLA7
-         DJxLLSbGJOr+kvsKBrxkNkuec+OX1hgRGUPxQbLAUysbTLkm0JAI2Uyu/sWJAuIKOWgd
-         F8mQ4JZhQa2Fqd1JAKFuF9bJC8vT4eyTlM9tV9lfACk02DBS0Ayjt9+uDFljqVo1Ne2T
-         BJsw==
+        bh=f76tELWeD+Cq+rZ2nxZRf+Lr/87HEoPSQFMjularl7s=;
+        b=gV/CkO5+yDyR2BtTpL6acO8ksCDaXgZ/Mdr2KfSt7vXdkvrp4vOh/EADiQ+zywJynU
+         SW+xHfk1uQ7+y0BZmXWDIBpHOcaYmayvBGUtylXj+cpbhBc7CTIYYMNu+GmNXzuoNrcK
+         LQQL+TKgLOAdzqkzJdIXnyxJl2ESUoKsAUj7M8ZORs+qdnsrzVtbAW4m+j9OmrKINiQL
+         kMqQ9fkjfLUv92lX/AsSVbgu57rLtx+1xZzxIXBJqv0tzjziR3KKb4pVigwpCSfoe2Sh
+         4ziWCwAOPAaSd2ZobdNxQWOKAXSX/P3uF0WYwAfizNleUDYBDPtSggXR9NgJBbf/lPNL
+         8O1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tNVlKJMZgR8fQGfjNMGlZb0HEXGPqeGS+UCAapReQEQ=;
-        b=ivgwpI/Eo2rfxk2YmQYlaOQBrTVyktUJRMYTBn07K8BlbV3DaNw7IfHJ134dZXfh6l
-         A5CmHPKe1zefVwYnnPSkFxml5npqwaePlkjXWopks+Bjcs+rfTgx7TvALz5Ji7K+5FKU
-         hSOtfFVs/z4zl55NxzUyz9UGjQOfwjIVj8O+/zWNhfRMqFXZ6FI6jUOVzKSGxBlr2V9R
-         liLCap88mGTHdcl7MChto1tsJvsC9ke7a0Q5YyM+iv1Emj0L8b9p/C9C3ExAIH6XiLVV
-         l0A6elNglUBFX9yUNgl3g2jMlZnLrb0xU+kBWRixUJ7YwRkj1topwF3P4oOtTbo1zJgq
-         N91A==
-X-Gm-Message-State: AGi0PuaqhlZgMQz7a23AfdZItjC1KmRzN2sRf0rxbE3Agid7BGMyaxfG
-        wUUJZIlblCkcEdBSp7yJk9r4A3XbaIGwjQ==
-X-Google-Smtp-Source: APiQypLM6AK8jKHmA2nJzuwDkDwYvmAhNNN+CNoOBiRU/u2OgnsIOG3G2+TrSv7A9npS7PRZThXzUA==
-X-Received: by 2002:a19:f614:: with SMTP id x20mr20240048lfe.84.1588107571728;
-        Tue, 28 Apr 2020 13:59:31 -0700 (PDT)
+        bh=f76tELWeD+Cq+rZ2nxZRf+Lr/87HEoPSQFMjularl7s=;
+        b=EPU3xjR8w9QEJZq2MmapaNW5YSooUYV45aW5krcuxC1g6AwAP9IaLO/7qVUvKa3Gga
+         91DEX1ST1OaFKv9ytZoCexAh1Ucou4z4IRcWaQaSrFyATwKnSnIX2XyBRQMRS1eKoSZV
+         /NVfRrXBdo3u+NsdsFCVJJEvaiYNzNLN/ki3gNhlENK2vMwv/v9rGl49CTDof9QAENRe
+         xipLfP9SxJ1C85TLwQaQ2svZ2CKrrZo3x/9VB3oFtjB7lsedotPEY+j2SXThhMa9BPDr
+         Jf6ijn53C75UhE+9oF7+mCRHu72J+f7KrVeFATvmCUljrQ9K7YBHTsPrMyuQe5z0X44O
+         5oSg==
+X-Gm-Message-State: AGi0PuYdM8UgCgt+38IInbfpEOBzZ6dULILcOc0OpKm4PuBM4VG41SOp
+        i8oSokk7FqJ4R6K6rL8mFYEGZx56lQkIVQ==
+X-Google-Smtp-Source: APiQypIyLU6bchTrGUBspJZC7W9x7kj6ckHQy61yTYUJR3oMfNtrovTxVulDU2ZLcnOnbM6O4XdWEQ==
+X-Received: by 2002:a2e:909a:: with SMTP id l26mr18315311ljg.262.1588107572992;
+        Tue, 28 Apr 2020 13:59:32 -0700 (PDT)
 Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.30
+        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 13:59:31 -0700 (PDT)
+        Tue, 28 Apr 2020 13:59:32 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -57,9 +57,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Joel Fernandes <joel@joelfernandes.org>,
         RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 03/24] rcu/tree: Use consistent style for comments
-Date:   Tue, 28 Apr 2020 22:58:42 +0200
-Message-Id: <20200428205903.61704-4-urezki@gmail.com>
+Subject: [PATCH 04/24] rcu/tree: Repeat the monitor if any free channel is busy
+Date:   Tue, 28 Apr 2020 22:58:43 +0200
+Message-Id: <20200428205903.61704-5-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200428205903.61704-1-urezki@gmail.com>
 References: <20200428205903.61704-1-urezki@gmail.com>
@@ -70,77 +70,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+It can be that one of the channels can not be detached
+due to the fact that its free channel and previous data
+has not been processed yet. From the other hand another
+channel can be successfully detached causing the monitor
+work to stop.
 
-Simple clean up of comments in kfree_rcu() code to keep it consistent
-with majority of commenting styles.
+To prevent that, if there are any channels are still in
+pending state after a detach attempt, just reschedule
+the monitor work.
 
-Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ kernel/rcu/tree.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index cd61649e1b00..1487af8e11e8 100644
+index 1487af8e11e8..0762ac06f0b7 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3043,15 +3043,15 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
- 					  unsigned long flags)
+@@ -2995,7 +2995,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
  {
--	// Attempt to start a new batch.
-+	/* Attempt to start a new batch. */
- 	krcp->monitor_todo = false;
- 	if (queue_kfree_rcu_work(krcp)) {
--		// Success! Our job is done here.
-+		/* Success! Our job is done here. */
- 		raw_spin_unlock_irqrestore(&krcp->lock, flags);
- 		return;
+ 	struct kfree_rcu_cpu_work *krwp;
+-	bool queued = false;
++	bool repeat = false;
+ 	int i;
+ 
+ 	lockdep_assert_held(&krcp->lock);
+@@ -3033,11 +3033,14 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+ 			 * been detached following each other, one by one.
+ 			 */
+ 			queue_rcu_work(system_wq, &krwp->rcu_work);
+-			queued = true;
+ 		}
++
++		/* Repeat if any "free" corresponding channel is still busy. */
++		if (krcp->bhead || krcp->head)
++			repeat = true;
  	}
  
--	// Previous RCU batch still in progress, try again later.
-+	/* Previous RCU batch still in progress, try again later. */
- 	krcp->monitor_todo = true;
- 	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
- 	raw_spin_unlock_irqrestore(&krcp->lock, flags);
-@@ -3151,14 +3151,14 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	unsigned long flags;
- 	struct kfree_rcu_cpu *krcp;
- 
--	local_irq_save(flags);	// For safely calling this_cpu_ptr().
-+	local_irq_save(flags);	/* For safely calling this_cpu_ptr(). */
- 	krcp = this_cpu_ptr(&krc);
- 	if (krcp->initialized)
- 		raw_spin_lock(&krcp->lock);
- 
--	// Queue the object but don't yet schedule the batch.
-+	/* Queue the object but don't yet schedule the batch. */
- 	if (debug_rcu_head_queue(head)) {
--		// Probable double kfree_rcu(), just leak.
-+		/* Probable double kfree_rcu(), just leak. */
- 		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
- 			  __func__, head);
- 		goto unlock_return;
-@@ -3176,7 +3176,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 
- 	WRITE_ONCE(krcp->count, krcp->count + 1);
- 
--	// Set timer to drain after KFREE_DRAIN_JIFFIES.
-+	/* Set timer to drain after KFREE_DRAIN_JIFFIES. */
- 	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING &&
- 	    !krcp->monitor_todo) {
- 		krcp->monitor_todo = true;
-@@ -3722,7 +3722,7 @@ int rcutree_offline_cpu(unsigned int cpu)
- 
- 	rcutree_affinity_setting(cpu, cpu);
- 
--	// nohz_full CPUs need the tick for stop-machine to work quickly
-+	/* nohz_full CPUs need the tick for stop-machine to work quickly */
- 	tick_dep_set(TICK_DEP_BIT_RCU);
- 	return 0;
+-	return queued;
++	return !repeat;
  }
+ 
+ static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
 -- 
 2.20.1
 
