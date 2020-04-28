@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94341BC7C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:26:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886741BC8AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbgD1S0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:26:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38174 "EHLO mail.kernel.org"
+        id S1730071AbgD1See (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:34:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728772AbgD1S0f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:26:35 -0400
+        id S1728773AbgD1Se3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:34:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B589C208E0;
-        Tue, 28 Apr 2020 18:26:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 830C12085B;
+        Tue, 28 Apr 2020 18:34:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098395;
+        s=default; t=1588098869;
         bh=tJx2Pw8jARz8g4y2ONxmN/CJIrowA+R2SLrDY7KpChs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DVezjO2sA8zWK+vPGzJQP4trfj61PdRApDupbkv2R613s2PRnPUP8LuPfoq32L34M
-         FnO5s4Q74NRp9O/JEmKBn2EVnpHhBAwDqPUZGw0fL2cCNJ0xD/YpFImjL9SvoJ4FBf
-         MGC6+fdGOMSMRV5s3Jz/89eEOCVVnmcUisW0X4Q0=
+        b=f7D2bMHcmswk2k0wgN4SMkOn6Er+L80heUhjKLPrvOFq5WCSlm4lhsmQ0Y8A6LiHl
+         x4dFuFDeuSnLenwon81ckA57oJmaxWGg9TjjsB0g8IUdOxklOmT+YAQSmbDeJHXk0q
+         Icg+PBytj/OhnD3FWMNcsNXyOl2YSt/3EO7ncPfM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -35,12 +35,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Kees Cook <keescook@chromium.org>, NeilBrown <neilb@suse.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 022/167] selftests: kmod: fix handling test numbers above 9
-Date:   Tue, 28 Apr 2020 20:23:18 +0200
-Message-Id: <20200428182227.963762880@linuxfoundation.org>
+Subject: [PATCH 5.4 025/168] selftests: kmod: fix handling test numbers above 9
+Date:   Tue, 28 Apr 2020 20:23:19 +0200
+Message-Id: <20200428182234.884990627@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
