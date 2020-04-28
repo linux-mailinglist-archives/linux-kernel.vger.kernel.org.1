@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404EE1BCEDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED141BCEE4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgD1VhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:37:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726282AbgD1VhF (ORCPT
+        id S1726887AbgD1VhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:37:19 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:46569 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726274AbgD1VhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:37:05 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A292C03C1AC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:37:04 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e25so411294ljg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=byKFbf6/4dlMbIbNFz7mzcw9H9m+Hnm7ILov1GMUf20=;
-        b=c5V540DX5qA6TExpwN82zDgCG62wkqprBQKUL+iKPh4WlRl/iYQMUxVRhV6k+zsiT3
-         LdHMx69qD/cpw5w0oGC5Q0372ifsczILIVK5UMTuNG1Z2+H4Chzy4fZoyZE2yARv/Qes
-         lhUI/+ul3xggWnP/fqFH3tT8S0RA9vGMxghbU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=byKFbf6/4dlMbIbNFz7mzcw9H9m+Hnm7ILov1GMUf20=;
-        b=h7VcGVp6sMHBovZThSDYbD/cxpPD4W3kWYc0thFf5ItVJmdepTS2r7TOMxj5HYCoRq
-         llsrMsELzLvMLICt7NMsVQtdtsSsAHxPs4Dyv9bwXLNYn6JIslA2bAYx38jB4rhKd0Td
-         c7wRm8iHcV9PbL8pFUVbj/UiAs4/eD3OBXMT67dI9yKeJpxZHJp5jNYgweHT6ysbqKKz
-         s9EKEANH4m7JfEMgsGGXFuV9WaiWzylQ2YgphTbZtYbaByRXCdQh/VMTy9tmMQ1a1ij4
-         aidA+RJBHJTuxg7Nbww9a9CAVgR12GDUGHYK+OB/Jiq1CiQrwWjhXU/v7w6wX8YZH1s1
-         mG1w==
-X-Gm-Message-State: AGi0PuYPRG4p2fLSjNEUEmMvm2x1HVpjd0Wjd626IIxIPVTU5B1G9RlN
-        unSVH8iOMIFYCIQny3mtEMg0gQp1pKQ=
-X-Google-Smtp-Source: APiQypKpfFeMG1F24osbGOCCoXeB2xPLxsvcKTjjLs6TvN/HdQKYhi7fJWiOFWZtbr0F75eX9YHFrw==
-X-Received: by 2002:a05:651c:c8:: with SMTP id 8mr17858806ljr.182.1588109822370;
-        Tue, 28 Apr 2020 14:37:02 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id k18sm516708lfg.81.2020.04.28.14.37.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Apr 2020 14:37:00 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id u15so423050ljd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:37:00 -0700 (PDT)
-X-Received: by 2002:a2e:9a54:: with SMTP id k20mr17622095ljj.265.1588109820160;
- Tue, 28 Apr 2020 14:37:00 -0700 (PDT)
+        Tue, 28 Apr 2020 17:37:18 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MPXMa-1jqB8k2Rve-00MfDB; Tue, 28 Apr 2020 23:37:12 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Sanjay R Mehta <sanju.mehta@amd.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: spi-amd: remove unused variable
+Date:   Tue, 28 Apr 2020 23:37:02 +0200
+Message-Id: <20200428213711.3643464-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
- <87imi8nzlw.fsf@x220.int.ebiederm.org> <CAHk-=wgh4zts+3hdkGzHLJ6pBGumcJ=23gRbMfubDrLstis2Bg@mail.gmail.com>
- <CAHk-=whKHpERyVv2-C+kxq9KV_mJPW3hkGDpn6f4yOvs+au8SA@mail.gmail.com>
- <20200411182043.GA3136@redhat.com> <CAHk-=wgwXpKepChGi4ZhQVxZxD0ic8s2CDXvUmqBTMaKGz-fjg@mail.gmail.com>
- <20200412195049.GA23824@redhat.com> <CAHk-=wiDwR+6ugYaKEGHfYteLF+NH5xu=T7uuUTkK9y-hr6zow@mail.gmail.com>
- <AM6PR03MB51708CF53D8A02086427DAC2E4AC0@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wi_zr9dwX3UBYvgkmm6eVQfRP50orryJ6ZVAxuFqdSG5A@mail.gmail.com>
- <20200428190836.GC29960@redhat.com> <CAHk-=wi03QRcUR1DfbEr+Pw-DAMENzY-FuRcGawtj9p597=p2w@mail.gmail.com>
- <CAG48ez03ABTa-KbCtFHqB1hOT7dgAM96c3kiw-e80B+utSEwYw@mail.gmail.com>
-In-Reply-To: <CAG48ez03ABTa-KbCtFHqB1hOT7dgAM96c3kiw-e80B+utSEwYw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 28 Apr 2020 14:36:43 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjTLnMuZmBO2foeHhsLAoUTpUi7oBVJ67F4XKB+tdEDbQ@mail.gmail.com>
-Message-ID: <CAHk-=wjTLnMuZmBO2foeHhsLAoUTpUi7oBVJ67F4XKB+tdEDbQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
-To:     Jann Horn <jannh@google.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:RUUlGlElSt8VH6YuqnzdRtPfaVA3sQMv/NlNARHgl21NMn/5LO8
+ VyuPmscDcKLjnGixtTm/+Db0LL+SXiFq3g5Zwmb1lJq7KOLf/GNO7fEZV75YNjVewbIJzy0
+ lIJcG6MbX7pZOoKjZZCBWBFDafemn6zR7UH5UMSeoJVZqGxUtCaX8vTVOYqnmzaxE85DgCO
+ PcT+tS9OB9Kdcn+RaaSBA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:n9JyFrAgx6k=:qN1Gd//b2P8MBRloIfOtvt
+ dUfzGjLDHeP6cPZhMow9nj3k7tk897P/06P5xGv9N6FWsvgz+0P1TqH9uaWEuavYXPdu6EN3d
+ TdNKH5BZqDnm/qdQ3BEiEyaL6yaLau+4niqw/yLcYtChmH+QjLb7EAbj9cw2uON9+ruPzo+eD
+ /+yiRfhrmXNprMYV/1Wo5bGjHXFucm4m0wI2oeYHpsfLjy44W2mLMNP/akSHF5QzGu7Gw9CGd
+ 8rEBSJdSc1dpYH/WASAOshm9L0JrEdMk30y3rlpubSUcrPtICZibMlCAxb4iBmm2L4JQAnoex
+ HaZUZEP9sxvY5I3eypROot3BULvG+i3VTIRuLRJ0tmVJPScoTpU/TW2sXSqCc7XHFUq7h++RX
+ TS6XvGpzj9YKTGmSgIRCrSw3Szm3QAqdErwlsU+cwafUAmHiv8GDjX50hrVILFVKRPcnL4uil
+ 08ZMIDmTi3pfRyp35u34ZUz/DQ7zu2ui4mDOoU9eqMYevb03I6OGrqb8HmTzrmdXcO2G5NqAS
+ XRKmUt5h+T+Uu9VuXmIiy+K4qeUxqfcu9aOTpPxMRW1ej26TlmT6C99RSmBoy1z68P4oqENw2
+ M6e813U0br8W14MLlLUrXvjPNK4BIba7xu+yRqr143XhD3S5sa8K//gU0NZ9C5bEPeq6urBg+
+ 0BwjUOcCIYtBZJrmZmLDxV8WydGzsdtABsMA3GXZdk11VgjpC7IEt2MSm3pVvFE+I+g9u3KDL
+ TJofb3qQ6Vg0jSNUMTqFcztWhqxhKhMmy6PBhsioo6Jx1Z3+rSY3+ag6+ep1go2u9F9C2vUBC
+ dAtS+imgoRoNZqxSP+LmwkuxXO+Xnir/AZDQv1n3SA5spEiR/w=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 2:06 PM Jann Horn <jannh@google.com> wrote:
->
-> In execve:
->
->  - After the point of no return, but before we start waiting for the
->    other threads to go away, finish calculating our post-execve creds
->    and stash them somewhere in the task_struct or so.
->  - Drop the cred_guard_mutex.
->  - Wait for the other threads to die.
->  - Take the cred_guard_mutex again.
->  - Clear out the pointer in the task_struct.
->  - Finish execve and install the new creds.
->  - Drop the cred_guard_mutex again.
->
-> Then in ptrace_may_access, after taking the cred_guard_mutex, we'd
-> know that the target task is either outside execve or in the middle of
-> execve, with old and new credentials known; and then we could say "you
-> only get to access that task if you're capable relative to *both* its
-> old and new credentials, since the task currently has both state from
-> the old executable and from the new one".
+This variable was defined in the original version of this file but
+never used, so remove it to avoid the warning:
 
-That doesn't solve the problem with "check_unsafe_exec()" - you might
-miss setting LSM_UNSAFE_PTRACE.
+drivers/spi/spi-amd.c: In function 'amd_spi_fifo_xfer':
+drivers/spi/spi-amd.c:171:17: error: unused variable 'opcode' [-Werror=unused-variable]
+  171 |  u8 cmd_opcode, opcode = 0;
 
-Although maybe that whole function could be moved down (to after you
-get the cred_guard_mutex the second time).
+Fixes: bbb336f39efc ("spi: spi-amd: Add AMD SPI controller driver support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/spi/spi-amd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-               Linus
+diff --git a/drivers/spi/spi-amd.c b/drivers/spi/spi-amd.c
+index 0d9debe1386e..c5a16dd44fa3 100644
+--- a/drivers/spi/spi-amd.c
++++ b/drivers/spi/spi-amd.c
+@@ -168,7 +168,7 @@ static inline int amd_spi_fifo_xfer(struct amd_spi *amd_spi,
+ {
+ 	struct spi_master *master = amd_spi->master;
+ 	struct spi_transfer *xfer = NULL;
+-	u8 cmd_opcode, opcode = 0;
++	u8 cmd_opcode;
+ 	u8 *buf = NULL;
+ 	u32 m_cmd = 0;
+ 	u32 i = 0;
+-- 
+2.26.0
+
