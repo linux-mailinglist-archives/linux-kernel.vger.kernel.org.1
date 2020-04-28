@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2771BC713
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 711601BC715
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbgD1RuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 13:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
+        id S1728587AbgD1Ruu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 13:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727827AbgD1RuI (ORCPT
+        with ESMTP id S1728469AbgD1Ruu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 13:50:08 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764E1C03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:50:08 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c63so22725356qke.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:50:08 -0700 (PDT)
+        Tue, 28 Apr 2020 13:50:50 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5C4C03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:50:50 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id q2so10827253qvd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 10:50:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=IO10IaEZnZ3+2CD5x/8DkaNmjwG6l+xlu6W8mVUoegQ=;
-        b=YOFpITAAgodND7TYQsJ1rrh55GlKANe+tM8iX2EwqRMLPdEiS9Wo4eQMBVyI0OlM33
-         XG5yeygKJdBRM+nJqfG2GbCMwbrz+2KvJuoGf984AtdtcLLSprEUAaGHwkjEJTcadnuO
-         1GxWop+jQsNFpmQWZiRrVPVUoEnBCMMV7imI0J7KhdAygf4nidkf4QfckKKgYohJOV21
-         43u6JAg8+AAdhdoIp90Uh+Fx4cAa3/XmmONGIJCXlBNWLa8IhKKSFNR8Jnk0RTfvtKrS
-         bnjzMGLdfbIEN7ewp90Q0rFKFh5dzDgu+qxmTdM57XV8wkMwZT9aA2+10HVQBk0Ptflv
-         yPrQ==
+        bh=4RsoYDdTGu1SZ+s46DR7Sp4Vbgb9d386KsPLmLSTiqw=;
+        b=YrDyMiyNCzxWECcH0V0f3xofFUSdJeusuMiG7X15GKAQ0vYe39ceX5HCEYlYg0VG3S
+         7+5JlXXp3an8Qt+HUemrMnXLjXY435z74/PTqaheVvPMus0ddIXXVszvS/JSqE48ZbdF
+         QLsDBdkv7hHzggeHEcqFhDDXiuVJy9O53JkqRgbgWRI/cCVGi/zY04GlDptgdGZngHPI
+         Jke4Wl3wrW3tQD/QWFAyO332DqOHbX2FRXAjRoSZXJSG42bsOsSGeP9pc7jGXKio/Wf2
+         rA6pw8cpHVZ9EDFmvejsod2sx5n0jyjkPX+Q9pRH/KmEZwjbsv1faQwNrSLiS67FxkVY
+         nmng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=IO10IaEZnZ3+2CD5x/8DkaNmjwG6l+xlu6W8mVUoegQ=;
-        b=FaxsjXl3WkhOtlIbb92dbVdKt6kefHPXYU948xluaTu0JiI7W/UjwESiXH2RywI+qB
-         Qdn5czP7JmOAhtl1A/23Q4haG9G425w7mR+kY84D0NOjU/SdD9eWrT1tbS8H0ZubRBGy
-         Hqo1EI4a34iVvvq3EjqcKU5OGL7LbeM+8wrJZfUzzY8Ci8+rXhvoV1oieBsC/2anUSNk
-         VVCIZARRiJHOEYWoWJkFCCEwxeYeSUvQlypvcOBbH/jO+uo6fMaw+MQqzU6516/XFrTP
-         sXMk8D5ZMMkc6O8YNjm4E5fJOxStEWR7q/Y4dSJIW4Gk5b3V9TqWC2AqgcR2Y5IaMzHJ
-         rEaQ==
-X-Gm-Message-State: AGi0Pub+WwcBP8+bapUAl1KtIQXABI+paCjb/ruo1b4J382cdsNVthu4
-        9LtiPGJEfpBVHd+mDK1p6/8=
-X-Google-Smtp-Source: APiQypK6A6qu5+Y8OFMa14BEt1MJpLR+NTGN9Uf6EUPl0nbSigFkjAhNbVKaEoDUqauUNz9E4HCSaA==
-X-Received: by 2002:a37:a702:: with SMTP id q2mr27949790qke.150.1588096207645;
-        Tue, 28 Apr 2020 10:50:07 -0700 (PDT)
+        bh=4RsoYDdTGu1SZ+s46DR7Sp4Vbgb9d386KsPLmLSTiqw=;
+        b=fGPQBwEzSvLnh5EmWNEXPw+JrB+wUS5pKYOe5wHa1jlkxjQHWFCtBg/UNE+TMiAuRA
+         IXMdt6OIhzb9VbCMi078BF/q5VR3Jbg9BYH8BpKuC8xqQ6oT6C4y5QGfIkDup4z6JaAm
+         tD6ccAnh+6jK9N9PEnwUxqsKRVYNHDT9auKEzujPtg6XYKYmQDUpbcxcUX2BTwP4nEXO
+         mTDJq/08RiymMJ7cJziqj2ssi0eVgv2u8a5sQ7F0nFB+QbGcbe81kB8FCIrEaFxkz4m1
+         Swk04aAisGOT07eA2tcrKoWE2X1cwwzhVykK3mY1/SKsEH8ezO8MdvKfD7tZYBbKZhkB
+         vX/g==
+X-Gm-Message-State: AGi0PuZgbx5pLWXiSDGXUYybWF3UhJC73ghGJCVQK/FqIDiZ9CVm6ayQ
+        McvWTQJsUeXOa2pa63aEw38=
+X-Google-Smtp-Source: APiQypIueOIN167ElVB/8dF0GEXs7LDtcOAJf/t20iMH2Ji2Y9QYBU+6psehmcOX7Oo7HL5XZ7A3ZA==
+X-Received: by 2002:a05:6214:1812:: with SMTP id o18mr29787810qvw.64.1588096249237;
+        Tue, 28 Apr 2020 10:50:49 -0700 (PDT)
 Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id h13sm12401160qti.32.2020.04.28.10.50.06
+        by smtp.gmail.com with ESMTPSA id e8sm13395494qkl.57.2020.04.28.10.50.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 10:50:07 -0700 (PDT)
+        Tue, 28 Apr 2020 10:50:48 -0700 (PDT)
 From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
 X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 37B6F409A3; Tue, 28 Apr 2020 14:50:05 -0300 (-03)
-Date:   Tue, 28 Apr 2020 14:50:05 -0300
+        id 126F4409A3; Tue, 28 Apr 2020 14:50:46 -0300 (-03)
+Date:   Tue, 28 Apr 2020 14:50:46 -0300
 To:     Zou Wei <zou_wei@huawei.com>
 Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
         alexander.shishkin@linux.intel.com, jolsa@redhat.com,
         namhyung@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] perf tools: Remove unneeded semicolon
-Message-ID: <20200428175005.GC5460@kernel.org>
-References: <1588065523-71423-1-git-send-email-zou_wei@huawei.com>
+Subject: Re: [PATCH -next] perf script: remove unneeded conversion to bool
+Message-ID: <20200428175046.GD5460@kernel.org>
+References: <1587904265-865-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1588065523-71423-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1587904265-865-1-git-send-email-zou_wei@huawei.com>
 X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Apr 28, 2020 at 05:18:43PM +0800, Zou Wei escreveu:
-> Fixes coccicheck warnings:
+Em Sun, Apr 26, 2020 at 08:31:05PM +0800, Zou Wei escreveu:
+> This issue was detected by using the Coccinelle software:
 > 
-> tools/perf/builtin-diff.c:1565:2-3: Unneeded semicolon
-> tools/perf/builtin-lock.c:778:2-3: Unneeded semicolon
-> tools/perf/builtin-mem.c:126:2-3: Unneeded semicolon
-> tools/perf/util/intel-pt-decoder/intel-pt-pkt-decoder.c:555:2-3: Unneeded semicolon
-> tools/perf/util/ordered-events.c:317:2-3: Unneeded semicolon
-> tools/perf/util/synthetic-events.c:1131:2-3: Unneeded semicolon
-> tools/perf/util/trace-event-read.c:78:2-3: Unneeded semicolon
+> tools/perf/builtin-script.c:3285:48-53: WARNING: conversion to bool not needed here
+> tools/perf/builtin-script.c:2839:36-41: WARNING: conversion to bool not needed here
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> The conversion to bool is unneeded, remove it
 
-Thanks, applied.
+Thanks, applied,
+
+- Arnaldo
