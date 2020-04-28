@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 229481BC979
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121481BC87C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731062AbgD1SmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:42:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33618 "EHLO mail.kernel.org"
+        id S1729898AbgD1SdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:33:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731046AbgD1Sl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:41:57 -0400
+        id S1729874AbgD1SdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:33:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE45D20B1F;
-        Tue, 28 Apr 2020 18:41:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B221221841;
+        Tue, 28 Apr 2020 18:33:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099315;
-        bh=okFhcd/SyvEwUKm90K1+K90VGZtWh3QimsVJ6c3i+xQ=;
+        s=default; t=1588098783;
+        bh=JhjZvLtCuEhKf7j0w0JV88r/hMeS3e+qy+8EgEb0JE4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W4npwtWCBjFzYH6C9eUzymQqwx5pRIrEufLZY/DxTjQkxokT7HzATh9sPVoFmsTtk
-         Oesr46EZUe9XlcNdbdiLvfZd/AZZrSnSIk99LsCU9pbUf063362cM1c+HFavHMDVhp
-         3gbIJYvSa+GzdEE/8PpDLZQFuZsBP+gCB81TVK78=
+        b=rgaAUzgfm9rvc9UwKIs9g2hUiSmtZ06Uy3wsjiitpVuXv3R4xB+MzCqPQYo/vghPN
+         C8zSHjDTM5py2z8lYQrE70hqVDajA7rRQJs+S32YrrlNWAQoNtmA3d7m2iC9fa3qQj
+         B33Gqu3TRp+Koh4JVFURiLXPzhmJmlYqwiZibkZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.4 093/168] iio: xilinx-xadc: Fix sequencer configuration for aux channels in simultaneous mode
-Date:   Tue, 28 Apr 2020 20:24:27 +0200
-Message-Id: <20200428182244.088837946@linuxfoundation.org>
+        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 056/131] macsec: avoid to set wrong mtu
+Date:   Tue, 28 Apr 2020 20:24:28 +0200
+Message-Id: <20200428182232.008105283@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,58 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Taehee Yoo <ap420073@gmail.com>
 
-commit 8bef455c8b1694547ee59e8b1939205ed9d901a6 upstream.
+[ Upstream commit 7f327080364abccf923fa5a5b24e038eb0ba1407 ]
 
-The XADC has two internal ADCs. Depending on the mode it is operating in
-either one or both of them are used. The device manual calls this
-continuous (one ADC) and simultaneous (both ADCs) mode.
+When a macsec interface is created, the mtu is calculated with the lower
+interface's mtu value.
+If the mtu of lower interface is lower than the length, which is needed
+by macsec interface, macsec's mtu value will be overflowed.
+So, if the lower interface's mtu is too low, macsec interface's mtu
+should be set to 0.
 
-The meaning of the sequencing register for the aux channels changes
-depending on the mode.
+Test commands:
+    ip link add dummy0 mtu 10 type dummy
+    ip link add macsec0 link dummy0 type macsec
+    ip link show macsec0
 
-In continuous mode each bit corresponds to one of the 16 aux channels. And
-the single ADC will convert them one by one in order.
+Before:
+    11: macsec0@dummy0: <BROADCAST,MULTICAST,M-DOWN> mtu 4294967274
+After:
+    11: macsec0@dummy0: <BROADCAST,MULTICAST,M-DOWN> mtu 0
 
-In simultaneous mode the aux channels are split into two groups the first 8
-channels are assigned to the first ADC and the other 8 channels to the
-second ADC. The upper 8 bits of the sequencing register are unused and the
-lower 8 bits control both ADCs. This means a bit needs to be set if either
-the corresponding channel from the first group or the second group (or
-both) are set.
-
-Currently the driver does not have the special handling required for
-simultaneous mode. Add it.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Fixes: bdc8cda1d010 ("iio:adc: Add Xilinx XADC driver")
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: c09440f7dcb3 ("macsec: introduce IEEE 802.1AE driver")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/iio/adc/xilinx-xadc-core.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/macsec.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
---- a/drivers/iio/adc/xilinx-xadc-core.c
-+++ b/drivers/iio/adc/xilinx-xadc-core.c
-@@ -798,6 +798,16 @@ static int xadc_preenable(struct iio_dev
- 	if (ret)
- 		goto err;
+--- a/drivers/net/macsec.c
++++ b/drivers/net/macsec.c
+@@ -3238,11 +3238,11 @@ static int macsec_newlink(struct net *ne
+ 			  struct netlink_ext_ack *extack)
+ {
+ 	struct macsec_dev *macsec = macsec_priv(dev);
++	rx_handler_func_t *rx_handler;
++	u8 icv_len = DEFAULT_ICV_LEN;
+ 	struct net_device *real_dev;
+-	int err;
++	int err, mtu;
+ 	sci_t sci;
+-	u8 icv_len = DEFAULT_ICV_LEN;
+-	rx_handler_func_t *rx_handler;
  
-+	/*
-+	 * In simultaneous mode the upper and lower aux channels are samples at
-+	 * the same time. In this mode the upper 8 bits in the sequencer
-+	 * register are don't care and the lower 8 bits control two channels
-+	 * each. As such we must set the bit if either the channel in the lower
-+	 * group or the upper group is enabled.
-+	 */
-+	if (seq_mode == XADC_CONF1_SEQ_SIMULTANEOUS)
-+		scan_mask = ((scan_mask >> 8) | scan_mask) & 0xff0000;
-+
- 	ret = xadc_write_adc_reg(xadc, XADC_REG_SEQ(1), scan_mask >> 16);
- 	if (ret)
- 		goto err;
+ 	if (!tb[IFLA_LINK])
+ 		return -EINVAL;
+@@ -3258,7 +3258,11 @@ static int macsec_newlink(struct net *ne
+ 
+ 	if (data && data[IFLA_MACSEC_ICV_LEN])
+ 		icv_len = nla_get_u8(data[IFLA_MACSEC_ICV_LEN]);
+-	dev->mtu = real_dev->mtu - icv_len - macsec_extra_len(true);
++	mtu = real_dev->mtu - icv_len - macsec_extra_len(true);
++	if (mtu < 0)
++		dev->mtu = 0;
++	else
++		dev->mtu = mtu;
+ 
+ 	rx_handler = rtnl_dereference(real_dev->rx_handler);
+ 	if (rx_handler && rx_handler != macsec_handle_frame)
 
 
