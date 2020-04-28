@@ -2,146 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3691BB2E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 02:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266BF1BB2EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 02:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgD1A3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 20:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726016AbgD1A3G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 20:29:06 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90918C0610D5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 17:29:06 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id i16so18600959ils.12
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 17:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Z3XKyHxAG7IUAvzD9JfBuXDfdRYbv9qqPO6eeYSrFk=;
-        b=ORd7/HnRA28Oya0GJjq9fEZBcHElM84CebAGT4i17uPekgJx2dJnHcDe0AwBvb+NwJ
-         BvxTMdG5eJHN2Arut0iXak3+TVVQqJZNkMADD5eTou0O/biFl0+XHSQu6YchIsvOdfPQ
-         Qa6vAx0Zx4tx9ZNlgdiSSCrcDooIBRmJTN/4T7cwnMmBIT6c5uzfXDjkwAu3GXtFrFXc
-         7/121vdRAmQ/izha0afgQbXyNncGbFsL79Zvd6Ncxp7hzKli0XC3Vv5abDouCS49QWDy
-         tBwlGrb3lEgcEy4V8pJ9Q8s8kw1ox5zPvbzuTaA3xItOcGLUu42+DqABWJNOboJG3iNH
-         glVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Z3XKyHxAG7IUAvzD9JfBuXDfdRYbv9qqPO6eeYSrFk=;
-        b=CEz99Cc0FJQ1r3Ej7WguxL2qvnBUv1jbcFOaERqp3W7OjGTsalz0GmwULnCbxv+Q2r
-         V2xl1qvOdoOfo9S/FevH+nMRpCYrwmzXXxbMJpUJviqfDomC+uCcldpm4R0Gjfl/CL5+
-         YAGLIMHo4+K/6LT5f+3YF+Su4N7roCgFEr/8COlJ12DzNBlEvHTF2IWRwXOkSBcRPQUH
-         ez+V610EG2Lyk1MHvx2FqwQnMjQ1ZIQfef5ls1NV6hhT6ckDbo8L2D0rOnomAO3t9hK9
-         2HpgoZ5eMQh//tsh534mPFyfEGre3WYEXmHgXVyUgR6ZXKynjXMl5yQYpndXNnEEorEk
-         5bfw==
-X-Gm-Message-State: AGi0PuYf+YTT73nOKCJaqojxTZOyDgaL0KfVc/m+KTwiDt/yWahLxBrb
-        6brx+NYJSaDHF0oXZH/+vmAXPF9OJsvagGY+JPBKeQ==
-X-Google-Smtp-Source: APiQypKNcYUgCo9BYCsRgOoS0qjiW7kuAUtuQNqf8nOHc8HFG6NxKxozTIoOpNtW1E0Z1daC2YmA8D+pFaUvVC9fUa0=
-X-Received: by 2002:a92:d8ca:: with SMTP id l10mr23867156ilo.118.1588033745597;
- Mon, 27 Apr 2020 17:29:05 -0700 (PDT)
+        id S1726418AbgD1Acw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 20:32:52 -0400
+Received: from mga03.intel.com ([134.134.136.65]:53455 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726233AbgD1Acv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 20:32:51 -0400
+IronPort-SDR: 5KNYLR3I1xhGKJi7l7vIQiOSnasLct7HltAiYDg6fmwVh+4+feyGshyO433Ja8xOxbTukETJZC
+ tJB0J0JCO9qQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 17:32:49 -0700
+IronPort-SDR: lBQl9HB+Bjlc4ebtztBGRLJrNoDj+JSiAJk5fsXKUOGRNmgqvn0zEzFk1Tu7dEYA7LmXv6D9mr
+ GHn4do8gGo+Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
+   d="scan'208";a="404503975"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP; 27 Apr 2020 17:32:49 -0700
+Received: from debox1-hc.jf.intel.com (debox1-hc.jf.intel.com [10.54.75.159])
+        by linux.intel.com (Postfix) with ESMTP id B16885807CA;
+        Mon, 27 Apr 2020 17:32:49 -0700 (PDT)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     rjw@rjwysocki.net, lenb@kernel.org, bhelgaas@google.com,
+        kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
+Cc:     "David E. Box" <david.e.box@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Add support for StorageD3Enable _DSD property
+Date:   Mon, 27 Apr 2020 17:32:12 -0700
+Message-Id: <20200428003214.3764-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20200427165917.31799-1-pbonzini@redhat.com>
-In-Reply-To: <20200427165917.31799-1-pbonzini@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 27 Apr 2020 17:28:54 -0700
-Message-ID: <CALMp9eTBs=deSYu1=CMLwZcO8HTpGM2JsgDxvFR1Y220tdUQ3w@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: handle wrap around 32-bit address space
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, everdox@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 9:59 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> KVM is not handling the case where EIP wraps around the 32-bit address
-> space (that is, outside long mode).  This is needed both in vmx.c
-> and in emulate.c.  SVM with NRIPS is okay, but it can still print
-> an error to dmesg due to integer overflow.
->
-> Reported-by: Nick Peterson <everdox@gmail.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/emulate.c |  2 ++
->  arch/x86/kvm/svm/svm.c |  3 ---
->  arch/x86/kvm/vmx/vmx.c | 15 ++++++++++++---
->  3 files changed, 14 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> index bddaba9c68dd..de5476f8683e 100644
-> --- a/arch/x86/kvm/emulate.c
-> +++ b/arch/x86/kvm/emulate.c
-> @@ -5798,6 +5798,8 @@ int x86_emulate_insn(struct x86_emulate_ctxt *ctxt)
->         }
->
->         ctxt->eip = ctxt->_eip;
-> +       if (ctxt->mode != X86EMUL_MODE_PROT64)
-> +               ctxt->eip = (u32)ctxt->_eip;
->
->  done:
->         if (rc == X86EMUL_PROPAGATE_FAULT) {
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 8f8fc65bfa3e..d5e72b22bc87 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -319,9 +319,6 @@ static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
->                 if (!kvm_emulate_instruction(vcpu, EMULTYPE_SKIP))
->                         return 0;
->         } else {
-> -               if (svm->next_rip - kvm_rip_read(vcpu) > MAX_INST_SIZE)
-> -                       pr_err("%s: ip 0x%lx next 0x%llx\n",
-> -                              __func__, kvm_rip_read(vcpu), svm->next_rip);
->                 kvm_rip_write(vcpu, svm->next_rip);
->         }
->         svm_set_interrupt_shadow(vcpu, 0);
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 3ab6ca6062ce..ed1ffc8a727b 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -1556,7 +1556,7 @@ static int vmx_rtit_ctl_check(struct kvm_vcpu *vcpu, u64 data)
->
->  static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
->  {
-> -       unsigned long rip;
-> +       unsigned long rip, orig_rip;
->
->         /*
->          * Using VMCS.VM_EXIT_INSTRUCTION_LEN on EPT misconfig depends on
-> @@ -1568,8 +1568,17 @@ static int skip_emulated_instruction(struct kvm_vcpu *vcpu)
->          */
->         if (!static_cpu_has(X86_FEATURE_HYPERVISOR) ||
->             to_vmx(vcpu)->exit_reason != EXIT_REASON_EPT_MISCONFIG) {
-> -               rip = kvm_rip_read(vcpu);
-> -               rip += vmcs_read32(VM_EXIT_INSTRUCTION_LEN);
-> +               orig_rip = kvm_rip_read(vcpu);
-> +               rip = orig_rip + vmcs_read32(VM_EXIT_INSTRUCTION_LEN);
-> +#ifdef CONFIG_X86_64
-> +               /*
-> +                * We need to mask out the high 32 bits of RIP if not in 64-bit
-> +                * mode, but just finding out that we are in 64-bit mode is
-> +                * quite expensive.  Only do it if there was a carry.
-> +                */
-> +               if (unlikely(((rip ^ orig_rip) >> 31) == 3) && !is_64_bit_mode(vcpu))
+NVMe storage power management during suspend-to-idle, particularly on
+laptops, has been inconsistent with some devices working with D3 while
+others must rely on NVMe APST in order for power savings to be realized.
+Currently the default is to use APST unless quirked to do otherwise.
+However newer platforms, like Intel Comet Lake systems, may require NVMe
+drives to use D3 in order for the PCIe ports to be properly power managed.
+To make it easier for drivers to choose, these platforms may supply a
+special "StorageD3Enable" _DSD property under the root port that the device
+is attached to. If supplied, the driver must use D3 in order for the
+platform to realize the deepest power savings in suspend-to-idle.
+    
+The first patch adds the new _DSD GUID and fowards the property through the
+pci/acpi layer to the pci device.
 
-Is it actually possible to wrap around 0 without getting a segment
-limit violation, or is it only possible to wrap *to* 0 (i.e. rip==1ull
-<< 32)?
+The second patch adds support for the property to the nvme driver.
 
-> +                       rip = (u32)rip;
-> +#endif
->                 kvm_rip_write(vcpu, rip);
->         } else {
->                 if (!kvm_emulate_instruction(vcpu, EMULTYPE_SKIP))
-> --
-> 2.18.2
->
+David E. Box (2):
+  pci: Add ACPI StorageD3Enable _DSD support
+  drivers/nvme: Add support for ACPI StorageD3Enable property
+
+ drivers/acpi/property.c |  3 +++
+ drivers/nvme/host/pci.c |  7 ++++++
+ drivers/pci/pci-acpi.c  | 47 +++++++++++++++++++++++++++++++++++++++++
+ drivers/pci/pci.c       |  6 ++++++
+ drivers/pci/pci.h       |  4 ++++
+ include/linux/pci.h     |  1 +
+ 6 files changed, 68 insertions(+)
+
+-- 
+2.20.1
+
