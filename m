@@ -2,140 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283C21BD066
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 01:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2AA1BD06B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 01:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726778AbgD1XHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 19:07:21 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:41331 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726486AbgD1XHT (ORCPT
+        id S1726515AbgD1XH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 19:07:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726044AbgD1XH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 19:07:19 -0400
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id A27DF22802;
-        Wed, 29 Apr 2020 01:07:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1588115236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Mz5eS6TC885v+pJlTmwBKnJ4KfddmXZzoEFMZTkEoUs=;
-        b=qsc9vL5wx9lDOsUCqeeCA8NK/Z1ghMULbvr8z1fbwhC+YZCi9PksnnkNEZeVm8/EQUgMl/
-        IfC+vDbjhQye81xKk0/F5WHFzM2sdjzHFSdp14hfnbKpgkLP63iDn2S+covJyE1H9KTUMI
-        zX0UD6v7SrUS1Me/CajXM3GAx2ovhg0=
-From:   Michael Walle <michael@walle.cc>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH net-next v2 4/4] net: phy: bcm54140: add second PHY ID
-Date:   Wed, 29 Apr 2020 01:06:59 +0200
-Message-Id: <20200428230659.7754-4-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200428230659.7754-1-michael@walle.cc>
-References: <20200428230659.7754-1-michael@walle.cc>
+        Tue, 28 Apr 2020 19:07:56 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C77CC03C1AC;
+        Tue, 28 Apr 2020 16:07:56 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 18so116867pfv.8;
+        Tue, 28 Apr 2020 16:07:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zQ1AN2qLuGSeriYOxLxpDZYr+EholNiT0zZxYuiIwcw=;
+        b=b4oEVM9CyNeYtoxafbq+JAL+h5ey/mUcxOqqHN+XAc5LZf1lgHDA+Rj7zRz1Oj9JLp
+         15C3fHQt6Mi0TvmQxsqnq3+qcaGXM0id9myxH52BYD0o9DOVD0/zuGNvXkW8z6yFbOz+
+         zOuqxDamL1N5d1MZDZJuG2cTr0OnewmuPcVH4UIdUomSk7xRaxCG7LBTeO52b4vKqdeY
+         IFbGD6/H09Au+EPchC9Di8ZygjvkpmPxr49/I0spBEtfikaTZNBiw7seew2L1Z9jgvfu
+         oISjH0q5N3yrm1++FLs/HXLHaXLWjlscHBk57XbPQS0ohSFjJjuW3b+VJzNmCCddSN8A
+         iSEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zQ1AN2qLuGSeriYOxLxpDZYr+EholNiT0zZxYuiIwcw=;
+        b=TDGB2lWgstzLeR03EfZr83oGgiyMdEhjETLGmr+yyP5A9Ly2/cEt0QXVT30z90l2Dw
+         rJmikZGrDoXSiOLYn6ntPNNy5O4VAEcaq7Obs0CWwW9akZXi5PM/0vf5+k/egi6aMl7k
+         w1U49f0fXWDvCYdR3g+gkTjKHY4IMe8hu1sP9EBlceFt8cF7svokzFDLcbId3iEF2Xsk
+         OL6vt7cbJAQjZJq98AksR+S6SnO56ekinTdF4YOYOrNnfigsbalWK0t0jPCvHLacqG+T
+         jqacWd79fXvX6wm+O7WcjiHO9oAOxI2+ZW83CPjtOTv2nZfXngAjU84HqUZRuHY9Ih4D
+         3FHg==
+X-Gm-Message-State: AGi0PuZvryPg7XDZJAVrk8NLfeTfhoxjycgQRtCdcyADmuMMobhNIqrL
+        FJ5k+dYB2p7bJY9oDAVFe1E=
+X-Google-Smtp-Source: APiQypLjJoieB0Lu8Y7K+KgvHsR98OFs5tWWuZhvEaVCWrhgeb6GzvIdO0fy+bkn5Nao58qOe6HuPw==
+X-Received: by 2002:a63:ef12:: with SMTP id u18mr25903105pgh.347.1588115276125;
+        Tue, 28 Apr 2020 16:07:56 -0700 (PDT)
+Received: from syed ([106.202.21.137])
+        by smtp.gmail.com with ESMTPSA id g6sm5459558pja.2.2020.04.28.16.07.52
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Apr 2020 16:07:55 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 04:37:41 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
+        rrichter@marvell.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 3/4] gpio: thunderx: Utilize for_each_set_clump macro
+Message-ID: <ea25f5cbe03a3bb4bf5d976b004d87c4bab178e3.1588112716.git.syednwaris@gmail.com>
+References: <cover.1588112714.git.syednwaris@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++++
-X-Spam-Level: ******
-X-Rspamd-Server: web
-X-Spam-Status: Yes, score=6.40
-X-Spam-Score: 6.40
-X-Rspamd-Queue-Id: A27DF22802
-X-Spamd-Result: default: False [6.40 / 15.00];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         DKIM_SIGNED(0.00)[];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_COUNT_ZERO(0.00)[0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:31334, ipnet:2a02:810c:8000::/33, country:DE];
-         FREEMAIL_CC(0.00)[lunn.ch,gmail.com,armlinux.org.uk,davemloft.net,walle.cc];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam: Yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1588112714.git.syednwaris@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This PHY has two PHY IDs depending on its mode. Adjust the mask so that
-it includes both IDs.
+This patch reimplements the thunderx_gpio_set_multiple function in
+drivers/gpio/gpio-thunderx.c to use the new for_each_set_clump macro.
+Instead of looping for each bank in thunderx_gpio_set_multiple
+function, now we can skip bank which is not set and save cycles.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
+Cc: Robert Richter <rrichter@marvell.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
+Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 ---
-changes since v1:
- - leave the PHY ID in brcmphy.h but clear the masked bit
- - fixed typo in commit message
+Changes in v3:
+ - Change datatype of some variables from u64 to unsigned long
+   in function thunderx_gpio_set_multiple to resolve build errors.
 
- drivers/net/phy/bcm54140.c | 11 +++++++++--
- include/linux/brcmphy.h    |  2 +-
- 2 files changed, 10 insertions(+), 3 deletions(-)
+CHanges in v2:
+ - No change.
 
-diff --git a/drivers/net/phy/bcm54140.c b/drivers/net/phy/bcm54140.c
-index d73cbddbc69b..b5325157206a 100644
---- a/drivers/net/phy/bcm54140.c
-+++ b/drivers/net/phy/bcm54140.c
-@@ -115,6 +115,13 @@
- #define BCM54140_HWMON_IN_ALARM_BIT(ch) ((ch) ? BCM54140_RDB_MON_ISR_3V3 \
- 					      : BCM54140_RDB_MON_ISR_1V0)
- 
-+/* This PHY has two different PHY IDs depening on its MODE_SEL pin. This
-+ * pin choses between 4x SGMII and QSGMII mode:
-+ *   AE02_5009 4x SGMII
-+ *   AE02_5019 QSGMII
-+ */
-+#define BCM54140_PHY_ID_MASK	0xffffffe8
+ drivers/gpio/gpio-thunderx.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpio/gpio-thunderx.c b/drivers/gpio/gpio-thunderx.c
+index 9f66deab46ea..e577ab7e9e3c 100644
+--- a/drivers/gpio/gpio-thunderx.c
++++ b/drivers/gpio/gpio-thunderx.c
+@@ -275,12 +275,16 @@ static void thunderx_gpio_set_multiple(struct gpio_chip *chip,
+ 				       unsigned long *bits)
+ {
+ 	int bank;
+-	u64 set_bits, clear_bits;
++	unsigned long set_bits, clear_bits, gpio_mask;
++	const unsigned long bank_size = 64;
++	unsigned long offset;
 +
- #define BCM54140_PHY_ID_REV(phy_id)	((phy_id) & 0x7)
- #define BCM54140_REV_B0			1
+ 	struct thunderx_gpio *txgpio = gpiochip_get_data(chip);
  
-@@ -857,7 +864,7 @@ static int bcm54140_set_tunable(struct phy_device *phydev,
- static struct phy_driver bcm54140_drivers[] = {
- 	{
- 		.phy_id         = PHY_ID_BCM54140,
--		.phy_id_mask    = 0xfffffff8,
-+		.phy_id_mask    = BCM54140_PHY_ID_MASK,
- 		.name           = "Broadcom BCM54140",
- 		.features       = PHY_GBIT_FEATURES,
- 		.config_init    = bcm54140_config_init,
-@@ -875,7 +882,7 @@ static struct phy_driver bcm54140_drivers[] = {
- module_phy_driver(bcm54140_drivers);
- 
- static struct mdio_device_id __maybe_unused bcm54140_tbl[] = {
--	{ PHY_ID_BCM54140, 0xfffffff8 },
-+	{ PHY_ID_BCM54140, BCM54140_PHY_ID_MASK },
- 	{ }
- };
- 
-diff --git a/include/linux/brcmphy.h b/include/linux/brcmphy.h
-index 8be150e69c7c..58d0150acc3e 100644
---- a/include/linux/brcmphy.h
-+++ b/include/linux/brcmphy.h
-@@ -25,7 +25,7 @@
- #define PHY_ID_BCM5461			0x002060c0
- #define PHY_ID_BCM54612E		0x03625e60
- #define PHY_ID_BCM54616S		0x03625d10
--#define PHY_ID_BCM54140			0xae025019
-+#define PHY_ID_BCM54140			0xae025009
- #define PHY_ID_BCM57780			0x03625d90
- #define PHY_ID_BCM89610			0x03625cd0
- 
+-	for (bank = 0; bank <= chip->ngpio / 64; bank++) {
+-		set_bits = bits[bank] & mask[bank];
+-		clear_bits = ~bits[bank] & mask[bank];
++	for_each_set_clump(offset, gpio_mask, mask, chip->ngpio, bank_size) {
++		bank = offset / bank_size;
++		set_bits = bits[bank] & gpio_mask;
++		clear_bits = ~bits[bank] & gpio_mask;
+ 		writeq(set_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO_TX_SET);
+ 		writeq(clear_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO_TX_CLR);
+ 	}
 -- 
-2.20.1
+2.26.2
 
