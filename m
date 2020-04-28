@@ -2,204 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70B61BB81E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 09:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1464F1BB816
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 09:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726748AbgD1Hw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 03:52:57 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:25769 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgD1Hwy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 03:52:54 -0400
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 03S7qc6L011853
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 16:52:39 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 03S7qc6L011853
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1588060359;
-        bh=QPAQvrairyv/g99zYJPMQ7WDBrdaFd2bW853qF/5aXc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=weNGx2Z6XS22im/pq2oCo5m4ZGkjz8I6CaacYx34oPH/F0fcfs4tQmQg0YKNLqQy0
-         E3jeQgZrr+7lp8hJ7D0A1s2fBFDrfO3C696AmbP7raL6yn3Elj9cPJNL0eOwR/ohM4
-         9Ku3EZj2XI5yPnj2zzYnXLSazlNklCTtH5Q8/WrPOIqRQB16cz0Rolto0tWmqisGBy
-         VyIJWJ4Qr6UivZSvpHdj9FEKM/4i2TNbpDks/VBcW2T5FKoZJs2SbOle6eez2idkt2
-         TL0vpcH0B2aIWM/B9nHbqLcZ+359ObscbHcnVMX/+1fCi5W7qfwktuetTP5QVOVO3i
-         /3w1Tk6RuZQpQ==
-X-Nifty-SrcIP: [209.85.222.49]
-Received: by mail-ua1-f49.google.com with SMTP id b6so6609399uak.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 00:52:38 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaH7mxTv9T7KIMEXjwzLG8mUJR/blGXTa9LjaBreV+7w0RYNAxl
-        yV7KoOQAFm1Yf/EdzkDk/wIqshgz8wRXtWB+8Tw=
-X-Google-Smtp-Source: APiQypJb1/OJIWgvmQ4YLflHEvxCw5scmVMbfuEMCiQcthiRE4P93Oeyk61i9y3G9miJ3m+3ZNzrMfNEvCp9s68eGo4=
-X-Received: by 2002:ab0:cd:: with SMTP id 71mr18483445uaj.109.1588060357644;
- Tue, 28 Apr 2020 00:52:37 -0700 (PDT)
+        id S1726678AbgD1HwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 03:52:16 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:53181 "EHLO smtp1.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726253AbgD1HwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 03:52:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; l=950; q=dns/txt; s=axis-central1;
+  t=1588060336; x=1619596336;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YYJgrFy01q/iXXRT8jAgJY9sVKaTPwGPeHvj2Hpz2SE=;
+  b=AZjh7BQE3WZ8gk5dgzvKTSNtjBOvT7kLRpeQqihFggRwJhWO0nMYvJ/0
+   saUneTLzcbi7tlUo5Uzpf6NZEcyyaLbUlR2dIoN06ftCacuemLbrRyrJ5
+   FpscGVSgJ9jerPmEoTcl2SK6hco9z6khZIBj+6n5cCLcr36PCdhyqSFNk
+   0SPc+UQ8ONui6biQhdGrK3rhW1Xc2FxUL7RUbLQD0yLVOei+Ms7T9uGFW
+   L3xWNo18aOrwmLSYDGwCXQaGCIs8Ct4N0we7JhxU8YjpowPz0ROw6LOsX
+   bEu9ttrysU5ufg1Etb/WwHQBNw1NAD3I1I+D+fH322/sS20M0+2Xm82xi
+   A==;
+IronPort-SDR: lYeH8fyYcjDt4AyM/O6xNBIvf0u3r0MUt/tX2KWz8nu7vZ2iSQMCuytyK7qsKHY3thDkbHdmMr
+ M+ZhpXNfiLovKcXCHaJrqIj48oeTmdbE3iKPojXIklumrqm65yo2om8XhEN6aEZrbnqn0aVNWs
+ 0idLfVzR7oP69Lvw0iPAOqqnFKItTi3SILOf0ldyOtexQPPq64DTke22p4DngXvZpwJuEugfBJ
+ t3SNL9+bTFkYDlrJYdwlimEXXlHon3QIM+Mt+QbAp1OTkD9GWv02V3F5vmhDBfBk8kiqSB2zVl
+ 1sM=
+X-IronPort-AV: E=Sophos;i="5.73,327,1583190000"; 
+   d="scan'208";a="8154008"
+Date:   Tue, 28 Apr 2020 09:52:14 +0200
+From:   Jesper Nilsson <Jesper.Nilsson@axis.com>
+To:     Jason Yan <yanaijie@huawei.com>
+CC:     Jesper Nilsson <Jesper.Nilsson@axis.com>,
+        Lars Persson <Lars.Persson@axis.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@axis.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm: remove unneeded semicolon in board-artpec6.c
+Message-ID: <20200428075214.j5gwldrm5ne337ma@axis.com>
+References: <20200428063213.16038-1-yanaijie@huawei.com>
 MIME-Version: 1.0
-References: <20200425080343.GA2048673@kroah.com> <20200426024436.7534-1-xujialu@vimux.org>
-In-Reply-To: <20200426024436.7534-1-xujialu@vimux.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 28 Apr 2020 16:52:01 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS3P2uCOnE3zX59QKOg7SgtS25j-1VXdHE32vrDyCA2_A@mail.gmail.com>
-Message-ID: <CAK7LNAS3P2uCOnE3zX59QKOg7SgtS25j-1VXdHE32vrDyCA2_A@mail.gmail.com>
-Subject: Re: [PATCH] scripts: gtags_files_generator.sh
-To:     xujialu <xujialu@vimux.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20200428063213.16038-1-yanaijie@huawei.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 11:48 AM xujialu <xujialu@vimux.org> wrote:
->
-> Add a script to generate a more precise gtags.files from *.cmd files.
->
-> For navigating linux sources, it will be more efficient if gtags/cscope
-> just collects source files that needed for compilation. The kernel
-> makefiles already create *.cmd files that contain the files we needed,
-> then just extracts files list from them and into gtags.files cause it's
-> the the default name list file for gtags.
+On Tue, Apr 28, 2020 at 08:32:13AM +0200, Jason Yan wrote:
+> Fix the following coccicheck warning:
+> 
+> arch/arm/mach-artpec/board-artpec6.c:42:2-3: Unneeded semicolon
 
+Acked-by: Jesper Nilsson <jesper.nilsson@axis.com>
 
-This is unneeded.
-
-scripts/tags.sh supports COMPILED_SOURCE=1
-to collect tags only from compiled sources.
-
-Please do not reinvent the wheel
-to achieve similar things.
-
-
-$ time make COMPILED_SOURCE=1 gtags
-  GEN     gtags
-
-real 0m7.623s
-user 0m7.459s
-sys 0m1.124s
-
-
-is fine for me.
-
-If the existing code is problematic,
-we need to improve it,
-not add the second one.
-
-
-
-
-
->
-> make defconfig
-> make
-> scripts/gtags_files_generator.sh
-> gtags [-f gtags.files]
->
-> Enjoy with vim+gtags. :)
->
-> Here is a log for comparison with 'make gtags':
->
-> $ time make ARCH=arm cscope
->   GEN     cscope
->
-> real    1m20.600s
-> user    1m36.004s
-> sys     0m8.192s
-> $ wc -l cscope.files
-> 31201 cscope.files              #collected too many files we don't care
->
-> $ time ./scripts/gtags_files_generator.sh
->
-> Succeed, 3716 gtags.files listed!
->
-> real    0m1.593s                #collected files only we care
-> user    0m1.704s
-> sys     0m0.256s
->                                 #collected also dts and dtsi
-
-
-Why do you need to collect dts and dtsi?
-
-
-
-
-
-
-
-> $ grep dts gtags.files
-> arch/arm/boot/dts/xxxxxx-clocks.dtsi
-> arch/arm/boot/dts/xxxxxx.dtsi
-> arch/arm/boot/dts/xxxxxxxx.dts
-> arch/arm/boot/dts/xxxxxxxx.dtsi
->
-> Signed-off-by: xujialu <xujialu@vimux.org>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 > ---
->  scripts/gtags_files_generator.sh | 48 ++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100755 scripts/gtags_files_generator.sh
->
-> diff --git a/scripts/gtags_files_generator.sh b/scripts/gtags_files_generator.sh
-> new file mode 100755
-> index 000000000000..04698d9234a7
-> --- /dev/null
-> +++ b/scripts/gtags_files_generator.sh
-> @@ -0,0 +1,48 @@
-> +#!/bin/bash -e
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Author: xujialu <xujialu@vimux.org>
-> +#
-> +# A script for generating gtags.files after compilation.
-> +#
-> +# Usage:
-> +#      make defconfig
-> +#      make
-> +#      scripts/gtags_files_generator.sh
-> +#      gtags [-f gtags.files]
-> +
-> +
-> +gtags_files_list()
-> +{
-> +       ls ${AUTOCONF_H} $(realpath -e --relative-to=. \
-> +               $(find ${KBUILD_OUTPUT} -name "*$1.cmd" -exec \
-> +               grep -Poh '(?(?=^source_.* \K).*|(?=^  \K\S).*(?= \\))' {} \+ |
-> +               awk '!a[$0]++' | sed "s,^,${KBUILD_OUTPUT},") |
-> +               sed -e '/\.\./d' | awk '!a[$0]++'
-> +       )
-> +}
-> +
-> +gtags_files_generator()
-> +{
-> +       GTAGS_FILES=$PWD/gtags.files
-> +
-> +       echo && [ $# = 1 ] && cd $1
-> +
-> +       SYSTEM_MAP=$(find -name System.map -print -quit)
-> +
-> +       [ -z "${SYSTEM_MAP}" ] && echo "Failed, please compile first!" && exit 1
-> +
-> +       KBUILD_OUTPUT=${SYSTEM_MAP%/*}/
-> +       KBUILD_OUTPUT=${KBUILD_OUTPUT#*/}
-> +
-> +       AUTOCONF_H=${KBUILD_OUTPUT}include/generated/autoconf.h
-> +
-> +       grep Configuration ${AUTOCONF_H} | sed 's/ \* //'
-> +       gtags_files_list > ${GTAGS_FILES}
-> +
-> +       echo && [ $# = 1 ] && sed -i "s|^|$1|" ${GTAGS_FILES}
-> +
-> +       echo "Succeed, $(wc -l ${GTAGS_FILES}) listed!"
-> +}
-> +
-> +gtags_files_generator $1 2>/dev/null
-> --
-> 2.20.1
->
+>  arch/arm/mach-artpec/board-artpec6.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mach-artpec/board-artpec6.c b/arch/arm/mach-artpec/board-artpec6.c
+> index d3cf3e8603e8..c27e7bbcd7bc 100644
+> --- a/arch/arm/mach-artpec/board-artpec6.c
+> +++ b/arch/arm/mach-artpec/board-artpec6.c
+> @@ -39,7 +39,7 @@ static void __init artpec6_init_machine(void)
+>  		 */
+>  		regmap_write(regmap, ARTPEC6_DMACFG_REGNUM,
+>  			     ARTPEC6_DMACFG_UARTS_BURST);
+> -	};
+> +	}
+>  }
+>  
+>  static void artpec6_l2c310_write_sec(unsigned long val, unsigned reg)
+> -- 
+> 2.21.1
+> 
 
-
+/^JN - Jesper Nilsson
 -- 
-Best Regards
-Masahiro Yamada
+               Jesper Nilsson -- jesper.nilsson@axis.com
