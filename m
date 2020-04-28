@@ -2,117 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97AA1BC8AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DCE1BCAF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730118AbgD1Sei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44284 "EHLO
+        id S1731130AbgD1Sxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730121AbgD1SeX (ORCPT
+        by vger.kernel.org with ESMTP id S1730175AbgD1Se4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:34:23 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B68C03C1AC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:34:23 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id t7so2849312plr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d8J9/+H1aJgIU0iPd3k8kUXfWA6cvbV7BCbp34hUMis=;
-        b=PzZLYwaag6VROB6/jTlW9RHPa3Znmxxj1gxVDF7bKVaHEe7DgmI6oiMixvFxC0hifr
-         6AF8PGrk53GEMQ2uvcLzz3tI9y6/4PYq8kHzbjRPRIjS+cqFJCnOlLMmxdtHPHCQTetS
-         rY9cdvBZM1YJK3ZB6JqBBSWL6fq8YJap+HZZkKlX6Xu1QVzE54vkzpuw2khc0Bfwu+1/
-         e1R+H9YvIHUv+u5g7rByKatPq1NJikTUOYTQ7eLDvr0JUW+MNOD19ptMr14AMCOoevYW
-         jyjAxHQzyIrOk/0iPRnrkpFhUlEvmaqOesnOkoASIrNQZLh6Z9a6eXSwSh/WDEDBNNlD
-         Gz8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d8J9/+H1aJgIU0iPd3k8kUXfWA6cvbV7BCbp34hUMis=;
-        b=Fkfq8ldrV2+9g4CbnbDOammReNyziuU5TqJf42DOxCZ0RP0iLDBhhe4M18q8VTXLXm
-         dtwrDSPCnHyD8uF0OUFEdwnacxIQbgc5vySUat8NK+CbSDpBQ1d5F/HMiZTr1YsruyM1
-         IfPbchnnvNjiPHfZs0uqRKt4Ccx3+kWTW6JZAt4p/Qdec6gv8hfsl0l3n+NkBDhWiVaN
-         fyypBdVXv2eHaYuWcGRjD0JgHFb79gp9ePe0SY+Ia6je6wMEiJywC2qVFNmFADlY6b2q
-         B5MxEKhctt1WigOwPL9pmoTrlXJlhtGLs0oJERIYceAMFDGz+aUjdzFWHHgjb5XvBx1W
-         ycIg==
-X-Gm-Message-State: AGi0PuZxXffQIN/Nv55MRwMjPkrzcghZzkClASVX1amCiKklsVvfCnGA
-        Ga+aCF/aBp69NWoZRAXDeZf+NZTaT/HDqyffbv0DFw==
-X-Google-Smtp-Source: APiQypK4DziNhv8yRj8qmx9ucMaNvJnzarNstlH/ET2gZdf27UdoomqisWjZrSKO9zFfc0EmggwKCgxi0dJ9zlfGZ2Y=
-X-Received: by 2002:a17:902:988e:: with SMTP id s14mr29496990plp.179.1588098862653;
- Tue, 28 Apr 2020 11:34:22 -0700 (PDT)
+        Tue, 28 Apr 2020 14:34:56 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4566DC03C1AB;
+        Tue, 28 Apr 2020 11:34:56 -0700 (PDT)
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id E139C44A;
+        Tue, 28 Apr 2020 18:34:55 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 12:34:54 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-doc@vger.kernel.org, Harry Wei <harryxiyou@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC] Documentation: zh_CN: convert to use
+ i2c_new_client_device()
+Message-ID: <20200428123454.4ccbaf6c@lwn.net>
+In-Reply-To: <cb2d1373-5bb3-93c2-f5af-40a04b21651b@linux.alibaba.com>
+References: <20200425100616.3363-1-wsa+renesas@sang-engineering.com>
+        <cb2d1373-5bb3-93c2-f5af-40a04b21651b@linux.alibaba.com>
+Organization: LWN.net
 MIME-Version: 1.0
-References: <20200428174221.2040849-1-natechancellor@gmail.com>
-In-Reply-To: <20200428174221.2040849-1-natechancellor@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 28 Apr 2020 11:34:11 -0700
-Message-ID: <CAKwvOd=cb-dyWGeMoCE4+zdgA1R=t=QPkzU9EGiCtgdzXke_cw@mail.gmail.com>
-Subject: Re: [PATCH] dpaa2-eth: Use proper division helper in dpaa2_dbg_ch_show
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 10:43 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> When building arm32 allmodconfig:
->
-> ERROR: modpost: "__aeabi_uldivmod"
-> [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-eth.ko] undefined!
->
-> frames and cdan are both of type __u64 (unsigned long long) so we need
-> to use div64_u64 to avoid this issues.
->
-> Fixes: 460fd830dd9d ("dpaa2-eth: add channel stat to debugfs")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1012
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+On Sat, 25 Apr 2020 22:26:57 +0800
+Alex Shi <alex.shi@linux.alibaba.com> wrote:
 
-Don't forget reported by tags to show some love to our bots! Thanks
-for the patch.
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> 在 2020/4/25 下午6:06, Wolfram Sang 写道:
+> > Move away from the deprecated API and advertise the new one.
+> > 
+> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> > ---
+> > 
+> > I can't read Chinese. But given the context, I think just updating to
+> > the new function name is enough. Please let me know if not. Thanks!  
+> 
+> It looks good. Thanks!
+> 
+> Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-> ---
->  drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
-> index 80291afff3ea..0a31e4268dfb 100644
-> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
-> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
-> @@ -139,7 +139,7 @@ static int dpaa2_dbg_ch_show(struct seq_file *file, void *offset)
->                            ch->stats.dequeue_portal_busy,
->                            ch->stats.frames,
->                            ch->stats.cdan,
-> -                          ch->stats.frames / ch->stats.cdan,
-> +                          div64_u64(ch->stats.frames, ch->stats.cdan),
->                            ch->buf_count);
->         }
->
->
-> base-commit: 0fd02a5d3eb7020a7e1801f8d7f01891071c85e4
-> --
-> 2.26.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200428174221.2040849-1-natechancellor%40gmail.com.
+Applied, thanks.
 
-
-
--- 
-Thanks,
-~Nick Desaulniers
+jon
