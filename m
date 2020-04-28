@@ -2,137 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129F91BB4AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 05:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E301BB4B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 05:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbgD1D2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 23:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726487AbgD1D2Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 23:28:16 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B397AC03C1A9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 20:28:16 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id r10so21071570qvw.23
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 20:28:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=S74qc3gT0+GaAOfxP9OW8h7LX2dHXzF9FcHNnI79iRU=;
-        b=IidsVYIWxuA6ZMq4mduyFOFvGK2ppYXoJH0wqJkIqqc+oYorXd4D8TC5648uk83yp9
-         Wk6TRGHazyI7/dl0YaKYN69J4JYYCXH0CXmm45CYpg5crMvD0sBEhoVk0OCbke9ON03l
-         t++54shNE4fldweicnAFUG7BlPQRKlLvBj3ELH6NgoiG7tKyqU09KfhIbfcLrXBCqA5+
-         ERaEY1qXQhMRhOoex9Yt2JzsgbxA1o9//qxW7Rl64iVEwEvm2M5aNBfC/sbBWFTgc2W9
-         OB2UUdMDfKlny1MscN1lZUlNUVq8y5d3lfxTGrfnTL+k4Xh6lfcXpgzN0XvkrZqCgzwF
-         SQ4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=S74qc3gT0+GaAOfxP9OW8h7LX2dHXzF9FcHNnI79iRU=;
-        b=I8hC3uv0iUmvHe/bsF5vRfOiS4uOKvNipaShxVECC2ftzzNofbTBf6uEzfnCFaR3jI
-         z07+fHdm5N09VAOESlFmh6+HnscN1QdWqu57wbW5XCknYXPToPVqaC4kvKMKnBPFSc8I
-         FjqhDHDRVPLrgC6/2eKNly+KY078cgX118HQoDTncmSMEeohn+LUjgwUrnfq44D7UTfk
-         oNcH9P67r6emvPq8rIMVRSx3cNkfGbLj8BvxKMUv5zHuGcygGlTNWkeURuzKXXW010fm
-         hVtM0NSTNsvZE9qgadCNVqC9GhXwsKNpXyHxdI4vkKhdCT9TFsor9IbYtRrSR3/e9Bq2
-         cFeA==
-X-Gm-Message-State: AGi0PuaIqstggpRLgYKkUaW0ezpHhAOrkg49GrS5lcOxfEx0vqWdY6pX
-        nNymoXanr2XfLjWwZbIBU4xbbfaD5g==
-X-Google-Smtp-Source: APiQypKNWrwmeyovNjE39gEB3tk3kbcuILr7RYV7vdkJNUwXcv+LEB33zDblKbOqInzqOcSp3nptjlK/lg==
-X-Received: by 2002:a0c:99ca:: with SMTP id y10mr18997354qve.217.1588044495889;
- Mon, 27 Apr 2020 20:28:15 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 05:27:45 +0200
-In-Reply-To: <20200428032745.133556-1-jannh@google.com>
-Message-Id: <20200428032745.133556-6-jannh@google.com>
-Mime-Version: 1.0
-References: <20200428032745.133556-1-jannh@google.com>
-X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
-Subject: [PATCH 5/5] mm/gup: Take mmap_sem in get_dump_page()
-From:   Jann Horn <jannh@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        linux-c6x-dev@linux-c6x.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1726307AbgD1DaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 23:30:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3357 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726047AbgD1DaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 23:30:11 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D54AAEE4D4C2439DAFE6;
+        Tue, 28 Apr 2020 11:30:05 +0800 (CST)
+Received: from huawei.com (10.175.105.27) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Apr 2020
+ 11:29:59 +0800
+From:   Wu Bo <wubo40@huawei.com>
+To:     <rpeterso@redhat.com>, <agruenba@redhat.com>
+CC:     <cluster-devel@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <liuzhiqiang26@huawei.com>, <linfeilong@huawei.com>,
+        <wubo40@huawei.com>
+Subject: [PATCH] fs/gfs2:lock a spinlock always before returning from do_xmote()
+Date:   Tue, 28 Apr 2020 11:29:05 +0800
+Message-ID: <1588044545-59405-1-git-send-email-wubo40@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.105.27]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Properly take the mmap_sem before calling into the GUP code from
-get_dump_page(); and play nice, allowing __get_user_pages_locked() to drop
-the mmap_sem if it has to sleep.
+The call stack is as follows:
+finish_xmote()
+        ...
+        spin_lock(&gl->gl_lockref.lock);
+        ...
+	--> do_xmote()
+            spin_unlock(&gl->gl_lockref.lock);
+            ...
+            return;
+        ...
+        spin_unlock(&gl->gl_lockref.lock);
+           
+do_xmote function needs to be locked before returning,
+Otherwise, there will be a double release lock in finish_xmote() function.
 
-This requires adjusting the check in __get_user_pages_locked() to be
-slightly less strict: While `vmas != NULL` is normally incompatible with
-the lock-dropping retry logic, it's fine if we only want a single page,
-because then retries can only happen when we haven't grabbed any pages yet.
-
-Signed-off-by: Jann Horn <jannh@google.com>
+Signed-off-by: Wu Bo <wubo40@huawei.com>
 ---
- mm/gup.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ fs/gfs2/glock.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 9a7e83772f1fe..4bb4149c0e259 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1261,7 +1261,8 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
- 
- 	if (locked) {
- 		/* if VM_FAULT_RETRY can be returned, vmas become invalid */
--		BUG_ON(vmas);
-+		if (WARN_ON(vmas && nr_pages != 1))
-+			return -EFAULT;
- 		/* check caller initialized locked */
- 		BUG_ON(*locked != 1);
+diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
+index 29f9b66..7129d10 100644
+--- a/fs/gfs2/glock.c
++++ b/fs/gfs2/glock.c
+@@ -613,6 +613,7 @@ static void do_xmote(struct gfs2_glock *gl, struct gfs2_holder *gh, unsigned int
+ 				fs_err(sdp, "Error %d syncing glock \n", ret);
+ 				gfs2_dump_glock(NULL, gl, true);
+ 			}
++			spin_lock(&gl->gl_lockref.lock);
+ 			return;
+ 		}
  	}
-@@ -1548,18 +1549,28 @@ static long __get_user_pages_locked(struct task_struct *tsk,
-  * NULL wherever the ZERO_PAGE, or an anonymous pte_none, has been found -
-  * allowing a hole to be left in the corefile to save diskspace.
-  *
-- * Called without mmap_sem, but after all other threads have been killed.
-+ * Called without mmap_sem (takes and releases the mmap_sem by itself).
-  */
- struct page *get_dump_page(unsigned long addr)
- {
-+	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
- 	struct page *page;
-+	int locked = 1;
-+	int ret;
- 
--	if (__get_user_pages(current, current->mm, addr, 1,
--			     FOLL_FORCE | FOLL_DUMP | FOLL_GET, &page, &vma,
--			     NULL) < 1)
-+	if (down_read_killable(&mm->mmap_sem))
-+		return NULL;
-+	ret = __get_user_pages_locked(current, mm, addr, 1, &page, &vma,
-+				      &locked,
-+				      FOLL_FORCE | FOLL_DUMP | FOLL_GET);
-+	if (ret != 1) {
-+		if (locked)
-+			up_read(&mm->mmap_sem);
- 		return NULL;
-+	}
- 	flush_cache_page(vma, addr, page_to_pfn(page));
-+	up_read(&mm->mmap_sem);
- 	return page;
- }
- 
 -- 
-2.26.2.303.gf8c07b1a785-goog
+1.8.3.1
 
