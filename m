@@ -2,180 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F131BB32C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEF11BB33C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgD1BEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 21:04:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36588 "EHLO mail.kernel.org"
+        id S1726315AbgD1BIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 21:08:09 -0400
+Received: from mga05.intel.com ([192.55.52.43]:43127 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726425AbgD1BEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 21:04:01 -0400
-Received: from kicinski-fedora-PC1C0HJN.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F070E21775;
-        Tue, 28 Apr 2020 01:03:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588035840;
-        bh=hEAM8D7/SUsiKAc+5z81o3UhOC4lXna1wiU4BP9pTCc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jJk2GlbkmARyyuw/vHeG0IrUxQQMRuBe4kDStAkNj63VUEqRVouGjrR43LEwVPmD9
-         BtJjSj5CoJ0PzdHLDHHfMWvyartD31Wg983OXlxw4Dc7q7ZazYgXJmH+cCghebbBU6
-         jPg3cX32HKez53Smg2d/j5CLIv1m++0OvQU1Sv/c=
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     davem@davemloft.net
-Cc:     keescook@chromium.org, shuah@kernel.org, netdev@vger.kernel.org,
-        luto@amacapital.net, wad@chromium.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, Tim.Bird@sony.com,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH net-next v6 5/5] selftests: tls: run all tests for TLS 1.2 and TLS 1.3
-Date:   Mon, 27 Apr 2020 18:03:51 -0700
-Message-Id: <20200428010351.331260-6-kuba@kernel.org>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200428010351.331260-1-kuba@kernel.org>
-References: <20200428010351.331260-1-kuba@kernel.org>
+        id S1726263AbgD1BIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 27 Apr 2020 21:08:09 -0400
+IronPort-SDR: J+WjQwm+IMEz5n9R5AJqcxO0ZMhOOnogWwTOIIHi7hHZC3LI7BPg9pYO1Y+4gpXBi0XOSSaj8Y
+ UPQPoAQVJ4zQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 18:08:08 -0700
+IronPort-SDR: 2YoVZ36m76ZElHEJ97QaJ9BSnZaX0q6H1YcE2h2urZ+Ix/dX43x5tEXzq+SzYZx7OAac/BP8ym
+ 0SsxcIBGu0dA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,325,1583222400"; 
+   d="scan'208";a="459058326"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.25])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Apr 2020 18:08:08 -0700
+Date:   Mon, 27 Apr 2020 18:08:08 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jacob Jun Pan <jacob.jun.pan@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH 6/7] x86/traps: Fix up invalid PASID
+Message-ID: <20200428010808.GA18865@otc-nc-03>
+References: <1585596788-193989-1-git-send-email-fenghua.yu@intel.com>
+ <1585596788-193989-7-git-send-email-fenghua.yu@intel.com>
+ <87mu6ys20d.fsf@nanos.tec.linutronix.de>
+ <20200427224646.GA103955@otc-nc-03>
+ <874kt4pgyk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874kt4pgyk.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TLS 1.2 and TLS 1.3 differ in the implementation.
-Use fixture parameters to run all tests for both
-versions, and remove the one-off TLS 1.2 test.
+Hi Thomas,
 
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/net/tls.c | 93 ++++++-------------------------
- 1 file changed, 17 insertions(+), 76 deletions(-)
+On Tue, Apr 28, 2020 at 02:54:59AM +0200, Thomas Gleixner wrote:
+> Ashok,
+> 
+> "Raj, Ashok" <ashok.raj@intel.com> writes:
+> > On Sun, Apr 26, 2020 at 05:25:06PM +0200, Thomas Gleixner wrote:
+> >> Just for the record I also suggested to have a proper errorcode in the
+> >> #GP for ENQCMD and I surely did not suggest to avoid decoding the user
+> >> instructions.
+> >
+> > We certainly discussed the possiblity of adding an error code to 
+> > identiy #GP due to ENQCMD with our HW architects. 
+> >
+> > There are only a few cases that have an error code, like move to segment
+> > with an invalid value for instance. There were a few but i don't
+> > recall that entire list. 
+> >
+> > Since the error code is 0 in most places, there isn't plumbing in hw to return
+> > this value in all cases. It appeared that due to some uarch reasons it
+> > wasn't as simple as it appears to /me sw kinds :-)
+> 
+> Sigh.
+> 
+> > So after some internal discussion we decided to take the current
+> > approach. Its possible that if the #GP was due to some other reason
+> > we might #GP another time. Since this wasn't perf or speed path we took
+> > this lazy approach.
+> 
+> I know that the HW people's mantra is that everything can be fixed in
+> software and therefore slapping new features into the CPUs can be done
+> without thinking about the consequeses.
+> 
+> But we all know from painful experience that this is fundamentally wrong
+> unless there is a really compelling reason.
 
-diff --git a/tools/testing/selftests/net/tls.c b/tools/testing/selftests/net/tls.c
-index 0ea44d975b6c..c5282e62df75 100644
---- a/tools/testing/selftests/net/tls.c
-+++ b/tools/testing/selftests/net/tls.c
-@@ -101,6 +101,21 @@ FIXTURE(tls)
- 	bool notls;
- };
- 
-+FIXTURE_VARIANT(tls)
-+{
-+	unsigned int tls_version;
-+};
-+
-+FIXTURE_VARIANT_ADD(tls, 12)
-+{
-+	.tls_version = TLS_1_2_VERSION,
-+};
-+
-+FIXTURE_VARIANT_ADD(tls, 13)
-+{
-+	.tls_version = TLS_1_3_VERSION,
-+};
-+
- FIXTURE_SETUP(tls)
- {
- 	struct tls12_crypto_info_aes_gcm_128 tls12;
-@@ -112,7 +127,7 @@ FIXTURE_SETUP(tls)
- 	len = sizeof(addr);
- 
- 	memset(&tls12, 0, sizeof(tls12));
--	tls12.info.version = TLS_1_3_VERSION;
-+	tls12.info.version = variant->tls_version;
- 	tls12.info.cipher_type = TLS_CIPHER_AES_GCM_128;
- 
- 	addr.sin_family = AF_INET;
-@@ -733,7 +748,7 @@ TEST_F(tls, bidir)
- 		struct tls12_crypto_info_aes_gcm_128 tls12;
- 
- 		memset(&tls12, 0, sizeof(tls12));
--		tls12.info.version = TLS_1_3_VERSION;
-+		tls12.info.version = variant->tls_version;
- 		tls12.info.cipher_type = TLS_CIPHER_AES_GCM_128;
- 
- 		ret = setsockopt(self->fd, SOL_TLS, TLS_RX, &tls12,
-@@ -1258,78 +1273,4 @@ TEST(keysizes) {
- 	close(cfd);
- }
- 
--TEST(tls12) {
--	int fd, cfd;
--	bool notls;
--
--	struct tls12_crypto_info_aes_gcm_128 tls12;
--	struct sockaddr_in addr;
--	socklen_t len;
--	int sfd, ret;
--
--	notls = false;
--	len = sizeof(addr);
--
--	memset(&tls12, 0, sizeof(tls12));
--	tls12.info.version = TLS_1_2_VERSION;
--	tls12.info.cipher_type = TLS_CIPHER_AES_GCM_128;
--
--	addr.sin_family = AF_INET;
--	addr.sin_addr.s_addr = htonl(INADDR_ANY);
--	addr.sin_port = 0;
--
--	fd = socket(AF_INET, SOCK_STREAM, 0);
--	sfd = socket(AF_INET, SOCK_STREAM, 0);
--
--	ret = bind(sfd, &addr, sizeof(addr));
--	ASSERT_EQ(ret, 0);
--	ret = listen(sfd, 10);
--	ASSERT_EQ(ret, 0);
--
--	ret = getsockname(sfd, &addr, &len);
--	ASSERT_EQ(ret, 0);
--
--	ret = connect(fd, &addr, sizeof(addr));
--	ASSERT_EQ(ret, 0);
--
--	ret = setsockopt(fd, IPPROTO_TCP, TCP_ULP, "tls", sizeof("tls"));
--	if (ret != 0) {
--		notls = true;
--		printf("Failure setting TCP_ULP, testing without tls\n");
--	}
--
--	if (!notls) {
--		ret = setsockopt(fd, SOL_TLS, TLS_TX, &tls12,
--				 sizeof(tls12));
--		ASSERT_EQ(ret, 0);
--	}
--
--	cfd = accept(sfd, &addr, &len);
--	ASSERT_GE(cfd, 0);
--
--	if (!notls) {
--		ret = setsockopt(cfd, IPPROTO_TCP, TCP_ULP, "tls",
--				 sizeof("tls"));
--		ASSERT_EQ(ret, 0);
--
--		ret = setsockopt(cfd, SOL_TLS, TLS_RX, &tls12,
--				 sizeof(tls12));
--		ASSERT_EQ(ret, 0);
--	}
--
--	close(sfd);
--
--	char const *test_str = "test_read";
--	int send_len = 10;
--	char buf[10];
--
--	send_len = strlen(test_str) + 1;
--	EXPECT_EQ(send(fd, test_str, send_len, 0), send_len);
--	EXPECT_NE(recv(cfd, buf, send_len, 0), -1);
--	EXPECT_EQ(memcmp(buf, test_str, send_len), 0);
--
--	close(fd);
--	close(cfd);
--}
--
- TEST_HARNESS_MAIN
--- 
-2.25.4
+:-)... I'm still looking for the quote from Linus about RAS before
+he went to behavior school.
 
+
+> 
+> For new features there is absolutely no reason at all.
+> 
+> Can HW people pretty please understand that hardware and software have
+> to be co-designed and not dictated by 'some uarch reasons'. This is
+> nothing fundamentally new. This problem existed 30+ years ago, is well
+> documented and has been ignored forever. I'm tired of that, really.
+> 
+> But as this seems to be unsolvable for the problem at hand can you
+> please document the inability, unwillingness or whatever in the
+> changelog?
+
+Most certainly!
+
+> 
+> The question why this brand new_ ENQCMD + invalid PASID induced #GP does
+> not generate an useful error code and needs heuristics to be dealt with
+> is pretty obvious.
+> 
+
+Cheers,
+Ashok
