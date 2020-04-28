@@ -2,156 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC411BC562
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA801BC5AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728296AbgD1Qiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 12:38:54 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:47834 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728037AbgD1Qix (ORCPT
+        id S1728510AbgD1Qq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 12:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728293AbgD1Qq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 12:38:53 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03SGcWQr007658;
-        Tue, 28 Apr 2020 18:38:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=ho062TRS0YdQ6wUnxTpdhRHNh/WM5Lgej+B4b4n+1WU=;
- b=Y4JojaNBtGP9CoyX+sKdfiEZeYVNiE9SsaFXBE4sApdQ179oDInnlsJfgIXrRuYmOkuq
- PpLyX1racB7DlJrMZ55V4evElOtb9DjKjwj99Jed3EPuNJWxWiHxZbAJ7GTfqWSfkuGX
- sAYKpOfqtCJxYrSz91Oj+jGyv9o7sy5UgYrIzibaiKunR9TMB4tm+n7IRTya7TEs0l4f
- TX6ZD9mrw+Pb2l7/zuoM/NhG9PJkf6yobA7mUMfoq2vA5KBItp+OZibVbQv/WZw9GfSA
- bG9+FPzeHXZNj/6XWPERS5fqs4VuRFeHQ1QQ5T7ZwRODPgJDfME3ZMF+X/fcPjAFYSTQ LQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30mhjws5jb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Apr 2020 18:38:44 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A9B9310002A;
-        Tue, 28 Apr 2020 18:38:43 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 95B912B5F4B;
-        Tue, 28 Apr 2020 18:38:43 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.44) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 28 Apr
- 2020 18:38:42 +0200
-Subject: Re: [PATCH v3 03/14] remoteproc: Add new operation and flags for
- synchronistation
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <bjorn.andersson@linaro.org>, <ohad@wizery.com>
-CC:     <loic.pallardy@st.com>, <s-anna@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <corbet@lwn.net>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200424200135.28825-1-mathieu.poirier@linaro.org>
- <20200424200135.28825-4-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <7c5c8d5e-feb7-74ad-a2eb-1ccb8192b0ae@st.com>
-Date:   Tue, 28 Apr 2020 18:38:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 28 Apr 2020 12:46:58 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F237BC03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 09:46:57 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id e2so17732708eje.13
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 09:46:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lHXIK5KG4MM6NL6ZnqDyJCo1++3O5tMDxa0Oox/FCk0=;
+        b=Qu+2TQv0OYiYE16287sogB8uDjS8JZz9MFHDIwMmE4QWXix8Yj3Rir/mLPwz00RjUg
+         hnk6uNKaE0hzn5zlYIZTWKFCs2u3Lk4U9c8hgRG4h/3lWuPoDD91flVvK19N8QzMsCzs
+         vJ6aDNedAL1ptIzuTwxhsiNW9/aiFum9pNkTk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lHXIK5KG4MM6NL6ZnqDyJCo1++3O5tMDxa0Oox/FCk0=;
+        b=Mpg84VHDhllpicR0qpWSh1OJSchjGlzKYqkLvmxHqSu93iwoPa8kGfdSPEyqnkRW4O
+         zGKNken+2MJ0YLMk0kGR6dRC4oEBQAbEoN1E5F2aNZjBoEBHCRVurODalegnu1kh6gzV
+         2Ny9Ioc+LgyDDy3RhVsWF1ruINrs8zV7m4aSSjRqRDeopTdLjPLhODXCGkR+eh8pRI9P
+         ag1xE1iPEN0N00/a3FDxOBJbGU0y5FQoFHXb+qzOEKRGLjCBWoZpx2DqQ27kb++VnrQC
+         xSvZUufRIV2ggt+GOHsJxURbnYGgFY8z1L6cs7sqto9hOVNdxXFjN0oAv+PknbKsbR/i
+         H6Rg==
+X-Gm-Message-State: AGi0PuYcb4HPPXNKruH2bfZa4uJmlpicU7u3lMHkOdVp+0ASEBhzRQr+
+        1HVBRlpPy9bvOny3MJ+O1rOQYzJqmlo=
+X-Google-Smtp-Source: APiQypLHGz+2/bjKHfeRHjP/I/QpclJ3IINPAXyZXEbhIhL9ymLEd5rY0XdrpOVjbhyVuji5154r8w==
+X-Received: by 2002:a17:906:d0da:: with SMTP id bq26mr24781564ejb.344.1588092416307;
+        Tue, 28 Apr 2020 09:46:56 -0700 (PDT)
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com. [209.85.208.50])
+        by smtp.gmail.com with ESMTPSA id d18sm299566eds.15.2020.04.28.09.46.55
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Apr 2020 09:46:56 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id s10so16923458edy.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 09:46:55 -0700 (PDT)
+X-Received: by 2002:a19:240a:: with SMTP id k10mr19924040lfk.30.1588092037785;
+ Tue, 28 Apr 2020 09:40:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200424200135.28825-4-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-28_11:2020-04-28,2020-04-28 signatures=0
+References: <20200428032745.133556-1-jannh@google.com> <20200428032745.133556-3-jannh@google.com>
+ <CAHk-=wjSYTpTH0X8EcGGJD84tsJS62BN3tC6NfzmjvXdSkFVxg@mail.gmail.com> <94141fbb-9559-1851-54c1-cdc5fc529a1a@landley.net>
+In-Reply-To: <94141fbb-9559-1851-54c1-cdc5fc529a1a@landley.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 28 Apr 2020 09:40:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg2uw09tJMKTooQBr=AJPzzLTaq95b+SSS513Gm0gy5sw@mail.gmail.com>
+Message-ID: <CAHk-=wg2uw09tJMKTooQBr=AJPzzLTaq95b+SSS513Gm0gy5sw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] coredump: Fix handling of partial writes in dump_emit()
+To:     Rob Landley <rob@landley.net>
+Cc:     Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        linux-c6x-dev@linux-c6x.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 28, 2020 at 9:34 AM Rob Landley <rob@landley.net> wrote:
+>
+> Writes to a local filesystem should never be short unless disk full/error.
 
+Well, that code is definitely supposed to also write to pipes.
 
-On 4/24/20 10:01 PM, Mathieu Poirier wrote:
-> Add a new sync_ops to support use cases where the remoteproc
-> core is synchronising with the remote processor.  Exactly when to use
-> the synchronisation operations is directed by the flags in structure
-> rproc_sync_flags.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  include/linux/remoteproc.h | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> index ac4082f12e8b..ceb3b2bba824 100644
-> --- a/include/linux/remoteproc.h
-> +++ b/include/linux/remoteproc.h
-> @@ -353,6 +353,23 @@ enum rsc_handling_status {
->  	RSC_IGNORED	= 1,
->  };
->  
-> +/**
-> + * struct rproc_sync_flags - platform specific flags indicating which
-> + *			      rproc_ops to use at specific times during
-> + *			      the rproc lifecycle.
-> + * @on_init: true if synchronising with the remote processor at
-> + *	     initialisation time
-> + * @after_stop: true if synchronising with the remote processor after it was
-> + *		stopped from the cmmand line
-typo command
-> + * @after_crash: true if synchronising with the remote processor after
-> + *		 it has crashed
-> + */
-> +struct rproc_sync_flags {
-> +	bool on_init;
-> +	bool after_stop;
-> +	bool after_crash;
-> +};
-> +
-how about a bit field instead (just a proposition)?
-Platform driver would set the sync flag and rproc_set_sync_flag could be a 
-simple mask instead of a switch case.
+But it also has "was I interrupted" logic, which stops the core dump.
 
-Is it possible to split this patch in a different ways because difficult to understand as
-rproc_sync_flags seems not used before 
-[PATCH v3 09/14] remoteproc: Deal with synchronisation when crashing
+So short writes can very much happen, it's just that they also imply
+that the core dump should be aborted.
 
-Thanks
-Arnaud  
+So the loop seems to be unnecessary. The situations where short writes
+can happen are all the same situations where we want to abort anyway,
+so the loop count should probably always be just one.
 
->  /**
->   * struct rproc_ops - platform-specific device handlers
->   * @start:	power on the device and boot it
-> @@ -459,6 +476,9 @@ struct rproc_dump_segment {
->   * @firmware: name of firmware file to be loaded
->   * @priv: private data which belongs to the platform-specific rproc module
->   * @ops: platform-specific start/stop rproc handlers
-> + * @sync_ops: platform-specific start/stop rproc handlers when
-> + *	      synchronising with a remote processor.
-> + * @sync_flags: Determine the rproc_ops to choose in specific states.
->   * @dev: virtual device for refcounting and common remoteproc behavior
->   * @power: refcount of users who need this rproc powered up
->   * @state: state of the device
-> @@ -482,6 +502,7 @@ struct rproc_dump_segment {
->   * @table_sz: size of @cached_table
->   * @has_iommu: flag to indicate if remote processor is behind an MMU
->   * @auto_boot: flag to indicate if remote processor should be auto-started
-> + * @sync_with_rproc: true if currently synchronising with the rproc
->   * @dump_segments: list of segments in the firmware
->   * @nb_vdev: number of vdev currently handled by rproc
->   */
-> @@ -492,6 +513,8 @@ struct rproc {
->  	const char *firmware;
->  	void *priv;
->  	struct rproc_ops *ops;
-> +	struct rproc_ops *sync_ops;
-> +	struct rproc_sync_flags sync_flags;
->  	struct device dev;
->  	atomic_t power;
->  	unsigned int state;
-> @@ -515,6 +538,7 @@ struct rproc {
->  	size_t table_sz;
->  	bool has_iommu;
->  	bool auto_boot;
-> +	bool sync_with_rproc;
->  	struct list_head dump_segments;
->  	int nb_vdev;
->  	u8 elf_class;
-> 
+The same would go for any potential network filesystem with the
+traditional NFS intr-like behavior.
+
+            Linus
