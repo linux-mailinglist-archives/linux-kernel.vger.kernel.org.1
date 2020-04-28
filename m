@@ -2,166 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15EE1BC410
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E1B1BC40A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728448AbgD1Ptb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 11:49:31 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:44736 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728297AbgD1Pta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 11:49:30 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1AA1C20002A;
-        Tue, 28 Apr 2020 17:49:28 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 0CEF9200019;
-        Tue, 28 Apr 2020 17:49:28 +0200 (CEST)
-Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 240892030C;
-        Tue, 28 Apr 2020 17:49:27 +0200 (CEST)
-From:   Iuliana Prodan <iuliana.prodan@nxp.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     Aymen Sghaier <aymen.sghaier@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx <linux-imx@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>
-Subject: [PATCH v6 3/3] crypto: engine - support for batch requests
-Date:   Tue, 28 Apr 2020 18:49:05 +0300
-Message-Id: <1588088945-9067-4-git-send-email-iuliana.prodan@nxp.com>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1588088945-9067-1-git-send-email-iuliana.prodan@nxp.com>
-References: <1588088945-9067-1-git-send-email-iuliana.prodan@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728329AbgD1PtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 11:49:19 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26477 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727860AbgD1PtR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 11:49:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588088956;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=v2/K5uPFOC3xkb96FgK9bRPm2O5D0n0FhbGzP2S0ozQ=;
+        b=TRA87ZpCeQsey3moCnl/ziy5LVqrBhNGsUeMn7mzzzeNcM0LuIXvWmg1dki0t9n/KYejyC
+        VAoy78mim3UZiIIMwgbjPvAJI58EYnYMH15Rhhe26MtJpfavMzIF8o64Em0jOJG7bKObD8
+        oaJCOK4JqZyxtjjEOjpc9xwv0UIx7cs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-fEAv9dx4M3eIBZgtKgb0eA-1; Tue, 28 Apr 2020 11:49:13 -0400
+X-MC-Unique: fEAv9dx4M3eIBZgtKgb0eA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C4C7108BD1B;
+        Tue, 28 Apr 2020 15:49:12 +0000 (UTC)
+Received: from treble (ovpn-112-209.rdu2.redhat.com [10.10.112.209])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1AB4019C4F;
+        Tue, 28 Apr 2020 15:49:11 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 10:49:09 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jann Horn <jannh@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        alexandre.chartre@oracle.com
+Subject: Re: x86 entry perf unwinding failure (missing IRET_REGS annotation
+ on stack switch?)
+Message-ID: <20200428154909.4cjwetyyb2zhnq5i@treble>
+References: <CAG48ez1rkN0YU-ieBaUZDKFYG5XFnd7dhDjSDdRmVfWyQzsA5g@mail.gmail.com>
+ <20200302151829.brlkedossh7qs47s@treble>
+ <20200302155239.7ww7jfeu4yeevpkb@treble>
+ <20200428070450.w5l5ey54dtmqy5ph@treble>
+ <20200428124627.GC13558@hirez.programming.kicks-ass.net>
+ <20200428141614.GA13616@hirez.programming.kicks-ass.net>
+ <20200428143157.nxxrgfpo3leia2kr@treble>
+ <20200428152552.GD13592@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200428152552.GD13592@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added support for batch requests, per crypto engine.
-A new callback is added, do_batch_requests, which executes a
-batch of requests. This has the crypto_engine structure as argument
-(for cases when more than one crypto-engine is used).
-The crypto_engine_alloc_init_and_set function, initializes
-crypto-engine, but also, sets the do_batch_requests callback.
-On crypto_pump_requests, if do_batch_requests callback is
-implemented in a driver, this will be executed. The link between
-the requests will be done in driver, if possible.
-do_batch_requests is available only if the hardware has support
-for multiple request.
+On Tue, Apr 28, 2020 at 05:25:52PM +0200, Peter Zijlstra wrote:
+> On Tue, Apr 28, 2020 at 09:31:57AM -0500, Josh Poimboeuf wrote:
+> > That's quite the monstrosity, and I still don't see the point.  I
+> > thought we decided to just disallow CFI changes in alternatives anyway?
+> > That can be done much simpler.
+> 
+> Something like so then ?
+> 
+> ---
+> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+> index 8443ec690051..d14d83e6edb0 100644
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -940,6 +940,7 @@ static int handle_group_alt(struct objtool_file *file,
+>  
+>  		last_new_insn = insn;
+>  
+> +		insn->alt_group = true;
+>  		insn->ignore = orig_insn->ignore_alts;
+>  		insn->func = orig_insn->func;
+>  
+> @@ -2242,6 +2243,11 @@ static int handle_insn_ops(struct instruction *insn, struct insn_state *state)
+>  	list_for_each_entry(op, &insn->stack_ops, list) {
+>  		int res;
+>  
+> +		if (insn->alt_group) {
+> +			WARN_FUNC("alternative has CFI", insn->sec, insn->offset);
+> +			return 1;
+> +		}
+> +
 
-Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
----
- crypto/crypto_engine.c  | 27 ++++++++++++++++++++++++++-
- include/crypto/engine.h |  5 +++++
- 2 files changed, 31 insertions(+), 1 deletion(-)
+ACK (separate patch)
 
-diff --git a/crypto/crypto_engine.c b/crypto/crypto_engine.c
-index ee19273..412149e 100644
---- a/crypto/crypto_engine.c
-+++ b/crypto/crypto_engine.c
-@@ -227,6 +227,18 @@ static void crypto_pump_requests(struct crypto_engine *engine,
- 
- out:
- 	spin_unlock_irqrestore(&engine->queue_lock, flags);
-+
-+	/*
-+	 * Batch requests is possible only if
-+	 * hardware can enqueue multiple requests
-+	 */
-+	if (engine->do_batch_requests) {
-+		ret = engine->do_batch_requests(engine);
-+		if (ret)
-+			dev_err(engine->dev, "failed to do batch requests: %d\n",
-+				ret);
-+	}
-+
- 	return;
- }
- 
-@@ -456,6 +468,12 @@ EXPORT_SYMBOL_GPL(crypto_engine_stop);
-  * crypto-engine queue.
-  * @dev: the device attached with one hardware engine
-  * @retry_support: whether hardware has support for retry mechanism
-+ * @cbk_do_batch: pointer to a callback function to be invoked when executing a
-+ *                a batch of requests.
-+ *                This has the form:
-+ *                callback(struct crypto_engine *engine)
-+ *                where:
-+ *                @engine: the crypto engine structure.
-  * @rt: whether this queue is set to run as a realtime task
-  * @qlen: maximum size of the crypto-engine queue
-  *
-@@ -464,6 +482,7 @@ EXPORT_SYMBOL_GPL(crypto_engine_stop);
-  */
- struct crypto_engine *crypto_engine_alloc_init_and_set(struct device *dev,
- 						       bool retry_support,
-+						       int (*cbk_do_batch)(struct crypto_engine *engine),
- 						       bool rt, int qlen)
- {
- 	struct sched_param param = { .sched_priority = MAX_RT_PRIO / 2 };
-@@ -483,6 +502,12 @@ struct crypto_engine *crypto_engine_alloc_init_and_set(struct device *dev,
- 	engine->idling = false;
- 	engine->retry_support = retry_support;
- 	engine->priv_data = dev;
-+	/*
-+	 * Batch requests is possible only if
-+	 * hardware has support for retry mechanism.
-+	 */
-+	engine->do_batch_requests = retry_support ? cbk_do_batch : NULL;
-+
- 	snprintf(engine->name, sizeof(engine->name),
- 		 "%s-engine", dev_name(dev));
- 
-@@ -516,7 +541,7 @@ EXPORT_SYMBOL_GPL(crypto_engine_alloc_init_and_set);
-  */
- struct crypto_engine *crypto_engine_alloc_init(struct device *dev, bool rt)
- {
--	return crypto_engine_alloc_init_and_set(dev, false, rt,
-+	return crypto_engine_alloc_init_and_set(dev, false, NULL, rt,
- 						CRYPTO_ENGINE_MAX_QLEN);
- }
- EXPORT_SYMBOL_GPL(crypto_engine_alloc_init);
-diff --git a/include/crypto/engine.h b/include/crypto/engine.h
-index b92d7ff..3f06e40 100644
---- a/include/crypto/engine.h
-+++ b/include/crypto/engine.h
-@@ -37,6 +37,8 @@
-  * @unprepare_crypt_hardware: there are currently no more requests on the
-  * queue so the subsystem notifies the driver that it may relax the
-  * hardware by issuing this call
-+ * @do_batch_requests: execute a batch of requests. Depends on multiple
-+ * requests support.
-  * @kworker: kthread worker struct for request pump
-  * @pump_requests: work struct for scheduling work to the request pump
-  * @priv_data: the engine private data
-@@ -59,6 +61,8 @@ struct crypto_engine {
- 
- 	int (*prepare_crypt_hardware)(struct crypto_engine *engine);
- 	int (*unprepare_crypt_hardware)(struct crypto_engine *engine);
-+	int (*do_batch_requests)(struct crypto_engine *engine);
-+
- 
- 	struct kthread_worker           *kworker;
- 	struct kthread_work             pump_requests;
-@@ -107,6 +111,7 @@ int crypto_engine_stop(struct crypto_engine *engine);
- struct crypto_engine *crypto_engine_alloc_init(struct device *dev, bool rt);
- struct crypto_engine *crypto_engine_alloc_init_and_set(struct device *dev,
- 						       bool retry_support,
-+						       int (*cbk_do_batch)(struct crypto_engine *engine),
- 						       bool rt, int qlen);
- int crypto_engine_exit(struct crypto_engine *engine);
- 
+>  		res = update_cfi_state(insn, &state->cfi, op);
+>  		if (res)
+>  			return res;
+> @@ -2439,12 +2445,6 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+>  
+>  	sec = insn->sec;
+>  
+> -	if (insn->alt_group && list_empty(&insn->alts)) {
+> -		WARN_FUNC("don't know how to handle branch to middle of alternative instruction group",
+> -			  sec, insn->offset);
+> -		return 1;
+> -	}
+> -
+
+ACK (separate patch)
+
+>  	while (1) {
+>  		next_insn = next_insn_same_sec(file, insn);
+>  
+> @@ -2494,8 +2494,16 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+>  				}
+>  			}
+>  
+> -			if (skip_orig)
+> +			if (skip_orig) {
+> +				struct instruction *prev_insn = insn;
+> +				sec_for_each_insn_continue(file, insn) {
+> +					if (!insn->alt_group)
+> +						break;
+> +					if (!insn->visited)
+> +						insn->cfi = prev_insn->cfi;
+> +				}
+>  				return 0;
+> +			}
+
+NACK :-)
+
+What happens if you have two alternatives adjacent to each other (which
+can definitely happen in this scenario)?
+
+I still like my patch, at least the hack is done before the validate
+code, so validate_branch() itself is simpler.
+
 -- 
-2.1.0
+Josh
 
