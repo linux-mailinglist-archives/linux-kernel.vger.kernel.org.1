@@ -2,151 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023021BBF19
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB131BBF2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgD1NVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 09:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727804AbgD1NVJ (ORCPT
+        id S1726924AbgD1NXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 09:23:10 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28319 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726798AbgD1NXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 09:21:09 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7698DC03C1AB;
-        Tue, 28 Apr 2020 06:21:08 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id h11so8348810plr.11;
-        Tue, 28 Apr 2020 06:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vloW/Le5uTQWcHYDSa4UBFwJd+x/1yJE7+IrW0Uir68=;
-        b=uugDtdaaPea9Qem1yWXNMLi9gRG0GI/Vgl/Z+2D8dNgR0YSKpud6IPhbq5RS8gDIWD
-         zdrj7X8QwHwITgj6rGtnWk9zsSUe+HdFNCjSJgQycxot+o2TGvW23sKBdrguYrSdNXYW
-         kyPeeRIVqQ4jme4VsO/ZAU0BbglFDS24Lg4v/vb9GO3GmRnykawt7JA36rysNz8P02yx
-         QChX37YVxcMRuhA6NgC8s81uDJU3cyxsab1R1vx0DHFubvApL6dvSBOXChEPEbdHtvlb
-         rUrB40lVSAlmD+hrnrNFidfvV/YfhQjh3KiwIOO5XfmR3Sy8QiL2HnXDuhL7p0kxD2Hf
-         2/hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vloW/Le5uTQWcHYDSa4UBFwJd+x/1yJE7+IrW0Uir68=;
-        b=uCU74+P03q+UTYRGdURrdZWRx5L1fyrmiAc5sl/D+WQ79CiWcAa6YSMJTRZRAGSHHn
-         Pc2H7U2c3id/cmhw37erhn1wKa4TNwqz1nvJSTpveSbLNiOG0sp2Ixp+G7hhltYSOA+Q
-         zNzGp0mvGd99W9jV0ciNCEDVYUuhpDW/GUArBgRLVpF2dZA557iFQ6s2PivchjdUjQlF
-         RBa4VTjBAX+CqrF60wydHPOZfVQ1MwUupStrG+EoG8mhFLyh9VD9tF78GXB1ddecB+tW
-         5kHzv+L1xQaMJeLyINQZlVJ1sDHe5iTV1lIxWmJmTrN5eyiv4/rCUsthrUH9ptoA87Yy
-         Ql/w==
-X-Gm-Message-State: AGi0PuYtnumI1dIT0ptp9tyaXDL7mVl8p/jh+zBHojh3x7uO55jEDJH0
-        EIF6xgzYNUsCf33bZ6lYHSk=
-X-Google-Smtp-Source: APiQypIcd+DvKwzZS/3gA8jfo7SAiP8Tv8dawrVg3z4qxHYJvH/TJSd8+LSZgGW5y8rVr0Og2hpZLQ==
-X-Received: by 2002:a17:90a:3268:: with SMTP id k95mr4895519pjb.185.1588080067940;
-        Tue, 28 Apr 2020 06:21:07 -0700 (PDT)
-Received: from gnu-cfl-2.localdomain (c-69-181-90-243.hsd1.ca.comcast.net. [69.181.90.243])
-        by smtp.gmail.com with ESMTPSA id r12sm12957662pgv.59.2020.04.28.06.21.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 06:21:07 -0700 (PDT)
-Received: from gnu-cfl-2.localdomain (localhost [IPv6:::1])
-        by gnu-cfl-2.localdomain (Postfix) with ESMTP id 511E7C037D;
-        Tue, 28 Apr 2020 06:21:06 -0700 (PDT)
-From:   "H.J. Lu" <hjl.tools@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Kees Cook <keescook@chromium.org>,
-        Borislav Petkov <bp@suse.de>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 2/2] Discard .note.gnu.property sections in generic NOTES
-Date:   Tue, 28 Apr 2020 06:21:05 -0700
-Message-Id: <20200428132105.170886-2-hjl.tools@gmail.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20200428132105.170886-1-hjl.tools@gmail.com>
-References: <20200428132105.170886-1-hjl.tools@gmail.com>
+        Tue, 28 Apr 2020 09:23:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588080186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QeTe1VZqdF2mNKJQkDt1Swo6+XvFwxRuyivMd/xg+yI=;
+        b=JmW/RRFy2RlWABXjylI5O4ahUJgpzUHrcE0Lsa6O0DfVKxaF4ZanTlOMlWKOUK7jCGuJbI
+        a1zq6MlCGSYnfNSX1W9ArUgy/OEQIB2kOkkIn/GUBeezkqDR111QZCnPV7vLl8HFV819n7
+        peba7IFzr9lYIUY625ns1fFy6fxPc7M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-Nhx-R-eIMdGe82_y6PvUQw-1; Tue, 28 Apr 2020 09:23:04 -0400
+X-MC-Unique: Nhx-R-eIMdGe82_y6PvUQw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A871107ACCA;
+        Tue, 28 Apr 2020 13:23:02 +0000 (UTC)
+Received: from krava (unknown [10.40.196.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 691C85D750;
+        Tue, 28 Apr 2020 13:22:59 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 15:22:57 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Clark Williams <williams@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Song Liu <songliubraving@fb.com>,
+        Wang Nan <wangnan0@huawei.com>
+Subject: Re: [PATCH 7/7] perf record: Introduce --switch-output-event
+Message-ID: <20200428132257.GH1476763@krava>
+References: <20200427211935.25789-1-acme@kernel.org>
+ <20200427211935.25789-8-acme@kernel.org>
+ <20200428094839.GD1476763@krava>
+ <20200428121601.GB2245@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428121601.GB2245@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the command-line option, -mx86-used-note=yes, the x86 assembler
-in binutils 2.32 and above generates a program property note in a note
-section, .note.gnu.property, to encode used x86 ISAs and features.  But
-kernel linker script only contains a single NOTE segment:
+On Tue, Apr 28, 2020 at 09:16:01AM -0300, Arnaldo Carvalho de Melo wrote:
 
-PHDRS {
- text PT_LOAD FLAGS(5);
- data PT_LOAD FLAGS(6);
- percpu PT_LOAD FLAGS(6);
- init PT_LOAD FLAGS(7);
- note PT_NOTE FLAGS(0);
-}
-SECTIONS
-{
-...
- .notes : AT(ADDR(.notes) - 0xffffffff80000000) { __start_notes = .; KEEP(*(.not
-e.*)) __stop_notes = .; } :text :note
-...
-}
+SNIP
 
-The NOTE segment generated by kernel linker script is aligned to 4 bytes.
-But .note.gnu.property section must be aligned to 8 bytes on x86-64 and
-we get
+> > > +				pr_err("Couldn't create side band evlist.\n.");
+> > > +				goto out_child;
+> > > +			}
+> > >  		}
+> > >  
+> > >  		if (evlist__add_bpf_sb_event(rec->sb_evlist, &session->header.env)) {
+> > 
+> > it's getting bigger, I wonder we should put all the sb_* setup in
+> > separated functions like sb_start/sb_stop
+> 
+> Well, the rec->thread_id = pthread_self(); part is just for reusing a
+> 'perf record' specific mechanism, what to do when the event appears in
+> the side band thread ring buffer, the evlist__set_cb() also is related
+> to that, moving thread_id to evlist seems too much at this time.
 
-[hjl@gnu-skx-1 linux]$ readelf -n vmlinux
+hum, I meant record specific static functions sb_start/sb_stop,
+not inside evlist.. just to have it separated
 
-Displaying notes found in: .notes
-  Owner                Data size Description
-  Xen                  0x00000006 Unknown note type: (0x00000006)
-   description data: 6c 69 6e 75 78 00
-  Xen                  0x00000004 Unknown note type: (0x00000007)
-   description data: 32 2e 36 00
-  xen-3.0              0x00000005 Unknown note type: (0x006e6558)
-   description data: 08 00 00 00 03
-readelf: Warning: note with invalid namesz and/or descsz found at offset 0x50
-readelf: Warning:  type: 0xffffffff, namesize: 0x006e6558, descsize:
-0x80000000, alignment: 8
-[hjl@gnu-skx-1 linux]$
+> 
+> > > @@ -2179,10 +2199,19 @@ static int switch_output_setup(struct record *rec)
+> > >  	};
+> > >  	unsigned long val;
+> > >  
+> > > +	/*
+> > > +	 * If we're using --switch-output-events, then we imply its 
+> > > +	 * --switch-output=signal, as we'll send a SIGUSR2 from the side band
+> > > +	 *  thread to its parent.
+> > > +	 */
+> > > +	if (rec->sb_evlist != NULL)
+> > > +		goto do_signal;
+> > > +
+> > >  	if (!s->set)
+> > >  		return 0;
+>  
+> > hum, it looks like this jump is not necessay and can be avoided
+> > by some bool checks.. could we add some bool when --switch-output-event
+> > is used, so we don't depend on wether rec->sb_evlist was allocated for
+> > whatever reason?
+> 
+> If rec->sb_evlist is NULL, then there was no --switch-output-event
+> passed... The only advantage in adding the complexity below would be if
+> we had rec->switch_output_event_set which would clarify that sb_evlist
+> is not used only for --switch-output-event, to make things clearer.
+> 
+> And this still leaves us with the jump, otherwise we would have to test
+> it twice, right?
 
-Since note.gnu.property section in kernel image is never used, this patch
-discards .note.gnu.property sections in kernel linker script by adding
+still I like the idea of checking bool twice then adding jumps
 
-/DISCARD/ : {
-  *(.note.gnu.property)
-}
+> 
+> I think I'll separate the patch adding OPT_CALLBACK_SET(), then fold the
+> switch_output_event_set addition to builtin-record, ok?
 
-before kernel NOTE segment in generic NOTES.
+ok, or set the bool directly in the callback, both works for me ;-)
 
-Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- include/asm-generic/vmlinux.lds.h | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 71e387a5fe90..95cd678428f4 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -833,7 +833,14 @@
- #define TRACEDATA
- #endif
- 
-+/*
-+ * Discard .note.gnu.property sections which are unused and have
-+ * different alignment requirement from kernel note sections.
-+ */
- #define NOTES								\
-+	/DISCARD/ : {							\
-+		*(.note.gnu.property)					\
-+	}								\
- 	.notes : AT(ADDR(.notes) - LOAD_OFFSET) {			\
- 		__start_notes = .;					\
- 		KEEP(*(.note.*))					\
--- 
-2.25.4
+thanks,
+jirka
 
