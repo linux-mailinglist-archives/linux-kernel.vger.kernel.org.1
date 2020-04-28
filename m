@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1D91BC0B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2081BC0A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgD1OIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:08:25 -0400
-Received: from smtpout1.mo803.mail-out.ovh.net ([79.137.123.219]:47039 "EHLO
-        smtpout1.mo803.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727807AbgD1OIY (ORCPT
+        id S1728092AbgD1OHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:07:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbgD1OHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:08:24 -0400
-Received: from pro2.mail.ovh.net (unknown [10.108.4.3])
-        by mo803.mail-out.ovh.net (Postfix) with ESMTPS id 24867500160D;
-        Tue, 28 Apr 2020 16:08:22 +0200 (CEST)
-Received: from localhost (89.70.31.203) by DAG2EX1.emp2.local (172.16.2.11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1847.3; Tue, 28 Apr
- 2020 16:08:21 +0200
-Date:   Tue, 28 Apr 2020 16:06:53 +0200
-From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH 1/6] iio: chemical: scd30: add core driver
-Message-ID: <20200428140653.GA10280@arch>
-References: <20200422141135.86419-1-tomasz.duszynski@octakon.com>
- <20200422141135.86419-2-tomasz.duszynski@octakon.com>
- <CAHp75VcbaGYj76qkDJnTnuG5SM215qVmFo7FLR6YzHA37PgF_g@mail.gmail.com>
- <20200424190413.GA2731@arch>
- <CAHp75Vdajf7Ci3ytxP7Qs9=fFaxvVBQoL5uh+HUDwxHS5r9MUg@mail.gmail.com>
- <20200425184130.GA37271@arch>
- <CAHp75Vez8wSaYHbXmvfXUS5N+vScQqHGg055DNKrEnCunP7awA@mail.gmail.com>
- <20200428075606.GB6908@arch>
- <CAHp75VdKqVvJg7T=42w1SzKSDbfWjYKMomgQBshiMAW=_e0y_w@mail.gmail.com>
+        Tue, 28 Apr 2020 10:07:33 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF47C03C1A9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 07:07:32 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id k12so17352043qtm.4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 07:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Fy9ivS8QPPwiuCK+doJtcNxxWhUNoFRKbiicEk8ESXs=;
+        b=m03V7Bqnrzc7u1hOHNegLX/D6uRA6iSn20RxNU8QvJ1QFKsSaD70QJ6n/s/UyarsFJ
+         rS4XcjYTl/K8wPVQmsqZcwGaYD4DEF96z+keAqbELkFqDS54ADd792WseZXN6fmhZjdK
+         D2hC44IoUKWdnBAHvC5M60WEYESwUu1VZofGFOKhASI+hQkhe9zsHZWNSdgUyJHHj9IU
+         jBU0JJsSzE8KiMpymNT5HJRvRE8knYzVWS+0PdOCFmaciO0iQSVK5de5Rbf3CztawIBI
+         CdsaCr46/lqDnOLgGy9KBM4Sz16Nusr1wxAiubc5Qq7sqPrR7bFG3qVDFZzxPdIE6WuI
+         tBmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Fy9ivS8QPPwiuCK+doJtcNxxWhUNoFRKbiicEk8ESXs=;
+        b=pA8BFrTpV30uPcxDd4QAlF31FUBTei5kVZacjAAUcFQ9CgE+0Jh57c1oKsTfKxKHBH
+         deyKxeIgB2ZrHJxpzM8JLrVM8pDhvG7GNj6xslZYbLpkiLVr0HqTnFBk2DKR12rBfKa2
+         4+YaQDPCSkCghNvRyyQgCxrbM/sAbNFw7obBG4ApFOC39OflM/mKKSeb9oCCuQmI5/CS
+         qWK2z7SaTuetp9hIp0n0UqHp7LxSDk67gL4GMVjP/V5fmr2nhuEzE8gNLZ6LEIVAS4HH
+         WFLxc1Yrq0tRUY3sF521oW1h8rWUmY9ivSCU6ESgA2EihH3oHt6yL9+aXqGdjtJsVjoA
+         m6PQ==
+X-Gm-Message-State: AGi0PuYcZPGAq3qDBVGwobToRjZsJxWnFf/Yz6zPqwvEpBkuYHIqDnbS
+        BO7IJUqxvkbzgxNRLIckXohJ39j3s+c=
+X-Google-Smtp-Source: APiQypL8JVVgXn1Z0K37nLLf+jtFxuaUMdsGklwooOQS8IA68vzDHPI0GpgPkHQUdRDPsQEeiTjwEQ==
+X-Received: by 2002:ac8:65cc:: with SMTP id t12mr28186660qto.310.1588082850656;
+        Tue, 28 Apr 2020 07:07:30 -0700 (PDT)
+Received: from [192.168.1.10] (c-66-30-119-151.hsd1.ma.comcast.net. [66.30.119.151])
+        by smtp.gmail.com with ESMTPSA id 29sm13492497qkr.109.2020.04.28.07.07.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Apr 2020 07:07:29 -0700 (PDT)
+Subject: Re: [PATCH 1/3] KVM: x86/mmu: Tweak PSE hugepage handling to avoid 2M
+ vs 4M conundrum
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200428005422.4235-1-sean.j.christopherson@intel.com>
+ <20200428005422.4235-2-sean.j.christopherson@intel.com>
+From:   Barret Rhoden <brho@google.com>
+Message-ID: <3e60b34b-e160-2052-3066-c29867ccef64@google.com>
+Date:   Tue, 28 Apr 2020 10:07:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdKqVvJg7T=42w1SzKSDbfWjYKMomgQBshiMAW=_e0y_w@mail.gmail.com>
-X-Originating-IP: [89.70.31.203]
-X-ClientProxiedBy: DAG1EX1.emp2.local (172.16.2.1) To DAG2EX1.emp2.local
- (172.16.2.11)
-X-Ovh-Tracer-Id: 4095460913286765727
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedriedugdejvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkfhggtggujghisehttdertddttdejnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecukfhppedtrddtrddtrddtpdekledrjedtrdefuddrvddtfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehprhhovddrmhgrihhlrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomhdprhgtphhtthhopehjihgtvdefsehkvghrnhgvlhdrohhrgh
+In-Reply-To: <20200428005422.4235-2-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 01:16:47PM +0300, Andy Shevchenko wrote:
-> On Tue, Apr 28, 2020 at 10:57 AM Tomasz Duszynski
-> <tomasz.duszynski@octakon.com> wrote:
-> >
-> > On Sat, Apr 25, 2020 at 09:52:25PM +0300, Andy Shevchenko wrote:
-> > > On Sat, Apr 25, 2020 at 9:42 PM Tomasz Duszynski
-> > > <tomasz.duszynski@octakon.com> wrote:
-> > > > On Sat, Apr 25, 2020 at 02:43:35PM +0300, Andy Shevchenko wrote:
-> > > > > On Fri, Apr 24, 2020 at 10:05 PM Tomasz Duszynski
-> > > > > <tomasz.duszynski@octakon.com> wrote:
-> > > > > > On Wed, Apr 22, 2020 at 10:49:44PM +0300, Andy Shevchenko wrote:
-> > > > > > > On Wed, Apr 22, 2020 at 5:22 PM Tomasz Duszynski
-> > > > > > > <tomasz.duszynski@octakon.com> wrote:
-> > >
-> > > ...
-> > >
-> > > > > > As for ABI that's in
-> > > > > > a separate patch.
-> > > > >
-> > > > > It's not good from bisectability point of view. If by some reason this
-> > > > > patch or documentation patch gets reverted, the other one will be
-> > > > > dangling.
-> > > > > Please, unify them.
-> > > > >
-> > > >
-> > > > Huh? Reverting core and leaving leftovers would be wrong and pointless.
-> > >
-> > > Exactly my point why it should be one patch. To secure impossibility
-> > > to do pointless reverts.
-> > >
-> >
-> > But the same applies to other driver parts like i2c or serial
-> > interfaces. I don't buy it.
->
-> They won't compile without core driver, right? Absence of the
-> documentation OTOH doesn't prevent build.
->
+On 4/27/20 8:54 PM, Sean Christopherson wrote:
+> Change the PSE hugepage handling in walk_addr_generic() to fire on any
+> page level greater than PT_PAGE_TABLE_LEVEL, a.k.a. PG_LEVEL_4K.  PSE
+> paging only has two levels, so "== 2" and "> 1" are functionally the
+> seam, i.e. this is a nop.
+   ^ s/seam/same/
 
-Fair enough.
+Barret
 
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+> 
+> A future patch will drop KVM's PT_*_LEVEL enums in favor of the kernel's
+> PG_LEVEL_* enums, at which point "walker->level == PG_LEVEL_2M" is
+> semantically incorrect (though still functionally ok).
+> 
+> No functional change intended.
+> 
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>   arch/x86/kvm/mmu/paging_tmpl.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+> index efec7d27b8c5..ca39bd315f70 100644
+> --- a/arch/x86/kvm/mmu/paging_tmpl.h
+> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
+> @@ -436,7 +436,7 @@ static int FNAME(walk_addr_generic)(struct guest_walker *walker,
+>   	gfn = gpte_to_gfn_lvl(pte, walker->level);
+>   	gfn += (addr & PT_LVL_OFFSET_MASK(walker->level)) >> PAGE_SHIFT;
+>   
+> -	if (PTTYPE == 32 && walker->level == PT_DIRECTORY_LEVEL && is_cpuid_PSE36())
+> +	if (PTTYPE == 32 && walker->level > PT_PAGE_TABLE_LEVEL && is_cpuid_PSE36())
+>   		gfn += pse36_gfn_delta(pte);
+>   
+>   	real_gpa = mmu->translate_gpa(vcpu, gfn_to_gpa(gfn), access, &walker->fault);
+> 
+
