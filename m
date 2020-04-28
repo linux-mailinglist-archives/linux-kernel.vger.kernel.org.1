@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C827F1BC99E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CED91BC90C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731229AbgD1SnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:43:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35626 "EHLO mail.kernel.org"
+        id S1730602AbgD1SiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:38:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731219AbgD1SnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:43:21 -0400
+        id S1730564AbgD1SiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:38:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DB3120575;
-        Tue, 28 Apr 2020 18:43:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF7122076A;
+        Tue, 28 Apr 2020 18:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099400;
-        bh=aT9hg1sNSwLGT6XuCK3dDWR6DyvsBM1bIaw3wIjbf28=;
+        s=default; t=1588099087;
+        bh=IZgABO1LPc/syRa3S24HgemmK6nBaVBYnir7vQoZ+Kw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CcOT7e2+XBIurtNVMBGnJ858hkWBciuBrtZMzqq5iRNdJEZhbRf5i/cfgjR6akm7O
-         3j6WRTYIZNXA2c65CsIX5f1R8zY6fqR1Coy6ESq8BQVxO+f7Q5YY2DLE+jbWb1FF+n
-         zhqIHbVOCmS1nvhU1LfmHjH+cr73VXPFwt0eIgGE=
+        b=iDyuv85yyLGpXhvO8L0Khhgh4sG63g4mf7NZm9NxW4PCpAJg8I/c7lchRTHUZQm3z
+         99vrWWxm+uOKNJvkA2TT4oUE8uEfO7QsoTRt7/U1FP2H21qYUHp13YJFphmCP0XnT1
+         4UH6DgEBdKRUH4yF2gWSF3WjcR+kyr5wxbrcCM+k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Steve French <stfrench@microsoft.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Aurelien Aptel <aaptel@suse.com>
-Subject: [PATCH 5.4 133/168] cifs: fix uninitialised lease_key in open_shroot()
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 095/131] ALSA: hda/realtek - Fix unexpected init_amp override
 Date:   Tue, 28 Apr 2020 20:25:07 +0200
-Message-Id: <20200428182248.820379456@linuxfoundation.org>
+Message-Id: <20200428182236.981454800@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paulo Alcantara <pc@cjr.nz>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 0fe0781f29dd8ab618999e6bda33c782ebbdb109 upstream.
+commit 67791202c5e069cf2ba51db0718d56c634709e78 upstream.
 
-SMB2_open_init() expects a pre-initialised lease_key when opening a
-file with a lease, so set pfid->lease_key prior to calling it in
-open_shroot().
+The commit 1c76aa5fb48d ("ALSA: hda/realtek - Allow skipping
+spec->init_amp detection") changed the way to assign spec->init_amp
+field that specifies the way to initialize the amp.  Along with the
+change, the commit also replaced a few fixups that set spec->init_amp
+in HDA_FIXUP_ACT_PROBE with HDA_FIXUP_ACT_PRE_PROBE.  This was rather
+aligning to the other fixups, and not supposed to change the actual
+behavior.
 
-This issue was observed when performing some DFS failover tests and
-the lease key was never randomly generated.
+However, this change turned out to cause a regression on FSC S7020,
+which hit exactly the above.  The reason was that there is still one
+place that overrides spec->init_amp after HDA_FIXUP_ACT_PRE_PROBE
+call, namely in alc_ssid_check().
 
-Signed-off-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-CC: Stable <stable@vger.kernel.org>
+This patch fixes the regression by adding the proper spec->init_amp
+override check, i.e. verifying whether it's still ALC_INIT_UNDEFINED.
+
+Fixes: 1c76aa5fb48d ("ALSA: hda/realtek - Allow skipping spec->init_amp detection")
+Cc: <stable@vger.kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207329
+Link: https://lore.kernel.org/r/20200418190639.10082-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/smb2ops.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ sound/pci/hda/patch_realtek.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -664,6 +664,11 @@ int open_shroot(unsigned int xid, struct
- 	if (smb3_encryption_required(tcon))
- 		flags |= CIFS_TRANSFORM_REQ;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -801,9 +801,11 @@ static void alc_ssid_check(struct hda_co
+ {
+ 	if (!alc_subsystem_id(codec, ports)) {
+ 		struct alc_spec *spec = codec->spec;
+-		codec_dbg(codec,
+-			  "realtek: Enable default setup for auto mode as fallback\n");
+-		spec->init_amp = ALC_INIT_DEFAULT;
++		if (spec->init_amp == ALC_INIT_UNDEFINED) {
++			codec_dbg(codec,
++				  "realtek: Enable default setup for auto mode as fallback\n");
++			spec->init_amp = ALC_INIT_DEFAULT;
++		}
+ 	}
+ }
  
-+	if (!server->ops->new_lease_key)
-+		return -EIO;
-+
-+	server->ops->new_lease_key(pfid);
-+
- 	memset(rqst, 0, sizeof(rqst));
- 	resp_buftype[0] = resp_buftype[1] = CIFS_NO_BUFFER;
- 	memset(rsp_iov, 0, sizeof(rsp_iov));
 
 
