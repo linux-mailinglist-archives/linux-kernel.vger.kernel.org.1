@@ -2,286 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDAA91BC7D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7FF1BC7F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728908AbgD1S1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
+        id S1729128AbgD1S2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728834AbgD1S1D (ORCPT
+        by vger.kernel.org with ESMTP id S1729093AbgD1S1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:27:03 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7BEC03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:27:02 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x4so3952962wmj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:27:02 -0700 (PDT)
+        Tue, 28 Apr 2020 14:27:55 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A96C03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:27:55 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id e18so4908275oot.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:27:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RbhBW/kVDmKBpgBPPDRywC4JTwBWDdk0LU6fqNqndyM=;
-        b=OuNXAGxvdUOUc9ZBfgB767lk50030ejNZaRDkEYB6KuqorrlYWG7cJxPf4RkcJWkbV
-         Rb5HrQ+gTll9Y+l5xv5kK3PWiwLB2qNBQTpDztW5AuUSMfVYEKH8jHOJQHQPMsSXbjSK
-         fa1BiGUCbJIK9mdCAFVMw9EgkTzhHxxjmy7lM=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fDqv3R9cE9Y5n/V2wUs8Y32OjnZ/aKdvT0h6Lgiz/HY=;
+        b=n29TFIPK+JhYt+TPWIz1/KhNtyqQ7L5/rZxHlp7HpJQZGYlLqpRpOnGf0iPajeKYqy
+         tVZ/Q1POb6DEHqWsQqdi0tdxUTcZmLPkq+2U719TbJyj7uhKm3s6pa4/PpHxbuNbZjIS
+         u2bscJLu51H71kntdVPEglWvHDfWfZPCmXlfELFR5SmVifInYuOSjWZ85cNSH7HgX98W
+         AIgMewWq5YPwtUbDb7IkeoQs9aZl8IA1uhdC/s883fjhxDd59Tg6eZRNMP8JY4mZbLxg
+         FsWihl7ryjCoMDcaqpobRT8Y1RY81wCK0sevyUkOByuVkjCit5Zy75qq7mNpCPSErd2Q
+         Wn2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RbhBW/kVDmKBpgBPPDRywC4JTwBWDdk0LU6fqNqndyM=;
-        b=jwO4auqGseqj6xyfT6BkM1JLeLiGhsfAq0y10J2YYJUnzAJ4+L7qcSu6QPZyIccu0s
-         s0g2HWhA+sTAvPi4BT++2ClptSGLUV8wPPj9kT+SXH7ChHwWfigX1Rfnzw/SiNzGgpuq
-         EmxKZ9pt3VPE9X3tLnybRyEgP/Inx5moRjayU94Cb5JggwbdoQQOw0Twn08DYTUL1K1z
-         vydlsrmQLVMubNB235Rx60tUBfc8fQGmQh9UMDqeGKb+1bOQyF5qbXviXUSnxDNlmoWH
-         9fFLeNWC9rdxwX6ddSRpj3cgQIkn0dC3w9WNXQB1c1qfepiMcIoxd3FXZ6/bfD6jUDvD
-         OugQ==
-X-Gm-Message-State: AGi0PuYqG+j1GtkCeZLDhQpd1uRcS+0SGqL0oVgZD87zJ+hzBXEBc0o9
-        f3exJG8YoEXtbrCXX7R90MwiMA==
-X-Google-Smtp-Source: APiQypItaAgbrMyavidZT6lgynKH9R7FHzJu+K99KFV9jUtxw7W/Ss6N3fBp/UNDfbIk0XzuT3fBvw==
-X-Received: by 2002:a7b:c772:: with SMTP id x18mr6261512wmk.39.1588098421110;
-        Tue, 28 Apr 2020 11:27:01 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:56e1:adff:fe3f:49ed])
-        by smtp.gmail.com with ESMTPSA id h2sm4475049wmf.34.2020.04.28.11.27.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 11:27:00 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 19:27:00 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] mm, memcg: Decouple e{low,min} state mutations from
- protection checks
-Message-ID: <51ffacb736bb02ecc09c828ebe8f4ec7fda68c48.1588092152.git.chris@chrisdown.name>
-References: <cover.1588092152.git.chris@chrisdown.name>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fDqv3R9cE9Y5n/V2wUs8Y32OjnZ/aKdvT0h6Lgiz/HY=;
+        b=FZZHSiUMvWhyytf9fkClQcUE0y4GX0mCNJdcMro1OWLrxfy8c6A/bUGcAoaYZ11Z0d
+         rcmF3qPFhzIyGXbavV/REdDdg1prf7EII2Ev4bgGLDr9LIuBPUREyiqg8PP0Qh238PgV
+         9zIM3GmeehCgUcqjLq8CxtyUrlN+GxmrYyL/4YA2Andhz/Gqxk3wfiHg8UEEQjYcNhcC
+         9T/nHq2fEfV9pf4t/ky7rxdEld6QZz7HuPbtcBToKq/wxdqFf0esLhoZrSsHY8alSO0W
+         kb4SH+hfzNDnRHOgKqngeb8Q+R6bty1CkGyRvyZJvQjmMORNIO+Uhv3fYf+utjqgpHrf
+         Uziw==
+X-Gm-Message-State: AGi0PuaHZYhlt0dl7KJOBU8ymPYMKae7VMV86+SG1U8R22PWMacD6Z0m
+        VvwwJHiWf4uJtk7AWth19y//Xi0dH39j1MFhxTHbLw==
+X-Google-Smtp-Source: APiQypIjxc9zzxbXdsZPSPNo55/H/IOTaFV2ac11jvrMkl9FRsIxseYy/mB4h80YD9VH1Suqm/zPue0vPRtWPx1jeVA=
+X-Received: by 2002:a4a:615d:: with SMTP id u29mr24640962ooe.15.1588098474005;
+ Tue, 28 Apr 2020 11:27:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1588092152.git.chris@chrisdown.name>
+References: <CGME20200331022842eucas1p29e52dc93c4bd0b6e470c41aef19c9a86@eucas1p2.samsung.com>
+ <20200331022832.209618-1-saravanak@google.com> <781eefdc-c926-7566-5305-bb9633e6fac0@samsung.com>
+ <CAGETcx8aW-EY+bGEPr+20bZUF-=ghZDPyQ8AdU7eYYd-wOvekA@mail.gmail.com>
+ <20200331072910.GC854501@kroah.com> <CAGETcx9r_t0AWVaTt5hk9s6Tti0UcNAersjXCJ_A04yJKNPtDA@mail.gmail.com>
+ <20200428155222.GA1584194@kroah.com>
+In-Reply-To: <20200428155222.GA1584194@kroah.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 28 Apr 2020 11:27:18 -0700
+Message-ID: <CAGETcx8nbz-J1gLvoEKE_HgCcVGyV2o8rZeq_USFKM6=s7WmNg@mail.gmail.com>
+Subject: Re: [PATCH v1] driver core: Fix handling of fw_devlink=permissive
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mem_cgroup_protected currently is both used to set effective low and min
-and return a mem_cgroup_protection based on the result. As a user, this
-can be a little unexpected: it appears to be a simple predicate
-function, if not for the big warning in the comment above about the
-order in which it must be executed.
+On Tue, Apr 28, 2020 at 8:52 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Apr 16, 2020 at 11:25:47AM -0700, Saravana Kannan wrote:
+> > On Tue, Mar 31, 2020 at 12:29 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Mon, Mar 30, 2020 at 11:18:01PM -0700, Saravana Kannan wrote:
+> > > > On Mon, Mar 30, 2020 at 10:43 PM Marek Szyprowski
+> > > > <m.szyprowski@samsung.com> wrote:
+> > > > >
+> > > > > Hi,
+> > > > >
+> > > > > On 2020-03-31 04:28, Saravana Kannan wrote:
+> > > > > > When commit 8375e74f2bca ("driver core: Add fw_devlink kernel
+> > > > > > commandline option") added fw_devlink, it didn't implement "permissive"
+> > > > > > mode correctly.
+> > > > > >
+> > > > > > That commit got the device links flags correct to make sure unprobed
+> > > > > > suppliers don't block the probing of a consumer. However, if a consumer
+> > > > > > is waiting for mandatory suppliers to register, that could still block a
+> > > > > > consumer from probing.
+> > > > > >
+> > > > > > This commit fixes that by making sure in permissive mode, all suppliers
+> > > > > > to a consumer are treated as a optional suppliers. So, even if a
+> > > > > > consumer is waiting for suppliers to register and link itself (using the
+> > > > > > DL_FLAG_SYNC_STATE_ONLY flag) to the supplier, the consumer is never
+> > > > > > blocked from probing.
+> > > > > >
+> > > > > > Fixes: 8375e74f2bca ("driver core: Add fw_devlink kernel commandline option")
+> > > > > > Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > > ---
+> > > > > > Hi Marek,
+> > > > > >
+> > > > > > If you pull in this patch and then add back in my patch that created the
+> > > > > > boot problem for you, can you see if that fixes the boot issue for you?
+> > > > >
+> > > > > Indeed, this fixes booting on my Raspberry Pi3/4 boards with linux
+> > > > > next-20200327. Thanks! :)
+> > > >
+> > > > Hi Marek,
+> > > >
+> > > > Thanks for testing, but I'm not able to find the tag next-20200327. I
+> > > > can only find next-20200326 and next-20200330. I was just trying to
+> > > > make sure that next-20200327 doesn't have the revert Greg did. I'm
+> > > > guessing you meant next-20200326?
+> > > >
+> > > > > Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > > >
+> > > > Thanks!
+> > > >
+> > > > Greg,
+> > > >
+> > > > Can you pull in my fix and then revert the revert?
+> > >
+> > > After 5.7-rc1 is out I will, thanks.
+> >
+> > Hi Greg,
+> >
+> > Just to clarify, this patch is a bug fix and I think this patch should
+> > go into all the stable branches that support fw_devlink.
+> >
+> > The only risky change that you needed to wait on for 5.7-rc1 is the
+> > patch [1] that sets fw_devlink=permissive by default. Well, a revert
+> > of the revert of [1].
+> >
+> > [1] - https://lore.kernel.org/lkml/20200321210305.28937-1-saravanak@google.com/
+>
+> I don't understand, what kernels should this go back to?  Your "Fixes:"
+> line just shows for a 5.7-rc1 patch, nothing older.
 
-This change makes it so that we separate the state mutations from the
-actual protection checks, which makes it more obvious where we need to
-be careful mutating internal state, and where we are simply checking and
-don't need to worry about that.
+That's all. I was just stating the obvious I guess -- to pull this
+into all the releases that have the "Fixes" commit. Btw you had
+reverted the "Fixes" commit. So you'll have to revert the revert and
+then apply this patch. Hope that makes sense.
 
-Signed-off-by: Chris Down <chris@chrisdown.name>
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Yafang Shao <laoar.shao@gmail.com>
----
- include/linux/memcontrol.h | 48 +++++++++++++++++++++++++++++---------
- mm/memcontrol.c            | 30 +++++++-----------------
- mm/vmscan.c                | 17 ++++----------
- 3 files changed, 49 insertions(+), 46 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index d630af1a4e17..88576b1235b0 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -50,12 +50,6 @@ enum memcg_memory_event {
- 	MEMCG_NR_MEMORY_EVENTS,
- };
- 
--enum mem_cgroup_protection {
--	MEMCG_PROT_NONE,
--	MEMCG_PROT_LOW,
--	MEMCG_PROT_MIN,
--};
--
- struct mem_cgroup_reclaim_cookie {
- 	pg_data_t *pgdat;
- 	unsigned int generation;
-@@ -357,8 +351,26 @@ static inline unsigned long mem_cgroup_protection(struct mem_cgroup *memcg,
- 		   READ_ONCE(memcg->memory.elow));
- }
- 
--enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
--						struct mem_cgroup *memcg);
-+void mem_cgroup_calculate_protection(struct mem_cgroup *root,
-+				     struct mem_cgroup *memcg);
-+
-+static inline bool mem_cgroup_below_low(struct mem_cgroup *memcg)
-+{
-+	if (mem_cgroup_disabled())
-+		return false;
-+
-+	return READ_ONCE(memcg->memory.elow) >=
-+		page_counter_read(&memcg->memory);
-+}
-+
-+static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
-+{
-+	if (mem_cgroup_disabled())
-+		return false;
-+
-+	return READ_ONCE(memcg->memory.emin) >=
-+		page_counter_read(&memcg->memory);
-+}
- 
- int mem_cgroup_try_charge(struct page *page, struct mm_struct *mm,
- 			  gfp_t gfp_mask, struct mem_cgroup **memcgp,
-@@ -838,13 +850,27 @@ static inline void memcg_memory_event_mm(struct mm_struct *mm,
- static inline unsigned long mem_cgroup_protection(struct mem_cgroup *memcg,
- 						  bool in_low_reclaim)
- {
-+
-+
-+static inline void mem_cgroup_calculate_protection(struct mem_cgroup *root,
-+						   struct mem_cgroup *memcg);
-+{
-+}
-+
-+static inline void mem_cgroup_protection(struct mem_cgroup *memcg,
-+					 bool in_low_reclaim)
-+{
- 	return 0;
- }
- 
--static inline enum mem_cgroup_protection mem_cgroup_protected(
--	struct mem_cgroup *root, struct mem_cgroup *memcg)
-+static inline bool mem_cgroup_below_low(struct mem_cgroup *memcg)
-+{
-+	return false;
-+}
-+
-+static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
- {
--	return MEMCG_PROT_NONE;
-+	return false;
- }
- 
- static inline int mem_cgroup_try_charge(struct page *page, struct mm_struct *mm,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b0374be44e9e..317dbbaac603 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6368,27 +6368,21 @@ static unsigned long effective_protection(unsigned long usage,
- }
- 
- /**
-- * mem_cgroup_protected - check if memory consumption is in the normal range
-+ * mem_cgroup_calculate_protection - calculate and cache effective low and min
-  * @root: the top ancestor of the sub-tree being checked
-  * @memcg: the memory cgroup to check
-  *
-  * WARNING: This function is not stateless! It can only be used as part
-  *          of a top-down tree iteration, not for isolated queries.
-- *
-- * Returns one of the following:
-- *   MEMCG_PROT_NONE: cgroup memory is not protected
-- *   MEMCG_PROT_LOW: cgroup memory is protected as long there is
-- *     an unprotected supply of reclaimable memory from other cgroups.
-- *   MEMCG_PROT_MIN: cgroup memory is protected
-  */
--enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
--						struct mem_cgroup *memcg)
-+void mem_cgroup_calculate_protection(struct mem_cgroup *root,
-+				     struct mem_cgroup *memcg)
- {
- 	unsigned long usage, parent_usage;
- 	struct mem_cgroup *parent;
- 
- 	if (mem_cgroup_disabled())
--		return MEMCG_PROT_NONE;
-+		return;
- 
- 	if (!root)
- 		root = root_mem_cgroup;
-@@ -6403,22 +6397,22 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
- 		 */
- 		WRITE_ONCE(memcg->memory.emin, 0);
- 		WRITE_ONCE(memcg->memory.elow, 0);
--		return MEMCG_PROT_NONE;
-+		return;
- 	}
- 
- 	usage = page_counter_read(&memcg->memory);
- 	if (!usage)
--		return MEMCG_PROT_NONE;
-+		return;
- 
- 	parent = parent_mem_cgroup(memcg);
- 	/* No parent means a non-hierarchical mode on v1 memcg */
- 	if (!parent)
--		return MEMCG_PROT_NONE;
-+		return;
- 
- 	if (parent == root) {
- 		memcg->memory.emin = READ_ONCE(memcg->memory.min);
- 		memcg->memory.elow = memcg->memory.low;
--		goto out;
-+		return;
- 	}
- 
- 	parent_usage = page_counter_read(&parent->memory);
-@@ -6431,14 +6425,6 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
- 	WRITE_ONCE(memcg->memory.elow, effective_protection(usage, parent_usage,
- 			memcg->memory.low, READ_ONCE(parent->memory.elow),
- 			atomic_long_read(&parent->memory.children_low_usage)));
--
--out:
--	if (usage <= memcg->memory.emin)
--		return MEMCG_PROT_MIN;
--	else if (usage <= memcg->memory.elow)
--		return MEMCG_PROT_LOW;
--	else
--		return MEMCG_PROT_NONE;
- }
- 
- /**
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 72ac38eb8c29..e913c4652341 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2645,14 +2645,15 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
- 		unsigned long reclaimed;
- 		unsigned long scanned;
- 
--		switch (mem_cgroup_protected(target_memcg, memcg)) {
--		case MEMCG_PROT_MIN:
-+		mem_cgroup_calculate_protection(target_memcg, memcg);
-+
-+		if (mem_cgroup_below_min(memcg)) {
- 			/*
- 			 * Hard protection.
- 			 * If there is no reclaimable memory, OOM.
- 			 */
- 			continue;
--		case MEMCG_PROT_LOW:
-+		} else if (mem_cgroup_below_low(memcg)) {
- 			/*
- 			 * Soft protection.
- 			 * Respect the protection only as long as
-@@ -2664,16 +2665,6 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
- 				continue;
- 			}
- 			memcg_memory_event(memcg, MEMCG_LOW);
--			break;
--		case MEMCG_PROT_NONE:
--			/*
--			 * All protection thresholds breached. We may
--			 * still choose to vary the scan pressure
--			 * applied based on by how much the cgroup in
--			 * question has exceeded its protection
--			 * thresholds (see get_scan_count).
--			 */
--			break;
- 		}
- 
- 		reclaimed = sc->nr_reclaimed;
--- 
-2.26.2
-
+-Saravana
