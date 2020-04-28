@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924ED1BCB7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F4D1BC868
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729452AbgD1SaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:30:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44332 "EHLO mail.kernel.org"
+        id S1728950AbgD1ScV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:32:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729438AbgD1SaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:30:02 -0400
+        id S1729188AbgD1ScO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:32:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1DB9F20730;
-        Tue, 28 Apr 2020 18:30:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7AE47218AC;
+        Tue, 28 Apr 2020 18:32:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098602;
-        bh=1Fj3PTj5oghOrjkoXDbSvlZzFgLk4RdKysNplhgIQxs=;
+        s=default; t=1588098733;
+        bh=/Pgjjic5C0EKauwdVzgPf6juUebWhP8kZUQgSEb41Jw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TB7Vm05XfXkcEdHw2DUbD9b0WHeohrlJTfbmOPNHYYGqOB8A7eDdhf3b+Buv3MxPl
-         6Yk2q4Hl7aW9LLdUw5XNkw9LnlUZd0oHfaYruVGpVB9JXtdZE5eQ3O+PU4rHr1b1Uw
-         6WX984KzDKc6hlKCJ7x8rndtTV109CGpUe4egtpg=
+        b=FIkm4vYxhvdvwgmwD5A/aP5G0ow0StiL+eMhtIPgF60dUajhNbk4jEsT0iUpTD94l
+         zar5WM4+ZKssZe+ovhDjzLUF3VvA9z/wp52/Nrg4++fyZ16T3JoC3wdajAop0ZWJam
+         UfYO4w2qaf5ziY4DqY6FqfQfJbKrbzd+uMCjmrLo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lary Gibaud <yarl-baudig@mailoo.org>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.6 083/167] iio: st_sensors: rely on odr mask to know if odr can be set
+        stable@vger.kernel.org, Michal Kubecek <mkubecek@suse.cz>,
+        KarimAllah Ahmed <karahmed@amazon.de>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 047/131] kvm: fix compile on s390 part 2
 Date:   Tue, 28 Apr 2020 20:24:19 +0200
-Message-Id: <20200428182235.492788197@linuxfoundation.org>
+Message-Id: <20200428182230.935133221@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +46,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lary Gibaud <yarl-baudig@mailoo.org>
+From: Christian Borntraeger <borntraeger@de.ibm.com>
 
-commit e450e07c14abae563ad13b064cbce9fdccc6bc8d upstream.
+commit eb1f2f387db8c0d084581fb26e7faffde700bc8e upstream.
 
-Indeed, relying on addr being not 0 cannot work because some device have
-their register to set odr at address 0. As a matter of fact, if the odr
-can be set, then there is a mask.
+We also need to fence the memunmap part.
 
-Sensors with ODR register at address 0 are: lsm303dlh, lsm303dlhc, lsm303dlm
-
-Fixes: 7d245172675a ("iio: common: st_sensors: check odr address value in st_sensors_set_odr()")
-Signed-off-by: Lary Gibaud <yarl-baudig@mailoo.org>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: e45adf665a53 ("KVM: Introduce a new guest mapping API")
+Fixes: d30b214d1d0a (kvm: fix compilation on s390)
+Cc: Michal Kubecek <mkubecek@suse.cz>
+Cc: KarimAllah Ahmed <karahmed@amazon.de>
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/common/st_sensors/st_sensors_core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ virt/kvm/kvm_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/iio/common/st_sensors/st_sensors_core.c
-+++ b/drivers/iio/common/st_sensors/st_sensors_core.c
-@@ -79,7 +79,7 @@ int st_sensors_set_odr(struct iio_dev *i
- 	struct st_sensor_odr_avl odr_out = {0, 0};
- 	struct st_sensor_data *sdata = iio_priv(indio_dev);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index f99b99b77a486..5b949aa273de5 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1756,8 +1756,10 @@ void kvm_vcpu_unmap(struct kvm_vcpu *vcpu, struct kvm_host_map *map,
  
--	if (!sdata->sensor_settings->odr.addr)
-+	if (!sdata->sensor_settings->odr.mask)
- 		return 0;
+ 	if (map->page)
+ 		kunmap(map->page);
++#ifdef CONFIG_HAS_IOMEM
+ 	else
+ 		memunmap(map->hva);
++#endif
  
- 	err = st_sensors_match_odr(sdata->sensor_settings, odr, &odr_out);
+ 	if (dirty) {
+ 		kvm_vcpu_mark_page_dirty(vcpu, map->gfn);
+-- 
+2.20.1
+
 
 
