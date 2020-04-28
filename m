@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44A41BCF23
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0411BCF2A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgD1Vvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:51:55 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:60383 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725934AbgD1Vvz (ORCPT
+        id S1726577AbgD1Vxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725934AbgD1Vxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:51:55 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1Mnac7-1imkao3kfN-00jX3M; Tue, 28 Apr 2020 23:51:36 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Sameeh Jubran <sameehj@amazon.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Guy Tzalik <gtzalik@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Zorik Machulsky <zorik@amazon.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] net: ena: fix gcc-4.8 missing-braces warning
-Date:   Tue, 28 Apr 2020 23:51:25 +0200
-Message-Id: <20200428215131.3948527-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+        Tue, 28 Apr 2020 17:53:37 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB734C03C1AE
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:53:36 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 198so18118434lfo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:53:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EebmjuehlITayp5XUzqWL+oJJRo+KSj0cYhRYx1gdlA=;
+        b=meYDDc/NArsPldNgBgNJvrPvMIFHwYS0eD8aPeUWYtpdZTlFyEn5GX2LksPqglJHgk
+         EVKmWqoVAaKuViS0X3GMxJ9j0QsRi1r5ZKpNap+JbNg/5cX+nBJxgWnQhnkvD2Z/sVVX
+         s2B8DMwznPP6crTK8gUVsUUkGnYEKkHNtBtdcOzPkOmvNQUDNhVU0QRbAAalgjJZWIxV
+         winagD3FWbOyBtQIEzXVoPMBuIu7pPRBIThcQ8C6bjb58g9R+VrgHTziKQ/43+2qZeu/
+         palfN8xIHpmdSHyeWb0FLV51Hiqb/9NFSSiq07YOp6F//OanEJIE8W7br+Rn/PCPIyZW
+         2Oww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EebmjuehlITayp5XUzqWL+oJJRo+KSj0cYhRYx1gdlA=;
+        b=Hii5Q8O6eTowGTewhS4Np4KVIJEITWxPA2/nFnVbpu6O0EVfZQs6DtRKIN3Y74oHlG
+         nlEwXBh2Vmp4wpEcZPceEpeQizeHDcfFeG7sKOIizUzfvU9SFRQbzlvhSRoDwIdTwsfQ
+         xYDtN84Cul8xL0cuoIuXFiOuy/BejbubpMZf0dLsK5HcP/Zmv5C+iRKQjWsGI5S2i+dc
+         krZ9mP5aOoSLlW8tB0pv948FrXWqwOhqeJ+8vKqzKZLtnbNV4KPhWcWNN5c3X2gAavfs
+         kR3ESP4LlTfNl+oivLn7nyOKWg3h5/xLXqFvvI7CULVCR+K6vUJf7V16/wsg+FGtySxb
+         zFLA==
+X-Gm-Message-State: AGi0PuaVtC7lO7Loo9BxVdsYM0ZstqZJrAnS6P+7bWrbikq5ZFnDGu3S
+        6LABcEjLZmL+fKpF93dPSK0mLmHnmuM3KYMqQuvuQw==
+X-Google-Smtp-Source: APiQypJuhLaNNHXGi961rAv3/PkE4xDpF8B341WyZL4HyhwZWoY06bgKp3ljqCOSSkgZEFkd7QpCeUqGrWARsTp/EHo=
+X-Received: by 2002:ac2:4257:: with SMTP id m23mr20189275lfl.141.1588110814972;
+ Tue, 28 Apr 2020 14:53:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:eio/Sn10wNZ8eP76k+ivMjpj0w9kH5VYdd8pKjIDDJmnyUTYjlj
- wNLeF4Ab9tqskgvYVtVf3p4+v45TDrWL2xMEh0zywuz8ncc91zI4xMW9gK2XlkIMwDzjEEQ
- 1p21YFg9T6glNvKht4dHZG8fEanK9c4mPx7W4b/9zW4BMtAEuJGQEvPMqjAWht7MVx2XBzT
- qe0HjXBmkfRSro17xVhcA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aJcnJT7sWcE=:lgUJlhr00A1DGCATYjS5sm
- FBU2X7hVhPIi8k2M47qCv7Qk82Vfh1sUNybcQmV//wnR4rgKQ3vnZWSPXvsHViWXNYUWTE4m+
- h9XScbryIV5m2Ip/wOcuDQIPqLJYXOl3yFbdNsMLKtjFMsN9vvmnAnrU9p4cK/B12DsQ8oE7K
- tMk3GWWCQ2dpNzxf8pYpugaHLzhrZLQ7iUCPLNQL0D/rOIum27FpH5tek5MrHR8J41RY1fr76
- i9a1PyTtOttcF+VOb1u10jLDGwkovXJcZXqtjb6+MAa+0xQ8Gm+2vJBUSQtUnweDB4S8O9Cn3
- hIM92CTJonXKgmJHL61ZoK04MNRO+Tnjji9BEALjlUgCqCr46OvVLywHmwjjtvSKO1sdtoGkV
- k5jMKg3qEGuqfNzHi+Ef06m8YIzu1BGcr0g94wgZwLCo6BAbX2+6ypMDw5Rvbqsh4BWgwxVX4
- pU/vxpXPYQ8YMp54+inALnufyyd7n2bqvqin/3EVcuiCz+i0NOPriM+z9jOTK0YNxLdWk2iBA
- mnpFhk4H0bsTFre57cdPW0mJqUgdf9npr8nWSyKJrtECdd8k29fSk6LZZzL1WQui1OBKGsClz
- sFCmJqH3bkKByehwr0LbzhzAvO8QdDHLc09OhN1GUOG7hktmm3ocTqBHPSPqr57HvUP1HaT9C
- OzOx9BHBAarIsKPFlsCm+LyrfGQOpFkTHd0tev263YcivAcpuOQ6oWgw1jdLgzq/JyppmAFTx
- GVmW0FoThNUsUhzFfbsVXWYpwoqIRT4khv1WS51hPGuO4tXY7IrJJWSZY2S84NmI+CNs4DCVg
- 6HB04JnlLnoGnguNcItK9vhHzzVc7OFFfNvVoZCP49wFRimUhU=
+References: <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
+ <87imi8nzlw.fsf@x220.int.ebiederm.org> <CAHk-=wgh4zts+3hdkGzHLJ6pBGumcJ=23gRbMfubDrLstis2Bg@mail.gmail.com>
+ <CAHk-=whKHpERyVv2-C+kxq9KV_mJPW3hkGDpn6f4yOvs+au8SA@mail.gmail.com>
+ <20200411182043.GA3136@redhat.com> <CAHk-=wgwXpKepChGi4ZhQVxZxD0ic8s2CDXvUmqBTMaKGz-fjg@mail.gmail.com>
+ <20200412195049.GA23824@redhat.com> <CAHk-=wiDwR+6ugYaKEGHfYteLF+NH5xu=T7uuUTkK9y-hr6zow@mail.gmail.com>
+ <AM6PR03MB51708CF53D8A02086427DAC2E4AC0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wi_zr9dwX3UBYvgkmm6eVQfRP50orryJ6ZVAxuFqdSG5A@mail.gmail.com>
+ <20200428190836.GC29960@redhat.com> <CAHk-=wi03QRcUR1DfbEr+Pw-DAMENzY-FuRcGawtj9p597=p2w@mail.gmail.com>
+ <CAG48ez03ABTa-KbCtFHqB1hOT7dgAM96c3kiw-e80B+utSEwYw@mail.gmail.com> <CAHk-=wjTLnMuZmBO2foeHhsLAoUTpUi7oBVJ67F4XKB+tdEDbQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wjTLnMuZmBO2foeHhsLAoUTpUi7oBVJ67F4XKB+tdEDbQ@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 28 Apr 2020 23:53:08 +0200
+Message-ID: <CAG48ez3EQOvdbzu9aO-cEAJwF_=fJzn1Cg0LMs3ruc=5r1ie5w@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Older compilers warn about initializers with incorrect curly
-braces:
+On Tue, Apr 28, 2020 at 11:37 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Tue, Apr 28, 2020 at 2:06 PM Jann Horn <jannh@google.com> wrote:
+> > In execve:
+> >
+> >  - After the point of no return, but before we start waiting for the
+> >    other threads to go away, finish calculating our post-execve creds
+> >    and stash them somewhere in the task_struct or so.
+> >  - Drop the cred_guard_mutex.
+> >  - Wait for the other threads to die.
+> >  - Take the cred_guard_mutex again.
+> >  - Clear out the pointer in the task_struct.
+> >  - Finish execve and install the new creds.
+> >  - Drop the cred_guard_mutex again.
+> >
+> > Then in ptrace_may_access, after taking the cred_guard_mutex, we'd
+> > know that the target task is either outside execve or in the middle of
+> > execve, with old and new credentials known; and then we could say "you
+> > only get to access that task if you're capable relative to *both* its
+> > old and new credentials, since the task currently has both state from
+> > the old executable and from the new one".
+>
+> That doesn't solve the problem with "check_unsafe_exec()" - you might
+> miss setting LSM_UNSAFE_PTRACE.
 
-drivers/net/ethernet/amazon/ena/ena_netdev.c: In function 'ena_xdp_xmit_buff':
-drivers/net/ethernet/amazon/ena/ena_netdev.c:311:2: error: expected ',' or ';' before 'struct'
-  struct ena_tx_buffer *tx_info;
-  ^~~~~~
-drivers/net/ethernet/amazon/ena/ena_netdev.c:321:2: error: 'tx_info' undeclared (first use in this function)
-  tx_info = &xdp_ring->tx_buffer_info[req_id];
-  ^~~~~~~
-drivers/net/ethernet/amazon/ena/ena_netdev.c:321:2: note: each undeclared identifier is reported only once for each function it appears in
-
-Use the GNU empty initializer extension to avoid this.
-
-Fixes: 31aa9857f173 ("net: ena: enable negotiating larger Rx ring size")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/amazon/ena/ena_netdev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index 2cc765df8da3..ad385652ca24 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -307,7 +307,7 @@ static int ena_xdp_xmit_buff(struct net_device *dev,
- 			     struct ena_rx_buffer *rx_info)
- {
- 	struct ena_adapter *adapter = netdev_priv(dev);
--	struct ena_com_tx_ctx ena_tx_ctx = {0};
-+	struct ena_com_tx_ctx ena_tx_ctx = { };
- 	struct ena_tx_buffer *tx_info;
- 	struct ena_ring *xdp_ring;
- 	u16 next_to_use, req_id;
--- 
-2.26.0
-
+You don't need LSM_UNSAFE_PTRACE if the tracer has already passed a
+ptrace_may_access() check against the post-execve creds of the target
+- that's no different from having done PTRACE_ATTACH after execve is
+over.
