@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39221BB3B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 04:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721191BB3BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 04:11:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgD1CFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 22:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
+        id S1726337AbgD1CLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 22:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726233AbgD1CFJ (ORCPT
+        by vger.kernel.org with ESMTP id S1726233AbgD1CLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 22:05:09 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F55C03C1A8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 19:05:09 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 20so20314655qkl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 19:05:09 -0700 (PDT)
+        Mon, 27 Apr 2020 22:11:15 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66F5C03C1A9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 19:11:15 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id s63so20348520qke.4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 19:11:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=lca.pw; s=google;
         h=content-transfer-encoding:from:mime-version:subject:date:message-id
          :references:cc:in-reply-to:to;
-        bh=5LYd/Zi3hJUwLPdN4usWASbwvT7potspOtjbDTRKL+A=;
-        b=MSN75S3VoqV/AR+RnBUNfVVT/zqsH02MTG71nbJsBkVQouwReIRA7J5EWyzTyPCure
-         lHgsfwgzJe6IL9gQY5InIzFAlvKctXKwIyutxCTvGPPqxSfyvAQ0SDRj/qyPJGQY9tRS
-         n39366bQHT0GJnODcrMd/vzNQCyqKkfoXA74ydo6ucd9Airjtxfm3k5EU5mTGHueXZCW
-         OJUEKu9Uir40jcdVZGTU7MtswJFIWLrCzMlBZa9Zc0D+tujVPvzEPVKpT/I4qPPTGQI7
-         vMqhShC+6JafppW/8PqxDGgGKHAoD2SnhGAByhrdYq9F+IHOzuYg9octfCBEbEasUbs5
-         RFWA==
+        bh=7634cSYNnkEeZLF9qaQ+2AgpibDUSOrBUl4aX1MYmtc=;
+        b=ZRkzebefYI8C8YM+yiMqJuIxbcoHVPnVIoxvoL8/hgvaR74uXvHOvFl4346qeUIuUr
+         7GZbXnz+22W3LePUoSJ2gWqSXyMqfX1aUWsfxdOmpYbgkh8OzGZ3kG4YzmdclLPek/RO
+         oVJAxqoWqeclY26sXJcQs4W2JfjNzlx4Ey0FoMnFAYL9UxTnrZyoZzIjUm4gp+ozkZZB
+         vFMTJiTsxGPCrFmtoqo4y0cxos0KVXLX5nMiiWNh/Qy+CCpNKygxhfkIy3hgeOu7PyAq
+         oi2Y0OKlopHWpUuBSkiL0Ed0d0RcX12M4Hl2WS0lsStn0GM0VeqsPhoQqU3g67mlydnw
+         wclw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:content-transfer-encoding:from:mime-version
          :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=5LYd/Zi3hJUwLPdN4usWASbwvT7potspOtjbDTRKL+A=;
-        b=hZLY1mkm2rDVohdbxdxpwQhEs+08f8XQfMxC+r9zn8UpzCdNDg/dQ8wYWN9Z7qlX7A
-         c4/1nTdI6KFrL9PD6zxp1lEnEkUko7BwhIRoU554pdOGxzefbbJrljpcZ1sYUPvj3t59
-         Gi0RKaqUew+iEb5trCYUH1IbQ+Q/plwnfFqhgMCd9pJW7Xrjp+l7Z79PYb6QQq6l89GU
-         4CBOpK+meB6aO/Uc76QoufynUkgoOfrL8bDNMMZvAsiUL3gl1N1n/edZusUl+gzHrs2A
-         ep49dgwOR02w5bPhwWicRC2sCATx2Xs59I9urjdW7b2JGMhNKOQ7Uh37iT5b7A5qYIph
-         tWJA==
-X-Gm-Message-State: AGi0PubPTOL0TeSrU+h1ThwcfhT0pi6rAA3XYenVb8O1BA2FL67fD8yW
-        6MlmHXL3vC+X+9gNx1QcYXCXYA==
-X-Google-Smtp-Source: APiQypLvvDPhvplvRIWxHEO72+RER7MJ5455VH9L3uYoQC6Zhtx2gpipkKWkiJHlMXJSqIAkSQu49g==
-X-Received: by 2002:a37:278c:: with SMTP id n134mr26071276qkn.348.1588039508427;
-        Mon, 27 Apr 2020 19:05:08 -0700 (PDT)
+        bh=7634cSYNnkEeZLF9qaQ+2AgpibDUSOrBUl4aX1MYmtc=;
+        b=KLKKX5JwpjsnreWvLhq+O7RwARIenpnvT9V9+KaPGmgbU6kQaL0Y3Y14AU/R4MS2Rg
+         8azu9M+QHr+lWd4lxR8mvBiazKaBUCTbUVwuYlnxHRSUFbHcWgNhQPDArgG72LAlbHvy
+         eak5Ofxgx6hv7Il1NbNZ7GzwGq9l2tDHZUvjfSu1la2H6/lSN9SF8jd+KQsSk/g56K9i
+         f2dqMkUwQ+pYgjvv7LVQQBnN/PagxGjtigKAPD7bl5IrHc6hpgIpLN7T879rSC01P6UY
+         J4MF6gl/mhNjFxfh/LW4DbIp5qYxUpkidZdHR97ggoSEc94/YHQpf97+20NAFAkzaDLw
+         q+ow==
+X-Gm-Message-State: AGi0PuYmGblgik3PaT9eDDP+xiwq5Zn9GDlNkdXgMwuu5dsR0GXNrr4+
+        Yo+Ym7+XTA9stg6QXxv6YD9zLA==
+X-Google-Smtp-Source: APiQypLaVm9c2SWLzE0Ol8tWHv9xAxVvSk0tUEaXh6snUiBA0tr0lAOAwF/hn7HoXTPC1RAWydrxSw==
+X-Received: by 2002:a05:620a:13eb:: with SMTP id h11mr23839919qkl.404.1588039874792;
+        Mon, 27 Apr 2020 19:11:14 -0700 (PDT)
 Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id z90sm10396578qtd.75.2020.04.27.19.05.07
+        by smtp.gmail.com with ESMTPSA id p2sm12282513qkm.65.2020.04.27.19.11.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2020 19:05:07 -0700 (PDT)
+        Mon, 27 Apr 2020 19:11:14 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 From:   Qian Cai <cai@lca.pw>
 Mime-Version: 1.0 (1.0)
-Subject: Re: [mm/debug] fa6726c1e7: kernel_BUG_at_include/linux/mm.h
-Date:   Mon, 27 Apr 2020 22:05:06 -0400
-Message-Id: <31CD915D-2E14-4897-AF62-82B6C5FD567A@lca.pw>
-References: <51dcbcbf-6020-6672-05b0-5bb10c6292b5@arm.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-In-Reply-To: <51dcbcbf-6020-6672-05b0-5bb10c6292b5@arm.com>
-To:     Anshuman Khandual <Anshuman.Khandual@arm.com>
+Subject: Re: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking dependency
+Date:   Mon, 27 Apr 2020 22:11:13 -0400
+Message-Id: <28BB8A1C-CFDF-4F5A-8686-537C3CE04818@lca.pw>
+References: <dbbfe685-7374-9a96-b7c2-684142746e30@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>
+In-Reply-To: <dbbfe685-7374-9a96-b7c2-684142746e30@redhat.com>
+To:     Waiman Long <longman@redhat.com>
 X-Mailer: iPhone Mail (17D50)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
@@ -88,24 +76,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On Apr 27, 2020, at 9:49 PM, Anshuman Khandual <Anshuman.Khandual@arm.com>=
- wrote:
+> On Apr 27, 2020, at 9:39 PM, Waiman Long <longman@redhat.com> wrote:
 >=20
-> This is an unsupported (enabled via CONFIG_EXPERT) X86 platform (CONFIG_X8=
-6_PAE)
-> and is known to fail. The latest (V17) patch had moved the test invocation=
- into
-> a late_initcall() per Linus thus pushing down any possible failures (like t=
-his)
-> after early boot. Please ignore this report.
->=20
-> Apart from this X86_PAE based config, no other platform failures have repo=
-rted
-> so far. Assuming that this test robot does have a good platform coverage, t=
-he
-> CONFIG_EXPERT method of enabling CONFIG_DEBUG_VM_PGTABLE should help in ge=
-tting
-> more platform coverage for this test.
+> The sequence that was prevented by this patch is "kn->count --> mem_hotplu=
+g_lock.rwsem". This sequence isn't directly in the splat. Once this link is b=
+roken, the 3-lock circular loop cannot be formed. Maybe I should modify the c=
+ommit log to make this point more clear.
 
-This sounds really sloppy. Why can=E2=80=99t we make it impossible to select=
- this combination if nobody is willing to fix it?=
+I don=E2=80=99t know what you are talking about. Once trylock succeed once, y=
+ou will have kn->count =E2=80=94> cpu/memory_hotplug_lock.=
