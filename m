@@ -2,204 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6091BC05D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C521BC069
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbgD1N5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 09:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57246 "EHLO
+        id S1727823AbgD1N7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 09:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727026AbgD1N5C (ORCPT
+        with ESMTP id S1726868AbgD1N7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 09:57:02 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E9B7C03C1AC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 06:57:02 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id o19so21806117qkk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 06:57:02 -0700 (PDT)
+        Tue, 28 Apr 2020 09:59:37 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C55DC03C1A9;
+        Tue, 28 Apr 2020 06:59:37 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a21so18685126ljj.11;
+        Tue, 28 Apr 2020 06:59:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=bnjOOvh4SMYLoB4ygqU5KXt2AopllOYg67zW9fgDCNE=;
-        b=A4dGhCCaKxI4AU9G03hChxAqCSkhA71uO8KNLuohGzG0mJFT4Lp6Wh1TKfGr5BNZc6
-         Q/uT3GKjILE5nH9jbXtaoVq0q/4Ee+BQTiDpYeQvuKGelLa75+6+EbUJkiyblBO7VWZx
-         EXkLAGCs9OrP5m4MxvNr/jqwft6y6pT8ofrzBGlRY2CTsidC8jTeekQN5oeUzuJVhtB3
-         URjAAr77a9wxzmUiiwDD0eBCUtz1Us87LVmw5R4Z1nXvGsMOarA8oFckw/57kYPNCc1n
-         Be3JJqAC0MlLAhHu7rUn0cmV/bGFX8kuzDhvETpzLgIv3wrrnb9+gEezBdhVN/OCgWN3
-         l8zw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/zDDEPocLsCCoVeXtmXy84tPsu7600voeG3oAn4ZlpA=;
+        b=kUNbrCtmRLSJ/pudx3+TenRiaadVEt9iw7/4tzRtVz5f/MZveB8dNvKk2/ugbTRJhR
+         Zc4pUnkymtC8EutfUFzMyYsKttPwsPjlD6AaornIRldASJA4iHMJ02RsgXc4oiL45RPT
+         zuqWAUPYL+6qHrzh95mLH2MjhNtZYNXaEkibHmCeipxrXopGe4oUAiY8S40ud8JKMSLh
+         rUeu1zEG2pwxbmZLiK1vLU7VzezAMwC6qkcj3zjVopvb/eXGcoHRakxEt9D3gR7mzqtw
+         H8nTX7D79cjA+d+H2H/UCv2J5pHS+HBmTR/vmPF7lkGMzHjulmVeSQIxE1hi5q2A5tSX
+         3bkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=bnjOOvh4SMYLoB4ygqU5KXt2AopllOYg67zW9fgDCNE=;
-        b=HMZNt7adUqSymM4LupxsbpOy3l+iMLVnFXqJ++Au9Kz2z994oRUut6X/wAeQnYr1iT
-         u44O1XDFWQrajcq0Kqaouxnoq/7du7w5jNCe0jQmxyhQVnLpPcfDBDYITf1TO/wfJ9o1
-         XUxRfVmUZqIMjLL0/+Mc7mx0K0XGXh0Q980cuHCMBS6N5VqXKvNagA86RbWCmv5iQ5tP
-         h7oR4WCJ+Vd3Zfex0z4f7frmiyIsdotRw4wd6hinVVfYQH/92WRzR5EK37NPZ09d0q0Z
-         ZHFGfpAeBcq+CfVR+OPWPwTq7uxexD6ygE5IcY9QxgSV4xl62R74f413zZxdGq4Dpl/A
-         CQ1w==
-X-Gm-Message-State: AGi0PuY47DAdcZ+wJRpND9PdyJ0UsKetcwmQNDI4TxDjuT6eeYdXZKAk
-        6iDvaRyDDXWnv7j1Dv8Zjp/01w==
-X-Google-Smtp-Source: APiQypLeiLlI+LOU+p/8ztIa9gNMSBld4WWzJ561dEk9dxi+ri8pRessRnzlrEK+25gUPQWqWAcxIg==
-X-Received: by 2002:a05:620a:70f:: with SMTP id 15mr27416361qkc.68.1588082221618;
-        Tue, 28 Apr 2020 06:57:01 -0700 (PDT)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id r6sm14179799qtc.28.2020.04.28.06.57.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Apr 2020 06:57:00 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: linux-next boot error: WARNING: suspicious RCU usage in
- ipmr_get_table
-From:   Qian Cai <cai@lca.pw>
-In-Reply-To: <CACT4Y+YnjK+kq0pfb5fe-q1bqe2T1jq_mvKHf--Z80Z3wkyK1Q@mail.gmail.com>
-Date:   Tue, 28 Apr 2020 09:56:59 -0400
-Cc:     syzbot <syzbot+1519f497f2f9f08183c6@syzkaller.appspotmail.com>,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "paul E. McKenney" <paulmck@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <34558B83-103E-4205-8D3D-534978D5A498@lca.pw>
-References: <000000000000df9a9805a455e07b@google.com>
- <CACT4Y+YnjK+kq0pfb5fe-q1bqe2T1jq_mvKHf--Z80Z3wkyK1Q@mail.gmail.com>
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Amol Grover <frextrite@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/zDDEPocLsCCoVeXtmXy84tPsu7600voeG3oAn4ZlpA=;
+        b=HN7w7/PfUjQkDZv3rGz8agSN5Kwqkn052WjMehxM+sZ3HrlmLVaFLH0L/Y74Mb03X1
+         GEWsMI50J6AWUlqq3b2skmdluZbhmMamiinkpzRP11WYUar4n86c6IGcZWr1/5WyJ3jA
+         ZJemSsszHmN3sbCOOJxlRjIv6wzic0qNqHiP+L9mTwfUtP5xrVP9AxvsIx5Mq2i7DIb7
+         t5JQ+ceb30D6SGg1ABFjm+Ri1rRkg3oy3VSddUbNFXrcSJozQwfSqky7X1tf4JBFm5S2
+         QnvjOSdX2P2PJqIiNj8OcPXtYmryQ0lglpC1voPj5+HEbQcxzto6kWzZOVVXW/1yFpuU
+         Fkfg==
+X-Gm-Message-State: AGi0PuZtkNHXYQ2SftoZ/iLPX3pbxu2CPqEcFtJXV+70aXKLaq/s9Wz9
+        YpMu81w4kjca356hHJ+/G9cjQQ5I
+X-Google-Smtp-Source: APiQypKJJuzlxQ9mHh3+8CqA33Kq/xzKGGJF2P2UiVJ2Y2mGNO1HupwCr8Yqb6gYmn+InovKMBfcPA==
+X-Received: by 2002:a2e:85d1:: with SMTP id h17mr18032882ljj.70.1588082372333;
+        Tue, 28 Apr 2020 06:59:32 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id o3sm14358371lfl.78.2020.04.28.06.59.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Apr 2020 06:59:31 -0700 (PDT)
+Subject: Re: [RFC PATCH v1 3/5] media: tegra-video: Move PM runtime handle to
+ streaming
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1588047650-29402-1-git-send-email-skomatineni@nvidia.com>
+ <1588047650-29402-4-git-send-email-skomatineni@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <631390cb-9aff-0e3f-6c39-81d6c565987e@gmail.com>
+Date:   Tue, 28 Apr 2020 16:59:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <1588047650-29402-4-git-send-email-skomatineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+28.04.2020 07:20, Sowjanya Komatineni пишет:
+> diff --git a/drivers/staging/media/tegra-video/csi.c b/drivers/staging/media/tegra-video/csi.c
+> index b3dd0c3..29ccdae 100644
+> --- a/drivers/staging/media/tegra-video/csi.c
+> +++ b/drivers/staging/media/tegra-video/csi.c
+> @@ -272,8 +272,25 @@ static int tegra_csi_s_stream(struct v4l2_subdev *subdev, int enable)
+>  	struct tegra_vi_channel *chan = v4l2_get_subdev_hostdata(subdev);
+>  	struct tegra_csi_channel *csi_chan = to_csi_chan(subdev);
+>  	struct tegra_csi *csi = csi_chan->csi;
+> +	int ret;
+> +
+> +	if (enable && atomic_add_return(1, &csi->clk_refcnt) == 1) {
+> +		ret = pm_runtime_get_sync(csi->dev);
+> +		if (ret < 0) {
+> +			dev_err(csi->dev,
+> +				"failed to get runtime PM: %d\n", ret);
+> +			pm_runtime_put_noidle(csi->dev);
+> +			atomic_dec(&csi->clk_refcnt);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	ret = csi->ops->csi_streaming(csi_chan, chan->pg_mode, enable);
+>  
+> -	return csi->ops->csi_streaming(csi_chan, chan->pg_mode, enable);
+> +	if ((ret < 0 || !enable) && atomic_dec_and_test(&csi->clk_refcnt))
+> +		pm_runtime_put_sync(csi->dev);
 
-
-> On Apr 28, 2020, at 4:57 AM, Dmitry Vyukov <dvyukov@google.com> wrote:
->> net/ipv4/ipmr.c:136 RCU-list traversed in non-reader section!!
-
-=
-https://lore.kernel.org/netdev/20200222063835.14328-2-frextrite@gmail.com/=
-
-
-Never been picked up for a few months due to some reasons. You could =
-probably
-need to convince David, Paul, Steven or Linus to unblock the bot or =
-carry patches
-on your own?
-
->> net/ipv6/ip6mr.c:124 RCU-list traversed in non-reader section!!
-
-Not sure about this if anyone is working on it. Adding a few people...
-
->>=20
->> other info that might help us debug this:
->>=20
->>=20
->> rcu_scheduler_active =3D 2, debug_locks =3D 1
->> 1 lock held by swapper/0/1:
->> #0: ffffffff8a5a6330 (pernet_ops_rwsem){+.+.}-{3:3}, at: =
-register_pernet_subsys+0x16/0x40 net/core/net_namespace.c:1257
->>=20
->> stack backtrace:
->> CPU: 0 PID: 1 Comm: swapper/0 Not tainted =
-5.7.0-rc3-next-20200428-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, =
-BIOS Google 01/01/2011
->> Call Trace:
->> __dump_stack lib/dump_stack.c:77 [inline]
->> dump_stack+0x18f/0x20d lib/dump_stack.c:118
->> ip6mr_get_table+0x153/0x180 net/ipv6/ip6mr.c:124
->> ip6mr_new_table+0x1b/0x70 net/ipv6/ip6mr.c:382
->> ip6mr_rules_init net/ipv6/ip6mr.c:236 [inline]
->> ip6mr_net_init+0x133/0x3f0 net/ipv6/ip6mr.c:1310
->> ops_init+0xaf/0x420 net/core/net_namespace.c:151
->> __register_pernet_operations net/core/net_namespace.c:1140 [inline]
->> register_pernet_operations+0x346/0x840 net/core/net_namespace.c:1217
->> register_pernet_subsys+0x25/0x40 net/core/net_namespace.c:1258
->> ip6_mr_init+0x49/0x152 net/ipv6/ip6mr.c:1363
->> inet6_init+0x1d7/0x6dc net/ipv6/af_inet6.c:1032
->> do_one_initcall+0x10a/0x7d0 init/main.c:1159
->> do_initcall_level init/main.c:1232 [inline]
->> do_initcalls init/main.c:1248 [inline]
->> do_basic_setup init/main.c:1268 [inline]
->> kernel_init_freeable+0x501/0x5ae init/main.c:1454
->> kernel_init+0xd/0x1bb init/main.c:1359
->> ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:351
->>=20
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->> WARNING: suspicious RCU usage
->> 5.7.0-rc3-next-20200428-syzkaller #0 Not tainted
->> -----------------------------
->> security/integrity/evm/evm_main.c:231 RCU-list traversed in =
-non-reader section!!
-
-Ditto.
-
->>=20
->> other info that might help us debug this:
->>=20
->>=20
->> rcu_scheduler_active =3D 2, debug_locks =3D 1
->> 2 locks held by systemd/1:
->> #0: ffff888098dfa450 (sb_writers#8){.+.+}-{0:0}, at: sb_start_write =
-include/linux/fs.h:1659 [inline]
->> #0: ffff888098dfa450 (sb_writers#8){.+.+}-{0:0}, at: =
-mnt_want_write+0x3a/0xb0 fs/namespace.c:354
->> #1: ffff8880988e8310 (&type->i_mutex_dir_key#6){++++}-{3:3}, at: =
-inode_lock include/linux/fs.h:799 [inline]
->> #1: ffff8880988e8310 (&type->i_mutex_dir_key#6){++++}-{3:3}, at: =
-vfs_setxattr+0x92/0xf0 fs/xattr.c:219
->>=20
->> stack backtrace:
->> CPU: 0 PID: 1 Comm: systemd Not tainted =
-5.7.0-rc3-next-20200428-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, =
-BIOS Google 01/01/2011
->> Call Trace:
->> __dump_stack lib/dump_stack.c:77 [inline]
->> dump_stack+0x18f/0x20d lib/dump_stack.c:118
->> evm_protected_xattr+0x1c2/0x210 security/integrity/evm/evm_main.c:231
->> evm_protect_xattr.isra.0+0xb6/0x3d0 =
-security/integrity/evm/evm_main.c:318
->> evm_inode_setxattr+0xc4/0xf0 security/integrity/evm/evm_main.c:387
->> security_inode_setxattr+0x18f/0x200 security/security.c:1297
->> vfs_setxattr+0xa7/0xf0 fs/xattr.c:220
->> setxattr+0x23d/0x330 fs/xattr.c:451
->> path_setxattr+0x170/0x190 fs/xattr.c:470
->> __do_sys_setxattr fs/xattr.c:485 [inline]
->> __se_sys_setxattr fs/xattr.c:481 [inline]
->> __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:481
->> do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
->> entry_SYSCALL_64_after_hwframe+0x49/0xb3
->> RIP: 0033:0x7fe46005e67a
->> Code: 48 8b 0d 21 18 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f =
-84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 bc 00 00 00 0f 05 <48> 3d =
-01 f0 ff ff 73 01 c3 48 8b 0d ee 17 2b 00 f7 d8 64 89 01 48
->> RSP: 002b:00007fffef423568 EFLAGS: 00000246 ORIG_RAX: =
-00000000000000bc
->> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fe46005e67a
->> RDX: 00007fffef4235e0 RSI: 0000556ea53ddf9b RDI: 0000556ea6766760
->> RBP: 0000556ea53ddf9b R08: 0000000000000000 R09: 0000000000000030
->> R10: 0000000000000020 R11: 0000000000000246 R12: 00007fffef4235e0
->> R13: 0000000000000020 R14: 0000000000000000 R15: 0000556ea6751700
->>=20
->> security/device_cgroup.c:357 RCU-list traversed in non-reader =
-section!!
-
-=
-https://lore.kernel.org/lkml/20200406105950.GA2285@workstation-kernel-dev/=
-
-
-The same story. The patch had been ignored for a while.
-
-
-
+Runtime PM maintains its own refcount, why these
+clk_refcnt/power_on_refcnt are needed?
