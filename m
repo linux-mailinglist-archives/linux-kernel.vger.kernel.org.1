@@ -2,164 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5B01BBCC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F001C1BBCCD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgD1LqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 07:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
+        id S1726682AbgD1Lsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 07:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726285AbgD1LqI (ORCPT
+        with ESMTP id S1726285AbgD1Lsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 07:46:08 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1BCC03C1A9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:46:08 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jTOgf-0003kY-1Q; Tue, 28 Apr 2020 13:46:05 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jTOgd-0006Bj-7O; Tue, 28 Apr 2020 13:46:03 +0200
-Date:   Tue, 28 Apr 2020 13:46:03 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Bin Liu <b-liu@ti.com>
-Cc:     Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, russell@personaltelco.net,
-        fercerpav@gmail.com
-Subject: Re: [PATCH v1] usb: musb: dsps: set MUSB_DA8XX quirk for AM335x
-Message-ID: <20200428114603.55a5xj2o3fupt57a@pengutronix.de>
-References: <20200327053849.5348-1-o.rempel@pengutronix.de>
+        Tue, 28 Apr 2020 07:48:37 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B83BC03C1A9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:48:37 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 49BKfV3T5mz9sSX; Tue, 28 Apr 2020 21:48:34 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1588074514;
+        bh=2Xt4drwzFdVoeLpaSdh55/L13zgR9vEVW6/4XuF+vMI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=A3Z9s3IC6Mm4hUr+WF1T2mo5kr9Rc6qWQqzMOfky6XVKvjc5n+VicZ0JE6amXUqhj
+         GtfIhPLiu/Hf4wFewBbZ/GxKapOdK0EuRm1dpPlQh2byI3Nb1HqcLfS7DViDpm2+mr
+         GvrwGa9FgcGYZqCvT98hg/fTClJvzu7gZzoDd7wOdDZBhsPpysyIU0slQ+QyALRcla
+         lwkU+EgZw80sDHQDrVMe2ZiuFKH+2HKMAdBMYRgFxCbYTHUY8GHBSjQl7QS+Q74g9s
+         rDw/nDY/vvDgZrT+mEzVvKAOuWknPcf1Qgt4rC/x0W1Y1RegZ0kTGoabxveskhlIyU
+         1mE+X93WnZZbg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     linuxppc-dev@ozlabs.org
+Cc:     hch@lst.de, jk@ozlabs.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc/spufs: Add rcu_read_lock() around fcheck()
+Date:   Tue, 28 Apr 2020 21:48:11 +1000
+Message-Id: <20200428114811.68436-1-mpe@ellerman.id.au>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vi2ejj65ibafjw3l"
-Content-Disposition: inline
-In-Reply-To: <20200327053849.5348-1-o.rempel@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 13:45:35 up 165 days,  3:04, 179 users,  load average: 0.00, 0.01,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently the spu coredump code triggers an RCU warning:
 
---vi2ejj65ibafjw3l
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  =============================
+  WARNING: suspicious RCU usage
+  5.7.0-rc3-01755-g7cd49f0b7ec7 #1 Not tainted
+  -----------------------------
+  include/linux/fdtable.h:95 suspicious rcu_dereference_check() usage!
 
-Hi all,
+  other info that might help us debug this:
 
-ping
+  rcu_scheduler_active = 2, debug_locks = 1
+  1 lock held by spu-coredump/1343:
+   #0: c0000007fa22f430 (sb_writers#2){.+.+}-{0:0}, at: .do_coredump+0x1010/0x13c8
 
-On Fri, Mar 27, 2020 at 06:38:49AM +0100, Oleksij Rempel wrote:
-> Beagle Bone Black has different memory corruptions if kernel is
-> configured with USB_TI_CPPI41_DMA=3Dy. This issue is reproducible with
-> ath9k-htc driver (ar9271 based wifi usb controller):
->=20
-> root@AccessBox:~ iw dev wlan0 set monitor  fcsfail otherbss
-> root@AccessBox:~ ip l s dev wlan0 up
-> kmemleak: Cannot insert 0xda577e40 into the object search tree (overlaps =
-existing)
-> CPU: 0 PID: 176 Comm: ip Not tainted 5.5.0 #7
-> Hardware name: Generic AM33XX (Flattened Device Tree)
-> [<c0112c14>] (unwind_backtrace) from [<c010dc98>] (show_stack+0x18/0x1c)
-> [<c010dc98>] (show_stack) from [<c08c7c2c>] (dump_stack+0x84/0x98)
-> [<c08c7c2c>] (dump_stack) from [<c02c75a8>] (create_object+0x2f8/0x324)
-> [<c02c75a8>] (create_object) from [<c02b8928>] (kmem_cache_alloc+0x1a8/0x=
-39c)
-> [<c02b8928>] (kmem_cache_alloc) from [<c072fb68>] (__alloc_skb+0x60/0x174)
-> [<c072fb68>] (__alloc_skb) from [<bf0c5c58>] (ath9k_wmi_cmd+0x50/0x184 [a=
-th9k_htc])
-> [<bf0c5c58>] (ath9k_wmi_cmd [ath9k_htc]) from [<bf0cb410>] (ath9k_regwrit=
-e_multi+0x54/0x84 [ath9k_htc])
-> [<bf0cb410>] (ath9k_regwrite_multi [ath9k_htc]) from [<bf0cb7fc>] (ath9k_=
-regwrite+0xf0/0xfc [ath9k_htc])
-> [<bf0cb7fc>] (ath9k_regwrite [ath9k_htc]) from [<bf1aca78>] (ar5008_hw_pr=
-ocess_ini+0x280/0x6c0 [ath9k_hw])
-> [<bf1aca78>] (ar5008_hw_process_ini [ath9k_hw]) from [<bf1a66ac>] (ath9k_=
-hw_reset+0x270/0x1458 [ath9k_hw])
-> [<bf1a66ac>] (ath9k_hw_reset [ath9k_hw]) from [<bf0c9588>] (ath9k_htc_sta=
-rt+0xb0/0x22c [ath9k_htc])
-> [<bf0c9588>] (ath9k_htc_start [ath9k_htc]) from [<bf0eb3c0>] (drv_start+0=
-x4c/0x1e8 [mac80211])
-> [<bf0eb3c0>] (drv_start [mac80211]) from [<bf104a84>] (ieee80211_do_open+=
-0x480/0x954 [mac80211])
-> [<bf104a84>] (ieee80211_do_open [mac80211]) from [<c075127c>] (__dev_open=
-+0xdc/0x160)
-> [<c075127c>] (__dev_open) from [<c07516a8>] (__dev_change_flags+0x1a4/0x2=
-04)
-> [<c07516a8>] (__dev_change_flags) from [<c0751728>] (dev_change_flags+0x2=
-0/0x50)
-> [<c0751728>] (dev_change_flags) from [<c076971c>] (do_setlink+0x2ac/0x978)
->=20
-> After applying this patch, the system is running in monitor mode without
-> noticeable issues.
->=20
-> Suggested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/usb/musb/musb_dsps.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/usb/musb/musb_dsps.c b/drivers/usb/musb/musb_dsps.c
-> index 88923175f71e..c01f9e9e69f5 100644
-> --- a/drivers/usb/musb/musb_dsps.c
-> +++ b/drivers/usb/musb/musb_dsps.c
-> @@ -690,7 +690,7 @@ static void dsps_dma_controller_resume(struct dsps_gl=
-ue *glue) {}
->  #endif /* CONFIG_USB_TI_CPPI41_DMA */
-> =20
->  static struct musb_platform_ops dsps_ops =3D {
-> -	.quirks		=3D MUSB_DMA_CPPI41 | MUSB_INDEXED_EP,
-> +	.quirks		=3D MUSB_DMA_CPPI41 | MUSB_INDEXED_EP | MUSB_DA8XX,
->  	.init		=3D dsps_musb_init,
->  	.exit		=3D dsps_musb_exit,
-> =20
-> --=20
-> 2.26.0.rc2
->=20
->=20
+  stack backtrace:
+  CPU: 0 PID: 1343 Comm: spu-coredump Not tainted 5.7.0-rc3-01755-g7cd49f0b7ec7 #1
+  Call Trace:
+    .dump_stack+0xec/0x15c (unreliable)
+    .lockdep_rcu_suspicious+0x120/0x144
+    .coredump_next_context+0x148/0x158
+    .spufs_coredump_extra_notes_size+0x54/0x190
+    .elf_coredump_extra_notes_size+0x34/0x50
+    .elf_core_dump+0xe48/0x19d0
+    .do_coredump+0xe50/0x13c8
+    .get_signal+0x864/0xd88
+    .do_notify_resume+0x158/0x3c8
+    .interrupt_exit_user_prepare+0x19c/0x208
+    interrupt_return+0x14/0x1c0
 
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+This comes from fcheck_files() via fcheck().
 
---vi2ejj65ibafjw3l
-Content-Type: application/pgp-signature; name="signature.asc"
+It's pretty clearly documented that fcheck() must be wrapped with
+rcu_read_lock(), so fix it.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+---
+ arch/powerpc/platforms/cell/spufs/coredump.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl6oF3YACgkQ4omh9DUa
-UbNxxw//X9YdZtPal7XffaLiNDXV1lnFi/NLXSUeEj0TCUjUivG7zjpXh2AdXzql
-+a6YO08MWiXAvUt+4iQUg3RD6gxXQVvp4s5aQ3s5Izw/fUMU+EUf5Ert5omGZsds
-ppVx25gB0MO2DBwtpE/eQlUT6g8r0buVeTnsSHEipHHA4cWnxGbroQsqSGhYAtMp
-Sr0ssZB1qIqi9RuJjBCTRP4A9cX4Pytz0f5vrvN8+aJqAH3D1U/rlqyPOv+uk4S/
-JoVCfGB2SnqgtdkuksyIiDeXnpmh32HR5bD5AyhG5zmEU86t0ZFlFPQB2lEBGYK9
-ojkE4FbsHRQBRGAVV5zaty69jPW2rrwCHjDG0TnVi7Qh6HeyMdDQtdhGr1GcMJku
-t21FH5KF0r8d0UESSXSl30zsJgvAARq7/QPcxC6OmLwW4i2JEWnu4BgL6bIfDJRa
-narw0yq8us19iV00rlp/xFwDA1tHnOZrrAt+t7xbWT/LAeUBhtQXJzlO4f9oWNap
-8fLu8UDTyVwStSVPHNzmDoSR2z9Rj2RUfy0zdNYkELvfmMZ06T6cjVLTIYVahOIw
-R63PuvZu0yeZ6Ue9WbgLjme+6rWjLehigZrH8e6YbM5ZX0fBJZcZCjgYgWgpQRkn
-YVSHhmCYtn7CxacmRbRQ2kNNCOTZc6ClZ4oq3t1MsTRJtdYGMBo=
-=GvdV
------END PGP SIGNATURE-----
+diff --git a/arch/powerpc/platforms/cell/spufs/coredump.c b/arch/powerpc/platforms/cell/spufs/coredump.c
+index 8b3296b62f65..0fc52cbaa552 100644
+--- a/arch/powerpc/platforms/cell/spufs/coredump.c
++++ b/arch/powerpc/platforms/cell/spufs/coredump.c
+@@ -82,13 +82,19 @@ static int match_context(const void *v, struct file *file, unsigned fd)
+  */
+ static struct spu_context *coredump_next_context(int *fd)
+ {
++	struct spu_context *ctx;
+ 	struct file *file;
+ 	int n = iterate_fd(current->files, *fd, match_context, NULL);
+ 	if (!n)
+ 		return NULL;
+ 	*fd = n - 1;
++
++	rcu_read_lock();
+ 	file = fcheck(*fd);
+-	return SPUFS_I(file_inode(file))->i_ctx;
++	ctx = SPUFS_I(file_inode(file))->i_ctx;
++	rcu_read_unlock();
++
++	return ctx;
+ }
+ 
+ int spufs_coredump_extra_notes_size(void)
+-- 
+2.25.1
 
---vi2ejj65ibafjw3l--
