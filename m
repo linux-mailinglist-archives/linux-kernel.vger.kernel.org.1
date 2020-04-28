@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A763C1BCB13
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384141BC7B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730423AbgD1SyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:54:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51378 "EHLO mail.kernel.org"
+        id S1728646AbgD1S0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:26:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730064AbgD1See (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:34:34 -0400
+        id S1727827AbgD1S0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:26:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6673821707;
-        Tue, 28 Apr 2020 18:34:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B223208E0;
+        Tue, 28 Apr 2020 18:26:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098873;
-        bh=2ljyNe12FS2y0Tkn2bvU7tbSgoTZOjBeAZoiWEP65sY=;
+        s=default; t=1588098363;
+        bh=Qx2tEubZRAhNZD5v2RNXGOpZeZLoeJABDxlfGSHEieQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y1uGqttDn81bna15sFbJYKQksHitx6PhE1azjPctOWywTMjpx7OwQ6liMaDsT5g4x
-         XaUV0VnEtZkwySdAuqiFJZwgaUITCJW5Bb1PCO8EtFhDFvrq1m9H2L+28u1+TFu08q
-         mivJ3IjikCnmhs2euvQ1XJpKJdIUZWbpgSnk1KUc=
+        b=gXv5nt8/IQ28JbwSX89e+Wzjj4UJUOwjunsu8mxjeRm/aEB6O+CQ+fKRGyeeXPKi5
+         4/gOhl9vHin0RYH3vPbctivw4ZtTxTTBAyJMqVotDiEt+hE45r5KCB8EnrP4WltONC
+         9NN/fU9hO6N9e3H0CgKctHHSam1Dja2nLC4+/Ppo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, "Yan, Zheng" <zyan@redhat.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 011/168] scsi: lpfc: Fix crash after handling a pci error
-Date:   Tue, 28 Apr 2020 20:23:05 +0200
-Message-Id: <20200428182233.120645460@linuxfoundation.org>
+Subject: [PATCH 5.6 010/167] ceph: dont skip updating wanted caps when cap is stale
+Date:   Tue, 28 Apr 2020 20:23:06 +0200
+Message-Id: <20200428182226.535176245@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,45 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Yan, Zheng <zyan@redhat.com>
 
-[ Upstream commit 4cd70891308dfb875ef31060c4a4aa8872630a2e ]
+[ Upstream commit 0aa971b6fd3f92afef6afe24ef78d9bb14471519 ]
 
-Injecting EEH on a 32GB card is causing kernel oops
+1. try_get_cap_refs() fails to get caps and finds that mds_wanted
+   does not include what it wants. It returns -ESTALE.
+2. ceph_get_caps() calls ceph_renew_caps(). ceph_renew_caps() finds
+   that inode has cap, so it calls ceph_check_caps().
+3. ceph_check_caps() finds that issued caps (without checking if it's
+   stale) already includes caps wanted by open file, so it skips
+   updating wanted caps.
 
-The pci error handler is doing an IO flush and the offline code is also
-doing an IO flush. When the 1st flush is complete the hdwq is destroyed
-(freed), yet the second flush accesses the hdwq and crashes.
+Above events can cause an infinite loop inside ceph_get_caps().
 
-Added a check in lpfc_sli4_fush_io_rings to check both the HBA_IOQ_FLUSH
-flag and the hdwq pointer to see if it is already set and not already
-freed.
-
-Link: https://lore.kernel.org/r/20200322181304.37655-6-jsmart2021@gmail.com
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: "Yan, Zheng" <zyan@redhat.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_sli.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/ceph/caps.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index 1692ce913b7f0..a951e1c8165ed 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -4013,6 +4013,11 @@ lpfc_sli_flush_io_rings(struct lpfc_hba *phba)
- 	struct lpfc_iocbq *piocb, *next_iocb;
+diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+index 28ae0c1347004..d050acc1fd5d9 100644
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -1973,8 +1973,12 @@ retry_locked:
+ 		}
  
- 	spin_lock_irq(&phba->hbalock);
-+	if (phba->hba_flag & HBA_IOQ_FLUSH ||
-+	    !phba->sli4_hba.hdwq) {
-+		spin_unlock_irq(&phba->hbalock);
-+		return;
-+	}
- 	/* Indicate the I/O queues are flushed */
- 	phba->hba_flag |= HBA_IOQ_FLUSH;
- 	spin_unlock_irq(&phba->hbalock);
+ 		/* want more caps from mds? */
+-		if (want & ~(cap->mds_wanted | cap->issued))
+-			goto ack;
++		if (want & ~cap->mds_wanted) {
++			if (want & ~(cap->mds_wanted | cap->issued))
++				goto ack;
++			if (!__cap_is_valid(cap))
++				goto ack;
++		}
+ 
+ 		/* things we might delay */
+ 		if ((cap->issued & ~retain) == 0)
 -- 
 2.20.1
 
