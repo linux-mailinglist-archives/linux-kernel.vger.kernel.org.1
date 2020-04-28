@@ -2,113 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A5821BC022
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58121BC029
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727863AbgD1NtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 09:49:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58844 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726798AbgD1NtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 09:49:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id CF97AAD4B;
-        Tue, 28 Apr 2020 13:48:57 +0000 (UTC)
-Date:   Tue, 28 Apr 2020 15:48:58 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH v3 00/10] livepatch,module: Remove .klp.arch and
- module_disable_ro()
-In-Reply-To: <cover.1587812518.git.jpoimboe@redhat.com>
-Message-ID: <alpine.LSU.2.21.2004281541420.6376@pobox.suse.cz>
-References: <cover.1587812518.git.jpoimboe@redhat.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1727908AbgD1Nt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 09:49:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726893AbgD1Nt6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 09:49:58 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DACC03C1A9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 06:49:57 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id u6so21523441ljl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 06:49:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K8+fuPYkH+puLBJZrUcKcisDj7x840mOx2H/AXTSfXc=;
+        b=p5Udw9bpsNiJSRMg3b5y5IhL8YEuFQwO5OsVib3uyjXzhkWGcTlaHtkl3R1HGV4DQ3
+         rJl/fnDPJTNEAhDESkXnBYSglWuOOHsQJj6dnYzUkWY2FxQp1kgpJr7VsAPEuQPO+m8a
+         0hZvMw8Wf9iE8FQ/CNrOYlPIiDkUjzm37NJ9yJGMQ63KBIcaM3FU+xbGGyw6N+TMOcKj
+         CLWt/ZVZdFOpw1VOaM8dUExw/MT6GYZ7Rve+ZabI71dn/3Ryx6XJtAb96ekMVBUdQX6m
+         nMlX3tlmq0zGcOHTw77PvFxF7F6NggrItFv/aSZVtFp9D88403vwRShnXvCTKMsSRwEA
+         vVkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K8+fuPYkH+puLBJZrUcKcisDj7x840mOx2H/AXTSfXc=;
+        b=E18yMoiFDoxqzVQokIC7Kq8ake6TkJ3O+Y1/LDMHZrUBa3nUxHlJkbajZTGBDa0HF9
+         0kI03D6PpuulsXO/xyckvlof3BuZxvK0rJ81/lNzZDH1QXiRymQ28yyO0PqiMT3ZSBcg
+         6l5sR/f+nPr1jwE2D42jy0p8LxZ0oj7Kn0UePpWg0v+ybrhBtI9C75zykvhB6Sx6nhEc
+         8elVZNe8qA6WvPOrbqCGMk365PAWnWLcvpBkslz5+Dw3X51Av+suxFRfS5Cbk+aTFMI/
+         9XWn5pbBUJF1H/Yene8MVqcm3FrHvAgPjYBvy5r72jWeMZHpcFEcT/0dN/dDlYXLpVDF
+         8Img==
+X-Gm-Message-State: AGi0Pub1r33O0aaOZ6p8oMP0OVMTSdNqKPVB/FIY293cjOb+VUD+BLot
+        dIewiYwaYRiIobCUQH9QXkwzZmYZRiY+7Dl0dFRvYw==
+X-Google-Smtp-Source: APiQypIc/HQesVeDmCFc8wG0wY/Ggva2NZkJMawXfsozJERv7QuSkzZDCvjIox+R6iueMRpnA9xGQJce2qF7OX0/rpQ=
+X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr17807230ljp.277.1588081795589;
+ Tue, 28 Apr 2020 06:49:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200424141517.11582-1-geert+renesas@glider.be>
+In-Reply-To: <20200424141517.11582-1-geert+renesas@glider.be>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 28 Apr 2020 15:49:44 +0200
+Message-ID: <CACRpkdah7D7b+-DBnMnh9_WmCK9qXGaA9usK-1jSJ+0nihWC6g@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: Rename "chip" variables to "gc" in core header file
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Apr 2020, Josh Poimboeuf wrote:
+On Fri, Apr 24, 2020 at 4:15 PM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
 
-> v3:
-> - klp: split klp_write_relocations() into object/section specific
->   functions [joe]
-> - s390: fix plt/got writes [joe]
-> - s390: remove text_mutex usage [mbenes]
-> - x86: do text_poke_sync() before releasing text_mutex [peterz]
-> - split x86 text_mutex changes into separate patch [mbenes]
-> 
-> v2:
-> - add vmlinux.ko check [peterz]
-> - remove 'klp_object' forward declaration [mbenes]
-> - use text_mutex [jeyu]
-> - fix documentation TOC [jeyu]
-> - fix s390 issues [mbenes]
-> - upstream kpatch-build now supports this
->   (though it's only enabled for Linux >= 5.8)
-> 
-> These patches add simplifications and improvements for some issues Peter
-> found six months ago, as part of his non-writable text code (W^X)
-> cleanups.
-> 
-> Highlights:
-> 
-> - Remove the livepatch arch-specific .klp.arch sections, which were used
->   to do paravirt patching and alternatives patching for livepatch
->   replacement code.
-> 
-> - Add support for jump labels in patched code.
-> 
-> - Remove the last module_disable_ro() usage.
-> 
-> For more background, see this thread:
-> 
->   https://lkml.kernel.org/r/20191021135312.jbbxsuipxldocdjk@treble
-> 
-> This has been tested with kpatch-build integration tests and klp-convert
-> selftests.
-> 
-> Josh Poimboeuf (7):
->   livepatch: Disallow vmlinux.ko
->   livepatch: Apply vmlinux-specific KLP relocations early
->   livepatch: Prevent module-specific KLP rela sections from referencing
->     vmlinux symbols
->   s390: Change s390_kernel_write() return type to match memcpy()
->   livepatch: Remove module_disable_ro() usage
->   module: Remove module_disable_ro()
->   x86/module: Use text_mutex in apply_relocate_add()
-> 
-> Peter Zijlstra (3):
->   livepatch: Remove .klp.arch
->   s390/module: Use s390_kernel_write() for late relocations
->   x86/module: Use text_poke() for late relocations
-> 
->  Documentation/livepatch/module-elf-format.rst |  15 +-
->  arch/s390/include/asm/uaccess.h               |   2 +-
->  arch/s390/kernel/module.c                     | 147 +++++++++------
->  arch/s390/mm/maccess.c                        |   9 +-
->  arch/um/kernel/um_arch.c                      |  16 ++
->  arch/x86/kernel/Makefile                      |   1 -
->  arch/x86/kernel/livepatch.c                   |  53 ------
->  arch/x86/kernel/module.c                      |  43 ++++-
->  include/linux/livepatch.h                     |  17 +-
->  include/linux/module.h                        |   2 -
->  kernel/livepatch/core.c                       | 177 +++++++++++-------
->  kernel/module.c                               |  23 +--
->  12 files changed, 277 insertions(+), 228 deletions(-)
->  delete mode 100644 arch/x86/kernel/livepatch.c
+> Consistently use "gc" for "struct gpio *" variables.
+>
+> This follows the spirit of commit a0b66a73785ccc8f ("gpio: Rename
+> variable in core APIs").
+>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-With the small issue in patch 2 fixed
+Patch applied.
 
-Acked-by: Miroslav Benes <mbenes@suse.cz>
-
-Great stuff. I am happy we will get rid of the arch-specific code.
-
-M
+Yours,
+Linus Walleij
