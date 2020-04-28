@@ -2,96 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D3E1BCD59
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF7E1BCD62
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgD1U17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 16:27:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21187 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726286AbgD1U16 (ORCPT
+        id S1726467AbgD1U3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 16:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726286AbgD1U3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 16:27:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588105677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Eg1xk1qbLOD2jm86OCEQIZspFf2KSHhRV26te2Q2h+g=;
-        b=ccyNURpCidGGCBnYEEdDMbYQTjUxUgpNomKaXY9z+nDVnCY0G0vB07eZgJCLai5ipr7D0W
-        zfQN8gWF2gKcwHFWFpZy4mDKVH3jFx4YDaS60scMxb77OntVPYK2yd34hN3nzSRiBxVjmw
-        VNswHiH/fkndI+t6gqyYWNjLinOuVdU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-X_DZxyeYPVy9uo7zIXD4BA-1; Tue, 28 Apr 2020 16:27:52 -0400
-X-MC-Unique: X_DZxyeYPVy9uo7zIXD4BA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4234480058A;
-        Tue, 28 Apr 2020 20:27:51 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-113-129.rdu2.redhat.com [10.10.113.129])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A756A60CD3;
-        Tue, 28 Apr 2020 20:27:49 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] Fix use after free in get_tree_bdev()
-From:   David Howells <dhowells@redhat.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     Lukas Czerner <lczerner@redhat.com>, Ian Kent <raven@themaw.net>,
-        torvalds@linux-foundation.org, dhowells@redhat.com,
-        linux-ext4@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 28 Apr 2020 21:27:48 +0100
-Message-ID: <158810566883.1168184.8679527126430822408.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.21
+        Tue, 28 Apr 2020 16:29:34 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080F9C03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 13:29:32 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id f5so12901158ual.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 13:29:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pkj7kKKcclLvASvEGyrCI/6i5twP0NxxYNk+RIVUFp8=;
+        b=Z4mcO0+46Tgu18zZ1ILlmbNz2QscI6HGOLUt2jq9eozqAy5T/bsUTxE9llCisBgdq+
+         5Q8HDvyffxiry0/gYfAQjrpVLASdlCL8cJWR9DtHuywPHkbpv5UlZ7yrx0huAeHh3ftC
+         4ppmcha4ZlkJHkdZntWl60jDD3kul+Qv5BesDKBCWQHLpYdPWOGZbK9Ck4YLgF+4xU2c
+         d0smJ1hXHK4q7+TZ834uhiMqXPmGT0UvC8BiFmH9I+C3VwMeqV7fKbPcteAB4h4nFgNG
+         6bGKK1FofR25GczJ3bsbw+Ftw4WKY9bo2sNOtpPjsp6BLPQ1DoW/twAvS9ae2K1NG1TM
+         zXdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pkj7kKKcclLvASvEGyrCI/6i5twP0NxxYNk+RIVUFp8=;
+        b=fflVfOe5LaDvt+dSLLR9Vmq3XjkOmZVTy3qDGlToQC0ETzkl1BbFM20jF4zDN57ChI
+         d1wXE4dM2MmFZZ/y5CkwGDp30IOuZNtAOBACev1VjHEaf5xKL1RQKMbcqEHJmaQ35gx8
+         8tDwVSj/IIKBa3rZP6p/T4Fv2qUxkVPtpT4EgHFnJmZjrno2VHLqbFxoiQPVhBe6kBrk
+         gNRk9kNrJF5Qz9jDIC3lRsvljw2xjPkpxu9zfaQ5o70Hk8bTB/gevzzMVsKYqHGeS5hT
+         ZnFjf/FSIxJ9ZpbGQhm3CfBT46YAGc7jz2BQdSnvb+2zj+DFtQYa8Sl+7BuYVL30tXGO
+         /ztg==
+X-Gm-Message-State: AGi0PuYNuIwgz6wott3e/Cqr36RYrIyytJnmwq5Iy8J6HJ3N0NN1yhTa
+        jUnpdg4R6DwQX6o3Bj+Fty+evZM9pp0bJqlxPLv8LA==
+X-Google-Smtp-Source: APiQypJRtqhFbG7Rpns7Xg65/400D7gj9RtZJmOOrneoEGGX2VN0LUGpUc52NK91FBqKp4r/OAxibEQH/VFYLqZScB4=
+X-Received: by 2002:a67:e9d9:: with SMTP id q25mr22043390vso.27.1588105771956;
+ Tue, 28 Apr 2020 13:29:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <1585232945-23368-1-git-send-email-Anson.Huang@nxp.com>
+In-Reply-To: <1585232945-23368-1-git-send-email-Anson.Huang@nxp.com>
+From:   Amit Kucheria <amit.kucheria@verdurent.com>
+Date:   Wed, 29 Apr 2020 01:58:56 +0530
+Message-ID: <CAHLCerP7O19cRsK6OfmGm89K7KefRQnCUdNCNQM8mEAbycUjbg@mail.gmail.com>
+Subject: Re: [PATCH V2] thermal: imx: Add missing of_node_put()
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+        Fabio Estevam <festevam@gmail.com>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        lakml <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <Linux-imx@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6fcf0c72e4b9, a fix to get_tree_bdev() put a missing blkdev_put() in
-the wrong place, before a warnf() that displays the bdev under
-consideration rather after it.
+On Thu, Mar 26, 2020 at 8:06 PM Anson Huang <Anson.Huang@nxp.com> wrote:
+>
+> After finishing using cpu node got from of_get_cpu_node(), of_node_put()
+> needs to be called.
+>
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+> Changes since V1:
+>         - improve the logic, no need to use got.
+> ---
+>  drivers/thermal/imx_thermal.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
+> index e761c9b..1b84ea6 100644
+> --- a/drivers/thermal/imx_thermal.c
+> +++ b/drivers/thermal/imx_thermal.c
+> @@ -649,7 +649,7 @@ MODULE_DEVICE_TABLE(of, of_imx_thermal_match);
+>  static int imx_thermal_register_legacy_cooling(struct imx_thermal_data *data)
+>  {
+>         struct device_node *np;
+> -       int ret;
+> +       int ret = 0;
+>
+>         data->policy = cpufreq_cpu_get(0);
+>         if (!data->policy) {
+> @@ -664,11 +664,12 @@ static int imx_thermal_register_legacy_cooling(struct imx_thermal_data *data)
+>                 if (IS_ERR(data->cdev)) {
+>                         ret = PTR_ERR(data->cdev);
+>                         cpufreq_cpu_put(data->policy);
 
-This results in a silent lockup in printk("%pg") called via warnf() from
-get_tree_bdev() under some circumstances when there's a race with the
-blockdev being frozen.  This can be caused by xfstests/tests/generic/085 in
-combination with Lukas Czerner's ext4 mount API conversion patchset.  It
-looks like it ought to occur with other users of get_tree_bdev() such as
-XFS, but apparently doesn't.
+You could move this policy release outside the if block too, no?
 
-Fix this by switching the order of the lines.
-
-Fixes: 6fcf0c72e4b9 ("vfs: add missing blkdev_put() in get_tree_bdev()")
-Reported-by: Lukas Czerner <lczerner@redhat.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Ian Kent <raven@themaw.net>
-cc: Al Viro <viro@zeniv.linux.org.uk>
----
-
- fs/super.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/super.c b/fs/super.c
-index cd352530eca9..a288cd60d2ae 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1302,8 +1302,8 @@ int get_tree_bdev(struct fs_context *fc,
- 	mutex_lock(&bdev->bd_fsfreeze_mutex);
- 	if (bdev->bd_fsfreeze_count > 0) {
- 		mutex_unlock(&bdev->bd_fsfreeze_mutex);
--		blkdev_put(bdev, mode);
- 		warnf(fc, "%pg: Can't mount, blockdev is frozen", bdev);
-+		blkdev_put(bdev, mode);
- 		return -EBUSY;
- 	}
- 
-
-
+> -                       return ret;
+>                 }
+>         }
+>
+> -       return 0;
+> +       of_node_put(np);
+> +
+> +       return ret;
+>  }
+>
+>  static void imx_thermal_unregister_legacy_cooling(struct imx_thermal_data *data)
+> --
+> 2.7.4
+>
