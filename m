@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135451BCB46
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089891BCBBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730212AbgD1Szn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:55:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48370 "EHLO mail.kernel.org"
+        id S1728938AbgD1S1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:27:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729290AbgD1ScQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:32:16 -0400
+        id S1728909AbgD1S1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:27:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5D442076A;
-        Tue, 28 Apr 2020 18:32:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA66020B1F;
+        Tue, 28 Apr 2020 18:27:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098736;
-        bh=2jMiSALDv50QzCUlTeNHittWa+cIG7wLty3qu/h8BX4=;
+        s=default; t=1588098434;
+        bh=eKkMLoWmmxBEA0EEWrqjo0000MnuLIWuCTCdkeZCa5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AFMfvD2q996067L9ESuuVdLyJzg9DaU+Rg2m0SRyaq3/Bc3f+lM6M3EbMcO6fJdnA
-         lT0Xb19U7hCxzZtUDi7rvszgFDaddLB+wHY77IVAu6+Miey/JNp52L6euQPGJtd4Cn
-         B5fGshjGBN7PDMndSn7p4yHM/CPHaAMN9K5SJLXY=
+        b=aKqnhTmKkwG/qo1chhed66osAceB8M+TWHsbdWlQDUFJ7K+w5ixJgC07qW5nMNCfp
+         /aOTkzQYcwRNzu63q1qndN/b0Re8/IHmWZ8O2/2MkrnISJD+C/Q/0uQHQyCgro6a9b
+         9/o7gDHa90nVcajnqYAZYb/b0GokuaoSXEXrD+SI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        stable@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Allison Collins <allison.henderson@oracle.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 006/168] arm64: compat: Workaround Neoverse-N1 #1542419 for compat user-space
-Date:   Tue, 28 Apr 2020 20:23:00 +0200
-Message-Id: <20200428182232.484512497@linuxfoundation.org>
+Subject: [PATCH 5.6 005/167] xfs: correctly acount for reclaimable slabs
+Date:   Tue, 28 Apr 2020 20:23:01 +0200
+Message-Id: <20200428182225.994108964@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,58 +46,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Morse <james.morse@arm.com>
+From: Dave Chinner <dchinner@redhat.com>
 
-[ Upstream commit 222fc0c8503d98cec3cb2bac2780cdd21a6e31c0 ]
+[ Upstream commit d59eadaea2b9945095d4d6d44367ebabd604395c ]
 
-Compat user-space is unable to perform ICIMVAU instructions from
-user-space. Instead it uses a compat-syscall. Add the workaround for
-Neoverse-N1 #1542419 to this code path.
+The XFS inode item slab actually reclaimed by inode shrinker
+callbacks from the memory reclaim subsystem. These should be marked
+as reclaimable so the mm subsystem has the full picture of how much
+memory it can actually reclaim from the XFS slab caches.
 
-Signed-off-by: James Morse <james.morse@arm.com>
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Dave Chinner <dchinner@redhat.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Allison Collins <allison.henderson@oracle.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/sys_compat.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ fs/xfs/xfs_super.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/sys_compat.c b/arch/arm64/kernel/sys_compat.c
-index f1cb649594271..c9fb02927d3e5 100644
---- a/arch/arm64/kernel/sys_compat.c
-+++ b/arch/arm64/kernel/sys_compat.c
-@@ -8,6 +8,7 @@
-  */
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index 2094386af8aca..68fea439d9743 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -1861,7 +1861,8 @@ xfs_init_zones(void)
  
- #include <linux/compat.h>
-+#include <linux/cpufeature.h>
- #include <linux/personality.h>
- #include <linux/sched.h>
- #include <linux/sched/signal.h>
-@@ -17,6 +18,7 @@
+ 	xfs_ili_zone = kmem_cache_create("xfs_ili",
+ 					 sizeof(struct xfs_inode_log_item), 0,
+-					 SLAB_MEM_SPREAD, NULL);
++					 SLAB_RECLAIM_ACCOUNT | SLAB_MEM_SPREAD,
++					 NULL);
+ 	if (!xfs_ili_zone)
+ 		goto out_destroy_inode_zone;
  
- #include <asm/cacheflush.h>
- #include <asm/system_misc.h>
-+#include <asm/tlbflush.h>
- #include <asm/unistd.h>
- 
- static long
-@@ -30,6 +32,15 @@ __do_compat_cache_op(unsigned long start, unsigned long end)
- 		if (fatal_signal_pending(current))
- 			return 0;
- 
-+		if (cpus_have_const_cap(ARM64_WORKAROUND_1542419)) {
-+			/*
-+			 * The workaround requires an inner-shareable tlbi.
-+			 * We pick the reserved-ASID to minimise the impact.
-+			 */
-+			__tlbi(aside1is, 0);
-+			dsb(ish);
-+		}
-+
- 		ret = __flush_cache_user_range(start, start + chunk);
- 		if (ret)
- 			return ret;
 -- 
 2.20.1
 
