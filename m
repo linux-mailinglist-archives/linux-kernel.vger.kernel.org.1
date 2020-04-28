@@ -2,155 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5461BBE58
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42421BBE61
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgD1M4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 08:56:31 -0400
-Received: from mail.efficios.com ([167.114.26.124]:58448 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726746AbgD1M4a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:56:30 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 8851627C857;
-        Tue, 28 Apr 2020 08:56:29 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id yy07838jlHYR; Tue, 28 Apr 2020 08:56:29 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 31C7A27C771;
-        Tue, 28 Apr 2020 08:56:29 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 31C7A27C771
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1588078589;
-        bh=wCLQaSXXFHWHOQTdzk9lhf8jXpkpRXiVjr4m5yXdZp0=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=gHEORjTfvJt3R+b8gor73nsmxy3TUV2xG8onL/Drc9WtteeV9fk5x6oR3zGHRPBzz
-         YPrCDh5F1+VvRK0MTyZCMvUQwtjNEWK8GckWqL3zSlUZOJ/NUMs+Rxe7QxFTuMASC8
-         Vo7Mutoj7dKY3FZsVUdp5Abh73+xwtMymYKJp5N294AFcyYV3cCNtNSxp/hUH+e+ME
-         LbKTM7upADUZuFbbEl5ngTM9uq5b3IvZ0uKkBOcv4hSHGuSM6yPBLKnk4s8qpO9Yck
-         f1Ui1G+rzegttYk0Wv7fXppIA7vpafkfkqrGAD5XOQ0EaEtCDOgY0rfMIq4TdG12Vj
-         YX97fNDldv/LQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id FW4KC6PkGCbk; Tue, 28 Apr 2020 08:56:29 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 1DD0B27C965;
-        Tue, 28 Apr 2020 08:56:29 -0400 (EDT)
-Date:   Tue, 28 Apr 2020 08:56:28 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Florian Weimer <fw@deneb.enyo.de>
-Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        carlos <carlos@redhat.com>, Rich Felker <dalias@libc.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ben Maurer <bmaurer@fb.com>, Dave Watson <davejwatson@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paul <paulmck@linux.vnet.ibm.com>, Paul Turner <pjt@google.com>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>
-Message-ID: <1862775654.72437.1588078588989.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1080028389.72414.1588077193438.JavaMail.zimbra@efficios.com>
-References: <20200326155633.18236-1-mathieu.desnoyers@efficios.com> <20200326155633.18236-6-mathieu.desnoyers@efficios.com> <87ees9z417.fsf@mid.deneb.enyo.de> <284293396.70630.1588005648556.JavaMail.zimbra@efficios.com> <87zhawvphv.fsf@mid.deneb.enyo.de> <2102127737.70791.1588008377292.JavaMail.zimbra@efficios.com> <87ftcnrf7d.fsf@mid.deneb.enyo.de> <1080028389.72414.1588077193438.JavaMail.zimbra@efficios.com>
-Subject: Re: [PATCH glibc 5/9] glibc: Perform rseq(2) registration at C
- startup and thread creation (v17)
+        id S1726846AbgD1M5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 08:57:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726746AbgD1M5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 08:57:19 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73DA6206D6;
+        Tue, 28 Apr 2020 12:57:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588078637;
+        bh=BAeQTU0OgzmvlFIr927RAcq1shGoyB+kb7Hl2BhC50M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dur1TI9/mOUwXvaRoeEqnEJaG6GJNDfvIg6qZ7tsxQAm8mECDKfW1ys9AakN/vt5c
+         wXEc3FNNoa2nbDqGNC9mjvUZRJLgnrPQQ236qAUlftMUYTLSn3glS9uvJffMeAf3wu
+         EF5exq/FJLzpqeHWExcuKmUIV1vNHrE8JOIlCa2o=
+Date:   Tue, 28 Apr 2020 14:57:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Wang Wenhu <wenhu.wang@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, rdunlap@infradead.org,
+        kernel@vivo.com, agross@kernel.org, bjorn.andersson@linaro.org,
+        ohad@wizery.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3,1/3] driver: rpmon: new driver Remote Processor Monitor
+Message-ID: <20200428125715.GA1302692@kroah.com>
+References: <20200412112405.24116-1-wenhu.wang@vivo.com>
+ <20200414035949.107225-1-wenhu.wang@vivo.com>
+ <20200414035949.107225-2-wenhu.wang@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3918 (ZimbraWebClient - FF75 (Linux)/8.8.15_GA_3895)
-Thread-Topic: glibc: Perform rseq(2) registration at C startup and thread creation (v17)
-Thread-Index: z7tk/3iPPlCh9cj1VVKnVHBj0mM1xIMs04Lw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200414035949.107225-2-wenhu.wang@vivo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 28, 2020, at 8:33 AM, Mathieu Desnoyers mathieu.desnoyers@efficios.com wrote:
-
-> ----- On Apr 28, 2020, at 8:02 AM, Florian Weimer fw@deneb.enyo.de wrote:
+On Mon, Apr 13, 2020 at 08:59:47PM -0700, Wang Wenhu wrote:
+> RPMON is a driver framework. It supports remote processor monitor
+> from user level. The basic components are a character device
+> with sysfs interfaces for user space communication and different
+> kinds of message drivers introduced modularly, which are used to
+> communicate with remote processors.
 > 
-[...]
->> 
->>> x32 should not be an issue as explained above, so I'm very open to
->>> add this "uptr" for user-space only.
->> 
->> Okay, then please use anonymous unions and structs as necessary, to
->> ensure that the uptr field can be reached on all platforms in the same
->> way.
+> As for user space, one can get notifications of different events
+> of remote processors, like their registrations, through standard
+> file read operation of the file descriptors related to the exported
+> character devices. Actions can also be taken into account via
+> standard write operations to the devices. Besides, the sysfs class
+> attributes could be accessed conveniently.
 > 
-> OK, will do!
+> Message drivers act as engines to communicate with remote processors.
+> Currently RPMON_QMI is available which uses QMI infrastructures
+> on Qualcomm SoC Platforms.
+> 
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Ohad Ben-Cohen <ohad@wizery.com>
+> Cc: linux-remoteproc@vger.kernel.org
+> Cc: linux-arm-msm@vger.kernel.org
+> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+> ---
+> Changes since v1:
+>  - Addressed review comments from Randy
+> Changes since v2:
+>  - Log message typo
+>  - Added Cc list
+> ---
+>  drivers/Kconfig        |   2 +
+>  drivers/Makefile       |   1 +
+>  drivers/rpmon/Kconfig  |  26 +++
+>  drivers/rpmon/Makefile |   1 +
+>  drivers/rpmon/rpmon.c  | 506 +++++++++++++++++++++++++++++++++++++++++
+>  include/linux/rpmon.h  |  68 ++++++
+>  6 files changed, 604 insertions(+)
+>  create mode 100644 drivers/rpmon/Kconfig
+>  create mode 100644 drivers/rpmon/Makefile
+>  create mode 100644 drivers/rpmon/rpmon.c
+>  create mode 100644 include/linux/rpmon.h
 
-What I came up with looks like this. User-space can use rseq_cs.uptr.ptr
-both on 32-bit and 64-bit to update the pointer:
+You create a bunch of sysfs files, but you do not have any
+Documentation/ABI/ updates showing what those files are for?  Please fix
+that up.
 
-    /* Restartable sequences rseq_cs field.
+> +config RPMON
+> +	tristate "Remote Processor Monitor Core Framework"
+> +	help
+> +	  RPMON is a driver framework. It supports remote processor monitor
+> +	  from user level. The basic components are a character device
+> +	  with sysfs interfaces for user space communication and different
+> +	  kinds of message drivers introduced modularly, which are used to
+> +	  communicate with remote processors.
+> +
+> +	  As for user space, one can get notifications of different events
+> +	  of remote processors, like their registrations, through standard
+> +	  file read operation of the file descriptors related to the exported
+> +	  character devices. Actions can also be taken into account via
+> +	  standard write operations to the devices. Besides, the sysfs class
+> +	  attributes could be accessed conveniently.
 
-       Contains NULL when no critical section is active for the current
-       thread, or holds a pointer to the currently active struct rseq_cs.
+So you don't need the char dev node?  The sysfs files are sufficient?
+Or do they both do different things?
 
-       Updated by user-space, which sets the address of the currently
-       active rseq_cs at the beginning of assembly instruction sequence
-       block, and set to NULL by the kernel when it restarts an assembly
-       instruction sequence block, as well as when the kernel detects that
-       it is preempting or delivering a signal outside of the range
-       targeted by the rseq_cs.  Also needs to be set to NULL by user-space
-       before reclaiming memory that contains the targeted struct rseq_cs.
+How does the user/kernel api work for the char node?
 
-       Read and set by the kernel.  Set by user-space with single-copy
-       atomicity semantics.  This field should only be updated by the
-       thread which registered this data structure.  Aligned on 64-bit.
+> +#define RPMON_MAX_DEVICES	(1U << MINORBITS)
 
-       User-space may perform the update through the rseq_cs.uptr.ptr
-       field.  The padding needs to be initialized to zero on 32-bit.  */
-    union
-      {
-        uint64_t ptr64;
-#ifdef __LP64__
-        uint64_t ptr;
-#else   
-        struct
-          {
-# if (defined (__BYTE_ORDER) && (__BYTE_ORDER == __BIG_ENDIAN)) || defined (__BIG_ENDIAN)
-            uint32_t padding; /* Initialized to zero.  */
-            uint32_t ptr32;
-# else /* LITTLE */
-            uint32_t ptr32;
-            uint32_t padding; /* Initialized to zero.  */
-# endif /* ENDIAN */
-          } ptr;
-#endif
+Why do you have a limit?
 
-#ifndef __KERNEL__
-        struct
-          {
-# ifdef __LP64__
-            const struct rseq_cs *ptr;
-# else
-#  if (defined (__BYTE_ORDER) && (__BYTE_ORDER == __BIG_ENDIAN)) || defined (__BIG_ENDIAN)
-            uint32_t padding; /* Initialized to zero.  */
-            const struct rseq_cs *ptr;
-#  else /* LITTLE */
-            const struct rseq_cs *ptr;
-            uint32_t padding; /* Initialized to zero.  */
-#  endif /* ENDIAN */
-# endif
-          } uptr;
-#endif
-      } rseq_cs;
+Why not just make it dynamic?
 
-Thanks,
+> +#define RPMON_NAME			"rpmon"
+> +
+> +static int rpmon_major;
 
-Mathieu
+Why do you need a whole major for this?  Why not use a misc device?
+
+> +static struct cdev *rpmon_cdev;
+> +static DEFINE_IDR(rpmon_idr);
+> +static const struct file_operations rpmon_fops;
+> +
+> +/* Protect idr accesses */
+> +static DEFINE_MUTEX(minor_lock);
+
+Are you sure you need this?
 
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+
+> +
+> +static ssize_t name_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+> +{
+> +	struct rpmon_device *rpmondev = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	mutex_lock(&rpmondev->info_lock);
+> +	if (!rpmondev->info) {
+> +		ret = -EINVAL;
+> +		dev_err(dev, "the device has been unregistered\n");
+
+How can that happen in your sysfs file?  Shouldn't the name be part of
+the structure itself?  And what's wrong with the default name in struct
+device?
+
+> +static ssize_t rpmon_read(struct file *filep, char __user *buf,
+> +			  size_t count, loff_t *ppos)
+> +{
+> +	struct rpmon_device *rpmondev = filep->private_data;
+> +	DECLARE_WAITQUEUE(wait, current);
+> +	ssize_t ret = 0;
+> +	u32 event;
+> +
+> +	if (count != sizeof(u32))
+> +		return -EINVAL;
+> +
+> +	add_wait_queue(&rpmondev->wait, &wait);
+> +
+> +	do {
+> +		mutex_lock(&rpmondev->info_lock);
+> +		if (!rpmondev->info) {
+> +			ret = -EIO;
+> +			mutex_unlock(&rpmondev->info_lock);
+> +			break;
+> +		}
+> +		mutex_unlock(&rpmondev->info_lock);
+> +
+> +		set_current_state(TASK_INTERRUPTIBLE);
+> +
+> +		event = atomic_read(&rpmondev->event);
+> +		if (event) {
+> +			__set_current_state(TASK_RUNNING);
+> +			if (copy_to_user(buf, &event, count))
+> +				ret = -EFAULT;
+> +			else {
+> +				atomic_set(&rpmondev->event, 0);
+> +				ret = count;
+> +			}
+> +			break;
+> +		}
+> +
+> +		if (filep->f_flags & O_NONBLOCK) {
+> +			ret = -EAGAIN;
+> +			break;
+> +		}
+> +
+> +		if (signal_pending(current)) {
+> +			ret = -ERESTARTSYS;
+> +			break;
+> +		}
+> +		schedule();
+> +	} while (1);
+> +
+> +	__set_current_state(TASK_RUNNING);
+
+Are you _sure_ that is the right way to do this???
+
+> +	remove_wait_queue(&rpmondev->wait, &wait);
+> +
+> +	return ret;
+> +}
+> +
+> +static ssize_t rpmon_write(struct file *filep, const char __user *buf,
+> +			   size_t count, loff_t *ppos)
+> +{
+> +	struct rpmon_device *rpmondev = filep->private_data;
+> +	ssize_t ret;
+> +	u32 action;
+> +
+> +	if (count != sizeof(u32))
+> +		return -EINVAL;
+
+That's rude, how can you enforce userspace doing this?  What about short
+writes?
+
+> +
+> +	if (copy_from_user(&action, buf, count))
+> +		return -EFAULT;
+> +
+> +	mutex_lock(&rpmondev->info_lock);
+> +	if (!rpmondev->info) {
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	if (!rpmondev->info->monitor) {
+> +		ret = -ENOTSUPP;
+> +		goto out;
+> +	}
+> +
+> +	if (rpmondev->info->monitor)
+> +		ret = rpmondev->info->monitor(rpmondev->info, action);
+> +out:
+> +	mutex_unlock(&rpmondev->info_lock);
+> +	return ret ? ret : sizeof(u32);
+> +}
+> +
+> +static const struct file_operations rpmon_fops = {
+> +	.owner		= THIS_MODULE,
+> +	.open		= rpmon_open,
+> +	.read		= rpmon_read,
+> +	.write		= rpmon_write,
+> +	.poll		= rpmon_poll,
+> +	.release	= rpmon_release,
+> +};
+> +
+> +static int rpmon_major_init(void)
+> +{
+> +	static const char name[] = RPMON_NAME;
+> +	struct cdev *cdev = NULL;
+> +	dev_t rpmon_dev = 0;
+> +	int ret;
+> +
+> +	ret = alloc_chrdev_region(&rpmon_dev, 0, RPMON_MAX_DEVICES, name);
+> +	if (ret)
+> +		goto out;
+> +
+> +	ret = -ENOMEM;
+> +	cdev = cdev_alloc();
+> +	if (!cdev)
+> +		goto out_unregister;
+> +
+> +	cdev->owner = THIS_MODULE;
+> +	cdev->ops = &rpmon_fops;
+> +	kobject_set_name(&cdev->kobj, "%s", name);
+
+That doesn't do what you think it does :)
+
+Just use a misc device please.
+
+thanks,
+
+greg k-h
