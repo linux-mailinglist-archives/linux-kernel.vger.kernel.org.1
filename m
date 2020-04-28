@@ -2,135 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2438A1BBDE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898DE1BBE1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726804AbgD1Mqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 08:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
+        id S1726864AbgD1MsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 08:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726620AbgD1Mqp (ORCPT
+        by vger.kernel.org with ESMTP id S1726620AbgD1MsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:46:45 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445C1C03C1A9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 05:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=L8JvbmxT37GKwTzqU5jL14/ixMzFMoK2O4sEzKJ6fwA=; b=hdJ4RabNMW8wAaV1Y2dK7WXpLK
-        kJnswvHWMJK929DoAy4hSj5e/RMCungqN9cXj//3PO6Mqi73mVQtFRCc4DrDUgZM/AF9AQyfh9xA7
-        c5ph5v8nT1FhYLh4NviE4YcavWrQ/nr/wKnsHAI4RPU2In/5kU/kdJIguqwm04Q/4mL8HoOBfDu+k
-        78bBdgJ6o0MVeVYdGhEGTp7xwDiMF3UWT6W8pyjE7WgjX6OSjOfGmTmsfuZhQ26BBPLdZzsSSCciM
-        KVwYndM7pWppb45znZ/lWQK38TQOai8iF8ykofKbKCO5SxKqB8DFs9s5CRcP7Hit0JrkBmo/KkRYp
-        UG0GmpVg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTPdA-00009U-Ds; Tue, 28 Apr 2020 12:46:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0C15430477A;
-        Tue, 28 Apr 2020 14:46:27 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6992B286AD5E1; Tue, 28 Apr 2020 14:46:27 +0200 (CEST)
-Date:   Tue, 28 Apr 2020 14:46:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Jann Horn <jannh@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        alexandre.chartre@oracle.com
-Subject: Re: x86 entry perf unwinding failure (missing IRET_REGS annotation
- on stack switch?)
-Message-ID: <20200428124627.GC13558@hirez.programming.kicks-ass.net>
-References: <CAG48ez1rkN0YU-ieBaUZDKFYG5XFnd7dhDjSDdRmVfWyQzsA5g@mail.gmail.com>
- <20200302151829.brlkedossh7qs47s@treble>
- <20200302155239.7ww7jfeu4yeevpkb@treble>
- <20200428070450.w5l5ey54dtmqy5ph@treble>
+        Tue, 28 Apr 2020 08:48:11 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14AFC03C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 05:48:09 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id m18so32273753otq.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 05:48:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gIMUGicgwmIFtnYG9N3fQPjEXkbOpiDE/URudlFOW5s=;
+        b=dUDumjdTIlGGpNmZYXHngArdwQWCCtin2qUEkmCJQtwAgVH3K5XgViZI81wZ44IjG7
+         Zq9hacLuuX3LoskBpPXvwEKqsb+nyh8KlA22O07jpgEn9K3uC6ACaKAN8PKic/lPqIH3
+         aGuwroFwfXlxdyxjbX0M5ZO8aNaVayipg4ovDBY1QrVdSeb7pZN8F9XkXds1YomIXvTY
+         YmfpZJC7mu05HAL4WFjKaNy2UHPs3FQx9op/si0XAJd964b+EV57407V2UZmA/ay/P77
+         xLf+QNzD7vJnw4QY7Rt6Ymk3pNiAJ9KUWkKYygNBJf6EbhdoOzp+JfBNNHOfuB1A5awb
+         aYQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gIMUGicgwmIFtnYG9N3fQPjEXkbOpiDE/URudlFOW5s=;
+        b=ckjUlGWAhFQaOy8GZ481QZzjrXlRu7TKHkSeR1v0rFVHCw9rhqQPyUK5XKN+9Ekrm9
+         E5eyMBh1yZubMp+cRfP0+jC1o2vqyKRs4N8dg6ZbZtcuFW2xK3xMVLccOzO9T2siwGQt
+         xs/87A/qU31zBvjYxojacEtmfIX08yGDWgainSAnWRJzyXRMCrzeO9q5+TwkL5CMO4U3
+         078RgponVEU5i0GDLIndGmREvsl+CDQLPL0i/RkNm+QWkze0XSTTOCQcw1GbkIY8nRW8
+         z11Id5DV86WL9f7swBFErG9MDAv4zeVmKNx0nrkshlOmIi9XSHtOJICRqukXqMB4a1TQ
+         x5GQ==
+X-Gm-Message-State: AGi0PuYONcLClZpUZzgi+gvcTxRtaahxrVrOQ6Mey20/EPkZwrOXs10H
+        UHpIspYFL0jSP7oL/dwVDJhbfh7lYUBR1Q0T+o3vyw==
+X-Google-Smtp-Source: APiQypJfEP180kCuws7+abjZcT8dPX9zxxKNlOozz0+TthkUItgt4+ccPZriFdCypuPgxcXtg9LpjV+6NqVW8gqrIFU=
+X-Received: by 2002:a05:6830:13d4:: with SMTP id e20mr22370151otq.66.1588078089294;
+ Tue, 28 Apr 2020 05:48:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428070450.w5l5ey54dtmqy5ph@treble>
+References: <20200401163542.83278-1-robert.marko@sartura.hr> <20200427164514.GQ56386@vkoul-mobl.Dlink>
+In-Reply-To: <20200427164514.GQ56386@vkoul-mobl.Dlink>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Tue, 28 Apr 2020 14:47:58 +0200
+Message-ID: <CA+HBbNHT7bOM68zBGAHO0Pi9WrBc244Qewwe5JV7fNhNUGPZ4Q@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] phy: add driver for Qualcomm IPQ40xx USB PHY
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-kernel@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        robh+dt@kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, John Crispin <john@phrozen.org>,
+        Luka Perkov <luka.perkov@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 02:04:50AM -0500, Josh Poimboeuf wrote:
-> On Mon, Mar 02, 2020 at 09:52:40AM -0600, Josh Poimboeuf wrote:
-> > On Mon, Mar 02, 2020 at 09:18:29AM -0600, Josh Poimboeuf wrote:
-> > > > So I think on machines without X86_FEATURE_SMAP, trying to unwind from
-> > > > the two NOPs at f41 and f42 will cause the unwinder to report an
-> > > > error? Looking at unwind_next_frame(), "sp:(und)" without the "end:1"
-> > > > marker seems to be reserved for errors.
-> > 
-> > I think we can blame this one on Peter ;-)
-> > 
-> >   764eef4b109a ("objtool: Rewrite alt->skip_orig")
-> > 
-> > With X86_FEATURE_SMAP, alt->skip_orig gets set, which tells objtool to
-> > skip validation of the NOPs.  That has the side effect of not
-> > propagating the ORC state to the NOPs as well.
-> 
-> I almost forgot about this one, until I rediscovered it just now...
-> Peter, I just realized you weren't CCed on the original email, oops.
-
-Nah, I got them (through x86@); but I too lost track of it :/
-
-> I'm thinking something like this should fix it.  Peter, does this look
-> ok?
-
-Unfortunate. But also, I fear, insufficient. Specifically consider
-things like:
-
-	ALTERNATIVE "jmp 1f",
-		"alt...
-		"..."
-		"...insn", X86_FEAT_foo
-	1:
-
-This results in something like:
-
-
-	.text	.altinstr_replacement
-	e8 xx	...
-	90
-	90
-	...
-	90
-
-Where all our normal single byte nops (0x90) are unreachable with
-undefined CFI, but the alternative might have CFI, which is never
-propagated.
-
-We ran into this with the validate_alternative stuff from Alexandre.
-
-> @@ -773,12 +772,26 @@ static int handle_group_alt(struct objtool_file *file,
->  	struct instruction *last_orig_insn, *last_new_insn, *insn, *fake_jump = NULL;
->  	unsigned long dest_off;
->  
-> +	/*
-> +	 * For uaccess checking, propagate the STAC/CLAC from the alternative
-> +	 * to the original insn to avoid paths where we see the STAC but then
-> +	 * take the NOP instead of CLAC (and vice versa).
-> +	 */
-> +	if (!orig_insn->ignore_alts && orig_insn->type == INSN_NOP &&
-> +	    *new_insn &&
-> +	    ((*new_insn)->type == INSN_STAC ||
-> +	     (*new_insn)->type == INSN_CLAC))
-> +		orig_insn->type = (*new_insn)->type;
-
-Also, this generates a mis-match between actual instruction text and
-type. We now have a single byte instruction (0x90) with the type of a 3
-byte (SLAC/CLAC). Which currently isn't a problem, but I'm looking at
-adding infrastructure for having objtool rewrite instructions.
-
-So rather than hacking around this issue, should we not make
-create_orc() smarter?
-
-I'm trying to come up with something, but so far I'm just making a mess.
+On Mon, Apr 27, 2020 at 6:45 PM Vinod Koul <vkoul@kernel.org> wrote:
+>
+> Hello Robert,
+>
+> On 01-04-20, 18:35, Robert Marko wrote:
+>
+> > +static int ipq4019_ss_phy_power_on(struct phy *_phy)
+> > +{
+> > +     struct ipq4019_usb_phy *phy = phy_get_drvdata(_phy);
+> > +
+> > +     ipq4019_ss_phy_power_off(_phy);
+> > +
+> > +     reset_control_deassert(phy->por_rst);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static struct phy_ops ipq4019_usb_ss_phy_ops = {
+> > +     .power_on       = ipq4019_ss_phy_power_on,
+> > +     .power_off      = ipq4019_ss_phy_power_off,
+> > +};
+> > +
+> > +static int ipq4019_hs_phy_power_off(struct phy *_phy)
+> > +{
+> > +     struct ipq4019_usb_phy *phy = phy_get_drvdata(_phy);
+> > +
+> > +     reset_control_assert(phy->por_rst);
+> > +     msleep(10);
+>
+> why not call ipq4019_ss_phy_power_off() here as well?
+Its not necessary, SS and HS PHY-s are separated but share
+the same register space.
+So when HS PHY is controlled, SS PHY can remain working.
+>
+> > +
+> > +     reset_control_assert(phy->srif_rst);
+> > +     msleep(10);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int ipq4019_hs_phy_power_on(struct phy *_phy)
+> > +{
+> > +     struct ipq4019_usb_phy *phy = phy_get_drvdata(_phy);
+> > +
+> > +     ipq4019_hs_phy_power_off(_phy);
+> > +
+> > +     reset_control_deassert(phy->srif_rst);
+> > +     msleep(10);
+> > +
+> > +     reset_control_deassert(phy->por_rst);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static struct phy_ops ipq4019_usb_hs_phy_ops = {
+> > +     .power_on       = ipq4019_hs_phy_power_on,
+> > +     .power_off      = ipq4019_hs_phy_power_off,
+> > +};
+>
+> So this is fiddling with resets, what about phy configuration and
+> calibration, who take care of that?
+As as I understand, since I don't have documentation access is that no
+calibration and configuration except to properly reset them are needed.
+Development hardware required some magic register values to be
+written but in the previous revisions of this driver it was
+discovered that they were leftovers from the development HW.
+>
+> > +static int ipq4019_usb_phy_probe(struct platform_device *pdev)
+> > +{
+> > +     struct device *dev = &pdev->dev;
+> > +     struct resource *res;
+> > +     struct phy_provider *phy_provider;
+> > +     struct ipq4019_usb_phy *phy;
+> > +     const struct of_device_id *match;
+> > +
+> > +     match = of_match_device(ipq4019_usb_phy_of_match, &pdev->dev);
+> > +     if (!match)
+> > +             return -ENODEV;
+>
+> you are using this to get match-data few lines below, why not use
+> of_device_get_match_data() and get the match->data which you are
+> interested in?
+Thanks, I will look into it.
+>
+> --
+> ~Vinod
