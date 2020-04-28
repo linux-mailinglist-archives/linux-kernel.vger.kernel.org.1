@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9761BC9BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11841BCA8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731508AbgD1So0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:44:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37290 "EHLO mail.kernel.org"
+        id S1730834AbgD1SuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:50:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731372AbgD1SoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:44:20 -0400
+        id S1730648AbgD1Sih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:38:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2972720575;
-        Tue, 28 Apr 2020 18:44:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A5B820575;
+        Tue, 28 Apr 2020 18:38:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099459;
-        bh=SYcstaTmz5kLRXaXsVYOwtRBxzojpc98XB8EkQONjts=;
+        s=default; t=1588099116;
+        bh=qb+tFqZAtb67ysg/oJZrMRY528CyQDiR23V3cBnmGUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i2yXxYtO5sh4g/S0zny8yPDO67WrwlgWoyHiL4Cc0v66NANwGBjLLQbel1rBpiWdE
-         0vxpv2KSvi344DhhI0Nv/9Ge6m+YebW4mu0LDBk3CS4JF4VMsqQM7MVf9OyP+mkfX/
-         oDr88E7oDSNXH950dXLvaERmhwTr8jgK+OnVK6zY=
+        b=n71KqZDHR5u5fTUscyznokA/loYctbbiSzvGUw0BD27hVWeUULDGT4cf/BYOx+z75
+         O6Ib7/6acrUBG+NuZeuMzOHCJx6EapeTxKDzgvQLlIGEJewHlvlBt3/Ptu3ADNPW1+
+         jfk3RqCxjyQv1IhcO2fjPGsusBinJ3A2xESdE24E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
         Michal Simek <michal.simek@xilinx.com>
-Subject: [PATCH 5.4 159/168] Revert "serial: uartps: Use the same dynamic major number for all ports"
+Subject: [PATCH 5.6 157/167] Revert "serial: uartps: Fix uartps_major handling"
 Date:   Tue, 28 Apr 2020 20:25:33 +0200
-Message-Id: <20200428182251.173351093@linuxfoundation.org>
+Message-Id: <20200428182245.440171669@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +45,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Michal Simek <michal.simek@xilinx.com>
 
-commit 8da1a3940da4b0e82848ec29b835486890bc9232 upstream.
+commit 2e01911b7cf7aa07a304a809eca1b11a4bd35859 upstream.
 
-This reverts commit ab262666018de6f4e206b021386b93ed0c164316.
+This reverts commit 5e9bd2d70ae7c00a95a22994abf1eef728649e64.
 
 As Johan says, this driver needs a lot more work and these changes are
 only going in the wrong direction:
-  https://lkml.kernel.org/r/20190523091839.GC568@localhost
+    https://lkml.kernel.org/r/20190523091839.GC568@localhost
 
 Reported-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Michal Simek <michal.simek@xilinx.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/14a565fc1e14a5ec6cc6a6710deb878ae8305f22.1585905873.git.michal.simek@xilinx.com
+Link: https://lore.kernel.org/r/310999ab5342f788a7bc1b0e68294d4f052cad07.1585905873.git.michal.simek@xilinx.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/xilinx_uartps.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/tty/serial/xilinx_uartps.c |    8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
 --- a/drivers/tty/serial/xilinx_uartps.c
 +++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -30,13 +30,13 @@
- 
- #define CDNS_UART_TTY_NAME	"ttyPS"
- #define CDNS_UART_NAME		"xuartps"
-+#define CDNS_UART_MAJOR		0	/* use dynamic node allocation */
- #define CDNS_UART_FIFO_SIZE	64	/* FIFO size */
- #define CDNS_UART_REGISTER_SPACE	0x1000
- #define TX_TIMEOUT		500000
- 
- /* Rx Trigger level */
- static int rx_trigger_level = 56;
--static int uartps_major;
- module_param(rx_trigger_level, uint, 0444);
- MODULE_PARM_DESC(rx_trigger_level, "Rx trigger level, 1-63 bytes");
- 
-@@ -1521,7 +1521,7 @@ static int cdns_uart_probe(struct platfo
- 	cdns_uart_uart_driver->owner = THIS_MODULE;
- 	cdns_uart_uart_driver->driver_name = driver_name;
- 	cdns_uart_uart_driver->dev_name	= CDNS_UART_TTY_NAME;
--	cdns_uart_uart_driver->major = uartps_major;
-+	cdns_uart_uart_driver->major = CDNS_UART_MAJOR;
- 	cdns_uart_uart_driver->minor = cdns_uart_data->id;
- 	cdns_uart_uart_driver->nr = 1;
- 
-@@ -1550,7 +1550,6 @@ static int cdns_uart_probe(struct platfo
+@@ -1576,6 +1576,7 @@ static int cdns_uart_probe(struct platfo
  		goto err_out_id;
  	}
  
--	uartps_major = cdns_uart_uart_driver->tty_driver->major;
++	uartps_major = cdns_uart_uart_driver->tty_driver->major;
  	cdns_uart_data->cdns_uart_driver = cdns_uart_uart_driver;
  
  	/*
+@@ -1706,7 +1707,6 @@ static int cdns_uart_probe(struct platfo
+ 		console_port = NULL;
+ #endif
+ 
+-	uartps_major = cdns_uart_uart_driver->tty_driver->major;
+ 	cdns_uart_data->cts_override = of_property_read_bool(pdev->dev.of_node,
+ 							     "cts-override");
+ 	return 0;
+@@ -1768,12 +1768,6 @@ static int cdns_uart_remove(struct platf
+ 		console_port = NULL;
+ #endif
+ 
+-	/* If this is last instance major number should be initialized */
+-	mutex_lock(&bitmap_lock);
+-	if (bitmap_empty(bitmap, MAX_UART_INSTANCES))
+-		uartps_major = 0;
+-	mutex_unlock(&bitmap_lock);
+-
+ 	uart_unregister_driver(cdns_uart_data->cdns_uart_driver);
+ 	return rc;
+ }
 
 
