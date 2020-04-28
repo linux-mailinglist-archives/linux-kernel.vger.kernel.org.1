@@ -2,121 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6331BBCD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81471BBCC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgD1Lv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 07:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726264AbgD1Lv1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 07:51:27 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F02C03C1A9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:51:27 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id m18so32007989otq.9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:51:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YV5X7b0RVx9UtJZqWhbhycNNkPCol2NhsoVPXumvChw=;
-        b=qY200Gdh14KWjuFl7nMHJc5Y6JPsMnKXb+yEm+ncWoJ2UZOZXise3+Js8HeoWMi7cc
-         IgwtEqKjPLAGBnHEg5HKFHjRoxSnELVv8kn45MyI9kIFqYgVS6zPiJ2M85fAOg22GyyE
-         819bOa4POc+oTD+ZXBHOQGapNKnxVaE7fpJUkb9oIedVVdxYBRu0336uweqMWwyfBhRd
-         cg4cmOHFVMgLu/3Xr/MNVw4TRUgxCW2aFT9eVid1r0DJvVrHL5ecakv39CU7qdZADE2/
-         mV9188VWARK8Oe7oA39H1FZ1UhXWmfyCwoT9EmxMJFgimfGqXL9yyKrEStKAlQkAgLsZ
-         rJAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YV5X7b0RVx9UtJZqWhbhycNNkPCol2NhsoVPXumvChw=;
-        b=AVpINAXYlx1W7aC+kqTj00uDXPqhXVFUXBvvElK4xmR1bakYJFWrDSOGOC3ebD7WcD
-         9KviRY3ISopNygaq3DKKaV8NY+BaWiS3ksHpwb30crONZnh7to0Dq1uzwt7ykZvpJFbE
-         VpRvj7NNhJ+PCf2L57QsfkTRd6GHJhGuLsYzlH5FMtmdRVQHwupgXd1RbHhwXcmu6Vl2
-         DsqXh+5JfB7iMvdINr/e/tPQ69HfSetFv0X0fAgmgnyVOK/dUgE5w1DLVev3dLjorJ0G
-         i03LoJJiAnZnvUoy6XuPCY8IXaIDtBHEb4aLZNvgISsXkrWggvB6VDjNfdIi9/NCFLjI
-         xaew==
-X-Gm-Message-State: AGi0PubwPRPZjGi5c5s0PTiz9lgJKGFkjLPeWT/7OBM7pvSBL42OAWpp
-        VnQH/VTT43EGxuWc+itiSx++YmIWq2KvSJYdSc0Vbw==
-X-Google-Smtp-Source: APiQypIGTUh/5sCvlDOhvI/LG4JE8NTFr9y4EW8BlYgrxb5QHasXcsr59vMAsl3o74ezgCVEiF3BiSVV/FTK4Mkh01Y=
-X-Received: by 2002:a05:6830:1e4e:: with SMTP id e14mr21811872otj.91.1588074686391;
- Tue, 28 Apr 2020 04:51:26 -0700 (PDT)
+        id S1726774AbgD1LqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 07:46:23 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3325 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726285AbgD1LqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 07:46:22 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id BF27A4D8058AFB411182;
+        Tue, 28 Apr 2020 19:46:16 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Apr 2020 19:46:07 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <john.johansen@canonical.com>, <jmorris@namei.org>,
+        <serge@hallyn.com>
+CC:     <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] apparmor: Use true and false for bool variable
+Date:   Tue, 28 Apr 2020 19:52:21 +0800
+Message-ID: <1588074741-73393-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-References: <20200408110816.2712841-1-robert.foss@linaro.org>
- <20200408110816.2712841-2-robert.foss@linaro.org> <20200415160729.GA4438@bogus>
- <20200415162110.bmorj4u4hkqohqjx@pengutronix.de> <CAG3jFysg34=HJ7xefuAKw4Uq6W0POm5TsJmzQku6WwkhH_j=-w@mail.gmail.com>
- <20200428075504.ovzugt2mbgan7z3k@gilmour.lan> <20200428082505.GA22489@pengutronix.de>
-In-Reply-To: <20200428082505.GA22489@pengutronix.de>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 28 Apr 2020 13:51:15 +0200
-Message-ID: <CAG3jFysKKfu564y4jnfh3unT-6xPLSeBPjfGX5KRY5s=avp1mg@mail.gmail.com>
-Subject: Re: [PATCH v7 1/3] media: dt-bindings: ov8856: Document YAML bindings
-To:     Marco Felsch <m.felsch@pengutronix.de>
-Cc:     Maxime Ripard <maxime@cerno.tech>, Rob Herring <robh@kernel.org>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ah, sorry. I was thinking of the 'port' property and replying to that.
+Fixes coccicheck warnings:
 
-assigned clocks are definitely being removed.
+security/apparmor/file.c:162:9-10: WARNING: return of 0/1 in function 'is_deleted' with return type bool
+security/apparmor/file.c:362:9-10: WARNING: return of 0/1 in function 'xindex_is_subset' with return type bool
+security/apparmor/policy_unpack.c:246:9-10: WARNING: return of 0/1 in function 'unpack_X' with return type bool
+security/apparmor/policy_unpack.c:292:9-10: WARNING: return of 0/1 in function 'unpack_nameX' with return type bool
+security/apparmor/policy_unpack.c:646:8-9: WARNING: return of 0/1 in function 'unpack_rlimits' with return type bool
+security/apparmor/policy_unpack.c:604:8-9: WARNING: return of 0/1 in function 'unpack_secmark' with return type bool
+security/apparmor/policy_unpack.c:538:8-9: WARNING: return of 0/1 in function 'unpack_trans_table' with return type bool
+security/apparmor/policy_unpack.c:327:9-10: WARNING: return of 0/1 in function 'unpack_u32' with return type bool
+security/apparmor/policy_unpack.c:345:9-10: WARNING: return of 0/1 in function 'unpack_u64' with return type bool
+security/apparmor/policy_unpack.c:309:9-10: WARNING: return of 0/1 in function 'unpack_u8' with return type bool
+security/apparmor/policy_unpack.c:568:8-9: WARNING: return of 0/1 in function 'unpack_xattrs' with return type bool
+security/apparmor/policy_unpack.c:1007:10-11: WARNING: return of 0/1 in function 'verify_dfa_xindex' with return type bool
+security/apparmor/policy_unpack.c:997:9-10: WARNING: return of 0/1 in function 'verify_xindex' with return type bool
 
-On Tue, 28 Apr 2020 at 10:25, Marco Felsch <m.felsch@pengutronix.de> wrote:
->
-> On 20-04-28 09:55, Maxime Ripard wrote:
-> > On Mon, Apr 27, 2020 at 05:13:42PM +0200, Robert Foss wrote:
-> > > On Wed, 15 Apr 2020 at 18:21, Marco Felsch <m.felsch@pengutronix.de> wrote:
-> > > >
-> > > > On 20-04-15 11:07, Rob Herring wrote:
-> > > > > On Wed, Apr 08, 2020 at 01:08:14PM +0200, Robert Foss wrote:
-> > > > > > From: Dongchun Zhu <dongchun.zhu@mediatek.com>
->
-> ...
->
-> > > > > > +  clock-names:
-> > > > > > +    description:
-> > > > > > +      Input clock for the sensor.
-> > > > > > +    items:
-> > > > > > +      - const: xvclk
-> > > > > > +
-> > > > > > +  assigned-clocks:
-> > > > > > +    description:
-> > > > > > +      Input clock for the sensor.
-> > > > > > +
-> > > > > > +  assigned-clock-rates:
-> > > > > > +    description:
-> > > > > > +      Frequency of the xvclk clock in Hertz.
-> > > > >
-> > > > > These 2 should have a 'maxItems: 1'
-> > > >
-> > > > Don't know why those properties are needed here.. IMHO this shouldn't be
-> > > > part of the binding or at least it should be optional and not required.
-> > > > All we need is the clocks and the clock-names property.
-> > >
-> > > Thanks Marco, I'll make it optional for the next revision.
-> >
-> > Well, the whole discussion we had was about removing them entirely?
->
-> +1 from my side. It is part of the system integration and not part of
-> this device.
->
-> Regards,
->   Marco
->
-> > Maxime
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ security/apparmor/file.c          | 12 ++++-----
+ security/apparmor/policy_unpack.c | 54 +++++++++++++++++++--------------------
+ 2 files changed, 33 insertions(+), 33 deletions(-)
+
+diff --git a/security/apparmor/file.c b/security/apparmor/file.c
+index f1caf36..9a2d14b 100644
+--- a/security/apparmor/file.c
++++ b/security/apparmor/file.c
+@@ -154,13 +154,13 @@ int aa_audit_file(struct aa_profile *profile, struct aa_perms *perms,
+  * is_deleted - test if a file has been completely unlinked
+  * @dentry: dentry of file to test for deletion  (NOT NULL)
+  *
+- * Returns: %1 if deleted else %0
++ * Returns: true if deleted else false
+  */
+ static inline bool is_deleted(struct dentry *dentry)
+ {
+ 	if (d_unlinked(dentry) && d_backing_inode(dentry)->i_nlink == 0)
+-		return 1;
+-	return 0;
++		return true;
++	return false;
+ }
+ 
+ static int path_name(const char *op, struct aa_label *label,
+@@ -353,15 +353,15 @@ int aa_path_perm(const char *op, struct aa_label *label,
+  * this is done as part of the subset test, where a hardlink must have
+  * a subset of permissions that the target has.
+  *
+- * Returns: %1 if subset else %0
++ * Returns: true if subset else false
+  */
+ static inline bool xindex_is_subset(u32 link, u32 target)
+ {
+ 	if (((link & ~AA_X_UNSAFE) != (target & ~AA_X_UNSAFE)) ||
+ 	    ((link & AA_X_UNSAFE) && !(target & AA_X_UNSAFE)))
+-		return 0;
++		return false;
+ 
+-	return 1;
++	return true;
+ }
+ 
+ static int profile_path_link(struct aa_profile *profile,
+diff --git a/security/apparmor/policy_unpack.c b/security/apparmor/policy_unpack.c
+index 2dfe078..b67322a 100644
+--- a/security/apparmor/policy_unpack.c
++++ b/security/apparmor/policy_unpack.c
+@@ -243,11 +243,11 @@ static size_t unpack_u16_chunk(struct aa_ext *e, char **chunk)
+ static bool unpack_X(struct aa_ext *e, enum aa_code code)
+ {
+ 	if (!inbounds(e, 1))
+-		return 0;
++		return false;
+ 	if (*(u8 *) e->pos != code)
+-		return 0;
++		return false;
+ 	e->pos++;
+-	return 1;
++	return true;
+ }
+ 
+ /**
+@@ -261,10 +261,10 @@ static bool unpack_X(struct aa_ext *e, enum aa_code code)
+  * name element in the stream.  If @name is NULL any name element will be
+  * skipped and only the typecode will be tested.
+  *
+- * Returns 1 on success (both type code and name tests match) and the read
++ * Returns true on success (both type code and name tests match) and the read
+  * head is advanced past the headers
+  *
+- * Returns: 0 if either match fails, the read head does not move
++ * Returns: false if either match fails, the read head does not move
+  */
+ static bool unpack_nameX(struct aa_ext *e, enum aa_code code, const char *name)
+ {
+@@ -289,11 +289,11 @@ static bool unpack_nameX(struct aa_ext *e, enum aa_code code, const char *name)
+ 
+ 	/* now check if type code matches */
+ 	if (unpack_X(e, code))
+-		return 1;
++		return true;
+ 
+ fail:
+ 	e->pos = pos;
+-	return 0;
++	return false;
+ }
+ 
+ static bool unpack_u8(struct aa_ext *e, u8 *data, const char *name)
+@@ -306,12 +306,12 @@ static bool unpack_u8(struct aa_ext *e, u8 *data, const char *name)
+ 		if (data)
+ 			*data = get_unaligned((u8 *)e->pos);
+ 		e->pos += sizeof(u8);
+-		return 1;
++		return true;
+ 	}
+ 
+ fail:
+ 	e->pos = pos;
+-	return 0;
++	return false;
+ }
+ 
+ static bool unpack_u32(struct aa_ext *e, u32 *data, const char *name)
+@@ -324,12 +324,12 @@ static bool unpack_u32(struct aa_ext *e, u32 *data, const char *name)
+ 		if (data)
+ 			*data = le32_to_cpu(get_unaligned((__le32 *) e->pos));
+ 		e->pos += sizeof(u32);
+-		return 1;
++		return true;
+ 	}
+ 
+ fail:
+ 	e->pos = pos;
+-	return 0;
++	return false;
+ }
+ 
+ static bool unpack_u64(struct aa_ext *e, u64 *data, const char *name)
+@@ -342,12 +342,12 @@ static bool unpack_u64(struct aa_ext *e, u64 *data, const char *name)
+ 		if (data)
+ 			*data = le64_to_cpu(get_unaligned((__le64 *) e->pos));
+ 		e->pos += sizeof(u64);
+-		return 1;
++		return true;
+ 	}
+ 
+ fail:
+ 	e->pos = pos;
+-	return 0;
++	return false;
+ }
+ 
+ static size_t unpack_array(struct aa_ext *e, const char *name)
+@@ -472,7 +472,7 @@ static struct aa_dfa *unpack_dfa(struct aa_ext *e)
+  * @e: serialized data extent information  (NOT NULL)
+  * @profile: profile to add the accept table to (NOT NULL)
+  *
+- * Returns: 1 if table successfully unpacked
++ * Returns: true if table successfully unpacked
+  */
+ static bool unpack_trans_table(struct aa_ext *e, struct aa_profile *profile)
+ {
+@@ -535,12 +535,12 @@ static bool unpack_trans_table(struct aa_ext *e, struct aa_profile *profile)
+ 		if (!unpack_nameX(e, AA_STRUCTEND, NULL))
+ 			goto fail;
+ 	}
+-	return 1;
++	return true;
+ 
+ fail:
+ 	aa_free_domain_entries(&profile->file.trans);
+ 	e->pos = saved_pos;
+-	return 0;
++	return false;
+ }
+ 
+ static bool unpack_xattrs(struct aa_ext *e, struct aa_profile *profile)
+@@ -565,11 +565,11 @@ static bool unpack_xattrs(struct aa_ext *e, struct aa_profile *profile)
+ 			goto fail;
+ 	}
+ 
+-	return 1;
++	return true;
+ 
+ fail:
+ 	e->pos = pos;
+-	return 0;
++	return false;
+ }
+ 
+ static bool unpack_secmark(struct aa_ext *e, struct aa_profile *profile)
+@@ -601,7 +601,7 @@ static bool unpack_secmark(struct aa_ext *e, struct aa_profile *profile)
+ 			goto fail;
+ 	}
+ 
+-	return 1;
++	return true;
+ 
+ fail:
+ 	if (profile->secmark) {
+@@ -613,7 +613,7 @@ static bool unpack_secmark(struct aa_ext *e, struct aa_profile *profile)
+ 	}
+ 
+ 	e->pos = pos;
+-	return 0;
++	return false;
+ }
+ 
+ static bool unpack_rlimits(struct aa_ext *e, struct aa_profile *profile)
+@@ -643,11 +643,11 @@ static bool unpack_rlimits(struct aa_ext *e, struct aa_profile *profile)
+ 		if (!unpack_nameX(e, AA_STRUCTEND, NULL))
+ 			goto fail;
+ 	}
+-	return 1;
++	return true;
+ 
+ fail:
+ 	e->pos = pos;
+-	return 0;
++	return false;
+ }
+ 
+ static u32 strhash(const void *data, u32 len, u32 seed)
+@@ -994,8 +994,8 @@ static bool verify_xindex(int xindex, int table_size)
+ 	xtype = xindex & AA_X_TYPE_MASK;
+ 	index = xindex & AA_X_INDEX_MASK;
+ 	if (xtype == AA_X_TABLE && index >= table_size)
+-		return 0;
+-	return 1;
++		return false;
++	return true;
+ }
+ 
+ /* verify dfa xindexes are in range of transition tables */
+@@ -1004,11 +1004,11 @@ static bool verify_dfa_xindex(struct aa_dfa *dfa, int table_size)
+ 	int i;
+ 	for (i = 0; i < dfa->tables[YYTD_ID_ACCEPT]->td_lolen; i++) {
+ 		if (!verify_xindex(dfa_user_xindex(dfa, i), table_size))
+-			return 0;
++			return false;
+ 		if (!verify_xindex(dfa_other_xindex(dfa, i), table_size))
+-			return 0;
++			return false;
+ 	}
+-	return 1;
++	return true;
+ }
+ 
+ /**
+-- 
+2.6.2
+
