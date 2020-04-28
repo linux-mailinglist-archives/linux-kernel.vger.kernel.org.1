@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E39B1BBF95
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B3B1BBFB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbgD1NcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 09:32:06 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54826 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726798AbgD1NcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 09:32:05 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6DBB7485DB123A2BECDA;
-        Tue, 28 Apr 2020 21:32:00 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Tue, 28 Apr 2020
- 21:31:49 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <luk@wybcz.pl>,
-        <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] staging: rtl8723bs: os_dep: remove rtw_spt_band_free()
-Date:   Tue, 28 Apr 2020 21:31:15 +0800
-Message-ID: <20200428133115.28072-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1726924AbgD1NiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 09:38:04 -0400
+Received: from smtp.asem.it ([151.1.184.197]:60277 "EHLO smtp.asem.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726846AbgD1NiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 09:38:03 -0400
+X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Apr 2020 09:38:02 EDT
+Received: from webmail.asem.it
+        by asem.it (smtp.asem.it)
+        (SecurityGateway 6.5.2)
+        with ESMTP id SG000224851.MSG 
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 15:32:56 +0200S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+    s=s1024; d=asem.it;
+    h=from:to:cc:subject:date:message-id:mime-version:content-type;
+    bh=28fmM/Mc4puUfyAGMkuNbmm1IJ99YCUvvMXvlxEraDA=;
+    b=rf6A7revh95uWhta10EFGqUBJ/fY2gkSSVKVxyjhVu5gV7jp/MnTl2u1VpjdW7
+      o0EVmLG5g2NXHgncMjZG2C4NeCqKvKDI+cE7ZGoxh1Vqr00uCOTzV7+25GoaJD
+      RxB+9QqubQfIhXRct9fYrFJaCDaParJYldyY5PNjvKbW7Mo=
+Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1261.35; Tue, 28
+ Apr 2020 15:32:55 +0200
+Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
+ (172.16.16.44) with Microsoft SMTP Server id 15.1.1261.35 via Frontend
+ Transport; Tue, 28 Apr 2020 15:32:55 +0200
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Changbin Du <changbin.du@intel.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH] Documentation: x86: fix space instead of tab in uefi doc
+Date:   Tue, 28 Apr 2020 15:32:25 +0200
+Message-ID: <1588080745-21999-1-git-send-email-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
+X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
+X-SGSPF-Result: none (smtp.asem.it)
+X-SGOP-RefID: str=0001.0A09020E.5EA83088.0010,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that rtw_spt_band_free() is only a direct wrapper of kfree, we can
-remove it and just use kfree().
-
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 ---
- drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ Documentation/x86/x86_64/uefi.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-index b037868fbf22..478e10d708e9 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-@@ -152,11 +152,6 @@ static struct ieee80211_supported_band *rtw_spt_band_alloc(
- 	return spt_band;
- }
+diff --git a/Documentation/x86/x86_64/uefi.rst b/Documentation/x86/x86_64/uefi.rst
+index 88c3ba3..3b89410 100644
+--- a/Documentation/x86/x86_64/uefi.rst
++++ b/Documentation/x86/x86_64/uefi.rst
+@@ -36,7 +36,7 @@ Mechanics
  
--static void rtw_spt_band_free(struct ieee80211_supported_band *spt_band)
--{
--	kfree(spt_band);
--}
--
- static const struct ieee80211_txrx_stypes
- rtw_cfg80211_default_mgmt_stypes[NUM_NL80211_IFTYPES] = {
- 	[NL80211_IFTYPE_ADHOC] = {
-@@ -3476,7 +3471,7 @@ void rtw_wdev_free(struct wireless_dev *wdev)
- 	if (!wdev)
- 		return;
+ 	elilo bootloader with x86_64 support, elilo configuration file,
+ 	kernel image built in first step and corresponding
+-	initrd. Instructions on building elilo	and its dependencies
++	initrd. Instructions on building elilo and its dependencies
+ 	can be found in the elilo sourceforge project.
  
--	rtw_spt_band_free(wdev->wiphy->bands[NL80211_BAND_2GHZ]);
-+	kfree(wdev->wiphy->bands[NL80211_BAND_2GHZ]);
- 
- 	wiphy_free(wdev->wiphy);
- 
+ - Boot to EFI shell and invoke elilo choosing the kernel image built
 -- 
-2.21.1
+2.7.4
 
