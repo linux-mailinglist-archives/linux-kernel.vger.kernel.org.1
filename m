@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E6D1BC887
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0B61BCADC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729467AbgD1Sd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:33:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49834 "EHLO mail.kernel.org"
+        id S1730474AbgD1Swi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:52:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728933AbgD1SdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:33:25 -0400
+        id S1729261AbgD1SgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:36:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9C8D21835;
-        Tue, 28 Apr 2020 18:33:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C12FB2085B;
+        Tue, 28 Apr 2020 18:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098805;
-        bh=WCHXzWwqAstatUoruqMOdtVKrthmhw+tUuchZIXN6P8=;
+        s=default; t=1588098964;
+        bh=D7yI5jf0N7AIEwKlsJJUMm+DUQddQ9Hx2yGufvoqEMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OqKo5NX4zU8nK30XVJVUsvVPs4AoGqe/4IOnop7vSGTUKCd/9YDRcy7by/aTYKH4Q
-         lvgdK7jKKd1qQT8kO6XlGUrkgeEJVIFpPYlFmGC7w3mO8QuxFKbVYhDV1Nmxzozd1c
-         GOrXMkZjIQvmAHo90Fq6RQ0WFFpOD3ek/6mHLAKI=
+        b=lOFAFWhAmoKshksV8porf9TP8szp3KoSTVDPKtFEsumh1OG2/hd3d6mWT2HC0B5h8
+         YeAaxInjgaehGgAl13XS/oDGGuBBglOFYpZT7sTqbKvK5ed66yud8zzsQRskfvCOmZ
+         RbJLe5K39d6iQIZOaolvHXhBKOTyveVzerRphEVY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Uros Bizjak <ubizjak@gmail.com>
-Subject: [PATCH 5.6 114/167] KVM: VMX: Enable machine check support for 32bit targets
-Date:   Tue, 28 Apr 2020 20:24:50 +0200
-Message-Id: <20200428182239.628317549@linuxfoundation.org>
+        stable@vger.kernel.org, Olivier Moysan <olivier.moysan@st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 079/131] iio: adc: stm32-adc: fix sleep in atomic context
+Date:   Tue, 28 Apr 2020 20:24:51 +0200
+Message-Id: <20200428182234.861197663@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +45,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uros Bizjak <ubizjak@gmail.com>
+From: Olivier Moysan <olivier.moysan@st.com>
 
-commit fb56baae5ea509e63c2a068d66a4d8ea91969fca upstream.
+commit e2042d2936dfc84e9c600fe9b9d0039ca0e54b7d upstream.
 
-There is no reason to limit the use of do_machine_check
-to 64bit targets. MCE handling works for both target familes.
+This commit fixes the following error:
+"BUG: sleeping function called from invalid context at kernel/irq/chip.c"
 
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-Cc: stable@vger.kernel.org
-Fixes: a0861c02a981 ("KVM: Add VT-x machine check support")
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Message-Id: <20200414071414.45636-1-ubizjak@gmail.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+In DMA mode suppress the trigger irq handler, and make the buffer
+transfers directly in DMA callback, instead.
+
+Fixes: 2763ea0585c9 ("iio: adc: stm32: add optional dma support")
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Acked-by: Fabrice Gasnier <fabrice.gasnier@st.com>
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/vmx/vmx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/adc/stm32-adc.c |   31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
 
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4571,7 +4571,7 @@ static int handle_rmode_exception(struct
-  */
- static void kvm_machine_check(void)
+--- a/drivers/iio/adc/stm32-adc.c
++++ b/drivers/iio/adc/stm32-adc.c
+@@ -1308,8 +1308,30 @@ static unsigned int stm32_adc_dma_residu
+ static void stm32_adc_dma_buffer_done(void *data)
  {
--#if defined(CONFIG_X86_MCE) && defined(CONFIG_X86_64)
-+#if defined(CONFIG_X86_MCE)
- 	struct pt_regs regs = {
- 		.cs = 3, /* Fake ring 3 no matter what the guest ran on */
- 		.flags = X86_EFLAGS_IF,
+ 	struct iio_dev *indio_dev = data;
++	struct stm32_adc *adc = iio_priv(indio_dev);
++	int residue = stm32_adc_dma_residue(adc);
++
++	/*
++	 * In DMA mode the trigger services of IIO are not used
++	 * (e.g. no call to iio_trigger_poll).
++	 * Calling irq handler associated to the hardware trigger is not
++	 * relevant as the conversions have already been done. Data
++	 * transfers are performed directly in DMA callback instead.
++	 * This implementation avoids to call trigger irq handler that
++	 * may sleep, in an atomic context (DMA irq handler context).
++	 */
++	dev_dbg(&indio_dev->dev, "%s bufi=%d\n", __func__, adc->bufi);
++
++	while (residue >= indio_dev->scan_bytes) {
++		u16 *buffer = (u16 *)&adc->rx_buf[adc->bufi];
+ 
+-	iio_trigger_poll_chained(indio_dev->trig);
++		iio_push_to_buffers(indio_dev, buffer);
++
++		residue -= indio_dev->scan_bytes;
++		adc->bufi += indio_dev->scan_bytes;
++		if (adc->bufi >= adc->rx_buf_sz)
++			adc->bufi = 0;
++	}
+ }
+ 
+ static int stm32_adc_dma_start(struct iio_dev *indio_dev)
+@@ -1703,6 +1725,7 @@ static int stm32_adc_probe(struct platfo
+ {
+ 	struct iio_dev *indio_dev;
+ 	struct device *dev = &pdev->dev;
++	irqreturn_t (*handler)(int irq, void *p) = NULL;
+ 	struct stm32_adc *adc;
+ 	int ret;
+ 
+@@ -1785,9 +1808,11 @@ static int stm32_adc_probe(struct platfo
+ 	if (ret < 0)
+ 		goto err_clk_disable;
+ 
++	if (!adc->dma_chan)
++		handler = &stm32_adc_trigger_handler;
++
+ 	ret = iio_triggered_buffer_setup(indio_dev,
+-					 &iio_pollfunc_store_time,
+-					 &stm32_adc_trigger_handler,
++					 &iio_pollfunc_store_time, handler,
+ 					 &stm32_adc_buffer_setup_ops);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "buffer setup failed\n");
 
 
