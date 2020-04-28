@@ -2,102 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120EA1BB932
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 10:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47011BB93D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 10:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgD1Iwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 04:52:37 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:36194 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726402AbgD1Iwh (ORCPT
+        id S1726836AbgD1IyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 04:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726346AbgD1IyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 04:52:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588063955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=T9gujxmIA52XJjJIjJGj47W5lD5i+d6CSCHpkidbk00=;
-        b=Kk+rwk4M+WPS2cCuCa3+ShTfBi4C4/iYrdSkUSsvvG7577sfkELqXTHmjN32giOyK5V6fa
-        9ZfNy3Hp1rATM0Y/TCJy6xZYwlk8rcd9lYRdwsFukXy7UsHYcRaubRQ38y8GgLtk5fDxSe
-        GaZJ/V8mSULiP9ZK3L+waKy8rU8y6xk=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-k0ZH4S0DPzWjNO3XOhHNBw-1; Tue, 28 Apr 2020 04:52:33 -0400
-X-MC-Unique: k0ZH4S0DPzWjNO3XOhHNBw-1
-Received: by mail-pj1-f71.google.com with SMTP id bt3so1879462pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 01:52:33 -0700 (PDT)
+        Tue, 28 Apr 2020 04:54:12 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA301C03C1A9;
+        Tue, 28 Apr 2020 01:54:12 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id b18so19512326ilf.2;
+        Tue, 28 Apr 2020 01:54:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dDgulWnHGZo56l/rwtjNPISMYmw8h8PKUdGgHUf/qbQ=;
+        b=bsFvHtQgLA9U5xzZknhx5MWq1lav+iBhrlYLLy/RFrIxJCCZYXtPdiI9CYGPsOpUb4
+         PbUMU8veALBn6Ielw6gMIuf1TIhd+jknAnEWCaC+XToSiri5IjsszZMqLqnfSZxLFzgI
+         FOg+4Rn9cs6ReBn8ouy2wMpXsv0fr7I6z6ppQCOidhy3SVghFEXyjZMh2gJyeNSCpXdi
+         g/9/6GDL4+DD6aLVJr82+aCYgGlY3ewCkCeOA3qhN8HGEPrQkDAsp+xEguvzAzqjBVzr
+         48nhVLmXLA6gqeccxuLl+oSLxT6fxlwaXxMCwsZodpX/bN/8W+tkxYVFuSU0WBBIu7hn
+         WeTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=T9gujxmIA52XJjJIjJGj47W5lD5i+d6CSCHpkidbk00=;
-        b=J2FQX6wqtWpX3ZCg1fJ4QM1qXLH9CIiTGlZuWN/2zh2ilVw0bCiG++Dz3UFylDqVRz
-         BTp+WUwkjIrH3xvVd0Q0O2Wjo1IiA79E6FFMpHTknbda9E2qXo78E7UmXtHbcY3f/KEI
-         j6rdi6bdPdDUSibOA1PANe7Wp442xUNAgyVrGODJOGFPDJ596eEpXuEawkTWLXl9AuvB
-         3WJgUqx6szEpSFeuFVAjQmiPrPrFkad8g+3UEd0Lr/Rk/CybK5zmYIL/A2OYcPMPovdO
-         EKTnAHcXTqT8/jLQVvjShXBEY9eCG0a/YAfpldkaBca0NVQcfzroD0kiHIgwxfepJJdE
-         KgJw==
-X-Gm-Message-State: AGi0PuZs86rH0Zu4S04CXrzPjEUiPcsYI6z6U7g6fio7xRUTYAsdR9k+
-        1mj4CiZohajE4/iwc57O7KfcGsLtQt+fj63aZ/TgNILyfzJ6Gc/wVui8dbkJIqomoj38q7zbAtM
-        zQVc7nXdR1BaDK/eJqac9kZOr
-X-Received: by 2002:a63:de49:: with SMTP id y9mr26209870pgi.435.1588063952403;
-        Tue, 28 Apr 2020 01:52:32 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIW6MPibMiV6lAF4LqnxCmnL0EBPSZPDuGJO/nMe0Ss11xXTYM3/1M7PkWt8OTp5foTs/Jpog==
-X-Received: by 2002:a63:de49:: with SMTP id y9mr26209808pgi.435.1588063951198;
-        Tue, 28 Apr 2020 01:52:31 -0700 (PDT)
-Received: from localhost ([182.69.228.151])
-        by smtp.gmail.com with ESMTPSA id g43sm1544780pje.22.2020.04.28.01.52.29
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Apr 2020 01:52:30 -0700 (PDT)
-From:   Bhupesh Sharma <bhsharma@redhat.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, bhsharma@redhat.com,
-        bhupesh.linux@gmail.com, Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH] hw_breakpoint: Remove unused '__register_perf_hw_breakpoint' declaration
-Date:   Tue, 28 Apr 2020 14:22:17 +0530
-Message-Id: <1588063937-5744-1-git-send-email-bhsharma@redhat.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dDgulWnHGZo56l/rwtjNPISMYmw8h8PKUdGgHUf/qbQ=;
+        b=ZNJeTdY6xpQDihxHXf7SHlhZaaV7stw4OLB79rM0Xf8c7xJC+LIVVw5+v14WbeOtFQ
+         RAQoyNa/kDFojwcRHEPCzaLUvfzZn4hO3giUtXz4qurJKYNqVJOXG3oKtXvnBVPVIhCx
+         lJRdr28CYPafThHSxXIC1ZH1EDc2oeUJdwczAZOEwFS3fnI8pdNl10mrk0isWC/HtCy3
+         DrO3tDzAezjEZaKw31wy39KFxbKqrQHOkhCYw45QoY3wtz8yqE2M2HV1juuTONSoC5VK
+         cWgl3cvSkQwUc00Kebrhtxli+byW2JK64bZt7C6/DgvYPPd7DPQCK6Vy0oUjZJwvFV4l
+         H9Ag==
+X-Gm-Message-State: AGi0PuY9bc+HuvV1EFeraA7ZObUQBFPQmxPI48nbijENbQILU/hoMWJ+
+        1zZ701oUSe8dbMxdqSpbvD2NOMU1t/7Rt4/zi78=
+X-Google-Smtp-Source: APiQypLjn+quin05VpI7eccg9aPBvq4rkesUHFhJvzeuZEXRWkfxI9E/S60HRrWJ9MxsyWnLP/SFJNPDcKrdHUSAbTY=
+X-Received: by 2002:a92:d151:: with SMTP id t17mr3585764ilg.35.1588064051274;
+ Tue, 28 Apr 2020 01:54:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200426120442.11560-1-peron.clem@gmail.com> <20200426120442.11560-5-peron.clem@gmail.com>
+ <20200428080020.35qcuylwq2ylmubu@gilmour.lan>
+In-Reply-To: <20200428080020.35qcuylwq2ylmubu@gilmour.lan>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Tue, 28 Apr 2020 10:54:00 +0200
+Message-ID: <CAJiuCcc2LQ4L36KSfO8iLVFBUO6k+zsZFX+_Ovm_10PoWO4AsA@mail.gmail.com>
+Subject: Re: [PATCH 4/7] arm64: dts: allwinner: a64: Add HDMI audio
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit b326e9560a28 ("hw-breakpoints: Use overflow handler instead of
-the event callback") removed '__register_perf_hw_breakpoint' function
-usage and replaced it with 'register_perf_hw_breakpoint' function.
+Hi Maxime,
 
-Remove the left-over unused '__register_perf_hw_breakpoint' declaration
-from 'hw_breakpoint.h' as well.
+On Tue, 28 Apr 2020 at 10:00, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> On Sun, Apr 26, 2020 at 02:04:39PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
+> > From: Marcus Cooper <codekipper@gmail.com>
+> >
+> > Add a simple-soundcard to link audio between HDMI and I2S.
+> >
+> > Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> > Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
+> > ---
+> >  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 21 +++++++++++++++++++
+> >  1 file changed, 21 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64=
+/boot/dts/allwinner/sun50i-a64.dtsi
+> > index e56e1e3d4b73..08ab6b5e72a5 100644
+> > --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+> > @@ -102,6 +102,25 @@
+> >               status =3D "disabled";
+> >       };
+> >
+> > +     hdmi_sound: hdmi-sound {
+> > +             compatible =3D "simple-audio-card";
+> > +             simple-audio-card,format =3D "i2s";
+> > +             simple-audio-card,name =3D "allwinner,hdmi";
+>
+> I'm not sure what the usual card name should be like though. I would assu=
+me that
+> this should be something specific enough so that you're able to different=
+iate
+> between boards / SoC so that the userspace can choose a different configu=
+ration
+> based on it?
 
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Bhupesh Sharma <bhsharma@redhat.com>
----
- include/linux/hw_breakpoint.h | 3 ---
- 1 file changed, 3 deletions(-)
+I really don't know what we should use here,
+I just have a look at other SoC:
+rk3328: "HDMI"
+rk3399: "hdmi-sound"
+r8a774c0-cat874: "CAT874 HDMI sound"
 
-diff --git a/include/linux/hw_breakpoint.h b/include/linux/hw_breakpoint.h
-index 6058c3844a76..fe1302da8e0f 100644
---- a/include/linux/hw_breakpoint.h
-+++ b/include/linux/hw_breakpoint.h
-@@ -72,7 +72,6 @@ register_wide_hw_breakpoint(struct perf_event_attr *attr,
- 			    void *context);
- 
- extern int register_perf_hw_breakpoint(struct perf_event *bp);
--extern int __register_perf_hw_breakpoint(struct perf_event *bp);
- extern void unregister_hw_breakpoint(struct perf_event *bp);
- extern void unregister_wide_hw_breakpoint(struct perf_event * __percpu *cpu_events);
- 
-@@ -115,8 +114,6 @@ register_wide_hw_breakpoint(struct perf_event_attr *attr,
- 			    void *context)		{ return NULL; }
- static inline int
- register_perf_hw_breakpoint(struct perf_event *bp)	{ return -ENOSYS; }
--static inline int
--__register_perf_hw_breakpoint(struct perf_event *bp) 	{ return -ENOSYS; }
- static inline void unregister_hw_breakpoint(struct perf_event *bp)	{ }
- static inline void
- unregister_wide_hw_breakpoint(struct perf_event * __percpu *cpu_events)	{ }
--- 
-2.7.4
+But maybe it's time to introduce proper name:
+What about :
+sun50i-a64-hdmi
+sun50i-h6-hdmi
+How should we handle this with h3 / h5 ?
+settings the simple-audio-card,name in each SoC dts?
+Or using sun50i-h3-hdmi as they are both identical?
 
+Regards,
+Clement
+
+
+>
+> If so, it's really too generic.
+>
+> Maxime
