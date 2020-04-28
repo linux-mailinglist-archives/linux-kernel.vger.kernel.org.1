@@ -2,67 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6695E1BB5A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 07:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 139101BB59D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 07:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgD1FE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 01:04:27 -0400
-Received: from mga14.intel.com ([192.55.52.115]:10411 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726042AbgD1FE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 01:04:27 -0400
-IronPort-SDR: st8HWoiB/PiRtIxcsMIZZ+y6+xK/NiJnBbQRq2/c7UDIRubmDoh0s3+RwqOFosOVAiVdoEpiQ9
- W5HBQticXTGw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2020 22:04:26 -0700
-IronPort-SDR: iPxTFM3ev1MWeMRC4aiL1oaNO47gnWGI3rOc8ZJrQ92tzn+Uf/L/rHO+D2h+9Xn5ybqKGfqhVk
- cxEq5b450dog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,326,1583222400"; 
-   d="scan'208";a="302607777"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Apr 2020 22:04:25 -0700
-Date:   Tue, 28 Apr 2020 13:01:35 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     linux-fpga@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, mdf@kernel.org
-Subject: How to update a piece of flash for FPGA firmware?
-Message-ID: <20200428050135.GA27416@yilunxu-OptiPlex-7050>
+        id S1726284AbgD1FCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 01:02:31 -0400
+Received: from mail-eopbgr680070.outbound.protection.outlook.com ([40.107.68.70]:45999
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725792AbgD1FCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 01:02:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gGfN0l0QAkzqXrpzOKfu6Nkr+gQFWYng/M/BqFnHRgv26BfJ2sDoRBpDH+WklJiElg+dOBy1Q0lzlSM/W4078gaiwbMR8Z1wZ8r1SSv0PHWiDrmIGgHmdt5FHpsehnaekKGBw+7QcjY9Hp3cIpxX1e+k/3Eqak2Cx+/3x2qgXXeH7ECgrvgTZ1wa0u3wxKuxs5B/cr6Szm+XaqwfMHz4Nb/2wx2yO2CDQHGrLRl4caHaW4IUM3HNOUel26XZH15aZoFXNb/r50mpHRaCoqSwzPX+29uVemgbGSsDB7BSmAM5Hwp669bqGTNaE1ydQdKCT/+lqoiVtR7kSjlnFfjDoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W+at1g2m0VyXyxoV2WTS0ruWiKOsJ10Y+70e8usDpz0=;
+ b=FT0Z4LZUQ2ZRhcjMD3dsdHzOSUqsdgK6OYorOHH9LT1SzkkZ11bTLnLIk0++7wsvGnIw2cjscUSWNFS8PmhEqJ+2wrInaRZZXSFAFJArIC7U29OV0LYknqfR6GaHjcRxGkXvDZ3eXr6Js8ccnxkuojRwoBbTpi+AsQolBZTer050a6sFgx9zInwYKeBMYSq4XTCEnLqmpQbnBKKTKXmP1rXxxbUntAMs+uTrzpb/eS2XXc8+MojjE0//efZeXmgjCz7sxf9NrNoMNpRCiVVQtNnZ30M44OPaPvQMOoTv2qjmoTkOeISGiezr/31WfQA4H3etm6IsKoNvZ2rwxn7AJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W+at1g2m0VyXyxoV2WTS0ruWiKOsJ10Y+70e8usDpz0=;
+ b=IHFQ/LXIRLw3zBVYqBHhEr3hNvNQw6kKnwZVGoFn3UznYGQXpGJFuajM5H8jdEdoi++GhPTcrItN9HnHnxmGlXpXx77Y6EWQ26DeW8aZVY1eU8q2Ra9gZreQLIttQmX6xkVVKZUEvWj4Z2c5Zn925k9mpNhQXlLXN9gMslUHUn4=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Sanju.Mehta@amd.com; 
+Received: from DM6PR12MB3420.namprd12.prod.outlook.com (2603:10b6:5:3a::27) by
+ DM6PR12MB3499.namprd12.prod.outlook.com (2603:10b6:5:11e::20) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2937.22; Tue, 28 Apr 2020 05:02:28 +0000
+Received: from DM6PR12MB3420.namprd12.prod.outlook.com
+ ([fe80::7545:386:8328:18a0]) by DM6PR12MB3420.namprd12.prod.outlook.com
+ ([fe80::7545:386:8328:18a0%6]) with mapi id 15.20.2937.023; Tue, 28 Apr 2020
+ 05:02:28 +0000
+Subject: Re: linux-next: build warning after merge of the spi tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sanjay R Mehta <sanju.mehta@amd.com>
+References: <20200428141611.0ed0969a@canb.auug.org.au>
+From:   Sanjay R Mehta <sanmehta@amd.com>
+Message-ID: <2b6a132c-8659-d2ed-917e-09aef47aeac3@amd.com>
+Date:   Tue, 28 Apr 2020 10:31:56 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+In-Reply-To: <20200428141611.0ed0969a@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BM1PR01CA0135.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:b00:40::29) To DM6PR12MB3420.namprd12.prod.outlook.com
+ (2603:10b6:5:3a::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.31.32.32] (165.204.159.242) by BM1PR01CA0135.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:40::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Tue, 28 Apr 2020 05:02:25 +0000
+X-Originating-IP: [165.204.159.242]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 94dc526d-27c0-4e2c-813a-08d7eb315908
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3499:|DM6PR12MB3499:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3499C19C3573C71C73868891E5AC0@DM6PR12MB3499.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
+X-Forefront-PRVS: 0387D64A71
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3420.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(136003)(346002)(396003)(366004)(39860400002)(110136005)(66556008)(5660300002)(26005)(478600001)(66476007)(53546011)(956004)(31696002)(6486002)(16576012)(81156014)(54906003)(8936002)(316002)(2616005)(186003)(8676002)(52116002)(2906002)(558084003)(36756003)(31686004)(16526019)(4326008)(66946007)(6666004);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6ULYFiRnWjsz9CAYbeFpx3rhN3F1AsKmVBTI+++10gMANhk1uCpHmUDvG9ovSN5dmbU/h4NU/tHSYfqUh+SMDKHUVYC/Ya+4boK6qpcgUQ03ZqulzHI2lgoWG8x/PN1SIFWTqwCICLS82uEZigp2rjN8YZG3y+8Isa03EvocbejQq1j9yynVbyHbQMu2u7yglBpitPXY0q+HT4LClTrZSgPPCROt24LoE1iCV5hS2+6Lb+ijokTiVj32+cJxZEzN574uA1y7KEx874iGzmYEW3XpHDxrZdveyjsu6AMT4Ko+Iz6EXM6o7Wp4RdFbl8bzCAB4rRrVWrgrE44X2iSeOJFQCDCvxhhbGQdNSY1c8ORq2yL7p68BnIIVZpLLuNjgnRWjwxpLHzigPU0MsYsBhq3diFRl+45MhvDql6iy3MoRB5deaUI99OT/bKQ+vF6t
+X-MS-Exchange-AntiSpam-MessageData: WO8wm8AnBA+eST0P2uXLLrSIQTV+9BKeQc1lTqyv+kNA3S1sHxPgUgT5fGLSCkwHSozzgMl0E9YzFqwIw27qziZ5j1BxUlHECc8Z4w0Pob7wf1LRp6iR71FZYjc6iDn0uRq3dG4s2A5F3ZfWxc/fUeYUb5MyfLGT/dU9MkkTCPVPr/rJp9XgGnL59jdGvDCeYAyovNLrADoyzv4GhYUh7gV4QCYgB1oAavs6gFTL0+tVttXEPwBeqDdzoxpCg23hYiN6VcT+EeP+aZW4+HfMhT94RY99B+XJ+/g8+MpOzjk83+qE/HrFyP6gyisAYaoct3RowU5IP6fIg3T//38/cKvCVKExNL/Wj70QzLgaEBIkOHnVV/+i62XaTAqZ71rzJooXOPgHv6lV35S+d1k/VAccryB0FFCx2fBoXIQFhtEY0/xHsfHDESukfQygvI5zm/5MJGgN4375ic3bpfue0gjhh0MsXJ8FaBK+QWIyYvUIpsKpt5TH5xlAoFYS1RTXuQEeZq3YnZRHiABculoanqF7dh2+EzEnv42ImGXE1fD/dG8Vpby6j/sKXHvibr2BPGW/9Ky0Il/3Vx1IMpoT/zNyFy/Ei4dfhS3DwJfeqscJHNR7IUv+xp1kFbrFKyMpd/zm/2jdYmYcnif2PrBWSo26Hfc/eODQPuB2AabqNuJvDsHoBjYJVfXKSwXbzkCfFuC9ftKhzuYXSSPegYMRJaMmaXpLzpbNs+n3ndQJYO6o9iBs5ibDkwnMUIGcKdQh5NSGEJa538YHFh42YxDnvdccCgAdUK1mYzjLCUEnJ2jYTFHxYjPlZpkhGTH2L9Gt
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94dc526d-27c0-4e2c-813a-08d7eb315908
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2020 05:02:28.0476
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wSDjL2tdJvxUeWw3ZjOCU8d1bbl8eQUCVwKcZOqkbruLqaFf+/xgVW4Zab96ykhbGXReo15T70BvQklORsXtMw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3499
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Stephen,
 
-I wonder if an updating of FPGA Flash (but cannot reload) could be
-implemented as fpga-mgr?
+I have just sent a fixup patch for this. Could it still reach 5.8?
 
-I have the pcie based FPGA card. The bitstream for FPGA static region is
-stored on flash chip. Board will load the bitstream to FPGA on system
-power cycle. The flash chip could be accessed through "PCIE -> ... ->
-Flash update engine -> Flash". So the update of the FPGA static region is
-basicly updating the flash chip through PCIE and rebooting system.
+Thanks & regards
+Sanjay Mehta
 
-Should I implement the flash update engine as a fpga-mgr device? On one
-hand it is just a flash write, FPGA functionality is actually not
-changed before reboot. Does fpga-mgr requires bitstream takes function
-immediately after write_complete()? On the other hand, the flash write
-do affects FPGA static region on next boot. Operating on the
-corresponding fpga region makes kernel fully aware of what is being
-done.
-
-Actually the FPGA card do has the capability to reload bitstream at
-runtime. But it will cause the whole PCIE device lost, static region is
-also destroyed. We need to rescan PCI to get it back. So I think
-basically this is the same case as system reboot from FPGA's
-perspective.
-
-Thanks
-Yilun
+On 4/28/2020 9:46 AM, Stephen Rothwell wrote:
+> [CAUTION: External Email]
+> 
