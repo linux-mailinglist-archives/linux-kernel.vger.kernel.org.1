@@ -2,129 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91281BCB4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97AA1BC8AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729099AbgD1Szx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:55:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43918 "EHLO
+        id S1730118AbgD1Sei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728913AbgD1Sb6 (ORCPT
+        by vger.kernel.org with ESMTP id S1730121AbgD1SeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:31:58 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0C4C03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:31:57 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id f13so25822743wrm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:31:57 -0700 (PDT)
+        Tue, 28 Apr 2020 14:34:23 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B68C03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:34:23 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t7so2849312plr.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:34:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=T4aY7SsGeGGlUnAvLytvyfsEd/infPH0ib2GDQYAca0=;
-        b=cBftCMNiCqKAeas54VnN7viiIAfa5EJgrd35ITaFFqmxrziSmZj2jJzUWPCAXCLRC7
-         awNd6HJqFM8xaHwiTVtc+sLsz9Lm6ae66v4KS5EIIyCzn9uqsmgwutBKfMJe+HdJfPOx
-         eMe4mk0ZequzNTm2KPSA2zzDlHLUVmpLM+Fo8MkWMo+tLB6s+x+9Cr+KkESmTZJe1dEB
-         e2e7SqHxlFavONFS6/vulJX4pypYwM8G27PejWzUzh6oMt1KeNh26G44tk3byx2YXJab
-         NrOTV9Fzv8SpPae0hR3DRuGuWDdgYteR1DQp6cK48lIBvUgOQTsNJx381T4hb58d67M6
-         ih+Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d8J9/+H1aJgIU0iPd3k8kUXfWA6cvbV7BCbp34hUMis=;
+        b=PzZLYwaag6VROB6/jTlW9RHPa3Znmxxj1gxVDF7bKVaHEe7DgmI6oiMixvFxC0hifr
+         6AF8PGrk53GEMQ2uvcLzz3tI9y6/4PYq8kHzbjRPRIjS+cqFJCnOlLMmxdtHPHCQTetS
+         rY9cdvBZM1YJK3ZB6JqBBSWL6fq8YJap+HZZkKlX6Xu1QVzE54vkzpuw2khc0Bfwu+1/
+         e1R+H9YvIHUv+u5g7rByKatPq1NJikTUOYTQ7eLDvr0JUW+MNOD19ptMr14AMCOoevYW
+         jyjAxHQzyIrOk/0iPRnrkpFhUlEvmaqOesnOkoASIrNQZLh6Z9a6eXSwSh/WDEDBNNlD
+         Gz8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T4aY7SsGeGGlUnAvLytvyfsEd/infPH0ib2GDQYAca0=;
-        b=HseJORPECnxRSVLOfQ4wLUS/FdJmfLddUx4zVVPOt6rAVZYk+8iorAJGn0JqfGnd/v
-         xv4f/0prycVKy3vwG7uQu76dcEkXQc7Ln5Dgx0Ygfe9LBlYJwK5d+IVBD5hVdNpd7QK8
-         6A2oIydfsol2ArfGdvjiOPcC4eESUJLzvzogobPBsKA1mlrJYG02bPeIx8E5QhkhArlJ
-         KjEsp7RMuyKr6ua0Gwzn5PLn1hySCnCtBrwB5NjEcz/wvZG4ZgYnnffQH7327jlj/z5y
-         LpJmXuXB9VuM/C9vtfatV2CXbKgPoU007nlkfb5JBrnP/RkBC8aXRXQ94LGwdqIXuEA7
-         XF1Q==
-X-Gm-Message-State: AGi0PuYHzHKH3orAnZBs/8gxOBqfUZJ3jl1cj1clKDZkqzhFDqnF+WQ6
-        3WVFDncT6SlKtp/7+y3i/tXl4Q==
-X-Google-Smtp-Source: APiQypIcTV0jARth4etalPFOSqyN1yL0YRWUnf3fCeXNMXPjWOlzQUOAOyGClS/2GttKoNnGb4Fx8Q==
-X-Received: by 2002:adf:8441:: with SMTP id 59mr35982612wrf.237.1588098716404;
-        Tue, 28 Apr 2020 11:31:56 -0700 (PDT)
-Received: from [192.168.0.41] (lns-bzn-59-82-252-135-148.adsl.proxad.net. [82.252.135.148])
-        by smtp.googlemail.com with ESMTPSA id m8sm27877197wrx.54.2020.04.28.11.31.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Apr 2020 11:31:55 -0700 (PDT)
-Subject: Re: [PATCH 1/2] drivers/clocksource/timer-of: Remove __init markings
-To:     Saravana Kannan <saravanak@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Sandeep Patil <sspatil@android.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-References: <d2934f74d77c637c41d7cb98710cb5363d09e83b.1585021186.git.baolin.wang7@gmail.com>
- <CADBw62pmiguVmuq334eskLAZ5CkrjxohW_fXNjNev+O1U15=OQ@mail.gmail.com>
- <bd800f7b-05fd-b393-fba6-1965ba89e1b3@linaro.org>
- <CAGETcx9da-U+dXA6sreTKJQiS3brYh3Hfh_qVYt06=3UOSmT_g@mail.gmail.com>
- <429da47b-ad51-30eb-ff36-b05780c941ba@linaro.org>
- <CAGETcx9sc6oWSPK=aWJ+39i9eHAyg6iOf+Xf2oVECO+g1pFjtQ@mail.gmail.com>
- <573b7d9e-fb5d-5c81-a981-6d965db933f3@linaro.org>
- <20200427221752.GA166576@google.com>
- <7c508403-3b53-8285-5724-c2bca221b77a@linaro.org>
- <CAGETcx_peaPtmjF4s0iR6ObZ=f76EjaMOokyBYM3a7AX-8_ong@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <da25dc33-addb-298d-103a-fcf1cf0e6793@linaro.org>
-Date:   Tue, 28 Apr 2020 20:31:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d8J9/+H1aJgIU0iPd3k8kUXfWA6cvbV7BCbp34hUMis=;
+        b=Fkfq8ldrV2+9g4CbnbDOammReNyziuU5TqJf42DOxCZ0RP0iLDBhhe4M18q8VTXLXm
+         dtwrDSPCnHyD8uF0OUFEdwnacxIQbgc5vySUat8NK+CbSDpBQ1d5F/HMiZTr1YsruyM1
+         IfPbchnnvNjiPHfZs0uqRKt4Ccx3+kWTW6JZAt4p/Qdec6gv8hfsl0l3n+NkBDhWiVaN
+         fyypBdVXv2eHaYuWcGRjD0JgHFb79gp9ePe0SY+Ia6je6wMEiJywC2qVFNmFADlY6b2q
+         B5MxEKhctt1WigOwPL9pmoTrlXJlhtGLs0oJERIYceAMFDGz+aUjdzFWHHgjb5XvBx1W
+         ycIg==
+X-Gm-Message-State: AGi0PuZxXffQIN/Nv55MRwMjPkrzcghZzkClASVX1amCiKklsVvfCnGA
+        Ga+aCF/aBp69NWoZRAXDeZf+NZTaT/HDqyffbv0DFw==
+X-Google-Smtp-Source: APiQypK4DziNhv8yRj8qmx9ucMaNvJnzarNstlH/ET2gZdf27UdoomqisWjZrSKO9zFfc0EmggwKCgxi0dJ9zlfGZ2Y=
+X-Received: by 2002:a17:902:988e:: with SMTP id s14mr29496990plp.179.1588098862653;
+ Tue, 28 Apr 2020 11:34:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx_peaPtmjF4s0iR6ObZ=f76EjaMOokyBYM3a7AX-8_ong@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200428174221.2040849-1-natechancellor@gmail.com>
+In-Reply-To: <20200428174221.2040849-1-natechancellor@gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 28 Apr 2020 11:34:11 -0700
+Message-ID: <CAKwvOd=cb-dyWGeMoCE4+zdgA1R=t=QPkzU9EGiCtgdzXke_cw@mail.gmail.com>
+Subject: Re: [PATCH] dpaa2-eth: Use proper division helper in dpaa2_dbg_ch_show
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/2020 20:23, Saravana Kannan wrote:
-> On Tue, Apr 28, 2020 at 12:02 AM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
->>
->>
->> Hi Saravana,
-> 
-> You were replying to Sandeep :)
+On Tue, Apr 28, 2020 at 10:43 AM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> When building arm32 allmodconfig:
+>
+> ERROR: modpost: "__aeabi_uldivmod"
+> [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-eth.ko] undefined!
+>
+> frames and cdan are both of type __u64 (unsigned long long) so we need
+> to use div64_u64 to avoid this issues.
+>
+> Fixes: 460fd830dd9d ("dpaa2-eth: add channel stat to debugfs")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1012
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-Oh, right :)
+Don't forget reported by tags to show some love to our bots! Thanks
+for the patch.
+Reported-by: kernelci.org bot <bot@kernelci.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Sorry Sandeep. Thanks for taking the time to elaborate a clear statement
-of the GKI.
+> ---
+>  drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
+> index 80291afff3ea..0a31e4268dfb 100644
+> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
+> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
+> @@ -139,7 +139,7 @@ static int dpaa2_dbg_ch_show(struct seq_file *file, void *offset)
+>                            ch->stats.dequeue_portal_busy,
+>                            ch->stats.frames,
+>                            ch->stats.cdan,
+> -                          ch->stats.frames / ch->stats.cdan,
+> +                          div64_u64(ch->stats.frames, ch->stats.cdan),
+>                            ch->buf_count);
+>         }
+>
+>
+> base-commit: 0fd02a5d3eb7020a7e1801f8d7f01891071c85e4
+> --
+> 2.26.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200428174221.2040849-1-natechancellor%40gmail.com.
 
-[ ... ]
-
->> That was my understanding of the GKI, thanks for confirming.
->>
->> Putting apart the non-technical aspect of these changes, the benefit I
->> see is the memory usage optimization regarding the single kernel image.
->>
->> With the ARM64 defconfig, multiple platforms and their corresponding
->> drivers are compiled-in. It results in a big kernel image which fails to
->> load because of overlapping on DT load address (or something else). When
->> that is detected, it is fine to adjust the load addresses, otherwise it
->> is painful to narrow down the root cause.
->>
->> In order to prevent this, we have to customize the defconfig each
->> version release.
-> 
-> Sorry, I'm not sure I understand where you are going with this. Are
-> you agreeing to pick up this change?
-
-Right. I agree with the change but I would like to have Thomas opinion
-on this before picking the patch.
-
-Thomas ?
 
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thanks,
+~Nick Desaulniers
