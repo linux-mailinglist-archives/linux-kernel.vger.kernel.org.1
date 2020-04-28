@@ -2,54 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDDC91BB4D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 05:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506B01BB4FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 06:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgD1DyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 23:54:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:45390 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbgD1DyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 23:54:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A40B31B;
-        Mon, 27 Apr 2020 20:54:14 -0700 (PDT)
-Received: from [10.163.70.197] (unknown [10.163.70.197])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C8713F73D;
-        Mon, 27 Apr 2020 20:54:05 -0700 (PDT)
-Subject: Re: [mm/debug] fa6726c1e7: kernel_BUG_at_include/linux/mm.h
-To:     Qian Cai <cai@lca.pw>
-Cc:     kernel test robot <lkp@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <096a07fc-4525-feb6-5658-40bcffbd0a58@arm.com>
- <D30E4C88-408A-438B-803B-D9F8F82D87A7@lca.pw>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <a7816294-05af-b325-c699-84bb143b3d6a@arm.com>
-Date:   Tue, 28 Apr 2020 09:23:37 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726307AbgD1EHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 00:07:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726258AbgD1EHn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 00:07:43 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8603CC03C1A9;
+        Mon, 27 Apr 2020 21:07:41 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id x25so1131356wmc.0;
+        Mon, 27 Apr 2020 21:07:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LSKLs+uH/nXJXVRVF9wLRK1/PW3bgortq15p+iwdX9I=;
+        b=MIiTkf5iKNGuIMwLqKyx7DEjjzjvUMovzaXbiUoVaDKJsqXWuXjZKOk6xVZn1TEcb4
+         CG9VeNNsaNMZtZTWr5WC3tggHz5Yrqh60YqPa/x9Nq12tHykkv3QZ85KIA23PYf+H8IE
+         y8AIvBGTfLEzFc5DXqOr2Csynmv+ZUbsiTzbu7ctaMgyxTwh4K0Qe6ivUXthNJg9kRfF
+         9UnsRxGnkJAtYSccPc6eppmNzy19Ertmn6uu7oV2KGm5ymZVBlJDX9DlsdMPUD/3r5T3
+         Nu8nZKJvnE3Uh2KVpRJSQrdnI4rBHKULgoEdhZ6acfBwHzJrTBcdib6cCyndKg4JxLCo
+         kr2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LSKLs+uH/nXJXVRVF9wLRK1/PW3bgortq15p+iwdX9I=;
+        b=KLYRqHscVnOk2ewdcYG0tPw+AXHNf1XSvymLJDYKvzm5l+Ck3AGmouANXpdN65x6Zd
+         bjGv6UUcZqfj7vVYFoFK2vcXqSJ8iF80s92CT+fsgYPRqomfCwN17qHk/7IjpWNLX/or
+         E9wjBkyb8NF4J3Kv3WMb7STGuVDjCAL3HsVlzzzKC96KIK6CD2fgkaroU9fP6OZ1s/VE
+         4/bp8m2Q9PDKiP1ZI9LenKp6/Ou21ISfo7gninfjac2LHppne7xOpeMDOtCJ3NJvgQbZ
+         8ZkZNOXxB8AXx3ksV0V0QeJfVMBWkCFtCpmXuL8G9mNljREnNCwbWBD03xziUiyqLS5r
+         ziXQ==
+X-Gm-Message-State: AGi0Pua/Pl2L1oY4vgXLyuq4NT5FCeuXgZdSpSkFDAw4VUeJ0DxH6Fin
+        bQ85vWpecJC8oL4gRcMM2Zn4ANVD
+X-Google-Smtp-Source: APiQypJ1OE0RgimC8V/dkU/ECeKwZbO3NfvMvHXCoBylN36m0uekgF9eW5JEO2yKMXgSnWky0nm0lQ==
+X-Received: by 2002:a7b:c944:: with SMTP id i4mr2344325wml.144.1588046859892;
+        Mon, 27 Apr 2020 21:07:39 -0700 (PDT)
+Received: from [10.230.188.26] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id b22sm2427152wmj.1.2020.04.27.21.07.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 21:07:38 -0700 (PDT)
+Subject: Re: [PATCH-next] net: phy: bcm54140: Make a bunch of functions static
+To:     ChenTao <chentao107@huawei.com>, andrew@lunn.ch,
+        hkallweit1@gmail.com
+Cc:     linux@armlinux.org.uk, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200428014804.54944-1-chentao107@huawei.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <2cc91b0a-049e-95db-b9d9-21da25b022d9@gmail.com>
+Date:   Mon, 27 Apr 2020 21:07:36 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <D30E4C88-408A-438B-803B-D9F8F82D87A7@lca.pw>
+In-Reply-To: <20200428014804.54944-1-chentao107@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -60,58 +72,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 04/28/2020 08:21 AM, Qian Cai wrote:
+On 4/27/2020 6:48 PM, ChenTao wrote:
+> Fix the following warning:
 > 
+> drivers/net/phy/bcm54140.c:663:5: warning:
+> symbol 'bcm54140_did_interrupt' was not declared. Should it be static?
+> drivers/net/phy/bcm54140.c:672:5: warning:
+> symbol 'bcm54140_ack_intr' was not declared. Should it be static?
+> drivers/net/phy/bcm54140.c:684:5: warning:
+> symbol 'bcm54140_config_intr' was not declared. Should it be static?
 > 
->> On Apr 27, 2020, at 10:35 PM, Anshuman Khandual <Anshuman.Khandual@arm.com> wrote:
->>
->> Letting CONFIG_DEBUG_VM_PGTABLE enabled via CONFIG_EXPERT for unsupported
->> platforms i.e without ARCH_HAS_DEBUG_VM_PGTABLE, was a conscious decision
->> meant to expand it's adaptability and coverage without requiring any code
->> (i.e Kconfig) change. The easier it is to enable the test on unsupported
->> platforms right now, more folks are likely to try it out thus increasing
->> it's probability to get fixed on those platforms. That is a valid enough
->> reason to have CONFIG_EXPERT based enablement method, IMHO. Also even with
->> CONFIG_EXPERT set, CONFIG_DEBUG_VM_PGTABLE does not get enabled by default
->> automatically.
-> 
-> No, I am talking about PAE. There is a distinction between known broken that nobody cares (like arm32) and in-progress/unknown status (like s390).
-> 
-> Also, it is not very nice to introduce regressions for robots when testing PAE because they always select CONFIG__EXPERT and CONFIG_DEBUG_VM.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: ChenTao <chentao107@huawei.com>
 
-Okay, will add X86_PAE to the explicitly disabled list along with
-IA64 and ARM.
-
-----
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Date: Tue, 28 Apr 2020 04:30:04 +0100
-Subject: [PATCH 3/3] mm/debug/pgtable: Completely disable X86_PAE
-
-Completely disable X86_PAE, even via CONFIG_EXPERT.
-
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- lib/Kconfig.debug | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 6a492e32579a..79e097a2285f 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -697,7 +697,7 @@ config DEBUG_VM_PGFLAGS
- config DEBUG_VM_PGTABLE
-        bool "Debug arch page table for semantics compliance"
-        depends on MMU
--       depends on !IA64 && !ARM
-+       depends on !IA64 && !ARM && !X86_PAE
-        depends on ARCH_HAS_DEBUG_VM_PGTABLE || EXPERT
-        default y if ARCH_HAS_DEBUG_VM_PGTABLE && DEBUG_VM
-        help
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-
-Hello Andrew/Stephen,
-
-Could you please fold the above patch in linux-next. Also please do
-let me know if I should respin the series as well. Thank you.
-
-- Anshuman
+Florian
