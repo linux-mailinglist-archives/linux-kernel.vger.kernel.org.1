@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B026A1BCB8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CD81BCA33
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729543AbgD1S5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:57:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44440 "EHLO mail.kernel.org"
+        id S1730993AbgD1Sl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:41:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728935AbgD1SaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:30:05 -0400
+        id S1730117AbgD1Sl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:41:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DA072137B;
-        Tue, 28 Apr 2020 18:30:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8386F21569;
+        Tue, 28 Apr 2020 18:41:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098605;
-        bh=r7W2BMvSVN2n2aUOBFfbrcyTxzO/sjlxfzlONt//hmY=;
+        s=default; t=1588099286;
+        bh=Fb3sQa6OCs+P3URJNkaWDvAwPUCo6P0IAoeJ4lkfKvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DDLKI6U0V06n1j0cOCWWTkM/kA/WSHMTnDixtAiWtFBuChAV4JaSB7IkA9gFo3UbV
-         5iMJpBIorK9OmFhzLip2RSESxU/hF8Wu7qztM5aW42mAgbgScc6FZtWyzNJRqBqAUP
-         P7Wp5VBCnCwW1K0zbOvQroNoepMyYe2HG66Iz/yI=
+        b=vUAyz1rFP54jf0ZawXv3H7v5vDNFO4ugSZH5YTxyMxhcX8Zcn6dMV6EcnnfmDKFG1
+         /aygtYfqwROYr1MRk225IP0BnDZg5XrdQS28Ncq7ZXV34DdKHKpm7z+L2m1LSlUvWy
+         LQ5VijXT0mTdLwgWC6JsXB2OMMki0DnAZoATwa5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 026/131] Revert "powerpc/64: irq_work avoid interrupt when called with hardware irqs enabled"
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 064/168] net/mlx4_en: avoid indirect call in TX completion
 Date:   Tue, 28 Apr 2020 20:23:58 +0200
-Message-Id: <20200428182228.420966387@linuxfoundation.org>
+Message-Id: <20200428182240.038949532@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
-References: <20200428182224.822179290@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,110 +46,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit abc3fce76adbdfa8f87272c784b388cd20b46049 ]
+[ Upstream commit 310660a14b74c380b0ef5c12b66933d6a3d1b59f ]
 
-This reverts commit ebb37cf3ffd39fdb6ec5b07111f8bb2f11d92c5f.
+Commit 9ecc2d86171a ("net/mlx4_en: add xdp forwarding and data write support")
+brought another indirect call in fast path.
 
-That commit does not play well with soft-masked irq state
-manipulations in idle, interrupt replay, and possibly others due to
-tracing code sometimes using irq_work_queue (e.g., in
-trace_hardirqs_on()). That can cause PACA_IRQ_DEC to become set when
-it is not expected, and be ignored or cleared or cause warnings.
+Use INDIRECT_CALL_2() helper to avoid the cost of the indirect call
+when/if CONFIG_RETPOLINE=y
 
-The net result seems to be missing an irq_work until the next timer
-interrupt in the worst case which is usually not going to be noticed,
-however it could be a long time if the tick is disabled, which is
-against the spirit of irq_work and might cause real problems.
-
-The idea is still solid, but it would need more work. It's not really
-clear if it would be worth added complexity, so revert this for
-now (not a straight revert, but replace with a comment explaining why
-we might see interrupts happening, and gives git blame something to
-find).
-
-Fixes: ebb37cf3ffd3 ("powerpc/64: irq_work avoid interrupt when called with hardware irqs enabled")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200402120401.1115883-1-npiggin@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Tariq Toukan <tariqt@mellanox.com>
+Cc: Willem de Bruijn <willemb@google.com>
+Reviewed-by: Saeed Mahameed <saeedm@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/time.c | 44 +++++++++++---------------------------
- 1 file changed, 13 insertions(+), 31 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/en_tx.c |   14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-index 5449e76cf2dfd..f6c21f6af274e 100644
---- a/arch/powerpc/kernel/time.c
-+++ b/arch/powerpc/kernel/time.c
-@@ -492,35 +492,6 @@ static inline void clear_irq_work_pending(void)
- 		"i" (offsetof(struct paca_struct, irq_work_pending)));
+--- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+@@ -43,6 +43,7 @@
+ #include <linux/ip.h>
+ #include <linux/ipv6.h>
+ #include <linux/moduleparam.h>
++#include <linux/indirect_call_wrapper.h>
+ 
+ #include "mlx4_en.h"
+ 
+@@ -261,6 +262,10 @@ static void mlx4_en_stamp_wqe(struct mlx
+ 	}
  }
  
--void arch_irq_work_raise(void)
--{
--	preempt_disable();
--	set_irq_work_pending_flag();
--	/*
--	 * Non-nmi code running with interrupts disabled will replay
--	 * irq_happened before it re-enables interrupts, so setthe
--	 * decrementer there instead of causing a hardware exception
--	 * which would immediately hit the masked interrupt handler
--	 * and have the net effect of setting the decrementer in
--	 * irq_happened.
--	 *
--	 * NMI interrupts can not check this when they return, so the
--	 * decrementer hardware exception is raised, which will fire
--	 * when interrupts are next enabled.
--	 *
--	 * BookE does not support this yet, it must audit all NMI
--	 * interrupt handlers to ensure they call nmi_enter() so this
--	 * check would be correct.
--	 */
--	if (IS_ENABLED(CONFIG_BOOKE) || !irqs_disabled() || in_nmi()) {
--		set_dec(1);
--	} else {
--		hard_irq_disable();
--		local_paca->irq_happened |= PACA_IRQ_DEC;
--	}
--	preempt_enable();
--}
--
- #else /* 32-bit */
++INDIRECT_CALLABLE_DECLARE(u32 mlx4_en_free_tx_desc(struct mlx4_en_priv *priv,
++						   struct mlx4_en_tx_ring *ring,
++						   int index, u64 timestamp,
++						   int napi_mode));
  
- DEFINE_PER_CPU(u8, irq_work_pending);
-@@ -529,16 +500,27 @@ DEFINE_PER_CPU(u8, irq_work_pending);
- #define test_irq_work_pending()		__this_cpu_read(irq_work_pending)
- #define clear_irq_work_pending()	__this_cpu_write(irq_work_pending, 0)
+ u32 mlx4_en_free_tx_desc(struct mlx4_en_priv *priv,
+ 			 struct mlx4_en_tx_ring *ring,
+@@ -329,6 +334,11 @@ u32 mlx4_en_free_tx_desc(struct mlx4_en_
+ 	return tx_info->nr_txbb;
+ }
  
-+#endif /* 32 vs 64 bit */
++INDIRECT_CALLABLE_DECLARE(u32 mlx4_en_recycle_tx_desc(struct mlx4_en_priv *priv,
++						      struct mlx4_en_tx_ring *ring,
++						      int index, u64 timestamp,
++						      int napi_mode));
 +
- void arch_irq_work_raise(void)
- {
-+	/*
-+	 * 64-bit code that uses irq soft-mask can just cause an immediate
-+	 * interrupt here that gets soft masked, if this is called under
-+	 * local_irq_disable(). It might be possible to prevent that happening
-+	 * by noticing interrupts are disabled and setting decrementer pending
-+	 * to be replayed when irqs are enabled. The problem there is that
-+	 * tracing can call irq_work_raise, including in code that does low
-+	 * level manipulations of irq soft-mask state (e.g., trace_hardirqs_on)
-+	 * which could get tangled up if we're messing with the same state
-+	 * here.
-+	 */
- 	preempt_disable();
- 	set_irq_work_pending_flag();
- 	set_dec(1);
- 	preempt_enable();
- }
+ u32 mlx4_en_recycle_tx_desc(struct mlx4_en_priv *priv,
+ 			    struct mlx4_en_tx_ring *ring,
+ 			    int index, u64 timestamp,
+@@ -449,7 +459,9 @@ bool mlx4_en_process_tx_cq(struct net_de
+ 				timestamp = mlx4_en_get_cqe_ts(cqe);
  
--#endif /* 32 vs 64 bit */
--
- #else  /* CONFIG_IRQ_WORK */
+ 			/* free next descriptor */
+-			last_nr_txbb = ring->free_tx_desc(
++			last_nr_txbb = INDIRECT_CALL_2(ring->free_tx_desc,
++						       mlx4_en_free_tx_desc,
++						       mlx4_en_recycle_tx_desc,
+ 					priv, ring, ring_index,
+ 					timestamp, napi_budget);
  
- #define test_irq_work_pending()	0
--- 
-2.20.1
-
 
 
