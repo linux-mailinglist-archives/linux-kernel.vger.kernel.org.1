@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4602D1BCA21
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012CB1BCAF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731293AbgD1Sql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:46:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35246 "EHLO mail.kernel.org"
+        id S1730010AbgD1Sxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:53:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731174AbgD1Sm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:42:59 -0400
+        id S1730053AbgD1Seo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:34:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 388212076A;
-        Tue, 28 Apr 2020 18:42:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25B5B21707;
+        Tue, 28 Apr 2020 18:34:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099378;
-        bh=VtS+X6WEymlTP8Z6qFuMXCpIcfSJoMeZrYnzp/pdOZ0=;
+        s=default; t=1588098883;
+        bh=cT5SIXL+iVDu/hb72oYjuRoUfLvME/5P/O+c1CUUBH8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fD/NfX6uHwdocwpp8KY0QbGXRi4szHEKhFY7viS4fSXe0TEH2ShO8f0eGyVzTbDiz
-         gqVctsvWMh0FZXwVnf8rYrjLvHBJo8zMVoHUZ99oJF4FTb0Hjcy7dvTedyEspCJ/xT
-         vNOx+4OLCjWrs0Wc9igbzLSjeMOplfRWKrdGUtZc=
+        b=Wmim8SyscwmvjPhUnySqksmEF958o/4EVs8gSkUgEr0Vn1zJLA2AUx9jHT9SikuAC
+         H73ySR5sxhsqlNuMNlPrMGA2JXQ9VAt2wkYI/QY89ZvMzWFCs9WWCUdTN0mVZ6M9hC
+         Uet/ktmGnxCRkAr5QsfwFpf2LKy5g8DdmvrXalb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gyeongtaek Lee <gt82.lee@samsung.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 125/168] ASoC: dapm: fixup dapm kcontrol widget
-Date:   Tue, 28 Apr 2020 20:24:59 +0200
-Message-Id: <20200428182248.113911781@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 5.6 124/167] iwlwifi: mvm: beacon statistics shouldnt go backwards
+Date:   Tue, 28 Apr 2020 20:25:00 +0200
+Message-Id: <20200428182240.973667531@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,71 +45,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gyeongtaek Lee <gt82.lee@samsung.com>
+From: Mordechay Goodstein <mordechay.goodstein@intel.com>
 
-commit ebf1474745b4373fdde0fcf32d9d1f369b50b212 upstream.
+commit 290d5e4951832e39d10f4184610dbf09038f8483 upstream.
 
-snd_soc_dapm_kcontrol widget which is created by autodisable control
-should contain correct on_val, mask and shift because it is set when the
-widget is powered and changed value is applied on registers by following
-code in dapm_seq_run_coalesced().
+We reset statistics also in case that we didn't reassoc so in
+this cases keep last beacon counter.
 
-		mask |= w->mask << w->shift;
-		if (w->power)
-			value |= w->on_val << w->shift;
-		else
-			value |= w->off_val << w->shift;
-
-Shift on the mask in dapm_kcontrol_data_alloc() is removed to prevent
-double shift.
-And, on_val in dapm_kcontrol_set_value() is modified to get correct
-value in the dapm_seq_run_coalesced().
-
-Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/000001d61537$b212f620$1638e260$@samsung.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20200417100405.1f9142751fbc.Ifbfd0f928a0a761110b8f4f2ca5483a61fb21131@changeid
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/soc-dapm.c |   20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/rx.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -423,7 +423,7 @@ static int dapm_kcontrol_data_alloc(stru
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
+@@ -8,7 +8,7 @@
+  * Copyright(c) 2012 - 2014 Intel Corporation. All rights reserved.
+  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
+  * Copyright(c) 2016 - 2017 Intel Deutschland GmbH
+- * Copyright(c) 2018 - 2019 Intel Corporation
++ * Copyright(c) 2018 - 2020 Intel Corporation
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of version 2 of the GNU General Public License as
+@@ -31,7 +31,7 @@
+  * Copyright(c) 2012 - 2014 Intel Corporation. All rights reserved.
+  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
+  * Copyright(c) 2016 - 2017 Intel Deutschland GmbH
+- * Copyright(c) 2018 - 2019 Intel Corporation
++ * Copyright(c) 2018 - 2020 Intel Corporation
+  * All rights reserved.
+  *
+  * Redistribution and use in source and binary forms, with or without
+@@ -566,6 +566,7 @@ void iwl_mvm_rx_rx_mpdu(struct iwl_mvm *
  
- 			memset(&template, 0, sizeof(template));
- 			template.reg = e->reg;
--			template.mask = e->mask << e->shift_l;
-+			template.mask = e->mask;
- 			template.shift = e->shift_l;
- 			template.off_val = snd_soc_enum_item_to_val(e, 0);
- 			template.on_val = template.off_val;
-@@ -546,8 +546,22 @@ static bool dapm_kcontrol_set_value(cons
- 	if (data->value == value)
- 		return false;
+ struct iwl_mvm_stat_data {
+ 	struct iwl_mvm *mvm;
++	__le32 flags;
+ 	__le32 mac_id;
+ 	u8 beacon_filter_average_energy;
+ 	void *general;
+@@ -606,6 +607,13 @@ static void iwl_mvm_stat_iterator(void *
+ 			-general->beacon_average_energy[vif_id];
+ 	}
  
--	if (data->widget)
--		data->widget->on_val = value;
-+	if (data->widget) {
-+		switch (dapm_kcontrol_get_wlist(kcontrol)->widgets[0]->id) {
-+		case snd_soc_dapm_switch:
-+		case snd_soc_dapm_mixer:
-+		case snd_soc_dapm_mixer_named_ctl:
-+			data->widget->on_val = value & data->widget->mask;
-+			break;
-+		case snd_soc_dapm_demux:
-+		case snd_soc_dapm_mux:
-+			data->widget->on_val = value >> data->widget->shift;
-+			break;
-+		default:
-+			data->widget->on_val = value;
-+			break;
-+		}
-+	}
++	/* make sure that beacon statistics don't go backwards with TCM
++	 * request to clear statistics
++	 */
++	if (le32_to_cpu(data->flags) & IWL_STATISTICS_REPLY_FLG_CLEAR)
++		mvmvif->beacon_stats.accu_num_beacons +=
++			mvmvif->beacon_stats.num_beacons;
++
+ 	if (mvmvif->id != id)
+ 		return;
  
- 	data->value = value;
+@@ -763,6 +771,7 @@ void iwl_mvm_handle_rx_statistics(struct
+ 
+ 		flags = stats->flag;
+ 	}
++	data.flags = flags;
+ 
+ 	iwl_mvm_rx_stats_check_trigger(mvm, pkt);
  
 
 
