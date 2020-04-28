@@ -2,84 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998301BCDC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70341BCDD4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbgD1U6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 16:58:20 -0400
-Received: from mga07.intel.com ([134.134.136.100]:12912 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726274AbgD1U6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 16:58:19 -0400
-IronPort-SDR: scboWr2SMTqEtQK7Z5aZr8sCRYu8dg7hSOux9eAAY/7S1aGtaMrgHwKBXTst19sE/2qvjqa8sx
- VuYFerjZ/hwg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 13:58:16 -0700
-IronPort-SDR: pygPwoLUgJeiETJ1sloDS2DdGwuUtTzeCBhfufFSE3zoYrNEjecBG2eUJwiGcoh55mkFBtbLGR
- y3n+sZVRHBaw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
-   d="scan'208";a="367614156"
-Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Apr 2020 13:58:16 -0700
-Date:   Tue, 28 Apr 2020 13:57:19 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Jun Pan <jacob.jun.pan@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Sohil Mehta <sohil.mehta@intel.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH 5/7] x86/mmu: Allocate/free PASID
-Message-ID: <20200428205718.GG242333@romley-ivt3.sc.intel.com>
-References: <1585596788-193989-1-git-send-email-fenghua.yu@intel.com>
- <1585596788-193989-6-git-send-email-fenghua.yu@intel.com>
- <87pnbus3du.fsf@nanos.tec.linutronix.de>
+        id S1726658AbgD1U6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 16:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726636AbgD1U6h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 16:58:37 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D86C03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 13:58:37 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id rh22so18392501ejb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 13:58:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OSzO1rJO0R184LhoOiiy43Vbf5CZ5lYIXfcp6IiNMuk=;
+        b=fW8/VJuKoPUP7uviDlRt5iWPklR6159dL8OqPXAYkQt9jT0QXQH20Vj9C11FGoyFvc
+         OmLtFM7kkC1koJGiB6xpfGZtZ5KQla2TT0FJ0a62xNBnSaBDE5mcnxixIXf215wOmA2x
+         bz5s03577i+7pt7SX5d+h4+D+TvfNRIGHm5exgfywa5JPZAkLGGlYKVJ1xOOXfp4y32z
+         H/OOSJvk+DvAC9eCBwXFeQ72VKvf6z6DSYPHye8eGQW9zYal4Z7bSHNJMbnI/Ugqef1v
+         U6385QbNHByFEDZBtIQhEEYNiVIsvaguzMhSGX7AJ6VGb7NALY801/q3RB/Dl4z90Kza
+         Ej5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OSzO1rJO0R184LhoOiiy43Vbf5CZ5lYIXfcp6IiNMuk=;
+        b=nci4K0bmrQkfgOw9J7branEgAC+U6jwDcE2vm/xUURCLTw4qvNdLWqfLp4lCodp3Jf
+         C2ck+/vK9wmXvwGSgDPPCGbQ68AhZct11xOb6gpqMQ90be03Ise8aGTamFXZVIQooCZ4
+         IO2naSjFSsv8h3swMFdbgWIjTiOh6f3ypGUbeO5Jgxwdz8I2HqkT1r6hX1yGuzQA/Pbl
+         l9ipIRmW11SqeE6KxhEzdXgh3424wY9k2QAfweJJkpW9xSjit+3ScYOoOppiYfJFrNI3
+         eS4PAjySXlTh2ds0SPTSLVakUiRio/QOYP58AdPukMxbKYsZpQ6P7bVBcTm+LBpkm8z+
+         lb/A==
+X-Gm-Message-State: AGi0PuYoPTeDmkeWOYh4Z6Gecr6OURq1FtUVx0hp6H9WGeuYNSmszRmo
+        HWCJu/59tBYXbGgPpg0alfiRYM7vjbOnmz6rMSwqEw==
+X-Google-Smtp-Source: APiQypIDmIaYEXVfqX5Ab4PeJvhjul4YnZzP2xIfW1kiZtODLOShV6xLWrmLPJ+wBx6xyCCV+2sKrWG5awxiNEHaSK4=
+X-Received: by 2002:a17:906:5918:: with SMTP id h24mr27104025ejq.210.1588107515478;
+ Tue, 28 Apr 2020 13:58:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pnbus3du.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200428181010.170568-1-swboyd@chromium.org> <20200428181010.170568-3-swboyd@chromium.org>
+In-Reply-To: <20200428181010.170568-3-swboyd@chromium.org>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Tue, 28 Apr 2020 21:58:24 +0100
+Message-ID: <CAJ9a7VjJpZWMJFkwxwnc=w8p1cemx-vM7yrWWWEHp_ThjkJoSA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] coresight: Avoid casting void pointers
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 26, 2020 at 04:55:25PM +0200, Thomas Gleixner wrote:
-> Fenghua Yu <fenghua.yu@intel.com> writes:
-> > diff --git a/arch/x86/include/asm/mmu.h b/arch/x86/include/asm/mmu.h
-> > index bdeae9291e5c..137bf51f19e6 100644
-> > --- a/arch/x86/include/asm/mmu.h
-> > +++ b/arch/x86/include/asm/mmu.h
-> > @@ -50,6 +50,10 @@ typedef struct {
-> >  	u16 pkey_allocation_map;
-> >  	s16 execute_only_pkey;
-> >  #endif
-> > +
-> > +#ifdef CONFIG_INTEL_IOMMU_SVM
-> > +	int pasid;
-> 
-> int? It's a value which gets programmed into the MSR along with the
-> valid bit (bit 31) set. 
+Reviewed-by mike.leach@linaro.org
 
-BTW, ARM is working on PASID as well. Christoph suggested that the PASID
-should be defined in mm_struct instead of mm->context so that both ARM and X86
-can access it:
-https://lore.kernel.org/linux-iommu/20200414170252.714402-1-jean-philippe@linaro.org/T/#mb57110ffe1aaa24750eeea4f93b611f0d1913911
+On Tue, 28 Apr 2020 at 19:10, Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> We don't need to cast void pointers, such as the amba_id data. Assign to
+> a local variable to make the code prettier and also return NULL instead
+> of 0 to make sparse happy.
+>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Reviewed-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>
+> Thanks Joe for finding my thinko!
+>
+>  drivers/hwtracing/coresight/coresight-priv.h | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
+> index 5a36f0f50899..36c943ae94d5 100644
+> --- a/drivers/hwtracing/coresight/coresight-priv.h
+> +++ b/drivers/hwtracing/coresight/coresight-priv.h
+> @@ -215,9 +215,12 @@ cti_remove_assoc_from_csdev(struct coresight_device *csdev) {}
+>  /* extract the data value from a UCI structure given amba_id pointer. */
+>  static inline void *coresight_get_uci_data(const struct amba_id *id)
+>  {
+> -       if (id->data)
+> -               return ((struct amba_cs_uci_id *)(id->data))->data;
+> -       return 0;
+> +       struct amba_cs_uci_id *uci_id = id->data;
+> +
+> +       if (!uci_id)
+> +               return NULL;
+> +
+> +       return uci_id->data;
+>  }
+>
+>  void coresight_release_platform_data(struct coresight_device *csdev,
+> --
+> Sent by a computer, using git, on the internet
+>
 
-So I will define "pasid" to mm_struct in a separate patch in the next version.
 
-Thanks.
-
--Fenghua
-
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
