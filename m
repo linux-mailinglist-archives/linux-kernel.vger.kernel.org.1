@@ -2,119 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C19A1BCE04
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160181BCE29
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgD1VAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726968AbgD1VAB (ORCPT
+        id S1726669AbgD1VFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:05:05 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51550 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726291AbgD1VFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:00:01 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CB7C03C1AD;
-        Tue, 28 Apr 2020 13:59:59 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id g4so258820ljl.2;
-        Tue, 28 Apr 2020 13:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sBXzHuBlNIiG5WL15rHVAeI2UeCimXr5JALsutUTg9Y=;
-        b=UYukFqdvOw/RYQ+Em+r2cvMx8ideTgu8rhd+I9bYqLwxcbgu9vNXU3uaca55s732ym
-         CrEQXN6x38a8DRsG2xFDMK4jMsgvDPwo5MBF0NBh/mZ4wod0iMehj046iiSrKLhDhxTD
-         OLv6OW+1XR9USm3IGF083IXEWzo5J8uRc39cB1SyQZ5W9JXESO9ihoIFmDJaTahQ8jis
-         vjc9UkiSGkqOJqqtzYOpN6RBPV6P3Df43fHcETpcrBu2P0GzMYBv4gsYLtHb74LY7+/s
-         InJNpW48Iukvavept/9+c6OE54pG3/uqM0Sl1LdoqWfgWT5ZBgHdYawwx2PKGzYxu77m
-         pjMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sBXzHuBlNIiG5WL15rHVAeI2UeCimXr5JALsutUTg9Y=;
-        b=mCeesFEXcKo1A4RYTt502imsIpmJnFX9kI96NXLHYJju0DSy6c20yPwp6DNztG5Xab
-         FSBYYOrzVysPp0H68Cbjdq4wpRAJ5jGmPtaFfF5Q4YbcxNcFOs7s/gZg4145jMlT3zyn
-         TdeeXoytG7S7liaGcJIn3TPI6UwhQanVozbEmKTVd11rej6zvHfq3+pJ1GMeOHuARJZn
-         JuDsgYrlo3chvaejcq6kHTqJ7xBzn9zCXKWrx+c1r0JqcjFVs5nm8b8pVJLB5YDPcK5k
-         p0zOu2P04KMdz4S8UTWQNYKYhQbxapvz9C195qV8/B1eduFYTe21uxyIOnP3pz2+lX3T
-         y0WA==
-X-Gm-Message-State: AGi0Pubatzrmr7bBJEnLviMckSwrEKagTaiX+vxZEjg1YUSH9voZwVcE
-        lLK5DGOcWebRoACoaHeiPdraPzLsmmgOYA==
-X-Google-Smtp-Source: APiQypKbwyjmz7XAKZZaGzDhUO4GGzDo1hAKGgC0IXSPp5QF7iC3hAYqf7fmKiCv2L6QXg614yuycw==
-X-Received: by 2002:ac2:5dc6:: with SMTP id x6mr20373376lfq.108.1588107597607;
-        Tue, 28 Apr 2020 13:59:57 -0700 (PDT)
-Received: from pc638.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id z21sm295483ljh.42.2020.04.28.13.59.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 13:59:57 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 21/24] rcu/tiny: move kvfree_call_rcu() out of header
-Date:   Tue, 28 Apr 2020 22:59:00 +0200
-Message-Id: <20200428205903.61704-22-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200428205903.61704-1-urezki@gmail.com>
-References: <20200428205903.61704-1-urezki@gmail.com>
+        Tue, 28 Apr 2020 17:05:05 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03SL4tuY040669;
+        Tue, 28 Apr 2020 16:04:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588107895;
+        bh=do4BwFKHFK8c0cqWCxuyCnA0pQp/WVNM3LY6FxwoDJA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=mca143oCj+GVP8p28R2KPM/yk0mssU8YEUXt52eXrzjvO6LqY3qOUStPOWMRZl4M5
+         6dcvNwFh+SXIMGY3+Kc+OwBv3iiUWUhdYGw11FC0N0GYUD+8cSdCLCylkLSURf9ypB
+         ysoG16t4jXRYz49AAhBEretyF2JkJUVhfOxYCuDM=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03SL4tCM096363
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 28 Apr 2020 16:04:55 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
+ Apr 2020 16:04:54 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 28 Apr 2020 16:04:54 -0500
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03SL4sPS123165;
+        Tue, 28 Apr 2020 16:04:54 -0500
+Subject: Re: [PATCH net v2 2/2] net: phy: DP83TC811: Fix WoL in config init to
+ be disabled
+To:     David Miller <davem@davemloft.net>
+CC:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
+        <linux@armlinux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <afd@ti.com>
+References: <20200427212112.25368-1-dmurphy@ti.com>
+ <20200427212112.25368-3-dmurphy@ti.com>
+ <20200428.130545.1878103691480474686.davem@davemloft.net>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <d150900f-7a54-2ff2-00cb-6b40ea18c468@ti.com>
+Date:   Tue, 28 Apr 2020 15:59:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200428.130545.1878103691480474686.davem@davemloft.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move inlined kvfree_call_rcu() function out of the
-header file. This step is a preparation for head-less
-support.
+David
 
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- include/linux/rcutiny.h | 6 +-----
- kernel/rcu/tiny.c       | 6 ++++++
- 2 files changed, 7 insertions(+), 5 deletions(-)
+On 4/28/20 3:05 PM, David Miller wrote:
+> From: Dan Murphy <dmurphy@ti.com>
+> Date: Mon, 27 Apr 2020 16:21:12 -0500
+>
+>> +		return phy_write_mmd(phydev, DP83822_DEVADDR,
+>                                               ^^^^^^^^^^^^^^^^
+>
+> Please don't submit patches that have not even had a conversation with
+> the compiler.
+>
+> This register define only exists in dp83822.c and you are trying to use
+> it in dp83tc811.c
+>
+> If this doesn't compile, how did you do functional testing of this
+> change?
 
-diff --git a/include/linux/rcutiny.h b/include/linux/rcutiny.h
-index 0c6315c4a0fe..7eb66909ae1b 100644
---- a/include/linux/rcutiny.h
-+++ b/include/linux/rcutiny.h
-@@ -34,11 +34,7 @@ static inline void synchronize_rcu_expedited(void)
- 	synchronize_rcu();
- }
- 
--static inline void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
--{
--	call_rcu(head, func);
--}
--
-+void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func);
- void rcu_qs(void);
- 
- static inline void rcu_softirq_qs(void)
-diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-index aa897c3f2e92..508c82faa45c 100644
---- a/kernel/rcu/tiny.c
-+++ b/kernel/rcu/tiny.c
-@@ -177,6 +177,12 @@ void call_rcu(struct rcu_head *head, rcu_callback_t func)
- }
- EXPORT_SYMBOL_GPL(call_rcu);
- 
-+void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-+{
-+	call_rcu(head, func);
-+}
-+EXPORT_SYMBOL_GPL(kvfree_call_rcu);
-+
- void __init rcu_init(void)
- {
- 	open_softirq(RCU_SOFTIRQ, rcu_process_callbacks);
--- 
-2.20.1
+My fault, I thought my defconfig had this turned on to compile as it did 
+in v1.
 
+I functionally tested these changes on the DP83822 as they are register 
+and feature compatible for WoL
+
+Dan
+
+> If you compile tested these changes against a tree other than the 'net'
+> tree, please don't do that.
+>
+> Thanks.
