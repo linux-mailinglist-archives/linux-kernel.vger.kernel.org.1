@@ -2,81 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E3C1BB992
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 11:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E381BB974
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 11:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726941AbgD1JMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 05:12:05 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:32668 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726462AbgD1JME (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 05:12:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588065124; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=fn3H9mKpXT3A+/rYhDOKxcNKIcrs2URjyh96Pk02sMs=;
- b=siFziCqI7Wi8zeScugKN4iHCtszGhTd4nDXgW+mC66HQKBKWfmcVAP+/Ae15WXd9Bg6Kro0u
- 5gTHB+Lx0Fu8dFVSp6RsZaySpTgLXH70fK1g+tHUwejTA8NjBxJ3fl/FCm/CkLLTXqQQr1fC
- aEq6jj5b3X6jnoSNSVEOrtypzUM=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea7f363.7ff444887688-smtp-out-n02;
- Tue, 28 Apr 2020 09:12:03 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DF782C43636; Tue, 28 Apr 2020 09:12:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
-        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3552DC433D2;
-        Tue, 28 Apr 2020 09:11:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3552DC433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S1726922AbgD1JF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 05:05:58 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:59894 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726883AbgD1JF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 05:05:58 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B2FA16180231ED2D0B7D;
+        Tue, 28 Apr 2020 17:05:55 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 28 Apr 2020 17:05:49 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <acme@redhat.com>, <rostedt@goodmis.org>
+CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] tools lib traceevent: Remove unneeded semicolon
+Date:   Tue, 28 Apr 2020 17:12:01 +0800
+Message-ID: <1588065121-71236-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] ath5k: remove conversion to bool in
- ath5k_ani_calibration()
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20200426094037.23048-1-yanaijie@huawei.com>
-References: <20200426094037.23048-1-yanaijie@huawei.com>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     <jirislaby@gmail.com>, <mickflemm@gmail.com>, <mcgrof@kernel.org>,
-        <davem@davemloft.net>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jason Yan <yanaijie@huawei.com>
-User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20200428091201.DF782C43636@smtp.codeaurora.org>
-Date:   Tue, 28 Apr 2020 09:12:01 +0000 (UTC)
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jason Yan <yanaijie@huawei.com> wrote:
+Fixes coccicheck warning:
 
-> The '>' expression itself is bool, no need to convert it to bool again.
-> This fixes the following coccicheck warning:
-> 
-> drivers/net/wireless/ath/ath5k/ani.c:504:56-61: WARNING: conversion to
-> bool not needed here
-> 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+ tools/lib/traceevent/kbuffer-parse.c:441:2-3: Unneeded semicolon
 
-Patch applied to ath-next branch of ath.git, thanks.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ tools/lib/traceevent/kbuffer-parse.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-c26b01d5ec1a ath5k: remove conversion to bool in ath5k_ani_calibration()
-
+diff --git a/tools/lib/traceevent/kbuffer-parse.c b/tools/lib/traceevent/kbuffer-parse.c
+index b887e74..27f3b07 100644
+--- a/tools/lib/traceevent/kbuffer-parse.c
++++ b/tools/lib/traceevent/kbuffer-parse.c
+@@ -438,7 +438,7 @@ void *kbuffer_translate_data(int swap, void *data, unsigned int *size)
+ 	case KBUFFER_TYPE_TIME_EXTEND:
+ 	case KBUFFER_TYPE_TIME_STAMP:
+ 		return NULL;
+-	};
++	}
+ 
+ 	*size = length;
+ 
 -- 
-https://patchwork.kernel.org/patch/11510327/
+2.6.2
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
