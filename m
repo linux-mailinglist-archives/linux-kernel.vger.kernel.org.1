@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AB71BCBC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698201BC81C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729108AbgD1S17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:27:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40114 "EHLO mail.kernel.org"
+        id S1729389AbgD1S3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:29:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729064AbgD1S1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:27:46 -0400
+        id S1728844AbgD1S3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:29:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0DF220B80;
-        Tue, 28 Apr 2020 18:27:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DFE720730;
+        Tue, 28 Apr 2020 18:29:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098466;
-        bh=DNcOpV0szsSX9D/2oFZXTbFZXuuiDI8hhGvLaGfA/B0=;
+        s=default; t=1588098575;
+        bh=/yBA27/kqdiy37hk84WYeY9GxI6HtW+l5MdCsPRFJ34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KYj6RS+Ug2SU+H6JXZndqp9v+zoV0Nkxg5x3jo7CzzYi1K7oxm4EsRib3Hc9Tloz0
-         +qTH7nSNq9TaT9YmcrEa9FfyuYDXhuYfDTaEZR+7xooHr7Qzx2ASpVex7qRJrYT29h
-         o9opzHW4yxiTtUApqie9+ewkfm4PT1NNEUj9QgRw=
+        b=G8GVXGxAY7zgsV7FgthDzjcxRKgTrodZhTBu4MQtQgyjlKTk5JHuNUfUgX0gCtvvf
+         6rc7Zy8CF/KgFUhrtZlqOWmVgHE+O4ntnNII/zdvMNcY1wkGY35x+/xilnMmEV2b0V
+         uMrL0qxvKe92ITuzPn19UyQTNWJAFHPLe6TuOMzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 052/167] net: bcmgenet: correct per TX/RX ring statistics
-Date:   Tue, 28 Apr 2020 20:23:48 +0200
-Message-Id: <20200428182231.597256260@linuxfoundation.org>
+        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
+        Wu Bo <wubo40@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 017/131] scsi: iscsi: Report unbind session event when the target has been removed
+Date:   Tue, 28 Apr 2020 20:23:49 +0200
+Message-Id: <20200428182227.322063766@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +45,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Doug Berger <opendmb@gmail.com>
+From: Wu Bo <wubo40@huawei.com>
 
-[ Upstream commit a6d0b83f25073bdf08b8547aeff961a62c6ab229 ]
+[ Upstream commit 13e60d3ba287d96eeaf1deaadba51f71578119a3 ]
 
-The change to track net_device_stats per ring to better support SMP
-missed updating the rx_dropped member.
+If the daemon is restarted or crashes while logging out of a session, the
+unbind session event sent by the kernel is not processed and is lost.  When
+the daemon starts again, the session can't be unbound because the daemon is
+waiting for the event message. However, the kernel has already logged out
+and the event will not be resent.
 
-The ndo_get_stats method is also needed to combine the results for
-ethtool statistics (-S) before filling in the ethtool structure.
+When iscsid restart is complete, logout session reports error:
 
-Fixes: 37a30b435b92 ("net: bcmgenet: Track per TX/RX rings statistics")
-Signed-off-by: Doug Berger <opendmb@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Logging out of session [sid: 6, target: iqn.xxxxx, portal: xx.xx.xx.xx,3260]
+iscsiadm: Could not logout of [sid: 6, target: iscsiadm -m node iqn.xxxxx, portal: xx.xx.xx.xx,3260].
+iscsiadm: initiator reported error (9 - internal error)
+iscsiadm: Could not logout of all requested sessions
+
+Make sure the unbind event is emitted.
+
+[mkp: commit desc and applied by hand since patch was mangled]
+
+Link: https://lore.kernel.org/r/4eab1771-2cb3-8e79-b31c-923652340e99@huawei.com
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/scsi/scsi_transport_iscsi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -938,6 +938,8 @@ static void bcmgenet_get_ethtool_stats(s
- 	if (netif_running(dev))
- 		bcmgenet_update_mib_counters(priv);
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index c0fb9e7890807..04d095488c764 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -2010,7 +2010,7 @@ static void __iscsi_unbind_session(struct work_struct *work)
+ 	if (session->target_id == ISCSI_MAX_TARGET) {
+ 		spin_unlock_irqrestore(&session->lock, flags);
+ 		mutex_unlock(&ihost->mutex);
+-		return;
++		goto unbind_session_exit;
+ 	}
  
-+	dev->netdev_ops->ndo_get_stats(dev);
+ 	target_id = session->target_id;
+@@ -2022,6 +2022,8 @@ static void __iscsi_unbind_session(struct work_struct *work)
+ 		ida_simple_remove(&iscsi_sess_ida, target_id);
+ 
+ 	scsi_remove_target(&session->dev);
 +
- 	for (i = 0; i < BCMGENET_STATS_LEN; i++) {
- 		const struct bcmgenet_stats *s;
- 		char *p;
-@@ -3142,6 +3144,7 @@ static struct net_device_stats *bcmgenet
- 	dev->stats.rx_packets = rx_packets;
- 	dev->stats.rx_errors = rx_errors;
- 	dev->stats.rx_missed_errors = rx_errors;
-+	dev->stats.rx_dropped = rx_dropped;
- 	return &dev->stats;
++unbind_session_exit:
+ 	iscsi_session_event(session, ISCSI_KEVENT_UNBIND_SESSION);
+ 	ISCSI_DBG_TRANS_SESSION(session, "Completed target removal\n");
  }
- 
+-- 
+2.20.1
+
 
 
