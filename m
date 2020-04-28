@@ -2,154 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC25D1BB7CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 09:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57571BB7E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 09:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgD1HgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 03:36:19 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:57445 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726315AbgD1HgS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 03:36:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1588059387; x=1619595387;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=l+7lymZr2/PbYc8GInZFUxgJZD0H1aEn6FrOAjgjXsE=;
-  b=pcne0OqSEw9+hBs9e4xCxsLuOT48xBXEzrC9kBrb0jhMaEz8Lf4QLsYd
-   Ap0F71C0/fToeg/UcOWwcPzL0Ji763nxmQIBFYfqwbaVq+LrfwZMzp3V2
-   mbDbngmDe4mBw1BFM4ZvdrQFLuNgZ3Ux9qeMYRMALVXBIbpcFTK/0xhau
-   CVLMBr02vNLYvYpx7caOt/3Br9lHma3+xmJ5a2xVITiQzC0YV21jRKsI3
-   RbfCvPFKNn0EKzeUifoWsm5d1mUE6h426M3V49+05mmHHzJbGOH51L/qD
-   4DK6quRCn3ZfNmV3dg2L9zojti6yzknKbmodm1i3I+Whz5VUgzUSjjKlD
-   g==;
-IronPort-SDR: rrx3yRjQKrn3vEgUf5i1JbVFyFjDVipK+0Ae9Ps7i6JwkAlUL1E5c2ZabnyFSc582XANNZAAoU
- teRTy+rJb+jVFh1JX3egsUJU2TUEVL4UMMgDH3pH1rXaQS4nuQ255tHAyu4gLEm+BOjvXX3mBc
- 7uIE4e9W9p9lS/6nAunymV9EGbiU3jAHUvvVrJiPahGUlUGVrV2dwI4GcUuSbe4J1zmDuKI9/a
- UOM71NlUWuwLN1nEh189Jxbxm3vcGtaXshL94KeinUq65WpR1M1Pp5tOCcm8ZPb+Q0q4gNX1K6
- pu8=
-X-IronPort-AV: E=Sophos;i="5.73,327,1583164800"; 
-   d="scan'208";a="238865963"
-Received: from mail-dm6nam11lp2173.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.173])
-  by ob1.hgst.iphmx.com with ESMTP; 28 Apr 2020 15:36:01 +0800
+        id S1726489AbgD1Hmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 03:42:40 -0400
+Received: from mail-am6eur05on2064.outbound.protection.outlook.com ([40.107.22.64]:59808
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726272AbgD1Hmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 03:42:39 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bp9qBG3uOjocNp7Si/+cvkxpjjGJllHN+uTJNsSbTiP5H0yDgV1yyXQYAGyvQUlOdBTyLlo1DX4u1vFe0eTKqMBvVc37HtfVDhni8Je5C5hx1rZ6g0lXrhn5JXVaD66jFo0oQ5FRzbPOz6BJuqQQ1BJwPhX7I4bnJEb90swr/3pWIU7PPBtPeIIRj4PYadO7Oc68Ss4Ny6ZUnRw1JNFca0npuOlPd6gGD0Ogm6WZVaDe4Q9iEXUd6KhtHm5xuy4nxifGxjIgJUSFWlMIh1u7wbYhO9wVREwTV7uuHYVdhfMO2EJ1zx/tWjiKDRF9OGJwF6KJgjZHK49mN8AgYW1vjw==
+ b=lE3TeS5dkRT/u0hmCvM+eWzPLB/At1kA+AJHv7vlEVoZiahHi7TWvqFJ3CW+B0Pp1C+TCZ44qLrF4MVPE9qXIdzJINB9q3tO00NRdgpLQr8bq7tAscdeJouVx8pS0bA5X/avp4D+v8jE7qLZZA8suanrSGetQPS/b96cmd5tiC8PvC6p+HUlXp+SqlfJY58WR8+fOtqZZDLtToObqmkaOOduNMrJtitkBqyGw+kVPaCiCRYl7DrjtBYJI3sC5z+lmETLEp2QJP2ycdcejjREtA38gK6eDH2uGQtrlKMjwV+cbJ7YnRUNE3LO4GnqiJwsEDa2WxdmYLKmVdfi/iFt2A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9kMtbv8yUt4G6v4jrQHHQQ4khahSBTQvBJDoYl/V4NU=;
- b=AUAvfXfCRR867zXfZU3DfM3jVGPpkGw8RZFi6hAhW98pU/YcCP1pPpAryjDDpOo/JlWsoihcQWS3iPboPUiDkjwBTMDC6Q66s0myjNlhN7MbFGXiiI96juKZ9x4OEvmtwbQQhuYcIWhWrF+7yP6QprAd7yNq7jRjowV3uAhvdPrL4V3aHxKCVjDhEX52ogwmJX6FACwISKfhP27l0Y9SBnbvxwFN1EQVeYPNvsoauwvq7AE5M6RAipWcE9rAXgl5y/hyDfPZzcopTVSFN59aQ1M6RUI4AtEWTHt4sN1lxBrFCO1lOcL7xAiPbmTS2yjiGvI7SDaOZfndciJ5y6D6+A==
+ bh=ghtKKDlC9f/+o/B0RxHJt1RlPJtIYobSgYs1yRAo1cI=;
+ b=SZ5d5zWMRofV6V/kqtNluQH1KQcezb7683XBFwPvv3701E1+ud47gZVj7qAY1lLmsoZ+1YqNXPkiNP1UhljelUCAd4V7vCe2Ia+IcYC6um/87jxNfNP+YXLfyQRwdiaMX+RpdMHNTLyYp9gQ5c1aX+uS+Uk9s3+wCLe6AVrb2uM0QyV2psNsGGyM0TJ9cQ2C3mFISoObM/RVTi5rB/NbSxw9WdHg1prWdF58ELlUFRUECmIZLiLogeoeCrDME3UBh2wRv3lL4h6gb/52GaPkc473XTJ9Vu4sXzyUSKJBthJqo8slD3O6AodAuujSfFqXWgmKaEynfL6SdtA9hqFuTQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9kMtbv8yUt4G6v4jrQHHQQ4khahSBTQvBJDoYl/V4NU=;
- b=DUsbisR5Ajk9Gsgd3O5aaJ7QdCYfg0A5gxJQ46bLrkDQS93pAvhMEajD0sQw1vs/zVzFe3lXPs9KWfInZtq3RpkBCgVc3kb/k7mzGTfh/P4XecMxy/fXQyBevQpsD/tdM6zigELdF4/N2Vx1mjpSFKIQ4yELYYsjDACjBhZGQpM=
-Authentication-Results: dabbelt.com; dkim=none (message not signed)
- header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
-Received: from DM6PR04MB6201.namprd04.prod.outlook.com (2603:10b6:5:127::32)
- by DM6PR04MB5929.namprd04.prod.outlook.com (2603:10b6:5:170::32) with
+ bh=ghtKKDlC9f/+o/B0RxHJt1RlPJtIYobSgYs1yRAo1cI=;
+ b=fBYvXLKCy2zEG7eiAYyVyOngVT1E4RUUXYhQiz0AqIH6J67vbSM5ozgw757p1HrBl5edY3pGoRE1n8YTTKyQ7Fi9fnpuiTWOL04UMxa/TrNS99QNLKV8Itg4J1oc5J8QZzo/PEBhqrH+OIVkVRmxGttUOQ8L7QVOCWPCNBSObV4=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR0402MB2775.eurprd04.prod.outlook.com (2603:10a6:4:99::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Tue, 28 Apr
- 2020 07:36:00 +0000
-Received: from DM6PR04MB6201.namprd04.prod.outlook.com
- ([fe80::f8b3:c124:482b:52e0]) by DM6PR04MB6201.namprd04.prod.outlook.com
- ([fe80::f8b3:c124:482b:52e0%5]) with mapi id 15.20.2937.023; Tue, 28 Apr 2020
- 07:36:00 +0000
-From:   Anup Patel <anup.patel@wdc.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Alexander Graf <graf@amazon.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Anup Patel <anup.patel@wdc.com>
-Subject: [PATCH v12 17/17] RISC-V: KVM: Add MAINTAINERS entry
-Date:   Tue, 28 Apr 2020 13:03:12 +0530
-Message-Id: <20200428073312.324684-18-anup.patel@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200428073312.324684-1-anup.patel@wdc.com>
-References: <20200428073312.324684-1-anup.patel@wdc.com>
-Content-Transfer-Encoding: 8bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Tue, 28 Apr
+ 2020 07:42:33 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::d17b:d767:19c3:b871%6]) with mapi id 15.20.2937.023; Tue, 28 Apr 2020
+ 07:42:33 +0000
+From:   peng.fan@nxp.com
+To:     konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org
+Cc:     xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] xen/swiotlb: correct the check for xen_destroy_contiguous_region
+Date:   Tue, 28 Apr 2020 15:33:45 +0800
+Message-Id: <1588059225-11245-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
 Content-Type: text/plain
-X-ClientProxiedBy: MAXPR01CA0073.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:49::15) To DM6PR04MB6201.namprd04.prod.outlook.com
- (2603:10b6:5:127::32)
+X-ClientProxiedBy: SG2PR0601CA0010.apcprd06.prod.outlook.com (2603:1096:3::20)
+ To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from wdc.com (106.51.31.156) by MAXPR01CA0073.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:49::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.19 via Frontend Transport; Tue, 28 Apr 2020 07:35:53 +0000
-X-Mailer: git-send-email 2.25.1
-X-Originating-IP: [106.51.31.156]
+Received: from localhost.localdomain (119.31.174.66) by SG2PR0601CA0010.apcprd06.prod.outlook.com (2603:1096:3::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2937.13 via Frontend Transport; Tue, 28 Apr 2020 07:42:30 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [119.31.174.66]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 697a908f-56bf-441b-de0e-08d7eb46cbc3
-X-MS-TrafficTypeDiagnostic: DM6PR04MB5929:
+X-MS-Office365-Filtering-Correlation-Id: 88a53fa9-b69f-49ae-8dbf-08d7eb47b69b
+X-MS-TrafficTypeDiagnostic: DB6PR0402MB2775:|DB6PR0402MB2775:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR04MB5929EAAA2A91D45BE886D1C28DAC0@DM6PR04MB5929.namprd04.prod.outlook.com>
-WDCIPOUTBOUND: EOP-TRUE
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
+X-Microsoft-Antispam-PRVS: <DB6PR0402MB27757FDEE7409ECED1B91F8188AC0@DB6PR0402MB2775.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
 X-Forefront-PRVS: 0387D64A71
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6201.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(136003)(396003)(39860400002)(366004)(376002)(1076003)(66946007)(2906002)(5660300002)(66556008)(66476007)(7416002)(86362001)(478600001)(55236004)(55016002)(186003)(8936002)(316002)(4326008)(7696005)(36756003)(956004)(110136005)(8886007)(2616005)(6666004)(26005)(16526019)(54906003)(44832011)(52116002)(81156014)(1006002)(8676002);DIR:OUT;SFP:1102;
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(366004)(396003)(39860400002)(136003)(376002)(186003)(26005)(5660300002)(69590400007)(86362001)(478600001)(66946007)(6512007)(66476007)(66556008)(956004)(9686003)(45080400002)(6506007)(6666004)(36756003)(2616005)(4326008)(8936002)(8676002)(52116002)(16526019)(2906002)(81156014)(6486002)(316002);DIR:OUT;SFP:1101;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EQfE3qQYFNdMVR4pCA2H9pBTtujkDr4f2WhXUZhYXQ7tLSbP8ZuM5rqbx9oresXCDWKXcHloRwasOW7HtIQman6UlQs4ypVh7x2Z7nYI5cFL+vZ1VwXGVWN6oPbmT4FkNvrKGOnS4VEJdEccdK9Gk2jTu3Lg31GoB6kI8W0Ith/BjpDypqU8+te6RpN/eStugTpPrrhakOQTEbavuwSfx/Fl8q+gGW/u4Mv0zVslnixC1ZY0V8/GgTCHFeUNed6sjZrI8FRXfarZ0as4HCOn2eAP2Ah8MNkOExp2stWwmpR3JO68GNrJjHObXzNWiGUVLJD9QIr73/v8e3l+yaW+Ih8JD3uLQ80vdOS0fWpREYM5Ys/WI4wiiPaC0G1/mRSXjdw9Vcgoi7T/b8hKlMF71Rkoket9Tq9Jv5JWLdy8Vz+mG47skf5ctFXlSu6D07Lh
-X-MS-Exchange-AntiSpam-MessageData: BPNy4eSdcKGFmPTjRJns0RtOx0SrsdiyF4mzxVIdxfBAOGUlSVAYtL2iF2vhyDMITEHhD8fYNl70tRMUDRrM5jWR9+8/l73cVUZmPxYLc1XZ89i9wYXb4aQIfSqvl2sihODqzuttrNZJSkqikxAViUbuziQy7erp9K+9mdgcYfcUwojjxJU3cEgT24gm9ZW0ahlP02NRIRsrBatEX9uzKwY3LTvBXfBYOP1xvpPRmRBh98i6NEnqVFD6UlNtyGGuE3ccl+4pGa07GmE2DapO/mi+mto3OttLu+D5dQEI6y1/R0luIOMYVv/3tk6ntA+0qcDAcljWhmwkW7Pm26e28cM8yh3+LimU9s9sEInXgQ1i7TndTuWoVVtovAB5ArxrS5XaJAlswwEvN9adh+e8Q7gv+K+SOQwEI+dZHIJWCZ12lTtZzXFV3pxAqrLs2Z9eLWqTIljs+TkbY9fmYXVn0qbmJkt4heyTciS38Zd1C0fx9H/oAAEb8OuA6E7V4Wb56Vr1WsCT/wTbYN9grt9XoxXYOoN5EEjIOq/TA12DkIcYwm9ZyysFcFnuskv2YVFsfq0re0BGTTs0GCIvw5XIdrcAxtnd9zAEHe7lSM6KebW229Fs/eRWBfOpmSrQRZuTHOzbWchJcVrTekMJBPyo5mFdcmbZaHim/6qeaolIFMGEjCNjMVJ91BJJzlrI6dIynCXjxHZSb+o6QUAVOMlHQ6lISiobVEoUUvUATs+MxQ5Z5LydC5RPNh+rdkbG9ZBTrXXSOSPBW3iVwet6M5UZpHufNaYkGVEIJEz5a5bjSVc=
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 697a908f-56bf-441b-de0e-08d7eb46cbc3
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2020 07:36:00.0300
+X-Microsoft-Antispam-Message-Info: VKLdp/orntAdGjO+9DyQ4iWLhiOQ6BgNDkN1hq0yxTdn7Qnp+7uxxsKph9uTzfaBd7DhDH2G28HIPcbi/kk+r0R+Ns54lJbHPaz3rBRfhIDg/aXvMwzWcoU/YCRsS9JJ4BVifM/FPfFajNKlHcKVlo+fmXuvLiAP5cibm70lFz0TQIt210nVAbdTOEYwPvQoWIuI13njpa+EQ119648x8k+ZCoaFjo8UQ0uDeYlDeb3sH8ZJMuVqy2Lj61E7v1QtYA9wF0mcMsOwl/qoj20WdZ0QpaOA0kSMFQx2lrww1F6lIV9DDcAGTPKkJWHtTb+BDM3hmPXN3dtGxOCmq4YnENpX6dR+9t36ZyXr670vIQFQkASFzwGEhWf92kbEZqEXR4AE0nUM3TdoSaK9gvamJFYmGkDxj/kbicEmQwvIDDr7WzZOgpit7KruZ3VbCE0zxCB/NmhDyCcZcsYJMMqeQYdZooUOmFcABAHQ2bnRUeWP21YGxZ6Sti+V9Hoxc9cG
+X-MS-Exchange-AntiSpam-MessageData: Zk7f7i+o2viB7Jgl5mrSR1/CCHr1NRenCZXGkkc/I+9xeNir+x4bIyepOt+yyoBzeLU4aXh0vNk+quNbMS/Ia8ojfThG/bghsfrsNVBgC+/RrqxZaC2/nSbu4Ut72DIAhgFN+3bbta4YlnHkg2W+qTk2BaVm771muo/SDeTw8YVkV3cxyQ28p6+d8D3lkXfSYDeGi7JYIIWbSxJg4lCZm7+JRabwjUEpFAv9NdqmSnuIJEz8b2X/kdurSUGSn4+hVhuzTLisSJYbfSbBmz2rK7gHbLjZxECqI5Xjv8AC3iasGI+RVF8FBp6Ca3ee+CsagUFdL8McUvHdMoORbYWMcN32yiBUDGAXY7lVLe2Ia6tGyMKRQShoKfiLnEPwZsBdRziqtiSP60N78vj12q81hAuN2OtN/eV6WTkzcm6GweOhENmyQ9dv30LQCVOzr6HTfYRJoyRcy0q/tTdNMdGn1upXdtgHiP3v0ohyjwcPkDtGqUWm2huXcgjO7bCaJ9/V1kkNDSzfEOCuIts643/JeA6GM86lGVRYjGP7Awn7pcHmXOGgk0htVDBlZyvdX7NfVYOcD0AU55ER7U2ALt0br1SoRxasbEjom/NUPU3PICzdFomFXM9jWeK9pivCLhW6BvQ7fUTEKKU7q5HTU5avpdaOn1nxM0l6Felzo8Yrv+GkIGiRw6lKS5rga6FaSdJ2FYloKDNClLDgwO+jy4IoiHaXl1zojySo9Om5PLllJCz0sbOLB2cCL1obBJwcciVPL6z0nF7uzchcL4Ym9wIpd9q0Chn8bz74XlrGZXOgGFI=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 88a53fa9-b69f-49ae-8dbf-08d7eb47b69b
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2020 07:42:33.7546
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: j0EGFCLqljrtW+0ljHk83LycyCzRshwzO0VrF5iP1hWuE9sF+HPTmbnM6VzDSd54t0hf9ZQPyeLCMdVgf+9CXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5929
+X-MS-Exchange-CrossTenant-UserPrincipalName: gpAo6zFgx2yanelGIdZXEjn9aRuVxqn9rP/bKhZp507od0M+GKbRuN5wF0Oov1eF4dgWG1zimXqHquqgOPdhmg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2775
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as maintainer for KVM RISC-V and Atish as designated reviewer.
+From: Peng Fan <peng.fan@nxp.com>
 
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Signed-off-by: Anup Patel <anup.patel@wdc.com>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-Reviewed-by: Alexander Graf <graf@amazon.com>
+When booting xen on i.MX8QM, met:
+"
+[    3.602128] Unable to handle kernel paging request at virtual address 0000000000272d40
+[    3.610804] Mem abort info:
+[    3.613905]   ESR = 0x96000004
+[    3.617332]   EC = 0x25: DABT (current EL), IL = 32 bits
+[    3.623211]   SET = 0, FnV = 0
+[    3.626628]   EA = 0, S1PTW = 0
+[    3.630128] Data abort info:
+[    3.633362]   ISV = 0, ISS = 0x00000004
+[    3.637630]   CM = 0, WnR = 0
+[    3.640955] [0000000000272d40] user address but active_mm is swapper
+[    3.647983] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[    3.654137] Modules linked in:
+[    3.677285] Hardware name: Freescale i.MX8QM MEK (DT)
+[    3.677302] Workqueue: events deferred_probe_work_func
+[    3.684253] imx6q-pcie 5f000000.pcie: PCI host bridge to bus 0000:00
+[    3.688297] pstate: 60000005 (nZCv daif -PAN -UAO)
+[    3.688310] pc : xen_swiotlb_free_coherent+0x180/0x1c0
+[    3.693993] pci_bus 0000:00: root bus resource [bus 00-ff]
+[    3.701002] lr : xen_swiotlb_free_coherent+0x44/0x1c0
+"
+
+In xen_swiotlb_alloc_coherent, if !(dev_addr + size - 1 <= dma_mask) or
+range_straddles_page_boundary(phys, size) are true, it will
+create contiguous region. So when free, we need to free contiguous
+region use upper check condition.
+
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- MAINTAINERS | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/xen/swiotlb-xen.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 26f281d9f32a..ad3f37a8bdb1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9324,6 +9324,17 @@ F:	arch/powerpc/include/uapi/asm/kvm*
- F:	arch/powerpc/kernel/kvm*
- F:	arch/powerpc/kvm/
+diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+index b6d27762c6f8..ab96e468584f 100644
+--- a/drivers/xen/swiotlb-xen.c
++++ b/drivers/xen/swiotlb-xen.c
+@@ -346,8 +346,8 @@ xen_swiotlb_free_coherent(struct device *hwdev, size_t size, void *vaddr,
+ 	/* Convert the size to actually allocated. */
+ 	size = 1UL << (order + XEN_PAGE_SHIFT);
  
-+KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)
-+M:	Anup Patel <anup.patel@wdc.com>
-+R:	Atish Patra <atish.patra@wdc.com>
-+L:	kvm@vger.kernel.org
-+L:	kvm-riscv@lists.infradead.org
-+T:	git git://github.com/kvm-riscv/linux.git
-+S:	Maintained
-+F:	arch/riscv/include/uapi/asm/kvm*
-+F:	arch/riscv/include/asm/kvm*
-+F:	arch/riscv/kvm/
-+
- KERNEL VIRTUAL MACHINE for s390 (KVM/s390)
- M:	Christian Borntraeger <borntraeger@de.ibm.com>
- M:	Janosch Frank <frankja@linux.ibm.com>
+-	if (!WARN_ON((dev_addr + size - 1 > dma_mask) ||
+-		     range_straddles_page_boundary(phys, size)) &&
++	if (((dev_addr + size - 1 > dma_mask) ||
++	    range_straddles_page_boundary(phys, size)) &&
+ 	    TestClearPageXenRemapped(virt_to_page(vaddr)))
+ 		xen_destroy_contiguous_region(phys, order);
+ 
 -- 
-2.25.1
+2.16.4
 
