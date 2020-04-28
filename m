@@ -2,88 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAA01BB7B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 09:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501A91BB7D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 09:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgD1HfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 03:35:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726800AbgD1HfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 03:35:05 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C72F0206B9;
-        Tue, 28 Apr 2020 07:35:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588059303;
-        bh=IAwY+0Nh3EkxxXHtSahpYzrED4Rl8r+8ekoqfkVKb/0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oZDYROcDt/z2hNKXF24FZRVWFw/iV17GPFpXarq4tvPeCBQyL+ns9y5VzPlfMGqYd
-         s2hp8hQIBz9WYApD+atCrE3vYXR1rMcyjn05BNKspBQn72xPop6y115/ZPZkEKMGQn
-         50YnTSqionB3NEYZKPwRCPjHicWPXB+inBFdAC+8=
-Date:   Tue, 28 Apr 2020 09:34:58 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     vkoul@kernel.org, megha.dey@linux.intel.com, maz@kernel.org,
-        bhelgaas@google.com, rafael@kernel.org, tglx@linutronix.de,
-        hpa@zytor.com, alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, jgg@mellanox.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH RFC 01/15] drivers/base: Introduce platform_msi_ops
-Message-ID: <20200428073458.GB994208@kroah.com>
-References: <158751095889.36773.6009825070990637468.stgit@djiang5-desk3.ch.intel.com>
- <158751203294.36773.11436842117908325764.stgit@djiang5-desk3.ch.intel.com>
- <20200426070118.GA2083720@kroah.com>
- <4223511b-8dc0-33d1-6af1-831d8bf40b3d@intel.com>
+        id S1726547AbgD1Hhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 03:37:51 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51370 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726259AbgD1Hhv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 03:37:51 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03S7bkRO101845;
+        Tue, 28 Apr 2020 02:37:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588059466;
+        bh=O9oTLB3jQJfcVXDqg1A605+vTcYSVQlvUCOUCgtMw7M=;
+        h=Subject:To:References:From:Date:In-Reply-To;
+        b=JeZv+NxO08ND9ofrlVteGz2EadykJerIiT9RRY7+/iVZ1xCVDbw/1uJyKdJQKCn4Z
+         4DZ+BPIhAvUupo9Aded3ywm7n2Zo7Psnf2ZeveU/a0RPF6O71QnHHJ9BOFAWWybZtH
+         fL/lQ2za4yuFOGGHcgSoxdA8xo0zlV96lWvtjZag=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03S7bkuw086112;
+        Tue, 28 Apr 2020 02:37:46 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 28
+ Apr 2020 02:37:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 28 Apr 2020 02:37:45 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03S7bhlt121897;
+        Tue, 28 Apr 2020 02:37:43 -0500
+Subject: Re: [PATCH] arm: dts: am33xx-l4: add gpio-line-names to gpio
+ controllers
+To:     Drew Fustini <drew@beagleboard.org>,
+        =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+References: <20200427233116.GA18917@x1>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <b15f2577-8a7d-4c18-1633-d47133247f49@ti.com>
+Date:   Tue, 28 Apr 2020 10:37:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4223511b-8dc0-33d1-6af1-831d8bf40b3d@intel.com>
+In-Reply-To: <20200427233116.GA18917@x1>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 02:38:12PM -0700, Dave Jiang wrote:
+
+
+On 28/04/2020 02:31, Drew Fustini wrote:
+> Add gpio-line-names properties to the gpio controller nodes.  The names
+> correspond to the AM335x pin names which are also the muxmode 0 signal
+> names.  Refer to "Table 4-2. Pin Attributes" in the TI AM335x Sitara
+> Processors datasheet:
+> 
+> http://www.ti.com/lit/ds/symlink/am3358.pdf
 > 
 > 
-> On 4/26/2020 12:01 AM, Greg KH wrote:
-> > On Tue, Apr 21, 2020 at 04:33:53PM -0700, Dave Jiang wrote:
-> > > From: Megha Dey <megha.dey@linux.intel.com>
-> > > 
-> > > This is a preparatory patch to introduce Interrupt Message Store (IMS).
-> > > 
-> > > Until now, platform-msi.c provided a generic way to handle non-PCI MSI
-> > > interrupts. Platform-msi uses its parent chip's mask/unmask routines
-> > > and only provides a way to write the message in the generating device.
-> > > 
-> > > Newly creeping non-PCI complaint MSI-like interrupts (Intel's IMS for
-> > > instance) might need to provide a device specific mask and unmask callback
-> > > as well, apart from the write function.
-> > > 
-> > > Hence, introduce a new structure platform_msi_ops, which would provide
-> > > device specific write function as well as other device specific callbacks
-> > > (mask/unmask).
-> > > 
-> > > Signed-off-by: Megha Dey <megha.dey@linux.intel.com>
-> > 
-> > As this is not following the Intel-specific rules for sending me new
-> > code, I am just deleting it all from my inbox.
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> ---
+>   arch/arm/boot/dts/am33xx-l4.dtsi | 134 +++++++++++++++++++++++++++++++
+>   1 file changed, 134 insertions(+)
 > 
-> That is my fault. As the aggregator of the patches, I should've signed off
-> Megha's patches.
+> diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
+> index 5ed7f3c58c0f..1ac574ebfe74 100644
+> --- a/arch/arm/boot/dts/am33xx-l4.dtsi
+> +++ b/arch/arm/boot/dts/am33xx-l4.dtsi
+> @@ -157,6 +157,39 @@
+>   				#interrupt-cells = <2>;
+>   				reg = <0x0 0x1000>;
+>   				interrupts = <96>;
+> +				gpio-line-names =
+> +					"MDIO_DATA",
+> +					"MDIO_CLK",
+> +					"SPI0_SCLK",
+> +					"SPI0_D0",
+> +					"SPI0_D1",
+> +					"SPI0_CS0",
+> +					"SPI0_CS1",
+> +					"ECAP0_IN_PWM0_OUT",
+> +					"LCD_DATA12",
+> +					"LCD_DATA13",
+> +					"LCD_DATA14",
+> +					"LCD_DATA15",
+> +					"UART1_CTSN",
+> +					"UART1_RTSN",
+> +					"UART1_RXD",
+> +					"UART1_TXD",
+> +					"GMII1_TXD3",
+> +					"GMII1_TXD2",
+> +					"USB0_DRVVBUS",
+> +					"XDMA_EVENT_INTR0",
+> +					"XDMA_EVENT_INTR1",
+> +					"GMII1_TXD1",
+> +					"GPMC_AD8",
+> +					"GPMC_AD9",
+> +					"NC",
+> +					"NC",
+> +					"GPMC_AD10",
+> +					"GPMC_AD11",
+> +					"GMII1_TXD0",
+> +					"RMII1_REFCLK",
+> +					"GPMC_WAIT0",
+> +					"GPMC_WPN";
+>   			};
+This misuse GPIO DT bindings:
+"
+Optionally, a GPIO controller may have a "gpio-line-names" property. This is
+an array of strings defining the names of the GPIO lines going out of the
+GPIO controller. This name should be the most meaningful producer name
+for the system, such as a rail name indicating the usage. Package names
+such as pin name are discouraged: such lines have opaque names (since they
+are by definition generic purpose) and such names are usually not very
+helpful. For example "MMC-CD", "Red LED Vdd" and "ethernet reset" are
+reasonable line names as they describe what the line is used for. "GPIO0"
+is not a good name to give to a GPIO line. Placeholders are discouraged:
+rather use the "" (blank string) if the use of the GPIO line is undefined
+in your design. The names are assigned starting from line offset 0 from
+left to right from the passed array. An incomplete array (where the number
+of passed named are less than ngpios) will still be used up until the last
+provided valid line index.
+"
 
-That is NOT the Intel-specific rules I am talking about.  Please go work
-with the "Linux group" at Intel to find out what I am referring to, they
-know what I mean.
 
-The not-signing-off is just a normal kernel community rule, everyone has
-to follow that.
+Additional note. On other TI SoCs like am437x the same gpio line can be routed to more
+than one pin (but only one pin can be used).
+gpio0_0 GPIO IO -> A17, D16
 
-greg k-h
+
+-- 
+Best regards,
+grygorii
