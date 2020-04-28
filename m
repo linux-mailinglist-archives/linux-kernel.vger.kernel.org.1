@@ -2,107 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082F61BB7E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 09:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18ACC1BB7F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 09:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgD1HlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 03:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgD1HlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 03:41:02 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4138C03C1A9;
-        Tue, 28 Apr 2020 00:41:01 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id u6so20357125ljl.6;
-        Tue, 28 Apr 2020 00:41:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VSTKTi7V/q8CR6GcenKRp2sd1IMvYmp6ucZc3EIquso=;
-        b=kOyFEvAD625k7UDFOwe9BZLpS7/vLFtFjHy216Sutod4zwnaNSUlio82wfoFHL5dhN
-         b7RYEGF6sTA+ekHf8CJ61EF4VXftF0do3jrp0G5QJK8tvzEKVuBNXv+1E85fY0AzNfY5
-         580zwNW6D0bPed8EeHBjhLEykcpe51TLmbaqT0LyuzZ2ycDarJmHWFQ/jHwmGD4xB5I9
-         4/NAYvgP/4YuWe8pa22A5pq3oJ4If2NyucXWPFv2OM19Ms2f04mVieBce2CWd4eDPWtP
-         5onydc7U0x8nATzGI+IgEwzH8b4u9Ki5MPx/EgO2W4sGG6CC3dtKNqnNwZQ1Jp1olqUX
-         tMlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VSTKTi7V/q8CR6GcenKRp2sd1IMvYmp6ucZc3EIquso=;
-        b=kF+kMhRmsSJIEqGn0QsANvcg/PsJk+23mwoHyH9DnU5dt03dMdzjjuL0cVDSY4fOGJ
-         WS3npISCIczvff36PhFteHDjI+C8BK3R8mZXhDdwTNmSpkaRbrMNL6X+mkqslWnPoS+H
-         fZ5FNrE/uQFvGDWY0Oa7IYRDYWjG7TXtPnTtsP2E8UhrDrcoMokHunPGhruirPXyD+Io
-         1dYhpMgpRl/mJl01jKdAoH2zwPma36mVO2mPlN8Id2JbzQoAMlis01hL6Gt/EJvhrTWA
-         eFmznKq9r06sRDw+CauqBruo1Ns2l0WaZ0xvWty/hfGQBO+Qy8WVfiXzDF5ZiP5olY25
-         SKJg==
-X-Gm-Message-State: AGi0PuYTdsfCpFcZyKsqqlhWn4ruCo6QJCs69YvqdBN9SFf1TLlpidKE
-        Vgt2PgiNs7Ie2iCUMFeGQPA=
-X-Google-Smtp-Source: APiQypJdmUu6b0MWQu3fBzo17XXGzEpTTUzA724t8KPOwQjDlXn6PmWYi7HieJOZZAHyE3DW8Yyhgg==
-X-Received: by 2002:a2e:9616:: with SMTP id v22mr17013316ljh.62.1588059660206;
-        Tue, 28 Apr 2020 00:41:00 -0700 (PDT)
-Received: from curiosity (ip-195-182-157-78.clients.cmk.ru. [195.182.157.78])
-        by smtp.gmail.com with ESMTPSA id b16sm13482050lfj.2.2020.04.28.00.40.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 00:40:59 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 10:45:27 +0300
-From:   Sergey Matyukevich <geomatsi@gmail.com>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wireless <linux-wireless@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mac80211-next tree
-Message-ID: <20200428074527.GA3912@curiosity>
-References: <20200428122930.51b6a9c2@canb.auug.org.au>
- <c3922c972277ff627c0308a94dfe3f25ba3b333f.camel@sipsolutions.net>
- <20200428072543.GA2630@curiosity>
- <baae77876a4b73de83aa6dcc27257da231777c22.camel@sipsolutions.net>
+        id S1726617AbgD1Hp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 03:45:56 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:50279 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726253AbgD1Hp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 03:45:56 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49BDGT61qhz9v0Yh;
+        Tue, 28 Apr 2020 09:45:53 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=UBR5gAQ5; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Jm5mmlEvRnDf; Tue, 28 Apr 2020 09:45:53 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49BDGT4QTyz9v0Yg;
+        Tue, 28 Apr 2020 09:45:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1588059953; bh=/2fZZkU1LY2pi9G08Gg14D8HOq4abGxDwLX+kqPlt1o=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=UBR5gAQ53YJN7ELul96h9s1XA1XXA+4fvsvJ+j3pt0+0nKvRCMh3AZyL/IBPKVzuA
+         j3Gc+fUrI76w6umT2wOmN3GTPm/U0ZjnNCv4YC/kSlVhGQRyeNlBqhuRQjCUJuX8ff
+         HU7o4PADGi6vHlzTQ7FuNK5gQHJ7lzZ6KlCoAPp8=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9CC8B8B7EF;
+        Tue, 28 Apr 2020 09:45:54 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id rlSWOtbbJT9w; Tue, 28 Apr 2020 09:45:54 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DE3628B7ED;
+        Tue, 28 Apr 2020 09:45:53 +0200 (CEST)
+Subject: Re: [PATCH 2/7] signal: factor copy_siginfo_to_external32 from
+ copy_siginfo_to_user32
+To:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeremy Kerr <jk@ozlabs.org>, linux-fsdevel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        "Eric W . Biederman" <ebiederm@xmission.com>
+References: <20200421154204.252921-1-hch@lst.de>
+ <20200421154204.252921-3-hch@lst.de>
+ <20200425214724.a9a00c76edceff7296df7874@linux-foundation.org>
+ <20200426074039.GA31501@lst.de>
+ <20200427154050.e431ad7fb228610cc6b95973@linux-foundation.org>
+ <20200428070935.GE18754@lst.de>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Message-ID: <ddbaba35-9cc5-dfb9-3cae-51b026de5b65@c-s.fr>
+Date:   Tue, 28 Apr 2020 09:45:46 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <baae77876a4b73de83aa6dcc27257da231777c22.camel@sipsolutions.net>
+In-Reply-To: <20200428070935.GE18754@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 09:24:16AM +0200, Johannes Berg wrote:
-> On Tue, 2020-04-28 at 10:25 +0300, Sergey Matyukevich wrote:
-> > On Tue, Apr 28, 2020 at 09:01:30AM +0200, Johannes Berg wrote:
-> > > On Tue, 2020-04-28 at 12:29 +1000, Stephen Rothwell wrote:
-> > > > Hi all,
-> > > > 
-> > > > After merging the mac80211-next tree, today's linux-next build (x86_64
-> > > > allmodconfig) failed like this:
-> > > > 
-> > > > Caused by commit
-> > > > 
-> > > >   6cd536fe62ef ("cfg80211: change internal management frame registration API")
-> > > 
-> > > Yeah. I forgot about staging. I guess I'll throw in a quick fix.
-> > > 
-> > > johannes
-> > 
-> > Hello Johannes,
-> > 
-> > Could you please take a look at the following fix for this issue:
-> > https://patchwork.kernel.org/patch/11509497/
+
+
+Le 28/04/2020 à 09:09, Christoph Hellwig a écrit :
+> On Mon, Apr 27, 2020 at 03:40:50PM -0700, Andrew Morton wrote:
+>>> https://www.spinics.net/lists/kernel/msg3473847.html
+>>> https://www.spinics.net/lists/kernel/msg3473840.html
+>>> https://www.spinics.net/lists/kernel/msg3473843.html
+>>
+>> OK, but that doesn't necessitate the above monstrosity?  How about
+>>
+>> static int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+>> 			     const struct kernel_siginfo *from, bool x32_ABI)
+>> {
+>> 	struct compat_siginfo new;
+>> 	copy_siginfo_to_external32(&new, from);
+>> 	...
+>> }
+>>
+>> int copy_siginfo_to_user32(struct compat_siginfo __user *to,
+>> 			   const struct kernel_siginfo *from)
+>> {
+>> #if defined(CONFIG_X86_X32_ABI) || defined(CONFIG_IA32_EMULATION)
+>> 	return __copy_siginfo_to_user32(to, from, in_x32_syscall());
+>> #else
+>> 	return __copy_siginfo_to_user32(to, from, 0);
+>> #endif
+>> }
+>>
+>> Or something like that - I didn't try very hard.  We know how to do
+>> this stuff, and surely this thing isn't how!
 > 
-> Heh. I was just fixing it too, missed your patch. How do you like this
-> fix?
+> I guess that might be a worthwhile middle ground.  Still not a fan of
+> all these ifdefs..
 > 
-> https://p.sipsolutions.net/0638ee56c2e48a30.txt
 
-Looks good. But I have a couple of questions:
+Can't we move the small X32 specific part out of 
+__copy_siginfo_to_user32(), in an arch specific helper that voids for 
+other architectures ?
 
-- why cleanup vif->mgmt_frame_reg in wilc_mac_open ?
+Something like:
 
-- previously wilc_wfi_p2p_rx was called only for PROBE_REQ and ACTION,
-  now it will be called for all the other registred frames as well
+		if (!arch_special_something(&new, from)) {
+			new.si_utime = from->si_utime;
+			new.si_stime = from->si_stime;
+		}
 
-Regards,
-Sergey
+Then the arch_special_something() does what it wants in x86 and returns 
+1, and for architectures not implementating it, a generic version return 
+0 all the time.
+
+Christophe
