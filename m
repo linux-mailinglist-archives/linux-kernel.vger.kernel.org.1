@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CE61BC88F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA10E1BC7BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729974AbgD1Sdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:33:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50128 "EHLO mail.kernel.org"
+        id S1728741AbgD1S02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:26:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729965AbgD1Sdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:33:37 -0400
+        id S1728717AbgD1S0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:26:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24A9920575;
-        Tue, 28 Apr 2020 18:33:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6C73208E0;
+        Tue, 28 Apr 2020 18:26:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098817;
-        bh=SgIOKnFekVTZdbg62jtE6S/vCStCN4oFmWjvD0J3m0Q=;
+        s=default; t=1588098383;
+        bh=Zl39YaVNOpEw+1FqGTKQv1RKhpb4hDsvXuv532WrKls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TPnSjBZI3EguP1QbqGM2S2u0YcAmlXXJW2r+1N6FLD5MX8hhXLfvOSDz+h4Yq6wMn
-         c9DpUJ2MsQ4TvF+l5VRqOvBaLaRUOCcTWJKnqEr+Nvs0/iDkrhqg6Z8g334wCk2HFp
-         UDy7WtJu4jH3X+bdplqu0lwIE1B94Gn23gly0kOc=
+        b=fMu2wPCfP1C46h4KeynTYSxBiOkbgnMS2n+EX2UtLSjVsVGvI9xh4eW4qM0P5mAFI
+         Lpn8zAAjn5H2q3TXkD/41O34UHNdINPLSFGOaliHAyB0Keic1fi1XgchqHITnczmYp
+         bGL+X8sqB/wj8/DoXgP35r/zTtTAbiWeA148yuCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        Dan Williams <dan.j.williams@intel.com>,
+        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
+        Keith Busch <kbusch@kernel.org>,
+        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 019/168] tools/test/nvdimm: Fix out of tree build
-Date:   Tue, 28 Apr 2020 20:23:13 +0200
-Message-Id: <20200428182234.119453496@linuxfoundation.org>
+Subject: [PATCH 5.6 018/167] nvme: fix deadlock caused by ANA update wrong locking
+Date:   Tue, 28 Apr 2020 20:23:14 +0200
+Message-Id: <20200428182227.502660835@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,65 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Santosh Sivaraj <santosh@fossix.org>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit 1f776799628139d0da47e710ad86eb58d987ff66 ]
+[ Upstream commit 657f1975e9d9c880fa13030e88ba6cc84964f1db ]
 
-Out of tree build using
+The deadlock combines 4 flows in parallel:
+- ns scanning (triggered from reconnect)
+- request timeout
+- ANA update (triggered from reconnect)
+- I/O coming into the mpath device
 
-   make M=tools/test/nvdimm O=/tmp/build -C /tmp/build
+(1) ns scanning triggers disk revalidation -> update disk info ->
+    freeze queue -> but blocked, due to (2)
 
-fails with the following error
+(2) timeout handler reference the g_usage_counter - > but blocks in
+    the transport .timeout() handler, due to (3)
 
-make: Entering directory '/tmp/build'
-  CC [M]  tools/testing/nvdimm/test/nfit.o
-linux/tools/testing/nvdimm/test/nfit.c:19:10: fatal error: nd-core.h: No such file or directory
-   19 | #include <nd-core.h>
-      |          ^~~~~~~~~~~
-compilation terminated.
+(3) the transport timeout handler (indirectly) calls nvme_stop_queue() ->
+    which takes the (down_read) namespaces_rwsem - > but blocks, due to (4)
 
-That is because the kbuild file uses $(src) which points to
-tools/testing/nvdimm, $(srctree) correctly points to root of the linux
-source tree.
+(4) ANA update takes the (down_write) namespaces_rwsem -> calls
+    nvme_mpath_set_live() -> which synchronize the ns_head srcu
+    (see commit 504db087aacc) -> but blocks, due to (5)
 
-Reported-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Santosh Sivaraj <santosh@fossix.org>
-Link: https://lore.kernel.org/r/20200114054051.4115790-1-santosh@fossix.org
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+(5) I/O came into nvme_mpath_make_request -> took srcu_read_lock ->
+    direct_make_request > blk_queue_enter -> but blocked, due to (1)
+
+==> the request queue is under freeze -> deadlock.
+
+The fix is making ANA update take a read lock as the namespaces list
+is not manipulated, it is just the ns and ns->head that are being
+updated (which is protected with the ns->head lock).
+
+Fixes: 0d0b660f214dc ("nvme: add ANA support")
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/nvdimm/Kbuild      | 4 ++--
- tools/testing/nvdimm/test/Kbuild | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/nvme/host/multipath.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/nvdimm/Kbuild b/tools/testing/nvdimm/Kbuild
-index c4a9196d794c9..cb80d3b811792 100644
---- a/tools/testing/nvdimm/Kbuild
-+++ b/tools/testing/nvdimm/Kbuild
-@@ -21,8 +21,8 @@ DRIVERS := ../../../drivers
- NVDIMM_SRC := $(DRIVERS)/nvdimm
- ACPI_SRC := $(DRIVERS)/acpi/nfit
- DAX_SRC := $(DRIVERS)/dax
--ccflags-y := -I$(src)/$(NVDIMM_SRC)/
--ccflags-y += -I$(src)/$(ACPI_SRC)/
-+ccflags-y := -I$(srctree)/drivers/nvdimm/
-+ccflags-y += -I$(srctree)/drivers/acpi/nfit/
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index a11900cf3a365..906dc0faa48ec 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -514,7 +514,7 @@ static int nvme_update_ana_state(struct nvme_ctrl *ctrl,
+ 	if (!nr_nsids)
+ 		return 0;
  
- obj-$(CONFIG_LIBNVDIMM) += libnvdimm.o
- obj-$(CONFIG_BLK_DEV_PMEM) += nd_pmem.o
-diff --git a/tools/testing/nvdimm/test/Kbuild b/tools/testing/nvdimm/test/Kbuild
-index fb3c3d7cdb9bd..75baebf8f4ba1 100644
---- a/tools/testing/nvdimm/test/Kbuild
-+++ b/tools/testing/nvdimm/test/Kbuild
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
--ccflags-y := -I$(src)/../../../../drivers/nvdimm/
--ccflags-y += -I$(src)/../../../../drivers/acpi/nfit/
-+ccflags-y := -I$(srctree)/drivers/nvdimm/
-+ccflags-y += -I$(srctree)/drivers/acpi/nfit/
+-	down_write(&ctrl->namespaces_rwsem);
++	down_read(&ctrl->namespaces_rwsem);
+ 	list_for_each_entry(ns, &ctrl->namespaces, list) {
+ 		unsigned nsid = le32_to_cpu(desc->nsids[n]);
  
- obj-m += nfit_test.o
- obj-m += nfit_test_iomap.o
+@@ -525,7 +525,7 @@ static int nvme_update_ana_state(struct nvme_ctrl *ctrl,
+ 		if (++n == nr_nsids)
+ 			break;
+ 	}
+-	up_write(&ctrl->namespaces_rwsem);
++	up_read(&ctrl->namespaces_rwsem);
+ 	return 0;
+ }
+ 
 -- 
 2.20.1
 
