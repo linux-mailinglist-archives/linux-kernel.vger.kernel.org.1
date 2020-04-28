@@ -2,76 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCAF1BCF03
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786131BCF07
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgD1Vmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726272AbgD1Vmo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:42:44 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4425CC03C1AC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:42:44 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id z2so24982701iol.11
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:42:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rfmlo41ts2i7Zcv0kqVybUxAnbR3sTlhoiDkLxdhqcM=;
-        b=jzYQ2rTc5iGSeW867YpgJb0e0aw2v+lG7u1PpshHvK+b6XV/dUh6YTFnf/tFVjoHSL
-         BU4n4+hcpwwPAURGSbzgxuxkjBKwGmDDH8fhJ6Noim6yF2Ko55IlWL3GaMHWQIEE85z8
-         stYWqfldjztBG7VdjBUxgxmYYt7ch8ZcywOPIpqIy8JW+yYySgvhJYT/a2dBQLTPNYo6
-         TtGt6ctYXhojzWnBpNIFQzBu/3qfIkUvqHKv/BAXbgbmwYbakHDJ4C2IA1PvjgV2JQK5
-         3zqvrwVubOUgBRTJ59l1iaxH/JjFjMKorIeIuTq3Oo0trW8vjEUnPKDt2enyUWMjCT9R
-         lGRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rfmlo41ts2i7Zcv0kqVybUxAnbR3sTlhoiDkLxdhqcM=;
-        b=qz/a30Zz4+wQyNrHDB/vJs86KPWdNEruvXdyhAduM5XuyAG8a4IX3nxXouV4AtYxij
-         nzGBdu7yikWIILKzC9adUBbQBPbgf8xehs2+1B46x7Vi21r0kq7Oqg00vR3RPdqo0SU7
-         poiUCobRj1iXa2FkywisXnsDNpogDW6vpynF3Iik3MIWlKaC/cDE9wIpl1mNl+s/74RD
-         wfnVt0otNOwjNg8EH4HHXVtHKKaFV0PL9NWVhjGYXOfhcgkginCVCk9jqkB5SjWFfiWt
-         fHyhEnkP9bml2ZfbEtqE9QHkmPE5H0VVb8U2TCMNNzfUQtk+9UqkYJMGPvDAisptHa3M
-         mZ+Q==
-X-Gm-Message-State: AGi0PuYDTLBCtSIRZa92PX2oMPD7v9fZvAo3QJPJuN4LfM+0VExboapD
-        6RamjK3q/OHZMI3DmqiNEVNOBGHDxgCaC4iYV+XBtw==
-X-Google-Smtp-Source: APiQypK7/mohAHqrxGWpCG7N79ayXvDCuEmqwdOh2T1wVp1srOrMpFaJDheHtIywUbwKQ4GJrCnqek9FIrXvz7vYYDc=
-X-Received: by 2002:a05:6638:bd0:: with SMTP id g16mr27759289jad.48.1588110163502;
- Tue, 28 Apr 2020 14:42:43 -0700 (PDT)
+        id S1726808AbgD1VnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:43:09 -0400
+Received: from mga03.intel.com ([134.134.136.65]:58531 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726364AbgD1VnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 17:43:08 -0400
+IronPort-SDR: g75KC5gZD0rKohz/767n+YDN6JKzkZ8Qa9jkaKAyAXMqf1/At6L4AfF4cIYlsw3e1i4Kb91rcI
+ 8HOiz7k7quAw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 14:43:07 -0700
+IronPort-SDR: zK/pOH0bB0NT5PPv86h4FZnum68iEaTsGInoqhARg7hctD54dmmM1+W6iUI50j6u6vBwxrQD+7
+ Cq0xOkcDVr8w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
+   d="scan'208";a="249285767"
+Received: from asehgal-mobl.amr.corp.intel.com (HELO [10.254.29.183]) ([10.254.29.183])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Apr 2020 14:43:04 -0700
+Subject: Re: [PATCH] ASoC: SOF: sort out Kconfig, again
+To:     Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200428212752.2901778-1-arnd@arndb.de>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <6b39fbba-c65d-2c02-14bf-11c2d00547af@linux.intel.com>
+Date:   Tue, 28 Apr 2020 16:43:04 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200423022550.15113-1-sean.j.christopherson@intel.com> <20200423022550.15113-5-sean.j.christopherson@intel.com>
-In-Reply-To: <20200423022550.15113-5-sean.j.christopherson@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 28 Apr 2020 14:42:32 -0700
-Message-ID: <CALMp9eRPfvsx+uu4RFbDiLrL4pY9_NiZkivWqUi8gUSAMHv-ZA@mail.gmail.com>
-Subject: Re: [PATCH 04/13] KVM: x86: Make return for {interrupt_nmi}_allowed()
- a bool instead of int
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oliver Upton <oupton@google.com>,
-        Peter Shier <pshier@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200428212752.2901778-1-arnd@arndb.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 7:26 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Return an actual bool for kvm_x86_ops' {interrupt_nmi}_allowed() hook to
-> better reflect the return semantics, and to avoid creating an even
-> bigger mess when the related VMX code is refactored in upcoming patches.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
+
+
+On 4/28/20 4:27 PM, Arnd Bergmann wrote:
+> The imx8 config keeps causing issues:
+> 
+> WARNING: unmet direct dependencies detected for SND_SOC_SOF_IMX8M
+>    Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=m] && SND_SOC_SOF_TOPLEVEL [=y] && SND_SOC_SOF_IMX_TOPLEVEL [=y] && IMX_DSP [=n]
+>    Selected by [m]:
+>    - SND_SOC_SOF_IMX_OF [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=m] && SND_SOC_SOF_TOPLEVEL [=y] && SND_SOC_SOF_IMX_TOPLEVEL [=y] && SND_SOC_SOF_IMX8M_SUPPORT [=y]
+> 
+> This is complicated by two drivers having dependencies on both
+> platform specific drivers and the SND_SOC_SOF_OF framework code,
+> and using an somewhat obscure method to build them the same way
+> as the SOC_SOF_OF symbol (built-in or modular).
+> 
+> My solution now ensures that the two drivers can only be enabled
+> when the dependencies are met:
+> 
+> - When the platform specific drivers are built-in, everything is
+>    fine, as SOC_SOF_OF is either =y or =m
+> 
+> - When both are loadable modules, it also works, both for Kconfig
+>    and at runtime
+> 
+> - When the hardware drivers are loadable modules or disabled, and
+>    SOC_SOF_OF=y, prevent the IMX_SOF_OF drivers from being turned on,
+>    as this would be broken.
+> 
+> It seems that this is just an elaborate way to describe two tristate
+> symbols that have straight dependencies, but maybe I'm missing some
+> subtle point. It seems to always build for me now.
+
+Thanks Arnd, do you mind sharing your config? We noticed last week that 
+there's a depend/select confusion might be simpler to fix, see 
+https://github.com/thesofproject/linux/pull/2047/commits
+
+If I look at the first line I see a IMX_DSP=n which looks exactly like 
+what we wanted to fix.
+
+> 
+> Fixes: fe57a92c8858 ("ASoC: SOF: Add missing dependency on IMX_SCU")
+> Fixes: afb93d716533 ("ASoC: SOF: imx: Add i.MX8M HW support")
+> Fixes: cb0312f61c3e ("ASoC: SOF: imx: fix undefined reference issue")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   sound/soc/sof/imx/Kconfig | 7 +++----
+>   1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/soc/sof/imx/Kconfig b/sound/soc/sof/imx/Kconfig
+> index f76660e91382..66684d7590f4 100644
+> --- a/sound/soc/sof/imx/Kconfig
+> +++ b/sound/soc/sof/imx/Kconfig
+> @@ -21,7 +21,8 @@ config SND_SOC_SOF_IMX_OF
+>   
+>   config SND_SOC_SOF_IMX8_SUPPORT
+>   	bool "SOF support for i.MX8"
+> -	depends on IMX_SCU
+> +	depends on IMX_SCU=y || IMX_SCU=SND_SOC_SOF_IMX_OF
+> +	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_IMX_OF
+>   	help
+>   	  This adds support for Sound Open Firmware for NXP i.MX8 platforms
+>   	  Say Y if you have such a device.
+> @@ -29,14 +30,13 @@ config SND_SOC_SOF_IMX8_SUPPORT
+>   
+>   config SND_SOC_SOF_IMX8
+>   	tristate
+> -	depends on IMX_SCU
+> -	select IMX_DSP
+>   	help
+>   	  This option is not user-selectable but automagically handled by
+>   	  'select' statements at a higher level
+>   
+>   config SND_SOC_SOF_IMX8M_SUPPORT
+>   	bool "SOF support for i.MX8M"
+> +	depends on IMX_DSP=y || IMX_DSP=SND_SOC_SOF_OF
+>   	help
+>   	  This adds support for Sound Open Firmware for NXP i.MX8M platforms
+>   	  Say Y if you have such a device.
+> @@ -44,7 +44,6 @@ config SND_SOC_SOF_IMX8M_SUPPORT
+>   
+>   config SND_SOC_SOF_IMX8M
+>   	tristate
+> -	depends on IMX_DSP
+>   	help
+>   	  This option is not user-selectable but automagically handled by
+>   	  'select' statements at a higher level
+> 
