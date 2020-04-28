@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8328F1BB443
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 04:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0C41BB455
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 05:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgD1C6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 22:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726047AbgD1C6w (ORCPT
+        id S1726490AbgD1DAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 23:00:05 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:56918 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726359AbgD1C7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 22:58:52 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F94C03C1A9;
-        Mon, 27 Apr 2020 19:58:50 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id n24so7755658plp.13;
-        Mon, 27 Apr 2020 19:58:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/byDlkt6s+cQBuQif6rcML0PxVzE1MoIoVjA0VLFhMA=;
-        b=Fa6uqLYAD7a6+7BnYHMVXak0/2gRK0gawoyDOvbRcNDGpYwwVc2/ZUEBfvLabZ/t/b
-         vT9mks4QIGJ9IzsJoDE1EiaZS6Ah4vZiBuhezaX+SW72zIOnX96f/p5LKgE6b3d5CRgJ
-         Ll067Ob3EN6STbQQzDzmEAb2+Y+MCfR8Vu1sDqXHfzaO54Xv7rWMaqOzB8VaZ8F3azLs
-         vO2zCf/1egB4yptnyhvjNd1jEW60yr22n4V4Uw9RlcPjso7k00W/HhAKjFymj+0h1syJ
-         pU+hfS51t0rEnvArouSp587+OoJ1PbsPU21YePxWBRr+13Gc2OVBbfCHDQt8c7Y/Ub8x
-         f/JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/byDlkt6s+cQBuQif6rcML0PxVzE1MoIoVjA0VLFhMA=;
-        b=S3d2awxjG7YNF3F1/wqJoY3P43RY/GIOLy4eaP2jK21dbQIqhFOS/gUz+jWcUS1ka1
-         Sffum93/c4lLOQoxhHaWD/stRcCtZ4cGX17blOkCNdEPnTFZkco8Jvo0oGGzBvrzkjsW
-         GoeFvLPye7qtrF8oCJTqd3mdyzJzVXhUdpW90wULmUTZMrytQi+b9wwy1c0sO01sZrc9
-         nvu9v/bisjgy9WNJpGZLdYcr56gPZGgSCXTtbk8ZysO2ISgxnGcFwIHEso7tqlvJjb65
-         LlHOeIao2qY61RfXiyneDSc2F5WK5y5gpWS2cGFFLsyHQTBNyQ2j4Tapk/W4ogw/7maG
-         7E6w==
-X-Gm-Message-State: AGi0PuYnO0bMS2ceALJJV9DMgDKhMYv97QiEKH2B6SsXkSjyQc7Zq3yl
-        sGCifAwyrYxUbRadWyp6P1iXvOiU
-X-Google-Smtp-Source: APiQypJSMABkEKdshyCULU8a9vVj94Mjqb0HBNI2eoxM2bEA72MsgymuG6edVsTQXxXkkYn7PGcvbA==
-X-Received: by 2002:a17:90a:fb4e:: with SMTP id iq14mr2281878pjb.146.1588042730010;
-        Mon, 27 Apr 2020 19:58:50 -0700 (PDT)
-Received: from localhost ([89.208.244.169])
-        by smtp.gmail.com with ESMTPSA id u3sm6702844pfb.105.2020.04.27.19.58.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 27 Apr 2020 19:58:49 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 10:58:44 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     tglx@linutronix.de, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v1] ethernet: ks8842: delete unnecessary goto
- label
-Message-ID: <20200428025844.GA31933@nuc8i5>
-References: <20200425115612.17171-1-zhengdejin5@gmail.com>
- <20200427.111547.346558310845161759.davem@davemloft.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427.111547.346558310845161759.davem@davemloft.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Mon, 27 Apr 2020 22:59:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588042783; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Hnw6YsaPhmWo+FG4M9WAgpw2nCpRT7gopKKbS5r3bNc=; b=sT93KfO4RRMvvRammbh1laxrDbhh1Gi1fqMky50uMZOHGxIBkuFPUlbCnhUoDxqsJHT///ha
+ a7d9z3QYSpYgXpgxVk49U/iLw0au8T8FWxcBA7nMVJdcIAPrfQXAcEou/tJFlBpUNc5sXkJU
+ YYEu5OxRsyKckd0+097MkpsGWqM=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea79c1c.7f63f3a57ed8-smtp-out-n03;
+ Tue, 28 Apr 2020 02:59:40 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E5464C433BA; Tue, 28 Apr 2020 02:59:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from bbhatt-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 467E3C433D2;
+        Tue, 28 Apr 2020 02:59:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 467E3C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     mani@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hemantk@codeaurora.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [RESEND PATCH v2 0/8] Bug fixes and improved logging in MHI
+Date:   Mon, 27 Apr 2020 19:59:18 -0700
+Message-Id: <1588042766-17496-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 11:15:47AM -0700, David Miller wrote:
-> From: Dejin Zheng <zhengdejin5@gmail.com>
-> Date: Sat, 25 Apr 2020 19:56:12 +0800
-> 
-> > the label of err_register is not necessary, so delete it to
-> > simplify code.
-> > 
-> > Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-> 
-> It's not unnecessary, it's documenting the state of the probe.
+A set of patches for bug fixes and improved logging in mhi/core/boot.c.
+Verified on x86 and arm64 platforms.
 
-David, Thanks for your information, and abandon this commit.
+v2:
+-Fix channel ID range check potential infinite loop
+-Add appropriate signed-off-by tags
 
-BR,
-Dejin
+Bhaumik Bhatt (5):
+  bus: mhi: core: Handle firmware load using state worker
+  bus: mhi: core: WARN_ON for malformed vector table
+  bus: mhi: core: Return appropriate error codes for AMSS load failure
+  bus: mhi: core: Improve debug logs for loading firmware
+  bus: mhi: core: Ensure non-zero session or sequence ID values
+
+Hemant Kumar (3):
+  bus: mhi: core: Cache intmod from mhi event to mhi channel
+  bus: mhi: core: Add range check for channel id received in event ring
+  bus: mhi: core: Read transfer length from an event properly
+
+ drivers/bus/mhi/core/boot.c     | 74 +++++++++++++++++++++++++----------------
+ drivers/bus/mhi/core/init.c     |  5 ++-
+ drivers/bus/mhi/core/internal.h |  1 +
+ drivers/bus/mhi/core/main.c     | 18 +++++++---
+ drivers/bus/mhi/core/pm.c       |  6 +---
+ include/linux/mhi.h             |  2 --
+ 6 files changed, 65 insertions(+), 41 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
