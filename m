@@ -2,61 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EF01BBCF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 158241BBDD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgD1MCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 08:02:06 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:50142 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726448AbgD1MCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:02:05 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9E64020B5D08FD27AD28;
-        Tue, 28 Apr 2020 20:02:00 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 28 Apr 2020 20:01:54 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <mchehab@kernel.org>
-CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] media: cx231xx: Remove unneeded semicolon
-Date:   Tue, 28 Apr 2020 20:08:09 +0800
-Message-ID: <1588075689-73680-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1726864AbgD1Mow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 08:44:52 -0400
+Received: from mail.ac.gov.br ([179.252.114.240]:43639 "EHLO
+        srvifs070.ac.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726794AbgD1Mow (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 08:44:52 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id 3374629851FD;
+        Tue, 28 Apr 2020 07:10:38 -0500 (ACT)
+Received: from srvifs070.ac.gov.br ([127.0.0.1])
+        by localhost (srvifs070.ac.gov.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id S9ilVl5Nh0Dq; Tue, 28 Apr 2020 07:10:36 -0500 (ACT)
+Received: from srvifs070.ac.gov.br (localhost [127.0.0.1])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id 257172985203;
+        Tue, 28 Apr 2020 07:10:26 -0500 (ACT)
+Received: from srvifs070.ac.gov.br (srvifs070.ac.gov.br [10.1.4.71])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id 07D632984539;
+        Tue, 28 Apr 2020 07:10:02 -0500 (ACT)
+Date:   Tue, 28 Apr 2020 08:10:01 -0400 (AMT)
+From:   Fidelity Investment <angela.magalhaes@ac.gov.br>
+Reply-To: Fidelity Investment <customercaremarketing@outlook.co.id>
+Message-ID: <1729983565.358237.1588075801738.JavaMail.zimbra@ac.gov.br>
+Subject: Investitionsangebot
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [102.166.17.141]
+X-Mailer: Zimbra 8.0.6_GA_5922 (zclient/8.0.6_GA_5922)
+Thread-Topic: Investitionsangebot
+Thread-Index: iMNkOZQea0ENk7r0dyj9qGfVbTMMzA==
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warnings:
 
-drivers/media/usb/cx231xx/cx231xx-avcore.c:610:3-4: Unneeded semicolon
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/media/usb/cx231xx/cx231xx-avcore.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/usb/cx231xx/cx231xx-avcore.c b/drivers/media/usb/cx231xx/cx231xx-avcore.c
-index d611709..3d3c881 100644
---- a/drivers/media/usb/cx231xx/cx231xx-avcore.c
-+++ b/drivers/media/usb/cx231xx/cx231xx-avcore.c
-@@ -607,7 +607,7 @@ int cx231xx_set_video_input_mux(struct cx231xx *dev, u8 input)
- 							CX231XX_VMUX_COMPOSITE1,
- 							INPUT(input)->vmux);
- 			break;
--		};
-+		}
- 
- 		break;
- 	default:
 -- 
-2.6.2
-
+Fidelity Investment hat ein gro&szlig;artiges Angebot f&uuml;r Sie. Investieren Sie einen Kapitalbetrag von 500 Euro in Fidelity Investment Online Global Market Trading und verdienen Sie innerhalb von f&uuml;nf Arbeitstagen 5000 Euro. Dieser Trade wird von Fidelity Investment Digital durchgef&uuml;hrt. Um mehr &uuml;ber uns zu erfahren, erreichen Sie uns bitte unter: customercaremarketing@outlook.co.id
