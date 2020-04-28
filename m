@@ -2,76 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E321BCF33
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1276C1BCF19
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726519AbgD1Vzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725934AbgD1Vzg (ORCPT
+        id S1726621AbgD1Vsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:48:54 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:40589 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgD1Vsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:55:36 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B25CC03C1AD
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:47:03 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id x2so400495ilp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:47:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=76NwtcJFolRpkssepMqzzHW6HjfTr+1YoDKxexuV45Y=;
-        b=MPCuda/sCllNWtDmaB2Z8BpFCPmPYapCKuY71j1CJ3zJn0c1Rh5QkHwgW2snCRZsgp
-         HV3ItMCtbPp9p14VV+dchHw5H5QSxUNJwE7Ay+0fRQnxVytV3Tf3iYlUKDVhSIzdc4va
-         /snaOKzBHe5dUgseXI6IqCnpJsPLz6pHO3JSuSX4QcLFVh9hdKUROM+2O/V5D934uP3Q
-         rbd7adUyVoUJ2VaOqvxbiFbItcLHKxAUtiAbwP8yhyWXrYoC6UEzX5YUrnD1c4Jdd0KC
-         FiNNuvnN0PSPR0pRrcjM+iOLTmEysfF21xRQbwcnvZkLW0ucwG8cTFH68TRnhzDOy/Qf
-         gJOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=76NwtcJFolRpkssepMqzzHW6HjfTr+1YoDKxexuV45Y=;
-        b=jda70hjDoz3ljNTrvmEAp8IVXtc1tgVvnw6g+JvUcvdnPq2t6id5f5/Uo1r5xSwHkB
-         kspLwH2AIe2a7L8COfYpPM5tFPLAoQN58FKWTnUx0RokvvnUYhnsq2zaelFjMFIUCRu8
-         GqdZuX8pb+PYppW1nKpQnY1viG92rR4j3CYkOdrkvmYgEguUsB8RlG/nOTlkh4XQ3/fV
-         TFi0EALqHbNGXlTbmOEgt+OqmhmdLD1n+dqhOxPEetEQswwTvQvEoRqVFeiOxcph2rZK
-         DV34H5r8kJwH/H7ESg9KKlonmbQUKKMGIhVssqn+1hRJLzwDDouNFUML0+XEjRYiZ/fE
-         iX9Q==
-X-Gm-Message-State: AGi0PuZfIhTabpjO1fml5+TniIcAe+0k+7KgKaXgsJT91fr0OrLUG0/l
-        K1dwgpU44fCpuJ4NlxN1wFcfgjh1qFkZDLiTLwZ/6g==
-X-Google-Smtp-Source: APiQypJBobtGHzmKTfOmqkB1rhDOoIuXbsBLejVtVlTBZageEuCay/mjHv6SX62C34lGE/3iCsJIY5BzlgGxahZuE1g=
-X-Received: by 2002:a92:da4e:: with SMTP id p14mr28469010ilq.296.1588110422235;
- Tue, 28 Apr 2020 14:47:02 -0700 (PDT)
+        Tue, 28 Apr 2020 17:48:54 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MLi0U-1jlDUS435U-00HhCE; Tue, 28 Apr 2020 23:47:57 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Shreyas NC <shreyas.nc@intel.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: component: suppress uninitialized-variable warning
+Date:   Tue, 28 Apr 2020 23:47:31 +0200
+Message-Id: <20200428214754.3925368-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <20200423022550.15113-1-sean.j.christopherson@intel.com> <20200423022550.15113-7-sean.j.christopherson@intel.com>
-In-Reply-To: <20200423022550.15113-7-sean.j.christopherson@intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 28 Apr 2020 14:46:51 -0700
-Message-ID: <CALMp9eTFm9T1b66Za2BXxUhZmNRaXNjid3RJ3YMLmg68imx6=Q@mail.gmail.com>
-Subject: Re: [PATCH 06/13] KVM: nVMX: Report NMIs as allowed when in L2 and
- Exit-on-NMI is set
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oliver Upton <oupton@google.com>,
-        Peter Shier <pshier@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:CwaJqqI8UP3UYQa9QLeTXBcxWgnAERLM8vCOxjOOEAo6dfRILDf
+ LeO9h10wirIWDwv/JYCpujsz5ihmwXnxr5ZVnF6fjlXBTOrFpjkS7YaQllg/u4+ORwbI1DA
+ kxCRbtdDyAV9QhcaU6Ziis4Gf2mVE3FsnWg1aXZZw9CUh5bIjY2/t57C93Zp4lBmTZ7TttH
+ +ODOByIu1hjDFoMEOa2qA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6OOAtvjEG8Y=:39ln5prj9KTgnldiZQ01UN
+ 4E3DgmxckBBa2DYf+ZhSgu5LP8rnoU4Hn209TkYgCfE1JcUIQUVKc/WxtcufErSo5Cc7wuQ0C
+ HzlYNLD3iSHxe5f1tCMwO8ru5sj5J/nmxJyQgnRJBVi8lw1vkMQkGitCz+OLeOY+Xkm7LQHj+
+ V91Wxldp5CR+OCHKLSESyA5Nj6Rzkrh4nqMngtnppNsj2qvsL9xrnD2Iga7qBJaHX/dL+PStU
+ dtKwcK1elD3BzM2KXiqaHTMVVuFlCz1zUpsUv/cikpiuzJamzjci0ZWzeBdl6RiWJiHjH+lsM
+ hx3dh4hwNbG2rLrazrEwtbyddf5jJ/nAkstwqCtI0eLABTQw2U3fFUd8uTvw6hkJXQJy1RsHp
+ 6hfMFZo5TnxcX6XNMqRQ0wyGPO0xDafn/aDE0+zEY0JnYszQKfE85vev6MjWpsKXu8Vff+iY/
+ CU4S0ZY0Dqo0udPP37uRzHRDaPBBCezqthWPPmnYPOxpIKRoZpQeqOxjJVqshsVgo/eS/XOhz
+ sVaaRy6A9tzG6A/Fr3p6EEbmQlKG7/Coa6/JJX2HNLK7iCBoiqtV1Krye5+yFtr5g/qx44Vjn
+ JI0JvW5voZeBQ7Z3Wg6rkaQwb4KjEIq8PIcqU6rHlwMQcACLtK1cKXHsD4RtvxI1cbLwsNrem
+ gjSO8tyhRV/HJgNb/CJDwwLG3BcVxxs3gNsQHaCBW2oxsagTe4FiE7kCNQ96DGWhLp0m/g6HK
+ cPul8V6+pl7neS9mdT0KYU4hbbof7Giftobzl2I8G7gB/qL5AIBUhBfchAoLWZkBBgZyLdXyK
+ 7RbxwSNM9GBeW26VXpc/C6BmMmULaQ6gPa4JRNaynwd9MnuCKQ=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 7:26 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> Report NMIs as allowed when the vCPU is in L2 and L2 is being run with
-> Exit-on-NMI enabled, as NMIs are always unblocked from L1's perspective
-> in this case.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Jim Mattson <jmattson@google.com>
+Old versions of gcc (tested on gcc-4.8) produce a warning for
+correct code:
+
+sound/soc/soc-compress.c: In function 'soc_compr_open':
+sound/soc/soc-compress.c:75:28: error: 'component' is used uninitialized in this function [-Werror=uninitialized]
+  struct snd_soc_component *component, *save = NULL;
+
+Change the for_each_rtd_components() macro to ensure 'component'
+gets initialized to a value the compiler does not complain about.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/sound/soc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 907afbc652f2..69a82487fa9b 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1179,7 +1179,7 @@ struct snd_soc_pcm_runtime {
+ #define asoc_rtd_to_codec(rtd, n) (rtd)->dais[n + (rtd)->num_cpus]
+ 
+ #define for_each_rtd_components(rtd, i, component)			\
+-	for ((i) = 0;							\
++	for ((i) = 0, component = NULL;					\
+ 	     ((i) < rtd->num_components) && ((component) = rtd->components[i]);\
+ 	     (i)++)
+ #define for_each_rtd_cpu_dais(rtd, i, dai)				\
+-- 
+2.26.0
+
