@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAE31BC7C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4BD1BC8B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728801AbgD1S0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:26:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38262 "EHLO mail.kernel.org"
+        id S1730157AbgD1Seq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:34:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728779AbgD1S0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:26:37 -0400
+        id S1730119AbgD1Sej (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:34:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 034C42173E;
-        Tue, 28 Apr 2020 18:26:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1CDA22085B;
+        Tue, 28 Apr 2020 18:34:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098397;
-        bh=xh5jasGP+qlz4q1zVydQmxu/W7eq4W6XizMxpF9rPFE=;
+        s=default; t=1588098878;
+        bh=zL0FdfL38x/EJDuy8U1yKqo4ejxmtZ5FfNqZxUFoe5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a2oXbecdZaYvQOjfInc1oslhOej23y+WEMzPVEq+B3IRgxDwRNu3KaeDFNpfYmurn
-         M6MaRzpjLr+IVqDMN66nqUAtBbKOjxqSEUW4pud5R5Guxj1EloLa15fOUp3iOh1MNj
-         Xv+DFX5hqeERwsQPugeejkcQk3/hEex7fWjsQysc=
+        b=fUHm1CQ+bbSG1xnaK4alQTN5NficJC+YcDp+aOj73HWYOBBMjp8Q1Fx4MSOAo8gu2
+         owk62FajoKSFC0K/6NhRA3mRi5mz2e0zdRzm84bbpwLmemigmLUmSeOfMoUuJ4Y7u3
+         iq7P+jYu2KuTaEwbHgrqR42lVgj0l+/cbqUoKwWo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -37,12 +37,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 023/167] ipc/util.c: sysvipc_find_ipc() should increase position index
-Date:   Tue, 28 Apr 2020 20:23:19 +0200
-Message-Id: <20200428182228.105979287@linuxfoundation.org>
+Subject: [PATCH 5.4 026/168] ipc/util.c: sysvipc_find_ipc() should increase position index
+Date:   Tue, 28 Apr 2020 20:23:20 +0200
+Message-Id: <20200428182235.022176918@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -78,7 +78,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/ipc/util.c b/ipc/util.c
-index fe61df53775ac..2d70f25f64b83 100644
+index d126d156efc64..594871610d454 100644
 --- a/ipc/util.c
 +++ b/ipc/util.c
 @@ -764,13 +764,13 @@ static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
