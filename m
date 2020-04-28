@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F291D1BCB91
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555011BCBDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729770AbgD1S6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:58:02 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:64802 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729417AbgD1S56 (ORCPT
+        id S1729564AbgD1TAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:00:19 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:44940 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729263AbgD1S7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:57:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588100277; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=2Y6b36ayyOGCJzSMhx0uz2jc0TRSogQ1Q1n9GsQYtto=; b=ADGKuWeW2lqY+GeBoYYOmB9/RtXHBAOKOFHxz9ZfOWLXbQPE8S3LtcWda9mcipGg6CX2Z9fC
- bXynkLeZHgaWpFt8eo0X4UTEipX8u3RRedmbyqP1Ou7yb2C7mYhaeyeYLqI1f5NhMFEftJMk
- MBvs822Cbhu3FryA7EBUnlSWHvg=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea87cb3.7f844196e570-smtp-out-n03;
- Tue, 28 Apr 2020 18:57:55 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DE93CC44788; Tue, 28 Apr 2020 18:57:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BBCCAC4478F;
-        Tue, 28 Apr 2020 18:57:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BBCCAC4478F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v3 6/6] bus: mhi: core: Fix channel device name conflict
-To:     Jeffrey Hugo <jhugo@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1588003153-13139-1-git-send-email-jhugo@codeaurora.org>
- <1588003153-13139-7-git-send-email-jhugo@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <72519148-a677-bfdf-05fc-f14cc3e3bffd@codeaurora.org>
-Date:   Tue, 28 Apr 2020 11:57:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Tue, 28 Apr 2020 14:59:17 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SItOrH087842;
+        Tue, 28 Apr 2020 18:59:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=6QfPBxRy5q90uwHDhwkUZK3Fz9TlbCsqwMzjQP33fAQ=;
+ b=UuzYbl5loRqRRTDE3pzbcxlp8AoZsd2mvoJ5IB71FBYjz5pBLpDDzUZyWaQBT2lvObEw
+ LMNmexC/MBYW6oGpPjUFxJexF9G+g5eX+ApuvTGiHNObigDRKRCrtV7fNs8dwZqKc0e3
+ q7kiCkk8IKcNOoeNVRHkrcebK9bAG6Y2fFw7AFIynX7SnZ6CuSdhXJSQQ38BKV4b8qZr
+ gLczAyd5Du1ZZKoFTJzvjv8NQuBt2J6TEg7wVambUY7Nn5XdJm5yb7YiRUnsMd6DsW8o
+ QgFp9fYox5ki7zaFJ1j9l/ESOTzDx3cSpxxP3dZM2ykswoHJPbZwD+0Cwyw1uWC/oFqk yw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 30p2p077g6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 18:59:07 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03SIv13j173815;
+        Tue, 28 Apr 2020 18:59:06 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 30my0e1hmd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Apr 2020 18:59:06 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03SIx1x2005370;
+        Tue, 28 Apr 2020 18:59:01 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 28 Apr 2020 11:59:01 -0700
+Date:   Tue, 28 Apr 2020 21:58:54 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Oliver Graute <oliver.graute@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-fbdev@vger.kernel.org,
+        gregkh@linuxfoundation.org,
+        Oliver Graute <oliver.graute@kococonnector.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v1] staging: fbtft: fb_st7789v: enabled inversion
+Message-ID: <20200428185854.GK2014@kadam>
+References: <1586424250-25897-1-git-send-email-oliver.graute@gmail.com>
+ <20200409101517.GO2001@kadam>
+ <20200427082939.GB18436@portage>
 MIME-Version: 1.0
-In-Reply-To: <1588003153-13139-7-git-send-email-jhugo@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427082939.GB18436@portage>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=915 bulkscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004280150
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9605 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1015
+ bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 mlxlogscore=964 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004280149
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 27, 2020 at 10:29:39AM +0200, Oliver Graute wrote:
+> On 09/04/20, Dan Carpenter wrote:
+> > On Thu, Apr 09, 2020 at 11:24:05AM +0200, Oliver Graute wrote:
+> > > From: Oliver Graute <oliver.graute@kococonnector.com>
+> > > 
+> > > Enable inversion mode
+> > 
+> > What the heck is an inversion mode and why would you want it?
+> 
+> 
+> Should I name it:
+> 
+> Enable MIPI_DCS_ENTER_INVERT_MODE
+> 
 
+What I'm saying is the changelog should explain why would want to apply
+the patch.  What does the inversion mode do?  Is it inverting the color
+or flipping something upside down?
 
-On 4/27/20 8:59 AM, Jeffrey Hugo wrote:
-> When multiple instances of the same MHI product are present in a system,
-> we can see a splat from mhi_create_devices() - "sysfs: cannot create
-> duplicate filename".
-> 
-> This is because the device names assigned to the MHI channel devices are
-> non-unique.  They consist of the channel's name, and the channel's pipe
-> id.  For identical products, each instance is going to have the same
-> set of channel (both in name and pipe id).
-> 
-> To fix this, we prepend the device name of the parent device that the
-> MHI channels belong to.  Since different instances of the same product
-> should have unique device names, this makes the MHI channel devices for
-> each product also unique.
-> 
-> Additionally, remove the pipe id from the MHI channel device name.  This
-> is an internal detail to the MHI product that provides little value, and
-> imposes too much device specific internal details to userspace.  It is
-> expected that channel with a specific name (ie "SAHARA") has a specific
-> client, and it does not matter what pipe id that channel is enumerated on.
-> The pipe id is an internal detail between the MHI bus, and the hardware.
-> The client is not expected to make decisions based on the pipe id, and to
-> do so would require the client to have intimate knowledge of the hardware,
-> which is inappropiate as it may violate the layering provided by the MHI
-> bus.  The limitation of doing this is that each product may only have one
-> instance of a channel by a unique name.  This limitation is appropriate
-> given the usecases of MHI channels.
-> 
-> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
-> ---
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+Probably if I had a background in graphics I would know what "Enable
+inversion mode" means...  But three words is not a proper and complete
+commit message normally.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+regards,
+dan carpenter
+
