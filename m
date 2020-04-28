@@ -2,153 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BDE1BC69F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE9D1BC6B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 19:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728490AbgD1R3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 13:29:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728462AbgD1R3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 13:29:20 -0400
-Received: from localhost (mobile-166-175-187-210.mycingular.net [166.175.187.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728293AbgD1R3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 13:29:52 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39471 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728549AbgD1R3r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 13:29:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588094985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6ccMItdhwvpodcMZBPPRhaKCXgBbP3FMX3RumfGVPIw=;
+        b=SkXZ/OPnxc/voQ2FXhKiJnF+2V5IjONBiNXyn1XkeNPlXuNJnyZfyCV/z6Bg5mBRvWsURq
+        GihR66g20ubQn9NktMrjqfLdGZmfrhBvgIMC87PQOJ7n2XKfJRkYrcieAp8cVL8Pi3O68z
+        dT4WwoDLLAMbrDKKBfy96NN1amMEsBo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-42-ivygr76OMHiz6tvf_Rtt-Q-1; Tue, 28 Apr 2020 13:29:44 -0400
+X-MC-Unique: ivygr76OMHiz6tvf_Rtt-Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38D1C2085B;
-        Tue, 28 Apr 2020 17:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588094959;
-        bh=KVlfB6OONnLYWB6zTD4NzqP3muDeWV4yVUIppLNLLR4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=MxwYE2w2lKs5eDKpwbNX8Fs+0pJ2GijfEqIhf7nzZ8rNyGiqrQMqA93fspMHjHEQy
-         Gw+tm+13xO0WK8HHvcXokteJtLGtgYcWO7MhuD9yqRTerZnvx93JLJfSxb/V0s16tO
-         KFYuby1C0slOe4Y0mFMyK52Kj6NclZLuIfB8arWs=
-Date:   Tue, 28 Apr 2020 12:29:17 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc:     Shannon Nelson <snelson@pensando.io>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        netdev@vger.kernel.org, bjorn@helgaas.com,
-        linux-kernel-mentees@lists.linuxfoundation.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, skhan@linuxfoundation.org
-Subject: Re: [Linux-kernel-mentees] [PATCH v2 2/2] realtek/8139cp: Remove
- Legacy Power Management
-Message-ID: <20200428172917.GA177492@google.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87F7F800C78;
+        Tue, 28 Apr 2020 17:29:42 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-114-62.ams2.redhat.com [10.36.114.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1DFF95C1D4;
+        Tue, 28 Apr 2020 17:29:39 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org
+Subject: [PATCH v3 05/11] iio: light: cm32181: Clean up the probe function a bit
+Date:   Tue, 28 Apr 2020 19:29:17 +0200
+Message-Id: <20200428172923.567806-5-hdegoede@redhat.com>
+In-Reply-To: <20200428172923.567806-1-hdegoede@redhat.com>
+References: <20200428172923.567806-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428144314.24533-3-vaibhavgupta40@gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 08:13:14PM +0530, Vaibhav Gupta wrote:
-> Upgrade power management from legacy to generic using dev_pm_ops.
-> 
-> Add "__maybe_unused" attribute to resume() and susend() callbacks
-> definition to suppress compiler warnings.
-> 
-> Generic callback requires an argument of type "struct device*". Hence,
-> convert it to "struct net_device*" using "dev_get_drv_data()" to use
-> it in the callback.
-> 
-> Most of the cleaning part is to remove pci_save_state(),
-> pci_set_power_state(), etc power management function calls.
-> 
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-> ---
->  drivers/net/ethernet/realtek/8139cp.c | 25 +++++++------------------
->  1 file changed, 7 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/realtek/8139cp.c b/drivers/net/ethernet/realtek/8139cp.c
-> index 60d342f82fb3..4f2fb1393966 100644
-> --- a/drivers/net/ethernet/realtek/8139cp.c
-> +++ b/drivers/net/ethernet/realtek/8139cp.c
-> @@ -2054,10 +2054,9 @@ static void cp_remove_one (struct pci_dev *pdev)
->  	free_netdev(dev);
->  }
->  
-> -#ifdef CONFIG_PM
-> -static int cp_suspend (struct pci_dev *pdev, pm_message_t state)
-> +static int __maybe_unused cp_suspend(struct device *device)
->  {
-> -	struct net_device *dev = pci_get_drvdata(pdev);
-> +	struct net_device *dev = dev_get_drvdata(device);
->  	struct cp_private *cp = netdev_priv(dev);
->  	unsigned long flags;
->  
-> @@ -2075,16 +2074,12 @@ static int cp_suspend (struct pci_dev *pdev, pm_message_t state)
->  
->  	spin_unlock_irqrestore (&cp->lock, flags);
->  
-> -	pci_save_state(pdev);
-> -	pci_enable_wake(pdev, pci_choose_state(pdev, state), cp->wol_enabled);
+3 small cleanups to cm32181_probe():
 
-This one is a little more interesting because it relies on the driver
-state (cp->wol_enabled).  IIUC, the corresponding pci_enable_wake() in
-the generic path is in pci_prepare_to_sleep() (called from
-pci_pm_suspend_noirq()).
+1. Do not log an error when we fail to allocate memory (as a general
+rule drivers do not log errors for this as the kernel will already
+have complained loudly that it could not alloc the mem).
 
-But of course the generic path doesn't look at cp->wol_enabled.  It
-looks at device_may_wakeup(), but I don't know whether there's a
-connection between that and cp->wol_enabled.
+2. Remove the i2c_set_clientdata() call, we never use i2c_get_clientdata(=
+)
+or dev_get_drvdata() anywhere.
 
-> -	pci_set_power_state(pdev, pci_choose_state(pdev, state));
-> -
->  	return 0;
->  }
->  
-> -static int cp_resume (struct pci_dev *pdev)
-> +static int __maybe_unused cp_resume(struct device *device)
->  {
-> -	struct net_device *dev = pci_get_drvdata (pdev);
-> +	struct net_device *dev = dev_get_drvdata(device);
->  	struct cp_private *cp = netdev_priv(dev);
->  	unsigned long flags;
->  
-> @@ -2093,10 +2088,6 @@ static int cp_resume (struct pci_dev *pdev)
->  
->  	netif_device_attach (dev);
->  
-> -	pci_set_power_state(pdev, PCI_D0);
-> -	pci_restore_state(pdev);
-> -	pci_enable_wake(pdev, PCI_D0, 0);
-> -
->  	/* FIXME: sh*t may happen if the Rx ring buffer is depleted */
->  	cp_init_rings_index (cp);
->  	cp_init_hw (cp);
-> @@ -2111,7 +2102,6 @@ static int cp_resume (struct pci_dev *pdev)
->  
->  	return 0;
->  }
-> -#endif /* CONFIG_PM */
->  
->  static const struct pci_device_id cp_pci_tbl[] = {
->          { PCI_DEVICE(PCI_VENDOR_ID_REALTEK,     PCI_DEVICE_ID_REALTEK_8139), },
-> @@ -2120,15 +2110,14 @@ static const struct pci_device_id cp_pci_tbl[] = {
->  };
->  MODULE_DEVICE_TABLE(pci, cp_pci_tbl);
->  
-> +static SIMPLE_DEV_PM_OPS(cp_pm_ops, cp_suspend, cp_resume);
-> +
->  static struct pci_driver cp_driver = {
->  	.name         = DRV_NAME,
->  	.id_table     = cp_pci_tbl,
->  	.probe        =	cp_init_one,
->  	.remove       = cp_remove_one,
-> -#ifdef CONFIG_PM
-> -	.resume       = cp_resume,
-> -	.suspend      = cp_suspend,
-> -#endif
-> +	.driver.pm    = &cp_pm_ops,
->  };
->  
->  module_pci_driver(cp_driver);
-> -- 
-> 2.26.2
-> 
+3. Add a dev helper variable and use it in various places instead of
+&client->dev.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+Changes in v3:
+- This is a new patch in v3 of this patch-set
+---
+ drivers/iio/light/cm32181.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/iio/light/cm32181.c b/drivers/iio/light/cm32181.c
+index 065bc7a11f84..8fe49610fc26 100644
+--- a/drivers/iio/light/cm32181.c
++++ b/drivers/iio/light/cm32181.c
+@@ -326,41 +326,35 @@ static const struct iio_info cm32181_info =3D {
+=20
+ static int cm32181_probe(struct i2c_client *client)
+ {
++	struct device *dev =3D &client->dev;
+ 	struct cm32181_chip *cm32181;
+ 	struct iio_dev *indio_dev;
+ 	int ret;
+=20
+-	indio_dev =3D devm_iio_device_alloc(&client->dev, sizeof(*cm32181));
+-	if (!indio_dev) {
+-		dev_err(&client->dev, "devm_iio_device_alloc failed\n");
++	indio_dev =3D devm_iio_device_alloc(dev, sizeof(*cm32181));
++	if (!indio_dev)
+ 		return -ENOMEM;
+-	}
+=20
+ 	cm32181 =3D iio_priv(indio_dev);
+-	i2c_set_clientdata(client, indio_dev);
+ 	cm32181->client =3D client;
+=20
+ 	mutex_init(&cm32181->lock);
+-	indio_dev->dev.parent =3D &client->dev;
++	indio_dev->dev.parent =3D dev;
+ 	indio_dev->channels =3D cm32181_channels;
+ 	indio_dev->num_channels =3D ARRAY_SIZE(cm32181_channels);
+ 	indio_dev->info =3D &cm32181_info;
+-	indio_dev->name =3D dev_name(&client->dev);
++	indio_dev->name =3D dev_name(dev);
+ 	indio_dev->modes =3D INDIO_DIRECT_MODE;
+=20
+ 	ret =3D cm32181_reg_init(cm32181);
+ 	if (ret) {
+-		dev_err(&client->dev,
+-			"%s: register init failed\n",
+-			__func__);
++		dev_err(dev, "%s: register init failed\n", __func__);
+ 		return ret;
+ 	}
+=20
+-	ret =3D devm_iio_device_register(&client->dev, indio_dev);
++	ret =3D devm_iio_device_register(dev, indio_dev);
+ 	if (ret) {
+-		dev_err(&client->dev,
+-			"%s: regist device failed\n",
+-			__func__);
++		dev_err(dev, "%s: regist device failed\n", __func__);
+ 		return ret;
+ 	}
+=20
+--=20
+2.26.0
+
