@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F71A1BCB15
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 009FC1BCB21
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730627AbgD1SyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:54:10 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:53225 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730064AbgD1SyH (ORCPT
+        id S1730192AbgD1Syv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731504AbgD1Sys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:54:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588100046; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=0e4Q4kCLbMcxnWJZ9yvWd0DliCAIiPdcXMbvbzquWlY=; b=rVn+LZSxekQBZLbZGWUzo7+fII4zQYk/TKy1Io8DW7SnNhyZH9vGWB8Mfqo1zFleGMYjKKU3
- cnMJrZ1nMABbQGu0PZqHnL0VDJBhD417W+pOTYae81amBuCMVTKPpF+Bcpe2fWMRcpsA2/+A
- KDNukBp+r/xtIqX2GEfXCgkIMro=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea87bce.7fef5834e458-smtp-out-n04;
- Tue, 28 Apr 2020 18:54:06 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 21E0DC43637; Tue, 28 Apr 2020 18:54:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C94AC433D2;
-        Tue, 28 Apr 2020 18:54:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4C94AC433D2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v3 2/6] bus: mhi: core: Remove link_status() callback
-To:     Jeffrey Hugo <jhugo@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1588003153-13139-1-git-send-email-jhugo@codeaurora.org>
- <1588003153-13139-3-git-send-email-jhugo@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <b81dd0ff-9c85-ae7e-55db-0055c57df801@codeaurora.org>
-Date:   Tue, 28 Apr 2020 11:54:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Tue, 28 Apr 2020 14:54:48 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B3CC03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:54:47 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id e9so24371259iok.9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 11:54:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C18IvcKIUPmqhWrNgGQA3HNdNJlQg6Mgu7oxvCya4yA=;
+        b=L9xOTWTy9tw1EFj+TKRAx32qbXnmGcmWjC9j+1VFE2M+ENXZSCUF5FaAziHTxmF4H0
+         OyMKlGYZ2xM60lfspQhpw9mEylRaIPO32BPXwBYQSIz4taZP3Ui7derpShjsvTSAHNKo
+         hs32y1/Re/uF3tXYVScQ7RyDjnYTLYKpVWNJTtHWTkVaackmgtpv1sDnV1FxOh4uq2F9
+         4RDSvp0pwjqMIry4z+GsOylTQPvWIjwpv3hWcK8HvhFbAt5Xut9zXnDzTAAhtFKdSvV+
+         Ky0ttH1cEZ4Eqly2TWn+V2KcFl11plVaHKk+n7PifWmJegn4DSSsqLOLodv1QIOjOl1E
+         XE/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C18IvcKIUPmqhWrNgGQA3HNdNJlQg6Mgu7oxvCya4yA=;
+        b=fuxlNjwQHIFjC/OhQtPv4XPqdpZ90eiDXlz1hJ6MRhBuZ0fINyLD38eAE4ltosZtLD
+         uc6/qUUmoIOOepdpqykyRYaocu4mEUET/dxkaRxytSRJzwDpo5r8IwI2PgH93x2FL8en
+         PVVyvSjA3Hi60EO5iDeGpHCcsUauwJeFwoc0BGg/jHcZflXzwrCw/SgNgDZpmhyNvSFN
+         o7i4rbz0ml8LJixtDn97sqDezLNPyUcdLInJMmOIBNJID8negUVknpH89m/8Jh9uZXOA
+         K+XvyRYlUgDdAhP5w/BgXYwdQBuJ8lI3994JQ278Xn9orb1sdToD7wtQzwEwnjvsUQk5
+         c7qQ==
+X-Gm-Message-State: AGi0PuaWf0z1riQO4xHIQuG1tJFSTvyIOjbzhi2FxRnG1qrqYljnUAZp
+        ACqIvEcl5Wivvs2Mte4tF6MbmaT8TboeXaDoRPTErA==
+X-Google-Smtp-Source: APiQypKNUmcUlXwHdS61LpkDlzHCZSbCAeLZkmmYY+dHTh5R33ZwUxkPBkV2Jz+PT0FIsbrOye9DX+T7bTM7OrBnW3M=
+X-Received: by 2002:a5e:a610:: with SMTP id q16mr27415990ioi.75.1588100086060;
+ Tue, 28 Apr 2020 11:54:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1588003153-13139-3-git-send-email-jhugo@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200423022550.15113-1-sean.j.christopherson@intel.com> <20200423022550.15113-2-sean.j.christopherson@intel.com>
+In-Reply-To: <20200423022550.15113-2-sean.j.christopherson@intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 28 Apr 2020 11:54:35 -0700
+Message-ID: <CALMp9eRD9py=N9hDSon5GPzuiZw1Z+3xHv9umu1_qKzWczz0PA@mail.gmail.com>
+Subject: Re: [PATCH 01/13] KVM: nVMX: Preserve exception priority irrespective
+ of exiting behavior
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oliver Upton <oupton@google.com>,
+        Peter Shier <pshier@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/27/20 8:59 AM, Jeffrey Hugo wrote:
-> If the MHI core detects invalid data due to a PCI read, it calls into
-> the controller via link_status() to double check that the link is infact
-> down.  All in all, this is pretty pointless, and racy.  There are no good
-> reasons for this, and only drawbacks.
-> 
-> Its pointless because chances are, the controller is going to do the same
-> thing to determine if the link is down - attempt a PCI access and compare
-> the result.  This does not make the link status decision any smarter.
-> 
-> Its racy because its possible that the link was down at the time of the
-> MHI core access, but then recovered before the controller access.  In this
-> case, the controller will indicate the link is not down, and the MHI core
-> will precede to use a bad value as the MHI core does not attempt to retry
-> the access.
-> 
-> Retrying the access in the MHI core is a bad idea because again, it is
-> racy - what if the link is down again?  Furthermore, there may be some
-> higher level state associated with the link status, that is now invalid
-> because the link went down.
-> 
-> The only reason why the MHI core could see "invalid" data when doing a PCI
-> access, that is actually valid, is if the register actually contained the
-> PCI spec defined sentinel for an invalid access.  In this case, it is
-> arguable that the MHI implementation broken, and should be fixed, not
-> worked around.
-> 
-> Therefore, remove the link_status() callback before anyone attempts to
-> implement it.
-> 
-> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+On Wed, Apr 22, 2020 at 7:26 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> Short circuit vmx_check_nested_events() if an exception is pending and
+> needs to be injected into L2, priority between coincident events is not
+> dependent on exiting behavior.  This fixes a bug where a single-step #DB
+> that is not intercepted by L1 is incorrectly dropped due to servicing a
+> VMX Preemption Timer VM-Exit.
+>
+> Injected exceptions also need to be blocked if nested VM-Enter is
+> pending or an exception was already injected, otherwise injecting the
+> exception could overwrite an existing event injection from L1.
+> Technically, this scenario should be impossible, i.e. KVM shouldn't
+> inject its own exception during nested VM-Enter.  This will be addressed
+> in a future patch.
+>
+> Note, event priority between SMI, NMI and INTR is incorrect for L2, e.g.
+> SMI should take priority over VM-Exit on NMI/INTR, and NMI that is
+> injected into L2 should take priority over VM-Exit INTR.  This will also
+> be addressed in a future patch.
+>
+> Fixes: b6b8a1451fc4 ("KVM: nVMX: Rework interception of IRQs and NMIs")
+> Reported-by: Jim Mattson <jmattson@google.com>
+> Cc: Oliver Upton <oupton@google.com>
+> Cc: Peter Shier <pshier@google.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
