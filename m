@@ -2,106 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE871BBC71
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46B71BBC80
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 13:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgD1La7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 07:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726645AbgD1La6 (ORCPT
+        id S1726752AbgD1Ler (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 07:34:47 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:53384 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726450AbgD1Leq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 07:30:58 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FB9C03C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:30:58 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id 18so10540047pfx.6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 04:30:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=7mluZ8A4I9xD33tssLfMPlz8TFvmTBj7H//FiLCwMKQ=;
-        b=Uzz6rxf2M+0uA0gqifTALGQks4hWRLyGGLFFT02xEl0ZpUVciIXpgIq1gLWPdfAZ5N
-         5yy8L64gbdCHAqkLOXIH5OnuIedLJ0Zvhv4fpsYM5iQjhPkeQpNIfXRz1NH0+UW3dx8y
-         svQWYO809ihQXo7WeYTtvcjEPZYLHdfasSMCPzy4ko0SYKhoEDGD80hzwFffKVrcwfhC
-         14f6c1qi+Xuk4D31slGnBdu3nOYteQ3OBHuc/WX2rWNVW0jfDoIL2mKF9BW41MfZJseD
-         HUldHwkxqtRtPIdRaoZgIcOHdCxjGOTYUJvwvRnPM6eSB1zdDNrZ8UQuBshdv3hpvnsC
-         H1CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=7mluZ8A4I9xD33tssLfMPlz8TFvmTBj7H//FiLCwMKQ=;
-        b=jCLpRSwOuuF1qqL5dRu8DGemt289FEXFVWsi22ADGuPbAzMECVpo4ch45b7ae07Sbc
-         D3XVPpO99sJ/aqouybsAAkKGbpOUPOOtEmQd1lYATAndmxEwO+gmbJHBDOB5Jkaqxrc3
-         Gxn3sG/0xixyCiy5/BQuQvcneZ8IIpCs/goCffDerYscL+x9S1cPLfU2GyugCrGp2BLM
-         NrKxEARXqLhr8BZhnX3UocxxuRaMYV5criSEg8Mfi/p1cBH7/1PhQ3i2a8oZ7E+KOnxv
-         vHerrfsGjcHOpNVOagnkJVpqZt9nffxGm8cwnT36dJ/tmPVxVM3pkLKUgKOlE2VxxjMt
-         qGLA==
-X-Gm-Message-State: AGi0PuZib4348+BymoepwaSC4gHEJ5OW1uki/u3wsL8wEF1LbgucdwQ1
-        wo4oDyD4WvNbcerPvnkstL+c
-X-Google-Smtp-Source: APiQypL9Kkbnieket+vePrygfOB6d5NB7/ZBGTCpfca9KeSGImCWXC/JlcXcQDHRS2TXxne/Tg0jMw==
-X-Received: by 2002:aa7:94a3:: with SMTP id a3mr29670332pfl.101.1588073457999;
-        Tue, 28 Apr 2020 04:30:57 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:816:a859:6d8a:8338:74e:a3d1])
-        by smtp.gmail.com with ESMTPSA id y25sm13511710pgc.36.2020.04.28.04.30.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Apr 2020 04:30:57 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 17:00:49 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jason Yan <yanaijie@huawei.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH] pinctrl: remove unused 'pwm37_pins'
-Message-ID: <20200428113049.GA5259@Mani-XPS-13-9360>
-References: <20200417092112.12303-1-yanaijie@huawei.com>
- <CACRpkdb5Ozz_MKAUDoyOxdnu_NkN72vRu=ZY7j_Lb5uMAiS3SA@mail.gmail.com>
+        Tue, 28 Apr 2020 07:34:46 -0400
+Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 03SBXTin099181;
+        Tue, 28 Apr 2020 20:33:29 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
+ Tue, 28 Apr 2020 20:33:29 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 03SBXT6c099160
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Tue, 28 Apr 2020 20:33:29 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <20200424024239.63607-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <20200425004609.GE8982@jagdpanzerIV.localdomain>
+ <842ff40b-a232-6098-4333-996a3033b30a@i-love.sakura.ne.jp>
+ <20200427062117.GC486@jagdpanzerIV.localdomain>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <4dae86af-1d9a-f5a8-cff6-aa91ec038a79@i-love.sakura.ne.jp>
+Date:   Tue, 28 Apr 2020 20:33:21 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200427062117.GC486@jagdpanzerIV.localdomain>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdb5Ozz_MKAUDoyOxdnu_NkN72vRu=ZY7j_Lb5uMAiS3SA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 11:58:01AM +0200, Linus Walleij wrote:
-> On Fri, Apr 17, 2020 at 10:54 AM Jason Yan <yanaijie@huawei.com> wrote:
+On 2020/04/27 15:21, Sergey Senozhatsky wrote:
+>> KERN_NO_CONSOLES is for type of messages where "saved for later analysis" is
+>> important but "printed for immediate notification" is not important.
+>> In other words, KERN_NO_CONSOLES is NOT for dying messages where "printed for
+>> immediate notification" is important.
 > 
-> > Fix the following gcc warning:
-> >
-> > drivers/pinctrl/pinctrl-bm1880.c:263:27: warning: ‘pwm37_pins’ defined
-> > but not used [-Wunused-const-variable=]
-> >  static const unsigned int pwm37_pins[] = { 110 };
-> >                            ^~~~~~~~~~
-> >
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> 
-> I'm sceptic about this. I think PWM37 exists and just need to be
-> properly defined.
-> 
-> Mani will know the right solution to this.
-> 
+> per-console loglevel is a user configurable parameter.
+> KERN_NO_CONSOLES is a hard-coded policy.
 
-Sorry for missing this thread before. The original patch didn't land in my
-inbox.
+But given that whether to use KERN_NO_CONSOLES is configurable via e.g. sysctl,
+KERN_NO_CONSOLES will become a user configurable parameter. What's still wrong?
 
-Anyway the issue is, pwm37 is not added to BM1880_PINCTRL_GRP. So the proper
-fix would be to add it.
-
-Jason, will you be able to send a patch for adding it? Otherwise I'll do that.
-
-Thanks,
-Mani
-
-> Yours,
-> Linus Walleij
