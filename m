@@ -2,97 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F3C1BCDE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 22:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CE81BCE06
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgD1U7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 16:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726284AbgD1U7T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 16:59:19 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE98C03C1AC;
-        Tue, 28 Apr 2020 13:59:17 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k13so26379275wrw.7;
-        Tue, 28 Apr 2020 13:59:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bX7CVm4iuAAH0o5R/PeSEAhxOdLA5OW7S2c0nbeGVLE=;
-        b=CcbFZOAJoW4rbUWsHmcPHsHozHnEwTzRuvNz9U4/ZOJqq7utBjTfoH5CsO9JRnRHt1
-         rEOmqSxfk+jIxroxX33JiucrCr075YNkEjON0QU4uOizE+3r0sh7mK+F2vGrV/vvuCES
-         FoTSSq11Ih1J1UM/3FOwGhGdyN/8eNDDUDtnTZK+FqgFJNx0runA+pcXyRuGklSnO+in
-         2i2nwJvuI8SaO9G7/mdOt+botVhpqc+jS9rEw/s8L2LbetUXplsy7XXXvS/R1xdFDeBR
-         OmSuHD/0PUnOkqLSzTHbX7cV7oL6Ytf6rOtHCYxpJ9o7wW9ua3wlv+KCbk9fuPhqNFw7
-         jJGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bX7CVm4iuAAH0o5R/PeSEAhxOdLA5OW7S2c0nbeGVLE=;
-        b=hP9d+MXMDbG41mAFgRGYfhjFstOgdSE7iqhQ6CFyf/49ovrlOPCybO50AVyaWyskap
-         LqcjA9rdCiWjZj4Tx7gLqeFK1+qJ/F3Ik8CkigWLywroMJwIzdYOK5mX3b/gaKuFwrE3
-         kkDnXyQe2JJDWNN3DhaQ+couvNdCxJjQ5z7nrL3S2JoyxMzuWy5vR59rcf0QP7Q3PP2b
-         OLdYCa3+1OoyELfoonfOX8dWaVWfJLxi8FynfwVoDtcttYSBa5zbFjwSwSO9wZXAoENf
-         FjsnsRw4JJ8QdGeIfdujJpg2z7Lh+QO5RR1jfA8Ho2Fwv4HtBLOZ+nbyGvgpwTz9FZl8
-         Pgsw==
-X-Gm-Message-State: AGi0PubRRQDmk1/2xFIXEIz1HXWfE4WrZ/dkd5d6G5ZdJRDo1+Xx32LS
-        r9a5t3jDxauGO5/BQInAJ354ozfMBk8=
-X-Google-Smtp-Source: APiQypIzhc0ywXqo4vqGCXspSNPcU0dqF/kQw5+cHvAnEwpWwC0M9ay3Hcy+bbNoPgkYKIQt4vlnQg==
-X-Received: by 2002:adf:fcc6:: with SMTP id f6mr31635290wrs.388.1588107555779;
-        Tue, 28 Apr 2020 13:59:15 -0700 (PDT)
-Received: from [192.168.1.23] (afcs235.neoplus.adsl.tpnet.pl. [95.49.70.235])
-        by smtp.gmail.com with ESMTPSA id o18sm26588411wrp.23.2020.04.28.13.59.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Apr 2020 13:59:15 -0700 (PDT)
-Subject: Re: [PATCH v21 11/16] leds: lp55xx: Add multicolor framework support
- to lp55xx
-To:     Dan Murphy <dmurphy@ti.com>, pavel@ucw.cz
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200428160338.2793-1-dmurphy@ti.com>
- <20200428160338.2793-12-dmurphy@ti.com>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <5225c7bf-1e0d-5465-132e-54a3071cf518@gmail.com>
-Date:   Tue, 28 Apr 2020 22:59:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200428160338.2793-12-dmurphy@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1727777AbgD1VAb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Apr 2020 17:00:31 -0400
+Received: from mga04.intel.com ([192.55.52.120]:52856 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726885AbgD1U7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 16:59:48 -0400
+IronPort-SDR: +oi8F2jbF+Rn0XZkvLUX/fhZtGUKUmPLgSCP0jAITkSNzpG90qKXS2mdyFI2+k49efZWjcd8fD
+ sniB3Gn6i83Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 13:59:45 -0700
+IronPort-SDR: +Q8PjyVutkue3EcjsUEaFZlOavwMvvK+V+3ei0OrSYFlhTsGbOvqnexFpbIZZpuVkMvs1zSr4N
+ AbzGg5ky6H6g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
+   d="scan'208";a="246628978"
+Received: from orsmsx105.amr.corp.intel.com ([10.22.225.132])
+  by orsmga007.jf.intel.com with ESMTP; 28 Apr 2020 13:59:44 -0700
+Received: from orsmsx122.amr.corp.intel.com (10.22.225.227) by
+ ORSMSX105.amr.corp.intel.com (10.22.225.132) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 28 Apr 2020 13:59:44 -0700
+Received: from orsmsx115.amr.corp.intel.com ([169.254.4.83]) by
+ ORSMSX122.amr.corp.intel.com ([169.254.11.34]) with mapi id 14.03.0439.000;
+ Tue, 28 Apr 2020 13:59:44 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "Pan, Jacob jun" <jacob.jun.pan@intel.com>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        x86 <x86@kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
+Subject: RE: [PATCH 5/7] x86/mmu: Allocate/free PASID
+Thread-Topic: [PATCH 5/7] x86/mmu: Allocate/free PASID
+Thread-Index: AQHWBtMgRqn1rM/ldEi9589O6eqhDKiMHSGAgANeKoCAAAkqgP//jPrQgACRMQD//44esA==
+Date:   Tue, 28 Apr 2020 20:59:43 +0000
+Message-ID: <3908561D78D1C84285E8C5FCA982C28F7F608EE2@ORSMSX115.amr.corp.intel.com>
+References: <1585596788-193989-1-git-send-email-fenghua.yu@intel.com>
+        <1585596788-193989-6-git-send-email-fenghua.yu@intel.com>
+        <87pnbus3du.fsf@nanos.tec.linutronix.de>        <20200428112113.000033bd@intel.com>
+        <87tv13o306.fsf@nanos.tec.linutronix.de>
+        <3908561D78D1C84285E8C5FCA982C28F7F608BE9@ORSMSX115.amr.corp.intel.com>
+ <20200428134200.000010f7@intel.com>
+In-Reply-To: <20200428134200.000010f7@intel.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.22.254.140]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dan,
+>> So the driver needs to use flush/drain operations to make sure all
+>> the in-flight work has completed before releasing/re-using the PASID.
+>> 
+> Are you suggesting we should let driver also hold a reference of the
+> PASID?
 
-On 4/28/20 6:03 PM, Dan Murphy wrote:
-> Add multicolor framework support for the lp55xx family.
-> 
-> Acked-by: Pavel Machek <pavel@ucw.cz>
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->   drivers/leds/Kconfig                      |   1 +
->   drivers/leds/leds-lp5521.c                |  14 +-
->   drivers/leds/leds-lp5523.c                |  14 +-
->   drivers/leds/leds-lp5562.c                |  13 +-
->   drivers/leds/leds-lp55xx-common.c         | 178 +++++++++++++++++++---
->   drivers/leds/leds-lp55xx-common.h         |  14 +-
->   drivers/leds/leds-lp8501.c                |  14 +-
->   include/linux/platform_data/leds-lp55xx.h |   8 +
->   8 files changed, 209 insertions(+), 47 deletions(-)
-> 
+The sequence for bare metal is:
 
-For patches 10/16 - 16/16:
+	process is queuing requests to DSA
+	process exits (either deliberately, or crashes, or is killed)
+	kernel does exit processing
+	DSA driver is called as part of tear down of "mm"
+		issues drain/flush commands to ensure that all
+		queued operations on the PASID for this mm have
+		completed
+	PASID can be freed
 
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+There's a 1:1 map from "mm" to PASID ... so reference counting seems
+like overkill. Once the kernel is in the "exit" path, we know that no more
+work can be queued using this PASID.
 
--- 
-Best regards,
-Jacek Anaszewski
+-Tony
