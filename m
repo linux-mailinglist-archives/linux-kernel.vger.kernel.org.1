@@ -2,172 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0B61BB998
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 11:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBAA1BB9A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 11:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgD1JMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 05:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        id S1726857AbgD1JQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 05:16:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726462AbgD1JMk (ORCPT
+        by vger.kernel.org with ESMTP id S1726552AbgD1JQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 05:12:40 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5E2C03C1A9;
-        Tue, 28 Apr 2020 02:12:39 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s10so23763208wrr.0;
-        Tue, 28 Apr 2020 02:12:39 -0700 (PDT)
+        Tue, 28 Apr 2020 05:16:55 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6CFC03C1A9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 02:16:54 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id t14so23718481wrw.12
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 02:16:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1oDTbvwHgrD9ZLQPoK5BGfLkEAfVqa/XbZPM5vd3Q8M=;
-        b=mKIrYxCLJGvLcaKAR7v0QOQ0y9M4srcwbTFsCmuZvgrQyJRkaXvANAdmTtNkD0ku7j
-         y9rPVeA2X8Pd/j7SZSeTZmeATo47du3gf1PYTB/HhXxfBMBxkVtvKOU2GhTTsea7vSJF
-         HyQ0zXX4gyATDmoUnH/MThJP6jkNE8v8XsD4C2WAPoBmZK0dIKLr4e1i2BFjl+u/eq7X
-         W0CtS7RKxmFIxFIYpe72A78Ifx6PsyPWf0CKvt8lbVjYgUp0vA7DSl+AaY5gNlJ19jI/
-         K0jGjDsCeQulIS+VF9S8xiPREnmqif60Uk/hJYfK3nlG6qK4ghrcLlemsKahtKN3VmqI
-         PaRQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kol2KnUcVyH0F7Ix7H0VZWG4kz6cZK2B84uPA/+NLmw=;
+        b=b8TK5lRu2zdjHITUnvvgSNq0/t93vnrQav69WlFUmdAImx/QVnBdaMJhSSstXj/vmp
+         c4vsNZG6H64f48aO3ug9CSBci33QqvxxEmV/nUCvNBeJsf1O9+Jze6a/ky7hUtRzM94+
+         fBfpv3prrsqZsGudTQmxieV6v1qUSaQqYxufroh+dxH0D/UgWt6Xl7gmr5K7qcRX91VB
+         NR2iqxHu0A6YnnsZPfeTPUyvKsVhrPfYzgIRmB0L7BIxJbke+HopvQbMi84lOyKf0WiI
+         B0cg6zstCm5gE4ikZjVuET9oxlAqknEE4s2x+LI1ua0BBG1G+4gp87qCSWDK9zYghAVL
+         S46A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1oDTbvwHgrD9ZLQPoK5BGfLkEAfVqa/XbZPM5vd3Q8M=;
-        b=FX3vVA/rlj1m5t5krIcsE3nKkCC78cw74H468RhlQXVDR1R14PzxKVAFfgeDIZFQFs
-         izIRb+0FkX8R78aCUXY/sSxx0278iSQnf8ao3oxP1X7KLQplU7DNVLhkqnJf+jEXjf9i
-         RyUfE+U8vIfqNDqlyN5Ns5N72cVrWDz5+X1etibg70Oz8JRnA4ZxtqkXRjSgYLkkv2IL
-         SdY8ndXgRbED6OfBfUoLfFE9ESfIqJ9AuwZXWEZ1XiB/yKK19tVniq5RJEygMvOPUGnn
-         J+6ymQvMXksecDfq8ewRQ/jNJBJJEAt8Dc1UHLrg6qw2dHN8q2iY1qR8BU2uham1WS5m
-         FyiA==
-X-Gm-Message-State: AGi0PubVilxOaEbFXh8p86eNsDnO2Rvb7i6wcVO1trcO+QJyCX5HuZUv
-        C2su12b5lcan1JFkK3iVnL4=
-X-Google-Smtp-Source: APiQypJAWt32dlGrt2LtTHrQxFplAS8Y/IJS/ek3mWd5g/SljrZNxJd4yzL7aRQge7JgtKbLer+nmg==
-X-Received: by 2002:a5d:498d:: with SMTP id r13mr33376413wrq.374.1588065158164;
-        Tue, 28 Apr 2020 02:12:38 -0700 (PDT)
-Received: from ubuntu-G3 (ip5f5bfcc8.dynamic.kabel-deutschland.de. [95.91.252.200])
-        by smtp.googlemail.com with ESMTPSA id j17sm27352474wrb.46.2020.04.28.02.12.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 Apr 2020 02:12:37 -0700 (PDT)
-Message-ID: <d75ec0cd8bdc4da05a11d57bdc33399a8ebbc3d7.camel@gmail.com>
-Subject: Re: [PATCH v2 5/5] scsi: ufs: UFS Host Performance Booster(HPB)
- driver
-From:   Bean Huo <huobean@gmail.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Avri Altman <Avri.Altman@wdc.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>
-Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Tue, 28 Apr 2020 11:12:33 +0200
-In-Reply-To: <b2584ba8-3542-1aae-5802-e59d218e1553@acm.org>
-References: <20200416203126.1210-1-beanhuo@micron.com>
-         <20200416203126.1210-6-beanhuo@micron.com>
-         <8921adc3-0c1e-eb16-4a22-1a2a583fc8b3@acm.org>
-         <SN6PR04MB4640851C163648C54EB274C5FCD00@SN6PR04MB4640.namprd04.prod.outlook.com>
-         <SN6PR04MB4640ABB2BB5D2CE5AA2C3778FCD10@SN6PR04MB4640.namprd04.prod.outlook.com>
-         <12e8ad61-caa4-3d28-c1d7-febe99a488fb@acm.org>
-         <SN6PR04MB4640A33BBE0CD58107D7FC69FCAF0@SN6PR04MB4640.namprd04.prod.outlook.com>
-         <b2584ba8-3542-1aae-5802-e59d218e1553@acm.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kol2KnUcVyH0F7Ix7H0VZWG4kz6cZK2B84uPA/+NLmw=;
+        b=ORLAfY5owI9O7Fxzrwt2IbBXguxWG8CqoU2EA7nHlWTcVgNEZfhv1znHzC4s23MG/0
+         LmtMLm9RxRMhd+w5EFYAziNwgpGpKQP7kv6I5rtPB31osXBmLp8CDtCfZIErGbxRMCRE
+         wLrLxhTJaK0EobiKzAbqH8dLOT0K2BWloUO4Gy4YKS1rYz/Yg040GlVTD/JteTj+cJYC
+         Vnv9zDNQQE4WAnUd74yhoi5w6GSVCck0+sBkSG8JBwgwx84M5mwAGAYSIBCT+b58m37m
+         BhYX3Wv5a3Y5V749og/vX4d33T9i6vWNPcwVO+WxDL4YcKGE8nDvA41fmNeyJRl3F7DO
+         z+1g==
+X-Gm-Message-State: AGi0PuZUcphptAcgIz6x6ULtgUKHbh2pHhl/YqlxxY2diydKp1Q1X6vc
+        gxGkxcks2EhzhPqDYHysxoxoOQ==
+X-Google-Smtp-Source: APiQypI1NaFanMBSA/9TXktEMwg92qBduRtE849bebURjum+Ps+JfDCHR5BF5kVxyiG6aXCkG+KrrQ==
+X-Received: by 2002:a5d:4843:: with SMTP id n3mr31480285wrs.7.1588065412820;
+        Tue, 28 Apr 2020 02:16:52 -0700 (PDT)
+Received: from localhost.localdomain ([87.120.218.65])
+        by smtp.googlemail.com with ESMTPSA id k14sm25005543wrp.53.2020.04.28.02.16.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Apr 2020 02:16:52 -0700 (PDT)
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+To:     linux-pm@vger.kernel.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org
+Cc:     akashast@codeaurora.org, linux-kernel@vger.kernel.org,
+        georgi.djakov@linaro.org
+Subject: [PATCH] interconnect: Add helpers for enabling/disabling a path
+Date:   Tue, 28 Apr 2020 12:16:50 +0300
+Message-Id: <20200428091650.27669-1-georgi.djakov@linaro.org>
+X-Mailer: git-send-email 2.26.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-04-27 at 20:36 -0700, Bart Van Assche wrote:
-> On 2020-04-26 23:13, Avri Altman wrote:
-> > > On 2020-04-25 01:59, Avri Altman wrote:
-> > 
-> > HPB support is comprised of 4 main duties:
-> > 1) Read the device HPB configuration
-> > 2) Attend the device's recommendations that are embedded in the
-> > sense buffer
-> > 3) L2P cache management - This entails sending 2 new scsi commands
-> > (opcodes were taken from the vendor pool):
-> > 	a. HPB-READ-BUFFER - read L2P physical addresses for a
-> > subregion
-> > 	b. HPB-WRITE-BUFFER - notify the device that a region is
-> > inactive (in host-managed mode)
-> > 4) Use HPB-READ: a 3rd new scsi command (again - uses the vendor
-> > pool) to perform read operation instead of READ10.  HPB-READ
-> > carries both the logical and the physical addresses.
-> > 
-> > I will let Bean defend the Samsung approach of using a single LLD
-> > to attend all 4 duties.
-> > 
-> > Another approach might be to split those duties between 2 modules:
-> >  - A LLD that will perform the first 2 - those can be done only
-> > using ufs privet stuff, and 
-> >  - another module in scsi mid-layer that will be responsible of L2P
-> > cache management,
-> >   and HPB-READ command setup.
-> > A framework to host the scsi mid-layer module can be the scsi
-> > device handler.
-> > 
-> > The scsi-device-handler infrastructure was added to the kernel
-> > mainly to facilitate multiple paths for storage devices.
-> > The HPB framework, although far from the original intention of the
-> > authors, might as well fit in.
-> > In that sense, using READs and HPB_READs intermittently, can be
-> > perceived as a multi-path.
-> > 
-> > Scsi device handlers are also attached to a specific scsi_device
-> > (lun).
-> > This can serve as the glue linking between the ufs LLD and the
-> > device handler which resides in the scsi level.
-> > 
-> > Device handlers comes with a rich and handy set of APIs & ops,
-> > which we can use to support HPB.
-> > Specifically we can use it to attach & activate the device handler,
-> > only after the ufs driver verified that HPB is supported by both
-> > the platform and the device. 
-> > 
-> > The 2 modules can communicate using the handler_data opaque
-> > pointer,
-> > and the handler’s set_params op-mode: which is an open protocol
-> > essentially,
-> > and we can use it to pass the sense buffer in its full or just a
-> > parsed version.
-> > 
-> > Being a scsi mid-layer module, it will not break anything while
-> > sending
-> > HPB-READ-BUFFER and HPB-WRITE-BUFFER as part of the L2P cache
-> > management duties.
-> > 
-> > Last but not least, the device handler is already hooked in the
-> > scsi command setup flow - scsi_setup_fs_cmnd(),
-> > So we get the hook into HPB-READ prep_fn for free.   
-> >  
-> > Later on, we might want to export the L2P cache management logic to
-> > user-space.
-> > Locating the L2P cache management in scsi mid-layer will enable us
-> > to do so, using the scsi-netlink or some other means.
-> 
-> 
-> - Will preparing a SCSI command involve executing a SCSI command? If
-> so,
->   how will it be prevented that execution of that internally
-> submitted
->   SCSI command triggers a deadlock due to tag exhaustion?
-> 
-> Thanks,
-> 
+There is a repeated pattern in multiple drivers where they want to switch
+the bandwidth between zero and some other value. This is happening often
+in the suspend/resume callbacks. Let's add helper functions to enable and
+disable the path, so that callers don't have to take care of remembering
+the bandwidth values and handle this in the framework instead.
 
-No, as for the HPB READ, it will replace SCSI READ in SCSI request
-executing path in case L2P entry hit in HPB cache. so it still uses the
-previously assigned tag.
+With this patch the users can call icc_disable() and icc_enable() to lower
+their bandwidth request to zero and then restore it back to it's previous
+value.
 
-As for the HPB BUFFER READ and HPB BUFFER WRITE, should beg for a new
-tag from hba->cmd_queue.
+Suggested-by: Evan Green <evgreen@chromium.org>
+Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+---
+ drivers/interconnect/core.c     | 50 ++++++++++++++++++++++++++++++++-
+ drivers/interconnect/internal.h |  2 ++
+ include/linux/interconnect.h    | 12 ++++++++
+ 3 files changed, 63 insertions(+), 1 deletion(-)
 
-Bean
-
+diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
+index 2c6515e3ecf1..6af68e506ac2 100644
+--- a/drivers/interconnect/core.c
++++ b/drivers/interconnect/core.c
+@@ -158,6 +158,7 @@ static struct icc_path *path_init(struct device *dev, struct icc_node *dst,
+ 		hlist_add_head(&path->reqs[i].req_node, &node->req_list);
+ 		path->reqs[i].node = node;
+ 		path->reqs[i].dev = dev;
++		path->reqs[i].enabled = true;
+ 		/* reference to previous node was saved during path traversal */
+ 		node = node->reverse;
+ 	}
+@@ -249,9 +250,12 @@ static int aggregate_requests(struct icc_node *node)
+ 	if (p->pre_aggregate)
+ 		p->pre_aggregate(node);
+ 
+-	hlist_for_each_entry(r, &node->req_list, req_node)
++	hlist_for_each_entry(r, &node->req_list, req_node) {
++		if (!r->enabled)
++			continue;
+ 		p->aggregate(node, r->tag, r->avg_bw, r->peak_bw,
+ 			     &node->avg_bw, &node->peak_bw);
++	}
+ 
+ 	return 0;
+ }
+@@ -546,6 +550,50 @@ int icc_set_bw(struct icc_path *path, u32 avg_bw, u32 peak_bw)
+ }
+ EXPORT_SYMBOL_GPL(icc_set_bw);
+ 
++int icc_disable(struct icc_path *path)
++{
++	int i;
++
++	if (!path)
++		return 0;
++
++	if (WARN_ON(IS_ERR(path) || !path->num_nodes))
++		return -EINVAL;
++
++	mutex_lock(&icc_lock);
++
++	for (i = 0; i < path->num_nodes; i++)
++		path->reqs[i].enabled = false;
++
++	mutex_unlock(&icc_lock);
++
++	return icc_set_bw(path, path->reqs[0].avg_bw,
++			  path->reqs[0].peak_bw);
++}
++EXPORT_SYMBOL_GPL(icc_disable);
++
++int icc_enable(struct icc_path *path)
++{
++	int i;
++
++	if (!path)
++		return 0;
++
++	if (WARN_ON(IS_ERR(path) || !path->num_nodes))
++		return -EINVAL;
++
++	mutex_lock(&icc_lock);
++
++	for (i = 0; i < path->num_nodes; i++)
++		path->reqs[i].enabled = true;
++
++	mutex_unlock(&icc_lock);
++
++	return icc_set_bw(path, path->reqs[0].avg_bw,
++			  path->reqs[0].peak_bw);
++}
++EXPORT_SYMBOL_GPL(icc_enable);
++
+ /**
+  * icc_get() - return a handle for path between two endpoints
+  * @dev: the device requesting the path
+diff --git a/drivers/interconnect/internal.h b/drivers/interconnect/internal.h
+index bf18cb7239df..f5f82a5c939e 100644
+--- a/drivers/interconnect/internal.h
++++ b/drivers/interconnect/internal.h
+@@ -14,6 +14,7 @@
+  * @req_node: entry in list of requests for the particular @node
+  * @node: the interconnect node to which this constraint applies
+  * @dev: reference to the device that sets the constraints
++ * @enabled: indicates whether the path with this request is enabled
+  * @tag: path tag (optional)
+  * @avg_bw: an integer describing the average bandwidth in kBps
+  * @peak_bw: an integer describing the peak bandwidth in kBps
+@@ -22,6 +23,7 @@ struct icc_req {
+ 	struct hlist_node req_node;
+ 	struct icc_node *node;
+ 	struct device *dev;
++	bool enabled;
+ 	u32 tag;
+ 	u32 avg_bw;
+ 	u32 peak_bw;
+diff --git a/include/linux/interconnect.h b/include/linux/interconnect.h
+index d70a914cba11..21dd232d81ff 100644
+--- a/include/linux/interconnect.h
++++ b/include/linux/interconnect.h
+@@ -29,6 +29,8 @@ struct icc_path *icc_get(struct device *dev, const int src_id,
+ 			 const int dst_id);
+ struct icc_path *of_icc_get(struct device *dev, const char *name);
+ void icc_put(struct icc_path *path);
++int icc_disable(struct icc_path *path);
++int icc_enable(struct icc_path *path);
+ int icc_set_bw(struct icc_path *path, u32 avg_bw, u32 peak_bw);
+ void icc_set_tag(struct icc_path *path, u32 tag);
+ 
+@@ -50,6 +52,16 @@ static inline void icc_put(struct icc_path *path)
+ {
+ }
+ 
++static inline int icc_disable(struct icc_path *path)
++{
++	return 0;
++}
++
++static inline int icc_enable(struct icc_path *path)
++{
++	return 0;
++}
++
+ static inline int icc_set_bw(struct icc_path *path, u32 avg_bw, u32 peak_bw)
+ {
+ 	return 0;
