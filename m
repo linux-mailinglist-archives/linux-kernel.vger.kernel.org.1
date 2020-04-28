@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133D41BCAAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDDB1BC93A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730749AbgD1Svi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:51:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55112 "EHLO mail.kernel.org"
+        id S1730294AbgD1Sju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:39:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729218AbgD1ShL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:37:11 -0400
+        id S1730415AbgD1Sjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:39:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85BCD20B80;
-        Tue, 28 Apr 2020 18:37:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D903620730;
+        Tue, 28 Apr 2020 18:39:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099031;
-        bh=aA6z5Im+fckIqDKy07hv31qtqVKsbkx6P9lhSktTShc=;
+        s=default; t=1588099185;
+        bh=jTkbz6y8N+xHaIkPwxT3Swbov8LWwYRkjGnhFasGZuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fY/tYTIGwKMRVKzVKsa6tAVFwToeUFGVci7Hl+HVDZl8xgT+1OS6GMpoJPmFWkCTR
-         4dAdCB/tI4T9Aq+c/O5UxcF+u2euua4uTAib4ANOKE5CnehsR++5Fs24nzHP91PYkn
-         0Z3rgixrh5PyRnNOfyJyyIFr3wVuhyOB0xmU4kz8=
+        b=HGRwaFgchut9kj4Lz80PVo6Fl6q6nEEegUxKQlVkKa9Gshl9u/Ulz3FVBZzEztXxi
+         D17G8xpBAZhafdxf4tzAzwlr99DZuxhr6GagpYR2LegsSoTBufu90W9mRGB8+aReq9
+         ELM0XdGVlivnBOTLVUA+5LgXdenHzxa+wpgsOA7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH 5.6 146/167] UAS: no use logging any details in case of ENODEV
+        stable@vger.kernel.org,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.19 110/131] iwlwifi: mvm: beacon statistics shouldnt go backwards
 Date:   Tue, 28 Apr 2020 20:25:22 +0200
-Message-Id: <20200428182244.058058234@linuxfoundation.org>
+Message-Id: <20200428182239.053291784@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,33 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Mordechay Goodstein <mordechay.goodstein@intel.com>
 
-commit 5963dec98dc52d52476390485f07a29c30c6a582 upstream.
+commit 290d5e4951832e39d10f4184610dbf09038f8483 upstream.
 
-Once a device is gone, the internal state does not matter anymore.
-There is no need to spam the logs.
+We reset statistics also in case that we didn't reassoc so in
+this cases keep last beacon counter.
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Cc: stable <stable@vger.kernel.org>
-Fixes: 326349f824619 ("uas: add dead request list")
-Link: https://lore.kernel.org/r/20200415141750.811-1-oneukum@suse.com
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20200417100405.1f9142751fbc.Ifbfd0f928a0a761110b8f4f2ca5483a61fb21131@changeid
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/storage/uas.c |    3 +++
- 1 file changed, 3 insertions(+)
 
---- a/drivers/usb/storage/uas.c
-+++ b/drivers/usb/storage/uas.c
-@@ -190,6 +190,9 @@ static void uas_log_cmd_state(struct scs
- 	struct uas_cmd_info *ci = (void *)&cmnd->SCp;
- 	struct uas_cmd_info *cmdinfo = (void *)&cmnd->SCp;
+---
+ drivers/net/wireless/intel/iwlwifi/mvm/rx.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
+@@ -587,6 +587,7 @@ void iwl_mvm_rx_rx_mpdu(struct iwl_mvm *
  
-+	if (status == -ENODEV) /* too late */
-+		return;
+ struct iwl_mvm_stat_data {
+ 	struct iwl_mvm *mvm;
++	__le32 flags;
+ 	__le32 mac_id;
+ 	u8 beacon_filter_average_energy;
+ 	void *general;
+@@ -630,6 +631,13 @@ static void iwl_mvm_stat_iterator(void *
+ 		}
+ 	}
+ 
++	/* make sure that beacon statistics don't go backwards with TCM
++	 * request to clear statistics
++	 */
++	if (le32_to_cpu(data->flags) & IWL_STATISTICS_REPLY_FLG_CLEAR)
++		mvmvif->beacon_stats.accu_num_beacons +=
++			mvmvif->beacon_stats.num_beacons;
 +
- 	scmd_printk(KERN_INFO, cmnd,
- 		    "%s %d uas-tag %d inflight:%s%s%s%s%s%s%s%s%s%s%s%s ",
- 		    prefix, status, cmdinfo->uas_tag,
+ 	if (mvmvif->id != id)
+ 		return;
+ 
+@@ -790,6 +798,7 @@ void iwl_mvm_handle_rx_statistics(struct
+ 
+ 		flags = stats->flag;
+ 	}
++	data.flags = flags;
+ 
+ 	iwl_mvm_rx_stats_check_trigger(mvm, pkt);
+ 
 
 
