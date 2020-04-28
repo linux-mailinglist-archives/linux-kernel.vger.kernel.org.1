@@ -2,137 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428EF1BB240
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 01:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1881BB273
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 02:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbgD0X5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 19:57:14 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:54376 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726355AbgD0X5O (ORCPT
+        id S1726350AbgD1ABr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 20:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726279AbgD1ABq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 19:57:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588031832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TX3l/PsIBBKAEBFp9II7hFHKmsTrVNvxgpKGxnEg3zs=;
-        b=LlkDOFKKSF9tfS0L3MVHmnU6/9z8orRFb6HM3Zac80QGiZl21VEBMp+2Rpy+0pb03+tRkY
-        wlGTMAsvWw0RSh9SkZa13wnUuvrAYdzlnIUuXEooosnZ1qfJ/Q5aklzKtqDrK4A9wHCwLm
-        FJedj46nVj9cs0b7mr62Qqou6DLFxu0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-V-bSCE4gMoyiC7kkAoz9Zg-1; Mon, 27 Apr 2020 19:57:08 -0400
-X-MC-Unique: V-bSCE4gMoyiC7kkAoz9Zg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36668107ACCA;
-        Mon, 27 Apr 2020 23:57:07 +0000 (UTC)
-Received: from localhost.localdomain.com (vpn2-54-127.bne.redhat.com [10.64.54.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9B9E960300;
-        Mon, 27 Apr 2020 23:57:04 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        steve.capper@arm.com, catalin.marinas@arm.com, broonie@kernel.org,
-        will@kernel.org, shan.gavin@gmail.com
-Subject: [PATCH v2] arm64/kernel: Fix range on invalidating dcache for boot page tables
-Date:   Tue, 28 Apr 2020 09:57:00 +1000
-Message-Id: <20200427235700.112220-1-gshan@redhat.com>
+        Mon, 27 Apr 2020 20:01:46 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B705C03C1AC
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 17:01:45 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id w3so7622084plz.5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 17:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8nzlTHfR7hFdD1oizXMfz09Kcd8VyPhh+IZvp5hf/Cw=;
+        b=GEmbiSmZ+SKuKCwgVlQekXj/+yFNzE1P+atI4JedZgi2WiZmpqEGCN3xp3WGKlHhPu
+         BFIRnFlFlehyGzA83Wczy6rwlBjJ5t6ZrjCxQ4f+Iz7PziWvQq6EB0BMpEkAfWy1MdtE
+         ekvEaAoK1rQT7XQ2SWd3ZhjQnCNINewMLF199NrbBwsFuiprwGNqlJhSuO2wQQPia4ib
+         Pv7SL0pelZ/hMVe1JsWf4o59FIH8iqnQx+T+CgGJ7SDny5ix5sYSzihMDuGt6EoQNPn5
+         sy3nK1hG5xkLqTtRaIh8hm99PthwafIIgn2iSk4ty0Dpfrit+RfhAw4T1Zn4MURQFVhb
+         WdxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8nzlTHfR7hFdD1oizXMfz09Kcd8VyPhh+IZvp5hf/Cw=;
+        b=awqX7QdTuxoaK/GMa0bTx1WsRMuJY27/ImwTbAvBDsrtjiDqsjA1ZkjC1GUAGFxQbL
+         4Q421Dxz3SXxre/ufa/6qCLU6Op3dCz4Qz7ARy9vsAsiwJfF5EgVEYwHLZlCPpDWAMtJ
+         pZB+R1SJfeIG0ihAikufvj1l4kWW4zWjRB8k3xb3rfhHKS4wne6ncdqduc2z7F+0aefD
+         sxmbSQZm/kTJZc6OT3EBMEJMcfJf8ezCH6+mMnUxsh5epqE0UnzLGw3UXJ8dTiQDwOgo
+         K9NV/5+MnGHqBDwRw4JmbarEcSSS4S5I5GUpLGRIRLSFrZSzJFEfnEzadoSQ4A+Bhcgb
+         06zw==
+X-Gm-Message-State: AGi0PuY/GA4bYBGY5tAiJJre7aj1iJbSBMCdEH1I0E1e5fIUZO0amsYr
+        9ZK6++7RYP0O/1ahh2sxj4AkKA==
+X-Google-Smtp-Source: APiQypIonDTh3jzFIn6vMcUkguT9HYXi2h6aOEXE5aT9m0hdaIn7sOZOXacCYA37T7NFEN0tHe3hjg==
+X-Received: by 2002:a17:902:b187:: with SMTP id s7mr27031025plr.0.1588032104765;
+        Mon, 27 Apr 2020 17:01:44 -0700 (PDT)
+Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id cp22sm363850pjb.28.2020.04.27.17.01.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Apr 2020 17:01:44 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rishabh Bhatnagar <rishabhb@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH 1/2] dt-bindings: remoteproc: qcom: pas: Add SM8250 remoteprocs
+Date:   Mon, 27 Apr 2020 17:01:09 -0700
+Message-Id: <20200428000110.2958704-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prior to commit 8eb7e28d4c642c31 ("arm64/mm: move runtime pgds to
-rodata"), idmap_pgd_dir, tramp_pg_dir, reserved_ttbr0, swapper_pg_dir,
-and init_pg_dir were contiguous at the end of the kernel image. The
-maintenance at the end of __create_page_tables assumed these were
-contiguous, and affected everything from the start of idmap_pg_dir
-to the end of init_pg_dir.
+Add the SM8250 audio, compute and sensor remoteprocs to the PAS DT
+binding.
 
-That commit moved all but init_pg_dir into the .rodata section, with
-other data placed between idmap_pg_dir and init_pg_dir, but did not
-update the maintenance. Hence the maintenance is performed on much
-more data than necessary (but as the bootloader previously made this
-clean to the PoC there is no functional problem).
-
-As we only alter idmap_pg_dir, and init_pg_dir, we only need to perform
-maintenance for these. As the other dirs are in .rodata, the bootloader
-will have initialised them as expected and cleaned them to the PoC. The
-kernel will initialize them as necessary after enabling the MMU.
-
-This patch reworks the maintenance to only cover the idmap_pg_dir and
-init_pg_dir to avoid this unnecessary work.
-
-Signed-off-by: Gavin Shan <gshan@redhat.com>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
-v2: Include the suggested commit log    (Mark Rutland)
-    Improved comments and code          (Mark Rutland)
----
- arch/arm64/include/asm/pgtable.h |  1 +
- arch/arm64/kernel/head.S         | 12 +++++++++---
- arch/arm64/kernel/vmlinux.lds.S  |  1 +
- 3 files changed, 11 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/remoteproc/qcom,adsp.txt         | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pg=
-table.h
-index 8c20e2bd6287..5caff09c6a3a 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -457,6 +457,7 @@ extern pgd_t init_pg_dir[PTRS_PER_PGD];
- extern pgd_t init_pg_end[];
- extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
- extern pgd_t idmap_pg_dir[PTRS_PER_PGD];
-+extern pgd_t idmap_pg_end[];
- extern pgd_t tramp_pg_dir[PTRS_PER_PGD];
-=20
- extern void set_swapper_pgd(pgd_t *pgdp, pgd_t pgd);
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index 57a91032b4c2..32f5ecbec0ea 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -394,13 +394,19 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
-=20
- 	/*
- 	 * Since the page tables have been populated with non-cacheable
--	 * accesses (MMU disabled), invalidate the idmap and swapper page
--	 * tables again to remove any speculatively loaded cache lines.
-+	 * accesses (MMU disabled), invalidate those tables again to
-+	 * remove any speculatively loaded cache lines.
- 	 */
-+	dmb	sy
-+
- 	adrp	x0, idmap_pg_dir
-+	adrp	x1, idmap_pg_end
-+	sub	x1, x1, x0
-+	bl	__inval_dcache_area
-+
-+	adrp	x0, init_pg_dir
- 	adrp	x1, init_pg_end
- 	sub	x1, x1, x0
--	dmb	sy
- 	bl	__inval_dcache_area
-=20
- 	ret	x28
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.=
-lds.S
-index 497f9675071d..94402aaf5f5c 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -139,6 +139,7 @@ SECTIONS
-=20
- 	idmap_pg_dir =3D .;
- 	. +=3D IDMAP_DIR_SIZE;
-+	idmap_pg_end =3D .;
-=20
- #ifdef CONFIG_UNMAP_KERNEL_AT_EL0
- 	tramp_pg_dir =3D .;
---=20
-2.23.0
+diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
+index 9938918b2fea..49ec30454198 100644
+--- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
++++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
+@@ -21,6 +21,9 @@ on the Qualcomm ADSP Hexagon core.
+ 		    "qcom,sm8150-cdsp-pas"
+ 		    "qcom,sm8150-mpss-pas"
+ 		    "qcom,sm8150-slpi-pas"
++		    "qcom,sm8250-adsp-pas"
++		    "qcom,sm8250-cdsp-pas"
++		    "qcom,sm8250-slpi-pas"
+ 
+ - interrupts-extended:
+ 	Usage: required
+@@ -44,6 +47,9 @@ on the Qualcomm ADSP Hexagon core.
+ 	qcom,sm8150-adsp-pas:
+ 	qcom,sm8150-cdsp-pas:
+ 	qcom,sm8150-slpi-pas:
++	qcom,sm8250-adsp-pas:
++	qcom,sm8250-cdsp-pas:
++	qcom,sm8250-slpi-pas:
+ 		    must be "wdog", "fatal", "ready", "handover", "stop-ack"
+ 	qcom,qcs404-wcss-pas:
+ 	qcom,sm8150-mpss-pas:
+@@ -105,10 +111,13 @@ on the Qualcomm ADSP Hexagon core.
+ 	qcom,sdm845-cdsp-pas:
+ 	qcom,sm8150-adsp-pas:
+ 	qcom,sm8150-cdsp-pas:
++	qcom,sm8250-adsp-pas:
++	qcom,sm8250-cdsp-pas:
+ 		    must be "cx", "load_state"
+ 	qcom,sm8150-mpss-pas:
+ 		    must be "cx", "load_state", "mss"
+ 	qcom,sm8150-slpi-pas:
++	qcom,sm8250-slpi-pas:
+ 		    must be "lcx", "lmx", "load_state"
+ 
+ - memory-region:
+-- 
+2.24.0
 
