@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09FE1BC8D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D501BC9A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbgD1SgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:36:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53420 "EHLO mail.kernel.org"
+        id S1730977AbgD1Snb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:43:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730331AbgD1SgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:36:02 -0400
+        id S1731226AbgD1Sn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:43:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 583082085B;
-        Tue, 28 Apr 2020 18:36:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9AE622085B;
+        Tue, 28 Apr 2020 18:43:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098961;
+        s=default; t=1588099408;
         bh=Jq+43dOowewCe+eyDo+Q0xe3EHHPuoR53eIrtwTUFs8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uhs+QBSLD2nooDmG1uwf+U8t5hMsUmr0B+jy1ExHzdeRX+StRXz+bvDbWrRWwCGWc
-         2DwudwEdL1Mgh6cmI293H8IOPZqCiQyOzPmq2bzX3gSu9EaPE8R2vS9LDNuN2VtQk9
-         4c2QoE0vT/xfPXBCW63dQGV/712shKdFxgNFKrao=
+        b=k96YHEOA3dHuGy+/FckMF12MOoZ5Q/rgBMC798f6h7ByXslZQqaJc7/0G1s7wLebP
+         gw8Aoraz6n7m0VdC5jsXNHAZSk/OYkVRwV4T92ZJQnMML8PkfZg7usgZiNSQSrnIxy
+         B+P3xAA/SDsYMLbtXbcyXmzw9VGLOpN5a2nVmdUY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.6 134/167] staging: comedi: dt2815: fix writing hi byte of analog output
+Subject: [PATCH 5.4 136/168] staging: comedi: dt2815: fix writing hi byte of analog output
 Date:   Tue, 28 Apr 2020 20:25:10 +0200
-Message-Id: <20200428182242.389089986@linuxfoundation.org>
+Message-Id: <20200428182249.101499577@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
+References: <20200428182231.704304409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
