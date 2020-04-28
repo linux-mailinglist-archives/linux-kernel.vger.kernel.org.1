@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB521BBE3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DF41BBE4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 14:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgD1Mu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 08:50:56 -0400
-Received: from mga18.intel.com ([134.134.136.126]:54668 "EHLO mga18.intel.com"
+        id S1726819AbgD1MyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 08:54:23 -0400
+Received: from albireo.enyo.de ([37.24.231.21]:48706 "EHLO albireo.enyo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727071AbgD1Mux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 08:50:53 -0400
-IronPort-SDR: 1rgqmyF9lNl2HI94eQaItmlRhjx/XyFIfLfHwvOOC4hprRprkUAMequgZnX9YTBmoYifi+FVUR
- WdVifkj72xkA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 05:50:52 -0700
-IronPort-SDR: SCQqSllUydQSHNN+qQ7dk5wAut5zz6fYbhReVhnikxqFFMRrSYFI7FjQSqPzVDIbL7k/3aJrl1
- wfTwI3PK4ZWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,327,1583222400"; 
-   d="scan'208";a="292845050"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Apr 2020 05:50:47 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jTPhJ-003YnF-8d; Tue, 28 Apr 2020 15:50:49 +0300
-Date:   Tue, 28 Apr 2020 15:50:49 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        id S1726759AbgD1MyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 08:54:22 -0400
+Received: from [172.17.203.2] (helo=deneb.enyo.de)
+        by albireo.enyo.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1jTPka-0002WQ-A9; Tue, 28 Apr 2020 12:54:12 +0000
+Received: from fw by deneb.enyo.de with local (Exim 4.92)
+        (envelope-from <fw@deneb.enyo.de>)
+        id 1jTPkT-00031t-02; Tue, 28 Apr 2020 14:54:05 +0200
+From:   Florian Weimer <fw@deneb.enyo.de>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Michael Kerrisk <mtk.manpages@gmail.com>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        carlos <carlos@redhat.com>, Rich Felker <dalias@libc.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Will Deacon <will.deacon@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ben Maurer <bmaurer@fb.com>, Dave Watson <davejwatson@fb.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v3 05/16] mfd: Add support for Kontron sl28cpld
- management controller
-Message-ID: <20200428125049.GU185537@smile.fi.intel.com>
-References: <20200423174543.17161-1-michael@walle.cc>
- <20200423174543.17161-6-michael@walle.cc>
+        Paul <paulmck@linux.vnet.ibm.com>, Paul Turner <pjt@google.com>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>
+Subject: Re: [PATCH glibc 5/9] glibc: Perform rseq(2) registration at C startup and thread creation (v17)
+References: <20200326155633.18236-1-mathieu.desnoyers@efficios.com>
+        <87ees9z417.fsf@mid.deneb.enyo.de>
+        <284293396.70630.1588005648556.JavaMail.zimbra@efficios.com>
+        <87zhawvphv.fsf@mid.deneb.enyo.de>
+        <2102127737.70791.1588008377292.JavaMail.zimbra@efficios.com>
+        <87ftcnrf7d.fsf@mid.deneb.enyo.de>
+        <1080028389.72414.1588077193438.JavaMail.zimbra@efficios.com>
+        <878sifrdo0.fsf@mid.deneb.enyo.de>
+        <190402462.72430.1588077816717.JavaMail.zimbra@efficios.com>
+Date:   Tue, 28 Apr 2020 14:54:04 +0200
+In-Reply-To: <190402462.72430.1588077816717.JavaMail.zimbra@efficios.com>
+        (Mathieu Desnoyers's message of "Tue, 28 Apr 2020 08:43:36 -0400
+        (EDT)")
+Message-ID: <87tv13py8j.fsf@mid.deneb.enyo.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200423174543.17161-6-michael@walle.cc>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 07:45:32PM +0200, Michael Walle wrote:
-> This patch adds core support for the board management controller found
-> on the SMARC-sAL28 board. It consists of the following functions:
->  - watchdog
->  - GPIO controller
->  - PWM controller
->  - fan sensor
->  - interrupt controller
+* Mathieu Desnoyers:
 
-...
+> ----- On Apr 28, 2020, at 8:35 AM, Florian Weimer fw@deneb.enyo.de wrote:
+>
+>> * Mathieu Desnoyers:
+>> 
+>>> One issue I'm currently facing when running "make check": because
+>>> nptl/tst-rseq-nptl.c uses pthread_cancel(), I run into an Abort
+>>> with:
+>>>
+>>> libgcc_s.so.1 must be installed for pthread_cancel to work
+>>> Didn't expect signal from child: got `Aborted'
+>> 
+>> This is really unusual.  Is the affected test statically linked?
+>
+> I built glibc without specifying anything particular, and ran
+> "make check". It indeed seems to be dynamically linked to libc:
+>
+> ldd tst-rseq-nptl
+> ./tst-rseq-nptl: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by ./tst-rseq-nptl)
+> linux-vdso.so.1 (0x00007ffd3a2f3000)
+> libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f0527560000)
+> libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f052716f000)
+> /home/efficios/glibc-test5/lib/ld-linux-x86-64.so.2 => /lib64/ld-linux-x86-64.so.2 (0x00007f0527986000)
 
->  obj-$(CONFIG_MFD_STMFX) 	+= stmfx.o
->  
->  obj-$(CONFIG_SGI_MFD_IOC3)	+= ioc3.o
-> +
-> +obj-$(CONFIG_MFD_SL28CPLD)	+= sl28cpld.o
+That's expected if the installed glibc is older than the built glibc.
 
-Perhaps keep an order?
+> After make check I have:
+>
+> cat tst-rseq-nptl.test-result 
+> FAIL: nptl/tst-rseq-nptl
+> original exit status 134
 
-...
+What's in the tst-rseq-nptl.out file?
 
-> +	return devm_mfd_add_devices(dev, -1, sl28cpld_devs,
+> And if I run
+>
+> ./tst-rseq-nptl
+>
+> Then I get
+>
+> libgcc_s.so.1 must be installed for pthread_cancel to work
+> Didn't expect signal from child: got `Aborted'
+> libgcc_s.so.1 must be installed for pthread_cancel to work
+> Aborted (core dumped)
 
--1 has its own definition.
+I'm puzzled why you don't get a GLIBC_2.32 version error in this case.
+Do you build with --enable-hardcoded-path-in-tests?
 
-> +				    ARRAY_SIZE(sl28cpld_devs), NULL,
-> +				    i2c->irq, NULL);
-> +}
+> Same result if I do ./testrun.sh nptl/tst-rseq-nptl
 
--- 
-With Best Regards,
-Andy Shevchenko
+That one definitely should work.
 
+I expect you might see this if libgcc_s.so.1 is installed into a
+multiarch subdirectory that upstream glibc does not search.  (The
+Debian patches are unfortunately not upstream.)
 
+I think on my system, the built glibc can find the system libgcc_s via
+/etc/ld.so.cache, so I haven't seen this issue yet.
