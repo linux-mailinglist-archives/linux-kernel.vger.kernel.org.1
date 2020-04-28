@@ -2,92 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF941BBABF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 12:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8573C1BBACD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 12:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgD1KHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 06:07:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:48892 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726932AbgD1KHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 06:07:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3A1A30E;
-        Tue, 28 Apr 2020 03:07:53 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.1.132])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DBE313F305;
-        Tue, 28 Apr 2020 03:07:51 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 11:07:45 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Bhupesh Sharma <bhsharma@redhat.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] hw_breakpoint: Remove unused
- '__register_perf_hw_breakpoint' declaration
-Message-ID: <20200428100745.GA15300@C02TD0UTHF1T.local>
-References: <1588063937-5744-1-git-send-email-bhsharma@redhat.com>
+        id S1727930AbgD1KIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 06:08:35 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:35110 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726932AbgD1KIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 06:08:34 -0400
+Received: by mail-wr1-f65.google.com with SMTP id x18so23919443wrq.2;
+        Tue, 28 Apr 2020 03:08:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wYqrGMV+EWFYnxIHszXLpHDlpZ5ax2djYBoiPCdGZtM=;
+        b=FOMkBhjc+5vrsgWg9fhi5Dv5RuAa37x1j2mwA+nnb9CPpeBZ4Mdps+M4OjTPmilIOj
+         uFUdrMTZ4FUbagGDIYGq+Zubw8Eqt96HWfmmX5uka9YkO5knZaiVcfWMYDW/AxCqOyn8
+         4sFt8xMXxzt0VryUw5XGJ+GsA3CZyLxCzKkfcV24zEZOBIGawfndeAL0hoMAW8OpGmcJ
+         uuLwKIhBfwbtnySTT+ucl4IVGbLBaGBJEWv0BZColnfJOphPjevlnz1aeoPgqbAV6UMN
+         +qYQ+0LqXFRVpDXTx/1kI0vLsFxwTzBxaIrMw5a8xs1cx65bBz3DrX9AyXQ/uos/CVl9
+         INeQ==
+X-Gm-Message-State: AGi0PuaS5btYfaCzKH8Og0eXKNdIswcV1ghh48k5tl4ELrkkjwLWwLCl
+        TTNrG8zAazVnuCI2tDDTSDgKEJMH
+X-Google-Smtp-Source: APiQypJ4xBgFV3si14qsdmuXSYJOafatBduuvUuwZF2JwDOEJMghZx1A4ojKnwlMtXWN0req9V5K6g==
+X-Received: by 2002:a5d:498d:: with SMTP id r13mr33647675wrq.374.1588068510619;
+        Tue, 28 Apr 2020 03:08:30 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id x6sm27382925wrg.58.2020.04.28.03.08.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 03:08:29 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 10:08:28 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH] hv_netvsc: Fix netvsc_start_xmit's return type
+Message-ID: <20200428100828.aslw3pn5nhwtlsnt@liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net>
+References: <20200428033042.44561-1-natechancellor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1588063937-5744-1-git-send-email-bhsharma@redhat.com>
+In-Reply-To: <20200428033042.44561-1-natechancellor@gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhupesh,
-
-On Tue, Apr 28, 2020 at 02:22:17PM +0530, Bhupesh Sharma wrote:
-> commit b326e9560a28 ("hw-breakpoints: Use overflow handler instead of
-> the event callback") removed '__register_perf_hw_breakpoint' function
-> usage and replaced it with 'register_perf_hw_breakpoint' function.
+On Mon, Apr 27, 2020 at 08:30:43PM -0700, Nathan Chancellor wrote:
+> netvsc_start_xmit is used as a callback function for the ndo_start_xmit
+> function pointer. ndo_start_xmit's return type is netdev_tx_t but
+> netvsc_start_xmit's return type is int.
 > 
-> Remove the left-over unused '__register_perf_hw_breakpoint' declaration
-> from 'hw_breakpoint.h' as well.
+> This causes a failure with Control Flow Integrity (CFI), which requires
+> function pointer prototypes and callback function definitions to match
+> exactly. When CFI is in enforcing, the kernel panics. When booting a
+> CFI kernel with WSL 2, the VM is immediately terminated because of this:
 > 
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Bhupesh Sharma <bhsharma@redhat.com>
+> $ wsl.exe -d ubuntu
+> The Windows Subsystem for Linux instance has terminated.
+> 
+> Avoid this by using the right return type for netvsc_start_xmit.
+> 
+> Fixes: fceaf24a943d8 ("Staging: hv: add the Hyper-V virtual network driver")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1009
 
-This is generic code, so I'm a bit confused as to why you've sent it to
-us. I'd expect this to go via the perf core maintainers (cc'd).
+Please consider pulling in the panic log from #1009 to the commit
+message. It is much better than the one line message above.
 
-FWIW, this looks sane to me, so:
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark.
-
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 > ---
->  include/linux/hw_breakpoint.h | 3 ---
->  1 file changed, 3 deletions(-)
 > 
-> diff --git a/include/linux/hw_breakpoint.h b/include/linux/hw_breakpoint.h
-> index 6058c3844a76..fe1302da8e0f 100644
-> --- a/include/linux/hw_breakpoint.h
-> +++ b/include/linux/hw_breakpoint.h
-> @@ -72,7 +72,6 @@ register_wide_hw_breakpoint(struct perf_event_attr *attr,
->  			    void *context);
+> Do note that netvsc_xmit still returns int because netvsc_xmit has a
+> potential return from netvsc_vf_xmit, which does not return netdev_tx_t
+> because of the call to dev_queue_xmit.
+> 
+> I am not sure if that is an oversight that was introduced by
+> commit 0c195567a8f6e ("netvsc: transparent VF management") or if
+> everything works properly as it is now.
+> 
+> My patch is purely concerned with making the definition match the
+> prototype so it should be NFC aside from avoiding the CFI panic.
+> 
+>  drivers/net/hyperv/netvsc_drv.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+> index d8e86bdbfba1e..ebcfbae056900 100644
+> --- a/drivers/net/hyperv/netvsc_drv.c
+> +++ b/drivers/net/hyperv/netvsc_drv.c
+> @@ -707,7 +707,8 @@ static int netvsc_xmit(struct sk_buff *skb, struct net_device *net, bool xdp_tx)
+>  	goto drop;
+>  }
 >  
->  extern int register_perf_hw_breakpoint(struct perf_event *bp);
-> -extern int __register_perf_hw_breakpoint(struct perf_event *bp);
->  extern void unregister_hw_breakpoint(struct perf_event *bp);
->  extern void unregister_wide_hw_breakpoint(struct perf_event * __percpu *cpu_events);
->  
-> @@ -115,8 +114,6 @@ register_wide_hw_breakpoint(struct perf_event_attr *attr,
->  			    void *context)		{ return NULL; }
->  static inline int
->  register_perf_hw_breakpoint(struct perf_event *bp)	{ return -ENOSYS; }
-> -static inline int
-> -__register_perf_hw_breakpoint(struct perf_event *bp) 	{ return -ENOSYS; }
->  static inline void unregister_hw_breakpoint(struct perf_event *bp)	{ }
->  static inline void
->  unregister_wide_hw_breakpoint(struct perf_event * __percpu *cpu_events)	{ }
+> -static int netvsc_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+> +static netdev_tx_t netvsc_start_xmit(struct sk_buff *skb,
+> +				     struct net_device *ndev)
+>  {
+>  	return netvsc_xmit(skb, ndev, false);
+>  }
+> 
+> base-commit: 51184ae37e0518fd90cb437a2fbc953ae558cd0d
 > -- 
-> 2.7.4
+> 2.26.2
 > 
