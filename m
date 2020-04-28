@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB19F1BCC3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A901BCC3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729121AbgD1TUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 15:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
+        id S1728868AbgD1TTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728981AbgD1TTw (ORCPT
+        by vger.kernel.org with ESMTP id S1728498AbgD1TTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 15:19:52 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2092C03C1AC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 12:19:51 -0700 (PDT)
+        Tue, 28 Apr 2020 15:19:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818D3C035495
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 12:19:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=o57KJG7FUndGuDb6ctvmoUs++JMbSj8MPYpWk/nAFrY=; b=0gvFfmy89/lVoxEkPNC6CKgnjq
-        4j5NSb5AW/zf0sIQJ1JBM8bbRItOgmx8SOCNlUwHa0uvBjNS8D4UzWXn6hAqW6DQ+0OYfj3ro9qIt
-        CepiGeZQWBeOa9Br17PqNyGdWbHBiEFjXsZTA8W4Ouo9qk15OaLz6STDk4kCln6LfrysA0e9km0iB
-        Cs30CqOSAVJEB5y9+QoLSw6X3ThN4oCTK/b6FrU1UNfmP/L48FUxPjduMLjizg3VVra8am3JCRFvp
-        IH2OLKW6mwubKiYQvmu1TF8k4cjA6rYvAu3V8RN8Ha/hOlmrXZjKrrvMGKHmDmgGBJJMHjhVU65qK
-        zPTJq7/w==;
+        bh=NrsVwe4TzastsXwURfp0/elwEEkYtzFdxS+HUS5Whw0=; b=qz67HFhvgX2F37f9m8k7CcIdFN
+        a1Q/cgf0ReGEaCQCrOQlpuqzFHPsSVehEvjnQ/09JKXovBi3voBz+xiwzfpCb9v6ZvwHwrWSSoEGq
+        taFZtxfrkURMSULXhbIkrg7MwVryP63vl6poAOy9qH2L+V9QrAF5SrZuppEQz0+iPETqF/iWwyLsJ
+        DJLIi/3lP2JhaN0W+9KbLNaRuoRwgRjUs60qycMI9b3LSx05nBJ0SAXIoP7Hih6rWWPNkQ6U+IndQ
+        fRx5MfzGhYAgK2S709RGx+QH6ZU0AcW+vtGnLkr4dOSJPlKiGvVSB0bCbiEKdoJYRUl6CTqubfswp
+        PVIGmxCw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTVlR-0007ky-JG; Tue, 28 Apr 2020 19:19:29 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTVlR-0006WB-Uj; Tue, 28 Apr 2020 19:19:30 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B5BC730774A;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B7C1E30775A;
         Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 8EAF325D01314; Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
-Message-Id: <20200428191659.795115188@infradead.org>
+        id 9368E25D01317; Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
+Message-Id: <20200428191659.854203028@infradead.org>
 User-Agent: quilt/0.65
-Date:   Tue, 28 Apr 2020 21:11:08 +0200
+Date:   Tue, 28 Apr 2020 21:11:09 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
 Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
         tglx@linutronix.de, x86@kernel.org, mbenes@suse.cz,
         peterz@infradead.org
-Subject: [PATCH v2 07/14] objtool: Make handle_insn_ops() unconditional
+Subject: [PATCH v2 08/14] objtool: Remove INSN_STACK
 References: <20200428191101.886208539@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,48 +52,224 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that every instruction has a list of stack_ops; we can trivially
-distinquish those instructions that do not have stack_ops, their list
-is empty.
-
-This means we can now call handle_insn_ops() unconditionally.
+With the unconditional use of handle_insn_ops(), INSN_STACK has lost
+its purpose. Remove it.
 
 Suggested-by: Julien Thierry <jthierry@redhat.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- tools/objtool/check.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ tools/objtool/arch.h            |    1 -
+ tools/objtool/arch/x86/decode.c |   23 -----------------------
+ tools/objtool/check.c           |    3 ---
+ 3 files changed, 27 deletions(-)
 
+--- a/tools/objtool/arch.h
++++ b/tools/objtool/arch.h
+@@ -21,7 +21,6 @@ enum insn_type {
+ 	INSN_RETURN,
+ 	INSN_EXCEPTION_RETURN,
+ 	INSN_CONTEXT_SWITCH,
+-	INSN_STACK,
+ 	INSN_BUG,
+ 	INSN_NOP,
+ 	INSN_STAC,
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -141,7 +141,6 @@ int arch_decode_instruction(const struct
+ 		if (rex_w && !rex_b && modrm_mod == 3 && modrm_rm == 4) {
+ 
+ 			/* add/sub reg, %rsp */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_ADD;
+ 				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+@@ -154,7 +153,6 @@ int arch_decode_instruction(const struct
+ 	case 0x50 ... 0x57:
+ 
+ 		/* push reg */
+-		*type = INSN_STACK;
+ 		ADD_OP(op) {
+ 			op->src.type = OP_SRC_REG;
+ 			op->src.reg = op_to_cfi_reg[op1 & 0x7][rex_b];
+@@ -166,7 +164,6 @@ int arch_decode_instruction(const struct
+ 	case 0x58 ... 0x5f:
+ 
+ 		/* pop reg */
+-		*type = INSN_STACK;
+ 		ADD_OP(op) {
+ 			op->src.type = OP_SRC_POP;
+ 			op->dest.type = OP_DEST_REG;
+@@ -178,7 +175,6 @@ int arch_decode_instruction(const struct
+ 	case 0x68:
+ 	case 0x6a:
+ 		/* push immediate */
+-		*type = INSN_STACK;
+ 		ADD_OP(op) {
+ 			op->src.type = OP_SRC_CONST;
+ 			op->dest.type = OP_DEST_PUSH;
+@@ -196,7 +192,6 @@ int arch_decode_instruction(const struct
+ 
+ 		if (modrm == 0xe4) {
+ 			/* and imm, %rsp */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_AND;
+ 				op->src.reg = CFI_SP;
+@@ -215,7 +210,6 @@ int arch_decode_instruction(const struct
+ 			break;
+ 
+ 		/* add/sub imm, %rsp */
+-		*type = INSN_STACK;
+ 		ADD_OP(op) {
+ 			op->src.type = OP_SRC_ADD;
+ 			op->src.reg = CFI_SP;
+@@ -229,7 +223,6 @@ int arch_decode_instruction(const struct
+ 		if (rex_w && !rex_r && modrm_mod == 3 && modrm_reg == 4) {
+ 
+ 			/* mov %rsp, reg */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_REG;
+ 				op->src.reg = CFI_SP;
+@@ -242,7 +235,6 @@ int arch_decode_instruction(const struct
+ 		if (rex_w && !rex_b && modrm_mod == 3 && modrm_rm == 4) {
+ 
+ 			/* mov reg, %rsp */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_REG;
+ 				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+@@ -258,7 +250,6 @@ int arch_decode_instruction(const struct
+ 		    (modrm_mod == 1 || modrm_mod == 2) && modrm_rm == 5) {
+ 
+ 			/* mov reg, disp(%rbp) */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_REG;
+ 				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+@@ -270,7 +261,6 @@ int arch_decode_instruction(const struct
+ 		} else if (rex_w && !rex_b && modrm_rm == 4 && sib == 0x24) {
+ 
+ 			/* mov reg, disp(%rsp) */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_REG;
+ 				op->src.reg = op_to_cfi_reg[modrm_reg][rex_r];
+@@ -286,7 +276,6 @@ int arch_decode_instruction(const struct
+ 		if (rex_w && !rex_b && modrm_mod == 1 && modrm_rm == 5) {
+ 
+ 			/* mov disp(%rbp), reg */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_REG_INDIRECT;
+ 				op->src.reg = CFI_BP;
+@@ -299,7 +288,6 @@ int arch_decode_instruction(const struct
+ 			   modrm_mod != 3 && modrm_rm == 4) {
+ 
+ 			/* mov disp(%rsp), reg */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_REG_INDIRECT;
+ 				op->src.reg = CFI_SP;
+@@ -314,7 +302,6 @@ int arch_decode_instruction(const struct
+ 	case 0x8d:
+ 		if (sib == 0x24 && rex_w && !rex_b && !rex_x) {
+ 
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				if (!insn.displacement.value) {
+ 					/* lea (%rsp), reg */
+@@ -332,7 +319,6 @@ int arch_decode_instruction(const struct
+ 		} else if (rex == 0x48 && modrm == 0x65) {
+ 
+ 			/* lea disp(%rbp), %rsp */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_ADD;
+ 				op->src.reg = CFI_BP;
+@@ -350,7 +336,6 @@ int arch_decode_instruction(const struct
+ 			 * Restoring rsp back to its original value after a
+ 			 * stack realignment.
+ 			 */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_ADD;
+ 				op->src.reg = CFI_R10;
+@@ -368,7 +353,6 @@ int arch_decode_instruction(const struct
+ 			 * Restoring rsp back to its original value after a
+ 			 * stack realignment.
+ 			 */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_ADD;
+ 				op->src.reg = CFI_R13;
+@@ -382,7 +366,6 @@ int arch_decode_instruction(const struct
+ 
+ 	case 0x8f:
+ 		/* pop to mem */
+-		*type = INSN_STACK;
+ 		ADD_OP(op) {
+ 			op->src.type = OP_SRC_POP;
+ 			op->dest.type = OP_DEST_MEM;
+@@ -395,7 +378,6 @@ int arch_decode_instruction(const struct
+ 
+ 	case 0x9c:
+ 		/* pushf */
+-		*type = INSN_STACK;
+ 		ADD_OP(op) {
+ 			op->src.type = OP_SRC_CONST;
+ 			op->dest.type = OP_DEST_PUSHF;
+@@ -404,7 +386,6 @@ int arch_decode_instruction(const struct
+ 
+ 	case 0x9d:
+ 		/* popf */
+-		*type = INSN_STACK;
+ 		ADD_OP(op) {
+ 			op->src.type = OP_SRC_POPF;
+ 			op->dest.type = OP_DEST_MEM;
+@@ -443,7 +424,6 @@ int arch_decode_instruction(const struct
+ 		} else if (op2 == 0xa0 || op2 == 0xa8) {
+ 
+ 			/* push fs/gs */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_CONST;
+ 				op->dest.type = OP_DEST_PUSH;
+@@ -452,7 +432,6 @@ int arch_decode_instruction(const struct
+ 		} else if (op2 == 0xa1 || op2 == 0xa9) {
+ 
+ 			/* pop fs/gs */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_POP;
+ 				op->dest.type = OP_DEST_MEM;
+@@ -469,7 +448,6 @@ int arch_decode_instruction(const struct
+ 		 * mov bp, sp
+ 		 * pop bp
+ 		 */
+-		*type = INSN_STACK;
+ 		ADD_OP(op)
+ 			op->dest.type = OP_DEST_LEAVE;
+ 
+@@ -537,7 +515,6 @@ int arch_decode_instruction(const struct
+ 		else if (modrm_reg == 6) {
+ 
+ 			/* push from mem */
+-			*type = INSN_STACK;
+ 			ADD_OP(op) {
+ 				op->src.type = OP_SRC_CONST;
+ 				op->dest.type = OP_DEST_PUSH;
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -2247,6 +2247,9 @@ static int validate_branch(struct objtoo
- 				return 0;
- 		}
- 
-+		if (handle_insn_ops(insn, &state))
-+			return 1;
-+
- 		switch (insn->type) {
- 
- 		case INSN_RETURN:
-@@ -2306,9 +2309,6 @@ static int validate_branch(struct objtoo
- 			break;
- 
- 		case INSN_EXCEPTION_RETURN:
--			if (handle_insn_ops(insn, &state))
--				return 1;
--
- 			/*
- 			 * This handles x86's sync_core() case, where we use an
- 			 * IRET to self. All 'normal' IRET instructions are in
-@@ -2328,8 +2328,6 @@ static int validate_branch(struct objtoo
+@@ -2327,9 +2327,6 @@ static int validate_branch(struct objtoo
+ 			}
  			return 0;
  
- 		case INSN_STACK:
--			if (handle_insn_ops(insn, &state))
--				return 1;
- 			break;
- 
+-		case INSN_STACK:
+-			break;
+-
  		case INSN_STAC:
+ 			if (state.uaccess) {
+ 				WARN_FUNC("recursive UACCESS enable", sec, insn->offset);
 
 
