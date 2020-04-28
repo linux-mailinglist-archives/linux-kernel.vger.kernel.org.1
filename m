@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A1F1BCC31
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406461BCC46
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 21:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728740AbgD1TTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 15:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
+        id S1729224AbgD1TU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 15:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728338AbgD1TTi (ORCPT
+        by vger.kernel.org with ESMTP id S1728392AbgD1TTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Apr 2020 15:19:38 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73846C03C1AB
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0C6C03C1AE
         for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 12:19:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=T3Az2I6NrBjKPYKkaUHbBFNx72yC5+65dAU5og422iQ=; b=NKw8Y0gCT0LnDWhB84Bt0wYy0j
-        dX/TSZwfSX1Yj6vAAFKudsQ9UCvpxAw47Iw4wvjjW7Kk33FSLDdGGeLuaEvfHI2n5hk8E9cFcfyJo
-        pnsNiH0BkNGAAgJKSDayU6gskd+RYeU3R9/w0o5fi1P+WUYgpIMhc09n052/eci+4usHJbxqV/DYQ
-        k8dPhoEH46t6Jsm0ujKRbuyKMN6gcFYNYCYflbc1koi2kMdJjNq7BG6wpZ4JmP2omiTEBWFnu+rL2
-        5Sd9infhXhVtTAXojjfqXwdP4U/wMRbBPZ5IkWYusxqKbVIikXdpKzm0rN4/Upbqas/EVmvGjCSQ5
-        NKzVzGVQ==;
+        bh=0LPOq6kuy6O1K32QsrMgcnJ+qO6SmUMAmC4PPFEY/AA=; b=OmTEDuc3EQ/062cQNMmFp0Rsuo
+        H+8OhZJtRJTGw6vTilMBdlck5d7vDh4FpUTfZ/X9eok8pARCzx165jbvU0tXpFQURM6xndRoRkMPZ
+        Q2+iwrIgxM7CXNqz1lzsHXQHm1haSwFVvRuA2+424satoeJ+IaZiWsKOcTKXTUqPGks/K3jj26Vsa
+        0mOr2OVBwApK6fkBXgWpeGOoTs4n5ntqu32LVV7FENblbsZI3xudwuK9kW2ZiNhr6E7REyyJAxeJU
+        E4EaigCmWZBYrBN6rV8RP+NIVe1953K46vpSEJxM/Y1fEPd62+s/jjwb3ZNy6PnW+QDWDOGNHjKMX
+        GFH8WUKg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTVlQ-0006Vl-7H; Tue, 28 Apr 2020 19:19:28 +0000
+        id 1jTVlR-0006WA-U0; Tue, 28 Apr 2020 19:19:30 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9583E3075DB;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 987CA3075F9;
         Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 7FB3725D01311; Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
-Message-Id: <20200428191659.558899462@infradead.org>
+        id 85D7725D01313; Tue, 28 Apr 2020 21:19:26 +0200 (CEST)
+Message-Id: <20200428191659.618384136@infradead.org>
 User-Agent: quilt/0.65
-Date:   Tue, 28 Apr 2020 21:11:04 +0200
+Date:   Tue, 28 Apr 2020 21:11:05 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     jpoimboe@redhat.com, alexandre.chartre@oracle.com
 Cc:     linux-kernel@vger.kernel.org, jthierry@redhat.com,
         tglx@linutronix.de, x86@kernel.org, mbenes@suse.cz,
         peterz@infradead.org
-Subject: [PATCH v2 03/14] x86,smap: Fix smap_{save,restore}() alternatives
+Subject: [PATCH v2 04/14] objtool: is_fentry_call() crashes if call has no destination
 References: <20200428191101.886208539@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,54 +52,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As reported by objtool:
+From: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-  lib/ubsan.o: warning: objtool: .altinstr_replacement+0x0: alternative modifies stack
-  lib/ubsan.o: warning: objtool: .altinstr_replacement+0x7: alternative modifies stack
+Fix is_fentry_call() so that it works if a call has no destination
+set (call_dest). This needs to be done in order to support intra-
+function calls.
 
-the smap_{save,restore}() alternatives violate (the newly enforced)
-rule on stack invariance. That is, due to there only being a single
-ORC table it must be valid to any alternative. These alternatives
-violate this with the direct result that unwinds will not be correct
-in between these calls.
-
-[ In specific, since we force SMAP on for objtool, running on !SMAP
-hardware will observe a different stack-layout and the ORC unwinder
-will stumble. ]
-
-So rewrite the functions to unconditionally save/restore the flags,
-which gives an invariant stack layout irrespective of the SMAP state.
-
+Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200414103618.12657-2-alexandre.chartre@oracle.com
 ---
- arch/x86/include/asm/smap.h |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ tools/objtool/check.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/smap.h
-+++ b/arch/x86/include/asm/smap.h
-@@ -57,16 +57,19 @@ static __always_inline unsigned long sma
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1490,7 +1490,7 @@ static int decode_sections(struct objtoo
+ 
+ static bool is_fentry_call(struct instruction *insn)
  {
- 	unsigned long flags;
- 
--	asm volatile (ALTERNATIVE("", "pushf; pop %0; " __ASM_CLAC,
--				  X86_FEATURE_SMAP)
--		      : "=rm" (flags) : : "memory", "cc");
-+	asm volatile ("# smap_save\n\t"
-+		      "pushf; pop %0"
-+		      : "=rm" (flags) : : "memory");
-+
-+	clac();
- 
- 	return flags;
- }
- 
- static __always_inline void smap_restore(unsigned long flags)
- {
--	asm volatile (ALTERNATIVE("", "push %0; popf", X86_FEATURE_SMAP)
-+	asm volatile ("# smap_restore\n\t"
-+		      "push %0; popf"
- 		      : : "g" (flags) : "memory", "cc");
- }
- 
+-	if (insn->type == INSN_CALL &&
++	if (insn->type == INSN_CALL && insn->call_dest &&
+ 	    insn->call_dest->type == STT_NOTYPE &&
+ 	    !strcmp(insn->call_dest->name, "__fentry__"))
+ 		return true;
 
 
