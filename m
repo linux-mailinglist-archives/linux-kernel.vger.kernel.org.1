@@ -2,545 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92ED21BC1B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3678D1BC1B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgD1Ots (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728069AbgD1Otp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:49:45 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AFBC03C1AC;
-        Tue, 28 Apr 2020 07:49:43 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id k12so3099816wmj.3;
-        Tue, 28 Apr 2020 07:49:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=qeGtKru8bhxB6/hDq4XVMeEBIdxLu70ja6sTJBKnbuw=;
-        b=cTDMe2gmciox+mmosAc+rUsRLdZtto/BhFA1nlkHEFN6yQOsMDSLDu6C8cCpe0e/Uj
-         Fup6Ll/GutARKyljOMW+rAjExEbmBQv2zq51kSpXG+zrwD8FbApCWItyaA9WGh16I03w
-         3btllkPpLeCT7osJyhUKQqChCLYYCf6oPh5kBrz+gVL91cxLMOaBmFJW8fXNDRjBmZhZ
-         w6hD7w7sJzE8YDTUnkQeIkVE/AM3IgeXWGAf/FAhURsIEcgY0eK4qbBVQZQS3gSa1BjN
-         Khfun3W38YL96lpaGA2nn/AScSgSwD8wGTW4M4np7AWJ2Bbe038Ri7hdS/nOdJZI4zvR
-         OWrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=qeGtKru8bhxB6/hDq4XVMeEBIdxLu70ja6sTJBKnbuw=;
-        b=dIkKgPwsaOFr2u0S/KhXCbbuVFzmSv+2OCgcIR9GKua1zHTC5oaXRkoFsLprlH/HgS
-         GDR0o3BPB7WDny0+OgmPS1NIETeigDHLvpkXycl35r8q6oJrcO9xZwKIybvh/TtPhkH+
-         oY7j36vJikaBQJ5LPlrLVs8tU9kfE7ip8/RipF3J3klrnT9Bf5VGQiyvp9fTHXSsk9r4
-         UZVSkr76y4RgQDBrn5/d66JmaoSkGSOWT2IIWh6EuqK/eUDUSZqqEmIQFaKAphpgrGcU
-         0vbboNBmc+KG1qsgS0ESlAgywoqwM+AY2H3yIFCNTj9RWCiKGrG2ciUBzPHLcmEH3AMH
-         aeig==
-X-Gm-Message-State: AGi0PuYkezDyFO7MYI4diYrWAFCD8+el3U2QbpUxWymYWJZidoxsovmz
-        0lS5FBnNLYNdKyriEFqnAI92X21P
-X-Google-Smtp-Source: APiQypLoRFwYkp13h4RrlQcpO/AjHJ33BIdLB18A7STBz9fUHxw3w2aN5mBzTEaSXKPJFxzJurF8Hg==
-X-Received: by 2002:a1c:bc09:: with SMTP id m9mr4836453wmf.145.1588085382352;
-        Tue, 28 Apr 2020 07:49:42 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id l9sm25458592wrq.83.2020.04.28.07.49.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Apr 2020 07:49:41 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] arm64: dts: rockchip: rename and label gpio-led subnodes
-Date:   Tue, 28 Apr 2020 16:49:33 +0200
-Message-Id: <20200428144933.10953-2-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200428144933.10953-1-jbx6244@gmail.com>
-References: <20200428144933.10953-1-jbx6244@gmail.com>
+        id S1728064AbgD1Otl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:49:41 -0400
+Received: from mga12.intel.com ([192.55.52.136]:30897 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727079AbgD1Otk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 10:49:40 -0400
+IronPort-SDR: 116a6z/WmpGZ/hcQBSv5gj6oC6aNMQKtO3/6IdBYUjTMfvGZcLP0kWNrwGAKtVOb2QUe+q0eMl
+ ctlFZo2Oxrbg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 07:49:37 -0700
+IronPort-SDR: nTiHZ+QKeXVh3/SB61c0U6V6btT6zfCikuVBAXyd3hAQO+IfBavYC6hZpRsmLfu54jVDW898tT
+ FFT8wjNHZonA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
+   d="scan'208";a="432207306"
+Received: from orsmsx102.amr.corp.intel.com ([10.22.225.129])
+  by orsmga005.jf.intel.com with ESMTP; 28 Apr 2020 07:49:38 -0700
+Received: from orsmsx124.amr.corp.intel.com (10.22.240.120) by
+ ORSMSX102.amr.corp.intel.com (10.22.225.129) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 28 Apr 2020 07:49:38 -0700
+Received: from orsmsx101.amr.corp.intel.com ([169.254.8.204]) by
+ ORSMSX124.amr.corp.intel.com ([169.254.2.166]) with mapi id 14.03.0439.000;
+ Tue, 28 Apr 2020 07:49:37 -0700
+From:   "Derrick, Jonathan" <jonathan.derrick@intel.com>
+To:     "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "helgaas@kernel.org" <helgaas@kernel.org>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mr.nuke.me@gmail.com" <mr.nuke.me@gmail.com>
+Subject: Re: [PATCH v1 1/1] PCI/AER: Use _OSC negotiation to determine AER
+ ownership
+Thread-Topic: [PATCH v1 1/1] PCI/AER: Use _OSC negotiation to determine AER
+ ownership
+Thread-Index: AQHWG/i80WXiBjxvV0GlmSmUDGqUuqiOHfGAgAD37gA=
+Date:   Tue, 28 Apr 2020 14:49:36 +0000
+Message-ID: <f3bae1805b4668f2eb0bb636aabde26161d680fe.camel@intel.com>
+References: <20200428000213.GA29631@google.com>
+In-Reply-To: <20200428000213.GA29631@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.255.3.48]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1598CB4BFD7AD741A2C2349256703DD8@intel.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current dts files with 'gpio-led' nodes were manually verified.
-In order to automate this process leds-gpio.txt
-has been converted to yaml. With this conversion a check
-for pattern properties was added. A test with the command
-below gives a screen full of warnings like:
-
-arch/arm64/boot/dts/rockchip/rk3368-r88.dt.yaml: gpio-leds:
-'work' does not match any of the regexes:
-'(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
-
-Fix these errors with help of the following rules:
-
-1: Add nodename in the preferred form.
-
-2: Always add a label that ends with '_led' to prevent conflicts
-   with other labels such as 'power' and 'mmc'
-
-3: If leds need pinctrl add a label that ends with '_led_pin'
-   also to prevent conflicts with other labels.
-
-patternProperties:
-  # The first form is preferred, but fall back to just 'led'
-  # anywhere in the node name to at least catch some child nodes.
-  "(^led-[0-9a-f]$|led)":
-
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/leds/
-leds-gpio.yaml
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts     |  4 +--
- arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts |  6 ++---
- arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts     |  4 +--
- arch/arm64/boot/dts/rockchip/rk3328-rock64.dts     |  4 +--
- arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts    |  4 +--
- .../boot/dts/rockchip/rk3368-orion-r68-meta.dts    |  4 +--
- arch/arm64/boot/dts/rockchip/rk3368-r88.dts        |  2 +-
- arch/arm64/boot/dts/rockchip/rk3399-ficus.dts      | 29 +++++++++++-----------
- arch/arm64/boot/dts/rockchip/rk3399-firefly.dts    | 10 ++++----
- arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts |  6 ++---
- .../boot/dts/rockchip/rk3399-pinebook-pro.dts      | 10 ++++----
- arch/arm64/boot/dts/rockchip/rk3399-rock960.dts    | 29 +++++++++++-----------
- 12 files changed, 57 insertions(+), 55 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts b/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts
-index 8011e9b12..ccb27023c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3308-roc-cc.dts
-@@ -28,14 +28,14 @@
- 	leds {
- 		compatible = "gpio-leds";
- 
--		power {
-+		power_led: led-0 {
- 			label = "firefly:red:power";
- 			linux,default-trigger = "ir-power-click";
- 			default-state = "on";
- 			gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_HIGH>;
- 		};
- 
--		user {
-+		user_led: led-1 {
- 			label = "firefly:blue:user";
- 			linux,default-trigger = "ir-user-click";
- 			default-state = "off";
-diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-index cf20aac5f..fe253669b 100644
---- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-@@ -128,9 +128,9 @@
- 	leds: gpio-leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "led_pins";
--		pinctrl-0 = <&led_pins>;
-+		pinctrl-0 = <&blue_led_pin>;
- 
--		led-0 {
-+		blue_led: led-0 {
- 			label = "blue:heartbeat";
- 			gpios = <&gpio0 RK_PC1 GPIO_ACTIVE_HIGH>;
- 			linux,default-trigger = "heartbeat";
-@@ -528,7 +528,7 @@
- 	};
- 
- 	leds {
--		led_pins: led-pins {
-+		blue_led_pin: blue-led-pin {
- 			rockchip,pins = <0 RK_PC1 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-index 8d553c921..34db48c27 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-@@ -86,7 +86,7 @@
- 	leds {
- 		compatible = "gpio-leds";
- 
--		power {
-+		power_led: led-0 {
- 			label = "firefly:blue:power";
- 			linux,default-trigger = "heartbeat";
- 			gpios = <&rk805 1 GPIO_ACTIVE_LOW>;
-@@ -94,7 +94,7 @@
- 			mode = <0x23>;
- 		};
- 
--		user {
-+		user_led: led-1 {
- 			label = "firefly:yellow:user";
- 			linux,default-trigger = "mmc1";
- 			gpios = <&rk805 0 GPIO_ACTIVE_LOW>;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
-index ebf3eb222..6e09c223e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
-@@ -73,12 +73,12 @@
- 	leds {
- 		compatible = "gpio-leds";
- 
--		power {
-+		power_led: led-0 {
- 			gpios = <&rk805 1 GPIO_ACTIVE_LOW>;
- 			linux,default-trigger = "mmc0";
- 		};
- 
--		standby {
-+		standby_led: led-1 {
- 			gpios = <&rk805 0 GPIO_ACTIVE_LOW>;
- 			linux,default-trigger = "heartbeat";
- 		};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts b/arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts
-index 1d0778ff2..46357d1d7 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts
-@@ -50,13 +50,13 @@
- 	leds: gpio-leds {
- 		compatible = "gpio-leds";
- 
--		blue {
-+		blue_led: led-0 {
- 			gpios = <&gpio2 RK_PA2 GPIO_ACTIVE_HIGH>;
- 			label = "geekbox:blue:led";
- 			default-state = "on";
- 		};
- 
--		red {
-+		red_led: led-1 {
- 			gpios = <&gpio2 RK_PA3 GPIO_ACTIVE_HIGH>;
- 			label = "geekbox:red:led";
- 			default-state = "off";
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368-orion-r68-meta.dts b/arch/arm64/boot/dts/rockchip/rk3368-orion-r68-meta.dts
-index 6cc310255..b058ce999 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368-orion-r68-meta.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3368-orion-r68-meta.dts
-@@ -50,7 +50,7 @@
- 	leds: gpio-leds {
- 		compatible = "gpio-leds";
- 
--		red {
-+		red_led: led-0 {
- 			gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
- 			label = "orion:red:led";
- 			pinctrl-names = "default";
-@@ -58,7 +58,7 @@
- 			default-state = "on";
- 		};
- 
--		blue {
-+		blue_led: led-1 {
- 			gpios = <&gpio0 RK_PB4 GPIO_ACTIVE_HIGH>;
- 			label = "orion:blue:led";
- 			pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368-r88.dts b/arch/arm64/boot/dts/rockchip/rk3368-r88.dts
-index 006a1fb6a..236ab0f1b 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368-r88.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3368-r88.dts
-@@ -43,7 +43,7 @@
- 	leds: gpio-leds {
- 		compatible = "gpio-leds";
- 
--		work {
-+		work_led: led-0 {
- 			gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
- 			label = "r88:green:led";
- 			pinctrl-names = "default";
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts b/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
-index ebe2ee77b..1ce85a581 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-ficus.dts
-@@ -27,42 +27,43 @@
- 	leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "default";
--		pinctrl-0 = <&user_led1>, <&user_led2>, <&user_led3>,
--			    <&user_led4>, <&wlan_led>, <&bt_led>;
-+		pinctrl-0 = <&user_led1_pin>, <&user_led2_pin>,
-+			    <&user_led3_pin>, <&user_led4_pin>,
-+			    <&wlan_led_pin>, <&bt_led_pin>;
- 
--		user_led1 {
-+		user_led1: led-1 {
- 			label = "red:user1";
- 			gpios = <&gpio4 25 0>;
- 			linux,default-trigger = "heartbeat";
- 		};
- 
--		user_led2 {
-+		user_led2: led-2 {
- 			label = "red:user2";
- 			gpios = <&gpio4 26 0>;
- 			linux,default-trigger = "mmc0";
- 		};
- 
--		user_led3 {
-+		user_led3: led-3 {
- 			label = "red:user3";
- 			gpios = <&gpio4 30 0>;
- 			linux,default-trigger = "mmc1";
- 		};
- 
--		user_led4 {
-+		user_led4: led-4 {
- 			label = "red:user4";
- 			gpios = <&gpio1 0 0>;
- 			panic-indicator;
- 			linux,default-trigger = "none";
- 		};
- 
--		wlan_active_led {
-+		wlan_active_led: led-5 {
- 			label = "red:wlan";
- 			gpios = <&gpio1 1 0>;
- 			linux,default-trigger = "phy0tx";
- 			default-state = "off";
- 		};
- 
--		bt_active_led {
-+		bt_active_led: led-6 {
- 			label = "red:bt";
- 			gpios = <&gpio1 4 0>;
- 			linux,default-trigger = "hci0-power";
-@@ -114,32 +115,32 @@
- 	};
- 
- 	leds {
--		user_led1: user_led1 {
-+		user_led1_pin: user-led1-pin {
- 			rockchip,pins =
- 				<4 RK_PD1 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		user_led2: user_led2 {
-+		user_led2_pin: user-led2-pin {
- 			rockchip,pins =
- 				<4 RK_PD2 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		user_led3: user_led3 {
-+		user_led3_pin: user-led3-pin {
- 			rockchip,pins =
- 				<4 RK_PD6 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		user_led4: user_led4 {
-+		user_led4_pin: user-led4-pin {
- 			rockchip,pins =
- 				<1 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		wlan_led: wlan_led {
-+		wlan_led_pin: wlan-led-pin {
- 			rockchip,pins =
- 				<1 RK_PA1 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		bt_led: bt_led {
-+		bt_led_pin: bt-led-pin {
- 			rockchip,pins =
- 				<1 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts b/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-index d63faf38c..20b5599f5 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-firefly.dts
-@@ -91,15 +91,15 @@
- 	leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "default";
--		pinctrl-0 = <&work_led_gpio>, <&diy_led_gpio>;
-+		pinctrl-0 = <&work_led_pin>, <&diy_led_pin>;
- 
--		work-led {
-+		work_led: led-0 {
- 			label = "work";
- 			default-state = "on";
- 			gpios = <&gpio2 RK_PD3 GPIO_ACTIVE_HIGH>;
- 		};
- 
--		diy-led {
-+		diy_led: led-1 {
- 			label = "diy";
- 			default-state = "off";
- 			gpios = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
-@@ -629,11 +629,11 @@
- 	};
- 
- 	leds {
--		work_led_gpio: work_led-gpio {
-+		work_led_pin: work-led-pin {
- 			rockchip,pins = <2 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		diy_led_gpio: diy_led-gpio {
-+		diy_led_pin: diy-led-pin {
- 			rockchip,pins = <0 RK_PB5 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-index 4b4a38e59..bf87fa32d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-hugsun-x99.dts
-@@ -39,9 +39,9 @@
- 	leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "default";
--		pinctrl-0 = <&power_led_gpio>;
-+		pinctrl-0 = <&power_led_pin>;
- 
--		led-0 {
-+		power_led: led-0 {
- 			label = "blue:power";
- 			gpios = <&gpio4 RK_PC2 GPIO_ACTIVE_HIGH>;
- 			default-state = "on";
-@@ -510,7 +510,7 @@
- 	};
- 
- 	leds {
--		power_led_gpio: power-led-gpio {
-+		power_led_pin: power-led-pin {
- 			rockchip,pins = <4 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-index d44c73521..cb0245d22 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
-@@ -90,9 +90,9 @@
- 	leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "default";
--		pinctrl-0 = <&pwrled_gpio &slpled_gpio>;
-+		pinctrl-0 = <&pwr_led_pin &slp_led_pin>;
- 
--		green-led {
-+		green_led: led-0 {
- 			color = <LED_COLOR_ID_GREEN>;
- 			default-state = "on";
- 			function = LED_FUNCTION_POWER;
-@@ -100,7 +100,7 @@
- 			label = "green:power";
- 		};
- 
--		red-led {
-+		red_led: led-1 {
- 			color = <LED_COLOR_ID_RED>;
- 			default-state = "off";
- 			function = LED_FUNCTION_STANDBY;
-@@ -825,11 +825,11 @@
- 	};
- 
- 	leds {
--		pwrled_gpio: pwrled_gpio {
-+		pwr_led_pin: pwr-led-pin {
- 			rockchip,pins = <0 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		slpled_gpio: slpled_gpio {
-+		slp_led_pin: slp-led-pin {
- 			rockchip,pins = <0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 	};
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-index 437a75f31..c88295782 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock960.dts
-@@ -17,42 +17,43 @@
- 	leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "default";
--		pinctrl-0 = <&user_led1>, <&user_led2>, <&user_led3>,
--			    <&user_led4>, <&wlan_led>, <&bt_led>;
-+		pinctrl-0 = <&user_led1_pin>, <&user_led2_pin>,
-+			    <&user_led3_pin>, <&user_led4_pin>,
-+			    <&wlan_led_pin>, <&bt_led_pin>;
- 
--		user_led1 {
-+		user_led1: led-1 {
- 			label = "green:user1";
- 			gpios = <&gpio4 RK_PC2 0>;
- 			linux,default-trigger = "heartbeat";
- 		};
- 
--		user_led2 {
-+		user_led2: led-2 {
- 			label = "green:user2";
- 			gpios = <&gpio4 RK_PC6 0>;
- 			linux,default-trigger = "mmc0";
- 		};
- 
--		user_led3 {
-+		user_led3: led-3 {
- 			label = "green:user3";
- 			gpios = <&gpio4 RK_PD0 0>;
- 			linux,default-trigger = "mmc1";
- 		};
- 
--		user_led4 {
-+		user_led4: led-4 {
- 			label = "green:user4";
- 			gpios = <&gpio4 RK_PD4 0>;
- 			panic-indicator;
- 			linux,default-trigger = "none";
- 		};
- 
--		wlan_active_led {
-+		wlan_active_led: led-5 {
- 			label = "yellow:wlan";
- 			gpios = <&gpio4 RK_PD5 0>;
- 			linux,default-trigger = "phy0tx";
- 			default-state = "off";
- 		};
- 
--		bt_active_led {
-+		bt_active_led: led-6 {
- 			label = "blue:bt";
- 			gpios = <&gpio4 RK_PD6 0>;
- 			linux,default-trigger = "hci0-power";
-@@ -68,32 +69,32 @@
- 
- &pinctrl {
- 	leds {
--		user_led1: user_led1 {
-+		user_led1_pin: user-led1-pin {
- 			rockchip,pins =
- 				<4 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		user_led2: user_led2 {
-+		user_led2_pin: user-led2-pin {
- 			rockchip,pins =
- 				<4 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		user_led3: user_led3 {
-+		user_led3_pin: user-led3-pin {
- 			rockchip,pins =
- 				<4 RK_PD0 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		user_led4: user_led4 {
-+		user_led4_pin: user-led4-pin {
- 			rockchip,pins =
- 				<4 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		wlan_led: wlan_led {
-+		wlan_led_pin: wlan-led-pin {
- 			rockchip,pins =
- 				<4 RK_PD5 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
- 
--		bt_led: bt_led {
-+		bt_led_pin: bt-led-pin {
- 			rockchip,pins =
- 				<4 RK_PD6 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
--- 
-2.11.0
-
+U29ycnkgSSBkaWRuJ3Qgc2VlIHRoaXMgYmVmb3JlIG15IGNvbW1lbnRzIHllc3RlcmRheQ0KDQpG
+b3IgZWl0aGVyIGluZGl2aWR1YWwgb3Igc3BsaXQgc2V0LA0KUmV2aWV3ZWQtYnk6IEpvbiBEZXJy
+aWNrIDxqb25hdGhhbi5kZXJyaWNrQGludGVsLmNvbT4NCg0KVGhhbmtzIEt1cHB1c3dhbXkNCg0K
+T24gTW9uLCAyMDIwLTA0LTI3IGF0IDE5OjAyIC0wNTAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
+PiBbK2NjIEpvbiwgQWxleGFuZHJ1XQ0KPiANCj4gT24gU3VuLCBBcHIgMjYsIDIwMjAgYXQgMTE6
+MzA6MDZBTSAtMDcwMCwgc2F0aHlhbmFyYXlhbmFuLmt1cHB1c3dhbXlAbGludXguaW50ZWwuY29t
+IHdyb3RlOg0KPiA+IEZyb206IEt1cHB1c3dhbXkgU2F0aHlhbmFyYXlhbmFuIDxzYXRoeWFuYXJh
+eWFuYW4ua3VwcHVzd2FteUBsaW51eC5pbnRlbC5jb20+DQo+ID4gDQo+ID4gQ3VycmVudGx5IFBD
+SWUgQUVSIGRyaXZlciB1c2VzIEhFU1QgRklSTVdBUkVfRklSU1QgYml0IHRvDQo+ID4gZGV0ZXJt
+aW5lIHRoZSBQQ0llIEFFUiBDYXBhYmlsaXR5IG93bmVyc2hpcCBiZXR3ZWVuIE9TIGFuZA0KPiA+
+IGZpcm13YXJlLiBUaGlzIHN1cHBvcnQgaXMgYWRkZWQgYmFzZWQgb24gZm9sbG93aW5nIHNwZWMN
+Cj4gPiByZWZlcmVuY2UuDQo+ID4gDQo+ID4gUGVyIEFDUEkgc3BlYyByNi4zLCB0YWJsZSAxOC0z
+ODcsIDE4LTM4OCwgMTgtMzg5LCBIRVNUIHRhYmxlDQo+ID4gZmxhZ3MgZmllbGQgQklULTAgYW5k
+IEJJVC0xIGNhbiBiZSB1c2VkIHRvIGV4cG9zZSB0aGUNCj4gPiBvd25lcnNoaXAgb2YgZXJyb3Ig
+c291cmNlIGJldHdlZW4gZmlybXdhcmUgYW5kIE9TUE0uDQo+ID4gDQo+ID4gQml0IFswXSAtIEZJ
+Uk1XQVJFX0ZJUlNUOiBJZiBzZXQsIGluZGljYXRlcyB0aGF0IHN5c3RlbQ0KPiA+ICAgICAgICAg
+ICBmaXJtd2FyZSB3aWxsIGhhbmRsZSBlcnJvcnMgZnJvbSB0aGlzIHNvdXJjZQ0KPiA+ICAgICAg
+ICAgICBmaXJzdC4NCj4gPiBCaXQgWzFdIOKAkyBHTE9CQUw6IElmIHNldCwgaW5kaWNhdGVzIHRo
+YXQgdGhlIHNldHRpbmdzDQo+ID4gICAgICAgICAgIGNvbnRhaW5lZCBpbiB0aGlzIHN0cnVjdHVy
+ZSBhcHBseSBnbG9iYWxseSB0byBhbGwNCj4gPiAgICAgICAgICAgUENJIEV4cHJlc3MgQnJpZGdl
+cy4NCj4gPiANCj4gPiBBbHRob3VnaCBhYm92ZSBzcGVjIHJlZmVyZW5jZSBzdGF0ZXMgdGhhdCBz
+ZXR0aW5nDQo+ID4gRklSTVdBUkVfRklSU1QgYml0IG1lYW5zIGZpcm13YXJlIHdpbGwgaGFuZGxl
+IHRoZSBlcnJvciBzb3VyY2UNCj4gPiBmaXJzdCwgaXQgZG9lcyBub3QgZXhwbGljaXRseSBzdGF0
+ZSBhbnl0aGluZyBhYm91dCBBRVINCj4gPiBvd25lcnNoaXAuIFNvIHVzaW5nIEhFU1QgdG8gZGV0
+ZXJtaW5lIEFFUiBvd25lcnNoaXAgaXMNCj4gPiBpbmNvcnJlY3QuDQo+ID4gDQo+ID4gQWxzbywg
+YXMgcGVyIGZvbGxvd2luZyBzcGVjaWZpY2F0aW9uIHJlZmVyZW5jZXMsIF9PU0MgY2FuIGJlDQo+
+ID4gdXNlZCB0byBuZWdvdGlhdGUgdGhlIEFFUiBvd25lcnNoaXAgYmV0d2VlbiBmaXJtd2FyZSBh
+bmQgT1MuDQo+ID4gRGV0YWlscyBhcmUsDQo+ID4gDQo+ID4gUGVyIEFDUEkgc3BlYyByNi4zLCBz
+ZWMgNi4yLjExLjMsIHRhYmxlIHRpdGxlZCDigJxJbnRlcnByZXRhdGlvbg0KPiA+IG9mIF9PU0Mg
+Q29udHJvbCBGaWVsZOKAnSBhbmQgYXMgcGVyIFBDSSBmaXJtd2FyZSBzcGVjaWZpY2F0aW9uIHIz
+LjIsDQo+ID4gc2VjIDQuNS4xLCB0YWJsZSA0LTUsIE9TIGNhbiBzZXQgYml0IDMgb2YgX09TQyBj
+b250cm9sIGZpZWxkDQo+ID4gdG8gcmVxdWVzdCBjb250cm9sIG92ZXIgUENJIEV4cHJlc3MgQUVS
+LiBJZiB0aGUgT1Mgc3VjY2Vzc2Z1bGx5DQo+ID4gcmVjZWl2ZXMgY29udHJvbCBvZiB0aGlzIGZl
+YXR1cmUsIGl0IG11c3QgaGFuZGxlIGVycm9yIHJlcG9ydGluZw0KPiA+IHRocm91Z2ggdGhlIEFF
+UiBDYXBhYmlsaXR5IGFzIGRlc2NyaWJlZCBpbiB0aGUgUENJIEV4cHJlc3MgQmFzZQ0KPiA+IFNw
+ZWNpZmljYXRpb24uDQo+ID4gDQo+ID4gU2luY2UgYWJvdmUgc3BlYyByZWZlcmVuY2VzIGNsZWFy
+bHkgc3RhdGVzIF9PU0MgY2FuIGJlIHVzZWQgdG8NCj4gPiBkZXRlcm1pbmUgQUVSIG93bmVyc2hp
+cCwgZG9uJ3QgZGVwZW5kIG9uIEhFU1QgRklSTVdBUkVfRklSU1QgYml0Lg0KPiANCj4gSSBzcGxp
+dCB0aGlzIHVwIGEgYml0IGFuZCBhcHBsaWVkIHRoZSBmaXJzdCBwYXJ0IHRvIHBjaS9lcnJvciB0
+byBnZXQNCj4gaXQgaW50byAtbmV4dCBzbyB3ZSBjYW4gc3RhcnQgc2VlaW5nIHdoYXQgYnJlYWtz
+LiAgSSB3b24ndCBiZSB0b28NCj4gc3VycHJpc2VkIGlmIHdlIHRyaXAgb3ZlciBzb21ldGhpbmcu
+DQo+IA0KPiBIZXJlJ3MgdGhlIGZpcnN0IHBhcnQgKGVudGlyZSBvcmlnaW5hbCBwYXRjaCBpcyBh
+dA0KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzY3YWYyOTMxNzA1YmVkOWE1ODhiNWEzOWQz
+NjljYjcwYjk5NDIxOTAuMTU4NzkyNTYzNi5naXQuc2F0aHlhbmFyYXlhbmFuLmt1cHB1c3dhbXlA
+bGludXguaW50ZWwuY29tKS4NCj4gDQo+IGNvbW1pdCA4ZjhlNDJlN2MyZGQgKCJQQ0kvQUVSOiBV
+c2Ugb25seSBfT1NDIHRvIGRldGVybWluZSBBRVIgb3duZXJzaGlwIikNCj4gQXV0aG9yOiBLdXBw
+dXN3YW15IFNhdGh5YW5hcmF5YW5hbiA8c2F0aHlhbmFyYXlhbmFuLmt1cHB1c3dhbXlAbGludXgu
+aW50ZWwuY29tPg0KPiBEYXRlOiAgIE1vbiBBcHIgMjcgMTg6MjU6MTMgMjAyMCAtMDUwMA0KPiAN
+Cj4gICAgIFBDSS9BRVI6IFVzZSBvbmx5IF9PU0MgdG8gZGV0ZXJtaW5lIEFFUiBvd25lcnNoaXAN
+Cj4gICAgIA0KPiAgICAgUGVyIHRoZSBQQ0kgRmlybXdhcmUgc3BlYywgcjMuMiwgc2VjIDQuNS4x
+LCB0aGUgT1MgY2FuIHJlcXVlc3QgY29udHJvbCBvZg0KPiAgICAgQUVSIHZpYSBiaXQgMyBvZiB0
+aGUgX09TQyBDb250cm9sIEZpZWxkLiAgSW4gdGhlIHJldHVybmVkIHZhbHVlIG9mIHRoZQ0KPiAg
+ICAgQ29udHJvbCBGaWVsZDoNCj4gICAgIA0KPiAgICAgICBUaGUgZmlybXdhcmUgc2V0cyBbYml0
+IDNdIHRvIDEgdG8gZ3JhbnQgY29udHJvbCBvdmVyIFBDSSBFeHByZXNzIEFkdmFuY2VkDQo+ICAg
+ICAgIEVycm9yIFJlcG9ydGluZy4gIC4uLiAgYWZ0ZXIgY29udHJvbCBpcyB0cmFuc2ZlcnJlZCB0
+byB0aGUgb3BlcmF0aW5nDQo+ICAgICAgIHN5c3RlbSwgZmlybXdhcmUgbXVzdCBub3QgbW9kaWZ5
+IHRoZSBBZHZhbmNlZCBFcnJvciBSZXBvcnRpbmcgQ2FwYWJpbGl0eS4NCj4gICAgICAgSWYgY29u
+dHJvbCBvZiB0aGlzIGZlYXR1cmUgd2FzIHJlcXVlc3RlZCBhbmQgZGVuaWVkIG9yIHdhcyBub3Qg
+cmVxdWVzdGVkLA0KPiAgICAgICBmaXJtd2FyZSByZXR1cm5zIHRoaXMgYml0IHNldCB0byAwLg0K
+PiAgICAgDQo+ICAgICBQcmV2aW91c2x5IHRoZSBwY2lfcm9vdCBkcml2ZXIgbG9va2VkIGF0IHRo
+ZSBIRVNUIEZJUk1XQVJFX0ZJUlNUIGJpdCB0bw0KPiAgICAgZGV0ZXJtaW5lIHdoZXRoZXIgdG8g
+cmVxdWVzdCBvd25lcnNoaXAgb2YgdGhlIEFFUiBDYXBhYmlsaXR5LiAgVGhpcyB3YXMNCj4gICAg
+IGJhc2VkIG9uIEFDUEkgc3BlYyB2Ni4zLCBzZWMgMTguMy4yLjQsIGFuZCBzaW1pbGFyIHNlY3Rp
+b25zLCB3aGljaCBzYXkNCj4gICAgIHRoaW5ncyBsaWtlOg0KPiAgICAgDQo+ICAgICAgIEJpdCBb
+MF0gLSBGSVJNV0FSRV9GSVJTVDogSWYgc2V0LCBpbmRpY2F0ZXMgdGhhdCBzeXN0ZW0gZmlybXdh
+cmUgd2lsbA0KPiAgICAgICAgICAgICAgICAgaGFuZGxlIGVycm9ycyBmcm9tIHRoaXMgc291cmNl
+IGZpcnN0Lg0KPiAgICAgDQo+ICAgICAgIEJpdCBbMV0gLSBHTE9CQUw6IElmIHNldCwgaW5kaWNh
+dGVzIHRoYXQgdGhlIHNldHRpbmdzIGNvbnRhaW5lZCBpbiB0aGlzDQo+ICAgICAgICAgICAgICAg
+ICBzdHJ1Y3R1cmUgYXBwbHkgZ2xvYmFsbHkgdG8gYWxsIFBDSSBFeHByZXNzIERldmljZXMuDQo+
+ICAgICANCj4gICAgIFRoZXNlIEFDUEkgcmVmZXJlbmNlcyBkb24ndCBzYXkgYW55dGhpbmcgYWJv
+dXQgb3duZXJzaGlwIG9mIHRoZSBBRVINCj4gICAgIENhcGFiaWxpdHkuDQo+ICAgICANCj4gICAg
+IFJlbW92ZSB1c2Ugb2YgdGhlIEZJUk1XQVJFX0ZJUlNUIGJpdCBhbmQgcmVseSBvbmx5IG9uIHRo
+ZSBfT1NDIGJpdCB0bw0KPiAgICAgZGV0ZXJtaW5lIHdoZXRoZXIgd2UgaGF2ZSBjb250cm9sIG9m
+IHRoZSBBRVIgQ2FwYWJpbGl0eS4NCj4gICAgIA0KPiAgICAgTGluazogaHR0cHM6Ly9sb3JlLmtl
+cm5lbC5vcmcvci82N2FmMjkzMTcwNWJlZDlhNTg4YjVhMzlkMzY5Y2I3MGI5OTQyMTkwLjE1ODc5
+MjU2MzYuZ2l0LnNhdGh5YW5hcmF5YW5hbi5rdXBwdXN3YW15QGxpbnV4LmludGVsLmNvbQ0KPiAg
+ICAgW2JoZWxnYWFzOiBjb21taXQgbG9nLCBzcGxpdCBwYXRjaGVzXQ0KPiAgICAgU2lnbmVkLW9m
+Zi1ieTogS3VwcHVzd2FteSBTYXRoeWFuYXJheWFuYW4gPHNhdGh5YW5hcmF5YW5hbi5rdXBwdXN3
+YW15QGxpbnV4LmludGVsLmNvbT4NCj4gICAgIFNpZ25lZC1vZmYtYnk6IEJqb3JuIEhlbGdhYXMg
+PGJoZWxnYWFzQGdvb2dsZS5jb20+DQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9hY3BpL3Bj
+aV9yb290LmMgYi9kcml2ZXJzL2FjcGkvcGNpX3Jvb3QuYw0KPiBpbmRleCBhYzhhZDZjYjgyYWEu
+LjllMjM1YzFhNzVmZiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9hY3BpL3BjaV9yb290LmMNCj4g
+KysrIGIvZHJpdmVycy9hY3BpL3BjaV9yb290LmMNCj4gQEAgLTQ4MywxMyArNDgzLDggQEAgc3Rh
+dGljIHZvaWQgbmVnb3RpYXRlX29zX2NvbnRyb2woc3RydWN0IGFjcGlfcGNpX3Jvb3QgKnJvb3Qs
+IGludCAqbm9fYXNwbSwNCj4gIAlpZiAoSVNfRU5BQkxFRChDT05GSUdfSE9UUExVR19QQ0lfU0hQ
+QykpDQo+ICAJCWNvbnRyb2wgfD0gT1NDX1BDSV9TSFBDX05BVElWRV9IUF9DT05UUk9MOw0KPiAg
+DQo+IC0JaWYgKHBjaV9hZXJfYXZhaWxhYmxlKCkpIHsNCj4gLQkJaWYgKGFlcl9hY3BpX2Zpcm13
+YXJlX2ZpcnN0KCkpDQo+IC0JCQlkZXZfaW5mbygmZGV2aWNlLT5kZXYsDQo+IC0JCQkJICJQQ0ll
+IEFFUiBoYW5kbGVkIGJ5IGZpcm13YXJlXG4iKTsNCj4gLQkJZWxzZQ0KPiAtCQkJY29udHJvbCB8
+PSBPU0NfUENJX0VYUFJFU1NfQUVSX0NPTlRST0w7DQo+IC0JfQ0KPiArCWlmIChwY2lfYWVyX2F2
+YWlsYWJsZSgpKQ0KPiArCQljb250cm9sIHw9IE9TQ19QQ0lfRVhQUkVTU19BRVJfQ09OVFJPTDsN
+Cj4gIA0KPiAgCS8qDQo+ICAJICogUGVyIHRoZSBEb3duc3RyZWFtIFBvcnQgQ29udGFpbm1lbnQg
+UmVsYXRlZCBFbmhhbmNlbWVudHMgRUNOIHRvDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9w
+Y2llL2Flci5jIGIvZHJpdmVycy9wY2kvcGNpZS9hZXIuYw0KPiBpbmRleCBmNDI3NGQzMDEyMzUu
+LmVmYzI2NzczY2M2ZCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9wY2kvcGNpZS9hZXIuYw0KPiAr
+KysgYi9kcml2ZXJzL3BjaS9wY2llL2Flci5jDQo+IEBAIC0zMTgsMzAgKzMxOCw2IEBAIGludCBw
+Y2llX2Flcl9nZXRfZmlybXdhcmVfZmlyc3Qoc3RydWN0IHBjaV9kZXYgKmRldikNCj4gIAkJYWVy
+X3NldF9maXJtd2FyZV9maXJzdChkZXYpOw0KPiAgCXJldHVybiBkZXYtPl9fYWVyX2Zpcm13YXJl
+X2ZpcnN0Ow0KPiAgfQ0KPiAtDQo+IC1zdGF0aWMgYm9vbCBhZXJfZmlybXdhcmVfZmlyc3Q7DQo+
+IC0NCj4gLS8qKg0KPiAtICogYWVyX2FjcGlfZmlybXdhcmVfZmlyc3QgLSBDaGVjayBpZiBBUEVJ
+IHNob3VsZCBjb250cm9sIEFFUi4NCj4gLSAqLw0KPiAtYm9vbCBhZXJfYWNwaV9maXJtd2FyZV9m
+aXJzdCh2b2lkKQ0KPiAtew0KPiAtCXN0YXRpYyBib29sIHBhcnNlZCA9IGZhbHNlOw0KPiAtCXN0
+cnVjdCBhZXJfaGVzdF9wYXJzZV9pbmZvIGluZm8gPSB7DQo+IC0JCS5wY2lfZGV2CT0gTlVMTCwJ
+LyogQ2hlY2sgYWxsIFBDSWUgZGV2aWNlcyAqLw0KPiAtCQkuZmlybXdhcmVfZmlyc3QJPSAwLA0K
+PiAtCX07DQo+IC0NCj4gLQlpZiAocGNpZV9wb3J0c19uYXRpdmUpDQo+IC0JCXJldHVybiBmYWxz
+ZTsNCj4gLQ0KPiAtCWlmICghcGFyc2VkKSB7DQo+IC0JCWFwZWlfaGVzdF9wYXJzZShhZXJfaGVz
+dF9wYXJzZSwgJmluZm8pOw0KPiAtCQlhZXJfZmlybXdhcmVfZmlyc3QgPSBpbmZvLmZpcm13YXJl
+X2ZpcnN0Ow0KPiAtCQlwYXJzZWQgPSB0cnVlOw0KPiAtCX0NCj4gLQlyZXR1cm4gYWVyX2Zpcm13
+YXJlX2ZpcnN0Ow0KPiAtfQ0KPiAgI2VuZGlmDQo+ICANCj4gICNkZWZpbmUJUENJX0VYUF9BRVJf
+RkxBR1MJKFBDSV9FWFBfREVWQ1RMX0NFUkUgfCBQQ0lfRVhQX0RFVkNUTF9ORkVSRSB8IFwNCj4g
+QEAgLTE1MjMsNyArMTQ5OSw3IEBAIHN0YXRpYyBzdHJ1Y3QgcGNpZV9wb3J0X3NlcnZpY2VfZHJp
+dmVyIGFlcmRyaXZlciA9IHsNCj4gICAqLw0KPiAgaW50IF9faW5pdCBwY2llX2Flcl9pbml0KHZv
+aWQpDQo+ICB7DQo+IC0JaWYgKCFwY2lfYWVyX2F2YWlsYWJsZSgpIHx8IGFlcl9hY3BpX2Zpcm13
+YXJlX2ZpcnN0KCkpDQo+ICsJaWYgKCFwY2lfYWVyX2F2YWlsYWJsZSgpKQ0KPiAgCQlyZXR1cm4g
+LUVOWElPOw0KPiAgCXJldHVybiBwY2llX3BvcnRfc2VydmljZV9yZWdpc3RlcigmYWVyZHJpdmVy
+KTsNCj4gIH0NCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvcGNpLWFjcGkuaCBiL2luY2x1
+ZGUvbGludXgvcGNpLWFjcGkuaA0KPiBpbmRleCAyZDE1NWJmYjhmYmYuLjExYzk4ODc1NTM4YSAx
+MDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9wY2ktYWNwaS5oDQo+ICsrKyBiL2luY2x1ZGUv
+bGludXgvcGNpLWFjcGkuaA0KPiBAQCAtMTI1LDEwICsxMjUsNCBAQCBzdGF0aWMgaW5saW5lIHZv
+aWQgYWNwaV9wY2lfYWRkX2J1cyhzdHJ1Y3QgcGNpX2J1cyAqYnVzKSB7IH0NCj4gIHN0YXRpYyBp
+bmxpbmUgdm9pZCBhY3BpX3BjaV9yZW1vdmVfYnVzKHN0cnVjdCBwY2lfYnVzICpidXMpIHsgfQ0K
+PiAgI2VuZGlmCS8qIENPTkZJR19BQ1BJICovDQo+ICANCj4gLSNpZmRlZiBDT05GSUdfQUNQSV9B
+UEVJDQo+IC1leHRlcm4gYm9vbCBhZXJfYWNwaV9maXJtd2FyZV9maXJzdCh2b2lkKTsNCj4gLSNl
+bHNlDQo+IC1zdGF0aWMgaW5saW5lIGJvb2wgYWVyX2FjcGlfZmlybXdhcmVfZmlyc3Qodm9pZCkg
+eyByZXR1cm4gZmFsc2U7IH0NCj4gLSNlbmRpZg0KPiAtDQo+ICAjZW5kaWYJLyogX1BDSV9BQ1BJ
+X0hfICovDQo=
