@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CAC1BCF3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 048E11BCF44
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726672AbgD1V5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47952 "EHLO
+        id S1726838AbgD1V66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726180AbgD1V5o (ORCPT
+        by vger.kernel.org with ESMTP id S1726286AbgD1V65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:57:44 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D594C03C1AD
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:57:44 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id b18so504643ilf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:57:44 -0700 (PDT)
+        Tue, 28 Apr 2020 17:58:57 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F18C03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:58:56 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id k23so19377ios.5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 14:58:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Io2WMO8492IJ58vES9hjWcjeSKOy0fwA74x2MUbiieQ=;
-        b=i+etvV+A6H82xkMFH/Wlbyxxv5zUTTycXQCEGIQe4u2HkAeaatkzyJiu3wiKq8WCOp
-         r5j9HSMmVyBVMm8KB8I3wsHSHlzajGYAvDX02jl7P7wdFbsx4j+hJkoNO9Jgyb0oYVHy
-         elYH8z/IJ7NiZGRYfTw3IrvrJndVJ4AmDxh6bDMt70+OaAZOyDqHWYZsEFqEyX6O5Hip
-         gj6JcZDmApaawYInA4N1YNDWXwTCIhwKxDHALZngxVTiRRS35ApB9r/IybQBX+4QE4GN
-         oSD9smnKk0gVjIF+JBY2zXEwnUemVMyDNa8SpmXkffuTNSQqWA1juCiOrVJ5j6zpp7Cj
-         ei/A==
+        bh=Lnb/AuomAQNJo8vC00yUB5kS4MsOuZB4Ct4ocKwuxdk=;
+        b=mkX4NZaNgVNkDyA54xwp26Mz+IRfpG1ztLCsGFY2+Q8scP70EZBen1e/opZFQUaqlu
+         VJ5Rp3psn0rcwas6GrwhtKAnlAsUMCJwnICnwwnEFuTuYssLk0gb3UiqYMLHl5xTHTzi
+         gLhIEZwFQq1pLhwwjwjrCp6Vx9Yt4PsflleMy1hgrW1LffY+tBffmmXWGBUqvxlJ+2Kh
+         S15d2MNup5bdK3efqdbfh+lDsG3Tj3O6M4oehDOMG8bH+cLrtwHmg3DVQfN/vJgExQTy
+         Sn89OHYrhTvStmTNGHpU5K0R86SV6xMjDV6poX65cA+KQPjNmK97WyfbQHpqPcjQVa6Z
+         xG3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Io2WMO8492IJ58vES9hjWcjeSKOy0fwA74x2MUbiieQ=;
-        b=C4Quc2gW4qP+t+h1BK8yzTUvPskZqq/OgAVY+5clh5gPmduo9T66xDmN9gJT576AP3
-         r59pm8wINpasp5bawkkBKS5GR+Lycp9vfinUVTVsHrGUG0SUWWczpQxE5Jx6xJ/yfLaH
-         hiTnB45berY1Z3Vp9zpd5vG2VHB0itbCglPDcJ5+8k43YWfgNMLnIUaa1n27h9/A144O
-         dzsdNjZb+ydp6COSEUS/TKOPoA1p9epp5ZjImbjki0PE7BAlR2DDlsmC88kPE3gQdM03
-         Lpj76ONIW62HK/M0bbYEGYJzASWDCGEfIeEpO+J4GhyzaTqyERdLBqzWvKKxJfRLIdXH
-         o1QA==
-X-Gm-Message-State: AGi0PuaWd0JGiX5tpfxfdEYi8aguE0HZ0TjbP1ec4UcgGh3CYnTUU4Zc
-        E7WpwtP2mKGcTn/r+V40G86gVYDLr/nwNkHSw6ZJ8g==
-X-Google-Smtp-Source: APiQypLd6vCwcOl5dOCvVDnFlwdc7Aq16jZewq3oPeBM95t0Wqxw92H6H4X1szGZ0dllpY3xlNAcJGHTeAlbm3Cwg3Y=
-X-Received: by 2002:a92:da4e:: with SMTP id p14mr28502177ilq.296.1588111063335;
- Tue, 28 Apr 2020 14:57:43 -0700 (PDT)
+        bh=Lnb/AuomAQNJo8vC00yUB5kS4MsOuZB4Ct4ocKwuxdk=;
+        b=K7ozczrOZqPxTKktD4hUM+Q0Hb3oZ3Ob7XmTM6OYRSDCT2/KytCdc1g3g7gVe7UGS/
+         phzzEzN8uairxHdDmF4QhJpSEFEZCM5Zd8eBa1eLN30jiEyAtTCSH0g9D9pXgO4c8eCx
+         M4EpIgd+bjFTG7oUxHDW6XoKI7FXTmJLUIeCfxquFWqyFCXapBdjyxd96JvNETI4xgNZ
+         O0RkFQCpI56UoWshVifVX03Njao1zrCYc6rw8hhI6fVuvHrCsVeeRmqEI1tnjyiSE+NE
+         2EdFi/MDgHMKqpa85TjmcUnsN0HQQHOV7Xf6kaoFNFR3B408cwMmW968U1oISOHyaqS8
+         PTqg==
+X-Gm-Message-State: AGi0PuaO2PPZfVZgwGtswYQaXDkKBOzqKPnJkCOPwx/+PiwvYaVUAq4Z
+        xeFbtY/opUr8eeGdWqvZ2QFeNiewJ0m1nx1fMmtHEg==
+X-Google-Smtp-Source: APiQypJIb0ErMY4mtUsYmzA6Yv167R2fgOgPSoZqyTb9YnVxaEYquhArv+3g934sjJXNag31V/j4bT9VoIQAlxJU3/g=
+X-Received: by 2002:a5e:a610:: with SMTP id q16mr28126485ioi.75.1588111136020;
+ Tue, 28 Apr 2020 14:58:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200423022550.15113-1-sean.j.christopherson@intel.com> <20200423022550.15113-8-sean.j.christopherson@intel.com>
-In-Reply-To: <20200423022550.15113-8-sean.j.christopherson@intel.com>
+References: <20200423022550.15113-1-sean.j.christopherson@intel.com> <20200423022550.15113-9-sean.j.christopherson@intel.com>
+In-Reply-To: <20200423022550.15113-9-sean.j.christopherson@intel.com>
 From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 28 Apr 2020 14:57:32 -0700
-Message-ID: <CALMp9eQnzROUKG0wUhtzpCJcoxv267nsAGZSZs5_dx2XkrC6EQ@mail.gmail.com>
-Subject: Re: [PATCH 07/13] KVM: VMX: Split out architectural interrupt/NMI
- blocking checks
+Date:   Tue, 28 Apr 2020 14:58:44 -0700
+Message-ID: <CALMp9eQav5s4SceVD=3zYb-RYkNHs+8F3hMUASBYrcJcyUterQ@mail.gmail.com>
+Subject: Re: [PATCH 08/13] KVM: nVMX: Preserve IRQ/NMI priority irrespective
+ of exiting behavior
 To:     Sean Christopherson <sean.j.christopherson@intel.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
@@ -69,11 +69,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Wed, Apr 22, 2020 at 7:26 PM Sean Christopherson
 <sean.j.christopherson@intel.com> wrote:
 >
-> Move the architectural (non-KVM specific) interrupt/NMI blocking checks
-> to a separate helper so that they can be used in a future patch by
-> vmx_check_nested_events().
+> Short circuit vmx_check_nested_events() if an unblocked IRQ/NMI is
+> pending and needs to be injected into L2, priority between coincident
+> events is not dependent on exiting behavior.
 >
-> No functional change intended.
->
+> Fixes: b6b8a1451fc4 ("KVM: nVMX: Rework interception of IRQs and NMIs")
 > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Reviewed-by: Jim Mattson <jmattson@google.com>
