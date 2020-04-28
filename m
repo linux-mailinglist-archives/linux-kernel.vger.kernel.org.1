@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A481BC924
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7B51BC962
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729060AbgD1SjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:39:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57552 "EHLO mail.kernel.org"
+        id S1730361AbgD1SlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:41:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729088AbgD1Siy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:38:54 -0400
+        id S1730736AbgD1SlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:41:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B3AB20575;
-        Tue, 28 Apr 2020 18:38:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74D312085B;
+        Tue, 28 Apr 2020 18:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099133;
-        bh=PXQ3ud4Mq4WvMs2L4/YJb2DA51O2G1hCs0ozlECu1g0=;
+        s=default; t=1588099263;
+        bh=aA6z5Im+fckIqDKy07hv31qtqVKsbkx6P9lhSktTShc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=16o5qBEGVBEkTnmwu9GsS5dkdh8MOyU/QvnIHr8XQKb55UOQ6Z5SyG2BEXf8ur+lw
-         JekrjXHB2ouR5zuBU+YJgImJY458B68Lq6ATGeAd4dBCeRNqInWi7dmyYdERDitbKR
-         aMvgvJrBt6Fpn6I5WHSXWhl/L2hiwUwoGI0SxDgo=
+        b=Lnw3tP1RhzFKDolaB8+/vSdZgb1gVvykZYAY4pe+eaZjWzkCpbEU8/DJL3nvKQjQo
+         4+IF0YDrTxb5KDOzPSABS71dln17P99/2mWjOm9h2+l3AFy6pLuIx04AzMGVYt3wgc
+         ClDlkupf+OGJHOBjdwss8awQudNo74CnjQvNp5P4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: [PATCH 5.6 159/167] Revert "serial: uartps: Fix error path when alloc failed"
-Date:   Tue, 28 Apr 2020 20:25:35 +0200
-Message-Id: <20200428182245.702461543@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 4.19 124/131] UAS: no use logging any details in case of ENODEV
+Date:   Tue, 28 Apr 2020 20:25:36 +0200
+Message-Id: <20200428182240.848679067@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-References: <20200428182225.451225420@linuxfoundation.org>
+In-Reply-To: <20200428182224.822179290@linuxfoundation.org>
+References: <20200428182224.822179290@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Simek <michal.simek@xilinx.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit b6fd2dbbd649b89a3998528994665ded1e3fbf7f upstream.
+commit 5963dec98dc52d52476390485f07a29c30c6a582 upstream.
 
-This reverts commit 32cf21ac4edd6c0d5b9614368a83bcdc68acb031.
+Once a device is gone, the internal state does not matter anymore.
+There is no need to spam the logs.
 
-As Johan says, this driver needs a lot more work and these changes are
-only going in the wrong direction:
-  https://lkml.kernel.org/r/20190523091839.GC568@localhost
-
-Reported-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/46cd7f039db847c08baa6508edd7854f7c8ff80f.1585905873.git.michal.simek@xilinx.com
+Fixes: 326349f824619 ("uas: add dead request list")
+Link: https://lore.kernel.org/r/20200415141750.811-1-oneukum@suse.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/tty/serial/xilinx_uartps.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/usb/storage/uas.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/tty/serial/xilinx_uartps.c
-+++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -1554,10 +1554,8 @@ static int cdns_uart_probe(struct platfo
- #ifdef CONFIG_SERIAL_XILINX_PS_UART_CONSOLE
- 	cdns_uart_console = devm_kzalloc(&pdev->dev, sizeof(*cdns_uart_console),
- 					 GFP_KERNEL);
--	if (!cdns_uart_console) {
--		rc = -ENOMEM;
--		goto err_out_id;
--	}
-+	if (!cdns_uart_console)
-+		return -ENOMEM;
+--- a/drivers/usb/storage/uas.c
++++ b/drivers/usb/storage/uas.c
+@@ -190,6 +190,9 @@ static void uas_log_cmd_state(struct scs
+ 	struct uas_cmd_info *ci = (void *)&cmnd->SCp;
+ 	struct uas_cmd_info *cmdinfo = (void *)&cmnd->SCp;
  
- 	strncpy(cdns_uart_console->name, CDNS_UART_TTY_NAME,
- 		sizeof(cdns_uart_console->name));
++	if (status == -ENODEV) /* too late */
++		return;
++
+ 	scmd_printk(KERN_INFO, cmnd,
+ 		    "%s %d uas-tag %d inflight:%s%s%s%s%s%s%s%s%s%s%s%s ",
+ 		    prefix, status, cmdinfo->uas_tag,
 
 
