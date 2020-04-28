@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B581BC9AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E801BC8FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731326AbgD1Sn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:43:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36722 "EHLO mail.kernel.org"
+        id S1730506AbgD1Shh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:37:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731318AbgD1Snz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:43:55 -0400
+        id S1730483AbgD1She (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:37:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9818C20575;
-        Tue, 28 Apr 2020 18:43:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4B3720B1F;
+        Tue, 28 Apr 2020 18:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099435;
-        bh=ngkRcDgh2gXjSDeeX+GNSVS802t52ZmthJhMAK80nao=;
+        s=default; t=1588099053;
+        bh=cx53Q1txw0OXP9jC5QKoWUgPkLNbKKpXi65526FejRo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F+wZDYDcEccR3oH+MT2FxJFiU1HbpM6rOq1y7aIwAhgJqEc+pvnCeB9qQOLX1IaQP
-         Pdd0glUlwsjgSKF+U69PcquXVQ+6+DzSP7i/H7aOYyhrIwLDe+WAV6QdAxRbLkmbAp
-         +T/+QJIzZJQCWXZuSXy3Hvc0nmTUj1xESb84onuo=
+        b=LbolyCEYc2QKGN40zfz4qG/mER2K8vFIX9QhcIhrRum3CCvGCf+uqcJC5yLh3prAg
+         sAjlb92NheinsR19Kbga4vBx3Y3r49MeSBUDSwvw8Rj2V4kpIi/Vp9sP1VSnRLPOVi
+         uRS3BmK9vQPosK2Y9UTFbUBRkQ2w3qtUN6LzEQFQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
         Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.4 150/168] usb: dwc3: gadget: Fix request completion check
-Date:   Tue, 28 Apr 2020 20:25:24 +0200
-Message-Id: <20200428182250.459995351@linuxfoundation.org>
+Subject: [PATCH 5.6 149/167] usb: dwc3: gadget: Fix request completion check
+Date:   Tue, 28 Apr 2020 20:25:25 +0200
+Message-Id: <20200428182244.412333708@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -66,7 +66,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/usb/dwc3/gadget.c
 +++ b/drivers/usb/dwc3/gadget.c
-@@ -2481,14 +2481,7 @@ static int dwc3_gadget_ep_reclaim_trb_li
+@@ -2484,14 +2484,7 @@ static int dwc3_gadget_ep_reclaim_trb_li
  
  static bool dwc3_gadget_ep_request_completed(struct dwc3_request *req)
  {
@@ -82,7 +82,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  }
  
  static int dwc3_gadget_ep_cleanup_completed_request(struct dwc3_ep *dep,
-@@ -2512,8 +2505,7 @@ static int dwc3_gadget_ep_cleanup_comple
+@@ -2515,8 +2508,7 @@ static int dwc3_gadget_ep_cleanup_comple
  
  	req->request.actual = req->request.length - req->remaining;
  
