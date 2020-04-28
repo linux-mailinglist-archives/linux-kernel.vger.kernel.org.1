@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4301A1BB38A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3B41BB382
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 03:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726335AbgD1Boc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Apr 2020 21:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726264AbgD1Bob (ORCPT
+        id S1726399AbgD1Bj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Apr 2020 21:39:56 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:43371 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726259AbgD1Bj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Apr 2020 21:44:31 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C5FC03C1A8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 18:44:31 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id r7so15193385edo.11
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 18:44:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6dLKuml1l37VsUNUL7W3+8Plw3oZZU13zk85vygbzVU=;
-        b=Bd+HoaOQxYuuh8Zf1OdODQuVSh84RUl4JQmlzGerUyQmf8yQo21wChRkbSt91VRbi7
-         rW7nVLys2SsQX2Zyf0eFgqihojc0YmFDp8m/iu9CZyEhvrn1ELZTebPjm+Ei/dLS9xRA
-         fQg/tEt3Rd0+Q259PEVjDGKRpewOS/+lcY8FU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6dLKuml1l37VsUNUL7W3+8Plw3oZZU13zk85vygbzVU=;
-        b=OFEa9D0TR44hd2nxsFuPrP2BC6pvFEAzJMitRQ68VEpT8VU0yoNxRtmdn4ZGfHgK1U
-         y3ymkmp9qclKpeIcfBKAxhLgyqKyqd5ntl5GIyi7RAb1xZE7Ym6zSmmbxGQW8fQ2sI37
-         d96oNJ/FQ5Io69470SvCHxgclsbXp9h6eNRYaeaqbKKQ2IKq2cp9PB7i4PD2LyEYuPkZ
-         FxkRvZ54pRvvUYUtmPn/wO0EDWa3DumRBHibQ/N1/UxVYsmzWkgwpHUK1o2N+f83AC+C
-         g1jVRuzgDPUr5I484Sv3n77RGc7Z0WBhYY11OrIp6LSV7vs6hrzHwJBsK8//eCHAjKRs
-         76SA==
-X-Gm-Message-State: AGi0PuZ0vhGhhjQ+0BD7teCE/r9JdIWHJSQEqKeNw2LVml4vMv2adkWe
-        gjvi0DP/9zYzaqw0STHkGd2U9HTCkJk=
-X-Google-Smtp-Source: APiQypImgvMU7CXHZH0GN68HjQ+4686vzh9ZabejfYlMM6csZNqh+vZZAj/tT/cDTcbDNiNEEu8xqA==
-X-Received: by 2002:a50:9b53:: with SMTP id a19mr21482394edj.104.1588038269964;
-        Mon, 27 Apr 2020 18:44:29 -0700 (PDT)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id a15sm134933eds.50.2020.04.27.18.44.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Apr 2020 18:44:29 -0700 (PDT)
-Received: by mail-ed1-f42.google.com with SMTP id a8so15219881edv.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Apr 2020 18:44:29 -0700 (PDT)
-X-Received: by 2002:a05:6512:14a:: with SMTP id m10mr17156490lfo.152.1588037812064;
- Mon, 27 Apr 2020 18:36:52 -0700 (PDT)
+        Mon, 27 Apr 2020 21:39:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588037995;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AWt0oKx+pB01zuowl3HYopTA8sOUDIn9j7BD+UlNWuQ=;
+        b=Ouxne/IIEAnH0KL7fRqf8jqXc+MyoCV+MG/DFOHJ2JUOiZWOuIpHSckKTXcIFMkQAxrB7G
+        58ELjB7iHbLsKus6uw70DYwyKKInSklS92JQ/pOnZKSYmGcT+mpp5ETiS+GfH5pZN24O8Y
+        1qHmFOMifiyQz0FKGI+wCgOVSAFj2ss=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-369--721LIx2PCSItKIXH4hrrA-1; Mon, 27 Apr 2020 21:39:53 -0400
+X-MC-Unique: -721LIx2PCSItKIXH4hrrA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A52B835B40;
+        Tue, 28 Apr 2020 01:39:50 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-112-176.rdu2.redhat.com [10.10.112.176])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F8A4196AE;
+        Tue, 28 Apr 2020 01:39:44 +0000 (UTC)
+Subject: Re: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking
+ dependency
+To:     Qian Cai <cai@lca.pw>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>
+References: <20200427235621.7823-5-longman@redhat.com>
+ <55509F31-A503-4148-B209-B4D062AD0ED7@lca.pw>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <dbbfe685-7374-9a96-b7c2-684142746e30@redhat.com>
+Date:   Mon, 27 Apr 2020 21:39:44 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200426130100.306246-1-hagen@jauu.net> <20200426163430.22743-1-hagen@jauu.net>
- <20200427170826.mdklazcrn4xaeafm@wittgenstein> <CAG48ez0hskhN7OkxwHX-Bo5HGboJaVEk8udFukkTgiC=43ixcw@mail.gmail.com>
- <87zhawdc6w.fsf@x220.int.ebiederm.org> <20200427185929.GA1768@laniakea>
- <CAK8P3a2Ux1pDZEBjgRSPMJXvwUAvbPastX2ynVVC2iPTTDK_ow@mail.gmail.com>
- <20200427201303.tbiipopeapxofn6h@wittgenstein> <20200428004546.mlpwixgms2ekpfdm@yavin.dot.cyphar.com>
-In-Reply-To: <20200428004546.mlpwixgms2ekpfdm@yavin.dot.cyphar.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 27 Apr 2020 18:36:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wga3O=BoKZXR27-CDnAFareWcMxXhpWerwtCffdaH6_ow@mail.gmail.com>
-Message-ID: <CAHk-=wga3O=BoKZXR27-CDnAFareWcMxXhpWerwtCffdaH6_ow@mail.gmail.com>
-Subject: Re: [RFC v2] ptrace, pidfd: add pidfd_ptrace syscall
-To:     Aleksa Sarai <cyphar@cyphar.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Hagen Paul Pfeifer <hagen@jauu.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Brian Gerst <brgerst@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <55509F31-A503-4148-B209-B4D062AD0ED7@lca.pw>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 5:46 PM Aleksa Sarai <cyphar@cyphar.com> wrote:
+On 4/27/20 8:13 PM, Qian Cai wrote:
 >
-> I agree. It would be a shame to add a new ptrace syscall and not take
-> the opportunity to fix the multitude of problems with the existing API.
-> But that's a Pandora's box which we shouldn't open unless we want to
-> wait a long time to get an API everyone is okay with -- a pretty high
-> price to just get pidfds support in ptrace.
+>> On Apr 27, 2020, at 7:56 PM, Waiman Long <longman@redhat.com> wrote:
+>>
+>> A lockdep splat is observed by echoing "1" to the shrink sysfs file
+>> and then shutting down the system:
+>>
+>> [  167.473392] Chain exists of:
+>> [  167.473392]   kn->count#279 --> mem_hotplug_lock.rw_sem --> slab_mu=
+tex
+>> [  167.473392]
+>> [  167.484323]  Possible unsafe locking scenario:
+>> [  167.484323]
+>> [  167.490273]        CPU0                    CPU1
+>> [  167.494825]        ----                    ----
+>> [  167.499376]   lock(slab_mutex);
+>> [  167.502530]                                lock(mem_hotplug_lock.rw=
+_sem);
+>> [  167.509356]                                lock(slab_mutex);
+>> [  167.515044]   lock(kn->count#279);
+>> [  167.518462]
+>> [  167.518462]  *** DEADLOCK ***
+>>
+>> It is because of the get_online_cpus() and get_online_mems() calls in
+>> kmem_cache_shrink() invoked via the shrink sysfs file. To fix that, we
+>> have to use trylock to get the memory and cpu hotplug read locks. Sinc=
+e
+>> hotplug events are rare, it should be fine to refuse a kmem caches
+>> shrink operation when some hotplug events are in progress.
+> I don=E2=80=99t understand how trylock could prevent a splat. The funda=
+mental issue is that in sysfs slab store case, the locking order (once tr=
+ylock succeed) is,
+>
+> kn->count =E2=80=94> cpu/memory_hotplug
+>
+> But we have the existing reverse chain everywhere.
+>
+> cpu/memory_hotplug =E2=80=94> slab_mutex =E2=80=94> kn->count
+>
+The sequence that was prevented by this patch is "kn->count -->=20
+mem_hotplug_lock.rwsem". This sequence isn't directly in the splat. Once=20
+this link is broken, the 3-lock circular loop cannot be formed. Maybe I=20
+should modify the commit log to make this point more clear.
 
-We should really be very very careful with some "smarter ptrace".
-We've had _so_ many security issues with ptrace that it's not even
-funny.
+Cheers,
+Longman
 
-And that's ignoring all the practical issues we've had.
 
-I would definitely not want to have anything that looks like ptrace AT
-ALL using pidfd. If we have a file descriptor to specify the target
-process, then we should probably take advantage of that file
-descriptor to actually make it more of a asynchronous interface that
-doesn't cause the kinds of deadlocks that we've had with ptrace.
-
-The synchronous nature of ptrace() means that not only do we have
-those nasty deadlocks, it's also very very expensive to use. It also
-has some other fundamental problems, like the whole "take over parent"
-and the SIGCHLD behavior.
-
-It also is hard to ptrace a ptracer. Which is annoying when you're
-debugging gdb or strace or whatever.
-
-So I think the thing to do is ask the gdb (and strace) people if they
-have any _very_ particular painpoints that we could perhaps help with.
-
-And then very carefully think things through and not repeat all the
-mistakes ptrace did.
-
-I'm not very optimistic.
-
-              Linus
