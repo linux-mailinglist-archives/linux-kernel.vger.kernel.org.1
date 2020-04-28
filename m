@@ -2,65 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9701BCEFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A951BCEFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgD1Vk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726256AbgD1Vkz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:40:55 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC85BC03C1AC;
-        Tue, 28 Apr 2020 14:40:54 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 0477E1210A3F2;
-        Tue, 28 Apr 2020 14:40:53 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 14:40:53 -0700 (PDT)
-Message-Id: <20200428.144053.1011868905140234992.davem@davemloft.net>
-To:     mchehab+huawei@kernel.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        corbet@lwn.net, netdev@vger.kernel.org, linux-hams@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        linux-decnet-user@lists.sourceforge.net,
-        ceph-devel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-atm-general@lists.sourceforge.net, lvs-devel@vger.kernel.org
-Subject: Re: [PATCH 00/38] net: manually convert files to ReST format -
- part 1
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <cover.1588024424.git.mchehab+huawei@kernel.org>
-References: <cover.1588024424.git.mchehab+huawei@kernel.org>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 28 Apr 2020 14:40:54 -0700 (PDT)
+        id S1726902AbgD1VlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:41:11 -0400
+Received: from mga04.intel.com ([192.55.52.120]:55498 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726774AbgD1VlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 17:41:10 -0400
+IronPort-SDR: J1ZCH6W2Tf+7k2B3KPvKi5aNK8QMIbJ6F9/Slm7ZMUHx3YbS8KidhE/k9jSjQK3jkqnd6vB+A6
+ CQ3tyd5PcPIQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 14:41:09 -0700
+IronPort-SDR: BmShGtgPqO6g9l9TLnBaVqT0N7A8E9oYbKUmaq7A4M6HrJ//OEDzv4VauweuunA2PtV+nzwqSv
+ a6P896ZIrZdQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,328,1583222400"; 
+   d="scan'208";a="247825303"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga007.fm.intel.com with ESMTP; 28 Apr 2020 14:41:09 -0700
+Date:   Tue, 28 Apr 2020 14:41:09 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 1/7] mm: Document x86 uses a linked list of pgds
+Message-ID: <20200428214109.GB406458@iweiny-DESK2.sc.intel.com>
+References: <20200428194449.22615-1-willy@infradead.org>
+ <20200428194449.22615-2-willy@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428194449.22615-2-willy@infradead.org>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Date: Tue, 28 Apr 2020 00:01:15 +0200
+On Tue, Apr 28, 2020 at 12:44:43PM -0700, Matthew Wilcox wrote:
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> 
+> x86 uses page->lru of the pages used for pgds, but that's not immediately
+> obvious to anyone looking to make changes.  Add a struct list_head to
+> the union so it's clearly in use for pgds.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  include/linux/mm_types.h | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 4aba6c0c2ba8..9bb34e2cd5a5 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -142,8 +142,13 @@ struct page {
+>  			struct list_head deferred_list;
+>  		};
+>  		struct {	/* Page table pages */
+> -			unsigned long _pt_pad_1;	/* compound_head */
+> -			pgtable_t pmd_huge_pte; /* protected by page->ptl */
+> +			union {
+> +				struct list_head pgd_list;	/* x86 */
 
-> There are very few documents upstream that aren't converted upstream.
-> 
-> This series convert part of the networking text files into ReST.
-> It is part of a bigger set of patches, which were split on parts,
-> in order to make reviewing task easier.
-> 
-> The full series (including those ones) are at:
-> 
-> 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=net-docs
-> 
-> And the documents, converted to HTML via the building system
-> are at:
-> 
-> 	https://www.infradead.org/~mchehab/kernel_docs/networking/
+Shouldn't pgd_list_{add,del}() use this list head variable instead of lru to
+complete the documentation?
 
-Series applied to net-next, thank you.
+Probably the list iteration loops arch/x86/* as well?
+
+Ira
+
+> +				struct {
+> +					unsigned long _pt_pad_1;
+> +					pgtable_t pmd_huge_pte;
+> +				};
+> +			};
+>  			unsigned long _pt_pad_2;	/* mapping */
+>  			union {
+>  				struct mm_struct *pt_mm; /* x86 pgds only */
+> -- 
+> 2.26.2
+> 
+> 
