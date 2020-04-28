@@ -2,56 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AAD51BCEA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710CE1BCEB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 23:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726755AbgD1V33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 17:29:29 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:58054 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725934AbgD1V32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 17:29:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=uABev7ksk/0LGLL6iZYY0qzPu2ypUoSvYM+d38tXkO4=; b=tmwLjMTI8z7U5RVmyDF9p85bjQ
-        Pvb82bC+E3tqss6iIHRFCYujnpZIqR/Cyf15qRpdykkROC7zTGwfXb8AkNxklkflQcEFNcRP0qmZs
-        ZVMRB7YWeWBQ1Bd4tTbPD20poZvpAK8H4JlK+BSBaifUyqqnEKbr/pJPsSfSbZQk7dYs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jTXnC-000ABM-2n; Tue, 28 Apr 2020 23:29:26 +0200
-Date:   Tue, 28 Apr 2020 23:29:26 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Michael Walle <michael@walle.cc>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next 4/4] net: phy: bcm54140: add second PHY ID
-Message-ID: <20200428212926.GE30459@lunn.ch>
-References: <20200428210854.28088-1-michael@walle.cc>
- <20200428210854.28088-4-michael@walle.cc>
+        id S1726778AbgD1Vap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 17:30:45 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:38239 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbgD1Vap (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 17:30:45 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1McHM2-1it7ey3lam-00ciSB; Tue, 28 Apr 2020 23:30:37 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Rishi Gupta <gupt21@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jiri Kosina <jkosina@suse.cz>,
+        Bastien Nocera <bnocera@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Wolfram Sang <wsa@the-dreams.de>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: mcp2221: add gpiolib dependency
+Date:   Tue, 28 Apr 2020 23:30:17 +0200
+Message-Id: <20200428213035.3108649-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428210854.28088-4-michael@walle.cc>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:7r62qOoVCPk7gtPEoS7ZCMnWkY3NDUcoFia+LnBLDsJhyS0znYT
+ 8l0MoyYXUWSQ1KXGyDmM+4QXQ2jKT9uDUl4JyDjT1lUR5yWRobTJ30NqcPt8rrtM5Getybt
+ c/gYzc7hs54mFqvfbvGu2tjOMKuQS4EisdokSjBu1B8GGk9zuO7tDOpyXQAgQK1ht/9gybx
+ KwAA2oetBf7QpSDnxHGvQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZuNYRQiWMEE=:mhP4d/Qfn7PrwxWDgFNNAz
+ aupxDknp6gt1/Ru2AyMiOnsN11+IMPN5JUz0sE5uDFuc0T7P2MgW+eaRjaUuEukRoni9WcvFz
+ IS6a6CBMZ+FPIxClGfY5linu4XdOwhkg4DRV4mf66gX2fDOCDlPXQsxq+/aSH2uWei1TtDpre
+ NgwOCUtN7qL0nAafixszMd/UnJo+v3vL+FwpoiM13ZvGqkuRdC0UgALgip7Kwz3A+crFwXWQy
+ P/cEkHwD0y3/Bu20rala7TfH3o5anT8HYWv60pP5B+nzapyRfCjNpgPJr0lVWWOyNsoDJssm2
+ 7eP2clJDq1FG8RbvYZlrep9zBZrWG+EQmnt2JZALtFPc04GBHhY6dCnK7yBHSYAUWh1NN3Hex
+ jBVyLeBOMa4SAl/ALuhSrXDRxcDc9EOOxmQlk2r9zNoOVTlEWDlGoW6397U9qkNYNGh4TYOqj
+ wheDojTdiWNZxRhxh3An+a+3Kf0za5hAYIbxdSLnpdHqxzM+Bkk8T0R4Q6bl1deMlb/VGSzM3
+ rwGR2VfHaOxd3GJEkKiOXpBQvv3+lLuCIA3y4Nc5KlDp9XkiGwZdjGZ7dScA/7FwmiS1ajnSY
+ /MLWXsxC013uM0T87xvxV/gW7ToDIvwapRnpebPyYvdVopqhoDp7RJpH9+s5O7SEDXO57Y/Ht
+ jJ6LsED0LT9ijiHXQa5wOOkcXENsxnkc37i2wlpQdDS7rbl6jkPN4IgKp4X22+Le+k38yxcny
+ 0j0+Bn+ZSud5bMbzaLy+Bb8y3YVqFrj60ogGG5jOXJhCLIZnQJjcZWgpD9RFA5xRM2GyKd5rf
+ lf17fCNghFntPypm++wYaW1bkrt0YgiIp8xcDvj1eSy6gDJ7wo=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 11:08:54PM +0200, Michael Walle wrote:
-> This PHY have to PHY IDs depending on its mode. Adjust the mask so that
-> it includes both IDs.
+Without gpiolib, this driver fails to link:
 
-Hi Michael
+arm-linux-gnueabi-ld: drivers/hid/hid-mcp2221.o: in function `mcp2221_probe':
+hid-mcp2221.c:(.text+0x1b0): undefined reference to `devm_gpiochip_add_data'
+arm-linux-gnueabi-ld: drivers/hid/hid-mcp2221.o: in function `mcp_gpio_get':
+hid-mcp2221.c:(.text+0x30c): undefined reference to `gpiochip_get_data'
 
-I don't have a strong opinion, but maybe list it as two different
-PHYs? I do sometimes grep for PHY IDs, and that would not work due to
-the odd mask.
+Fixes: 328de1c519c5 ("HID: mcp2221: add GPIO functionality support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/hid/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-    Andrew
+diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+index 008bf44bc2c3..d54e7ae80de5 100644
+--- a/drivers/hid/Kconfig
++++ b/drivers/hid/Kconfig
+@@ -1155,6 +1155,7 @@ config HID_ALPS
+ config HID_MCP2221
+ 	tristate "Microchip MCP2221 HID USB-to-I2C/SMbus host support"
+ 	depends on USB_HID && I2C
++	depends on GPIOLIB
+ 	---help---
+ 	Provides I2C and SMBUS host adapter functionality over USB-HID
+ 	through MCP2221 device.
+-- 
+2.26.0
+
