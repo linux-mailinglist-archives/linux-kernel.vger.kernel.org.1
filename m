@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BA81BC7B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4245A1BC7C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbgD1S0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:26:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37236 "EHLO mail.kernel.org"
+        id S1728765AbgD1S0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:26:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727827AbgD1S0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:26:01 -0400
+        id S1728742AbgD1S02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:26:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C631620730;
-        Tue, 28 Apr 2020 18:26:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5B1C208E0;
+        Tue, 28 Apr 2020 18:26:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588098361;
-        bh=Fbzklwso61IMLOubYjfCEIBGHAuX+p6DKbIr5DOMRtA=;
+        s=default; t=1588098388;
+        bh=WwMQnnlr9UFxuKnVYip2MbxhHSDl070mII4XwC96BvM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ihNLzPULseabd9+RtGvpec0vwhk0S2WW5iQXod52pIxgc6h6l714lXQiGHQIGpRX
-         gdkt94BX9iPQMIyi/Gr8je7lsB1a61GNRpnj3tAXHaJFjb8PfYcgL0YB8GRArkf7qE
-         hxa1CnRclEcrzcBVOMDKgUKYbmZ17AMNFZadHMzM=
+        b=gbhP5OeYWiw7IPJM79Vt250W/3NXY6UzLUZ56ptbqtIjifBfjwnqsszCowOHSGWT8
+         M1h0goctVktTSPpK36p1Y6PEtbMtILB2jfJHPmf1eiabCo/t0U52BqGCn4xebO1mAq
+         RkJtZE45LT14vM6SUK8htCca5IAAXr8u5aKKbmgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, Jann Horn <jannh@google.com>
-Subject: [PATCH 5.6 001/167] mm: check that mm is still valid in madvise()
-Date:   Tue, 28 Apr 2020 20:22:57 +0200
-Message-Id: <20200428182225.685927310@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 002/167] tools/testing/nvdimm: Fix compilation failure without CONFIG_DEV_DAX_PMEM_COMPAT
+Date:   Tue, 28 Apr 2020 20:22:58 +0200
+Message-Id: <20200428182225.771266156@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
 References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,75 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit bc0c4d1e176eeb614dc8734fc3ace34292771f11 ]
+[ Upstream commit c0e71d602053e4e7637e4bc7d0bc9603ea77a33f ]
 
-IORING_OP_MADVISE can end up basically doing mprotect() on the VM of
-another process, which means that it can race with our crazy core dump
-handling which accesses the VM state without holding the mmap_sem
-(because it incorrectly thinks that it is the final user).
+When a kernel is configured without CONFIG_DEV_DAX_PMEM_COMPAT, the
+compilation of tools/testing/nvdimm fails with:
 
-This is clearly a core dumping problem, but we've never fixed it the
-right way, and instead have the notion of "check that the mm is still
-ok" using mmget_still_valid() after getting the mmap_sem for writing in
-any situation where we're not the original VM thread.
+  Building modules, stage 2.
+  MODPOST 11 modules
+ERROR: "dax_pmem_compat_test" [tools/testing/nvdimm/test/nfit_test.ko] undefined!
 
-See commit 04f5866e41fb ("coredump: fix race condition between
-mmget_not_zero()/get_task_mm() and core dumping") for more background on
-this whole mmget_still_valid() thing.  You might want to have a barf bag
-handy when you do.
+Fix the problem by calling dax_pmem_compat_test() only if the kernel has
+the required functionality.
 
-We're discussing just fixing this properly in the only remaining core
-dumping routines.  But even if we do that, let's make do_madvise() do
-the right thing, and then when we fix core dumping, we can remove all
-these mmget_still_valid() checks.
-
-Reported-and-tested-by: Jann Horn <jannh@google.com>
-Fixes: c1ca757bd6f4 ("io_uring: add IORING_OP_MADVISE")
-Acked-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200123154720.12097-1-jack@suse.cz
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/madvise.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ tools/testing/nvdimm/test/nfit.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 4bb30ed6c8d21..8cbd8c1bfe159 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -27,6 +27,7 @@
- #include <linux/swapops.h>
- #include <linux/shmem_fs.h>
- #include <linux/mmu_notifier.h>
-+#include <linux/sched/mm.h>
+diff --git a/tools/testing/nvdimm/test/nfit.c b/tools/testing/nvdimm/test/nfit.c
+index bf6422a6af7ff..a8ee5c4d41ebb 100644
+--- a/tools/testing/nvdimm/test/nfit.c
++++ b/tools/testing/nvdimm/test/nfit.c
+@@ -3164,7 +3164,9 @@ static __init int nfit_test_init(void)
+ 	mcsafe_test();
+ 	dax_pmem_test();
+ 	dax_pmem_core_test();
++#ifdef CONFIG_DEV_DAX_PMEM_COMPAT
+ 	dax_pmem_compat_test();
++#endif
  
- #include <asm/tlb.h>
+ 	nfit_test_setup(nfit_test_lookup, nfit_test_evaluate_dsm);
  
-@@ -1090,6 +1091,23 @@ int do_madvise(unsigned long start, size_t len_in, int behavior)
- 	if (write) {
- 		if (down_write_killable(&current->mm->mmap_sem))
- 			return -EINTR;
-+
-+		/*
-+		 * We may have stolen the mm from another process
-+		 * that is undergoing core dumping.
-+		 *
-+		 * Right now that's io_ring, in the future it may
-+		 * be remote process management and not "current"
-+		 * at all.
-+		 *
-+		 * We need to fix core dumping to not do this,
-+		 * but for now we have the mmget_still_valid()
-+		 * model.
-+		 */
-+		if (!mmget_still_valid(current->mm)) {
-+			up_write(&current->mm->mmap_sem);
-+			return -EINTR;
-+		}
- 	} else {
- 		down_read(&current->mm->mmap_sem);
- 	}
 -- 
 2.20.1
 
