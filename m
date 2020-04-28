@@ -2,129 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212D81BCB5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BE11BCB6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730357AbgD1S4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:56:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729313AbgD1S4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:56:45 -0400
-Received: from linux-8ccs.fritz.box (p3EE2CE96.dip0.t-ipconnect.de [62.226.206.150])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729609AbgD1S5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:57:05 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:64802 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728663AbgD1S5C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:57:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588100221; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=JNRLCO94IcPhS5EP1PF7TeeXll0iKX1oSMuytOLgOgA=; b=tmEcTV5w/HCsDw8l+OgMWgCgsYluRznHgqDvqd/x4vs8OvReh42MkxmpDVrk32y78ANtF+6+
+ WyB4hrvPRFDXwTYXpT/pB7pSsaq4imTZW86Va7E86RKfRWve+SbGhMt18ImHQYO7WXga2wBb
+ aOSGzG4yejpuimvIPTRrXNefF1k=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea87c79.7f843eca5b20-smtp-out-n03;
+ Tue, 28 Apr 2020 18:56:57 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 04B06C433D2; Tue, 28 Apr 2020 18:56:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41F4D206D6;
-        Tue, 28 Apr 2020 18:56:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588100204;
-        bh=0305n2qo1oQ3Gv0+MWmU1c/cqoXpogKBnneHyGLLyPY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XmppFroab/0dGguUy2yW9Hk84ASbMa+V+IWa0oxQVj1XJ+FCM+G/02uRkxpmN6onG
-         tw9qS4NAgnOx12Svzdl+qDCGlez8Hdx2N4Vn0ipalARdUiPlzSHswOrdmhg+seLH0p
-         rdVL0Rv1DP1YQePgYr/IuLr+Y2KCuihM3UhbdGFQ=
-Date:   Tue, 28 Apr 2020 20:56:40 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH v3 09/10] module: Remove module_disable_ro()
-Message-ID: <20200428185639.GC12860@linux-8ccs.fritz.box>
-References: <cover.1587812518.git.jpoimboe@redhat.com>
- <33089a8ffb2e724cecfa51d72887ae9bf70354f9.1587812518.git.jpoimboe@redhat.com>
- <20200428162505.GA12860@linux-8ccs.fritz.box>
- <20200428163602.77t6s2qeh4xeacdq@treble>
- <20200428164155.GB12860@linux-8ccs.fritz.box>
- <20200428170309.xrsmqdwj5qu2q6t6@treble>
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E986DC433F2;
+        Tue, 28 Apr 2020 18:56:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E986DC433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v3 4/6] bus: mhi: core: Fix typo in comment
+To:     Jeffrey Hugo <jhugo@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1588003153-13139-1-git-send-email-jhugo@codeaurora.org>
+ <1588003153-13139-5-git-send-email-jhugo@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <e50ae083-6dd2-060b-8169-a1eb6cd5626f@codeaurora.org>
+Date:   Tue, 28 Apr 2020 11:56:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200428170309.xrsmqdwj5qu2q6t6@treble>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1588003153-13139-5-git-send-email-jhugo@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Josh Poimboeuf [28/04/20 12:03 -0500]:
->On Tue, Apr 28, 2020 at 06:41:55PM +0200, Jessica Yu wrote:
->> +++ Josh Poimboeuf [28/04/20 11:36 -0500]:
->> > On Tue, Apr 28, 2020 at 06:25:05PM +0200, Jessica Yu wrote:
->> > > +++ Josh Poimboeuf [25/04/20 06:07 -0500]:
->> > > > module_disable_ro() has no more users.  Remove it.
->> > > >
->> > > > Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
->> > > > Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->> > >
->> > > Hm, I guess this means we can also remove the module_enable_ro() stubs
->> > > in module.h and make it a static function again (like the other
->> > > module_enable_* functions) as there are no more outside users. I have to
->> > > remind myself after this patchset is merged :-)
->> >
->> > Ah, true.  I'm respinning the patch set anyway, I can just add this as a
->> > another patch.
->>
->> That would be great. Thanks!
->
->Sneak preview:
->
->From: Josh Poimboeuf <jpoimboe@redhat.com>
->Subject: [PATCH] module: Make module_enable_ro() static again
->
->Now that module_enable_ro() has no more external users, make it static
->again.
->
->Suggested-by: Jessica Yu <jeyu@kernel.org>
->Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
->---
-> include/linux/module.h | 6 ------
-> kernel/module.c        | 4 ++--
-> 2 files changed, 2 insertions(+), 8 deletions(-)
->
->diff --git a/include/linux/module.h b/include/linux/module.h
->index e4ef7b36feda..2c2e988bcf10 100644
->--- a/include/linux/module.h
->+++ b/include/linux/module.h
->@@ -858,12 +858,6 @@ extern int module_sysfs_initialized;
->
-> #define __MODULE_STRING(x) __stringify(x)
->
->-#ifdef CONFIG_STRICT_MODULE_RWX
->-extern void module_enable_ro(const struct module *mod, bool after_init);
->-#else
->-static inline void module_enable_ro(const struct module *mod, bool after_init) { }
->-#endif
->-
-> #ifdef CONFIG_GENERIC_BUG
-> void module_bug_finalize(const Elf_Ehdr *, const Elf_Shdr *,
-> 			 struct module *);
->diff --git a/kernel/module.c b/kernel/module.c
->index f0e414a01d91..6d8aab60943e 100644
->--- a/kernel/module.c
->+++ b/kernel/module.c
->@@ -2016,7 +2016,7 @@ static void frob_writable_data(const struct module_layout *layout,
-> 		   (layout->size - layout->ro_after_init_size) >> PAGE_SHIFT);
-> }
->
->-void module_enable_ro(const struct module *mod, bool after_init)
->+static void module_enable_ro(const struct module *mod, bool after_init)
-> {
-> 	if (!rodata_enabled)
-> 		return;
->@@ -2057,7 +2057,7 @@ static int module_enforce_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
-> }
->
-> #else /* !CONFIG_STRICT_MODULE_RWX */
->-/* module_{enable,disable}_ro() stubs are in module.h */
->+void module_enable_ro(const struct module *mod, bool after_init) {}
 
-Missing static here, but otherwise looks good. Thanks!
 
-> static void module_enable_nx(const struct module *mod) { }
-> static int module_enforce_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
-> 				       char *secstrings, struct module *mod)
->-- 
->2.21.1
->
+On 4/27/20 8:59 AM, Jeffrey Hugo wrote:
+> There is a typo - "runtimet" should be "runtime".  Fix it.
+> 
+> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+> ---
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
