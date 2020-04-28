@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173051BC018
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5821BC022
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 15:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgD1Nrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 09:47:53 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3327 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726798AbgD1Nrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 09:47:52 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 5AB36E1E74B4ADC021EB;
-        Tue, 28 Apr 2020 21:47:49 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 28 Apr 2020 21:47:39 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-CC:     Wei Yongjun <weiyongjun1@huawei.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] stm class: stm_heartbeat: fix error return code
-Date:   Tue, 28 Apr 2020 13:48:55 +0000
-Message-ID: <20200428134855.78014-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1727863AbgD1NtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 09:49:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58844 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726798AbgD1NtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 09:49:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id CF97AAD4B;
+        Tue, 28 Apr 2020 13:48:57 +0000 (UTC)
+Date:   Tue, 28 Apr 2020 15:48:58 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH v3 00/10] livepatch,module: Remove .klp.arch and
+ module_disable_ro()
+In-Reply-To: <cover.1587812518.git.jpoimboe@redhat.com>
+Message-ID: <alpine.LSU.2.21.2004281541420.6376@pobox.suse.cz>
+References: <cover.1587812518.git.jpoimboe@redhat.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return error code -ENOMEM from the error handling case instead
-of 0(ret can be overwritted to 0 in for loop).
+On Sat, 25 Apr 2020, Josh Poimboeuf wrote:
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/hwtracing/stm/heartbeat.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> v3:
+> - klp: split klp_write_relocations() into object/section specific
+>   functions [joe]
+> - s390: fix plt/got writes [joe]
+> - s390: remove text_mutex usage [mbenes]
+> - x86: do text_poke_sync() before releasing text_mutex [peterz]
+> - split x86 text_mutex changes into separate patch [mbenes]
+> 
+> v2:
+> - add vmlinux.ko check [peterz]
+> - remove 'klp_object' forward declaration [mbenes]
+> - use text_mutex [jeyu]
+> - fix documentation TOC [jeyu]
+> - fix s390 issues [mbenes]
+> - upstream kpatch-build now supports this
+>   (though it's only enabled for Linux >= 5.8)
+> 
+> These patches add simplifications and improvements for some issues Peter
+> found six months ago, as part of his non-writable text code (W^X)
+> cleanups.
+> 
+> Highlights:
+> 
+> - Remove the livepatch arch-specific .klp.arch sections, which were used
+>   to do paravirt patching and alternatives patching for livepatch
+>   replacement code.
+> 
+> - Add support for jump labels in patched code.
+> 
+> - Remove the last module_disable_ro() usage.
+> 
+> For more background, see this thread:
+> 
+>   https://lkml.kernel.org/r/20191021135312.jbbxsuipxldocdjk@treble
+> 
+> This has been tested with kpatch-build integration tests and klp-convert
+> selftests.
+> 
+> Josh Poimboeuf (7):
+>   livepatch: Disallow vmlinux.ko
+>   livepatch: Apply vmlinux-specific KLP relocations early
+>   livepatch: Prevent module-specific KLP rela sections from referencing
+>     vmlinux symbols
+>   s390: Change s390_kernel_write() return type to match memcpy()
+>   livepatch: Remove module_disable_ro() usage
+>   module: Remove module_disable_ro()
+>   x86/module: Use text_mutex in apply_relocate_add()
+> 
+> Peter Zijlstra (3):
+>   livepatch: Remove .klp.arch
+>   s390/module: Use s390_kernel_write() for late relocations
+>   x86/module: Use text_poke() for late relocations
+> 
+>  Documentation/livepatch/module-elf-format.rst |  15 +-
+>  arch/s390/include/asm/uaccess.h               |   2 +-
+>  arch/s390/kernel/module.c                     | 147 +++++++++------
+>  arch/s390/mm/maccess.c                        |   9 +-
+>  arch/um/kernel/um_arch.c                      |  16 ++
+>  arch/x86/kernel/Makefile                      |   1 -
+>  arch/x86/kernel/livepatch.c                   |  53 ------
+>  arch/x86/kernel/module.c                      |  43 ++++-
+>  include/linux/livepatch.h                     |  17 +-
+>  include/linux/module.h                        |   2 -
+>  kernel/livepatch/core.c                       | 177 +++++++++++-------
+>  kernel/module.c                               |  23 +--
+>  12 files changed, 277 insertions(+), 228 deletions(-)
+>  delete mode 100644 arch/x86/kernel/livepatch.c
 
-diff --git a/drivers/hwtracing/stm/heartbeat.c b/drivers/hwtracing/stm/heartbeat.c
-index 3e7df1c0477f..81d7b21d31ec 100644
---- a/drivers/hwtracing/stm/heartbeat.c
-+++ b/drivers/hwtracing/stm/heartbeat.c
-@@ -64,7 +64,7 @@ static void stm_heartbeat_unlink(struct stm_source_data *data)
- 
- static int stm_heartbeat_init(void)
- {
--	int i, ret = -ENOMEM;
-+	int i, ret;
- 
- 	if (nr_devs < 0 || nr_devs > STM_HEARTBEAT_MAX)
- 		return -EINVAL;
-@@ -72,8 +72,10 @@ static int stm_heartbeat_init(void)
- 	for (i = 0; i < nr_devs; i++) {
- 		stm_heartbeat[i].data.name =
- 			kasprintf(GFP_KERNEL, "heartbeat.%d", i);
--		if (!stm_heartbeat[i].data.name)
-+		if (!stm_heartbeat[i].data.name) {
-+			ret = -ENOMEM;
- 			goto fail_unregister;
-+		}
- 
- 		stm_heartbeat[i].data.nr_chans	= 1;
- 		stm_heartbeat[i].data.link	= stm_heartbeat_link;
+With the small issue in patch 2 fixed
 
+Acked-by: Miroslav Benes <mbenes@suse.cz>
 
+Great stuff. I am happy we will get rid of the arch-specific code.
 
-
-
+M
