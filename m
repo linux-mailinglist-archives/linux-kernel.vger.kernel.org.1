@@ -2,316 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5534C1BC365
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F411BC36E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 17:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbgD1PZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 11:25:18 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50609 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728606AbgD1PZR (ORCPT
+        id S1728651AbgD1PZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 11:25:57 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:44933 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728932AbgD1PZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 11:25:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588087516;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5MtNMEGePoQeOLLhuNO9qh1Kt/0hKDl+pM06audhEQE=;
-        b=WCY45wgp9MZIZV24aw9O+CsRNmRMo8keKh+JMd1j/59gLURvnQGv76CVhborwEt5cN+W1Y
-        G45B7+zH4NOTsJxMZZfvbbENQzeHlV3k/+HwK9Cj+i/q80Zb51N/m6nuFVFky5yqOjFsot
-        QSAW1AgtwD7m21TU/IiXNlFc4rfivPE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-67-oaZ_Z8BoMbC0ijO3_-1-lw-1; Tue, 28 Apr 2020 11:25:13 -0400
-X-MC-Unique: oaZ_Z8BoMbC0ijO3_-1-lw-1
-Received: by mail-wm1-f72.google.com with SMTP id 14so997682wmo.9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 08:25:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5MtNMEGePoQeOLLhuNO9qh1Kt/0hKDl+pM06audhEQE=;
-        b=OSshChdr+SmoMY0BxhOkXqWvi++mQEiOa6livSK1isirTdecjvFbU0ghFPtaXYels7
-         RewImknqScacdT2xZWgElxHgTKYRKuLeP1znJ+YQU7pNvGkhV8cxote5s5i6TWJTkNwI
-         FTznypFz6aAbzrYPRzyMrm6fu7jNHmheU28Fhwgv9I6RpY5Bq+BoNxH38l15XqjWfhaY
-         cOiJ95ClMP2/dkxTRBhXzqq63/ppOs9wjzRxMoE9te73yLa2N3HeD69SSFOtcOE403dE
-         CRoSMcEYW6qtOIKB+ZtLRCUxKWOzC/6WuXthDlEdqpoL6X6+KC2rDJoemmgF8jpB9MMS
-         wi6w==
-X-Gm-Message-State: AGi0PubQIc7TbMZ8lURtdDaVESSQLZeKIiX7A2BJ2m18CJ0XGs07LMJ0
-        EezP1rSkQSK4a70GkSHxCv9EgDHYJGMTpGE/A2tGc6YVKwQWyh7rri7I8i+h0XqRg2zeJ6e31/M
-        gouhtR9PElhqzgAS3YamdwjLq
-X-Received: by 2002:a1c:66d5:: with SMTP id a204mr5197820wmc.69.1588087512165;
-        Tue, 28 Apr 2020 08:25:12 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIJdX3FBeU0e1jJbzapSQEZb33vOn2eVbDhxsWqrn0qFTot27aYfiyyqxJOctswjaoqI4z3Xg==
-X-Received: by 2002:a1c:66d5:: with SMTP id a204mr5197790wmc.69.1588087511757;
-        Tue, 28 Apr 2020 08:25:11 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id a205sm3990772wmh.29.2020.04.28.08.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 08:25:10 -0700 (PDT)
-Date:   Tue, 28 Apr 2020 11:25:07 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
+        Tue, 28 Apr 2020 11:25:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1588087551; x=1619623551;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=cr1xLjxHXx64ntwnS08YLhiz3vvksmX83WhtbnrvZUw=;
+  b=UWEHsFYXWGdwz6PjjadGBlFbe9SOyO+9vQktwCK9fPlG88lozlr0b8Lj
+   d5yE6+MG8NMa1pyeSrelnMMjzhC1GrW+WuYD24F+QiUHLntZKT7kFYuqM
+   Jm9IXEkQog76CSuWgMZyMIsG8wrrtqK9hMVQZGCJvD2FNQpi0myCornup
+   Y=;
+IronPort-SDR: f244zrapqRg3fSHMRO3IURpZbEqz2ca5HhjMI0ikY/hiR4+4SDiBb/4/PUJ41yw6GCCIKKdpKy
+ xkOipg8ZerzQ==
+X-IronPort-AV: E=Sophos;i="5.73,328,1583193600"; 
+   d="scan'208";a="27655075"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 28 Apr 2020 15:25:38 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id 4F022A1C8A;
+        Tue, 28 Apr 2020 15:25:37 +0000 (UTC)
+Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 28 Apr 2020 15:25:36 +0000
+Received: from 38f9d3867b82.ant.amazon.com (10.43.160.180) by
+ EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 28 Apr 2020 15:25:32 +0000
+Subject: Re: [PATCH v1 00/15] Add support for Nitro Enclaves
+To:     Liran Alon <liran.alon@oracle.com>,
+        "Paraschiv, Andra-Irina" <andraprs@amazon.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, Stefano Garzarella <sgarzare@redhat.com>,
-        Lance Digby <ldigby@redhat.com>
-Subject: Re: [PATCH v2] virtio-blk: handle block_device_operations callbacks
- after hot unplug
-Message-ID: <20200428110515-mutt-send-email-mst@kernel.org>
-References: <20200428143009.107645-1-stefanha@redhat.com>
+        <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>, Balbir Singh <sblbir@amazon.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200421184150.68011-1-andraprs@amazon.com>
+ <18406322-dc58-9b59-3f94-88e6b638fe65@redhat.com>
+ <ff65b1ed-a980-9ddc-ebae-996869e87308@amazon.com>
+ <5c514de6-52a8-8532-23d9-e6b0cc9ac7eb@oracle.com>
+ <eb92ba4e-113e-d7ec-4633-f6b5ac54796b@amazon.com>
+ <26111e31-8ff5-8358-1e05-6d7df0441ab1@oracle.com>
+From:   Alexander Graf <graf@amazon.de>
+Message-ID: <50f58a36-76ee-5e97-f5e6-1f08bee0c596@amazon.de>
+Date:   Tue, 28 Apr 2020 17:25:29 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428143009.107645-1-stefanha@redhat.com>
+In-Reply-To: <26111e31-8ff5-8358-1e05-6d7df0441ab1@oracle.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.160.180]
+X-ClientProxiedBy: EX13D04UWA001.ant.amazon.com (10.43.160.47) To
+ EX13D20UWC001.ant.amazon.com (10.43.162.244)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 03:30:09PM +0100, Stefan Hajnoczi wrote:
-> A userspace process holding a file descriptor to a virtio_blk device can
-> still invoke block_device_operations after hot unplug.  For example, a
-> program that has /dev/vdb open can call ioctl(HDIO_GETGEO) after hot
-> unplug to invoke virtblk_getgeo().
-
-
-which causes what? a use after free?
-
-> 
-> Introduce a reference count in struct virtio_blk so that its lifetime
-> covers both virtio_driver probe/remove and block_device_operations
-> open/release users.  This ensures that block_device_operations functions
-> like virtblk_getgeo() can safely access struct virtio_blk.
-> 
-> Add remove_mutex to prevent block_device_operations functions from
-> accessing vblk->vdev during virtblk_remove() and let the safely check
-
-let the -> let them?
-
-> for !vblk->vdev after virtblk_remove() returns.
-> 
-> Switching to a reference count also solves the vd_index_ida leak where
-> vda, vdb, vdc, etc indices were lost when the device was hot unplugged
-> while the block device was still open.
-
-Can you move this statement up so we list both issues (use after free
-and leak) upfront, then discuss the fix?
-
-> 
-> Reported-by: Lance Digby <ldigby@redhat.com>
-> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> ---
-> If someone has a simpler solution please let me know.  I looked at
-> various approaches including reusing device_lock(&vblk->vdev.dev) but
-> they were more complex and extending the lifetime of virtio_device after
-> remove() has been called seems questionable.
-> ---
->  drivers/block/virtio_blk.c | 85 ++++++++++++++++++++++++++++++++++----
->  1 file changed, 77 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> index 93468b7c6701..3dd53b445cc1 100644
-> --- a/drivers/block/virtio_blk.c
-> +++ b/drivers/block/virtio_blk.c
-> @@ -44,6 +44,13 @@ struct virtio_blk {
->  	/* Process context for config space updates */
->  	struct work_struct config_work;
->  
-> +	/*
-> +	 * Tracks references from block_device_operations open/release and
-> +	 * virtio_driver probe/remove so this object can be freed once no
-> +	 * longer in use.
-> +	 */
-> +	refcount_t refs;
-> +
->  	/* What host tells us, plus 2 for header & tailer. */
->  	unsigned int sg_elems;
->  
-> @@ -53,6 +60,9 @@ struct virtio_blk {
->  	/* num of vqs */
->  	int num_vqs;
->  	struct virtio_blk_vq *vqs;
-> +
-> +	/* Provides mutual exclusion with virtblk_remove(). */
-
-This is not the best way to document access rules.
-Which fields does this protect, exactly?
-I think it's just vdev. Right?
-Pls add to the comment.
-
-> +	struct mutex remove_mutex;
->  };
->  
->  struct virtblk_req {
-> @@ -295,10 +305,54 @@ static int virtblk_get_id(struct gendisk *disk, char *id_str)
->  	return err;
->  }
->  
-> +static void virtblk_get(struct virtio_blk *vblk)
-> +{
-> +	refcount_inc(&vblk->refs);
-> +}
-> +
-> +static void virtblk_put(struct virtio_blk *vblk)
-> +{
-> +	if (refcount_dec_and_test(&vblk->refs)) {
-> +		ida_simple_remove(&vd_index_ida, vblk->index);
-> +		mutex_destroy(&vblk->remove_mutex);
-> +		kfree(vblk);
-> +	}
-> +}
-> +
-> +static int virtblk_open(struct block_device *bd, fmode_t mode)
-> +{
-> +	struct virtio_blk *vblk = bd->bd_disk->private_data;
-> +	int ret = -ENXIO;
-
-
-It's more common to do
-
-	int ret = 0;
-
-and on error:
-	ret = -ENXIO;
-
-
-let's do this.
-
-
-> +
-> +	mutex_lock(&vblk->remove_mutex);
-> +
-> +	if (vblk->vdev) {
-> +		virtblk_get(vblk);
-> +		ret = 0;
-> +	}
-
-I prefer
-	else
-		ret = -ENXIO
-
-here.
-
-
-> +
-> +	mutex_unlock(&vblk->remove_mutex);
-> +	return ret;
-> +}
-> +
-> +static void virtblk_release(struct gendisk *disk, fmode_t mode)
-> +{
-> +	struct virtio_blk *vblk = disk->private_data;
-> +
-> +	virtblk_put(vblk);
-> +}
-> +
->  /* We provide getgeo only to please some old bootloader/partitioning tools */
->  static int virtblk_getgeo(struct block_device *bd, struct hd_geometry *geo)
->  {
->  	struct virtio_blk *vblk = bd->bd_disk->private_data;
-> +	int ret = -ENXIO;
-
-It's more common to do
-
-	int ret = 0;
-
-and on error:
-	ret = -ENXIO;
-
-
-let's do this.
-
-> +
-> +	mutex_lock(&vblk->remove_mutex);
-> +
-> +	if (!vblk->vdev) {
-> +		goto out;
-> +	}
-
-
-single lines are not supposed to use {}.
-if you add ret = -ENXIO here then it won't be a single line anymore
-though.
-
->  
->  	/* see if the host passed in geometry config */
->  	if (virtio_has_feature(vblk->vdev, VIRTIO_BLK_F_GEOMETRY)) {
-> @@ -314,11 +368,17 @@ static int virtblk_getgeo(struct block_device *bd, struct hd_geometry *geo)
->  		geo->sectors = 1 << 5;
->  		geo->cylinders = get_capacity(bd->bd_disk) >> 11;
->  	}
-> -	return 0;
-> +
-> +	ret = 0;
-> +out:
-> +	mutex_unlock(&vblk->remove_mutex);
-> +	return ret;
->  }
->  
->  static const struct block_device_operations virtblk_fops = {
->  	.owner  = THIS_MODULE,
-> +	.open = virtblk_open,
-> +	.release = virtblk_release,
->  	.getgeo = virtblk_getgeo,
->  };
->  
-> @@ -655,6 +715,10 @@ static int virtblk_probe(struct virtio_device *vdev)
->  		goto out_free_index;
->  	}
->  
-> +	/* This reference is dropped in virtblk_remove(). */
-> +	refcount_set(&vblk->refs, 1);
-> +	mutex_init(&vblk->remove_mutex);
-> +
->  	vblk->vdev = vdev;
->  	vblk->sg_elems = sg_elems;
->  
-> @@ -820,8 +884,12 @@ static int virtblk_probe(struct virtio_device *vdev)
->  static void virtblk_remove(struct virtio_device *vdev)
->  {
->  	struct virtio_blk *vblk = vdev->priv;
-> -	int index = vblk->index;
-> -	int refc;
-> +
-> +	/*
-> +	 * Virtqueue processing is stopped safely here but mutual exclusion is
-> +	 * needed for block_device_operations.
-> +	 */
-> +	mutex_lock(&vblk->remove_mutex);
->  
->  	/* Make sure no work handler is accessing the device. */
->  	flush_work(&vblk->config_work);
-> @@ -834,15 +902,16 @@ static void virtblk_remove(struct virtio_device *vdev)
->  	/* Stop all the virtqueues. */
->  	vdev->config->reset(vdev);
->  
-> -	refc = kref_read(&disk_to_dev(vblk->disk)->kobj.kref);
-> +	/* Virtqueue are stopped, nothing can use vblk->vdev anymore. */
-
-Virtqueues?
-
-> +	vblk->vdev = NULL;
-> +
->  	put_disk(vblk->disk);
->  	vdev->config->del_vqs(vdev);
->  	kfree(vblk->vqs);
-> -	kfree(vblk);
->  
-> -	/* Only free device id if we don't have any users */
-> -	if (refc == 1)
-> -		ida_simple_remove(&vd_index_ida, index);
-> +	mutex_unlock(&vblk->remove_mutex);
-> +
-> +	virtblk_put(vblk);
->  }
->  
->  #ifdef CONFIG_PM_SLEEP
-> -- 
-> 2.25.3
-> 
+CgpPbiAyNy4wNC4yMCAxMzo0NCwgTGlyYW4gQWxvbiB3cm90ZToKPiAKPiBPbiAyNy8wNC8yMDIw
+IDEwOjU2LCBQYXJhc2NoaXYsIEFuZHJhLUlyaW5hIHdyb3RlOgo+Pgo+PiBPbiAyNS8wNC8yMDIw
+IDE4OjI1LCBMaXJhbiBBbG9uIHdyb3RlOgo+Pj4KPj4+IE9uIDIzLzA0LzIwMjAgMTY6MTksIFBh
+cmFzY2hpdiwgQW5kcmEtSXJpbmEgd3JvdGU6Cj4+Pj4KPj4+PiBUaGUgbWVtb3J5IGFuZCBDUFVz
+IGFyZSBjYXJ2ZWQgb3V0IG9mIHRoZSBwcmltYXJ5IFZNLCB0aGV5IGFyZQo+Pj4+IGRlZGljYXRl
+ZCBmb3IgdGhlIGVuY2xhdmUuIFRoZSBOaXRybyBoeXBlcnZpc29yIHJ1bm5pbmcgb24gdGhlIGhv
+c3QKPj4+PiBlbnN1cmVzIG1lbW9yeSBhbmQgQ1BVIGlzb2xhdGlvbiBiZXR3ZWVuIHRoZSBwcmlt
+YXJ5IFZNIGFuZCB0aGUKPj4+PiBlbmNsYXZlIFZNLgo+Pj4gSSBob3BlIHlvdSBwcm9wZXJseSB0
+YWtlIGludG8gY29uc2lkZXJhdGlvbiBIeXBlci1UaHJlYWRpbmcKPj4+IHNwZWN1bGF0aXZlIHNp
+ZGUtY2hhbm5lbCB2dWxuZXJhYmlsaXRpZXMgaGVyZS4KPj4+IGkuZS4gVXN1YWxseSBjbG91ZCBw
+cm92aWRlcnMgZGVzaWduYXRlIGVhY2ggQ1BVIGNvcmUgdG8gYmUgYXNzaWduZWQKPj4+IHRvIHJ1
+biBvbmx5IHZDUFVzIG9mIHNwZWNpZmljIGd1ZXN0LiBUbyBhdm9pZCBzaGFyaW5nIGEgc2luZ2xl
+IENQVQo+Pj4gY29yZSBiZXR3ZWVuIG11bHRpcGxlIGd1ZXN0cy4KPj4+IFRvIGhhbmRsZSB0aGlz
+IHByb3Blcmx5LCB5b3UgbmVlZCB0byB1c2Ugc29tZSBraW5kIG9mIGNvcmUtc2NoZWR1bGluZwo+
+Pj4gbWVjaGFuaXNtIChTdWNoIHRoYXQgZWFjaCBDUFUgY29yZSBlaXRoZXIgcnVucyBvbmx5IHZD
+UFVzIG9mIGVuY2xhdmUKPj4+IG9yIG9ubHkgdkNQVXMgb2YgcHJpbWFyeSBWTSBhdCBhbnkgZ2l2
+ZW4gcG9pbnQgaW4gdGltZSkuCj4+Pgo+Pj4gSW4gYWRkaXRpb24sIGNhbiB5b3UgZWxhYm9yYXRl
+IG1vcmUgb24gaG93IHRoZSBlbmNsYXZlIG1lbW9yeSBpcwo+Pj4gY2FydmVkIG91dCBvZiB0aGUg
+cHJpbWFyeSBWTT8KPj4+IERvZXMgdGhpcyBpbnZvbHZlIHBlcmZvcm1pbmcgYSBtZW1vcnkgaG90
+LXVucGx1ZyBvcGVyYXRpb24gZnJvbQo+Pj4gcHJpbWFyeSBWTSBvciBqdXN0IHVubWFwIGVuY2xh
+dmUtYXNzaWduZWQgZ3Vlc3QgcGh5c2ljYWwgcGFnZXMgZnJvbQo+Pj4gcHJpbWFyeSBWTSdzIFNM
+QVQgKEVQVC9OUFQpIGFuZCBtYXAgdGhlbSBub3cgb25seSBpbiBlbmNsYXZlJ3MgU0xBVD8KPj4K
+Pj4gQ29ycmVjdCwgd2UgdGFrZSBpbnRvIGNvbnNpZGVyYXRpb24gdGhlIEhUIHNldHVwLiBUaGUg
+ZW5jbGF2ZSBnZXRzCj4+IGRlZGljYXRlZCBwaHlzaWNhbCBjb3Jlcy4gVGhlIHByaW1hcnkgVk0g
+YW5kIHRoZSBlbmNsYXZlIFZNIGRvbid0IHJ1bgo+PiBvbiBDUFUgc2libGluZ3Mgb2YgYSBwaHlz
+aWNhbCBjb3JlLgo+IFRoZSB3YXkgSSB3b3VsZCBpbWFnaW5lIHRoaXMgdG8gd29yayBpcyB0aGF0
+IFByaW1hcnktVk0ganVzdCBzcGVjaWZpZXMKPiBob3cgbWFueSB2Q1BVcyB3aWxsIHRoZSBFbmNs
+YXZlLVZNIGhhdmUgYW5kIHRob3NlIHZDUFVzIHdpbGwgYmUgc2V0IHdpdGgKPiBhZmZpbml0eSB0
+byBydW4gb24gc2FtZSBwaHlzaWNhbCBDUFUgY29yZXMgYXMgUHJpbWFyeS1WTS4KPiBCdXQgd2l0
+aCB0aGUgZXhjZXB0aW9uIHRoYXQgc2NoZWR1bGVyIGlzIG1vZGlmaWVkIHRvIG5vdCBydW4gdkNQ
+VXMgb2YKPiBQcmltYXJ5LVZNIGFuZCBFbmNsYXZlLVZNIGFzIHNpYmxpbmcgb24gdGhlIHNhbWUg
+cGh5c2ljYWwgQ1BVIGNvcmUKPiAoY29yZS1zY2hlZHVsaW5nKS4gaS5lLiBUaGlzIGlzIGRpZmZl
+cmVudCB0aGFuIHByaW1hcnktVk0gbG9zaW5nCj4gcGh5c2ljYWwgQ1BVIGNvcmVzIHBlcm1hbmVu
+dGx5IGFzIGxvbmcgYXMgdGhlIEVuY2xhdmUtVk0gaXMgcnVubmluZy4KPiBPciBtYXliZSB0aGlz
+IHNob3VsZCBldmVuIGJlIGNvbnRyb2xsZWQgYnkgYSBrbm9iIGluIHZpcnR1YWwgUENJIGRldmlj
+ZQo+IGludGVyZmFjZSB0byBhbGxvdyBmbGV4aWJpbGl0eSB0byBjdXN0b21lciB0byBkZWNpZGUg
+aWYgRW5jbGF2ZS1WTSBuZWVkcwo+IGRlZGljYXRlZCBDUFUgY29yZXMgb3IgaXMgaXQgb2sgdG8g
+c2hhcmUgdGhlbSB3aXRoIFByaW1hcnktVk0KPiBhcyBsb25nIGFzIGNvcmUtc2NoZWR1bGluZyBp
+cyB1c2VkIHRvIGd1YXJhbnRlZSBwcm9wZXIgaXNvbGF0aW9uLgoKUnVubmluZyBib3RoIHBhcmVu
+dCBhbmQgZW5jbGF2ZSBvbiB0aGUgc2FtZSBjb3JlIGNhbiAqcG90ZW50aWFsbHkqIGxlYWQgCnRv
+IEwyIGNhY2hlIGxlYWthZ2UsIHNvIHdlIGRlY2lkZWQgbm90IHRvIGdvIHdpdGggaXQgOikuCgo+
+Pgo+PiBSZWdhcmRpbmcgdGhlIG1lbW9yeSBjYXJ2ZSBvdXQsIHRoZSBsb2dpYyBpbmNsdWRlcyBw
+YWdlIHRhYmxlIGVudHJpZXMKPj4gaGFuZGxpbmcuCj4gQXMgSSB0aG91Z2h0LiBUaGFua3MgZm9y
+IGNvbmZvcm1hdGlvbi4KPj4KPj4gSUlSQywgbWVtb3J5IGhvdC11bnBsdWcgY2FuIGJlIHVzZWQg
+Zm9yIHRoZSBtZW1vcnkgYmxvY2tzIHRoYXQgd2VyZQo+PiBwcmV2aW91c2x5IGhvdC1wbHVnZ2Vk
+Lgo+Pgo+PiBodHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cHM6Ly93d3cua2VybmVsLm9y
+Zy9kb2MvaHRtbC9sYXRlc3QvYWRtaW4tZ3VpZGUvbW0vbWVtb3J5LWhvdHBsdWcuaHRtbF9fOyEh
+R3FpdlBWYTdCcmlvIU11YmdhQmpKYWJEdE56TnBkT3h4YlNLdExicVhIYnNFcFR0WjFtai1ybmZM
+dk1JYkxXMW5aOGNLMTBHaFlKUSQgCj4+Cj4+Cj4+Pgo+Pj4gSSBkb24ndCBxdWl0ZSB1bmRlcnN0
+YW5kIHdoeSBFbmNsYXZlIFZNIG5lZWRzIHRvIGJlCj4+PiBwcm92aXNpb25lZC90ZWFyZG93biBk
+dXJpbmcgcHJpbWFyeSBWTSdzIHJ1bnRpbWUuCj4+Pgo+Pj4gRm9yIGV4YW1wbGUsIGFuIGFsdGVy
+bmF0aXZlIGNvdWxkIGhhdmUgYmVlbiB0byBqdXN0IHByb3Zpc2lvbiBib3RoCj4+PiBwcmltYXJ5
+IFZNIGFuZCBFbmNsYXZlIFZNIG9uIHByaW1hcnkgVk0gc3RhcnR1cC4KPj4+IFRoZW4sIHdhaXQg
+Zm9yIHByaW1hcnkgVk0gdG8gc2V0dXAgYSBjb21tdW5pY2F0aW9uIGNoYW5uZWwgd2l0aAo+Pj4g
+RW5jbGF2ZSBWTSAoRS5nLiB2aWEgdmlydGlvLXZzb2NrKS4KPj4+IFRoZW4sIHByaW1hcnkgVk0g
+aXMgZnJlZSB0byByZXF1ZXN0IEVuY2xhdmUgVk0gdG8gcGVyZm9ybSB2YXJpb3VzCj4+PiB0YXNr
+cyB3aGVuIHJlcXVpcmVkIG9uIHRoZSBpc29sYXRlZCBlbnZpcm9ubWVudC4KPj4+Cj4+PiBTdWNo
+IHNldHVwIHdpbGwgbWltaWMgYSBjb21tb24gRW5jbGF2ZSBzZXR1cC4gU3VjaCBhcyBNaWNyb3Nv
+ZnQKPj4+IFdpbmRvd3MgVkJTIEVQVC1iYXNlZCBFbmNsYXZlcyAoVGhhdCBhbGwgcnVucyBvbiBW
+VEwxKS4gSXQgaXMgYWxzbwo+Pj4gc2ltaWxhciB0byBURUVzIHJ1bm5pbmcgb24gQVJNIFRydXN0
+Wm9uZS4KPj4+IGkuZS4gSW4gbXkgYWx0ZXJuYXRpdmUgcHJvcG9zZWQgc29sdXRpb24sIHRoZSBF
+bmNsYXZlIFZNIGlzIHNpbWlsYXIKPj4+IHRvIFZUTDEvVHJ1c3Rab25lLgo+Pj4gSXQgd2lsbCBh
+bHNvIGF2b2lkIHJlcXVpcmluZyBpbnRyb2R1Y2luZyBhIG5ldyBQQ0kgZGV2aWNlIGFuZCBkcml2
+ZXIuCj4+Cj4+IFRydWUsIHRoaXMgY2FuIGJlIGFub3RoZXIgb3B0aW9uLCB0byBwcm92aXNpb24g
+dGhlIHByaW1hcnkgVk0gYW5kIHRoZQo+PiBlbmNsYXZlIFZNIGF0IGxhdW5jaCB0aW1lLgo+Pgo+
+PiBJbiB0aGUgcHJvcG9zZWQgc2V0dXAsIHRoZSBwcmltYXJ5IFZNIHN0YXJ0cyB3aXRoIHRoZSBp
+bml0aWFsCj4+IGFsbG9jYXRlZCByZXNvdXJjZXMgKG1lbW9yeSwgQ1BVcykuIFRoZSBsYXVuY2gg
+cGF0aCBvZiB0aGUgZW5jbGF2ZSBWTSwKPj4gYXMgaXQncyBzcGF3bmVkIG9uIHRoZSBzYW1lIGhv
+c3QsIGlzIGRvbmUgdmlhIHRoZSBpb2N0bCBpbnRlcmZhY2UgLQo+PiBQQ0kgZGV2aWNlIC0gaG9z
+dCBoeXBlcnZpc29yIHBhdGguIFNob3J0LXJ1bm5pbmcgb3IgbG9uZy1ydW5uaW5nCj4+IGVuY2xh
+dmUgY2FuIGJlIGJvb3RzdHJhcHBlZCBkdXJpbmcgcHJpbWFyeSBWTSBsaWZldGltZS4gRGVwZW5k
+aW5nIG9uCj4+IHRoZSB1c2UgY2FzZSwgYSBjdXN0b20gc2V0IG9mIHJlc291cmNlcyAobWVtb3J5
+IGFuZCBDUFVzKSBpcyBzZXQgZm9yCj4+IGFuIGVuY2xhdmUgYW5kIHRoZW4gZ2l2ZW4gYmFjayB3
+aGVuIHRoZSBlbmNsYXZlIGlzIHRlcm1pbmF0ZWQ7IHRoZXNlCj4+IHJlc291cmNlcyBjYW4gYmUg
+dXNlZCBmb3IgYW5vdGhlciBlbmNsYXZlIHNwYXduZWQgbGF0ZXIgb24gb3IgdGhlCj4+IHByaW1h
+cnkgVk0gdGFza3MuCj4+Cj4gWWVzLCBJIGFscmVhZHkgdW5kZXJzdG9vZCB0aGlzIGlzIGhvdyB0
+aGUgbWVjaGFuaXNtIHdvcmsuIEknbQo+IHF1ZXN0aW9uaW5nIHdoZXRoZXIgdGhpcyBpcyBpbmRl
+ZWQgYSBnb29kIGFwcHJvYWNoIHRoYXQgc2hvdWxkIGFsc28gYmUKPiB0YWtlbiBieSB1cHN0cmVh
+bS4KCkkgdGhvdWdodCB0aGUgcG9pbnQgb2YgTGludXggd2FzIHRvIHN1cHBvcnQgZGV2aWNlcyB0
+aGF0IGV4aXN0LCByYXRoZXIgCnRoYW4gY2hhbmdlIHRoZSB3YXkgdGhlIHdvcmxkIHdvcmtzIGFy
+b3VuZCBpdD8gOykKCj4gVGhlIHVzZS1jYXNlIG9mIHVzaW5nIE5pdHJvIEVuY2xhdmVzIGlzIGZv
+ciBhIENvbmZpZGVudGlhbC1Db21wdXRpbmcKPiBzZXJ2aWNlLiBpLmUuIFRoZSBhYmlsaXR5IHRv
+IHByb3Zpc2lvbiBhIGNvbXB1dGUgaW5zdGFuY2UgdGhhdCBjYW4gYmUKPiB0cnVzdGVkIHRvIHBl
+cmZvcm0gYSBidW5jaCBvZiBjb21wdXRhdGlvbiBvbiBzZW5zaXRpdmUKPiBpbmZvcm1hdGlvbiB3
+aXRoIGhpZ2ggY29uZmlkZW5jZSB0aGF0IGl0IGNhbm5vdCBiZSBjb21wcm9taXNlZCBhcyBpdCdz
+Cj4gaGlnaGx5IGlzb2xhdGVkLiBTb21lIHRlY2hub2xvZ2llcyBzdWNoIGFzIEludGVsIFNHWCBh
+bmQgQU1EIFNFVgo+IGF0dGVtcHRlZCB0byBhY2hpZXZlIHRoaXMgZXZlbiB3aXRoIGd1YXJhbnRl
+ZXMgdGhhdAo+IHRoZSBjb21wdXRhdGlvbiBpcyBpc29sYXRlZCBmcm9tIHRoZSBoYXJkd2FyZSBh
+bmQgaHlwZXJ2aXNvciBpdHNlbGYuCgpZZWFoLCB0aGF0IHdvcmtlZCByZWFsbHkgd2VsbCwgZGlk
+bid0IGl0PyA7KQoKPiBJIHdvdWxkIGhhdmUgZXhwZWN0ZWQgdGhhdCBmb3IgdGhlIHZhc3QgbWFq
+b3JpdHkgb2YgcmVhbCBjdXN0b21lcgo+IHVzZS1jYXNlcywgdGhlIGN1c3RvbWVyIHdpbGwgcHJv
+dmlzaW9uIGEgY29tcHV0ZSBpbnN0YW5jZSB0aGF0IHJ1bnMgc29tZQo+IGNvbmZpZGVudGlhbC1j
+b21wdXRpbmcgdGFzayBpbiBhbiBlbmNsYXZlIHdoaWNoIGl0Cj4ga2VlcHMgcnVubmluZyBmb3Ig
+dGhlIGVudGlyZSBsaWZlLXRpbWUgb2YgdGhlIGNvbXB1dGUgaW5zdGFuY2UuIEFzIHRoZQo+IHNv
+bGUgcHVycG9zZSBvZiB0aGUgY29tcHV0ZSBpbnN0YW5jZSBpcyB0byBqdXN0IGV4cG9zZSBhIHNl
+cnZpY2UgdGhhdAo+IHBlcmZvcm1zIHNvbWUgY29uZmlkZW50aWFsLWNvbXB1dGluZyB0YXNrLgo+
+IEZvciB0aG9zZSBjYXNlcywgaXQgc2hvdWxkIGhhdmUgYmVlbiBzdWZmaWNpZW50IHRvIGp1c3Qg
+cHJlLXByb3Zpc2lvbiBhCj4gc2luZ2xlIEVuY2xhdmUtVk0gdGhhdCBwZXJmb3JtcyB0aGlzIHRh
+c2ssIHRvZ2V0aGVyIHdpdGggdGhlIGNvbXB1dGUKPiBpbnN0YW5jZSBhbmQgY29ubmVjdCB0aGVt
+IHZpYSB2aXJ0aW8tdnNvY2suCj4gV2l0aG91dCBpbnRyb2R1Y2luZyBhbnkgbmV3IHZpcnR1YWwg
+UENJIGRldmljZSwgZ3Vlc3QgUENJIGRyaXZlciBhbmQKPiB1bmlxdWUgc2VtYW50aWNzIG9mIHN0
+ZWFsaW5nIHJlc291cmNlcyAoQ1BVcyBhbmQgTWVtb3J5KSBmcm9tIHByaW1hcnktVk0KPiBhdCBy
+dW50aW1lLgoKWW91IHdvdWxkIGFsc28gbmVlZCB0byBwcmVwcm92aXNpb24gdGhlIGltYWdlIHRo
+YXQgcnVucyBpbiB0aGUgZW5jbGF2ZSwgCndoaWNoIGlzIHVzdWFsbHkgb25seSBkZXRlcm1pbmVk
+IGF0IHJ1bnRpbWUuIEZvciB0aGF0IHlvdSBuZWVkIHRoZSBQQ0kgCmRyaXZlciBhbnl3YXksIHNv
+IHdoeSBub3QgbWFrZSB0aGUgY3JlYXRpb24gZHluYW1pYyB0b28/Cgo+IEluIHRoaXMgTml0cm8g
+RW5jbGF2ZSBhcmNoaXRlY3R1cmUsIHdlIGRlLWZhY3RvIHB1dCBDb21wdXRlCj4gY29udHJvbC1w
+bGFuZSBhYmlsaXRpZXMgaW4gdGhlIGhhbmRzIG9mIHRoZSBndWVzdCBWTS4gSW5zdGVhZCBvZgo+
+IGludHJvZHVjaW5nIG5ldyBjb250cm9sLXBsYW5lIHByaW1pdGl2ZXMgdGhhdCBhbGxvd3MgYnVp
+bGRpbmcKPiB0aGUgZGF0YS1wbGFuZSBhcmNoaXRlY3R1cmUgZGVzaXJlZCBieSB0aGUgY3VzdG9t
+ZXIgaW4gYSBmbGV4aWJsZSBtYW5uZXIuCj4gKiBXaGF0IGlmIHRoZSBjdXN0b21lciBwcmVmZXJz
+IHRvIGhhdmUgaXQncyBFbmNsYXZlIFZNIHBvbGxpbmcgUzMgYnVja2V0Cj4gZm9yIG5ldyB0YXNr
+cyBhbmQgcHJvZHVjZSByZXN1bHRzIHRvIFMzIGFzLXdlbGw/IFdpdGhvdXQgaGF2aW5nIGFueQo+
+ICJQcmltYXJ5LVZNIiBvciB2aXJ0aW8tdnNvY2sgY29ubmVjdGlvbiBvZiBhbnkga2luZD8KPiAq
+IFdoYXQgaWYgZm9yIHNvbWUgdXNlLWNhc2VzIGN1c3RvbWVyIHdhbnRzIEVuY2xhdmUtVk0gdG8g
+aGF2ZSBkZWRpY2F0ZWQKPiBjb21wdXRlIHBvd2VyIChpLmUuIE5vdCBzaGFyZSBwaHlzaWNhbCBD
+UFUgY29yZXMgd2l0aCBwcmltYXJ5LVZNLiBOb3QKPiBldmVuIHdpdGggY29yZS1zY2hlZHVsaW5n
+KSBidXQgZm9yIG90aGVyCj4gdXNlLWNhc2VzLCBjdXN0b21lciBwcmVmZXJzIHRvIHNoYXJlIHBo
+eXNpY2FsIENQVSBjb3JlcyB3aXRoIFByaW1hcnktVk0KPiAoVG9nZXRoZXIgd2l0aCBjb3JlLXNj
+aGVkdWxpbmcgZ3VhcmFudGVlcyk/IChBbHRob3VnaCB0aGlzIGNvdWxkIGJlCj4gYWRkcmVzc2Vk
+IGJ5IGV4dGVuZGluZyB0aGUgdmlydHVhbCBQQ0kgZGV2aWNlCj4gaW50ZXJmYWNlIHdpdGggYSBr
+bm9iIHRvIGNvbnRyb2wgdGhpcykKPiAKPiBBbiBhbHRlcm5hdGl2ZSB3b3VsZCBoYXZlIGJlZW4g
+dG8gaGF2ZSB0aGUgZm9sbG93aW5nIG5ldyBjb250cm9sLXBsYW5lCj4gcHJpbWl0aXZlczoKPiAq
+IEFiaWxpdHkgdG8gcHJvdmlzaW9uIGEgVk0gd2l0aG91dCBib290LXZvbHVtZSwgYnV0IGluc3Rl
+YWQgZnJvbSBhbgo+IEltYWdlIHRoYXQgaXMgdXNlZCB0byBib290IGZyb20gbWVtb3J5LiBBbGxv
+d2luZyB0byBwcm92aXNpb24gZGlzay1sZXNzIAo+IFZNcy4KPiAgwqAgKEUuZy4gQ2FuIGJlIHVz
+ZWZ1bCBmb3Igb3RoZXIgdXNlLWNhc2VzIHN1Y2ggYXMgVk1zIG5vdCByZXF1aXJpbmcgRUJTCj4g
+YXQgYWxsIHdoaWNoIGNvdWxkIGFsbG93IGNoZWFwZXIgY29tcHV0ZSBpbnN0YW5jZSkKPiAqIEFi
+aWxpdHkgdG8gcHJvdmlzaW9uIGEgZ3JvdXAgb2YgVk1zIHRvZ2V0aGVyIGFzIGEgZ3JvdXAgc3Vj
+aCB0aGF0IHRoZXkKPiBhcmUgZ3VhcmFudGVlZCB0byBsYXVuY2ggYXMgc2libGluZyBWTXMgb24g
+dGhlIHNhbWUgaG9zdC4KPiAqIEFiaWxpdHkgdG8gY3JlYXRlIGEgZmFzdC1wYXRoIGNvbm5lY3Rp
+b24gYmV0d2VlbiBzaWJsaW5nIFZNcyBvbiB0aGUKPiBzYW1lIGhvc3Qgd2l0aCB2aXJ0aW8tdnNv
+Y2suIE9yIGV2ZW4gYWxzbyBvdGhlciBzaGFyZWQtbWVtb3J5IG1lY2hhbmlzbS4KPiAqIEV4dGVu
+ZCBBV1MgRmFyZ2F0ZSB3aXRoIGFiaWxpdHkgdG8gcnVuIG11bHRpcGxlIG1pY3JvVk1zIGFzIGEg
+Z3JvdXAKPiAoU2ltaWxhciB0byBhYm92ZSkgY29ubmVjdGVkIHdpdGggdmlydGlvLXZzb2NrLiBU
+byBhbGxvdyBvbi1kZW1hbmQgc2NhbGUKPiBvZiBjb25maWRlbnRpYWwtY29tcHV0aW5nIHRhc2su
+CgpZZXMsIHRoZXJlIGFyZSBhICpsb3QqIG9mIGRpZmZlcmVudCB3YXlzIHRvIGltcGxlbWVudCBl
+bmNsYXZlcyBpbiBhIApjbG91ZCBlbnZpcm9ubWVudC4gVGhpcyBpcyB0aGUgb25lIHRoYXQgd2Ug
+Zm9jdXNlZCBvbiwgYnV0IEknbSBzdXJlIApvdGhlcnMgaW4gdGhlIHNwYWNlIHdpbGwgaGF2ZSBt
+b3JlIGlkZWFzLiBJdCdzIGRlZmluaXRlbHkgYW4gaW50ZXJlc3RpbmcgCnNwYWNlIGFuZCBJJ20g
+ZWFnZXIgdG8gc2VlIG1vcmUgaW5ub3ZhdGlvbiBoYXBwZW5pbmcgOikuCgo+IEhhdmluZyBzYWlk
+IHRoYXQsIEkgZG8gc2VlIGEgc2ltaWxhciBhcmNoaXRlY3R1cmUgdG8gTml0cm8gRW5jbGF2ZXMK
+PiB2aXJ0dWFsIFBDSSBkZXZpY2UgdXNlZCBmb3IgYSBkaWZmZXJlbnQgcHVycG9zZTogRm9yIGh5
+cGVydmlzb3ItYmFzZWQKPiBzZWN1cml0eSBpc29sYXRpb24gKFN1Y2ggYXMgV2luZG93cyBWQlMp
+Lgo+IEUuZy4gTGludXggYm9vdC1sb2FkZXIgY2FuIGRldGVjdCB0aGUgcHJlc2VuY2Ugb2YgdGhp
+cyB2aXJ0dWFsIFBDSQo+IGRldmljZSBhbmQgdXNlIGl0IHRvIHByb3Zpc2lvbiBtdWx0aXBsZSBW
+TSBzZWN1cml0eSBkb21haW5zLiBTdWNoIHRoYXQKPiB3aGVuIGEgc2VjdXJpdHkgZG9tYWluIGlz
+IGNyZWF0ZWQsCj4gaXQgaXMgc3BlY2lmaWVkIHdoYXQgaXMgdGhlIGhhcmR3YXJlIHJlc291cmNl
+cyBpdCBoYXZlIGFjY2VzcyB0byAoR3Vlc3QKPiBtZW1vcnkgcGFnZXMsIElPUG9ydHMsIE1TUnMg
+YW5kIGV0Yy4pIGFuZCB0aGUgYmxvYiBpdCBzaG91bGQgcnVuIHRvCj4gYm9vdHN0cmFwLiBTaW1p
+bGFyLCBidXQgc3VwZXJpb3IgdGhhbiwKPiBIeXBlci1WIFZTTS4gSW4gYWRkaXRpb24sIHNvbWUg
+c2VjdXJpdHkgZG9tYWlucyB3aWxsIGJlIGdpdmVuIHNwZWNpYWwKPiBhYmlsaXRpZXMgdG8gY29u
+dHJvbCBvdGhlciBzZWN1cml0eSBkb21haW5zIChGb3IgZXhhbXBsZSwgdG8gY29udHJvbCB0aGUK
+PiArWFMsK1hVIEVQVCBiaXRzIG9mIG90aGVyIHNlY3VyaXR5Cj4gZG9tYWlucyB0byBlbmZvcmNl
+IGNvZGUtaW50ZWdyaXR5LiBTaW1pbGFyIHRvIFdpbmRvd3MgVkJTIEhWQ0kpLiBKdXN0IGFuCj4g
+aWRlYS4uLiA6KQoKWWVzLCBhYnNvbHV0ZWx5ISBTbyBtdWNoIGZ1biB0byBiZSBoYWQgOkQKCgpB
+bGV4CgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgR2VybWFueSBHbWJICktyYXVzZW5zdHIu
+IDM4CjEwMTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1bmc6IENocmlzdGlhbiBTY2hsYWVnZXIs
+IEpvbmF0aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJn
+IHVudGVyIEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4KVXN0LUlEOiBERSAyODkgMjM3IDg3OQoK
+Cg==
 
