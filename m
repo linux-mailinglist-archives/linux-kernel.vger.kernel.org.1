@@ -2,83 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7321BC08B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C11E1BC096
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 16:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgD1OFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 10:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727110AbgD1OFl (ORCPT
+        id S1727999AbgD1OGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 10:06:46 -0400
+Received: from alexa-out-blr-02.qualcomm.com ([103.229.18.198]:61561 "EHLO
+        alexa-out-blr-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726942AbgD1OGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 10:05:41 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF07CC03C1A9;
-        Tue, 28 Apr 2020 07:05:40 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id m2so16978691lfo.6;
-        Tue, 28 Apr 2020 07:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=r3hzm7yTEE9xqQrbBm8OOfDWzkr0IEj+zeX1Eo846UY=;
-        b=p4OEQHwXTSirIiP6YEPENS2RQpq4t+1vw3fDD9fE9E8qcWtTcCZjEiliG02mYh8L94
-         Ywbew18Wx/pTNrgJ+iHkP5dxm6P9hnXERGOxdOLboqd3bVsAeMPPfDmhx/9sHfnt+4FR
-         TEESang+PBYT9XsK31s2qaADmj/AtHch+sKPWBZm3AnGtBIgwYadBoNSVOsqG4GpuNWm
-         Td/NDuBgeXQR3rdklugeFSOOfDo1Sa/LSfOniv818VlOnD8TxHpSK0/bETwCF0a+liRJ
-         C0QxMCjnQIp6K07U1Qxed5S1lL+fJTnCz2dFKVL4R2Hx9NpJ8t83Ddf5qX9NH5EGIiwY
-         1f+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r3hzm7yTEE9xqQrbBm8OOfDWzkr0IEj+zeX1Eo846UY=;
-        b=rvQewAiAQQg29GHhXgGxX7iWhEyKPL5vK95a8av+TfPIbkGP9VI91V4qWVVKI8ZxWt
-         1q9TGd8Yyv9LcghToZDTL3e6gVSJfFvuc8wb4lNUq90mueYinWI+y/N/9zYTCP6I1GuZ
-         wYh/VlWuv3XzpvTv594Dfgnq4rRas4hF7lFRRvxCZkGe7v4l/cauj9ukKKgZVOgWy+Ty
-         /gRXm4Vi0+yVBqhT/zmznLoR3sMCjYIDXbzxQW50tsOgxlyPbRJpnpTJkcSMqVUCT+tt
-         TJxArA4AtcZ9P8EXGy8HhgTCn5nKx3itWiRl1gTknNEXgVHP0vyNAT0XiWZVUNFuauNw
-         LVZQ==
-X-Gm-Message-State: AGi0PuadPeqQ6Lq4QfUjXg/Q8Y67Qt/XdcCmJhJ+EcloQIxIb6Nyg1zt
-        e9WxWSUh9GIi1PtP1jqB95ZhsEFE
-X-Google-Smtp-Source: APiQypKxN3pfvXCQL3vLYQ1O+Zw8BJKyVvfYPi9WBRQ+0uc2Ezri5OcRPNp9EyLJ5HnBfm7cUFyp2A==
-X-Received: by 2002:ac2:53a6:: with SMTP id j6mr19174715lfh.153.1588082736038;
-        Tue, 28 Apr 2020 07:05:36 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id v7sm14124531lfq.55.2020.04.28.07.05.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Apr 2020 07:05:35 -0700 (PDT)
-Subject: Re: [RFC PATCH v1 3/5] media: tegra-video: Move PM runtime handle to
- streaming
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1588047650-29402-1-git-send-email-skomatineni@nvidia.com>
- <1588047650-29402-4-git-send-email-skomatineni@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <4d069601-5507-dc8f-0cbc-acd8fd7324b3@gmail.com>
-Date:   Tue, 28 Apr 2020 17:05:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <1588047650-29402-4-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Tue, 28 Apr 2020 10:06:46 -0400
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by alexa-out-blr-02.qualcomm.com with ESMTP/TLS/AES256-SHA; 28 Apr 2020 19:36:43 +0530
+Received: from c-sanm-linux.qualcomm.com ([10.206.25.31])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 28 Apr 2020 19:36:24 +0530
+Received: by c-sanm-linux.qualcomm.com (Postfix, from userid 2343233)
+        id BD7E328DA; Tue, 28 Apr 2020 19:36:23 +0530 (IST)
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: [PATCH v6 0/4] Add QMP V3 USB3 PHY support for SC7180 
+Date:   Tue, 28 Apr 2020 19:36:11 +0530
+Message-Id: <1588082775-19959-1-git-send-email-sanm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-28.04.2020 07:20, Sowjanya Komatineni пишет:
-> +	ret = csi->ops->csi_streaming(csi_chan, chan->pg_mode, enable);
->  
-> -	return csi->ops->csi_streaming(csi_chan, chan->pg_mode, enable);
-> +	if ((ret < 0 || !enable) && atomic_dec_and_test(&csi->clk_refcnt))
-> +		pm_runtime_put_sync(csi->dev);
+Add QMP V3 USB3 PHY entries for SC7180 in phy driver and
+device tree bindings.
 
-There shouldn't be a need to sync the RPM here, hence just
-pm_runtime_put(csi->dev). Same for the VI.
+changes in v6:
+*Added separate yaml file for USB3 DP PHY bindings.
+
+changes in v5:
+*Addressed comments from Matthias in yaml file.
+*Dropped PATCH 4/4 as it is landed in linux-next. 
+
+changes in v4:
+*Addressed comments from Matthias and Rob in yaml file.
+
+changes in v3:
+*Addressed Rob's comments in yaml file.
+*Sepearated the SC7180 support in yaml patch.
+*corrected the phy reset entries in device tree.
+
+changes in v2:
+*Remove global phy reset in QMP PHY.
+*Convert QMP PHY bindings to yaml.
+
+Sandeep Maheswaram (4):
+  dt-bindings: phy: qcom,qmp: Convert QMP PHY bindings to yaml
+  dt-bindings: phy: qcom,qmp-usb3-dp: Add dt bindings for USB3 DP PHY
+  dt-bindings: phy: qcom,qmp-usb3-dp: Add support for SC7180
+  phy: qcom-qmp: Add QMP V3 USB3 PHY support for SC7180
+
+ .../devicetree/bindings/phy/qcom,qmp-phy.yaml      | 311 +++++++++++++++++++++
+ .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml         | 136 +++++++++
+ .../devicetree/bindings/phy/qcom-qmp-phy.txt       | 242 ----------------
+ drivers/phy/qualcomm/phy-qcom-qmp.c                |  38 +++
+ 4 files changed, 485 insertions(+), 242 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+ create mode 100644 Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
+ delete mode 100644 Documentation/devicetree/bindings/phy/qcom-qmp-phy.txt
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
