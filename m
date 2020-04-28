@@ -2,129 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F111BC4BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9431BC4CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 18:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbgD1QO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 12:14:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728037AbgD1QO2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 12:14:28 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF7AC03C1AB;
-        Tue, 28 Apr 2020 09:14:28 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id f18so22091514lja.13;
-        Tue, 28 Apr 2020 09:14:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZnXnmnUGnJoiqmak1qzJ2uo0ETz1Y/4EWDM5M5+McW4=;
-        b=fGS2oo0V4315baKko4RVx1wvx1RkPf6mVsOhdOrIDDYWBQzPnkKlTSp8QHvAj1CDy9
-         nzIxC+HzhXpaIa7msXlP2DMi5d8gpXeO92dOxA7FQ2waSsG3js+AV+/HHAjo/ZlDoJQw
-         hcb9MPNRB8gjqdA06X2g4kJnT47UJptPJsJzQRnzBRzkOgQ4K9xgW14vozetfeDfkS4z
-         PiYhDAK0FEGJjn0A7uVFpN+BKbglLueXcL1gS5csd30zCtQk4+zZhwNbBojouyxNvpah
-         MVMeHsvKv2teVMfuSxNxQDDi643nUKW1KifpFcZbs5cRdQpyLgvy55+a1NCbpap4kJ/N
-         NLIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZnXnmnUGnJoiqmak1qzJ2uo0ETz1Y/4EWDM5M5+McW4=;
-        b=n2BdI3BSFrziwKdD/OFP31BCCzFVnVnt/apNQ3xI3YaOKEOc9qkLIY56in2ZyzKLJc
-         38Vf0zPjX9IB3FGGyYPhw7e57gts+xUrrZ5r6lDSxsxWZtVIe/DvgxlKPh+T1R6FPTet
-         JMLKpskX1maO4Na7COB2hFPe5FEXONtNpTS4fsHRNW2bwjKNndIkIDZL02uMtJ1pirMN
-         DYHz2GNby5gJ0QQJOuAPWWEmwVluS+U7qt6kkLnV1m5qIbf19/sOJgKhH3k6TZjDdl+n
-         sgLAFRYGHs5qt02y4hZ2yRjmJrf7KxLZKaHxr/TvZf3RzPFu+QQ+eTTxjfSSzwVmYwWc
-         ruoA==
-X-Gm-Message-State: AGi0PuYoJdIFxq7m85dX9dhLuWiPZayaWLZ1ZL5wsSq4q/XeQsunQDVa
-        t+gSatM/JFGTmyi5uh6TBX2vkAoKPFriWS9Jsj0=
-X-Google-Smtp-Source: APiQypIXDLASfkazcJ+MQrYti2Ag3mLrjAObISlzH9I+j+TwEOwLu6ohEsL7aLot1tJOG7n4pooQE3SwWHE1K4b6jjM=
-X-Received: by 2002:a2e:9011:: with SMTP id h17mr18597862ljg.138.1588090466535;
- Tue, 28 Apr 2020 09:14:26 -0700 (PDT)
+        id S1728412AbgD1QPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 12:15:43 -0400
+Received: from mout.web.de ([212.227.15.3]:48103 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728130AbgD1QPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 12:15:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1588090527;
+        bh=8xAdLHi22Afye50tIMhbKEqj7g/+TQevJSFjaSxYdqg=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=MVgTvgZvgNJuS+z2cPeCyp5fB56haCGx4xZoItRrxErQakN6XkP00lcqHyIcseqZ2
+         jvxkvf66X1tjgYXATOu6MciNW2j07T1PmbAc5xI4dWD89I4ZZIUDDt0G7h7Tog4ZFx
+         FtyOXr7LhUEj3yBd5cswCu9zTWXTUwyOuw6sV8OU=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.179.255]) by smtp.web.de (mrweb003
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0M8iK4-1jJbX92qE8-00C713; Tue, 28
+ Apr 2020 18:15:27 +0200
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] drm/mcde: dsi: Fix a return value check in
+ mcde_dsi_bind()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <1900157b-39fe-e6fe-6fe7-26053a32f507@web.de>
+Date:   Tue, 28 Apr 2020 18:15:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <CAK7LNARHd0DXRLONf6vH_ghsYZjzoduzkixqNDpVqqPx0yHbHg@mail.gmail.com>
-In-Reply-To: <CAK7LNARHd0DXRLONf6vH_ghsYZjzoduzkixqNDpVqqPx0yHbHg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 28 Apr 2020 09:14:15 -0700
-Message-ID: <CAADnVQ+RvDq9qvNgSkwaMO8QcDG1gCm-SkGgNHyy1gVC3_0w=A@mail.gmail.com>
-Subject: Re: BPFilter: bit size mismatch between bpfiter_umh and vmliux
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:5FSzJc0UFp6D0EjhmLJsAt414KiTEdB8XeMKnL+B1QqzWX01Sci
+ ALM2gq3tuJCroG6vhkBs953+cNGmvtbyjGzY6lMjmMba0WrY5YRpy+B5Y8yUhvfXUwgFAVn
+ H2FlIq24bqqvqmsULR9DreYsjFKUd8FkxRQwLRcN5I2fIHDicn+xOiONqPGCCO7GRuEDPoP
+ VCKJkTAF2xfDVC+3uf7zg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+05hwj3gRN0=:5sVYyphrgIkiZWH8cDYeFI
+ NxnXgdTF2OnOPFAJlZqQyI8yQYlOhPzVKivirIqk9z3HNgWVPJem+KvCzMO4Wislw8go1Q+Rm
+ jYPITCQEC+Hoh0zbCJaiZFdv6XefO/QszCFBBX/JwHT5KFohpbcw5VYKEihMMlngxQFVsvrLW
+ 1QpIwyFwt7atXXy3tYMEcC53xHg/emSsex+CTmk9FgZDx5obsXCE04D8+4UkVVco0LD+nThv/
+ l+ZmYvJiLt0ACqjcniZkrBFzCDPtm0+p5PLwBjO2DSxlyoPNYGncQPjMy80g+hv3CxTMbskPX
+ ZKcMZUgE+jX8TCBf84FBWqRk80c+d19/AUp/K1unWzzwFwuPpwg9vbOoP3sw8arMJMXIvLW+P
+ vS3qh9KfFtjz8DMzI0FS32JnIFW8TaO/t1p9Wb1Ewz2Aru/rreLr6oyLdjBworEKJuXHD8Y1c
+ P1XIbzQfeL5P8rb+eO78LEM3W4nUu5BEhpduBF+JGwYbJxa4RqXmLl3YO7TPwW5RHaBMXas2m
+ Psfiq+wNxV9nmhAT2IUWDDjYboVmyCqtHTCrWzEbGOoqluvnRWjfNEjOpAf9CIaCHGtBEEGUF
+ IvI/V5cI9/I64trOtaUP+BHzSdAfdfkPhWH4+vfGPiICXy1Nb7rsYOPchha2twovQZ5kr0vkx
+ 9dMlQPLHgHYSYJqR0yKY5GRWWIhJ66frD+X5uLlyoLQdkSm7vdXpPzeRE7uj18jsgUnOTlU+Q
+ uP0kyx4n71mviLkPuo4HkDt70YLzw2DQ3LGY/yaYnMWlmlj1FHJpBlQNcWP6CjHU7Ty2Otd1g
+ sxw0EP28F8/YyIs6GMZu1OfW1hsbFU6iizys0kNDSnE1UZT2QwmR0n+dxyjvAWxaXWtB7lmXM
+ ay3CR/mgxR3chr78pwQyaZXmRgyu/e6ccCOVX4P+0bFhETSdvit+gUUYSF6PIdnW/EGuOhjMQ
+ kCYBCghN+3I3/T3MiF5KCiRQAz01PSMPnTPYe+hHVeSOuRiNHCLMjjeJKKzAw+4Xd09Sna50p
+ BxxknXklaCAuAOf3E4vBdCnir89KiH6CoVGuB6iz3WHZGFz91iwLI1MVffFNG5/GJmQeTejBm
+ szo0Q0W2vc4xQRAu4jPLBArDdvV2YkdL8o9WCMQGV3R6Mp5sNWhncrP0ZSNfHYEGT5+sK5Z1d
+ mrolh92At5emAhNUcb1PF03O4KJQ6EV6nCjnSRTTuLBI9JxjrQdJ+yqPKEnInSdvIHmT/UlTF
+ T3WNGQrptvhKroaHL
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 3:54 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> Hi.
->
-> I have a question about potential bit size
-> mismatch between vmlinux and bpfilter_umh.
->
->
-> net/bpfilter/bpfilter_umh is compiled for the
-> default machine bit of the compiler.
-> This may not match to the kernel bit size.
->
->
-> This happens in the following scenario.
->
-> GCC can be compiled as bi-arch.
-> If you use GCC that defaults to 64-bit,
-> you can give -m32 flag to produce the 32 bit code.
->
-> When you build the kernel for 32-bit, -m32 is
-> properly passed for building the kernel space objects.
-> However, it is missing while building the userspace
-> objects for bpfilter_umh.
->
->
-> For example, my build host is x86_64 Ubuntu.
->
-> If I build the kernel for i386
-> with CONFIG_BPFILTER_UMH=y,
-> the embedded bpfilter_umh is 64bit ELF.
->
-> You can reproduce it by the following command on the
-> mainline kernel.
->
-> masahiro@oscar:~/ref/linux$ make ARCH=i386 defconfig
-> masahiro@oscar:~/ref/linux$ scripts/config -e BPFILTER
-> masahiro@oscar:~/ref/linux$ scripts/config -e BPFILTER_UMH
-> masahiro@oscar:~/ref/linux$ make $(nproc) ARCH=i386
->    ...
-> masahiro@oscar:~/ref/linux$ file vmlinux
-> vmlinux: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV),
-> statically linked,
-> BuildID[sha1]=7ac691c67b4fe9b0cd46b45a2dc2d728d7d87686, not stripped
-> masahiro@oscar:~/ref/linux$ file net/bpfilter/bpfilter_umh
-> net/bpfilter/bpfilter_umh: ELF 64-bit LSB executable, x86-64, version
-> 1 (GNU/Linux), statically linked,
-> BuildID[sha1]=baf1ffe26f4c030a99a945fc22924c8c559e60ac, for GNU/Linux
-> 3.2.0, not stripped
->
->
->
->
-> At least, the build was successful,
-> but does this work at runtime?
->
-> If this is a bug, I can fix it cleanly.
->
-> I think the bit size of the user mode helper
-> should match to the kernel bit size. Is this correct?
+> In case of error, the function of_drm_find_bridge() returns NULL pointer
+> not ERR_PTR().
 
-yes. they should match.
-In theory we can have -m32 umh running on 64-bit kernel,
-but I wouldn't bother adding support for such thing
-until there is a use case.
-Running 64-bit umh on 32-bit kernel is no go.
+Such information is helpful.
+
+
+> The IS_ERR() test in the return value check should be
+> replaced with NULL test.
+
+* Would you like to convert this description into an imperative wording?
+
+* Please fix the patch subject according to a function name.
+
+* How do you think about to add the tag =E2=80=9CFixes=E2=80=9D to the com=
+mit message
+  because of an adjustment for the error detection?
+
+Regards,
+Markus
