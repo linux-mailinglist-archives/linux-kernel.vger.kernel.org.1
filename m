@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9749A1BC9FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FFB1BCA73
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Apr 2020 20:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731523AbgD1Sok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 14:44:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37624 "EHLO mail.kernel.org"
+        id S1730550AbgD1Skd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 14:40:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731390AbgD1Soh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 14:44:37 -0400
+        id S1730841AbgD1SjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 14:39:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35C4B206D6;
-        Tue, 28 Apr 2020 18:44:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 850C320575;
+        Tue, 28 Apr 2020 18:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588099476;
-        bh=CTF34mYL5Zm2aCRc78RJkk59CgF4gPC5ZKAdh7FgILU=;
+        s=default; t=1588099163;
+        bh=YRPz9qHcObap93jH97qo4aIT3nzat78I2eNfcwvsejg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YwqAKTUDJDqJ0XGdz4Aba7BdcmnLGFe9yvuvq13SyHFVffdsYQf/QgHbj1UgBsJZC
-         aCHiU8VriasxCDAzyuVjlqFHTqe3FiWoEQozz7doWZMBGTqCoXYHi4Ts3dXaTRDUcw
-         KR5ARf7nWv99qPKaQ5tK4UvkiGDu/Rd1BCC/BPQ8=
+        b=ZQH23i8uo2UzANs2OBsmQWMiWZ58p1br48vcqMoeahw98MHAzaaS/HWuA/Vl02okx
+         TX2j4wVSVtrYcGdyRCufR+k75OvrVUQniM1zeQbIIaPXz9ULH6Qbh6/QWM5MPgKXA6
+         e/rcsaNbRQhW3kpfltM00HKBQzRdAKXtXzeX7Wds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 166/168] powerpc/mm: Fix CONFIG_PPC_KUAP_DEBUG on PPC32
+        stable@vger.kernel.org, Francisco Jerez <currojerez@riseup.net>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
+        Andi Shyti <andi.shyti@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.6 164/167] drm/i915/gt: Update PMINTRMSK holding fw
 Date:   Tue, 28 Apr 2020 20:25:40 +0200
-Message-Id: <20200428182251.666828529@linuxfoundation.org>
+Message-Id: <20200428182246.345179491@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-References: <20200428182231.704304409@linuxfoundation.org>
+In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
+References: <20200428182225.451225420@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +46,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@c-s.fr>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit feb8e960d780e170e992a70491eec9dd68f4dbf2 upstream.
+commit e1eb075c5051987fbbadbc0fb8211679df657721 upstream.
 
-CONFIG_PPC_KUAP_DEBUG is not selectable because it depends on PPC_32
-which doesn't exists.
+If we use a non-forcewaked write to PMINTRMSK, it does not take effect
+until much later, if at all, causing a loss of RPS interrupts and no GPU
+reclocking, leaving the GPU running at the wrong frequency for long
+periods of time.
 
-Fixing it leads to a deadlock due to a vital register getting
-clobbered in _switch().
-
-Change dependency to PPC32 and use r0 instead of r4 in _switch()
-
-Fixes: e2fb9f544431 ("powerpc/32: Prepare for Kernel Userspace Access Protection")
-Cc: stable@vger.kernel.org # v5.2+
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/540242f7d4573f7cdf1b3bf46bb35f743b2cd68f.1587124651.git.christophe.leroy@c-s.fr
+Reported-by: Francisco Jerez <currojerez@riseup.net>
+Suggested-by: Francisco Jerez <currojerez@riseup.net>
+Fixes: 35cc7f32c298 ("drm/i915/gt: Use non-forcewake writes for RPS")
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Francisco Jerez <currojerez@riseup.net>
+Cc: Mika Kuoppala <mika.kuoppala@linux.intel.com>
+Cc: Andi Shyti <andi.shyti@intel.com>
+Reviewed-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
+Reviewed-by: Andi Shyti <andi.shyti@intel.com>
+Reviewed-by: Francisco Jerez <currojerez@riseup.net>
+Cc: <stable@vger.kernel.org> # v5.6+
+Link: https://patchwork.freedesktop.org/patch/msgid/20200415170318.16771-2-chris@chris-wilson.co.uk
+(cherry picked from commit a080bd994c4023042a2b605c65fa10a25933f636)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/powerpc/kernel/entry_32.S         |    2 +-
- arch/powerpc/platforms/Kconfig.cputype |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/i915/gt/intel_rps.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -705,7 +705,7 @@ END_FTR_SECTION_IFSET(CPU_FTR_SPE)
- 	stw	r10,_CCR(r1)
- 	stw	r1,KSP(r3)	/* Set old stack pointer */
+--- a/drivers/gpu/drm/i915/gt/intel_rps.c
++++ b/drivers/gpu/drm/i915/gt/intel_rps.c
+@@ -83,7 +83,8 @@ static void rps_enable_interrupts(struct
+ 	gen6_gt_pm_enable_irq(gt, rps->pm_events);
+ 	spin_unlock_irq(&gt->irq_lock);
  
--	kuap_check r2, r4
-+	kuap_check r2, r0
- #ifdef CONFIG_SMP
- 	/* We need a sync somewhere here to make sure that if the
- 	 * previous task gets rescheduled on another CPU, it sees all
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -389,7 +389,7 @@ config PPC_KUAP
+-	set(gt->uncore, GEN6_PMINTRMSK, rps_pm_mask(rps, rps->cur_freq));
++	intel_uncore_write(gt->uncore,
++			   GEN6_PMINTRMSK, rps_pm_mask(rps, rps->last_freq));
+ }
  
- config PPC_KUAP_DEBUG
- 	bool "Extra debugging for Kernel Userspace Access Protection"
--	depends on PPC_KUAP && (PPC_RADIX_MMU || PPC_32)
-+	depends on PPC_KUAP && (PPC_RADIX_MMU || PPC32)
- 	help
- 	  Add extra debugging for Kernel Userspace Access Protection (KUAP)
- 	  If you're unsure, say N.
+ static void gen6_rps_reset_interrupts(struct intel_rps *rps)
+@@ -117,7 +118,8 @@ static void rps_disable_interrupts(struc
+ 
+ 	rps->pm_events = 0;
+ 
+-	set(gt->uncore, GEN6_PMINTRMSK, rps_pm_sanitize_mask(rps, ~0u));
++	intel_uncore_write(gt->uncore,
++			   GEN6_PMINTRMSK, rps_pm_sanitize_mask(rps, ~0u));
+ 
+ 	spin_lock_irq(&gt->irq_lock);
+ 	gen6_gt_pm_disable_irq(gt, GEN6_PM_RPS_EVENTS);
 
 
