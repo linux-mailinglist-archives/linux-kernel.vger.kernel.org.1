@@ -2,81 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4CC1BD78B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82F51BD782
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgD2IsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 04:48:09 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:36793 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbgD2IsH (ORCPT
+        id S1726526AbgD2Ird (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 04:47:33 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:60171 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726345AbgD2Irc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 04:48:07 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MZCOl-1jgegV2MXh-00V7l9; Wed, 29 Apr 2020 10:47:54 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dpaa2-eth: debugfs: use div64_u64 for division
-Date:   Wed, 29 Apr 2020 10:47:22 +0200
-Message-Id: <20200429084740.2665893-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+        Wed, 29 Apr 2020 04:47:32 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9AB75580104;
+        Wed, 29 Apr 2020 04:47:30 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 29 Apr 2020 04:47:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=+x1hnvO451DFLw58Xq3iUsbF2Jz
+        alXMCx3P3fGnFW08=; b=mDylNO0ImdJQcBjcJhxqGwZ0gLH65YlOxSjvQREEP3f
+        4qGYzmConM9HkJufYMjsnhf4/U5f/nMYa7Y4bpNHEPZRGxnLHIjQiWjERglE53zA
+        oKMD/cPGAwRaPGqCJ5/SiN46qyNsjQGFSvMny9nDQB6IkO1SJfBgD9EdtiaVDZ7d
+        A/0pbA75VQ1czsx3Ud3zZ0Ct1tM7dRs5LdgkX5nrL4wlzG5WiI+zMV3YRbG6e9lU
+        EfEjiSIOEGi0F1dFrhGkZzyaX9IhNnWJBcdmGy3kakaIYmrgYV2DTu3hhEr3UJ+B
+        5cyi95cQhZgjntybSHnjxI/ELKDeyPR6wO+DmEdIyNQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=+x1hnv
+        O451DFLw58Xq3iUsbF2JzalXMCx3P3fGnFW08=; b=E2GG4YtpPx9b335eVlOleh
+        Vf8483NTNxzjs95yfN4uRYnvVs2tiKuUvRyMMVSInBLyjh+qMlQ0dVtjSwJbsDUK
+        WQWtSA+Bwb1TRuouQ6Rb6pdXfGYF71YpiWoLMMd4B0/gUi2rfcg5JorfqN0JJssQ
+        b5NszxFBVjt1AJHxC1DJ+KMryBcTxX33yCPmx9xaU+gujbvcPTEUhLLXynjJE6yy
+        miqhu3mWUKdKBcCgKILcyM6xOfgqmO5G1ZTnt75gOcYXtIUlupWdCgLceHSTqR8Q
+        BUigUlYpBZcCXoJnGIlSKCLjDvyVjMLksV6GI/iUupM/vJJdPxnutvDdSf42SJBQ
+        ==
+X-ME-Sender: <xms:HT-pXhpN54g-6aCMfmUe-4DMD6dWLtA3usgSR6go2S5ER7rxsPhAww>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrieefgddtkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
+    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:HT-pXrVffufAEMQkyDUZKoQp7m4gU6WDQH-928szCVw6XspkjR09Bw>
+    <xmx:HT-pXkD0RZGaxlLx-cC-xX6d0cZb-LFHZKS3nww8to01I-3FCcWuVg>
+    <xmx:HT-pXuTBDDqX0KhTqh3gFz8BYE7BbY0XahpKNhyToXMGSNRpH-Z_Jw>
+    <xmx:Ij-pXvat0UK807ynw6DTDs5CBzCYKJ5Cy3QP0hnPHBSOnNjslvCryA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D9FE03280066;
+        Wed, 29 Apr 2020 04:47:24 -0400 (EDT)
+Date:   Wed, 29 Apr 2020 10:47:23 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jonathan Bakker <xc-racer2@live.ca>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        James Hogan <jhogan@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Philipp Rossak <embed3d@gmail.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        openpvrsgx-devgroup@letux.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v7 08/12] arm: dts: s5pv210: Add node for SGX 540
+Message-ID: <20200429084723.jxybvsakniinvivt@gilmour.lan>
+References: <cover.1587760454.git.hns@goldelico.com>
+ <3fd18c747426e15fd1f3500b9c4adce2db9ddd0c.1587760454.git.hns@goldelico.com>
+ <NYBE9Q.YH08US7A7DC3@crapouillou.net>
+ <BN6PR04MB0660A180D2069848E5C03D7EA3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
+ <20200427154617.GA1798@pi3>
+ <BN6PR04MB06605F014024061C894AFBA4A3AC0@BN6PR04MB0660.namprd04.prod.outlook.com>
+ <BN6PR04MB0660044B5B1D45BE4CBCD2AAA3AC0@BN6PR04MB0660.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:JfNeeEx0olSSRzhxiQEp15g+QVP6cDJNVOOCYktX9TalmzZn3hd
- z2oYTqndiXg/znyl2mxXOxFj7KS9ryp18cKZor6IT+ivkN9a0jsy2CYNqvh4E/NHdMwPkyA
- n9KqnRTc97pMM/bgE4GfpLcr59CLE/v9wfnud1d3J3+rZJIsMOdlSSkwC7zPyHyCpZJ2AMz
- qcYy3sqIkRgkF9rMq42uQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:95pt5O6yTM0=:dYCSEoJZBytA9RaJU0hG1/
- B7Y1bI/hIalo/N/UrY5WGsa7F6DQkyM7TE+KP1ym/+6Nnt8SteugYBLQRqCdoQ1H3MUdNGL+z
- NktN1U9CEvf+m+KXfh33zKHQh6Dh08uusCP+GNvrFc/wwOfIuUm5qSzgnJAdZUNzMXfRuAFk3
- Mg8pjIHyTIgYS1zhczCf0Buqltn4MwxEG9QIsXiFhi+7n9/qFcCipRLaCJuNVi5xtfJgfgBFl
- jbh/XtKCF++HsSRvxTezwYiGGehPjR1KDNJ2dT6zCB07+sfXsjXq+S4ugMkgz17+UiiPv7n92
- dmMECdJ/yt2yOWa1At026X4/6edpuIS6QJVVlDEFZ7MbXuukFefSpvE0u/NzDRbEd6a8uRoQz
- q5JeiC2+hPNTDYfGnwxB6QmvsQZYqclYRfMO5BDOWxn7oBlXWIIYz48tZqs4x4WAqpmB+HL1U
- TF82/bKIG5HOZiq4ki04ghOyWiptBMc4zjhYAFa2yQP2c8uPzoVVrypyRKCbymrtJ+2znVV9F
- RGi58Wlvsdxp29WHdAWX1SlHwqGRKgvXG1oFySZ5k4Nd/Gog4B6+kUkD+zeaq4H7G0TYNwR9B
- W1mAIWRSwtsvzWf/cAIVaVvqdCU1UmFSIOav0r15Z5tImXjC6slhM+IO/B2JJtxOU3NTOZ+JR
- aJ6eJubQkpeDyYs3UF5/w3IFE2sqbRPFozHjt3Al1r5L1BW8jL5cRXzYeJYwUE0c3Ed5JHLrt
- bLJwsOmpnndNw9kQFxf4lQLf/NTu1ZHg4MvOBvMuhOTfZxKTkSSROkdt+YqUKIz9mldfUpJ4+
- JKFtNeprj/gXFXLIcjk61v7y1QI8ScRuWXW84dY7JbJMQ4OKis=
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="u22eiu3zouiknukx"
+Content-Disposition: inline
+In-Reply-To: <BN6PR04MB0660044B5B1D45BE4CBCD2AAA3AC0@BN6PR04MB0660.namprd04.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A plain 64-bit division breaks building on 32-bit architectures:
 
-ERROR: modpost: "__aeabi_uldivmod" [drivers/net/ethernet/freescale/dpaa2/fsl-dpaa2-eth.ko] undefined!
+--u22eiu3zouiknukx
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-As this function is not performance critical, just use the external
-helper instead.
+Hi,
 
-Fixes: 460fd830dd9d ("dpaa2-eth: add channel stat to debugfs")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Apr 28, 2020 at 03:58:03PM -0700, Jonathan Bakker wrote:
+> On 2020-04-28 2:39 p.m., Jonathan Bakker wrote:
+> > On 2020-04-27 8:46 a.m., Krzysztof Kozlowski wrote:
+> >> On Sun, Apr 26, 2020 at 07:57:12AM -0700, Jonathan Bakker wrote:
+> >>> Hi Paul,
+> >>>
+> >>> On 2020-04-26 5:56 a.m., Paul Cercueil wrote:
+> >>>>
+> >>>>
+> >>>> Le ven. 24 avril 2020 =E0 22:34, H. Nikolaus Schaller <hns@goldelico=
+=2Ecom> a =E9crit :
+> >>>>> From: Jonathan Bakker <xc-racer2@live.ca>
+> >>>>>
+> >>>>> All s5pv210 devices have a PowerVR SGX 540 (revision 120) attached.
+> >>>>>
+> >>>>> There is no external regulator for it so it can be enabled by defau=
+lt.
+> >>>>>
+> >>>>> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
+> >>>>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> >>>>> ---
+> >>>>> =A0arch/arm/boot/dts/s5pv210.dtsi | 13 +++++++++++++
+> >>>>> =A01 file changed, 13 insertions(+)
+> >>>>>
+> >>>>> diff --git a/arch/arm/boot/dts/s5pv210.dtsi b/arch/arm/boot/dts/s5p=
+v210.dtsi
+> >>>>> index 2ad642f51fd9..abbdda205c1b 100644
+> >>>>> --- a/arch/arm/boot/dts/s5pv210.dtsi
+> >>>>> +++ b/arch/arm/boot/dts/s5pv210.dtsi
+> >>>>> @@ -512,6 +512,19 @@ vic3: interrupt-controller@f2300000 {
+> >>>>> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 #interrupt-cells =3D <1>;
+> >>>>> =A0=A0=A0=A0=A0=A0=A0=A0 };
+> >>>>>
+> >>>>> +=A0=A0=A0=A0=A0=A0=A0 gpu: gpu@f3000000 {
+> >>>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 compatible =3D "samsung,s5pv210-=
+sgx540-120";
+> >>
+> >> This should not pass the bindings check because you missed last
+> >> compatibles.
+> >>
+> >=20
+> > Thanks for pointing that out, I'll add it and make sure it passes the b=
+indings check.
+> >=20
+> >>>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 reg =3D <0xf3000000 0x10000>;
+> >>>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 interrupt-parent =3D <&vic2>;
+> >>>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 interrupts =3D <10>;
+> >>>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 clock-names =3D "core";
+> >>>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 clocks =3D <&clocks CLK_G3D>;
+> >>>>> +
+> >>>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 assigned-clocks =3D <&clocks MOU=
+T_G3D>, <&clocks DOUT_G3D>;
+> >>>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 assigned-clock-rates =3D <0>, <6=
+6700000>;
+> >>>>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 assigned-clock-parents =3D <&clo=
+cks MOUT_MPLL>;
+> >>>>
+> >>>> What are these clocks for, and why are they reparented / reclocked?
+> >>>>
+> >>>> Shouldn't they be passed to 'clocks' as well?
+> >>>>
+> >>>> -Paul
+> >>>>
+> >>>
+> >>> The G3D clock system can have multiple parents, and for stable operat=
+ion
+> >>> it's recommended to use the MPLL clock as the parent (which in turn
+> >>> is actually a mux as well).  MOUT_G3D is simply the mux for CLK_G3D
+> >>> (SGX core clock), DOUT_G3D is the divider.  DOUT_G3D could equally be=
+ CLK_G3D
+> >>> (and probably should be, for readability) as CLK_G3D is simply the ga=
+te and
+> >>> DOUT_G3D is the divider for it.
+> >>
+> >> Good point, it should be CLK_G3D instead of DOUT.  Can you fix this as
+> >> well?
+> >=20
+> > Yep, will do.  Nikolaus, I'll send you an updated patch to include.
+> >=20
+>=20
+> How are assigned-clocks handled in the yaml DT schema?  When running make=
+ dtbs_check,
+> I end up with messages such as
+>=20
+> arch/arm/boot/dts/s5pv210-aquila.dt.yaml: gpu@f3000000: 'assigned-clock-p=
+arents', 'assigned-clock-rates', 'assigned-clocks' do not match any of the =
+regexes: 'pinctrl-[0-9]+'
+>=20
+> Do they need to explicitly be listed as valid entries?
 
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
-index 80291afff3ea..0a31e4268dfb 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
-@@ -139,7 +139,7 @@ static int dpaa2_dbg_ch_show(struct seq_file *file, void *offset)
- 			   ch->stats.dequeue_portal_busy,
- 			   ch->stats.frames,
- 			   ch->stats.cdan,
--			   ch->stats.frames / ch->stats.cdan,
-+			   div64_u64(ch->stats.frames, ch->stats.cdan),
- 			   ch->buf_count);
- 	}
- 
--- 
-2.26.0
+If you have additionalProperties set to false, yes. But you should really
+consider not using them in the first place, since they provide no guarantee=
+ on
+whether the setup you did in the DT will remain during the life of the syst=
+em.
 
+I'm not sure why it's needed on that SoC in particular, but this should be =
+fixed
+in the driver itself (either the clock or the GPU driver).
+
+Maxime
+
+--u22eiu3zouiknukx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXqk/GwAKCRDj7w1vZxhR
+xR+OAP9zSq/md3bxfVKk4er7ZI7jk8/dQzTxgBO3mo3r+wRqmwEAy6d+UHyzeb5t
+qZLq2zIdK45SI8CMqYcGeBsbBQ1iVAc=
+=VCha
+-----END PGP SIGNATURE-----
+
+--u22eiu3zouiknukx--
