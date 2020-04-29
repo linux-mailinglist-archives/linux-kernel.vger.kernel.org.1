@@ -2,119 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD6E1BE19C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4166E1BE1A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgD2OuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:50:13 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36066 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726456AbgD2OuN (ORCPT
+        id S1727071AbgD2OuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726929AbgD2OuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:50:13 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03TEmXHb002888;
-        Wed, 29 Apr 2020 16:50:05 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=Kr1XXbzLTlBBBZ4y6p9Pc2Y8Dqf2pHM8kUu97rhSPs8=;
- b=qPTpZJMYIZCSukhS/KRaf8VGAJz9sKiwwCb9HtlYB140Ftw1hKr8cNT5kJvVRAJ6a/dl
- Id4LZpXwdHSqRYfaE/zGkwrulkDbfo8TurbuXsWnv8feUSvRAYxktZKYdFvZbpePPmzX
- 41fN5Ag0pm2JGHcbjV2nXmPB6LQfIRAH2HXgQL4UdR10joFX2A3ehFmRzRiAh5/1FggC
- 7CYp+YEkzbugb7IulSzL0L5J0W5JynnCkJeBjXp3DPvCvPvwYazJXtznWoobr9cRbdgg
- k+Vt8M94UsN5UPHP6UzatGrkG6M0bTvA4Rtheg6Q/Pmbt26ir3geY9oK2gr+8E63foKv wg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30mhjwy0tv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 16:50:05 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 20E06100034;
-        Wed, 29 Apr 2020 16:50:05 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 10E532AAF6B;
-        Wed, 29 Apr 2020 16:50:05 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.46) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 29 Apr
- 2020 16:50:03 +0200
-Subject: Re: [PATCH v2 08/12] remoteproc: stm32: Introduce new start ops for
- synchronisation
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <bjorn.andersson@linaro.org>, <ohad@wizery.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
-CC:     <loic.pallardy@st.com>, <linux-remoteproc@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200424202505.29562-1-mathieu.poirier@linaro.org>
- <20200424202505.29562-9-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <d9df6dba-6e99-d3cb-56e5-d7b9be0925f8@st.com>
-Date:   Wed, 29 Apr 2020 16:50:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 29 Apr 2020 10:50:21 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8ACC03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 07:50:21 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id e20so1862218otk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 07:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qyI0SNEnQtXEbJwY1Ck/cg35XSFvpALxjDJPBXBhrnQ=;
+        b=OTk4BhDexgtYj45AbedwxqiaNtEWMz5vICEz3FjS2ASgEs8RDykY5nycZKJdyYbvnn
+         xdYRSxrMo55Daa/iS9BaQRTfDRlJL96e4tSX6UHp/duPNiog6mElo/qalSUKyuNe2+2N
+         FywOGF2rs+Lg/lbWRbixNls/EZK2awg/bnYNn07l121KiDC7cS3+PpjNLSCT4vphjz9Q
+         8+Qvo/Jpc4uxv0X7IfL1rgTr7vmGDeAVK+o2Evv+5128QbHUGYjhzwz3j8odYXtGvUjn
+         MHsz/jK4o0FM3/8LMB8RHP46ODdQNZsg6uZaFmQaGKJ55XRjyCSufzRH3kpLiEfiZ5zN
+         8GxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qyI0SNEnQtXEbJwY1Ck/cg35XSFvpALxjDJPBXBhrnQ=;
+        b=PU4bUdNritx0WjqefG9McFDhhnz9+K57M08gAjVAEsEWJxvCBlzWwoJhhi/SUtrqW2
+         U+HyR8uIBSuVr98hp5bgyZVhPSCPnrIF/W6HSRJ+CLVjRtIcfkg9p8NKYOYhwNlz96gw
+         Flbn0y+0DgwUalsEIV+acVlpHNUAyl1UL6bp4W8M2kHhLYqd8HhbYzFzIlOMLIO/dB8Z
+         0W9kvRLEMIwVGIsYCFv7Gqnpxs2pL6HmACa2CPeTCskvPgqB+/uI9tkaLkVF6H3FzKii
+         YVVUnEJx+VdEa/Yg16BibpqMhnEVAKq3GTgJUrPmA8GW5PPqk2bDIJwcfdXerfAyfE4k
+         RtgA==
+X-Gm-Message-State: AGi0PuYU/av/8PUhiYJxnOsN3oBFyQqPVvvu/MDc0OmJWWQceJXahv55
+        DYpZ7TPzbDm0wh3G5osFv/MKQB6IEh6fhQcF5WhtHQ==
+X-Google-Smtp-Source: APiQypIXL8I2wEME01DT2EGMJ0/M/DnYHbWLA+pVPwZCB7X9EbvdQ5yUHo7uSB8IJZb4WwLhqG0FGhPpcw/e0s52+Ik=
+X-Received: by 2002:a9d:2f48:: with SMTP id h66mr24840284otb.252.1588171820828;
+ Wed, 29 Apr 2020 07:50:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200424202505.29562-9-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-29_07:2020-04-29,2020-04-29 signatures=0
+References: <1585341214-25285-1-git-send-email-tharvey@gateworks.com>
+ <1585341214-25285-3-git-send-email-tharvey@gateworks.com> <20200428094426.GL3559@dell>
+ <CAJ+vNU0UCugbM7Q7WZ1Hw-U=Je483jYGdrvS0Vq6idxtuUmz2Q@mail.gmail.com> <20200429063319.GV3559@dell>
+In-Reply-To: <20200429063319.GV3559@dell>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Wed, 29 Apr 2020 07:50:09 -0700
+Message-ID: <CAJ+vNU1e10F_g51UXgJ+o1R9zhf_1J9xHJ6SYEuZC4615QfG1w@mail.gmail.com>
+Subject: Re: [PATCH v8 2/3] mfd: add Gateworks System Controller core driver
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux HWMON List <linux-hwmon@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Robert Jones <rjones@gateworks.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 28, 2020 at 11:33 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Tue, 28 Apr 2020, Tim Harvey wrote:
+>
+> > On Tue, Apr 28, 2020 at 2:44 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > <snip>
+> > > > +
+> > > > +static int gsc_probe(struct i2c_client *client)
+> > > > +{
+> > > > +     struct device *dev = &client->dev;
+> > > > +     struct gsc_dev *gsc;
+> > > > +     int ret;
+> > > > +     unsigned int reg;
+> > > > +
+> > > > +     gsc = devm_kzalloc(dev, sizeof(*gsc), GFP_KERNEL);
+> > > > +     if (!gsc)
+> > > > +             return -ENOMEM;
+> > > > +
+> > > > +     gsc->dev = &client->dev;
+> > > > +     gsc->i2c = client;
+> > > > +     i2c_set_clientdata(client, gsc);
+> > > > +
+> > > > +     gsc->bus.reg_write = gsc_regmap_regwrite;
+> > > > +     gsc->bus.reg_read = gsc_regmap_regread;
+> > >
+> > > Why do you need to store these in ddata?
+> >
+> > Lee,
+> >
+> > Thanks for the review!
+> >
+> > I need the remap_bus* for devm_regmap_init() in the hwmon sub-module driver:
+> >
+> > hwmon->regmap = devm_regmap_init(dev, &gsc->bus, gsc->i2c_hwmon,
+> > &gsc_hwmon_regmap_config);
+> >
+> > Is there something easier I'm missing?
+>
+> This is an odd setup.  I haven't seen one driver registering another
+> driver's Regmap call-backs before, related or otherwise.  Normally the
+> Regmap is setup (initialised) in the parent driver and child drivers
+> just make use of it.  Here it looks like you are registering 2
+> separate Regmaps, but using the same call-backs for both, which seems
+> wrong to me.
+>
 
+Lee,
 
-On 4/24/20 10:25 PM, Mathieu Poirier wrote:
-> Introduce new start functions to be used when synchonising with an MCU.
-> 
-> Mainly based on the work published by Arnaud Pouliquen [1].
-> 
-> [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=239877
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+It is perhaps an odd setup. The hwmon sub-device is at a different i2c
+slave address than the other sub-devices. The same callbacks are used
+for reg read/write to take advantage of the retries due to the errata
+resulting in occasional NAK'd register reads.
 
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-
-Thanks,
-Arnaud
-
-> ---
->  drivers/remoteproc/stm32_rproc.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-> index 8ba69e903851..404f17a97095 100644
-> --- a/drivers/remoteproc/stm32_rproc.c
-> +++ b/drivers/remoteproc/stm32_rproc.c
-> @@ -449,6 +449,13 @@ static int stm32_rproc_start(struct rproc *rproc)
->  	return stm32_rproc_set_hold_boot(rproc, true);
->  }
->  
-> +static int stm32_rproc_sync_start(struct rproc *rproc)
-> +{
-> +	stm32_rproc_add_coredump_trace(rproc);
-> +
-> +	return stm32_rproc_set_hold_boot(rproc, true);
-> +}
-> +
->  static int stm32_rproc_stop(struct rproc *rproc)
->  {
->  	struct stm32_rproc *ddata = rproc->priv;
-> @@ -522,6 +529,10 @@ static struct rproc_ops st_rproc_ops = {
->  	.get_boot_addr	= rproc_elf_get_boot_addr,
->  };
->  
-> +static __maybe_unused struct rproc_ops st_rproc_sync_ops = {
-> +	.start		= stm32_rproc_sync_start,
-> +};
-> +
->  static const struct of_device_id stm32_rproc_match[] = {
->  	{ .compatible = "st,stm32mp1-m4" },
->  	{},
-> 
+Tim
