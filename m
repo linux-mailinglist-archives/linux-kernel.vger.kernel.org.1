@@ -2,225 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9831BD6C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DBFB1BD6C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgD2IEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 04:04:55 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44814 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726175AbgD2IEy (ORCPT
+        id S1726781AbgD2ICm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 04:02:42 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:55132 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726175AbgD2ICl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 04:04:54 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T7WvPa069563;
-        Wed, 29 Apr 2020 04:02:17 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30mh6vc5cr-1
+        Wed, 29 Apr 2020 04:02:41 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T82Tc2000920;
+        Wed, 29 Apr 2020 10:02:33 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=xAKjtR7pf94l044PtIdkC1ZExxD4NPo7DesKo4PrcN0=;
+ b=ECJAvqakrfmc6W3Gk6rr/m6ljTZDc5CCcVoECs20CuUENnn9eh2yq74yVHTyJ1Q08jQo
+ D0yuJtLf65sJCPYqpssUQc23oDo7FUNBwGEZlJSgmYaP1movHgXD2QnIval1xsMtN7xO
+ WzDamNRELBsJNjqQ6HmeRYlwTawwIBAoN//VKGqJhsTLLTMyGq6EqHPKcKlzU+Ep5x/v
+ Ujo/MgmnKuVlcAP6nDS9R84FfP4zMui5+Vc14DQu/8Bzk69FREzTp7i5fPsU1o7uLe0h
+ D+fqCN7H1CL29MKuYLj8xwWf4PP7NhwjPFCKQORuNK+OcPTLCnqHfcTljeZIRpctsqfL 9w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 30mhjwvwd6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 04:02:16 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03T7f2rA097986;
-        Wed, 29 Apr 2020 04:02:16 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30mh6vc5b8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 04:02:16 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03T7uRKb022662;
-        Wed, 29 Apr 2020 08:02:14 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 30mcu59k5f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 08:02:14 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03T82BEw43057160
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Apr 2020 08:02:11 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E943AE051;
-        Wed, 29 Apr 2020 08:02:11 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E9D26AE045;
-        Wed, 29 Apr 2020 08:02:05 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.81.16])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 29 Apr 2020 08:02:05 +0000 (GMT)
-Subject: Re: [PATCH v7 2/5] powerpc/hv-24x7: Add rtas call in hv-24x7 driver
- to get processor details
-To:     Kajol Jain <kjain@linux.ibm.com>, acme@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        sukadev@linux.vnet.ibm.com
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        anju@linux.vnet.ibm.com, maddy@linux.vnet.ibm.com,
-        ravi.bangoria@linux.ibm.com, peterz@infradead.org,
-        yao.jin@linux.intel.com, ak@linux.intel.com, jolsa@kernel.org,
-        kan.liang@linux.intel.com, jmario@redhat.com,
-        alexander.shishkin@linux.intel.com, mingo@kernel.org,
-        paulus@ozlabs.org, namhyung@kernel.org, mpetlan@redhat.com,
-        gregkh@linuxfoundation.org, benh@kernel.crashing.org,
-        mamatha4@linux.vnet.ibm.com, mark.rutland@arm.com,
-        tglx@linutronix.de
-References: <20200327063642.26175-1-kjain@linux.ibm.com>
- <20200327063642.26175-3-kjain@linux.ibm.com>
-From:   Madhavan Srinivasan <maddy@linux.ibm.com>
-Message-ID: <fc2f519f-7dc9-cc72-496e-bc1403aa2178@linux.ibm.com>
-Date:   Wed, 29 Apr 2020 13:32:04 +0530
+        Wed, 29 Apr 2020 10:02:33 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1213410002A;
+        Wed, 29 Apr 2020 10:02:31 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 003F1206653;
+        Wed, 29 Apr 2020 10:02:30 +0200 (CEST)
+Received: from lmecxl0912.tpe.st.com (10.75.127.51) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 29 Apr
+ 2020 10:02:27 +0200
+Subject: Re: [PATCH 6/6] ARM: dts: stm32mp1: Add IoT Box board support
+To:     <mani@kernel.org>, <robh+dt@kernel.org>,
+        <mcoquelin.stm32@gmail.com>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200420173124.27416-1-mani@kernel.org>
+ <20200420173124.27416-7-mani@kernel.org>
+From:   Alexandre Torgue <alexandre.torgue@st.com>
+Message-ID: <210a98b3-feea-8faf-316c-d45e1697ea21@st.com>
+Date:   Wed, 29 Apr 2020 10:02:20 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200327063642.26175-3-kjain@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200420173124.27416-7-mani@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-TM-AS-GCONF: 00
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG3NODE2.st.com
+ (10.75.127.8)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-29_02:2020-04-28,2020-04-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 bulkscore=0 spamscore=0 mlxscore=0 impostorscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 lowpriorityscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004290057
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mani
 
-
-On 3/27/20 12:06 PM, Kajol Jain wrote:
-> For hv_24x7 socket/chip level events, specific chip-id to which
-> the data requested should be added as part of pmu events.
-> But number of chips/socket in the system details are not exposed.
->
-> Patch implements read_sys_info_pseries() to get system
-> parameter values like number of sockets and chips per socket.
-> Rtas_call with token "PROCESSOR_MODULE_INFO"
-> is used to get these values.
-
-Patch looks good to me.
-
-Reviewed-by: Madhavan Srinivasan <maddy@linux.ibm.com>
-
-> Sub-sequent patch exports these values via sysfs.
->
-> Patch also make these parameters default to 1.
->
-> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+On 4/20/20 7:31 PM, mani@kernel.org wrote:
+> From: Manivannan Sadhasivam <mani@kernel.org>
+> 
+> IoT Box is an IoT gateway device based on Stinger96 board powered by
+> STM32MP1 SoC, designed and manufactured by Shiratech Solutions. This
+> device makes use of Stinger96 board by having it as a base board with
+> one additional mezzanine on top.
+> 
+> Following are the features exposed by this device in addition to the
+> Stinger96 board:
+> 
+> * WiFi/BT
+> * CCS811 VOC sensor
+> * 2x Digital microphones IM69D130
+> * 12x WS2812B LEDs
+> 
+> Following peripherals are tested and known to work:
+> 
+> * WiFi/BT
+> * CCS811
+> 
+> More information about this device can be found in Shiratech website:
+> https://www.shiratech-solutions.com/products/iot-box/
+> 
+> Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
 > ---
->   arch/powerpc/perf/hv-24x7.c              | 72 ++++++++++++++++++++++++
->   arch/powerpc/platforms/pseries/pseries.h |  3 +
->   2 files changed, 75 insertions(+)
->
-> diff --git a/arch/powerpc/perf/hv-24x7.c b/arch/powerpc/perf/hv-24x7.c
-> index 48e8f4b17b91..9ae00f29bd21 100644
-> --- a/arch/powerpc/perf/hv-24x7.c
-> +++ b/arch/powerpc/perf/hv-24x7.c
-> @@ -20,6 +20,11 @@
->   #include <asm/io.h>
->   #include <linux/byteorder/generic.h>
->
-> +#ifdef CONFIG_PPC_RTAS
-> +#include <asm/rtas.h>
-> +#include <../../platforms/pseries/pseries.h>
-> +#endif
-> +
->   #include "hv-24x7.h"
->   #include "hv-24x7-catalog.h"
->   #include "hv-common.h"
-> @@ -57,6 +62,69 @@ static bool is_physical_domain(unsigned domain)
->   	}
->   }
->
-> +#ifdef CONFIG_PPC_RTAS
-> +#define PROCESSOR_MODULE_INFO   43
-> +#define PROCESSOR_MAX_LENGTH	(8 * 1024)
-> +
-> +static int strbe16toh(const char *buf, int offset)
-> +{
-> +	return (buf[offset] << 8) + buf[offset + 1];
-> +}
-> +
-> +static u32		physsockets;	/* Physical sockets */
-> +static u32		physchips;	/* Physical chips */
-> +
+>   arch/arm/boot/dts/Makefile                |  1 +
+>   arch/arm/boot/dts/stm32mp157a-iot-box.dts | 92 +++++++++++++++++++++++
+>   2 files changed, 93 insertions(+)
+>   create mode 100644 arch/arm/boot/dts/stm32mp157a-iot-box.dts
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 966b81dfffd6..455ec6eb6303 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1030,6 +1030,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
+>   	stm32h743i-disco.dtb \
+>   	stm32mp157a-avenger96.dtb \
+>   	stm32mp157a-dk1.dtb \
+> +	stm32mp157a-iot-box.dtb \
+>   	stm32mp157a-stinger96.dtb \
+>   	stm32mp157c-dhcom-pdk2.dtb \
+>   	stm32mp157c-dk2.dtb \
+> diff --git a/arch/arm/boot/dts/stm32mp157a-iot-box.dts b/arch/arm/boot/dts/stm32mp157a-iot-box.dts
+> new file mode 100644
+> index 000000000000..fa1c006ce531
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/stm32mp157a-iot-box.dts
+> @@ -0,0 +1,92 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 > +/*
-> + * Function read_sys_info_pseries() make a rtas_call which require
-> + * data buffer of size 8K. As standard 'rtas_data_buf' is of size
-> + * 4K, we are adding new local buffer 'rtas_local_data_buf'.
+> + * Copyright (C) 2020 Manivannan Sadhasivam
 > + */
-> +char rtas_local_data_buf[PROCESSOR_MAX_LENGTH] __cacheline_aligned;
 > +
-> +/*
-> + * read_sys_info_pseries()
-> + * Retrieve the number of sockets and chips per socket details
-> + * through the get-system-parameter rtas call.
-> + */
-> +void read_sys_info_pseries(void)
-> +{
-> +	int call_status, len, ntypes;
+> +/dts-v1/;
+> +#include "stm32mp157a-stinger96.dtsi"
 > +
-> +	/*
-> +	 * Making system parameter: chips and sockets default to 1.
-> +	 */
-> +	physsockets = 1;
-> +	physchips = 1;
-> +	memset(rtas_local_data_buf, 0, PROCESSOR_MAX_LENGTH);
-> +	spin_lock(&rtas_data_buf_lock);
+> +/ {
+> +	model = "Shiratech STM32MP157A IoT Box";
+> +	compatible = "shiratech,stm32mp157a-iot-box", "st,stm32mp157";
 > +
-> +	call_status = rtas_call(rtas_token("ibm,get-system-parameter"), 3, 1,
-> +				NULL,
-> +				PROCESSOR_MODULE_INFO,
-> +				__pa(rtas_local_data_buf),
-> +				PROCESSOR_MAX_LENGTH);
+> +	wlan_pwr: regulator-wlan {
+> +		compatible = "regulator-fixed";
 > +
-> +	spin_unlock(&rtas_data_buf_lock);
+> +		regulator-name = "wl-reg";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
 > +
-> +	if (call_status != 0) {
-> +		pr_info("%s %s Error calling get-system-parameter (0x%x)\n",
-> +			__FILE__, __func__, call_status);
-> +	} else {
-> +		rtas_local_data_buf[PROCESSOR_MAX_LENGTH - 1] = '\0';
-> +		len = strbe16toh(rtas_local_data_buf, 0);
-> +		if (len < 6)
-> +			return;
+> +		gpios = <&gpiog 3 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +};
 > +
-> +		ntypes = strbe16toh(rtas_local_data_buf, 2);
+> +&i2c2 {
+> +	ccs811@5b {
+> +		compatible = "ams,ccs811";
+> +		reg = <0x5b>;
+> +		wakeup-gpios = <&gpioa 12 GPIO_ACTIVE_LOW>;
+> +		reset-gpios = <&gpioa 11 GPIO_ACTIVE_LOW>;
+> +	};
+> +};
 > +
-> +		if (!ntypes)
-> +			return;
-> +		physsockets = strbe16toh(rtas_local_data_buf, 4);
-> +		physchips = strbe16toh(rtas_local_data_buf, 6);
-> +	}
-> +}
-> +#endif /* CONFIG_PPC_RTAS */
-> +
->   /* Domains for which more than one result element are returned for each event. */
->   static bool domain_needs_aggregation(unsigned int domain)
->   {
-> @@ -1605,6 +1673,10 @@ static int hv_24x7_init(void)
->   	if (r)
->   		return r;
->
-> +#ifdef CONFIG_PPC_RTAS
-> +	read_sys_info_pseries();
-> +#endif
-> +
->   	return 0;
->   }
->
-> diff --git a/arch/powerpc/platforms/pseries/pseries.h b/arch/powerpc/platforms/pseries/pseries.h
-> index 13fa370a87e4..1727559ce304 100644
-> --- a/arch/powerpc/platforms/pseries/pseries.h
-> +++ b/arch/powerpc/platforms/pseries/pseries.h
-> @@ -19,6 +19,9 @@ extern void request_event_sources_irqs(struct device_node *np,
->   struct pt_regs;
->
->   extern int pSeries_system_reset_exception(struct pt_regs *regs);
-> +#ifdef CONFIG_PPC_RTAS
-> +extern void read_sys_info_pseries(void);
-> +#endif
->   extern int pSeries_machine_check_exception(struct pt_regs *regs);
->   extern long pseries_machine_check_realmode(struct pt_regs *regs);
->
+> +&pinctrl {
 
+Currently all pinmux definition are done in stm32mp15-pinctrl.dtsi file.
+Can you move it ?
+
+Otherwise (except commit title) it is ok for me.
+
+thanks
+alex
+
+> +	/*
+> +	 * Note: The SDMMC2 pins lack external pullups on data lines. Hence,
+> +	 * we need to enable it in the SoC.
+> +	 */
+> +	sdmmc2_b4_pins_pull: sdmmc2-b4-pull {
+> +		pins1 {
+> +			pinmux = <STM32_PINMUX('B', 14, AF9)>, /* SDMMC2_D0 */
+> +				 <STM32_PINMUX('B', 15, AF9)>, /* SDMMC2_D1 */
+> +				 <STM32_PINMUX('B', 3, AF9)>, /* SDMMC2_D2 */
+> +				 <STM32_PINMUX('B', 4, AF9)>, /* SDMMC2_D3 */
+> +				 <STM32_PINMUX('G', 6, AF10)>; /* SDMMC2_CMD */
+> +			slew-rate = <1>;
+> +			bias-pull-up;
+> +		};
+> +		pins2 {
+> +			pinmux = <STM32_PINMUX('E', 3, AF9)>; /* SDMMC2_CK */
+> +			slew-rate = <2>;
+> +			drive-push-pull;
+> +			bias-disable;
+> +		};
+> +	};
+> +};
+> +
+> +/* WiFi */
+> +&sdmmc2 {
+> +	pinctrl-names = "default", "opendrain", "sleep";
+> +	pinctrl-0 = <&sdmmc2_b4_pins_pull>;
+> +	pinctrl-1 = <&sdmmc2_b4_od_pins_b>;
+> +	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a>;
+> +	broken-cd;
+> +	non-removable;
+> +	st,neg-edge;
+> +	bus-width = <1>;
+> +	vmmc-supply = <&wlan_pwr>;
+> +	status = "okay";
+> +
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	brcmf: bcrmf@1 {
+> +		reg = <1>;
+> +		compatible = "brcm,bcm4329-fmac";
+> +	};
+> +};
+> +
+> +/* Bluetooth */
+> +&uart4 {
+> +	/* Note: HW flow control is broken, hence using custom CTS/RTS gpios */
+> +	/delete-property/st,hw-flow-ctrl;
+> +	cts-gpios = <&gpioa 15 GPIO_ACTIVE_LOW>;
+> +	rts-gpios = <&gpiob 0 GPIO_ACTIVE_LOW>;
+> +	status = "okay";
+> +
+> +	bluetooth {
+> +		shutdown-gpios = <&gpiog 2 GPIO_ACTIVE_HIGH>;
+> +		compatible = "brcm,bcm43438-bt";
+> +		max-speed = <115200>;
+> +	};
+> +};
+> 
