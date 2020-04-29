@@ -2,187 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CE11BE439
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 18:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB7AB1BE40B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 18:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgD2Qrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 12:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726456AbgD2Qrj (ORCPT
+        id S1726828AbgD2Qi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 12:38:28 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:25606 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726493AbgD2Qi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 12:47:39 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297EDC03C1AE;
-        Wed, 29 Apr 2020 09:47:39 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t7so1048627plr.0;
-        Wed, 29 Apr 2020 09:47:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
-         :content-disposition:content-transfer-encoding:user-agent;
-        bh=8olA7bGKpwTL+rub9/QHgnKCc3ZKGK1GWlWeW8QAqvw=;
-        b=T0jV5NUqXAu2hp6WbcE9MU1kfF1Ua+DMHNF3Rtd5h7juQf1Z1B7R6LiywelnQcCA8B
-         6zw0kbjbuuXVI4UhD1F0CbXny+nv1341VtVGzs/0fDgWyLQBTr4tPqACNY7f/+Z7TK24
-         prgG+YEeDbNVmy96ptsNvv7gxdcSSsUSLnnEgZrV3tYEhPQ1Y5u/n6pEU0/2WfHerW9g
-         FXPSRBikIj7c9oMR+69kKn26CWJ7d1QgaurhsHFSZ3gX1S70P13D0JD0eFc5CrKzYnKi
-         1mxFj9zj5CBCg/cNLbE63m0VnP8qgXDBu5gqgc2VOGKIhXquHhZUl1C8NgHKb6xDYfxs
-         2L2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:mime-version:content-disposition
-         :content-transfer-encoding:user-agent;
-        bh=8olA7bGKpwTL+rub9/QHgnKCc3ZKGK1GWlWeW8QAqvw=;
-        b=NBGghtMdM3ne76XIx07qZI3YZXD8O+mUnqjrX3UvIJtpopPjtxOqZGHTmhOUjIJNm7
-         acL7FPSNFutHUMY8mIgdrVn3gAOq+mLnooksY28P/0JQExmZ+F1xq9QiECLeSFIz+yaM
-         v6J+57tB+cqkD3/MlQOFOCrFrp1UVMgUNfleeOGS4/P9fJp1orjVdB4wBsJhNNjzIVSU
-         bwGvbzlOXakCVXCI8SoXLIKiMy70vswH0b2uYCK1slwhUkmeWJbdQ2EhFPPFRtAhgXk5
-         Oa207n7VE98GOorSWBvYQ/oTAgldMudv2mCohBwzU2i/VMijxfRsjwNIS5vHOgyGNJbf
-         YjaA==
-X-Gm-Message-State: AGi0PuZK/SSY9BDh4ov3CSTy1V7rYQxRlnC2bN6RO/GihAaJB9TSzemo
-        6xclGJNrJF64Htn2qVOiUnIZLYcz
-X-Google-Smtp-Source: APiQypJ9G7U5RXGrBLrAmF7yA+s0D+9dvzXHBw/pRM833NET1oopuLWJ5EBedBsfc0sfi2RR+KuGXQ==
-X-Received: by 2002:a17:90a:b884:: with SMTP id o4mr4222432pjr.8.1588178858520;
-        Wed, 29 Apr 2020 09:47:38 -0700 (PDT)
-Received: from udknight.localhost ([59.57.158.27])
-        by smtp.gmail.com with ESMTPSA id w11sm1425302pgj.4.2020.04.29.09.47.37
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 29 Apr 2020 09:47:37 -0700 (PDT)
-Received: from udknight.localhost (localhost [127.0.0.1])
-        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 03TGapvt013853;
-        Thu, 30 Apr 2020 00:36:51 +0800
-Received: (from root@localhost)
-        by udknight.localhost (8.14.9/8.14.9/Submit) id 03TGaj5E013847;
-        Thu, 30 Apr 2020 00:36:45 +0800
-Date:   Thu, 30 Apr 2020 00:36:45 +0800
-From:   Wang YanQing <udknight@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andy Whitcroft <apw@canonical.com>, Markus.Elfring@web.de,
-        mcroce@redhat.com
-Subject: [PATCH] checkpatch: add support to check 'Fixes:' tag format
-Message-ID: <20200429163645.GA13810@udknight>
-Mail-Followup-To: Wang YanQing <udknight@gmail.com>, joe@perches.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andy Whitcroft <apw@canonical.com>, Markus.Elfring@web.de,
-        mcroce@redhat.com
+        Wed, 29 Apr 2020 12:38:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588178306; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=4s/uu5d90dFDcjdFr84ftHeij5DiBpvs7D+0ACrC89Y=; b=pd+myu0dbRCOHBcbvA598aBxhBGBy/UViWfXoA7nGUYRq/PsnqSXDK4bO4IbyIObzxhCIdSP
+ akvUnfenIaOVYWzr0QjcQbRhvHL3JsHNpbFB+tDAJM2Rk4LwRMCkWwav2pS0glyDPrTJAh6Y
+ /au5XuyLlL/OIaavTafSSqdgEew=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea9ad81.7f88f590a500-smtp-out-n01;
+ Wed, 29 Apr 2020 16:38:25 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D243AC433BA; Wed, 29 Apr 2020 16:38:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.131.182.194] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 37E15C432C2;
+        Wed, 29 Apr 2020 16:38:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 37E15C432C2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v3 03/17] arm64: dts: sdm845: Add OPP table for all qup
+ devices
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>
+References: <1588080785-6812-1-git-send-email-rnayak@codeaurora.org>
+ <1588080785-6812-4-git-send-email-rnayak@codeaurora.org>
+ <20200429000234.GK4525@google.com>
+ <fe4b60f9-8aa6-0173-a67f-2f0f8451ad85@codeaurora.org>
+ <cc425e51-9e27-76a3-8ce6-1a751960ff7a@codeaurora.org>
+ <20200429161046.GR4525@google.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <59f6fcbd-c7c5-c51f-cbb3-c9b980d7611b@codeaurora.org>
+Date:   Wed, 29 Apr 2020 22:08:15 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20200429161046.GR4525@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.7.1 (2016-10-04)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to submitting-patches.rst, 'Fixes:' tag has a little
-stricter condition about the one line summary than normal git
-commit description:
-“...
-Do not split the tag across multiple
-lines, tags are exempt from the "wrap at 75 columns" rule in order to simplify
-parsing scripts
-...”
 
-And there is no sanity check for 'Fixes:' tag format in checkpatch the same
-as GIT_COMMIT_ID for git commit description, so let's expand the GIT_COMMIT_ID
-to add 'Fixes:' tag format check support.
+On 4/29/2020 9:40 PM, Matthias Kaehlcke wrote:
+> On Wed, Apr 29, 2020 at 08:23:30PM +0530, Rajendra Nayak wrote:
+>>
+>> On 4/29/2020 7:45 PM, Rajendra Nayak wrote:
+>>>
+>>> On 4/29/2020 5:32 AM, Matthias Kaehlcke wrote:
+>>>> Hi Rajendra,
+>>>>
+>>>> On Tue, Apr 28, 2020 at 07:02:51PM +0530, Rajendra Nayak wrote:
+>>>>> qup has a requirement to vote on the performance state of the CX domain
+>>>>> in sdm845 devices. Add OPP tables for these and also add power-domains
+>>>>> property for all qup instances.
+>>>>>
+>>>>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>>>>> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+>>>>> ---
+>>>>>    arch/arm64/boot/dts/qcom/sdm845.dtsi | 115 +++++++++++++++++++++++++++++++++++
+>>>>>    1 file changed, 115 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>>>>> index 8f926b5..36b9fb1 100644
+>>>>> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>>>>> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>>>>> @@ -804,6 +804,25 @@
+>>>>>                clock-names = "core";
+>>>>>            };
+>>>>> +        qup_opp_table: qup-opp-table {
+>>>>> +            compatible = "operating-points-v2";
+>>>>> +
+>>>>> +            opp-19200000 {
+>>>>> +                opp-hz = /bits/ 64 <19200000>;
+>>>>> +                required-opps = <&rpmhpd_opp_min_svs>;
+>>>>> +            };
+>>>>> +
+>>>>> +            opp-75000000 {
+>>>>> +                opp-hz = /bits/ 64 <75000000>;
+>>>>> +                required-opps = <&rpmhpd_opp_low_svs>;
+>>>>> +            };
+>>>>> +
+>>>>> +            opp-100000000 {
+>>>>> +                opp-hz = /bits/ 64 <100000000>;
+>>>>> +                required-opps = <&rpmhpd_opp_svs>;
+>>>>> +            };
+>>>>> +        };
+>>>>> +
+>>>>
+>>>> Judging from SDM845 (which has more OPP tables) the convention seems to be
+>>>> to add OPP tables to the nodes that use them, which seems reasonable and
+>>>> keeps them out of the device list.
+>>>>
+>>>> Unfortunately this convention isn't completely suitable for cases like this
+>>>> (and the DSI OPPs later in this series), where the same OPP table is used by
+>>>> multiple devices. A possible compromise would be to add the table to the
+>>>> node of the first device that uses them.
+>>>
+>>> Sounds fair, I will do that and respin. Thanks.
+>>
+>> Looking into this some more, I see we do have..
+>>
+>> static const struct of_device_id of_skipped_node_table[] = {
+>>          { .compatible = "operating-points-v2", },
+>>          {} /* Empty terminated list */
+>> };
+>>
+>> ..in drivers/of/platform.c, so its not being added to the device list.
+> 
+> sure, I didn't mean that the OPP table is added by the kernel as a device, but
+> that the table breaks with the structure of the DT of device nodes ordered by
+> address.
 
-Based on original patch by Joe Perches <joe@perches.com>
+Ah ok, got it.
 
-Link: https://lore.kernel.org/lkml/40bfc40958fca6e2cc9b86101153aa0715fac4f7.camel@perches.com/
-Signed-off-by: Wang YanQing <udknight@gmail.com>
----
- scripts/checkpatch.pl | 36 ++++++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 12 deletions(-)
+> 
+>> And atleast in case of qup, I am having to duplicate the OPP tables once for
+>> each qup instance. Not to mention, having them inside the first qup device
+>> just makes it a little confusing to read who the OPP table belongs to.
+> 
+> I'm not advocating for duplicating the OPP tables. An alternative to having
+> them in the first QUP device could be to have an dedicated node with shared
+> opp tables outside of the device list, similar to thermal-zones.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 23a001a..879dcf4 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2818,11 +2818,13 @@ sub process {
- 		    $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
- 		    $line !~ /^This reverts commit [0-9a-f]{7,40}/ &&
- 		    ($line =~ /\bcommit\s+[0-9a-f]{5,}\b/i ||
-+		     $line =~ /\bfixes:\s+[0-9a-f]{5,}\b/i ||
- 		     ($line =~ /(?:\s|^)[0-9a-f]{12,40}(?:[\s"'\(\[]|$)/i &&
--		      $line !~ /[\<\[][0-9a-f]{12,40}[\>\]]/i &&
--		      $line !~ /\bfixes:\s*[0-9a-f]{12,40}/i))) {
-+		      $line !~ /[\<\[][0-9a-f]{12,40}[\>\]]/i))) {
- 			my $init_char = "c";
- 			my $orig_commit = "";
-+			my $prefix = "commit";
-+			my $prefix_case = "[Cc]ommit";
- 			my $short = 1;
- 			my $long = 0;
- 			my $case = 1;
-@@ -2832,19 +2834,28 @@ sub process {
- 			my $id = '0123456789ab';
- 			my $orig_desc = "commit description";
- 			my $description = "";
-+			my $acrosslines = 0;
-+			my $title = "title line";
- 
--			if ($line =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
-+			if ($line =~ /\b(f)ixes:\s+([0-9a-f]{5,})\b/i) {
-+				$init_char = $1;
-+				$orig_commit = lc($2);
-+				$prefix = "Fixes:";
-+				$prefix_case = "Fixes:";
-+				$init_char = "F";
-+				$title = "a single line title (without line breaks)";
-+			} elsif ($line =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
- 				$init_char = $1;
- 				$orig_commit = lc($2);
- 			} elsif ($line =~ /\b([0-9a-f]{12,40})\b/i) {
- 				$orig_commit = lc($1);
- 			}
- 
--			$short = 0 if ($line =~ /\bcommit\s+[0-9a-f]{12,40}/i);
--			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
--			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
--			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
--			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
-+			$short = 0 if ($line =~ /\b$prefix\s+[0-9a-f]{12,40}/i);
-+			$long = 1 if ($line =~ /\b$prefix\s+[0-9a-f]{41,}/i);
-+			$space = 0 if ($line =~ /\b$prefix [0-9a-f]/i);
-+			$case = 0 if ($line =~ /\b$prefix_case\s+[0-9a-f]{5,40}[^A-F]/);
-+			if ($line =~ /\b$prefix\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
- 				$orig_desc = $1;
- 				$hasparens = 1;
- 			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
-@@ -2852,23 +2863,24 @@ sub process {
- 				 $rawlines[$linenr] =~ /^\s*\("([^"]+)"\)/) {
- 				$orig_desc = $1;
- 				$hasparens = 1;
--			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
-+			} elsif ($line =~ /\b$prefix\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
- 				 defined $rawlines[$linenr] &&
- 				 $rawlines[$linenr] =~ /^\s*[^"]+"\)/) {
--				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
-+				$line =~ /\b$prefix\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
- 				$orig_desc = $1;
- 				$rawlines[$linenr] =~ /^\s*([^"]+)"\)/;
- 				$orig_desc .= " " . $1;
- 				$hasparens = 1;
-+				$acrosslines = 1 if ($prefix eq "Fixes:");
- 			}
- 
- 			($id, $description) = git_commit_info($orig_commit,
- 							      $id, $orig_desc);
- 
- 			if (defined($id) &&
--			   ($short || $long || $space || $case || ($orig_desc ne $description) || !$hasparens)) {
-+			   ($short || $long || $space || $case || ($orig_desc ne $description) || !$hasparens || $acrosslines)) {
- 				ERROR("GIT_COMMIT_ID",
--				      "Please use git commit description style 'commit <12+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herecurr);
-+				      "Please use git commit description style '$prefix <12+ chars of sha1> (\"<$title>\")' - ie: '${init_char}" . substr($prefix, 1) . " $id (\"$description\")'\n" . $herecurr);
- 			}
- 		}
- 
+That sounds like a good idea too.
+
+> I tend to like consistency and the sprinkled in OPP tables break with that,
+> but ultimately it's up to Bjorn.
+
+Bjorn, any thoughts?
+
 -- 
-1.8.5.6.2.g3d8a54e.dirty
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
