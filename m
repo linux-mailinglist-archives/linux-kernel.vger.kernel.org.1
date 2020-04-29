@@ -2,225 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9C61BDEEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0064C1BDE28
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728427AbgD2Njp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:39:45 -0400
-Received: from 8bytes.org ([81.169.241.247]:39838 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727087AbgD2Nhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:48 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 180F1E92; Wed, 29 Apr 2020 15:37:38 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH v3 15/34] iommu/amd: Convert to probe/release_device() call-backs
-Date:   Wed, 29 Apr 2020 15:36:53 +0200
-Message-Id: <20200429133712.31431-16-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
-References: <20200429133712.31431-1-joro@8bytes.org>
+        id S1727899AbgD2Nhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:37:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727105AbgD2NhB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:37:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106DFC09B055;
+        Wed, 29 Apr 2020 06:37:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=pT2PqjPu+THmksytYubIGVOFppVgVjYx+FXyGg2zfw8=; b=qs1oEvJ8FAfdZaviBHeJRqU6+f
+        fXI+QmmR+ZRpvZeLHNQo8OTkqnlMeMXTUexoqrm+P3ONQpBaIr83KwhGJe6YKo2bIm3ttGsOcKsKE
+        olK6QPqzd1HS0cc9EYlEoMD945qLNGWfSYzG6LoKMp4w4EWtZZBDN/MFqSiwlWjC4QzFZR5K/Nh3J
+        Cy0EY3xaytBFlSNSvJt1OUgle1AdIoAG81BLkiC2TmEe7OEB8gSrG0JLDXVFvwx9i2LYpr8UAAUE9
+        qfPlED1WGLP1DVOSqQmYNzBSr1wkp5dMvxbrYE8gVSQtAVjbLwXqxElI2lcWx3Mu11DWC8jiKyceH
+        zxETCLkg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTmtX-0005wU-SS; Wed, 29 Apr 2020 13:36:59 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 21/25] mm: Add DEFINE_READAHEAD
+Date:   Wed, 29 Apr 2020 06:36:53 -0700
+Message-Id: <20200429133657.22632-22-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
+References: <20200429133657.22632-1-willy@infradead.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-Convert the AMD IOMMU Driver to use the probe_device() and
-release_device() call-backs of iommu_ops, so that the iommu core code
-does the group and sysfs setup.
+Allow for a more concise definition of a struct readahead_control.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- drivers/iommu/amd_iommu.c | 71 ++++++++++++---------------------------
- 1 file changed, 22 insertions(+), 49 deletions(-)
+ include/linux/pagemap.h | 7 +++++++
+ mm/readahead.c          | 6 +-----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
-index 0b4b4faa876d..c30367413683 100644
---- a/drivers/iommu/amd_iommu.c
-+++ b/drivers/iommu/amd_iommu.c
-@@ -343,21 +343,9 @@ static bool check_device(struct device *dev)
- 	return true;
- }
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 1169e2428dd7..ff5bf10829a6 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -684,6 +684,13 @@ struct readahead_control {
+ 	unsigned int _batch_count;
+ };
  
--static void init_iommu_group(struct device *dev)
--{
--	struct iommu_group *group;
--
--	group = iommu_group_get_for_dev(dev);
--	if (IS_ERR(group))
--		return;
--
--	iommu_group_put(group);
--}
--
- static int iommu_init_device(struct device *dev)
- {
- 	struct iommu_dev_data *dev_data;
--	struct amd_iommu *iommu;
- 	int devid;
- 
- 	if (dev->archdata.iommu)
-@@ -367,8 +355,6 @@ static int iommu_init_device(struct device *dev)
- 	if (devid < 0)
- 		return devid;
- 
--	iommu = amd_iommu_rlookup_table[devid];
--
- 	dev_data = find_dev_data(devid);
- 	if (!dev_data)
- 		return -ENOMEM;
-@@ -391,8 +377,6 @@ static int iommu_init_device(struct device *dev)
- 
- 	dev->archdata.iommu = dev_data;
- 
--	iommu_device_link(&iommu->iommu, dev);
--
- 	return 0;
- }
- 
-@@ -410,7 +394,7 @@ static void iommu_ignore_device(struct device *dev)
- 	setup_aliases(dev);
- }
- 
--static void iommu_uninit_device(struct device *dev)
-+static void amd_iommu_uninit_device(struct device *dev)
- {
- 	struct iommu_dev_data *dev_data;
- 	struct amd_iommu *iommu;
-@@ -429,13 +413,6 @@ static void iommu_uninit_device(struct device *dev)
- 	if (dev_data->domain)
- 		detach_device(dev);
- 
--	iommu_device_unlink(&iommu->iommu, dev);
--
--	iommu_group_remove_device(dev);
--
--	/* Remove dma-ops */
--	dev->dma_ops = NULL;
--
- 	/*
- 	 * We keep dev_data around for unplugged devices and reuse it when the
- 	 * device is re-plugged - not doing so would introduce a ton of races.
-@@ -2152,55 +2129,50 @@ static void detach_device(struct device *dev)
- 	spin_unlock_irqrestore(&domain->lock, flags);
- }
- 
--static int amd_iommu_add_device(struct device *dev)
-+static struct iommu_device *amd_iommu_probe_device(struct device *dev)
- {
--	struct iommu_dev_data *dev_data;
--	struct iommu_domain *domain;
-+	struct iommu_device *iommu_dev;
- 	struct amd_iommu *iommu;
- 	int ret, devid;
- 
--	if (get_dev_data(dev))
--		return 0;
--
- 	if (!check_device(dev))
--		return -ENODEV;
-+		return ERR_PTR(-ENODEV);
- 
- 	devid = get_device_id(dev);
- 	if (devid < 0)
--		return devid;
-+		return ERR_PTR(devid);
- 
- 	iommu = amd_iommu_rlookup_table[devid];
- 
-+	if (get_dev_data(dev))
-+		return &iommu->iommu;
++#define DEFINE_READAHEAD(rac, f, m, i)					\
++	struct readahead_control rac = {				\
++		.file = f,						\
++		.mapping = m,						\
++		._index = i,						\
++	}
 +
- 	ret = iommu_init_device(dev);
- 	if (ret) {
- 		if (ret != -ENOTSUPP)
- 			dev_err(dev, "Failed to initialize - trying to proceed anyway\n");
--
-+		iommu_dev = ERR_PTR(ret);
- 		iommu_ignore_device(dev);
--		dev->dma_ops = NULL;
--		goto out;
-+	} else {
-+		iommu_dev = &iommu->iommu;
- 	}
--	init_iommu_group(dev);
- 
--	dev_data = get_dev_data(dev);
-+	iommu_completion_wait(iommu);
- 
--	BUG_ON(!dev_data);
-+	return iommu_dev;
-+}
- 
--	if (dev_data->iommu_v2)
--		iommu_request_dm_for_dev(dev);
-+static void amd_iommu_probe_finalize(struct device *dev)
-+{
-+	struct iommu_domain *domain;
- 
- 	/* Domains are initialized for this device - have a look what we ended up with */
- 	domain = iommu_get_domain_for_dev(dev);
- 	if (domain->type == IOMMU_DOMAIN_DMA)
- 		iommu_setup_dma_ops(dev, IOVA_START_PFN << PAGE_SHIFT, 0);
--
--out:
--	iommu_completion_wait(iommu);
--
--	return 0;
- }
- 
--static void amd_iommu_remove_device(struct device *dev)
-+static void amd_iommu_release_device(struct device *dev)
+ /**
+  * readahead_page - Get the next page to read.
+  * @rac: The current readahead request.
+diff --git a/mm/readahead.c b/mm/readahead.c
+index 3c9a8dd7c56c..2126a2754e22 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -179,11 +179,7 @@ void page_cache_readahead_unbounded(struct address_space *mapping,
  {
- 	struct amd_iommu *iommu;
- 	int devid;
-@@ -2214,7 +2186,7 @@ static void amd_iommu_remove_device(struct device *dev)
+ 	LIST_HEAD(page_pool);
+ 	gfp_t gfp_mask = readahead_gfp_mask(mapping);
+-	struct readahead_control rac = {
+-		.mapping = mapping,
+-		.file = file,
+-		._index = index,
+-	};
++	DEFINE_READAHEAD(rac, file, mapping, index);
+ 	unsigned long i;
  
- 	iommu = amd_iommu_rlookup_table[devid];
- 
--	iommu_uninit_device(dev);
-+	amd_iommu_uninit_device(dev);
- 	iommu_completion_wait(iommu);
- }
- 
-@@ -2687,8 +2659,9 @@ const struct iommu_ops amd_iommu_ops = {
- 	.map = amd_iommu_map,
- 	.unmap = amd_iommu_unmap,
- 	.iova_to_phys = amd_iommu_iova_to_phys,
--	.add_device = amd_iommu_add_device,
--	.remove_device = amd_iommu_remove_device,
-+	.probe_device = amd_iommu_probe_device,
-+	.release_device = amd_iommu_release_device,
-+	.probe_finalize = amd_iommu_probe_finalize,
- 	.device_group = amd_iommu_device_group,
- 	.domain_get_attr = amd_iommu_domain_get_attr,
- 	.get_resv_regions = amd_iommu_get_resv_regions,
+ 	/*
 -- 
-2.17.1
+2.26.2
 
