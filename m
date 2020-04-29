@@ -2,117 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 095CF1BDEF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5A21BDF31
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbgD2Njz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
+        id S1728618AbgD2NlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:41:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727971AbgD2Nhs (ORCPT
+        with ESMTP id S1727095AbgD2NhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:48 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9BAC03C1AD;
-        Wed, 29 Apr 2020 06:37:47 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id DF2F0E06; Wed, 29 Apr 2020 15:37:37 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH v3 14/34] iommu/amd: Remove dev_data->passthrough
-Date:   Wed, 29 Apr 2020 15:36:52 +0200
-Message-Id: <20200429133712.31431-15-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
-References: <20200429133712.31431-1-joro@8bytes.org>
+        Wed, 29 Apr 2020 09:37:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02285C035493;
+        Wed, 29 Apr 2020 06:37:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=7jF/5Wz0vEdYXDOMS0hCwx2KuSkqA3em8Ujbgxg5dVM=; b=dBK7yFj/JmjuhLlR+U0eT0TW3f
+        wQu7LsAg/m1llsfBMqNeYklmfsFXV7MV98YxOwQOy2IxLOSNX1wcl0AIP0WsyjDLLdkzPul9a1I0R
+        D7icGCmgTquHd9wcU38JFHKQF6mpO2oCOCQr79dvOiL9TAaQoNu+v7jVNUoyJxbSG1hQaU2LGm7cE
+        EiHBnyV6mACvAKLNsXAHxFXUHwjGOgX7EMiq/KtYyHiKNZYJENx5cmoSk7PRyVI/1f61rsU7D4GXq
+        QzZj5c5qiiGoqvCRJCtumWpBzkvMKfObBx5D8OZTc28WYguirycNKTdGgQ6xpi+bUkG0m0dkUopyH
+        127uhj2g==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTmtX-0005wQ-RF; Wed, 29 Apr 2020 13:36:59 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 20/25] mm: Remove page fault assumption of compound page size
+Date:   Wed, 29 Apr 2020 06:36:52 -0700
+Message-Id: <20200429133657.22632-21-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
+References: <20200429133657.22632-1-willy@infradead.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-Make use of generic IOMMU infrastructure to gather the same information
-carried in dev_data->passthrough and remove the struct member.
+A compound page in the page cache will not necessarily be of PMD size,
+so check explicitly.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- drivers/iommu/amd_iommu.c       | 10 +++++-----
- drivers/iommu/amd_iommu_types.h |  1 -
- 2 files changed, 5 insertions(+), 6 deletions(-)
+ mm/memory.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
-index 3e0d27f7622e..0b4b4faa876d 100644
---- a/drivers/iommu/amd_iommu.c
-+++ b/drivers/iommu/amd_iommu.c
-@@ -2047,8 +2047,8 @@ static int pdev_iommuv2_enable(struct pci_dev *pdev)
- static int attach_device(struct device *dev,
- 			 struct protection_domain *domain)
- {
--	struct pci_dev *pdev;
- 	struct iommu_dev_data *dev_data;
-+	struct pci_dev *pdev;
- 	unsigned long flags;
- 	int ret;
+diff --git a/mm/memory.c b/mm/memory.c
+index f703fe8c8346..d68ce428ddd2 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3549,13 +3549,14 @@ static vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
+ 	unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
+ 	pmd_t entry;
+ 	int i;
+-	vm_fault_t ret;
++	vm_fault_t ret = VM_FAULT_FALLBACK;
  
-@@ -2067,8 +2067,10 @@ static int attach_device(struct device *dev,
+ 	if (!transhuge_vma_suitable(vma, haddr))
+-		return VM_FAULT_FALLBACK;
++		return ret;
  
- 	pdev = to_pci_dev(dev);
- 	if (domain->flags & PD_IOMMUV2_MASK) {
-+		struct iommu_domain *def_domain = iommu_get_dma_domain(dev);
-+
- 		ret = -EINVAL;
--		if (!dev_data->passthrough)
-+		if (def_domain->type != IOMMU_DOMAIN_IDENTITY)
- 			goto out;
+-	ret = VM_FAULT_FALLBACK;
+ 	page = compound_head(page);
++	if (page_order(page) != HPAGE_PMD_ORDER)
++		return ret;
  
- 		if (dev_data->iommu_v2) {
-@@ -2189,9 +2191,7 @@ static int amd_iommu_add_device(struct device *dev)
- 
- 	/* Domains are initialized for this device - have a look what we ended up with */
- 	domain = iommu_get_domain_for_dev(dev);
--	if (domain->type == IOMMU_DOMAIN_IDENTITY)
--		dev_data->passthrough = true;
--	else if (domain->type == IOMMU_DOMAIN_DMA)
-+	if (domain->type == IOMMU_DOMAIN_DMA)
- 		iommu_setup_dma_ops(dev, IOVA_START_PFN << PAGE_SHIFT, 0);
- 
- out:
-diff --git a/drivers/iommu/amd_iommu_types.h b/drivers/iommu/amd_iommu_types.h
-index ca8c4522045b..d0d7b6a0c3d8 100644
---- a/drivers/iommu/amd_iommu_types.h
-+++ b/drivers/iommu/amd_iommu_types.h
-@@ -640,7 +640,6 @@ struct iommu_dev_data {
- 	struct pci_dev *pdev;
- 	u16 devid;			  /* PCI Device ID */
- 	bool iommu_v2;			  /* Device can make use of IOMMUv2 */
--	bool passthrough;		  /* Device is identity mapped */
- 	struct {
- 		bool enabled;
- 		int qdep;
+ 	/*
+ 	 * Archs like ppc64 need additonal space to store information
 -- 
-2.17.1
+2.26.2
 
