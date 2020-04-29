@@ -2,126 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491D91BE642
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B75C1BE64A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgD2SbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 14:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42930 "EHLO
+        id S1726885AbgD2Sdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 14:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726456AbgD2SbI (ORCPT
+        by vger.kernel.org with ESMTP id S1726456AbgD2Sdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 14:31:08 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED49C03C1AE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:31:08 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t9so1124164pjw.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:31:08 -0700 (PDT)
+        Wed, 29 Apr 2020 14:33:45 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FA2C03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:33:44 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id e25so3723453ljg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:33:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=jipXnRNqbc0qX0ErEpuBweBWta4tR4eWXcMPowlUvJI=;
-        b=WSfQ0nd4b3fJoziq3+KweOHUjLhQmQJDFTtRJ3F3TCJ5y9wh3ntqTnP/l+TCl10jFa
-         6MQMQGqyFi5Y6RdAvONkeZ4dQqCyjKfJBiGfRY7mcatRrjCTM6Bfja5s9SVRbvC0fcTD
-         0bcoV3hJ8okScE9Yx5aD5tG4xJ78hjMb/MjjQ=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cir/lv0gr0jqM/9RAZTjqohFxMF8rxZT7xpH/V9tx08=;
+        b=isI3J18WjpIGZO4EXpJhkASI5rqAKW4KQeH7U6lgW2hDd71iIRmx579BvS8WKq5wit
+         ebHIJbs3dginlnOGzEEUmHreOZITcmFxtsu81uL7od9yLYAZNfYj/a0f7Rp7X0goJ8OC
+         hUa+fZtmO/xxg60NMMjDnUFhUglozu3dIHPLUTtt8JrLx1aSmwre3S5s88HWRqTZn8XI
+         G8WEkD2YV3eHdmEZC6DKfCv09PuFykTpuWi2e1FttPMu/kIpZ3Vu+jL8h2E+0NCmik0r
+         IlCztZC/HZk0MNEiBJRYIoylrFd8dfFJigXEoIBI8DEVBmkp/9FE+zo6aHbHvDvrYAhO
+         U6Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=jipXnRNqbc0qX0ErEpuBweBWta4tR4eWXcMPowlUvJI=;
-        b=BDnmQ7+2jm/pdKeU8hS7w3l+EWWxejOrLGD09l/NkxWl9Iy9lMwYEHJauRmPQKLVCG
-         Hv0GGyBaqoN/KQyQ0mI7+0bli4wPRZwI/FxgQ2AtlfE48iHgun6LS4/fGjotKfV6XdPR
-         C/GjmI1DYoe4AocMmktUofijYHZCqlH2ZAdsRxug/H8TqMggvYaS588gHYB0PIQ5hiQq
-         j+KB9cwd3whYcK+Te3jCbEIb9W3d1L8DHoVcZSsIRczuffETc3oSNw3jxNtzjL1st5cC
-         0HYLYw46dImX7PAIt7mL+Hw7VCrGyDE4Jyou0hvtCsHA8pOiQSrrt2i8mXArNjI4VdM/
-         EcOw==
-X-Gm-Message-State: AGi0PuYA8c+VUQL+6MmgA8/nIYIyu/OC/PGpsUzqCOU59EbwDDBsO/Ej
-        ZBj/BaaeKqWaAuUp/0uhRyAwUzURabo=
-X-Google-Smtp-Source: APiQypKkmjEMnyFbV00Cl9uoPBqpsYGURW9WxlfekvOSBT01al7FcGF5ckKPor7St1anhaVTeG3rnQ==
-X-Received: by 2002:a17:90a:17ed:: with SMTP id q100mr4942776pja.80.1588185067361;
-        Wed, 29 Apr 2020 11:31:07 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id e11sm1602547pfl.85.2020.04.29.11.31.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 11:31:06 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cir/lv0gr0jqM/9RAZTjqohFxMF8rxZT7xpH/V9tx08=;
+        b=aMJZCVhpGTL3xBhdgDKa2+IQ+IpqJ530+5LAXko03PfRBjbAfnzdv8A8BCIoTzedkj
+         Wm9MdpEKDsazqBQJdZV6FBs6EAJP/BigNT09rf96Af1/oXsN9dfGUEEusRWEFB5ls+Bo
+         0PWzSb+60IKkwrBVWpJRftxVPnIDILDolE2OdpxtGWMqe7RZAfzdD6CAspCqsWlOzfjo
+         Wk3Le+EuRzgMy3I8ltrNeBTG0q/EjgloMLIhcZAh/JzplMvgvvq0OhEmvpRqvDowWyXV
+         d4ppJev/t/8wvJQuRU447mcAK2+NGyACmfvglU1EGXxKSyQ/WlDi3HIMIgjH1yr+AD0p
+         R2rQ==
+X-Gm-Message-State: AGi0Pua0VOSewX5Ed0EROlIft+LB3EJXwTEJdUY/hlslg2DkraxNjl+r
+        qpwclwEVmDveBHClpcfOnOfSUNufBZP1iYi038uznA==
+X-Google-Smtp-Source: APiQypK7H+WNjl7MgV9H6VpCJ21cqNs0D1HA8YsqIg1WUfIpRmpzTfDFiRtqZQtTY6pGPn7Q0vQyNa18W8Hr28IJUFM=
+X-Received: by 2002:a2e:8999:: with SMTP id c25mr22226153lji.73.1588185222389;
+ Wed, 29 Apr 2020 11:33:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200429180818.GA3062@xps15>
-References: <20200428181010.170568-1-swboyd@chromium.org> <20200428181010.170568-2-swboyd@chromium.org> <20200429180818.GA3062@xps15>
-Subject: Re: [PATCH v2 1/2] coresight: Include required headers in C files
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Wed, 29 Apr 2020 11:31:05 -0700
-Message-ID: <158818506575.117437.11635372928426076937@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+References: <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
+ <87imi8nzlw.fsf@x220.int.ebiederm.org> <CAHk-=wgh4zts+3hdkGzHLJ6pBGumcJ=23gRbMfubDrLstis2Bg@mail.gmail.com>
+ <CAHk-=whKHpERyVv2-C+kxq9KV_mJPW3hkGDpn6f4yOvs+au8SA@mail.gmail.com>
+ <20200411182043.GA3136@redhat.com> <CAHk-=wgwXpKepChGi4ZhQVxZxD0ic8s2CDXvUmqBTMaKGz-fjg@mail.gmail.com>
+ <20200412195049.GA23824@redhat.com> <CAHk-=wiDwR+6ugYaKEGHfYteLF+NH5xu=T7uuUTkK9y-hr6zow@mail.gmail.com>
+ <AM6PR03MB51708CF53D8A02086427DAC2E4AC0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wi_zr9dwX3UBYvgkmm6eVQfRP50orryJ6ZVAxuFqdSG5A@mail.gmail.com>
+ <20200428190836.GC29960@redhat.com> <CAHk-=wi03QRcUR1DfbEr+Pw-DAMENzY-FuRcGawtj9p597=p2w@mail.gmail.com>
+ <CAG48ez03ABTa-KbCtFHqB1hOT7dgAM96c3kiw-e80B+utSEwYw@mail.gmail.com>
+ <CAHk-=wjTLnMuZmBO2foeHhsLAoUTpUi7oBVJ67F4XKB+tdEDbQ@mail.gmail.com>
+ <CAG48ez3EQOvdbzu9aO-cEAJwF_=fJzn1Cg0LMs3ruc=5r1ie5w@mail.gmail.com>
+ <CAHk-=whTgFbjGTP=CqMWs_LOkY7bWvLQGYKwKx86amdbMovAkw@mail.gmail.com>
+ <CAG48ez2-Nu2ALN6VEUZL-prtR_Kk8QYBHcnvuh0aU2e4zf37RA@mail.gmail.com> <CAHk-=wh=G47oD2F1CgOrvGFbEPh2ddMKLV4_wV_bs6S=98aZ5A@mail.gmail.com>
+In-Reply-To: <CAHk-=wh=G47oD2F1CgOrvGFbEPh2ddMKLV4_wV_bs6S=98aZ5A@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 29 Apr 2020 20:33:14 +0200
+Message-ID: <CAG48ez06PwxJ5ysTapByKnm6O0ifJv8Py2Ln0ypZZCwdxTU9zw@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Mathieu Poirier (2020-04-29 11:08:18)
-> Hi Stephen,
->=20
-> On Tue, Apr 28, 2020 at 11:10:09AM -0700, Stephen Boyd wrote:
-> > diff --git a/drivers/hwtracing/coresight/coresight-cti-sysfs.c b/driver=
-s/hwtracing/coresight/coresight-cti-sysfs.c
-> > index aeea39cbd161..77e14e770806 100644
-> > --- a/drivers/hwtracing/coresight/coresight-cti-sysfs.c
-> > +++ b/drivers/hwtracing/coresight/coresight-cti-sysfs.c
-> > @@ -4,7 +4,14 @@
-> >   * Author: Mike Leach <mike.leach@linaro.org>
-> >   */
-> > =20
-> > +#include <linux/atomic.h>
-> >  #include <linux/coresight.h>
-> > +#include <linux/device.h>
-> > +#include <linux/io.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/spinlock.h>
-> > +#include <linux/sysfs.h>
->=20
-> What is io.h and slab.h used for in coresight-cti-sysfs.c ?
+On Wed, Apr 29, 2020 at 7:58 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Tue, Apr 28, 2020 at 4:36 PM Jann Horn <jannh@google.com> wrote:
+> >
+> > On Wed, Apr 29, 2020 at 12:14 AM Linus Torvalds
+> > <torvalds@linux-foundation.org> wrote:
+> > >
+> > >  - we move check_unsafe_exec() down. As far as I can tell, there's no
+> > > reason it's that early - the flags it sets aren't actually used until
+> > > when we actually do that final set_creds..
+> >
+> > Right, we should be able to do that stuff quite a bit later than it happens now.
+>
+> Actually, looking at it, this looks painful for multiple reasons.
+>
+> The LSM_UNSAFE_xyz flags are used by security_bprm_set_creds(), which
+> when I traced it through, happened much earlier than I thought. Making
+> things worse, it's done by prepare_binprm(), which also potentially
+> gets called from random points by the low-level binfmt handlers too.
 
-io.h is for readl_relaxed() usage in this file. I added slab for the
-devm_kcalloc() but it doesn't look necessary given that device.h is
-where that is defined, not slab.h. Thanks for catching that!
+Yeah, but all of that happens before we actually need to do anything
+with the accumulated credential information from the prepare_binprm()
+calls. We can probably move the unsafe calculation and a new LSM hook
+into flush_old_exec(), right before de_thread().
 
->=20
-> > =20
-> >  #include "coresight-cti.h"
-> > =20
-> > diff --git a/drivers/hwtracing/coresight/coresight-cti.c b/drivers/hwtr=
-acing/coresight/coresight-cti.c
-> > index 7fc1fc8d7738..be61c1705916 100644
-> > --- a/drivers/hwtracing/coresight/coresight-cti.c
-> > +++ b/drivers/hwtracing/coresight/coresight-cti.c
-> > @@ -4,7 +4,20 @@
-> >   * Author: Mike Leach <mike.leach@linaro.org>
-> >   */
-> > =20
-> > +#include <linux/amba/bus.h>
-> > +#include <linux/atomic.h>
-> > +#include <linux/bits.h>
-> > +#include <linux/coresight.h>
-> > +#include <linux/device.h>
-> > +#include <linux/io.h>
->=20
-> Same comment as above.
->=20
-> No need to send another version if these are mistakes - just let me know =
-and
-> I'll do the adjustment.
->=20
+> And we also have that odd "fs->in_exec" flag, which is used by thread
+> cloning and io_uring, and I'm not sure what the exact semantics are.
 
-Same here, io.h is for the readl_relaxed() and writel_relaxed() calls.
+The idea is to ensure that once we're through check_unsafe_exec() and
+have computed our LSM_UNSAFE_* flags, another thread that's still
+running must not be able to fork() off a child with CLONE_FS, because
+having an fs_struct that's shared with anything other than sibling
+threads (which will be killed off) is supposed to only be possible if
+LSM_UNSAFE_SHARE is set. So:
 
-So please remove slab.h from the two files (but not the other one) when
-applying. Thanks.
+If check_unsafe_exec() can match each reference in the refcount
+->fs->users with a reference from a sibling thread (iow the fs_struct
+is not currently shared with another task), it sets p->fs->in_exec.
+
+If another thread tries to clone(CLONE_FS) while we're in execve(),
+copy_fs() will throw -EAGAIN. And if io_uring tries to grab a
+reference to the fs_struct with the intent to use it on a kernel
+worker thread (which conceptually is kinda similar to the
+clone(CLONE_FS) case), that also aborts.
+
+And then at the end of execve(), we clear the ->fs->in_exec flag again.
+
+So this should work fine as long as we ensure that we can't have two
+threads from the same process going through execve concurrently. (Or
+if we actually want to support that, we could make ->in_exec a counter
+instead of a flag, but really, preventing concurrent execve()s from a
+multithreaded process seems saner...)
+
+> I'm _almost_ inclined to say that we should just abort the execve()
+> entirely if somebody tries to attach in the middle.
+>
+> IOW, get rid of the locking, and replace it all just with a sequence
+> count. Make execve() abort if the sequence count has changed between
+> loading the original creds, and having installed the new creds.
+>
+> You can ptrace _over_ an execve, and you can ptrace _after_ an
+> execve(), but trying to attach just as we execve() would just cause
+> the execve() to fail.
+>
+> We could maybe make it conditional on the credentials actually having
+> changed at all (set another flag in bprm_fill_uid()). So it would only
+> fail for the suid exec case.
+>
+> Because honestly, trying to ptrace in the middle of a suid execve()
+> sounds like an attack, not a useful thing.
+>
+> That sequence count approach would be a much simpler change.
+
+In that model, what should happen if someone tries to attach to a
+process that's in execve(), but after the point of no return in
+de_thread()? "Abort" after the point of no return normally means
+force_sigsegv(), right?
