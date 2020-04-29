@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEC01BD8B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A691BD8BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgD2JtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 05:49:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53896 "EHLO mail.kernel.org"
+        id S1726774AbgD2Jtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 05:49:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726345AbgD2JtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 05:49:00 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1726760AbgD2Jtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 05:49:40 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 410BA20775;
-        Wed, 29 Apr 2020 09:48:59 +0000 (UTC)
-Date:   Wed, 29 Apr 2020 05:48:57 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Joerg Roedel <jroedel@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before text_poke()
-Message-ID: <20200429054857.66e8e333@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69AF620775;
+        Wed, 29 Apr 2020 09:49:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588153779;
+        bh=WsmEci1RYX3gAXKaPKi6kDaOGwHuQghjcCQy84kcjQ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CagCh6zTlW6+JwlUlk8EMFhgv7Z5QyoiQHoq1ssaAhPo7jVgu2CFYCdEz3uvXNAET
+         hjGNZD2vHO38Fb0/pRRwPTT8U/Wj4qB/QmtzsSYSxQ4QZwlVW8YKKs/SC6Yxq4/ePp
+         k1BWwULan3xoevpUBDH3MlmxEsxQSKxNIN2xQX9g=
+Date:   Wed, 29 Apr 2020 11:49:37 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
+        rostedt@goodmis.org, mingo@redhat.com, jack@suse.cz,
+        ming.lei@redhat.com, nstange@suse.de, akpm@linux-foundation.org,
+        mhocko@suse.com, yukuai3@huawei.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] blktrace: break out of blktrace setup on
+ concurrent calls
+Message-ID: <20200429094937.GB2081185@kroah.com>
+References: <20200429074627.5955-1-mcgrof@kernel.org>
+ <20200429074627.5955-6-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200429074627.5955-6-mcgrof@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+On Wed, Apr 29, 2020 at 07:46:26AM +0000, Luis Chamberlain wrote:
+> We use one blktrace per request_queue, that means one per the entire
+> disk.  So we cannot run one blktrace on say /dev/vda and then /dev/vda1,
+> or just two calls on /dev/vda.
+> 
+> We check for concurrent setup only at the very end of the blktrace setup though.
+> 
+> If we try to run two concurrent blktraces on the same block device the
+> second one will fail, and the first one seems to go on. However when
+> one tries to kill the first one one will see things like this:
+> 
+> The kernel will show these:
+> 
+> ```
+> debugfs: File 'dropped' in directory 'nvme1n1' already present!
+> debugfs: File 'msg' in directory 'nvme1n1' already present!
+> debugfs: File 'trace0' in directory 'nvme1n1' already present!
+> ``
+> 
+> And userspace just sees this error message for the second call:
+> 
+> ```
+> blktrace /dev/nvme1n1
+> BLKTRACESETUP(2) /dev/nvme1n1 failed: 5/Input/output error
+> ```
+> 
+> The first userspace process #1 will also claim that the files
+> were taken underneath their nose as well. The files are taken
+> away form the first process given that when the second blktrace
+> fails, it will follow up with a BLKTRACESTOP and BLKTRACETEARDOWN.
+> This means that even if go-happy process #1 is waiting for blktrace
+> data, we *have* been asked to take teardown the blktrace.
+> 
+> This can easily be reproduced with break-blktrace [0] run_0005.sh test.
+> 
+> Just break out early if we know we're already going to fail, this will
+> prevent trying to create the files all over again, which we know still
+> exist.
+> 
+> [0] https://github.com/mcgrof/break-blktrace
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  kernel/trace/blktrace.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+> index 5c52976bd762..383045f67cb8 100644
+> --- a/kernel/trace/blktrace.c
+> +++ b/kernel/trace/blktrace.c
+> @@ -4,6 +4,8 @@
+>   *
+>   */
+>  
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+>  #include <linux/kernel.h>
+>  #include <linux/blkdev.h>
+>  #include <linux/blktrace_api.h>
+> @@ -516,6 +518,11 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
+>  	 */
+>  	strreplace(buts->name, '/', '_');
+>  
+> +	if (q->blk_trace) {
+> +		pr_warn("Concurrent blktraces are not allowed\n");
+> +		return -EBUSY;
 
-Tzvetomir was adding a feature to trace-cmd that would allow the user
-to specify filtering on process IDs within a tracing instance (or
-buffer). When he added this feature and tested it on tracing PIDs 1 and
-2, it caused his kernel to hang.
+You have access to a block device here, please use dev_warn() instead
+here for that, that makes it obvious as to what device a "concurrent
+blktrace" was attempted for.
 
-He sent me his code and I was able to reproduce the hang as well. I
-bisected it down to this commit 763802b53a42 ("x86/mm: split
-vmalloc_sync_all()"). It was 100% reproducible. With the commit it
-would hang, and reverting the commit, it would work.
+thanks,
 
-Adding a bunch of printk()s, I found where it locked up. It was after
-the recording was finished, and a write of "0" to
-tracefs/instance/foo/events/enable. And in the code, it was:
-
-(you may skip to the end of the chain)
-
-system_enable_write() {
-  __ftrace_set_clr_event() {
-    __ftrace_set_clr_event_nolock() {
-      ftrace_event_enable_disable() {
-        __ftrace_event_enable_disable() {
-          call->class->reg() <trace_event_reg()> {
-            trace_point_probe_unregister() {
-              tracepoint_remove_func() {
-                static_key_slow_dec() {
-                  __static_key_slow_dec() {
-
-    <continued>
-
-  __static_key_slow_dec_cpus_locked() {
-    jump_label_update() {
-      __jump_label_update()
-        arch_jump_label_transform() {
-          jump_label_transform() {
-            __jump_label_transform() {
-              text_poke_bp() {
-                text_poke_bp_batch() {
-                  text_poke() {
-                    __text_poke() {
-
-    <continued> (This is where you want to see)
-
-  use_temporary_mm() {
-    switch_mm_irqs_off() {
-      load_new_mm_cr3() {
-        write_cr3() <<--- Lock up!
-
-The really strange part about this, is that this only crashes if we
-filter the PIDs on an instance (and via trace-cmd, which does some
-initial clean ups). But it works fine when doing from the top level
-tracing buffer, or by doing this manually. I'm not sure how vmalloc
-gets involved with this. Anyway, I tried the following patch, and it
-fixes the lockup for both myself and Tzvetomir. But since I'm not 100%
-sure what broke, I'm sending this out as an RFC.
-
-Fixes: 763802b53a42 ("x86/mm: split vmalloc_sync_all()")
-Reported-by: Tzvetomir Stoyanov (VMware) <tz.stoyanov@gmail.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 7867dfb3963e..015dd30a2260 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -802,6 +802,8 @@ static void *__text_poke(void *addr, const void *opcode, size_t len)
- 	 */
- 	BUG_ON(!after_bootmem);
- 
-+	vmalloc_sync_mappings();
-+
- 	if (!core_kernel_text((unsigned long)addr)) {
- 		pages[0] = vmalloc_to_page(addr);
- 		if (cross_page_boundary)
+greg k-h
