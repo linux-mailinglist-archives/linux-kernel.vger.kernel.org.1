@@ -2,97 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFF11BE307
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 537EF1BE31D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgD2PpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726774AbgD2PpN (ORCPT
+        id S1726883AbgD2Puk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:50:40 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:54846 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726511AbgD2Puk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:45:13 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2F8C03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:45:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=n4SiF6VzKpSikyxuEjK2tPE8HtYTsR9Hpkf9W1SwGK4=; b=Hofz04tBzULPDF6kymNT5agJJD
-        AcLgCygy6kHRSAj1yIiXaRlusRHFvZN3QxcNO11oWAX1Saxo6asRdJ5suGan4TEkwDjYZ1gO8keeH
-        E+R4e4ailrcVZ7wUhKJ/DO0lLwXNhaXpUMQB1i+cRZ1cf5us3ptQGxY5dHkrdqGVskbqigrUmdzEi
-        kDk0ejMMJaphvwTHhUYb9v11gOt4azgRqkdyzvr1h1W+O4ohRBhy/enot050JZiCUELlhMF+pG0yH
-        uAFNdo07ASL3QAbn7T/0sLVPIxcxucT4LyBr9o68/Ns7Nql8KkGf7mTTTNG6S5cfHMM1ir7aQTkNP
-        6qXdvvqQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTosr-0002JC-CU; Wed, 29 Apr 2020 15:44:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3B8283011E8;
-        Wed, 29 Apr 2020 17:44:23 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 14BA720BD9729; Wed, 29 Apr 2020 17:44:23 +0200 (CEST)
-Date:   Wed, 29 Apr 2020 17:44:23 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Joerg Roedel <jroedel@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before text_poke()
-Message-ID: <20200429154423.GM13592@hirez.programming.kicks-ass.net>
-References: <20200429054857.66e8e333@oasis.local.home>
- <20200429105941.GQ30814@suse.de>
- <20200429082854.6e1796b5@oasis.local.home>
- <20200429100731.201312a9@gandalf.local.home>
- <20200429141004.GR30814@suse.de>
- <20200429103216.34b6f7aa@gandalf.local.home>
+        Wed, 29 Apr 2020 11:50:40 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03TFoYTN051130;
+        Wed, 29 Apr 2020 10:50:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588175434;
+        bh=5nY8gwiNRgZ3ZAWjsz6MminkpMk9pTq3Re+mM4PEwLI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Y20XMnjJihHM9YAAhNvoKFLJZGcBQ1tGJadpcIVibWb5D0T+hNeuZLAm4zTyxIVkZ
+         E/aGxZu4VFRa6AJM7ZNg40e1wFx1OFL+HSeRtTRvTo5jlyJtT8tWdh2hERdBhPp7x8
+         iA2rohI0g5Rkl/OVODSAEMnIOyrA6u3IXVukvkGs=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03TFoYV0043468
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 29 Apr 2020 10:50:34 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 29
+ Apr 2020 10:50:34 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 29 Apr 2020 10:50:34 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03TFoYqe007051;
+        Wed, 29 Apr 2020 10:50:34 -0500
+Subject: Re: [PATCH v22 01/16] dt: bindings: Add multicolor class dt bindings
+ documention
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+References: <20200429125631.7044-1-dmurphy@ti.com>
+ <20200429125631.7044-2-dmurphy@ti.com>
+ <769c19a1-4124-b674-5b03-6100f176768e@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <8991ffea-3ac6-555d-1cab-b50ec4d46372@ti.com>
+Date:   Wed, 29 Apr 2020 10:44:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429103216.34b6f7aa@gandalf.local.home>
+In-Reply-To: <769c19a1-4124-b674-5b03-6100f176768e@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 10:32:16AM -0400, Steven Rostedt wrote:
-> On Wed, 29 Apr 2020 16:10:04 +0200
-> Joerg Roedel <jroedel@suse.de> wrote:
-> 
-> > On Wed, Apr 29, 2020 at 10:07:31AM -0400, Steven Rostedt wrote:
-> > > Talking with Mathieu about this on IRC, he pointed out that my code does
-> > > have a vzalloc() that is called:
-> > > 
-> > > in trace_pid_write()
-> > > 
-> > > 	pid_list->pids = vzalloc((pid_list->pid_max + 7) >> 3);
-> > > 
-> > > This is done when -P1,2 is on the trace-cmd command line.  
-> > 
-> > Yeah, I was guessing something like this, init_mm has a mapping which
-> > poking_mm has not. I currently try to reproduce this on one of my
-> > machines.
-> 
-> Note, in use_temporary_mm(poking_mm), poking_mm only contains the page that
+Jacek
 
-poking_mm should contain the full kernel map, the userspace part is 2
-pages in a random location to alias two kernel pages.
+On 4/29/20 10:37 AM, Jacek Anaszewski wrote:
+> Hi Dan,
+>
+> Thanks for the conversion, but now the binding example is missing.
+> In Documentation/devicetree/bindings/leds/common.yaml we do have
+> examples.
+>
+I have looked at a few recent examples of yaml files (rohm,bd71828-leds 
+and max77650) and there are no examples.
 
-So a vmalloc fault _should_ work.
+I am not sure if examples are required but more of a nice to have 
+especially for peripherals.
 
-> needs to be updated. But will get added to per_cpu(cpu_tlbstate.loaded_mm),
-> which appears to be the one that's not updated.
-> 
-> -- Steve
+But additionalProperties: false is required
+
+I can add a really basic example but I thought the intent of the 
+examples was to derive a sample dts.
+
+Dan
+
