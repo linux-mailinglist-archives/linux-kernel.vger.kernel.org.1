@@ -2,75 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D711BDA9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CF51BDAA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbgD2L3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 07:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726839AbgD2L3D (ORCPT
+        id S1726923AbgD2L3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 07:29:44 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:32553 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726743AbgD2L3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 07:29:03 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B72C03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 04:29:03 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id i27so1350309ota.7
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 04:29:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
-        b=MVQhrFPcxGc7VwYVJE5zBfsSVJNQ2/TX6tg+ljTG/W4hGrH7tHLJBqdfarnDUQSSzk
-         2kR9aOPBub7a92OxovH7egG+OTv/krEZ+9KUM0HJ1+TRFqO5KS1EYq0q59CqZHjob2Rh
-         gmK0Nwk7X6Dhjv/CeeKXg/FL2770YwJHTgoIVBmCxYU7D0PgdxFmj00UHvgEHPeKinKH
-         QpvTbc8VsBjoagZXC0hHHAzgSDbTRTVls3O8ZpJKek9/G2TrDFdckc261wBkP/VAmlyY
-         lWEUWJlqQnCj4cpBGCaGsRDj7RjtUEXVnqCO7quhSv+WLTxxbsB7Ey7OhhKnkMEfr+iy
-         i65g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
-        b=e7/2p6pdn48xPdiG6m+DrjX6Xi/nyNPiKO0kR7N55Ns/Fbe6pgylAMQGYGshIxcOI4
-         BJcvKMn0B+PYh28GHoI7KbE0VsDPBSTifZLyyG/xdnAwD5qh3sCcubwbQP3wBqyB34tw
-         kITVVdm6RX1e4+lZpjKhR5a/9wrclnU9Zw4SXnoYN36f1jitFADDPnEMBGxX+Ln20f5/
-         s4Iu0gSDzeW38jnJaZW91kC/mkPx8g2DlIeW0m62uRlCDNlPaLbRjPxcHn0rDLNWI7HI
-         TgACZgOeDMB3FLN85UVbyy8K2xVNPi8A7LIZSQ/0hbnlvrcKBGTIgj8sPufVD+O2V6g1
-         e24Q==
-X-Gm-Message-State: AGi0PuY9mjsgs9YRMeAR5OJJbBcD3BKbaUGiysn5cbPRcBGbbzKw45h9
-        KZrYF9G1Kam65YNTsxNfZlaUqwNkKAcjOT1CBtU=
-X-Google-Smtp-Source: APiQypIbkO8SL60JINDAG702+YA0RNchXbId85pTjlsuk4bh20OL9T9u2O8tvgk3vBARJWQMKXlZdlVjPkkyS7UqNsc=
-X-Received: by 2002:a9d:3b8:: with SMTP id f53mr26254823otf.37.1588159742698;
- Wed, 29 Apr 2020 04:29:02 -0700 (PDT)
+        Wed, 29 Apr 2020 07:29:44 -0400
+X-IronPort-AV: E=Sophos;i="5.73,331,1583164800"; 
+   d="scan'208";a="90776150"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 29 Apr 2020 19:29:39 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 3E3D14BCC883;
+        Wed, 29 Apr 2020 19:29:38 +0800 (CST)
+Received: from [10.167.220.69] (10.167.220.69) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 29 Apr 2020 19:29:38 +0800
+Message-ID: <5EA96520.3070200@cn.fujitsu.com>
+Date:   Wed, 29 Apr 2020 19:29:36 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
 MIME-Version: 1.0
-Received: by 2002:a4a:330d:0:0:0:0:0 with HTTP; Wed, 29 Apr 2020 04:29:02
- -0700 (PDT)
-Reply-To: idrisomar259@gmail.com
-From:   Idris Omar <ahmedibram684@gmail.com>
-Date:   Wed, 29 Apr 2020 04:29:02 -0700
-Message-ID: <CAG6EmfLF8VjyWj5W3Or9L9AyP6Ek-rq8B6+GuB8Mjf0XrRBFGw@mail.gmail.com>
-Subject: hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+To:     Po-Hsu Lin <po-hsu.lin@canonical.com>
+CC:     <linux-kselftest@vger.kernel.org>, <rostedt@goodmis.org>,
+        <mingo@redhat.com>, <shuah@kernel.org>, <colin.king@canonical.com>,
+        <mhiramat@kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] selftests/ftrace: treat module requirement unmet situation
+ as unsupported
+References: <20200429095044.24625-1-po-hsu.lin@canonical.com>
+In-Reply-To: <20200429095044.24625-1-po-hsu.lin@canonical.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.167.220.69]
+X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
+X-yoursite-MailScanner-ID: 3E3D14BCC883.AE6E6
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Sir / Madam,
+Hi Lin,
 
-Hi Friend I am the accountant and auditing manager of the
-International Finance Bank Plc bf I want to transfer an abandoned sum
-of 10.5 millions USD  to your account.50% will be for you. No risk
-involved.
-
-Contact me for more details.
-
-Kindly reply me back to my alternative email address (
-idrisomar259@gmail.com  )
+It looks fine to me.
+Reviewed-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 
 Thanks,
+Xiao Yang
+On 2020/4/29 17:50, Po-Hsu Lin wrote:
+> When the required module for the test does not exist, use
+> exit_unsupported instead of exit_unresolved to indicate this test is
+> not supported.
+> 
+> By doing this we can make test behaviour in sync with the
+> irqsoff_tracer.tc test in preemptirq, which is also treating module
+> existence in this way. Moreover, the test won't exit with a non-zero
+> return value if the module does not exist.
+> 
+> Fixes: 646f01ccdd59 ("ftrace/selftest: Add tests to test register_ftrace_direct()")
+> Fixes: 4d23e9b4fd2e ("selftests/ftrace: Add trace_printk sample module test")
+> Fixes: 7bc026d6c032 ("selftests/ftrace: Add function filter on module testcase")
+> Fixes: af2a0750f374 ("selftests/ftrace: Improve kprobe on module testcase to load/unload module")
+> Signed-off-by: Po-Hsu Lin<po-hsu.lin@canonical.com>
+> ---
+>   tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc  | 2 +-
+>   tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc  | 2 +-
+>   tools/testing/selftests/ftrace/test.d/event/trace_printk.tc    | 2 +-
+>   tools/testing/selftests/ftrace/test.d/ftrace/func_mod_trace.tc | 2 +-
+>   tools/testing/selftests/ftrace/test.d/kprobe/kprobe_module.tc  | 2 +-
+>   5 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc b/tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc
+> index d75a869..3d6189e 100644
+> --- a/tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/direct/ftrace-direct.tc
+> @@ -5,7 +5,7 @@
+>   rmmod ftrace-direct ||:
+>   if ! modprobe ftrace-direct ; then
+>     echo "No ftrace-direct sample module - please make CONFIG_SAMPLE_FTRACE_DIRECT=m"
+> -  exit_unresolved;
+> +  exit_unsupported;
+>   fi
+> 
+>   echo "Let the module run a little"
+> diff --git a/tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc b/tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc
+> index 801ecb6..3d0e3ca 100644
+> --- a/tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/direct/kprobe-direct.tc
+> @@ -5,7 +5,7 @@
+>   rmmod ftrace-direct ||:
+>   if ! modprobe ftrace-direct ; then
+>     echo "No ftrace-direct sample module - please build with CONFIG_SAMPLE_FTRACE_DIRECT=m"
+> -  exit_unresolved;
+> +  exit_unsupported;
+>   fi
+> 
+>   if [ ! -f kprobe_events ]; then
+> diff --git a/tools/testing/selftests/ftrace/test.d/event/trace_printk.tc b/tools/testing/selftests/ftrace/test.d/event/trace_printk.tc
+> index b02550b..dd8b10d 100644
+> --- a/tools/testing/selftests/ftrace/test.d/event/trace_printk.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/event/trace_printk.tc
+> @@ -5,7 +5,7 @@
+>   rmmod trace-printk ||:
+>   if ! modprobe trace-printk ; then
+>     echo "No trace-printk sample module - please make CONFIG_SAMPLE_TRACE_PRINTK=m"
+> -  exit_unresolved;
+> +  exit_unsupported;
+>   fi
+> 
+>   echo "Waiting for irq work"
+> diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func_mod_trace.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func_mod_trace.tc
+> index 1a4b4a4..26dc06a 100644
+> --- a/tools/testing/selftests/ftrace/test.d/ftrace/func_mod_trace.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/ftrace/func_mod_trace.tc
+> @@ -13,7 +13,7 @@ echo '*:mod:trace_printk'>  set_ftrace_filter
+>   if ! modprobe trace-printk ; then
+>     echo "No trace-printk sample module - please make CONFIG_SAMPLE_TRACE_PRINTK=
+>   m"
+> -  exit_unresolved;
+> +  exit_unsupported;
+>   fi
+> 
+>   : "Wildcard should be resolved after loading module"
+> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_module.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_module.tc
+> index d861bd7..4e07c69 100644
+> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_module.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_module.tc
+> @@ -8,7 +8,7 @@ rmmod trace-printk ||:
+>   if ! modprobe trace-printk ; then
+>     echo "No trace-printk sample module - please make CONFIG_SAMPLE_TRACE_PRINTK=
+>   m"
+> -  exit_unresolved;
+> +  exit_unsupported;
+>   fi
+> 
+>   MOD=trace_printk
 
-Mr Idris Omar
+
+
