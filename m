@@ -2,86 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A10F1BDF5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B2E1BDF62
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgD2NoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:44:01 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:38131 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726599AbgD2NoB (ORCPT
+        id S1727932AbgD2NpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:45:08 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:62566 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbgD2NpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:44:01 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 161D05C032C;
-        Wed, 29 Apr 2020 09:44:00 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 29 Apr 2020 09:44:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=RCkDFCkJ36lrnnoBT4PNHnDTJIA
-        yrsJLEZzeqnANdOY=; b=AQ8VdrvJPUngy+owDVLnDzYd9A1GPRywCSjbOdCArWh
-        CCFE8cZfIkJlvZ5Y/FjUMVlsWfYVYr69XAgZBmGqFTQhc0R5f0kBaz6owdKF7xaz
-        YFxcJ5ZE8+jydVwt1+kNhoQ1ZHjvzvvmX+SRSrTJV8WjbKFiL/7Mg52JEEF4cOqb
-        JgYOcxMVf7nNTFrl+xaS/t77X/uo8eoC/Ssde/JoLq82dXauwW0ZRry7+40BX/u4
-        j78lVB46VBLt5hf3hgvjU7DCqjHdPpwyIvtlyaniOJN6hOOV1iNAleub1NjbmZve
-        IKLbyJDvyVVqXsE2d+ndlaEdW4rmjYWUccLZiAO1zqg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=RCkDFC
-        kJ36lrnnoBT4PNHnDTJIAyrsJLEZzeqnANdOY=; b=RF1Zc3H744YcckFjtaTly/
-        p39Emml01M31zsNvnwHJq+4i0r/RxAvjead5TzgNAdFMH4MDyYmX0un3hT3cfeVi
-        eJPAnp4SraPaLz4A5cmrM7eWe+7vpvLYN3eYkh4EOd3pdBVqsuphbd/b9gXMEHdM
-        JqQSJmg4AVZafNDKjy5UdW0PnxEJVl9L1m9cuFk+Ub+S9+hrtPPpMlNeOmRN2wiU
-        X+Psp8MpgvL/MvcXLEKkDoJa+Y/n8VCnT9NpUMh3TcY8Bkpdw9BnlVAVjsX8ikrw
-        wGsJpVqXoVnyRG9whhx6zzq4tWMczw+VKLE4fN2FL3wm419Zp+NJow/37UjRS95Q
-        ==
-X-ME-Sender: <xms:n4SpXldwacOaPD6Q4Y3Ndfu8ds0BQfHEMlz_BawAwCIvb0Q3FmTgtQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrieefgdeijecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttdertd
-    dttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeen
-    ucggtffrrghtthgvrhhnpeevueehjefgfffgiedvudekvdektdelleelgefhleejieeuge
-    egveeuuddukedvteenucfkphepkeefrdekiedrkeelrddutdejnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtoh
-    hm
-X-ME-Proxy: <xmx:n4SpXheFf1MHon5mWloqgUusi6l7poOym-YrbFJhj8-yjKiRj36B-g>
-    <xmx:n4SpXn2YYLkiRQBWw7sV1XsTO2UYUkL77E2y1QIpk_tj6U_J59GWfQ>
-    <xmx:n4SpXh8OQqdRdFrxvsdrCvmJhCwI3YClgwdy-0fvhm6cqfuLAV-gRA>
-    <xmx:oISpXmQhvve9eJVDbDd3cR8wxmuq7kkKkMzaLJYNZRwSz7ciLGqElA>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 545393065ED1;
-        Wed, 29 Apr 2020 09:43:59 -0400 (EDT)
-Date:   Wed, 29 Apr 2020 15:43:57 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Akira Shimahara <akira215corp@gmail.com>
-Cc:     zbr@ioremap.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/5] w1_therm: fix reset_select_slave. Creating
- w1_therm.h
-Message-ID: <20200429134357.GA2132814@kroah.com>
-References: <20200429133048.139402-1-akira215corp@gmail.com>
+        Wed, 29 Apr 2020 09:45:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1588167904; x=1590759904;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=xlNJzENzGdwVrLtZkCj2SP29S7rBf6E3uG2taG606uk=;
+        b=oXlvIHRP5IFNPMrTe6r7bTXJLhcQmXCAk9cHNE+FPRCwi3S8aFVxLeG568wYwWDR
+        YBV+KORkLoks3YqeoOMy/Ol7+jEyt4Sw/JEO+lnA6s+DHgZThgJap1RhXS8jiYNp
+        rT9CS5MNwYO96aUFCHBA+Aib/NVA36v1pfXuE9BPwuE=;
+X-AuditID: c39127d2-9f7ff70000001ac4-3e-5ea984e0caf8
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 0D.BC.06852.0E489AE5; Wed, 29 Apr 2020 15:45:04 +0200 (CEST)
+Received: from [172.16.21.128] ([172.16.21.128])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2020042915450423-291825 ;
+          Wed, 29 Apr 2020 15:45:04 +0200 
+Subject: Re: [PATCH v2] drm/panel: simple: Support reset GPIOs
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+References: <20191224142134.22902-1-miquel.raynal@bootlin.com>
+ <20200102172700.GA15341@ravnborg.org> <20200106101042.5bb5b742@xps13>
+From:   Wadim Egorov <w.egorov@phytec.de>
+Message-ID: <519b5628-3e40-b034-8efd-56288cc2159e@phytec.de>
+Date:   Wed, 29 Apr 2020 15:45:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429133048.139402-1-akira215corp@gmail.com>
+In-Reply-To: <20200106101042.5bb5b742@xps13>
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 29.04.2020 15:45:04,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 29.04.2020 15:45:04
+X-TNEFEvaluated: 1
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHLMWRmVeSWpSXmKPExsWyRoCBS/dBy8o4g9fLRCx6z51ksrjy9T2b
+        xeVdc9gsXr7exmxxuH0fq8Xlr32MFit+bmW0+LlrHotF55t37A6cHvPWVHvsnHWX3WP7twes
+        Hve7jzN5LJl2lc3j8ya5ALYoLpuU1JzMstQifbsErowXW78xFtwRq1h+4hB7A+NaoS5GTg4J
+        AROJizcXsYHYQgLbGCWudvJ3MXIB2WcYJQ5MXs7cxcjBISxgJzHnMjNIjYiAn8THp03sIDXM
+        AkuYJGY132SDaGhjlPj4cDsjSBWbgLrEnQ3fWEFsXgEbiSNX74BtYBFQlbi2dycTiC0qECHx
+        +eARNogaQYmTM5+wgNicAjoSzz5cYQIZKiFwhVHi07b9TBCnCkmcXnwW7AxmoAV/5l2CssUl
+        bj2ZzwRha0ssW/iaeQKj0Cwkc2chaZmFpGUWkpYFjCyrGIVyM5OzU4sys/UKMipLUpP1UlI3
+        MQLj6PBE9Us7GPvmeBxiZOJgPMQowcGsJML7KGNZnBBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHe
+        DbwlYUIC6YklqdmpqQWpRTBZJg5OqQZGqymOjyevWNWW6XhrHdvJI8IH4w0Vfp5aa/Svh1l0
+        sTjr2W8F3cX9BS/PHtnIdLHs17QIv4OruOfX/hL1/G18JnDHr4aEj4k8r8+c61Yo/OWx4ty0
+        JbIpcWsDEuIsp001WO4YM31G4IusQ+eFgtY+WXnhZfEOm5J+zpiZGjOsvq9baPuu1yuST4ml
+        OCPRUIu5qDgRAAWr3EKRAgAA
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 03:30:48PM +0200, Akira Shimahara wrote:
-> Patch for enhancement of w1_therm module.
->  - Creating a w1_therm.h file to clean up the code and documenting it.
->  - fix reset_select_slave function: w1_reset_select_slave() from w1_io.c
-> 	could not be used here because a SKIP ROM command is sent if only
-> 	one device is on the line. At the beginning of the search process,
-> 	sl->master->slave_count is 1 even if more devices are on the line,
-> 	causing data collision in the bus.
+Hi Sam,
 
-This should be three different patches, one to create the file by moving
-the code, one to document it, and the last to do the fix.
+you've asked in another thread [1] if there is any known simple panel
+that requires a reset. We have a Densitron DMT070WSNLCMI-1E Panel
+(compatible to avic,tm070ddh03) with some reset timing requirements, [2]
+Page 20. So it would be nice to see this patch accepted.
 
-thanks,
+[1] https://patchwork.kernel.org/patch/11292207/
+[2]
+https://www.densitron.com/sites/default/files/2019-09/DMT070WSNLCMI-1E%20Re=
+v%20A.pdf
 
-greg k-h
+Regards,
+Wadim
+
+On 06.01.20 10:10, Miquel Raynal wrote:
+> Hi Sam,
+>
+> Sam Ravnborg <sam@ravnborg.org> wrote on Thu, 2 Jan 2020 18:27:00 +0100:
+>
+>> Hi Miquel
+>>
+>> On Tue, Dec 24, 2019 at 03:21:34PM +0100, Miquel Raynal wrote:
+>>> The panel common bindings provide a gpios-reset property. Let's
+>>> support it in the simple driver.
+>>>
+>>> Two fields are added to the panel description structure: the time to
+>>> assert the reset and the time to wait right after before starting to
+>>> interact with it in any manner. In case these default values are not
+>>> filled but the GPIO is present in the DT, default values are applied.  =
+
+>> Wehn we discussed this the last time you wrote:
+>>
+>> """
+>> my hardware is:
+>>
+>> LVDS IP <----------> LVDS to RGB bridge <------------> Panel
+>>
+>> While there is a simple "RGB to LVDS" bridge driver, there is none
+>> doing the work the other way around. In my case, the bridge has a reset
+>> pin.
+>>
+>> As until now there is no way to represent the "LVDS to RGB" bridge and
+>> because the bindings already document such reset pin, I decided to add
+>> support for it in the simple panel driver.
+>> """
+>>
+>> Based on the information provided it seems that the correct way is to
+>> add a "LVDS to RGB bridge" and then let the bridge handle the reset
+>> functionality.
+> This I agree, but we are talking about my current situation.=20
+>
+>> It is obviously much more code to do it this way but then
+>> other panels using the same type of brigde have the
+>> same functionality without adding bridge functionality to the panel.
+> This, I do not fully agree as bindings for the panel reset already
+> exist and we could have a reset on both: the bridge and the panel.
+> I choose to use a wrong (private) DT representation because I am not
+> willing to add an LVDS->RGB bridge: as you say, it is much more work to
+> do. But, IMHO, this is not related to the patch. If you consider this
+> patch wrong because a panel cannot have a reset, then it should be
+> stated clearly and maybe removed from the bindings?
+>
+> Anyway if you think this change can't be useful, let's put it aside.
+>
+> Thanks for your time,
+> Miqu=C3=A8l
+>
+> =5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=
+=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
