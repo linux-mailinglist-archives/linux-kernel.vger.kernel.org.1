@@ -2,211 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EADB31BDCEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83191BDCE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgD2NAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:00:44 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:49204 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726516AbgD2NAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:00:43 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200429130040epoutp03a370fb86393d6332c04504b70738913e~KS98wms6n0144201442epoutp03c
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 13:00:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200429130040epoutp03a370fb86393d6332c04504b70738913e~KS98wms6n0144201442epoutp03c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1588165240;
-        bh=uRUQIukj/rCNvkl85MJQQAAdTNwuw5HToUOLXDyKcto=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=T4sqCGUzHY/+1xE0AMFIHTIMs/jwRCmy+JwKB/RR77HHVEO3hM6bKFATlgQR64WMn
-         zKekYepMRK9xHtcylI2+cl+i5dttYn4XO9/bT8V9N25c7lAdrAPjZvd7Ge0MUM4tj+
-         pvmUTPwnuOO+Y4IXphQaDgU34uaBNSsa6xpxiw5k=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20200429130039epcas5p470bbeef7ad11480f89fa277a75c3962b~KS97pOyMb2186221862epcas5p4y;
-        Wed, 29 Apr 2020 13:00:39 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7D.B7.04736.77A79AE5; Wed, 29 Apr 2020 22:00:39 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200429125853epcas5p494c3f081a7610f42d293d08d3daf7dee~KS8YqyYRZ2186621866epcas5p4s;
-        Wed, 29 Apr 2020 12:58:53 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200429125853epsmtrp26ad7c606db305c51d9789c49d6986b0c~KS8YqD1jL0566405664epsmtrp2E;
-        Wed, 29 Apr 2020 12:58:53 +0000 (GMT)
-X-AuditID: b6c32a4b-ae3ff70000001280-f5-5ea97a77ce9c
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        35.C1.18461.C0A79AE5; Wed, 29 Apr 2020 21:58:52 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.135]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200429125851epsmtip2dcccc7be7bfe1d8beeed5d185cdae578~KS8XPA4fA2342223422epsmtip2H;
-        Wed, 29 Apr 2020 12:58:51 +0000 (GMT)
-From:   Maninder Singh <maninder1.s@samsung.com>
-To:     mhocko@suse.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        a.sahrawat@samsung.com, v.narang@samsung.com,
-        Maninder Singh <maninder1.s@samsung.com>
-Subject: [PATCH v2] mm/vmscan.c: change prototype for shrink_page_list
-Date:   Wed, 29 Apr 2020 18:28:34 +0530
-Message-Id: <1588165114-24954-1-git-send-email-maninder1.s@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRmVeSWpSXmKPExsWy7bCmhm551co4g1c7hC0u7k61mLN+DZvF
-        5V1z2CzurfnPanF4fhuLxf0+B4tDJ+cyOrB7bPo0id3jxIzfLB59W1YxeqzfcpXF4/MmuQDW
-        KC6blNSczLLUIn27BK6Mjfs/MBWskq+Yu+AJewPjNMkuRk4OCQETiaNXD7N0MXJxCAnsZpS4
-        N+s0K4TziVHi6t6vUJlvjBLrdh1kgmm5ffUOVGIvo8S110/ZIJyvjBLTTzSzgVSxCehJrNq1
-        B6iKg0MEyP7zRAekhllgAqPE8V07GEFqhAXcJK79eMsKYrMIqErMufSCHaSeV8Bd4tTTIohl
-        chI3z3Uyg/RKCKxjl9i2s5kZIuEiMXXpEUYIW1ji1fEt7BC2lMTnd3vZIBqaGSU+7VvLCOFM
-        YZRYevEjK0SVvcTr5gYmkG3MApoS63fpQ4RlJaaeWgf2JrMAn0Tv7ydQL/NK7JgHY6tKtNzc
-        ADVGWuLzx48sELaHRPfrg2BHCAnESjRMm8IygVF2FsKGBYyMqxglUwuKc9NTi00LjPNSy/WK
-        E3OLS/PS9ZLzczcxgiNfy3sH46ZzPocYBTgYlXh4LVJXxgmxJpYVV+YeYpTgYFYS4X2UsSxO
-        iDclsbIqtSg/vqg0J7X4EKM0B4uSOK8WI1C1QHpiSWp2ampBahFMlomDU6qBUZs1/8yS5Tb7
-        v24K5blWNv/S057/vwoinga2uf14uO3vBPNgHalb+02+Ld3s46TaEGoyOea+/dOvwl1FfBE/
-        Ugu8Vyvz8L8/f8VFqDH5bUwsz26H3T2vo79umj7Fqoux4Ev4V6kasceuUxfad/yaUvXnT8j9
-        fct+LbJyNCy1EjNbV+see0F/jxJLcUaioRZzUXEiAEpw86r4AgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLJMWRmVeSWpSXmKPExsWy7bCSvC5P1co4gy0nrC0u7k61mLN+DZvF
-        5V1z2CzurfnPanF4fhuLxf0+B4tDJ+cyOrB7bPo0id3jxIzfLB59W1YxeqzfcpXF4/MmuQDW
-        KC6blNSczLLUIn27BK6Mjfs/MBWskq+Yu+AJewPjNMkuRk4OCQETidtX77B0MXJxCAnsZpTo
-        vjyJDSIhLfHz33sWCFtYYuW/5+wQRZ8ZJea/3AlWxCagJ7Fq1x6wIhEBA4lTc1YwgRQxC0xh
-        lGhY9I8JJCEs4CZx7cdbVhCbRUBVYs6lF0CTODh4BdwlTj0tglggJ3HzXCfzBEaeBYwMqxgl
-        UwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLzczcxgkNIS3MH4/ZVH/QOMTJxMB5ilOBgVhLhfZSx
-        LE6INyWxsiq1KD++qDQntfgQozQHi5I4743ChXFCAumJJanZqakFqUUwWSYOTqkGpgUSr7+t
-        KPwtpjPb+shND4HYKWclZjFotN1cX/tvS2j/TA3/A3dk9R0FZe58EZkuzzkvhcOpTOeZ3EnJ
-        4EMVL7J1fZYtM/8Q03hLw2hW3GSRrACxBetVrN+frSoQWjHlbOyHO2kZPlKN36Z/nxL3/W2I
-        qLHLMouQr9tePTsz/VB9TN4Cy7qZEfcX1y0puf+prPKp455jhZEbUlM6r3DdZdNSf64a7uZ2
-        ZUbhbYVZ0Vuyz132UApxnhBwnP+3cqRd3rdbtycFyhjJ8tnfW5CwsPa7Z5ZeVozZbUZhP+WI
-        BGaDl22pR3Rd2/+vm7DQPX7LiT5dq1v5Vz59ik2cv+Ha96NcIjUmrx7a9DXrbOvkUWIpzkg0
-        1GIuKk4EALOun0qQAgAA
-X-CMS-MailID: 20200429125853epcas5p494c3f081a7610f42d293d08d3daf7dee
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200429125853epcas5p494c3f081a7610f42d293d08d3daf7dee
-References: <CGME20200429125853epcas5p494c3f081a7610f42d293d08d3daf7dee@epcas5p4.samsung.com>
+        id S1727074AbgD2M6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 08:58:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726617AbgD2M6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 08:58:43 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BECFE208FE;
+        Wed, 29 Apr 2020 12:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588165123;
+        bh=li6Xj3PSlgcABYGV0eO2IHr8jMH0aES6+8vgJv4vSkI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gKeaL7cuw9y28v4bTwmHN6XU7HARFAAxv4aps3Yd06f8jH0/Y+RsPKEBJCJBMjhpX
+         VRkS2NDskyNYR6JPa/7nlbQSFeslZelyy7YN8eFeF4pQ7oZ1GRxuNzeGSfqmRz41hY
+         rV2l4ace0KSWvUGU3dxPnu7Z8/Nc6BW7vgTVST4I=
+Date:   Wed, 29 Apr 2020 13:58:40 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        YueHaibing <yuehaibing@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        sound-open-firmware@alsa-project.org,
+        Shawn Guo <shawnguo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH] ASoC: SOF: sort out Kconfig, again
+Message-ID: <20200429125840.GK4201@sirena.org.uk>
+References: <20200428212752.2901778-1-arnd@arndb.de>
+ <6b39fbba-c65d-2c02-14bf-11c2d00547af@linux.intel.com>
+ <CAK8P3a24whg2RhJE3Vf5u3EWy+wvFqhXdp7EQZuQx0shPsMARw@mail.gmail.com>
+ <f91c9a68-7641-beb8-a23e-bd1b9b8d0acb@linux.intel.com>
+ <b784c008-7094-05cb-6200-6b246ff39bb8@linux.intel.com>
+ <CAK8P3a3vri_-tdEy3x6tRGUjb_k-+Mc+Jt9bQpgFvqm2RN+cJA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HTLCc13+3hfAZ6SL"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3vri_-tdEy3x6tRGUjb_k-+Mc+Jt9bQpgFvqm2RN+cJA@mail.gmail.com>
+X-Cookie: I know how to do SPECIAL EFFECTS!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'commit 3c710c1ad11b ("mm, vmscan:
-extract shrink_page_list reclaim counters into a struct")'
 
-changed data type for the function,
-so changing return type for funciton and its caller.
+--HTLCc13+3hfAZ6SL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Vaneet Narang <v.narang@samsung.com>
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
----
-v1 -> v2: position of variable changed mistakenly, reverted.
+On Wed, Apr 29, 2020 at 10:24:45AM +0200, Arnd Bergmann wrote:
 
- mm/internal.h   |  2 +-
- mm/page_alloc.c |  2 +-
- mm/vmscan.c     | 24 ++++++++++++------------
- 3 files changed, 14 insertions(+), 14 deletions(-)
+> I looked at the bigger picture again and found that the more fundamental
+> problem is the dependency reversal in sound/soc/sof/sof-of-dev.c, where
+> you have common code that knows about and links against a hardware
+> specific driver. This is something we try hard do avoid in general in the
+> kernel, as it causes all kinds of problems:
 
-diff --git a/mm/internal.h b/mm/internal.h
-index b5634e7..c3eeec8 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -527,7 +527,7 @@ extern unsigned long  __must_check vm_mmap_pgoff(struct file *, unsigned long,
-         unsigned long, unsigned long);
- 
- extern void set_pageblock_order(void);
--unsigned long reclaim_clean_pages_from_list(struct zone *zone,
-+unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 					    struct list_head *page_list);
- /* The ALLOC_WMARK bits are used as an index to zone->watermark */
- #define ALLOC_WMARK_MIN		WMARK_MIN
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 1385d78..f17d88c6 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8416,7 +8416,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
- 					unsigned long start, unsigned long end)
- {
- 	/* This function is based on compact_zone() from compaction.c. */
--	unsigned long nr_reclaimed;
-+	unsigned int nr_reclaimed;
- 	unsigned long pfn = start;
- 	unsigned int tries = 0;
- 	int ret = 0;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b06868f..8076012 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1066,17 +1066,17 @@ static void page_check_dirty_writeback(struct page *page,
- /*
-  * shrink_page_list() returns the number of reclaimed pages
-  */
--static unsigned long shrink_page_list(struct list_head *page_list,
--				      struct pglist_data *pgdat,
--				      struct scan_control *sc,
--				      enum ttu_flags ttu_flags,
--				      struct reclaim_stat *stat,
--				      bool ignore_references)
-+static unsigned int shrink_page_list(struct list_head *page_list,
-+				     struct pglist_data *pgdat,
-+				     struct scan_control *sc,
-+				     enum ttu_flags ttu_flags,
-+				     struct reclaim_stat *stat,
-+				     bool ignore_references)
- {
- 	LIST_HEAD(ret_pages);
- 	LIST_HEAD(free_pages);
--	unsigned nr_reclaimed = 0;
--	unsigned pgactivate = 0;
-+	unsigned int nr_reclaimed = 0;
-+	unsigned int pgactivate = 0;
- 
- 	memset(stat, 0, sizeof(*stat));
- 	cond_resched();
-@@ -1483,7 +1483,7 @@ static unsigned long shrink_page_list(struct list_head *page_list,
- 	return nr_reclaimed;
- }
- 
--unsigned long reclaim_clean_pages_from_list(struct zone *zone,
-+unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 					    struct list_head *page_list)
- {
- 	struct scan_control sc = {
-@@ -1492,7 +1492,7 @@ unsigned long reclaim_clean_pages_from_list(struct zone *zone,
- 		.may_unmap = 1,
- 	};
- 	struct reclaim_stat dummy_stat;
--	unsigned long ret;
-+	unsigned int ret;
- 	struct page *page, *next;
- 	LIST_HEAD(clean_pages);
- 
-@@ -1900,13 +1900,13 @@ static int current_may_throttle(void)
- {
- 	LIST_HEAD(page_list);
- 	unsigned long nr_scanned;
--	unsigned long nr_reclaimed = 0;
- 	unsigned long nr_taken;
- 	struct reclaim_stat stat;
- 	int file = is_file_lru(lru);
- 	enum vm_event_item item;
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
- 	struct zone_reclaim_stat *reclaim_stat = &lruvec->reclaim_stat;
-+	unsigned int nr_reclaimed = 0;
- 	bool stalled = false;
- 
- 	while (unlikely(too_many_isolated(pgdat, file, sc))) {
-@@ -2096,7 +2096,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
- unsigned long reclaim_pages(struct list_head *page_list)
- {
- 	int nid = NUMA_NO_NODE;
--	unsigned long nr_reclaimed = 0;
-+	unsigned int nr_reclaimed = 0;
- 	LIST_HEAD(node_page_list);
- 	struct reclaim_stat dummy_stat;
- 	struct page *page;
--- 
-1.9.1
+This is a legacy of this being factored out of the x86 code, since ACPI
+is not really fit for purpose when used to describe at least the audio
+hardware on modern laptops essentially all the enumeration is quirk
+based.  It really needs cleaning up for the non-x86 SOF users.
 
+--HTLCc13+3hfAZ6SL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6pef8ACgkQJNaLcl1U
+h9DFqgf7Bk+odcTlRMvglULBd8JVvvVNug3HsTUJZY0nAIJ8yvEYcing+rV9QnY6
+WwoxEdaADURcX9ZNcW/nwguxgd87xkc2rLeasBXq5aJTtTQlfRkym+rc6ws53+7v
+BD6eD5RXHgYz8tTAiPKQZg1pS2mgneX0Akpg5Txl7UGKaffA32meh9iz3f6JvGPe
+OUg6IYwkMHEz/2x8Wd46205Ygp0R96/FuUMo3Io6TgJOX9L9lf/2flb+B3yyeHpG
+lPtFxgiPutWxduMDbxiAHJL1xgzL1GQScnfQWOgho9egVaaYrW1q7VGRNrBLwHr1
+uhwjh/jEoitjH3YvQCM4wI4gOvLmyw==
+=qi/x
+-----END PGP SIGNATURE-----
+
+--HTLCc13+3hfAZ6SL--
