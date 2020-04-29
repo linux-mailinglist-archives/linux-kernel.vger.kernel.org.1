@@ -2,147 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD1D1BD900
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42671BD902
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgD2KGk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Apr 2020 06:06:40 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:51381 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbgD2KGj (ORCPT
+        id S1726760AbgD2KGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 06:06:45 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:36438 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbgD2KGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 06:06:39 -0400
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 2ABF4200004;
-        Wed, 29 Apr 2020 10:06:33 +0000 (UTC)
-Date:   Wed, 29 Apr 2020 12:06:32 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Christophe Kerello <christophe.kerello@st.com>
-Cc:     <richard@nod.at>, <vigneshr@ti.com>, <lee.jones@linaro.org>,
-        <robh+dt@kernel.org>, <mark.rutland@arm.com>, <tony@atomide.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>, <marex@denx.de>
-Subject: Re: [PATCH v2 06/12] mtd: rawnand: stm32_fmc2: use FMC2_TIMEOUT_MS
- for timeouts
-Message-ID: <20200429120632.7bce63e6@xps13>
-In-Reply-To: <b6b31f36-8e8f-4042-2587-0dcad82aafc5@st.com>
-References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
-        <1586966256-29548-7-git-send-email-christophe.kerello@st.com>
-        <20200427202212.0235d987@xps13>
-        <0e2c9a6a-aa21-7814-9af8-629de6568fab@st.com>
-        <20200429113529.5ddc3ad9@xps13>
-        <b6b31f36-8e8f-4042-2587-0dcad82aafc5@st.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 29 Apr 2020 06:06:43 -0400
+Received: by mail-wm1-f65.google.com with SMTP id u127so1369184wmg.1;
+        Wed, 29 Apr 2020 03:06:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tXrWrPumlE2jtN1J/oDfyJrpYks7pUQ//wpKnWHr1xY=;
+        b=KwSVmd80xbikmMvU1y8zTPyijI8wXS415axCQaLrMR0y0P5l1rTUxk/v3VcVH4MrHG
+         K5AodBfX1tIpJrAFbApcdPw+/mKoUAWxiOfTdLFmaREopmIo+bIcru340D4V5ueJ4SqX
+         A8Uvx9nORl9tDaa/q/zIBgLI7e37ivLIlt7syasAij+YDUeA2QtsgzxcuRgpwqqKFeYc
+         0xybiCzuj5ZPBy/mpUGyVun1WILA/WVslUwu9cn2rZaRbR/f0yNpvKcZqUu7+O5jxHwK
+         fKaQXRTwHa+BpoV9BjwZDnBgsDHpuw9+wMQevSohQaJPXelINJhseII2GAHwMiVlIg9R
+         Ygxg==
+X-Gm-Message-State: AGi0PuaDwrOJf5WGRnQvpJUPIRVP4SK22upZlysnFiTeZe9bTOICpoGP
+        hAxnMNpYCu5oCSfvvRdKpFQ=
+X-Google-Smtp-Source: APiQypKj5T16tWJeZwK+YQ8igeZqc4xYmWCZgPcuVSnBLwFyWfb35oXFaS9qmRdq0ZJJ4PJxTS+g7A==
+X-Received: by 2002:a1c:bc05:: with SMTP id m5mr2197843wmf.143.1588154801445;
+        Wed, 29 Apr 2020 03:06:41 -0700 (PDT)
+Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
+        by smtp.gmail.com with ESMTPSA id a1sm29684118wrn.80.2020.04.29.03.06.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 03:06:40 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 12:06:39 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mm, memcg: Decouple e{low,min} state mutations from
+ protection checks
+Message-ID: <20200429100639.GZ28637@dhcp22.suse.cz>
+References: <cover.1588092152.git.chris@chrisdown.name>
+ <51ffacb736bb02ecc09c828ebe8f4ec7fda68c48.1588092152.git.chris@chrisdown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <51ffacb736bb02ecc09c828ebe8f4ec7fda68c48.1588092152.git.chris@chrisdown.name>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
-
-Christophe Kerello <christophe.kerello@st.com> wrote on Wed, 29 Apr
-2020 11:41:44 +0200:
-
-> On 4/29/20 11:35 AM, Miquel Raynal wrote:
-> > Hi Christophe,
-> > 
-> > Christophe Kerello <christophe.kerello@st.com> wrote on Wed, 29 Apr
-> > 2020 11:27:43 +0200:
-> >   
-> >> Hi Miquèl,
-> >>
-> >> On 4/27/20 8:22 PM, Miquel Raynal wrote:  
-> >>> Hi Christophe,
-> >>>
-> >>> Christophe Kerello <christophe.kerello@st.com> wrote on Wed, 15 Apr
-> >>> 2020 17:57:30 +0200:  
-> >>>    >>>> This patch removes the constant FMC2_TIMEOUT_US.  
-> >>>> FMC2_TIMEOUT_MS is set to 5 seconds and this constant is used
-> >>>> each time that we need to wait (except when the timeout value
-> >>>> is set by the framework)
-> >>>>
-> >>>> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> >>>> ---
-> >>>>    drivers/mtd/nand/raw/stm32_fmc2_nand.c | 11 +++++------
-> >>>>    1 file changed, 5 insertions(+), 6 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> >>>> index ab53314..f159c39 100644
-> >>>> --- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> >>>> +++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-> >>>> @@ -37,8 +37,7 @@
-> >>>>    /* Max ECC buffer length */
-> >>>>    #define FMC2_MAX_ECC_BUF_LEN		(FMC2_BCHDSRS_LEN * FMC2_MAX_SG)  
-> >>>>    >> -#define FMC2_TIMEOUT_US			1000  
-> >>>> -#define FMC2_TIMEOUT_MS			1000
-> >>>> +#define FMC2_TIMEOUT_MS			5000  
-> >>>>    >>   /* Timings */  
-> >>>>    #define FMC2_THIZ			1
-> >>>> @@ -525,9 +524,9 @@ static int stm32_fmc2_ham_calculate(struct nand_chip *chip, const u8 *data,
-> >>>>    	u32 sr, heccr;
-> >>>>    	int ret;  
-> >>>>    >> -	ret = readl_relaxed_poll_timeout(fmc2->io_base + FMC2_SR,  
-> >>>> -					 sr, sr & FMC2_SR_NWRF, 10,
-> >>>> -					 FMC2_TIMEOUT_MS);
-> >>>> +	ret = readl_relaxed_poll_timeout_atomic(fmc2->io_base + FMC2_SR,
-> >>>> +						sr, sr & FMC2_SR_NWRF, 1,
-> >>>> +						1000 * FMC2_TIMEOUT_MS);  
-> >>>
-> >>> Is the _atomic suffix needed here? If yes it would deserve a separate
-> >>> patch with Fixes/Stable tags.  
-> >>>    >>  
-> >> I have currently not seen any issues. So, I will remove this modification as we will move to regmap_read_poll_timeout in patch 10.
-> >>  
-> >>>>    	if (ret) {
-> >>>>    		dev_err(fmc2->dev, "ham timeout\n");
-> >>>>    		return ret;
-> >>>> @@ -1315,7 +1314,7 @@ static int stm32_fmc2_waitrdy(struct nand_chip *chip, unsigned long timeout_ms)
-> >>>>    	/* Check if there is no pending requests to the NAND flash */
-> >>>>    	if (readl_relaxed_poll_timeout_atomic(fmc2->io_base + FMC2_SR, sr,
-> >>>>    					      sr & FMC2_SR_NWRF, 1,
-> >>>> -					      FMC2_TIMEOUT_US))
-> >>>> +					      1000 * FMC2_TIMEOUT_MS))
-> >>>>    		dev_warn(fmc2->dev, "Waitrdy timeout\n");  
-> >>>>    >>   	/* Wait tWB before R/B# signal is low */  
-> >>>
-> >>> You change the timeouts from 1ms to 5s.
-> >>>
-> >>> Maybe 5s is a little bit too much IMHO but we don't really care as this
-> >>> is a timeout. However 1ms is tight. If you are changing this value
-> >>> because it triggers error (eg. when the machine is loaded), then it is
-> >>> a fix and should appear like it.
-> >>>
-> >>> Thanks,
-> >>> Miquèl  
-> >>>    >>  
-> >> No errors currently happens.
-> >> During our stress tests, in a overloaded system, we have seen that we could be close to 1 second, even if we never met this value.
-> >> So, to be safe, I have set this timeout to 5 seconds.
-> >> As it is just a timeout value, I have not seen any side effect.
-> >> I am using the same timeout constant to avoid to have one timeout per cases.  
-> > 
-> > Something is wrong in my mind:
-> > You say you observe delays of almost up to 1 second, but the polling
-> > currently happens on 1000 us = 1ms, either you had timeouts or I
-> > misread something?
-> > 
-> > Thanks,
-> > Miquèl
-> >   
+On Tue 28-04-20 19:27:00, Chris Down wrote:
+> mem_cgroup_protected currently is both used to set effective low and min
+> and return a mem_cgroup_protection based on the result. As a user, this
+> can be a little unexpected: it appears to be a simple predicate
+> function, if not for the big warning in the comment above about the
+> order in which it must be executed.
 > 
-> Hi Miquèl,
+> This change makes it so that we separate the state mutations from the
+> actual protection checks, which makes it more obvious where we need to
+> be careful mutating internal state, and where we are simply checking and
+> don't need to worry about that.
 > 
-> My fault. For this polling, we never met 1 ms.
-> The 1 second observed was on the sequencer when we read/write a page (as it the same timeout value that is used)
+> Signed-off-by: Chris Down <chris@chrisdown.name>
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Roman Gushchin <guro@fb.com>
+> Cc: Yafang Shao <laoar.shao@gmail.com>
 
-OK I get it. So perhaps you can give these details in the commit log to
-explain why you use 5 seconds instead of one.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Thanks,
-Miquèl
+> ---
+>  include/linux/memcontrol.h | 48 +++++++++++++++++++++++++++++---------
+>  mm/memcontrol.c            | 30 +++++++-----------------
+>  mm/vmscan.c                | 17 ++++----------
+>  3 files changed, 49 insertions(+), 46 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index d630af1a4e17..88576b1235b0 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -50,12 +50,6 @@ enum memcg_memory_event {
+>  	MEMCG_NR_MEMORY_EVENTS,
+>  };
+>  
+> -enum mem_cgroup_protection {
+> -	MEMCG_PROT_NONE,
+> -	MEMCG_PROT_LOW,
+> -	MEMCG_PROT_MIN,
+> -};
+> -
+>  struct mem_cgroup_reclaim_cookie {
+>  	pg_data_t *pgdat;
+>  	unsigned int generation;
+> @@ -357,8 +351,26 @@ static inline unsigned long mem_cgroup_protection(struct mem_cgroup *memcg,
+>  		   READ_ONCE(memcg->memory.elow));
+>  }
+>  
+> -enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+> -						struct mem_cgroup *memcg);
+> +void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+> +				     struct mem_cgroup *memcg);
+> +
+> +static inline bool mem_cgroup_below_low(struct mem_cgroup *memcg)
+> +{
+> +	if (mem_cgroup_disabled())
+> +		return false;
+> +
+> +	return READ_ONCE(memcg->memory.elow) >=
+> +		page_counter_read(&memcg->memory);
+> +}
+> +
+> +static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
+> +{
+> +	if (mem_cgroup_disabled())
+> +		return false;
+> +
+> +	return READ_ONCE(memcg->memory.emin) >=
+> +		page_counter_read(&memcg->memory);
+> +}
+>  
+>  int mem_cgroup_try_charge(struct page *page, struct mm_struct *mm,
+>  			  gfp_t gfp_mask, struct mem_cgroup **memcgp,
+> @@ -838,13 +850,27 @@ static inline void memcg_memory_event_mm(struct mm_struct *mm,
+>  static inline unsigned long mem_cgroup_protection(struct mem_cgroup *memcg,
+>  						  bool in_low_reclaim)
+>  {
+> +
+> +
+> +static inline void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+> +						   struct mem_cgroup *memcg);
+> +{
+> +}
+> +
+> +static inline void mem_cgroup_protection(struct mem_cgroup *memcg,
+> +					 bool in_low_reclaim)
+> +{
+>  	return 0;
+>  }
+>  
+> -static inline enum mem_cgroup_protection mem_cgroup_protected(
+> -	struct mem_cgroup *root, struct mem_cgroup *memcg)
+> +static inline bool mem_cgroup_below_low(struct mem_cgroup *memcg)
+> +{
+> +	return false;
+> +}
+> +
+> +static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
+>  {
+> -	return MEMCG_PROT_NONE;
+> +	return false;
+>  }
+>  
+>  static inline int mem_cgroup_try_charge(struct page *page, struct mm_struct *mm,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b0374be44e9e..317dbbaac603 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6368,27 +6368,21 @@ static unsigned long effective_protection(unsigned long usage,
+>  }
+>  
+>  /**
+> - * mem_cgroup_protected - check if memory consumption is in the normal range
+> + * mem_cgroup_calculate_protection - calculate and cache effective low and min
+>   * @root: the top ancestor of the sub-tree being checked
+>   * @memcg: the memory cgroup to check
+>   *
+>   * WARNING: This function is not stateless! It can only be used as part
+>   *          of a top-down tree iteration, not for isolated queries.
+> - *
+> - * Returns one of the following:
+> - *   MEMCG_PROT_NONE: cgroup memory is not protected
+> - *   MEMCG_PROT_LOW: cgroup memory is protected as long there is
+> - *     an unprotected supply of reclaimable memory from other cgroups.
+> - *   MEMCG_PROT_MIN: cgroup memory is protected
+>   */
+> -enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+> -						struct mem_cgroup *memcg)
+> +void mem_cgroup_calculate_protection(struct mem_cgroup *root,
+> +				     struct mem_cgroup *memcg)
+>  {
+>  	unsigned long usage, parent_usage;
+>  	struct mem_cgroup *parent;
+>  
+>  	if (mem_cgroup_disabled())
+> -		return MEMCG_PROT_NONE;
+> +		return;
+>  
+>  	if (!root)
+>  		root = root_mem_cgroup;
+> @@ -6403,22 +6397,22 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+>  		 */
+>  		WRITE_ONCE(memcg->memory.emin, 0);
+>  		WRITE_ONCE(memcg->memory.elow, 0);
+> -		return MEMCG_PROT_NONE;
+> +		return;
+>  	}
+>  
+>  	usage = page_counter_read(&memcg->memory);
+>  	if (!usage)
+> -		return MEMCG_PROT_NONE;
+> +		return;
+>  
+>  	parent = parent_mem_cgroup(memcg);
+>  	/* No parent means a non-hierarchical mode on v1 memcg */
+>  	if (!parent)
+> -		return MEMCG_PROT_NONE;
+> +		return;
+>  
+>  	if (parent == root) {
+>  		memcg->memory.emin = READ_ONCE(memcg->memory.min);
+>  		memcg->memory.elow = memcg->memory.low;
+> -		goto out;
+> +		return;
+>  	}
+>  
+>  	parent_usage = page_counter_read(&parent->memory);
+> @@ -6431,14 +6425,6 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+>  	WRITE_ONCE(memcg->memory.elow, effective_protection(usage, parent_usage,
+>  			memcg->memory.low, READ_ONCE(parent->memory.elow),
+>  			atomic_long_read(&parent->memory.children_low_usage)));
+> -
+> -out:
+> -	if (usage <= memcg->memory.emin)
+> -		return MEMCG_PROT_MIN;
+> -	else if (usage <= memcg->memory.elow)
+> -		return MEMCG_PROT_LOW;
+> -	else
+> -		return MEMCG_PROT_NONE;
+>  }
+>  
+>  /**
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 72ac38eb8c29..e913c4652341 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2645,14 +2645,15 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+>  		unsigned long reclaimed;
+>  		unsigned long scanned;
+>  
+> -		switch (mem_cgroup_protected(target_memcg, memcg)) {
+> -		case MEMCG_PROT_MIN:
+> +		mem_cgroup_calculate_protection(target_memcg, memcg);
+> +
+> +		if (mem_cgroup_below_min(memcg)) {
+>  			/*
+>  			 * Hard protection.
+>  			 * If there is no reclaimable memory, OOM.
+>  			 */
+>  			continue;
+> -		case MEMCG_PROT_LOW:
+> +		} else if (mem_cgroup_below_low(memcg)) {
+>  			/*
+>  			 * Soft protection.
+>  			 * Respect the protection only as long as
+> @@ -2664,16 +2665,6 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+>  				continue;
+>  			}
+>  			memcg_memory_event(memcg, MEMCG_LOW);
+> -			break;
+> -		case MEMCG_PROT_NONE:
+> -			/*
+> -			 * All protection thresholds breached. We may
+> -			 * still choose to vary the scan pressure
+> -			 * applied based on by how much the cgroup in
+> -			 * question has exceeded its protection
+> -			 * thresholds (see get_scan_count).
+> -			 */
+> -			break;
+>  		}
+>  
+>  		reclaimed = sc->nr_reclaimed;
+> -- 
+> 2.26.2
+
+-- 
+Michal Hocko
+SUSE Labs
