@@ -2,95 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753621BE589
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3C71BE58E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgD2Rmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 13:42:50 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:40896 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726524AbgD2Rmu (ORCPT
+        id S1727042AbgD2Rnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 13:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726423AbgD2Rns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 13:42:50 -0400
-Received: from [192.168.42.210] ([93.22.38.239])
-        by mwinf5d58 with ME
-        id Yhig2200R59bE5H03hig2Q; Wed, 29 Apr 2020 19:42:48 +0200
-X-ME-Helo: [192.168.42.210]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 29 Apr 2020 19:42:48 +0200
-X-ME-IP: 93.22.38.239
-Subject: Re: [PATCH] video: fbdev: pxa3xx_gcu: Fix some resource leak in an
- error handling path in 'pxa3xx_gcu_probe()'
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     b.zolnierkie@samsung.com, gregkh@linuxfoundation.org,
-        mpe@ellerman.id.au, zhenzhong.duan@gmail.com, arnd@arndb.de,
-        tglx@linutronix.de, eric.y.miao@gmail.com, daniel@caiaq.de,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20200429043438.96212-1-christophe.jaillet@wanadoo.fr>
- <20200429122538.GO2014@kadam>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <0db91149-fa85-6ec3-1787-d5effd41a1b9@wanadoo.fr>
-Date:   Wed, 29 Apr 2020 19:42:40 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 29 Apr 2020 13:43:48 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4F1C03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 10:43:47 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id o139so1686549ybc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 10:43:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GUC2c7qaVi26ZGKWMBOTx0/+sTgSLxjRbpYLLRvQLZ8=;
+        b=eDaVdQvJuHitoEvv+FFtbMIBRroVqMfU+tjQMg7aEAFoQXhmpRuh/lHszkEdf1X9Ub
+         g7lwqRZvjtB0MxIigoHP/vNgG+CJEejguqKc6KeSmi0+EUriGCbQSpkmGwV9yar5/wcC
+         aY/NtJqBYDBQA/i2Byf+FWNAEP+4rQCUAkCTDwsOfLp/qond8/X4YAH/2iO36WqrZjdY
+         QFGpQQqaMpHIox7oyDTVyFxj/VU2FnObbb58nUygQJxQw+Ng/ANauMMUHid6t69Y4bnM
+         k45+v52GS2sOYhPZUJNM7QCtNddYZPs3tWPBTrjgJpB7dlJxg+uQ+5tvyA7rK7mJ3fWx
+         kRHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GUC2c7qaVi26ZGKWMBOTx0/+sTgSLxjRbpYLLRvQLZ8=;
+        b=ujEEGoy55tGwTuFDIjCZMXSBYt79+QAY/e2SDjHB6Sm72fpzYVUtbdK7ETN27GpcXr
+         Kfhzr8XmxBKcEUkIX8F1KWQRbxV7SYHSg9vsRqLBzQnUAauD6gkEW37N9qXIKI05dQN1
+         9q5sgYst/mTx38YDfNV8wYRKvuV6BoNOcZqbwawFJSH1SgWOQTwm3OARz0BqiZ3mvK+Z
+         ANlOpxXkqJSNnEmeZJu1oyQ7atR6hZsHKu1tPm93Ts26DeER/HqdoW++ltMU1V/BNaMb
+         0f67l2ImeQn9U4SmXcsTZzE9gM6QQT09J0IrxWDcfHGdTimhKy/3JuVD0ryRMCA22bkp
+         pKtw==
+X-Gm-Message-State: AGi0PuZp/z+OFeY7sTaPdUtRdni9gyKrd1KfqdyiKu0GitjrQvX/nVX2
+        eLGk4Zu09yLaVtUBmmfdfR47Y+K8RLWFxpUaZCEZCQ==
+X-Google-Smtp-Source: APiQypJoFGf572jCZ3dzXxWizg4289lgkS/VM9I6VCpSem3gJ+VpZPZdvIkbHkxj2bDNFJedH6togd1L5mpn9UPYHQI=
+X-Received: by 2002:a25:4443:: with SMTP id r64mr53632222yba.41.1588182226158;
+ Wed, 29 Apr 2020 10:43:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200429122538.GO2014@kadam>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200319023101.82458-1-irogers@google.com> <20200323105939.GE1534489@krava>
+In-Reply-To: <20200323105939.GE1534489@krava>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 29 Apr 2020 10:43:31 -0700
+Message-ID: <CAP-5=fU4dUPwRA-XTw6B9Xtc5y7Z0jZzDHU=KFvNfbNXVsONkw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] perf parse-events: fix memory leaks found on parse_events
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 29/04/2020 à 14:25, Dan Carpenter a écrit :
-> On Wed, Apr 29, 2020 at 06:34:38AM +0200, Christophe JAILLET wrote:
->> If an error occurs in the loop where we call 'pxa3xx_gcu_add_buffer()',
->> any resource already allocated should be freed.
->>
->> In order to fix it, add a call to 'pxa3xx_gcu_free_buffers()' in the error
->> handling path, as already done in the remove function.
->>
->> Fixes: 364dbdf3b6c3 ("video: add driver for PXA3xx 2D graphics accelerator")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/video/fbdev/pxa3xx-gcu.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/video/fbdev/pxa3xx-gcu.c b/drivers/video/fbdev/pxa3xx-gcu.c
->> index 4279e13a3b58..68d9c7a681d4 100644
->> --- a/drivers/video/fbdev/pxa3xx-gcu.c
->> +++ b/drivers/video/fbdev/pxa3xx-gcu.c
->> @@ -675,6 +675,7 @@ static int pxa3xx_gcu_probe(struct platform_device *pdev)
->>   
->>   err_disable_clk:
->>   	clk_disable_unprepare(priv->clk);
->> +	pxa3xx_gcu_free_buffers(dev, priv);
-> The error handling in this function makes no sense and is buggy.  It
-> should be that it unwinds in the reverse order from the allocation.  The
-> goto should be "goto free_most_recently_allocated_resource;".  Since the
-> unwind is done in the wrong order it causes a couple bugs.
+On Mon, Mar 23, 2020 at 3:59 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> These buffers are the last thing which we allocated so they should be
-> the first thing which we free.  In this case, calling
-> pxa3xx_gcu_free_buffers() before the buffers are allocated is confusing
-> but harmless.  The clk_disable_unprepare() is done on some paths where
-> the clock was not enabled and that will trigger a WARN() so that's a
-> bug.  Syzcaller will complain and if you have reboot on WARN then it's
-> annoying.
+> On Wed, Mar 18, 2020 at 07:31:00PM -0700, Ian Rogers wrote:
+> > Memory leaks found by applying LLVM's libfuzzer on the parse_events
+> > function.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 >
-> The second bug is that we don't deregister the misc device or release
-> the DMA memory on failure when we allocate the buffers in the loop.
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 >
-> regards,
-> dan carpenter
+> thanks,
+> jirka
+
+Ping.
+
+> > ---
+> >  tools/perf/util/parse-events.c | 2 ++
+> >  tools/perf/util/parse-events.y | 3 ++-
+> >  2 files changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+> > index 593b6b03785d..1e0bec5c0846 100644
+> > --- a/tools/perf/util/parse-events.c
+> > +++ b/tools/perf/util/parse-events.c
+> > @@ -1482,6 +1482,8 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
+> >
+> >               list_for_each_entry_safe(pos, tmp, &config_terms, list) {
+> >                       list_del_init(&pos->list);
+> > +                     if (pos->free_str)
+> > +                             free(pos->val.str);
+> >                       free(pos);
+> >               }
+> >               return -EINVAL;
+> > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+> > index 94f8bcd83582..8212cc771667 100644
+> > --- a/tools/perf/util/parse-events.y
+> > +++ b/tools/perf/util/parse-events.y
+> > @@ -44,7 +44,7 @@ static void free_list_evsel(struct list_head* list_evsel)
+> >
+> >       list_for_each_entry_safe(evsel, tmp, list_evsel, core.node) {
+> >               list_del_init(&evsel->core.node);
+> > -             perf_evsel__delete(evsel);
+> > +             evsel__delete(evsel);
+> >       }
+> >       free(list_evsel);
+> >  }
+> > @@ -326,6 +326,7 @@ PE_NAME opt_pmu_config
+> >       }
+> >       parse_events_terms__delete($2);
+> >       parse_events_terms__delete(orig_terms);
+> > +     free(pattern);
+> >       free($1);
+> >       $$ = list;
+> >  #undef CLEANUP_YYABORT
+> > --
+> > 2.25.1.696.g5e7596f4ac-goog
+> >
 >
-Agreed. I've been a little too fast on this one.
-I'll update it.
-
-Thx for the review.
-
-CJ
-
-
