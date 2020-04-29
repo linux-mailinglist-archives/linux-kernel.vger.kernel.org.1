@@ -2,202 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270D31BDF40
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E3F1BDF10
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728653AbgD2Nlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:41:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
+        id S1727908AbgD2NkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727047AbgD2NhA (ORCPT
+        with ESMTP id S1727918AbgD2Nhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:00 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF01C03C1AD;
-        Wed, 29 Apr 2020 06:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=bOEbKIsQIFnCtSDYQkNPerOlNIh4Nn7TrV9caXzQimA=; b=tmNyVBN5wFfv8upzxj5VjRpHh2
-        uckdawMPejrJi+vyScItinIu/HXlQe0TdhyOgr8Cs/m2qk/tbygMa3YM7tbRq1LyMrEWfwZtOWiX/
-        GQNXJ3Q2UqNnuf6aGU9VlHfRDadqv4WyFRF8F6LICdZp/Jq/PUXs8IJS09FcolnFxHA52vnqeFLf5
-        UG3afY1rxFd72OPbhnn3GGkghiLFrQwmOUA537UNVjuLSzZ31ttw4Be6u6d7aIket5PkKOCU2duBs
-        Lc44PXdeOAohIzGA+uGnMT1G1LUU6m1ttGUG1IEXY9gbL5iQn9FL6Lh3sJ3ywDS93pXvoV3xKnYUx
-        xLBAyJBQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTmtX-0005va-Hr; Wed, 29 Apr 2020 13:36:59 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 13/25] iomap: Support large pages in write paths
-Date:   Wed, 29 Apr 2020 06:36:45 -0700
-Message-Id: <20200429133657.22632-14-willy@infradead.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
-References: <20200429133657.22632-1-willy@infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 29 Apr 2020 09:37:43 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C74C03C1AE;
+        Wed, 29 Apr 2020 06:37:43 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 9FB358A8; Wed, 29 Apr 2020 15:37:36 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH v3 07/34] iommu: Add probe_device() and release_device() call-backs
+Date:   Wed, 29 Apr 2020 15:36:45 +0200
+Message-Id: <20200429133712.31431-8-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
+References: <20200429133712.31431-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+From: Joerg Roedel <jroedel@suse.de>
 
-Use thp_size() instead of PAGE_SIZE and offset_in_thp() instead of
-offset_in_page().  Also simplify the logic in iomap_do_writepage()
-for determining end of file.
+Add call-backs to 'struct iommu_ops' as an alternative to the
+add_device() and remove_device() call-backs, which will be removed when
+all drivers are converted.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+The new call-backs will not setup IOMMU groups and domains anymore,
+so also add a probe_finalize() call-back where the IOMMU driver can do
+per-device setup work which require the device to be set up with a
+group and a domain.
+
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- fs/iomap/buffered-io.c | 43 +++++++++++++++++++++++-------------------
- 1 file changed, 24 insertions(+), 19 deletions(-)
+ drivers/iommu/iommu.c | 63 ++++++++++++++++++++++++++++++++++++++-----
+ include/linux/iommu.h |  9 +++++++
+ 2 files changed, 66 insertions(+), 6 deletions(-)
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 75f42c0d4cd9..709be90a1997 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -466,7 +466,7 @@ iomap_is_partially_uptodate(struct page *page, unsigned long from,
- 	unsigned i;
- 
- 	/* Limit range to one page */
--	len = min_t(unsigned, PAGE_SIZE - from, count);
-+	len = min_t(unsigned, thp_size(page) - from, count);
- 
- 	/* First and last blocks in range within page */
- 	first = from >> inode->i_blkbits;
-@@ -510,7 +510,7 @@ iomap_invalidatepage(struct page *page, unsigned int offset, unsigned int len)
- 	 * If we are invalidating the entire page, clear the dirty state from it
- 	 * and release it to avoid unnecessary buildup of the LRU.
- 	 */
--	if (offset == 0 && len == PAGE_SIZE) {
-+	if (offset == 0 && len == thp_size(page)) {
- 		WARN_ON_ONCE(PageWriteback(page));
- 		cancel_dirty_page(page);
- 		iomap_page_release(page);
-@@ -586,7 +586,9 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 	loff_t block_size = i_blocksize(inode);
- 	loff_t block_start = pos & ~(block_size - 1);
- 	loff_t block_end = (pos + len + block_size - 1) & ~(block_size - 1);
--	unsigned from = offset_in_page(pos), to = from + len, poff, plen;
-+	unsigned from = offset_in_thp(page, pos);
-+	unsigned to = from + len;
-+	unsigned poff, plen;
- 	int status;
- 
- 	if (PageUptodate(page))
-@@ -718,7 +720,7 @@ __iomap_write_end(struct inode *inode, loff_t pos, unsigned len,
- 	 */
- 	if (unlikely(copied < len && !PageUptodate(page)))
- 		return 0;
--	iomap_set_range_uptodate(page, offset_in_page(pos), len);
-+	iomap_set_range_uptodate(page, offset_in_thp(page, pos), len);
- 	iomap_set_page_dirty(page);
- 	return copied;
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 5877abd9b693..6cfe7799dc8c 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -174,6 +174,36 @@ static void dev_iommu_free(struct device *dev)
+ 	dev->iommu = NULL;
  }
-@@ -793,6 +795,10 @@ iomap_write_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 		unsigned long bytes;	/* Bytes to write to page */
- 		size_t copied;		/* Bytes copied from user */
  
-+		/*
-+		 * XXX: We don't know what size page we'll find in the
-+		 * page cache, so only copy up to a regular page boundary.
-+		 */
- 		offset = offset_in_page(pos);
- 		bytes = min_t(unsigned long, PAGE_SIZE - offset,
- 						iov_iter_count(i));
-@@ -1335,7 +1341,7 @@ iomap_add_to_ioend(struct inode *inode, loff_t offset, struct page *page,
++static int __iommu_probe_device(struct device *dev)
++{
++	const struct iommu_ops *ops = dev->bus->iommu_ops;
++	struct iommu_device *iommu_dev;
++	struct iommu_group *group;
++	int ret;
++
++	iommu_dev = ops->probe_device(dev);
++	if (IS_ERR(iommu_dev))
++		return PTR_ERR(iommu_dev);
++
++	dev->iommu->iommu_dev = iommu_dev;
++
++	group = iommu_group_get_for_dev(dev);
++	if (!IS_ERR(group)) {
++		ret = PTR_ERR(group);
++		goto out_release;
++	}
++	iommu_group_put(group);
++
++	iommu_device_link(iommu_dev, dev);
++
++	return 0;
++
++out_release:
++	ops->release_device(dev);
++
++	return ret;
++}
++
+ int iommu_probe_device(struct device *dev)
  {
- 	sector_t sector = iomap_sector(&wpc->iomap, offset);
- 	unsigned len = i_blocksize(inode);
--	unsigned poff = offset & (PAGE_SIZE - 1);
-+	unsigned poff = offset & (thp_size(page) - 1);
- 	bool merged, same_page = false;
- 
- 	if (!wpc->ioend || !iomap_can_add_to_ioend(wpc, offset, sector)) {
-@@ -1385,11 +1391,12 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
- 	struct iomap_page *iop = to_iomap_page(page);
- 	struct iomap_ioend *ioend, *next;
- 	unsigned len = i_blocksize(inode);
--	u64 file_offset; /* file offset of page */
-+	loff_t pos;
- 	int error = 0, count = 0, i;
-+	int nr_blocks = i_blocks_per_page(inode, page);
- 	LIST_HEAD(submit_list);
- 
--	WARN_ON_ONCE(i_blocks_per_page(inode, page) > 1 && !iop);
-+	WARN_ON_ONCE(nr_blocks > 1 && !iop);
- 	WARN_ON_ONCE(iop && atomic_read(&iop->write_count) != 0);
- 
- 	/*
-@@ -1397,20 +1404,20 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
- 	 * end of the current map or find the current map invalid, grab a new
- 	 * one.
- 	 */
--	for (i = 0, file_offset = page_offset(page);
--	     i < (PAGE_SIZE >> inode->i_blkbits) && file_offset < end_offset;
--	     i++, file_offset += len) {
-+	for (i = 0, pos = page_offset(page);
-+	     i < nr_blocks && pos < end_offset;
-+	     i++, pos += len) {
- 		if (iop && !test_bit(i, iop->uptodate))
- 			continue;
- 
--		error = wpc->ops->map_blocks(wpc, inode, file_offset);
-+		error = wpc->ops->map_blocks(wpc, inode, pos);
- 		if (error)
- 			break;
- 		if (WARN_ON_ONCE(wpc->iomap.type == IOMAP_INLINE))
- 			continue;
- 		if (wpc->iomap.type == IOMAP_HOLE)
- 			continue;
--		iomap_add_to_ioend(inode, file_offset, page, iop, wpc, wbc,
-+		iomap_add_to_ioend(inode, pos, page, iop, wpc, wbc,
- 				 &submit_list);
- 		count++;
+ 	const struct iommu_ops *ops = dev->bus->iommu_ops;
+@@ -191,10 +221,17 @@ int iommu_probe_device(struct device *dev)
+ 		goto err_free_dev_param;
  	}
-@@ -1492,7 +1499,6 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
+ 
+-	ret = ops->add_device(dev);
++	if (ops->probe_device)
++		ret = __iommu_probe_device(dev);
++	else
++		ret = ops->add_device(dev);
++
+ 	if (ret)
+ 		goto err_module_put;
+ 
++	if (ops->probe_finalize)
++		ops->probe_finalize(dev);
++
+ 	return 0;
+ 
+ err_module_put:
+@@ -204,17 +241,31 @@ int iommu_probe_device(struct device *dev)
+ 	return ret;
+ }
+ 
++static void __iommu_release_device(struct device *dev)
++{
++	const struct iommu_ops *ops = dev->bus->iommu_ops;
++
++	iommu_device_unlink(dev->iommu->iommu_dev, dev);
++
++	iommu_group_remove_device(dev);
++
++	ops->release_device(dev);
++}
++
+ void iommu_release_device(struct device *dev)
  {
- 	struct iomap_writepage_ctx *wpc = data;
- 	struct inode *inode = page->mapping->host;
--	pgoff_t end_index;
- 	u64 end_offset;
- 	loff_t offset;
+ 	const struct iommu_ops *ops = dev->bus->iommu_ops;
  
-@@ -1533,10 +1539,8 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
- 	 * ---------------------------------^------------------|
- 	 */
- 	offset = i_size_read(inode);
--	end_index = offset >> PAGE_SHIFT;
--	if (page->index < end_index)
--		end_offset = (loff_t)(page->index + 1) << PAGE_SHIFT;
--	else {
-+	end_offset = page_offset(page) + thp_size(page);
-+	if (end_offset > offset) {
- 		/*
- 		 * Check whether the page to write out is beyond or straddles
- 		 * i_size or not.
-@@ -1548,7 +1552,8 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
- 		 * |				    |      Straddles     |
- 		 * ---------------------------------^-----------|--------|
- 		 */
--		unsigned offset_into_page = offset & (PAGE_SIZE - 1);
-+		unsigned offset_into_page = offset_in_thp(page, offset);
-+		pgoff_t end_index = offset >> PAGE_SHIFT;
+-	if (dev->iommu_group)
++	if (!dev->iommu)
++		return;
++
++	if (ops->release_device)
++		__iommu_release_device(dev);
++	else if (dev->iommu_group)
+ 		ops->remove_device(dev);
  
- 		/*
- 		 * Skip the page if it is fully outside i_size, e.g. due to a
-@@ -1579,7 +1584,7 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
- 		 * memory is zeroed when mapped, and writes to that region are
- 		 * not written out to the file."
- 		 */
--		zero_user_segment(page, offset_into_page, PAGE_SIZE);
-+		zero_user_segment(page, offset_into_page, thp_size(page));
+-	if (dev->iommu) {
+-		module_put(ops->owner);
+-		dev_iommu_free(dev);
+-	}
++	module_put(ops->owner);
++	dev_iommu_free(dev);
+ }
  
- 		/* Adjust the end_offset to the end of file */
- 		end_offset = offset;
+ static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 1f027b07e499..30170d191e5e 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -225,6 +225,10 @@ struct iommu_iotlb_gather {
+  * @iova_to_phys: translate iova to physical address
+  * @add_device: add device to iommu grouping
+  * @remove_device: remove device from iommu grouping
++ * @probe_device: Add device to iommu driver handling
++ * @release_device: Remove device from iommu driver handling
++ * @probe_finalize: Do final setup work after the device is added to an IOMMU
++ *                  group and attached to the groups domain
+  * @device_group: find iommu group for a particular device
+  * @domain_get_attr: Query domain attributes
+  * @domain_set_attr: Change domain attributes
+@@ -275,6 +279,9 @@ struct iommu_ops {
+ 	phys_addr_t (*iova_to_phys)(struct iommu_domain *domain, dma_addr_t iova);
+ 	int (*add_device)(struct device *dev);
+ 	void (*remove_device)(struct device *dev);
++	struct iommu_device *(*probe_device)(struct device *dev);
++	void (*release_device)(struct device *dev);
++	void (*probe_finalize)(struct device *dev);
+ 	struct iommu_group *(*device_group)(struct device *dev);
+ 	int (*domain_get_attr)(struct iommu_domain *domain,
+ 			       enum iommu_attr attr, void *data);
+@@ -375,6 +382,7 @@ struct iommu_fault_param {
+  *
+  * @fault_param: IOMMU detected device fault reporting data
+  * @fwspec:	 IOMMU fwspec data
++ * @iommu_dev:	 IOMMU device this device is linked to
+  * @priv:	 IOMMU Driver private data
+  *
+  * TODO: migrate other per device data pointers under iommu_dev_data, e.g.
+@@ -384,6 +392,7 @@ struct dev_iommu {
+ 	struct mutex lock;
+ 	struct iommu_fault_param	*fault_param;
+ 	struct iommu_fwspec		*fwspec;
++	struct iommu_device		*iommu_dev;
+ 	void				*priv;
+ };
+ 
 -- 
-2.26.2
+2.17.1
 
