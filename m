@@ -2,263 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454481BDCC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADB31BDCEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgD2M4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 08:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726822AbgD2M4y (ORCPT
+        id S1727023AbgD2NAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:00:44 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:49204 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726516AbgD2NAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 08:56:54 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE045C03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 05:56:53 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g13so2383884wrb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 05:56:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=XYk/cAtFVHXNtNHbOE2qkoNRhInGbwIFRUiqQNZ88tg=;
-        b=a8f8v67xBBbbpVhP2ojbET/hNZ3Ft77EH/K9RBJwH5wAvLfAJLqRVT2ulzFZaaZIXy
-         onGt6EFhq3iuy6nIXexzHVJYzYcfkkAzA+6SpfXAI9RskOGq/pXoz/AD1jwiEyky4/79
-         cxN3FZXm6gJdqOutPm09CdS5OKpF0APItnoMKKPFV8iMzX8znQ7mOuLK7eN32qZaIq1m
-         I/t/KNO7kcR6EGvWH/GWCPerfPLZ/n8tiwz8b+DGInDvsumojtLJWfmr5OknjMByR14R
-         QEPY87GcCzIsXU+Jyq5pHfSEPN6fmtm9kCGBigAdgAJRd7EN5XMvzhSIaRUL89Xgmmo6
-         /1nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XYk/cAtFVHXNtNHbOE2qkoNRhInGbwIFRUiqQNZ88tg=;
-        b=VjTpxl5yQx0yI1u3IxHVfmLBMW3BtHe5PsHhDWsqbB200FuNqhK3KhceXZDhExEqTP
-         giluGpQpAa2GOpuin3+q0A3JglrxDkNfEHQXdhUPtOBhXx37O7m5BZ5guunL5I2Ybzfm
-         Afwa+Ht56zAV1L8z3hmsUmQagq6v71MEiZxriSmU5otHVF0rky1suFaCpgMWaekYRuPM
-         Tc5zHwxJST46RLdAIhiklYj/3tuI5BYGMuSDR+r98qBwi28fASbt01fZljuwty2KUJv6
-         HJmSwPdno1IZUUlL43fS5pFxomKCls+Sv1Vo83sejEL8bISQr/jjW3Akg/DDBj4zlWJp
-         EXLA==
-X-Gm-Message-State: AGi0Pua5GcHQPQFtcmqjh0o1kTaLDGYusallNZBlZNwh9p2ZuuaiJ8XE
-        rgfRqCPOAVt3FmSPV2CrGQQG4w==
-X-Google-Smtp-Source: APiQypJwsQvNohta1HoBo/PvRb08fLLD2gpABkAb6Dkt6t7shvmXZLPP92iCaOUixL+dKtyh4Me/Cg==
-X-Received: by 2002:adf:a309:: with SMTP id c9mr36694231wrb.97.1588165012332;
-        Wed, 29 Apr 2020 05:56:52 -0700 (PDT)
-Received: from x1 (i59F66838.versanet.de. [89.246.104.56])
-        by smtp.gmail.com with ESMTPSA id h13sm28683465wrs.22.2020.04.29.05.56.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 05:56:51 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 14:57:36 +0200
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Subject: Re: [PATCH] arm: dts: am33xx-l4: add gpio-line-names to gpio
- controllers
-Message-ID: <20200429125736.GA31476@x1>
-References: <20200427233116.GA18917@x1>
- <b15f2577-8a7d-4c18-1633-d47133247f49@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b15f2577-8a7d-4c18-1633-d47133247f49@ti.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Wed, 29 Apr 2020 09:00:43 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200429130040epoutp03a370fb86393d6332c04504b70738913e~KS98wms6n0144201442epoutp03c
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 13:00:40 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200429130040epoutp03a370fb86393d6332c04504b70738913e~KS98wms6n0144201442epoutp03c
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1588165240;
+        bh=uRUQIukj/rCNvkl85MJQQAAdTNwuw5HToUOLXDyKcto=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=T4sqCGUzHY/+1xE0AMFIHTIMs/jwRCmy+JwKB/RR77HHVEO3hM6bKFATlgQR64WMn
+         zKekYepMRK9xHtcylI2+cl+i5dttYn4XO9/bT8V9N25c7lAdrAPjZvd7Ge0MUM4tj+
+         pvmUTPwnuOO+Y4IXphQaDgU34uaBNSsa6xpxiw5k=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20200429130039epcas5p470bbeef7ad11480f89fa277a75c3962b~KS97pOyMb2186221862epcas5p4y;
+        Wed, 29 Apr 2020 13:00:39 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7D.B7.04736.77A79AE5; Wed, 29 Apr 2020 22:00:39 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200429125853epcas5p494c3f081a7610f42d293d08d3daf7dee~KS8YqyYRZ2186621866epcas5p4s;
+        Wed, 29 Apr 2020 12:58:53 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200429125853epsmtrp26ad7c606db305c51d9789c49d6986b0c~KS8YqD1jL0566405664epsmtrp2E;
+        Wed, 29 Apr 2020 12:58:53 +0000 (GMT)
+X-AuditID: b6c32a4b-ae3ff70000001280-f5-5ea97a77ce9c
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        35.C1.18461.C0A79AE5; Wed, 29 Apr 2020 21:58:52 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.109.224.135]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200429125851epsmtip2dcccc7be7bfe1d8beeed5d185cdae578~KS8XPA4fA2342223422epsmtip2H;
+        Wed, 29 Apr 2020 12:58:51 +0000 (GMT)
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     mhocko@suse.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        a.sahrawat@samsung.com, v.narang@samsung.com,
+        Maninder Singh <maninder1.s@samsung.com>
+Subject: [PATCH v2] mm/vmscan.c: change prototype for shrink_page_list
+Date:   Wed, 29 Apr 2020 18:28:34 +0530
+Message-Id: <1588165114-24954-1-git-send-email-maninder1.s@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKIsWRmVeSWpSXmKPExsWy7bCmhm551co4g1c7hC0u7k61mLN+DZvF
+        5V1z2CzurfnPanF4fhuLxf0+B4tDJ+cyOrB7bPo0id3jxIzfLB59W1YxeqzfcpXF4/MmuQDW
+        KC6blNSczLLUIn27BK6Mjfs/MBWskq+Yu+AJewPjNMkuRk4OCQETiaNXD7N0MXJxCAnsZpS4
+        N+s0K4TziVHi6t6vUJlvjBLrdh1kgmm5ffUOVGIvo8S110/ZIJyvjBLTTzSzgVSxCehJrNq1
+        B6iKg0MEyP7zRAekhllgAqPE8V07GEFqhAXcJK79eMsKYrMIqErMufSCHaSeV8Bd4tTTIohl
+        chI3z3Uyg/RKCKxjl9i2s5kZIuEiMXXpEUYIW1ji1fEt7BC2lMTnd3vZIBqaGSU+7VvLCOFM
+        YZRYevEjK0SVvcTr5gYmkG3MApoS63fpQ4RlJaaeWgf2JrMAn0Tv7ydQL/NK7JgHY6tKtNzc
+        ADVGWuLzx48sELaHRPfrg2BHCAnESjRMm8IygVF2FsKGBYyMqxglUwuKc9NTi00LjPNSy/WK
+        E3OLS/PS9ZLzczcxgiNfy3sH46ZzPocYBTgYlXh4LVJXxgmxJpYVV+YeYpTgYFYS4X2UsSxO
+        iDclsbIqtSg/vqg0J7X4EKM0B4uSOK8WI1C1QHpiSWp2ampBahFMlomDU6qBUZs1/8yS5Tb7
+        v24K5blWNv/S057/vwoinga2uf14uO3vBPNgHalb+02+Ld3s46TaEGoyOea+/dOvwl1FfBE/
+        Ugu8Vyvz8L8/f8VFqDH5bUwsz26H3T2vo79umj7Fqoux4Ev4V6kasceuUxfad/yaUvXnT8j9
+        fct+LbJyNCy1EjNbV+see0F/jxJLcUaioRZzUXEiAEpw86r4AgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLJMWRmVeSWpSXmKPExsWy7bCSvC5P1co4gy0nrC0u7k61mLN+DZvF
+        5V1z2CzurfnPanF4fhuLxf0+B4tDJ+cyOrB7bPo0id3jxIzfLB59W1YxeqzfcpXF4/MmuQDW
+        KC6blNSczLLUIn27BK6Mjfs/MBWskq+Yu+AJewPjNMkuRk4OCQETidtX77B0MXJxCAnsZpTo
+        vjyJDSIhLfHz33sWCFtYYuW/5+wQRZ8ZJea/3AlWxCagJ7Fq1x6wIhEBA4lTc1YwgRQxC0xh
+        lGhY9I8JJCEs4CZx7cdbVhCbRUBVYs6lF0CTODh4BdwlTj0tglggJ3HzXCfzBEaeBYwMqxgl
+        UwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLzczcxgkNIS3MH4/ZVH/QOMTJxMB5ilOBgVhLhfZSx
+        LE6INyWxsiq1KD++qDQntfgQozQHi5I4743ChXFCAumJJanZqakFqUUwWSYOTqkGpgUSr7+t
+        KPwtpjPb+shND4HYKWclZjFotN1cX/tvS2j/TA3/A3dk9R0FZe58EZkuzzkvhcOpTOeZ3EnJ
+        4EMVL7J1fZYtM/8Q03hLw2hW3GSRrACxBetVrN+frSoQWjHlbOyHO2kZPlKN36Z/nxL3/W2I
+        qLHLMouQr9tePTsz/VB9TN4Cy7qZEfcX1y0puf+prPKp455jhZEbUlM6r3DdZdNSf64a7uZ2
+        ZUbhbYVZ0Vuyz132UApxnhBwnP+3cqRd3rdbtycFyhjJ8tnfW5CwsPa7Z5ZeVozZbUZhP+WI
+        BGaDl22pR3Rd2/+vm7DQPX7LiT5dq1v5Vz59ik2cv+Ha96NcIjUmrx7a9DXrbOvkUWIpzkg0
+        1GIuKk4EALOun0qQAgAA
+X-CMS-MailID: 20200429125853epcas5p494c3f081a7610f42d293d08d3daf7dee
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200429125853epcas5p494c3f081a7610f42d293d08d3daf7dee
+References: <CGME20200429125853epcas5p494c3f081a7610f42d293d08d3daf7dee@epcas5p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 10:37:43AM +0300, Grygorii Strashko wrote:
-> 
-> 
-> On 28/04/2020 02:31, Drew Fustini wrote:
-> > Add gpio-line-names properties to the gpio controller nodes.  The names
-> > correspond to the AM335x pin names which are also the muxmode 0 signal
-> > names.  Refer to "Table 4-2. Pin Attributes" in the TI AM335x Sitara
-> > Processors datasheet:
-> This misuse GPIO DT bindings:
-> "
-> Optionally, a GPIO controller may have a "gpio-line-names" property. This is
-> an array of strings defining the names of the GPIO lines going out of the
-> GPIO controller. This name should be the most meaningful producer name
-> for the system, such as a rail name indicating the usage. Package names
-> such as pin name are discouraged: such lines have opaque names (since they
-> are by definition generic purpose) and such names are usually not very
-> helpful. For example "MMC-CD", "Red LED Vdd" and "ethernet reset" are
-> reasonable line names as they describe what the line is used for. "GPIO0"
-> is not a good name to give to a GPIO line. Placeholders are discouraged:
-> rather use the "" (blank string) if the use of the GPIO line is undefined
-> in your design. The names are assigned starting from line offset 0 from
-> left to right from the passed array. An incomplete array (where the number
-> of passed named are less than ngpios) will still be used up until the last
-> provided valid line index.
-> "
+'commit 3c710c1ad11b ("mm, vmscan:
+extract shrink_page_list reclaim counters into a struct")'
 
-Thank you for pointing out that "Package names such as pin name are
-discouraged".  That is what I was doing in that patch which I now
-realize is incorrect.
+changed data type for the function,
+so changing return type for funciton and its caller.
 
-The goal to adding the gpio-line-names was to have gpioinfo provide
-helpful information to a user on the BeagleBone.  Currently this is all
-that appears when booting 5.7-rc2 on a BegaleBone:
+Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+---
+v1 -> v2: position of variable changed mistakenly, reverted.
 
-debian@beaglebone:~$ gpioinfo
-gpiochip0 - 32 lines:
-	line   0:      unnamed       unused   input  active-high
-	line   1:      unnamed       unused   input  active-high
-	line   2:      unnamed       unused   input  active-high
-	line   3:      unnamed       unused   input  active-high
-	line   4:      unnamed       unused   input  active-high
-	line   5:      unnamed       unused   input  active-high
-	line   6:      unnamed         "cd"   input   active-low [used]
-	line   7:      unnamed       unused   input  active-high
-	line   8:      unnamed       unused   input  active-high
-	line   9:      unnamed       unused   input  active-high
-	line  10:      unnamed       unused   input  active-high
-	line  11:      unnamed       unused   input  active-high
-	line  12:      unnamed       unused   input  active-high
-	line  13:      unnamed       unused   input  active-high
-	line  14:      unnamed       unused   input  active-high
-	line  15:      unnamed       unused   input  active-high
-	line  16:      unnamed       unused   input  active-high
-	line  17:      unnamed       unused   input  active-high
-	line  18:      unnamed       unused   input  active-high
-	line  19:      unnamed       unused   input  active-high
-	line  20:      unnamed       unused   input  active-high
-	line  21:      unnamed       unused   input  active-high
-	line  22:      unnamed       unused   input  active-high
-	line  23:      unnamed       unused   input  active-high
-	line  24:      unnamed       unused   input  active-high
-	line  25:      unnamed       unused   input  active-high
-	line  26:      unnamed       unused   input  active-high
-	line  27:      unnamed       unused   input  active-high
-	line  28:      unnamed       unused   input  active-high
-	line  29:      unnamed       unused   input  active-high
-	line  30:      unnamed       unused   input  active-high
-	line  31:      unnamed       unused   input  active-high
-gpiochip1 - 32 lines:
-	line   0:      unnamed       unused   input  active-high
-	line   1:      unnamed       unused   input  active-high
-	line   2:      unnamed       unused   input  active-high
-	line   3:      unnamed       unused   input  active-high
-	line   4:      unnamed       unused   input  active-high
-	line   5:      unnamed       unused   input  active-high
-	line   6:      unnamed       unused   input  active-high
-	line   7:      unnamed       unused   input  active-high
-	line   8:      unnamed       unused   input  active-high
-	line   9:      unnamed       unused   input  active-high
-	line  10:      unnamed       unused   input  active-high
-	line  11:      unnamed       unused   input  active-high
-	line  12:      unnamed       unused   input  active-high
-	line  13:      unnamed       unused   input  active-high
-	line  14:      unnamed       unused   input  active-high
-	line  15:      unnamed       unused   input  active-high
-	line  16:      unnamed       unused   input  active-high
-	line  17:      unnamed       unused   input  active-high
-	line  18:      unnamed       unused   input  active-high
-	line  19:      unnamed       unused   input  active-high
-	line  20:      unnamed       unused   input  active-high
-	line  21:      unnamed "beaglebone:green:usr0" output active-high [used]
-	line  22:      unnamed "beaglebone:green:usr1" output active-high [used]
-	line  23:      unnamed "beaglebone:green:usr2" output active-high [used]
-	line  24:      unnamed "beaglebone:green:usr3" output active-high [used]
-	line  25:      unnamed       unused   input  active-high
-	line  26:      unnamed       unused   input  active-high
-	line  27:      unnamed       unused   input  active-high
-	line  28:      unnamed       unused   input  active-high
-	line  29:      unnamed       unused   input  active-high
-	line  30:      unnamed       unused   input  active-high
-	line  31:      unnamed       unused   input  active-high
-gpiochip2 - 32 lines:
-	line   0:      unnamed       unused   input  active-high
-	line   1:      unnamed       unused   input  active-high
-	line   2:      unnamed       unused   input  active-high
-	line   3:      unnamed       unused   input  active-high
-	line   4:      unnamed       unused   input  active-high
-	line   5:      unnamed       unused   input  active-high
-	line   6:      unnamed       unused   input  active-high
-	line   7:      unnamed       unused   input  active-high
-	line   8:      unnamed       unused   input  active-high
-	line   9:      unnamed       unused   input  active-high
-	line  10:      unnamed       unused   input  active-high
-	line  11:      unnamed       unused   input  active-high
-	line  12:      unnamed       unused   input  active-high
-	line  13:      unnamed       unused   input  active-high
-	line  14:      unnamed       unused   input  active-high
-	line  15:      unnamed       unused   input  active-high
-	line  16:      unnamed       unused   input  active-high
-	line  17:      unnamed       unused   input  active-high
-	line  18:      unnamed       unused   input  active-high
-	line  19:      unnamed       unused   input  active-high
-	line  20:      unnamed       unused   input  active-high
-	line  21:      unnamed       unused   input  active-high
-	line  22:      unnamed       unused   input  active-high
-	line  23:      unnamed       unused   input  active-high
-	line  24:      unnamed       unused   input  active-high
-	line  25:      unnamed       unused   input  active-high
-	line  26:      unnamed       unused   input  active-high
-	line  27:      unnamed       unused   input  active-high
-	line  28:      unnamed       unused   input  active-high
-	line  29:      unnamed       unused   input  active-high
-	line  30:      unnamed       unused   input  active-high
-	line  31:      unnamed       unused   input  active-high
-gpiochip3 - 32 lines:
-	line   0:      unnamed       unused   input  active-high
-	line   1:      unnamed       unused   input  active-high
-	line   2:      unnamed       unused   input  active-high
-	line   3:      unnamed       unused   input  active-high
-	line   4:      unnamed       unused   input  active-high
-	line   5:      unnamed       unused   input  active-high
-	line   6:      unnamed       unused   input  active-high
-	line   7:      unnamed       unused   input  active-high
-	line   8:      unnamed       unused   input  active-high
-	line   9:      unnamed       unused   input  active-high
-	line  10:      unnamed       unused   input  active-high
-	line  11:      unnamed       unused   input  active-high
-	line  12:      unnamed       unused   input  active-high
-	line  13:      unnamed       unused   input  active-high
-	line  14:      unnamed       unused   input  active-high
-	line  15:      unnamed       unused   input  active-high
-	line  16:      unnamed       unused   input  active-high
-	line  17:      unnamed       unused   input  active-high
-	line  18:      unnamed       unused   input  active-high
-	line  19:      unnamed       unused   input  active-high
-	line  20:      unnamed       unused   input  active-high
-	line  21:      unnamed       unused   input  active-high
-	line  22:      unnamed       unused   input  active-high
-	line  23:      unnamed       unused   input  active-high
-	line  24:      unnamed       unused   input  active-high
-	line  25:      unnamed       unused   input  active-high
-	line  26:      unnamed       unused   input  active-high
-	line  27:      unnamed       unused   input  active-high
-	line  28:      unnamed       unused   input  active-high
-	line  29:      unnamed       unused   input  active-high
-	line  30:      unnamed       unused   input  active-high
-	line  31:      unnamed       unused   input  active-high
+ mm/internal.h   |  2 +-
+ mm/page_alloc.c |  2 +-
+ mm/vmscan.c     | 24 ++++++++++++------------
+ 3 files changed, 14 insertions(+), 14 deletions(-)
 
-I discussed it with Robert Nelson and Jason Kridner and the idea came up
-that using the beagle pin header labels would be more useful than the
-AM3358 pin names.
-
-> Additional note. On other TI SoCs like am437x the same gpio line can be routed to more
-> than one pin (but only one pin can be used).
-> gpio0_0 GPIO IO -> A17, D16
-
-Thank you for that insights.
-
-Instead of am33xx-l4.dtsi, I am thinking of adding a gpio-line-names
-property in: source/arch/arm/boot/dts/am335x-bone-common.dtsi
-
-For gpiochip0, line 0 and line 1 would be "" as they are not connected
-to P8/P9 header.  line 2 would be labeled "P9_22", line 3 would be
-"P9_21", etc.  I'll post a complete patch for am335x-bone-common.dtsi
-and the gpioinfo output to demonstrate the usefulness.
-
-
-thanks,
-drew
+diff --git a/mm/internal.h b/mm/internal.h
+index b5634e7..c3eeec8 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -527,7 +527,7 @@ extern unsigned long  __must_check vm_mmap_pgoff(struct file *, unsigned long,
+         unsigned long, unsigned long);
+ 
+ extern void set_pageblock_order(void);
+-unsigned long reclaim_clean_pages_from_list(struct zone *zone,
++unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+ 					    struct list_head *page_list);
+ /* The ALLOC_WMARK bits are used as an index to zone->watermark */
+ #define ALLOC_WMARK_MIN		WMARK_MIN
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 1385d78..f17d88c6 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8416,7 +8416,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 					unsigned long start, unsigned long end)
+ {
+ 	/* This function is based on compact_zone() from compaction.c. */
+-	unsigned long nr_reclaimed;
++	unsigned int nr_reclaimed;
+ 	unsigned long pfn = start;
+ 	unsigned int tries = 0;
+ 	int ret = 0;
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index b06868f..8076012 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1066,17 +1066,17 @@ static void page_check_dirty_writeback(struct page *page,
+ /*
+  * shrink_page_list() returns the number of reclaimed pages
+  */
+-static unsigned long shrink_page_list(struct list_head *page_list,
+-				      struct pglist_data *pgdat,
+-				      struct scan_control *sc,
+-				      enum ttu_flags ttu_flags,
+-				      struct reclaim_stat *stat,
+-				      bool ignore_references)
++static unsigned int shrink_page_list(struct list_head *page_list,
++				     struct pglist_data *pgdat,
++				     struct scan_control *sc,
++				     enum ttu_flags ttu_flags,
++				     struct reclaim_stat *stat,
++				     bool ignore_references)
+ {
+ 	LIST_HEAD(ret_pages);
+ 	LIST_HEAD(free_pages);
+-	unsigned nr_reclaimed = 0;
+-	unsigned pgactivate = 0;
++	unsigned int nr_reclaimed = 0;
++	unsigned int pgactivate = 0;
+ 
+ 	memset(stat, 0, sizeof(*stat));
+ 	cond_resched();
+@@ -1483,7 +1483,7 @@ static unsigned long shrink_page_list(struct list_head *page_list,
+ 	return nr_reclaimed;
+ }
+ 
+-unsigned long reclaim_clean_pages_from_list(struct zone *zone,
++unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+ 					    struct list_head *page_list)
+ {
+ 	struct scan_control sc = {
+@@ -1492,7 +1492,7 @@ unsigned long reclaim_clean_pages_from_list(struct zone *zone,
+ 		.may_unmap = 1,
+ 	};
+ 	struct reclaim_stat dummy_stat;
+-	unsigned long ret;
++	unsigned int ret;
+ 	struct page *page, *next;
+ 	LIST_HEAD(clean_pages);
+ 
+@@ -1900,13 +1900,13 @@ static int current_may_throttle(void)
+ {
+ 	LIST_HEAD(page_list);
+ 	unsigned long nr_scanned;
+-	unsigned long nr_reclaimed = 0;
+ 	unsigned long nr_taken;
+ 	struct reclaim_stat stat;
+ 	int file = is_file_lru(lru);
+ 	enum vm_event_item item;
+ 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+ 	struct zone_reclaim_stat *reclaim_stat = &lruvec->reclaim_stat;
++	unsigned int nr_reclaimed = 0;
+ 	bool stalled = false;
+ 
+ 	while (unlikely(too_many_isolated(pgdat, file, sc))) {
+@@ -2096,7 +2096,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
+ unsigned long reclaim_pages(struct list_head *page_list)
+ {
+ 	int nid = NUMA_NO_NODE;
+-	unsigned long nr_reclaimed = 0;
++	unsigned int nr_reclaimed = 0;
+ 	LIST_HEAD(node_page_list);
+ 	struct reclaim_stat dummy_stat;
+ 	struct page *page;
+-- 
+1.9.1
 
