@@ -2,292 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83821BD2F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 176EE1BD348
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgD2Dap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 23:30:45 -0400
-Received: from mga11.intel.com ([192.55.52.93]:53603 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726672AbgD2Dan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 23:30:43 -0400
-IronPort-SDR: DUfdH/P+LSv8Ig52+0bFKAL6V6MGbfu+SRkGAvEgiGSiCH49RmqaDqHHN4EjFKqECH2FAR+rW9
- zSMLVs3KOJNQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 20:30:42 -0700
-IronPort-SDR: /rzWIOXv4+dgYsqavHURKVD22MUAw392H4FSOdMyaKGLYmyZ/ulbgEMR455DcMG618GytgWOUB
- ez7lCqzWOvgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,329,1583222400"; 
-   d="scan'208";a="432416057"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga005.jf.intel.com with ESMTP; 28 Apr 2020 20:30:42 -0700
-Date:   Tue, 28 Apr 2020 20:36:44 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, ashok.raj@intel.com,
-        Liu Yi L <yi.l.liu@intel.com>, kevin.tian@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v3 3/4] iommu/vt-d: Add page request draining support
-Message-ID: <20200428203644.3dcf13f2@jacob-builder>
-In-Reply-To: <20200422080611.15689-4-baolu.lu@linux.intel.com>
-References: <20200422080611.15689-1-baolu.lu@linux.intel.com>
-        <20200422080611.15689-4-baolu.lu@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1726690AbgD2D5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 23:57:30 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:42883 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgD2D53 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 23:57:29 -0400
+X-Greylist: delayed 1176 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Apr 2020 23:57:28 EDT
+Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
+        by twspam01.aspeedtech.com with ESMTP id 03T3S2BK051729
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:28:02 +0800 (GMT-8)
+        (envelope-from ryan_chen@aspeedtech.com)
+Received: from mail.aspeedtech.com (twmbx02.aspeed.com [192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 03T3Rxv1051700;
+        Wed, 29 Apr 2020 11:27:59 +0800 (GMT-8)
+        (envelope-from ryan_chen@aspeedtech.com)
+Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.620.29; Wed, 29 Apr
+ 2020 11:37:52 +0800
+From:   ryan_chen <ryan_chen@aspeedtech.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, <linux-i2c@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+CC:     ryan_chen <ryan_chen@aspeedtech.com>
+Subject: [PATCH v0 linux master] i2c/busses: Avoid i2c interrupt status clear race condition.
+Date:   Wed, 29 Apr 2020 11:37:37 +0800
+Message-ID: <20200429033737.2781-1-ryan_chen@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 03T3Rxv1051700
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Apr 2020 16:06:10 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+In AST2600 there have a slow peripheral bus between CPU
+ and i2c controller.
+Therefore GIC i2c interrupt status clear have delay timing,
+when CPU issue write clear i2c controller interrupt status.
+To avoid this issue, the driver need have read after write
+ clear at i2c ISR.
 
-> When a PASID is stopped or terminated, there can be pending PRQs
-> (requests that haven't received responses) in remapping hardware.
-> This adds the interface to drain page requests and call it when a
-> PASID is terminated.
-> 
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/intel-svm.c   | 103
-> ++++++++++++++++++++++++++++++++++-- include/linux/intel-iommu.h |
-> 4 ++ 2 files changed, 102 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iommu/intel-svm.c b/drivers/iommu/intel-svm.c
-> index 83dc4319f661..2534641ef707 100644
-> --- a/drivers/iommu/intel-svm.c
-> +++ b/drivers/iommu/intel-svm.c
-> @@ -23,6 +23,7 @@
->  #include "intel-pasid.h"
->  
->  static irqreturn_t prq_event_thread(int irq, void *d);
-> +static void intel_svm_drain_prq(struct device *dev, int pasid);
->  
->  #define PRQ_ORDER 0
->  
-> @@ -66,6 +67,8 @@ int intel_svm_enable_prq(struct intel_iommu *iommu)
->  	dmar_writeq(iommu->reg + DMAR_PQT_REG, 0ULL);
->  	dmar_writeq(iommu->reg + DMAR_PQA_REG,
-> virt_to_phys(iommu->prq) | PRQ_ORDER); 
-> +	init_completion(&iommu->prq_complete);
-> +
->  	return 0;
->  }
->  
-> @@ -208,6 +211,7 @@ static void intel_mm_release(struct mmu_notifier
-> *mn, struct mm_struct *mm) rcu_read_lock();
->  	list_for_each_entry_rcu(sdev, &svm->devs, list) {
->  		intel_pasid_tear_down_entry(svm->iommu, sdev->dev,
-> svm->pasid);
-> +		intel_svm_drain_prq(sdev->dev, svm->pasid);
-mmu_notifier release is called in atomic context, drain_prq needs to
-wait for completion. I tested exit path when a process crashes. I got
+Signed-off-by: ryan_chen <ryan_chen@aspeedtech.com>
+---
+ drivers/i2c/busses/i2c-aspeed.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-[  +0.696214] BUG: sleeping function called from invalid context at kernel/sched/completion.c:101
-[  +0.000068] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 3235, name: dsatest
-[  +0.000046] INFO: lockdep is turned off.
-[  +0.000002] CPU: 1 PID: 3235 Comm: dsatest Not tainted 5.7.0-rc1-z-svmtest+ #1637
-[  +0.000000] Hardware name: Intel Corporation Kabylake Client platform/Skylake Halo DDR4 RVP11, BIOS 
-04.1709050855 09/05/2017
-[  +0.000001] Call Trace:
-[  +0.000004]  dump_stack+0x68/0x9b
-[  +0.000003]  ___might_sleep+0x229/0x250
-[  +0.000003]  wait_for_completion_timeout+0x3c/0x110
-[  +0.000003]  intel_svm_drain_prq+0x12f/0x210
-[  +0.000003]  intel_mm_release+0x73/0x110
-[  +0.000003]  __mmu_notifier_release+0x94/0x220
-[  +0.000002]  ? do_munmap+0x10/0x10
-[  +0.000002]  ? prepare_ftrace_return+0x5c/0x80
-[  +0.000003]  exit_mmap+0x156/0x1a0
-[  +0.000002]  ? mmput+0x44/0x120
-[  +0.000003]  ? exit_mmap+0x5/0x1a0
-[  +0.000002]  ? ftrace_graph_caller+0xa0/0xa0
-[  +0.000001]  mmput+0x5e/0x120
+diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+index 07c1993274c5..f51702d86a90 100644
+--- a/drivers/i2c/busses/i2c-aspeed.c
++++ b/drivers/i2c/busses/i2c-aspeed.c
+@@ -603,6 +603,7 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
+ 	/* Ack all interrupts except for Rx done */
+ 	writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
+ 	       bus->base + ASPEED_I2C_INTR_STS_REG);
++	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+ 	irq_remaining = irq_received;
+ 
+ #if IS_ENABLED(CONFIG_I2C_SLAVE)
+@@ -645,9 +646,11 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
+ 			irq_received, irq_handled);
+ 
+ 	/* Ack Rx done */
+-	if (irq_received & ASPEED_I2CD_INTR_RX_DONE)
++	if (irq_received & ASPEED_I2CD_INTR_RX_DONE) {
+ 		writel(ASPEED_I2CD_INTR_RX_DONE,
+ 		       bus->base + ASPEED_I2C_INTR_STS_REG);
++		readl(bus->base + ASPEED_I2C_INTR_STS_REG);
++	}
+ 	spin_unlock(&bus->lock);
+ 	return irq_remaining ? IRQ_NONE : IRQ_HANDLED;
+ }
+-- 
+2.17.1
 
-
->  		intel_flush_svm_range_dev(svm, sdev, 0, -1, 0);
->  	}
->  	rcu_read_unlock();
-> @@ -401,12 +405,8 @@ int intel_svm_unbind_gpasid(struct device *dev,
-> int pasid) if (!sdev->users) {
->  			list_del_rcu(&sdev->list);
->  			intel_pasid_tear_down_entry(iommu, dev,
-> svm->pasid);
-> +			intel_svm_drain_prq(dev, svm->pasid);
->  			intel_flush_svm_range_dev(svm, sdev, 0, -1,
-> 0);
-> -			/* TODO: Drain in flight PRQ for the PASID
-> since it
-> -			 * may get reused soon, we don't want to
-> -			 * confuse with its previous life.
-> -			 * intel_svm_drain_prq(dev, pasid);
-> -			 */
->  			kfree_rcu(sdev, rcu);
->  
->  			if (list_empty(&svm->devs)) {
-> @@ -644,6 +644,7 @@ int intel_svm_unbind_mm(struct device *dev, int
-> pasid)
->  			 * large and has to be physically
-> contiguous. So it's
->  			 * hard to be as defensive as we might like.
-> */ intel_pasid_tear_down_entry(iommu, dev, svm->pasid);
-> +			intel_svm_drain_prq(dev, svm->pasid);
->  			intel_flush_svm_range_dev(svm, sdev, 0, -1,
-> 0); kfree_rcu(sdev, rcu);
->  
-> @@ -722,6 +723,92 @@ static bool is_canonical_address(u64 addr)
->  	return (((saddr << shift) >> shift) == saddr);
->  }
->  
-> +/**
-> + * intel_svm_drain_prq:
-> + *
-> + * Drain all pending page requests and responses related to a
-> specific
-> + * pasid in both software and hardware.
-> + */
-> +static void intel_svm_drain_prq(struct device *dev, int pasid)
-> +{
-> +	struct device_domain_info *info;
-> +	struct dmar_domain *domain;
-> +	struct intel_iommu *iommu;
-> +	struct qi_desc desc[3];
-> +	struct pci_dev *pdev;
-> +	int head, tail;
-> +	u16 sid, did;
-> +	int qdep;
-> +
-> +	info = get_domain_info(dev);
-> +	if (WARN_ON(!info || !dev_is_pci(dev)))
-> +		return;
-> +
-> +	if (!info->ats_enabled)
-> +		return;
-> +
-> +	iommu = info->iommu;
-> +	domain = info->domain;
-> +	pdev = to_pci_dev(dev);
-> +	sid = PCI_DEVID(info->bus, info->devfn);
-> +	did = domain->iommu_did[iommu->seq_id];
-> +	qdep = pci_ats_queue_depth(pdev);
-> +
-> +	memset(desc, 0, sizeof(desc));
-> +	desc[0].qw0 = QI_IWD_STATUS_DATA(QI_DONE) |
-> +			QI_IWD_FENCE |
-> +			QI_IWD_TYPE;
-> +	desc[1].qw0 = QI_EIOTLB_PASID(pasid) |
-> +			QI_EIOTLB_DID(did) |
-> +			QI_EIOTLB_GRAN(QI_GRAN_NONG_PASID) |
-> +			QI_EIOTLB_TYPE;
-> +	desc[2].qw0 = QI_DEV_EIOTLB_PASID(pasid) |
-> +			QI_DEV_EIOTLB_SID(sid) |
-> +			QI_DEV_EIOTLB_QDEP(qdep) |
-> +			QI_DEIOTLB_TYPE |
-> +			QI_DEV_IOTLB_PFSID(info->pfsid);
-> +
-> +	/*
-> +	 * Submit an invalidation wait descriptor with fence and
-> page request
-> +	 * drain flags set to invalidation queue. This ensures that
-> all requests
-> +	 * submitted to the invalidation queue ahead of this wait
-> descriptor are
-> +	 * processed and completed, and all already issued page
-> requests from
-> +	 * the device are put in the page request queue.
-> +	 */
-> +	qi_submit_sync(iommu, desc, 1, QI_OPT_WAIT_DRAIN);
-> +
-> +	/*
-> +	 * Check and wait until all pending page requests in the
-> queue are
-> +	 * handled by the intr thread.
-> +	 */
-> +prq_retry:
-> +	tail = dmar_readq(iommu->reg + DMAR_PQT_REG) & PRQ_RING_MASK;
-> +	head = dmar_readq(iommu->reg + DMAR_PQH_REG) & PRQ_RING_MASK;
-> +	while (head != tail) {
-> +		struct page_req_dsc *req;
-> +
-> +		req = &iommu->prq[head / sizeof(*req)];
-> +		if (!req->pasid_present || req->pasid != pasid) {
-> +			head = (head + sizeof(*req)) & PRQ_RING_MASK;
-> +			continue;
-> +		}
-> +
-> +		wait_for_completion_timeout(&iommu->prq_complete,
-> HZ);
-> +		goto prq_retry;
-> +	}
-> +
-> +	/*
-> +	 * Perform steps described in VT-d spec CH7.10 to drain page
-> +	 * requests and responses in hardware.
-> +	 */
-> +qi_retry:
-> +	qi_submit_sync(iommu, desc, 3, QI_OPT_WAIT_DRAIN);
-> +	if (readl(iommu->reg + DMAR_PRS_REG) & DMA_PRS_PRO) {
-> +		wait_for_completion_timeout(&iommu->prq_complete,
-> HZ);
-> +		goto qi_retry;
-> +	}
-> +}
-> +
->  static irqreturn_t prq_event_thread(int irq, void *d)
->  {
->  	struct intel_iommu *iommu = d;
-> @@ -856,6 +943,12 @@ static irqreturn_t prq_event_thread(int irq,
-> void *d) }
->  
->  	dmar_writeq(iommu->reg + DMAR_PQH_REG, tail);
-> +	/*
-> +	 * Clear the page request overflow bit and wake up all
-> threads that
-> +	 * are waiting for the completion of this handling.
-> +	 */
-> +	writel(DMA_PRS_PRO, iommu->reg + DMAR_PRS_REG);
-> +	complete(&iommu->prq_complete);
->  
->  	return IRQ_RETVAL(handled);
->  }
-> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-> index cca1e5f9aeaa..a0512b401a59 100644
-> --- a/include/linux/intel-iommu.h
-> +++ b/include/linux/intel-iommu.h
-> @@ -292,6 +292,8 @@
->  
->  /* PRS_REG */
->  #define DMA_PRS_PPR	((u32)1)
-> +#define DMA_PRS_PRO	((u32)2)
-> +
->  #define DMA_VCS_PAS	((u64)1)
->  
->  #define IOMMU_WAIT_OP(iommu, offset, op, cond,
-> sts)			\ @@ -333,6 +335,7 @@ enum {
->  
->  #define QI_IWD_STATUS_DATA(d)	(((u64)d) << 32)
->  #define QI_IWD_STATUS_WRITE	(((u64)1) << 5)
-> +#define QI_IWD_FENCE		(((u64)1) << 6)
->  #define QI_IWD_PRQ_DRAIN	(((u64)1) << 7)
->  
->  #define QI_IOTLB_DID(did) 	(((u64)did) << 16)
-> @@ -590,6 +593,7 @@ struct intel_iommu {
->  #ifdef CONFIG_INTEL_IOMMU_SVM
->  	struct page_req_dsc *prq;
->  	unsigned char prq_name[16];    /* Name for PRQ interrupt */
-> +	struct completion prq_complete;
->  	struct ioasid_allocator_ops pasid_allocator; /* Custom
-> allocator for PASIDs */ #endif
->  	struct q_inval  *qi;            /* Queued invalidation info
-> */
-
-[Jacob Pan]
