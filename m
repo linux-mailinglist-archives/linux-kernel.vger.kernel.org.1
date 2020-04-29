@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AB61BE01B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8BB1BE026
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727903AbgD2OFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726974AbgD2OFT (ORCPT
+        id S1728297AbgD2OGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:06:04 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40308 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726974AbgD2OGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:05:19 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D92C03C1AD;
-        Wed, 29 Apr 2020 07:05:19 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s8so1076581pgq.1;
-        Wed, 29 Apr 2020 07:05:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DEEpUHKbo7+1Jkg/OAyp8ExogsjgJ/bJ72CGCkCrCE0=;
-        b=hojnsxk5cbkCgTm3gD/55r9/8hJ28O0FLE/vFz2iLSLJ1H6ogulPbjhhpOtaOEMjbI
-         Z3DUJmzXjAXxDJZJHDtgNkeYWB9cB/TWbrmolOa6Uaa4pi1+vGCcM/1xJMwmaoi/zicT
-         d/SNu6msOZ3t3Df/Vv9JliwzM2JwZiEscGBa1wqr1SpUXfUA/6fROgKPJKyXT0Tsez1a
-         M7aBNa+NSNFihQy5P/Aej5FyOqrod64RFEY/EQblc3jemlA1y38hnu5YOdEv9dPb0ejE
-         0pPf/TUmbdC6qNiaJhm6kBIzjw8JfSh4b6FM5DE1EZ5FT6ffuquIdW+R/SB+OsrdfVJq
-         wccg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DEEpUHKbo7+1Jkg/OAyp8ExogsjgJ/bJ72CGCkCrCE0=;
-        b=SyoeRrZsDbhxAbYChXkP3hIKBBO3X9fEiShfJYkaqTafA/ngvecu1H+x/A2h4/U1tQ
-         ugAMd6O/glVpa0bFjLts/zOliFfRcQmSWhy4lpUTVKNEwJXNqU6MqOUN6S9HwoLkg40L
-         eehxlAbJYtLsFvpu+XoAvNm2prkNLudyAGT00Lts/uTIthEHaHqUHO/xoeTZZFXGDXNC
-         aMUK62tVkzeuvMCHnNJ7ayX21EwHHC6hYFKRFwV6r6um4DzyQOk0QTDY9ZX7GqU5+86J
-         JydNTrI8g+OJdxW5BaQvRSMkwP1qVV2Ea1LiN4ULss6pz5pDI+xowNi0DNKkjX/CgsSJ
-         BJMQ==
-X-Gm-Message-State: AGi0PubafkG8DaRGM3m+VXT4fZCnIXXbG+GbNKw2it+I1sHl3vpAQn4N
-        mPWYpAeFHVB3ipVW5Hwzvr0=
-X-Google-Smtp-Source: APiQypIRAYOyUORLHBZdVDtC1XhW4R0C2iplDIjrREc+muriFRYeclTHLM4vfvRbYJPILxgxAJeLhA==
-X-Received: by 2002:a63:ac57:: with SMTP id z23mr14791709pgn.423.1588169119086;
-        Wed, 29 Apr 2020 07:05:19 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a2sm1214038pfg.106.2020.04.29.07.05.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 Apr 2020 07:05:18 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 07:05:17 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 000/168] 5.4.36-rc1 review
-Message-ID: <20200429140517.GB8469@roeck-us.net>
-References: <20200428182231.704304409@linuxfoundation.org>
+        Wed, 29 Apr 2020 10:06:03 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03TE2M0R087844;
+        Wed, 29 Apr 2020 10:05:52 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30me469ts9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Apr 2020 10:05:52 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03TE2it7090253;
+        Wed, 29 Apr 2020 10:05:52 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30me469tm4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Apr 2020 10:05:51 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03TE3Vdh010400;
+        Wed, 29 Apr 2020 14:05:41 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma02fra.de.ibm.com with ESMTP id 30mcu7wsqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Apr 2020 14:05:41 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03TE5cCm65732862
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Apr 2020 14:05:38 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC4034C04E;
+        Wed, 29 Apr 2020 14:05:38 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 851594C040;
+        Wed, 29 Apr 2020 14:05:36 +0000 (GMT)
+Received: from drishya.in.ibm.com (unknown [9.85.83.72])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed, 29 Apr 2020 14:05:36 +0000 (GMT)
+Date:   Wed, 29 Apr 2020 19:35:33 +0530
+From:   Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
+        mpe@ellerman.id.au, skiboot@lists.ozlabs.org, oohall@gmail.com,
+        ego@linux.vnet.ibm.com, linuxram@us.ibm.com,
+        pratik.r.sampat@gmail.com
+Subject: Re: [PATCH v8 2/3] API to verify the STOP API and image compatibility
+Message-ID: <20200429140533.GC4852@drishya.in.ibm.com>
+Reply-To: svaidy@linux.ibm.com
+References: <20200423105438.29034-1-psampat@linux.ibm.com>
+ <20200423105438.29034-3-psampat@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200428182231.704304409@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200423105438.29034-3-psampat@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-29_05:2020-04-29,2020-04-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 impostorscore=0
+ spamscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 phishscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004290115
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 08:22:54PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.36 release.
-> There are 168 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 30 Apr 2020 18:21:07 +0000.
-> Anything received after that time might be too late.
-> 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 427 pass: 427 fail: 0
+* Pratik Rajesh Sampat <psampat@linux.ibm.com> [2020-04-23 16:24:37]:
 
-Guenter
+> From: Prem Shanker Jha <premjha2@in.ibm.com>
+> 
+> Commit defines a new API primarily intended for OPAL to determine
+> cpu register save API's compatibility with HOMER layout and
+> self save restore. It can help OPAL determine if version of
+> API integrated with OPAL is different from hostboot.
+> 
+> Change-Id: Ic0de45a336cfb8b6b6096a10ac1cd3ffbaa44fc0
+> Reviewed-on: http://rchgit01.rchland.ibm.com/gerrit1/77612
+> Tested-by: FSP CI Jenkins <fsp-CI-jenkins+hostboot@us.ibm.com>
+> Tested-by: Jenkins Server <pfd-jenkins+hostboot@us.ibm.com>
+> Tested-by: Hostboot CI <hostboot-ci+hostboot@us.ibm.com>
+> Reviewed-by: RANGANATHPRASAD G. BRAHMASAMUDRA <prasadbgr@in.ibm.com>
+> Reviewed-by: Gregory S Still <stillgs@us.ibm.com>
+> Reviewed-by: Jennifer A Stofer <stofer@us.ibm.com>
+> Reviewed-on: http://rchgit01.rchland.ibm.com/gerrit1/77614
+> Tested-by: Jenkins OP Build CI <op-jenkins+hostboot@us.ibm.com>
+> Tested-by: Jenkins OP HW <op-hw-jenkins+hostboot@us.ibm.com>
+> Reviewed-by: Daniel M Crowell <dcrowell@us.ibm.com>
+> Signed-off-by: Pratik Rajesh Sampat <psampat@linux.ibm.com>
+
+Reviewed-by: Vaidyanathan Srinivasan <svaidy@linux.ibm.com>
+
+> ---
+>  include/p9_stop_api.H                    | 25 ++++++++++
+>  libpore/p9_cpu_reg_restore_instruction.H |  7 ++-
+>  libpore/p9_hcd_memmap_base.H             |  7 +++
+>  libpore/p9_stop_api.C                    | 58 +++++++++++++++++++++++-
+>  libpore/p9_stop_api.H                    | 26 ++++++++++-
+>  libpore/p9_stop_util.H                   | 20 ++++----
+>  6 files changed, 130 insertions(+), 13 deletions(-)
+
+This stop-api code will help OPAL check and use self-save functions so
+that different versions of OPAL can be loaded and run with different
+versions of low level firmware stack.
+
+--Vaidy
