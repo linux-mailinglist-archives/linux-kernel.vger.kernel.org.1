@@ -2,328 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4F01BD80C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897C81BD819
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgD2JSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 05:18:31 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2128 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726345AbgD2JSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 05:18:30 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 3C8E08B28A22A94EFAB2;
-        Wed, 29 Apr 2020 10:18:28 +0100 (IST)
-Received: from localhost (10.47.88.1) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Wed, 29 Apr
- 2020 10:18:25 +0100
-Date:   Wed, 29 Apr 2020 10:18:06 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     SeongJae Park <sjpark@amazon.com>
-CC:     <akpm@linux-foundation.org>, SeongJae Park <sjpark@amazon.de>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <dwmw@amazon.com>,
-        <irogers@google.com>, <jolsa@redhat.com>, <kirill@shutemov.name>,
-        <mark.rutland@arm.com>, <mgorman@suse.de>, <minchan@kernel.org>,
-        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
-        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
-        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-damon@amazon.com>, <linux-mm@kvack.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v9 00/15] Introduce Data Access MONitor (DAMON)
-Message-ID: <20200429101806.000002f4@Huawei.com>
-In-Reply-To: <20200429074954.24032-1-sjpark@amazon.com>
-References: <20200428171713.000028df@Huawei.com>
-        <20200429074954.24032-1-sjpark@amazon.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726596AbgD2JWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 05:22:23 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:58897 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726501AbgD2JWW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 05:22:22 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MfpKZ-1iwc612wNl-00gGTR; Wed, 29 Apr 2020 11:22:12 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] amdgpu: fix gcc-4.8 build warnings
+Date:   Wed, 29 Apr 2020 11:20:42 +0200
+Message-Id: <20200429092207.4049268-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.88.1]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:x/Y2ttaKh8S4oSIHZuCcQJcIg3m35dCZcGbCfqBWDyKe6L/H8TJ
+ iPhHhkmD0/Z8JCtJuJf/MsKD9MwsTLHZilEXd/MEpqujXLEE8A0Hth9nRUfolyRtw5enShd
+ GFPbhOprj+sG0VfzyOhbSt4cUDkdQlz6u50FUMimF7FA1zPPx+xPL4b6jJnRjD9ooD+EexR
+ yjN45AdLttxbasdfJXE2w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:I1U8bIBgt5Q=:nkG5R3DDKbefs9Nak+vMK6
+ cKgQSJAkcHCdprpBC7yP13QN2c9q/MiSM5Z+2gK9wGVeVxnuaLV9rPlsFeg+M1aRSDka18+b5
+ rlB1toFZr/DyMbAhyRvI/SE/ADwvLNVGSfNOEoURqsGxyqbDVdZkgCSctUdDLW1vp2ERR6T47
+ zQbQSWD5M4PPyeEI2M/TDMNYmt1Hwy0FdbHBSJLFFhnMOkAQiRJihxT1G7ClG1PkGmqooZN6z
+ U40AM2vhrSmq7mTjwF0uaWYpwZf1NuH82QY3Xhk6FI/fHl4HQG3Qh9/nssqueZd4crncAzkh8
+ yNZ2yHrFckogPSoKDOFJof2EUv6jVNa3EoDg1isG5GK5IjZN655Vawq1zHiBEdhiTctoeNpGs
+ 2Mu73KqlJ6mTYMc9v1/QYZSdEjQZxCXhSRmCSNLCAUqS/0l3kvanXVAkSBbnQAejp7cmr+wzX
+ w1Cs+WYtYw2N86/1fb3aiZu0ZwrimHm/O84twtXk3B81mi9q2uoLBbx4qMSX4k/bS0QU0jTd6
+ Mygb15AI8Ex/ez3NKxMa34bEfantpSnO7tBOzR6INDWUDBQpuFxvP0WLnFOApmzh4VVeJsEGx
+ lKXJIXPnzYLJS4NZgYBeYTECob5SSANv5HmtDsB6UI/WLPynMCC+JpTY7P5ly1Kl1uAgkegU8
+ fbcr5GaJVGVV0Gktsn+qJIz2v1ZTNsizde5/ZnyDkAIRGlNuh+kqyi3+T3d5iPbQdFpmwIKC3
+ piLUsUmeVJrZrMJNDduRDuRS/U1cPDnicQAATdHXbKrC+ZrC9rJ8mUvcf9ZCTEYoJdCAQ7Lkl
+ YzWYa2T4vCyN4hwJloNemuIQgbuiNjB5NbCnNbZdxvZZCi/hCM=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Apr 2020 09:49:54 +0200
-SeongJae Park <sjpark@amazon.com> wrote:
+Older compilers warn about initializers with incorrect curly
+braces:
 
-> On Tue, 28 Apr 2020 17:17:13 +0100 Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> 
-> > On Tue, 28 Apr 2020 15:23:42 +0200
-> > SeongJae Park <sjpark@amazon.com> wrote:
-> >   
-> > > On Tue, 28 Apr 2020 13:27:04 +0100 Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > >   
-> > > > On Mon, 27 Apr 2020 14:04:27 +0200
-> > > > SeongJae Park <sjpark@amazon.com> wrote:
-> > > >     
-> > > > > From: SeongJae Park <sjpark@amazon.de>
-> > > > > 
-> > > > > Introduction
-> > > > > ============
-> > > > > 
-> > > > > Memory management decisions can be improved if finer data access information is
-> > > > > available.  However, because such finer information usually comes with higher
-> > > > > overhead, most systems including Linux forgives the potential benefit and rely
-> > > > > on only coarse information or some light-weight heuristics.  The pseudo-LRU and
-> > > > > the aggressive THP promotions are such examples.
-> > > > > 
-> > > > > A number of data access pattern awared memory management optimizations (refer
-> > > > > to 'Appendix A' for more details) consistently say the potential benefit is not
-> > > > > small.  However, none of those has successfully merged to the mainline Linux
-> > > > > kernel mainly due to the absence of a scalable and efficient data access
-> > > > > monitoring mechanism.  Refer to 'Appendix B' to see the limitations of existing
-> > > > > memory monitoring mechanisms.
-> > > > > 
-> > > > > DAMON is a data access monitoring subsystem for the problem.  It is 1) accurate
-> > > > > enough to be used for the DRAM level memory management (a straightforward
-> > > > > DAMON-based optimization achieved up to 2.55x speedup), 2) light-weight enough
-> > > > > to be applied online (compared to a straightforward access monitoring scheme,
-> > > > > DAMON is up to 94,242.42x lighter) and 3) keeps predefined upper-bound overhead
-> > > > > regardless of the size of target workloads (thus scalable).  Refer to 'Appendix
-> > > > > C' if you interested in how it is possible, and 'Appendix F' to know how the
-> > > > > numbers collected.
-> > > > > 
-> > > > > DAMON has mainly designed for the kernel's memory management mechanisms.
-> > > > > However, because it is implemented as a standalone kernel module and provides
-> > > > > several interfaces, it can be used by a wide range of users including kernel
-> > > > > space programs, user space programs, programmers, and administrators.  DAMON
-> > > > > is now supporting the monitoring only, but it will also provide simple and
-> > > > > convenient data access pattern awared memory managements by itself.  Refer to
-> > > > > 'Appendix D' for more detailed expected usages of DAMON.
-> > > > >     
-> > > [...]  
-> > > > > 
-> > > > > Future Plans
-> > > > > ============
-> > > > > 
-> > > > > This patchset is only for the first stage of DAMON.  As soon as this patchset
-> > > > > is merged, official patchsets for below future plans will be posted.
-> > > > >     
-> > > [...]  
-> > > > > 
-> > > > > Support Various Address Spaces
-> > > > > ------------------------------
-> > > > > 
-> > > > > Currently, DAMON supports virtual memory address spaces using PTE Accessed bits
-> > > > > as its access checking primitive.  However, the core design of DAMON is not
-> > > > > dependent to such implementation details.  In a future, DAMON will decouple
-> > > > > those and support various address spaces including physical memory.  It will
-> > > > > further allow users to configure and even implement the primitives by
-> > > > > themselves for their special usecase.  Monitoring of page cache, NUMA nodes,
-> > > > > specific files, or block devices would be examples of such usecases.
-> > > > > 
-> > > > > An RFC patchset for this plan is already available
-> > > > > (https://lore.kernel.org/linux-mm/20200409094232.29680-1-sjpark@amazon.com/).
-> > > > >     
-> > > [...]  
-> > > > > 
-> > > > > Patch History
-> > > > > =============
-> > > > > 
-> > > > > The most biggest change in this version is support of minimal region size,
-> > > > > which defaults to 'PAGE_SIZE'.  This change will reduce unnecessary region
-> > > > > splits and thus improve the quality of the output.  In a future, we will be
-> > > > > able to make this configurable for support of various access check primitives
-> > > > > such as PMUs.    
-> > > > 
-> > > > That is a good improvement.  Might be interesting to consider taking
-> > > > hugepages into account as well.    
-> > > 
-> > > Thanks!  Kudos to Stefan and you for giving me the comments for the change.
-> > > 
-> > > As abovely mentioned in 'Future Plans' section, DAMON will be highly
-> > > configurable.  You can see the plan in more detail via the RFC patchset[1].
-> > > Thus, the minimal region size will also be able to configured as users want,
-> > > including the size of the hugepage.
-> > > 
-> > > [1] https://lore.kernel.org/linux-mm/20200409094232.29680-1-sjpark@amazon.com/
-> > >   
-> > > > 
-> > > > One issue I've noted is that we have a degeneracy problem with the current
-> > > > region merging and splitting that perhaps could do with a small tweak.
-> > > > 
-> > > > Currently we can end with a very small number of regions because there
-> > > > is no limit on how many regions can be merged in a give pass for merging.
-> > > > However, splitting only doubles the number of regions.
-> > > > 
-> > > > I've been experimenting with a few loops of the splitting algorithm to ensure
-> > > > we don't end up stuck with limited regions.  I think the problem we are working
-> > > > around can be roughly described as:
-> > > > 
-> > > > 1) Program allocates a lot of memory - not really touching much of it.
-> > > > 2) Damon fuses the large memory allocations in to one region because the
-> > > >    access counts are always near 0. 
-> > > > 3) Program finishes setup.
-> > > > 4) Program accesses a few pages in the huge reason a lot, but not that much
-> > > >    for most of the rest.  Taking an extreme option, the page in the middle
-> > > >    gets all the accesses and the other 1G on either side gets none.
-> > > > 5) As a split always breaks the page in two, the chances of significantly
-> > > >    different values for the two resulting regions is low (as we only sample
-> > > >    the hot page occasionally).
-> > > > 
-> > > > If we just run the splits twice if the number of regions < max regions / 4
-> > > > then over time we should eventually get a region with the single hot page in it.
-> > > > We will get there faster if we split more (keeping below max regions).
-> > > > 
-> > > > As we always remain below max regions, we are still obeying the fixed
-> > > > maximum overhead and actually monitoring at closer to the desired granularity.    
-> > > 
-> > > Good point.  However, as you also mentioned, DAMON will slowly, but eventually
-> > > adjust the regions appropriately.
-> > > 
-> > > And yes, your suggested solution will work pretty well.  Indeed, my one
-> > > previous colleague found this problem on a few of special workloads and tried
-> > > the solution you suggested.  The improvement was clear.
-> > > 
-> > > However, I didn't adopt the solution due to below reasons.
-> > > 
-> > > First, IMHO, this is an accuracy improvement, rather than bug fix.  But the
-> > > extent of the enhancement didn't seem very critical to me.  Most of other
-> > > workloads didn't show such problem (and thus improvement).  Even with the
-> > > workloads showing the problem, the problem was not seem so critical.
-> > > 
-> > > Second, if the low accuracy is problem, users could get higher accuracy by
-> > > simply adjusting the sampling interval and/or aggregation interval to lower
-> > > value.  This is the supposed way to trade the accuracy with the overhead.  
-> > 
-> > I disagree.  There is very little chance of getting out of this situation with the
-> > current splitting.  Changing sampling and aggregation intervals doesn't actually help.
-> > 
-> > Let's draw out an example to discuss.
-> > 
-> > Toy state - taking just one block of memory.
-> > 
-> > 0 = not accessed page (very cold)
-> > X = accessed page (extremely hot)
-> > 
-> > First few cycles - no accesses
-> > 
-> > in X.Regions list average value estimated by damon.
-> > 
-> > Region C is needed to set the max and will never be aggregated.
-> > 
-> > aggregation cycle then state.
-> > 0.start
-> > 0.accessed          0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 X X X
-> > 0.regions (percent)|  A (0)          |   B (0)                         | C(1)|
-> > 0.merge            |   A                                               | C   |
-> > 0.split            |  A                                |     B         | C   |
-> > 
-> > After a few cycles, hot page
-> > 1.start
-> > 1.accessed          0 0 0 0 0 0 0 0 0 0 0 X 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 1.regions (acc_cnt)|  A (1/18)                         |   B (0)       | C(1)|  
-> 
->              ^ not count but ratio, right?
+drivers/gpu/drm/drm_dp_mst_topology.c: In function 'drm_dp_mst_dsc_aux_for_port':
+drivers/gpu/drm/drm_dp_mst_topology.c:5497:9: error: missing braces around initializer [-Werror=missing-braces]
+  struct drm_dp_desc desc = { 0 };
+         ^
 
-oops. Absolutely.
+Change all instances in the amd gpu driver to using the GNU empty
+initializer extension.
 
-> 
-> > 1.merge            |             A                                     | C   |
-> > 1.split            |  A                    |                 B         | C   |
-> > 2.start
-> > 2.accessed          0 0 0 0 0 0 0 0 0 0 0 X 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 2.regions (acc_cnt)|  A (1/12)             |               B (0)       | C(1)|
-> > 2.merge            |             A                                     | C   |
-> > 2.split            |  A      |                               B         | C   |
-> > 3.start
-> > 3.accessed          0 0 0 0 0 0 0 0 0 0 0 X 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-> > 3.regions (acc_cnt)|  A (0)  |               B (1/21)                  | C(1)|
-> > 3.merge            |             A                                     | C   |
-> > 3.split            |  A                |                     B         | C   |
-> > 
-> > Now make that 1000 pages long with the hot page at page 500.
-> > So the average best case we will ever get is a 1/500 * number of sample period
-> > between aggregations.  
-> 
-> So nice example, thank you!  Now I understand the point.
-> 
-> So, the problem is that we cannot find the small hot region near the _middle_
-> because we split each region into only two subregions.
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: some context changes linux-next stopped yesterday's patch from
+applying today.
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c         | 2 +-
+ drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c        | 2 +-
+ drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c | 2 +-
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c          | 6 +++---
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.c         | 6 +++---
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c     | 2 +-
+ drivers/gpu/drm/amd/display/dc/dcn21/dcn21_hubp.c         | 6 +++---
+ 7 files changed, 13 insertions(+), 13 deletions(-)
 
-Exactly.  Pathological case :(
-
-> 
-> > 
-> > So what are the chances of failing to aggregate on the sample after we split
-> > at that optimal point? We need to successfully sample that one page enough that
-> > we get it 10% of the time.
-> > 
-> > I 'think' this a case of where the 10% point is on the CDF of a binomial
-> > f(1/N, M) where N is number of bins and Mis number of samples.
-> > 
-> > Using matlab online I think the best chance you ever get is when you take 10 samples
-> > and need just one of them to be in the region.
-> > 
-> > p = 1 - binocdf(0,10,1/N)
-> > For N = 500, p = 0.0198
-> > For N = 1000, p = 0.0099
-> > 
-> > Someone with better maths than me can check.
-> > 
-> > Now this just got us to the point where we won't aggregate the region for one
-> > round of aggregation.  We may split it again and if the resulting region is small
-> > enough might not merge it the next aggregation cycle.
-> > 
-> > So I'd argue that allowing at least 2 repeats of splitting is well worth while.
-> > It is just a couple of additional lines of code.  
-> 
-> Nice suggestion, I will apply this suggestion in the next spin.  It might be as
-> below:
-> 
->     if (nr_regions() < nr_max_regions / 4)
->             split_into_4_regions();
->     else if (nr_regions() < nr_max_regions / 2)
->             split_into_2_regions();
-> 
-> If this pseudo-code is missing some of your point, please let me know.
-
-That's it.  My prototype was less efficient in that it just ran the
-2 way split twice if we still had too few regions, but result is very
-nearly the same (potentially some changes in the location of the split as
-10-90% both times vs whatever limits you put in the 4 region version).
-
-> 
-> >   
-> > > 
-> > > Finally, I would like to keep code as simple as it can.
-> > > 
-> > > For same reasons, I would like to keep the code as currently is until real user
-> > > problem is reported.  If you have different opinions, please feel free to yell
-> > > at me.  
-> > 
-> > :)   
-> 
-> Appreciate your explanations and suggestions.
-
-You are welcome.
-
-Out of interest, do you have any comparative data on how 'accurate' the resulting
-estimates are vs a more precise heatmap from a memory trace?
-
-I'm looking at gathering such data but much happier to leverage your work if
-you've already done it!
-
-Thanks,
-
-Jonathan
-
-> 
-> 
-> Thanks,
-> SeongJae Park
-
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 7f4417981bff..81ce3103d751 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -8695,7 +8695,7 @@ bool amdgpu_dm_psr_enable(struct dc_stream_state *stream)
+ {
+ 	struct dc_link *link = stream->link;
+ 	unsigned int vsync_rate_hz = 0;
+-	struct dc_static_screen_params params = {0};
++	struct dc_static_screen_params params = { };
+ 	/* Calculate number of static frames before generating interrupt to
+ 	 * enter PSR.
+ 	 */
+diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+index 37fa7b48250e..5484a316eaa8 100644
+--- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
++++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+@@ -294,7 +294,7 @@ static enum bp_result bios_parser_get_i2c_info(struct dc_bios *dcb,
+ 	struct atom_display_object_path_v2 *object;
+ 	struct atom_common_record_header *header;
+ 	struct atom_i2c_record *record;
+-	struct atom_i2c_record dummy_record = {0};
++	struct atom_i2c_record dummy_record = { };
+ 	struct bios_parser *bp = BP_FROM_DCB(dcb);
+ 
+ 	if (!info)
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
+index 24c5765890fa..ee3ef5094fd1 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
+@@ -698,7 +698,7 @@ void rn_clk_mgr_construct(
+ 		struct dccg *dccg)
+ {
+ 	struct dc_debug_options *debug = &ctx->dc->debug;
+-	struct dpm_clocks clock_table = { 0 };
++	struct dpm_clocks clock_table = { };
+ 
+ 	clk_mgr->base.ctx = ctx;
+ 	clk_mgr->base.funcs = &dcn21_funcs;
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+index 9ef9e50a34fa..7cbfe740a947 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+@@ -2683,9 +2683,9 @@ static void dp_test_send_link_test_pattern(struct dc_link *link)
+ 
+ static void dp_test_get_audio_test_data(struct dc_link *link, bool disable_video)
+ {
+-	union audio_test_mode            dpcd_test_mode = {0};
+-	struct audio_test_pattern_type   dpcd_pattern_type = {0};
+-	union audio_test_pattern_period  dpcd_pattern_period[AUDIO_CHANNELS_COUNT] = {0};
++	union audio_test_mode            dpcd_test_mode = { };
++	struct audio_test_pattern_type   dpcd_pattern_type = { };
++	union audio_test_pattern_period  dpcd_pattern_period[AUDIO_CHANNELS_COUNT] = { };
+ 	enum dp_test_pattern test_pattern = DP_TEST_PATTERN_AUDIO_OPERATOR_DEFINED;
+ 
+ 	struct pipe_ctx *pipes = link->dc->current_state->res_ctx.pipe_ctx;
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.c
+index 84d7ac5dd206..dfa541f0b0d3 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hubp.c
+@@ -1253,9 +1253,9 @@ void hubp2_validate_dml_output(struct hubp *hubp,
+ 		struct _vcs_dpi_display_ttu_regs_st *dml_ttu_attr)
+ {
+ 	struct dcn20_hubp *hubp2 = TO_DCN20_HUBP(hubp);
+-	struct _vcs_dpi_display_rq_regs_st rq_regs = {0};
+-	struct _vcs_dpi_display_dlg_regs_st dlg_attr = {0};
+-	struct _vcs_dpi_display_ttu_regs_st ttu_attr = {0};
++	struct _vcs_dpi_display_rq_regs_st rq_regs = { };
++	struct _vcs_dpi_display_dlg_regs_st dlg_attr = { };
++	struct _vcs_dpi_display_ttu_regs_st ttu_attr = { };
+ 	DC_LOGGER_INIT(ctx->logger);
+ 	DC_LOG_DEBUG("DML Validation | Running Validation");
+ 
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+index 60ea499c1ca8..beea5e129c24 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -449,7 +449,7 @@ struct _vcs_dpi_soc_bounding_box_st dcn2_0_nv14_soc = {
+ 	.use_urgent_burst_bw = 0
+ };
+ 
+-struct _vcs_dpi_soc_bounding_box_st dcn2_0_nv12_soc = { 0 };
++struct _vcs_dpi_soc_bounding_box_st dcn2_0_nv12_soc = { };
+ 
+ #ifndef mmDP0_DP_DPHY_INTERNAL_CTRL
+ 	#define mmDP0_DP_DPHY_INTERNAL_CTRL		0x210f
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_hubp.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_hubp.c
+index 960a0716dde5..4aae6fb333bb 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_hubp.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_hubp.c
+@@ -365,9 +365,9 @@ void hubp21_validate_dml_output(struct hubp *hubp,
+ 		struct _vcs_dpi_display_ttu_regs_st *dml_ttu_attr)
+ {
+ 	struct dcn21_hubp *hubp21 = TO_DCN21_HUBP(hubp);
+-	struct _vcs_dpi_display_rq_regs_st rq_regs = {0};
+-	struct _vcs_dpi_display_dlg_regs_st dlg_attr = {0};
+-	struct _vcs_dpi_display_ttu_regs_st ttu_attr = {0};
++	struct _vcs_dpi_display_rq_regs_st rq_regs = { };
++	struct _vcs_dpi_display_dlg_regs_st dlg_attr = { };
++	struct _vcs_dpi_display_ttu_regs_st ttu_attr = { };
+ 	DC_LOGGER_INIT(ctx->logger);
+ 	DC_LOG_DEBUG("DML Validation | Running Validation");
+ 
+-- 
+2.26.0
 
