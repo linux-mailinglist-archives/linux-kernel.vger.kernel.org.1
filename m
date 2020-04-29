@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150711BD36F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 06:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544011BD37C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 06:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726745AbgD2ELm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 00:11:42 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3332 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725497AbgD2ELm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 00:11:42 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id EE75AB21C9CFFC900FED;
-        Wed, 29 Apr 2020 12:11:39 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 29 Apr 2020 12:11:32 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <aviad.krawczyk@huawei.com>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next v2] hinic: Use ARRAY_SIZE for nic_vf_cmd_msg_handler
-Date:   Wed, 29 Apr 2020 12:17:40 +0800
-Message-ID: <1588133860-55722-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+        id S1726705AbgD2EVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 00:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726451AbgD2EVo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 00:21:44 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CC6C03C1AC;
+        Tue, 28 Apr 2020 21:21:42 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id x18so820206wrq.2;
+        Tue, 28 Apr 2020 21:21:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=mCtLbL6Zr88D4dLaHGj83fov+fdvmqInAbjfmiya5zo=;
+        b=KcCq3sClZpqJ+2xt78xBXZ2HjIAMNDO9niYhUn/bcXUsDen5XtDase8Ia/KrNMEauM
+         s7/M9EiQBCHZmekYkS6aMFhwUA59/7+vV2Eu57BotW9DRWB/4dnvhDQ2FrnNlqj7wz4z
+         n3X15y2VRcuo0NXNM044Q2+KSEl94m5XamGtRFzpzcq3XlfKBGxhAsJ+BUzSAtKMDQaz
+         QHtM+sNfE0ggxsEaamQmf+YmMBCK9j9cbz2T0QxduqEGJXxG7xZwVbEU5L0edwPIF4sz
+         CS1xhppM3/KnbXJxBemdcHj0Jv+B4TiXpCjPvIyJZzqYZStoOVsJ0BMG85Sr3NHOLpk7
+         FTWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mCtLbL6Zr88D4dLaHGj83fov+fdvmqInAbjfmiya5zo=;
+        b=Hm2vtrDclal0pL99Bu9RUqtw6v22V4WmM4HLVr5pC9MIxeNRn9N7BA8ErZt070p5mH
+         Glva7GNl/Am1dLtI7UBNTc4+I1Cd9uOwSymNmBTxxc88cN5Z5dYij4lsPrqX9EwgdgyP
+         ZJ5pJps5NpQOHqpgVPYS4F/SqSpgzAC0uJC724nGrFs5pinVyr9NRcrXv6Yd5zaiGuiC
+         Mj19l9hGPhQAo459QZIxrkftDg1lCgwrrzJ3QQYuy9xzcxONIN2hZbngWnjFGsK/YaTd
+         3CFbQq2Vcf8GTdTYwVU9YJM4cGRCCTbm4JqkgwsSvd8d1BRnPWqcII9BI/JFC04zjwGi
+         hm0w==
+X-Gm-Message-State: AGi0PuZdO91er4T1drKUkfl7Kg00dQs+F6dv7bgT6N5JdFZACaJGAe0Q
+        zgpRwzRIFr1FyRtVM4Dj6Sc=
+X-Google-Smtp-Source: APiQypIsyheNKE+yUYPn7h7Lh02qj284R2B2KtXNfFSBoHmveI6gKwv0q4UjlWp33+buDZ1Wr5yXuA==
+X-Received: by 2002:adf:f604:: with SMTP id t4mr37208925wrp.399.1588134101564;
+        Tue, 28 Apr 2020 21:21:41 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d97:3d00:e147:2f5e:e04:2e01])
+        by smtp.gmail.com with ESMTPSA id z1sm5958897wmf.15.2020.04.28.21.21.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 21:21:40 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, Joe Perches <joe@perches.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH RESEND] MAINTAINERS: remove entry after hp100 driver removal
+Date:   Wed, 29 Apr 2020 06:21:16 +0200
+Message-Id: <20200429042116.29126-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix coccinelle warning, use ARRAY_SIZE
+Commit a10079c66290 ("staging: remove hp100 driver") removed all files
+from ./drivers/staging/hp/, but missed to adjust MAINTAINERS.
 
-drivers/net/ethernet/huawei/hinic/hinic_sriov.c:713:43-44: WARNING: Use ARRAY_SIZE
+Since then, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
-----------
-v1-->v2:
-   remove cmd_number
+  warning: no file matches F: drivers/staging/hp/hp100.*
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
+So, drop HP100 Driver entry in MAINTAINERS now.
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- drivers/net/ethernet/huawei/hinic/hinic_sriov.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+Greg, here is a minor non-urgent patch for staging.
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-index b24788e..af70cca 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-@@ -704,17 +704,15 @@ int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
- 	struct hinic_hwdev *dev = hwdev;
- 	struct hinic_func_to_io *nic_io;
- 	struct hinic_pfhwdev *pfhwdev;
--	u32 i, cmd_number;
-+	u32 i;
- 	int err = 0;
+applies cleanly on v5.7-rc3, current master and next-20200428
+
+ MAINTAINERS | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 26f281d9f32a..41e2b577488f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7746,11 +7746,6 @@ L:	platform-driver-x86@vger.kernel.org
+ S:	Orphan
+ F:	drivers/platform/x86/tc1100-wmi.c
  
- 	if (!hwdev)
- 		return -EFAULT;
- 
--	cmd_number = sizeof(nic_vf_cmd_msg_handler) /
--			    sizeof(struct vf_cmd_msg_handle);
- 	pfhwdev = container_of(dev, struct hinic_pfhwdev, hwdev);
- 	nic_io = &dev->func_to_io;
--	for (i = 0; i < cmd_number; i++) {
-+	for (i = 0; i < ARRAY_SIZE(nic_vf_cmd_msg_handler); i++) {
- 		vf_msg_handle = &nic_vf_cmd_msg_handler[i];
- 		if (cmd == vf_msg_handle->cmd &&
- 		    vf_msg_handle->cmd_msg_handler) {
-@@ -725,7 +723,7 @@ int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
- 			break;
- 		}
- 	}
--	if (i == cmd_number)
-+	if (i == ARRAY_SIZE(nic_vf_cmd_msg_handler))
- 		err = hinic_msg_to_mgmt(&pfhwdev->pf_to_mgmt, HINIC_MOD_L2NIC,
- 					cmd, buf_in, in_size, buf_out,
- 					out_size, HINIC_MGMT_MSG_SYNC);
+-HP100:	Driver for HP 10/100 Mbit/s Voice Grade Network Adapter Series
+-M:	Jaroslav Kysela <perex@perex.cz>
+-S:	Obsolete
+-F:	drivers/staging/hp/hp100.*
+-
+ HPET:	High Precision Event Timers driver
+ M:	Clemens Ladisch <clemens@ladisch.de>
+ S:	Maintained
 -- 
-2.6.2
+2.17.1
 
