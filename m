@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AB01BE04B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3B11BE04D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgD2OKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:10:20 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3341 "EHLO huawei.com"
+        id S1728168AbgD2OKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:10:22 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:36840 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726691AbgD2OKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:10:19 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id C86CD686A7DCC01E1F55;
-        Wed, 29 Apr 2020 22:10:12 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Wed, 29 Apr 2020
- 22:09:58 +0800
+        id S1726691AbgD2OKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 10:10:21 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 4038964235C1C3E36776;
+        Wed, 29 Apr 2020 22:10:18 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Wed, 29 Apr 2020
+ 22:10:09 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <pkshih@realtek.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <linux-wireless@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+To:     <tsbogend@alpha.franken.de>, <pbonzini@redhat.com>,
+        <sean.j.christopherson@intel.com>, <linux-mips@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] rtlwifi: remove comparison of 0/1 to bool variable
-Date:   Wed, 29 Apr 2020 22:09:24 +0800
-Message-ID: <20200429140924.7750-1-yanaijie@huawei.com>
+Subject: [PATCH] KVM: MIPS: use true,false for bool variable
+Date:   Wed, 29 Apr 2020 22:09:35 +0800
+Message-ID: <20200429140935.7993-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -36,32 +36,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable 'rtlpriv->rfkill.rfkill_state' is bool and can directly
-assigned to bool values.
-
 Fix the following coccicheck warning:
 
-drivers/net/wireless/realtek/rtlwifi/core.c:1725:14-42: WARNING:
-Comparison of 0/1 to bool variable
+arch/mips/kvm/mips.c:82:1-28: WARNING: Assignment of 0/1 to bool
+variable
+arch/mips/kvm/mips.c:88:1-28: WARNING: Assignment of 0/1 to bool
+variable
 
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/net/wireless/realtek/rtlwifi/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kvm/mips.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtlwifi/core.c b/drivers/net/wireless/realtek/rtlwifi/core.c
-index f73e690bbe8e..4dd82c6052f0 100644
---- a/drivers/net/wireless/realtek/rtlwifi/core.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/core.c
-@@ -1722,7 +1722,7 @@ static void rtl_op_rfkill_poll(struct ieee80211_hw *hw)
- 				 "wireless radio switch turned %s\n",
- 				  radio_state ? "on" : "off");
+diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+index 9f50ceef9978..44eb36b1dbd8 100644
+--- a/arch/mips/kvm/mips.c
++++ b/arch/mips/kvm/mips.c
+@@ -79,13 +79,13 @@ bool kvm_trace_guest_mode_change;
  
--			blocked = (rtlpriv->rfkill.rfkill_state == 1) ? 0 : 1;
-+			blocked = !rtlpriv->rfkill.rfkill_state;
- 			wiphy_rfkill_set_hw_state(hw->wiphy, blocked);
- 		}
- 	}
+ int kvm_guest_mode_change_trace_reg(void)
+ {
+-	kvm_trace_guest_mode_change = 1;
++	kvm_trace_guest_mode_change = true;
+ 	return 0;
+ }
+ 
+ void kvm_guest_mode_change_trace_unreg(void)
+ {
+-	kvm_trace_guest_mode_change = 0;
++	kvm_trace_guest_mode_change = false;
+ }
+ 
+ /*
 -- 
 2.21.1
 
