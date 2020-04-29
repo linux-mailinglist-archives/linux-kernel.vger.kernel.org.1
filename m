@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCBA1BD871
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EF81BD84D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgD2Ji1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 05:38:27 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:13556 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgD2Ji1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 05:38:27 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app04-12004 (RichMail) with SMTP id 2ee45ea94af6929-add2e; Wed, 29 Apr 2020 17:37:58 +0800 (CST)
-X-RM-TRANSID: 2ee45ea94af6929-add2e
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.104.146.39])
-        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee65ea94af2f5a-e8bde;
-        Wed, 29 Apr 2020 17:37:58 +0800 (CST)
-X-RM-TRANSID: 2ee65ea94af2f5a-e8bde
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com, shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] ASoC: mxs-saif: Fix unused assignment
-Date:   Wed, 29 Apr 2020 17:38:23 +0800
-Message-Id: <20200429093823.1372-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1726636AbgD2Jct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 05:32:49 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3339 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726423AbgD2Jct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 05:32:49 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 38B0DC4EAF167E610303;
+        Wed, 29 Apr 2020 17:32:46 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 29 Apr 2020 17:32:35 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <airlied@linux.ie>, <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] drm/dp_mst: use false for bool variable
+Date:   Wed, 29 Apr 2020 17:38:47 +0800
+Message-ID: <1588153127-76124-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete unused initialized value, because 'ret' will be assigined
-by the function of_alias_get_id().
+Fixes coccicheck warning:
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+drivers/gpu/drm/drm_dp_mst_topology.c:2229:6-13: WARNING: Assignment of 0/1 to bool variable
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- sound/soc/mxs/mxs-saif.c | 2 +-
+ drivers/gpu/drm/drm_dp_mst_topology.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 1e38ce858..dc197883e 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -733,7 +733,7 @@ static int mxs_saif_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
- 	struct mxs_saif *saif;
--	int irq, ret = 0;
-+	int irq, ret;
- 	struct device_node *master;
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index 1e26b89..1ce13c5 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -2226,7 +2226,7 @@ drm_dp_mst_handle_link_address_port(struct drm_dp_mst_branch *mstb,
+ 	struct drm_dp_mst_port *port;
+ 	int old_ddps = 0, ret;
+ 	u8 new_pdt = DP_PEER_DEVICE_NONE;
+-	bool new_mcs = 0;
++	bool new_mcs = false;
+ 	bool created = false, send_link_addr = false, changed = false;
  
- 	if (!np)
+ 	port = drm_dp_get_port(mstb, port_msg->port_number);
 -- 
-2.20.1.windows.1
-
-
+2.6.2
 
