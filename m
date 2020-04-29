@@ -2,150 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86A71BD8F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EB81BD911
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgD2KAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 06:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726423AbgD2KAq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 06:00:46 -0400
-X-Greylist: delayed 160297 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Apr 2020 03:00:45 PDT
-Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0748AC03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 03:00:45 -0700 (PDT)
-Received: from mxbackcorp1j.mail.yandex.net (mxbackcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::162])
-        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 4F0B62E14F8;
-        Wed, 29 Apr 2020 13:00:41 +0300 (MSK)
-Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
-        by mxbackcorp1j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id LwAPw3r2ej-0eWKRgZF;
-        Wed, 29 Apr 2020 13:00:41 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1588154441; bh=gP489w7s3rUBOauoVcawLipj/7JSOZ/VcxF7zU9U1Gs=;
-        h=Message-ID:Date:To:From:Subject:Cc;
-        b=0EGsba8Aaim60DqlIBUCLHkdJpDnvU8kuuHe/IvJ8tCccZahcBwY+Qu9c/B0S2oYQ
-         9xGbBa47LycxIJQq7h8I+wBlCFucIUH7JK+208JM5paI/vvEfV6NKbahdVdsq3o1eR
-         M/e/nQo9mqMKtdAKQt1EORuZoY+9jkIKfHwKR5Js=
-Authentication-Results: mxbackcorp1j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:6905::1:6])
-        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id WSh2rztLM4-0dWKIrZP;
-        Wed, 29 Apr 2020 13:00:40 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: [PATCH] perf tool: fix detection of active SMT
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-To:     linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Kan Liang <kan.liang@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-Date:   Wed, 29 Apr 2020 13:00:39 +0300
-Message-ID: <158815443969.303706.11130341357699244442.stgit@buzz>
-User-Agent: StGit/0.19
+        id S1726907AbgD2KG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 06:06:57 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3381 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726345AbgD2KGv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 06:06:51 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 3B04ED5A3D1979CF669D;
+        Wed, 29 Apr 2020 18:06:48 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 29 Apr 2020 18:06:41 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <geoff@infradead.org>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <wangxiongfeng2@huawei.com>
+Subject: [PATCH] powerpc/ps3: Move static keyword to the front of declaration
+Date:   Wed, 29 Apr 2020 18:00:48 +0800
+Message-ID: <1588154448-56759-1-git-send-email-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SMT now could be disabled via "/sys/devices/system/cpu/smt/control".
-Status shown in "/sys/devices/system/cpu/smt/active" simply as "0" / "1".
+Move the static keyword to the front of declaration of 'vuart_bus_priv',
+and resolve the following compiler warning that can be seen when
+building with warnings enabled (W=1):
 
-If this knob isn't here fallback to checking topology but fix couple bugs:
+drivers/ps3/ps3-vuart.c:867:1: warning: ‘static’ is not at beginning of declaration [-Wold-style-declaration]
+ } static vuart_bus_priv;
+ ^
 
-Check access("devices/system/cpu/cpu%d/topology/core_cpus", F_OK) fails,
-unless current directory is "/sys". Simply try read this file first.
-
-Cpu bitmap is split into 32 bit words. For system with more than 32 cores
-threads are always in different words thus first word never has two bits:
-cpu0: "0000,00000100,00000001", cpu 79: "8000,00000080,00000000".
-
-Instead of parsing bitmap read "core_cpus_list" or "thread_siblings_list"
-and simply check presence of ',' or '-' in it.
-
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Fixes: de5077c4e38f ("perf tools: Add utility function to detect SMT status")
-Fixes: 0ccdb8407a46 ("perf tools: Apply new CPU topology sysfs attributes")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 ---
- tools/perf/util/smt.c |   41 +++++++++++++++++++++--------------------
- 1 file changed, 21 insertions(+), 20 deletions(-)
+ drivers/ps3/ps3-vuart.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/smt.c b/tools/perf/util/smt.c
-index 3b791ef2cd50..c398528d1006 100644
---- a/tools/perf/util/smt.c
-+++ b/tools/perf/util/smt.c
-@@ -1,6 +1,7 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <unistd.h>
-+#include <string.h>
- #include <linux/bitops.h>
- #include "api/fs/fs.h"
- #include "smt.h"
-@@ -9,39 +10,39 @@ int smt_on(void)
- {
- 	static bool cached;
- 	static int cached_result;
-+	int active;
- 	int cpu;
- 	int ncpu;
-+	char *str = NULL;
-+	size_t strlen;
+diff --git a/drivers/ps3/ps3-vuart.c b/drivers/ps3/ps3-vuart.c
+index ddaa5ea..8e80e09 100644
+--- a/drivers/ps3/ps3-vuart.c
++++ b/drivers/ps3/ps3-vuart.c
+@@ -858,13 +858,13 @@ static int ps3_vuart_handle_port_interrupt(struct ps3_system_bus_device *dev)
+ 	return 0;
+ }
  
- 	if (cached)
- 		return cached_result;
+-struct vuart_bus_priv {
++static struct vuart_bus_priv {
+ 	struct ports_bmp *bmp;
+ 	unsigned int virq;
+ 	struct mutex probe_mutex;
+ 	int use_count;
+ 	struct ps3_system_bus_device *devices[PORT_COUNT];
+-} static vuart_bus_priv;
++} vuart_bus_priv;
  
-+	if (sysfs__read_int("devices/system/cpu/smt/active", &active) > 0)
-+		goto done;
-+
- 	ncpu = sysconf(_SC_NPROCESSORS_CONF);
- 	for (cpu = 0; cpu < ncpu; cpu++) {
--		unsigned long long siblings;
--		char *str;
--		size_t strlen;
- 		char fn[256];
- 
--		snprintf(fn, sizeof fn,
--			"devices/system/cpu/cpu%d/topology/core_cpus", cpu);
--		if (access(fn, F_OK) == -1) {
--			snprintf(fn, sizeof fn,
--				"devices/system/cpu/cpu%d/topology/thread_siblings",
--				cpu);
--		}
--		if (sysfs__read_str(fn, &str, &strlen) < 0)
--			continue;
--		/* Entry is hex, but does not have 0x, so need custom parser */
--		siblings = strtoull(str, NULL, 16);
--		free(str);
--		if (hweight64(siblings) > 1) {
--			cached_result = 1;
--			cached = true;
-+		snprintf(fn, sizeof(fn), "devices/system/cpu/cpu%d/topology/%s",
-+			 cpu, "core_cpus_list");
-+		if (sysfs__read_str(fn, &str, &strlen) > 0)
-+			break;
-+
-+		snprintf(fn, sizeof(fn), "devices/system/cpu/cpu%d/topology/%s",
-+			 cpu, "thread_siblings_list");
-+		if (sysfs__read_str(fn, &str, &strlen) > 0)
- 			break;
--		}
- 	}
-+
-+	active = str && (strchr(str, ',') != NULL || strchr(str, '-') != NULL);
-+	free(str);
-+
-+done:
- 	if (!cached) {
--		cached_result = 0;
-+		cached_result = active;
- 		cached = true;
- 	}
- 	return cached_result;
+ /**
+  * ps3_vuart_irq_handler - first stage interrupt handler
+-- 
+1.7.12.4
 
