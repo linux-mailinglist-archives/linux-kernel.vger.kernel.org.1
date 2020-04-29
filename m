@@ -2,69 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AA21BD167
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 02:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8881A1BD16A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 02:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgD2Aum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 20:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
+        id S1726530AbgD2AwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 20:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726353AbgD2Aul (ORCPT
+        by vger.kernel.org with ESMTP id S1726353AbgD2AwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 20:50:41 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1EAC03C1AC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 17:50:39 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id c24so254075uap.13
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 17:50:39 -0700 (PDT)
+        Tue, 28 Apr 2020 20:52:21 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007BEC03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 17:52:20 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id mq3so66926pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 17:52:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6u3sVYzO/Ci5rYvWAGcPeyuh2kJ6IDPGvpL5WgquApI=;
-        b=cK2TC6oquRyuDEIZ1S6rIu8b3VOBFMwrJQubosXZZog80NmR+y/OlKbMCRaYQhZhpm
-         sWdEbha+b9pOy8AmCfTklC2xUV8b1e0VwH2uu5DoFuI05bntFwhljyerZYyRnK32Ze1Z
-         pmka47TcDe2giuk2cFnHmM+QKkaEQD1W78IU4=
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rN6lzh1HO7SQ5a1mJWUzVv7pQ/WYiEXJe4nN1cTa5qQ=;
+        b=MfYvGkg0E36KkDEUNVqNoMHi4kvTBkFhVPDMvs9JK86Ojx9aJWa7Pg/QX9KT4cZo8x
+         vp+NJ3MbB39Q7sc2/bFpuOq6mR2ppSAAw8TIbfe52vt3vnOXuBJPzk+RsoyK+4jMO8Bh
+         8BWgeEw0zmhh7uvFJxmfp8wa1ARMXdqAHBMWo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6u3sVYzO/Ci5rYvWAGcPeyuh2kJ6IDPGvpL5WgquApI=;
-        b=RfE78tai5G+7VU+J6VmEsMGhBlf50ABQRZRNA2Cck4jw89TU9zZo95GPev79/CB9/U
-         fNWs6YaRsqXEGWyPXsKmW7Wha8LP5d9hvTvHhqVp+ng+7YlW1+n3rJ8Kq3yo6GDF13tk
-         c8H0/o8qyMqV+J6ES9qBLsI9LMFBv0QrTUaYwdjEDu3aUDYrmkUSO6SNghg0W4rpoNci
-         lMeaTx2rTI0iWvprTBAsq7USzkVf2mogSA63gltv4/duwDT0UKJ+zwvU/yorN1PvwVm2
-         KRa5yhr0f3EmsYzgNf6BNucDCeieMYmjbtSiz4T3dj/cr8I21L4kxfs2Y/iLBCrIJxt0
-         u/fA==
-X-Gm-Message-State: AGi0Pua+xBhMlAZ2oVcBLd6oGzTI8M1kIY61+sxtzla0pRk3SbHU9sw+
-        VM70Fct/ZGqSD8p/bsW/Q+4ys6TYqPs=
-X-Google-Smtp-Source: APiQypJnPoB9T7yYiv/d8OlLecmfamjfetfCRKMdU9/Z2SJI5opjmYoTS8JMw7k4qoh+vDPQ6En4HA==
-X-Received: by 2002:a9f:2907:: with SMTP id t7mr22066689uat.4.1588121438924;
-        Tue, 28 Apr 2020 17:50:38 -0700 (PDT)
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com. [209.85.222.46])
-        by smtp.gmail.com with ESMTPSA id r188sm4631180vsb.20.2020.04.28.17.50.38
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rN6lzh1HO7SQ5a1mJWUzVv7pQ/WYiEXJe4nN1cTa5qQ=;
+        b=YDd/zc3m9Doe/Z9V8ViH2u/u780x9A7wGFWoMpwuEAfTUjA3iuaOhDt1pzFvPWMLhG
+         XwxX0kfeYby6aksvy5BzPQ+sco6G8+I9CtC7Joh+FOb0J1nL9e2UO6j5enLcHCBN8I6F
+         AphiNwugHD1x/+mBrF4/BUCnVtqAdE8Zgx8rcSlXnOJUlB91wbgU1ZIKiRJjloo9l3dW
+         vTYXUoqpA+oOi/UyMPAAW/d8mAUCBfJop+HlxLhXt5WvSRt7bjMFHC6PI9ymR5U8IydS
+         QC2jbBD3LmMM2FNkKdsG3SocJ6zssBU4YNL7DUQubAKS42Z+18q7VhYeUPmc6AcKFAmd
+         l+9A==
+X-Gm-Message-State: AGi0PuanmBISW4Ai/ag9IGoR9SSayd1MEJj8yq9uTcnfRt52QfsHx58A
+        LG2Ve8vUpbfRuKUF6QWjc1F65g==
+X-Google-Smtp-Source: APiQypJ3CMyOvb8iG4oSBSb6yTfenmSgIpnIcDpYDhZ0ot1VO0Sx06ThIhO9CBG26qDIlXxW/OVNJg==
+X-Received: by 2002:a17:902:690b:: with SMTP id j11mr32585184plk.145.1588121540569;
+        Tue, 28 Apr 2020 17:52:20 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id o1sm3114190pjs.35.2020.04.28.17.52.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Apr 2020 17:50:38 -0700 (PDT)
-Received: by mail-ua1-f46.google.com with SMTP id y10so285758uao.8
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 17:50:38 -0700 (PDT)
-X-Received: by 2002:ab0:375a:: with SMTP id i26mr1184039uat.120.1588121438064;
- Tue, 28 Apr 2020 17:50:38 -0700 (PDT)
+        Tue, 28 Apr 2020 17:52:20 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 17:52:19 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 16/17] arm64: dts: sdm845: Add qspi opps and
+ power-domains
+Message-ID: <20200429005219.GQ4525@google.com>
+References: <1588080785-6812-1-git-send-email-rnayak@codeaurora.org>
+ <1588080785-6812-17-git-send-email-rnayak@codeaurora.org>
 MIME-Version: 1.0
-References: <20200428172322.1.I396f351e364f3c09df7c7606e79abefb8682c092@changeid>
- <20200428172322.2.Iacb3c8152c3cf9015a91308678155a578b0cc050@changeid> <a23b7a97f349e6f74b993a4e127564ad3f7d6929.camel@perches.com>
-In-Reply-To: <a23b7a97f349e6f74b993a4e127564ad3f7d6929.camel@perches.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 28 Apr 2020 17:50:26 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Us6LyfgeXvxnqq+KhHN1djok1y+W_xzSb-KGFy2wgEMg@mail.gmail.com>
-Message-ID: <CAD=FV=Us6LyfgeXvxnqq+KhHN1djok1y+W_xzSb-KGFy2wgEMg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpio: Make "offset" and "unsigned int", not just "unsigned"
-To:     Joe Perches <joe@perches.com>
-Cc:     LinusW <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1588080785-6812-17-git-send-email-rnayak@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -72,33 +68,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Tue, Apr 28, 2020 at 5:38 PM Joe Perches <joe@perches.com> wrote:
->
-> On Tue, 2020-04-28 at 17:23 -0700, Douglas Anderson wrote:
-> > When I copied the function prototypes from the GPIO header file into
-> > my own driver, checkpatch yelled at me saying that I shouldn't use use
-> > "unsigned" but instead should say "unsigned int".  Let's make the
-> > header file use "unsigned int" so others who copy like I did won't get
-> > yelled at.
->
-> There are a few other unsigned declarations in the file.
+On Tue, Apr 28, 2020 at 07:03:04PM +0530, Rajendra Nayak wrote:
+> Add the power domain supporting performance state and the corresponding
+> OPP tables for the qspi device on sdm845
+> 
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index 67e3b90..1843123 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -3017,6 +3017,30 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		qspi_opp_table: qspi-opp-table {
+> +			compatible = "operating-points-v2";
+> +
+> +			opp-19200000 {
+> +				opp-hz = /bits/ 64 <19200000>;
+> +				required-opps = <&rpmhpd_opp_min_svs>;
+> +			};
+> +
+> +			opp-100000000 {
+> +				opp-hz = /bits/ 64 <100000000>;
+> +				required-opps = <&rpmhpd_opp_low_svs>;
+> +			};
+> +
+> +			opp-150000000 {
+> +				opp-hz = /bits/ 64 <150000000>;
+> +				required-opps = <&rpmhpd_opp_svs>;
+> +			};
+> +
+> +			opp-300000000 {
+> +				opp-hz = /bits/ 64 <300000000>;
+> +				required-opps = <&rpmhpd_opp_nom>;
+> +			};
+> +		};
 
-There are?  I swear I looked for them before I sent my patch and I
-couldn't find them.  Then I looked again upon seeing your reply and I
-still can't find them.  My eyes are bad, though.  Maybe you can give
-me specifics?
-
-
-> Maybe do all of them (and remove the unnecessary externs)?
-
-You mean just remove the word "extern" everywhere in this file?  Sure,
-I can if you want.
-
-
-> trivial reformatting of the function pointer block too
-
-Wow, I must be totally out of it.  Maybe it's the gin and tonic I just
-had.  I don't understand this comment either.  Can you clarify?
-
-
--Doug
+move OPP table inside the 'qspi' node (like 'rpmhpd_opp_table',
+'gpu_opp_table' or 'gmu_opp_table').
