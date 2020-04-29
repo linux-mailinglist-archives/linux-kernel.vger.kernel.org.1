@@ -2,85 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4FC1BD6D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CFB1BD6F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726511AbgD2IHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 04:07:31 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:48217 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbgD2IHb (ORCPT
+        id S1726503AbgD2IQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 04:16:20 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:59266 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726355AbgD2IQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 04:07:31 -0400
-Received: from mail-qt1-f169.google.com ([209.85.160.169]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1Mqagw-1iqC123Skq-00mehJ; Wed, 29 Apr 2020 10:07:29 +0200
-Received: by mail-qt1-f169.google.com with SMTP id z90so1107430qtd.10;
-        Wed, 29 Apr 2020 01:07:28 -0700 (PDT)
-X-Gm-Message-State: AGi0PubUYmDFnOTInJ1eyFUUywCG7T/YgBsKecYpdh1L0bNR/t+Nki6G
-        Nw1BVV8wvYVGbaMPzNbL4dEq/vjb2BdmiRFwLPU=
-X-Google-Smtp-Source: APiQypLfq9vA8PAqfU/YH18U09P0GJiLGEJ7pxzfmyyZ8eMnuqIgB3yzKDt07rPkw8Uw/LGU/qVDLoTi47iZXZD4HCg=
-X-Received: by 2002:ac8:4c8d:: with SMTP id j13mr32077431qtv.142.1588147647641;
- Wed, 29 Apr 2020 01:07:27 -0700 (PDT)
+        Wed, 29 Apr 2020 04:16:20 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200429080944euoutp0144b3f7a27ec289849a427435394b4385~KO-7VLP3a0941309413euoutp01M
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:09:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200429080944euoutp0144b3f7a27ec289849a427435394b4385~KO-7VLP3a0941309413euoutp01M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1588147784;
+        bh=E3/63fbyPb1GHXrZ02mRszxPZgR2rp/bdliWjE9lF2w=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=thX8FtCR9dKALIGQ5h7liJQBUubXV/Y+9OddUvEPRW4D8RV6I9xgvB1nAYmgmo0HG
+         1zLwwQG99nrJxmNEupC/kODoMMbM80jy0tqDk4ZawkZdrY6LPxSQ6LsdrSsKlZ2WSG
+         9IX53FB8sT4PKe1BbvZ6wQnBVLN/lq/LxMpEVT0A=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200429080944eucas1p2d9ee84166e661b360e6a767576d36cda~KO-7GsICW2934929349eucas1p2S;
+        Wed, 29 Apr 2020 08:09:44 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 71.3F.60679.74639AE5; Wed, 29
+        Apr 2020 09:09:43 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200429080943eucas1p2af0045f4b5380ea86c25cb9d450e10fe~KO-6vhcg41870118701eucas1p29;
+        Wed, 29 Apr 2020 08:09:43 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200429080943eusmtrp1e3d8e6c0416c8e5c71e95937ac5a609a~KO-6u5W4E2531225312eusmtrp1Z;
+        Wed, 29 Apr 2020 08:09:43 +0000 (GMT)
+X-AuditID: cbfec7f4-0cbff7000001ed07-a1-5ea93647ac3c
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id A7.DF.08375.74639AE5; Wed, 29
+        Apr 2020 09:09:43 +0100 (BST)
+Received: from [106.120.51.71] (unknown [106.120.51.71]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200429080943eusmtip20c65c021fe08c81e0347decbea7b2a6f~KO-6ZxqqE1358413584eusmtip2P;
+        Wed, 29 Apr 2020 08:09:43 +0000 (GMT)
+Subject: Re: linux-next: build failure after merge of the drm-misc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Message-ID: <997e83ad-1966-6ebd-13d1-05617b67b7f8@samsung.com>
+Date:   Wed, 29 Apr 2020 10:09:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20200428074827.GA19846@lst.de> <20200428195645.1365019-1-arnd@arndb.de>
- <20200429064458.GA31717@lst.de>
-In-Reply-To: <20200429064458.GA31717@lst.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Wed, 29 Apr 2020 10:07:11 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1YD3RitSLLRsM+e+LwAxg+NS6F071B4zokwEpiL0WvrA@mail.gmail.com>
-Message-ID: <CAK8P3a1YD3RitSLLRsM+e+LwAxg+NS6F071B4zokwEpiL0WvrA@mail.gmail.com>
-Subject: Re: [PATCH] fixup! signal: factor copy_siginfo_to_external32 from copy_siginfo_to_user32
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeremy Kerr <jk@ozlabs.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:HDtOAVxf7F2kbOnVT+0Pbdsy6gyVLoRB+Ord+l/jmjxXPAbBL42
- 3+X+s/6c2JKSUDROKdUmb5RfzZOCOLmDD0yRRZiZK+C7ON33X4xGtgMFU3xmOohU6YZuk7G
- TztkztYiKr7uIxCPFCPqnwjUVQ29tybSJMdZBq4nmAbY2lRPFzIWDPV5ZGvExkctRcT3yFm
- ZB2LEJX08qFqgpeyjSuLg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wC5lmBW+bg0=:t+X4oCSjs88VFqmJoFXRW+
- PptH+Yin5M5HwIqowvIh7j5a3pqRYf4LmGVib8xT6NTu0w4nRBKkosFPAzHPM0+rNx+6ywE8H
- 91s8dVamJO/NorU94C+chA5zrmcwuibPKaO5mJfgDl9EPm2EwYRoXgw4vDDEZiBuFkfLHPZsX
- lP5p424klNI+NYvHYYDKZox/RSfqUcRkPEvaQG1vYmcphN+IqPQLBUM6+vmtyxQPoO38jWS5R
- bBhCAXyq8UQMX9fW2FFtErI4qXrl258imjxI7l8+0rPOwApFoxi6/dI1dXNAC6nx2G+8Npkt0
- 5RfwBFYY9e0qaztiFn0V1iNxalGyLiNkZCgU35oyMXgbSG+mtcfwZnrYBvK3VI9wK5D0FmfXB
- YqMchPDOamFSbN0XehNnpGoEMtc/L8lZr2121QvnnKOeM6JZs2VYzjZMA2vXtX2f2qMUHcgPM
- stQMu3VDvnm/ceky/oDEdfBWKiEk8zPpDXGMRBmjf41fsPTlHfsYrtKQFEH1vaLp0ksa1yYZW
- hEJUzpiV9QqyuTOOOCiA459HRGwy3LNYget1RVXzdcfdp2hUjsSv+CEaMyl4JGY673KznVcky
- y0Bo3A1brwQSdWPz/SVKVM5o3FH/0aOSXNAaQu0i37MjgQD/kBvUAGtSIFlU8M/6Ey0oeI3ue
- 109PRLULFsB9+EPm8SWmKrU4YJCavN5kAc8dLWRf9efWbMY57yqsryhvV/wOWi7VbjWmx7Hcj
- h5Sju4us+oZYqLkMsNH7mXPIHBeKanbM3LPzM/cI9/buI6TdHfetDN+ODVhRrJDjJf/0e6Mi7
- nmedfvD/cN04U7eTD7/CP7sQa+NLyf3i+JtGQ+j1CCPfv+loUA=
+In-Reply-To: <20200429083329.30ff39a1@canb.auug.org.au>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAKsWRmVeSWpSXmKPExsWy7djP87ruZivjDPavt7ZY+PAus8WVr+/Z
+        LGZP2MxkcXnXHDaLgwvbGC227r3K7sDm0XjjBpvH3m8LWDzudx9n8vi8SS6AJYrLJiU1J7Ms
+        tUjfLoEr4+DsMywFLyUr1i5dyNTAuEK0i5GDQ0LARGL/ZCCTi0NIYAWjxP1Xd1ghnC+MEtde
+        T2GCcD4zSmz5uoeti5ETrOPi3wcsEInljBJzz05lhnDeMkp077nDDlIlLOAucfxHIxPIDhEB
+        bYkDvwVAapgFfjJKfN9wjgmkhk3ASmJi+ypGkBpeATuJxiMaICaLgKrE1GUmIBWiAhESnx4c
+        ZgWxeQUEJU7OfMICYnMKmEtMWHwXbBOzgIHEkUVzWCFscYlbT+YzQdjyEtvfzmGGuHkVu8S2
+        894QtovE2juzoeLCEq+Ob2GHsGUkTk/uAftLQmAdo8TfjhfMEM52Ronlk/9BfW8tcefcLyjb
+        UWLlncMskHDkk7jxVhBiMZ/EpG3TmSHCvBIdbUIQ1WoSG5ZtYIPZ1bVzJfMERqVZSF6bheSd
+        WUjemYXknQWMLKsYxVNLi3PTU4uN8lLL9YoTc4tL89L1kvNzNzEC083pf8e/7GDc9SfpEKMA
+        B6MSD+8GnhVxQqyJZcWVuYcYJTiYlUR4H2UsixPiTUmsrEotyo8vKs1JLT7EKM3BoiTOa7zo
+        ZayQQHpiSWp2ampBahFMlomDU6qBsWORW0Fgae8+f4dHO6avfCT18Aqf+1n11hAfuxUXgjfJ
+        KW8XO7Z4zRP+J3FSm0t1l9e77FbZ9izh06LW12WFe70OzHE95FL1L+NYYmTDzdfN+T0lF9bx
+        s5kGbf8gtC6Ox/bQLOs/qyM3vNj67R9Lae2E9hU2nK8V9/XOXpY4+f1hG8Woe9ONniuxFGck
+        GmoxFxUnAgB9PjuWMwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIIsWRmVeSWpSXmKPExsVy+t/xe7ruZivjDOYvV7JY+PAus8WVr+/Z
+        LGZP2MxkcXnXHDaLgwvbGC227r3K7sDm0XjjBpvH3m8LWDzudx9n8vi8SS6AJUrPpii/tCRV
+        ISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/OJiU1J7MstUjfLkEv4+DsMywFLyUr1i5d
+        yNTAuEK0i5GTQ0LAROLi3wcsXYxcHEICSxklDi++ztbFyAGUkJE4vr4MokZY4s+1LjaImteM
+        Eg1P/jCCJIQF3CWO/2hkAqkXEdCWOPBbAKSGWeA3o8T645OgGrYzSszeNYUJpIFNwEpiYvsq
+        RpAGXgE7icYjGiAmi4CqxNRlJiAVogIREod3zAIbzysgKHFy5hMWEJtTwFxiwuK77CA2s4Ce
+        xI7rv1ghbHGJW0/mM0HY8hLb385hnsAoNAtJ+ywkLbOQtMxC0rKAkWUVo0hqaXFuem6xoV5x
+        Ym5xaV66XnJ+7iZGYHRtO/Zz8w7GSxuDDzEKcDAq8fBu4FkRJ8SaWFZcmXuIUYKDWUmE91HG
+        sjgh3pTEyqrUovz4otKc1OJDjKZAv01klhJNzgdGfl5JvKGpobmFpaG5sbmxmYWSOG+HwMEY
+        IYH0xJLU7NTUgtQimD4mDk6pBsbgnU3lgfva2xVMrnr9qD7Kskr/ltAjOT4HS8NPx56Guj+x
+        SNr7YlfMPyNrPqfKR3c6TO1urpOaymjOy5ko2PlXYZGXt1gA685dl3kjly/gPLrK7ElmvlvZ
+        3cLqZ76KS4Ol2l2X+N13WNqTecpldY6hV3Jch8PD1Nxj/z1m7hL61pqZqFkWoMRSnJFoqMVc
+        VJwIAMYTVJ3EAgAA
+X-CMS-MailID: 20200429080943eucas1p2af0045f4b5380ea86c25cb9d450e10fe
+X-Msg-Generator: CA
+X-RootMTR: 20200428223343eucas1p1ef3e4998b8063ade8b456611e39b7865
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200428223343eucas1p1ef3e4998b8063ade8b456611e39b7865
+References: <20200420130118.7a866fd5@canb.auug.org.au>
+        <CGME20200428223343eucas1p1ef3e4998b8063ade8b456611e39b7865@eucas1p1.samsung.com>
+        <20200429083329.30ff39a1@canb.auug.org.au>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 8:45 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Tue, Apr 28, 2020 at 09:56:26PM +0200, Arnd Bergmann wrote:
-> > I think I found a way to improve the x32 handling:
-> >
-> > This is a simplification over Christoph's "[PATCH 2/7] signal: factor
-> > copy_siginfo_to_external32 from copy_siginfo_to_user32", reducing the
-> > x32 specifics in the common code to a single #ifdef/#endif check, in
-> > order to keep it more readable for everyone else.
-> >
-> > Christoph, if you like it, please fold into your patch.
->
-> What do you think of this version?  This one always overrides
-> copy_siginfo_to_user32 for the x86 compat case to keep the churn down,
-> and improves the copy_siginfo_to_external32 documentation a bit.
 
-Looks good to me. I preferred checking for X32 explicitly (so we can
-find and kill off the #ifdef if we ever remove X32 for good), but there is
-little difference in the end.
+Hi Stephen,
 
-         Arnd
+On 4/29/20 12:33 AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Mon, 20 Apr 2020 13:01:18 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> After merging the drm-misc tree, today's linux-next build (powerpc
+>> allyesconfig) failed like this:
+>>
+>> drivers/video/fbdev/controlfb.c: In function 'controlfb_mmap':
+>> drivers/video/fbdev/controlfb.c:756:23: error: implicit declaration of function 'pgprot_cached_wthru'; did you mean 'pgprot_cached'? [-Werror=implicit-function-declaration]
+>>   756 |   vma->vm_page_prot = pgprot_cached_wthru(vma->vm_page_prot);
+>>       |                       ^~~~~~~~~~~~~~~~~~~
+>>       |                       pgprot_cached
+>> drivers/video/fbdev/controlfb.c:756:23: error: incompatible types when assigning to type 'pgprot_t' {aka 'struct <anonymous>'} from type 'int'
+>>
+>> Presumably exposed by commit
+>>
+>>   a07a63b0e24d ("video: fbdev: controlfb: add COMPILE_TEST support")
+>>
+>> I just turned off COMPILE_TEST again for today.  Please let me know when
+>> this is fixed.
+> 
+> This still appears to have not been addressed.
+
+Sorry for the delay, I've just posted a patch (also included below):
+
+"[PATCH] video: fbdev: controlfb: fix build for COMPILE_TEST=y && PPC_PMAC=y && PPC32=n"
+
+which should fix it.
+
+Please verify it, thank you!
+
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
+
+
+From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: [PATCH] video: fbdev: controlfb: fix build for COMPILE_TEST=y && PPC_PMAC=y && PPC32=n
+
+powerpc allyesconfig fails like this:
+
+drivers/video/fbdev/controlfb.c: In function 'controlfb_mmap':
+drivers/video/fbdev/controlfb.c:756:23: error: implicit declaration of function 'pgprot_cached_wthru'; did you mean 'pgprot_cached'? [-Werror=implicit-function-declaration]
+  756 |   vma->vm_page_prot = pgprot_cached_wthru(vma->vm_page_prot);
+      |                       ^~~~~~~~~~~~~~~~~~~
+      |                       pgprot_cached
+drivers/video/fbdev/controlfb.c:756:23: error: incompatible types when assigning to type 'pgprot_t' {aka 'struct <anonymous>'} from type 'int'
+
+Fix it by adding missing PPC32 dependency.
+
+Fixes: a07a63b0e24d ("video: fbdev: controlfb: add COMPILE_TEST support")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Reported-by: kbuild test robot <lkp@intel.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+---
+ drivers/video/fbdev/controlfb.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+Index: b/drivers/video/fbdev/controlfb.c
+===================================================================
+--- a/drivers/video/fbdev/controlfb.c
++++ b/drivers/video/fbdev/controlfb.c
+@@ -47,7 +47,7 @@
+ #include <linux/nvram.h>
+ #include <linux/adb.h>
+ #include <linux/cuda.h>
+-#ifdef CONFIG_PPC_PMAC
++#if defined(CONFIG_PPC_PMAC) && defined(CONFIG_PPC32)
+ #include <asm/prom.h>
+ #include <asm/btext.h>
+ #endif
+@@ -55,7 +55,7 @@
+ #include "macmodes.h"
+ #include "controlfb.h"
+ 
+-#ifndef CONFIG_PPC_PMAC
++#if !defined(CONFIG_PPC_PMAC) || !defined(CONFIG_PPC32)
+ #define invalid_vram_cache(addr)
+ #undef in_8
+ #undef out_8
