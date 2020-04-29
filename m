@@ -2,123 +2,437 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08571BD524
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D101BD52A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgD2Gxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 02:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726355AbgD2Gxd (ORCPT
+        id S1726854AbgD2Gye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 02:54:34 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:34459 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726355AbgD2Gyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 02:53:33 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63D9C03C1AD;
-        Tue, 28 Apr 2020 23:53:32 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Bq3Z11Qwz9sSb;
-        Wed, 29 Apr 2020 16:53:30 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1588143210;
-        bh=hFHsmeY9uewYE8AQT4rn3OwaK6pdWVRGoOni88zSTPI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jNo8eq6IN7xMGwypND+3vleFimvTfGZr49ISn5xems6ILmil+Irj9Q8jHBFGxk8pq
-         mpExJ7+XVXDuws6DppcfvfzJ3qN+VvZETRl5vkahWRIXjy7HjaK8vYocbc3SjcJYSb
-         RRf6OeYEizoDPv7uTl5fdRYxt4LSuWhOSk9+ehbVhPfi0TeWoyogd8dMH2UQs+aSDN
-         BOwghOTEZpktCB+Wi9NKYhnitAmukvq7Th4dAHAdzi+qMbH5KV/8prrEhatqcQTERy
-         BVbPW8iQGA3IgNPlF0sYRsjjwvoob8wWDN+bqDpAETYlViPMF45iLsbA9tpxPmkbHE
-         YI3f/O6lJ+f2A==
-Date:   Wed, 29 Apr 2020 16:53:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gavin Shan <gshan@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: linux-next: manual merge of the akpm-current tree with the arm64
- tree
-Message-ID: <20200429165328.13619ca5@canb.auug.org.au>
+        Wed, 29 Apr 2020 02:54:33 -0400
+Received: by mail-lj1-f196.google.com with SMTP id f11so1445872ljp.1;
+        Tue, 28 Apr 2020 23:54:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7OF8Jqroi8SEKwU+6NdbITJv7+zIFGlSSzopGeFoceA=;
+        b=Js43ELrawYLhdbJMqjgWdz47DD39L/GoVB+pPFwsDJ8uZT1LGkJxSEeduCv+iXO77s
+         6XymFy7LzX/2mawI4a39cMhtQZ3i0+KaemY2EbkfbNEzEmYRFERlQYT1OSv1VIGIJFK3
+         WyUyt9Bw3iq2PL3dRU2EJw6zoH2/DyUzMyX0MvDEpFIAzBU5g0TAsBpwZq5eKUBcQZAl
+         YR8o/RBhIUQYgTHkOkIySSEa8oyFSSX/DXXF9ph4V3ZAYlvor4NSKD8dURVyYxFp+qmU
+         t+YNCopRQKWnundrjmyG6PPCGhtOtHa1OhoUn5rXzprD3k5h4pqZZt0WJQmvQO1+m6df
+         vNbg==
+X-Gm-Message-State: AGi0PuYZxlnBxpmdisL+RMiNk2w3XFuiZD17RVbfBqST/tyRlwFb1Bq6
+        b0Hi+xlZeYmDu1jpe6G+Q88=
+X-Google-Smtp-Source: APiQypJS9v2Egip8gzdyF5eH1CS8R5ekW3k+NP28hA1czTgiOrK+XLDiPtX4DT3nRmziLcVCQVvmrA==
+X-Received: by 2002:a2e:9990:: with SMTP id w16mr19662322lji.194.1588143269514;
+        Tue, 28 Apr 2020 23:54:29 -0700 (PDT)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id a10sm1520782ljp.16.2020.04.28.23.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 23:54:28 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 09:53:43 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     sre@kernel.org, robh+dt@kernel.org, broonie@kernel.org,
+        lgirdwood@gmail.com, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v10 01/11] lib: add linear ranges helpers
+Message-ID: <aadd70ad382276e8ccbf6c6b91a596d9898a5afd.1586925868.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1586925868.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/EI/XKWUZfTbl.V+lPB9bbVC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1586925868.git.matti.vaittinen@fi.rohmeurope.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EI/XKWUZfTbl.V+lPB9bbVC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Many devices have control registers which control some measurable
+property. Often a register contains control field so that change in
+this field causes linear change in the controlled property. It is not
+a rare case that user wants to give 'meaningful' control values and
+driver needs to convert them to register field values. Even more
+often user wants to 'see' the currently set value - again in
+meaningful units - and driver needs to convert the values it reads
+from register to these meaningful units. Examples of this include:
 
-Hi all,
+- regulators, voltage/current configurations
+- power, voltage/current configurations
+- clk(?) NCOs
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+and maybe others I can't think of right now.
 
-  arch/arm64/include/asm/pgtable.h
+Provide a linear_range helper which can do conversion from user value
+to register value 'selector'.
 
-between commit:
+The idea here is stolen from regulator framework and patches refactoring
+the regulator helpers to use this are following.
 
-  68ecabd0e680 ("arm64/mm: Use phys_to_page() to access pgtable memory")
+Current implementation does not support inversely proportional ranges
+but it might be useful if we could support also inversely proportional
+ranges?
 
-from the arm64 tree and commit:
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
 
-  22998131ab33 ("arm64: add support for folded p4d page tables")
+No changes since v9
 
-from the akpm-current tree.
+ include/linux/linear_range.h |  48 +++++++
+ lib/Kconfig                  |   3 +
+ lib/Makefile                 |   1 +
+ lib/linear_ranges.c          | 241 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 293 insertions(+)
+ create mode 100644 include/linux/linear_range.h
+ create mode 100644 lib/linear_ranges.c
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+diff --git a/include/linux/linear_range.h b/include/linux/linear_range.h
+new file mode 100644
+index 000000000000..17b5943727d5
+--- /dev/null
++++ b/include/linux/linear_range.h
+@@ -0,0 +1,48 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (C) 2020 ROHM Semiconductors */
++
++#ifndef LINEAR_RANGE_H
++#define LINEAR_RANGE_H
++
++#include <linux/types.h>
++
++/**
++ * struct linear_range - table of selector - value pairs
++ *
++ * Define a lookup-table for range of values. Intended to help when looking
++ * for a register value matching certaing physical measure (like voltage).
++ * Usable when increment of one in register always results a constant increment
++ * of the physical measure (like voltage).
++ *
++ * @min:  Lowest value in range
++ * @min_sel: Lowest selector for range
++ * @max_sel: Highest selector for range
++ * @step: Value step size
++ */
++struct linear_range {
++	unsigned int min;
++	unsigned int min_sel;
++	unsigned int max_sel;
++	unsigned int step;
++};
++
++unsigned int linear_range_values_in_range(const struct linear_range *r);
++unsigned int linear_range_values_in_range_array(const struct linear_range *r,
++						int ranges);
++unsigned int linear_range_get_max_value(const struct linear_range *r);
++
++int linear_range_get_value(const struct linear_range *r, unsigned int selector,
++			   unsigned int *val);
++int linear_range_get_value_array(const struct linear_range *r, int ranges,
++				 unsigned int selector, unsigned int *val);
++int linear_range_get_selector_low(const struct linear_range *r,
++				  unsigned int val, unsigned int *selector,
++				  bool *found);
++int linear_range_get_selector_high(const struct linear_range *r,
++				   unsigned int val, unsigned int *selector,
++				   bool *found);
++int linear_range_get_selector_low_array(const struct linear_range *r,
++					int ranges, unsigned int val,
++					unsigned int *selector, bool *found);
++
++#endif
+diff --git a/lib/Kconfig b/lib/Kconfig
+index 5d53f9609c25..8ec05335426c 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -19,6 +19,9 @@ config RAID6_PQ_BENCHMARK
+ 	  Benchmark all available RAID6 PQ functions on init and choose the
+ 	  fastest one.
+ 
++config LINEAR_RANGES
++	tristate
++
+ config PACKING
+ 	bool "Generic bitfield packing and unpacking"
+ 	default n
+diff --git a/lib/Makefile b/lib/Makefile
+index 685aee60de1d..20b9cfdcad69 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -125,6 +125,7 @@ obj-$(CONFIG_DEBUG_LIST) += list_debug.o
+ obj-$(CONFIG_DEBUG_OBJECTS) += debugobjects.o
+ 
+ obj-$(CONFIG_BITREVERSE) += bitrev.o
++obj-$(CONFIG_LINEAR_RANGES) += linear_ranges.o
+ obj-$(CONFIG_PACKING)	+= packing.o
+ obj-$(CONFIG_CRC_CCITT)	+= crc-ccitt.o
+ obj-$(CONFIG_CRC16)	+= crc16.o
+diff --git a/lib/linear_ranges.c b/lib/linear_ranges.c
+new file mode 100644
+index 000000000000..d1336c75ccd7
+--- /dev/null
++++ b/lib/linear_ranges.c
+@@ -0,0 +1,241 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * helpers to map values in a linear range to range index
++ *
++ * Original idea borrowed from regulator framework
++ *
++ * It might be useful if we could support also inversely proportional ranges?
++ * Copyright 2020 ROHM Semiconductors
++ */
++
++#include <linux/errno.h>
++#include <linux/export.h>
++#include <linux/kernel.h>
++#include <linux/linear_range.h>
++
++/**
++ * linear_range_values_in_range - return the amount of values in a range
++ * @r:		pointer to linear range where values are counted
++ *
++ * Compute the amount of values in range pointed by @r. Note, values can
++ * be all equal - range with selectors 0,...,2 with step 0 still contains
++ * 3 values even though they are all equal.
++ *
++ * Return: the amount of values in range pointed by @r
++ */
++unsigned int linear_range_values_in_range(const struct linear_range *r)
++{
++	if (!r)
++		return 0;
++	return r->max_sel - r->min_sel + 1;
++}
++EXPORT_SYMBOL_GPL(linear_range_values_in_range);
++
++/**
++ * linear_range_values_in_range_array - return the amount of values in ranges
++ * @r:		pointer to array of linear ranges where values are counted
++ * @ranges:	amount of ranges we include in computation.
++ *
++ * Compute the amount of values in ranges pointed by @r. Note, values can
++ * be all equal - range with selectors 0,...,2 with step 0 still contains
++ * 3 values even though they are all equal.
++ *
++ * Return: the amount of values in first @ranges ranges pointed by @r
++ */
++unsigned int linear_range_values_in_range_array(const struct linear_range *r,
++						int ranges)
++{
++	int i, values_in_range = 0;
++
++	for (i = 0; i < ranges; i++) {
++		int values;
++
++		values = linear_range_values_in_range(&r[i]);
++		if (!values)
++			return values;
++
++		values_in_range += values;
++	}
++	return values_in_range;
++}
++EXPORT_SYMBOL_GPL(linear_range_values_in_range_array);
++
++/**
++ * linear_range_get_max_value - return the largest value in a range
++ * @r:		pointer to linear range where value is looked from
++ *
++ * Return: the largest value in the given range
++ */
++unsigned int linear_range_get_max_value(const struct linear_range *r)
++{
++	return r->min + (r->max_sel - r->min_sel) * r->step;
++}
++EXPORT_SYMBOL_GPL(linear_range_get_max_value);
++
++/**
++ * linear_range_get_value - fetch a value from given range
++ * @r:		pointer to linear range where value is looked from
++ * @selector:	selector for which the value is searched
++ * @val:	address where found value is updated
++ *
++ * Search given ranges for value which matches given selector.
++ *
++ * Return: 0 on success, -EINVAL given selector is not found from any of the
++ * ranges.
++ */
++int linear_range_get_value(const struct linear_range *r, unsigned int selector,
++			   unsigned int *val)
++{
++	if (r->min_sel > selector || r->max_sel < selector)
++		return -EINVAL;
++
++	*val = r->min + (selector - r->min_sel) * r->step;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(linear_range_get_value);
++
++/**
++ * linear_range_get_value_array - fetch a value from array of ranges
++ * @r:		pointer to array of linear ranges where value is looked from
++ * @ranges:	amount of ranges in an array
++ * @selector:	selector for which the value is searched
++ * @val:	address where found value is updated
++ *
++ * Search through an array of ranges for value which matches given selector.
++ *
++ * Return: 0 on success, -EINVAL given selector is not found from any of the
++ * ranges.
++ */
++int linear_range_get_value_array(const struct linear_range *r, int ranges,
++				 unsigned int selector, unsigned int *val)
++{
++	int i;
++
++	for (i = 0; i < ranges; i++)
++		if (r[i].min_sel <= selector && r[i].max_sel >= selector)
++			return linear_range_get_value(&r[i], selector, val);
++
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(linear_range_get_value_array);
++
++/**
++ * linear_range_get_selector_low - return linear range selector for value
++ * @r:		pointer to linear range where selector is looked from
++ * @val:	value for which the selector is searched
++ * @selector:	address where found selector value is updated
++ * @found:	flag to indicate that given value was in the range
++ *
++ * Return selector which which range value is closest match for given
++ * input value. Value is matching if it is equal or smaller than given
++ * value. If given value is in the range, then @found is set true.
++ *
++ * Return: 0 on success, -EINVAL if range is invalid or does not contain
++ * value smaller or equal to given value
++ */
++int linear_range_get_selector_low(const struct linear_range *r,
++				  unsigned int val, unsigned int *selector,
++				  bool *found)
++{
++	*found = false;
++
++	if (r->min > val)
++		return -EINVAL;
++
++	if (linear_range_get_max_value(r) < val) {
++		*selector = r->max_sel;
++		return 0;
++	}
++
++	*found = true;
++
++	if (r->step == 0)
++		*selector = r->min_sel;
++	else
++		*selector = (val - r->min) / r->step + r->min_sel;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(linear_range_get_selector_low);
++
++/**
++ * linear_range_get_selector_low_array - return linear range selector for value
++ * @r:		pointer to array of linear ranges where selector is looked from
++ * @ranges:	amount of ranges to scan from array
++ * @val:	value for which the selector is searched
++ * @selector:	address where found selector value is updated
++ * @found:	flag to indicate that given value was in the range
++ *
++ * Scan array of ranges for selector which which range value matches given
++ * input value. Value is matching if it is equal or smaller than given
++ * value. If given value is found to be in a range scanning is stopped and
++ * @found is set true. If a range with values smaller than given value is found
++ * but the range max is being smaller than given value, then the ranges
++ * biggest selector is updated to @selector but scanning ranges is continued
++ * and @found is set to false.
++ *
++ * Return: 0 on success, -EINVAL if range array is invalid or does not contain
++ * range with a value smaller or equal to given value
++ */
++int linear_range_get_selector_low_array(const struct linear_range *r,
++					int ranges, unsigned int val,
++					unsigned int *selector, bool *found)
++{
++	int i;
++	int ret = -EINVAL;
++
++	for (i = 0; i < ranges; i++) {
++		int tmpret;
++
++		tmpret = linear_range_get_selector_low(&r[i], val, selector,
++						       found);
++		if (!tmpret)
++			ret = 0;
++
++		if (*found)
++			break;
++	}
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(linear_range_get_selector_low_array);
++
++/**
++ * linear_range_get_selector_high - return linear range selector for value
++ * @r:		pointer to linear range where selector is looked from
++ * @val:	value for which the selector is searched
++ * @selector:	address where found selector value is updated
++ * @found:	flag to indicate that given value was in the range
++ *
++ * Return selector which which range value is closest match for given
++ * input value. Value is matching if it is equal or higher than given
++ * value. If given value is in the range, then @found is set true.
++ *
++ * Return: 0 on success, -EINVAL if range is invalid or does not contain
++ * value greater or equal to given value
++ */
++int linear_range_get_selector_high(const struct linear_range *r,
++				   unsigned int val, unsigned int *selector,
++				   bool *found)
++{
++	*found = false;
++
++	if (linear_range_get_max_value(r) < val)
++		return -EINVAL;
++
++	if (r->min > val) {
++		*selector = r->min_sel;
++		return 0;
++	}
++
++	*found = true;
++
++	if (r->step == 0)
++		*selector = r->max_sel;
++	else
++		*selector = DIV_ROUND_UP(val - r->min, r->step) + r->min_sel;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(linear_range_get_selector_high);
+-- 
+2.21.0
 
---=20
-Cheers,
-Stephen Rothwell
 
-diff --cc arch/arm64/include/asm/pgtable.h
-index 5caff09c6a3a,ef7145c3b96b..000000000000
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@@ -622,10 -632,10 +633,10 @@@ static inline phys_addr_t p4d_page_padd
-  #define pud_offset(dir, addr)		((pud_t *)__va(pud_offset_phys((dir), (add=
-r))))
- =20
-  #define pud_set_fixmap(addr)		((pud_t *)set_fixmap_offset(FIX_PUD, addr))
-- #define pud_set_fixmap_offset(pgd, addr)	pud_set_fixmap(pud_offset_phys(p=
-gd, addr))
-+ #define pud_set_fixmap_offset(p4d, addr)	pud_set_fixmap(pud_offset_phys(p=
-4d, addr))
-  #define pud_clear_fixmap()		clear_fixmap(FIX_PUD)
- =20
-- #define pgd_page(pgd)			phys_to_page(__pgd_to_phys(pgd))
- -#define p4d_page(p4d)		pfn_to_page(__phys_to_pfn(__p4d_to_phys(p4d)))
-++#define p4d_page(p4d)			phys_to_page(__p4d_to_phys(p4d))
- =20
-  /* use ONLY for statically allocated translation tables */
-  #define pud_offset_kimg(dir,addr)	((pud_t *)__phys_to_kimg(pud_offset_phy=
-s((dir), (addr))))
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
---Sig_/EI/XKWUZfTbl.V+lPB9bbVC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6pJGgACgkQAVBC80lX
-0GyO5wf+OLmU9E7qxpHRBu5+In4W7nQAzZebK8jk35wkQ9gtDYJJS4sNEKsXLY10
-LidilguyAkN5pzk5CD8A1dxy7+rfKo6pdoy7gporviKIEPerwq3q+H7h6uPQdSFP
-cxk08WSckZgrV4qbeeHzZWBUVCQZpdmFgFb8Q4+SYCp76tFn8sJGS5qFRNyxDiE2
-MaBol/kYAz2LHsDSAdD7orOydM4J48VuSqE0cIEexjzhfeNJLmjlUYbBUcaOYcJw
-uYj6mGBdHBkr3Yc5uVG7Ik/8hQuCoa6z36TTSJ8c7usJ10S2EH2bY7JAcWZVaLUK
-SSRvo16DWo13RAXOkMzS+6LlGxG61Q==
-=SjDB
------END PGP SIGNATURE-----
-
---Sig_/EI/XKWUZfTbl.V+lPB9bbVC--
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
