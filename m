@@ -2,81 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B5D1BEC0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 00:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB451BEC13
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 00:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgD2WYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 18:24:03 -0400
-Received: from mga17.intel.com ([192.55.52.151]:33252 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726481AbgD2WYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 18:24:03 -0400
-IronPort-SDR: VbB/PxLe7O+XOG0Mfkp26ZuSwxjYA41HyRrTcWmnKUSDLoINR5ykWS2ZbnUkapG7Hce/Nmoq9a
- 8HpBNVo6mDcg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 15:24:02 -0700
-IronPort-SDR: QmHGe38YMh/15b3Az8RAY2FiSQGf0moHXjggntwMvaFvKgufCh1vejIfwUqtMw+VgsIpnWWIlK
- tYmtAtx/DxNA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
-   d="scan'208";a="367944111"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by fmsmga001.fm.intel.com with ESMTP; 29 Apr 2020 15:24:01 -0700
-Date:   Wed, 29 Apr 2020 15:30:03 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v12 4/8] iommu/vt-d: Add bind guest PASID support
-Message-ID: <20200429153003.31d2edf7@jacob-builder>
-In-Reply-To: <72d52eba-8c78-9d99-2537-b03dbfb3b543@redhat.com>
-References: <1587495165-80096-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1587495165-80096-5-git-send-email-jacob.jun.pan@linux.intel.com>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D8A0D03@SHSMSX104.ccr.corp.intel.com>
-        <20200427133409.47ba22b2@jacob-builder>
-        <72d52eba-8c78-9d99-2537-b03dbfb3b543@redhat.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1726929AbgD2WbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 18:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726481AbgD2WbL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 18:31:11 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE040C03C1AE;
+        Wed, 29 Apr 2020 15:31:10 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id A15882A1735
+Received: by earth.universe (Postfix, from userid 1000)
+        id D74F03C08C6; Thu, 30 Apr 2020 00:31:05 +0200 (CEST)
+Date:   Thu, 30 Apr 2020 00:31:05 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: power: Add the BQ27561 fuel gauge
+ bindings
+Message-ID: <20200429223105.2echdvu745d6xbx2@earth.universe>
+References: <20200417172227.28075-1-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xemb2zi3kkbabaoe"
+Content-Disposition: inline
+In-Reply-To: <20200417172227.28075-1-dmurphy@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Apr 2020 16:12:01 +0200
-Auger Eric <eric.auger@redhat.com> wrote:
 
-> >> in last review Eric raised the open about what about binding the
-> >> same PASID to the same pdev multiple times. We discussed that
-> >> should be disallowed. Here can you check whether aux_domain is
-> >> enabled on pdev to restrict multiple-binding only for
-> >> sub-devices?  
-> > Why aux_domain is sufficient? A pdev could have aux_domain enabled
-> > but still bind pdev many times more than its mdevs.
-> > 
-> > Either we allow multiple bind or not.  
-> 
-> I tried to figure out whether binding the same PASID to the same pdev
-> was meaningful. I understood it is not. If this case can be detected
-> at VFIO level I am fine as well.
-I will remove the multiple bind support for now. Reintroduce it when we
-enable mdev.
+--xemb2zi3kkbabaoe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
+Hi,
 
-Jacob
+On Fri, Apr 17, 2020 at 12:22:26PM -0500, Dan Murphy wrote:
+> Introduce the Texas Instrument BQ27561 and BQ27750 fuel gauge device
+> tree bindings.
+>=20
+> Cc: Rob Herring <robh@kernel.org>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+
+I think its best to just add them to bq27xxx.txt. Conversion to YAML
+would still be nice of course :)
+
+In any case the binding is incomplete, since batteries should contain
+a power-supplies node referencing their charger via a phandle, see
+power_suppliy.txt (which still needs to be converted to YAML).
+
+-- Sebastian
+
+>  .../bindings/power/supply/bq27561.yaml        | 46 +++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/supply/bq2756=
+1.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/power/supply/bq27561.yaml =
+b/Documentation/devicetree/bindings/power/supply/bq27561.yaml
+> new file mode 100644
+> index 000000000000..abc9acdbc704
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/power/supply/bq27561.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2020 Texas Instruments Incorporated
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/power/supply/bq27561.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: TI BQ27561 and BQ27750 Fuel Gauges
+> +
+> +maintainers:
+> +  - Dan Murphy <dmurphy@ti.com>
+> +
+> +description: |
+> +  The bq27z561 device provides a feature-rich gas gauging solution for
+> +  single-cell battery pack applications.
+> +
+> +  Specifications about the charger can be found at:
+> +    https://www.ti.com/lit/gpn/bq27z561
+> +    https://www.ti.com/lit/gpn/bq27750
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,bq27561
+> +      - ti,bq27750
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: |
+> +      I2C address of the device which is 0x55
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c0 {
+> +      #address-cells =3D <1>;
+> +      #size-cells =3D <0>;
+> +      fuel_gauge@55 {
+> +        compatible =3D "ti,bq27561";
+> +        reg =3D <0x55>;
+> +      };
+> +    };
+> --=20
+> 2.25.1
+>=20
+
+--xemb2zi3kkbabaoe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl6qACEACgkQ2O7X88g7
++pr1HRAAlca+wGXkJM5z+VHrMYTiryyjVYigImg4CKkGNmjbo3oCAOPvYoD8RLGq
+M27Njfb+pbRzzYf9hXTXO91Y7yiWAWbwFs1xJpazgMeYMTMwrY/HMDUJ5WfRiz2o
+/zGb4csNyELJAodiw4t+U28oMrh4PhmbqLJmOxG0qLVecRJI7Bso9la8E/4ih9qY
+zS4YLAyokfHyrsFzgpg64mhfXN8qeCL3oPzbk+7cMpQoEV6NbfvDaEFwESGyBgGN
+0cdzQJ8s0oOpfPiAecl/dHBUpP3nafBiiiSxxNKR1J8+yDDG1eCa2qCCHXgYNg3e
+/jta5p/BR53WnlE0GtunF6XAFp93mx54sbMNnKPr9pjVmgtb60z+1rtihRV8rIHr
+txDV6l8SoYTDWAFg9n1wtyZUgd4uD0J3TEkJ47usEdr+tWrVLxtIsDwE2qWXLS84
+/Ewa0X+wxUkqh/uMxSXierrwhScu7ksvlpfvIjUsNsFN5FfhUXZw8Q/i2imC6j6V
+3P4FVmFTRltfHaTIehVETuJXrNTnw3arZ4jhEC39u9xQO5kUOvFzNxMeEQPT4LST
+uvretfXswKEE4iRyDDWuRANJ3Vtg5uyhBGcwBZzhToNrQEVQis8Y9JUMGjJjD4Le
+hBORhcSzkrI/nq42yuo4nNyfAJZ7mMft3B012+myNvDm+Sol6LQ=
+=6M1m
+-----END PGP SIGNATURE-----
+
+--xemb2zi3kkbabaoe--
