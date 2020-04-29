@@ -2,176 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E541BDCF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E811BDD0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgD2NBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:01:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726516AbgD2NBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:01:37 -0400
-Received: from Mani-XPS-13-9360 (unknown [157.46.25.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21E41214D8;
-        Wed, 29 Apr 2020 13:01:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588165297;
-        bh=zNBekyFZGFYfMOOOV65o8aytIfG87wwm23IWKpe4Fbc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UmNAjTgu/r1QUb30T3OHTNekPYdmIwYkZVLrOhrnkrNyeIhUUfozyHjTRTlM7eDxH
-         O6L9CB4CsdJS+K3PfVwTthyrWWYQ8g2d+wJf9585Kd0x44+zwE+bX2XtvoH6jRl2oC
-         ar1wY0UdqMwZ2vHXy7+8mW8hDJBFeqnTKotbzWOs=
-Date:   Wed, 29 Apr 2020 18:31:26 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     johan@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patong.mxl@gmail.com
-Subject: Re: [PATCH 1/2] usb: serial: Add MaxLinear/Exar USB to Serial driver
-Message-ID: <20200429130126.GD6443@Mani-XPS-13-9360>
-References: <20200428195651.6793-1-mani@kernel.org>
- <20200428195651.6793-2-mani@kernel.org>
- <20200429072036.GA2045202@kroah.com>
- <20200429074025.GA6443@Mani-XPS-13-9360>
- <20200429092904.GA2079263@kroah.com>
+        id S1727838AbgD2NDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727803AbgD2NDY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:03:24 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531CFC03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 06:03:24 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id s63so1807701qke.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 06:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tAl7syPo2yQlu/PZKqGcqSBESjyxy3P84yTs4WkPbbI=;
+        b=ldKvjMxfAeMsB1TvRmUleq48K0nxf19ST9h6diloFfJWh3HPYhCMUKRlKzh7FwvNOQ
+         5SYYkIyuSZAkFneigxihGQZaR5NktSzjVkX8Xg8La8z3selDht56kpMa/BZCKSrQWCYC
+         rsHfc9y1lHkJaqeaUCzvaJDN7o+cxGmRcFPq1CxU7mlVia2IhD9tdt62EOO/2o3ty9oa
+         iGex5q2Da3ZOBYquP5sQ7+v0aXrHv8HS43SYIIZ+KVazzJIsQMG2V9bKiHKFnMM8ONgr
+         7xmHDc4HJUZtACuVtWbz/xdr1qXQ08CQSkY2399enuvuFR5s9Zp2CGCfOfoAdd2DmQkB
+         eUZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tAl7syPo2yQlu/PZKqGcqSBESjyxy3P84yTs4WkPbbI=;
+        b=ZmePE5Bp3FIrOxb31oTtv+iGyVIcMLOBLAIVIAlzzpPdeUetZVm31gru/AfVk9qaUI
+         zcToXPuY3YzbhU6w0y+X+iVFxlAMZR20K3herpd9S7WerKUnWu0gScR/z7cINWZhG4SP
+         7U71JgN/pXvpHmrNRrkGhBjCGBNZ02KgxD9P54PiW4d2HCbnXX8ECRMRipFuhuQUkATJ
+         1UWoZMyM6jMNBeVKoS3fgWZuHOwxjS7ZfP4Xq6t9Qt1iO9ORf6VHsALau+py+Z+5WtTB
+         jFFB0anlZV0wi2/RcoVkDKmHXc8OTSNf4iufiIuOb1wxcwmbeuiw7Ufi7Q0JmBTHwj4/
+         Jq6w==
+X-Gm-Message-State: AGi0PuZSKtQFK969wvg9t2PrdDAICyaOW3P7tlLr1Loiy7xi/xGuNVX8
+        FDax7dF5DKoowpCxNDHHU/A=
+X-Google-Smtp-Source: APiQypKD8/dClGE1LyoInBqoNn90Qcp8wHGLsI7jLus/Ar6FJeTFj7vMGtyQm4YvYEzkG5QMzoKhJQ==
+X-Received: by 2002:a05:620a:1222:: with SMTP id v2mr32258356qkj.463.1588165403279;
+        Wed, 29 Apr 2020 06:03:23 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id g6sm16174937qtc.52.2020.04.29.06.03.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 06:03:22 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 326F4409A3; Wed, 29 Apr 2020 10:03:20 -0300 (-03)
+Date:   Wed, 29 Apr 2020 10:03:20 -0300
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Subject: Re: [PATCH] perf tool: fix detection of active SMT
+Message-ID: <20200429130320.GG5460@kernel.org>
+References: <158815443969.303706.11130341357699244442.stgit@buzz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200429092904.GA2079263@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <158815443969.303706.11130341357699244442.stgit@buzz>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 11:29:04AM +0200, Greg KH wrote:
-> On Wed, Apr 29, 2020 at 01:10:26PM +0530, Manivannan Sadhasivam wrote:
-> > Hi Greg,
-> > 
-> > On Wed, Apr 29, 2020 at 09:20:36AM +0200, Greg KH wrote:
-> > > On Wed, Apr 29, 2020 at 01:26:50AM +0530, mani@kernel.org wrote:
-> > > > From: Manivannan Sadhasivam <mani@kernel.org>
-> > > > 
-> > > > Add support for MaxLinear/Exar USB to Serial converters. This driver
-> > > > only supports XR21V141X series but provision has been made to support
-> > > > other series in future.
-> > > > 
-> > > > This driver is inspired from the initial one submitted by Patong Yang:
-> > > > 
-> > > > https://patchwork.kernel.org/patch/10543261/
-> > > > 
-> > > > While the initial driver was a custom tty USB driver exposing whole
-> > > > new serial interface ttyXRUSBn, this version is completely based on USB
-> > > > serial core thus exposing the interfaces as ttyUSBn. This will avoid
-> > > > the overhead of exposing a new USB serial interface which the userspace
-> > > > tools are unaware of.
-> > > 
-> > > Nice work!
-> > > 
-> > > Some comments below:
-> > > 
-> > > > +// SPDX-License-Identifier: GPL-2.0+
-> > > > +/*
-> > > > + * MaxLinear/Exar USB to Serial driver
-> > > > + *
-> > > > + * Based on initial driver written by Patong Yang <patong.mxl@gmail.com>
-> > > > + *
-> > > > + * Copyright (c) 2020 Manivannan Sadhasivam <mani@kernel.org>
-> > > > + */
-> > > > +
-> > > > +#include <linux/kernel.h>
-> > > > +#include <linux/module.h>
-> > > > +#include <linux/slab.h>
-> > > > +#include <linux/tty.h>
-> > > > +#include <linux/usb.h>
-> > > > +#include <linux/usb/serial.h>
-> > > > +
-> > > > +#include "xr_serial.h"
-> > > 
-> > > No need for a .h file for a single .c file.
-> > > 
-> > 
-> > Yeah but since this driver can support multiple series of XR chips (they
-> > might have separate register definitions and such), I thought it is a good
-> > idea to have a header file to keep the driver sane. But can club it to the
-> > source file for now.
+Em Wed, Apr 29, 2020 at 01:00:39PM +0300, Konstantin Khlebnikov escreveu:
+> SMT now could be disabled via "/sys/devices/system/cpu/smt/control".
+> Status shown in "/sys/devices/system/cpu/smt/active" simply as "0" / "1".
 > 
-> Don't worry about future stuff, focus on what you need to do now :)
-> 
+> If this knob isn't here fallback to checking topology but fix couple bugs:
 
-Alright, will do :)
+In these cases, please break the patch into two, the first looking at
+this new /sys/devices/system/cpu/smt/active file, then you go and do the
+fix, and if its more than one, please break those fixes also in separate
+patches.
 
-> > > > +static int xr_get_reg(struct usb_serial_port *port, u8 block, u16 reg,
-> > > > +		      u16 *val)
-> > > > +{
-> > > > +	struct usb_serial *serial = port->serial;
-> > > > +	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-> > > > +	void *dmabuf;
-> > > > +	int ret = -EINVAL;
-> > > > +
-> > > > +	dmabuf = kmalloc(sizeof(reg), GFP_KERNEL);
-> > > 
-> > > So that is 2 bytes?
-> > > 
-> > 
-> > Explanation below...
-> > 
-> > > > +	if (!dmabuf)
-> > > > +		return -ENOMEM;
-> > > > +
-> > > > +	if (port_priv->idProduct == XR21V141X_ID) {
-> > > > +		/* XR21V141X uses custom command for reading UART registers */
-> > > > +		ret = usb_control_msg(serial->dev,
-> > > > +				      usb_rcvctrlpipe(serial->dev, 0),
-> > > > +				      XR_GET_XR21V141X,
-> > > > +				      USB_DIR_IN | USB_TYPE_VENDOR, 0,
-> > > > +				      reg | (block << 8), dmabuf,
-> > > > +				      port_priv->reg_width,
-> > > > +				      USB_CTRL_SET_TIMEOUT);
-> > > > +	}
-> > > > +
-> > > > +	if (ret == port_priv->reg_width) {
-> > > > +		memcpy(val, dmabuf, port_priv->reg_width);
-> > > 
-> > > But here you copy ->reg_width bytes in?  How do you know val can hold
-> > > that much?  It's only set to be 1, so you copy 1 byte to a 16bit value?
-> > > What part of the 16bits did you just copy those 8 bits to (hint, think
-> > > cpu endian issues...)
-> > > 
-> > > That feels really really odd and a bit broken.
-> > > 
-> > 
-> > Right. The reason is, the other series which can be supported by this driver
-> > have different register widths. For instance XR2280x. I haven't used them
-> > personally but seen this in initial driver. So I just used the max u16 type
-> > to make the reg_{set/get} routines work with those.
-> 
-> Drop the whole "different register width" stuff for now, as the driver
-> does not support it and it adds additional complexity that is hard to
-> review for no good reason.  If you want to add support for new devices
-> later, _then_ we can add support for that.
-> 
-> Don't over-engineer :)
-> 
-
-Sure!
-
-> > But agree, I should've used le16_to_cpu() cast to avoid endian issues.
-> 
-> You have to, the code is broken as-is right now.
-> 
-
-We don't need the conversion if u8 is used everywhere :)
+Also you forgot to add all the people that worked on the fixed csets in
+the CC list, so that they could review your work and give their Acked-by
+or Reviewed-by, I'm adding the missing one, Andi Kleen, to this
+response,
 
 Thanks,
-Mani
 
-> > If you think this hack is not required now, I can just use u8 and worry about
-> > compatibility later.
+- Arnaldo
+ 
+> Check access("devices/system/cpu/cpu%d/topology/core_cpus", F_OK) fails,
+> unless current directory is "/sys". Simply try read this file first.
 > 
-> Please do so.
+> Cpu bitmap is split into 32 bit words. For system with more than 32 cores
+> threads are always in different words thus first word never has two bits:
+> cpu0: "0000,00000100,00000001", cpu 79: "8000,00000080,00000000".
 > 
-> thanks,
+> Instead of parsing bitmap read "core_cpus_list" or "thread_siblings_list"
+> and simply check presence of ',' or '-' in it.
 > 
-> greg k-h
+> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> Fixes: de5077c4e38f ("perf tools: Add utility function to detect SMT status")
+> Fixes: 0ccdb8407a46 ("perf tools: Apply new CPU topology sysfs attributes")
+> ---
+>  tools/perf/util/smt.c |   41 +++++++++++++++++++++--------------------
+>  1 file changed, 21 insertions(+), 20 deletions(-)
+> 
+> diff --git a/tools/perf/util/smt.c b/tools/perf/util/smt.c
+> index 3b791ef2cd50..c398528d1006 100644
+> --- a/tools/perf/util/smt.c
+> +++ b/tools/perf/util/smt.c
+> @@ -1,6 +1,7 @@
+>  #include <stdio.h>
+>  #include <stdlib.h>
+>  #include <unistd.h>
+> +#include <string.h>
+>  #include <linux/bitops.h>
+>  #include "api/fs/fs.h"
+>  #include "smt.h"
+> @@ -9,39 +10,39 @@ int smt_on(void)
+>  {
+>  	static bool cached;
+>  	static int cached_result;
+> +	int active;
+>  	int cpu;
+>  	int ncpu;
+> +	char *str = NULL;
+> +	size_t strlen;
+>  
+>  	if (cached)
+>  		return cached_result;
+>  
+> +	if (sysfs__read_int("devices/system/cpu/smt/active", &active) > 0)
+> +		goto done;
+> +
+>  	ncpu = sysconf(_SC_NPROCESSORS_CONF);
+>  	for (cpu = 0; cpu < ncpu; cpu++) {
+> -		unsigned long long siblings;
+> -		char *str;
+> -		size_t strlen;
+>  		char fn[256];
+>  
+> -		snprintf(fn, sizeof fn,
+> -			"devices/system/cpu/cpu%d/topology/core_cpus", cpu);
+> -		if (access(fn, F_OK) == -1) {
+> -			snprintf(fn, sizeof fn,
+> -				"devices/system/cpu/cpu%d/topology/thread_siblings",
+> -				cpu);
+> -		}
+> -		if (sysfs__read_str(fn, &str, &strlen) < 0)
+> -			continue;
+> -		/* Entry is hex, but does not have 0x, so need custom parser */
+> -		siblings = strtoull(str, NULL, 16);
+> -		free(str);
+> -		if (hweight64(siblings) > 1) {
+> -			cached_result = 1;
+> -			cached = true;
+> +		snprintf(fn, sizeof(fn), "devices/system/cpu/cpu%d/topology/%s",
+> +			 cpu, "core_cpus_list");
+> +		if (sysfs__read_str(fn, &str, &strlen) > 0)
+> +			break;
+> +
+> +		snprintf(fn, sizeof(fn), "devices/system/cpu/cpu%d/topology/%s",
+> +			 cpu, "thread_siblings_list");
+> +		if (sysfs__read_str(fn, &str, &strlen) > 0)
+>  			break;
+> -		}
+>  	}
+> +
+> +	active = str && (strchr(str, ',') != NULL || strchr(str, '-') != NULL);
+> +	free(str);
+> +
+> +done:
+>  	if (!cached) {
+> -		cached_result = 0;
+> +		cached_result = active;
+>  		cached = true;
+>  	}
+>  	return cached_result;
+> 
+
+-- 
+
+- Arnaldo
