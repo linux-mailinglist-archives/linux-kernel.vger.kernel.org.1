@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8751BF077
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFF21BE6A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgD3Gps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 02:45:48 -0400
-Received: from mga18.intel.com ([134.134.136.126]:51627 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbgD3Gps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 02:45:48 -0400
-IronPort-SDR: f5BZPPJmmBa0zFisnRMC+rvB7dnWWODYtkJzH/H+qaMX55YgL2J/UmjI7HGGYE/iljoD09byPx
- w8Dk8hnllAzg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 23:45:47 -0700
-IronPort-SDR: 5JDk6IlEH4J//G4hxGQbGfk9EcsA4GLTNYnOGk+Najmtr/DTUSKoGbTimstED8jiExCOByLXVE
- 4m48v6OIp3rw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,334,1583222400"; 
-   d="scan'208";a="459460044"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by fmsmga005.fm.intel.com with ESMTP; 29 Apr 2020 23:45:42 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        slawomir.blauciak@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH] soundwire: qcom: fix error handling in probe
-Date:   Thu, 30 Apr 2020 02:50:57 +0800
-Message-Id: <20200429185057.12810-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727095AbgD2SvL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Apr 2020 14:51:11 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:48930 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726423AbgD2SvL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 14:51:11 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 5A18D6071A61;
+        Wed, 29 Apr 2020 20:51:08 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id NbIDHCmeZZST; Wed, 29 Apr 2020 20:51:07 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 008C262257A2;
+        Wed, 29 Apr 2020 20:51:06 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id TPdioTLx9-de; Wed, 29 Apr 2020 20:51:06 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id D3EA26089348;
+        Wed, 29 Apr 2020 20:51:06 +0200 (CEST)
+Date:   Wed, 29 Apr 2020 20:51:06 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     stable <stable@vger.kernel.org>
+Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        John Ogness <john.ogness@linutronix.de>
+Message-ID: <1537701093.171645.1588186266734.JavaMail.zimbra@nod.at>
+In-Reply-To: <875zdibasg.fsf@vostro.fn.ogness.net>
+References: <20200119215233.7292-1-richard@nod.at> <875zdibasg.fsf@vostro.fn.ogness.net>
+Subject: Please queue ubifs: Fix ubifs_tnc_lookup() usage in
+ do_kill_orphans() for stable (was: Re: [PATCH] ubifs: Fix
+ ubifs_tnc_lookup() usage in do_kill_orphans())
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Please queue ubifs: Fix ubifs_tnc_lookup() usage in do_kill_orphans() for stable (was: Re: [PATCH] ubifs: Fix ubifs_tnc_lookup() usage in do_kill_orphans())
+Thread-Index: vuDlWTB9U53gSqUpBqsVy2sOOiFwnA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+----- Ursprüngliche Mail -----
+> Von: "John Ogness" <john.ogness@linutronix.de>
+> An: "richard" <richard@nod.at>
+> CC: "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-kernel" <linux-kernel@vger.kernel.org>
+> Gesendet: Mittwoch, 29. April 2020 16:56:31
+> Betreff: Re: [PATCH] ubifs: Fix ubifs_tnc_lookup() usage in do_kill_orphans()
 
-Make sure all error cases are properly handled and all resources freed.
+> Hi Richard,
+> 
+> Could you CC this patch to stable? It fixes a serious problem that I am
+> seeing on real devices (i.e. Linux not being able to mount its root
+> filesystem after a power cut). Thanks.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/qcom.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+Just checked again, better ask stable maintainers. :-)
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index d6c9ad231873..e08a17c13f92 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -765,12 +765,16 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	}
- 
- 	ctrl->irq = of_irq_get(dev->of_node, 0);
--	if (ctrl->irq < 0)
--		return ctrl->irq;
-+	if (ctrl->irq < 0) {
-+		ret = ctrl->irq;
-+		goto err_init;
-+	}
- 
- 	ctrl->hclk = devm_clk_get(dev, "iface");
--	if (IS_ERR(ctrl->hclk))
--		return PTR_ERR(ctrl->hclk);
-+	if (IS_ERR(ctrl->hclk)) {
-+		ret = PTR_ERR(ctrl->hclk);
-+		goto err_init;
-+	}
- 
- 	clk_prepare_enable(ctrl->hclk);
- 
-@@ -787,7 +791,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 
- 	ret = qcom_swrm_get_port_config(ctrl);
- 	if (ret)
--		return ret;
-+		goto err_clk;
- 
- 	params = &ctrl->bus.params;
- 	params->max_dr_freq = DEFAULT_CLK_FREQ;
-@@ -814,28 +818,32 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 					"soundwire", ctrl);
- 	if (ret) {
- 		dev_err(dev, "Failed to request soundwire irq\n");
--		goto err;
-+		goto err_clk;
- 	}
- 
- 	ret = sdw_add_bus_master(&ctrl->bus);
- 	if (ret) {
- 		dev_err(dev, "Failed to register Soundwire controller (%d)\n",
- 			ret);
--		goto err;
-+		goto err_clk;
- 	}
- 
- 	qcom_swrm_init(ctrl);
- 	ret = qcom_swrm_register_dais(ctrl);
- 	if (ret)
--		goto err;
-+		goto err_master_add;
- 
- 	dev_info(dev, "Qualcomm Soundwire controller v%x.%x.%x Registered\n",
- 		 (ctrl->version >> 24) & 0xff, (ctrl->version >> 16) & 0xff,
- 		 ctrl->version & 0xffff);
- 
- 	return 0;
--err:
-+
-+err_master_add:
-+	sdw_delete_bus_master(&ctrl->bus);
-+err_clk:
- 	clk_disable_unprepare(ctrl->hclk);
-+err_init:
- 	return ret;
- }
- 
--- 
-2.17.1
+Stable maintainers, can you please make sure this patch will make it
+into stable?
+The upstream commit is:
+4ab25ac8b2b5 ("ubifs: Fix ubifs_tnc_lookup() usage in do_kill_orphans()")
 
+I always thought havings a Fixes-Tag is enough to make sure it will
+get picked up. Isn't this the case?
+
+Thanks,
+//richard
+ 
+> John Ogness
+> 
+> On 2020-01-19, Richard Weinberger <richard@nod.at> wrote:
+>> Orphans are allowed to point to deleted inodes.
+>> So -ENOENT is not a fatal error.
+>>
+>> Reported-by: Кочетков Максим <fido_max@inbox.ru>
+>> Reported-and-tested-by: "Christian Berger" <Christian.Berger@de.bosch.com>
+>> Fixes: ee1438ce5dc4 ("ubifs: Check link count of inodes when killing orphans.")
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>> ---
+>>  fs/ubifs/orphan.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
+>> index 54d6db61106f..2645917360b9 100644
+>> --- a/fs/ubifs/orphan.c
+>> +++ b/fs/ubifs/orphan.c
+>> @@ -688,14 +688,14 @@ static int do_kill_orphans(struct ubifs_info *c, struct
+>> ubifs_scan_leb *sleb,
+>>  
+>>  			ino_key_init(c, &key1, inum);
+>>  			err = ubifs_tnc_lookup(c, &key1, ino);
+>> -			if (err)
+>> +			if (err && err != -ENOENT)
+>>  				goto out_free;
+>>  
+>>  			/*
+>>  			 * Check whether an inode can really get deleted.
+>>  			 * linkat() with O_TMPFILE allows rebirth of an inode.
+>>  			 */
+>> -			if (ino->nlink == 0) {
+>> +			if (err == 0 && ino->nlink == 0) {
+>>  				dbg_rcvry("deleting orphaned inode %lu",
+> >  					  (unsigned long)inum);
