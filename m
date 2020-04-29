@@ -2,144 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BB11BDB19
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA371BDB1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726838AbgD2LvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 07:51:15 -0400
-Received: from mout.web.de ([217.72.192.78]:43245 "EHLO mout.web.de"
+        id S1726754AbgD2LxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 07:53:19 -0400
+Received: from verein.lst.de ([213.95.11.211]:34088 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726511AbgD2LvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 07:51:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1588161061;
-        bh=YpG1Yk8wmgaxNXrdr0JLTCB7c7Q4uVrpM9UhSdIBYOs=;
-        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
-        b=rAgS1+H0wd1XqkisItHDnCIAe+A6HN7f+tJb1OlAhT8aXYr6sBt8M4X9Z2uGGJoZm
-         zfK60EWDrq8/VpeE1vF7/7ksRox6uFg6+pun2s4r+FouwJlqmgh/8w9C8zrugaLGik
-         SbQJjRbOSNnLfrD0znoccBLyXLWD1eU2PXAxcKo8=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.133.72.72]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MKM5t-1jkSeA2Krv-00LyCD; Wed, 29
- Apr 2020 13:51:01 +0200
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alan Tull <atull@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Moritz Fischer <mdf@kernel.org>
-Subject: Re: [PATCH 3/4 v2] firmware: stratix10-svc: Fix some error handling
- paths in stratix10_svc_drv_probe()
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-To:     Christophe Jaillet <christophe.jaillet@wanadoo.fr>,
-        Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <767eb869-d9c1-757b-77a6-79927728ddcd@web.de>
-Date:   Wed, 29 Apr 2020 13:51:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726511AbgD2LxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 07:53:19 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 872C568BFE; Wed, 29 Apr 2020 13:53:16 +0200 (CEST)
+Date:   Wed, 29 Apr 2020 13:53:16 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeremy Kerr <jk@ozlabs.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fixup! signal: factor copy_siginfo_to_external32 from
+ copy_siginfo_to_user32
+Message-ID: <20200429115316.GA7886@lst.de>
+References: <20200428074827.GA19846@lst.de> <20200428195645.1365019-1-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:R438sIDxeezX+deWXb3VHlaMCT5XQYYNt1edkyHRb0Aa41E25XI
- Fp16ZddXsuacSbwMdOkv1+tz1w76mMhNc3DUmQVq7GRfW1nVyYhbXLvYUgkWzjpP71xAI1E
- fM4KxzxDKvbsxTrAx8KnJhgB2Q4QBJMPlDOw5yfH3T3vEZQKbR7M03CqV6L0MD6cHfM4HCv
- mik3Ota2s+XdmMdSvwHOw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:X3yf3c0YaFo=:zvBU3T/SXtDugAATfcBv7X
- ZSRcj04b6C1uwPSIyJIhAdOLjXCoCwglZlpYcW9JyMC82WDoAuuUyAjSg/rXSchqjfqaxvNwc
- ISu2QXlv2AL5qO4oN+7k5Fmacmrmo4lW++xCwBuKTVITyeRI5hRhQOFjDngz6KmthIW3Nf+zn
- wvGkOdnOoZX2h2utFSNuXhtRxnhklL+shm+oByiCLsLBBAFsiI3vdnj6Zxm31Mu9OnSzi1tCK
- JbYCZJD1Mr+dq8++2HSHpd43X3R9zj3eOO79QE9JTTLWlIVSFA/gVI42l1/UNRY3Co4hErrzc
- bTRnbH//DjYB4DlCNpxv6omnuA51YoxbUGCHiCbdUSCSUjkUNCz9KUCklzRFUjUC16aVfBp56
- 0feDUovAnKzezQsLeSLlGQoqu/nEsc2Jvf/86ZgY7zp7QZAFl96NtaBxwP8TqNpnwHPeFkWQU
- 5roIDKhTi9RRoifDgowMZQwGox3fB3rGpe3nPYjK/FLMyg4WrN55HabE6gS9wNiu0TqeRn6l6
- DCw/uSsLEo4f4tzMYdrON7u1ea1tc31dKph5Q31LnEYkNIyevEZBxcevdIMxaF12z6fojUSuF
- W0uQ8+RBQQuQAnU0NPhBzKOl8izm8+wYyelOJVLaJ80LW/LxArNU6/Z56gDwh39aNbBZ7jCX8
- eeFxms68zFHkKp6Cd4HYR7c1vUTlko/wJpeQBd9/7YW+8ve9uqodShke4hVF8spD/gnNd81A4
- dnkTmzL5ncOlUi3TGsElxIBmoS9qlrygHKxNedMosdnY0WSebAFFrt8/btMJnLEnNJpR0W8Nq
- IAS8AcIO9hawTjRpWsZJRW14rPTknnSLqlXCC0jE2XHyPh0NfG3adBAAR51jvSs+RGXaBdfF6
- lRwNxTf8++GSJ6ZX8kOyxCcnx44So/wl9nzCy6VPpC83lhmK8FwQI4D/mwfL27l3C4kmSPCrn
- DCwsJpdA+fw6Hn2gplN70/zPFHlmMkyQes1bcU0G0WfmDvTZRaoacvZvPAccifVN2AlUDUuWZ
- Qita64llx6n+YpE66CmfYmVDAve8NKb7gh5t0mi1rGYIScM74cga3E9Gs9BjZ4MY/Ec4J3pO3
- Cy4FuaDfoQbQ94i/wlGbvdlvfK5PyCPFZGWIuzUJIFJ0tvtW/t1+J5AWp2/gi8FfqzK42MsM8
- V0E5GVqzVOZ2TrFPf0pmzaJd5Px+53x0M2HzY/Hrp48fn6VL7P38PrPcXMO1RpeWK7zbFe8jT
- R7kDXj/F9ncnLE4kh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428195645.1365019-1-arnd@arndb.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> While at it, also move a 'platform_device_put()' call to the error handl=
-ing path.
+I did another pass at this, reducing the overhead of the x32 magic
+in common code down to renaming copy_siginfo_to_user32 to
+copy_siginfo_to_user32 and having a conditional #define to give it
+the old name back:
 
-How do you think about to use the message =E2=80=9CComplete exception hand=
-ling
-in stratix10_svc_drv_probe()=E2=80=9D in the final commit subject?
+---
+From 45e5263d7c24d854bb446b7e69dc53729ed842bc Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Wed, 29 Apr 2020 11:57:10 +0200
+Subject: signal: refactor copy_siginfo_to_user32
 
+Factor out a copy_siginfo_to_external32 helper from
+copy_siginfo_to_user32 that fills out the compat_siginfo, but does so
+on a kernel space data structure.  With that we can let architectures
+override copy_siginfo_to_user32 with their own implementations using
+copy_siginfo_to_external32.  That allows moving the x32 SIGCHLD purely
+to x86 architecture code.
 
-=E2=80=A6
-> +++ b/drivers/firmware/stratix10-svc.c
-=E2=80=A6
-> @@ -1043,24 +1043,34 @@  static int stratix10_svc_drv_probe(struct platf=
-orm_device *pdev)
-=E2=80=A6
-> +	return 0;
-> +
-> +put_platform:
-> +	platform_device_put(svc->stratix10_svc_rsu);
-> +err_free_kfifo:
-=E2=80=A6
->  	return ret;
->  }
+As a nice side effect copy_siginfo_to_external32 also comes in handy
+for avoiding a set_fs() call in the coredump code later on.
 
+Contains improvements from Eric W. Biederman <ebiederm@xmission.com>
+and Arnd Bergmann <arnd@arndb.de>.
 
-Can the label =E2=80=9Cerr_put_device=E2=80=9D be more appropriate for the=
- improved
-function implementation?
-(Or: Would you like to omit the prefix =E2=80=9Cerr_=E2=80=9D for these ju=
-mp targets?)
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ arch/x86/ia32/ia32_signal.c   |   2 +-
+ arch/x86/include/asm/compat.h |   8 ++-
+ arch/x86/kernel/signal.c      |  28 ++++++++-
+ include/linux/compat.h        |  11 +++-
+ kernel/signal.c               | 106 +++++++++++++++++-----------------
+ 5 files changed, 96 insertions(+), 59 deletions(-)
 
-Regards,
-Markus
+diff --git a/arch/x86/ia32/ia32_signal.c b/arch/x86/ia32/ia32_signal.c
+index f9d8804144d09..81cf22398cd16 100644
+--- a/arch/x86/ia32/ia32_signal.c
++++ b/arch/x86/ia32/ia32_signal.c
+@@ -350,7 +350,7 @@ int ia32_setup_rt_frame(int sig, struct ksignal *ksig,
+ 	unsafe_put_user(*(__u64 *)set, (__u64 *)&frame->uc.uc_sigmask, Efault);
+ 	user_access_end();
+ 
+-	if (__copy_siginfo_to_user32(&frame->info, &ksig->info, false))
++	if (__copy_siginfo_to_user32(&frame->info, &ksig->info))
+ 		return -EFAULT;
+ 
+ 	/* Set up registers for signal handler */
+diff --git a/arch/x86/include/asm/compat.h b/arch/x86/include/asm/compat.h
+index 52e9f3480f690..d4edf281fff49 100644
+--- a/arch/x86/include/asm/compat.h
++++ b/arch/x86/include/asm/compat.h
+@@ -214,7 +214,11 @@ static inline bool in_compat_syscall(void)
+ #endif
+ 
+ struct compat_siginfo;
+-int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+-		const kernel_siginfo_t *from, bool x32_ABI);
++
++#ifdef CONFIG_X86_X32_ABI
++int copy_siginfo_to_user32(struct compat_siginfo __user *to,
++		const kernel_siginfo_t *from);
++#define copy_siginfo_to_user32 copy_siginfo_to_user32
++#endif /* CONFIG_X86_X32_ABI */
+ 
+ #endif /* _ASM_X86_COMPAT_H */
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index 83b74fb38c8fc..f3df262e370b3 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -37,6 +37,7 @@
+ #include <asm/vm86.h>
+ 
+ #ifdef CONFIG_X86_64
++#include <linux/compat.h>
+ #include <asm/proto.h>
+ #include <asm/ia32_unistd.h>
+ #endif /* CONFIG_X86_64 */
+@@ -511,6 +512,31 @@ static int __setup_rt_frame(int sig, struct ksignal *ksig,
+ }
+ #endif /* CONFIG_X86_32 */
+ 
++#ifdef CONFIG_X86_X32_ABI
++static int x32_copy_siginfo_to_user(struct compat_siginfo __user *to,
++		const struct kernel_siginfo *from)
++{
++	struct compat_siginfo new;
++
++	copy_siginfo_to_external32(&new, from);
++	if (from->si_signo == SIGCHLD) {
++		new._sifields._sigchld_x32._utime = from->si_utime;
++		new._sifields._sigchld_x32._stime = from->si_stime;
++	}
++	if (copy_to_user(to, &new, sizeof(struct compat_siginfo)))
++		return -EFAULT;
++	return 0;
++}
++
++int copy_siginfo_to_user32(struct compat_siginfo __user *to,
++			   const struct kernel_siginfo *from)
++{
++	if (in_x32_syscall())
++		return x32_copy_siginfo_to_user(to, from);
++	return __copy_siginfo_to_user32(to, from);
++}
++#endif /* CONFIG_X86_X32_ABI */
++
+ static int x32_setup_rt_frame(struct ksignal *ksig,
+ 			      compat_sigset_t *set,
+ 			      struct pt_regs *regs)
+@@ -543,7 +569,7 @@ static int x32_setup_rt_frame(struct ksignal *ksig,
+ 	user_access_end();
+ 
+ 	if (ksig->ka.sa.sa_flags & SA_SIGINFO) {
+-		if (__copy_siginfo_to_user32(&frame->info, &ksig->info, true))
++		if (x32_copy_siginfo_to_user(&frame->info, &ksig->info))
+ 			return -EFAULT;
+ 	}
+ 
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index 0480ba4db5929..e432df9be2e4b 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -402,8 +402,15 @@ long compat_get_bitmap(unsigned long *mask, const compat_ulong_t __user *umask,
+ 		       unsigned long bitmap_size);
+ long compat_put_bitmap(compat_ulong_t __user *umask, unsigned long *mask,
+ 		       unsigned long bitmap_size);
+-int copy_siginfo_from_user32(kernel_siginfo_t *to, const struct compat_siginfo __user *from);
+-int copy_siginfo_to_user32(struct compat_siginfo __user *to, const kernel_siginfo_t *from);
++void __copy_siginfo_to_external32(struct compat_siginfo *to,
++		const struct kernel_siginfo *from);
++int copy_siginfo_from_user32(kernel_siginfo_t *to,
++		const struct compat_siginfo __user *from);
++int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
++		const kernel_siginfo_t *from);
++#ifndef copy_siginfo_to_user32
++#define copy_siginfo_to_user32 __copy_siginfo_to_user32
++#endif
+ int get_compat_sigevent(struct sigevent *event,
+ 		const struct compat_sigevent __user *u_event);
+ 
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 284fc1600063b..3a74e67c12425 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -3235,94 +3235,94 @@ int copy_siginfo_from_user(kernel_siginfo_t *to, const siginfo_t __user *from)
+ }
+ 
+ #ifdef CONFIG_COMPAT
+-int copy_siginfo_to_user32(struct compat_siginfo __user *to,
+-			   const struct kernel_siginfo *from)
+-#if defined(CONFIG_X86_X32_ABI) || defined(CONFIG_IA32_EMULATION)
+-{
+-	return __copy_siginfo_to_user32(to, from, in_x32_syscall());
+-}
+-int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
+-			     const struct kernel_siginfo *from, bool x32_ABI)
+-#endif
++/**
++ * copy_siginfo_to_external32: copy a kernel signinfo into a 32-bit user one
++ * @to: compat siginfo destination
++ * @from: kernel siginfo source
++ *
++ * This function does not work properly for SIGCHLD on x32, but it does not need
++ * to as SIGCHLD never causes a coredump as this function is only intended to
++ * be used either by the coredump code or to implement copy_siginfo_to_user32,
++ * which can have its own arch version to deal with things like x32.
++ */
++void copy_siginfo_to_external32(struct compat_siginfo *to,
++		const struct kernel_siginfo *from)
+ {
+-	struct compat_siginfo new;
+-	memset(&new, 0, sizeof(new));
++	memset(to, 0, sizeof(*to));
+ 
+-	new.si_signo = from->si_signo;
+-	new.si_errno = from->si_errno;
+-	new.si_code  = from->si_code;
++	to->si_signo = from->si_signo;
++	to->si_errno = from->si_errno;
++	to->si_code  = from->si_code;
+ 	switch(siginfo_layout(from->si_signo, from->si_code)) {
+ 	case SIL_KILL:
+-		new.si_pid = from->si_pid;
+-		new.si_uid = from->si_uid;
++		to->si_pid = from->si_pid;
++		to->si_uid = from->si_uid;
+ 		break;
+ 	case SIL_TIMER:
+-		new.si_tid     = from->si_tid;
+-		new.si_overrun = from->si_overrun;
+-		new.si_int     = from->si_int;
++		to->si_tid     = from->si_tid;
++		to->si_overrun = from->si_overrun;
++		to->si_int     = from->si_int;
+ 		break;
+ 	case SIL_POLL:
+-		new.si_band = from->si_band;
+-		new.si_fd   = from->si_fd;
++		to->si_band = from->si_band;
++		to->si_fd   = from->si_fd;
+ 		break;
+ 	case SIL_FAULT:
+-		new.si_addr = ptr_to_compat(from->si_addr);
++		to->si_addr = ptr_to_compat(from->si_addr);
+ #ifdef __ARCH_SI_TRAPNO
+-		new.si_trapno = from->si_trapno;
++		to->si_trapno = from->si_trapno;
+ #endif
+ 		break;
+ 	case SIL_FAULT_MCEERR:
+-		new.si_addr = ptr_to_compat(from->si_addr);
++		to->si_addr = ptr_to_compat(from->si_addr);
+ #ifdef __ARCH_SI_TRAPNO
+-		new.si_trapno = from->si_trapno;
++		to->si_trapno = from->si_trapno;
+ #endif
+-		new.si_addr_lsb = from->si_addr_lsb;
++		to->si_addr_lsb = from->si_addr_lsb;
+ 		break;
+ 	case SIL_FAULT_BNDERR:
+-		new.si_addr = ptr_to_compat(from->si_addr);
++		to->si_addr = ptr_to_compat(from->si_addr);
+ #ifdef __ARCH_SI_TRAPNO
+-		new.si_trapno = from->si_trapno;
++		to->si_trapno = from->si_trapno;
+ #endif
+-		new.si_lower = ptr_to_compat(from->si_lower);
+-		new.si_upper = ptr_to_compat(from->si_upper);
++		to->si_lower = ptr_to_compat(from->si_lower);
++		to->si_upper = ptr_to_compat(from->si_upper);
+ 		break;
+ 	case SIL_FAULT_PKUERR:
+-		new.si_addr = ptr_to_compat(from->si_addr);
++		to->si_addr = ptr_to_compat(from->si_addr);
+ #ifdef __ARCH_SI_TRAPNO
+-		new.si_trapno = from->si_trapno;
++		to->si_trapno = from->si_trapno;
+ #endif
+-		new.si_pkey = from->si_pkey;
++		to->si_pkey = from->si_pkey;
+ 		break;
+ 	case SIL_CHLD:
+-		new.si_pid    = from->si_pid;
+-		new.si_uid    = from->si_uid;
+-		new.si_status = from->si_status;
+-#ifdef CONFIG_X86_X32_ABI
+-		if (x32_ABI) {
+-			new._sifields._sigchld_x32._utime = from->si_utime;
+-			new._sifields._sigchld_x32._stime = from->si_stime;
+-		} else
+-#endif
+-		{
+-			new.si_utime = from->si_utime;
+-			new.si_stime = from->si_stime;
+-		}
++		to->si_pid = from->si_pid;
++		to->si_uid = from->si_uid;
++		to->si_status = from->si_status;
++		to->si_utime = from->si_utime;
++		to->si_stime = from->si_stime;
+ 		break;
+ 	case SIL_RT:
+-		new.si_pid = from->si_pid;
+-		new.si_uid = from->si_uid;
+-		new.si_int = from->si_int;
++		to->si_pid = from->si_pid;
++		to->si_uid = from->si_uid;
++		to->si_int = from->si_int;
+ 		break;
+ 	case SIL_SYS:
+-		new.si_call_addr = ptr_to_compat(from->si_call_addr);
+-		new.si_syscall   = from->si_syscall;
+-		new.si_arch      = from->si_arch;
++		to->si_call_addr = ptr_to_compat(from->si_call_addr);
++		to->si_syscall   = from->si_syscall;
++		to->si_arch      = from->si_arch;
+ 		break;
+ 	}
++}
+ 
++int __copy_siginfo_to_user32(struct compat_siginfo __user *to,
++			   const struct kernel_siginfo *from)
++{
++	struct compat_siginfo new;
++
++	copy_siginfo_to_external32(&new, from);
+ 	if (copy_to_user(to, &new, sizeof(struct compat_siginfo)))
+ 		return -EFAULT;
+-
+ 	return 0;
+ }
+ 
+-- 
+2.26.2
+
