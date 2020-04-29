@@ -2,136 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75FD1BE2C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 170D11BE2E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbgD2Pbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726456AbgD2Pbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:31:48 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        id S1727812AbgD2PiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727777AbgD2Ph5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 11:37:57 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1302C035493
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:37:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-Id:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=APwIRecRnjGUH2eb3CGxLwLNtFCkNs/Jq94banB90BQ=; b=0BobqBKFTaTIIPk45Fsf/h1XUV
+        lwCgKshooE5fbFDmJWtsIyKOnomC5S/AMfgnwmxtDdeWngwrb3+ckHe0VXZyswI/11lMNZ5/Q1xLx
+        PcjzbGmZEmkYkwHWX4wqOGVLkLaVLdFDGVEyJqV6MuUgYDNqYZx38ghAInmQWaaKmEuj2wuoQ6SMr
+        BPStBSofuGk9dtcX/xcUOlJn1WM9faneSeV/hJzBY6PvSHPjo94MXVxrWVvZi5Flh9IjJDX6bEHWw
+        tAEagzdn3cIS3HDaqqKxGwVlaR8KScDZcXCB2ZOewrMQmaHEUR/Qzu79pEJdJi7jAwaWmU/ydmPHH
+        vojWK0+g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTomG-00028Z-2q; Wed, 29 Apr 2020 15:37:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9DD9206F0;
-        Wed, 29 Apr 2020 15:31:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588174307;
-        bh=cz2GRQMmobQIU8Dm3XppVkcHbEvwo+MsQ2UDSbo/Nso=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=JkiBRNRGIihwWrIm7TmLD0OHzJ1ywldClvr5mPhqCfN0nC7742gsdK+I5GDPzQViw
-         PhW1LWaxV9f/D8CO1eAIuZuPmo4zJ0vJficejaMQRYM6sY/v9nAw4EbCN5R5WUEwd2
-         w/7UhV7fM+0Rki5Soiw+9Xuku8QviaYrXSBJ7MBE=
-Message-ID: <018c93fd12244f173ede8e6f4e9f453cbb447bff.camel@kernel.org>
-Subject: Re: [PATCH V2] fs/ceph:fix double unlock in handle_cap_export()
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Wu Bo <wubo40@huawei.com>, sage@redhat.com, idryomov@gmail.com,
-        "Yan, Zheng" <ukernel@gmail.com>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liuzhiqiang26@huawei.com, linfeilong@huawei.com
-Date:   Wed, 29 Apr 2020 11:31:45 -0400
-In-Reply-To: <6c99072a-f92b-b7e8-9aef-509d1a9ee985@huawei.com>
-References: <1588079622-423774-1-git-send-email-wubo40@huawei.com>
-         <e89bd817c69422c85f1945041dd83fbe8d534805.camel@kernel.org>
-         <6c99072a-f92b-b7e8-9aef-509d1a9ee985@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1 (3.36.1-1.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 13A55303F45;
+        Wed, 29 Apr 2020 17:37:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id CD4DE236D79EE; Wed, 29 Apr 2020 17:37:31 +0200 (CEST)
+Message-Id: <20200429153258.563269446@infradead.org>
+User-Agent: quilt/0.65
+Date:   Wed, 29 Apr 2020 17:32:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     walken@google.com, dave@stgolabs.net, mingo@kernel.org,
+        tglx@linutronix.de, oleg@redhat.com, irogers@google.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        peterz@infradead.org
+Subject: [RFC][PATCH 0/7] Generic RB-tree helpers
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-04-29 at 08:46 +0800, Wu Bo wrote:
-> On 2020/4/28 22:48, Jeff Layton wrote:
-> > On Tue, 2020-04-28 at 21:13 +0800, Wu Bo wrote:
-> > > if the ceph_mdsc_open_export_target_session() return fails,
-> > > should add a lock to avoid twice unlocking.
-> > > Because the lock will be released at the retry or out_unlock tag.
-> > > 
-> > 
-> > The problem looks real, but...
-> > 
-> > > --
-> > > v1 -> v2:
-> > > add spin_lock(&ci->i_ceph_lock) before goto out_unlock tag.
-> > > 
-> > > Signed-off-by: Wu Bo <wubo40@huawei.com>
-> > > ---
-> > >   fs/ceph/caps.c | 27 +++++++++++++++------------
-> > >   1 file changed, 15 insertions(+), 12 deletions(-)
-> > > 
-> > > diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-> > > index 185db76..414c0e2 100644
-> > > --- a/fs/ceph/caps.c
-> > > +++ b/fs/ceph/caps.c
-> > > @@ -3731,22 +3731,25 @@ static void handle_cap_export(struct inode *inode, struct ceph_mds_caps *ex,
-> > >   
-> > >   	/* open target session */
-> > >   	tsession = ceph_mdsc_open_export_target_session(mdsc, target);
-> > > -	if (!IS_ERR(tsession)) {
-> > > -		if (mds > target) {
-> > > -			mutex_lock(&session->s_mutex);
-> > > -			mutex_lock_nested(&tsession->s_mutex,
-> > > -					  SINGLE_DEPTH_NESTING);
-> > > -		} else {
-> > > -			mutex_lock(&tsession->s_mutex);
-> > > -			mutex_lock_nested(&session->s_mutex,
-> > > -					  SINGLE_DEPTH_NESTING);
-> > > -		}
-> > > -		new_cap = ceph_get_cap(mdsc, NULL);
-> > > -	} else {
-> > > +	if (IS_ERR(tsession)) {
-> > >   		WARN_ON(1);
-> > >   		tsession = NULL;
-> > >   		target = -1;
-> > > +		mutex_lock(&session->s_mutex);
-> > > +		spin_lock(&ci->i_ceph_lock);
-
-Rather than taking the spinlock here, it'd be nicer to set a new label
-above the mutex (out_unlock_mutex or something) and jump to that.
-
-> > > +		goto out_unlock;
-> > 
-> > Why did you make this case goto out_unlock instead of retrying as it did
-> > before?
-> > 
-> 
-> If the problem occurs, target = -1, and goto retry lable, you need to 
-> call __get_cap_for_mds() or even call __ceph_remove_cap(), and then jump 
-> to out_unlock lable. All I think is unnecessary, goto out_unlock instead 
-> of retrying directly.
-> 
-
-(cc'ing Zheng since he understands the IMPORT/EXPORT code better than I)
-
-I'm not quite convinced. It certainly looks like this was done
-deliberately before, and that the expectation is that the cap be removed
-in this case.
-
-If we do want to make this change, then at the very least the changelog
-needs to spell out why this safe and desirable.
-
-> > > +	}
-> > > +
-> > > +	if (mds > target) {
-> > > +		mutex_lock(&session->s_mutex);
-> > > +		mutex_lock_nested(&tsession->s_mutex,
-> > > +					SINGLE_DEPTH_NESTING);
-> > > +	} else {
-> > > +		mutex_lock(&tsession->s_mutex);
-> > > +		mutex_lock_nested(&session->s_mutex,
-> > > +					SINGLE_DEPTH_NESTING);
-> > >   	}
-> > > +	new_cap = ceph_get_cap(mdsc, NULL);
-> > >   	goto retry;
-> > >   
-> > >   out_unlock:
-> 
-> 
-
--- 
-Jeff Layton <jlayton@kernel.org>
+An attempt to reduce the rb-tree boiler place..
 
