@@ -2,295 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77781BD522
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F95F1BD51B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726770AbgD2GxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 02:53:23 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:39707 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726355AbgD2GxW (ORCPT
+        id S1726774AbgD2Gw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 02:52:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40474 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726741AbgD2Gw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 02:53:22 -0400
-Received: by mail-lf1-f66.google.com with SMTP id m2so702478lfo.6;
-        Tue, 28 Apr 2020 23:53:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=L2HlBl71HW9jKu0KuOMnp/i4ZqquAULMv4EIPuzBe3s=;
-        b=fbpepA7EzKJvUf+IhhIND3ZS3vX4j/w+VbTcLAvAFYJz36KTLBweMC94YIZtXJogoZ
-         igB4cqwWSBkJIm/WUzgCNgpMH7PDt7MmeaPdZtE1bsbf2qV2mbyA+orzI0F+rOGGU+TN
-         /XwcEg1akXllRxoxFPNFg8fl6/flgg4R86T/TLqvqXn2RfV8OaAjf8YK8kYwRggnjHhM
-         A1bAokUVcC3ybL+8bT9RNxlnnasvjKlFkOXBEwtr0Qm0VsZB1zlkbhWdSyTWlKIJCW/6
-         yJ6z3k4qr63Ilaz5gOjk3626zJx2ApBENNlP45H8ejRSEN/m9mweO7t+uYcYpNFqPeFP
-         t3XA==
-X-Gm-Message-State: AGi0PuZWAqC+ORgbogNDDPd4YBdCQytmetDA8C1zBalUgwsnrFPgjCVe
-        XYjS34c12OVysA4vFiYc7Puq7vt7
-X-Google-Smtp-Source: APiQypKOMRdqnbBpib8vFzukcZwTX7SNri/jpDlPBqhSWxqwA79WY9B6UsSdHNMda5jd5KcKvMl7hw==
-X-Received: by 2002:a19:ae06:: with SMTP id f6mr21371376lfc.97.1588143197034;
-        Tue, 28 Apr 2020 23:53:17 -0700 (PDT)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id l18sm1493912ljg.98.2020.04.28.23.53.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Apr 2020 23:53:16 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 09:52:29 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     sre@kernel.org, robh+dt@kernel.org, broonie@kernel.org,
-        lgirdwood@gmail.com, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v10 00/11] Support ROHM BD99954 charger IC
-Message-ID: <cover.1586925868.git.matti.vaittinen@fi.rohmeurope.com>
+        Wed, 29 Apr 2020 02:52:56 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T6Xdxo027875;
+        Wed, 29 Apr 2020 02:52:39 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mh34a9es-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Apr 2020 02:52:39 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03T6jicJ007888;
+        Wed, 29 Apr 2020 06:52:39 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma03wdc.us.ibm.com with ESMTP id 30mcu6jqb0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Apr 2020 06:52:39 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03T6qcNx51446232
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Apr 2020 06:52:38 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3EB2D6A051;
+        Wed, 29 Apr 2020 06:52:38 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D41CF6A054;
+        Wed, 29 Apr 2020 06:52:37 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.199.54.241])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 29 Apr 2020 06:52:37 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 14B542E301A; Wed, 29 Apr 2020 12:22:30 +0530 (IST)
+Date:   Wed, 29 Apr 2020 12:22:29 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Christopher Lameter <cl@linux.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 2/3] powerpc/numa: Prefer node id queried from vphn
+Message-ID: <20200429065229.GA18304@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20200428093836.27190-1-srikar@linux.vnet.ibm.com>
+ <20200428093836.27190-3-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20200428093836.27190-3-srikar@linux.vnet.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-29_01:2020-04-28,2020-04-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
+ phishscore=0 suspectscore=0 clxscore=1011 impostorscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004290048
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support ROHM BD99954 Battery Management IC
+Hello Srikar,
 
-ROHM BD99954 is a Battery Management IC for 1-4 cell Lithium-Ion
-secondary battery. BD99954 is intended to be used in space-constraint
-equipment such as Low profile Notebook PC, Tablets and other
-applications.
-
-Series extracts a "linear ranges" helper out of the regulator
-framework. Linear ranges helper is intended to help converting
-real-world values to register values when conversion is linear. I
-suspect this is useful also for power subsystem and possibly for clk.
-
-Current implementation does not support inversely proportional ranges
-but adding support for that could be helpful.
-
-This version of series introduces new battry DT binding entries and
-adds the parsing in power_supply_get_battery_info().
-
-Changelog v10:
- - Add patch 11 which removes the "default n" from power/supply KConfig
-   (Please just drop from series if you disagree)
- - Fix the regulator_linear_ranges added to qcom_smd-regulator.c at
-   v5.7-rc1
- - Minor styling to BD70528 power/supply driver as suggested by Andy
-
-Changelog v9:
- General:
-   - rebased on top of v5.7-rc1
-   - re-ordered patches as suggested by Sebastian Reichel
-   - added few acks
- BD99954 driver:
-   - Moved bd99954-charger.h to drivers/power/supply
-   - fixed a typo from print
-   - used devm_add_action_or_reset and removed remove callback
-
-Changelog v8:
- Linear ranges
-   - small improvements suggested by Andy Shevchenko, no functional changes
-
-Changelog v7:
- General:
-   - rebased on top of v5.6
- bd99954 driver:
-   - fixed bunch of styling issues spotted by Andy Shevchenko
-   - dropped ACPI table as ACPI properties are not supported at this
-     version of driver.
-   - added few acks
-
-Changelog v6:
- generic:
-   - rebased on top of 5.6-rc7.
- linear ranges:
-   - moved to lib as requested by Greg KH
-   - EXPORT_SYMBOL => EXPORT_SYMBOL_GPL
-   - licence GPL-2.0, not later
-   - added KUnit test for linear ranges
-
-Changelog v5:
- generic:
-   - rebased on top of 5.6-rc6.
- DT-bindings:
-   - Dropped -charger extension from compatible and removed wildcard x.
- regulators:
-   - squashed the regulator changes in one patch.
- power-supply KConfig:
-   - fixed indentiation
-   - dropped unnecessary 'default N' from BD99954.
-
-Changelog v4:
- generic:
-   - rebase and drop RFC.
- DT-bindings:
-   - add I2C node address-cells and size-cells to fix yaml check errors
-   - uncomment multipleOf:
- bd70528:
-   - add patch which renames driver internal linear_range struct to
-     avoid collision when regulator/driver.h (which gets included from
-     rohm generic header) introduces the linear_range struct.
- regulators:
-   - rebase to v5.6-rc2 and convert also the two newly introduced
-     drivers to use linear_range struct instead of
-     regulator_linear_range.
- linear_ranges:
-   - Fix kerneldoc.
-
-Changelog RFC-v3:
- DT-bindings:
-   - fix the BD99954 binding (the *-microvolt Vs. *-microvolts issue is
-     still there. Not sure which one is correct)
-   - renabe tricklecharge-* binding to trickle-charge-* as suggested by
-     Rob.
- - drop the linear-ranges helper which was written for BD70528 and
-   extract the linear-range code from regulator framework instead.
- - refactor regulator framework to utilize extracted linear-ranges
-   code.
- - change the struct regulator_linear_range to linear_range from
-   regulator drivers.
- - refactor BD70528 to use regulator framework originated
-   linear-ranges code.
- - change BD99954 to use linear-ranges code from regulator framework
-
-Changelog RFC-v2:
- DT-bindings:
-   - Used the battery parameters described in battery.txt
-   - Added few new parameters to battery.txt
-   - Added ASCII art charging profile chart for BD99954 to explain
-     states and limits.
- Linear ranges:
-   - Fixed division by zero error from linear-ranges code if step 0 is
-     used.
- Power-supply core:
-   - Added parsing of new battery parameters.
- BD99954 driver:
-   - converted to use battery parameters from battery node
-   - Added step 0 ranges for reg values which do not change voltage
-   - added dt-node to psy-config
-
-Patch 1:
-	Linear ranges helpers
-Patch 2:
-	Test for linear ranges helpers
-Patch 3:
-	Rename driver internal struct linear_range from bd70528-power
-Patch 4:
-	Use linear-ranges helpers in regulator framework and
-	convert regulator drivers to use new linear_range struct.
-Patch 5:
-	Use linear-ranges helpers in bd70528 driver
-Patch 6:
-	DT binding docs for the new battery parameters
-Patch 7:
-	Parsing of new battery parameters
-Patch 8:
-	BD99954 charger DT binding docs
-Patch 9:
-	ROHM BD99954 charger IC driver
-Patch 10:
-	Fix Kconfig help text indentiation for other entries as well.
-Patch 10:
-	Fix Kconfig by removing the "default n".
-
----
-
-Matti Vaittinen (11):
-  lib: add linear ranges helpers
-  lib/test_linear_ranges: add a test for the 'linear_ranges'
-  power: supply: bd70528: rename linear_range to avoid collision
-  regulator: use linear_ranges helper
-  power: supply: bd70528: use linear ranges
-  dt-bindings: battery: add new battery parameters
-  power: supply: add battery parameters
-  dt_bindings: ROHM BD99954 Charger
-  power: supply: Support ROHM bd99954 charger
-  power: supply: Fix Kconfig help text indentiation
-  power: supply: KConfig cleanup default n
-
- .../bindings/power/supply/battery.txt         |    6 +
- .../bindings/power/supply/rohm,bd99954.yaml   |  155 +++
- drivers/power/supply/Kconfig                  |   36 +-
- drivers/power/supply/Makefile                 |    1 +
- drivers/power/supply/bd70528-charger.c        |  140 +-
- drivers/power/supply/bd99954-charger.c        | 1142 +++++++++++++++++
- drivers/power/supply/bd99954-charger.h        | 1075 ++++++++++++++++
- drivers/power/supply/power_supply_core.c      |    8 +
- drivers/regulator/88pg86x.c                   |    4 +-
- drivers/regulator/88pm800-regulator.c         |    4 +-
- drivers/regulator/Kconfig                     |    1 +
- drivers/regulator/act8865-regulator.c         |    4 +-
- drivers/regulator/act8945a-regulator.c        |    2 +-
- drivers/regulator/arizona-ldo1.c              |    2 +-
- drivers/regulator/arizona-micsupp.c           |    4 +-
- drivers/regulator/as3711-regulator.c          |    6 +-
- drivers/regulator/as3722-regulator.c          |    4 +-
- drivers/regulator/axp20x-regulator.c          |   16 +-
- drivers/regulator/bcm590xx-regulator.c        |    8 +-
- drivers/regulator/bd70528-regulator.c         |    8 +-
- drivers/regulator/bd71828-regulator.c         |   10 +-
- drivers/regulator/bd718x7-regulator.c         |   26 +-
- drivers/regulator/da903x.c                    |    2 +-
- drivers/regulator/helpers.c                   |  130 +-
- drivers/regulator/hi6421-regulator.c          |    4 +-
- drivers/regulator/lochnagar-regulator.c       |    4 +-
- drivers/regulator/lp873x-regulator.c          |    4 +-
- drivers/regulator/lp87565-regulator.c         |    2 +-
- drivers/regulator/lp8788-buck.c               |    2 +-
- drivers/regulator/max77650-regulator.c        |    2 +-
- drivers/regulator/mcp16502.c                  |    4 +-
- drivers/regulator/mp8859.c                    |    2 +-
- drivers/regulator/mt6323-regulator.c          |    6 +-
- drivers/regulator/mt6358-regulator.c          |    8 +-
- drivers/regulator/mt6380-regulator.c          |    6 +-
- drivers/regulator/mt6397-regulator.c          |    6 +-
- drivers/regulator/palmas-regulator.c          |    4 +-
- drivers/regulator/qcom-rpmh-regulator.c       |    2 +-
- drivers/regulator/qcom_rpm-regulator.c        |   14 +-
- drivers/regulator/qcom_smd-regulator.c        |   78 +-
- drivers/regulator/rk808-regulator.c           |   10 +-
- drivers/regulator/s2mps11.c                   |   14 +-
- drivers/regulator/sky81452-regulator.c        |    2 +-
- drivers/regulator/stpmic1_regulator.c         |   18 +-
- drivers/regulator/tps65086-regulator.c        |   10 +-
- drivers/regulator/tps65217-regulator.c        |    4 +-
- drivers/regulator/tps65218-regulator.c        |    6 +-
- drivers/regulator/tps65912-regulator.c        |    4 +-
- drivers/regulator/twl-regulator.c             |    4 +-
- drivers/regulator/twl6030-regulator.c         |    2 +-
- drivers/regulator/wm831x-dcdc.c               |    2 +-
- drivers/regulator/wm831x-ldo.c                |    4 +-
- drivers/regulator/wm8350-regulator.c          |    2 +-
- drivers/regulator/wm8400-regulator.c          |    2 +-
- include/linux/linear_range.h                  |   48 +
- include/linux/power_supply.h                  |    4 +
- include/linux/regulator/driver.h              |   27 +-
- lib/Kconfig                                   |    3 +
- lib/Kconfig.debug                             |   11 +
- lib/Makefile                                  |    2 +
- lib/linear_ranges.c                           |  241 ++++
- lib/test_linear_ranges.c                      |  228 ++++
- 62 files changed, 3228 insertions(+), 362 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/power/supply/rohm,bd99954.yaml
- create mode 100644 drivers/power/supply/bd99954-charger.c
- create mode 100644 drivers/power/supply/bd99954-charger.h
- create mode 100644 include/linux/linear_range.h
- create mode 100644 lib/linear_ranges.c
- create mode 100644 lib/test_linear_ranges.c
+On Tue, Apr 28, 2020 at 03:08:35PM +0530, Srikar Dronamraju wrote:
+> Node id queried from the static device tree may not
+> be correct. For example: it may always show 0 on a shared processor.
+> Hence prefer the node id queried from vphn and fallback on the device tree
+> based node id if vphn query fails.
+> 
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+> Cc: Christopher Lameter <cl@linux.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> ---
+> Changelog v1:->v2:
+> - Rebased to v5.7-rc3
+> 
+>  arch/powerpc/mm/numa.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
+> index b3615b7fdbdf..281531340230 100644
+> --- a/arch/powerpc/mm/numa.c
+> +++ b/arch/powerpc/mm/numa.c
+> @@ -719,20 +719,20 @@ static int __init parse_numa_properties(void)
+>  	 */
+>  	for_each_present_cpu(i) {
+>  		struct device_node *cpu;
+> -		int nid;
+> -
+> -		cpu = of_get_cpu_node(i, NULL);
+> -		BUG_ON(!cpu);
+> -		nid = of_node_to_nid_single(cpu);
+> -		of_node_put(cpu);
+> +		int nid = vphn_get_nid(i);
+> 
+>  		/*
+>  		 * Don't fall back to default_nid yet -- we will plug
+>  		 * cpus into nodes once the memory scan has discovered
+>  		 * the topology.
+>  		 */
+> -		if (nid < 0)
+> -			continue;
 
 
-base-commit: 8f3d9f354286745c751374f5f1fcafee6b3f3136
--- 
-2.21.0
+> +		if (nid == NUMA_NO_NODE) {
+> +			cpu = of_get_cpu_node(i, NULL);
+> +			if (cpu) {
+
+Why are we not retaining the BUG_ON(!cpu) assert here ?
+
+> +				nid = of_node_to_nid_single(cpu);
+> +				of_node_put(cpu);
+> +			}
+> +		}
+
+Is it possible at this point that both vphn_get_nid(i) and
+of_node_to_nid_single(cpu) returns NUMA_NO_NODE ? If so,
+should we still call node_set_online() below ?
 
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+>  		node_set_online(nid);
+>  	}
+> 
+> -- 
+> 2.20.1
+> 
+--
+Thanks and Regards
+gautham.
