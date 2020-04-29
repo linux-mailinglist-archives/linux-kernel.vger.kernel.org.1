@@ -2,133 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9328B1BDE25
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564261BDE41
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgD2Nh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbgD2NhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:01 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3351CC0A3BF3;
-        Wed, 29 Apr 2020 06:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=u23sNGTDG+u9Lk1Zo8Xu9MDzG9uzpPr1XYeNiQGb77w=; b=FaHrizP5bJ1yL18yZzX0LCOIA3
-        XK13cukEJ31kTpTmirnJYRGSp68Xby0cYl078yXwVgJ7io9a0Ti5eLgH8ouYy4m8DMiIzY2BhwTMA
-        nVr6uQCYesz/ZtJJGEiHt/0oT7bm7Hh+F96qfzcOlMTty+TjgEiwkKv0IMsr9M+Bnr11CoKQyH6L8
-        UWKFsa0oirt+eDJNHYFiFhR6RdI2jg2OPGvXbBglkPLiHTfyotM5AEHLX6bsevxmxXfIGbqE9ABLG
-        uvM6of5ihPj7kdUFt1qXmBtRVuxbuc+Kfea2Z8kejnQWKq/C6zSzxQZ+x3vRp8eEdGF0Q2AjGHQuf
-        u+ICdD/g==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTmtY-0005ww-1P; Wed, 29 Apr 2020 13:37:00 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     William Kucharski <william.kucharski@oracle.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v3 25/25] mm: Align THP mappings for non-DAX
-Date:   Wed, 29 Apr 2020 06:36:57 -0700
-Message-Id: <20200429133657.22632-26-willy@infradead.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
-References: <20200429133657.22632-1-willy@infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728097AbgD2Nh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:37:56 -0400
+Received: from 8bytes.org ([81.169.241.247]:39788 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727986AbgD2Nht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:37:49 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id DF0ACECD; Wed, 29 Apr 2020 15:37:38 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH v3 19/34] iommu/s390: Convert to probe/release_device() call-backs
+Date:   Wed, 29 Apr 2020 15:36:57 +0200
+Message-Id: <20200429133712.31431-20-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
+References: <20200429133712.31431-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: William Kucharski <william.kucharski@oracle.com>
+From: Joerg Roedel <jroedel@suse.de>
 
-When we have the opportunity to use transparent huge pages to map a
-file, we want to follow the same rules as DAX.
+Convert the S390 IOMMU driver to use the probe_device() and
+release_device() call-backs of iommu_ops, so that the iommu core code
+does the group and sysfs setup.
 
-Signed-off-by: William Kucharski <william.kucharski@oracle.com>
-[Inline __thp_get_unmapped_area() into thp_get_unmapped_area()]
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- mm/huge_memory.c | 40 +++++++++++++---------------------------
- 1 file changed, 13 insertions(+), 27 deletions(-)
+ drivers/iommu/s390-iommu.c | 22 ++++++----------------
+ 1 file changed, 6 insertions(+), 16 deletions(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 7a5e2b470bc7..ebaf649aa28d 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -535,30 +535,30 @@ bool is_transparent_hugepage(struct page *page)
+diff --git a/drivers/iommu/s390-iommu.c b/drivers/iommu/s390-iommu.c
+index 1137f3ddcb85..610f0828f22d 100644
+--- a/drivers/iommu/s390-iommu.c
++++ b/drivers/iommu/s390-iommu.c
+@@ -166,21 +166,14 @@ static void s390_iommu_detach_device(struct iommu_domain *domain,
+ 	}
  }
- EXPORT_SYMBOL_GPL(is_transparent_hugepage);
  
--static unsigned long __thp_get_unmapped_area(struct file *filp,
--		unsigned long addr, unsigned long len,
--		loff_t off, unsigned long flags, unsigned long size)
-+unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
-+		unsigned long len, unsigned long pgoff, unsigned long flags)
+-static int s390_iommu_add_device(struct device *dev)
++static struct iommu_device *s390_iommu_probe_device(struct device *dev)
  {
-+	loff_t off = (loff_t)pgoff << PAGE_SHIFT;
- 	loff_t off_end = off + len;
--	loff_t off_align = round_up(off, size);
-+	loff_t off_align = round_up(off, PMD_SIZE);
- 	unsigned long len_pad, ret;
+-	struct iommu_group *group = iommu_group_get_for_dev(dev);
+ 	struct zpci_dev *zdev = to_pci_dev(dev)->sysdata;
  
--	if (off_end <= off_align || (off_end - off_align) < size)
--		return 0;
-+	if (off_end <= off_align || (off_end - off_align) < PMD_SIZE)
-+		goto regular;
- 
--	len_pad = len + size;
-+	len_pad = len + PMD_SIZE;
- 	if (len_pad < len || (off + len_pad) < off)
--		return 0;
-+		goto regular;
- 
- 	ret = current->mm->get_unmapped_area(filp, addr, len_pad,
- 					      off >> PAGE_SHIFT, flags);
- 
- 	/*
--	 * The failure might be due to length padding. The caller will retry
--	 * without the padding.
-+	 * The failure might be due to length padding.  Retry without
-+	 * the padding.
- 	 */
- 	if (IS_ERR_VALUE(ret))
--		return 0;
-+		goto regular;
- 
- 	/*
- 	 * Do not try to align to THP boundary if allocation at the address
-@@ -567,23 +567,9 @@ static unsigned long __thp_get_unmapped_area(struct file *filp,
- 	if (ret == addr)
- 		return addr;
- 
--	ret += (off - ret) & (size - 1);
-+	ret += (off - ret) & (PMD_SIZE - 1);
- 	return ret;
--}
+-	if (IS_ERR(group))
+-		return PTR_ERR(group);
 -
--unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
--		unsigned long len, unsigned long pgoff, unsigned long flags)
--{
--	unsigned long ret;
--	loff_t off = (loff_t)pgoff << PAGE_SHIFT;
+-	iommu_group_put(group);
+-	iommu_device_link(&zdev->iommu_dev, dev);
 -
--	if (!IS_DAX(filp->f_mapping->host) || !IS_ENABLED(CONFIG_FS_DAX_PMD))
--		goto out;
--
--	ret = __thp_get_unmapped_area(filp, addr, len, off, flags, PMD_SIZE);
--	if (ret)
--		return ret;
--out:
-+regular:
- 	return current->mm->get_unmapped_area(filp, addr, len, pgoff, flags);
+-	return 0;
++	return &zdev->iommu_dev;
  }
- EXPORT_SYMBOL_GPL(thp_get_unmapped_area);
+ 
+-static void s390_iommu_remove_device(struct device *dev)
++static void s390_iommu_release_device(struct device *dev)
+ {
+ 	struct zpci_dev *zdev = to_pci_dev(dev)->sysdata;
+ 	struct iommu_domain *domain;
+@@ -191,7 +184,7 @@ static void s390_iommu_remove_device(struct device *dev)
+ 	 * to vfio-pci and completing the VFIO_SET_IOMMU ioctl (which triggers
+ 	 * the attach_dev), removing the device via
+ 	 * "echo 1 > /sys/bus/pci/devices/.../remove" won't trigger detach_dev,
+-	 * only remove_device will be called via the BUS_NOTIFY_REMOVED_DEVICE
++	 * only release_device will be called via the BUS_NOTIFY_REMOVED_DEVICE
+ 	 * notifier.
+ 	 *
+ 	 * So let's call detach_dev from here if it hasn't been called before.
+@@ -201,9 +194,6 @@ static void s390_iommu_remove_device(struct device *dev)
+ 		if (domain)
+ 			s390_iommu_detach_device(domain, dev);
+ 	}
+-
+-	iommu_device_unlink(&zdev->iommu_dev, dev);
+-	iommu_group_remove_device(dev);
+ }
+ 
+ static int s390_iommu_update_trans(struct s390_domain *s390_domain,
+@@ -373,8 +363,8 @@ static const struct iommu_ops s390_iommu_ops = {
+ 	.map = s390_iommu_map,
+ 	.unmap = s390_iommu_unmap,
+ 	.iova_to_phys = s390_iommu_iova_to_phys,
+-	.add_device = s390_iommu_add_device,
+-	.remove_device = s390_iommu_remove_device,
++	.probe_device = s390_iommu_probe_device,
++	.release_device = s390_iommu_release_device,
+ 	.device_group = generic_device_group,
+ 	.pgsize_bitmap = S390_IOMMU_PGSIZES,
+ };
 -- 
-2.26.2
+2.17.1
 
