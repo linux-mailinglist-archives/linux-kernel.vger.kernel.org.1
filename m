@@ -2,99 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 210D11BE6DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 21:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3A71BE6E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 21:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgD2TB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 15:01:56 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:37649 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgD2TB4 (ORCPT
+        id S1726960AbgD2TCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 15:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727023AbgD2TCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 15:01:56 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MumVX-1jCKwh27ud-00rpSG; Wed, 29 Apr 2020 21:01:40 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Guan Xuetao <gxt@pku.edu.cn>,
-        Russell King <linux@armlinux.org.uk>,
-        Will Deacon <will.deacon@arm.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] initramfs: fix another section mismatch
-Date:   Wed, 29 Apr 2020 21:01:29 +0200
-Message-Id: <20200429190135.66411-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:Szb2DZmVbsi9zjRUpDEH7akgew64KiBCpb3bqi+G1E8EOw0LQH+
- TlGePCThpd30p+6jKUM6y8jmbDwOE6e9BfTt7O9LjHUEY1cHuT3IFuVIcPCmSy99Y86+j2g
- 8G6pgeey9wEKCGkd8smGL2z/cHRq4WVKWKts21hPxjl3DbpnTRNRCLrnqYFm55S8AuFt82f
- anFT93iEsS8s5/jsxgjoQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:h9pmxs2rWbc=:2vcMAoEgtdbCJo7EjwQKVY
- iTVmiHOkHgdmh2/o5x5Mb3DgZXizfSSM45oQ2rw9eziCvspfh669eA2RCkOVzcSZq3TZLRPni
- ss6VwGeGatYVo6F/KmHqPxlTvFIU1Ex1W/Tp165NK3d+bkP1EY46nOWq3RoX+NrjWyWh1UG6h
- REmjdrAM1rU4UXXsGa1eTB6KTTrXtDEk3xanVCgMe24NOobaitppXeBsleW/AUdlwsWHq/241
- DekvlYVSS0l6vNtnGl5bjnvgxLzu8ITT7xsVHwhFy/K1ZT8oCdoPANfNBPbeUvUxZqV8nRcmq
- tJRbgWfyRpcSF2R3riU7n7rj2b+o0ID2x2IGslElooFF8OgaX1SX63xUz5XBFycrOuhH3eBd8
- 9Wm1TX6Hrgl0jm5hGqWZLnF6fOTeuc1yaJgiIDkpjjUZwuA9JbHfklfvdiNcdcYG94OJfee5e
- f8WRpMPi1PHcz7RYLzWEqhgAFy4QmZSN//kDdcW95ZSNhq2xv8SM21ijrr9z5lOke60MeNJWM
- 0MyVQ2isjIX38KVE277BtPGjnROsiJsvZn/a1tqucTmq2ycUas5xDp5AE28Kp9J8dsK0GDwqm
- 0Whmt/s0NcLYk7md/4APxkqPpFdsJ835gnjVNObUTyp3egE/m6YPbJNqm9qs2p5tcJeS6dLxT
- WPgsivSI2qcvl3ZezMRIobjQ2sRHi8dUe11t5iM+QzLkwbR4zku1KYnsCzm1DPrg1LetHdtMQ
- 1EiW3MA4EvF5PizMWVD04g2uQ5xEPgMlOeTBXnn0O2wT4bPJdZc4fFH+oNFv0TLSYBjptT18X
- sli0Z7fzyrf2gUX0XrMeTbHKJ5wPSvKPp1eRkU4rdVRJkeOjEU=
+        Wed, 29 Apr 2020 15:02:03 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF82C03C1AE;
+        Wed, 29 Apr 2020 12:02:03 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 060DB1210A3E3;
+        Wed, 29 Apr 2020 12:02:02 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 12:02:02 -0700 (PDT)
+Message-Id: <20200429.120202.166441911475967295.davem@davemloft.net>
+To:     yuehaibing@huawei.com
+Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, kuba@kernel.org,
+        tglx@linutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] ila: remove unused inline function
+ ila_addr_is_ila
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200429132530.6172-1-yuehaibing@huawei.com>
+References: <20200429132530.6172-1-yuehaibing@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 29 Apr 2020 12:02:03 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building with gcc-10 causes a harmless warning, similar to the
-gcc-4.6 warning that Geert fixed last year:
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Wed, 29 Apr 2020 21:25:30 +0800
 
-WARNING: modpost: vmlinux.o(.text.unlikely+0xe69): Section mismatch in reference from the function kexec_free_initrd() to the function .init.text:free_initrd_mem()
-The function kexec_free_initrd() references
-the function __init free_initrd_mem().
-This is often because kexec_free_initrd lacks a __init
-annotation or the annotation of free_initrd_mem is wrong.
+> There's no callers in-tree anymore since commit 84287bb32856 ("ila: add
+> checksum neutral map auto").
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Add the missing __init annotations.
-
-Fixes: 4ada1e810038 ("initramfs: fix populate_initrd_image() section mismatch")
-Fixes: 23091e287355 ("initramfs: cleanup initrd freeing")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- init/initramfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/init/initramfs.c b/init/initramfs.c
-index 8ec1be4d7d51..bda77a6c8e50 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -542,7 +542,7 @@ void __weak free_initrd_mem(unsigned long start, unsigned long end)
- }
- 
- #ifdef CONFIG_KEXEC_CORE
--static bool kexec_free_initrd(void)
-+static bool __init kexec_free_initrd(void)
- {
- 	unsigned long crashk_start = (unsigned long)__va(crashk_res.start);
- 	unsigned long crashk_end   = (unsigned long)__va(crashk_res.end);
-@@ -565,7 +565,7 @@ static bool kexec_free_initrd(void)
- 	return true;
- }
- #else
--static inline bool kexec_free_initrd(void)
-+static inline bool __init kexec_free_initrd(void)
- {
- 	return false;
- }
--- 
-2.26.0
-
+Applied.
