@@ -2,78 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1561BE98C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 23:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BEF1BE99D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 23:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgD2VG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 17:06:56 -0400
-Received: from elvis.franken.de ([193.175.24.41]:60847 "EHLO elvis.franken.de"
+        id S1727848AbgD2VHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 17:07:44 -0400
+Received: from mga06.intel.com ([134.134.136.31]:44895 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726921AbgD2VGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 17:06:55 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jTtuv-0005Q3-07; Wed, 29 Apr 2020 23:06:53 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C9A13C0355; Wed, 29 Apr 2020 23:06:27 +0200 (CEST)
-Date:   Wed, 29 Apr 2020 23:06:27 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Rob Herring <robh+dt@kernel.org>, od@zcrc.me,
-        =?utf-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        id S1726891AbgD2VHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 17:07:43 -0400
+IronPort-SDR: S+KBPWIAqtmkNtqiHM/H8i7VM578yfLJxqyYUohjFKNgI3M60PTo2/rW2vLUTkLx0MNxfdze3x
+ KHyYAR0awvaw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 14:07:43 -0700
+IronPort-SDR: fO28tMpy91+h61zlAdF7J+DLy95HhSJ1xZ91vgd72GUoJevjkgLSc21L1bQKX1nPN773x00Tq8
+ TR1D9bkilTVw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
+   d="scan'208";a="258085302"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 29 Apr 2020 14:07:39 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jTtvf-000GLJ-0A; Thu, 30 Apr 2020 05:07:39 +0800
+Date:   Thu, 30 Apr 2020 05:06:40 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Srivatsa Vaddagiri <vatsa@codeaurora.org>, konrad.wilk@oracle.com,
+        mst@redhat.com, jasowang@redhat.com, jan.kiszka@siemens.com,
+        will@kernel.org, stefano.stabellini@xilinx.com
+Cc:     kbuild-all@lists.01.org, iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, tsoni@codeaurora.org,
+        pratikp@codeaurora.org, vatsa@codeaurora.org,
+        christoffer.dall@arm.com, alex.bennee@linaro.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/13] MIPS: ingenic: Drop obsolete code, merge the rest
- in setup.c
-Message-ID: <20200429210627.GH24583@alpha.franken.de>
-References: <20200413152633.198301-1-paul@crapouillou.net>
- <20200413152633.198301-13-paul@crapouillou.net>
+Subject: Re: [PATCH 5/5] virtio: Add bounce DMA ops
+Message-ID: <202004300425.BWcRAuHD%lkp@intel.com>
+References: <1588073958-1793-6-git-send-email-vatsa@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200413152633.198301-13-paul@crapouillou.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <1588073958-1793-6-git-send-email-vatsa@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 05:26:33PM +0200, Paul Cercueil wrote:
-> Drop a bootload of 10-years-old dirty code, that is not used anymore, as
-> it has been replaced with clean code over the ages.
-> 
-> Merge the very few bits left inside setup.c, so that everything is clean
-> and tidy now.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  arch/mips/include/asm/mach-jz4740/base.h  |  27 -----
->  arch/mips/include/asm/mach-jz4740/dma.h   |  23 ----
->  arch/mips/include/asm/mach-jz4740/irq.h   |  45 +-------
->  arch/mips/include/asm/mach-jz4740/timer.h | 126 ----------------------
->  arch/mips/jz4740/Makefile                 |   7 +-
->  arch/mips/jz4740/pm.c                     |  34 ------
->  arch/mips/jz4740/prom.c                   |  19 ----
->  arch/mips/jz4740/reset.c                  |  24 -----
->  arch/mips/jz4740/reset.h                  |   7 --
->  arch/mips/jz4740/setup.c                  |  63 ++++++++++-
->  arch/mips/jz4740/time.c                   |  17 ---
->  arch/mips/jz4740/timer.c                  |  42 --------
->  12 files changed, 61 insertions(+), 373 deletions(-)
->  delete mode 100644 arch/mips/include/asm/mach-jz4740/base.h
->  delete mode 100644 arch/mips/include/asm/mach-jz4740/dma.h
->  delete mode 100644 arch/mips/include/asm/mach-jz4740/timer.h
->  delete mode 100644 arch/mips/jz4740/pm.c
->  delete mode 100644 arch/mips/jz4740/prom.c
->  delete mode 100644 arch/mips/jz4740/reset.c
->  delete mode 100644 arch/mips/jz4740/reset.h
->  delete mode 100644 arch/mips/jz4740/time.c
->  delete mode 100644 arch/mips/jz4740/timer.c
+Hi Srivatsa,
 
-applied to mips-next.
+Thank you for the patch! Perhaps something to improve:
 
-Thomas.
+[auto build test WARNING on vhost/linux-next]
+[also build test WARNING on xen-tip/linux-next linus/master v5.7-rc3 next-20200428]
+[cannot apply to swiotlb/linux-next]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+url:    https://github.com/0day-ci/linux/commits/Srivatsa-Vaddagiri/virtio-on-Type-1-hypervisor/20200429-032334
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git linux-next
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-191-gc51a0382-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> drivers/virtio/virtio_bounce.c:22:21: sparse: sparse: symbol 'virtio_pool' was not declared. Should it be static?
+>> drivers/virtio/virtio_bounce.c:79:8: sparse: sparse: symbol 'virtio_max_mapping_size' was not declared. Should it be static?
+
+Please review and possibly fold the followup patch.
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
