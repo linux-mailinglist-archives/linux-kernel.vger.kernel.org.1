@@ -2,118 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17041BDF3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FD61BDEFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728637AbgD2Nl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
+        id S1728454AbgD2NkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgD2NhA (ORCPT
+        with ESMTP id S1727947AbgD2Nhq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:00 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA864C09B052;
-        Wed, 29 Apr 2020 06:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=VARbJRt66GXZ9qiKVVic699Ba+6i1AmoDjPwsJmH6Ms=; b=de4RFMRD8dMojIIeXBHcYPG/M5
-        nWhABiDosUpLCR6KRc1wgN3T8SPfYoLJVSfmoWAAg1yTm8JRu0hIRMVkBl2IZ0/57ANffY4eNtzjJ
-        0+Q6ZF75GUh0BNFNAZApP7LfPnMdiW5denJpYF1vBSQcUoqy2bSib5GP32tZnnvQcbyovRK8iv2mV
-        6K8E3kJCQHATjoghavXFEKlKQ7/yLyay0pxghvyOFcf5oQ4acCEwBoclrNn3vv50W6EKviUaNA55N
-        d0J47upy2ZwpPWv8P6+upSJve7iOzniw5/f++qOU3MXp38F62EHS6G7tvp3I1X/ooTuqZH4bq49WO
-        WJ444nfA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTmtX-0005vx-LQ; Wed, 29 Apr 2020 13:36:59 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH v3 16/25] mm: Make prep_transhuge_page return its argument
-Date:   Wed, 29 Apr 2020 06:36:48 -0700
-Message-Id: <20200429133657.22632-17-willy@infradead.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
-References: <20200429133657.22632-1-willy@infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 29 Apr 2020 09:37:46 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E5DC03C1AD;
+        Wed, 29 Apr 2020 06:37:45 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 2A8C6CB4; Wed, 29 Apr 2020 15:37:37 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH v3 10/34] iommu: Move new probe_device path to separate function
+Date:   Wed, 29 Apr 2020 15:36:48 +0200
+Message-Id: <20200429133712.31431-11-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
+References: <20200429133712.31431-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+From: Joerg Roedel <jroedel@suse.de>
 
-By permitting NULL or order-0 pages as an argument, and returning the
-argument, callers can write:
+This makes it easier to remove to old code-path when all drivers are
+converted. As a side effect that it also fixes the error cleanup
+path.
 
-	return prep_transhuge_page(alloc_pages(...));
-
-instead of assigning the result to a temporary variable and conditionally
-passing that to prep_transhuge_page().
-
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- include/linux/huge_mm.h | 7 +++++--
- mm/huge_memory.c        | 9 +++++++--
- 2 files changed, 12 insertions(+), 4 deletions(-)
+ drivers/iommu/iommu.c | 69 ++++++++++++++++++++++++++++---------------
+ 1 file changed, 46 insertions(+), 23 deletions(-)
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index 1f6245091917..6a8502278f41 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -193,7 +193,7 @@ extern unsigned long thp_get_unmapped_area(struct file *filp,
- 		unsigned long addr, unsigned long len, unsigned long pgoff,
- 		unsigned long flags);
- 
--extern void prep_transhuge_page(struct page *page);
-+extern struct page *prep_transhuge_page(struct page *page);
- extern void free_transhuge_page(struct page *page);
- bool is_transparent_hugepage(struct page *page);
- 
-@@ -358,7 +358,10 @@ static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
- 	return false;
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 18eb3623bd00..8be047a4808f 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -218,12 +218,55 @@ static int __iommu_probe_device(struct device *dev, struct list_head *group_list
+ 	return ret;
  }
  
--static inline void prep_transhuge_page(struct page *page) {}
-+static inline struct page *prep_transhuge_page(struct page *page)
++static int __iommu_probe_device_helper(struct device *dev)
 +{
-+	return page;
-+}
- 
- static inline bool is_transparent_hugepage(struct page *page)
- {
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 6ecd1045113b..7a5e2b470bc7 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -508,15 +508,20 @@ static inline struct deferred_split *get_deferred_split_queue(struct page *page)
- }
- #endif
- 
--void prep_transhuge_page(struct page *page)
-+struct page *prep_transhuge_page(struct page *page)
- {
-+	if (!page || compound_order(page) == 0)
-+		return page;
- 	/*
--	 * we use page->mapping and page->indexlru in second tail page
-+	 * we use page->mapping and page->index in second tail page
- 	 * as list_head: assuming THP order >= 2
- 	 */
-+	BUG_ON(compound_order(page) == 1);
- 
- 	INIT_LIST_HEAD(page_deferred_list(page));
- 	set_compound_page_dtor(page, TRANSHUGE_PAGE_DTOR);
++	const struct iommu_ops *ops = dev->bus->iommu_ops;
++	struct iommu_group *group;
++	int ret;
 +
-+	return page;
- }
++	ret = __iommu_probe_device(dev, NULL);
++	if (ret)
++		goto err_out;
++
++	/*
++	 * Try to allocate a default domain - needs support from the
++	 * IOMMU driver. There are still some drivers which don't
++	 * support default domains, so the return value is not yet
++	 * checked.
++	 */
++	iommu_alloc_default_domain(dev);
++
++	group = iommu_group_get(dev);
++	if (!group)
++		goto err_release;
++
++	if (group->default_domain)
++		ret = __iommu_attach_device(group->default_domain, dev);
++
++	iommu_group_put(group);
++
++	if (ret)
++		goto err_release;
++
++	if (ops->probe_finalize)
++		ops->probe_finalize(dev);
++
++	return 0;
++
++err_release:
++	iommu_release_device(dev);
++err_out:
++	return ret;
++
++}
++
+ int iommu_probe_device(struct device *dev)
+ {
+ 	const struct iommu_ops *ops = dev->bus->iommu_ops;
+ 	int ret;
  
- bool is_transparent_hugepage(struct page *page)
+ 	WARN_ON(dev->iommu_group);
++
+ 	if (!ops)
+ 		return -EINVAL;
+ 
+@@ -235,30 +278,10 @@ int iommu_probe_device(struct device *dev)
+ 		goto err_free_dev_param;
+ 	}
+ 
+-	if (ops->probe_device) {
+-		struct iommu_group *group;
+-
+-		ret = __iommu_probe_device(dev, NULL);
+-
+-		/*
+-		 * Try to allocate a default domain - needs support from the
+-		 * IOMMU driver. There are still some drivers which don't
+-		 * support default domains, so the return value is not yet
+-		 * checked.
+-		 */
+-		if (!ret)
+-			iommu_alloc_default_domain(dev);
+-
+-		group = iommu_group_get(dev);
+-		if (group && group->default_domain) {
+-			ret = __iommu_attach_device(group->default_domain, dev);
+-			iommu_group_put(group);
+-		}
+-
+-	} else {
+-		ret = ops->add_device(dev);
+-	}
++	if (ops->probe_device)
++		return __iommu_probe_device_helper(dev);
+ 
++	ret = ops->add_device(dev);
+ 	if (ret)
+ 		goto err_module_put;
+ 
 -- 
-2.26.2
+2.17.1
 
