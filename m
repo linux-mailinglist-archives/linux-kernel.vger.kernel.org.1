@@ -2,80 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7921BE93D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589181BE9F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 23:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgD2U41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 16:56:27 -0400
-Received: from smtprelay0185.hostedemail.com ([216.40.44.185]:38046 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726456AbgD2U41 (ORCPT
+        id S1727108AbgD2VeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 17:34:20 -0400
+Received: from 7.mo173.mail-out.ovh.net ([46.105.44.159]:59286 "EHLO
+        7.mo173.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726511AbgD2VeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 16:56:27 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 2A4F33D13;
-        Wed, 29 Apr 2020 20:56:26 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:983:988:989:1208:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3653:3867:4250:5007:6299:6642:7903:8603:10004:10400:10848:11026:11658:11914:12297:12438:12555:12679:12760:13069:13095:13311:13357:13439:14181:14394:14659:14721:21080:21433:21451:21505:21627:30054:30062:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: town34_724d5c9ce7815
-X-Filterd-Recvd-Size: 1767
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 29 Apr 2020 20:56:25 +0000 (UTC)
-Message-ID: <3dc7bdaa58490f5906efc11a4d6113e42a087723.camel@perches.com>
-Subject: [PATCH] checkpatch: Disallow --git and --file/--fix
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andy Whitcroft <apw@shadowen.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Wed, 29 Apr 2020 13:56:24 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.1-2 
+        Wed, 29 Apr 2020 17:34:18 -0400
+X-Greylist: delayed 2228 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Apr 2020 17:34:18 EDT
+Received: from player787.ha.ovh.net (unknown [10.110.115.149])
+        by mo173.mail-out.ovh.net (Postfix) with ESMTP id B50BD139AF8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 22:57:08 +0200 (CEST)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player787.ha.ovh.net (Postfix) with ESMTPSA id C950B12118E6D;
+        Wed, 29 Apr 2020 20:56:57 +0000 (UTC)
+Date:   Wed, 29 Apr 2020 22:56:56 +0200
+From:   Stephen Kitt <steve@sk2.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 2/3] docs: sysctl/kernel: document ftrace entries
+Message-ID: <20200429225656.43aed6f9@heffalump.sk2.org>
+In-Reply-To: <20200428124133.0fbaf7c5@lwn.net>
+References: <20200423183651.15365-1-steve@sk2.org>
+        <20200423183651.15365-2-steve@sk2.org>
+        <20200428124133.0fbaf7c5@lwn.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/FW_R1QjDCvmBdAlezO_Ci08"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 16871610105530371461
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrieefgdduheegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtsehgtderreertdejnecuhfhrohhmpefuthgvphhhvghnucfmihhtthcuoehsthgvvhgvsehskhdvrdhorhhgqeenucggtffrrghtthgvrhhnpeevledvueefvdeivefftdeugeekveethefftdffteelheejkeejjeduffeiudetkeenucfkpheptddrtddrtddrtddpkedvrdeihedrvdehrddvtddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhlrgihvghrjeekjedrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehsthgvvhgvsehskhdvrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't allow these options to be combined.
+--Sig_/FW_R1QjDCvmBdAlezO_Ci08
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Miscellanea:
+On Tue, 28 Apr 2020 12:41:33 -0600, Jonathan Corbet <corbet@lwn.net> wrote:
+> On Thu, 23 Apr 2020 20:36:50 +0200
+> Stephen Kitt <steve@sk2.org> wrote:
+> > Based on the ftrace documentation, the tp_printk boot parameter
+> > documentation, and the implementation in kernel/trace/trace.c.
+> >=20
+> > Signed-off-by: Stephen Kitt <steve@sk2.org> =20
+>=20
+> This one could benefit from an ack from Steve (CC'd).  Also one other
+> little nit below:
 
-o Add missing $P: to some die("reason message") output
+Thanks (and thanks for the review Steve). I=E2=80=99ll follow up with v2 sh=
+ortly,
+fixing the spelling and grammar here:
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- scripts/checkpatch.pl | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> > +the console.  This is very useful for capturing traces that lead to
+> > +crashes and outputing it to a serial console.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index e4af60..4a5c6bb 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -246,6 +246,8 @@ list_types(0) if ($list_types);
- $fix = 1 if ($fix_inplace);
- $check_orig = $check;
- 
-+die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
-+
- my $exit = 0;
- 
- my $perl_version_ok = 1;
-@@ -269,11 +271,11 @@ if ($color =~ /^[01]$/) {
- } elsif ($color =~ /^auto$/i) {
- 	$color = (-t STDOUT);
- } else {
--	die "Invalid color mode: $color\n";
-+	die "$P: Invalid color mode: $color\n";
- }
- 
- # skip TAB size 1 to avoid additional checks on $tabsize - 1
--die "Invalid TAB size: $tabsize\n" if ($tabsize < 2);
-+die "$P: Invalid TAB size: $tabsize\n" if ($tabsize < 2);
- 
- sub hash_save_array_words {
- 	my ($hashRef, $arrayRef) = @_;
+in addition to this:
 
+> > +will stop tracepoints from being sent to printk(), and
+> > +
+> > +:: =20
+>=20
+> I would just make that ", and::" and avoid the separate line.
 
+Regards,
+
+Stephen
+
+--Sig_/FW_R1QjDCvmBdAlezO_Ci08
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl6p6hgACgkQgNMC9Yht
+g5z7Mw/9HsTuQXsity9hRkNzrwr4hTozShBtlUDgcUSictJoPGuhOGChizQsCQUU
+6yOvLYAEEqj9ywVInKXWG30lne3dQGdVTSlUj3rRLBt96aVbr0JfzksS8Ea6aFkU
+0YHZrdOBcdScpAy8W6Fx3bwEdue4Tv1/vihE6nS10SAIq6YaJOPMmTC9oNCPmxx3
+3url0e6O753LM8PNoPngonA5SA6KBLfDEuTTPrmokE6Pte6nJbo0fkL0naCOJ/t7
+yD21WuNtvc2Jep62foDoyFkTzIleek2Vl+ALxqNhCXAJ/bNktrl87gBU1UMaRkXk
+AP6MD3WRBwQ8VQaqMB7Af91vH7zVyVbbAyZ7bJ3+XBy2A5n34x7CdMreTV8EOH7j
+kLidI9NrHJCJgc3W08TF1ZF6MW79YmOT+knyvDFmtk/a7RgBTPeqLu/3qAvxz5xN
+Jl5lXwkxcDAshHbpGSPcfiOXATC6IjdaWe93jiIZy47YEcNgNKVDwef8/wEXWSyq
+SpVSCDj1fAFV78CAhUdKjlP7WqKEv1kqHeWEJoz4LFRU6OP+Efpj7Sb/ftzYFQ1H
+cKE0DUGK0bxFRHqXR2r68tNbHlzUq6jNxiRAuCueTYZSVR1fjKp+TsVuSuJ6+nKX
+GLrXsyTPhD+1I6NTVXkJJi6Zw1PKP68UFONxGKYAxDF4LsTmegY=
+=JIW3
+-----END PGP SIGNATURE-----
+
+--Sig_/FW_R1QjDCvmBdAlezO_Ci08--
