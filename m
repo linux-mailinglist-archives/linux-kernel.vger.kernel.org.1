@@ -2,213 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8CA1BDE21
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C362F1BDE42
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgD2Nh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727104AbgD2NhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:01 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C40C0A3BED;
-        Wed, 29 Apr 2020 06:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=QHpArOw85BPHEjO7S9SgdFjdibQa3jHe0Xw6rE9ncnQ=; b=d2YVSfeRj/e9/uubCe5VKMbX7o
-        RhLLOc+Nx9xNp3wg5vqWqnc5zfsQ8PHRvV47lb2omWzIvnOzipwNPf4xZ+C/DK1OiT6CCVWIBhVef
-        K7Pi5OSPhNGUeMx9d5Oo6MaghxalnKJ9Is1EgdePtMGKbshuM8pOIv+OgCRjuUpJQ6/3rhow+PBtr
-        3a0DsCoeFbUs/e4VB4LllxNH5F7bzHGaaYsz9WB+/FADDEdSuCKExZoDTD6n1kr5EI+rvCs1GhrQV
-        3Ye/nKpfCjtVLfG5NniW+gwAmGsMh74tJbc6k5l111pWj5gfILP6BShxTYhmZJtxFNYKv++wMvmly
-        hz89uo5w==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTmtX-0005wd-Tq; Wed, 29 Apr 2020 13:36:59 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 22/25] mm: Make page_cache_readahead_unbounded take a readahead_control
-Date:   Wed, 29 Apr 2020 06:36:54 -0700
-Message-Id: <20200429133657.22632-23-willy@infradead.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
-References: <20200429133657.22632-1-willy@infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728108AbgD2Nh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:37:59 -0400
+Received: from 8bytes.org ([81.169.241.247]:39874 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727970AbgD2Nht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:37:49 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 3D260E9A; Wed, 29 Apr 2020 15:37:38 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH v3 16/34] iommu/vt-d: Convert to probe/release_device() call-backs
+Date:   Wed, 29 Apr 2020 15:36:54 +0200
+Message-Id: <20200429133712.31431-17-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
+References: <20200429133712.31431-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+From: Joerg Roedel <jroedel@suse.de>
 
-Define it in the callers instead of in page_cache_readahead_unbounded().
+Convert the Intel IOMMU driver to use the probe_device() and
+release_device() call-backs of iommu_ops, so that the iommu core code
+does the group and sysfs setup.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- fs/ext4/verity.c        |  4 ++--
- fs/f2fs/verity.c        |  4 ++--
- include/linux/pagemap.h |  5 ++---
- mm/readahead.c          | 26 ++++++++++++--------------
- 4 files changed, 18 insertions(+), 21 deletions(-)
+ drivers/iommu/intel-iommu.c | 67 ++++---------------------------------
+ 1 file changed, 6 insertions(+), 61 deletions(-)
 
-diff --git a/fs/ext4/verity.c b/fs/ext4/verity.c
-index dec1244dd062..fe2e541543da 100644
---- a/fs/ext4/verity.c
-+++ b/fs/ext4/verity.c
-@@ -346,6 +346,7 @@ static struct page *ext4_read_merkle_tree_page(struct inode *inode,
- 					       pgoff_t index,
- 					       unsigned long num_ra_pages)
- {
-+	DEFINE_READAHEAD(rac, NULL, inode->i_mapping, index);
- 	struct page *page;
- 
- 	index += ext4_verity_metadata_pos(inode) >> PAGE_SHIFT;
-@@ -355,8 +356,7 @@ static struct page *ext4_read_merkle_tree_page(struct inode *inode,
- 		if (page)
- 			put_page(page);
- 		else if (num_ra_pages > 1)
--			page_cache_readahead_unbounded(inode->i_mapping, NULL,
--					index, num_ra_pages, 0);
-+			page_cache_readahead_unbounded(&rac, num_ra_pages, 0);
- 		page = read_mapping_page(inode->i_mapping, index, NULL);
- 	}
- 	return page;
-diff --git a/fs/f2fs/verity.c b/fs/f2fs/verity.c
-index 865c9fb774fb..707a94745472 100644
---- a/fs/f2fs/verity.c
-+++ b/fs/f2fs/verity.c
-@@ -226,6 +226,7 @@ static struct page *f2fs_read_merkle_tree_page(struct inode *inode,
- 					       pgoff_t index,
- 					       unsigned long num_ra_pages)
- {
-+	DEFINE_READAHEAD(rac, NULL, inode->i_mapping, index);
- 	struct page *page;
- 
- 	index += f2fs_verity_metadata_pos(inode) >> PAGE_SHIFT;
-@@ -235,8 +236,7 @@ static struct page *f2fs_read_merkle_tree_page(struct inode *inode,
- 		if (page)
- 			put_page(page);
- 		else if (num_ra_pages > 1)
--			page_cache_readahead_unbounded(inode->i_mapping, NULL,
--					index, num_ra_pages, 0);
-+			page_cache_readahead_unbounded(&rac, num_ra_pages, 0);
- 		page = read_mapping_page(inode->i_mapping, index, NULL);
- 	}
- 	return page;
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index ff5bf10829a6..7eb54f5c403b 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -640,9 +640,8 @@ void page_cache_sync_readahead(struct address_space *, struct file_ra_state *,
- void page_cache_async_readahead(struct address_space *, struct file_ra_state *,
- 		struct file *, struct page *, pgoff_t index,
- 		unsigned long req_count);
--void page_cache_readahead_unbounded(struct address_space *, struct file *,
--		pgoff_t index, unsigned long nr_to_read,
--		unsigned long lookahead_count);
-+void page_cache_readahead_unbounded(struct readahead_control *,
-+		unsigned long nr_to_read, unsigned long lookahead_count);
- 
- /*
-  * Like add_to_page_cache_locked, but used to add newly allocated pages:
-diff --git a/mm/readahead.c b/mm/readahead.c
-index 2126a2754e22..62da2d4beed1 100644
---- a/mm/readahead.c
-+++ b/mm/readahead.c
-@@ -159,9 +159,7 @@ static void read_pages(struct readahead_control *rac, struct list_head *pages,
- 
- /**
-  * page_cache_readahead_unbounded - Start unchecked readahead.
-- * @mapping: File address space.
-- * @file: This instance of the open file; used for authentication.
-- * @index: First page index to read.
-+ * @rac: Readahead control.
-  * @nr_to_read: The number of pages to read.
-  * @lookahead_size: Where to start the next readahead.
-  *
-@@ -173,13 +171,13 @@ static void read_pages(struct readahead_control *rac, struct list_head *pages,
-  * Context: File is referenced by caller.  Mutexes may be held by caller.
-  * May sleep, but will not reenter filesystem to reclaim memory.
-  */
--void page_cache_readahead_unbounded(struct address_space *mapping,
--		struct file *file, pgoff_t index, unsigned long nr_to_read,
--		unsigned long lookahead_size)
-+void page_cache_readahead_unbounded(struct readahead_control *rac,
-+		unsigned long nr_to_read, unsigned long lookahead_size)
- {
-+	struct address_space *mapping = rac->mapping;
-+	unsigned long index = readahead_index(rac);
- 	LIST_HEAD(page_pool);
- 	gfp_t gfp_mask = readahead_gfp_mask(mapping);
--	DEFINE_READAHEAD(rac, file, mapping, index);
- 	unsigned long i;
- 
- 	/*
-@@ -200,7 +198,7 @@ void page_cache_readahead_unbounded(struct address_space *mapping,
- 	for (i = 0; i < nr_to_read; i++) {
- 		struct page *page = xa_load(&mapping->i_pages, index + i);
- 
--		BUG_ON(index + i != rac._index + rac._nr_pages);
-+		BUG_ON(index + i != rac->_index + rac->_nr_pages);
- 
- 		if (page && !xa_is_value(page)) {
- 			/*
-@@ -211,7 +209,7 @@ void page_cache_readahead_unbounded(struct address_space *mapping,
- 			 * have a stable reference to this page, and it's
- 			 * not worth getting one just for that.
- 			 */
--			read_pages(&rac, &page_pool, true);
-+			read_pages(rac, &page_pool, true);
- 			continue;
- 		}
- 
-@@ -224,12 +222,12 @@ void page_cache_readahead_unbounded(struct address_space *mapping,
- 		} else if (add_to_page_cache_lru(page, mapping, index + i,
- 					gfp_mask) < 0) {
- 			put_page(page);
--			read_pages(&rac, &page_pool, true);
-+			read_pages(rac, &page_pool, true);
- 			continue;
- 		}
- 		if (i == nr_to_read - lookahead_size)
- 			SetPageReadahead(page);
--		rac._nr_pages++;
-+		rac->_nr_pages++;
- 	}
- 
- 	/*
-@@ -237,7 +235,7 @@ void page_cache_readahead_unbounded(struct address_space *mapping,
- 	 * uptodate then the caller will launch readpage again, and
- 	 * will then handle the error.
- 	 */
--	read_pages(&rac, &page_pool, false);
-+	read_pages(rac, &page_pool, false);
- 	memalloc_nofs_restore(nofs);
- }
- EXPORT_SYMBOL_GPL(page_cache_readahead_unbounded);
-@@ -252,6 +250,7 @@ void __do_page_cache_readahead(struct address_space *mapping,
- 		struct file *file, pgoff_t index, unsigned long nr_to_read,
- 		unsigned long lookahead_size)
- {
-+	DEFINE_READAHEAD(rac, file, mapping, index);
- 	struct inode *inode = mapping->host;
- 	loff_t isize = i_size_read(inode);
- 	pgoff_t end_index;	/* The last page we want to read */
-@@ -266,8 +265,7 @@ void __do_page_cache_readahead(struct address_space *mapping,
- 	if (nr_to_read > end_index - index)
- 		nr_to_read = end_index - index + 1;
- 
--	page_cache_readahead_unbounded(mapping, file, index, nr_to_read,
--			lookahead_size);
-+	page_cache_readahead_unbounded(&rac, nr_to_read, lookahead_size);
+diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+index b9f905a55dda..b906727f5b85 100644
+--- a/drivers/iommu/intel-iommu.c
++++ b/drivers/iommu/intel-iommu.c
+@@ -5781,78 +5781,27 @@ static bool intel_iommu_capable(enum iommu_cap cap)
+ 	return false;
  }
  
- /*
+-static int intel_iommu_add_device(struct device *dev)
++static struct iommu_device *intel_iommu_probe_device(struct device *dev)
+ {
+-	struct dmar_domain *dmar_domain;
+-	struct iommu_domain *domain;
+ 	struct intel_iommu *iommu;
+-	struct iommu_group *group;
+ 	u8 bus, devfn;
+-	int ret;
+ 
+ 	iommu = device_to_iommu(dev, &bus, &devfn);
+ 	if (!iommu)
+-		return -ENODEV;
+-
+-	iommu_device_link(&iommu->iommu, dev);
++		return ERR_PTR(-ENODEV);
+ 
+ 	if (translation_pre_enabled(iommu))
+ 		dev->archdata.iommu = DEFER_DEVICE_DOMAIN_INFO;
+ 
+-	group = iommu_group_get_for_dev(dev);
+-
+-	if (IS_ERR(group)) {
+-		ret = PTR_ERR(group);
+-		goto unlink;
+-	}
+-
+-	iommu_group_put(group);
+-
+-	domain = iommu_get_domain_for_dev(dev);
+-	dmar_domain = to_dmar_domain(domain);
+-	if (domain->type == IOMMU_DOMAIN_DMA) {
+-		if (device_def_domain_type(dev) == IOMMU_DOMAIN_IDENTITY) {
+-			ret = iommu_request_dm_for_dev(dev);
+-			if (ret) {
+-				dmar_remove_one_dev_info(dev);
+-				dmar_domain->flags |= DOMAIN_FLAG_LOSE_CHILDREN;
+-				domain_add_dev_info(si_domain, dev);
+-				dev_info(dev,
+-					 "Device uses a private identity domain.\n");
+-			}
+-		}
+-	} else {
+-		if (device_def_domain_type(dev) == IOMMU_DOMAIN_DMA) {
+-			ret = iommu_request_dma_domain_for_dev(dev);
+-			if (ret) {
+-				dmar_remove_one_dev_info(dev);
+-				dmar_domain->flags |= DOMAIN_FLAG_LOSE_CHILDREN;
+-				if (!get_private_domain_for_dev(dev)) {
+-					dev_warn(dev,
+-						 "Failed to get a private domain.\n");
+-					ret = -ENOMEM;
+-					goto unlink;
+-				}
+-
+-				dev_info(dev,
+-					 "Device uses a private dma domain.\n");
+-			}
+-		}
+-	}
+-
+ 	if (device_needs_bounce(dev)) {
+ 		dev_info(dev, "Use Intel IOMMU bounce page dma_ops\n");
+ 		set_dma_ops(dev, &bounce_dma_ops);
+ 	}
+ 
+-	return 0;
+-
+-unlink:
+-	iommu_device_unlink(&iommu->iommu, dev);
+-	return ret;
++	return &iommu->iommu;
+ }
+ 
+-static void intel_iommu_remove_device(struct device *dev)
++static void intel_iommu_release_device(struct device *dev)
+ {
+ 	struct intel_iommu *iommu;
+ 	u8 bus, devfn;
+@@ -5863,10 +5812,6 @@ static void intel_iommu_remove_device(struct device *dev)
+ 
+ 	dmar_remove_one_dev_info(dev);
+ 
+-	iommu_group_remove_device(dev);
+-
+-	iommu_device_unlink(&iommu->iommu, dev);
+-
+ 	if (device_needs_bounce(dev))
+ 		set_dma_ops(dev, NULL);
+ }
+@@ -6198,8 +6143,8 @@ const struct iommu_ops intel_iommu_ops = {
+ 	.map			= intel_iommu_map,
+ 	.unmap			= intel_iommu_unmap,
+ 	.iova_to_phys		= intel_iommu_iova_to_phys,
+-	.add_device		= intel_iommu_add_device,
+-	.remove_device		= intel_iommu_remove_device,
++	.probe_device		= intel_iommu_probe_device,
++	.release_device		= intel_iommu_release_device,
+ 	.get_resv_regions	= intel_iommu_get_resv_regions,
+ 	.put_resv_regions	= generic_iommu_put_resv_regions,
+ 	.apply_resv_region	= intel_iommu_apply_resv_region,
 -- 
-2.26.2
+2.17.1
 
