@@ -2,286 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4181BDEED
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDA91BDDC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728417AbgD2Njn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:39:43 -0400
-Received: from 8bytes.org ([81.169.241.247]:40040 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727972AbgD2Nht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:49 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 74609EA5; Wed, 29 Apr 2020 15:37:38 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH v3 17/34] iommu/arm-smmu: Convert to probe/release_device() call-backs
-Date:   Wed, 29 Apr 2020 15:36:55 +0200
-Message-Id: <20200429133712.31431-18-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
-References: <20200429133712.31431-1-joro@8bytes.org>
+        id S1727821AbgD2NhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727123AbgD2NhD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:37:03 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B48EC03C1AD;
+        Wed, 29 Apr 2020 06:37:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=oXxUrvy/kUnfNT9NBeZHk9XD5uu+tqt+pEPP09Y9sOA=; b=R1vFiFrjwm7B66XUTIDc86VFe2
+        e4U7mJuSkpAzt5Ea1thlmNYRzcau7ltMFPn9S1KyS3Vf/q0pEWCsBr6TiKV+uSv/D7UvYKvuCiaBc
+        3mgSrA7QwPNmV6dP3ekDUdV5InMvIdQz8FyNBxHUbvtoHmpK1IwzlPXRd1CAEx0ZyM5MZC6BPB5nZ
+        G1mHV6IP1ywcT5yc0alGq2j6Iu5K2EHmglhI/JuYFMwE4Qua3AGe3sB+EvcqTlHw1o+tE5+cGBodp
+        os11pOa7yzbncp+zGfA8n0mVlSVELVJyRfXOdrxwNqNPBevCLCTqEqWPqXXkScohru3KgU9GTuoTY
+        9RCmc06Q==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTmtX-0005wl-Uv; Wed, 29 Apr 2020 13:36:59 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 23/25] mm: Make __do_page_cache_readahead take a readahead_control
+Date:   Wed, 29 Apr 2020 06:36:55 -0700
+Message-Id: <20200429133657.22632-24-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
+References: <20200429133657.22632-1-willy@infradead.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-Convert the arm-smmu and arm-smmu-v3 drivers to use the probe_device() and
-release_device() call-backs of iommu_ops, so that the iommu core code does the
-group and sysfs setup.
+Also call __do_page_cache_readahead() directly from ondemand_readahead()
+instead of indirecting via ra_submit().
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- drivers/iommu/arm-smmu-v3.c | 38 ++++++++++--------------------------
- drivers/iommu/arm-smmu.c    | 39 ++++++++++++++-----------------------
- 2 files changed, 25 insertions(+), 52 deletions(-)
+ mm/internal.h  | 11 +++++------
+ mm/readahead.c | 26 ++++++++++++++------------
+ 2 files changed, 19 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
-index 82508730feb7..42e1ee7e5197 100644
---- a/drivers/iommu/arm-smmu-v3.c
-+++ b/drivers/iommu/arm-smmu-v3.c
-@@ -2914,27 +2914,26 @@ static bool arm_smmu_sid_in_range(struct arm_smmu_device *smmu, u32 sid)
+diff --git a/mm/internal.h b/mm/internal.h
+index 5efb13d5c226..fd3eaff7acdc 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -51,18 +51,17 @@ void unmap_page_range(struct mmu_gather *tlb,
  
- static struct iommu_ops arm_smmu_ops;
+ void force_page_cache_readahead(struct address_space *, struct file *,
+ 		pgoff_t index, unsigned long nr_to_read);
+-void __do_page_cache_readahead(struct address_space *, struct file *,
+-		pgoff_t index, unsigned long nr_to_read,
+-		unsigned long lookahead_size);
++void __do_page_cache_readahead(struct readahead_control *,
++		unsigned long nr_to_read, unsigned long lookahead_size);
  
--static int arm_smmu_add_device(struct device *dev)
-+static struct iommu_device *arm_smmu_probe_device(struct device *dev)
- {
- 	int i, ret;
- 	struct arm_smmu_device *smmu;
- 	struct arm_smmu_master *master;
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
--	struct iommu_group *group;
- 
- 	if (!fwspec || fwspec->ops != &arm_smmu_ops)
--		return -ENODEV;
-+		return ERR_PTR(-ENODEV);
- 
- 	if (WARN_ON_ONCE(dev_iommu_priv_get(dev)))
--		return -EBUSY;
-+		return ERR_PTR(-EBUSY);
- 
- 	smmu = arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
- 	if (!smmu)
--		return -ENODEV;
-+		return ERR_PTR(-ENODEV);
- 
- 	master = kzalloc(sizeof(*master), GFP_KERNEL);
- 	if (!master)
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
- 
- 	master->dev = dev;
- 	master->smmu = smmu;
-@@ -2975,30 +2974,15 @@ static int arm_smmu_add_device(struct device *dev)
- 		master->ssid_bits = min_t(u8, master->ssid_bits,
- 					  CTXDESC_LINEAR_CDMAX);
- 
--	ret = iommu_device_link(&smmu->iommu, dev);
--	if (ret)
--		goto err_disable_pasid;
-+	return &smmu->iommu;
- 
--	group = iommu_group_get_for_dev(dev);
--	if (IS_ERR(group)) {
--		ret = PTR_ERR(group);
--		goto err_unlink;
--	}
--
--	iommu_group_put(group);
--	return 0;
--
--err_unlink:
--	iommu_device_unlink(&smmu->iommu, dev);
--err_disable_pasid:
--	arm_smmu_disable_pasid(master);
- err_free_master:
- 	kfree(master);
- 	dev_iommu_priv_set(dev, NULL);
--	return ret;
-+	return ERR_PTR(ret);
- }
- 
--static void arm_smmu_remove_device(struct device *dev)
-+static void arm_smmu_release_device(struct device *dev)
- {
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
- 	struct arm_smmu_master *master;
-@@ -3010,8 +2994,6 @@ static void arm_smmu_remove_device(struct device *dev)
- 	master = dev_iommu_priv_get(dev);
- 	smmu = master->smmu;
- 	arm_smmu_detach_dev(master);
--	iommu_group_remove_device(dev);
--	iommu_device_unlink(&smmu->iommu, dev);
- 	arm_smmu_disable_pasid(master);
- 	kfree(master);
- 	iommu_fwspec_free(dev);
-@@ -3138,8 +3120,8 @@ static struct iommu_ops arm_smmu_ops = {
- 	.flush_iotlb_all	= arm_smmu_flush_iotlb_all,
- 	.iotlb_sync		= arm_smmu_iotlb_sync,
- 	.iova_to_phys		= arm_smmu_iova_to_phys,
--	.add_device		= arm_smmu_add_device,
--	.remove_device		= arm_smmu_remove_device,
-+	.probe_device		= arm_smmu_probe_device,
-+	.release_device		= arm_smmu_release_device,
- 	.device_group		= arm_smmu_device_group,
- 	.domain_get_attr	= arm_smmu_domain_get_attr,
- 	.domain_set_attr	= arm_smmu_domain_set_attr,
-diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
-index a6a5796e9c41..e622f4e33379 100644
---- a/drivers/iommu/arm-smmu.c
-+++ b/drivers/iommu/arm-smmu.c
-@@ -220,7 +220,7 @@ static int arm_smmu_register_legacy_master(struct device *dev,
-  * With the legacy DT binding in play, we have no guarantees about
-  * probe order, but then we're also not doing default domains, so we can
-  * delay setting bus ops until we're sure every possible SMMU is ready,
-- * and that way ensure that no add_device() calls get missed.
-+ * and that way ensure that no probe_device() calls get missed.
+ /*
+  * Submit IO for the read-ahead request in file_ra_state.
   */
- static int arm_smmu_legacy_bus_init(void)
+ static inline void ra_submit(struct file_ra_state *ra,
+-		struct address_space *mapping, struct file *filp)
++		struct address_space *mapping, struct file *file)
  {
-@@ -1062,7 +1062,6 @@ static int arm_smmu_master_alloc_smes(struct device *dev)
- 	struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
- 	struct arm_smmu_device *smmu = cfg->smmu;
- 	struct arm_smmu_smr *smrs = smmu->smrs;
--	struct iommu_group *group;
- 	int i, idx, ret;
+-	__do_page_cache_readahead(mapping, filp,
+-			ra->start, ra->size, ra->async_size);
++	DEFINE_READAHEAD(rac, file, mapping, ra->start);
++	__do_page_cache_readahead(&rac, ra->size, ra->async_size);
+ }
  
- 	mutex_lock(&smmu->stream_map_mutex);
-@@ -1090,18 +1089,9 @@ static int arm_smmu_master_alloc_smes(struct device *dev)
- 		cfg->smendx[i] = (s16)idx;
+ /**
+diff --git a/mm/readahead.c b/mm/readahead.c
+index 62da2d4beed1..74c7e1eff540 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -246,12 +246,11 @@ EXPORT_SYMBOL_GPL(page_cache_readahead_unbounded);
+  * behaviour which would occur if page allocations are causing VM writeback.
+  * We really don't want to intermingle reads and writes like that.
+  */
+-void __do_page_cache_readahead(struct address_space *mapping,
+-		struct file *file, pgoff_t index, unsigned long nr_to_read,
+-		unsigned long lookahead_size)
++void __do_page_cache_readahead(struct readahead_control *rac,
++		unsigned long nr_to_read, unsigned long lookahead_size)
+ {
+-	DEFINE_READAHEAD(rac, file, mapping, index);
+-	struct inode *inode = mapping->host;
++	struct inode *inode = rac->mapping->host;
++	unsigned long index = readahead_index(rac);
+ 	loff_t isize = i_size_read(inode);
+ 	pgoff_t end_index;	/* The last page we want to read */
+ 
+@@ -265,7 +264,7 @@ void __do_page_cache_readahead(struct address_space *mapping,
+ 	if (nr_to_read > end_index - index)
+ 		nr_to_read = end_index - index + 1;
+ 
+-	page_cache_readahead_unbounded(&rac, nr_to_read, lookahead_size);
++	page_cache_readahead_unbounded(rac, nr_to_read, lookahead_size);
+ }
+ 
+ /*
+@@ -273,10 +272,11 @@ void __do_page_cache_readahead(struct address_space *mapping,
+  * memory at once.
+  */
+ void force_page_cache_readahead(struct address_space *mapping,
+-		struct file *filp, pgoff_t index, unsigned long nr_to_read)
++		struct file *file, pgoff_t index, unsigned long nr_to_read)
+ {
++	DEFINE_READAHEAD(rac, file, mapping, index);
+ 	struct backing_dev_info *bdi = inode_to_bdi(mapping->host);
+-	struct file_ra_state *ra = &filp->f_ra;
++	struct file_ra_state *ra = &file->f_ra;
+ 	unsigned long max_pages;
+ 
+ 	if (unlikely(!mapping->a_ops->readpage && !mapping->a_ops->readpages &&
+@@ -294,7 +294,7 @@ void force_page_cache_readahead(struct address_space *mapping,
+ 
+ 		if (this_chunk > nr_to_read)
+ 			this_chunk = nr_to_read;
+-		__do_page_cache_readahead(mapping, filp, index, this_chunk, 0);
++		__do_page_cache_readahead(&rac, this_chunk, 0);
+ 
+ 		index += this_chunk;
+ 		nr_to_read -= this_chunk;
+@@ -432,10 +432,11 @@ static int try_context_readahead(struct address_space *mapping,
+  * A minimal readahead algorithm for trivial sequential/random reads.
+  */
+ static void ondemand_readahead(struct address_space *mapping,
+-		struct file_ra_state *ra, struct file *filp,
++		struct file_ra_state *ra, struct file *file,
+ 		bool hit_readahead_marker, pgoff_t index,
+ 		unsigned long req_size)
+ {
++	DEFINE_READAHEAD(rac, file, mapping, index);
+ 	struct backing_dev_info *bdi = inode_to_bdi(mapping->host);
+ 	unsigned long max_pages = ra->ra_pages;
+ 	unsigned long add_pages;
+@@ -516,7 +517,7 @@ static void ondemand_readahead(struct address_space *mapping,
+ 	 * standalone, small random read
+ 	 * Read as is, and do not pollute the readahead state.
+ 	 */
+-	__do_page_cache_readahead(mapping, filp, index, req_size, 0);
++	__do_page_cache_readahead(&rac, req_size, 0);
+ 	return;
+ 
+ initial_readahead:
+@@ -542,7 +543,8 @@ static void ondemand_readahead(struct address_space *mapping,
+ 		}
  	}
  
--	group = iommu_group_get_for_dev(dev);
--	if (IS_ERR(group)) {
--		ret = PTR_ERR(group);
--		goto out_err;
--	}
--	iommu_group_put(group);
--
- 	/* It worked! Now, poke the actual hardware */
--	for_each_cfg_sme(cfg, fwspec, i, idx) {
-+	for_each_cfg_sme(cfg, fwspec, i, idx)
- 		arm_smmu_write_sme(smmu, idx);
--		smmu->s2crs[idx].group = group;
--	}
- 
- 	mutex_unlock(&smmu->stream_map_mutex);
- 	return 0;
-@@ -1172,7 +1162,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 
- 	/*
- 	 * FIXME: The arch/arm DMA API code tries to attach devices to its own
--	 * domains between of_xlate() and add_device() - we have no way to cope
-+	 * domains between of_xlate() and probe_device() - we have no way to cope
- 	 * with that, so until ARM gets converted to rely on groups and default
- 	 * domains, just say no (but more politely than by dereferencing NULL).
- 	 * This should be at least a WARN_ON once that's sorted.
-@@ -1382,7 +1372,7 @@ struct arm_smmu_device *arm_smmu_get_by_fwnode(struct fwnode_handle *fwnode)
- 	return dev ? dev_get_drvdata(dev) : NULL;
+-	ra_submit(ra, mapping, filp);
++	rac._index = ra->start;
++	__do_page_cache_readahead(&rac, ra->size, ra->async_size);
  }
  
--static int arm_smmu_add_device(struct device *dev)
-+static struct iommu_device *arm_smmu_probe_device(struct device *dev)
- {
- 	struct arm_smmu_device *smmu = NULL;
- 	struct arm_smmu_master_cfg *cfg;
-@@ -1403,7 +1393,7 @@ static int arm_smmu_add_device(struct device *dev)
- 	} else if (fwspec && fwspec->ops == &arm_smmu_ops) {
- 		smmu = arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
- 	} else {
--		return -ENODEV;
-+		return ERR_PTR(-ENODEV);
- 	}
- 
- 	ret = -EINVAL;
-@@ -1444,21 +1434,19 @@ static int arm_smmu_add_device(struct device *dev)
- 	if (ret)
- 		goto out_cfg_free;
- 
--	iommu_device_link(&smmu->iommu, dev);
--
- 	device_link_add(dev, smmu->dev,
- 			DL_FLAG_PM_RUNTIME | DL_FLAG_AUTOREMOVE_SUPPLIER);
- 
--	return 0;
-+	return &smmu->iommu;
- 
- out_cfg_free:
- 	kfree(cfg);
- out_free:
- 	iommu_fwspec_free(dev);
--	return ret;
-+	return ERR_PTR(ret);
- }
- 
--static void arm_smmu_remove_device(struct device *dev)
-+static void arm_smmu_release_device(struct device *dev)
- {
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
- 	struct arm_smmu_master_cfg *cfg;
-@@ -1475,13 +1463,11 @@ static void arm_smmu_remove_device(struct device *dev)
- 	if (ret < 0)
- 		return;
- 
--	iommu_device_unlink(&smmu->iommu, dev);
- 	arm_smmu_master_free_smes(cfg, fwspec);
- 
- 	arm_smmu_rpm_put(smmu);
- 
- 	dev_iommu_priv_set(dev, NULL);
--	iommu_group_remove_device(dev);
- 	kfree(cfg);
- 	iommu_fwspec_free(dev);
- }
-@@ -1512,6 +1498,11 @@ static struct iommu_group *arm_smmu_device_group(struct device *dev)
- 	else
- 		group = generic_device_group(dev);
- 
-+	/* Remember group for faster lookups */
-+	if (!IS_ERR(group))
-+		for_each_cfg_sme(cfg, fwspec, i, idx)
-+			smmu->s2crs[idx].group = group;
-+
- 	return group;
- }
- 
-@@ -1628,8 +1619,8 @@ static struct iommu_ops arm_smmu_ops = {
- 	.flush_iotlb_all	= arm_smmu_flush_iotlb_all,
- 	.iotlb_sync		= arm_smmu_iotlb_sync,
- 	.iova_to_phys		= arm_smmu_iova_to_phys,
--	.add_device		= arm_smmu_add_device,
--	.remove_device		= arm_smmu_remove_device,
-+	.probe_device		= arm_smmu_probe_device,
-+	.release_device		= arm_smmu_release_device,
- 	.device_group		= arm_smmu_device_group,
- 	.domain_get_attr	= arm_smmu_domain_get_attr,
- 	.domain_set_attr	= arm_smmu_domain_set_attr,
+ /**
 -- 
-2.17.1
+2.26.2
 
