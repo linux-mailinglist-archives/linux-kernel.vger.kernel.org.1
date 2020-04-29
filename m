@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A718C1BD519
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E471BD51D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgD2Gws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 02:52:48 -0400
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:29059 "EHLO
+        id S1726790AbgD2Gw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 02:52:58 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:20520 "EHLO
         smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726741AbgD2Gws (ORCPT
+        with ESMTP id S1726756AbgD2Gw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 02:52:48 -0400
+        Wed, 29 Apr 2020 02:52:57 -0400
 Received: from localhost.localdomain ([92.148.159.11])
         by mwinf5d18 with ME
-        id YWsl2201j0F2omL03WsmNo; Wed, 29 Apr 2020 08:52:46 +0200
+        id YWsu2200D0F2omL03WsuQ4; Wed, 29 Apr 2020 08:52:54 +0200
 X-ME-Helo: localhost.localdomain
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 29 Apr 2020 08:52:46 +0200
+X-ME-Date: Wed, 29 Apr 2020 08:52:54 +0200
 X-ME-IP: 92.148.159.11
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To:     richard.gong@linux.intel.com, gregkh@linuxfoundation.org,
         atull@kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 2/4 v2] firmware: stratix10-svc: Unmap some previously memremap'ed memory
-Date:   Wed, 29 Apr 2020 08:52:43 +0200
-Message-Id: <43505dc3a4b405d1c7d4a0fa74c67eda3e8bdb75.1588142343.git.christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 3/4 v2] firmware: stratix10-svc: Fix some error handling paths in 'stratix10_svc_drv_probe()'
+Date:   Wed, 29 Apr 2020 08:52:52 +0200
+Message-Id: <0ff40f39de4deb63b03b363d0e0f3e3c8cccd62d.1588142343.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1588142343.git.christophe.jaillet@wanadoo.fr>
 References: <cover.1588142343.git.christophe.jaillet@wanadoo.fr>
@@ -37,30 +37,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In 'svc_create_memory_pool()' we memremap some memory. This has to be
-undone in case of error and if the driver is removed.
+If an error occurs after calling 'svc_create_memory_pool()', the allocated
+genpool should be destroyed with 'gen_pool_destroy()', as already done in
+the remove function.
 
-The easiest way to do it is to use 'devm_memremap()'.
+If an error occurs after calling 'kfifo_alloc()', the allocated memory
+should be freed with 'kfifo_free()', as already done in the remove
+function.
 
+While at it, also move a 'platform_device_put()' call to the error handling
+path.
+
+Fixes: b5dc75c915cd ("firmware: stratix10-svc: extend svc to support new RSU features")
 Fixes: 7ca5ce896524 ("firmware: add Intel Stratix10 service layer driver")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- drivers/firmware/stratix10-svc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/stratix10-svc.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
-index 3a176e62754a..de5870f76c5e 100644
+index de5870f76c5e..739004398877 100644
 --- a/drivers/firmware/stratix10-svc.c
 +++ b/drivers/firmware/stratix10-svc.c
-@@ -631,7 +631,7 @@ svc_create_memory_pool(struct platform_device *pdev,
- 	end = rounddown(sh_memory->addr + sh_memory->size, PAGE_SIZE);
- 	paddr = begin;
- 	size = end - begin;
--	va = memremap(paddr, size, MEMREMAP_WC);
-+	va = devm_memremap(dev, paddr, size, MEMREMAP_WC);
- 	if (!va) {
- 		dev_err(dev, "fail to remap shared memory\n");
- 		return ERR_PTR(-EINVAL);
+@@ -1024,7 +1024,7 @@ static int stratix10_svc_drv_probe(struct platform_device *pdev)
+ 	ret = kfifo_alloc(&controller->svc_fifo, fifo_size, GFP_KERNEL);
+ 	if (ret) {
+ 		dev_err(dev, "failed to allocate FIFO\n");
+-		return ret;
++		goto err_destroy_pool;
+ 	}
+ 	spin_lock_init(&controller->svc_fifo_lock);
+ 
+@@ -1043,24 +1043,34 @@ static int stratix10_svc_drv_probe(struct platform_device *pdev)
+ 
+ 	/* add svc client device(s) */
+ 	svc = devm_kzalloc(dev, sizeof(*svc), GFP_KERNEL);
+-	if (!svc)
+-		return -ENOMEM;
++	if (!svc) {
++		ret = -ENOMEM;
++		goto err_free_kfifo;
++	}
+ 
+ 	svc->stratix10_svc_rsu = platform_device_alloc(STRATIX10_RSU, 0);
+ 	if (!svc->stratix10_svc_rsu) {
+ 		dev_err(dev, "failed to allocate %s device\n", STRATIX10_RSU);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto err_free_kfifo;
+ 	}
+ 
+ 	ret = platform_device_add(svc->stratix10_svc_rsu);
+-	if (ret) {
+-		platform_device_put(svc->stratix10_svc_rsu);
+-		return ret;
+-	}
++	if (ret)
++		goto put_platform;
++
+ 	dev_set_drvdata(dev, svc);
+ 
+ 	pr_info("Intel Service Layer Driver Initialized\n");
+ 
++	return 0;
++
++put_platform:
++	platform_device_put(svc->stratix10_svc_rsu);
++err_free_kfifo:
++	kfifo_free(&controller->svc_fifo);
++err_destroy_pool:
++	gen_pool_destroy(genpool);
+ 	return ret;
+ }
+ 
 -- 
 2.25.1
 
