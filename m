@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9BE1BF080
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914E51BF082
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726560AbgD3Gqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 02:46:35 -0400
+        id S1726636AbgD3Gqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 02:46:40 -0400
 Received: from mga12.intel.com ([192.55.52.136]:56943 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726501AbgD3Gqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 02:46:34 -0400
-IronPort-SDR: V80BdiEz/JbRokzWcXFy4bMOs80BZgtG38lMljU01g6ZFl9Fohhmn74nsxmhlPmmiTtDJPvqL3
- RCN+pErGbxLQ==
+        id S1726583AbgD3Gqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 02:46:38 -0400
+IronPort-SDR: wbqT0W2EAh0dnPgbkOUuz9zi296dWqyJWCooNvUVK9JMPtf+b/17dFnmpyFNGe0XtZDWCuHrCe
+ WN0rxlK9tstQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 23:46:34 -0700
-IronPort-SDR: FLINvBnF6DVGFZNPKgQvB8JdisnVaRhTTCrQJRjw80Tuoy3qF63OT7zCc13sCEiU4bykvJy6Li
- aLeD2FnvNhcw==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 23:46:37 -0700
+IronPort-SDR: EQtOCt5eBesmLQbG5D1fSWZ+Ch5cYQn4VzLEXlzBsb2ya/YKXgrcpTAjGdSYr5g7PIsYDgzVxz
+ R2qNHZTi2UmQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,334,1583222400"; 
-   d="scan'208";a="249662772"
+   d="scan'208";a="249662780"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Apr 2020 23:46:30 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 29 Apr 2020 23:46:34 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org,
@@ -33,36 +33,194 @@ Cc:     linux-kernel@vger.kernel.org, tiwai@suse.de, broonie@kernel.org,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         slawomir.blauciak@intel.com, mengdong.lin@intel.com,
         bard.liao@intel.com
-Subject: [PATCH 0/3] soundwire: bus_type: add sdw_master_device support
-Date:   Thu, 30 Apr 2020 02:51:42 +0800
-Message-Id: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
+Subject: [PATCH 1/3] soundwire: bus: rename sdw_bus_master_add/delete, add arguments
+Date:   Thu, 30 Apr 2020 02:51:43 +0800
+Message-Id: <20200429185145.12891-2-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
+References: <20200429185145.12891-1-yung-chuan.liao@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds sdw master devices support.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Pierre-Louis Bossart (3):
-  soundwire: bus: rename sdw_bus_master_add/delete, add arguments
-  soundwire: bus_type: introduce sdw_slave_type and sdw_master_type
-  soundwire: bus_type: add sdw_master_device support
+In preparation for future extensions, rename functions to use
+sdw_bus_master prefix and add a parent and fwnode argument to
+sdw_bus_master_add to help with device registration in follow-up
+patches.
 
- .../driver-api/soundwire/summary.rst          |  7 +-
- drivers/soundwire/Makefile                    |  2 +-
- drivers/soundwire/bus.c                       | 27 ++++---
- drivers/soundwire/bus.h                       |  3 +
- drivers/soundwire/bus_type.c                  | 19 +++--
- drivers/soundwire/intel.c                     |  9 ++-
- drivers/soundwire/master.c                    | 79 +++++++++++++++++++
- drivers/soundwire/qcom.c                      |  7 +-
- drivers/soundwire/slave.c                     |  8 +-
- include/linux/soundwire/sdw.h                 | 22 +++++-
- include/linux/soundwire/sdw_type.h            |  9 ++-
- 11 files changed, 160 insertions(+), 32 deletions(-)
- create mode 100644 drivers/soundwire/master.c
+No functionality change, just renames and additional arguments.
 
+The Intel code is currently unused, the two additional arguments are
+only needed for compilation.
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+---
+ Documentation/driver-api/soundwire/summary.rst |  7 ++++---
+ drivers/soundwire/bus.c                        | 15 +++++++++------
+ drivers/soundwire/intel.c                      |  9 +++++----
+ drivers/soundwire/qcom.c                       |  6 +++---
+ include/linux/soundwire/sdw.h                  |  5 +++--
+ 5 files changed, 24 insertions(+), 18 deletions(-)
+
+diff --git a/Documentation/driver-api/soundwire/summary.rst b/Documentation/driver-api/soundwire/summary.rst
+index 8193125a2bfb..01dcb954f6d7 100644
+--- a/Documentation/driver-api/soundwire/summary.rst
++++ b/Documentation/driver-api/soundwire/summary.rst
+@@ -101,10 +101,11 @@ Following is the Bus API to register the SoundWire Bus:
+ 
+ .. code-block:: c
+ 
+-	int sdw_add_bus_master(struct sdw_bus *bus)
++	int sdw_bus_master_add(struct sdw_bus *bus,
++				struct device *parent,
++				struct fwnode_handle)
+ 	{
+-		if (!bus->dev)
+-			return -ENODEV;
++		sdw_master_device_add(bus, parent, fwnode);
+ 
+ 		mutex_init(&bus->lock);
+ 		INIT_LIST_HEAD(&bus->slaves);
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 488c3c9e4947..18024ff770f8 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -10,13 +10,16 @@
+ #include "bus.h"
+ 
+ /**
+- * sdw_add_bus_master() - add a bus Master instance
++ * sdw_bus_master_add() - add a bus Master instance
+  * @bus: bus instance
++ * @parent: parent device
++ * @fwnode: firmware node handle
+  *
+  * Initializes the bus instance, read properties and create child
+  * devices.
+  */
+-int sdw_add_bus_master(struct sdw_bus *bus)
++int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
++		       struct fwnode_handle *fwnode)
+ {
+ 	struct sdw_master_prop *prop = NULL;
+ 	int ret;
+@@ -107,7 +110,7 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL(sdw_add_bus_master);
++EXPORT_SYMBOL(sdw_bus_master_add);
+ 
+ static int sdw_delete_slave(struct device *dev, void *data)
+ {
+@@ -131,18 +134,18 @@ static int sdw_delete_slave(struct device *dev, void *data)
+ }
+ 
+ /**
+- * sdw_delete_bus_master() - delete the bus master instance
++ * sdw_bus_master_delete() - delete the bus master instance
+  * @bus: bus to be deleted
+  *
+  * Remove the instance, delete the child devices.
+  */
+-void sdw_delete_bus_master(struct sdw_bus *bus)
++void sdw_bus_master_delete(struct sdw_bus *bus)
+ {
+ 	device_for_each_child(bus->dev, NULL, sdw_delete_slave);
+ 
+ 	sdw_bus_debugfs_exit(bus);
+ }
+-EXPORT_SYMBOL(sdw_delete_bus_master);
++EXPORT_SYMBOL(sdw_bus_master_delete);
+ 
+ /*
+  * SDW IO Calls
+diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+index ed8d576bf5dc..1b600f423d8b 100644
+--- a/drivers/soundwire/intel.c
++++ b/drivers/soundwire/intel.c
+@@ -1110,9 +1110,10 @@ static int intel_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, sdw);
+ 
+-	ret = sdw_add_bus_master(&sdw->cdns.bus);
++	/* 2nd and 3rd arguments are just added for compilation */
++	ret = sdw_bus_master_add(&sdw->cdns.bus, NULL, NULL);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "sdw_add_bus_master fail: %d\n", ret);
++		dev_err(&pdev->dev, "sdw_bus_master_add fail: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1173,7 +1174,7 @@ static int intel_probe(struct platform_device *pdev)
+ 	sdw_cdns_enable_interrupt(&sdw->cdns, false);
+ 	free_irq(sdw->link_res->irq, sdw);
+ err_init:
+-	sdw_delete_bus_master(&sdw->cdns.bus);
++	sdw_bus_master_delete(&sdw->cdns.bus);
+ 	return ret;
+ }
+ 
+@@ -1189,7 +1190,7 @@ static int intel_remove(struct platform_device *pdev)
+ 		free_irq(sdw->link_res->irq, sdw);
+ 		snd_soc_unregister_component(sdw->cdns.dev);
+ 	}
+-	sdw_delete_bus_master(&sdw->cdns.bus);
++	sdw_bus_master_delete(&sdw->cdns.bus);
+ 
+ 	return 0;
+ }
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index e08a17c13f92..401811d6627e 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -821,7 +821,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 		goto err_clk;
+ 	}
+ 
+-	ret = sdw_add_bus_master(&ctrl->bus);
++	ret = sdw_bus_master_add(&ctrl->bus, dev, dev->fwnode);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to register Soundwire controller (%d)\n",
+ 			ret);
+@@ -840,7 +840,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ err_master_add:
+-	sdw_delete_bus_master(&ctrl->bus);
++	sdw_bus_master_delete(&ctrl->bus);
+ err_clk:
+ 	clk_disable_unprepare(ctrl->hclk);
+ err_init:
+@@ -851,7 +851,7 @@ static int qcom_swrm_remove(struct platform_device *pdev)
+ {
+ 	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(&pdev->dev);
+ 
+-	sdw_delete_bus_master(&ctrl->bus);
++	sdw_bus_master_delete(&ctrl->bus);
+ 	clk_disable_unprepare(ctrl->hclk);
+ 
+ 	return 0;
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 00f5826092e3..2003e8c55538 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -832,8 +832,9 @@ struct sdw_bus {
+ 	bool multi_link;
+ };
+ 
+-int sdw_add_bus_master(struct sdw_bus *bus);
+-void sdw_delete_bus_master(struct sdw_bus *bus);
++int sdw_bus_master_add(struct sdw_bus *bus, struct device *parent,
++		       struct fwnode_handle *fwnode);
++void sdw_bus_master_delete(struct sdw_bus *bus);
+ 
+ /**
+  * sdw_port_config: Master or Slave Port configuration
 -- 
 2.17.1
 
