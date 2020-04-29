@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE841BE3CC
+	by mail.lfdr.de (Postfix) with ESMTP id A2F831BE3CD
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 18:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727073AbgD2Q0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 12:26:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42630 "EHLO mail.kernel.org"
+        id S1727086AbgD2Q0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 12:26:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726481AbgD2Q0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 12:26:38 -0400
+        id S1726481AbgD2Q0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 12:26:44 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10CFF2076B;
-        Wed, 29 Apr 2020 16:26:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0465020787;
+        Wed, 29 Apr 2020 16:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588177598;
-        bh=+ZFmSTfRlzLSqIImDH7J+JHuq7zyyWHC0ptJUMmXft0=;
+        s=default; t=1588177604;
+        bh=RgPmeUZllXtirgmPRnh3nwQ41QJGEdm8EDdeOOZDzrw=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=jNtwpDlN2/yGU87aQZnyuN1IH98wv1CpRVpBC4Uwt/70lA0qwy5OTnoe2aHRSBp1D
-         h8Ozoh62f6XvG7IfwUZLY8MseaEy1tb57+jJf+GZoEy6PcVaUQdJlvbxcCr3Rrl35A
-         vXmxiQ+oXRTxE74U6ugksHMR6+IwBMln6lqNHRR8=
-Date:   Wed, 29 Apr 2020 17:26:36 +0100
+        b=g7ATxj0SrrWjJMZGiZ95dLJiaRR8ZWhv29KHHXqp5w/HNIL+8QZDBvI3KWFJjJ5t5
+         e3PeziQYim2SczDKhMpkbBX89HuyUd7slp/oGTxTr0/lcJ3UV0ufBqp1F6RbuEuV3R
+         eYInyzTdM+BkMiPllU+7soEeVT+Csl+k3Wdu8+94=
+Date:   Wed, 29 Apr 2020 17:26:42 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
 Cc:     Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
         alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
         Charles Keepax <ckeepax@opensource.cirrus.com>,
-        kbuild test robot <lkp@intel.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
         Richard Fitzgerald <rf@opensource.wolfsonmicro.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>
-In-Reply-To: <20200428214642.3925004-1-arnd@arndb.de>
-References: <20200428214642.3925004-1-arnd@arndb.de>
-Subject: Re: [PATCH] ASoC: rt5682: fix I2C/Soundwire dependencies
-Message-Id: <158817756638.27768.13590393174406922978.b4-ty@kernel.org>
+In-Reply-To: <20200428212721.2877627-1-arnd@arndb.de>
+References: <20200428212721.2877627-1-arnd@arndb.de>
+Subject: Re: [PATCH] ASoC: codecs: wm97xx: fix ac97 dependency
+Message-Id: <158817756638.27768.14951334654894863306.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Apr 2020 23:46:14 +0200, Arnd Bergmann wrote:
-> If one of the two is a loadable module, the combined driver must
-> not be built-in:
+On Tue, 28 Apr 2020 23:26:59 +0200, Arnd Bergmann wrote:
+> A recent build fix got the dependency slightly wrong, breaking
+> builds with CONFIG_AC97_BUS_NEW:
 > 
-> aarch64-linux-ld: sound/soc/codecs/rt5682.o: in function `rt5682_sdw_hw_free':
-> rt5682.c:(.text+0xb34): undefined reference to `sdw_stream_remove_slave'
-> aarch64-linux-ld: sound/soc/codecs/rt5682.o: in function `rt5682_sdw_hw_params':
-> rt5682.c:(.text+0xe78): undefined reference to `sdw_stream_add_slave'
+> WARNING: unmet direct dependencies detected for SND_SOC_WM9713
+>   Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AC97_BUS [=n]
+>   Selected by [m]:
+>   - SND_SOC_ZYLONITE [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_PXA2XX_SOC [=m] && MACH_ZYLONITE [=y] && AC97_BUS [=n]=n
 > 
 > [...]
 
@@ -60,8 +58,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: rt5682: fix I2C/Soundwire dependencies
-      commit: fd443a20c2f0950f3c31765a08f7dd49b3bc69cb
+[1/1] ASoC: codecs: wm97xx: fix ac97 dependency
+      commit: ee2cbe06935bfa58f1fe07dc2a2283945f4b97dc
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
