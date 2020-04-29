@@ -2,251 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 256381BE6C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7521B1BE6CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 21:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgD2S7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 14:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726519AbgD2S7g (ORCPT
+        id S1727781AbgD2TAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 15:00:02 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:49127 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbgD2TAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 14:59:36 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A787C035493
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:59:36 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id a7so1130377pju.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:59:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5T+EXrxP7lWEQxoVx8+oLDKkl3t74DvI2pCLas6bET0=;
-        b=Pa4LWoXeMo4fJxrX/bASaPmAPGwFdkXd6wuTDoCLSvfVXScLl3XKsRFS5VFHMGj05/
-         s7doZFZuDSYnbvXXIy4maWStVP+lLZzTQPgMZrPWNELweKdCLR1S7W2Ce59O2HxX8vNl
-         gzxp/ogWtlpgt3POi9LokpFMn3dC8FsL1VFqk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5T+EXrxP7lWEQxoVx8+oLDKkl3t74DvI2pCLas6bET0=;
-        b=YurXKrDJ1A5bDUNbadLLe7faFUEwrffxwCZHpxWbQSMPof3uA3Bqo3c6zWvokuuSE5
-         n4P1FnGIV4JnbvqLsrls4/sEuZqVcHxYCslVQsZnRk3aZKS+kEKwB+TgaaDw4idsb2lC
-         P7eUUQR2tiGQBp36IPlU/O63HodAQN/A0bJ8wyGe5lLr4Csc0fIr5ifdj+6BOaWhPAFS
-         xXU3osoowkyN0SZiR4hibt895AUPSH1sTcxslq288NmTXKaW1Fr6q9AH/USIeBwrkEEd
-         XSjkCm4psqyI3P5lAAD+j4GqqDCsHLf2HLKTmNOkEZQcLz1l5e0LQ+wWZ0lZMJYTNh1b
-         utAg==
-X-Gm-Message-State: AGi0Pua3iid0eLu8YbrsHQLPMDdlDlKIZv00maJ9trjnfgch+nt6JqMd
-        9YLui8nwsSo0AjmFl3vBJWuiWA==
-X-Google-Smtp-Source: APiQypLGjxmoYOQYHORM/I4sB5Dc2jR592KUVDa5lfftZ+KXwPA/jfCzTy6Cgz7QCEdZ2o9p/MKB0g==
-X-Received: by 2002:a17:90b:297:: with SMTP id az23mr4731753pjb.85.1588186775689;
-        Wed, 29 Apr 2020 11:59:35 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id o99sm46973pjo.8.2020.04.29.11.59.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Apr 2020 11:59:34 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 11:59:33 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH v6 2/4] dt-bindings: phy: qcom,qmp-usb3-dp: Add dt
- bindings for USB3 DP PHY
-Message-ID: <20200429185933.GT4525@google.com>
-References: <1588082775-19959-1-git-send-email-sanm@codeaurora.org>
- <1588082775-19959-3-git-send-email-sanm@codeaurora.org>
+        Wed, 29 Apr 2020 15:00:02 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1Mn2Fb-1in8aH036d-00k7n6; Wed, 29 Apr 2020 20:59:50 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Julien Grall <julien.grall@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ubsan: fix gcc-10 warnings
+Date:   Wed, 29 Apr 2020 20:59:35 +0200
+Message-Id: <20200429185948.4189600-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1588082775-19959-3-git-send-email-sanm@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:HkxPfGnHYJGSk0C6wdDdnnj8OfDDTYNTZOo8toDKy6w2faWr+wz
+ vnZUdy9xZqgWUr1lBvp3vQNAmfLg4VZYjGH+GDKOzf/L/hw58Cpho3X5MNU8jMoecOgps+a
+ H+WISVPtr3XammZRdDBj9n+fIuqwGvQCnrkqR7XuzsegdgjLKS4rfvFmKCwogKGaLYk/ZcV
+ b+tyvsE1/797+W/fL09NA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gfYI6kWzEM8=:9bL0pWPzk6T9hgKFHT8r7K
+ QsCjGLelQqfeo3JIrmuuiZQKHv+vrsoFILUMIvx6I1gbRrWe00kZ5Lx0ylVKwkOdvaV8cxxgZ
+ PUcj3ugsfFhDQTKar+fEdc2opD4AUf29sO3P6SZSVB7oDt4Y7NI2BMc0OTTsAhMSTe7XdHY+d
+ qkWlKl7oHYJahlIpqwkDxTF3edQt2juOGJEFKgyWjd6qaa19lHnOFZ21jto26bF0Y3guZZ82z
+ 5R2b16gmraFgRjvHxGKnjZBR5LR97Gu6Kg1KsY4Z+7G+l1ys/+WwvcitceXOFNX9RXJEd5H88
+ 0v2H6djpdr95Al6kCBf2oB+8o5a79yqtq1Qy3ZCHlgKJPQXxTknj2lKpNx3ZgIap1bf3UUndn
+ Rc/FX6Qb2xBLjudGIrbZMTmElos5efta06XKJg1T5NTYzZTGBP/aTZb0XwR80PmsJLG8AY/sl
+ UDc5s1bA1Xle4MVf3mTJi/F6J9ijpCdTdM/gTM3vdb0QBUblHRgVVv4BXjcKh0ACGMyPLbFwi
+ vkOmqAlbWs1Oh2TJB/u2aaCDuCTYGINqvpM9wNGR+hmdLree3uvImbISUgQhGSgHCdK7yK5DL
+ fXlUwTwtOG0fIJ12z4jXcDF7dTaq12Lo3VhzI8QzlHBvMNZhA6bc6PRvnPFlvgzWAxcAaZGHD
+ OD55Fsr10qctTFXqC/C2VWIhMCRD+B3eakBhcw84AqBwMMAhO9/HFR8F1bgPgw7gpNzc5918b
+ 1mw5l0L/x7ixgPwhiSwG+k1VbGWZ5gcT5xm8wvBcDXMwG+HEJBxQ7HUGS39KmEEvRSkq6g/ws
+ 8sQgyF41WAufYm6t2Nn8ugXiq3kw5lViQy+5PxRROJLrd31ofA=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sandeep,
+The latest compiler expects slightly different function prototypes
+for the ubsan helpers:
 
-This is a bit misleading/confusing. Patch "1/4] dt-bindings: phy: qcom,qmp:
-Convert QMP PHY bindings to yaml" does the conversion to yaml AND removes
-the binding for USB3 DP PHY, then this patch adds it again. Patches should
-be self-contained and their commit messages shouldn't omit important details.
-If the first patch is applied in isolation the USB3 DP PHY binding disappears
-silently, supposedly with the approval from Rob, who reviewed an earlier
-version of the patch without the removal.
+lib/ubsan.c:192:6: error: conflicting types for built-in function '__ubsan_handle_add_overflow'; expected 'void(void *, void *, void *)' [-Werror=builtin-declaration-mismatch]
+  192 | void __ubsan_handle_add_overflow(struct overflow_data *data,
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/ubsan.c:200:6: error: conflicting types for built-in function '__ubsan_handle_sub_overflow'; expected 'void(void *, void *, void *)' [-Werror=builtin-declaration-mismatch]
+  200 | void __ubsan_handle_sub_overflow(struct overflow_data *data,
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/ubsan.c:207:6: error: conflicting types for built-in function '__ubsan_handle_mul_overflow'; expected 'void(void *, void *, void *)' [-Werror=builtin-declaration-mismatch]
+  207 | void __ubsan_handle_mul_overflow(struct overflow_data *data,
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/ubsan.c:214:6: error: conflicting types for built-in function '__ubsan_handle_negate_overflow'; expected 'void(void *, void *)' [-Werror=builtin-declaration-mismatch]
+  214 | void __ubsan_handle_negate_overflow(struct overflow_data *data,
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/ubsan.c:234:6: error: conflicting types for built-in function '__ubsan_handle_divrem_overflow'; expected 'void(void *, void *, void *)' [-Werror=builtin-declaration-mismatch]
+  234 | void __ubsan_handle_divrem_overflow(struct overflow_data *data,
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-I think there are two options:
+Change the Linux implementation to match these, using a local
+typed pointer.
 
-1) one patch with the (complete) conversion to a single yaml file, plus
-   a separate patch that moves the DP PHY binding to its own file
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ lib/ubsan.c | 33 +++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
 
-2) a single patch which does the conversion to yaml and moves the DP PHY
-   binding to its own file
+diff --git a/lib/ubsan.c b/lib/ubsan.c
+index f8c0ccf35f29..cb9af3f6b77e 100644
+--- a/lib/ubsan.c
++++ b/lib/ubsan.c
+@@ -189,7 +189,7 @@ static void handle_overflow(struct overflow_data *data, void *lhs,
+ 	ubsan_epilogue();
+ }
+ 
+-void __ubsan_handle_add_overflow(struct overflow_data *data,
++void __ubsan_handle_add_overflow(void *data,
+ 				void *lhs, void *rhs)
+ {
+ 
+@@ -197,23 +197,23 @@ void __ubsan_handle_add_overflow(struct overflow_data *data,
+ }
+ EXPORT_SYMBOL(__ubsan_handle_add_overflow);
+ 
+-void __ubsan_handle_sub_overflow(struct overflow_data *data,
++void __ubsan_handle_sub_overflow(void *data,
+ 				void *lhs, void *rhs)
+ {
+ 	handle_overflow(data, lhs, rhs, '-');
+ }
+ EXPORT_SYMBOL(__ubsan_handle_sub_overflow);
+ 
+-void __ubsan_handle_mul_overflow(struct overflow_data *data,
++void __ubsan_handle_mul_overflow(void *data,
+ 				void *lhs, void *rhs)
+ {
+ 	handle_overflow(data, lhs, rhs, '*');
+ }
+ EXPORT_SYMBOL(__ubsan_handle_mul_overflow);
+ 
+-void __ubsan_handle_negate_overflow(struct overflow_data *data,
+-				void *old_val)
++void __ubsan_handle_negate_overflow(void *_data, void *old_val)
+ {
++	struct overflow_data *data = _data;
+ 	char old_val_str[VALUE_LENGTH];
+ 
+ 	if (suppress_report(&data->location))
+@@ -231,9 +231,9 @@ void __ubsan_handle_negate_overflow(struct overflow_data *data,
+ EXPORT_SYMBOL(__ubsan_handle_negate_overflow);
+ 
+ 
+-void __ubsan_handle_divrem_overflow(struct overflow_data *data,
+-				void *lhs, void *rhs)
++void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs)
+ {
++	struct overflow_data *data = _data;
+ 	char rhs_val_str[VALUE_LENGTH];
+ 
+ 	if (suppress_report(&data->location))
+@@ -326,10 +326,9 @@ void __ubsan_handle_type_mismatch(struct type_mismatch_data *data,
+ }
+ EXPORT_SYMBOL(__ubsan_handle_type_mismatch);
+ 
+-void __ubsan_handle_type_mismatch_v1(struct type_mismatch_data_v1 *data,
+-				void *ptr)
++void __ubsan_handle_type_mismatch_v1(void *_data, void *ptr)
+ {
+-
++	struct type_mismatch_data_v1 *data = _data;
+ 	struct type_mismatch_data_common common_data = {
+ 		.location = &data->location,
+ 		.type = data->type,
+@@ -341,8 +340,9 @@ void __ubsan_handle_type_mismatch_v1(struct type_mismatch_data_v1 *data,
+ }
+ EXPORT_SYMBOL(__ubsan_handle_type_mismatch_v1);
+ 
+-void __ubsan_handle_out_of_bounds(struct out_of_bounds_data *data, void *index)
++void __ubsan_handle_out_of_bounds(void *_data, void *index)
+ {
++	struct out_of_bounds_data *data = _data;
+ 	char index_str[VALUE_LENGTH];
+ 
+ 	if (suppress_report(&data->location))
+@@ -357,9 +357,9 @@ void __ubsan_handle_out_of_bounds(struct out_of_bounds_data *data, void *index)
+ }
+ EXPORT_SYMBOL(__ubsan_handle_out_of_bounds);
+ 
+-void __ubsan_handle_shift_out_of_bounds(struct shift_out_of_bounds_data *data,
+-					void *lhs, void *rhs)
++void __ubsan_handle_shift_out_of_bounds(void *_data, void *lhs, void *rhs)
+ {
++	struct shift_out_of_bounds_data *data = _data;
+ 	struct type_descriptor *rhs_type = data->rhs_type;
+ 	struct type_descriptor *lhs_type = data->lhs_type;
+ 	char rhs_str[VALUE_LENGTH];
+@@ -399,8 +399,9 @@ void __ubsan_handle_shift_out_of_bounds(struct shift_out_of_bounds_data *data,
+ EXPORT_SYMBOL(__ubsan_handle_shift_out_of_bounds);
+ 
+ 
+-void __ubsan_handle_builtin_unreachable(struct unreachable_data *data)
++void __ubsan_handle_builtin_unreachable(void *_data)
+ {
++	struct unreachable_data *data = _data;
+ 	ubsan_prologue(&data->location, "unreachable");
+ 	pr_err("calling __builtin_unreachable()\n");
+ 	ubsan_epilogue();
+@@ -408,9 +409,9 @@ void __ubsan_handle_builtin_unreachable(struct unreachable_data *data)
+ }
+ EXPORT_SYMBOL(__ubsan_handle_builtin_unreachable);
+ 
+-void __ubsan_handle_load_invalid_value(struct invalid_value_data *data,
+-				void *val)
++void __ubsan_handle_load_invalid_value(void *_data, void *val)
+ {
++	struct invalid_value_data *data = _data;
+ 	char val_str[VALUE_LENGTH];
+ 
+ 	if (suppress_report(&data->location))
+-- 
+2.26.0
 
-IMO 1) is slightly better, but both should be ok.
-
-Thanks
-
-Matthias
-
-On Tue, Apr 28, 2020 at 07:36:13PM +0530, Sandeep Maheswaram wrote:
-> Split out the dt bindings for USB3 DP PHY from qcom,qmp bindings
-> for modularity.
-> 
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
->  .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml         | 135 +++++++++++++++++++++
->  1 file changed, 135 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-> new file mode 100644
-> index 0000000..6055786
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml
-> @@ -0,0 +1,135 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/phy/qcom,qmp-usb3-dp-phy.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Qualcomm QMP USB3 DP PHY controller
-> +
-> +maintainers:
-> +  - Manu Gautam <mgautam@codeaurora.org>
-> +
-> +properties:
-> +  compatible:
-> +    const:
-> +      qcom,sdm845-qmp-usb3-phy
-> +  reg:
-> +    items:
-> +      - description: Address and length of PHY's common serdes block.
-> +      - description: Address and length of the DP_COM control block.
-> +
-> +  reg-names:
-> +    items:
-> +      - const: reg-base
-> +      - const: dp_com
-> +
-> +  "#clock-cells":
-> +     enum: [ 1, 2 ]
-> +
-> +  "#address-cells":
-> +    enum: [ 1, 2 ]
-> +
-> +  "#size-cells":
-> +    enum: [ 1, 2 ]
-> +
-> +  clocks:
-> +    items:
-> +      - description: Phy aux clock.
-> +      - description: Phy config clock.
-> +      - description: 19.2 MHz ref clk.
-> +      - description: Phy common block aux clock.
-> +
-> +  clock-names:
-> +    items:
-> +      - const: aux
-> +      - const: cfg_ahb
-> +      - const: ref
-> +      - const: com_aux
-> +
-> +  resets:
-> +    items:
-> +      - description: reset of phy block.
-> +      - description: phy common block reset.
-> +
-> +  reset-names:
-> +    items:
-> +      - const: phy
-> +      - const: common
-> +
-> +  vdda-phy-supply:
-> +    description:
-> +        Phandle to a regulator supply to PHY core block.
-> +
-> +  vdda-pll-supply:
-> +    description:
-> +        Phandle to 1.8V regulator supply to PHY refclk pll block.
-> +
-> +  vddp-ref-clk-supply:
-> +    description:
-> +        Phandle to a regulator supply to any specific refclk
-> +        pll block.
-> +
-> +#Required nodes:
-> +patternProperties:
-> +  "^phy@[0-9a-f]+$":
-> +    type: object
-> +    description:
-> +      Each device node of QMP phy is required to have as many child nodes as
-> +      the number of lanes the PHY has.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - "#clock-cells"
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - clocks
-> +  - clock-names
-> +  - resets
-> +  - reset-names
-> +  - vdda-phy-supply
-> +  - vdda-pll-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-sdm845.h>
-> +    usb_1_qmpphy: phy-wrapper@88e9000 {
-> +        compatible = "qcom,sdm845-qmp-usb3-phy";
-> +        reg = <0 0x088e9000 0 0x18c>,
-> +              <0 0x088e8000 0 0x10>;
-> +        reg-names = "reg-base", "dp_com";
-> +        #clock-cells = <1>;
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        clocks = <&gcc GCC_USB3_PRIM_PHY_AUX_CLK>,
-> +                 <&gcc GCC_USB_PHY_CFG_AHB2PHY_CLK>,
-> +                 <&gcc GCC_USB3_PRIM_CLKREF_CLK>,
-> +                 <&gcc GCC_USB3_PRIM_PHY_COM_AUX_CLK>;
-> +        clock-names = "aux", "cfg_ahb", "ref", "com_aux";
-> +
-> +        resets = <&gcc GCC_USB3_PHY_PRIM_BCR>,
-> +                 <&gcc GCC_USB3_DP_PHY_PRIM_BCR>;
-> +        reset-names = "phy", "common";
-> +
-> +        vdda-phy-supply = <&vdda_usb2_ss_1p2>;
-> +        vdda-pll-supply = <&vdda_usb2_ss_core>;
-> +
-> +        usb_1_ssphy: phy@88e9200 {
-> +                reg = <0 0x088e9200 0 0x128>,
-> +                      <0 0x088e9400 0 0x200>,
-> +                      <0 0x088e9c00 0 0x218>,
-> +                      <0 0x088e9600 0 0x128>,
-> +                      <0 0x088e9800 0 0x200>,
-> +                      <0 0x088e9a00 0 0x100>;
-> +                #clock-cells = <0>;
-> +                #phy-cells = <0>;
-> +                clocks = <&gcc GCC_USB3_PRIM_PHY_PIPE_CLK>;
-> +                clock-names = "pipe0";
-> +                clock-output-names = "usb3_phy_pipe_clk_src";
-> +            };
-> +        };
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
