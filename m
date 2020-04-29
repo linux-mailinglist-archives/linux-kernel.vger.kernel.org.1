@@ -2,93 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC281BE268
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80951BE26D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgD2PTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:19:10 -0400
-Received: from mga11.intel.com ([192.55.52.93]:31671 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgD2PTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:19:10 -0400
-IronPort-SDR: dXZmd7RsbMk+XAuBd3eBmiOE2YjQEct2oeM8S0HspfUg8gF8iGL9asErcyNerVCZJA3pSObkK7
- GW2dnbZ/aA9A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 08:19:09 -0700
-IronPort-SDR: /yu9CjJYrcqU+eu/Fik6TgZ7B57IWCzt5+Wf3UnCw37D0tOkMr4KGflaUm8HMkCCYfL/IiLMJg
- vg5g5wIIIocg==
-X-IronPort-AV: E=Sophos;i="5.73,332,1583222400"; 
-   d="scan'208";a="432592548"
-Received: from aslawinx-mobl1.ger.corp.intel.com (HELO [10.249.130.47]) ([10.249.130.47])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 08:19:06 -0700
-Subject: Re: [PATCH] ASoC: Intel: sst: ipc command timeout
-To:     "Lu, Brent" <brent.lu@intel.com>,
-        "Rojewski, Cezary" <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc:     Kate Stewart <kstewart@linuxfoundation.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>
-References: <1586506705-3194-1-git-send-email-brent.lu@intel.com>
- <4f495cf1-4740-cf3b-196f-cc850c503b43@linux.intel.com>
- <BN6PR1101MB21328B6F4147640D07F9E40A97DA0@BN6PR1101MB2132.namprd11.prod.outlook.com>
- <c8309abf-cbfb-a3db-5aa7-2e2f748a6d34@intel.com>
- <BN6PR1101MB21328C54E66082227B9F497A97D50@BN6PR1101MB2132.namprd11.prod.outlook.com>
- <5e84c48c-a5d1-b2ff-c197-5efa478c5916@linux.intel.com>
- <BN6PR1101MB2132D23B042284DDA667642A97AC0@BN6PR1101MB2132.namprd11.prod.outlook.com>
-From:   =?UTF-8?Q?Amadeusz_S=c5=82awi=c5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>
-Message-ID: <9d003948-a651-9920-86b6-307e912dd8ed@linux.intel.com>
-Date:   Wed, 29 Apr 2020 17:19:03 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726794AbgD2PU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbgD2PU6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 11:20:58 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D78C03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:20:58 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id ck5so1290518qvb.11
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=F1ilkwC+n0OgBT9uuTRB3SLW+eKQbLVicZAameJ09RE=;
+        b=hU9N/SYx4o943FSpLmFfYRzFNhrE21wcaMBxiSuAyKj39P181veL7UUM+Tijbark7Y
+         4FntQ4jtahEHZ2rJUyjp2m7Xkn+CT2EQDSbQoocEQAAAsMY9K/kWwgiToHBb4C/L6guj
+         X7ReFRVhH7S+W/nUgEjUcSEKS+3o1yBiQndwqzEwTTDSBzwuuSZGURC8VCDJLee68U6b
+         LyMEq+b9xbv6jFzelvtMyf5dVc5D0UK6genSiQM52b9KW2VwmPS4QHD2VZSF+VMC5T55
+         jpZZfbH51z6liczzYjMmOE7k5OT/PIH1ZPEqFsht2oGW+wcoelJiwVDL8XwJ0RbAZcco
+         aqRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=F1ilkwC+n0OgBT9uuTRB3SLW+eKQbLVicZAameJ09RE=;
+        b=tRX+13TfS2M00JfbHuDthNWIwEKQtYwcmXrd1DP91e496FRbt3M4XjT16Abv9Qwtkl
+         dgIpfaY9fnIxVyp7P5v8JEjGCXdAH4q7O5gO/zEfQxWNqoZVljlCLf4NzkxWMWz3nxUO
+         q1r8Xp/qaBNcAND2/IQyMByOsSTpNodSIC2xr/2gp+zre0DjA61dNU+ffU0JWZPijZql
+         R5SIgmABHH2Qp/PmAC9sqlHj3Wc5JEsfstnUp575vnWcpbbIhh/eM6kdG6+CDQ0X223/
+         +Kgm4NnEOjfqT6g0+2O6OQ49upohvK+OrI5ZvIFNHl7E5pPewFHOcmuLmo+5aPQjsr5i
+         hzlw==
+X-Gm-Message-State: AGi0PuYGbBvCUQDAz0Bv4aVE+cqTPramefFjQFz+gc4TP2F0XvWVRRY3
+        Ss+rew9LudxC0D0vjritrul21IS+qGGlqE9iimM=
+X-Google-Smtp-Source: APiQypJ0Nvq6CGqqwwZIRCzWr/OLeDFDoBTIaAobRMxTChzChbCfY2At1MWgWTL3RvZeIV7LClAOl5HebEwRtFJ4+YY=
+X-Received: by 2002:a05:6214:158b:: with SMTP id m11mr28220190qvw.168.1588173657420;
+ Wed, 29 Apr 2020 08:20:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <BN6PR1101MB2132D23B042284DDA667642A97AC0@BN6PR1101MB2132.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a0c:c24a:0:0:0:0:0 with HTTP; Wed, 29 Apr 2020 08:20:57
+ -0700 (PDT)
+Reply-To: annah2bruun@gmail.com
+From:   "Mrs. Anna H." <rakeshpillalamrri@gmail.com>
+Date:   Wed, 29 Apr 2020 15:20:57 +0000
+Message-ID: <CAPJk2A0R1kcKGJYMK6MQETwxFcRCG7Pd4hbXmNrhLvNtoNeXTA@mail.gmail.com>
+Subject: I Need Your Urgent Assistance
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+My Dear
 
 
-On 4/28/2020 7:29 PM, Lu, Brent wrote:
->>
->> I've looked at the code and byt_is_dsp_busy seems suspicious to me.
->> Can you check if following change fixes problem for you:(...)
->>
->> We seem to treat SST_IPCX as 32 bit register instead of 64 one, which may
->> explain wrong behaviour. (Specification says it is 64 bit register).
->>
->> Thanks,
->> Amadeusz
-> 
-> Hi Amadeusz,
-> 
-> The patch does not work but I managed to create a workaround just for
-> reference. Still don't know why first read in sst_byt_irq_thread returns
-> incorrect value.
-> 
+My Name is Mrs. Anna H. Bruun,  from Norway. I know that this message
+will be a surprise to you. Firstly, I am married to Mr. Patrick Bruun,
+A gold merchant who owns a small gold Mine in Burkina Faso; He died of
+Cardiovascular Disease in mid-March 2011. During his life time he
+deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundre=
+d
+thousand Euros in a bank in Ouagadougou the capital city of Burkina
+Faso in West Africa. The deposited money was from the sale of the
+shares, death benefits payment and entitlements of my deceased husband
+by his company.
 
-Hi,
-yes that seems bit weird. It is bit better as it does not modify common 
-code, but still... Maybe going back to your original idea of replacing 
-memcpy, try replacing it with readq? It should generate one instruction 
-read (although it is only for x64_64, for 32 bit kernel we would still 
-need to do something else).
+I am sending this message to you praying that it will reach you in
+good health, since I am not in good health condition in which I sleep
+every night without knowing if I may be alive to see the next day. I
+am suffering from long time cancer and presently i am partially
+suffering from a stroke illness which has become almost impossible for
+me to move around. I am married to my late husband for over 4 years
+before he died and is unfortunately that we don't have a child, my
+doctor confided in me that i have less chance to live. Having known my
+health condition, I decided to contact you to claim the fund since I
+don't have any relation I grew up from the orphanage home,
 
-Thanks,
-Amadeusz
+I have decided to donate what I have to you for the support of
+helping Motherless babies/Less privileged/Widows' because I am dying
+and diagnosed of cancer for about 2 years ago. I have been touched by
+God Almighty to donate from what I have inherited from my late husband
+to you for good work of God Almighty. I have asked Almighty God to
+forgive me and believe he has, because He is a Merciful God I will be
+going in for an operation surgery soon
+
+This is the reason i need your services to stand as my next of kin or
+an executor to claim the funds for charity purposes. If this money
+remains unclaimed after my death, the bank executives or the
+government will take the money as unclaimed fund and maybe use it for
+selfish and worthless ventures, I need a very honest person who can
+claim this money and use it for Charity works, for orphanages, widows
+and also build schools for less privilege that will be named after my
+late husband and my name; I need your urgent answer to know if you
+will be able to execute this project, and I will give you more
+information on how the fund will be transferred to your bank account.
+
+
+Thanks
+Mrs. Anna H.
