@@ -2,103 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CC11BDF97
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EFE1BDFCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgD2Nwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726885AbgD2Nwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:52:32 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727841AbgD2N7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:59:05 -0400
+Received: from mx-relay77-hz1.antispameurope.com ([94.100.132.239]:46954 "EHLO
+        mx-relay77-hz1.antispameurope.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726948AbgD2N7E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:59:04 -0400
+X-Greylist: delayed 354 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Apr 2020 09:59:02 EDT
+Received: from mailgw1.iis.fraunhofer.de ([153.96.172.4]) by mx-relay77-hz1.antispameurope.com;
+ Wed, 29 Apr 2020 15:53:06 +0200
+Received: from mail.iis.fraunhofer.de (mail03.iis.fhg.de [153.96.171.212])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC0FD20B80;
-        Wed, 29 Apr 2020 13:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588168351;
-        bh=ytyUCCIGyI+obLrMHzKUGgdlqFzyE04ZtGFK91iRm3M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lJkD/zbF1yevejOPgDCxQVSXUwBW/PWbOWYpI/zUSqNEq2OM6x8+7V+spbjIyhxcg
-         eN9lkO0ouItL2Ik+0MigJ11kTM7haS58xBWd4EqV2++KMVrtEELIMHeaJcxnFR2Ccp
-         Bg/nUNm71ptDOwgsWg3HxAKyf3jcXK2iQLdS37HQ=
-Date:   Wed, 29 Apr 2020 14:52:28 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Basil Eljuse <Basil.Eljuse@arm.com>,
-        Ferry Toth <fntoth@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        netdev <netdev@vger.kernel.org>, linux-pm@vger.kernel.org,
-        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>
-Subject: Re: [PATCH v3 1/3] driver core: Revert default
- driver_deferred_probe_timeout value to 0
-Message-ID: <20200429135228.GL4201@sirena.org.uk>
-References: <20200422203245.83244-1-john.stultz@linaro.org>
- <20200422203245.83244-2-john.stultz@linaro.org>
- <CGME20200429134605eucas1p2bd601082e7a6b8c8fdbe79c83972e2e3@eucas1p2.samsung.com>
- <9e0501b5-c8c8-bc44-51e7-4bde2844b912@samsung.com>
+        by mailgw1.iis.fraunhofer.de (Postfix) with ESMTPS id 8733D2400082;
+        Wed, 29 Apr 2020 15:53:02 +0200 (CEST)
+Received: from mail01.iis.fhg.de (2001:638:a0a:1111:fd91:8c2a:e4a5:e74e) by
+ mail03.iis.fhg.de (2001:638:a0a:1111:314f:f22c:4a37:b25a) with Microsoft SMTP
+ Server (TLS) id 15.0.1395.4; Wed, 29 Apr 2020 15:53:02 +0200
+Received: from mail01.iis.fhg.de ([fe80::fd91:8c2a:e4a5:e74e]) by
+ mail01.iis.fhg.de ([fe80::fd91:8c2a:e4a5:e74e%12]) with mapi id
+ 15.00.1395.000; Wed, 29 Apr 2020 15:53:02 +0200
+From:   "Stahl, Manuel" <manuel.stahl@iis-extern.fraunhofer.de>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "sojkam1@fel.cvut.cz" <sojkam1@fel.cvut.cz>
+Subject: Re: [PATCH v4] Add new uio device for PCI with dynamic memory
+ allocation
+Thread-Topic: [PATCH v4] Add new uio device for PCI with dynamic memory
+ allocation
+Thread-Index: AQHWFA15mQXQpLHKR0emWdXVXY2Gm6iOf4GAgAEst4CAAB7rgIAARjmA
+Date:   Wed, 29 Apr 2020 13:53:02 +0000
+Message-ID: <03b6755c07fb19420a7fb21b434b137aaa238893.camel@iis-extern.fraunhofer.de>
+References: <1507296707.2915.14.camel@iis-extern.fraunhofer.de>
+         <20200416163830.30623-1-manuel.stahl@iis-extern.fraunhofer.de>
+         <20200428135443.GA1437053@kroah.com>
+         <eb405ab3782844e379629a655a3dcaf38dd2552d.camel@iis-extern.fraunhofer.de>
+         <20200429094141.GB2080576@kroah.com>
+In-Reply-To: <20200429094141.GB2080576@kroah.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [153.96.171.210]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <360A9EF8EDE7BB4B89D615F459782861@iis.fhg.de>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="00hq2S6J2Jlg6EbK"
-Content-Disposition: inline
-In-Reply-To: <9e0501b5-c8c8-bc44-51e7-4bde2844b912@samsung.com>
-X-Cookie: I know how to do SPECIAL EFFECTS!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-cloud-security-sender: manuel.stahl@iis-extern.fraunhofer.de
+X-cloud-security-recipient: linux-kernel@vger.kernel.org
+X-cloud-security-crypt: load encryption module
+X-cloud-security-Virusscan: CLEAN
+X-cloud-security-disclaimer: This E-Mail was scanned by E-Mailservice on mx-relay77-hz1.antispameurope.com with AED91602119
+X-cloud-security-connect: mailgw1.iis.fraunhofer.de[153.96.172.4], TLS=1, IP=153.96.172.4
+X-cloud-security: scantime:.3293
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---00hq2S6J2Jlg6EbK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Apr 29, 2020 at 03:46:04PM +0200, Marek Szyprowski wrote:
-> On 22.04.2020 22:32, John Stultz wrote:
-
-> > Fixes: c8c43cee29f6 ("driver core: Fix driver_deferred_probe_check_stat=
-e() logic")
-> > Signed-off-by: John Stultz <john.stultz@linaro.org>
-
-> Please also revert dca0b44957e5 "regulator: Use=20
-> driver_deferred_probe_timeout for regulator_init_complete_work" then,=20
-> because now with the default 0 timeout some regulators gets disabled=20
-> during boot, before their supplies gets instantiated.
-
-Yes, please - I requested this when the revert was originally proposed :(
-
---00hq2S6J2Jlg6EbK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6phpsACgkQJNaLcl1U
-h9B9Ogf+MFUG/IZB61LkLCHnKhJON6xWRLosWtR73L7yE/rRElq2K/LdbZGCyN7I
-EjK3VX1zEARY+I/ZQFGed1LNwAn9hMdFEVwqFv+PHOCC6hzJd+0O2jnbyUaC+3Bq
-+Hg2vXWb9z9UXLyoXcPiz4B+1fLkS2e48lLf/ahWQfd+BZQpzNrpoZ3i+0Pt+Vqn
-mXKIC9ZbFJtslUU6Gt6fz8DzseaPWMw0qPfdssdaG4EfNCP+UO4GtxVsFwnV2h/u
-fYgUlXaMEwQJN0p+g6Qu/f4419vhBIqoDXRtqQ0Fc4tPoUif0qYSx/bEpK6No3ue
-yv7+6TCSurJPLib9y1EXa60sVn/4Hg==
-=4Efx
------END PGP SIGNATURE-----
-
---00hq2S6J2Jlg6EbK--
+T24gTWksIDIwMjAtMDQtMjkgYXQgMTE6NDEgKzAyMDAsIGdyZWdraEBsaW51eGZvdW5kYXRpb24u
+b3JnIHdyb3RlOg0KPiBPbiBXZWQsIEFwciAyOSwgMjAyMCBhdCAwNzo1MTowMUFNICswMDAwLCBT
+dGFobCwgTWFudWVsIHdyb3RlOg0KPiA+IE9uIERpLCAyMDIwLTA0LTI4IGF0IDE1OjU0ICswMjAw
+LCBncmVna2ggQCBsaW51eGZvdW5kYXRpb24gLiBvcmcgd3JvdGU6DQo+ID4gPiBPbiBUaHUsIEFw
+ciAxNiwgMjAyMCBhdCAwNjozODozMFBNICswMjAwLCBNYW51ZWwgU3RhaGwgd3JvdGU6DQo+ID4g
+PiA+IA0KPiA+ID4gPiArICoNCj4gPiA+ID4gKyAqIFNpbmNlIHRoZSBkcml2ZXIgZG9lcyBub3Qg
+ZGVjbGFyZSBhbnkgZGV2aWNlIGlkcywgeW91IG11c3QgYWxsb2NhdGUNCj4gPiA+ID4gKyAqIGlk
+IGFuZCBiaW5kIHRoZSBkZXZpY2UgdG8gdGhlIGRyaXZlciB5b3Vyc2VsZi4gIEZvciBleGFtcGxl
+Og0KPiA+ID4gPiArICoNCj4gPiA+ID4gKyAqICMgZWNobyAiODA4NiAxMGY1IiA+IC9zeXMvYnVz
+L3BjaS9kcml2ZXJzL3Vpb19wY2lfZG1lbV9nZW5pcnEvbmV3X2lkDQo+ID4gPiA+ICsgKiAjIGVj
+aG8gLW4gMDAwMDowMDoxOS4wID4gL3N5cy9idXMvcGNpL2RyaXZlcnMvZTEwMDBlL3VuYmluZA0K
+PiA+ID4gPiArICogIyBlY2hvIC1uIDAwMDA6MDA6MTkuMCA+IC9zeXMvYnVzL3BjaS9kcml2ZXJz
+L3Vpb19wY2lfZG1lbV9nZW5pcnEvYmluZA0KPiA+ID4gPiArICogIyBscyAtbCAvc3lzL2J1cy9w
+Y2kvZGV2aWNlcy8wMDAwOjAwOjE5LjAvZHJpdmVyDQo+ID4gPiA+ICsgKiAuLi4vMDAwMDowMDox
+OS4wL2RyaXZlciAtPiAuLi8uLi8uLi9idXMvcGNpL2RyaXZlcnMvdWlvX3BjaV9kbWVtX2dlbmly
+cQ0KPiA+ID4gPiArICoNCj4gPiA+ID4gKyAqIE9yIHVzZSBhIG1vZHByb2JlIGFsaWFzOg0KPiA+
+ID4gPiArICogIyBhbGlhcyBwY2k6djAwMDAxMEVFZDAwMDAxMDAwc3Yqc2Qqc2MqaSogdWlvX3Bj
+aV9kbWVtX2dlbmlycQ0KPiA+ID4gPiArICoNCj4gPiA+ID4gKyAqIERyaXZlciB3b24ndCBiaW5k
+IHRvIGRldmljZXMgd2hpY2ggZG8gbm90IHN1cHBvcnQgdGhlIEludGVycnVwdCBEaXNhYmxlIEJp
+dA0KPiA+ID4gPiArICogaW4gdGhlIGNvbW1hbmQgcmVnaXN0ZXIuIEFsbCBkZXZpY2VzIGNvbXBs
+aWFudCB0byBQQ0kgMi4zIChjaXJjYSAyMDAyKSBhbmQNCj4gPiA+ID4gKyAqIGFsbCBjb21wbGlh
+bnQgUENJIEV4cHJlc3MgZGV2aWNlcyBzaG91bGQgc3VwcG9ydCB0aGlzIGJpdC4NCj4gPiA+ID4g
+KyAqDQo+ID4gPiA+ICsgKiBUaGUgRE1BIG1hc2sgYml0cyBhbmQgc2l6ZXMgb2YgZHluYW1pYyBy
+ZWdpb25zIGFyZSBkZXJpdmVkIGZyb20gbW9kdWxlDQo+ID4gPiA+ICsgKiBwYXJhbWV0ZXJzLg0K
+PiA+ID4gPiArICoNCj4gPiA+ID4gKyAqIFRoZSBmb3JtYXQgZm9yIHNwZWNpZnlpbmcgZHluYW1p
+YyByZWdpb24gc2l6ZXMgaW4gbW9kdWxlIHBhcmFtZXRlcnMNCj4gPiA+ID4gKyAqIGlzIGFzIGZv
+bGxvd3M6DQo+ID4gPiA+ICsgKg0KPiA+ID4gPiArICogdWlvX3BjaV9kbWVtX2dlbmlycS5kbWVt
+X3NpemVzIDo9IDx1aW9fZG1lbV9zaXplc19kZWY+Wzs8dWlvX2RtZW1fc2l6ZXNfZGVmPl0NCj4g
+PiA+ID4gKyAqIDx1aW9fZG1lbV9zaXplc19kZWY+ICAgICAgICAgICA6PSA8cGNpX2lkPjo8c2l6
+ZT5bLDxzaXplPl0NCj4gPiA+ID4gKyAqIDxwY2lfaWQ+ICAgICAgICAgICAgICAgICAgICAgICA6
+PSA8dmVuZG9yPjo8ZGV2aWNlPg0KPiA+ID4gPiArICogPHNpemU+ICAgICAgICAgICAgICAgICAg
+ICAgICAgIDo9IHN0YW5kYXJkIGxpbnV4IG1lbXNpemUNCj4gPiA+ID4gKyAqDQo+ID4gPiA+ICsg
+KiBFeGFtcGxlczoNCj4gPiA+ID4gKyAqDQo+ID4gPiA+ICsgKiAxKSBVSU8gZG1lbSBkZXZpY2Ug
+d2l0aCAzIGR5bmFtaWMgcmVnaW9uczoNCj4gPiA+ID4gKyAqIHVpb19wY2lfZG1lbV9nZW5pcnEu
+ZG1lbV9zaXplcz04MDg2OjEwZjU6NEssMTZLLDRNDQo+ID4gPiA+ICsgKg0KPiA+ID4gPiArICog
+MikgVHdvIFVJTyBkbWVtIGRldmljZXMgd2l0aCBkaWZmZXJlbnQgbnVtYmVyIG9mIGR5bmFtaWMg
+cmVnaW9uczoNCj4gPiA+ID4gKyAqIHVpb19wY2lfZG1lbV9nZW5pcnEuZG1lbV9zaXplcz04MDg2
+OjEwZjU6NEssMTZLLDRNOzEyMzQ6MDAwMTo4Sw0KPiA+ID4gDQo+ID4gPiBNb2R1bGUgcGFyYW1l
+dGVycyBhcmUgaG9ycmlkLCBhcmUgeW91IHN1cmUgdGhlcmUgaXMgbm8gb3RoZXIgd2F5Pw0KPiA+
+IA0KPiA+IFlvdSdyZSByaWdodCwgc2VlbWVkIHRvIGJlIHRoZSBzaW1wbGVzdCBzb2x1dGlvbiBi
+YWNrIHdoZW4gd2Ugc3RhcnRlZCBkZXZlbG9waW5nIHRoaXMgZHJpdmVyLiBJIHdpbGwgdHJ5IHRv
+IGNoYW5nZSBpdCB0byBzeXNmcywgc28gdGhhdCBvbmUgY2FuIGFkZCByZWdpb25zIHdoaWxlIHRo
+ZSBtb2R1bGUgaXMgYWxyZWFkeSBsb2FkZWQuDQo+IA0KPiAvbWUgaGFuZHMgeW91IHNvbWUgXG4g
+Y2hhcmFjdGVycy4uLg0KPiANCj4gQW55d2F5LCBjb25maWdmcyBpcyBmb3IgY29uZmlndXJpbmcg
+c3R1ZmYsIGRvbid0IG1ha2UgYSBzeXNmcyBmaWxlIHRoYXQNCj4geW91IGhhdmUgdG8gc29tZWhv
+dyAicGFyc2UiIHBsZWFzZS4NCg0KTG9va2luZyBiYWNrIGF0IHRoaXMgZHJpdmVyIGFmdGVyIHNv
+bWUgeWVhcnMgSSByZWFsaXplZCBhZ2FpbiB0aGUgcmVhc29uDQpmb3IgdXNpbmcga2VybmVsIHBh
+cmFtZXRlcnM6DQoNClRoZSBjdXJyZW50IFVJTyBBUEkgbmVlZHMgdGhlIGluZm9ybWF0aW9uIGFi
+b3V0IGF2YWlsYWJsZSBtZW1vcnkgbWFwcyB3aGVuDQpyZWdpc3RlcmluZyBhIG5ldyBVSU8gZGV2
+aWNlIHdpdGggX191aW9fcmVnaXN0ZXJfZGV2aWNlKCksIHdoaWNoIG9idmlvdXNseQ0KbmVlZHMg
+dG8gYmUgY2FsbGVkIGR1cmluZyBwcm9iZSgpIGluIHVpb19wY2lfZG1lbV9nZW5pcnEuIE90aGVy
+d2lzZSB0aGVyZQ0KaXMgbm8gZGV2aWNlIGZpbGUgaW4gL2RldiB0byBvcGVuIGZvciB1c2VyIHNw
+YWNlIGFwcGxpY2F0aW9ucy4NCg0KQWZ0ZXIgdGhhdCB0aGVyZSBpcyBubyBmdW5jdGlvbiB0byB1
+cGRhdGUgdGhlIHVpb19tYXAgaW5mby4gU28gd2UgY2FuIGVpdGhlcg0Ka2VlcCB0aGUgbW9kdWxl
+IHBhcmFtZXRlcnMgYW5kIGFsbG9jYXRlIHRoZSBETUEgbWVtb3J5IGR1cmluZyBwcm9iZSgpIG9y
+DQphbGxvY2F0ZSB0aGUgRE1BIG1lbW9yeSBkdXJpbmcgbW1hcCgpIGFuZA0KICBhKSByZXBsaWNh
+dGUgcGFydHMgb2YgdWlvX2Rldl9hZGRfYXR0cmlidXRlcygpIGluIHRoaXMgZHJpdmVyIHRvIHVw
+ZGF0ZSBzeXNmcw0KICBiKSBhZGQgYSBmdW5jdGlvbiBpbiB1aW8uYyB0byBhbGxvdyB1cGRhdGVz
+IHRvIHRoZSB1aW9fbWFwDQoNCldoaWNoIHdheSB3b3VsZCB5b3UgZ28/DQoNCkJlc3QgcmVnYXJk
+cywNCk1hbnVlbCBTdGFobA0K
