@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA881BDF1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96EE71BDF41
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbgD2Nkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53090 "EHLO
+        id S1728664AbgD2Nlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727906AbgD2Nhm (ORCPT
+        with ESMTP id S1726963AbgD2NhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:42 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C417C03C1AD;
-        Wed, 29 Apr 2020 06:37:42 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 34E20791; Wed, 29 Apr 2020 15:37:36 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH v3 05/34] iommu/amd: Remove dma_mask check from check_device()
-Date:   Wed, 29 Apr 2020 15:36:43 +0200
-Message-Id: <20200429133712.31431-6-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
-References: <20200429133712.31431-1-joro@8bytes.org>
+        Wed, 29 Apr 2020 09:37:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A448C09B043;
+        Wed, 29 Apr 2020 06:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=UiMCPebDLCXMqtOlym1wnistbwlAeXJLnwQjJng5vCw=; b=X2tSjWREBcuvyYNGFYUpqzAc/3
+        9gdNKbRs/t9w4UcCyVt69o/PnyBtxN0qdZ7YHASBdJeekC24AhZ3TVvc76o8uzcMF2XZQ3XlPMREO
+        SplRNXWSLAg/BsfEso77nR3X5VK72aMysC4++thKniYyXukFqidO6j1NtjDRnt2dnxoq2GEa2pFyv
+        kkOAJ8mXvopMeJrJISKzGU2UbGmb8lbKe8HjMYkrWG8ss//FD85mQRaaeRw1gKLXF4UvPkGjxtzh/
+        hKO5LSFJn6erNozXSMcRhfkUlhyZPp3Lsk1OEtB5KQixqqocXnDFzlB5rT8xAA5+A66t7+Cr0O3mg
+        4cidrfig==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTmtX-0005vN-FG; Wed, 29 Apr 2020 13:36:59 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 11/25] iomap: Support large pages in iomap_adjust_read_range
+Date:   Wed, 29 Apr 2020 06:36:43 -0700
+Message-Id: <20200429133657.22632-12-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
+References: <20200429133657.22632-1-willy@infradead.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-The check was only needed for the DMA-API implementation in the AMD
-IOMMU driver, which no longer exists.
+Pass the struct page instead of the iomap_page so we can determine the
+size of the page.  Use offset_in_thp() instead of offset_in_page() and use
+thp_size() instead of PAGE_SIZE.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- drivers/iommu/amd_iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/iomap/buffered-io.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/iommu/amd_iommu.c b/drivers/iommu/amd_iommu.c
-index 73b4f84cf449..504f2db75eda 100644
---- a/drivers/iommu/amd_iommu.c
-+++ b/drivers/iommu/amd_iommu.c
-@@ -326,7 +326,7 @@ static bool check_device(struct device *dev)
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 4a79061073eb..423ffc9d4a97 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -83,15 +83,16 @@ iomap_page_release(struct page *page)
+  * Calculate the range inside the page that we actually need to read.
+  */
+ static void
+-iomap_adjust_read_range(struct inode *inode, struct iomap_page *iop,
++iomap_adjust_read_range(struct inode *inode, struct page *page,
+ 		loff_t *pos, loff_t length, unsigned *offp, unsigned *lenp)
  {
- 	int devid;
++	struct iomap_page *iop = to_iomap_page(page);
+ 	loff_t orig_pos = *pos;
+ 	loff_t isize = i_size_read(inode);
+ 	unsigned block_bits = inode->i_blkbits;
+ 	unsigned block_size = (1 << block_bits);
+-	unsigned poff = offset_in_page(*pos);
+-	unsigned plen = min_t(loff_t, PAGE_SIZE - poff, length);
++	unsigned poff = offset_in_thp(page, *pos);
++	unsigned plen = min_t(loff_t, thp_size(page) - poff, length);
+ 	unsigned first = poff >> block_bits;
+ 	unsigned last = (poff + plen - 1) >> block_bits;
  
--	if (!dev || !dev->dma_mask)
-+	if (!dev)
- 		return false;
+@@ -129,7 +130,7 @@ iomap_adjust_read_range(struct inode *inode, struct iomap_page *iop,
+ 	 * page cache for blocks that are entirely outside of i_size.
+ 	 */
+ 	if (orig_pos <= isize && orig_pos + length > isize) {
+-		unsigned end = offset_in_page(isize - 1) >> block_bits;
++		unsigned end = offset_in_thp(page, isize - 1) >> block_bits;
  
- 	devid = get_device_id(dev);
+ 		if (first <= end && last > end)
+ 			plen -= (last - end) * block_size;
+@@ -256,7 +257,7 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+ 	}
+ 
+ 	/* zero post-eof blocks as the page may be mapped */
+-	iomap_adjust_read_range(inode, iop, &pos, length, &poff, &plen);
++	iomap_adjust_read_range(inode, page, &pos, length, &poff, &plen);
+ 	if (plen == 0)
+ 		goto done;
+ 
+@@ -571,7 +572,6 @@ static int
+ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+ 		struct page *page, struct iomap *srcmap)
+ {
+-	struct iomap_page *iop = iomap_page_create(inode, page);
+ 	loff_t block_size = i_blocksize(inode);
+ 	loff_t block_start = pos & ~(block_size - 1);
+ 	loff_t block_end = (pos + len + block_size - 1) & ~(block_size - 1);
+@@ -580,9 +580,10 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+ 
+ 	if (PageUptodate(page))
+ 		return 0;
++	iomap_page_create(inode, page);
+ 
+ 	do {
+-		iomap_adjust_read_range(inode, iop, &block_start,
++		iomap_adjust_read_range(inode, page, &block_start,
+ 				block_end - block_start, &poff, &plen);
+ 		if (plen == 0)
+ 			break;
 -- 
-2.17.1
+2.26.2
 
