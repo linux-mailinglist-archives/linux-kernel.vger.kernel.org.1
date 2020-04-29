@@ -2,123 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A1D1BE219
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5A01BE223
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgD2PIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:08:45 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:12606 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726618AbgD2PIo (ORCPT
+        id S1726905AbgD2PK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:10:59 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:14826 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726516AbgD2PK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:08:44 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03TF8PQB004369;
-        Wed, 29 Apr 2020 17:08:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=OrHsueskmIs43EdFBn1E0vUvKJn0/dh6AJ0xQ3uCkUU=;
- b=WU/9l2NUHJH3flwUdt93RKlSOQmpi7VFr8JCg6CpOnWjmxuv0b7ar/GvhNXzDhytHw6O
- bD9La1Beo83P0GFaqGWCOKMbllfsqlZwUQmfQqVEWZOqnGsECGZ5OwE0eKPy8MoiwS8l
- hzEuVg5D9cWA1zgd6h/nGnyOBmZByzpgribLJrtwFUQK+1mCd2wiHhG9nqDvb4XQRwDG
- nd7PUINXfID6uHt30ZPMQWW7a3x6XdTxL6GEsalwwGEaXz3v5V/QXkbaLsC27xc4TJaM
- zH1s/QnOFs7NG/c775sAO6DcdcJqJ7PzUDVQ5Vi6yHZ915hYmedzryzE30fgHiVzuToJ IQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30mhq672ft-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 17:08:34 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4F1E310003A;
-        Wed, 29 Apr 2020 17:08:34 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3CE062AB39C;
-        Wed, 29 Apr 2020 17:08:34 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.45) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 29 Apr
- 2020 17:08:33 +0200
-Subject: Re: [PATCH v2 00/12] remoteproc: stm32: Add support for synchronising
- with M4
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <bjorn.andersson@linaro.org>, <ohad@wizery.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>
-CC:     <loic.pallardy@st.com>, <linux-remoteproc@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200424202505.29562-1-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <219771d3-b0a5-0ec7-7f20-d2055bcb0217@st.com>
-Date:   Wed, 29 Apr 2020 17:08:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Wed, 29 Apr 2020 11:10:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588173057; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Uj1kdH+1z3EYbeBHEefFEkAH70TKfLMeVJuy+wrtzT4=; b=t8CDd/VkOUFgF6WgxHaCZqI+RZ+nNEgPCEpkzZdWaP0nQ963chp2Hlp6pCyErfNKT95T5Mfr
+ aaOWKrBQFH3iCZyRwqHsCtfIQIadSplAeR25VerzTOrHCWew9eAifJu5klauWUceEwveOAtE
+ 0IwZHo5etp+DPBcUEHxPL8sasPo=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea998f9.7f1b79ee56c0-smtp-out-n04;
+ Wed, 29 Apr 2020 15:10:49 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A277DC433BA; Wed, 29 Apr 2020 15:10:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.131.182.194] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F1CE6C433CB;
+        Wed, 29 Apr 2020 15:10:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F1CE6C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v3 12/17] media: venus: core: Add support for opp
+ tables/perf voting
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mka@chromium.org,
+        linux-media@vger.kernel.org
+References: <1588080785-6812-1-git-send-email-rnayak@codeaurora.org>
+ <1588080785-6812-13-git-send-email-rnayak@codeaurora.org>
+ <b091dc29-d2e8-ed3f-fe1c-ae60e16d5d78@linaro.org>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <425a8828-be17-fe79-99f5-9e20eff51b13@codeaurora.org>
+Date:   Wed, 29 Apr 2020 20:40:42 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200424202505.29562-1-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <b091dc29-d2e8-ed3f-fe1c-ae60e16d5d78@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG7NODE3.st.com (10.75.127.21) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-29_07:2020-04-29,2020-04-29 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+Hey Stan,
 
-On 4/24/20 10:24 PM, Mathieu Poirier wrote:
-> This patchset needs to be applied on top of this one [1].
+On 4/29/2020 8:06 PM, Stanimir Varbanov wrote:
+> Hi Rajendra,
 > 
-> It refactors the STM32 platform code in order to introduce support for
-> synchronising with the M4 remote processor that would have been started by
-> the boot loader or another entity.
+> Thanks for the patch!
 > 
-> It carries the same functionatlity as the previeous revision but account
-> for changes in the remoteproc core to support synchronisation scenarios.
-> Some RB tags have been removed when the content of the patch has strayed 
-> too far from the original version. See patch 3, 8, 9 and 12 for more
-> details.
+[]..
 
-I reviewed the series, and made some tests on my side.
-FYI, I do not answer to patches when tagged "Reviewed-by: Loic Pallardy" 
-and with no extra remark. So consider them as Reviewed-by me but not
-necessary to add the tag in commit, Reviewed-by: loic in commit is sufficient. 
+>>   #include <linux/pm_runtime.h>
+>>   #include <media/videobuf2-v4l2.h>
+>>   #include <media/v4l2-mem2mem.h>
+>> @@ -214,6 +215,20 @@ static int venus_probe(struct platform_device *pdev)
+>>   	if (!core->pm_ops)
+>>   		return -ENODEV;
+>>   
+>> +	core->opp_table = dev_pm_opp_set_clkname(dev, "core");
+> 
+> Should we set opp clkname if opp_of_add_table fails? We have platforms
+> which don't have opp tables in Venus DT node. We have to be backward
+> compatible for them.
 
-Concerning tests, it works find except the crash recovery from a sync start.
-But i suppose that you know the limitation, waiting Loic patches[1] update :)
+so the way its designed, you are expected to call dev_pm_opp_set_clkname()
+*before* adding any OPPs from the OPP table.
+As for backward compatibility its already handled by the OPP core now [1]
+which makes sure dev_pm_opp_set_rate() is equivalent to a clk_set_rate()
+in case of a missing OPP table.
 
-[1]: https://lkml.org/lkml/2020/3/11/403
+>> +	if (IS_ERR(core->opp_table))
+>> +		return PTR_ERR(core->opp_table);
+>> +
+>> +	if (core->res->opp_pmdomain) {
+>> +		ret = dev_pm_opp_of_add_table(dev);
+>> +		if (!ret) {
+>> +			core->has_opp_table = true;
+>> +		} else if (ret != -ENODEV) {
+> 
+> Is it possible dev_pm_opp_of_add_table() to return EPROBE_DEFER?
 
-Thanks a lot for your work!
-Arnaud
- 
+Nope, it does not, I had checked.
+
+>> +			dev_err(dev, "Invalid OPP table in Device tree\n");
+> 
+> ... if so, please drop dev_err.
+> 
+>> +			return ret;
+>> +		}
+>> +	}
+[]..
+
+>> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+>> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+>> @@ -9,6 +9,7 @@
+>>   #include <linux/iopoll.h>
+>>   #include <linux/kernel.h>
+>>   #include <linux/pm_domain.h>
+>> +#include <linux/pm_opp.h>
+>>   #include <linux/pm_runtime.h>
+>>   #include <linux/types.h>
+>>   #include <media/v4l2-mem2mem.h>
+>> @@ -66,10 +67,9 @@ static void core_clks_disable(struct venus_core *core)
+>>   
+>>   static int core_clks_set_rate(struct venus_core *core, unsigned long freq)
+>>   {
+>> -	struct clk *clk = core->clks[0];
+>>   	int ret;
+>>   
+>> -	ret = clk_set_rate(clk, freq);
+>> +	ret = dev_pm_opp_set_rate(core->dev, freq);
+> 
+> Is this will work for legacy platforms without OPP tables?
+
+yes, see [1] which is already merged in mainline.
 
 > 
-> Tested on ST's mp157c board.
+> Also what about the other clocks (vicodec0,1) in this function.
+
+We continue to use clk_set_rate() for those. The performance state
+is associated with only the core clk.
+
+>>   	if (ret)
+>>   		return ret;
+>>   
+>> @@ -740,13 +740,15 @@ static int venc_power_v4(struct device *dev, int on)
+>>   
+>>   static int vcodec_domains_get(struct device *dev)
+>>   {
+>> +	struct opp_table *opp_table;
+>> +	struct device **opp_virt_dev;
+>>   	struct venus_core *core = dev_get_drvdata(dev);
+>>   	const struct venus_resources *res = core->res;
+>>   	struct device *pd;
+>>   	unsigned int i;
+>>   
+>>   	if (!res->vcodec_pmdomains_num)
+>> -		return -ENODEV;
+>> +		goto skip_pmdomains;
+>>   
+>>   	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
+>>   		pd = dev_pm_domain_attach_by_name(dev,
+>> @@ -763,6 +765,24 @@ static int vcodec_domains_get(struct device *dev)
+>>   	if (!core->pd_dl_venus)
+>>   		return -ENODEV;
+>>   
+>> +skip_pmdomains:
+>> +	if (!res->opp_pmdomain || !core->has_opp_table)
+>> +		return 0;
+>> +
+>> +	/* Attach the power domain for setting performance state */
+>> +	opp_table = dev_pm_opp_attach_genpd(dev, res->opp_pmdomain, &opp_virt_dev);
+>> +	if (IS_ERR(opp_table)) {
+>> +		return PTR_ERR(opp_table);
+>> +	} else if (opp_virt_dev) {
+>> +		core->opp_pmdomain = *opp_virt_dev;
+>> +		core->opp_dl_venus = device_link_add(dev, core->opp_pmdomain,
+>> +						     DL_FLAG_RPM_ACTIVE |
+>> +						     DL_FLAG_PM_RUNTIME |
+>> +						     DL_FLAG_STATELESS);
+>> +		if (!core->opp_dl_venus)
+>> +			return -ENODEV;
 > 
-> Thanks,
-> Mathieu
-> 
-> [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=277049
-> [2]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=239877
-> 
-> Mathieu Poirier (12):
->   remoteproc: stm32: Decouple rproc from memory translation
->   remoteproc: stm32: Request IRQ with platform device
->   remoteproc: stm32: Decouple rproc from DT parsing
->   remoteproc: stm32: Remove memory translation from DT parsing
->   remoteproc: stm32: Parse syscon that will manage M4 synchronisation
->   remoteproc: stm32: Get coprocessor state
->   remoteproc: stm32: Get loaded resource table for synchronisation
->   remoteproc: stm32: Introduce new start ops for synchronisation
->   remoteproc: stm32: Update M4 state in stm32_rproc_stop()
->   remoteproc: stm32: Introduce new parse fw ops for synchronisation
->   remoteproc: stm32: Introduce new loaded rsc ops for synchronisation
->   remoteproc: stm32: Set synchronisation state machine if needed
-> 
->  drivers/remoteproc/stm32_rproc.c | 262 ++++++++++++++++++++++++++++---
->  1 file changed, 244 insertions(+), 18 deletions(-)
-> 
+> I think as you return ENODEV you have to detach opp domain here because
+> vcodec_domains_put() is not called in error path.
+
+Ok, I'll fix that up.
+
+Thanks for the review.
+
+[1] https://lkml.org/lkml/2020/4/8/413
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
