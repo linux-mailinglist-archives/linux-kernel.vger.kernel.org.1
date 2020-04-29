@@ -2,139 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1261BDE29
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516991BDF03
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727920AbgD2Nho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727061AbgD2NhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:01 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D28C09B053;
-        Wed, 29 Apr 2020 06:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=iTN8ck5uddQpmt+rtiNROGP2F4hhl9L/H+YaYM0mw+U=; b=WOCJ26x4q1SK35EPWcVGDCM+9o
-        k5VOp+7Zry0z8QXx7IY6SWRTe/ArfgjtKfR/r/XO4TLv14LlCE8pE1Sgn0dY6704FmH1OrNGPg4R2
-        TruyAAZWjnQLJao+sqZm1dcz/35WASoBBv37xyj4hjU8f+z5dV1+c+hGXyA32rswly5hzYkYrqapz
-        1cbCyFpkvuXOvObY39bcxZckpel93dxCIUUuUdHI3hWuCIjStICcUT8hp4OodzSkctgUgkGBIgOiO
-        vT9vdJCzP23UTjD4a4NC93HdkJy7EcOBCNpu7nS5Z5WBX8YRy50Bwp8j7mBCyhtEoWY1bRpztu0ga
-        nxCn7xTg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTmtX-0005w1-Mh; Wed, 29 Apr 2020 13:36:59 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH v3 17/25] mm: Add __page_cache_alloc_order
-Date:   Wed, 29 Apr 2020 06:36:49 -0700
-Message-Id: <20200429133657.22632-18-willy@infradead.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
-References: <20200429133657.22632-1-willy@infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1728482AbgD2NkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:40:10 -0400
+Received: from 8bytes.org ([81.169.241.247]:39838 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727921AbgD2Nhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:37:45 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 57C43CC0; Wed, 29 Apr 2020 15:37:37 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH v3 11/34] iommu: Split off default domain allocation from group assignment
+Date:   Wed, 29 Apr 2020 15:36:49 +0200
+Message-Id: <20200429133712.31431-12-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
+References: <20200429133712.31431-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+From: Joerg Roedel <jroedel@suse.de>
 
-This new function allows page cache pages to be allocated that are
-larger than an order-0 page.
+When a bus is initialized with iommu-ops, all devices on the bus are
+scanned and iommu-groups are allocated for them, and each groups will
+also get a default domain allocated.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Until now this happened as soon as the group was created and the first
+device added to it. When other devices with different default domain
+requirements were added to the group later on, the default domain was
+re-allocated, if possible.
+
+This resulted in some back and forth and unnecessary allocations, so
+change the flow to defer default domain allocation until all devices
+have been added to their respective IOMMU groups.
+
+The default domains are allocated for newly allocated groups after
+each device on the bus is handled and was probed by the IOMMU driver.
+
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- include/linux/pagemap.h | 24 +++++++++++++++++++++---
- mm/filemap.c            | 12 ++++++++----
- 2 files changed, 29 insertions(+), 7 deletions(-)
+ drivers/iommu/iommu.c | 154 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 151 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 55199cb5bd66..1169e2428dd7 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -205,15 +205,33 @@ static inline int page_cache_add_speculative(struct page *page, int count)
- 	return __page_cache_add_speculative(page, count);
- }
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 8be047a4808f..7de0e29db333 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -199,7 +199,7 @@ static int __iommu_probe_device(struct device *dev, struct list_head *group_list
+ 	dev->iommu->iommu_dev = iommu_dev;
  
-+static inline gfp_t thp_gfpmask(gfp_t gfp)
-+{
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	/* We'd rather allocate smaller pages than stall a page fault */
-+	gfp |= GFP_TRANSHUGE_LIGHT;
-+	gfp &= ~__GFP_DIRECT_RECLAIM;
-+#endif
-+	return gfp;
-+}
-+
- #ifdef CONFIG_NUMA
--extern struct page *__page_cache_alloc(gfp_t gfp);
-+extern struct page *__page_cache_alloc_order(gfp_t gfp, unsigned int order);
- #else
--static inline struct page *__page_cache_alloc(gfp_t gfp)
-+static inline
-+struct page *__page_cache_alloc_order(gfp_t gfp, unsigned int order)
- {
--	return alloc_pages(gfp, 0);
-+	if (order == 0)
-+		return alloc_pages(gfp, 0);
-+	return prep_transhuge_page(alloc_pages(thp_gfpmask(gfp), order));
- }
- #endif
- 
-+static inline struct page *__page_cache_alloc(gfp_t gfp)
-+{
-+	return __page_cache_alloc_order(gfp, 0);
-+}
-+
- static inline struct page *page_cache_alloc(struct address_space *x)
- {
- 	return __page_cache_alloc(mapping_gfp_mask(x));
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 23a051a7ef0f..9abba062973a 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -941,24 +941,28 @@ int add_to_page_cache_lru(struct page *page, struct address_space *mapping,
- EXPORT_SYMBOL_GPL(add_to_page_cache_lru);
- 
- #ifdef CONFIG_NUMA
--struct page *__page_cache_alloc(gfp_t gfp)
-+struct page *__page_cache_alloc_order(gfp_t gfp, unsigned int order)
- {
- 	int n;
- 	struct page *page;
- 
-+	if (order > 0)
-+		gfp = thp_gfpmask(gfp);
-+
- 	if (cpuset_do_page_mem_spread()) {
- 		unsigned int cpuset_mems_cookie;
- 		do {
- 			cpuset_mems_cookie = read_mems_allowed_begin();
- 			n = cpuset_mem_spread_node();
--			page = __alloc_pages_node(n, gfp, 0);
-+			page = __alloc_pages_node(n, gfp, order);
-+			prep_transhuge_page(page);
- 		} while (!page && read_mems_allowed_retry(cpuset_mems_cookie));
- 
- 		return page;
+ 	group = iommu_group_get_for_dev(dev);
+-	if (!IS_ERR(group)) {
++	if (IS_ERR(group)) {
+ 		ret = PTR_ERR(group);
+ 		goto out_release;
  	}
--	return alloc_pages(gfp, 0);
-+	return prep_transhuge_page(alloc_pages(gfp, order));
+@@ -1599,6 +1599,37 @@ static int add_iommu_group(struct device *dev, void *data)
+ 	return ret;
  }
--EXPORT_SYMBOL(__page_cache_alloc);
-+EXPORT_SYMBOL(__page_cache_alloc_order);
- #endif
  
- /*
++static int probe_iommu_group(struct device *dev, void *data)
++{
++	const struct iommu_ops *ops = dev->bus->iommu_ops;
++	struct list_head *group_list = data;
++	int ret;
++
++	if (!dev_iommu_get(dev))
++		return -ENOMEM;
++
++	if (!try_module_get(ops->owner)) {
++		ret = -EINVAL;
++		goto err_free_dev_iommu;
++	}
++
++	ret = __iommu_probe_device(dev, group_list);
++	if (ret)
++		goto err_module_put;
++
++	return 0;
++
++err_module_put:
++	module_put(ops->owner);
++err_free_dev_iommu:
++	dev_iommu_free(dev);
++
++	if (ret == -ENODEV)
++		ret = 0;
++
++	return ret;
++}
++
+ static int remove_iommu_group(struct device *dev, void *data)
+ {
+ 	iommu_release_device(dev);
+@@ -1658,10 +1689,127 @@ static int iommu_bus_notifier(struct notifier_block *nb,
+ 	return 0;
+ }
+ 
++struct __group_domain_type {
++	struct device *dev;
++	unsigned int type;
++};
++
++static int probe_get_default_domain_type(struct device *dev, void *data)
++{
++	const struct iommu_ops *ops = dev->bus->iommu_ops;
++	struct __group_domain_type *gtype = data;
++	unsigned int type = 0;
++
++	if (ops->def_domain_type)
++		type = ops->def_domain_type(dev);
++
++	if (type) {
++		if (gtype->type && gtype->type != type) {
++			dev_warn(dev, "Device needs domain type %s, but device %s in the same iommu group requires type %s - using default\n",
++				 iommu_domain_type_str(type),
++				 dev_name(gtype->dev),
++				 iommu_domain_type_str(gtype->type));
++			gtype->type = 0;
++		}
++
++		if (!gtype->dev) {
++			gtype->dev  = dev;
++			gtype->type = type;
++		}
++	}
++
++	return 0;
++}
++
++static void probe_alloc_default_domain(struct bus_type *bus,
++				       struct iommu_group *group)
++{
++	struct __group_domain_type gtype;
++
++	memset(&gtype, 0, sizeof(gtype));
++
++	/* Ask for default domain requirements of all devices in the group */
++	__iommu_group_for_each_dev(group, &gtype,
++				   probe_get_default_domain_type);
++
++	if (!gtype.type)
++		gtype.type = iommu_def_domain_type;
++
++	iommu_group_alloc_default_domain(bus, group, gtype.type);
++}
++
++static int iommu_group_do_dma_attach(struct device *dev, void *data)
++{
++	struct iommu_domain *domain = data;
++	const struct iommu_ops *ops;
++	int ret;
++
++	ret = __iommu_attach_device(domain, dev);
++
++	ops = domain->ops;
++
++	if (ret == 0 && ops->probe_finalize)
++		ops->probe_finalize(dev);
++
++	return ret;
++}
++
++static int __iommu_group_dma_attach(struct iommu_group *group)
++{
++	return __iommu_group_for_each_dev(group, group->default_domain,
++					  iommu_group_do_dma_attach);
++}
++
++static int bus_iommu_probe(struct bus_type *bus)
++{
++	const struct iommu_ops *ops = bus->iommu_ops;
++	int ret;
++
++	if (ops->probe_device) {
++		struct iommu_group *group, *next;
++		LIST_HEAD(group_list);
++
++		/*
++		 * This code-path does not allocate the default domain when
++		 * creating the iommu group, so do it after the groups are
++		 * created.
++		 */
++		ret = bus_for_each_dev(bus, NULL, &group_list, probe_iommu_group);
++		if (ret)
++			return ret;
++
++		list_for_each_entry_safe(group, next, &group_list, entry) {
++			/* Remove item from the list */
++			list_del_init(&group->entry);
++
++			mutex_lock(&group->mutex);
++
++			/* Try to allocate default domain */
++			probe_alloc_default_domain(bus, group);
++
++			if (!group->default_domain) {
++				mutex_unlock(&group->mutex);
++				continue;
++			}
++
++			ret = __iommu_group_dma_attach(group);
++
++			mutex_unlock(&group->mutex);
++
++			if (ret)
++				break;
++		}
++	} else {
++		ret = bus_for_each_dev(bus, NULL, NULL, add_iommu_group);
++	}
++
++	return ret;
++}
++
+ static int iommu_bus_init(struct bus_type *bus, const struct iommu_ops *ops)
+ {
+-	int err;
+ 	struct notifier_block *nb;
++	int err;
+ 
+ 	nb = kzalloc(sizeof(struct notifier_block), GFP_KERNEL);
+ 	if (!nb)
+@@ -1673,7 +1821,7 @@ static int iommu_bus_init(struct bus_type *bus, const struct iommu_ops *ops)
+ 	if (err)
+ 		goto out_free;
+ 
+-	err = bus_for_each_dev(bus, NULL, NULL, add_iommu_group);
++	err = bus_iommu_probe(bus);
+ 	if (err)
+ 		goto out_err;
+ 
 -- 
-2.26.2
+2.17.1
 
