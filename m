@@ -2,64 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78721BE048
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1871BE055
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgD2OKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:10:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50452 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726691AbgD2OKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:10:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 0C79AAC92;
-        Wed, 29 Apr 2020 14:10:06 +0000 (UTC)
-Date:   Wed, 29 Apr 2020 16:10:04 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before text_poke()
-Message-ID: <20200429141004.GR30814@suse.de>
-References: <20200429054857.66e8e333@oasis.local.home>
- <20200429105941.GQ30814@suse.de>
- <20200429082854.6e1796b5@oasis.local.home>
- <20200429100731.201312a9@gandalf.local.home>
+        id S1728267AbgD2OK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:10:56 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3385 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727119AbgD2OKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 10:10:55 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id F3C8B6D9CB7E42972048;
+        Wed, 29 Apr 2020 22:10:53 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 29 Apr 2020
+ 22:10:45 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <airlied@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <tzimmermann@suse.de>, <kraxel@redhat.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH] drm/ast: remove duplicate assignment of ast_crtc_funcs member
+Date:   Wed, 29 Apr 2020 22:10:10 +0800
+Message-ID: <20200429141010.8445-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429100731.201312a9@gandalf.local.home>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 10:07:31AM -0400, Steven Rostedt wrote:
-> Talking with Mathieu about this on IRC, he pointed out that my code does
-> have a vzalloc() that is called:
-> 
-> in trace_pid_write()
-> 
-> 	pid_list->pids = vzalloc((pid_list->pid_max + 7) >> 3);
-> 
-> This is done when -P1,2 is on the trace-cmd command line.
+The struct member 'set_config' was assigned twice:
 
-Yeah, I was guessing something like this, init_mm has a mapping which
-poking_mm has not. I currently try to reproduce this on one of my
-machines.
+static const struct drm_crtc_funcs ast_crtc_funcs = {
+	.reset = ast_crtc_reset,
+	.set_config = drm_crtc_helper_set_config,
+	......
+	.set_config = drm_atomic_helper_set_config,
+	......
+};
 
-Regards,
+Since the second one is which we use now in fact, we can remove the
+first one.
 
-	Joerg
+This fixes the following coccicheck warning:
+
+drivers/gpu/drm/ast/ast_mode.c:932:50-51: set_config: first occurrence
+line 934, second occurrence line 937
+
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/gpu/drm/ast/ast_mode.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/ast/ast_mode.c b/drivers/gpu/drm/ast/ast_mode.c
+index d2ab81f9c498..7062bcd78740 100644
+--- a/drivers/gpu/drm/ast/ast_mode.c
++++ b/drivers/gpu/drm/ast/ast_mode.c
+@@ -931,7 +931,6 @@ static void ast_crtc_atomic_destroy_state(struct drm_crtc *crtc,
+ 
+ static const struct drm_crtc_funcs ast_crtc_funcs = {
+ 	.reset = ast_crtc_reset,
+-	.set_config = drm_crtc_helper_set_config,
+ 	.gamma_set = drm_atomic_helper_legacy_gamma_set,
+ 	.destroy = ast_crtc_destroy,
+ 	.set_config = drm_atomic_helper_set_config,
+-- 
+2.21.1
+
