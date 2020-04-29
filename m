@@ -2,879 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063451BE47F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5993B1BE484
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726580AbgD2RAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 13:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726558AbgD2RAA (ORCPT
+        id S1727068AbgD2RAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 13:00:45 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:45246 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726556AbgD2RAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 13:00:00 -0400
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D75DC035493
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 10:00:00 -0700 (PDT)
-Received: by mail-yb1-xb41.google.com with SMTP id w7so1655193ybq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 10:00:00 -0700 (PDT)
+        Wed, 29 Apr 2020 13:00:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8nvKfWdd8YWPNmRiqxCRvzWQ72sEO+aeisGAHFlkaUk=;
-        b=ZtaelN+3L/8INewUzYH6hsAir3UsOmoRkdKV4INkVaDj0twrRUI/Q+sqNEJrut1VBg
-         OqgiwwFqGA82fOLiX3W3A/DzzTEk1mB4k7hyLPlKB0yogW1UlyVj/IsrjZg9IoZXIIYc
-         nz6A63P+IV4E1hiVmcmkvpKwlCeUg02nefiQIHl/v1WhZ+IDSi9nsrNeQh0DoMEIFLjU
-         xEP7um0qmSQH4RxOamzrykB6kELYsjmYuqoOY8lDH3/BLjKF4IGpZtmrClu7yirdQZnG
-         qoeVo7LvmYaiQWIdd5NDLN/9DiHGdfOsGei/Fcmytop0B5qgTlQlu3ojGv1mJ5zcs87S
-         RtVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8nvKfWdd8YWPNmRiqxCRvzWQ72sEO+aeisGAHFlkaUk=;
-        b=e6Crjj7ngFnT5uEsO5oOYxDzT2buoE4ArdxpgAVVZj2hx01Ii39ztHlzoMg5PTESSq
-         HStSShSOwsU0WZHwUAt9ezpz2v1JQhcTzMq6MbvaKdaGPbSadEKJ6mWE+lpvek4g2tBj
-         GtN0qDXH9Y2lVWuyYz7J95RhzRHm8oNda+2RaiYQxtuedAYyjv1zZQk7eSPlG4665nla
-         yDU/8RwBW+fUU2n2bLowpeQxBFdVV0edz07X+4nYeP+vDiD/Vrp69du0Y+CJACmFT2sD
-         pxprZSiWnkrJ7TyfCRkKwpenPpBXib7/YKST+p8z20YKCbLA6FNZCEb2dnrsekl50sIg
-         0UKA==
-X-Gm-Message-State: AGi0PuY8SKTpfFWcAiCX0nrWStFGiPMxc4auIoleU5MkPENcfbTC/FA+
-        VCrhTo3wCPe4EC0KDU2p4adSSAbH80J+Ckr7g0HRJA==
-X-Google-Smtp-Source: APiQypJR9a5Mq8eQFB+AwifQ9SltmfrH11zsKqbBdUff7nqIEofG6kOJki3KucNlkErA6djbVD3HnThCZjYSPTAVROU=
-X-Received: by 2002:a05:6902:505:: with SMTP id x5mr55149827ybs.286.1588179598826;
- Wed, 29 Apr 2020 09:59:58 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1588179641; x=1619715641;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=BK8xUtQ22b42Y6/UbT+hrRysgOYWfyLPo8r/GaUjGi0=;
+  b=azetfcp5XVCSAbAf1pcYNdeQW0+AgbEe/6ITwrWmRQdPf2dkRoJW3XzR
+   /NPIXw/NHWR8SQxsDr+JV7CSaUTMrLq2XMhM0LWRZckJ0UZfx27cKDJdK
+   5Uali+M1NerZve+7jTGK0oPCSDsBziRrDuMly9EtBWDkLoIZzmLdkXUPW
+   c=;
+IronPort-SDR: 4cCPTeHUmtNmeSpcJzkCyEQf/VGiZsm7JFVkTWrES8L14sv1mAyDN+OaYU+l0g4/ZPRXASlsCD
+ EuC6fMyCRwfA==
+X-IronPort-AV: E=Sophos;i="5.73,332,1583193600"; 
+   d="scan'208";a="31930054"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-81e76b79.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 29 Apr 2020 17:00:40 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-81e76b79.us-west-2.amazon.com (Postfix) with ESMTPS id A3CA9A1987;
+        Wed, 29 Apr 2020 17:00:39 +0000 (UTC)
+Received: from EX13D16EUB001.ant.amazon.com (10.43.166.28) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 29 Apr 2020 17:00:39 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.200) by
+ EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 29 Apr 2020 17:00:31 +0000
+Subject: Re: [PATCH v1 05/15] nitro_enclaves: Handle PCI device command
+ requests
+To:     Liran Alon <liran.alon@oracle.com>, <linux-kernel@vger.kernel.org>
+CC:     Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200421184150.68011-1-andraprs@amazon.com>
+ <20200421184150.68011-6-andraprs@amazon.com>
+ <39060271-279b-546b-05a6-c5b2fd7ff5d0@oracle.com>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <7c3ba71e-f8c1-bf18-f88b-df2c4da3b69e@amazon.com>
+Date:   Wed, 29 Apr 2020 20:00:24 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200401184913.63446-1-irogers@google.com> <20200429144912.GB30487@kernel.org>
-In-Reply-To: <20200429144912.GB30487@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 29 Apr 2020 09:59:47 -0700
-Message-ID: <CAP-5=fWsDALy2345=tCNVTFKYNOyGbuXDhm_KKHWWuemBjXAfQ@mail.gmail.com>
-Subject: Re: [PATCH v6] perf tools: add support for libpfm4
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Igor Lubashev <ilubashe@akamai.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jiwei Sun <jiwei.sun@windriver.com>,
-        yuzhoujian <yuzhoujian@didichuxing.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <39060271-279b-546b-05a6-c5b2fd7ff5d0@oracle.com>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.200]
+X-ClientProxiedBy: EX13D22UWC002.ant.amazon.com (10.43.162.29) To
+ EX13D16EUB001.ant.amazon.com (10.43.166.28)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 7:49 AM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Em Wed, Apr 01, 2020 at 11:49:13AM -0700, Ian Rogers escreveu:
-> > From: Stephane Eranian <eranian@google.com>
-> >
-> > This patch links perf with the libpfm4 library if it is available and
-> > NO_LIBPFM4 isn't passed to the build. The libpfm4 library contains hardware
->
-> Can we make this a explicit decision instead, i.e. for it to be linked
-> we would need to have its development files installed and -DLIBPFM4,
-> like we have for CORESIGHT?
->
->   $ grep CORESIGHT tools/perf/Makefile.perf
->   # Define CORESIGHT if you DO WANT support for CoreSight trace decoding.
->   $
+CgpPbiAyNS8wNC8yMDIwIDE3OjUyLCBMaXJhbiBBbG9uIHdyb3RlOgo+Cj4gT24gMjEvMDQvMjAy
+MCAyMTo0MSwgQW5kcmEgUGFyYXNjaGl2IHdyb3RlOgo+PiBUaGUgTml0cm8gRW5jbGF2ZXMgUENJ
+IGRldmljZSBleHBvc2VzIGEgTU1JTyBzcGFjZSB0aGF0IHRoaXMgZHJpdmVyCj4+IHVzZXMgdG8g
+c3VibWl0IGNvbW1hbmQgcmVxdWVzdHMgYW5kIHRvIHJlY2VpdmUgY29tbWFuZCByZXBsaWVzIGUu
+Zy4gZm9yCj4+IGVuY2xhdmUgY3JlYXRpb24gLyB0ZXJtaW5hdGlvbiBvciBzZXR0aW5nIGVuY2xh
+dmUgcmVzb3VyY2VzLgo+Pgo+PiBBZGQgbG9naWMgZm9yIGhhbmRsaW5nIFBDSSBkZXZpY2UgY29t
+bWFuZCByZXF1ZXN0cyBiYXNlZCBvbiB0aGUgZ2l2ZW4KPj4gY29tbWFuZCB0eXBlLgo+Pgo+PiBS
+ZWdpc3RlciBhbiBNU0ktWCBpbnRlcnJ1cHQgdmVjdG9yIGZvciBjb21tYW5kIHJlcGx5IG5vdGlm
+aWNhdGlvbnMgdG8KPj4gaGFuZGxlIHRoaXMgdHlwZSBvZiBjb21tdW5pY2F0aW9uIGV2ZW50cy4K
+Pj4KPj4gU2lnbmVkLW9mZi1ieTogQWxleGFuZHJ1LUNhdGFsaW4gVmFzaWxlIDxsZXhudkBhbWF6
+b24uY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBBbmRyYSBQYXJhc2NoaXYgPGFuZHJhcHJzQGFtYXpv
+bi5jb20+Cj4+IC0tLQo+PiDCoCAuLi4vdmlydC9hbWF6b24vbml0cm9fZW5jbGF2ZXMvbmVfcGNp
+X2Rldi5jwqDCoCB8IDI2NCArKysrKysrKysrKysrKysrKysKPj4gwqAgMSBmaWxlIGNoYW5nZWQs
+IDI2NCBpbnNlcnRpb25zKCspCj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpcnQvYW1hem9u
+L25pdHJvX2VuY2xhdmVzL25lX3BjaV9kZXYuYyAKPj4gYi9kcml2ZXJzL3ZpcnQvYW1hem9uL25p
+dHJvX2VuY2xhdmVzL25lX3BjaV9kZXYuYwo+PiBpbmRleCA4ZmJlZTk1ZWEyOTEuLjc0NTNkMTI5
+Njg5YSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy92aXJ0L2FtYXpvbi9uaXRyb19lbmNsYXZlcy9u
+ZV9wY2lfZGV2LmMKPj4gKysrIGIvZHJpdmVycy92aXJ0L2FtYXpvbi9uaXRyb19lbmNsYXZlcy9u
+ZV9wY2lfZGV2LmMKPj4gQEAgLTQwLDYgKzQwLDI1MSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHBj
+aV9kZXZpY2VfaWQgbmVfcGNpX2lkc1tdID0gewo+PiDCoCDCoCBNT0RVTEVfREVWSUNFX1RBQkxF
+KHBjaSwgbmVfcGNpX2lkcyk7Cj4+IMKgICsvKioKPj4gKyAqIG5lX3N1Ym1pdF9yZXF1ZXN0IC0g
+U3VibWl0IGNvbW1hbmQgcmVxdWVzdCB0byB0aGUgUENJIGRldmljZSAKPj4gYmFzZWQgb24gdGhl
+Cj4+ICsgKiBjb21tYW5kIHR5cGUuCj4+ICsgKgo+PiArICogVGhpcyBmdW5jdGlvbiBnZXRzIGNh
+bGxlZCB3aXRoIHRoZSBuZV9wY2lfZGV2IG11dGV4IGhlbGQuCj4+ICsgKgo+PiArICogQHBkZXY6
+IFBDSSBkZXZpY2UgdG8gc2VuZCB0aGUgY29tbWFuZCB0by4KPj4gKyAqIEBjbWRfdHlwZTogY29t
+bWFuZCB0eXBlIG9mIHRoZSByZXF1ZXN0IHNlbnQgdG8gdGhlIFBDSSBkZXZpY2UuCj4+ICsgKiBA
+Y21kX3JlcXVlc3Q6IGNvbW1hbmQgcmVxdWVzdCBwYXlsb2FkLgo+PiArICogQGNtZF9yZXF1ZXN0
+X3NpemU6IHNpemUgb2YgdGhlIGNvbW1hbmQgcmVxdWVzdCBwYXlsb2FkLgo+PiArICoKPj4gKyAq
+IEByZXR1cm5zOiAwIG9uIHN1Y2Nlc3MsIG5lZ2F0aXZlIHJldHVybiB2YWx1ZSBvbiBmYWlsdXJl
+Lgo+PiArICovCj4+ICtzdGF0aWMgaW50IG5lX3N1Ym1pdF9yZXF1ZXN0KHN0cnVjdCBwY2lfZGV2
+ICpwZGV2LAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZW51bSBuZV9wY2lf
+ZGV2X2NtZF90eXBlIGNtZF90eXBlLAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgdm9pZCAqY21kX3JlcXVlc3QsIHNpemVfdCBjbWRfcmVxdWVzdF9zaXplKQo+PiArewo+PiAr
+wqDCoMKgIHN0cnVjdCBuZV9wY2lfZGV2ICpuZV9wY2lfZGV2ID0gTlVMTDsKPiBUaGVzZSBsb2Nh
+bCB2YXJzIGFyZSB1bm5lY2Vzc2FyaWx5IGluaXRpYWxpemVkLgoKSSB3b3VsZCBrZWVwIHRoaXMg
+aW5pdGlhbGl6ZWQgb3ZlcmFsbC4KCj4+ICsKPj4gK8KgwqDCoCBCVUdfT04oIXBkZXYpOwo+PiAr
+Cj4+ICvCoMKgwqAgbmVfcGNpX2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPj4gK8KgwqDC
+oCBCVUdfT04oIW5lX3BjaV9kZXYpOwo+PiArwqDCoMKgIEJVR19PTighbmVfcGNpX2Rldi0+aW9t
+ZW1fYmFzZSk7Cj4gWW91IHNob3VsZCByZW1vdmUgdGhlc2UgZGVmZW5zaXZlIEJVR19PTigpIGNh
+bGxzLgoKRG9uZS4KCj4+ICsKPj4gK8KgwqDCoCBpZiAoV0FSTl9PTihjbWRfdHlwZSA8PSBJTlZB
+TElEX0NNRCB8fCBjbWRfdHlwZSA+PSBNQVhfQ01EKSkgewo+PiArwqDCoMKgwqDCoMKgwqAgZGV2
+X2Vycl9yYXRlbGltaXRlZCgmcGRldi0+ZGV2LCAiSW52YWxpZCBjbWQgdHlwZT0lZFxuIiwKPj4g
+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNtZF90eXBlKTsKPj4gKwo+
+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1FSU5WQUw7Cj4+ICvCoMKgwqAgfQo+PiArCj4+ICvC
+oMKgwqAgaWYgKFdBUk5fT04oIWNtZF9yZXF1ZXN0KSkKPj4gK8KgwqDCoMKgwqDCoMKgIHJldHVy
+biAtRUlOVkFMOwo+PiArCj4+ICvCoMKgwqAgaWYgKFdBUk5fT04oY21kX3JlcXVlc3Rfc2l6ZSA+
+IE5FX1NFTkRfREFUQV9TSVpFKSkgewo+PiArwqDCoMKgwqDCoMKgwqAgZGV2X2Vycl9yYXRlbGlt
+aXRlZCgmcGRldi0+ZGV2LAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgIkludmFsaWQgcmVxIHNpemU9JWxkIGZvciBjbWQgdHlwZT0lZFxuIiwKPj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNtZF9yZXF1ZXN0X3NpemUsIGNtZF90eXBl
+KTsKPj4gKwo+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1FSU5WQUw7Cj4+ICvCoMKgwqAgfQo+
+IEl0IGRvZXNuJ3QgbWFrZSBzZW5zZSB0byBoYXZlIFdBUk5fT04oKSBwcmludCBlcnJvciB0byBk
+bWVzZyBvbiBldmVyeSAKPiBldmFsdWF0aW9uIHRvIHRydWUsCj4gdG9nZXRoZXIgd2l0aCB1c2lu
+ZyBkZXZfZXJyX3JhdGVsaW1pdGVkKCkgd2hpY2ggYXR0ZW1wdHMgdG8gcmF0ZS1saW1pdCAKPiBw
+cmludHMuCj4KPiBBbnl3YXksIHRoZXNlIGNvbmRpdGlvbnMgd2VyZSBhbHJlYWR5IGNoZWNrZWQg
+YnkgbmVfZG9fcmVxdWVzdCgpLiBXaHkgCj4gYWxzbyBjaGVjayB0aGVtIGhlcmU/CgpVcGRhdGVk
+IHRvIG5vdCB1c2UgV0FSTl9PTi4gUmlnaHQsIHRoZXkgd2VyZSBjaGVja2VkIGJlZm9yZSwgYnV0
+IEkga2VwdCAKdGhlbSBoZXJlIGp1c3QgZm9yIGNoZWNraW5nIHRoZSBwYXJhbWV0ZXJzLgoKPgo+
+PiArCj4+ICvCoMKgwqAgbWVtY3B5X3RvaW8obmVfcGNpX2Rldi0+aW9tZW1fYmFzZSArIE5FX1NF
+TkRfREFUQSwgY21kX3JlcXVlc3QsCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNtZF9yZXF1
+ZXN0X3NpemUpOwo+PiArCj4+ICvCoMKgwqAgaW93cml0ZTMyKGNtZF90eXBlLCBuZV9wY2lfZGV2
+LT5pb21lbV9iYXNlICsgTkVfQ09NTUFORCk7Cj4+ICsKPj4gK8KgwqDCoCByZXR1cm4gMDsKPj4g
+K30KPj4gKwo+PiArLyoqCj4+ICsgKiBuZV9yZXRyaWV2ZV9yZXBseSAtIFJldHJpZXZlIHJlcGx5
+IGZyb20gdGhlIFBDSSBkZXZpY2UuCj4+ICsgKgo+PiArICogVGhpcyBmdW5jdGlvbiBnZXRzIGNh
+bGxlZCB3aXRoIHRoZSBuZV9wY2lfZGV2IG11dGV4IGhlbGQuCj4+ICsgKgo+PiArICogQHBkZXY6
+IFBDSSBkZXZpY2UgdG8gcmVjZWl2ZSB0aGUgcmVwbHkgZnJvbS4KPj4gKyAqIEBjbWRfcmVwbHk6
+IGNvbW1hbmQgcmVwbHkgcGF5bG9hZC4KPj4gKyAqIEBjbWRfcmVwbHlfc2l6ZTogc2l6ZSBvZiB0
+aGUgY29tbWFuZCByZXBseSBwYXlsb2FkLgo+PiArICoKPj4gKyAqIEByZXR1cm5zOiAwIG9uIHN1
+Y2Nlc3MsIG5lZ2F0aXZlIHJldHVybiB2YWx1ZSBvbiBmYWlsdXJlLgo+PiArICovCj4+ICtzdGF0
+aWMgaW50IG5lX3JldHJpZXZlX3JlcGx5KHN0cnVjdCBwY2lfZGV2ICpwZGV2LAo+PiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IG5lX3BjaV9kZXZfY21kX3JlcGx5ICpj
+bWRfcmVwbHksCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzaXplX3QgY21k
+X3JlcGx5X3NpemUpCj4+ICt7Cj4+ICvCoMKgwqAgc3RydWN0IG5lX3BjaV9kZXYgKm5lX3BjaV9k
+ZXYgPSBOVUxMOwo+IFRoZXNlIGxvY2FsIHZhcnMgYXJlIHVubmVjZXNzYXJpbHkgaW5pdGlhbGl6
+ZWQuCj4+ICsKPj4gK8KgwqDCoCBCVUdfT04oIXBkZXYpOwo+PiArCj4+ICvCoMKgwqAgbmVfcGNp
+X2RldiA9IHBjaV9nZXRfZHJ2ZGF0YShwZGV2KTsKPj4gK8KgwqDCoCBCVUdfT04oIW5lX3BjaV9k
+ZXYpOwo+PiArwqDCoMKgIEJVR19PTighbmVfcGNpX2Rldi0+aW9tZW1fYmFzZSk7Cj4gWW91IHNo
+b3VsZCByZW1vdmUgdGhlc2UgZGVmZW5zaXZlIEJVR19PTigpIGNhbGxzLgo+PiArCj4+ICvCoMKg
+wqAgaWYgKFdBUk5fT04oIWNtZF9yZXBseSkpCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVJ
+TlZBTDsKPj4gKwo+PiArwqDCoMKgIGlmIChXQVJOX09OKGNtZF9yZXBseV9zaXplID4gTkVfUkVD
+Vl9EQVRBX1NJWkUpKSB7Cj4+ICvCoMKgwqDCoMKgwqDCoCBkZXZfZXJyX3JhdGVsaW1pdGVkKCZw
+ZGV2LT5kZXYsICJJbnZhbGlkIHJlcGx5IHNpemU9JWxkXG4iLAo+PiArwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY21kX3JlcGx5X3NpemUpOwo+PiArCj4+ICvCoMKgwqDC
+oMKgwqDCoCByZXR1cm4gLUVJTlZBTDsKPj4gK8KgwqDCoCB9Cj4gSXQgZG9lc24ndCBtYWtlIHNl
+bnNlIHRvIGhhdmUgV0FSTl9PTigpIHByaW50IGVycm9yIHRvIGRtZXNnIG9uIGV2ZXJ5IAo+IGV2
+YWx1YXRpb24gdG8gdHJ1ZSwKPiB0b2dldGhlciB3aXRoIHVzaW5nIGRldl9lcnJfcmF0ZWxpbWl0
+ZWQoKSB3aGljaCBhdHRlbXB0cyB0byByYXRlLWxpbWl0IAo+IHByaW50cy4KPgo+IEFueXdheSwg
+dGhlc2UgY29uZGl0aW9ucyB3ZXJlIGFscmVhZHkgY2hlY2tlZCBieSBuZV9kb19yZXF1ZXN0KCku
+IFdoeSAKPiBhbHNvIGNoZWNrIHRoZW0gaGVyZT8KPgo+PiArCj4+ICvCoMKgwqAgbWVtY3B5X2Zy
+b21pbyhjbWRfcmVwbHksIG5lX3BjaV9kZXYtPmlvbWVtX2Jhc2UgKyBORV9SRUNWX0RBVEEsCj4+
+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjbWRfcmVwbHlfc2l6ZSk7Cj4+ICsKPj4gK8Kg
+wqDCoCByZXR1cm4gMDsKPj4gK30KPj4gKwo+PiArLyoqCj4+ICsgKiBuZV93YWl0X2Zvcl9yZXBs
+eSAtIFdhaXQgZm9yIGEgcmVwbHkgb2YgYSBQQ0kgY29tbWFuZC4KPj4gKyAqCj4+ICsgKiBUaGlz
+IGZ1bmN0aW9uIGdldHMgY2FsbGVkIHdpdGggdGhlIG5lX3BjaV9kZXYgbXV0ZXggaGVsZC4KPj4g
+KyAqCj4+ICsgKiBAcGRldjogUENJIGRldmljZSBmb3Igd2hpY2ggYSByZXBseSBpcyB3YWl0ZWQu
+Cj4+ICsgKgo+PiArICogQHJldHVybnM6IDAgb24gc3VjY2VzcywgbmVnYXRpdmUgcmV0dXJuIHZh
+bHVlIG9uIGZhaWx1cmUuCj4+ICsgKi8KPj4gK3N0YXRpYyBpbnQgbmVfd2FpdF9mb3JfcmVwbHko
+c3RydWN0IHBjaV9kZXYgKnBkZXYpCj4+ICt7Cj4+ICvCoMKgwqAgc3RydWN0IG5lX3BjaV9kZXYg
+Km5lX3BjaV9kZXYgPSBOVUxMOwo+PiArwqDCoMKgIGludCByYyA9IC1FSU5WQUw7Cj4gVGhlc2Ug
+bG9jYWwgdmFycyBhcmUgdW5uZWNlc3NhcmlseSBpbml0aWFsaXplZC4KPj4gKwo+PiArwqDCoMKg
+IEJVR19PTighcGRldik7Cj4+ICsKPj4gK8KgwqDCoCBuZV9wY2lfZGV2ID0gcGNpX2dldF9kcnZk
+YXRhKHBkZXYpOwo+PiArwqDCoMKgIEJVR19PTighbmVfcGNpX2Rldik7Cj4gWW91IHNob3VsZCBy
+ZW1vdmUgdGhlc2UgZGVmZW5zaXZlIEJVR19PTigpIGNhbGxzLgo+PiArCj4+ICvCoMKgwqAgLyoK
+Pj4gK8KgwqDCoMKgICogVE9ETzogVXBkYXRlIHRvIF9pbnRlcnJ1cHRpYmxlIGFuZCBoYW5kbGUg
+aW50ZXJydXB0ZWQgd2FpdCBldmVudAo+PiArwqDCoMKgwqAgKiBlLmcuIC1FUkVTVEFSVFNZUywg
+aW5jb21pbmcgc2lnbmFscyArIGFkZCAvIHVwZGF0ZSB0aW1lb3V0Lgo+PiArwqDCoMKgwqAgKi8K
+Pj4gK8KgwqDCoCByYyA9IHdhaXRfZXZlbnRfdGltZW91dChuZV9wY2lfZGV2LT5jbWRfcmVwbHlf
+d2FpdF9xLAo+PiArIGF0b21pY19yZWFkKCZuZV9wY2lfZGV2LT5jbWRfcmVwbHlfYXZhaWwpICE9
+IDAsCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbXNlY3NfdG9famlmZmllcyhE
+RUZBVUxUX1RJTUVPVVRfTVNFQ1MpKTsKPj4gK8KgwqDCoCBpZiAoIXJjKSB7Cj4+ICvCoMKgwqDC
+oMKgwqDCoCBwcl9lcnIoIldhaXQgZXZlbnQgdGltZWQgb3V0IHdoZW4gd2FpdGluZyBmb3IgUENJ
+IGNtZCAKPj4gcmVwbHlcbiIpOwo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gLUVUSU1F
+RE9VVDsKPj4gK8KgwqDCoCB9Cj4+ICsKPj4gK8KgwqDCoCByZXR1cm4gMDsKPj4gK30KPj4gKwo+
+PiAraW50IG5lX2RvX3JlcXVlc3Qoc3RydWN0IHBjaV9kZXYgKnBkZXYsIGVudW0gbmVfcGNpX2Rl
+dl9jbWRfdHlwZSAKPj4gY21kX3R5cGUsCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqAgdm9pZCAqY21k
+X3JlcXVlc3QsIHNpemVfdCBjbWRfcmVxdWVzdF9zaXplLAo+PiArwqDCoMKgwqDCoMKgwqDCoMKg
+IHN0cnVjdCBuZV9wY2lfZGV2X2NtZF9yZXBseSAqY21kX3JlcGx5LCBzaXplX3QgCj4+IGNtZF9y
+ZXBseV9zaXplKQo+IFRoaXMgZnVuY3Rpb24gaXMgaW50cm9kdWNlZCBpbiB0aGlzIHBhdGNoIGJ1
+dCBpdCBpcyBub3QgdXNlZC4KPiBJdCB3aWxsIGNhdXNlIGNvbXBpbGluZyB0aGUga2VybmVsIG9u
+IHRoaXMgY29tbWl0IHRvIHJhaXNlIAo+IHdhcm5pbmdzL2Vycm9ycyBvbiB1bnVzZWQgZnVuY3Rp
+b25zLgo+IFlvdSBzaG91bGQgaW50cm9kdWNlIGZ1bmN0aW9ucyBvbiB0aGUgcGF0Y2ggdGhhdCB0
+aGV5IGFyZSB1c2VkLgoKVGhpcyBmdW5jdGlvbiBpcyBleHRlcm5hbGx5IGF2YWlsYWJsZSwgdmlh
+IHRoZSBuZV9wY2lfZGV2IGhlYWRlciwgc28gaXQgCnNob3VsZG4ndCByYWlzZSB3YXJuaW5ncy4K
+Cj4+ICt7Cj4+ICvCoMKgwqAgc3RydWN0IG5lX3BjaV9kZXYgKm5lX3BjaV9kZXYgPSBOVUxMOwo+
+PiArwqDCoMKgIGludCByYyA9IC1FSU5WQUw7Cj4gVGhlc2UgbG9jYWwgdmFycyBhcmUgdW5uZWNl
+c3NhcmlseSBpbml0aWFsaXplZC4KPj4gKwo+PiArwqDCoMKgIEJVR19PTighcGRldik7Cj4+ICsK
+Pj4gK8KgwqDCoCBuZV9wY2lfZGV2ID0gcGNpX2dldF9kcnZkYXRhKHBkZXYpOwo+PiArwqDCoMKg
+IEJVR19PTighbmVfcGNpX2Rldik7Cj4+ICvCoMKgwqAgQlVHX09OKCFuZV9wY2lfZGV2LT5pb21l
+bV9iYXNlKTsKPiBZb3Ugc2hvdWxkIHJlbW92ZSB0aGVzZSBkZWZlbnNpdmUgQlVHX09OKCkgY2Fs
+bHMuCj4+ICsKPj4gK8KgwqDCoCBpZiAoV0FSTl9PTihjbWRfdHlwZSA8PSBJTlZBTElEX0NNRCB8
+fCBjbWRfdHlwZSA+PSBNQVhfQ01EKSkgewo+PiArwqDCoMKgwqDCoMKgwqAgZGV2X2Vycl9yYXRl
+bGltaXRlZCgmcGRldi0+ZGV2LCAiSW52YWxpZCBjbWQgdHlwZT0lZFxuIiwKPj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNtZF90eXBlKTsKPj4gKwo+PiArwqDCoMKg
+wqDCoMKgwqAgcmV0dXJuIC1FSU5WQUw7Cj4+ICvCoMKgwqAgfQo+PiArCj4+ICvCoMKgwqAgaWYg
+KFdBUk5fT04oIWNtZF9yZXF1ZXN0KSkKPj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiAtRUlOVkFM
+Owo+PiArCj4+ICvCoMKgwqAgaWYgKFdBUk5fT04oY21kX3JlcXVlc3Rfc2l6ZSA+IE5FX1NFTkRf
+REFUQV9TSVpFKSkgewo+PiArwqDCoMKgwqDCoMKgwqAgZGV2X2Vycl9yYXRlbGltaXRlZCgmcGRl
+di0+ZGV2LAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIkludmFs
+aWQgcmVxIHNpemU9JWxkIGZvciBjbWQgdHlwZT0lZFxuIiwKPj4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNtZF9yZXF1ZXN0X3NpemUsIGNtZF90eXBlKTsKPj4gKwo+
+PiArwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1FSU5WQUw7Cj4+ICvCoMKgwqAgfQo+PiArCj4+ICvC
+oMKgwqAgaWYgKFdBUk5fT04oIWNtZF9yZXBseSkpCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4g
+LUVJTlZBTDsKPj4gKwo+PiArwqDCoMKgIGlmIChXQVJOX09OKGNtZF9yZXBseV9zaXplID4gTkVf
+UkVDVl9EQVRBX1NJWkUpKSB7Cj4+ICvCoMKgwqDCoMKgwqDCoCBkZXZfZXJyX3JhdGVsaW1pdGVk
+KCZwZGV2LT5kZXYsICJJbnZhbGlkIHJlcGx5IHNpemU9JWxkXG4iLAo+PiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY21kX3JlcGx5X3NpemUpOwo+PiArCj4+ICvCoMKg
+wqDCoMKgwqDCoCByZXR1cm4gLUVJTlZBTDsKPj4gK8KgwqDCoCB9Cj4gSSB3b3VsZCBjb25zaWRl
+ciBzcGVjaWZ5aW5nIGFsbCB0aGVzZSBjb25kaXRpb25zIGluIGZ1bmN0aW9uIAo+IGRvY3VtZW50
+YXRpb24gaW5zdGVhZCBvZiBlbmZvcmNpbmcgdGhlbSBhdCBydW50aW1lIG9uIGV2ZXJ5IGZ1bmN0
+aW9uIAo+IGNhbGwuCgpJIHRoaW5rIHRoYXQgYm90aCBQQ0kgZGV2IGxvZ2ljIGNoZWNrcyBhbmQg
+ZG9jdW1lbnRhdGlvbiB3b3VsZCBiZSAKaGVscGZ1bCBpbiB0aGlzIGNhc2UuIDopCgo+PiArCj4+
+ICvCoMKgwqAgLyoKPj4gK8KgwqDCoMKgICogVXNlIHRoaXMgbXV0ZXggc28gdGhhdCB0aGUgUENJ
+IGRldmljZSBoYW5kbGVzIG9uZSBjb21tYW5kIAo+PiByZXF1ZXN0IGF0Cj4+ICvCoMKgwqDCoCAq
+IGEgdGltZS4KPj4gK8KgwqDCoMKgICovCj4+ICvCoMKgwqAgbXV0ZXhfbG9jaygmbmVfcGNpX2Rl
+di0+cGNpX2Rldl9tdXRleCk7Cj4+ICsKPj4gK8KgwqDCoCBhdG9taWNfc2V0KCZuZV9wY2lfZGV2
+LT5jbWRfcmVwbHlfYXZhaWwsIDApOwo+PiArCj4+ICvCoMKgwqAgcmMgPSBuZV9zdWJtaXRfcmVx
+dWVzdChwZGV2LCBjbWRfdHlwZSwgY21kX3JlcXVlc3QsIAo+PiBjbWRfcmVxdWVzdF9zaXplKTsK
+Pj4gK8KgwqDCoCBpZiAocmMgPCAwKSB7Cj4+ICvCoMKgwqDCoMKgwqDCoCBkZXZfZXJyX3JhdGVs
+aW1pdGVkKCZwZGV2LT5kZXYsCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCAiRmFpbHVyZSBpbiBzdWJtaXQgY21kIHJlcXVlc3QgW3JjPSVkXVxuIiwKPj4gK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJjKTsKPj4gKwo+PiArwqDCoMKgwqDC
+oMKgwqAgbXV0ZXhfdW5sb2NrKCZuZV9wY2lfZGV2LT5wY2lfZGV2X211dGV4KTsKPj4gKwo+PiAr
+wqDCoMKgwqDCoMKgwqAgcmV0dXJuIHJjOwo+IENvbnNpZGVyIGxlYXZpbmcgZnVuY3Rpb24gd2l0
+aCBhIGdvdG8gdG8gYSBsYWJlbCB0aGF0IHVubG9ja3MgbXV0ZXggCj4gYW5kIHRoZW4gcmV0dXJu
+LgoKRG9uZSwgSSBhZGRlZCBhIGdvdG8gZm9yIG11dGV4IHVubG9jayBhbmQgcmV0dXJuLiBJbiB0
+aGlzIHBhdGNoIGFuZCBpbiBhIApmb2xsb3dpbmcgb25lLCB0aGF0IHdhcyBoYXZpbmcgYSBzaW1p
+bGFyIGNsZWFudXAgc3RydWN0dXJlLgoKPj4gK8KgwqDCoCB9Cj4+ICsKPj4gK8KgwqDCoCByYyA9
+IG5lX3dhaXRfZm9yX3JlcGx5KHBkZXYpOwo+PiArwqDCoMKgIGlmIChyYyA8IDApIHsKPj4gK8Kg
+wqDCoMKgwqDCoMKgIGRldl9lcnJfcmF0ZWxpbWl0ZWQoJnBkZXYtPmRldiwKPj4gK8KgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJGYWlsdXJlIGluIHdhaXQgY21kIHJlcGx5
+IFtyYz0lZF1cbiIsCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBy
+Yyk7Cj4+ICsKPj4gK8KgwqDCoMKgwqDCoMKgIG11dGV4X3VubG9jaygmbmVfcGNpX2Rldi0+cGNp
+X2Rldl9tdXRleCk7Cj4+ICsKPj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiByYzsKPj4gK8KgwqDC
+oCB9Cj4+ICsKPj4gK8KgwqDCoCByYyA9IG5lX3JldHJpZXZlX3JlcGx5KHBkZXYsIGNtZF9yZXBs
+eSwgY21kX3JlcGx5X3NpemUpOwo+PiArwqDCoMKgIGlmIChyYyA8IDApIHsKPj4gK8KgwqDCoMKg
+wqDCoMKgIGRldl9lcnJfcmF0ZWxpbWl0ZWQoJnBkZXYtPmRldiwKPj4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJGYWlsdXJlIGluIHJldHJpZXZlIGNtZCByZXBseSBb
+cmM9JWRdXG4iLAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmMp
+Owo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoCBtdXRleF91bmxvY2soJm5lX3BjaV9kZXYtPnBjaV9k
+ZXZfbXV0ZXgpOwo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gcmM7Cj4+ICvCoMKgwqAg
+fQo+PiArCj4+ICvCoMKgwqAgYXRvbWljX3NldCgmbmVfcGNpX2Rldi0+Y21kX3JlcGx5X2F2YWls
+LCAwKTsKPj4gKwo+PiArwqDCoMKgIGlmIChjbWRfcmVwbHktPnJjIDwgMCkgewo+PiArwqDCoMKg
+wqDCoMKgwqAgZGV2X2Vycl9yYXRlbGltaXRlZCgmcGRldi0+ZGV2LAo+PiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIkZhaWx1cmUgaW4gY21kIHByb2Nlc3MgbG9naWMg
+W3JjPSVkXVxuIiwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNt
+ZF9yZXBseS0+cmMpOwo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoCBtdXRleF91bmxvY2soJm5lX3Bj
+aV9kZXYtPnBjaV9kZXZfbXV0ZXgpOwo+PiArCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1cm4gY21k
+X3JlcGx5LT5yYzsKPj4gK8KgwqDCoCB9Cj4+ICsKPj4gK8KgwqDCoCBtdXRleF91bmxvY2soJm5l
+X3BjaV9kZXYtPnBjaV9kZXZfbXV0ZXgpOwo+PiArCj4+ICvCoMKgwqAgcmV0dXJuIDA7Cj4+ICt9
+Cj4+ICsKPj4gKy8qKgo+PiArICogbmVfcmVwbHlfaGFuZGxlciAtIEludGVycnVwdCBoYW5kbGVy
+IGZvciByZXRyaWV2aW5nIGEgcmVwbHkgbWF0Y2hpbmcKPj4gKyAqIGEgcmVxdWVzdCBzZW50IHRv
+IHRoZSBQQ0kgZGV2aWNlIGZvciBlbmNsYXZlIGxpZmV0aW1lIG1hbmFnZW1lbnQuCj4+ICsgKgo+
+PiArICogQGlycTogcmVjZWl2ZWQgaW50ZXJydXB0IGZvciBhIHJlcGx5IHNlbnQgYnkgdGhlIFBD
+SSBkZXZpY2UuCj4+ICsgKiBAYXJnczogUENJIGRldmljZSBwcml2YXRlIGRhdGEgc3RydWN0dXJl
+Lgo+PiArICoKPj4gKyAqIEByZXR1cm5zOiBJUlFfSEFORExFRCBvbiBoYW5kbGVkIGludGVycnVw
+dCwgSVJRX05PTkUgb3RoZXJ3aXNlLgo+PiArICovCj4+ICtzdGF0aWMgaXJxcmV0dXJuX3QgbmVf
+cmVwbHlfaGFuZGxlcihpbnQgaXJxLCB2b2lkICphcmdzKQo+PiArewo+PiArwqDCoMKgIHN0cnVj
+dCBuZV9wY2lfZGV2ICpuZV9wY2lfZGV2ID0gKHN0cnVjdCBuZV9wY2lfZGV2ICopYXJnczsKPj4g
+Kwo+PiArwqDCoMKgIGF0b21pY19zZXQoJm5lX3BjaV9kZXYtPmNtZF9yZXBseV9hdmFpbCwgMSk7
+Cj4+ICsKPj4gK8KgwqDCoCAvKiBUT0RPOiBVcGRhdGUgdG8gX2ludGVycnVwdGlibGUuICovCj4+
+ICvCoMKgwqAgd2FrZV91cCgmbmVfcGNpX2Rldi0+Y21kX3JlcGx5X3dhaXRfcSk7Cj4+ICsKPj4g
+K8KgwqDCoCByZXR1cm4gSVJRX0hBTkRMRUQ7Cj4+ICt9Cj4+ICsKPj4gwqAgLyoqCj4+IMKgwqAg
+KiBuZV9zZXR1cF9tc2l4IC0gU2V0dXAgTVNJLVggdmVjdG9ycyBmb3IgdGhlIFBDSSBkZXZpY2Uu
+Cj4+IMKgwqAgKgo+PiBAQCAtNzUsOCArMzIwLDI1IEBAIHN0YXRpYyBpbnQgbmVfc2V0dXBfbXNp
+eChzdHJ1Y3QgcGNpX2RldiAqcGRldiwgCj4+IHN0cnVjdCBuZV9wY2lfZGV2ICpuZV9wY2lfZGV2
+KQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgZ290byBlcnJfYWxsb2NfaXJxX3ZlY3M7Cj4+IMKgwqDC
+oMKgwqAgfQo+PiDCoCArwqDCoMKgIC8qCj4+ICvCoMKgwqDCoCAqIFRoaXMgSVJRIGdldHMgdHJp
+Z2dlcmVkIGV2ZXJ5IHRpbWUgdGhlIFBDSSBkZXZpY2UgcmVzcG9uZHMgdG8gYQo+PiArwqDCoMKg
+wqAgKiBjb21tYW5kIHJlcXVlc3QuIFRoZSByZXBseSBpcyB0aGVuIHJldHJpZXZlZCwgcmVhZGlu
+ZyBmcm9tIAo+PiB0aGUgTU1JTwo+PiArwqDCoMKgwqAgKiBzcGFjZSBvZiB0aGUgUENJIGRldmlj
+ZS4KPj4gK8KgwqDCoMKgICovCj4+ICvCoMKgwqAgcmMgPSByZXF1ZXN0X2lycShwY2lfaXJxX3Zl
+Y3RvcihwZGV2LCBORV9WRUNfUkVQTFkpLAo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG5l
+X3JlcGx5X2hhbmRsZXIsIDAsICJlbmNsYXZlX2NtZCIsIG5lX3BjaV9kZXYpOwo+PiArwqDCoMKg
+IGlmIChyYyA8IDApIHsKPj4gK8KgwqDCoMKgwqDCoMKgIGRldl9lcnJfcmF0ZWxpbWl0ZWQoJnBk
+ZXYtPmRldiwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJGYWls
+dXJlIGluIGFsbG9jYXRpbmcgaXJxIHJlcGx5IFtyYz0lZF1cbiIsCj4+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByYyk7Cj4+ICsKPj4gK8KgwqDCoMKgwqDCoMKgIGdv
+dG8gZXJyX3JlcV9pcnFfcmVwbHk7Cj4+ICvCoMKgwqAgfQo+PiArCj4+IMKgwqDCoMKgwqAgcmV0
+dXJuIDA7Cj4+IMKgICtlcnJfcmVxX2lycV9yZXBseToKPj4gK8KgwqDCoCBwY2lfZnJlZV9pcnFf
+dmVjdG9ycyhwZGV2KTsKPj4gwqAgZXJyX2FsbG9jX2lycV92ZWNzOgo+PiDCoMKgwqDCoMKgIHJl
+dHVybiByYzsKPj4gwqAgfQo+PiBAQCAtMjMyLDYgKzQ5NCw3IEBAIHN0YXRpYyBpbnQgbmVfcHJv
+YmUoc3RydWN0IHBjaV9kZXYgKnBkZXYsIGNvbnN0IAo+PiBzdHJ1Y3QgcGNpX2RldmljZV9pZCAq
+aWQpCj4+IMKgIMKgIGVycl9uZV9wY2lfZGV2X2VuYWJsZToKPj4gwqAgZXJyX25lX3BjaV9kZXZf
+ZGlzYWJsZToKPj4gK8KgwqDCoCBmcmVlX2lycShwY2lfaXJxX3ZlY3RvcihwZGV2LCBORV9WRUNf
+UkVQTFkpLCBuZV9wY2lfZGV2KTsKPj4gwqDCoMKgwqDCoCBwY2lfZnJlZV9pcnFfdmVjdG9ycyhw
+ZGV2KTsKPiBJIHN1Z2dlc3QgdG8gaW50cm9kdWNlIGEgbmVfdGVhcmRvd25fbXNpeCgpIHV0aWxp
+dHkuIFRoYXQgaXMgYWltZWQgdG8gCj4gY2xlYW51cCBhZnRlciBuZV9zZXR1cF9tc2l4KCkuCgpJ
+IGFkZGVkIHRoaXMgZnVuY3Rpb25hbGl0eSBpbiBhIG5ldyBmdW5jdGlvbiwgdGhlbiBJIHVzZWQg
+aXQgZm9yIGNsZWFudXAgCmluIHRoaXMgZnVuY3Rpb24gYW5kIHRlYXJkb3duIGluIHBjaSByZW1v
+dmUgZnVuY3Rpb24uCgpUaGFuayB5b3UuCgpBbmRyYQoKPj4gwqAgZXJyX3NldHVwX21zaXg6Cj4+
+IMKgwqDCoMKgwqAgcGNpX2lvdW5tYXAocGRldiwgbmVfcGNpX2Rldi0+aW9tZW1fYmFzZSk7Cj4+
+IEBAIC0yNTUsNiArNTE4LDcgQEAgc3RhdGljIHZvaWQgbmVfcmVtb3ZlKHN0cnVjdCBwY2lfZGV2
+ICpwZGV2KQo+PiDCoCDCoMKgwqDCoMKgIHBjaV9zZXRfZHJ2ZGF0YShwZGV2LCBOVUxMKTsKPj4g
+wqAgK8KgwqDCoCBmcmVlX2lycShwY2lfaXJxX3ZlY3RvcihwZGV2LCBORV9WRUNfUkVQTFkpLCBu
+ZV9wY2lfZGV2KTsKPj4gwqDCoMKgwqDCoCBwY2lfZnJlZV9pcnFfdmVjdG9ycyhwZGV2KTsKPj4g
+wqAgwqDCoMKgwqDCoCBwY2lfaW91bm1hcChwZGV2LCBuZV9wY2lfZGV2LT5pb21lbV9iYXNlKTsK
+CgoKQW1hem9uIERldmVsb3BtZW50IENlbnRlciAoUm9tYW5pYSkgUy5SLkwuIHJlZ2lzdGVyZWQg
+b2ZmaWNlOiAyN0EgU2YuIExhemFyIFN0cmVldCwgVUJDNSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBD
+b3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVnaXN0ZXJlZCBpbiBSb21hbmlhLiBSZWdpc3RyYXRp
+b24gbnVtYmVyIEoyMi8yNjIxLzIwMDUuCg==
 
-
-Thanks Arnaldo, I'll do that.
-Ian
-
-> - Arnaldo
->
-> > event tables for all processors supported by perf_events. It is a helper
-> > library that helps convert from a symbolic event name to the event
-> > encoding required by the underlying kernel interface. This
-> > library is open-source and available from: http://perfmon2.sf.net.
-> >
-> > With this patch, it is possible to specify full hardware events
-> > by name. Hardware filters are also supported. Events must be
-> > specified via the --pfm-events and not -e option. Both options
-> > are active at the same time and it is possible to mix and match:
-> >
-> > $ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
-> >
-> > v6 is a rebase.
-> > v5 is a rebase.
-> > v4 is a rebase on git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
-> >    branch perf/core and re-adds the tools/build/feature/test-libpfm4.c
-> >    missed in v3.
-> > v3 is against acme/perf/core and removes a diagnostic warning.
-> > v2 of this patch makes the --pfm-events man page documentation
-> > conditional on libpfm4 behing configured. It tidies some of the
-> > documentation and adds the feature test missed in the v1 patch.
-> >
-> > Reviewed-By:Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/build/Makefile.feature             |   6 +-
-> >  tools/build/feature/Makefile             |   7 +-
-> >  tools/build/feature/test-libpfm4.c       |   8 +
-> >  tools/perf/Documentation/Makefile        |   4 +-
-> >  tools/perf/Documentation/perf-record.txt |  11 +
-> >  tools/perf/Documentation/perf-stat.txt   |  10 +
-> >  tools/perf/Documentation/perf-top.txt    |  11 +
-> >  tools/perf/Makefile.config               |  12 ++
-> >  tools/perf/Makefile.perf                 |   6 +-
-> >  tools/perf/builtin-list.c                |  16 ++
-> >  tools/perf/builtin-record.c              |  20 ++
-> >  tools/perf/builtin-stat.c                |  21 ++
-> >  tools/perf/builtin-top.c                 |  20 ++
-> >  tools/perf/util/evsel.c                  |   2 +-
-> >  tools/perf/util/evsel.h                  |   1 +
-> >  tools/perf/util/parse-events.c           | 246 +++++++++++++++++++++++
-> >  tools/perf/util/parse-events.h           |   5 +
-> >  tools/perf/util/pmu.c                    |  11 +
-> >  tools/perf/util/pmu.h                    |   1 +
-> >  19 files changed, 410 insertions(+), 8 deletions(-)
-> >  create mode 100644 tools/build/feature/test-libpfm4.c
-> >
-> > diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-> > index 574c2e0b9d20..08c6fe5aee2d 100644
-> > --- a/tools/build/Makefile.feature
-> > +++ b/tools/build/Makefile.feature
-> > @@ -72,7 +72,8 @@ FEATURE_TESTS_BASIC :=                  \
-> >          setns                                \
-> >          libaio                               \
-> >          libzstd                              \
-> > -        disassembler-four-args
-> > +        disassembler-four-args               \
-> > +        libpfm4
-> >
-> >  # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
-> >  # of all feature tests
-> > @@ -127,7 +128,8 @@ FEATURE_DISPLAY ?=              \
-> >           bpf                 \
-> >           libaio                      \
-> >           libzstd             \
-> > -         disassembler-four-args
-> > +         disassembler-four-args      \
-> > +         libpfm4
-> >
-> >  # Set FEATURE_CHECK_(C|LD)FLAGS-all for all FEATURE_TESTS features.
-> >  # If in the future we need per-feature checks/flags for features not
-> > diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-> > index 7ac0d8088565..573072d32545 100644
-> > --- a/tools/build/feature/Makefile
-> > +++ b/tools/build/feature/Makefile
-> > @@ -67,7 +67,9 @@ FILES=                                          \
-> >           test-llvm.bin                               \
-> >           test-llvm-version.bin                       \
-> >           test-libaio.bin                     \
-> > -         test-libzstd.bin
-> > +         test-libzstd.bin                    \
-> > +         test-libpfm4.bin
-> > +
-> >
-> >  FILES := $(addprefix $(OUTPUT),$(FILES))
-> >
-> > @@ -321,6 +323,9 @@ $(OUTPUT)test-libaio.bin:
-> >  $(OUTPUT)test-libzstd.bin:
-> >       $(BUILD) -lzstd
-> >
-> > +$(OUTPUT)test-libpfm4.bin:
-> > +     $(BUILD) -lpfm
-> > +
-> >  ###############################
-> >
-> >  clean:
-> > diff --git a/tools/build/feature/test-libpfm4.c b/tools/build/feature/test-libpfm4.c
-> > new file mode 100644
-> > index 000000000000..7f24df86cf09
-> > --- /dev/null
-> > +++ b/tools/build/feature/test-libpfm4.c
-> > @@ -0,0 +1,8 @@
-> > +#include <sys/types.h>
-> > +#include <perfmon/pfmlib.h>
-> > +
-> > +int main(void)
-> > +{
-> > +        pfm_initialize();
-> > +        return 0;
-> > +}
-> > diff --git a/tools/perf/Documentation/Makefile b/tools/perf/Documentation/Makefile
-> > index 31824d5269cc..6e54979c2124 100644
-> > --- a/tools/perf/Documentation/Makefile
-> > +++ b/tools/perf/Documentation/Makefile
-> > @@ -48,7 +48,7 @@ man5dir=$(mandir)/man5
-> >  man7dir=$(mandir)/man7
-> >
-> >  ASCIIDOC=asciidoc
-> > -ASCIIDOC_EXTRA = --unsafe -f asciidoc.conf
-> > +ASCIIDOC_EXTRA += --unsafe -f asciidoc.conf
-> >  ASCIIDOC_HTML = xhtml11
-> >  MANPAGE_XSL = manpage-normal.xsl
-> >  XMLTO_EXTRA =
-> > @@ -59,7 +59,7 @@ HTML_REF = origin/html
-> >
-> >  ifdef USE_ASCIIDOCTOR
-> >  ASCIIDOC = asciidoctor
-> > -ASCIIDOC_EXTRA = -a compat-mode
-> > +ASCIIDOC_EXTRA += -a compat-mode
-> >  ASCIIDOC_EXTRA += -I. -rasciidoctor-extensions
-> >  ASCIIDOC_EXTRA += -a mansource="perf" -a manmanual="perf Manual"
-> >  ASCIIDOC_HTML = xhtml5
-> > diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-> > index b3f3b3f1c161..ad2c41f595c2 100644
-> > --- a/tools/perf/Documentation/perf-record.txt
-> > +++ b/tools/perf/Documentation/perf-record.txt
-> > @@ -596,6 +596,17 @@ Make a copy of /proc/kcore and place it into a directory with the perf data file
-> >  Limit the sample data max size, <size> is expected to be a number with
-> >  appended unit character - B/K/M/G
-> >
-> > +ifdef::HAVE_LIBPFM[]
-> > +--pfm-events events::
-> > +Select a PMU event using libpfm4 syntax (see http://perfmon2.sf.net)
-> > +including support for event filters. For example '--pfm-events
-> > +inst_retired:any_p:u:c=1:i'. More than one event can be passed to the
-> > +option using the comma separator. Hardware events and generic hardware
-> > +events cannot be mixed together. The latter must be used with the -e
-> > +option. The -e option and this one can be mixed and matched.  Events
-> > +can be grouped using the {} notation.
-> > +endif::HAVE_LIBPFM[]
-> > +
-> >  SEE ALSO
-> >  --------
-> >  linkperf:perf-stat[1], linkperf:perf-list[1], linkperf:perf-intel-pt[1]
-> > diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
-> > index 4d56586b2fb9..536952ad592c 100644
-> > --- a/tools/perf/Documentation/perf-stat.txt
-> > +++ b/tools/perf/Documentation/perf-stat.txt
-> > @@ -71,6 +71,16 @@ report::
-> >  --tid=<tid>::
-> >          stat events on existing thread id (comma separated list)
-> >
-> > +ifdef::HAVE_LIBPFM[]
-> > +--pfm-events events::
-> > +Select a PMU event using libpfm4 syntax (see http://perfmon2.sf.net)
-> > +including support for event filters. For example '--pfm-events
-> > +inst_retired:any_p:u:c=1:i'. More than one event can be passed to the
-> > +option using the comma separator. Hardware events and generic hardware
-> > +events cannot be mixed together. The latter must be used with the -e
-> > +option. The -e option and this one can be mixed and matched.  Events
-> > +can be grouped using the {} notation.
-> > +endif::HAVE_LIBPFM[]
-> >
-> >  -a::
-> >  --all-cpus::
-> > diff --git a/tools/perf/Documentation/perf-top.txt b/tools/perf/Documentation/perf-top.txt
-> > index 487737a725e9..9858e3640b0c 100644
-> > --- a/tools/perf/Documentation/perf-top.txt
-> > +++ b/tools/perf/Documentation/perf-top.txt
-> > @@ -319,6 +319,17 @@ Default is to monitor all CPUS.
-> >       go straight to the histogram browser, just like 'perf top' with no events
-> >       explicitely specified does.
-> >
-> > +ifdef::HAVE_LIBPFM[]
-> > +--pfm-events events::
-> > +Select a PMU event using libpfm4 syntax (see http://perfmon2.sf.net)
-> > +including support for event filters. For example '--pfm-events
-> > +inst_retired:any_p:u:c=1:i'. More than one event can be passed to the
-> > +option using the comma separator. Hardware events and generic hardware
-> > +events cannot be mixed together. The latter must be used with the -e
-> > +option. The -e option and this one can be mixed and matched.  Events
-> > +can be grouped using the {} notation.
-> > +endif::HAVE_LIBPFM[]
-> > +
-> >
-> >  INTERACTIVE PROMPTING KEYS
-> >  --------------------------
-> > diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-> > index 80e55e796be9..571aa6b1af40 100644
-> > --- a/tools/perf/Makefile.config
-> > +++ b/tools/perf/Makefile.config
-> > @@ -999,6 +999,18 @@ ifdef LIBCLANGLLVM
-> >    endif
-> >  endif
-> >
-> > +ifndef NO_LIBPFM4
-> > +  ifeq ($(feature-libpfm4), 1)
-> > +    CFLAGS += -DHAVE_LIBPFM
-> > +    EXTLIBS += -lpfm
-> > +    ASCIIDOC_EXTRA = -aHAVE_LIBPFM=1
-> > +    $(call detected,CONFIG_LIBPFM4)
-> > +  else
-> > +    msg := $(warning libpfm4 not found, disables libpfm4 support. Please install libpfm4-dev);
-> > +    NO_LIBPFM4 := 1
-> > +  endif
-> > +endif
-> > +
-> >  # Among the variables below, these:
-> >  #   perfexecdir
-> >  #   perf_include_dir
-> > diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-> > index d15a311408f1..9787eb3ca0a9 100644
-> > --- a/tools/perf/Makefile.perf
-> > +++ b/tools/perf/Makefile.perf
-> > @@ -118,6 +118,8 @@ include ../scripts/utilities.mak
-> >  #
-> >  # Define LIBBPF_DYNAMIC to enable libbpf dynamic linking.
-> >  #
-> > +# Define NO_LIBPFM4 to disable libpfm4 extension.
-> > +#
-> >
-> >  # As per kernel Makefile, avoid funny character set dependencies
-> >  unexport LC_ALL
-> > @@ -188,7 +190,7 @@ AWK     = awk
-> >  # non-config cases
-> >  config := 1
-> >
-> > -NON_CONFIG_TARGETS := clean python-clean TAGS tags cscope help install-doc install-man install-html install-info install-pdf doc man html info pdf
-> > +NON_CONFIG_TARGETS := clean python-clean TAGS tags cscope help
-> >
-> >  ifdef MAKECMDGOALS
-> >  ifeq ($(filter-out $(NON_CONFIG_TARGETS),$(MAKECMDGOALS)),)
-> > @@ -832,7 +834,7 @@ INSTALL_DOC_TARGETS += quick-install-doc quick-install-man quick-install-html
-> >
-> >  # 'make doc' should call 'make -C Documentation all'
-> >  $(DOC_TARGETS):
-> > -     $(Q)$(MAKE) -C $(DOC_DIR) O=$(OUTPUT) $(@:doc=all)
-> > +     $(Q)$(MAKE) -C $(DOC_DIR) O=$(OUTPUT) $(@:doc=all) ASCIIDOC_EXTRA=$(ASCIIDOC_EXTRA)
-> >
-> >  TAG_FOLDERS= . ../lib ../include
-> >  TAG_FILES= ../../include/uapi/linux/perf_event.h
-> > diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
-> > index 965ef017496f..5edeb428168a 100644
-> > --- a/tools/perf/builtin-list.c
-> > +++ b/tools/perf/builtin-list.c
-> > @@ -18,6 +18,10 @@
-> >  #include <subcmd/parse-options.h>
-> >  #include <stdio.h>
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include <perfmon/pfmlib.h>
-> > +#endif
-> > +
-> >  static bool desc_flag = true;
-> >  static bool details_flag;
-> >
-> > @@ -56,6 +60,18 @@ int cmd_list(int argc, const char **argv)
-> >       if (!raw_dump && pager_in_use())
-> >               printf("\nList of pre-defined events (to be used in -e):\n\n");
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +     {
-> > +             int ret;
-> > +             ret = pfm_initialize();
-> > +             if (ret != PFM_SUCCESS) {
-> > +                     fprintf(stderr,
-> > +                             "warning libpfm failed to initialize: %s\n",
-> > +                             pfm_strerror(ret));
-> > +             }
-> > +     }
-> > +#endif
-> > +
-> >       if (argc == 0) {
-> >               print_events(NULL, raw_dump, !desc_flag, long_desc_flag,
-> >                               details_flag, deprecated);
-> > diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> > index 7d7912e121d6..7d2737f33c2e 100644
-> > --- a/tools/perf/builtin-record.c
-> > +++ b/tools/perf/builtin-record.c
-> > @@ -64,6 +64,10 @@
-> >  #include <linux/zalloc.h>
-> >  #include <linux/bitmap.h>
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include <perfmon/pfmlib.h>
-> > +#endif
-> > +
-> >  struct switch_output {
-> >       bool             enabled;
-> >       bool             signal;
-> > @@ -2415,6 +2419,11 @@ static struct option __record_options[] = {
-> >  #endif
-> >       OPT_CALLBACK(0, "max-size", &record.output_max_size,
-> >                    "size", "Limit the maximum size of the output file", parse_output_max_size),
-> > +#ifdef HAVE_LIBPFM
-> > +     OPT_CALLBACK(0, "pfm-events", &record.evlist, "event",
-> > +             "libpfm4 event selector. use 'perf list' to list available events",
-> > +             parse_libpfm_events_option),
-> > +#endif
-> >       OPT_END()
-> >  };
-> >
-> > @@ -2455,6 +2464,17 @@ int cmd_record(int argc, const char **argv)
-> >       if (rec->evlist == NULL)
-> >               return -ENOMEM;
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +     {
-> > +             int ret;
-> > +             ret = pfm_initialize();
-> > +             if (ret != PFM_SUCCESS) {
-> > +                     ui__warning("warning libpfm failed to initialize: %s\n",
-> > +                             pfm_strerror(ret));
-> > +             }
-> > +     }
-> > +#endif
-> > +
-> >       err = perf_config(perf_record_config, rec);
-> >       if (err)
-> >               return err;
-> > diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> > index ec053dc1e35c..c47eaf238f0c 100644
-> > --- a/tools/perf/builtin-stat.c
-> > +++ b/tools/perf/builtin-stat.c
-> > @@ -89,6 +89,10 @@
-> >  #include <linux/ctype.h>
-> >  #include <perf/evlist.h>
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include <perfmon/pfmlib.h>
-> > +#endif
-> > +
-> >  #define DEFAULT_SEPARATOR    " "
-> >  #define FREEZE_ON_SMI_PATH   "devices/cpu/freeze_on_smi"
-> >
-> > @@ -933,6 +937,11 @@ static struct option stat_options[] = {
-> >                   "Use with 'percore' event qualifier to show the event "
-> >                   "counts of one hardware thread by sum up total hardware "
-> >                   "threads of same physical core"),
-> > +#ifdef HAVE_LIBPFM
-> > +     OPT_CALLBACK(0, "pfm-events", &evsel_list, "event",
-> > +             "libpfm4 event selector. use 'perf list' to list available events",
-> > +             parse_libpfm_events_option),
-> > +#endif
-> >       OPT_END()
-> >  };
-> >
-> > @@ -1871,6 +1880,18 @@ int cmd_stat(int argc, const char **argv)
-> >       unsigned int interval, timeout;
-> >       const char * const stat_subcommands[] = { "record", "report" };
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +     {
-> > +             int ret;
-> > +             ret = pfm_initialize();
-> > +             if (ret != PFM_SUCCESS) {
-> > +                     fprintf(stderr,
-> > +                             "warning libpfm failed to initialize: %s\n",
-> > +                             pfm_strerror(ret));
-> > +             }
-> > +     }
-> > +#endif
-> > +
-> >       setlocale(LC_ALL, "");
-> >
-> >       evsel_list = evlist__new();
-> > diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-> > index 6684d94b1398..afec285f9877 100644
-> > --- a/tools/perf/builtin-top.c
-> > +++ b/tools/perf/builtin-top.c
-> > @@ -84,6 +84,10 @@
-> >  #include <linux/ctype.h>
-> >  #include <perf/mmap.h>
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include <perfmon/pfmlib.h>
-> > +#endif
-> > +
-> >  static volatile int done;
-> >  static volatile int resize;
-> >
-> > @@ -1565,6 +1569,11 @@ int cmd_top(int argc, const char **argv)
-> >                   "Sort the output by the event at the index n in group. "
-> >                   "If n is invalid, sort by the first event. "
-> >                   "WARNING: should be used on grouped events."),
-> > +#ifdef HAVE_LIBPFM
-> > +     OPT_CALLBACK(0, "pfm-events", &top.evlist, "event",
-> > +             "libpfm4 event selector. use 'perf list' to list available events",
-> > +             parse_libpfm_events_option),
-> > +#endif
-> >       OPTS_EVSWITCH(&top.evswitch),
-> >       OPT_END()
-> >       };
-> > @@ -1578,6 +1587,17 @@ int cmd_top(int argc, const char **argv)
-> >       if (status < 0)
-> >               return status;
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +     {
-> > +             int ret;
-> > +             ret = pfm_initialize();
-> > +             if (ret != PFM_SUCCESS) {
-> > +                     ui__warning("warning libpfm failed to initialize: %s\n",
-> > +                             pfm_strerror(ret));
-> > +             }
-> > +     }
-> > +#endif
-> > +
-> >       top.annotation_opts.min_pcnt = 5;
-> >       top.annotation_opts.context  = 4;
-> >
-> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> > index eb880efbce16..ca1b9cbf3355 100644
-> > --- a/tools/perf/util/evsel.c
-> > +++ b/tools/perf/util/evsel.c
-> > @@ -2448,7 +2448,7 @@ bool perf_evsel__fallback(struct evsel *evsel, int err,
-> >
-> >               /* Is there already the separator in the name. */
-> >               if (strchr(name, '/') ||
-> > -                 strchr(name, ':'))
-> > +                 (strchr(name, ':') && !evsel->is_libpfm_event))
-> >                       sep = "";
-> >
-> >               if (asprintf(&new_name, "%s%su", name, sep) < 0)
-> > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> > index 53187c501ee8..0b6eec714e6f 100644
-> > --- a/tools/perf/util/evsel.h
-> > +++ b/tools/perf/util/evsel.h
-> > @@ -76,6 +76,7 @@ struct evsel {
-> >       bool                    ignore_missing_thread;
-> >       bool                    forced_leader;
-> >       bool                    use_uncore_alias;
-> > +     bool                    is_libpfm_event;
-> >       /* parse modifier helper */
-> >       int                     exclude_GH;
-> >       int                     sample_read;
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> > index 10107747b361..31ed184566c8 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -37,6 +37,11 @@
-> >  #include "util/evsel_config.h"
-> >  #include "util/event.h"
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +#include <perfmon/pfmlib_perf_event.h>
-> > +static void print_libpfm_events(bool name_only);
-> > +#endif
-> > +
-> >  #define MAX_NAME_LEN 100
-> >
-> >  #ifdef PARSER_DEBUG
-> > @@ -2794,6 +2799,10 @@ void print_events(const char *event_glob, bool name_only, bool quiet_flag,
-> >       print_sdt_events(NULL, NULL, name_only);
-> >
-> >       metricgroup__print(true, true, NULL, name_only, details_flag);
-> > +
-> > +#ifdef HAVE_LIBPFM
-> > +     print_libpfm_events(name_only);
-> > +#endif
-> >  }
-> >
-> >  int parse_events__is_hardcoded_term(struct parse_events_term *term)
-> > @@ -3042,3 +3051,240 @@ char *parse_events_formats_error_string(char *additional_terms)
-> >  fail:
-> >       return NULL;
-> >  }
-> > +
-> > +#ifdef HAVE_LIBPFM
-> > +static int
-> > +parse_libpfm_event(char *strp, struct perf_event_attr *attr)
-> > +{
-> > +     int ret;
-> > +
-> > +     ret = pfm_get_perf_event_encoding(strp, PFM_PLM0|PFM_PLM3,
-> > +                                     attr, NULL, NULL);
-> > +     return ret;
-> > +}
-> > +
-> > +int parse_libpfm_events_option(const struct option *opt, const char *str,
-> > +                     int unset __maybe_unused)
-> > +{
-> > +     struct evlist *evlist = *(struct evlist **)opt->value;
-> > +     struct perf_event_attr attr;
-> > +     struct perf_pmu *pmu;
-> > +     struct evsel *evsel, *grp_leader = NULL;
-> > +     char *p, *q, *p_orig;
-> > +     const char *sep;
-> > +     int grp_evt = -1;
-> > +     int ret;
-> > +
-> > +     p_orig = p = strdup(str);
-> > +     if (!p)
-> > +             return -1;
-> > +     /*
-> > +      * force loading of the PMU list
-> > +      */
-> > +     perf_pmu__scan(NULL);
-> > +
-> > +     for (q = p; strsep(&p, ",{}"); q = p) {
-> > +             sep = p ? str + (p - p_orig - 1) : "";
-> > +             if (*sep == '{') {
-> > +                     if (grp_evt > -1) {
-> > +                             fprintf(stderr, "nested event groups not supported\n");
-> > +                             goto error;
-> > +                     }
-> > +                     grp_evt++;
-> > +             }
-> > +
-> > +             /* no event */
-> > +             if (*q == '\0')
-> > +                     continue;
-> > +
-> > +             memset(&attr, 0, sizeof(attr));
-> > +             event_attr_init(&attr);
-> > +
-> > +             ret = parse_libpfm_event(q, &attr);
-> > +             if (ret != PFM_SUCCESS) {
-> > +                     fprintf(stderr, "failed to parse event %s : %s\n", str, pfm_strerror(ret));
-> > +                     goto error;
-> > +             }
-> > +
-> > +             evsel = perf_evsel__new_idx(&attr, evlist->core.nr_entries);
-> > +             if (evsel == NULL)
-> > +                     goto error;
-> > +
-> > +             evsel->name = strdup(q);
-> > +             if (!evsel->name) {
-> > +                     evsel__delete(evsel);
-> > +                     goto error;
-> > +             }
-> > +             evsel->is_libpfm_event = true;
-> > +
-> > +             pmu = perf_pmu__find_by_type((unsigned)attr.type);
-> > +             if (pmu)
-> > +                     evsel->core.own_cpus = perf_cpu_map__get(pmu->cpus);
-> > +
-> > +             evlist__add(evlist, evsel);
-> > +
-> > +             if (grp_evt == 0)
-> > +                     grp_leader = evsel;
-> > +
-> > +             if (grp_evt > -1) {
-> > +                     evsel->leader = grp_leader;
-> > +                     grp_leader->core.nr_members++;
-> > +                     grp_evt++;
-> > +             }
-> > +
-> > +             if (*sep == '}') {
-> > +                     if (grp_evt < 0) {
-> > +                             fprintf(stderr, "cannot close a non-existing event group\n");
-> > +                             goto error;
-> > +                     }
-> > +                     evlist->nr_groups++;
-> > +                     grp_leader = NULL;
-> > +                     grp_evt = -1;
-> > +             }
-> > +     }
-> > +     return 0;
-> > +error:
-> > +     free(p_orig);
-> > +     return -1;
-> > +}
-> > +
-> > +static const char *srcs[PFM_ATTR_CTRL_MAX]={
-> > +     [PFM_ATTR_CTRL_UNKNOWN] = "???",
-> > +     [PFM_ATTR_CTRL_PMU] = "PMU",
-> > +     [PFM_ATTR_CTRL_PERF_EVENT] = "perf_event",
-> > +};
-> > +
-> > +static void
-> > +print_attr_flags(pfm_event_attr_info_t *info)
-> > +{
-> > +     int n = 0;
-> > +
-> > +     if (info->is_dfl) {
-> > +             printf("[default] ");
-> > +             n++;
-> > +     }
-> > +
-> > +     if (info->is_precise) {
-> > +             printf("[precise] ");
-> > +             n++;
-> > +     }
-> > +
-> > +     if (!n)
-> > +             printf("- ");
-> > +}
-> > +
-> > +static void
-> > +print_libpfm_detailed_events(pfm_pmu_info_t *pinfo, pfm_event_info_t *info)
-> > +{
-> > +     pfm_event_attr_info_t ainfo;
-> > +     const char *src;
-> > +     int j, ret;
-> > +
-> > +     ainfo.size = sizeof(ainfo);
-> > +
-> > +     printf("\nName  : %s\n", info->name);
-> > +     printf("PMU   : %s\n", pinfo->name);
-> > +     printf("Desc  : %s\n", info->desc);
-> > +     printf("Equiv : %s\n", info->equiv ? info->equiv : "None");
-> > +     printf("Code  : 0x%"PRIx64"\n", info->code);
-> > +
-> > +     pfm_for_each_event_attr(j, info) {
-> > +             ret = pfm_get_event_attr_info(info->idx, j, PFM_OS_PERF_EVENT_EXT, &ainfo);
-> > +             if (ret != PFM_SUCCESS)
-> > +                     continue;
-> > +
-> > +             if (ainfo.ctrl >= PFM_ATTR_CTRL_MAX)
-> > +                     ainfo.ctrl = PFM_ATTR_CTRL_UNKNOWN;
-> > +
-> > +             src = srcs[ainfo.ctrl];
-> > +             switch(ainfo.type) {
-> > +             case PFM_ATTR_UMASK:
-> > +                     printf("Umask : 0x%02"PRIx64" : %s: [%s] : ", ainfo.code, src, ainfo.name);
-> > +                     print_attr_flags(&ainfo);
-> > +                     printf(": %s\n", ainfo.desc);
-> > +                     break;
-> > +             case PFM_ATTR_MOD_BOOL:
-> > +                     printf("Modif : %s: [%s] : %s (boolean)\n", src, ainfo.name, ainfo.desc);
-> > +                     break;
-> > +             case PFM_ATTR_MOD_INTEGER:
-> > +                     printf("Modif : %s: [%s] : %s (integer)\n", src, ainfo.name, ainfo.desc);
-> > +                     break;
-> > +             case PFM_ATTR_NONE:
-> > +             case PFM_ATTR_RAW_UMASK:
-> > +             case PFM_ATTR_MAX:
-> > +             default:
-> > +                     printf("Attr  : %s: [%s] : %s\n", src, ainfo.name, ainfo.desc);
-> > +             }
-> > +     }
-> > +}
-> > +
-> > +/*
-> > + * list all pmu::event:umask, pmu::event
-> > + * printed events may not be all valid combinations of umask for an event
-> > + */
-> > +static void
-> > +print_libpfm_simplified_events(pfm_pmu_info_t *pinfo, pfm_event_info_t *info)
-> > +{
-> > +     pfm_event_attr_info_t ainfo;
-> > +     int j, ret;
-> > +     int um = 0;
-> > +
-> > +     ainfo.size = sizeof(ainfo);
-> > +
-> > +     pfm_for_each_event_attr(j, info) {
-> > +             ret = pfm_get_event_attr_info(info->idx, j, PFM_OS_PERF_EVENT_EXT, &ainfo);
-> > +             if (ret != PFM_SUCCESS)
-> > +                     continue;
-> > +
-> > +             if (ainfo.type != PFM_ATTR_UMASK)
-> > +                     continue;
-> > +
-> > +             printf("%s::%s:%s\n", pinfo->name, info->name, ainfo.name);
-> > +             um++;
-> > +     }
-> > +     if (um == 0)
-> > +             printf("%s::%s\n", pinfo->name, info->name);
-> > +}
-> > +
-> > +static void
-> > +print_libpfm_events(bool name_only)
-> > +{
-> > +     pfm_event_info_t info;
-> > +     pfm_pmu_info_t pinfo;
-> > +     pfm_event_attr_info_t ainfo;
-> > +     int i, p, ret;
-> > +
-> > +     /* initialize to zero to indicate ABI version */
-> > +     info.size  = sizeof(info);
-> > +     pinfo.size = sizeof(pinfo);
-> > +     ainfo.size = sizeof(ainfo);
-> > +
-> > +     putchar('\n');
-> > +
-> > +     pfm_for_all_pmus(p) {
-> > +             ret = pfm_get_pmu_info(p, &pinfo);
-> > +             if (ret != PFM_SUCCESS)
-> > +                     continue;
-> > +
-> > +             /* ony print events that are supported by host HW */
-> > +             if (!pinfo.is_present)
-> > +                     continue;
-> > +
-> > +             /* handled by perf directly */
-> > +             if (pinfo.pmu == PFM_PMU_PERF_EVENT)
-> > +                     continue;
-> > +
-> > +             for (i = pinfo.first_event; i != -1; i = pfm_get_event_next(i)) {
-> > +
-> > +                     ret = pfm_get_event_info(i, PFM_OS_PERF_EVENT_EXT, &info);
-> > +                     if (ret != PFM_SUCCESS)
-> > +                             continue;
-> > +
-> > +                     if (!name_only)
-> > +                             print_libpfm_detailed_events(&pinfo, &info);
-> > +                     else
-> > +                             print_libpfm_simplified_events(&pinfo, &info);
-> > +             }
-> > +     }
-> > +}
-> > +#endif
-> > diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-> > index 27596cbd0ba0..84d4799c9a31 100644
-> > --- a/tools/perf/util/parse-events.h
-> > +++ b/tools/perf/util/parse-events.h
-> > @@ -37,6 +37,11 @@ int parse_events_terms(struct list_head *terms, const char *str);
-> >  int parse_filter(const struct option *opt, const char *str, int unset);
-> >  int exclude_perf(const struct option *opt, const char *arg, int unset);
-> >
-> > +#ifdef HAVE_LIBPFM
-> > +extern int parse_libpfm_events_option(const struct option *opt, const char *str,
-> > +                             int unset);
-> > +#endif
-> > +
-> >  #define EVENTS_HELP_MAX (128*1024)
-> >
-> >  enum perf_pmu_event_symbol_type {
-> > diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> > index ef6a63f3d386..5e918ca740c6 100644
-> > --- a/tools/perf/util/pmu.c
-> > +++ b/tools/perf/util/pmu.c
-> > @@ -869,6 +869,17 @@ static struct perf_pmu *pmu_find(const char *name)
-> >       return NULL;
-> >  }
-> >
-> > +struct perf_pmu *perf_pmu__find_by_type(unsigned int type)
-> > +{
-> > +     struct perf_pmu *pmu;
-> > +
-> > +     list_for_each_entry(pmu, &pmus, list)
-> > +             if (pmu->type == type)
-> > +                     return pmu;
-> > +
-> > +     return NULL;
-> > +}
-> > +
-> >  struct perf_pmu *perf_pmu__scan(struct perf_pmu *pmu)
-> >  {
-> >       /*
-> > diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-> > index 5fb3f16828df..de3b868d912c 100644
-> > --- a/tools/perf/util/pmu.h
-> > +++ b/tools/perf/util/pmu.h
-> > @@ -65,6 +65,7 @@ struct perf_pmu_alias {
-> >  };
-> >
-> >  struct perf_pmu *perf_pmu__find(const char *name);
-> > +struct perf_pmu *perf_pmu__find_by_type(unsigned int type);
-> >  int perf_pmu__config(struct perf_pmu *pmu, struct perf_event_attr *attr,
-> >                    struct list_head *head_terms,
-> >                    struct parse_events_error *error);
-> > --
-> > 2.26.0.rc2.310.g2932bb562d-goog
-> >
->
-> --
->
-> - Arnaldo
