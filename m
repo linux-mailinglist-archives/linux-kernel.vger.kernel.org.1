@@ -2,181 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374981BD647
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 09:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131DC1BD63F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 09:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgD2HmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 03:42:17 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2127 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726554AbgD2HmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 03:42:13 -0400
-Received: from lhreml707-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 4A1DB5F8236ABC6C97AB;
-        Wed, 29 Apr 2020 08:42:11 +0100 (IST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- lhreml707-chm.china.huawei.com (10.201.108.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Wed, 29 Apr 2020 08:42:10 +0100
-Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.160)
- by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.1913.5; Wed, 29 Apr 2020 09:42:10 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <david.safford@gmail.com>,
-        <viro@zeniv.linux.org.uk>, <jmorris@namei.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <silviu.vlasceanu@huawei.com>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [RFC][PATCH 3/3] evm: Return -EAGAIN to ignore verification failures
-Date:   Wed, 29 Apr 2020 09:39:35 +0200
-Message-ID: <20200429073935.11913-3-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200429073935.11913-1-roberto.sassu@huawei.com>
-References: <20200429073935.11913-1-roberto.sassu@huawei.com>
+        id S1726564AbgD2Hkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 03:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726355AbgD2Hky (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 03:40:54 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012D4C03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 00:40:53 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id b24so183507lfp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 00:40:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=S6vndLuaeXb6bB9uiepv0GIEKfn+kuOCySzTjAzHsMU=;
+        b=FDLgGsPFHgxlMBjFNmkfnE/Jr4mIXNB0ns9FLOBMmwPRIyZAlEnLT6cTCgVk6vLaCW
+         ttoowgf6aOut7y2PxCcyMO7iByXRbafn3qJt+BEsv13U45mOcDHqmNm3MT7KhHXp02s8
+         qNIODLOep7LI6mc5PkRyIZQkcJPxNxdJbwAhk7uhCmWq48lMQcj25Pu5LwbYN2bIMoAn
+         gniHdU1zqIfIAJJQEwtEf1I9od2tl1RQ+3At4RTciCU3gNLSIxB+sLpX3Z4BQC9m6hiP
+         K9rXPnNmEK76QnKzxjl6YrH0FewLuscVAmm2rpuLKi0NVxWe4nau8n7rvoBvBx9GwCIt
+         6YFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S6vndLuaeXb6bB9uiepv0GIEKfn+kuOCySzTjAzHsMU=;
+        b=EVauGuqJrNXli22zY31tt69i6PJv4+PLNRK5h3oILURpdH0SfLr8aCfxFPH+J2kcoq
+         gSZoqH2SPkqZh+sklt5DAcN8LAdWhdzfT40zsNEydaqSxb9dFprzrWHwgokwGcaPDUBp
+         Q2SsrG/SJYyN8BIsSywZNi44Qno5zPa0oOs1tsBfkQOlq4bHD1e+BU/tbIIjvwur0aj3
+         CSecDoiu3fdYo5kj3cKtTB1wB8FTX+l2IPt55r8GoxcfY0IwEGhSV/N1FYQT4ac+iQ+9
+         SaorlhHGpsg5GVXQ/aLhW+IGQ6tXIP+kwzuR1mRSDZb+0VmjMKdT2rMUip+wd9vMZQIa
+         VypQ==
+X-Gm-Message-State: AGi0PuYKWq6Tf6yxS0XcqDfEmhfRRK8aKbB9NrxGzn2yAG1Vo07JeiHN
+        PhQyxC+uHw/202P+UBc/QGZumILmZQLDOA7QRnY=
+X-Google-Smtp-Source: APiQypLMoZakO/8ExLncaCmnnOtNMCr57sttCek7NXn2hztLvfuFdT+oQQxp8aJPkYV2kumt/lzBA/5xwKhJMFDHg7I=
+X-Received: by 2002:ac2:5c07:: with SMTP id r7mr22066594lfp.160.1588146051463;
+ Wed, 29 Apr 2020 00:40:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.204.65.160]
-X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+References: <1582175719-7401-1-git-send-email-yash.shah@sifive.com> <MN2PR13MB3552ADB09621545F67A914E28CFA0@MN2PR13MB3552.namprd13.prod.outlook.com>
+In-Reply-To: <MN2PR13MB3552ADB09621545F67A914E28CFA0@MN2PR13MB3552.namprd13.prod.outlook.com>
+From:   David Abdurachmanov <david.abdurachmanov@gmail.com>
+Date:   Wed, 29 Apr 2020 10:40:15 +0300
+Message-ID: <CAEn-LTqUWfiV_QV3hyCQ9YouaHCzNFPq=WABfioNEiMJVP8ZVg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/2] cacheinfo support to read no. of L2 cache ways enabled
+To:     Yash Shah <yash.shah@sifive.com>
+Cc:     "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        Sachin Ghadi <sachin.ghadi@sifive.com>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alexios.zavras@intel.com" <alexios.zavras@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "bp@suse.de" <bp@suse.de>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By default, EVM maintains the same behavior as before hooks were moved
-outside the LSM infrastructure. When EVM returns -EPERM, callers stop their
-execution and return the error to user space.
+Ping.
 
-This patch introduces a new mode, called ignore, that changes the return
-value of the pre hooks from -EPERM to -EAGAIN. It also modifies the callers
-of pre and post hooks to continue the execution if -EAGAIN is returned. The
-error is then handled by the post hooks.
+I think this one got lost in time. I don't see it in v5.6 or v5.7.
 
-The only error that is not ignored is when user space is trying to modify a
-portable signature. Once that signature has been validated with the current
-values of metadata, there is no valid reason to change them.
+david
 
-From user space perspective, operations on corrupted metadata are
-successfully performed but post hooks didn't update the HMAC. At the next
-IMA verification, when evm_verifyxattr() is called, corruption will be
-detected and access will be denied.
-
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- fs/attr.c                         |  2 +-
- fs/xattr.c                        |  4 ++--
- security/integrity/evm/evm_main.c | 23 +++++++++++++++++------
- 3 files changed, 20 insertions(+), 9 deletions(-)
-
-diff --git a/fs/attr.c b/fs/attr.c
-index 6ce60e1eba34..6370e2f3704d 100644
---- a/fs/attr.c
-+++ b/fs/attr.c
-@@ -329,7 +329,7 @@ int notify_change(struct dentry * dentry, struct iattr * attr, struct inode **de
- 	if (error)
- 		return error;
- 	evm_error = evm_inode_setattr(dentry, attr);
--	if (evm_error)
-+	if (evm_error && evm_error != -EAGAIN)
- 		return evm_error;
- 	error = try_break_deleg(inode, delegated_inode);
- 	if (error)
-diff --git a/fs/xattr.c b/fs/xattr.c
-index b1fd2aa481a8..73f0f3cd6c45 100644
---- a/fs/xattr.c
-+++ b/fs/xattr.c
-@@ -229,7 +229,7 @@ vfs_setxattr(struct dentry *dentry, const char *name, const void *value,
- 		goto out;
- 
- 	evm_error = evm_inode_setxattr(dentry, name, value, size);
--	if (evm_error) {
-+	if (evm_error && evm_error != -EAGAIN) {
- 		error = evm_error;
- 		goto out;
- 	}
-@@ -408,7 +408,7 @@ vfs_removexattr(struct dentry *dentry, const char *name)
- 		goto out;
- 
- 	evm_error = evm_inode_removexattr(dentry, name);
--	if (evm_error) {
-+	if (evm_error && evm_error != -EAGAIN) {
- 		error = evm_error;
- 		goto out;
- 	}
-diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-index ca9eaef7058b..ef09caa3bbcf 100644
---- a/security/integrity/evm/evm_main.c
-+++ b/security/integrity/evm/evm_main.c
-@@ -54,11 +54,13 @@ static struct xattr_list evm_config_default_xattrnames[] = {
- 
- LIST_HEAD(evm_config_xattrnames);
- 
--static int evm_fixmode;
-+static int evm_fixmode, evm_ignoremode __ro_after_init;
- static int __init evm_set_fixmode(char *str)
- {
- 	if (strncmp(str, "fix", 3) == 0)
- 		evm_fixmode = 1;
-+	if (strncmp(str, "ignore", 6) == 0)
-+		evm_ignoremode = 1;
- 	return 0;
- }
- __setup("evm=", evm_set_fixmode);
-@@ -311,6 +313,7 @@ static int evm_protect_xattr(struct dentry *dentry, const char *xattr_name,
- 			     const void *xattr_value, size_t xattr_value_len)
- {
- 	enum integrity_status evm_status;
-+	int rc = -EPERM;
- 
- 	if (strcmp(xattr_name, XATTR_NAME_EVM) == 0) {
- 		if (!capable(CAP_SYS_ADMIN))
-@@ -345,12 +348,17 @@ static int evm_protect_xattr(struct dentry *dentry, const char *xattr_name,
- 				    -EPERM, 0);
- 	}
- out:
--	if (evm_status != INTEGRITY_PASS)
-+	if (evm_status != INTEGRITY_PASS) {
-+		if (evm_ignoremode && evm_status != INTEGRITY_PASS_IMMUTABLE)
-+			rc = -EAGAIN;
-+
- 		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
- 				    dentry->d_name.name, "appraise_metadata",
- 				    integrity_status_msg[evm_status],
--				    -EPERM, 0);
--	return evm_status == INTEGRITY_PASS ? 0 : -EPERM;
-+				    rc, 0);
-+	}
-+
-+	return evm_status == INTEGRITY_PASS ? 0 : rc;
- }
- 
- /**
-@@ -482,6 +490,7 @@ int evm_inode_setattr(struct dentry *dentry, struct iattr *attr)
- {
- 	unsigned int ia_valid = attr->ia_valid;
- 	enum integrity_status evm_status;
-+	int rc = -EPERM;
- 
- 	/* Policy permits modification of the protected attrs even though
- 	 * there's no HMAC key loaded
-@@ -495,10 +504,12 @@ int evm_inode_setattr(struct dentry *dentry, struct iattr *attr)
- 	if ((evm_status == INTEGRITY_PASS) ||
- 	    (evm_status == INTEGRITY_NOXATTRS))
- 		return 0;
-+	if (evm_ignoremode && evm_status != INTEGRITY_PASS_IMMUTABLE)
-+		rc = -EAGAIN;
- 	integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
- 			    dentry->d_name.name, "appraise_metadata",
--			    integrity_status_msg[evm_status], -EPERM, 0);
--	return -EPERM;
-+			    integrity_status_msg[evm_status], rc, 0);
-+	return rc;
- }
- 
- /**
--- 
-2.17.1
-
+On Fri, Mar 13, 2020 at 8:03 AM Yash Shah <yash.shah@sifive.com> wrote:
+>
+> Any comments or updates on this series?
+>
+> - Yash
+>
+> > -----Original Message-----
+> > From: Yash Shah <yash.shah@sifive.com>
+> > Sent: 20 February 2020 10:45
+> > To: palmer@dabbelt.com; Paul Walmsley ( Sifive)
+> > <paul.walmsley@sifive.com>
+> > Cc: aou@eecs.berkeley.edu; anup@brainfault.org;
+> > gregkh@linuxfoundation.org; alexios.zavras@intel.com; tglx@linutronix.de;
+> > bp@suse.de; linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org;
+> > Sachin Ghadi <sachin.ghadi@sifive.com>; Yash Shah
+> > <yash.shah@sifive.com>
+> > Subject: [PATCH v5 0/2] cacheinfo support to read no. of L2 cache ways
+> > enabled
+> >
+> > The patchset includes 2 patches. Patch 1 implements cache_get_priv_group
+> > which make use of a generic ops structure to return a private attribute group
+> > for custom cacheinfo. Patch 2 implements a private attribute named
+> > "number_of_ways_enabled" in the cacheinfo framework. Reading this
+> > attribute returns the number of L2 cache ways enabled at runtime,
+> >
+> > This patchset is based on Linux v5.6-rc2 and tested on HiFive Unleashed
+> > board.
+> >
+> > v5:
+> > - Since WayEnable is 8bits, mask out and return only the last 8 bit in
+> >   l2_largest_wayenabled()
+> > - Rebased on Linux v5.6-rc2
+> >
+> > v4:
+> > - Rename "sifive_l2_largest_wayenabled" to "l2_largest_wayenabled" and
+> >   make it a static function
+> >
+> > v3:
+> > - As per Anup Patel's suggestion[0], implement a new approach which uses
+> >   generic ops structure. Hence addition of patch 1 to this series and
+> >   corresponding changes to patch 2.
+> > - Dropped "riscv: dts: Add DT support for SiFive L2 cache controller"
+> >   patch since it is already merged
+> > - Rebased on Linux v5.5-rc6
+> >
+> > Changes in v2:
+> > - Rebase the series on v5.5-rc3
+> > - Remove the reserved-memory node from DT
+> >
+> > [0]: https://lore.kernel.org/linux-
+> > riscv/CAAhSdy0CXde5s_ya=4YvmA4UQ5f5gLU-
+> > Z_FaOr8LPni+s_615Q@mail.gmail.com/
+> >
+> > Yash Shah (2):
+> >   riscv: cacheinfo: Implement cache_get_priv_group with a generic ops
+> >     structure
+> >   riscv: Add support to determine no. of L2 cache way enabled
+> >
+> >  arch/riscv/include/asm/cacheinfo.h   | 15 ++++++++++++++
+> >  arch/riscv/kernel/cacheinfo.c        | 17 ++++++++++++++++
+> >  drivers/soc/sifive/sifive_l2_cache.c | 38
+> > ++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 70 insertions(+)
+> >  create mode 100644 arch/riscv/include/asm/cacheinfo.h
+> >
+> > --
+> > 2.7.4
+>
+>
