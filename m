@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE3E1BE62E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0851BE649
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726904AbgD2SW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 14:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726423AbgD2SW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 14:22:56 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB5FC03C1AE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:22:54 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j1so3761968wrt.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=B4AExkQ/skCkgH//SVAJ+HY/UbjZ3z29vi0E6Yau+cc=;
-        b=YRJMFTxbM0bgeSz3RuGdHJxxLuwdgSWTgLgtoiXIweL8tIX9FGlQlYaJuSUPBBJz0K
-         jPCUAaMxuGVVpRauDZzmKr/3YoCbJ8dGgBs4OfNCURbd46wqVR17diEUaD4lxblwDd9c
-         rsKW63ZlF0YCMIMPUQT6JYhjBEUCvhRkmQ3tlpSdKpy79JwByxKi2bPbiCo5G2U3xqLz
-         bjiHLqA6rzM3UqfIv4hcmbEeqCS7uT3R8NzQ6ydkUH7wkEtNdpeSvRd8rckqycaIWWkv
-         L+l9Ip1j3qWw+VwY+VJRYHlAZ2TU9W196zkfI5yFx4ESXLU5l2gnaJVEfdhvY5u9L8F+
-         ZjZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=B4AExkQ/skCkgH//SVAJ+HY/UbjZ3z29vi0E6Yau+cc=;
-        b=Kv8rvu/gFnDY+3emBhLR8aFsxXfSn7De+8H/O2Bc6txOLvMLwfkqljZ/7+yv4e2kIF
-         ejD8SsXddeiOD3cuK7FGEYJg/tJYiL3ObrpYBT0ETW1m+vO102pAMeh1d2oLWkCVBYqo
-         z+nNhXKO0bWcBbhVUOOb1i41zbTCENqVWBEjI45yjcG56yxB+y4G1RjupNZeEh+atf07
-         SLWHIHWBFQVLwyoKzIKlLluXybmGJuDyiogH/wDLbYkY0pj1cwjImM0Z9ugEiMutK7kQ
-         2gF0euFjpvlT802RTUploybkTn67F3sRJquI1VFXdqqQyCySS3oFvgRL3lOhkWWW3KR5
-         Qxog==
-X-Gm-Message-State: AGi0Pub1PhwWCfjkDKMx6irljLW2sCG9y3+XWPzT0LF0XVn0X1kQetL/
-        xQT9Yt4DtP+GXUABrTjnhgSMuw==
-X-Google-Smtp-Source: APiQypIgFkCETUKcnEqx8tMuAByNY5IhjOfevdMmAgkZMz9mukDUiKUpnYW6PV1StwGdsiqRyq/pRw==
-X-Received: by 2002:adf:8b1b:: with SMTP id n27mr38786679wra.385.1588184573262;
-        Wed, 29 Apr 2020 11:22:53 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id e13sm117683wrp.15.2020.04.29.11.22.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 Apr 2020 11:22:52 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/2] arm64: dts: meson-g12: usb DT fixes
-In-Reply-To: <CAFBinCCwvfycP9VZ35Jn=yNRbgbUYkRucLPpRGCJv2XCTR+o6Q@mail.gmail.com>
-References: <20200326160857.11929-1-narmstrong@baylibre.com> <CAFBinCCwvfycP9VZ35Jn=yNRbgbUYkRucLPpRGCJv2XCTR+o6Q@mail.gmail.com>
-Date:   Wed, 29 Apr 2020 11:22:49 -0700
-Message-ID: <7ho8rakv7q.fsf@baylibre.com>
+        id S1726815AbgD2Sdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 14:33:31 -0400
+Received: from elvis.franken.de ([193.175.24.41]:60653 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726519AbgD2Sdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 14:33:31 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jTrWH-000430-01; Wed, 29 Apr 2020 20:33:17 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id CEF21C034E; Wed, 29 Apr 2020 20:25:05 +0200 (CEST)
+Date:   Wed, 29 Apr 2020 20:25:05 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, john.garry@huawei.com,
+        Huacai Chen <chenhc@lemote.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Stephen Kitt <steve@sk2.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
+        Daniel Silsby <dansilsby@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] MIPS: Massage address spaces headers
+Message-ID: <20200429182505.GB21158@alpha.franken.de>
+References: <20200428021437.2000066-1-jiaxun.yang@flygoat.com>
+ <20200428021437.2000066-2-jiaxun.yang@flygoat.com>
+ <20200428113326.GD11443@alpha.franken.de>
+ <7613695F-5A83-4B57-A2E6-0EE27DCF397F@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7613695F-5A83-4B57-A2E6-0EE27DCF397F@flygoat.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Martin Blumenstingl <martin.blumenstingl@googlemail.com> writes:
+On Tue, Apr 28, 2020 at 07:45:19PM +0800, Jiaxun Yang wrote:
+> 
+> 
+> 于 2020年4月28日 GMT+08:00 下午7:33:26, Thomas Bogendoerfer <tsbogend@alpha.franken.de> 写到:
+> >On Tue, Apr 28, 2020 at 10:14:12AM +0800, Jiaxun Yang wrote:
+> >> That would allow us modify kernel vm address spaces without
+> >> step into the hell of includes.
+> >> 
+> >> Also use some marcos for address spaces to make spaces.h more
+> >> clear.
+> >> 
+> >> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> >
+> >I don't like this patch as I can't see a good reason for shuffling
+> >stuff arround. Can you drop this from this series ?
+> 
+> The problem is without this patch we'll have to include pgtable-32.h and
+> pgtable-64.h into asm/io.h, and that will become totally hell.
 
-> On Thu, Mar 26, 2020 at 5:09 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->>
->> Misc USB DT fixes for G12A.
->>
->> Neil Armstrong (2):
->>   arm64: dts: meson-g12b-ugoos-am6: fix usb vbus-supply
->>   arm64: dts: meson-g12-common: fix dwc2 clock names
-> for both patches:
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+sure, but this would just mean moving VMALLOC_START, but not the other
+stuff in this patch, which is more what I dislike...
 
-Queued as fixes for v5.7-rc,
+Thomas.
 
-Thanks,
-
-Kevin
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
