@@ -2,97 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7231BD2EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3201BD2F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgD2D2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 23:28:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:33520 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726636AbgD2D2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 23:28:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 802C2C14;
-        Tue, 28 Apr 2020 20:28:37 -0700 (PDT)
-Received: from [192.168.0.129] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 653D03F73D;
-        Tue, 28 Apr 2020 20:28:31 -0700 (PDT)
-Subject: Re: [mm/debug] fa6726c1e7: kernel_BUG_at_include/linux/mm.h
-To:     Catalin Marinas <catalin.marinas@arm.com>, Qian Cai <cai@lca.pw>
-Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        kernel test robot <lkp@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Will Deacon <will@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-References: <9e9091b9-6918-d0af-dd92-3bdc0e29a4d5@arm.com>
- <813D7CD3-F31C-4056-92DF-D462633E9D69@lca.pw> <20200428092105.GB3868@gaia>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <b62c66c8-1550-087f-f5d2-b33a18bb0edc@arm.com>
-Date:   Wed, 29 Apr 2020 08:58:02 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726738AbgD2Dam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 23:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726567AbgD2Dam (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 23:30:42 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464D0C03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 20:30:41 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id g10so396745lfj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 20:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2TI7CerNdrp5A6O6fiQbGr7STfYhiESWfFVCA8vmVU0=;
+        b=wTqjBVFa2uRyEmnvVl4u3zFHwlO3ljDd+Ngp1Nc8E9g2ZTKEkLULHqU7JTmLSZbok0
+         AKpFmxRbN29ag2mFg+6DJ8/DWKcqgt2UWaX9+UUn9345IzE/Emvj9KqpY+BTN2gQVHMI
+         wdQhxCHVzK8MjNgEz55RVRPAOjej81ee5PPRv/N51QYyohwPGx/HLkn0Vhmeo2MoBDj2
+         jz+ljZcJa28H6iLIszjZKSkbuzJaJPxvk0uBKPe08e4Lkb0ihSdiFPttj/B4STFpWQgU
+         WsFrICY4Cl9ptZdDclvWcrhJh9iQ/DQ5G60wI/FkkpFMfiQLnlVWtKDo/10nAj0USx5C
+         4Yyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2TI7CerNdrp5A6O6fiQbGr7STfYhiESWfFVCA8vmVU0=;
+        b=WaPDmNAdasPItuRktpoFL6WDddcvAlD8/ekvKyLm5kxl8g+Likb8YcIeDpu9YC6APc
+         Ada2M38AFcBVamYqLwFAz9NPzFHXhiZbnBMExq0itW1AW8i9Gf/Wt/rHp65bjXmltvT+
+         KPXLU2NK+B0d6f5sGJQAioJk8idyQDiHHl5I5BTV4FxCUVotkyR8euLs847ChBplVIGD
+         qwk5buq0GZdKAIbPt8geU7AtHifpZKpqbX32KdV3hMkLEHd5cZcQeSR80X90p1CmapSX
+         pcOchjrWl35YFCbSBZ36FfRgqAFRjDgBfpOsRJ1v0qUkXMhHnWLYKF1Io0aJyy1MQVhm
+         3CrA==
+X-Gm-Message-State: AGi0PuZD5zABJoQBRWfANoXAcshncMHIp9CqAsaCUap2m8ICWNe2NC0Q
+        Hn/A1YKnQjqdVD0X+Ez1i5YLAopWhKunSwN94phsBQ==
+X-Google-Smtp-Source: APiQypIhu+D+NYyGc6aDVaCL3fwrGr6QHRs63cH7J5+S0wtewoZYpKa1DgGyMfdDUkXZCWbyAaELX35gTx3GXZa+Bh8=
+X-Received: by 2002:a19:f719:: with SMTP id z25mr21987672lfe.63.1588131039305;
+ Tue, 28 Apr 2020 20:30:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200428092105.GB3868@gaia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200429023104.131925-1-jannh@google.com> <20200429024648.GA23230@ZenIV.linux.org.uk>
+In-Reply-To: <20200429024648.GA23230@ZenIV.linux.org.uk>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 29 Apr 2020 05:30:12 +0200
+Message-ID: <CAG48ez3UsadMEHac-muTMvCgLPNV=BnFjn2sNWm59iQ-hxF+rw@mail.gmail.com>
+Subject: Re: [PATCH] epoll: Fix UAF dentry name access in wakeup source setup
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        NeilBrown <neilb@suse.de>, "Rafael J . Wysocki" <rjw@sisk.pl>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 29, 2020 at 4:46 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Wed, Apr 29, 2020 at 04:31:04AM +0200, Jann Horn wrote:
+> > I'm guessing this will go through akpm's tree?
+> >
+> >  fs/eventpoll.c | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+> > index 8c596641a72b0..5052a41670479 100644
+> > --- a/fs/eventpoll.c
+> > +++ b/fs/eventpoll.c
+> > @@ -1450,7 +1450,7 @@ static int reverse_path_check(void)
+> >
+> >  static int ep_create_wakeup_source(struct epitem *epi)
+> >  {
+> > -     const char *name;
+> > +     struct name_snapshot name;
+> >       struct wakeup_source *ws;
+> >
+> >       if (!epi->ep->ws) {
+> > @@ -1459,8 +1459,9 @@ static int ep_create_wakeup_source(struct epitem *epi)
+> >                       return -ENOMEM;
+> >       }
+> >
+> > -     name = epi->ffd.file->f_path.dentry->d_name.name;
+> > -     ws = wakeup_source_register(NULL, name);
+> > +     take_dentry_name_snapshot(&name, epi->ffd.file->f_path.dentry);
+> > +     ws = wakeup_source_register(NULL, name.name.name);
+> > +     release_dentry_name_snapshot(&name);
+>
+> I'm not sure I like it.  Sure, it won't get freed under you that way; it still
+> can go absolutely stale by the time you return from wakeup_source_register().
+> What is it being used for?
+
+The one user I'm aware of is Android; they use EPOLLWAKEUP in the
+following places:
+
+https://cs.android.com/search?q=EPOLLWAKEUP%20-file:strace%20-file:uapi%2F%20-file:syscall%2Fzerrors%20-file:sys%2Funix%2Fzerrors%20-file:prebuilts%2F%20-file:mod.rs%20-file:libcap-ng%2F%20-file:tests%2F&sq=
+
+I see timerfds, /dev/input/event*, some other stuff with input devices
+and video devices, binder, netlink socket, and some other stuff like
+that - nothing that's actually likely to be renamed.
 
 
-On 04/28/2020 02:51 PM, Catalin Marinas wrote:
-> On Tue, Apr 28, 2020 at 04:41:11AM -0400, Qian Cai wrote:
->> On Apr 28, 2020, at 1:54 AM, Anshuman Khandual <Anshuman.Khandual@arm.com> wrote:
->>> That is true. There is a slight change in the rules, making it explicit yes
->>> only when both ARCH_HAS_DEBUG_VM_PGTABLE and DEBUG_VM are enabled.
->>>
->>> +config DEBUG_VM_PGTABLE
->>> +    bool "Debug arch page table for semantics compliance"
->>> +    depends on MMU
->>> +    depends on !IA64 && !ARM
->>> +    depends on ARCH_HAS_DEBUG_VM_PGTABLE || EXPERT
->>> +    default y if ARCH_HAS_DEBUG_VM_PGTABLE && DEBUG_VM
->>> +    help
->>>
->>> The default is really irrelevant as the config option can be set explicitly.
->>
->> That could also explain. Since not long time ago, it was only “default
->> y if DEBUG_VM”, that caused the robot saved a .config with
->> DEBUG_VM_PGTABLE=y by default.
->>
->> Even though you changed the rule recently, it has no effect as the
->> robot could “make oldconfig” from the saved config for each linux-next
->> tree execution and the breakage will go on.
-> 
-> I'm not entirely sure that's the case. This report still points at the
-> old commit fa6726c1e7 which has:
-> 
-> +       depends on ARCH_HAS_DEBUG_VM_PGTABLE || EXPERT
-> +       default n if !ARCH_HAS_DEBUG_VM_PGTABLE
-> +       default y if DEBUG_VM
-> 
-> In -next we now have commit 647d9a0de34c and subsequently modified by
-> commit 0a8646638865. So hopefully with the latest -next tree we won't
-> see this report.
+Searching on cs.android.com for places that parse this stuff, there
+seems to be some code that uploads it as part of bug reports or
+something (?), and some parser whose precise purpose I can't figure
+out right now:
+<https://cs.android.com/android/platform/superproject/+/master:frameworks/base/core/java/com/android/internal/os/KernelWakelockReader.java;l=210?q=%2Fwakeup_sources%20-file:sepolicy%20&ss=android>
 
-Could some one from LKP test framework, please confirm if this still causes
-above problem on the latest linux-next by default ?
+(Arve might know what this is actually good for.)
+
+
+Anyway, I don't think that name is actually particularly critical to
+the correct functioning of the system; and the bug is a memory
+corruption issue, so we should fix it somehow. And adding
+infrastructure to power management so that it can invoke a callback to
+figure out the (potentially, under rare circumstances, changing) name
+of a wakeup source seems like a bit of overkill to me.
