@@ -2,94 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F82E1BEC57
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 01:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABEA1BEC5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 01:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgD2XCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 19:02:32 -0400
-Received: from mga11.intel.com ([192.55.52.93]:65455 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726164AbgD2XCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 19:02:32 -0400
-IronPort-SDR: iWRh/dzCdigfwf3JFZ8vSIJuaBggYo5ezW3522W6R9U9d4KkEG1k/SM+5urXKTLuBbp21b6vm0
- jbR99PfxCzUQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 16:02:31 -0700
-IronPort-SDR: vaokhmIa5VvUIIGTviyZG7HRd2E2dm4X6gRMTkTynFEuEdgrWdwd8jJvVqbzFY+T805xnbtKLB
- MEqgunexeidg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
-   d="scan'208";a="405202065"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga004.jf.intel.com with ESMTP; 29 Apr 2020 16:02:30 -0700
-Message-ID: <dd5b9bab31ecf247a0b4890e22bfbb486ff52001.camel@intel.com>
-Subject: Re: [PATCH v10 01/26] Documentation/x86: Add CET description
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        id S1727946AbgD2XDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 19:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727025AbgD2XDE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 19:03:04 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42927C035495
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 16:03:04 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id t3so3923632qkg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 16:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=UyDw5QOX4WfyUC8G627O7ysI5MXH2/kRIYRidhm+34A=;
+        b=Lf9PP9+pAmFpHpj/QA/vAUx6tPP+SMmy9otSkTHgBufep+WZtwcfRYFXHUYzeNOZY0
+         SSSAR5BfKXwu+JpXHmhJr/JUUF9F5hoGfhF6zI6lutQMd9Gy8+ZrIUYooreCLbeZdRSc
+         A0tS3wmiYn5H/hE8vNDkLWe9KcZ9XxaAC14AzAByukRe7mwS8No33u3J0IZlCXxvO6Ph
+         T0mxIgWGenP6PReTGK9OG7LFtVW/sn/EUUbm4WEIwCHNzRpfNw3inm8gqhw/QKNkHvdf
+         0S5BwcySsi/C4sLiJ/A9nsBPJGLQoB/ie9s3uFiuMVtheZVMWRuv7ke7ViClk89F4oDY
+         e4DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UyDw5QOX4WfyUC8G627O7ysI5MXH2/kRIYRidhm+34A=;
+        b=XJjnFuF30EhSwMDuc2CBvncNMqTdfJd24aJj/hMrqc8J8P9wY07zdGhLlV9asVHLTP
+         xqJeKtWLrkD3vUt2cR2dLOQDsNyijOi1+vVlijJt2j4d49u1wbkFWlZmxESj9IbQ9bfw
+         jJ5U+jWY4uDJzWbaUHzi8jt27iLBKI4opMjlfkghwJ6ajAA0uoGo9Own1tpMmi35o8ZU
+         aHMbboZOTvKHKmLZweOHryelc8SwTr7deZZwZIIU01kPwY6WUvtyQwWGHHMJ5Nihp/3F
+         pS0wuN/ZHfJSxnU+09nheQlf24yaup1JsbxfMd/F5XWVIpXOxhZK8hDFcisXHRsG+6SN
+         4ibw==
+X-Gm-Message-State: AGi0PuYGfY4V3TcS9E+bL7/Ke93k0qNrI9aapftDsTd8sK1nfWEtQ2PB
+        84+AspK4a+jY4I+olWZnFHTHJw==
+X-Google-Smtp-Source: APiQypIMM3qPwE29FFUjHN0D+hYMHptYMFkDQiz7DJhIoeMIpRIpI7WoZIuhGnKXuL/3vQ+au4ADbA==
+X-Received: by 2002:a05:620a:166d:: with SMTP id d13mr787657qko.448.1588201383344;
+        Wed, 29 Apr 2020 16:03:03 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id i2sm446118qki.54.2020.04.29.16.03.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 29 Apr 2020 16:03:02 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jTvjJ-0000sP-V0; Wed, 29 Apr 2020 20:03:01 -0300
+Date:   Wed, 29 Apr 2020 20:03:01 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     linux-doc@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
         Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>,
         Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>
-Date:   Wed, 29 Apr 2020 16:02:33 -0700
-In-Reply-To: <b5197a8d-5d8b-e1f7-68d4-58d80261904c@intel.com>
-References: <20200429220732.31602-1-yu-cheng.yu@intel.com>
-         <20200429220732.31602-2-yu-cheng.yu@intel.com>
-         <b5197a8d-5d8b-e1f7-68d4-58d80261904c@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [regression?] Re: [PATCH v6 06/12] mm/gup: track FOLL_PIN pages
+Message-ID: <20200429230301.GL26002@ziepe.ca>
+References: <5b901542-d949-8d7e-89c7-f8d5ee20f6e9@nvidia.com>
+ <20200424141548.5afdd2bb@w520.home>
+ <665ffb48-d498-90f4-f945-997a922fc370@nvidia.com>
+ <20200428105455.30343fb4@w520.home>
+ <20200428174957.GV26002@ziepe.ca>
+ <20200428130752.75c153bd@w520.home>
+ <20200428192251.GW26002@ziepe.ca>
+ <20200428141223.5b1653db@w520.home>
+ <20200429002903.GZ26002@ziepe.ca>
+ <20200429135633.626a8411@w520.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200429135633.626a8411@w520.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-04-29 at 15:53 -0700, Dave Hansen wrote:
-> On 4/29/20 3:07 PM, Yu-cheng Yu wrote:
-> > +Note:
-> > +  There is no CET-enabling arch_prctl function.  By design, CET is enabled
-> > +  automatically if the binary and the system can support it.
+On Wed, Apr 29, 2020 at 01:56:33PM -0600, Alex Williamson wrote:
+> On Tue, 28 Apr 2020 21:29:03 -0300
+> Jason Gunthorpe <jgg@ziepe.ca> wrote:
 > 
-> I think Andy and I danced around this last time.  Let me try to say it
-> more explicitly.
+> > On Tue, Apr 28, 2020 at 02:12:23PM -0600, Alex Williamson wrote:
+> > 
+> > > > > Maybe I was just getting lucky before this commit.  For a
+> > > > > VM_PFNMAP, vaddr_get_pfn() only needs pin_user_pages_remote() to return
+> > > > > error and the vma information that we setup in vfio_pci_mmap().    
+> > > > 
+> > > > I've written on this before, vfio should not be passing pages to the
+> > > > iommu that it cannot pin eg it should not touch VM_PFNMAP vma's in the
+> > > > first place.
+> > > > 
+> > > > It is a use-after-free security issue the way it is..  
+> > > 
+> > > Where is the user after free?  Here I'm trying to map device mmio space
+> > > through the iommu, which we need to enable p2p when the user owns
+> > > multiple devices.  
+> > 
+> > Yes, I gathered what the intent was..
+> > 
+> > > The device is owned by the user, bound to vfio-pci, and can't be
+> > > unbound while the user has it open.  The iommu mappings are torn
+> > > down on release.  I guess I don't understand the problem.  
+> > 
+> > For PFNMAP VMAs the lifecycle rule is basically that the PFN inside
+> > the VMA can only be used inside the mmap_sem that read it. Ie you
+> > cannot take a PFN outside the mmap_sem and continue to use it.
+> > 
+> > This is because the owner of the VMA owns the lifetime of that PFN,
+> > and under the write side of the mmap_sem it can zap the PFN, or close
+> > the VMA. Afterwards the VMA owner knows that there are no active
+> > reference to the PFN in the system and can reclaim the PFN
+> > 
+> > ie the PFNMAP has no per-page pin counter. All lifetime revolves around
+> > the mmap_sem and the vma.
+> > 
+> > What vfio does is take the PFN out of the mmap_sem and program it into
+> > the iommu.
+> > 
+> > So when the VMA owner decides the PFN has no references, it actually
+> > doesn't: vfio continues to access it beyond its permitted lifetime.
+> > 
+> > HW like mlx5 and GPUs have BAR pages which have security
+> > properties. Once the PFN is returned to the driver the security
+> > context of the PFN can be reset and re-assigned to another
+> > process. Using VFIO a hostile user space can retain access to the BAR
+> > page and upon its reassignment access a security context they were not
+> > permitted to access.
+> > 
+> > This is why GUP does not return PFNMAP pages and vfio should not carry
+> > a reference outside the mmap_sem. It breaks all the lifetime rules.
 > 
-> I want CET kernel enabling to able to be disconnected from the on-disk
-> binary.  I want a binary compiled with CET to be able to disable it, and
-> I want a binary not compiled with CET to be able to enable it.  I want
-> different threads in a process to be able to each have different CET status.
+> Thanks for the explanation.  I'm inferring that there is no solution to
+> this, 
 
-The kernel patches we have now can be modified to support this model.  If after
-discussion this is favorable, I will modify code accordingly.
+Not a particularly good one unfortunately. I've been wanting to use
+P2P_DMA pages to solve these kinds of things but they are kind of
+expensive.
 
-> Which JITs was this tested with?  I think as a bare minimum we need to
-> know that this design can accommodate _a_ modern JIT.  It would be
-> horrible if the browser javascript engines couldn't use this design, for
-> instance.
+I have a copy of some draft patches trying to do this
 
-JIT work is still in progress.  When that is available I will test it.
+> but why can't we use mmu notifiers to invalidate the iommu on zap or
+> close?
 
-Yu-cheng
+Hum.. I think with the new mmu interval notifiers vfio might be able
+to manage that without a huge amount of trouble. But the iommu
+invalidation needs to be synchronous from a mmu notifier callback - is
+that feasible?
 
+But even so, we have all this stuff now for authorizing PCI P2P which
+this design completely ignores as well. :(
+
+> I know that at least QEMU won't consider these sorts of mapping
+> fatal, so we could possibly change the default and make support for
+> such mappings opt-in, but I don't know if I'd break DPDK, or
+> potentially users within QEMU that make use of p2p between devices.
+
+I'd heard this was mostly for GPU device assignment? I'd be surprised
+if DPDK used this..
+
+Jason
