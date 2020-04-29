@@ -2,166 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA95F1BD44F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B50411BD44A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgD2GAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 02:00:24 -0400
-Received: from twhmllg3.macronix.com ([211.75.127.131]:11644 "EHLO
-        TWHMLLG3.macronix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgD2GAX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 02:00:23 -0400
-Received: from twhfmlp1.macronix.com (twhfmlp1.macronix.com [172.17.20.91])
-        by TWHMLLG3.macronix.com with ESMTP id 03T5xaO9000906;
-        Wed, 29 Apr 2020 13:59:36 +0800 (GMT-8)
-        (envelope-from masonccyang@mxic.com.tw)
-Received: from MXML06C.mxic.com.tw (mxml06c.macronix.com [172.17.14.55])
-        by Forcepoint Email with ESMTP id D119FB1EA87A141E4B92;
-        Wed, 29 Apr 2020 13:59:36 +0800 (CST)
-In-Reply-To: <20200428083423.4fafd187@collabora.com>
-References: <1587451187-6889-1-git-send-email-masonccyang@mxic.com.tw>  <20200421092328.129308f6@collabora.com>
-        <20200427175536.2mmei2fy6f7bg6jm@yadavpratyush.com>     <OF18214CA5.6A9B2B30-ON48258558.001D894C-48258558.002249E0@mxic.com.tw> <20200428083423.4fafd187@collabora.com>
-To:     "Boris Brezillon" <boris.brezillon@collabora.com>
-Cc:     broonie@kernel.org, juliensu@mxic.com.tw,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, "Pratyush Yadav" <me@yadavpratyush.com>,
-        miquel.raynal@bootlin.com, "Pratyush Yadav" <p.yadav@ti.com>,
-        richard@nod.at, tudor.ambarus@microchip.com, vigneshr@ti.com
-Subject: Re: [PATCH v2 0/5] mtd: spi-nor: Add support for Octal 8D-8D-8D mode
+        id S1726551AbgD2GAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 02:00:10 -0400
+Received: from mga02.intel.com ([134.134.136.20]:37800 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726353AbgD2GAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 02:00:10 -0400
+IronPort-SDR: oHqEgtaXIhl3isy6Hf8G2t+e//ONqNeSicsrJSoyfIwwtyH91kg2Oyary+Dpg6ts79rOmDbTYd
+ sdKdbFsE8ibA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 23:00:10 -0700
+IronPort-SDR: tdP0JcozjqYHzyECyiw/jSMEsOE06f5G+Xx1KzyJMydy7oBY26+A7gv7lcK33Wa9GZIUsD60eM
+ YTMGInxN1rcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,330,1583222400"; 
+   d="scan'208";a="404937027"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.210.254]) ([10.254.210.254])
+  by orsmga004.jf.intel.com with ESMTP; 28 Apr 2020 23:00:06 -0700
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        ashok.raj@intel.com, Liu Yi L <yi.l.liu@intel.com>,
+        kevin.tian@intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] iommu/vt-d: Add page request draining support
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+References: <20200422080611.15689-1-baolu.lu@linux.intel.com>
+ <20200422080611.15689-4-baolu.lu@linux.intel.com>
+ <20200428203644.3dcf13f2@jacob-builder>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <3dd69b64-fc2c-bcfe-dc5f-cbca2b8c351f@linux.intel.com>
+Date:   Wed, 29 Apr 2020 14:00:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-KeepSent: C28C41CE:C7A0DF28-48258559:00209CD2;
- type=4; name=$KeepSent
-X-Mailer: Lotus Notes Release 8.5.3FP4 SHF90 June 10, 2013
-Message-ID: <OFC28C41CE.C7A0DF28-ON48258559.00209CD2-48258559.0020EC27@mxic.com.tw>
-From:   masonccyang@mxic.com.tw
-Date:   Wed, 29 Apr 2020 13:59:36 +0800
-X-MIMETrack: Serialize by Router on MXML06C/TAIWAN/MXIC(Release 9.0.1FP10 HF265|July 25, 2018) at
- 2020/04/29 PM 01:59:36,
-        Serialize complete at 2020/04/29 PM 01:59:36
-Content-Type: text/plain; charset="US-ASCII"
-X-MAIL: TWHMLLG3.macronix.com 03T5xaO9000906
+In-Reply-To: <20200428203644.3dcf13f2@jacob-builder>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jacob,
 
-Hi Boris,
-
-> > > > On Tue, 21 Apr 2020 14:39:42 +0800
-> > > > Mason Yang <masonccyang@mxic.com.tw> wrote:
-> > > > 
-> > > > > Hello,
-> > > > > 
-> > > > > This is repost of patchset from Boris Brezillon's
-> > > > > [RFC,00/18] mtd: spi-nor: Proposal for 8-8-8 mode support [1]. 
-> > > > 
-> > > > I only quickly went through the patches you sent and saying it's a
-> > > > repost of the RFC is a bit of a lie. You completely ignored the 
-state
-> > > > tracking I was trying to do to avoid leaving the flash in 8D mode 
-when
-> > > > suspending/resetting the board, and I think that part is crucial. 
-If I
-> > > > remember correctly, we already had this discussion so I must say 
-I'm a
-> > > > bit disappointed.
-> > > > 
-> > > > Can you sync with Pratyush? I think his series [1] is better in 
-that 
-> > it
-> > > > tries to restore the flash in single-SPI mode before suspend (it's
-> > > > missing the shutdown case, but that can be easily added I think). 
-Of
-> > > > course that'd be even better to have proper state tracking at the 
-SPI
-> > > > NOR level. 
-> > > 
-> > > Hi Mason,
-> > > 
-> > > I posted a re-roll of my series here [0]. Could you please base your 
-
-> > > changes on top of it? Let me know if the series is missing something 
-you 
-> > 
-> > > need.
-> > > 
-> > > [0] 
-> > 
-https://lore.kernel.org/linux-mtd/20200424184410.8578-1-p.yadav@ti.com/
-> > 
-> > 
-> > Our mx25uw51245g supports BFPT DWORD-18,19 and 20 data and xSPI 
-profile 
-> > 1.0,
-> > and it comply with BFPT DWORD-19, octal mode enable sequences by write 
-CFG 
-> > Reg2 
-> > with instruction 0x72. Therefore, I can't apply your patches.
-> > 
-> > I quickly went through your patches but can't reply them in each your 
-> > patches.
+On 2020/4/29 11:36, Jacob Pan wrote:
+> On Wed, 22 Apr 2020 16:06:10 +0800
+> Lu Baolu<baolu.lu@linux.intel.com>  wrote:
 > 
-> Why?!! Aren't you registered to the MTD mailing list? Sorry but having
-> reviews outside of the original thread is far from ideal. Please find a
-> way to reply to the original patchset.
+>> When a PASID is stopped or terminated, there can be pending PRQs
+>> (requests that haven't received responses) in remapping hardware.
+>> This adds the interface to drain page requests and call it when a
+>> PASID is terminated.
+>>
+>> Signed-off-by: Jacob Pan<jacob.jun.pan@linux.intel.com>
+>> Signed-off-by: Liu Yi L<yi.l.liu@intel.com>
+>> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel-svm.c   | 103
+>> ++++++++++++++++++++++++++++++++++-- include/linux/intel-iommu.h |
+>> 4 ++ 2 files changed, 102 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/iommu/intel-svm.c b/drivers/iommu/intel-svm.c
+>> index 83dc4319f661..2534641ef707 100644
+>> --- a/drivers/iommu/intel-svm.c
+>> +++ b/drivers/iommu/intel-svm.c
+>> @@ -23,6 +23,7 @@
+>>   #include "intel-pasid.h"
+>>   
+>>   static irqreturn_t prq_event_thread(int irq, void *d);
+>> +static void intel_svm_drain_prq(struct device *dev, int pasid);
+>>   
+>>   #define PRQ_ORDER 0
+>>   
+>> @@ -66,6 +67,8 @@ int intel_svm_enable_prq(struct intel_iommu *iommu)
+>>   	dmar_writeq(iommu->reg + DMAR_PQT_REG, 0ULL);
+>>   	dmar_writeq(iommu->reg + DMAR_PQA_REG,
+>> virt_to_phys(iommu->prq) | PRQ_ORDER);
+>> +	init_completion(&iommu->prq_complete);
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> @@ -208,6 +211,7 @@ static void intel_mm_release(struct mmu_notifier
+>> *mn, struct mm_struct *mm) rcu_read_lock();
+>>   	list_for_each_entry_rcu(sdev, &svm->devs, list) {
+>>   		intel_pasid_tear_down_entry(svm->iommu, sdev->dev,
+>> svm->pasid);
+>> +		intel_svm_drain_prq(sdev->dev, svm->pasid);
+> mmu_notifier release is called in atomic context, drain_prq needs to
+> wait for completion. I tested exit path when a process crashes. I got
 > 
-> > 
-> > i.e,.
-> > 1) [v4,03/16] spi: spi-mem: allow specifying a command's extension
-> > 
-> > -                                u8 opcode;
-> > +                                u16 opcode;
-> > 
-> > big/little Endian issue, right?
+> [  +0.696214] BUG: sleeping function called from invalid context at kernel/sched/completion.c:101
+> [  +0.000068] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 3235, name: dsatest
+> [  +0.000046] INFO: lockdep is turned off.
+> [  +0.000002] CPU: 1 PID: 3235 Comm: dsatest Not tainted 5.7.0-rc1-z-svmtest+ #1637
+> [  +0.000000] Hardware name: Intel Corporation Kabylake Client platform/Skylake Halo DDR4 RVP11, BIOS
+> 04.1709050855 09/05/2017
+> [  +0.000001] Call Trace:
+> [  +0.000004]  dump_stack+0x68/0x9b
+> [  +0.000003]  ___might_sleep+0x229/0x250
+> [  +0.000003]  wait_for_completion_timeout+0x3c/0x110
+> [  +0.000003]  intel_svm_drain_prq+0x12f/0x210
+> [  +0.000003]  intel_mm_release+0x73/0x110
+> [  +0.000003]  __mmu_notifier_release+0x94/0x220
+> [  +0.000002]  ? do_munmap+0x10/0x10
+> [  +0.000002]  ? prepare_ftrace_return+0x5c/0x80
+> [  +0.000003]  exit_mmap+0x156/0x1a0
+> [  +0.000002]  ? mmput+0x44/0x120
+> [  +0.000003]  ? exit_mmap+0x5/0x1a0
+> [  +0.000002]  ? ftrace_graph_caller+0xa0/0xa0
+> [  +0.000001]  mmput+0x5e/0x120
 > 
-> There's no endianness issue since it's SPI controller responsibility to
-> interpret this field.
-> 
-> > why not just u8 ext_opcode;
-> 
-> Because I see the ext_ext_code comimg, and it's also more consistent
-> with the addr field if we use an u16 and a number of cmd cycles.
-> 
-> > No any impact for exist code and actually only xSPI device use 
-extension 
-> > command.
-> 
-> And extending the opcode field to an u16 has no impact either.
 > 
 
-okay, got your point.
+Thanks a lot!
 
-thanks for your time & comments.
-Mason
+Actually, we can't drain page requests in this mm_notifier code path,
+right? The assumptions of page request draining are that 1) the device
+driver has drained DMA requests in the device end; 2) the pasid entry
+has been marked as non-present. So we could only drain page requests in
+the unbind path.
 
+Thought?
 
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information 
-and/or personal data, which is protected by applicable laws. Please be 
-reminded that duplication, disclosure, distribution, or use of this e-mail 
-(and/or its attachments) or any part thereof is prohibited. If you receive 
-this e-mail in error, please notify us immediately and delete this mail as 
-well as its attachment(s) from your system. In addition, please be 
-informed that collection, processing, and/or use of personal data is 
-prohibited unless expressly permitted by personal data protection laws. 
-Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
-
-
-============================================================================
-
-CONFIDENTIALITY NOTE:
-
-This e-mail and any attachments may contain confidential information and/or personal data, which is protected by applicable laws. Please be reminded that duplication, disclosure, distribution, or use of this e-mail (and/or its attachments) or any part thereof is prohibited. If you receive this e-mail in error, please notify us immediately and delete this mail as well as its attachment(s) from your system. In addition, please be informed that collection, processing, and/or use of personal data is prohibited unless expressly permitted by personal data protection laws. Thank you for your attention and cooperation.
-
-Macronix International Co., Ltd.
-
-=====================================================================
-
+Best regards,
+baolu
