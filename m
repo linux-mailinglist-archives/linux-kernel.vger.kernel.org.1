@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896041BD975
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FACE1BD978
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgD2KVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 06:21:15 -0400
-Received: from mga02.intel.com ([134.134.136.20]:51286 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726596AbgD2KVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 06:21:14 -0400
-IronPort-SDR: UQsTIgWKefsUMXqtPLXQxg6ouBAnKfC0T2foVfLRiD30WX95Ib0np7GaTcmizyElBwiCEyDIb7
- iFP1BcBj7tgg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 03:21:13 -0700
-IronPort-SDR: ySQ0rVq4vj1Kw0NWsqMA+zUA61ak4m1l5gWDv1p/wODWBKx+zsg31IJqEqxh6l7ecsbszvc/KA
- dDhAkfJSz4uA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,331,1583222400"; 
-   d="scan'208";a="404999202"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004.jf.intel.com with ESMTP; 29 Apr 2020 03:21:11 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jTjq6-003hwH-5E; Wed, 29 Apr 2020 13:21:14 +0300
-Date:   Wed, 29 Apr 2020 13:21:14 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Syed Nayyar Waris <syednwaris@gmail.com>
-Cc:     akpm@linux-foundation.org, vilhelm.gray@gmail.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        michal.simek@xilinx.com, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/4] gpio: xilinx: Utilize for_each_set_clump macro
-Message-ID: <20200429102114.GF185537@smile.fi.intel.com>
-References: <cover.1588112714.git.syednwaris@gmail.com>
- <80745504d15c87aa1da0d4be3c16d1279f48615b.1588112716.git.syednwaris@gmail.com>
+        id S1726904AbgD2KVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 06:21:32 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:35883 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726885AbgD2KVa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 06:21:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588155689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hz9HME15vkT56qMj5LmOqA+tedqqwOFQ+Q8WjdDrPz0=;
+        b=I71aYNgv0YXq1BFxTBbkTRFBPbeu8VithDOBhcQxc+/nT6ATOCxUAnwgnrgzxe4jAhUYa8
+        kMVeKoKwnUf2eq/my1BTVZVhDx04OEfVTtmZ1fMV+ohh26Upt0Ig7RwoaYFBtzOOnSmKFW
+        nxyQg2IqD014Nud/Z+HAor3rVzTwH50=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-rMocXUIJPfmLRVlaChmbwQ-1; Wed, 29 Apr 2020 06:21:28 -0400
+X-MC-Unique: rMocXUIJPfmLRVlaChmbwQ-1
+Received: by mail-wm1-f72.google.com with SMTP id n17so810651wmi.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 03:21:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hz9HME15vkT56qMj5LmOqA+tedqqwOFQ+Q8WjdDrPz0=;
+        b=p5XVrz5Shpgc+wxWtGY1dUsqLhKcwJQy+6bhNaQpsNg7KFONl2BTwxTs/5asop8n1I
+         4Cywp/z0QbSpb9pc4emORpgekW77+/3vSVzm7SpbxtSqeT2In84MxVmKLxv9GSJZWlGs
+         QAuYOSnD23gUC8roxuuv6XhjPP2yg7Fbb1VcoHHZG6Cqwbe3xfiBpBa8+EmpxPCM1znJ
+         ooI2yN8EPd1dGdnAvxMObfg72gTbDWdS8OtiPEk5sSMFd05egas+JjQO0OE+QY9KJxZk
+         6pjcWthVru4xlgRAHX9ewKM2jmym0rkDkFulQrzEl/LrJny4vod9Ls127Kv1YDZJJmfk
+         XmzQ==
+X-Gm-Message-State: AGi0PuaAWqbAOXmKr3ytzIyBp/+HnKnjyqKyXKjolrsjoXzzfoL7La7G
+        +81MwJxeB9pO7bmKbStjUfgVbIfXGJDLISZNA6zuWT//A011BZmhFteopXU6VXboixANdlmj2rD
+        JeNHmvBAHKVL9yiw7kGwEgqOg
+X-Received: by 2002:a1c:2457:: with SMTP id k84mr2313344wmk.96.1588155687036;
+        Wed, 29 Apr 2020 03:21:27 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKKMMdeorh+RY8Ed8FPGANq5KrsjW/4VRsW6587QQ+69w47F8p9jVy1kPAJs3+G3UIspNlEEg==
+X-Received: by 2002:a1c:2457:: with SMTP id k84mr2313325wmk.96.1588155686804;
+        Wed, 29 Apr 2020 03:21:26 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id 36sm30729577wrc.35.2020.04.29.03.21.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Apr 2020 03:21:26 -0700 (PDT)
+Subject: Re: [PATCH][v2] kvm: x86: emulate APERF/MPERF registers
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Li RongQing <lirongqing@baidu.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        hpa@zytor.com, bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        joro@8bytes.org, jmattson@google.com, wanpengli@tencent.com,
+        vkuznets@redhat.com, sean.j.christopherson@intel.com
+References: <1588139196-23802-1-git-send-email-lirongqing@baidu.com>
+ <20200429085440.GG13592@hirez.programming.kicks-ass.net>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <201824a4-6b0f-9061-ec21-26d71fa11bc4@redhat.com>
+Date:   Wed, 29 Apr 2020 12:21:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <80745504d15c87aa1da0d4be3c16d1279f48615b.1588112716.git.syednwaris@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200429085440.GG13592@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 04:39:47AM +0530, Syed Nayyar Waris wrote:
-> This patch reimplements the xgpio_set_multiple function in
-> drivers/gpio/gpio-xilinx.c to use the new for_each_set_clump macro.
-> Instead of looping for each bit in xgpio_set_multiple
-> function, now we can check each channel at a time and save cycles.
+On 29/04/20 10:54, Peter Zijlstra wrote:
+> On Wed, Apr 29, 2020 at 01:46:36PM +0800, Li RongQing wrote:
+>> Guest kernel reports a fixed cpu frequency in /proc/cpuinfo,
+>> this is confused to user when turbo is enable, and aperf/mperf
+>> can be used to show current cpu frequency after 7d5905dc14a
+>> "(x86 / CPU: Always show current CPU frequency in /proc/cpuinfo)"
+>> so we should emulate aperf mperf to achieve it
+>>
+>> the period of aperf/mperf in guest mode are accumulated as
+>> emulated value, and add per-VM knod to enable emulate mperfaperf
+>>
+>> diff v1:
+>> 1. support AMD
+>> 2. support per-vm capability to enable
+> Would it make sense to provide a pass-through APERF/MPERF for
+> KVM_HINTS_REALTIME ? Because that hint guarantees we have a 1:1 vCPU:CPU
+> binding and guaranteed no over-commit.
+> 
 
-> +	const unsigned long state_size = BITS_PER_TYPE(*state);
+Yes but that's up to userspace.
 
-This '*state' is unneeded complication, use BITS_PER_U32.
-
-> +#define TOTAL_BITS BITS_PER_TYPE(chip->gpio_state)
-
-This macro makes code uglier, besides the fact of absence of #undef.
-And also see above.
-
-> +	DECLARE_BITMAP(old, TOTAL_BITS);
-> +	DECLARE_BITMAP(new, TOTAL_BITS);
-> +	DECLARE_BITMAP(changed, TOTAL_BITS);
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Paolo
 
