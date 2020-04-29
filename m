@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82B21BDA9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D711BDA9E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbgD2L3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 07:29:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:37524 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726554AbgD2L3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 07:29:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B947012FC;
-        Wed, 29 Apr 2020 04:29:03 -0700 (PDT)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D509C3F73D;
-        Wed, 29 Apr 2020 04:29:02 -0700 (PDT)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v2 4/4] kselftest: Move test_vdso to the vDSO test suite
-Date:   Wed, 29 Apr 2020 12:28:34 +0100
-Message-Id: <20200429112834.24908-5-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200429112834.24908-1-vincenzo.frascino@arm.com>
-References: <20200429112834.24908-1-vincenzo.frascino@arm.com>
+        id S1726907AbgD2L3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 07:29:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726839AbgD2L3D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 07:29:03 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B72C03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 04:29:03 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id i27so1350309ota.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 04:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
+        b=MVQhrFPcxGc7VwYVJE5zBfsSVJNQ2/TX6tg+ljTG/W4hGrH7tHLJBqdfarnDUQSSzk
+         2kR9aOPBub7a92OxovH7egG+OTv/krEZ+9KUM0HJ1+TRFqO5KS1EYq0q59CqZHjob2Rh
+         gmK0Nwk7X6Dhjv/CeeKXg/FL2770YwJHTgoIVBmCxYU7D0PgdxFmj00UHvgEHPeKinKH
+         QpvTbc8VsBjoagZXC0hHHAzgSDbTRTVls3O8ZpJKek9/G2TrDFdckc261wBkP/VAmlyY
+         lWEUWJlqQnCj4cpBGCaGsRDj7RjtUEXVnqCO7quhSv+WLTxxbsB7Ey7OhhKnkMEfr+iy
+         i65g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XXiibj26cwiCy87WU+u2jxQnAx+tvjXXNcEInMJCZoA=;
+        b=e7/2p6pdn48xPdiG6m+DrjX6Xi/nyNPiKO0kR7N55Ns/Fbe6pgylAMQGYGshIxcOI4
+         BJcvKMn0B+PYh28GHoI7KbE0VsDPBSTifZLyyG/xdnAwD5qh3sCcubwbQP3wBqyB34tw
+         kITVVdm6RX1e4+lZpjKhR5a/9wrclnU9Zw4SXnoYN36f1jitFADDPnEMBGxX+Ln20f5/
+         s4Iu0gSDzeW38jnJaZW91kC/mkPx8g2DlIeW0m62uRlCDNlPaLbRjPxcHn0rDLNWI7HI
+         TgACZgOeDMB3FLN85UVbyy8K2xVNPi8A7LIZSQ/0hbnlvrcKBGTIgj8sPufVD+O2V6g1
+         e24Q==
+X-Gm-Message-State: AGi0PuY9mjsgs9YRMeAR5OJJbBcD3BKbaUGiysn5cbPRcBGbbzKw45h9
+        KZrYF9G1Kam65YNTsxNfZlaUqwNkKAcjOT1CBtU=
+X-Google-Smtp-Source: APiQypIbkO8SL60JINDAG702+YA0RNchXbId85pTjlsuk4bh20OL9T9u2O8tvgk3vBARJWQMKXlZdlVjPkkyS7UqNsc=
+X-Received: by 2002:a9d:3b8:: with SMTP id f53mr26254823otf.37.1588159742698;
+ Wed, 29 Apr 2020 04:29:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a4a:330d:0:0:0:0:0 with HTTP; Wed, 29 Apr 2020 04:29:02
+ -0700 (PDT)
+Reply-To: idrisomar259@gmail.com
+From:   Idris Omar <ahmedibram684@gmail.com>
+Date:   Wed, 29 Apr 2020 04:29:02 -0700
+Message-ID: <CAG6EmfLF8VjyWj5W3Or9L9AyP6Ek-rq8B6+GuB8Mjf0XrRBFGw@mail.gmail.com>
+Subject: hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move test_vdso from x86 to the vDSO test suite.
-
-Suggested-by: Andy Lutomirski <luto@kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
----
- tools/testing/selftests/vDSO/Makefile                  | 10 ++++++++--
- .../test_vdso.c => vDSO/vdso_correctness_test_x86.c}   |  0
- tools/testing/selftests/x86/Makefile                   |  2 +-
- 3 files changed, 9 insertions(+), 3 deletions(-)
- rename tools/testing/selftests/{x86/test_vdso.c => vDSO/vdso_correctness_test_x86.c} (100%)
-
-diff --git a/tools/testing/selftests/vDSO/Makefile b/tools/testing/selftests/vDSO/Makefile
-index 7b096eedfd5d..cdffb51cb413 100644
---- a/tools/testing/selftests/vDSO/Makefile
-+++ b/tools/testing/selftests/vDSO/Makefile
-@@ -7,12 +7,14 @@ ARCH ?= $(shell echo $(uname_M) | sed -e s/i.86/x86/ -e s/x86_64/x86/)
- TEST_GEN_PROGS := $(OUTPUT)/vdso_test
- TEST_GEN_PROGS += $(OUTPUT)/vdso_full_test
- TEST_GEN_PROGS += $(OUTPUT)/vdso_clock_getres
--ifeq ($(ARCH),x86)
-+ifeq ($(ARCH),$(filter $(ARCH),x86 x86_64))
- TEST_GEN_PROGS += $(OUTPUT)/vdso_standalone_test_x86
-+TEST_GEN_PROGS += $(OUTPUT)/vdso_correctness_test_x86
- endif
- 
- CFLAGS := -std=gnu99
- CFLAGS_vdso_standalone_test_x86 := -nostdlib -fno-asynchronous-unwind-tables -fno-stack-protector
-+LDFLAGS_vdso_correctness_test_x86 := -ldl
- ifeq ($(CONFIG_X86_32),y)
- LDLIBS += -lgcc_s
- endif
-@@ -25,4 +27,8 @@ $(OUTPUT)/vdso_standalone_test_x86: vdso_standalone_test_x86.c parse_vdso.c
- 	$(CC) $(CFLAGS) $(CFLAGS_vdso_standalone_test_x86) \
- 		vdso_standalone_test_x86.c parse_vdso.c \
- 		-o $@
--
-+$(OUTPUT)/vdso_correctness_test_x86: vdso_correctness_test_x86.c
-+	$(CC) $(CFLAGS) \
-+		vdso_correctness_test_x86.c \
-+		-o $@ \
-+		$(LDFLAGS_vdso_correctness_test_x86)
-diff --git a/tools/testing/selftests/x86/test_vdso.c b/tools/testing/selftests/vDSO/vdso_correctness_test_x86.c
-similarity index 100%
-rename from tools/testing/selftests/x86/test_vdso.c
-rename to tools/testing/selftests/vDSO/vdso_correctness_test_x86.c
-diff --git a/tools/testing/selftests/x86/Makefile b/tools/testing/selftests/x86/Makefile
-index 5d49bfec1e9a..d20586a4cfd2 100644
---- a/tools/testing/selftests/x86/Makefile
-+++ b/tools/testing/selftests/x86/Makefile
-@@ -12,7 +12,7 @@ CAN_BUILD_WITH_NOPIE := $(shell ./check_cc.sh $(CC) trivial_program.c -no-pie)
- 
- TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt test_mremap_vdso \
- 			check_initial_reg_state sigreturn iopl ioperm \
--			protection_keys test_vdso test_vsyscall mov_ss_trap \
-+			protection_keys test_vsyscall mov_ss_trap \
- 			syscall_arg_fault
- TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
- 			test_FCMOV test_FCOMI test_FISTTP \
 -- 
-2.25.2
+Sir / Madam,
 
+Hi Friend I am the accountant and auditing manager of the
+International Finance Bank Plc bf I want to transfer an abandoned sum
+of 10.5 millions USD  to your account.50% will be for you. No risk
+involved.
+
+Contact me for more details.
+
+Kindly reply me back to my alternative email address (
+idrisomar259@gmail.com  )
+
+Thanks,
+
+Mr Idris Omar
