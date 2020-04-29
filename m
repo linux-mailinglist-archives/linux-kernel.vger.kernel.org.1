@@ -2,126 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18701BE497
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F7D1BE486
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgD2RBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 13:01:46 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:52393 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726456AbgD2RBo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 13:01:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588179703; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=QSQIZIE1UkRMlEWP8K7XFOlZNS3rxvCKF1UPsNcLMS0=; b=pU7IuFhpaU8FNBnOpGxCRdUenoESVsvBn7Zce8XJ3/GCfryl0nTLa4H/4YH4Y69rVK90M9U8
- nOo6ftOr6JyGsXW2z1wah3zmlmGDYh6giyJTSzGRkk1omFFT7SLF8wETUDu1cEBBfMw+gAk0
- XWm4RZSn2JrrzL9YjAfP990AS9A=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea9b2bd.7fc83cd46618-smtp-out-n03;
- Wed, 29 Apr 2020 17:00:45 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 079C8C43636; Wed, 29 Apr 2020 17:00:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from sayalil-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sayalil)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 08338C433CB;
-        Wed, 29 Apr 2020 17:00:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 08338C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sayalil@codeaurora.org
-From:   Sayali Lokhande <sayalil@codeaurora.org>
-To:     jaegeuk@kernel.org, yuchao0@huawei.com,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     stummala@codeaurora.org, linux-kernel@vger.kernel.org,
-        Sayali Lokhande <sayalil@codeaurora.org>
-Subject: [PATCH V3] f2fs: Avoid double lock for cp_rwsem during checkpoint
-Date:   Wed, 29 Apr 2020 22:30:30 +0530
-Message-Id: <1588179630-22819-1-git-send-email-sayalil@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+        id S1727084AbgD2RAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 13:00:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:42294 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727070AbgD2RAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 13:00:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 39FA41045;
+        Wed, 29 Apr 2020 10:00:49 -0700 (PDT)
+Received: from [192.168.0.14] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 479573F73D;
+        Wed, 29 Apr 2020 10:00:46 -0700 (PDT)
+Subject: Re: [PATCH v9 01/18] arm64: kexec: make dtb_mem always enabled
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+References: <20200326032420.27220-1-pasha.tatashin@soleen.com>
+ <20200326032420.27220-2-pasha.tatashin@soleen.com>
+From:   James Morse <james.morse@arm.com>
+Cc:     jmorris@namei.org, sashal@kernel.org, ebiederm@xmission.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        corbet@lwn.net, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, maz@kernel.org,
+        vladimir.murzin@arm.com, matthias.bgg@gmail.com,
+        bhsharma@redhat.com, linux-mm@kvack.org, mark.rutland@arm.com,
+        steve.capper@arm.com, rfontana@redhat.com, tglx@linutronix.de,
+        selindag@gmail.com
+Message-ID: <f29c53ec-a152-a4a9-6d50-7aeedd60173f@arm.com>
+Date:   Wed, 29 Apr 2020 18:00:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200326032420.27220-2-pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There could be a scenario where f2fs_sync_node_pages gets
-called during checkpoint, which in turn tries to flush
-inline data and calls iput(). This results in deadlock as
-iput() tries to hold cp_rwsem, which is already held at the
-beginning by checkpoint->block_operations().
+Hi Pavel,
 
-Call stack :
+On 26/03/2020 03:24, Pavel Tatashin wrote:
+> Currently, dtb_mem is enabled only when CONFIG_KEXEC_FILE is
+> enabled. This adds ugly ifdefs to c files.
 
-Thread A		Thread B
-f2fs_write_checkpoint()
-- block_operations(sbi)
- - f2fs_lock_all(sbi);
-  - down_write(&sbi->cp_rwsem);
+~s/dtb_mem/ARCH_HAS_KIMAGE_ARCH/ ?
+dtb_mem is just one member of struct kimage_arch.
 
-                        - open()
-                         - igrab()
-                        - write() write inline data
-                        - unlink()
-- f2fs_sync_node_pages()
- - if (is_inline_node(page))
-  - flush_inline_data()
-   - ilookup()
-     page = f2fs_pagecache_get_page()
-     if (!page)
-      goto iput_out;
-     iput_out:
-			-close()
-			-iput()
-       iput(inode);
-       - f2fs_evict_inode()
-        - f2fs_truncate_blocks()
-         - f2fs_lock_op()
-           - down_read(&sbi->cp_rwsem);
 
-Fixes: 399368372ed9 ("f2fs: introduce a new global lock scheme")
-Signed-off-by: Sayali Lokhande <sayalil@codeaurora.org>
----
- fs/f2fs/checkpoint.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+> Always enabled dtb_mem, when it is not used, it is NULL.
+> Change the dtb_mem to phys_addr_t, as it is a physical address.
 
-diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
-index 5ba649e..97b6378 100644
---- a/fs/f2fs/checkpoint.c
-+++ b/fs/f2fs/checkpoint.c
-@@ -1219,21 +1219,19 @@ static int block_operations(struct f2fs_sb_info *sbi)
- 		goto retry_flush_quotas;
- 	}
- 
--retry_flush_nodes:
- 	down_write(&sbi->node_write);
- 
- 	if (get_pages(sbi, F2FS_DIRTY_NODES)) {
- 		up_write(&sbi->node_write);
-+		up_write(&sbi->node_change);
-+		f2fs_unlock_all(sbi);
- 		atomic_inc(&sbi->wb_sync_req[NODE]);
- 		err = f2fs_sync_node_pages(sbi, &wbc, false, FS_CP_NODE_IO);
- 		atomic_dec(&sbi->wb_sync_req[NODE]);
--		if (err) {
--			up_write(&sbi->node_change);
--			f2fs_unlock_all(sbi);
-+		if (err)
- 			goto out;
--		}
- 		cond_resched();
--		goto retry_flush_nodes;
-+		goto retry_flush_quotas;
- 	}
- 
- 	/*
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Regardless,
+Reviewed-by: James Morse <james.morse@arm.com>
+
+
+Thanks,
+
+James
