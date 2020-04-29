@@ -2,206 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD7E1BD82E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6311BD835
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgD2J0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 05:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42044 "EHLO
+        id S1726524AbgD2J1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 05:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726345AbgD2J0d (ORCPT
+        by vger.kernel.org with ESMTP id S1726423AbgD2J1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 05:26:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B96C03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 02:26:33 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jTiyy-0007rD-OA; Wed, 29 Apr 2020 11:26:20 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1jTiyu-00011L-62; Wed, 29 Apr 2020 11:26:16 +0200
-Date:   Wed, 29 Apr 2020 11:26:16 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Philippe Schenker <philippe.schenker@toradex.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "sergei.shtylyov@cogentembedded.com" 
-        <sergei.shtylyov@cogentembedded.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "david@protonic.nl" <david@protonic.nl>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Kazuya Mizuguchi <kazuya.mizuguchi.ks@renesas.com>
-Subject: Re: [PATCH net-next v3] net: phy: micrel: add phy-mode support for
- the KSZ9031 PHY
-Message-ID: <20200429092616.7ug4kdgdltxowkcs@pengutronix.de>
-References: <20200422072137.8517-1-o.rempel@pengutronix.de>
- <CAMuHMdU1ZmSm_tjtWxoFNako2fzmranGVz5qqD2YRNEFRjX0Sw@mail.gmail.com>
- <20200428154718.GA24923@lunn.ch>
- <6791722391359fce92b39e3a21eef89495ccf156.camel@toradex.com>
- <CAMuHMdXm7n6cE5-ZjwxU_yKSrCaZCwqc_tBA+M_Lq53hbH2-jg@mail.gmail.com>
+        Wed, 29 Apr 2020 05:27:54 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8972FC03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 02:27:54 -0700 (PDT)
+Received: from zn.tnic (p200300EC2F0B9500F107CEE1E1E2B6BF.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:9500:f107:cee1:e1e2:b6bf])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4A7661EC0C77;
+        Wed, 29 Apr 2020 11:27:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1588152472;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=DrGwM1kYHwl+AZjo5HyYbhiUN3fFeAiO6sqppkogEjQ=;
+        b=GVsO25Fm12j8NYVq8vJvLOEQrqQNQeGVvr2rFD8kLl/3gqHi4wE+VJ37KxU4F1KXpRnc9x
+        HBv0bFMCEngAkQ9CQXCHB+hnBoiIT2yqgK4n+j4RRSLb50ITM6ih1ShZkznXqOugCpsccB
+        fhhjt3kd8IkuqUKQmP/Pllw+hW0eXfY=
+Date:   Wed, 29 Apr 2020 11:27:35 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v3 05/10] x86/fpu/xstate: Define new functions for
+ clearing fpregs and xstates
+Message-ID: <20200429092735.GA16407@zn.tnic>
+References: <20200328164307.17497-1-yu-cheng.yu@intel.com>
+ <20200328164307.17497-6-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="f37udlmunv3yqdec"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdXm7n6cE5-ZjwxU_yKSrCaZCwqc_tBA+M_Lq53hbH2-jg@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 10:46:27 up 166 days, 5 min, 179 users,  load average: 0.11, 0.06,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200328164307.17497-6-yu-cheng.yu@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Mar 28, 2020 at 09:43:02AM -0700, Yu-cheng Yu wrote:
+> @@ -318,18 +313,40 @@ static inline void copy_init_fpstate_to_fpregs(void)
+>   * Called by sys_execve(), by the signal handler code and by various
+>   * error paths.
+>   */
+> -void fpu__clear(struct fpu *fpu)
+> +static void fpu__clear(struct fpu *fpu, int clear_user_only)
 
---f37udlmunv3yqdec
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I said:
 
-Hi Geert,
+"fpu__clear(struct fpu *fpu, bool user_only)"
+			     ^^^^^^^^^^^^^^
 
-On Wed, Apr 29, 2020 at 10:45:35AM +0200, Geert Uytterhoeven wrote:
-> Hi Philippe,
->=20
-> On Tue, Apr 28, 2020 at 6:16 PM Philippe Schenker
-> <philippe.schenker@toradex.com> wrote:
-> > On Tue, 2020-04-28 at 17:47 +0200, Andrew Lunn wrote:
-> > > On Tue, Apr 28, 2020 at 05:28:30PM +0200, Geert Uytterhoeven wrote:
-> > > > This triggers on Renesas Salvator-X(S):
-> > > >
-> > > >     Micrel KSZ9031 Gigabit PHY e6800000.ethernet-ffffffff:00:
-> > > > *-skew-ps values should be used only with phy-mode =3D "rgmii"
-> > > >
-> > > > which uses:
-> > > >
-> > > >         phy-mode =3D "rgmii-txid";
-> > > >
-> > > > and:
-> > > >
-> > > >         rxc-skew-ps =3D <1500>;
-> > > >
-> > > > If I understand Documentation/devicetree/bindings/net/ethernet-
-> > > > controller.yaml
-> > > > correctly:
-> > >
-> > > Checking for skews which might contradict the PHY-mode is new. I think
-> > > this is the first PHY driver to do it. So i'm not too surprised it has
-> > > triggered a warning, or there is contradictory documentation.
-> > >
-> > > Your use cases is reasonable. Have the normal transmit delay, and a
-> > > bit shorted receive delay. So we should allow it. It just makes the
-> > > validation code more complex :-(
-> >
-> > I reviewed Oleksij's patch that introduced this warning. I just want to
-> > explain our thinking why this is a good thing, but yes maybe we change
-> > that warning a little bit until it lands in mainline.
-> >
-> > The KSZ9031 driver didn't support for proper phy-modes until now as it
-> > don't have dedicated registers to control tx and rx delays. With
-> > Oleksij's patch this delay is now done accordingly in skew registers as
-> > best as possible. If you now also set the rxc-skew-ps registers those
-> > values you previously set with rgmii-txid or rxid get overwritten.
-> >
-> > We chose the warning to occur on phy-modes 'rgmii-id', 'rgmii-rxid' and
-> > 'rgmii-txid' as on those, with the 'rxc-skew-ps' value present,
-> > overwriting skew values could occur and you end up with values you do
-> > not wanted. We thought, that most of the boards have just 'rgmii' set in
-> > phy-mode with specific skew-values present.
-> >
-> > @Geert if you actually want the PHY to apply RXC and TXC delays just
-> > insert 'rgmii-id' in your DT and remove those *-skew-ps values. If you
->=20
-> That seems to work for me, but of course doesn't take into account PCB
-> routing.
+you made it
 
-On boards with simple design, the clock lines have nearly same length as da=
-ta
-lines. To provide needed clock delay, you should make clock line ~17
-centimeter longer than data lines. Or configure PHY or MAC side to
-provide needed delay.
-Since "phy-mode =3D "rgmii-txid"" was ignored till my patch. And the
-"rxc-skew-ps =3D <1500>" will add a delay of 0.6 nano seconds. Your
-configuration was:
-TX delay =3D 1.2ns
-RX delay =3D 0.6ns
+		     ..., int clear_user_only)
 
-Is it really reflects the configuration of you PCB?
+Why?
 
-> > need custom timing due to PCB routing it was thought out to use the phy-
-> > mode 'rgmii' and do the whole required timing with the *-skew-ps values.
->=20
-> That mean we do have to provide all values again?
+If you agree with the review comment, then please do it as suggested. If
+you don't, then say why you don't.
 
-No. Using proper phy-mode should be enough. If you using default TX dealy a=
-nd
-configuring RX delay manually, the phy-mode =3D "rgmii-id" is
-the right choice for you.
+Why would you do something in-between?
 
-> Using "rgmii" without any skew values makes DHCP fail on R-Car H3 ES2.0,
-> M3-W (ES1.0), and M3-N (ES1.0). Interestingly, DHCP still works on R-Car
-> H3 ES1.0.
+>  {
+> -	WARN_ON_FPU(fpu != &current->thread.fpu); /* Almost certainly an anomaly */
 
-The TX delay affects MAC to PHY path. The RX delay affects PHY to MAC
-path. On my HW, disabling TX delays, didn't affected the communication
-in any measurable way. Even with clock line length is equal to the data
-lines length. So, it may work just on the edge of the spec.
+Why are you moving this into the callers when *both* do it?
 
-> Note that I'm not too-familiar with the actual skew values needed
-> (CC Mizuguchi-san).
->=20
-> Related commits:
->   - 0e45da1c6ea6b186 ("arm64: dts: r8a7795: salvator-x: Fix
-> EthernetAVB PHY timing")
->   - dda3887907d74338 ("arm64: dts: r8a7795: Use rgmii-txid phy-mode
-> for EthernetAVB")
->   - 7eda14afb8843a0d ("arm64: dts: renesas: r8a77990: ebisu: Fix
-> EthernetAVB phy mode to rgmii")
+> +	if (static_cpu_has(X86_FEATURE_FPU)) {
 
-Regards,
-Oleksij.
---=20
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Flip this logic:
 
---f37udlmunv3yqdec
-Content-Type: application/pgp-signature; name="signature.asc"
+	if (!static_cpu_has(X86_FEATURE_FPU)) {
+                fpu__drop(fpu);
+                fpu__initialize(fpu);
+		return;
+	}
 
------BEGIN PGP SIGNATURE-----
+	fpregs_lock();
+	...
 
-iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl6pSDQACgkQ4omh9DUa
-UbPJAQ/+LKRfA0dP7eKYb/DDX4v/6S1nJMmwoCCWrjVB2nGeUL5a/T7s4AwotKvp
-D3uzbGzyVgzYo41Sl+OUDqxVA9vJ2/dKG2AooUL641ptkc03zh4ihhQajjhrIb9h
-1ig4lARM60ngONJprFehqGRbDw7MP+QmYWc9zHfh16xEDeHG/jYnvsCs9bUyIMts
-YMcwCngMANU6qDG2xxsYwAgCp+wuUVbXsn4Syh2kaL5LaoM/4sMEE1nyjQ/a/DZP
-rQN92+rX2KPS2Rp3xY2qD2Cz20c4kcuXfMNOnFJRuyBqNggdFmkezxl+QvRhTULe
-VcGMSwH9uOSVh0zze72JdCI2zj3VZd/iS7Bs94wvQpbYhlB27SpG5eq1msJ7RX8c
-tTjIBm98l4fSRRpDne5dXa+A2ThifkOeh1bGnFjJCIyXffQ1UC2PEgLVp8WW2stf
-wQfOgZnv8c8FXbSx+IgBuIcgiZtCkd3f9Nyn+MbFZqVthqRZdt5Dc2o9UiljABQP
-Rg/JMcuCjYZUWWgFNmvFCKi45I4Xh6RRCwk3TTMQUOmOanMJEY77s8/Jymjsx3tA
-PIbqTf8Nmcv+rGGHAgMm3AWmQc+kGNBoydKtdZ64yfNZjY9FzNAaU7ZmIRLz99UH
-SzocUdqZt91pTtN4G33dJLSTyWgOS1WFdpQJsbrAQl9z0u+0hkU=
-=ZopQ
------END PGP SIGNATURE-----
+to save an indentation level and make the important case more readable
+and locking more prominent.
 
---f37udlmunv3yqdec--
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
