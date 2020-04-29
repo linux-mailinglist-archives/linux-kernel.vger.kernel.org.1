@@ -2,141 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8D81BD7A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78EC1BD7F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgD2Ix5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 04:53:57 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:23544 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726345AbgD2Ix5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 04:53:57 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T8qTRP032348;
-        Wed, 29 Apr 2020 10:52:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=BEwhmA5i7vXM6Du+soyBhv27RZwVEwPtgYeu2uOQAdY=;
- b=nGDnVU34/IVp7EvLTZ6q+pMXYpiSeBs/bEwmp7/GwPzwKKQIjFv0bKkzG7H5v4P9BYFU
- 4wrhPRSq5lc8H2/O0CzKjo9QTv97JgHp5plUO5zFWmFBoMREur0t5qwuJwULGrRkz4QE
- dico+50yZXFrBt0jj5a7DWAe3FdKyMiiWp3jSirKVdPP7gFoREX5krRR2q5wYEiYLrwH
- OpP7UlsgJoxzlJ3bhskmYmg35cClgWEner/dVqaApS7fajbuRQvRSUehd16guTQSnXwu
- 9HO4gCn4+Qgk9ZW8zgB38mygMl1CM3uevJewHrDPuUTuuBR8HRb/ROIGo+86Pr+A8k4X Cw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30mhq655yq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 10:52:51 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7AF8A100034;
-        Wed, 29 Apr 2020 10:52:50 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 642582073F6;
-        Wed, 29 Apr 2020 10:52:50 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.51) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 29 Apr
- 2020 10:52:49 +0200
-Subject: Re: [PATCH v3 11/14] remoteproc: Deal with synchronisation when
- changing FW image
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <bjorn.andersson@linaro.org>, <ohad@wizery.com>
-CC:     <loic.pallardy@st.com>, <s-anna@ti.com>,
-        <linux-remoteproc@vger.kernel.org>, <corbet@lwn.net>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200424200135.28825-1-mathieu.poirier@linaro.org>
- <20200424200135.28825-12-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <4ab6d7ac-905b-494e-cce7-cb8a697decb7@st.com>
-Date:   Wed, 29 Apr 2020 10:52:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200424200135.28825-12-mathieu.poirier@linaro.org>
+        id S1726625AbgD2JJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 05:09:18 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:36918 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726423AbgD2JJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 05:09:17 -0400
+Received: from BC-Mail-Ex32.internal.baidu.com (unknown [172.31.51.26])
+        by Forcepoint Email with ESMTPS id 31488EF6B05385D52B1B;
+        Wed, 29 Apr 2020 16:53:21 +0800 (CST)
+Received: from BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) by
+ BC-Mail-Ex32.internal.baidu.com (172.31.51.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1979.3; Wed, 29 Apr 2020 16:53:20 +0800
+Received: from BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) by
+ BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) with mapi id
+ 15.01.1713.004; Wed, 29 Apr 2020 16:53:21 +0800
+From:   "Li,Rongqing" <lirongqing@baidu.com>
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHg4NjogbW92ZSB0dXJib19kaXNhYmxlZCgpIG91?=
+ =?utf-8?B?dCBvZiBpbnRlbF9zZXRfbWF4X2ZyZXFfcmF0aW8=?=
+Thread-Topic: [PATCH] x86: move turbo_disabled() out of
+ intel_set_max_freq_ratio
+Thread-Index: AQHWHf5SNM6UMcxYQk+vHgcwGgRbdKiPywfQ
+Date:   Wed, 29 Apr 2020 08:53:20 +0000
+Message-ID: <98dec9ed285d4f96baccc73195cac84e@baidu.com>
+References: <1588125007-8799-1-git-send-email-lirongqing@baidu.com>
+ <1588148110.21179.63.camel@suse.cz>
+In-Reply-To: <1588148110.21179.63.camel@suse.cz>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.198.9]
+x-baidu-bdmsfe-datecheck: 1_BC-Mail-Ex32_2020-04-29 16:53:21:041
+x-baidu-bdmsfe-viruscheck: BC-Mail-Ex32_GRAY_Inside_WithoutAtta_2020-04-29
+ 16:53:21:025
 Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG8NODE3.st.com (10.75.127.24) To SFHDAG3NODE1.st.com
- (10.75.127.7)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-29_03:2020-04-28,2020-04-29 signatures=0
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/24/20 10:01 PM, Mathieu Poirier wrote:
-> This patch prevents the firmware image from being displayed or changed
-> when the remoteproc core is synchronising with a remote processor. This
-> is needed since there is no guarantee about the nature of the firmware
-> image that is loaded by the external entity.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
->  drivers/remoteproc/remoteproc_sysfs.c | 24 +++++++++++++++++++++++-
->  1 file changed, 23 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-> index 7f8536b73295..cdd322a6ecfa 100644
-> --- a/drivers/remoteproc/remoteproc_sysfs.c
-> +++ b/drivers/remoteproc/remoteproc_sysfs.c
-> @@ -13,9 +13,20 @@
->  static ssize_t firmware_show(struct device *dev, struct device_attribute *attr,
->  			  char *buf)
->  {
-> +	ssize_t ret;
->  	struct rproc *rproc = to_rproc(dev);
->  
-> -	return sprintf(buf, "%s\n", rproc->firmware);
-> +	/*
-> +	 * In most instances there is no guarantee about the firmware
-> +	 * that was loaded by the external entity.  As such simply don't
-> +	 * print anything.
-> +	 */
-> +	if (rproc_needs_syncing(rproc))
-> +		ret = sprintf(buf, "\n");
-
-A default name is provided in sysfs if no firmware is started/synchronised on boot.
-
-IMO providing an empty name here could be confusing.
-Perhaps a refactoring of this sysfs entry would be nice:
- - Normal boot (no firmware loaded) : empty name instead of a default name
- - auto_boot: name provided by the platform driver or default name ( current implementation)
- - synchronization: a predefined name such as Default, unknown, External, None,...   
-
-> +	else
-> +		ret = sprintf(buf, "%s\n", rproc->firmware);
-> +
-> +	return ret;
->  }
->  
->  /* Change firmware name via sysfs */
-> @@ -39,6 +50,17 @@ static ssize_t firmware_store(struct device *dev,
->  		goto out;
->  	}
->  
-> +	/*
-> +	 * There is no point in trying to change the firmware if loading the
-> +	 * image of the remote processor is done by another entity.
-> +	 */
-> +	if (rproc_needs_syncing(rproc)) {
-> +		dev_err(dev,
-> +			"can't change firmware while synchronising with MCU\n");
-
-I don't know if you decide to keep "MCU" or not. If not the case
-you have also some other instances in your patch 9/14.
-
-Regards
-Arnaud
-
-> +		err = -EBUSY;
-> +		goto out;
-> +	}
-> +
->  	len = strcspn(buf, "\n");
->  	if (!len) {
->  		dev_err(dev, "can't provide a NULL firmware\n");
-> 
+DQo+IEhlbGxvLA0KPiANCj4gdGhlIHByb2JsZW0gaXMgdGhhdCB0dXJibyBjYW4gYmUgZW5hYmxl
+ZC9kaXNhYmxlZCBieSB0aGUgZmlybXdhcmUgYXQgcnVudGltZSwNCj4gYWZ0ZXIgdGhlIG1hY2hp
+bmUgaGFzIGJvb3RlZC4NCj4gDQo+IFRoaXMgaGFwcGVucyBmb3IgZXhhbXBsZSB3aXRoIHRoZSBE
+ZWxsIFhQUyAxMywgd2hlcmUgdHVyYm8gZ2V0cyBkaXNhYmxlZCBieQ0KPiB0aGUgZmlybXdhcmUg
+aWYgdGhlIG1hY2hpbmUgaXMgZGlzY29ubmVjdGVkIGZyb20gQUMgcG93ZXIgYW5kIHJ1bnMgb24g
+YmF0dGVyeS4NCj4gVGhlIGxhcHRvcCBjb3VsZCBib290IG9uIGJhdHRlcnkgKHR1cmJvIGRpc2Fi
+bGVkKSwgdGhlbiBhZnRlciBzb21lIHRpbWUgdGhlDQo+IHVzZXIgY29ubmVjdHMgdGhlIEFDIHBv
+d2VyIHN1cHBseSwgdHVyYm8gZ2V0cyBlbmFibGVkLCBhbmQgd2l0aCB5b3VyIHBhdGNoDQo+IHdl
+IHdvdWxkbid0IGtub3cgd2hhdCBpcyB0aGUgdHVyYm9fZnJlcS9iYXNlX2ZyZXEgcmF0aW8gdG8g
+ZG8gZnJlcXVlbmN5DQo+IGludmFyaWFuY2UgKHdlIHNraXBwZWQgcmVhZGluZyBNU1JfVFVSQk9f
+UkFUSU9fTElNSVQgYXQgYm9vdCBiZWNhdXNlDQo+IHR1cmJvIHdhcyBkaXNhYmxlZCBhdCB0aGF0
+IHRpbWVkKS4NCj4gDQo+IFRoaXMgYmVoYXZpb3Igd2FzIHJlcXVlc3RlZCBieSByZXZpZXdlcnMg
+aW4gdGhpcyB0aHJlYWQ6DQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMTkwNjQyNi5I
+RHFhVmE3MW1GQGtyZWFjaGVyLw0KPiBhbmQgaW1wbGVtZW50ZWQgd2l0aCA5MTgyMjljZGQ1YWIg
+KCJ4ODYvaW50ZWxfcHN0YXRlOiBIYW5kbGUgcnVudGltZSB0dXJibw0KPiBkaXNhYmxlbWVudC9l
+bmFibGVtZW50IGluIGZyZXF1ZW5jeSBpbnZhcmlhbmNlIikuDQo+IA0KDQoNClRoYW5rcyBmb3Ig
+eW91IGV4cGxhbmF0aW9uDQoNClNvcnJ5IGZvciBub2lzZQ0KDQotTGkNCg0KPiANCj4gVGhhbmtz
+LA0KPiBHaW92YW5uaSBHaGVyZG92aWNoDQo=
