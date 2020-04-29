@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408C11BE2B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9081BE2BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgD2P3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:29:36 -0400
-Received: from mga05.intel.com ([192.55.52.43]:51969 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726423AbgD2P3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:29:36 -0400
-IronPort-SDR: ZbHsZ18bGBlN0FU7L68dy+01UZi695KSWoDdpV/tyVtdLTRHUddhYxEWYJ+DgpxtZ5xnuRpwA7
- o3w5WM+9kOWg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 08:29:35 -0700
-IronPort-SDR: wHf8dhSjYq1ovl6/KJN6kiRcTLDiQ66kPnQ15/b7VAWrefT12q7R2zmrmTVy6hxv4qabvPobuF
- ghmfu4hGXVAw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,332,1583222400"; 
-   d="scan'208";a="432595853"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 29 Apr 2020 08:29:35 -0700
-Received: from [10.255.166.42] (vramuthx-mobl1.gar.corp.intel.com [10.255.166.42])
-        by linux.intel.com (Postfix) with ESMTP id B2A905802C8;
-        Wed, 29 Apr 2020 08:29:30 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v4 2/2] mtd: rawnand: Add NAND controller support on Intel
- LGM SoC
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>,
-        qi-ming.wu@intel.com
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, cheol.yong.kim@intel.com,
-        hauke.mehrtens@intel.com, anders.roxell@linaro.org,
-        vigneshr@ti.com, arnd@arndb.de, richard@nod.at,
-        brendanhiggins@google.com, linux-mips@vger.kernel.org,
-        robh+dt@kernel.org, miquel.raynal@bootlin.com, tglx@linutronix.de,
-        masonccyang@mxic.com.tw, andriy.shevchenko@intel.com
-References: <20200429104205.18780-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200429104205.18780-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200429162249.55d38ee8@collabora.com>
- <9d77c64c-d0f9-7a13-3391-d05bf458bdb1@linux.intel.com>
- <20200429164832.6800fc70@collabora.com>
- <2e83a2f7-853c-f0e2-f686-daf1e0649eae@linux.intel.com>
-Message-ID: <f5961645-fe35-7ef5-05ff-c1529c5699a1@linux.intel.com>
-Date:   Wed, 29 Apr 2020 23:29:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727032AbgD2Pac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726937AbgD2Pac (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 11:30:32 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A33B3C03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:30:31 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id y24so2492783wma.4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:30:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N9yPL5U8quFESl4Stw3OsG4QqTTqIkWJu59ukHEiK9k=;
+        b=whxuS1tBIOGCXGKR4D9txfj0YrmvLOppPzKf133Orw2xrDFaxNC2NVAj2Yxms3Btjw
+         NHvTheC/ne7068Zqc8rsMg+2BAga/XkLIMao16bcGyxemQ9q9tPqOjHk0EluqowWkXKP
+         rm2JZAmN0vdwbkYiYGVNeiyAnsrCfqjEdvzEutsmoYC9XAyQMi2c6PjQHLansB11bjyF
+         bAUz0LQ+Eq99vqYrtX7aMn19G5+Vdwv7XDOACYvKaODSQs9rSt0XJ86Th9EXer1tOHDZ
+         ZX6Bc45zaPh7n7Ra92xD31RtoqDp7AyFTEGH76JSzCHwW70/ZSoSvsFSSJUMHHiKJ0T5
+         Qbkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N9yPL5U8quFESl4Stw3OsG4QqTTqIkWJu59ukHEiK9k=;
+        b=t0fgS+yB8MnZY6OXsVZd43jWBEMuj3v5/x4jVNr/dJBjeqPmxwiHqWXHlfGewTE6D6
+         YQjDNsXhPT/soeT2VDaQYC+a1Lsgg5ici0/vl30OifMAxpEWmS1yf463naRgzTEqPrIK
+         0VdulGl+IoPOSwTYaBGw36SKsiqVVA5jFkbI2F8qey1ub5Ox6je+gJIOC6Un5XDH3he5
+         GvWJi1OAy/Kl6zDP2H1NIKDBPwXgbMsyWMH6eQ7kKYfwoR9QPRhAUQkRpeTxL8QB3iju
+         cZb4cXKWgXs/0MbBWoxGkO99UL10kxNrjELufj8ABy0mL/mP4+2xVTCyeZiZAHWMegAK
+         QLgw==
+X-Gm-Message-State: AGi0PuaXUAmCrXHylqsmkh3UJKT2e+f3CK1ytXP7b01uDCGyYKsuNXfu
+        iTEBO5Lh+Yq6jZNdqv61N25eglcL19Q=
+X-Google-Smtp-Source: APiQypI9ooSvKXGzfgE7VydIt8jFs20yFTtVFE5oUkIKvGGCN0t6yST0jxtjPo1HsMTn0kxs9wv4CQ==
+X-Received: by 2002:a05:600c:2314:: with SMTP id 20mr4090739wmo.118.1588174200388;
+        Wed, 29 Apr 2020 08:30:00 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.gmail.com with ESMTPSA id l5sm7923729wmi.22.2020.04.29.08.29.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 08:29:59 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        arnd@arndb.de, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] misc: fastrpc: fix memory leak
+Date:   Wed, 29 Apr 2020 16:29:51 +0100
+Message-Id: <20200429152951.18504-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <2e83a2f7-853c-f0e2-f686-daf1e0649eae@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
+if misc_register() fails, previously allocated data is left without freeing,
+this could result in memory leak.
 
-On 29/4/2020 11:18 pm, Ramuthevar, Vadivel MuruganX wrote:
-> +    writel(lower_32_bits(ebu_host->cs[ebu_host->cs_num].nand_pa) |
-> +           EBU_ADDR_SEL_REGEN | EBU_ADDR_MASK,
-> +           ebu_host->ebu + EBU_ADDR_SEL(reg));
-> +
-> +    writel(EBU_MEM_BASE_CS_0 | EBU_ADDR_MASK | EBU_ADDR_SEL_REGEN,
-> +           ebu_host->ebu + EBU_ADDR_SEL(0));
+So fix it!
 
-Good catch!, one will be removed , Thanks !
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/misc/fastrpc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Regards
-Vadivel
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index e3e085e33d46..9065d3e71ff7 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -1613,8 +1613,10 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
+ 					    domains[domain_id]);
+ 	data->miscdev.fops = &fastrpc_fops;
+ 	err = misc_register(&data->miscdev);
+-	if (err)
++	if (err) {
++		kfree(data);
+ 		return err;
++	}
+ 
+ 	kref_init(&data->refcount);
+ 
+-- 
+2.21.0
+
