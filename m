@@ -2,116 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7EA1BD6AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 09:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D72F1BD6BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgD2H4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 03:56:42 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:54284 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726381AbgD2H4l (ORCPT
+        id S1726661AbgD2IAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 04:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726345AbgD2IAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 03:56:41 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03T7uN8w007867;
-        Wed, 29 Apr 2020 02:56:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588146983;
-        bh=n4pmfRipX17yviyXCDK8at/AM0pg14P8PWeY9w6wQmA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=XDfkkNuUPYbFAV2lKtYm2z5y+m4/7Qo7STPFfnkln0JgNbc19/pUDC16TTyYK5sXU
-         nucf2/Vc057I3eFohiLDCxffAjvn4V7jzRRwHQMobraXzKpC5x7rTcq6jFO4loa1TL
-         0HeWsLMASeQNvQ4qgAkJK0RYBVKc6/W/G/SaptDo=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03T7uNgE116017
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 29 Apr 2020 02:56:23 -0500
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 29
- Apr 2020 02:56:22 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 29 Apr 2020 02:56:22 -0500
-Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03T7uJJV074144;
-        Wed, 29 Apr 2020 02:56:20 -0500
-Subject: Re: [PATCH] drm/bridge: fix stack usage warning on old gcc
-To:     Arnd Bergmann <arnd@arndb.de>, Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-CC:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-References: <20200428215408.4111675-1-arnd@arndb.de>
-From:   Tomi Valkeinen <tomi.valkeinen@ti.com>
-Message-ID: <22ee464b-f59a-69a3-b669-f821d567fbf5@ti.com>
-Date:   Wed, 29 Apr 2020 10:56:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 29 Apr 2020 04:00:34 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49925C03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 01:00:33 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id n11so651780pgl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 01:00:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daemons-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ws5RoUs9BriDfSRkNG63+mR2vT5tvodj3Q9+M/gLZPE=;
+        b=qSVAH55OAgDQsOQRCHZPWMz7fCVAjTpWBjYMm7LXCQTnMOyZ7Elx+iKUddqvqYhE1P
+         5lSnX2vvXhjb5t1uKWKpuLCXLC0Kq7hM7gQMlurrUmJpYJWK9vRicI8sgsa5LpB1ZnYc
+         w9ExbnqozKqsAhWbrZrBPQ3Lq613RtugMgi7PsciMGvEbqK7COPy6cJr88Gba9HyS8Ro
+         ot89vTYW0jh2ceXk9VYqTOomvnVgZXATVX0ijnXrEraTaQBjgBb7nFpuSXSDnV30ripJ
+         DJBLmAjW3CScH64lkaTG+zDfx8rZxhqf+86t1sbOrCj2EmF6gKk0llrPrB2W6cQ2t+5/
+         ncWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ws5RoUs9BriDfSRkNG63+mR2vT5tvodj3Q9+M/gLZPE=;
+        b=GKPHfNpoSmFz6LQ5468OOfh/1NPTCod78vxZBtiBD0DDFyGre3hdyNx6ElIDiPttOE
+         EZDECahUt8ZS3SHSgCZ7VZh7bCKmKaVSc/EZC/IIrebpNAGfK5JpnUdPqRiZrSGjFsIX
+         SNbiTrijoP0Zv7K+WdPizr00lpZwBqOYJ6PnxJjIFlxCwLkzfyecKCG1i+mAjjpWej/T
+         FD69j/W1PaIP+iI19ESEiwqlswzy4K9y599DKWeawpKRH2z/sqno7b/xZZuPMelgfcta
+         TBRrTywPshpbqMtxfLo8nuaXUCqzmvtVMnBizLJCX3EvL4gfnDIYmITlJ58UzEQT1h0k
+         M6Ug==
+X-Gm-Message-State: AGi0Pubmf2jyzHek9mPUQmgtNuCsAE95QlbpK/FpplyDQzYtsmbEynk9
+        rFAoPFZr2/ZOYUB/jvq3M5Qy
+X-Google-Smtp-Source: APiQypLJqpMAR4GU8Qdqt8+I9LRgFDuTqS0ubKbugPWxkmIZhA0qw3JVE9AjraFvZWusHh33uaY4+A==
+X-Received: by 2002:a62:ed14:: with SMTP id u20mr34503722pfh.69.1588147232557;
+        Wed, 29 Apr 2020 01:00:32 -0700 (PDT)
+Received: from localhost.localdomain ([47.156.151.166])
+        by smtp.googlemail.com with ESMTPSA id b3sm429253pga.48.2020.04.29.01.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 01:00:31 -0700 (PDT)
+From:   Clay McClure <clay@daemons.net>
+Cc:     Clay McClure <clay@daemons.net>, Arnd Bergmann <arnd@arndb.de>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Mao Wenan <maowenan@huawei.com>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Edward Cree <ecree@solarflare.com>,
+        Josh Triplett <josh@joshtriplett.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net: Make PTP-specific drivers depend on PTP_1588_CLOCK
+Date:   Wed, 29 Apr 2020 00:59:00 -0700
+Message-Id: <20200429075903.19788-1-clay@daemons.net>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200429072959.GA10194@arctic-shiba-lx>
+References: <20200429072959.GA10194@arctic-shiba-lx>
 MIME-Version: 1.0
-In-Reply-To: <20200428215408.4111675-1-arnd@arndb.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/04/2020 00:53, Arnd Bergmann wrote:
-> Some older versions of gcc badly optimize code that passes
-> an inline function argument into another function by reference,
-> causing huge stack usage:
-> 
-> drivers/gpu/drm/bridge/tc358768.c: In function 'tc358768_bridge_pre_enable':
-> drivers/gpu/drm/bridge/tc358768.c:840:1: error: the frame size of 2256 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
-> 
-> Use a temporary variable as a workaround and add a comment pointing
-> to the gcc bug.
-> 
-> Fixes: ff1ca6397b1d ("drm/bridge: Add tc358768 driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/gpu/drm/bridge/tc358768.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-> index 1b39e8d37834..6650fe4cfc20 100644
-> --- a/drivers/gpu/drm/bridge/tc358768.c
-> +++ b/drivers/gpu/drm/bridge/tc358768.c
-> @@ -178,6 +178,8 @@ static int tc358768_clear_error(struct tc358768_priv *priv)
->   
->   static void tc358768_write(struct tc358768_priv *priv, u32 reg, u32 val)
->   {
-> +	/* work around https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81715 */
-> +	int tmpval = val;
->   	size_t count = 2;
->   
->   	if (priv->error)
-> @@ -187,7 +189,7 @@ static void tc358768_write(struct tc358768_priv *priv, u32 reg, u32 val)
->   	if (reg < 0x100 || reg >= 0x600)
->   		count = 1;
->   
-> -	priv->error = regmap_bulk_write(priv->regmap, reg, &val, count);
-> +	priv->error = regmap_bulk_write(priv->regmap, reg, &tmpval, count);
->   }
->   
->   static void tc358768_read(struct tc358768_priv *priv, u32 reg, u32 *val)
-> 
+Commit d1cbfd771ce8 ("ptp_clock: Allow for it to be optional") changed
+all PTP-capable Ethernet drivers from `select PTP_1588_CLOCK` to `imply
+PTP_1588_CLOCK`, "in order to break the hard dependency between the PTP
+clock subsystem and ethernet drivers capable of being clock providers."
+As a result it is possible to build PTP-capable Ethernet drivers without
+the PTP subsystem by deselecting PTP_1588_CLOCK. Drivers are required to
+handle the missing dependency gracefully.
 
-tc358768_write is not inline. What is the inline function here? Or is tc358768_write optimized to 
-inline by the compiler?
+Some PTP-capable Ethernet drivers (e.g., TI_CPSW) factor their PTP code
+out into separate drivers (e.g., TI_CPTS_MOD). The above commit also
+changed these PTP-specific drivers to `imply PTP_1588_CLOCK`, making it
+possible to build them without the PTP subsystem. But as Grygorii
+Strashko noted in [1]:
 
-  Tomi
+On Wed, Apr 22, 2020 at 02:16:11PM +0300, Grygorii Strashko wrote:
 
+> Another question is that CPTS completely nonfunctional in this case and
+> it was never expected that somebody will even try to use/run such
+> configuration (except for random build purposes).
+
+In my view, enabling a PTP-specific driver without the PTP subsystem is
+a configuration error made possible by the above commit. Kconfig should
+not allow users to create a configuration with missing dependencies that
+results in "completely nonfunctional" drivers.
+
+I audited all network drivers that call ptp_clock_register() but merely
+`imply PTP_1588_CLOCK` and found five PTP-specific drivers that are
+likely nonfunctional without PTP_1588_CLOCK:
+
+    NET_DSA_MV88E6XXX_PTP
+    NET_DSA_SJA1105_PTP
+    MACB_USE_HWSTAMP
+    CAVIUM_PTP
+    TI_CPTS_MOD
+
+Note how these symbols all reference PTP or timestamping in their name;
+this is a clue that they depend on PTP_1588_CLOCK.
+
+Change them from `imply PTP_1588_CLOCK` [2] to `depends on PTP_1588_CLOCK`.
+I'm not using `select PTP_1588_CLOCK` here because PTP_1588_CLOCK has
+its own dependencies, which `select` would not transitively apply.
+
+Additionally, remove the `select NET_PTP_CLASSIFY` from CPTS_TI_MOD;
+PTP_1588_CLOCK already selects that.
+
+[1]: https://lore.kernel.org/lkml/c04458ed-29ee-1797-3a11-7f3f560553e6@ti.com/
+
+[2]: NET_DSA_SJA1105_PTP had never declared any type of dependency on
+PTP_1588_CLOCK (`imply` or otherwise); adding a `depends on PTP_1588_CLOCK`
+here seems appropriate.
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Richard Cochran <richardcochran@gmail.com>
+Cc: Nicolas Pitre <nico@fluxnic.net>
+Cc: Grygorii Strashko <grygorii.strashko@ti.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Fixes: d1cbfd771ce8 ("ptp_clock: Allow for it to be optional")
+Signed-off-by: Clay McClure <clay@daemons.net>
+---
+ drivers/net/dsa/mv88e6xxx/Kconfig    | 2 +-
+ drivers/net/dsa/sja1105/Kconfig      | 1 +
+ drivers/net/ethernet/cadence/Kconfig | 2 +-
+ drivers/net/ethernet/cavium/Kconfig  | 2 +-
+ drivers/net/ethernet/ti/Kconfig      | 3 +--
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/dsa/mv88e6xxx/Kconfig b/drivers/net/dsa/mv88e6xxx/Kconfig
+index 6435020d690d..51185e4d7d15 100644
+--- a/drivers/net/dsa/mv88e6xxx/Kconfig
++++ b/drivers/net/dsa/mv88e6xxx/Kconfig
+@@ -24,8 +24,8 @@ config NET_DSA_MV88E6XXX_PTP
+ 	bool "PTP support for Marvell 88E6xxx"
+ 	default n
+ 	depends on NET_DSA_MV88E6XXX_GLOBAL2
++	depends on PTP_1588_CLOCK
+ 	imply NETWORK_PHY_TIMESTAMPING
+-	imply PTP_1588_CLOCK
+ 	help
+ 	  Say Y to enable PTP hardware timestamping on Marvell 88E6xxx switch
+ 	  chips that support it.
+diff --git a/drivers/net/dsa/sja1105/Kconfig b/drivers/net/dsa/sja1105/Kconfig
+index 0fe1ae173aa1..68c3086af9af 100644
+--- a/drivers/net/dsa/sja1105/Kconfig
++++ b/drivers/net/dsa/sja1105/Kconfig
+@@ -20,6 +20,7 @@ tristate "NXP SJA1105 Ethernet switch family support"
+ config NET_DSA_SJA1105_PTP
+ 	bool "Support for the PTP clock on the NXP SJA1105 Ethernet switch"
+ 	depends on NET_DSA_SJA1105
++	depends on PTP_1588_CLOCK
+ 	help
+ 	  This enables support for timestamping and PTP clock manipulations in
+ 	  the SJA1105 DSA driver.
+diff --git a/drivers/net/ethernet/cadence/Kconfig b/drivers/net/ethernet/cadence/Kconfig
+index 53b50c24d9c9..2c4c12b03502 100644
+--- a/drivers/net/ethernet/cadence/Kconfig
++++ b/drivers/net/ethernet/cadence/Kconfig
+@@ -35,8 +35,8 @@ config MACB
+ config MACB_USE_HWSTAMP
+ 	bool "Use IEEE 1588 hwstamp"
+ 	depends on MACB
++	depends on PTP_1588_CLOCK
+ 	default y
+-	imply PTP_1588_CLOCK
+ 	---help---
+ 	  Enable IEEE 1588 Precision Time Protocol (PTP) support for MACB.
+ 
+diff --git a/drivers/net/ethernet/cavium/Kconfig b/drivers/net/ethernet/cavium/Kconfig
+index 6a700d34019e..4520e7ee00fe 100644
+--- a/drivers/net/ethernet/cavium/Kconfig
++++ b/drivers/net/ethernet/cavium/Kconfig
+@@ -54,7 +54,7 @@ config	THUNDER_NIC_RGX
+ config CAVIUM_PTP
+ 	tristate "Cavium PTP coprocessor as PTP clock"
+ 	depends on 64BIT && PCI
+-	imply PTP_1588_CLOCK
++	depends on PTP_1588_CLOCK
+ 	---help---
+ 	  This driver adds support for the Precision Time Protocol Clocks and
+ 	  Timestamping coprocessor (PTP) found on Cavium processors.
+diff --git a/drivers/net/ethernet/ti/Kconfig b/drivers/net/ethernet/ti/Kconfig
+index 89cec778cf2d..8e348780efb6 100644
+--- a/drivers/net/ethernet/ti/Kconfig
++++ b/drivers/net/ethernet/ti/Kconfig
+@@ -90,9 +90,8 @@ config TI_CPTS
+ config TI_CPTS_MOD
+ 	tristate
+ 	depends on TI_CPTS
++	depends on PTP_1588_CLOCK
+ 	default y if TI_CPSW=y || TI_KEYSTONE_NETCP=y || TI_CPSW_SWITCHDEV=y
+-	select NET_PTP_CLASSIFY
+-	imply PTP_1588_CLOCK
+ 	default m
+ 
+ config TI_K3_AM65_CPSW_NUSS
 -- 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.20.1
+
