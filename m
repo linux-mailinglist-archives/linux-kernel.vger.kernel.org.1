@@ -2,95 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49D21BD2D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336A01BD2CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgD2DO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 23:14:27 -0400
-Received: from mail-m17613.qiye.163.com ([59.111.176.13]:27962 "EHLO
-        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726560AbgD2DO0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 23:14:26 -0400
-Received: from ubuntu.localdomain (unknown [157.0.31.122])
-        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 52F79481854;
-        Wed, 29 Apr 2020 11:14:23 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
-Subject: [PATCH] clk/meson: fixes memleak issue in init err branch
-Date:   Tue, 28 Apr 2020 20:14:15 -0700
-Message-Id: <20200429031416.3900-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.26.2
+        id S1726635AbgD2DJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 23:09:32 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3378 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726559AbgD2DJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 23:09:32 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id EC86577A9F912E32341D;
+        Wed, 29 Apr 2020 11:09:29 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 29 Apr 2020 11:09:23 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <aviad.krawczyk@huawei.com>, <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] hinic: Use ARRAY_SIZE for nic_vf_cmd_msg_handler
+Date:   Wed, 29 Apr 2020 11:15:36 +0800
+Message-ID: <1588130136-49236-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VPTkpLS0tJSkhNSUhLTllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MC46Lyo5DTg*ME5WDTA0OSwr
-        SRAaCzNVSlVKTkNDSkhLS01ITk1NVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSUlZV1kIAVlBSUxCQjcG
-X-HM-Tid: 0a71c3eda48f93bakuws52f79481854
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In common init function, when run into err branch, we didn`t
-use kfree to release kzmalloc area, this may bring in memleak
+fix coccinelle warning, use ARRAY_SIZE
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
+drivers/net/ethernet/huawei/hinic/hinic_sriov.c:713:43-44: WARNING: Use ARRAY_SIZE
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/clk/meson/meson8b.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/huawei/hinic/hinic_sriov.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-index 34a70c4b4899..0f07d5a4cd16 100644
---- a/drivers/clk/meson/meson8b.c
-+++ b/drivers/clk/meson/meson8b.c
-@@ -3687,6 +3687,7 @@ static void __init meson8b_clkc_init_common(struct device_node *np,
- 	if (ret) {
- 		pr_err("%s: Failed to register clkc reset controller: %d\n",
- 		       __func__, ret);
-+		kfree(rstc);
- 		return;
- 	}
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+index b24788e..ac12725 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+@@ -710,8 +710,7 @@ int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
+ 	if (!hwdev)
+ 		return -EFAULT;
  
-@@ -3710,8 +3711,10 @@ static void __init meson8b_clkc_init_common(struct device_node *np,
- 			continue;
- 
- 		ret = of_clk_hw_register(np, clk_hw_onecell_data->hws[i]);
--		if (ret)
-+		if (ret) {
-+			kfree(rstc);
- 			return;
-+		}
- 	}
- 
- 	meson8b_cpu_nb_data.cpu_clk = clk_hw_onecell_data->hws[CLKID_CPUCLK];
-@@ -3727,13 +3730,16 @@ static void __init meson8b_clkc_init_common(struct device_node *np,
- 	if (ret) {
- 		pr_err("%s: failed to register the CPU clock notifier\n",
- 		       __func__);
-+		kfree(rstc);
- 		return;
- 	}
- 
- 	ret = of_clk_add_hw_provider(np, of_clk_hw_onecell_get,
- 				     clk_hw_onecell_data);
--	if (ret)
-+	if (ret) {
- 		pr_err("%s: failed to register clock provider\n", __func__);
-+		kfree(rstc);
-+	}
- }
- 
- static void __init meson8_clkc_init(struct device_node *np)
+-	cmd_number = sizeof(nic_vf_cmd_msg_handler) /
+-			    sizeof(struct vf_cmd_msg_handle);
++	cmd_number = ARRAY_SIZE(nic_vf_cmd_msg_handler);
+ 	pfhwdev = container_of(dev, struct hinic_pfhwdev, hwdev);
+ 	nic_io = &dev->func_to_io;
+ 	for (i = 0; i < cmd_number; i++) {
 -- 
-2.26.2
+2.6.2
 
