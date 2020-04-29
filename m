@@ -2,147 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70381BD967
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7151BD96C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgD2KTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 06:19:44 -0400
-Received: from mail-eopbgr690056.outbound.protection.outlook.com ([40.107.69.56]:55394
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726625AbgD2KTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 06:19:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i2br6Dy6CljlW2VRorth7yEsx5OyCR8Vomi3VnY8DRhKkR4DzxIum+E/bzJPYOr0L3dJHYUYyxmQxFGd1mQ60UmGUVHaEY/zsw4Vb2aGn/f1vfqXA1CybK+VJmypIyCvJnWxV1DwCCViE6cLrZaHgHQHUuvYKuxDwYoA2eRXxiruh/8Xdx6JWMv0eKwSQVaDuzJILVr0ZI6DqniN6RnetH7Siicuu4ZgLJAhOYwVSMGgcJ5HuX11I6XjkwuM37CxJYeGehYoF+5nZeIUxJYJpcYQH6Nri+0ZkgAtZKVHYRTA6dwwJfvuY0NLk/j890zbVXqKw2RUTNsP51gI+8JvXQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3hrjxsBHiSrJukurep1+xddXg60vu3XEDZmrQeLfhw0=;
- b=U7KLTeAJZUJy1PIxuXLkt7hk2uAHU/aSFkB3NnRItIbxaPrZfnu+Iv0/xSxnYzjKi9cK9RHnp4ZOqYjrEkn5Hv9uBR2Gomi+qi46foI1t5zIBcS8NjnAKE6XNQ6NLXvZKggpVmVfvG6q7N7lXIUk82lbtp9V5hKqGIgE6dWCZvHNZ3L5LhTttAqBPTKYrDFM5AqrGlMya4t3G5jNntO2GISDezhvaiDABs/ctIL9ibFjQNZsOO02kyMgNCIOrCCc/tCIxOweYf9FXWqXEkWxaeJ8wOtqhy+USpvVUOuacET5hvgxeQcNEa6nbzC+rxdiwWgVxmpuS9hFtu+4wcabtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=micron.com; dmarc=pass action=none header.from=micron.com;
- dkim=pass header.d=micron.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=micron.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3hrjxsBHiSrJukurep1+xddXg60vu3XEDZmrQeLfhw0=;
- b=V6Bl6Mg8HBJBUihJgYyatp860tEZvf7dPnUSM8eSKjEvps5FLxQYM23OGdqO0AYz27a+AAcj14OOqECs4Cpff9F87h/F+BVgMFhcA/RY0d4WJOk9S1ygpso57n9+0rsUtQ/oiLyJUXGgeQSnqSKWzSNI1lhDZWRwuEO5TJ32mKA=
-Received: from BN7PR08MB5684.namprd08.prod.outlook.com (2603:10b6:408:35::23)
- by BN7PR08MB4210.namprd08.prod.outlook.com (2603:10b6:406:fb::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Wed, 29 Apr
- 2020 10:19:13 +0000
-Received: from BN7PR08MB5684.namprd08.prod.outlook.com
- ([fe80::9ca2:4625:2b46:e45c]) by BN7PR08MB5684.namprd08.prod.outlook.com
- ([fe80::9ca2:4625:2b46:e45c%4]) with mapi id 15.20.2958.020; Wed, 29 Apr 2020
- 10:19:13 +0000
-From:   "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>
-CC:     "cang@codeaurora.org" <cang@codeaurora.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>
-Subject: RE: [EXT] [PATCH v1 4/4] scsi: ufs-mediatek: enable WriteBooster
- capability
-Thread-Topic: [EXT] [PATCH v1 4/4] scsi: ufs-mediatek: enable WriteBooster
- capability
-Thread-Index: AQHWHU4ihpQ3MTM+9UKTJOebA4liOaiP5HcQ
-Date:   Wed, 29 Apr 2020 10:19:13 +0000
-Message-ID: <BN7PR08MB56845966D744DA36404FF054DBAD0@BN7PR08MB5684.namprd08.prod.outlook.com>
-References: <20200428111355.1776-1-stanley.chu@mediatek.com>
- <20200428111355.1776-5-stanley.chu@mediatek.com>
-In-Reply-To: <20200428111355.1776-5-stanley.chu@mediatek.com>
-Accept-Language: en-150, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcYmVhbmh1b1xhcHBkYXRhXHJvYW1pbmdcMDlkODQ5YjYtMzJkMy00YTQwLTg1ZWUtNmI4NGJhMjllMzViXG1zZ3NcbXNnLWRjZTQ3OTJiLThhMDItMTFlYS04YjkzLWRjNzE5NjFmOWRkM1xhbWUtdGVzdFxkY2U0NzkyZC04YTAyLTExZWEtOGI5My1kYzcxOTYxZjlkZDNib2R5LnR4dCIgc3o9IjE2NTYiIHQ9IjEzMjMyNjI5MTQ5ODk5MjQ5MyIgaD0iNHV5VFd1S2hPcVdHYUJGNmpEZDB6Sm9VKzVzPSIgaWQ9IiIgYmw9IjAiIGJvPSIxIiBjaT0iY0FBQUFFUkhVMVJTUlVGTkNnVUFBSEFBQUFCdEF6NmZEeDdXQWNSVUhzWG5iZ1Q2eEZRZXhlZHVCUG9BQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQkFBQUFmM09FS1FBQUFBQUFBQUFBQUFBQUFBPT0iLz48L21ldGE+
-x-dg-rorf: true
-authentication-results: mediatek.com; dkim=none (message not signed)
- header.d=none;mediatek.com; dmarc=none action=none header.from=micron.com;
-x-originating-ip: [165.225.81.119]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b9b0a53e-0dd7-43ca-842a-08d7ec26c3fe
-x-ms-traffictypediagnostic: BN7PR08MB4210:|BN7PR08MB4210:|BN7PR08MB4210:
-x-microsoft-antispam-prvs: <BN7PR08MB4210A9F9230DCBED625D5F7DDBAD0@BN7PR08MB4210.namprd08.prod.outlook.com>
-x-ms-exchange-transport-forked: True
-x-ms-oob-tlc-oobclassifiers: OLM:972;
-x-forefront-prvs: 03883BD916
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /nYFDACwLFqDb17xxsAfjRlg90OBCysEP144xSW1f/vEVqKL8hF6K8F+vy/4HBDq1BNnuQGWPsdYOGmWs6sC0oPtJRmmRsblQaPZ8GC4168qSh2Mchtk6yKazT4jIlqcuWl8+R0vsMNj9hasY5ImKCCBUlxeKw83gQ9xHOmXyx3Utw+60wDegLJdEE+ZkTO6ZJzxpLQO+RSca23MR/VKXZBep8tKSq40cEFYy098pZ+lMA++72DBtpDouQLbKbC9vFjxnSxSx+kTSdQs4OdnwDVaqjDP77OkLn5oiBmvgosVjP7I50qVnBfbjQmibGDRk//7wiZ5VcseJ6aEKl0QrUjsPSXoWxtNoFngh+v2lt9I/h91C9zfoYoJHxbsAXUi6hdVVAH3f+T57BQf0/TbrSI2X/D90r1LuX2j9lfx9TASycFE/VdIWxNN9n/G7N97
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR08MB5684.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(136003)(366004)(39860400002)(376002)(396003)(5660300002)(71200400001)(54906003)(8936002)(86362001)(316002)(55016002)(66946007)(9686003)(76116006)(7696005)(110136005)(8676002)(64756008)(33656002)(66556008)(66476007)(478600001)(66446008)(52536014)(7416002)(186003)(55236004)(26005)(4326008)(6506007)(53546011)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 1TRRHh2QrQllKaiwsWyyZV3Xgjhw0C24sE4nf3wITHm7gNQ2KhFB41FHS1EUjdHZCXafAbVJfxX/PSVdlfe98CqrHpKSVPj+ImWX7fB4ljtCyygLVPngQ5TA41fO3r5+1MtPSZJOx5yFHBxYkdm5pOcandFaad01kBFQksIU3ESl7HcoVAPYIKSxDuqrcMDfIEbbiBo6uG9QhsEMbMaTFG32KL5at8nkFbrV0PAxiIxaCK76P6OL7P6tURwe6nCOTQw7mZ6+yV7EncmwHpzLKRhROtDRjWGiIxDN6rXopPR58vHgU3zc0+eBhbBtFjEKKKzeRQkhPOaRwME3xCq0haaTT1od0/nl7OWydqEpRPvFS/IQB5JAAT/AoXgNryk1ebBh9Vua8ZssXdotfn0D6LDWDxNvfTcemaiVE+vF+0tWYeIIy1uqWBYTQ3qiiA28hSkmYFVgyN5fX+M9adMm+QGqULnsukVdPHPVJnleS9iwePnDpYLWmqEbQFzML7hW9zexRH4eAhIhvnWgeSxQUnbJk1mGJ/ZUaAP0JIEMU0/SdFUD5Yx5UdoCtvD1A8w50SEsz8N31DG8RW4YnH5CT9QBTpafR/UmNmg85jOxzLuevepkyaYvqXJKE+vn6aRA6QGqp5P5REkI+ufg3A3ruZk5Jv6ZUwF3pJ/lLXzlO/9cBZQ+AA0r4u6YXwqvCr2PeHNtS9l/02VVwJvbZlIMi3jqTrO/zk08p2uSNdvVOONglRQbiNI3/Yao2t2xGnRgO0T/tzjcLRzb6FH9g83iD31YW/sHxeE0P16cMw2/Lj0=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726839AbgD2KUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 06:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726535AbgD2KTw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 06:19:52 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69368C03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 03:19:50 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id r66so1324295oie.5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 03:19:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ySw1JY1pUEmGxd3VKb4dOahnkparolrY7LxLxmHjsxQ=;
+        b=AI26J2eputUhny34KK4c7nSnnxIjryDf3Ty/h6zFRGVmbIF51p9Y9yQwt59mv/ekw3
+         fUFeu5YqA0HJE7xIYJ4OY1gXBAEyr+64HagBmGKGQIPtA43KxzuseSy36Amqt7p+WeUk
+         t6BolG5l0IGQiGYqyxguo63zs0hM6Pi3fmOCzNtEbYFTtl4NdYM6mjhpen4oyaFiwBdT
+         myCjJ/X7O6TYJft6csJST0r5ZUDxlw0Nq8JgO39ClHXW7LrdDJXucjjN0FBlZ2iQ3pOd
+         xtzSdc8v1GWyXhPrUxekIIswg2LVm/PLtb2/1HQAuN6BGm1r+WYBOlIYXHCkjtlw5Zen
+         XkiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ySw1JY1pUEmGxd3VKb4dOahnkparolrY7LxLxmHjsxQ=;
+        b=C5UL6bR2RzTBsvd7HQvWLSYeePnoppuqkMHsBMyj+Qc+SZB9OWBmb2TwUE7EIqNqMZ
+         Doz6QByE8NYIO7OQpQvgIYDZIjOzgUEYjKA9ajliQ0A82OqXeApusTtNg7PyaM3/oC53
+         qSjjiPH5v16To56rszQ41+qvnPCifLVl/AW2Wv63F6NC4ubQ4u8Zz/jhofi+9djIENkO
+         z3+Iebx7z1IUtWnrs8K7a3Xxkk6jUJ1dW4K8+a+7CiFYYl8Ex9TU81vmf+1HyUU3Q/q6
+         9pBkxPKuJfq8zvjCpbvl35mQ5reg6aqowTGf5xnquQujW/EZ9Jvo4IV4BEiGd+onyAU7
+         lx8A==
+X-Gm-Message-State: AGi0PuY0jO957xhF2y9DBdYpZ5wvb7jhPMHRZ+C6K8DCqSakQAO++vxK
+        tSKdfYtO4Yz+k2MP8qi53IuMLv89eDgU7VfecpccyQ==
+X-Google-Smtp-Source: APiQypKvohcP7ZVI9yC1TSomAWF3be4k8n2tkZf0ZBfetHCkCcgSQx24p/4rt/0tq616Edrtb6ONPrahLEAxtucqwl4=
+X-Received: by 2002:aca:f3d6:: with SMTP id r205mr1177033oih.26.1588155589705;
+ Wed, 29 Apr 2020 03:19:49 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: micron.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b9b0a53e-0dd7-43ca-842a-08d7ec26c3fe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Apr 2020 10:19:13.5934
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f38a5ecd-2813-4862-b11b-ac1d563c806f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uvqyrgC/1tcWyb9MRA1v5eHqsXiUM8A6i3AzOb3ePCKSjYKdBr7AD5y378+1TEmZ7Hy9WT8h1t22q+k6WVVqbg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR08MB4210
+References: <20200428180718.1609826-1-robert.foss@linaro.org>
+ <20200428180718.1609826-2-robert.foss@linaro.org> <20200429090012.vhhwatojkncjquwd@gilmour.lan>
+In-Reply-To: <20200429090012.vhhwatojkncjquwd@gilmour.lan>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Wed, 29 Apr 2020 12:19:38 +0200
+Message-ID: <CAG3jFyvcgqi_rm-Enf3gTyHowbgX6iBe3coDPu91p9EBTxS2XA@mail.gmail.com>
+Subject: Re: [PATCH v5 v5 2/3] media: ov8856: Add devicetree support
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Stanley Chu <stanley.chu@mediatek.com>
-> Sent: Tuesday, April 28, 2020 1:14 PM
-> To: linux-scsi@vger.kernel.org; martin.petersen@oracle.com;
-> avri.altman@wdc.com; alim.akhtar@samsung.com; jejb@linux.ibm.com;
-> asutoshd@codeaurora.org
-> Cc: Bean Huo (beanhuo) <beanhuo@micron.com>; cang@codeaurora.org;
-> matthias.bgg@gmail.com; bvanassche@acm.org; linux-
-> mediatek@lists.infradead.org; linux-arm-kernel@lists.infradead.org; linux=
--
-> kernel@vger.kernel.org; kuohong.wang@mediatek.com;
-> peter.wang@mediatek.com; chun-hung.wu@mediatek.com;
-> andy.teng@mediatek.com; Stanley Chu <stanley.chu@mediatek.com>
-> Subject: [EXT] [PATCH v1 4/4] scsi: ufs-mediatek: enable WriteBooster cap=
-ability
->=20
-> Enable WriteBooster capability on MediaTek UFS platforms.
->=20
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> ---
->  drivers/scsi/ufs/ufs-mediatek.c | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-media=
-tek.c
-> index 673c16596fb2..15b9c420a3a5 100644
-> --- a/drivers/scsi/ufs/ufs-mediatek.c
-> +++ b/drivers/scsi/ufs/ufs-mediatek.c
-> @@ -263,6 +263,9 @@ static int ufs_mtk_init(struct ufs_hba *hba)
->  	/* Enable clock-gating */
->  	hba->caps |=3D UFSHCD_CAP_CLK_GATING;
->=20
-> +	/* Enable WriteBooster */
-> +	hba->caps |=3D UFSHCD_CAP_WB_EN;
-> +
->  	/*
->  	 * ufshcd_vops_init() is invoked after
->  	 * ufshcd_setup_clock(true) in ufshcd_hba_init() thus
-> --
-> 2.18.0
+On Wed, 29 Apr 2020 at 11:00, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Hi,
+>
+> On Tue, Apr 28, 2020 at 08:07:17PM +0200, Robert Foss wrote:
+> > Add match table, enable ov8856_probe() to support
+> > both ACPI and DT modes.
+> >
+> > ACPI and DT modes are primarily distinguished from
+> > each other by relying on devm_XXX_get_optional()
+> > will return NULL instead of a reference for the
+> > desired managed resource.
+> >
+> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> > ---
+> >
+> > - Changes since v4:
+> >   * Maxime & Sakari: Switch to clock-frequency
+> >
+> > - Changes since v3:
+> >   * Remove redundant {}-brackets
+> >   * Compare xvclk_rate to 5% tolerance
+> >   * Andy: Use dev_fwnode()
+> >   * Andy: Use %pe instead of %ld + PTR_ERR()
+> >   * Andy: Invert reset_gpio logic
+> >   * Andy: Remove dev_dbg() from failing reset_gpio setup
+> >   * Andy: Use dev_err for logging for failures
+> >   * Andy: Remove dev_warn from EDEFER/regulator error path
+> >   * Andy & Sakari: Replaced GPIOD_OUT_XXX with 0/1
+> >   * Maxime & Sakari: Verify clock frequency from DT
+> >   * Sakari: Verify the 'xvclk_rate' is set correctly for ACPI/DT devices
+> >   * Sakari: Remove duplicate ov8856->dev assignment
+> >
+> > - Changes since v2:
+> >   * Added "struct device *dev" member to struct ov8856
+> >   * Andy: Switch to optional version of devm_gpiod_get
+> >   * Andy: Switch to optional version of devm_clk_get
+> >   * Fabio: Add reset sleep period
+> >   * Sakari: Unify defines for 19.2Mhz
+> >   * Sakari: Remove 24Mhz clock, since it isn't needed for supported modes
+> >   * Sakari: Replace dev_info() with dev_dbg()
+> >   * Sakari: Switch induction variable type to unsigned
+> >   * Sakari: Don't wait for reset_gpio when in ACPI mode
+> >   * Sakari: Pull reset GPIO high on power on failure
+> >   * Sakari: Add power on/off to resume/suspend
+> >   * Sakari: Fix indentation
+> >   * Sakari: Power off during ov8856_remove()
+> >   * Sakari: Don't sleep during power-on in ACPI mode
+> >   * Sakari: Switch to getting xvclk from clk_get_rate
+> >
+> > - Changes since v1:
+> >   * Andy & Sakari: Make XVCLK optional since to not break ACPI
+> >   * Fabio: Change n_shutdown_gpio name to reset_gpio
+> >   * Fabio: Invert reset_gpio due to GPIO_ACTIVE_HIGH -> GPIO_ACTIVE_LOW change
+> >   * Fabio: Remove empty line
+> >   * Fabio: Remove real error from devm_gpiod_get() failures
+> >   * Sakari: ARRAY_SIZE() directly instead of through OV8856_NUM_SUPPLIES
+> >   * Sakari: Use XVCLK rate as provided by DT
+> >
+> >  drivers/media/i2c/ov8856.c | 139 +++++++++++++++++++++++++++++++++----
+> >  1 file changed, 126 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+> > index 8655842af275..48b02b8d205f 100644
+> > --- a/drivers/media/i2c/ov8856.c
+> > +++ b/drivers/media/i2c/ov8856.c
+> > @@ -3,10 +3,13 @@
+> >
+> >  #include <asm/unaligned.h>
+> >  #include <linux/acpi.h>
+> > +#include <linux/clk.h>
+> >  #include <linux/delay.h>
+> > +#include <linux/gpio/consumer.h>
+> >  #include <linux/i2c.h>
+> >  #include <linux/module.h>
+> >  #include <linux/pm_runtime.h>
+> > +#include <linux/regulator/consumer.h>
+> >  #include <media/v4l2-ctrls.h>
+> >  #include <media/v4l2-device.h>
+> >  #include <media/v4l2-fwnode.h>
+> > @@ -18,7 +21,7 @@
+> >  #define OV8856_LINK_FREQ_360MHZ              360000000ULL
+> >  #define OV8856_LINK_FREQ_180MHZ              180000000ULL
+> >  #define OV8856_SCLK                  144000000ULL
+> > -#define OV8856_MCLK                  19200000
+> > +#define OV8856_XVCLK_19_2            19200000
+> >  #define OV8856_DATA_LANES            4
+> >  #define OV8856_RGB_DEPTH             10
+> >
+> > @@ -64,6 +67,12 @@
+> >
+> >  #define to_ov8856(_sd)                       container_of(_sd, struct ov8856, sd)
+> >
+> > +static const char * const ov8856_supply_names[] = {
+> > +     "dovdd",        /* Digital I/O power */
+> > +     "avdd",         /* Analog power */
+> > +     "dvdd",         /* Digital core power */
+> > +};
+> > +
+> >  enum {
+> >       OV8856_LINK_FREQ_720MBPS,
+> >       OV8856_LINK_FREQ_360MBPS,
+> > @@ -566,6 +575,11 @@ struct ov8856 {
+> >       struct media_pad pad;
+> >       struct v4l2_ctrl_handler ctrl_handler;
+> >
+> > +     struct device           *dev;
+> > +     struct clk              *xvclk;
+> > +     struct gpio_desc        *reset_gpio;
+> > +     struct regulator_bulk_data supplies[ARRAY_SIZE(ov8856_supply_names)];
+> > +
+> >       /* V4L2 Controls */
+> >       struct v4l2_ctrl *link_freq;
+> >       struct v4l2_ctrl *pixel_rate;
+> > @@ -908,6 +922,52 @@ static int ov8856_set_stream(struct v4l2_subdev *sd, int enable)
+> >       return ret;
+> >  }
+> >
+> > +static int __ov8856_power_on(struct ov8856 *ov8856)
+> > +{
+> > +     struct i2c_client *client = v4l2_get_subdevdata(&ov8856->sd);
+> > +     int ret;
+> > +
+> > +     ret = clk_prepare_enable(ov8856->xvclk);
+> > +     if (ret < 0) {
+> > +             dev_err(&client->dev, "failed to enable xvclk\n");
+> > +             return ret;
+> > +     }
+> > +
+> > +     if (is_acpi_node(dev_fwnode(ov8856->dev)))
+> > +             return 0;
+> > +
+> > +     if (ov8856->reset_gpio) {
+> > +             gpiod_set_value_cansleep(ov8856->reset_gpio, 1);
+> > +             usleep_range(1000, 2000);
+> > +     }
+> > +
+> > +     ret = regulator_bulk_enable(ARRAY_SIZE(ov8856_supply_names),
+> > +                                 ov8856->supplies);
+> > +     if (ret < 0) {
+> > +             dev_err(&client->dev, "failed to enable regulators\n");
+> > +             goto disable_clk;
+> > +     }
+> > +
+> > +     gpiod_set_value_cansleep(ov8856->reset_gpio, 0);
+> > +     usleep_range(1500, 1800);
+> > +
+> > +     return 0;
+> > +
+> > +disable_clk:
+> > +     gpiod_set_value_cansleep(ov8856->reset_gpio, 1);
+> > +     clk_disable_unprepare(ov8856->xvclk);
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +static void __ov8856_power_off(struct ov8856 *ov8856)
+> > +{
+> > +     gpiod_set_value_cansleep(ov8856->reset_gpio, 1);
+> > +     regulator_bulk_disable(ARRAY_SIZE(ov8856_supply_names),
+> > +                            ov8856->supplies);
+> > +     clk_disable_unprepare(ov8856->xvclk);
+> > +}
+> > +
+> >  static int __maybe_unused ov8856_suspend(struct device *dev)
+> >  {
+> >       struct i2c_client *client = to_i2c_client(dev);
+> > @@ -918,6 +978,7 @@ static int __maybe_unused ov8856_suspend(struct device *dev)
+> >       if (ov8856->streaming)
+> >               ov8856_stop_streaming(ov8856);
+> >
+> > +     __ov8856_power_off(ov8856);
+> >       mutex_unlock(&ov8856->mutex);
+> >
+> >       return 0;
+> > @@ -931,6 +992,8 @@ static int __maybe_unused ov8856_resume(struct device *dev)
+> >       int ret;
+> >
+> >       mutex_lock(&ov8856->mutex);
+> > +
+> > +     __ov8856_power_on(ov8856);
+> >       if (ov8856->streaming) {
+> >               ret = ov8856_start_streaming(ov8856);
+> >               if (ret) {
+> > @@ -1092,29 +1155,58 @@ static int ov8856_identify_module(struct ov8856 *ov8856)
+> >       return 0;
+> >  }
+> >
+> > -static int ov8856_check_hwcfg(struct device *dev)
+> > +static int ov8856_get_hwcfg(struct ov8856 *ov8856)
+> >  {
+> > +     struct device *dev = ov8856->dev;
+> >       struct fwnode_handle *ep;
+> >       struct fwnode_handle *fwnode = dev_fwnode(dev);
+> >       struct v4l2_fwnode_endpoint bus_cfg = {
+> >               .bus_type = V4L2_MBUS_CSI2_DPHY
+> >       };
+> > -     u32 mclk;
+> > +     u32 xvclk_rate;
+> >       int ret;
+> >       unsigned int i, j;
+> >
+> >       if (!fwnode)
+> >               return -ENXIO;
+> >
+> > -     ret = fwnode_property_read_u32(fwnode, "clock-frequency", &mclk);
+> > +     ret = fwnode_property_read_u32(fwnode, "clock-frequency",
+> > +             &xvclk_rate);
+> >       if (ret)
+> >               return ret;
+> >
+> > -     if (mclk != OV8856_MCLK) {
+> > -             dev_err(dev, "external clock %d is not supported", mclk);
+> > +     if (!is_acpi_node(fwnode)) {
+> > +             ov8856->xvclk = devm_clk_get(dev, "xvclk");
+> > +             if (IS_ERR(ov8856->xvclk)) {
+> > +                     dev_err(dev, "could not get xvclk clock (%pe)\n",
+> > +                                     ov8856->xvclk);
+> > +                     return PTR_ERR(ov8856->xvclk);
+> > +             }
+> > +
+> > +             clk_set_rate(ov8856->xvclk, xvclk_rate);
+> > +             xvclk_rate = clk_get_rate(ov8856->xvclk);
+> > +     }
+> > +
+> > +     /* external clock must be 19.2MHz, allow 5% tolerance */
+>
+> Where is that 5% tolerance coming from? Experimentations, datasheets, something
+> that looks good enough? Either way, this should be in the comment.
 
-Reviewed-by: Bean Huo <beanhuo@micron.com>
+I don't have access to the full datasheet unfortunately. A 24Mhz rate
+is as far as I understand it supported and required for higher
+bandwidth count modes.
+It was suggested to me that adding a tolerance is the best practice,
+the ov5645 driver uses a 1% tolerance, which may be more appropriate.
+
+The closest frequency to 19.2Mhz * 1.05 I'm able to generate is 24Mhz,
+which works. But unfortunately my testing platform sdm845-db845c is
+not able to generate lower frequencies than 19.2Mhz.
+
+This all adds up to a pretty unclear picture of what is supported, if
+anyone has access to the full documentation I would like to make the
+tolerances and comments reflect that.
+
+>
+> Maxime
