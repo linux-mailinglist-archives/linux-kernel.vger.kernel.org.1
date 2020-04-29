@@ -2,115 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333B91BE9F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 23:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52FF1BE9F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 23:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgD2VeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 17:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
+        id S1727771AbgD2VeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 17:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726511AbgD2VeP (ORCPT
+        by vger.kernel.org with ESMTP id S1727109AbgD2VeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 17:34:15 -0400
-Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:20a:202:5301::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46E6C03C1AE;
-        Wed, 29 Apr 2020 14:34:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1588196052;
-        s=strato-dkim-0002; d=goldelico.com;
-        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=APYsrPKLpxWrEqgNU863cTg+ycwDHFE8CKynHgQnywo=;
-        b=KSj5SecTJLl+K4JgUgvaqKUC0QzrdzGyTV9i10tWK5DfV0YbIRki8KPas2S6dUBGR+
-        71iVcviOdJAkHhVpuC09LhDiWeEH+HuwUafTkInwCEMvSJKowqAMgUT26a/Nu4ePHKrn
-        Od3GckUmSC9hcfoZ+7Y1EDkBl5JbeyuHoozfUU/8LnVsowoBYSycMSdJ+bSABhK2+cwY
-        7ruhUpBKRqcPwqEeJpARdWNpOPRb4fzmuEBG2jI1SEiMS1LuHeKrUQcaok4Ejs8CTISh
-        ZlE7CU+J4uR4F1djqs6y1fhalMmrJJVgRG7rPHqXquG8T3TzGtmMTkXeOj/D+ILtsrCX
-        T3Gw==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGHPrvwDWuZw=="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-        by smtp.strato.de (RZmta 46.6.2 DYNA|AUTH)
-        with ESMTPSA id R0acebw3TLY1W3U
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-        Wed, 29 Apr 2020 23:34:01 +0200 (CEST)
-Subject: Re: [PATCHv3] w1: omap-hdq: Simplify driver with PM runtime autosuspend
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <E8575FE4-4BC2-41B7-B574-339C58D9CB5E@goldelico.com>
-Date:   Wed, 29 Apr 2020 23:34:00 +0200
-Cc:     Evgeniy Polyakov <zbr@ioremap.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Adam Ford <aford173@gmail.com>,
-        "Andrew F . Davis" <afd@ti.com>, Vignesh R <vigneshr@ti.com>
-Content-Transfer-Encoding: 7bit
-Message-Id: <891CBD28-3F91-493D-AD80-6575608846A4@goldelico.com>
-References: <3197C3F0-DEB9-4221-AFBD-4F2A08C84C4C@goldelico.com> <20200417164340.3d9043d1@aktux> <6430AF54-849E-456B-8DB0-B4478BBDB78D@goldelico.com> <20200417150721.GL37466@atomide.com> <8E062482-5D5D-4837-9980-D6C708DD24D4@goldelico.com> <20200420150802.GR37466@atomide.com> <D1A77603-11FB-407F-B480-82C57E742C51@goldelico.com> <20200421085336.32cf8ffe@aktux> <20200421180220.GB37466@atomide.com> <70F19A6E-7B36-4873-9364-F284A14EE3A0@goldelico.com> <20200421182017.GC37466@atomide.com> <D3E40A6A-39B8-4F3F-9ABC-28EAE8D623A6@goldelico.com> <20200422120418.49a40c75@aktux> <6E3A50D9-0F15-4A56-8C5E-7CDC63E8AF9F@goldelico.com> <A2AC3E81-49B2-4CF2-A7CF-6075AEB1B72D@goldelico.com> <44AD9673-AE02-498F-A5CC-48499DF226E3@goldelico.com> <E8575FE4-4BC2-41B7-B574-339C58D9CB5E@goldelico.com>
-To:     Andreas Kemnade <andreas@kemnade.info>,
-        Tony Lindgren <tony@atomide.com>
-X-Mailer: Apple Mail (2.3124)
+        Wed, 29 Apr 2020 17:34:20 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09B5C03C1AE;
+        Wed, 29 Apr 2020 14:34:18 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id i3so3870476ioo.13;
+        Wed, 29 Apr 2020 14:34:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8b6QHxXd3vZ+EyiWhkwhg0kfpcq3O+hjHWyjj4r6ooc=;
+        b=O66tfx9gmcUfI6elnrIm/Rvhl6ScmaK0Z2nHqOxB+aFignowhn5UeE8nZtX+fReI7S
+         souwwPxwLCavRPXkMeALk5qkWl5EKNWPHUUnRRTgoiSa9j1gLVariTMqIte6Atgqh2tp
+         1nIDcdD23gJ0LvxVHTs9Yhdw8Nus8dC9J56l/tVahHURRrB35DVR6FT5ksdRx5+FuKb6
+         N+VttRTT9sD56f20XXvlNDsd57gDAqCNXK7NZmWbECnApUtg61wYTsofK8kYYfMDyNG5
+         wNeZ8YMkfIh3I6e4Yl525GLmsloVaqybIbYEGYtFyp5e+VhuMq+qZAXlUmN3PW1/2brw
+         o5eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=8b6QHxXd3vZ+EyiWhkwhg0kfpcq3O+hjHWyjj4r6ooc=;
+        b=McWH0xvH/ySpx9/5qt7BaQ0g70k+b//DLaM/cv5Ng2sIlji0HI4RHaxp70u5mzyUVD
+         uPFPEO1supXUIeyY0+U8oXJDg9XmADTmrUtbQrThopSBge3ZDTspNo4mbWNEmuNLv29N
+         vllyH0a/6twkpdTOvBt2LN2X+64b3NA3/RiKY99GHwswFdEIYorsqZA3tr+kqMPcn9Dl
+         Ykemvx1uKQpHba5mI+klsuPJVGdKVCVDHkPH6hKlbJLHSd4zw5CD5miJZlHNlEE26jlZ
+         86R/hJLSbDzzfNIc18ie73g3Y4ybjvT8mG2kTuhpbgGC8YQQhoeXBAIiNgp33MciopLf
+         Po0Q==
+X-Gm-Message-State: AGi0PubC3Hdf4VpfU3xXBSjRa+11MC2s11Hdn2st20IaFrmOLmoiIkEs
+        FSerR6tnTLnDV5k/rHAbpA5WSEdE
+X-Google-Smtp-Source: APiQypKWeCKlYsCHkBjkALP7x8BhRcR3ufT3FOYVFtXu1hFbUr2rxuauy2foOX83lf3B6V7OpPeVNw==
+X-Received: by 2002:a05:6602:2f08:: with SMTP id q8mr182814iow.103.1588196057490;
+        Wed, 29 Apr 2020 14:34:17 -0700 (PDT)
+Received: from [10.67.49.116] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id h82sm1525684ila.14.2020.04.29.14.34.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Apr 2020 14:34:16 -0700 (PDT)
+Subject: Re: [PATCH net-next v2 3/7] net: bcmgenet: move clk_wol management to
+ bcmgenet_wol
+To:     Doug Berger <opendmb@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1588190526-2082-1-git-send-email-opendmb@gmail.com>
+ <1588190526-2082-4-git-send-email-opendmb@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ G10n8gCguORqNGMsVRxrlLs7/himep7MrCc=
+Message-ID: <411df968-bcc3-298b-2125-3a90567c8bb2@gmail.com>
+Date:   Wed, 29 Apr 2020 14:34:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <1588190526-2082-4-git-send-email-opendmb@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-> Am 25.04.2020 um 12:37 schrieb H. Nikolaus Schaller <hns@goldelico.com>:
+On 4/29/20 1:02 PM, Doug Berger wrote:
+> The GENET_POWER_WOL_MAGIC power up and power down code configures
+> the device for WoL when suspending and disables the WoL logic when
+> resuming. It makes sense that this code should also manage the WoL
+> clocking.
 > 
+> This commit consolidates the logic and moves it earlier in the
+> resume sequence.
 > 
->> Am 25.04.2020 um 12:29 schrieb H. Nikolaus Schaller <hns@goldelico.com>:
->> 
->> H
->> The things start to get "fixed" when the hdq_isr
->> jumps to 6 indicating
->> 
->> OMAP_HDQ_INT_STATUS_RXCOMPLETE | OMAP_HDQ_INT_STATUS_TXCOMPLETE
->> 
->> So I am getting more inclined to believe that it is
->> not a power management issue but some piggybacked
->> change to how interrupts are handled.
->> Especially hdq_reset_irqstatus.
->> 
->> So I will add a printk to hdq_reset_irqstatus
->> to see what value it had before being reset.
+> Since the clock is now only enabled if WoL is successfully entered
+> the wol_active flag is introduced to track that state to keep the
+> clock enables and disables balanced in case a suspend is aborted.
+> The MPD_EN hardware bit can't be used because it can be cleared
+> when the MAC is reset by a deep sleep.
 > 
-> I now did check the log during boot and there is the
-> reverse situation. Initially it works but suddenly
-> hdq_isr becomes 6 and then trouble starts.
-> 
-> So the key problem is that both, the RX and the TX
-> interrupts may be set and then, the code resets
-> everything to 0 and looses either one.
-> 
-> I wonder if that is an issue by two processes reading
-> hdq in parallel.
-> 
-> Another question is how independent command-writes + result-reads
-> are properly serialized and locked so that they don't overlap?
+> Signed-off-by: Doug Berger <opendmb@gmail.com>
 
-I have reworked the way the spinlocks, setting and resetting
-of the hdq_irqstatus bits are done and now it works right from
-start of boot. Without any timeouts or delays.
-
-I am not exactly sure what went wrong, but it seems as if
-the read is already done when the write interrupt status
-bit is processed. Then, the old logic did wipe out both
-bits by hdq_reset_irqstatus() and the read code did timeout
-because it did not notice that the data had already been
-available. This may depend on other system activities so
-that it can explain why other tests didn't reveal it.
-
-omap_hdq_runtime_resume() and omap_hdq_runtime_suspend()
-also behave fine.
-
-Before I can post something I need to clean up my hacks
-and add similar fixes to omap_hdq_break() and omap_w1_triplet()
-where I hope that I don't break those...
-
-BR and thanks,
-Nikolaus
-
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
