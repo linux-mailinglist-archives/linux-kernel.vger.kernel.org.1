@@ -2,74 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7CA1BDD37
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A9B1BDD48
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgD2NLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:11:41 -0400
-Received: from m17616.mail.qiye.163.com ([59.111.176.16]:33194 "EHLO
-        m17616.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727115AbgD2NLf (ORCPT
+        id S1726826AbgD2NOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:14:09 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:38659 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbgD2NOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:11:35 -0400
-Received: from ubuntu.localdomain (unknown [58.251.74.227])
-        by m17616.mail.qiye.163.com (Hmail) with ESMTPA id E621A108DC2;
-        Wed, 29 Apr 2020 21:11:24 +0800 (CST)
-From:   Wang Wenhu <wenhu.wang@vivo.com>
-To:     corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com, Wang Wenhu <wenhu.wang@vivo.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: [PATCH] doc: thermal: add cpu-idle-cooling to index tree
-Date:   Wed, 29 Apr 2020 06:11:09 -0700
-Message-Id: <20200429131109.80891-1-wenhu.wang@vivo.com>
-X-Mailer: git-send-email 2.17.1
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZTlVKQ01CQkJMQkxDSUpLT1lXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NRw6Cyo4EDg#T004Ckg6NU89
-        FzUwClZVSlVKTkNDSk1OQ0JLSU1KVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTkpVTE9VSUlMWVdZCAFZQUlLSUw3Bg++
-X-HM-Tid: 0a71c6103cda9374kuwse621a108dc2
+        Wed, 29 Apr 2020 09:14:08 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id F36E26000C;
+        Wed, 29 Apr 2020 13:13:59 +0000 (UTC)
+Date:   Wed, 29 Apr 2020 15:13:59 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sun6i: dsi: fix gcc-4.8
+Message-ID: <20200429131359.GJ610776@aptenodytes>
+References: <20200428215105.3928459-1-arnd@arndb.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yr/DzoowOgTDcSCF"
+Content-Disposition: inline
+In-Reply-To: <20200428215105.3928459-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add cpu-idle-cooling.rst to the index list for user reference through
-self-compiled htmldocs or online documentation tree of kernel.
 
-Like: https://www.kernel.org/doc/html/latest/driver-api/thermal/index.html
+--yr/DzoowOgTDcSCF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- Documentation/driver-api/thermal/cpu-idle-cooling.rst | 3 +++
- Documentation/driver-api/thermal/index.rst            | 1 +
- 2 files changed, 4 insertions(+)
+Hi,
 
-diff --git a/Documentation/driver-api/thermal/cpu-idle-cooling.rst b/Documentation/driver-api/thermal/cpu-idle-cooling.rst
-index a1c3edecae00..b9f34ceb2a38 100644
---- a/Documentation/driver-api/thermal/cpu-idle-cooling.rst
-+++ b/Documentation/driver-api/thermal/cpu-idle-cooling.rst
-@@ -1,3 +1,6 @@
-+================
-+CPU Idle Cooling
-+================
- 
- Situation:
- ----------
-diff --git a/Documentation/driver-api/thermal/index.rst b/Documentation/driver-api/thermal/index.rst
-index 5ba61d19c6ae..4cb0b9b6bfb8 100644
---- a/Documentation/driver-api/thermal/index.rst
-+++ b/Documentation/driver-api/thermal/index.rst
-@@ -8,6 +8,7 @@ Thermal
-    :maxdepth: 1
- 
-    cpu-cooling-api
-+   cpu-idle-cooling
-    sysfs-api
-    power_allocator
- 
--- 
-2.17.1
+On Tue 28 Apr 20, 23:50, Arnd Bergmann wrote:
+> Older compilers warn about initializers with incorrect curly
+> braces:
+>=20
+> drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c: In function 'sun6i_dsi_encoder_en=
+able':
+> drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c:720:8: error: missing braces aroun=
+d initializer [-Werror=3Dmissing-braces]
+>   union phy_configure_opts opts =3D { 0 };
+>         ^
+> drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c:720:8: error: (near initialization=
+ for 'opts.mipi_dphy') [-Werror=3Dmissing-braces]
+>=20
+> Use the GNU empty initializer extension to avoid this.
 
+Looks good to me:
+Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+
+But maybe use the drm/sun4i: dsi: prefix instead (granted, it wasn't used in
+the commit being fixed).
+
+Cheers,
+
+Paul
+
+> Fixes: bb3b6fcb6849 ("sun6i: dsi: Convert to generic phy handling")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c b/drivers/gpu/drm/sun=
+4i/sun6i_mipi_dsi.c
+> index f6c67dd87a05..aa67cb037e9d 100644
+> --- a/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> +++ b/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c
+> @@ -718,7 +718,7 @@ static void sun6i_dsi_encoder_enable(struct drm_encod=
+er *encoder)
+>  	struct drm_display_mode *mode =3D &encoder->crtc->state->adjusted_mode;
+>  	struct sun6i_dsi *dsi =3D encoder_to_sun6i_dsi(encoder);
+>  	struct mipi_dsi_device *device =3D dsi->device;
+> -	union phy_configure_opts opts =3D { 0 };
+> +	union phy_configure_opts opts =3D { };
+>  	struct phy_configure_opts_mipi_dphy *cfg =3D &opts.mipi_dphy;
+>  	u16 delay;
+>  	int err;
+> --=20
+> 2.26.0
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--yr/DzoowOgTDcSCF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl6pfZcACgkQ3cLmz3+f
+v9EZuwf/c+11FwGVP8LmF3ZNopR32d3cDoA0mLr1vizGfseJVldesiJUy/VuZI7I
+ppIjTfjte/iBHuyGcv8oAc0GQfkJaCvLFlcSkDUGgH5UfPEqxCTGvPLvV0doT77g
+MAUZw1EnVM2zHZ9IvjLmmes2/nvRMs/knC4qf8H8VW2LcFbDqUt+P9SioDHMEOzz
+ZpKNqa7C6Ll/KK7RljKfhk/i1bzakwyEw5Mv31bMBjJ5QeiP+OnLBDBD6ltBfjM7
+f4ODxc85UpxYB9uoRfgQoE2Dk2aN2h2OMTGt7USnEA3HesH1oxRpP7xWpefwHGfY
+oHhO7JHJ8TOwoWS/iIN+wsbHxbDpWw==
+=QQXf
+-----END PGP SIGNATURE-----
+
+--yr/DzoowOgTDcSCF--
