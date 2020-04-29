@@ -2,121 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CED81BE5FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E163E1BE604
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgD2SMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 14:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
+        id S1726815AbgD2SNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 14:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726882AbgD2SMU (ORCPT
+        by vger.kernel.org with ESMTP id S1726481AbgD2SNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 14:12:20 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C343CC03C1AE;
-        Wed, 29 Apr 2020 11:12:20 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a7so1077042pju.2;
-        Wed, 29 Apr 2020 11:12:20 -0700 (PDT)
+        Wed, 29 Apr 2020 14:13:50 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D26C03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:13:50 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id ep1so1656987qvb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l2iiF8eLYUS7geaeL51YFIwVieGq2CPRystA+8gQyAE=;
-        b=HIROAHaFP2LYp7KDV0cJInDYForeR11I1pCH0XoEoi2GIRQlLDiE1yrWaoMpPY2shG
-         kAHO1OQZwj7ON9G7cc+V3IIYNI2WKbqdGMz/bAHoBgg1S7slWPNwHxzo6/qX8CYeVPI6
-         1WLhY4svLHUMqgtP/GQNXUx5TaTU92RAxcdbY6R+LiI0An4SYFnbIQ78hAxmzltLwx5D
-         t3a5F63JdpMjJRVLvvEcb+k36V9C93GjCWnJ8CyDMpOr8kPvy3ysS2MOp8YeHgTGrzUo
-         R3MYmqpmweFoo575fbEmZ6RdJ2uMC64XsOnw1G8ZpwXkw/djKYoZKJ+p7N4u06eqC9GF
-         xmeA==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xTgtmGwxauJTydREgK09WzB6MYiDzB9i7VjPGTpt37U=;
+        b=OxULsJ5r5CCmhYeRDREkVhKG6STLXTlbVuo1tpUtqWFJynVd4jBDum0y8GnBOn0/Ea
+         mjASoERFgvMOHTPb3TAye72QrcY4lc7+NhAPq/6lTtkdNA8vazAH/TuVyWfsmobpnJvd
+         HD+Scip5390cs2hPeMmynSEDhHQR7nSE0xbuglFPghFN1bHNGo1EMivubQ7VMzOivxZ8
+         47E9dYOPm1Tw85T6W4Xbd6orp2NByXE9zhxeHCw4m3w07vCkUhtegWLM6WqxwU454/+s
+         R3EZeg/WawUoke5ZHRju2kCtHscho5DxiQHK+FMaD/G6zVtOyqblxOez/rhEwo8lwr9V
+         dk+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l2iiF8eLYUS7geaeL51YFIwVieGq2CPRystA+8gQyAE=;
-        b=Lvi5uauice1xkn1HDk5U0cgeBK3SO+6/cTF8OGoZlysVspOZkRDEvg20ToZgNsuK7i
-         fFAqNaLv3F2m4Sh52S7O+/VZ+e6bw/uSMYToTfb5sH8lpi76+kX2s23TJIvblj+8bXZR
-         dxVV16ksTdpU6WhVP3i2ihohtttpYAdRkYMJPlQgq+JjjtOx5916VDy17na567LRZ0rV
-         q7dWyD8YOh9VQJMR4Meoaf8QY4znHLnDRmkMc45/g0U2OxZzusCI+XSxbocdfkV9SGMv
-         5m412/sSt2LGskJYVZGhTmFs/hRklR0YBJD6md+H3I+EGDVValb01ucO417FyliHLliK
-         a2RQ==
-X-Gm-Message-State: AGi0PuYk3Z0U/iNCc3xK2PXsOW64/vVxDF8R7NyG/tPh3gjWnen6movo
-        w5rwsi5OUUvAQ2dqYrJ34f0+OwoK9K0zS87K588=
-X-Google-Smtp-Source: APiQypL/o082CcCG7bO4nwva90iOUAOOXATVEA0CCq557uNHxakfsLVaGqefgmCsqIYKT8G43LBgay0mpntpr3vv8DY=
-X-Received: by 2002:a17:902:7003:: with SMTP id y3mr9060348plk.18.1588183940336;
- Wed, 29 Apr 2020 11:12:20 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xTgtmGwxauJTydREgK09WzB6MYiDzB9i7VjPGTpt37U=;
+        b=K/SO2Tca8Ks4t/QQh2URjMcfNYp/niOJIS0nIMMNnDPe3Qprz3oOuivlEyMCmiHuPB
+         +up/8KndUGPSTwwgOt8g2BbvDwHgvcbIre7M6bo/pRnDso8b9PxFHk9gU4GWS0f0exl+
+         /l/EmcKXV+O0B4y0hZIwpJV0+330eSo+93U9jRQB51rL7I7sTw6Seg6o6SJ3ltQT9+61
+         VhsoiMLHftgcSzDBRTkuw1rtcdh8fOCVldekQ7ucyj9Wqs+PZP+F3bFgH/zreusIPG3C
+         J3TC8NCkIa8gLIucubuBRN1aF/cx+oY2az8I4YJCsLzlImqK2UGclksI3Pl+Bx2rm3qL
+         L34Q==
+X-Gm-Message-State: AGi0PuaTX8ztQkTLXQJ7d0Mo/M8668/AsxvcCn2VusnQlhXhtGkW6Wfi
+        BZX2Lmc1TGoXETepBSVPMQTEqnibhQx7mg==
+X-Google-Smtp-Source: APiQypLQUunEASYCrK9s5Re1XN/UPaJ9Ds5irz5ggXqfTs7Dnb4OTpJovrY1lcBBg+DQAIn3qoZW2w==
+X-Received: by 2002:a0c:c603:: with SMTP id v3mr34933774qvi.82.1588184029198;
+        Wed, 29 Apr 2020 11:13:49 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id j92sm16382881qtd.58.2020.04.29.11.13.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 11:13:48 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 8DCBF409A3; Wed, 29 Apr 2020 15:13:46 -0300 (-03)
+Date:   Wed, 29 Apr 2020 15:13:46 -0300
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Andi Kleen <ak@linux.intel.com>,
+        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Subject: Re: [PATCH v2 2/3] perf tool: fix detecting smt at machines with
+ more than 32 cpus
+Message-ID: <20200429181346.GF30487@kernel.org>
+References: <158817718710.747528.11009278875028211991.stgit@buzz>
+ <158817735893.747933.15107805593224835078.stgit@buzz>
 MIME-Version: 1.0
-References: <20200429173112.38366-1-alcooperx@gmail.com>
-In-Reply-To: <20200429173112.38366-1-alcooperx@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 29 Apr 2020 21:12:13 +0300
-Message-ID: <CAHp75VcA4kRJcdMxNovSafh4_Tin5-gvemvq=-6McgaP+8je+g@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Add XHCI, EHCI and OHCI support for Broadcom STB SoS's
-To:     Al Cooper <alcooperx@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <158817735893.747933.15107805593224835078.stgit@buzz>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 8:33 PM Al Cooper <alcooperx@gmail.com> wrote:
->
-> v4 - A few more fixes to the brcm,bcm7445-ehci.yaml dt-bindings
->      document requested by Rob Herring.
->    - Fixed ordering issue in MAINTAINERS as requested by
->      Andy Shevchenko.
+Em Wed, Apr 29, 2020 at 07:22:43PM +0300, Konstantin Khlebnikov escreveu:
+> Cpu bitmap is split into 32 bit words. For system with more than 32 cores
+> threads are always in different words thus first word never has two bits:
+> cpu0: "0000,00000100,00000001", cpu 79: "8000,00000080,00000000".
+> 
+> Instead of parsing bitmap read "core_cpus_list" or "thread_siblings_list"
+> and simply check presence of ',' or '-' in it.
+> 
+> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> Fixes: de5077c4e38f ("perf tools: Add utility function to detect SMT status")
+> ---
+>  tools/perf/util/smt.c |   37 +++++++++++++++++--------------------
+>  1 file changed, 17 insertions(+), 20 deletions(-)
+> 
+> diff --git a/tools/perf/util/smt.c b/tools/perf/util/smt.c
+> index 8481842e9edb..dc37b5abd1c3 100644
+> --- a/tools/perf/util/smt.c
+> +++ b/tools/perf/util/smt.c
+> @@ -1,6 +1,7 @@
+>  #include <stdio.h>
+>  #include <stdlib.h>
+>  #include <unistd.h>
+> +#include <string.h>
+>  #include <linux/bitops.h>
+>  #include "api/fs/fs.h"
+>  #include "smt.h"
+> @@ -9,39 +10,35 @@ int smt_on(void)
+>  {
+>  	static bool cached;
+>  	static int cached_result;
+> +	int active;
+>  	int cpu;
+>  	int ncpu;
+> +	char *str = NULL;
+> +	size_t strlen;
 
-FWIW,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Try not to use as the name of a variable the well known name of a
+standard C library function, there are cases where some of those names
+are used as #define directives and then all hell break loose...
 
-(consider addressing couple of minor comments)
+Also doing first the change that makes the use of that new file would
+allow me to have processed that patch first, which is way simpler than
+this one, i.e. try to leave the more involved changes to the end of the
+patchkit, that helps cherry-picking the less complex/smaller parts of
+your patchkit.
 
->
-> v3 - Addressed all of Andy Shevchenko's review comments for
->      ehci-brcm.c.
->    - Fixed the brcm,bcm7445-ehci.yaml dt-bindings document,
->      dt_binding_check now passes.
->    - Added the XHCI functionality to xhci-plat.c instead of creating
->      new brcmstb files, as suggested by Mathias Nyman.
->
-> v2 - Addressed Andy Shevchenko's review comments.
->    - Fixed dt_binding_check error pointed out by Rob Herring.
->    - Removed pr_info message in ehci_brcm_init as suggested by
->      Greg Kroah-Hartman.
->
->
-> Al Cooper (4):
->   dt-bindings: Add Broadcom STB USB support
->   usb: xhci: xhci-plat: Add support for Broadcom STB SoC's
->   usb: ehci: Add new EHCI driver for Broadcom STB SoC's
->   usb: host: Add ability to build new Broadcom STB USB drivers
->
->  .../bindings/usb/brcm,bcm7445-ehci.yaml       |  60 ++++
->  .../devicetree/bindings/usb/usb-xhci.txt      |   1 +
->  MAINTAINERS                                   |   8 +
->  drivers/usb/host/Kconfig                      |  16 +
->  drivers/usb/host/Makefile                     |  16 +-
->  drivers/usb/host/ehci-brcm.c                  | 286 ++++++++++++++++++
->  drivers/usb/host/xhci-plat.c                  |  10 +
->  7 files changed, 391 insertions(+), 6 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/usb/brcm,bcm7445-ehci.yaml
->  create mode 100644 drivers/usb/host/ehci-brcm.c
->
-> --
-> 2.17.1
->
+I've applied the first one, thanks!
 
+- Arnaldo
+  
+>  	if (cached)
+>  		return cached_result;
+>  
+>  	ncpu = sysconf(_SC_NPROCESSORS_CONF);
+>  	for (cpu = 0; cpu < ncpu; cpu++) {
+> -		unsigned long long siblings;
+> -		char *str;
+> -		size_t strlen;
+>  		char fn[256];
+>  
+> -		snprintf(fn, sizeof fn,
+> -			"devices/system/cpu/cpu%d/topology/core_cpus", cpu);
+> -		if (sysfs__read_str(fn, &str, &strlen) < 0) {
+> -			snprintf(fn, sizeof fn,
+> -				"devices/system/cpu/cpu%d/topology/thread_siblings",
+> -				cpu);
+> -			if (sysfs__read_str(fn, &str, &strlen) < 0)
+> -				continue;
+> -		}
+> -		/* Entry is hex, but does not have 0x, so need custom parser */
+> -		siblings = strtoull(str, NULL, 16);
+> -		free(str);
+> -		if (hweight64(siblings) > 1) {
+> -			cached_result = 1;
+> -			cached = true;
+> +		snprintf(fn, sizeof(fn), "devices/system/cpu/cpu%d/topology/%s",
+> +			 cpu, "core_cpus_list");
+> +		if (sysfs__read_str(fn, &str, &strlen) > 0)
+> +			break;
+> +
+> +		snprintf(fn, sizeof(fn), "devices/system/cpu/cpu%d/topology/%s",
+> +			 cpu, "thread_siblings_list");
+> +		if (sysfs__read_str(fn, &str, &strlen) > 0)
+>  			break;
+> -		}
+>  	}
+> +
+> +	active = str && (strchr(str, ',') != NULL || strchr(str, '-') != NULL);
+> +	free(str);
+> +
+>  	if (!cached) {
+> -		cached_result = 0;
+> +		cached_result = active;
+>  		cached = true;
+>  	}
+>  	return cached_result;
+> 
 
 -- 
-With Best Regards,
-Andy Shevchenko
+
+- Arnaldo
