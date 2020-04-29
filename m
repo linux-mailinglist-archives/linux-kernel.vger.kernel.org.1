@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CF31BE8E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2B41BE91E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726937AbgD2UqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 16:46:21 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:32928 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbgD2UqV (ORCPT
+        id S1726935AbgD2Uwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 16:52:41 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:60403 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726481AbgD2Uwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 16:46:21 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 29 Apr 2020 16:52:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588193560; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=p1T77UuTyTPUkQiCdjRiexComvsqP6jWBbVEBaDSv+4=; b=VLfqAXOHF1m6JbZm93aez7aDlZI/C1fRLCb+RbDErVAL9txVZ+Ypz5RawFcRNqUnYZJTRFO7
+ b4viPfTxeCe7kJTBXzGH1iL2Ktr+imy9swbVnOOH3xFbTQVRg2/S+fYkWiUEeVdmt0iemf1q
+ 7CtjNVTKJH8aZ0mTsUjyyqBUU/U=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea9e916.7f3cb7adfab0-smtp-out-n05;
+ Wed, 29 Apr 2020 20:52:38 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C6D6EC433CB; Wed, 29 Apr 2020 20:52:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from bbhatt-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 333BE20025;
-        Wed, 29 Apr 2020 22:46:15 +0200 (CEST)
-Date:   Wed, 29 Apr 2020 22:46:13 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: Re: [PATCH] drm/bridge: fix stack usage warning on old gcc
-Message-ID: <20200429204613.GA24103@ravnborg.org>
-References: <20200428215408.4111675-1-arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428215408.4111675-1-arnd@arndb.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=ULXz4hXy c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=kj9zAlcOel0A:10 a=mDV3o1hIAAAA:8 a=e5mUnYsNAAAA:8
-        a=ZNoC2qXWVDHt2F1EEv0A:9 a=CjuIK1q_8ugA:10 a=_FVE-zBwftR9WsbkzFJk:22
-        a=Vxmtnl_E_bksehYqCbjh:22 a=pHzHmUro8NiASowvMSCR:22
-        a=nt3jZW36AmriUCFCBwmW:22
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 45213C433D2;
+        Wed, 29 Apr 2020 20:52:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 45213C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     mani@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hemantk@codeaurora.org, jhugo@codeaurora.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v3 0/9] Bug fixes and improved logging in MHI
+Date:   Wed, 29 Apr 2020 13:52:22 -0700
+Message-Id: <1588193551-31439-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd.
+A set of patches for bug fixes and improved logging in mhi/core/boot.c.
+Verified on x86 and arm64 platforms.
 
-On Tue, Apr 28, 2020 at 11:53:54PM +0200, Arnd Bergmann wrote:
-> Some older versions of gcc badly optimize code that passes
-> an inline function argument into another function by reference,
-> causing huge stack usage:
-> 
-> drivers/gpu/drm/bridge/tc358768.c: In function 'tc358768_bridge_pre_enable':
-> drivers/gpu/drm/bridge/tc358768.c:840:1: error: the frame size of 2256 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
-> 
-> Use a temporary variable as a workaround and add a comment pointing
-> to the gcc bug.
-> 
-> Fixes: ff1ca6397b1d ("drm/bridge: Add tc358768 driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+v3:
+-Fixed signed-off-by tags
+-Add a refactor patch for MHI queue APIs
+-Commit text fix in bus: mhi: core: Read transfer length from an event properly
+-Fix channel ID range check for ctrl and data event rings processing
 
-Thanks, pushed to drm-misc-next with Tomi's r-b.
+v2:
+-Fix channel ID range check potential infinite loop
+-Add appropriate signed-off-by tags
 
-	Sam
+Bhaumik Bhatt (5):
+  bus: mhi: core: Handle firmware load using state worker
+  bus: mhi: core: WARN_ON for malformed vector table
+  bus: mhi: core: Return appropriate error codes for AMSS load failure
+  bus: mhi: core: Improve debug logs for loading firmware
+  bus: mhi: core: Ensure non-zero session or sequence ID values
 
-> ---
->  drivers/gpu/drm/bridge/tc358768.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-> index 1b39e8d37834..6650fe4cfc20 100644
-> --- a/drivers/gpu/drm/bridge/tc358768.c
-> +++ b/drivers/gpu/drm/bridge/tc358768.c
-> @@ -178,6 +178,8 @@ static int tc358768_clear_error(struct tc358768_priv *priv)
->  
->  static void tc358768_write(struct tc358768_priv *priv, u32 reg, u32 val)
->  {
-> +	/* work around https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81715 */
-> +	int tmpval = val;
->  	size_t count = 2;
->  
->  	if (priv->error)
-> @@ -187,7 +189,7 @@ static void tc358768_write(struct tc358768_priv *priv, u32 reg, u32 val)
->  	if (reg < 0x100 || reg >= 0x600)
->  		count = 1;
->  
-> -	priv->error = regmap_bulk_write(priv->regmap, reg, &val, count);
-> +	priv->error = regmap_bulk_write(priv->regmap, reg, &tmpval, count);
->  }
->  
->  static void tc358768_read(struct tc358768_priv *priv, u32 reg, u32 *val)
-> -- 
-> 2.26.0
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Hemant Kumar (4):
+  bus: mhi: core: Refactor mhi queue APIs
+  bus: mhi: core: Cache intmod from mhi event to mhi channel
+  bus: mhi: core: Add range check for channel id received in event ring
+  bus: mhi: core: Read transfer length from an event properly
+
+ drivers/bus/mhi/core/boot.c     |  74 +++++++++++++++----------
+ drivers/bus/mhi/core/init.c     |   5 +-
+ drivers/bus/mhi/core/internal.h |   4 +-
+ drivers/bus/mhi/core/main.c     | 120 +++++++++++++++++++---------------------
+ drivers/bus/mhi/core/pm.c       |   6 +-
+ include/linux/mhi.h             |   2 -
+ 6 files changed, 110 insertions(+), 101 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
