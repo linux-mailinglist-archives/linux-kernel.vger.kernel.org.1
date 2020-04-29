@@ -2,94 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3EF1BE919
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB78A1BE882
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbgD2UuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 16:50:01 -0400
-Received: from vern.gendns.com ([98.142.107.122]:59342 "EHLO vern.gendns.com"
+        id S1726891AbgD2UYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 16:24:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:44566 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726511AbgD2UuB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 16:50:01 -0400
-X-Greylist: delayed 1724 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Apr 2020 16:50:00 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Y8MYBDFCYPC4U8pxIx3v4pRrJy5sBdcHs+qbfFFaKhU=; b=HTOA934A6qy/XJhCXv7JieZkm9
-        VDL/VwsXQXfZKMgebwhoX79DwCe1dEyeNLemwXBIk8tM5mFwdDDYFvPECAQCzz75BADr6511h+kZm
-        b8xC6rq+M3ApF0SyHRlkvEHJekU7J0f4DZ8eUQvE4QuZoVDF0ga3EBnACXPC9HY9MiFJVOENmdDtj
-        V6tmcJNN1od8LGMdW7BZHbnD6DX6UdWZuMsTjoiZDME+RGH4YX2Cz59VwIWX2x2edHepq3assRPm5
-        7v+9TI4QaC6GTRJwyxxr7pBa0wkQ6YQmJFqwDC/WN7rMHSh9ev0BsCPqOzmnf/buNsVuHQbXNNHod
-        d6QWNSXQ==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:40316 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1jTtCd-0005BN-Mc; Wed, 29 Apr 2020 16:21:07 -0400
-Subject: Re: [PATCH 0/4] Introduce the Counter character device interface
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
-Cc:     kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, felipe.balbi@linux.intel.com,
-        fabien.lahoudere@collabora.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-References: <cover.1588176662.git.vilhelm.gray@gmail.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <a6402ade-648d-6e49-85cd-a7fd7f58fd1d@lechnology.com>
-Date:   Wed, 29 Apr 2020 15:21:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726456AbgD2UYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 16:24:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6F311063;
+        Wed, 29 Apr 2020 13:24:48 -0700 (PDT)
+Received: from [10.37.12.43] (unknown [10.37.12.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EF1A3F68F;
+        Wed, 29 Apr 2020 13:24:45 -0700 (PDT)
+Subject: Re: [PATCH] thermal: power_allocate: add upper and lower limits
+To:     Michael Kao <michael.kao@mediatek.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
+        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20200424071601.2636-1-michael.kao@mediatek.com>
+ <accb83e0-ffbe-b6e3-6bf9-e7cc8b9fe19c@arm.com>
+ <1588156776.3573.1.camel@mtksdccf07>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <03286571-c110-7f5e-a911-24f8c3e4fd42@arm.com>
+Date:   Wed, 29 Apr 2020 21:24:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <cover.1588176662.git.vilhelm.gray@gmail.com>
+In-Reply-To: <1588156776.3573.1.camel@mtksdccf07>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/29/20 1:11 PM, William Breathitt Gray wrote:
-> Over the past couple years we have noticed some shortcomings with the
-> Counter sysfs interface. Although useful in the majority of situations,
-> there are certain use-cases where interacting through sysfs attributes
-> can become cumbersome and inefficient. A desire to support more advanced
-> functionality such as timestamps, multi-axis positioning tables, and
-> other such latency-sensitive applications, has motivated a reevaluation
-> of the Counter subsystem. I believe a character device interface will be
-> helpful for this more niche area of counter device use.
 
-Nice to see some progress being made. :-)
 
+On 4/29/20 11:39 AM, Michael Kao wrote:
+> On Fri, 2020-04-24 at 10:22 +0100, Lukasz Luba wrote:
+>> Hi Michael,
+>>
+>> On 4/24/20 8:16 AM, Michael Kao wrote:
+>>> The upper and lower limits of thermal throttle state in the
+>>> device tree do not apply to the power_allocate governor.
+>>> Add the upper and lower limits to the power_allocate governor.
+>>>
+>>> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+>>> ---
+>>>    drivers/thermal/thermal_core.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+>>> index 9a321dc548c8..f6feed2265bd 100644
+>>> --- a/drivers/thermal/thermal_core.c
+>>> +++ b/drivers/thermal/thermal_core.c
+>>> @@ -598,7 +598,7 @@ int power_actor_set_power(struct thermal_cooling_device *cdev,
+>>>    	if (ret)
+>>>    		return ret;
+>>>    
+>>> -	instance->target = state;
+>>> +	instance->target = clamp_val(state, instance->lower, instance->upper);
+>>>    	mutex_lock(&cdev->lock);
+>>>    	cdev->updated = false;
+>>>    	mutex_unlock(&cdev->lock);
+>>>
+>>
+>> Thank you for the patch and having to look at it. I have some concerns
+>> with this approach. Let's analyze it further.
+>>
+>> In default the cooling devices in the thermal zone which is used by IPA
+>> do not have this 'lower' and 'upper' limits. They are set to
+>> THERMAL_NO_LIMIT in DT to give full control to IPA over the states.
+>>
+>> This the function 'power_actor_set_power' actually translates granted
+>> power to the state that device will run for the next period.
+>> The IPA algorithm has already split the power budget.
+>> Now what happen when the 'lower' value will change the state to a state
+>> which consumes more power than was calculated in the IPA alg... It will
+>> became unstable.
+>>
+>> I would rather see a change which uses these 'lower' and 'upper' limits
+>> before the IPA do the calculation of the power budget. But this wasn't
+>> a requirement and we assumed that IPA has full control over the cooling
+>> device (which I described above with this DT THERMAL_NO_LIMIT).
+>>
+>> Is there a problem with your platform that it has to provide some
+>> minimal performance, so you tried to introduce this clamping?
+>>
+>> Regards,
+>> Lukasz
 > 
-> Interaction with Counter character devices occurs via ioctl commands.
-> This allows userspace applications to access and set counter data using
-> native C datatypes rather than working through string translations.
+> 
+> Hi Lukasz,
+> 
+> I refer to the documentation settings of the thermal device tree
+> (Documentation / devicetree / bindings / thermal / thermal.txt).
+> 
+> It shows that cooling-device is a mandatory property, so max/min cooling
+> state should be able to support in framework point of view.
+> Otherwise, the limitation should be added in binding document.
+> 
+> Different hardware mechanisms have different heat dissipation
+> capabilities.
+> Limiting the input heat source can slow down the heat accumulation and
+> temperature burst.
+> We want to reduce the accumulation of heat at high temperature by
+> limiting the minimum gear of thermal throttle.
 
-For most aspects of the counter subsystem, this is not an issue since
-configuring a counter is not a time-sensitive operation. Instead of
-ioctls, I was expecting to just be able to read the character device
-and receive counter events or poll to wait for events similar to how
-the input subsystem works or how buffers work in the iio subsystem.
+I agree that these 'lower' and 'upper' limits shouldn't be just
+ignored as is currently. This patch clamps the value at late stage,
+though.
 
-I'm afraid I don't really see much use in having ioctls that do
-exactly what sysfs already does. And my intuition tells me that the
-extra work needed to maintain it will probably cost more than any
-benefit gained. (Maybe other have a different experience that leads
-to a different conclusion?)
+Let me have a look how it could be taken into account in the early
+stage, before the power calculation and split are done. Maybe there
+is a clean way to inject this.
+
+Regards,
+Lukasz
