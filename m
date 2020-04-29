@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF591BD44E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC5A1BD405
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 07:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgD2GAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 02:00:23 -0400
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:40329 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726353AbgD2GAX (ORCPT
+        id S1726483AbgD2FeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 01:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726456AbgD2FeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 02:00:23 -0400
-X-Greylist: delayed 1801 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Apr 2020 02:00:22 EDT
-Received: from unknown (HELO lgeamrelo02.lge.com) (156.147.1.126)
-        by 156.147.23.51 with ESMTP; 29 Apr 2020 14:30:20 +0900
-X-Original-SENDERIP: 156.147.1.126
-X-Original-MAILFROM: ch0.han@lge.com
-Received: from unknown (HELO localhost.localdomain) (10.177.221.57)
-        by 156.147.1.126 with ESMTP; 29 Apr 2020 14:30:20 +0900
-X-Original-SENDERIP: 10.177.221.57
-X-Original-MAILFROM: ch0.han@lge.com
-From:   Changhee Han <ch0.han@lge.com>
-To:     akpm@linux-foundation.org
-Cc:     vbabka@suse.cz, iamjoonsoo.kim@lge.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, corbet@lwn.net, ch0.han@lge.com
-Subject: [PATCH] tools/vm/page_owner_sort: filter out unneeded line
-Date:   Wed, 29 Apr 2020 14:29:40 +0900
-Message-Id: <20200429052940.16968-1-ch0.han@lge.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 29 Apr 2020 01:34:15 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F6DC03C1AD
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 22:34:15 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id p25so549995pfn.11
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 22:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=El+6gKx5Y3HIntvHMbow+1u5xZcps2vUNvwZMXLjgcQ=;
+        b=WgpijuHEKn/8XXCzzKxzjWMCDJHm/DLuRj6MZ/rHiKxUcJuSIyiK0BDpt2/HYqhCyh
+         k9nqegW7waD7R8F/AITNi4z6LLTB76q9WZ+x230J+MsJUb/efVXEzRnLAxc5RbPEPK1A
+         RZCQKmCBefFLCH3CEI/OdCF4cEnENZmuf+hn4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=El+6gKx5Y3HIntvHMbow+1u5xZcps2vUNvwZMXLjgcQ=;
+        b=ROlhgqP2G/zG6DFZd6g6ZD3uzRMRoZs0npbRU+BnuPybGHWfA9W9HeCe1zlo4YhSHj
+         MH4UhFIG3hiIg7/rbXDe7b5D1DzQxpza4VUvDql5I/f6d23KaMzz4PCNqgo85EhbRbtX
+         E/WcunU5NRK23QdteWJK202mS+c5BVlIQn2ouCQ6o+d0AIc+AFfzb0GqFx0Hc/8GMi6U
+         tpo4E0mOGx60+ndt4MFothMKdtgVZpYVg22ojAJZd63OYMEYYkyq/VjnP2mtWLnzg6S6
+         tJU5xrzCBR9zJe57twViFaTZNIE5tlOU2NshXn3QsBpCDuEBkGa7qeGF6vOW22i7Gget
+         eVww==
+X-Gm-Message-State: AGi0PuZnu11y9tbU31tYmiUsNsC2XdwVYBi6w8S3M5NsNv/kD3osrYB+
+        nDhcXfYGZFJHl25Ei4p9SBssJ9HDHuA=
+X-Google-Smtp-Source: APiQypJsMcJxDW6S6sbWCGFKDdmh9p7KsDDtP9z+FRXOXB3y8ocnzGMoSuPivzCd9vTntoaNuVLFsQ==
+X-Received: by 2002:a62:6dc3:: with SMTP id i186mr31454744pfc.273.1588138454630;
+        Tue, 28 Apr 2020 22:34:14 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id i18sm3588305pjx.33.2020.04.28.22.34.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 22:34:13 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com, bleung@chromium.org,
+        Prashant Malani <pmalani@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org (open list:USB TYPEC CLASS)
+Subject: [PATCH] usb: typec: mux: intel: Handle alt mode HPD_LVL
+Date:   Tue, 28 Apr 2020 22:33:16 -0700
+Message-Id: <20200429053319.113508-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To see a sorted result from page owner, it needs a tiresome
-preprocessing work before running page_owner_sort. This patch simply
-filters out a line which starts with "PFN" while reading page owner
-report.
+According to the PMC Type C Subsystem (TCSS) Mux programming guide rev
+0.6, when a device is transitioning to DP Alternate Mode state, if the
+HPD_LVL in the status update command VDO is set, the HPD_HIGH field in
+the Alternate Mode request “mode_data” field (bit 14) should also be
+set. Ensure the bit is correctly handled while issuing the Alternate
+Mode request.
 
-Signed-off-by: Changhee Han <ch0.han@lge.com>
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+Fixes: 6701adfa9693 ("usb: typec: driver for Intel PMC mux control")
 ---
- Documentation/vm/page_owner.rst | 3 +--
- tools/vm/page_owner_sort.c      | 5 +++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/typec/mux/intel_pmc_mux.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/vm/page_owner.rst b/Documentation/vm/page_owner.rst
-index 0ed5ab8c7ab4..079f3f8c4784 100644
---- a/Documentation/vm/page_owner.rst
-+++ b/Documentation/vm/page_owner.rst
-@@ -83,8 +83,7 @@ Usage
- 4) Analyze information from page owner::
+diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+index f5c5e0aef66f..c599112559e7 100644
+--- a/drivers/usb/typec/mux/intel_pmc_mux.c
++++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+@@ -157,6 +157,10 @@ pmc_usb_mux_dp(struct pmc_usb_port *port, struct typec_mux_state *state)
+ 	req.mode_data |= (state->mode - TYPEC_STATE_MODAL) <<
+ 			 PMC_USB_ALTMODE_DP_MODE_SHIFT;
  
- 	cat /sys/kernel/debug/page_owner > page_owner_full.txt
--	grep -v ^PFN page_owner_full.txt > page_owner.txt
--	./page_owner_sort page_owner.txt sorted_page_owner.txt
-+	./page_owner_sort page_owner_full.txt sorted_page_owner.txt
- 
-    See the result about who allocated each page
-    in the ``sorted_page_owner.txt``.
-diff --git a/tools/vm/page_owner_sort.c b/tools/vm/page_owner_sort.c
-index d3a8755c039c..85eb65ea16d3 100644
---- a/tools/vm/page_owner_sort.c
-+++ b/tools/vm/page_owner_sort.c
-@@ -4,8 +4,7 @@
-  *
-  * Example use:
-  * cat /sys/kernel/debug/page_owner > page_owner_full.txt
-- * grep -v ^PFN page_owner_full.txt > page_owner.txt
-- * ./page_owner_sort page_owner.txt sorted_page_owner.txt
-+ * ./page_owner_sort page_owner_full.txt sorted_page_owner.txt
-  *
-  * See Documentation/vm/page_owner.rst
- */
-@@ -38,6 +37,8 @@ int read_block(char *buf, int buf_size, FILE *fin)
- 	while (buf_end - curr > 1 && fgets(curr, buf_end - curr, fin)) {
- 		if (*curr == '\n') /* empty line */
- 			return curr - buf;
-+		if (!strncmp(curr, "PFN", 3))
-+			continue;
- 		curr += strlen(curr);
- 	}
++	if (data->status & DP_STATUS_HPD_STATE)
++		req.mode_data |= PMC_USB_DP_HPD_LVL <<
++				 PMC_USB_ALTMODE_DP_MODE_SHIFT;
++
+ 	return pmc_usb_command(port, (void *)&req, sizeof(req));
+ }
  
 -- 
-2.17.1
+2.26.2.303.gf8c07b1a785-goog
 
