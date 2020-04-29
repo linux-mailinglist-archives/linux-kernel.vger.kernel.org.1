@@ -2,61 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9121BD901
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16281BD90C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgD2KGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 06:06:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48326 "EHLO
+        id S1726844AbgD2KGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 06:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726575AbgD2KGn (ORCPT
+        with ESMTP id S1726763AbgD2KGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 06:06:43 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11693C03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 03:06:43 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id x25so1366677wmc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 03:06:42 -0700 (PDT)
+        Wed, 29 Apr 2020 06:06:46 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8490DC03C1AD;
+        Wed, 29 Apr 2020 03:06:45 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id k1so1788709wrx.4;
+        Wed, 29 Apr 2020 03:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=tRSFF6YjPRMfXBqbX85nqv3CwbxXtG04SneAHAxmtSk=;
-        b=ZaoT/ij9giXypBnwF0vKQfdQYcFEexr7ot2GWI7JdgQrsXo9VYV6KHH4XkLaDuZMPx
-         HZKACur5XS+EEZU8wvMLwnedKLU0hgMWm9SVrHjnF4dsqeSklS1CdXY/au5GlIXXs26E
-         U6ei9jVS7xMgB66/Bnr4sbL/TgjW8MAlcgiZViWSR8TgbfbVeQZTiitKsMqw+TmCGLir
-         n69ERZ4ZudBSPtAlOl1K1Qhu7gQCT2l8ampFm1LlyZ54yV0Sewa4lVJ9IsrNLFl2dmey
-         uj6CD0sgRArdDeOcCUUzJ4f4pBb9ez+Wg/Wgr8iaM2Hbt5M+D4zcDfurKuGfdPsJXQYO
-         HJVw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Nu1X2CW6jPtDQ0aEhEItVv3kksJg5s4aseacqkeIhzw=;
+        b=huwf0HvL6kpp+czUgrhjvRS4qZYndq90uhZM4bWYOZfbxK7vqRE95//PfH49sRMF0K
+         gjmLwjrKYHai0Y52Fg/6e0HydeOgU3IZ2Bffnx3P6/xgWvTcMCUvc050VNQICGtjhSKP
+         xnOCt9d9gN4JkAWiQ65oqNc16HqXA+tIm4LSDYqZJZNwJOG0as5NQVCECvMpJK8obg7n
+         HX/kf2pSKCE1B0T9WXGId98rqK7ZOkExlBZj/mKS4bepIidwYPVTu9fVdF5patYeGxwK
+         Zy2HnES4sM/lzJdoupRJRjcOHI89hlcW0pPIxFWGAV1tA7j5jWM/H+14sQKZEJg1wjGz
+         dUpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tRSFF6YjPRMfXBqbX85nqv3CwbxXtG04SneAHAxmtSk=;
-        b=beoXjuonBFTMXN8yGYxwyQZkj8w42Q2TqDhgkhW02wHpcdwY9DGjwZ1T7FjEwtBQ2E
-         Zq+ItTvWNNkO4R3hN5mH6kWqEoL1CccR+BOf3kM5tx2wk7Uxgma5ufBXRtCgiOFoiytA
-         UKZiXkefCcSn+f05EKXPfh2foU50gJ40ycL0C3pfpvbQn6bwbT2D99vvfkc4+PLNPhSN
-         OLRg5/dss+yiJ0dfywJkkAhucCRQJ1C8J7uq3BvbwjOoLozQ33Wyg/YaWK3WwqXdrvDZ
-         W+BBvjExVNdpC5Q9uKftr8B9oGhAAMLNahI4HcQB0+ZJh/Cytv4ZzP4h6xH3GRblTWrr
-         vhfw==
-X-Gm-Message-State: AGi0PuZ8sAWtYihRmVz0f9LfZqf69f3hqqunU4QRdL2sGtBwAOdyuTiN
-        ZdK/z3aslM/4jY/PSJB0u0kAzRx8SQ==
-X-Google-Smtp-Source: APiQypL56XDldRfasfPDv99mihTbQk2Mpcz6n7bPRtYAhUmrZBRUyYh8JxA1iA1CBb/pR1zc4ttnDg==
-X-Received: by 2002:a05:600c:2214:: with SMTP id z20mr2558849wml.189.1588154801433;
-        Wed, 29 Apr 2020 03:06:41 -0700 (PDT)
+        bh=Nu1X2CW6jPtDQ0aEhEItVv3kksJg5s4aseacqkeIhzw=;
+        b=Ucsbq1lPpL5/7lcRqLz7zI2byM9DBCFDR44V2VyUPQYgnGUQ59wl33+YFU0ujhuaX0
+         0NxY13JRzvHR3C9m0P90qMfa9owPEFVMLiTJ63ZtvgTlMaNsKaPjnE39s5DRcC2+7KIz
+         hIveuMmvdMFcbJJ9jyHTLGDMbh6JQ7XiCr6rriGqRoW8WDqgFzFW93Q2AZp82tTDYrHB
+         oJHNbNDZkxtftI0vayJDf4/yI4pocCaoSk0L02zKFHRE6S7zVQSEdaYjJ+HSK7eWOKFH
+         UfZjqECK1N+HuaeidC53fYi6wjVFhMmCtaRiaZ4mhxs8TaHCJMzQ9OZKT3H7MTWehxTc
+         eBGA==
+X-Gm-Message-State: AGi0PuZZhOVPGM0OQgcCFGfxTu6O+MwGAv3v1ZTV5KB/B5OFX8YBz73H
+        oG4PhhWdf4F8i/uPnpuWCUpv8W++xQ==
+X-Google-Smtp-Source: APiQypJ/GTZod9A7Y8IqPtMshR7Flx22YxFkPVs6PA3aNO1TPy2CHjJzDQ5A67Gu+PvIRtWiVlvtWA==
+X-Received: by 2002:adf:b1c9:: with SMTP id r9mr41352720wra.271.1588154803962;
+        Wed, 29 Apr 2020 03:06:43 -0700 (PDT)
 Received: from ninjahost.lan (host-2-102-14-195.as13285.net. [2.102.14.195])
-        by smtp.gmail.com with ESMTPSA id 1sm7205478wmi.0.2020.04.29.03.06.40
-        for <linux-kernel@vger.kernel.org>
+        by smtp.gmail.com with ESMTPSA id 1sm7205478wmi.0.2020.04.29.03.06.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 03:06:40 -0700 (PDT)
+        Wed, 29 Apr 2020 03:06:43 -0700 (PDT)
 From:   Jules Irenge <jbi.octave@gmail.com>
 To:     linux-kernel@vger.kernel.org
-Subject: [PATCH 0/6] Lock warnings cleanup
-Date:   Wed, 29 Apr 2020 11:05:22 +0100
-Message-Id: <20200429100529.19645-1-jbi.octave@gmail.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-usb@vger.kernel.org (open list:USB GADGET/PERIPHERAL SUBSYSTEM),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/ZYNQ
+        ARCHITECTURE)
+Subject: [PATCH 1/6] usb: gadget: Add missing annotation for xudc_handle_setup()
+Date:   Wed, 29 Apr 2020 11:05:23 +0100
+Message-Id: <20200429100529.19645-2-jbi.octave@gmail.com>
 X-Mailer: git-send-email 2.25.3
-In-Reply-To: <0/6>
+In-Reply-To: <20200429100529.19645-1-jbi.octave@gmail.com>
 References: <0/6>
+ <20200429100529.19645-1-jbi.octave@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,24 +71,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch serie propose a solution to functions that record context
-imbalance by adding annotations
+Sparse reports a warning at xudc_handle_setup()
 
-Jules Irenge (6):
-  usb: gadget: Add missing annotation for xudc_handle_setup()
-  udp: Add missing annotations for busylock_acquire() and
-    busylock_release()
-  udp: Add annotations for udp_rmem_release()
-  net: atm: Add missing annotation for lec_seq_stop()
-  USB: dummy-hcd: Add missing annotation for set_link_state()
-  net: atm: Add annotation for lec_priv_walk()
+warning: context imbalance in xudc_handle_setup() - unexpected unlock
 
- drivers/usb/gadget/udc/dummy_hcd.c  |  1 +
- drivers/usb/gadget/udc/udc-xilinx.c |  1 +
- net/atm/lec.c                       | 11 ++++++++++-
- net/ipv4/udp.c                      | 11 +++++++++++
- 4 files changed, 23 insertions(+), 1 deletion(-)
+The root cause is the missing annotation at xudc_handle_setup()
 
+Add the missing __must_hold(&udc->lock) annotation
+
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+---
+ drivers/usb/gadget/udc/udc-xilinx.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/gadget/udc/udc-xilinx.c b/drivers/usb/gadget/udc/udc-xilinx.c
+index 29d8e5f8bb58..ae22882dba6a 100644
+--- a/drivers/usb/gadget/udc/udc-xilinx.c
++++ b/drivers/usb/gadget/udc/udc-xilinx.c
+@@ -1733,6 +1733,7 @@ static void xudc_set_clear_feature(struct xusb_udc *udc)
+  * Process setup packet and delegate to gadget layer.
+  */
+ static void xudc_handle_setup(struct xusb_udc *udc)
++	__must_hold(&udc->lock)
+ {
+ 	struct xusb_ep *ep0 = &udc->ep[0];
+ 	struct usb_ctrlrequest setup;
 -- 
 2.25.3
 
