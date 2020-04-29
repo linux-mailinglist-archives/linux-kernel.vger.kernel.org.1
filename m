@@ -2,126 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 018EE1BE053
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78721BE048
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbgD2OKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:10:45 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:37186 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726691AbgD2OKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:10:44 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 79FA820E5DA8037B5AF0;
-        Wed, 29 Apr 2020 22:10:43 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 29 Apr 2020
- 22:10:36 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <andrew@lunn.ch>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <davem@davemloft.net>,
-        <linux@armlinux.org.uk>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] net: dsa: mv88e6xxx: remove duplicate assignment of struct members
-Date:   Wed, 29 Apr 2020 22:10:01 +0800
-Message-ID: <20200429141001.8361-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1727856AbgD2OKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:10:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50452 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726691AbgD2OKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 10:10:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 0C79AAC92;
+        Wed, 29 Apr 2020 14:10:06 +0000 (UTC)
+Date:   Wed, 29 Apr 2020 16:10:04 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before text_poke()
+Message-ID: <20200429141004.GR30814@suse.de>
+References: <20200429054857.66e8e333@oasis.local.home>
+ <20200429105941.GQ30814@suse.de>
+ <20200429082854.6e1796b5@oasis.local.home>
+ <20200429100731.201312a9@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200429100731.201312a9@gandalf.local.home>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These struct members named 'phylink_validate' was assigned twice:
+On Wed, Apr 29, 2020 at 10:07:31AM -0400, Steven Rostedt wrote:
+> Talking with Mathieu about this on IRC, he pointed out that my code does
+> have a vzalloc() that is called:
+> 
+> in trace_pid_write()
+> 
+> 	pid_list->pids = vzalloc((pid_list->pid_max + 7) >> 3);
+> 
+> This is done when -P1,2 is on the trace-cmd command line.
 
-static const struct mv88e6xxx_ops mv88e6190_ops = {
-	......
-	.phylink_validate = mv88e6390_phylink_validate,
-	......
-	.phylink_validate = mv88e6390_phylink_validate,
-};
+Yeah, I was guessing something like this, init_mm has a mapping which
+poking_mm has not. I currently try to reproduce this on one of my
+machines.
 
-static const struct mv88e6xxx_ops mv88e6190x_ops = {
-	......
-	.phylink_validate = mv88e6390_phylink_validate,
-	......
-	.phylink_validate = mv88e6390x_phylink_validate,
-};
+Regards,
 
-static const struct mv88e6xxx_ops mv88e6191_ops = {
-	......
-	.phylink_validate = mv88e6390_phylink_validate,
-	......
-	.phylink_validate = mv88e6390_phylink_validate,
-};
-
-static const struct mv88e6xxx_ops mv88e6290_ops = {
-	......
-	.phylink_validate = mv88e6390_phylink_validate,
-	......
-	.phylink_validate = mv88e6390_phylink_validate,
-};
-
-Remove all the first one and leave the second one which are been used in
-fact. Be aware that for 'mv88e6190x_ops' the assignment functions is
-different while the others are all the same. This fixes the following
-coccicheck warning:
-
-drivers/net/dsa/mv88e6xxx/chip.c:3911:48-49: phylink_validate: first
-occurrence line 3965, second occurrence line 3967
-drivers/net/dsa/mv88e6xxx/chip.c:3970:49-50: phylink_validate: first
-occurrence line 4024, second occurrence line 4026
-drivers/net/dsa/mv88e6xxx/chip.c:4029:48-49: phylink_validate: first
-occurrence line 4082, second occurrence line 4085
-drivers/net/dsa/mv88e6xxx/chip.c:4184:48-49: phylink_validate: first
-occurrence line 4238, second occurrence line 4242
-
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/net/dsa/mv88e6xxx/chip.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index dd8a5666a584..2b4a723c8306 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3962,7 +3962,6 @@ static const struct mv88e6xxx_ops mv88e6190_ops = {
- 	.serdes_get_stats = mv88e6390_serdes_get_stats,
- 	.serdes_get_regs_len = mv88e6390_serdes_get_regs_len,
- 	.serdes_get_regs = mv88e6390_serdes_get_regs,
--	.phylink_validate = mv88e6390_phylink_validate,
- 	.gpio_ops = &mv88e6352_gpio_ops,
- 	.phylink_validate = mv88e6390_phylink_validate,
- };
-@@ -4021,7 +4020,6 @@ static const struct mv88e6xxx_ops mv88e6190x_ops = {
- 	.serdes_get_stats = mv88e6390_serdes_get_stats,
- 	.serdes_get_regs_len = mv88e6390_serdes_get_regs_len,
- 	.serdes_get_regs = mv88e6390_serdes_get_regs,
--	.phylink_validate = mv88e6390_phylink_validate,
- 	.gpio_ops = &mv88e6352_gpio_ops,
- 	.phylink_validate = mv88e6390x_phylink_validate,
- };
-@@ -4079,7 +4077,6 @@ static const struct mv88e6xxx_ops mv88e6191_ops = {
- 	.serdes_get_stats = mv88e6390_serdes_get_stats,
- 	.serdes_get_regs_len = mv88e6390_serdes_get_regs_len,
- 	.serdes_get_regs = mv88e6390_serdes_get_regs,
--	.phylink_validate = mv88e6390_phylink_validate,
- 	.avb_ops = &mv88e6390_avb_ops,
- 	.ptp_ops = &mv88e6352_ptp_ops,
- 	.phylink_validate = mv88e6390_phylink_validate,
-@@ -4235,7 +4232,6 @@ static const struct mv88e6xxx_ops mv88e6290_ops = {
- 	.serdes_get_stats = mv88e6390_serdes_get_stats,
- 	.serdes_get_regs_len = mv88e6390_serdes_get_regs_len,
- 	.serdes_get_regs = mv88e6390_serdes_get_regs,
--	.phylink_validate = mv88e6390_phylink_validate,
- 	.gpio_ops = &mv88e6352_gpio_ops,
- 	.avb_ops = &mv88e6390_avb_ops,
- 	.ptp_ops = &mv88e6352_ptp_ops,
--- 
-2.21.1
-
+	Joerg
