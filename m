@@ -2,75 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27DB1BD2EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE0F1BD2FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgD2D31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 23:29:27 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:55650 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726551AbgD2D30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 23:29:26 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6A0E7431E02F50010AA4;
-        Wed, 29 Apr 2020 11:29:24 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 29 Apr 2020 11:29:17 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <aviad.krawczyk@huawei.com>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] hinic: Use kmemdup instead of kzalloc and memcpy
-Date:   Wed, 29 Apr 2020 11:35:28 +0800
-Message-ID: <1588131328-49470-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
+        id S1726676AbgD2Dfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 23:35:48 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:38994 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726551AbgD2Dfs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 23:35:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588131347; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Reply-To: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=RKZjGjRaRWOMA4bE7u8bYNMGSYHBc1o/5aoxXJ54jnQ=; b=UF3RQFaLof+5O/hFPoKjFlz5tpUNnScnSIb9FENKdSFtxf0g/Q1Kf6gpzYvaQt3MXn9uJsoz
+ Wvsu6560LqUM7K0+p7g1TpB7Z5sP8LXnKHItCGCooLd0odjK7oQHbOqgzBMQh65n4eA41TDl
+ Cx1S+iOT36h2gV9PQQVQQMnLQII=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea8f613.7f1ff9fc10a0-smtp-out-n05;
+ Wed, 29 Apr 2020 03:35:47 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 359A1C43637; Wed, 29 Apr 2020 03:35:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from quicinc.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: svaddagi)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7C61BC433D2;
+        Wed, 29 Apr 2020 03:35:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7C61BC433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vatsa@codeaurora.org
+Date:   Wed, 29 Apr 2020 09:05:39 +0530
+From:   Srivatsa Vaddagiri <vatsa@codeaurora.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     konrad.wilk@oracle.com, jasowang@redhat.com,
+        jan.kiszka@siemens.com, will@kernel.org,
+        stefano.stabellini@xilinx.com, iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, tsoni@codeaurora.org,
+        pratikp@codeaurora.org, christoffer.dall@arm.com,
+        alex.bennee@linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] virtio: Add bounce DMA ops
+Message-ID: <20200429033539.GB5097@quicinc.com>
+Reply-To: Srivatsa Vaddagiri <vatsa@codeaurora.org>
+References: <1588073958-1793-1-git-send-email-vatsa@codeaurora.org>
+ <1588073958-1793-6-git-send-email-vatsa@codeaurora.org>
+ <20200428121232-mutt-send-email-mst@kernel.org>
+ <20200428174952.GA5097@quicinc.com>
+ <20200428163448-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20200428163448-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes coccicheck warnings:
+* Michael S. Tsirkin <mst@redhat.com> [2020-04-28 16:41:04]:
 
- drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:452:17-24: WARNING opportunity for kmemdup
- drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c:458:23-30: WARNING opportunity for kmemdup
+> > Won't we still need some changes to virtio to make use of its own pool (to
+> > bounce buffers)? Something similar to its own DMA ops proposed in this patch?
+> 
+> If you are doing this for all devices, you need to either find a way
+> to do this without chaning DMA ops, or by doing some automatic change
+> to all drivers.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+Ok thanks for this input. I will see how we can obfuscate this in DMA APIs
+itself.
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c b/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
-index f8626df..a39cc16 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_mbox.c
-@@ -449,18 +449,15 @@ static void recv_mbox_handler(struct hinic_mbox_func_to_func *func_to_func,
- 		return;
- 	}
- 
--	rcv_mbox_temp = kzalloc(sizeof(*rcv_mbox_temp), GFP_KERNEL);
-+	rcv_mbox_temp = kmemdup(recv_mbox, sizeof(*rcv_mbox_temp), GFP_KERNEL);
- 	if (!rcv_mbox_temp)
- 		return;
- 
--	memcpy(rcv_mbox_temp, recv_mbox, sizeof(*rcv_mbox_temp));
--
--	rcv_mbox_temp->mbox = kzalloc(MBOX_MAX_BUF_SZ, GFP_KERNEL);
-+	rcv_mbox_temp->mbox = kmemdup(recv_mbox->mbox, MBOX_MAX_BUF_SZ,
-+				      GFP_KERNEL);
- 	if (!rcv_mbox_temp->mbox)
- 		goto err_alloc_rcv_mbox_msg;
- 
--	memcpy(rcv_mbox_temp->mbox, recv_mbox->mbox, MBOX_MAX_BUF_SZ);
--
- 	rcv_mbox_temp->buf_out = kzalloc(MBOX_MAX_BUF_SZ, GFP_KERNEL);
- 	if (!rcv_mbox_temp->buf_out)
- 		goto err_alloc_rcv_mbox_buf;
+Can you also comment on the virtio transport problem I cited? The hypervisor we
+are dealing with does not support MMIO transport. It supports message queue
+send/recv and also doorbell, which I think can be used if we can make some
+change like this to virtio_mmio.c:
+
++static inline u32
++virtio_readl(struct virtio_mmio_device *vm_dev, u32 reg_offset)
++{
++        return vm_dev->mmio_ops->readl(vm_dev, reg_offset);
++}
++ 
++static inline void
++virtio_writel(struct virtio_mmio_device *vm_dev, u32 reg_offset, u32 data)
++{
++        vm_dev->mmio_ops->writel(vm_dev, reg_offset, data);
++}
+
+
+        /* Check magic value */
+-        magic = readl(vm_dev->base + VIRTIO_MMIO_MAGIC_VALUE);
++        magic = vrito_readl(vm_dev, VIRTIO_MMIO_MAGIC_VALUE);
+
+mmio_ops->readl on most platforms can default to readl itself, while on a
+platform like us, it can boil down to message_queue send/recv. Would such a
+change be acceptable?
+
 -- 
-2.6.2
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
