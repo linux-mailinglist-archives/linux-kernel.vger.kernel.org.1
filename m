@@ -2,178 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C441BDDB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B33C1BDDB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgD2Nd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
+        id S1727096AbgD2NeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726669AbgD2Nd1 (ORCPT
+        with ESMTP id S1726661AbgD2NeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:33:27 -0400
+        Wed, 29 Apr 2020 09:34:19 -0400
 Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBC9C03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 06:33:25 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j2so2535466wrs.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 06:33:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D11C03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 06:34:19 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id i10so2535249wrv.10
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 06:34:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:organization:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=57KpVyxFiIynSOtLWM5S1qu9oG0E8FFGMRYGzL0PtQs=;
-        b=ABiQRIwnnGgnP7DXwh5VSPW3qFWj2FcDVAgkYap4Sep2VKflFx4N/3UKNVOrNvHK5f
-         XttYZI0S7MqVMonv8SzdRLVL+QgpFNksG1Ov1gH0sBsnm5ZwXkWWcglAUcDoecIgVDKv
-         TA0d/5OOhCjf3aeu0+ukRzQme0Pof1jHr0s9VmSqQOJvxLkVzvgmNqXBhnQsf82RuGh5
-         nGSfyDjdej/n9WKXpFKfkTK6vAHyrSmyZq5RjjElWNgoasSIQINoQRnst/8pUz0RBefl
-         wxUHuhRndYMqGu/IE9TR5h6FOdCU4eI/gcjp+NLfWE4HjmePW2eoEhj4KASneqM8iCPE
-         U6nQ==
+        bh=oWjoLz4m5yHmRo9LMIvAUfjqnNKsovRwzYwrOJ1JeU8=;
+        b=EYeOLgVnJwlqmYEaJEt29olhAC9Ta+bTseXdF7UltD/wqSgb4e/lsYSBgQP3xa85Q8
+         XRkCLXxQgp6bxqmfT2uKL2yNU225U7DrLSB+Npqk3M4WNy2qYoUJuOjoBDp73/+BJhjl
+         aIwqRockPe94WYbc2J8Z2zxJfDli3pLoq8NpC+E7Pvaqbtkdmymh3MP3btuArtAWdJo+
+         nb2Qa18dkX9Gvusd0i9iLuVVQIPbvDMO1a78VpWl10Uh3CfZ3/yNAbi3Ts8POkn5yoyc
+         TDUI5zNm5OpUPqTpai2m6EydJSStXGFYGuJsTcA/2d47s+4r5SKZ/akOIGldAAH0IrVg
+         fiIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :organization:message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=57KpVyxFiIynSOtLWM5S1qu9oG0E8FFGMRYGzL0PtQs=;
-        b=jqwLFjUwzh5OUm09gyqOOiy8saMnYEhZc+EW8EpKtpFA39unNBfHhrNWMIcwmltKv8
-         gb0CF+k8OcmmDc3s0fwfIWPZXaGd6wg7T11Y4vTcHWmrGg+yclbKpvyUXdVoRYpjNwp1
-         a1V4VocQEfoXIJixgJU/BDQuNkeLbyHoZglx1bnh02TdjTatThvTsVe7jlOqar2mLUkf
-         YHn9tNMsEANkh4lS+bMsTIORKNAQfs/Z8EwvjQl0dTX6favDXJ4qBj/m/mSSm6hDHwMi
-         h1CuqQYsLCp3/B6MjHxg/FXCF82l6vAZar3BNoMr3jkgZLdod40MPEPEsUlNsN27Sre1
-         jrbQ==
-X-Gm-Message-State: AGi0PuaDodc5kvB9vSsoIWodIaN27KCMzdX+8mWr8nUdrPOLuVjkafaq
-        bSOOvmX8oXF24TYBEXEBHatcAHJ2yYOEPw==
-X-Google-Smtp-Source: APiQypLeL8JXb5wg6K5NkhgJTycyIPyVnsKkihsopNfL2tb7HT1xgcWccOBeuwpneP2REnFZ67aTSw==
-X-Received: by 2002:a5d:4e02:: with SMTP id p2mr42130290wrt.302.1588167203674;
-        Wed, 29 Apr 2020 06:33:23 -0700 (PDT)
-Received: from ?IPv6:2a01:e35:2ec0:82b0:4460:3fd3:382:4a71? ([2a01:e35:2ec0:82b0:4460:3fd3:382:4a71])
-        by smtp.gmail.com with ESMTPSA id s17sm7644244wmc.48.2020.04.29.06.33.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Apr 2020 06:33:22 -0700 (PDT)
-Subject: Re: [PATCH v2] drm/meson: add mode selection limits against specific
- SoC revisions
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200428092147.13698-1-narmstrong@baylibre.com>
- <CAFBinCBb=FTH6aken5K9zoedBPYBJUCSj0eA+_Eghv+mnU_3vg@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
- 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
- BSwxi7g3Mu7u5kUByanqHyA=
-Organization: Baylibre
-Message-ID: <f7aadb74-4351-3c55-7d99-afabc34b0712@baylibre.com>
-Date:   Wed, 29 Apr 2020 15:33:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oWjoLz4m5yHmRo9LMIvAUfjqnNKsovRwzYwrOJ1JeU8=;
+        b=b/fQ2uIixGuGvLyYB0FGQtC1s28eTkYveuskb88dHJUSyI1MgTsfFFRGEv+yBd1dPu
+         +aHFwe29A3rfFc6mOBo7fHsg/UCpXWnaxbC+t1aLay4+mEgtlSliE7DhGqXyR4/p1VCr
+         x7Q/EsyrV5GuBgboQDkFVC34g/TFDl4no4VKKKErJH7jsgZ57ayuH9qUPEFBdtOxLG12
+         LlcCECrDp5THehxGCzqnAKjyXos/LkfDkAzakF8RRcrcuo+VZ/06BoAgYNrWanutKGco
+         7B3SB28i6qYmmNIsyeaOAowk3lp9L4eqTwOPBaXW20Ju2lCVKqtODMDilfPkTDfakf1u
+         VZDw==
+X-Gm-Message-State: AGi0PuYH7mSpvwksEi2TsWINZUD+N9L62XvAe6x76jaU3IxpTFCFhEcK
+        tJs3/vf2awflEH+s4nPAEjOYNeUG
+X-Google-Smtp-Source: APiQypJeRtrkjIvqYxKHHJl0aQP8BxfOkGAW3E9JW3ZYW/WTAEMb6dolh709xQxg45Dt8eIpwz++Wg==
+X-Received: by 2002:adf:e450:: with SMTP id t16mr42285744wrm.301.1588167258163;
+        Wed, 29 Apr 2020 06:34:18 -0700 (PDT)
+Received: from akira-laptop.home ([2a01:cb19:8b28:7600:a0b9:1c6f:cfba:2b21])
+        by smtp.googlemail.com with ESMTPSA id z1sm7919098wmf.15.2020.04.29.06.34.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 06:34:17 -0700 (PDT)
+From:   Akira Shimahara <akira215corp@gmail.com>
+To:     greg@kroah.com
+Cc:     zbr@ioremap.net, linux-kernel@vger.kernel.org,
+        Akira Shimahara <akira215corp@gmail.com>
+Subject: [PATCH v3 4/5] w1_therm: alarms support by adding sysfs entry. Updating doc
+Date:   Wed, 29 Apr 2020 15:34:09 +0200
+Message-Id: <20200429133409.141273-1-akira215corp@gmail.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCBb=FTH6aken5K9zoedBPYBJUCSj0eA+_Eghv+mnU_3vg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Patch for enhacement of w1_therm module. Adding device alarms settings
+by a dedicated sysfs entry alarms (RW) : read or write TH and TL in the
+device RAM. Checking devices in alarm state could be performed using
+the master search command.
 
-On 29/04/2020 00:03, Martin Blumenstingl wrote:
-> Hi Neil,
-> 
-> On Tue, Apr 28, 2020 at 11:21 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
->>
->> The Amlogic S805X/Y uses the same die as the S905X, but with more
->> limited graphics capabilities.
->>
->> This adds a soc version detection adding specific limitations on the HDMI
->> mode selections.
->>
->> Here, we limit to HDMI 1.3a max HDMI PHY clock frequency.
-> for my own education: 1.65GHz from the PLL will be divided down to 165MHz
-> isn't this more like the limit of HDMI 1.2a?
+Updating doc in Documentation/ABI/testing/sysfs-driver-w1_therm
+accordingly.
 
-indeed from [1] :
-```
-HDMI 1.3 / 1.3a:
-- Higher speed: HDMI 1.3 increases its single-link bandwidth to 340 MHz (10.2 Gbps) to support the
-demands of future HD display devices, such as higher resolutions, Deep Color and high frame rates.
-In addition, built into the HDMI 1.3 specification is the technical foundations that will let future
-versions of HDMI reach significantly higher speeds.
-```
+Signed-off-by: Akira Shimahara <akira215corp@gmail.com>
+---
+ .../ABI/testing/sysfs-driver-w1_therm         |  15 ++
+ drivers/w1/slaves/w1_therm.c                  | 129 ++++++++++++++++++
+ drivers/w1/slaves/w1_therm.h                  |  12 ++
+ 3 files changed, 156 insertions(+)
 
-So yes, it must be HDMI 1.2a, I'll fixup while applying.
+diff --git a/Documentation/ABI/testing/sysfs-driver-w1_therm b/Documentation/ABI/testing/sysfs-driver-w1_therm
+index 279e13d..39488a4 100644
+--- a/Documentation/ABI/testing/sysfs-driver-w1_therm
++++ b/Documentation/ABI/testing/sysfs-driver-w1_therm
+@@ -1,3 +1,18 @@
++What:		/sys/bus/w1/devices/.../alarms
++Date:		Apr 2020
++Contact:	Akira Shimahara <akira215corp@gmail.com>
++Description:
++		(RW) read or write TH and TL (Temperature High an Low) alarms.
++		Values shall be space separated and in the device range
++		(typical -55 degC to 125 degC). Values are integer as they
++		are store in a 8bit register in the device.
++		Lowest value is automatically put to TL.
++		Once set, alarms could be search at master level, refer to
++		Documentation/w1/w1_generic.rst for detailed information
++Users:		any user space application which wants to communicate with
++		w1_term device
++
++
+ What:		/sys/bus/w1/devices/.../eeprom
+ Date:		Apr 2020
+ Contact:	Akira Shimahara <akira215corp@gmail.com>
+diff --git a/drivers/w1/slaves/w1_therm.c b/drivers/w1/slaves/w1_therm.c
+index 3ddf2b1..db75048 100644
+--- a/drivers/w1/slaves/w1_therm.c
++++ b/drivers/w1/slaves/w1_therm.c
+@@ -68,6 +68,12 @@ module_param_named(strong_pullup, w1_strong_pullup, int, 0);
+  *				(device do that automatically on power-up)
+  *
+  *
++ * alarms (RW) : read TH and TL (Temperature High an Low) alarms
++ *	Values shall be space separated and in the device range
++ *	(typically -55° to 125°)
++ *	Values are integer are they are store in a 8bit field in the device
++ *	Lowest value is automatically put to TL
++ *
+  */
+ 
+ /*
+@@ -81,6 +87,7 @@ static struct attribute *w1_therm_attrs[] = {
+ 	&dev_attr_ext_power.attr,
+ 	&dev_attr_resolution.attr,
+ 	&dev_attr_eeprom.attr,
++	&dev_attr_alarms.attr,
+ 	NULL,
+ };
+ 
+@@ -89,6 +96,7 @@ static struct attribute *w1_ds18s20_attrs[] = {
+ 	&dev_attr_temperature.attr,
+ 	&dev_attr_ext_power.attr,
+ 	&dev_attr_eeprom.attr,
++	&dev_attr_alarms.attr,
+ 	NULL,
+ };
+ 
+@@ -99,6 +107,7 @@ static struct attribute *w1_ds28ea00_attrs[] = {
+ 	&dev_attr_ext_power.attr,
+ 	&dev_attr_resolution.attr,
+ 	&dev_attr_eeprom.attr,
++	&dev_attr_alarms.attr,
+ 	NULL,
+ };
+ 
+@@ -207,6 +216,7 @@ static struct w1_family w1_therm_family_DS1825 = {
+ };
+ 
+ /*----------------------Device capability description-----------------------*/
++
+ static struct w1_therm_family_converter w1_therm_families[] = {
+ 	{
+ 		.f			= &w1_therm_family_DS18S20,
+@@ -1009,6 +1019,125 @@ static ssize_t eeprom_store(struct device *device,
+ 	return size;
+ }
+ 
++static ssize_t alarms_show(struct device *device,
++	struct device_attribute *attr, char *buf)
++{
++	struct w1_slave *sl = dev_to_w1_slave(device);
++	int ret = -ENODEV;
++	s8 th = 0, tl = 0;
++	struct therm_info scratchpad;
++
++	ret = read_scratchpad(sl, &scratchpad);
++
++	if (!ret)	{
++		th = scratchpad.rom[2]; // TH is byte 2
++		tl = scratchpad.rom[3]; // TL is byte 3
++	} else {
++		dev_info(device,
++			"%s: error reading alarms register %d\n",
++			__func__, ret);
++	}
++
++	return sprintf(buf, "%hd %hd\n", tl, th);
++}
++
++static ssize_t alarms_store(struct device *device,
++	struct device_attribute *attr, const char *buf, size_t size)
++{
++	struct w1_slave *sl = dev_to_w1_slave(device);
++	struct therm_info info;
++	u8 new_config_register[3];	/* array of data to be written */
++	int temp, ret = -EINVAL;
++	char *token = NULL;
++	s8 tl, th, tt;	/* 1 byte per value + temp ring order */
++	char *p_args = kmalloc(size, GFP_KERNEL);
++
++	/* Safe string copys as buf is const */
++	if (!p_args) {
++		dev_warn(device,
++			"%s: error unable to allocate memory %d\n",
++			__func__, -ENOMEM);
++		return size;
++	}
++	strcpy(p_args, buf);
++
++	/* Split string using space char */
++	token = strsep(&p_args, " ");
++
++	if (!token)	{
++		dev_info(device,
++			"%s: error parsing args %d\n", __func__, -EINVAL);
++		goto free_m;
++	}
++
++	/* Convert 1st entry to int */
++	ret = kstrtoint (token, 10, &temp);
++	if (ret) {
++		dev_info(device,
++			"%s: error parsing args %d\n", __func__, ret);
++		goto free_m;
++	}
++
++	tl = int_to_short(temp);
++
++	/* Split string using space char */
++	token = strsep(&p_args, " ");
++	if (!token)	{
++		dev_info(device,
++			"%s: error parsing args %d\n", __func__, -EINVAL);
++		goto free_m;
++	}
++	/* Convert 2nd entry to int */
++	ret = kstrtoint (token, 10, &temp);
++	if (ret) {
++		dev_info(device,
++			"%s: error parsing args %d\n", __func__, ret);
++		goto free_m;
++	}
++
++	/* Prepare to cast to short by eliminating out of range values */
++	th = int_to_short(temp);
++
++	/* Reorder if required th and tl */
++	if (tl > th) {
++		tt = tl; tl = th; th = tt;
++	}
++
++	/* Read the scratchpad to change only the required bits
++	 * (th : byte 2 - tl: byte 3)
++	 */
++	ret = read_scratchpad(sl, &info);
++	if (!ret) {
++		new_config_register[0] = th;	// Byte 2
++		new_config_register[1] = tl;	// Byte 3
++		new_config_register[2] = info.rom[4];// Byte 4
++	} else {
++		dev_info(device,
++			"%s: error reading from the slave device %d\n",
++			__func__, ret);
++		goto free_m;
++	}
++
++	/* Write data in the device RAM */
++	if (!SLAVE_SPECIFIC_FUNC(sl)) {
++		dev_info(device,
++			"%s: Device not supported by the driver %d\n",
++			__func__, -ENODEV);
++		goto free_m;
++	}
++
++	ret = SLAVE_SPECIFIC_FUNC(sl)->write_data(sl, new_config_register);
++	if (ret)
++		dev_info(device,
++			"%s: error writing to the slave device %d\n",
++			__func__, ret);
++
++free_m:
++	/* free allocated memory */
++	kfree(p_args);
++
++	return size;
++}
+ #if IS_REACHABLE(CONFIG_HWMON)
+ static int w1_read_temp(struct device *device, u32 attr, int channel,
+ 			long *val)
+diff --git a/drivers/w1/slaves/w1_therm.h b/drivers/w1/slaves/w1_therm.h
+index 487156f..4f2dcf0 100644
+--- a/drivers/w1/slaves/w1_therm.h
++++ b/drivers/w1/slaves/w1_therm.h
+@@ -287,6 +287,17 @@ static ssize_t resolution_store(struct device *device,
+ static ssize_t eeprom_store(struct device *device,
+ 	struct device_attribute *attr, const char *buf, size_t size);
+ 
++/** @brief A callback function to set the alarms level
++ *  @param device represents the master device
++ */
++static ssize_t alarms_store(struct device *device,
++	struct device_attribute *attr, const char *buf, size_t size);
++
++/** @brief A callback function to get the alarms level
++ *  @return Low and High alarm, separate by one space
++ */
++static ssize_t alarms_show(struct device *device,
++	struct device_attribute *attr, char *buf);
+ /*-----------------------------Attributes declarations----------------------*/
+ 
+ static DEVICE_ATTR_RW(w1_slave);
+@@ -295,6 +306,7 @@ static DEVICE_ATTR_RO(temperature);
+ static DEVICE_ATTR_RO(ext_power);
+ static DEVICE_ATTR_RW(resolution);
+ static DEVICE_ATTR_WO(eeprom);
++static DEVICE_ATTR_RW(alarms);
+ 
+ /*--------------------------Interface Functions-----------------------------*/
+ 
+-- 
+2.25.4
 
-> 
->> Changes sinces v1:
->> - Moved frequency check in the vclk code, and also checks DMT modes
->>
->> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> 
-> This looks good to me based on the current limitations of meson_vclk.c
-> If we switch to CCF based VPU clock rate changes then we should do
-> this in the clock driver by calling clk_hw_set_rate_range(hdmi_pll, 0,
-> 1.65GHz)
-> 
-> The good thing is: we can re-use struct meson_drm_soc_limits even
-> after switching to CCF.
-> We will just need to set the max PHY freq using
-> clk_round_rate(hdmi_pll, ULONG_MAX)
-
-Exact !
-
-Neil
-
-> 
-> 
-> Martin
-> 
-
-[1] https://denon.custhelp.com/app/answers/detail/a_id/192/~/differences-between-hdmi-versions-1.1%2C-1.2%2C-1.3a%2C-1.4-and-2.0%3F
