@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542691BD7EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 121B41BD7F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgD2JHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 05:07:43 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:59690 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726470AbgD2JHn (ORCPT
+        id S1726655AbgD2JHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 05:07:55 -0400
+Received: from sonic303-1.consmr.mail.bf2.yahoo.com ([74.6.131.40]:35973 "EHLO
+        sonic303-1.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726426AbgD2JHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 05:07:43 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T8wSHn005185;
-        Wed, 29 Apr 2020 11:07:13 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=e9NwN/IhCOM3jYLOzfdAEssprCoON8TaVJUaQG+tcnY=;
- b=J+GPW50HYzS2dnXExZqnZ0XHPX4HJhPak2/+H/VoXthCvYrz3BF1nP/uko5izwrQMNrv
- wzs46w4f3d+w94AXcFAmi/Sn0y2zTTLH7HbtwL3gYNS285nPHK/AKxJHNb/NVW3lhXhR
- T2kTZS6oyyPzvOu8DFUZQUhnFsEtEcoyvnDoMDHoOsOmxbjE2gV6PXTvpWMdJA+kAxjP
- hBOCr4gJ9hAiFo5EXXhQnWFVTWLITdlztngvL8b9CnozBWDP18OBf3Rre6DMTfrx/zQv
- KsnOasx7zbGbEwn+21S0q6vY6vbOKZEhyJqVQ9HDfeCaZUpNu0HeQwE4apqCgH3oyzwT 7w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30n4j61dnw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 11:07:13 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3325C10002A;
-        Wed, 29 Apr 2020 11:07:09 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag6node2.st.com [10.75.127.17])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1819920749E;
-        Wed, 29 Apr 2020 11:07:09 +0200 (CEST)
-Received: from [10.211.9.35] (10.75.127.44) by SFHDAG6NODE2.st.com
- (10.75.127.17) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Wed, 29 Apr
- 2020 11:07:07 +0200
-Subject: Re: [PATCH v2 04/12] mtd: rawnand: stm32_fmc2: manage all errors
- cases at probe time
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Marek Vasut <marex@denx.de>
-CC:     <richard@nod.at>, <vigneshr@ti.com>, <lee.jones@linaro.org>,
-        <robh+dt@kernel.org>, <mark.rutland@arm.com>, <tony@atomide.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>
-References: <1586966256-29548-1-git-send-email-christophe.kerello@st.com>
- <1586966256-29548-5-git-send-email-christophe.kerello@st.com>
- <20200427194747.224a2402@xps13>
- <40a9bac7-9ed4-b781-f2c2-2d90b4e82749@denx.de>
- <20200427200848.722f4c56@xps13>
- <3527f3b8-225d-6e5a-dd8a-0421d475f70b@denx.de>
- <20200427220806.13741ec0@xps13>
-From:   Christophe Kerello <christophe.kerello@st.com>
-Message-ID: <75a430de-54af-c4db-9d93-6b3d5e65874c@st.com>
-Date:   Wed, 29 Apr 2020 11:07:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Wed, 29 Apr 2020 05:07:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1588151274; bh=q1Er/SdqxATomBDx27mJAnsQxxrJWpCL+Y8MaW3053A=; h=Date:From:Reply-To:Subject:References:From:Subject; b=n/8vhjMYrIGjjTF6QxgIG7TsisJArEujJwsOpEy8p8RbTgBbvW83vDDvgsagNSx1xBxoPnjfUxSBf03GOvuasCuj2C8+ldT3s8BJ6IiNdd/jhWBF6YRbMePW2BmBbGh5LeomPF1AnSYnFjygyaV824/4omslRzHZkMeiAtRxm17hx472vu07as3BhxZ/TVqZojbvIvIyefx6w4YszdbuFQ86+hRXSykEdkT3RZCAq0MSyauCmV+U+BWteyKIpJO14vZ3Bcgac+LnnwjMav7uTTX9xwQO/OcCQCamivAlod3Z/6fxah191v4tzlpc8N8DoTuaOwB6Uq3oPLhwmcS+cQ==
+X-YMail-OSG: 8VzAAn4VM1n3x2ftBykE1ErD.iq5EWOTERDWAmW5rHzsf7NOKf2f_sZyGxNfksv
+ Db0EdCoWaXH_7XRvf_BK_nbPCcO4ncHe69C5.WCNr2r9NdFnBiT5iqLkcBhl_yV69.VhWShWI0nc
+ po.cpn3RiOKUrK6b.rzjwdgotsM7gpF2S4CDSC7Bo6Gr29HYAgta0uhjCjEwJKiqf_Dl4rBXc7jT
+ toQ99EdlTpQl9fQOV9AlunFXpJCpmC.wEZYoRAWdVspAIkxnNtlgOeT3jAC4oigDCM9BiTbjhrPZ
+ 43KYaZLG91Uh7hZduqC647tF79MGtst0c2XVsRIA7bwHRIzTzMM.9lb_s3ZAFHc4NtYhGo7T0V92
+ SGM4LdYbDd_STWJR8IVgK5SQ3D.e3dt7DGxLhNQRQhVP6d0Z_Xco.yr8H.iIt.6O7osCSCm6OShO
+ j6zpxu_gtGD8GkoG8.T.8ilxHSAZBI_ui31aE7LDsd7lezpjSBPeTWvxGl3Xb7Xdg.xLBEHt4Gcu
+ Uq2OUzB_TM7oSexM8lwvuQ3ia1TTQOGbW5IwyEFIgVwZr6VfRiMK2DujNZJVk_KXo7PlTn0tXup2
+ Q89LYWHflp8D5VGuWL795XiUUNZFoJYERI0nuijXp3QQkNEU8K0aa.lJdV3IUzwB_fnV6z091x0F
+ TXGZ7bnZft.7Pf3jLIIF7GpvfItaNXYhIMag_FhXXI2GgIIhbnL3J9Aeu.q3zTSCSlWLX5Fot4dZ
+ BP4xljVkq313d7l0kRAa1Fr.TwbYN2nWhlBdFe0KmjWu.P5vcYeZTYK5pfWu0RUWuHD3hEJSTdJH
+ e7o6cKCCfqaqKUP4_6MNy8y8ZhSwadimzDOX1MaExc9lPxqGda1BWnvghpfmfiOK8du0BuVlrQOT
+ eTS0GQbjo_eoxlxOW8ZRsuj8.YeASr9us6DO7ns0oEVvjSnJxBxg3D89Bunb2BrymR0xot3CuPo.
+ WHgtKn3I4FEugUtJOzGpVMYAM5.QnGW66K5OZjGMCVelDIjR.C0wCawoXh4pZihvyDsW4f1iy39d
+ tG_NWug_dKsj3Sq4QWv1Ecwz2bpRaiO2LWonD_fM56eaAZ48V9lMKeNosWu1DiFYnOSrmkYb.RpX
+ xpAzn6OOnd.U5bEMGyrkeNPxpWXdNth4aqDz3T.hMTjhEY1lNJ3epuv.NabzyQfsC6hX2xcL34d5
+ CVSXLGVL.0_tKZpYpUh3H5uemhIL9ZwtnSvcmkGUU1g05yAmZwxy.sBTjZlYOPjeZ0QjkhOjw.eJ
+ wQ1oKFYGnTYbN9P4LLMY7KIlQzog1QzDRTrYzT3OcxfrLys0sTMpADC6eyvjnZnJ47MmCybeS0rL
+ X
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.bf2.yahoo.com with HTTP; Wed, 29 Apr 2020 09:07:54 +0000
+Date:   Wed, 29 Apr 2020 09:07:53 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrs.mainaabrunel126@gmail.com>
+Reply-To: mrs.minaabrunel30@gmail.com
+Message-ID: <1836231886.1376172.1588151273253@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-In-Reply-To: <20200427220806.13741ec0@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG6NODE2.st.com
- (10.75.127.17)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-29_03:2020-04-28,2020-04-29 signatures=0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1836231886.1376172.1588151273253.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15756 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquèl,
 
-On 4/27/20 10:08 PM, Miquel Raynal wrote:
-[...]
->>>> btw would it make sense to split the first three patches of this series
->>>> into a separate series ? This rawnand part seems more like an unrelated
->>>> cleanup.
->>> As it seems that the MFD discussion can take longer, then I would say
->>> yes, at least for the cleanup/misc changes part.
->> Right
->>
 
-I think that it is better to only have one set of patches as there is 
-different maintainers that will review the whole set of patches.
-I expect to be able to propose a v3 next week to add the EBI driver and 
-the updates on NAND driver (as some patches are linked)
-A proposal could be to put all the NAND patches that you have started to 
-review at the beginning of the set of patches (patch 4/5/6/7/8).
-You will be free to apply them after the review and I will only resubmit 
-the patches that have not been applied in the next version.
+My Dear in the lord
 
-Regards,
-Christophe Kerello.
+
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Rome th=
+e capital city of Italy in Southern Europe. The money was from the sale of =
+his company and death benefits payment and entitlements of my deceased husb=
+and by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
