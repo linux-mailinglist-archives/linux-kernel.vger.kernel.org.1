@@ -2,202 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AAD1BDB11
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517DB1BDB1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgD2LuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 07:50:15 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:52993 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726516AbgD2LuO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 07:50:14 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id DF3D5734;
-        Wed, 29 Apr 2020 07:50:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 29 Apr 2020 07:50:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=MZELg45ZQRts6Cx5sUhyiaLHCD8
-        lRyjQOu7wzrAbEX8=; b=AdwKmZuBTWOncc4vQFaslDngWdipB7Wqv3I7TYGxi8M
-        gPRbPacdPE2U0iNsmPnuHLlhAuUIgo6nEwFlp1DGKIW7NOb+Qhcme6/Twmc7wlL5
-        4pZOEdkEuDZCeqY0LSHmNZyT1KNta/K74rKhebaIbkfHtrcVc771P0xA7ahH8wzg
-        1GA0ibYCEAn4ZO0fYFvtPyCnvFv3dG2hZ9LGVztMVHSu8zo5RxnECqbv3JPGZfWo
-        ef50Ciky/KMuzxE7PWcd9SEVc0Rrvjpxg2tgX+HRhQW1At0R+jkpxqCPVtUU+Nav
-        GzjE+a+/X8H5WsczHIOxvYLKZTVmcSwVMeo+FFtKOuA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=MZELg4
-        5ZQRts6Cx5sUhyiaLHCD8lRyjQOu7wzrAbEX8=; b=MG42hl0NaysBYPaqZodAAc
-        8CULeoLq6hP+Evn53cgbUf138qUNy3Br4rVF5qXFuHiP+lmST6UyASqoxnoLdLA4
-        MGDM74Cx04fOiptzHNnyfUegnA0MsswcVwiHqJEqzVyKMOMGOYBFGPe5WN8qi/7V
-        urtTqzcbxu5M5FEfGyg2DfDl33Iqd6Voh5KkPGVbIvVSdxTG8BOmQCzdLVdVzCiE
-        2APiiZ4sdN+nEcM0rj492E70qFDTmGhUyoN5VSSNjkbUAnGVQkraEpTHm7wmn3Kp
-        cAC80tqeu9hXzGWiSKU4QfN1YFULJjXi2rLNEqGvrMuWOzayTb5lo4YJTXEZxyGQ
-        ==
-X-ME-Sender: <xms:8mmpXqlGaXjIB2AkWGkbyZSvzxcCYjWGfmFrsp-nsbnz3jNtI0RHRA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrieefgdeghecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucffohhmrghinh
-    epuggvvhhitggvthhrvggvrdhorhhgnecukfhppeeltddrkeelrdeikedrjeeinecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvse
-    gtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:8mmpXukVgCosWgr-zmsPAEDwC7UJvcsqqluQmHAJr2oHydlhDldBEQ>
-    <xmx:8mmpXoN0JjU9yFBj4GFCjcgg6gfVWqEfzoFJP5jdLByiV51NWWC-KA>
-    <xmx:8mmpXnOoNQR4Ckq-KHGp8Nsvq94N2RXH8BFC3474gbm0LDXUfoLwrQ>
-    <xmx:9GmpXj6QDi0cK_8E3K5TcQZpcO3Qk37EfNurxpLAsBn0v9YDJmG45uNWzrQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id DAA333280060;
-        Wed, 29 Apr 2020 07:50:09 -0400 (EDT)
-Date:   Wed, 29 Apr 2020 13:50:08 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
-        brendanhiggins@google.com, tglx@linutronix.de,
-        boris.brezillon@collabora.com, anders.roxell@linaro.org,
-        masonccyang@mxic.com.tw, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, hauke.mehrtens@intel.com,
-        andriy.shevchenko@intel.com, qi-ming.wu@intel.com,
-        cheol.yong.kim@intel.com
-Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: Add YAML for Nand Flash
- Controller support
-Message-ID: <20200429115008.d5jmsc4ws2o3cm5w@gilmour.lan>
-References: <20200423162113.38055-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200423162113.38055-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1726862AbgD2LvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 07:51:20 -0400
+Received: from mga09.intel.com ([134.134.136.24]:21491 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726511AbgD2LvT (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 07:51:19 -0400
+IronPort-SDR: J2OP1BgeI2AszwR1fhWuUS3EUa8A5b/BngAlde5zLQTBSd9q9nTjPM5+lp83GLobpFNbZL9HLI
+ TxeBcwQykc7w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 04:50:57 -0700
+IronPort-SDR: ZmnLxnuTdWZlaw/i1Am6MGyFdOIqPswoJt5vdE08OfpIb9S8g7E/3NJYjfF5YlSp06fawJrR71
+ DwBG1X1POHRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,331,1583222400"; 
+   d="scan'208";a="257939108"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.254.212.103]) ([10.254.212.103])
+  by orsmga003.jf.intel.com with ESMTP; 29 Apr 2020 04:50:49 -0700
+Subject: Re: [PATCH] perf stat: Fix uncore event mixed metric with workload
+ error issue
+To:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, kan.liang@intel.com,
+        yao.jin@intel.com
+References: <20200427144116.27330-1-yao.jin@linux.intel.com>
+ <20200428105155.GG1476763@krava>
+ <20200428211922.GA874567@tassilo.jf.intel.com>
+ <20200429081639.GJ1476763@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <a73d121d-d457-fc17-032f-b1b572cad858@linux.intel.com>
+Date:   Wed, 29 Apr 2020 19:50:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vrgo34uqoxmbwyae"
-Content-Disposition: inline
-In-Reply-To: <20200423162113.38055-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+In-Reply-To: <20200429081639.GJ1476763@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jiri,
 
---vrgo34uqoxmbwyae
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 4/29/2020 4:16 PM, Jiri Olsa wrote:
+> On Tue, Apr 28, 2020 at 02:19:22PM -0700, Andi Kleen wrote:
+>>> I wonder this would break some expectations.. would it be
+>>> more safe to detect duration event and bypass it from the
+>>> decission? but maybe the case I'm worried about is not a
+>>> problem at all.. Andi?
+>>
+>> Don't see what it would break.
+>>
+>> Yes maybe we need to special case duration_time more, but that would
+>> be a much bigger patch.
+> 
+> would below change work for you? if duration_time is the only
+> case, I'd rather go with the special case for it
+> 
+> jirka
+> 
+> 
 
-Hi,
+Just tested, for the case of DRAM_BW_Use, it can work.
 
-On Fri, Apr 24, 2020 at 12:21:12AM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel=
-=2Ecom>
->=20
-> Add YAML file for dt-bindings to support NAND Flash Controller
-> on Intel's Lightning Mountain SoC.
->=20
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@li=
-nux.intel.com>
+root@lkp-csl-2sp5 ~# perf stat -M DRAM_BW_Use -- sleep 1
+
+  Performance counter stats for 'system wide':
+
+               9.54 MiB  uncore_imc/cas_count_read/
+               3.26 MiB  uncore_imc/cas_count_write/
+         1002109793 ns   duration_time
+
+        1.002109793 seconds time elapsed
+
+Thanks
+Jin Yao
+
 > ---
->  .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 61 ++++++++++++++++=
-++++++
->  1 file changed, 61 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.=
-yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/=
-Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-> new file mode 100644
-> index 000000000000..6dd899d367b4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Intel LGM SoC NAND Controller Device Tree Bindings
-> +
-> +allOf:
-> +  - $ref: "nand-controller.yaml"
-> +
-> +maintainers:
-> +  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.=
-com>
-> +
-> +properties:
-> +  compatible:
-> +    const: intel,lgm-nand-controller
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  dmas:
-> +    maxItems: 2
-> +
-> +  dma-names:
-> +    enum:
-> +      - rx
-> +      - tx
-
-This looks wrong?
-
-If you have two dmas channels, I assume you'll want to have both rx and tx,
-right? If so, then you need an items, not an enum.
-
-> +  pinctrl-names: true
-> +
-> +patternProperties:
-> +  "^pinctrl-[0-9]+$": true
-
-both pinctrl-names and that pattern are added automatically by the tooling,=
- you
-should leave them out.
-
-> +  "^nand@[a-f0-9]+$":
-> +    type: object
-> +    properties:
-> +      reg:
-> +        minimum: 0
-> +        maximum: 7
-> +
-> +      nand-ecc-mode: true
-> +
-> +      nand-ecc-algo:
-> +        const: hw
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - dmas
-> +
-> +additionalProperties: false
-> +
-> +...
-
-Can you provide an example too?
-
-Thanks!
-Maxime
-
---vrgo34uqoxmbwyae
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXqlp8AAKCRDj7w1vZxhR
-xaI7AP9HY2RRA2nv/CwHEUJZv3C50OrtP7Ir+YFN6Hd4bYtCcgEArOCPK1GJeB2l
-VoqKcGXOMea5Mx1PBMZF1eirh59GXgM=
-=tGn6
------END PGP SIGNATURE-----
-
---vrgo34uqoxmbwyae--
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 9207b6c45475..2518204cffd1 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -1853,6 +1853,8 @@ static void setup_system_wide(int forks)
+>   		struct evsel *counter;
+>   
+>   		evlist__for_each_entry(evsel_list, counter) {
+> +			if (counter->tool_event == PERF_TOOL_DURATION_TIME)
+> +				continue;
+>   			if (!counter->core.system_wide)
+>   				return;
+>   		}
+> 
