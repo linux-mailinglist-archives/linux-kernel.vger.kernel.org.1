@@ -2,65 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A531BE88B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED83B1BE89E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbgD2UaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 16:30:05 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:56676 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgD2UaE (ORCPT
+        id S1727025AbgD2UfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 16:35:16 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:46373 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbgD2UfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 16:30:04 -0400
-Received: by mail-io1-f69.google.com with SMTP id 2so3730983ioy.23
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 13:30:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=P36ux4kpJA4yJ0M9w1keQlA8L7/Ku3ikNPWzORzqPpQ=;
-        b=oGeVbofRWEbGz7F+Y1GxFMo8nx/mwoX6cS9YIcLTQOjC/SNtR/w7D+7cMNgaGhI8QG
-         sxrSUMC9MjkpwOmf8RYWNKJ+AlPqTdEq8qjTCzPRRiEf3s6PyWucROoXgpjY2/Eg6QDM
-         7gD5NsPQlkhmjSN7SbKBE9sp5hwmlWhrHR2bVp5BxvOEKZEShgwpCgLmvFE5oTGAGy8Y
-         +QBGUdpiUN/EVZfbQRkp+pilhyiN7HCeMg9siK+EekGkUNIM1PvPLRdfbbxv9clU6PMc
-         BQsvmATD5V30RCHX7T3zxQXILrhCZKf/++sNR/oA95Sj4CTyK6gqFRadTHa+1Rg606Fi
-         t5Bg==
-X-Gm-Message-State: AGi0PuZxAgFSPLoc2qMpyBYsreY7XPXgNPOPCfD4GeJ6ukk3kpeQRTQF
-        JwOMWPo3AtT3RnEai8nMjGDwa1LpsRFn3HDkCTCtciqQpH9l
-X-Google-Smtp-Source: APiQypJtO21lrjpHALiSJyG1R7XX5MYRsAvJuVRMEvqi38U8bebrgP09swd00jLT9r90N3751dAGaeiGZhTX2GTT/KujJwiW1QaN
+        Wed, 29 Apr 2020 16:35:15 -0400
+Received: from mail-qk1-f180.google.com ([209.85.222.180]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MqJVd-1iqPx30BMp-00nPvX for <linux-kernel@vger.kernel.org>; Wed, 29 Apr
+ 2020 22:35:14 +0200
+Received: by mail-qk1-f180.google.com with SMTP id 23so3525306qkf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 13:35:13 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaPcCML7I7QArqJb0NcnGUkd92pyAkQUgIAZvVxwFDfD+517jE7
+        3A6/TpC4iK2uXZxjlRGSmGWhI5dD5Hku5qpvwkk=
+X-Google-Smtp-Source: APiQypKmqhe1J42Dc9NNIPPjb6h2NIdLKVnO4btIHTL91FOrFIt6m/guokM0LsSiDAM68xNngDTmSmEt8UP92RQMJ6c=
+X-Received: by 2002:a37:63d0:: with SMTP id x199mr276734qkb.3.1588192512920;
+ Wed, 29 Apr 2020 13:35:12 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:6a4e:: with SMTP id m14mr32417870jaf.17.1588192203152;
- Wed, 29 Apr 2020 13:30:03 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 13:30:03 -0700
-In-Reply-To: <Pine.LNX.4.44L0.2004291608270.24784-100000@netrider.rowland.org>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001aa0e705a473d05c@google.com>
-Subject: Re: WARNING in usbhid_raw_request/usb_submit_urb (3)
-From:   syzbot <syzbot+db339689b2101f6f6071@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, gregkh@linuxfoundation.org,
-        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com
+References: <20200429142119.1735196-1-arnd@arndb.de> <3943343.tW1xmJHsB6@pc-42>
+In-Reply-To: <3943343.tW1xmJHsB6@pc-42>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 29 Apr 2020 22:34:56 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1e=-H_b8_GPJW5-uufye5_6OJ6f+ZWErjKPWkxSRSigw@mail.gmail.com>
+Message-ID: <CAK8P3a1e=-H_b8_GPJW5-uufye5_6OJ6f+ZWErjKPWkxSRSigw@mail.gmail.com>
+Subject: Re: [PATCH] staging: wfx: avoid compiler warning on empty array
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jules Irenge <jbi.octave@gmail.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:9QjL77LkDYLmgJ4/MyTpk+/PGzTHnxHnsYkUU7jwiN2MjcgIjzI
+ L1ADRf7JM05B3BzLVCVeN5WIQTN2Q/jvKVhqYPID20sSaWpRIntC3qMG0ZOHdwidRiutPzK
+ TGfHg91I34gmXdcc9++SfD+yyXG/N2AWF1mf1aMeywBgC1y5sb7FETwfZeuJGt7SkzFfTNV
+ cKC/K9fiszofrI8zKEcJQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:CGrjO5c+958=:h32JaDyG+MoUxgZJsP/tpS
+ FCxyjgAZat4HiXGWcTAWuvacepL57v9oNfOTp7GmtJdtR75R5c1jdNCOlxxYNbW4lSCLlBDi5
+ 0JeoPtgPx782yx/UvjR+jHFg4PwRAHnpyhwrgewXRL/NYVQA85PZ+1bnIVakekg2KSk8/SQZV
+ lJjuVdgXCX1eRb9TgxUA7UOpe+IEqo9hpko5+0q48crrwNpr3JuBzaR91tWgqalZn6qrxRlHn
+ mDM0WHOo0k1FhyilEOAmZMb4MlZHwR1iiOz8XEdUcX1S+7KET4eb7061vUl0G1+y/dZ8Uwfzx
+ CVKyOJ6Cl6TClNcU2rm3O10Yg67t2f4MeitLnfBu6YKLB8vpeKaWzFARuWnCrYmPKu7f/Rkkr
+ mZvO3uHm73yDIBai7McrkyIE8pZItlPhDW+qt7oi6wBujxhTzQd/zIAKY07nSgETy42hH/N89
+ 8GusGJicwSs4StYryCxBlXgh5SRHc2eJDCkBsBvr1xX/tNho8bwwSrLfvG00PPUug7GtpJapP
+ 0cQd0FDW/tOj9riI8z0vXCh4KTGFN0vR9OiE69J3EPtuVNpEwTR9srEmF9yU5wsa9U7IGWs9m
+ GeLyeIeIgTRYGx9cXZHmZnXk6VfHJBQRUEBSsAQ8natDzedlcqikGxgnGtxzHZ5oTAAkLZ+VK
+ hixmyJxC/jechV0YH8iZWs5s6syrxh0uT0ttiz4DqgjPm+D9MC+9tuLmTmEFVaSqZ6xz7O88w
+ DaDBhUogm0cST/6Q2HX7xBVZBKU5jNCMkx96zRJHZPPuHrrQO8IpLXoWuNscaNOC88W+VqWZA
+ X6xUKYdA4El+zM8mhisdmqPGy0cxa7nMI5NbdzFme0/YczCyKw=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Apr 29, 2020 at 6:04 PM Jerome Pouiller
+<Jerome.Pouiller@silabs.com> wrote:
+> On Wednesday 29 April 2020 16:21:09 CEST Arnd Bergmann wrote:
+> >
+> > -static const struct of_device_id wfx_sdio_of_match[];
+> > +static const struct of_device_id wfx_sdio_of_match[] = {
+> > +       { .compatible = "silabs,wfx-sdio" },
+> > +       { .compatible = "silabs,wf200" },
+> > +       { },
+> > +};
+> > +MODULE_DEVICE_TABLE(of, wfx_sdio_of_match);
+>
+> I suggest to keep the '#ifdef CONFIG_OF' around this definition. If
+> CONFIG_OF is undefined, of_match_ptr() and of_match_node() will be NULL
+> and it should compile.
 
-syzbot has tested the proposed patch and the reproducer did not trigger crash:
+I would generally always go for fewer #ifdef instead of more when the result
+is the same. Are you worried about wasting 600 bytes of object code size for
+the array on systems that need this driver but not CONFIG_OF, or something
+else?
 
-Reported-and-tested-by: syzbot+db339689b2101f6f6071@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         0fa84af8 Merge tag 'usb-serial-5.7-rc1' of https://git.ker..
-git tree:       https://github.com/google/kasan.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6b9c154b0c23aecf
-dashboard link: https://syzkaller.appspot.com/bug?extid=db339689b2101f6f6071
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14a84ac4100000
-
-Note: testing is done by a robot and is best-effort only.
+     Arnd
