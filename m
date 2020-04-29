@@ -2,116 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3331BDBF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC581BDBFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgD2MWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 08:22:17 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:45985 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726739AbgD2MWR (ORCPT
+        id S1727092AbgD2MXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 08:23:35 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:54683 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726701AbgD2MXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 08:22:17 -0400
-Received: by mail-wr1-f65.google.com with SMTP id t14so2236909wrw.12
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 05:22:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F1Vyi5oIpMniiJ1X1bwh1/7tqzVkkRj08pWhRZE7c+M=;
-        b=DMFHBHmCtRCiIry6FLabTL1gh/05iyNbyiO2E3Tf+TWxD4qKokJiWboug4C14MMOfq
-         c/Bur5pg+86+KL7Q7HZzTNBkQbr9d7b+ZTc+jhBuv+rc51bg4/k6y0BpfaC6nkohtBq1
-         0MRzOHA+qNKxdgOfJLma+swqfbljuOsN/LvxPvcdF+Qfy0VCEnkqVX629syIJD/0yFzJ
-         pzwA2/7xED4kX+IF/OLQZklQzkXsiLpOqVwfrDkGm+wPVyxcg140HqKh2hnTsXcXGg4z
-         X35qiF7XOnoBCLt4qDo/nvHTcnpsW9RTGUnt+yIeRuUdJnQJ/PntGsDd2kB1zJpK3647
-         iGSw==
-X-Gm-Message-State: AGi0PuYKkvaKSS1PNxN9POZgpB0NIRmJHMYh4RlvpQX2rqyJt1EFXCT2
-        8hotaGkS6qWn+r9Hf23EUOM=
-X-Google-Smtp-Source: APiQypKnWBYUo6BP7xM7bZ+TgaJBDEnHFZi4EuKVmDYQRCUHS4sHLGy0+C//6II7OWTEW5xn6unxsw==
-X-Received: by 2002:a5d:6a8b:: with SMTP id s11mr38386766wru.258.1588162933425;
-        Wed, 29 Apr 2020 05:22:13 -0700 (PDT)
-Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
-        by smtp.gmail.com with ESMTPSA id n25sm7497026wmk.9.2020.04.29.05.22.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 05:22:12 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 14:22:11 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Christopher Lameter <cl@linux.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 3/3] mm/page_alloc: Keep memoryless cpuless node 0
- offline
-Message-ID: <20200429122211.GD28637@dhcp22.suse.cz>
-References: <20200428093836.27190-1-srikar@linux.vnet.ibm.com>
- <20200428093836.27190-4-srikar@linux.vnet.ibm.com>
- <20200428165912.ca1eadefbac56d740e6e8fd1@linux-foundation.org>
- <20200429014145.GD19958@linux.vnet.ibm.com>
+        Wed, 29 Apr 2020 08:23:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588163013;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R9+wT3J9tc1Yx0D3CddYx87MnOuJxaf9qh3qg4rBhso=;
+        b=gCgeodhdiPhDkHYGBCASnJxMn17zy6KX5G+1mo8w1x7VlPgxXCjCnGcp6UpCFGqF7w7v+J
+        qFl5PSNM071zl2USdVC8fZQwL/SXmV2S2L34jh6VIwYLBlKZsrVyLVGrlrsj2HZKEuoJy+
+        2NC+5LQkjxNs2fuIJUWfHKtLT9fDq7Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-505-RW2kRNRNObqk4EpI2qBYJg-1; Wed, 29 Apr 2020 08:23:32 -0400
+X-MC-Unique: RW2kRNRNObqk4EpI2qBYJg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C443F107ACCA;
+        Wed, 29 Apr 2020 12:23:30 +0000 (UTC)
+Received: from [192.168.1.10] (unknown [10.40.193.136])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4D9365D9E5;
+        Wed, 29 Apr 2020 12:23:23 +0000 (UTC)
+Subject: Re: [dm-devel] [PATCH -next] md: dm-ebs-target: fix build errors &
+ Kconfig entry
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, dm-devel@redhat.com
+Cc:     Mike Snitzer <snitzer@redhat.com>, Alasdair Kergon <agk@redhat.com>
+References: <d33b3bfb-c38d-9770-e6a6-929519dc21d4@infradead.org>
+From:   Heinz Mauelshagen <heinzm@redhat.com>
+Message-ID: <980b6b95-6e18-40ff-f71c-058917c5b6ee@redhat.com>
+Date:   Wed, 29 Apr 2020 14:23:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429014145.GD19958@linux.vnet.ibm.com>
+In-Reply-To: <d33b3bfb-c38d-9770-e6a6-929519dc21d4@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 29-04-20 07:11:45, Srikar Dronamraju wrote:
-> > > 
-> > > By marking, N_ONLINE as NODE_MASK_NONE, lets stop assuming that Node 0 is
-> > > always online.
-> > > 
-> > > ...
-> > >
-> > > --- a/mm/page_alloc.c
-> > > +++ b/mm/page_alloc.c
-> > > @@ -116,8 +116,10 @@ EXPORT_SYMBOL(latent_entropy);
-> > >   */
-> > >  nodemask_t node_states[NR_NODE_STATES] __read_mostly = {
-> > >  	[N_POSSIBLE] = NODE_MASK_ALL,
-> > > +#ifdef CONFIG_NUMA
-> > > +	[N_ONLINE] = NODE_MASK_NONE,
-> > > +#else
-> > >  	[N_ONLINE] = { { [0] = 1UL } },
-> > > -#ifndef CONFIG_NUMA
-> > >  	[N_NORMAL_MEMORY] = { { [0] = 1UL } },
-> > >  #ifdef CONFIG_HIGHMEM
-> > >  	[N_HIGH_MEMORY] = { { [0] = 1UL } },
-> > 
-> > So on all other NUMA machines, when does node 0 get marked online?
-> > 
-> > This change means that for some time during boot, such machines will
-> > now be running with node 0 marked as offline.  What are the
-> > implications of this?  Will something break?
-> 
-> Till the nodes are detected, marking Node 0 as online tends to be redundant.
-> Because the system doesn't know if its a NUMA or a non-NUMA system.
-> Once we detect the nodes, we online them immediately. Hence I don't see any
-> side-effects or negative implications of this change.
-> 
-> However if I am missing anything, please do let me know.
-> 
-> >From my part, I have tested this on
-> 1. Non-NUMA Single node but CPUs and memory coming from zero node.
-> 2. Non-NUMA Single node but CPUs and memory coming from non-zero node.
-> 3. NUMA Multi node but with CPUs and memory from node 0.
-> 4. NUMA Multi node but with no CPUs and memory from node 0.
+On 4/28/20 5:03 PM, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+>
+> Fix build errors by selecting DM_BUFIO.
+>
+> Fix Kconfig entry formatting by using tabs instead of spaces,
+> using "help" instead of "---help---", and
+> indenting help text with one additional space.
+>
+> Fixes these build errors:
+>
+> ld: drivers/md/dm-ebs-target.o: in function `__ebs_forget_bio':
+> dm-ebs-target.c:(.text+0x1bc): undefined reference to `dm_bufio_forget'
+> ld: drivers/md/dm-ebs-target.o: in function `ebs_dtr':
+> dm-ebs-target.c:(.text+0x2fe): undefined reference to `dm_bufio_client_destroy'
+> ld: drivers/md/dm-ebs-target.o: in function `__ebs_rw_bio':
+> dm-ebs-target.c:(.text+0x4c4): undefined reference to `dm_bufio_get_block_size'
+> ld: dm-ebs-target.c:(.text+0x4f1): undefined reference to `dm_bufio_read'
+> ld: dm-ebs-target.c:(.text+0x504): undefined reference to `dm_bufio_get_block_size'
+> ld: dm-ebs-target.c:(.text+0x519): undefined reference to `dm_bufio_new'
+> ld: dm-ebs-target.c:(.text+0x567): undefined reference to `dm_bufio_mark_partial_buffer_dirty'
+> ld: dm-ebs-target.c:(.text+0x56f): undefined reference to `dm_bufio_release'
+> ld: drivers/md/dm-ebs-target.o: in function `__ebs_process_bios':
+> dm-ebs-target.c:(.text+0x6bf): undefined reference to `dm_bufio_prefetch'
+> ld: dm-ebs-target.c:(.text+0x72d): undefined reference to `dm_bufio_prefetch'
+> ld: dm-ebs-target.c:(.text+0x783): undefined reference to `dm_bufio_prefetch'
+> ld: dm-ebs-target.c:(.text+0x7fe): undefined reference to `dm_bufio_write_dirty_buffers'
+> ld: drivers/md/dm-ebs-target.o: in function `ebs_ctr':
+> dm-ebs-target.c:(.text+0xa82): undefined reference to `dm_bufio_client_create'
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Heinz Mauelshagen <dm-devel@redhat.com>
+> Cc: Alasdair Kergon <agk@redhat.com>
+> Cc: Mike Snitzer <snitzer@redhat.com>
+> Cc: dm-devel@redhat.com
+> ---
+>   drivers/md/Kconfig |   12 ++++++------
+>   1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> --- linux-next-20200428.orig/drivers/md/Kconfig
+> +++ linux-next-20200428/drivers/md/Kconfig
+> @@ -338,12 +338,12 @@ config DM_WRITECACHE
+>   	   to be cached in standard RAM.
+>   
+>   config DM_EBS
+> -       tristate "Emulated block size target (EXPERIMENTAL)"
+> -       depends on BLK_DEV_DM
+> -       default n
+> -       ---help---
+> -	 dm-ebs emulates smaller logical block size on backing devices
+> -	 with larger ones (e.g. 512 byte sectors on 4K native disks).
+> +	tristate "Emulated block size target (EXPERIMENTAL)"
+> +	depends on BLK_DEV_DM
+> +	select DM_BUFIO
+> +	help
+> +	  dm-ebs emulates smaller logical block size on backing devices
+> +	  with larger ones (e.g. 512 byte sectors on 4K native disks).
+>   
+>   config DM_ERA
+>          tristate "Era target (EXPERIMENTAL)"
 
-Have you tested on something else than ppc? Each arch does the NUMA
-setup separately and this is a big mess. E.g. x86 marks even memory less
-nodes (see init_memory_less_node) as online.
 
-Honestly I have hard time to evaluate the effect of this patch. It makes
-some sense to assume all nodes offline before they get online but this
-is a land mine territory.
+Thanks, fine with me for the most part.
 
-I am also not sure what kind of problem this is going to address. You
-have mentioned numa balancing without many details.
--- 
-Michal Hocko
-SUSE Labs
+We mainly use '---help---' for dm/md though, so lets's keep it. Mike?
+
+Heinz
+
+
+>
+> --
+> dm-devel mailing list
+> dm-devel@redhat.com
+> https://www.redhat.com/mailman/listinfo/dm-devel
+
