@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C7B1BE221
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52411BE226
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgD2PKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:10:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60844 "EHLO mail.kernel.org"
+        id S1727044AbgD2PLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:11:11 -0400
+Received: from mga09.intel.com ([134.134.136.24]:34434 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726516AbgD2PKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:10:52 -0400
-Received: from redsun51.ssa.fujisawa.hgst.com (unknown [199.255.47.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 164D72074A;
-        Wed, 29 Apr 2020 15:10:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588173051;
-        bh=8A+8vDkMP+/JIF1TdfhS0LnIA8WKy9bVLiwsTDkUSTI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c+2m4Dap45V77moeWAWH+2CYGA+rcZ2K/2OztHOy+BvupHtxBxuOcFzc0f716mlq8
-         SRHd7Vuz5ZNEnYuu6ClzWTH5I0Z9AfqndxDyjDcbiHIpD9ASe9sglx4azZrWB6rq68
-         aMDBsDpM1DlYf7FagC6/0AkN9e5GAbjA4COdzq3k=
-Date:   Thu, 30 Apr 2020 00:10:46 +0900
-From:   Keith Busch <kbusch@kernel.org>
-To:     "Williams, Dan J" <dan.j.williams@intel.com>
-Cc:     "hch@lst.de" <hch@lst.de>,
-        "david.e.box@linux.intel.com" <david.e.box@linux.intel.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "axboe@fb.com" <axboe@fb.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>
-Subject: Re: [PATCH 0/2] Add support for StorageD3Enable _DSD property
-Message-ID: <20200429151046.GA6222@redsun51.ssa.fujisawa.hgst.com>
-References: <20200428003214.3764-1-david.e.box@linux.intel.com>
- <20200428051312.GB17146@lst.de>
- <de052d30cc881ac67f9410b50b0760ee5bf9a623.camel@linux.intel.com>
- <20200428142247.GB5439@lst.de>
- <de2d78556fcb10f97364201256ac8f342a58eb75.camel@linux.intel.com>
- <296064bbcf702744bf603932c9d849307db2e5b7.camel@intel.com>
+        id S1726516AbgD2PLK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 11:11:10 -0400
+IronPort-SDR: ElUws5vpdG3KgsCcWkiWQMsBBSgaUdJlBN1IViucBAmcpqOeMuxxhF7+M6irM7ijffaBk3Dw/Z
+ zQj17VCE/N4g==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 08:11:09 -0700
+IronPort-SDR: djrkxjwSWyZod30Qu1TcOUeLgAzClPtfzriYb4a+RxiOOFVGRXgNirZbBx315VcBzBIryl8t/D
+ PV6a0xbc0xBA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,332,1583222400"; 
+   d="scan'208";a="276199069"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by orsmga002.jf.intel.com with ESMTP; 29 Apr 2020 08:11:08 -0700
+Date:   Wed, 29 Apr 2020 08:10:57 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/2] KVM: nVMX: vmcs.SYSENTER optimization and "fix"
+Message-ID: <20200429151057.GB15992@linux.intel.com>
+References: <20200428231025.12766-1-sean.j.christopherson@intel.com>
+ <CALMp9eQLPPAzM+vsrSMO6thOnCRpn6ab+VOh-1UKZug8==ME8g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <296064bbcf702744bf603932c9d849307db2e5b7.camel@intel.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <CALMp9eQLPPAzM+vsrSMO6thOnCRpn6ab+VOh-1UKZug8==ME8g@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 05:20:09AM +0000, Williams, Dan J wrote:
-> On Tue, 2020-04-28 at 08:27 -0700, David E. Box wrote:
-> > On Tue, 2020-04-28 at 16:22 +0200, Christoph Hellwig wrote:
-> > > On Tue, Apr 28, 2020 at 07:09:59AM -0700, David E. Box wrote:
-> > > > > I'm not sure who came up with the idea to put this into ACPI,
-> > > > > but
-> > > > > it
-> > > > > belongs into NVMe.  Please talk to the NVMe technical working
-> > > > > group
-> > > > > instead of trying to overrules them in an unrelated group that
-> > > > > doesn't
-> > > > > apply to all of PCIe.
-> > > > 
-> > > > Agreed that this is not ideal since it does not apply to all of
-> > > > PCIe.
-> > > > But as the property already exists on shipping systems, we need
-> > > > to
-> > > > be
-> > > > able to read it in the NVMe driver and the patch is consitent
-> > > > with
-> > > > the
-> > > > way properties under PCI ports are read.
-> > > 
-> > > The point is that it is not the BIOSes job do decide how Linux does
-> > > power management.  For example D3 has really horrible entry and
-> > > exit
-> > > latencies in many cases, and will lead to higher power usage.
-> > 
-> > The platform can know which pm policies will save the most power. But
-> > since the solution doesn't apply to all PCIe devices (despite BIOS
-> > specifying it that way) I'll withdraw this patch. Thanks.
+On Tue, Apr 28, 2020 at 04:45:25PM -0700, Jim Mattson wrote:
+> On Tue, Apr 28, 2020 at 4:10 PM Sean Christopherson
+> <sean.j.christopherson@intel.com> wrote:
+> >
+> > Patch 1 is a "fix" for handling SYSENTER_EIP/ESP in L2 on a 32-bit vCPU.
+> > The primary motivation is to provide consistent behavior after patch 2.
+> >
+> > Patch 2 is essentially a re-submission of a nested VMX optimization to
+> > avoid redundant VMREADs to the SYSENTER fields in the nested VM-Exit path.
+> >
+> > After patch 2 and without patch 1, KVM would end up with weird behavior
+> > where L1 and L2 would only see 32-bit values for their own SYSENTER_E*P
+> > MSRs, but L1 could see a 64-bit value for L2's MSRs.
+> >
+> > Sean Christopherson (2):
+> >   KVM: nVMX: Truncate writes to vmcs.SYSENTER_EIP/ESP for 32-bit vCPU
+> >   KVM: nVMX: Drop superfluous VMREAD of vmcs02.GUEST_SYSENTER_*
+> >
+> >  arch/x86/kvm/vmx/nested.c |  4 ----
+> >  arch/x86/kvm/vmx/vmx.c    | 18 ++++++++++++++++--
+> >  2 files changed, 16 insertions(+), 6 deletions(-)
 > 
-> Wait, why withdraw? In this case the platform is unfortunately
-> preventing the standard driver from making a proper determination. So
-> while I agree that it's not the BIOSes job, when the platform actively
-> prevents proper operation due to some ill conceived non-standard
-> platform property what is Linux left to do on these systems?
-> 
-> The *patch* is not trying to overrule NVME, and the best I can say is
-> that the Intel Linux team was not in the loop when this was being
-> decided between the platform BIOS implemenation and  whomever  thought
-> they could just publish random ACPI properties that impacted NVME
-> operation [1].
-> 
-> So now David is trying to get these platform unbroken because they are
-> already shipping with this b0rkage.
+> It seems like this could be fixed more generally by truncating
+> natural-width fields on 32-bit vCPUs in handle_vmwrite(). However,
+> that also would imply that we can't shadow any natural-width fields on
+> a 32-bit vCPU.
 
-Rather than quirking all these cases, which I get the feeling there
-are many more than we've currently got in our quirk list, perhaps it'd
-be simpler to default to the simple suspend. AFAIK, the simple suspend
-works for all platforms, though it may not realize the best power savings
-and/or exit latency.
+handle_vmwrite() and handle_vmread() already correctly handle truncating
+writes/reads when L1 isn't in 64-bit mode.
+
+This path is effectively out-of-band, for lack of a better phrase.  The
+WRMSR is intercepted and the data is stuffed into vmcs02.  Without these
+patches, the effective L2 state depends on the underlying hardware
+capabilities, e.g. L2 gets 64-bit behavior if L0 is a 64-bit CPU, and
+32-bit behavior if L0 is a 32-bit CPU.  It's "wrong", but consistent as the
+value seen by L2 is the same value that is saved into vmcs12.  Of course in
+the 64-bit CPU case, L1 can't actually see the full value via VMREAD as the
+vCPU is 32-bit, but at least the underlying memory/machinery is consistent.
+
+With just patch 2, the above would still be true for 64-bit L0, but for
+32-bit L0 it would result in L2 seeing a 32-bit value while saving a 64-bit
+value into vmcs12.  Again, L1 wouldn't see the 64-bit value when using
+VMREAD, but the value in memory is still wrong-ish.
+
+Truncating the value on WRMSR interception makes the behavior fully
+dependent on the vCPU capabilities, i.e. what L2 sees is the same value
+that's saved into vmcs12, which is the same value seen by VMREAD in L1,
+irrespective of whether L0 is 64-bit or 32-bit.
