@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5261BD171
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 02:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40F01BD176
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 02:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726507AbgD2AyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 20:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726399AbgD2AyR (ORCPT
+        id S1726430AbgD2A55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 20:57:57 -0400
+Received: from smtprelay0186.hostedemail.com ([216.40.44.186]:37892 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726274AbgD2A55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 20:54:17 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C925C03C1AC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 17:54:17 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id o127so436961iof.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 17:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CVCKB95iwC9L0s73/1b4PgZEDXMYea5f6aOdPbuhrfs=;
-        b=oL1OtJH1jZEWtCPxmKJWypuIAYkdBy09ZSMxolC4nff8zPfhHJvTWaLFzl9rd8jAsn
-         m+xvaZ/7yGzh16JkO39Ixpkh5D3rXmxtoTbukJTPK54Jg6ZFMcgkvFJy5UqEBkS1YfYk
-         Fd0XnkPqOvyuPu99reJQA4k4e+dvBSs5Yu4A7hl9GoZtrW8kW0HxNJrHCSg1EFVx7GsW
-         8G/gGT8yjLLFLMRMIVIgK7PlB8JN+4/ve/I9y54mE5phN3Mg/FJYUdJRJTQTV/9AeiV4
-         YSL6g+duyYOFvAHndPv7x3cecfuogeHfidYAv2Wb4PG7wqr2QtZCt9AqEyIzMOyh6YSo
-         4aOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CVCKB95iwC9L0s73/1b4PgZEDXMYea5f6aOdPbuhrfs=;
-        b=DGn0eNWqHUTq9aAkINZIFQyOAYo3vc/9LmONKFiXIH3a5Pi/vQijSijgP3P/Aukxzl
-         QrnFTY5jjT1DSeGiEmaCL9HGmgCN3y1TPkpjUg3ZEXAZYnh4VQmImJ4VruDP3et/vSBG
-         FiWH5DlL6FWvn7lqRzSQ+PAwA7m9smh0Kp8GnXDG90yJa5kW6DY8s83VeUV342OhVdv6
-         ng7WBlsfKuzeDOc7MF5faZLcB/X51gef8bEBDak1H23qGA9xglFOaLu3NKnxpdy8K3Cf
-         UY8WJXaSAqdCr2/aFjEXf4+akD9Q0ks8J6xy5v3Y41054a0/JAojyneHftrLrhLsZvmi
-         zhOQ==
-X-Gm-Message-State: AGi0PubncU2GqW4K+XMZAflT9jExXQcMpMivK1dnqZNG2bRcBsMW7d9L
-        BFnHDZ4rkJtck3NbIqhjwSFgGLid00zQ629JcQ==
-X-Google-Smtp-Source: APiQypITAXxCTs0uKEAlDGYInBa5o8Mn2Ns7jyWD8cHLnvtll7VpZVda9N78Kqas+aAjF53EHbMfdN/mFM/oxhCl4ig=
-X-Received: by 2002:a05:6602:1695:: with SMTP id s21mr29169787iow.40.1588121656779;
- Tue, 28 Apr 2020 17:54:16 -0700 (PDT)
+        Tue, 28 Apr 2020 20:57:57 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id CA2BE180188D0;
+        Wed, 29 Apr 2020 00:57:55 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:421:599:800:960:966:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2110:2194:2196:2199:2200:2393:2553:2559:2562:2692:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3872:3873:3874:4184:4250:4321:4385:4605:4823:5007:6248:7903:8694:10004:10400:10450:10455:10848:11026:11232:11658:11914:12043:12296:12297:12438:12740:12760:12895:13161:13229:13439:13618:14093:14096:14097:14180:14181:14659:14721:19904:19999:21060:21080:21324:21433:21627:21990:30054:30079:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: swim79_7f4e863aa8e34
+X-Filterd-Recvd-Size: 4026
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 29 Apr 2020 00:57:54 +0000 (UTC)
+Message-ID: <bc5c8165908facbb4781b2f29903dfacdf625e83.camel@perches.com>
+Subject: Re: [PATCH 2/2] gpio: Make "offset" and "unsigned int", not just
+ "unsigned"
+From:   Joe Perches <joe@perches.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     LinusW <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 28 Apr 2020 17:57:53 -0700
+In-Reply-To: <CAD=FV=Us6LyfgeXvxnqq+KhHN1djok1y+W_xzSb-KGFy2wgEMg@mail.gmail.com>
+References: <20200428172322.1.I396f351e364f3c09df7c7606e79abefb8682c092@changeid>
+         <20200428172322.2.Iacb3c8152c3cf9015a91308678155a578b0cc050@changeid>
+         <a23b7a97f349e6f74b993a4e127564ad3f7d6929.camel@perches.com>
+         <CAD=FV=Us6LyfgeXvxnqq+KhHN1djok1y+W_xzSb-KGFy2wgEMg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-References: <20200428191101.886208539@infradead.org> <20200428191659.558899462@infradead.org>
-In-Reply-To: <20200428191659.558899462@infradead.org>
-From:   Brian Gerst <brgerst@gmail.com>
-Date:   Tue, 28 Apr 2020 20:54:05 -0400
-Message-ID: <CAMzpN2jp1mtnf61eXPaj2O5=-8Fp42v+t6Br3ce9Fioq8h=0YA@mail.gmail.com>
-Subject: Re: [PATCH v2 03/14] x86,smap: Fix smap_{save,restore}() alternatives
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        jthierry@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 3:21 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> As reported by objtool:
->
->   lib/ubsan.o: warning: objtool: .altinstr_replacement+0x0: alternative modifies stack
->   lib/ubsan.o: warning: objtool: .altinstr_replacement+0x7: alternative modifies stack
->
-> the smap_{save,restore}() alternatives violate (the newly enforced)
-> rule on stack invariance. That is, due to there only being a single
-> ORC table it must be valid to any alternative. These alternatives
-> violate this with the direct result that unwinds will not be correct
-> in between these calls.
->
-> [ In specific, since we force SMAP on for objtool, running on !SMAP
-> hardware will observe a different stack-layout and the ORC unwinder
-> will stumble. ]
->
-> So rewrite the functions to unconditionally save/restore the flags,
-> which gives an invariant stack layout irrespective of the SMAP state.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/include/asm/smap.h |   11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
->
-> --- a/arch/x86/include/asm/smap.h
-> +++ b/arch/x86/include/asm/smap.h
-> @@ -57,16 +57,19 @@ static __always_inline unsigned long sma
->  {
->         unsigned long flags;
->
-> -       asm volatile (ALTERNATIVE("", "pushf; pop %0; " __ASM_CLAC,
-> -                                 X86_FEATURE_SMAP)
-> -                     : "=rm" (flags) : : "memory", "cc");
-> +       asm volatile ("# smap_save\n\t"
-> +                     "pushf; pop %0"
-> +                     : "=rm" (flags) : : "memory");
-> +
-> +       clac();
->
->         return flags;
->  }
->
->  static __always_inline void smap_restore(unsigned long flags)
->  {
-> -       asm volatile (ALTERNATIVE("", "push %0; popf", X86_FEATURE_SMAP)
-> +       asm volatile ("# smap_restore\n\t"
-> +                     "push %0; popf"
->                       : : "g" (flags) : "memory", "cc");
->  }
+On Tue, 2020-04-28 at 17:50 -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Tue, Apr 28, 2020 at 5:38 PM Joe Perches <joe@perches.com> wrote:
+> > On Tue, 2020-04-28 at 17:23 -0700, Douglas Anderson wrote:
+> > > When I copied the function prototypes from the GPIO header file into
+> > > my own driver, checkpatch yelled at me saying that I shouldn't use use
+> > > "unsigned" but instead should say "unsigned int".  Let's make the
+> > > header file use "unsigned int" so others who copy like I did won't get
+> > > yelled at.
+> > 
+> > There are a few other unsigned declarations in the file.
+> 
+> There are?  I swear I looked for them before I sent my patch and I
+> couldn't find them.  Then I looked again upon seeing your reply and I
+> still can't find them.  My eyes are bad, though.  Maybe you can give
+> me specifics?
 
-POPF is an expensive instruction that should be avoided if possible.
-A better solution would be to have the alternative jump over the
-push/pop when SMAP is disabled.
+$ git grep -P -n '\bunsigned\s+(?!int|long)' include/linux/gpio/driver.h
+include/linux/gpio/driver.h:352:                                                unsigned offset);
+include/linux/gpio/driver.h:354:                                                unsigned offset);
+include/linux/gpio/driver.h:356:                                                unsigned offset);
+include/linux/gpio/driver.h:358:                                                unsigned offset);
+include/linux/gpio/driver.h:360:                                                unsigned offset, int value);
+include/linux/gpio/driver.h:362:                                                unsigned offset);
+include/linux/gpio/driver.h:367:                                                unsigned offset, int value);
+include/linux/gpio/driver.h:372:                                              unsigned offset,
+include/linux/gpio/driver.h:375:                                                unsigned offset);
+include/linux/gpio/driver.h:462:                        unsigned offset);
+include/linux/gpio/driver.h:660:int gpiochip_generic_request(struct gpio_chip *gc, unsigned offset);
+include/linux/gpio/driver.h:661:void gpiochip_generic_free(struct gpio_chip *gc, unsigned offset);
+include/linux/gpio/driver.h:662:int gpiochip_generic_config(struct gpio_chip *gc, unsigned offset,
 
---
-Brian Gerst
+> > Maybe do all of them (and remove the unnecessary externs)?
+> 
+> You mean just remove the word "extern" everywhere in this file?  Sure,
+> I can if you want.
+
+Up to the actual maintainers I suppose.
+There are only a few extern function declarations.
+Most do not use extern.
+
+> > trivial reformatting of the function pointer block too
+> 
+> Wow, I must be totally out of it.  Maybe it's the gin and tonic I just
+> had.  I don't understand this comment either.  Can you clarify?
+
+	int				(*foo)(...,
+				               ...);
+
+might be better with fewer tabs between return type and function pointer
+
+	int		(*foo)(..., ...);
+
+cheers, oe
+
