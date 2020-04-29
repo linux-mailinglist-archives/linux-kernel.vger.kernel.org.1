@@ -2,153 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F95F1BD51B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD191BD517
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 08:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbgD2Gw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 02:52:57 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40474 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726741AbgD2Gw4 (ORCPT
+        id S1726702AbgD2Gwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 02:52:39 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:49432 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbgD2Gwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 02:52:56 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03T6Xdxo027875;
         Wed, 29 Apr 2020 02:52:39 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30mh34a9es-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 02:52:39 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03T6jicJ007888;
-        Wed, 29 Apr 2020 06:52:39 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma03wdc.us.ibm.com with ESMTP id 30mcu6jqb0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 06:52:39 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03T6qcNx51446232
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Apr 2020 06:52:38 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3EB2D6A051;
-        Wed, 29 Apr 2020 06:52:38 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D41CF6A054;
-        Wed, 29 Apr 2020 06:52:37 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.199.54.241])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 29 Apr 2020 06:52:37 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 14B542E301A; Wed, 29 Apr 2020 12:22:30 +0530 (IST)
-Date:   Wed, 29 Apr 2020 12:22:29 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Christopher Lameter <cl@linux.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v2 2/3] powerpc/numa: Prefer node id queried from vphn
-Message-ID: <20200429065229.GA18304@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <20200428093836.27190-1-srikar@linux.vnet.ibm.com>
- <20200428093836.27190-3-srikar@linux.vnet.ibm.com>
+Received: from localhost.localdomain ([92.148.159.11])
+        by mwinf5d18 with ME
+        id YWsd2200H0F2omL03WsdMR; Wed, 29 Apr 2020 08:52:38 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 29 Apr 2020 08:52:38 +0200
+X-ME-IP: 92.148.159.11
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     richard.gong@linux.intel.com, gregkh@linuxfoundation.org,
+        atull@kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/4 v2] firmware: stratix10-svc: Fix genpool creation error handling
+Date:   Wed, 29 Apr 2020 08:52:34 +0200
+Message-Id: <660774ee8e63c03cb93a24d605c381eb0dce3b67.1588142343.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1588142343.git.christophe.jaillet@wanadoo.fr>
+References: <cover.1588142343.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428093836.27190-3-srikar@linux.vnet.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-29_01:2020-04-28,2020-04-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
- phishscore=0 suspectscore=0 clxscore=1011 impostorscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004290048
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Srikar,
+'svc_create_memory_pool()' returns an error pointer on error, not NULL.
+Fix the corresponding test and return value accordingly.
 
-On Tue, Apr 28, 2020 at 03:08:35PM +0530, Srikar Dronamraju wrote:
-> Node id queried from the static device tree may not
-> be correct. For example: it may always show 0 on a shared processor.
-> Hence prefer the node id queried from vphn and fallback on the device tree
-> based node id if vphn query fails.
-> 
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-> Cc: Christopher Lameter <cl@linux.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> ---
-> Changelog v1:->v2:
-> - Rebased to v5.7-rc3
-> 
->  arch/powerpc/mm/numa.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-> index b3615b7fdbdf..281531340230 100644
-> --- a/arch/powerpc/mm/numa.c
-> +++ b/arch/powerpc/mm/numa.c
-> @@ -719,20 +719,20 @@ static int __init parse_numa_properties(void)
->  	 */
->  	for_each_present_cpu(i) {
->  		struct device_node *cpu;
-> -		int nid;
-> -
-> -		cpu = of_get_cpu_node(i, NULL);
-> -		BUG_ON(!cpu);
-> -		nid = of_node_to_nid_single(cpu);
-> -		of_node_put(cpu);
-> +		int nid = vphn_get_nid(i);
-> 
->  		/*
->  		 * Don't fall back to default_nid yet -- we will plug
->  		 * cpus into nodes once the memory scan has discovered
->  		 * the topology.
->  		 */
-> -		if (nid < 0)
-> -			continue;
+Move the genpool allocation after a few devm_kzalloc in order to ease
+error handling.
 
+Fixes: 7ca5ce896524 ("firmware: add Intel Stratix10 service layer driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/firmware/stratix10-svc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> +		if (nid == NUMA_NO_NODE) {
-> +			cpu = of_get_cpu_node(i, NULL);
-> +			if (cpu) {
+diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
+index d5f0769f3761..3a176e62754a 100644
+--- a/drivers/firmware/stratix10-svc.c
++++ b/drivers/firmware/stratix10-svc.c
+@@ -997,10 +997,6 @@ static int stratix10_svc_drv_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
+-	genpool = svc_create_memory_pool(pdev, sh_memory);
+-	if (!genpool)
+-		return -ENOMEM;
+-
+ 	/* allocate service controller and supporting channel */
+ 	controller = devm_kzalloc(dev, sizeof(*controller), GFP_KERNEL);
+ 	if (!controller)
+@@ -1011,6 +1007,10 @@ static int stratix10_svc_drv_probe(struct platform_device *pdev)
+ 	if (!chans)
+ 		return -ENOMEM;
+ 
++	genpool = svc_create_memory_pool(pdev, sh_memory);
++	if (IS_ERR(genpool))
++		return PTR_ERR(genpool);
++
+ 	controller->dev = dev;
+ 	controller->num_chans = SVC_NUM_CHANNEL;
+ 	controller->num_active_client = 0;
+-- 
+2.25.1
 
-Why are we not retaining the BUG_ON(!cpu) assert here ?
-
-> +				nid = of_node_to_nid_single(cpu);
-> +				of_node_put(cpu);
-> +			}
-> +		}
-
-Is it possible at this point that both vphn_get_nid(i) and
-of_node_to_nid_single(cpu) returns NUMA_NO_NODE ? If so,
-should we still call node_set_online() below ?
-
-
->  		node_set_online(nid);
->  	}
-> 
-> -- 
-> 2.20.1
-> 
---
-Thanks and Regards
-gautham.
