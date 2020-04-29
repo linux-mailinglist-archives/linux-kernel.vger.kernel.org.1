@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899181BDA73
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEC51BDA8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgD2LPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 07:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726345AbgD2LPn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 07:15:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E016BC03C1AD;
-        Wed, 29 Apr 2020 04:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kZiL+C64pEB0gGtZIjbEgTMKcXAg4VXf1yvXjFv+qDw=; b=YcSAHSw6S3qB0Tg7W4OVOCRBTL
-        YXvpVMydg9K6WrN4eq5xtf4hAH0jgIntPTDWsKB/3Sq2bhdePBNC1pFzKafwOy382NH0IcyH7zVDO
-        3LXJ0fPUAG+PZJZJs6jozz957nBUeO3eg0nHBVVy5ays3f9nYB3PLLuQewq6wseOK+SosyaWHV5Ih
-        KcxmFTBVX1pQ0wpPJolRTsiDJMs5+FfP82eYLaC1yGOWtf9k/ruEN2TLAgMrAaUBHuueAq7cCyxeL
-        tTPDl3mModtoVgLYgenjyIN3UcM8x6+gvx0w/msMwPZg8ejNKfY+mjnsp98NZi19hH/H+KybTisdz
-        /o4NOevQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTkgU-00013v-I5; Wed, 29 Apr 2020 11:15:22 +0000
-Date:   Wed, 29 Apr 2020 04:15:22 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH v3 2/6] block: move main block debugfs initialization to
- its own file
-Message-ID: <20200429111522.GB21892@infradead.org>
-References: <20200429074627.5955-1-mcgrof@kernel.org>
- <20200429074627.5955-3-mcgrof@kernel.org>
+        id S1726620AbgD2L0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 07:26:40 -0400
+Received: from out1.migadu.com ([91.121.223.63]:54796 "EHLO out1.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726345AbgD2L0k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 07:26:40 -0400
+X-Greylist: delayed 449 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Apr 2020 07:26:39 EDT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429074627.5955-3-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kl.wtf; s=default;
+        t=1588159147;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=imyH5i/2Y9yMNzm7UXaBN/+s9A++43Lu0do6gm4lZAo=;
+        b=LrdIfbupDauYnhNB/LVW7socv26n2fC4hjUAyHuPXJNEkxTUwwClvoDTrPINu4HaMhyLgo
+        2rAzNOU032gKGBlrYK/tFlmA75qh/N18BQ6tDUJLLelE+4b/sKqm4B7YwCj+vx8S6HsmSc
+        AY1CCPyS+l3NPDGicr7OJQ8/QFbU5I0=
+Date:   Wed, 29 Apr 2020 11:19:07 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   kl@kl.wtf
+Message-ID: <e8d385dbfbbb09acfe58d716c588722c@kl.wtf>
+Subject: Re: [PATCH v2] drm: make drm_file use keyed wakeups
+To:     "Daniel Vetter" <daniel@ffwll.ch>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        airlied@linux.ie, tzimmermann@suse.de, mripard@kernel.org,
+        maarten.lankhorst@linux.intel.com, linux-kernel@vger.kernel.org
+In-Reply-To: <20200428151410.GU3456981@phenom.ffwll.local>
+References: <20200428151410.GU3456981@phenom.ffwll.local>
+ <20200424162615.10461-1-kl@kl.wtf>
+X-Spam-Score: -0.10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 07:46:23AM +0000, Luis Chamberlain wrote:
-> make_request-based drivers and and request-based drivers share some
-> debugfs code. By moving this into its own file it makes it easier
-> to expand and audit this shared code.
-> 
-> This patch contains no functional changes.
-> 
-> Cc: Bart Van Assche <bvanassche@acm.org>
-> Cc: Omar Sandoval <osandov@fb.com>
-> Cc: Hannes Reinecke <hare@suse.com>
-> Cc: Nicolai Stange <nstange@suse.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: yu kuai <yukuai3@huawei.com>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-
-Looks good,
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+April 28, 2020 5:14 PM, "Daniel Vetter" <daniel@ffwll.ch> wrote:=0A=0A> O=
+n Fri, Apr 24, 2020 at 06:26:15PM +0200, Kenny Levinsen wrote:=0A> =0A>> =
+Some processes, such as systemd, are only polling for EPOLLERR|EPOLLHUP.=
+=0A>> As drm_file uses unkeyed wakeups, such a poll can receive many spur=
+ious=0A>> wakeups from uninteresting events if, for example, the file des=
+cription=0A>> is subscribed to vblank events. This is the case with syste=
+md, as it=0A>> polls a file description from logind that is shared with t=
+he users'=0A>> compositor.=0A>> =0A>> Use keyed wakeups to allow the wake=
+up target to more efficiently discard=0A>> these uninteresting events.=0A=
+>> =0A>> Signed-off-by: Kenny Levinsen <kl@kl.wtf>=0A> =0A> Hm I applied =
+v1 and I'm not spotting what's different here, and there's no=0A> changel=
+og explaining what changed ...=0A> =0A> Please send a fixup if there's an=
+ything important missing.=0A> -Daniel=0A>=0A=0AIt's only the summary that=
+ differed as you and sravn requested in #dri-devel, so it's probably fine=
+.=0A=0AI should have explained the change. I'm still trying to get the ha=
+ng of the email-based workflow. :)=0A=0ABest regards,=0AKenny Levinsen=0A=
+=0A>> ---=0A>> drivers/gpu/drm/drm_file.c | 6 ++++--=0A>> 1 file changed,=
+ 4 insertions(+), 2 deletions(-)=0A>> =0A>> diff --git a/drivers/gpu/drm/=
+drm_file.c b/drivers/gpu/drm/drm_file.c=0A>> index c4c704e01961..ec25b3d9=
+79d9 100644=0A>> --- a/drivers/gpu/drm/drm_file.c=0A>> +++ b/drivers/gpu/=
+drm/drm_file.c=0A>> @@ -608,7 +608,8 @@ ssize_t drm_read(struct file *fil=
+p, char __user *buffer,=0A>> file_priv->event_space -=3D length;=0A>> lis=
+t_add(&e->link, &file_priv->event_list);=0A>> spin_unlock_irq(&dev->event=
+_lock);=0A>> - wake_up_interruptible(&file_priv->event_wait);=0A>> + wake=
+_up_interruptible_poll(&file_priv->event_wait,=0A>> + EPOLLIN | EPOLLRDNO=
+RM);=0A>> break;=0A>> }=0A>> =0A>> @@ -804,7 +805,8 @@ void drm_send_even=
+t_locked(struct drm_device *dev, struct drm_pending_event *e)=0A>> list_d=
+el(&e->pending_link);=0A>> list_add_tail(&e->link,=0A>> &e->file_priv->ev=
+ent_list);=0A>> - wake_up_interruptible(&e->file_priv->event_wait);=0A>> =
++ wake_up_interruptible_poll(&e->file_priv->event_wait,=0A>> + EPOLLIN | =
+EPOLLRDNORM);=0A>> }=0A>> EXPORT_SYMBOL(drm_send_event_locked);=0A>> =0A>=
+> --=0A>> 2.26.1=0A> =0A> --=0A> Daniel Vetter=0A> Software Engineer, Int=
+el Corporation=0A> http://blog.ffwll.ch
