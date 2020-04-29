@@ -2,102 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEB21BD726
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE141BD72F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726792AbgD2IWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 04:22:38 -0400
-Received: from mga14.intel.com ([192.55.52.115]:44131 "EHLO mga14.intel.com"
+        id S1726814AbgD2IXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 04:23:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726621AbgD2IWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 04:22:38 -0400
-IronPort-SDR: dMiGYpRM5R3C/CcgAHoz2hsFfpTv2lrCHeVSKimyWK8bsBu4mCGhttxVKcH2oCc/xEV4c67VgW
- L3iBoL47mwlA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 01:22:38 -0700
-IronPort-SDR: F+sD5STICk/m6zujNoE9BvEABvPm9vfHA/7Vwbg/OxHjhyfuFBlI+4A+I2dBRswY9yrVoa2IZs
- NG95l8OV7VzA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,330,1583222400"; 
-   d="scan'208";a="459104696"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 29 Apr 2020 01:22:38 -0700
-Received: from [10.215.242.51] (ekotax-mobl.gar.corp.intel.com [10.215.242.51])
-        by linux.intel.com (Postfix) with ESMTP id 142FD5802C8;
-        Wed, 29 Apr 2020 01:22:34 -0700 (PDT)
-Subject: Re: [PATCH 1/4] spi: lantiq: Synchronize interrupt handlers and
- transfers
-To:     Hauke Mehrtens <hauke@hauke-m.de>,
-        Daniel Schwierzeck <daniel.schwierzeck@gmail.com>,
-        broonie@kernel.org, robh@kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, andriy.shevchenko@intel.com,
-        cheol.yong.kim@intel.com, chuanhua.lei@linux.intel.com,
-        qi-ming.wu@intel.com
-References: <cover.1587702428.git.eswara.kota@linux.intel.com>
- <3bf88d24b9cad9f3df1da8ed65bf55c05693b0f2.1587702428.git.eswara.kota@linux.intel.com>
- <310ca761-e7ae-1192-99fd-a1960697806b@gmail.com>
- <262f2739-494a-a59b-f1e9-80a95ea465b1@hauke-m.de>
-From:   Dilip Kota <eswara.kota@linux.intel.com>
-Message-ID: <078a68ad-b82b-81c5-2d93-bfa4b70bc5d6@linux.intel.com>
-Date:   Wed, 29 Apr 2020 16:22:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726423AbgD2IXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 04:23:30 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFE0F2083B;
+        Wed, 29 Apr 2020 08:23:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588148610;
+        bh=0UVv0Dm6NAErwc46CCRtkpaSdr1MlLFvEVwXEGbstNA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aoLDgHdyIr+7W5xjns+neFIwh9hDaeAV6+CyFVferesQpAFjCj0WnD1g+EpqRxgLr
+         FdtauSNQC/wUywx9rIB7VqSy9flTvXwa5TK2V8DtppAObzKxeGnHjX/RcHjTIRU5hP
+         z+3pVZemfC5CO5EY9/MPNz6kQ7cfs+0vbvHBrBlo=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1jTi08-007e8O-7P; Wed, 29 Apr 2020 09:23:28 +0100
 MIME-Version: 1.0
-In-Reply-To: <262f2739-494a-a59b-f1e9-80a95ea465b1@hauke-m.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Date:   Wed, 29 Apr 2020 09:23:28 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, julien.thierry.kdev@gmail.com
+Subject: Re: [RFC Patch v1 2/4] irqchip/gic-v3: Add support to handle SGI as
+ pseudo NMI
+In-Reply-To: <CAFA6WYPNNNZeX5zpadayfiZ7P_mHmiREpUd5LZ3Jp+TjGVqoEw@mail.gmail.com>
+References: <1587726554-32018-1-git-send-email-sumit.garg@linaro.org>
+ <1587726554-32018-3-git-send-email-sumit.garg@linaro.org>
+ <20200425112950.3a4815b6@why> <6fd3d96181ec53f735ef1b6a79d28da1@kernel.org>
+ <CAFA6WYPNNNZeX5zpadayfiZ7P_mHmiREpUd5LZ3Jp+TjGVqoEw@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.3
+Message-ID: <ac57cb4bbb6507ee98f199d68a514503@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: sumit.garg@linaro.org, daniel.thompson@linaro.org, jason@lakedaemon.net, catalin.marinas@arm.com, dianders@chromium.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, jason.wessel@windriver.com, kgdb-bugreport@lists.sourceforge.net, tglx@linutronix.de, will@kernel.org, julien.thierry.kdev@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sumit,
 
-On 4/28/2020 7:30 PM, Hauke Mehrtens wrote:
-> On 4/28/20 1:10 PM, Daniel Schwierzeck wrote:
->>
->> Am 24.04.20 um 12:42 schrieb Dilip Kota:
->>
-...
-> Hi,
->
-> The Interrupt controller found on Danube till xrx300 which is probably
-> from Infineon like this SPI controller IP acknowledges the interrupts
-> also inside this SPI controller IP automatically, this has to be done
-> manually on the xrx500 and probably also LGM as they use a different
-> interrupt controller. I prepared patches for this internally 2.5 years
-> ago but did not send them upstream because of internal processes.
->
-> I would suggest to only do this ack on the newer platforms starting with
-> the xrx500 and not on the older.
->
-> On SMP systems a lock is needed in lantiq_ssc_xmit_interrupt() to
-> protect against an other thread reading from the RX buffer or writing to
-> the TX buffer in parallel.
->
-> @Dilip. Did you try the patches I send you one months ago on the LGM?
-All the cases you mentioned are taken care in the patch, could you 
-please have a look once.
+On 2020-04-28 15:11, Sumit Garg wrote:
+> Hi Marc,
+> 
+> Thanks for your comments and apologies for my delayed response as I
+> was exploring ideas that you have shared.
+> 
+> On Sat, 25 Apr 2020 at 20:02, Marc Zyngier <maz@kernel.org> wrote:
+>> 
+>> On 2020-04-25 11:29, Marc Zyngier wrote:
+>> > On Fri, 24 Apr 2020 16:39:12 +0530
+>> > Sumit Garg <sumit.garg@linaro.org> wrote:
+>> >
+>> > Hi Sumit,
+>> >
+>> >> With pseudo NMIs enabled, interrupt controller can be configured to
+>> >> deliver SGI as a pseudo NMI. So add corresponding handling for SGIs.
+>> >>
+>> >> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+>> >> ---
+>> >>  drivers/irqchip/irq-gic-v3.c | 22 +++++++++++++++++-----
+>> >>  1 file changed, 17 insertions(+), 5 deletions(-)
+>> >>
+>> >> diff --git a/drivers/irqchip/irq-gic-v3.c
+>> >> b/drivers/irqchip/irq-gic-v3.c
+>> >> index d7006ef..be361bf 100644
+>> >> --- a/drivers/irqchip/irq-gic-v3.c
+>> >> +++ b/drivers/irqchip/irq-gic-v3.c
+>> >> @@ -609,17 +609,29 @@ static inline void gic_handle_nmi(u32 irqnr,
+>> >> struct pt_regs *regs)
+>> >>      if (irqs_enabled)
+>> >>              nmi_enter();
+>> >>
+>> >> -    if (static_branch_likely(&supports_deactivate_key))
+>> >> -            gic_write_eoir(irqnr);
+>> >>      /*
+>> >>       * Leave the PSR.I bit set to prevent other NMIs to be
+>> >>       * received while handling this one.
+>> >>       * PSR.I will be restored when we ERET to the
+>> >>       * interrupted context.
+>> >>       */
+>> >> -    err = handle_domain_nmi(gic_data.domain, irqnr, regs);
+>> >> -    if (err)
+>> >> -            gic_deactivate_unhandled(irqnr);
+>> >> +    if (likely(irqnr > 15)) {
+>> >> +            if (static_branch_likely(&supports_deactivate_key))
+>> >> +                    gic_write_eoir(irqnr);
+>> >> +
+>> >> +            err = handle_domain_nmi(gic_data.domain, irqnr, regs);
+>> >> +            if (err)
+>> >> +                    gic_deactivate_unhandled(irqnr);
+>> >> +    } else {
+>> >> +            gic_write_eoir(irqnr);
+>> >> +            if (static_branch_likely(&supports_deactivate_key))
+>> >> +                    gic_write_dir(irqnr);
+>> >> +#ifdef CONFIG_SMP
+>> >> +            handle_IPI(irqnr, regs);
+>> >> +#else
+>> >> +            WARN_ONCE(true, "Unexpected SGI received!\n");
+>> >> +#endif
+>> >> +    }
+>> >>
+>> >>      if (irqs_enabled)
+>> >>              nmi_exit();
+>> >
+>> > If there is one thing I would like to avoid, it is to add more ugly
+>> > hacks to the way we handle SGIs. There is very little reason why SGIs
+>> > should be handled differently from all other interrupts. They have the
+>> > same properties, and it is only because of the 32bit legacy that we
+>> > deal
+>> > with them in such a cumbersome way. Nothing that we cannot fix though.
+>> >
+>> > What I would really like to see is first a conversion of the SGIs to
+>> > normal, full fat interrupts. These interrupts can then be configured as
+>> > NMI using the normal API.
+>> >
+>> > I think Julien had something along these lines (or was that limited to
+>> > the PMU?). Otherwise, I'll happily help you with that.
+>> 
+>> OK, to give you an idea of what I am after, here's a small series[1]
+>> that
+>> can be used as a base (it has been booted exactly *once* on a model, 
+>> and
+>> is thus absolutely perfect ;-).
+> 
+> Thanks for this series. I have re-based my patch-set on top of this
+> series [1] and just dropped this patch #2. It works fine for me.
 
-And the patch you shared internally, has done below change. By referring 
-it i have updated the offsets, mentioning offsets are wrong. But actual 
-case is vrx200 are having different offsets and xrx500, latest chipsets 
-are having different offsets. I think this could be the reason for SPI 
-transfer timeouts when you run test on vrx200 with my patches.
+I just had a look.
 
--#define LTQ_SPI_IRNICR		0xf8
--#define LTQ_SPI_IRNCR		0xfc
-+#define LTQ_SPI_IRNCR		0xf8
-+#define LTQ_SPI_IRNICR		0xfc
+"irqchip/gic-v3: Enable arch specific IPI as pseudo NMI" is still done
+the wrong way, I'm afraid. You directly poke into the GIC configuration,
+which isn't acceptable, as you leave the rest of the kernel completely
+unaware that this is a NMI. You should make the interrupt a NMI as it
+is being configured in gic_smp_init(), calling request_nmi() at this 
+stage.
 
-These offsets need to be defined in SoC data structure as they are 
-different across the chipsets(which i have done in initial phase of the 
-patch which i submitted for internal review. I hope you had got a chance 
-to review it).
+>> 
+>> There is still a bit of work to be able to actually request a SGI 
+>> (they
+>> are hard-wired as chained interrupts so far, as this otherwise changes
+>> the output of /proc/interrupts, among other things), but you will
+>> hopefully see what I'm aiming for.
+> 
+> I was exploring this idea: "request a SGI". I guess here you meant to
+> request a new SGI as a normal NMI/IRQ via common APIs such as
+> request_percpu_nmi() or request_percpu_irq() rather than statically
+> adding a new IPI as per this patch [2], correct? If yes, then I have
+> following follow up queries:
+> 
+> 1. Do you envision any drivers to use SGIs in a similar manner as they
+> use SPIs or PPIs?
 
-Regards,
-Dilip
+No. SGIs are already pretty much all allocated for the kernel's internal
+needs and once we allocate an additional one for this KGDB feature,
+we're out of non-secure SGIs. We could start a multiplexing scheme to
+overcome this, but the kernel already has plenty of other mechanisms
+for internal communication. After all, why would you need anything more
+than smp_call_function()?
 
+The single use case I can imagine is that you'd want to signal a CPU
+that isn't running Linux. This would require a lot more work than
+just an interrupt, and is out of scope for the time being.
+
+> 2. How do you envision allocation of SGIs as currently they are
+> hardcoded in an arch specific file (like arch/arm64/kernel/smp.c
+> +794)?
+
+What I would like is for the arch code to request these interrupts as
+normal interrupts, for which there is one problem to solve: how do you
+find out about the Linux IRQ number for a given IPI. Or rather, how
+do you get rid of the requirement to have IPI numbers at all and just
+say "give me a per-cpu interrupt that I can use as an IPI, and by the
+way here's the handler you can call".
+
+And I insist: this is only for the arch code. Nothing else.
+
+> 3. AFAIK, the major difference among SGIs and SPIs or PPIs is the
+> trigger method where SGIs are software triggered and SPIs or PPIs are
+> hardware triggered. And I couldn't find a generalized method across
+> architectures to invoke SGIs. So how do you envision drivers to invoke
+> SGIs in an architecture agnostic manner?
+
+Well, SGIs are not architecture agnostic. They are fundamentally part of
+the GIC architecture, which only exists for the two ARM architectures.
+
+SGIs are not a general purpose mechanism. IPIs are, and we have services
+on top of IPIs, such as invoking a function on a remote CPU. What else
+do you need?
+
+Thanks,
+
+          M.
+-- 
+Jazz is not dead. It just smells funny...
