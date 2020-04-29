@@ -2,91 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C81D1BE2DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07221BE2DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgD2PgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
+        id S1726937AbgD2Phb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726484AbgD2PgH (ORCPT
+        with ESMTP id S1726456AbgD2Pha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:36:07 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDF8C03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:36:07 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id x26so1169313pgc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:36:07 -0700 (PDT)
+        Wed, 29 Apr 2020 11:37:30 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CA7C03C1AD;
+        Wed, 29 Apr 2020 08:37:28 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e26so2531922wmk.5;
+        Wed, 29 Apr 2020 08:37:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TJNMR4oboW7WFcnPibORXRu4vpOcald9BO/lcSdsbJU=;
-        b=KbYqDwbe+5X2nV8lcrIde+ORFQeQ3rrbblUybL+zsc2dj8sGqWcFfvo39qh+lAI4oJ
-         VdbNlNrsY53rPimDsbKp88S8EZty1oNEqB/jbnsypAH6oezvvyGw8TImxfPIF7FNzB/t
-         0X4d9EzhWgVFzM61F1G/Lysa9eDK30EsCR7Zu2O92SVY5CsPOaw7QU0taQ/9GdVemUYk
-         gM5YoXIyRiO+98yvLLVXRPpL2yI99XAB72IypjVXubKwncZtvnx6iwDEh4iH91RB5KCd
-         cukyO6mDVHCqrum+Lo7fNhtfITpRmCEQYdzwtE1/VF2FwojqoTUD2FnJpUmA/1M5mhl5
-         NOag==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rlQ2CSVV6XANNoo1iZF8vKF1KcyKLoixPtiCb4LIRmU=;
+        b=UzBVTnboUM1rw6sSV38W0WKxcXHMlyDVGxvSlM+eJKNTZeceQEoiV20qojzMEmljPz
+         9S2TRJyT1FaSwi9l9G9Tv2lqDHvk8PGrzhNRT7M3+QDzqVWITFQzpOB+aRoEcVHk1+Zx
+         bUQu4D/nMUJnNFX+LaStHa9gmtvkhdBMn1p4DQ89cbvBFPsz0gDFGIgsECZTIR5wQz9D
+         iyaqBsyFYMWvVvjFcFXZFjV9p0RAmgF/lSkqFFH7n5do/kC/zmZOnjDZ0gaMnTHzkiNb
+         cITdZ2TpLrcJUaR60kV0FV9Yfigj0/TJte1oCMebG84UdiqohIIuhqzkrcOgg9h/4DcP
+         WJQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=TJNMR4oboW7WFcnPibORXRu4vpOcald9BO/lcSdsbJU=;
-        b=MZbceYqfoYh5RwyS5eMgGB8oIkactTDLibUpq3zj/x4oUgd8h1aqm+Ahj3RKoyqei/
-         MuMrckXWcFnU8furBK9JPi7zmz0vtGLs/N9eg7BXm/A7IV6irvca0BfgUrwNDw/28I6t
-         Gk9/np/NzYYOKKgg0RNtjjKZaLmCkUrkxCgGkb6BPYd5qXoq5+GgKuyfmFlklker36Xx
-         4+55bbFlUM0bzBq636BP0KKvm7Gk3v48y/cZHwfKbL1utAXYQze6SqSLElLK4d9lYRkk
-         t+EsiIQZO3lCkez1DnenpjU+F8kKEWLhVbTL983CGUNk6cU83rYMgFzf/5IXMfDJRFoy
-         eOjw==
-X-Gm-Message-State: AGi0PuaGttHztQB90Wbs3DYQR6AUm49NHnIzhGcB2WBtqITIIj2vitE0
-        otoUUKRdVaFl7flG/aI04Z4=
-X-Google-Smtp-Source: APiQypIljJQgPqTe8smMDubFOAi16dTLZaugpCJiNx+uWdfsu5l1tiz7Y3oSKdpcSrNdtXqmb+p5xA==
-X-Received: by 2002:a62:144c:: with SMTP id 73mr36548770pfu.37.1588174567209;
-        Wed, 29 Apr 2020 08:36:07 -0700 (PDT)
-Received: from localhost ([89.208.244.169])
-        by smtp.gmail.com with ESMTPSA id y7sm1367321pfq.21.2020.04.29.08.36.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 Apr 2020 08:36:06 -0700 (PDT)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     mark.rutland@arm.com, maz@kernel.org, daniel.lezcano@linaro.org,
-        tglx@linutronix.de, linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
-Subject: [PATCH v1] drivers/clocksource/arm_arch_timer: remove duplicate error message
-Date:   Wed, 29 Apr 2020 23:35:59 +0800
-Message-Id: <20200429153559.21189-1-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.25.0
+        bh=rlQ2CSVV6XANNoo1iZF8vKF1KcyKLoixPtiCb4LIRmU=;
+        b=Wg0gC3t+CzldSh6aJRFZZk9q1v71+aIz00d2/+ckvFZDP14xCNtnn3KStL1yi5nqUk
+         T6EjgPeRSGXK0/gKxlYankID/hImk5MV9C8jMnSXn2GBA7OL8u0VjhprzkEG3TK711AP
+         A3qW2+z/Pv13JUQSSYNHoz2AaqRugm1NCG4w52272upjBl3VpIuAZTGxKui0f44JVTN+
+         MXdZ9OAgqm6R9InqzFVBP1mqIMHgh+WEF1Dg2qDslFuYod03R/WpFjwBy/1anQ83NBiE
+         sHAWi+OZFubKmwqEweIZUF11SwNuvTX1IlFcalBPN7twRSiWGmSCljSt2ljgs5+HfEtn
+         J+mQ==
+X-Gm-Message-State: AGi0PuZMOpw5Ck7f6ziqCWsA6Kbxy8pnxXAl1gWFhKLgf+bC5MJPXOP1
+        fSD8qrQAyQ0+p/QmHdnzGDw=
+X-Google-Smtp-Source: APiQypIg8WaDaKeSC+d4Fk1TXb+PTmnDD/c+xUPJUF1So7oC4slxG/rIYm8O+NdsZmPI4F8Zqjf2zw==
+X-Received: by 2002:a1c:ba56:: with SMTP id k83mr3825211wmf.1.1588174647248;
+        Wed, 29 Apr 2020 08:37:27 -0700 (PDT)
+Received: from [192.168.1.23] (afgd208.neoplus.adsl.tpnet.pl. [95.49.159.208])
+        by smtp.gmail.com with ESMTPSA id k14sm31165910wrp.53.2020.04.29.08.37.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Apr 2020 08:37:26 -0700 (PDT)
+Subject: Re: [PATCH v22 01/16] dt: bindings: Add multicolor class dt bindings
+ documention
+To:     Dan Murphy <dmurphy@ti.com>, pavel@ucw.cz
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh@kernel.org>
+References: <20200429125631.7044-1-dmurphy@ti.com>
+ <20200429125631.7044-2-dmurphy@ti.com>
+From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Message-ID: <769c19a1-4124-b674-5b03-6100f176768e@gmail.com>
+Date:   Wed, 29 Apr 2020 17:37:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200429125631.7044-2-dmurphy@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-it will print an error message by itself when acpi_gtdt_init()
-goes wrong. so remove the duplicate error message.
+Hi Dan,
 
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
----
- drivers/clocksource/arm_arch_timer.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Thanks for the conversion, but now the binding example is missing.
+In Documentation/devicetree/bindings/leds/common.yaml we do have
+examples.
 
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index 2204a444e801..ecf7b7db2d05 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -1588,10 +1588,8 @@ static int __init arch_timer_acpi_init(struct acpi_table_header *table)
- 	arch_timers_present |= ARCH_TIMER_TYPE_CP15;
- 
- 	ret = acpi_gtdt_init(table, &platform_timer_count);
--	if (ret) {
--		pr_err("Failed to init GTDT table.\n");
-+	if (ret)
- 		return ret;
--	}
- 
- 	arch_timer_ppi[ARCH_TIMER_PHYS_NONSECURE_PPI] =
- 		acpi_gtdt_map_ppi(ARCH_TIMER_PHYS_NONSECURE_PPI);
--- 
-2.25.0
+Best regards,
+Jacek Anaszewski
+
+On 4/29/20 2:56 PM, Dan Murphy wrote:
+> Add DT bindings for the LEDs multicolor class framework.
+> Add multicolor ID to the color ID list for device tree bindings.
+> 
+> CC: Rob Herring <robh@kernel.org>
+> Acked-by: Pavel Machek <pavel@ucw.cz>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>   .../bindings/leds/leds-class-multicolor.yaml  | 34 +++++++++++++++++++
+>   drivers/leds/led-core.c                       |  1 +
+>   include/dt-bindings/leds/common.h             |  3 +-
+>   3 files changed, 37 insertions(+), 1 deletion(-)
+>   create mode 100644 Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml b/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+> new file mode 100644
+> index 000000000000..3d4f23d07440
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+> @@ -0,0 +1,34 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-class-multicolor.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Common properties for the multicolor LED class.
+> +
+> +maintainers:
+> +  - Dan Murphy <dmurphy@ti.com>
+> +
+> +description: |
+> +  Bindings for multi color LEDs show how to describe current outputs of
+> +  either integrated multi-color LED elements (like RGB, RGBW, RGBWA-UV
+> +  etc.) or standalone LEDs, to achieve logically grouped multi-color LED
+> +  modules. This is achieved by adding multi-led nodes layer to the
+> +  monochrome LED bindings.
+> +  The nodes and properties defined in this document are unique to the multicolor
+> +  LED class.  Common LED nodes and properties are inherited from the common.txt
+> +  within this documentation directory.
+> +
+> +properties:
+> +  color:
+> +    description: |
+> +      For multicolor LED support this property should be defined as
+> +      LED_COLOR_ID_MULTI and further definition can be found in
+> +      include/linux/leds/common.h.
+> +
+> +required:
+> +  - color
+> +
+> +additionalProperties: false
+> +
+> +...
+> diff --git a/drivers/leds/led-core.c b/drivers/leds/led-core.c
+> index f1f718dbe0f8..846248a0693d 100644
+> --- a/drivers/leds/led-core.c
+> +++ b/drivers/leds/led-core.c
+> @@ -34,6 +34,7 @@ const char * const led_colors[LED_COLOR_ID_MAX] = {
+>   	[LED_COLOR_ID_VIOLET] = "violet",
+>   	[LED_COLOR_ID_YELLOW] = "yellow",
+>   	[LED_COLOR_ID_IR] = "ir",
+> +	[LED_COLOR_ID_MULTI] = "multicolor",
+>   };
+>   EXPORT_SYMBOL_GPL(led_colors);
+>   
+> diff --git a/include/dt-bindings/leds/common.h b/include/dt-bindings/leds/common.h
+> index 0ce7dfc00dcb..a463ce6a8794 100644
+> --- a/include/dt-bindings/leds/common.h
+> +++ b/include/dt-bindings/leds/common.h
+> @@ -30,7 +30,8 @@
+>   #define LED_COLOR_ID_VIOLET	5
+>   #define LED_COLOR_ID_YELLOW	6
+>   #define LED_COLOR_ID_IR		7
+> -#define LED_COLOR_ID_MAX	8
+> +#define LED_COLOR_ID_MULTI	8
+> +#define LED_COLOR_ID_MAX	9
+>   
+>   /* Standard LED functions */
+>   /* Keyboard LEDs, usually it would be input4::capslock etc. */
+> 
 
