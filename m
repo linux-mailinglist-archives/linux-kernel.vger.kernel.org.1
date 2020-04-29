@@ -2,108 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80951BE26D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF0A1BE26E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgD2PU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726526AbgD2PU6 (ORCPT
+        id S1726893AbgD2PVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:21:24 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:20967 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726762AbgD2PVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:20:58 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D78C03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:20:58 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id ck5so1290518qvb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=F1ilkwC+n0OgBT9uuTRB3SLW+eKQbLVicZAameJ09RE=;
-        b=hU9N/SYx4o943FSpLmFfYRzFNhrE21wcaMBxiSuAyKj39P181veL7UUM+Tijbark7Y
-         4FntQ4jtahEHZ2rJUyjp2m7Xkn+CT2EQDSbQoocEQAAAsMY9K/kWwgiToHBb4C/L6guj
-         X7ReFRVhH7S+W/nUgEjUcSEKS+3o1yBiQndwqzEwTTDSBzwuuSZGURC8VCDJLee68U6b
-         LyMEq+b9xbv6jFzelvtMyf5dVc5D0UK6genSiQM52b9KW2VwmPS4QHD2VZSF+VMC5T55
-         jpZZfbH51z6liczzYjMmOE7k5OT/PIH1ZPEqFsht2oGW+wcoelJiwVDL8XwJ0RbAZcco
-         aqRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=F1ilkwC+n0OgBT9uuTRB3SLW+eKQbLVicZAameJ09RE=;
-        b=tRX+13TfS2M00JfbHuDthNWIwEKQtYwcmXrd1DP91e496FRbt3M4XjT16Abv9Qwtkl
-         dgIpfaY9fnIxVyp7P5v8JEjGCXdAH4q7O5gO/zEfQxWNqoZVljlCLf4NzkxWMWz3nxUO
-         q1r8Xp/qaBNcAND2/IQyMByOsSTpNodSIC2xr/2gp+zre0DjA61dNU+ffU0JWZPijZql
-         R5SIgmABHH2Qp/PmAC9sqlHj3Wc5JEsfstnUp575vnWcpbbIhh/eM6kdG6+CDQ0X223/
-         +Kgm4NnEOjfqT6g0+2O6OQ49upohvK+OrI5ZvIFNHl7E5pPewFHOcmuLmo+5aPQjsr5i
-         hzlw==
-X-Gm-Message-State: AGi0PuYGbBvCUQDAz0Bv4aVE+cqTPramefFjQFz+gc4TP2F0XvWVRRY3
-        Ss+rew9LudxC0D0vjritrul21IS+qGGlqE9iimM=
-X-Google-Smtp-Source: APiQypJ0Nvq6CGqqwwZIRCzWr/OLeDFDoBTIaAobRMxTChzChbCfY2At1MWgWTL3RvZeIV7LClAOl5HebEwRtFJ4+YY=
-X-Received: by 2002:a05:6214:158b:: with SMTP id m11mr28220190qvw.168.1588173657420;
- Wed, 29 Apr 2020 08:20:57 -0700 (PDT)
+        Wed, 29 Apr 2020 11:21:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588173683; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=+gyt2AqINPW1eeo+2IXQyoxZJZuFqi+WhErt1y8Af3c=; b=UFD5Qlx4PRRJ7E8GI4FCNq0NMMCpALxaE7w1o5touhr7XGTi9HTernbfS00DbPGpfXMIdveR
+ LT7Q1gjKsEYkcjMbLbbpc/iVvzmdbAbZTNv3tQw3J6Qmc68AfpRA7dTq+0BG1kVSfdWucLRo
+ NjV9OpJhLXeNzxPkD/2gHpY2UL4=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea99b6f.7f1bc751d810-smtp-out-n05;
+ Wed, 29 Apr 2020 15:21:19 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E423DC44791; Wed, 29 Apr 2020 15:21:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pkondeti)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AA646C433CB;
+        Wed, 29 Apr 2020 15:21:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AA646C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=pkondeti@codeaurora.org
+Date:   Wed, 29 Apr 2020 20:51:06 +0530
+From:   Pavan Kondeti <pkondeti@codeaurora.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] sched/uclamp: Add a new sysctl to control RT
+ default boost value
+Message-ID: <20200429152106.GB19464@codeaurora.org>
+References: <20200428164134.5588-1-qais.yousef@arm.com>
+ <20200429113255.GA19464@codeaurora.org>
+ <20200429123056.otyedhljlugyf5we@e107158-lin>
 MIME-Version: 1.0
-Received: by 2002:a0c:c24a:0:0:0:0:0 with HTTP; Wed, 29 Apr 2020 08:20:57
- -0700 (PDT)
-Reply-To: annah2bruun@gmail.com
-From:   "Mrs. Anna H." <rakeshpillalamrri@gmail.com>
-Date:   Wed, 29 Apr 2020 15:20:57 +0000
-Message-ID: <CAPJk2A0R1kcKGJYMK6MQETwxFcRCG7Pd4hbXmNrhLvNtoNeXTA@mail.gmail.com>
-Subject: I Need Your Urgent Assistance
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200429123056.otyedhljlugyf5we@e107158-lin>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear
+Hi Qais,
 
+On Wed, Apr 29, 2020 at 01:30:57PM +0100, Qais Yousef wrote:
+> Hi Pavan
+> 
+> On 04/29/20 17:02, Pavan Kondeti wrote:
+> > Hi Qais,
+> > 
+> > On Tue, Apr 28, 2020 at 05:41:33PM +0100, Qais Yousef wrote:
+> > 
+> > [...]
+> > 
+> > >  
+> > > +static void uclamp_sync_util_min_rt_default(struct task_struct *p)
+> > > +{
+> > > +	struct uclamp_se *uc_se = &p->uclamp_req[UCLAMP_MIN];
+> > > +
+> > > +	if (unlikely(rt_task(p)) && !uc_se->user_defined)
+> > > +		uclamp_se_set(uc_se, sysctl_sched_uclamp_util_min_rt_default, false);
+> > > +}
+> > 
+> > Unlike system default clamp values, RT default value is written to
+> > p->uclamp_req[UCLAMP_MIN]. A user may not be able to set the uclamp.max to a
+> > lower value than sysctl_sched_uclamp_util_min_rt_default. This is not a
+> > big deal. Just sharing my observation. Is this how you expected it to work?
+> 
+> This is how I expect it to work yes.
+> 
+> Note that the sysctl_sched_uclamp_util_{min,max}, or 'system default clamp
+> values' as you called them, are constraints. They define the range any task is
+> _allowed to_ *request*.
+> 
+> The new sysctl_sched_uclamp_util_min_rt_default is setting the default
+> *request* for RT tasks. And this was done since historically RT tasks has
+> always run at the highest performance point in Linux.
+> 
+> Can you think of a scenario where setting the default *request* of uclamp.max
+> for all RT tasks helps?
+> 
 
-My Name is Mrs. Anna H. Bruun,  from Norway. I know that this message
-will be a surprise to you. Firstly, I am married to Mr. Patrick Bruun,
-A gold merchant who owns a small gold Mine in Burkina Faso; He died of
-Cardiovascular Disease in mid-March 2011. During his life time he
-deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundre=
-d
-thousand Euros in a bank in Ouagadougou the capital city of Burkina
-Faso in West Africa. The deposited money was from the sale of the
-shares, death benefits payment and entitlements of my deceased husband
-by his company.
+It was a hypothetical question :-) Thanks for clearly explaining the
+difference between system default clamp values (constraints) vs the newly
+introduced sysctl_sched_uclamp_util_min_rt_default (request for RT tasks).
 
-I am sending this message to you praying that it will reach you in
-good health, since I am not in good health condition in which I sleep
-every night without knowing if I may be alive to see the next day. I
-am suffering from long time cancer and presently i am partially
-suffering from a stroke illness which has become almost impossible for
-me to move around. I am married to my late husband for over 4 years
-before he died and is unfortunately that we don't have a child, my
-doctor confided in me that i have less chance to live. Having known my
-health condition, I decided to contact you to claim the fund since I
-don't have any relation I grew up from the orphanage home,
+> I'm thinking, the global constrain of sysctl_sched_uclamp_util_max should
+> suffice. Or one can use cgroup to selectively cap some tasks.
+> 
+> For example if you don't want any task in the system to be boosted to anything
+> higher than 800, just do
+> 
+> 	sysctl_sched_uclamp_util_max = 800
+> 
+> Or if you want to be selective, the same thing can be achieved by creating
+> a cgroup cpu controller that has uclamp.max = 0.8 and attaching tasks to it.
+> 
+> > 
+> > > +
+> > >  static inline struct uclamp_se
+> > >  uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+> > >  {
+> > > @@ -907,8 +935,15 @@ uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+> > >  static inline struct uclamp_se
+> > >  uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
+> > >  {
+> > > -	struct uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id);
+> > > -	struct uclamp_se uc_max = uclamp_default[clamp_id];
+> > > +	struct uclamp_se uc_req, uc_max;
+> > > +
+> > > +	/*
+> > > +	 * Sync up any change to sysctl_sched_uclamp_util_min_rt_default value.
+> > > +	 */
+> > > +	uclamp_sync_util_min_rt_default(p);
+> > > +
+> > > +	uc_req = uclamp_tg_restrict(p, clamp_id);
+> > > +	uc_max = uclamp_default[clamp_id];
+> > 
+> > We are calling uclamp_sync_util_min_rt_default() unnecessarily for
+> > clamp_id == UCLAMP_MAX case. Would it be better to have a separate
+> 
+> It was actually intentional to make sure we update the value ASAP. I didn't
+> think it's a lot of overhead. I can further protect with a check to verify
+> whether the value has changed if it seems heavy handed.
+> 
+> > uclamp_default for RT like uclamp_default_rt and select uc_max based
+> > on task policy? Since all tunables are handled in sysctl_sched_uclamp_handler
+> > we can cover the case of uclamp_util_min < uclamp_util_min_rt.
+> 
+> Hmm I'm not sure I got you.
+> 
+> uclamp_default[] is setting the constraints. I.e. what's the range it's allowed
+> to take.
+> 
+> What's added here is simply setting the requested uclamp.min value, which if
+> the constraints allow it will be applied.
+> 
+> For example. If
+> 
+> 	sysctl_sched_uclamp_util_min = 0
+> 	sysctl_sched_uclamp_util_min_rt_default = 400
+> 
+> uclamp_eff_get() will return 0 as effective uclamp.min value for the task. So
+> while the task still requests to be boosted to 1024, but the system constraint
+> prevents it from getting it. But as soon as the system constraint has changed,
+> the task might be able to get what it wants.
+> 
+> For example, if at runtime sysctl_sched_uclamp_util_min was modified to 1024
+> 
+> 	sysctl_sched_uclamp_util_min = 1024
+> 	sysctl_sched_uclamp_util_min_rt_default = 400
+> 
+> uclamp_eff_get() return 400 for the task now, as requested.
+> 
 
-I have decided to donate what I have to you for the support of
-helping Motherless babies/Less privileged/Widows' because I am dying
-and diagnosed of cancer for about 2 years ago. I have been touched by
-God Almighty to donate from what I have inherited from my late husband
-to you for good work of God Almighty. I have asked Almighty God to
-forgive me and believe he has, because He is a Merciful God I will be
-going in for an operation surgery soon
+Yes, I did understand the relation between sysctl_sched_uclamp_util_min and
+sysctl_sched_uclamp_util_min_rt_default . It is not clear why we are copying
+sysctl_sched_uclamp_util_min_rt_default into p->uclamp_req[UCLAMP_MIN] though
+user did not explicitly asked for it. In the above reply, you clearly
+mentioned that the new knob works like a request from the user space for all
+RT tasks.
 
-This is the reason i need your services to stand as my next of kin or
-an executor to claim the funds for charity purposes. If this money
-remains unclaimed after my death, the bank executives or the
-government will take the money as unclaimed fund and maybe use it for
-selfish and worthless ventures, I need a very honest person who can
-claim this money and use it for Charity works, for orphanages, widows
-and also build schools for less privilege that will be named after my
-late husband and my name; I need your urgent answer to know if you
-will be able to execute this project, and I will give you more
-information on how the fund will be transferred to your bank account.
+As we are copying the sysctl_sched_uclamp_util_min_rt_default value into
+p->uclamp_req[UCLAMP_MIN], user gets it when sched_getattr() is called though
+sched_setattr() was not called before. I guess that is expected behavior with
+your definition of this new tunable. Thanks for answering the question in
+detail.
 
+Thanks,
+Pavan
 
-Thanks
-Mrs. Anna H.
+> Thanks
+> 
+> --
+> Qais Yousef
+> 
+> > 
+> > >  
+> > >  	/* System default restrictions always apply */
+> > >  	if (unlikely(uc_req.value > uc_max.value))
+> > > @@ -1114,12 +1149,13 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+> > >  				loff_t *ppos)
+> > >  {
+> > >  	bool update_root_tg = false;
+> > > -	int old_min, old_max;
+> > > +	int old_min, old_max, old_min_rt;
+> > >  	int result;
+> > >  
+> > >  	mutex_lock(&uclamp_mutex);
+> > >  	old_min = sysctl_sched_uclamp_util_min;
+> > >  	old_max = sysctl_sched_uclamp_util_max;
+> > > +	old_min_rt = sysctl_sched_uclamp_util_min_rt_default;
+> > >  
+> > >  	result = proc_dointvec(table, write, buffer, lenp, ppos);
+> > >  	if (result)
+> > > @@ -1133,6 +1169,18 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+> > >  		goto undo;
+> > >  	}
+> > >  
+> > > +	/*
+> > > +	 * The new value will be applied to RT tasks the next time the
+> > > +	 * scheduler needs to calculate the effective uclamp.min for that task,
+> > > +	 * assuming the task is using the system default and not a user
+> > > +	 * specified value. In the latter we shall leave the value as the user
+> > > +	 * requested.
+> > > +	 */
+> > > +	if (sysctl_sched_uclamp_util_min_rt_default > SCHED_CAPACITY_SCALE) {
+> > > +		result = -EINVAL;
+> > > +		goto undo;
+> > > +	}
+> > > +
+> > >  	if (old_min != sysctl_sched_uclamp_util_min) {
+> > >  		uclamp_se_set(&uclamp_default[UCLAMP_MIN],
+> > >  			      sysctl_sched_uclamp_util_min, false);
+> > > @@ -1158,6 +1206,7 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+> > >  undo:
+> > >  	sysctl_sched_uclamp_util_min = old_min;
+> > >  	sysctl_sched_uclamp_util_max = old_max;
+> > > +	sysctl_sched_uclamp_util_min_rt_default = old_min_rt;
+> > >  done:
+> > >  	mutex_unlock(&uclamp_mutex);
+> > >  
+> > > @@ -1200,9 +1249,13 @@ static void __setscheduler_uclamp(struct task_struct *p,
+> > >  		if (uc_se->user_defined)
+> > >  			continue;
+> > >  
+> > > -		/* By default, RT tasks always get 100% boost */
+> > > +		/*
+> > > +		 * By default, RT tasks always get 100% boost, which the admins
+> > > +		 * are allowed to change via
+> > > +		 * sysctl_sched_uclamp_util_min_rt_default knob.
+> > > +		 */
+> > >  		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+> > > -			clamp_value = uclamp_none(UCLAMP_MAX);
+> > > +			clamp_value = sysctl_sched_uclamp_util_min_rt_default;
+> > >  
+> > >  		uclamp_se_set(uc_se, clamp_value, false);
+> > >  	}
+> > > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> > > index 8a176d8727a3..64117363c502 100644
+> > > --- a/kernel/sysctl.c
+> > > +++ b/kernel/sysctl.c
+> > > @@ -453,6 +453,13 @@ static struct ctl_table kern_table[] = {
+> > >  		.mode		= 0644,
+> > >  		.proc_handler	= sysctl_sched_uclamp_handler,
+> > >  	},
+> > > +	{
+> > > +		.procname	= "sched_util_clamp_min_rt_default",
+> > > +		.data		= &sysctl_sched_uclamp_util_min_rt_default,
+> > > +		.maxlen		= sizeof(unsigned int),
+> > > +		.mode		= 0644,
+> > > +		.proc_handler	= sysctl_sched_uclamp_handler,
+> > > +	},
+> > >  #endif
+> > >  #ifdef CONFIG_SCHED_AUTOGROUP
+> > >  	{
+> > > -- 
+> > > 2.17.1
+> > > 
+> > 
+> > Thanks,
+> > Pavan
+> > 
+> > -- 
+> > Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+> > Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
