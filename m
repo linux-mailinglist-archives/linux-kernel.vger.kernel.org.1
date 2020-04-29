@@ -2,59 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696611BE319
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26B31BE320
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgD2PuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:50:08 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:44078 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726511AbgD2PuH (ORCPT
+        id S1726893AbgD2PvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726562AbgD2PvQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:50:07 -0400
-Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id bb23fa4412e3993e; Wed, 29 Apr 2020 17:50:04 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Benjamin Gaignard <benjamin.gaignard@st.com>
-Cc:     viresh.kumar@linaro.org, hugues.fruchet@st.com, mchehab@kernel.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, pavel@ucw.cz,
-        len.brown@intel.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Patrick Bellasi <patrick.bellasi@arm.com>
-Subject: Re: [RFC 0/3] Introduce cpufreq minimum load QoS
-Date:   Wed, 29 Apr 2020 17:50:04 +0200
-Message-ID: <7657495.QyJl4BcWH5@kreacher>
-In-Reply-To: <20200424114058.21199-1-benjamin.gaignard@st.com>
-References: <20200424114058.21199-1-benjamin.gaignard@st.com>
+        Wed, 29 Apr 2020 11:51:16 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AABF5C03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NxBBFFm6MtwCSdPcYTRckA3NQsUn3OiyYrVi4AMqwnQ=; b=F5ul1L8C/XskogCvKJ7LlCJhxO
+        aEbtYahfIeSU21RzUMsl9uZ5r10KqANOnR1jsEOW9tK4Cq3MBhpGKSBrSQVB9phdebLADYTGKOlH4
+        VgStoiCqApU9zqGEWPJ7rcdX9WjI02fLZ8JdcW1pGCOWLIXve1N6yUg6hr5AkrADB3tcgk1GveKxO
+        9VO5ndtowBnBFjzkofqJ2rF3jPSmRsmCrtIIfyURzmKfGZ98AH1F0M6gcOjUe+6bLPuPbXqLVzzvD
+        xZmfy8U5d7ZgssyrtyGXEbUzpWW4AiifAGHsyzhDjCuW9PoLrICqF0sl+6Ky+umNJ/XoeVLQRfkN2
+        pCIWfZbw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTozP-0000df-GE; Wed, 29 Apr 2020 15:51:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DC0143011E8;
+        Wed, 29 Apr 2020 17:51:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C378620BD9729; Wed, 29 Apr 2020 17:51:09 +0200 (CEST)
+Date:   Wed, 29 Apr 2020 17:51:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     jpoimboe@redhat.com, alexandre.chartre@oracle.com,
+        linux-kernel@vger.kernel.org, jthierry@redhat.com,
+        tglx@linutronix.de, x86@kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH v2 02/14] objtool: Fix ORC vs alternatives
+Message-ID: <20200429155109.GN13592@hirez.programming.kicks-ass.net>
+References: <20200428191101.886208539@infradead.org>
+ <20200428191659.499074346@infradead.org>
+ <alpine.LSU.2.21.2004291622160.28992@pobox.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.21.2004291622160.28992@pobox.suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, April 24, 2020 1:40:55 PM CEST Benjamin Gaignard wrote:
-> When start streaming from the sensor the CPU load could remain very low 
-> because almost all the capture pipeline is done in hardware (i.e. without 
-> using the CPU) and let believe to cpufreq governor that it could use lower 
-> frequencies. If the governor decides to use a too low frequency that 
-> becomes a problem when we need to acknowledge the interrupt during the 
-> blanking time.
-> The delay to ack the interrupt and perform all the other actions before
-> the next frame is very short and doesn't allow to the cpufreq governor to
-> provide the required burst of power. That led to drop the half of the frames.
+On Wed, Apr 29, 2020 at 04:33:31PM +0200, Miroslav Benes wrote:
+> On Tue, 28 Apr 2020, Peter Zijlstra wrote:
+> >  /*
+> > + * Alternatives should not contain any ORC entries, this in turn means they
+> > + * should not contain any CFI ops, which implies all instructions should have
+> > + * the same same CFI state.
+> > + *
+> > + * It is possible to constuct alternatives that have unreachable holes that go
+> > + * unreported (because they're NOPs), such holes would result in CFI_UNDEFINED
+> > + * states which then results in ORC entries, which we just said we didn't want.
+> > + *
+> > + * Avoid them by copying the CFI entry of the first instruction into the whole
+> > + * alternative.
+> > + */
+> > +static void fill_alternative_cfi(struct objtool_file *file, struct instruction *insn)
+> > +{
+> > +	struct instruction *first_insn = insn;
+> > +	int alt_group = insn->alt_group;
+> > +
+> > +	sec_for_each_insn_continue(file, insn) {
+> > +		if (insn->alt_group != alt_group)
+> > +			break;
+> > +		insn->cfi = first_insn->cfi;
+> > +	}
+> > +}
 > 
-> To avoid this problem, DCMI driver informs the cpufreq governors by adding
-> a cpufreq minimum load QoS resquest.
+> If I am reading this and previous patch correctly...
+> 
+> The function would copy cfi only to "orig" alternative (its insn->alts is 
+> non-empty, orig_insn->alt_group differs from new_insn->alt_group), right? 
 
-This seems to be addressing a use case that can be addressed with the help of
-utilization clamps with less power overhead.
+Yes.
 
-Thanks!
+> Would it make sense to do the same for "new" alternative, because of the 
+> invariant? It seems to me it is not processed anywhere that way.
 
+No.
 
+> Am I missing something? Whenever I try to read all this alternatives 
+> handling in objtool, I get lost pretty soon.
+
+We only care about the ORC covering the original range, because that is
+the range we execute code from. The memory where we store the
+alternative instructions (.altinstruction section) is never executed,
+that is, RIP should never point there, so we don't need ORC data covering
+it.
 
