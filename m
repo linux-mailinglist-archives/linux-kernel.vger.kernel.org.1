@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A811BEA04
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 23:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0DA1BEA12
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 23:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgD2Vf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 17:35:29 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:37627 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726775AbgD2Vf2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 17:35:28 -0400
-Received: by mail-oi1-f195.google.com with SMTP id r25so3249707oij.4;
-        Wed, 29 Apr 2020 14:35:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=P60CLGRCVH/w+wVlBp6MkL7Ds15Cvq4t9vycfLUjyFI=;
-        b=l+lmEETa2u5ynCMun8a8xy+7aQyvXM4rrpc4TDYoGfigpFkmOZJi8gAy5QNdWdXcfS
-         S/ovB2GnVzl1gA/omdyvkRXHTH2HGS6hILnGAMMjYtqSILem/RbeKvUq169xvY5MaPbR
-         ZKv2ef0eHsqsFN6NysaRSLo1k7YahYOySWKaYz7EUfP+f9kIaKETyVg3BFkrh1RWY8e1
-         cf1szzKpQvM+HmjGNXLh3t/po8Q3ScJNMtyo2PVwSwwGlPzCNfILDinWWe/Ae/rXP//a
-         7WayWGr6hii5xZxNbEzujo+vn3YpB653vpYjgrBKRSceKu66NvYoVDrcMJ0Vbh6q/jQ/
-         wNzQ==
-X-Gm-Message-State: AGi0PuYze/62DMH5KtSeCXXUIoQI7+oiThTER8Dn7WrOYrfcldYy89Cz
-        q0PalazabIg1oARIrvrgTQ==
-X-Google-Smtp-Source: APiQypKoDEYLt06UnLfe/uPG+G9+07x8ZmccseGaZQiUJmc7TvMtKNzH6fV3dRHIJ4P4gPpt97gkag==
-X-Received: by 2002:aca:7251:: with SMTP id p78mr279418oic.32.1588196127566;
-        Wed, 29 Apr 2020 14:35:27 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d18sm691623otk.63.2020.04.29.14.35.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 14:35:27 -0700 (PDT)
-Received: (nullmailer pid 6694 invoked by uid 1000);
-        Wed, 29 Apr 2020 21:35:26 -0000
-Date:   Wed, 29 Apr 2020 16:35:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] clk: qcom: mmcc-msm8996: Properly describe GPU_GX
- gdsc
-Message-ID: <20200429213526.GA6644@bogus>
-References: <20200417070044.1376212-1-bjorn.andersson@linaro.org>
- <20200417070044.1376212-3-bjorn.andersson@linaro.org>
+        id S1727089AbgD2ViV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 17:38:21 -0400
+Received: from muru.com ([72.249.23.125]:51722 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726481AbgD2ViV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 17:38:21 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 8507F810A;
+        Wed, 29 Apr 2020 21:39:08 +0000 (UTC)
+Date:   Wed, 29 Apr 2020 14:38:17 -0700
+From:   Tony Lindgren <tony@atomide.com>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Andreas Kemnade <andreas@kemnade.info>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Adam Ford <aford173@gmail.com>,
+        "Andrew F . Davis" <afd@ti.com>, Vignesh R <vigneshr@ti.com>
+Subject: Re: [PATCHv3] w1: omap-hdq: Simplify driver with PM runtime
+ autosuspend
+Message-ID: <20200429213817.GU37466@atomide.com>
+References: <20200421180220.GB37466@atomide.com>
+ <70F19A6E-7B36-4873-9364-F284A14EE3A0@goldelico.com>
+ <20200421182017.GC37466@atomide.com>
+ <D3E40A6A-39B8-4F3F-9ABC-28EAE8D623A6@goldelico.com>
+ <20200422120418.49a40c75@aktux>
+ <6E3A50D9-0F15-4A56-8C5E-7CDC63E8AF9F@goldelico.com>
+ <A2AC3E81-49B2-4CF2-A7CF-6075AEB1B72D@goldelico.com>
+ <44AD9673-AE02-498F-A5CC-48499DF226E3@goldelico.com>
+ <E8575FE4-4BC2-41B7-B574-339C58D9CB5E@goldelico.com>
+ <891CBD28-3F91-493D-AD80-6575608846A4@goldelico.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200417070044.1376212-3-bjorn.andersson@linaro.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <891CBD28-3F91-493D-AD80-6575608846A4@goldelico.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020 00:00:42 -0700, Bjorn Andersson wrote:
-> The GPU_GX GDSC depends on both GPU GDSC being enabled and that the
-> VDD_GX rail is powered, so update the description of the node to cover
-> these requirements.
+* H. Nikolaus Schaller <hns@goldelico.com> [200429 21:35]:
+> I have reworked the way the spinlocks, setting and resetting
+> of the hdq_irqstatus bits are done and now it works right from
+> start of boot. Without any timeouts or delays.
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+> I am not exactly sure what went wrong, but it seems as if
+> the read is already done when the write interrupt status
+> bit is processed. Then, the old logic did wipe out both
+> bits by hdq_reset_irqstatus() and the read code did timeout
+> because it did not notice that the data had already been
+> available. This may depend on other system activities so
+> that it can explain why other tests didn't reveal it.
 > 
-> Changes since v1:
-> - vdd_gfx -> vdd-gfx
+> omap_hdq_runtime_resume() and omap_hdq_runtime_suspend()
+> also behave fine.
 > 
->  Documentation/devicetree/bindings/clock/qcom,mmcc.yaml | 4 ++++
->  drivers/clk/qcom/mmcc-msm8996.c                        | 2 ++
->  2 files changed, 6 insertions(+)
-> 
+> Before I can post something I need to clean up my hacks
+> and add similar fixes to omap_hdq_break() and omap_w1_triplet()
+> where I hope that I don't break those...
 
-Acked-by: Rob Herring <robh@kernel.org>
+OK good to hear you were able to figure out what is
+going on here.
+
+Regards,
+
+Tony
