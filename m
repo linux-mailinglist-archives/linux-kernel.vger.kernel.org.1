@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50401BDBC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548A01BDBE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgD2MQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 08:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
+        id S1726754AbgD2MTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 08:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726524AbgD2MQT (ORCPT
+        by vger.kernel.org with ESMTP id S1726524AbgD2MTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 08:16:19 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18A6C03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 05:16:18 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id w20so2394928ljj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 05:16:18 -0700 (PDT)
+        Wed, 29 Apr 2020 08:19:48 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612AFC03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 05:19:48 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id g10so1434293lfj.13
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 05:19:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=l4hDIJCDKgb4QJRH77lrv/BKKESfMFPpw/eu45ndVLk=;
-        b=jVQ5osqfPhLb6kqXlke+Yq5O5jpAUgnjip18N6tStX3o84+RcoTxisglPe4PdlIC42
-         YsygTr5CONv4uSYE44kUtuerR+Zz/kyRN3uGKGmUBUvigC9t5umI4z5T44PBdVtR+AVx
-         PGoCNKCQ92iEaFj44zvVjG9i+DQK0lsFDK1Ggv0J6e2qZUbG9ZsKqbe7eEKtCLIM85Bv
-         bkDNlR+QiEj8SXBiWDEfclrL2PGfRrgP3jZ0sC2yuX7AFttD/xdJirC0qaq+oF2aYukF
-         moWBReBCc/T734CNF89iyQnZ3TB69Q09w2FyCmBbD+37GZ+U5HMQFvfC1cewRuraY73n
-         a7mg==
+        bh=C1Ts4DfOpbqwNmKAyV/9/Lll4n9YArjQ/mn7brU53Ks=;
+        b=HeQpH7rxp/Oyh4cRIDkKuEC/nrOQkmhe2swtarQuUReEO9o8Fgc5g5gq10VX8AQ9Ca
+         9FUz0xLE0yzVF97yDlEt5U8ogfTQLqmFS5CBYqICi2zKUeyYtLnU/dG73H3PEFPr4uzg
+         O7fEBhpMIUKX1MZfGlQ3RPfC8YI+3CQ4CWCQ2+9tqLp6xSNSavLwClNKF9av4efRAURB
+         KeARE2/mJ0kKPp8hy5nuL4+z4J2kd9NG229n7jc0ndiQF1qA1xFeAMNAHoETBgACTXeB
+         QqIgG/CQ1UTq3Q8vG88ewPteWzXsxqDvel6D9PYwVvaXXYsiFAA8QiKShxdQzqvsKXpw
+         IdMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=l4hDIJCDKgb4QJRH77lrv/BKKESfMFPpw/eu45ndVLk=;
-        b=FusjQ8caXWpXEvY/HSyjW8E9wfaFZdhr/fN+RS2nwa60loOJq1O41ZfAsNd6Ozq3vL
-         dKqIWexd8NWAxnO80wHc88H5cIZ+wPI1oopIwydAz9yL/3bdS6pGOyLVFKmQR0quzgg0
-         FMkTLFJIUmN36rWHbNsTuk/RaiiQStxng92eOOAdEPVjl9J2tXl86Rios/5Tg+GJvw89
-         fsFKrY+JtS+WD+f/0WTbSbEqz52BTh0mOAB4rCGNvXsltWD9cmrwcbCXYBu3EvgxmJdD
-         lcu+Zhz9wUzsGmyqCKOVPwxR3NZO8DsQO2K89XKClLOgB6sdeurPUH4K1VU3kIiBQkIf
-         9x0Q==
-X-Gm-Message-State: AGi0PubnjqDzdSc4dp1XbNNoebpa27sSRszVpL1If4R76dP0Vbqs/r95
-        fKSwUBPRwKGGX2Qbk//ZcOQfmGKthzi2/otdDFVaUQ==
-X-Google-Smtp-Source: APiQypIGpYmRMV8dUpi/6uObL1nzzISH+8h5QWHeAlSd8ihzU1MAcUwAWx4wnOAGosmYDQxx8rxVeYSPGbyBjrReLSg=
-X-Received: by 2002:a2e:b6cf:: with SMTP id m15mr20188195ljo.168.1588162577327;
- Wed, 29 Apr 2020 05:16:17 -0700 (PDT)
+        bh=C1Ts4DfOpbqwNmKAyV/9/Lll4n9YArjQ/mn7brU53Ks=;
+        b=UXaf/KUgBNy+epVi5OeeVHclCM4+iu4q8/S0Zu6T5SlzB547p5PNmIGnvBihr8MvBk
+         JaojVHSSFz9qKJmn7q3lhf/WDB1fRWh916HhTxWo/jqNNICFPPT7a9nCKhJS659dy1pC
+         Bs3s9a48OOsBOJfiWU3ZSrklY9/KmSoPu9Z+//W0SgF3nY/f2EJ+b43f7A5BYwcUOyp4
+         S1ECcGdBW/0QTkBcaMVdGAVkctARIuCT12GNu6J4UtK/ZkaD7iMnHly2mzf5MvOB1IEG
+         tTk5TB+uPYuQ+WxnL+xmnzy4y3WN4dFDcrdZsgz60gybghB8ODvQA1rRNKzTDeVKDQN8
+         6VFQ==
+X-Gm-Message-State: AGi0PuYGHI8MgFAws/t4yqueousthsY3rWbSuFaoVsgaJa1niVa6mrBv
+        hU0wZpjvxDoAxQ1eCvnJ12STDf2mKFFHm1SVKCxqUw==
+X-Google-Smtp-Source: APiQypJ2jgIIIfWcY9D1adj1uOLPdacJazusj6aGHmHvzzde6RhBsWaPWv8/f2ZwRjyszUh2zAlZgyz1YZbk16iyJ9M=
+X-Received: by 2002:ac2:4a9d:: with SMTP id l29mr21464343lfp.4.1588162786702;
+ Wed, 29 Apr 2020 05:19:46 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200428172322.1.I396f351e364f3c09df7c7606e79abefb8682c092@changeid>
-In-Reply-To: <20200428172322.1.I396f351e364f3c09df7c7606e79abefb8682c092@changeid>
+ <20200428172322.2.Iacb3c8152c3cf9015a91308678155a578b0cc050@changeid>
+In-Reply-To: <20200428172322.2.Iacb3c8152c3cf9015a91308678155a578b0cc050@changeid>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 29 Apr 2020 14:16:05 +0200
-Message-ID: <CACRpkdbHAFiarn8Gn618cuMZpyEkPBkzDZO4-xR4hYd_jNXKdQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] gpio: Document proper return value for gpio drivers
+Date:   Wed, 29 Apr 2020 14:19:35 +0200
+Message-ID: <CACRpkdaT_G=Wa7iYhfBVGrcViy7EbDH1+Qme+UQTGTWybu7Fzg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpio: Make "offset" and "unsigned int", not just "unsigned"
 To:     Douglas Anderson <dianders@chromium.org>
 Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
@@ -63,13 +64,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, Apr 29, 2020 at 2:24 AM Douglas Anderson <dianders@chromium.org> wrote:
 
-> The legacy defines GPIOF_DIR_XXX are only for consumers. Document the
-> proper ones.  Also: don't use "_XXX" since that's harder to find with
-> "git grep".  Just list both of the values.
+> When I copied the function prototypes from the GPIO header file into
+> my own driver, checkpatch yelled at me saying that I shouldn't use use
+> "unsigned" but instead should say "unsigned int".  Let's make the
+> header file use "unsigned int" so others who copy like I did won't get
+> yelled at.
 >
 > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-Patch applied! Sorry for the historical confusion.
+Patch applied. Nice cleanup!
 
 Yours,
 Linus Walleij
