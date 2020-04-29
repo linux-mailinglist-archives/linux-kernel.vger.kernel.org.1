@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0851BE649
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB691BE635
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:25:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgD2Sdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 14:33:31 -0400
-Received: from elvis.franken.de ([193.175.24.41]:60653 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726519AbgD2Sdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 14:33:31 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jTrWH-000430-01; Wed, 29 Apr 2020 20:33:17 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CEF21C034E; Wed, 29 Apr 2020 20:25:05 +0200 (CEST)
-Date:   Wed, 29 Apr 2020 20:25:05 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, john.garry@huawei.com,
-        Huacai Chen <chenhc@lemote.com>,
-        Paul Burton <paulburton@kernel.org>,
+        id S1726763AbgD2SZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 14:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726456AbgD2SZV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 14:25:21 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A388EC03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mk8Z9sCY0AhAexl6PYPVinqKRa9QYElOCdGLIqmtc8Y=; b=h0NgVJZnMQxSMXEuqfJICAC3T9
+        DVTnQvYxycKsv119y9J9+OnK1xPBqKoOR2PzIMa+JPHZwiYWXb4EMkeDgGRU2AX5x0vdOMVmgOmSE
+        8eWtvR4CrHy/U2yEyWpy2SBgyZ/tKI2xbT7qpHjwOT3x+1mXJLdnuBHtSnaiVPx3lnW7fL0HLCoer
+        29gnZMWOkrivqfvC//UzEW8RHJmYHhDxbsAYgo35Goc1Khg5XZ9dIfEOm24XjJVFDS02HP8OFBot/
+        wvNgnzAQtcHCHkX4ANTRtpwbAjyrfCGobZGvRfPs5bApZTRz1dot8UtI4KoccJkt/8ho14puFjqGZ
+        /VKECLDw==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTrOO-0006rY-LW; Wed, 29 Apr 2020 18:25:08 +0000
+Date:   Wed, 29 Apr 2020 11:25:08 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Waiman Long <longman@redhat.com>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Kitt <steve@sk2.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
-        Daniel Silsby <dansilsby@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Changbin Du <changbin.du@gmail.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] MIPS: Massage address spaces headers
-Message-ID: <20200429182505.GB21158@alpha.franken.de>
-References: <20200428021437.2000066-1-jiaxun.yang@flygoat.com>
- <20200428021437.2000066-2-jiaxun.yang@flygoat.com>
- <20200428113326.GD11443@alpha.franken.de>
- <7613695F-5A83-4B57-A2E6-0EE27DCF397F@flygoat.com>
+Subject: Re: [PATCH v3] mm/slub: Fix incorrect interpretation of s->offset
+Message-ID: <20200429182508.GU29705@bombadil.infradead.org>
+References: <20200429135328.26976-1-longman@redhat.com>
+ <af19e771-062f-6ed7-0b9a-e8cd8d0fdb6a@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7613695F-5A83-4B57-A2E6-0EE27DCF397F@flygoat.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <af19e771-062f-6ed7-0b9a-e8cd8d0fdb6a@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 07:45:19PM +0800, Jiaxun Yang wrote:
+On Wed, Apr 29, 2020 at 06:42:55PM +0200, Markus Elfring wrote:
+> > In a couple of places in the slub memory allocator, the code uses
+> > "s->offset" as a check to see if the free pointer is put right after the
+> > object. That check is no longer true with commit 3202fa62fb43 ("slub:
+> > relocate freelist pointer to middle of object").
 > 
+> Will any further collateral evolution become interesting?
+
+What do you mean by this question?
+
+> > +static inline unsigned int get_info_end(struct kmem_cache *s)
+> > +{
+> > +	if (freeptr_outside_object(s))
+> > +		return s->inuse + sizeof(void *);
+> > +	else
+> > +		return s->inuse;
+> > +}
 > 
-> 于 2020年4月28日 GMT+08:00 下午7:33:26, Thomas Bogendoerfer <tsbogend@alpha.franken.de> 写到:
-> >On Tue, Apr 28, 2020 at 10:14:12AM +0800, Jiaxun Yang wrote:
-> >> That would allow us modify kernel vm address spaces without
-> >> step into the hell of includes.
-> >> 
-> >> Also use some marcos for address spaces to make spaces.h more
-> >> clear.
-> >> 
-> >> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> How do you think about the following source code variants?
+> 
+> +	return freeptr_outside_object(s)
+> +	       ? s->inuse + sizeof(void *)
+> +	       : s->inuse;
+
+That is less clear than the version Wayman posted.
+
+> >  static struct track *get_track(struct kmem_cache *s, void *object,
+> >  	enum track_item alloc)
+> >  {
+> >  	struct track *p;
 > >
-> >I don't like this patch as I can't see a good reason for shuffling
-> >stuff arround. Can you drop this from this series ?
+> > -	if (s->offset)
+> > -		p = object + s->offset + sizeof(void *);
+> > -	else
+> > -		p = object + s->inuse;
+> > +	p = object + get_info_end(s);
+> >
+> >  	return p + alloc;
+> >  }
 > 
-> The problem is without this patch we'll have to include pgtable-32.h and
-> pgtable-64.h into asm/io.h, and that will become totally hell.
+> +	struct track *p = object + get_info_end(s);
+> 
+>  	return p + alloc;
 
-sure, but this would just mean moving VMALLOC_START, but not the other
-stuff in this patch, which is more what I dislike...
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Yes, I think that's an improvement.
