@@ -2,84 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACAA1BDC77
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F851BDC7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726910AbgD2Mi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 08:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726628AbgD2Mi1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 08:38:27 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFDEC03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 05:38:27 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id e25so2437660ljg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 05:38:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yiklenLhNOV+HKXdiZuFGpxcMEuzoxvnXmW3/CZQYZs=;
-        b=fMMGd7cuYi00xYIotGRhY6Dnx7VYaht0u0LQuHp4fzcCDF9cBBdPfE+f8GXRMwcza0
-         cLuwR336ZmgamL7yC676FL5jlkc5Yz1B+1TS4yVNxDprMVCznLRjQdK1bX816iSRAWxd
-         vCvTGXv3tDcjKsafsNJiLTH2Z/TFLyyqrthbVHJxlAAPpgxWK/RlNhJUDw9OLXdE0smj
-         kKtaF64FI9ricj+z5+PMpVi/HcrBHhYWQc6Hw715u3+ZxxFmFXuhjNN83YcHp7lHpcvi
-         20w3ODJEGsB2yuhAXLnYyJ0Snyklwuq81N5iNcKJMXc7Xiiwx6j9alt/6cDGQgxFy6hX
-         VDvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yiklenLhNOV+HKXdiZuFGpxcMEuzoxvnXmW3/CZQYZs=;
-        b=EHL75X+PGwdD+FRmd8m5VQ21Mxe5aobYFJv52uMNGhL2DXKwfsfKbMSUTyM1Rije7W
-         pc0c6w/Ze3Y4kVjNdJZjYXRx24L/Ckj19c1vDzBHA3ZU15BMVWkmgnZSYUJyKHbL2bgS
-         QpnJR6C9wLT+2HwfPQGuGyNA5nTbJWsTaXDrVYDxTvXnVZHwR1+JcS7toDJFH5ycduER
-         FySl3Ws2hdyUkkCFN1XZIfd5BUiNaMRpbsn4X/Tg74Egc3esrk8mpdxTRwJS4AmI8b5l
-         s2Pi47gRcfq64+tKF4USP63rCWHnm7pWKmw6wtUxzr7bFIkciwfdXY3WPXIWAQ9mR5Jp
-         wygQ==
-X-Gm-Message-State: AGi0PuY1a9I1HI1gh1AF3m09jO8qwHYTgaSqSbn37Rktax1Zo6V9u8zR
-        p/EGWR8PGO+lhKvaDDXf7VQNijj5pIvJ/a40+7Gm8nfltxQ=
-X-Google-Smtp-Source: APiQypJSjoxKbAKfAOvydqwj3C8SjC23BV+vHuypyRaJJ1bGKEYT/DUGGPAuboZMKwIe81ZCOER6hgFyOq7nxIlRwZg=
-X-Received: by 2002:a05:651c:1058:: with SMTP id x24mr21640311ljm.39.1588163905575;
- Wed, 29 Apr 2020 05:38:25 -0700 (PDT)
+        id S1726784AbgD2MlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 08:41:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3382 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726516AbgD2MlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 08:41:00 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id F2D9E481BCF15DD98D02;
+        Wed, 29 Apr 2020 20:40:52 +0800 (CST)
+Received: from DESKTOP-C3MD9UG.china.huawei.com (10.166.215.55) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 29 Apr 2020 20:40:43 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] i2c: sh_mobile: eliminate a misreported warning
+Date:   Wed, 29 Apr 2020 20:40:17 +0800
+Message-ID: <20200429124017.397-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-References: <20200419001858.105281-1-hector.bujanda@digi.com> <CAMRc=MeHun_WEApEXP59ZszGa2n+wbU9qq3wU1VO9o590rO-Pw@mail.gmail.com>
-In-Reply-To: <CAMRc=MeHun_WEApEXP59ZszGa2n+wbU9qq3wU1VO9o590rO-Pw@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 29 Apr 2020 14:38:13 +0200
-Message-ID: <CACRpkdaeXFW5K=Npy2ubWsffc7aepEQ5kSJ2HrkrESjaTy_psQ@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: add GPIO_SET_DEBOUNCE_IOCTL
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Hector Bujanda <hector.bujanda@digi.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kent Gibson <warthog618@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.215.55]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 2:06 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+The warning is caused by the branches "if (pd->pos == -1)" and
+"if (pd->pos == 0)", because they appear after "real_pos = pd->pos - 2",
+so the compiler doesn't known the value of real_pos is negative through
+these two branches.
 
-> I understand the need to set debounce time to make line events
-> reliable. As I see it: there'll be a couple steps to add this.
+To avoid this warning, eliminate the middleman "data".
 
-I think there is a serious user-facing problem here though, because
-not all GPIO controllers supports debounce, so the call may return
-"nope" (error code).
+drivers/i2c/busses/i2c-sh_mobile.c: In function ‘sh_mobile_i2c_isr’:
+drivers/i2c/busses/i2c-sh_mobile.c:396:26: warning: ‘data’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+   pd->msg->buf[real_pos] = data;
+                          ^
+drivers/i2c/busses/i2c-sh_mobile.c:369:16: note: ‘data’ was declared here
+  unsigned char data;
 
-I think that is unavoidable with things like pull-up/down or drive
-strength, but for debounce I think we could do better.
-drivers/input/keyboard/gpio_keys.c contains generic
-debounce code using kernel timers if the GPIO driver
-cannot provide debouncing, and I have thought for a long
-time that it would be nice if we could do this generic, so that
-we always provide debouncing if requested, even for in-kernel
-consumers but most certainly for userspace consumers,
-else userspace will just start to reinvent this too.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/i2c/busses/i2c-sh_mobile.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/drivers/i2c/busses/i2c-sh_mobile.c b/drivers/i2c/busses/i2c-sh_mobile.c
+index d83ca4028fa0..2cca1b21e26e 100644
+--- a/drivers/i2c/busses/i2c-sh_mobile.c
++++ b/drivers/i2c/busses/i2c-sh_mobile.c
+@@ -366,7 +366,6 @@ static int sh_mobile_i2c_isr_tx(struct sh_mobile_i2c_data *pd)
+ 
+ static int sh_mobile_i2c_isr_rx(struct sh_mobile_i2c_data *pd)
+ {
+-	unsigned char data;
+ 	int real_pos;
+ 
+ 	/* switch from TX (address) to RX (data) adds two interrupts */
+@@ -387,13 +386,11 @@ static int sh_mobile_i2c_isr_rx(struct sh_mobile_i2c_data *pd)
+ 		if (real_pos < 0)
+ 			i2c_op(pd, OP_RX_STOP);
+ 		else
+-			data = i2c_op(pd, OP_RX_STOP_DATA);
++			pd->msg->buf[real_pos] = i2c_op(pd, OP_RX_STOP_DATA);
+ 	} else if (real_pos >= 0) {
+-		data = i2c_op(pd, OP_RX);
++		pd->msg->buf[real_pos] = i2c_op(pd, OP_RX);
+ 	}
+ 
+-	if (real_pos >= 0)
+-		pd->msg->buf[real_pos] = data;
+  done:
+ 	pd->pos++;
+ 	return pd->pos == (pd->msg->len + 2);
+-- 
+2.26.0.106.g9fadedd
+
+
