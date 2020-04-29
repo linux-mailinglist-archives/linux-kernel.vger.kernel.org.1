@@ -2,150 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4631BDF2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE081BDDC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728592AbgD2NlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:41:05 -0400
-Received: from 8bytes.org ([81.169.241.247]:39570 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727871AbgD2Nhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:39 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 84C5C434; Wed, 29 Apr 2020 15:37:35 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH v3 02/34] iommu: Add def_domain_type() callback in iommu_ops
-Date:   Wed, 29 Apr 2020 15:36:40 +0200
-Message-Id: <20200429133712.31431-3-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
-References: <20200429133712.31431-1-joro@8bytes.org>
+        id S1727802AbgD2NhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726898AbgD2NhA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:37:00 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9ADC09B040;
+        Wed, 29 Apr 2020 06:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=tyoiEDA4aqW5ranAPIIS6qQtQA5yS6rXGQxRGVOBB6U=; b=mS4GHtyZBEma/U97n2kGoKvCN4
+        uihpLwSbMpvtN78Td9rCZsJy24ZhDi39nb0f4DuBgT7dm0A+rZKdPmG3KNa3Df0H+grThrkbtfCQb
+        swxNDNxX9eEFySUycDJniOWL8BXGubht8trSMNEOYGJ6NfDyp66CeNwi77HBNQEDw2VhVhkOJ9uIw
+        M9Zpfytt4C1f2LYZ6iZWwprI4JB3pzdR6IeDBLH0hk76u0MXzs9XU+J2V/ufBX1Px9T4pmygj0Vki
+        FQetRR3rC9FXsAXYER2iPCA9qRSdryPfcTvhwCZ2RXJEFpYxRLQ8qgiCCRyGkyTM9ym79exive9ki
+        g9/3VlqQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTmtX-0005v1-BZ; Wed, 29 Apr 2020 13:36:59 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 08/25] fs: Support THPs in zero_user_segments
+Date:   Wed, 29 Apr 2020 06:36:40 -0700
+Message-Id: <20200429133657.22632-9-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
+References: <20200429133657.22632-1-willy@infradead.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-Some devices are reqired to use a specific type (identity or dma)
-of default domain when they are used with a vendor iommu. When the
-system level default domain type is different from it, the vendor
-iommu driver has to request a new default domain with
-iommu_request_dma_domain_for_dev() and iommu_request_dm_for_dev()
-in the add_dev() callback. Unfortunately, these two helpers only
-work when the group hasn't been assigned to any other devices,
-hence, some vendor iommu driver has to use a private domain if
-it fails to request a new default one.
+We can only kmap() one subpage of a THP at a time, so loop over all
+relevant subpages, skipping ones which don't need to be zeroed.  This is
+too large to inline when THPs are enabled and we actually need highmem,
+so put it in highmem.c.
 
-This adds def_domain_type() callback in the iommu_ops, so that
-any special requirement of default domain for a device could be
-aware by the iommu generic layer.
-
-Signed-off-by: Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-[ jroedel@suse.de: Added iommu_get_def_domain_type() function and use
-                   it to allocate the default domain ]
-Co-developed-by: Joerg Roedel <jroedel@suse.de>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- drivers/iommu/iommu.c | 20 +++++++++++++++++---
- include/linux/iommu.h |  6 ++++++
- 2 files changed, 23 insertions(+), 3 deletions(-)
+ include/linux/highmem.h | 15 +++++++---
+ mm/highmem.c            | 62 +++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 71 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index bfe011760ed1..5877abd9b693 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -1361,21 +1361,35 @@ struct iommu_group *fsl_mc_device_group(struct device *dev)
+diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+index ea5cdbd8c2c3..74614903619d 100644
+--- a/include/linux/highmem.h
++++ b/include/linux/highmem.h
+@@ -215,13 +215,18 @@ static inline void clear_highpage(struct page *page)
+ 	kunmap_atomic(kaddr);
  }
- EXPORT_SYMBOL_GPL(fsl_mc_device_group);
  
-+static int iommu_get_def_domain_type(struct device *dev)
-+{
-+	const struct iommu_ops *ops = dev->bus->iommu_ops;
-+	unsigned int type = 0;
-+
-+	if (ops->def_domain_type)
-+		type = ops->def_domain_type(dev);
-+
-+	return (type == 0) ? iommu_def_domain_type : type;
-+}
-+
- static int iommu_alloc_default_domain(struct device *dev,
- 				      struct iommu_group *group)
++#if defined(CONFIG_HIGHMEM) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
++void zero_user_segments(struct page *page, unsigned start1, unsigned end1,
++		unsigned start2, unsigned end2);
++#else /* !HIGHMEM || !TRANSPARENT_HUGEPAGE */
+ static inline void zero_user_segments(struct page *page,
+-	unsigned start1, unsigned end1,
+-	unsigned start2, unsigned end2)
++		unsigned start1, unsigned end1,
++		unsigned start2, unsigned end2)
  {
- 	struct iommu_domain *dom;
-+	unsigned int type;
++	unsigned long i;
+ 	void *kaddr = kmap_atomic(page);
  
- 	if (group->default_domain)
- 		return 0;
+-	BUG_ON(end1 > PAGE_SIZE || end2 > PAGE_SIZE);
++	BUG_ON(end1 > thp_size(page) || end2 > thp_size(page));
  
--	dom = __iommu_domain_alloc(dev->bus, iommu_def_domain_type);
--	if (!dom && iommu_def_domain_type != IOMMU_DOMAIN_DMA) {
-+	type = iommu_get_def_domain_type(dev);
+ 	if (end1 > start1)
+ 		memset(kaddr + start1, 0, end1 - start1);
+@@ -230,8 +235,10 @@ static inline void zero_user_segments(struct page *page,
+ 		memset(kaddr + start2, 0, end2 - start2);
+ 
+ 	kunmap_atomic(kaddr);
+-	flush_dcache_page(page);
++	for (i = 0; i < hpage_nr_pages(page); i++)
++		flush_dcache_page(page + i);
+ }
++#endif /* !HIGHMEM || !TRANSPARENT_HUGEPAGE */
+ 
+ static inline void zero_user_segment(struct page *page,
+ 	unsigned start, unsigned end)
+diff --git a/mm/highmem.c b/mm/highmem.c
+index 64d8dea47dd1..3a85c66ef532 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -367,9 +367,67 @@ void kunmap_high(struct page *page)
+ 	if (need_wakeup)
+ 		wake_up(pkmap_map_wait);
+ }
+-
+ EXPORT_SYMBOL(kunmap_high);
+-#endif
 +
-+	dom = __iommu_domain_alloc(dev->bus, type);
-+	if (!dom && type != IOMMU_DOMAIN_DMA) {
- 		dom = __iommu_domain_alloc(dev->bus, IOMMU_DOMAIN_DMA);
- 		if (dom) {
- 			dev_warn(dev,
- 				 "failed to allocate default IOMMU domain of type %u; falling back to IOMMU_DOMAIN_DMA",
--				 iommu_def_domain_type);
-+				 type);
- 		}
- 	}
- 
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 7ef8b0bda695..1f027b07e499 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -248,6 +248,10 @@ struct iommu_iotlb_gather {
-  * @cache_invalidate: invalidate translation caches
-  * @sva_bind_gpasid: bind guest pasid and mm
-  * @sva_unbind_gpasid: unbind guest pasid and mm
-+ * @def_domain_type: device default domain type, return value:
-+ *		- IOMMU_DOMAIN_IDENTITY: must use an identity domain
-+ *		- IOMMU_DOMAIN_DMA: must use a dma domain
-+ *		- 0: use the default setting
-  * @pgsize_bitmap: bitmap of all possible supported page sizes
-  * @owner: Driver module providing these ops
-  */
-@@ -318,6 +322,8 @@ struct iommu_ops {
- 
- 	int (*sva_unbind_gpasid)(struct device *dev, int pasid);
- 
-+	int (*def_domain_type)(struct device *dev);
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++void zero_user_segments(struct page *page, unsigned start1, unsigned end1,
++		unsigned start2, unsigned end2)
++{
++	unsigned int i;
 +
- 	unsigned long pgsize_bitmap;
- 	struct module *owner;
- };
++	BUG_ON(end1 > thp_size(page) || end2 > thp_size(page));
++
++	for (i = 0; i < hpage_nr_pages(page); i++) {
++		void *kaddr;
++		unsigned this_end;
++
++		if (end1 == 0 && start2 >= PAGE_SIZE) {
++			start2 -= PAGE_SIZE;
++			end2 -= PAGE_SIZE;
++			continue;
++		}
++
++		if (start1 >= PAGE_SIZE) {
++			start1 -= PAGE_SIZE;
++			end1 -= PAGE_SIZE;
++			if (start2) {
++				start2 -= PAGE_SIZE;
++				end2 -= PAGE_SIZE;
++			}
++			continue;
++		}
++
++		kaddr = kmap_atomic(page + i);
++
++		this_end = min_t(unsigned, end1, PAGE_SIZE);
++		if (end1 > start1)
++			memset(kaddr + start1, 0, this_end - start1);
++		end1 -= this_end;
++		start1 = 0;
++
++		if (start2 >= PAGE_SIZE) {
++			start2 -= PAGE_SIZE;
++			end2 -= PAGE_SIZE;
++		} else {
++			this_end = min_t(unsigned, end2, PAGE_SIZE);
++			if (end2 > start2)
++				memset(kaddr + start2, 0, this_end - start2);
++			end2 -= this_end;
++			start2 = 0;
++		}
++
++		kunmap_atomic(kaddr);
++		flush_dcache_page(page + i);
++
++		if (!end1 && !end2)
++			break;
++	}
++
++	BUG_ON((start1 | start2 | end1 | end2) != 0);
++}
++EXPORT_SYMBOL(zero_user_segments);
++#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++#endif /* CONFIG_HIGHMEM */
+ 
+ #if defined(HASHED_PAGE_VIRTUAL)
+ 
 -- 
-2.17.1
+2.26.2
 
