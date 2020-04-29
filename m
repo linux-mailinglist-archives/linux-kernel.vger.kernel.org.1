@@ -2,163 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A351BE08E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B3E1BE09D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgD2ORs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726836AbgD2ORs (ORCPT
+        id S1727823AbgD2OSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:18:52 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:14722 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726701AbgD2OSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:17:48 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509D9C03C1AD;
-        Wed, 29 Apr 2020 07:17:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=gy20xOpcARjPE/WRcsIp2GKWb0LL9aFImxYlWNFOUEc=; b=HkoAt8vH0GBzy0bZZ5RF/d4Em
-        vUijMxI/1wth5CHT46lActRXcXYzn4o7f8gNZ4vHFTkNpcBw5UTR7+AbIWOrxl89sfvGNsIYAGM/A
-        1fBIiUMeygZbsjakO9er37YLCiMLd1J3G7FPtFxU6DqX7/IBTA4q9PHRrDx0DarhsnTWeRY8qzKtH
-        2CIKbxH3Whuetu9WblsOw6brOc8eBn1jQHTXuabT54Sv90D9wTxz9YPxJyzQ1EiZoutbgCx4Es/bV
-        3ms48XhWlQkoXK7RYvOAlHwzLisoYnp/eTQGVX3bnKyzF7nbqJbHP0v2wp4ETboJ/58BnbPkExMdq
-        PbEStFMmQ==;
-Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:33810)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jTnWs-000843-6k; Wed, 29 Apr 2020 15:17:38 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jTnWo-00019D-01; Wed, 29 Apr 2020 15:17:34 +0100
-Date:   Wed, 29 Apr 2020 15:17:33 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, netdev@vger.kernel.org,
+        Wed, 29 Apr 2020 10:18:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588169930; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=h0jvRC7HGXaYimqyTJRzfmOTezRJJ7zDAntXQ60QslU=; b=Jctgtgx5P8dCA309UVhffLrxwRylztnskGdbOqA2e+pL1iOOKt7JVusY76c1xv5N8BQsb4U6
+ +XA3Hn1rTi6T9C0Ma8cuPJhVbiGLufWmq2eb04zm+iLb6y31LECOMpHFxuwKP/f0Ryl9OqeC
+ f245VLK8T+SXuLguWqJ39ucac9I=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea98cb5.7f2e1fdd23e8-smtp-out-n05;
+ Wed, 29 Apr 2020 14:18:29 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5679CC44791; Wed, 29 Apr 2020 14:18:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.131.182.194] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 932EDC44792;
+        Wed, 29 Apr 2020 14:18:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 932EDC44792
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v3 07/17] arm64: dts: sdm845: Add DSI and MDP OPP tables
+ and power-domains
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: dsa: mv88e6xxx: remove duplicate assignment of
- struct members
-Message-ID: <20200429141733.GG1551@shell.armlinux.org.uk>
-References: <20200429141001.8361-1-yanaijie@huawei.com>
+References: <1588080785-6812-1-git-send-email-rnayak@codeaurora.org>
+ <1588080785-6812-8-git-send-email-rnayak@codeaurora.org>
+ <20200429002705.GM4525@google.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <39ccd066-1691-b53d-029b-f6533f18d2e9@codeaurora.org>
+Date:   Wed, 29 Apr 2020 19:48:22 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429141001.8361-1-yanaijie@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200429002705.GM4525@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 10:10:01PM +0800, Jason Yan wrote:
-> These struct members named 'phylink_validate' was assigned twice:
-> 
-> static const struct mv88e6xxx_ops mv88e6190_ops = {
-> 	......
-> 	.phylink_validate = mv88e6390_phylink_validate,
-> 	......
-> 	.phylink_validate = mv88e6390_phylink_validate,
-> };
-> 
-> static const struct mv88e6xxx_ops mv88e6190x_ops = {
-> 	......
-> 	.phylink_validate = mv88e6390_phylink_validate,
-> 	......
-> 	.phylink_validate = mv88e6390x_phylink_validate,
-> };
-> 
-> static const struct mv88e6xxx_ops mv88e6191_ops = {
-> 	......
-> 	.phylink_validate = mv88e6390_phylink_validate,
-> 	......
-> 	.phylink_validate = mv88e6390_phylink_validate,
-> };
-> 
-> static const struct mv88e6xxx_ops mv88e6290_ops = {
-> 	......
-> 	.phylink_validate = mv88e6390_phylink_validate,
-> 	......
-> 	.phylink_validate = mv88e6390_phylink_validate,
-> };
-> 
-> Remove all the first one and leave the second one which are been used in
-> fact. Be aware that for 'mv88e6190x_ops' the assignment functions is
-> different while the others are all the same. This fixes the following
-> coccicheck warning:
-> 
-> drivers/net/dsa/mv88e6xxx/chip.c:3911:48-49: phylink_validate: first
-> occurrence line 3965, second occurrence line 3967
-> drivers/net/dsa/mv88e6xxx/chip.c:3970:49-50: phylink_validate: first
-> occurrence line 4024, second occurrence line 4026
-> drivers/net/dsa/mv88e6xxx/chip.c:4029:48-49: phylink_validate: first
-> occurrence line 4082, second occurrence line 4085
-> drivers/net/dsa/mv88e6xxx/chip.c:4184:48-49: phylink_validate: first
-> occurrence line 4238, second occurrence line 4242
 
-This looks like a mistake while rebasing / updating the code which
-resulted in commit 4262c38dc42e ("net: dsa: mv88e6xxx: Add SERDES stats
-counters to all 6390 family members").
 
-In light of what the commit which introduced this did, this patch looks
-correct to me.
+On 4/29/2020 5:57 AM, Matthias Kaehlcke wrote:
+> On Tue, Apr 28, 2020 at 07:02:55PM +0530, Rajendra Nayak wrote:
+>> Add the OPP tables for DSI and MDP based on the perf state/clk
+>> requirements, and add the power-domains property to specify the
+>> scalable power domain.
+>>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sdm845.dtsi | 59 ++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 59 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>> index 36b9fb1..7a625ad 100644
+>> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>> @@ -3309,6 +3309,59 @@
+>>   			#reset-cells = <1>;
+>>   		};
+>>   
+>> +		mdp_opp_table: mdp-opp-table {
+>> +			compatible = "operating-points-v2";
+>> +
+>> +			opp-19200000 {
+>> +				opp-hz = /bits/ 64 <19200000>;
+>> +				required-opps = <&rpmhpd_opp_min_svs>;
+>> +			};
+>> +
+>> +			opp-171428571 {
+>> +				opp-hz = /bits/ 64 <171428571>;
+>> +				required-opps = <&rpmhpd_opp_low_svs>;
+>> +			};
+>> +
+>> +			opp-344000000 {
+>> +				opp-hz = /bits/ 64 <344000000>;
+>> +				required-opps = <&rpmhpd_opp_svs_l1>;
+>> +			};
+>> +
+>> +			opp-430000000 {
+>> +				opp-hz = /bits/ 64 <430000000>;
+>> +				required-opps = <&rpmhpd_opp_nom>;
+>> +			};
+>> +		};
+> 
+> as commented on "[v3,03/17] arm64: dts: sdm845: Add OPP table for all qup
+> devices" (https://patchwork.kernel.org/patch/11514693/) this table should
+> probably be inside the 'mdp' node.
 
-Fixes: 4262c38dc42e ("net: dsa: mv88e6xxx: Add SERDES stats counters to all 6390 family members")
-Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
-
-Thanks.
+right, I will move this and the below table inside the device nodes.
 
 > 
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
-> ---
->  drivers/net/dsa/mv88e6xxx/chip.c | 4 ----
->  1 file changed, 4 deletions(-)
+>> +
+>> +		dsi_opp_table: dsi-opp-table {
+>> +			compatible = "operating-points-v2";
+>> +
+>> +			opp-19200000 {
+>> +				opp-hz = /bits/ 64 <19200000>;
+>> +				required-opps = <&rpmhpd_opp_min_svs>;
+>> +			};
+>> +
+>> +			opp-180000000 {
+>> +				opp-hz = /bits/ 64 <180000000>;
+>> +				required-opps = <&rpmhpd_opp_low_svs>;
+>> +			};
+>> +
+>> +			opp-275000000 {
+>> +				opp-hz = /bits/ 64 <275000000>;
+>> +				required-opps = <&rpmhpd_opp_svs>;
+>> +			};
+>> +
+>> +			opp-328580000 {
+>> +				opp-hz = /bits/ 64 <328580000>;
+>> +				required-opps = <&rpmhpd_opp_svs_l1>;
+>> +			};
+>> +
+>> +			opp-358000000 {
+>> +				opp-hz = /bits/ 64 <358000000>;
+>> +				required-opps = <&rpmhpd_opp_nom>;
+>> +			};
+>> +		};
+>> +
 > 
-> diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-> index dd8a5666a584..2b4a723c8306 100644
-> --- a/drivers/net/dsa/mv88e6xxx/chip.c
-> +++ b/drivers/net/dsa/mv88e6xxx/chip.c
-> @@ -3962,7 +3962,6 @@ static const struct mv88e6xxx_ops mv88e6190_ops = {
->  	.serdes_get_stats = mv88e6390_serdes_get_stats,
->  	.serdes_get_regs_len = mv88e6390_serdes_get_regs_len,
->  	.serdes_get_regs = mv88e6390_serdes_get_regs,
-> -	.phylink_validate = mv88e6390_phylink_validate,
->  	.gpio_ops = &mv88e6352_gpio_ops,
->  	.phylink_validate = mv88e6390_phylink_validate,
->  };
-> @@ -4021,7 +4020,6 @@ static const struct mv88e6xxx_ops mv88e6190x_ops = {
->  	.serdes_get_stats = mv88e6390_serdes_get_stats,
->  	.serdes_get_regs_len = mv88e6390_serdes_get_regs_len,
->  	.serdes_get_regs = mv88e6390_serdes_get_regs,
-> -	.phylink_validate = mv88e6390_phylink_validate,
->  	.gpio_ops = &mv88e6352_gpio_ops,
->  	.phylink_validate = mv88e6390x_phylink_validate,
->  };
-> @@ -4079,7 +4077,6 @@ static const struct mv88e6xxx_ops mv88e6191_ops = {
->  	.serdes_get_stats = mv88e6390_serdes_get_stats,
->  	.serdes_get_regs_len = mv88e6390_serdes_get_regs_len,
->  	.serdes_get_regs = mv88e6390_serdes_get_regs,
-> -	.phylink_validate = mv88e6390_phylink_validate,
->  	.avb_ops = &mv88e6390_avb_ops,
->  	.ptp_ops = &mv88e6352_ptp_ops,
->  	.phylink_validate = mv88e6390_phylink_validate,
-> @@ -4235,7 +4232,6 @@ static const struct mv88e6xxx_ops mv88e6290_ops = {
->  	.serdes_get_stats = mv88e6390_serdes_get_stats,
->  	.serdes_get_regs_len = mv88e6390_serdes_get_regs_len,
->  	.serdes_get_regs = mv88e6390_serdes_get_regs,
-> -	.phylink_validate = mv88e6390_phylink_validate,
->  	.gpio_ops = &mv88e6352_gpio_ops,
->  	.avb_ops = &mv88e6390_avb_ops,
->  	.ptp_ops = &mv88e6352_ptp_ops,
-> -- 
-> 2.21.1
-> 
+> depending on the outcome of the discussion mentioned above this might have
+> to move into the 'dsi0' node.
 > 
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
