@@ -2,141 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA211BE260
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E481BE271
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726838AbgD2PRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:17:42 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:50744 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726526AbgD2PRm (ORCPT
+        id S1726974AbgD2PVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726762AbgD2PVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:17:42 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03TFFOB3002482;
-        Wed, 29 Apr 2020 11:17:28 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 30pes2dpt5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 11:17:28 -0400
-Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 03TFHQIq027201
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 29 Apr 2020 11:17:27 -0400
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 29 Apr
- 2020 08:17:25 -0700
-Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 29 Apr 2020 08:17:25 -0700
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 03TFHM18026989;
-        Wed, 29 Apr 2020 11:17:23 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lars@metafoo.de>, <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v2 2/2] iio: hw_consumer: use new scanmask functions
-Date:   Wed, 29 Apr 2020 18:17:40 +0300
-Message-ID: <20200429151740.85917-2-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200429151740.85917-1-alexandru.ardelean@analog.com>
-References: <20200429151740.85917-1-alexandru.ardelean@analog.com>
+        Wed, 29 Apr 2020 11:21:45 -0400
+Received: from forward500j.mail.yandex.net (forward500j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119F6C03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:21:45 -0700 (PDT)
+Received: from mxback9q.mail.yandex.net (mxback9q.mail.yandex.net [IPv6:2a02:6b8:c0e:6b:0:640:b813:52e4])
+        by forward500j.mail.yandex.net (Yandex) with ESMTP id 54BA711C414C;
+        Wed, 29 Apr 2020 18:18:15 +0300 (MSK)
+Received: from localhost (localhost [::1])
+        by mxback9q.mail.yandex.net (mxback/Yandex) with ESMTP id KbPPkAcLKB-IE4iODx5;
+        Wed, 29 Apr 2020 18:18:14 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1588173494;
+        bh=YNxfJqP4C2YqdFNFfcbfqj+X9mIviH90oiKLdZH123Y=;
+        h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
+        b=HWYcWHxa6buWsZ6XBnUTmoSlMWjtrgvJXuIBfGelbwf8JJhbcj/s+bfZOK/ErCFo/
+         gd0p0P2w29PQtl5ih1nCcyMf2Lcj/DHlqgO9GkMdqu3wWdboNq9pK4jIRo+7fGexPn
+         bO5OpOA47H5AzVbvr6SINkp88lkfYFNDCVlnSrdg=
+Authentication-Results: mxback9q.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by vla1-c477e3898c96.qloud-c.yandex.net with HTTP;
+        Wed, 29 Apr 2020 18:18:14 +0300
+From:   Evgeniy Polyakov <zbr@ioremap.net>
+Envelope-From: drustafa@yandex.ru
+To:     Greg KH <greg@kroah.com>, Akira Shimahara <akira215corp@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200429134655.GB2132814@kroah.com>
+References: <20200429133204.140081-1-akira215corp@gmail.com> <20200429134655.GB2132814@kroah.com>
+Subject: Re: [PATCH v3 2/5] w1_therm: adding sysfs entry to check device power
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-29_07:2020-04-29,2020-04-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- mlxscore=0 suspectscore=2 bulkscore=0 phishscore=0 priorityscore=1501
- clxscore=1015 malwarescore=0 impostorscore=0 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004290128
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date:   Wed, 29 Apr 2020 18:18:14 +0300
+Message-Id: <330221588173223@mail.yandex.ru>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+Hi
 
-This change moves the handling of the scanmasks to the new wrapper
-functions that were added in a previous commit.
+29.04.2020, 16:47, "Greg KH" <greg@kroah.com>:
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/buffer/industrialio-hw-consumer.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
+>>  +What: /sys/bus/w1/devices/.../w1_slave
+>>  +Date: Apr 2020
+>>  +Contact: Akira Shimahara <akira215corp@gmail.com>
+>>  +Description:
+>>  + (RW) return the temperature in 1/1000 degC.
+>>  + *read*: return 2 lines with the hexa output data sent on the
+>>  + bus, return the CRC check and temperature in 1/1000 degC
+>
+> the w1_slave file returns a temperature???
+>
+> And sysfs is 1 value-per-file, not multiple lines.
 
-diff --git a/drivers/iio/buffer/industrialio-hw-consumer.c b/drivers/iio/buffer/industrialio-hw-consumer.c
-index f2d27788f666..ca2b6d31cb5c 100644
---- a/drivers/iio/buffer/industrialio-hw-consumer.c
-+++ b/drivers/iio/buffer/industrialio-hw-consumer.c
-@@ -28,7 +28,6 @@ struct hw_consumer_buffer {
- 	struct list_head head;
- 	struct iio_dev *indio_dev;
- 	struct iio_buffer buffer;
--	long scan_mask[];
- };
- 
- static struct hw_consumer_buffer *iio_buffer_to_hw_consumer_buffer(
-@@ -41,6 +40,8 @@ static void iio_hw_buf_release(struct iio_buffer *buffer)
- {
- 	struct hw_consumer_buffer *hw_buf =
- 		iio_buffer_to_hw_consumer_buffer(buffer);
-+
-+	iio_buffer_free_scanmask(&hw_buf->buffer);
- 	kfree(hw_buf);
- }
- 
-@@ -52,26 +53,34 @@ static const struct iio_buffer_access_funcs iio_hw_buf_access = {
- static struct hw_consumer_buffer *iio_hw_consumer_get_buffer(
- 	struct iio_hw_consumer *hwc, struct iio_dev *indio_dev)
- {
--	size_t mask_size = BITS_TO_LONGS(indio_dev->masklength) * sizeof(long);
- 	struct hw_consumer_buffer *buf;
-+	int ret;
- 
- 	list_for_each_entry(buf, &hwc->buffers, head) {
- 		if (buf->indio_dev == indio_dev)
- 			return buf;
- 	}
- 
--	buf = kzalloc(sizeof(*buf) + mask_size, GFP_KERNEL);
-+	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
- 	if (!buf)
- 		return NULL;
- 
- 	buf->buffer.access = &iio_hw_buf_access;
- 	buf->indio_dev = indio_dev;
--	buf->buffer.scan_mask = buf->scan_mask;
- 
- 	iio_buffer_init(&buf->buffer);
-+
-+	ret = iio_buffer_alloc_scanmask(&buf->buffer, indio_dev->masklength);
-+	if (ret)
-+		goto err_free_buf;
-+
- 	list_add_tail(&buf->head, &hwc->buffers);
- 
- 	return buf;
-+
-+err_free_buf:
-+	kfree(buf);
-+	return NULL;
- }
- 
- /**
-@@ -106,7 +115,7 @@ struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev)
- 			ret = -ENOMEM;
- 			goto err_put_buffers;
- 		}
--		set_bit(chan->channel->scan_index, buf->buffer.scan_mask);
-+		iio_buffer_channel_enable(&buf->buffer, chan);
- 		chan++;
- 	}
- 
--- 
-2.17.1
+It was 'content crc' previously, and probably a good idea would be to add just one file with 'content'
 
+> And as this is a temperature, what's wrong with the iio interface that
+> handles temperature already? Don't go making up new userspace apis when
+> we already have good ones today :)
+
+What is that?
+w1 always had a sysfs files for its contents whether it is converted temperature or raw bytes data,
+there is also netlink interface which is there since the day one. 
+
+>>  + *write* :
+>>  + * `0` : save the 2 or 3 bytes to the device EEPROM
+>>  + (i.e. TH, TL and config register)
+>>  + * `9..12` : set the device resolution in RAM
+>>  + (if supported)
+>
+> I don't understand these write values, how do they match up to a
+> temperature readin?
+
+You kind of writing to device about how to convert its raw content into readable content, which will eventually become a temperature
