@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE3B1BE4EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5281C1BE4ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727835AbgD2RKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 13:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727799AbgD2RJ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 13:09:57 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4C4C035494
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 10:09:57 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id 18so1361938pfv.8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 10:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=xcQN/WNJ3PKuzjvXhZJ/eOoFGMkNcGIRid3lH/vICig=;
-        b=hcsCgevWbfyIOS3Ma5Zc7uCJmmPfS2go8mKkbtKUu8xteho7w++FLL7Ffz4bA6YcZ8
-         FGvlufLOfG9YnHegDls4Qs4j6Z32taJJi+zIwlClvPhXiIWgYo0gOzCnCobc0lNn1Qkf
-         VPCTGM9kESMs6PeCEbRweRhbksbnb/5EFhRQE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=xcQN/WNJ3PKuzjvXhZJ/eOoFGMkNcGIRid3lH/vICig=;
-        b=A39H15B/0itUN4OJ8ND+qfnT9fhhkC+w89pNyogFHUj6x4TNIKOQPVvgAncJL2YIuR
-         +RSZU2i9VzdrB/M+xG4wrEko5tSlGIIRsm82OU8sTvhWctx7kxTTo0jVUfCLiuvCuio2
-         x2xjZwMuCOFR37TwTYaXIH4zru3cv8aIDCVR5IdSuHr+quvkP7ROuiaeN0lXXqTd1WP3
-         +Rqt1duqF9rwCybglQyRbhLvo+3/W4xVeQFPYlp1WsZOBURzf6+8ZDFfaIg6uUUIm64o
-         ohCSPFkqvBhuysIyphPW4IDKf9Ul4mxCcE5CWWLbv/fBBewIgtxUCRMeWMvZTPfFCIZH
-         Qrcg==
-X-Gm-Message-State: AGi0Pub4TpHzEQKYQ9DdvMhfszJEgD6SpMW+0hr8a9jK9hkeCla5k/4m
-        BCEdLQIJuffGgCUwpO2O8mCJ+A==
-X-Google-Smtp-Source: APiQypI2r7KKRGsuq3L884nKjCvqNbuMuJC3pzGKQRH2L1+DsPz8xxzAhFZZOxGeTWra83HnQtHhMA==
-X-Received: by 2002:a63:1e18:: with SMTP id e24mr31238033pge.296.1588180197178;
-        Wed, 29 Apr 2020 10:09:57 -0700 (PDT)
-Received: from lbrmn-lnxub113.broadcom.net ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id y63sm1574456pfg.138.2020.04.29.10.09.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 10:09:56 -0700 (PDT)
-From:   Scott Branden <scott.branden@broadcom.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        David Brown <david.brown@linaro.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>, bjorn.andersson@linaro.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        Takashi Iwai <tiwai@suse.de>, linux-kselftest@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Scott Branden <scott.branden@broadcom.com>
-Subject: [PATCH v4 7/7] MAINTAINERS: bcm-vk: add maintainer for Broadcom VK Driver
-Date:   Wed, 29 Apr 2020 10:09:14 -0700
-Message-Id: <20200429170914.30976-8-scott.branden@broadcom.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200429170914.30976-1-scott.branden@broadcom.com>
-References: <20200429170914.30976-1-scott.branden@broadcom.com>
+        id S1727799AbgD2RKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 13:10:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726530AbgD2RKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 13:10:35 -0400
+Received: from localhost (mobile-166-175-184-168.mycingular.net [166.175.184.168])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 825DE2083B;
+        Wed, 29 Apr 2020 17:10:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588180234;
+        bh=2xgcMioH3CWsTJf+X/wvX2WrB+R7RzkvMl/X2y3wgaA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=i3/Vf9ubdb8TMxpehNHGGBNTu5jT80uie8MpBKJJKGqwjGAJpOpRtM9HlGRX9MgKJ
+         +yChP6v6VYC73cG+BVGxSHvKVtE2WKj+CUZW9uFv9HVf4bfs9/+cEdFkyPMHFwek76
+         WwgRcx8JRM3FGXCoAreRGtA3anRIhgQZXjgnneCs=
+Date:   Wed, 29 Apr 2020 12:10:32 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Austin.Bolen@dell.com
+Cc:     sathyanarayanan.kuppuswamy@linux.intel.com,
+        Mario.Limonciello@dell.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        jonathan.derrick@intel.com, mr.nuke.me@gmail.com, rjw@rjwysocki.net
+Subject: Re: [PATCH v1 1/1] PCI/AER: Use _OSC negotiation to determine AER
+ ownership
+Message-ID: <20200429171032.GA30596@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a3535fbc69604425b1e8f008348950ab@AUSX13MPC107.AMER.DELL.COM>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer entry for new Broadcom VK Driver
+On Wed, Apr 29, 2020 at 03:24:41PM +0000, Austin.Bolen@dell.com wrote:
+> On 4/28/2020 3:37 PM, Bjorn Helgaas wrote:
+> > [EXTERNAL EMAIL] 
+> >
+> > [+to Mario, Austin, Rafael; Dell folks, I suspect this commit will
+> > break Dell servers but I'd like your opinion]
+> >
+> > <snip>
+> Thanks Bjorn, for the heads up. I checked with our server BIOS team and
+> they say that only checking _OSC for AER should work on our servers.  We
+> always configure_OSC and the HEST FIRMWARE_FIRST flag to retain firmware
+> control of AER so either could be checked.
+> 
+> > I *really* want the patch because the current mix of using both _OSC
+> > and FIRMWARE_FIRST to determine AER capability ownership is a mess and
+> > getting worse, but I'm more and more doubtful.
+> >
+> > My contention is that if firmware doesn't want the OS to use the AER
+> > capability it should simply decline to grant control via _OSC.
+>
+> I agree per spec that _OSC should be used and this was confirmed by the
+> ACPI working group. Alex had submitted a patch for us [2] to switch to
+> using _OSC to determine AER ownership following the decision in the ACPI
+> working group.
 
-Signed-off-by: Scott Branden <scott.branden@broadcom.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+Perfect, thank you!  I had forgotten that Alex posted that.  We should
+add credit to him and a link to that discussion.  Thanks again!
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c1175fc0aadb..cbc132a9b766 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3613,6 +3613,13 @@ L:	netdev@vger.kernel.org
- S:	Supported
- F:	drivers/net/ethernet/broadcom/tg3.*
- 
-+BROADCOM VK DRIVER
-+M:	Scott Branden <scott.branden@broadcom.com>
-+L:	bcm-kernel-feedback-list@broadcom.com
-+S:	Supported
-+F:	drivers/misc/bcm-vk/
-+F:	include/uapi/linux/misc/bcm_vk.h
-+
- BROCADE BFA FC SCSI DRIVER
- M:	Anil Gurumurthy <anil.gurumurthy@qlogic.com>
- M:	Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>
--- 
-2.17.1
+> [2] https://lkml.org/lkml/2018/11/16/202
+> 
+> > But things like 0584396157ad ("PCI: PCIe AER: honor ACPI HEST FIRMWARE
+> > FIRST mode") [1] suggest that some machines grant AER control to the
+> > OS via _OSC, but still expect the OS to leave AER alone for certain
+> > devices.
+>
+> AFAIK, no Dell server, including the 11G servers mentioned in that
+> patch, have granted control of AER via _OSC and set HEST FIRMWARE_FIRST
+> for some devices. I don't think this model is even support by the
+> ACPI/PCIe standards.  Yes, you can set the bits that way, but there is
+> no text I've found that says how the OS/firmware should behave in that
+> scenario. In order to be interoperable, I think someone would need to
+> standardized how the OS/firmware would could co-ordinate in such a model.
 
+I agree and I want to get Linux out of the current muddle where we
+try to make sense out of it.
+
+> > I think the FIRMWARE_FIRST language in the ACPI spec is really too
+> > vague to tell the OS not to use the AER Capability, but it seems like
+> > that's what commits like [1] rely on.
+> >
+> > The current _OSC definition (PCI Firmware r3.2) applies only to
+> > PNP0A03/PNP0A08 devices, but it's conceivable that it could be
+> > extended to other devices if we need per-device AER Capability
+> > ownership.
+> >
+> > [1] https://git.kernel.org/linus/0584396157ad
+<snip>
