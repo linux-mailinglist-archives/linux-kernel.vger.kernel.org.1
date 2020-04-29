@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 568061BE73A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 21:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F301BDAFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgD2TVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 15:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726524AbgD2TVM (ORCPT
+        id S1726875AbgD2LsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 07:48:06 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:20545 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726457AbgD2LsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 15:21:12 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447B6C03C1AE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 12:21:11 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k1so3949129wrx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 12:21:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=UmOfyDnZj12RCgACCCb3qZ3dCbNdN1PCrZ+63qHHHJI=;
-        b=0il6LUH7GR2pTesy30O8mHj9VhiUmU/yM6cLt1iUgpQTqNSx/uWLQtYBWVg+KPkUWB
-         0VksvPSEun/0vb7ldUpRwJnjau1VKW+ePuhU0ib81xkIRTavC3P5q+bfMiwc3L1PZ1YG
-         XYHzP8RWn/OVcJkd7T0efuHqb4RpTs0Z7tL4A7vWMOoCiXkCbY5oj2dzMr8aWyFqx7sl
-         ziybq67g1NVaIXu+wdlGHXkFFSas/Tah93JDhtsPya8TXTj5rdttFSDMT6JQ71kuSHvA
-         8RLKfLoHNE52Bav/RHm/c0tMPwM/YEZY/9LIv4Nu0Qa516ilYcXGq4Henjw8LS/iqzby
-         N+Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=UmOfyDnZj12RCgACCCb3qZ3dCbNdN1PCrZ+63qHHHJI=;
-        b=Gv4o6jymBqCoxLUyE98iCdq/sKzH2mmjPXiBavpZaDE04vPi/i96a3MM+GcUqC2Oim
-         sLi4q4eDHZwrDRAdXhUFzjKGOVc3PjaFX30VlUTv4iQh1gmwLYEaodWoohHccehKlPMH
-         gcCIBdSO9T8wi/dhr3gp79wYrztUGsTiaegRXA5UEfWtwqbUcJaVdNW6kqkSnTIIyc2B
-         kgclgCLXF9QM/dYk/yc2pBIFmXnQ5jRiThIBHDNeEpRnPIFDm1yWj+RGCS2vL9yVLpN7
-         8d8DhI+OJffxKNnU4m4Qqjqdp9NmIz5hNC3Wxmo4FtejzgO2oSNpUsAUWn8hoWsv2/hK
-         093Q==
-X-Gm-Message-State: AGi0Puae6wX2DIarNqslKiQyNBBPKpQWR3ra+SlU3yQwSzLHYTQ8hM63
-        drvB8az4H7SJYif9x3zzDScsUQ==
-X-Google-Smtp-Source: APiQypIpj8gSGyyDhN0ZznSMn8SWwFJDrrXakP5DPIWP0f9+wHAv9yZYAjlMS/SEM1kkUsAcTx4rLA==
-X-Received: by 2002:a5d:4d50:: with SMTP id a16mr44538017wru.219.1588188069963;
-        Wed, 29 Apr 2020 12:21:09 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id k133sm10091947wma.0.2020.04.29.12.21.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 Apr 2020 12:21:08 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: meson: kvim3: move hdmi to tdm a
-In-Reply-To: <20200421141814.639480-1-jbrunet@baylibre.com>
-References: <20200421141814.639480-1-jbrunet@baylibre.com>
-Date:   Wed, 29 Apr 2020 12:21:06 -0700
-Message-ID: <7h1ro6ksil.fsf@baylibre.com>
+        Wed, 29 Apr 2020 07:48:04 -0400
+X-Greylist: delayed 903 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Apr 2020 07:48:04 EDT
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Wed, 29 Apr 2020 04:32:57 -0700
+Received: from localhost.localdomain (ashwinh-vm-1.vmware.com [10.110.19.225])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 5FD23B1F56;
+        Wed, 29 Apr 2020 07:32:57 -0400 (EDT)
+From:   ashwin-h <ashwinh@vmware.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@kernel.org>, <srivatsab@vmware.com>,
+        <srivatsa@csail.mit.edu>, <rostedt@goodmis.org>,
+        <srostedt@vmware.com>, <gregkh@linuxfoundation.org>,
+        <ashwin.hiranniah@gmail.com>, ashwin-h <ashwinh@vmware.com>
+Subject: [PATCH 0/5] Backport to 4.9- ext4: protect journal inode's blocks using block_validity 
+Date:   Thu, 30 Apr 2020 00:51:34 +0530
+Message-ID: <cover.1587713792.git.ashwinh@vmware.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
 Content-Type: text/plain
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: ashwinh@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerome Brunet <jbrunet@baylibre.com> writes:
+[PATCH 1/5] ext4: avoid declaring fs inconsistent due to invalid file
+handles
+This patch is backported as functionality in this commit is used by
+Patch 2 in this patchset.
 
-> The tdmout b is physically routed to the 40 pin header and the tdmout c
-> is routed to the m2 connector. It makes these interfaces poor
-> candidates to handle the HDMI 8ch i2s link (2ch i2s * 4 lanes) as it would
-> force the same link format on the related connectors.
->
-> Instead use the TDM A interface. This one is not routed to the outside
-> world on the vim3, so it can only be used for HDMI.
->
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+[PATCH 2/5] ext4: protect journal inode's blocks using block_validity
+Backport to 4.9
 
-Queued for v5.8,
+[PATCH 3/5] ext4: don't perform block validity checks on the journal
+[PATCH 4/5] ext4: fix block validity checks for journal inodes using
+[PATCH 5/5] ext4: unsigned int compared against zero
+Fixes issues found in Patch 2 in this patchset.
 
-Kevin
+These patches addresses CVE-2019-19319
+
+Colin Ian King (1):
+  ext4: unsigned int compared against zero
+
+Theodore Ts'o (4):
+  ext4: avoid declaring fs inconsistent due to invalid file handles
+  ext4: protect journal inode's blocks using block_validity
+  ext4: don't perform block validity checks on the journal inode
+  ext4: fix block validity checks for journal inodes using indirect
+    blocks
+
+ fs/ext4/block_validity.c | 54 ++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ext4/ext4.h           | 15 ++++++++++++--
+ fs/ext4/extents.c        | 12 +++++++----
+ fs/ext4/ialloc.c         |  2 +-
+ fs/ext4/inode.c          | 48 ++++++++++++++++++++++++++++++------------
+ fs/ext4/ioctl.c          |  2 +-
+ fs/ext4/namei.c          |  4 ++--
+ fs/ext4/resize.c         |  5 +++--
+ fs/ext4/super.c          | 19 +++++------------
+ 9 files changed, 122 insertions(+), 39 deletions(-)
+
+-- 
+2.7.4
+
