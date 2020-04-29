@@ -2,207 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB0A1BE029
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CC11BDF97
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728318AbgD2OGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:06:18 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:48099 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728304AbgD2OGQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:06:16 -0400
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200429140613epoutp045e77169f26651be97796f157286a1b14~KT3Lc0RPg2636826368epoutp04Y
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 14:06:13 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200429140613epoutp045e77169f26651be97796f157286a1b14~KT3Lc0RPg2636826368epoutp04Y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1588169173;
-        bh=oEwo5iuvoaz/Z75vzSm5Xv3zjWzxpEMaF99L3uR/baE=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=BKuMxjb2PWur4Wr/hiyJNehprM3N/rFC49JzvsRpElO1OZldWtJxk1RPGOaep3ykZ
-         g92xA4hTn7WsVxYgW0se7+RbjO39AEZGhgXhYkF5CdDtl8MO+V2ExRuPFNd/iTYAoD
-         3vDLb/82AVm5WmdIOytSMYMfgE5Hrr0zfyJ4oPaw=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20200429140612epcas5p4020b10eea17671f960ab3d96dbf84d5a~KT3KkBy9B0260202602epcas5p49;
-        Wed, 29 Apr 2020 14:06:12 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        12.B5.10083.4D989AE5; Wed, 29 Apr 2020 23:06:12 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200429135110epcas5p4377ad1a5d783d0634ab06e23993116a7~KTqDA9NUD0604506045epcas5p4Z;
-        Wed, 29 Apr 2020 13:51:10 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200429135110epsmtrp2935efb325383037fffe2934f6cb2d81a~KTqDAMyj20135801358epsmtrp2F;
-        Wed, 29 Apr 2020 13:51:10 +0000 (GMT)
-X-AuditID: b6c32a4a-875ff70000002763-23-5ea989d4510c
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F4.A0.25866.E4689AE5; Wed, 29 Apr 2020 22:51:10 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.135]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200429135109epsmtip2dac40d2a001284e394f5451139ee832d~KTqBh970X1466314663epsmtip2V;
-        Wed, 29 Apr 2020 13:51:09 +0000 (GMT)
-From:   Maninder Singh <maninder1.s@samsung.com>
-To:     mhocko@suse.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        a.sahrawat@samsung.com, v.narang@samsung.com,
-        Maninder Singh <maninder1.s@samsung.com>
-Subject: [PATCH v3] mm/vmscan.c: change prototype for shrink_page_list
-Date:   Wed, 29 Apr 2020 19:20:59 +0530
-Message-Id: <1588168259-25604-1-git-send-email-maninder1.s@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEIsWRmVeSWpSXmKPExsWy7bCmlu6VzpVxBut+i1hc3J1qMWf9GjaL
-        y7vmsFncW/Of1eLw/DYWi/t9DhaHTs5ldGD32PRpErvHiRm/WTz6tqxi9Fi/5SqLx+dNcgGs
-        UVw2Kak5mWWpRfp2CVwZFw50MxXslKvoWSvdwLhZoouRk0NCwETi984pTCC2kMBuRolnO+26
-        GLmA7E+MEh/uXGWCcD4zSqyevogFpmPqv23sEIldjBILFm5hhHC+Mkr82LqGHaSKTUBPYtWu
-        PUAdHBwiQPafJzogNcwCExglju/awQgSFxZwk5jz0wOknEVAVeL206dgZ/AKuEs82XiADWKZ
-        nMTNc53MIL0SAuvYJea/bGcH6ZUQcJG4v7seokZY4tXxLewQtpTE53d72SDqmxklPu1bywjh
-        TGGUWHrxIytElb3E6+YGJpBBzAKaEut36UOEZSWmnloHdgSzAJ9E7+8nTBBxXokd82BsVYmW
-        mxugxkhLfP74ERoqHhIvlz+FhmOsxLNHx1kmMMrOQtiwgJFxFaNkakFxbnpqsWmBUV5quV5x
-        Ym5xaV66XnJ+7iZGcMxree1gXHbO5xCjAAejEg+vRerKOCHWxLLiytxDjBIczEoivI8ylsUJ
-        8aYkVlalFuXHF5XmpBYfYpTmYFES59ViBKoWSE8sSc1OTS1ILYLJMnFwSjUwWrAdibU7b506
-        rUN75cvsyqnvOHOXp9zce0/t39rJHY925/794KMgMInr2YTd3iErs9/I1Bs8YajenXAx4NfX
-        LaduJwtmqPF4+E/75LzxgKiq5KmXDv9mznjz1WCpDVP4Be2f5jMPSeX9n2k7o7/50cneuye1
-        npscOGMjF2q/hfV3e5mf3MmLCUosxRmJhlrMRcWJAJzUhF31AgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDJMWRmVeSWpSXmKPExsWy7bCSvK5f28o4g8lb9C0u7k61mLN+DZvF
-        5V1z2CzurfnPanF4fhuLxf0+B4tDJ+cyOrB7bPo0id3jxIzfLB59W1YxeqzfcpXF4/MmuQDW
-        KC6blNSczLLUIn27BK6MCwe6mQp2ylX0rJVuYNws0cXIySEhYCIx9d829i5GLg4hgR2MEtPP
-        bmOGSEhL/Pz3ngXCFpZY+e85VNFnRomXb+eAJdgE9CRW7doDZosIGEicmrOCCaSIWWAKo0TD
-        on9ADgeHsICbxJyfHiA1LAKqErefPmUCsXkF3CWebDzABrFATuLmuU7mCYw8CxgZVjFKphYU
-        56bnFhsWGOWllusVJ+YWl+al6yXn525iBAeQltYOxj2rPugdYmTiYDzEKMHBrCTC+yhjWZwQ
-        b0piZVVqUX58UWlOavEhRmkOFiVx3q+zFsYJCaQnlqRmp6YWpBbBZJk4OKUamMTb2p497Ixu
-        k4nfMjUi5lnzuZRHOfMuy3iFs/usy54X5vricmbWDrXKP+7spxecUV4WM2NFFmdt55q7hvcU
-        vTk0r1gx7S5S+2Z08p2XgLvIrRXn763lvH7lwZw0baYKs/OFPT6GLr4JNYklx6b5lz2pXO2f
-        fp2pctYF3aBYjzdLNAq+aSUzrai44zVXp4b5YZnA3dcLPXoe253kuP3C7u/l3sO2m6af4ZJz
-        Uf5QvH7Wj5Pr+ecZbLBKUTsb/F+s5JsKZ0PJ9/2xLUdET3frXpIPrPn8z1vCJPLf4e0GG2bI
-        t693uBnSt0Jn36uyNaZfnp+9+nrOvpSySZ0as+e2H/qx/9e5PyedMuwfTsnir1diKc5INNRi
-        LipOBADkgWFYjwIAAA==
-X-CMS-MailID: 20200429135110epcas5p4377ad1a5d783d0634ab06e23993116a7
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200429135110epcas5p4377ad1a5d783d0634ab06e23993116a7
-References: <CGME20200429135110epcas5p4377ad1a5d783d0634ab06e23993116a7@epcas5p4.samsung.com>
+        id S1727813AbgD2Nwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:52:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726885AbgD2Nwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:52:32 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC0FD20B80;
+        Wed, 29 Apr 2020 13:52:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588168351;
+        bh=ytyUCCIGyI+obLrMHzKUGgdlqFzyE04ZtGFK91iRm3M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lJkD/zbF1yevejOPgDCxQVSXUwBW/PWbOWYpI/zUSqNEq2OM6x8+7V+spbjIyhxcg
+         eN9lkO0ouItL2Ik+0MigJ11kTM7haS58xBWd4EqV2++KMVrtEELIMHeaJcxnFR2Ccp
+         Bg/nUNm71ptDOwgsWg3HxAKyf3jcXK2iQLdS37HQ=
+Date:   Wed, 29 Apr 2020 14:52:28 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Basil Eljuse <Basil.Eljuse@arm.com>,
+        Ferry Toth <fntoth@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        netdev <netdev@vger.kernel.org>, linux-pm@vger.kernel.org,
+        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>
+Subject: Re: [PATCH v3 1/3] driver core: Revert default
+ driver_deferred_probe_timeout value to 0
+Message-ID: <20200429135228.GL4201@sirena.org.uk>
+References: <20200422203245.83244-1-john.stultz@linaro.org>
+ <20200422203245.83244-2-john.stultz@linaro.org>
+ <CGME20200429134605eucas1p2bd601082e7a6b8c8fdbe79c83972e2e3@eucas1p2.samsung.com>
+ <9e0501b5-c8c8-bc44-51e7-4bde2844b912@samsung.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="00hq2S6J2Jlg6EbK"
+Content-Disposition: inline
+In-Reply-To: <9e0501b5-c8c8-bc44-51e7-4bde2844b912@samsung.com>
+X-Cookie: I know how to do SPECIAL EFFECTS!!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'commit 3c710c1ad11b ("mm, vmscan:
-extract shrink_page_list reclaim counters into a struct")'
 
-changed data type for the function,
-so changing return type for funciton and its caller.
+--00hq2S6J2Jlg6EbK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Vaneet Narang <v.narang@samsung.com>
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
----
-v1 -> v2: position of variable changed mistakenly, thus reverted.
-v2 -> v3: Don't change position of any variable, thus reverted.
-	  if required then need to send by separate patch.
+On Wed, Apr 29, 2020 at 03:46:04PM +0200, Marek Szyprowski wrote:
+> On 22.04.2020 22:32, John Stultz wrote:
 
- mm/internal.h   |  2 +-
- mm/page_alloc.c |  2 +-
- mm/vmscan.c     | 24 ++++++++++++------------
- 3 files changed, 14 insertions(+), 14 deletions(-)
+> > Fixes: c8c43cee29f6 ("driver core: Fix driver_deferred_probe_check_stat=
+e() logic")
+> > Signed-off-by: John Stultz <john.stultz@linaro.org>
 
-diff --git a/mm/internal.h b/mm/internal.h
-index b5634e7..c3eeec8 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -527,7 +527,7 @@ extern unsigned long  __must_check vm_mmap_pgoff(struct file *, unsigned long,
-         unsigned long, unsigned long);
- 
- extern void set_pageblock_order(void);
--unsigned long reclaim_clean_pages_from_list(struct zone *zone,
-+unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 					    struct list_head *page_list);
- /* The ALLOC_WMARK bits are used as an index to zone->watermark */
- #define ALLOC_WMARK_MIN		WMARK_MIN
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 1385d78..f17d88c6 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8416,7 +8416,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
- 					unsigned long start, unsigned long end)
- {
- 	/* This function is based on compact_zone() from compaction.c. */
--	unsigned long nr_reclaimed;
-+	unsigned int nr_reclaimed;
- 	unsigned long pfn = start;
- 	unsigned int tries = 0;
- 	int ret = 0;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b06868f..7631725 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1066,17 +1066,17 @@ static void page_check_dirty_writeback(struct page *page,
- /*
-  * shrink_page_list() returns the number of reclaimed pages
-  */
--static unsigned long shrink_page_list(struct list_head *page_list,
--				      struct pglist_data *pgdat,
--				      struct scan_control *sc,
--				      enum ttu_flags ttu_flags,
--				      struct reclaim_stat *stat,
--				      bool ignore_references)
-+static unsigned int shrink_page_list(struct list_head *page_list,
-+				     struct pglist_data *pgdat,
-+				     struct scan_control *sc,
-+				     enum ttu_flags ttu_flags,
-+				     struct reclaim_stat *stat,
-+				     bool ignore_references)
- {
- 	LIST_HEAD(ret_pages);
- 	LIST_HEAD(free_pages);
--	unsigned nr_reclaimed = 0;
--	unsigned pgactivate = 0;
-+	unsigned int nr_reclaimed = 0;
-+	unsigned int pgactivate = 0;
- 
- 	memset(stat, 0, sizeof(*stat));
- 	cond_resched();
-@@ -1483,7 +1483,7 @@ static unsigned long shrink_page_list(struct list_head *page_list,
- 	return nr_reclaimed;
- }
- 
--unsigned long reclaim_clean_pages_from_list(struct zone *zone,
-+unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 					    struct list_head *page_list)
- {
- 	struct scan_control sc = {
-@@ -1492,7 +1492,7 @@ unsigned long reclaim_clean_pages_from_list(struct zone *zone,
- 		.may_unmap = 1,
- 	};
- 	struct reclaim_stat dummy_stat;
--	unsigned long ret;
-+	unsigned int ret;
- 	struct page *page, *next;
- 	LIST_HEAD(clean_pages);
- 
-@@ -1900,7 +1900,7 @@ static int current_may_throttle(void)
- {
- 	LIST_HEAD(page_list);
- 	unsigned long nr_scanned;
--	unsigned long nr_reclaimed = 0;
-+	unsigned int nr_reclaimed = 0;
- 	unsigned long nr_taken;
- 	struct reclaim_stat stat;
- 	int file = is_file_lru(lru);
-@@ -2096,7 +2096,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
- unsigned long reclaim_pages(struct list_head *page_list)
- {
- 	int nid = NUMA_NO_NODE;
--	unsigned long nr_reclaimed = 0;
-+	unsigned int nr_reclaimed = 0;
- 	LIST_HEAD(node_page_list);
- 	struct reclaim_stat dummy_stat;
- 	struct page *page;
--- 
-1.9.1
+> Please also revert dca0b44957e5 "regulator: Use=20
+> driver_deferred_probe_timeout for regulator_init_complete_work" then,=20
+> because now with the default 0 timeout some regulators gets disabled=20
+> during boot, before their supplies gets instantiated.
 
+Yes, please - I requested this when the revert was originally proposed :(
+
+--00hq2S6J2Jlg6EbK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6phpsACgkQJNaLcl1U
+h9B9Ogf+MFUG/IZB61LkLCHnKhJON6xWRLosWtR73L7yE/rRElq2K/LdbZGCyN7I
+EjK3VX1zEARY+I/ZQFGed1LNwAn9hMdFEVwqFv+PHOCC6hzJd+0O2jnbyUaC+3Bq
++Hg2vXWb9z9UXLyoXcPiz4B+1fLkS2e48lLf/ahWQfd+BZQpzNrpoZ3i+0Pt+Vqn
+mXKIC9ZbFJtslUU6Gt6fz8DzseaPWMw0qPfdssdaG4EfNCP+UO4GtxVsFwnV2h/u
+fYgUlXaMEwQJN0p+g6Qu/f4419vhBIqoDXRtqQ0Fc4tPoUif0qYSx/bEpK6No3ue
+yv7+6TCSurJPLib9y1EXa60sVn/4Hg==
+=4Efx
+-----END PGP SIGNATURE-----
+
+--00hq2S6J2Jlg6EbK--
