@@ -2,86 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5021BDFA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000091BDFDA
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727108AbgD2Nz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:55:28 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:59629 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726853AbgD2Nz1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:55:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588168526;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zxaVkGmIzNCD7S/waco7p06sl1vo0f84OW1yaoPDlxM=;
-        b=FaJ5rhDVqRGdO1pmvpV6Z21OwCvBSRdh1tYs78PJm1RpI8QTaa0eRexCsy7xz5KR2wnsHT
-        zDVfDA2kJI5WJ4q9W+Por7SRestQp2gjgRCpWESnFmPfk6J3kkoPNJeET6apAmLE5F72kE
-        FYhoTC+p5zo+tGSXBdHbsVixGVnkrpg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-xIyadMCCPwynY6fRioCn8A-1; Wed, 29 Apr 2020 09:55:24 -0400
-X-MC-Unique: xIyadMCCPwynY6fRioCn8A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727809AbgD2OAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:00:55 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:55478 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726776AbgD2OAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 10:00:55 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id C93B6412CC;
+        Wed, 29 Apr 2020 14:00:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :references:in-reply-to:x-mailer:message-id:date:date:subject
+        :subject:from:from:received:received:received; s=mta-01; t=
+        1588168851; x=1589983252; bh=PFQ+bnPNNJYx7rujMY9zrWYg2tjFphBQGIb
+        XMJn43Q8=; b=mzVn/jDG2iH8Ng5dI4ec/VbIkJPjIRDAbCj/7gUcRhDabcdOLvl
+        sdYsGlbLUHe2lqo0hSvgAqrZ0b/gQwaro2FX7nzxiCe0T4Xuhlwj4CXaV30irYwG
+        X3SSYZtOjbL/Ogl2pNAL02ywEpHc4o4Nk8OuamdYlyYY8++Fzn3XOs2E=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id LvlLtNU3-tSf; Wed, 29 Apr 2020 17:00:51 +0300 (MSK)
+Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC5AA1899520;
-        Wed, 29 Apr 2020 13:55:22 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-115-218.rdu2.redhat.com [10.10.115.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A2EF2605CB;
-        Wed, 29 Apr 2020 13:55:21 +0000 (UTC)
-Subject: Re: [PATCH v3] mm/slub: Fix incorrect interpretation of s->offset
-To:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Markus Elfring <Markus.Elfring@web.de>
-References: <20200429135328.26976-1-longman@redhat.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <7530523e-749c-dac7-f6ab-f52dcb20ecb9@redhat.com>
-Date:   Wed, 29 Apr 2020 09:55:21 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        by mta-01.yadro.com (Postfix) with ESMTPS id D14BC4C848;
+        Wed, 29 Apr 2020 17:00:50 +0300 (MSK)
+Received: from localhost (172.17.204.212) by T-EXCH-02.corp.yadro.com
+ (172.17.10.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Wed, 29
+ Apr 2020 17:00:51 +0300
+From:   Roman Bolshakov <r.bolshakov@yadro.com>
+To:     <martin.petersen@oracle.com>
+CC:     <bvanassche@acm.org>, <dave.jiang@intel.com>, <dvyukov@google.com>,
+        <gregkh@linuxfoundation.org>,
+        <ksummit-discuss@lists.linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <mchehab@kernel.org>, <me@tobin.cc>, <stfrench@microsoft.com>,
+        <vishal.l.verma@intel.com>, Roman Bolshakov <r.bolshakov@yadro.com>
+Subject: Re: [Ksummit-discuss] [PATCH v2 0/3] Maintainer Entry Profiles
+Date:   Wed, 29 Apr 2020 16:55:27 +0300
+Message-ID: <20200429135524.52802-1-r.bolshakov@yadro.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <yq1tv9fdfar.fsf@oracle.com>
+References: <yq1tv9fdfar.fsf@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20200429135328.26976-1-longman@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.17.204.212]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-02.corp.yadro.com (172.17.10.102)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/29/20 9:53 AM, Waiman Long wrote:
-> In a couple of places in the slub memory allocator, the code uses
-> "s->offset" as a check to see if the free pointer is put right after the
-> object. That check is no longer true with commit 3202fa62fb43 ("slub:
-> relocate freelist pointer to middle of object").
->
-> As a result, echoing "1" into the validate sysfs file, e.g. of dentry,
-> may cause a bunch of "Freepointer corrupt" error reports like the
-> following to appear with the system in panic afterwards.
->
-> [   38.579769] =============================================================================
-> [   38.580845] BUG dentry(666:pmcd.service) (Tainted: G    B): Freepointer corrupt
-> [   38.581948] -----------------------------------------------------------------------------
->
-> To fix it, use the check "s->offset == s->inuse" in the new helper
+On 9/11/19 5:40 PM, Martin K. Petersen wrote:
+> After the Plumbers session last year I wrote this for SCSI based on a
+> prior version by Christoph. It's gone a bit stale but I'll update it to
+> match your template.
+> 
 
-Sorry, forgot to change the commit log to ">=". Anyway, this is a 
-serious bug that needs to be fixed before v5.7 is released.
+Hi Martin,
 
-Cheers,
-Longman
+The Maintainer profile is very helpful. Are you planning to send another
+version and address Bart's comments?
 
+Thanks,
+Roman
