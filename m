@@ -2,389 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07111BDACA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A133C1BDAD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbgD2LhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 07:37:24 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:58693 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726737AbgD2LhY (ORCPT
+        id S1726836AbgD2Lj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 07:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726519AbgD2LjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 07:37:24 -0400
-X-IronPort-AV: E=Sophos;i="5.73,331,1583164800"; 
-   d="scan'208";a="90776289"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 29 Apr 2020 19:37:15 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 6A44B4BCC88B;
-        Wed, 29 Apr 2020 19:37:14 +0800 (CST)
-Received: from [10.167.220.69] (10.167.220.69) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 29 Apr 2020 19:37:14 +0800
-Message-ID: <5EA966E8.30901@cn.fujitsu.com>
-Date:   Wed, 29 Apr 2020 19:37:12 +0800
-From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
-User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.2; zh-CN; rv:1.9.2.18) Gecko/20110616 Thunderbird/3.1.11
+        Wed, 29 Apr 2020 07:39:24 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D72C03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 04:39:24 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id m13so1379266otf.6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 04:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o9VrpMFGjOZAS3Z1MSBGkfDTiC/JRHokO7emMoXoeIE=;
+        b=pxa+H+hOMi3z5vWJlv69Dxx4Isvr/SWvy5GTYEsKmySqlgpAvDWT/pCeHv+EPwqCyM
+         ruGoQe8ND8601mqmCQObvux9EZ884oLXSzjlgckjwDhjUjY08IbzoeP41vXhgAwAj/eW
+         tPxsqWfe8wg5llAwmHiUZbdE3rcoueGzCJnSwy0ryepv6QJy1c2lt4VvbGraQqAYKEEp
+         7YgxIjQ1lVdoW6Jg7nY2Thx2dHW0lvontdVtbRKKGaABSMJvSOj2TyOGA5Sps0EUrQKi
+         wx0IlP/coReesElhwHv0UZ1D/K7TzwiZznSjm2GizSB4PRsh2IZgA9vBpe7KZHk1FJ1E
+         L4/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o9VrpMFGjOZAS3Z1MSBGkfDTiC/JRHokO7emMoXoeIE=;
+        b=dme3OqO3RIE32TMPlpzSFy1PvsmhQUP1IrcvAhWmVnN6GQikZNJpVJLwqIK+uFVKQa
+         Yp91UC2VUEdbq0g4kD91qlxsT7yamgXIeOAT1kx0Zv1H86TnCDQ8OCb+4aAvxUwZ1UUF
+         HamLSA/6DOWZWU6j/DE4ydw85mLM4b+ZaXIAZ+iGw0S+AG2EHTk/1SgX3S2aDQObtdzf
+         8hYitz2rCwYd5Pqq5f46euKIddbWFGBHtlMn3SUpAQ+mZSWTDhfab9h3dIxNmn7eS5mF
+         tqrWwp6XusUDlSkGkGnUPGzwss6POIWl65h5a1Syoi7vbxPmIDghExpdNOADoZaTwcGx
+         eH+g==
+X-Gm-Message-State: AGi0PuYTvCdB6NMrKEyLa0/bDOTNKIvXtcQ53pafoI/ZavwU36/mQEzd
+        mHmBrLnZq79wXRx9PREGSxWMBYKAX1YEWkVzSuqTkw==
+X-Google-Smtp-Source: APiQypITz23O96j+VAKXsxtYRMC+UiqrZWtT6Qk/x0g9an80p19WixC+bUNecs3lb0W7N89TLaP+nCuleQLr+IvG8ns=
+X-Received: by 2002:a05:6830:1e4e:: with SMTP id e14mr25681406otj.91.1588160363652;
+ Wed, 29 Apr 2020 04:39:23 -0700 (PDT)
 MIME-Version: 1.0
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-CC:     <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH] kernel/trace: Stop and wait for kthread on preempt irq
- module unload
-References: <20200424223630.224895-1-joel@joelfernandes.org> <5EA80319.7080005@cn.fujitsu.com>
-In-Reply-To: <5EA80319.7080005@cn.fujitsu.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.220.69]
-X-ClientProxiedBy: G08CNEXCHPEKD05.g08.fujitsu.local (10.167.33.203) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: 6A44B4BCC88B.AD039
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
-X-Spam-Status: No
+References: <20200428180718.1609826-1-robert.foss@linaro.org>
+ <20200428180718.1609826-2-robert.foss@linaro.org> <20200429090012.vhhwatojkncjquwd@gilmour.lan>
+ <CAG3jFyvcgqi_rm-Enf3gTyHowbgX6iBe3coDPu91p9EBTxS2XA@mail.gmail.com> <20200429111307.GA867@valkosipuli.retiisi.org.uk>
+In-Reply-To: <20200429111307.GA867@valkosipuli.retiisi.org.uk>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Wed, 29 Apr 2020 13:39:12 +0200
+Message-ID: <CAG3jFyvvX6J6TSnXr=KUzu5BuQ351sNbNC2mtY0QWdqBdAz7JA@mail.gmail.com>
+Subject: Re: [PATCH v5 v5 2/3] media: ov8856: Add devicetree support
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel, Steven
+On Wed, 29 Apr 2020 at 13:13, Sakari Ailus <sakari.ailus@iki.fi> wrote:
+>
+> Hi Robert, Maxime,
+>
+> On Wed, Apr 29, 2020 at 12:19:38PM +0200, Robert Foss wrote:
+> > On Wed, 29 Apr 2020 at 11:00, Maxime Ripard <maxime@cerno.tech> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Tue, Apr 28, 2020 at 08:07:17PM +0200, Robert Foss wrote:
+> > > > Add match table, enable ov8856_probe() to support
+> > > > both ACPI and DT modes.
+> > > >
+> > > > ACPI and DT modes are primarily distinguished from
+> > > > each other by relying on devm_XXX_get_optional()
+> > > > will return NULL instead of a reference for the
+> > > > desired managed resource.
+> > > >
+> > > > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> > > > ---
+> > > >
+> > > > - Changes since v4:
+> > > >   * Maxime & Sakari: Switch to clock-frequency
+> > > >
+> > > > - Changes since v3:
+> > > >   * Remove redundant {}-brackets
+> > > >   * Compare xvclk_rate to 5% tolerance
+> > > >   * Andy: Use dev_fwnode()
+> > > >   * Andy: Use %pe instead of %ld + PTR_ERR()
+> > > >   * Andy: Invert reset_gpio logic
+> > > >   * Andy: Remove dev_dbg() from failing reset_gpio setup
+> > > >   * Andy: Use dev_err for logging for failures
+> > > >   * Andy: Remove dev_warn from EDEFER/regulator error path
+> > > >   * Andy & Sakari: Replaced GPIOD_OUT_XXX with 0/1
+> > > >   * Maxime & Sakari: Verify clock frequency from DT
+> > > >   * Sakari: Verify the 'xvclk_rate' is set correctly for ACPI/DT devices
+> > > >   * Sakari: Remove duplicate ov8856->dev assignment
+> > > >
+> > > > - Changes since v2:
+> > > >   * Added "struct device *dev" member to struct ov8856
+> > > >   * Andy: Switch to optional version of devm_gpiod_get
+> > > >   * Andy: Switch to optional version of devm_clk_get
+> > > >   * Fabio: Add reset sleep period
+> > > >   * Sakari: Unify defines for 19.2Mhz
+> > > >   * Sakari: Remove 24Mhz clock, since it isn't needed for supported modes
+> > > >   * Sakari: Replace dev_info() with dev_dbg()
+> > > >   * Sakari: Switch induction variable type to unsigned
+> > > >   * Sakari: Don't wait for reset_gpio when in ACPI mode
+> > > >   * Sakari: Pull reset GPIO high on power on failure
+> > > >   * Sakari: Add power on/off to resume/suspend
+> > > >   * Sakari: Fix indentation
+> > > >   * Sakari: Power off during ov8856_remove()
+> > > >   * Sakari: Don't sleep during power-on in ACPI mode
+> > > >   * Sakari: Switch to getting xvclk from clk_get_rate
+> > > >
+> > > > - Changes since v1:
+> > > >   * Andy & Sakari: Make XVCLK optional since to not break ACPI
+> > > >   * Fabio: Change n_shutdown_gpio name to reset_gpio
+> > > >   * Fabio: Invert reset_gpio due to GPIO_ACTIVE_HIGH -> GPIO_ACTIVE_LOW change
+> > > >   * Fabio: Remove empty line
+> > > >   * Fabio: Remove real error from devm_gpiod_get() failures
+> > > >   * Sakari: ARRAY_SIZE() directly instead of through OV8856_NUM_SUPPLIES
+> > > >   * Sakari: Use XVCLK rate as provided by DT
+> > > >
+> > > >  drivers/media/i2c/ov8856.c | 139 +++++++++++++++++++++++++++++++++----
+> > > >  1 file changed, 126 insertions(+), 13 deletions(-)
+> > > >
+> > > > diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+> > > > index 8655842af275..48b02b8d205f 100644
+> > > > --- a/drivers/media/i2c/ov8856.c
+> > > > +++ b/drivers/media/i2c/ov8856.c
+> > > > @@ -3,10 +3,13 @@
+> > > >
+> > > >  #include <asm/unaligned.h>
+> > > >  #include <linux/acpi.h>
+> > > > +#include <linux/clk.h>
+> > > >  #include <linux/delay.h>
+> > > > +#include <linux/gpio/consumer.h>
+> > > >  #include <linux/i2c.h>
+> > > >  #include <linux/module.h>
+> > > >  #include <linux/pm_runtime.h>
+> > > > +#include <linux/regulator/consumer.h>
+> > > >  #include <media/v4l2-ctrls.h>
+> > > >  #include <media/v4l2-device.h>
+> > > >  #include <media/v4l2-fwnode.h>
+> > > > @@ -18,7 +21,7 @@
+> > > >  #define OV8856_LINK_FREQ_360MHZ              360000000ULL
+> > > >  #define OV8856_LINK_FREQ_180MHZ              180000000ULL
+> > > >  #define OV8856_SCLK                  144000000ULL
+> > > > -#define OV8856_MCLK                  19200000
+> > > > +#define OV8856_XVCLK_19_2            19200000
+> > > >  #define OV8856_DATA_LANES            4
+> > > >  #define OV8856_RGB_DEPTH             10
+> > > >
+> > > > @@ -64,6 +67,12 @@
+> > > >
+> > > >  #define to_ov8856(_sd)                       container_of(_sd, struct ov8856, sd)
+> > > >
+> > > > +static const char * const ov8856_supply_names[] = {
+> > > > +     "dovdd",        /* Digital I/O power */
+> > > > +     "avdd",         /* Analog power */
+> > > > +     "dvdd",         /* Digital core power */
+> > > > +};
+> > > > +
+> > > >  enum {
+> > > >       OV8856_LINK_FREQ_720MBPS,
+> > > >       OV8856_LINK_FREQ_360MBPS,
+> > > > @@ -566,6 +575,11 @@ struct ov8856 {
+> > > >       struct media_pad pad;
+> > > >       struct v4l2_ctrl_handler ctrl_handler;
+> > > >
+> > > > +     struct device           *dev;
+> > > > +     struct clk              *xvclk;
+> > > > +     struct gpio_desc        *reset_gpio;
+> > > > +     struct regulator_bulk_data supplies[ARRAY_SIZE(ov8856_supply_names)];
+> > > > +
+> > > >       /* V4L2 Controls */
+> > > >       struct v4l2_ctrl *link_freq;
+> > > >       struct v4l2_ctrl *pixel_rate;
+> > > > @@ -908,6 +922,52 @@ static int ov8856_set_stream(struct v4l2_subdev *sd, int enable)
+> > > >       return ret;
+> > > >  }
+> > > >
+> > > > +static int __ov8856_power_on(struct ov8856 *ov8856)
+> > > > +{
+> > > > +     struct i2c_client *client = v4l2_get_subdevdata(&ov8856->sd);
+> > > > +     int ret;
+> > > > +
+> > > > +     ret = clk_prepare_enable(ov8856->xvclk);
+> > > > +     if (ret < 0) {
+> > > > +             dev_err(&client->dev, "failed to enable xvclk\n");
+> > > > +             return ret;
+> > > > +     }
+> > > > +
+> > > > +     if (is_acpi_node(dev_fwnode(ov8856->dev)))
+> > > > +             return 0;
+> > > > +
+> > > > +     if (ov8856->reset_gpio) {
+> > > > +             gpiod_set_value_cansleep(ov8856->reset_gpio, 1);
+> > > > +             usleep_range(1000, 2000);
+> > > > +     }
+> > > > +
+> > > > +     ret = regulator_bulk_enable(ARRAY_SIZE(ov8856_supply_names),
+> > > > +                                 ov8856->supplies);
+> > > > +     if (ret < 0) {
+> > > > +             dev_err(&client->dev, "failed to enable regulators\n");
+> > > > +             goto disable_clk;
+> > > > +     }
+> > > > +
+> > > > +     gpiod_set_value_cansleep(ov8856->reset_gpio, 0);
+> > > > +     usleep_range(1500, 1800);
+> > > > +
+> > > > +     return 0;
+> > > > +
+> > > > +disable_clk:
+> > > > +     gpiod_set_value_cansleep(ov8856->reset_gpio, 1);
+> > > > +     clk_disable_unprepare(ov8856->xvclk);
+> > > > +
+> > > > +     return ret;
+> > > > +}
+> > > > +
+> > > > +static void __ov8856_power_off(struct ov8856 *ov8856)
+> > > > +{
+> > > > +     gpiod_set_value_cansleep(ov8856->reset_gpio, 1);
+> > > > +     regulator_bulk_disable(ARRAY_SIZE(ov8856_supply_names),
+> > > > +                            ov8856->supplies);
+> > > > +     clk_disable_unprepare(ov8856->xvclk);
+> > > > +}
+> > > > +
+> > > >  static int __maybe_unused ov8856_suspend(struct device *dev)
+> > > >  {
+> > > >       struct i2c_client *client = to_i2c_client(dev);
+> > > > @@ -918,6 +978,7 @@ static int __maybe_unused ov8856_suspend(struct device *dev)
+> > > >       if (ov8856->streaming)
+> > > >               ov8856_stop_streaming(ov8856);
+> > > >
+> > > > +     __ov8856_power_off(ov8856);
+> > > >       mutex_unlock(&ov8856->mutex);
+> > > >
+> > > >       return 0;
+> > > > @@ -931,6 +992,8 @@ static int __maybe_unused ov8856_resume(struct device *dev)
+> > > >       int ret;
+> > > >
+> > > >       mutex_lock(&ov8856->mutex);
+> > > > +
+> > > > +     __ov8856_power_on(ov8856);
+> > > >       if (ov8856->streaming) {
+> > > >               ret = ov8856_start_streaming(ov8856);
+> > > >               if (ret) {
+> > > > @@ -1092,29 +1155,58 @@ static int ov8856_identify_module(struct ov8856 *ov8856)
+> > > >       return 0;
+> > > >  }
+> > > >
+> > > > -static int ov8856_check_hwcfg(struct device *dev)
+> > > > +static int ov8856_get_hwcfg(struct ov8856 *ov8856)
+> > > >  {
+> > > > +     struct device *dev = ov8856->dev;
+> > > >       struct fwnode_handle *ep;
+> > > >       struct fwnode_handle *fwnode = dev_fwnode(dev);
+> > > >       struct v4l2_fwnode_endpoint bus_cfg = {
+> > > >               .bus_type = V4L2_MBUS_CSI2_DPHY
+> > > >       };
+> > > > -     u32 mclk;
+> > > > +     u32 xvclk_rate;
+> > > >       int ret;
+> > > >       unsigned int i, j;
+> > > >
+> > > >       if (!fwnode)
+> > > >               return -ENXIO;
+> > > >
+> > > > -     ret = fwnode_property_read_u32(fwnode, "clock-frequency", &mclk);
+> > > > +     ret = fwnode_property_read_u32(fwnode, "clock-frequency",
+> > > > +             &xvclk_rate);
+> > > >       if (ret)
+> > > >               return ret;
+> > > >
+> > > > -     if (mclk != OV8856_MCLK) {
+> > > > -             dev_err(dev, "external clock %d is not supported", mclk);
+> > > > +     if (!is_acpi_node(fwnode)) {
+> > > > +             ov8856->xvclk = devm_clk_get(dev, "xvclk");
+> > > > +             if (IS_ERR(ov8856->xvclk)) {
+> > > > +                     dev_err(dev, "could not get xvclk clock (%pe)\n",
+> > > > +                                     ov8856->xvclk);
+> > > > +                     return PTR_ERR(ov8856->xvclk);
+> > > > +             }
+> > > > +
+> > > > +             clk_set_rate(ov8856->xvclk, xvclk_rate);
+> > > > +             xvclk_rate = clk_get_rate(ov8856->xvclk);
+> > > > +     }
+> > > > +
+> > > > +     /* external clock must be 19.2MHz, allow 5% tolerance */
+> > >
+> > > Where is that 5% tolerance coming from? Experimentations, datasheets, something
+> > > that looks good enough? Either way, this should be in the comment.
+> >
+> > I don't have access to the full datasheet unfortunately. A 24Mhz rate
+> > is as far as I understand it supported and required for higher
+> > bandwidth count modes.
+> > It was suggested to me that adding a tolerance is the best practice,
+> > the ov5645 driver uses a 1% tolerance, which may be more appropriate.
+>
+> The frequency should really be exact. Sometimes what happens is, however,
+> that a register list based driver does not have the register lists for a
+> frequency that is available on a given system. That's why some drivers have
+> allowed some difference to the intended frequency.
+>
+> That 5 % seems like a random value, just like any other number that differs
+> from the exact frequency would be.
+>
+> I'd issue a warning if the frequency differs from what was intended, but
+> still proceed with probe. This way we can make sure the difference is noted
+> while boards that cannot provide the exact frequency supported by the
+> driver can still function.
 
-First of all, the previous dmesg may not be reliable and I often got the
-following dmesg by inserting and remving preemptirq_delay_test in loops:
-(btw: I think these dmesgs are caused by the same bug).
----------------------------------------------------
-[  178.484520] ------------[ cut here ]------------
-[  178.510058] refcount_t: addition on 0; use-after-free.
-[  178.511663] WARNING: CPU: 0 PID: 2389 at lib/refcount.c:25
-refcount_warn_saturate+0x9c/0x140
-[  178.512266] Modules linked in: preemptirq_delay_test(-) sunrpc vfat
-fat ext4 mbcache jbd2 crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce
-ip_tables xfs libcrc32c virtio_net net_failover virtio_mmio failover
-virtio_blk [last unloaded: preemptirq_delay_test]
-[  178.514061] CPU: 0 PID: 2389 Comm: rmmod Not tainted 5.6.0-rc7+ #18
-[  178.514389] Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0
-02/06/2015
-[  178.514988] pstate: 40000005 (nZcv daif -PAN -UAO)
-[  178.515259] pc : refcount_warn_saturate+0x9c/0x140
-[  178.515562] lr : refcount_warn_saturate+0x9c/0x140
-[  178.515865] sp : fffffe001300fd70
-[  178.516082] x29: fffffe001300fd70 x28: fffffc004533e380
-[  178.516366] x27: 0000000000000000 x26: 0000000000000000
-[  178.516611] x25: 0000000000000000 x24: fffffe00115bbbf0
-[  178.516847] x23: 0000000000000000 x22: 0000000000000200
-[  178.517121] x21: fffffe0011273988 x20: fffffc007cf7af28
-[  178.517554] x19: fffffc007cf7af00 x18: 0000000000000010
-[  178.517795] x17: 0000000000000000 x16: 0000000000000000
-[  178.518044] x15: ffffffffffffffff x14: fffffe0011273988
-[  178.518279] x13: fffffe009300fa97 x12: fffffe001300fa9f
-[  178.518518] x11: fffffe00112b0000 x10: fffffe001300fa20
-[  178.518885] x9 : 00000000ffffffd0 x8 : 75203b30206e6f20
-[  178.519316] x7 : 000000000000014e x6 : fffffe001127cf50
-[  178.519661] x5 : fffffe001127c000 x4 : 0000000000000000
-[  178.519978] x3 : fffffe001127cf50 x2 : 0000000000000000
-[  178.520245] x1 : cecd1d29479b5500 x0 : 0000000000000000
-[  178.520659] Call trace:
-[  178.520850]  refcount_warn_saturate+0x9c/0x140
-[  178.521084]  kthread_stop+0x48/0x278
-[  178.521703]  preemptirq_delay_exit+0x28/0xfc8c [preemptirq_delay_test]
-[  178.522006]  __arm64_sys_delete_module+0x14c/0x298
-[  178.522226]  do_el0_svc+0xf8/0x1e0
-[  178.522403]  el0_sync_handler+0x134/0x1bc
-[  178.522598]  el0_sync+0x140/0x180
-[  178.522862] ---[ end trace 437c7bc9df5e92dd ]---
-[  178.524159] ------------[ cut here ]------------
-[  178.524420] refcount_t: underflow; use-after-free.
-[  178.524734] WARNING: CPU: 0 PID: 2389 at lib/refcount.c:28
-refcount_warn_saturate+0xf0/0x140
-[  178.525079] Modules linked in: preemptirq_delay_test(-) sunrpc vfat
-fat ext4 mbcache jbd2 crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce
-ip_tables xfs libcrc32c virtio_net net_failover virtio_mmio failover
-virtio_blk [last unloaded: preemptirq_delay_test]
-[  178.526190] CPU: 0 PID: 2389 Comm: rmmod Tainted: G        W
-5.6.0-rc7+ #18
-[  178.526541] Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0
-02/06/2015
-[  178.526836] pstate: 40000005 (nZcv daif -PAN -UAO)
-[  178.527060] pc : refcount_warn_saturate+0xf0/0x140
-[  178.527269] lr : refcount_warn_saturate+0xf0/0x140
-[  178.527484] sp : fffffe001300fd70
-[  178.527643] x29: fffffe001300fd70 x28: fffffc004533e380
-[  178.527905] x27: 0000000000000000 x26: 0000000000000000
-[  178.528166] x25: 0000000000000000 x24: fffffe00115bbbf0
-[  178.528489] x23: 0000000000000000 x22: 0000000000000200
-[  178.528808] x21: 0000000000000000 x20: fffffc007cf7af28
-[  178.529080] x19: fffffc007cf7af00 x18: 0000000000000010
-[  178.529429] x17: 0000000000000000 x16: 0000000000000000
-[  178.529747] x15: ffffffffffffffff x14: 0720072007200720
-[  178.530100] x13: 0720072007200720 x12: 0720072007200720
-[  178.530366] x11: 0720072007200720 x10: 0720072007200720
-[  178.530632] x9 : 0720072007200720 x8 : 072007200720072e
-[  178.530891] x7 : 0000000000000170 x6 : fffffe001127cf50
-[  178.531154] x5 : fffffe001127c000 x4 : 0000000000000000
-[  178.531431] x3 : fffffe001127cf50 x2 : 0000000000000000
-[  178.531705] x1 : cecd1d29479b5500 x0 : 0000000000000000
-[  178.532003] Call trace:
-[  178.532166]  refcount_warn_saturate+0xf0/0x140
-[  178.532434]  kthread_stop+0x254/0x278
-[  178.532644]  preemptirq_delay_exit+0x28/0xfc8c [preemptirq_delay_test]
-[  178.532963]  __arm64_sys_delete_module+0x14c/0x298
-[  178.533210]  do_el0_svc+0xf8/0x1e0
-[  178.533415]  el0_sync_handler+0x134/0x1bc
-[  178.533627]  el0_sync+0x140/0x180
-[  178.533807] ---[ end trace 437c7bc9df5e92de ]---
-[  178.626471] Unable to handle kernel paging request at virtual address
-0000fffffc0043ca
-[  178.627253] Mem abort info:
-[  178.627539]   ESR = 0x96000004
-[  178.627927]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  178.628414]   SET = 0, FnV = 0
-[  178.628806]   EA = 0, S1PTW = 0
-[  178.629090] Data abort info:
-[  178.639723]   ISV = 0, ISS = 0x00000004
-[  178.640182]   CM = 0, WnR = 0
-[  178.640530] [0000fffffc0043ca] address between user and kernel
-address ranges
-[  178.641300] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[  178.641931] Modules linked in: sunrpc vfat fat ext4 mbcache jbd2
-crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce ip_tables xfs
-libcrc32c virtio_net net_failover virtio_mmio failover virtio_blk [last
-unloaded: preemptirq_delay_test]
-[  178.643547] CPU: 1 PID: 2394 Comm: pmlogger_check Tainted: G        W
-        5.6.0-rc7+ #18
-[  178.644219] Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0
-02/06/2015
-[  178.644782] pstate: 60000005 (nZCv daif -PAN -UAO)
-[  178.645219] pc : __kmalloc+0xc8/0x2e8
-[  178.645538] lr : __kmalloc+0x9c/0x2e8
-[  178.645841] sp : fffffe001312fc20
-[  178.646127] x29: fffffe001312fc20 x28: fffffc0042a0af00
-[  178.646532] x27: fffffc005a7ad000 x26: 00000000cc79f001
-[  178.647037] x25: fffffc0042a0af00 x24: fffffc007d76fc00
-[  178.647431] x23: fffffe00103e95e4 x22: 000000000000001b
-[  178.647895] x21: 0000000000000cc0 x20: fffffc007d76fc00
-[  178.648276] x19: 0000fffffc0043ca x18: 0000000000000000
-[  178.648673] x17: 0000000000000000 x16: 0000000000000000
-[  178.649077] x15: 0000000000000000 x14: 0000000000000010
-[  178.649608] x13: 0000000000000000 x12: 0000000000000000
-[  178.649963] x11: 0000000000000000 x10: 0000000000000000
-[  178.650337] x9 : 0000000000000000 x8 : 0000000000001f18
-[  178.650683] x7 : 0000000000001f18 x6 : fffffc005a7ad1f8
-[  178.651099] x5 : 0000000000000000 x4 : 0000000000000000
-[  178.651557] x3 : 0000000000000000 x2 : fffffe001021d1e0
-[  178.652006] x1 : 0000000000000000 x0 : 0000000000000001
-[  178.652407] Call trace:
-[  178.652694]  __kmalloc+0xc8/0x2e8
-[  178.652972]  load_elf_binary+0xdc/0xdb8
-[  178.653286]  search_binary_handler+0x98/0x268
-[  178.653626]  __do_execve_file+0x4ec/0x7c8
-[  178.653985]  __arm64_sys_execve+0x40/0x50
-[  178.654310]  do_el0_svc+0xf8/0x1e0
-[  178.654578]  el0_sync_handler+0x134/0x1bc
-[  178.654962]  el0_sync+0x140/0x180
-[  178.655509] Code: b4001073 b9402281 b9401380 11000400 (f8616a7b)
-[  178.656543] ---[ end trace 437c7bc9df5e92df ]---
-[  178.657100] Kernel panic - not syncing: Fatal exception
-[  178.657630] SMP: stopping secondary CPUs
-[  178.658237] Kernel Offset: disabled
-[  178.658644] CPU features: 0x10002,20006082
-[  178.658903] Memory Limit: none
-[  178.659263] ---[ end Kernel panic - not syncing: Fatal exception ]---
----------------------------------------------------
+Issuing a warning sounds like a good solution to me. What do you think Maxime?
 
-Thanks,
-Xiao Yang
-On 2020/4/28 18:19, Xiao Yang wrote:
-> Hi Joel,
-> 
-> Thanks for your quick fix.
-> 
-> Unfortunately, it fixes my original panic but introduces other
-> issues(two wanings and one panic) on my arm64 vm, as below:
-> --------------------------------------------------------------------
-> [ 3465.434942] ------------[ cut here ]------------
-> [ 3465.435481] refcount_t: addition on 0; use-after-free.
-> [ 3465.437071] WARNING: CPU: 1 PID: 6708 at lib/refcount.c:25
-> refcount_warn_saturate+0x9c/0x140
-> [ 3465.437720] Modules linked in: preemptirq_delay_test(O-) sunrpc vfat
-> fat ext4 mbcache jbd2 crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce
-> ip_tables xfs libcrc32c virtio_net net_failover failover virtio_mmio
-> virtio_blk
-> [ 3465.439787] CPU: 1 PID: 6708 Comm: rmmod Tainted: G           O
-> 5.6.0-rc7+ #18
-> [ 3465.440316] Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0
-> 02/06/2015
-> [ 3465.440967] pstate: 40000005 (nZcv daif -PAN -UAO)
-> [ 3465.441297] pc : refcount_warn_saturate+0x9c/0x140
-> [ 3465.441592] lr : refcount_warn_saturate+0x9c/0x140
-> [ 3465.441919] sp : fffffe001382fd70
-> [ 3465.442160] x29: fffffe001382fd70 x28: fffffc004876d200
-> [ 3465.442649] x27: 0000000000000000 x26: 0000000000000000
-> [ 3465.443071] x25: 0000000000000000 x24: fffffe00115bbbf0
-> [ 3465.443670] x23: 0000000000000000 x22: 0000000000000200
-> [ 3465.444194] x21: fffffe0011273988 x20: fffffc0063fdd228
-> [ 3465.444576] x19: fffffc0063fdd200 x18: 0000000000000010
-> [ 3465.444939] x17: 0000000000000000 x16: 0000000000000000
-> [ 3465.445329] x15: ffffffffffffffff x14: fffffe0011273988
-> [ 3465.445698] x13: fffffe009382fa97 x12: fffffe001382fa9f
-> [ 3465.446116] x11: fffffe00112b0000 x10: fffffe001382fa20
-> [ 3465.446498] x9 : 00000000ffffffd0 x8 : 6572662d72657466
-> [ 3465.446941] x7 : 0000000000000149 x6 : fffffe001127cf50
-> [ 3465.447375] x5 : fffffe001127c000 x4 : 0000000000000000
-> [ 3465.447757] x3 : fffffe001127cf50 x2 : 0000000000000000
-> [ 3465.448161] x1 : 2e36d2803fe6b700 x0 : 0000000000000000
-> [ 3465.448702] Call trace:
-> [ 3465.448979]  refcount_warn_saturate+0x9c/0x140
-> [ 3465.449330]  kthread_stop+0x48/0x278
-> [ 3465.450144]  preemptirq_delay_exit+0x28/0xfc8c [preemptirq_delay_test]
-> [ 3465.450625]  __arm64_sys_delete_module+0x14c/0x298
-> [ 3465.450998]  do_el0_svc+0xf8/0x1e0
-> [ 3465.451372]  el0_sync_handler+0x134/0x1bc
-> [ 3465.451701]  el0_sync+0x140/0x180
-> [ 3465.452099] ---[ end trace 1a8ec2201af5e8c7 ]---
-> [ 3465.478208] ------------[ cut here ]------------
-> [ 3465.478696] WARNING: CPU: 1 PID: 6708 at kernel/kthread.c:400
-> __kthread_bind_mask+0x34/0x90
-> [ 3465.479210] Modules linked in: preemptirq_delay_test(O-) sunrpc vfat
-> fat ext4 mbcache jbd2 crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce
-> ip_tables xfs libcrc32c virtio_net net_failover failover virtio_mmio
-> virtio_blk
-> [ 3465.480509] CPU: 1 PID: 6708 Comm: rmmod Tainted: G        W  O
-> 5.6.0-rc7+ #18
-> [ 3465.480966] Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0
-> 02/06/2015
-> [ 3465.481465] pstate: 40000005 (nZcv daif -PAN -UAO)
-> [ 3465.481821] pc : __kthread_bind_mask+0x34/0x90
-> [ 3465.482129] lr : __kthread_bind_mask+0x30/0x90
-> [ 3465.482419] sp : fffffe001382fd30
-> [ 3465.482639] x29: fffffe001382fd30 x28: fffffc004876d200
-> [ 3465.483017] x27: 0000000000000000 x26: 0000000000000000
-> [ 3465.483385] x25: 0000000000000000 x24: fffffe00115bbbf0
-> [ 3465.483795] x23: 0000000000000000 x22: 0000000000000200
-> [ 3465.484251] x21: fffffe0010a9cb88 x20: 0000000000000040
-> [ 3465.484599] x19: fffffc0063fdd200 x18: 0000000000000010
-> [ 3465.484957] x17: 0000000000000000 x16: 0000000000000000
-> [ 3465.485347] x15: ffffffffffffffff x14: fffffe0011273988
-> [ 3465.485714] x13: fffffe009382fa97 x12: fffffe001382fa9f
-> [ 3465.486210] x11: fffffe00112b0000 x10: fffffe001382fa20
-> [ 3465.486599] x9 : 00000000ffffffd0 x8 : 6572662d72657466
-> [ 3465.487039] x7 : 0000000000000149 x6 : fffffe001127cf50
-> [ 3465.487447] x5 : fffffe001127c000 x4 : 0000000000000001
-> [ 3465.487868] x3 : fffffe001127cf50 x2 : 2e36d2803fe6b700
-> [ 3465.488252] x1 : 0000000000000000 x0 : 0000000000000000
-> [ 3465.488628] Call trace:
-> [ 3465.488851]  __kthread_bind_mask+0x34/0x90
-> [ 3465.489192]  kthread_unpark+0xa0/0xb0
-> [ 3465.489456]  kthread_stop+0x8c/0x278
-> [ 3465.489736]  preemptirq_delay_exit+0x28/0xfc8c [preemptirq_delay_test]
-> [ 3465.490216]  __arm64_sys_delete_module+0x14c/0x298
-> [ 3465.490594]  do_el0_svc+0xf8/0x1e0
-> [ 3465.490850]  el0_sync_handler+0x134/0x1bc
-> [ 3465.491157]  el0_sync+0x140/0x180
-> [ 3465.491413] ---[ end trace 1a8ec2201af5e8c8 ]---
-> [ 3465.504614] Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000000000000
-> [ 3465.505340] Mem abort info:
-> [ 3465.505553]   ESR = 0x96000006
-> [ 3465.505855]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [ 3465.506234]   SET = 0, FnV = 0
-> [ 3465.506525]   EA = 0, S1PTW = 0
-> [ 3465.506786] Data abort info:
-> [ 3465.507037]   ISV = 0, ISS = 0x00000006
-> [ 3465.507304]   CM = 0, WnR = 0
-> [ 3465.507685] user pgtable: 64k pages, 42-bit VAs, pgdp=0000000082450000
-> [ 3465.508225] [0000000000000000] pgd=0000000000000000,
-> pud=0000000000000000, pmd=0000000000000000
-> [ 3465.509049] Internal error: Oops: 96000006 [#1] PREEMPT SMP
-> [ 3465.509527] Modules linked in: preemptirq_delay_test(O-) sunrpc vfat
-> fat ext4 mbcache jbd2 crct10dif_ce ghash_ce sha2_ce sha256_arm64 sha1_ce
-> ip_tables xfs libcrc32c virtio_net net_failover failover virtio_mmio
-> virtio_blk
-> [ 3465.510964] CPU: 1 PID: 6708 Comm: rmmod Tainted: G        W  O
-> 5.6.0-rc7+ #18
-> [ 3465.511527] Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0
-> 02/06/2015
-> [ 3465.512031] pstate: 60000085 (nZCv daIf -PAN -UAO)
-> [ 3465.512392] pc : __list_add_valid+0x18/0xa0
-> [ 3465.512740] lr : wait_for_completion+0xc8/0x178
-> [ 3465.513085] sp : fffffe001382fd00
-> [ 3465.513362] x29: fffffe001382fd00 x28: fffffc004876d200
-> [ 3465.513769] x27: 0000000000000000 x26: 0000000000000000
-> [ 3465.514205] x25: 0000000000000000 x24: fffffc0076e616c8
-> [ 3465.514638] x23: fffffe001382fd68 x22: 0000000000000000
-> [ 3465.515030] x21: fffffe0011273988 x20: fffffc0076e616c0
-> [ 3465.515444] x19: fffffc0076e616b8 x18: 0000000000000010
-> [ 3465.515826] x17: 0000000000000000 x16: 0000000000000000
-> [ 3465.516184] x15: ffffffffffffffff x14: fffffe0011273988
-> [ 3465.516584] x13: fffffe009382fa97 x12: fffffe001382fa9f
-> [ 3465.516976] x11: fffffe00112b0000 x10: fffffe001382fa20
-> [ 3465.517351] x9 : 00000000ffffffd0 x8 : 6572662d72657466
-> [ 3465.517750] x7 : 0000000000000149 x6 : fffffe001127cf50
-> [ 3465.518169] x5 : 0000000000000001 x4 : fffffc0076e616c8
-> [ 3465.518454] x3 : fffffe0010128b38 x2 : 0000000000000000
-> [ 3465.518711] x1 : 0000000000000000 x0 : fffffe001382fd68
-> [ 3465.518985] Call trace:
-> [ 3465.519157]  __list_add_valid+0x18/0xa0
-> [ 3465.519351]  wait_for_completion+0xc8/0x178
-> [ 3465.519578]  kthread_stop+0x9c/0x278
-> [ 3465.519779]  preemptirq_delay_exit+0x28/0xfc8c [preemptirq_delay_test]
-> [ 3465.520109]  __arm64_sys_delete_module+0x14c/0x298
-> [ 3465.520342]  do_el0_svc+0xf8/0x1e0
-> [ 3465.520520]  el0_sync_handler+0x134/0x1bc
-> [ 3465.520718]  el0_sync+0x140/0x180
-> [ 3465.521177] Code: 910003fd f9400442 eb01005f 54000141 (f9400041)
-> [ 3465.522258] ---[ end trace 1a8ec2201af5e8c9 ]---
-> [ 3465.522746] Kernel panic - not syncing: Fatal exception
-> [ 3465.523242] SMP: stopping secondary CPUs
-> [ 3465.523898] Kernel Offset: disabled
-> [ 3465.524423] CPU features: 0x10002,20006082
-> [ 3465.524939] Memory Limit: none
-> [ 3465.525534] ---[ end Kernel panic - not syncing: Fatal exception ]---
-> --------------------------------------------------------------------
-> 
-> I am looking into these issues.
-> 
-> Thanks,
-> Xiao Yang
-> On 2020/4/25 6:36, Joel Fernandes (Google) wrote:
->> Kthread running the test needs to be stopped or it can continue
->> executing code unloaded by module causing a crash.
->>
->> Suggested-by: Steven Rostedt<rostedt@goodmis.org>
->> Reported-by: Xiao Yang<yangx.jy@cn.fujitsu.com>
->> Link: http://lore.kernel.org/r/5EA2B0C8.2080706@cn.fujitsu.com
->> Signed-off-by: Joel Fernandes (Google)<joel@joelfernandes.org>
->> ---
->>    kernel/trace/preemptirq_delay_test.c | 5 ++++-
->>    1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/trace/preemptirq_delay_test.c b/kernel/trace/preemptirq_delay_test.c
->> index 31c0fad4cb9e1..1c28ca20e30b6 100644
->> --- a/kernel/trace/preemptirq_delay_test.c
->> +++ b/kernel/trace/preemptirq_delay_test.c
->> @@ -145,10 +145,10 @@ static struct attribute_group attr_group = {
->>    };
->>
->>    static struct kobject *preemptirq_delay_kobj;
->> +static struct task_struct *test_task;
->>
->>    static int __init preemptirq_delay_init(void)
->>    {
->> -	struct task_struct *test_task;
->>    	int retval;
->>
->>    	test_task = preemptirq_start_test();
->> @@ -171,6 +171,9 @@ static int __init preemptirq_delay_init(void)
->>    static void __exit preemptirq_delay_exit(void)
->>    {
->>    	kobject_put(preemptirq_delay_kobj);
->> +
->> +	if (test_task)
->> +		kthread_stop(test_task);
->>    }
->>
->>    module_init(preemptirq_delay_init)
-> 
-
-
-
+>
+> --
+> Regards,
+>
+> Sakari Ailus
