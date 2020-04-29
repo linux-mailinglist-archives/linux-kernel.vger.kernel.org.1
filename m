@@ -2,144 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64BB71BEBFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 00:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF931BEC0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 00:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgD2WRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 18:17:05 -0400
-Received: from mga03.intel.com ([134.134.136.65]:11796 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726935AbgD2WRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 18:17:05 -0400
-IronPort-SDR: 6kWa0COaKlQbNhBypua1gUE1rYiIoPdLnBDOu7djbv79x+uhHe8Hrs8Wv+2NRJ/iYj0M2VIlor
- 3sQRLqpyfCzg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 15:17:04 -0700
-IronPort-SDR: EGYnLfCVgjRdNT/fYGTKRk+d6V0IiVC/1awiI7IG5cNJU7V0Ldg9SIIizGpH0tjvPk5Gx5q7SB
- nRX3CPWIkgIA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
-   d="scan'208";a="432720256"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga005.jf.intel.com with ESMTP; 29 Apr 2020 15:17:04 -0700
-Date:   Wed, 29 Apr 2020 15:23:06 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, ashok.raj@intel.com,
-        Liu Yi L <yi.l.liu@intel.com>, kevin.tian@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v3 3/4] iommu/vt-d: Add page request draining support
-Message-ID: <20200429152306.5be6fcdc@jacob-builder>
-In-Reply-To: <3dd69b64-fc2c-bcfe-dc5f-cbca2b8c351f@linux.intel.com>
-References: <20200422080611.15689-1-baolu.lu@linux.intel.com>
-        <20200422080611.15689-4-baolu.lu@linux.intel.com>
-        <20200428203644.3dcf13f2@jacob-builder>
-        <3dd69b64-fc2c-bcfe-dc5f-cbca2b8c351f@linux.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1727104AbgD2WYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 18:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726481AbgD2WYN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 18:24:13 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FD6C03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 15:24:11 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id c63so3822164qke.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 15:24:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N5mT0UrjUVQ+LKtL+fJLsV3ZSWofkUiis5zRHwPIn6g=;
+        b=iOr8ewoJWDPUm01VpYhUnSr9hu0AeEv6mfKoy4WSbmPz+/U2GA7+WDNRk0WJsTr04U
+         WhxArBkqGiHwH0eVdTIWnoL2lyOAaBVi4x1F0X0nEES18bInCY3AoJMlIib4tpDmAdxs
+         X7eeSjHDlUpSG+PL0co1Tyuc+DJhSQ4t8uQ+LuavTBCLciYgDVJx3PVtAcyjl3j4wKri
+         +DOHBcB3E07UZcN0SYf130nFWdo5rAhUExJzxtOhx+0LMeZ6/Fs5yr2STov3KzQztfHR
+         x1GxeerLoqqe9mY/rx8xoHFNGVexQMEVsKc0iGMkuGORAV/L/eIfTdeeManhzMDJZbM2
+         w42A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N5mT0UrjUVQ+LKtL+fJLsV3ZSWofkUiis5zRHwPIn6g=;
+        b=JUsTA9vZvR3YoBByo2k6b94PyeuBTuIbfZYasQ2TwCbgNxmwhBpjl3vUJijKieU4EM
+         rOwlUTu48R+5bSMFKsMLKlrBTeieRRo/lsKlI4NWYU10KEQp8ni44QOJJkWNJS9KaP3+
+         EMK1YQiBSWM/9r0D6lbayk2uXlyRrrvEVj99DhMvNGybxzaWQV3uayAegmN8GV1XwDBs
+         hU0eG0g3nXXlP15oab0T+LbFktSIWG3C/16AveroSmMeUqp/kQ0krizEkRMeNGoC40EO
+         JkF+tILqpAr7FauIgyaA5IY9TpyBbSaFd0RngSYQ00olMczao1BMNsfPNA+oqlU0iey9
+         MIug==
+X-Gm-Message-State: AGi0PuZUg8QDZHnTjzuDHTqjJpICOUiBMFNfdr2/Zee/fLjESQjji79i
+        Cu+9OT4+gvzsscvxIOjxcazI+pbVnDhEHw==
+X-Google-Smtp-Source: APiQypLmSLmxNDDWl0UnrQSTpUW2GmUZbQRHdvicW/k4j+I6MtsmkbywTZggJAVAGijrzMf1lY8ehQ==
+X-Received: by 2002:a37:e54:: with SMTP id 81mr644968qko.284.1588199049619;
+        Wed, 29 Apr 2020 15:24:09 -0700 (PDT)
+Received: from ovpn-113-19.phx2.redhat.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id v27sm517889qtb.35.2020.04.29.15.24.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 29 Apr 2020 15:24:08 -0700 (PDT)
+From:   Qian Cai <cai@lca.pw>
+To:     akpm@linux-foundation.org
+Cc:     cl@linux.com, rientjes@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>
+Subject: [PATCH] mm/slub: fix stack overruns with SLUB_STATS
+Date:   Wed, 29 Apr 2020 18:23:56 -0400
+Message-Id: <20200429222356.4322-1-cai@lca.pw>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Apr 2020 14:00:05 +0800
-Lu Baolu <baolu.lu@linux.intel.com> wrote:
+There is no need to copy SLUB_STATS items from root memcg cache to new
+memcg cache copies. Doing so could result in stack overruns because the
+store function only accepts 0 to clear the stat and returns an error for
+everything else while the show method would print out the whole stat.
+Then, the mismatch of the lengths returns from show and store methods
+happens in memcg_propagate_slab_attrs(),
 
-> Hi Jacob,
-> 
-> On 2020/4/29 11:36, Jacob Pan wrote:
-> > On Wed, 22 Apr 2020 16:06:10 +0800
-> > Lu Baolu<baolu.lu@linux.intel.com>  wrote:
-> >   
-> >> When a PASID is stopped or terminated, there can be pending PRQs
-> >> (requests that haven't received responses) in remapping hardware.
-> >> This adds the interface to drain page requests and call it when a
-> >> PASID is terminated.
-> >>
-> >> Signed-off-by: Jacob Pan<jacob.jun.pan@linux.intel.com>
-> >> Signed-off-by: Liu Yi L<yi.l.liu@intel.com>
-> >> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
-> >> ---
-> >>   drivers/iommu/intel-svm.c   | 103
-> >> ++++++++++++++++++++++++++++++++++-- include/linux/intel-iommu.h |
-> >> 4 ++ 2 files changed, 102 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/drivers/iommu/intel-svm.c b/drivers/iommu/intel-svm.c
-> >> index 83dc4319f661..2534641ef707 100644
-> >> --- a/drivers/iommu/intel-svm.c
-> >> +++ b/drivers/iommu/intel-svm.c
-> >> @@ -23,6 +23,7 @@
-> >>   #include "intel-pasid.h"
-> >>   
-> >>   static irqreturn_t prq_event_thread(int irq, void *d);
-> >> +static void intel_svm_drain_prq(struct device *dev, int pasid);
-> >>   
-> >>   #define PRQ_ORDER 0
-> >>   
-> >> @@ -66,6 +67,8 @@ int intel_svm_enable_prq(struct intel_iommu
-> >> *iommu) dmar_writeq(iommu->reg + DMAR_PQT_REG, 0ULL);
-> >>   	dmar_writeq(iommu->reg + DMAR_PQA_REG,
-> >> virt_to_phys(iommu->prq) | PRQ_ORDER);
-> >> +	init_completion(&iommu->prq_complete);
-> >> +
-> >>   	return 0;
-> >>   }
-> >>   
-> >> @@ -208,6 +211,7 @@ static void intel_mm_release(struct
-> >> mmu_notifier *mn, struct mm_struct *mm) rcu_read_lock();
-> >>   	list_for_each_entry_rcu(sdev, &svm->devs, list) {
-> >>   		intel_pasid_tear_down_entry(svm->iommu,
-> >> sdev->dev, svm->pasid);
-> >> +		intel_svm_drain_prq(sdev->dev, svm->pasid);  
-> > mmu_notifier release is called in atomic context, drain_prq needs to
-> > wait for completion. I tested exit path when a process crashes. I
-> > got
-> > 
-> > [  +0.696214] BUG: sleeping function called from invalid context at
-> > kernel/sched/completion.c:101 [  +0.000068] in_atomic(): 1,
-> > irqs_disabled(): 0, non_block: 0, pid: 3235, name: dsatest
-> > [  +0.000046] INFO: lockdep is turned off. [  +0.000002] CPU: 1
-> > PID: 3235 Comm: dsatest Not tainted 5.7.0-rc1-z-svmtest+ #1637
-> > [  +0.000000] Hardware name: Intel Corporation Kabylake Client
-> > platform/Skylake Halo DDR4 RVP11, BIOS 04.1709050855 09/05/2017
-> > [  +0.000001] Call Trace: [  +0.000004]  dump_stack+0x68/0x9b
-> > [  +0.000003]  ___might_sleep+0x229/0x250
-> > [  +0.000003]  wait_for_completion_timeout+0x3c/0x110
-> > [  +0.000003]  intel_svm_drain_prq+0x12f/0x210
-> > [  +0.000003]  intel_mm_release+0x73/0x110
-> > [  +0.000003]  __mmu_notifier_release+0x94/0x220
-> > [  +0.000002]  ? do_munmap+0x10/0x10
-> > [  +0.000002]  ? prepare_ftrace_return+0x5c/0x80
-> > [  +0.000003]  exit_mmap+0x156/0x1a0
-> > [  +0.000002]  ? mmput+0x44/0x120
-> > [  +0.000003]  ? exit_mmap+0x5/0x1a0
-> > [  +0.000002]  ? ftrace_graph_caller+0xa0/0xa0
-> > [  +0.000001]  mmput+0x5e/0x120
-> > 
-> >   
-> 
-> Thanks a lot!
-> 
-> Actually, we can't drain page requests in this mm_notifier code path,
-> right? The assumptions of page request draining are that 1) the device
-> driver has drained DMA requests in the device end; 2) the pasid entry
-> has been marked as non-present. So we could only drain page requests
-> in the unbind path.
-> 
-> Thought?
-> 
-Right, we could save the drain here. unbind will come soon when mm
-exits. So even the in flight PRs come through, we could just respond
-with "Invalid Response" after mm exit starts. The current code already
-checks if the mm is exiting by mmget_not_zero.
+else if (root_cache->max_attr_size < ARRAY_SIZE(mbuf))
+	buf = mbuf;
 
-> Best regards,
-> baolu
+max_attr_size is only 2 from slab_attr_store(), then, it uses mbuf[64]
+in show_stat() later where a bounch of sprintf() would overrun the stack
+variable. Fix it by always allocating a page of buffer to be used in
+show_stat() if SLUB_STATS=y which should only be used for debug purpose.
 
-[Jacob Pan]
+ # echo 1 > /sys/kernel/slab/fs_cache/shrink
+ BUG: KASAN: stack-out-of-bounds in number+0x421/0x6e0
+ Write of size 1 at addr ffffc900256cfde0 by task kworker/76:0/53251
+
+ Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
+ Workqueue: memcg_kmem_cache memcg_kmem_cache_create_func
+ Call Trace:
+  dump_stack+0xa7/0xea
+  print_address_description.constprop.5.cold.7+0x64/0x384
+  __kasan_report.cold.8+0x76/0xda
+  kasan_report+0x41/0x60
+  __asan_store1+0x6d/0x70
+  number+0x421/0x6e0
+  vsnprintf+0x451/0x8e0
+  sprintf+0x9e/0xd0
+  show_stat+0x124/0x1d0
+  alloc_slowpath_show+0x13/0x20
+  __kmem_cache_create+0x47a/0x6b0
+
+ addr ffffc900256cfde0 is located in stack of task kworker/76:0/53251 at offset 0 in frame:
+  process_one_work+0x0/0xb90
+
+ this frame has 1 object:
+  [32, 72) 'lockdep_map'
+
+ Memory state around the buggy address:
+  ffffc900256cfc80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  ffffc900256cfd00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ >ffffc900256cfd80: 00 00 00 00 00 00 00 00 00 00 00 00 f1 f1 f1 f1
+                                                        ^
+  ffffc900256cfe00: 00 00 00 00 00 f2 f2 f2 00 00 00 00 00 00 00 00
+  ffffc900256cfe80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ==================================================================
+ Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in: __kmem_cache_create+0x6ac/0x6b0
+ Workqueue: memcg_kmem_cache memcg_kmem_cache_create_func
+ Call Trace:
+  dump_stack+0xa7/0xea
+  panic+0x23e/0x452
+  __stack_chk_fail+0x22/0x30
+  __kmem_cache_create+0x6ac/0x6b0
+
+Fixes: 107dab5c92d5 ("slub: slub-specific propagation changes")
+Signed-off-by: Qian Cai <cai@lca.pw>
+---
+ mm/slub.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index 9bf44955c4f1..57731f29dde3 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -5639,7 +5639,8 @@ static void memcg_propagate_slab_attrs(struct kmem_cache *s)
+ 		 */
+ 		if (buffer)
+ 			buf = buffer;
+-		else if (root_cache->max_attr_size < ARRAY_SIZE(mbuf))
++		else if (root_cache->max_attr_size < ARRAY_SIZE(mbuf) &&
++			 !IS_ENABLED(CONFIG_SLUB_STATS))
+ 			buf = mbuf;
+ 		else {
+ 			buffer = (char *) get_zeroed_page(GFP_KERNEL);
+-- 
+2.21.0 (Apple Git-122.2)
+
