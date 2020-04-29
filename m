@@ -2,659 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18D9D1BEC5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 01:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F82E1BEC57
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 01:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgD2XCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 19:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727114AbgD2XCj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 19:02:39 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5110C03C1AE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 16:02:38 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j1so4592042wrt.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 16:02:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U5oOmUf0LQqY0nbXDP/UFoOT31Gi+8DY/ogKRjemV4o=;
-        b=KMCCQCgg7WCPGXdnkJ0rwLtdbf8BKODQIJFSca7iKXTRuSiJQnEI6x+Vgqx1ObNnQm
-         tBDS+b1HWVo4H/mT7A3UK7+S69khBcC4dW9cvjXGULj8yCroiKyYF3/yTx05nlNJikm+
-         R+nRiVcSMQ0Dm0eUVtghAQR0mvX4uKWQQMrdrI0WybZCF+w6JfD0/iQgehKFvDMS6tTA
-         3muL9kFjLu6H51LecsZH5+ymsnZomsNWJHd0PiJt+2fI/3DQ2CfMsjMp7P/sxnBgdWtV
-         xHCi/z5RsWaOklmfGh+Hqh5u4v5xNCxedOMyEMs2brv8eGwpXrUsiLGPCz/ZM2hZGEob
-         l+VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=U5oOmUf0LQqY0nbXDP/UFoOT31Gi+8DY/ogKRjemV4o=;
-        b=spfkC2gM/4FvTiI9CBXHPnUTKlRqKe3NUKdwXYesg7RUevCQYGR5hSRh0vP3fNNsrh
-         jW4Zzf21k40BMWVykBDcdhGHXIRaiaUVbPnDUWuRA0fnOY0DMdiX2BiWaQAtbVdntw1A
-         hBR7OM63Plgye9WtcSniyfFsXIuJubsXtj3p8pWtK+p5kbv2KkArUQZl7mwtX0rrVTUo
-         CTqFo/IOZxmqX9hA5LrTw/jq9y7z23jQOn/Rm/UQskNK89tlQ7bUlyc79arkOjX3SPEy
-         uOFkjnxvEljWuWcJbfzfDZezgf9aMcOCRbZrzbCcGQGOuq+iNusUvipztGwSBT/ctWLD
-         W7oA==
-X-Gm-Message-State: AGi0Pubz2Pde8Z51rWxlIQJeSfIBG8po9C711MDT7Ry+uDixNrrfkBFg
-        KUq7DbGdFI71B4DEG786q9o=
-X-Google-Smtp-Source: APiQypJdi9qvk4VaWDZUW46BCTpVJl8V3tsf+LbKZ8EmYjytMOV0vagzHW/m0+961OI0jOyHsG6Wnw==
-X-Received: by 2002:adf:e8c4:: with SMTP id k4mr253818wrn.209.1588201357051;
-        Wed, 29 Apr 2020 16:02:37 -0700 (PDT)
-Received: from akira-laptop.home ([2a01:cb19:8b28:7600:a0b9:1c6f:cfba:2b21])
-        by smtp.googlemail.com with ESMTPSA id y9sm9390861wmm.26.2020.04.29.16.02.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 16:02:36 -0700 (PDT)
-From:   Akira Shimahara <akira215corp@gmail.com>
-To:     greg@kroah.com
-Cc:     zbr@ioremap.net, linux-kernel@vger.kernel.org,
-        Akira Shimahara <akira215corp@gmail.com>
-Subject: [PATCH v4 9/9] w1_therm: adding bulk read support to trigger multiple conversion on the bus
-Date:   Thu, 30 Apr 2020 01:02:27 +0200
-Message-Id: <20200429230227.200950-1-akira215corp@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1727901AbgD2XCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 19:02:32 -0400
+Received: from mga11.intel.com ([192.55.52.93]:65455 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726164AbgD2XCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 19:02:32 -0400
+IronPort-SDR: iWRh/dzCdigfwf3JFZ8vSIJuaBggYo5ezW3522W6R9U9d4KkEG1k/SM+5urXKTLuBbp21b6vm0
+ jbR99PfxCzUQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 16:02:31 -0700
+IronPort-SDR: vaokhmIa5VvUIIGTviyZG7HRd2E2dm4X6gRMTkTynFEuEdgrWdwd8jJvVqbzFY+T805xnbtKLB
+ MEqgunexeidg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
+   d="scan'208";a="405202065"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga004.jf.intel.com with ESMTP; 29 Apr 2020 16:02:30 -0700
+Message-ID: <dd5b9bab31ecf247a0b4890e22bfbb486ff52001.camel@intel.com>
+Subject: Re: [PATCH v10 01/26] Documentation/x86: Add CET description
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>
+Date:   Wed, 29 Apr 2020 16:02:33 -0700
+In-Reply-To: <b5197a8d-5d8b-e1f7-68d4-58d80261904c@intel.com>
+References: <20200429220732.31602-1-yu-cheng.yu@intel.com>
+         <20200429220732.31602-2-yu-cheng.yu@intel.com>
+         <b5197a8d-5d8b-e1f7-68d4-58d80261904c@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch for enhacement of w1_therm module. Adding bulk read support.
-Sending a 'trigger' command in the dedicated sysfs entry of bus master
-device send a conversion command for all the slaves on the bus. The sysfs
-entry is added as soon as at least one device supporting this feature
-is detected on the bus.
+On Wed, 2020-04-29 at 15:53 -0700, Dave Hansen wrote:
+> On 4/29/20 3:07 PM, Yu-cheng Yu wrote:
+> > +Note:
+> > +  There is no CET-enabling arch_prctl function.  By design, CET is enabled
+> > +  automatically if the binary and the system can support it.
+> 
+> I think Andy and I danced around this last time.  Let me try to say it
+> more explicitly.
+> 
+> I want CET kernel enabling to able to be disconnected from the on-disk
+> binary.  I want a binary compiled with CET to be able to disable it, and
+> I want a binary not compiled with CET to be able to enable it.  I want
+> different threads in a process to be able to each have different CET status.
 
-The behavior of the sysfs reading temperature on the device is as follow:
- * If no bulk read pending, trigger a conversion on the device, wait for
- the conversion to be done, read the temperature in device RAM
-* If a bulk read has been trigger, access directly the device RAM
+The kernel patches we have now can be modified to support this model.  If after
+discussion this is favorable, I will modify code accordingly.
 
-Reading the therm_bulk_read sysfs give the status of bulk operations:
- * `-1`: conversion in progress on at least 1 sensor
- * `1`: conversion complete but at least one sensor has not been read yet
- * `0`: no bulk operation. Reading temperature on ecah device will trigger
-a conversion
+> Which JITs was this tested with?  I think as a bare minimum we need to
+> know that this design can accommodate _a_ modern JIT.  It would be
+> horrible if the browser javascript engines couldn't use this design, for
+> instance.
 
-As not all devices support bulk read feature, it has been added in device
-family structure.
+JIT work is still in progress.  When that is available I will test it.
 
-The attribute is set at master level as soon as a supporting device is
-discover. It is removed when the last supported device leave the bus.
-The count of supported device is kept with the static counter
-bulk_read_device_counter.
-
-A strong pull up is apply on the line if at least one device required it.
-The duration of the pull up is the max time required by a device on the
-line, which depends on the resolution settings of each device. The strong
-pull up could be adjust with the a module parameter.
-
-Updating documentation in Documentation/ABI/testing/sysfs-driver-w1_therm
-and Documentation/w1/slaves/w1_therm.rst accordingly.
-
-Signed-off-by: Akira Shimahara <akira215corp@gmail.com>
----
- .../ABI/testing/sysfs-driver-w1_therm         |  36 ++-
- Documentation/w1/slaves/w1_therm.rst          |  50 +++-
- drivers/w1/slaves/w1_therm.c                  | 214 +++++++++++++++++-
- drivers/w1/slaves/w1_therm.h                  |  46 ++++
- 4 files changed, 331 insertions(+), 15 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-driver-w1_therm b/Documentation/ABI/testing/sysfs-driver-w1_therm
-index 39488a4..1f911ed 100644
---- a/Documentation/ABI/testing/sysfs-driver-w1_therm
-+++ b/Documentation/ABI/testing/sysfs-driver-w1_therm
-@@ -61,9 +61,16 @@ Date:		Apr 2020
- Contact:	Akira Shimahara <akira215corp@gmail.com>
- Description:
- 		(RO) return the temperature in 1/1000 degC.
--		Note that the conversion duration depend on the resolution (if
--		device support this feature). It takes 94ms in 9bits
--		resolution, 750ms for 12bits.
-+			* If a bulk read has been triggered, it will directly
-+			return the temperature computed when the bulk read
-+			occurred, if available. If not yet available, nothing
-+			is returned (a debug kernel message is sent), you
-+			should retry later on.
-+			* If no bulk read has been triggered, it will trigger
-+			a conversion and send the result. Note that the
-+			conversion duration depend on the resolution (if
-+			device support this feature). It takes 94ms in 9bits
-+			resolution, 750ms for 12bits.
- Users:		any user space application which wants to communicate with
- 		w1_term device
- 
-@@ -84,4 +91,25 @@ Description:
- 		refer to Documentation/w1/slaves/w1_therm.rst for detailed
- 		information.
- Users:		any user space application which wants to communicate with
--		w1_term device
-\ No newline at end of file
-+		w1_term device
-+
-+
-+What:		/sys/bus/w1/devices/w1_bus_masterXX/therm_bulk_read
-+Date:		Apr 2020
-+Contact:	Akira Shimahara <akira215corp@gmail.com>
-+Description:
-+		(RW) trigger a bulk read conversion. read the status
-+		*read*:
-+			* `-1`: conversion in progress on at least 1 sensor
-+			* `1` :	conversion complete but at least one sensor
-+				value has not been read yet
-+			* `0` :	no bulk operation. Reading temperature will
-+				trigger a conversion on each device
-+		*write*: `trigger`: trigger a bulk read on all supporting
-+			devices on the bus
-+		Note that if a bulk read is sent but one sensor is not read
-+		immediately, the next access to temperature on this device
-+		will return the temperature measured at the time of issue
-+		of the bulk read command (not the current temperature).
-+Users:		any user space application which wants to communicate with
-+		w1_term device
-diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
-index 82e8ffe..06eaff1 100644
---- a/Documentation/w1/slaves/w1_therm.rst
-+++ b/Documentation/w1/slaves/w1_therm.rst
-@@ -26,20 +26,31 @@ W1_THERM_DS1825		0x3B
- W1_THERM_DS28EA00	0x42
- ====================	====
- 
--Support is provided through the sysfs w1_slave file.  Each open and
-+Support is provided through the sysfs w1_slave file. Each open and
- read sequence will initiate a temperature conversion then provide two
--lines of ASCII output.  The first line contains the nine hex bytes
-+lines of ASCII output. The first line contains the nine hex bytes
- read along with a calculated crc value and YES or NO if it matched.
--If the crc matched the returned values are retained.  The second line
-+If the crc matched the returned values are retained. The second line
- displays the retained values along with a temperature in millidegrees
- Centigrade after t=.
- 
--Parasite powered devices are limited to one slave performing a
--temperature conversion at a time.  If none of the devices are parasite
--powered it would be possible to convert all the devices at the same
--time and then go back to read individual sensors.  That isn't
--currently supported.  The driver also doesn't support reduced
--precision (which would also reduce the conversion time) when reading values.
-+Alternatively, temperature can be read using temperature sysfs, it
-+return only temperature in millidegrees Centigrade.
-+
-+A bulk read of all devices on the bus could be done writing 'trigger'
-+in the therm_bulk_read sysfs entry at w1_bus_master level. This will
-+sent the convert command on all devices on the bus, and if parasite
-+powered devices are detected on the bus (and strong pullup is enable
-+in the module), it will drive the line high during the longer conversion
-+time required by parasited powered device on the line. Reading
-+therm_bulk_read will return 0 if no bulk conversion pending,
-+-1 if at least one sensor still in conversion, 1 if conversion is complete
-+but at least one sensor value has not been read yet. Result temperature is
-+then accessed by reading the temperature sysfs entry of each device, which
-+may return empty if conversion is still in progress. Note that if a bulk
-+read is sent but one sensor is not read immediately, the next access to
-+temperature on this device will return the temperature measured at the
-+time of issue of the bulk read command (not the current temperature).
- 
- Writing a value between 9 and 12 to the sysfs w1_slave file will change the
- precision of the sensor for the next readings. This value is in (volatile)
-@@ -49,6 +60,27 @@ To store the current precision configuration into EEPROM, the value 0
- has to be written to the sysfs w1_slave file. Since the EEPROM has a limited
- amount of writes (>50k), this command should be used wisely.
- 
-+Alternatively, resolution can be set or read (value from 9 to 12) using the
-+dedicated resolution sysfs entry on each device. This sysfs entry is not
-+present for devices not supporting this feature. Driver will adjust the
-+correct conversion time for each device regarding to its resolution setting.
-+In particular, strong pullup will be applied if required during the conversion
-+duration.
-+
-+The write-only sysfs entry eeprom is an alternative for EEPROM operations:
-+  * `save`: will save device RAM to EEPROM
-+  * `restore`: will restore EEPROM data in device RAM.
-+
-+ext_power syfs entry allow tho check the power status of each device.
-+  * `0`: device parasite powered
-+  * `1`: device externally powered
-+
-+sysfs alarms allow read or write TH and TL (Temperature High an Low) alarms.
-+Values shall be space separated and in the device range (typical -55 degC
-+to 125 degC). Values are integer as they are store in a 8bit register in
-+the device. Lowest value is automatically put to TL.Once set, alarms could
-+be search at master level.
-+
- The module parameter strong_pullup can be set to 0 to disable the
- strong pullup, 1 to enable autodetection or 2 to force strong pullup.
- In case of autodetection, the driver will use the "READ POWER SUPPLY"
-diff --git a/drivers/w1/slaves/w1_therm.c b/drivers/w1/slaves/w1_therm.c
-index 90217b1..86af9a3 100644
---- a/drivers/w1/slaves/w1_therm.c
-+++ b/drivers/w1/slaves/w1_therm.c
-@@ -67,6 +67,15 @@ module_param_named(strong_pullup, w1_strong_pullup, int, 0);
-  *	. 'restore'	:	restore EEPROM data in device RAM
-  *				(device do that automatically on power-up)
-  *
-+ * therm_bulk_read (RW): Attribute at master level
-+ *	. 'trigger' : trigger a bulk read on all supporting device on the bus
-+ *  read value:
-+ *	. -1 : conversion is in progress in 1 or more sensor
-+ *	.  1 : conversion complete but at least one sensor has not been read
-+ *	.  0 : no bulk operation. Reading temp will trigger a conversion
-+ * caveat : if a bulk read is sent but one sensor is not read immediately,
-+ *	the next access to temperature will return the temperature measured
-+ *	at the time of issue of the bulk read command
-  *
-  * alarms (RW) : read TH and TL (Temperature High an Low) alarms
-  *	Values shall be space separated and in the device range
-@@ -224,6 +233,7 @@ static struct w1_therm_family_converter w1_therm_families[] = {
- 		.set_resolution	= NULL,	// no config register
- 		.get_resolution	= NULL,	// no config register
- 		.write_data		= w1_DS18S20_write_data,
-+		.bulk_read		= true
- 	},
- 	{
- 		.f			= &w1_therm_family_DS1822,
-@@ -232,6 +242,7 @@ static struct w1_therm_family_converter w1_therm_families[] = {
- 		.set_resolution		= w1_DS18B20_set_resolution,
- 		.get_resolution		= w1_DS18B20_get_resolution,
- 		.write_data		= w1_DS18B20_write_data,
-+		.bulk_read		= true
- 	},
- 	{
- 		.f			= &w1_therm_family_DS18B20,
-@@ -240,6 +251,7 @@ static struct w1_therm_family_converter w1_therm_families[] = {
- 		.set_resolution		= w1_DS18B20_set_resolution,
- 		.get_resolution		= w1_DS18B20_get_resolution,
- 		.write_data		= w1_DS18B20_write_data,
-+		.bulk_read		= true
- 	},
- 	{
- 		.f			= &w1_therm_family_DS28EA00,
-@@ -248,6 +260,7 @@ static struct w1_therm_family_converter w1_therm_families[] = {
- 		.set_resolution		= w1_DS18B20_set_resolution,
- 		.get_resolution		= w1_DS18B20_get_resolution,
- 		.write_data		= w1_DS18B20_write_data,
-+		.bulk_read		= false
- 	},
- 	{
- 		.f			= &w1_therm_family_DS1825,
-@@ -256,6 +269,7 @@ static struct w1_therm_family_converter w1_therm_families[] = {
- 		.set_resolution		= w1_DS18B20_set_resolution,
- 		.get_resolution		= w1_DS18B20_get_resolution,
- 		.write_data		= w1_DS18B20_write_data,
-+		.bulk_read		= true
- 	}
- };
- 
-@@ -419,6 +433,17 @@ static inline bool bus_mutex_lock(struct mutex *lock)
- 	return true;
- }
- 
-+static inline bool bulk_read_support(struct w1_slave *sl)
-+{
-+	if (SLAVE_SPECIFIC_FUNC(sl))
-+		return SLAVE_SPECIFIC_FUNC(sl)->bulk_read;
-+
-+	dev_info(&sl->dev,
-+		"%s: Device not supported by the driver\n", __func__);
-+
-+	return false;  /* No device family */
-+}
-+
- static inline int conversion_time(struct w1_slave *sl)
- {
- 	if (SLAVE_SPECIFIC_FUNC(sl))
-@@ -470,6 +495,23 @@ static int w1_therm_add_slave(struct w1_slave *sl)
- 	}
- 	SLAVE_SPECIFIC_FUNC(sl) = sl_family_conv;
- 
-+	if (bulk_read_support(sl)) {
-+		/* add the sys entry to trigger bulk_read
-+		 * at master level only the 1st time
-+		 */
-+		if (!bulk_read_device_counter) {
-+			int err = device_create_file(&sl->master->dev,
-+				&dev_attr_therm_bulk_read);
-+
-+			if (err)
-+				dev_warn(&sl->dev,
-+				"%s: Device has been added, but bulk read is unavailable. err=%d\n",
-+				__func__, err);
-+		}
-+		/* Increment the counter */
-+		bulk_read_device_counter++;
-+	}
-+
- 	/* Getting the power mode of the device {external, parasite}*/
- 	SLAVE_POWERMODE(sl) = read_powermode(sl);
- 
-@@ -492,6 +534,9 @@ static int w1_therm_add_slave(struct w1_slave *sl)
- 		}
- 	}
- 
-+	/* Finally initialize convert_triggered flag */
-+	SLAVE_CONVERT_TRIGGERED(sl) = 0;
-+
- 	return 0;
- }
- 
-@@ -499,6 +544,14 @@ static void w1_therm_remove_slave(struct w1_slave *sl)
- {
- 	int refcnt = atomic_sub_return(1, THERM_REFCNT(sl->family_data));
- 
-+	if (bulk_read_support(sl)) {
-+		bulk_read_device_counter--;
-+		/* Delete the entry if no more device support the feature */
-+		if (!bulk_read_device_counter)
-+			device_remove_file(&sl->master->dev,
-+				&dev_attr_therm_bulk_read);
-+	}
-+
- 	while (refcnt) {
- 		msleep(1000);
- 		refcnt = atomic_read(THERM_REFCNT(sl->family_data));
-@@ -812,6 +865,94 @@ error:
- 	return ret;
- }
- 
-+static int trigger_bulk_read(struct w1_master *dev_master)
-+{
-+	struct w1_slave *sl = NULL; /* used to iterate through slaves */
-+	int max_trying = W1_THERM_MAX_TRY;
-+	int t_conv = 0;
-+	int ret = -ENODEV;
-+	bool strong_pullup = false;
-+
-+	/* Check whether there are parasite powered device on the bus,
-+	 * and compute duration of conversion for these devices
-+	 * so we can apply a strong pullup if required
-+	 */
-+	list_for_each_entry(sl, &dev_master->slist, w1_slave_entry) {
-+		if (!sl->family_data)
-+			goto error;
-+		if (bulk_read_support(sl)) {
-+			int t_cur = conversion_time(sl);
-+
-+			t_conv = t_cur > t_conv ? t_cur : t_conv;
-+			strong_pullup = strong_pullup ||
-+					(w1_strong_pullup == 2 ||
-+					(!SLAVE_POWERMODE(sl) &&
-+					w1_strong_pullup));
-+		}
-+	}
-+
-+	/* t_conv is the max conversion time required on the bus
-+	 * If its 0, no device support the bulk read feature
-+	 */
-+	if (!t_conv)
-+		goto error;
-+
-+	if (!bus_mutex_lock(&dev_master->bus_mutex)) {
-+		ret = -EAGAIN;	// Didn't acquire the mutex
-+		goto error;
-+	}
-+
-+	while ((max_trying--) && (ret < 0)) { /* ret should be either 0 */
-+
-+		if (!w1_reset_bus(dev_master)) {	/* Just reset the bus */
-+			unsigned long sleep_rem;
-+
-+			w1_write_8(dev_master, W1_SKIP_ROM);
-+
-+			if (strong_pullup)	/* Apply pullup if required */
-+				w1_next_pullup(dev_master, t_conv);
-+
-+			w1_write_8(dev_master, W1_CONVERT_TEMP);
-+
-+			/* set a flag to instruct that converT pending */
-+			list_for_each_entry(sl,
-+				&dev_master->slist, w1_slave_entry) {
-+				if (bulk_read_support(sl))
-+					SLAVE_CONVERT_TRIGGERED(sl) = -1;
-+			}
-+
-+			if (strong_pullup) { /*some device need pullup */
-+				sleep_rem = msleep_interruptible(t_conv);
-+				if (sleep_rem != 0) {
-+					ret = -EINTR;
-+					goto mt_unlock;
-+				}
-+				mutex_unlock(&dev_master->bus_mutex);
-+			} else {
-+				mutex_unlock(&dev_master->bus_mutex);
-+				sleep_rem = msleep_interruptible(t_conv);
-+				if (sleep_rem != 0) {
-+					ret = -EINTR;
-+					goto set_flag;
-+				}
-+			}
-+			ret = 0;
-+			goto set_flag;
-+		}
-+	}
-+
-+mt_unlock:
-+	mutex_unlock(&dev_master->bus_mutex);
-+set_flag:
-+	/* set a flag to register convsersion is done */
-+	list_for_each_entry(sl, &dev_master->slist, w1_slave_entry) {
-+		if (bulk_read_support(sl))
-+			SLAVE_CONVERT_TRIGGERED(sl) = 1;
-+	}
-+error:
-+	return ret;
-+}
-+
- /*------------------------Interface sysfs--------------------------*/
- 
- static ssize_t w1_slave_show(struct device *device,
-@@ -823,7 +964,20 @@ static ssize_t w1_slave_show(struct device *device,
- 	int ret, i;
- 	ssize_t c = PAGE_SIZE;
- 
--	ret = convert_t(sl, &info);
-+	if (bulk_read_support(sl)) {
-+		if (SLAVE_CONVERT_TRIGGERED(sl) < 0) {
-+			dev_dbg(device,
-+				"%s: Conversion in progress, retry later\n",
-+				__func__);
-+			return 0;
-+		} else if (SLAVE_CONVERT_TRIGGERED(sl) > 0) {
-+			/* A bulk read has been issued, read the device RAM */
-+			ret = read_scratchpad(sl, &info);
-+			SLAVE_CONVERT_TRIGGERED(sl) = 0;
-+		} else
-+			ret = convert_t(sl, &info);
-+	} else
-+		ret = convert_t(sl, &info);
- 
- 	if (ret < 0) {
- 		dev_dbg(device,
-@@ -904,7 +1058,20 @@ static ssize_t temperature_show(struct device *device,
- 		return 0;  /* No device family */
- 	}
- 
--	ret = convert_t(sl, &info);
-+	if (bulk_read_support(sl)) {
-+		if (SLAVE_CONVERT_TRIGGERED(sl) < 0) {
-+			dev_dbg(device,
-+				"%s: Conversion in progress, retry later\n",
-+				__func__);
-+			return 0;
-+		} else if (SLAVE_CONVERT_TRIGGERED(sl) > 0) {
-+			/* A bulk read has been issued, read the device RAM */
-+			ret = read_scratchpad(sl, &info);
-+			SLAVE_CONVERT_TRIGGERED(sl) = 0;
-+		} else
-+			ret = convert_t(sl, &info);
-+	} else
-+		ret = convert_t(sl, &info);
- 
- 	if (ret < 0) {
- 		dev_dbg(device,
-@@ -1138,6 +1305,49 @@ free_m:
- 	return size;
- }
- 
-+static ssize_t therm_bulk_read_store(struct device *device,
-+	struct device_attribute *attr, const char *buf, size_t size)
-+{
-+	struct w1_master *dev_master = dev_to_w1_master(device);
-+	int ret = -EINVAL; // Invalid argument
-+
-+	if (size == sizeof(BULK_TRIGGER_CMD))
-+		if (!strncmp(buf, BULK_TRIGGER_CMD,
-+				sizeof(BULK_TRIGGER_CMD)-1))
-+			ret = trigger_bulk_read(dev_master);
-+
-+	if (ret)
-+		dev_info(device,
-+			"%s: unable to trigger a bulk read on the bus. err=%d\n",
-+			__func__, ret);
-+
-+	return size;
-+}
-+
-+static ssize_t therm_bulk_read_show(struct device *device,
-+	struct device_attribute *attr, char *buf)
-+{
-+	struct w1_master *dev_master = dev_to_w1_master(device);
-+	struct w1_slave *sl = NULL;
-+	int ret = 0;
-+
-+	list_for_each_entry(sl, &dev_master->slist, w1_slave_entry) {
-+		if (sl->family_data) {
-+			if (bulk_read_support(sl)) {
-+				if (SLAVE_CONVERT_TRIGGERED(sl) == -1) {
-+					ret = -1;
-+					goto show_result;
-+				}
-+				if (SLAVE_CONVERT_TRIGGERED(sl) == 1)
-+					/* continue to check other slaves */
-+					ret = 1;
-+			}
-+		}
-+	}
-+show_result:
-+	return sprintf(buf, "%d\n", ret);
-+}
-+
- #if IS_REACHABLE(CONFIG_HWMON)
- static int w1_read_temp(struct device *device, u32 attr, int channel,
- 			long *val)
-diff --git a/drivers/w1/slaves/w1_therm.h b/drivers/w1/slaves/w1_therm.h
-index d4c560a..8b74603 100644
---- a/drivers/w1/slaves/w1_therm.h
-+++ b/drivers/w1/slaves/w1_therm.h
-@@ -39,10 +39,14 @@
- 
- #define EEPROM_CMD_WRITE    "save"	/* cmd for write eeprom sysfs */
- #define EEPROM_CMD_READ     "restore"	/* cmd for read eeprom sysfs */
-+#define BULK_TRIGGER_CMD    "trigger"	/* cmd to trigger a bulk read */
- 
- #define MIN_TEMP	-55	/* min temperature that can be mesured */
- #define MAX_TEMP	125	/* max temperature that can be mesured */
- 
-+/* Counter for devices supporting bulk reading */
-+static u16 bulk_read_device_counter; // =0 as per C standard
-+
- /*----------------------------------Structs---------------------------------*/
- 
- /**
-@@ -61,6 +65,7 @@ struct w1_therm_family_converter {
- 	int		(*set_resolution)(struct w1_slave *sl, int val);
- 	int		(*get_resolution)(struct w1_slave *sl);
- 	int		(*write_data)(struct w1_slave *sl, const u8 *data);
-+	bool		bulk_read;
- };
- 
- /**
-@@ -78,6 +83,7 @@ struct w1_therm_family_data {
- 	atomic_t refcnt;
- 	int external_powered;
- 	int resolution;
-+	int convert_triggered;
- 	struct w1_therm_family_converter *specific_functions;
- };
- 
-@@ -128,6 +134,14 @@ static inline int w1_DS18B20_get_resolution(struct w1_slave *sl);
- #define SLAVE_RESOLUTION(sl) \
- 	(((struct w1_therm_family_data *)(sl->family_data))->resolution)
- 
-+/*  return whether or not a converT command has been issued to the slave
-+ *  0: no bulk read is pending
-+ * -1: conversion is in progress
-+ *  1: conversion done, result to be read
-+ */
-+#define SLAVE_CONVERT_TRIGGERED(sl) \
-+	(((struct w1_therm_family_data *)(sl->family_data))->convert_triggered)
-+
- /* return the address of the refcnt in the family data */
- #define THERM_REFCNT(family_data) \
- 	(&((struct w1_therm_family_data *)family_data)->refcnt)
-@@ -148,6 +162,12 @@ static struct w1_therm_family_converter *device_family(struct w1_slave *sl);
-  */
- static inline bool bus_mutex_lock(struct mutex *lock);
- 
-+/** support_bulk_read() check is device is supporting bulk read
-+ *  @param sl device to get the conversion time
-+ *  @return true : bulk read support, false : no support or error
-+ */
-+static inline bool bulk_read_support(struct w1_slave *sl);
-+
- /** conversion_time() get the Tconv fo the device
-  *  @param sl device to get the conversion time
-  *  @return conversion time in ms, negative values kernel error code
-@@ -228,6 +248,14 @@ static int recall_eeprom(struct w1_slave *sl);
-  */
- static int read_powermode(struct w1_slave *sl);
- 
-+/** trigger_bulk_read()
-+ * @brief send a SKIP ROM follow by a CONVERT T commmand
-+ * on the bus. It also set a flag in each slave struct to signal
-+ * @param dev_master the device master of the bus
-+ * @return 0 if success, -kernel error code otherwise
-+ */
-+static int trigger_bulk_read(struct w1_master *dev_master);
-+
- /*----------------------------Interface sysfs-------------------------------*/
- 
- /** @brief A callback function to output the temperature Old way
-@@ -298,6 +326,22 @@ static ssize_t alarms_store(struct device *device,
-  */
- static ssize_t alarms_show(struct device *device,
- 	struct device_attribute *attr, char *buf);
-+
-+/** @brief A callback function to trigger bulk read on the bus
-+ *  @param check BULK_TRIGGER_CMD macro
-+ */
-+static ssize_t therm_bulk_read_store(struct device *device,
-+	struct device_attribute *attr, const char *buf, size_t size);
-+
-+
-+/** @brief A callback function to check if bulk read is on progress
-+ *  @return	-1 conversion in progress
-+ *			1 conversion complete but not read on all sensors
-+ *			0 no bulk operation pending
-+ */
-+static ssize_t therm_bulk_read_show(struct device *device,
-+	struct device_attribute *attr, char *buf);
-+
- /*-----------------------------Attributes declarations----------------------*/
- 
- static DEVICE_ATTR_RW(w1_slave);
-@@ -308,6 +352,8 @@ static DEVICE_ATTR_RW(resolution);
- static DEVICE_ATTR_WO(eeprom);
- static DEVICE_ATTR_RW(alarms);
- 
-+static DEVICE_ATTR_RW(therm_bulk_read); /* attribut at master level */
-+
- /*--------------------------Interface Functions-----------------------------*/
- 
- /** w1_therm_add_slave() - Called each time a search discover a new device
--- 
-2.26.2
+Yu-cheng
 
