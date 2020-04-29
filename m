@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3351BE675
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 387501BE686
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbgD2Sn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 14:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
+        id S1726852AbgD2Sql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 14:46:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726456AbgD2Sn3 (ORCPT
+        by vger.kernel.org with ESMTP id S1726554AbgD2Sqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 14:43:29 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494C3C03C1AE;
-        Wed, 29 Apr 2020 11:43:29 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 32A2A1210D904;
-        Wed, 29 Apr 2020 11:43:28 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 11:43:27 -0700 (PDT)
-Message-Id: <20200429.114327.1585519928398105692.davem@davemloft.net>
-To:     zou_wei@huawei.com
-Cc:     aviad.krawczyk@huawei.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next v2] hinic: Use ARRAY_SIZE for
- nic_vf_cmd_msg_handler
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1588133860-55722-1-git-send-email-zou_wei@huawei.com>
-References: <1588133860-55722-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 29 Apr 2020 11:43:28 -0700 (PDT)
+        Wed, 29 Apr 2020 14:46:40 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7829BC03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:46:40 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id v8so5636466wma.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:46:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:in-reply-to:references:date:message-id:mime-version;
+        bh=V3qZVHwLaLK/I0b0rJ63jIE3SQ22bSXyi7PMzS7GVwc=;
+        b=v8RjEYW2XwlnNxy17CGhj1lG7soRDm2FdRbHVvt07M7BPpiZupWPv5xqJsnSj6KoLA
+         dT9Cr8hP8fI35N+Q14QOEu6k1jbn4fMl82QE+K0xgmvNVRMoVc8292y7H8ByWjjFSE7a
+         PdbGY8EE7mNL29zhFBZ0bITzNJ1JSUCby2sDsYTwnaIlxN/lwf6pZgwsQvgo1zIP9RQv
+         Qq2Fh/ztGRrUxpFSqjhVDt/ey9aa8li4ufifTG+lN0dB9PU2hxbGUHi2k9DZnUBRoCFI
+         iEp12Az23yfAo4hTW1jDEaXzPTQYHVa6JTT+GTErAiK+w+i5TMEjybytvo6Bzyp1jSBX
+         zOuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=V3qZVHwLaLK/I0b0rJ63jIE3SQ22bSXyi7PMzS7GVwc=;
+        b=kf5vhOa+BZ+qS0DR3a3cc4fhkb6l3DreTVqp0Ljy+uMOHf1TTrC/rCMDkp0OunL7W9
+         xtd7zM5OkphfKx9hunaOjZba9A8SFchv8DDeEIuxF1zHM7Pdvzn5ucMITeTLBIw/LA5k
+         yyWLm9fwlMYiRkorbnZEmtRHZXnz7VGNhuTDl4782Jvv6i98E94ojEdpbGrS25r8TYjU
+         rD2YYegUIZkoSpeahmFE7aeSzKvPSA6dk5ZGwKItfY20v5pAo7r/TLjsGP9Xcpbm95ii
+         mgZZVB+wiv2RQHwWD74ACO2nu+PngMWV97sh0Rn2JoXTUNp0/qjRNuXxRdJ49DfxxPat
+         4+yw==
+X-Gm-Message-State: AGi0PuYWX5xmj5vI+bJAPqHS7Udb8sCBFArMcUFMjrMRGX9NFluvmxxA
+        8HTeTlECTKUDYCumqEZ+JeXGFg==
+X-Google-Smtp-Source: APiQypJdmpXOVXDmvkIQZMAsdMpd1NkWe/42oxJwKXczVw0SkYct2NGkjK3LGFf2yreraYRKmtXSIw==
+X-Received: by 2002:a1c:3dd6:: with SMTP id k205mr4774219wma.138.1588185998986;
+        Wed, 29 Apr 2020 11:46:38 -0700 (PDT)
+Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
+        by smtp.gmail.com with ESMTPSA id o6sm145378wrw.63.2020.04.29.11.46.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 29 Apr 2020 11:46:38 -0700 (PDT)
+From:   Kevin Hilman <khilman@baylibre.com>
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: meson-g12b-khadas-vim3: fix missing frddr_a node
+In-Reply-To: <AA7AFC1F-AB6E-438D-8510-BC472552C554@gmail.com>
+References: <20200415095927.3780-1-christianshewitt@gmail.com> <AA7AFC1F-AB6E-438D-8510-BC472552C554@gmail.com>
+Date:   Wed, 29 Apr 2020 11:46:35 -0700
+Message-ID: <7hftcmku44.fsf@baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zou Wei <zou_wei@huawei.com>
-Date: Wed, 29 Apr 2020 12:17:40 +0800
+Christian Hewitt <christianshewitt@gmail.com> writes:
 
-> fix coccinelle warning, use ARRAY_SIZE
-> 
-> drivers/net/ethernet/huawei/hinic/hinic_sriov.c:713:43-44: WARNING: Use ARRAY_SIZE
-> 
-> ----------
+>> On 15 Apr 2020, at 1:59 pm, chewitt <christianshewitt@gmail.com> wrote:
+>> 
+>> From: Christian Hewitt <christianshewitt@gmail.com>
+>> 
+>> The frddr_a node was accidently deleted when creating a common dtsi for the
+>> Khadas VIM3/VIM3L boards, preventing audio from working on the VIM3.
+>> 
+>> Fixes: 4f26cc1c96c9 ("arm64: dts: khadas-vim3: move common nodes into meson-khadas-vim3.dtsi")
+>> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+>> ---
+>> arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi | 4 ++++
+>> 1 file changed, 4 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
+>> index c33e85fbdaba..c6c8caed8327 100644
+>> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
+>> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
+>> @@ -154,6 +154,10 @@
+>> 	clock-latency = <50000>;
+>> };
+>> 
+>> +&frddr_a {
+>> +	status = "okay";
+>> +};
+>> +
+>> &frddr_b {
+>> 	status = "okay";
+>> };
+>> -- 
+>> 2.17.1
+>
+> NB: I appears the same change was sent by Neil in [1] as a fix to 5.4, but
+> this appears to have been dropped/missed somewhere.
+>
+> [1] https://patchwork.kernel.org/patch/11198535/
 
-Please don't put this "-------" here.
+Hmm, not sure how I dropped that one.  I applied (again) the original
+from Neil (with updated tags from Jerome) and queued as fix for v5.7-rc.
 
-> diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-> index b24788e..af70cca 100644
-> --- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-> +++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-> @@ -704,17 +704,15 @@ int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
->  	struct hinic_hwdev *dev = hwdev;
->  	struct hinic_func_to_io *nic_io;
->  	struct hinic_pfhwdev *pfhwdev;
-> -	u32 i, cmd_number;
-> +	u32 i;
->  	int err = 0;
+Sorry,
 
-Please preserve the reverse christmas tree ordering of local variables.
+Kevin
