@@ -2,162 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716091BE6B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849731BE6C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 20:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgD2Szo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 14:55:44 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:44627 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726423AbgD2Szn (ORCPT
+        id S1726951AbgD2S6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 14:58:31 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:37191 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726556AbgD2S6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 14:55:43 -0400
-Received: by mail-oo1-f65.google.com with SMTP id p67so666476ooa.11;
-        Wed, 29 Apr 2020 11:55:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=u16NUB++zzs8ASIrzVSF/fR0H3eWvFCKsVAOeZG9UVg=;
-        b=Qtsk3cpCaPfBW1rwZ2GN8FasqARBsgTiv0V/ihpjNJPyfAg9mFzjDHVmw/vAVYb5nm
-         u1YO7ASxx84MkQ6kV3aqBCVqlV3KUWFUTJc86NroeVfNOoOHe97WfOg6EIAct7U6qC5V
-         lnyBwKkiJBhANfigqYRhjNSYh41Yz/RK2Dz31uWH7dsiHlkO2wmhWDwQnWfLxkQ65AII
-         ycFrhNeAWivOfVEkEmyXArUxOUpkQS2i5F5tdT+cx/vQ/gZ6XXNPsmcZpXBhsdpsPd7U
-         dtTKLY4s7v+IgpUO6fHL8oWnY/jouYpCstea2LjmxivDYXXKfStq5C1i5+7GkDYNqRPi
-         wo7A==
-X-Gm-Message-State: AGi0PuZ/jAQHmsHJtrB6L3lj1OKMwbop+o5dTJWJhutXoJIx4ogZ3MMj
-        wCS626DifHZzlbrXj7MHxsKF+T8=
-X-Google-Smtp-Source: APiQypKZmFn4ieLoQnLl00W9LHE8B+/oqsFhymLM2UBRFIfqezRtXikGpPwDFP7DIfapNQ/TtUH37Q==
-X-Received: by 2002:a4a:a98b:: with SMTP id w11mr28658046oom.80.1588186542853;
-        Wed, 29 Apr 2020 11:55:42 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t5sm650514oor.36.2020.04.29.11.55.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 11:55:42 -0700 (PDT)
-Received: (nullmailer pid 31714 invoked by uid 1000);
-        Wed, 29 Apr 2020 18:55:41 -0000
-Date:   Wed, 29 Apr 2020 13:55:41 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, bhelgaas@google.com, rgummal@xilinx.com
-Subject: Re: [PATCH v6 1/2] PCI: xilinx-cpm: Add device tree binding for
- Versal CPM Root Port
-Message-ID: <20200429185541.atk5k4j7rgh7ipmr@bogus>
-References: <1587729844-20798-1-git-send-email-bharat.kumar.gogada@xilinx.com>
- <1587729844-20798-2-git-send-email-bharat.kumar.gogada@xilinx.com>
+        Wed, 29 Apr 2020 14:58:30 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1Mo73N-1ioFcd47Vz-00pZnh; Wed, 29 Apr 2020 20:57:33 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Marc Zyngier <maz@kernel.org>, Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Guan Xuetao <gxt@pku.edu.cn>,
+        James Morse <james.morse@arm.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Tony Luck <tony.luck@intel.com>, Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: kvm: fix gcc-10 shift warning
+Date:   Wed, 29 Apr 2020 20:56:20 +0200
+Message-Id: <20200429185657.4085975-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587729844-20798-2-git-send-email-bharat.kumar.gogada@xilinx.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:8OXL6NQmTkcBiOCkHQGhzeqEoFYUxBw7WVzJaTTnU7kjO2pO0JM
+ vohxDpabUNcn7UsoxF5ym+YjgJOchU1884rbX3nuxFYMv4FB/rT8ozIi8VhoHWbj/EF7FPM
+ U+oI0IRs8bC/K66ZNFOZU6JTuSag6RdDgHRdqF4yz8H69o2BDgngLCbAmGfAz69x0LP3CWv
+ b1VyXnO0UAWk5jmoJob5g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:pysSrQd7X8s=:tvN+Zry+xKDmdH/BL5InUX
+ k1tAFE1WchomAM9UocK6bXNp4JNYt1/e59RDJNa79qv/7xfQwkCWYLJva6UmP/CQJc3SrX5eN
+ 1sKBkSQTG70ZBxT4d8/8Lgr1CSw3AugFsu3m/MaeumdXG0l6a8hJbrvmVNjLaGRqALRzw+AV3
+ cOg5xDJUksWvc7nAn8UlShJD1V/LG5K8E9JvYYxuJbcIoIJ2/LuPlSiaMv1/q9/nc2dW+NziG
+ 5wf3KrVWmlsGw+cc1r++paHuiOApe512vZzjCAzXBpvmpmEEtp8UopOJhritiVk4ZOT6nTLEJ
+ sAKdlaPrr9DQkQ/9dd1NFygEVWwYl4ebCaGMLA/3IDEoXmx6YXjU14ysaixwv+DRwDz/T8hrc
+ wsyy49yGM0ASNpgvAzrwzGpOI5O+5+BO4C8IPAMK+ge/1w5BIG67Vb4qUyFLAPiRmRXbpV1po
+ e75B5che6cb7E7CpKuuQwx5E/WNwLvNQGUJVxefMBvMkqw3CceT9/O9WM3dAPEgjpePkqgWaw
+ f61iiu1vckjcT6R83rSm7xATAcRqXXfPj00qadM830cBOkalW8NRr1RxtYaNyKmGwaauEzcG3
+ kdPKX135SM/Wygk8rSEKnwezKDRlGU5sKeTLQDl7cTt0RyUATWYkFmvCrsPpePojs0MRq/p90
+ n021UC/9bO+o9vsHrol1N5IcG9sKArHnVX5TKUGDD+q1BTn3ew+69VSj/Q2nFEJv/VL9XiIXf
+ X6eCzkNl2qWW3Empf+D/+2fsuXMH7eOqX7LTg9Iw/zoGnvsyTZqmB0nV+VfUOlmOJajSxKpQ/
+ 5s7JDIXg+yLnWjUaDR/Q/AxlkUK9if7NstvdDBwY25FedD8Vvk=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 24, 2020 at 05:34:03PM +0530, Bharat Kumar Gogada wrote:
-> Add device tree binding documentation for Versal CPM Root Port driver.
-> 
-> Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-> ---
->  .../devicetree/bindings/pci/xilinx-versal-cpm.txt  | 68 ++++++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/xilinx-versal-cpm.txt
+gcc-10 warns that the 32-bit zero cannot be shifted more than
+32 bits to the right:
 
-DT bindings need to Cc DT list to be reviewed. Bindings are now in DT 
-schema format. See Documentation/devicetree/writing-schema.rst.
+arch/arm64/kvm/../../../virt/kvm/arm/mmu.c: In function 'clear_hyp_p4d_entry':
+arch/arm64/include/asm/pgtable.h:630:35: error: right shift count >= width of type [-Werror=shift-count-overflow]
+  630 | #define pud_index(addr)  (((addr) >> PUD_SHIFT) & (PTRS_PER_PUD - 1))
+      |                                   ^~
+arch/arm64/include/asm/memory.h:271:45: note: in definition of macro '__phys_to_virt'
+  271 | #define __phys_to_virt(x) ((unsigned long)((x) - physvirt_offset))
+      |                                             ^
+arch/arm64/include/asm/pgtable.h:633:42: note: in expansion of macro '__va'
+  633 | #define pud_offset(dir, addr)  ((pud_t *)__va(pud_offset_phys((dir), (addr))))
+      |                                          ^~~~
+arch/arm64/include/asm/pgtable.h:632:73: note: in expansion of macro 'pud_index'
+  632 | #define pud_offset_phys(dir, addr) (p4d_page_paddr(READ_ONCE(*(dir))) + pud_index(addr) * sizeof(pud_t))
+      |                                                                         ^~~~~~~~~
+arch/arm64/include/asm/pgtable.h:633:47: note: in expansion of macro 'pud_offset_phys'
+  633 | #define pud_offset(dir, addr)  ((pud_t *)__va(pud_offset_phys((dir), (addr))))
+      |                                               ^~~~~~~~~~~~~~~
+arch/arm64/kvm/../../../virt/kvm/arm/mmu.c:510:36: note: in expansion of macro 'pud_offset'
+  510 |  pud_t *pud_table __maybe_unused = pud_offset(p4d, 0);
+      |                                    ^~~~~~~~~~
 
-Sorry to tell you this on v6, but first I'm seeing it.
+This is harmless, and the warning is a little bit silly for
+a zero constant, but it's trivial to fix by making it an
+unsigned long, so do that.
 
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.txt b/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.txt
-> new file mode 100644
-> index 0000000..eac6144
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.txt
-> @@ -0,0 +1,68 @@
-> +* Xilinx Versal CPM DMA Root Port Bridge DT description
-> +
-> +Required properties:
-> +- #address-cells: Address representation for root ports, set to <3>
-> +- #size-cells: Size representation for root ports, set to <2>
-> +- #interrupt-cells: specifies the number of cells needed to encode an
-> +	interrupt source. The value must be 1.
-> +- compatible: Should contain "xlnx,versal-cpm-host-1.00"
-> +- reg: Should contain configuration space (includes bridge registers) and
-> +	CPM system level control and status registers, and length
-> +- reg-names: Must include the following entries:
-> +	"cfg": configuration space region and bridge registers
-> +	"cpm_slcr": CPM system level control and status registers
-> +- interrupts: Should contain AXI PCIe interrupt
-> +- interrupt-map-mask,
-> +  interrupt-map: standard PCI properties to define the mapping of the
-> +	PCI interface to interrupt numbers.
-> +- bus-range: Range of bus numbers associated with this controller
-> +- ranges: ranges for the PCI memory regions (I/O space region is not
-> +	supported by hardware)
-> +	Please refer to the standard PCI bus binding document for a more
-> +	detailed explanation
-> +- msi-map: Maps a Requester ID to an MSI controller and associated MSI
-> +	sideband data
-> +- interrupt-names: Must include the following entries:
-> +	"misc": interrupt asserted when legacy or error interrupt is received
+Fixes: 22998131ab33 ("arm64: add support for folded p4d page tables")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ virt/kvm/arm/mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Don't really need a name when only 1.
-
-> +
-> +Interrupt controller child node
-> ++++++++++++++++++++++++++++++++
-> +Required properties:
-> +- interrupt-controller: identifies the node as an interrupt controller
-> +- #address-cells: specifies the number of cells needed to encode an
-> +	address. The value must be 0.
-> +- #interrupt-cells: specifies the number of cells needed to encode an
-> +	interrupt source. The value must be 1.
-> +
-> +
-> +Refer to the following binding document for more detailed description on
-> +the use of 'msi-map':
-> +	 Documentation/devicetree/bindings/pci/pci-msi.txt
-> +
-> +Example:
-> +	pci@fca10000 {
-
-Unit address is normally the first entry.
-
-> +		#address-cells = <3>;
-> +		#interrupt-cells = <1>;
-> +		#size-cells = <2>;
-> +		compatible = "xlnx,versal-cpm-host-1.00";
-> +		interrupt-map = <0 0 0 1 &pcie_intc_0 0>,
-> +				<0 0 0 2 &pcie_intc_0 1>,
-> +				<0 0 0 3 &pcie_intc_0 2>,
-> +				<0 0 0 4 &pcie_intc_0 3>;
-> +		interrupt-map-mask = <0 0 0 7>;
-> +		interrupt-parent = <&gic>;
-> +		interrupt-names = "misc";
-> +		interrupts = <0 72 4>;
-> +		bus-range = <0x00 0xff>;
-> +		ranges = <0x02000000 0x00000000 0xE0000000 0x0 0xE0000000 0x00000000 0x10000000>,
-
-lowercase hex please.
-
-> +			 <0x43000000 0x00000080 0x00000000 0x00000080 0x00000000 0x00000000 0x80000000>;
-> +		msi-map = <0x0 &its_gic 0x0 0x10000>;
-> +		reg = <0x6 0x00000000 0x0 0x10000000>,
-> +		      <0x0 0xFCA10000 0x0 0x1000>;
-> +		reg-names = "cfg", "cpm_slcr";
-> +		pcie_intc_0: pci-interrupt-controller {
-
-interrupt-controller {
-
-> +			#address-cells = <0>;
-> +			#interrupt-cells = <1>;
-> +			interrupt-controller ;
-> +		};
-> +	};
-> -- 
-> 2.7.4
-> 
+diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+index 48d4288c5f1b..534d9798c3cb 100644
+--- a/virt/kvm/arm/mmu.c
++++ b/virt/kvm/arm/mmu.c
+@@ -507,7 +507,7 @@ static void clear_hyp_pgd_entry(pgd_t *pgd)
+ 
+ static void clear_hyp_p4d_entry(p4d_t *p4d)
+ {
+-	pud_t *pud_table __maybe_unused = pud_offset(p4d, 0);
++	pud_t *pud_table __maybe_unused = pud_offset(p4d, 0UL);
+ 	VM_BUG_ON(p4d_huge(*p4d));
+ 	p4d_clear(p4d);
+ 	pud_free(NULL, pud_table);
+-- 
+2.26.0
 
