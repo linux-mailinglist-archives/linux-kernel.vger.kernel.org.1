@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0711BDCAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8FF1BDCBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbgD2Mth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 08:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726599AbgD2Mtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 08:49:36 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D52621D7E;
-        Wed, 29 Apr 2020 12:49:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588164575;
-        bh=3TPpJC53ymK37dZLXDXOfPIIzQw46+VQdVgo7v80E9s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0aZzGHv6mH0BcgdxOn+uYVz2RvCaR1PMEVYKmLouOMFvZ/Tiy5I2+NaOA2IPzxi2Y
-         TMUaSGI45uJQrha9eDb3dc/AdSkaryRftgCE5Ga2Q0ppLJc+QiipFVuPigInGP4V+j
-         eNI3DzHG3UvKuVYIPGufUmdrkUGfE7fWIkkkH68M=
-Date:   Wed, 29 Apr 2020 13:49:33 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Leslie =?utf-8?B?SHNpYSjlpI/pgqbpgLJfUGVnYXRyb24p?= 
-        <Leslie_Hsia@pegatroncorp.com>
-Cc:     "knaack.h@gmx.de" <knaack.h@gmx.de>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hermes =?utf-8?B?SHNpZWgo6Kyd5pe75YqtX1BlZ2F0cm9uKQ==?= 
-        <Hermes_Hsieh@pegatroncorp.com>,
-        "jesse.sung@canonical.com" <jesse.sung@canonical.com>,
-        "jic23@kernel.org" <jic23@kernel.org>
-Subject: Re: [PATCH] subsystem: Amplifier driver for TAS5805M,Texas
- instruments
-Message-ID: <20200429124933.GJ4201@sirena.org.uk>
-References: <754706C925201D4896E92CCAD6B38E4401F0F733E3@PTW-EX-37.PEGA.CORP.PEGATRON>
- <20200428113033.GE5677@sirena.org.uk>
- <C84B7899-1FC4-43CC-9FAE-8FECE09E8D4E@pegatroncorp.com>
+        id S1726812AbgD2Mzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 08:55:52 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:43668 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726516AbgD2Mzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 08:55:52 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03TCtltE074490;
+        Wed, 29 Apr 2020 07:55:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588164947;
+        bh=+/D/YE4iaDfh77kDeL/eqDeYukrWzpHHleyItETnDQw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=CVK5NnCMdxn5RUvsbPrUj5m+I1T/a6YCsm5BNlXl+3d4BMvHXcL3KKJhzHplgUlt7
+         SxF7x9Mov6hSfdbntYJr6iNaTHI/i2rfbQGwv870y9BNgeYor5DIi3PGtUkC/TTfAL
+         YgwUC6Ng57+1MnoffzFKg/1kevE1Y7kgdCg7gYrA=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03TCtlIB104920
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 29 Apr 2020 07:55:47 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 29
+ Apr 2020 07:55:47 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 29 Apr 2020 07:55:47 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03TCtkFf077209;
+        Wed, 29 Apr 2020 07:55:47 -0500
+Subject: Re: [PATCH v21 11/16] leds: lp55xx: Add multicolor framework support
+ to lp55xx
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200428160338.2793-1-dmurphy@ti.com>
+ <20200428160338.2793-12-dmurphy@ti.com>
+ <5225c7bf-1e0d-5465-132e-54a3071cf518@gmail.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <9738553f-06a9-a57b-0c99-172b80dcb4f6@ti.com>
+Date:   Wed, 29 Apr 2020 07:49:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="451BZW+OUuJBCAYj"
-Content-Disposition: inline
-In-Reply-To: <C84B7899-1FC4-43CC-9FAE-8FECE09E8D4E@pegatroncorp.com>
-X-Cookie: I know how to do SPECIAL EFFECTS!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5225c7bf-1e0d-5465-132e-54a3071cf518@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Jacek
 
---451BZW+OUuJBCAYj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 4/28/20 3:59 PM, Jacek Anaszewski wrote:
+> Dan,
+>
+> On 4/28/20 6:03 PM, Dan Murphy wrote:
+>> Add multicolor framework support for the lp55xx family.
+>>
+>> Acked-by: Pavel Machek <pavel@ucw.cz>
+>> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+>> ---
+>>   drivers/leds/Kconfig                      |   1 +
+>>   drivers/leds/leds-lp5521.c                |  14 +-
+>>   drivers/leds/leds-lp5523.c                |  14 +-
+>>   drivers/leds/leds-lp5562.c                |  13 +-
+>>   drivers/leds/leds-lp55xx-common.c         | 178 +++++++++++++++++++---
+>>   drivers/leds/leds-lp55xx-common.h         |  14 +-
+>>   drivers/leds/leds-lp8501.c                |  14 +-
+>>   include/linux/platform_data/leds-lp55xx.h |   8 +
+>>   8 files changed, 209 insertions(+), 47 deletions(-)
+>>
+>
+> For patches 10/16 - 16/16:
+>
+> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+>
+Ack and added
 
-On Tue, Apr 28, 2020 at 06:27:45PM +0000, Leslie Hsia(=E5=A4=8F=E9=82=A6=E9=
-=80=B2_Pegatron) wrote:
+Dan
 
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
-
-> but he thought that this is an amplifier driver,
-> and we should put it into /sound/doc/codecs/,
-> so would you please give me an advice about the driver belongs to which s=
-ubsystem?
-> Jonathan, what do you think?
-
-A quick google suggests that this is an audio amplifier so I'd expect it
-to be in the audio subsystem.  If it were in IIO it wouldn't work with
-most userspace audio software...
-
---451BZW+OUuJBCAYj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6pd9wACgkQJNaLcl1U
-h9Dmowf5AUjajPkm6TWy/REW/DuKZSQCtdknps1+z1SiiWRwRHW62I0Gm+iPaTxW
-xFhA6o1UEc+eTbN8mezdskc3OH4v75Lto2hW2TXM+hepuh6n1LdP4RdK0b2H3nAG
-CYgwGKhgvoO7QM0keDx9h70fIsUHDMQyAObfX6MBbQyivF2Cbhp+FTFNy2P3cV/b
-adrf5QeWLVu/Mq6TR2A3m/31NJYDnarVTKnfSGaRJmxyJtvvqI22vC9SMGg4a/07
-1YwQxGjtPu0RSrJpfE99oR+2zoQUbAXDw7jjqOChK4RrmO5AfoqlHRYFkFzNYZFY
-fo0cEugpdQBCm6l4SvIWJRaeYZC5yw==
-=Boc5
------END PGP SIGNATURE-----
-
---451BZW+OUuJBCAYj--
