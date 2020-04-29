@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588AE1BE924
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7921BE93D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727768AbgD2Uws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 16:52:48 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:55541 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727023AbgD2Uwo (ORCPT
+        id S1727030AbgD2U41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 16:56:27 -0400
+Received: from smtprelay0185.hostedemail.com ([216.40.44.185]:38046 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726456AbgD2U41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 16:52:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588193563; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=CxXWapujNQU/nOx131lQ2pkM22nSN7vNLoN5yDLlLUQ=; b=a/kKaYsnN5xXrvL+RKpH5fn6uo+QbJOYKIZ+BFWzony1BevxjEgZeBM7FsCs2NncuIMpECba
- aVacoKJshA9qEaxss6SP13eaYz15Q53b5SM0YUcV6VPWz/7TfflUqBnlTX+GHIXhxeRdnEvW
- STbvtGxu5t4qMH4oFEHCuI+Ma9M=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea9e91a.7f5a2c6c80a0-smtp-out-n05;
- Wed, 29 Apr 2020 20:52:42 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AC9FBC4478C; Wed, 29 Apr 2020 20:52:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from bbhatt-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 17C68C43636;
-        Wed, 29 Apr 2020 20:52:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 17C68C43636
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     mani@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hemantk@codeaurora.org, jhugo@codeaurora.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v3 9/9] bus: mhi: core: Ensure non-zero session or sequence ID values
-Date:   Wed, 29 Apr 2020 13:52:31 -0700
-Message-Id: <1588193551-31439-10-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1588193551-31439-1-git-send-email-bbhatt@codeaurora.org>
-References: <1588193551-31439-1-git-send-email-bbhatt@codeaurora.org>
+        Wed, 29 Apr 2020 16:56:27 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 2A4F33D13;
+        Wed, 29 Apr 2020 20:56:26 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:973:982:983:988:989:1208:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3653:3867:4250:5007:6299:6642:7903:8603:10004:10400:10848:11026:11658:11914:12297:12438:12555:12679:12760:13069:13095:13311:13357:13439:14181:14394:14659:14721:21080:21433:21451:21505:21627:30054:30062:30070,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: town34_724d5c9ce7815
+X-Filterd-Recvd-Size: 1767
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 29 Apr 2020 20:56:25 +0000 (UTC)
+Message-ID: <3dc7bdaa58490f5906efc11a4d6113e42a087723.camel@perches.com>
+Subject: [PATCH] checkpatch: Disallow --git and --file/--fix
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andy Whitcroft <apw@shadowen.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Wed, 29 Apr 2020 13:56:24 -0700
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While writing any sequence or session identifiers, it is possible that
-the host could write a zero value, whereas only non-zero values are
-supported writes to those registers. Ensure that host does not write a
-non-zero value for those cases.
+Don't allow these options to be combined.
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Miscellanea:
+
+o Add missing $P: to some die("reason message") output
+
+Signed-off-by: Joe Perches <joe@perches.com>
 ---
- drivers/bus/mhi/core/boot.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ scripts/checkpatch.pl | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-index 0bc9c50..c9971d4 100644
---- a/drivers/bus/mhi/core/boot.c
-+++ b/drivers/bus/mhi/core/boot.c
-@@ -199,6 +199,9 @@ static int mhi_fw_load_amss(struct mhi_controller *mhi_cntrl,
- 	mhi_write_reg(mhi_cntrl, base, BHIE_TXVECSIZE_OFFS, mhi_buf->len);
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index e4af60..4a5c6bb 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -246,6 +246,8 @@ list_types(0) if ($list_types);
+ $fix = 1 if ($fix_inplace);
+ $check_orig = $check;
  
- 	sequence_id = prandom_u32() & BHIE_TXVECSTATUS_SEQNUM_BMSK;
-+	if (unlikely(!sequence_id))
-+		sequence_id = 1;
++die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
 +
- 	mhi_write_reg_field(mhi_cntrl, base, BHIE_TXVECDB_OFFS,
- 			    BHIE_TXVECDB_SEQNUM_BMSK, BHIE_TXVECDB_SEQNUM_SHFT,
- 			    sequence_id);
-@@ -254,6 +257,9 @@ static int mhi_fw_load_sbl(struct mhi_controller *mhi_cntrl,
- 		      lower_32_bits(dma_addr));
- 	mhi_write_reg(mhi_cntrl, base, BHI_IMGSIZE, size);
- 	session_id = prandom_u32() & BHI_TXDB_SEQNUM_BMSK;
-+	if (unlikely(!session_id))
-+		session_id = 1;
-+
- 	mhi_write_reg(mhi_cntrl, base, BHI_IMGTXDB, session_id);
- 	read_unlock_bh(pm_lock);
+ my $exit = 0;
  
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+ my $perl_version_ok = 1;
+@@ -269,11 +271,11 @@ if ($color =~ /^[01]$/) {
+ } elsif ($color =~ /^auto$/i) {
+ 	$color = (-t STDOUT);
+ } else {
+-	die "Invalid color mode: $color\n";
++	die "$P: Invalid color mode: $color\n";
+ }
+ 
+ # skip TAB size 1 to avoid additional checks on $tabsize - 1
+-die "Invalid TAB size: $tabsize\n" if ($tabsize < 2);
++die "$P: Invalid TAB size: $tabsize\n" if ($tabsize < 2);
+ 
+ sub hash_save_array_words {
+ 	my ($hashRef, $arrayRef) = @_;
+
+
