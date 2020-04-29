@@ -2,91 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1641BD2B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 04:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65791BD2A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 04:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgD2C61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 22:58:27 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:32902 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726522AbgD2C60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 22:58:26 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id ECFD31A021F;
-        Wed, 29 Apr 2020 04:58:24 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 616281A01F8;
-        Wed, 29 Apr 2020 04:58:20 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 419B74032C;
-        Wed, 29 Apr 2020 10:58:09 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V3] thermal: imx: Add missing of_node_put()
-Date:   Wed, 29 Apr 2020 10:49:30 +0800
-Message-Id: <1588128570-12917-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726611AbgD2Cww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 22:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726498AbgD2Cww (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 22:52:52 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F046FC03C1AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 19:52:51 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 23so643436qkf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Apr 2020 19:52:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=ZuYhQOwVqj5I2l0C3mwcWWBRC4vXsL2shmKKYh/lrQg=;
+        b=aCmH7CwlwPl/0ya/suzFuA1fMGqaCRqlG1An9hZRxqlWrWA87i8lAzj19h17I7fVNY
+         SkAcbxzKv2yVzNDU26bW9XPSlaGn08IkxBernQCD5ymMMy10wMAO4iA5SlJgrV6/rHaR
+         UR10WckaYKHTF8QxLVBLYtLz+jd+e24vryNXvlfdrfdWXTi/pS4/yFmx45AuBPT1atFY
+         e3xpNkyL5b2gkq9kVYEGW7ICo5ondTQiiXBy7zypoc2So3d00g3auY/sQKGU43yMdxoG
+         ehNkl1Lxa29e4IJt1e3V3D0XETFGEopBpDd1nTLMoOy1Y1xIImQCuF2KMJqnHHy7H+M9
+         uy/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=ZuYhQOwVqj5I2l0C3mwcWWBRC4vXsL2shmKKYh/lrQg=;
+        b=Gp+4ayq2x7SsRRXGQP1ZWd0RrkUClcvbqzrlyigf0v+oXhepArp7VE6KHnaB/Ha6Ra
+         xUSM8TPeteKN2/oA2HqXJiO8Rv9sLi/eEO1yEXH45fwrLJsYQGZmyGbcELTkHq8b5+HD
+         gqpuk4oJ91i9oOGwmzJQHMN1D3yExCn/pH0hZ4ekYQcYmZqH8db2O01eDyO1nAVux/sV
+         Q/eSQj3Q/eQCTEPLVtxzJA1R7OTPgyQDray4s+p1AJvxN2d7GWHdYa/6M+ZXeZUoIoVX
+         u1yUzbQmaemVLZsNWgRbBgClvdmyOG2ml0mJm5BEkF/QQf0zu60/55VPoaSrmVdyWKT8
+         igNg==
+X-Gm-Message-State: AGi0Pua9MqTWMWNiWZiT5AuwFbTXUv8/2rW1SAhLp7l4LrFgySuZzTBp
+        ulscG0vsiNqO3Kp9O5h60/oD5A==
+X-Google-Smtp-Source: APiQypJiO5xWI+h/pT4bi47A94HPt7b3SBuTMERGoOCtnJcgSOKc8ipTbQTSRssdaCLVDjQ5/LtWzQ==
+X-Received: by 2002:a37:7b01:: with SMTP id w1mr31743791qkc.167.1588128771014;
+        Tue, 28 Apr 2020 19:52:51 -0700 (PDT)
+Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id t67sm14947399qka.17.2020.04.28.19.52.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Apr 2020 19:52:50 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking
+ dependency
+From:   Qian Cai <cai@lca.pw>
+In-Reply-To: <56327de0-fa44-d5f3-2409-69cf2b97a209@redhat.com>
+Date:   Tue, 28 Apr 2020 22:52:48 -0400
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <0310F66F-0ECB-43BF-B86F-3BDB74F51B06@lca.pw>
+References: <dbbfe685-7374-9a96-b7c2-684142746e30@redhat.com>
+ <28BB8A1C-CFDF-4F5A-8686-537C3CE04818@lca.pw>
+ <56327de0-fa44-d5f3-2409-69cf2b97a209@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After finishing using cpu node got from of_get_cpu_node(), of_node_put()
-needs to be called, the cpufreq policy also needs to be put unconditionally.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V2:
-	- call cpufreq_cpu_put() unconditionally after cooling register done.
----
- drivers/thermal/imx_thermal.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
-index e761c9b..8764cb5 100644
---- a/drivers/thermal/imx_thermal.c
-+++ b/drivers/thermal/imx_thermal.c
-@@ -649,7 +649,7 @@ MODULE_DEVICE_TABLE(of, of_imx_thermal_match);
- static int imx_thermal_register_legacy_cooling(struct imx_thermal_data *data)
- {
- 	struct device_node *np;
--	int ret;
-+	int ret = 0;
- 
- 	data->policy = cpufreq_cpu_get(0);
- 	if (!data->policy) {
-@@ -661,20 +661,19 @@ static int imx_thermal_register_legacy_cooling(struct imx_thermal_data *data)
- 
- 	if (!np || !of_find_property(np, "#cooling-cells", NULL)) {
- 		data->cdev = cpufreq_cooling_register(data->policy);
--		if (IS_ERR(data->cdev)) {
-+		if (IS_ERR(data->cdev))
- 			ret = PTR_ERR(data->cdev);
--			cpufreq_cpu_put(data->policy);
--			return ret;
--		}
- 	}
- 
--	return 0;
-+	cpufreq_cpu_put(data->policy);
-+	of_node_put(np);
-+
-+	return ret;
- }
- 
- static void imx_thermal_unregister_legacy_cooling(struct imx_thermal_data *data)
- {
- 	cpufreq_cooling_unregister(data->cdev);
--	cpufreq_cpu_put(data->policy);
- }
- 
- #else
--- 
-2.7.4
+> On Apr 28, 2020, at 10:06 AM, Waiman Long <longman@redhat.com> wrote:
+>=20
+> On 4/27/20 10:11 PM, Qian Cai wrote:
+>>=20
+>>> On Apr 27, 2020, at 9:39 PM, Waiman Long <longman@redhat.com> wrote:
+>>>=20
+>>> The sequence that was prevented by this patch is "kn->count --> =
+mem_hotplug_lock.rwsem". This sequence isn't directly in the splat. Once =
+this link is broken, the 3-lock circular loop cannot be formed. Maybe I =
+should modify the commit log to make this point more clear.
+>> I don=E2=80=99t know what you are talking about. Once trylock succeed =
+once, you will have kn->count =E2=80=94> cpu/memory_hotplug_lock.
+>>=20
+> Trylock is handled differently from lockdep's perspective as trylock =
+can failed. When trylock succeeds, the critical section is executed. As =
+long as it doesn't try to acquire another lock in the circular chain, =
+the execution will finish at some point and release the lock. On the =
+other hand, if another task has already held all those locks, the =
+trylock will fail and held locks should be released. Again, no deadlock =
+will happen.
 
+So once,
+
+CPU0 (trylock succeed):
+kn->count =E2=80=94> cpu/memory_hotplug_lock.
+
+Did you mean that lockdep will not record this existing chain?
+
+If it did. Then later, are you still sure that CPU1 (via memcg path =
+below) will still be impossible to trigger a splat just because lockdep =
+will be able to tell that those arennon-exclusive =
+(cpu/memory_hotplug_lock) locks instead?
+
+ cpu/memory_hotplug_lock -> kn->count
+
+[  290.805818] -> #3 (kn->count#86){++++}-{0:0}:
+[  290.811954]        __kernfs_remove+0x455/0x4c0
+[  290.816428]        kernfs_remove+0x23/0x40
+[  290.820554]        sysfs_remove_dir+0x74/0x80
+[  290.824947]        kobject_del+0x57/0xa0
+[  290.828905]        sysfs_slab_unlink+0x1c/0x20
+[  290.833377]        shutdown_cache+0x15d/0x1c0
+[  290.837964]        kmemcg_cache_shutdown_fn+0xe/0x20
+[  290.842963]        kmemcg_workfn+0x35/0x50   <=E2=80=94=E2=80=94 =
+cpu/memory_hotplug_lock
+[  290.847095]        process_one_work+0x57e/0xb90
+[  290.851658]        worker_thread+0x63/0x5b0
+[  290.855872]        kthread+0x1f7/0x220
+[  290.859653]        ret_from_fork+0x27/0x50=
