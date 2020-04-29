@@ -2,89 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416EC1BD88C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127561BD8AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbgD2Jod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 05:44:33 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:52989 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726493AbgD2Joc (ORCPT
+        id S1726747AbgD2Jp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 05:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726456AbgD2Jp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 05:44:32 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588153472; h=In-Reply-To: Content-Type: MIME-Version:
- References: Reply-To: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=xeoQ4Rw3CrXOQCQ/sgEZvG+//pNvDfL8fDquz8JatMw=; b=tUZqRnj+QYVZfUmaupkZ8i6/d2abRCmwPidZ/vQCW0UEF2iV11LFkPOkghTpCCtf3iw0ymQH
- jrROORpKyHxjrLKzkyvZs9HJAxTfTamKE1HBHolPwEcGcg+HGPJxQBj2BG1z+r6w+asU9WHP
- 0NMdg2wqymfPvqaxRj1GmPDWWZQ=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5ea94c74.7ff0eebd0880-smtp-out-n03;
- Wed, 29 Apr 2020 09:44:20 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DA51AC4478C; Wed, 29 Apr 2020 09:44:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from quicinc.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: svaddagi)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E1190C433CB;
-        Wed, 29 Apr 2020 09:44:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E1190C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vatsa@codeaurora.org
-Date:   Wed, 29 Apr 2020 15:14:10 +0530
-From:   Srivatsa Vaddagiri <vatsa@codeaurora.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>, tsoni@codeaurora.org,
-        virtio-dev@lists.oasis-open.org, konrad.wilk@oracle.com,
-        jan.kiszka@siemens.com, jasowang@redhat.com,
-        christoffer.dall@arm.com,
-        virtualization@lists.linux-foundation.org, alex.bennee@linaro.org,
-        iommu@lists.linux-foundation.org, stefano.stabellini@xilinx.com,
-        will@kernel.org, linux-kernel@vger.kernel.org,
-        pratikp@codeaurora.org
-Subject: Re: [PATCH 5/5] virtio: Add bounce DMA ops
-Message-ID: <20200429094410.GD5097@quicinc.com>
-Reply-To: Srivatsa Vaddagiri <vatsa@codeaurora.org>
-References: <1588073958-1793-1-git-send-email-vatsa@codeaurora.org>
- <1588073958-1793-6-git-send-email-vatsa@codeaurora.org>
- <20200428121232-mutt-send-email-mst@kernel.org>
- <20200428174952.GA5097@quicinc.com>
- <20200428163448-mutt-send-email-mst@kernel.org>
- <275eba4b-dd35-aa95-b2e3-9c5cbf7c6d71@linux.intel.com>
- <20200429004531-mutt-send-email-mst@kernel.org>
- <b676430c-65b3-096e-ca48-ceebf10f4b28@linux.intel.com>
- <20200429023842-mutt-send-email-mst@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <20200429023842-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        Wed, 29 Apr 2020 05:45:57 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63BC0C03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 02:45:57 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id x2so843100pfx.7
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 02:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ohhcV++S296MTGeRuhLGIvJtdPeXzd9ZSIW5CqAT66c=;
+        b=r3FhSM5Jq6IGn5eX6PX8chZEibpKYSlKY4WEB3a3Y3I2D7etvrIh2/chQ1VPHStEx2
+         2kPbiuS1U1bvPZBp1gyD/xOIOQjYEVWpDfOtLfByE4gjhbimwWK0gLFpPC2t34X5SWXY
+         Nj9SZSZS4nKCbT4O0Z3Fuq6c7JhcCLhXE/FvNcKuGKBgiM5dDMQKJwfqXlzDISN/0u+p
+         XoQK5YCsTzQ6ObrQz0ogSUdOfhxD65jCoTv4MgPItjvhhvDzkwI2leBAUSZuepMLAzf9
+         tQjJonKSrEEUshOovDgy9li/METHkeEshx0miQ0WrlkGex2Zz2ueXezv1NQ2ZjOgA9iA
+         500Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ohhcV++S296MTGeRuhLGIvJtdPeXzd9ZSIW5CqAT66c=;
+        b=Yw/f0QSJPe0RQnBHCMQDWNXpU/VA+mM8+efNVAB/z8AdQI3qy7L95UxlUgi5aOe4D2
+         F5uFQlc1duAHd+vj5+cQFWDnlKMr8CQjrdTwWF5jDM2wiT/GOAVR0jCj3pz4+N32SCGv
+         0Iqp/a/pA2Z75lmmWtaD1kimw5lFPBBKMoz5uxsHe6itjrb1IQgWoMfoUt3t1qEWA1Ia
+         sXtYIQMqQJ9mb8ono4LGxjqQEXUOF2tgC332WDIYRr59NhEb9rHoOBsfHErIQ4krUi3a
+         HwS+/R2QRGBmzg/EzuDsLc2PsdiNMnX2iXRHNPXV0ebFiFqbLvQloBpnmbjGQHFJ7JYE
+         PkEg==
+X-Gm-Message-State: AGi0PuZL+8nJUIAlFfoJqESTT59yDL2CRy/w4fQvz+ah1y8jH01yk8fd
+        enT/0vI0IIAcKqQheAZQNF7DOp5hh8c=
+X-Google-Smtp-Source: APiQypLZBo08uLNAV/oOS/jZyyyFWI73jIcpFLt+eUImEfrpoREuu9dMgQo60MIf6PiAUsXGBX3seQ==
+X-Received: by 2002:a62:2b82:: with SMTP id r124mr1353326pfr.242.1588153556928;
+        Wed, 29 Apr 2020 02:45:56 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.15])
+        by smtp.gmail.com with ESMTPSA id g79sm727873pfb.60.2020.04.29.02.45.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 02:45:56 -0700 (PDT)
+From:   Baolin Wang <baolin.wang7@gmail.com>
+To:     lee.jones@linaro.org
+Cc:     baolin.wang7@gmail.com, orsonzhai@gmail.com, zhang.lyra@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mfd: sprd: Remove unnecessary spi_bus_type setting
+Date:   Wed, 29 Apr 2020 17:45:37 +0800
+Message-Id: <88f48e38c4f3e2130de0f58564562453d7ee57f2.1588153213.git.baolin.wang7@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Michael S. Tsirkin <mst@redhat.com> [2020-04-29 02:50:41]:
+The spi_register_driver() will set the spi_bus_type for the spi_driver,
+thus remove the redundant setting in this driver.
 
-> So it seems that with modern Linux, all one needs
-> to do on x86 is mark the device as untrusted.
-> It's already possible to do this with ACPI and with OF - would that be
-> sufficient for achieving what this patchset is trying to do?
+Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
+---
+ drivers/mfd/sprd-sc27xx-spi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-In my case, its not sufficient to just mark virtio device untrusted and thus
-activate the use of swiotlb. All of the secondary VM memory, including those
-allocate by swiotlb driver, is private to it. An additional piece of memory is
-available to secondary VM which is shared between VMs and which is where I need
-swiotlb driver to do its work.
-
+diff --git a/drivers/mfd/sprd-sc27xx-spi.c b/drivers/mfd/sprd-sc27xx-spi.c
+index ebdf2f11ae28..33336cde4724 100644
+--- a/drivers/mfd/sprd-sc27xx-spi.c
++++ b/drivers/mfd/sprd-sc27xx-spi.c
+@@ -284,7 +284,6 @@ MODULE_DEVICE_TABLE(of, sprd_pmic_match);
+ static struct spi_driver sprd_pmic_driver = {
+ 	.driver = {
+ 		.name = "sc27xx-pmic",
+-		.bus = &spi_bus_type,
+ 		.of_match_table = sprd_pmic_match,
+ 	},
+ 	.probe = sprd_pmic_probe,
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.17.1
+
