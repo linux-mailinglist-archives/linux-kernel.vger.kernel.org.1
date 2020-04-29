@@ -2,86 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71641BE450
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 18:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361C61BE457
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 18:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgD2Qt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 12:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726481AbgD2Qt0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 12:49:26 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A01DC03C1AE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 09:49:26 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id j14so2256134lfg.9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 09:49:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D9Uuz2eH1rEC3Rsd9pWrnSIaGFJoBuGHkEpyj9FO1RU=;
-        b=fNkYlfC7XyU0na36V1nAsEErxJD6SCdd001tONSj5QzCTF5pfnhtkJHTnLvT4RbjHZ
-         Esmpn/Ja4kfMTNbK4V/ULBUaFnl8J/DehN+PSbsUTUNm9u5a0/1rtLVU7yIw59uOmHc1
-         Oz8J1e1DSH0V3mg6CW+Ys3Xe1HiKJDyaEj9z4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D9Uuz2eH1rEC3Rsd9pWrnSIaGFJoBuGHkEpyj9FO1RU=;
-        b=IJDQ3g1oykEoOkoqC4DwVBz7oTiqfl8GHX5xp7a8FcOHrVW41Egw6nL4ySktL5BmUs
-         umdVJ/3xkwWG+OzG+BEQBOyi93E7ETJGGS70mvNYPAdbCavMcpZGMkNmElrRT7GrdE5g
-         uXmADH4VXsTWKv4CocPb4l/apHyMwbFQADZPBuhg3LQyVftDNu56bhiScxTvzL2Th+wO
-         Qe4YMGQCr6kFUb+5af1DcsvpaY6vT4DjXfCJL/l2wmOIVIfWDoSvayVmWTW7ab3pgfWD
-         ohm1tOwg1BkDDyDIytcTCxqP8FsZvebCLIDR6YpTRvPGdJWFP3dSDJCJS0Z2YebYFKJy
-         cyfQ==
-X-Gm-Message-State: AGi0PuacQFyN9yFvO0y/8Zg3//ibF7ay+/JJcgVaxCwHZJPtYh4lFRzc
-        9pZiqilM4n3IuP/KTrGJE5WvE3g6zEQ=
-X-Google-Smtp-Source: APiQypJIwsW62bIBM2PrWmRf+QEnBc4jPGqD+ocYUwBsHtV2evu3K9NisWFrn4Cs5MXVlxhR1f5sbw==
-X-Received: by 2002:a19:7507:: with SMTP id y7mr23501746lfe.121.1588178964259;
-        Wed, 29 Apr 2020 09:49:24 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id i14sm2977100lfl.21.2020.04.29.09.49.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Apr 2020 09:49:22 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id h6so2287566lfc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 09:49:22 -0700 (PDT)
-X-Received: by 2002:ac2:4466:: with SMTP id y6mr23676248lfl.125.1588178962247;
- Wed, 29 Apr 2020 09:49:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <158810566883.1168184.8679527126430822408.stgit@warthog.procyon.org.uk>
- <20200429060556.zeci7z7jwazly4ga@work>
-In-Reply-To: <20200429060556.zeci7z7jwazly4ga@work>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 29 Apr 2020 09:49:04 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiHoa0onB0KTthLXeHNNBupcPOdf38OEoFFy3ok3nOeJA@mail.gmail.com>
-Message-ID: <CAHk-=wiHoa0onB0KTthLXeHNNBupcPOdf38OEoFFy3ok3nOeJA@mail.gmail.com>
-Subject: Re: [PATCH] Fix use after free in get_tree_bdev()
-To:     Lukas Czerner <lczerner@redhat.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, Ian Kent <raven@themaw.net>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726960AbgD2QuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 12:50:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726580AbgD2QuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 12:50:13 -0400
+Subject: Re: [GIT PULL] RISC-V Fixes for 5.7-rc4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588179012;
+        bh=bKg24XwkHVX8aJUuYcsRZeOlgw2+5m4GrK/bym9sLHA=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=YlFyoPp+RX4fOGy1hr+a/QAvZ0f8gO3XTSOgYIFrX5V7uVzT4FBv8RURML5DN07ZW
+         4MMsuij/5Mv2Zl8xpqd9w/JgXqvxK09ORuK3jRTXxCHULnn4HnKPKBdpuqkUmhmzYX
+         jetpRxCeVPySVoZwyiqmePZdpJ0oAdKZj7jlFJaE=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <mhng-bd053cce-6f5a-40f4-9e58-a5ee70cc73a1@palmerdabbelt-glaptop1>
+References: <mhng-bd053cce-6f5a-40f4-9e58-a5ee70cc73a1@palmerdabbelt-glaptop1>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <mhng-bd053cce-6f5a-40f4-9e58-a5ee70cc73a1@palmerdabbelt-glaptop1>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git
+ tags/riscv-for-linus-5.7-rc4
+X-PR-Tracked-Commit-Id: a5fe13c7b49478c95e74f31f5b8b8347735684a7
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 1d2cc5ac6f6668cc15216d51051103c61467d7e8
+Message-Id: <158817901265.22148.17660808942250838603.pr-tracker-bot@kernel.org>
+Date:   Wed, 29 Apr 2020 16:50:12 +0000
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 11:06 PM Lukas Czerner <lczerner@redhat.com> wrote:
->
-> This fixes the problem I was seeing. Thanks David.
->
-> Reviewed-by: Lukas Czerner <lczerner@redhat.com>
+The pull request you sent on Wed, 29 Apr 2020 08:53:16 -0700 (PDT):
 
-Well, it got applied as obvious before this, so the commit log won't
-show your testing.
+> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.7-rc4
 
-Commit dd7bc8158b41 ("Fix use after free in get_tree_bdev()") in case
-anybody cares. Didn't make -rc3, but will be in -rc4.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/1d2cc5ac6f6668cc15216d51051103c61467d7e8
 
-          Linus
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
