@@ -2,85 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E481BE271
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52751BE265
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726974AbgD2PVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbgD2PVp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:21:45 -0400
-Received: from forward500j.mail.yandex.net (forward500j.mail.yandex.net [IPv6:2a02:6b8:0:801:2::110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119F6C03C1AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 08:21:45 -0700 (PDT)
-Received: from mxback9q.mail.yandex.net (mxback9q.mail.yandex.net [IPv6:2a02:6b8:c0e:6b:0:640:b813:52e4])
-        by forward500j.mail.yandex.net (Yandex) with ESMTP id 54BA711C414C;
-        Wed, 29 Apr 2020 18:18:15 +0300 (MSK)
-Received: from localhost (localhost [::1])
-        by mxback9q.mail.yandex.net (mxback/Yandex) with ESMTP id KbPPkAcLKB-IE4iODx5;
-        Wed, 29 Apr 2020 18:18:14 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1588173494;
-        bh=YNxfJqP4C2YqdFNFfcbfqj+X9mIviH90oiKLdZH123Y=;
-        h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
-        b=HWYcWHxa6buWsZ6XBnUTmoSlMWjtrgvJXuIBfGelbwf8JJhbcj/s+bfZOK/ErCFo/
-         gd0p0P2w29PQtl5ih1nCcyMf2Lcj/DHlqgO9GkMdqu3wWdboNq9pK4jIRo+7fGexPn
-         bO5OpOA47H5AzVbvr6SINkp88lkfYFNDCVlnSrdg=
-Authentication-Results: mxback9q.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by vla1-c477e3898c96.qloud-c.yandex.net with HTTP;
-        Wed, 29 Apr 2020 18:18:14 +0300
-From:   Evgeniy Polyakov <zbr@ioremap.net>
-Envelope-From: drustafa@yandex.ru
-To:     Greg KH <greg@kroah.com>, Akira Shimahara <akira215corp@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200429134655.GB2132814@kroah.com>
-References: <20200429133204.140081-1-akira215corp@gmail.com> <20200429134655.GB2132814@kroah.com>
-Subject: Re: [PATCH v3 2/5] w1_therm: adding sysfs entry to check device power
+        id S1726858AbgD2PSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 11:18:40 -0400
+Received: from mga02.intel.com ([134.134.136.20]:6299 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726562AbgD2PSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 11:18:39 -0400
+IronPort-SDR: TN7PIAHWCZpbHBwhWHi3nY9KKZBclXWO488PNkqFZ6IE3VB+OnnVmA+Pad84RyVhh1HVeWGc7l
+ b7lTVmPzX+tQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 08:18:38 -0700
+IronPort-SDR: L8Im9C8854t13HQozVXYhDTvYu1vq8EQ0is7FixfPmD9cMUV10VOlhf4Iqj0lH7qW6Kra/x3QW
+ PYr9HkbTeUug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,332,1583222400"; 
+   d="scan'208";a="303019043"
+Received: from linux.intel.com ([10.54.29.200])
+  by FMSMGA003.fm.intel.com with ESMTP; 29 Apr 2020 08:18:38 -0700
+Received: from [10.255.166.42] (vramuthx-mobl1.gar.corp.intel.com [10.255.166.42])
+        by linux.intel.com (Postfix) with ESMTP id 75FBF5802C8;
+        Wed, 29 Apr 2020 08:18:33 -0700 (PDT)
+Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
+Subject: Re: [PATCH v4 2/2] mtd: rawnand: Add NAND controller support on Intel
+ LGM SoC
+To:     Boris Brezillon <boris.brezillon@collabora.com>,
+        qi-ming.wu@intel.com
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, cheol.yong.kim@intel.com,
+        hauke.mehrtens@intel.com, anders.roxell@linaro.org,
+        vigneshr@ti.com, arnd@arndb.de, richard@nod.at,
+        brendanhiggins@google.com, linux-mips@vger.kernel.org,
+        robh+dt@kernel.org, miquel.raynal@bootlin.com, tglx@linutronix.de,
+        masonccyang@mxic.com.tw, andriy.shevchenko@intel.com
+References: <20200429104205.18780-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200429104205.18780-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20200429162249.55d38ee8@collabora.com>
+ <9d77c64c-d0f9-7a13-3391-d05bf458bdb1@linux.intel.com>
+ <20200429164832.6800fc70@collabora.com>
+From:   "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Message-ID: <2e83a2f7-853c-f0e2-f686-daf1e0649eae@linux.intel.com>
+Date:   Wed, 29 Apr 2020 23:18:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date:   Wed, 29 Apr 2020 18:18:14 +0300
-Message-Id: <330221588173223@mail.yandex.ru>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200429164832.6800fc70@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hi Boris,
 
-29.04.2020, 16:47, "Greg KH" <greg@kroah.com>:
+On 29/4/2020 10:48 pm, Boris Brezillon wrote:
+> On Wed, 29 Apr 2020 22:33:37 +0800
+> "Ramuthevar, Vadivel MuruganX"
+> <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+> 
+>> Hi Boris,
+>>
+>> On 29/4/2020 10:22 pm, Boris Brezillon wrote:
+>>> On Wed, 29 Apr 2020 18:42:05 +0800
+>>> "Ramuthevar, Vadivel MuruganX"
+>>> <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
+>>>    
+>>>> +
+>>>> +#define EBU_ADDR_SEL(n)		(0x20 + (n) * 4)
+>>>> +#define EBU_ADDR_MASK		(5 << 4)
+>>>
+>>> It's still unclear what ADDR_MASK is for. Can you add a comment
+>>> explaining what it does?
+>>
+>> Thank you Boris, keep review and giving inputs, will update.
+> 
+> Can you please explain it here before sending a new version?
 
->>  +What: /sys/bus/w1/devices/.../w1_slave
->>  +Date: Apr 2020
->>  +Contact: Akira Shimahara <akira215corp@gmail.com>
->>  +Description:
->>  + (RW) return the temperature in 1/1000 degC.
->>  + *read*: return 2 lines with the hexa output data sent on the
->>  + bus, return the CRC check and temperature in 1/1000 degC
->
-> the w1_slave file returns a temperature???
->
-> And sysfs is 1 value-per-file, not multiple lines.
+Memory Region Address Mask:
+Specifies the number of right-most bits in the base address that should 
+be included in the address comparison. bits positions(7:4).
 
-It was 'content crc' previously, and probably a good idea would be to add just one file with 'content'
+>>>    
+>>>> +#define EBU_ADDR_SEL_REGEN	0x1
+>>>
+>>>    
+>>>> +
+>>>> +	writel(lower_32_bits(ebu_host->cs[ebu_host->cs_num].nand_pa) |
+>>>> +	       EBU_ADDR_SEL_REGEN | EBU_ADDR_MASK,
+>>>> +	       ebu_host->ebu + EBU_ADDR_SEL(reg));
+>>>> +
+>>>> +	writel(EBU_MEM_BASE_CS_0 | EBU_ADDR_MASK | EBU_ADDR_SEL_REGEN,
+>>>> +	       ebu_host->ebu + EBU_ADDR_SEL(0));
+>>>> +	writel(EBU_MEM_BASE_CS_1 | EBU_ADDR_MASK | EBU_ADDR_SEL_REGEN,
+>>>> +	       ebu_host->ebu + EBU_ADDR_SEL(reg));
+>>>
+>>> That's super weird. You seem to set EBU_ADDR_SEL(reg) twice. Are you
+>>> sure that's needed, and are we setting EBU_ADDR_SEL(0) here?
+>>
+>> You are right, its weird only, but we need it, since different chip
+>> select has different memory region access address.
+> 
+> Well, that doesn't make any sense, the second write to
+> EBU_ADDR_SEL(reg) overrides the first one, meaning that nand_pa is
+> actually never written to ADDR_SEL(reg).
 
-> And as this is a temperature, what's wrong with the iio interface that
-> handles temperature already? Don't go making up new userspace apis when
-> we already have good ones today :)
+it will not overwrite the first one, since two different registers
+EBU_ADDR_SEL_0 EBU_ADDR_SEL  20H
+EBU_ADDR_SEL_1 EBU_ADDR_SEL  24H
 
-What is that?
-w1 always had a sysfs files for its contents whether it is converted temperature or raw bytes data,
-there is also netlink interface which is there since the day one. 
+it is an internal address selection w.r.t chip select for nand physical 
+address update.
 
->>  + *write* :
->>  + * `0` : save the 2 or 3 bytes to the device EEPROM
->>  + (i.e. TH, TL and config register)
->>  + * `9..12` : set the device resolution in RAM
->>  + (if supported)
->
-> I don't understand these write values, how do they match up to a
-> temperature readin?
 
-You kind of writing to device about how to convert its raw content into readable content, which will eventually become a temperature
+> 
+>>
+>> Yes , we are setting both CS0 and CS1 memory access region, if you have
+>> any concern to optimize, please suggest me, Thanks!
+> 
+> If you want to setup both CS, and the address written in EBU_ADDR_SEL(x)
+> is really related to the nand_pa address, then retrieve resources for
+> all CS ranges. 
+If it's not related, please explain what those
+> EBU_MEM_BASE_CS_X values encode.
+
+Memory Region Base Address
+FPI Bus addresses are compared to this base address in conjunction with 
+the mask control(EBU_ADDR_MASK). Driver need to program this field!
+
+Regards
+Vadivel
+
+> 
