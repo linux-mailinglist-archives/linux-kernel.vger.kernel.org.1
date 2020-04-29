@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF621BD248
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 04:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85191BD24C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 04:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgD2CcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 22:32:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726345AbgD2CcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 22:32:10 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12F8620730;
-        Wed, 29 Apr 2020 02:32:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588127530;
-        bh=W8/EyZPYK/miEiqAgzNxrcEQq3GEA2RTZHOJSMhHw38=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jCbkO5/izw0BXWLaRIUG1HrsPMhgFXEcXH8Pohqne7jNYyiRUTUlVyZlPW3wl+sGv
-         3xtV0TcqiyNQqsPIm6u433+WVvpUQX6IE4LbkPyaiOe7lvYPVnAEv+FflIFNSQkG7P
-         d6vF5sg58rwM4gPwwwa+RKyDl+82lGfIxXkZnwag=
-Date:   Wed, 29 Apr 2020 10:32:02 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     peng.fan@nxp.com
-Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, allison@lohutok.net, info@metux.net,
-        Anson.Huang@nxp.com, leonard.crestez@nxp.com, git@andred.net,
-        abel.vesa@nxp.com, ard.biesheuvel@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V1 2/4] ARM: imx: cpu: drop dead code
-Message-ID: <20200429023201.GJ32592@dragon>
-References: <1584004645-26720-1-git-send-email-peng.fan@nxp.com>
- <1584004645-26720-3-git-send-email-peng.fan@nxp.com>
+        id S1726567AbgD2Ccw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 22:32:52 -0400
+Received: from smtprelay0004.hostedemail.com ([216.40.44.4]:44880 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726345AbgD2Ccw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 22:32:52 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 20E12180A7351;
+        Wed, 29 Apr 2020 02:32:51 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:966:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2110:2194:2196:2199:2200:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3872:3873:3874:4184:4321:4385:4605:5007:6691:7903:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12438:12663:12740:12760:12895:13069:13311:13357:13439:14096:14097:14180:14181:14659:14721:21060:21080:21433:21627:21990:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: cause42_52f75aad21c32
+X-Filterd-Recvd-Size: 3266
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 29 Apr 2020 02:32:50 +0000 (UTC)
+Message-ID: <8e225a3166998c441049e9561703f357919d5499.camel@perches.com>
+Subject: Re: [PATCH 2/2] gpio: Make "offset" and "unsigned int", not just
+ "unsigned"
+From:   Joe Perches <joe@perches.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     LinusW <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 28 Apr 2020 19:32:48 -0700
+In-Reply-To: <CAD=FV=VtUEgwwB6C4GhTKx3TP37=i4shtwbG41r=wkELcpNmyQ@mail.gmail.com>
+References: <20200428172322.1.I396f351e364f3c09df7c7606e79abefb8682c092@changeid>
+         <20200428172322.2.Iacb3c8152c3cf9015a91308678155a578b0cc050@changeid>
+         <a23b7a97f349e6f74b993a4e127564ad3f7d6929.camel@perches.com>
+         <CAD=FV=Us6LyfgeXvxnqq+KhHN1djok1y+W_xzSb-KGFy2wgEMg@mail.gmail.com>
+         <bc5c8165908facbb4781b2f29903dfacdf625e83.camel@perches.com>
+         <CAD=FV=VtUEgwwB6C4GhTKx3TP37=i4shtwbG41r=wkELcpNmyQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1584004645-26720-3-git-send-email-peng.fan@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 05:17:23PM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> imx_soc_device_init is only called by i.MX6Q/SL/SX/UL/7D/7ULP.
-> So we could drop the switch case for i.MX1/2/3/5 which are dead code
-> that never be executed.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  arch/arm/mach-imx/cpu.c | 24 ------------------------
->  1 file changed, 24 deletions(-)
-> 
-> diff --git a/arch/arm/mach-imx/cpu.c b/arch/arm/mach-imx/cpu.c
-> index 2df649a84697..0302cb66134b 100644
-> --- a/arch/arm/mach-imx/cpu.c
-> +++ b/arch/arm/mach-imx/cpu.c
-> @@ -108,30 +108,6 @@ static int __init imx_soc_device_init(void)
->  		goto free_soc;
->  
->  	switch (__mxc_cpu_type) {
-> -	case MXC_CPU_MX1:
-> -		soc_id = "i.MX1";
-> -		break;
-> -	case MXC_CPU_MX21:
-> -		soc_id = "i.MX21";
-> -		break;
-> -	case MXC_CPU_MX25:
-> -		soc_id = "i.MX25";
-> -		break;
-> -	case MXC_CPU_MX27:
-> -		soc_id = "i.MX27";
-> -		break;
-> -	case MXC_CPU_MX31:
-> -		soc_id = "i.MX31";
-> -		break;
-> -	case MXC_CPU_MX35:
-> -		soc_id = "i.MX35";
-> -		break;
-> -	case MXC_CPU_MX51:
-> -		soc_id = "i.MX51";
-> -		break;
-> -	case MXC_CPU_MX53:
-> -		soc_id = "i.MX53";
-> -		break;
+On Tue, 2020-04-28 at 18:04 -0700, Doug Anderson wrote:
+> Hi,
 
-The code is here to completeness.  If it doesn't get in your way, let's
-just keep it.
+<slurring but replying with hi again...>
 
-Shawn
-
->  	case MXC_CPU_IMX6SL:
->  		ocotp_compat = "fsl,imx6sl-ocotp";
->  		soc_id = "i.MX6SL";
-> -- 
-> 2.16.4
+> On Tue, Apr 28, 2020 at 5:57 PM Joe Perches <joe@perches.com> wrote:
+> > On Tue, 2020-04-28 at 17:50 -0700, Doug Anderson wrote:
+> > > $ git grep -P -n '\bunsigned\s+(?!int|long)' include/linux/gpio/driver.h
+> > include/linux/gpio/driver.h:352:                                                unsigned offset);
+> > include/linux/gpio/driver.h:354:                                                unsigned offset);
+> > include/linux/gpio/driver.h:356:                                                unsigned offset);
+> > include/linux/gpio/driver.h:358:                                                unsigned offset);
+> > include/linux/gpio/driver.h:360:                                                unsigned offset, int value);
+> > include/linux/gpio/driver.h:362:                                                unsigned offset);
+> > include/linux/gpio/driver.h:367:                                                unsigned offset, int value);
+> > include/linux/gpio/driver.h:372:                                              unsigned offset,
+> > include/linux/gpio/driver.h:375:                                                unsigned offset);
+> > include/linux/gpio/driver.h:462:                        unsigned offset);
+> > include/linux/gpio/driver.h:660:int gpiochip_generic_request(struct gpio_chip *gc, unsigned offset);
+> > include/linux/gpio/driver.h:661:void gpiochip_generic_free(struct gpio_chip *gc, unsigned offset);
+> > include/linux/gpio/driver.h:662:int gpiochip_generic_config(struct gpio_chip *gc, unsigned offset,
 > 
+> ...riiiiiggght.   ...and now I run your sed script _after_ my patch
+> and I get no hits.  ...so I'm still confused about what you want me to
+> do that's not already done in my patch.
+
+So you did say it's the g&t.
+It seems I only looked at the first diff block.
+
+cheers, <hck>, Joe
+
