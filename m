@@ -2,104 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA661BD1C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 03:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B631BD1C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 03:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726493AbgD2BgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 21:36:09 -0400
-Received: from mga17.intel.com ([192.55.52.151]:16886 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726181AbgD2BgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 21:36:08 -0400
-IronPort-SDR: DKyDf+C7UwHMVrdLb0dCXUoHZNCAfbOgUMmksH9LMEIq/F/l3j0HwAHMfc0Ey0kOcFebO38NPw
- +NuIuYirRt1w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 18:36:08 -0700
-IronPort-SDR: Z9Ddv9+AOeUO8ugYlktzn19TYxlgniMZg2nWzHfJPzpxAnkXMQYG3kNcroPUzEzodp4kFtRU6K
- rlh8jJBLw+Cg==
-X-IronPort-AV: E=Sophos;i="5.73,329,1583222400"; 
-   d="scan'208";a="302867262"
-Received: from spandruv-mobl.amr.corp.intel.com ([10.251.128.143])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2020 18:36:07 -0700
-Message-ID: <2f526edc870a80ae87a824a1593507306eb05aeb.camel@linux.intel.com>
-Subject: Re: [PATCH] hid: intel-ish-hid: avoid bogus uninitialized-variable
- warning
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Nick Crews <ncrews@chromium.org>,
-        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 28 Apr 2020 18:36:07 -0700
-In-Reply-To: <20200428215337.4094575-1-arnd@arndb.de>
-References: <20200428215337.4094575-1-arnd@arndb.de>
+        id S1726516AbgD2Bgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 21:36:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgD2Bgi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 21:36:38 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29084C03C1AC;
+        Tue, 28 Apr 2020 18:36:38 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49Bh1s0GwXz9sSb;
+        Wed, 29 Apr 2020 11:36:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
+        t=1588124194; bh=aX6yuTZNfS6VpnGOKXY3BwUwvbi+L3YPZlT8aZPIt/Q=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=sLXdyA3asl4Ggu+8sp54jw2RxX89A307Eca03BspfzrH5LAbDE8tcQ7GXelho0cJ4
+         h0+ugwPDC0ylK0WrGGYom841yaBKVxl7ZDsBwTGt479MPHm3YLsyUenIawkyqeWeGK
+         5DgdA4AH+ve27bFPyGSW2irceBlfdO/Gh7x7XdgVxt5LrczFlchU5WPu7RUCRPVQc1
+         HfirjIkc2a/MCcXSnZbs+R2OHfX57P2JK9lUGvooL70+eH91x52qwtRjqokz+RhUfg
+         Vh39zw4qpqmfBzNS5pZKFPyHdzDIS4NVysxTIj+8RIta8BZUH/ukIKyK7nrpvRDcTf
+         UABIFc++ieJAQ==
+Message-ID: <e1ebea36b162e8a3b4b24ecbc1051f8081ff5e53.camel@ozlabs.org>
+Subject: Re: [RFC PATCH] powerpc/spufs: fix copy_to_user while atomic
+From:   Jeremy Kerr <jk@ozlabs.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 29 Apr 2020 09:36:30 +0800
+In-Reply-To: <20200428171133.GA17445@lst.de>
+References: <20200427200626.1622060-2-hch@lst.de>
+         <20200428120207.15728-1-jk@ozlabs.org> <20200428171133.GA17445@lst.de>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.2 (3.34.2-1.fc31) 
-MIME-Version: 1.0
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-28 at 23:53 +0200, Arnd Bergmann wrote:
-> Older compilers like gcc-4.8 don't see that the variable is
-> initialized when it is used:
-> 
-> In file included from include/linux/compiler_types.h:68:0,
->                  from <command-line>:0:
-> drivers/hid/intel-ish-hid/ishtp-fw-loader.c: In function
-> 'load_fw_from_host':
-> include/linux/compiler-gcc.h:75:45: warning:
-> 'fw_info.ldr_capability.max_dma_buf_size' may be used uninitialized
-> in this function [-Wmaybe-uninitialized]
->  #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix),
-> __COUNTER__)
->                                              ^
-> drivers/hid/intel-ish-hid/ishtp-fw-loader.c:770:22: note:
-> 'fw_info.ldr_capability.max_dma_buf_size' was declared here
->   struct shim_fw_info fw_info;
->                       ^
-> 
-> Make sure to initialize it before returning an error from
-> ish_query_loader_prop().
-> 
-> Fixes: 91b228107da3 ("HID: intel-ish-hid: ISH firmware loader client
-> driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Hi Christoph,
+
+> FYI, these little hunks reduce the difference to my version, maybe
+> you can fold them in?
+
+Sure, no problem.
+
+How do you want to coordinate these? I can submit mine through mpe, but
+that may make it tricky to synchronise with your changes. Or, you can
+include this change in your series if you prefer.
+
+Cheers,
 
 
-> ---
->  drivers/hid/intel-ish-hid/ishtp-fw-loader.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
-> b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
-> index aa2dbed30fc3..6cf59fd26ad7 100644
-> --- a/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
-> +++ b/drivers/hid/intel-ish-hid/ishtp-fw-loader.c
-> @@ -480,6 +480,7 @@ static int ish_query_loader_prop(struct
-> ishtp_cl_data *client_data,
->  			    sizeof(ldr_xfer_query_resp));
->  	if (rv < 0) {
->  		client_data->flag_retry = true;
-> +		*fw_info = (struct shim_fw_info){};
->  		return rv;
->  	}
->  
-> @@ -489,6 +490,7 @@ static int ish_query_loader_prop(struct
-> ishtp_cl_data *client_data,
->  			"data size %d is not equal to size of
-> loader_xfer_query_response %zu\n",
->  			rv, sizeof(struct loader_xfer_query_response));
->  		client_data->flag_retry = true;
-> +		*fw_info = (struct shim_fw_info){};
->  		return -EMSGSIZE;
->  	}
->  
+Jeremy
+
 
