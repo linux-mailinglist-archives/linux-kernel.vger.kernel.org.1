@@ -2,62 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336A01BD2CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDA01BD2D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgD2DJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 23:09:32 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:3378 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726559AbgD2DJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 23:09:32 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id EC86577A9F912E32341D;
-        Wed, 29 Apr 2020 11:09:29 +0800 (CST)
-Received: from linux-lmwb.huawei.com (10.175.103.112) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 29 Apr 2020 11:09:23 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <aviad.krawczyk@huawei.com>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] hinic: Use ARRAY_SIZE for nic_vf_cmd_msg_handler
-Date:   Wed, 29 Apr 2020 11:15:36 +0800
-Message-ID: <1588130136-49236-1-git-send-email-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.6.2
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.103.112]
-X-CFilter-Loop: Reflected
+        id S1726676AbgD2DWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 23:22:22 -0400
+Received: from kernel.crashing.org ([76.164.61.194]:49566 "EHLO
+        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbgD2DWW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 23:22:22 -0400
+X-Greylist: delayed 532 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Apr 2020 23:22:21 EDT
+Received: from localhost (gate.crashing.org [63.228.1.57])
+        (authenticated bits=0)
+        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 03T3LD4u008600
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 28 Apr 2020 22:21:16 -0500
+Message-ID: <55e1e941457cd596c4273e9c55dc2cfc9027c5ba.camel@kernel.crashing.org>
+Subject: Re: [PATCH v5 3/5] drivers/soc/litex: add LiteX SoC Controller
+ driver
+From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To:     Mateusz Holenko <mholenko@antmicro.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, devicetree@vger.kernel.org,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Cc:     Stafford Horne <shorne@gmail.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Filip Kokosinski <fkokosinski@antmicro.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, "Gabriel L. Somlo" <gsomlo@gmail.com>
+Date:   Wed, 29 Apr 2020 13:21:11 +1000
+In-Reply-To: <CAPk366REVxz7qRfJ0dJOVPRey6+01q1JRvqANDNffYV8Lvh73g@mail.gmail.com>
+References: <20200425133939.3508912-0-mholenko@antmicro.com>
+         <20200425133939.3508912-3-mholenko@antmicro.com>
+         <CAPk366REVxz7qRfJ0dJOVPRey6+01q1JRvqANDNffYV8Lvh73g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix coccinelle warning, use ARRAY_SIZE
+On Mon, 2020-04-27 at 11:13 +0200, Mateusz Holenko wrote:
+> As Gabriel Somlo <gsomlo@gmail.com> suggested to me, I could still use
+> readl/writel/ioread/iowrite() standard functions providing memory
+> barriers *and* have values in CPU native endianness by using the
+> following constructs:
+> 
+> `le32_to_cpu(readl(addr))`
+> 
+> and
+> 
+> `writel(cpu_to_le32(value), addr)`
+> 
+> as le32_to_cpu/cpu_to_le32():
+> - does nothing on LE CPUs and
+> - reorders bytes on BE CPUs which in turn reverts swapping made by
+> readl() resulting in returning the original value.
 
-drivers/net/ethernet/huawei/hinic/hinic_sriov.c:713:43-44: WARNING: Use ARRAY_SIZE
+It's a bit sad... I don't understand why you need this. The HW has a
+fied endian has you have mentioned earlier (and that is a good design).
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/net/ethernet/huawei/hinic/hinic_sriov.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+The fact that you are trying to shove things into a "smaller pipe" than
+the actual register shouldn't affect at what address the MSB and LSB
+reside. And readl/writel (or ioread32/iowrite32) will always be LE as
+well, so will match the HW layout. Thus I don't see why you need to
+play swapping games here.
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-index b24788e..ac12725 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-@@ -710,8 +710,7 @@ int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
- 	if (!hwdev)
- 		return -EFAULT;
- 
--	cmd_number = sizeof(nic_vf_cmd_msg_handler) /
--			    sizeof(struct vf_cmd_msg_handle);
-+	cmd_number = ARRAY_SIZE(nic_vf_cmd_msg_handler);
- 	pfhwdev = container_of(dev, struct hinic_pfhwdev, hwdev);
- 	nic_io = &dev->func_to_io;
- 	for (i = 0; i < cmd_number; i++) {
--- 
-2.6.2
+This however would be avoided completely if the HW was a tiny bit
+smarter and would do the multi-beat access for you which shouldn't be
+terribly hard to implement.
+
+That said, it would be even clearer if you just open coded the 2 or 3
+useful cases: 32/8, 32/16 and 32/32. The loop with calculated shifts
+(and no masks) makes the code hard to understand.
+
+Cheers,
+Ben.
 
