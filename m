@@ -2,171 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9BA1BD63A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 09:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7181BD651
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 09:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726457AbgD2Hkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 03:40:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726355AbgD2Hkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 03:40:35 -0400
-Received: from Mani-XPS-13-9360 (unknown [157.46.25.26])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1AA42073E;
-        Wed, 29 Apr 2020 07:40:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588146034;
-        bh=vT0nc6JP1XAbhEu/xWlWApVMT/AgweeuCYtCLOPZvik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aOWD4Hlawou5o0CTYK8q0icBT7hswPxiDZC3nVwT0Jo9Xd8Z2M8CP1kLZhS2/9AVs
-         bYPgaHHY6+OCUhAEhO5SpvHoLtuS0cpNVRwQMuDPQAAGlomZT+ZrVwmx2zeW/+MCz5
-         qHQZTI8CawBO30E2PgMwf+HahaIU0UyIRIAD20e4=
-Date:   Wed, 29 Apr 2020 13:10:26 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     johan@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patong.mxl@gmail.com
-Subject: Re: [PATCH 1/2] usb: serial: Add MaxLinear/Exar USB to Serial driver
-Message-ID: <20200429074025.GA6443@Mani-XPS-13-9360>
-References: <20200428195651.6793-1-mani@kernel.org>
- <20200428195651.6793-2-mani@kernel.org>
- <20200429072036.GA2045202@kroah.com>
+        id S1726759AbgD2HmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 03:42:25 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:59929 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726554AbgD2HmX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 03:42:23 -0400
+Received: from mail-qt1-f169.google.com ([209.85.160.169]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1Mx0VH-1jEmjV0fTn-00ySHt; Wed, 29 Apr 2020 09:42:22 +0200
+Received: by mail-qt1-f169.google.com with SMTP id b1so1117838qtt.1;
+        Wed, 29 Apr 2020 00:42:21 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYMx5cbpuTZKzYOJvRyKo4AlymN5WrSecm0QOs1GfFxiWKpzBCs
+        4TqODyDtwHxrCIrooQoHWMN+OsCU2EbxIlvnbtA=
+X-Google-Smtp-Source: APiQypJpUvYWo2LU3ZngNQ2JW3D6wR/VR7VqZhY2dctva2ZkWquiJEYUHe1E74mkf1lS1pWa7NroBC/zYcEQxa9gQho=
+X-Received: by 2002:ac8:4c8d:: with SMTP id j13mr32009866qtv.142.1588146140928;
+ Wed, 29 Apr 2020 00:42:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429072036.GA2045202@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200427200626.1622060-2-hch@lst.de> <20200428120207.15728-1-jk@ozlabs.org>
+ <20200428171133.GA17445@lst.de> <e1ebea36b162e8a3b4b24ecbc1051f8081ff5e53.camel@ozlabs.org>
+ <20200429061514.GD30946@lst.de> <2014678ca837f6aaa4cf23b4ea51e4805146c36d.camel@ozlabs.org>
+In-Reply-To: <2014678ca837f6aaa4cf23b4ea51e4805146c36d.camel@ozlabs.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Wed, 29 Apr 2020 09:42:04 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2s3SLw7qehipMCP2m4TG+S089nBiqFfY3c7M2qjVTHWw@mail.gmail.com>
+Message-ID: <CAK8P3a2s3SLw7qehipMCP2m4TG+S089nBiqFfY3c7M2qjVTHWw@mail.gmail.com>
+Subject: Re: [RFC PATCH] powerpc/spufs: fix copy_to_user while atomic
+To:     Jeremy Kerr <jk@ozlabs.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:0F+MXJdpbdc8prDZpJ1o0fXcWKpXA6GHBMcS6NM7GMZHddCJt3d
+ lSJ13n+AikE9nKXFORVKe4Qs0Jh+HErHj5vnWBO5TNyhOf60oSgbiK+ra4/t09GZ2ddMWaV
+ C5oz1NxXyh/7ozpWKqx9XlmyTYkp/856b70jnOFs1QRSI7UGbYzzaJ612bwdGEvgrsOVFME
+ F3lF04orawvvqY6a+6Ihw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0lGVva0neKE=:8/YCBhn/FU+mNBnNGbE08T
+ OodQyvsqEpg/TpLsQauCtU7AfaV2xkMHDzG241UV9cxGPDV6V/7+L7RXzRhUMWL+VMpJLXXLP
+ hDsTpoymddUSb0x3jbsDJQDtO4aJ4fVX3VoRZQOrdLhcNf7D1XbqJlsmnX46pmUt2elXerNTj
+ bo2Cqgc2yxjBzdFjKTgvrK7D3ik/bayNYiPV8jy/+q/ZDb4i5eK6VRuWRy6D1Q9VMlAQ4KKQW
+ rM2skiyjNg26/+ebCJUDaIaWtoURJE8rpJiHVmBDUiW406B0ufXXzhUKQT/Hj8fh/8spSY9Qs
+ 9GaRR6IqmSSQvBJBa7tt/LgC7zDrOfswUgtOhqINmvyIAMBJfSQoMxAJeUOpqg9pOk0dmue7G
+ oh+CUX+H/DPSXezN5P80PDjII94v6ylyUaKWv6Q27iloLV6OXbemGpiHGwNwKsT2ZTL7bQ29J
+ L1FL8jYEtu7QsaDu2tYYn3LvyGsgoaBTERLrTK97E0Ipj0hwJFVwk5i/vrq8fSjoV1YazLGTb
+ WDL2QCAxWhrVLujC0Eo/UdKXhRgHMiaMzKFFzaJQ6kzAa9B2uIc5JS/KDoJjoeoLHwW9kZ5EB
+ alaZ155sRgdBp2cUv+6VJmMdOVW+BrKJDqrJlU6cnzilgNv43OBJDdxecYkg9n1KQp3yxLepo
+ 5RkXKXEX94NGeT3kYHuJKjJ2ULG4U1C4EquOp55vAMTCKDhJNDXTYL73t1caOreK6mM7VU5OT
+ kwdwmwvuK0/zjI/yzSTCccCF7sHRvtu/nfjwouqr8JDj0Cw6WfbVOVxXXvw1JelzbK9jw+aTc
+ 22MrAs4CbMG3smYXxlE/9WIdlJPBBn/QHteMAxFOolE/AQhB/0=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Wed, Apr 29, 2020 at 8:33 AM Jeremy Kerr <jk@ozlabs.org> wrote:
+>
+> Hi Christoph,
+>
+> > And another one that should go on top of this one to address Al's other
+> > compaint:
+>
+> Yeah, I was pondering that one. The access_ok() is kinda redundant, but
+> it does avoid forcing a SPU context save on those errors.
+>
+> However, it's not like we really need to optimise for the case of
+> invalid addresses from userspace. So, I'll include this change in the
+> submission to Michael's tree. Arnd - let me know if you have any
+> objections.
 
-On Wed, Apr 29, 2020 at 09:20:36AM +0200, Greg KH wrote:
-> On Wed, Apr 29, 2020 at 01:26:50AM +0530, mani@kernel.org wrote:
-> > From: Manivannan Sadhasivam <mani@kernel.org>
-> > 
-> > Add support for MaxLinear/Exar USB to Serial converters. This driver
-> > only supports XR21V141X series but provision has been made to support
-> > other series in future.
-> > 
-> > This driver is inspired from the initial one submitted by Patong Yang:
-> > 
-> > https://patchwork.kernel.org/patch/10543261/
-> > 
-> > While the initial driver was a custom tty USB driver exposing whole
-> > new serial interface ttyXRUSBn, this version is completely based on USB
-> > serial core thus exposing the interfaces as ttyUSBn. This will avoid
-> > the overhead of exposing a new USB serial interface which the userspace
-> > tools are unaware of.
-> 
-> Nice work!
-> 
-> Some comments below:
-> 
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/*
-> > + * MaxLinear/Exar USB to Serial driver
-> > + *
-> > + * Based on initial driver written by Patong Yang <patong.mxl@gmail.com>
-> > + *
-> > + * Copyright (c) 2020 Manivannan Sadhasivam <mani@kernel.org>
-> > + */
-> > +
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/tty.h>
-> > +#include <linux/usb.h>
-> > +#include <linux/usb/serial.h>
-> > +
-> > +#include "xr_serial.h"
-> 
-> No need for a .h file for a single .c file.
-> 
+Sounds good. A lot of the access_ok() checks in the kernel are redundant
+or wrong, I think it makes a lot of sense to remove these.
 
-Yeah but since this driver can support multiple series of XR chips (they
-might have separate register definitions and such), I thought it is a good
-idea to have a header file to keep the driver sane. But can club it to the
-source file for now.
-
-> > +static int xr_get_reg(struct usb_serial_port *port, u8 block, u16 reg,
-> > +		      u16 *val)
-> > +{
-> > +	struct usb_serial *serial = port->serial;
-> > +	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-> > +	void *dmabuf;
-> > +	int ret = -EINVAL;
-> > +
-> > +	dmabuf = kmalloc(sizeof(reg), GFP_KERNEL);
-> 
-> So that is 2 bytes?
-> 
-
-Explanation below...
-
-> > +	if (!dmabuf)
-> > +		return -ENOMEM;
-> > +
-> > +	if (port_priv->idProduct == XR21V141X_ID) {
-> > +		/* XR21V141X uses custom command for reading UART registers */
-> > +		ret = usb_control_msg(serial->dev,
-> > +				      usb_rcvctrlpipe(serial->dev, 0),
-> > +				      XR_GET_XR21V141X,
-> > +				      USB_DIR_IN | USB_TYPE_VENDOR, 0,
-> > +				      reg | (block << 8), dmabuf,
-> > +				      port_priv->reg_width,
-> > +				      USB_CTRL_SET_TIMEOUT);
-> > +	}
-> > +
-> > +	if (ret == port_priv->reg_width) {
-> > +		memcpy(val, dmabuf, port_priv->reg_width);
-> 
-> But here you copy ->reg_width bytes in?  How do you know val can hold
-> that much?  It's only set to be 1, so you copy 1 byte to a 16bit value?
-> What part of the 16bits did you just copy those 8 bits to (hint, think
-> cpu endian issues...)
-> 
-> That feels really really odd and a bit broken.
-> 
-
-Right. The reason is, the other series which can be supported by this driver
-have different register widths. For instance XR2280x. I haven't used them
-personally but seen this in initial driver. So I just used the max u16 type
-to make the reg_{set/get} routines work with those.
-
-But agree, I should've used le16_to_cpu() cast to avoid endian issues.
-
-If you think this hack is not required now, I can just use u8 and worry about
-compatibility later.
-
-> > --- /dev/null
-> > +++ b/drivers/usb/serial/xr_serial.h
-> > @@ -0,0 +1,103 @@
-> > +/* SPDX-License-Identifier: GPL-2.0+ */
-> 
-> Are you sure about the "+"?  I have to ask :)
-> 
-
-I'm not a fan but since I've inherited the code from initial driver (which
-was GPL-2.0+), I kept it.
-
-> > +
-> > +#ifndef __LINUX_USB_SERIAL_XR_SERIAL_H
-> > +#define __LINUX_USB_SERIAL_XR_SERIAL_H
-> 
-> As you will drop this file, just a general statement, no need for
-> __LINUX as this is all Linux :)
-> 
-
-Sure.
-
-Thanks,
-Mani
-
-> thanks,
-> 
-> greg k-h
+       Arnd
