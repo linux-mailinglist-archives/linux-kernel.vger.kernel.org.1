@@ -2,143 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA181BDF34
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61691BDF49
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgD2NlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:41:07 -0400
-Received: from 8bytes.org ([81.169.241.247]:39514 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727865AbgD2Nhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:37 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 49DD72E2; Wed, 29 Apr 2020 15:37:35 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v3 00/34] iommu: Move iommu_group setup to IOMMU core code
-Date:   Wed, 29 Apr 2020 15:36:38 +0200
-Message-Id: <20200429133712.31431-1-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
+        id S1728301AbgD2Nl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726858AbgD2Ng7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:36:59 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D69DC08E859;
+        Wed, 29 Apr 2020 06:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=lT3WB4tsfdqi9806CIQgzRbn5jUT7F3rePhx8THgs3Q=; b=Jcl0TbsfsY8IflEMKQTrpztMNu
+        c45bt2AMTsw3vV6NvK3uz90AhgzeZPKq+60441w2HNyHbpyG6Av/Y0Nrt1wK1D/eZ7Uer76B+jvV0
+        x5HalM50dJ/ZW/Pfdk+WkU7e0sbt64o6fauakZh6HiaHwW0jjCndHk8O2rHWG5YKsZnzEbnkqAsUo
+        W9vp4A+go+Rcf4Rvbg3JdkZbYSos9dH+hfp3VugiLc9Naumz8c/gUz0DwWeqGAu/xjjURxBKh/2h4
+        DYWNM3s0vVA6KhEUwH0BPlS54HMAT7gz5iC2l/rX9u+aalPRLeGvP8KA4MdwikCtlHGgsw2kOTn1N
+        2AKnWiMg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jTmtX-0005un-9N; Wed, 29 Apr 2020 13:36:59 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v3 06/25] fs: Introduce i_blocks_per_page
+Date:   Wed, 29 Apr 2020 06:36:38 -0700
+Message-Id: <20200429133657.22632-7-willy@infradead.org>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
+References: <20200429133657.22632-1-willy@infradead.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-here is the third version of this patch-set. Older versions can be found
-here:
+This helper is useful for both large pages in the page cache and for
+supporting block size larger than page size.  Convert some example
+users (we have a few different ways of writing this idiom).
 
-	v1: https://lore.kernel.org/lkml/20200407183742.4344-1-joro@8bytes.org/
-	    (Has some more introductory text)
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/iomap/buffered-io.c  |  8 ++++----
+ fs/jfs/jfs_metapage.c   |  2 +-
+ fs/xfs/xfs_aops.c       |  2 +-
+ include/linux/pagemap.h | 16 ++++++++++++++++
+ 4 files changed, 22 insertions(+), 6 deletions(-)
 
-	v2: https://lore.kernel.org/lkml/20200414131542.25608-1-joro@8bytes.org/
-
-Changes v2 -> v3:
-
-	* Rebased v5.7-rc3
-
-	* Added a missing iommu_group_put() as reported by Lu Baolu.
-
-	* Added a patch to consolidate more initialization work in
-	  __iommu_probe_device(), fixing a bug where no 'struct
-	  device_iommu' was allocated in the hotplug path.
-
-There is also a git-branch available with these patches applied:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/joro/linux.git/log/?h=iommu-probe-device-v3
-
-Please review. If there are no objections I plan to put these patches
-into the IOMMU tree early next week.
-
-Thanks,
-
-	Joerg
-
-Joerg Roedel (33):
-  iommu: Move default domain allocation to separate function
-  iommu/amd: Implement iommu_ops->def_domain_type call-back
-  iommu/vt-d: Wire up iommu_ops->def_domain_type
-  iommu/amd: Remove dma_mask check from check_device()
-  iommu/amd: Return -ENODEV in add_device when device is not handled by
-    IOMMU
-  iommu: Add probe_device() and release_device() call-backs
-  iommu: Move default domain allocation to iommu_probe_device()
-  iommu: Keep a list of allocated groups in __iommu_probe_device()
-  iommu: Move new probe_device path to separate function
-  iommu: Split off default domain allocation from group assignment
-  iommu: Move iommu_group_create_direct_mappings() out of
-    iommu_group_add_device()
-  iommu: Export bus_iommu_probe() and make is safe for re-probing
-  iommu/amd: Remove dev_data->passthrough
-  iommu/amd: Convert to probe/release_device() call-backs
-  iommu/vt-d: Convert to probe/release_device() call-backs
-  iommu/arm-smmu: Convert to probe/release_device() call-backs
-  iommu/pamu: Convert to probe/release_device() call-backs
-  iommu/s390: Convert to probe/release_device() call-backs
-  iommu/virtio: Convert to probe/release_device() call-backs
-  iommu/msm: Convert to probe/release_device() call-backs
-  iommu/mediatek: Convert to probe/release_device() call-backs
-  iommu/mediatek-v1 Convert to probe/release_device() call-backs
-  iommu/qcom: Convert to probe/release_device() call-backs
-  iommu/rockchip: Convert to probe/release_device() call-backs
-  iommu/tegra: Convert to probe/release_device() call-backs
-  iommu/renesas: Convert to probe/release_device() call-backs
-  iommu/omap: Remove orphan_dev tracking
-  iommu/omap: Convert to probe/release_device() call-backs
-  iommu/exynos: Use first SYSMMU in controllers list for IOMMU core
-  iommu/exynos: Convert to probe/release_device() call-backs
-  iommu: Remove add_device()/remove_device() code-paths
-  iommu: Move more initialization to __iommu_probe_device()
-  iommu: Unexport iommu_group_get_for_dev()
-
-Sai Praneeth Prakhya (1):
-  iommu: Add def_domain_type() callback in iommu_ops
-
- drivers/iommu/amd_iommu.c       |  97 ++++----
- drivers/iommu/amd_iommu_types.h |   1 -
- drivers/iommu/arm-smmu-v3.c     |  38 +---
- drivers/iommu/arm-smmu.c        |  39 ++--
- drivers/iommu/exynos-iommu.c    |  24 +-
- drivers/iommu/fsl_pamu_domain.c |  22 +-
- drivers/iommu/intel-iommu.c     |  68 +-----
- drivers/iommu/iommu.c           | 387 +++++++++++++++++++++++++-------
- drivers/iommu/ipmmu-vmsa.c      |  60 ++---
- drivers/iommu/msm_iommu.c       |  34 +--
- drivers/iommu/mtk_iommu.c       |  24 +-
- drivers/iommu/mtk_iommu_v1.c    |  50 ++---
- drivers/iommu/omap-iommu.c      |  99 ++------
- drivers/iommu/qcom_iommu.c      |  24 +-
- drivers/iommu/rockchip-iommu.c  |  26 +--
- drivers/iommu/s390-iommu.c      |  22 +-
- drivers/iommu/tegra-gart.c      |  24 +-
- drivers/iommu/tegra-smmu.c      |  31 +--
- drivers/iommu/virtio-iommu.c    |  41 +---
- include/linux/iommu.h           |  21 +-
- 20 files changed, 531 insertions(+), 601 deletions(-)
-
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 890c8fcda4f3..4bc37bf8d057 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -46,7 +46,7 @@ iomap_page_create(struct inode *inode, struct page *page)
+ {
+ 	struct iomap_page *iop = to_iomap_page(page);
+ 
+-	if (iop || i_blocksize(inode) == PAGE_SIZE)
++	if (iop || i_blocks_per_page(inode, page) <= 1)
+ 		return iop;
+ 
+ 	iop = kmalloc(sizeof(*iop), GFP_NOFS | __GFP_NOFAIL);
+@@ -152,7 +152,7 @@ iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
+ 	unsigned int i;
+ 
+ 	spin_lock_irqsave(&iop->uptodate_lock, flags);
+-	for (i = 0; i < PAGE_SIZE / i_blocksize(inode); i++) {
++	for (i = 0; i < i_blocks_per_page(inode, page); i++) {
+ 		if (i >= first && i <= last)
+ 			set_bit(i, iop->uptodate);
+ 		else if (!test_bit(i, iop->uptodate))
+@@ -1090,7 +1090,7 @@ iomap_finish_page_writeback(struct inode *inode, struct page *page,
+ 		mapping_set_error(inode->i_mapping, -EIO);
+ 	}
+ 
+-	WARN_ON_ONCE(i_blocksize(inode) < PAGE_SIZE && !iop);
++	WARN_ON_ONCE(i_blocks_per_page(inode, page) > 1 && !iop);
+ 	WARN_ON_ONCE(iop && atomic_read(&iop->write_count) <= 0);
+ 
+ 	if (!iop || atomic_dec_and_test(&iop->write_count))
+@@ -1386,7 +1386,7 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+ 	int error = 0, count = 0, i;
+ 	LIST_HEAD(submit_list);
+ 
+-	WARN_ON_ONCE(i_blocksize(inode) < PAGE_SIZE && !iop);
++	WARN_ON_ONCE(i_blocks_per_page(inode, page) > 1 && !iop);
+ 	WARN_ON_ONCE(iop && atomic_read(&iop->write_count) != 0);
+ 
+ 	/*
+diff --git a/fs/jfs/jfs_metapage.c b/fs/jfs/jfs_metapage.c
+index a2f5338a5ea1..176580f54af9 100644
+--- a/fs/jfs/jfs_metapage.c
++++ b/fs/jfs/jfs_metapage.c
+@@ -473,7 +473,7 @@ static int metapage_readpage(struct file *fp, struct page *page)
+ 	struct inode *inode = page->mapping->host;
+ 	struct bio *bio = NULL;
+ 	int block_offset;
+-	int blocks_per_page = PAGE_SIZE >> inode->i_blkbits;
++	int blocks_per_page = i_blocks_per_page(inode, page);
+ 	sector_t page_start;	/* address of page in fs blocks */
+ 	sector_t pblock;
+ 	int xlen;
+diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
+index 1fd4fb7a607c..5b25f5ee84dc 100644
+--- a/fs/xfs/xfs_aops.c
++++ b/fs/xfs/xfs_aops.c
+@@ -544,7 +544,7 @@ xfs_discard_page(
+ 			page, ip->i_ino, offset);
+ 
+ 	error = xfs_bmap_punch_delalloc_range(ip, start_fsb,
+-			PAGE_SIZE / i_blocksize(inode));
++			i_blocks_per_page(inode, page));
+ 	if (error && !XFS_FORCED_SHUTDOWN(mp))
+ 		xfs_alert(mp, "page discard unable to remove delalloc mapping.");
+ out_invalidate:
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 36bfc9d855bb..ba16f7bf676b 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -816,4 +816,20 @@ static inline int page_mkwrite_check_truncate(struct page *page,
+ 	return offset;
+ }
+ 
++/**
++ * i_blocks_per_page - How many blocks fit in this page.
++ * @inode: The inode which contains the blocks.
++ * @page: The (potentially large) page.
++ *
++ * If the block size is larger than the size of this page, will return
++ * zero,
++ *
++ * Context: Any context.
++ * Return: The number of filesystem blocks covered by this page.
++ */
++static inline
++unsigned int i_blocks_per_page(struct inode *inode, struct page *page)
++{
++	return thp_size(page) >> inode->i_blkbits;
++}
+ #endif /* _LINUX_PAGEMAP_H */
 -- 
-2.17.1
+2.26.2
 
