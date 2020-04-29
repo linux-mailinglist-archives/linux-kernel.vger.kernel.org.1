@@ -2,214 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C16A1BD68B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 09:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC2D1BD6AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 09:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbgD2HuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 03:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726355AbgD2HuP (ORCPT
+        id S1726681AbgD2H5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 03:57:06 -0400
+Received: from mx-relay78-hz1.antispameurope.com ([94.100.133.239]:37890 "EHLO
+        mx-relay78-hz1.antispameurope.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726381AbgD2H5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 03:50:15 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A3D5C035493
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 00:50:15 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id x18so1289468wrq.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 00:50:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zK0JgSazAWJ2DYzIpBrk5SuXGsVgafJjJrHjjjF4QEI=;
-        b=q8hFA/yZXii6r1TMX0TgCgORl7m1G8odWD97j7WJHg+WZga+OmVbxDM3y4VZAQNEZA
-         wfY9AqyYrsmt3fxW531SYmzJijAbLfW5WXcX5e+UAVSWtljgwWUjVFVlfGIAXUQh02RP
-         FjKuW1LNfl0fJ/QpL7Jfe3CxGVJHJaV9pQ20mr8nDfjVCq5vrQOGye2XUwFWbWKqCqrU
-         7btV9uhmQ0h7QDmHVWXcF8qVaJRXeKZp2aLPEqRhT2JgjWya6glR404kfjD447gBpEMO
-         3OUL0jLvRDTctKhknf/TnsAc/KoEKLEG6lfQrLRfowjQcPdLxOWQOIp0G7e2FEEQUntw
-         NWVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zK0JgSazAWJ2DYzIpBrk5SuXGsVgafJjJrHjjjF4QEI=;
-        b=AJVCdTI/DVM3We7HT0Q6HJ3L2KiVht7NgqGiR4tSt4NogJWgij7RxhQUCDsb8E0toK
-         73UQ8pHsQvpNk/SGa6y2qcy7NHoGbuAf/nQnR68pNQJz/RvmvtF45O6TAO6DTrZJwKKh
-         G9+egd4LbPPrYQsYbGjHzPd2gasNoxMyrF6dkvUfcHZVTrwpZP022RIP4BzJeW5STEZb
-         dezSmjQS1dHWbsw+tSJ5w1bAGBrECBUOKDGy3ZuYBgD1mzHP5Qio3xwiXWU6hAGXU6/y
-         U8IzqbeZ2kW9UIVQtK02gDVk3f3HAkbyHlx2mXGopHnusRVoLFukw42UnDq/NpYupPju
-         FSyA==
-X-Gm-Message-State: AGi0PuYdAtoJPf9fHK/4j3JJJWVpTxBxn5eyoGeImI2SiM3mjzgV52lq
-        i0+m6ZZfKI0cMPUqE9kPXW6NhQ==
-X-Google-Smtp-Source: APiQypLM3lN3rGdfSMrJGzuhpRRPiDBdyd3CgLxNoIeBVXjlM1CuGYLMJlf+uDFnYw5bbKjL1Kjhog==
-X-Received: by 2002:a5d:480b:: with SMTP id l11mr40964935wrq.25.1588146613874;
-        Wed, 29 Apr 2020 00:50:13 -0700 (PDT)
-Received: from dell ([2.31.163.63])
-        by smtp.gmail.com with ESMTPSA id u188sm6727365wmg.37.2020.04.29.00.50.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 00:50:12 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 08:50:10 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Guru Das Srinagesh <gurus@codeaurora.org>
-Cc:     devicetree@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        David Collins <collinsd@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] mfd: Introduce QTI I2C PMIC controller
-Message-ID: <20200429075010.GX3559@dell>
-References: <cover.1588115326.git.gurus@codeaurora.org>
- <5644dea146f8b49a5b827c56392ff916bfb343e9.1588115326.git.gurus@codeaurora.org>
+        Wed, 29 Apr 2020 03:57:06 -0400
+X-Greylist: delayed 351 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Apr 2020 03:57:03 EDT
+Received: from mailgw1.iis.fraunhofer.de ([153.96.172.4]) by mx-relay78-hz1.antispameurope.com;
+ Wed, 29 Apr 2020 09:51:10 +0200
+Received: from mail.iis.fraunhofer.de (mail01.iis.fhg.de [153.96.171.211])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailgw1.iis.fraunhofer.de (Postfix) with ESMTPS id A532B2400082;
+        Wed, 29 Apr 2020 09:51:02 +0200 (CEST)
+Received: from mail01.iis.fhg.de (2001:638:a0a:1111:fd91:8c2a:e4a5:e74e) by
+ mail01.iis.fhg.de (2001:638:a0a:1111:fd91:8c2a:e4a5:e74e) with Microsoft SMTP
+ Server (TLS) id 15.0.1395.4; Wed, 29 Apr 2020 09:51:02 +0200
+Received: from mail01.iis.fhg.de ([fe80::fd91:8c2a:e4a5:e74e]) by
+ mail01.iis.fhg.de ([fe80::fd91:8c2a:e4a5:e74e%12]) with mapi id
+ 15.00.1395.000; Wed, 29 Apr 2020 09:51:02 +0200
+From:   "Stahl, Manuel" <manuel.stahl@iis-extern.fraunhofer.de>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "Stahl, Manuel" <manuel.stahl@iis-extern.fraunhofer.de>,
+        "sojkam1@fel.cvut.cz" <sojkam1@fel.cvut.cz>
+Subject: Re: [PATCH v4] Add new uio device for PCI with dynamic memory
+ allocation
+Thread-Topic: [PATCH v4] Add new uio device for PCI with dynamic memory
+ allocation
+Thread-Index: AQHWFA15mQXQpLHKR0emWdXVXY2Gm6iOf4GAgAEst4A=
+Date:   Wed, 29 Apr 2020 07:51:01 +0000
+Message-ID: <eb405ab3782844e379629a655a3dcaf38dd2552d.camel@iis-extern.fraunhofer.de>
+References: <1507296707.2915.14.camel@iis-extern.fraunhofer.de>
+         <20200416163830.30623-1-manuel.stahl@iis-extern.fraunhofer.de>
+         <20200428135443.GA1437053@kroah.com>
+In-Reply-To: <20200428135443.GA1437053@kroah.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [153.96.171.210]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <DB6D30FED112BA498DF5E122F00C71C2@iis.fhg.de>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5644dea146f8b49a5b827c56392ff916bfb343e9.1588115326.git.gurus@codeaurora.org>
+X-cloud-security-sender: manuel.stahl@iis-extern.fraunhofer.de
+X-cloud-security-recipient: linux-kernel@vger.kernel.org
+X-cloud-security-crypt: load encryption module
+X-cloud-security-Virusscan: CLEAN
+X-cloud-security-disclaimer: This E-Mail was scanned by E-Mailservice on mx-relay78-hz1.antispameurope.com with F356414813EE
+X-cloud-security-connect: mailgw1.iis.fraunhofer.de[153.96.172.4], TLS=1, IP=153.96.172.4
+X-cloud-security: scantime:.2600
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Apr 2020, Guru Das Srinagesh wrote:
-
-> The Qualcomm Technologies, Inc. I2C PMIC Controller is used by
-> multi-function PMIC devices which communicate over the I2C bus.  The
-> controller enumerates all child nodes as platform devices, and
-> instantiates a regmap interface for them to communicate over the I2C
-> bus.
-> 
-> The controller also controls interrupts for all of the children platform
-> devices.  The controller handles the summary interrupt by deciphering
-> which peripheral triggered the interrupt, and which of the peripheral
-> interrupts were triggered.  Finally, it calls the interrupt handlers for
-> each of the virtual interrupts that were registered.
-> 
-> Nicholas Troast is the original author of this driver.
-> 
-> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
-> ---
->  drivers/mfd/Kconfig         |  11 +
->  drivers/mfd/Makefile        |   1 +
->  drivers/mfd/qcom-i2c-pmic.c | 737 ++++++++++++++++++++++++++++++++++++++++++++
-
-The vast majority of this driver deals with IRQ handling.  Why can't
-this be split out into its own IRQ Chip driver and moved to
-drivers/irqchip?
-
->  3 files changed, 749 insertions(+)
->  create mode 100644 drivers/mfd/qcom-i2c-pmic.c
-
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index 54b6aa4..bf112eb 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -1002,6 +1002,17 @@ config MFD_PM8XXX
->  	  Say M here if you want to include support for PM8xxx chips as a
->  	  module. This will build a module called "pm8xxx-core".
->  
-> +config MFD_I2C_PMIC
-
-Too generic.  This should identify the vendor too.
-
-> +	tristate "QTI I2C PMIC support"
-
-Why aren't you using QCOM?
-
-Actually, this should be expanded here anyway.
-
-> +	depends on I2C && OF
-> +	select IRQ_DOMAIN
-> +	select REGMAP_I2C
-> +	help
-> +	  This enables support for controlling Qualcomm Technologies, Inc.
-> +	  PMICs over I2C. The driver controls interrupts, and provides register
-> +	  access for all of the device's peripherals.  Some QTI PMIC chips
-> +	  support communication over both I2C and SPMI.
-> +
->  config MFD_QCOM_RPM
->  	tristate "Qualcomm Resource Power Manager (RPM)"
->  	depends on ARCH_QCOM && OF
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index 7761f84..26f0b80 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -199,6 +199,7 @@ obj-$(CONFIG_MFD_SI476X_CORE)	+= si476x-core.o
->  obj-$(CONFIG_MFD_CS5535)	+= cs5535-mfd.o
->  obj-$(CONFIG_MFD_OMAP_USB_HOST)	+= omap-usb-host.o omap-usb-tll.o
->  obj-$(CONFIG_MFD_PM8XXX) 	+= qcom-pm8xxx.o ssbi.o
-> +obj-$(CONFIG_MFD_I2C_PMIC)     += qcom-i2c-pmic.o
->  obj-$(CONFIG_MFD_QCOM_RPM)	+= qcom_rpm.o
->  obj-$(CONFIG_MFD_SPMI_PMIC)	+= qcom-spmi-pmic.o
->  obj-$(CONFIG_TPS65911_COMPARATOR)	+= tps65911-comparator.o
-> diff --git a/drivers/mfd/qcom-i2c-pmic.c b/drivers/mfd/qcom-i2c-pmic.c
-> new file mode 100644
-> index 0000000..d0f600a
-> --- /dev/null
-> +++ b/drivers/mfd/qcom-i2c-pmic.c
-> @@ -0,0 +1,737 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
-
-This is very out of date.
-
-> + */
-> +
-> +#define pr_fmt(fmt) "I2C PMIC: %s: " fmt, __func__
-
-Please don't role your own debug helpers.
-
-The ones the kernel provides are suitably proficient.
-
-> +#include <linux/bitops.h>
-> +#include <linux/i2c.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/irq.h>
-> +#include <linux/irqdomain.h>
-> +#include <linux/module.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/pinctrl/consumer.h>
-> +#include <linux/regmap.h>
-> +#include <linux/slab.h>
-> +
-> +#define I2C_INTR_STATUS_BASE	0x0550
-> +#define INT_RT_STS_OFFSET	0x10
-> +#define INT_SET_TYPE_OFFSET	0x11
-> +#define INT_POL_HIGH_OFFSET	0x12
-> +#define INT_POL_LOW_OFFSET	0x13
-> +#define INT_LATCHED_CLR_OFFSET	0x14
-> +#define INT_EN_SET_OFFSET	0x15
-> +#define INT_EN_CLR_OFFSET	0x16
-> +#define INT_LATCHED_STS_OFFSET	0x18
-> +#define INT_PENDING_STS_OFFSET	0x19
-> +#define INT_MID_SEL_OFFSET	0x1A
-> +#define INT_MID_SEL_MASK	GENMASK(1, 0)
-> +#define INT_PRIORITY_OFFSET	0x1B
-> +#define INT_PRIORITY_BIT	BIT(0)
-> +
-> +enum {
-> +	IRQ_SET_TYPE = 0,
-> +	IRQ_POL_HIGH,
-> +	IRQ_POL_LOW,
-> +	IRQ_LATCHED_CLR, /* not needed but makes life easy */
-
-"Not"
-
-It doesn't matter if the value is not used.
-
-I think you can drop the comment.
-
-> +	IRQ_EN_SET,
-> +	IRQ_MAX_REGS,
-> +};
-
-Going to stop here for a second, as the vast majority of the remainder
-of the driver appears to surround IRQ management.
-
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+T24gRGksIDIwMjAtMDQtMjggYXQgMTU6NTQgKzAyMDAsIGdyZWdraCBAIGxpbnV4Zm91bmRhdGlv
+biAuIG9yZyB3cm90ZToNCj4gT24gVGh1LCBBcHIgMTYsIDIwMjAgYXQgMDY6Mzg6MzBQTSArMDIw
+MCwgTWFudWVsIFN0YWhsIHdyb3RlOg0KPiA+IA0KPiA+ICsgKg0KPiA+ICsgKiBTaW5jZSB0aGUg
+ZHJpdmVyIGRvZXMgbm90IGRlY2xhcmUgYW55IGRldmljZSBpZHMsIHlvdSBtdXN0IGFsbG9jYXRl
+DQo+ID4gKyAqIGlkIGFuZCBiaW5kIHRoZSBkZXZpY2UgdG8gdGhlIGRyaXZlciB5b3Vyc2VsZi4g
+IEZvciBleGFtcGxlOg0KPiA+ICsgKg0KPiA+ICsgKiAjIGVjaG8gIjgwODYgMTBmNSIgPiAvc3lz
+L2J1cy9wY2kvZHJpdmVycy91aW9fcGNpX2RtZW1fZ2VuaXJxL25ld19pZA0KPiA+ICsgKiAjIGVj
+aG8gLW4gMDAwMDowMDoxOS4wID4gL3N5cy9idXMvcGNpL2RyaXZlcnMvZTEwMDBlL3VuYmluZA0K
+PiA+ICsgKiAjIGVjaG8gLW4gMDAwMDowMDoxOS4wID4gL3N5cy9idXMvcGNpL2RyaXZlcnMvdWlv
+X3BjaV9kbWVtX2dlbmlycS9iaW5kDQo+ID4gKyAqICMgbHMgLWwgL3N5cy9idXMvcGNpL2Rldmlj
+ZXMvMDAwMDowMDoxOS4wL2RyaXZlcg0KPiA+ICsgKiAuLi4vMDAwMDowMDoxOS4wL2RyaXZlciAt
+PiAuLi8uLi8uLi9idXMvcGNpL2RyaXZlcnMvdWlvX3BjaV9kbWVtX2dlbmlycQ0KPiA+ICsgKg0K
+PiA+ICsgKiBPciB1c2UgYSBtb2Rwcm9iZSBhbGlhczoNCj4gPiArICogIyBhbGlhcyBwY2k6djAw
+MDAxMEVFZDAwMDAxMDAwc3Yqc2Qqc2MqaSogdWlvX3BjaV9kbWVtX2dlbmlycQ0KPiA+ICsgKg0K
+PiA+ICsgKiBEcml2ZXIgd29uJ3QgYmluZCB0byBkZXZpY2VzIHdoaWNoIGRvIG5vdCBzdXBwb3J0
+IHRoZSBJbnRlcnJ1cHQgRGlzYWJsZSBCaXQNCj4gPiArICogaW4gdGhlIGNvbW1hbmQgcmVnaXN0
+ZXIuIEFsbCBkZXZpY2VzIGNvbXBsaWFudCB0byBQQ0kgMi4zIChjaXJjYSAyMDAyKSBhbmQNCj4g
+PiArICogYWxsIGNvbXBsaWFudCBQQ0kgRXhwcmVzcyBkZXZpY2VzIHNob3VsZCBzdXBwb3J0IHRo
+aXMgYml0Lg0KPiA+ICsgKg0KPiA+ICsgKiBUaGUgRE1BIG1hc2sgYml0cyBhbmQgc2l6ZXMgb2Yg
+ZHluYW1pYyByZWdpb25zIGFyZSBkZXJpdmVkIGZyb20gbW9kdWxlDQo+ID4gKyAqIHBhcmFtZXRl
+cnMuDQo+ID4gKyAqDQo+ID4gKyAqIFRoZSBmb3JtYXQgZm9yIHNwZWNpZnlpbmcgZHluYW1pYyBy
+ZWdpb24gc2l6ZXMgaW4gbW9kdWxlIHBhcmFtZXRlcnMNCj4gPiArICogaXMgYXMgZm9sbG93czoN
+Cj4gPiArICoNCj4gPiArICogdWlvX3BjaV9kbWVtX2dlbmlycS5kbWVtX3NpemVzIDo9IDx1aW9f
+ZG1lbV9zaXplc19kZWY+Wzs8dWlvX2RtZW1fc2l6ZXNfZGVmPl0NCj4gPiArICogPHVpb19kbWVt
+X3NpemVzX2RlZj4gICAgICAgICAgIDo9IDxwY2lfaWQ+OjxzaXplPlssPHNpemU+XQ0KPiA+ICsg
+KiA8cGNpX2lkPiAgICAgICAgICAgICAgICAgICAgICAgOj0gPHZlbmRvcj46PGRldmljZT4NCj4g
+PiArICogPHNpemU+ICAgICAgICAgICAgICAgICAgICAgICAgIDo9IHN0YW5kYXJkIGxpbnV4IG1l
+bXNpemUNCj4gPiArICoNCj4gPiArICogRXhhbXBsZXM6DQo+ID4gKyAqDQo+ID4gKyAqIDEpIFVJ
+TyBkbWVtIGRldmljZSB3aXRoIDMgZHluYW1pYyByZWdpb25zOg0KPiA+ICsgKiB1aW9fcGNpX2Rt
+ZW1fZ2VuaXJxLmRtZW1fc2l6ZXM9ODA4NjoxMGY1OjRLLDE2Syw0TQ0KPiA+ICsgKg0KPiA+ICsg
+KiAyKSBUd28gVUlPIGRtZW0gZGV2aWNlcyB3aXRoIGRpZmZlcmVudCBudW1iZXIgb2YgZHluYW1p
+YyByZWdpb25zOg0KPiA+ICsgKiB1aW9fcGNpX2RtZW1fZ2VuaXJxLmRtZW1fc2l6ZXM9ODA4Njox
+MGY1OjRLLDE2Syw0TTsxMjM0OjAwMDE6OEsNCj4gDQo+IE1vZHVsZSBwYXJhbWV0ZXJzIGFyZSBo
+b3JyaWQsIGFyZSB5b3Ugc3VyZSB0aGVyZSBpcyBubyBvdGhlciB3YXk/DQoNCllvdSdyZSByaWdo
+dCwgc2VlbWVkIHRvIGJlIHRoZSBzaW1wbGVzdCBzb2x1dGlvbiBiYWNrIHdoZW4gd2Ugc3RhcnRl
+ZCBkZXZlbG9waW5nIHRoaXMgZHJpdmVyLiBJIHdpbGwgdHJ5IHRvIGNoYW5nZSBpdCB0byBzeXNm
+cywgc28gdGhhdCBvbmUgY2FuIGFkZCByZWdpb25zIHdoaWxlIHRoZSBtb2R1bGUgaXMgYWxyZWFk
+eSBsb2FkZWQuDQoNClJlZ2FyZHMsDQpNYW51ZWwNCg==
