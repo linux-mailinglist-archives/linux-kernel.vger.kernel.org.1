@@ -2,93 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED451BE52D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2E01BE532
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgD2R1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 13:27:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726530AbgD2R1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 13:27:04 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C82C020787;
-        Wed, 29 Apr 2020 17:27:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588181224;
-        bh=5nFxIMtORu9k1muM2m7cCBsnXArZmp2XEa9iMeJXeQo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iSQZm4JPdxY5Tm9abQB8Kklc7rlsjMpSugMrooVLJWMYtkKu1i0OOXoDAiu2QFx7E
-         Subvt4sI9yOswriE1+V5GXqvI6TB/Nrec+EGSyijgRHHQdrK3of98AMDniRQn9RgHn
-         i52MFEviNHy3x1kvejQlvM6EX0lKEwcVED2oz144=
-Date:   Wed, 29 Apr 2020 18:27:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>, linux-pm@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>, Len Brown <len.brown@intel.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH] regulator: Revert "Use driver_deferred_probe_timeout for
- regulator_init_complete_work"
-Message-ID: <20200429172701.GO4201@sirena.org.uk>
-References: <20200429172349.55979-1-john.stultz@linaro.org>
+        id S1727032AbgD2R2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 13:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726493AbgD2R2T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 13:28:19 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859CBC03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 10:28:19 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id h6so2403129lfc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 10:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gsj/DMCdq2iHsv9iEgXgXTTdBXXORDwu7caTzYP7OC0=;
+        b=BrwJd7jHAjw/ndKeVTDpR19v/ATSbqBb1x/5jMBcAmWWLYzhUU0mhqocbwlSjelc+/
+         TS+pjF4F06f6y7KRfVmNvULvilWng5nsq6/LOfIBTZVCduGAQDW9ErnXCy5dlYQxyN2C
+         yKfSS8+yRr3IK2V9SY0WJCnKvhNO8YUy30oGY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gsj/DMCdq2iHsv9iEgXgXTTdBXXORDwu7caTzYP7OC0=;
+        b=sIzKRP19j+7fhImr0viMBvEzm3lcXf22+e/AcytdVpLOX/TT0Z7NKbG1JOTxcvmnFA
+         ZwXmDMwARxNnI82Hlj1ZOoVrD2Ws4RRAz5DCMgumkALP1Dfu0OgXJj9N16rxCFnzZMVt
+         LicVJaPGapUSmsiZpRtztOEb1Ack87nx/lhlEGlBvcDilcnEh2WwnutQyLN3eVyLuTrG
+         5qUtNa1Y+i4boQBoYf3ieLZzA4Kju0mWUXhIXxek2ibhiSzgDXyINnmNysa6q+h19kMl
+         NqzniPs1HP9L3029YQ9JCaZmO3d0fLDj0u77JFULeXLmfY8VfMgaRG8n85FxU/ibXgas
+         mlvA==
+X-Gm-Message-State: AGi0PuYZLLDETAnXWTYhNxr7YU3EyZq3V/mJL7HkDRewd3wiTygtyUQF
+        /ym9YysgDRYE9SMfmeJxm3uM4k5xvdA=
+X-Google-Smtp-Source: APiQypIXN3qRD9SubLb2pyZJ6L6EjzIit+nIBMXCUSJR+kVV/ihoZPFEz/qnklDVNrBjJEp05olAyw==
+X-Received: by 2002:ac2:46ea:: with SMTP id q10mr24290655lfo.128.1588181297579;
+        Wed, 29 Apr 2020 10:28:17 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id u16sm2865053ljk.9.2020.04.29.10.28.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Apr 2020 10:28:16 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id u15so3521435ljd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 10:28:16 -0700 (PDT)
+X-Received: by 2002:a05:651c:449:: with SMTP id g9mr21840460ljg.278.1588181295980;
+ Wed, 29 Apr 2020 10:28:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DRfr/2Y1Zz/5r+Kb"
-Content-Disposition: inline
-In-Reply-To: <20200429172349.55979-1-john.stultz@linaro.org>
-X-Cookie: I know how to do SPECIAL EFFECTS!!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200415145110.20624-1-sibis@codeaurora.org>
+In-Reply-To: <20200415145110.20624-1-sibis@codeaurora.org>
+From:   Evan Green <evgreen@chromium.org>
+Date:   Wed, 29 Apr 2020 10:27:39 -0700
+X-Gmail-Original-Message-ID: <CAE=gft5REvz+0JLHtEN1BXmvWzMxftdecxPedLizgS47x1Sq7w@mail.gmail.com>
+Message-ID: <CAE=gft5REvz+0JLHtEN1BXmvWzMxftdecxPedLizgS47x1Sq7w@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Drop all accesses to MPSS PERPH register space
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-remoteproc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ohad Ben Cohen <ohad@wizery.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 15, 2020 at 7:51 AM Sibi Sankar <sibis@codeaurora.org> wrote:
+>
+> 7C retail devices using MSA based boot will result in a fuse combination
+> which will prevent accesses to MSS PERPH register space where the mpss
+> clocks and halt-nav reside. Hence requesting a halt-nav as part of the
+> SSR sequence will result in a NoC error. Issuing HALT NAV request and
+> turning on the mss clocks as part of SSR will no longer be required
+> since the modem firmware will have the necessary fixes to ensure that
+> there are no pending NAV DMA transactions thereby ensuring a smooth
+> SSR.
+>
+> Sibi Sankar (2):
+>   dt-bindings: remoteproc: qcom: Replace halt-nav with spare-regs
+>   remoteproc: qcom_q6v5_mss: Drop accesses to MPSS PERPH register space
 
---DRfr/2Y1Zz/5r+Kb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I haven't tested things in the "production" fuse configuration yet,
+but in my current configuration I've got a tree that's running the
+modem well.
 
-On Wed, Apr 29, 2020 at 05:23:49PM +0000, John Stultz wrote:
-> This reverts commit dca0b44957e5 ("regulator: Use
-> driver_deferred_probe_timeout for regulator_init_complete_work"),
-> as we ended up reverting the default deferred_probe_timeout
-> value back to zero, to preserve behavior with 5.6 we need to
-> decouple the regulator timeout which was previously 30 seconds.
->=20
-> This avoids breaking some systems that depend on the regulator
-> timeout but don't require the deferred probe timeout.
-
-Reviewed-by: Mark Brown <broonie@kernel.org>
-
-I'm assuming this should go via the same path that the other revert
-went.
-
---DRfr/2Y1Zz/5r+Kb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6puOQACgkQJNaLcl1U
-h9Ch0QgAgdGatjelyk2utw5eSqdQ71gadgTZyi9Lkaq8b4AVkkOcHrTQELFrWeiD
-P2fhekarO7j7hwZrYs1S/O8mFB4NZQ2TBErZ0nEpryTTyHehBLZWTAOHc0KKF7U3
-qd4Ytq+v1uwENN6P4BjT7T4U0MLCGxjg6TTdYFXL7zxe+LsK79CjE128gCcVGnqd
-yvaqaOTIwXOpHaOtbC54wSf1HKNJG+hY24HP652tZqwyljokazCtp9julOCT3Z7A
-QrNSPVeSvoSyY2uF7dgIRYV40xTkSCOqEf1cspKC2zq+mT3RFnmX1iLZSHRANI27
-6Tv7rRC/i9gfJAKjtoHqbKSFKA/mnw==
-=Jw6k
------END PGP SIGNATURE-----
-
---DRfr/2Y1Zz/5r+Kb--
+Tested-by: Evan Green <evgreen@chromium.org>
