@@ -2,131 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB78A1BE882
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4EE1BE8A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgD2UYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 16:24:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:44566 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726456AbgD2UYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 16:24:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6F311063;
-        Wed, 29 Apr 2020 13:24:48 -0700 (PDT)
-Received: from [10.37.12.43] (unknown [10.37.12.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EF1A3F68F;
-        Wed, 29 Apr 2020 13:24:45 -0700 (PDT)
-Subject: Re: [PATCH] thermal: power_allocate: add upper and lower limits
-To:     Michael Kao <michael.kao@mediatek.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
-        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20200424071601.2636-1-michael.kao@mediatek.com>
- <accb83e0-ffbe-b6e3-6bf9-e7cc8b9fe19c@arm.com>
- <1588156776.3573.1.camel@mtksdccf07>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <03286571-c110-7f5e-a911-24f8c3e4fd42@arm.com>
-Date:   Wed, 29 Apr 2020 21:24:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727098AbgD2UhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 16:37:00 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:54878 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726481AbgD2Ug7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 16:36:59 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03TKas8T118266;
+        Wed, 29 Apr 2020 15:36:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588192614;
+        bh=6n+4d/+0YDxslFrMhjg9UzNZ0Ew6YLvVvMxgo6mg1u0=;
+        h=From:To:CC:Subject:Date;
+        b=xdi9NQ44jhtI9ASD0Ziq1jlDFRPQGcdYNYfABlUFkQg5OigiyGoGACm+eCPTBeDsq
+         nhV9dS3TnSkFelSq5d3vXdbgexHAUtHFCzX3unp6aCV0mkOKIcFNnMhAJrKqt/wvLG
+         QB9egA9NAvdruADRCvsDCMJwMEyxDkv9YyAehtvE=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03TKasZf003581
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 29 Apr 2020 15:36:54 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 29
+ Apr 2020 15:36:54 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 29 Apr 2020 15:36:54 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03TKarer081378;
+        Wed, 29 Apr 2020 15:36:53 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v23 00/16] Multicolor Framework v23
+Date:   Wed, 29 Apr 2020 15:28:00 -0500
+Message-ID: <20200429202816.26501-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1588156776.3573.1.camel@mtksdccf07>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello
 
+This is the multi color LED framework.   This framework presents clustered
+colored LEDs into an array and allows the user space to adjust the brightness
+of the cluster using a single file write.  The individual colored LEDs
+intensities are controlled via a single file that is an array of LEDs
 
-On 4/29/20 11:39 AM, Michael Kao wrote:
-> On Fri, 2020-04-24 at 10:22 +0100, Lukasz Luba wrote:
->> Hi Michael,
->>
->> On 4/24/20 8:16 AM, Michael Kao wrote:
->>> The upper and lower limits of thermal throttle state in the
->>> device tree do not apply to the power_allocate governor.
->>> Add the upper and lower limits to the power_allocate governor.
->>>
->>> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
->>> ---
->>>    drivers/thermal/thermal_core.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
->>> index 9a321dc548c8..f6feed2265bd 100644
->>> --- a/drivers/thermal/thermal_core.c
->>> +++ b/drivers/thermal/thermal_core.c
->>> @@ -598,7 +598,7 @@ int power_actor_set_power(struct thermal_cooling_device *cdev,
->>>    	if (ret)
->>>    		return ret;
->>>    
->>> -	instance->target = state;
->>> +	instance->target = clamp_val(state, instance->lower, instance->upper);
->>>    	mutex_lock(&cdev->lock);
->>>    	cdev->updated = false;
->>>    	mutex_unlock(&cdev->lock);
->>>
->>
->> Thank you for the patch and having to look at it. I have some concerns
->> with this approach. Let's analyze it further.
->>
->> In default the cooling devices in the thermal zone which is used by IPA
->> do not have this 'lower' and 'upper' limits. They are set to
->> THERMAL_NO_LIMIT in DT to give full control to IPA over the states.
->>
->> This the function 'power_actor_set_power' actually translates granted
->> power to the state that device will run for the next period.
->> The IPA algorithm has already split the power budget.
->> Now what happen when the 'lower' value will change the state to a state
->> which consumes more power than was calculated in the IPA alg... It will
->> became unstable.
->>
->> I would rather see a change which uses these 'lower' and 'upper' limits
->> before the IPA do the calculation of the power budget. But this wasn't
->> a requirement and we assumed that IPA has full control over the cooling
->> device (which I described above with this DT THERMAL_NO_LIMIT).
->>
->> Is there a problem with your platform that it has to provide some
->> minimal performance, so you tried to introduce this clamping?
->>
->> Regards,
->> Lukasz
-> 
-> 
-> Hi Lukasz,
-> 
-> I refer to the documentation settings of the thermal device tree
-> (Documentation / devicetree / bindings / thermal / thermal.txt).
-> 
-> It shows that cooling-device is a mandatory property, so max/min cooling
-> state should be able to support in framework point of view.
-> Otherwise, the limitation should be added in binding document.
-> 
-> Different hardware mechanisms have different heat dissipation
-> capabilities.
-> Limiting the input heat source can slow down the heat accumulation and
-> temperature burst.
-> We want to reduce the accumulation of heat at high temperature by
-> limiting the minimum gear of thermal throttle.
+Dan
 
-I agree that these 'lower' and 'upper' limits shouldn't be just
-ignored as is currently. This patch clamps the value at late stage,
-though.
+Dan Murphy (16):
+  dt: bindings: Add multicolor class dt bindings documention
+  leds: multicolor: Introduce a multicolor class definition
+  dt: bindings: lp50xx: Introduce the lp50xx family of RGB drivers
+  leds: lp50xx: Add the LP50XX family of the RGB LED driver
+  dt: bindings: lp55xx: Be consistent in the document with LED acronym
+  dt: bindings: lp55xx: Update binding for Multicolor Framework
+  ARM: dts: n900: Add reg property to the LP5523 channel node
+  ARM: dts: imx6dl-yapp4: Add reg property to the lp5562 channel node
+  ARM: dts: ste-href: Add reg property to the LP5521 channel nodes
+  leds: lp55xx: Convert LED class registration to devm_*
+  leds: lp55xx: Add multicolor framework support to lp55xx
+  leds: lp5523: Update the lp5523 code to add multicolor brightness
+    function
+  leds: lp5521: Add multicolor framework multicolor brightness support
+  leds: lp55xx: Fix checkpatch file permissions issues
+  leds: lp5523: Fix checkpatch issues in the code
+  dt: bindings: Update lp55xx binding to recommended LED naming
 
-Let me have a look how it could be taken into account in the early
-stage, before the power calculation and split are done. Maybe there
-is a clean way to inject this.
+ .../ABI/testing/sysfs-class-led-multicolor    |  34 +
+ .../bindings/leds/leds-class-multicolor.yaml  |  70 ++
+ .../devicetree/bindings/leds/leds-lp50xx.yaml | 179 ++++
+ .../devicetree/bindings/leds/leds-lp55xx.txt  | 163 +++-
+ Documentation/leds/index.rst                  |   1 +
+ Documentation/leds/leds-class-multicolor.rst  |  86 ++
+ MAINTAINERS                                   |   8 +
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi    |  14 +-
+ arch/arm/boot/dts/omap3-n900.dts              |  29 +-
+ arch/arm/boot/dts/ste-href.dtsi               |  22 +-
+ drivers/leds/Kconfig                          |  22 +
+ drivers/leds/Makefile                         |   2 +
+ drivers/leds/led-class-multicolor.c           | 210 +++++
+ drivers/leds/led-core.c                       |   1 +
+ drivers/leds/leds-lp50xx.c                    | 777 ++++++++++++++++++
+ drivers/leds/leds-lp5521.c                    |  43 +-
+ drivers/leds/leds-lp5523.c                    |  62 +-
+ drivers/leds/leds-lp5562.c                    |  22 +-
+ drivers/leds/leds-lp55xx-common.c             | 213 +++--
+ drivers/leds/leds-lp55xx-common.h             |  16 +-
+ drivers/leds/leds-lp8501.c                    |  23 +-
+ include/dt-bindings/leds/common.h             |   3 +-
+ include/linux/led-class-multicolor.h          | 121 +++
+ include/linux/platform_data/leds-lp55xx.h     |   8 +
+ 24 files changed, 1970 insertions(+), 159 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-led-multicolor
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-class-multicolor.yaml
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
+ create mode 100644 Documentation/leds/leds-class-multicolor.rst
+ create mode 100644 drivers/leds/led-class-multicolor.c
+ create mode 100644 drivers/leds/leds-lp50xx.c
+ create mode 100644 include/linux/led-class-multicolor.h
 
-Regards,
-Lukasz
+-- 
+2.25.1
+
