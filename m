@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE3F1BE027
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988301BE030
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728305AbgD2OGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727820AbgD2OGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:06:13 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D666C03C1AE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 07:06:13 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id g4so2777142ljl.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 07:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/5dFXvkHlFL4ZD9k3m+cudI2M3jreB1NrwloZ96EAJw=;
-        b=hRK69FjpTSEspooL3pngL3RWCh2k42g9+qRkAdCL+irtc4FBd8usHLppdKZiUO37H4
-         dVtIaQds7wIJpD4FvJmA66WsFpFfircv+CumTEfc64ZSOaC04mVKNMUiibqxvwXKlthW
-         uV/x8yUF7yTSwotvszuUAYM3u62kvRUPdUhak5B9N3l1WIRWV5MaiV84IC2e8djDPvwE
-         Yr8AcLkIr1KWLn53YcTtBcJGoRPGQ1Pqr7OnW/qaqaIkm3e2ejq+sjpqgO3w+/wHVZQ8
-         3Jmoz2QNSIxgVhyhS7eHhnQ7OHVYaCMFrOcDADZh3gAbG5a3TT0Y72ntLo6SHcnf3IBB
-         uj0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/5dFXvkHlFL4ZD9k3m+cudI2M3jreB1NrwloZ96EAJw=;
-        b=X6GZMNtVuDOW7QweOXcrwxUp5FULAkDxQfx8EsLxdFbFU70I3ly09/qXJLQ9EMQw2f
-         4VQTPX8ihuH8zkm7rIMykqgFhA40ewHudr1mm9gq046A91TW+a3GvKkuET4yRCuDn9sD
-         0KGwBA+9ufgLEiwwUxwHpr1+xDZgtBbS/JGq63zMXjYSvdfzBTvGRb7B/A6g6yc6QJtg
-         8o0X9+V7LeUCS1iZQbK14Bac8LB1XuBntn13bF8hd1GGW236h5tUKpG/eLwrSvXpkO/i
-         agsL9KkLpYfyMxfHEi4PIbdpz8hvQro8dWL8J3T2mfzgXyoPSdAUnugXb32neglBylkH
-         +3Jw==
-X-Gm-Message-State: AGi0PuZHGGXZroakPtjP/V4gTf44wKJ7OO+a8K4uR92AC3NolALfQNVx
-        lkt4vaSm5bbz+9q97z23edBiOxwpSRZtzjfnEcPN1g==
-X-Google-Smtp-Source: APiQypKeyYViSeG3LDYxj8g69kihbk0QRE6mRva/Grt1UgVyN/1ZIYYoZXAzChs4XfsXoPtgXgLAGZsvsvLk5MwjgfQ=
-X-Received: by 2002:a2e:8e98:: with SMTP id z24mr21704390ljk.134.1588169171856;
- Wed, 29 Apr 2020 07:06:11 -0700 (PDT)
+        id S1727878AbgD2OHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:07:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726950AbgD2OHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 10:07:34 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 907E22082E;
+        Wed, 29 Apr 2020 14:07:32 +0000 (UTC)
+Date:   Wed, 29 Apr 2020 10:07:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before
+ text_poke()
+Message-ID: <20200429100731.201312a9@gandalf.local.home>
+In-Reply-To: <20200429082854.6e1796b5@oasis.local.home>
+References: <20200429054857.66e8e333@oasis.local.home>
+        <20200429105941.GQ30814@suse.de>
+        <20200429082854.6e1796b5@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200427074222.65369-1-maco@android.com> <20200427170613.GA13686@lst.de>
- <CAB0TPYGZc_n-b5xtNsbJxEiqpLMqE=RcXGuy7C2vbY18mKZ6_A@mail.gmail.com>
- <20200428070200.GC18754@lst.de> <CAB0TPYF4yHwXTG2xb5yci9-KJiT5=VbwWz9yj+uyBwb2rSi8Rg@mail.gmail.com>
-In-Reply-To: <CAB0TPYF4yHwXTG2xb5yci9-KJiT5=VbwWz9yj+uyBwb2rSi8Rg@mail.gmail.com>
-From:   Martijn Coenen <maco@android.com>
-Date:   Wed, 29 Apr 2020 16:06:00 +0200
-Message-ID: <CAB0TPYEkuCe-z2nNDRadGV3ASFXdZ3OVcB16yZ4PnNc2cokHAw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] Add a new LOOP_SET_FD_AND_STATUS ioctl
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
-        Narayan Kamath <narayan@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, kernel-team@android.com,
-        linux-block <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martijn Coenen <maco@google.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 4:57 PM Martijn Coenen <maco@android.com> wrote:
-> and it allows requesting a partition scan. It makes sense to maintain
-> that behavior, but what about LO_FLAGS_DIRECT_IO? I think you're
-> proposing LOOP_SET_STATUS(64) should keep ignoring that like it used
-> to?
+On Wed, 29 Apr 2020 08:28:54 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-I've just sent a v4 which basically implements that and your other suggestions.
+> On Wed, 29 Apr 2020 12:59:41 +0200
+> Joerg Roedel <jroedel@suse.de> wrote:
+> 
+> > >   use_temporary_mm() {
+> > >     switch_mm_irqs_off() {
+> > >       load_new_mm_cr3() {
+> > >         write_cr3() <<--- Lock up!    
+> > 
+> > I don't see how it could lock up in write_cr3(), at least on bare-metal.
+> > What is the environment this happens, 32 or 64 bit, in a VM or
+> > bare-metal?  
+> 
+> 64 bit bare-metal. In fact, it wasn't reproducible on a VM (according
+> to Tzvetomir, who was just using a Fedora kernel). I only tried it on
+> bare-metal.
+> 
+> > 
+> > I think it is more likely that your lockup is actually a page-fault
+> > loop, where the #PF handler does not map the faulting address correctly.  
+> 
+> Sounds reasonable.
+> 
+> > 
+> > But I have to look closer into how text_poke() works before I can say
+> > more.
+> > 
+> > Btw, in case it happens on x86-64, does it also happen without
+> > vmalloc-stacks?  
+> 
+> Just tried it out with !CONFIG_VMAP_STACKS and it still locks up :-/
 
-Thanks,
-Martijn
+Talking with Mathieu about this on IRC, he pointed out that my code does
+have a vzalloc() that is called:
 
->
-> Thanks,
-> Martijn
->
-> > and then in the main function reject anything not known.
-> >
-> > And then maybe add something like 64 bytes of padding to the end of the
-> > new structure, so that we can use flags to expand to it.
+in trace_pid_write()
+
+	pid_list->pids = vzalloc((pid_list->pid_max + 7) >> 3);
+
+This is done when -P1,2 is on the trace-cmd command line.
+
+-- Steve
