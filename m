@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176EE1BD348
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC3E1BD301
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 05:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgD2D5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 23:57:30 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:42883 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgD2D53 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 23:57:29 -0400
-X-Greylist: delayed 1176 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 Apr 2020 23:57:28 EDT
-Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
-        by twspam01.aspeedtech.com with ESMTP id 03T3S2BK051729
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 11:28:02 +0800 (GMT-8)
-        (envelope-from ryan_chen@aspeedtech.com)
-Received: from mail.aspeedtech.com (twmbx02.aspeed.com [192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 03T3Rxv1051700;
-        Wed, 29 Apr 2020 11:27:59 +0800 (GMT-8)
-        (envelope-from ryan_chen@aspeedtech.com)
-Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.620.29; Wed, 29 Apr
- 2020 11:37:52 +0800
-From:   ryan_chen <ryan_chen@aspeedtech.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, <linux-i2c@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     ryan_chen <ryan_chen@aspeedtech.com>
-Subject: [PATCH v0 linux master] i2c/busses: Avoid i2c interrupt status clear race condition.
-Date:   Wed, 29 Apr 2020 11:37:37 +0800
-Message-ID: <20200429033737.2781-1-ryan_chen@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726619AbgD2Dhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 23:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726399AbgD2Dhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 23:37:46 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B7AC206D8;
+        Wed, 29 Apr 2020 03:37:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588131466;
+        bh=XbNWCnLk1VJPpYjGpv8ddyaXOVe2sfB+lNDckroYR1o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E/4usoYtdF9PVQPYzt54/5009sCBniMu2IzjuKl7ts7q7qrUciiPhA6z2Dt8HaP3R
+         aU7BgKO8q3boSawQOnHhnEQLUybWYF9R1SUAYf0ZPwVGjMJ/VaU06ENJFnXDrMzSM8
+         V/GQ3k0tec/OcBL1S11qEt4X3rqgC3Ch65lEeaVk=
+Date:   Wed, 29 Apr 2020 11:37:41 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: dts: gw552x: add USB OTG support
+Message-ID: <20200429033740.GP32592@dragon>
+References: <1587748215-9587-1-git-send-email-tharvey@gateworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 03T3Rxv1051700
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1587748215-9587-1-git-send-email-tharvey@gateworks.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In AST2600 there have a slow peripheral bus between CPU
- and i2c controller.
-Therefore GIC i2c interrupt status clear have delay timing,
-when CPU issue write clear i2c controller interrupt status.
-To avoid this issue, the driver need have read after write
- clear at i2c ISR.
+On Fri, Apr 24, 2020 at 10:10:15AM -0700, Tim Harvey wrote:
+> The GW552x-B board revision adds USB OTG support.
+> 
+> Enable the device-tree node and configure the OTG_ID pin.
+> 
+> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> ---
+>  arch/arm/boot/dts/imx6qdl-gw552x.dtsi | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/imx6qdl-gw552x.dtsi b/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
+> index dc646b7..133a1e3 100644
+> --- a/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
+> +++ b/arch/arm/boot/dts/imx6qdl-gw552x.dtsi
+> @@ -12,8 +12,6 @@
+>  		led1 = &led1;
+>  		led2 = &led2;
+>  		nand = &gpmi;
+> -		usb0 = &usbh1;
+> -		usb1 = &usbotg;
 
-Signed-off-by: ryan_chen <ryan_chen@aspeedtech.com>
----
- drivers/i2c/busses/i2c-aspeed.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Have some comments about this change in the commit log?
 
-diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-index 07c1993274c5..f51702d86a90 100644
---- a/drivers/i2c/busses/i2c-aspeed.c
-+++ b/drivers/i2c/busses/i2c-aspeed.c
-@@ -603,6 +603,7 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
- 	/* Ack all interrupts except for Rx done */
- 	writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
- 	       bus->base + ASPEED_I2C_INTR_STS_REG);
-+	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
- 	irq_remaining = irq_received;
- 
- #if IS_ENABLED(CONFIG_I2C_SLAVE)
-@@ -645,9 +646,11 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
- 			irq_received, irq_handled);
- 
- 	/* Ack Rx done */
--	if (irq_received & ASPEED_I2CD_INTR_RX_DONE)
-+	if (irq_received & ASPEED_I2CD_INTR_RX_DONE) {
- 		writel(ASPEED_I2CD_INTR_RX_DONE,
- 		       bus->base + ASPEED_I2C_INTR_STS_REG);
-+		readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-+	}
- 	spin_unlock(&bus->lock);
- 	return irq_remaining ? IRQ_NONE : IRQ_HANDLED;
- }
--- 
-2.17.1
+Shawn
 
+>  	};
+>  
+>  	chosen {
+> @@ -258,6 +256,14 @@
+>  	status = "okay";
+>  };
+>  
+> +&usbotg {
+> +	vbus-supply = <&reg_5p0v>;
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_usbotg>;
+> +	disable-over-current;
+> +	status = "okay";
+> +};
+> +
+>  &wdog1 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&pinctrl_wdog>;
+> @@ -359,6 +365,12 @@
+>  		>;
+>  	};
+>  
+> +	pinctrl_usbotg: usbotggrp {
+> +		fsl,pins = <
+> +			MX6QDL_PAD_ENET_RX_ER__USB_OTG_ID	0x13059
+> +		>;
+> +	};
+> +
+>  	pinctrl_wdog: wdoggrp {
+>  		fsl,pins = <
+>  			MX6QDL_PAD_DISP0_DAT8__WDOG1_B		0x1b0b0
+> -- 
+> 2.7.4
+> 
