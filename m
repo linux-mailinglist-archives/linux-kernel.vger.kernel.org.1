@@ -2,70 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591911BD29A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 04:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1641BD2B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 04:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbgD2Cq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Apr 2020 22:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726498AbgD2Cq4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Apr 2020 22:46:56 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7003EC03C1AC;
-        Tue, 28 Apr 2020 19:46:56 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTckK-00DwIZ-FV; Wed, 29 Apr 2020 02:46:48 +0000
-Date:   Wed, 29 Apr 2020 03:46:48 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        NeilBrown <neilb@suse.de>, "Rafael J . Wysocki" <rjw@sisk.pl>
-Subject: Re: [PATCH] epoll: Fix UAF dentry name access in wakeup source setup
-Message-ID: <20200429024648.GA23230@ZenIV.linux.org.uk>
-References: <20200429023104.131925-1-jannh@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429023104.131925-1-jannh@google.com>
+        id S1726635AbgD2C61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Apr 2020 22:58:27 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:32902 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726522AbgD2C60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 28 Apr 2020 22:58:26 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id ECFD31A021F;
+        Wed, 29 Apr 2020 04:58:24 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 616281A01F8;
+        Wed, 29 Apr 2020 04:58:20 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 419B74032C;
+        Wed, 29 Apr 2020 10:58:09 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
+        amit.kucheria@verdurent.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH V3] thermal: imx: Add missing of_node_put()
+Date:   Wed, 29 Apr 2020 10:49:30 +0800
+Message-Id: <1588128570-12917-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 04:31:04AM +0200, Jann Horn wrote:
+After finishing using cpu node got from of_get_cpu_node(), of_node_put()
+needs to be called, the cpufreq policy also needs to be put unconditionally.
 
-> I'm guessing this will go through akpm's tree?
-> 
->  fs/eventpoll.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-> index 8c596641a72b0..5052a41670479 100644
-> --- a/fs/eventpoll.c
-> +++ b/fs/eventpoll.c
-> @@ -1450,7 +1450,7 @@ static int reverse_path_check(void)
->  
->  static int ep_create_wakeup_source(struct epitem *epi)
->  {
-> -	const char *name;
-> +	struct name_snapshot name;
->  	struct wakeup_source *ws;
->  
->  	if (!epi->ep->ws) {
-> @@ -1459,8 +1459,9 @@ static int ep_create_wakeup_source(struct epitem *epi)
->  			return -ENOMEM;
->  	}
->  
-> -	name = epi->ffd.file->f_path.dentry->d_name.name;
-> -	ws = wakeup_source_register(NULL, name);
-> +	take_dentry_name_snapshot(&name, epi->ffd.file->f_path.dentry);
-> +	ws = wakeup_source_register(NULL, name.name.name);
-> +	release_dentry_name_snapshot(&name);
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+Changes since V2:
+	- call cpufreq_cpu_put() unconditionally after cooling register done.
+---
+ drivers/thermal/imx_thermal.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-I'm not sure I like it.  Sure, it won't get freed under you that way; it still
-can go absolutely stale by the time you return from wakeup_source_register().
-What is it being used for?
+diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
+index e761c9b..8764cb5 100644
+--- a/drivers/thermal/imx_thermal.c
++++ b/drivers/thermal/imx_thermal.c
+@@ -649,7 +649,7 @@ MODULE_DEVICE_TABLE(of, of_imx_thermal_match);
+ static int imx_thermal_register_legacy_cooling(struct imx_thermal_data *data)
+ {
+ 	struct device_node *np;
+-	int ret;
++	int ret = 0;
+ 
+ 	data->policy = cpufreq_cpu_get(0);
+ 	if (!data->policy) {
+@@ -661,20 +661,19 @@ static int imx_thermal_register_legacy_cooling(struct imx_thermal_data *data)
+ 
+ 	if (!np || !of_find_property(np, "#cooling-cells", NULL)) {
+ 		data->cdev = cpufreq_cooling_register(data->policy);
+-		if (IS_ERR(data->cdev)) {
++		if (IS_ERR(data->cdev))
+ 			ret = PTR_ERR(data->cdev);
+-			cpufreq_cpu_put(data->policy);
+-			return ret;
+-		}
+ 	}
+ 
+-	return 0;
++	cpufreq_cpu_put(data->policy);
++	of_node_put(np);
++
++	return ret;
+ }
+ 
+ static void imx_thermal_unregister_legacy_cooling(struct imx_thermal_data *data)
+ {
+ 	cpufreq_cooling_unregister(data->cdev);
+-	cpufreq_cpu_put(data->policy);
+ }
+ 
+ #else
+-- 
+2.7.4
+
