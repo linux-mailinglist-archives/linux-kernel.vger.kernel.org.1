@@ -2,174 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2E81BDF5E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:44:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BB0A1BE029
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727925AbgD2No0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:44:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:39488 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726599AbgD2No0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:44:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0E6091045;
-        Wed, 29 Apr 2020 06:44:25 -0700 (PDT)
-Received: from [10.37.12.139] (unknown [10.37.12.139])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1BBD33F68F;
-        Wed, 29 Apr 2020 06:44:21 -0700 (PDT)
-Subject: Re: [PATCH] coresight: dynamic-replicator: Fix handling of multiple
- connections
-To:     saiprakash.ranjan@codeaurora.org, mike.leach@linaro.org
-Cc:     mathieu.poirier@linaro.org, swboyd@chromium.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20200426143725.18116-1-saiprakash.ranjan@codeaurora.org>
- <cf5852e9-c3c1-3d31-46f0-0370719947ab@arm.com>
- <CAJ9a7VgF3-Hdc7KSw9gVBeXSDHNguhqVhp60oK2XhCtr3DhDqg@mail.gmail.com>
- <84918e7d-c933-3fa1-a61e-0615d4b3cf2c@arm.com>
- <668ea1283a6dd6b34e701972f6f71034@codeaurora.org>
- <5b0f5d77c4eec22d8048bb0ffa078345@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <759d47de-2101-39cf-2f1c-cfefebebd548@arm.com>
-Date:   Wed, 29 Apr 2020 14:49:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
-MIME-Version: 1.0
-In-Reply-To: <5b0f5d77c4eec22d8048bb0ffa078345@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728318AbgD2OGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:06:18 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:48099 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728304AbgD2OGQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 10:06:16 -0400
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200429140613epoutp045e77169f26651be97796f157286a1b14~KT3Lc0RPg2636826368epoutp04Y
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 14:06:13 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200429140613epoutp045e77169f26651be97796f157286a1b14~KT3Lc0RPg2636826368epoutp04Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1588169173;
+        bh=oEwo5iuvoaz/Z75vzSm5Xv3zjWzxpEMaF99L3uR/baE=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=BKuMxjb2PWur4Wr/hiyJNehprM3N/rFC49JzvsRpElO1OZldWtJxk1RPGOaep3ykZ
+         g92xA4hTn7WsVxYgW0se7+RbjO39AEZGhgXhYkF5CdDtl8MO+V2ExRuPFNd/iTYAoD
+         3vDLb/82AVm5WmdIOytSMYMfgE5Hrr0zfyJ4oPaw=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20200429140612epcas5p4020b10eea17671f960ab3d96dbf84d5a~KT3KkBy9B0260202602epcas5p49;
+        Wed, 29 Apr 2020 14:06:12 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        12.B5.10083.4D989AE5; Wed, 29 Apr 2020 23:06:12 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200429135110epcas5p4377ad1a5d783d0634ab06e23993116a7~KTqDA9NUD0604506045epcas5p4Z;
+        Wed, 29 Apr 2020 13:51:10 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200429135110epsmtrp2935efb325383037fffe2934f6cb2d81a~KTqDAMyj20135801358epsmtrp2F;
+        Wed, 29 Apr 2020 13:51:10 +0000 (GMT)
+X-AuditID: b6c32a4a-875ff70000002763-23-5ea989d4510c
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F4.A0.25866.E4689AE5; Wed, 29 Apr 2020 22:51:10 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.109.224.135]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200429135109epsmtip2dac40d2a001284e394f5451139ee832d~KTqBh970X1466314663epsmtip2V;
+        Wed, 29 Apr 2020 13:51:09 +0000 (GMT)
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     mhocko@suse.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        a.sahrawat@samsung.com, v.narang@samsung.com,
+        Maninder Singh <maninder1.s@samsung.com>
+Subject: [PATCH v3] mm/vmscan.c: change prototype for shrink_page_list
+Date:   Wed, 29 Apr 2020 19:20:59 +0530
+Message-Id: <1588168259-25604-1-git-send-email-maninder1.s@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEIsWRmVeSWpSXmKPExsWy7bCmlu6VzpVxBut+i1hc3J1qMWf9GjaL
+        y7vmsFncW/Of1eLw/DYWi/t9DhaHTs5ldGD32PRpErvHiRm/WTz6tqxi9Fi/5SqLx+dNcgGs
+        UVw2Kak5mWWpRfp2CVwZFw50MxXslKvoWSvdwLhZoouRk0NCwETi984pTCC2kMBuRolnO+26
+        GLmA7E+MEh/uXGWCcD4zSqyevogFpmPqv23sEIldjBILFm5hhHC+Mkr82LqGHaSKTUBPYtWu
+        PUAdHBwiQPafJzogNcwCExglju/awQgSFxZwk5jz0wOknEVAVeL206dgZ/AKuEs82XiADWKZ
+        nMTNc53MIL0SAuvYJea/bGcH6ZUQcJG4v7seokZY4tXxLewQtpTE53d72SDqmxklPu1bywjh
+        TGGUWHrxIytElb3E6+YGJpBBzAKaEut36UOEZSWmnloHdgSzAJ9E7+8nTBBxXokd82BsVYmW
+        mxugxkhLfP74ERoqHhIvlz+FhmOsxLNHx1kmMMrOQtiwgJFxFaNkakFxbnpqsWmBUV5quV5x
+        Ym5xaV66XnJ+7iZGcMxree1gXHbO5xCjAAejEg+vRerKOCHWxLLiytxDjBIczEoivI8ylsUJ
+        8aYkVlalFuXHF5XmpBYfYpTmYFES59ViBKoWSE8sSc1OTS1ILYLJMnFwSjUwWrAdibU7b506
+        rUN75cvsyqnvOHOXp9zce0/t39rJHY925/794KMgMInr2YTd3iErs9/I1Bs8YajenXAx4NfX
+        LaduJwtmqPF4+E/75LzxgKiq5KmXDv9mznjz1WCpDVP4Be2f5jMPSeX9n2k7o7/50cneuye1
+        npscOGMjF2q/hfV3e5mf3MmLCUosxRmJhlrMRcWJAJzUhF31AgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDJMWRmVeSWpSXmKPExsWy7bCSvK5f28o4g8lb9C0u7k61mLN+DZvF
+        5V1z2CzurfnPanF4fhuLxf0+B4tDJ+cyOrB7bPo0id3jxIzfLB59W1YxeqzfcpXF4/MmuQDW
+        KC6blNSczLLUIn27BK6MCwe6mQp2ylX0rJVuYNws0cXIySEhYCIx9d829i5GLg4hgR2MEtPP
+        bmOGSEhL/Pz3ngXCFpZY+e85VNFnRomXb+eAJdgE9CRW7doDZosIGEicmrOCCaSIWWAKo0TD
+        on9ADgeHsICbxJyfHiA1LAKqErefPmUCsXkF3CWebDzABrFATuLmuU7mCYw8CxgZVjFKphYU
+        56bnFhsWGOWllusVJ+YWl+al6yXn525iBAeQltYOxj2rPugdYmTiYDzEKMHBrCTC+yhjWZwQ
+        b0piZVVqUX58UWlOavEhRmkOFiVx3q+zFsYJCaQnlqRmp6YWpBbBZJk4OKUamMTb2p497Ixu
+        k4nfMjUi5lnzuZRHOfMuy3iFs/usy54X5vricmbWDrXKP+7spxecUV4WM2NFFmdt55q7hvcU
+        vTk0r1gx7S5S+2Z08p2XgLvIrRXn763lvH7lwZw0baYKs/OFPT6GLr4JNYklx6b5lz2pXO2f
+        fp2pctYF3aBYjzdLNAq+aSUzrai44zVXp4b5YZnA3dcLPXoe253kuP3C7u/l3sO2m6af4ZJz
+        Uf5QvH7Wj5Pr+ecZbLBKUTsb/F+s5JsKZ0PJ9/2xLUdET3frXpIPrPn8z1vCJPLf4e0GG2bI
+        t693uBnSt0Jn36uyNaZfnp+9+nrOvpSySZ0as+e2H/qx/9e5PyedMuwfTsnir1diKc5INNRi
+        LipOBADkgWFYjwIAAA==
+X-CMS-MailID: 20200429135110epcas5p4377ad1a5d783d0634ab06e23993116a7
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200429135110epcas5p4377ad1a5d783d0634ab06e23993116a7
+References: <CGME20200429135110epcas5p4377ad1a5d783d0634ab06e23993116a7@epcas5p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/29/2020 12:47 PM, Sai Prakash Ranjan wrote:
-> On 2020-04-28 17:53, Sai Prakash Ranjan wrote:
->> On 2020-04-27 19:23, Suzuki K Poulose wrote:
->>> On 04/27/2020 10:45 AM, Mike Leach wrote:
->> [...]
->>>>>
->>>>> This is not sufficient. You must prevent another session trying to
->>>>> enable the other port of the replicator as this could silently fail
->>>>> the "on-going" session. Not ideal. Fail the attempt to enable a port
->>>>> if the other port is active. You could track this in software and
->>>>> fail early.
->>>>>
->>>>> Suzuki
->>>>
->>>> While I have no issue in principle with not enabling a path to a sink
->>>> that is not in use - indeed in some cases attaching to unused sinks
->>>> can cause back-pressure that slows throughput (cf TPIU) - I am
->>>> concerned that this modification is masking an underlying issue with
->>>> the platform in question.
->>>>
->>>> Should we decide to enable the diversion of different IDs to different
->>>> sinks or allow different sessions go to different sinks, then this has
->>>> potential to fail on the SC7180 SoC - and it will be difficult in
->>>> future to associate a problem with this discussion.
->>>
->>> Mike,
->>>
->>> I think thats a good point.
->>> Sai, please could we narrow down this to the real problem and may be
->>> work around it for the "device" ? Do we know which sink is causing the
->>> back pressure ? We could then push the "work around" to the replicator
->>> it is connected to.
->>>
->>> Suzuki
->>
->> Hi Suzuki, Mike,
->>
->> To add some more to the information provided earlier,
->> swao_replicator(6b06000) and etf are
->> in AOSS (Always-On-SubSystem) group. Also TPIU(connected to
->> qdss_replicator) and EUD(connected
->> to swao_replicator) sinks are unused.
->>
->> Please ignore the id filter values provided earlier.
->> Here are ID filter values after boot and before enabling replicator. 
->> As per
->> these idfilter values, we should not try to enable replicator if its 
->> already
->> enabled (in this case for swao_replicator) right?
->>
->> localhost ~ # cat
->> /sys/bus/amba/devices/6b06000.replicator/replicator1/mgmt/idfilter0
->> 0x0
->> localhost ~ # cat
->> /sys/bus/amba/devices/6b06000.replicator/replicator1/mgmt/idfilter1
->> 0x0
->>
->> localhost ~ # cat
->> /sys/bus/amba/devices/6046000.replicator/replicator0/mgmt/idfilter0
->> 0xff
->> localhost ~ # cat
->> /sys/bus/amba/devices/6046000.replicator/replicator0/mgmt/idfilter1
->> 0xff
->>
-> 
-> Looking more into replicator1(swao_replicator) values as 0x0 even after 
-> replicator_reset()
-> in replicator probe, I added dynamic_replicator_reset in 
-> dynamic_replicator_enable()
-> and am not seeing any hardlockup. Also I added some prints to check the 
-> idfilter
-> values before and after reset and found that its not set to 0xff even 
-> after replicator_reset()
-> in replicator probe, I don't see any other path setting it to 0x0.
-> 
-> After probe:
-> 
-> [    8.477669] func replicator_probe before reset replicator replicator1 
-> REPLICATOR_IDFILTER0=0x0 REPLICATOR_IDFILTER1=0x0
-> [    8.489470] func replicator_probe after reset replicator replicator1 
-> REPLICATOR_IDFILTER0=0xff REPLICATOR_IDFILTER1=0xff
+'commit 3c710c1ad11b ("mm, vmscan:
+extract shrink_page_list reclaim counters into a struct")'
 
-AFAICS, after the reset both of them are set to 0xff.
+changed data type for the function,
+so changing return type for funciton and its caller.
 
-> [    8.502738] func replicator_probe before reset replicator replicator0 
-> REPLICATOR_IDFILTER0=0x0 REPLICATOR_IDFILTER1=0x0
-> [    8.515214] func replicator_probe after reset replicator replicator0 
-> REPLICATOR_IDFILTER0=0xff REPLICATOR_IDFILTER1=0xff
+Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+---
+v1 -> v2: position of variable changed mistakenly, thus reverted.
+v2 -> v3: Don't change position of any variable, thus reverted.
+	  if required then need to send by separate patch.
 
+ mm/internal.h   |  2 +-
+ mm/page_alloc.c |  2 +-
+ mm/vmscan.c     | 24 ++++++++++++------------
+ 3 files changed, 14 insertions(+), 14 deletions(-)
 
+diff --git a/mm/internal.h b/mm/internal.h
+index b5634e7..c3eeec8 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -527,7 +527,7 @@ extern unsigned long  __must_check vm_mmap_pgoff(struct file *, unsigned long,
+         unsigned long, unsigned long);
+ 
+ extern void set_pageblock_order(void);
+-unsigned long reclaim_clean_pages_from_list(struct zone *zone,
++unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+ 					    struct list_head *page_list);
+ /* The ALLOC_WMARK bits are used as an index to zone->watermark */
+ #define ALLOC_WMARK_MIN		WMARK_MIN
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 1385d78..f17d88c6 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8416,7 +8416,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 					unsigned long start, unsigned long end)
+ {
+ 	/* This function is based on compact_zone() from compaction.c. */
+-	unsigned long nr_reclaimed;
++	unsigned int nr_reclaimed;
+ 	unsigned long pfn = start;
+ 	unsigned int tries = 0;
+ 	int ret = 0;
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index b06868f..7631725 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1066,17 +1066,17 @@ static void page_check_dirty_writeback(struct page *page,
+ /*
+  * shrink_page_list() returns the number of reclaimed pages
+  */
+-static unsigned long shrink_page_list(struct list_head *page_list,
+-				      struct pglist_data *pgdat,
+-				      struct scan_control *sc,
+-				      enum ttu_flags ttu_flags,
+-				      struct reclaim_stat *stat,
+-				      bool ignore_references)
++static unsigned int shrink_page_list(struct list_head *page_list,
++				     struct pglist_data *pgdat,
++				     struct scan_control *sc,
++				     enum ttu_flags ttu_flags,
++				     struct reclaim_stat *stat,
++				     bool ignore_references)
+ {
+ 	LIST_HEAD(ret_pages);
+ 	LIST_HEAD(free_pages);
+-	unsigned nr_reclaimed = 0;
+-	unsigned pgactivate = 0;
++	unsigned int nr_reclaimed = 0;
++	unsigned int pgactivate = 0;
+ 
+ 	memset(stat, 0, sizeof(*stat));
+ 	cond_resched();
+@@ -1483,7 +1483,7 @@ static unsigned long shrink_page_list(struct list_head *page_list,
+ 	return nr_reclaimed;
+ }
+ 
+-unsigned long reclaim_clean_pages_from_list(struct zone *zone,
++unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+ 					    struct list_head *page_list)
+ {
+ 	struct scan_control sc = {
+@@ -1492,7 +1492,7 @@ unsigned long reclaim_clean_pages_from_list(struct zone *zone,
+ 		.may_unmap = 1,
+ 	};
+ 	struct reclaim_stat dummy_stat;
+-	unsigned long ret;
++	unsigned int ret;
+ 	struct page *page, *next;
+ 	LIST_HEAD(clean_pages);
+ 
+@@ -1900,7 +1900,7 @@ static int current_may_throttle(void)
+ {
+ 	LIST_HEAD(page_list);
+ 	unsigned long nr_scanned;
+-	unsigned long nr_reclaimed = 0;
++	unsigned int nr_reclaimed = 0;
+ 	unsigned long nr_taken;
+ 	struct reclaim_stat stat;
+ 	int file = is_file_lru(lru);
+@@ -2096,7 +2096,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
+ unsigned long reclaim_pages(struct list_head *page_list)
+ {
+ 	int nid = NUMA_NO_NODE;
+-	unsigned long nr_reclaimed = 0;
++	unsigned int nr_reclaimed = 0;
+ 	LIST_HEAD(node_page_list);
+ 	struct reclaim_stat dummy_stat;
+ 	struct page *page;
+-- 
+1.9.1
 
-> localhost ~ #
-> localhost ~ #
-> localhost ~ # echo 1 > /sys/bus/coresight/devices/tmc_etr0/enable_sink
-> localhost ~ #
-> localhost ~ # echo 1 > /sys/bus/coresight/devices/etm0/enable_source
-> [   58.490485] func dynamic_replicator_enable before reset replicator 
-> replicator0 REPLICATOR_IDFILTER0=0xff REPLICATOR_IDFILTER1=0xff
-> [   58.503246] func dynamic_replicator_enable after reset replicator 
-> replicator0 REPLICATOR_IDFILTER0=0xff REPLICATOR_IDFILTER1=0xff
-> [   58.520902] func dynamic_replicator_enable before reset replicator 
-> replicator1 REPLICATOR_IDFILTER0=0x0 REPLICATOR_IDFILTER1=0x0
-
-You need to find what is resetting the IDFILTERs to 0 for replicator1.
-
-> [   58.533500] func dynamic_replicator_enable after reset replicator 
-> replicator1 REPLICATOR_IDFILTER0=0xff REPLICATOR_IDFILTER1=0xff
-> localhost ~ #
-> 
-> Can we have a replicator_reset in dynamic_replicator_enable?
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c 
-> b/drivers/hwtracing/coresight/coresight-replicator.c
-> index e7dc1c31d20d..794f8e4c049f 100644
-> --- a/drivers/hwtracing/coresight/coresight-replicator.c
-> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
-> @@ -68,6 +68,8 @@ static int dynamic_replicator_enable(struct 
-> replicator_drvdata *drvdata,
->          int rc = 0;
->          u32 reg;
-> 
-> +       dynamic_replicator_reset(drvdata);
-> +
-
-Again you are trying to mask an issue with this. Is the firmware
-using the replicator for anything ? If so, this needs to be claimed
-to prevent us from using it.
-
-Suzuki
