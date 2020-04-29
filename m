@@ -2,182 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3481BD612
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 09:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380AC1BD644
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 09:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgD2Hab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 03:30:31 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:39587 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgD2Haa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 03:30:30 -0400
-Received: by mail-io1-f68.google.com with SMTP id w4so1133761ioc.6;
-        Wed, 29 Apr 2020 00:30:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dZHTcsvd+3N0oInRnY4DjkFuABRDZ8hC5QyzW4Fndpw=;
-        b=TetJLiZPw6ChEh/JCuL44cexQY5WkpSd0UwYbPCSF07RKtB6rl4zlPjtgA9qhsNUcm
-         RY331mi+u67yhgxSlCGyTCgiA1R4kB0PLQu3rSrRjeQlNmXDO7+jo4byfaWMcl64uDnC
-         g5jzIMav8lH7bU2n3Jk/C+VWRqK4eIpf12wXkfdnThJmJ/LWHY+RNyh+55jX1/dgbTK1
-         MpDcUoeNFxkWCLO0DRXTZucSRBKBh3lnLlaqepnSqSjouds8L6kFtkTQGf85EQK5HMfI
-         zN/cmvkNbu/gldmdroVXYwRmX6fkIyq1qtEEKCX7dXzImr0erYVtowXcjMe0+Jr/dblN
-         fqbQ==
-X-Gm-Message-State: AGi0PubdiMi9IWuBqvyJ6eaVoiUBiEqjunuxQuETiyNFDs+zXiPSSlwu
-        sYtACUhOMHLHVmxGrGgGQkDeKX4FeMI3aJLKIfg=
-X-Google-Smtp-Source: APiQypJVWPuYy7vf+TXR8F6vp7ZkZTtUEZL+3Ecw2/FSpOFVbzuOM17akv3bF+vwpip+kTcDxviWpnQ/PJfWO7N+NWw=
-X-Received: by 2002:a02:415:: with SMTP id 21mr29604089jab.126.1588145429339;
- Wed, 29 Apr 2020 00:30:29 -0700 (PDT)
+        id S1726669AbgD2HmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 03:42:12 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2125 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726477AbgD2HmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 03:42:11 -0400
+Received: from lhreml709-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id B962F5BF6C391C3AAF11;
+        Wed, 29 Apr 2020 08:42:09 +0100 (IST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ lhreml709-chm.china.huawei.com (10.201.108.58) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Wed, 29 Apr 2020 08:42:09 +0100
+Received: from roberto-HP-EliteDesk-800-G2-DM-65W.huawei.com (10.204.65.160)
+ by fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Wed, 29 Apr 2020 09:42:08 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <david.safford@gmail.com>,
+        <viro@zeniv.linux.org.uk>, <jmorris@namei.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <silviu.vlasceanu@huawei.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [RFC][PATCH 1/3] evm: Move hooks outside LSM infrastructure
+Date:   Wed, 29 Apr 2020 09:39:33 +0200
+Message-ID: <20200429073935.11913-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <1588143611-6815-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1588143611-6815-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Huacai Chen <chenhc@lemote.com>
-Date:   Wed, 29 Apr 2020 15:38:00 +0800
-Message-ID: <CAAhV-H7uhPo_ZCTyt8eh9LSXXW7Unbr0SEXwG55GWLTksiNBWQ@mail.gmail.com>
-Subject: Re: [PATCH v5] MIPS: Loongson: Add DMA support for LS7A
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.204.65.160]
+X-ClientProxiedBy: lhreml701-chm.china.huawei.com (10.201.108.50) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Tiezhu,
+EVM is a module for the protection of the integrity of file metadata. It
+protects security-relevant extended attributes, and some file attributes
+such as the UID and the GID. It protects their integrity with an HMAC or
+with a signature.
 
-On Wed, Apr 29, 2020 at 3:00 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> In the current market, the most used bridge chip on the Loongson
-> platform are RS780E and LS7A, the RS780E bridge chip is already
-> supported by the mainline kernel.
->
-> In order to use the default implementation of __phys_to_dma() and
-> __dma_to_phys() in dma-direct.h, remove CONFIG_ARCH_HAS_PHYS_TO_DMA
-> and then set the bus's DMA limit to 36 bit for RS780E to maintain
-> downward compatibility.
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->
-> Hi Christoph and Jiaxun,
->
-> Thank you very much for your suggestions.
->
-> v5:
->   - use the default implementation of __phys_to_dma()
->     and __dma_to_phys() in dma-direct.h
->
->  arch/mips/Kconfig                                  |  1 -
->  arch/mips/include/asm/mach-loongson64/boot_param.h |  5 +++++
->  arch/mips/loongson64/dma.c                         | 22 +++++++++++-----------
->  arch/mips/loongson64/env.c                         |  2 ++
->  4 files changed, 18 insertions(+), 12 deletions(-)
->
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 9f15539..12b6bdb 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -1454,7 +1454,6 @@ choice
->  config CPU_LOONGSON64
->         bool "Loongson 64-bit CPU"
->         depends on SYS_HAS_CPU_LOONGSON64
-> -       select ARCH_HAS_PHYS_TO_DMA
->         select CPU_MIPSR2
->         select CPU_HAS_PREFETCH
->         select CPU_SUPPORTS_64BIT_KERNEL
-> diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> index fc9f14b..cccf4cb 100644
-> --- a/arch/mips/include/asm/mach-loongson64/boot_param.h
-> +++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
-> @@ -197,6 +197,7 @@ enum loongson_bridge_type {
->         LS7A = 2
->  };
->
-> +struct pci_dev;
->  struct loongson_system_configuration {
->         u32 nr_cpus;
->         u32 nr_nodes;
-> @@ -221,9 +222,13 @@ struct loongson_system_configuration {
->         u32 nr_sensors;
->         struct sensor_device sensors[MAX_SENSORS];
->         u64 workarounds;
-> +       void (*dma_config)(struct pci_dev *pdev);
->  };
->
->  extern struct efi_memory_map_loongson *loongson_memmap;
->  extern struct loongson_system_configuration loongson_sysconf;
->
-> +extern void rs780e_dma_config(struct pci_dev *pdev);
-> +extern void ls7a_dma_config(struct pci_dev *pdev);
-Please use alpha-betical order here, which means put ls7a things
-before rs780 things.
+What makes EVM different from other LSMs is that it makes a security
+decision depending on multiple pieces of information, which cannot be
+managed atomically by the system.
 
-> +
->  #endif
-> diff --git a/arch/mips/loongson64/dma.c b/arch/mips/loongson64/dma.c
-> index 5e86635..6878bcc 100644
-> --- a/arch/mips/loongson64/dma.c
-> +++ b/arch/mips/loongson64/dma.c
-> @@ -1,24 +1,24 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -#include <linux/dma-direct.h>
-> +#include <linux/pci.h>
->  #include <linux/init.h>
->  #include <linux/swiotlb.h>
->
-> -dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t paddr)
-> +void rs780e_dma_config(struct pci_dev *pdev)
->  {
-> -       /* We extract 2bit node id (bit 44~47, only bit 44~45 used now) from
-> -        * Loongson-3's 48bit address space and embed it into 40bit */
-> -       long nid = (paddr >> 44) & 0x3;
-> -       return ((nid << 44) ^ paddr) | (nid << 37);
-> +       pdev->dev.bus_dma_limit = DMA_BIT_MASK(36);
->  }
->
-> -phys_addr_t __dma_to_phys(struct device *dev, dma_addr_t daddr)
-> +void ls7a_dma_config(struct pci_dev *pdev)
->  {
-> -       /* We extract 2bit node id (bit 44~47, only bit 44~45 used now) from
-> -        * Loongson-3's 48bit address space and embed it into 40bit */
-> -       long nid = (daddr >> 37) & 0x3;
-> -       return ((nid << 37) ^ daddr) | (nid << 44);
->  }
-Why use a hardcoded 37? LS7A's node-id bits are configurable in BIOS.
+Example: cp -a file.orig file.dest
 
->
-> +void loongson_dma_config(struct pci_dev *pdev)
-> +{
-> +       loongson_sysconf.dma_config(pdev);
-> +}
-> +
-> +DECLARE_PCI_FIXUP_EARLY(PCI_ANY_ID, PCI_ANY_ID, loongson_dma_config);
-> +
->  void __init plat_swiotlb_setup(void)
->  {
->         swiotlb_init(1);
-> diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
-> index 71f4aaf..496f401 100644
-> --- a/arch/mips/loongson64/env.c
-> +++ b/arch/mips/loongson64/env.c
-> @@ -192,8 +192,10 @@ void __init prom_init_env(void)
->         if (vendor == PCI_VENDOR_ID_LOONGSON && device == 0x7a00) {
->                 pr_info("The bridge chip is LS7A\n");
->                 loongson_sysconf.bridgetype = LS7A;
-> +               loongson_sysconf.dma_config = ls7a_dma_config;
->         } else {
->                 pr_info("The bridge chip is RS780E or SR5690\n");
->                 loongson_sysconf.bridgetype = RS780E;
-> +               loongson_sysconf.dma_config = rs780e_dma_config;
->         }
->  }
-> --
-> 2.1.0
->
+If security.selinux, security.ima and security.evm must be preserved, cp
+will invoke setxattr() for each xattr, and EVM performs a verification
+during each operation. The problem is that copying security.evm from
+file.orig to file.dest will likely break the following EVM verifications if
+some metadata still have to be copied. EVM has no visibility on the
+metadata of the source file, so it cannot determine when the copy can be
+considered complete.
+
+On the other hand, EVM has to check metadata during every operation to
+ensure that there is no transition from corrupted metadata, e.g. after an
+offline attack, to valid ones after the operation. An HMAC update would
+prevent the corruption to be detected, as the HMAC on the new values would
+be correct. Thus, to avoid this issue, EVM has to return an error to the
+system call so that its execution will be interrupted.
+
+A solution that would satisfy both requirements, not breaking user space
+applications and detecting corrupted metadata is to let metadata operations
+be completed successfully and to pass the result of the EVM verification
+from the pre hooks to the post hooks. In this way, the HMAC update can be
+avoided if the verification wasn't successful.
+
+This approach will bring another important benefit: it is no longer
+required that every file has a valid HMAC or signature. Instead of always
+enforcing metadata integrity, even when it is not relevant for IMA, EVM
+will let IMA decide for files selected with the appraisal policy,
+depending on the result of the requested verification.
+
+The main problem is that the result of the verification currently cannot be
+passed from the pre hooks to the post hooks, due to how the LSM API is
+defined. A possible solution would be to use integrity_iint_cache for this
+purpose, but it will increase the memory pressure, as new structures will
+be allocated also for metadata operations, not only for measurement,
+appraisal and audit. Another solution would be to extend the LSM API, but
+it seems not worthwhile as EVM would be the only module getting a benefit
+from this change.
+
+Given that pre and post hooks are called from the same system call, a more
+efficient solution seems to move the hooks outside the LSM infrastructure,
+so that the return value of the pre hooks can be passed to the post hooks.
+A predefined error (-EAGAIN) will be used to signal to the system call to
+continue the execution. Otherwise, if the pre hooks return -EPERM, the
+system calls will behave as before and will immediately return before
+metadata are changed.
+
+Overview of the changes:
+
+evm_inode_init_security()	LSM (no change)
+evm_inode_setxattr()		LSM -> vfs_setxattr()
+evm_inode_post_setxattr()	LSM -> vfs_setxattr()
+evm_inode_removexattr()		LSM -> vfs_removexattr()
+evm_inode_post_removexattr()	vfs_removexattr() (no change)
+evm_inode_setattr()		LSM -> vfs_setattr()
+evm_inode_post_setattr()	vfs_setattr() (no change)
+evm_verifyxattr()		outside LSM (no change)
+
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+---
+ fs/attr.c           |  5 ++++-
+ fs/xattr.c          | 17 +++++++++++++++--
+ security/security.c | 18 +++---------------
+ 3 files changed, 22 insertions(+), 18 deletions(-)
+
+diff --git a/fs/attr.c b/fs/attr.c
+index b4bbdbd4c8ca..8f26d7d2e3b4 100644
+--- a/fs/attr.c
++++ b/fs/attr.c
+@@ -224,7 +224,7 @@ int notify_change(struct dentry * dentry, struct iattr * attr, struct inode **de
+ {
+ 	struct inode *inode = dentry->d_inode;
+ 	umode_t mode = inode->i_mode;
+-	int error;
++	int error, evm_error;
+ 	struct timespec64 now;
+ 	unsigned int ia_valid = attr->ia_valid;
+ 
+@@ -328,6 +328,9 @@ int notify_change(struct dentry * dentry, struct iattr * attr, struct inode **de
+ 	error = security_inode_setattr(dentry, attr);
+ 	if (error)
+ 		return error;
++	evm_error = evm_inode_setattr(dentry, attr);
++	if (evm_error)
++		return evm_error;
+ 	error = try_break_deleg(inode, delegated_inode);
+ 	if (error)
+ 		return error;
+diff --git a/fs/xattr.c b/fs/xattr.c
+index e13265e65871..3b323b75b741 100644
+--- a/fs/xattr.c
++++ b/fs/xattr.c
+@@ -183,6 +183,7 @@ int __vfs_setxattr_noperm(struct dentry *dentry, const char *name,
+ 			fsnotify_xattr(dentry);
+ 			security_inode_post_setxattr(dentry, name, value,
+ 						     size, flags);
++			evm_inode_post_setxattr(dentry, name, value, size);
+ 		}
+ 	} else {
+ 		if (unlikely(is_bad_inode(inode)))
+@@ -210,7 +211,7 @@ vfs_setxattr(struct dentry *dentry, const char *name, const void *value,
+ 		size_t size, int flags)
+ {
+ 	struct inode *inode = dentry->d_inode;
+-	int error;
++	int error, evm_error;
+ 
+ 	error = xattr_permission(inode, name, MAY_WRITE);
+ 	if (error)
+@@ -221,6 +222,12 @@ vfs_setxattr(struct dentry *dentry, const char *name, const void *value,
+ 	if (error)
+ 		goto out;
+ 
++	evm_error = evm_inode_setxattr(dentry, name, value, size);
++	if (evm_error) {
++		error = evm_error;
++		goto out;
++	}
++
+ 	error = __vfs_setxattr_noperm(dentry, name, value, size, flags);
+ 
+ out:
+@@ -382,7 +389,7 @@ int
+ vfs_removexattr(struct dentry *dentry, const char *name)
+ {
+ 	struct inode *inode = dentry->d_inode;
+-	int error;
++	int error, evm_error;
+ 
+ 	error = xattr_permission(inode, name, MAY_WRITE);
+ 	if (error)
+@@ -393,6 +400,12 @@ vfs_removexattr(struct dentry *dentry, const char *name)
+ 	if (error)
+ 		goto out;
+ 
++	evm_error = evm_inode_removexattr(dentry, name);
++	if (evm_error) {
++		error = evm_error;
++		goto out;
++	}
++
+ 	error = __vfs_removexattr(dentry, name);
+ 
+ 	if (!error) {
+diff --git a/security/security.c b/security/security.c
+index 7fed24b9d57e..e1368ab34cee 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -1255,14 +1255,9 @@ int security_inode_permission(struct inode *inode, int mask)
+ 
+ int security_inode_setattr(struct dentry *dentry, struct iattr *attr)
+ {
+-	int ret;
+-
+ 	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+ 		return 0;
+-	ret = call_int_hook(inode_setattr, 0, dentry, attr);
+-	if (ret)
+-		return ret;
+-	return evm_inode_setattr(dentry, attr);
++	return call_int_hook(inode_setattr, 0, dentry, attr);
+ }
+ EXPORT_SYMBOL_GPL(security_inode_setattr);
+ 
+@@ -1291,10 +1286,7 @@ int security_inode_setxattr(struct dentry *dentry, const char *name,
+ 		ret = cap_inode_setxattr(dentry, name, value, size, flags);
+ 	if (ret)
+ 		return ret;
+-	ret = ima_inode_setxattr(dentry, name, value, size);
+-	if (ret)
+-		return ret;
+-	return evm_inode_setxattr(dentry, name, value, size);
++	return ima_inode_setxattr(dentry, name, value, size);
+ }
+ 
+ void security_inode_post_setxattr(struct dentry *dentry, const char *name,
+@@ -1303,7 +1295,6 @@ void security_inode_post_setxattr(struct dentry *dentry, const char *name,
+ 	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+ 		return;
+ 	call_void_hook(inode_post_setxattr, dentry, name, value, size, flags);
+-	evm_inode_post_setxattr(dentry, name, value, size);
+ }
+ 
+ int security_inode_getxattr(struct dentry *dentry, const char *name)
+@@ -1335,10 +1326,7 @@ int security_inode_removexattr(struct dentry *dentry, const char *name)
+ 		ret = cap_inode_removexattr(dentry, name);
+ 	if (ret)
+ 		return ret;
+-	ret = ima_inode_removexattr(dentry, name);
+-	if (ret)
+-		return ret;
+-	return evm_inode_removexattr(dentry, name);
++	return ima_inode_removexattr(dentry, name);
+ }
+ 
+ int security_inode_need_killpriv(struct dentry *dentry)
+-- 
+2.17.1
+
