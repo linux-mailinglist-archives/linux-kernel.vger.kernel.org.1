@@ -2,67 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC09D1BD825
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD7E1BD82E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 11:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726556AbgD2JZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 05:25:54 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:41130 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726345AbgD2JZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 05:25:54 -0400
-Received: from [10.130.0.79] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxr2sWSKlebrctAA--.12S3;
-        Wed, 29 Apr 2020 17:25:42 +0800 (CST)
-To:     chenhc@lemote.com
-References: <CAAhV-H7uhPo_ZCTyt8eh9LSXXW7Unbr0SEXwG55GWLTksiNBWQ@mail.gmail.com>
-Subject: Re: [PATCH v5] MIPS: Loongson: Add DMA support for LS7A
-Cc:     hch@infradead.org, jiaxun.yang@flygoat.com,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        lixuefeng@loongson.cn, tsbogend@alpha.franken.de,
-        yangtiezhu@loongson.cn
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <94c49604-faf0-486d-f0ac-296536178a22@loongson.cn>
-Date:   Wed, 29 Apr 2020 17:25:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726688AbgD2J0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 05:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726345AbgD2J0d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 05:26:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B96C03C1AD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 02:26:33 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jTiyy-0007rD-OA; Wed, 29 Apr 2020 11:26:20 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jTiyu-00011L-62; Wed, 29 Apr 2020 11:26:16 +0200
+Date:   Wed, 29 Apr 2020 11:26:16 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Philippe Schenker <philippe.schenker@toradex.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "sergei.shtylyov@cogentembedded.com" 
+        <sergei.shtylyov@cogentembedded.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "david@protonic.nl" <david@protonic.nl>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Kazuya Mizuguchi <kazuya.mizuguchi.ks@renesas.com>
+Subject: Re: [PATCH net-next v3] net: phy: micrel: add phy-mode support for
+ the KSZ9031 PHY
+Message-ID: <20200429092616.7ug4kdgdltxowkcs@pengutronix.de>
+References: <20200422072137.8517-1-o.rempel@pengutronix.de>
+ <CAMuHMdU1ZmSm_tjtWxoFNako2fzmranGVz5qqD2YRNEFRjX0Sw@mail.gmail.com>
+ <20200428154718.GA24923@lunn.ch>
+ <6791722391359fce92b39e3a21eef89495ccf156.camel@toradex.com>
+ <CAMuHMdXm7n6cE5-ZjwxU_yKSrCaZCwqc_tBA+M_Lq53hbH2-jg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H7uhPo_ZCTyt8eh9LSXXW7Unbr0SEXwG55GWLTksiNBWQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dxr2sWSKlebrctAA--.12S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYT7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87
-        Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
-        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm72
-        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0
-        xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026x
-        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
-        JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
-        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_
-        WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
-        4UJbIYCTnIWIevJa73UjIFyTuYvjfUeID7DUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="f37udlmunv3yqdec"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXm7n6cE5-ZjwxU_yKSrCaZCwqc_tBA+M_Lq53hbH2-jg@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:46:27 up 166 days, 5 min, 179 users,  load average: 0.11, 0.06,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, I can not receive email today due to some unknown reason,
-so I use the "mailto: link" in the Linux-MIPS Archive to reply.
 
- > Please use alpha-betical order here, which means put ls7a things
- > before rs780 things.
+--f37udlmunv3yqdec
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-OK, thanks. I will modify it and send v6.
+Hi Geert,
 
- > Why use a hardcoded 37? LS7A's node-id bits are configurable in BIOS.
+On Wed, Apr 29, 2020 at 10:45:35AM +0200, Geert Uytterhoeven wrote:
+> Hi Philippe,
+>=20
+> On Tue, Apr 28, 2020 at 6:16 PM Philippe Schenker
+> <philippe.schenker@toradex.com> wrote:
+> > On Tue, 2020-04-28 at 17:47 +0200, Andrew Lunn wrote:
+> > > On Tue, Apr 28, 2020 at 05:28:30PM +0200, Geert Uytterhoeven wrote:
+> > > > This triggers on Renesas Salvator-X(S):
+> > > >
+> > > >     Micrel KSZ9031 Gigabit PHY e6800000.ethernet-ffffffff:00:
+> > > > *-skew-ps values should be used only with phy-mode =3D "rgmii"
+> > > >
+> > > > which uses:
+> > > >
+> > > >         phy-mode =3D "rgmii-txid";
+> > > >
+> > > > and:
+> > > >
+> > > >         rxc-skew-ps =3D <1500>;
+> > > >
+> > > > If I understand Documentation/devicetree/bindings/net/ethernet-
+> > > > controller.yaml
+> > > > correctly:
+> > >
+> > > Checking for skews which might contradict the PHY-mode is new. I think
+> > > this is the first PHY driver to do it. So i'm not too surprised it has
+> > > triggered a warning, or there is contradictory documentation.
+> > >
+> > > Your use cases is reasonable. Have the normal transmit delay, and a
+> > > bit shorted receive delay. So we should allow it. It just makes the
+> > > validation code more complex :-(
+> >
+> > I reviewed Oleksij's patch that introduced this warning. I just want to
+> > explain our thinking why this is a good thing, but yes maybe we change
+> > that warning a little bit until it lands in mainline.
+> >
+> > The KSZ9031 driver didn't support for proper phy-modes until now as it
+> > don't have dedicated registers to control tx and rx delays. With
+> > Oleksij's patch this delay is now done accordingly in skew registers as
+> > best as possible. If you now also set the rxc-skew-ps registers those
+> > values you previously set with rgmii-txid or rxid get overwritten.
+> >
+> > We chose the warning to occur on phy-modes 'rgmii-id', 'rgmii-rxid' and
+> > 'rgmii-txid' as on those, with the 'rxc-skew-ps' value present,
+> > overwriting skew values could occur and you end up with values you do
+> > not wanted. We thought, that most of the boards have just 'rgmii' set in
+> > phy-mode with specific skew-values present.
+> >
+> > @Geert if you actually want the PHY to apply RXC and TXC delays just
+> > insert 'rgmii-id' in your DT and remove those *-skew-ps values. If you
+>=20
+> That seems to work for me, but of course doesn't take into account PCB
+> routing.
 
-Oh, the platform dependent implementation of __phys_to_dma()
-and __dma_to_phys() are deleted, and ls7a_dma_config() is an
-empty function, the hardware can translate address of node id
-automatically for LS7A.
+On boards with simple design, the clock lines have nearly same length as da=
+ta
+lines. To provide needed clock delay, you should make clock line ~17
+centimeter longer than data lines. Or configure PHY or MAC side to
+provide needed delay.
+Since "phy-mode =3D "rgmii-txid"" was ignored till my patch. And the
+"rxc-skew-ps =3D <1500>" will add a delay of 0.6 nano seconds. Your
+configuration was:
+TX delay =3D 1.2ns
+RX delay =3D 0.6ns
 
+Is it really reflects the configuration of you PCB?
+
+> > need custom timing due to PCB routing it was thought out to use the phy-
+> > mode 'rgmii' and do the whole required timing with the *-skew-ps values.
+>=20
+> That mean we do have to provide all values again?
+
+No. Using proper phy-mode should be enough. If you using default TX dealy a=
+nd
+configuring RX delay manually, the phy-mode =3D "rgmii-id" is
+the right choice for you.
+
+> Using "rgmii" without any skew values makes DHCP fail on R-Car H3 ES2.0,
+> M3-W (ES1.0), and M3-N (ES1.0). Interestingly, DHCP still works on R-Car
+> H3 ES1.0.
+
+The TX delay affects MAC to PHY path. The RX delay affects PHY to MAC
+path. On my HW, disabling TX delays, didn't affected the communication
+in any measurable way. Even with clock line length is equal to the data
+lines length. So, it may work just on the edge of the spec.
+
+> Note that I'm not too-familiar with the actual skew values needed
+> (CC Mizuguchi-san).
+>=20
+> Related commits:
+>   - 0e45da1c6ea6b186 ("arm64: dts: r8a7795: salvator-x: Fix
+> EthernetAVB PHY timing")
+>   - dda3887907d74338 ("arm64: dts: r8a7795: Use rgmii-txid phy-mode
+> for EthernetAVB")
+>   - 7eda14afb8843a0d ("arm64: dts: renesas: r8a77990: ebisu: Fix
+> EthernetAVB phy mode to rgmii")
+
+Regards,
+Oleksij.
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
+--f37udlmunv3yqdec
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl6pSDQACgkQ4omh9DUa
+UbPJAQ/+LKRfA0dP7eKYb/DDX4v/6S1nJMmwoCCWrjVB2nGeUL5a/T7s4AwotKvp
+D3uzbGzyVgzYo41Sl+OUDqxVA9vJ2/dKG2AooUL641ptkc03zh4ihhQajjhrIb9h
+1ig4lARM60ngONJprFehqGRbDw7MP+QmYWc9zHfh16xEDeHG/jYnvsCs9bUyIMts
+YMcwCngMANU6qDG2xxsYwAgCp+wuUVbXsn4Syh2kaL5LaoM/4sMEE1nyjQ/a/DZP
+rQN92+rX2KPS2Rp3xY2qD2Cz20c4kcuXfMNOnFJRuyBqNggdFmkezxl+QvRhTULe
+VcGMSwH9uOSVh0zze72JdCI2zj3VZd/iS7Bs94wvQpbYhlB27SpG5eq1msJ7RX8c
+tTjIBm98l4fSRRpDne5dXa+A2ThifkOeh1bGnFjJCIyXffQ1UC2PEgLVp8WW2stf
+wQfOgZnv8c8FXbSx+IgBuIcgiZtCkd3f9Nyn+MbFZqVthqRZdt5Dc2o9UiljABQP
+Rg/JMcuCjYZUWWgFNmvFCKi45I4Xh6RRCwk3TTMQUOmOanMJEY77s8/Jymjsx3tA
+PIbqTf8Nmcv+rGGHAgMm3AWmQc+kGNBoydKtdZ64yfNZjY9FzNAaU7ZmIRLz99UH
+SzocUdqZt91pTtN4G33dJLSTyWgOS1WFdpQJsbrAQl9z0u+0hkU=
+=ZopQ
+-----END PGP SIGNATURE-----
+
+--f37udlmunv3yqdec--
