@@ -2,62 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567C91BDBD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E191D1BDB78
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 14:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgD2MR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 08:17:26 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:39160 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726524AbgD2MR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 08:17:26 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 2E69B2FDDB8262AA5332;
-        Wed, 29 Apr 2020 20:16:17 +0800 (CST)
-Received: from linux-ibm.site (10.175.102.37) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 29 Apr 2020 20:16:11 +0800
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-To:     <aacraid@microsemi.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <wangxiongfeng2@huawei.com>
-Subject: [PATCH] scsi: dpt_i2o: Remove always false 'chan < 0' statement
-Date:   Wed, 29 Apr 2020 20:10:18 +0800
-Message-ID: <1588162218-61757-1-git-send-email-wangxiongfeng2@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1727041AbgD2MME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 08:12:04 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:36221 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726830AbgD2MME (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 08:12:04 -0400
+Received: by mail-io1-f69.google.com with SMTP id m16so2204838ion.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 05:12:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=PcO8Kd1YBitB52qqPhTJQcKlql/IIwrSnAimZeG48WY=;
+        b=sR5GymXu2arnRIZnu7sdL3CL4ri9GqPV9ZmqM0D/FkIxQd1R1o10Kv20g4khIQGXM4
+         UiAgAR7Quzr014OIcIGkXLPpQYjc52LI94ApD/T+rqXHMiK/V1xgWHpB6b4Dzas7eWsc
+         1T8hsn3kVZeWp/H4xfVehCSOQf8b05V5zsu5VYPp9wVG3ro5vmY+M+N3kl9jv9BXGEbd
+         vKYSRAeqN1MMkYtDJ0MUsZS5N3VAWpTqz353K5YrY+jU2njXr1bvg/i/jRssKu2XgAfo
+         doXo/jn5lJ1MNlZ7D5xiL0ksrTxMOuS+6iXwh8MZKu9rP/qMo0qQcZN56dc1khB7JTZj
+         51/w==
+X-Gm-Message-State: AGi0Pubz4hmFTlfjrPkfkT6AwFOmo70BPrWcRGbYq/qL8xVUmmE4lhRR
+        w7/kDrfKwnH/azNXCNoq2k/ybw6T/1SSIXAFuRoiiG6mMuM5
+X-Google-Smtp-Source: APiQypJP2W68RxtxIieiSS1l8KwM59eBNQMIxwjGv9JUZ6878yRXgSmubwKDBS1vqBOIm8e+WhASeRnX1wkEPaga96kMUFN9cOqO
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a92:6c0b:: with SMTP id h11mr72208ilc.158.1588162322766;
+ Wed, 29 Apr 2020 05:12:02 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 05:12:02 -0700
+In-Reply-To: <00000000000051770905984d38d3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001821b605a46cdb7f@google.com>
+Subject: Re: WARNING in exfat_bdev_read
+From:   syzbot <syzbot+1930da7118e99b06e4ab@syzkaller.appspotmail.com>
+To:     alexander.levin@microsoft.com, davem@davemloft.net,
+        devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, namjae.jeon@samsung.com,
+        pragat.pandya@gmail.com, syzkaller-bugs@googlegroups.com,
+        valdis.kletnieks@vt.edu
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The channel index is represented by an unsigned variable 'u32 chan'. We
-don't need to check whether it is less than zero. The following
-statement is always false and let's remove it.
-	'chan < 0'
+syzbot suspects this bug was fixed by commit:
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
----
- drivers/scsi/dpt_i2o.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+commit 5f33771fb0ac484d6e8cc34cb1e27c37442cd0db
+Author: Namjae Jeon <namjae.jeon@samsung.com>
+Date:   Fri Jan 3 01:13:45 2020 +0000
 
-diff --git a/drivers/scsi/dpt_i2o.c b/drivers/scsi/dpt_i2o.c
-index 02dff3a..2cf8895 100644
---- a/drivers/scsi/dpt_i2o.c
-+++ b/drivers/scsi/dpt_i2o.c
-@@ -1120,7 +1120,7 @@ static struct adpt_device* adpt_find_device(adpt_hba* pHba, u32 chan, u32 id, u6
- {
- 	struct adpt_device* d;
- 
--	if(chan < 0 || chan >= MAX_CHANNEL)
-+	if (chan >= MAX_CHANNEL)
- 		return NULL;
- 	
- 	d = pHba->channel[chan].device[id];
--- 
-1.7.12.4
+    staging: exfat: add STAGING prefix to config names
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1407f818100000
+start commit:   32ef9553 Merge tag 'fsnotify_for_v5.5-rc1' of git://git.ke..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ff560c3de405258c
+dashboard link: https://syzkaller.appspot.com/bug?extid=1930da7118e99b06e4ab
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e208a6e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11f83882e00000
+
+If the result looks correct, please mark the bug fixed by replying with:
+
+#syz fix: staging: exfat: add STAGING prefix to config names
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
