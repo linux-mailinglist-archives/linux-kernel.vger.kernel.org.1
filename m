@@ -2,61 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC79A1BE456
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 18:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43301BE459
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 18:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgD2QuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 12:50:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59872 "EHLO mail.kernel.org"
+        id S1726775AbgD2Qws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 12:52:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726558AbgD2QuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 12:50:12 -0400
-Subject: Re: [GIT PULL] Crypto Fixes for 5.7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588179012;
-        bh=JiQTaWVwC63SkuV2FBWui7b1YBsjH7ezXzl5EPROEi4=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=fSw5jXxAGJccqkxbT6sOjDi3Lc9LVJ7ghgu9ccO4L+h9II+CMG1R5FAUwS7n62Iyt
-         vDL5JbEMruYBOxxCkwi8FM6v2TMpQcW2cDTuSwvDSr2a1wpieaLn8A7bnOznUEieYW
-         crfb1S6Cd3mZd9ysvpdC6ft6AStjOEhFxu9O7Whs=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200429055420.GA26381@gondor.apana.org.au>
-References: <20190916084901.GA20338@gondor.apana.org.au>
- <20190923050515.GA6980@gondor.apana.org.au>
- <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
- <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
- <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
- <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
- <20200408061513.GA23636@gondor.apana.org.au>
- <20200429055420.GA26381@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200429055420.GA26381@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-X-PR-Tracked-Commit-Id: 55b3209acbb01cb02b1ee6b1afe80d83b1aab36d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6c3efdc911b67816285719bd610152232cf5e8e4
-Message-Id: <158817901233.22148.11028199197664884191.pr-tracker-bot@kernel.org>
-Date:   Wed, 29 Apr 2020 16:50:12 +0000
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+        id S1726423AbgD2Qws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 12:52:48 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E08C3208FE;
+        Wed, 29 Apr 2020 16:52:46 +0000 (UTC)
+Date:   Wed, 29 Apr 2020 12:52:45 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joerg Roedel <jroedel@suse.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before
+ text_poke()
+Message-ID: <20200429125245.5a804f62@gandalf.local.home>
+In-Reply-To: <20200429162026.GT30814@suse.de>
+References: <20200429054857.66e8e333@oasis.local.home>
+        <20200429105941.GQ30814@suse.de>
+        <20200429082854.6e1796b5@oasis.local.home>
+        <20200429100731.201312a9@gandalf.local.home>
+        <20200429161747.GS30814@suse.de>
+        <20200429162026.GT30814@suse.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 29 Apr 2020 15:54:20 +1000:
+On Wed, 29 Apr 2020 18:20:26 +0200
+Joerg Roedel <jroedel@suse.de> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+> On Wed, Apr 29, 2020 at 06:17:47PM +0200, Joerg Roedel wrote:
+> > On Wed, Apr 29, 2020 at 10:07:31AM -0400, Steven Rostedt wrote:  
+> > > Talking with Mathieu about this on IRC, he pointed out that my code does
+> > > have a vzalloc() that is called:
+> > > 
+> > > in trace_pid_write()
+> > > 
+> > > 	pid_list->pids = vzalloc((pid_list->pid_max + 7) >> 3);
+> > > 
+> > > This is done when -P1,2 is on the trace-cmd command line.  
+> > 
+> > And that buffer is written to at any function entry?  
+> 
+> What I meant to say, is it possible that the page-fault handler does not
+> complete because at its beginning it calls into trace-code and faults
+> again on the same address?
+> 
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6c3efdc911b67816285719bd610152232cf5e8e4
+It should be read only at sched_switch.
 
-Thank you!
+Basically, it's a big bitmask, where each bit represents a possible process
+id (can be 2 gigs if we allow all positive ints!).
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Then, it is only written when setting it up. Bits 1 and 2 are set here
+(-P1,2). At context switch, next->pid is checked against this bitmask, and
+if it is set, it means we should allow this process to be traced.
+
+This mask should only be accessed at sched_switch time, not at other times.
+And it may read any possible page in that mask depending on the process id
+of the next task to be scheduled in.
+
+-- Steve
