@@ -2,85 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1DA1BE025
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE3F1BE027
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgD2OFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
+        id S1728305AbgD2OGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726974AbgD2OFp (ORCPT
+        by vger.kernel.org with ESMTP id S1727820AbgD2OGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:05:45 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1ABC03C1AD;
-        Wed, 29 Apr 2020 07:05:45 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l20so1053652pgb.11;
-        Wed, 29 Apr 2020 07:05:45 -0700 (PDT)
+        Wed, 29 Apr 2020 10:06:13 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D666C03C1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 07:06:13 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id g4so2777142ljl.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 07:06:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8J01/oDFV2PcJykhGwoHQX8vIr5XGOssUOqfsuxR9jc=;
-        b=qs+napDFpFlo5xPyYTAJIrpT5IOt484xsLCyWrWn5ORKukrLK1OUKZ8xLNje+wWE5t
-         VPyI1YjLoAvUaV5rqDCl6g3b8pxWtkz9pVpr49JYvoTFUqlu5L6qPVhCp2vV4CPEr7sf
-         pqiNvbhLOFSYDNs5cTB32h64wHO1/U88UaVcX+L3sGAWfJKP7cCTJt830Q/S4WdxuFwK
-         Bguj3aLTFReZjSwurbjd4qm3N5wWs9B2AcNPu1K6ljMjO9oJpTOaVBX+YiZ3Om1h7rdD
-         osG3Fap5ss/alqzYIPb0bjOari2ZmhqX9Zub/Vs8sBrTT27qLx3bTLO+9VfHAs+9tEeZ
-         DySg==
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/5dFXvkHlFL4ZD9k3m+cudI2M3jreB1NrwloZ96EAJw=;
+        b=hRK69FjpTSEspooL3pngL3RWCh2k42g9+qRkAdCL+irtc4FBd8usHLppdKZiUO37H4
+         dVtIaQds7wIJpD4FvJmA66WsFpFfircv+CumTEfc64ZSOaC04mVKNMUiibqxvwXKlthW
+         uV/x8yUF7yTSwotvszuUAYM3u62kvRUPdUhak5B9N3l1WIRWV5MaiV84IC2e8djDPvwE
+         Yr8AcLkIr1KWLn53YcTtBcJGoRPGQ1Pqr7OnW/qaqaIkm3e2ejq+sjpqgO3w+/wHVZQ8
+         3Jmoz2QNSIxgVhyhS7eHhnQ7OHVYaCMFrOcDADZh3gAbG5a3TT0Y72ntLo6SHcnf3IBB
+         uj0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8J01/oDFV2PcJykhGwoHQX8vIr5XGOssUOqfsuxR9jc=;
-        b=gdSmaPyPwySb44p0EvKKrLCzrpopX6StQV1ihCgjdXGCom/nv9rL0FH4VAa4vCHkgQ
-         gxMaGdIrq3iYk4I/Y47NMx+CtZhcah/5fLx4gPPVT1iW28jTTG6figO/EjOpJzjTv86b
-         B7BKXKoZYt1wrHqoO1B8rrP/iDvz9FFZL/ZFzn7HLuG0F49yePVUIzoQDpWj3fKIeVQw
-         /gh0Jf6t7Tt9Q85QrWOu0lK5OyI5H2LLnliW8pMc1KQqJ/6HPdukFv0HY6g1kBfGGcxd
-         RKXiDrm9+mDw2LfBLCrh+z51NFDJn3APJ+I7DIw1MXByVdbqrjbM7TaDER9Ct61JvGlG
-         AF0A==
-X-Gm-Message-State: AGi0PuZBIQ8gUt64IHgDvMZhCLHedX+uUladObo3a2I47zlgDWLT4wUT
-        WkHOa/8B52RGrcq93upTTSk=
-X-Google-Smtp-Source: APiQypJzNWQW+vkFFPFMz5ah4PlpvGIMURsTRNSJ2YRVDhClHefvyX0mKZEnVCPbWqwMY0qaunPsMg==
-X-Received: by 2002:aa7:96cc:: with SMTP id h12mr27300216pfq.298.1588169144965;
-        Wed, 29 Apr 2020 07:05:44 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a16sm1204686pff.41.2020.04.29.07.05.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 Apr 2020 07:05:43 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 07:05:42 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.6 000/167] 5.6.8-rc1 review
-Message-ID: <20200429140542.GC8469@roeck-us.net>
-References: <20200428182225.451225420@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/5dFXvkHlFL4ZD9k3m+cudI2M3jreB1NrwloZ96EAJw=;
+        b=X6GZMNtVuDOW7QweOXcrwxUp5FULAkDxQfx8EsLxdFbFU70I3ly09/qXJLQ9EMQw2f
+         4VQTPX8ihuH8zkm7rIMykqgFhA40ewHudr1mm9gq046A91TW+a3GvKkuET4yRCuDn9sD
+         0KGwBA+9ufgLEiwwUxwHpr1+xDZgtBbS/JGq63zMXjYSvdfzBTvGRb7B/A6g6yc6QJtg
+         8o0X9+V7LeUCS1iZQbK14Bac8LB1XuBntn13bF8hd1GGW236h5tUKpG/eLwrSvXpkO/i
+         agsL9KkLpYfyMxfHEi4PIbdpz8hvQro8dWL8J3T2mfzgXyoPSdAUnugXb32neglBylkH
+         +3Jw==
+X-Gm-Message-State: AGi0PuZHGGXZroakPtjP/V4gTf44wKJ7OO+a8K4uR92AC3NolALfQNVx
+        lkt4vaSm5bbz+9q97z23edBiOxwpSRZtzjfnEcPN1g==
+X-Google-Smtp-Source: APiQypKeyYViSeG3LDYxj8g69kihbk0QRE6mRva/Grt1UgVyN/1ZIYYoZXAzChs4XfsXoPtgXgLAGZsvsvLk5MwjgfQ=
+X-Received: by 2002:a2e:8e98:: with SMTP id z24mr21704390ljk.134.1588169171856;
+ Wed, 29 Apr 2020 07:06:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200428182225.451225420@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200427074222.65369-1-maco@android.com> <20200427170613.GA13686@lst.de>
+ <CAB0TPYGZc_n-b5xtNsbJxEiqpLMqE=RcXGuy7C2vbY18mKZ6_A@mail.gmail.com>
+ <20200428070200.GC18754@lst.de> <CAB0TPYF4yHwXTG2xb5yci9-KJiT5=VbwWz9yj+uyBwb2rSi8Rg@mail.gmail.com>
+In-Reply-To: <CAB0TPYF4yHwXTG2xb5yci9-KJiT5=VbwWz9yj+uyBwb2rSi8Rg@mail.gmail.com>
+From:   Martijn Coenen <maco@android.com>
+Date:   Wed, 29 Apr 2020 16:06:00 +0200
+Message-ID: <CAB0TPYEkuCe-z2nNDRadGV3ASFXdZ3OVcB16yZ4PnNc2cokHAw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/9] Add a new LOOP_SET_FD_AND_STATUS ioctl
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
+        Narayan Kamath <narayan@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, kernel-team@android.com,
+        linux-block <linux-block@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martijn Coenen <maco@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 08:22:56PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.6.8 release.
-> There are 167 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 30 Apr 2020 18:20:42 +0000.
-> Anything received after that time might be too late.
-> 
+On Tue, Apr 28, 2020 at 4:57 PM Martijn Coenen <maco@android.com> wrote:
+> and it allows requesting a partition scan. It makes sense to maintain
+> that behavior, but what about LO_FLAGS_DIRECT_IO? I think you're
+> proposing LOOP_SET_STATUS(64) should keep ignoring that like it used
+> to?
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 428 pass: 428 fail: 0
+I've just sent a v4 which basically implements that and your other suggestions.
 
-Guenter
+Thanks,
+Martijn
+
+>
+> Thanks,
+> Martijn
+>
+> > and then in the main function reject anything not known.
+> >
+> > And then maybe add something like 64 bytes of padding to the end of the
+> > new structure, so that we can use flags to expand to it.
