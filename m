@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EDB1BE2F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 17:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA8D1BD641
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 09:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgD2PlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 11:41:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:41282 "EHLO foss.arm.com"
+        id S1726630AbgD2HlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 03:41:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:43114 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726519AbgD2PlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 11:41:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82FFF1045;
-        Wed, 29 Apr 2020 08:41:02 -0700 (PDT)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3649F3F68F;
-        Wed, 29 Apr 2020 08:41:00 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 16:40:57 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Pavan Kondeti <pkondeti@codeaurora.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] sched/uclamp: Add a new sysctl to control RT
- default boost value
-Message-ID: <20200429154056.bznhs6wc2iyxzevy@e107158-lin>
-References: <20200428164134.5588-1-qais.yousef@arm.com>
- <20200429113255.GA19464@codeaurora.org>
- <20200429123056.otyedhljlugyf5we@e107158-lin>
- <20200429152106.GB19464@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200429152106.GB19464@codeaurora.org>
-User-Agent: NeoMutt/20171215
+        id S1726355AbgD2HlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 03:41:24 -0400
+IronPort-SDR: 3PqwIIFQKMmXCLuypnL7o3Tfliz+Knx1gIw6ZRqe0LNsU2t3MGY13m02hqqejTzN1/2Zk1NM3I
+ tQEdmded6nOw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 00:41:23 -0700
+IronPort-SDR: phi0KJ//BVVxyKik5SX4LXIfbNkAfgUfknW+m75A2qkdVTQLjC1+fOjB60anFyH3w/m175ypCW
+ NKGwCtOaEyMg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,330,1583222400"; 
+   d="scan'208";a="302931421"
+Received: from lxy-dell.sh.intel.com ([10.239.159.21])
+  by FMSMGA003.fm.intel.com with ESMTP; 29 Apr 2020 00:41:21 -0700
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kvm: x86: Cleanup vcpu->arch.guest_xstate_size
+Date:   Wed, 29 Apr 2020 23:43:12 +0800
+Message-Id: <20200429154312.1411-1-xiaoyao.li@intel.com>
+X-Mailer: git-send-email 2.18.2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/29/20 20:51, Pavan Kondeti wrote:
-> As we are copying the sysctl_sched_uclamp_util_min_rt_default value into
-> p->uclamp_req[UCLAMP_MIN], user gets it when sched_getattr() is called though
-> sched_setattr() was not called before. I guess that is expected behavior with
-> your definition of this new tunable. Thanks for answering the question in
-> detail.
+vcpu->arch.guest_xstate_size lost its only user since commit df1daba7d1cb
+("KVM: x86: support XSAVES usage in the host"), so clean it up.
 
-Yes. That's the original design without this patch actually. Though before it
-was always set to 1024.
+Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+---
+ arch/x86/include/asm/kvm_host.h | 1 -
+ arch/x86/kvm/cpuid.c            | 8 ++------
+ arch/x86/kvm/x86.c              | 2 --
+ 3 files changed, 2 insertions(+), 9 deletions(-)
 
-Thanks for having a look!
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 7cd68d1d0627..34a05ca3c904 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -654,7 +654,6 @@ struct kvm_vcpu_arch {
+ 
+ 	u64 xcr0;
+ 	u64 guest_supported_xcr0;
+-	u32 guest_xstate_size;
+ 
+ 	struct kvm_pio_request pio;
+ 	void *pio_data;
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 6828be99b908..f3eb4f171d3d 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -84,15 +84,11 @@ int kvm_update_cpuid(struct kvm_vcpu *vcpu)
+ 				   kvm_read_cr4_bits(vcpu, X86_CR4_PKE));
+ 
+ 	best = kvm_find_cpuid_entry(vcpu, 0xD, 0);
+-	if (!best) {
++	if (!best)
+ 		vcpu->arch.guest_supported_xcr0 = 0;
+-		vcpu->arch.guest_xstate_size = XSAVE_HDR_SIZE + XSAVE_HDR_OFFSET;
+-	} else {
++	else
+ 		vcpu->arch.guest_supported_xcr0 =
+ 			(best->eax | ((u64)best->edx << 32)) & supported_xcr0;
+-		vcpu->arch.guest_xstate_size = best->ebx =
+-			xstate_required_size(vcpu->arch.xcr0, false);
+-	}
+ 
+ 	best = kvm_find_cpuid_entry(vcpu, 0xD, 1);
+ 	if (best && (cpuid_entry_has(best, X86_FEATURE_XSAVES) ||
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 856b6fc2c2ba..7cd51a3acc43 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9358,8 +9358,6 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+ 	}
+ 	fx_init(vcpu);
+ 
+-	vcpu->arch.guest_xstate_size = XSAVE_HDR_SIZE + XSAVE_HDR_OFFSET;
+-
+ 	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
+ 
+ 	vcpu->arch.pat = MSR_IA32_CR_PAT_DEFAULT;
+-- 
+2.18.2
 
---
-Qais Yousef
