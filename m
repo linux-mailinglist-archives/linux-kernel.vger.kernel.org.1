@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621FB1BE579
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C30D1BE58C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 19:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgD2Rlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 13:41:37 -0400
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:46126 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727812AbgD2Rlb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 13:41:31 -0400
-Received: by mail-qv1-f67.google.com with SMTP id 59so1544422qva.13;
-        Wed, 29 Apr 2020 10:41:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/ripA1cv3wgZlf0slliRjLteC8ID9H9NjTXvUNwlSmw=;
-        b=Kyqu9KjzelJrKSKUBBoYDwMJDOe5Mj3X02OwbB93F5Fkc+syyboPJ9q4gRf+NRg1lU
-         +rPwcFeVGKpzbewV6O3n4MufQD2WUy/DOXBb3HwuLfZROsAvrDX7KtRqXC4ZZsosnrYP
-         +av6MoYLzsFzaDbyc0THxc63lEvvlvA5c2qMYb48YTd3t9vfoDWok9uU6SzAgnCX4h71
-         DHmLxRi+3W2RJkbp83AYJpK4KYy6myl4RDCCibk5dxL1+ZL4aK6cEi1gphzg4PZpBNLy
-         4PEuPaHshZrfYgi1IsnJLHz5GeddN1m2N9YWgUNcn2gSZIXe9g/z4MLIQqDGgdh8rj2Q
-         8J8Q==
-X-Gm-Message-State: AGi0PuaMhRWA3gFVbOloo1eCC36ZqpXoTpRpJO2ucfB/yNsqRC6lphlG
-        wuc1vusewFEorHyovzfNswVH/8sN/mA=
-X-Google-Smtp-Source: APiQypLd1+gq1CorW1pD17UsROfO8KWa/WyQ4fPOauRmaeHs92LijWzsyPo6W7jgeHDt2nzBAewvOg==
-X-Received: by 2002:a0c:f34b:: with SMTP id e11mr33725259qvm.76.1588182090079;
-        Wed, 29 Apr 2020 10:41:30 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id z1sm14766448qkz.3.2020.04.29.10.41.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 10:41:29 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 10/10] efi/libstub: Check return value of efi_parse_options
-Date:   Wed, 29 Apr 2020 13:41:20 -0400
-Message-Id: <20200429174120.1497212-12-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200429174120.1497212-1-nivedita@alum.mit.edu>
-References: <20200429174120.1497212-1-nivedita@alum.mit.edu>
+        id S1727930AbgD2RnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 13:43:01 -0400
+Received: from mga18.intel.com ([134.134.136.126]:27330 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726423AbgD2RnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 13:43:01 -0400
+IronPort-SDR: 3W92olAfU4AOO6sZFOrLvY3vsWYD8V4i4INxk6YetKwA/DbF4+i8kVdFx+eCKvwx/9+9zmofTQ
+ Mwcn0hRmBsLg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 10:43:00 -0700
+IronPort-SDR: RIod/jxEWRog2s7yUwV64h2/mIgYkUV0DztDDgj+sBqj0STUSNqiT8KbcUijE+JqjirkWGEqEY
+ 08AkNIDEs2lw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,332,1583222400"; 
+   d="scan'208";a="258031160"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga003.jf.intel.com with ESMTP; 29 Apr 2020 10:42:59 -0700
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v3 05/10] x86/fpu/xstate: Define new functions for clearing fpregs and xstates
+Date:   Wed, 29 Apr 2020 10:42:11 -0700
+Message-Id: <20200429174211.29713-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200328164307.17497-6-yu-cheng.yu@intel.com>
+References: <20200328164307.17497-6-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -51,72 +51,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-efi_parse_options can fail if it is unable to allocate space for a copy
-of the command line. Check the return value to make sure it succeeded.
+From: Fenghua Yu <fenghua.yu@intel.com>
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Currently, fpu__clear() clears all fpregs and xstates.  Once XSAVES
+supervisor states are introduced, supervisor settings (e.g. CET xstates)
+must remain active for signals; It is necessary to have separate functions:
+
+- Create fpu__clear_user_states(): clear only user settings for signals;
+- Create fpu__clear_all(): clear both user and supervisor settings in
+   flush_thread().
+
+Also modify copy_init_fpstate_to_fpregs() to take a mask from above two
+functions.
+
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Co-developed-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
 ---
- drivers/firmware/efi/libstub/efi-stub.c | 18 ++++++++++++++----
- drivers/firmware/efi/libstub/x86-stub.c | 12 ++++++++++--
- 2 files changed, 24 insertions(+), 6 deletions(-)
+v3:
+- Put common code into a static function fpu__clear(), with a parameter
+  user_only.
 
-diff --git a/drivers/firmware/efi/libstub/efi-stub.c b/drivers/firmware/efi/libstub/efi-stub.c
-index 930302d9415a..a4399537b4e6 100644
---- a/drivers/firmware/efi/libstub/efi-stub.c
-+++ b/drivers/firmware/efi/libstub/efi-stub.c
-@@ -207,11 +207,21 @@ efi_status_t efi_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg)
+v2:
+- Fixed an issue where fpu__clear_user_states() drops supervisor xstates.
+- Revise commit log.
+
+ arch/x86/include/asm/fpu/internal.h |  3 +-
+ arch/x86/kernel/fpu/core.c          | 49 +++++++++++++++++++----------
+ arch/x86/kernel/fpu/signal.c        |  4 +--
+ arch/x86/kernel/process.c           |  2 +-
+ arch/x86/kernel/signal.c            |  2 +-
+ 5 files changed, 39 insertions(+), 21 deletions(-)
+
+diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+index ccb1bb32ad7d..a42fcb4b690d 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -31,7 +31,8 @@ extern void fpu__save(struct fpu *fpu);
+ extern int  fpu__restore_sig(void __user *buf, int ia32_frame);
+ extern void fpu__drop(struct fpu *fpu);
+ extern int  fpu__copy(struct task_struct *dst, struct task_struct *src);
+-extern void fpu__clear(struct fpu *fpu);
++extern void fpu__clear_user_states(struct fpu *fpu);
++extern void fpu__clear_all(struct fpu *fpu);
+ extern int  fpu__exception_code(struct fpu *fpu, int trap_nr);
+ extern int  dump_fpu(struct pt_regs *ptregs, struct user_i387_struct *fpstate);
  
- 	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
- 	    IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
--	    cmdline_size == 0)
--		efi_parse_options(CONFIG_CMDLINE);
-+	    cmdline_size == 0) {
-+		status = efi_parse_options(CONFIG_CMDLINE);
-+		if (status != EFI_SUCCESS) {
-+			pr_efi_err("Failed to parse options\n");
-+			goto fail_free_cmdline;
-+		}
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index 12c70840980e..7fddd5d60443 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -294,12 +294,10 @@ void fpu__drop(struct fpu *fpu)
+  * Clear FPU registers by setting them up from
+  * the init fpstate:
+  */
+-static inline void copy_init_fpstate_to_fpregs(void)
++static inline void copy_init_fpstate_to_fpregs(u64 features_mask)
+ {
+-	fpregs_lock();
+-
+ 	if (use_xsave())
+-		copy_kernel_to_xregs(&init_fpstate.xsave, -1);
++		copy_kernel_to_xregs(&init_fpstate.xsave, features_mask);
+ 	else if (static_cpu_has(X86_FEATURE_FXSR))
+ 		copy_kernel_to_fxregs(&init_fpstate.fxsave);
+ 	else
+@@ -307,9 +305,6 @@ static inline void copy_init_fpstate_to_fpregs(void)
+ 
+ 	if (boot_cpu_has(X86_FEATURE_OSPKE))
+ 		copy_init_pkru_to_fpregs();
+-
+-	fpregs_mark_activate();
+-	fpregs_unlock();
+ }
+ 
+ /*
+@@ -318,18 +313,40 @@ static inline void copy_init_fpstate_to_fpregs(void)
+  * Called by sys_execve(), by the signal handler code and by various
+  * error paths.
+  */
+-void fpu__clear(struct fpu *fpu)
++static void fpu__clear(struct fpu *fpu, int user_only)
+ {
+-	WARN_ON_FPU(fpu != &current->thread.fpu); /* Almost certainly an anomaly */
++	WARN_ON_FPU(fpu != &current->thread.fpu);
+ 
+-	fpu__drop(fpu);
++	if (!static_cpu_has(X86_FEATURE_FPU)) {
++		fpu__drop(fpu);
++		fpu__initialize(fpu);
++		return;
 +	}
  
--	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && cmdline_size > 0)
--		efi_parse_options(cmdline_ptr);
-+	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && cmdline_size > 0) {
-+		status = efi_parse_options(cmdline_ptr);
-+		if (status != EFI_SUCCESS) {
-+			pr_efi_err("Failed to parse options\n");
-+			goto fail_free_cmdline;
-+		}
+-	/*
+-	 * Make sure fpstate is cleared and initialized.
+-	 */
+-	fpu__initialize(fpu);
+-	if (static_cpu_has(X86_FEATURE_FPU))
+-		copy_init_fpstate_to_fpregs();
++	fpregs_lock();
++
++	if (user_only) {
++		if (!fpregs_state_valid(fpu, smp_processor_id()) &&
++		    xfeatures_mask_supervisor())
++			copy_kernel_to_xregs(&fpu->state.xsave,
++					     xfeatures_mask_supervisor());
++		copy_init_fpstate_to_fpregs(xfeatures_mask_user());
++	} else {
++		copy_init_fpstate_to_fpregs(xfeatures_mask_all);
 +	}
++
++	fpregs_mark_activate();
++	fpregs_unlock();
++}
++
++void fpu__clear_user_states(struct fpu *fpu)
++{
++	fpu__clear(fpu, 1);
++}
++
++void fpu__clear_all(struct fpu *fpu)
++{
++	fpu__clear(fpu, 0);
+ }
  
- 	pr_efi("Booting Linux Kernel...\n");
+ /*
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index 3df0cfae535f..cd6eafba12da 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -289,7 +289,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
+ 			 IS_ENABLED(CONFIG_IA32_EMULATION));
  
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index 0faba30d6406..ca549f26f45d 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -739,12 +739,20 @@ unsigned long efi_main(efi_handle_t handle,
+ 	if (!buf) {
+-		fpu__clear(fpu);
++		fpu__clear_user_states(fpu);
+ 		return 0;
  	}
  
- #ifdef CONFIG_CMDLINE_BOOL
--	efi_parse_options(CONFIG_CMDLINE);
-+	status = efi_parse_options(CONFIG_CMDLINE);
-+	if (status != EFI_SUCCESS) {
-+		pr_efi_err("Failed to parse options\n");
-+		goto fail;
-+	}
- #endif
- 	if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE)) {
- 		unsigned long cmdline_paddr = ((u64)hdr->cmd_line_ptr |
- 					       ((u64)boot_params->ext_cmd_line_ptr << 32));
--		efi_parse_options((char *)cmdline_paddr);
-+		status = efi_parse_options((char *)cmdline_paddr);
-+		if (status != EFI_SUCCESS) {
-+			pr_efi_err("Failed to parse options\n");
-+			goto fail;
-+		}
- 	}
+@@ -416,7 +416,7 @@ static int __fpu__restore_sig(void __user *buf, void __user *buf_fx, int size)
  
- 	/*
+ err_out:
+ 	if (ret)
+-		fpu__clear(fpu);
++		fpu__clear_user_states(fpu);
+ 	return ret;
+ }
+ 
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 9da70b279dad..de182b84723a 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -191,7 +191,7 @@ void flush_thread(void)
+ 	flush_ptrace_hw_breakpoint(tsk);
+ 	memset(tsk->thread.tls_array, 0, sizeof(tsk->thread.tls_array));
+ 
+-	fpu__clear(&tsk->thread.fpu);
++	fpu__clear_all(&tsk->thread.fpu);
+ }
+ 
+ void disable_TSC(void)
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index 83b74fb38c8f..0052bbe5dfd4 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -732,7 +732,7 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
+ 		/*
+ 		 * Ensure the signal handler starts with the new fpu state.
+ 		 */
+-		fpu__clear(fpu);
++		fpu__clear_user_states(fpu);
+ 	}
+ 	signal_setup_done(failed, ksig, stepping);
+ }
 -- 
-2.26.2
+2.21.0
 
