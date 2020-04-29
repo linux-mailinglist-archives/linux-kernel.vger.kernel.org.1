@@ -2,60 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0921BD796
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585391BD79D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 10:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726625AbgD2IuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 04:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726345AbgD2IuI (ORCPT
+        id S1726701AbgD2Iu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 04:50:56 -0400
+Received: from smtp-190a.mail.infomaniak.ch ([185.125.25.10]:34883 "EHLO
+        smtp-190a.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726526AbgD2Iuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 04:50:08 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DCCC03C1AD;
-        Wed, 29 Apr 2020 01:50:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=McfirHER2yliCK9xpcEcEd1SIT40pFKzGHso+arjjzQ=; b=GsDbKg9d6S9lAVnn/+3nwAs5Jr
-        q/RY4ejijZl5Hev7SoOJXQUu4GC1BmGEyq3fFYqi89zNIncP4btsgI6B0zF4VMLjwQBQyGiaML8M1
-        oylzCAhztdbxb/56fnPxFpwqQ73nzJDW655pbk9oIAwnym+Og6vmAiL84RoV+98HWTi+IDxGhxHup
-        YmJcb84Q3e0q8CvCL6aRoxPmCtQdbhKRLGeG+BfRinzeHwoR8xVdlTi/+jB5rcgb1UmPXj00WEwTk
-        82YEzKxEBz5kk1KdQfPhQBUG4BMXkrhUwjDSuC1etJ4E+/zZmRWhIuPVHYmA6n5W8usbmhKsRljNz
-        OnyY+2Xg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTiPP-0007O2-Ip; Wed, 29 Apr 2020 08:49:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 52A18303F45;
-        Wed, 29 Apr 2020 10:49:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3E2C820BD8FF8; Wed, 29 Apr 2020 10:49:33 +0200 (CEST)
-Date:   Wed, 29 Apr 2020 10:49:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        bp@alien8.de, hpa@zytor.com, jpoimboe@redhat.com,
-        luto@amacapital.net, michal.lkml@markovi.net, mingo@redhat.com,
-        tglx@linutronix.de, x86@kernel.org, yamada.masahiro@socionext.com
-Subject: Re: [PATCH 0/2] Build ORC fast lookup table in scripts/sorttable tool
-Message-ID: <20200429084933.GF13592@hirez.programming.kicks-ass.net>
-References: <20200429064626.16389-1-changhuaixin@linux.alibaba.com>
+        Wed, 29 Apr 2020 04:50:55 -0400
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 49BsfQ1WB6zlhqlx;
+        Wed, 29 Apr 2020 10:50:22 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [94.23.54.103])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 49BsfM4z8bzmPw5b;
+        Wed, 29 Apr 2020 10:50:19 +0200 (CEST)
+Subject: Re: [PATCH v3 0/5] Add support for RESOLVE_MAYEXEC
+To:     Jann Horn <jannh@google.com>, Florian Weimer <fw@deneb.enyo.de>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Heimes <christian@python.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Eric Chiang <ericchiang@google.com>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mickael.salaun@ssi.gouv.fr>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20200428175129.634352-1-mic@digikod.net>
+ <CAG48ez1bKzh1YvbD_Lcg0AbMCH_cdZmrRRumU7UCJL=qPwNFpQ@mail.gmail.com>
+ <87blnb48a3.fsf@mid.deneb.enyo.de>
+ <CAG48ez2TphTj-VdDaSjvnr0Q8BhNmT3n86xYz4bF3wRJmAMsMw@mail.gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <ece281a5-8944-65fd-2a76-e4479a0cccaf@digikod.net>
+Date:   Wed, 29 Apr 2020 10:50:19 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429064626.16389-1-changhuaixin@linux.alibaba.com>
+In-Reply-To: <CAG48ez2TphTj-VdDaSjvnr0Q8BhNmT3n86xYz4bF3wRJmAMsMw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Antivirus: Dr.Web (R) for Unix mail servers drweb plugin ver.6.0.2.8
+X-Antivirus-Code: 0x100000
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 02:46:24PM +0800, Huaixin Chang wrote:
-> Move building of fast lookup table from boot to sorttable tool. This saves us
-> 6380us boot time on Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GHz with cores.
 
-And what does it add to the build time?
+
+On 29/04/2020 00:01, Jann Horn wrote:
+> On Tue, Apr 28, 2020 at 11:21 PM Florian Weimer <fw@deneb.enyo.de> wrote:
+>> * Jann Horn:
+>>
+>>> Just as a comment: You'd probably also have to use RESOLVE_MAYEXEC in
+>>> the dynamic linker.
+>>
+>> Absolutely.  In typical configurations, the kernel does not enforce
+>> that executable mappings must be backed by files which are executable.
+>> It's most obvious with using an explicit loader invocation to run
+>> executables on noexec mounts.  RESOLVE_MAYEXEC is much more useful
+>> than trying to reimplement the kernel permission checks (or what some
+>> believe they should be) in userspace.
+
+Indeed it makes sense to use RESOLVE_MAYEXEC for the dynamic linker too.
+Only the noexec mount option is taken into account for mmap(2) with
+PROT_EXEC, and if you can trick the dynamic linker with JOP as Jann
+explained, it may enable to execute new code. However, a kernel which
+forbids remapping memory with PROT_EXEC still enables to implement a W^X
+policy. Any JOP/ROP still enables unexpected code execution though.
+
+> 
+> Oh, good point.
+> 
+> That actually seems like something Mickaël could add to his series? If
+> someone turns on that knob for "When an interpreter wants to execute
+> something, enforce that we have execute access to it", they probably
+> also don't want it to be possible to just map files as executable? So
+> perhaps when that flag is on, the kernel should either refuse to map
+> anything as executable if it wasn't opened with RESOLVE_MAYEXEC or
+> (less strict) if RESOLVE_MAYEXEC wasn't used, print a warning, then
+> check whether the file is executable and bail out if not?
+> 
+> A configuration where interpreters verify that scripts are executable,
+> but other things can just mmap executable pages, seems kinda
+> inconsistent...
+
+As it is written in the documentation patch, this RESOLVE_MAYEXEC
+feature is an important missing piece, but to implement a consistent
+security policy we need to enable other restrictions starting with a
+noexec mount point policy. The purpose of this patch series is not to
+bring a full-feature LSM with process states handling, but it brings
+what is needed for LSMs such as SELinux, IMA or IPE to extend their
+capabilities to reach what you would expect.
