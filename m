@@ -2,284 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42671BD902
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35BE1BD919
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgD2KGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 06:06:45 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:36438 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbgD2KGn (ORCPT
+        id S1726762AbgD2KKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 06:10:06 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:37732 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726484AbgD2KKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 06:06:43 -0400
-Received: by mail-wm1-f65.google.com with SMTP id u127so1369184wmg.1;
-        Wed, 29 Apr 2020 03:06:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tXrWrPumlE2jtN1J/oDfyJrpYks7pUQ//wpKnWHr1xY=;
-        b=KwSVmd80xbikmMvU1y8zTPyijI8wXS415axCQaLrMR0y0P5l1rTUxk/v3VcVH4MrHG
-         K5AodBfX1tIpJrAFbApcdPw+/mKoUAWxiOfTdLFmaREopmIo+bIcru340D4V5ueJ4SqX
-         A8Uvx9nORl9tDaa/q/zIBgLI7e37ivLIlt7syasAij+YDUeA2QtsgzxcuRgpwqqKFeYc
-         0xybiCzuj5ZPBy/mpUGyVun1WILA/WVslUwu9cn2rZaRbR/f0yNpvKcZqUu7+O5jxHwK
-         fKaQXRTwHa+BpoV9BjwZDnBgsDHpuw9+wMQevSohQaJPXelINJhseII2GAHwMiVlIg9R
-         Ygxg==
-X-Gm-Message-State: AGi0PuaDwrOJf5WGRnQvpJUPIRVP4SK22upZlysnFiTeZe9bTOICpoGP
-        hAxnMNpYCu5oCSfvvRdKpFQ=
-X-Google-Smtp-Source: APiQypKj5T16tWJeZwK+YQ8igeZqc4xYmWCZgPcuVSnBLwFyWfb35oXFaS9qmRdq0ZJJ4PJxTS+g7A==
-X-Received: by 2002:a1c:bc05:: with SMTP id m5mr2197843wmf.143.1588154801445;
-        Wed, 29 Apr 2020 03:06:41 -0700 (PDT)
-Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
-        by smtp.gmail.com with ESMTPSA id a1sm29684118wrn.80.2020.04.29.03.06.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 03:06:40 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 12:06:39 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm, memcg: Decouple e{low,min} state mutations from
- protection checks
-Message-ID: <20200429100639.GZ28637@dhcp22.suse.cz>
-References: <cover.1588092152.git.chris@chrisdown.name>
- <51ffacb736bb02ecc09c828ebe8f4ec7fda68c48.1588092152.git.chris@chrisdown.name>
+        Wed, 29 Apr 2020 06:10:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588155005; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Reply-To: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=2mdlW9Q66AJBST1VWjfJfw3PhP2uQD6RM0aPJIOJ2Xg=; b=ZatmEfpD3Bsh8QryubtC4mP7Huo8BjQhW1fMtlsRmY8x8PVeQjmapR1kYrQT/eubPjz0BRK5
+ gZR7J8jknXaGUwJ/MzYX+kVbXrpKkIlB+U5LOW68xKruDSRReFj66NjT1XK5M0vdFKVNvXQM
+ wliILA6/W+ujkXXp2tNYhZ2VaaU=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5ea9527a.7fef5d0e11f0-smtp-out-n04;
+ Wed, 29 Apr 2020 10:10:02 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ED255C43636; Wed, 29 Apr 2020 10:10:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from quicinc.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: svaddagi)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D98A0C433CB;
+        Wed, 29 Apr 2020 10:09:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D98A0C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vatsa@codeaurora.org
+Date:   Wed, 29 Apr 2020 15:39:53 +0530
+From:   Srivatsa Vaddagiri <vatsa@codeaurora.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>, tsoni@codeaurora.org,
+        virtio-dev@lists.oasis-open.org, konrad.wilk@oracle.com,
+        jan.kiszka@siemens.com, jasowang@redhat.com,
+        christoffer.dall@arm.com,
+        virtualization@lists.linux-foundation.org, alex.bennee@linaro.org,
+        iommu@lists.linux-foundation.org, stefano.stabellini@xilinx.com,
+        will@kernel.org, linux-kernel@vger.kernel.org,
+        pratikp@codeaurora.org
+Subject: Re: [PATCH 5/5] virtio: Add bounce DMA ops
+Message-ID: <20200429100953.GE5097@quicinc.com>
+Reply-To: Srivatsa Vaddagiri <vatsa@codeaurora.org>
+References: <1588073958-1793-6-git-send-email-vatsa@codeaurora.org>
+ <20200428121232-mutt-send-email-mst@kernel.org>
+ <20200428174952.GA5097@quicinc.com>
+ <20200428163448-mutt-send-email-mst@kernel.org>
+ <275eba4b-dd35-aa95-b2e3-9c5cbf7c6d71@linux.intel.com>
+ <20200429004531-mutt-send-email-mst@kernel.org>
+ <b676430c-65b3-096e-ca48-ceebf10f4b28@linux.intel.com>
+ <20200429023842-mutt-send-email-mst@kernel.org>
+ <20200429094410.GD5097@quicinc.com>
+ <20200429055125-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <51ffacb736bb02ecc09c828ebe8f4ec7fda68c48.1588092152.git.chris@chrisdown.name>
+In-Reply-To: <20200429055125-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 28-04-20 19:27:00, Chris Down wrote:
-> mem_cgroup_protected currently is both used to set effective low and min
-> and return a mem_cgroup_protection based on the result. As a user, this
-> can be a little unexpected: it appears to be a simple predicate
-> function, if not for the big warning in the comment above about the
-> order in which it must be executed.
-> 
-> This change makes it so that we separate the state mutations from the
-> actual protection checks, which makes it more obvious where we need to
-> be careful mutating internal state, and where we are simply checking and
-> don't need to worry about that.
-> 
-> Signed-off-by: Chris Down <chris@chrisdown.name>
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Roman Gushchin <guro@fb.com>
-> Cc: Yafang Shao <laoar.shao@gmail.com>
+* Michael S. Tsirkin <mst@redhat.com> [2020-04-29 05:52:05]:
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-> ---
->  include/linux/memcontrol.h | 48 +++++++++++++++++++++++++++++---------
->  mm/memcontrol.c            | 30 +++++++-----------------
->  mm/vmscan.c                | 17 ++++----------
->  3 files changed, 49 insertions(+), 46 deletions(-)
+> > > So it seems that with modern Linux, all one needs
+> > > to do on x86 is mark the device as untrusted.
+> > > It's already possible to do this with ACPI and with OF - would that be
+> > > sufficient for achieving what this patchset is trying to do?
+> > 
+> > In my case, its not sufficient to just mark virtio device untrusted and thus
+> > activate the use of swiotlb. All of the secondary VM memory, including those
+> > allocate by swiotlb driver, is private to it.
 > 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index d630af1a4e17..88576b1235b0 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -50,12 +50,6 @@ enum memcg_memory_event {
->  	MEMCG_NR_MEMORY_EVENTS,
->  };
->  
-> -enum mem_cgroup_protection {
-> -	MEMCG_PROT_NONE,
-> -	MEMCG_PROT_LOW,
-> -	MEMCG_PROT_MIN,
-> -};
-> -
->  struct mem_cgroup_reclaim_cookie {
->  	pg_data_t *pgdat;
->  	unsigned int generation;
-> @@ -357,8 +351,26 @@ static inline unsigned long mem_cgroup_protection(struct mem_cgroup *memcg,
->  		   READ_ONCE(memcg->memory.elow));
->  }
->  
-> -enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
-> -						struct mem_cgroup *memcg);
-> +void mem_cgroup_calculate_protection(struct mem_cgroup *root,
-> +				     struct mem_cgroup *memcg);
-> +
-> +static inline bool mem_cgroup_below_low(struct mem_cgroup *memcg)
-> +{
-> +	if (mem_cgroup_disabled())
-> +		return false;
-> +
-> +	return READ_ONCE(memcg->memory.elow) >=
-> +		page_counter_read(&memcg->memory);
-> +}
-> +
-> +static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
-> +{
-> +	if (mem_cgroup_disabled())
-> +		return false;
-> +
-> +	return READ_ONCE(memcg->memory.emin) >=
-> +		page_counter_read(&memcg->memory);
-> +}
->  
->  int mem_cgroup_try_charge(struct page *page, struct mm_struct *mm,
->  			  gfp_t gfp_mask, struct mem_cgroup **memcgp,
-> @@ -838,13 +850,27 @@ static inline void memcg_memory_event_mm(struct mm_struct *mm,
->  static inline unsigned long mem_cgroup_protection(struct mem_cgroup *memcg,
->  						  bool in_low_reclaim)
->  {
-> +
-> +
-> +static inline void mem_cgroup_calculate_protection(struct mem_cgroup *root,
-> +						   struct mem_cgroup *memcg);
-> +{
-> +}
-> +
-> +static inline void mem_cgroup_protection(struct mem_cgroup *memcg,
-> +					 bool in_low_reclaim)
-> +{
->  	return 0;
->  }
->  
-> -static inline enum mem_cgroup_protection mem_cgroup_protected(
-> -	struct mem_cgroup *root, struct mem_cgroup *memcg)
-> +static inline bool mem_cgroup_below_low(struct mem_cgroup *memcg)
-> +{
-> +	return false;
-> +}
-> +
-> +static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
->  {
-> -	return MEMCG_PROT_NONE;
-> +	return false;
->  }
->  
->  static inline int mem_cgroup_try_charge(struct page *page, struct mm_struct *mm,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index b0374be44e9e..317dbbaac603 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6368,27 +6368,21 @@ static unsigned long effective_protection(unsigned long usage,
->  }
->  
->  /**
-> - * mem_cgroup_protected - check if memory consumption is in the normal range
-> + * mem_cgroup_calculate_protection - calculate and cache effective low and min
->   * @root: the top ancestor of the sub-tree being checked
->   * @memcg: the memory cgroup to check
->   *
->   * WARNING: This function is not stateless! It can only be used as part
->   *          of a top-down tree iteration, not for isolated queries.
-> - *
-> - * Returns one of the following:
-> - *   MEMCG_PROT_NONE: cgroup memory is not protected
-> - *   MEMCG_PROT_LOW: cgroup memory is protected as long there is
-> - *     an unprotected supply of reclaimable memory from other cgroups.
-> - *   MEMCG_PROT_MIN: cgroup memory is protected
->   */
-> -enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
-> -						struct mem_cgroup *memcg)
-> +void mem_cgroup_calculate_protection(struct mem_cgroup *root,
-> +				     struct mem_cgroup *memcg)
->  {
->  	unsigned long usage, parent_usage;
->  	struct mem_cgroup *parent;
->  
->  	if (mem_cgroup_disabled())
-> -		return MEMCG_PROT_NONE;
-> +		return;
->  
->  	if (!root)
->  		root = root_mem_cgroup;
-> @@ -6403,22 +6397,22 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
->  		 */
->  		WRITE_ONCE(memcg->memory.emin, 0);
->  		WRITE_ONCE(memcg->memory.elow, 0);
-> -		return MEMCG_PROT_NONE;
-> +		return;
->  	}
->  
->  	usage = page_counter_read(&memcg->memory);
->  	if (!usage)
-> -		return MEMCG_PROT_NONE;
-> +		return;
->  
->  	parent = parent_mem_cgroup(memcg);
->  	/* No parent means a non-hierarchical mode on v1 memcg */
->  	if (!parent)
-> -		return MEMCG_PROT_NONE;
-> +		return;
->  
->  	if (parent == root) {
->  		memcg->memory.emin = READ_ONCE(memcg->memory.min);
->  		memcg->memory.elow = memcg->memory.low;
-> -		goto out;
-> +		return;
->  	}
->  
->  	parent_usage = page_counter_read(&parent->memory);
-> @@ -6431,14 +6425,6 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
->  	WRITE_ONCE(memcg->memory.elow, effective_protection(usage, parent_usage,
->  			memcg->memory.low, READ_ONCE(parent->memory.elow),
->  			atomic_long_read(&parent->memory.children_low_usage)));
-> -
-> -out:
-> -	if (usage <= memcg->memory.emin)
-> -		return MEMCG_PROT_MIN;
-> -	else if (usage <= memcg->memory.elow)
-> -		return MEMCG_PROT_LOW;
-> -	else
-> -		return MEMCG_PROT_NONE;
->  }
->  
->  /**
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 72ac38eb8c29..e913c4652341 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2645,14 +2645,15 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->  		unsigned long reclaimed;
->  		unsigned long scanned;
->  
-> -		switch (mem_cgroup_protected(target_memcg, memcg)) {
-> -		case MEMCG_PROT_MIN:
-> +		mem_cgroup_calculate_protection(target_memcg, memcg);
-> +
-> +		if (mem_cgroup_below_min(memcg)) {
->  			/*
->  			 * Hard protection.
->  			 * If there is no reclaimable memory, OOM.
->  			 */
->  			continue;
-> -		case MEMCG_PROT_LOW:
-> +		} else if (mem_cgroup_below_low(memcg)) {
->  			/*
->  			 * Soft protection.
->  			 * Respect the protection only as long as
-> @@ -2664,16 +2665,6 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->  				continue;
->  			}
->  			memcg_memory_event(memcg, MEMCG_LOW);
-> -			break;
-> -		case MEMCG_PROT_NONE:
-> -			/*
-> -			 * All protection thresholds breached. We may
-> -			 * still choose to vary the scan pressure
-> -			 * applied based on by how much the cgroup in
-> -			 * question has exceeded its protection
-> -			 * thresholds (see get_scan_count).
-> -			 */
-> -			break;
->  		}
->  
->  		reclaimed = sc->nr_reclaimed;
-> -- 
-> 2.26.2
+> So why not make the bounce buffer memory shared then?
+
+Its a limitation by our hypervisor. When a secondary VM is created, two
+memory segments are allocated - one private and other shared. There is no
+provision for the secondary VM to make part of its private memory shared after
+it boots. I can perhaps consider a change in swiotlb driver to accept the second
+shared memory segment as its main working area (rather than allocate its own).
+
+That would still not work I think where swiotlb is used for pass-thr devices
+(when private memory is fine) as well as virtio devices (when shared memory is
+required).
 
 -- 
-Michal Hocko
-SUSE Labs
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
