@@ -2,62 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B611BDA7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8852B1BDA8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 13:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbgD2LUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 07:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726554AbgD2LUj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 07:20:39 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC15C03C1AD;
-        Wed, 29 Apr 2020 04:20:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=edQRYOZC7+bGzu4klieEhzueP0ff7UULya+SzfH1TFk=; b=XXorFLsXqdHVXmLrX+9IgfnsxQ
-        5VLCAPMu/Ppvt+f7r7KKi+BXdFnbn6eoofTEEHqmnmxyP47UtfKApzzHBpr7xrYb273cYgiK/raqU
-        /QI4/Z9+k8Qw7QlNW/XrHrjdxaFsADhn+n5jdUp3fBrZeWrn5gfycmpoTuk7rukv4Nbi6VV44KpAa
-        zEvEuRElKH0NUlIXmCdJq0nvHN0IhhErjVVy4+W7KPONRtI+tiullzIrhJtW9w9cpkR7HJ+FJftff
-        x7v9M98q5EvMoQC+a8ZnQBxaSsENgO5Q37JM81dCortelI7S3lJsA+nw6wELukZZHb0PObFYU5uFr
-        nfJLVJTw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTklD-0004CL-B7; Wed, 29 Apr 2020 11:20:15 +0000
-Date:   Wed, 29 Apr 2020 04:20:15 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bvanassche@acm.org,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] blktrace: move blktrace debugfs creation to
- helper function
-Message-ID: <20200429112015.GC21892@infradead.org>
-References: <20200429074627.5955-1-mcgrof@kernel.org>
- <20200429074627.5955-4-mcgrof@kernel.org>
+        id S1726753AbgD2LXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 07:23:19 -0400
+Received: from 8bytes.org ([81.169.241.247]:39474 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726345AbgD2LXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 07:23:18 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 8EDA22E2; Wed, 29 Apr 2020 13:23:16 +0200 (CEST)
+Date:   Wed, 29 Apr 2020 13:23:15 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Miller <davem@davemloft.net>,
+        Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v2] crypto: ccp: Add support for SEV-ES to the PSP driver
+Message-ID: <20200429112315.GO21900@8bytes.org>
+References: <9530369b1f0be211ae2512a1ab9f54281a4420d9.1587491088.git.thomas.lendacky@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200429074627.5955-4-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <9530369b1f0be211ae2512a1ab9f54281a4420d9.1587491088.git.thomas.lendacky@amd.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 07:46:24AM +0000, Luis Chamberlain wrote:
-> Move the work to create the debugfs directory used into a helper.
-> It will make further checks easier to read. This commit introduces
-> no functional changes.
+On Tue, Apr 21, 2020 at 12:44:49PM -0500, Tom Lendacky wrote:
+> To provide support for SEV-ES, the hypervisor must provide an area of
+> memory to the PSP. Once this Trusted Memory Region (TMR) is provided to
+> the PSP, the contents of this area of memory are no longer available to
+> the x86.
 > 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> Update the PSP driver to allocate a 1MB region for the TMR that is 1MB
+> aligned and then provide it to the PSP through the SEV INIT command.
+> 
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> ---
+> 
+> Changes since v1:
+> - No need to over-allocate the memory area to obtain the required
+>   alignment when using the page allocator.
 
-Looks good,
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
