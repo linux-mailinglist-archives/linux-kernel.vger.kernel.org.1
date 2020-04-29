@@ -2,155 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405A91BEC0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 00:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B5D1BEC0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 00:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgD2WZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 18:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726481AbgD2WZP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 18:25:15 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B57C03C1AE;
-        Wed, 29 Apr 2020 15:25:15 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 515CB2A0801
-Subject: Re: [PATCH 2/2] platform/chrome: typec: Register Type C switches
-To:     Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com, twawrzynczak@chromium.org,
-        Benson Leung <bleung@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20200422222242.241699-1-pmalani@chromium.org>
- <20200422222242.241699-2-pmalani@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <542cfe8f-04a5-8dbb-b498-90254bb4c54e@collabora.com>
-Date:   Thu, 30 Apr 2020 00:25:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1727087AbgD2WYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 18:24:03 -0400
+Received: from mga17.intel.com ([192.55.52.151]:33252 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726481AbgD2WYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 18:24:03 -0400
+IronPort-SDR: VbB/PxLe7O+XOG0Mfkp26ZuSwxjYA41HyRrTcWmnKUSDLoINR5ykWS2ZbnUkapG7Hce/Nmoq9a
+ 8HpBNVo6mDcg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 15:24:02 -0700
+IronPort-SDR: QmHGe38YMh/15b3Az8RAY2FiSQGf0moHXjggntwMvaFvKgufCh1vejIfwUqtMw+VgsIpnWWIlK
+ tYmtAtx/DxNA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
+   d="scan'208";a="367944111"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Apr 2020 15:24:01 -0700
+Date:   Wed, 29 Apr 2020 15:30:03 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v12 4/8] iommu/vt-d: Add bind guest PASID support
+Message-ID: <20200429153003.31d2edf7@jacob-builder>
+In-Reply-To: <72d52eba-8c78-9d99-2537-b03dbfb3b543@redhat.com>
+References: <1587495165-80096-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1587495165-80096-5-git-send-email-jacob.jun.pan@linux.intel.com>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D8A0D03@SHSMSX104.ccr.corp.intel.com>
+        <20200427133409.47ba22b2@jacob-builder>
+        <72d52eba-8c78-9d99-2537-b03dbfb3b543@redhat.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200422222242.241699-2-pmalani@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prashant,
+On Wed, 29 Apr 2020 16:12:01 +0200
+Auger Eric <eric.auger@redhat.com> wrote:
 
-Following my previous comments ...
-
-On 23/4/20 0:22, Prashant Malani wrote:
-> Register Type C mux and switch handles, when provided via firmware
-> bindings. These will allow the cros-ec-typec driver, and also alternate
-> mode drivers to configure connected Muxes correctly, according to PD
-> information retrieved from the Chrome OS EC.
+> >> in last review Eric raised the open about what about binding the
+> >> same PASID to the same pdev multiple times. We discussed that
+> >> should be disallowed. Here can you check whether aux_domain is
+> >> enabled on pdev to restrict multiple-binding only for
+> >> sub-devices?  
+> > Why aux_domain is sufficient? A pdev could have aux_domain enabled
+> > but still bind pdev many times more than its mdevs.
+> > 
+> > Either we allow multiple bind or not.  
 > 
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> ---
->  drivers/platform/chrome/cros_ec_typec.c | 47 +++++++++++++++++++++++++
->  1 file changed, 47 insertions(+)
-> 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index eda57db26f8d..324ead297c4d 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -14,6 +14,8 @@
->  #include <linux/platform_data/cros_usbpd_notify.h>
->  #include <linux/platform_device.h>
->  #include <linux/usb/typec.h>
-> +#include <linux/usb/typec_mux.h>
-> +#include <linux/usb/role.h>
->  
->  #define DRV_NAME "cros-ec-typec"
->  
-> @@ -25,6 +27,9 @@ struct cros_typec_port {
->  	struct typec_partner *partner;
->  	/* Port partner PD identity info. */
->  	struct usb_pd_identity p_identity;
-> +	struct typec_switch *ori_sw;
-> +	struct typec_mux *mux;
-> +	struct usb_role_switch *role_sw;
->  };
->  
->  /* Platform-specific data for the Chrome OS EC Type C controller. */
-> @@ -84,6 +89,40 @@ static int cros_typec_parse_port_props(struct typec_capability *cap,
->  	return 0;
->  }
->  
-> +static int cros_typec_get_switch_handles(struct cros_typec_port *port,
-> +					 struct fwnode_handle *fwnode,
-> +					 struct device *dev)
-> +{
-> +	port->mux = fwnode_typec_mux_get(fwnode, NULL);
-> +	if (IS_ERR(port->mux)) {
-> +		dev_info(dev, "Mux handle not found.\n");
+> I tried to figure out whether binding the same PASID to the same pdev
+> was meaningful. I understood it is not. If this case can be detected
+> at VFIO level I am fine as well.
+I will remove the multiple bind support for now. Reintroduce it when we
+enable mdev.
 
-Be quiet also here, dev_dbg at most, as you're ignoring the error anyway at the end.
+Thanks,
 
-> +		goto mux_err;
-> +	}
-> +
-> +	port->ori_sw = fwnode_typec_switch_get(fwnode);
-> +	if (IS_ERR(port->ori_sw)) {
-> +		dev_info(dev, "Orientation switch handle not found.\n");
-
-Same here
-
-> +		goto ori_sw_err;
-> +	}
-> +
-> +	port->role_sw = fwnode_usb_role_switch_get(fwnode);
-> +	if (IS_ERR(port->role_sw)) {
-> +		dev_info(dev, "USB role switch handle not found.\n");
-
-And here.
-
-> +		goto role_sw_err;
-> +	}
-> +
-> +	return 0;
-> +
-> +role_sw_err:
-> +	usb_role_switch_put(port->role_sw);
-> +ori_sw_err:
-> +	typec_switch_put(port->ori_sw);
-> +mux_err:
-> +	typec_mux_put(port->mux);
-> +
-> +	return -ENODEV;
-> +}
-> +
->  static void cros_unregister_ports(struct cros_typec_data *typec)
->  {
->  	int i;
-> @@ -91,6 +130,9 @@ static void cros_unregister_ports(struct cros_typec_data *typec)
->  	for (i = 0; i < typec->num_ports; i++) {
->  		if (!typec->ports[i])
->  			continue;
-> +		usb_role_switch_put(typec->ports[i]->role_sw);
-> +		typec_switch_put(typec->ports[i]->ori_sw);
-> +		typec_mux_put(typec->ports[i]->mux);
->  		typec_unregister_port(typec->ports[i]->port);
->  	}
->  }
-> @@ -153,6 +195,11 @@ static int cros_typec_init_ports(struct cros_typec_data *typec)
->  			ret = PTR_ERR(cros_port->port);
->  			goto unregister_ports;
->  		}
-> +
-> +		ret = cros_typec_get_switch_handles(cros_port, fwnode, dev);
-> +		if (ret)
-> +			dev_info(dev, "No switch control for port %d\n",
-> +				 port_num);
->  	}
->  
->  	return 0;
-> 
+Jacob
