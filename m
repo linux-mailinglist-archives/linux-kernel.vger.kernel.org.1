@@ -2,84 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0AA1BDA08
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 196DF1BDA11
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 12:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726739AbgD2Kpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 06:45:30 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:3078 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726554AbgD2Kpa (ORCPT
+        id S1726608AbgD2Ks1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 06:48:27 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:59014 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726516AbgD2Ks1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 06:45:30 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03TAjQED032380;
-        Wed, 29 Apr 2020 06:45:26 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 30pes2cuge-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 06:45:26 -0400
-Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 03TAjPaH037238
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 29 Apr 2020 06:45:25 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 29 Apr
- 2020 06:45:24 -0400
-Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 29 Apr 2020 06:45:23 -0400
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 03TAjHYR018374;
-        Wed, 29 Apr 2020 06:45:18 -0400
-From:   Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <jic23@kernel.org>
-CC:     <knaack.h@gmx.de>, <Michael.Hennerich@analog.com>,
-        Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-Subject: [PATCH] iio: adc: ad7768-1: Fix channel endian spec
-Date:   Wed, 29 Apr 2020 13:45:35 +0300
-Message-ID: <20200429104535.82988-1-sergiu.cuciurean@analog.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 29 Apr 2020 06:48:27 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200429104826euoutp025311270cea14e2411b3e367778e9e9e8~KRKfIp46Z0340703407euoutp02U
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 10:48:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200429104826euoutp025311270cea14e2411b3e367778e9e9e8~KRKfIp46Z0340703407euoutp02U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1588157306;
+        bh=DCd5lHjcXeHNQGZUdwhEbvOFkJjRzYTDAVmnV49rff4=;
+        h=From:Subject:To:Cc:Date:References:From;
+        b=rHqbvxXW0B8NXZOs4WstCm4T+AQEKcVBd/MhyBMstUISyQeiTgWA2oGxpH9TE+FxX
+         n8YCJ1gp66UeO7p20RkvtTh2qsyw/9FEioKK5dOtFhu8Nt3yHCPC12zFZEwZV8R06o
+         hJnLPRBqKZsu9+FrYB/D7XlWbRgUOXwU1pJ3srrE=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200429104825eucas1p2d343464550538b22ef93b62ebd388eb9~KRKerUPMm3150931509eucas1p2U;
+        Wed, 29 Apr 2020 10:48:25 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id A8.7C.61286.97B59AE5; Wed, 29
+        Apr 2020 11:48:25 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20200429104825eucas1p16bf37b71a3ab3a768d1eff6c48eb61dd~KRKeXeTQM3054730547eucas1p1j;
+        Wed, 29 Apr 2020 10:48:25 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200429104825eusmtrp1e7ac526c3c25966d91827a7a9649db2c~KRKeWyyVY0238502385eusmtrp19;
+        Wed, 29 Apr 2020 10:48:25 +0000 (GMT)
+X-AuditID: cbfec7f2-f0bff7000001ef66-82-5ea95b7981ed
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id E2.07.07950.87B59AE5; Wed, 29
+        Apr 2020 11:48:25 +0100 (BST)
+Received: from [106.120.51.71] (unknown [106.120.51.71]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200429104824eusmtip1cb5327ca35f1f01f0f7bc869da3717db~KRKd1-81i0970609706eusmtip1R;
+        Wed, 29 Apr 2020 10:48:24 +0000 (GMT)
+From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: [PATCH v2] video: fbdev: controlfb: fix build for COMPILE_TEST=y &&
+ PPC_PMAC=y && PPC32=n
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        kbuild test robot <lkp@intel.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <fe520316-3863-e6c4-9581-5d709f49e906@samsung.com>
+Date:   Wed, 29 Apr 2020 12:48:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-29_04:2020-04-29,2020-04-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- mlxscore=0 suspectscore=0 bulkscore=0 phishscore=0 priorityscore=1501
- clxscore=1011 malwarescore=0 impostorscore=0 lowpriorityscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004290090
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAKsWRmVeSWpSXmKPExsWy7djPc7qV0SvjDDbtl7RY+PAus8WVr+/Z
+        LE70fWC1uLxrDpvFq+ZHbBYrfm5ltNi69yq7A7tH440bbB57vy1g8Vi85yWTx/3u40weS6Zd
+        ZfP4vEkugC2KyyYlNSezLLVI3y6BK+PSy8OsBR08FW0tf9gbGKdxdTFyckgImEgs/rOVpYuR
+        i0NIYAWjxMN315ggnC+MEk9eHmaGcD4zSlxZchrI4QBrmbPUDyK+nFFiTcN7qPa3jBInHjQx
+        gcxlE7CSmNi+ihHEFhZIkTizYjqYLSIQILFk6jpGkAZmgdWMEoumbGAFSfAK2EkcW30BrJlF
+        QFViz8u7YLaoQITEpweHoWoEJU7OfMICYjMLiEvcejKfCcKWl9j+dg4zxEPL2CWa1/hC2C4S
+        q+8eZYWwhSVeHd/CDmHLSJye3AN2tYTAOkaJvx0vmCGc7YwSyyf/Y4Oospa4c+4XG8jPzAKa
+        Eut36UOEHSU+bf3IDgkKPokbbwUhbuCTmLRtOjSEeCU62oQgqtUkNizbwAaztmvnSqgzPSTm
+        fmpnncCoOAvJZ7OQfDYLyWezEG5YwMiyilE8tbQ4Nz212DAvtVyvODG3uDQvXS85P3cTIzAd
+        nf53/NMOxq+Xkg4xCnAwKvHwbuBZESfEmlhWXJl7iFGCg1lJhPdRxrI4Id6UxMqq1KL8+KLS
+        nNTiQ4zSHCxK4rzGi17GCgmkJ5akZqemFqQWwWSZODilGhjVL0+345JcahI+mffalgOGfdck
+        GrVmz2XLO/DTaPV2qaiukujpfsVbTz74uJpz1Y47Zbanui1Ml/bfPsRRVXWp5fxrtS+Tpy6L
+        iFRcdOW380GBrwmXb648El1uz3abzU4u1Cslxml5/bzdVoeWXu4R4ojj/Kf0JYb7ydwfFpYp
+        mTq8HL8vfkhWYinOSDTUYi4qTgQAMHzmwUMDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsVy+t/xu7qV0SvjDHZ0M1ksfHiX2eLK1/ds
+        Fif6PrBaXN41h83iVfMjNosVP7cyWmzde5Xdgd2j8cYNNo+93xaweCze85LJ4373cSaPJdOu
+        snl83iQXwBalZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdkYqlnaGwea2VkqqRvZ5OSmpNZllqk
+        b5egl3Hp5WHWgg6eiraWP+wNjNO4uhg5OCQETCTmLPXrYuTiEBJYyijx4vESZoi4jMTx9WVd
+        jJxAprDEn2tdbBA1rxklJrf8YgVJsAlYSUxsX8UIYgsLpEicWTGdEaRXRMBP4u+ZXJB6ZoHV
+        jBJ72i8yg9TwCthJHFt9gQnEZhFQldjz8i6YLSoQIXF4xyxGiBpBiZMzn7CA2MwC6hJ/5l1i
+        hrDFJW49mc8EYctLbH87h3kCo8AsJC2zkLTMQtIyC0nLAkaWVYwiqaXFuem5xUZ6xYm5xaV5
+        6XrJ+bmbGIGxtO3Yzy07GLveBR9iFOBgVOLh3cCzIk6INbGsuDL3EKMEB7OSCO+jjGVxQrwp
+        iZVVqUX58UWlOanFhxhNgR6ayCwlmpwPjPO8knhDU0NzC0tDc2NzYzMLJXHeDoGDMUIC6Ykl
+        qdmpqQWpRTB9TBycUg2MVa6iF+/rvlGOvOk2W40nUHer5fXipga1tUoKxc4FHg+P81zYdsA4
+        r9Q59qaYvtKsmJlPnsQYdpr9m/PltOrvreffzyhi/ce6vCD66OKsSK+4e22x05uTdM0P2C2/
+        wRvyc2kt34XlVZ17fM5Maji5IOzd/vY3a+t5/wn6y7c5vBNW3B5za85UJZbijERDLeai4kQA
+        cVmhHbsCAAA=
+X-CMS-MailID: 20200429104825eucas1p16bf37b71a3ab3a768d1eff6c48eb61dd
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200429104825eucas1p16bf37b71a3ab3a768d1eff6c48eb61dd
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200429104825eucas1p16bf37b71a3ab3a768d1eff6c48eb61dd
+References: <CGME20200429104825eucas1p16bf37b71a3ab3a768d1eff6c48eb61dd@eucas1p1.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change removes the endian description from the iio channel spec.
-In this way, the default (IIO_CPU) endian will be used, matching the
-be32_to_cpu() conversion from ad7768_spi_reg_read().
 
-Fixes: 8a15c73a9bcfe ("iio: adc: Add AD7768-1 ADC basic support")
+powerpc allyesconfig fails like this:
 
-Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+drivers/video/fbdev/controlfb.c: In function 'controlfb_mmap':
+drivers/video/fbdev/controlfb.c:756:23: error: implicit declaration of function 'pgprot_cached_wthru'; did you mean 'pgprot_cached'? [-Werror=implicit-function-declaration]
+  756 |   vma->vm_page_prot = pgprot_cached_wthru(vma->vm_page_prot);
+      |                       ^~~~~~~~~~~~~~~~~~~
+      |                       pgprot_cached
+drivers/video/fbdev/controlfb.c:756:23: error: incompatible types when assigning to type 'pgprot_t' {aka 'struct <anonymous>'} from type 'int'
+
+Fix it by adding missing PPC32 dependency.
+
+Fixes: a07a63b0e24d ("video: fbdev: controlfb: add COMPILE_TEST support")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Reported-by: kbuild test robot <lkp@intel.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 ---
- drivers/iio/adc/ad7768-1.c | 1 -
- 1 file changed, 1 deletion(-)
+v2: fix implicit btext_update_display() function declaration error
 
-diff --git a/drivers/iio/adc/ad7768-1.c b/drivers/iio/adc/ad7768-1.c
-index a0027797a7fe..99da13c3511a 100644
---- a/drivers/iio/adc/ad7768-1.c
-+++ b/drivers/iio/adc/ad7768-1.c
-@@ -144,7 +144,6 @@ static const struct iio_chan_spec ad7768_channels[] = {
- 			.realbits = 24,
- 			.storagebits = 32,
- 			.shift = 8,
--			.endianness = IIO_BE,
- 		},
- 	},
- };
--- 
-2.17.1
+ drivers/video/fbdev/controlfb.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: b/drivers/video/fbdev/controlfb.c
+===================================================================
+--- a/drivers/video/fbdev/controlfb.c
++++ b/drivers/video/fbdev/controlfb.c
+@@ -55,7 +55,7 @@
+ #include "macmodes.h"
+ #include "controlfb.h"
+ 
+-#ifndef CONFIG_PPC_PMAC
++#if !defined(CONFIG_PPC_PMAC) || !defined(CONFIG_PPC32)
+ #define invalid_vram_cache(addr)
+ #undef in_8
+ #undef out_8
 
