@@ -2,118 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3748C1BE0AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5682B1BE0B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 16:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgD2OVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 10:21:13 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:36590 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbgD2OVM (ORCPT
+        id S1727835AbgD2OV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 10:21:27 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:46791 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726776AbgD2OV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 10:21:12 -0400
-Received: by mail-wm1-f66.google.com with SMTP id u127so2242277wmg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 07:21:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ojboWOZgZoqIyeUJJnXwlgbMdttS6Y5MRL/4YmrAAyE=;
-        b=FAXP1rFryOM4haayFqYW/qE6c81HBken5bHAX7Rl1hPJ2+rPVjYGY0TUhYoo8HlTrO
-         pAiQmvFT+z5u/YuQYEv3rJRqiTf/V5kiJDbs+GerD8NMJFgvpZBgcz5EW6tdL7k18LTc
-         szPHFK2fUCJ3mvWGzZmaeUczL7FIIjTqddcxvHayC+/TwTysROVL1k/4BTmdnxa9cXzx
-         93V+eFCYULgnmkmxxWuXwWIDcxQUoLDMBeO0k1iR9E6bIiRY6rp/jogk11rk8E2Hp/pL
-         2rd4npQhHkXESqNe01Z+7mzq2pqDAcNmO8uUy4w3dXbtQFzJXVCe+TNcgOtcR9VVY4GI
-         M5Qg==
-X-Gm-Message-State: AGi0PubxdvBaTwQ4lSKsOhXQt2UhaH/8bCvVXo0Mdkq4fUMAucNdfnEj
-        VMeN+cen18ZECPQorXwrVSA=
-X-Google-Smtp-Source: APiQypLUUIxAecxWn46o/w3oVsvyKgab1TmUTlZwPcVaBr3LKUmKsIOfjUwuvmxqJtEXm/x4GVlxlA==
-X-Received: by 2002:a05:600c:210:: with SMTP id 16mr3389215wmi.57.1588170069159;
-        Wed, 29 Apr 2020 07:21:09 -0700 (PDT)
-Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
-        by smtp.gmail.com with ESMTPSA id s6sm8007704wmh.17.2020.04.29.07.21.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 07:21:08 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 16:21:06 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH] printk: Add loglevel for "do not print to consoles".
-Message-ID: <20200429142106.GG28637@dhcp22.suse.cz>
-References: <20200424024239.63607-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <20200425004609.GE8982@jagdpanzerIV.localdomain>
- <842ff40b-a232-6098-4333-996a3033b30a@i-love.sakura.ne.jp>
- <20200427062117.GC486@jagdpanzerIV.localdomain>
- <4dae86af-1d9a-f5a8-cff6-aa91ec038a79@i-love.sakura.ne.jp>
- <20200428121828.GP28637@dhcp22.suse.cz>
- <b4d74234-8009-9ffd-011f-bd5d1a4b85f6@i-love.sakura.ne.jp>
- <20200428154532.GU28637@dhcp22.suse.cz>
- <b1d507b1-dae7-f526-c74a-d465ddecea6a@i-love.sakura.ne.jp>
+        Wed, 29 Apr 2020 10:21:26 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1N6LMN-1j5IaG1fUP-016gSa; Wed, 29 Apr 2020 16:21:21 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jules Irenge <jbi.octave@gmail.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: wfx: avoid compiler warning on empty array
+Date:   Wed, 29 Apr 2020 16:21:09 +0200
+Message-Id: <20200429142119.1735196-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1d507b1-dae7-f526-c74a-d465ddecea6a@i-love.sakura.ne.jp>
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:9VR6xSDPQ8g1NPHjws4CXVoCdGkwhOxNYK2KCEQwm7vtwokhGcO
+ CYnU04XokIbuhXe8Zua9Z6fgLTEXNk+RCbcIZ4srK+52KJ4s02oc7e9STFvO7XVcgl5B7F2
+ eglp9gEEofWWxonxeOCmFbegVWtUPEFVtUHH2YpxP/kZ1Bw1XRMn58D23v1za2ou9U8IO6L
+ 7hbaPK0cV565ri1GIipHQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:y1/KdhnlWZM=:jbj+5QBLT9zgufaVm/rZOE
+ IpGQVwVYlS79n4eonJdiE/HEHj6bptBqv7FbbYTXnUSPdqkR2SUevxjLAPHbtRd0oIuN8lzaQ
+ L6crLUrklH5H0tbTqNZ0mX8OHK9nV4b1aPrpkgqBU36Hzy1VkFmuSY7fW6Zj89GlK3HjVWuBZ
+ iJ6d3r4UNMN4tsHW/67ipN9E2KVJddSp3PesTiA99os3uuavMrDS+HGzocfLYDlf8k+JJReDI
+ Io77ZoxIZiCGXq1ocOJTo+k/A3wNf58w+k8ZxzqUWy5A+NKl62Jr50aFZzzZqkwyCxdyuJGT3
+ MoPK03uwUslBUta75Pz1a0ICGtNwOO+/GVulccoaTl3T3JQZ4afPLLTJBo7iwVwI3Vlyk0Bli
+ ehBj1srTmXR4S7syJHkpWEBaOA98o/vy6hNxqj78NuPA3lwAZ4L07OJqu5C3UoCEwCjwJ5okb
+ yG7EyQ3XNypNL3nKpk72jGOVkYNSkM05nT9Lnxhce6tUq7/phCj9nDwSLk/gfC0U2up+kdw9n
+ 2VzFD/4iz09iCof1J52rrW0sKlGxqPdDnXFmF9zNrIC+c+43P2iaQe3IIb34yj3fRwKQWcJw8
+ rpTd+PVfTsX153GQjwsmBzbBTWsZQr9mf2Xo3QMLgh4Xt8IFrDyj6YJtIwsik+cSUuqU/q0SX
+ E1gyNQf6HrkvhWGKCUKpbaHyY9s2KFqum4JDqStrtsBJoL/tJ8/T2bxW7QMuhWnSnkgQBnxQC
+ lY2gCD8Lfr+Z7HI9z14t/GFKvnyko8KyXlytZwr4Wua6ojbwgRfZ6kX4b4Xe80ZV8j97J0NAI
+ fo36petyUrj/KBsXWvPVkQxpm/qXzimiwNDMjeXiknzeT/dSwM=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 29-04-20 01:23:15, Tetsuo Handa wrote:
-> On 2020/04/29 0:45, Michal Hocko wrote:
-> > On Tue 28-04-20 22:11:19, Tetsuo Handa wrote:
-> >> Existing KERN_$LEVEL allows a user to determine whether he/she wants that message
-> >> to be printed on consoles (even if it spams his/her operation doing on consoles), and
-> >> at the same time constrains that user whether that message is saved to log files.
-> >> KERN_NO_CONSOLES allows a user to control whether he/she wants that message to be
-> >> saved to log files (without spamming his/her operation doing on consoles).
-> > 
-> > I understand that. But how do I know whether the user considers the
-> > particular information important enough to be dumped on the console.
-> > This sounds like a policy in the kernel to me.
-> 
-> I'm still unable to understand your question.
+When CONFIG_OF is disabled, gcc-9 produces a warning about the
+wfx_sdio_of_match[] array having a declaration without a dimension:
 
-I am trying to say that KERN_NO_CONSOLES resembles more a policy than a
-priority. Because I as a developer have no idea whether the message is
-good enough for console or not.
+drivers/staging/wfx/bus_sdio.c:159:34: error: array 'wfx_sdio_of_match' assumed to have one element [-Werror]
+  159 | static const struct of_device_id wfx_sdio_of_match[];
+      |                                  ^~~~~~~~~~~~~~~~~
 
-> >                                                I simply cannot forsee
-> > any console configuration to tell whether my information is going to
-> > swamp the console to no use or not.
-> 
-> Neither can I.
-> 
-> >                                     Compare that to KERN_$LEVEL instead.
-> > I know that an information is of low/high importance. It is the user
-> > policy to decide and base some filtering on top of that priority.
-> 
-> Whether to use KERN_NO_CONSOLES is not per-importance basis but per-content basis.
-> 
-> Since both pr_info("[%7d] %5d %5d %8lu %8lu %8ld %8lu         %5hd %s\n", ...) from dump_tasks() and
-> pr_info("oom-kill:constraint=%s,nodemask=%*pbl", ...) from dump_oom_summary() use KERN_INFO importance,
-> existing KERN_$LEVEL-based approach cannot handle these messages differently. Since changing the former to
-> e.g. KERN_DEBUG will cause userspace to discard the messages, we effectively can't change KERN_$LEVEL.
+Move the proper declaration up and out of the #ifdef instead.
 
-I believe we are free to change kernel log levels as we find a fit. I
-was not aware that KERN_DEBUG messages are automatically filtered out.
-Even if this is the case then this doesn't really disallow admins to
-allow KERN_DEBUG into log files. Dump of the oom eligible tasks is
-arguably a debugging output anyway. So I disagree with your statement.
+Fixes: a7a91ca5a23d ("staging: wfx: add infrastructure for new driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/staging/wfx/bus_sdio.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-> If the kernel allows the former to use KERN_NO_CONSOLES in addition to KERN_INFO, the administrator can
-> select from two choices: printing "both the former and the latter" or "only the latter" to consoles.
-
-I am not really familiar with all the possibilities admins have when
-setting filtering for different consoles but KERN_NO_CONSOLES sounds
-rather alien to the existing priority based approach. You can fine tune
-priorities and that is all right because they should be reflecting
-importance. But global no-consoles doesn't really fit in here because
-each console might require a different policy but the marking is
-unconditional and largely unaware of existing consoles.
+diff --git a/drivers/staging/wfx/bus_sdio.c b/drivers/staging/wfx/bus_sdio.c
+index dedc3ff58d3e..c2e4bd1e3b0a 100644
+--- a/drivers/staging/wfx/bus_sdio.c
++++ b/drivers/staging/wfx/bus_sdio.c
+@@ -156,7 +156,13 @@ static const struct hwbus_ops wfx_sdio_hwbus_ops = {
+ 	.align_size		= wfx_sdio_align_size,
+ };
+ 
+-static const struct of_device_id wfx_sdio_of_match[];
++static const struct of_device_id wfx_sdio_of_match[] = {
++	{ .compatible = "silabs,wfx-sdio" },
++	{ .compatible = "silabs,wf200" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, wfx_sdio_of_match);
++
+ static int wfx_sdio_probe(struct sdio_func *func,
+ 			  const struct sdio_device_id *id)
+ {
+@@ -248,15 +254,6 @@ static const struct sdio_device_id wfx_sdio_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(sdio, wfx_sdio_ids);
+ 
+-#ifdef CONFIG_OF
+-static const struct of_device_id wfx_sdio_of_match[] = {
+-	{ .compatible = "silabs,wfx-sdio" },
+-	{ .compatible = "silabs,wf200" },
+-	{ },
+-};
+-MODULE_DEVICE_TABLE(of, wfx_sdio_of_match);
+-#endif
+-
+ struct sdio_driver wfx_sdio_driver = {
+ 	.name = "wfx-sdio",
+ 	.id_table = wfx_sdio_ids,
+@@ -264,6 +261,6 @@ struct sdio_driver wfx_sdio_driver = {
+ 	.remove = wfx_sdio_remove,
+ 	.drv = {
+ 		.owner = THIS_MODULE,
+-		.of_match_table = of_match_ptr(wfx_sdio_of_match),
++		.of_match_table = wfx_sdio_of_match,
+ 	}
+ };
 -- 
-Michal Hocko
-SUSE Labs
+2.26.0
+
