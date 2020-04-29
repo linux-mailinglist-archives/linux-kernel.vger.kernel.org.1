@@ -2,237 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547C41BDF65
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40AA21BDF6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727808AbgD2NqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:46:09 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:34381 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbgD2NqI (ORCPT
+        id S1727949AbgD2NrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:47:06 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:24635 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727878AbgD2NrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:46:08 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200429134606euoutp016735875f903d101d65f3e212a6a606b4~KTlnp3pG10217802178euoutp01l
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 13:46:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200429134606euoutp016735875f903d101d65f3e212a6a606b4~KTlnp3pG10217802178euoutp01l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1588167966;
-        bh=Iyco25skS+A3h6ng3DI6hlhHVx9kpvQeKmuPfKWu37g=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=ZkAWiLQhlRgOrcf2V4tPAY18tuujz7jKvS17wCcrzd84Oy/itLeoWMZx/B2tUYfWg
-         cioi5BrT6MizQAxWBNX7yR/PmITZIkVj1QQUK+tPJK3jJ1j5eFgzzgxMkaA0zxlHvN
-         yh3atvex4TZsjyTtUGVD6yRURQT9+v8h/81rlzZI=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200429134606eucas1p24180fbfd8776b6122330b148962defc2~KTlnL1UHq2629526295eucas1p2m;
-        Wed, 29 Apr 2020 13:46:06 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 2F.E8.60698.E1589AE5; Wed, 29
-        Apr 2020 14:46:06 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200429134605eucas1p2bd601082e7a6b8c8fdbe79c83972e2e3~KTlmwvxog3187231872eucas1p2R;
-        Wed, 29 Apr 2020 13:46:05 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200429134605eusmtrp1c165f577e5c9259ed853dbf82fccb3fa~KTlmv2G5v2400824008eusmtrp1a;
-        Wed, 29 Apr 2020 13:46:05 +0000 (GMT)
-X-AuditID: cbfec7f5-a0fff7000001ed1a-f3-5ea9851e4daa
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id BB.50.07950.D1589AE5; Wed, 29
-        Apr 2020 14:46:05 +0100 (BST)
-Received: from [106.210.88.143] (unknown [106.210.88.143]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200429134604eusmtip23ead9bd52f9ed1b14da857e90b79928d~KTllgCQvv0786307863eusmtip2J;
-        Wed, 29 Apr 2020 13:46:04 +0000 (GMT)
-Subject: Re: [PATCH v3 1/3] driver core: Revert default
- driver_deferred_probe_timeout value to 0
-To:     John Stultz <john.stultz@linaro.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Basil Eljuse <Basil.Eljuse@arm.com>,
-        Ferry Toth <fntoth@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        netdev <netdev@vger.kernel.org>, linux-pm@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <9e0501b5-c8c8-bc44-51e7-4bde2844b912@samsung.com>
-Date:   Wed, 29 Apr 2020 15:46:04 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
-        Thunderbird/68.7.0
+        Wed, 29 Apr 2020 09:47:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588168023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AsGJp+cGC6yjtmCMeQEpNPJgdJEBu8zfeHN6O5085Ko=;
+        b=bCzbe2yfwiXEPuQ18Tf4MjK5w00qiAqvTOqwLReEQvsp9zGk/iI6imO/mHoL19eLlAz7Ge
+        +/71kjDrcZAkDHgU9r21wqmot9th5urK0GcrGKnop8aKKO1zS7JHhN7u5WUvopmv5PWfPi
+        dnj2Uxpu4TAJ2ciW1XKr+WwaM5WFZAk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-tSb6k-j6PfqpeL9-UmO0Vw-1; Wed, 29 Apr 2020 09:46:59 -0400
+X-MC-Unique: tSb6k-j6PfqpeL9-UmO0Vw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7A5E462;
+        Wed, 29 Apr 2020 13:46:57 +0000 (UTC)
+Received: from [10.36.113.114] (ovpn-113-114.ams2.redhat.com [10.36.113.114])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D1D161001281;
+        Wed, 29 Apr 2020 13:46:48 +0000 (UTC)
+Subject: Re: [PATCH v12 6/8] iommu/vt-d: Add svm/sva invalidate function
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>
+References: <1587495165-80096-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1587495165-80096-7-git-send-email-jacob.jun.pan@linux.intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <0d014a1a-1acf-89cd-8ae0-22d94ebd7ff5@redhat.com>
+Date:   Wed, 29 Apr 2020 15:46:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-In-Reply-To: <20200422203245.83244-2-john.stultz@linaro.org>
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1587495165-80096-7-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0xbZRjH8547xOJZQXmEDWOZRImMEfzwJrKLiZITDZGh2QeToUVOuJem
-        5SIaEaHDcQIIRQM0rNwUhHBJoKFAuEgxVGjpcERUhMQRhkLAC8iwVN12djbHlze///P8n/yf
-        J3k5Ut3NhHAZujzRoNNmaxh/amjG64kKu9yVfPo3E4WXP/URuKq0nsCbNdMI/2ueYXHZ4uc0
-        /uzGOoObrt21/G2dZvDG8jiBy9r7Gez2ReGFoWoaL5Rv0XhxtInBe1VfI9xwbYLAy7uP4pmW
-        x7HbdZ3Gt8eGWTz1xzqNO+eGKbw/LsnPHnMehB5rDxJ8h2Yk2Lp+JIQRyyorDHRXMMLK0hgj
-        lC91E4Jj+goSrLMXhMmrPaxg8x0wwi13LSXYvvuYEvYGwhID3vSPSxWzMwpEQ/TZt/3Tq9sk
-        Vl8S/m6ltIFKUMkJCflxwD8Pk6ZmJCF/Ts1/iWBzsINVxF8IOg4/uS/2EOx/U088GLGZnYzS
-        6ETQ6F28L35HcPWrUlJ2BfIp4PS6aJmD+Neg9mCGlk0kb2aht1NpMHwMSDsSI7OKPwvbB9Z7
-        ERT/NPTPfUtJiOMe4y9B/dIbiuUYzDauUzL78XGwIrUimUn+SbDvNJEKB8PyejMhZwH/Kwcu
-        60eUsvZLMGpqoBUOhC2njVX4OLjqKilloAzBDU8vq4hKBIulDUhxvQArnkNG3ojkn4X+0Wil
-        /CIMLuwiuQx8APywc0xZIgDMQ/WkUlbBlXK14o4Ai7Pv/9iphetkDdJYjpxmOXKO5cg5loe5
-        LYjqRsFivjEnTTTG6sTCU0ZtjjFfl3bqndycAXT3B7v+c+4Po4l/UhyI55DmEVVNWleymtYW
-        GItyHAg4UhOkWkvvSFarUrVF74mG3LcM+dmi0YFCOUoTrIpt27yk5tO0eWKWKOpFw4MuwfmF
-        lCB9e7rXux15IvPcrCdhPmv1dPTFILve3t5X59N3JVarbjlOnmkufuqXCyOJWWdKX+n1uf8M
-        DZx/vSq0yL1y2G5X6RI8P1dkDrblPfPch++vfhHSsZYdQ0/sR6zZ538qMhlujsbmLr36sml3
-        4/vwD4rz4pm41puBSQOFT+iT4ssbg3MLNJQxXRsTSRqM2jt3ZGKZvQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFKsWRmVeSWpSXmKPExsVy+t/xe7qyrSvjDO51q1ncmvKbyaK3aTqT
-        xcsJhxkt/k46xm7RfHkJq8XUh0/YLOacb2Gx+DHvMJvFs1t7mSyaF69nszjzW9fiwrY+VosL
-        ba9YLS7vmsNm8bn3CKPFjPP7mCxufeK3OLZAzOLM6UusFv/37GC3OPjhCavF8lM7WCy+7u0C
-        EZ/ZHCQ81sxbw+jx+9ckRo8tK28yeeycdZfdY9OqTjaPO9f2sHm0XVvF5HHocAejx7yTgR77
-        565h99jy+zubx7czE1k8tlxtZ/H4vEkugC9Kz6Yov7QkVSEjv7jEVina0MJIz9DSQs/IxFLP
-        0Ng81srIVEnfziYlNSezLLVI3y5BL6NvURd7QYNyRU/XM8YGxgbZLkZODgkBE4ktk46zdTFy
-        cQgJLGWUmHjgOjtEQkbi5LQGVghbWOLPtS6ooreMErf/r2UESQgLJEkc/3kaqIiDQ0TAV2Lz
-        TyeQGmaBGewSs/+8YAOpERLIlWj6OY0FxGYTMJToetsFFucVsJN4830eE4jNIqAqsf7URRaQ
-        OaICsRItFzUhSgQlTs58AtbKKWAjcadrIdhaZgEziXmbHzJD2PIS29/OgbLFJW49mc80gVFo
-        FpL2WUhaZiFpmYWkZQEjyypGkdTS4tz03GIjveLE3OLSvHS95PzcTYzAdLPt2M8tOxi73gUf
-        YhTgYFTi4Z2QvjJOiDWxrLgy9xCjBAezkgjvo4xlcUK8KYmVValF+fFFpTmpxYcYTYF+m8gs
-        JZqcD0yFeSXxhqaG5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1MLUotg+pg4OKUaGGu4Nv4/
-        e7N6vcTiiD2c8XvKPFy+5ybfnNfaoq1yfyn7U5nf7SkrjxzhLVqm9KVPSUWA+8PBT5ns+VIM
-        jxVbVfdNXTM/6ZiQQIPo5fuxrzZMOKBboxXVmVGQ3WWs5FNh3WDLd27qm36nqGPrSw6mi+6t
-        03ZaYlarNGHuSa9mCes1fC3SK4KfKrEUZyQaajEXFScCAGmkurZNAwAA
-X-CMS-MailID: 20200429134605eucas1p2bd601082e7a6b8c8fdbe79c83972e2e3
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200429134605eucas1p2bd601082e7a6b8c8fdbe79c83972e2e3
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200429134605eucas1p2bd601082e7a6b8c8fdbe79c83972e2e3
-References: <20200422203245.83244-1-john.stultz@linaro.org>
-        <20200422203245.83244-2-john.stultz@linaro.org>
-        <CGME20200429134605eucas1p2bd601082e7a6b8c8fdbe79c83972e2e3@eucas1p2.samsung.com>
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+Hi Jacob,
 
-On 22.04.2020 22:32, John Stultz wrote:
-> This patch addresses a regression in 5.7-rc1+
->
-> In commit c8c43cee29f6 ("driver core: Fix
-> driver_deferred_probe_check_state() logic"), we both cleaned up
-> the logic and also set the default driver_deferred_probe_timeout
-> value to 30 seconds to allow for drivers that are missing
-> dependencies to have some time so that the dependency may be
-> loaded from userland after initcalls_done is set.
->
-> However, Yoshihiro Shimoda reported that on his device that
-> expects to have unmet dependencies (due to "optional links" in
-> its devicetree), was failing to mount the NFS root.
->
-> In digging further, it seemed the problem was that while the
-> device properly probes after waiting 30 seconds for any missing
-> modules to load, the ip_auto_config() had already failed,
-> resulting in NFS to fail. This was due to ip_auto_config()
-> calling wait_for_device_probe() which doesn't wait for the
-> driver_deferred_probe_timeout to fire.
->
-> Fixing that issue is possible, but could also introduce 30
-> second delays in bootups for users who don't have any
-> missing dependencies, which is not ideal.
->
-> So I think the best solution to avoid any regressions is to
-> revert back to a default timeout value of zero, and allow
-> systems that need to utilize the timeout in order for userland
-> to load any modules that supply misisng dependencies in the dts
-> to specify the timeout length via the exiting documented boot
-> argument.
->
-> Thanks to Geert for chasing down that ip_auto_config was why NFS
-> was failing in this case!
->
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
-> Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Cc: Basil Eljuse <Basil.Eljuse@arm.com>
-> Cc: Ferry Toth <fntoth@gmail.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Anders Roxell <anders.roxell@linaro.org>
-> Cc: netdev <netdev@vger.kernel.org>
-> Cc: linux-pm@vger.kernel.org
-> Reported-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Fixes: c8c43cee29f6 ("driver core: Fix driver_deferred_probe_check_state() logic")
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-
-Please also revert dca0b44957e5 "regulator: Use 
-driver_deferred_probe_timeout for regulator_init_complete_work" then, 
-because now with the default 0 timeout some regulators gets disabled 
-during boot, before their supplies gets instantiated.
-
-This patch broke booting of Samsung Exynos5800-based Peach-Pi Chromeboot 
-with the default multi_v7_defconfig.
-
+On 4/21/20 8:52 PM, Jacob Pan wrote:
+> When Shared Virtual Address (SVA) is enabled for a guest OS via
+> vIOMMU, we need to provide invalidation support at IOMMU API and driver
+> level. This patch adds Intel VT-d specific function to implement
+> iommu passdown invalidate API for shared virtual address.
+> 
+> The use case is for supporting caching structure invalidation
+> of assigned SVM capable devices. Emulated IOMMU exposes queue
+> invalidation capability and passes down all descriptors from the guest
+> to the physical IOMMU.
+> 
+> The assumption is that guest to host device ID mapping should be
+> resolved prior to calling IOMMU driver. Based on the device handle,
+> host IOMMU driver can replace certain fields before submit to the
+> invalidation queue.
+> 
 > ---
->   drivers/base/dd.c | 13 ++-----------
->   1 file changed, 2 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 06ec0e851fa1..908ae4d7805e 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -224,16 +224,7 @@ static int deferred_devs_show(struct seq_file *s, void *data)
->   }
->   DEFINE_SHOW_ATTRIBUTE(deferred_devs);
->   
-> -#ifdef CONFIG_MODULES
-> -/*
-> - * In the case of modules, set the default probe timeout to
-> - * 30 seconds to give userland some time to load needed modules
-> - */
-> -int driver_deferred_probe_timeout = 30;
-> -#else
-> -/* In the case of !modules, no probe timeout needed */
-> -int driver_deferred_probe_timeout = -1;
-> -#endif
-> +int driver_deferred_probe_timeout;
->   EXPORT_SYMBOL_GPL(driver_deferred_probe_timeout);
->   
->   static int __init deferred_probe_timeout_setup(char *str)
-> @@ -266,7 +257,7 @@ int driver_deferred_probe_check_state(struct device *dev)
->   		return -ENODEV;
->   	}
->   
-> -	if (!driver_deferred_probe_timeout) {
-> +	if (!driver_deferred_probe_timeout && initcalls_done) {
->   		dev_WARN(dev, "deferred probe timeout, ignoring dependency");
->   		return -ETIMEDOUT;
->   	}
+> v12	- Use ratelimited prints for all user called APIs.
+> 	- Check for domain nesting attr
+> ---
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+> Signed-off-by: Liu, Yi L <yi.l.liu@intel.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
 
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Thanks
+
+Eric
+> 
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> ---
+>  drivers/iommu/intel-iommu.c | 175 ++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 175 insertions(+)
+> 
+> diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
+> index 8862d6b0ef21..24de233faaf5 100644
+> --- a/drivers/iommu/intel-iommu.c
+> +++ b/drivers/iommu/intel-iommu.c
+> @@ -5595,6 +5595,180 @@ static void intel_iommu_aux_detach_device(struct iommu_domain *domain,
+>  	aux_domain_remove_dev(to_dmar_domain(domain), dev);
+>  }
+>  
+> +/*
+> + * 2D array for converting and sanitizing IOMMU generic TLB granularity to
+> + * VT-d granularity. Invalidation is typically included in the unmap operation
+> + * as a result of DMA or VFIO unmap. However, for assigned devices guest
+> + * owns the first level page tables. Invalidations of translation caches in the
+> + * guest are trapped and passed down to the host.
+> + *
+> + * vIOMMU in the guest will only expose first level page tables, therefore
+> + * we do not support IOTLB granularity for request without PASID (second level).
+> + *
+> + * For example, to find the VT-d granularity encoding for IOTLB
+> + * type and page selective granularity within PASID:
+> + * X: indexed by iommu cache type
+> + * Y: indexed by enum iommu_inv_granularity
+> + * [IOMMU_CACHE_INV_TYPE_IOTLB][IOMMU_INV_GRANU_ADDR]
+> + */
+> +
+> +const static int
+> +inv_type_granu_table[IOMMU_CACHE_INV_TYPE_NR][IOMMU_INV_GRANU_NR] = {
+> +	/*
+> +	 * PASID based IOTLB invalidation: PASID selective (per PASID),
+> +	 * page selective (address granularity)
+> +	 */
+> +	{-EINVAL, QI_GRAN_NONG_PASID, QI_GRAN_PSI_PASID},
+> +	/* PASID based dev TLBs */
+> +	{-EINVAL, -EINVAL, QI_DEV_IOTLB_GRAN_PASID_SEL},
+> +	/* PASID cache */
+> +	{-EINVAL, -EINVAL, -EINVAL}
+> +};
+> +
+> +static inline int to_vtd_granularity(int type, int granu)
+> +{
+> +	return inv_type_granu_table[type][granu];
+> +}
+> +
+> +static inline u64 to_vtd_size(u64 granu_size, u64 nr_granules)
+> +{
+> +	u64 nr_pages = (granu_size * nr_granules) >> VTD_PAGE_SHIFT;
+> +
+> +	/* VT-d size is encoded as 2^size of 4K pages, 0 for 4k, 9 for 2MB, etc.
+> +	 * IOMMU cache invalidate API passes granu_size in bytes, and number of
+> +	 * granu size in contiguous memory.
+> +	 */
+> +	return order_base_2(nr_pages);
+> +}
+> +
+> +#ifdef CONFIG_INTEL_IOMMU_SVM
+> +static int
+> +intel_iommu_sva_invalidate(struct iommu_domain *domain, struct device *dev,
+> +			   struct iommu_cache_invalidate_info *inv_info)
+> +{
+> +	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
+> +	struct device_domain_info *info;
+> +	struct intel_iommu *iommu;
+> +	unsigned long flags;
+> +	int cache_type;
+> +	u8 bus, devfn;
+> +	u16 did, sid;
+> +	int ret = 0;
+> +	u64 size = 0;
+> +
+> +	if (!inv_info || !dmar_domain ||
+> +	    inv_info->version != IOMMU_CACHE_INVALIDATE_INFO_VERSION_1)
+> +		return -EINVAL;
+> +
+> +	if (!dev || !dev_is_pci(dev))
+> +		return -ENODEV;
+> +
+> +	iommu = device_to_iommu(dev, &bus, &devfn);
+> +	if (!iommu)
+> +		return -ENODEV;
+> +
+> +	if (!(dmar_domain->flags & DOMAIN_FLAG_NESTING_MODE))
+> +		return -EINVAL;
+> +
+> +	spin_lock_irqsave(&device_domain_lock, flags);
+> +	spin_lock(&iommu->lock);
+> +	info = iommu_support_dev_iotlb(dmar_domain, iommu, bus, devfn);
+> +	if (!info) {
+> +		ret = -EINVAL;
+> +		goto out_unlock;
+> +	}
+> +	did = dmar_domain->iommu_did[iommu->seq_id];
+> +	sid = PCI_DEVID(bus, devfn);
+> +
+> +	/* Size is only valid in non-PASID selective invalidation */
+> +	if (inv_info->granularity != IOMMU_INV_GRANU_PASID)
+> +		size = to_vtd_size(inv_info->addr_info.granule_size,
+> +				   inv_info->addr_info.nb_granules);
+> +
+> +	for_each_set_bit(cache_type,
+> +			 (unsigned long *)&inv_info->cache,
+> +			 IOMMU_CACHE_INV_TYPE_NR) {
+> +		int granu = 0;
+> +		u64 pasid = 0;
+> +
+> +		granu = to_vtd_granularity(cache_type, inv_info->granularity);
+> +		if (granu == -EINVAL) {
+> +			pr_err_ratelimited("Invalid cache type and granu combination %d/%d\n",
+> +			       cache_type, inv_info->granularity);
+> +			break;
+> +		}
+> +
+> +		/*
+> +		 * PASID is stored in different locations based on the
+> +		 * granularity.
+> +		 */
+> +		if (inv_info->granularity == IOMMU_INV_GRANU_PASID &&
+> +		    (inv_info->pasid_info.flags & IOMMU_INV_PASID_FLAGS_PASID))
+> +			pasid = inv_info->pasid_info.pasid;
+> +		else if (inv_info->granularity == IOMMU_INV_GRANU_ADDR &&
+> +			 (inv_info->addr_info.flags & IOMMU_INV_ADDR_FLAGS_PASID))
+> +			pasid = inv_info->addr_info.pasid;
+> +
+> +		switch (BIT(cache_type)) {
+> +		case IOMMU_CACHE_INV_TYPE_IOTLB:
+> +			if (inv_info->granularity == IOMMU_INV_GRANU_ADDR &&
+> +			    size &&
+> +			    (inv_info->addr_info.addr & ((BIT(VTD_PAGE_SHIFT + size)) - 1))) {
+> +				pr_err_ratelimited("Address out of range, 0x%llx, size order %llu\n",
+> +				       inv_info->addr_info.addr, size);
+> +				ret = -ERANGE;
+> +				goto out_unlock;
+> +			}
+> +
+> +			/*
+> +			 * If granu is PASID-selective, address is ignored.
+> +			 * We use npages = -1 to indicate that.
+> +			 */
+> +			qi_flush_piotlb(iommu, did, pasid,
+> +					mm_to_dma_pfn(inv_info->addr_info.addr),
+> +					(granu == QI_GRAN_NONG_PASID) ? -1 : 1 << size,
+> +					inv_info->addr_info.flags & IOMMU_INV_ADDR_FLAGS_LEAF);
+> +
+> +			/*
+> +			 * Always flush device IOTLB if ATS is enabled. vIOMMU
+> +			 * in the guest may assume IOTLB flush is inclusive,
+> +			 * which is more efficient.
+> +			 */
+> +			if (info->ats_enabled)
+> +				qi_flush_dev_iotlb_pasid(iommu, sid,
+> +						info->pfsid, pasid,
+> +						info->ats_qdep,
+> +						inv_info->addr_info.addr,
+> +						size, granu);
+> +			break;
+> +		case IOMMU_CACHE_INV_TYPE_DEV_IOTLB:
+> +			if (info->ats_enabled)
+> +				qi_flush_dev_iotlb_pasid(iommu, sid,
+> +						info->pfsid, pasid,
+> +						info->ats_qdep,
+> +						inv_info->addr_info.addr,
+> +						size, granu);
+> +			else
+> +				pr_warn_ratelimited("Passdown device IOTLB flush w/o ATS!\n");
+> +			break;
+> +		case IOMMU_CACHE_INV_TYPE_PASID:
+> +			qi_flush_pasid_cache(iommu, did, granu,
+> +					     inv_info->pasid_info.pasid);
+> +			break;
+> +		default:
+> +			dev_err_ratelimited(dev, "Unsupported IOMMU invalidation type %d\n",
+> +					    cache_type);
+> +			ret = -EINVAL;
+> +		}
+> +	}
+> +out_unlock:
+> +	spin_unlock(&iommu->lock);
+> +	spin_unlock_irqrestore(&device_domain_lock, flags);
+> +
+> +	return ret;
+> +}
+> +#endif
+> +
+>  static int intel_iommu_map(struct iommu_domain *domain,
+>  			   unsigned long iova, phys_addr_t hpa,
+>  			   size_t size, int iommu_prot, gfp_t gfp)
+> @@ -6180,6 +6354,7 @@ const struct iommu_ops intel_iommu_ops = {
+>  	.is_attach_deferred	= intel_iommu_is_attach_deferred,
+>  	.pgsize_bitmap		= INTEL_IOMMU_PGSIZES,
+>  #ifdef CONFIG_INTEL_IOMMU_SVM
+> +	.cache_invalidate	= intel_iommu_sva_invalidate,
+>  	.sva_bind_gpasid	= intel_svm_bind_gpasid,
+>  	.sva_unbind_gpasid	= intel_svm_unbind_gpasid,
+>  #endif
+> 
 
