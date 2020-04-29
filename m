@@ -2,84 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8DF1BDF33
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 522C51BDE30
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 15:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728632AbgD2NlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 09:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727074AbgD2NhA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 09:37:00 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14ADC09B051;
-        Wed, 29 Apr 2020 06:36:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=2bQkIqpgUB37LvBPYV8/XJBmZx89qdwplflUzXZDdzY=; b=eZgRG+MWuSDIxW8xuSIKZX4CC4
-        O7BBTAj4GIo9PMR2BfqW96XQ+3n7IWUqPJx3dTe8vvPYv7tWctZW0zJd280Dq0uYj57pYGPXgWWq7
-        St/XNIsOVakSCLd+IZI43a7b9t2v1Wi6bNpBW8G+EvGV0eeKXIcwSQ6iCvsbWnlA1voKT/hUibOPd
-        Jth3H7jZGbbwcNpiScGlAa812u1d10UwL0bDdohkacDPSH3duUUSf+zvsR21ODCmXEYLtKeldiycl
-        OH4ieG0znRurJCnBBqPSkHmaehJ4QVC7bJzogEjx6CZeiT6G3HyCt6AyHfLRyAJ1U/gA/daYLzuz6
-        zpF+MRlg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTmtX-0005vo-KG; Wed, 29 Apr 2020 13:36:59 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 15/25] xfs: Support large pages
-Date:   Wed, 29 Apr 2020 06:36:47 -0700
-Message-Id: <20200429133657.22632-16-willy@infradead.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200429133657.22632-1-willy@infradead.org>
-References: <20200429133657.22632-1-willy@infradead.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1727991AbgD2Nhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 09:37:48 -0400
+Received: from 8bytes.org ([81.169.241.247]:39788 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727917AbgD2Nhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 09:37:45 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id ED118BAD; Wed, 29 Apr 2020 15:37:36 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Daniel Drake <drake@endlessm.com>, jonathan.derrick@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH v3 09/34] iommu: Keep a list of allocated groups in __iommu_probe_device()
+Date:   Wed, 29 Apr 2020 15:36:47 +0200
+Message-Id: <20200429133712.31431-10-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200429133712.31431-1-joro@8bytes.org>
+References: <20200429133712.31431-1-joro@8bytes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+From: Joerg Roedel <jroedel@suse.de>
 
-There is one place which assumes the size of a page; fix it.
+This is needed to defer default_domain allocation for new IOMMU groups
+until all devices have been added to the group.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 ---
- fs/xfs/xfs_aops.c  | 2 +-
- fs/xfs/xfs_super.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/iommu/iommu.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
-index 5b25f5ee84dc..bb677ecbdf32 100644
---- a/fs/xfs/xfs_aops.c
-+++ b/fs/xfs/xfs_aops.c
-@@ -548,7 +548,7 @@ xfs_discard_page(
- 	if (error && !XFS_FORCED_SHUTDOWN(mp))
- 		xfs_alert(mp, "page discard unable to remove delalloc mapping.");
- out_invalidate:
--	iomap_invalidatepage(page, 0, PAGE_SIZE);
-+	iomap_invalidatepage(page, 0, thp_size(page));
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 7a385c18e1a5..18eb3623bd00 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -44,6 +44,7 @@ struct iommu_group {
+ 	int id;
+ 	struct iommu_domain *default_domain;
+ 	struct iommu_domain *domain;
++	struct list_head entry;
+ };
+ 
+ struct group_device {
+@@ -184,7 +185,7 @@ static void dev_iommu_free(struct device *dev)
+ 	dev->iommu = NULL;
  }
  
- static const struct iomap_writeback_ops xfs_writeback_ops = {
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index abf06bf9c3f3..0c7c4afa5afd 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -1793,7 +1793,7 @@ static struct file_system_type xfs_fs_type = {
- 	.init_fs_context	= xfs_init_fs_context,
- 	.parameters		= xfs_fs_parameters,
- 	.kill_sb		= kill_block_super,
--	.fs_flags		= FS_REQUIRES_DEV,
-+	.fs_flags		= FS_REQUIRES_DEV | FS_LARGE_PAGES,
- };
- MODULE_ALIAS_FS("xfs");
+-static int __iommu_probe_device(struct device *dev)
++static int __iommu_probe_device(struct device *dev, struct list_head *group_list)
+ {
+ 	const struct iommu_ops *ops = dev->bus->iommu_ops;
+ 	struct iommu_device *iommu_dev;
+@@ -204,6 +205,9 @@ static int __iommu_probe_device(struct device *dev)
+ 	}
+ 	iommu_group_put(group);
  
++	if (group_list && !group->default_domain && list_empty(&group->entry))
++		list_add_tail(&group->entry, group_list);
++
+ 	iommu_device_link(iommu_dev, dev);
+ 
+ 	return 0;
+@@ -234,7 +238,7 @@ int iommu_probe_device(struct device *dev)
+ 	if (ops->probe_device) {
+ 		struct iommu_group *group;
+ 
+-		ret = __iommu_probe_device(dev);
++		ret = __iommu_probe_device(dev, NULL);
+ 
+ 		/*
+ 		 * Try to allocate a default domain - needs support from the
+@@ -567,6 +571,7 @@ struct iommu_group *iommu_group_alloc(void)
+ 	group->kobj.kset = iommu_group_kset;
+ 	mutex_init(&group->mutex);
+ 	INIT_LIST_HEAD(&group->devices);
++	INIT_LIST_HEAD(&group->entry);
+ 	BLOCKING_INIT_NOTIFIER_HEAD(&group->notifier);
+ 
+ 	ret = ida_simple_get(&iommu_group_ida, 0, 0, GFP_KERNEL);
 -- 
-2.26.2
+2.17.1
 
