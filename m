@@ -2,49 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363711C0B15
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 01:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBCE1C0B19
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 01:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbgD3XuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 19:50:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59870 "EHLO mail.kernel.org"
+        id S1728025AbgD3XuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 19:50:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726435AbgD3XuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726545AbgD3XuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Apr 2020 19:50:11 -0400
-Subject: Re: [GIT PULL] MMC fixes for v5.7-rc4
+Subject: Re: [GIT PULL] Kselftest update for Linux 5.7-rc4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588290611;
-        bh=JypEDT+bXowxBoNeuugDTapgYrfF5c6kq7f5VUmwqw8=;
+        bh=HBYTOdfjxSXrfjQy21aZ+AYPOe0FaEiPp/HkHkNwNPc=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=2iRp81rLgdSVE2ikNDVwLIsYsgqSzz/YvOhB7MnsJiDQUBfBG/Vd4+oK63b3rGF9s
-         qfpuZVFDG1Y159dJMGr2gO20iiMkmmCsUKtCGT5QyPXm0KFpClKnKIYDyv3a/rI/cH
-         9dRp9GLkPglHiOYEm9TdBCjAaZ7UXKsRGZT8lyDk=
+        b=sSeCRcVls7bxZzOKQR4DedD0Rfl2sHHA0213LVJoDOSkS8j/U92NXm8ry4Wsu9Vj3
+         CC1lQe0erzYcegokoxHjr0GP1+IbsiHCUp5y9TlRpVCq2WZDJOgq4L5Y2D2BwTyZsb
+         3254MUuqZAqf5AcwrQkzLqbE4cCkoFR9ysJ18oVY=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200430065743.21952-1-ulf.hansson@linaro.org>
-References: <20200430065743.21952-1-ulf.hansson@linaro.org>
+In-Reply-To: <fbc67b4b-a23e-2788-da18-7bb168ba5fd6@linuxfoundation.org>
+References: <fbc67b4b-a23e-2788-da18-7bb168ba5fd6@linuxfoundation.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200430065743.21952-1-ulf.hansson@linaro.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.7-rc2
-X-PR-Tracked-Commit-Id: 1a8eb6b373c2af6533c13d1ea11f504e5010ed9a
+X-PR-Tracked-Message-Id: <fbc67b4b-a23e-2788-da18-7bb168ba5fd6@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
+ tags/linux-kselftest-5.7-rc4
+X-PR-Tracked-Commit-Id: f0c0d0cf590f71b2213b29a7ded2cde3d0a1a0ba
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: af4a32ad21f83a0d093219c411e5a9f5b344e2ae
-Message-Id: <158829061112.2910.9344522246208958614.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 75ec0ba2acf45cc31b5b59e00106a55494c62209
+Message-Id: <158829061145.2910.15711180473019795925.pr-tracker-bot@kernel.org>
 Date:   Thu, 30 Apr 2020 23:50:11 +0000
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        skhan@linuxfoundation.org, Steven Rostedt <rostedt@goodmis.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 30 Apr 2020 08:57:43 +0200:
+The pull request you sent on Thu, 30 Apr 2020 11:59:00 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.7-rc2
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-5.7-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/af4a32ad21f83a0d093219c411e5a9f5b344e2ae
+https://git.kernel.org/torvalds/c/75ec0ba2acf45cc31b5b59e00106a55494c62209
 
 Thank you!
 
