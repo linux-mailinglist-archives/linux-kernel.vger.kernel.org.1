@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0BE1BFC62
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:05:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80EC1BFC68
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729536AbgD3OFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:05:15 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:44020 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728599AbgD3OFK (ORCPT
+        id S1729214AbgD3OFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:05:33 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:46833 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729109AbgD3OF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:05:10 -0400
-Received: by mail-oi1-f194.google.com with SMTP id j16so5280268oih.10;
-        Thu, 30 Apr 2020 07:05:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=btoVzhyY0wnUJEwfEjCbMjjPFevTpPi/O3/wVPiGFzY=;
-        b=uL4SrbiFCRixhE/NXVmUNF7DBC20uxcrgdy0omqXQbA+8hieiZDXQt4mX3/++42il2
-         lpdZl8jaIaVMcIDN0dN9xuNReQZrrBF5lK2q5HE+tCmfcsjYktFZjiPcH/MRDoAFN8JO
-         taV7iMIvp9fT5xYSI7TxtQjpwJaAImvNEDHI9LWdl8YU3KNgqwyVyLFF5tQYXEkuhFI8
-         6Pjm5LAm98r9m8ouCFIBca9oSJ9AH8xxW7lI5DjlzJWaC2a8qqAYLidIP/ZRVM90rka6
-         obH+zbU6aMhUzYQjvtDzxeVSU7tQuRalsIO8MssozMlGOKhynh7FqbFG8RQLl2tRDqrQ
-         F4vQ==
-X-Gm-Message-State: AGi0PuZL7cZBSIpxBf+J1TbMk0b6/fGkBQDUcXLCkoKBGVDjDT6vYGN+
-        fphiChmuIWQ8o9+FKOsJDCuu1vhjvTDTJaoxmu8=
-X-Google-Smtp-Source: APiQypJf2tz6nTts7ezicKf5ZObe2sWqHoXbLa3vjDS8ljB2NDD54mIOYa5s4UgwtTQTUZGm9HLHqKoVdv49zUTb29A=
-X-Received: by 2002:aca:f541:: with SMTP id t62mr1777710oih.148.1588255509404;
- Thu, 30 Apr 2020 07:05:09 -0700 (PDT)
+        Thu, 30 Apr 2020 10:05:28 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MvsN5-1jDBA202Rr-00suuU for <linux-kernel@vger.kernel.org>; Thu, 30 Apr
+ 2020 16:05:25 +0200
+Received: by mail-qk1-f174.google.com with SMTP id t3so5786419qkg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:05:24 -0700 (PDT)
+X-Gm-Message-State: AGi0PuandLSXWv9b+G4/hyCTHc3yVwXn1I1KIycMzt0hkm/02jmmZPpw
+        rhuT5yUFx9ZW2l8+RgK78/qrBVUcOaNh3G1Wo+c=
+X-Google-Smtp-Source: APiQypKfiuTQyZkimGUZuhVN/2iNyzi11875kCfR0We9GVut/dOFNKlobiXEVN3wKCduUp9kiEhAMWifibP/eeqhm+U=
+X-Received: by 2002:ae9:f712:: with SMTP id s18mr3753225qkg.394.1588255523610;
+ Thu, 30 Apr 2020 07:05:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <1588197415-13747-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1588197415-13747-10-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdWUYU6-S+EhzTKE4JeS2ExLQcsg_Bpy7RKD+cwhg55M8g@mail.gmail.com> <0002cb9c8b1f0f7a308dea06af14bb37@kernel.org>
-In-Reply-To: <0002cb9c8b1f0f7a308dea06af14bb37@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 30 Apr 2020 16:04:58 +0200
-Message-ID: <CAMuHMdV-65MAgzVm=1_TAHgtp+T-ZxdUjAv79uopKMp3EQar8Q@mail.gmail.com>
-Subject: Re: [PATCH 09/18] ARM: dts: r8a7742: Add IRQC support
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <CAK8P3a2qLJkokMGt48JRky=WUeAbJRuNmoD1oqfWdrGSC6y1LA@mail.gmail.com>
+In-Reply-To: <CAK8P3a2qLJkokMGt48JRky=WUeAbJRuNmoD1oqfWdrGSC6y1LA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 30 Apr 2020 16:05:07 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2Gzj9SVZSGo+PxWR0cMJb1sFwv+ii9J6jEGE-Z41Fr+A@mail.gmail.com>
+Message-ID: <CAK8P3a2Gzj9SVZSGo+PxWR0cMJb1sFwv+ii9J6jEGE-Z41Fr+A@mail.gmail.com>
+Subject: Re: Remaining randconfig objtool warnings, linux-next-20200428
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:cEKfAJqGGwRbsuWNFp4ylaRDRdTLvS34qZ28WQ+Mnmy4XjDGHI/
+ 2d2MFMx2qQnvRAMkDTc63efM+SAo4AqGXxk5MK4ty7bQ7ErRa6LKMYlYGgW3MpZwDrbKi8O
+ clnZWSl7BwbzNIpr9R3wjV161YpbepvK/HI1xz+Gs0kN9m1LWaGEeotIxVI2n0oyYUHw9NB
+ 35MGhge8G4CvBV/vL7z4Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DVEXobJtqlY=:PD1V5Jmy0vIiBrLAScz97K
+ IWx+Z5pXyVuHnM68XlXKjawkWQz8NMEnqX0NWrkAGf8hYJ0TYvHK9+oR+muar/Y0TKk80ex9/
+ zHJ8NmyHSHFM3WLup8l7sFmXQyfJjlvanyPuPrKWTVooO+dlYFy8z4Ht0tqbAmC/PG4Uu3e6S
+ rUOXznfmAOtHMezP69+yWzl+IYOrNjErO/GfNW/AA2AG8TVVMVu4jr6W0mOFAbOy0WBSg1b5g
+ c0YSoCZ0++u9Y1bUmL3oDFH54aBP7UaS94o/MoZEmwO9H36o9PDvCu90gnOomvHi2VfzVpRjS
+ ZdLD3gBYT//xGGQWUKMHUTYM3nlHsctXNgkU3GXl3v976mbQZnPvI5HgCgubFgIYSVG/xc/xD
+ x7LcIjPBszj58avhVDL4EC4Hjmhv4xPbIYUfRFlTTnxepEGAxOTJ9Wov60JmFhPdyBuGYXS9N
+ HwAiJ6zg/FS1sI/kQYZu6olRqbPnzUZY2eVH8MYvMDgZhfopcpPQulTW/k1RTwmhDLmayM7zo
+ olSNTzq2vtUMxhOI8cu379T0uVgzvEOunDJwIgbAqL3T4BOIaO0FjEDSX/FO7xtM9QxD4QCGQ
+ KxIydu3K8JzH0XWcD8CU3j1kmb5Mhevzp4bQ1IAKrz+7AUItomMKWvRGh5EMzwcIuGT3FPGPF
+ cWiICRrOPK3oSXecOOY2TTiEwTMw5mQpXNbaJQPuVVSrsBrw3bVd8wd/rly2WgoxUbL5tVD3S
+ VG9LKgB5bi1DaOwfHnO5kx3pIDzXPNyMhD4hUQio/D8wZgUyS/YHEI13K4Y/LyomWBvTY2f3D
+ W2Mn86JQqNMoD6joo7k9+snj/2pFtL52g5Tc32c/lcXMIEa9t4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-On Thu, Apr 30, 2020 at 4:01 PM Marc Zyngier <maz@kernel.org> wrote:
-> On 2020-04-30 14:54, Geert Uytterhoeven wrote:
-> > On Wed, Apr 29, 2020 at 11:58 PM Lad Prabhakar
-> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> >> Describe the IRQC interrupt controller in the r8a7742 device tree.
-> >>
-> >> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >> Reviewed-by: Marian-Cristian Rotariu
-> >> <marian-cristian.rotariu.rb@bp.renesas.com>
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Tue, Apr 28, 2020 at 4:49 PM Arnd Bergmann <arnd@arndb.de> wrote:
 >
-> Can I safely assume that the irqchip DT updates will be routed via
-> the arm-soc tree? If so, feel free to add my
-
-Yes they will, eventually.
-
-> Acked-by: Marc Zyngier <maz@kernel.org>
+> I noticed the number of objtool warnings in randconfig kernels have gone down
+>  recently, maybe it's possible to eliminate the remaining ones?
 >
-> to these patches.
+> Here are the ones I ran into recently, using gcc-9.3:
 
-Thanks!
+I now cross-checked with gcc-10.0, which leads to a few additional warnings
+for randconfig builds:
 
-Gr{oetje,eeting}s,
+drivers/gpu/drm/vmwgfx/vmwgfx_msg.o: warning: objtool:
+vmw_port_hb_in()+0x12f: stack state mismatch: cfa1=6+16 cfa2=7+8
+drivers/gpu/drm/vmwgfx/vmwgfx_msg.o: warning: objtool:
+vmw_port_hb_in()+0xca: return with modified stack frame
+drivers/media/dvb-frontends/rtl2832_sdr.o: warning: objtool:
+.text.unlikely: unexpected end of section
+drivers/media/dvb-frontends/rtl2832_sdr.o: warning: objtool:
+rtl2832_sdr_try_fmt_sdr_cap() falls through to next function
+rtl2832_sdr_s_fmt_sdr_cap.cold()
+kernel/kexec_core.o: warning: objtool: crash_kexec()+0x2b: unreachable
+instruction
+lib/locking-selftest.o: warning: objtool: locking_selftest()+0x117f:
+PUSHF stack exhausted
+lib/locking-selftest.o: warning: objtool: ww_tests()+0x1083: PUSHF
+stack exhausted
+lib/strncpy_from_user.o: warning: objtool: strncpy_from_user()+0x133:
+call to do_strncpy_from_user() with UACCESS enabled
+lib/strnlen_user.o: warning: objtool: strnlen_user()+0x122: call to
+do_strnlen_user() with UACCESS enabled
 
-                        Geert
+I uploaded these as well now, see
+https://drive.google.com/open?id=1k10cO9OkFKaMVnK7uX-prplY-13CAvW1
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+       Arnd
