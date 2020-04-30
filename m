@@ -2,150 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6061BFD8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C91C1BFD96
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728648AbgD3ONI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        id S1727803AbgD3ONm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbgD3ONE (ORCPT
+        with ESMTP id S1726481AbgD3ONl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:13:04 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C17C035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:13:03 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id p7so3247930ybo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:13:03 -0700 (PDT)
+        Thu, 30 Apr 2020 10:13:41 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F81C035494;
+        Thu, 30 Apr 2020 07:13:40 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id t11so1344693lfe.4;
+        Thu, 30 Apr 2020 07:13:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RuWwUfWQPRmorLJ8b4zPbt9Fzldh22r5PvhTsct28+I=;
-        b=pk7zbkMmpolApkEOyS3DR9EpWhiAdivVNW9DyuWBuWmykocUs1WMpHP3+1cKYrJDFt
-         fUY2r3pHLWypxFMnu8f8gwOQeCTfc+MCr/KCIl6f0q8sXIUnpPoxWR2ACDSMxnCvGX+9
-         TPs6FhDnt6eoep0i+XYqgQiB5AU/7zOWPAd3yaVzAsbIXsWq8ttxqtWmm7U4HXaMix/v
-         wVGxFG2ziimHkpUyfODY85r/+MWa/FTDTlPCV77olgN/52pXUWbexTtE4n020G/fJSQV
-         TZCUaeNnACcCno+1i/Xka0EAdccl7aU27HZHFQhxKfJ+UluRikOeMomXMl2MmF/7bOMK
-         D4Rg==
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OnNu0d4kBuNgtMDcTSpGxIZJGwHHHkKLCR/X38FoToI=;
+        b=E47cdC2LjQCfk4jercI9wU26vj6Ul3VxmudH5l5SAv6doIVinVVxuJeQBKaerKo/mS
+         zM2+xfjOVb6S3A6nWai/F/Yb5JRJUZzCqWuD1F+oqKHVGIOJG4dr7UCE+NKygEug54wY
+         Z6+kf82RB/TtCjzaounEBhPWA689NeR6/g6rKvWxGbF8w/q/PjnaGHjf1tuVQZS3L/si
+         5b6tntpaSKhoW0GYVkfNtJ6YN344tOm2WXpRq43XeaQ4XfJJhJTE7VlWYzYMX7LpohwM
+         RPsBwCHcBXXy7tVqT51Xj6B4a0QZ68JFYfTb/9PrkO8ChU5bSBED3pcMAsU3heEF+fHV
+         kj7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RuWwUfWQPRmorLJ8b4zPbt9Fzldh22r5PvhTsct28+I=;
-        b=nWnLn5ivIPI6pucaXZjRJIVU5wuUDCFfk9abKnz5zclTNebJIFAzturiA6Tp37WdLx
-         mCRt07s0qez0T3/J4P8+zOW1Ozubw39N/jNXxJlc5iq0VlzPNtCZgw6Wvr3KZwRMg78+
-         H/0xISwT4QMDtdHlHmxLt1eEL7TbLpk3tDEG4oEXPOWmmU4UtaEyngCpKMX3R9VNtwRp
-         uZPZxNONVV3wnA8DQr163Q3z4GmgH5mWY+4oiSnI8lSCgYVLz18FWguAyHUcXh5SfQSn
-         wVSIf0Y4ERNT2BYd2tLsaVEycJhhG0TVDNFMQIUqU+Fm9tk7JYdxbLSrHZT95ElkYpH7
-         PUHw==
-X-Gm-Message-State: AGi0PuaYTB5mzF8d3Yn1UvqMpF3nyEt30+e5cT07Ianod1GEmOd5DBl9
-        Er67v1aRxRGaPGdfMAlZ32NSXddjDHSumdYiYJe4eA==
-X-Google-Smtp-Source: APiQypKm5TqtGiKOOqwKJzOfYvb5QkQThWB3by2Fk9vyZpGFSzLNc6qrnPaoU2AON83sJot6qF68YMUxNVn9il077vA=
-X-Received: by 2002:a25:ddc3:: with SMTP id u186mr6092717ybg.383.1588255982479;
- Thu, 30 Apr 2020 07:13:02 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OnNu0d4kBuNgtMDcTSpGxIZJGwHHHkKLCR/X38FoToI=;
+        b=roi0B06KIK+PmGkECF0c4R0EoEYVlal9EYwSF+fyK+p4EKSvwXsxsov9WnrkNe7kuc
+         odYhVUCuegJIInHc/+8aPLi6YEaD3dWXRVKhSp22TF214vRgIvhpAWzuYe+G9OeMUhkQ
+         0SJVwSHBHh476fRhTm3xjzQeHSLfrOKBN0PB5wv14Ots8wdvFWh9Q1BbdpNxYK+9UuX7
+         klXEX98WGKho2VeyJkrJjTbZAfOA77gBrp2+i/j0O+b/qu+NISyrQwecL8miNqOlNcL4
+         B+8UNySu0w8lRgdeSilneT2Q0pSJK+UYTVVxseYhldCCI2zXvK5lUyTmWRy3wdGVObBF
+         Bjcw==
+X-Gm-Message-State: AGi0PuZrKiIarkFqpyD/9aM744O6ZI1t/4Ka+s4zH9xkmYT3Az2B23CL
+        6fJZ5J9jbPy0j6boY6lkyYbcRpn2
+X-Google-Smtp-Source: APiQypK7XRTZTlWVytKER1dcQ9yptU8BEQg7/anoFsos760OayR5hyrzgtTYVk8H1M7YcG3tWoKeoQ==
+X-Received: by 2002:ac2:530e:: with SMTP id c14mr2387989lfh.154.1588256019126;
+        Thu, 30 Apr 2020 07:13:39 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id q16sm4296014ljj.23.2020.04.30.07.13.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 07:13:38 -0700 (PDT)
+Subject: Re: [RFC PATCH v11 6/9] media: tegra: Add Tegra210 Video input driver
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
+Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1588197606-32124-1-git-send-email-skomatineni@nvidia.com>
+ <1588197606-32124-7-git-send-email-skomatineni@nvidia.com>
+ <bacc4308-4b95-f566-b80e-096ff96407b5@gmail.com>
+ <4da289e6-036f-853b-beb4-379d6462adb0@gmail.com>
+Message-ID: <c6d54885-6f23-f60c-a17b-3481fc4d6adf@gmail.com>
+Date:   Thu, 30 Apr 2020 17:13:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200409185744.255881-1-irogers@google.com> <20200414125105.GC117177@krava>
- <CAP-5=fXRN-h3M4s5XYtA=PX+qxZVvBiE94xRF9RN7zHG9fYE1w@mail.gmail.com>
-In-Reply-To: <CAP-5=fXRN-h3M4s5XYtA=PX+qxZVvBiE94xRF9RN7zHG9fYE1w@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 30 Apr 2020 07:12:49 -0700
-Message-ID: <CAP-5=fW0+FyFkakrYL6MYYYSQ_8F8kP+AhZ6W1Aqgophegzamg@mail.gmail.com>
-Subject: Re: [PATCH] perf data: if a bad header size, retry in pipe mode
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4da289e6-036f-853b-beb4-379d6462adb0@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 7:01 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Tue, Apr 14, 2020 at 5:51 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Thu, Apr 09, 2020 at 11:57:44AM -0700, Ian Rogers wrote:
-> > > Currently pipe mode files fail like:
-> > > $ perf record -o - sleep 1 > /tmp/perf.pipe.data
-> > > $ perf report -i /tmp/perf.pipe.data
-> > > incompatible file format (rerun with -v to learn more)
-> > >
-> > > This change makes it so that if a perf.data file's header size is wrong
-> > > it is re-checked in pipe mode, where if wrong it fails as it currently
-> > > does.
-> > >
-> >
-> > hi,
-> > how about doing it the other way round like below,
-> > read header and find out if it's pipe..
-> >
-> > seems it's less changes
-> >
-> > jirka
->
-> Looks good to me. I think removing the function declaration from
-> util/header.h is still worthwhile, but needn't be in a patch with this
-> change.
+30.04.2020 17:02, Dmitry Osipenko пишет:
+> 30.04.2020 16:56, Dmitry Osipenko пишет:
+>> 30.04.2020 01:00, Sowjanya Komatineni пишет:
+>>> +static int chan_capture_kthread_finish(void *data)
+>>> +{
+>>> +	struct tegra_vi_channel *chan = data;
+>>> +	struct tegra_channel_buffer *buf;
+>>> +
+>>> +	set_freezable();
+>>> +
+>>> +	while (1) {
+>>> +		try_to_freeze();
+>>
+>> I guess it won't be great to freeze in the middle of a capture process, so:
+>> 		if (list_empty(&chan->done))
+>> 			try_to_freeze();
+> 
+> And here should be some locking protection in order not race with the
+> chan_capture_kthread_start because kthread_finish could freeze before
+> kthread_start.
 
-Hi Jiri,
+Or maybe both start / finish threads should simply be allowed to freeze
+only when both capture and done lists are empty.
 
-Do you need to send this patch?
-
-Thanks,
-Ian
-
-> Thanks!
-> Ian
->
-> > ---
-> > diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> > index acbd046bf95c..20c34cec9a46 100644
-> > --- a/tools/perf/util/header.c
-> > +++ b/tools/perf/util/header.c
-> > @@ -3469,7 +3469,7 @@ static int perf_header__read_pipe(struct perf_session *session)
-> >                 return -EINVAL;
-> >         }
-> >
-> > -       return 0;
-> > +       return f_header.size == sizeof(f_header) ? 0 : -1;
-> >  }
-> >
-> >  static int read_attr(int fd, struct perf_header *ph,
-> > @@ -3571,7 +3571,7 @@ int perf_session__read_header(struct perf_session *session)
-> >         struct perf_file_header f_header;
-> >         struct perf_file_attr   f_attr;
-> >         u64                     f_id;
-> > -       int nr_attrs, nr_ids, i, j;
-> > +       int nr_attrs, nr_ids, i, j, err;
-> >         int fd = perf_data__fd(data);
-> >
-> >         session->evlist = evlist__new();
-> > @@ -3580,8 +3580,16 @@ int perf_session__read_header(struct perf_session *session)
-> >
-> >         session->evlist->env = &header->env;
-> >         session->machines.host.env = &header->env;
-> > -       if (perf_data__is_pipe(data))
-> > -               return perf_header__read_pipe(session);
-> > +
-> > +       /*
-> > +        * We could still read 'pipe' data from regular file,
-> > +        * check for the pipe header first.
-> > +        */
-> > +       err = perf_header__read_pipe(session);
-> > +       if (!err || (err && perf_data__is_pipe(data))) {
-> > +               data->is_pipe = true;
-> > +               return err;
-> > +       }
-> >
-> >         if (perf_file_header__read(&f_header, header, fd) < 0)
-> >                 return -EINVAL;
-> >
+if (list_empty(&chan->capture) &&
+    list_empty(&chan->done))
+	try_to_freeze();
