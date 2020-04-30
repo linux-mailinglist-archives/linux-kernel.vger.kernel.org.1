@@ -2,101 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A841C0035
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF961C003F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727845AbgD3P0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 11:26:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726534AbgD3P0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:26:54 -0400
-Received: from localhost (unknown [122.182.217.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8276920731;
-        Thu, 30 Apr 2020 15:26:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588260414;
-        bh=Gc4CSNIYpNL1Sg9aqBxD4gp1PKP4X9xSXcXPNS+Bx0A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PJ/uIJou43m0kJET6CvgCvR7YIAAP+pe//6F8guEs95z2CUfJ/NDPTQ/9rM4LSFJ0
-         NbzWBBhknCEV4wj/v/FWMa4RtiuIm5BuD/bTaeo3WesaPVcMZJ1kgJgdM+Hu2u8HSM
-         uJ55r1b03YwOhgpPzxrGfd/0TJyNo6KUx4+CVnJQ=
-Date:   Thu, 30 Apr 2020 20:56:50 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andreas =?iso-8859-1?Q?B=F6hler?= <dev@aboehler.at>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 2/5] usb: renesas-xhci: Add the renesas xhci driver
-Message-ID: <20200430152650.GK948789@vkoul-mobl.Dlink>
-References: <20200430101019.1130956-1-vkoul@kernel.org>
- <20200430101019.1130956-3-vkoul@kernel.org>
- <8ffd119b-192f-8fcc-46cc-3a405e30338c@linux.intel.com>
- <20200430144641.GJ948789@vkoul-mobl.Dlink>
- <20200430145302.GB3495619@kroah.com>
+        id S1727792AbgD3P1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 11:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726318AbgD3P1x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 11:27:53 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA30C035494;
+        Thu, 30 Apr 2020 08:27:53 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id fu13so834721pjb.5;
+        Thu, 30 Apr 2020 08:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=h7aecSn7WemaPr5MKAU25qlIzkvX9/7QdX+8sxse6As=;
+        b=RI0twVI0BCbvsJGtmfAURnVd29jYqM/+tPwkK6KWFVPzAsJUtQO+isXMTV5bxrTixq
+         IEi4hZENsklYeP6tC5frsru0LnToqen1Mmu5G25ZTukvm1eQ5E9sTcECsNVSRSTHjfs6
+         OSelV67AYFF2IG4iYEyGFbMbRLlp18AgzPfij6hW3M92CTGsTFmkc5N1QMlvHTI65qKD
+         1IIDHIHH2XT0eDme/InswnMbTsndIVcx/qXa9HZk4kTuMKIrNCbYf4L/5IWqv+5TU+4j
+         xzEhFuekRqi2jKQCgBcIJ6hJeeXDuS+VJtgQGlTu2QURv9p3fS2qKv2tNa8g1zjvQAeG
+         g8sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h7aecSn7WemaPr5MKAU25qlIzkvX9/7QdX+8sxse6As=;
+        b=rkVN9gy526efa75nYVZy91YuRnV3g+/PiJGH6CDxM1ZEtDCg/gOoiSA1UAG5wtGcX+
+         928IrwtYiVLSDXTRCnvAn758Fz9gzvW08o9orZh1d5sXm8MAszGUOzZ4tsBThEPDIRUr
+         YH0M6CKxbFvfOH9nmo42qs1veTK0JTTY79ccJ6//b/KNSYjgm3ivSAck8T4chFy8fjj0
+         50Jlcw1Nt+cTNpEqRamjNKlFWaOovy1FjAxzJ6NrcH/os6o33O3xpocIOUHQ22yCmqcV
+         CMc7FMCD3CYchR/CXfIVE8avqkupM6cWOXIqSqKwFLv/sbz0CTfH2yS84Huz55gO6jDM
+         IL5A==
+X-Gm-Message-State: AGi0PuY2NzzGgJM5XQlvc3TMst813yWfR2urIp93qP5mg+uEZM2rz5bG
+        +gxs2zzSacLfVSO8H9f8Rsly4Vy48Fg=
+X-Google-Smtp-Source: APiQypIhxBzQQ6uCPbobz43ZrYPYjT701oHyGyUly2zIMwKfqwCDzxsjhwA6Wk4frpoXp791ofbnHA==
+X-Received: by 2002:a17:902:d70f:: with SMTP id w15mr4420618ply.55.1588260469297;
+        Thu, 30 Apr 2020 08:27:49 -0700 (PDT)
+Received: from [192.168.1.159] (ip70-185-146-31.sb.sd.cox.net. [70.185.146.31])
+        by smtp.gmail.com with ESMTPSA id q64sm150019pfc.112.2020.04.30.08.27.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 08:27:48 -0700 (PDT)
+Subject: Re: BUG: unable to handle kernel NULL pointer dereference at
+ 00000000000000a8 in nilfs_segctor_do_co
+To:     Hideki EIRAKU <hdk1983@gmail.com>, linux-nilfs@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20200328.182640.1933740379722138264.hermes@ceres.dti.ne.jp>
+ <20200430.213842.00392641.hdk1983@gmail.com>
+From:   Tom <tommytoad0@gmail.com>
+Message-ID: <ee5677b7-802b-f524-36cc-9d5ae071859b@gmail.com>
+Date:   Thu, 30 Apr 2020 08:27:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430145302.GB3495619@kroah.com>
+In-Reply-To: <20200430.213842.00392641.hdk1983@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-04-20, 16:53, Greg Kroah-Hartman wrote:
-> On Thu, Apr 30, 2020 at 08:16:41PM +0530, Vinod Koul wrote:
-> > > > diff --git a/drivers/usb/host/Makefile b/drivers/usb/host/Makefile
-> > > > index b191361257cc..c3a79f626393 100644
-> > > > --- a/drivers/usb/host/Makefile
-> > > > +++ b/drivers/usb/host/Makefile
-> > > > @@ -70,7 +70,8 @@ obj-$(CONFIG_USB_OHCI_HCD_DAVINCI)	+= ohci-da8xx.o
-> > > >  obj-$(CONFIG_USB_UHCI_HCD)	+= uhci-hcd.o
-> > > >  obj-$(CONFIG_USB_FHCI_HCD)	+= fhci.o
-> > > >  obj-$(CONFIG_USB_XHCI_HCD)	+= xhci-hcd.o
-> > > > -obj-$(CONFIG_USB_XHCI_PCI)	+= xhci-pci.o
-> > > > +usb-xhci-pci-objs		:= xhci-pci.o xhci-pci-renesas.o
-> > > > +obj-$(CONFIG_USB_XHCI_PCI)	+= usb-xhci-pci.o
-> > > 
-> > > I don't think it's a good idea to rename the xhci-pci module to usb-xhci-pci
-> > > 
-> > > does
-> > > 
-> > > xhci-pci-y			:= xhci-pci.o xhci-pci-renesas.o
-> > > obj-$(CONFIG_USB_XHCI_PCI)	+= xhci-pci.o
-> > > 
-> > > cause some kbuild issues?
-> > 
-> > Yes with this version I get the warning:
-> > make[4]: Circular drivers/usb/host/xhci-pci.o <- drivers/usb/host/xhci-pci.o dependency dropped.
-> > 
-> > I don't speak enough Kbuild, but I guess it does make sense that we have
-> > xhci-pci.o as target for both xhci-pci.o xhci-pci-renesas.o! That was
-> > the reason for adding usb tag to this to resolve the conflict.
-> > 
-> > I am okay for any other mechanism which can work well here. Btw what
-> > issues do you foresee with adding usb tag to module name.
+Thank you!  This is very helpful information, and does seem to be a 
+workaround.
+
+Like you, I have my home directory on a separate NILFS2 filesystem. As a 
+temporary solution, I removed the line from /etc/fstab for that 
+filesystem and added your dd suggestion along with a manual mount of the 
+home filesystem to /etc/rc.local.  /home is now mounted properly at boot 
+with any of the newer kernels I tried.
+
+Thanks,
+Tom
+
+On 4/30/20 5:38 AM, Hideki EIRAKU wrote:
+>> In Msg <874kuapb2s.fsf@logand.com>;
+>>     Subject "Re: BUG: unable to handle kernel NULL pointer dereference at 00000000000000a8 in nilfs_segctor_do_construct":
+>>
+>>> Tomas Hlavaty <tom@logand.com> writes:
+>>>>>> 2) Can you mount the corrupted(?) partition from a recent version of
+>>>>>> kernel ?
+>>>
+>>> I tried the following Linux kernel versions:
+>>>
+>>> - v4.19
+>>> - v5.4
+>>> - v5.5.11
+>>>
+>>> and still get the crash
 > 
-> It will break all sorts of things.  Happens every time we rename
-> modules, let's not do it unless we absolutely have to.
-
-Hmm that is interesting, am not sure why though :)
-
-Anyway, I have fixed it up and was able to make both as modules and
-export two symbols for xhci-pci.ko to use :)
-
-Makefile change looks like:
-
-+obj-$(CONFIG_USB_XHCI_PCI)     += xhci-pci.o xhci-pci-renesas.o
-
-Thanks
--- 
-~Vinod
+> I found conditions to reproduce this issue with Linux 5.7-rc3:
+> 
+> - CONFIG_MEMCG=y *and* CONFIG_BLK_CGROUP=y
+> 
+> - When the NILFS2 file system writes to a device, the device file has
+>    never written by other programs since boot
+> 
+> The following is an example with CONFIG_MEMCG=y and
+> CONFIG_BLK_CGROUP=y kernel.  If you do mkfs and mount it, it works
+> because the mkfs command has written data to the device file before
+> mounting:
+> 
+> # mkfs -t nilfs2 /dev/sda1
+> mkfs.nilfs2 (nilfs-utils 2.2.7)
+> Start writing file system initial data to the device
+>         Blocksize:4096  Device:/dev/sda1  Device Size:267386880
+> File system initialization succeeded !!
+> # mount /dev/sda1 /mnt
+> # touch /mnt
+> # sync
+> #
+> 
+> Loopback mount seems to be the same - if you do losetup, mkfs and
+> mount on a loopback device, it works:
+> 
+> # losetup /dev/loop0 foo
+> # mkfs -t nilfs2 /dev/loop0
+> mkfs.nilfs2 (nilfs-utils 2.2.7)
+> Start writing file system initial data to the device
+>         Blocksize:4096  Device:/dev/loop0  Device Size:267386880
+> File system initialization succeeded !!
+> # mount /dev/sda1 /mnt
+> # touch /mnt
+> # sync
+> #
+> 
+> But if you do mkfs on a file and use mount -o loop, it may fail,
+> depending on whether the loopback device assigned by the mount command
+> was used or not before mounting:
+> 
+> # /sbin/mkfs.nilfs2 ./foo
+> mkfs.nilfs2 (nilfs-utils 2.2.7)
+> Start writing file system initial data to the device
+>         Blocksize:4096  Device:./foo  Device Size:268435456
+> File system initialization succeeded !!
+> # mount -o loop ./foo /mnt
+> [   36.371331] NILFS (loop0): segctord starting. Construction interval = 5 seconds, CP frequency < 30 seconds
+> # touch /mnt
+> # sync
+> [   40.252869] BUG: kernel NULL pointer dereference, address: 00000000000000a8
+> (snip)
+> 
+> After reboot, it fails:
+> 
+> # mount /dev/sda1 /mnt
+> [   14.021188] NILFS (sda1): segctord starting. Construction interval = 5 seconds, CP frequency < 30 seconds
+> # touch /mnt
+> # sync
+> [   20.576309] BUG: kernel NULL pointer dereference, address: 00000000000000a8
+> (snip)
+> 
+> But if you do dummy write to the device file before mounting, it
+> works:
+> 
+> # dd if=/dev/sda1 of=/dev/sda1 count=1
+> 1+0 records in
+> 1+0 records out
+> 512 bytes copied, 0.0135982 s, 37.7 kB/s
+> # mount /dev/sda1 /mnt
+> [   52.604560] NILFS (sda1): mounting unchecked fs
+> [   52.613335] NILFS (sda1): recovery complete
+> [   52.613877] NILFS (sda1): segctord starting. Construction interval = 5 seconds, CP frequency < 30 seconds
+> # touch /mnt
+> # sync
+> #
+> 
+> # losetup /dev/loop0 foo
+> # dd if=/dev/loop0 of=/dev/loop0 count=1
+> 1+0 records in
+> 1+0 records out
+> 512 bytes copied, 0.0243797 s, 21.0 kB/s
+> # mount /dev/loop0 /mnt
+> [  271.915595] NILFS (loop0): mounting unchecked fs
+> [  272.049603] NILFS (loop0): recovery complete
+> [  272.049724] NILFS (loop0): segctord starting. Construction interval = 5 seconds, CP frequency < 30 seconds
+> # touch /mnt
+> # sync
+> #
+> 
+> I think the dummy write is a simple workaround for now, unless
+> mounting NILFS2 at boot time.  But I have been using NILFS2 /home for
+> years, I would like to know better workarounds.
+> 
