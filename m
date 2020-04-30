@@ -2,102 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F741BF441
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBE31BF449
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgD3Jiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 05:38:55 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:39946 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbgD3Jiy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 05:38:54 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03U9bRQo146223;
-        Thu, 30 Apr 2020 09:38:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=RUSYverzYQ9JpE4an/COyndDToRPSkdFo0Kb7DfKK5M=;
- b=VTfpLk/ImRHchhbFMQwxmtAvIW/DZ/csS2xqohj26xM6vGbUlbwdqyFRXe8DQ63xjRd2
- /sW/rIa4TSh5K8jgvObfjzCQiaOavVzYblqO0oVnY/NaIyAcIJ3269mMWADsTPJ1l2CQ
- ldPypm0+KzL1muqllpdjo8fglOZJWyHaauKaw2h5Pn8Xnf/OBjzew72VP7M5IQSJAyGV
- rxO5mRfF4bkRf0xRi66Qa4rUcC684K05OQfrxzECiEgUtDoBXXNd8qGyzfOAasXTbmmF
- sbhkjE8glkonCVC07G+8zgR26yPZZnHJbmdBlntwFQcTnUc3hog8kBcpsL/VgnZWPYKz yQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 30p2p0fv67-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 09:38:46 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03U9bPJQ039878;
-        Thu, 30 Apr 2020 09:38:46 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 30qtjwptvf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 09:38:46 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03U9chKc024033;
-        Thu, 30 Apr 2020 09:38:43 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Apr 2020 02:38:42 -0700
-Date:   Thu, 30 Apr 2020 12:38:35 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Rylan Dmello <mail@rylan.coffee>
-Cc:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2 2/7] staging: qlge: Remove gotos from
- ql_set_mac_addr_reg
-Message-ID: <20200430093835.GT2014@kadam>
-References: <cover.1588209862.git.mail@rylan.coffee>
- <a6f485e43eb55e8fdc64a7a346cb0419b55c3cb6.1588209862.git.mail@rylan.coffee>
+        id S1726790AbgD3Jja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 05:39:30 -0400
+Received: from ozlabs.org ([203.11.71.1]:60127 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726396AbgD3Jj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 05:39:29 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49CVhL1mfPz9sPF;
+        Thu, 30 Apr 2020 19:39:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588239567;
+        bh=+q3qK7ThA6S0SUMv93CvqoJgpSGdg5tNFF2TPvf35hI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nQOE4vPYnSb9Gz4jmhcJfj+a1yh87FOuKiuzmd4oxYn5IhsI/Dnpwzmq52qQW0pQf
+         M0tApzyZI9uxTdAiPF4s0Nkcmvsx1nkje8SKC9VWyRlEJIRIX73CXIJEF4ai+ol2DI
+         zjGTMwOLdpx2CnZhmjov0yXsGp5XA5MkdfXI+vDu21NiH3qaAKsho+OsYLhyDQuPyb
+         oOyc6EHycC/flK5ft9w6rIq/dmjl65Ag+k1HTd5JfXzHzqtobx0BmmMKwqCk3977qq
+         93M3QGH4Y94A9KzFtlczuY8Tg4jfonKEvSz3r0vaMgH4N7dojOCJC3EIRX7AZLVqeW
+         5SR7cffZTwIrQ==
+Date:   Thu, 30 Apr 2020 19:39:10 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Will Deacon <will@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Guan Xuetao <gxt@pku.edu.cn>,
+        James Morse <james.morse@arm.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: kvm: fix gcc-10 shift warning
+Message-ID: <20200430193910.294842c4@canb.auug.org.au>
+In-Reply-To: <20200430082927.GA18615@willie-the-truck>
+References: <20200429185657.4085975-1-arnd@arndb.de>
+        <20200430090251.715f6bf0@why>
+        <20200430082927.GA18615@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6f485e43eb55e8fdc64a7a346cb0419b55c3cb6.1588209862.git.mail@rylan.coffee>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- malwarescore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300078
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1015
- bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004300078
+Content-Type: multipart/signed; boundary="Sig_/xzv.XEbMG=15e_LStDYa1s9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 09:33:04PM -0400, Rylan Dmello wrote:
-> As suggested by Joe Perches, this patch removes the 'exit' label
-> from the ql_set_mac_addr_reg function and replaces the goto
-> statements with break statements.
-> 
-> Signed-off-by: Rylan Dmello <mail@rylan.coffee>
-> ---
->  drivers/staging/qlge/qlge_main.c | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
-> index 29610618c7c0..f2b4a54fc4c0 100644
-> --- a/drivers/staging/qlge/qlge_main.c
-> +++ b/drivers/staging/qlge/qlge_main.c
-> @@ -336,22 +336,20 @@ static int ql_set_mac_addr_reg(struct ql_adapter *qdev, u8 *addr, u32 type,
->  
->  		status = ql_wait_reg_rdy(qdev, MAC_ADDR_IDX, MAC_ADDR_MW, 0);
->  		if (status)
-> -			goto exit;
-> +			break;
+--Sig_/xzv.XEbMG=15e_LStDYa1s9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Just "return status".  A direct return is immediately clear but with a
-break statement then you have to look down a bit and then scroll back.
+Hi Will,
 
-regards,
-dan carpenter
+On Thu, 30 Apr 2020 09:29:28 +0100 Will Deacon <will@kernel.org> wrote:
+>
+> On Thu, Apr 30, 2020 at 09:02:51AM +0100, Marc Zyngier wrote:
+> > On Wed, 29 Apr 2020 20:56:20 +0200
+> > Arnd Bergmann <arnd@arndb.de> wrote:
+> >  =20
+> > > Fixes: 22998131ab33 ("arm64: add support for folded p4d page tables")
+>=20
+> Happy to queue via arm64 for 5.8. Does that work for you, Arnd, or were y=
+ou
+> planning to get this in sooner than that?
 
+The commit that this fixes is in Andrew's patch series in linux-next,
+so it should just go in there.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/xzv.XEbMG=15e_LStDYa1s9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6qnL4ACgkQAVBC80lX
+0GzToAf/bXREqbiltcjG5hxNdpU1I4moIKv6bFtCjrnCW5muA2pCR3xx5Twzm5UG
+Mw36RWbLqcQwOOcH9RtlCFe0zq1DEgPvShaF1lTh8n5dybdjKbCzSFsP6uoSZ/1i
+rcT/rZ1GC/9zCOvI8MUYb748fIMdC5zeZOGpTPzYL8HPV4+65nY3+OMT8+0IS2JS
+kJACY35PygG1QnWjF7JmwfBnAGe3M3jJ2OJe1IiF8lR6max8qziACp5cGHxAMq3B
+d+XyW62Jfft6iGyz4+RAslfELwJXtLqgnJPy3NoJDy3eSghTCCh43mjuRctsVctk
+7aYaVXRjxdDyfLBn013vvyPbIibusQ==
+=6Ce6
+-----END PGP SIGNATURE-----
+
+--Sig_/xzv.XEbMG=15e_LStDYa1s9--
