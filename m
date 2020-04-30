@@ -2,139 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B871C0852
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAD01C085D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgD3Ul0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 16:41:26 -0400
-Received: from mga17.intel.com ([192.55.52.151]:53235 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726784AbgD3Ul0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:41:26 -0400
-IronPort-SDR: 6cjgBb5p4/wi34Y8AduGNh3uJQEt8VU+FC1C8P0lqqa+i+mfqZlknMhKsRp6XqCHYOS2uEzIy0
- 1upZY4zHPOAQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 13:41:24 -0700
-IronPort-SDR: z1RGRQUi4pCy6rG9DAyNKUjXl+0fSSUlsOrSnoHpDJFU6ONyTvf/IJ5/EKMIYR8Y6de5JVUFv8
- nfOnyaqPOG1Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,337,1583222400"; 
-   d="scan'208";a="249853406"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by fmsmga008.fm.intel.com with ESMTP; 30 Apr 2020 13:41:24 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
-        KarimAllah Raslan <karahmed@amazon.de>
-Subject: [PATCH] KVM: nVMX: Skip IBPB when switching between vmcs01 and vmcs02
-Date:   Thu, 30 Apr 2020 13:41:23 -0700
-Message-Id: <20200430204123.2608-1-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
+        id S1727092AbgD3Umh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 16:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726781AbgD3Umg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 16:42:36 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86881C035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 13:42:36 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id y25so462059pfn.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 13:42:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=evUox8r8uOfR78fNszPqbiwnmrlMrEI2BAyh4m9Yv54=;
+        b=QnwCazAp4MOubStUqIoXrdVbndInaGvYqm9yAaq+2LiIH7lUYJvFvWi1Ba/heC47yu
+         PfRRYw6MWYQzz7EQJ/5zhK2gMU8eyXOYUJRquyq2VdIzuwuvHJ0hvm8Fn4scql6CsgnK
+         9gcgwi3EAnpJCWQ59vqp2dqQi4jjJuPpvHsxE7tVate+P+qx2w5gHIAZj5ZJgMQa9Cck
+         EyVA8/A5pIG7rGnXJGm7THue8rw54QYlvteMEgHaAn3krbpyQknON++KmRwa9DoSciZl
+         umMmNps2ULLkKxdZ4PghSFurtJZjM4BMIr3S+cVNggThE0MjBlsQ6WOSEhFaIcTIYS/3
+         SGAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=evUox8r8uOfR78fNszPqbiwnmrlMrEI2BAyh4m9Yv54=;
+        b=gHM0j1NRFkgAnQaEHNDCvC/+wJoQ28qPqt0b3xboj3XQI0i/QLmXvhfh5CaOKGdqJ8
+         NMJ8EkYzH1C/31WkpqNwgO2Z/dHxPwQK/pt/WPUZD7R2CuwlPXeIrMopEvnwurf1RloS
+         CHJ15xR+tn9dWQfhhpWkG/YLB9EuWtx6Ak5ArCfjYSgKcfQ8RdqbaA56kgzUrRpNqcck
+         6nrpHYw36vLric9hLGMYx75LdadFCqLzBol6Hn6cMXOBp1oxhMEBJdnTzTcMC13oNoYq
+         cSgW2CqZqMufnUNDYDxNbcxy3/tlSOQj5SZql1SSkbM90IGuv7LJMy8XiDpjLqUrxbqp
+         WOfA==
+X-Gm-Message-State: AGi0PuYU7b/F7NiZrXyNfgbhAKrkM2XZzUj56nDyjop/VAi/H+FX8vyM
+        DHUGHI6YCYC/rnzIqQK4z/wCRQ==
+X-Google-Smtp-Source: APiQypIVxRDWynefJ2VPD1kCDmu4nsDPWzoEfoK7vamMy+pYmOBr2ZPqWddqsb9vSzzIhcLrnPtRcg==
+X-Received: by 2002:a63:175c:: with SMTP id 28mr764713pgx.44.1588279355955;
+        Thu, 30 Apr 2020 13:42:35 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id i185sm564158pfg.14.2020.04.30.13.42.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 13:42:35 -0700 (PDT)
+Date:   Thu, 30 Apr 2020 14:42:33 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     bjorn.andersson@linaro.org, ohad@wizery.com, loic.pallardy@st.com,
+        s-anna@ti.com, linux-remoteproc@vger.kernel.org, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 12/14] remoteproc: Introducing function
+ rproc_set_state_machine()
+Message-ID: <20200430204233.GB18004@xps15>
+References: <20200424200135.28825-1-mathieu.poirier@linaro.org>
+ <20200424200135.28825-13-mathieu.poirier@linaro.org>
+ <d297aeab-4f7e-95e0-04c0-266e0f08b2d0@st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d297aeab-4f7e-95e0-04c0-266e0f08b2d0@st.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Skip the Indirect Branch Prediction Barrier that is triggered on a VMCS
-switch when running with spectre_v2_user=on/auto if the switch is
-between two VMCSes in the same guest, i.e. between vmcs01 and vmcs02.
-The IBPB is intended to prevent one guest from attacking another, which
-is unnecessary in the nested case as it's the same guest from KVM's
-perspective.
+On Wed, Apr 29, 2020 at 11:22:28AM +0200, Arnaud POULIQUEN wrote:
+> 
+> 
+> On 4/24/20 10:01 PM, Mathieu Poirier wrote:
+> > Introducting function rproc_set_state_machine() to add
+> > operations and a set of flags to use when synchronising with
+> > a remote processor.
+> > 
+> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > ---
+> >  drivers/remoteproc/remoteproc_core.c     | 54 ++++++++++++++++++++++++
+> >  drivers/remoteproc/remoteproc_internal.h |  6 +++
+> >  include/linux/remoteproc.h               |  3 ++
+> >  3 files changed, 63 insertions(+)
+> > 
+> > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> > index 48afa1f80a8f..5c48714e8702 100644
+> > --- a/drivers/remoteproc/remoteproc_core.c
+> > +++ b/drivers/remoteproc/remoteproc_core.c
+> > @@ -2065,6 +2065,59 @@ int devm_rproc_add(struct device *dev, struct rproc *rproc)
+> >  }
+> >  EXPORT_SYMBOL(devm_rproc_add);
+> >  
+> > +/**
+> > + * rproc_set_state_machine() - Set a synchronisation ops and set of flags
+> > + *			       to use with a remote processor
+> > + * @rproc:	The remote processor to work with
+> > + * @sync_ops:	The operations to use when synchronising with a remote
+> > + *		processor
+> > + * @sync_flags:	The flags to use when deciding if the remoteproc core
+> > + *		should be synchronising with a remote processor
+> > + *
+> > + * Returns 0 on success, an error code otherwise.
+> > + */
+> > +int rproc_set_state_machine(struct rproc *rproc,
+> > +			    const struct rproc_ops *sync_ops,
+> > +			    struct rproc_sync_flags sync_flags)
+> 
+> So this API should be called by platform driver only in case of synchronization
+> support, right?
 
-This all but eliminates the overhead observed for nested VMX transitions
-when running with CONFIG_RETPOLINE=y and spectre_v2_user=on/auto, which
-can be significant, e.g. roughly 3x on current systems.
+Correct
 
-Reported-by: Alexander Graf <graf@amazon.com>
-Cc: KarimAllah Raslan <karahmed@amazon.de>
-Cc: stable@vger.kernel.org
-Fixes: 15d45071523d ("KVM/x86: Add IBPB support")
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/nested.c |  2 +-
- arch/x86/kvm/vmx/vmx.c    | 12 ++++++++----
- arch/x86/kvm/vmx/vmx.h    |  3 ++-
- 3 files changed, 11 insertions(+), 6 deletions(-)
+> In this case i would rename it as there is also a state machine in "normal" boot
+> proposal: rproc_set_sync_machine or rproc_set_sync_state_machine
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 2c36f3f53108..1a02bdfeeb2b 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -303,7 +303,7 @@ static void vmx_switch_vmcs(struct kvm_vcpu *vcpu, struct loaded_vmcs *vmcs)
- 	cpu = get_cpu();
- 	prev = vmx->loaded_vmcs;
- 	vmx->loaded_vmcs = vmcs;
--	vmx_vcpu_load_vmcs(vcpu, cpu);
-+	vmx_vcpu_load_vmcs(vcpu, cpu, prev);
- 	vmx_sync_vmcs_host_state(vmx, prev);
- 	put_cpu();
- 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 3ab6ca6062ce..818dd8ba5e9f 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1311,10 +1311,12 @@ static void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
- 		pi_set_on(pi_desc);
- }
- 
--void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu)
-+void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
-+			struct loaded_vmcs *buddy)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	bool already_loaded = vmx->loaded_vmcs->cpu == cpu;
-+	struct vmcs *prev;
- 
- 	if (!already_loaded) {
- 		loaded_vmcs_clear(vmx->loaded_vmcs);
-@@ -1333,10 +1335,12 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu)
- 		local_irq_enable();
- 	}
- 
--	if (per_cpu(current_vmcs, cpu) != vmx->loaded_vmcs->vmcs) {
-+	prev = per_cpu(current_vmcs, cpu);
-+	if (prev != vmx->loaded_vmcs->vmcs) {
- 		per_cpu(current_vmcs, cpu) = vmx->loaded_vmcs->vmcs;
- 		vmcs_load(vmx->loaded_vmcs->vmcs);
--		indirect_branch_prediction_barrier();
-+		if (!buddy || buddy->vmcs != prev)
-+			indirect_branch_prediction_barrier();
- 	}
- 
- 	if (!already_loaded) {
-@@ -1377,7 +1381,7 @@ void vmx_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 
--	vmx_vcpu_load_vmcs(vcpu, cpu);
-+	vmx_vcpu_load_vmcs(vcpu, cpu, NULL);
- 
- 	vmx_vcpu_pi_load(vcpu, cpu);
- 
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index b5e773267abe..d3d48acc6bd9 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -320,7 +320,8 @@ struct kvm_vmx {
- };
- 
- bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
--void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu);
-+void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
-+			struct loaded_vmcs *buddy);
- void vmx_vcpu_load(struct kvm_vcpu *vcpu, int cpu);
- int allocate_vpid(void);
- void free_vpid(int vpid);
--- 
-2.26.0
+That is a valid observation - rproc_set_sync_state_machine() sounds descriptive
+enough for me.
 
+> 
+> > +{
+> > +	if (!rproc || !sync_ops)
+> > +		return -EINVAL;
+> > +
+> > +	/*
+> > +	 * No point in going further if we never have to synchronise with
+> > +	 * the remote processor.
+> > +	 */
+> > +	if (!sync_flags.on_init &&
+> > +	    !sync_flags.after_stop && !sync_flags.after_crash)
+> > +		return 0;
+> > +
+> > +	/*
+> > +	 * Refuse to go further if remoteproc operations have been allocated
+> > +	 * but they will never be used.
+> > +	 */
+> > +	if (rproc->ops && sync_flags.on_init &&
+> > +	    sync_flags.after_stop && sync_flags.after_crash)
+> > +		return -EINVAL;
+> > +
+> > +	/*
+> > +	 * Don't allow users to set this more than once to avoid situations
+> > +	 * where the remote processor can't be recovered.
+> > +	 */
+> > +	if (rproc->sync_ops)
+> > +		return -EINVAL;
+> > +
+> > +	rproc->sync_ops = kmemdup(sync_ops, sizeof(*sync_ops), GFP_KERNEL);
+> > +	if (!rproc->sync_ops)
+> > +		return -ENOMEM;
+> > +
+> > +	rproc->sync_flags = sync_flags;
+> > +	/* Tell the core what to do when initialising */
+> > +	rproc_set_sync_flag(rproc, RPROC_SYNC_STATE_INIT);
+> 
+> Is there a use case where sync_flags.on_init is false and other flags are true?
+
+I haven't seen one yet, which doesn't mean it doesn't exist or won't in the
+future.  I wanted to make this as flexible as possible.  I started with the idea
+of making synchronisation at initialisation time implicit if
+rproc_set_state_machine() is called but I know it is only a matter of time
+before people come up with some exotic use case where .on_init is false.
+
+> 
+> Look like on_init is useless and should not be exposed to the platform driver.
+> Or comments are missing to explain the usage of it vs the other flags.
+
+Comments added in remoteproc_internal.h and the new section in
+Documentation/remoteproc.txt aren't sufficient?  Can you give me a hint as to
+what you think is missing?
+
+> 
+> Regards,
+> Arnaud
+>  
+> > +
+> > +	return 0;
+> > +}
+> > +EXPORT_SYMBOL(rproc_set_state_machine);
+> > +
+> >  /**
+> >   * rproc_type_release() - release a remote processor instance
+> >   * @dev: the rproc's device
+> > @@ -2088,6 +2141,7 @@ static void rproc_type_release(struct device *dev)
+> >  	kfree_const(rproc->firmware);
+> >  	kfree_const(rproc->name);
+> >  	kfree(rproc->ops);
+> > +	kfree(rproc->sync_ops);
+> >  	kfree(rproc);
+> >  }
+> >  
+> > diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+> > index 7dcc0a26892b..c1a293a37c78 100644
+> > --- a/drivers/remoteproc/remoteproc_internal.h
+> > +++ b/drivers/remoteproc/remoteproc_internal.h
+> > @@ -27,6 +27,8 @@ struct rproc_debug_trace {
+> >  /*
+> >   * enum rproc_sync_states - remote processsor sync states
+> >   *
+> > + * @RPROC_SYNC_STATE_INIT	state to use when the remoteproc core
+> > + *				is initialising.
+> >   * @RPROC_SYNC_STATE_SHUTDOWN	state to use after the remoteproc core
+> >   *				has shutdown (rproc_shutdown()) the
+> >   *				remote processor.
+> > @@ -39,6 +41,7 @@ struct rproc_debug_trace {
+> >   * operation to use.
+> >   */
+> >  enum rproc_sync_states {
+> > +	RPROC_SYNC_STATE_INIT,
+> >  	RPROC_SYNC_STATE_SHUTDOWN,
+> >  	RPROC_SYNC_STATE_CRASHED,
+> >  };
+> > @@ -47,6 +50,9 @@ static inline void rproc_set_sync_flag(struct rproc *rproc,
+> >  				       enum rproc_sync_states state)
+> >  {
+> >  	switch (state) {
+> > +	case RPROC_SYNC_STATE_INIT:
+> > +		rproc->sync_with_rproc = rproc->sync_flags.on_init;
+> > +		break;
+> >  	case RPROC_SYNC_STATE_SHUTDOWN:
+> >  		rproc->sync_with_rproc = rproc->sync_flags.after_stop;
+> >  		break;
+> > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> > index ceb3b2bba824..a75ed92b3de6 100644
+> > --- a/include/linux/remoteproc.h
+> > +++ b/include/linux/remoteproc.h
+> > @@ -619,6 +619,9 @@ struct rproc *rproc_get_by_child(struct device *dev);
+> >  struct rproc *rproc_alloc(struct device *dev, const char *name,
+> >  			  const struct rproc_ops *ops,
+> >  			  const char *firmware, int len);
+> > +int rproc_set_state_machine(struct rproc *rproc,
+> > +			    const struct rproc_ops *sync_ops,
+> > +			    struct rproc_sync_flags sync_flags);
+> >  void rproc_put(struct rproc *rproc);
+> >  int rproc_add(struct rproc *rproc);
+> >  int rproc_del(struct rproc *rproc);
+> > 
