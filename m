@@ -2,375 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9000A1C06C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2444A1C06E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726927AbgD3Tqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726863AbgD3Tq2 (ORCPT
+        id S1726799AbgD3Trn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:47:43 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12925 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgD3Trn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:46:28 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4A5C035495
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:46:28 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id y25so378041pfn.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NxGWym6M39FpWdScigAXkwBmrVrNXh+0LWhd39ynj6c=;
-        b=XkUJdR8V1C3am+EJyt9UZIe3TO+QKdIR5fwICpZC4ZHIh7XC6dK2m/2frGsFFmVF4+
-         XFvFRZDs/uKFuBsrAMBeFg/o5gbGXanTomcJTZ9gpykF5Op/zXbfwstVNm9poKskcXUU
-         D4k5+FuOjdrHtSTiIAZzl4puSjm+lATNc65ww=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NxGWym6M39FpWdScigAXkwBmrVrNXh+0LWhd39ynj6c=;
-        b=JN9ctfpODyW9VnjATHamFHQyAbMsV7liRD2JOuFGcTqlzuxOm4GVGGB/M/rbUNqwM0
-         uIgNtZe2oPU7i0e/6NoXYSESfOdFwsCBgzNpOeFAyfVjs7WTC4dm5hLhjuiQAKf22O0m
-         VijK7d0llGpPjH+IitTOiISTlxLXpv7kxPDE9+wCuthqWKS/g5JMYUIdGo4ORwKJk6W7
-         ky9IN+wE1r6m7CbqhbSQdDC5Qp73hm0QqtGPhzLLC9VFYBJTCiSb7xU1767RiS96kDzn
-         YhPT5QK6Icv/wBh1L81cEb1jWxgTMPQgAuZZofKDYyG/o+JWQzWwP5nVfwTqdCfYsWLi
-         HQpg==
-X-Gm-Message-State: AGi0Pua1Rg+05HNXkp1NcjVVaTX1/shb06pgl59SRxeEnXqRJQeY5sK9
-        OqEu3YtpvKpjh812E8Nrm8a91w==
-X-Google-Smtp-Source: APiQypI8SL4AfT1E4wyLsRXT6pVJShj3Chcf1e1fcW4Z6r9ohTrqxNdAMX2KVlkj3fEWUtQ5+gqT5Q==
-X-Received: by 2002:a62:f247:: with SMTP id y7mr387808pfl.200.1588275987416;
-        Thu, 30 Apr 2020 12:46:27 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id u3sm495993pfb.105.2020.04.30.12.46.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 12:46:26 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
-        narmstrong@baylibre.com, a.hajda@samsung.com,
-        Laurent.pinchart@ideasonboard.com, spanda@codeaurora.org
-Cc:     linux-gpio@vger.kernel.org, jonas@kwiboo.se,
-        robdclark@chromium.org, bjorn.andersson@linaro.org,
-        jeffrey.l.hugo@gmail.com, jernej.skrabec@siol.net,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, swboyd@chromium.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/6] drm/bridge: ti-sn65dsi86: Export bridge GPIOs to Linux
-Date:   Thu, 30 Apr 2020 12:46:12 -0700
-Message-Id: <20200430124442.v4.1.Ia50267a5549392af8b37e67092ca653a59c95886@changeid>
-X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-In-Reply-To: <20200430194617.197510-1-dianders@chromium.org>
-References: <20200430194617.197510-1-dianders@chromium.org>
+        Thu, 30 Apr 2020 15:47:43 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eab2ae20001>; Thu, 30 Apr 2020 12:45:38 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 30 Apr 2020 12:47:42 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 30 Apr 2020 12:47:42 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
+ 2020 19:47:42 +0000
+Received: from [10.2.165.152] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
+ 2020 19:47:41 +0000
+Subject: Re: [RFC PATCH v11 6/9] media: tegra: Add Tegra210 Video input driver
+To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
+        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
+CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1588197606-32124-1-git-send-email-skomatineni@nvidia.com>
+ <1588197606-32124-7-git-send-email-skomatineni@nvidia.com>
+ <bacc4308-4b95-f566-b80e-096ff96407b5@gmail.com>
+ <4da289e6-036f-853b-beb4-379d6462adb0@gmail.com>
+ <c6d54885-6f23-f60c-a17b-3481fc4d6adf@gmail.com>
+ <b14b9dc5-7ac9-7735-d98d-eebc7e151cba@nvidia.com>
+ <7d31d24f-f353-7e82-3ff9-cdba8b773d1e@nvidia.com>
+ <06a4a067-8d54-4322-b2a6-14e82eaeda29@nvidia.com>
+ <47873bbd-cf90-4595-5a99-7e9113327ecc@nvidia.com>
+ <f6088e0f-4ac7-a6be-3ede-0233dc88ef2c@nvidia.com>
+ <71532440-f455-cc24-74f7-9ccad5947099@gmail.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <b3238987-5e8a-32f2-7ce7-924e86bc6e9e@nvidia.com>
+Date:   Thu, 30 Apr 2020 12:46:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <71532440-f455-cc24-74f7-9ccad5947099@gmail.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1588275938; bh=LFtJPl2MR0AiX6258PUQppdEd8eLbOAvI5VJBjgGH9g=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=eUHo0YmGx9MVTjHCuaf0rRHK356SAAoY7t2g7NlB5sRu0G58FMNaweMLmuxhWq1a8
+         7j30zDua+ErzaQQYE7y4fgrbbXCzzeq3XXjOtZ7SRSzN81ZctWiWNKX0yCOjfRcmJh
+         FwVH/uFGFRWw2JZB+rIqFTDd+Ga01nJZz0LbsjIw/AnMxVqQ+E3u9heYElVMe6qupL
+         mLXDMf6FmQpxSUMm4HD+qJ/KxWy7u+YXc4H66TzZtHcS/HKn3KlikWEUd9yQGF6bJC
+         NZ/x4JZXdPP5mguxapxvrNj48L3QdJI3RsZ6Qh3Rew6tC9FfQj+KxNd50nQjnDPx4v
+         lRfC1wQfkjWiQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ti-sn65dsi86 MIPI DSI to eDP bridge chip has 4 pins on it that can
-be used as GPIOs in a system.  Each pin can be configured as input,
-output, or a special function for the bridge chip.  These are:
-- GPIO1: SUSPEND Input
-- GPIO2: DSIA VSYNC
-- GPIO3: DSIA HSYNC or VSYNC
-- GPIO4: PWM
 
-Let's expose these pins as GPIOs.  A few notes:
-- Access to ti-sn65dsi86 is via i2c so we set "can_sleep".
-- These pins can't be configured for IRQ.
-- There are no programmable pulls or other fancy features.
-- Keeping the bridge chip powered might be expensive.  The driver is
-  setup such that if all used GPIOs are only inputs we'll power the
-  bridge chip on just long enough to read the GPIO and then power it
-  off again.  Setting a GPIO as output will keep the bridge powered.
-- If someone releases a GPIO we'll implicitly switch it to an input so
-  we no longer need to keep the bridge powered for it.
+On 4/30/20 12:33 PM, Dmitry Osipenko wrote:
+> 30.04.2020 22:09, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> On 4/30/20 11:18 AM, Sowjanya Komatineni wrote:
+>>> On 4/30/20 10:06 AM, Sowjanya Komatineni wrote:
+>>>> On 4/30/20 9:29 AM, Sowjanya Komatineni wrote:
+>>>>> On 4/30/20 9:04 AM, Sowjanya Komatineni wrote:
+>>>>>> On 4/30/20 7:13 AM, Dmitry Osipenko wrote:
+>>>>>>> 30.04.2020 17:02, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>>>>>> 30.04.2020 16:56, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>>>>>>> 30.04.2020 01:00, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=
+=82:
+>>>>>>>>>> +static int chan_capture_kthread_finish(void *data)
+>>>>>>>>>> +{
+>>>>>>>>>> +=C2=A0=C2=A0=C2=A0 struct tegra_vi_channel *chan =3D data;
+>>>>>>>>>> +=C2=A0=C2=A0=C2=A0 struct tegra_channel_buffer *buf;
+>>>>>>>>>> +
+>>>>>>>>>> +=C2=A0=C2=A0=C2=A0 set_freezable();
+>>>>>>>>>> +
+>>>>>>>>>> +=C2=A0=C2=A0=C2=A0 while (1) {
+>>>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 try_to_freeze();
+>>>>>>>>> I guess it won't be great to freeze in the middle of a capture
+>>>>>>>>> process, so:
+>>>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (list_empty(&chan-=
+>done))
+>>>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 try_to_freeze();
+>>>>>>>> And here should be some locking protection in order not race with
+>>>>>>>> the
+>>>>>>>> chan_capture_kthread_start because kthread_finish could freeze
+>>>>>>>> before
+>>>>>>>> kthread_start.
+>>>>>>> Or maybe both start / finish threads should simply be allowed to
+>>>>>>> freeze
+>>>>>>> only when both capture and done lists are empty.
+>>>>>>>
+>>>>>>> if (list_empty(&chan->capture) &&
+>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0 list_empty(&chan->done))
+>>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0try_to_freeze();
+>>>>>> good to freeze when not in middle of the frame capture but why
+>>>>>> should we not allow freeze in between captures?
+>>>>>>
+>>>>>> Other drivers do allow freeze in between frame captures.
+>>>>>>
+>>>>>> I guess we can freeze before dequeue for capture and in finish
+>>>>>> thread we can freeze after capture done. This also don't need to
+>>>>>> check for list_empty with freeze to allow between frame captures.
+>>>>>>
+>>>>> Also if we add check for both lists empty, freeze is not allowed as
+>>>>> long as streaming is going on and in case of continuous streaming
+>>>>> freeze will never happen.
+>>> To allow freeze b/w frames (but not in middle of a frame),
+>>>
+>>> for capture_start thread, probably we can do unconditional
+>>> try_to_freeze()
+> Is it possible to use wait_event_freezable()?
+>
+> https://www.kernel.org/doc/Documentation/power/freezing-of-tasks.txt
+>
+> Will the wait_event_interruptible() be woken up when system freezes?
 
-Because of all of the above limitations we just need to implement a
-bare-bones GPIO driver.  The device tree bindings already account for
-this device being a GPIO controller so we only need the driver changes
-for it.
+Based on wait_event_freezable implementation, looks like it similar to=20
+wait_event_interruptible + try_to_free() as it does freezable_schedule=20
+unlike schedule with wait_event_interruptible.
 
-NOTE: Despite the fact that these pins are nominally muxable I don't
-believe it makes sense to expose them through the pinctrl interface as
-well as the GPIO interface.  The special functions are things that the
-bridge chip driver itself would care about and it can just configure
-the pins as needed.
+So using this for capture_start may be ok to allow freeze before start=20
+of frame. But can't use for capture_finish as this is same as=20
+wait_event_interruptible followed by unconditional try_to_freeze.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
+>
+>>> for capture_finish thread, at end of capture done we can do
+>>> try_to_freeze() only when done list is empty
+> This doesn't prevent situation where the done-list is empty and the
+> "finish" thread freezes, in the same time the "start" thread issues new
+> capture and then freezes too.
+>
+> 1. "start" thread issues capture
+>
+> 2. "finish" thread wakes and waits for the capture to complete
+>
+> 3. "start" thread begins another capture, waits for FRAME_START
+>
+> 4. system freezing activates
+>
+> 5. "finish" thread completes the capture and freezes because done-list
+> is empty
+>
+> 6. "start" thread gets FRAME_START, issues another capture and freezes
 
-Changes in v4:
-- Don't include gpio.h
-- Use gpiochip_get_data() instead of container_of() to get data.
-- GPIOF_DIR_XXX => GPIO_LINE_DIRECTION_XXX
-- Use Linus W's favorite syntax to read a bit from a bitfield.
-- Define and use SN_GPIO_MUX_MASK.
-- Add a comment about why we use a bitmap for gchip_output.
+This will not happen as we allow double buffering done list will not be=20
+empty till stream stop happens
 
-Changes in v3:
-- Becaue => Because
-- Add a kernel-doc to our pdata to clarify double-duty of gchip_output.
-- More comments about how powering off affects us (get_dir, dir_input).
-- Cleanup tail of ti_sn_setup_gpio_controller() to avoid one "return".
-- Use a bitmap rather than rolling my own.
+There will always be 1 outstanding frame in done list
 
-Changes in v2:
-- ("Export...GPIOs") is 1/2 of replacement for ("Allow...bridge GPIOs")
-
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 195 ++++++++++++++++++++++++++
- 1 file changed, 195 insertions(+)
-
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 6ad688b320ae..1a125423eb07 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -4,9 +4,11 @@
-  * datasheet: http://www.ti.com/lit/ds/symlink/sn65dsi86.pdf
-  */
- 
-+#include <linux/bits.h>
- #include <linux/clk.h>
- #include <linux/debugfs.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/gpio/driver.h>
- #include <linux/i2c.h>
- #include <linux/iopoll.h>
- #include <linux/module.h>
-@@ -54,6 +56,14 @@
- #define  BPP_18_RGB				BIT(0)
- #define SN_HPD_DISABLE_REG			0x5C
- #define  HPD_DISABLE				BIT(0)
-+#define SN_GPIO_IO_REG				0x5E
-+#define  SN_GPIO_INPUT_SHIFT			4
-+#define  SN_GPIO_OUTPUT_SHIFT			0
-+#define SN_GPIO_CTRL_REG			0x5F
-+#define  SN_GPIO_MUX_INPUT			0
-+#define  SN_GPIO_MUX_OUTPUT			1
-+#define  SN_GPIO_MUX_SPECIAL			2
-+#define  SN_GPIO_MUX_MASK			0x3
- #define SN_AUX_WDATA_REG(x)			(0x64 + (x))
- #define SN_AUX_ADDR_19_16_REG			0x74
- #define SN_AUX_ADDR_15_8_REG			0x75
-@@ -88,6 +98,34 @@
- 
- #define SN_REGULATOR_SUPPLY_NUM		4
- 
-+#define SN_NUM_GPIOS			4
-+
-+/**
-+ * struct ti_sn_bridge - Platform data for ti-sn65dsi86 driver.
-+ * @dev:          Pointer to our device.
-+ * @regmap:       Regmap for accessing i2c.
-+ * @aux:          Our aux channel.
-+ * @bridge:       Our bridge.
-+ * @connector:    Our connector.
-+ * @debugfs:      Used for managing our debugfs.
-+ * @host_node:    Remote DSI node.
-+ * @dsi:          Our MIPI DSI source.
-+ * @refclk:       Our reference clock.
-+ * @panel:        Our panel.
-+ * @enable_gpio:  The GPIO we toggle to enable the bridge.
-+ * @supplies:     Data for bulk enabling/disabling our regulators.
-+ * @dp_lanes:     Count of dp_lanes we're using.
-+ *
-+ * @gchip:        If we expose our GPIOs, this is used.
-+ * @gchip_output: A cache of whether we've set GPIOs to output.  This
-+ *                serves double-duty of keeping track of the direction and
-+ *                also keeping track of whether we've incremented the
-+ *                pm_runtime reference count for this pin, which we do
-+ *                whenever a pin is configured as an output.  This is a
-+ *                bitmap so we can do atomic ops on it without an extra
-+ *                lock so concurrent users of our 4 GPIOs don't stomp on
-+ *                each other's read-modify-write.
-+ */
- struct ti_sn_bridge {
- 	struct device			*dev;
- 	struct regmap			*regmap;
-@@ -102,6 +140,9 @@ struct ti_sn_bridge {
- 	struct gpio_desc		*enable_gpio;
- 	struct regulator_bulk_data	supplies[SN_REGULATOR_SUPPLY_NUM];
- 	int				dp_lanes;
-+
-+	struct gpio_chip		gchip;
-+	DECLARE_BITMAP(gchip_output, SN_NUM_GPIOS);
- };
- 
- static const struct regmap_range ti_sn_bridge_volatile_ranges[] = {
-@@ -874,6 +915,154 @@ static int ti_sn_bridge_parse_dsi_host(struct ti_sn_bridge *pdata)
- 	return 0;
- }
- 
-+static int ti_sn_bridge_gpio_get_direction(struct gpio_chip *chip,
-+					   unsigned int offset)
-+{
-+	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
-+
-+	/*
-+	 * We already have to keep track of the direction because we use
-+	 * that to figure out whether we've powered the device.  We can
-+	 * just return that rather than (maybe) powering up the device
-+	 * to ask its direction.
-+	 */
-+	return test_bit(offset, pdata->gchip_output) ?
-+		GPIO_LINE_DIRECTION_OUT : GPIO_LINE_DIRECTION_IN;
-+}
-+
-+static int ti_sn_bridge_gpio_get(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
-+	unsigned int val;
-+	int ret;
-+
-+	/*
-+	 * When the pin is an input we don't forcibly keep the bridge
-+	 * powered--we just power it on to read the pin.  NOTE: part of
-+	 * the reason this works is that the bridge defaults (when
-+	 * powered back on) to all 4 GPIOs being configured as GPIO input.
-+	 * Also note that if something else is keeping the chip powered the
-+	 * pm_runtime functions are lightweight increments of a refcount.
-+	 */
-+	pm_runtime_get_sync(pdata->dev);
-+	ret = regmap_read(pdata->regmap, SN_GPIO_IO_REG, &val);
-+	pm_runtime_put(pdata->dev);
-+
-+	if (ret)
-+		return ret;
-+
-+	return !!(val & BIT(SN_GPIO_INPUT_SHIFT + offset));
-+}
-+
-+static void ti_sn_bridge_gpio_set(struct gpio_chip *chip, unsigned int offset,
-+				  int val)
-+{
-+	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
-+	int ret;
-+
-+	if (!test_bit(offset, pdata->gchip_output)) {
-+		dev_err(pdata->dev, "Ignoring GPIO set while input\n");
-+		return;
-+	}
-+
-+	val &= 1;
-+	ret = regmap_update_bits(pdata->regmap, SN_GPIO_IO_REG,
-+				 BIT(SN_GPIO_OUTPUT_SHIFT + offset),
-+				 val << (SN_GPIO_OUTPUT_SHIFT + offset));
-+}
-+
-+static int ti_sn_bridge_gpio_direction_input(struct gpio_chip *chip,
-+					     unsigned int offset)
-+{
-+	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
-+	int shift = offset * 2;
-+	int ret;
-+
-+	if (!test_and_clear_bit(offset, pdata->gchip_output))
-+		return 0;
-+
-+	ret = regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-+				 SN_GPIO_MUX_MASK << shift,
-+				 SN_GPIO_MUX_INPUT << shift);
-+	if (ret) {
-+		set_bit(offset, pdata->gchip_output);
-+		return ret;
-+	}
-+
-+	/*
-+	 * NOTE: if nobody else is powering the device this may fully power
-+	 * it off and when it comes back it will have lost all state, but
-+	 * that's OK because the default is input and we're now an input.
-+	 */
-+	pm_runtime_put(pdata->dev);
-+
-+	return 0;
-+}
-+
-+static int ti_sn_bridge_gpio_direction_output(struct gpio_chip *chip,
-+					      unsigned int offset, int val)
-+{
-+	struct ti_sn_bridge *pdata = gpiochip_get_data(chip);
-+	int shift = offset * 2;
-+	int ret;
-+
-+	if (test_and_set_bit(offset, pdata->gchip_output))
-+		return 0;
-+
-+	pm_runtime_get_sync(pdata->dev);
-+
-+	/* Set value first to avoid glitching */
-+	ti_sn_bridge_gpio_set(chip, offset, val);
-+
-+	/* Set direction */
-+	ret = regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-+				 SN_GPIO_MUX_MASK << shift,
-+				 SN_GPIO_MUX_OUTPUT << shift);
-+	if (ret) {
-+		clear_bit(offset, pdata->gchip_output);
-+		pm_runtime_put(pdata->dev);
-+	}
-+
-+	return ret;
-+}
-+
-+static void ti_sn_bridge_gpio_free(struct gpio_chip *chip, unsigned int offset)
-+{
-+	/* We won't keep pm_runtime if we're input, so switch there on free */
-+	ti_sn_bridge_gpio_direction_input(chip, offset);
-+}
-+
-+static const char * const ti_sn_bridge_gpio_names[SN_NUM_GPIOS] = {
-+	"GPIO1", "GPIO2", "GPIO3", "GPIO4"
-+};
-+
-+static int ti_sn_setup_gpio_controller(struct ti_sn_bridge *pdata)
-+{
-+	int ret;
-+
-+	/* Only init if someone is going to use us as a GPIO controller */
-+	if (!of_property_read_bool(pdata->dev->of_node, "gpio-controller"))
-+		return 0;
-+
-+	pdata->gchip.label = dev_name(pdata->dev);
-+	pdata->gchip.parent = pdata->dev;
-+	pdata->gchip.owner = THIS_MODULE;
-+	pdata->gchip.free = ti_sn_bridge_gpio_free;
-+	pdata->gchip.get_direction = ti_sn_bridge_gpio_get_direction;
-+	pdata->gchip.direction_input = ti_sn_bridge_gpio_direction_input;
-+	pdata->gchip.direction_output = ti_sn_bridge_gpio_direction_output;
-+	pdata->gchip.get = ti_sn_bridge_gpio_get;
-+	pdata->gchip.set = ti_sn_bridge_gpio_set;
-+	pdata->gchip.can_sleep = true;
-+	pdata->gchip.names = ti_sn_bridge_gpio_names;
-+	pdata->gchip.ngpio = SN_NUM_GPIOS;
-+	ret = devm_gpiochip_add_data(pdata->dev, &pdata->gchip, pdata);
-+	if (ret)
-+		dev_err(pdata->dev, "can't add gpio chip\n");
-+
-+	return ret;
-+}
-+
- static int ti_sn_bridge_probe(struct i2c_client *client,
- 			      const struct i2c_device_id *id)
- {
-@@ -937,6 +1126,12 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
- 
- 	pm_runtime_enable(pdata->dev);
- 
-+	ret = ti_sn_setup_gpio_controller(pdata);
-+	if (ret) {
-+		pm_runtime_disable(pdata->dev);
-+		return ret;
-+	}
-+
- 	i2c_set_clientdata(client, pdata);
- 
- 	pdata->aux.name = "ti-sn65dsi86-aux";
--- 
-2.26.2.526.g744177e7f7-goog
-
+>> My understanding is buffer updates/release should not happen after
+>> frozen state. So we should let frame capture of outstanding buffer to
+>> finish before freezing in capture_finish thread.
+>>
+>> But for capture_start thread we can unconditionally freeze before
+>> dequeuing next buffer for capture.
+>>
+>> With this when both threads are in frozen state and no buffer
+>> updates/captures will happen after frozen state.
+>>
+>> I think its not required to finish streaming of all frames completely to
+>> let threads to enter frozen state as streaming can be continuous as well=
+.
+> Yes, only freezing in the middle of IO should be avoided.
+>
+> https://lwn.net/Articles/705269/
+>
+>>>> Hi Dmitry,
+>>>>
+>>>> Will update in v12 to not allow freeze in middle of a frame capture.
+>>>>
+>>>> Can you please confirm on above if you agree to allow freeze to
+>>>> happen in b/w frame captures?
+>>>>
+>>>> Also as most feedback has been received from you by now, appreciate
+>>>> if you can provide all in this v11 if you have anything else so we
+>>>> will not have any new changes after v12.
+> I'll take another look tomorrow / during weekend and let you know.
