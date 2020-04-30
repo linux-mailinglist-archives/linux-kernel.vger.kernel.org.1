@@ -2,148 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC181C0124
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14DA31C01AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgD3QCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726350AbgD3QCV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:02:21 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF96AC035494;
-        Thu, 30 Apr 2020 09:02:21 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x15so11595pfa.1;
-        Thu, 30 Apr 2020 09:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=cNV8wBKZnzVBtfymmveclI4KpbJZuqPxmoI95kkMdEk=;
-        b=gUF51ZdEmMNREvmXqCvOQL6dUB2acFhJN4T+qV1lyQaqLu19s6doZkP4sgYp+HFDxZ
-         vB0lbjGzTxRL0fE/0T+K+CkxGMAw3phFJpqHqgcsu395S+hUjHM5tAqQTmfF4iNiTK0S
-         rUy19yKokxXhSnhmACYx4qtBM0xXlI+/94J8U8fhHMisdBW4uA2nlERs8MexdDiujgcZ
-         owtBIRwsLeE/PmzeQlKTzRuCL3sk/LZ2tdoyH5VDaq9dBHU2/0EM0T/Zls4dXbKeiLK1
-         6fCIg28YSOEKSUTj0xoShyBrKt5gcQKodO8WzxA4w7+0WouJT5aiUzn2W9DlzrOGIU/i
-         usYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=cNV8wBKZnzVBtfymmveclI4KpbJZuqPxmoI95kkMdEk=;
-        b=i7OpEODc4npCC8mfXm1lhF/LZ6A4mKhw1tyuUpzTgysIU6cbDkD6ZRZXJNIwefDlMW
-         ZJwz+/LxIRrCnvBPfvNHJNadoCNfe1jLDq97rWl7CVapasboEn0W4li7z4Wp7lNtSDxu
-         MPEKbliIkeliAdhHReI8jPaQo4Ywmv9fD4G1//xU7+fWPYUFghc6ftcbv5WI67jZaK8v
-         5i0VflgXss13Tvwba5VxwBtXtqLJ6zYHp8hwNLMsvTHX8hbtbd2J45InmWtGt6QCFxzN
-         TUrO7SUO3ocTBtf47Kt6TpXAJ5QACWr2bWcC5OJDMaA++efxJln95/OWd/abFxWCErcL
-         D18w==
-X-Gm-Message-State: AGi0PuYqAmoYBM/boydJyRPuVmVi8wm/O9jCioC7ETcY3/i5RlO3btym
-        Sk687PFzK2bToX0WTZuXFczmxhY=
-X-Google-Smtp-Source: APiQypKDW2dWa9U3zBxfHDvIfC7dS46oUZwZ5hSH0zqX0CXg5Qavgg068rmwXmccEmvXAV0Z3Zj/ng==
-X-Received: by 2002:aa7:9811:: with SMTP id e17mr28538pfl.70.1588262541257;
-        Thu, 30 Apr 2020 09:02:21 -0700 (PDT)
-Received: from localhost.localdomain ([2402:3a80:d32:dd79:2591:468a:ee81:9c85])
-        by smtp.gmail.com with ESMTPSA id 5sm244359pjf.19.2020.04.30.09.02.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 09:02:20 -0700 (PDT)
-From:   madhuparnabhowmik10@gmail.com
-To:     zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
-        paulmck@kernel.org
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        frextrite@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Subject: [PATCH] integrity: evm: Fix RCU list related warnings.
-Date:   Thu, 30 Apr 2020 21:32:05 +0530
-Message-Id: <20200430160205.17798-1-madhuparnabhowmik10@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727982AbgD3QIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:08:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726761AbgD3QEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:04:37 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1A81208D5;
+        Thu, 30 Apr 2020 16:04:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588262676;
+        bh=htL5CBKoN0WCDcYQWi30eM6Fpz9wSc9gmJDRu0SQ/NI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=unU5CxMku37iTcODJkr/My/DCiuY6c7gGAUz/nAMxHPid7wUgnKJN7TIkX32+xzAE
+         LaNUyPunTxlMUmMWOxf8nrGoMgwV6nioZLtQ6AY+8pCNjmTJpZEtKL/ngWXECpueqz
+         gmp7pUE+yyWwIAa56XTDl09fGP1NFHQBOR2lpjN0=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jUBft-00AxE8-VJ; Thu, 30 Apr 2020 18:04:33 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        devel@driverdev.osuosl.org, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org,
+        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
+        netdev@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Florian Westphal <fw@strlen.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-wireless@vger.kernel.org, Geoff Levand <geoff@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-can@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>,
+        linux-sctp@vger.kernel.org, Vlad Yasevich <vyasevich@gmail.com>,
+        rds-devel@oss.oracle.com,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        David Howells <dhowells@redhat.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Remi Denis-Courmont <courmisch@gmail.com>,
+        linux-rdma@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-x25@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 00/37] net: manually convert files to ReST format - part 2
+Date:   Thu, 30 Apr 2020 18:03:55 +0200
+Message-Id: <cover.1588261997.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+That's the second part of my work to convert the networking
+text files into ReST. it is based on today's linux-next (next-20200430).
 
-This patch fixes the following warning and few other
-instances of traversal of evm_config_xattrnames list:
+The full series (including those ones) are at:
 
-[   32.848432] =============================
-[   32.848707] WARNING: suspicious RCU usage
-[   32.848966] 5.7.0-rc1-00006-ga8d5875ce5f0b #1 Not tainted
-[   32.849308] -----------------------------
-[   32.849567] security/integrity/evm/evm_main.c:231 RCU-list traversed in non-reader section!!
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=net-docs
 
-Since entries are only added to the list and never deleted,
-use list_For_each_entry_lockless() instead of
-list_for_each_entry_rcu() for traversing the list.
-Also, add a relevant comment in evm_secfs.c to indicate this fact.
+I should be sending the remaining patches (another /38 series)
+after getting those merged at -next.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
----
- security/integrity/evm/evm_crypto.c | 2 +-
- security/integrity/evm/evm_main.c   | 4 ++--
- security/integrity/evm/evm_secfs.c  | 9 ++++++++-
- 3 files changed, 11 insertions(+), 4 deletions(-)
+The documents, converted to HTML via the building system are at:
 
-diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-index 35682852ddea..b2dc87da5f50 100644
---- a/security/integrity/evm/evm_crypto.c
-+++ b/security/integrity/evm/evm_crypto.c
-@@ -207,7 +207,7 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
- 	data->hdr.length = crypto_shash_digestsize(desc->tfm);
- 
- 	error = -ENODATA;
--	list_for_each_entry_rcu(xattr, &evm_config_xattrnames, list) {
-+	list_for_each_entry_lockless(xattr, &evm_config_xattrnames, list) {
- 		bool is_ima = false;
- 
- 		if (strcmp(xattr->name, XATTR_NAME_IMA) == 0)
-diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-index d361d7fdafc4..0d36259b690d 100644
---- a/security/integrity/evm/evm_main.c
-+++ b/security/integrity/evm/evm_main.c
-@@ -97,7 +97,7 @@ static int evm_find_protected_xattrs(struct dentry *dentry)
- 	if (!(inode->i_opflags & IOP_XATTR))
- 		return -EOPNOTSUPP;
- 
--	list_for_each_entry_rcu(xattr, &evm_config_xattrnames, list) {
-+	list_for_each_entry_lockless(xattr, &evm_config_xattrnames, list) {
- 		error = __vfs_getxattr(dentry, inode, xattr->name, NULL, 0);
- 		if (error < 0) {
- 			if (error == -ENODATA)
-@@ -228,7 +228,7 @@ static int evm_protected_xattr(const char *req_xattr_name)
- 	struct xattr_list *xattr;
- 
- 	namelen = strlen(req_xattr_name);
--	list_for_each_entry_rcu(xattr, &evm_config_xattrnames, list) {
-+	list_for_each_entry_lockless(xattr, &evm_config_xattrnames, list) {
- 		if ((strlen(xattr->name) == namelen)
- 		    && (strncmp(req_xattr_name, xattr->name, namelen) == 0)) {
- 			found = 1;
-diff --git a/security/integrity/evm/evm_secfs.c b/security/integrity/evm/evm_secfs.c
-index 39ad1038d45d..cfc3075769bb 100644
---- a/security/integrity/evm/evm_secfs.c
-+++ b/security/integrity/evm/evm_secfs.c
-@@ -232,7 +232,14 @@ static ssize_t evm_write_xattrs(struct file *file, const char __user *buf,
- 		goto out;
- 	}
- 
--	/* Guard against races in evm_read_xattrs */
-+	/*
-+	 * xattr_list_mutex guards against races in evm_read_xattrs().
-+	 * Entries are only added to the evm_config_xattrnames list
-+	 * and never deleted. Therefore, the list is traversed
-+	 * using list_for_each_entry_lockless() without holding
-+	 * the mutex in evm_calc_hmac_or_hash(), evm_find_protected_xattrs()
-+	 * and evm_protected_xattr().
-+	 */
- 	mutex_lock(&xattr_list_mutex);
- 	list_for_each_entry(tmp, &evm_config_xattrnames, list) {
- 		if (strcmp(xattr->name, tmp->name) == 0) {
+	https://www.infradead.org/~mchehab/kernel_docs/networking/
+
+Mauro Carvalho Chehab (37):
+  docs: networking: convert l2tp.txt to ReST
+  docs: networking: convert lapb-module.txt to ReST
+  docs: networking: convert ltpc.txt to ReST
+  docs: networking: convert mac80211-injection.txt to ReST
+  docs: networking: convert mpls-sysctl.txt to ReST
+  docs: networking: convert multiqueue.txt to ReST
+  docs: networking: convert netconsole.txt to ReST
+  docs: networking: convert netdev-features.txt to ReST
+  docs: networking: convert netdevices.txt to ReST
+  docs: networking: convert netfilter-sysctl.txt to ReST
+  docs: networking: convert netif-msg.txt to ReST
+  docs: networking: convert nf_conntrack-sysctl.txt to ReST
+  docs: networking: convert nf_flowtable.txt to ReST
+  docs: networking: convert openvswitch.txt to ReST
+  docs: networking: convert operstates.txt to ReST
+  docs: networking: convert packet_mmap.txt to ReST
+  docs: networking: convert phonet.txt to ReST
+  docs: networking: convert pktgen.txt to ReST
+  docs: networking: convert PLIP.txt to ReST
+  docs: networking: convert ppp_generic.txt to ReST
+  docs: networking: convert proc_net_tcp.txt to ReST
+  docs: networking: convert radiotap-headers.txt to ReST
+  docs: networking: convert ray_cs.txt to ReST
+  docs: networking: convert rds.txt to ReST
+  docs: networking: convert regulatory.txt to ReST
+  docs: networking: convert rxrpc.txt to ReST
+  docs: networking: convert sctp.txt to ReST
+  docs: networking: convert secid.txt to ReST
+  docs: networking: convert seg6-sysctl.txt to ReST
+  docs: networking: convert skfp.txt to ReST
+  docs: networking: convert strparser.txt to ReST
+  docs: networking: convert switchdev.txt to ReST
+  docs: networking: convert tc-actions-env-rules.txt to ReST
+  docs: networking: convert tcp-thin.txt to ReST
+  docs: networking: convert team.txt to ReST
+  docs: networking: convert timestamping.txt to ReST
+  docs: networking: convert tproxy.txt to ReST
+
+ .../admin-guide/kernel-parameters.txt         |    2 +-
+ Documentation/admin-guide/serial-console.rst  |    2 +-
+ Documentation/filesystems/afs.rst             |    2 +-
+ Documentation/networking/bonding.rst          |    2 +-
+ Documentation/networking/can.rst              |    2 +-
+ .../networking/checksum-offloads.rst          |    2 +-
+ Documentation/networking/index.rst            |   37 +
+ Documentation/networking/ip-sysctl.rst        |    2 +-
+ .../networking/{l2tp.txt => l2tp.rst}         |  145 ++-
+ .../{lapb-module.txt => lapb-module.rst}      |  120 +-
+ .../networking/{ltpc.txt => ltpc.rst}         |   45 +-
+ ...1-injection.txt => mac80211-injection.rst} |   41 +-
+ .../{mpls-sysctl.txt => mpls-sysctl.rst}      |   17 +-
+ .../{multiqueue.txt => multiqueue.rst}        |   41 +-
+ .../{netconsole.txt => netconsole.rst}        |  125 +-
+ ...etdev-features.txt => netdev-features.rst} |   19 +-
+ .../{netdevices.txt => netdevices.rst}        |   21 +-
+ ...filter-sysctl.txt => netfilter-sysctl.rst} |   11 +-
+ Documentation/networking/netif-msg.rst        |   95 ++
+ Documentation/networking/netif-msg.txt        |   79 --
+ ...ack-sysctl.txt => nf_conntrack-sysctl.rst} |   51 +-
+ .../{nf_flowtable.txt => nf_flowtable.rst}    |   55 +-
+ .../{openvswitch.txt => openvswitch.rst}      |   23 +-
+ .../{operstates.txt => operstates.rst}        |   45 +-
+ Documentation/networking/packet_mmap.rst      | 1084 +++++++++++++++++
+ Documentation/networking/packet_mmap.txt      | 1061 ----------------
+ .../networking/{phonet.txt => phonet.rst}     |   56 +-
+ .../networking/{pktgen.txt => pktgen.rst}     |  316 ++---
+ .../networking/{PLIP.txt => plip.rst}         |   43 +-
+ .../{ppp_generic.txt => ppp_generic.rst}      |   52 +-
+ .../{proc_net_tcp.txt => proc_net_tcp.rst}    |   23 +-
+ ...iotap-headers.txt => radiotap-headers.rst} |   99 +-
+ .../networking/{ray_cs.txt => ray_cs.rst}     |  101 +-
+ Documentation/networking/{rds.txt => rds.rst} |  295 +++--
+ .../{regulatory.txt => regulatory.rst}        |   29 +-
+ .../networking/{rxrpc.txt => rxrpc.rst}       |  306 ++---
+ .../networking/{sctp.txt => sctp.rst}         |   37 +-
+ .../networking/{secid.txt => secid.rst}       |    6 +
+ Documentation/networking/seg6-sysctl.rst      |   26 +
+ Documentation/networking/seg6-sysctl.txt      |   18 -
+ .../networking/{skfp.txt => skfp.rst}         |  153 ++-
+ .../{strparser.txt => strparser.rst}          |   85 +-
+ .../{switchdev.txt => switchdev.rst}          |  114 +-
+ .../networking/tc-actions-env-rules.rst       |   29 +
+ .../networking/tc-actions-env-rules.txt       |   24 -
+ .../networking/{tcp-thin.txt => tcp-thin.rst} |    5 +
+ .../networking/{team.txt => team.rst}         |    6 +
+ .../{timestamping.txt => timestamping.rst}    |  154 ++-
+ .../networking/{tproxy.txt => tproxy.rst}     |   55 +-
+ MAINTAINERS                                   |   14 +-
+ drivers/net/Kconfig                           |    4 +-
+ drivers/net/appletalk/Kconfig                 |    2 +-
+ drivers/net/ethernet/toshiba/ps3_gelic_net.c  |    2 +-
+ drivers/net/ethernet/toshiba/spider_net.c     |    2 +-
+ drivers/net/fddi/Kconfig                      |    2 +-
+ drivers/net/plip/Kconfig                      |    2 +-
+ drivers/net/wireless/Kconfig                  |    2 +-
+ drivers/staging/fsl-dpaa2/ethsw/README        |    2 +-
+ include/linux/netdev_features.h               |    2 +-
+ include/net/cfg80211.h                        |    2 +-
+ include/uapi/linux/errqueue.h                 |    2 +-
+ net/Kconfig                                   |    2 +-
+ net/core/pktgen.c                             |    2 +-
+ net/lapb/Kconfig                              |    2 +-
+ net/mac80211/tx.c                             |    2 +-
+ net/netfilter/Kconfig                         |    2 +-
+ net/rxrpc/Kconfig                             |    6 +-
+ net/rxrpc/sysctl.c                            |    2 +-
+ net/wireless/radiotap.c                       |    2 +-
+ samples/pktgen/README.rst                     |    2 +-
+ 70 files changed, 2864 insertions(+), 2357 deletions(-)
+ rename Documentation/networking/{l2tp.txt => l2tp.rst} (79%)
+ rename Documentation/networking/{lapb-module.txt => lapb-module.rst} (74%)
+ rename Documentation/networking/{ltpc.txt => ltpc.rst} (86%)
+ rename Documentation/networking/{mac80211-injection.txt => mac80211-injection.rst} (67%)
+ rename Documentation/networking/{mpls-sysctl.txt => mpls-sysctl.rst} (82%)
+ rename Documentation/networking/{multiqueue.txt => multiqueue.rst} (76%)
+ rename Documentation/networking/{netconsole.txt => netconsole.rst} (66%)
+ rename Documentation/networking/{netdev-features.txt => netdev-features.rst} (95%)
+ rename Documentation/networking/{netdevices.txt => netdevices.rst} (89%)
+ rename Documentation/networking/{netfilter-sysctl.txt => netfilter-sysctl.rst} (62%)
+ create mode 100644 Documentation/networking/netif-msg.rst
+ delete mode 100644 Documentation/networking/netif-msg.txt
+ rename Documentation/networking/{nf_conntrack-sysctl.txt => nf_conntrack-sysctl.rst} (85%)
+ rename Documentation/networking/{nf_flowtable.txt => nf_flowtable.rst} (76%)
+ rename Documentation/networking/{openvswitch.txt => openvswitch.rst} (95%)
+ rename Documentation/networking/{operstates.txt => operstates.rst} (87%)
+ create mode 100644 Documentation/networking/packet_mmap.rst
+ delete mode 100644 Documentation/networking/packet_mmap.txt
+ rename Documentation/networking/{phonet.txt => phonet.rst} (82%)
+ rename Documentation/networking/{pktgen.txt => pktgen.rst} (62%)
+ rename Documentation/networking/{PLIP.txt => plip.rst} (92%)
+ rename Documentation/networking/{ppp_generic.txt => ppp_generic.rst} (91%)
+ rename Documentation/networking/{proc_net_tcp.txt => proc_net_tcp.rst} (83%)
+ rename Documentation/networking/{radiotap-headers.txt => radiotap-headers.rst} (70%)
+ rename Documentation/networking/{ray_cs.txt => ray_cs.rst} (65%)
+ rename Documentation/networking/{rds.txt => rds.rst} (59%)
+ rename Documentation/networking/{regulatory.txt => regulatory.rst} (94%)
+ rename Documentation/networking/{rxrpc.txt => rxrpc.rst} (85%)
+ rename Documentation/networking/{sctp.txt => sctp.rst} (64%)
+ rename Documentation/networking/{secid.txt => secid.rst} (87%)
+ create mode 100644 Documentation/networking/seg6-sysctl.rst
+ delete mode 100644 Documentation/networking/seg6-sysctl.txt
+ rename Documentation/networking/{skfp.txt => skfp.rst} (68%)
+ rename Documentation/networking/{strparser.txt => strparser.rst} (80%)
+ rename Documentation/networking/{switchdev.txt => switchdev.rst} (84%)
+ create mode 100644 Documentation/networking/tc-actions-env-rules.rst
+ delete mode 100644 Documentation/networking/tc-actions-env-rules.txt
+ rename Documentation/networking/{tcp-thin.txt => tcp-thin.rst} (97%)
+ rename Documentation/networking/{team.txt => team.rst} (67%)
+ rename Documentation/networking/{timestamping.txt => timestamping.rst} (89%)
+ rename Documentation/networking/{tproxy.txt => tproxy.rst} (70%)
+
 -- 
-2.17.1
+2.25.4
+
 
