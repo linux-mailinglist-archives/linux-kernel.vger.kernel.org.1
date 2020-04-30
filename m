@@ -2,155 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D50C1C08FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36BA1C0907
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbgD3VPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
+        id S1727057AbgD3VR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726549AbgD3VPj (ORCPT
+        by vger.kernel.org with ESMTP id S1726699AbgD3VRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:15:39 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C2CC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:15:39 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id b18so2792218ilf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:15:39 -0700 (PDT)
+        Thu, 30 Apr 2020 17:17:23 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE1DC035495
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:17:23 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id x18so9057227wrq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=broadcom.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8Pdnm8ECqM7H2/FerxXYY1DLktzf8E2C2MPAJfYGqwg=;
-        b=G8GiJdfHpnTbi20l6WjboM8fWS9MDkmILsCZdX6YcONkf5Mw5cq4K+lkQFt3cocXvK
-         fRo+fZnwFl8QaZKqxyvSlEPmv1+eU3d/8algZm64/PfUUUvnGkAwRQRrV2jz5+b0c8O8
-         oL0k3NV50QL2JiSs4KqsmlQuuJogbjB6OaLoE=
+        bh=8WL5+R63j920S0bt22y/MPX2pfyBeTnA7YIOS7PRZKQ=;
+        b=frQcDQ4WCQVLv5/aD12Lmk0nCBUbfuzzI+xShWJ0lmfghfmg7u5Nyib31+KLW4DWf6
+         emuYWTL/tu7itw/WxmjNCM6SVWPFLDFvZQ7ZVwNJ8cWZ/IQGEw25HZT3j5HnFP/80pEI
+         bXwkKq1SaFh6ohPsp1ttXqes/+ik4IqrL5Kdo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8Pdnm8ECqM7H2/FerxXYY1DLktzf8E2C2MPAJfYGqwg=;
-        b=R3FaeoPGiNB/wIRshbSlvqHLNT3hvkEYsZQvnA6m/BDdEcJE+UvdVpBX36wkWGM7DL
-         q21l30fhdUdDTJ7S2RAJdbPUSrVjiKV3o1On9P8yOw1rk1iAGUyQqpJ/7DcskoYmsgbc
-         nDTlrUv7wScbSgFSnyGW/QNME4cGaa5ZOqasjq5dp+Pql4pHnvXk8sZby0brCOogyerl
-         PR8RtJlhLIMVqBZnlXO7w8CGpfmFju+I5YyVjAZ8BNOeG8rS+9D1McCdOULAO9zsasWz
-         C+Cgc+DDrxRvLJyDKUuC7Ngrt4rVU/432OPJQJmXin290BiqcJdzvhsQQNEJK4/bcfcd
-         szhw==
-X-Gm-Message-State: AGi0PuYzkSeu7jDT+RZ1A73b6gpy9jPZzfk7y56V3gPDAgc6Va51Q5mm
-        jN5jq+NF7NT3df6PdpEHwnevqPDLrz4=
-X-Google-Smtp-Source: APiQypIaeF/e1vgdrYzmKxE7OZAw91LMy5eUca4rO+/H/nQ1XbQpO6FhKabo7CPwW5ZDqtOTtVaILw==
-X-Received: by 2002:a92:79c6:: with SMTP id u189mr401991ilc.172.1588281337863;
-        Thu, 30 Apr 2020 14:15:37 -0700 (PDT)
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com. [209.85.166.172])
-        by smtp.gmail.com with ESMTPSA id g22sm205242ioc.41.2020.04.30.14.15.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 14:15:37 -0700 (PDT)
-Received: by mail-il1-f172.google.com with SMTP id b18so2792091ilf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:15:36 -0700 (PDT)
-X-Received: by 2002:a92:6b04:: with SMTP id g4mr435576ilc.82.1588281335690;
- Thu, 30 Apr 2020 14:15:35 -0700 (PDT)
+        bh=8WL5+R63j920S0bt22y/MPX2pfyBeTnA7YIOS7PRZKQ=;
+        b=YAvNiwlijFMe03azwyA2PNDJIp+yGh5lpkqngcrWc6ebIOYLT0nCGE1VuKDI1QnL3+
+         CY6JgtwTYfvQEiJrSP/5oSdyeCMD0kjGpwh9EaS7bNMPOLwgTPmoZ2HrdLJnp1mApSAr
+         s8QvgNQi1hvfOKM7pOkijf5j3MHZtM7QQqnN1caLjQyEaL02Y04Pc4Tk4n2Vu3nLfSnK
+         iBn1XAN53r7B+dv43uaEVIoqNGL8HEbhk92P43r66F7F7rqfoccTLCa/hCoa+vK8UGDB
+         5swnkwDL40He8FCxZiRpr/RyH9NV8Vfu3W3KpaYKiZDsLyXqweDLQ9dmK2WgdnvU2zKJ
+         SQRA==
+X-Gm-Message-State: AGi0PuYxaduFyrBY9Vsfh/ULITcr91QatmZj+fEwpWgBN1/eViHtKZzt
+        yiRvlbJoTFq3hfloek2RHYQwLrT+xYhEfktdWjSk8w==
+X-Google-Smtp-Source: APiQypIrbs9SeynjYCjcsyxd3tGq+jY5BQu3eRy4jVk1GxW92FiZ1RNN0wUrj73yIHP4rSrPXj6fVWi+Iva7Qb24Nhw=
+X-Received: by 2002:adf:f74f:: with SMTP id z15mr491830wrp.297.1588281441827;
+ Thu, 30 Apr 2020 14:17:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200424094610.v5.1.Ic7096b3b9b7828cdd41cd5469a6dee5eb6abf549@changeid>
- <20200424094610.v5.3.I2d44fc0053d019f239527a4e5829416714b7e299@changeid>
-In-Reply-To: <20200424094610.v5.3.I2d44fc0053d019f239527a4e5829416714b7e299@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 30 Apr 2020 14:15:23 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WyMVoFz8wM6tJznosNF9-6-ser__tOY1uqrHBrPk5U+Q@mail.gmail.com>
-Message-ID: <CAD=FV=WyMVoFz8wM6tJznosNF9-6-ser__tOY1uqrHBrPk5U+Q@mail.gmail.com>
-Subject: Re: [PATCH v5 3/5] kernel/cpu_pm: Fix uninitted local in cpu_pm
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Evan Green <evgreen@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Allison Randal <allison@lohutok.net>,
-        Colin Cross <ccross@android.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20200430185522.4116-5-james.quinlan@broadcom.com> <20200430204017.GA62947@bjorn-Precision-5520>
+In-Reply-To: <20200430204017.GA62947@bjorn-Precision-5520>
+From:   Jim Quinlan <james.quinlan@broadcom.com>
+Date:   Thu, 30 Apr 2020 17:17:10 -0400
+Message-ID: <CA+-6iNzwxL0T130Bww-TkoVWhn_2--a1URu4JktGb6aD6qGjbA@mail.gmail.com>
+Subject: Re: [PATCH 5/5] PCI: brcmstb: disable L0s component of ASPM by default
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, Apr 24, 2020 at 9:47 AM Douglas Anderson <dianders@chromium.org> wrote:
+On Thu, Apr 30, 2020 at 4:40 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
 >
-> cpu_pm_notify() is basically a wrapper of notifier_call_chain().
-> notifier_call_chain() doesn't initialize *nr_calls to 0 before it
-> starts incrementing it--presumably it's up to the callers to do this.
+> On Thu, Apr 30, 2020 at 02:55:22PM -0400, Jim Quinlan wrote:
+> > From: Jim Quinlan <jquinlan@broadcom.com>
+> >
+> > Some informal internal experiments has shown that the BrcmSTB ASPM L0s
+> > savings may introduce an undesirable noise signal on some customers'
+> > boards.  In addition, L0s was found lacking in realized power savings,
+> > especially relative to the L1 ASPM component.  This is BrcmSTB's
+> > experience and may not hold for others.  At any rate, we disable L0s
+> > savings by default unless the DT node has the 'brcm,aspm-en-l0s'
+> > property.
 >
-> Unfortunately the callers of cpu_pm_notify() don't init *nr_calls.
-> This potentially means you could get too many or two few calls to
-> CPU_PM_ENTER_FAILED or CPU_CLUSTER_PM_ENTER_FAILED depending on the
-> luck of the stack.
+> I assume this works by writing the PCIe Link Capabilities register,
+> which is read-only via the config space path used by the generic ASPM
+> code, so that code thinks the device doesn't support L0s at all.
+Correct.
 >
-> Let's fix this.
+> Documentation/devicetree/bindings/pci/rockchip-pcie-host.txt includes
+> an "aspm-no-l0s" property.  It'd be nice if this could use the same
+> property.
+I'd like to use the existing "aspm-no-l0s" but we'd really like to
+have it disabled by default.  I'll probably switch but let me dwell on
+it a little.
+Thanks, Jim
 >
-> Fixes: ab10023e0088 ("cpu_pm: Add cpu power management notifiers")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->
-> Changes in v5: None
-> Changes in v4: None
-> Changes in v3: None
-> Changes in v2:
-> - ("Fix uninitted local in cpu_pm") new for v2.
->
->  kernel/cpu_pm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-
-I'm hoping at least the first 3 patches in this series can land soon
-so they can make it into v5.7.  The first 2 patches "Fix" a patch that
-was introduced in v5.7 and the 3rd patch fixes a longstanding bug that
-could also affect the same code.
-
-Ideally all 3 patches could go through the Qualcomm tree to keep
-things happy working there.  get_maintainer doesn't really identify an
-owner for "kernel/cpu_pm.c" so maybe nobody would mind if patch 3
-lands in the Qualcomm tree?  It looks like the most recent bugfixes to
-it (back in 2017) were landed by Rafael, though.  Rafael: would you be
-willing to Ack patch #3 for it to go in the Qualcomm tree?
-
----
-
-If patches #4 and #5 look OK you could certainly also land them in
-5.7, but the safer option for those two would be to target 5.8.
-
-Thanks!
-
--Doug
-
->
-> diff --git a/kernel/cpu_pm.c b/kernel/cpu_pm.c
-> index cbca6879ab7d..44a259338e33 100644
-> --- a/kernel/cpu_pm.c
-> +++ b/kernel/cpu_pm.c
-> @@ -80,7 +80,7 @@ EXPORT_SYMBOL_GPL(cpu_pm_unregister_notifier);
->   */
->  int cpu_pm_enter(void)
->  {
-> -       int nr_calls;
-> +       int nr_calls = 0;
->         int ret = 0;
->
->         ret = cpu_pm_notify(CPU_PM_ENTER, -1, &nr_calls);
-> @@ -131,7 +131,7 @@ EXPORT_SYMBOL_GPL(cpu_pm_exit);
->   */
->  int cpu_cluster_pm_enter(void)
->  {
-> -       int nr_calls;
-> +       int nr_calls = 0;
->         int ret = 0;
->
->         ret = cpu_pm_notify(CPU_CLUSTER_PM_ENTER, -1, &nr_calls);
-> --
-> 2.26.2.303.gf8c07b1a785-goog
->
+> > Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+> > ---
+> >  drivers/pci/controller/pcie-brcmstb.c | 14 +++++++++++++-
+> >  1 file changed, 13 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> > index 2bc913c0262c..bc1d514b19e4 100644
+> > --- a/drivers/pci/controller/pcie-brcmstb.c
+> > +++ b/drivers/pci/controller/pcie-brcmstb.c
+> > @@ -44,6 +44,9 @@
+> >  #define PCIE_RC_CFG_PRIV1_ID_VAL3                    0x043c
+> >  #define  PCIE_RC_CFG_PRIV1_ID_VAL3_CLASS_CODE_MASK   0xffffff
+> >
+> > +#define PCIE_RC_CFG_PRIV1_LINK_CAPABILITY                    0x04dc
+> > +#define  PCIE_RC_CFG_PRIV1_LINK_CAPABILITY_ASPM_SUPPORT_MASK 0xc00
+> > +
+> >  #define PCIE_RC_DL_MDIO_ADDR                         0x1100
+> >  #define PCIE_RC_DL_MDIO_WR_DATA                              0x1104
+> >  #define PCIE_RC_DL_MDIO_RD_DATA                              0x1108
+> > @@ -696,7 +699,7 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
+> >       int num_out_wins = 0;
+> >       u16 nlw, cls, lnksta;
+> >       int i, ret;
+> > -     u32 tmp;
+> > +     u32 tmp, aspm_support;
+> >
+> >       /* Reset the bridge */
+> >       brcm_pcie_bridge_sw_init_set(pcie, 1);
+> > @@ -806,6 +809,15 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
+> >               num_out_wins++;
+> >       }
+> >
+> > +     /* Only support ASPM L1 unless L0s is explicitly desired */
+> > +     aspm_support = PCIE_LINK_STATE_L1;
+> > +     if (of_property_read_bool(pcie->np, "brcm,aspm-en-l0s"))
+> > +             aspm_support |= PCIE_LINK_STATE_L0S;
+> > +     tmp = readl(base + PCIE_RC_CFG_PRIV1_LINK_CAPABILITY);
+> > +     u32p_replace_bits(&tmp, aspm_support,
+> > +             PCIE_RC_CFG_PRIV1_LINK_CAPABILITY_ASPM_SUPPORT_MASK);
+> > +     writel(tmp, base + PCIE_RC_CFG_PRIV1_LINK_CAPABILITY);
+> > +
+> >       /*
+> >        * For config space accesses on the RC, show the right class for
+> >        * a PCIe-PCIe bridge (the default setting is to be EP mode).
+> > --
+> > 2.17.1
+> >
