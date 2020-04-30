@@ -2,142 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C301BF317
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C951BF2B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgD3IlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 04:41:10 -0400
-Received: from mga18.intel.com ([134.134.136.126]:57783 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726815AbgD3IlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 04:41:08 -0400
-IronPort-SDR: bOFPn5AVG5eBPd6ZA3Js5TiQuiC4yrSYPTE0um6O1lhwR5hRnX54iEM/6RRIBSBfhd6mFg2S4x
- F7LTu9tr+D9Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 01:41:07 -0700
-IronPort-SDR: +SbNMsauFiB5ELoBy32LzdT63RXPMNZtx+Zg3uwJQnCzI6godX+TRUBLmo9Zb6Ea60gLXsF8zn
- QsPVZw6I4O/Q==
-X-IronPort-AV: E=Sophos;i="5.73,334,1583222400"; 
-   d="scan'208";a="405330939"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 01:41:07 -0700
-Subject: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     tglx@linutronix.de, mingo@redhat.com
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>, stable@vger.kernel.org,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Date:   Thu, 30 Apr 2020 01:24:58 -0700
-Message-ID: <158823509800.2094061.9683997333958344535.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1726829AbgD3IZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 04:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726546AbgD3IZH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 04:25:07 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5DEC035495
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 01:25:07 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id u16so857489wmc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 01:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=X6kBmgjWNGdoNWM+7HP6Cv8RL/gtxXSH0Zcy+2SUkTg=;
+        b=nlfgv/lwGO9u4M/cSd8s6bWYEd60n1HD9hX4RDYFeI6OM5b5/NS+Th7J2Udh6Fer0k
+         DgjCL6hq1Oe0dnPWSx2KED3KQCkEicF3F5fi4lbzX9RmkUUJ87uaGgCm0d3AMzH3WoIi
+         RJCIpL5QPBeAVE+HBDQEd1DUJFUotoDiX/5diJOFhvDrFX1xaXwYusiT4xUiclcepUHk
+         DY8FIUfbfAQReWU0N0sy92dKJXOjkifLiGUuD8U3CbGdljXWWevYVVfdvlMQhO9zlirS
+         yZ9TOFMBupFXFOzWg9N3ZCMfzM2AKi3GawTxnx1UEzRPRtAHEZ2lCSj+XFa3L/GlJj1K
+         gF5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=X6kBmgjWNGdoNWM+7HP6Cv8RL/gtxXSH0Zcy+2SUkTg=;
+        b=g97Wdi588rUcslq3QIMest2FaymHeHF/btVKmG54BjY75YwhHjSnWnMGhgIMdgajAQ
+         moGYz/ZSsLtLB5CAFIvf2A/u025BLfUx78rlQ80AE14RR7njgeTqq+yImaLxXw2LNchO
+         g6D7GikcE1BQBaFCTvJng6W106WITg7AL3MA0GtGvk0G6AK6tCOc1I78FsHe4BmLWi7+
+         B0vrMIgDHrbjdRLs7coSXO0jKEN6D+yhDVQyi91PpCaYPlyCuQDf7kKMSYp9sPutfMZ+
+         O0kI9C+cDl7mOJUSyqvr/SxinH+FUZUCy51tAtlA4Gg/XEXmjqAJwhUURNlC1M9cEoY5
+         fSWQ==
+X-Gm-Message-State: AGi0PuYMAsR60NamdrMzIyEDyrduP8mpS4UNyxmJq/jv4aTPIG1GOzoW
+        iRiWz8oVcDH3rbyFC4XnGnqo2A==
+X-Google-Smtp-Source: APiQypKS6rkdhsHbc2UUSlH3zD912MOA6ZFRvxtjDMHneZ8QIX90PvJVdV6AmPOLALep6jeYDNbP1Q==
+X-Received: by 2002:a1c:4e12:: with SMTP id g18mr1649275wmh.11.1588235106039;
+        Thu, 30 Apr 2020 01:25:06 -0700 (PDT)
+Received: from dell ([2.31.163.63])
+        by smtp.gmail.com with ESMTPSA id u7sm12108468wmg.41.2020.04.30.01.25.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 01:25:05 -0700 (PDT)
+Date:   Thu, 30 Apr 2020 09:25:03 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dilip Kota <eswara.kota@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org,
+        devicetree@vger.kernel.org, arnd@arndb.de, robh@kernel.org,
+        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
+        chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com,
+        yixin.zhu@intel.com
+Subject: Re: [PATCH v7 0/3] Add Intel ComboPhy driver
+Message-ID: <20200430082503.GA3118@dell>
+References: <cover.1588230494.git.eswara.kota@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1588230494.git.eswara.kota@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v1:
-- Rename memcpy_mcsafe() to copy_safe() since the x86-machine-check
-  specifics have already been de-emphasized in a previous commit and are
-  further de-emphasized by these changes. (Linus)
+On Thu, 30 Apr 2020, Dilip Kota wrote:
 
-- Move copy_safe() out-of-line since it no longer reverts to plain
-  memcpy (Linus)
+> This patch series adds Intel ComboPhy driver, respective yaml schemas
+> 
+> Changes on v7:
+>   As per System control driver maintainer's inputs remove
+>     fwnode_to_regmap() definition and use device_node_get_regmap()
+>     
+> Changes on v6:
+>   Rebase patches on the latest maintainer's branch
+>   https://git.kernel.org/pub/scm/linux/kernel/git/kishon/linux-phy.git/?h=phy-for-5.7
+> Dilip Kota (3):
+>   dt-bindings: phy: Add PHY_TYPE_XPCS definition
+>   dt-bindings: phy: Add YAML schemas for Intel ComboPhy
+>   phy: intel: Add driver support for ComboPhy
+> 
+>  .../devicetree/bindings/phy/intel,combo-phy.yaml   | 101 ++++
+>  drivers/phy/intel/Kconfig                          |  14 +
+>  drivers/phy/intel/Makefile                         |   1 +
+>  drivers/phy/intel/phy-intel-combo.c                | 627 +++++++++++++++++++++
+>  include/dt-bindings/phy/phy.h                      |   1 +
 
-- Move copy_safe() to its own stand-alone compilation unit where it no
-  longer entangles with arch/x86/lib/memcpy_64.S. This also allows perf
-  to stop tracking ongoing updates to that file due to copy_safe()
-  updates. (Linus)
+Why have you sent this to me?
 
-- Move the PowerPC implementation over to the new name.
+>  5 files changed, 744 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/intel,combo-phy.yaml
+>  create mode 100644 drivers/phy/intel/phy-intel-combo.c
+> 
 
-[1]: http://lore.kernel.org/r/158654083112.1572482.8944305411228188871.stgit@dwillia2-desk3.amr.corp.intel.com
-
----
-
-The primary motivation to go touch memcpy_mcsafe() is that the existing
-benefit of doing slow and careful copies is obviated on newer CPUs. That
-fact solves the problem of needing to detect machine-check recovery
-capability. Now the old "mcsafe_key" opt-in to careful copying can be made
-an opt-out from the default fast copy implementation.
-
-The discussion with Linus further made clear that this facility had
-already lost its x86-machine-check specificity starting with commit
-2c89130a56a ("x86/asm/memcpy_mcsafe: Add write-protection-fault
-handling"). The new changes to not require a "careful copy" further
-de-emphasizes the role that x86-MCA plays in the implementation to just
-one more source of recoverable trap during the operation.
-
-With the above realizations the name "mcsafe" is no longer accurate and
-copy_safe() is proposed as its replacement. x86 grows a copy_safe_fast()
-implementation as a default implementation that is independent of
-detecting the presence of x86-MCA.
-
----
-
-Dan Williams (2):
-      copy_safe: Rename memcpy_mcsafe() to copy_safe()
-      x86/copy_safe: Introduce copy_safe_fast()
-
-
- arch/powerpc/Kconfig                               |    2 
- arch/powerpc/include/asm/string.h                  |    2 
- arch/powerpc/include/asm/uaccess.h                 |    4 
- arch/powerpc/lib/Makefile                          |    2 
- arch/powerpc/lib/copy_safe.S                       |    4 
- arch/x86/Kconfig                                   |    2 
- arch/x86/Kconfig.debug                             |    2 
- arch/x86/include/asm/copy_safe.h                   |   18 ++
- arch/x86/include/asm/copy_safe_test.h              |   75 +++++++++
- arch/x86/include/asm/mcsafe_test.h                 |   75 ---------
- arch/x86/include/asm/string_64.h                   |   32 ----
- arch/x86/include/asm/uaccess_64.h                  |   21 ---
- arch/x86/kernel/cpu/mce/core.c                     |    9 -
- arch/x86/kernel/quirks.c                           |   10 -
- arch/x86/lib/Makefile                              |    1 
- arch/x86/lib/copy_safe.c                           |   66 ++++++++
- arch/x86/lib/copy_safe_64.S                        |  163 ++++++++++++++++++++
- arch/x86/lib/memcpy_64.S                           |  115 --------------
- arch/x86/lib/usercopy_64.c                         |   21 ---
- drivers/md/dm-writecache.c                         |   12 +
- drivers/nvdimm/claim.c                             |    2 
- drivers/nvdimm/pmem.c                              |    6 -
- include/linux/string.h                             |   17 +-
- include/linux/uio.h                                |   10 +
- lib/Kconfig                                        |    2 
- lib/iov_iter.c                                     |   36 ++--
- tools/arch/x86/include/asm/copy_safe_test.h        |   13 ++
- tools/arch/x86/include/asm/mcsafe_test.h           |   13 --
- tools/arch/x86/lib/memcpy_64.S                     |  115 --------------
- tools/objtool/check.c                              |    5 -
- tools/perf/bench/Build                             |    1 
- tools/perf/bench/mem-memcpy-x86-64-lib.c           |   24 ---
- tools/testing/nvdimm/test/nfit.c                   |   49 +++---
- .../testing/selftests/powerpc/copyloops/.gitignore |    2 
- tools/testing/selftests/powerpc/copyloops/Makefile |    6 -
- .../selftests/powerpc/copyloops/copy_safe.S        |    0 
- 36 files changed, 429 insertions(+), 508 deletions(-)
- rename arch/powerpc/lib/{memcpy_mcsafe_64.S => copy_safe.S} (98%)
- create mode 100644 arch/x86/include/asm/copy_safe.h
- create mode 100644 arch/x86/include/asm/copy_safe_test.h
- delete mode 100644 arch/x86/include/asm/mcsafe_test.h
- create mode 100644 arch/x86/lib/copy_safe.c
- create mode 100644 arch/x86/lib/copy_safe_64.S
- create mode 100644 tools/arch/x86/include/asm/copy_safe_test.h
- delete mode 100644 tools/arch/x86/include/asm/mcsafe_test.h
- delete mode 100644 tools/perf/bench/mem-memcpy-x86-64-lib.c
- rename tools/testing/selftests/powerpc/copyloops/{memcpy_mcsafe_64.S => copy_safe.S} (100%)
-
-base-commit: b8dcd632c06b8706d22934f9bf9bf16a42b1ecc7
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
