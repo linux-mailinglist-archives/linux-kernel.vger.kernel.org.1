@@ -2,47 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAA11BEE9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1471BEE8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgD3DWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 23:22:03 -0400
-Received: from mail.ac.gov.br ([179.252.114.240]:39506 "EHLO
-        srvifs070.ac.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgD3DWC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 23:22:02 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by srvifs070.ac.gov.br (Postfix) with ESMTP id CB86A31C9B25;
-        Wed, 29 Apr 2020 22:07:11 -0500 (ACT)
-Received: from srvifs070.ac.gov.br ([127.0.0.1])
-        by localhost (srvifs070.ac.gov.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id zTnLaEsz5DgI; Wed, 29 Apr 2020 22:07:11 -0500 (ACT)
-Received: from srvifs070.ac.gov.br (localhost [127.0.0.1])
-        by srvifs070.ac.gov.br (Postfix) with ESMTP id DECA431C9B34;
-        Wed, 29 Apr 2020 22:07:08 -0500 (ACT)
-Received: from srvifs070.ac.gov.br (srvifs070.ac.gov.br [10.1.4.71])
-        by srvifs070.ac.gov.br (Postfix) with ESMTP id D981231C9B0E;
-        Wed, 29 Apr 2020 22:07:03 -0500 (ACT)
-Date:   Wed, 29 Apr 2020 23:07:02 -0400 (AMT)
-From:   Morgan Stanley <angela.magalhaes@ac.gov.br>
-Reply-To: Morgan Stanley <invest-Morgan.stanley@outlook.co.id>
-Message-ID: <1207990856.544963.1588216022257.JavaMail.zimbra@ac.gov.br>
-Subject: Beantragen Sie eine dringende Gutschrift
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [102.166.83.42]
-X-Mailer: Zimbra 8.0.6_GA_5922 (zclient/8.0.6_GA_5922)
-Thread-Topic: Beantragen Sie eine dringende Gutschrift
-Thread-Index: dAZW0C1qt4i+vjRL8l1nucnvbk2ICQ==
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726575AbgD3DJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 23:09:43 -0400
+Received: from mga09.intel.com ([134.134.136.24]:29952 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726355AbgD3DJm (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 23:09:42 -0400
+IronPort-SDR: I1rPm+YH0oE67HGGWCxNOSKSCNDK5NLuEoao04eKyW97YxAc23XMTjP7Xn6CdE3NxBC44y7a1q
+ O6N4/op8I3PQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 20:09:42 -0700
+IronPort-SDR: PU10PztpogX36q71fq9iEN5Yh2j4OpgUqnpspL6BMCaGmN3cRWX5SuiRCogvl06qJxbVVt3t+6
+ Gce3Yphu/Z8g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
+   d="scan'208";a="248151995"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by fmsmga007.fm.intel.com with ESMTP; 29 Apr 2020 20:09:39 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH 0/2] perf stat: Support overall statistics for interval mode
+Date:   Thu, 30 Apr 2020 11:07:38 +0800
+Message-Id: <20200430030740.27156-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently perf-stat supports to print counts at regular interval (-I),
+but it's not very easy for user to get the overall statistics.
 
+With this patchset, it supports to report the summary at the end of
+interval output.
+
+For example,
+
+ root@kbl-ppc:~# perf stat -e cycles -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000412064          2,281,114      cycles
+      2.001383658          2,547,880      cycles
+
+  Performance counter stats for 'system wide':
+
+          4,828,994      cycles
+
+        2.002860349 seconds time elapsed
+
+ root@kbl-ppc:~# perf stat -e cycles,instructions -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000389902          1,536,093      cycles
+      1.000389902            420,226      instructions              #    0.27  insn per cycle
+      2.001433453          2,213,952      cycles
+      2.001433453            735,465      instructions              #    0.33  insn per cycle
+
+  Performance counter stats for 'system wide':
+
+          3,750,045      cycles
+          1,155,691      instructions              #    0.31  insn per cycle
+
+        2.003023361 seconds time elapsed
+
+ root@kbl-ppc:~# perf stat -M CPI,IPC -I1000 --interval-count 2
+ #           time             counts unit events
+      1.000435121            905,303      inst_retired.any          #      2.9 CPI
+      1.000435121          2,663,333      cycles
+      1.000435121            914,702      inst_retired.any          #      0.3 IPC
+      1.000435121          2,676,559      cpu_clk_unhalted.thread
+      2.001615941          1,951,092      inst_retired.any          #      1.8 CPI
+      2.001615941          3,551,357      cycles
+      2.001615941          1,950,837      inst_retired.any          #      0.5 IPC
+      2.001615941          3,551,044      cpu_clk_unhalted.thread
+
+  Performance counter stats for 'system wide':
+
+          2,856,395      inst_retired.any          #      2.2 CPI
+          6,214,690      cycles
+          2,865,539      inst_retired.any          #      0.5 IPC
+          6,227,603      cpu_clk_unhalted.thread
+
+        2.003403078 seconds time elapsed
+
+Jin Yao (2):
+  perf evsel: Create counts for collecting summary data
+  perf stat: Report summary for interval mode
+
+ tools/perf/builtin-stat.c | 14 ++++++-
+ tools/perf/util/evsel.c   | 10 ++++-
+ tools/perf/util/evsel.h   |  1 +
+ tools/perf/util/stat.c    | 77 +++++++++++++++++++++++++++++++++++++++
+ tools/perf/util/stat.h    |  5 +++
+ 5 files changed, 103 insertions(+), 4 deletions(-)
 
 -- 
-Sind Sie ein Gesch&auml;ftsmann oder eine Gesch&auml;ftsfrau? Befinden Sie sich in einer Finanzkrise oder ben&ouml;tigen Sie Mittel, um ein eigenes Unternehmen zu gr&uuml;nden? Ben&ouml;tigen Sie einen Kredit, um Ihre Schulden zu begleichen, Ihre Rechnungen zu bezahlen oder ein gutes Gesch&auml;ft zu er&ouml;ffnen? Haben Sie eine niedrige Kreditw&uuml;rdigkeit und es f&auml;llt Ihnen schwer, einen Kapitalkredit von lokalen Banken und anderen Finanzinstituten zu erhalten? Hier ist Ihre Chance, einen Kredit von unserem Unternehmen zu erhalten. Wir bieten Privatpersonen Kredite f&uuml;r folgende Zwecke und mehr an. Privatkredit, Gesch&auml;ftsausweitung, Unternehmensgr&uuml;ndung, Bildung, Schuldenkonsolidierung, Hartgeldkredite. Wir bieten Darlehen zu einem niedrigen Zinssatz von 2%. Bewerben Sie sich jetzt per E-Mail: (invest-Morgan.stanley@outlook.co.id)
+2.17.1
+
