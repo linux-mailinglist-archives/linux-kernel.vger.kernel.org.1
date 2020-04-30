@@ -2,95 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECF11C0850
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CE51C0855
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727874AbgD3Ukp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 16:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgD3Ukp (ORCPT
+        id S1727985AbgD3Ulc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 16:41:32 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50525 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727108AbgD3Ulb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:40:45 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1256C035494;
-        Thu, 30 Apr 2020 13:40:44 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id c63so7275660qke.2;
-        Thu, 30 Apr 2020 13:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2wXB9P7L6VKnvrEKDuVZ8Fz1x78dwH0yzpQ7LI1qBdQ=;
-        b=nYuOYdv7i3bBXGdXg/0tRS14pcT5A/jnwkPsmkk7D2/iEGPitWHtu2SSm4fBYB72uz
-         LEJYj/5tICP1sWA5mpc6tpGeHNQpUEv63D2kgZMEkoV16sCqRd0DmxYIa2VrMlGjlx4k
-         J3MaAYrzCAyGYMYWDg00z3zuWehzrdx/Tl7/1HxNZWDPnlMX94qfGN9CCcLlqzKiFykZ
-         iYHLT7L9R8ZFfjsuhbC25FepzOh5QLLwR7hgvRe1BraJvLRtTlut50bu2Nnhkugus2BD
-         HMPaCPRgOHN0mxAwh6YcpzPeOb/o+22/bJ3Uys5gJDP9n25p3bCb0BxkUG4J92e+ADeB
-         yvhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=2wXB9P7L6VKnvrEKDuVZ8Fz1x78dwH0yzpQ7LI1qBdQ=;
-        b=DB6eCqP6MxQrG2wSBCxhEHFh5yFZRuFMw6MMeFRps1L2fuIwLQe0jRTlbw5ihAt36/
-         Jyfdzyj3EGUJhUvBjRtJ80EaD8WigM6g4n6M3S9pRWM1dY+TYYXAPHWfQ4083amL4Bw0
-         ZHMsUWaFZC6Nr72NzF/hH9xGkv6bFnsSYT3AZCRPp8HGjfu4Z53dVLBgqQRYmgdPayiu
-         WeFrYFeXZB0/cuSWAss2Myj/6FFtZ2qFk720MjKK72vtCXRYOcfNUhXkVeqm98IlR17e
-         GSrBO9Jof25XI+JUCXtpnepv7tyH+vTS8qXVIDHyLFWBJhidkUftg5TOCRMASKX5vSCx
-         nCFA==
-X-Gm-Message-State: AGi0PuZinGCLYQMMEjQowOAsL3ulBO3dz+oi4C+6CR8RSz18Lbrgr4cG
-        hr1uXLo9LgZsziWj7JLi/Eg=
-X-Google-Smtp-Source: APiQypK2X+EbL4/u6yuToTVoXvzdrYETv1gNeyOhrBY1Iwa28a1bEOJ2lPZub08UxLUQHzoVu2aD2g==
-X-Received: by 2002:a05:620a:1347:: with SMTP id c7mr396651qkl.246.1588279244010;
-        Thu, 30 Apr 2020 13:40:44 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id l9sm674497qth.60.2020.04.30.13.40.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 13:40:43 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Thu, 30 Apr 2020 16:40:41 -0400
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Joe Perches <joe@perches.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>, X86 ML <x86@kernel.org>
-Subject: Re: [PATCH 1/2] efi/libstub: efi_info/efi_err message neatening
-Message-ID: <20200430204041.GA2579913@rani.riverdale.lan>
-References: <20200430182843.2510180-1-nivedita@alum.mit.edu>
- <091e3fc3bdbc5f480af7d3b3ac096d174a4480d0.1588273612.git.joe@perches.com>
- <CAMj1kXGMnTfYiU_vMDYG0uy7Na7wy=5DRHERTzZQeb4UBusn0g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXGMnTfYiU_vMDYG0uy7Na7wy=5DRHERTzZQeb4UBusn0g@mail.gmail.com>
+        Thu, 30 Apr 2020 16:41:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Tx7vcTH_1588279279;
+Received: from localhost(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0Tx7vcTH_1588279279)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 01 May 2020 04:41:27 +0800
+From:   Yang Shi <yang.shi@linux.alibaba.com>
+To:     kirill.shutemov@linux.intel.com, hughd@google.com,
+        aarcange@redhat.com, akpm@linux-foundation.org
+Cc:     yang.shi@linux.alibaba.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [v2 linux-next PATCH 1/2] mm: khugepaged: add exceed_max_ptes_* helpers
+Date:   Fri,  1 May 2020 04:41:18 +0800
+Message-Id: <1588279279-61908-1-git-send-email-yang.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 09:29:46PM +0200, Ard Biesheuvel wrote:
-> On Thu, 30 Apr 2020 at 21:12, Joe Perches <joe@perches.com> wrote:
-> >
-> > Use a standard style for these output logging messages.
-> >
-> > Miscellanea:
-> >
-> > o Use more common macro #defines with fmt, ##__VA_ARGS__
-> > 0 Remove trailing messages periods and odd ' uses
-> > o Remove embedded function names and use %s, __func__
-> >
-> > Signed-off-by: Joe Perches <joe@perches.com>
-> > ---
-> >
-> > Perhaps these trivialities on top of this series?
-> >
-> 
-> The EFI printing routines don't actually support format strings.
-> 
+The max_ptes_{swap|none|shared} are defined to tune the behavior of
+khugepaged.  The are checked at a couple of places with open coding.
+Replace the opencoding to exceed_pax_ptes_{swap|none_shared} helpers to
+improve the readability.
 
-The x86 real-mode bootup code actually has a printf.o that clocks in at
-under 2k. We could add it in, and it would also be nice to move it into
-lib or something, since at least alpha and powerpc implement something
-very similar for boot-time messages.
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+---
+ mm/khugepaged.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
+
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index a02a4c5..0c8d30b 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -339,6 +339,21 @@ struct attribute_group khugepaged_attr_group = {
+ };
+ #endif /* CONFIG_SYSFS */
+ 
++static inline bool exceed_max_ptes_none(unsigned int *nr_ptes)
++{
++	return (++(*nr_ptes) > khugepaged_max_ptes_none);
++}
++
++static inline bool exceed_max_ptes_swap(unsigned int *nr_ptes)
++{
++	return (++(*nr_ptes) > khugepaged_max_ptes_swap);
++}
++
++static inline bool exceed_max_ptes_shared(unsigned int *nr_ptes)
++{
++	return (++(*nr_ptes) > khugepaged_max_ptes_shared);
++}
++
+ int hugepage_madvise(struct vm_area_struct *vma,
+ 		     unsigned long *vm_flags, int advice)
+ {
+@@ -604,7 +619,7 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+ 		if (pte_none(pteval) || (pte_present(pteval) &&
+ 				is_zero_pfn(pte_pfn(pteval)))) {
+ 			if (!userfaultfd_armed(vma) &&
+-			    ++none_or_zero <= khugepaged_max_ptes_none) {
++			    !exceed_max_ptes_none(&none_or_zero)) {
+ 				continue;
+ 			} else {
+ 				result = SCAN_EXCEED_NONE_PTE;
+@@ -624,7 +639,7 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+ 		VM_BUG_ON_PAGE(!PageAnon(page), page);
+ 
+ 		if (page_mapcount(page) > 1 &&
+-				++shared > khugepaged_max_ptes_shared) {
++				exceed_max_ptes_shared(&shared)) {
+ 			result = SCAN_EXCEED_SHARED_PTE;
+ 			goto out;
+ 		}
+@@ -1234,7 +1249,7 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+ 	     _pte++, _address += PAGE_SIZE) {
+ 		pte_t pteval = *_pte;
+ 		if (is_swap_pte(pteval)) {
+-			if (++unmapped <= khugepaged_max_ptes_swap) {
++			if (!exceed_max_ptes_swap(&unmapped)) {
+ 				/*
+ 				 * Always be strict with uffd-wp
+ 				 * enabled swap entries.  Please see
+@@ -1252,7 +1267,7 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+ 		}
+ 		if (pte_none(pteval) || is_zero_pfn(pte_pfn(pteval))) {
+ 			if (!userfaultfd_armed(vma) &&
+-			    ++none_or_zero <= khugepaged_max_ptes_none) {
++			    !exceed_max_ptes_none(&none_or_zero)) {
+ 				continue;
+ 			} else {
+ 				result = SCAN_EXCEED_NONE_PTE;
+@@ -1286,7 +1301,7 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+ 		}
+ 
+ 		if (page_mapcount(page) > 1 &&
+-				++shared > khugepaged_max_ptes_shared) {
++				exceed_max_ptes_shared(&shared)) {
+ 			result = SCAN_EXCEED_SHARED_PTE;
+ 			goto out_unmap;
+ 		}
+@@ -1961,7 +1976,7 @@ static void khugepaged_scan_file(struct mm_struct *mm,
+ 			continue;
+ 
+ 		if (xa_is_value(page)) {
+-			if (++swap > khugepaged_max_ptes_swap) {
++			if (exceed_max_ptes_swap(&swap)) {
+ 				result = SCAN_EXCEED_SWAP_PTE;
+ 				break;
+ 			}
+-- 
+1.8.3.1
+
