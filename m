@@ -2,204 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36ECF1C05A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E3B1C05E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgD3TG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:06:27 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:13332 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726781AbgD3TGZ (ORCPT
+        id S1726830AbgD3TKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:10:39 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:58196 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726487AbgD3TKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:06:25 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UIk7Zw021042;
-        Thu, 30 Apr 2020 12:06:16 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=izMAJz8DJVs85exNsDSF0g00gieebqbhFq/VLhscdPk=;
- b=LmahK+czBUQ9NHDakW0O/IPvAmo9wvBjbXymAtqv1ePSD7ttgke32LAMZKguOm1Drfdg
- 7RxheLnQUY/HGP3YJJEO3rqZ0fp7rfmiwmuakTrfXbuf8Qwm1W2XHVng+nmRBQiwXcEz
- WRp6u6m/8SzZ8I1lnemZ1pMtPr7SNjFWZRA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30qu5mbag6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 30 Apr 2020 12:06:16 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 30 Apr 2020 12:06:15 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WUt0ANLxbZTYwrTIN1FXJ0wO0YMjKoBVe/jx0visHv1fNuZ4pCSNVkxL3QyzlaU+ehfolnST0Fb+5Z1T8lDvBJ7tVgsP67wnsi2Zg86ytbUE7dFmZrlRQafFh7n2HGhK3CE//N0fW6t90J6twfCs2/WG8Y/gMP6ZQIvR+yqYCJAmLP9fwGSacX01GTfY2Piw+Lmmxh9SVMfpLYPJY2XxUu6qkz1CqR0b34firDpIzl4LDh/i3cHEETwPonMQywyoHZqOf8QadnVHuJ7Uk4WYfexynDzV8CLCNfC4Ry4ihFQGXMzqP5tuSDDVhTWxAx4XKyEnQaoTp4VOlvcIlVL3Fw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=izMAJz8DJVs85exNsDSF0g00gieebqbhFq/VLhscdPk=;
- b=YLuXx7Z4dGAuhHHfKQSQ3Mjd0iD3ZfR+27Xtz+irsV53ctEmdFbRGztYD0h1uwreGB5RnEKhjuiRsyScCYjVcwCWcIW/P/lJWVIl+XnYmG2ErmeZWZgxmnXKI6RGRZy0AUiZgGPX92zrHz5yjzZce+zi8WLxIeelQEZBs+YpVLLEh6+uasCMMDSnZTXp6AibL31kXOBjcoj4CyS1BHudnVYGD4BfFtRekXADK5dFUGorY10BaEJnVyIun8AfozZkLyzMuKT0zDoD82LWd92N3bZ7HQySi1zwLvRagl2F6Bh7CoJqZInVi6PJhSQ95Chs7G5EN+IMmWzvCEUFdF4vQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=izMAJz8DJVs85exNsDSF0g00gieebqbhFq/VLhscdPk=;
- b=IJemA5xFGWGxib2c3wopxExH+ydDTC6i+wn8i0iQ01Yi4FE6pzgczw93J6Fm8a6yPo51Fqn4R1scfX8/uSzZHxlcGpyiS90qau1/HEAMd8tG972J42kHw9eK9n27gYD3W9IqCQYgot5T2cRrn2mixR4l+rFjonQ/EVXyp5dK51U=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2389.namprd15.prod.outlook.com (2603:10b6:a02:86::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.19; Thu, 30 Apr
- 2020 19:06:14 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.2937.028; Thu, 30 Apr 2020
- 19:06:14 +0000
-Date:   Thu, 30 Apr 2020 12:06:10 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Greg Thelen <gthelen@google.com>,
+        Thu, 30 Apr 2020 15:10:39 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jUEZk-0000zA-Oa; Thu, 30 Apr 2020 13:10:24 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jUEZj-0004x2-MM; Thu, 30 Apr 2020 13:10:24 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Ungerer <gerg@linux-m68k.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jann Horn <jannh@google.com>, Nicolas Pitre <nico@fluxnic.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-Message-ID: <20200430190610.GD339283@carbon.dhcp.thefacebook.com>
-References: <20200430182712.237526-1-shakeelb@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430182712.237526-1-shakeelb@google.com>
-X-ClientProxiedBy: MWHPR2001CA0006.namprd20.prod.outlook.com
- (2603:10b6:301:15::16) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        linux-c6x-dev@linux-c6x.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+References: <20200429214954.44866-1-jannh@google.com>
+        <20200429215620.GM1551@shell.armlinux.org.uk>
+        <CAHk-=wgpoEr33NJwQ+hqK1dz3Rs9jSw+BGotsSdt2Kb3HqLV7A@mail.gmail.com>
+        <31196268-2ff4-7a1d-e9df-6116e92d2190@linux-m68k.org>
+        <CAHk-=wjau_zmdLaFDLcY3xnqiFaC7VZDXnnzFG9QDHL4kqStYQ@mail.gmail.com>
+Date:   Thu, 30 Apr 2020 14:07:06 -0500
+In-Reply-To: <CAHk-=wjau_zmdLaFDLcY3xnqiFaC7VZDXnnzFG9QDHL4kqStYQ@mail.gmail.com>
+        (Linus Torvalds's message of "Thu, 30 Apr 2020 09:54:28 -0700")
+Message-ID: <87imhgyeqt.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:6bb9) by MWHPR2001CA0006.namprd20.prod.outlook.com (2603:10b6:301:15::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.19 via Frontend Transport; Thu, 30 Apr 2020 19:06:13 +0000
-X-Originating-IP: [2620:10d:c090:400::5:6bb9]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 32467cec-af2a-40c3-d046-08d7ed398daf
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2389:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2389D76F09A56FF8293E506EBEAA0@BYAPR15MB2389.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-Forefront-PRVS: 0389EDA07F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R7v2dGTb+RMqcKT2+kKphjClvpDGx9eaa2PH8XzgTunPXy6sua9I4IsLEFk4Sn8fHrWMQM93vsFqOQwL8fIpNXwymoMVgFoHo3uUVzm8xf46mx3w3TDO2x1cPKaqLTcGLq/6OFeJLhBA60uh52DdJ0P6kMT2LdHPedDlptsAVOgCeCaTV8qxu8mLGzC2HJX3hl2EBiOHol0/vRKZcTTF7J+BORlcWNf6A9NH6q/E2902hsZ41j1G1oepQHzAs5aY6HVq5Ei0Jx3xZ0px1fHz+LDzKEdRFDJ+oIqfxBVn6Bl8Mpq0CIlriTYmNK2/K/6aPp5j/8VIkyf6CXsTv52hTajK+uRzcjF8aH5/6x+37/K6Wd+Ar9h0owhRs16TkCVm/KbcA80/BOK6RZQTDJZVupDeAhR5oP+6L0sQoze1PtdFEoLOMeae7lanxhNFQ9ve
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(396003)(136003)(376002)(39860400002)(346002)(16526019)(6916009)(5660300002)(54906003)(1076003)(6506007)(52116002)(7696005)(186003)(4326008)(316002)(2906002)(66556008)(66476007)(66946007)(8936002)(8676002)(86362001)(9686003)(478600001)(55016002)(33656002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: mcgRZXS/Il/+qrj0AASXSql4oWJF8tri4YW92oPAxRarUtIA64kACv7udp1Blu1FR8l+rlPKZUdm8ybzV2TMOa0+c/svH5Cd/gvqNPOqVwmxE0y30d4dMz//w7tf3sECDHGAwGg6yrysp3XNs2YujhHkYkKkozSmIr5nxducut54NIWO5S1lyosDyPSwpc1ktwPbhA+jz3yuW6q2tnf8ED7BUIBwafjl48Zt5y2N631w+9J+tq2GQvCTZhTQjh0+rQ4kAJm6lkXvWzSjji3niTBBC6TR/LXq26b5tYcwmydcayiktsCEEwqkp3Qv1wVVxHQ8sgkdpxvWevWDwf8EOoWVK8f6OD+p4n9qQyCNlABB2AdaZwcLAzKTgCMJ0iRi4aeMDKFu/VzAklMkRTctb6AcSdQn9xtEThaGbDz3uNNA7x/odid+/r9Sa4PgB10I2kZrD+UwKXgC+uczqkN9yiGiwib5kDJCVi0Ki4RHKiq2pjCpBdyOyo3RhC3D5xyQ4JKX+ojXbvIRBIUmjvNj6hc89sQqkWADPISi2Ek9Nrda5Q7twCDE9E1W6F+XgvsfwKih4jRJAIk2jnlPDW9pxeb5TMCumpW7d9//b7lCekrsDmfaYV+8wUiOd/5WlW6VaIJbkd2c6i+2Ch5f+CK4Kqs4PFWlNlCEyY1oeLtxY70W7+7BMhbYOsgmKGyaKJY0chWBKeN2znchBQMZP8Ekb33pwMSv9/gDTssIfVkSeCacfctfs4+YW73xeDI7zqeptOaYX1ODwyGSHAp2Hi/31PVkx13eOj5VC5iUsqjERzrXFl+QaSAcFzeyuMaoEdwwltfkKQ//d4IRW1eGudKwNg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32467cec-af2a-40c3-d046-08d7ed398daf
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 19:06:14.4461
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uywNr/QS7i6XSv1XFlnGos/zRok4knM9lvqOeSh9iGeow+ybIht3sbqhVj5uxabs
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2389
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-30_12:2020-04-30,2020-04-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0
- suspectscore=1 clxscore=1011 phishscore=0 mlxlogscore=999 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300145
-X-FB-Internal: deliver
+Content-Type: text/plain
+X-XM-SPF: eid=1jUEZj-0004x2-MM;;;mid=<87imhgyeqt.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+M59kbFeatkOUeTsajPIqn7fwIqzhVK08=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,T_XMDrugObfuBody_00,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4987]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  1.0 T_XMDrugObfuBody_00 obfuscated drug references
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 556 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 11 (1.9%), b_tie_ro: 9 (1.7%), parse: 1.41 (0.3%),
+         extract_message_metadata: 20 (3.7%), get_uri_detail_list: 2.7 (0.5%),
+        tests_pri_-1000: 19 (3.4%), tests_pri_-950: 1.76 (0.3%),
+        tests_pri_-900: 1.31 (0.2%), tests_pri_-90: 225 (40.4%), check_bayes:
+        216 (38.9%), b_tokenize: 11 (2.1%), b_tok_get_all: 10 (1.8%),
+        b_comp_prob: 2.6 (0.5%), b_tok_touch_all: 189 (33.9%), b_finish: 0.94
+        (0.2%), tests_pri_0: 263 (47.3%), check_dkim_signature: 0.52 (0.1%),
+        check_dkim_adsp: 2.2 (0.4%), poll_dns_idle: 0.80 (0.1%), tests_pri_10:
+        1.93 (0.3%), tests_pri_500: 8 (1.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 0/5] Fix ELF / FDPIC ELF core dumping, and use mmap_sem properly in there
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Shakeel!
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-On Thu, Apr 30, 2020 at 11:27:12AM -0700, Shakeel Butt wrote:
-> Lowering memory.max can trigger an oom-kill if the reclaim does not
-> succeed. However if oom-killer does not find a process for killing, it
-> dumps a lot of warnings.
+> On Thu, Apr 30, 2020 at 7:10 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
 
-Makes total sense to me.
+>> > Most of that file goes back to pre-git days. And most of the commits
+>> > since are not so much about binfmt_flat, as they are about cleanups or
+>> > changes elsewhere where binfmt_flat was just a victim.
+>>
+>> I'll have a look at this.
+>
+> Thanks.
+>
+>> Quick hack test shows moving setup_new_exec(bprm) to be just before
+>> install_exec_creds(bprm) works fine for the static binaries case.
+>> Doing the flush_old_exec(bprm) there too crashed out - I'll need to
+>> dig into that to see why.
+>
+> Just moving setup_new_exec() would at least allow us to then join the
+> two together, and just say "setup_new_exec() does the credential
+> installation too".
 
-> 
-> Deleting a memcg does not reclaim memory from it and the memory can
-> linger till there is a memory pressure. One normal way to proactively
-> reclaim such memory is to set memory.max to 0 just before deleting the
-> memcg. However if some of the memcg's memory is pinned by others, this
-> operation can trigger an oom-kill without any process and thus can log a
-> lot un-needed warnings. So, ignore all such warnings from memory.max.
-> 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> ---
->  include/linux/oom.h | 3 +++
->  mm/memcontrol.c     | 9 +++++----
->  mm/oom_kill.c       | 2 +-
->  3 files changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/oom.h b/include/linux/oom.h
-> index c696c265f019..6345dc55df64 100644
-> --- a/include/linux/oom.h
-> +++ b/include/linux/oom.h
-> @@ -52,6 +52,9 @@ struct oom_control {
->  
->  	/* Used to print the constraint info. */
->  	enum oom_constraint constraint;
-> +
-> +	/* Do not warn even if there is no process to be killed. */
-> +	bool no_warn;
+But it is only half a help if we allow failure points between
+flush_old_exec and install_exec_creds.
 
-I'd invert it to warn. Or maybe even warn_on_no_proc?
+Greg do things work acceptably if install_exec_creds is moved to right
+after setup_new_exec? (patch below)
 
->  };
->  
->  extern struct mutex oom_lock;
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 317dbbaac603..a1f00d9b9bb0 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1571,7 +1571,7 @@ unsigned long mem_cgroup_size(struct mem_cgroup *memcg)
->  }
->  
->  static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> -				     int order)
-> +				     int order, bool no_warn)
->  {
->  	struct oom_control oc = {
->  		.zonelist = NULL,
-> @@ -1579,6 +1579,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  		.memcg = memcg,
->  		.gfp_mask = gfp_mask,
->  		.order = order,
-> +		.no_warn = no_warn,
->  	};
->  	bool ret;
->  
-> @@ -1821,7 +1822,7 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
->  		mem_cgroup_oom_notify(memcg);
->  
->  	mem_cgroup_unmark_under_oom(memcg);
-> -	if (mem_cgroup_out_of_memory(memcg, mask, order))
-> +	if (mem_cgroup_out_of_memory(memcg, mask, order, false))
->  		ret = OOM_SUCCESS;
->  	else
->  		ret = OOM_FAILED;
-> @@ -1880,7 +1881,7 @@ bool mem_cgroup_oom_synchronize(bool handle)
->  		mem_cgroup_unmark_under_oom(memcg);
->  		finish_wait(&memcg_oom_waitq, &owait.wait);
->  		mem_cgroup_out_of_memory(memcg, current->memcg_oom_gfp_mask,
-> -					 current->memcg_oom_order);
-> +					 current->memcg_oom_order, false);
->  	} else {
->  		schedule();
->  		mem_cgroup_unmark_under_oom(memcg);
-> @@ -6106,7 +6107,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
->  		}
->  
->  		memcg_memory_event(memcg, MEMCG_OOM);
-> -		if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0))
-> +		if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0, true))
+Looking at the code in load_flat_file after setup_new_exec it looks like
+the kinds of things that in binfmt_elf.c we do after install_exec_creds
+(aka vm_map).  So I think we want install_exec_creds sooner, instead
+of setup_new_exec later.
 
-I wonder if we can handle it automatically from the oom_killer side?
-We can suppress warnings if oc->memcg is set and the cgroup scanning
-showed that there are no belonging processes?
+> But if it's true that nobody really uses the odd flat library support
+> any more and there are no testers, maybe we should consider ripping it
+> out...
 
-Thanks!
+I looked a little deeper and there is another reason to think about
+ripping out the flat library loader.  The code is recursive, and
+supports a maximum of 4 shared libraries in the entire system.
+
+load_flat_binary
+	load_flat_file
+        	calc_reloc
+                	load_flat_shared_libary
+                        	load_flat_file
+                                	....
+
+I am mystified with what kind of system can survive with a grand total
+of 4 shared libaries.  I think my a.out slackware system that I ran on
+my i486 had more shared libraries.
+
+Having read just a bit more it is definitely guaranteed (by the code)
+that the first time load_flat_file is called id 0 will be used (aka id 0
+is guaranteed to be the binary), and the ids 1, 2, 3 and 4 will only be
+used if a relocation includes that id to reference an external shared
+library.  That part of the code is drop dead simple.
+
+---
+
+This is what I was thinking about applying.
+
+diff --git a/fs/binfmt_flat.c b/fs/binfmt_flat.c
+index 831a2b25ba79..1a1d1fcb893f 100644
+--- a/fs/binfmt_flat.c
++++ b/fs/binfmt_flat.c
+@@ -541,6 +541,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+ 		/* OK, This is the point of no return */
+ 		set_personality(PER_LINUX_32BIT);
+ 		setup_new_exec(bprm);
++		install_exec_creds(bprm);
+ 	}
+ 
+ 	/*
+@@ -963,8 +964,6 @@ static int load_flat_binary(struct linux_binprm *bprm)
+ 		}
+ 	}
+ 
+-	install_exec_creds(bprm);
+-
+ 	set_binfmt(&flat_format);
+ 
+ #ifdef CONFIG_MMU
+
+
