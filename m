@@ -2,94 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80EC1BFC68
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B511BFC6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729214AbgD3OFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:05:33 -0400
-Received: from mout.kundenserver.de ([212.227.126.187]:46833 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729109AbgD3OF2 (ORCPT
+        id S1729538AbgD3OFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728965AbgD3OFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:05:28 -0400
-Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MvsN5-1jDBA202Rr-00suuU for <linux-kernel@vger.kernel.org>; Thu, 30 Apr
- 2020 16:05:25 +0200
-Received: by mail-qk1-f174.google.com with SMTP id t3so5786419qkg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:05:24 -0700 (PDT)
-X-Gm-Message-State: AGi0PuandLSXWv9b+G4/hyCTHc3yVwXn1I1KIycMzt0hkm/02jmmZPpw
-        rhuT5yUFx9ZW2l8+RgK78/qrBVUcOaNh3G1Wo+c=
-X-Google-Smtp-Source: APiQypKfiuTQyZkimGUZuhVN/2iNyzi11875kCfR0We9GVut/dOFNKlobiXEVN3wKCduUp9kiEhAMWifibP/eeqhm+U=
-X-Received: by 2002:ae9:f712:: with SMTP id s18mr3753225qkg.394.1588255523610;
- Thu, 30 Apr 2020 07:05:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAK8P3a2qLJkokMGt48JRky=WUeAbJRuNmoD1oqfWdrGSC6y1LA@mail.gmail.com>
-In-Reply-To: <CAK8P3a2qLJkokMGt48JRky=WUeAbJRuNmoD1oqfWdrGSC6y1LA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 30 Apr 2020 16:05:07 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2Gzj9SVZSGo+PxWR0cMJb1sFwv+ii9J6jEGE-Z41Fr+A@mail.gmail.com>
-Message-ID: <CAK8P3a2Gzj9SVZSGo+PxWR0cMJb1sFwv+ii9J6jEGE-Z41Fr+A@mail.gmail.com>
-Subject: Re: Remaining randconfig objtool warnings, linux-next-20200428
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:cEKfAJqGGwRbsuWNFp4ylaRDRdTLvS34qZ28WQ+Mnmy4XjDGHI/
- 2d2MFMx2qQnvRAMkDTc63efM+SAo4AqGXxk5MK4ty7bQ7ErRa6LKMYlYGgW3MpZwDrbKi8O
- clnZWSl7BwbzNIpr9R3wjV161YpbepvK/HI1xz+Gs0kN9m1LWaGEeotIxVI2n0oyYUHw9NB
- 35MGhge8G4CvBV/vL7z4Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DVEXobJtqlY=:PD1V5Jmy0vIiBrLAScz97K
- IWx+Z5pXyVuHnM68XlXKjawkWQz8NMEnqX0NWrkAGf8hYJ0TYvHK9+oR+muar/Y0TKk80ex9/
- zHJ8NmyHSHFM3WLup8l7sFmXQyfJjlvanyPuPrKWTVooO+dlYFy8z4Ht0tqbAmC/PG4Uu3e6S
- rUOXznfmAOtHMezP69+yWzl+IYOrNjErO/GfNW/AA2AG8TVVMVu4jr6W0mOFAbOy0WBSg1b5g
- c0YSoCZ0++u9Y1bUmL3oDFH54aBP7UaS94o/MoZEmwO9H36o9PDvCu90gnOomvHi2VfzVpRjS
- ZdLD3gBYT//xGGQWUKMHUTYM3nlHsctXNgkU3GXl3v976mbQZnPvI5HgCgubFgIYSVG/xc/xD
- x7LcIjPBszj58avhVDL4EC4Hjmhv4xPbIYUfRFlTTnxepEGAxOTJ9Wov60JmFhPdyBuGYXS9N
- HwAiJ6zg/FS1sI/kQYZu6olRqbPnzUZY2eVH8MYvMDgZhfopcpPQulTW/k1RTwmhDLmayM7zo
- olSNTzq2vtUMxhOI8cu379T0uVgzvEOunDJwIgbAqL3T4BOIaO0FjEDSX/FO7xtM9QxD4QCGQ
- KxIydu3K8JzH0XWcD8CU3j1kmb5Mhevzp4bQ1IAKrz+7AUItomMKWvRGh5EMzwcIuGT3FPGPF
- cWiICRrOPK3oSXecOOY2TTiEwTMw5mQpXNbaJQPuVVSrsBrw3bVd8wd/rly2WgoxUbL5tVD3S
- VG9LKgB5bi1DaOwfHnO5kx3pIDzXPNyMhD4hUQio/D8wZgUyS/YHEI13K4Y/LyomWBvTY2f3D
- W2Mn86JQqNMoD6joo7k9+snj/2pFtL52g5Tc32c/lcXMIEa9t4=
+        Thu, 30 Apr 2020 10:05:46 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26BFC035494;
+        Thu, 30 Apr 2020 07:05:45 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id j14so1311724lfg.9;
+        Thu, 30 Apr 2020 07:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=j7xCCu9VuQu0HfGO2skjuS2R2CO/4T63UrJuAd/gmYA=;
+        b=TLbsdDlaakdtow4OFtE/0ekpvlLv6/nFuvtXG816d2BEb6ehtqhhfcTfqmyfiLLAoV
+         XIIB08dZb9nYnUs92wnmR0aI30oRu28+tydDM/O92gz49ePCRftk0BJDNoGteg4VZRxh
+         zP3TK3+aAzM69TejJWrr4FM8MsMEpK8C2ObWYORaNr0gLJbzL3af2HSUJmnNn9xBMxQr
+         ZGWx1zeI4aWGoIUoeDMkRk2S9vuguHOIO0wh3k9g+rSR+OBBVzru7VUK4lMM884vvFMT
+         /XzHWOY106qYz6/J01WULaqlEUqZKVvUXjNO84YYWkukT20vgmsTlVzZuvABb3hMDUVp
+         r1gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=j7xCCu9VuQu0HfGO2skjuS2R2CO/4T63UrJuAd/gmYA=;
+        b=Neh8l7SYQWfRM2M5p0+cjgTOlo50ykoY0ZrYm/h5fPICkY4w255fl6t69KdBSe6rbo
+         fOaxW8n2SqPOndaKhZywJrAL3WtHjQgeOT7kok9rajgL5JeI6wBWQdMNOErrRPo8ceVv
+         M6pi73GdLcvWYyaIEAF0jKQKOrkCxFAYZQTqAGDVikSYBA0Z6sk2y8v8WwibRclNzSJ1
+         PXMXquzeaiFgXggvN94B+aYKDweZNzMs8ladwslVnJnGMPWLeeIX91E+jv2ItARm7/1s
+         tWy9vHJmux20uES4ugVRjpetu4R+JSITKPMZEZx46xvP3+laS5KdSdt7fiHH5u3xsKds
+         GRSw==
+X-Gm-Message-State: AGi0PuYBcmz0YJ3sDP71EpBUKEaKjCz3MVgqN1pLf09+hxgV/VWlGOaw
+        0EHCtjXvj2n9C5vR+M9PbMY=
+X-Google-Smtp-Source: APiQypKMcejORSBVkOt2Y5RkeV20Y6iiGpHY/TlHCvnYcDxDGRMal4cEFSfQC4jjnhoPt1Wqp4Da/w==
+X-Received: by 2002:a05:6512:686:: with SMTP id t6mr2301585lfe.163.1588255542790;
+        Thu, 30 Apr 2020 07:05:42 -0700 (PDT)
+Received: from e123311-lin.cambridge.arm.com (static-91-225-135-18.devs.futuro.pl. [91.225.135.18])
+        by smtp.gmail.com with ESMTPSA id h24sm5034839lji.99.2020.04.30.07.05.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Apr 2020 07:05:42 -0700 (PDT)
+From:   Michal Orzel <michalorzel.eng@gmail.com>
+To:     jdelvare@suse.com, linux@roeck-us.net
+Cc:     Michal Orzel <michalorzel.eng@gmail.com>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Fix all coding-style warnings on lm75 driver
+Date:   Thu, 30 Apr 2020 16:05:34 +0200
+Message-Id: <1588255534-28073-1-git-send-email-michalorzel.eng@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 4:49 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> I noticed the number of objtool warnings in randconfig kernels have gone down
->  recently, maybe it's possible to eliminate the remaining ones?
->
-> Here are the ones I ran into recently, using gcc-9.3:
+Check/fix all warnings generated by checkpatch.pl script on LM75 driver.
 
-I now cross-checked with gcc-10.0, which leads to a few additional warnings
-for randconfig builds:
+Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+---
+ drivers/hwmon/lm75.c |  8 ++++++--
+ drivers/hwmon/lm75.h | 31 +++++++++++++++++--------------
+ 2 files changed, 23 insertions(+), 16 deletions(-)
 
-drivers/gpu/drm/vmwgfx/vmwgfx_msg.o: warning: objtool:
-vmw_port_hb_in()+0x12f: stack state mismatch: cfa1=6+16 cfa2=7+8
-drivers/gpu/drm/vmwgfx/vmwgfx_msg.o: warning: objtool:
-vmw_port_hb_in()+0xca: return with modified stack frame
-drivers/media/dvb-frontends/rtl2832_sdr.o: warning: objtool:
-.text.unlikely: unexpected end of section
-drivers/media/dvb-frontends/rtl2832_sdr.o: warning: objtool:
-rtl2832_sdr_try_fmt_sdr_cap() falls through to next function
-rtl2832_sdr_s_fmt_sdr_cap.cold()
-kernel/kexec_core.o: warning: objtool: crash_kexec()+0x2b: unreachable
-instruction
-lib/locking-selftest.o: warning: objtool: locking_selftest()+0x117f:
-PUSHF stack exhausted
-lib/locking-selftest.o: warning: objtool: ww_tests()+0x1083: PUSHF
-stack exhausted
-lib/strncpy_from_user.o: warning: objtool: strncpy_from_user()+0x133:
-call to do_strncpy_from_user() with UACCESS enabled
-lib/strnlen_user.o: warning: objtool: strnlen_user()+0x122: call to
-do_strnlen_user() with UACCESS enabled
+diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
+index 5e63922..ba0be48 100644
+--- a/drivers/hwmon/lm75.c
++++ b/drivers/hwmon/lm75.c
+@@ -797,8 +797,10 @@ static int lm75_detect(struct i2c_client *new_client,
+ 
+ 	/* First check for LM75A */
+ 	if (i2c_smbus_read_byte_data(new_client, 7) == LM75A_ID) {
+-		/* LM75A returns 0xff on unused registers so
+-		   just to be sure we check for that too. */
++		/*
++		 * LM75A returns 0xff on unused registers so
++		 * just to be sure we check for that too.
++		 */
+ 		if (i2c_smbus_read_byte_data(new_client, 4) != 0xff
+ 		 || i2c_smbus_read_byte_data(new_client, 5) != 0xff
+ 		 || i2c_smbus_read_byte_data(new_client, 6) != 0xff)
+@@ -849,6 +851,7 @@ static int lm75_suspend(struct device *dev)
+ {
+ 	int status;
+ 	struct i2c_client *client = to_i2c_client(dev);
++
+ 	status = i2c_smbus_read_byte_data(client, LM75_REG_CONF);
+ 	if (status < 0) {
+ 		dev_dbg(&client->dev, "Can't read config? %d\n", status);
+@@ -863,6 +866,7 @@ static int lm75_resume(struct device *dev)
+ {
+ 	int status;
+ 	struct i2c_client *client = to_i2c_client(dev);
++
+ 	status = i2c_smbus_read_byte_data(client, LM75_REG_CONF);
+ 	if (status < 0) {
+ 		dev_dbg(&client->dev, "Can't read config? %d\n", status);
+diff --git a/drivers/hwmon/lm75.h b/drivers/hwmon/lm75.h
+index b614e63..a398171 100644
+--- a/drivers/hwmon/lm75.h
++++ b/drivers/hwmon/lm75.h
+@@ -1,17 +1,15 @@
+ /* SPDX-License-Identifier: GPL-2.0-or-later */
+ /*
+-    lm75.h - Part of lm_sensors, Linux kernel modules for hardware
+-	      monitoring
+-    Copyright (c) 2003 Mark M. Hoffman <mhoffman@lightlink.com>
+-
+-*/
++ * lm75.h - Part of lm_sensors, Linux kernel modules for hardware monitoring
++ * Copyright (c) 2003 Mark M. Hoffman <mhoffman@lightlink.com>
++ */
+ 
+ /*
+-    This file contains common code for encoding/decoding LM75 type
+-    temperature readings, which are emulated by many of the chips
+-    we support.  As the user is unlikely to load more than one driver
+-    which contains this code, we don't worry about the wasted space.
+-*/
++ * This file contains common code for encoding/decoding LM75 type
++ * temperature readings, which are emulated by many of the chips
++ * we support.  As the user is unlikely to load more than one driver
++ * which contains this code, we don't worry about the wasted space.
++ */
+ 
+ #include <linux/kernel.h>
+ 
+@@ -20,18 +18,23 @@
+ #define LM75_TEMP_MAX 125000
+ #define LM75_SHUTDOWN 0x01
+ 
+-/* TEMP: 0.001C/bit (-55C to +125C)
+-   REG: (0.5C/bit, two's complement) << 7 */
++/*
++ * TEMP: 0.001C/bit (-55C to +125C)
++ * REG: (0.5C/bit, two's complement) << 7
++ */
+ static inline u16 LM75_TEMP_TO_REG(long temp)
+ {
+ 	int ntemp = clamp_val(temp, LM75_TEMP_MIN, LM75_TEMP_MAX);
++
+ 	ntemp += (ntemp < 0 ? -250 : 250);
+ 	return (u16)((ntemp / 500) << 7);
+ }
+ 
+ static inline int LM75_TEMP_FROM_REG(u16 reg)
+ {
+-	/* use integer division instead of equivalent right shift to
+-	   guarantee arithmetic shift and preserve the sign */
++	/*
++	 * use integer division instead of equivalent right shift to
++	 * guarantee arithmetic shift and preserve the sign
++	 */
+ 	return ((s16)reg / 128) * 500;
+ }
+-- 
+2.7.4
 
-I uploaded these as well now, see
-https://drive.google.com/open?id=1k10cO9OkFKaMVnK7uX-prplY-13CAvW1
-
-       Arnd
