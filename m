@@ -2,104 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 406A21BFFB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A6B1BFF37
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgD3PIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 11:08:48 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:48622 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726350AbgD3PIr (ORCPT
+        id S1726857AbgD3Ovn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:51:43 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:33877 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726357AbgD3Ovm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:08:47 -0400
-X-Greylist: delayed 1041 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Apr 2020 11:08:47 EDT
-Date:   Thu, 30 Apr 2020 10:51:23 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Jann Horn <jannh@google.com>, Nicolas Pitre <nico@fluxnic.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        linux-c6x-dev@linux-c6x.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Subject: Re: [PATCH v2 0/5] Fix ELF / FDPIC ELF core dumping, and use
- mmap_sem properly in there
-Message-ID: <20200430145123.GE21576@brightrain.aerifal.cx>
-References: <20200429214954.44866-1-jannh@google.com>
- <20200429215620.GM1551@shell.armlinux.org.uk>
- <CAHk-=wgpoEr33NJwQ+hqK1dz3Rs9jSw+BGotsSdt2Kb3HqLV7A@mail.gmail.com>
- <31196268-2ff4-7a1d-e9df-6116e92d2190@linux-m68k.org>
+        Thu, 30 Apr 2020 10:51:42 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 68D578D5;
+        Thu, 30 Apr 2020 10:51:41 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 30 Apr 2020 10:51:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=yUFL1mVF52h7LuiXHr0MmqdXpjr
+        /Do5cG5S9578N9FU=; b=flwRloM80e1YKWVVE0uunwO/B6bCRv7woEQil7ikD9o
+        lRF+leVNAjXiol85Xt4jS877ZBUxSMM3zaL2LZr0D4nAgLlH8gwiAoyRpzeMBPMC
+        y7AGp8KIby+tP6CvL0PIYlsSjgYBNBN0EtP8UMWN+YlDE3Hpo9LwNeo0sSP+/t5b
+        4uSsoJCA53uaSg2kMg9YDTNpCny2GCupw5Finjs4GBm7U5J3xrpfnnCIuPNqZh+x
+        IbPrpHpAm9Zp6JuzGpnsBsoDJGLDNmlXvojSWQLHkD600YhzRo2be5q8sThkMXid
+        iEUW/Xy5bkZSnYjPnrO0wSnA0yyO6hZ4/706pr7pZbQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=yUFL1m
+        VF52h7LuiXHr0MmqdXpjr/Do5cG5S9578N9FU=; b=FsNBbitKk8eDiMhklBBZAA
+        6uWhPPb932nl40fozzT8kBomeJztqBJC7UpGWUmlFC8P0ZQ3KW7tyiWkVG/G9cxz
+        YdzozPlEJxs3k6aFZmN3qzHdmeEdrMgmHhIFrJc5muXHiinPNuszNuw7OePxHZud
+        vlwUmfXkbP82FgyaE+XPuywLzW5LZRD5CwWnJ1JtpvL/f/leKCDBZ26FMMLfqfuA
+        DrmCbW5AYo0ilj2TIpRtLI5AbhAZTJwaDLjXehDKn4O161uOMFNiNMQEOPdpf9wz
+        m0hQ/Hn3BNbg4gAzWONhTVlhhAn1UnvAvC+O7zRAqlImA0xrW8fOqUZW90MYdPPQ
+        ==
+X-ME-Sender: <xms:_OWqXh7woC7d2ZzhGmFeRqlJoaykGikxCVc8txyuKlZunkFe5WJT6w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrieehgdekudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:_OWqXjImDnPUO9JQ9Nq1R0mGG-HKXJhWsULspBLza0TtxaYpagh9Uw>
+    <xmx:_OWqXjccGgel4Ura7pdRYyl0qZFftTKLhnAWG2WemJTscNhF-xLx_Q>
+    <xmx:_OWqXud2Kj-TNx84bvJnejQUzHxi7ofXVM4ilJkrFgoJ-ZV-CIzYXw>
+    <xmx:_eWqXkps6obGyXVibV8oFaG8LyJp1XAJ4f64IXNV6fion-SIRtZv0g>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4EE0D3280064;
+        Thu, 30 Apr 2020 10:51:40 -0400 (EDT)
+Date:   Thu, 30 Apr 2020 16:51:38 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Priit Laes <plaes@plaes.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v3 1/6] clk: sunxi-ng: a20: Register regmap for sun7i CCU
+Message-ID: <20200430145138.lhj4y5kjfz7bwamu@gilmour.lan>
+References: <20200430115702.5768-1-plaes@plaes.org>
+ <20200430115702.5768-2-plaes@plaes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="veryw4obx5pow3r5"
 Content-Disposition: inline
-In-Reply-To: <31196268-2ff4-7a1d-e9df-6116e92d2190@linux-m68k.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20200430115702.5768-2-plaes@plaes.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 12:10:05AM +1000, Greg Ungerer wrote:
-> 
-> 
-> On 30/4/20 9:03 am, Linus Torvalds wrote:
-> >On Wed, Apr 29, 2020 at 2:57 PM Russell King - ARM Linux admin
-> ><linux@armlinux.org.uk> wrote:
-> >>
-> >>I've never had any reason to use FDPIC, and I don't have any binaries
-> >>that would use it.  Nicolas Pitre added ARM support, so I guess he
-> >>would be the one to talk to about it.  (Added Nicolas.)
-> >
-> >While we're at it, is there anybody who knows binfmt_flat?
-> >
-> >It might be Nicolas too.
-> >
-> >binfmt_flat doesn't do core-dumping, but it has some other oddities.
-> >In particular, I'd like to bring sanity to the installation of the new
-> >creds, and all the _normal_ binfmt cases do it largely close together
-> >with setup_new_exec().
-> >
-> >binfmt_flat is doing odd things. It's doing this:
-> >
-> >         /* Flush all traces of the currently running executable */
-> >         if (id == 0) {
-> >                 ret = flush_old_exec(bprm);
-> >                 if (ret)
-> >                         goto err;
-> >
-> >                 /* OK, This is the point of no return */
-> >                 set_personality(PER_LINUX_32BIT);
-> >                 setup_new_exec(bprm);
-> >         }
-> >
-> >in load_flat_file() - which is also used to loading _libraries_. Where
-> >it makes no sense at all.
-> 
-> I haven't looked at the shared lib support in there for a long time,
-> but I thought that "id" is only 0 for the actual final program.
-> Libraries have a slot or id number associated with them.
 
-This sounds correct. My understanding of FLAT shared library support
-is that it's really bad and based on having preassigned slot indices
-for each library on the system, and a global array per-process to give
-to data base address for each library. Libraries are compiled to know
-their own slot numbers so that they just load from fixed_reg[slot_id]
-to get what's effectively their GOT pointer.
+--veryw4obx5pow3r5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm not sure if anybody has actually used this in over a decade. Last
-time I looked the tooling appeared broken, but in this domain lots of
-users have forked private tooling that's not publicly available or at
-least not publicly indexed, so it's hard to say for sure.
+On Thu, Apr 30, 2020 at 02:56:57PM +0300, Priit Laes wrote:
+> On sun7i, the gmac clock is handled by the dwmac-sunxi driver, but
+> its configuration register is located in the CCU register range,
+> requiring proper regmap setup.
+>=20
+> In order to do that, we use CLK_OF_DECLARE_DRIVER to initialize
+> sun7i ccu, which clears the OF_POPULATED flag, allowing the
+> platform device to probe the same resource with proper device node.
+>=20
+> Signed-off-by: Priit Laes <plaes@plaes.org>
+> ---
+>  drivers/clk/sunxi-ng/ccu-sun4i-a10.c | 62 +++++++++++++++++++++++++++-
+>  1 file changed, 60 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/clk/sunxi-ng/ccu-sun4i-a10.c b/drivers/clk/sunxi-ng/=
+ccu-sun4i-a10.c
+> index f32366d9336e..fa147b8ce705 100644
+> --- a/drivers/clk/sunxi-ng/ccu-sun4i-a10.c
+> +++ b/drivers/clk/sunxi-ng/ccu-sun4i-a10.c
+> @@ -8,6 +8,8 @@
+>  #include <linux/clk-provider.h>
+>  #include <linux/io.h>
+>  #include <linux/of_address.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> =20
+>  #include "ccu_common.h"
+>  #include "ccu_reset.h"
+> @@ -1478,5 +1480,61 @@ static void __init sun7i_a20_ccu_setup(struct devi=
+ce_node *node)
+>  {
+>  	sun4i_ccu_init(node, &sun7i_a20_ccu_desc);
+>  }
+> -CLK_OF_DECLARE(sun7i_a20_ccu, "allwinner,sun7i-a20-ccu",
+> -	       sun7i_a20_ccu_setup);
+> +CLK_OF_DECLARE_DRIVER(sun7i_a20_ccu, "allwinner,sun7i-a20-ccu",
+> +		      sun7i_a20_ccu_setup);
+> +
+> +/*
+> + * Regmap for the GMAC driver (dwmac-sunxi) to allow access to
+> + * GMAC configuration register.
+> + */
+> +#define SUN7I_A20_GMAC_CFG_REG 0x164
+> +static bool sun7i_a20_ccu_regmap_accessible_reg(struct device *dev,
+> +						unsigned int reg)
+> +{
+> +	if (reg =3D=3D SUN7I_A20_GMAC_CFG_REG)
+> +		return true;
+> +	return false;
+> +}
+> +
+> +static struct regmap_config sun7i_a20_ccu_regmap_config =3D {
+> +	.reg_bits	=3D 32,
+> +	.val_bits	=3D 32,
+> +	.reg_stride	=3D 4,
+> +	.max_register	=3D 0x1f4, /* clk_out_b */
+> +
+> +	.readable_reg	=3D sun7i_a20_ccu_regmap_accessible_reg,
+> +	.writeable_reg	=3D sun7i_a20_ccu_regmap_accessible_reg,
+> +};
+> +
+> +static int sun7i_a20_ccu_probe_regmap(struct platform_device *pdev)
+> +{
+> +	void __iomem *reg;
+> +	struct resource *res;
+> +	struct regmap *regmap;
+> +
+> +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	reg =3D devm_ioremap(&pdev->dev, res->start, resource_size(res));
+> +	if (IS_ERR(reg))
+> +		return PTR_ERR(reg);
 
-Rich
+You shouldn't really create a second mapping here but reuse the one you got=
+ in
+sun7i_a20_ccu_setup, since that code expect to be the sole user of it.
+
+Storing the virtual address in a global variable should work fine since we =
+only
+ever have a single instance of the controller
+
+Maxime
+
+--veryw4obx5pow3r5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXqrl+gAKCRDj7w1vZxhR
+xQHUAP43Ux7dIPWHzi8KIXHGURaaWzG5Si7pOOXp//+7NhsoJAD+MAMasUWFEicr
+LRkb9qgrRZxckPPqU9fMC5kg2QdCTwg=
+=k6DC
+-----END PGP SIGNATURE-----
+
+--veryw4obx5pow3r5--
