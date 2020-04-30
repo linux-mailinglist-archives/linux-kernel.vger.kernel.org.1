@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2B51BF9B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EEF1BF98A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbgD3Niw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:38:52 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:63460 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727781AbgD3Nio (ORCPT
+        id S1726906AbgD3NcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:32:23 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21524 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726692AbgD3NcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:38:44 -0400
-X-Greylist: delayed 402 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Apr 2020 09:38:43 EDT
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 7b8e4d71;
-        Thu, 30 Apr 2020 15:31:58 +0200 (CEST)
-Date:   Thu, 30 Apr 2020 15:31:58 +0200 (CEST)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-CC:     mbrugger@suse.com, u-boot@lists.denx.de, bmeng.cn@gmail.com,
-        marex@denx.de, linux-kernel@vger.kernel.org, sjg@chromium.org,
-        m.szyprowski@samsung.com, s.nawrocki@samsung.com,
-        nsaenzjulienne@suse.de
-In-reply-to: <20200430130433.11248-2-nsaenzjulienne@suse.de> (message from
-        Nicolas Saenz Julienne on Thu, 30 Apr 2020 15:04:32 +0200)
-Subject: Re: [PATCH v2 1/2] arm: rpi: Add function to trigger VL805's firmware load
-References: <20200430130433.11248-1-nsaenzjulienne@suse.de> <20200430130433.11248-2-nsaenzjulienne@suse.de>
-Message-ID: <0161a6a5254871ce@bloch.sibelius.xs4all.nl>
+        Thu, 30 Apr 2020 09:32:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588253541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n+aTxk90D7+j/ZxikiZm7htr7ihgz4RE8XZxOaPVLGY=;
+        b=VvzkadaBT+qn7TSfrLnw0ja+C+Zg/U+re4yRmexhPHXN4FPLB6KTtnM9J3MDyM7Ac0LCNO
+        QEzB3Tym0WQjGwE8H+Ib422K2AXAYtATfOFpQ94/uhpRUCeTSvSkoIrkCSIqF89Y6+eZD0
+        WK4NGETX0aUnv+SkAMq/YhCBeEFEbSI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-ArhEU26BO125W0CCvV0s8A-1; Thu, 30 Apr 2020 09:32:19 -0400
+X-MC-Unique: ArhEU26BO125W0CCvV0s8A-1
+Received: by mail-wm1-f72.google.com with SMTP id w2so858255wmc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:32:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n+aTxk90D7+j/ZxikiZm7htr7ihgz4RE8XZxOaPVLGY=;
+        b=GM+Gip8/Cs+H7bGjKg3x2fuFn25j7ak2CvyzAbmjvNUQddVZrSuxFdMJ4qD+zAMaav
+         P355Pz0f2GlwqOa95NjakLeJ8BFBQLieCG9b3d/VIAcYLZTZh/OWME9OiNZwQTDdEwzZ
+         5LgJOJG5I3ObXBz9/XgQFdHU60CG1Aw+pALAMcexf/OKBqn3S/dsG3dSVB9WFHyAxaV7
+         Ut6xfx3HMqnix2DwRI1r5RI86EtlrGY12w9GrLOlLpz/Cl7K4SM6NSikX9Km7nJeNUcv
+         EnXyLuwroWZfpPSDIEpR+eHx3fCML5PSRRywTTaKBYAVfai3KXz065JqF7lQ/rnotxLw
+         Ntdg==
+X-Gm-Message-State: AGi0PubvanZMAYUVQL1/+W6ZM0pl3d4oZpXImfkqpTqbQYMYH6MJ716n
+        45KaZLWfKBhZgiCwUcjHp2gCJ+ZpWMdz1ovgM+NJs1rsa/CTmHnZo7w36TKJKuY4Bzj1Zra5vQF
+        L/jSJ+TrcoiHTmasvpsDE8rjz
+X-Received: by 2002:a05:600c:210b:: with SMTP id u11mr3164041wml.133.1588253538321;
+        Thu, 30 Apr 2020 06:32:18 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLZwuDOopSSlnP92U8HygTNBmhhTn4PWDpNdu4eD+Pq/bkj6FBcQrWnMY670cOB2vZJ5e/KIA==
+X-Received: by 2002:a05:600c:210b:: with SMTP id u11mr3164026wml.133.1588253538120;
+        Thu, 30 Apr 2020 06:32:18 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ac19:d1fb:3f5f:d54f? ([2001:b07:6468:f312:ac19:d1fb:3f5f:d54f])
+        by smtp.gmail.com with ESMTPSA id s6sm12332481wmh.17.2020.04.30.06.32.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 06:32:17 -0700 (PDT)
+Subject: Re: [PATCH v4 5/7] KVM: VMX: Optimize posted-interrupt delivery for
+ timer fastpath
+To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Haiwei Li <lihaiwei@tencent.com>
+References: <1588055009-12677-1-git-send-email-wanpengli@tencent.com>
+ <1588055009-12677-6-git-send-email-wanpengli@tencent.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <66fd6180-8e8b-1f9c-90f1-a55af1467388@redhat.com>
+Date:   Thu, 30 Apr 2020 15:32:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <1588055009-12677-6-git-send-email-wanpengli@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> Date: Thu, 30 Apr 2020 15:04:32 +0200
-> 
-> On the Raspberry Pi 4, after a PCI reset, VL805's (a xHCI chip) firmware
-> may either be loaded directly from an EEPROM or, if not present, by the
-> SoC's VideoCore (the SoC's co-processor). Introduce the function that
-> informs VideoCore that VL805 may need its firmware loaded.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> 
-> ---
-> Changes since v1:
->  - Rename function so it's not mistaken with regular firmware loading
-> 
->  arch/arm/mach-bcm283x/include/mach/mbox.h | 13 +++++++
->  arch/arm/mach-bcm283x/include/mach/msg.h  |  7 ++++
->  arch/arm/mach-bcm283x/msg.c               | 43 +++++++++++++++++++++++
->  3 files changed, 63 insertions(+)
-> 
-> diff --git a/arch/arm/mach-bcm283x/include/mach/mbox.h b/arch/arm/mach-bcm283x/include/mach/mbox.h
-> index 60e226ce1d..2ae2d3d97c 100644
-> --- a/arch/arm/mach-bcm283x/include/mach/mbox.h
-> +++ b/arch/arm/mach-bcm283x/include/mach/mbox.h
-> @@ -491,6 +491,19 @@ struct bcm2835_mbox_tag_set_palette {
->  	} body;
->  };
->  
-> +#define BCM2835_MBOX_TAG_NOTIFY_XHCI_RESET          0x00030058
-> +
-> +struct bcm2835_mbox_tag_pci_dev_addr {
-> +	struct bcm2835_mbox_tag_hdr tag_hdr;
-> +	union {
-> +		struct {
-> +			u32 dev_addr;
-> +		} req;
-> +		struct {
-> +		} resp;
-> +	} body;
-> +};
-> +
->  /*
->   * Pass a raw u32 message to the VC, and receive a raw u32 back.
->   *
-> diff --git a/arch/arm/mach-bcm283x/include/mach/msg.h b/arch/arm/mach-bcm283x/include/mach/msg.h
-> index 4afb08631b..e45c1bf010 100644
-> --- a/arch/arm/mach-bcm283x/include/mach/msg.h
-> +++ b/arch/arm/mach-bcm283x/include/mach/msg.h
-> @@ -48,4 +48,11 @@ int bcm2835_set_video_params(int *widthp, int *heightp, int depth_bpp,
->  			     int pixel_order, int alpha_mode, ulong *fb_basep,
->  			     ulong *fb_sizep, int *pitchp);
->  
-> +/**
-> + * bcm2711_load_vl805_firmware() - get vl805's firmware loaded
-> + *
-> + * @return 0 if OK, -EIO on error
-> + */
-> +int bcm2711_notify_vl805_reset(void);
-
-Now the comment and function prototype don't agree :(.
-
-> +
->  #endif
-> diff --git a/arch/arm/mach-bcm283x/msg.c b/arch/arm/mach-bcm283x/msg.c
-> index 94b75283f8..a338190d33 100644
-> --- a/arch/arm/mach-bcm283x/msg.c
-> +++ b/arch/arm/mach-bcm283x/msg.c
-> @@ -40,6 +40,12 @@ struct msg_setup {
->  	u32 end_tag;
->  };
->  
-> +struct msg_notify_vl805_reset {
-> +	struct bcm2835_mbox_hdr hdr;
-> +	struct bcm2835_mbox_tag_pci_dev_addr dev_addr;
-> +	u32 end_tag;
-> +};
-> +
->  int bcm2835_power_on_module(u32 module)
->  {
->  	ALLOC_CACHE_ALIGN_BUFFER(struct msg_set_power_state, msg_pwr, 1);
-> @@ -151,3 +157,40 @@ int bcm2835_set_video_params(int *widthp, int *heightp, int depth_bpp,
->  
->  	return 0;
->  }
-> +
-> +/*
-> + * On the Raspberry Pi 4, after a PCI reset, VL805's (the xHCI chip) firmware
-> + * may either be loaded directly from an EEPROM or, if not present, by the
-> + * SoC's VideoCore. This informs VideoCore that VL805 needs its firmware
-> + * loaded.
-> + */
-> +int bcm2711_notify_vl805_reset(void)
-> +{
-> +	ALLOC_CACHE_ALIGN_BUFFER(struct msg_notify_vl805_reset,
-> +				 msg_notify_vl805_reset, 1);
-> +	int ret;
-> +
-> +	BCM2835_MBOX_INIT_HDR(msg_notify_vl805_reset);
-> +	BCM2835_MBOX_INIT_TAG(&msg_notify_vl805_reset->dev_addr,
-> +			      NOTIFY_XHCI_RESET);
-> +
-> +	/*
-> +	 * The pci device address is expected like this:
-> +	 *
-> +	 *   PCI_BUS << 20 | PCI_SLOT << 15 | PCI_FUNC << 12
-> +	 *
-> +	 * But since RPi4's PCIe setup is hardwired, we know the address in
-> +	 * advance.
-> +	 */
-> +	msg_notify_vl805_reset->dev_addr.body.req.dev_addr = 0x100000;
-> +
-> +	ret = bcm2835_mbox_call_prop(BCM2835_MBOX_PROP_CHAN,
-> +				     &msg_notify_vl805_reset->hdr);
-> +	if (ret) {
-> +		printf("bcm2711: Faild to load vl805's firmware, %d\n", ret);
-> +		return -EIO;
+On 28/04/20 08:23, Wanpeng Li wrote:
+> -	if (exit_fastpath == EXIT_FASTPATH_REENTER_GUEST &&
+> -	    kvm_vcpu_exit_request(vcpu))
+> -		exit_fastpath = EXIT_FASTPATH_NOP;
+> +	if (exit_fastpath == EXIT_FASTPATH_REENTER_GUEST) {
+> +		if (!kvm_vcpu_exit_request(vcpu))
+> +			vmx_sync_pir_to_irr(vcpu);
+> +		else
+> +			exit_fastpath = EXIT_FASTPATH_NOP;
 > +	}
-> +
-> +	return 0;
-> +}
-> +
-> -- 
-> 2.26.2
-> 
-> 
+
+This part should be in patch 3; not a big deal, I can reorganize that
+myself.
+
+Paolo
+
