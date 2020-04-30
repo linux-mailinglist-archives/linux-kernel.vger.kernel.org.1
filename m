@@ -2,65 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D561C0201
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8911C021A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727116AbgD3QSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726420AbgD3QSI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:18:08 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786E3C035495
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:18:07 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id r26so2626208wmh.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:18:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5bAsvHqWCwGkT9CQd5T/W8xxkcoMDs4/cE7bMjlYKe0=;
-        b=gbHXr1KRjKzHoWccXlTIFlKA6SNRGpxXOO+JrrqgTvF8sYDdJfErPMiJJXwfzBd82v
-         +Bp0Fn/5Bb8Gtwik2V1YrWSCqY7eslqiV5SJZQSfWPtOaDewmOSMtwJ7Bzs9PFtODxoR
-         RH7O/FjGUW8detzTpo+wXVG3U2QUMlLmWBYXJF5Eyzv2rUOCusSe4RelyEqOkdYzr16H
-         13FPv5lrfR0iidWprYTw97a8ojDJa0Zj30usR+mgFPxUKVVsrJ226gWyB4GvZHeCPtwn
-         AEmL2ybLlvTiEIWqjII/JOaclnZlhSDE4LV+MfUFikvplidy4TPP4nHQM016g7+PbXmc
-         6Q4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5bAsvHqWCwGkT9CQd5T/W8xxkcoMDs4/cE7bMjlYKe0=;
-        b=XzgTr3ZmajG5LOh5uLFLfBSQ7vhOkI7HXpV8xViCoQRzphOxW3TjMKXV+l+CqqYjjX
-         iKfrWgU3DLSP1x6fOIXFLYH71d1+i6tAPqLaREAThZSZ+KWGQLMVtSN3j5VP/nUz+OOl
-         mdZcTtrn5EqZoI8lv2N6RdyiLrqgQNZcoJmFvNNf0VjRqBiBzrDpURxEElnKJZpXtASF
-         R8DHgxEk4EjwTuE/HlwAQdo6MtpShpWan7jqomZMBCY/Ctvw/75bHi5Dpo8LddOSQ4FA
-         eYXMDCOmnkacSIM2Ye6k+ReMNkVjdXdSsudTpcunMe/M4izNWMqyRx9iodSQvl5zoAVS
-         jnOw==
-X-Gm-Message-State: AGi0PuYeDk+Ejc4synnZDsh6UYsPNEyVd+HrQnxIybenAEvtKwGm5wio
-        UkZUhiYJZm8NbyAqW6iusTMIdw==
-X-Google-Smtp-Source: APiQypLdCkOL76wT2MKicI01rEncdS8lGfzgse247Irn4tIefaTYWYzAtLZod6xQ+/HXO2xHj/xMhA==
-X-Received: by 2002:a1c:1b88:: with SMTP id b130mr3766023wmb.75.1588263486041;
-        Thu, 30 Apr 2020 09:18:06 -0700 (PDT)
-Received: from wychelm.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id y18sm160634wmc.45.2020.04.30.09.18.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 09:18:05 -0700 (PDT)
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@linaro.org
-Subject: [PATCH v2] serial: kgdboc: Allow earlycon initialization to be deferred
-Date:   Thu, 30 Apr 2020 17:17:41 +0100
-Message-Id: <20200430161741.1832050-1-daniel.thompson@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200429170804.880720-1-daniel.thompson@linaro.org>
-References: <20200429170804.880720-1-daniel.thompson@linaro.org>
+        id S1728250AbgD3QSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:18:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726431AbgD3QSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:18:38 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7673208D5;
+        Thu, 30 Apr 2020 16:18:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588263517;
+        bh=ugCY3y9aPneko9xp0OW8Y5PqnnRdwIA6ZnhjiQw0pbg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jkbiKuotKQWoJifXoYaYKWd4u1OUCkFJTCeaJ2hFfc8Mmzm6hL99xXi+5i8oLaR6e
+         GJ1b6u5OLXCuKZdQPYYbqcEoGl4qcjUVxJHvEaPOc1nGKIjtw42GlkxhXUFJCRfzBO
+         IWB28xT442895dIcuie8By96F883CyyppOigyJ4o=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jUBtT-00Axgb-Pl; Thu, 30 Apr 2020 18:18:35 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-pm@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: [PATCH v4 00/19] Manually convert  thermal, crypto and misc devices to ReST
+Date:   Thu, 30 Apr 2020 18:18:14 +0200
+Message-Id: <cover.1588263270.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -68,119 +46,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there is no guarantee that an earlycon will be initialized
-before kgdboc tries to adopt it. Almost the opposite: on systems
-with ACPI then if earlycon has no arguments then it is guaranteed that
-earlycon will not be initialized.
+Manually convert some files from thermal, crypto and misc-devices
+to ReST format.
 
-This patch mitigates the problem by giving kgdboc_earlycon a second
-chance during console_init(). This isn't quite as good as stopping during
-early parameter parsing but it is still early in the kernel boot.
+This series is against linux-next 20200430 tag (as I rebased it, in order
+to check if some patch were already merged via some other tree),
+but it should very likely merge fine against docs-next.
 
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
----
+The full series (including those ones) are at:
 
-Notes:
-    v2: Simplified, more robust, runs earlier, still has Doug's
-        recent patchset as a prerequisite. What's not to like?
-    
-    More specifically, based on feedback from Doug Anderson, I
-    have replaced the initial hacky implementation with a console
-    initcall.
-    
-    I also made it defer more aggressively after realizing that both
-    earlycon and kgdboc_earlycon are handled as early parameters
-    (meaning I think the current approach relies on the ordering
-    of drivers/tty/serial/Makefile to ensure the earlycon is enabled
-    before kgdboc tries to adopt it).
-    
-    Finally, my apologies to Jason and kgdb ML folks, who are seeing
-    this patch for the first time. I copied the original circulation
-    list from a patch that wasn't kgdb related and forgot to update.
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=misc-docs
 
- drivers/tty/serial/kgdboc.c | 41 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 39 insertions(+), 2 deletions(-)
+The documents touched on this patch, converted to HTML via the 
+building system are at (together with patches from other series):
 
-diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-index 7aca0a67fc0b..596213272ec3 100644
---- a/drivers/tty/serial/kgdboc.c
-+++ b/drivers/tty/serial/kgdboc.c
-@@ -509,6 +509,10 @@ static struct kgdb_io kgdboc_earlycon_io_ops = {
- 	.is_console		= true,
- };
+	https://www.infradead.org/~mchehab/kernel_docs/
 
-+#define MAX_CONSOLE_NAME_LEN (sizeof((struct console *) 0)->name)
-+static char kgdboc_earlycon_param[MAX_CONSOLE_NAME_LEN] __initdata;
-+static bool kgdboc_earlycon_late_enable __initdata;
-+
- static int __init kgdboc_earlycon_init(char *opt)
- {
- 	struct console *con;
-@@ -529,7 +533,24 @@ static int __init kgdboc_earlycon_init(char *opt)
- 	console_unlock();
 
- 	if (!con) {
--		pr_info("Couldn't find kgdb earlycon\n");
-+		/*
-+		 * Both earlycon and kgdboc_earlycon are initialized during
-+		 * early parameter parsing. We cannot guarantee earlycon gets
-+		 * in first and, in any case, on ACPI systems earlycon may
-+		 * defer its own initialization (usually to somewhere within
-+		 * setup_arch() ). To cope with either of these situations
-+		 * we can defer our own initialization to a little later in
-+		 * the boot.
-+		 */
-+		if (!kgdboc_earlycon_late_enable) {
-+			pr_info("No suitable earlycon yet, will try later\n");
-+			if (opt)
-+				strscpy(kgdboc_earlycon_param, opt,
-+					sizeof(kgdboc_earlycon_param));
-+			kgdboc_earlycon_late_enable = true;
-+		} else {
-+			pr_info("Couldn't find kgdb earlycon\n");
-+		}
- 		return 0;
- 	}
+v4:
 
-@@ -543,8 +564,24 @@ static int __init kgdboc_earlycon_init(char *opt)
+- added some acks.
 
- 	return 0;
- }
--
- early_param("kgdboc_earlycon", kgdboc_earlycon_init);
-+
-+/*
-+ * This is only intended for the late adoption of an early console.
-+ *
-+ * It is not a reliable way to adopt regular consoles because
-+ * we can not control what order console initcalls are made and
-+ * many regular consoles are registered much later in the boot
-+ * process than the console initcalls!
-+ */
-+static int __init kgdboc_earlycon_late_init(void)
-+{
-+	if (kgdboc_earlycon_late_enable)
-+		kgdboc_earlycon_init(kgdboc_earlycon_param);
-+	return 0;
-+}
-+console_initcall(kgdboc_earlycon_late_init);
-+
- #endif /* CONFIG_KGDB_SERIAL_CONSOLE */
+v3:
 
- module_init(init_kgdboc);
+- removed the cpu-freq patches from this series, as Rafael should
+  be applying it on his tree.
 
-base-commit: 6a8b55ed4056ea5559ebe4f6a4b247f627870d4c
-prerequisite-patch-id: cbaa70eb783f1f34aec7f5839d1fecbc7616a9f6
-prerequisite-patch-id: d7543cdd19fb194ded3361d52818970083efdb06
-prerequisite-patch-id: 2238d976451dac9e3ee1bf02a077d633e342aa0c
-prerequisite-patch-id: 9e4296261b608ee172060d04b3de431a5e370096
-prerequisite-patch-id: 2b008e0e14a212072874ecb483d9c6844d161b08
-prerequisite-patch-id: f5b692b89c997d828832e3ab27fffb8f770d7b6f
-prerequisite-patch-id: 851d6f4874aa24540db9d765275ae736e8b2955b
-prerequisite-patch-id: d3969c2fb7cd320eafebe63d7da270dac5a82fc9
-prerequisite-patch-id: e1fc1478b7f75094d263ffc64a9f3528151831cf
-prerequisite-patch-id: 45fb53996a9f5993e03673c10eebf2834c58307f
-prerequisite-patch-id: 50ac1ddb52c3cce8b712036f212fdd67d7493112
---
-2.25.1
+v2: 
+
+- a small change at patch 2 to avoid uneeded whitespace changes;
+- added 13 new patches at the end
+
+
+Mauro Carvalho Chehab (19):
+  docs: thermal: convert cpu-idle-cooling.rst to ReST
+  docs: crypto: convert asymmetric-keys.txt to ReST
+  docs: crypto: convert api-intro.txt to ReST format
+  docs: crypto: convert async-tx-api.txt to ReST format
+  docs: crypto: descore-readme.txt: convert to ReST format
+  docs: misc-devices/spear-pcie-gadget.txt: convert to ReST
+  docs: misc-devices/pci-endpoint-test.txt: convert to ReST
+  docs: misc-devices/pci-endpoint-test.txt: convert to ReST
+  docs: misc-devices/c2port.txt: convert to ReST format
+  docs: misc-devices/bh1770glc.txt: convert to ReST
+  docs: misc-devices/apds990x.txt: convert to ReST format
+  docs: pci: endpoint/function/binding/pci-test.txt convert to ReST
+  docs: arm64: convert perf.txt to ReST format
+  docs: powerpc: convert vcpudispatch_stats.txt to ReST
+  docs: sh: convert new-machine.txt to ReST
+  docs: sh: convert register-banks.txt to ReST
+  docs: trace: ring-buffer-design.txt: convert to ReST format
+  docs: kvm: get read of devices/README
+  docs: misc-devices: add uacce to the index.rst
+
+ .../endpoint/function/binding/pci-test.rst    |  26 +
+ .../endpoint/function/binding/pci-test.txt    |  19 -
+ Documentation/PCI/endpoint/index.rst          |   2 +
+ Documentation/arm64/index.rst                 |   1 +
+ Documentation/arm64/{perf.txt => perf.rst}    |   7 +-
+ .../crypto/{api-intro.txt => api-intro.rst}   | 186 ++--
+ ...symmetric-keys.txt => asymmetric-keys.rst} |  91 +-
+ .../{async-tx-api.txt => async-tx-api.rst}    | 253 +++---
+ ...{descore-readme.txt => descore-readme.rst} | 152 +++-
+ Documentation/crypto/index.rst                |   5 +
+ Documentation/driver-api/dmaengine/client.rst |   2 +-
+ .../driver-api/dmaengine/provider.rst         |   2 +-
+ .../driver-api/thermal/cpu-idle-cooling.rst   |  18 +-
+ Documentation/driver-api/thermal/index.rst    |   1 +
+ .../{ad525x_dpot.txt => ad525x_dpot.rst}      |  24 +-
+ .../{apds990x.txt => apds990x.rst}            |  31 +-
+ .../{bh1770glc.txt => bh1770glc.rst}          |  45 +-
+ .../misc-devices/{c2port.txt => c2port.rst}   |  58 +-
+ Documentation/misc-devices/index.rst          |   7 +
+ .../misc-devices/pci-endpoint-test.rst        |  56 ++
+ .../misc-devices/pci-endpoint-test.txt        |  41 -
+ .../misc-devices/spear-pcie-gadget.rst        | 170 ++++
+ .../misc-devices/spear-pcie-gadget.txt        | 130 ---
+ Documentation/powerpc/index.rst               |   1 +
+ ...patch_stats.txt => vcpudispatch_stats.rst} |  17 +-
+ Documentation/security/keys/core.rst          |   2 +-
+ Documentation/sh/index.rst                    |   6 +
+ .../sh/{new-machine.txt => new-machine.rst}   | 195 +++--
+ ...{register-banks.txt => register-banks.rst} |  13 +-
+ Documentation/trace/index.rst                 |   1 +
+ ...ffer-design.txt => ring-buffer-design.rst} | 802 ++++++++++--------
+ Documentation/virt/kvm/devices/README         |   1 -
+ Documentation/virt/kvm/devices/index.rst      |   3 +
+ MAINTAINERS                                   |   4 +-
+ arch/sh/Kconfig.cpu                           |   2 +-
+ crypto/asymmetric_keys/asymmetric_type.c      |   2 +-
+ crypto/asymmetric_keys/public_key.c           |   2 +-
+ crypto/asymmetric_keys/signature.c            |   2 +-
+ drivers/misc/Kconfig                          |   2 +-
+ drivers/misc/ad525x_dpot.c                    |   2 +-
+ include/crypto/public_key.h                   |   2 +-
+ include/keys/asymmetric-parser.h              |   2 +-
+ include/keys/asymmetric-subtype.h             |   2 +-
+ include/keys/asymmetric-type.h                |   2 +-
+ 44 files changed, 1358 insertions(+), 1034 deletions(-)
+ create mode 100644 Documentation/PCI/endpoint/function/binding/pci-test.rst
+ delete mode 100644 Documentation/PCI/endpoint/function/binding/pci-test.txt
+ rename Documentation/arm64/{perf.txt => perf.rst} (95%)
+ rename Documentation/crypto/{api-intro.txt => api-intro.rst} (70%)
+ rename Documentation/crypto/{asymmetric-keys.txt => asymmetric-keys.rst} (91%)
+ rename Documentation/crypto/{async-tx-api.txt => async-tx-api.rst} (55%)
+ rename Documentation/crypto/{descore-readme.txt => descore-readme.rst} (81%)
+ rename Documentation/misc-devices/{ad525x_dpot.txt => ad525x_dpot.rst} (85%)
+ rename Documentation/misc-devices/{apds990x.txt => apds990x.rst} (86%)
+ rename Documentation/misc-devices/{bh1770glc.txt => bh1770glc.rst} (83%)
+ rename Documentation/misc-devices/{c2port.txt => c2port.rst} (59%)
+ create mode 100644 Documentation/misc-devices/pci-endpoint-test.rst
+ delete mode 100644 Documentation/misc-devices/pci-endpoint-test.txt
+ create mode 100644 Documentation/misc-devices/spear-pcie-gadget.rst
+ delete mode 100644 Documentation/misc-devices/spear-pcie-gadget.txt
+ rename Documentation/powerpc/{vcpudispatch_stats.txt => vcpudispatch_stats.rst} (94%)
+ rename Documentation/sh/{new-machine.txt => new-machine.rst} (73%)
+ rename Documentation/sh/{register-banks.txt => register-banks.rst} (88%)
+ rename Documentation/trace/{ring-buffer-design.txt => ring-buffer-design.rst} (55%)
+ delete mode 100644 Documentation/virt/kvm/devices/README
+
+-- 
+2.25.4
+
 
