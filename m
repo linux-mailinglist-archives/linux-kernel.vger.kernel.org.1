@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F411C0249
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579591C021B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728445AbgD3QUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:20:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58740 "EHLO mail.kernel.org"
+        id S1728267AbgD3QSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:18:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727108AbgD3QSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727089AbgD3QSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Apr 2020 12:18:39 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1F4224956;
+        by mail.kernel.org (Postfix) with ESMTPSA id CB2CB24955;
         Thu, 30 Apr 2020 16:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588263518;
-        bh=E2W+Pp9D1/Ag9kxnKEgTpnr6s13MrdK3Hx82R//8IyQ=;
+        bh=tkR3wAT0LBmvaZI9/1wP4hUMFYjfHl3vE2K0GoEx1LM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RI72qE74qq8DRf2eNEeVqVVN3J3AsfpRNkLolqnnMt1UB+xXG53sXXUOhtryaQxWQ
-         d4sxs7io0tLSLVN6ydVgQqmfpRN/HzyviegkS1PGjEm87RQTdEtt41iEBibjjU4G74
-         0RawY5uPG2KfZwz/dllOCbsAgNvbX3os2ytmLVcU=
+        b=D6Djx5AJAN0TwrnZVbjAKbp7koalkpKSiHnBBAzdRIYlEFCzI8amprN6d/qh3JlSv
+         zaFOXLv7JPZdiGSMtUueeOe5h+2S/dJDr9jxwV4Dnba+xZIrOzn7DjwTKuy8uua3qy
+         pypGgyaAcQ/auq/XNZPMITb6H7qC0SntzfMiROL0=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jUBtU-00AxhH-3S; Thu, 30 Apr 2020 18:18:36 +0200
+        id 1jUBtU-00AxhN-4O; Thu, 30 Apr 2020 18:18:36 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v4 09/19] docs: misc-devices/c2port.txt: convert to ReST format
-Date:   Thu, 30 Apr 2020 18:18:23 +0200
-Message-Id: <1d175df3e43b2606b892a2bfed387cd5c1b6e3cd.1588263270.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v4 10/19] docs: misc-devices/bh1770glc.txt: convert to ReST
+Date:   Thu, 30 Apr 2020 18:18:24 +0200
+Message-Id: <1aaa71c0a287b53d8e77e535fa46bbc18f348b1a.1588263270.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1588263270.git.mchehab+huawei@kernel.org>
 References: <cover.1588263270.git.mchehab+huawei@kernel.org>
@@ -43,132 +43,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Use copyright symbol;
-- use title markups;
-- adjust indentation;
-- mark literal blocks as such.
+- Adjust document title markup;
+- use list markups;
+- Adjust identations to display properly at ReST output.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../misc-devices/{c2port.txt => c2port.rst}   | 58 ++++++++++---------
+ .../{bh1770glc.txt => bh1770glc.rst}          | 45 +++++++++++++------
  Documentation/misc-devices/index.rst          |  1 +
- 2 files changed, 32 insertions(+), 27 deletions(-)
- rename Documentation/misc-devices/{c2port.txt => c2port.rst} (59%)
+ 2 files changed, 33 insertions(+), 13 deletions(-)
+ rename Documentation/misc-devices/{bh1770glc.txt => bh1770glc.rst} (83%)
 
-diff --git a/Documentation/misc-devices/c2port.txt b/Documentation/misc-devices/c2port.rst
-similarity index 59%
-rename from Documentation/misc-devices/c2port.txt
-rename to Documentation/misc-devices/c2port.rst
-index ea7344465610..258e1c1d43c7 100644
---- a/Documentation/misc-devices/c2port.txt
-+++ b/Documentation/misc-devices/c2port.rst
-@@ -1,7 +1,11 @@
--			C2 port support
--			---------------
+diff --git a/Documentation/misc-devices/bh1770glc.txt b/Documentation/misc-devices/bh1770glc.rst
+similarity index 83%
+rename from Documentation/misc-devices/bh1770glc.txt
+rename to Documentation/misc-devices/bh1770glc.rst
+index 7d64c014dc70..ea5ca58bb958 100644
+--- a/Documentation/misc-devices/bh1770glc.txt
++++ b/Documentation/misc-devices/bh1770glc.rst
+@@ -1,9 +1,13 @@
 +.. SPDX-License-Identifier: GPL-2.0
-+.. include:: <isonum.txt>
- 
--(C) Copyright 2007 Rodolfo Giometti <giometti@enneenne.com>
-+===============
-+C2 port support
-+===============
 +
-+|copy| Copyright 2007 Rodolfo Giometti <giometti@enneenne.com>
++=======================
+ Kernel driver bh1770glc
+ =======================
  
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
-@@ -32,10 +36,10 @@ The C2 Interface main references are at (http://www.silabs.com)
- Silicon Laboratories site], see:
+ Supported chips:
+-ROHM BH1770GLC
+-OSRAM SFH7770
++
++- ROHM BH1770GLC
++- OSRAM SFH7770
  
- - AN127: FLASH Programming via the C2 Interface at
--http://www.silabs.com/Support Documents/TechnicalDocs/an127.pdf 
-+  http://www.silabs.com/Support Documents/TechnicalDocs/an127.pdf
+ Data sheet:
+ Not freely available
+@@ -48,12 +52,16 @@ chip_id
+ 	RO - shows detected chip type and version
  
- - C2 Specification at
--http://www.silabs.com/pages/DownloadDoc.aspx?FILEURL=Support%20Documents/TechnicalDocs/an127.pdf&src=SearchResults
-+  http://www.silabs.com/pages/DownloadDoc.aspx?FILEURL=Support%20Documents/TechnicalDocs/an127.pdf&src=SearchResults
+ power_state
+-	RW - enable / disable chip. Uses counting logic
+-	     1 enables the chip
+-	     0 disables the chip
++	RW - enable / disable chip
++
++	Uses counting logic
++
++	     - 1 enables the chip
++	     - 0 disables the chip
  
- however it implements a two wire serial communication protocol (bit
- banging) designed to enable in-system programming, debugging, and
-@@ -47,44 +51,44 @@ Using the driver
- ----------------
+ lux0_input
+ 	RO - measured lux value
++
+ 	     sysfs_notify called when threshold interrupt occurs
  
- Once the driver is loaded you can use sysfs support to get C2port's
--info or read/write in-system flash.
-+info or read/write in-system flash::
+ lux0_sensor_range
+@@ -66,16 +74,22 @@ lux0_rate_avail
+ 	RO - supported measurement rates
  
--# ls /sys/class/c2port/c2port0/
--access            flash_block_size  flash_erase       rev_id
--dev_id            flash_blocks_num  flash_size        subsystem/
--flash_access      flash_data        reset             uevent
-+  # ls /sys/class/c2port/c2port0/
-+  access            flash_block_size  flash_erase       rev_id
-+  dev_id            flash_blocks_num  flash_size        subsystem/
-+  flash_access      flash_data        reset             uevent
+ lux0_thresh_above_value
+-	RW - HI level threshold value. All results above the value
++	RW - HI level threshold value
++
++	     All results above the value
+ 	     trigs an interrupt. 65535 (i.e. sensor_range) disables the above
+ 	     interrupt.
  
- Initially the C2port access is disabled since you hardware may have
- such lines multiplexed with other devices so, to get access to the
--C2port, you need the command:
-+C2port, you need the command::
+ lux0_thresh_below_value
+-	RW - LO level threshold value. All results below the value
++	RW - LO level threshold value
++
++	     All results below the value
+ 	     trigs an interrupt. 0 disables the below interrupt.
  
--# echo 1 > /sys/class/c2port/c2port0/access
-+  # echo 1 > /sys/class/c2port/c2port0/access
+ lux0_calibscale
+-	RW - calibration value. Set to neutral value by default.
++	RW - calibration value
++
++	     Set to neutral value by default.
+ 	     Output results are multiplied with calibscale / calibscale_default
+ 	     value.
  
- after that you should read the device ID and revision ID of the
--connected micro controller:
-+connected micro controller::
+@@ -84,32 +98,37 @@ lux0_calibscale_default
  
--# cat /sys/class/c2port/c2port0/dev_id
--8
--# cat /sys/class/c2port/c2port0/rev_id
--1
-+  # cat /sys/class/c2port/c2port0/dev_id
-+  8
-+  # cat /sys/class/c2port/c2port0/rev_id
-+  1
+ prox0_raw
+ 	RO - measured proximity value
++
+ 	     sysfs_notify called when threshold interrupt occurs
  
- However, for security reasons, the in-system flash access in not
--enabled yet, to do so you need the command:
-+enabled yet, to do so you need the command::
+ prox0_sensor_range
+ 	RO - prox0_raw max value
  
--# echo 1 > /sys/class/c2port/c2port0/flash_access
-+  # echo 1 > /sys/class/c2port/c2port0/flash_access
+ prox0_raw_en
+-	RW - enable / disable proximity - uses counting logic
+-	     1 enables the proximity
+-	     0 disables the proximity
++	RW - enable / disable proximity
++
++	     Uses counting logic
++
++	     - 1 enables the proximity
++	     - 0 disables the proximity
  
--After that you can read the whole flash:
-+After that you can read the whole flash::
+ prox0_thresh_above_count
+ 	RW - number of proximity interrupts needed before triggering the event
  
--# cat /sys/class/c2port/c2port0/flash_data > image
-+  # cat /sys/class/c2port/c2port0/flash_data > image
+ prox0_rate_above
+ 	RW - Measurement rate (in Hz) when the level is above threshold
+-	     i.e. when proximity on has been reported.
++	i.e. when proximity on has been reported.
  
--erase it:
-+erase it::
+ prox0_rate_below
+ 	RW - Measurement rate (in Hz) when the level is below threshold
+-	     i.e. when proximity off has been reported.
++	i.e. when proximity off has been reported.
  
--# echo 1 > /sys/class/c2port/c2port0/flash_erase
-+  # echo 1 > /sys/class/c2port/c2port0/flash_erase
+ prox0_rate_avail
+ 	RO - Supported proximity measurement rates in Hz
  
--and write it:
-+and write it::
+ prox0_thresh_above0_value
+ 	RW - threshold level which trigs proximity events.
++
+ 	     Filtered by persistence filter (prox0_thresh_above_count)
  
--# cat image > /sys/class/c2port/c2port0/flash_data
-+  # cat image > /sys/class/c2port/c2port0/flash_data
- 
--after writing you have to reset the device to execute the new code:
-+after writing you have to reset the device to execute the new code::
- 
--# echo 1 > /sys/class/c2port/c2port0/reset
-+  # echo 1 > /sys/class/c2port/c2port0/reset
+ prox0_thresh_above1_value
 diff --git a/Documentation/misc-devices/index.rst b/Documentation/misc-devices/index.rst
-index 17e77b6aa27c..f4ecafad6678 100644
+index f4ecafad6678..d28e755a1595 100644
 --- a/Documentation/misc-devices/index.rst
 +++ b/Documentation/misc-devices/index.rst
-@@ -16,6 +16,7 @@ fit into other categories.
+@@ -15,6 +15,7 @@ fit into other categories.
+    :maxdepth: 2
  
     ad525x_dpot
++   bh1770glc
     eeprom
-+   c2port
+    c2port
     ibmvmc
-    ics932s401
-    isl29003
 -- 
 2.25.4
 
