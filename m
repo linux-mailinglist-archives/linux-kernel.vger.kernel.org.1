@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F58C1BF010
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F041BF017
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgD3GN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 02:13:58 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:47542 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726378AbgD3GN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 02:13:58 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id A3665E8AE37DF678951F;
-        Thu, 30 Apr 2020 14:13:54 +0800 (CST)
-Received: from huawei.com (10.175.105.27) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 30 Apr 2020
- 14:13:47 +0800
-From:   Wu Bo <wubo40@huawei.com>
-To:     <jlayton@kernel.org>, <ukernel@gmail.com>, <sage@redhat.com>,
-        <idryomov@gmail.com>
-CC:     <ceph-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liuzhiqiang26@huawei.com>, <linfeilong@huawei.com>,
-        <wubo40@huawei.com>
-Subject: [PATCH V3] fs/ceph:fix double unlock in handle_cap_export()
-Date:   Thu, 30 Apr 2020 14:12:49 +0800
-Message-ID: <1588227169-83237-1-git-send-email-wubo40@huawei.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1726743AbgD3GPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 02:15:03 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:54862 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726412AbgD3GPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 02:15:03 -0400
+Received: by mail-io1-f69.google.com with SMTP id u10so276671iog.21
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 23:15:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=LGPQXr9UFNG0Da8I+jNxRs0HPIkBIqCGuS7p+9YCeGg=;
+        b=ohlCrnx/kqfpwI1jctEhOsXIjIxYBXdUOwBZIJ54PSBwCKWRQM5a9bGWVYudZONm1l
+         pcBlAz1ofWL0gbijOJ+MONpn89hdnErVX6FQeobUfwuyXa3z5GVb5Pwr5qI8gJMP1Hp6
+         YZCM/jLnwDIIf3tHlUD/Hf/fDfkajL76ML2HA1YuN1RP/yvWE0a90E9yAwafYv5bL/7c
+         KIDI+kwZ9pzSqVPMul0ByjYvfisnuRSgxFbC9b72By6LE5gxKyk/WE51HAwe4z1t88o0
+         WNV6xRsNgNZSwn3Qjzl/l6ASHh+3Uf8ktEy9c5zCkYeRnag38SwAMiiJhVsFMXm0D6Bt
+         gOPQ==
+X-Gm-Message-State: AGi0PuadX8MDEMifdjnvb5UfeWMh0EERLTu1U7Qjxoxsv7UM+3QwhNbX
+        r7hn3CbtAbhWri53Xxcig58VuA8SUzDuT/mm/cDKARUL77iz
+X-Google-Smtp-Source: APiQypItWPCp/4iJfpJma41I1BKksbOFHTczxvYLYhN4aAIprmWe1R4Xi8W7XMYKiyqSv2IHXeW1rAQ1iMyE1Dy0TaNFKC2pTaCU
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.105.27]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a92:c004:: with SMTP id q4mr380269ild.93.1588227302698;
+ Wed, 29 Apr 2020 23:15:02 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 23:15:02 -0700
+In-Reply-To: <000000000000fdd3f3058bfcf369@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000033365905a47bfcd4@google.com>
+Subject: Re: WARNING: bad unlock balance in rcu_lock_release
+From:   syzbot <syzbot+f9545ab3e9f85cd43a3a@syzkaller.appspotmail.com>
+To:     ebiggers@kernel.org, jack@suse.cz, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the ceph_mdsc_open_export_target_session() return fails,
-we should add mutex_lock(&session->s_mutex) on IS_ERR(tsession) block 
-to avoid twice unlocking. because the session->s_mutex will be unlock
-at the out_unlock lable.
+syzbot suspects this bug was fixed by commit:
 
---
-v2 -> v3:
-  - Rewrite solution, adding a mutex_lock(&session->s_mutex) 
-    to the IS_ERR(tsession) block.
-  - Modify the comment more clearly.
-v1 -> v2:
-  - add spin_lock(&ci->i_ceph_lock) before goto out_unlock lable
-     
+commit 10476e6304222ced7df9b3d5fb0a043b3c2a1ad8
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Fri Mar 13 08:56:38 2020 +0000
 
-Signed-off-by: Wu Bo <wubo40@huawei.com>
----
- fs/ceph/caps.c | 1 +
- 1 file changed, 1 insertion(+)
+    locking/lockdep: Fix bad recursion pattern
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index 185db76..d27d778 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -3746,6 +3746,7 @@ static void handle_cap_export(struct inode *inode, struct ceph_mds_caps *ex,
- 		WARN_ON(1);
- 		tsession = NULL;
- 		target = -1;
-+		mutex_lock(&session->s_mutex);
- 	}
- 	goto retry;
- 
--- 
-1.8.3.1
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16d64bac100000
+start commit:   7d194c21 Linux 5.4-rc4
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6c03e4d33fa96d51
+dashboard link: https://syzkaller.appspot.com/bug?extid=f9545ab3e9f85cd43a3a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a0a8c0e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13dd2dd8e00000
 
+If the result looks correct, please mark the bug fixed by replying with:
+
+#syz fix: locking/lockdep: Fix bad recursion pattern
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
