@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A56F1BFFF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69BF1C0007
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgD3PSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 11:18:43 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:59331 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1726661AbgD3PSn (ORCPT
+        id S1726909AbgD3PWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 11:22:16 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60248 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbgD3PWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:18:43 -0400
-Received: (qmail 1937 invoked by uid 500); 30 Apr 2020 11:18:42 -0400
-Received: from localhost (sendmail-bs@127.0.0.1)
-  by localhost with SMTP; 30 Apr 2020 11:18:42 -0400
-Date:   Thu, 30 Apr 2020 11:18:42 -0400 (EDT)
-From:   Alan Stern <stern@rowland.harvard.edu>
-X-X-Sender: stern@netrider.rowland.org
-To:     Vladimir Stankovic <vladimir.stankovic@displaylink.com>
-cc:     gregkh@linuxfoundation.org, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <mausb-host-devel@displaylink.com>
-Subject: Re: [External] Re: [PATCH v5 5/8] usb: mausb_host: Introduce PAL
- processing
-In-Reply-To: <8536b665-1e25-bd5a-4ca0-3f68233ff1be@displaylink.com>
-Message-ID: <Pine.LNX.4.44L0.2004301112390.27217-100000@netrider.rowland.org>
+        Thu, 30 Apr 2020 11:22:16 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UFJh0b107342;
+        Thu, 30 Apr 2020 15:19:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=BlAQ+cr28c3G7QtbaaRKhxV/AvgpV2lx9FrBL1fLgEw=;
+ b=LHpVGc/hSWEqEyg2SK8MhCm7H9iX9+gDrfb94BbQlA18Q05XwbIkcwaInirP4E7lzBQh
+ dreySwYT2VAGG7p3q+GTOH6ZIcl3tDs6YPeJ8V4S33aQgkw+jyKrDxxBgcXo4gJnGb3M
+ TA1bRfDzzLS8LpfCLm3I29zMDcegOC/2InAzgB9tzlk640UicYVNqbZ69nhiqOc3dHqX
+ 7ce1+aiANeksvHKnsJ3qrXnRKtiLuxVoygJlinn3UrYGgcYY2Fbv80BA9tT3/+7QdgpD
+ S+KG/go1/ZVO2C6qVZzKn2iLHGUWM2EjVDovodzouUiifkg+2H3QlvwLoIO6OnfjlgCU DQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 30p2p0hhvf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 15:19:50 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UFISuO077365;
+        Thu, 30 Apr 2020 15:19:49 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 30qtkwjy0e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 15:19:49 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03UFJlsc012797;
+        Thu, 30 Apr 2020 15:19:48 GMT
+Received: from char.us.oracle.com (/10.152.32.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 30 Apr 2020 08:19:47 -0700
+Received: by char.us.oracle.com (Postfix, from userid 1000)
+        id 90C566A00FC; Thu, 30 Apr 2020 11:20:09 -0400 (EDT)
+Date:   Thu, 30 Apr 2020 11:20:08 -0400
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>, tsoni@codeaurora.org,
+        virtio-dev@lists.oasis-open.org, jan.kiszka@siemens.com,
+        jasowang@redhat.com, christoffer.dall@arm.com,
+        virtualization@lists.linux-foundation.org, alex.bennee@linaro.org,
+        iommu@lists.linux-foundation.org, stefano.stabellini@xilinx.com,
+        will@kernel.org, linux-kernel@vger.kernel.org,
+        pratikp@codeaurora.org
+Subject: Re: [PATCH 5/5] virtio: Add bounce DMA ops
+Message-ID: <20200430152008.GB872@char.us.oracle.com>
+References: <20200428174952.GA5097@quicinc.com>
+ <20200428163448-mutt-send-email-mst@kernel.org>
+ <275eba4b-dd35-aa95-b2e3-9c5cbf7c6d71@linux.intel.com>
+ <20200429004531-mutt-send-email-mst@kernel.org>
+ <b676430c-65b3-096e-ca48-ceebf10f4b28@linux.intel.com>
+ <20200429023842-mutt-send-email-mst@kernel.org>
+ <20200429094410.GD5097@quicinc.com>
+ <20200429055125-mutt-send-email-mst@kernel.org>
+ <20200429100953.GE5097@quicinc.com>
+ <20200429061621-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200429061621-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.1 (2017-09-22)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004300124
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1011
+ bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ mlxscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004300124
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020, Vladimir Stankovic wrote:
-
-> On 26.4.20. 22:56, Alan Stern wrote:
-> > On Sun, 26 Apr 2020, Vladimir Stankovic wrote:
-> > 
-> >> On 26.4.20. 16:31, Alan Stern wrote:
-> >>> On Sun, 26 Apr 2020, Vladimir Stankovic wrote:
-> >>>
-> >>>> On 26.4.20. 02:32, Alan Stern wrote:
-> >>>>> On Sat, 25 Apr 2020 vladimir.stankovic@displaylink.com wrote:
-> >>>>>
-> >>>>>> Protocol adaptation layer (PAL) implementation has been added to
-> >>>>>> introduce MA-USB structures and logic.
-> >>>>>>
-> >>>>>> Signed-off-by: Vladimir Stankovic <vladimir.stankovic@displaylink.com>
-> >>>>>
-> >>>>> ...
-> >>>>>
-> >>>>>> +	/*
-> >>>>>> +	 * Masking URB_SHORT_NOT_OK flag as SCSI driver is adding it where it
-> >>>>>> +	 * should not, so it is breaking the USB drive on the linux
-> >>>>>> +	 */
-> >>>>>> +	urb->transfer_flags &= ~URB_SHORT_NOT_OK;
-
-...
-
-> > Okay.  What SCSI driver does the comment refer to?  Is it something 
-> > internal to DisplayLink or is it part of the regular Linux kernel?
-> > 
-> > Alan Stern
-> > 
-> Hi,
+On Wed, Apr 29, 2020 at 06:20:48AM -0400, Michael S. Tsirkin wrote:
+> On Wed, Apr 29, 2020 at 03:39:53PM +0530, Srivatsa Vaddagiri wrote:
+> > That would still not work I think where swiotlb is used for pass-thr devices
+> > (when private memory is fine) as well as virtio devices (when shared memory is
+> > required).
 > 
-> Comment was related to the SCSI driver that's part of regular Linux kernel -
-> once the remote USB flash drive gets enumerated by host, it would appear as
-> directly attached to host and then handled by the kernel.
+> So that is a separate question. When there are multiple untrusted
+> devices, at the moment it looks like a single bounce buffer is used.
 > 
-> With current implementation, following messages are being logged:
-> 
-> scsi 3:0:0:0: Direct-Access     Kingston DataTraveler 3.0 PMAP PQ: 0 ANSI: 6
-> sd 3:0:0:0: Attached scsi generic sg2 type 0
-> 
-> after which the flash drive is usable/accessible from host side.
+> Which to me seems like a security problem, I think we should protect
+> untrusted devices from each other.
 
-More context please.  Without the log messages preceding this one we 
-can't tell whether the device is using the usb-storage driver or the 
-uas driver.
-
-Also, what makes you think the driver is setting the SHORT_NOT_OK flag
-at the wrong time?  In fact, how can there be a wrong time?  
-SHORT_NOT_OK is a valid flag to use with any control or bulk URB.
-
-Alan Stern
-
+There are two DMA pools code in Linux already - the TTM one for graphics
+and the mm/dmapool.c - could those be used instead? Or augmented at least?
