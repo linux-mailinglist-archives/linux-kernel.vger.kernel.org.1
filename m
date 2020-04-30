@@ -2,101 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7D41C0856
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B871C0852
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbgD3Ulj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 16:41:39 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:38284 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726784AbgD3Ulj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:41:39 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Tx7vcUa_1588279287;
-Received: from localhost(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0Tx7vcUa_1588279287)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 01 May 2020 04:41:35 +0800
-From:   Yang Shi <yang.shi@linux.alibaba.com>
-To:     kirill.shutemov@linux.intel.com, hughd@google.com,
-        aarcange@redhat.com, akpm@linux-foundation.org
-Cc:     yang.shi@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [v2 linux-next PATCH 2/2] mm: khugepaged: don't have to put being freed page back to lru
-Date:   Fri,  1 May 2020 04:41:19 +0800
-Message-Id: <1588279279-61908-2-git-send-email-yang.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1588279279-61908-1-git-send-email-yang.shi@linux.alibaba.com>
-References: <1588279279-61908-1-git-send-email-yang.shi@linux.alibaba.com>
+        id S1727923AbgD3Ul0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 16:41:26 -0400
+Received: from mga17.intel.com ([192.55.52.151]:53235 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726784AbgD3Ul0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 16:41:26 -0400
+IronPort-SDR: 6cjgBb5p4/wi34Y8AduGNh3uJQEt8VU+FC1C8P0lqqa+i+mfqZlknMhKsRp6XqCHYOS2uEzIy0
+ 1upZY4zHPOAQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 13:41:24 -0700
+IronPort-SDR: z1RGRQUi4pCy6rG9DAyNKUjXl+0fSSUlsOrSnoHpDJFU6ONyTvf/IJ5/EKMIYR8Y6de5JVUFv8
+ nfOnyaqPOG1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,337,1583222400"; 
+   d="scan'208";a="249853406"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
+  by fmsmga008.fm.intel.com with ESMTP; 30 Apr 2020 13:41:24 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>,
+        KarimAllah Raslan <karahmed@amazon.de>
+Subject: [PATCH] KVM: nVMX: Skip IBPB when switching between vmcs01 and vmcs02
+Date:   Thu, 30 Apr 2020 13:41:23 -0700
+Message-Id: <20200430204123.2608-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.26.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When khugepaged successfully isolated and copied data from old page to
-collapsed THP, the old page is about to be freed if its last mapcount
-is gone.  So putting the page back to lru sounds not that productive in
-this case since the page might be isolated by vmscan but it can't be
-reclaimed by vmscan since it can't be unmapped by try_to_unmap() at all.
+Skip the Indirect Branch Prediction Barrier that is triggered on a VMCS
+switch when running with spectre_v2_user=on/auto if the switch is
+between two VMCSes in the same guest, i.e. between vmcs01 and vmcs02.
+The IBPB is intended to prevent one guest from attacking another, which
+is unnecessary in the nested case as it's the same guest from KVM's
+perspective.
 
-Actually if khugepaged is the last user of this page so it can be freed
-directly.  So, clearing active and unevictable flags, unlocking and
-dropping refcount from isolate instead of calling putback_lru_page().
+This all but eliminates the overhead observed for nested VMX transitions
+when running with CONFIG_RETPOLINE=y and spectre_v2_user=on/auto, which
+can be significant, e.g. roughly 3x on current systems.
 
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+Reported-by: Alexander Graf <graf@amazon.com>
+Cc: KarimAllah Raslan <karahmed@amazon.de>
+Cc: stable@vger.kernel.org
+Fixes: 15d45071523d ("KVM/x86: Add IBPB support")
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
-v2: Check mapcount and skip putback lru if the last mapcount is gone
+ arch/x86/kvm/vmx/nested.c |  2 +-
+ arch/x86/kvm/vmx/vmx.c    | 12 ++++++++----
+ arch/x86/kvm/vmx/vmx.h    |  3 ++-
+ 3 files changed, 11 insertions(+), 6 deletions(-)
 
- mm/khugepaged.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
-
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 0c8d30b..1fdd677 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -559,10 +559,18 @@ void __khugepaged_exit(struct mm_struct *mm)
- static void release_pte_page(struct page *page)
- {
- 	mod_node_page_state(page_pgdat(page),
--			NR_ISOLATED_ANON + page_is_file_lru(page),
--			-compound_nr(page));
--	unlock_page(page);
--	putback_lru_page(page);
-+		NR_ISOLATED_ANON + page_is_file_lru(page), -compound_nr(page));
-+
-+	if (total_mapcount(page)) {
-+		unlock_page(page);
-+		putback_lru_page(page);
-+	} else {
-+		ClearPageActive(page);
-+		ClearPageUnevictable(page);
-+		unlock_page(page);
-+		/* Drop refcount from isolate */
-+		put_page(page);
-+	}
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index 2c36f3f53108..1a02bdfeeb2b 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -303,7 +303,7 @@ static void vmx_switch_vmcs(struct kvm_vcpu *vcpu, struct loaded_vmcs *vmcs)
+ 	cpu = get_cpu();
+ 	prev = vmx->loaded_vmcs;
+ 	vmx->loaded_vmcs = vmcs;
+-	vmx_vcpu_load_vmcs(vcpu, cpu);
++	vmx_vcpu_load_vmcs(vcpu, cpu, prev);
+ 	vmx_sync_vmcs_host_state(vmx, prev);
+ 	put_cpu();
+ 
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 3ab6ca6062ce..818dd8ba5e9f 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -1311,10 +1311,12 @@ static void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
+ 		pi_set_on(pi_desc);
  }
  
- static void release_pte_pages(pte_t *pte, pte_t *_pte,
-@@ -771,8 +779,6 @@ static void __collapse_huge_page_copy(pte_t *pte, struct page *page,
- 		} else {
- 			src_page = pte_page(pteval);
- 			copy_user_highpage(page, src_page, address, vma);
--			if (!PageCompound(src_page))
--				release_pte_page(src_page);
- 			/*
- 			 * ptl mostly unnecessary, but preempt has to
- 			 * be disabled to update the per-cpu stats
-@@ -786,6 +792,8 @@ static void __collapse_huge_page_copy(pte_t *pte, struct page *page,
- 			pte_clear(vma->vm_mm, address, _pte);
- 			page_remove_rmap(src_page, false);
- 			spin_unlock(ptl);
-+			if (!PageCompound(src_page))
-+				release_pte_page(src_page);
- 			free_page_and_swap_cache(src_page);
- 		}
+-void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu)
++void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
++			struct loaded_vmcs *buddy)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 	bool already_loaded = vmx->loaded_vmcs->cpu == cpu;
++	struct vmcs *prev;
+ 
+ 	if (!already_loaded) {
+ 		loaded_vmcs_clear(vmx->loaded_vmcs);
+@@ -1333,10 +1335,12 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu)
+ 		local_irq_enable();
  	}
+ 
+-	if (per_cpu(current_vmcs, cpu) != vmx->loaded_vmcs->vmcs) {
++	prev = per_cpu(current_vmcs, cpu);
++	if (prev != vmx->loaded_vmcs->vmcs) {
+ 		per_cpu(current_vmcs, cpu) = vmx->loaded_vmcs->vmcs;
+ 		vmcs_load(vmx->loaded_vmcs->vmcs);
+-		indirect_branch_prediction_barrier();
++		if (!buddy || buddy->vmcs != prev)
++			indirect_branch_prediction_barrier();
+ 	}
+ 
+ 	if (!already_loaded) {
+@@ -1377,7 +1381,7 @@ void vmx_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+ 
+-	vmx_vcpu_load_vmcs(vcpu, cpu);
++	vmx_vcpu_load_vmcs(vcpu, cpu, NULL);
+ 
+ 	vmx_vcpu_pi_load(vcpu, cpu);
+ 
+diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+index b5e773267abe..d3d48acc6bd9 100644
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -320,7 +320,8 @@ struct kvm_vmx {
+ };
+ 
+ bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
+-void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu);
++void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
++			struct loaded_vmcs *buddy);
+ void vmx_vcpu_load(struct kvm_vcpu *vcpu, int cpu);
+ int allocate_vpid(void);
+ void free_vpid(int vpid);
 -- 
-1.8.3.1
+2.26.0
 
