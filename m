@@ -2,120 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAEE1BFF9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D991BFFA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727808AbgD3PGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 11:06:39 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:58791 "EHLO
+        id S1727827AbgD3PG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 11:06:57 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:45539 "EHLO
         wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726377AbgD3PGj (ORCPT
+        by vger.kernel.org with ESMTP id S1726501AbgD3PG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:06:39 -0400
+        Thu, 30 Apr 2020 11:06:56 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id B54D7246;
-        Thu, 30 Apr 2020 11:06:37 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 30 Apr 2020 11:06:38 -0400
+        by mailnew.west.internal (Postfix) with ESMTP id AEF9C3D7;
+        Thu, 30 Apr 2020 11:06:54 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 30 Apr 2020 11:06:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=xeYUSzizreuaYphksMpyWqjTJec
-        L7d9Xwl6zIofVoEY=; b=lp6zVlpE3eoz9SYKA88UDswb1xxapdzJZmAnRgUG5B1
-        PYJWbMW5muAIoBqCDokmHux9qoVl13bmpqtZvbVe5WAGOLC7KLkDXQ8b+9K8N6Zq
-        YuRGY45RCjxVIo9tzDcBbH6+eRF7vXAP7RLVEovJbaHHi/pBq+qpZDXccqinetAd
-        CZybS1xl/9CrDHjVInsjsiNsIZgKoQ5xbao9SOarTD30zYK1qSQnvKJjvUMH2qMy
-        xb6X8/GIhO/pDOAmxjttdpjc924CoTFLx9JVSAQt9OsjhwwXDEYMWoX2QLktfoDG
-        H+52AxC3+A/Rb0r4JUKrQjIrzCITyeOH8GRT9PFvnOg==
+        :content-type:in-reply-to; s=fm2; bh=3HOldL8M8SMhSFP04OdXihjEBtT
+        HltI1ljKcZAb+nkU=; b=c9Jlcl1rGAZQZsRZokJHWuF0zB9rfxpkoH4HQ0LusyR
+        4nzRuVu05bhdqG6EeL0AK4+0TJFJr/EeRET0GCJ77nt+u1LPbsJWaTu5FzgvhI46
+        E2rCO2tfd2R7S8/kKw4YWvEhX42I+hzTTv397UEOwilQmjqqOyRWELvAbV0x8CLy
+        mSIEHlu9c5rCKsZng3/oUZsomDllS4UlRujAQtmZdb8UPqPyGw/042FzVNphKdya
+        5/90seI+WvLVSrr8fAKaFh2yyYCvY2Svq0LIZQaElMZcL7l4bgvx9ynqiOgwEP4w
+        G2rHw+hLBDwurMLmtmHOVOB2QChDH88nKBGS7nelrBQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=xeYUSz
-        izreuaYphksMpyWqjTJecL7d9Xwl6zIofVoEY=; b=cdKcxH1KGK98bzRIMgetPN
-        9F7B9olUs9M9ZUZ6XH7yhU4EDCUO4WjtPT/6Evz/XcE6d2kMX0FHq9iB3dmoOB3X
-        rPDn9gCh4C+MXDKCb0OyEV5JpF6jDLjJSCUCPbqI/ww9N+hUz7EDYOxklg3KvjR7
-        XOXuJMEfy2ArCaFQXv8X07mPJnDdLsjbZE0N1mTZKhVwpGh1OzgxOZeKSYyxdBPg
-        ggdvAeHHiwlZLfPEp004MN1V61630DNqwjhN5m2GwFnAa66xeo5J1wdzuf0DJfiw
-        xAN/a2Roe+jWakXfRzQdAeX2BX13Bp1vCaSEzVDMpBjuFiiWVDDdlPJT3Mj11uoA
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=3HOldL
+        8M8SMhSFP04OdXihjEBtTHltI1ljKcZAb+nkU=; b=rZ2vf5bZBWVwnMklpPl8Bd
+        vO4YGW/TMVENltc1XyknpsxocwyldTOFsWluFkN561NHL9YUCn70oZY/alr6SrtN
+        pFdiKHWfGtUxViftRrtmq1cYItYknbwWxhZSJFdi7eQFua0SoiXrqqojOGdGZC8t
+        M1n5892MNX0XyVW8kSMh3R377sPxR5AKTw4w8rtkKcVQTdRpM+TSLJwPr6+nL8W3
+        PXqmOuZCM7L8fJE23iupC5S9ABIxjvf7dTWts4ysvfeDgmzwYjB44iL+utgFkvwa
+        lQYFim8If+13p8gU8JFuktA725TBysPhZkLeBgtdaKuOapyYs2TrP4+d55kbKKFQ
         ==
-X-ME-Sender: <xms:e-mqXsban-fsGmkv5_OhAW_tF5_eLXapM9rgiwvbgI4ojK_wjPIVoQ>
+X-ME-Sender: <xms:jemqXkhoKUgqmlZFMxeK0cDa90kpmrp0xhAsS7J2naiy7HyM4OgTTQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrieehgdekgecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehgtderre
-    dttddunecuhfhrohhmpeforgigihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghr
-    nhhordhtvggthheqnecuggftrfgrthhtvghrnhepuddvudfhkeekhefgffetffelgffftd
-    ehffduffegveetffehueeivddvjedvgfevnecukfhppeeltddrkeelrdeikedrjeeinecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimh
-    gvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:e-mqXjBBR52nqK-zxgR-1G7jCWx1ArBxPPA07WEBQtCRUk7rw1qOmA>
-    <xmx:e-mqXhZYCk94Sn5hdWvk4fJ7zLqLNmFG_uVpFogL-HDnXScXLrnfqw>
-    <xmx:e-mqXkheQp4_GXv_UiRlLyI0XQLkF4nByEM-SdbnmpZRnyEVyPxp5Q>
-    <xmx:femqXk1-IUJsjrcJbbO5ZJS4U14XdbWE1aZ4ofeIHpMxtmontqDhB3tsy4k>
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
+    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:jemqXkpnDXrjC4V69PI-XyVp3mJnYjhF-ntNPpfbLCqrGOu7a4mCKw>
+    <xmx:jemqXjeFFLdSCxpHmpzKYVvqadSK37vzz52J1EUYSByc8KglZIAsow>
+    <xmx:jemqXvwPR3RTFuBwdbZCpRNQfFY508PK6h6eWtbbnsUtt_lUSdCq0Q>
+    <xmx:jumqXgB-mzVQpjHwawS_NrFP-SQU-PYGNf_1_-qDDRQoXNpWTFuyrBItnEo>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9CBF73065F35;
-        Thu, 30 Apr 2020 11:06:35 -0400 (EDT)
-Date:   Thu, 30 Apr 2020 17:06:34 +0200
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5A3D23280069;
+        Thu, 30 Apr 2020 11:06:53 -0400 (EDT)
+Date:   Thu, 30 Apr 2020 17:06:52 +0200
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Emmanuel Vadot <manu@freebsd.org>
 Cc:     maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
         airlied@linux.ie, daniel@ffwll.ch, matthew.d.roper@intel.com,
         noralf@tronnes.org, kraxel@redhat.com, tglx@linutronix.de,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND 2/2] drm/format_helper: Dual licence the header in GPL-2
- and MIT
-Message-ID: <20200430150634.42zna3xwhj4cwsnd@gilmour.lan>
-References: <20200430145537.31474-1-manu@FreeBSD.org>
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: Re: [RESEND 1/2] drm/client: Dual licence the header in GPL-2 and MIT
+Message-ID: <20200430150652.7rhh7zn2lqhzy4bs@gilmour.lan>
+References: <20200430145439.31257-1-manu@FreeBSD.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hbb2lqbyfl32a4jv"
+        protocol="application/pgp-signature"; boundary="tjombykybepmtpey"
 Content-Disposition: inline
-In-Reply-To: <20200430145537.31474-1-manu@FreeBSD.org>
+In-Reply-To: <20200430145439.31257-1-manu@FreeBSD.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---hbb2lqbyfl32a4jv
+--tjombykybepmtpey
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 30, 2020 at 04:55:37PM +0200, Emmanuel Vadot wrote:
+On Thu, Apr 30, 2020 at 04:54:38PM +0200, Emmanuel Vadot wrote:
 > Source file was dual licenced but the header was omitted, fix that.
 > Contributors for this file are:
+> Daniel Vetter <daniel.vetter@ffwll.ch>
+> Matt Roper <matthew.d.roper@intel.com>
+> Maxime Ripard <mripard@kernel.org>
 > Noralf Tr=F8nnes <noralf@tronnes.org>
-> Gerd Hoffmann <kraxel@redhat.com>
-> Thomas Gleixner <tglx@linutronix.de>
+> Thomas Zimmermann <tzimmermann@suse.de>
 >=20
-> Acked-by: Gerd Hoffmann <kraxel@redhat.com>
 > Acked-by: Noralf Tr=F8nnes <noralf@tronnes.org>
+> Acked-by: Matt Roper <matthew.d.roper@intel.com>
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 > Signed-off-by: Emmanuel Vadot <manu@FreeBSD.org>
-> ---
->  include/drm/drm_format_helper.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/include/drm/drm_format_helper.h b/include/drm/drm_format_hel=
-per.h
-> index ac220aa1a245..7c5d4ffb2af2 100644
-> --- a/include/drm/drm_format_helper.h
-> +++ b/include/drm/drm_format_helper.h
-> @@ -1,4 +1,4 @@
-> -/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/* SPDX-License-Identifier: GPL-2.0 or MIT */
 
-You changed the GPL license there, was that intentional?
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
 Maxime
 
---hbb2lqbyfl32a4jv
+--tjombykybepmtpey
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXqrpegAKCRDj7w1vZxhR
-xVnGAP9cMyJIv4AkRNCKjdSzj/K4g5e8uw/jvdXScgB+ctQFaAD+K463Hxv77qvo
-2lLF+91XcxMo/HIXjZAkKeW4uI9Udw4=
-=Cwsu
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXqrpjAAKCRDj7w1vZxhR
+xXGwAP9Ki8H1vsg5ATj+ZH/wRTiLKXRb3PQC/kGD5BF/AvIVIgD/XC7nOwVt3iuT
+6ZFDx1vpZM6X92tW1fMSxk5/v/OIQQU=
+=yUcS
 -----END PGP SIGNATURE-----
 
---hbb2lqbyfl32a4jv--
+--tjombykybepmtpey--
