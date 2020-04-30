@@ -2,136 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAAD1BEEA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81821BEEAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbgD3D0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 23:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726396AbgD3D0F (ORCPT
+        id S1726678AbgD3D0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 23:26:55 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:35936 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbgD3D0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 23:26:05 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F46C035494
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 20:26:05 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id 188so3483574lfa.10
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 20:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rep5Pfyn5wwxEy4YRJRyifa2EtharymFjZwIOhhAhjI=;
-        b=hxPz/T6gnizicMHSps1pqHyi5LPdmmZAEZZ6ZvmYNNumXDosb4mxFs185exk2bmlag
-         MzcTztnXTDRN0IqPCvpeFPqLrBVxtw2iaUxPXXHLeyci2LAR7IKzylYEMDPIi/x5ZIy+
-         Ni65GjbEcyASwyPX8s3S6S7ZKWXPtR2caNdDo=
+        Wed, 29 Apr 2020 23:26:54 -0400
+Received: by mail-pf1-f193.google.com with SMTP id z1so2222008pfn.3;
+        Wed, 29 Apr 2020 20:26:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rep5Pfyn5wwxEy4YRJRyifa2EtharymFjZwIOhhAhjI=;
-        b=NJmUqqi2dfrVtE5Hlh2+hcehHeaHz+602o+RZDAqyqTj0h7h03hLjA3rAKMwcQegjV
-         g/6HC+l/mijrswRDeiLaT2T2xm375ocuow51rUPKQI3Y66IvMMV0NbHzzO1UJ86XOWh5
-         A39X44P/jdouJtcPyPetRZfcETTqhikvtqwdgWFGFAiPqAWbb0h3IbU7zyApXxI6ekJa
-         TF8871vxKaGC9DrCvM6X+U9TSarNSJurp0CKr215+0RGNQPnMm9Z8NztEUPlQn48y7hJ
-         NTxJ+4rzHISjYG/PvKxrX5i7/EJxzpRutI0gRL8821NV7sWOYDuNvbTgN0DjY0ZxHbZ6
-         c1gA==
-X-Gm-Message-State: AGi0PuZREzYru2aJzjrYk8mHj07ixj0oW3q0otUQdFGOIQ0jXTxnFnmD
-        NbwmiJeKPVkJOE0W1vT1bqEMD70XSJs=
-X-Google-Smtp-Source: APiQypKrbkwwWgLwYM1J9rsuN4rYBBU28xIcbkfuxveLPwwlAfnUenaG84Fx5MaWG5c7IcS915Igcg==
-X-Received: by 2002:a05:6512:695:: with SMTP id t21mr653024lfe.158.1588217163039;
-        Wed, 29 Apr 2020 20:26:03 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id u3sm4021639lff.26.2020.04.29.20.26.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Apr 2020 20:26:01 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id j3so4868341ljg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 20:26:01 -0700 (PDT)
-X-Received: by 2002:a2e:8512:: with SMTP id j18mr791220lji.201.1588217161107;
- Wed, 29 Apr 2020 20:26:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B/yD4aYy+x5y2S0pou2i8a1nwXsjhcizrnINaWT4DzY=;
+        b=KXhjgYdn4E6lJ9yyaFAYWBFwj59ff/GV+0A4/Y3JjLyENPzhTO8UCc3FXBgQQfefYe
+         mA5hBj1LioHu1H11oB5OPABmh5Jcwoga2NMRfmwyXLpno9ji1svBrQDa1FiMTFQjFxSC
+         TlGTrGWg+eXLKcnJHSD9Ta7TgHrY89jxWdQ6//q5Dx479hALi+WVOSvw+KWkJ3uyrE4o
+         o0goDuMA1BN+40anmd4OUcfHBP6tDd+LE3pGwUJXZoljB5fzg8y27RzWY7AwlIQHemkM
+         T+WrBMxvHtkoUuiwMn0RtolfblSKMTGY/Qh3RCHATeK38nxsN9L3yUbgyNBguizeriK/
+         nyiA==
+X-Gm-Message-State: AGi0PuZpvfRltmg1B73SJfDji/8lkcu2r1z8OhfVw/hRPjnW6lJ2mLtm
+        WLE8tbtTM72G8CDnar48IInVcBQK
+X-Google-Smtp-Source: APiQypJXFJrJOiKHX9ggSpsLho0xiRuKgxJmFyuVchIeWwNUCgdCIX7Fa3c9zwdqsUTYCjd98vYoIQ==
+X-Received: by 2002:a63:dc41:: with SMTP id f1mr1420544pgj.348.1588217211774;
+        Wed, 29 Apr 2020 20:26:51 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id d8sm2189038pfd.159.2020.04.29.20.26.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 20:26:50 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 20:26:49 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: How to upload fpga firmware
+Message-ID: <20200430032649.GB6168@epycbox.lan>
+References: <20200422114432.GM1694@pengutronix.de>
+ <20200423013648.GA2430@epycbox.lan>
+ <20200423062331.GR1694@pengutronix.de>
+ <20200425035949.GA11710@epycbox.lan>
+ <20200427064433.GH5877@pengutronix.de>
 MIME-Version: 1.0
-References: <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
- <CAHk-=wi_zr9dwX3UBYvgkmm6eVQfRP50orryJ6ZVAxuFqdSG5A@mail.gmail.com>
- <20200428190836.GC29960@redhat.com> <CAHk-=wi03QRcUR1DfbEr+Pw-DAMENzY-FuRcGawtj9p597=p2w@mail.gmail.com>
- <CAG48ez03ABTa-KbCtFHqB1hOT7dgAM96c3kiw-e80B+utSEwYw@mail.gmail.com>
- <CAHk-=wjTLnMuZmBO2foeHhsLAoUTpUi7oBVJ67F4XKB+tdEDbQ@mail.gmail.com>
- <CAG48ez3EQOvdbzu9aO-cEAJwF_=fJzn1Cg0LMs3ruc=5r1ie5w@mail.gmail.com>
- <CAHk-=whTgFbjGTP=CqMWs_LOkY7bWvLQGYKwKx86amdbMovAkw@mail.gmail.com>
- <CAG48ez2-Nu2ALN6VEUZL-prtR_Kk8QYBHcnvuh0aU2e4zf37RA@mail.gmail.com>
- <CAHk-=wh=G47oD2F1CgOrvGFbEPh2ddMKLV4_wV_bs6S=98aZ5A@mail.gmail.com>
- <AM6PR03MB5170A6AA240D2E8F5E88B911E4AD0@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wguiKq8yf11WJjgSL4ADKZ5sLe_Qbd7vHEqAkTvZJ+d+Q@mail.gmail.com>
- <CAHk-=wjUZLybZBJgOtD2gng=FS7USrbQQ1-tn5M+UP5DbCWdzw@mail.gmail.com>
- <CAG48ez0FL3i4eGFYryOwG2nnS+JigfKYAVSV9ogVHjmjOWzsrA@mail.gmail.com>
- <AM6PR03MB5170C5D02C6FCB6D69DFE3ADE4AA0@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wg6oKSLkVhY5oqOFyzCCSr9eYPGK2SHJfgCXF_QOmPKog@mail.gmail.com> <CAG48ez25=6qrCU51dEAV_ciyU2jvPuRFWfFOAAT22kmeAZccuQ@mail.gmail.com>
-In-Reply-To: <CAG48ez25=6qrCU51dEAV_ciyU2jvPuRFWfFOAAT22kmeAZccuQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 29 Apr 2020 20:25:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjE_YJ4SFJUasF=tW0jMr6zg+rkRNuNt2hdODPu_LLTVw@mail.gmail.com>
-Message-ID: <CAHk-=wjE_YJ4SFJUasF=tW0jMr6zg+rkRNuNt2hdODPu_LLTVw@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
-To:     Jann Horn <jannh@google.com>
-Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427064433.GH5877@pengutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 8:00 PM Jann Horn <jannh@google.com> wrote:
->
-> But if we go with Bernd's approach together with your restart
-> suggestion,
+On Mon, Apr 27, 2020 at 08:44:33AM +0200, Sascha Hauer wrote:
+> On Fri, Apr 24, 2020 at 08:59:49PM -0700, Moritz Fischer wrote:
+> > Hi Sascha,
+> > 
+> > On Thu, Apr 23, 2020 at 08:23:31AM +0200, Sascha Hauer wrote:
+> > > Hi Moritz,
+> > > 
+> > > On Wed, Apr 22, 2020 at 06:36:48PM -0700, Moritz Fischer wrote:
+> > > > Hi Sascha,
+> > > > 
+> > > > On Wed, Apr 22, 2020 at 01:44:32PM +0200, Sascha Hauer wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > I wonder what can be done with the mainline state of drivers/fpga/. The
+> > > > > entry to the framework seems to be fpga_mgr_load(). The only user of
+> > > > > this function is fpga_region_program_fpga(). This in turn is only called
+> > > > > in response of applying a device tree overlay. A device tree overlay is
+> > > > > applied with of_overlay_fdt_apply() which has no users in the Kernel.
+> > > > 
+> > > > Yes. It is waiting for dt_overlays one way or another. I personally
+> > > > don't currently have the bandwidth to work actively on this.
+> > > > 
+> > > > > My current task is to load a firmware to a FPGA. The code all seems to
+> > > > > be there in the Kernel, it only lacks a way to trigger it. I am not very
+> > > > > interested in device tree overlays since the FPGA appears as a PCI
+> > > > > device (although applying a dtbo could enable the PCIe controller device
+> > > > > tree node). Is there some mainline way to upload FPGA firmware? At the
+> > > > > moment we are using the attached patch to trigger loading the firmware
+> > > > > from userspace. Would something like this be acceptable for mainline?
+> > > > 
+> > > > We've looked into this sort of patches over the years and never came to
+> > > > a general interface that really works.
+> > > > 
+> > > > The OPAE folks (and other users I know of) usually use FPGA Manager with
+> > > > a higher layer on top of it that moves the bitstream into the kernel via
+> > > > an ioctl().
+> > > > 
+> > > > One concept I had toyed with mentally, but haven't really gotten around
+> > > > to implement is a 'discoverable' region, that would deal with the
+> > > > necessary re-enumeration via a callback and have a sysfs interface
+> > > > similar to what the patch below has.
+> > > > This would essentially cover use-cases where you have a discoverable
+> > > > device implemented in FPGA logic, such as say an FPGA hanging off of
+> > > > PCIe bus that can get loaded over USB, a CPLD or some other side-band
+> > > > mechanism. After loading the image you'd have to rescan the PCIe bus -
+> > > > which - imho is the kernel's job.
+> > > > 
+> > > > What I really wanna avoid is creating another /dev/fpga0 / /dev/xdevcfg
+> > > > that completely leaves the kernel in the dark about the fact that it
+> > > > reconfigures a bit of hardware hanging off the bus.
+> > > 
+> > > Yes, makes sense. While this would suffice my needs at the moment it
+> > > really sounds like a dead end.
+> > > 
+> > > > 
+> > > > In my ideal world you'd create a pci driver that binds to your device,
+> > > > and creates mfd style subdevices for whatever you'd want your design to
+> > > > do. One of these devices would be an FPGA and a FPGA region attached to
+> > > > that FPGA manager. Your top level driver would co-ordinate the fact that
+> > > > you are re-programming parts of the FPGA and create / destroy devices as
+> > > > needed for the hardware contained in the bitstream.
+> > > 
+> > > In my case there is no pci device visible before loading the firmware,
+> > > so creating a pci driver is not an option. Maybe pci host controllers
+> > > could register themselves as fpga-bridges. With this we could put the
+> > > pci host controller (or the pci device, AFAIK there is a PCI device tree
+> > > binding) where the fpga is connected into the fpga-bridges phandles list
+> > > of the fpga-region.
+> > 
+> > Can you talk a bit more about the system you're working with? Is there
+> > some sort of sideband mechanism to load the image? What exposes the
+> > image loading capaibility? A CPLD, an ASIC, USB device, JTAG?
+> 
+> We have two systems. One uploads the FPGA firmware via SPI passive
+> serial mode (compatible fpga-arria10-passive-serial). The other system
+> has a ftdi FT232H USB/serial converter chip working in synchronous FIFO
+> mode, connected to the FPGA via a CPLD. The series from Anatolij Gustchin
+> here https://patchwork.kernel.org/cover/10824743/ would have been useful
+> for us, although of course our CPLD has a different protocol. On this
+> system we currently ended up with a small custom driver which bypasses
+> FPGA manager and only uploads the firmware at USB connect time.
 
-So repeat after me: Bernd's approach _without_ the restart is unacceptable.
+Yeah this seems imho the only legit use-case for a something like the
+sysfs entry for the fpga-region. That being said once we add that, it's
+going to become ABI and everyone is gonna use that instead of
+implementing a proper driver using FPGA Regions to deal with
+re-enumeration.
 
-It's unacceptable because it breaks things that currently work, and
-returns EAGAIN in situations where that is simple not a valid error
-code.
+We don't really have a good way of modelling systems where the bus is
+100% discoverable (like a PCI device), but only after we load firmware.
 
-His original patch also happens to be unacceptable because it's an
-unmaintainable mess, but that's independent of the bug it introduced.
+I mean you could implement a FPGA manager for your CPLD that also
+instantiates a region that you then target when you want to reprogram
+the FPGA region. How you'd tie that together though with the PCI device
+to get the bus to be re-enumerated as part of reprogramming the region,
+I'm not 100% sure :)
 
-That bug has nothing to do with ptrace(). It's literally a "write()"
-to a file in /proc.
+> > It also depends a bit on the use-case: After you program the bitstream,
+> > do you need to runtime re-program it? Does it do partial
+> > reconfiguration? Are there subdevices inside your device, or is the
+> > whole thing a discoverable PCI device afterwards?
+> 
+> On both systems It's one PCI device only. Currently we don't need runtime
+> re-programming, although this might be useful in the future. Also there's
+> no partial reconfiguration.
+> 
 
-What is so hard to get about this basic thing?
+Sorry for the late response, things are busy at the moment.
 
-> then simply doing PTRACE_ATTACH on two threads A and B
-> would be enough to livelock, right?
-
-The same case that just causes a recursive wait. Yes. No worse off than we were.
-
-And the fact is, *THAT* case looks truly trivial to work around.
-
-Just make the ptrace() code - but not the fs/proc/base.c code - do
-something like
-
-        if (lock_exec_creds(tsk))
-                return -EINTR;
-
-and now ptrace() doesn't repeat (simply because it doesn't return that
-ERESTARTNOINTR. It would go through that "return through signal
-handling code" in the kernel, but it wouldn't actually retry the
-system call).
-
-But I'm getting less and less interested in trying to "fix" this
-problem, when people don't seem to realize that the important case is
-to not break _good_ programs, and the pointless buggy garbage
-test-case is entirely uninteresting. It's buggy user code. If it
-causes a wait or a livelock, nobody sane should care in the least. Fix
-the bug in user space.
-
-Introducing new bugs in the kernel where they didn't exist before - in
-order to try to work around buggy user-space that has never ever
-worked - is not acceptable.
-
-                       Linus
+Cheers,
+Moritz
