@@ -2,202 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309401BF76A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 13:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CABE41BF73C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 13:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbgD3L7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 07:59:13 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:50454 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgD3L7M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 07:59:12 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jU7qR-0001jj-Tt; Thu, 30 Apr 2020 05:59:11 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jU7qR-000741-05; Thu, 30 Apr 2020 05:59:11 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20200419141057.621356-1-gladkov.alexey@gmail.com>
-        <87ftcv1nqe.fsf@x220.int.ebiederm.org>
-        <87wo66vvnm.fsf_-_@x220.int.ebiederm.org>
-        <20200424173927.GB26802@redhat.com>
-        <87mu6ymkea.fsf_-_@x220.int.ebiederm.org>
-        <875zdmmj4y.fsf_-_@x220.int.ebiederm.org>
-        <CAHk-=whvktUC9VbzWLDw71BHbV4ofkkuAYsrB5Rmxnhc-=kSeQ@mail.gmail.com>
-        <878sihgfzh.fsf@x220.int.ebiederm.org>
-        <CAHk-=wjSM9mgsDuX=ZTy2L+S7wGrxZMcBn054As_Jyv8FQvcvQ@mail.gmail.com>
-        <87sggnajpv.fsf_-_@x220.int.ebiederm.org>
-        <20200428180540.GB29960@redhat.com>
-        <87mu6v70in.fsf_-_@x220.int.ebiederm.org>
-        <87h7x142an.fsf_-_@x220.int.ebiederm.org>
-Date:   Thu, 30 Apr 2020 06:55:54 -0500
-In-Reply-To: <87h7x142an.fsf_-_@x220.int.ebiederm.org> (Eric W. Biederman's
-        message of "Thu, 30 Apr 2020 06:54:08 -0500")
-Message-ID: <87bln9427p.fsf_-_@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S1726780AbgD3L4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 07:56:43 -0400
+Received: from mout.web.de ([212.227.15.4]:36639 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726481AbgD3L4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 07:56:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1588247784;
+        bh=VGV4Fw2sNEq8D8bF6x0dfHewG3Zs/VQNCW6HfTq7oas=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=mhEJE/AaHsHvaVu9RVBT9dwFLjcJo5t6iZUYYxWJbGXHUH1zpxE91K8oHzdVMO7Jh
+         YQjbXIUASjX6mioywyIoxm6LNfoDqJlbBidHJqKeeluAMwnHGNeji7J3z2t9HVLeRx
+         0fZM2W+fcniXTuJ8ErOJL/+v2tGFT6RUvAUU5xQw=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.175.216]) by smtp.web.de (mrweb004
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MfTx5-1jnh7j2qRH-00P6vk; Thu, 30
+ Apr 2020 13:56:24 +0200
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2] drm/mcde: dsi: Fix return value check in
+ mcde_dsi_bind()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
+ +v43YoGpDNyhgA0w9CEhuwfZrE91GocMtjLO67TAc2i2nxMc/FJRDI0OemO4VJ9RwID6ltwt
+ mpVJgXGKkNJ1ey+QOXouzlErVvE2fRh+KXXN1Q7fSmTJlAW9XJYHS3BDHb0uRpymRSX3O+E2
+ lA87C7R8qAigPDZi6Z7UmwIA83ZMKXQ5stA0lhPyYgQcM7fh7V4ZYhnR0I5/qkUoxKpqaYLp
+ YHBczVP+Zx/zHOM0KQphOMbU7X3c1pmMruoe6ti9uZzqZSLsF+NKXFEPBS665tQr66HJvZvY
+ GMDlntZFAZ6xQvCC1r3MGoxEC1tuEa24vPCC9RZ9wk2sY5Csbva0WwYv3WKRZZBv8eIhGMxs
+ rcpeGShRFyZ/0BYO53wZAPV1pEhGLLxd8eLN/nEWjJE0ejakPC1H/mt5F+yQBJAzz9JzbToU
+ 5jKLu0SugNI18MspJut8AiA1M44CIWrNHXvWsQ+nnBKHDHHYZu7MoXlOmB32ndsfPthR3GSv
+ jN7YD4Ad724H8fhRijmC1+RpuSce7w2JLj5cYj4MlccmNb8YUxsE8brY2WkXQYS8Ivse39MX
+ BE66MQN0r5DQ6oqgoJ4gHIVBUv/ZwgcmUNS5gQkNCFA0dWXznQARAQABtCZNYXJrdXMgRWxm
+ cmluZyA8TWFya3VzLkVsZnJpbmdAd2ViLmRlPokCVAQTAQgAPhYhBHDP0hzibeXjwQ/ITuU9
+ Figxg9azBQJYNvsQAhsjBQkJZgGABQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEOU9Figx
+ g9azcyMP/iVihZkZ4VyH3/wlV3nRiXvSreqg+pGPI3c8J6DjP9zvz7QHN35zWM++1yNek7Ar
+ OVXwuKBo18ASlYzZPTFJZwQQdkZSV+atwIzG3US50ZZ4p7VyUuDuQQVVqFlaf6qZOkwHSnk+
+ CeGxlDz1POSHY17VbJG2CzPuqMfgBtqIU1dODFLpFq4oIAwEOG6fxRa59qbsTLXxyw+PzRaR
+ LIjVOit28raM83Efk07JKow8URb4u1n7k9RGAcnsM5/WMLRbDYjWTx0lJ2WO9zYwPgRykhn2
+ sOyJVXk9xVESGTwEPbTtfHM+4x0n0gC6GzfTMvwvZ9G6xoM0S4/+lgbaaa9t5tT/PrsvJiob
+ kfqDrPbmSwr2G5mHnSM9M7B+w8odjmQFOwAjfcxoVIHxC4Cl/GAAKsX3KNKTspCHR0Yag78w
+ i8duH/eEd4tB8twcqCi3aCgWoIrhjNS0myusmuA89kAWFFW5z26qNCOefovCx8drdMXQfMYv
+ g5lRk821ZCNBosfRUvcMXoY6lTwHLIDrEfkJQtjxfdTlWQdwr0mM5ye7vd83AManSQwutgpI
+ q+wE8CNY2VN9xAlE7OhcmWXlnAw3MJLW863SXdGlnkA3N+U4BoKQSIToGuXARQ14IMNvfeKX
+ NphLPpUUnUNdfxAHu/S3tPTc/E/oePbHo794dnEm57LuuQINBFg2+xABEADZg/T+4o5qj4cw
+ nd0G5pFy7ACxk28mSrLuva9tyzqPgRZ2bdPiwNXJUvBg1es2u81urekeUvGvnERB/TKekp25
+ 4wU3I2lEhIXj5NVdLc6eU5czZQs4YEZbu1U5iqhhZmKhlLrhLlZv2whLOXRlLwi4jAzXIZAu
+ 76mT813jbczl2dwxFxcT8XRzk9+dwzNTdOg75683uinMgskiiul+dzd6sumdOhRZR7YBT+xC
+ wzfykOgBKnzfFscMwKR0iuHNB+VdEnZw80XGZi4N1ku81DHxmo2HG3icg7CwO1ih2jx8ik0r
+ riIyMhJrTXgR1hF6kQnX7p2mXe6K0s8tQFK0ZZmYpZuGYYsV05OvU8yqrRVL/GYvy4Xgplm3
+ DuMuC7/A9/BfmxZVEPAS1gW6QQ8vSO4zf60zREKoSNYeiv+tURM2KOEj8tCMZN3k3sNASfoG
+ fMvTvOjT0yzMbJsI1jwLwy5uA2JVdSLoWzBD8awZ2X/eCU9YDZeGuWmxzIHvkuMj8FfX8cK/
+ 2m437UA877eqmcgiEy/3B7XeHUipOL83gjfq4ETzVmxVswkVvZvR6j2blQVr+MhCZPq83Ota
+ xNB7QptPxJuNRZ49gtT6uQkyGI+2daXqkj/Mot5tKxNKtM1Vbr/3b+AEMA7qLz7QjhgGJcie
+ qp4b0gELjY1Oe9dBAXMiDwARAQABiQI8BBgBCAAmFiEEcM/SHOJt5ePBD8hO5T0WKDGD1rMF
+ Alg2+xACGwwFCQlmAYAACgkQ5T0WKDGD1rOYSw/+P6fYSZjTJDAl9XNfXRjRRyJSfaw6N1pA
+ Ahuu0MIa3djFRuFCrAHUaaFZf5V2iW5xhGnrhDwE1Ksf7tlstSne/G0a+Ef7vhUyeTn6U/0m
+ +/BrsCsBUXhqeNuraGUtaleatQijXfuemUwgB+mE3B0SobE601XLo6MYIhPh8MG32MKO5kOY
+ hB5jzyor7WoN3ETVNQoGgMzPVWIRElwpcXr+yGoTLAOpG7nkAUBBj9n9TPpSdt/npfok9ZfL
+ /Q+ranrxb2Cy4tvOPxeVfR58XveX85ICrW9VHPVq9sJf/a24bMm6+qEg1V/G7u/AM3fM8U2m
+ tdrTqOrfxklZ7beppGKzC1/WLrcr072vrdiN0icyOHQlfWmaPv0pUnW3AwtiMYngT96BevfA
+ qlwaymjPTvH+cTXScnbydfOQW8220JQwykUe+sHRZfAF5TS2YCkQvsyf7vIpSqo/ttDk4+xc
+ Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
+ x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
+ pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
+Message-ID: <fa72cc36-0204-fb82-6c62-ae43cb13260f@web.de>
+Date:   Thu, 30 Apr 2020 13:56:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jU7qR-000741-05;;;mid=<87bln9427p.fsf_-_@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19n9Eti+w+LK2E89w42H49+N0x3I54SVB0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,T_TooManySym_02,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.7 XMSubLong Long Subject
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;LKML <linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 371 ms - load_scoreonly_sql: 0.07 (0.0%),
-        signal_user_changed: 12 (3.2%), b_tie_ro: 10 (2.8%), parse: 1.44
-        (0.4%), extract_message_metadata: 13 (3.6%), get_uri_detail_list: 2.4
-        (0.6%), tests_pri_-1000: 13 (3.4%), tests_pri_-950: 1.24 (0.3%),
-        tests_pri_-900: 0.97 (0.3%), tests_pri_-90: 76 (20.4%), check_bayes:
-        74 (19.9%), b_tokenize: 8 (2.1%), b_tok_get_all: 6 (1.6%),
-        b_comp_prob: 1.97 (0.5%), b_tok_touch_all: 55 (14.9%), b_finish: 0.84
-        (0.2%), tests_pri_0: 241 (65.0%), check_dkim_signature: 0.53 (0.1%),
-        check_dkim_adsp: 2.4 (0.6%), poll_dns_idle: 0.80 (0.2%), tests_pri_10:
-        2.6 (0.7%), tests_pri_500: 7 (1.8%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH v1 1/3] posix-cpu-timers: Extend rcu_read_lock removing task_struct references
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DEI4Ybf3QGbHW/g9A85zayyrGSS3EiwDmRWhy/cGQi/v71ixJv0
+ h/uIVuRARce4Y/Cu3ZMNS0x2Zcsa8ztjIESVy6ZTLJ+DE9t2OUSCXS2m50NYcu/HMcrLPtN
+ f4X3rD6heutw1MmSp3Pp1jadIO3YSMWtQOvPf2bD53dhbDGgLWKXw1mhg3kPOsErXuzXe+q
+ WNyQFPhUuLKlizJXkm9IQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xN50rvvqBe4=:HxdsD/5Nqi7bKsX4PBTDZA
+ +5PbDC4/+513BCUXDMJW5nZcBdC87JU40ASscwAOnNtEpxcaG7Khqg0eItCeeb1pNvO7o+HS7
+ Ugl5V/7EeJgN/0oCc6Ukfe8YubusxPeh9Jmv4vdUPBttPdoBb9FcIl2h0nu6u4JTsLNa6U/qn
+ RZfQBpcBCbNXsAwkDKnct2j91pL+h+hdvmi85kCYuFmciaoiGXmyz3xuzLFBvSrIEZRlVpSu1
+ 5s0PmWyuffEFVnKu1HjJpCs7/Uga0oiu7mHBf0GDE44YcBD/ZMFNg/Fqer9u3gyW2+xqIbbrY
+ u1LpX8pFxTN8xhaRSDepmg/FLvaqBW3H9zgDSTsmtic52+CmaadQ0YP8IEicmTgiST9zwg1q1
+ wex9dQPvZK5yHElXC/gPANNdqrwiNGE8lt0HchdwP0UfXY9lI+POhFGfMBHyMZrAc4RnVuRSV
+ xPEruE3RLyQ2ElL08VFkwr7H+uGLYcMSv8zgJXAZM/NcP/HEhXND6boeRAUQESHMAK5ItO7Ab
+ IGXrLyXi5ZwzrZMZuCblHx/xOia90uILxQIDCViMYEIUEsi3bm7qSTAwRN1wTEJozOd5qtQ5y
+ rol+CXKdd958IQrjscRjelnLK+7+wBF6grDgQh0JLMKHBcMJRpa6+lO8wImbppES4uWuW95t2
+ xDiXbOalOtIC8n5+10Lna3VXQaF2nf3deFcQWgoU+YC8A4MssRWqHtXfBikcxtU4EevvTQTUj
+ OH9F9PmxzOMaUeysbLMNO/Px+ctUBWIVq6l82SOqN7VpE66/S7CVPNbhR4xkffOYBDdpH3MvS
+ ttWfmfrGwwa3nHN+rOo5rPMqzGph+pdam9sfSIu4UIC50w3oD7Gdw10Yc+XO4RsWRj7p9gLc4
+ aQoGNvoQdlst9GzPeJIRR+JhBih7mX18I9Ak2qPG13Wf3L48lWYaG02KN23SzV4gfLUTT/HA1
+ A0UpbqsSxbJ1jEOjkCex2mxRay8iUtgjZciP93qDvM3eDGBs17qwozSSzRKr3pPBN9Ab48CGL
+ LYQztoxVh+K19KAR5wXbNcuq5SlIcWYxrRMWMWppHkCUTienCqaEZCCCX7t7hPeazrXpMRVM5
+ +s08nL5ZVMO2j8MP1qFSwkyjsMrKzeYIrXS0BHrBvfDytiFMDkU1CbWSZtYgG6jYaYc+FIpyX
+ 0MiIFV+ZAr8nIMseTYzbuvQj5cm3fk5e2LI8HV73SrV2qEVVaoqBfdI9p2ZjI0CUeEpabyCdb
+ Mo5oroFHyXKygpndD
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> The of_drm_find_bridge() function returns NULL on error, it doesn't retu=
+rn
+> error pointers so this check doesn't work.
 
-Now that the code stores of pid references it is no longer necessary
-or desirable to take a reference on task_struct in __get_task_for_clock.
+How do you think about a wording variant like the following?
 
-Instead extend the scope of rcu_read_lock and remove the reference
-counting on struct task_struct entirely.
+   Change description:
+   An error pointer check was performed after a call of the
+   function =E2=80=9Cof_drm_find_bridge=E2=80=9D despite of the detail
+   that failures are indicated for the bridge search
+   by null pointers instead.
+   Thus adjust a check for the failure predicate
+   and the corresponding exception handling.
 
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- kernel/time/posix-cpu-timers.c | 43 ++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 20 deletions(-)
 
-diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-index b7f972fb115e..91996dd089a4 100644
---- a/kernel/time/posix-cpu-timers.c
-+++ b/kernel/time/posix-cpu-timers.c
-@@ -81,36 +81,36 @@ static struct task_struct *lookup_task(const pid_t pid, bool thread,
- }
- 
- static struct task_struct *__get_task_for_clock(const clockid_t clock,
--						bool getref, bool gettime)
-+						bool gettime)
- {
- 	const bool thread = !!CPUCLOCK_PERTHREAD(clock);
- 	const pid_t pid = CPUCLOCK_PID(clock);
--	struct task_struct *p;
- 
- 	if (CPUCLOCK_WHICH(clock) >= CPUCLOCK_MAX)
- 		return NULL;
- 
--	rcu_read_lock();
--	p = lookup_task(pid, thread, gettime);
--	if (p && getref)
--		get_task_struct(p);
--	rcu_read_unlock();
--	return p;
-+	return lookup_task(pid, thread, gettime);
- }
- 
- static inline struct task_struct *get_task_for_clock(const clockid_t clock)
- {
--	return __get_task_for_clock(clock, true, false);
-+	return __get_task_for_clock(clock, false);
- }
- 
- static inline struct task_struct *get_task_for_clock_get(const clockid_t clock)
- {
--	return __get_task_for_clock(clock, true, true);
-+	return __get_task_for_clock(clock, true);
- }
- 
- static inline int validate_clock_permissions(const clockid_t clock)
- {
--	return __get_task_for_clock(clock, false, false) ? 0 : -EINVAL;
-+	int ret;
-+
-+	rcu_read_lock();
-+	ret = __get_task_for_clock(clock, false) ? 0 : -EINVAL;
-+	rcu_read_unlock();
-+
-+	return ret;
- }
- 
- static inline enum pid_type cpu_timer_pid_type(struct k_itimer *timer)
-@@ -368,15 +368,18 @@ static int posix_cpu_clock_get(const clockid_t clock, struct timespec64 *tp)
- 	struct task_struct *tsk;
- 	u64 t;
- 
-+	rcu_read_lock();
- 	tsk = get_task_for_clock_get(clock);
--	if (!tsk)
-+	if (!tsk) {
-+		rcu_read_unlock();
- 		return -EINVAL;
-+	}
- 
- 	if (CPUCLOCK_PERTHREAD(clock))
- 		t = cpu_clock_sample(clkid, tsk);
- 	else
- 		t = cpu_clock_sample_group(clkid, tsk, false);
--	put_task_struct(tsk);
-+	rcu_read_unlock();
- 
- 	*tp = ns_to_timespec64(t);
- 	return 0;
-@@ -389,19 +392,19 @@ static int posix_cpu_clock_get(const clockid_t clock, struct timespec64 *tp)
-  */
- static int posix_cpu_timer_create(struct k_itimer *new_timer)
- {
--	struct task_struct *p = get_task_for_clock(new_timer->it_clock);
-+	struct task_struct *p;
- 
--	if (!p)
-+	rcu_read_lock();
-+	p = get_task_for_clock(new_timer->it_clock);
-+	if (!p) {
-+		rcu_read_unlock();
- 		return -EINVAL;
-+	}
- 
- 	new_timer->kclock = &clock_posix_cpu;
- 	timerqueue_init(&new_timer->it.cpu.node);
- 	new_timer->it.cpu.pid = get_task_pid(p, cpu_timer_pid_type(new_timer));
--	/*
--	 * get_task_for_clock() took a reference on @p. Drop it as the timer
--	 * holds a reference on the pid of @p.
--	 */
--	put_task_struct(p);
-+	rcu_read_unlock();
- 	return 0;
- }
- 
--- 
-2.25.0
-
+Regards,
+Markus
