@@ -2,296 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097D61C007D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF421C0088
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727955AbgD3Ph2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 11:37:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60826 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726619AbgD3Ph1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:37:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E7D48ABBE;
-        Thu, 30 Apr 2020 15:37:22 +0000 (UTC)
-Subject: Re: [PATCH v7 11/18] mm: x86: Invoke hypercall when page encryption
- status is changed
-To:     Brijesh Singh <brijesh.singh@amd.com>,
-        Ashish Kalra <Ashish.Kalra@amd.com>, pbonzini@redhat.com
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, rientjes@google.com,
-        venu.busireddy@oracle.com
-References: <cover.1588234824.git.ashish.kalra@amd.com>
- <c167e7191cb8f9c7635f5d8cfecb1157cc96cf6b.1588234824.git.ashish.kalra@amd.com>
- <486fe740-0c2d-9d2b-d490-bdb3215a120c@suse.com>
- <c75af894-b216-d8c0-8863-7df1ccff5c9f@amd.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <56455051-055f-e50b-60cb-09d398916305@suse.com>
-Date:   Thu, 30 Apr 2020 17:37:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728002AbgD3Pic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 11:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726420AbgD3Pib (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 11:38:31 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818D9C035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 08:38:31 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id x12so5307129qts.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 08:38:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P9HhjXHjgQ2uRdTOdCGFRzrISVJUe9hHihb1s6U+pG0=;
+        b=EBCfRCyNsTlDJFaRQRt4ZOByXKwsez2d0WVoOUVj0uyzY2FQjjUArA4Cdr92cMp5yy
+         00zTxOzpBt6C0OXx4Ubu0BX+XEnhoymU29QAZiSeYC1TaiquQ6Guo8m/i8tGqEPIt2Yt
+         upoTJJeeNPy2dAk4ETUD4kl9Dplk18J7ntJnI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P9HhjXHjgQ2uRdTOdCGFRzrISVJUe9hHihb1s6U+pG0=;
+        b=T4HkOpwyeUhAL+zOhor/b8cbkyQBUHtgTDClDdMRvLjlx3uByi87iFkd9pI3Tagnqo
+         yecjY2Lb2ozsh6um0vrcq/puzB0plL5bhe4YVt9A7zl0oSgcJvJniwiuVgiyOyBhnQE6
+         N+VvBjdeXh0xJ3UZ8uigKXFLcFtMz6CjWbtPyFeJ8volN7X6C7B6AOLbN3FxZ4ee8e95
+         P7wCdrFl76cjE0fot7kwpwZyyS0DTBSWkkw5QtjPYShTY/XLXUDuI5OgirzD4TBabs9d
+         aJ7YBn+FNwUr6skTYTLjtFx2UJTH3q417UJ5HEslT2tYDrlICQrFk/rBd3ot+QPRoH0P
+         KrQw==
+X-Gm-Message-State: AGi0PuawiKRClGwvDDklcYVGP816Kfh/4CRGM6OI8waT+B64PJh2Uf9f
+        rXgfbXjysLV9itHG0JPvAoYx4PPwPgI=
+X-Google-Smtp-Source: APiQypJ5ArB8+NKHRnssmuj19aGbmgYBPRM4Bd7f0g9wK2xkVNqsL1j2JoYDtt7zn2EIAaTKVkyq+g==
+X-Received: by 2002:ac8:66d8:: with SMTP id m24mr4296291qtp.175.1588261109694;
+        Thu, 30 Apr 2020 08:38:29 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id o13sm277866qke.77.2020.04.30.08.38.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 08:38:28 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id v10so3427262ybk.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 08:38:27 -0700 (PDT)
+X-Received: by 2002:a5b:483:: with SMTP id n3mr6464401ybp.519.1588261107424;
+ Thu, 30 Apr 2020 08:38:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c75af894-b216-d8c0-8863-7df1ccff5c9f@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1588093804-30446-1-git-send-email-michalorzel.eng@gmail.com> <875zdiacv2.fsf@intel.com>
+In-Reply-To: <875zdiacv2.fsf@intel.com>
+From:   Sean Paul <seanpaul@chromium.org>
+Date:   Thu, 30 Apr 2020 11:37:49 -0400
+X-Gmail-Original-Message-ID: <CAOw6vbK69aWzti9a7MXNmAfVfJXzzC5g74p4ukSE49MhaV_b3g@mail.gmail.com>
+Message-ID: <CAOw6vbK69aWzti9a7MXNmAfVfJXzzC5g74p4ukSE49MhaV_b3g@mail.gmail.com>
+Subject: Re: [PATCH] drm: Replace drm_modeset_lock/unlock_all with
+ DRM_MODESET_LOCK_ALL_* helpers
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Michal Orzel <michalorzel.eng@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        mripard@kernel.org, tzimmermann@suse.de,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.04.20 17:21, Brijesh Singh wrote:
-> 
-> On 4/30/20 4:49 AM, Jürgen Groß wrote:
->> On 30.04.20 10:45, Ashish Kalra wrote:
->>> From: Brijesh Singh <Brijesh.Singh@amd.com>
->>>
->>> Invoke a hypercall when a memory region is changed from encrypted ->
->>> decrypted and vice versa. Hypervisor needs to know the page encryption
->>> status during the guest migration.
->>>
->>> Cc: Thomas Gleixner <tglx@linutronix.de>
->>> Cc: Ingo Molnar <mingo@redhat.com>
->>> Cc: "H. Peter Anvin" <hpa@zytor.com>
->>> Cc: Paolo Bonzini <pbonzini@redhat.com>
->>> Cc: "Radim Krčmář" <rkrcmar@redhat.com>
->>> Cc: Joerg Roedel <joro@8bytes.org>
->>> Cc: Borislav Petkov <bp@suse.de>
->>> Cc: Tom Lendacky <thomas.lendacky@amd.com>
->>> Cc: x86@kernel.org
->>> Cc: kvm@vger.kernel.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
->>> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
->>> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
->>> ---
->>>    arch/x86/include/asm/paravirt.h       | 10 +++++
->>>    arch/x86/include/asm/paravirt_types.h |  2 +
->>>    arch/x86/kernel/paravirt.c            |  1 +
->>>    arch/x86/mm/mem_encrypt.c             | 58 ++++++++++++++++++++++++++-
->>>    arch/x86/mm/pat/set_memory.c          |  7 ++++
->>>    5 files changed, 77 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/x86/include/asm/paravirt.h
->>> b/arch/x86/include/asm/paravirt.h
->>> index 694d8daf4983..8127b9c141bf 100644
->>> --- a/arch/x86/include/asm/paravirt.h
->>> +++ b/arch/x86/include/asm/paravirt.h
->>> @@ -78,6 +78,12 @@ static inline void paravirt_arch_exit_mmap(struct
->>> mm_struct *mm)
->>>        PVOP_VCALL1(mmu.exit_mmap, mm);
->>>    }
->>>    +static inline void page_encryption_changed(unsigned long vaddr,
->>> int npages,
->>> +                        bool enc)
->>> +{
->>> +    PVOP_VCALL3(mmu.page_encryption_changed, vaddr, npages, enc);
->>> +}
->>> +
->>>    #ifdef CONFIG_PARAVIRT_XXL
->>>    static inline void load_sp0(unsigned long sp0)
->>>    {
->>> @@ -946,6 +952,10 @@ static inline void paravirt_arch_dup_mmap(struct
->>> mm_struct *oldmm,
->>>    static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
->>>    {
->>>    }
->>> +
->>> +static inline void page_encryption_changed(unsigned long vaddr, int
->>> npages, bool enc)
->>> +{
->>> +}
->>>    #endif
->>>    #endif /* __ASSEMBLY__ */
->>>    #endif /* _ASM_X86_PARAVIRT_H */
->>> diff --git a/arch/x86/include/asm/paravirt_types.h
->>> b/arch/x86/include/asm/paravirt_types.h
->>> index 732f62e04ddb..03bfd515c59c 100644
->>> --- a/arch/x86/include/asm/paravirt_types.h
->>> +++ b/arch/x86/include/asm/paravirt_types.h
->>> @@ -215,6 +215,8 @@ struct pv_mmu_ops {
->>>          /* Hook for intercepting the destruction of an mm_struct. */
->>>        void (*exit_mmap)(struct mm_struct *mm);
->>> +    void (*page_encryption_changed)(unsigned long vaddr, int npages,
->>> +                    bool enc);
->>>      #ifdef CONFIG_PARAVIRT_XXL
->>>        struct paravirt_callee_save read_cr2;
->>> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
->>> index c131ba4e70ef..840c02b23aeb 100644
->>> --- a/arch/x86/kernel/paravirt.c
->>> +++ b/arch/x86/kernel/paravirt.c
->>> @@ -367,6 +367,7 @@ struct paravirt_patch_template pv_ops = {
->>>                (void (*)(struct mmu_gather *, void *))tlb_remove_page,
->>>          .mmu.exit_mmap        = paravirt_nop,
->>> +    .mmu.page_encryption_changed    = paravirt_nop,
->>>      #ifdef CONFIG_PARAVIRT_XXL
->>>        .mmu.read_cr2        = __PV_IS_CALLEE_SAVE(native_read_cr2),
->>> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
->>> index f4bd4b431ba1..603f5abf8a78 100644
->>> --- a/arch/x86/mm/mem_encrypt.c
->>> +++ b/arch/x86/mm/mem_encrypt.c
->>> @@ -19,6 +19,7 @@
->>>    #include <linux/kernel.h>
->>>    #include <linux/bitops.h>
->>>    #include <linux/dma-mapping.h>
->>> +#include <linux/kvm_para.h>
->>>      #include <asm/tlbflush.h>
->>>    #include <asm/fixmap.h>
->>> @@ -29,6 +30,7 @@
->>>    #include <asm/processor-flags.h>
->>>    #include <asm/msr.h>
->>>    #include <asm/cmdline.h>
->>> +#include <asm/kvm_para.h>
->>>      #include "mm_internal.h"
->>>    @@ -196,6 +198,48 @@ void __init sme_early_init(void)
->>>            swiotlb_force = SWIOTLB_FORCE;
->>>    }
->>>    +static void set_memory_enc_dec_hypercall(unsigned long vaddr, int
->>> npages,
->>> +                    bool enc)
->>> +{
->>> +    unsigned long sz = npages << PAGE_SHIFT;
->>> +    unsigned long vaddr_end, vaddr_next;
->>> +
->>> +    vaddr_end = vaddr + sz;
->>> +
->>> +    for (; vaddr < vaddr_end; vaddr = vaddr_next) {
->>> +        int psize, pmask, level;
->>> +        unsigned long pfn;
->>> +        pte_t *kpte;
->>> +
->>> +        kpte = lookup_address(vaddr, &level);
->>> +        if (!kpte || pte_none(*kpte))
->>> +            return;
->>> +
->>> +        switch (level) {
->>> +        case PG_LEVEL_4K:
->>> +            pfn = pte_pfn(*kpte);
->>> +            break;
->>> +        case PG_LEVEL_2M:
->>> +            pfn = pmd_pfn(*(pmd_t *)kpte);
->>> +            break;
->>> +        case PG_LEVEL_1G:
->>> +            pfn = pud_pfn(*(pud_t *)kpte);
->>> +            break;
->>> +        default:
->>> +            return;
->>> +        }
->>> +
->>> +        psize = page_level_size(level);
->>> +        pmask = page_level_mask(level);
->>> +
->>> +        if (x86_platform.hyper.sev_migration_hcall)
->>> +            x86_platform.hyper.sev_migration_hcall(pfn << PAGE_SHIFT,
->>> +                                   psize >> PAGE_SHIFT,
->>> +                                   enc);
->>
->> Why do you need two indirections? One via pv.mmu_ops and then another
->> via x86_platform.hyper? Isn't one enough?
->>
-> Currently, there is no strong reason to have two indirections other than
-> building a flexibility for the future expansion, e.g when we add SEV
-> support for the Xen then hypercall invocation may be slightly different
-> but the code to walk the page table to find the GPA will be same for
-> both KVM and Xen. The pv.mmu_ops provides a generic indirection which
-> can be used by set_memory_{decrypted,encrypted}. I will look into
-> removing the extra indirection in next version. thanks.
-> 
-> 
->> And if x86_platform.hyper.sev_migration_hcall isn't set the whole loop
->> is basically a nop.
->>
-> Yes, this double indirection has a draw back that we will be executing
-> the unnecessary code  when x86_platform.hyper.sev_migration_hcall isn't
-> set. I will look into improving it.
-> 
-> 
->>> +        vaddr_next = (vaddr & pmask) + psize;
->>> +    }
->>> +}
->>> +
->>>    static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
->>>    {
->>>        pgprot_t old_prot, new_prot;
->>> @@ -253,12 +297,13 @@ static void __init __set_clr_pte_enc(pte_t
->>> *kpte, int level, bool enc)
->>>    static int __init early_set_memory_enc_dec(unsigned long vaddr,
->>>                           unsigned long size, bool enc)
->>>    {
->>> -    unsigned long vaddr_end, vaddr_next;
->>> +    unsigned long vaddr_end, vaddr_next, start;
->>>        unsigned long psize, pmask;
->>>        int split_page_size_mask;
->>>        int level, ret;
->>>        pte_t *kpte;
->>>    +    start = vaddr;
->>>        vaddr_next = vaddr;
->>>        vaddr_end = vaddr + size;
->>>    @@ -313,6 +358,8 @@ static int __init
->>> early_set_memory_enc_dec(unsigned long vaddr,
->>>          ret = 0;
->>>    +    set_memory_enc_dec_hypercall(start, PAGE_ALIGN(size) >>
->>> PAGE_SHIFT,
->>> +                    enc);
->>>    out:
->>>        __flush_tlb_all();
->>>        return ret;
->>> @@ -451,6 +498,15 @@ void __init mem_encrypt_init(void)
->>>        if (sev_active())
->>>            static_branch_enable(&sev_enable_key);
->>>    +#ifdef CONFIG_PARAVIRT
->>> +    /*
->>> +     * With SEV, we need to make a hypercall when page encryption
->>> state is
->>> +     * changed.
->>> +     */
->>> +    if (sev_active())
->>> +        pv_ops.mmu.page_encryption_changed =
->>> set_memory_enc_dec_hypercall;
->>> +#endif
->>> +
->>>        pr_info("AMD %s active\n",
->>>            sev_active() ? "Secure Encrypted Virtualization (SEV)"
->>>                     : "Secure Memory Encryption (SME)");
->>> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
->>> index 59eca6a94ce7..9aaf1b6f5a1b 100644
->>> --- a/arch/x86/mm/pat/set_memory.c
->>> +++ b/arch/x86/mm/pat/set_memory.c
->>> @@ -27,6 +27,7 @@
->>>    #include <asm/proto.h>
->>>    #include <asm/memtype.h>
->>>    #include <asm/set_memory.h>
->>> +#include <asm/paravirt.h>
->>>      #include "../mm_internal.h"
->>>    @@ -2003,6 +2004,12 @@ static int __set_memory_enc_dec(unsigned
->>> long addr, int numpages, bool enc)
->>>         */
->>>        cpa_flush(&cpa, 0);
->>>    +    /* Notify hypervisor that a given memory range is mapped
->>> encrypted
->>> +     * or decrypted. The hypervisor will use this information during
->>> the
->>> +     * VM migration.
->>> +     */
->>> +    page_encryption_changed(addr, numpages, enc);
->>
->> Is this operation really so performance critical that a pv-op is
->> needed? Wouldn't a static key be sufficient here?
->>
-> Well, in a typical Linux kernel boot it does not get called so many
-> times. We noticed that some drivers (mainly nvme) calls it more often
-> than others. I am open for the suggestions, we went with the pv-op path
-> based on the previous feedbacks. A static key maybe sufficient as well.
-> 
+On Wed, Apr 29, 2020 at 4:57 AM Jani Nikula <jani.nikula@linux.intel.com> wrote:
+>
+> On Tue, 28 Apr 2020, Michal Orzel <michalorzel.eng@gmail.com> wrote:
+> > As suggested by the TODO list for the kernel DRM subsystem, replace
+> > the deprecated functions that take/drop modeset locks with new helpers.
+> >
+> > Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+> > ---
+> >  drivers/gpu/drm/drm_mode_object.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/drm_mode_object.c b/drivers/gpu/drm/drm_mode_object.c
+> > index 35c2719..901b078 100644
+> > --- a/drivers/gpu/drm/drm_mode_object.c
+> > +++ b/drivers/gpu/drm/drm_mode_object.c
+> > @@ -402,12 +402,13 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
+> >  {
+> >       struct drm_mode_obj_get_properties *arg = data;
+> >       struct drm_mode_object *obj;
+> > +     struct drm_modeset_acquire_ctx ctx;
+> >       int ret = 0;
+> >
+> >       if (!drm_core_check_feature(dev, DRIVER_MODESET))
+> >               return -EOPNOTSUPP;
+> >
+> > -     drm_modeset_lock_all(dev);
+> > +     DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+>
+> I cry a little every time I look at the DRM_MODESET_LOCK_ALL_BEGIN and
+> DRM_MODESET_LOCK_ALL_END macros. :(
+>
+> Currently only six users... but there are ~60 calls to
+> drm_modeset_lock_all{,_ctx} that I presume are to be replaced. I wonder
+> if this will come back and haunt us.
+>
 
-I'm fine with a pv-op if this is seen to be the way to go. But I would
-skip the x86_platform.hyper indirection and call the kvm specific
-function directly. In case Xen gains SEV capability we can still either
-add the indirection again or just copy the KVM function and replace the
-hypercall with the Xen variant.
+What's the alternative? Seems like the options without the macros is
+to use incorrect scope or have a bunch of retry/backoff cargo-cult
+everywhere (and hope the copy source is done correctly).
 
+Sean
 
-Juergen
+> BR,
+> Jani.
+>
+>
+> >
+> >       obj = drm_mode_object_find(dev, file_priv, arg->obj_id, arg->obj_type);
+> >       if (!obj) {
+> > @@ -427,7 +428,7 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
+> >  out_unref:
+> >       drm_mode_object_put(obj);
+> >  out:
+> > -     drm_modeset_unlock_all(dev);
+> > +     DRM_MODESET_LOCK_ALL_END(ctx, ret);
+> >       return ret;
+> >  }
+> >
+> > @@ -449,12 +450,13 @@ static int set_property_legacy(struct drm_mode_object *obj,
+> >  {
+> >       struct drm_device *dev = prop->dev;
+> >       struct drm_mode_object *ref;
+> > +     struct drm_modeset_acquire_ctx ctx;
+> >       int ret = -EINVAL;
+> >
+> >       if (!drm_property_change_valid_get(prop, prop_value, &ref))
+> >               return -EINVAL;
+> >
+> > -     drm_modeset_lock_all(dev);
+> > +     DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+> >       switch (obj->type) {
+> >       case DRM_MODE_OBJECT_CONNECTOR:
+> >               ret = drm_connector_set_obj_prop(obj, prop, prop_value);
+> > @@ -468,7 +470,7 @@ static int set_property_legacy(struct drm_mode_object *obj,
+> >               break;
+> >       }
+> >       drm_property_change_valid_put(prop, ref);
+> > -     drm_modeset_unlock_all(dev);
+> > +     DRM_MODESET_LOCK_ALL_END(ctx, ret);
+> >
+> >       return ret;
+> >  }
+>
+> --
+> Jani Nikula, Intel Open Source Graphics Center
