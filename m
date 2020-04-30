@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807BD1BF4AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:59:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8300F1BF4B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgD3J7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 05:59:21 -0400
+        id S1726961AbgD3J7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 05:59:36 -0400
 Received: from mail-co1nam11on2066.outbound.protection.outlook.com ([40.107.220.66]:37818
         "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726378AbgD3J7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 05:59:19 -0400
+        id S1726826AbgD3J7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 05:59:20 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=modYXQGQcyDQ2xfFapaVudJriEnKSztlssxbG2mRLZA5mNykI843NQZdqqlBbj67Tv+XZKn28up87aU85up0pMHljJQUXCkFdoMDtPS1p3q0G60spZA2JAm602nC9gDr5Z3Y3th3HL0bcN2fh4X3Y8XUHYyHRwAz309XZ4XWlVzOSjbCZNcheEi3mfLLpK/93aaDQQIqhmeLT9mTsUtDMsIVgOz7b4638gyw/A27M+S4Z8zph06fdd98cb96osRuJA2/cARRofO/gFz57nVGn2II+WBHxJY0UdDCkAJPB4MPhG1LpVUK8qPwUnJOrfYGfksraT6vJWePnN646s8AxA==
+ b=Uak6xEeq4ji3/4qjjdbTe0Q/oX/Ee1kvVuiX3kQIekOqTmr8AfDPbU3duF7mdyUZxdWtaJ9FOcgWoAL35I60P2JOykarOKc01HlqriDNa1HOetJPv/x9Cmj3yhuxrFUcOW2BAvSPqG+lVEuDLkE+RQLQEZ/FSWnnj5AbvBzvyMIBNO4SaZpUMLqMwpnFrxGCtL8hlkgpEi9fonzfwr2paBlVMdj/bszJmUPV80xLiD6bKLkbBmv/TM+kcZMswO0FtqT0wNYBGssPQi4spmULQKnQ/pTdBov5iIFa/6Rmuk2KoDZfFyxMiPONUPjJmfaIREw6s5mmlf8i1bw9+JxAMg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zO5KEr/c0V47cntzr6VM8XYrvXQmDezAE3ACOoAylNo=;
- b=WKK2bD1xozB//Iof4LgxtH7Kh3Y41XvByD4S8WwvhpZZSopVeRcts9wivFsK6WRmqAOq6OR6JAW831G6JucKn7nKrGnpucYAZGMlMfoM8WT6aVjTsXXZthlPREAfsRdBXib+HUlMvXFdmKlzUGfWd7ajXaD1otYVtdwWiQMqsJG5W0nMn0Dpw3wAWU+ictVp6NruYz1QY/s1mrPDyMknU3lJ/UqyXmqGiD45T0uA1uMzCVI/q9zAZ6S6lx5LIOLo2rGOjLuGC6QCWWbJJg4SXAs+0xVHCPzdn7izLt/rgw4Rrlih4ezuDlwCRR4GrngfWZ9IuosoEZzV7lupa3JClw==
+ bh=xCjrNLC2LhnFkNcifiJpqfLa/GGgYoNgV84DoNYXhiw=;
+ b=N1tFlprDu3Kd8PFMaUXPt9/CBhw1c3mgEUy3DqXs79s1wqHpA8pkOjhgV0O81kOS6YuFKjCf//oVlQbZzV18GG7uND547B3/yk0I9H1xpNh0qlVvQ/JPYPhGUfFxCnjb34RvH38ZthyfoRLeC+pvzud2EAKMJthM/m0R9zpswOzmZ8SuXdIR1nkpNQIIoj9uYTRSWcWEbN/M0Jc4c07hIlnCMv4g1CCs4DaCmJ5NLevOaYZhLn7gkboPKd/5np9xJKV1VukH1selhKjyuPHWSdKsC/n4EL552BzoFFwOuen5JcjBnQ/dxD4GxTegcvTFUyXOb4IowXgFH/VebBdz3w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=sifive.com; dmarc=pass action=none header.from=sifive.com;
  dkim=pass header.d=sifive.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zO5KEr/c0V47cntzr6VM8XYrvXQmDezAE3ACOoAylNo=;
- b=V94lJhhIYF7dsKLMmVZ/SJx+BN0lN6M1uYMcHKPZpn7YbLh3dCJJHYscOAXsJESgyfjynUEZlVPP3lYs7sCECh7m9vIPLniazJIQ56SL9H2DGbDxr5pIx2bUq0ReWxjsQ24LRdG/WpKU1R2s6/3iudPH9fy/LXs405rDu5di4IU=
+ bh=xCjrNLC2LhnFkNcifiJpqfLa/GGgYoNgV84DoNYXhiw=;
+ b=qkoMOUkbFbATJoVjN72Ixn7WCyVE5dnwQOGAokQPL8ZaWx6kzbKK3WcFwHbTkAnaix4D3VApMASGZTQGGeubDSjS+fjqz5mT4I1I/K5VqCEHISB9XZtSeYcKBauIiC+UFu5+wvXD5RTqPUG/JV2iblKCw5T7tCT5kBTvAmGI2F8=
 Authentication-Results: microchip.com; dkim=none (message not signed)
  header.d=none;microchip.com; dmarc=none action=none header.from=sifive.com;
 Received: from BN8PR13MB2611.namprd13.prod.outlook.com (2603:10b6:408:81::17)
  by BN8PR13MB2884.namprd13.prod.outlook.com (2603:10b6:408:85::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.14; Thu, 30 Apr
- 2020 09:59:15 +0000
+ 2020 09:59:18 +0000
 Received: from BN8PR13MB2611.namprd13.prod.outlook.com
  ([fe80::c129:8fca:5ed:8929]) by BN8PR13MB2611.namprd13.prod.outlook.com
  ([fe80::c129:8fca:5ed:8929%6]) with mapi id 15.20.2958.020; Thu, 30 Apr 2020
- 09:59:15 +0000
+ 09:59:18 +0000
 From:   Sagar Shrikant Kadam <sagar.kadam@sifive.com>
 To:     tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
         richard@nod.at, vigneshr@ti.com
@@ -45,63 +45,69 @@ Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mtd@lists.infradead.org,
         Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-Subject: [PATCH 0/2] update is25wp256d page write capabilities
-Date:   Thu, 30 Apr 2020 02:58:50 -0700
-Message-Id: <1588240732-13905-1-git-send-email-sagar.kadam@sifive.com>
+Subject: [PATCH 1/2] riscv: defconfig: enable spi nor on Hifive Unleashed A00 board.
+Date:   Thu, 30 Apr 2020 02:58:51 -0700
+Message-Id: <1588240732-13905-2-git-send-email-sagar.kadam@sifive.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1588240732-13905-1-git-send-email-sagar.kadam@sifive.com>
+References: <1588240732-13905-1-git-send-email-sagar.kadam@sifive.com>
 Content-Type: text/plain
 X-ClientProxiedBy: BYAPR08CA0027.namprd08.prod.outlook.com
  (2603:10b6:a03:100::40) To BN8PR13MB2611.namprd13.prod.outlook.com
  (2603:10b6:408:81::17)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from gamma07.internal.sifive.com (64.62.193.194) by BYAPR08CA0027.namprd08.prod.outlook.com (2603:10b6:a03:100::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 09:59:13 +0000
+Received: from gamma07.internal.sifive.com (64.62.193.194) by BYAPR08CA0027.namprd08.prod.outlook.com (2603:10b6:a03:100::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 09:59:17 +0000
 X-Mailer: git-send-email 2.7.4
 X-Originating-IP: [64.62.193.194]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1f194c6f-10a8-4a0f-10b3-08d7eced2372
+X-MS-Office365-Filtering-Correlation-Id: 39f59fe8-1b43-4f15-1e76-08d7eced25c5
 X-MS-TrafficTypeDiagnostic: BN8PR13MB2884:
 X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN8PR13MB28844AFF04000F500A5F6BF099AA0@BN8PR13MB2884.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-Microsoft-Antispam-PRVS: <BN8PR13MB28840A50452C06794ED0832D99AA0@BN8PR13MB2884.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1265;
 X-Forefront-PRVS: 0389EDA07F
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4MLehkgPkdJOeopcQ5DInrJdPpBpzTm9wqLhZroxLVHda4Xe3cClvQlAAh9+JrrOvWSIVR6R2E7H2X+l1y1iVCXshdJG0E6dEo5LmYISOHTppGezXUcPnavuwovA7HuNGbHOaIg7YPR59Iw3U0fHaFSLUsn8JTJA2pcle3iW23I0Ie4/RNJ4gzbhwyKUV7ATKqT5nB6PLcnoEeygaIY6zEXNuhfeHSpGHpJPourywBUL0nNb1RAmEgmFvcg5PZkOU7hA5mksWHIcpu5NYFY8RmErfQSmPYtglJMZxLQalE37woFys/0P+/9w/E2JiS/ybg0xa2MSrdXJH2SGcNtJHQ5gdjTz/KRrO8NzHiNGTCoxRs11X+PHIbcz2QdM1H0bZd3MnIOWiZw0ZSAhhALUGP83otyhFgdgXhz7UVeN1IJrqX5GaP0icZLm/7RmYKxz
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR13MB2611.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(39850400004)(396003)(366004)(7696005)(52116002)(8676002)(8936002)(16526019)(186003)(26005)(5660300002)(4744005)(956004)(478600001)(2906002)(2616005)(316002)(6666004)(66476007)(66556008)(66946007)(86362001)(15650500001)(36756003)(107886003)(4326008)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: DHrcdylyOx4qjkqpiFsp8JI4sGtnPjIfZeVf9QSsxAyZaOLM6U3DaA2nRihFvUjNM78RNyIvBqci0ZXMF+JMG0R6idQGeIcMJaxHe0jpIiOx3VJWnLpm8Kqev1HLaRtTshbzJHnoh01tt8WP16SvACPAJHWW0oym08R5J/T0eFEth10mEPAplG8oDlIfmDy+RDA7dfbsDuORvXDt8nJV3OxkZOLyHKYEMPrCnq0TUGGX30ETepqBif2MpRWu+PfWn/lbVO8TinS7eVEGzJ4BHk2eEzo3a+rfoVR9qJL86V8UfKekegNb/Kgpaulzp8wpzIaltC0/5Ri+WJCwKGRHBqgAT17zt2gfZ6ppo7J6z4BDL9XPMJngEwc8b/oHBmCjcppQQ1gIRW6cbjDzcfwYuFoTZyjEQMHsux/KdGuUE2rmU7Hjn2KZwFVmo/UOdejU1yaaMlN66TKZmn53asJrLd8HAsIVe24QmHiMfgV8oh15i+HrPx11/T4cJPofTJKbrNKep/XHEG48YnWPII+mETbjdDiOyhcXnkgffr6PGTutE81hie/lcwMDOLQHII5wz9oF06v9CqZEQoRVORfFDwKYfymwzGdybNb6m0+rrC3H6I6U6F5B3Crp/PMTnhBV5njBlwv8dLEQGWMxuGws86gtjtYeDn9JThnvB2DMaIS0U57PZ9tyjxupD/QKHhIN5c+joRcJHg4RW+XIRbE1ND/DWB9AVA8c2MCNcJxeMD8zsEKPzg9YveFVY7PRMYbL/bjt3jP266z/UZRNPXJs1/uxd12G8stAbivkhjyCBsU=
+X-Microsoft-Antispam-Message-Info: xxicrGQAppmCd9g9ACLPPrwQl8lVGO4Rx1ZRBagPsmuwXf3vacWBDg8QzfKSdh+Lq+EJIBKycRL2YbeGjzYdxAjxr9JvT+pnQHfpadyK4BrqFQ5XxCIl/P31shP9sTvr8l2FgKhLxMIK6+VWV2cQj791Wlbex7NKzB3S7rwK9lIBbA7kI1H8toT4gwZtoBaq5gRyw5MIkgMlxD/GiMQRkeKVbPrxsaxHd53P4h1sjDF5Tjp80sPHwrEmcwxGmCrx4Q5Q4eHTOFBwaS1Ml1SCqKeYr3P232vCccNsHZ0qKJs9uUmCu8uLvHLlic5zZuNIMk1ZxMIVXcAqxgoL3yO1DYLTpZr3TkAzh++QZ0q6xXpm1xa3kAkywBLri0n6nquswAQIqFOTxAfki1iLQezeClCSvQ5fnUNW7yZERRfj7nwHSrehaClmQLgYEcYgtJ10
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR13MB2611.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(39850400004)(396003)(366004)(7696005)(52116002)(8676002)(8936002)(16526019)(186003)(26005)(5660300002)(4744005)(956004)(478600001)(2906002)(2616005)(316002)(6666004)(66476007)(66556008)(66946007)(86362001)(36756003)(107886003)(4326008)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: GSecvMogeO4xfYfwXzYLnRhZ/Qxf8JH09tISPVYn9sB7MIAzE42EG4jgqn9Fz1DQBw9bFmp/tEvZ4sDm52fcQ3RzRBoEtVW7qmzV4TJk6du4ixHl629Uuue55NSxdRwDDWufbaDLWvVgDH0mgO4SxTdG2b8vnxivnuNlTEgTTQjFInn6ol47jAxPANEVMOx4imQKNR5Dg2Jm4UvrOmPGPnwxTKPkxZfcwfsp8+1awMhdb+v4n/0DwN9ZWyoMxxY5b2CudnTJdW0phacpzgjtqZ1fYwO/7C1KN7W+Jk3UR9obFNhe56+lW/plYb4sKAiz6jI5Yc/fJbU4Cx2J6Bpj5nbPYB1xdiFtLCyvH14SH1yOQMxqs+ciS6amPcSxjnAlb8wsyTK7rW90eQFPJMmBs2afQX0AExpkRmN+j6ZGpU2ZIMFVI5bEb0FeNBFbn0yQ1NTbzBClY1xEacjQ7zO+w9B011rd1UGpqpZQR1cC/xhKkNN+o7UWxVFNEdUPSm11hTilQ9iplqFt148NcC89vJwZjCuqQo6bRfUcY0R7TbrdrSo7BAkLq0o9gxUknUKASVI3ZwpdSb3SjJUXtyLvrjxaDs0r+dpBQHvnNIQHHwvuhqu/mchUih48GairkjLtBwW76J3qndBkUOKIb/7lDa5KKIW4aGQgCYmi4gUkTIVI0aQSYaS8iir46ck9X2ZWRdfCLJXEBclouwy0aB8GMvMj+qjXNKmR0U/h4mSvSQ8KL+Bbp1ndJ9fXTSkXkvfetMxisZN2Qu2lMn3hD1PpDoMXxYqlD/2YREwOXV4cfKY=
 X-OriginatorOrg: sifive.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f194c6f-10a8-4a0f-10b3-08d7eced2372
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 09:59:14.8153
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39f59fe8-1b43-4f15-1e76-08d7eced25c5
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 09:59:18.6071
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +/iHnhN6rfjPAiU4XYNXWuSRwg175f0Z9QaDt7cH2VCLUI1FHSgc0RoNwes5Ll6UC6YzdmhBjqZdKCo0o4ACIw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: g4NdIfRh0nZAlpEVZgg7Ukq7HkkJlVWcJQEeviumtvyAuTFvC0xnW45bleOFgXomILZiHau2qroVrm4ifufRmA==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR13MB2884
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HiFive Unleashed A00 board has is25wp256d snor chip. It is observed
-that it gets configured with Serial Input Page program by the end
-of spi_nor_scan. Using the post bfpt fixup hook we prioritize the
-page program settings to use quad input page program (opcode:0x34)
-over serial input page program (opcode: 0x12).
+Enable MTD based SPI-NOR framework in order to use spi flash
+available on HiFive Unleashed A00 board.
 
-The patchset is tested on Linux 5.7-rc3.
+Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+---
+ arch/riscv/configs/defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Sagar Shrikant Kadam (2):
-  riscv: defconfig: enable spi nor on Hifive Unleashed A00 board.
-  spi: nor: update page program settings for is25wp256 using post bfpt
-    fixup
-
- arch/riscv/configs/defconfig |  2 ++
- drivers/mtd/spi-nor/issi.c   | 16 ++++++++++++++++
- 2 files changed, 18 insertions(+)
-
+diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+index 4da4886..970580b 100644
+--- a/arch/riscv/configs/defconfig
++++ b/arch/riscv/configs/defconfig
+@@ -80,6 +80,8 @@ CONFIG_USB_STORAGE=y
+ CONFIG_USB_UAS=y
+ CONFIG_MMC=y
+ CONFIG_MMC_SPI=y
++CONFIG_MTD=y
++CONFIG_MTD_SPI_NOR=y
+ CONFIG_RTC_CLASS=y
+ CONFIG_VIRTIO_PCI=y
+ CONFIG_VIRTIO_BALLOON=y
 -- 
 2.7.4
 
