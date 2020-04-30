@@ -2,92 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A1A1C022D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B795B1C023A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728383AbgD3QT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728360AbgD3QTY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:19:24 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3E5C035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:19:24 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id n11so2954796pgl.9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:19:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Bd0ayqDMLRPuvdluOrNP0SAnf99YHwhV63n8Qm6Evr0=;
-        b=Fgzh7czcWgcRnFx83H2M0ciY+zcYmlZjgOaa/jX0pueO8zT/VXnQcYKFXymMIW+NYk
-         wvpmT2rEtn3eIDt+TDbkiByRU3ApYZWSMeEzzQwbL0v2FKgIgFmhiTgB8DOcW0hZVeH6
-         +F76m7aRqb1Dl3CvOFye96AshPssh/Uxga3SKkBAUvkDlrml68jtvBow05X1YKw3h0Hc
-         UrbxFNEIpB3Wtcy403d6EPU1O6bp2X3Hwr80xEypABKG+6hDC/T07I4K56VpJcrP2gTo
-         /kkyNBaNOYq9+AJtQj1JNe3EktdIsWvAMm4RuObBgRhiyrMG6SptZAvBFW7TYLGxfyNj
-         jG8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Bd0ayqDMLRPuvdluOrNP0SAnf99YHwhV63n8Qm6Evr0=;
-        b=gXD6qcZdo6rfsVs7V1Ej3SON0G4v5Fc3TtURSdUIUk8D/qzK316iwiXL4dUQAO7M5t
-         zFUxLHrQyxCz8BD4w5RbYgLG259+YluTzHnDpDs9YLrEnfF/uHc9q8kBqUKsi0m3x8wJ
-         eZ71VyYrE4ISE6t+cxFC0PORk66BgZPQww+D5zSke7gUq/y66weT09Mzmp+Sb/LD5vfw
-         L2dA7Du4OxYc/4+o+6p6P7CLrSYsIWPgd4wYBZprMaj2ELmJZOCkCpn+WGUPT4Vj/EHF
-         N/cOJ380YNanbSnC2EUDSiZ7X49E8yrYOzjYpAXAQEyMFFuWMty6xBMvT4jEbOj3wdRW
-         pSlg==
-X-Gm-Message-State: AGi0PuahlW5RX8VB5b0N0XOjY+Yz1dudNJumLdaR/eR/gq1TgXWr8VxK
-        jh8LETbRsGVvkg/MwpMy15E=
-X-Google-Smtp-Source: APiQypLb8VOAJ6P7mOQi3+hTbQ5C4u0mf4dY18qk3+afjrMk7rIhrwPGInAU6SxK7+e70O0J3rHVlQ==
-X-Received: by 2002:a63:756:: with SMTP id 83mr3994025pgh.293.1588263563657;
-        Thu, 30 Apr 2020 09:19:23 -0700 (PDT)
-Received: from ubuntu.localdomain ([117.136.40.215])
-        by smtp.gmail.com with ESMTPSA id w12sm223727pfq.133.2020.04.30.09.19.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 09:19:23 -0700 (PDT)
-From:   Guixiong Wei <guixiongwei@gmail.com>
-To:     catalin.marinas@arm.com, will@kernel.org
-Cc:     nsaenzjulienne@suse.de, steve.capper@arm.com,
-        akpm@linux-foundation.org, guro@fb.com, tglx@linutronix.de,
-        rppt@linux.ibm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Guixiong Wei <guixiongwei@gmail.com>
-Subject: [PATCH v2] arm: mm: use __pfn_to_section() to get mem_section
-Date:   Fri,  1 May 2020 06:18:58 +1400
-Message-Id: <20200430161858.11379-1-guixiongwei@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728453AbgD3QTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:19:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56094 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728121AbgD3QTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:19:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 68804ACC4;
+        Thu, 30 Apr 2020 16:19:43 +0000 (UTC)
+Message-ID: <0f7f2350cebdbd6904274e6a4e8da6e0a6c72102.camel@suse.de>
+Subject: Re: [PATCH v2 05/91] clk: bcm: rpi: Allow the driver to be probed
+ by DT
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Maxime Ripard <maxime@cerno.tech>, Eric Anholt <eric@anholt.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-rpi-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
+Date:   Thu, 30 Apr 2020 18:19:41 +0200
+In-Reply-To: <0f5319caa4d1b9ba8a83a094abcb681d4be6eb1c.1587742492.git-series.maxime@cerno.tech>
+References: <cover.d1e741d37e43e1ba2d2ecd93fc81d42a6df99d14.1587742492.git-series.maxime@cerno.tech>
+         <0f5319caa4d1b9ba8a83a094abcb681d4be6eb1c.1587742492.git-series.maxime@cerno.tech>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-q7dZwA3wemW7oWhPS4wd"
+User-Agent: Evolution 3.36.2 
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__pfn_to_section() helper which already wraps around
-__nr_to_section(pfn_to_section_nr(pfn)), should be used
-directly instead.
 
-Signed-off-by: Guixiong Wei <guixiongwei@gmail.com>
----
+--=-q7dZwA3wemW7oWhPS4wd
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-v1 -> v2
-- reword the commit message.
+On Fri, 2020-04-24 at 17:33 +0200, Maxime Ripard wrote:
+> The current firmware clock driver for the RaspberryPi can only be probed =
+by
+> manually registering an associated platform_device.
+>=20
+> While this works fine for cpufreq where the device gets attached a clkdev
+> lookup, it would be tedious to maintain a table of all the devices using
+> one of the clocks exposed by the firmware.
+>=20
+> Since the DT on the other hand is the perfect place to store those
+> associations, make the firmware clocks driver probe-able through the devi=
+ce
+> tree so that we can represent it as a node.
+>=20
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: linux-clk@vger.kernel.org
+> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> ---
+>  drivers/clk/bcm/clk-raspberrypi.c | 20 +++++++++++++++++---
+>  1 file changed, 17 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/clk/bcm/clk-raspberrypi.c b/drivers/clk/bcm/clk-
+> raspberrypi.c
+> index 1654fd0eedc9..aedeaaf2f66b 100644
+> --- a/drivers/clk/bcm/clk-raspberrypi.c
+> +++ b/drivers/clk/bcm/clk-raspberrypi.c
+> @@ -255,15 +255,22 @@ static int raspberrypi_clk_probe(struct platform_de=
+vice
+> *pdev)
+>  	struct raspberrypi_clk *rpi;
+>  	int ret;
+> =20
+> -	firmware_node =3D of_find_compatible_node(NULL, NULL,
+> -					"raspberrypi,bcm2835-firmware");
+> +	/*
+> +	 * We can be probed either through the an old-fashioned
+> +	 * platform device registration or through a DT node that is a
+> +	 * child of the firmware node. Handle both cases.
+> +	 */
+> +	if (dev->of_node)
+> +		firmware_node =3D of_get_parent(dev->of_node);
+> +	else
+> +		firmware_node =3D of_find_compatible_node(NULL, NULL,
+> +							"raspberrypi,bcm2835-
+> firmware");
+>  	if (!firmware_node) {
+>  		dev_err(dev, "Missing firmware node\n");
+>  		return -ENOENT;
+>  	}
+> =20
+>  	firmware =3D rpi_firmware_get(firmware_node);
+> -	of_node_put(firmware_node);
 
----
- arch/arm64/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Why remove this? I think it's still needed after your changes.
 
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index e42727e3568e..d2df416b840e 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -272,7 +272,7 @@ int pfn_valid(unsigned long pfn)
- 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
- 		return 0;
- 
--	if (!valid_section(__nr_to_section(pfn_to_section_nr(pfn))))
-+	if (!valid_section(__pfn_to_section(pfn)))
- 		return 0;
- #endif
- 	return memblock_is_map_memory(addr);
--- 
-2.17.1
+Regards,
+Nicolas
+
+
+--=-q7dZwA3wemW7oWhPS4wd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6q+p0ACgkQlfZmHno8
+x/5Aewf/fIRt353bQjRQPXHvnCWvme3juReNuol1emq3w4qxjIbYk/3z6mE5Xqik
+N6cAGO+Hf35L5nhpW9qXpVTT3vbylYXIZ/OW5weQzIN+oKmUvJh+7FUwzl790OiU
+y2LJVs53mnmGErmkoTOkyoJNmDeft+FMuQ+105YbheOsgDY3XKDscjlwQgsk/Vx7
+/ELAtNxaNwm0lU2V6TfIgDaIDysRbkao9DtA1c97wG1O6lZAanouAfuIFR+8+xrz
+AYKm8KnHJXi4wRSh2BAjm0e3qX+/RaI9RNeT7Xq68tsLl4jbz673IXTuyETjVc0s
+Csb4+I6CCUbczBNHzKUO2UntZvTpdQ==
+=fDu0
+-----END PGP SIGNATURE-----
+
+--=-q7dZwA3wemW7oWhPS4wd--
 
