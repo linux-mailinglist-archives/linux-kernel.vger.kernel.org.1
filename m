@@ -2,152 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B49F1C02A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 488DF1C02AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgD3Qfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:35:36 -0400
-Received: from mail.efficios.com ([167.114.26.124]:43716 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgD3Qff (ORCPT
+        id S1726635AbgD3QhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:37:02 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:55442 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726377AbgD3QhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:35:35 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E540228FB75;
-        Thu, 30 Apr 2020 12:35:34 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id z1GqY8BLFzv7; Thu, 30 Apr 2020 12:35:34 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 9977C28F7CF;
-        Thu, 30 Apr 2020 12:35:34 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 9977C28F7CF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1588264534;
-        bh=oP0ySd/C10g2du7jih56rgqzcsTpAP1agLKm0fyXMSg=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=OtKLuo67yS2RuQWnC379KkWAVdoX7xysKD2DDs9KBqsCM5y7ISSnJ+RfrUrWBXx8E
-         WhkRh8+J3xXGLy/K9srCl4wwXcOgF0n1UjM+tr8/No/DvhC/GzjoIrD5wJQ3+SsBtw
-         ikS0c641NEDSe509SeazXd8XfjdmnC2JqUa9g908q5phrsgll0TAiXbT9rXraZMiCt
-         4NJtMGIM5Jy1EJLc6CJvWz6rq0JRm7GJMG0a41UXVwX04RLJ4P0J2csLFcq3gl6+uP
-         vn/qDqP2UiuwtRIupwIjmUOGuBPgmwimRAyJKL6pK6UfcY+67YTHB9odtAcPNP8rTc
-         Vcg5t07undrrQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id n6ykwUjOdPE1; Thu, 30 Apr 2020 12:35:34 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 897CE290002;
-        Thu, 30 Apr 2020 12:35:34 -0400 (EDT)
-Date:   Thu, 30 Apr 2020 12:35:34 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     Joerg Roedel <jroedel@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
+        Thu, 30 Apr 2020 12:37:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588264619;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N1kujXhR0DAj22ohzNF4EmVUFABeAdXNfPVcnWuHRxo=;
+        b=KFDY+ase3naK51WgBRbCjBlmNZYfCdBzYBm51jEk3Rxhk9vEoLZd7w1vJ4cSE8jORDWT+O
+        /OotW0baUaJFps68dGevuP2MU1buGHRZY0X9x2O736t3sbLISiq6+aUhN7PIES1BCLhQtA
+        +slKPjdGIVTO2d6QMLvRpbM1nNVCb0M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-629V3yTBP9erMAd_WkCRDQ-1; Thu, 30 Apr 2020 12:36:55 -0400
+X-MC-Unique: 629V3yTBP9erMAd_WkCRDQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BEDC107ACF9;
+        Thu, 30 Apr 2020 16:36:53 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-113-72.ams2.redhat.com [10.36.113.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3B6F76061B;
+        Thu, 30 Apr 2020 16:36:46 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     carlos <carlos@redhat.com>, Joseph Myers <joseph@codesourcery.com>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        libc-alpha <libc-alpha@sourceware.org>,
         Thomas Gleixner <tglx@linutronix.de>,
+        Ben Maurer <bmaurer@fb.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Message-ID: <1877450632.77955.1588264534446.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200430123034.5705cd47@gandalf.local.home>
-References: <20200429054857.66e8e333@oasis.local.home> <20200429100731.201312a9@gandalf.local.home> <20200430141120.GA8135@suse.de> <20200430145057.GB8135@suse.de> <2026887875.77814.1588260015439.JavaMail.zimbra@efficios.com> <20200430121627.682061e2@gandalf.local.home> <947455570.77870.1588263502669.JavaMail.zimbra@efficios.com> <20200430123034.5705cd47@gandalf.local.home>
-Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before
- text_poke()
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dave Watson <davejwatson@fb.com>, Paul Turner <pjt@google.com>,
+        Rich Felker <dalias@libc.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>
+Subject: Re: [RFC PATCH glibc 1/3] glibc: Perform rseq(2) registration at C startup and thread creation (v18)
+References: <20200428171513.22926-1-mathieu.desnoyers@efficios.com>
+        <875zdhmaft.fsf@oldenburg2.str.redhat.com>
+        <1287616647.77866.1588263099045.JavaMail.zimbra@efficios.com>
+Date:   Thu, 30 Apr 2020 18:36:44 +0200
+In-Reply-To: <1287616647.77866.1588263099045.JavaMail.zimbra@efficios.com>
+        (Mathieu Desnoyers's message of "Thu, 30 Apr 2020 12:11:39 -0400
+        (EDT)")
+Message-ID: <878sidkk0z.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3918 (ZimbraWebClient - FF75 (Linux)/8.8.15_GA_3895)
-Thread-Topic: x86/mm: Sync all vmalloc mappings before text_poke()
-Thread-Index: +PuMHowgGmPM1/VUMnVVDDjIrQWjJg==
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 30, 2020, at 12:30 PM, rostedt rostedt@goodmis.org wrote:
+* Mathieu Desnoyers:
 
-> On Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
->> ----- On Apr 30, 2020, at 12:16 PM, rostedt rostedt@goodmis.org wrote:
+> @deftypevar {struct rseq} __rseq_abi
+> @standards{Linux, sys/rseq.h}
+> @Theglibc{} implements a @code{__rseq_abi} TLS symbol to interact with the
+> Restartable Sequences system call (Linux-specific).  The layout of this
+> structure is defined by the @file{sys/rseq.h} header.  Registration of each
+> thread's @code{__rseq_abi} is performed by @theglibc{} at libc library
+> initialization and thread creation.
+
+s/libc library/library/
+
+> The main executable and shared libraries may either have an undefined
+> @code{__rseq_abi} TLS symbol, or define their own, with the same
+> declaration as the one present in @file{sys/rseq.h}.  The dynamic linker
+> will ensure that only one of those available symbols will be used at
+> runtime across the process.
+>
+> If the main executable or shared libraries observe an uninitialized
+> @code{__rseq_abi.cpu_id} field (value @code{RSEQ_CPU_ID_UNINITIALIZED}), they
+> may perform rseq registration to the kernel: this means either glibc was
+> prevented from doing the registration, or an older glibc version, which does
+> not include rseq support, is in use.  When the main executable or a library
+> thus takes ownership of the registration, the memory used to hold the
+> @code{__rseq_abi} TLS variable must stay allocated, and is not re-used, until
+> the very end of the thread lifetime or until an explicit rseq unregistration
+> for that thread is performed.  It is not recommended to dlclose() libraries
+> owning the @code{__rseq_abi} TLS variable.
+
+s/dlclose()/@code{dlclose}/ (no parentheses)
+
+Rest looks okay.
+
+>>> +  if (__rseq_abi.cpu_id == RSEQ_CPU_ID_REGISTRATION_FAILED)
+>>> +    return;
+>>> +  ret = INTERNAL_SYSCALL_CALL (rseq, &__rseq_abi, sizeof (struct rseq),
+>>> +                              0, RSEQ_SIG);
+>>> +  if (INTERNAL_SYSCALL_ERROR_P (ret) &&
+>>> +      INTERNAL_SYSCALL_ERRNO (ret) != EBUSY)
+>>> +    __rseq_abi.cpu_id = RSEQ_CPU_ID_REGISTRATION_FAILED;
 >> 
->> > On Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
->> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
->> >   
->> >> > The right fix is to call vmalloc_sync_mappings() right after allocating
->> >> > tracing or perf buffers via v[zm]alloc().
->> >> 
->> >> Either right after allocation, or right before making the vmalloc'd data
->> >> structure visible to the instrumentation. In the case of the pid filter,
->> >> that would be the rcu_assign_pointer() which publishes the new pid filter
->> >> table.
->> >> 
->> >> As long as vmalloc_sync_mappings() is performed somewhere *between* allocation
->> >> and publishing the pointer for instrumentation, it's fine.
->> >> 
->> >> I'll let Steven decide on which approach works best for him.
->> > 
->> > As stated in the other email, I don't see it having anything to do with
->> > vmalloc, but with the per_cpu() allocation. I'll test this theory out by
->> > not even allocating the pid masks and touching the per cpu data at every
->> > event to see if it crashes.
->> 
->> As pointed out in my other email, per-cpu allocation uses vmalloc when
->> size > PAGE_SIZE.
-> 
-> And as I replied:
-> 
->	buf->data = alloc_percpu(struct trace_array_cpu);
-> 
-> struct trace_array_cpu {
->	atomic_t		disabled;
->	void			*buffer_page;	/* ring buffer spare */
-> 
->	unsigned long		entries;
->	unsigned long		saved_latency;
->	unsigned long		critical_start;
->	unsigned long		critical_end;
->	unsigned long		critical_sequence;
->	unsigned long		nice;
->	unsigned long		policy;
->	unsigned long		rt_priority;
->	unsigned long		skipped_entries;
->	u64			preempt_timestamp;
->	pid_t			pid;
->	kuid_t			uid;
->	char			comm[TASK_COMM_LEN];
-> 
->	bool			ignore_pid;
-> #ifdef CONFIG_FUNCTION_TRACER
->	bool			ftrace_ignore_pid;
-> #endif
-> };
-> 
-> That doesn't look bigger than PAGE_SIZE to me.
+>> Sorry, I forgot: Please add a comment that the EBUSY error is ignored
+>> because registration may have already happened in a legacy library.
+>
+> Considering that we now disable signals across thread creation, and that
+> glibc's initialization happens before other libraries' constructors
+> (as far as I remember even before LD_PRELOADed library constructors),
+> in which scenario can we expect to have EBUSY here ?
 
-Let me point you to:
+That's a good point.
 
-pcpu_alloc()
-  calling pcpu_create_chunk()
+> Not setting __rseq_abi.cpu_id to RSEQ_CPU_ID_REGISTRATION_FAILED in case
+> of EBUSY is more a way to handle "unforeseen" scenarios where somehow the
+> registration would already be done. But I cannot find an "expected"
+> scenario which would lead to this now.
+>
+> So if EBUSY really is unexpected, how should we treat that ? I don't think
+> setting REGISTRATION_FAILED would be appropriate, because then it would
+> break assumption of the prior successful registration that have already
+> been done by this thread.
 
-which is then responsible for calling the underlying 
-pcpu_mem_zalloc() which then uses vmalloc. So batching
-those allocations can be responsible for using vmalloc'd
-memory rather than kmalloc'd even though the allocation
-size is smaller than 4kB.
+You could call __libc_fatal with an error message.  ENOSYS is definitely
+an expected error code here, and EPERM (and perhaps EACCES) can happen
+with seccomp filters.
 
 Thanks,
+Florian
 
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
