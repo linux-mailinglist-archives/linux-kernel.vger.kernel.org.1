@@ -2,154 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370BC1BF5B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 12:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D37741BF5BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 12:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726849AbgD3Kjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 06:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726413AbgD3Kjy (ORCPT
+        id S1726929AbgD3KkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 06:40:23 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:51150 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726127AbgD3KkX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 06:39:54 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E294C035494;
-        Thu, 30 Apr 2020 03:39:54 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id d15so6276229wrx.3;
-        Thu, 30 Apr 2020 03:39:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=m+chlPrQMdP5dXdx8tvxwWBw9YtWA0u5+Y75TJ+sgjc=;
-        b=DEO30DXRjI9qe7OqYYAiRNHtlG5zLfzm7Y1JyOvMdwEQzGht2paggKoPuCmJjyKgJV
-         e+jPeRtbuZrY/XJfqb9y+2zpvX9TmgLrUuES2zrcM4I8i7MAPEtf+W/l4cs8VE4xhA9o
-         QlpROHnGv2QimMSkqYpQdOoJUl8qzE8DTcMydvi0QGn9GTU4p6rIjohZirkl9uQ+3whf
-         r1xn3SAf6NqdhKQdX2a3ZdlpxhTtWwG3N2wbSA6ZykbizdiWlYOlSOKmt7c32HNYnytZ
-         SFxWzd3ZKVr4fvn9obczDkGcSHmAikNFlhbsbHdfpfjzdj6CquRr6cXfoBOQvfmQYoS6
-         AAdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=m+chlPrQMdP5dXdx8tvxwWBw9YtWA0u5+Y75TJ+sgjc=;
-        b=eXuZv8jOUnzaS4iVY+mkezcmXLVvSHjbbmJpsS4rWsaBDGK+fCDcHjK2XnNzh5Eq6d
-         LeVMdZJsX/yja9fu6jBrpCtJYoSO4gBxIWkFltwl+N/YhPTbn16A/IbfyyyIcHhKr59Y
-         2fuOaKOsPyHaWZOsbfs/HA9rwBFyj5a/xokwkIBqcy5lI+Za++UZL2t2bt3ETrzozEQg
-         LZH8ThvxTfIbuXbLMRsCMm37MwNT9p0cEYbNPbdLddL9cfp0+T3j90iv7ZJpTstXOoHk
-         1Bg+TDwuCsiaEzXPAIurePiyj9J4MVLc0UiPVq7v6eFnWFIs+NUHWKWzk7hnOG/2dygs
-         ZCGQ==
-X-Gm-Message-State: AGi0PuYcEdXz5G/KqX9IWgrvb7wjPhaOhWqh3ZxpxuMEQ0qBc+I7TVHF
-        YBpmg59EEhZFpq/DzILiRGJE9tZ8
-X-Google-Smtp-Source: APiQypLiSTqx0KQcnVM1ygQKcXZCjKbEZfa1vp0p40OC82kF6U5oyh0OQ+sb7bPOvGgT+TOg2khd1g==
-X-Received: by 2002:a05:6000:1287:: with SMTP id f7mr3253924wrx.345.1588243192502;
-        Thu, 30 Apr 2020 03:39:52 -0700 (PDT)
-Received: from [192.168.0.104] (p5B3F6E9D.dip0.t-ipconnect.de. [91.63.110.157])
-        by smtp.gmail.com with ESMTPSA id c20sm12353770wmd.36.2020.04.30.03.39.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 03:39:50 -0700 (PDT)
-Subject: Re: [PATCH v9 2/6] mfd: mp2629: Add support for mps battery charger
-From:   saravanan sekar <sravanhome@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     andy.shevchenko@gmail.com, robh+dt@kernel.org, jic23@kernel.org,
-        knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        sre@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20200415162030.16414-1-sravanhome@gmail.com>
- <20200415162030.16414-3-sravanhome@gmail.com> <20200424071822.GM3612@dell>
- <8ff17d07-8030-fcfe-8d8a-3011e4077778@gmail.com> <20200424093720.GA3542@dell>
- <864eb6ad-a605-c0a0-c3e7-23c0c70f5ede@gmail.com> <20200424105319.GD8414@dell>
- <c62cd5f2-6d82-0a2a-5ee5-a3e99e188a05@gmail.com> <20200427085149.GF3559@dell>
- <6063ad6e-444c-b905-b858-d8f94d700748@gmail.com>
-Message-ID: <4585179d-826b-6240-38a2-18fe757bc810@gmail.com>
-Date:   Thu, 30 Apr 2020 12:39:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 30 Apr 2020 06:40:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588243222; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Reply-To: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=3iE9hjbZSe6ch4LQtq3ut0I5M3jpYxJ5SilmB8NMlEA=; b=jlmqc0ITSyUTGx+TUAmlp/jxnJMZU/Wh7rEZWamOeygcqAekIA6x47uGRuDBDTzeDrDqcgmy
+ j/M5QV8X4koUs8deA3pv1+yHFiGvj6dB7LagLZJ+03bLAH3PPngUUZ0xYD05020xVO1rSQQB
+ FNXZPYdHN35JE2+kXd4crjuEtsc=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eaaab0e.7fe1f29b3650-smtp-out-n05;
+ Thu, 30 Apr 2020 10:40:14 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3CED9C44791; Thu, 30 Apr 2020 10:40:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from quicinc.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: svaddagi)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 306C5C433F2;
+        Thu, 30 Apr 2020 10:40:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 306C5C433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vatsa@codeaurora.org
+Date:   Thu, 30 Apr 2020 16:10:05 +0530
+From:   Srivatsa Vaddagiri <vatsa@codeaurora.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     konrad.wilk@oracle.com, jasowang@redhat.com,
+        jan.kiszka@siemens.com, will@kernel.org,
+        stefano.stabellini@xilinx.com, iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, tsoni@codeaurora.org,
+        pratikp@codeaurora.org, christoffer.dall@arm.com,
+        alex.bennee@linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC/PATCH 0/1] virtio_mmio: hypervisor specific interfaces for
+ MMIO
+Message-ID: <20200430104004.GA3204@quicinc.com>
+Reply-To: Srivatsa Vaddagiri <vatsa@codeaurora.org>
+References: <1588240976-10213-1-git-send-email-vatsa@codeaurora.org>
+ <20200430060653-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <6063ad6e-444c-b905-b858-d8f94d700748@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20200430060653-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+* Michael S. Tsirkin <mst@redhat.com> [2020-04-30 06:07:56]:
 
-On 27/04/20 11:30 am, saravanan sekar wrote:
-> Hi Lee,
->
-> On 27/04/20 10:51 am, Lee Jones wrote:
->> On Fri, 24 Apr 2020, saravanan sekar wrote:
->>
->>> On 24/04/20 12:53 pm, Lee Jones wrote:
->>>> On Fri, 24 Apr 2020, saravanan sekar wrote:
->>>>
->>>>> Hi Lee,
->>>>>
->>>>> On 24/04/20 11:37 am, Lee Jones wrote:
->>>>>> On Fri, 24 Apr 2020, saravanan sekar wrote:
->>>>>>
->>>>>>> Hi Lee,
->>>>>>>
->>>>>>> On 24/04/20 9:18 am, Lee Jones wrote:
->>>>>>>> On Wed, 15 Apr 2020, Saravanan Sekar wrote:
->>>>>>>>
->>>>>>>>> mp2629 is a highly-integrated switching-mode battery charge 
->>>>>>>>> management
->>>>>>>>> device for single-cell Li-ion or Li-polymer battery.
->>>>>>>>>
->>>>>>>>> Add MFD core enables chip access for ADC driver for battery 
->>>>>>>>> readings,
->>>>>>>>> and a power supply battery-charger driver
->>>>>>>>>
->>>>>>>>> Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
->>>>>>>>> ---
->>>>>>>>>      drivers/mfd/Kconfig        |  9 ++++
->>>>>>>>>      drivers/mfd/Makefile       |  2 +
->>>>>>>>>      drivers/mfd/mp2629.c       | 86 
->>>>>>>>> ++++++++++++++++++++++++++++++++++++++
->>>>>>>>>      include/linux/mfd/mp2629.h | 19 +++++++++
->>>>>>>>>      4 files changed, 116 insertions(+)
->>>>>>>>>      create mode 100644 drivers/mfd/mp2629.c
->>>>>>>>>      create mode 100644 include/linux/mfd/mp2629.h
->>>>>>>> How is this driver registered?
->>>>>>>>
->>>>>>>> Looks like it has device tree support.  Is there another way?
->>>>>>> Yes, only using device tree
->>>>>> Then how about using 'simple-mfd' and 'syscon'?
->>>>>>
->>>>>> Then you can omit this driver completely.
->>>>> The exception is to support for non device tree platform as well, 
->>>>> but I have
->>>>> tested only for ARM device tree platform.
->>>> Is that a reality though?
->>>>
->>>> How else do you see this realistically being registered?
->>>>
->>> I understand that acpi related device table are not covered here, 
->>> well I
->>> don't have to platform to test so.
->>> If you ask me to cover acpi related table, I can do but hard to test.
->> I don't know of any reasons why syscon can't be used by ACPI.
->>
->> Please try to solve this issue using 'simple-mfd' and 'syscon'.
-> Well the simple-mfd and syscon topic recommended by you when Device 
-> tree alone is used.
-> I wounder still I receive review/improvements comments for this mfd 
-> patch and also another
-> to omit this driver using simple-mfd (rework the series).
-> Confused, not sure which is valid and will be accepted at the end.
+> On Thu, Apr 30, 2020 at 03:32:55PM +0530, Srivatsa Vaddagiri wrote:
+> > The Type-1 hypervisor we are dealing with does not allow for MMIO transport. 
+> 
+> How about PCI then?
 
-I had look into syscon, as far my understanding syscon is supported only 
-for memory mapped IO. MP2629
-device is over I2C bus, could you share your thought about syscon for 
-this device?
+Correct me if I am wrong, but basically virtio_pci uses the same low-level
+primitive as readl/writel on a platform such as ARM64? So similar issues
+there also.
 
-Thanks,
-Saravanan
-
-
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
