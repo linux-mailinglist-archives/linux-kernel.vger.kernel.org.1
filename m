@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5791BF847
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7191BF84A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgD3Mh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 08:37:27 -0400
-Received: from hel-mailgw-01.vaisala.com ([193.143.230.17]:46709 "EHLO
+        id S1726917AbgD3Mhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 08:37:37 -0400
+Received: from hel-mailgw-01.vaisala.com ([193.143.230.17]:46718 "EHLO
         hel-mailgw-01.vaisala.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726053AbgD3Mh1 (ORCPT
+        with ESMTP id S1726053AbgD3Mha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 08:37:27 -0400
-IronPort-SDR: JC1LwE3cJwpU6xP9VrNk1kP5CTP+pP+eCCEY5S7xOLATcakplyjkbc9by7EjKUYA9pFc6eoG43
- L1i6ZbakbzpTxAt6UqnILATpiwUFNWcjMCPMXYF2++Mw5xecXJe5OQIW0hlqkm67GCSJHg7pgl
- Oi4ill4athke/C4Ying52PV07s+ZIbY2NMGJ78klKph1XaKlNMw4qyU6kCDuhjEvHM1ptm+PA7
- VA0IAo5+HZwNouAfpemVqnTZ7U583qoL67Wv8Mwl5vy1NQdJIC9MdozOw+umeCzmwy1SJu1Q0Z
- chs=
+        Thu, 30 Apr 2020 08:37:30 -0400
+IronPort-SDR: zRXC6M2FUn1WZaDz1avibpNtAnAhZij38kZyoSNXxrHQ7AESSKILAU4bHzgEB3TEQTh/ZoQgqf
+ Tb7UZ98nhGLoeKthwEjCkXSz40v12uYj0PPrzuG5zvaNqXQ7j1Qpv9XWLUcf92n27FXpexMpzF
+ roi0JtnAM8++rAdzUCwSs1Ux6qttU5vHGQy1CK4O52aAJ/PT13GOsAuK1/Cn+p6o4SG5dbrH71
+ Fm/HbJpGOqL2S1SwEBWblfJIZlfojV8RN61siXt1/HNZx7+FR3/1RoAwEitIUqD7eIIAkQD/fj
+ IpM=
 X-IronPort-AV: E=Sophos;i="5.73,334,1583186400"; 
-   d="scan'208";a="278151906"
+   d="scan'208";a="278151911"
 From:   =?UTF-8?q?Vesa=20J=C3=A4=C3=A4skel=C3=A4inen?= 
         <vesa.jaaskelainen@vaisala.com>
 To:     op-tee@lists.trustedfirmware.org,
@@ -32,14 +32,16 @@ Cc:     Rijo Thomas <Rijo-john.Thomas@amd.com>,
         linux-kernel@vger.kernel.org,
         =?UTF-8?q?Vesa=20J=C3=A4=C3=A4skel=C3=A4inen?= 
         <vesa.jaaskelainen@vaisala.com>
-Subject: [PATCH v2 0/3] tee: add support for session's client UUID generation
-Date:   Thu, 30 Apr 2020 15:37:08 +0300
-Message-Id: <20200430123711.20083-1-vesa.jaaskelainen@vaisala.com>
+Subject: [PATCH v2 1/3] tee: add support for session's client UUID generation
+Date:   Thu, 30 Apr 2020 15:37:09 +0300
+Message-Id: <20200430123711.20083-2-vesa.jaaskelainen@vaisala.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200430123711.20083-1-vesa.jaaskelainen@vaisala.com>
+References: <20200430123711.20083-1-vesa.jaaskelainen@vaisala.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 30 Apr 2020 12:37:21.0114 (UTC) FILETIME=[179ABBA0:01D61EEC]
+X-OriginalArrivalTime: 30 Apr 2020 12:37:21.0286 (UTC) FILETIME=[17B4FA60:01D61EEC]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -59,45 +61,238 @@ environment to TEE environment is encoded into on UUID.
 In order to guarantee trustworthiness of client UUID user space is not
 allowed to freely pass client UUID.
 
-Vesa Jääskeläinen (3):
-  tee: add support for session's client UUID generation
-  tee: optee: Add support for session login client UUID generation
-  [RFC] tee: add support for app id for client UUID generation
+UUIDv5 form is used encode variable amount of information needed for
+different login types.
 
- drivers/tee/Kconfig      |   1 +
- drivers/tee/optee/call.c |   6 +-
- drivers/tee/tee_core.c   | 211 +++++++++++++++++++++++++++++++++++++++
- include/linux/tee_drv.h  |  16 +++
- 4 files changed, 233 insertions(+), 1 deletion(-)
+Signed-off-by: Vesa Jääskeläinen <vesa.jaaskelainen@vaisala.com>
+---
+ drivers/tee/Kconfig     |   1 +
+ drivers/tee/tee_core.c  | 153 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/tee_drv.h |  16 +++++
+ 3 files changed, 170 insertions(+)
 
+diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
+index 8da63f38e6bd..806eb87d4da0 100644
+--- a/drivers/tee/Kconfig
++++ b/drivers/tee/Kconfig
+@@ -3,6 +3,7 @@
+ config TEE
+ 	tristate "Trusted Execution Environment support"
+ 	depends on HAVE_ARM_SMCCC || COMPILE_TEST || CPU_SUP_AMD
++	select CRYPTO_SHA1
+ 	select DMA_SHARED_BUFFER
+ 	select GENERIC_ALLOCATOR
+ 	help
+diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+index 6aec502c495c..d5db206d6af2 100644
+--- a/drivers/tee/tee_core.c
++++ b/drivers/tee/tee_core.c
+@@ -6,18 +6,33 @@
+ #define pr_fmt(fmt) "%s: " fmt, __func__
+ 
+ #include <linux/cdev.h>
++#include <linux/cred.h>
+ #include <linux/fs.h>
+ #include <linux/idr.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/tee_drv.h>
+ #include <linux/uaccess.h>
++#include <crypto/hash.h>
++#include <crypto/sha.h>
+ #include "tee_private.h"
+ 
+ #define TEE_NUM_DEVICES	32
+ 
+ #define TEE_IOCTL_PARAM_SIZE(x) (sizeof(struct tee_param) * (x))
+ 
++#define TEE_UUID_NS_NAME_SIZE	128
++
++/*
++ * TEE Client UUID name space identifier (UUIDv4)
++ *
++ * Value here is random UUID that is allocated as name space identifier for
++ * forming Client UUID's for TEE environment using UUIDv5 scheme.
++ */
++static const uuid_t tee_client_uuid_ns = UUID_INIT(0x58ac9ca0, 0x2086, 0x4683,
++						   0xa1, 0xb8, 0xec, 0x4b,
++						   0xc0, 0x8e, 0x01, 0xb6);
++
+ /*
+  * Unprivileged devices in the lower half range and privileged devices in
+  * the upper half range.
+@@ -110,6 +125,144 @@ static int tee_release(struct inode *inode, struct file *filp)
+ 	return 0;
+ }
+ 
++/**
++ * uuid_v5() - Calculate UUIDv5
++ * @uuid: Resulting UUID
++ * @ns: Name space ID for UUIDv5 function
++ * @name: Name for UUIDv5 function
++ * @size: Size of name
++ *
++ * UUIDv5 is specific in RFC 4122.
++ *
++ * This implements section (for SHA-1):
++ * 4.3.  Algorithm for Creating a Name-Based UUID
++ */
++static int uuid_v5(uuid_t *uuid, const uuid_t *ns, const void *name,
++		   size_t size)
++{
++	unsigned char hash[SHA1_DIGEST_SIZE];
++	struct crypto_shash *shash = NULL;
++	struct shash_desc *desc = NULL;
++	int rc;
++
++	shash = crypto_alloc_shash("sha1", 0, 0);
++	if (IS_ERR(shash)) {
++		rc = PTR_ERR(shash);
++		pr_err("shash(sha1) allocation failed\n");
++		return rc;
++	}
++
++	desc = kzalloc(sizeof(*desc) + crypto_shash_descsize(shash),
++		       GFP_KERNEL);
++	if (!desc) {
++		rc = -ENOMEM;
++		goto out_free_shash;
++	}
++
++	desc->tfm = shash;
++
++	rc = crypto_shash_init(desc);
++	if (rc < 0)
++		goto out_free_desc;
++
++	rc = crypto_shash_update(desc, (const u8 *)ns, sizeof(*ns));
++	if (rc < 0)
++		goto out_free_desc;
++
++	rc = crypto_shash_update(desc, (const u8 *)name, size);
++	if (rc < 0)
++		goto out_free_desc;
++
++	rc = crypto_shash_final(desc, hash);
++	if (rc < 0)
++		goto out_free_desc;
++
++	memcpy(uuid->b, hash, UUID_SIZE);
++
++	/* Tag for version 5 */
++	uuid->b[6] = (hash[6] & 0x0F) | 0x50;
++	uuid->b[8] = (hash[8] & 0x3F) | 0x80;
++
++out_free_desc:
++	kfree(desc);
++
++out_free_shash:
++	crypto_free_shash(shash);
++	return rc;
++}
++
++int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
++				 const u8 connection_data[TEE_IOCTL_UUID_LEN])
++{
++	const char *application_id = NULL;
++	gid_t ns_grp = (gid_t)-1;
++	kgid_t grp = INVALID_GID;
++	char *name = NULL;
++	int name_len;
++	int rc;
++
++	if (connection_method == TEE_IOCTL_LOGIN_PUBLIC) {
++		/* Nil UUID to be passed to TEE environment */
++		uuid_copy(uuid, &uuid_null);
++		return 0;
++	}
++
++	/*
++	 * In Linux environment client UUID is based on UUIDv5.
++	 *
++	 * Determine client UUID with following semantics for 'name':
++	 *
++	 * For TEEC_LOGIN_USER:
++	 * uid=<uid>
++	 *
++	 * For TEEC_LOGIN_GROUP:
++	 * gid=<gid>
++	 *
++	 */
++
++	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
++	if (!name)
++		return -ENOMEM;
++
++	switch (connection_method) {
++	case TEE_IOCTL_LOGIN_USER:
++		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "uid=%x",
++				    current_euid().val);
++		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
++			rc = -E2BIG;
++			goto out_free_name;
++		}
++		break;
++
++	case TEE_IOCTL_LOGIN_GROUP:
++		memcpy(&ns_grp, connection_data, sizeof(gid_t));
++		grp = make_kgid(current_user_ns(), ns_grp);
++		if (!gid_valid(grp) || !in_egroup_p(grp)) {
++			rc = -EPERM;
++			goto out_free_name;
++		}
++
++		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "gid=%x",
++				    grp.val);
++		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
++			rc = -E2BIG;
++			goto out_free_name;
++		}
++		break;
++
++	default:
++		rc = -EINVAL;
++		goto out_free_name;
++	}
++
++	rc = uuid_v5(uuid, &tee_client_uuid_ns, name, name_len);
++out_free_name:
++	kfree(name);
++
++	return rc;
++}
++EXPORT_SYMBOL_GPL(tee_session_calc_client_uuid);
++
+ static int tee_ioctl_version(struct tee_context *ctx,
+ 			     struct tee_ioctl_version_data __user *uvers)
+ {
+diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+index 1412e9cc79ce..8471b790e858 100644
+--- a/include/linux/tee_drv.h
++++ b/include/linux/tee_drv.h
+@@ -165,6 +165,22 @@ int tee_device_register(struct tee_device *teedev);
+  */
+ void tee_device_unregister(struct tee_device *teedev);
+ 
++/**
++ * tee_session_calc_client_uuid() - Calculates client UUID for session
++ * @uuid:		Resulting UUID
++ * @connection_method:	Connection method for session (TEE_IOCTL_LOGIN_*)
++ * @connectuon_data:	Connection data for opening session
++ *
++ * Based on connection method calculates UUIDv5 based client UUID.
++ *
++ * For group based logins verifies that calling process has specified
++ * credentials.
++ *
++ * @return < 0 on failure
++ */
++int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
++				 const u8 connection_data[TEE_IOCTL_UUID_LEN]);
++
+ /**
+  * struct tee_shm - shared memory object
+  * @ctx:	context using the object
 -- 
 2.17.1
 
-Changes v1->v2:
-
-* Changed goto labels to be more logical
-* Capture error if formatted string for UUIDv5 does not fit into buffer
-
-Notes:
-
-This patcheset has been designed so that it can be iteratively intergrated
-meaning that the application ID (RFC patch) part can be left for later when
-there is agreed solution for that.
-
-TEE specification leaves Linux behavior undefined. It does not define any
-UUID value for name space. UUID in here is randomly generated with uuidgen
-tool.
-
-I have also include amdtee people as this method probably should also be
-applied in there.
-
-Using op-tee@lists.trustedfirmware.org instead of tee-dev@lists.linaro.org as
-latter is deprecated old list.
-
-Original issue in OP-TEE OS tracker:
-https://github.com/OP-TEE/optee_os/issues/3642
-
-Related reviews and demonstration for the concept:
-https://github.com/linaro-swg/linux/pull/74
-https://github.com/OP-TEE/optee_client/pull/195
-https://github.com/OP-TEE/optee_test/pull/406
