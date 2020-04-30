@@ -2,302 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC011BF1E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB841BF1E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgD3H4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 03:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726453AbgD3H4B (ORCPT
+        id S1726689AbgD3H4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 03:56:41 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:18025 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbgD3H4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:56:01 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B6EC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 00:56:00 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id B15842A239C;
-        Thu, 30 Apr 2020 08:55:58 +0100 (BST)
-Date:   Thu, 30 Apr 2020 09:55:55 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Parshuram Thombare <pthombar@cadence.com>
-Cc:     <bbrezillon@kernel.org>, <vitor.soares@synopsys.com>,
-        <pgaj@cadence.com>, <linux-i3c@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
-        <praneeth@ti.com>
-Subject: Re: [PATCH v6 2/8] i3c: master: split bus_init callback into
- bus_init and master_set_info
-Message-ID: <20200430095555.40ff15d7@collabora.com>
-In-Reply-To: <1587140452-30071-1-git-send-email-pthombar@cadence.com>
-References: <1587140398-29473-1-git-send-email-pthombar@cadence.com>
-        <1587140452-30071-1-git-send-email-pthombar@cadence.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 30 Apr 2020 03:56:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1588233440; x=1619769440;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=AHpPHIdSCuLujDbRlpm1jzx8b1L8Cgq7g9RvAvcpuwc=;
+  b=nKYxepLpMPhR/vMQEJ+qNxfK8c0zilJohL1Rbdc2zif1miFxzO77mfeu
+   ZiyrroifoH6H4XKkoX6s3jtO6/3LP6MhJ3GrvP65g8RUEhEH/TQHnbCrX
+   P7KU2NQeAsiVVdUyesGEwN8pKiF+WpF6fjtTC6UdVD56W8R30T00nRqji
+   3WbnKMQ/AWg5Zwh64KXT/IRpM3RGQ20+VdAvLmD510wtXICnhz/NZy932
+   eA9QEQrByfT/IMGT/mLfgQ2E7ysrTAWuD4MRr3zJ0jPzFkxwivKIrbti+
+   QGDyWr+NNRz/8pejkjzdVguYUqtusVYv9Tr0sHXLGb+Mvy1E69metgs5b
+   A==;
+IronPort-SDR: 3F5NKtOXOCF0x5VCuKwTzGSrAIB0TbZwCAEDqiSro+5QL0zZ78L687QAsBK0Ui0gHGkRThezYP
+ GsjFFs+SKNGmaPmiS5FE2mNujx+QXZY1OAHOo/OA82udAbRnbt5J65rKlReOE9eoN4nbvQ4vYV
+ wZtgup+okvgSYkkoXMj05fJM0+1S9iRNr5UUR/OkhxRnGAb2eg+xCJDOic59+fY0DbS0yYchsj
+ PGbg1SXnSC7fvmB3imCK5V4jAnaXUncVu8761BSmrlXbiznGVEMSV7dac8LdFb9waPcuZLK1iR
+ UeM=
+X-IronPort-AV: E=Sophos;i="5.73,334,1583164800"; 
+   d="scan'208";a="239114168"
+Received: from mail-mw2nam12lp2046.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.46])
+  by ob1.hgst.iphmx.com with ESMTP; 30 Apr 2020 15:57:17 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M1HqH13wKTwyRsRTI8HcfBEczLRJzIXgTdlcxfvWDI2uGvHdNPiD65LUNoxOBA5hAATRgDjwNPuCn91bZey4qaOKmL0m+W9RT3w+LkWOAkb9f6PeE3aQELkEPeVoW3Fwf0HwNb0Y+ZWFer6E5AKtt7e/3Y9LpE3CigapnieRyqA/0BkqaeARJY1SNuij0zaFY73tJTzeOvMWHDFTafghld95XlWg/CoRzJACRIHxcIjk/piLyz4QGgCHK07CkBqYDIgDdDIrq0xLs3nJItSfMdZFOriuunGkK64XpFKPmnnQ0DqGe1bKc9P+adNRszOuLIoiO0nfGSCbTOhbZ4/BnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D8UElqIP+1Ir7J7JyIb7PNo8qhgPJylq0O8p+oEqkSo=;
+ b=X/cByvFiCIjeyNi7OGAkRESAvLHdYKN99ptYxUJyqDJR97aroRpcDyco1q6fSFcdDpyjI2RKV5NM+4Izl4A0iRzS8uJ7N26tqCF80QgALDdD+cY/iZbQ1i1veTICTI+pOJnbPNWEDmp19XCvIUFPglAZE0cd91UBDtzAE9F2LUYMA8qvCdLwNNxXD/mzZN2VnDf1ZO/LuBMAHn3idNCKxfwCdkTzfDLzIq6m+Vi2s8w6ghZ31dixKVVwlY4fonka6ihp/tg9oGmRjhURoWUVK5NELaHBcHpBBHtpFwwZbrA22VAVm1vrf5oN4ISdpTkhTWUSe9KqTme/jMg8dkYpdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D8UElqIP+1Ir7J7JyIb7PNo8qhgPJylq0O8p+oEqkSo=;
+ b=fUvjuy6DBl6rnJuTEa3zLMBL2JS4U1QQ8J0v7mFywJgUTaygVVf6/lW77g4egk/oNxrHk0/TfKyD5sTR/cx3NoPOXyQ6+PyoaF1Fyigy/N29F3K9FApXF30DBEQfXmHGWCPiTGeuBIxMq09CWWjZzfl3gm/1/gmfjDq36S42Ew8=
+Received: from BYAPR04MB4629.namprd04.prod.outlook.com (2603:10b6:a03:14::14)
+ by BYAPR04MB4662.namprd04.prod.outlook.com (2603:10b6:a03:14::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Thu, 30 Apr
+ 2020 07:56:38 +0000
+Received: from BYAPR04MB4629.namprd04.prod.outlook.com
+ ([fe80::75ba:5d7d:364c:5ae1]) by BYAPR04MB4629.namprd04.prod.outlook.com
+ ([fe80::75ba:5d7d:364c:5ae1%6]) with mapi id 15.20.2958.019; Thu, 30 Apr 2020
+ 07:56:38 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>
+CC:     "beanhuo@micron.com" <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>
+Subject: RE: [PATCH v2 2/5] scsi: ufs: add "index" in parameter list of
+ ufshcd_query_flag()
+Thread-Topic: [PATCH v2 2/5] scsi: ufs: add "index" in parameter list of
+ ufshcd_query_flag()
+Thread-Index: AQHWHi3/YyJYvbtdE0K1lTCqV5rChKiRTEmA
+Date:   Thu, 30 Apr 2020 07:56:37 +0000
+Message-ID: <BYAPR04MB46296FE5C0C4AE0CE7B24478FCAA0@BYAPR04MB4629.namprd04.prod.outlook.com>
+References: <20200429135610.23750-1-stanley.chu@mediatek.com>
+ <20200429135610.23750-3-stanley.chu@mediatek.com>
+In-Reply-To: <20200429135610.23750-3-stanley.chu@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: mediatek.com; dkim=none (message not signed)
+ header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 494f130f-cf2c-4200-2bcb-08d7ecdc02e5
+x-ms-traffictypediagnostic: BYAPR04MB4662:
+x-microsoft-antispam-prvs: <BYAPR04MB466236CAA33BF86F8D8DC0D2FCAA0@BYAPR04MB4662.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3513;
+x-forefront-prvs: 0389EDA07F
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4629.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(366004)(396003)(346002)(376002)(39860400002)(7416002)(5660300002)(66476007)(64756008)(55016002)(66446008)(71200400001)(4326008)(66556008)(26005)(76116006)(9686003)(316002)(4744005)(8936002)(66946007)(54906003)(478600001)(2906002)(33656002)(6506007)(86362001)(110136005)(52536014)(8676002)(186003)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Iqq0kXZHFiTy0cTKwArrfJ37mABwagaCB/ATPWYFhUz2wC1m2AGU7i+HSb8WPp9K4kQecXdzPHbDnpVKuEU5zkBnijHd0LtbIGt1OL4xG6lUI8RS7/FnYxZVQVrIOFfOewBkeWUi2P5Vw/GFe1/0mV0rZvqEg+Ys0kOA28a/YbIwEAi6QVf3npIVltjsUpPv4l9cpHWbq89V9Ksacibur+lS5RNFSPixhHD5WmOzWHJditUSdO3UyBqG81C0j1Wx4YDv2Ylb3weyTb3ZJugi6Ub+UwjCTMQGt6hFA4cTlFY/9X+Fm2kKwzwZYYYWRCtUEvs3lOY9EQEse6VlLP/MROAMrF1JvTqYRvsgQpUu2+4hYrU+Sof6pW5Sf4q8on3GAsTGlBn264NWe1wJ56CPDuCk9wTByIIlAKvWlzWZlU2R4UH+e8L3ZmAToJToOYFM
+x-ms-exchange-antispam-messagedata: BDGB7Tv8st4gCOAxIvuBOwea+iI++TnjB6H1IImfuOHXE6Zp7y9qh63oazGiuQy3westxCKNff2EsoefhfjHa22imzGN83y8Ks1W7rO5ULA1yzOMcxvmrMtyaBhJHiw0vjRHcIt6NJE95NQQSoqSOXuOhG1Xt2PnMIv1CxWNd/3ZNxUhQ/0/sbuK5PFZqpMTpawpxvjbTW1IDZcc0V3SDwi4rYB3kpZJ5DpbOG8g9BryV5ZyK3PhNn47O3JnB+SMkbGqGspajQ24yJzSyVmVMmKkaI3jORYDN/nDk9iDRlRhTBn/sCBEgQsqcHMpSlh7iX+cjflMcKKeMCBGcqVMEYzxuMrn3z417HlBULDqeXn6qBtljYoyl9PqJsvO7Z9f99i9l1dJHlInKboHR+SRGRi6+KTIdQW3WcMneLDQpxGX4uu12dtk87LwOA3DV/Kjbq2N2Szq4RveViIqQDbTIV67QMjySKyDpgwCbYr1aeeF2Qvtns0cMMmJ2ni4QwYuW/+7h+6tcAOmIdTN+0/Gka2PPiT3gnR3vT4ZR4nFmH+XaeMQjaCXrIr38wbaK5HlbbCM3/0TTs+pgwnWdmaCY6UmdrutKRH+L9PNhfmIaFk7NRztJu/CfCPnHsxDWmmUtiLYtFX/A9aUOlqfJ+iSjvCYaLVF0zBW2oU3ZVVEsztY7pKedSMTFKGSH0z6e+j69i4UF+dYE3k1yiEA33oN8EESaHgLasa+lr3GxdVk768bVhiDKr4UzO+N7mDvA60g5lhh5Wm2p8CC08uauAjuJDdlxUTY4w8hTWk0v/45Auc=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 494f130f-cf2c-4200-2bcb-08d7ecdc02e5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2020 07:56:38.0558
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: c0flrD3Yb0gkolSR6+ug0FXokJIY+mtas+EOkooCHuNfMiZ2OerK/cyvW0jZhuHlz0Z0L74onz7+gUixf8cYlg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4662
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Apr 2020 18:20:52 +0200
-Parshuram Thombare <pthombar@cadence.com> wrote:
 
-> To support mastership handover procedure, this patch splits the
-> bus_init callback into bus_init and master_set_info callbacks
-
-Missing period at the end of this sentence.
-
-IIRC, we discussed passing master info directly at controller
-registration time for primary master registration, thus avoiding this
-->master_set_info() step. Any good reason for doing that? I mean, I'd
-expect the PID, BCR, DCR to be fixed, the only one that can be assigned
-automatically is the address, and we can have a magic value for
-'auto-assign the first available address', like '0'. The
-write to DEV_ID_RR0() can be done conditionally in master_bus_init()
-when '!secondary_master'.
-
-> 
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+>=20
+> For preparation of LU Dedicated buffer mode support on WriteBooster
+> feature, "index" parameter shall be added and allowed to be specified
+> by callers.
+>=20
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> Reviewed-by: Bean Huo <beanhuo@micron.com>
 > ---
->  drivers/i3c/master.c                 | 10 +++--
->  drivers/i3c/master/dw-i3c-master.c   | 29 ++++++++-----
->  drivers/i3c/master/i3c-master-cdns.c | 63 ++++++++++++++++++----------
->  include/linux/i3c/master.h           |  7 +++-
->  4 files changed, 71 insertions(+), 38 deletions(-)
-> 
-> diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-> index 5f4bd52121fe..0ec332e45737 100644
-> --- a/drivers/i3c/master.c
-> +++ b/drivers/i3c/master.c
-> @@ -1716,6 +1716,10 @@ static int i3c_master_bus_init(struct i3c_master_controller *master)
->  	if (ret)
->  		goto err_detach_devs;
->  
-> +	ret = master->ops->master_set_info(master);
-> +	if (ret)
-> +		goto err_detach_devs;
-> +
->  	/*
->  	 * The master device should have been instantiated in ->bus_init(),
->  	 * complain if this was not the case.
-> @@ -2378,9 +2382,9 @@ EXPORT_SYMBOL_GPL(i3c_generic_ibi_recycle_slot);
->  
->  static int i3c_master_check_ops(const struct i3c_master_controller_ops *ops)
->  {
-> -	if (!ops || !ops->bus_init || !ops->priv_xfers ||
-> -	    !ops->send_ccc_cmd || !ops->do_daa || !ops->i2c_xfers ||
-> -	    !ops->i2c_funcs)
-> +	if (!ops || !ops->bus_init || !ops->master_set_info ||
-> +	    !ops->priv_xfers || !ops->send_ccc_cmd || !ops->do_daa ||
-> +	    !ops->i2c_xfers || !ops->i2c_funcs)
->  		return -EINVAL;
->  
->  	if (ops->request_ibi &&
-> diff --git a/drivers/i3c/master/dw-i3c-master.c b/drivers/i3c/master/dw-i3c-master.c
-> index 1d83c97431c7..5c9a72d68fb8 100644
-> --- a/drivers/i3c/master/dw-i3c-master.c
-> +++ b/drivers/i3c/master/dw-i3c-master.c
-> @@ -593,7 +593,6 @@ static int dw_i3c_master_bus_init(struct i3c_master_controller *m)
->  {
->  	struct dw_i3c_master *master = to_dw_i3c_master(m);
->  	struct i3c_bus *bus = i3c_master_get_bus(m);
-> -	struct i3c_device_info info = { };
->  	u32 thld_ctrl;
->  	int ret;
->  
-> @@ -624,6 +623,24 @@ static int dw_i3c_master_bus_init(struct i3c_master_controller *m)
->  	writel(INTR_MASTER_MASK, master->regs + INTR_STATUS_EN);
->  	writel(INTR_MASTER_MASK, master->regs + INTR_SIGNAL_EN);
->  
-> +	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_SIR_REQ_REJECT);
-> +	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_MR_REQ_REJECT);
-> +
-> +	/* For now don't support Hot-Join */
-> +	writel(readl(master->regs + DEVICE_CTRL) | DEV_CTRL_HOT_JOIN_NACK,
-> +	       master->regs + DEVICE_CTRL);
-> +
-> +	dw_i3c_master_enable(master);
-> +
-> +	return 0;
-> +}
-> +
-> +static int dw_i3c_master_set_info(struct i3c_master_controller *m)
-> +{
-> +	struct dw_i3c_master *master = to_dw_i3c_master(m);
-> +	struct i3c_device_info info = { };
-> +	int ret;
-> +
->  	ret = i3c_master_get_free_addr(m, 0);
->  	if (ret < 0)
->  		return ret;
-> @@ -638,15 +655,6 @@ static int dw_i3c_master_bus_init(struct i3c_master_controller *m)
->  	if (ret)
->  		return ret;
->  
-> -	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_SIR_REQ_REJECT);
-> -	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_MR_REQ_REJECT);
-> -
-> -	/* For now don't support Hot-Join */
-> -	writel(readl(master->regs + DEVICE_CTRL) | DEV_CTRL_HOT_JOIN_NACK,
-> -	       master->regs + DEVICE_CTRL);
-> -
-> -	dw_i3c_master_enable(master);
-> -
->  	return 0;
->  }
->  
-> @@ -1088,6 +1096,7 @@ static irqreturn_t dw_i3c_master_irq_handler(int irq, void *dev_id)
->  
->  static const struct i3c_master_controller_ops dw_mipi_i3c_ops = {
->  	.bus_init = dw_i3c_master_bus_init,
-> +	.master_set_info = dw_i3c_master_set_info,
->  	.bus_cleanup = dw_i3c_master_bus_cleanup,
->  	.attach_i3c_dev = dw_i3c_master_attach_i3c_dev,
->  	.reattach_i3c_dev = dw_i3c_master_reattach_i3c_dev,
-> diff --git a/drivers/i3c/master/i3c-master-cdns.c b/drivers/i3c/master/i3c-master-cdns.c
-> index 8889a4fdb454..c2d1631a9e38 100644
-> --- a/drivers/i3c/master/i3c-master-cdns.c
-> +++ b/drivers/i3c/master/i3c-master-cdns.c
-> @@ -1199,21 +1199,20 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
->  	struct cdns_i3c_master *master = to_cdns_i3c_master(m);
->  	unsigned long pres_step, sysclk_rate, max_i2cfreq;
->  	struct i3c_bus *bus = i3c_master_get_bus(m);
-> -	u32 ctrl, prescl0, prescl1, pres, low;
-> -	struct i3c_device_info info = { };
-> -	int ret, ncycles;
-> +	u32 ctrl, prescl0, prescl1, pres, low, bus_mode;
-> +	int ncycles;
->  
->  	switch (bus->mode) {
->  	case I3C_BUS_MODE_PURE:
-> -		ctrl = CTRL_PURE_BUS_MODE;
-> +		bus_mode = CTRL_PURE_BUS_MODE;
->  		break;
->  
->  	case I3C_BUS_MODE_MIXED_FAST:
-> -		ctrl = CTRL_MIXED_FAST_BUS_MODE;
-> +		bus_mode = CTRL_MIXED_FAST_BUS_MODE;
->  		break;
->  
->  	case I3C_BUS_MODE_MIXED_SLOW:
-> -		ctrl = CTRL_MIXED_SLOW_BUS_MODE;
-> +		bus_mode = CTRL_MIXED_SLOW_BUS_MODE;
->  		break;
->  
->  	default:
-> @@ -1244,7 +1243,6 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
->  	bus->scl_rate.i2c = sysclk_rate / ((pres + 1) * 5);
->  
->  	prescl0 |= PRESCL_CTRL0_I2C(pres);
-> -	writel(prescl0, master->regs + PRESCL_CTRL0);
->  
->  	/* Calculate OD and PP low. */
->  	pres_step = 1000000000 / (bus->scl_rate.i3c * 4);
-> @@ -1252,15 +1250,43 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
->  	if (ncycles < 0)
->  		ncycles = 0;
->  	prescl1 = PRESCL_CTRL1_OD_LOW(ncycles);
-> +
-> +	ctrl = readl(master->regs + CTRL);
-> +	if (ctrl & CTRL_DEV_EN)
-> +		cdns_i3c_master_disable(master);
-> +	writel(prescl0, master->regs + PRESCL_CTRL0);
->  	writel(prescl1, master->regs + PRESCL_CTRL1);
-> +	ctrl &= ~CTRL_BUS_MODE_MASK;
-> +	ctrl |= bus_mode | CTRL_HALT_EN | CTRL_MCS_EN;
-> +	/*
-> +	 * Enable Hot-Join, and, when a Hot-Join request happens,
-> +	 * disable all events coming from this device.
-> +	 * We will issue ENTDAA afterwards from the threaded IRQ
-> +	 * handler.
-> +	 */
-> +	if (!m->secondary)
-> +		ctrl |= CTRL_HJ_ACK | CTRL_HJ_DISEC;
-> +	writel(ctrl, master->regs + CTRL);
-> +	cdns_i3c_master_enable(master);
->  
-> -	/* Get an address for the master. */
-> -	ret = i3c_master_get_free_addr(m, 0);
-> -	if (ret < 0)
-> -		return ret;
-> +	return 0;
-> +}
->  
-> -	writel(prepare_rr0_dev_address(ret) | DEV_ID_RR0_IS_I3C,
-> -	       master->regs + DEV_ID_RR0(0));
-> +static int cdns_i3c_master_set_info(struct i3c_master_controller *m)
-> +{
-> +	struct cdns_i3c_master *master = to_cdns_i3c_master(m);
-> +	struct i3c_device_info info = { };
-> +	int ret;
-> +
-> +	if (!m->secondary) {
-> +		/* Get an address for the master. */
-> +		ret = i3c_master_get_free_addr(m, 0);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		writel(prepare_rr0_dev_address(ret) | DEV_ID_RR0_IS_I3C,
-> +		       master->regs + DEV_ID_RR0(0));
-> +	}
->  
->  	cdns_i3c_master_dev_rr_to_info(master, 0, &info);
->  	if (info.bcr & I3C_BCR_HDR_CAP)
-> @@ -1270,16 +1296,6 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
->  	if (ret)
->  		return ret;
->  
-> -	/*
-> -	 * Enable Hot-Join, and, when a Hot-Join request happens, disable all
-> -	 * events coming from this device.
-> -	 *
-> -	 * We will issue ENTDAA afterwards from the threaded IRQ handler.
-> -	 */
-> -	ctrl |= CTRL_HJ_ACK | CTRL_HJ_DISEC | CTRL_HALT_EN | CTRL_MCS_EN;
-> -	writel(ctrl, master->regs + CTRL);
-> -
-> -	cdns_i3c_master_enable(master);
->  
->  	return 0;
->  }
-> @@ -1507,6 +1523,7 @@ static void cdns_i3c_master_recycle_ibi_slot(struct i3c_dev_desc *dev,
->  
->  static const struct i3c_master_controller_ops cdns_i3c_master_ops = {
->  	.bus_init = cdns_i3c_master_bus_init,
-> +	.master_set_info = cdns_i3c_master_set_info,
->  	.bus_cleanup = cdns_i3c_master_bus_cleanup,
->  	.do_daa = cdns_i3c_master_do_daa,
->  	.attach_i3c_dev = cdns_i3c_master_attach_i3c_dev,
-> diff --git a/include/linux/i3c/master.h b/include/linux/i3c/master.h
-> index f13fd8b1dd79..3dc7eafe811a 100644
-> --- a/include/linux/i3c/master.h
-> +++ b/include/linux/i3c/master.h
-> @@ -337,10 +337,12 @@ struct i3c_bus {
->  
->  /**
->   * struct i3c_master_controller_ops - I3C master methods
-> - * @bus_init: hook responsible for the I3C bus initialization. You should at
-> - *	      least call master_set_info() from there and set the bus mode.
-> + * @bus_init: hook responsible for the I3C bus initialization.
->   *	      You can also put controller specific initialization in there.
->   *	      This method is mandatory.
-> + * @master_set_info: hook responsible for assigning address to main master.
-> + *			You should call i3c_master_set_info from here.
-> + *			This method is mandatory.
->   * @bus_cleanup: cleanup everything done in
->   *		 &i3c_master_controller_ops->bus_init().
->   *		 This method is optional.
-> @@ -421,6 +423,7 @@ struct i3c_bus {
->   */
->  struct i3c_master_controller_ops {
->  	int (*bus_init)(struct i3c_master_controller *master);
-> +	int (*master_set_info)(struct i3c_master_controller *m);
->  	void (*bus_cleanup)(struct i3c_master_controller *master);
->  	int (*attach_i3c_dev)(struct i3c_dev_desc *dev);
->  	int (*reattach_i3c_dev)(struct i3c_dev_desc *dev, u8 old_dyn_addr);
-
+>  drivers/scsi/ufs/ufs-sysfs.c |  2 +-
+>  drivers/scsi/ufs/ufshcd.c    | 28 +++++++++++++++-------------
+>  drivers/scsi/ufs/ufshcd.h    |  2 +-
+>  3 files changed, 17 insertions(+), 15 deletions(-)
+>=20
+> diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+> index 93484408bc40..b86b6a40d7e6 100644
+> --- a/drivers/scsi/ufs/ufs-sysfs.c
+> +++ b/drivers/scsi/ufs/ufs-sysfs.c
+> @@ -631,7 +631,7 @@ static ssize_t _name##_show(struct device *dev,
+> \
+>         struct ufs_hba *hba =3D dev_get_drvdata(dev);                    =
+ \
+>         pm_runtime_get_sync(hba->dev);                                  \
+>         ret =3D ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,      =
+ \
+> -               QUERY_FLAG_IDN##_uname, &flag);                         \
+> +               QUERY_FLAG_IDN##_uname, 0, &flag);                      \
+The sysfs entries for flags needs to get an _index argument now
