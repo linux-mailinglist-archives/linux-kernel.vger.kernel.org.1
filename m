@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5101BF081
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E5E1BF07D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgD3Gqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 02:46:38 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:26448 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726481AbgD3Gqh (ORCPT
+        id S1726539AbgD3Gq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 02:46:27 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50606 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726501AbgD3Gq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 02:46:37 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1588229167; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=+9Cpn/ZecQ165+BryqoLCY0vh0xahyK2iWdM0lDGV5U=;
- b=pTvUnhcld4F06Tu06v67kY2FCP0jf3KU8PDYNXqpb46sLqGy9XcSZqaRiByc5O3VxYmcMgsl
- dQv0bLKyHfMZC0xwSpfh/RNZ1qKfUCU4vSDaVlcWfa8tcEnpvcYUBw288CpBSHdUC7PlPETx
- oeQWgQTCsoZCQX2Kd1jyx2qiwl0=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5eaa7408.7f82d1152420-smtp-out-n05;
- Thu, 30 Apr 2020 06:45:28 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 449CCC433BA; Thu, 30 Apr 2020 06:45:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rananta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D0BA6C433D2;
-        Thu, 30 Apr 2020 06:45:27 +0000 (UTC)
+        Thu, 30 Apr 2020 02:46:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588229184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RLEL+A2Y8ThCTO/2PBYFiQCG0qUQHEWBfC2HqHC6sUc=;
+        b=iq7pg1Nhc9qq7ipNYPveH2Y7+GhPqMO6rdS1ZHgWGpTW88pnFK1EM73e2sEFHWvq7yofRa
+        LBDs7Jnmx6zeAyHSYoOkNF8HK5fEBsdoz0Uc/aQMWEt+iib2mtdy44//pXccBMgD8yaCbI
+        iw1VZ4L69tEJWMqCgA6Is/GlQRLo1xw=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-o-vkuThKP4qbCGIBxpbCsw-1; Thu, 30 Apr 2020 02:46:20 -0400
+X-MC-Unique: o-vkuThKP4qbCGIBxpbCsw-1
+Received: by mail-wr1-f70.google.com with SMTP id p16so3360784wro.16
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 23:46:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RLEL+A2Y8ThCTO/2PBYFiQCG0qUQHEWBfC2HqHC6sUc=;
+        b=rv2YsDRxj/7gcUSyw5iutiNd/HqWX4HWytrxhqgeNLmELT50QVCoDwVqAWb4CJQjJ2
+         XAK66w68JytCN5UYtBKaJXYn0JMj18KbsSwS+HOvZGY9kB5GqSwrPy6WIEUuJ6gfMR/n
+         rvShtBvGihXZUFE6t7EiFqakb7PH88VvYsMLYAGqvUbA6GlmBMgOnlnUmgV+8QAQnuv0
+         zO8uouwJl9nxN/D3uXjFTKa9ZCqQNsSpgjAbhiVkeeVmokIwvlLxcaCXGOsjawsJyXVW
+         xyZglBniiwnrqPcXIWwLv8M9mk7JvElwwBY3lz7IRYjKuvviRyU17b4Xtk5ik5jWfmuo
+         J4TQ==
+X-Gm-Message-State: AGi0PuaSevauBADThc3mfb0KCDXivPf5Xn9pyZxU7Budrryo2dYuni4y
+        CKgMxlytNYzKM7Kg7P0MDMl042CInh7q78GT/g+Q3wwdJtuJQnO981Jo4cbeIOvYhSaQfg1npGu
+        1df44JpdqVep5lMfiD/WKoeyY
+X-Received: by 2002:a05:6000:114c:: with SMTP id d12mr1918069wrx.381.1588229179417;
+        Wed, 29 Apr 2020 23:46:19 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIcWHDQ8NNR/eZLBVLzbDVLqCqfBNiQOwlCXTe6YPk//VfIN5W3VSPkaw9TeqPPHPYxDiKjcg==
+X-Received: by 2002:a05:6000:114c:: with SMTP id d12mr1918041wrx.381.1588229179146;
+        Wed, 29 Apr 2020 23:46:19 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ac19:d1fb:3f5f:d54f? ([2001:b07:6468:f312:ac19:d1fb:3f5f:d54f])
+        by smtp.gmail.com with ESMTPSA id h16sm2669639wrw.36.2020.04.29.23.46.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Apr 2020 23:46:18 -0700 (PDT)
+Subject: Re: [PATCH RFC 4/6] KVM: x86: acknowledgment mechanism for async pf
+ page ready notifications
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>
+References: <20200429093634.1514902-1-vkuznets@redhat.com>
+ <20200429093634.1514902-5-vkuznets@redhat.com>
+ <CALCETrXEzpKNhNJQm+SshiEfyHjYkB7+1c+7iusZy66rRsWunA@mail.gmail.com>
+ <0de4a809-e965-d0ad-489f-5b011aa5bf89@redhat.com>
+ <CALCETrWQBmmVODuSXac965o29Oxqo6uo4Ujm2AN2FUMztwCnzA@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <2be99d33-7b5d-bf2f-a34f-b841cd5c1936@redhat.com>
+Date:   Thu, 30 Apr 2020 08:46:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <CALCETrWQBmmVODuSXac965o29Oxqo6uo4Ujm2AN2FUMztwCnzA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 29 Apr 2020 23:45:27 -0700
-From:   rananta@codeaurora.org
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        jassisinghbrar@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>
-Subject: Re: [PATCH 2/2] soc: qcom: ipcc: Add support for IPCC controller
-In-Reply-To: <20200430063054.18879-2-manivannan.sadhasivam@linaro.org>
-References: <20200430063054.18879-1-manivannan.sadhasivam@linaro.org>
- <20200430063054.18879-2-manivannan.sadhasivam@linaro.org>
-Message-ID: <93afcf6810308580a299905da2b8dad0@codeaurora.org>
-X-Sender: rananta@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-29 23:30, Manivannan Sadhasivam wrote:
-> +static int qcom_ipcc_probe(struct platform_device *pdev)
-> +{
-> +	struct qcom_ipcc_proto_data *proto_data;
-> +	int ret;
-> +
-> +	proto_data = devm_kzalloc(&pdev->dev, sizeof(*proto_data), 
-> GFP_KERNEL);
-> +	if (!proto_data)
-> +		return -ENOMEM;
-> +
-> +	ipcc_proto_data = proto_data;
-> +	proto_data->dev = &pdev->dev;
-> +
-> +	proto_data->base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(proto_data->base)) {
-> +		dev_err(&pdev->dev, "Failed to ioremap the ipcc base addr\n");
-> +		return PTR_ERR(proto_data->base);
-> +	}
-> +
-> +	proto_data->irq = platform_get_irq(pdev, 0);
-> +	if (proto_data->irq < 0) {
-> +		dev_err(&pdev->dev, "Failed to get the IRQ\n");
-> +		return proto_data->irq;
-> +	}
-> +
-> +	/* Perform a SW reset on this client's protocol state */
-> +	writel(0x1, proto_data->base + IPCC_REG_CLIENT_CLEAR);
-We can skip doing a SW reset here. Few of the subsystems may be brought 
-out of reset via the bootloader and the interrupts from them might be 
-pending. Doing a SW reset here would clear those interrupts.
+On 30/04/20 02:45, Andy Lutomirski wrote:
+>> That's a very bad idea since one is synchronous and one is asynchronous.
+>>  Part of the proposal we agreed upon was to keep "page not ready"
+>> synchronous while making "page ready" an interrupt.  The data structure
+>> for "page not ready" will be #VE.
+>
+> #VE on SVM will be interesting, to say the least, and I think that a
+> solution that is VMX specific doesn't make much sense.
 
-Thank you.
-Raghavendra
+You can always inject it manually.  The same is true of Haswell and
+earlier processors.
+
+> #VE also has
+> unpleasant issues involving the contexts in which it can occur.  You
+> will have quite a hard time convincing me to ack the addition of a #VE
+> entry handler for this.  I think a brand new vector is the right
+> solution.
+
+I need --verbose. :)  For #VE I liked the idea of re-enabling it from an
+IPI, at least in the case where we cannot move out of the IST stack.
+And any other vector that behaves like an exception would have the same
+issue, wouldn't it (especially re-entrancy)?
+
+Paolo
+
