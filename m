@@ -2,164 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068CC1C0781
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DA51C074D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgD3UMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 16:12:30 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53714 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgD3UMY (ORCPT
+        id S1727047AbgD3UEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 16:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726338AbgD3UEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:12:24 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK9RpK005992;
-        Thu, 30 Apr 2020 20:11:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=+I5DK1bpDxPp17bxmkq3TLU7ktjAi9yJhHWfSrepooM=;
- b=fUyqySXDeLDsctdyoiziddJfcj8mcTOQxSfQWSYjilj7uE73/HfZauZY2u5i3Uvnv5tG
- KAp31PWGtBoS4N9epLF82hU53mniZOA/7lEKUmGjH9KQ+H8nH1Cv4EpFkW6aOiLQYMoX
- C+k0eWTaXn4nJZt4GHwStEs5HC9LqEeghzxIIbxp3ejHUWBFXbT7/tq5dR1lXdmCGGJ1
- l+UQocYxc5AJd89VOHMDkMnZiIFb1tj2e3zzxxVqrjAbyCo4wTz8IntLONqd/e7Dypen
- biFbKfiOp/Jdby2w/mf18RluKSLiAmDV3u+b0FlU7mTnkhhI8TC+riHLkuTMqfVSGna9 QQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 30p2p0k2ps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 20:11:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK7Qbg096026;
-        Thu, 30 Apr 2020 20:11:48 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 30qtjy23v9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 20:11:48 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03UKBlCt024136;
-        Thu, 30 Apr 2020 20:11:47 GMT
-Received: from localhost.localdomain (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Apr 2020 13:11:45 -0700
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
-        linux-crypto@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: [PATCH 7/7] padata: document multithreaded jobs
-Date:   Thu, 30 Apr 2020 16:11:25 -0400
-Message-Id: <20200430201125.532129-8-daniel.m.jordan@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
-References: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- malwarescore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300150
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1015
- bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004300150
+        Thu, 30 Apr 2020 16:04:01 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A564C035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 13:04:01 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id v63so389055pfb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 13:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=3uYu7BNvYOGkc20ha5J/aAEuQ9mqiqPvOhd6B04IV9A=;
+        b=tGSazxkG8iYHiUGg9z3/ziD1PrpzsJN0F3Z1dORQ7Lpsim1xwidMONGsRPJ5i6TIa8
+         Ro0kGSUn6+g60gIxEx3izxAB8anYPikqtdWH/SBGq9X8ZnrV4u350g2uzSUTwwSaVMZ4
+         kq86ccSa6s/5dcVxw1c/KnatDxOlEoiqV5ylkxWYexqCNvOeTZc20y86t+0wpLoxs957
+         Kd+bU7HbT77Uz/hYbgM/rHszPt+BO8GZMK2I3sUx9HX14m8lPgTu5ZHY6dzDFGNYugtb
+         Yhpj+TDa9LnXngnK52vp1458SlM3EFEtOVFKAORfQRVHNakAzKtJynEFFx8tjNVX5IxR
+         N3NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3uYu7BNvYOGkc20ha5J/aAEuQ9mqiqPvOhd6B04IV9A=;
+        b=KszNxgyhab7vVIFASVG7fJfCEkCiC8GsH313MRk4krgjt6EjhxSrbPxIwC0hX/cbYE
+         4FFljRJCxuQhiWxRK03wP1R5bVnt8OnbGdm8gXGkiAG33tkW2GlCyW6H8vHD53aTI3qu
+         DP10dZLaOpZTgqvDA2ybcUdJUu90RUwTh+iqtqSMrnttXvPqX2kART5z91R9Bs7mSBJ9
+         58pdA5RuX4bkvwepfz7016JfsfTWQYi1ecUolJQnqPlJtsDrZtBUWEBQoJ/nbE262Lng
+         sbKKzD4f6AZNS2KHi9q6RTAw2Ne9y6wvddHfTUbYaIYuOUxZKXjjldcKGwO5N6ctahjq
+         30Kg==
+X-Gm-Message-State: AGi0PubyJHKdVu3NoUsUuMaNOZqSCqg4vlRPj4g4EuJaeaEcqaDkacJX
+        xxoh+3R4PI46vz3FDDLdBJcVXEDr170=
+X-Google-Smtp-Source: APiQypIf4/p4n46Y+IEjO+M6yY4VM/WoDWLGSGYfUACAiDEVQx5qHNSIGKtwIF+Wzsx+xE4EUoJqVQ==
+X-Received: by 2002:a63:eb15:: with SMTP id t21mr599223pgh.279.1588277041057;
+        Thu, 30 Apr 2020 13:04:01 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.43.171])
+        by smtp.gmail.com with ESMTPSA id e5sm528000pfd.64.2020.04.30.13.03.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Apr 2020 13:04:00 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] mm/gup.c: Handle error at earliest for incorrect nr_pages value
+Date:   Fri,  1 May 2020 01:41:58 +0530
+Message-Id: <1588277518-21425-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Documentation for multithreaded jobs.
+As per documentation, pin_user_pages_fast() & get_user_pages_fast()
+will return 0, if nr_pages <= 0. But this can be figure out only after
+going inside the internal_get_user_pages_fast().
 
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+This can be handled early. Adding a check for the same.
+
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 ---
- Documentation/core-api/padata.rst | 41 +++++++++++++++++++++++--------
- 1 file changed, 31 insertions(+), 10 deletions(-)
+ mm/gup.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/core-api/padata.rst b/Documentation/core-api/padata.rst
-index 9a24c111781d9..b7e047af993e8 100644
---- a/Documentation/core-api/padata.rst
-+++ b/Documentation/core-api/padata.rst
-@@ -4,23 +4,26 @@
- The padata parallel execution mechanism
- =======================================
+diff --git a/mm/gup.c b/mm/gup.c
+index 50681f0..a13aaa6 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2817,6 +2817,8 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
+ 	 */
+ 	if (WARN_ON_ONCE(gup_flags & FOLL_PIN))
+ 		return -EINVAL;
++	if (nr_pages <= 0)
++		return 0;
  
--:Date: December 2019
-+:Date: April 2020
+ 	/*
+ 	 * The caller may or may not have explicitly set FOLL_GET; either way is
+@@ -2854,6 +2856,8 @@ int pin_user_pages_fast(unsigned long start, int nr_pages,
+ 	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
+ 	if (WARN_ON_ONCE(gup_flags & FOLL_GET))
+ 		return -EINVAL;
++	if (nr_pages <= 0)
++		return 0;
  
- Padata is a mechanism by which the kernel can farm jobs out to be done in
--parallel on multiple CPUs while retaining their ordering.  It was developed for
--use with the IPsec code, which needs to be able to perform encryption and
--decryption on large numbers of packets without reordering those packets.  The
--crypto developers made a point of writing padata in a sufficiently general
--fashion that it could be put to other uses as well.
-+parallel on multiple CPUs while optionally retaining their ordering.
- 
--Usage
--=====
-+It was originally developed for IPsec, which needs to perform encryption and
-+decryption on large numbers of packets without reordering those packets.  This
-+is currently the sole consumer of padata's serialized job support.
-+
-+Padata also supports multithreaded jobs, splitting up the job evenly while load
-+balancing and coordinating between threads.
-+
-+Running Serialized Jobs
-+=======================
- 
- Initializing
- ------------
- 
--The first step in using padata is to set up a padata_instance structure for
--overall control of how jobs are to be run::
-+The first step in using padata to run parallel jobs is to set up a
-+padata_instance structure for overall control of how jobs are to be run::
- 
-     #include <linux/padata.h>
- 
-@@ -162,6 +165,24 @@ functions that correspond to the allocation in reverse::
- It is the user's responsibility to ensure all outstanding jobs are complete
- before any of the above are called.
- 
-+Running Multithreaded Jobs
-+==========================
-+
-+A multithreaded job has a main thread and zero or more helper threads, with the
-+main thread participating in the job and then waiting until all helpers have
-+finished.  padata splits the job into units called chunks, where a chunk is a
-+piece of the job that one thread completes in one call to the thread function.
-+
-+A user has to do three things to run a multithreaded job.  First, describe the
-+job by defining a padata_mt_job structure, which is explained in the Interface
-+section.  This includes a pointer to the thread function, which padata will
-+call each time it assigns a job chunk to a thread.  Then, define the thread
-+function, which accepts three arguments, ``start``, ``end``, and ``arg``, where
-+the first two delimit the range that the thread operates on and the last is a
-+pointer to the job's shared state, if any.  Prepare the shared state, which is
-+typically a stack-allocated structure that wraps the required data.  Last, call
-+padata_do_multithreaded(), which will return once the job is finished.
-+
- Interface
- =========
- 
+ 	gup_flags |= FOLL_PIN;
+ 	return internal_get_user_pages_fast(start, nr_pages, gup_flags, pages);
 -- 
-2.26.2
+1.9.1
 
