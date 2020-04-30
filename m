@@ -2,111 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896BD1BEF86
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 07:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8111E1BEF8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 07:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgD3FCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 01:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S1726427AbgD3FDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 01:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726180AbgD3FCX (ORCPT
+        by vger.kernel.org with ESMTP id S1726040AbgD3FDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 01:02:23 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70F8C035494
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 22:02:23 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id ms17so237869pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 22:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/x+rzFhqL8qq/IbAbhJvN4V9t4Lz3kP/p46lFDN1LPU=;
-        b=QeUOH2T0toOL6FXdkhKq+g+r/NoRVo1i2zlq/dnOlDFJ7Qg3JgS5yBug89VdkBBuXJ
-         uIwAth6iHY+LFOy85L2+cBK/fyvKlE6++yw6wsviDaoMtG//30Iq79W3dCFahjhHej5m
-         bsyu7z3tWK77hkQZEtJyGjU+mVA97ThGY/dMIESgne0XoachFQI/glwM066JniYC5Yjv
-         jiyuJbGAgCgs0avenlhmD3u3Q0MDjNA/wPRb0I+kaLNcjDHYng4SUtXkqg1iIbklShcT
-         u/OmWS2O17Fbavnp7f8ERKiwbf5WesDEha3GK1DB5/91dT7HOZIt04oibLGSAW2F2BL3
-         VI1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/x+rzFhqL8qq/IbAbhJvN4V9t4Lz3kP/p46lFDN1LPU=;
-        b=Judf7f2Mg7EnX7ggMqTtb8p53EuT2pmzoqzL3mSfunz28pLFTIdwH3R9V4Pr3T5oEG
-         q06rk9N9e5QlRC2LKRcRHBTPkNbVksW7GsMMr40nrTCwp9V99NB3tFXdUNCot4U+gwgL
-         Xj1t1/q8BYZsa3Ih3gSbFHAIxmuH9SEpMfsWRiCIYUCds5C3XHnPjSHvQLynwC0xWKX1
-         GsUpEVS5xqlks97AZhV220T+0xAKX28Td95siDkwm/LYJ4zfG8flH5BvhALedlBHtB21
-         lBPtpv99fV6YlZbVU0hLFLxF+BRZUTktUjZ24tGT3i4ci24OcnJMM0iW88hsk2I9eO8S
-         ZFtw==
-X-Gm-Message-State: AGi0PuZKNyxf6rU+1e8t6TXVoaXxLMpO7NaI0Q/1zoftPrUMT7i6/6kz
-        1+kNyJDdiPZbA11i7PS9+Py+kw==
-X-Google-Smtp-Source: APiQypJzR7a0kCiE/1VDTmkgBdSYfEHsJ0JsARDvEUXhRCY3bEJHo7Os1dih7PRmqQ2XQpmx9ywNJw==
-X-Received: by 2002:a17:90b:1104:: with SMTP id gi4mr937970pjb.115.1588222943125;
-        Wed, 29 Apr 2020 22:02:23 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id o9sm671869pje.47.2020.04.29.22.02.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 22:02:22 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 22:02:59 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, arnd@arndb.de
-Subject: Re: [PATCH] misc: fastrpc: fix memory leak
-Message-ID: <20200430050259.GB2166963@builder.lan>
-References: <20200429152951.18504-1-srinivas.kandagatla@linaro.org>
+        Thu, 30 Apr 2020 01:03:51 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A28CC035494
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 22:03:51 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jU1MP-0005xo-Hj; Thu, 30 Apr 2020 07:03:45 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jU1MO-00069c-QN; Thu, 30 Apr 2020 07:03:44 +0200
+Date:   Thu, 30 Apr 2020 07:03:44 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>,
+        Christian Herber <christian.herber@nxp.com>
+Subject: Re: [PATCH net-next v3 2/2] net: phy: tja11xx: add support for
+ master-slave configuration
+Message-ID: <20200430050344.u7bsakcrrw2cakex@pengutronix.de>
+References: <20200428075308.2938-1-o.rempel@pengutronix.de>
+ <20200428075308.2938-3-o.rempel@pengutronix.de>
+ <20200429182053.GM30459@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="aevfvnzd6ykgpc2t"
 Content-Disposition: inline
-In-Reply-To: <20200429152951.18504-1-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20200429182053.GM30459@lunn.ch>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 07:02:42 up 166 days, 20:21, 163 users,  load average: 0.11, 0.08,
+ 0.02
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 29 Apr 08:29 PDT 2020, Srinivas Kandagatla wrote:
 
-> if misc_register() fails, previously allocated data is left without freeing,
-> this could result in memory leak.
+--aevfvnzd6ykgpc2t
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-s/could/will/
+On Wed, Apr 29, 2020 at 08:20:53PM +0200, Andrew Lunn wrote:
+> > +static int tja11xx_config_aneg(struct phy_device *phydev)
+> > +{
+> > +	u16 ctl =3D 0;
+> > +	int ret;
+> > +
+> > +	switch (phydev->master_slave_set) {
+> > +	case PORT_MODE_CFG_MASTER_FORCE:
+> > +	case PORT_MODE_CFG_MASTER_PREFERRED:
+> > +		ctl |=3D MII_CFG1_MASTER_SLAVE;
+> > +		break;
+> > +	case PORT_MODE_CFG_SLAVE_FORCE:
+> > +	case PORT_MODE_CFG_SLAVE_PREFERRED:
+> > +		break;
+> > +	case PORT_MODE_CFG_UNKNOWN:
+> > +		return 0;
+> > +	default:
+> > +		phydev_warn(phydev, "Unsupported Master/Slave mode\n");
+> > +		return -ENOTSUPP;
+> > +	}
+>=20
+> Does the hardware actually support PORT_MODE_CFG_SLAVE_PREFERRED and
+> PORT_MODE_CFG_MASTER_PREFERRED? I thought that required autoneg, which
+> this PHY does not support? So i would of expected these two values to
+> return ENOTSUPP?
 
-> 
-> So fix it!
-> 
-
-As Markus pointed out, a Fixes: tag would be in order to make sure this
-is backported properly.
-
-
-PS: although unlikely, if of_platform_populate() where to fail we're
-leaking both the contet and the misc device.
+I do not have strong opinion here. Will change it.
 
 Regards,
-Bjorn
+Oleksij
+--=20
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  drivers/misc/fastrpc.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-> index e3e085e33d46..9065d3e71ff7 100644
-> --- a/drivers/misc/fastrpc.c
-> +++ b/drivers/misc/fastrpc.c
-> @@ -1613,8 +1613,10 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
->  					    domains[domain_id]);
->  	data->miscdev.fops = &fastrpc_fops;
->  	err = misc_register(&data->miscdev);
-> -	if (err)
-> +	if (err) {
-> +		kfree(data);
->  		return err;
-> +	}
->  
->  	kref_init(&data->refcount);
->  
-> -- 
-> 2.21.0
-> 
+--aevfvnzd6ykgpc2t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEERBNZvwSgvmcMY/T74omh9DUaUbMFAl6qXDAACgkQ4omh9DUa
+UbNSIxAAnuqCCyRXMKpPIyGfOO+VHRzckemdFoGwEclePdskhMp3rMPTED/iOcDa
+r75OTE65mCoKQ+epY3Dx5ZitqdinLbSctLlSePg/74lNPsLQBUrr8tH2CnTeQ9z0
+qKfakIIgK5B+MdZLxIzV913Vfp7e29f4vjON/LeqkenNLxoxprVCUsz51cQYta+t
+d2JnwJVRhlMG+wveRVlfFksItFh0W3I+MbN12ICLEKCzqzRYZqjq57RWWu2PLEDV
+sprC2I0p3C9ZZOCzNVqz1LY0nJZnZMFJzbxlCC9BcWT+w3KUk3qoEAxg2jyu2kD4
+DW+kmRcKUwgv+4RYWmmn4jiF+Dmfikf7OmdTvQF5w5KzC82eJwTzaP5qb3X3QFC4
+QeO0FPc3Uf2o0FvEsm1PYXtofamAaUDq2JyvybNjHn6Rto4HfQZWQXkdKJfE33jJ
+h54c9UshwhZ2aOmo0cN2JBJlbQrXV7HtYxVusu9k8nik4w1cNDEetSh74EyeGV5i
+yUpkHRs1lD/TI8r+ZR5JCFMQwqA6BxGw53HYjZFdy4kWpLeIF+gcGhlvF6r1hgdK
+2omXLdYODGYSUCpe9C9tclb6lhmxq1ue48HgFmM577Xi4jJTFLiYeAywQ3M3B7xp
+f1f4WSTdkKKerYzsR+Ce8z/AhmysLBnjCxCb2/bp/Zppq68DCj0=
+=U6If
+-----END PGP SIGNATURE-----
+
+--aevfvnzd6ykgpc2t--
