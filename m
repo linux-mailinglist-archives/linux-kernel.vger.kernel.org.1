@@ -2,112 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCA11BED3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 02:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0221BED16
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 02:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgD3Az2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 20:55:28 -0400
-Received: from mga01.intel.com ([192.55.52.88]:21869 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgD3Az2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 20:55:28 -0400
-IronPort-SDR: Yf20lfQHPwm6r+jBqapudIdjMW3i/G39/i6RmS3Iib2G0bB0OaJju6CBBZ//VcB6iOqAxp1SLe
- E+iqfClPvOSQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 17:55:27 -0700
-IronPort-SDR: +gRX2R/WV/4QXJPPo6djRHcjf8PsJ1DwkfropLFEC/MLZ7TCqHkGV7ms5qWKqZXcpf0RzixPXC
- dDGi/gCLRJ5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
-   d="scan'208";a="249600406"
-Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Apr 2020 17:55:21 -0700
-Date:   Wed, 29 Apr 2020 20:45:38 -0400
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Eric Blake <eblake@redhat.com>
-Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        "cjia@nvidia.com" <cjia@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "libvir-list@redhat.com" <libvir-list@redhat.com>,
-        "Zhengxiao.zx@alibaba-inc.com" <Zhengxiao.zx@alibaba-inc.com>,
-        "shuangtai.tst@alibaba-inc.com" <shuangtai.tst@alibaba-inc.com>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eauger@redhat.com" <eauger@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Yang, Ziye" <ziye.yang@intel.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "pasic@linux.ibm.com" <pasic@linux.ibm.com>,
-        "aik@ozlabs.ru" <aik@ozlabs.ru>,
-        "felipe@nutanix.com" <felipe@nutanix.com>,
-        "Ken.Xue@amd.com" <Ken.Xue@amd.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "eskultet@redhat.com" <eskultet@redhat.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
-        "dinechin@redhat.com" <dinechin@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Liu, Changpeng" <changpeng.liu@intel.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>,
-        "jonathan.davies@nutanix.com" <jonathan.davies@nutanix.com>,
-        "He, Shaopeng" <shaopeng.he@intel.com>
-Subject: Re: [PATCH v5 0/4] introduction of migration_version attribute for
- VFIO live migration
-Message-ID: <20200430004537.GO12879@joy-OptiPlex-7040>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20200422073628.GA12879@joy-OptiPlex-7040>
- <20200424191049.GU3106@work-vm>
- <20200426013628.GC12879@joy-OptiPlex-7040>
- <20200427153743.GK2923@work-vm>
- <20200428005429.GJ12879@joy-OptiPlex-7040>
- <20200428141437.GG2794@work-vm>
- <20200429072616.GL12879@joy-OptiPlex-7040>
- <20200429082201.GA2834@work-vm>
- <20200429093555.GM12879@joy-OptiPlex-7040>
- <94cd58d2-0580-53cd-6ca2-2c33146e0f2c@redhat.com>
+        id S1726468AbgD3Arp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 20:47:45 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:45470 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726329AbgD3Arp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 20:47:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Tx3-FoL_1588207658;
+Received: from US-143344MP.local(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0Tx3-FoL_1588207658)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 30 Apr 2020 08:47:40 +0800
+Subject: Re: [linux-next PATCH 2/2] mm: khugepaged: don't have to put being
+ freed page back to lru
+From:   Yang Shi <yang.shi@linux.alibaba.com>
+To:     kirill.shutemov@linux.intel.com, hughd@google.com,
+        aarcange@redhat.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <1588200982-69492-1-git-send-email-yang.shi@linux.alibaba.com>
+ <1588200982-69492-2-git-send-email-yang.shi@linux.alibaba.com>
+ <c0691ef4-31c9-f0dd-ec23-94e86bc12794@linux.alibaba.com>
+Message-ID: <1d7c1fdd-3589-da46-716f-7767eecb87a4@linux.alibaba.com>
+Date:   Wed, 29 Apr 2020 17:47:34 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0)
+ Gecko/20100101 Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94cd58d2-0580-53cd-6ca2-2c33146e0f2c@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <c0691ef4-31c9-f0dd-ec23-94e86bc12794@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 10:13:01PM +0800, Eric Blake wrote:
-> [meta-comment]
-> 
-> On 4/29/20 4:35 AM, Yan Zhao wrote:
-> > On Wed, Apr 29, 2020 at 04:22:01PM +0800, Dr. David Alan Gilbert wrote:
-> [...]
-> >>>>>>>>>>>>>>>>> This patchset introduces a migration_version attribute under sysfs
-> >>>>>>>>>>> of VFIO
-> >>>>>>>>>>>>>>>>> Mediated devices.
-> 
-> Hmm, several pages with up to 16 levels of quoting, with editors making 
-> the lines ragged, all before I get to the real meat of the email. 
-> Remember, it's okay to trim content,...
-> 
-> >> So why don't we split the difference; lets say that it should start with
-> >> the hex PCI Vendor ID.
-> >>
-> > The problem is for mdev devices, if the parent devices are not PCI devices,
-> > they don't have PCI vendor IDs.
-> 
-> ...to just what you are replying to.
->
-sorry for that. next time I'll try to make a better balance between
-keeping conversation background and leaving the real meat of the email.
 
-Thanks for reminding.
-Yan
+
+On 4/29/20 5:41 PM, Yang Shi wrote:
+>
+>
+> On 4/29/20 3:56 PM, Yang Shi wrote:
+>> When khugepaged successfully isolated and copied data from base page to
+>> collapsed THP, the base page is about to be freed.  So putting the page
+>> back to lru sounds not that productive since the page might be isolated
+>> by vmscan but it can't be reclaimed by vmscan since it can't be unmapped
+>> by try_to_unmap() at all.
+>>
+>> Actually khugepaged is the last user of this page so it can be freed
+>> directly.  So, clearing active and unevictable flags, unlocking and
+>> dropping refcount from isolate instead of calling putback_lru_page().
+>
+> Please disregard the patch. I just remembered Kirill added collapse 
+> shared pages support. If the pages are shared then they have to be put 
+> back to lru since they may be still mapped by other processes. So we 
+> need check the mapcount if we would like to skip lru.
+>
+> And I spotted the other issue. The release_pte_page() calls 
+> mod_node_page_state() unconditionally, it was fine before. But, due to 
+> the support for collapsing shared pages we need check if the last 
+> mapcount is gone or not.
+
+Hmm... this is false. I mixed up NR_ISOLATED_ANON and NR_ANON_MAPPED.
+
+>
+> Andrew, would you please remove this patch from -mm tree? I will send 
+> one or two rectified patches. Sorry for the inconvenience.
+>
+>>
+>> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>> Cc: Hugh Dickins <hughd@google.com>
+>> Cc: Andrea Arcangeli <aarcange@redhat.com>
+>> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+>> ---
+>>   mm/khugepaged.c | 15 +++++++++++++--
+>>   1 file changed, 13 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+>> index 0c8d30b..c131a90 100644
+>> --- a/mm/khugepaged.c
+>> +++ b/mm/khugepaged.c
+>> @@ -559,6 +559,17 @@ void __khugepaged_exit(struct mm_struct *mm)
+>>   static void release_pte_page(struct page *page)
+>>   {
+>>       mod_node_page_state(page_pgdat(page),
+>> +        NR_ISOLATED_ANON + page_is_file_lru(page), -compound_nr(page));
+>> +    ClearPageActive(page);
+>> +    ClearPageUnevictable(page);
+>> +    unlock_page(page);
+>> +    /* Drop refcount from isolate */
+>> +    put_page(page);
+>> +}
+>> +
+>> +static void release_pte_page_to_lru(struct page *page)
+>> +{
+>> +    mod_node_page_state(page_pgdat(page),
+>>               NR_ISOLATED_ANON + page_is_file_lru(page),
+>>               -compound_nr(page));
+>>       unlock_page(page);
+>> @@ -576,12 +587,12 @@ static void release_pte_pages(pte_t *pte, pte_t 
+>> *_pte,
+>>           page = pte_page(pteval);
+>>           if (!pte_none(pteval) && !is_zero_pfn(pte_pfn(pteval)) &&
+>>                   !PageCompound(page))
+>> -            release_pte_page(page);
+>> +            release_pte_page_to_lru(page);
+>>       }
+>>         list_for_each_entry_safe(page, tmp, compound_pagelist, lru) {
+>>           list_del(&page->lru);
+>> -        release_pte_page(page);
+>> +        release_pte_page_to_lru(page);
+>>       }
+>>   }
+>
+
