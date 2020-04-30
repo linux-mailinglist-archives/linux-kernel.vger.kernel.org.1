@@ -2,170 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957251BF55C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 12:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C371BF567
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 12:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgD3K2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 06:28:30 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:52153 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726127AbgD3K2a (ORCPT
+        id S1725280AbgD3K3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 06:29:47 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53998 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726546AbgD3K3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 06:28:30 -0400
+        Thu, 30 Apr 2020 06:29:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588242508;
+        s=mimecast20190719; t=1588242585;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h5p3gDi1VEjOInC7wzq0lhr6Bn3YffDIogBP2mcy8kc=;
-        b=ApEshFynpCo2DKwvXqgduhxTJupJd6GRUaANRxpLqvPo7AvL7PmytAwfXx/m8NTAqPl4ol
-        BcLOZq3IjBQ8tIFZbcvDT33KEqXo0hDBwxpAOEcUajXbUv4jGpHaYlJteQ25uPAkLu6CJE
-        O2MSNjV/akwNQ9SUd2B43urNlnTvmV4=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-260-llRHx5pBNDeMzb8y6aaysA-1; Thu, 30 Apr 2020 06:28:26 -0400
-X-MC-Unique: llRHx5pBNDeMzb8y6aaysA-1
-Received: by mail-wm1-f72.google.com with SMTP id f81so417611wmf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 03:28:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h5p3gDi1VEjOInC7wzq0lhr6Bn3YffDIogBP2mcy8kc=;
-        b=ezBPZN0JFbzJdDbseauW6BQI5dOizRVI0GEhYyrh7+OkGBAV18YdFaQ6/8ITeYiBVZ
-         7C9HxCv/j7RtrDvY0rDz1JENaESOyI+7wOLICDx4UClrdSq7yK455tZRMH3eXyhld9EE
-         MziyPlUexQN5VVXph0vKN2G/YgdvEwEH//+BI4komeMc30mZPucAVwDAb5ij6ElXPZF6
-         qEe1ypY5QNzewbe4xjgCB3K2z7LmQAauSM9S2Weip8muHHuob4WAUVddm+ZaGzirY1gq
-         zWEsz51szOZKM0/TS7pWv0Zl34cJ7aYFsGnIzqIEUDQ7C5WPJmrMj06ijJ4ze0mgyrXl
-         xMCg==
-X-Gm-Message-State: AGi0PuarduO2LqZux+EOvFSWWPB8KpusSa2SrDPwaaZeoe2vK0pQ4qXl
-        FfAaBAE49xjOVn04LpG/hOmIaqJw7kBU9DioNivNTXC1z9fFexmYvu4MdUy21wX78FO9052IiTS
-        dhl6szsGxEhbEbN433ude8sSr
-X-Received: by 2002:adf:9441:: with SMTP id 59mr3078537wrq.211.1588242504888;
-        Thu, 30 Apr 2020 03:28:24 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKdaYMooyRpO60M9yffISXrKNIX1+9SfmvT2a95+mlrjkv1g1RtPlrwD7pghxHm4UBclpULEg==
-X-Received: by 2002:adf:9441:: with SMTP id 59mr3078513wrq.211.1588242504609;
-        Thu, 30 Apr 2020 03:28:24 -0700 (PDT)
-Received: from redhat.com (bzq-109-66-7-121.red.bezeqint.net. [109.66.7.121])
-        by smtp.gmail.com with ESMTPSA id s14sm1695648wro.29.2020.04.30.03.28.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 03:28:24 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 06:28:21 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     Stefano Garzarella <sgarzare@redhat.com>,
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=F00GW0IDxO2YtXf8I1Htd7Li0LSvuJyIHlJhh9ba9cc=;
+        b=ET/HEcMaPnnU8Ikjs61jZltkM1jseyY3c45PGlU7miJREHCpkXXQLaY03Qe9vKzx/vNlZE
+        eKvP6zLAHOsdyXX/QZKFc24fU77NAjotl1JoCYIApC469dlGO4tppelP/N8c24f7OyH2V1
+        H3WFLVSoOOPwCGabrnnBfqff3BfwSUU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-F5xrMv_8M0upE38nqrJ6fA-1; Thu, 30 Apr 2020 06:29:37 -0400
+X-MC-Unique: F5xrMv_8M0upE38nqrJ6fA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0BD301899521;
+        Thu, 30 Apr 2020 10:29:32 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-172.ams2.redhat.com [10.36.113.172])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 963F15D780;
+        Thu, 30 Apr 2020 10:29:16 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, virtio-dev@lists.oasis-open.org,
         virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, cohuck@redhat.com,
+        linuxppc-dev@lists.ozlabs.org, linux-acpi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-hyperv@vger.kernel.org,
+        linux-s390@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Baoquan He <bhe@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
         Jason Wang <jasowang@redhat.com>,
-        Lance Digby <ldigby@redhat.com>
-Subject: Re: [PATCH v3] virtio-blk: handle block_device_operations callbacks
- after hot unplug
-Message-ID: <20200430062549-mutt-send-email-mst@kernel.org>
-References: <20200429165345.144702-1-stefanha@redhat.com>
- <20200430084323.qts2q5ql7rkclk2h@steredhat>
- <20200430101410.GA164094@stefanha-x1.localdomain>
+        Juergen Gross <jgross@suse.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Len Brown <lenb@kernel.org>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Wei Yang <richard.weiyang@gmail.com>
+Subject: [PATCH v2 0/3] mm/memory_hotplug: Allow to not create firmware memmap entries
+Date:   Thu, 30 Apr 2020 12:29:05 +0200
+Message-Id: <20200430102908.10107-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430101410.GA164094@stefanha-x1.localdomain>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 11:14:10AM +0100, Stefan Hajnoczi wrote:
-> On Thu, Apr 30, 2020 at 10:43:23AM +0200, Stefano Garzarella wrote:
-> > On Wed, Apr 29, 2020 at 05:53:45PM +0100, Stefan Hajnoczi wrote:
-> > > A userspace process holding a file descriptor to a virtio_blk device can
-> > > still invoke block_device_operations after hot unplug.  This leads to a
-> > > use-after-free accessing vblk->vdev in virtblk_getgeo() when
-> > > ioctl(HDIO_GETGEO) is invoked:
-> > > 
-> > >   BUG: unable to handle kernel NULL pointer dereference at 0000000000000090
-> > >   IP: [<ffffffffc00e5450>] virtio_check_driver_offered_feature+0x10/0x90 [virtio]
-> > >   PGD 800000003a92f067 PUD 3a930067 PMD 0
-> > >   Oops: 0000 [#1] SMP
-> > >   CPU: 0 PID: 1310 Comm: hdio-getgeo Tainted: G           OE  ------------   3.10.0-1062.el7.x86_64 #1
-> > >   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
-> > >   task: ffff9be5fbfb8000 ti: ffff9be5fa890000 task.ti: ffff9be5fa890000
-> > >   RIP: 0010:[<ffffffffc00e5450>]  [<ffffffffc00e5450>] virtio_check_driver_offered_feature+0x10/0x90 [virtio]
-> > >   RSP: 0018:ffff9be5fa893dc8  EFLAGS: 00010246
-> > >   RAX: ffff9be5fc3f3400 RBX: ffff9be5fa893e30 RCX: 0000000000000000
-> > >   RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff9be5fbc10b40
-> > >   RBP: ffff9be5fa893dc8 R08: 0000000000000301 R09: 0000000000000301
-> > >   R10: 0000000000000000 R11: 0000000000000000 R12: ffff9be5fdc24680
-> > >   R13: ffff9be5fbc10b40 R14: ffff9be5fbc10480 R15: 0000000000000000
-> > >   FS:  00007f1bfb968740(0000) GS:ffff9be5ffc00000(0000) knlGS:0000000000000000
-> > >   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > >   CR2: 0000000000000090 CR3: 000000003a894000 CR4: 0000000000360ff0
-> > >   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > >   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > >   Call Trace:
-> > >    [<ffffffffc016ac37>] virtblk_getgeo+0x47/0x110 [virtio_blk]
-> > >    [<ffffffff8d3f200d>] ? handle_mm_fault+0x39d/0x9b0
-> > >    [<ffffffff8d561265>] blkdev_ioctl+0x1f5/0xa20
-> > >    [<ffffffff8d488771>] block_ioctl+0x41/0x50
-> > >    [<ffffffff8d45d9e0>] do_vfs_ioctl+0x3a0/0x5a0
-> > >    [<ffffffff8d45dc81>] SyS_ioctl+0xa1/0xc0
-> > > 
-> > > A related problem is that virtblk_remove() leaks the vd_index_ida index
-> > > when something still holds a reference to vblk->disk during hot unplug.
-> > > This causes virtio-blk device names to be lost (vda, vdb, etc).
-> > > 
-> > > Fix these issues by protecting vblk->vdev with a mutex and reference
-> > > counting vblk so the vd_index_ida index can be removed in all cases.
-> > > 
-> > > Fixes: 48e4043d4529523cbc7fa8dd745bd8e2c45ce1d3
-> > >        ("virtio: add virtio disk geometry feature")
-> > > Reported-by: Lance Digby <ldigby@redhat.com>
-> > > Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> > > ---
-> > >  drivers/block/virtio_blk.c | 87 ++++++++++++++++++++++++++++++++++----
-> > >  1 file changed, 79 insertions(+), 8 deletions(-)
-> > > 
-> > > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> > > index 93468b7c6701..6f7f277495f4 100644
-> > > --- a/drivers/block/virtio_blk.c
-> > > +++ b/drivers/block/virtio_blk.c
-> > > @@ -33,6 +33,16 @@ struct virtio_blk_vq {
-> > >  } ____cacheline_aligned_in_smp;
-> > >  
-> > >  struct virtio_blk {
-> > > +	/*
-> > > +	 * vdev may be accessed without taking this mutex in blk-mq and
-> > > +	 * virtqueue code paths because virtblk_remove() stops them before vdev
-> > > +	 * is freed.
-> > > +	 *
-> > > +	 * Everything else must hold this mutex when accessing vdev and must
-> > > +	 * handle the case where vdev is NULL after virtblk_remove() has been
-> > > +	 * called.
-> > > +	 */
-> > > +	struct mutex vdev_mutex;
-> > 
-> > The patch LGTM, I'm just worried about cache_type_store() and
-> > cache_type_show() because IIUC they aren't in blk-mq and virtqueue code
-> > paths, but they use vdev.
-> > 
-> > Do we have to take the mutex there too?
-> 
-> No, because del_gendisk() in virtblk_remove() deletes the sysfs
-> attributes before vblk->vdev is set to NULL.  kernfs deactivates the
-> kernfs nodes so that further read()/write() operations fail with ENODEV
-> (see fs/kernfs/dir.c and fs/kernfs/file.c).
-> 
-> I have tested that a userspace process with a sysfs attr file open
-> cannot access the attribute after virtblk_remove().
-> 
-> Stefan
+This is the follow up of [1]:
+	[PATCH v1 0/3] mm/memory_hotplug: Make virtio-mem play nicely with
+	kexec-tools
 
-Sounds good, but pls update the comment adding something like
-" .. or anything coming from block layer since del_gendisk()
-  in virtblk_remove deletes the disk before vblk->vdev is set to NULL.
-"
+I realized that this is not only helpful for virtio-mem, but also for
+dax/kmem - it's a fix for that use case (see patch #3) of persistent
+memory.
 
--- 
-MST
+Also, while testing, I discovered that kexec-tools will *not* add dax/kme=
+m
+memory (anything not directly under the root when parsing /proc/iomem) to
+the elfcorehdr, so this memory will never get included in a dump. This
+probably has to be fixed in kexec-tools - virtio-mem will require this as
+well.
+
+v1 -> v2:
+- Don't change the resource name
+- Rename the flag to MHP_NO_FIRMWARE_MEMMAP to reflect what it is doing
+- Rephrase subjects/descriptions
+- Use the flag for dax/kmem
+
+I'll have to rebase virtio-mem on these changes, there will be a resend.
+
+[1] https://lkml.kernel.org/r/20200429160803.109056-1-david@redhat.com
+
+David Hildenbrand (3):
+  mm/memory_hotplug: Prepare passing flags to add_memory() and friends
+  mm/memory_hotplug: Introduce MHP_NO_FIRMWARE_MEMMAP
+  device-dax: Add system ram (add_memory()) with MHP_NO_FIRMWARE_MEMMAP
+
+ arch/powerpc/platforms/powernv/memtrace.c       |  2 +-
+ arch/powerpc/platforms/pseries/hotplug-memory.c |  2 +-
+ drivers/acpi/acpi_memhotplug.c                  |  2 +-
+ drivers/base/memory.c                           |  2 +-
+ drivers/dax/kmem.c                              |  3 ++-
+ drivers/hv/hv_balloon.c                         |  2 +-
+ drivers/s390/char/sclp_cmd.c                    |  2 +-
+ drivers/xen/balloon.c                           |  2 +-
+ include/linux/memory_hotplug.h                  | 15 ++++++++++++---
+ mm/memory_hotplug.c                             | 14 ++++++++------
+ 10 files changed, 29 insertions(+), 17 deletions(-)
+
+--=20
+2.25.3
 
