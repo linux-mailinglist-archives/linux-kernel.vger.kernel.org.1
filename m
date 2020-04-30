@@ -2,152 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC8D1BF9AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56211BF9B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbgD3NiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726577AbgD3NiM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:38:12 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91752C035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:38:11 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id f18so6478454lja.13
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8pRCZ6kZWfVJxdxP6p9p7StOMMTYz2dP0EbXo5rgjQU=;
-        b=EyGdH4vIo8rZD2dWljfyuvofwLAScuy9MrePCPLMC5SLAN0uCqQgWU8hOATGY8NIUG
-         LwU5XqtrSsASECVWVUS0kqmaNFOJ+f7Gt60Rs46vskb78lwJIYXW+VaB0yoC9jwiDxnd
-         eeFKa6lM8p9a1iPOaT8z276Ht3zSOkERrFaNY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8pRCZ6kZWfVJxdxP6p9p7StOMMTYz2dP0EbXo5rgjQU=;
-        b=hMXeURv8z4cyB0eZUy50K+ysKxwuTT33EUlHIJF1CsoUmsNAYcmYll1U8eGcc+qdmO
-         aU7qxo4acM7VJi0+Dle6Hrtk6M76Q6S3Q3R2BblRzqm8GX7s2tT5LyVf1bM4Gs8cpsC/
-         yALael7WDDPrgU9yMfSO0vwp9/+GqV4MifHSgXk7xAw1bAIB6IntQURsPHZoGI9bpG0Q
-         rXT041HENVjFjxNHfOl+Py6YKwQMT76r0IjO4ZqmVSosoxS2xN/RA8Nih/E/SNPK26mV
-         Z5N2s+3feBA0YNOr4qvaB4waVzOKF6QGYbY0d2y8FQe0Jj1d8YhkE8FWx6M/fd6jjajt
-         9LOQ==
-X-Gm-Message-State: AGi0PuZDdPwjb7SSHpRmM0b3cH3jVw/PLdVmtrNxgQvgjE0c9CpN42pr
-        ahN7rQFA8EOZ/CqT6bo+JsfYFw/1L2s=
-X-Google-Smtp-Source: APiQypLe7WijtuskdrwKkYkSURtdiQHLf3zYc2QMtuE1gWGiztiCSqGp44sXXp3b3RPyWyroJ4TArA==
-X-Received: by 2002:a2e:b885:: with SMTP id r5mr2223539ljp.118.1588253889516;
-        Thu, 30 Apr 2020 06:38:09 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id u2sm4994076lfk.67.2020.04.30.06.38.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 06:38:08 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id u10so1228135lfo.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:38:08 -0700 (PDT)
-X-Received: by 2002:a19:9109:: with SMTP id t9mr2305493lfd.10.1588253887778;
- Thu, 30 Apr 2020 06:38:07 -0700 (PDT)
+        id S1727798AbgD3Nip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:38:45 -0400
+Received: from mga09.intel.com ([134.134.136.24]:61389 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726577AbgD3Nin (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:38:43 -0400
+IronPort-SDR: dmFKBRsR31GHjEZ8oxOiFdca9trLAZtmCh2QHh+F51wMQA64hZGEWLi0h6U/gWplXrH4KaRc8w
+ cPMiElNAU7fA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 06:38:42 -0700
+IronPort-SDR: yZoYA8Yk7lCOe409WCst2FaaUWobRCyqWOOakOowW74bp1U/EyP54g3hGjBzGnxoFfsr1dWWt0
+ cYhsjce1nJig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,336,1583222400"; 
+   d="scan'208";a="368146857"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.254.213.153]) ([10.254.213.153])
+  by fmsmga001.fm.intel.com with ESMTP; 30 Apr 2020 06:38:35 -0700
+Subject: Re: [PATCH] perf parse-events: Use strcmp to compare the PMU name
+To:     John Garry <john.garry@huawei.com>, Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        "irogers@google.com" <irogers@google.com>
+References: <20200430003618.17002-1-yao.jin@linux.intel.com>
+ <20200430084529.GC1681583@krava>
+ <66b84e3f-f7d8-bb65-616e-d159a509a439@huawei.com>
+ <20200430111551.GC1694693@krava>
+ <0195184b-0b43-f2fd-8d80-3b70d3f5a950@huawei.com>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <8685d584-1d28-4648-8d85-2ea637f3c695@linux.intel.com>
+Date:   Thu, 30 Apr 2020 21:38:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
- <CAHk-=wi_zr9dwX3UBYvgkmm6eVQfRP50orryJ6ZVAxuFqdSG5A@mail.gmail.com>
- <20200428190836.GC29960@redhat.com> <CAHk-=wi03QRcUR1DfbEr+Pw-DAMENzY-FuRcGawtj9p597=p2w@mail.gmail.com>
- <CAG48ez03ABTa-KbCtFHqB1hOT7dgAM96c3kiw-e80B+utSEwYw@mail.gmail.com>
- <CAHk-=wjTLnMuZmBO2foeHhsLAoUTpUi7oBVJ67F4XKB+tdEDbQ@mail.gmail.com>
- <CAG48ez3EQOvdbzu9aO-cEAJwF_=fJzn1Cg0LMs3ruc=5r1ie5w@mail.gmail.com>
- <CAHk-=whTgFbjGTP=CqMWs_LOkY7bWvLQGYKwKx86amdbMovAkw@mail.gmail.com>
- <CAG48ez2-Nu2ALN6VEUZL-prtR_Kk8QYBHcnvuh0aU2e4zf37RA@mail.gmail.com>
- <CAHk-=wh=G47oD2F1CgOrvGFbEPh2ddMKLV4_wV_bs6S=98aZ5A@mail.gmail.com>
- <AM6PR03MB5170A6AA240D2E8F5E88B911E4AD0@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wguiKq8yf11WJjgSL4ADKZ5sLe_Qbd7vHEqAkTvZJ+d+Q@mail.gmail.com>
- <CAHk-=wjUZLybZBJgOtD2gng=FS7USrbQQ1-tn5M+UP5DbCWdzw@mail.gmail.com>
- <CAG48ez0FL3i4eGFYryOwG2nnS+JigfKYAVSV9ogVHjmjOWzsrA@mail.gmail.com>
- <AM6PR03MB5170C5D02C6FCB6D69DFE3ADE4AA0@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wg6oKSLkVhY5oqOFyzCCSr9eYPGK2SHJfgCXF_QOmPKog@mail.gmail.com>
- <CAG48ez25=6qrCU51dEAV_ciyU2jvPuRFWfFOAAT22kmeAZccuQ@mail.gmail.com> <CAHk-=wjE_YJ4SFJUasF=tW0jMr6zg+rkRNuNt2hdODPu_LLTVw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjE_YJ4SFJUasF=tW0jMr6zg+rkRNuNt2hdODPu_LLTVw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 30 Apr 2020 06:37:51 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjcyDkW_eQ_f4j82dci6jteSgOZ_ONRh9nzs9ykWELQng@mail.gmail.com>
-Message-ID: <CAHk-=wjcyDkW_eQ_f4j82dci6jteSgOZ_ONRh9nzs9ykWELQng@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
-To:     Jann Horn <jannh@google.com>
-Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0195184b-0b43-f2fd-8d80-3b70d3f5a950@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 8:25 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Bernd's approach _without_ the restart is unacceptable.
->
-> It's unacceptable because it breaks things that currently work, and
-> returns EAGAIN in situations where that is simple not a valid error
-> code.
+Hi John, Jiri,
 
-Looking at my restart thing, I think it's a hack, and I don't think
-that's acceptable either.
+On 4/30/2020 7:48 PM, John Garry wrote:
+> On 30/04/2020 12:15, Jiri Olsa wrote:
+> 
+> +
+> 
+>> On Thu, Apr 30, 2020 at 09:54:18AM +0100, John Garry wrote:
+>>> On 30/04/2020 09:45, Jiri Olsa wrote:
+>>>> On Thu, Apr 30, 2020 at 08:36:18AM +0800, Jin Yao wrote:
+>>>>> A big uncore event group is split into multiple small groups which
+>>>>> only include the uncore events from the same PMU. This has been
+>>>>> supported in the commit 3cdc5c2cb924a ("perf parse-events: Handle
+>>>>> uncore event aliases in small groups properly").
+>>>>>
+>>>>> If the event's PMU name starts to repeat, it must be a new event.
+>>>>> That can be used to distinguish the leader from other members.
+>>>>> But now it only compares the pointer of pmu_name
+>>>>> (leader->pmu_name == evsel->pmu_name).
+>>>>>
+>>>>> If we use "perf stat -M LLC_MISSES.PCIE_WRITE -a" on cascadelakex,
+>>>>> the event list is:
+>>>>>
+>>>>> evsel->name                    evsel->pmu_name
+>>>>> ---------------------------------------------------------------
+>>>>> unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_4 (as leader)
+>>>>> unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_2
+>>>>> unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_0
+>>>>> unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_5
+>>>>> unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_3
+>>>>> unc_iio_data_req_of_cpu.mem_write.part0        uncore_iio_1
+>>>>> unc_iio_data_req_of_cpu.mem_write.part1        uncore_iio_4
+>>>>> ......
+>>>>>
+>>>>> For the event "unc_iio_data_req_of_cpu.mem_write.part1" with
+>>>>> "uncore_iio_4", it should be the event from PMU "uncore_iio_4".
+>>>>> It's not a new leader for this PMU.
+>>>>>
+>>>>> But if we use "(leader->pmu_name == evsel->pmu_name)", the check
+>>>>> would be failed and the event is stored to leaders[] as a new
+>>>>> PMU leader.
+>>>>>
+>>>>> So this patch uses strcmp to compare the PMU name between events.
+>>>>>
+>>>>> Fixes: 3cdc5c2cb924a ("perf parse-events: Handle uncore event aliases in 
+>>>>> small groups properly")
+>>>>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>>>>
+>>>> looks good, any chance we could have automated test
+>>>> for this uncore leader setup logic? like maybe the way
+>>>> John did the pmu-events tests? like test will trigger
+>>>> only when there's the pmu/events in the system
+>>>>
+>>>> Acked-by: Jiri Olsa <jolsa@redhat.com>
+>>>>
+>>>> thanks,
+>>>> jirka
+>>>
+>>> Hi jirka,
+>>>
+>>> JFYI, this is effectively the same patch as I mentioned to you, which was a
+>>> fix for the same WARN:
+>>>
+>>> https://lore.kernel.org/linux-arm-kernel/1587120084-18990-2-git-send-email-john.garry@huawei.com/ 
+>>>
+>>>
+>>> but I found that it "fixed" d4953f7ef1a2 ("perf parse-events: Fix 3 use
+>>> after frees found with clang ASANutil/parse-events.c"), based on bisect
+>>> breakage
+>>
+>> hum right.. sorry I did not recalled that, there's
+>> also the warn removal in here, could you guys also
+>> plz sync on the fixes clauses?
+> 
+> I just thought that it fixes d4953f7ef1a2, as I found that the pointer equality 
+> fails from that commit. I assume the parse-events code was sound before then (in 
+> that regard). That's all I know :)
+> 
+> Thanks!
+> 
 
-I was pleased with how clever it was, but it's one of those "clever
-hacks" that is in the end more "hack" than "clever".
+For 3cdc5c2cb924a, I just think it should use strcmp for pmu_name comparison 
+rather than using pointer. But I'm OK to add d4953f7ef1a2 in fixes clauses. :)
 
-The basic issue is that releasing a lock in the middle just
-fundamentally defeats the purpose of the lock unless you have a way to
-redo the operation after fixing whatever caused the drop.
+Thanks
+Jin Yao
 
-And the system call restart thing is dodgy, because there's none of
-that "fixing".
-
-It can cause that "write()" call to do the CPU busy loop too if it
-hits that "execve() in process" situation.
-
-The only difference with the "write()" case vs "ptrace()" is that
-nobody has ever written an insane test-case that doesn't wait for
-children, and then does a "write()" to the /proc file that can then
-require zombie children to be reaped.
-
-So I don't think the approach is valid even with the restart. Not
-restarting isn't acceptable for write(), but restarting doesn't really
-work either.
-
-I guess we could have a very special lock that does something like
-
-    int lock_exec_cred_mutex(struct task_struct *task)
-    {
-        if (mutex_trylock(&task->signal->cred_guard_mutex))
-                return 0;
-
-        if (lock_can_deadlock(task))
-                return -EDEADLK;
-
-        return mutex_lock_interruptible(&task->signal->cred_guard_mutex);
-    }
-
-might work. But that "lock_can_deadlock()" needs some kind of oracle
-or heuristic.
-
-And I can't come up with a perfect one, although I can come up with
-things like "if the target has threads, and those threads have a
-reaoer that is you, then you have to have SIGCHLD enabled". But it
-gets ugly and hacky.
-
-But I think actually releasing the lock in the middle of execve()
-before it's done with is worse than ugly and hacky - it's
-fundamentally broken.
-
-Moving things around? Sure - like waiting for the threads _after_ the
-lock and having done all the cred calculations. So I think Oleg's
-patch works.
-
-                 Linus
+>>
+>> thanks,
+>> jirka
+>>
+>>>
+>>> cheers
+>>>
+>>>>
+>>>>
+>>>>> ---
+>>>>>    tools/perf/util/parse-events.c | 5 ++---
+>>>>>    1 file changed, 2 insertions(+), 3 deletions(-)
+>>>>>
+>>>>> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+>>>>> index 10107747b361..786eddb6a097 100644
+>>>>> --- a/tools/perf/util/parse-events.c
+>>>>> +++ b/tools/perf/util/parse-events.c
+>>>>> @@ -1629,12 +1629,11 @@ parse_events__set_leader_for_uncore_aliase(char 
+>>>>> *name, struct list_head *list,
+>>>>>             * event. That can be used to distinguish the leader from
+>>>>>             * other members, even they have the same event name.
+>>>>>             */
+>>>>> -        if ((leader != evsel) && (leader->pmu_name == evsel->pmu_name)) {
+>>>>> +        if ((leader != evsel) &&
+>>>>> +            !strcmp(leader->pmu_name, evsel->pmu_name)) {
+>>>>>                is_leader = false;
+>>>>>                continue;
+>>>>>            }
+>>>>> -        /* The name is always alias name */
+>>>>> -        WARN_ON(strcmp(leader->name, evsel->name));
+>>>>>            /* Store the leader event for each PMU */
+>>>>>            leaders[nr_pmu++] = (uintptr_t) evsel;
+>>>>> -- 
+>>>>> 2.17.1
+>>>>>
+>>>>
+>>>> .
+>>>>
+>>>
+>>
+>> .
+>>
+> 
