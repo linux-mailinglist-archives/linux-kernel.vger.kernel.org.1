@@ -2,149 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BDB91BF4B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814971BF4AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgD3J7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 05:59:31 -0400
-Received: from mail-co1nam11on2056.outbound.protection.outlook.com ([40.107.220.56]:6038
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726867AbgD3J7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 05:59:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KkMDh/KHI/zVKcQe3v5T8K72KmwdEiTjtsyTjovPnNdDiWzW4v42BvabzzZDjb1NwzTQIbOpfBdzlTmuK9652fSRd/0C2VwOs9DOO0W8dl1q9Qo/hA6sV4p5BfhgUBGr1qsHfl7GTlHCXZgau+CC6ujUHaxZZqv9ObOdYbAik053qogtG9MdbZbTVS6obJYQObWzEfBNBniEL41kA/3UPoK7mKeq1uxzfY0w9b3V3niffCq7om3QIqw/mzdG2QRzV4WJu02SSoNsRAp/f76CFufjAWiyIM1y7EKLTtlu45Qh8Y/9LvyDLOpN6YaNyGRV04juTpaAiEWzo3YVU5tbwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FuwNckBsREWK/wRm/JNwz4peDmzIsWTpLA7jtPQWozc=;
- b=HCEyASXvbRDmCuZZYQzjEQxUr1Dp1K7wu0XSGujdhpvHeHbjhhLzfX2FEVYz4KjnA446OALwVpglxTdG6XmM4q8GtjE5AY+lEJy8RtWFLFoDmFiCjwk/GTQUePzW9gASMC1MJu1rf7raElMrZE0hPAugCzDmWLflVn+s9kAU80ONdRKCgE2CAqNFvgFFYZ+1nTX/lyp60LMAUKSX8Pm94pvrbufpyG2HoX+rY3C/fduBWNxjHvzS+L3oyu0B53cyvoM3+aJz5SUNL7Hi7TVMzpb6XB6BiorIgpMwoQcCmcnzTcMRM96mUDP98xXRZGTp25+bscTij4RiNpOsU/jo7g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sifive.com; dmarc=pass action=none header.from=sifive.com;
- dkim=pass header.d=sifive.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FuwNckBsREWK/wRm/JNwz4peDmzIsWTpLA7jtPQWozc=;
- b=A45vD+jgQEb57/hjknxvF0cThvKZ9bbAErIkg/DEVFJba+vn3WvouE7q3Mh9eEJnjfj16yUZQQuJRXP3OKZE4Ov4h/4naUHV+zSuWuD/n0q+j5JS0kd+wnhG6hxibLMr5xBPF+LlRANWaUN//05pLgiCcLnEnOBuPiOpKhg8uYg=
-Authentication-Results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none header.from=sifive.com;
-Received: from BN8PR13MB2611.namprd13.prod.outlook.com (2603:10b6:408:81::17)
- by BN8PR13MB2884.namprd13.prod.outlook.com (2603:10b6:408:85::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.14; Thu, 30 Apr
- 2020 09:59:21 +0000
-Received: from BN8PR13MB2611.namprd13.prod.outlook.com
- ([fe80::c129:8fca:5ed:8929]) by BN8PR13MB2611.namprd13.prod.outlook.com
- ([fe80::c129:8fca:5ed:8929%6]) with mapi id 15.20.2958.020; Thu, 30 Apr 2020
- 09:59:21 +0000
-From:   Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-To:     tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-Subject: [PATCH 2/2] spi: nor: update page program settings for is25wp256 using post bfpt fixup
-Date:   Thu, 30 Apr 2020 02:58:52 -0700
-Message-Id: <1588240732-13905-3-git-send-email-sagar.kadam@sifive.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588240732-13905-1-git-send-email-sagar.kadam@sifive.com>
-References: <1588240732-13905-1-git-send-email-sagar.kadam@sifive.com>
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR08CA0027.namprd08.prod.outlook.com
- (2603:10b6:a03:100::40) To BN8PR13MB2611.namprd13.prod.outlook.com
- (2603:10b6:408:81::17)
+        id S1726817AbgD3J7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 05:59:17 -0400
+Received: from retiisi.org.uk ([95.216.213.190]:56968 "EHLO
+        hillosipuli.retiisi.org.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726378AbgD3J7Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 05:59:16 -0400
+Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id EBA90634C8F;
+        Thu, 30 Apr 2020 12:59:07 +0300 (EEST)
+Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@retiisi.org.uk>)
+        id 1jU5yF-0000QG-Pc; Thu, 30 Apr 2020 12:59:07 +0300
+Date:   Thu, 30 Apr 2020 12:59:07 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Marco Felsch <m.felsch@pengutronix.de>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxime Ripard <maxime@cerno.tech>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>
+Subject: Re: [PATCH v6 2/3] media: ov8856: Add devicetree support
+Message-ID: <20200430095907.GG867@valkosipuli.retiisi.org.uk>
+References: <20200429162437.2025699-1-robert.foss@linaro.org>
+ <20200429162437.2025699-3-robert.foss@linaro.org>
+ <20200430093524.GB2188@pengutronix.de>
+ <20200430094549.GF867@valkosipuli.retiisi.org.uk>
+ <20200430095332.GC2188@pengutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from gamma07.internal.sifive.com (64.62.193.194) by BYAPR08CA0027.namprd08.prod.outlook.com (2603:10b6:a03:100::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 09:59:20 +0000
-X-Mailer: git-send-email 2.7.4
-X-Originating-IP: [64.62.193.194]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7cfacc88-ae92-4046-6b0e-08d7eced2782
-X-MS-TrafficTypeDiagnostic: BN8PR13MB2884:
-X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN8PR13MB2884332FA4DDD5A640EFA43299AA0@BN8PR13MB2884.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 0389EDA07F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8Uz4U0VX63iZOcmwNEfpkQHtbCmDIexKsK7lhUWgJZw4SfqpGSZuv1IV75Hdux6otjS2H0DLwnBd5FplDKz4Xe/ZC5Gcq6UGbresp+jsTY4Ppj4SrGwas32ryCZxSnX+LkaDbVtGVjUhDS5/Gwt7DZGRo1UQZsBw9ycOmgCfnIrs7NVNNnUA72CuRnwSyhIuUmLMj9Y0QRZn3d8gsVMaxU+SsU5+q3/kRJDcCOg3+DHD3eUsKoR6n3Ks9KB1SNUF9Rjvr6TS5T/YrCcwcLgVG/nSdfU6tWGIOv8KRUFgcHAURsWRetUOKdYUjRtIOSFY2jDrAejIErtVH7J9mbfcZgVQ2qFHVlrpaYGf9ppJYEFp2TxhR9ULML6GoJZiSyw8Y89xQhhMVKd35JAbudb9B6Uz0KzbF47wY7Ssge3Hm+OfM5jXMdMISqnGEPTiY+Ot
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR13MB2611.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(39850400004)(396003)(366004)(7696005)(52116002)(8676002)(8936002)(16526019)(186003)(26005)(5660300002)(956004)(478600001)(2906002)(2616005)(316002)(6666004)(66476007)(66556008)(66946007)(86362001)(15650500001)(36756003)(107886003)(4326008)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: MgeCjNPMxNVPp4vjAQfJe9uK8TtX0KSHJJxcI21dPrkFcpp+IJEL+Hj3YVkfvQAF3CxEzL/Hpj/HoEmKBN/legrGQRAM1Z2ob087UjkREhAEbEypt/AxD0a/a8FyItIeSYB9FRko4YWd7EZ8ZAgxzZ7wgLWyU3tw0xxQMN6cMW8a03VdVyc97Pi4qMU3rzr7e9NYr4EoSG5YtfWG8Our+D1uBlLNNC/liFcJ0cOeKwrjarsls0F3pq3wMMOEhr36CSy+P0s+y6PdMLkjVhe4d5t+4RWDSZji1Ad5I7QSgC1BYkngGtnTD1SuIf5Twn4CQXq4TYIiUww/stgebXFr+x7+yOSmxgLQ4d8QUFxdUxP/mU+LuK7WLaqy/M0F6COqPqvxsCj7zSwyfaaUhAiuYvjwqrETKeJFIhhlrfa9P3yoSCZyrdofYByeQoz+VDWbsIyeKw/d1BzA/0k0zkXGtP3F3aAOHbp+HUBqtU2de+YWeGroiYodDdf1hACxO3Wj/baTwAT/nJSx1m3MuwFvhYzA6A7/oT4Vq8R2uduQzM/9NZwYXXiQeWReOLjYOJMTdgXj48JAMcncwtzkWP5zjp4zDutwSOlQA1OWQ3KrTIMCnsypuw0uF/V17brKIiAIeW3GS1ygAEUzOnqFGokOyaUHrSZoRF0rhmzwL25cGrQVOfKGk8Tv3eRoaFar1LduZLaC6lLDYcdQHtiadtGvJi49FE70vOTGUygaGzmM8ieCNJPCOwgriBqVAiD4WESNvirmFMbiPGRhljV/WCbXuk/2NBWZPQlT289O8mDz3I8=
-X-OriginatorOrg: sifive.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7cfacc88-ae92-4046-6b0e-08d7eced2782
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 09:59:21.7013
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HqTe1ObbgXWmuwEDM4quTXlvnhomtKTFVF23Zx1vdN1Mc6mllkoE5DlwpPo4j8WgjevLOE74VF2uoR/XuiUp4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR13MB2884
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430095332.GC2188@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During SFDP parsing it is seen that the IS25WP256d device is missing 4BAIT
-(4-Byte address instruction table), due to which it's page program
-capacity doesn't get correctly populated and the device gets configured
-with 4-byte Address Serial Input Page Program i.e. SNOR_PROTO_1_1_1
-even though it can work with SNOR_PROTO_1_1_4.
+Hi Marco,
 
-Here using the post bfpt fixup hooks we update the page program
-settings to 4-byte QUAD Input Page program operations.
+On Thu, Apr 30, 2020 at 11:53:32AM +0200, Marco Felsch wrote:
+> Hi Sakari,
+> 
+> On 20-04-30 12:45, Sakari Ailus wrote:
+> > Hi Marco,
+> > 
+> > On Thu, Apr 30, 2020 at 11:35:24AM +0200, Marco Felsch wrote:
+> > > Hi Robert,
+> > > 
+> > > thnakf for the patch but pls keep in mind to do one thing per patch.
+> > > IMHO this patch do a lot more. Anyway below are my comment :)
+> > > 
+> > > On 20-04-29 18:24, Robert Foss wrote:
+> > > > Add match table, enable ov8856_probe() to support
+> > > > both ACPI and DT modes.
+> > > 
+> > > You are also adding the support for reset-gpios and regualtors. IMHO the
+> > > commit message don't belong to the changes you made anymore.
+> > > 
+> > > > ACPI and DT modes are primarily distinguished from
+> > > > each other by relying on devm_XXX_get_optional()
+> > > > will return NULL instead of a reference for the
+> > > > desired managed resource.
+> > > > 
+> > > > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> > > > ---
+> > > > 
+> > > > - Changes since v5:
+> > > >   * Maxime & Sakari: Replaced clock tolerance check with warning
+> > > > 
+> > > > - Changes since v4:
+> > > >   * Maxime & Sakari: Switch to clock-frequency
+> > > > 
+> > > > - Changes since v3:
+> > > >   * Remove redundant {}-brackets
+> > > >   * Compare xvclk_rate to 5% tolerance
+> > > >   * Andy: Use dev_fwnode()
+> > > >   * Andy: Use %pe instead of %ld + PTR_ERR()
+> > > >   * Andy: Invert reset_gpio logic
+> > > >   * Andy: Remove dev_dbg() from failing reset_gpio setup
+> > > >   * Andy: Use dev_err for logging for failures
+> > > >   * Andy: Remove dev_warn from EDEFER/regulator error path
+> > > >   * Andy & Sakari: Replaced GPIOD_OUT_XXX with 0/1
+> > > >   * Maxime & Sakari: Verify clock frequency from DT
+> > > >   * Sakari: Verify the 'xvclk_rate' is set correctly for ACPI/DT devices
+> > > >   * Sakari: Remove duplicate ov8856->dev assignment
+> > > > 
+> > > > - Changes since v2:
+> > > >   * Added "struct device *dev" member to struct ov8856
+> > > >   * Andy: Switch to optional version of devm_gpiod_get
+> > > >   * Andy: Switch to optional version of devm_clk_get
+> > > >   * Fabio: Add reset sleep period
+> > > >   * Sakari: Unify defines for 19.2Mhz
+> > > >   * Sakari: Remove 24Mhz clock, since it isn't needed for supported modes
+> > > >   * Sakari: Replace dev_info() with dev_dbg()
+> > > >   * Sakari: Switch induction variable type to unsigned
+> > > >   * Sakari: Don't wait for reset_gpio when in ACPI mode
+> > > >   * Sakari: Pull reset GPIO high on power on failure
+> > > >   * Sakari: Add power on/off to resume/suspend
+> > > >   * Sakari: Fix indentation
+> > > >   * Sakari: Power off during ov8856_remove()
+> > > >   * Sakari: Don't sleep during power-on in ACPI mode
+> > > >   * Sakari: Switch to getting xvclk from clk_get_rate
+> > > > 
+> > > > - Changes since v1:
+> > > >   * Andy & Sakari: Make XVCLK optional since to not break ACPI
+> > > >   * Fabio: Change n_shutdown_gpio name to reset_gpio
+> > > >   * Fabio: Invert reset_gpio due to GPIO_ACTIVE_HIGH -> GPIO_ACTIVE_LOW change
+> > > >   * Fabio: Remove empty line
+> > > >   * Fabio: Remove real error from devm_gpiod_get() failures
+> > > >   * Sakari: ARRAY_SIZE() directly instead of through OV8856_NUM_SUPPLIES
+> > > >   * Sakari: Use XVCLK rate as provided by DT
+> > > > 
+> > > >  drivers/media/i2c/ov8856.c | 137 +++++++++++++++++++++++++++++++++----
+> > > >  1 file changed, 123 insertions(+), 14 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+> > > > index 8655842af275..4749dc74d5ad 100644
+> > > > --- a/drivers/media/i2c/ov8856.c
+> > > > +++ b/drivers/media/i2c/ov8856.c
+> > > > @@ -3,10 +3,13 @@
+> > > >  
+> > > >  #include <asm/unaligned.h>
+> > > >  #include <linux/acpi.h>
+> > > > +#include <linux/clk.h>
+> > > >  #include <linux/delay.h>
+> > > > +#include <linux/gpio/consumer.h>
+> > > >  #include <linux/i2c.h>
+> > > >  #include <linux/module.h>
+> > > >  #include <linux/pm_runtime.h>
+> > > > +#include <linux/regulator/consumer.h>
+> > > >  #include <media/v4l2-ctrls.h>
+> > > >  #include <media/v4l2-device.h>
+> > > >  #include <media/v4l2-fwnode.h>
+> > > > @@ -18,7 +21,7 @@
+> > > >  #define OV8856_LINK_FREQ_360MHZ		360000000ULL
+> > > >  #define OV8856_LINK_FREQ_180MHZ		180000000ULL
+> > > >  #define OV8856_SCLK			144000000ULL
+> > > > -#define OV8856_MCLK			19200000
+> > > > +#define OV8856_XVCLK_19_2		19200000
+> > > >  #define OV8856_DATA_LANES		4
+> > > >  #define OV8856_RGB_DEPTH		10
+> > > >  
+> > > > @@ -64,6 +67,12 @@
+> > > >  
+> > > >  #define to_ov8856(_sd)			container_of(_sd, struct ov8856, sd)
+> > > >  
+> > > > +static const char * const ov8856_supply_names[] = {
+> > > > +	"dovdd",	/* Digital I/O power */
+> > > > +	"avdd",		/* Analog power */
+> > > > +	"dvdd",		/* Digital core power */
+> > > > +};
+> > > > +
+> > > >  enum {
+> > > >  	OV8856_LINK_FREQ_720MBPS,
+> > > >  	OV8856_LINK_FREQ_360MBPS,
+> > > > @@ -566,6 +575,11 @@ struct ov8856 {
+> > > >  	struct media_pad pad;
+> > > >  	struct v4l2_ctrl_handler ctrl_handler;
+> > > >  
+> > > > +	struct device		*dev;
+> > > > +	struct clk		*xvclk;
+> > > > +	struct gpio_desc	*reset_gpio;
+> > > > +	struct regulator_bulk_data supplies[ARRAY_SIZE(ov8856_supply_names)];
+> > > > +
+> > > >  	/* V4L2 Controls */
+> > > >  	struct v4l2_ctrl *link_freq;
+> > > >  	struct v4l2_ctrl *pixel_rate;
+> > > > @@ -908,6 +922,52 @@ static int ov8856_set_stream(struct v4l2_subdev *sd, int enable)
+> > > >  	return ret;
+> > > >  }
+> > > >  
+> > > > +static int __ov8856_power_on(struct ov8856 *ov8856)
+> > > > +{
+> > > > +	struct i2c_client *client = v4l2_get_subdevdata(&ov8856->sd);
+> > > > +	int ret;
+> > > > +
+> > > > +	ret = clk_prepare_enable(ov8856->xvclk);
+> > > 
+> > > You're request the clk only in DT case or do I miss something? If so you
+> > > have to check if the clk is available.
+> > > 
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(&client->dev, "failed to enable xvclk\n");
+> > > > +		return ret;
+> > > > +	}
+> > > > +
+> > > > +	if (is_acpi_node(dev_fwnode(ov8856->dev)))
+> > > > +		return 0;
+> > > > +
+> > > > +	if (ov8856->reset_gpio) {
+> > > > +		gpiod_set_value_cansleep(ov8856->reset_gpio, 1);
+> > > > +		usleep_range(1000, 2000);
+> > > > +	}
+> > > > +
+> > > > +	ret = regulator_bulk_enable(ARRAY_SIZE(ov8856_supply_names),
+> > > > +				    ov8856->supplies);
+> > > > +	if (ret < 0) {
+> > > > +		dev_err(&client->dev, "failed to enable regulators\n");
+> > > > +		goto disable_clk;
+> > > > +	}
+> > > > +
+> > > > +	gpiod_set_value_cansleep(ov8856->reset_gpio, 0);
+> > > 
+> > > You need to check the existance of the gpio here too.
+> > 
+> > No need to; the GPIO framework can handle this internally.
+> 
+> Ahh, I said nothing :) so all my comments about that can be dropped. 
+> 
+> > > > +	usleep_range(1500, 1800);
+> > > > +
+> > > > +	return 0;
+> > > > +
+> > > > +disable_clk:
+> > > > +	gpiod_set_value_cansleep(ov8856->reset_gpio, 1);
+> > > 
+> > > And here.. pls check the whole patch.
+> > > 
+> > > > +	clk_disable_unprepare(ov8856->xvclk);
+> > > > +
+> > > > +	return ret;
+> > > > +}
+> > > > +
+> > > > +static void __ov8856_power_off(struct ov8856 *ov8856)
+> > > > +{
+> > > > +	gpiod_set_value_cansleep(ov8856->reset_gpio, 1);
+> > > > +	regulator_bulk_disable(ARRAY_SIZE(ov8856_supply_names),
+> > > > +			       ov8856->supplies);
+> > > > +	clk_disable_unprepare(ov8856->xvclk);
+> > > 
+> > > Clk is only availabel in DT use-case.
+> > > 
+> > > > +}
+> > > > +
+> > > >  static int __maybe_unused ov8856_suspend(struct device *dev)
+> > > >  {
+> > > >  	struct i2c_client *client = to_i2c_client(dev);
+> > > > @@ -918,6 +978,7 @@ static int __maybe_unused ov8856_suspend(struct device *dev)
+> > > >  	if (ov8856->streaming)
+> > > >  		ov8856_stop_streaming(ov8856);
+> > > >  
+> > > > +	__ov8856_power_off(ov8856);
+> > > >  	mutex_unlock(&ov8856->mutex);
+> > > >  
+> > > >  	return 0;
+> > > > @@ -931,6 +992,8 @@ static int __maybe_unused ov8856_resume(struct device *dev)
+> > > >  	int ret;
+> > > >  
+> > > >  	mutex_lock(&ov8856->mutex);
+> > > > +
+> > > > +	__ov8856_power_on(ov8856);
+> > > >  	if (ov8856->streaming) {
+> > > >  		ret = ov8856_start_streaming(ov8856);
+> > > >  		if (ret) {
+> > > > @@ -1092,29 +1155,54 @@ static int ov8856_identify_module(struct ov8856 *ov8856)
+> > > >  	return 0;
+> > > >  }
+> > > >  
+> > > > -static int ov8856_check_hwcfg(struct device *dev)
+> > > > +static int ov8856_get_hwcfg(struct ov8856 *ov8856)
+> > > >  {
+> > > > +	struct device *dev = ov8856->dev;
+> > > >  	struct fwnode_handle *ep;
+> > > >  	struct fwnode_handle *fwnode = dev_fwnode(dev);
+> > > >  	struct v4l2_fwnode_endpoint bus_cfg = {
+> > > >  		.bus_type = V4L2_MBUS_CSI2_DPHY
+> > > >  	};
+> > > > -	u32 mclk;
+> > > > +	u32 xvclk_rate;
+> > > >  	int ret;
+> > > >  	unsigned int i, j;
+> > > >  
+> > > >  	if (!fwnode)
+> > > >  		return -ENXIO;
+> > > >  
+> > > > -	ret = fwnode_property_read_u32(fwnode, "clock-frequency", &mclk);
+> > > > +	ret = fwnode_property_read_u32(fwnode, "clock-frequency",
+> > > > +		&xvclk_rate);
+> > > >  	if (ret)
+> > > >  		return ret;
+> > > >  
+> > > > -	if (mclk != OV8856_MCLK) {
+> > > > -		dev_err(dev, "external clock %d is not supported", mclk);
+> > > > -		return -EINVAL;
+> > > > +	if (!is_acpi_node(fwnode)) {
+> > > > +		ov8856->xvclk = devm_clk_get(dev, "xvclk");
+> > > > +		if (IS_ERR(ov8856->xvclk)) {
+> > > > +			dev_err(dev, "could not get xvclk clock (%pe)\n",
+> > > > +					ov8856->xvclk);
+> > > > +			return PTR_ERR(ov8856->xvclk);
+> > > > +		}
+> > > > +
+> > > > +		clk_set_rate(ov8856->xvclk, xvclk_rate);
+> > > > +		xvclk_rate = clk_get_rate(ov8856->xvclk);
+> > > >  	}
+> > > 
+> > > Why do we handle the clock only in DT case? Is there a problem with the
+> > > clock handling and ACPI?
+> > 
+> > Not really, it's just that ACPI does not provide an interface to the clocks
+> > as such.
+> 
+> But you will get a clk by devm_clk_get()?
 
-The patch is tested on HiFive Unleashed A00 board and it benefits
-few seconds of average write time for entire flash write.
+No, because ACPI does not expose one to drivers. Effectively the entire
+power sequences are implemented in ACPI, not in the driver.
 
-QUAD Input Page Program operations:
-> time mtd_debug write /dev/mtd0 0 33554432 rd32M
-Copied 33554432 bytes from rd32M to address 0x00000000 in flash
-real    0m 32.85s
-user    0m 0.00s
-sys     0m 31.79s
-
-Serial Input Page Program operations:
-> time mtd_debug write /dev/mtd0 0 33554432 rd32M
-Copied 33554432 bytes from rd32M to address 0x00000000 in flash
-real    0m 35.87s
-user    0m 0.00s
-sys     0m 35.42s
-
-Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
----
- drivers/mtd/spi-nor/issi.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/drivers/mtd/spi-nor/issi.c b/drivers/mtd/spi-nor/issi.c
-index ffcb60e..9eb6e82 100644
---- a/drivers/mtd/spi-nor/issi.c
-+++ b/drivers/mtd/spi-nor/issi.c
-@@ -23,6 +23,22 @@ is25lp256_post_bfpt_fixups(struct spi_nor *nor,
- 		BFPT_DWORD1_ADDRESS_BYTES_3_ONLY)
- 		nor->addr_width = 4;
- 
-+	/*
-+	 * On IS25WP256d device 4-Byte address instruction table doesn't
-+	 * get populated and so the device get's configured with 4-byte
-+	 * Address Serial Input Page Program i.e. SNOR_PROTO_1_1_1 even
-+	 * though it supports SNOR_PROTO_1_1_4, so priorotize QUAD write
-+	 * over SINGLE write if device id table holds SPI_NOR_QUAD_READ.
-+	 */
-+	if (strcmp(nor->info->name, "is25wp256") == 0) {
-+		if (nor->info->flags & SPI_NOR_QUAD_READ) {
-+			params->hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4;
-+			spi_nor_set_pp_settings
-+				(&params->page_programs[SNOR_CMD_PP_1_1_4],
-+				 SPINOR_OP_PP_1_1_4,
-+				 SNOR_PROTO_1_1_4);
-+		}
-+	}
- 	return 0;
- }
- 
 -- 
-2.7.4
+Regards,
 
+Sakari Ailus
