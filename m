@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9A81C01C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C371C022A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgD3QLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:11:00 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:48824 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726473AbgD3QLA (ORCPT
+        id S1726626AbgD3QTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:19:21 -0400
+Received: from li1843-175.members.linode.com ([172.104.24.175]:34642 "EHLO
+        mail.stoffel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbgD3QTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:11:00 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UG9P7i018332;
-        Thu, 30 Apr 2020 16:10:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=cGBuAWcMSJuK2HC9O6Fm+m3T13l5AKHSgVbckXcZcws=;
- b=X+Sn+ll5H98DPvH7VO7oG3aYaZVmj8JKTknXpDbnFeO3k0GpQkGIg4cqwL7XrTCEt9Vt
- xa8JggswfIUaz2bVM7OZBz1mVTDARGX/fwas8lZMZIYHcvXapo7WCNp3XQgFeM3EqCbP
- 7gw4vmHzHnlKoeUggE18jdHpc6WTkofF+g7AI4BJdz3DZPNOaqIQn4L05ctekAtou3rx
- PqvngvS78QAY0vAfrTRWJZmXi1poDS0Hhl9+gzzJnogYDWnuBBGcW1v/Nc04T5n7ab9o
- 2pSe1VhnH37+jTnJvYc1gkXp4w6Jsp7GDCjGvd7kFqljOhIcK1SmYbvnwmrPl/KW/CJe cg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 30p01p2y1e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 16:10:53 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UG8RaZ075430;
-        Thu, 30 Apr 2020 16:08:53 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 30qtkwpg1y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 30 Apr 2020 16:08:53 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03UG8qd9077324;
-        Thu, 30 Apr 2020 16:08:52 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 30qtkwpg1c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 16:08:52 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03UG8oep011597;
-        Thu, 30 Apr 2020 16:08:51 GMT
-Received: from [10.159.147.146] (/10.159.147.146)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Apr 2020 09:08:50 -0700
-Subject: Re: [PATCH 24/37] docs: networking: convert rds.txt to ReST
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-References: <cover.1588261997.git.mchehab+huawei@kernel.org>
- <6c2adf3f895bea317c2f69cb14e2cf0eb203ac64.1588261997.git.mchehab+huawei@kernel.org>
-From:   santosh.shilimkar@oracle.com
-Organization: Oracle Corporation
-Message-ID: <871049f9-9d40-8fcd-f525-d30facd757d4@oracle.com>
-Date:   Thu, 30 Apr 2020 09:08:49 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.2
+        Thu, 30 Apr 2020 12:19:12 -0400
+X-Greylist: delayed 562 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Apr 2020 12:19:12 EDT
+Received: from quad.stoffel.org (066-189-075-104.res.spectrum.com [66.189.75.104])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.stoffel.org (Postfix) with ESMTPSA id 560F21F03E;
+        Thu, 30 Apr 2020 12:09:50 -0400 (EDT)
+Received: by quad.stoffel.org (Postfix, from userid 1000)
+        id 99CE8A6257; Thu, 30 Apr 2020 12:09:49 -0400 (EDT)
 MIME-Version: 1.0
-In-Reply-To: <6c2adf3f895bea317c2f69cb14e2cf0eb203ac64.1588261997.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 clxscore=1011
- phishscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501 mlxscore=0
- suspectscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004300128
+Message-ID: <24234.63565.561786.818825@quad.stoffel.home>
+Date:   Thu, 30 Apr 2020 12:09:49 -0400
+From:   "John Stoffel" <john@stoffel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Jason Baron <jbaron@akamai.com>, Coly Li <colyli@suse.de>,
+        "agk\@redhat.com" <agk@redhat.com>,
+        "snitzer\@redhat.com" <snitzer@redhat.com>,
+        "linux-raid\@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        NeilBrown <neilb@suse.de>
+Subject: Re: [PATCH] md/raid0: add config parameters to specify zone layout
+In-Reply-To: <E3616A45-C6D0-4B3B-8112-688B03126F00@fb.com>
+References: <1585236500-12015-1-git-send-email-jbaron@akamai.com>
+        <0b7aad8b-f0b7-24c6-ad19-99c6202a3036@suse.de>
+        <8feb2018-7f99-6e02-c704-9d7fed40bba2@akamai.com>
+        <E3616A45-C6D0-4B3B-8112-688B03126F00@fb.com>
+X-Mailer: VM 8.2.0b under 25.1.1 (x86_64-pc-linux-gnu)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/30/20 9:04 AM, Mauro Carvalho Chehab wrote:
-> - add SPDX header;
-> - add a document title;
-> - mark code blocks and literals as such;
-> - mark tables as such;
-> - mark lists as such;
-> - adjust identation, whitespaces and blank lines where needed;
-> - add to networking/index.rst.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+>>>>> "Song" == Song Liu <songliubraving@fb.com> writes:
+
+Song> Hi Jason,
+>> On Apr 27, 2020, at 2:10 PM, Jason Baron <jbaron@akamai.com> wrote:
+>> 
+>> 
+>> 
+>> On 4/25/20 12:31 AM, Coly Li wrote:
+>>> On 2020/3/26 23:28, Jason Baron wrote:
+>>>> Let's add some CONFIG_* options to directly configure the raid0 layout
+>>>> if you know in advance how your raid0 array was created. This can be
+>>>> simpler than having to manage module or kernel command-line parameters.
+>>>> 
+>>> 
+>>> Hi Jason,
+>>> 
+>>> If the people who compiling the kernel is not the end users, the
+>>> communication gap has potential risk to make users to use a different
+>>> layout for existing raid0 array after a kernel upgrade.
+>>> 
+>>> If this patch goes into upstream, it is very probably such risky
+>>> situation may happen.
+>>> 
+>>> The purpose of adding default_layout is to let *end user* to be aware of
+>>> they layout when they use difference sizes component disks to assemble
+>>> the raid0 array, and make decision which layout algorithm should be
+>>> used. Such situation cannot be decided in kernel compiling time.
+>> 
+>> I agree that in general it may not be known at compile time. Thus,
+>> I've left the default as RAID0_LAYOUT_NONE. However, there are
+>> use-cases where it is known at compile-time which layout is needed.
+>> In our use-case, we knew that we didn't have any pre-3.14 raid0
+>> arrays. Thus, we can safely set RAID0_ALT_MULTIZONE_LAYOUT. So
+>> this is a simpler configuration for us than setting module or command
+>> line parameters.
+
+Song> I would echo Coly's concern that CONFIG_ option could make it risky. 
+Song> If the overhead of maintaining extra command line parameter, I would
+Song> recommend you carry a private patch for this change. For upstream, it
+Song> is better NOT to carry the default in CONFIG_.
+
+I agree as well.  Just because you have a known base, doesn't mean
+that others wouldn't be hit with this problem.
+
+John
+
