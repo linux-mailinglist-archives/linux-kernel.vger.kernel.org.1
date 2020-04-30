@@ -2,69 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C8A1BFD71
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6061BFD8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729114AbgD3OMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:12:37 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:46222 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728661AbgD3OMd (ORCPT
+        id S1728648AbgD3ONI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726830AbgD3ONE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:12:33 -0400
-Received: by mail-oo1-f65.google.com with SMTP id x16so1301184oop.13;
-        Thu, 30 Apr 2020 07:12:33 -0700 (PDT)
+        Thu, 30 Apr 2020 10:13:04 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C17C035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:13:03 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id p7so3247930ybo.12
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:13:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RuWwUfWQPRmorLJ8b4zPbt9Fzldh22r5PvhTsct28+I=;
+        b=pk7zbkMmpolApkEOyS3DR9EpWhiAdivVNW9DyuWBuWmykocUs1WMpHP3+1cKYrJDFt
+         fUY2r3pHLWypxFMnu8f8gwOQeCTfc+MCr/KCIl6f0q8sXIUnpPoxWR2ACDSMxnCvGX+9
+         TPs6FhDnt6eoep0i+XYqgQiB5AU/7zOWPAd3yaVzAsbIXsWq8ttxqtWmm7U4HXaMix/v
+         wVGxFG2ziimHkpUyfODY85r/+MWa/FTDTlPCV77olgN/52pXUWbexTtE4n020G/fJSQV
+         TZCUaeNnACcCno+1i/Xka0EAdccl7aU27HZHFQhxKfJ+UluRikOeMomXMl2MmF/7bOMK
+         D4Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=A4VjQG4GaeZwUvuLCg1gpRlRogX8RvlAHCiaM0iOEnI=;
-        b=J6lpTDRZaNPYoLUnGMDVGSzHSGs6W1QTFBT41GlWseKs3Ib6MaEo75QOwdTAPjSTwR
-         S/rTS4S/ElSSrncdFwmwWXf2t13PuNToC738fEjdt+YiqowYph6wid0fwsfxhdgaBTQw
-         P9uWpgoF6nM15WyIH1343rdarRDF4BBwG/Gv0RJzM6zgEcBtR6Ydio1XEQPGUYdwwL4h
-         wR6He6R0J1G8JFNnuog1JJCD2qEMY4z17XXyerefT2smJk3OfJ55fuysnSaK0HCXVGvy
-         zcGQ7ZtNkP1+e3SGRTbNtsQcPosHJGis9PJPuesY8dHVwfIyQXAWaSoQgYh9owu3W7yp
-         UbIw==
-X-Gm-Message-State: AGi0PuYn/u1IIzEbjy9Aza7XjzwiVg1H8hkLZPLr8+swjbpehl8LPtYM
-        2uLSJxQZHd9vWJjU5IHC194YuQ0=
-X-Google-Smtp-Source: APiQypJZZKu6q0o/sEjNsrIJ8Ue6NRQME63JkomfCMYnMIiIszUXKpZSJ2lwInTV04v8Fv8dAtRTzg==
-X-Received: by 2002:a4a:3b4a:: with SMTP id s71mr2953497oos.81.1588255952586;
-        Thu, 30 Apr 2020 07:12:32 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u9sm6726otq.54.2020.04.30.07.12.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 07:12:31 -0700 (PDT)
-Received: (nullmailer pid 9061 invoked by uid 1000);
-        Thu, 30 Apr 2020 14:12:31 -0000
-Date:   Thu, 30 Apr 2020 09:12:31 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Lubomir Rintel <lkundrak@v3.sk>
-Subject: Re: [PATCH 04/10] dt-bindings: marvell,mmp2: Add clock id for the
- Audio clock
-Message-ID: <20200430141231.GA9028@bogus>
-References: <20200419172742.674717-1-lkundrak@v3.sk>
- <20200419172742.674717-5-lkundrak@v3.sk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RuWwUfWQPRmorLJ8b4zPbt9Fzldh22r5PvhTsct28+I=;
+        b=nWnLn5ivIPI6pucaXZjRJIVU5wuUDCFfk9abKnz5zclTNebJIFAzturiA6Tp37WdLx
+         mCRt07s0qez0T3/J4P8+zOW1Ozubw39N/jNXxJlc5iq0VlzPNtCZgw6Wvr3KZwRMg78+
+         H/0xISwT4QMDtdHlHmxLt1eEL7TbLpk3tDEG4oEXPOWmmU4UtaEyngCpKMX3R9VNtwRp
+         uZPZxNONVV3wnA8DQr163Q3z4GmgH5mWY+4oiSnI8lSCgYVLz18FWguAyHUcXh5SfQSn
+         wVSIf0Y4ERNT2BYd2tLsaVEycJhhG0TVDNFMQIUqU+Fm9tk7JYdxbLSrHZT95ElkYpH7
+         PUHw==
+X-Gm-Message-State: AGi0PuaYTB5mzF8d3Yn1UvqMpF3nyEt30+e5cT07Ianod1GEmOd5DBl9
+        Er67v1aRxRGaPGdfMAlZ32NSXddjDHSumdYiYJe4eA==
+X-Google-Smtp-Source: APiQypKm5TqtGiKOOqwKJzOfYvb5QkQThWB3by2Fk9vyZpGFSzLNc6qrnPaoU2AON83sJot6qF68YMUxNVn9il077vA=
+X-Received: by 2002:a25:ddc3:: with SMTP id u186mr6092717ybg.383.1588255982479;
+ Thu, 30 Apr 2020 07:13:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200419172742.674717-5-lkundrak@v3.sk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200409185744.255881-1-irogers@google.com> <20200414125105.GC117177@krava>
+ <CAP-5=fXRN-h3M4s5XYtA=PX+qxZVvBiE94xRF9RN7zHG9fYE1w@mail.gmail.com>
+In-Reply-To: <CAP-5=fXRN-h3M4s5XYtA=PX+qxZVvBiE94xRF9RN7zHG9fYE1w@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 30 Apr 2020 07:12:49 -0700
+Message-ID: <CAP-5=fW0+FyFkakrYL6MYYYSQ_8F8kP+AhZ6W1Aqgophegzamg@mail.gmail.com>
+Subject: Re: [PATCH] perf data: if a bad header size, retry in pipe mode
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Apr 2020 19:27:36 +0200, Lubomir Rintel wrote:
-> This clocks the Audio block.
-> 
-> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-> ---
->  include/dt-bindings/clock/marvell,mmp2.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Tue, Apr 14, 2020 at 7:01 AM Ian Rogers <irogers@google.com> wrote:
+>
+> On Tue, Apr 14, 2020 at 5:51 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Thu, Apr 09, 2020 at 11:57:44AM -0700, Ian Rogers wrote:
+> > > Currently pipe mode files fail like:
+> > > $ perf record -o - sleep 1 > /tmp/perf.pipe.data
+> > > $ perf report -i /tmp/perf.pipe.data
+> > > incompatible file format (rerun with -v to learn more)
+> > >
+> > > This change makes it so that if a perf.data file's header size is wrong
+> > > it is re-checked in pipe mode, where if wrong it fails as it currently
+> > > does.
+> > >
+> >
+> > hi,
+> > how about doing it the other way round like below,
+> > read header and find out if it's pipe..
+> >
+> > seems it's less changes
+> >
+> > jirka
+>
+> Looks good to me. I think removing the function declaration from
+> util/header.h is still worthwhile, but needn't be in a patch with this
+> change.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Hi Jiri,
+
+Do you need to send this patch?
+
+Thanks,
+Ian
+
+> Thanks!
+> Ian
+>
+> > ---
+> > diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> > index acbd046bf95c..20c34cec9a46 100644
+> > --- a/tools/perf/util/header.c
+> > +++ b/tools/perf/util/header.c
+> > @@ -3469,7 +3469,7 @@ static int perf_header__read_pipe(struct perf_session *session)
+> >                 return -EINVAL;
+> >         }
+> >
+> > -       return 0;
+> > +       return f_header.size == sizeof(f_header) ? 0 : -1;
+> >  }
+> >
+> >  static int read_attr(int fd, struct perf_header *ph,
+> > @@ -3571,7 +3571,7 @@ int perf_session__read_header(struct perf_session *session)
+> >         struct perf_file_header f_header;
+> >         struct perf_file_attr   f_attr;
+> >         u64                     f_id;
+> > -       int nr_attrs, nr_ids, i, j;
+> > +       int nr_attrs, nr_ids, i, j, err;
+> >         int fd = perf_data__fd(data);
+> >
+> >         session->evlist = evlist__new();
+> > @@ -3580,8 +3580,16 @@ int perf_session__read_header(struct perf_session *session)
+> >
+> >         session->evlist->env = &header->env;
+> >         session->machines.host.env = &header->env;
+> > -       if (perf_data__is_pipe(data))
+> > -               return perf_header__read_pipe(session);
+> > +
+> > +       /*
+> > +        * We could still read 'pipe' data from regular file,
+> > +        * check for the pipe header first.
+> > +        */
+> > +       err = perf_header__read_pipe(session);
+> > +       if (!err || (err && perf_data__is_pipe(data))) {
+> > +               data->is_pipe = true;
+> > +               return err;
+> > +       }
+> >
+> >         if (perf_file_header__read(&f_header, header, fd) < 0)
+> >                 return -EINVAL;
+> >
