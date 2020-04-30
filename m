@@ -2,63 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A581BFFC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EAF1BFFA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgD3PLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 11:11:38 -0400
-Received: from elvis.franken.de ([193.175.24.41]:33630 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726699AbgD3PLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:11:38 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jUAqa-0005Uk-00; Thu, 30 Apr 2020 17:11:32 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 30965C0358; Thu, 30 Apr 2020 17:05:45 +0200 (CEST)
-Date:   Thu, 30 Apr 2020 17:05:45 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] MIPS: tools: Show result for loongson3-llsc-check
-Message-ID: <20200430150545.GA17822@alpha.franken.de>
-References: <1588250184-18730-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1726835AbgD3PGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 11:06:53 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:24879 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726501AbgD3PGw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 11:06:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588259212; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=b3Fk8o+zUWDtaaxt3LW4me8q66Riwnz1AJgdSV4hMvY=; b=Qxd1CH7kNw+FQXYgYc0CU2oBYRLkHK/DtKAbZWHWjIzdw/R3eROlh8ie16kLXOHSYlLSgeqb
+ /+wbcdUHU8k/sNPV8WDfiEfr5u0A70DjTsd26h7FvpCYU3yKkDpO5txc/97JPHrVaBxhyXz9
+ ukvyJ87X3/f6VpTjidJYR79eh18=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eaae97d.7f7376767d50-smtp-out-n03;
+ Thu, 30 Apr 2020 15:06:37 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D7441C433F2; Thu, 30 Apr 2020 15:06:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B22E3C433CB;
+        Thu, 30 Apr 2020 15:06:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B22E3C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v3 8/9] bus: mhi: core: Improve debug logs for loading
+ firmware
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>, mani@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hemantk@codeaurora.org
+References: <1588193551-31439-1-git-send-email-bbhatt@codeaurora.org>
+ <1588193551-31439-9-git-send-email-bbhatt@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <6b8fbb74-3e56-be82-f262-e282d8393c61@codeaurora.org>
+Date:   Thu, 30 Apr 2020 09:06:34 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1588250184-18730-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <1588193551-31439-9-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 08:36:24PM +0800, Tiezhu Yang wrote:
-> It is better to show the result before loongson3-llsc-check exit,
-> otherwise we can see nothing if the return status is EXIT_SUCCESS,
-> it seems confusing.
+On 4/29/2020 2:52 PM, Bhaumik Bhatt wrote:
+> Add log messages to track boot flow errors and timeouts in SBL or AMSS
+> firmware loading to aid in debug.
 > 
-> E.g. without this patch:
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 > 
-> [loongson@localhost tools]$ ./loongson3-llsc-check ../../../vmlinux
-> [loongson@localhost tools]$
-> 
-> With this patch:
-> 
-> [loongson@localhost tools]$ ./loongson3-llsc-check ../../../vmlinux
-> loongson3-llsc-check returns success
-> [loongson@localhost tools]$
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  arch/mips/tools/loongson3-llsc-check.c | 2 ++
->  1 file changed, 2 insertions(+)
 
-applied to mips-next.
-
-Thomas.
+Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
