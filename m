@@ -2,161 +2,486 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA771BF028
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869BB1BF037
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgD3GTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 02:19:42 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22152 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726337AbgD3GTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 02:19:42 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 03U69uY8008203;
-        Wed, 29 Apr 2020 23:19:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=/XmngWCDDQ7yTPEIuqpcQSMJWLVrYb+8cMDOpxm8CVU=;
- b=Zx5IuvG7t9/7RfXNvyAUFC+0nMOndGe1bm9DZynAYR/K5mafdglH1S1sU6h4A5lkPaHw
- FIgf8kYO3S+jCORSuLsATLMQKQMDpMMUSgdkfl+iGP50f3wRnyAmNKKAV+XXGC7Llx6a
- FCa/KFKOYqEqANMsC1nG7j54GATy3aoOQ6o= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 30qjh01v0v-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 29 Apr 2020 23:19:32 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 29 Apr 2020 23:19:28 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R0YatdEgofILMhPmzhCqNkR9cw/5icguE2D7gRLVwk0ylID8T0HPr4kmyqVGVvV1bEhqIdmbF6Jbcyua/unRBwehCvlJCTm+rtrg/9iuXBsSC7ZpH+k2zy1yysNiP9/HU1ZDpbDfbeVAilFowqgqr6d/xR3fukD1yYTxQjvW/Lk9QZacfYxQgeA+13dgLoM4BWlt8Z0gPfaJNx7pVFmZnF4vCnU96+kfc5yCLxM1sYdG+oVXMTsfujdfEilgNNR91bP1Ii6MDWX2/lRubHHnZbndyIs5NZ1HR5E5GKIkkkAew0l36pcq90iuhz5BpNbUjoL5CXMpo4CuKqn9eKHqlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/XmngWCDDQ7yTPEIuqpcQSMJWLVrYb+8cMDOpxm8CVU=;
- b=MJmSoeh/k+139zgjFylSofaYSU+Gkl2oSCUyZLcVKb0TxvlOB82sFKCvUisMuRuiSuqPhdRyn8z7hqc9/AGk9+IWV/8AUkMKyN4yrQaW+mWNmAljZHODVo3DLTReXS66igR7PY2dH5+bhk66ROPHzR2bQMJM6QK3Gm4626xOuVuPrrjOrEyzu4ye6ffx0PkHaZ7sxrklt1az080eVAwunXifvKchQMXx21n/KT+C06HfjpigS0t0/kbB5dvS+o8bUR0Z7NmKjXHf+SyvaUeas1xLFBAYbKzQrVT3puOu1MoQIDkks4/ZW5tBUxkQBColx38uIxe4cz3UYoUF2Y58Tw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/XmngWCDDQ7yTPEIuqpcQSMJWLVrYb+8cMDOpxm8CVU=;
- b=fNF0EEf6v8ccHHv/xrUnw5QC8BxiCemtQ1YHnOb3zV5fwaUoafOD4wJM4PNsysFSioke+iif38HUxErUo1eY+TGluoaq2PbLDDOTdEndZAWyBySao6QaiFUKV57OrUPkkNAfA4DHdkL99Bq3QA4duTg3lJKaVz7e94I8/pXtsck=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB2215.namprd15.prod.outlook.com (2603:10b6:a02:89::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Thu, 30 Apr
- 2020 06:19:26 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::bdf1:da56:867d:f8a2]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::bdf1:da56:867d:f8a2%7]) with mapi id 15.20.2958.020; Thu, 30 Apr 2020
- 06:19:26 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Jason Baron <jbaron@akamai.com>
-CC:     Coly Li <colyli@suse.de>, "agk@redhat.com" <agk@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        NeilBrown <neilb@suse.de>
-Subject: Re: [PATCH] md/raid0: add config parameters to specify zone layout
-Thread-Topic: [PATCH] md/raid0: add config parameters to specify zone layout
-Thread-Index: AQHWA4Oi1lNMKhCVRE6s4F46gf8lKKiJbd6AgAQ7nYCAA74WAA==
-Date:   Thu, 30 Apr 2020 06:19:26 +0000
-Message-ID: <E3616A45-C6D0-4B3B-8112-688B03126F00@fb.com>
-References: <1585236500-12015-1-git-send-email-jbaron@akamai.com>
- <0b7aad8b-f0b7-24c6-ad19-99c6202a3036@suse.de>
- <8feb2018-7f99-6e02-c704-9d7fed40bba2@akamai.com>
-In-Reply-To: <8feb2018-7f99-6e02-c704-9d7fed40bba2@akamai.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.80.23.2.2)
-authentication-results: akamai.com; dkim=none (message not signed)
- header.d=none;akamai.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:67b7]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d24309c7-81c9-4093-d834-08d7ecce6f1f
-x-ms-traffictypediagnostic: BYAPR15MB2215:
-x-microsoft-antispam-prvs: <BYAPR15MB2215008ACEA37969FC968CCAB3AA0@BYAPR15MB2215.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0389EDA07F
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(366004)(346002)(136003)(376002)(396003)(186003)(4326008)(2906002)(6506007)(53546011)(6512007)(6486002)(54906003)(316002)(2616005)(66946007)(91956017)(76116006)(86362001)(36756003)(66476007)(66556008)(64756008)(66446008)(33656002)(478600001)(8676002)(71200400001)(6916009)(5660300002)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +AnxEYt09ocoig4Rdq1iQCEhCqAVcoSBHkqgQqK/zbrJ8OHi6vbTD4TmV/aO4ajbccefo8EX/CVsdR9lGVTPn9W+2TNO7bavUT/vnmgwEj3LXHvYPGU9H9QcvMXfsG74FtOCYEB1//XVSgxhSmAvlzBoDHWABMpu+FnOG5XFWvXaadzN4sVOGstfthBRi/UYBCoEpMNaVaF06Waor+XBxKQP+qNt21O8mHu+JW9zuf2J6PlMUva02NhEG9Mh1NT+DA4ydDm/oMeILQ6+Ji/UAY8sCaABaw6eFzk5rCSpL10jizMJIqfk8XbbuFUIiRnh5IUtFVZ8S49wjXWg9sxCFo5Gg5Si0yGA8U/mCI4T4hpf6m1HY82ZTaHFkmINeCIClsXVdjemtCfi7hNk1D7+6UlzXBdI2L5LI1qche/nbooOsR3/BKgFN2uLQKlEYZZH
-x-ms-exchange-antispam-messagedata: fS/Y2FHDBgjIh2MjYhj+TzcaJGwOpzOaw2Rd/WV0DQohS4Jqdb97uLeDLh7z5YXH72AAQSK9Ejftn45q5hzgWvMh21SdY7sSkgl0DiLFLxTN0VW58tg8TGfVRnidCGuvFtogt/ONQDMxPXxIJw/97NbjrCPzcdmt0JXPejbm6TWWxLHs5LrLa7vwAj756pSWsrK042aytwDfxeau/QkgvEyg/S5HS5KvtcdS/HUBgKTe6AlnLFQowAkXJdYzojhW3rQyVFffDQCKvgsHeQXVgPRWXx5cmvMvqetGtFEJlERxyYqWPtq3GfEEMo8qdsMWhYjptSaMMDJileiNR8QQYcaUoKOhZEvcTHI6TKGNvXQp4aLXOIy0OXeL9w5uBPvekbvl4mwNuOH3P/C4qtOclqFk0XZN2LNhkRjRpSd87JLfoXTZicz41NYAXM7YWT0p/4Luu2oY9EEzaoy8+vhTpEOA1DwwekHVmtbfsfFw3r9vv/ZEqYgwUVUa53YPggGY/lcHk9SJE53Th+ilL6YRf8Yxph7MDaty3rASA9czzon2KjCQRlvIS9sTe2M0tdJZMrqIWbt+AEWDlk6gyxYjdf7KKJJdYlQH1S8lmgXyQjB32eAK8tA7wn0pReaK8chKNzonw5hjd44HxiS+29dhplpqVDTk6BQBS2wUbvrkx8J4qPqm8XFL9GU1DIND55URkTEjBK853+lASSHyuyJlhZCj2GLqfVSrnxXLgYO6ew9QO8S7QU7EiOxyZmFOLc6i2RNTvXs8ro5lH6QLUKM7SvNBSXcu/haMS0d7bhF1tGDk96ywzHI8mRNcRr4vS9nMP3YYfkbwqHgZHm3BqNV5rA==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D838AE0962CBCF47995E7AC2D4866D5E@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726491AbgD3G0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 02:26:13 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3390 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726337AbgD3G0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 02:26:13 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id A2551286E1224EC0E009;
+        Thu, 30 Apr 2020 14:26:08 +0800 (CST)
+Received: from linux-ibm.site (10.175.102.37) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 30 Apr 2020 14:25:59 +0800
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+To:     <rjw@rjwysocki.net>, <viresh.kumar@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <guohanjun@huawei.com>, <john.garry@huawei.com>,
+        <wangxiongfeng2@huawei.com>
+Subject: [RFC PATCH] cpufreq: add support for HiSilicon SoC HIP09
+Date:   Thu, 30 Apr 2020 14:19:59 +0800
+Message-ID: <1588227599-46438-1-git-send-email-wangxiongfeng2@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: d24309c7-81c9-4093-d834-08d7ecce6f1f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2020 06:19:26.6621
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: k3hXG1pf8verFKZ6+aNCk54uh5oL0GQzyk4tBUHpIkCMvEsgWAP6j4LalU4ZA835kbRYCfWUx7QkLevZsV4sUw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2215
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-30_01:2020-04-30,2020-04-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- suspectscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 impostorscore=0
- clxscore=1015 lowpriorityscore=0 phishscore=0 mlxscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300050
-X-FB-Internal: deliver
+Content-Type: text/plain
+X-Originating-IP: [10.175.102.37]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+HiSilicon SoC has a separate System Control Processor(SCP) dedicated for
+clock frequency adjustment and has been using the cpufreq driver
+'cppc-cpufreq'. New HiSilicon SoC HIP09 add support for CPU Boost, but
+ACPI CPPC doesn't support this. In HiSilicon SoC HIP09, each core has
+its own clock domain. It is better for the core itself to adjust its
+frequency when we require fast response. In this patch, we add a
+separate cpufreq driver for HiSilicon SoC HIP09.
 
-> On Apr 27, 2020, at 2:10 PM, Jason Baron <jbaron@akamai.com> wrote:
->=20
->=20
->=20
-> On 4/25/20 12:31 AM, Coly Li wrote:
->> On 2020/3/26 23:28, Jason Baron wrote:
->>> Let's add some CONFIG_* options to directly configure the raid0 layout
->>> if you know in advance how your raid0 array was created. This can be
->>> simpler than having to manage module or kernel command-line parameters.
->>>=20
->>=20
->> Hi Jason,
->>=20
->> If the people who compiling the kernel is not the end users, the
->> communication gap has potential risk to make users to use a different
->> layout for existing raid0 array after a kernel upgrade.
->>=20
->> If this patch goes into upstream, it is very probably such risky
->> situation may happen.
->>=20
->> The purpose of adding default_layout is to let *end user* to be aware of
->> they layout when they use difference sizes component disks to assemble
->> the raid0 array, and make decision which layout algorithm should be
->> used. Such situation cannot be decided in kernel compiling time.
->=20
-> I agree that in general it may not be known at compile time. Thus,
-> I've left the default as RAID0_LAYOUT_NONE. However, there are
-> use-cases where it is known at compile-time which layout is needed.
-> In our use-case, we knew that we didn't have any pre-3.14 raid0
-> arrays. Thus, we can safely set RAID0_ALT_MULTIZONE_LAYOUT. So
-> this is a simpler configuration for us than setting module or command
-> line parameters.
+We add a new communication interface based on shared memory between OS
+and SCP. OS tell SCP the desired frequency through the shared memory.
+SCP loops the shared memory and change the frequency when the value in
+the shared memory changed. We use '_DSD' method to get shared memory
+address and doorbell register address from UEFI. A example of '_DSD'
+method is as below.
 
-I would echo Coly's concern that CONFIG_ option could make it risky.=20
-If the overhead of maintaining extra command line parameter, I would
-recommend you carry a private patch for this change. For upstream, it
-is better NOT to carry the default in CONFIG_.
+Device (C002)
+{
+    Name (_HID, "ACPI0007" /* Processor Device */)  // _HID: Hardware ID
+    Name (_UID, 0x02)  // _UID: Unique ID
+        Name (_DSD, Package () {
+                ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+                Package () {
+                        Package () {"cpufreq_method", 2},
+                        Package () {"shm_base_addr", 0x0000xxxx},
+                        Package () {"shm_size", xx},
+                        Package () {"doorbell_addr", 0x0000xxxx},
+                        Package () {"doorbell_val", 0xxx},
+                        Package () {"transition delay", xxxxxxxx},
+                }
+        })
+}
 
-Thanks,
-Song
+An alternative method is to resue PCCT table to report the shared memory
+address and doorbell register address. But we needs to redefine the
+registers layout of the shared memory, different from '_CPC', and I don't
+know whether it complies with the spec.
+
+I also figure out another way to add CPU Boost for CPPC. I notice the
+difference when we describe 'Highest Performance' and 'Nominal
+Performance' in the spec.
+
+Highest Performance: the absolute maximum performance an individual
+    processor may reach. This performance level may not be sustainable for
+    long durations, and may only be achievable if other platform components
+    are in a specific state; for example, it may require other processors be
+    in an idle state.
+Nominal Performance:  the maximum sustained performance level of the
+    processor. This is the performance level the platform is expected to be
+    able to maintain continuously. All processors are expected to be able to
+    sustain their nominal performance state simultaneously.
+
+The current CPPC code does not support CPU BOOST and use 'Highest
+Performance' as the maximum performance the CPU can achieve. I think
+maybe we can use 'Highest Performance Register' to record the maximum
+performance CPU can achieve in Boost Mode, and 'Nominal Performance
+Register' to record the maximum performance in Non-Boost Mode. But this
+needs modifying the UEFI, and we need to firgure out a way to modify
+CPPC driver without influencing the machines using the old UEFI.
+
+When the number of clock domain become enormous, such as hundreds of
+cores each has its own clock domain, it will take almost one millisecond
+for the SCP to finish frequency adjustment for all the cores. Especially
+when turbo calculation is involved, the time will be longer. SCP needs
+to calculate how much the clock frequency can boost for each core. So it
+is better for each core to adjust its own frequency. But it is not safe
+for OS to write frequency adjustment registers directly when CPU Boost is
+supported. So we add a new SoC implementation-specific(SiP) Service Call
+for this situation.
+
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+---
+ drivers/cpufreq/Kconfig.arm    |   7 +
+ drivers/cpufreq/Makefile       |   1 +
+ drivers/cpufreq/hisi-cpufreq.c | 334 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 342 insertions(+)
+ create mode 100644 drivers/cpufreq/hisi-cpufreq.c
+
+diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+index 15c1a12..119310e 100644
+--- a/drivers/cpufreq/Kconfig.arm
++++ b/drivers/cpufreq/Kconfig.arm
+@@ -89,6 +89,13 @@ config ARM_HIGHBANK_CPUFREQ
+ 
+ 	  If in doubt, say N.
+ 
++config ARM_HISILICON_CPUFREQ
++	tristate "HiSilicon SoC CPUFreq driver"
++	depends on ACPI_PROCESSOR
++	default m
++	help
++	  This adds the CPUFreq driver for HiSilicon SoC.
++
+ config ARM_IMX6Q_CPUFREQ
+ 	tristate "Freescale i.MX6 cpufreq support"
+ 	depends on ARCH_MXC
+diff --git a/drivers/cpufreq/Makefile b/drivers/cpufreq/Makefile
+index f6670c4..0fa8668 100644
+--- a/drivers/cpufreq/Makefile
++++ b/drivers/cpufreq/Makefile
+@@ -53,6 +53,7 @@ obj-$(CONFIG_ARM_BRCMSTB_AVS_CPUFREQ)	+= brcmstb-avs-cpufreq.o
+ obj-$(CONFIG_ACPI_CPPC_CPUFREQ)		+= cppc_cpufreq.o
+ obj-$(CONFIG_ARCH_DAVINCI)		+= davinci-cpufreq.o
+ obj-$(CONFIG_ARM_HIGHBANK_CPUFREQ)	+= highbank-cpufreq.o
++obj-$(CONFIG_ARM_HISILICON_CPUFREQ) 	+= hisi-cpufreq.o
+ obj-$(CONFIG_ARM_IMX6Q_CPUFREQ)		+= imx6q-cpufreq.o
+ obj-$(CONFIG_ARM_IMX_CPUFREQ_DT)	+= imx-cpufreq-dt.o
+ obj-$(CONFIG_ARM_KIRKWOOD_CPUFREQ)	+= kirkwood-cpufreq.o
+diff --git a/drivers/cpufreq/hisi-cpufreq.c b/drivers/cpufreq/hisi-cpufreq.c
+new file mode 100644
+index 0000000..3fda10f
+--- /dev/null
++++ b/drivers/cpufreq/hisi-cpufreq.c
+@@ -0,0 +1,334 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020 Hisilicon Limited. */
++
++#include <asm/arch_timer.h>
++#include <linux/acpi.h>
++#include <linux/arm-smccc.h>
++#include <linux/cpu.h>
++#include <linux/cpufeature.h>
++#include <linux/cpufreq.h>
++#include <linux/delay.h>
++#include <linux/io.h>
++#include <linux/module.h>
++
++#define HISILICON_SIP_SMC_FAST_CALL_VAL(func_num) \
++	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL, ARM_SMCCC_SMC_64, \
++	ARM_SMCCC_OWNER_SIP, (func_num))
++
++#define HISILICON_SIP_SMC_FUNCID_SET_CPUFREQ 1
++#define HISILICON_SIP_SMC_SET_CPUFREQ \
++	HISILICON_SIP_SMC_FAST_CALL_VAL(HISILICON_SIP_SMC_FUNCID_SET_CPUFREQ)
++
++#define HISI_CPUFREQ_METHOD_SMC 1
++/*
++ * OS stores the desired frequency in shared memory. Platform loops the
++ * shared memory.
++ */
++#define HISI_CPUFREQ_METHOD_SHM 2
++/*
++ * OS stores the desired frequency in shared memory and use a doorbell
++ * interrupt to notify the platform.
++ */
++#define HISI_CPUFREQ_METHOD_NOTIFY 3
++
++struct hisi_cpufreq_shm {
++	u64 max_freq;
++	u64 min_freq;
++	u64 turbo_freq;
++	u64 target_freq;
++	u32 clock_domain;
++};
++
++struct hisi_cpufreq_cpudata {
++	u64 max_freq;
++	u64 min_freq;
++	u64 turbo_freq;
++	cpumask_t shared_cpus;
++	void __iomem *doorbell_addr;
++	u32 doorbell_val;
++	u32 transition_delay;
++};
++
++unsigned int hisi_cpufreq_method;
++static DEFINE_PER_CPU(struct hisi_cpufreq_shm *, cpufreq_shm_data);
++static struct hisi_cpufreq_cpudata *cpufreq_cpudata;
++
++static unsigned long hisi_smc_set_freq(unsigned long target_freq)
++{
++	struct arm_smccc_res res;
++
++	arm_smccc_smc(HISILICON_SIP_SMC_SET_CPUFREQ, target_freq,
++		      0, 0, 0, 0, 0, 0, &res);
++
++	return res.a0;
++}
++
++static unsigned int hisi_shm_set_freq(unsigned int cpu,
++				       unsigned long target_freq,
++				       bool knock_doorbell)
++{
++	struct hisi_cpufreq_cpudata *cpudata = &cpufreq_cpudata[cpu];
++
++	per_cpu(cpufreq_shm_data, cpu)->target_freq = target_freq;
++
++	if (knock_doorbell)
++		writel(cpudata->doorbell_val, cpudata->doorbell_addr);
++
++	return 0;
++}
++
++static unsigned int hisi_cpufreq_set_freq(unsigned int cpu,
++					  unsigned int target_freq)
++{
++	if (hisi_cpufreq_method == HISI_CPUFREQ_METHOD_SMC)
++		/*
++		 * The caller CPU is also the CPU which needs frequency
++		 * adjustment.
++		 */
++		return hisi_smc_set_freq(target_freq);
++	else
++		return hisi_shm_set_freq(cpu, target_freq,
++					 hisi_cpufreq_method ==
++					 HISI_CPUFREQ_METHOD_NOTIFY);
++}
++
++static unsigned int hisi_cpufreq_fast_switch(struct cpufreq_policy *policy,
++					     unsigned int target_freq)
++{
++	unsigned int cpu = policy->cpu;
++
++	return hisi_cpufreq_set_freq(cpu, target_freq);
++}
++
++static int hisi_cpufreq_set_target(struct cpufreq_policy *policy,
++				   unsigned int target_freq,
++				   unsigned int relation)
++{
++	struct cpufreq_freqs freqs;
++	unsigned int cpu = policy->cpu;
++	int ret;
++
++	freqs.old = policy->cur;
++	freqs.new = target_freq;
++
++	cpufreq_freq_transition_begin(policy, &freqs);
++	ret = hisi_cpufreq_set_freq(cpu, target_freq);
++	cpufreq_freq_transition_end(policy, &freqs, ret != 0);
++
++	return ret;
++}
++
++static void __amu_get_cpufreq(void *arg)
++{
++	u64 core_cnt1, const_cnt1;
++	u64 core_cnt2, const_cnt2;
++	u64 core_delta, const_delta;
++	unsigned int const_freq;
++	unsigned int *cur_freq = arg;
++
++	const_cnt1 = read_sysreg_s(SYS_AMEVCNTR0_CONST_EL0);
++	core_cnt1 = read_sysreg_s(SYS_AMEVCNTR0_CORE_EL0);
++	udelay(2);
++	const_cnt2 = read_sysreg_s(SYS_AMEVCNTR0_CONST_EL0);
++	core_cnt2 = read_sysreg_s(SYS_AMEVCNTR0_CORE_EL0);
++
++	const_delta = const_cnt2 = const_cnt1;
++	core_delta = core_cnt2 - core_cnt1;
++	if (!const_delta || !core_delta) {
++		*cur_freq = 0;
++		return;
++	}
++
++	const_freq = arch_timer_get_cntfrq();
++	*cur_freq = core_delta * const_freq / const_delta;
++}
++
++static unsigned int amu_get_cpufreq(unsigned int cpunum)
++{
++	int cur_freq;
++
++	smp_call_function_single(cpunum, __amu_get_cpufreq, &cur_freq, true);
++
++	return cur_freq;
++}
++
++static unsigned int hisi_cpufreq_get_rate(unsigned int cpunum)
++{
++	unsigned int cur_freq;
++
++	if (cpus_have_cap(ARM64_HAS_AMU_EXTN)) {
++		cur_freq = amu_get_cpufreq(cpunum);
++		if (cur_freq)
++			return cur_freq/1000;
++	}
++
++	return per_cpu(cpufreq_shm_data, cpunum)->target_freq;
++}
++
++static int hisi_cpufreq_verify_policy(struct cpufreq_policy_data *policy)
++{
++	cpufreq_verify_within_cpu_limits(policy);
++	return 0;
++}
++
++static int hisi_cpufreq_cpu_init(struct cpufreq_policy *policy)
++{
++	unsigned int cpu = policy->cpu;
++	struct hisi_cpufreq_cpudata *cpudata = &cpufreq_cpudata[cpu];
++
++	policy->min = cpudata->min_freq;
++	policy->max = cpudata->max_freq;
++	policy->cpuinfo.min_freq = cpudata->min_freq;
++	policy->cpuinfo.max_freq = cpudata->max_freq;
++	policy->transition_delay_us = cpudata->transition_delay;
++	policy->shared_type = CPUFREQ_SHARED_TYPE_ANY;
++	policy->fast_switch_possible = true;
++
++	cpumask_copy(policy->cpus, &cpudata->shared_cpus);
++
++	return 0;
++}
++
++static int hisi_cpufreq_set_boost(int state)
++{
++	struct cpufreq_policy *policy;
++	u64 max_freq;
++	unsigned int cpu;
++	int ret;
++
++	for_each_online_cpu(cpu) {
++		if (state)
++			max_freq = cpufreq_cpudata[cpu].turbo_freq;
++		else
++			max_freq = cpufreq_cpudata[cpu].max_freq;
++
++		policy = cpufreq_cpu_get(cpu);
++		if (!policy)
++			continue;
++
++		if (policy->max == max_freq) {
++			cpufreq_cpu_put(policy);
++			continue;
++		}
++
++		policy->max = policy->cpuinfo.max_freq = max_freq;
++		ret = freq_qos_update_request(policy->max_freq_req, max_freq);
++		if (ret < 0) {
++			cpufreq_cpu_put(policy);
++			return ret;
++		}
++
++		cpufreq_cpu_put(policy);
++	}
++
++	return 0;
++}
++
++static struct cpufreq_driver hisi_cpufreq_driver = {
++	.flags = CPUFREQ_CONST_LOOPS,
++	.init = hisi_cpufreq_cpu_init,
++	.verify = hisi_cpufreq_verify_policy,
++	.target = hisi_cpufreq_set_target,
++	.fast_switch = hisi_cpufreq_fast_switch,
++	.get = hisi_cpufreq_get_rate,
++	.set_boost = hisi_cpufreq_set_boost,
++	.name = "hisi_cpufreq",
++};
++
++static int __init hisi_cpufreq_parse_device_property(struct device *dev,
++						     unsigned int cpu)
++{
++	u64 addr;
++	u32 size, val;
++	struct hisi_cpufreq_shm *shm_data;
++
++	if (!hisi_cpufreq_method && device_property_read_u32(dev,
++					"cpufreq_method", &hisi_cpufreq_method))
++		return -ENODEV;
++
++	if (!device_property_read_u64(dev, "shm_base_addr", &addr) &&
++	    !device_property_read_u32(dev, "shm_size", &size))
++		per_cpu(cpufreq_shm_data, cpu) = ioremap(addr, size);
++	else if (hisi_cpufreq_method != HISI_CPUFREQ_METHOD_SMC)
++		return -EINVAL;
++
++	if (!device_property_read_u64(dev, "doorbell_addr", &addr))
++		cpufreq_cpudata[cpu].doorbell_addr = ioremap(addr, 4);
++	else if (hisi_cpufreq_method == HISI_CPUFREQ_METHOD_NOTIFY)
++		return -EINVAL;
++	if (!device_property_read_u32(dev, "doorbell_val", &val))
++		cpufreq_cpudata[cpu].doorbell_val = val;
++
++	if (!device_property_read_u32(dev, "transition_delay", &val))
++		cpufreq_cpudata[cpu].transition_delay = val;
++
++	shm_data = per_cpu(cpufreq_shm_data, cpu);
++	cpufreq_cpudata[cpu].max_freq = shm_data->max_freq;
++	cpufreq_cpudata[cpu].min_freq = shm_data->min_freq;
++	cpufreq_cpudata[cpu].turbo_freq = shm_data->turbo_freq;
++
++	return 0;
++}
++
++static int __init hisi_cpufreq_init(void)
++{
++	struct hisi_cpufreq_cpudata *cpudata;
++	struct device *dev;
++	unsigned int i, j;
++	int ret;
++
++	if (acpi_disabled)
++		return -ENODEV;
++
++	cpufreq_cpudata = kcalloc(num_possible_cpus(),
++				  sizeof(struct hisi_cpufreq_cpudata),
++				  GFP_KERNEL);
++	if (!cpufreq_cpudata)
++		return -ENOMEM;
++
++	for_each_possible_cpu(i) {
++		dev = get_cpu_device(i);
++		if (!dev)
++			goto failed;
++
++		ret = hisi_cpufreq_parse_device_property(dev, i);
++		if (ret)
++			goto failed;
++	}
++
++	/* parse clock domain info */
++	for_each_possible_cpu(i) {
++		cpudata = &cpufreq_cpudata[i];
++		cpumask_set_cpu(i, &cpudata->shared_cpus);
++
++		for_each_possible_cpu(j) {
++			if (i == j)
++				continue;
++			if (per_cpu(cpufreq_shm_data, i)->clock_domain ==
++			    per_cpu(cpufreq_shm_data, j)->clock_domain)
++				cpumask_set_cpu(j, &cpudata->shared_cpus);
++		}
++	}
++
++	if (cpufreq_register_driver(&hisi_cpufreq_driver))
++		goto failed;
++
++	return 0;
++
++failed:
++	kfree(cpufreq_cpudata);
++	return -ENODEV;
++}
++
++static void __exit hisi_cpufreq_exit(void)
++{
++	cpufreq_unregister_driver(&hisi_cpufreq_driver);
++	kfree(cpufreq_cpudata);
++}
++
++late_initcall(hisi_cpufreq_init);
++module_exit(hisi_cpufreq_exit);
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Xiongfeng Wang <wangxiongfeng2@huawei.com>");
++MODULE_DESCRIPTION("HiSilicon CPUFreq driver");
+-- 
+1.7.12.4
+
