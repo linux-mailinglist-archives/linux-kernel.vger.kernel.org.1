@@ -2,278 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB74F1BED5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEF51BECF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 02:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgD3BC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 21:02:56 -0400
-Received: from pbmsgap02.intersil.com ([192.157.179.202]:58736 "EHLO
-        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726279AbgD3BC4 (ORCPT
+        id S1726430AbgD3AcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 20:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726279AbgD3AcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 21:02:56 -0400
-Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
-        by pbmsgap02.intersil.com (8.16.0.27/8.16.0.27) with SMTP id 03U0ROcm022639;
-        Wed, 29 Apr 2020 20:28:48 -0400
-Received: from pbmxdp03.intersil.corp (pbmxdp03.pb.intersil.com [132.158.200.224])
-        by pbmsgap02.intersil.com with ESMTP id 30mfccj8cw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 29 Apr 2020 20:28:48 -0400
-Received: from pbmxdp01.intersil.corp (132.158.200.222) by
- pbmxdp03.intersil.corp (132.158.200.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
- 15.1.1531.3; Wed, 29 Apr 2020 20:28:47 -0400
-Received: from localhost (132.158.202.109) by pbmxdp01.intersil.corp
- (132.158.200.222) with Microsoft SMTP Server id 15.1.1531.3 via Frontend
- Transport; Wed, 29 Apr 2020 20:28:46 -0400
-From:   <vincent.cheng.xh@renesas.com>
-To:     <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Vincent Cheng <vincent.cheng.xh@renesas.com>
-Subject: [PATCH net-next 3/3] ptp: ptp_clockmatrix: Add adjphase() to support PHC write phase mode.
-Date:   Wed, 29 Apr 2020 20:28:25 -0400
-Message-ID: <1588206505-21773-4-git-send-email-vincent.cheng.xh@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588206505-21773-1-git-send-email-vincent.cheng.xh@renesas.com>
-References: <1588206505-21773-1-git-send-email-vincent.cheng.xh@renesas.com>
-X-TM-AS-MML: disable
+        Wed, 29 Apr 2020 20:32:18 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A9CC035494
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 17:32:18 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id 1so2680668vsl.9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 17:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yvBPc0DiyGZraWsHXTZijFQXms7S1k4nGWlL29l0V6o=;
+        b=LLKpiqorH1T+DHvdVpNwSJ6wA5dpT5aybNXWckiQzkEuh6BbgjbDZ1vujEnC7zaAlZ
+         EqEJTChEoOVixhZggQqOBqxnHbOSByZBPP/2dDtSyKe7XOuhVUZLIQT4Pi9+FUld0X90
+         yqHEJk1FRQp/pz/nHyfm+APLUWpPoYOxck25Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yvBPc0DiyGZraWsHXTZijFQXms7S1k4nGWlL29l0V6o=;
+        b=i2iYRPm/nr26GXFINdGmgs3/im0Z3Cz2LLrG8QWjc6JPnSs1qqhbjyqQQGNs9SYqpb
+         rHdkIoVfAgmSr5caOePtG5ziKds1vd0bOdHn4lB7eh7xlPVx1N+hPNz+Pqn6BiZySor2
+         HD92yTuSV3t+N6lajclyfE5F8P/uQbzXTqYECQ+HxJ9wra8R3FZ6OGA1GNwWNIAfccBg
+         dHea5rZuWry7f15zDnsO8EX6QwYAJiP/b3pUuXp/AtBXHH5bi4K2VSujg3d8wtVGhi97
+         ywOkG9s/Gu1kx9HyrdVXgMjgcKBz5VKyqoPHakQslBs8VKyzR517xRdYxpiPGfS5k+DJ
+         5Oww==
+X-Gm-Message-State: AGi0Pua0HAwj+maceF/0Bex/XTSZHXvTKrcCw8CbUs1Ll2VE7BqVQp6p
+        L2XzhcmgY6ZHosWCYRiPXxHf/gOkrxs=
+X-Google-Smtp-Source: APiQypIWQr9HEzH3ZnNhXFJCuEj5YnQrt5tNOM2u83qZI0GHGWD3+iaUhC0Wdjw2/Vv/njaQVoqr/Q==
+X-Received: by 2002:a67:eb84:: with SMTP id e4mr1051623vso.8.1588206736897;
+        Wed, 29 Apr 2020 17:32:16 -0700 (PDT)
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com. [209.85.217.45])
+        by smtp.gmail.com with ESMTPSA id m203sm360352vka.41.2020.04.29.17.32.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Apr 2020 17:32:15 -0700 (PDT)
+Received: by mail-vs1-f45.google.com with SMTP id g184so2687150vsc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 17:32:15 -0700 (PDT)
+X-Received: by 2002:a67:c40c:: with SMTP id c12mr980053vsk.106.1588206735333;
+ Wed, 29 Apr 2020 17:32:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-29_11:2020-04-29,2020-04-29 signatures=0
-X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 suspectscore=4 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-2002250000 definitions=main-2004300000
-X-Proofpoint-Spam-Reason: mlx
+References: <20200429170804.880720-1-daniel.thompson@linaro.org>
+In-Reply-To: <20200429170804.880720-1-daniel.thompson@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 29 Apr 2020 17:32:01 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UaABk9uejyDR73fW7DDsYvPHaWBD+DpJBGFftJ78UJLg@mail.gmail.com>
+Message-ID: <CAD=FV=UaABk9uejyDR73fW7DDsYvPHaWBD+DpJBGFftJ78UJLg@mail.gmail.com>
+Subject: Re: [PATCH] serial: kgdboc: Allow earlycon initialization to be deferred
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Sumit Garg <sumit.garg@linaro.org>, linux-serial@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Patch Tracking <patches@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Cheng <vincent.cheng.xh@renesas.com>
+Hi,
 
-Add idtcm_adjphase() to support PHC write phase mode.
+On Wed, Apr 29, 2020 at 10:08 AM Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> As described in the big comment in the patch, earlycon initialization
+> can be deferred if, a) earlycon was supplied without arguments and, b)
+> the ACPI SPCR table hasn't yet been parsed.
+>
+> Unfortunately, if deferred, then the earlycon is not ready during early
+> parameter parsing so kgdboc cannot use it. This patch mitigates the
+> problem by giving kgdboc_earlycon a second chance during
+> dbg_late_init(). Adding a special purpose interface slightly increase
+> the intimacy between kgdboc and debug-core but this seems better than
+> adding kgdb specific hooks into the arch code (and much, much better
+> than faking non-intimacy with function pointers).
+>
+> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+> ---
+>
+> Notes:
+>     Hi Doug,
+>
+>     This patch extends your patch set to make it easier to deploy on ACPI
+>     systems[1]:
+>       earlycon kgdboc_earlycon kgdboc=ttyAMA0
+>
+>     I have mixed feeling about it because it adds calls from debug-core
+>     into kgdboc and I don't think there are other examples of this.
+>     However earlycon auto-configuration is so awesome I'd like to
+>     be able to keep using it and this is the best I have come up with
+>     so far ;-).
 
-Signed-off-by: Vincent Cheng <vincent.cheng.xh@renesas.com>
----
- drivers/ptp/ptp_clockmatrix.c | 123 ++++++++++++++++++++++++++++++++++++++++++
- drivers/ptp/ptp_clockmatrix.h |  11 +++-
- 2 files changed, 132 insertions(+), 2 deletions(-)
+It's a little gross, but it's OK with me.  I guess the other option
+would be to have "kgdboc_earlycon" try again at various different
+initcall levels...
 
-diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
-index a3f6088..07b13c3 100644
---- a/drivers/ptp/ptp_clockmatrix.c
-+++ b/drivers/ptp/ptp_clockmatrix.c
-@@ -24,6 +24,15 @@ MODULE_LICENSE("GPL");
- 
- #define SETTIME_CORRECTION (0)
- 
-+static void set_write_phase_ready(struct kthread_work *work)
-+{
-+	struct idtcm_channel *ch = container_of(work,
-+						struct idtcm_channel,
-+						write_phase_ready_work.work);
-+
-+	ch->write_phase_ready = 1;
-+}
-+
- static int char_array_to_timespec(u8 *buf,
- 				  u8 count,
- 				  struct timespec64 *ts)
-@@ -871,6 +880,69 @@ static int idtcm_set_pll_mode(struct idtcm_channel *channel,
- 
- /* PTP Hardware Clock interface */
- 
-+/**
-+ * @brief Maximum absolute value for write phase offset in picoseconds
-+ *
-+ * Destination signed register is 32-bit register in resolution of 50ps
-+ *
-+ * 0x7fffffff * 50 =  2147483647 * 50 = 107374182350
-+ */
-+static int _idtcm_adjphase(struct idtcm_channel *channel, s32 deltaNs)
-+{
-+	struct idtcm *idtcm = channel->idtcm;
-+
-+	int err;
-+	u8 i;
-+	u8 buf[4] = {0};
-+	s32 phaseIn50Picoseconds;
-+	s64 phaseOffsetInPs;
-+
-+	if (channel->pll_mode != PLL_MODE_WRITE_PHASE) {
-+
-+		kthread_cancel_delayed_work_sync(
-+			&channel->write_phase_ready_work);
-+
-+		err = idtcm_set_pll_mode(channel, PLL_MODE_WRITE_PHASE);
-+
-+		if (err)
-+			return err;
-+
-+		channel->write_phase_ready = 0;
-+
-+		kthread_queue_delayed_work(channel->kworker,
-+					   &channel->write_phase_ready_work,
-+					   msecs_to_jiffies(WR_PHASE_SETUP_MS));
-+	}
-+
-+	if (!channel->write_phase_ready)
-+		deltaNs = 0;
-+
-+	phaseOffsetInPs = (s64)deltaNs * 1000;
-+
-+	/*
-+	 * Check for 32-bit signed max * 50:
-+	 *
-+	 * 0x7fffffff * 50 =  2147483647 * 50 = 107374182350
-+	 */
-+	if (phaseOffsetInPs > MAX_ABS_WRITE_PHASE_PICOSECONDS)
-+		phaseOffsetInPs = MAX_ABS_WRITE_PHASE_PICOSECONDS;
-+	else if (phaseOffsetInPs < -MAX_ABS_WRITE_PHASE_PICOSECONDS)
-+		phaseOffsetInPs = -MAX_ABS_WRITE_PHASE_PICOSECONDS;
-+
-+	phaseIn50Picoseconds = DIV_ROUND_CLOSEST(div64_s64(phaseOffsetInPs, 50),
-+						 1);
-+
-+	for (i = 0; i < 4; i++) {
-+		buf[i] = phaseIn50Picoseconds & 0xff;
-+		phaseIn50Picoseconds >>= 8;
-+	}
-+
-+	err = idtcm_write(idtcm, channel->dpll_phase, DPLL_WR_PHASE,
-+			  buf, sizeof(buf));
-+
-+	return err;
-+}
-+
- static int idtcm_adjfreq(struct ptp_clock_info *ptp, s32 ppb)
- {
- 	struct idtcm_channel *channel =
-@@ -977,6 +1049,24 @@ static int idtcm_adjtime(struct ptp_clock_info *ptp, s64 delta)
- 	return err;
- }
- 
-+static int idtcm_adjphase(struct ptp_clock_info *ptp, s32 delta)
-+{
-+	struct idtcm_channel *channel =
-+		container_of(ptp, struct idtcm_channel, caps);
-+
-+	struct idtcm *idtcm = channel->idtcm;
-+
-+	int err;
-+
-+	mutex_lock(&idtcm->reg_lock);
-+
-+	err = _idtcm_adjphase(channel, delta);
-+
-+	mutex_unlock(&idtcm->reg_lock);
-+
-+	return err;
-+}
-+
- static int idtcm_enable(struct ptp_clock_info *ptp,
- 			struct ptp_clock_request *rq, int on)
- {
-@@ -1055,6 +1145,7 @@ static const struct ptp_clock_info idtcm_caps = {
- 	.owner		= THIS_MODULE,
- 	.max_adj	= 244000,
- 	.n_per_out	= 1,
-+	.adjphase	= &idtcm_adjphase,
- 	.adjfreq	= &idtcm_adjfreq,
- 	.adjtime	= &idtcm_adjtime,
- 	.gettime64	= &idtcm_gettime,
-@@ -1062,6 +1153,21 @@ static const struct ptp_clock_info idtcm_caps = {
- 	.enable		= &idtcm_enable,
- };
- 
-+static int write_phase_worker_setup(struct idtcm_channel *channel, int index)
-+{
-+	channel->kworker = kthread_create_worker(0, "channel%d", index);
-+
-+	if (IS_ERR(channel->kworker))
-+		return PTR_ERR(channel->kworker);
-+
-+	channel->write_phase_ready = 0;
-+
-+	kthread_init_delayed_work(&channel->write_phase_ready_work,
-+				  set_write_phase_ready);
-+
-+	return 0;
-+}
-+
- static int idtcm_enable_channel(struct idtcm *idtcm, u32 index)
- {
- 	struct idtcm_channel *channel;
-@@ -1146,6 +1252,10 @@ static int idtcm_enable_channel(struct idtcm *idtcm, u32 index)
- 	if (!channel->ptp_clock)
- 		return -ENOTSUPP;
- 
-+	err = write_phase_worker_setup(channel, index);
-+	if (err)
-+		return err;
-+
- 	dev_info(&idtcm->client->dev, "PLL%d registered as ptp%d\n",
- 		 index, channel->ptp_clock->index);
- 
-@@ -1284,6 +1394,19 @@ static int idtcm_remove(struct i2c_client *client)
- {
- 	struct idtcm *idtcm = i2c_get_clientdata(client);
- 
-+	int i;
-+	struct idtcm_channel *channel;
-+
-+	for (i = 0; i < MAX_PHC_PLL; i++) {
-+		channel = &idtcm->channel[i];
-+
-+		if (channel->kworker) {
-+			kthread_cancel_delayed_work_sync(
-+				&channel->write_phase_ready_work);
-+			kthread_destroy_worker(channel->kworker);
-+		}
-+	}
-+
- 	ptp_clock_unregister_all(idtcm);
- 
- 	mutex_destroy(&idtcm->reg_lock);
-diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
-index 6c1f93a..36e133d 100644
---- a/drivers/ptp/ptp_clockmatrix.h
-+++ b/drivers/ptp/ptp_clockmatrix.h
-@@ -15,6 +15,8 @@
- #define FW_FILENAME	"idtcm.bin"
- #define MAX_PHC_PLL	4
- 
-+#define MAX_ABS_WRITE_PHASE_PICOSECONDS (107374182350LL)
-+
- #define PLL_MASK_ADDR		(0xFFA5)
- #define DEFAULT_PLL_MASK	(0x04)
- 
-@@ -33,8 +35,9 @@
- 
- #define POST_SM_RESET_DELAY_MS		(3000)
- #define PHASE_PULL_IN_THRESHOLD_NS	(150000)
--#define TOD_WRITE_OVERHEAD_COUNT_MAX    (5)
--#define TOD_BYTE_COUNT                  (11)
-+#define TOD_WRITE_OVERHEAD_COUNT_MAX	(5)
-+#define TOD_BYTE_COUNT			(11)
-+#define WR_PHASE_SETUP_MS		(5000)
- 
- /* Values of DPLL_N.DPLL_MODE.PLL_MODE */
- enum pll_mode {
-@@ -77,6 +80,10 @@ struct idtcm_channel {
- 	u16			hw_dpll_n;
- 	enum pll_mode		pll_mode;
- 	u16			output_mask;
-+	int			write_phase_ready;
-+
-+	struct kthread_worker		*kworker;
-+	struct kthread_delayed_work	write_phase_ready_work;
- };
- 
- struct idtcm {
--- 
-2.7.4
+Speaking of which, I wonder if you could just make kgdboc register to
+run at "console_initcall" level.  If I'm reading it properly:
 
+start_kernel()
+- setup_arch(): ACPI stuff is done by the end of this, right?
+- console_init(): It would be easy to get called here, I think.
+- dbg_late_init(): Where you're hooking in now.
+
+I didn't put printouts in any code and test it out, but if the above
+is right then you'll actually get called _earlier_ and with less
+hackiness if you just have kgdboc try again at console initlevel.
+
+
+>     Daniel.
+>
+>
+>     [1] And also on DT based arm64 systems that have ACPI support
+>         enabled at compile time because such systems don't decide
+>         whether to adopt DT or ACPI until after early parameter
+>         parsing.
+>
+>  drivers/tty/serial/kgdboc.c | 26 +++++++++++++++++++++++++-
+>  include/linux/kgdb.h        |  2 ++
+>  kernel/debug/debug_core.c   |  4 ++++
+>  3 files changed, 31 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+> index 7aca0a67fc0b..a7a079ce2c5d 100644
+> --- a/drivers/tty/serial/kgdboc.c
+> +++ b/drivers/tty/serial/kgdboc.c
+> @@ -509,6 +509,8 @@ static struct kgdb_io kgdboc_earlycon_io_ops = {
+>         .is_console             = true,
+>  };
+>
+> +static bool kgdboc_earlycon_late_enable __initdata;
+> +
+>  static int __init kgdboc_earlycon_init(char *opt)
+>  {
+>         struct console *con;
+> @@ -529,7 +531,23 @@ static int __init kgdboc_earlycon_init(char *opt)
+>         console_unlock();
+>
+>         if (!con) {
+> -               pr_info("Couldn't find kgdb earlycon\n");
+> +               /*
+> +                * If earlycon deferred its initialization then we also need to
+> +                * do that since there is no console at this point. We will
+> +                * only defer ourselves when kgdboc_earlycon has no arguments.
+> +                * This is because earlycon init is only deferred if there are
+> +                * no arguments to earlycon (we assume that a user who doesn't
+> +                * specify an earlycon driver won't know the right console name
+> +                * to put into kgdboc_earlycon and will let that auto-configure
+> +                * too).
+> +                */
+> +               if (!kgdboc_earlycon_late_enable &&
+> +                   earlycon_acpi_spcr_enable && (!opt || !opt[0])) {
+> +                       earlycon_kgdboc_late_enable = true;
+> +                       pr_info("No suitable earlycon yet, will try later\n");
+> +               } else {
+> +                       pr_info("Couldn't find kgdb earlycon\n");
+> +               }
+
+Personally I'd rather take all the caveats out and just make it
+generic.  Stash the name of the console in a string (you can make it
+initdata so it doesn't waste any space) and just always retry later if
+we didn't find the console.  Then you don't need to be quite so
+fragile and if someone else finds another reason to delay earlycon
+we'll still work.
+
+Speaking of which, if we build kgdboc as a module won't you get an
+error accessing "earlycon_acpi_spcr_enable"?
+
+
+>                 return 0;
+>         }
+>
+> @@ -545,6 +563,12 @@ static int __init kgdboc_earlycon_init(char *opt)
+>  }
+>
+>  early_param("kgdboc_earlycon", kgdboc_earlycon_init);
+> +
+> +void __init kgdb_earlycon_late_init(void)
+> +{
+> +       if (kgdboc_earlycon_late_enable)
+> +               earlycon_kgdboc_init(NULL);
+> +}
+>  #endif /* CONFIG_KGDB_SERIAL_CONSOLE */
+>
+>  module_init(init_kgdboc);
+> diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+> index 77a3c519478a..02867a2f0eb4 100644
+> --- a/include/linux/kgdb.h
+> +++ b/include/linux/kgdb.h
+> @@ -227,6 +227,8 @@ extern int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt);
+>  extern void kgdb_arch_late(void);
+>
+>
+> +extern void __init kgdb_earlycon_late_init(void);
+> +
+
+It's not required to add "__init" for declarations, is it?
+
+
+>  /**
+>   * struct kgdb_arch - Describe architecture specific values.
+>   * @gdb_bpt_instr: The instruction to trigger a breakpoint.
+> diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+> index 2d74dcbca477..f066ef2bc615 100644
+> --- a/kernel/debug/debug_core.c
+> +++ b/kernel/debug/debug_core.c
+> @@ -963,11 +963,15 @@ void __weak kgdb_arch_late(void)
+>  {
+>  }
+>
+> +void __init __weak kgdb_earlycon_late_init(void)
+> +
+
+I assume the above is because "kgdboc" can be compiled as a module and
+you need to essentially no-op your call in that case?  If so, could
+you add a comment about it?  I also would have thought you'd actually
+need to define the weak function implementation, not just declare it.
+Maybe I'm confused, though.
+
+
+>  void __init dbg_late_init(void)
+>  {
+>         dbg_is_early = false;
+>         if (kgdb_io_module_registered)
+>                 kgdb_arch_late();
+> +       else
+> +               kgdb_earlycon_late_init();
+>         kdb_init(KDB_INIT_FULL);
+
+It feels like it'd be better not to make yourself an "else" but rather
+to add a 2nd "if" test either at the beginning or the end of this
+function.  I'm 99% sure it makes no difference, but it makes my brain
+hurt a little trying to prove it because you've added another flow of
+control to analyze / keep working.  Specifically you've now got a case
+where you're running a bunch of the "debug_core" code where
+"dbg_is_early = false" but you haven't yet run "KDB_INIT_FULL".
+
+Anyway, I don't feel that strongly about it, so if you really like it
+the way it is that's fine...
+
+
+-Doug
