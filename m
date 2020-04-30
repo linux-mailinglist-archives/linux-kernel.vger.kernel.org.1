@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A5E1BF562
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 12:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304CA1BF583
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 12:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgD3K3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 06:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726127AbgD3K3Q (ORCPT
+        id S1726949AbgD3KaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 06:30:11 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:63566 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726907AbgD3KaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 06:29:16 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437DFC035494;
-        Thu, 30 Apr 2020 03:29:16 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id z6so1288789wml.2;
-        Thu, 30 Apr 2020 03:29:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=KHpNLJMS3mu2V09RaaLnnYRUJwfut2dVA8xoIPufxks=;
-        b=oeLytCEGaH/rofZN/yNpDszUHyJ0X32104xC8+aTBe4mX32nz2AURmDDWgwu9g6qXJ
-         oIJUpk0XC1NkmPDpywPDTNN2xT7qf8TlCQeI+qF2zsHB2rJ9vQxzNpm9Adt4WyVUDvHJ
-         SSnE76fPC83wV6AofqkxMI/p12PzsVok1Ud5MAAjBXNgw5W7gM6+cVQ3vKsmOaJDhYG2
-         pkEfV5iE6erfSXnAIx9vgTjLZCwt9U/j4I1Jj+1fLNNoosGGJ7jRqGm4Wc2U6kLOtedL
-         02YQDP+aQpGDYVKKHVwADxnYTdCnTPh2FiMyaqHpTm9nxqmTmGHBpIhGy9sTnQqkQwZ9
-         nXng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=KHpNLJMS3mu2V09RaaLnnYRUJwfut2dVA8xoIPufxks=;
-        b=qnMLami22sdUSmEFkenlgWTpwUTCcClDBBBW4oPvJdMtNMZtWhqvDROktGqsRskaXN
-         L22bSNnwWOB9RlhL3TAMVAKnxTWQLVONXFKse/eB8nSjp9mNDjqsOO+Akz1TjXAlamkO
-         NEBFlbMDkp6KAHPgfLVUBnCmIh66cmoM0idXULHnwR0dkBVimLQT/TUR6l4z6DkRToXN
-         VcLu7zbRjfsWFGTiQHpvTsKpKdWih0YPPI2GdEEI+1dhTPSlBRTq0ANWEeYI9lEsVrIe
-         ICRCmdnMlONI3y8vEuzRosywNBP3D8FmJwoXnGB6TAfLAjcDkxgV25QO5HEsZHfz/VP5
-         jwrg==
-X-Gm-Message-State: AGi0PuYnCbX3PGywQxnqfsUwS1ZYGUkvzDdbISqh5sR61laI+5VuMpFv
-        1amaw1bAI88JqOYH7vwD9N4=
-X-Google-Smtp-Source: APiQypKTabP3IH+sEVHf+m5JSdymF9eA/BbYpwtxCF6TlSLWdp2QHMQ9rTYPLEhiw7qSWNMsyHFHGA==
-X-Received: by 2002:a1c:64c5:: with SMTP id y188mr2189457wmb.130.1588242554995;
-        Thu, 30 Apr 2020 03:29:14 -0700 (PDT)
-Received: from [192.168.43.138] ([37.142.166.235])
-        by smtp.gmail.com with ESMTPSA id x18sm3209513wrs.11.2020.04.30.03.29.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 03:29:14 -0700 (PDT)
-Subject: Re: [PATCH v7 3/7] tpm: tpm_tis: Rewrite "tpm_tis_req_canceled()"
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Eyal.Cohen@nuvoton.com, oshrialkoby85@gmail.com,
-        alexander.steffen@infineon.com, robh+dt@kernel.org,
-        mark.rutland@arm.com, peterhuewe@gmx.de, jgg@ziepe.ca,
-        arnd@arndb.de, gregkh@linuxfoundation.org, benoit.houyere@st.com,
-        eajames@linux.ibm.com, joel@jms.id.au, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        oshri.alkoby@nuvoton.com, tmaimon77@gmail.com, gcwilson@us.ibm.com,
-        kgoldman@us.ibm.com, Dan.Morav@nuvoton.com,
-        oren.tanami@nuvoton.com, shmulik.hager@nuvoton.com,
-        amir.mizinski@nuvoton.com
-References: <20200427124931.115697-1-amirmizi6@gmail.com>
- <20200427124931.115697-4-amirmizi6@gmail.com>
- <20200429053703.GF8452@linux.intel.com>
-From:   Amir Mizinski <amirmizi6@gmail.com>
-Message-ID: <41fd551b-e678-32bb-781d-48cfe1a3c5bb@gmail.com>
-Date:   Thu, 30 Apr 2020 10:29:08 +0000
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 30 Apr 2020 06:30:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588242608; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Reply-To: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=k1Dl4yzC1omqlWq2Asz34n/944KUyAHUVkIZtMS/CJo=; b=Yl1Lo1IRrzZGr5pwN5aeQAURkb6bPcfXx/bA0bE7Ab1d1FBeOHuhov7mEzugBwC+Xclknt1a
+ p4qgRzKY+I7Wh++jsrxhIla0SorpLFh32srAyQzy7OCOAMn0KKvPA1fGP35MQ1SOXeYMd6XH
+ wqoQ4hG7IcOy29FmXu/vuHXja6w=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eaaa89d.7f97a7408180-smtp-out-n03;
+ Thu, 30 Apr 2020 10:29:49 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B4689C44793; Thu, 30 Apr 2020 10:29:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from quicinc.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: svaddagi)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EF410C433CB;
+        Thu, 30 Apr 2020 10:29:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EF410C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vatsa@codeaurora.org
+Date:   Thu, 30 Apr 2020 15:59:39 +0530
+From:   Srivatsa Vaddagiri <vatsa@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     konrad.wilk@oracle.com, mst@redhat.com, jasowang@redhat.com,
+        jan.kiszka@siemens.com, stefano.stabellini@xilinx.com,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org, tsoni@codeaurora.org,
+        pratikp@codeaurora.org, christoffer.dall@arm.com,
+        alex.bennee@linaro.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC/PATCH 0/1] virtio_mmio: hypervisor specific interfaces for
+ MMIO
+Message-ID: <20200430102939.GG5097@quicinc.com>
+Reply-To: Srivatsa Vaddagiri <vatsa@codeaurora.org>
+References: <1588240976-10213-1-git-send-email-vatsa@codeaurora.org>
+ <20200430100821.GC19932@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <20200429053703.GF8452@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20200430100821.GC19932@willie-the-truck>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Will Deacon <will@kernel.org> [2020-04-30 11:08:22]:
 
-On 2020-04-29 05:37, Jarkko Sakkinen wrote:
-> On Mon, Apr 27, 2020 at 03:49:27PM +0300, amirmizi6@gmail.com wrote:
->> From: Amir Mizinski <amirmizi6@gmail.com>
->>
->> Using this function while reading/writing data resulted in an aborted
->> operation.
->> After investigating the issue according to the TCG TPM Profile (PTP)
->> Specifications, I found that "request to cancel" should occur only if
->> TPM_STS.commandReady bit is lit.
->> Note that i couldn't find a case where the present condition
->> (in the linux kernel) is valid, so I'm removing the case for
->> "TPM_VID_WINBOND" since we have no need for it.
->>
->> Also, the default comparison is wrong. Only cmdReady bit needs to be
->> compared instead of the full lower status register byte.
->>
->> Fixes: 1f86605 (tpm: Fix cancellation of TPM commands (polling mode))
->
-> Needs to have exactly 12 hex digits of the hash.
->
+> > This patch is meant to seek comments. If its considered to be in right
+> > direction, will work on making it more complete and send the next version!
+> 
+> What's stopping you from implementing the trapping support in the
+> hypervisor? Unlike the other patches you sent out, where the guest memory
+> is not accessible to the host, there doesn't seem to be any advantage to
+> not having trapping support, or am I missing something here?
 
-Ok, i'll fix this for version 8. Thank you.
+Hi Will,
+	I have had this discussion with hypervisor folks. They seem to be
+concerned about complexity of having a VM's fault be handled in another
+untrusted VM. They are not keen to add MMIO support.
 
-> /Jarkko
-
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
