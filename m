@@ -2,162 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 015DA1C0218
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1051E1C0204
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728230AbgD3QSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:18:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727049AbgD3QSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:18:38 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C272E2173E;
-        Thu, 30 Apr 2020 16:18:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588263517;
-        bh=1HSEtM//mtsWijKO6s3LsrrY5g4LGqp0ULlRYJzv8go=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZIEkWaxruoI8rsJBH/VsKhH81CfBr1pX/uYW/ta2Pj4pE70cPG45WjjB5FDkbzM79
-         RkjX4fa8QqnVjXL0DOJpsSzoiksLGXUGI2/shW4AjSSyJH/ZnkumklOlrTo8bYQ8YQ
-         CEXZ9hmPzXDLi47/TRyn/TVFRQ9zu5MtYiMY2D1Y=
-Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jUBtU-00Axh8-1g; Thu, 30 Apr 2020 18:18:36 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Hennerich <michael.hennerich@analog.com>
-Subject: [PATCH v4 07/19] docs: misc-devices/pci-endpoint-test.txt: convert to ReST
-Date:   Thu, 30 Apr 2020 18:18:21 +0200
-Message-Id: <5e6389e49965a39d5ea5face113848671409bb7e.1588263270.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <cover.1588263270.git.mchehab+huawei@kernel.org>
-References: <cover.1588263270.git.mchehab+huawei@kernel.org>
+        id S1728101AbgD3QS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:18:28 -0400
+Received: from mail.efficios.com ([167.114.26.124]:38972 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbgD3QSX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:18:23 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 1493A28FB39;
+        Thu, 30 Apr 2020 12:18:23 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id bzyRC6oWE99D; Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id BC0A028F877;
+        Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com BC0A028F877
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1588263502;
+        bh=L55kMAHWHtClXwT3AsAHrTu4aKopstWuDvA/OyUEXfw=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=a0h2NHQD3T8P5WMYNRq/esttBzqmJ5x00gb7J/F1X1p6JpLeAsgsEjUh20DCv5pma
+         muv6+Y+WUACsdkjNSDLiDjqG5hvb6yHS6wC/GWDD2Qv4uXPq+X5GuKGUOeU8DYAU79
+         FeizHDpFWpLt7Eica3HjqwfMiPaqwuy5tDBXdfo2sYvAahVQ0yPLnPRiotbk6OgQQn
+         wCK0OGubt84svS5QivphLQZZnRkPTBLj4ZQfyFadgrMxG12mZ+idp88uglnv7LPBqK
+         nOBKkfqgqri7WE8fQALZX4/KWthxgXjAOK0+5vvtENlNMbcdJp3o5vXKaeSwSLEw5u
+         qnbLNdK4sCABA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id z-dubMsoJYa8; Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id AAA3428F79F;
+        Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
+Date:   Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     Joerg Roedel <jroedel@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Message-ID: <947455570.77870.1588263502669.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200430121627.682061e2@gandalf.local.home>
+References: <20200429054857.66e8e333@oasis.local.home> <20200429105941.GQ30814@suse.de> <20200429082854.6e1796b5@oasis.local.home> <20200429100731.201312a9@gandalf.local.home> <20200430141120.GA8135@suse.de> <20200430145057.GB8135@suse.de> <2026887875.77814.1588260015439.JavaMail.zimbra@efficios.com> <20200430121627.682061e2@gandalf.local.home>
+Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before
+ text_poke()
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3918 (ZimbraWebClient - FF75 (Linux)/8.8.15_GA_3895)
+Thread-Topic: x86/mm: Sync all vmalloc mappings before text_poke()
+Thread-Index: rw6BtFhk9xaOWvTrQYsbm6qr+yaRNA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- use title markups;
-- mark literal blocks.
+----- On Apr 30, 2020, at 12:16 PM, rostedt rostedt@goodmis.org wrote:
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../{ad525x_dpot.txt => ad525x_dpot.rst}      | 24 +++++++++----------
- Documentation/misc-devices/index.rst          |  1 +
- drivers/misc/Kconfig                          |  2 +-
- drivers/misc/ad525x_dpot.c                    |  2 +-
- 4 files changed, 15 insertions(+), 14 deletions(-)
- rename Documentation/misc-devices/{ad525x_dpot.txt => ad525x_dpot.rst} (85%)
+> On Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+>> > The right fix is to call vmalloc_sync_mappings() right after allocating
+>> > tracing or perf buffers via v[zm]alloc().
+>> 
+>> Either right after allocation, or right before making the vmalloc'd data
+>> structure visible to the instrumentation. In the case of the pid filter,
+>> that would be the rcu_assign_pointer() which publishes the new pid filter
+>> table.
+>> 
+>> As long as vmalloc_sync_mappings() is performed somewhere *between* allocation
+>> and publishing the pointer for instrumentation, it's fine.
+>> 
+>> I'll let Steven decide on which approach works best for him.
+> 
+> As stated in the other email, I don't see it having anything to do with
+> vmalloc, but with the per_cpu() allocation. I'll test this theory out by
+> not even allocating the pid masks and touching the per cpu data at every
+> event to see if it crashes.
 
-diff --git a/Documentation/misc-devices/ad525x_dpot.txt b/Documentation/misc-devices/ad525x_dpot.rst
-similarity index 85%
-rename from Documentation/misc-devices/ad525x_dpot.txt
-rename to Documentation/misc-devices/ad525x_dpot.rst
-index 0c9413b1cbf3..6483ec254520 100644
---- a/Documentation/misc-devices/ad525x_dpot.txt
-+++ b/Documentation/misc-devices/ad525x_dpot.rst
-@@ -1,6 +1,8 @@
-----------------------------------
--  AD525x Digital Potentiometers
-----------------------------------
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=============================
-+AD525x Digital Potentiometers
-+=============================
- 
- The ad525x_dpot driver exports a simple sysfs interface.  This allows you to
- work with the immediate resistance settings as well as update the saved startup
-@@ -8,9 +10,8 @@ settings.  Access to the factory programmed tolerance is also provided, but
- interpretation of this settings is required by the end application according to
- the specific part in use.
- 
-----------
--  Files
-----------
-+Files
-+=====
- 
- Each dpot device will have a set of eeprom, rdac, and tolerance files.  How
- many depends on the actual part you have, as will the range of allowed values.
-@@ -24,23 +25,22 @@ and may vary greatly on a part-by-part basis.  For exact interpretation of
- this field, please consult the datasheet for your part.  This is presented
- as a hex file for easier parsing.
- 
-------------
--  Example
-------------
-+Example
-+=======
- 
- Locate the device in your sysfs tree.  This is probably easiest by going into
--the common i2c directory and locating the device by the i2c slave address.
-+the common i2c directory and locating the device by the i2c slave address::
- 
- 	# ls /sys/bus/i2c/devices/
- 	0-0022  0-0027  0-002f
- 
- So assuming the device in question is on the first i2c bus and has the slave
--address of 0x2f, we descend (unrelated sysfs entries have been trimmed).
-+address of 0x2f, we descend (unrelated sysfs entries have been trimmed)::
- 
- 	# ls /sys/bus/i2c/devices/0-002f/
- 	eeprom0 rdac0 tolerance0
- 
--You can use simple reads/writes to access these files:
-+You can use simple reads/writes to access these files::
- 
- 	# cd /sys/bus/i2c/devices/0-002f/
- 
-diff --git a/Documentation/misc-devices/index.rst b/Documentation/misc-devices/index.rst
-index 68b43e140641..a72ab89e7d1a 100644
---- a/Documentation/misc-devices/index.rst
-+++ b/Documentation/misc-devices/index.rst
-@@ -14,6 +14,7 @@ fit into other categories.
- .. toctree::
-    :maxdepth: 2
- 
-+   ad525x_dpot
-    eeprom
-    ibmvmc
-    ics932s401
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index 99e151475d8f..9388743d78e3 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -24,7 +24,7 @@ config AD525X_DPOT
- 	  AD5271, AD5272, AD5274
- 	  digital potentiometer chips.
- 
--	  See Documentation/misc-devices/ad525x_dpot.txt for the
-+	  See Documentation/misc-devices/ad525x_dpot.rst for the
- 	  userspace interface.
- 
- 	  This driver can also be built as a module.  If so, the module
-diff --git a/drivers/misc/ad525x_dpot.c b/drivers/misc/ad525x_dpot.c
-index ccce3226a571..6f164522b028 100644
---- a/drivers/misc/ad525x_dpot.c
-+++ b/drivers/misc/ad525x_dpot.c
-@@ -58,7 +58,7 @@
-  * AD5272		1		1024		20, 50, 100 (50-TP)
-  * AD5274		1		256		20, 50, 100 (50-TP)
-  *
-- * See Documentation/misc-devices/ad525x_dpot.txt for more info.
-+ * See Documentation/misc-devices/ad525x_dpot.rst for more info.
-  *
-  * derived from ad5258.c
-  * Copyright (c) 2009 Cyber Switching, Inc.
+As pointed out in my other email, per-cpu allocation uses vmalloc when
+size > PAGE_SIZE.
+
+Thanks,
+
+Mathieu
+
+
 -- 
-2.25.4
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
