@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0571F1BF888
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804B81BF85C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbgD3Mwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 08:52:55 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:46460 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726127AbgD3Mwz (ORCPT
+        id S1726790AbgD3Mpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 08:45:34 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:53420 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726520AbgD3Mpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 08:52:55 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03UCqph2023466;
-        Thu, 30 Apr 2020 07:52:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588251171;
-        bh=IJiH5XXjwvCYQrn8bAHW0XTGtuzYNqRGjiJpARBzrWk=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=yGOvUJiLcMQz1eI/NJzhNoZtAIIlZrIK6gJPUeqvMIMw2Wmz5svbTJuTimYBN0NUh
-         b6d2+pQTPGFYR9RwQrYKJe7EYXi1wJMMwSf2I7zwxztK1lfBl5sJKa0eoeNIjHVraz
-         tFerEiVNSxv/XybL13dmtTWIU0fjCE8qEK/CKKDg=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03UCqp1B048588;
-        Thu, 30 Apr 2020 07:52:51 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 30
- Apr 2020 07:52:50 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 30 Apr 2020 07:52:50 -0500
-Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03UCqowF019754;
-        Thu, 30 Apr 2020 07:52:50 -0500
-Subject: Re: [PATCH 1/2] dt-bindings: power: Add the BQ27561 fuel gauge
- bindings
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-References: <20200417172227.28075-1-dmurphy@ti.com>
- <20200429223105.2echdvu745d6xbx2@earth.universe>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <9ab727a2-098b-465a-e74f-e169abf9ef81@ti.com>
-Date:   Thu, 30 Apr 2020 07:44:13 -0500
+        Thu, 30 Apr 2020 08:45:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588250733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/Cb5HHKbQwivw+27kErpeaVpuk6fg8e7FOLW1l12fCc=;
+        b=GfLDdMcTZ0juKuTCnm8BNOYrgkEdq0wYYLxnaBowclMo8qUSvQ/jdtQfFSjvYm3J4IM0hL
+        jh1gaTi1CPpD9T6xMSNvZO5bfGfxFcZpFlMKb9mWvpyita2o1pSBLS0+FMNsKQPLzYJ+XS
+        mF6b4pyeYi8NOVlKsVLD9bQUNH6/Yc0=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-Gjilz1DZNGmErwor0gFowA-1; Thu, 30 Apr 2020 08:45:31 -0400
+X-MC-Unique: Gjilz1DZNGmErwor0gFowA-1
+Received: by mail-wr1-f69.google.com with SMTP id a12so645363wrv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 05:45:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/Cb5HHKbQwivw+27kErpeaVpuk6fg8e7FOLW1l12fCc=;
+        b=A78HE2+vBu6AddVPrasN9yrxq6tUPTQxTudTp8Em+a30Cuewkeob9vykYJdUmjCOQT
+         Y1rUOu3IMRpX0+wruIo4e4EAfoPBcHliASd3uEAmy0dJnNh7dtyocb6NakyufE1tkMc0
+         9KVNd8pTzs/IC4OOXnmtgQynPsLRsg6A6VKSOrgb3V4XOoU5+ieu65mf8MuzBFqgkArM
+         O7iT1USs4lU+HB1haHq+pbRrAxbKfahZU5zBIO8dKDv7hFP8KnIFJVqUMI5euYo6+jyJ
+         GMLCOXqcjjxBrCSLtTuEUjeBZRgDVUfV5fYAf1eMhSVL/s2wNnx6wSsxsb5FAtHVNsiw
+         4scQ==
+X-Gm-Message-State: AGi0PuZM4x25TzdLZQpYP61gIXjxJLWFK3GmQ4RWQyxyADTLDQs2o1cr
+        o0I+mvv+SKMwzGpsi2bQPvWRKXd/Viudiyn3UIXNlaYQEdRtKjqnsNQoaefDtMP2nNMpuYJJiFk
+        Z4SBG3G9bf1T2EAXdwY7+7IIs
+X-Received: by 2002:a1c:6787:: with SMTP id b129mr2890868wmc.165.1588250729955;
+        Thu, 30 Apr 2020 05:45:29 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJHyik7w72yZvX6PX+sEPiltOuJ0kE1Z2Mjczffq8o7emZek2HBnjq6JmtiOcFDW1lscPKysw==
+X-Received: by 2002:a1c:6787:: with SMTP id b129mr2890837wmc.165.1588250729563;
+        Thu, 30 Apr 2020 05:45:29 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ac19:d1fb:3f5f:d54f? ([2001:b07:6468:f312:ac19:d1fb:3f5f:d54f])
+        by smtp.gmail.com with ESMTPSA id t20sm11667993wmi.2.2020.04.30.05.45.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 05:45:29 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: handle wrap around 32-bit address space
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Jim Mattson' <jmattson@google.com>
+Cc:     'LKML' <linux-kernel@vger.kernel.org>,
+        'kvm list' <kvm@vger.kernel.org>,
+        'Sean Christopherson' <sean.j.christopherson@intel.com>,
+        'Joerg Roedel' <joro@8bytes.org>,
+        "'everdox@gmail.com'" <everdox@gmail.com>
+References: <20200427165917.31799-1-pbonzini@redhat.com>
+ <CALMp9eTBs=deSYu1=CMLwZcO8HTpGM2JsgDxvFR1Y220tdUQ3w@mail.gmail.com>
+ <c3ac5f4c9e3a412cb57ea02df19dd2d2@AcuMS.aculab.com>
+ <91c76eb0edcd4f1a9d5bc541d35f8ade@AcuMS.aculab.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <2f471fbc-99fb-1a85-8f9f-c276c897f518@redhat.com>
+Date:   Thu, 30 Apr 2020 14:45:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200429223105.2echdvu745d6xbx2@earth.universe>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <91c76eb0edcd4f1a9d5bc541d35f8ade@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastien
+On 29/04/20 10:56, David Laight wrote:
+>>>> +               if (unlikely(((rip ^ orig_rip) >> 31) == 3) && !is_64_bit_mode(vcpu))
+>> Isn't the more obvious:
+>> 	if (((rip ^ orig_rip) & 1ull << 32) ...
+>> equivalent?
 
-On 4/29/20 5:31 PM, Sebastian Reichel wrote:
-> Hi,
->
-> On Fri, Apr 17, 2020 at 12:22:26PM -0500, Dan Murphy wrote:
->> Introduce the Texas Instrument BQ27561 and BQ27750 fuel gauge device
->> tree bindings.
->>
->> Cc: Rob Herring <robh@kernel.org>
->> Signed-off-by: Dan Murphy <dmurphy@ti.com>
->> ---
-> I think its best to just add them to bq27xxx.txt. Conversion to YAML
-> would still be nice of course :)
+This one would not (it would also detect carry on high memory addresses,
+not just 0x7fffffff to 0x80000000)...
 
-Ack
+> Actually not even being clever, how about:
+> 	if (orig_rip < (1ull << 32) && unlikely(rip >= (1ull << 32)) && ...
 
+... but yes this one would be equivalent.
 
-> In any case the binding is incomplete, since batteries should contain
-> a power-supplies node referencing their charger via a phandle, see
-> power_suppliy.txt (which still needs to be converted to YAML).
-
-Ack
-
-Dan
+Paolo
 
