@@ -2,140 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 422CF1BFB56
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3CB1BFB89
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729088AbgD3N7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:59:13 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:37628 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729166AbgD3N7J (ORCPT
+        id S1728629AbgD3OAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728169AbgD3OA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:59:09 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E6246321;
-        Thu, 30 Apr 2020 15:59:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1588255146;
-        bh=GhmU8YETMOVIz97f3awqWGN1baPnypD27desAmZxvnM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m0nCqzOK1A1eW641+wJC9vh12s4/oo687inR7KwWAJ0KfqiiA33qRsLDxYcMx6ii6
-         nLBqmMij+oZZhbjtiWkUkW2pvzh+f/SZwuwlfKT6O9T4OqGBt/h223EPPZfeexVlUe
-         6Cgq6VmXqw2elz+zFvEkTwg+mGUak8lKvy5fWD4o=
-Date:   Thu, 30 Apr 2020 16:59:04 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Daniel Gomez <daniel@qtec.com>, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/3] media: v4l2-subdev.h: Add min and max enum
-Message-ID: <20200430135904.GI5856@pendragon.ideasonboard.com>
-References: <20200414200151.80089-1-daniel@qtec.com>
- <20200414200151.80089-2-daniel@qtec.com>
- <20200430094233.GE867@valkosipuli.retiisi.org.uk>
- <20200430111014.GD5856@pendragon.ideasonboard.com>
- <20200430133125.GL867@valkosipuli.retiisi.org.uk>
+        Thu, 30 Apr 2020 10:00:26 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2413CC035494;
+        Thu, 30 Apr 2020 07:00:26 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id u11so1553494iow.4;
+        Thu, 30 Apr 2020 07:00:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nz4EYudAGnRAka2sLpxAUHkI/tIzbc4FpKMb2iD2HGI=;
+        b=WxsmkjonITcLJ97YhEvjgmBobJxYhdcS0FMYbI0ha9eAYIbOvVa++0B/N61OFuA+vq
+         TZYJoOOK1ZCNtDRuUb0+F6GjgICAVNM5rw4vEuVnM80xd3VkxSFGCpu0bX2tf4mdswgH
+         D8T/Hct4kccVa1z5uGmKgC3cbV8W5/BGPIlISHzo6yjyI6Yd84kp1sl1eFHyPTD6GGmH
+         0Q1F1IZODwzZhcHFUAcQpScBz+tK/gV6IwRa2pAu8aiuKxSgJ9XM9CrOeEgOUpJR6Mg0
+         6oYATFOQutPCYugnCrV+5/HZ8KiRd7lgTda3lkj13rjmdcAeGR16UBPZIBdRZZnJts6f
+         Vuww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nz4EYudAGnRAka2sLpxAUHkI/tIzbc4FpKMb2iD2HGI=;
+        b=CiwWFwshQdvP92w7Gq4UFxS8dWY/QB4VLzrv/Fv5WzUuF1H2+udlUzzN0oNB5PrCp5
+         JDfW7qpXlB1CfLHp3qNnE4cvwmmsuBlkxpaQVoO8+yZRBwn06HweZtXwQqgFq9wn+BAw
+         OhlJrMN9hF7/l6YD7tafQx4xByBQiOIoMRE6cjfAS/r1pvKjWSINoPOxc6oQDceCvuWR
+         mzcLvzCjGCZiIARbyWCnPwKK9atKLl/idujJjghzNVZCL8hRNNt6Omnqr52iP9zwSK/K
+         XOKHuBDj+D/1LFSFE6rGaoGYK0Ffhf2HLrwX0zc5KLKIYjOwtnCbmhDbmSgKltqJmQMm
+         slBw==
+X-Gm-Message-State: AGi0Pub3N2Cxo4L39iufmf9A8KhU1QiVU9tQA3+2VW80YrTnnsM9sWK7
+        +RvhIB1Z0Vo2Rng1TbwF4efWg3ph+A6IJRbcZk4=
+X-Google-Smtp-Source: APiQypL/hGXbUxNw4AVM3ITxY+bWgZQNGgI8BdvnXtQMrcBmjvMtXdgrG7Lhm8mMQi0TVyWgoYz+zdbaXKGpRu9prEA=
+X-Received: by 2002:a6b:b8d6:: with SMTP id i205mr2058871iof.123.1588255225316;
+ Thu, 30 Apr 2020 07:00:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200430133125.GL867@valkosipuli.retiisi.org.uk>
+References: <20200426104115.22630-1-peron.clem@gmail.com> <20200426104115.22630-4-peron.clem@gmail.com>
+ <20200428081321.ht3el26yqhsnyfm4@gilmour.lan> <CAJiuCcdVs_drs40Q6537BYfz24F7NmC6B8S5-Lt4V4ggs-FXWA@mail.gmail.com>
+ <20200429123529.y24dpy63wxq7uvkt@gilmour.lan> <CAJiuCcfXqizcq_JuXRCsqEqM2562cr1SGJ0pmy07jcJxAXojOw@mail.gmail.com>
+ <20200430084600.samghw4zxb5zdbez@gilmour.lan>
+In-Reply-To: <20200430084600.samghw4zxb5zdbez@gilmour.lan>
+From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Date:   Thu, 30 Apr 2020 16:00:14 +0200
+Message-ID: <CAJiuCcf_LHrJ6QdZgH8HyN6TRiT+GiD+t4UggFCrz-VwVHXV6w@mail.gmail.com>
+Subject: Re: [PATCH v3 3/7] ASoC: sun4i-i2s: Add support for H6 I2S
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Marcus Cooper <codekipper@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+Hi Maxime,
 
-On Thu, Apr 30, 2020 at 04:31:25PM +0300, Sakari Ailus wrote:
-> On Thu, Apr 30, 2020 at 02:10:14PM +0300, Laurent Pinchart wrote:
-> > On Thu, Apr 30, 2020 at 12:42:33PM +0300, Sakari Ailus wrote:
-> >> On Tue, Apr 14, 2020 at 10:01:49PM +0200, Daniel Gomez wrote:
-> >>> Add min and max structures to the v4l2-subdev callback in order to allow
-> >>> the subdev to return a range of valid frame intervals.
-> >>> 
-> >>> This would operate similar to the struct v4l2_subdev_frame_size_enum and
-> >>> its max and min values for the width and the height. In this case, the
-> >>> possibility to return a frame interval range is added to the v4l2-subdev level
-> >>> whenever the v4l2 device operates in step-wise or continuous mode.
-> >> 
-> >> The current API only allows providing a list of enumerated values. That is
-> >> limiting indeed, especially on register list based sensor drivers where
-> >> vertical blanking is configurable.
-> >> 
-> >> I guess this could be extended to cover what V4L2, more or less. If we tell
-> >> it's a range, is it assumed to be contiguous? We don't have try operation
-> >> for the frame interval, but I guess set is good enough. The fraction is
-> >> probably best for TV standards but it's not what camera sensors natively
-> >> use. (But for a register list based driver, the established practice
-> >> remains to use frame interval.)
-> >> 
-> >> I'm also wondering the effect on existing user space; if a driver gives a
-> >> range, how will the existing programs work with such a driver?
-> >> 
-> >> I'd add an anonymous union with the interval field, the other field being
-> >> min_interval. Then the current applications would get the minimum interval
-> >> and still continue to function. I guess compilers are modern enough these
-> >> days we can have an anonymous union in the uAPI?
-> > 
-> > We can discuss all this, but given patch 3/3 in this series, I think
-> > this isn't the right API :-) The sensor driver should not expose the
-> > frame interval enumeration API. It should instead expose control of the
-> > frame rate through V4L2_CID_PIXEL_RATE, V4L2_CID_HBLANK and
-> > V4L2_CID_VBLANK.
-> > 
-> 
-> That would require also exposing the size of the pixel array (and the
-> analogue crop), in order to provide all the necessary information to
-> calculate the frame rate. No objections there; this is a new driver.
-> 
-> There are however existing drivers that implement s_frame_interval subdev
-> ioctl; those might benefit from this one. Or would you implement the pixel
-> rate based control as well, and effectively deprecate the s_frame_interval
-> on those?
+On Thu, 30 Apr 2020 at 10:46, Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> Hi,
+>
+> On Wed, Apr 29, 2020 at 06:33:00PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
+> > On Wed, 29 Apr 2020 at 14:35, Maxime Ripard <maxime@cerno.tech> wrote:
+> > >
+> > > On Tue, Apr 28, 2020 at 10:55:47AM +0200, Cl=C3=A9ment P=C3=A9ron wro=
+te:
+> > > > > > +static int sun50i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+> > > > > > +                              unsigned int fmt)
+> > > > >
+> > > > > The alignment is off here
+> > > > >
+> > > > > > +{
+> > > > > > +     u32 mode, val;
+> > > > > > +     u8 offset;
+> > > > > > +
+> > > > > > +     /*
+> > > > > > +      * DAI clock polarity
+> > > > > > +      *
+> > > > > > +      * The setup for LRCK contradicts the datasheet, but unde=
+r a
+> > > > > > +      * scope it's clear that the LRCK polarity is reversed
+> > > > > > +      * compared to the expected polarity on the bus.
+> > > > > > +      */
+> > > > >
+> > > > > Did you check this or has it been copy-pasted?
+> > > >
+> > > > copy-pasted, I will check this.
+> > >
+> > > It's not going to be easy to do this if you only have a board with HD=
+MI. If you
+> > > can't test that easily, just remove the comment (or make it explicit =
+that you
+> > > copy pasted it?), no comment is better than a wrong one.
+> >
+> > I have talked with Marcus Cooper it may be able to test this this week-=
+end.
+> > Also this can explain why we need the "
+> > simple-audio-card,frame-inversion;" in the device-tree.
+> >
+> > If think this fix has been introduced by you, correct? Could you say
+> > on which SoC did you see this issue?
+>
+> This was seen on an H3
 
-That's what I would recommend, yes. I would only keep
-.s_frame_interval() for sensors that expose that concept at the hardware
-level (for instance with an integrated ISP whose firmware exposes a
-frame interval or frame rate control).
+Just two more questions:
+- Did you observe this issue on both TDM and I2S mode?
+- On which DAI node?
 
-> >>> Signed-off-by: Daniel Gomez <daniel@qtec.com>
-> >>> ---
-> >>>  include/uapi/linux/v4l2-subdev.h | 6 +++++-
-> >>>  1 file changed, 5 insertions(+), 1 deletion(-)
-> >>> 
-> >>> diff --git a/include/uapi/linux/v4l2-subdev.h b/include/uapi/linux/v4l2-subdev.h
-> >>> index 03970ce30741..ee15393c58cd 100644
-> >>> --- a/include/uapi/linux/v4l2-subdev.h
-> >>> +++ b/include/uapi/linux/v4l2-subdev.h
-> >>> @@ -117,6 +117,8 @@ struct v4l2_subdev_frame_interval {
-> >>>   * @code: format code (MEDIA_BUS_FMT_ definitions)
-> >>>   * @width: frame width in pixels
-> >>>   * @height: frame height in pixels
-> >>> + * @min_interval: min frame interval in seconds
-> >>> + * @max_interval: max frame interval in seconds
-> >>>   * @interval: frame interval in seconds
-> >>>   * @which: format type (from enum v4l2_subdev_format_whence)
-> >>>   */
-> >>> @@ -126,9 +128,11 @@ struct v4l2_subdev_frame_interval_enum {
-> >>>  	__u32 code;
-> >>>  	__u32 width;
-> >>>  	__u32 height;
-> >>> +	struct v4l2_fract min_interval;
-> >>> +	struct v4l2_fract max_interval;
-> >> 
-> >> This changes the memory layout of the struct and breaks the ABI. Any new
-> >> fields in the struct may only replace reserved fields while the rest must
-> >> stay unchanged.
-> >> 
-> >>>  	struct v4l2_fract interval;
-> >>>  	__u32 which;
-> >>> -	__u32 reserved[8];
-> >>> +	__u32 reserved[4];
-> >>>  };
-> >>>  
-> >>>  /**
+Since recent change in sun4i-i2s.c, we had to introduce the
+"simple-audio-card,frame-inversion" in LibreElec tree.
+H3 boards are quite common in LibreElec community so I think:
+ - This fix is only needed in TDM mode
+ - Or this fix is not required for the HDMI DAI node (HDMI DAI is a
+little bit different compare to other DAI but I think the first guess
+is more likely)
 
--- 
 Regards,
+Clement
 
-Laurent Pinchart
+>
+> Maxime
