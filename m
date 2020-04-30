@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E2B1BF239
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648A01BF23B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727122AbgD3IHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 04:07:31 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:60506 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726689AbgD3IH3 (ORCPT
+        id S1727778AbgD3IHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 04:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726453AbgD3IHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 04:07:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588234047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gdooSi8kzNzLUkGPoOY/gSrvbDZtHNpV4mw4hssBG2A=;
-        b=enelnxuf1qDBkgUxyCCBHrWElzbCRCNajnzy6TfCAUWcu+ziqJPAGPeopocUp5/zgoEGLf
-        nxizfwRhgvvOM9B44APg+H7NZAqxbwAlGTjwJg0VTlzoYpmMGh/9kX0BOt7MKBu0jVeGEL
-        r7kaPV+rZpLkNIehT4K9H5tT04ogN0Y=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-144-8Qrzqyp4PWOcug6gblnwSw-1; Thu, 30 Apr 2020 04:07:26 -0400
-X-MC-Unique: 8Qrzqyp4PWOcug6gblnwSw-1
-Received: by mail-wr1-f70.google.com with SMTP id g7so3445061wrw.18
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 01:07:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gdooSi8kzNzLUkGPoOY/gSrvbDZtHNpV4mw4hssBG2A=;
-        b=HNgpZrGt0Tp1CRfNJ83zGEa2lN85ui4RKNYCJpiqccBOT0kpfAxb1SsY9pECOjHQi9
-         h+h0uw8Wetwu/Fi6rXw33D3mswvEOMYt4bhyRLrqxTgoATHLG+1SL9vr09AN3Uw/s+yb
-         7Z0g4DcfH1RQqZUapk1BoWE2lDU0CVJdKg7CKpKE3Bhk1pi7qiOFXGciisSpjdC9fQk/
-         DW8ZZ6KNxPKMx/wgyr9IafmyJ2B07sZltn7aGEp4swJg36maVMEwh4IR2xHPEB/Dl7US
-         um9+QZq8B+VjwLgfyysI4bxfuPov5KNV2CemygoHDP9uzhkhg1xhA70WfIemoOn9sWSI
-         srbQ==
-X-Gm-Message-State: AGi0PubZAxSzXP9b3hoM9I8UXzz5XuAYpxg92mtygD0MVs65z03ExfUs
-        ak4sNfIGJP8xkVxnF0nikVv/Bchk3KIAqDQW5b6nfNry6v7IljBYIgYJMjpzDQ6nwH9MnB6z2SU
-        wfau6mBXZRFGNxtXwqdswc1vx
-X-Received: by 2002:adf:ce02:: with SMTP id p2mr2401476wrn.173.1588234045016;
-        Thu, 30 Apr 2020 01:07:25 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKz0zSjPZHjTj9qCN/S+Ro7syFoCI8JaW4cIB/I7GfLhunASC+45CCYaKVkcAeN/Q5Me5j2UQ==
-X-Received: by 2002:adf:ce02:: with SMTP id p2mr2401448wrn.173.1588234044664;
-        Thu, 30 Apr 2020 01:07:24 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.179.209])
-        by smtp.gmail.com with ESMTPSA id i17sm11338242wml.23.2020.04.30.01.07.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 01:07:23 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 10:07:21 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Michel Lespinasse <walken@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>, irogers@google.com,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [RFC][PATCH 1/7] rbtree: Add generic add and find helpers
-Message-ID: <20200430080721.GC68379@localhost.localdomain>
-References: <20200429153258.563269446@infradead.org>
- <20200429153549.006661686@infradead.org>
- <20200430072847.GA68379@localhost.localdomain>
- <CANN689FBczsBm=bYPfs1saUEeUq+oxLWnr8xfwtOstQkvJmwOA@mail.gmail.com>
+        Thu, 30 Apr 2020 04:07:39 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A6EC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 01:07:38 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AD6532A0221;
+        Thu, 30 Apr 2020 09:07:35 +0100 (BST)
+Date:   Thu, 30 Apr 2020 10:07:33 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Parshuram Thombare <pthombar@cadence.com>
+Cc:     <bbrezillon@kernel.org>, <vitor.soares@synopsys.com>,
+        <pgaj@cadence.com>, <linux-i3c@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
+        <praneeth@ti.com>
+Subject: Re: [PATCH v6 3/8] i3c: master: i3c mastership request and handover
+Message-ID: <20200430100733.4e0dc578@collabora.com>
+In-Reply-To: <1587140462-30209-1-git-send-email-pthombar@cadence.com>
+References: <1587140398-29473-1-git-send-email-pthombar@cadence.com>
+        <1587140462-30209-1-git-send-email-pthombar@cadence.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANN689FBczsBm=bYPfs1saUEeUq+oxLWnr8xfwtOstQkvJmwOA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/04/20 00:51, Michel Lespinasse wrote:
-> On Thu, Apr 30, 2020 at 12:28 AM Juri Lelli <juri.lelli@redhat.com> wrote:
-> > > --- a/include/linux/rbtree.h
-> > > +++ b/include/linux/rbtree.h
-> > > @@ -141,12 +141,18 @@ static inline void rb_insert_color_cache
-> > >       rb_insert_color(node, &root->rb_root);
-> > >  }
-> > >
-> > > -static inline void rb_erase_cached(struct rb_node *node,
-> > > +static inline bool rb_erase_cached(struct rb_node *node,
-> > >                                  struct rb_root_cached *root)
-> > >  {
-> > > -     if (root->rb_leftmost == node)
-> > > +     bool leftmost = false;
-> > > +
-> > > +     if (root->rb_leftmost == node) {
-> > >               root->rb_leftmost = rb_next(node);
-> >
-> > Think we need
-> >
-> >  if (root->rb_leftmost)
-> >
-> > > +             leftmost = true;
-> >
-> > DEADLINE crashes w/o that.
-> 
-> I think Peter's code is correct; after removing the only node in an
-> rbtree rb_leftmost should be NULL.
+On Fri, 17 Apr 2020 18:21:02 +0200
+Parshuram Thombare <pthombar@cadence.com> wrote:
 
-Indeed, I've only got the idea that Peter was thinking of using
-rb_erase_cached return value as an indication that new rb_leftmost is
-not NULL (and for example perform an update in DEADLINE earliest_dl).
+> +
+> +/* This function is expected to be called with normaluse_lock */
+> +int i3c_master_acquire_bus(struct i3c_master_controller *master)
+> +{
+> +	int ret = 0;
+> +
+> +	if (!master->this || master->this != master->bus.cur_master) {
 
-I also had the impression that DEADLINE is actually the only consumer of
-that return value and so we were able to define its semantic.
+Let's limit the number of indentations by doing
 
-> The issue appears to be in dequeue_pushable_dl_task unconditionally
-> dereferencing the pointer returned by rb_first_cached(), which may be
-> NULL. I'm not sure what the correct behavior is though, i.e. what
-> dl_rq->earliest_dl.next should be set to if the rbtree ends up empty.
-> Current code (before Peter's changes) preserves the existing
-> dl_rq->earliest_dl.next value in that case, which seems very weird to
-> me (and worthy of a comment if it's correct).
+	if (master->this == master->bus.cur_master)
+		return 0;
 
-But, yeah. Fixing things in DEADLINE code works for me as well. We could
-reset it to 0 (initial value), but I now actually wonder if places where
-that is consumed are actually OK. Different discussion, though. :-)
 
-Thanks,
+> +		if (master->mr_state == I3C_MR_IDLE) {
+> +			master->mr_state = I3C_MR_WAIT_DA;
+> +			init_completion(&master->mr_comp);
+> +			queue_work(master->wq, &master->sec_mst_work);
+> +			/*
+> +			 * Bus acquire procedure may need write lock
+> +			 * so release read lock before yielding
+> +			 * to bus acquire state machine
+> +			 */
+> +			i3c_bus_normaluse_unlock(&master->bus);
+> +			wait_for_completion(&master->mr_comp);
+> +			i3c_bus_normaluse_lock(&master->bus);
 
-Juri
+Is that really enough? I remember we had something a bit more complex
+to handle the case where bus is acquired to send a message to a device,
+and another master on the bus re-acquires it before we have a chance to
+send this message message. i3c_master_acquire_bus_ownership() was
+dealing with that in Przemek series. It seems you've rewritten a lot of
+these things. Would you mind explaining why, and how that works?
+
+> +			if (master->mr_state != I3C_MR_DONE)
+> +				ret = -EAGAIN;
+> +			master->mr_state = I3C_MR_IDLE;
+> +		} else {
+> +			/*
+> +			 * MR request is already in process for
+> +			 * this master
+> +			 */
+> +			ret = -EAGAIN;
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(i3c_master_acquire_bus);
+
 
