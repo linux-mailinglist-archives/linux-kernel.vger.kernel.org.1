@@ -2,81 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED311C099A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BCA1C09A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727101AbgD3Vog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:44:36 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:60459 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbgD3Vof (ORCPT
+        id S1726960AbgD3Vwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgD3Vwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:44:35 -0400
-Received: from mail-qk1-f178.google.com ([209.85.222.178]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MJEpp-1jimlN0NSd-00Khm9; Thu, 30 Apr 2020 23:44:34 +0200
-Received: by mail-qk1-f178.google.com with SMTP id s9so4748399qkm.6;
-        Thu, 30 Apr 2020 14:44:33 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZghjhx/xayLprs8SLRh1slG58kMxKQ2L1E4Zrvs+TJooOskv55
-        wYYqOHCuTuBgWS+b0WwgUoKO/19OG/B9CKSQ/MU=
-X-Google-Smtp-Source: APiQypJG61UgX2jVL3xX+glRo4MMKBEeabgc3GqvItqPEIiPOYIHTXVB0ewjzbQUwQBm4qyJilYhp6OqGHyHSKdeL8Q=
-X-Received: by 2002:a37:63d0:: with SMTP id x199mr594389qkb.3.1588283072801;
- Thu, 30 Apr 2020 14:44:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200430213101.135134-1-arnd@arndb.de> <20200430213101.135134-5-arnd@arndb.de>
- <49831bca-b9cf-4b9a-1a60-f4289e9c83c0@embeddedor.com>
-In-Reply-To: <49831bca-b9cf-4b9a-1a60-f4289e9c83c0@embeddedor.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 30 Apr 2020 23:44:16 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0y0JTrsjFx1XRh7A6YdSZ=aJ1V3-Eajfsbz3HtQOEu7A@mail.gmail.com>
-Message-ID: <CAK8P3a0y0JTrsjFx1XRh7A6YdSZ=aJ1V3-Eajfsbz3HtQOEu7A@mail.gmail.com>
-Subject: Re: [PATCH 04/15] ath10k: fix gcc-10 zero-length-bounds warnings
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Michal Kazior <michal.kazior@tieto.com>,
-        Kalle Valo <kvalo@qca.qualcomm.com>,
-        Maharaja Kennadyrajan <mkenna@codeaurora.org>,
-        Wen Gong <wgong@codeaurora.org>,
-        Erik Stromdahl <erik.stromdahl@gmail.com>,
-        ath10k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:UzqWa1uTx+8qlS57U8rov8c8CfYZsP5wisVZbCwro749WkrbXdK
- 0cV6I4ErTSyxR50khFsv5dK2Qa5SPh+/eDNZLi/Az7qv6cPL3BM1YfmQ6fX+460XHHB33Vj
- I+hvKmYefNAW1DnDXSpYy3qtOp6BcXt6qNdNKgt3WB31bXgVC2X/V55SJg5IVlhwktVcPvn
- gMS2w0/Rpd0FDqaHt1Lcw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AffdSqvvlvY=:2+GBVTlK354dDFmmZnrEkl
- M5pB+N7FiY+DIwhiGS/NIZS4Q9MEIhO7sgPEC6R+iz5kPSvJAJ8FPfNf195oLq2reuRyd1GrD
- hijlBApvjh//G2bw+HeRCmcslf7QCWtJzg85Wbmx8SQTCBtbjFlnjQCzvZDQ6BtxO9U4qggTA
- 6HNud3R4LmHMN7mK1yVCNFfUUgtGglT8n0oxfBTLluh3kr90cta/XH9rayjvEQ7TgkmYyn4G7
- 6nU8q8dZ4A6YkgpRvyNVuCce4ONFlfHfAQ34cY/o24kLYVe9vyi1nDKorzSjJio6+FQC6auDw
- ou6xFlch0fN/xniowavN1QR2VJ3nvr1CtctWiFqWjOaGir1QXVgNoVvHJ9TxZwNu3LrcUMdz2
- 4aBh7kttMZWJMLPijwHl4BAO+1G1BrHmyJ/FF1NHARdLVU4z2ffZI1mvu1Hfh19j5t6Qq6S41
- KEa7adNCtIgI42364dQA3Y4iOrdlqyr//oIA4Ua3m1rG35s58MgER3fvQ2liTGJmEzZXzMtgo
- xSNrkaS407eMaktZfdVjgwRXhrfcBd0sRguIOghxGkBWb4/1p0UZgOkQbv1yBVzBQyqbn2iS3
- I3z/C3HjgQ85rnCJogdO7EpfHhi+VWr/Dbdgkh6Capx0tPKqQfMPp2rB+MCpq2xqfx3M8QNsr
- DlHWUdEkZ5aPKY5dhmVnJo50BN5dSt9AVk/wwMkKUql04VrY41mglfxMuVF1OwvZsTOKt/yBs
- gzDpH2dV6uyB4j32Sn2KXv6X4lV3t0Wh+PYQItub43mcAaTx6mXJ3p6UvR93ZCl8AqEhXa2Hm
- X2j3c5qoM9H1RG5xbeLdY0k2+9QZMgcR+UUwIluqSgWjKes5IM=
+        Thu, 30 Apr 2020 17:52:37 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DF4C035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:52:37 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id k22so5825448eds.6
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=zgDZM2QEe3TNlL7K8Bymnn7KFg8gtWAYwvoscbSiu6Q=;
+        b=OzIVTd/Umg4BVW2aaVD56kjxL6YFqh9+OD6bVaTZVRy+i4nWJDwNaMQa0xOWi1277g
+         GyVKMF5l+tnx41ET1wxad6lBPs2dNE1uQlDhQ4rtQPvw0bAsMzKrpqqGKVEbHjnvYezZ
+         j4wGcwya12ynLd7YCBTQX26T8Ye4g+/cpG7E/fnP1lF9grC4usJLWmMZq+InP+U3KX7n
+         8w/OzB2gjAdJhu1U0VIejTzTFW2+ByPGNkUUZ3DjlPsxPMy6LSR7Ua08fx+TPgvHl6VZ
+         mRtku5j5TUkRqrYFkRlw/U0Thbr2FeZJLFqWiPiKKH0bsAM99MdJ1/SbAOM4QRFpqp/i
+         YGUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=zgDZM2QEe3TNlL7K8Bymnn7KFg8gtWAYwvoscbSiu6Q=;
+        b=lrp6MRfVk8bZOarwzeO5cnP9U8nMicjzTsCkI5wl5z5fMj5lfsD0v/QZpsUN30hsX4
+         Euf0BQvja64mEQnLXInwUrTV2gspBjvctdYwHkmD2jIi2pc5eRnmm6woAtUCEXo0bSUG
+         M0/hUZUvfxzqAAAqEH+x499uNWa1PyWpSMgJPFD/xO92SZTegniuK//lmAULwf8qzPqT
+         dAPUNd/kEDE4NlI4rUTEMYI+Bc77n07ik1vyKzUFEFrhNXmFqJ8CfDdhmzH1me/NCJhP
+         78ifnzIVLsG9dw5xFbIC0Fd4iwsDgG6Ghso4WvMJy6ao+06Rhb9FULUuXTtex1fdv3lF
+         eLWw==
+X-Gm-Message-State: AGi0PuYGeeN15AbwXO0XedLdtrnw3Tk0KnX3ZHTXYIzJhaf3WFkvdcR1
+        JRXunn3TIS+/TnDwn4VN/4cyFg==
+X-Google-Smtp-Source: APiQypJD8RUe9YBETXgY/U8ynUxBhxdy0riV5Q6OnOvIOkE3/Aqn5u1ovU/CZeP2lL35E59nHYm0TA==
+X-Received: by 2002:a05:6402:319c:: with SMTP id di28mr1049635edb.185.1588283556033;
+        Thu, 30 Apr 2020 14:52:36 -0700 (PDT)
+Received: from ls00508.pb.local ([2001:1438:4010:2540:b82f:dfc:5e2a:e7cc])
+        by smtp.gmail.com with ESMTPSA id f13sm92022ejd.2.2020.04.30.14.52.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 14:52:34 -0700 (PDT)
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     hch@infradead.org, david@fromorbit.com, willy@infradead.org,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Subject: [RFC PATCH V2 0/9] Introduce attach/clear_page_private to cleanup code
+Date:   Thu, 30 Apr 2020 23:44:41 +0200
+Message-Id: <20200430214450.10662-1-guoqing.jiang@cloud.ionos.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 11:41 PM Gustavo A. R. Silva
-<gustavo@embeddedor.com> wrote:
-> On 4/30/20 16:30, Arnd Bergmann wrote:
-> > gcc-10 started warning about out-of-bounds access for zero-length
-> > arrays:
-> The treewide patch is an experimental change and, as this change only applies
-> to my -next tree, I will carry this patch in it, so other people don't have
-> to worry about this at all.
+Hi,
 
-Ok, thanks!
+Based on the previous thread [1], this patchset introduces attach_page_private
+and clear_page_private to replace attach_page_buffers and __clear_page_buffers.
+Thanks a lot for the constructive suggestions and comments from Christoph,
+Matthew and Dave.
 
-       Arnd
+And sorry for cross post to different lists since it modifies different subsystems.
+
+RFC -> RFC V2:
+
+1. rename the new functions and add comments for them.
+2. change the return type of attach_page_private.
+3. call attach_page_private(newpage, clear_page_private(page)) to cleanup code further.
+4. avoid potential use-after-free in orangefs.
+
+[1]. https://lore.kernel.org/linux-fsdevel/20200420221424.GH5820@bombadil.infradead.org/
+
+Thanks,
+Guoqing
+
+Guoqing Jiang (9):
+  include/linux/pagemap.h: introduce attach/clear_page_private
+  md: remove __clear_page_buffers and use attach/clear_page_private
+  btrfs: use attach/clear_page_private
+  fs/buffer.c: use attach/clear_page_private
+  f2fs: use attach/clear_page_private
+  iomap: use attach/clear_page_private
+  ntfs: replace attach_page_buffers with attach_page_private
+  orangefs: use attach/clear_page_private
+  buffer_head.h: remove attach_page_buffers
+
+ drivers/md/md-bitmap.c      | 12 ++----------
+ fs/btrfs/disk-io.c          |  4 +---
+ fs/btrfs/extent_io.c        | 21 ++++++---------------
+ fs/btrfs/inode.c            | 23 +++++------------------
+ fs/buffer.c                 | 16 ++++------------
+ fs/f2fs/f2fs.h              | 11 ++---------
+ fs/iomap/buffered-io.c      | 19 ++++---------------
+ fs/ntfs/aops.c              |  2 +-
+ fs/ntfs/mft.c               |  2 +-
+ fs/orangefs/inode.c         | 32 ++++++--------------------------
+ include/linux/buffer_head.h |  8 --------
+ include/linux/pagemap.h     | 35 +++++++++++++++++++++++++++++++++++
+ 12 files changed, 67 insertions(+), 118 deletions(-)
+
+-- 
+2.17.1
+
