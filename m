@@ -2,173 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F301BF4CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 12:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89331BF4D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 12:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726859AbgD3KDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 06:03:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:51728 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726378AbgD3KDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 06:03:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A0311063;
-        Thu, 30 Apr 2020 03:03:18 -0700 (PDT)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B787D3F68F;
-        Thu, 30 Apr 2020 03:03:15 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 11:03:13 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Tao Zhou <ouwen210@hotmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] Documentation/sysctl: Document uclamp sysctl knobs
-Message-ID: <20200430100311.hcamfff363hl4bjk@e107158-lin>
-References: <20200428164134.5588-1-qais.yousef@arm.com>
- <20200428164134.5588-2-qais.yousef@arm.com>
- <BL0PR14MB377949FBF2B798EEC425EE719AAA0@BL0PR14MB3779.namprd14.prod.outlook.com>
+        id S1726884AbgD3KEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 06:04:22 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:39042 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726378AbgD3KEV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 06:04:21 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03U9wt5a044012;
+        Thu, 30 Apr 2020 10:04:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : cc : subject : references : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=DSSzKp3mUVTKXxhiuVUGdx3G2Yd34m/wqtsKlf9cY6c=;
+ b=lZ6kuWQpNxDDH63AFqEDLZZujA6OxaKmoRiIDaU9YVCAuZNMZAGZ7DByCmMPwmo6MTgP
+ AhFhANnzBfT6OLpFMb4Ej2tjK+KffgujNANhW7AGJM+Db4GMBc9c1+JtThSBBD4r3kXS
+ y5Q5JYJQ1MDzqcp8TeNpcnMH9n8dYv8Z3MAm0D1NwabuNNIVxUL54sCvr2ty0BFYagBs
+ kAS1u59mdRIo8gX1wKpF7OYep6Kexl6PYMe/3UJS9Ldej/lw3iydr5vfFkx4lDcqmao8
+ 4pbAD8FdUgdr7OKLj0FkgUKKO0tb/fo/mN18POuzGZdjerj2ZEda4m+uXvd2n+dAYKaV Lw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 30nucgahn0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 10:04:01 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03U9wE5u176717;
+        Thu, 30 Apr 2020 10:04:00 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 30qtg0gu6j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 10:04:00 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03UA3wEa019145;
+        Thu, 30 Apr 2020 10:03:58 GMT
+Received: from dhcp-10-175-187-247.vpn.oracle.com (/10.175.187.247) by default
+ (Oracle Beehive Gateway v4.0) with ESMTP ; Thu, 30 Apr 2020 03:03:45 -0700
+X-X-SENDER: alan@localhost
+USER-AGENT: Alpine 2.21 (LRH 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <BL0PR14MB377949FBF2B798EEC425EE719AAA0@BL0PR14MB3779.namprd14.prod.outlook.com>
-User-Agent: NeoMutt/20171215
+Message-ID: <alpine.LRH.2.21.2004301010520.23084@localhost>
+Date:   Thu, 30 Apr 2020 03:03:36 -0700 (PDT)
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        ast@kernel.org, daniel@iogearbox.net, yhs@fb.com, kafai@fb.com,
+        songliubraving@fb.com, andriin@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 0/6] bpf, printk: add BTF-based type printing
+References: <1587120160-3030-1-git-send-email-alan.maguire@oracle.com>
+ <20200418160536.4mrvqh2lasqbyk77@ast-mbp>
+ <alpine.LRH.2.21.2004201623390.12711@localhost>
+ <7d6019da19d52c851d884731b1f16328fdbe2e3d.camel@perches.com>
+In-Reply-To: <7d6019da19d52c851d884731b1f16328fdbe2e3d.camel@perches.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 adultscore=0
+ mlxlogscore=999 phishscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300081
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 suspectscore=3 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300081
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/30/20 13:06, Tao Zhou wrote:
-> Hi,
-> 
-> On Tue, Apr 28, 2020 at 05:41:34PM +0100, Qais Yousef wrote:
-> > Uclamp exposes 3 sysctl knobs:
+On Mon, 20 Apr 2020, Joe Perches wrote:
+
+> On Mon, 2020-04-20 at 16:29 +0100, Alan Maguire wrote:
+> > On Sat, 18 Apr 2020, Alexei Starovoitov wrote:
 > > 
-> > 	* sched_util_clamp_min
-> > 	* sched_util_clamp_max
-> > 	* sched_util_clamp_min_rt_default
->  
-> > Document them in sysctl/kernel.rst.
+> > > On Fri, Apr 17, 2020 at 11:42:34AM +0100, Alan Maguire wrote:
+> > > > The printk family of functions support printing specific pointer types
+> > > > using %p format specifiers (MAC addresses, IP addresses, etc).  For
+> > > > full details see Documentation/core-api/printk-formats.rst.
+> > > > 
+> > > > This RFC patchset proposes introducing a "print typed pointer" format
+> > > > specifier "%pT<type>"; the type specified is then looked up in the BPF
+> > > > Type Format (BTF) information provided for vmlinux to support display.
+> > > 
+> > > This is great idea! Love it.
+> > > 
 > > 
-> > Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-> > CC: Jonathan Corbet <corbet@lwn.net>
-> > CC: Juri Lelli <juri.lelli@redhat.com>
-> > CC: Vincent Guittot <vincent.guittot@linaro.org>
-> > CC: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> > CC: Steven Rostedt <rostedt@goodmis.org>
-> > CC: Ben Segall <bsegall@google.com>
-> > CC: Mel Gorman <mgorman@suse.de>
-> > CC: Luis Chamberlain <mcgrof@kernel.org>
-> > CC: Kees Cook <keescook@chromium.org>
-> > CC: Iurii Zaikin <yzaikin@google.com>
-> > CC: Quentin Perret <qperret@google.com>
-> > CC: Valentin Schneider <valentin.schneider@arm.com>
-> > CC: Patrick Bellasi <patrick.bellasi@matbug.net>
-> > CC: Pavan Kondeti <pkondeti@codeaurora.org>
-> > CC: linux-doc@vger.kernel.org
-> > CC: linux-kernel@vger.kernel.org
-> > CC: linux-fsdevel@vger.kernel.org
-> > ---
-> >  Documentation/admin-guide/sysctl/kernel.rst | 48 +++++++++++++++++++++
-> >  1 file changed, 48 insertions(+)
-> > 
-> > diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-> > index 0d427fd10941..e7255f71493c 100644
-> > --- a/Documentation/admin-guide/sysctl/kernel.rst
-> > +++ b/Documentation/admin-guide/sysctl/kernel.rst
-> > @@ -940,6 +940,54 @@ Enables/disables scheduler statistics. Enabling this feature
-> >  incurs a small amount of overhead in the scheduler but is
-> >  useful for debugging and performance tuning.
+> > Thanks for taking a look!
 > >  
-> > +sched_util_clamp_min:
-> > +=====================
-> > +
-> > +Max allowed *minimum* utilization.
-> > +
-> > +Default value is SCHED_CAPACITY_SCALE (1024), which is the maximum possible
-> > +value.
-> > +
-> > +It means that any requested uclamp.min value cannot be greater than
->                                                           ^^^^^^^
-> 
-> Seems that 'greater' should be 'smaller'.
-> And the range is [sched_util_clamp_min:SCHED_CAPACITY_SCALE]
-> Uclamp request should not below this system value.
-> Or I am totally wrong for memory leak.
-
-No the range is [0:sched_util_clamp_min].
-
-It is what it is implemented by this condition:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/sched/core.c?h=v5.7-rc3#n913
-
-So if the requested uclamp.min value is greater than sched_util_clamp_min, we
-return sched_util_clamp_min.
-
-Thanks
-
---
-Qais Yousef
-
-> 
-> Thank you
-> 
-> > +sched_util_clamp_min, ie: it is restricted to the range
-> > +[0:sched_util_clamp_min].
-> > +
-> > +sched_util_clamp_max:
-> > +=====================
-> > +
-> > +Max allowed *maximum* utilization.
-> > +
-> > +Default value is SCHED_CAPACITY_SCALE (1024), which is the maximum possible
-> > +value.
-> > +
-> > +It means that any requested uclamp.max value cannot be greater than
-> > +sched_util_clamp_max, ie: it is restricted to the range
-> > +[0:sched_util_clamp_max].
-> > +
-> > +sched_util_clamp_min_rt_default:
-> > +================================
-> > +
-> > +By default Linux is tuned for performance. Which means that RT tasks always run
-> > +at the highest frequency and most capable (highest capacity) CPU (in
-> > +heterogeneous systems).
-> > +
-> > +Uclamp achieves this by setting the requested uclamp.min of all RT tasks to
-> > +SCHED_CAPACITY_SCALE (1024) by default. Which effectively boosts the tasks to
-> > +run at the highest frequency and bias them to run on the biggest CPU.
-> > +
-> > +This knob allows admins to change the default behavior when uclamp is being
-> > +used. In battery powered devices particularly, running at the maximum
-> > +capacity and frequency will increase energy consumption and shorten the battery
-> > +life.
-> > +
-> > +This knob is only effective for RT tasks which the user hasn't modified their
-> > +requested uclamp.min value via sched_setattr() syscall.
-> > +
-> > +This knob will not escape the constraint imposed by sched_util_clamp_min
-> > +defined above.
-> > +
-> > +Any modification is applied lazily on the next opportunity the scheduler needs
-> > +to calculate the effective value of uclamp.min of the task.
-> >  
-> >  seccomp
-> >  =======
-> > -- 
-> > 2.17.1
+> > > > The above potential use cases hint at a potential reply to
+> > > > a reasonable objection that such typed display should be
+> > > > solved by tracing programs, where the in kernel tracing records
+> > > > data and the userspace program prints it out.  While this
+> > > > is certainly the recommended approach for most cases, I
+> > > > believe having an in-kernel mechanism would be valuable
+> > > > also.
+> > > 
+> > > yep. This is useful for general purpose printk.
+> > > The only piece that must be highlighted in the printk documentation
+> > > that unlike the rest of BPF there are zero safety guarantees here.
+> > > The programmer can pass wrong pointer to printk() and the kernel _will_ crash.
+> > > 
 > > 
+> > Good point; I'll highlight the fact that we aren't
+> > executing in BPF context, no verifier etc.
+> > 
+> > > >   struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
+> > > > 
+> > > >   pr_info("%pTN<struct sk_buff>", skb);
+> > > 
+> > > why follow "TN" convention?
+> > > I think "%p<struct sk_buff>" is much more obvious, unambiguous, and
+> > > equally easy to parse.
+> > > 
+> > 
+> > That was my first choice, but the first character
+> > after the 'p' in the '%p' specifier signifies the
+> > pointer format specifier. If we use '<', and have
+> > '%p<', where do we put the modifiers? '%p<xYz struct foo>'
+> > seems clunky to me.
+> 
+> While I don't really like the %p<struct type> block,
+> it's at least obvious what's being attempted.
+> 
+> Modifiers could easily go after the <struct type> block.
+>
+
+Good idea; I'll go with that approach for v2.
+ 
+> It appears a %p<struct type> output might be a lot of
+> total characters so another potential issue might be
+> the maximum length of each individual printk.
+>
+
+Right, that's a concern. On the other side, it turns out
+that with the "omit zeroed values" behaviour by default,
+the output trims down nicely.  The omit zero functionality
+works for nested types too, so a freshly-allocated skb
+fits easily inside the printk limit now.  The in-progress
+output looks like this now (v2 coming shortly I hope):
+
+printk(KERN_INFO "%p<struct sk_buff>", skb);
+
+(struct sk_buff){
+ .transport_header = (__u16)65535,
+ .mac_header = (__u16)65535,
+ .end = (sk_buff_data_t)192,
+ .head = (unsigned char *)000000007524fd8b,
+ .data = (unsigned char *)000000007524fd8b,
+ .truesize = (unsigned int)768,
+ .users = (refcount_t){
+  .refs = (atomic_t){
+   .counter = (int)1,
+  },
+ },
+}
+
+Of course as structures get used and values get set
+(precisely when we need to see them!) more fields will
+be displayed and we will bump against printk limits.
+
+The modifiers I'm working on for v2 are
+
+'c' - compact mode (no pretty-printing), i.e.
+
+(struct sk_buff){.transport_header = (__u16)65535,.mac_header = (__u16)65535,.end = (sk_buff_data_t)192,.head = (unsigned char *)000000007524fd8b,.data = (unsigned char *)000000007524fd8b,.truesize = (unsigned int)768,.users = (refcount_t){.refs = (atomic_t){.counter = (int)1,},},}
+
+      This saves a fair few characters, especially for highly-indented
+      data structures.
+
+'T' - omit type/member names.
+'x' - avoid pointer obfuscation
+'0' - show zeroed values, as suggested by Arnaldo and Alexei
+
+...so the default output of "%p<struct sk_buff>"
+will be like the above example.
+
+I was hoping to punt on pointer obfuscation and just
+use %p[K] since obfuscation can be sysctl-controlled;
+however that control assumes a controlling process context
+as I understand it.  Since BTF printk can be invoked
+anywhere (especially via trace_printk() in BPF programs),
+those settings aren't hugely relevant, so I _think_ we need
+a way to directly control obfuscation for this use case.
+
+> > > I like the choice of C style output, but please format it similar to drgn. Like:
+> > > *(struct task_struct *)0xffff889ff8a08000 = {
+> > > 	.thread_info = (struct thread_info){
+> > > 		.flags = (unsigned long)0,
+> > > 		.status = (u32)0,
+> > > 	},
+> > > 	.state = (volatile long)1,
+> > > 	.stack = (void *)0xffffc9000c4dc000,
+> > > 	.usage = (refcount_t){
+> > > 		.refs = (atomic_t){
+> > > 			.counter = (int)2,
+> > > 		},
+> > > 	},
+> > > 	.flags = (unsigned int)4194560,
+> > > 	.ptrace = (unsigned int)0,
+> 
+> And here, the issue might be duplicating the log level
+> for each line of output and/or prefixing each line with
+> whatever struct type is being dumped as interleaving
+> with other concurrent logging is possible.
+> 
+
+That's a good idea but sadly it makes the problem of longer
+display worse.  Compact/type-omitted options help for
+the particularly bad cases at least I suppose.
+
+> Here as well the individual field types don't contain
+> enough information to determine if a field should be
+> output as %x or %u.
+> 
+>
+
+Right, we could add some more format modifiers for cases
+like that I guess.  Currently the display formats used are
+
+- numbers are represented as decimal
+- bitfields are represented in hex
+- pointers are obfuscated unless the 'x' option is used
+- char arrays are printed as chars if printable,
+  [ 'l', 'i', 'k', 'e', ' ', 't', 'h', 'i', 's' ]
+
+I'd be happy to add more format specifiers to control
+these options, or tweak the defaults if needed. A
+"print numbers in hex" option seems worthwhile perhaps?
+
+Thanks for the feedback!
+
+Alan
