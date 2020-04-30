@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13ADB1BEEE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 06:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE451BEEC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgD3EFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 00:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47888 "EHLO
+        id S1726575AbgD3D6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 23:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725280AbgD3EFL (ORCPT
+        by vger.kernel.org with ESMTP id S1726454AbgD3D6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 00:05:11 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A9AC035494
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 21:05:11 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id z1so2266509pfn.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 21:05:11 -0700 (PDT)
+        Wed, 29 Apr 2020 23:58:04 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FFFC035494;
+        Wed, 29 Apr 2020 20:58:04 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id i16so9313ils.12;
+        Wed, 29 Apr 2020 20:58:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=nL5VdHGdHlO2IhatVlz8X2CvG6piY9r4GDUrKsxm6ic=;
-        b=cznpSpEiKH0hWKnAx7uiNiDeEwX7JlHVKlluiqHNX33+HHWfFn62Kn29274rvc+uVz
-         rOUdG86CoRen4CZvqcq7OquI9A+E8ZRXuOVo4wISjUibG2vYtwHg9jsZRr+K+CdptyTK
-         iKgFksouKlj3d3tKpgTMh79uoJdEyvWRBi0nYwP+4HxbWZMs+nlTO8KNFzlf6hvExW8+
-         JRwRL4u5q6M/bkLb472L+0o/NQP04ijfzV32DZB2FEY75+NH0dyFclfXnJAE6WT3/GGt
-         A+pUe4z4jsbl4btUNziBt6+091qGMRA95ardgp/E9w3NVA+cFH4llUfRrwJ1fq37qdEs
-         JiJg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dOspF7w14kkeDi21u8LT7QgFXxgV7izAF+lcJJNgVGY=;
+        b=bYmIRu4t+F43Br1MFoLKj/2KtO7FtPfYz9X+TyYZxoaPYs1BJ/QRXEssrU845zScpm
+         qa0V8RWBlNhtqwhluBshdr6iF5yRI/eGZs2u24yuPZMqQ+zpySOdUQyENbz92ELghnyJ
+         n1roMjq2pLWUd+iVOiJ9w3hgd+pPFV76mCqg5qHlQ2rWmLxYjU1hOuCOOTd8n60Eg4UT
+         xDflhWEHpDN0r9htOae7GZXeeHSs5L8noBim03oMae4XfmD8Up84E/u/gVrChkjQbNR1
+         9DzELnLDwSSD8Ly4o3ELww+NcXeQw626i6z6z02jx7TNdgJA/EbIdDqR19N9bnMEi+8I
+         Nmhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=nL5VdHGdHlO2IhatVlz8X2CvG6piY9r4GDUrKsxm6ic=;
-        b=VSbiGp2wJx1WBtC/XsvR+sZ8e4vRTRqGzvzNvF1wl3ZyO7D0VYUGaVRMTZY059gWhC
-         5Z7lq0XxLwgv+JdJ9EvCupxrPwJAjIagyaB2E25qgHzyGythEyk8q4L8cBT1PoW5KYHR
-         4lhFqIoBeItNTfJO4WNBtGemlIQfjM6RisBV0f72fTV8x/aFQmuyn6sCTinuviFvkwBm
-         SSLguupzqoP6MDeZgGX668QNKuAWT2f5FEVeWQoFNzPFadW1S87nn7UmtkLVWYWYyxtE
-         SJ0VfEX8VTmhxntAWDuTI3+DbpgYW+kF5nHZOpvqGADgmPs8fmDzWEOu5Pt0GbVOdqfu
-         fBgA==
-X-Gm-Message-State: AGi0PuaVHmmUMpQflurfu15Y/s38+seGN4yl0xxlbU9oByT1jyhdhV7j
-        Qvs8sF7HN+tf5etHfTB05Vg=
-X-Google-Smtp-Source: APiQypLLwNEhk4G5v1VTt7A03T6ulKhnelKdVSLFjdGL9WidJAeO6lU/Q524Qb58XKgf+UuQhNy3iA==
-X-Received: by 2002:a62:3c5:: with SMTP id 188mr1524979pfd.41.1588219510852;
-        Wed, 29 Apr 2020 21:05:10 -0700 (PDT)
-Received: from ubuntu.localdomain ([223.104.63.3])
-        by smtp.gmail.com with ESMTPSA id 185sm2358836pfv.9.2020.04.29.21.05.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 21:05:10 -0700 (PDT)
-From:   Guixiong Wei <guixiongwei@gmail.com>
-To:     catalin.marinas@arm.com, will@kernel.org
-Cc:     nsaenzjulienne@suse.de, steve.capper@arm.com,
-        akpm@linux-foundation.org, guro@fb.com, tglx@linutronix.de,
-        rppt@linux.ibm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Guixiong Wei <guixiongwei@gmail.com>
-Subject: [PATCH] arm: mm: use __pfn_to_section() to get mem_section
-Date:   Thu, 30 Apr 2020 18:04:37 +1400
-Message-Id: <20200430040437.119591-1-guixiongwei@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dOspF7w14kkeDi21u8LT7QgFXxgV7izAF+lcJJNgVGY=;
+        b=e7oinwA9PMVhs8NeEJHLZ40p8prz6Eh6G/TSmZIxKN5CbqBW8kzeZ0uyJttX8LEM+f
+         Gk8ffUIMhvKgoArblEfEJXOfyzs5UT0jZOcwn6E2N8qhc8AIXMKNZMQZxYm4Hc8UyX+s
+         7JZbu/BxlYkdxZ5aBMAgSW6ekQy6OMrCcxhOkXl1aXBlR/KwxPG8dFmG/hFCIdbgznK1
+         25MNLv9eIeK3BgHwylZL/rYsb+S9HgPZiwGVIbthWRnJiScw82kNi0Yf7XX/D0NeNUts
+         AVw706Qi34H5KVnvUxq23JIQVSdL/UCLSZhnPLOpdgrmE58WEA7NIaYq3xSFsHHPhuUk
+         VGuQ==
+X-Gm-Message-State: AGi0PuaYydQ71jcT8gvzSJhrfUPA4saQ+N3o56gc21HdAocfD/fcJ2NY
+        XdnpmHAj7KuTXvoUM+DXkv9kWFkqP+1lX8xhLI6Y51DauEo=
+X-Google-Smtp-Source: APiQypKBylr/J39bqvf6uVDQ/V4pYdv1udXBLc1XsqJuj//ZCLP1m9QnRnyygT4OSfyQc+kSMNAYl97AjxOzhjIIeHA=
+X-Received: by 2002:a92:5d0f:: with SMTP id r15mr26441ilb.251.1588219083339;
+ Wed, 29 Apr 2020 20:58:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <1588216776-62161-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <1588216776-62161-1-git-send-email-zou_wei@huawei.com>
+From:   Huacai Chen <chenhuacai@gmail.com>
+Date:   Thu, 30 Apr 2020 12:05:34 +0800
+Message-ID: <CAAhV-H66CA+n+FQCia-_-o0AQLJ3HZrTAufZH1CgrR+k+xRo8g@mail.gmail.com>
+Subject: Re: [PATCH -next] KVM: MIPS/Emulate: Remove unneeded semicolon
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use __pfn_to_section() to get mem_section, instead of open-coding it.
-No semantic changes.
+Reviewed-by: Huacai Chen <chenhc@lemote.com>
 
-Signed-off-by: Guixiong Wei <guixiongwei@gmail.com>
----
- arch/arm64/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index e42727e3568e..d2df416b840e 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -272,7 +272,7 @@ int pfn_valid(unsigned long pfn)
- 	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
- 		return 0;
- 
--	if (!valid_section(__nr_to_section(pfn_to_section_nr(pfn))))
-+	if (!valid_section(__pfn_to_section(pfn)))
- 		return 0;
- #endif
- 	return memblock_is_map_memory(addr);
--- 
-2.17.1
-
+On Thu, Apr 30, 2020 at 11:13 AM Zou Wei <zou_wei@huawei.com> wrote:
+>
+> Fixes coccicheck warnings:
+>
+> arch/mips/kvm/emulate.c:1793:3-4: Unneeded semicolon
+> arch/mips/kvm/emulate.c:1968:3-4: Unneeded semicolon
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  arch/mips/kvm/emulate.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/mips/kvm/emulate.c b/arch/mips/kvm/emulate.c
+> index 754094b..5c88bd1 100644
+> --- a/arch/mips/kvm/emulate.c
+> +++ b/arch/mips/kvm/emulate.c
+> @@ -1790,7 +1790,7 @@ static enum emulation_result kvm_mips_guest_cache_op(int (*fn)(unsigned long),
+>                         return EMULATE_EXCEPT;
+>                 default:
+>                         break;
+> -               };
+> +               }
+>         }
+>  }
+>
+> @@ -1965,7 +1965,7 @@ enum emulation_result kvm_mips_emulate_inst(u32 cause, u32 *opc,
+>                         break;
+>                 default:
+>                         goto unknown;
+> -               };
+> +               }
+>                 break;
+>  unknown:
+>  #endif
+> --
+> 2.6.2
+>
