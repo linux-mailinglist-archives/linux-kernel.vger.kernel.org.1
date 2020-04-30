@@ -2,132 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA26D1C0950
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363C81C095A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727862AbgD3Vcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:32:42 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:51025 "EHLO
+        id S1727924AbgD3Vc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:32:58 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:43541 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgD3Vcl (ORCPT
+        with ESMTP id S1727915AbgD3Vc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:32:41 -0400
+        Thu, 30 Apr 2020 17:32:56 -0400
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
  (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MRmwM-1jaI7F1geQ-00T9PZ; Thu, 30 Apr 2020 23:32:35 +0200
+ 1MmDVA-1imRaR2Lgm-00iDFn; Thu, 30 Apr 2020 23:32:47 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-usb@vger.kernel.org
-Subject: [PATCH 08/15] usb: ehci: avoid gcc-10 zero-length-bounds warning
-Date:   Thu, 30 Apr 2020 23:30:50 +0200
-Message-Id: <20200430213101.135134-9-arnd@arndb.de>
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Steven J. Magnani" <steve@digidescorp.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 09/15] udf: avoid gcc-10 zero-length-bounds warnings
+Date:   Thu, 30 Apr 2020 23:30:51 +0200
+Message-Id: <20200430213101.135134-10-arnd@arndb.de>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200430213101.135134-1-arnd@arndb.de>
 References: <20200430213101.135134-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:9LwbzPiDVBTutPI7/SmbJcMbJzAjVunAx6lsoRTMq+jOauVlaC3
- MgKUiAe+HddGUKoavqOfiAsSpWnCH3KOmtqZqSCBvUZkoD9k1rj+PQ4AVhfvLLaMvdG9CX+
- 7Y4+sJJK7i+mMhDuVBqNuXk9EhPc6KK6v5/xyT3y9wGWLHToM1tskvt271mkLVQOER9AXa0
- qJwyxkiW9dCsIY54jJz+Q==
+X-Provags-ID: V03:K1:07qp34xh3mqepOFKvyRAb4y0v5X363uNQ9u6Ix633Cw+M61Nfjr
+ CTbcSuvJbJp7t0RNzR9PxtJtufMDOX+YR5/gkvov6Z9AR+TyNLlsUAxnjf6ex31DvAiCr+K
+ 3hRGamOPrbmuxvm7S1U8fKpD8FjdWEw103dmSlsmecxEqSfPFP5/2BJbyrDSGAl7rKCzHik
+ uRXNTiXo9Qq+O0KOvSz4g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lguDXmXr0vo=:HF3x9q9yVSo8GfNZqml4nG
- Y1So3lZ/EU291ooBiltDFReKVfKroB8H0GqCweHIfHh6ZZf6T5OnasR3za5ZgEKMNPJOljE4a
- rWkbTcCbBgIhJhoqEWoe41PNI+jy4CTiEv0dQJqPzDkW8tMgWVqFNEPh0lS+VGUI7FvAZr8MA
- pofS+LpblAWAZaqFYgbVxEEwkjisO8qqt9+kX6Y5DtO90yomqQtzL1YRZ/UUH+HQ4TKRP6oM1
- 5W1QWYCFiV5y3z/VGtB/va7j9vYN5YCGZFty33a+DKvGVQHTXL+H19tHgYZpzabzt2mmpwL2h
- DhQVJYKPM5s8dsNv6ho3RpA4FEpOhyvpUX09S/CtvXi61/rfEf/TSLZBytZDOUONU5h5HvV/S
- CJJR6hf6ytHn3MRgCJ/ASzMQCjsOVhVD1JdGu53rovZp++mR3j4SOCNpO9bnqXB89k6rUGuiQ
- s/FhHMGN8ra75zHUkqrTLKsz7+PYN04EYGegMNGOrs2EZUeQvHWdWBpqLCApu0pcbVLoh5hNh
- dAsXXYqkNqL82ettUCs/rW41TxPWItB/wdrvmowJ55Z6SvBDAHKzINaUA3dDfgrXO+VGpGeGT
- LbiHgKUPF23qbcBSa3hKkjDFs7i2BrTuAxWrkPJ+W85XBX+xuD0tBeFExInOrjz0306cCzMim
- p5B/m+taevaLNoTey3/geklfUu+bp9vOpBdLvQjcvjo00thdkxfYSTXnHATU3pkLpOc4SlCDH
- i2X+CjrNuhZomIKp6ZFwG5PTc5bt9MSl8wDWg33jP19lMpou6wQm5Eg5T/yjaziSMHK/nPASt
- z60ev2uT6xJm/Vhvywu0OrPttAQ8naeLtNyPkstQNrkLFzSFq8=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:KnYxXNvNgMs=:Tmmb0sOO/qsMTf3wN63dYB
+ g9ONZfKjLoib9ju565Eop7oCroJmGFMFVwgukAccYflXQgMKk226ZBVrwYYm9GSruVDnHsVyU
+ RSYVVw/NigRJCDMinU95+HQ3Oy2QPp5r5BolQDOi5Z2TQksaTGg27U5yOXGBzhAyQvT42qzCF
+ 5YGA7B3vvAty5Vph1dBWftUUO851btP5zLS7vFVVKTwwlWfIh3IOvF8SctBD82PEh9OBVs4D2
+ aY8UT36e8w+SVT4lyWSr2nHfpQmRXZ0+rIaNPbqR4QErJNapTDs79D5yHtp8AW0kPgW76sbRx
+ oS6G5WREuXAgzc0HlEgfTcSXaOerfp25fcjfENJg+CiQGkm8izB7IU3awIfxS7db3MBE6gxxV
+ y98mMp2NOY9DSXyPjMwJHDODkS1KIsGDqj9eq0BB+hn0A2RWlUCnJbm5botReD/Qa1yqG9O7+
+ yB+ndbMOMgpvKwC2nB24bTUy6tEKyJu45QXj8OWA6xOXhdeTA7ydlDQ76Vqeh8W8DwOkpba0A
+ OCt2zV0du8LDYLlqR1IQBk5zGasJ1NxVEKQQJ/e4U+cC48qbQDJhPK1SABCwIznv9WYL8rFdB
+ DsFDqmjlR5wkRh5YQhi5Z5y0dqtGbyaTrxmQ5bML0QMEtfwZ/LEcPJOJd4ncvl+lFWnZt7T6X
+ CPopI5a3y/nTRWOD5XCt8ohzZx1JuxSBov9Oci4mNTL5PK7iV5zbhV4mrVQRjXI8Ru5yo23QF
+ VISCrRrgaNBxWuFAHHizmNIL+XCf3XjC+m5cuCeQkmLEFJlOxVwB1oxp3eBcQGkiBN9ikUgRT
+ LpaHxqMFXAmwND32KeJRgHtXhZ0B75JjIde7X+MTJBLGGDX6Ws=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building ehci drivers with gcc-10 results in a number of warnings like
-when an zero-length array is accessed:
+gcc-10 warns about writes to the empty freeSpaceTable[] array, with
+many instances like:
 
-drivers/usb/host/ehci-hub.c: In function 'ehci_bus_suspend':
-drivers/usb/host/ehci-hub.c:320:30: error: array subscript 14 is outside the bounds of an interior zero-length array 'u32[0]' {aka 'unsigned int[0]'} [-Werror=zero-length-bounds]
-  320 |    u32 __iomem *hostpc_reg = &ehci->regs->hostpc[port];
-      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from drivers/usb/host/ehci.h:273,
-                 from drivers/usb/host/ehci-hcd.c:96:
-include/linux/usb/ehci_def.h:186:7: note: while referencing 'hostpc'
-  186 |  u32  hostpc[0]; /* HOSTPC extension */
-      |       ^~~~~~
-In file included from drivers/usb/host/ehci-hcd.c:305:
-drivers/usb/host/ehci-hub.c: In function 'ehci_hub_control':
-drivers/usb/host/ehci-hub.c:892:15: error: array subscript 256 is outside the bounds of an interior zero-length array 'u32[0]' {aka 'unsigned int[0]'} [-Werror=zero-length-bounds]
-  892 |  hostpc_reg = &ehci->regs->hostpc[temp];
-      |               ^~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from drivers/usb/host/ehci.h:273,
-                 from drivers/usb/host/ehci-hcd.c:96:
-include/linux/usb/ehci_def.h:186:7: note: while referencing 'hostpc'
-  186 |  u32  hostpc[0]; /* HOSTPC extension */
-      |       ^~~~~~
+fs/udf/balloc.c: In function 'udf_bitmap_new_block':
+fs/udf/balloc.c:101:36: error: array subscript 65535 is outside the bounds of an interior zero-length array '__le32[0]' {aka 'unsigned int[0]'} [-Werror=zero-length-bounds]
+  101 |  le32_add_cpu(&lvid->freeSpaceTable[partition], cnt);
+      |                ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+In file included from fs/udf/udfdecl.h:7,
+                 from fs/udf/balloc.c:22:
+fs/udf/ecma_167.h:363:11: note: while referencing 'freeSpaceTable'
+  363 |  __le32   freeSpaceTable[0];
+      |           ^~~~~~~~~~~~~~
 
-All these fields are colocated with reserved fields that I guess
-refer to the correct field length.
+These can all be avoided by using a flexible array member instead.
 
-Change the two struct definition to use an unnamed union to define
-both of these fields at the same location as the corresponding
-reserved fields.
+Another warning is a bit more obscure:
+
+fs/udf/super.c: In function 'udf_count_free':
+fs/udf/super.c:2521:26: warning: array subscript '(<unknown>) + 4294967295' is outside the bounds of an interior zero-length array '__le32[0]' {aka 'unsigned int[0]'} [-Wzero-length-bounds]
+ 2521 |      lvid->freeSpaceTable[part]);
+
+Work around this one by changing the array access to equivalent
+pointer arithmetic, as there cannot be multiple flexible-array
+members in a single struct.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- include/linux/usb/ehci_def.h | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ fs/udf/ecma_167.h | 2 +-
+ fs/udf/super.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/usb/ehci_def.h b/include/linux/usb/ehci_def.h
-index 78e006355557..8777d8e56ef2 100644
---- a/include/linux/usb/ehci_def.h
-+++ b/include/linux/usb/ehci_def.h
-@@ -127,7 +127,8 @@ struct ehci_regs {
- #define FLAG_CF		(1<<0)		/* true: we'll support "high speed" */
+diff --git a/fs/udf/ecma_167.h b/fs/udf/ecma_167.h
+index 736ebc5dc441..14ffe27342bc 100644
+--- a/fs/udf/ecma_167.h
++++ b/fs/udf/ecma_167.h
+@@ -360,9 +360,9 @@ struct logicalVolIntegrityDesc {
+ 	uint8_t			logicalVolContentsUse[32];
+ 	__le32			numOfPartitions;
+ 	__le32			lengthOfImpUse;
+-	__le32			freeSpaceTable[0];
+ 	__le32			sizeTable[0];
+ 	uint8_t			impUse[0];
++	__le32			freeSpaceTable[];
+ } __packed;
  
- 	/* PORTSC: offset 0x44 */
--	u32		port_status[0];	/* up to N_PORTS */
-+	union {
-+		u32		port_status[9];	/* up to N_PORTS */
- /* EHCI 1.1 addendum */
- #define PORTSC_SUSPEND_STS_ACK 0
- #define PORTSC_SUSPEND_STS_NYET 1
-@@ -165,7 +166,8 @@ struct ehci_regs {
- #define PORT_CONNECT	(1<<0)		/* device connected */
- #define PORT_RWC_BITS   (PORT_CSC | PORT_PEC | PORT_OCC)
+ /* Integrity Type (ECMA 167r3 3/10.10.3) */
+diff --git a/fs/udf/super.c b/fs/udf/super.c
+index f747bf72edbe..379867888c36 100644
+--- a/fs/udf/super.c
++++ b/fs/udf/super.c
+@@ -117,7 +117,7 @@ struct logicalVolIntegrityDescImpUse *udf_sb_lvidiu(struct super_block *sb)
+ 	}
+ 	/* The offset is to skip freeSpaceTable and sizeTable arrays */
+ 	offset = partnum * 2 * sizeof(uint32_t);
+-	return (struct logicalVolIntegrityDescImpUse *)&(lvid->impUse[offset]);
++	return (struct logicalVolIntegrityDescImpUse *)(lvid->impUse + offset);
+ }
  
--	u32		reserved3[9];
-+		u32		reserved3[9];
-+	};
- 
- 	/* USBMODE: offset 0x68 */
- 	u32		usbmode;	/* USB Device mode */
-@@ -181,11 +183,13 @@ struct ehci_regs {
-  * PORTSCx
-  */
- 	/* HOSTPC: offset 0x84 */
--	u32		hostpc[0];	/* HOSTPC extension */
-+	union {
-+		u32		hostpc[17];	/* HOSTPC extension */
- #define HOSTPC_PHCD	(1<<22)		/* Phy clock disable */
- #define HOSTPC_PSPD	(3<<25)		/* Port speed detection */
- 
--	u32		reserved5[17];
-+		u32		reserved5[17];
-+	};
- 
- 	/* USBMODE_EX: offset 0xc8 */
- 	u32		usbmode_ex;	/* USB Device mode extension */
+ /* UDF filesystem type */
 -- 
 2.26.0
 
