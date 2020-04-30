@@ -2,129 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA8E1C032C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFC81C0331
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726756AbgD3Qx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
+        id S1726661AbgD3Qyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726333AbgD3Qx1 (ORCPT
+        by vger.kernel.org with ESMTP id S1726272AbgD3Qyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:53:27 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3732BC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:53:27 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id 72so91914otu.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:53:27 -0700 (PDT)
+        Thu, 30 Apr 2020 12:54:51 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22CDC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:54:50 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a21so40116ljj.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:54:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=L1yc3aiS2aa72MaQjHCirx/9BP7xAuIw9ECEzmtVIsI=;
-        b=ZPBurWYBXORgZDIV17o1am4RGcfdkLOoI+K5fC68nY+u4bbVd/WJBEYIRhMu+fRJge
-         L+gspegsNCOmHy6vWRfPmvAibdyVV0j/A44AZCZe/Ho009FgQQPq5QH7l627AnH1WvUB
-         hIbSzS4B33PC47tx8og1TQJrQB51fFFKW3NyR+sEtvtc7O2A7Nxg7D6ysQg/veHjw+OD
-         v94WHYzlAjd56on25IzjMugBL5gOevb7RY9vdkH0flIX/HrO0CT09fEsCVQGcpcjV+V8
-         VrHKiyNbcn7At5DoOIogPUENHdkTZdb+l3v2Z7L4gtw/zNJOIOpjLWvMcCWxhQ7zgink
-         C1vQ==
+        bh=jusIkjp3Dz4is1PZPLtprnCAT5bOhq5lF7YlVU3AWyQ=;
+        b=K/L1x2WLoEDVhKcajWjRfk8di4UnhY9fQ857BctryF99FXnh8lvm/+FMFP7To9VzLC
+         Oeh5Zl2gS6/3rwg+PAIfEpUDm0vFKxb3sBkuIMd/j+tdM33ErRljDKSRox35DyrhVqQy
+         cxTvpJRHT1GSdzAq5WmfU86CiiQNmQ4AcXgOg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=L1yc3aiS2aa72MaQjHCirx/9BP7xAuIw9ECEzmtVIsI=;
-        b=S27sLnrgDU6f3Tsr5DT1PbJC2TKGnE7RJlAa7YoiHlHlIcnBK4LpCISBhfvWS0+yY1
-         2uvGgCRpQ1vgJm0UVmaumiS2I46uGBCA6FpNlz0bp6VDxlTv2G+JIuVHWsZSpuJYOYsX
-         xk6AiMDRXNb9Fc9QoMNjOo/9gcSTkHchA6RDqShDg6HjXV2cZ6+WZfTvvYGljrdkcwaO
-         D/fC86jpwSLKePT39HfpdqhPZmfoJSCiviZcqC4LGanUs/SfJrhcBelf0m6SGRxMP+yu
-         8bSdZyKvSEDfd/47IXBnRaU/dLQjYvKzEmrAqxhdeY9VKbvKeXYUFs1xkQF4MNlKK/2P
-         z3aw==
-X-Gm-Message-State: AGi0PubSWWm1n5wPXgdX9A+z8Id3aR2lrqRxG0xlidtHKn1uqjkmrQ6S
-        5yUzINhsUtIRsH4AxChStmPGxVOPHyrC53gh8dA4Jg==
-X-Google-Smtp-Source: APiQypJ8t3/XkLVbT5o3BxszJHl5XBeeWLeT/ycZ9X+0ZU0M/P/075GxaYt9V0upGxVcm/4CiJPt/DRDAYJo05RzVmw=
-X-Received: by 2002:a05:6830:10da:: with SMTP id z26mr85039oto.139.1588265600483;
- Thu, 30 Apr 2020 09:53:20 -0700 (PDT)
+        bh=jusIkjp3Dz4is1PZPLtprnCAT5bOhq5lF7YlVU3AWyQ=;
+        b=JdjxCR9B3TWfZWtVRiU6rp8SIRyq1H5xV4mfYnA625wjVrgRIaN8kcY/fSrgl1HWuj
+         R329ym6twrBiubGPlBRVbTKErROetNPHXWy3e02GJozlD/n+KGJc2UBpXlSrMIAWfuFH
+         POY8z8IdcT3ZvaMXUm8kwhL+3vhqxo5bFv1+AsvaLZ7Z9x54cOYLfqYjv1g1mTgphEH0
+         +OJYB4Riym7f68qJ3efvkc85jqohy6SkWzcHlrkbZEVOmCy/JxBdi5o/kh9/Wqo0xu51
+         X5KpflxbbwVuTnVzXbcJPtQJNtFS566dwVMBLs35R+FLP0c1vy5w69zSmB2rG/Ps5Wue
+         tZNg==
+X-Gm-Message-State: AGi0PuaFsbQ13X2Pme4XhdZqHHrm5gLbPym3IovFmMLNAdekVVQrWlVw
+        rCIeGGJzBsCZ73imnTmcl9WJHQkh6wI=
+X-Google-Smtp-Source: APiQypImXeEbxtL7c3uuxIaXyJw9GW1Gz1zvC/A4TrCZhI3oJTRqVBrNKH5JRJeYLUsuQGs7Iiz5vg==
+X-Received: by 2002:a05:651c:39b:: with SMTP id e27mr130566ljp.145.1588265687533;
+        Thu, 30 Apr 2020 09:54:47 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id g3sm255111ljk.27.2020.04.30.09.54.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 09:54:46 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id j14so1813586lfg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:54:45 -0700 (PDT)
+X-Received: by 2002:a05:6512:405:: with SMTP id u5mr2728777lfk.192.1588265685113;
+ Thu, 30 Apr 2020 09:54:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <d2934f74d77c637c41d7cb98710cb5363d09e83b.1585021186.git.baolin.wang7@gmail.com>
- <CADBw62pmiguVmuq334eskLAZ5CkrjxohW_fXNjNev+O1U15=OQ@mail.gmail.com>
- <bd800f7b-05fd-b393-fba6-1965ba89e1b3@linaro.org> <CAGETcx9da-U+dXA6sreTKJQiS3brYh3Hfh_qVYt06=3UOSmT_g@mail.gmail.com>
- <429da47b-ad51-30eb-ff36-b05780c941ba@linaro.org> <CAGETcx9sc6oWSPK=aWJ+39i9eHAyg6iOf+Xf2oVECO+g1pFjtQ@mail.gmail.com>
- <573b7d9e-fb5d-5c81-a981-6d965db933f3@linaro.org> <20200427221752.GA166576@google.com>
- <7c508403-3b53-8285-5724-c2bca221b77a@linaro.org> <CAGETcx_peaPtmjF4s0iR6ObZ=f76EjaMOokyBYM3a7AX-8_ong@mail.gmail.com>
- <da25dc33-addb-298d-103a-fcf1cf0e6793@linaro.org> <CAPDyKFrDSqnkhCVweaA0D-d+KWN_8=OiXW74tDM1DhnCZAgPww@mail.gmail.com>
-In-Reply-To: <CAPDyKFrDSqnkhCVweaA0D-d+KWN_8=OiXW74tDM1DhnCZAgPww@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 30 Apr 2020 09:52:44 -0700
-Message-ID: <CAGETcx-TRhRDiWX40n_RJPqWcrjKjabocGhU-wyEzEePv2cP+w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drivers/clocksource/timer-of: Remove __init markings
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sandeep Patil <sspatil@android.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
+References: <20200429214954.44866-1-jannh@google.com> <20200429215620.GM1551@shell.armlinux.org.uk>
+ <CAHk-=wgpoEr33NJwQ+hqK1dz3Rs9jSw+BGotsSdt2Kb3HqLV7A@mail.gmail.com> <31196268-2ff4-7a1d-e9df-6116e92d2190@linux-m68k.org>
+In-Reply-To: <31196268-2ff4-7a1d-e9df-6116e92d2190@linux-m68k.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 30 Apr 2020 09:54:28 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjau_zmdLaFDLcY3xnqiFaC7VZDXnnzFG9QDHL4kqStYQ@mail.gmail.com>
+Message-ID: <CAHk-=wjau_zmdLaFDLcY3xnqiFaC7VZDXnnzFG9QDHL4kqStYQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] Fix ELF / FDPIC ELF core dumping, and use mmap_sem
+ properly in there
+To:     Greg Ungerer <gerg@linux-m68k.org>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jann Horn <jannh@google.com>, Nicolas Pitre <nico@fluxnic.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        linux-c6x-dev@linux-c6x.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 5:57 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+On Thu, Apr 30, 2020 at 7:10 AM Greg Ungerer <gerg@linux-m68k.org> wrote:
 >
-> On Tue, 28 Apr 2020 at 20:55, Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
-> >
-> > On 28/04/2020 20:23, Saravana Kannan wrote:
-> > > On Tue, Apr 28, 2020 at 12:02 AM Daniel Lezcano
-> > > <daniel.lezcano@linaro.org> wrote:
-> > >>
-> > >>
-> > >> Hi Saravana,
-> > >
-> > > You were replying to Sandeep :)
-> >
-> > Oh, right :)
-> >
-> > Sorry Sandeep. Thanks for taking the time to elaborate a clear statement
-> > of the GKI.
-> >
-> > [ ... ]
-> >
-> > >> That was my understanding of the GKI, thanks for confirming.
-> > >>
-> > >> Putting apart the non-technical aspect of these changes, the benefit I
-> > >> see is the memory usage optimization regarding the single kernel image.
-> > >>
-> > >> With the ARM64 defconfig, multiple platforms and their corresponding
-> > >> drivers are compiled-in. It results in a big kernel image which fails to
-> > >> load because of overlapping on DT load address (or something else). When
-> > >> that is detected, it is fine to adjust the load addresses, otherwise it
-> > >> is painful to narrow down the root cause.
-> > >>
-> > >> In order to prevent this, we have to customize the defconfig each
-> > >> version release.
-> > >
-> > > Sorry, I'm not sure I understand where you are going with this. Are
-> > > you agreeing to pick up this change?
-> >
-> > Right. I agree with the change but I would like to have Thomas opinion
-> > on this before picking the patch.
-> >
-> > Thomas ?
+> > in load_flat_file() - which is also used to loading _libraries_. Where
+> > it makes no sense at all.
 >
-> I am not Thomas :-) But just wanted to provide some feedback from my side.
->
-> In general we are careful when deciding to export symbols. And at
-> least, I think at least we should require one user of it before
-> allowing it to be exported (I assume that is what is happening in
-> patch2/2 - I couldn't find it)
+> I haven't looked at the shared lib support in there for a long time,
+> but I thought that "id" is only 0 for the actual final program.
+> Libraries have a slot or id number associated with them.
 
-I believe it is done in Patch 2/2, but I think you don't see them in
-the diff because they are already called from the driver, but the
-driver won't compile as a module due to the removal of __init markings
-in the driver.
-https://lore.kernel.org/lkml/182aae1ed5e5d2b124f1a32686e5566c9a27c980.1585021186.git.baolin.wang7@gmail.com/
+Yes, that was my assumption, but looking at the code, it really isn't
+obvious that that is the case at all.
 
--Saravana
+'id' gets calculated from fields that very much look like they could
+be zero (eg by taking the top bits from another random field).
+
+> > Most of that file goes back to pre-git days. And most of the commits
+> > since are not so much about binfmt_flat, as they are about cleanups or
+> > changes elsewhere where binfmt_flat was just a victim.
+>
+> I'll have a look at this.
+
+Thanks.
+
+> Quick hack test shows moving setup_new_exec(bprm) to be just before
+> install_exec_creds(bprm) works fine for the static binaries case.
+> Doing the flush_old_exec(bprm) there too crashed out - I'll need to
+> dig into that to see why.
+
+Just moving setup_new_exec() would at least allow us to then join the
+two together, and just say "setup_new_exec() does the credential
+installation too".
+
+So to some degree, that's the important one.
+
+But that flush_old_exec() does look odd in load_flat_file(). It's not
+like anything but executing a binary should flush the old exec.
+Certainly not loading a library, however odd that flat library code
+is.
+
+My _guess_ is that the reason for this is that "load_flat_file()" also
+does a lot of verification of the file and does that whole "return
+-ENOEXEC if the file format isn't right". So we don't want to flush
+the old exec before that is done, but we obviously also don't want to
+flush the old exec after we've actually loaded the new one into
+memory..
+
+So the location of flush_old_exec() makes that kind of sense, but it
+would have made it better if that flat file support had a clear
+separation of "check the file" from "load the file".
+
+Oh well. As mentioned, the whole "at least put setup_new_exec() and
+install_exec_creds() together" is the bigger thing.
+
+But if it's true that nobody really uses the odd flat library support
+any more and there are no testers, maybe we should consider ripping it
+out...
+
+                Linus
