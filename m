@@ -2,159 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994FC1BF883
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C965A1BF893
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726809AbgD3MwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 08:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
+        id S1726789AbgD3M45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 08:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726127AbgD3MwM (ORCPT
+        by vger.kernel.org with ESMTP id S1726483AbgD3M44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 08:52:12 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B821BC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 05:52:11 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 631232A274B;
-        Thu, 30 Apr 2020 13:52:08 +0100 (BST)
-Date:   Thu, 30 Apr 2020 14:52:05 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Ricardo Ribalda Delgado <ribalda@kernel.org>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH v2] mtd: Fix mtd not the same name not registered if
- nvmem
-Message-ID: <20200430145205.06e16bd4@collabora.com>
-In-Reply-To: <CAPybu_38B-1MaX-t61WBHrZkXhJ4P8fT4n9cdXzZs3LmBr5vZQ@mail.gmail.com>
-References: <20200401100240.445447-1-ribalda@kernel.org>
-        <20200402065953.9974-1-ribalda@kernel.org>
-        <CAPybu_34nSmbu4JMK-uA3SWrj_eMUftZ8S6zf1Vpg3Etkz3SPw@mail.gmail.com>
-        <20200427162222.1c2b2c85@xps13>
-        <20200427163711.07614619@collabora.com>
-        <20200427164922.5829717f@xps13>
-        <20200427211024.174f5830@collabora.com>
-        <CAPybu_38B-1MaX-t61WBHrZkXhJ4P8fT4n9cdXzZs3LmBr5vZQ@mail.gmail.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 30 Apr 2020 08:56:56 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAFFC035494;
+        Thu, 30 Apr 2020 05:56:56 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id t16so2212768plo.7;
+        Thu, 30 Apr 2020 05:56:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=wdAvI3LUiwrfy87yREuLPNednn19RW9tCdeasjU7N08=;
+        b=gUmy9IDnD49clVIBN/3OEWsI1xjBCVLrFqz7imxdr3r2losZbkBbVhp6M/Igt76Ere
+         gppPSSzSF5f/bMZj8HWm0QM58EYMhonSosu8NIG7Rw6MiOdQ7m20lgwGQVqqPEsjYIK+
+         AMQb+ObbgEH0Ua7GejCvZxDJVZaGTKMNNUqamzLUfvmhczYAd6kT9xKEKI/JJ38qek5T
+         9uyvtzM4ZB4C/yl0lDBjH6r7YLq+Lugys7uxGqSD3BYmtDgACDJlWA9TI87H/mQWEx8C
+         QujKVOuPxEo+QGPS51SNipSY7XJf7aD0V0hG42uh7FJMOIV74b7hvxeSKmrP0KV4gG4/
+         Imcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=wdAvI3LUiwrfy87yREuLPNednn19RW9tCdeasjU7N08=;
+        b=cp0jN18C4Ln2xE4d/SX7mUy7aBIsggq3Kv0yvfOqTMz4cCkVe2PP9T/P/p/DgEdIT5
+         324Kx8wCQ2Ao5M1koSMnJYelx7q/7s3f7A1NAjZkIxcABul9w5XbRPFvHsdJTy1GoRGK
+         J/tIPMC9iERpeZe7R7NjGe2D8JBoaHBFm4Vcx0qWx32p9/+4YEltg70Efz/PTR986oRg
+         DcFs4kpUscYIQvHyUzqTaYrElB4cQvtGZq/Bm6cE7SJKysMau9j/4fmzTddfkvOWpJVn
+         iWs7Cnw53zwfkoA+4TeyQzEattS1W8Ic9eFD7V86YdVF/mWEf8OER4jme7bOn/CVonDm
+         EICg==
+X-Gm-Message-State: AGi0PuZ9iRacPdSza9r03cdngxk8lc8TBn9z5HNwHY/QAo7jaGhuxHhS
+        6IXI3jvWmZ1Xt1SAO7E8OlA=
+X-Google-Smtp-Source: APiQypJMKCg7VEQEGEHUX1dvUj24J0y6xfNsMXad59jrgTG3CCrz5osVl0OYO2sI/qh4gmFR2/Eh7w==
+X-Received: by 2002:a17:902:14b:: with SMTP id 69mr3624171plb.121.1588251416235;
+        Thu, 30 Apr 2020 05:56:56 -0700 (PDT)
+Received: from udknight.localhost ([59.57.158.27])
+        by smtp.gmail.com with ESMTPSA id a16sm3111592pgg.23.2020.04.30.05.56.54
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Apr 2020 05:56:55 -0700 (PDT)
+Received: from udknight.localhost (localhost [127.0.0.1])
+        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 03UCuJrl032023;
+        Thu, 30 Apr 2020 20:56:19 +0800
+Received: (from root@localhost)
+        by udknight.localhost (8.14.9/8.14.9/Submit) id 03UCuEeT032019;
+        Thu, 30 Apr 2020 20:56:14 +0800
+Date:   Thu, 30 Apr 2020 20:56:14 +0800
+From:   Wang YanQing <udknight@gmail.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>
+Subject: Re: [PATCH] checkpatch: add support to check 'Fixes:' tag format
+Message-ID: <20200430125614.GA30691@udknight>
+Mail-Followup-To: Wang YanQing <udknight@gmail.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>
+References: <20200429163645.GA13810@udknight>
+ <4112ab7e-1f06-d880-e471-084c78bc84d4@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4112ab7e-1f06-d880-e471-084c78bc84d4@web.de>
+User-Agent: Mutt/1.7.1 (2016-10-04)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020 14:26:51 +0200
-Ricardo Ribalda Delgado <ribalda@kernel.org> wrote:
+On Wed, Apr 29, 2020 at 07:40:21PM +0200, Markus Elfring wrote:
+> > “...
+> > Do not split the tag across multiple
+> > lines, tags are exempt from the "wrap at 75 columns" rule in order to simplify
+> > parsing scripts
+> > ...”
+> 
+> Why do you not like the reformatting of the quotation so far
+> (if such change descriptions should cope also with specific
+> Unicode characters)?
+> 
+> “…
+> Do not split the tag across multiple lines, tags are exempt from
+> the "wrap at 75 columns" rule in order to simplify parsing scripts.
+> …”
+> 
+>
 
-> Hi
-> 
-> On Mon, Apr 27, 2020 at 9:10 PM Boris Brezillon
-> <boris.brezillon@collabora.com> wrote:
-> >
-> > On Mon, 27 Apr 2020 16:49:22 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >  
-> > > Hi Boris,
-> > >
-> > > Boris Brezillon <boris.brezillon@collabora.com> wrote on Mon, 27 Apr
-> > > 2020 16:37:11 +0200:
-> > >  
-> > > > On Mon, 27 Apr 2020 16:22:22 +0200
-> > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > >  
-> > > > > Hi Ricardo,
-> > > > >
-> > > > > Ricardo Ribalda Delgado <ribalda@kernel.org> wrote on Tue, 14 Apr 2020
-> > > > > 15:47:23 +0200:
-> > > > >  
-> > > > > > Ping?
-> > > > > >
-> > > > > > On Thu, Apr 2, 2020 at 8:59 AM Ricardo Ribalda Delgado
-> > > > > > <ribalda@kernel.org> wrote:  
-> > > > > > >
-> > > > > > > When the nvmem framework is enabled, a nvmem device is created per mtd
-> > > > > > > device/partition.
-> > > > > > >
-> > > > > > > It is not uncommon that a device can have multiple mtd devices with
-> > > > > > > partitions that have the same name. Eg, when there DT overlay is allowed
-> > > > > > > and the same device with mtd is attached twice.
-> > > > > > >
-> > > > > > > Under that circumstances, the mtd fails to register due to a name
-> > > > > > > duplication on the nvmem framework.
-> > > > > > >
-> > > > > > > With this patch we add a _1, _2, _X to the subsequent names if there is
-> > > > > > > a collition, and throw a warning, instead of not starting the mtd
-> > > > > > > device.
-> > > > > > >
-> > > > > > > [    8.948991] sysfs: cannot create duplicate filename '/bus/nvmem/devices/Production Data'
-> > > > > > > [    8.948992] CPU: 7 PID: 246 Comm: systemd-udevd Not tainted 5.5.0-qtec-standard #13
-> > > > > > > [    8.948993] Hardware name: AMD Dibbler/Dibbler, BIOS 05.22.04.0019 10/26/2019
-> > > > > > > [    8.948994] Call Trace:
-> > > > > > > [    8.948996]  dump_stack+0x50/0x70
-> > > > > > > [    8.948998]  sysfs_warn_dup.cold+0x17/0x2d
-> > > > > > > [    8.949000]  sysfs_do_create_link_sd.isra.0+0xc2/0xd0
-> > > > > > > [    8.949002]  bus_add_device+0x74/0x140
-> > > > > > > [    8.949004]  device_add+0x34b/0x850
-> > > > > > > [    8.949006]  nvmem_register.part.0+0x1bf/0x640
-> > > > > > > ...
-> > > > > > > [    8.948926] mtd mtd8: Failed to register NVMEM device
-> > > > > > >
-> > > > > > > Signed-off-by: Ricardo Ribalda Delgado <ribalda@kernel.org>  
-> > > > >
-> > > > > Thanks for proposing this change. Indeed we are aware of the problem
-> > > > > and the best solution that we could come up with was to create an
-> > > > > additional "unique_name" field to the mtd_info structure. This new
-> > > > > field would have the form:
-> > > > >
-> > > > >     [<parent-unique-name><separator>]<mtd-name>
-> > > > >
-> > > > > The separator might be '~' (but I am completely open on that), and that
-> > > > > would give for instance:
-> > > > >
-> > > > >     my-controller~my-device~my-part~mysub-part  
-> > > >
-> > > > I'd prefer something slightly more standard for the separator, like '/',
-> > > > which is what we usually use when we want to represent a path in a tree.
-> > > > I do agree on the general approach though.  
-> > >
-> > > I am not sure / is a valid separator here we would use this
-> > > name to create a sysfs entry. Would it work?  
-> >
-> > Hm, you're probably right, I didn't check how the name was used by
-> > nvmem. I also see that partition names can contain spaces, which is
-> > not that great. So, if we want to use mtd->unique_name we should
-> > probably sanitize it before passing it to nvmem. All this makes me
-> > reconsider your initial proposal: use 'mtdX' as the nvmem name. It's
-> > unique and it's simple enough to not require this extra sanitization
-> > pass, on the other hand, guessing the nvmem partition based on such an
-> > opaque name is not simple, not to mention that the mtd device name can
-> > change depending on the probe order.
-> >
-> > I also wonder if creating nvmem devs unconditionally for all mtd
-> > devices is a good idea. Sounds like we should only do that if there's an
-> > explicit request to have one partition exposed as an nvmem.
-> >
-> > Note that, no matter what we decide about nvmem, I think having unique
-> > names at the MTD level is a good thing.  
-> 
-> I have no preference one way or another.
-> 
-> The issue is that our current master leads to mtds not working fine
-> and making the system unusable. Whatever we decide it must be fast and
-> the patch backported.
-> 
-> My original patch follows the same logic as led does where there is a
-> duplicated name. I can send a separate patch that uses mtdX and then
-> you decide what to pick. Or we can go with a third way, but it needs
-> to be soon ;).
+Sigh. I will fix it, but I want to hear from Joe Perches before
+next patch version.
 
-Please send a patch using dev_name(&mtd->dev), and let's hope it
-doesn't break someone else use case.
+> 
+> > And there is no sanity check for 'Fixes:' tag format in checkpatch the same
+> > as GIT_COMMIT_ID for git commit description, so let's expand the GIT_COMMIT_ID
+> > to add 'Fixes:' tag format check support.
+> 
+> I have got the impression that this wording might need another bit
+> of fine-tuning.
+
+The current wording is enough I think.
+
+> 
+> 
+> > +				      "Please use git commit description style '$prefix <12+ chars of sha1> (\"<$title>\")' - ie: '${init_char}" . substr($prefix, 1) . " $id (\"$description\")'\n" . $herecurr);
+> 
+> I imagine that the support for different quotation characters
+> can become helpful, can't it?
+
+No, we don't need to support other quotation character for 'Fixes:' tag
+at least now. The submitting-patches.rst tells us the pretty format is:
+“...
+Fixes: %h (\"%s\")
+...”
+
+> 
+> Regards,
+> Markus
+
+Thanks.
