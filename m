@@ -2,236 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF171BF71A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 13:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6171B1BF71F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 13:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgD3Lsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 07:48:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:53192 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726809AbgD3Lso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 07:48:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D1811045;
-        Thu, 30 Apr 2020 04:48:44 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DD5293F305;
-        Thu, 30 Apr 2020 04:48:42 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        linux-kernel@vger.kernel.org, harb@amperecomputing.com
-Subject: [PATCH 5/5] arm/arm64: smccc: Add ARCH_SOC_ID support
-Date:   Thu, 30 Apr 2020 12:48:14 +0100
-Message-Id: <20200430114814.14116-6-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200430114814.14116-1-sudeep.holla@arm.com>
-References: <20200430114814.14116-1-sudeep.holla@arm.com>
+        id S1726929AbgD3Ltc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 07:49:32 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2134 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726127AbgD3Ltb (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 07:49:31 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 950C4468E8A6D32915F1;
+        Thu, 30 Apr 2020 12:49:30 +0100 (IST)
+Received: from [127.0.0.1] (10.47.0.178) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 30 Apr
+ 2020 12:49:29 +0100
+Subject: Re: [PATCH] perf parse-events: Use strcmp to compare the PMU name
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     Jin Yao <yao.jin@linux.intel.com>, <acme@kernel.org>,
+        <jolsa@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <alexander.shishkin@linux.intel.com>,
+        <Linux-kernel@vger.kernel.org>, <ak@linux.intel.com>,
+        <kan.liang@intel.com>, <yao.jin@intel.com>,
+        "irogers@google.com" <irogers@google.com>
+References: <20200430003618.17002-1-yao.jin@linux.intel.com>
+ <20200430084529.GC1681583@krava>
+ <66b84e3f-f7d8-bb65-616e-d159a509a439@huawei.com>
+ <20200430111551.GC1694693@krava>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <0195184b-0b43-f2fd-8d80-3b70d3f5a950@huawei.com>
+Date:   Thu, 30 Apr 2020 12:48:48 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <20200430111551.GC1694693@krava>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.0.178]
+X-ClientProxiedBy: lhreml731-chm.china.huawei.com (10.201.108.82) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SMCCC v1.2 adds a new optional function SMCCC_ARCH_SOC_ID to obtain a
-SiP defined SoC identification value. Add support for the same.
+On 30/04/2020 12:15, Jiri Olsa wrote:
 
-Also using the SoC bus infrastructure, let us expose the platform
-specific SoC atrributes under sysfs. We also provide custom sysfs for
-the vendor ID as JEP-106 bank and identification code.
++
 
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/firmware/psci/Makefile |   2 +-
- drivers/firmware/psci/soc_id.c | 148 +++++++++++++++++++++++++++++++++
- include/linux/arm-smccc.h      |   5 ++
- 3 files changed, 154 insertions(+), 1 deletion(-)
- create mode 100644 drivers/firmware/psci/soc_id.c
+> On Thu, Apr 30, 2020 at 09:54:18AM +0100, John Garry wrote:
+>> On 30/04/2020 09:45, Jiri Olsa wrote:
+>>> On Thu, Apr 30, 2020 at 08:36:18AM +0800, Jin Yao wrote:
+>>>> A big uncore event group is split into multiple small groups which
+>>>> only include the uncore events from the same PMU. This has been
+>>>> supported in the commit 3cdc5c2cb924a ("perf parse-events: Handle
+>>>> uncore event aliases in small groups properly").
+>>>>
+>>>> If the event's PMU name starts to repeat, it must be a new event.
+>>>> That can be used to distinguish the leader from other members.
+>>>> But now it only compares the pointer of pmu_name
+>>>> (leader->pmu_name == evsel->pmu_name).
+>>>>
+>>>> If we use "perf stat -M LLC_MISSES.PCIE_WRITE -a" on cascadelakex,
+>>>> the event list is:
+>>>>
+>>>> evsel->name					evsel->pmu_name
+>>>> ---------------------------------------------------------------
+>>>> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_4 (as leader)
+>>>> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_2
+>>>> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_0
+>>>> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_5
+>>>> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_3
+>>>> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_1
+>>>> unc_iio_data_req_of_cpu.mem_write.part1		uncore_iio_4
+>>>> ......
+>>>>
+>>>> For the event "unc_iio_data_req_of_cpu.mem_write.part1" with
+>>>> "uncore_iio_4", it should be the event from PMU "uncore_iio_4".
+>>>> It's not a new leader for this PMU.
+>>>>
+>>>> But if we use "(leader->pmu_name == evsel->pmu_name)", the check
+>>>> would be failed and the event is stored to leaders[] as a new
+>>>> PMU leader.
+>>>>
+>>>> So this patch uses strcmp to compare the PMU name between events.
+>>>>
+>>>> Fixes: 3cdc5c2cb924a ("perf parse-events: Handle uncore event aliases in small groups properly")
+>>>> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+>>>
+>>> looks good, any chance we could have automated test
+>>> for this uncore leader setup logic? like maybe the way
+>>> John did the pmu-events tests? like test will trigger
+>>> only when there's the pmu/events in the system
+>>>
+>>> Acked-by: Jiri Olsa <jolsa@redhat.com>
+>>>
+>>> thanks,
+>>> jirka
+>>
+>> Hi jirka,
+>>
+>> JFYI, this is effectively the same patch as I mentioned to you, which was a
+>> fix for the same WARN:
+>>
+>> https://lore.kernel.org/linux-arm-kernel/1587120084-18990-2-git-send-email-john.garry@huawei.com/
+>>
+>> but I found that it "fixed" d4953f7ef1a2 ("perf parse-events: Fix 3 use
+>> after frees found with clang ASANutil/parse-events.c"), based on bisect
+>> breakage
+> 
+> hum right.. sorry I did not recalled that, there's
+> also the warn removal in here, could you guys also
+> plz sync on the fixes clauses?
 
-diff --git a/drivers/firmware/psci/Makefile b/drivers/firmware/psci/Makefile
-index 1956b882470f..c0b0c9ca57e4 100644
---- a/drivers/firmware/psci/Makefile
-+++ b/drivers/firmware/psci/Makefile
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- #
--obj-$(CONFIG_ARM_PSCI_FW)	+= psci.o
-+obj-$(CONFIG_ARM_PSCI_FW)	+= psci.o soc_id.o
- obj-$(CONFIG_ARM_PSCI_CHECKER)	+= psci_checker.o
-diff --git a/drivers/firmware/psci/soc_id.c b/drivers/firmware/psci/soc_id.c
-new file mode 100644
-index 000000000000..820f69dad7f5
---- /dev/null
-+++ b/drivers/firmware/psci/soc_id.c
-@@ -0,0 +1,148 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2020 Arm Limited
-+ */
-+
-+#include <linux/arm-smccc.h>
-+#include <linux/bitfield.h>
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+#include <linux/sys_soc.h>
-+
-+#define SOCID_JEP106_BANK_IDX_MASK	GENMASK(30, 24)
-+#define SOCID_JEP106_ID_CODE_MASK	GENMASK(23, 16)
-+#define SOCID_IMP_DEF_SOC_ID_MASK	GENMASK(15, 0)
-+#define JEP106_BANK_IDX(x)	(u8)(FIELD_GET(SOCID_JEP106_BANK_IDX_MASK, (x)))
-+#define JEP106_ID_CODE(x)	(u8)(FIELD_GET(SOCID_JEP106_ID_CODE_MASK, (x)))
-+#define IMP_DEF_SOC_ID(x)	(u16)(FIELD_GET(SOCID_IMP_DEF_SOC_ID_MASK, (x)))
-+
-+static int soc_id_version;
-+static struct soc_device *soc_dev;
-+static struct soc_device_attribute *soc_dev_attr;
-+
-+static int smccc_map_error_codes(unsigned long a0)
-+{
-+	if (a0 == SMCCC_RET_INVALID_PARAMETER)
-+		return -EINVAL;
-+	if (a0 == SMCCC_RET_NOT_SUPPORTED)
-+		return -EOPNOTSUPP;
-+	return 0;
-+}
-+
-+static int smccc_soc_id_support_check(void)
-+{
-+	struct arm_smccc_res res;
-+
-+	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE) {
-+		pr_err("%s: invalid SMCCC conduit\n", __func__);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
-+			     ARM_SMCCC_ARCH_SOC_ID, &res);
-+
-+	return smccc_map_error_codes(res.a0);
-+}
-+
-+static ssize_t
-+jep106_cont_bank_code_show(struct device *dev, struct device_attribute *attr,
-+			   char *buf)
-+{
-+	return sprintf(buf, "%02x\n", JEP106_BANK_IDX(soc_id_version) + 1);
-+}
-+
-+static DEVICE_ATTR_RO(jep106_cont_bank_code);
-+
-+static ssize_t
-+jep106_identification_code_show(struct device *dev,
-+				struct device_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%02x\n", JEP106_ID_CODE(soc_id_version) & 0x7F);
-+}
-+
-+static DEVICE_ATTR_RO(jep106_identification_code);
-+
-+static struct attribute *jep106_id_attrs[] = {
-+	&dev_attr_jep106_cont_bank_code.attr,
-+	&dev_attr_jep106_identification_code.attr,
-+	NULL
-+};
-+
-+ATTRIBUTE_GROUPS(jep106_id);
-+
-+static int __init smccc_soc_init(void)
-+{
-+	struct device *dev;
-+	int ret, soc_id_rev;
-+	struct arm_smccc_res res;
-+	static char soc_id_str[8], soc_id_rev_str[12];
-+
-+	if (arm_smccc_get_version() < ARM_SMCCC_VERSION_1_2)
-+		return 0;
-+
-+	ret = smccc_soc_id_support_check();
-+	if (ret)
-+		return ret;
-+
-+	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_SOC_ID, 0, &res);
-+
-+	ret = smccc_map_error_codes(res.a0);
-+	if (ret)
-+		return ret;
-+
-+	soc_id_version = res.a0;
-+
-+	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_SOC_ID, 1, &res);
-+
-+	ret = smccc_map_error_codes(res.a0);
-+	if (ret)
-+		return ret;
-+
-+	soc_id_rev = res.a0;
-+
-+	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
-+	if (!soc_dev_attr)
-+		return -ENOMEM;
-+
-+	sprintf(soc_id_str, "0x%04x", IMP_DEF_SOC_ID(soc_id_version));
-+	sprintf(soc_id_rev_str, "0x%08x", soc_id_rev);
-+
-+	soc_dev_attr->soc_id = soc_id_str;
-+	soc_dev_attr->revision = soc_id_rev_str;
-+
-+	soc_dev = soc_device_register(soc_dev_attr);
-+	if (IS_ERR(soc_dev)) {
-+		ret = PTR_ERR(soc_dev);
-+		goto free_soc;
-+	}
-+
-+	dev = soc_device_to_device(soc_dev);
-+
-+	ret = devm_device_add_groups(dev, jep106_id_groups);
-+	if (ret) {
-+		dev_err(dev, "sysfs create failed: %d\n", ret);
-+		goto unregister_soc;
-+	}
-+
-+	pr_info("SMCCC SoC ID: %s Revision %s\n", soc_dev_attr->soc_id,
-+		soc_dev_attr->revision);
-+
-+	return 0;
-+
-+unregister_soc:
-+	soc_device_unregister(soc_dev);
-+free_soc:
-+	kfree(soc_dev_attr);
-+	return ret;
-+}
-+module_init(smccc_soc_init);
-+
-+static void __exit smccc_soc_exit(void)
-+{
-+	if (soc_dev)
-+		soc_device_unregister(soc_dev);
-+	kfree(soc_dev_attr);
-+}
-+module_exit(smccc_soc_exit);
-diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-index d6b0f4acc707..04414fc2000f 100644
---- a/include/linux/arm-smccc.h
-+++ b/include/linux/arm-smccc.h
-@@ -68,6 +68,11 @@
- 			   ARM_SMCCC_SMC_32,				\
- 			   0, 1)
- 
-+#define ARM_SMCCC_ARCH_SOC_ID						\
-+	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
-+			   ARM_SMCCC_SMC_32,				\
-+			   0, 2)
-+
- #define ARM_SMCCC_ARCH_WORKAROUND_1					\
- 	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
- 			   ARM_SMCCC_SMC_32,				\
--- 
-2.17.1
+I just thought that it fixes d4953f7ef1a2, as I found that the pointer 
+equality fails from that commit. I assume the parse-events code was 
+sound before then (in that regard). That's all I know :)
+
+Thanks!
+
+> 
+> thanks,
+> jirka
+> 
+>>
+>> cheers
+>>
+>>>
+>>>
+>>>> ---
+>>>>    tools/perf/util/parse-events.c | 5 ++---
+>>>>    1 file changed, 2 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+>>>> index 10107747b361..786eddb6a097 100644
+>>>> --- a/tools/perf/util/parse-events.c
+>>>> +++ b/tools/perf/util/parse-events.c
+>>>> @@ -1629,12 +1629,11 @@ parse_events__set_leader_for_uncore_aliase(char *name, struct list_head *list,
+>>>>    		 * event. That can be used to distinguish the leader from
+>>>>    		 * other members, even they have the same event name.
+>>>>    		 */
+>>>> -		if ((leader != evsel) && (leader->pmu_name == evsel->pmu_name)) {
+>>>> +		if ((leader != evsel) &&
+>>>> +		    !strcmp(leader->pmu_name, evsel->pmu_name)) {
+>>>>    			is_leader = false;
+>>>>    			continue;
+>>>>    		}
+>>>> -		/* The name is always alias name */
+>>>> -		WARN_ON(strcmp(leader->name, evsel->name));
+>>>>    		/* Store the leader event for each PMU */
+>>>>    		leaders[nr_pmu++] = (uintptr_t) evsel;
+>>>> -- 
+>>>> 2.17.1
+>>>>
+>>>
+>>> .
+>>>
+>>
+> 
+> .
+> 
 
