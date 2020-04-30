@@ -2,129 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CC41BFC8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA931BFCA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729348AbgD3OGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:06:41 -0400
-Received: from mout.web.de ([212.227.15.4]:44323 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728283AbgD3OGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:06:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1588255587;
-        bh=a8CsPTsb0Rnh07ZEvOHAFMQL0ZBBV4dnc48d3lm8fCI=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Cc:Date:In-Reply-To;
-        b=AdGOuVd9lHS08wwlC1uq4KYwJ4SSYN/JNOr90LNnQrESvZKMYrPw+hSKtu+7WI0k+
-         nnl1S1wuFvmvFR4Kc/cmPajft2NByz8OvlWQIYgBEWil5s5hZjwDvezqR08T6UfGph
-         ZRpUOYxnHQiX8CMEem+S+uE8UDO+bRsNUrGY/NpM=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.131.175.216]) by smtp.web.de (mrweb002
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0MFLQi-1jQsZb0RJk-00EQEe; Thu, 30
- Apr 2020 16:06:27 +0200
-Subject: Re: checkpatch: Support for alternative quotation characters around
- commit title?
-To:     Wang YanQing <udknight@gmail.com>, Joe Perches <joe@perches.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        kernel-janitors@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20200429163645.GA13810@udknight>
- <4112ab7e-1f06-d880-e471-084c78bc84d4@web.de>
- <20200430125614.GA30691@udknight>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Cc:     linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Matteo Croce <mcroce@redhat.com>
-Message-ID: <dee7be7c-cbb9-688e-662a-34549d2df35a@web.de>
-Date:   Thu, 30 Apr 2020 16:06:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1728667AbgD3OHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:07:07 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:41977 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728945AbgD3OHE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 10:07:04 -0400
+Received: by mail-oi1-f193.google.com with SMTP id 19so5285305oiy.8;
+        Thu, 30 Apr 2020 07:07:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ypl3TMqHlEyc54S03DtZTNB+eyp6v+vQ5hgOUzmHpUg=;
+        b=SFkYlMRXJa1HQ07Vm9xq+/fUHRF/zrLe5DI+io2D0hUv09irfHHaC3/1RovhELkLl/
+         7M/FtKN16USdyv/qXLMP3gFaobhgra6wepDNXH5YSwnn3Vayon2M0rX0KLs2GZ0vi754
+         Kk9+waZK4mBk35uSo5yYfQWGn0zxsBUsjptk3KoHbsjxzS5k1QBok9S8tk/FkvAvqGjo
+         o//Gv7RHgyqWLfaV+L71c17+USRbGnfwV7QJ1yHrspRHkEIrPQdqKWh+CJl4wTldTOFz
+         oUjn1xw/5p/yS6r0cn8frVkNqxU9/9B/QjORlDM5RcqElLdX5w0tqbAnc3GxdLKBoeB3
+         hPAg==
+X-Gm-Message-State: AGi0PubHnws3Z0Lxpeu4bHQk2Nj8omKENfKHBug8zRvWa3g9ffiy7Bxt
+        1Wh+jeMjG2BeVjWOFaqKUA==
+X-Google-Smtp-Source: APiQypIP8LI9E0STiYnne0hBy5N7yLlgo3kcsx6yXCtmZ7uE9MOuR1kv9WPAh62YT3wAZ4XcJhqUuQ==
+X-Received: by 2002:aca:1709:: with SMTP id j9mr1847601oii.59.1588255622600;
+        Thu, 30 Apr 2020 07:07:02 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j42sm1327968ooi.5.2020.04.30.07.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 07:07:01 -0700 (PDT)
+Received: (nullmailer pid 31546 invoked by uid 1000);
+        Thu, 30 Apr 2020 14:07:01 -0000
+Date:   Thu, 30 Apr 2020 09:07:01 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jon Hunter <jonathanh@nvidia.com>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: mfd: Document the RTC present on
+ MAX77620
+Message-ID: <20200430140701.GA21776@bogus>
+References: <20200417170825.2551367-1-thierry.reding@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200430125614.GA30691@udknight>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QreoYv2Q90lndpAnA9rF6yVbhksQG/cW0RX7Eoabwv7SUpOph/D
- MkZweskGQ3QYZJmT636PceKB70uNcl6uQJpYpHbm6mmvpz75/oy6nyZO10/mpKLZ1BgkQEP
- 68J2OaiL4vujyKeaKcmjw6SQiMltJt8BfU1ldEiDuuR0V9VFS+F0VPWVd0AVDwYWCU8+1MH
- GG/6/4Q1TP4cBYPTdIRDA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oCQabBRKl4M=:LV9DAdFMC3fojM0M6apAI4
- 1piZa5/kOZa7tQlhtilqwYZHq+AbWszFb2CkQgdVqpoU6ZBki/3F9yTP+yayqvHkXfIC5Y3JP
- q0iz0B9IYN5Zq+mhrB1GZer2vVwXVJ+MHQLvDyryglzAKRUycijU28zXQwqqGpJldiUgMaAoM
- rj4JOIAig38+AUDAk4r3neHy0bjXU0c0MBbCbVoFa+2ji4MKtFrfUnv1atl79w60qotn74JfR
- KLOkOgWvFpSpFwxB07vJJ8HIKLilFmuxxJqmBBfYi3Z4sRtR45Ytv+SYMGM6P9q2S43i9Fkot
- 7sTOelkEjOqnOTYNFfcuWYj/0E3m+92B6p6PRrDcXEIukbsb83cuBIUbCYitzJ85Y2zUZdYiY
- TgicCBCuWHZBpdM48luim+H+zl0pJ7GfXXwRJC4nXrz6goedy3NCMz8WA8YJBNTk50nGhKBC9
- DKnliP2EDJHuq75sAP7msSWNktSP4TRgBSR6l0Vkj2Kp/OkB/IB/nsZyVkVtGnlQoAZjZI+Tu
- Gw2czhURrM0HccSL6Fz9waO/IXk1oSSiH28C627NEANf5qXKiU8hnhWr832CuGozmRT3IVVXx
- z5f62u4O/nUudctZuuVoVViMyRNYr4syvMhJ8QgSFD0ILtz2KUI2XGUTMmevq2Ckvu5kzhmXP
- Y6aug9NBchFLZERb3/SXVJGYflj/QHR/i1DcL57tZWO2QrRtawEQTYihxhEsFxJrdDN7b8bAa
- XA5JoVanenEzA0C8hitFLO3Kjn+jT/BtBu50ixrwcbSY1nMG40weekdCVyOBLQ4zIWaFpsqEZ
- rM21gp1CjHzSIXuvj/m5tAMLU/ptwFdHWSJKLalQG+PdtlahmYW2mHr7Yo4uFC70co8GQD5oI
- +RNR0t7A74/KW1HTvQk8pK+A/zCmfw7PtBKXG5FDnA6VrK1rRcStqaWXHIJGmX+A4k+4X3teI
- /UunhOkRPHBIyMCTCM4bpv4i75EMLN3HmVtluxG2ckWHz+Grjmt0itFAeFrGPl3VHuFiJGh6Z
- 95aX8x/a2ccKTcESoqE+Pj1xp67vCYpS2bVsHoRhOkbdeXv12lYUWjkL6XqqOIk6JAGUmvlnz
- DabNR9yetC0qy5nxt76pKfF9wZiDSnB/h9bycKXU2bU8pirSzm6QEw1mA/NXBbtA8O9lvtvLQ
- HksEY9GTLl4Ipz1e478bf7ZVKDn6PBRJ+N8PeCW3E2gW/MmEYOLio/Vk2NuJCRuHrvfEUt8d6
- c8k8dfcDaUlQ0FLps
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200417170825.2551367-1-thierry.reding@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> No, we don't need to support other quotation character for 'Fixes:' tag
-> at least now. The submitting-patches.rst tells us the pretty format is:
-> =E2=80=9C...
-> Fixes: %h (\"%s\")
-> ...=E2=80=9D
+On Fri, Apr 17, 2020 at 07:08:23PM +0200, Thierry Reding wrote:
+> From: Thierry Reding <treding@nvidia.com>
+> 
+> The RTC present on MAX77620 can be used to generate an alarm at a given
+> time, which in turn can be used as a wakeup source for the system if it
+> is properly wired up.
+> 
+> Document how to enable the RTC to act as a wakeup source.
+> 
+> Signed-off-by: Thierry Reding <treding@nvidia.com>
+> ---
+>  .../devicetree/bindings/mfd/max77620.txt          | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/max77620.txt b/Documentation/devicetree/bindings/mfd/max77620.txt
+> index 5a642a51d58e..f05005b0993e 100644
+> --- a/Documentation/devicetree/bindings/mfd/max77620.txt
+> +++ b/Documentation/devicetree/bindings/mfd/max77620.txt
+> @@ -125,6 +125,17 @@ MAX77663 supports 20, 40, 80, 160, 320, 640, 1280 and 2540 microseconds.
+>  			control) then, GPIO1/nRST_IO goes LOW.
+>  			this property is valid for max20024 only.
+>  
+> +Realtime Clock
+> +--------------
+> +The MAX77620 family of power management ICs contain a realtime clock block
+> +that can be used to keep track of time even when the system is powered off.
+> +
+> +The realtime clock can also be programmed to trigger alerts, which can be
+> +used to wake the system up from sleep. In order to configure the RTC to act
+> +as a wakeup source, add an "rtc" child node and add the "wakeup-source"
+> +property.
+> +
+> +
+>  For DT binding details of different sub modules like GPIO, pincontrol,
+>  regulator, power, please refer respective device-tree binding document
+>  under their respective sub-system directories.
+> @@ -159,4 +170,8 @@ max77620@3c {
+>  			maxim,fps-event-source = <MAX77620_FPS_EVENT_SRC_SW>;
+>  		};
+>  	};
+> +
+> +	rtc {
+> +		wakeup-source;
 
-Can such a data structure still be correctly parsed if the commit title
-would contain double quotes?
+Is the RTC really the only thing that could wake the system in this 
+PMIC?
 
-How do you think about to discuss delimiter variations?
+I don't think it's really valid to have 'wakeup-source' without 
+'interrupts' unless the wakeup mechanism is somehow not an interrupt. So 
+I think this belongs in the parent node.
 
-Regards,
-Markus
+Rob
