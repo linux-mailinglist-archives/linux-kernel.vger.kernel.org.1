@@ -2,144 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65091C03AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 19:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14291C03BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 19:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgD3RRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 13:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726440AbgD3RRj (ORCPT
+        id S1726702AbgD3RUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 13:20:10 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3820 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726440AbgD3RUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 13:17:39 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BE7C035495
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 10:17:39 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y3so1887932lfy.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 10:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AbtaQ1Pr8o8wY3oZ0XUT+6r9NQjFUKQ2iX6lszWerYA=;
-        b=hvyYWSqj2/fPEY1WvRlxpzG6+BEmdG53Q6FGr0rmFjqrtn6k+h40SEBcbuDXCqxUgu
-         oQj9pLhUMMsLzXOxx5yIsXnoxM5edRADMw3Nok9hHdGYJi9aZqee4YhpZbofCd09La3i
-         YD/BYT0Ja4/85/lTKRMWx/UXUjWBdf/VeXqqw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AbtaQ1Pr8o8wY3oZ0XUT+6r9NQjFUKQ2iX6lszWerYA=;
-        b=ONOS4LUyIhagiIzsPBsizTOkHUUbm7qiO3343BfvKqt6Ra9bM2lARSyqnUaGa7zV8q
-         ysbJLpx6pi0GDng6TIs58Tom+4N4/an10rvqBUw4STcUonE2fONrVdnuCsPjQoMhw8wR
-         oJLlCPd5oADcf8Q9FXSphYyRKnRJkHx4cAeVFxPKkCax1GIsRNM2a81mUBDFFucK+vF9
-         hrgQfOj6eCyWhSFA8/lSCdUDDW3N8tMaW5NSzuTN1kkEY9854ITCmt7SygFHHjiGO50y
-         sOmKlULegMFPuX6y1yTOyEHimA2WYfbo6Tz+BbugRZaqhDoz1VFLy7maINBCl8CnC/BJ
-         3X3w==
-X-Gm-Message-State: AGi0Pua/uPV8eYwmP6/3PrBeMRNdbN2yH1Cj35KZM+XpIsONFYUH/E3b
-        GYL4jYEZ9vwTJNySuv9ClIegW8gU7+w=
-X-Google-Smtp-Source: APiQypIUhqK4rK5dvUYCtW0df72Q7miKkv6BO6DJvTerLVjNOgm3+htkgSL7JlSZyGvT1KChO8RUVA==
-X-Received: by 2002:a19:b10:: with SMTP id 16mr2915441lfl.133.1588267057334;
-        Thu, 30 Apr 2020 10:17:37 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id v18sm243988lfd.0.2020.04.30.10.17.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 10:17:36 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id b2so163288ljp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 10:17:35 -0700 (PDT)
-X-Received: by 2002:a05:651c:319:: with SMTP id a25mr167004ljp.209.1588267055471;
- Thu, 30 Apr 2020 10:17:35 -0700 (PDT)
+        Thu, 30 Apr 2020 13:20:09 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UH2OqJ073064;
+        Thu, 30 Apr 2020 13:19:54 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mhc3vs69-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Apr 2020 13:19:52 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03UH4DJ5084423;
+        Thu, 30 Apr 2020 13:19:51 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mhc3vs5b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Apr 2020 13:19:51 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03UHAvTE017841;
+        Thu, 30 Apr 2020 17:19:49 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 30mcu7322e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Apr 2020 17:19:49 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03UHJko756360974
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 17:19:46 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2EF4411C04C;
+        Thu, 30 Apr 2020 17:19:46 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 63DDB11C04A;
+        Thu, 30 Apr 2020 17:19:45 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.14.241])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 30 Apr 2020 17:19:45 +0000 (GMT)
+Date:   Thu, 30 Apr 2020 19:19:42 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        akpm@linux-foundation.org, jack@suse.cz, kirill@shutemov.name,
+        david@redhat.com, aarcange@redhat.com, linux-mm@kvack.org,
+        frankja@linux.ibm.com, sfr@canb.auug.org.au, jhubbard@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        peterz@infradead.org, sean.j.christopherson@intel.com,
+        Ulrich.Weigand@de.ibm.com
+Subject: Re: [PATCH v1 1/1] fs/splice: add missing callback for inaccessible
+ pages
+Message-ID: <20200430191942.3ae9155f@p-imbrenda>
+In-Reply-To: <172c51f7-7dd6-7dd0-153f-aedd4b10a9f3@intel.com>
+References: <20200428225043.3091359-1-imbrenda@linux.ibm.com>
+        <2a1abf38-d321-e3c7-c3b1-53b6db6da310@intel.com>
+        <b077744e-65be-f89c-55bb-4fc0f712eb76@de.ibm.com>
+        <609afef2-43c2-d048-1c01-448a53a54d4e@intel.com>
+        <20200430005310.7b25efab@p-imbrenda>
+        <172c51f7-7dd6-7dd0-153f-aedd4b10a9f3@intel.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <158823509800.2094061.9683997333958344535.stgit@dwillia2-desk3.amr.corp.intel.com>
- <CAHk-=wh6d59KAG_6t+NrCLBz-i0OUSJrqurric=m0ZG850Ddkw@mail.gmail.com> <CALCETrVP5k25yCfknEPJm=XX0or4o2b2mnzmevnVHGNLNOXJ2g@mail.gmail.com>
-In-Reply-To: <CALCETrVP5k25yCfknEPJm=XX0or4o2b2mnzmevnVHGNLNOXJ2g@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 30 Apr 2020 10:17:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=widQfxhWMUN3bGxM_zg3az0fRKYvFoP8bEhqsCtaEDVAA@mail.gmail.com>
-Message-ID: <CAHk-=widQfxhWMUN3bGxM_zg3az0fRKYvFoP8bEhqsCtaEDVAA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        stable <stable@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-30_11:2020-04-30,2020-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=830 phishscore=0 mlxscore=0
+ malwarescore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004300132
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 9:52 AM Andy Lutomirski <luto@kernel.org> wrote:
->
-> If I'm going to copy from memory that might be bad but is at least a
-> valid pointer, I want a function to do this.  If I'm going to copy
-> from memory that might be entirely bogus, that's a different
-> operation.  In other words, if I'm writing e.g. filesystem that is
-> touching get_user_pages()'d persistent memory, I don't want to panic
-> if the memory fails, but I do want at least a very loud warning if I
-> follow a wild pointer.
->
-> So I think that probe_kernel_copy() is not a valid replacement for
-> memcpy_mcsafe().
+On Wed, 29 Apr 2020 16:52:46 -0700
+Dave Hansen <dave.hansen@intel.com> wrote:
 
-Fair enough.
+> On 4/29/20 3:53 PM, Claudio Imbrenda wrote:
+> >> Actually, that's the problem.  You've gone through all these
+> >> careful checks and made the page inaccessible.  *After* that
+> >> process, how do you keep the page from being hit by an I/O device
+> >> before it's made accessible again?  My patch just assumes that
+> >> *all* pages have gone through that process and passed those
+> >> checks.  
+> > I don't understand what you are saying here.
+> > 
+> > we start with all pages accessible, we mark pages as inaccessible
+> > when they are imported in the secure guest (we use the PG_arch_1
+> > bit in struct page). we then try to catch all I/O on inaccessible
+> > pages and make them accessible so that I/O devices are happy.   
+> 
+> The catching mechanism is incomplete, that's all I'm saying.
 
-That said, the part I do like about probe_kernel_read/write() is that
-it does indicate which part we think is possibly the one that needs
-more care.
+well, sendto in the end does a copy_from_user or a get_user_pages_fast,
+both are covered (once we fix the make_accessible to work on FOLL_GET
+too). 
 
-Sure, it _might_ be both sides, but honestly, that's likely the much
-less common case. Kind of like "copy_{to,from}_user()" vs
-"copy_in_user()".
+> Without looking too hard, and not even having the hardware, I've found
+> two paths where the "catching" was incomplete:
+> 
+> 	1. sendfile(), which you've patched
+> 	2. sendto(), which you haven't patched
+> 
+> > either your quick and dirty patch was too dirty (e.g. not accounting
+> > for possible races between make_accessible/make_inaccessible), or
+> > some of the functions in the trace you provided should do
+> > pin_user_page instead of get_user_page (or both)  
+> 
+> I looked in the traces for any races.  For sendto(), at least, the
+> make_accessible() never happened before the process exited.  That's
+> entirely consistent with the theory that it entirely missed being
+> caught.  I can't find any evidence that there were races.
+> 
+> Go ahead and try it.  You have the patch!  I mean, I found a bug in
+> about 10 minutes in one tiny little VM.
 
-Yes, the "copy_in_user()" case exists, but it's the odd and unusual case.
+I tried your patch, but I could not reproduce the problem. I have a
+Debian 10 x86_64 with the latest kernel from master and your patch on
+top. is there anything I'm missing? which virtual devices are you using?
+any particular .config options?
 
-Looking at the existing cases of "memcpy_mcsafe()", they do seem to
-generally have a very clearly defined direction, not "both sides can
-break".
+I could easily get the mm_make_accessible tracepoints, but I never
+manage to trigger the mm_accessible_error ones.
 
-I also find myself suspecting that one case people _do_ want to
-possibly do is to copy from nvdimm memory into user space. So then
-that needs yet another function.
+are you using transparent hugepages by any chance? the
+infrastructure for inaccessible pages is meant only for small pages,
+since on s390x only small pages can ever be used for secure
+guests and therefore become inaccessible.
 
-And we have that copy_to_user_mcsafe() for that, and used in the
-disgustingly named "copyout_mcsafe()". Ugly incomprehensible BSD'ism.
+> And, yes, you need to get rid of the FOLL_PIN check unless you want to
+> go change a big swath of the remaining get_user_pages*() sites.
 
-But oddly we don't have the "from_user" case.
-
-So this thing seems messy, the naming is odd and inconsistent, and I'd
-really like the whole "access with exception handling" to have some
-clear rules and clear names.
-
-The whole "there are fifty different special cases" really drives me
-wild. It's why I think the hardware was so broken.
-
-And now the special "writes can fault" rule still confuses me.
-_copy_to_iter_mcsafe() was mentioned, which makes me think that it's
-literally about that "copy from nvram to user space" issue.
-
-But that can't just trap on the destination, that fundamentally needs
-special user space accesses anyway. Even on x86 you have the whole
-STAC/CLAC issue, on other architectures the stores may not be normal
-stores at all.
-
-So a "copy_safe()" model doesn't actually work for that at all.
-
-So I'm a bit (maybe a _lot_) confused about what the semantics should
-actually be. And I want the naming to reflect whatever those semantics
-are. And I don't think "copy_safe()" reflects any semantics at all.
-
-                     Linus
