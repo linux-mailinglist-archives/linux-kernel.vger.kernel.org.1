@@ -2,172 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89F31C06F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BBF1C072C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgD3Ttf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgD3Ttf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:49:35 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E245CC035495
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:49:34 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s18so3353082pgl.12
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:49:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eVgbuol89Iq0veE3I85Gk84NyFRa8gOBSOw6m+GRCSg=;
-        b=x/LUbAAMBI9EjfhEunVYObFNi0ilObBdHfFK9/9Y5x8kQ72e+7rk4hmGcWo23uxalQ
-         oR+hheCz7Y9fkffCw8PJeHEjjQknHmVO0oeQlyBcP0esveORtxk/8mlHR5f9WUh+9dfH
-         wl0CWP60y7fvrr5frOrebzPRYj8vOrbw85QPcl4mYo6l7Lp2ucpGmNVuPAqzotP8FZ4J
-         MUpoIva+US8Kpxx3SNED8vA9DHbg8o4/JpjjD1wXT5x9MLzYfrEer/m3wC/ajwJXQIrU
-         ocFIMjfD+eDvyvTdKsjCkAuUCLQgjgMJkCS8tUPC7vh5bI6kPnSLgkuXUx3FQTnyEJ8/
-         TZvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eVgbuol89Iq0veE3I85Gk84NyFRa8gOBSOw6m+GRCSg=;
-        b=Czv8j6XvdC2yhd55iWNge4vswDGuCsmLnfDOKKkJ+dj3S4Ad7OSf250wHCRQP5FMcc
-         Zilvh+v4eDxEiXQYtJX2Mqms1r6mhcH13acQQXKgZQTR0kzBjVlLLNoIhFDeA8jgX1Ka
-         5EaDsrRU821cY9PuQQU+UCHWlRtjDwPF8kSfy6PJispFy2UD+qH3Y4KeAlNwCR5WoqrK
-         JdO+lS1a/TFIztxptr1ISbY29SwcpddkHszaCraB5x6nQHGlSJWM39xFf5bqgEfTr/BT
-         97ArpwkDO7Um/NbRk+3SKtiIts0fihvZYKuwQThgIaX/kuumUxHtA2TS4sJr7m2NfdQd
-         1Mfg==
-X-Gm-Message-State: AGi0Pua/OLK9P1OrcpieIvqL6FV4/mXlKgqvb0KVe4wJXDCBr/foKfeD
-        y1OaGiPkU3gR3jJuJECux2q6Qg==
-X-Google-Smtp-Source: APiQypI9zanAp40tlGa9iIJ5KTbKbr2YTHaLxGZRYxFJQ1lE4/d/8jwLCZytJiPDVXLWJjC8Nhu0tA==
-X-Received: by 2002:a63:1d46:: with SMTP id d6mr624552pgm.236.1588276174377;
-        Thu, 30 Apr 2020 12:49:34 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id a15sm517061pju.3.2020.04.30.12.49.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 12:49:33 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 13:49:31 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     bjorn.andersson@linaro.org, ohad@wizery.com, loic.pallardy@st.com,
-        s-anna@ti.com, linux-remoteproc@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 03/14] remoteproc: Add new operation and flags for
- synchronistation
-Message-ID: <20200430194931.GB17031@xps15>
-References: <20200424200135.28825-1-mathieu.poirier@linaro.org>
- <20200424200135.28825-4-mathieu.poirier@linaro.org>
- <7c5c8d5e-feb7-74ad-a2eb-1ccb8192b0ae@st.com>
+        id S1726900AbgD3T7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:59:07 -0400
+Received: from mga03.intel.com ([134.134.136.65]:19811 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726450AbgD3T7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 15:59:07 -0400
+IronPort-SDR: IIGg+zsTns2nfPnwHZsArttq5Re+6NfhyTU6C64tcsX9H8egrq2TdPxGMTyrZ02+vYgqWq9NfK
+ 4WRsSBNBy8cg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 12:59:05 -0700
+IronPort-SDR: s1mjBUu/ajRwjZ3ZpNgANTVYmxk6oLFeP0VXuFISLP9/D38GZlsNzWaTxlfq4vHTzFC9hmPVwR
+ WLJx4yNqwbgQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,337,1583222400"; 
+   d="scan'208";a="248370687"
+Received: from irsmsx153.ger.corp.intel.com ([163.33.192.75])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Apr 2020 12:59:04 -0700
+Received: from irsmsx103.ger.corp.intel.com ([169.254.3.44]) by
+ IRSMSX153.ger.corp.intel.com ([169.254.9.216]) with mapi id 14.03.0439.000;
+ Thu, 30 Apr 2020 20:49:37 +0100
+From:   "Alessandrelli, Daniele" <daniele.alessandrelli@intel.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "robh@kernel.org" <robh@kernel.org>,
+        "Murphy, Paul J" <paul.j.murphy@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Shevchenko, Andriy" <andriy.shevchenko@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 0/1] Add IMR driver for Keem Bay
+Thread-Topic: [PATCH 0/1] Add IMR driver for Keem Bay
+Thread-Index: AQHWF/bwdmCqRgB2xEunJAxCAmyaOqiSEEGA
+Date:   Thu, 30 Apr 2020 19:49:36 +0000
+Message-ID: <d3f045b05c83d0eca1d5498587493ca485e0a1a0.camel@intel.com>
+References: <cover.1587485099.git.daniele.alessandrelli@intel.com>
+In-Reply-To: <cover.1587485099.git.daniele.alessandrelli@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.252.22.135]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A6BF041FE16A394DA13BF5020330A280@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c5c8d5e-feb7-74ad-a2eb-1ccb8192b0ae@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 06:38:41PM +0200, Arnaud POULIQUEN wrote:
-> 
-> 
-> On 4/24/20 10:01 PM, Mathieu Poirier wrote:
-> > Add a new sync_ops to support use cases where the remoteproc
-> > core is synchronising with the remote processor.  Exactly when to use
-> > the synchronisation operations is directed by the flags in structure
-> > rproc_sync_flags.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >  include/linux/remoteproc.h | 24 ++++++++++++++++++++++++
-> >  1 file changed, 24 insertions(+)
-> > 
-> > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
-> > index ac4082f12e8b..ceb3b2bba824 100644
-> > --- a/include/linux/remoteproc.h
-> > +++ b/include/linux/remoteproc.h
-> > @@ -353,6 +353,23 @@ enum rsc_handling_status {
-> >  	RSC_IGNORED	= 1,
-> >  };
-> >  
-> > +/**
-> > + * struct rproc_sync_flags - platform specific flags indicating which
-> > + *			      rproc_ops to use at specific times during
-> > + *			      the rproc lifecycle.
-> > + * @on_init: true if synchronising with the remote processor at
-> > + *	     initialisation time
-> > + * @after_stop: true if synchronising with the remote processor after it was
-> > + *		stopped from the cmmand line
-> typo command
-> > + * @after_crash: true if synchronising with the remote processor after
-> > + *		 it has crashed
-> > + */
-> > +struct rproc_sync_flags {
-> > +	bool on_init;
-> > +	bool after_stop;
-> > +	bool after_crash;
-> > +};
-> > +
-> how about a bit field instead (just a proposition)?
-> Platform driver would set the sync flag and rproc_set_sync_flag could be a 
-> simple mask instead of a switch case.
+T24gVHVlLCAyMDIwLTA0LTIxIGF0IDE3OjM2ICswMTAwLCBEYW5pZWxlIEFsZXNzYW5kcmVsbGkg
+d3JvdGU6DQo+IFRoZSBmb2xsb3dpbmcgaXMgYSBwYXRjaCBmb3IgYSBuZXcgSW50ZWwgTW92aWRp
+dXMgU29DLCBjb2RlLW5hbWVkDQo+IEtlZW0NCj4gQmF5Lg0KPiANCj4gS2VlbSBCYXkgbmVlZHMg
+YSBkcml2ZXIgdG8gZGlzYWJsZSB0aGUgSXNvbGF0ZWQgTWVtb3J5IFJlZ2lvbiAoSU1SKQ0KPiBz
+ZXQgdXAgYnkgdGhlIFNvQyBib290bG9hZGVyIGR1cmluZyBlYXJseSBib290Lg0KPiANCj4gSWYg
+c3VjaCBhbiBJTVIgaXMgbm90IGRpc2FibGVkIGFuZCBzb21lIGRldmljZSB0cmllcyB0byBhY2Nl
+c3MgaXQsDQo+IHRoZSBzeXN0ZW0gd2lsbCByZWJvb3QuDQo+IA0KPiBTaW5jZSB0aGlzIGRyaXZl
+ciBpcyBTb0Mtc3BlY2lmaWMgYW5kIEtlZW0gQmF5IGlzIGEgbmV3IFNvQywgSSB3YXMNCj4gdW5z
+dXJlIG9mIHdoZXJlIHRvIHB1dCB0aGlzIGRyaXZlci4gSW4gdGhlIGVuZCBJIGRlY2lkZWQgdG8g
+Y3JlYXRlIGENCj4gbmV3ICdrZWVtYmF5JyBkaXJlY3RvcnkgaW4gJ2RyaXZlcnMvc29jJy4gSSBo
+b3BlIHRoYXQncyByZWFzb25hYmxlLA0KPiBpZg0KPiBub3QsIGp1c3QgbGV0IG1lIGtub3cuDQo+
+IA0KPiANCj4gRGFuaWVsZSBBbGVzc2FuZHJlbGxpICgxKToNCj4gICBzb2M6IGtlZW1iYXk6IEFk
+ZCBLZWVtIEJheSBJTVIgZHJpdmVyDQo+IA0KPiAgTUFJTlRBSU5FUlMgICAgICAgICAgICAgICAg
+ICAgICAgIHwgIDUgKysrKw0KPiAgZHJpdmVycy9zb2MvS2NvbmZpZyAgICAgICAgICAgICAgIHwg
+IDEgKw0KPiAgZHJpdmVycy9zb2MvTWFrZWZpbGUgICAgICAgICAgICAgIHwgIDEgKw0KPiAgZHJp
+dmVycy9zb2Mva2VlbWJheS9LY29uZmlnICAgICAgIHwgMjIgKysrKysrKysrKysrKysrKysNCj4g
+IGRyaXZlcnMvc29jL2tlZW1iYXkvTWFrZWZpbGUgICAgICB8ICA1ICsrKysNCj4gIGRyaXZlcnMv
+c29jL2tlZW1iYXkva2VlbWJheS1pbXIuYyB8IDQwDQo+ICsrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysNCj4gIDYgZmlsZXMgY2hhbmdlZCwgNzQgaW5zZXJ0aW9ucygrKQ0KPiAgY3JlYXRl
+IG1vZGUgMTAwNjQ0IGRyaXZlcnMvc29jL2tlZW1iYXkvS2NvbmZpZw0KPiAgY3JlYXRlIG1vZGUg
+MTAwNjQ0IGRyaXZlcnMvc29jL2tlZW1iYXkvTWFrZWZpbGUNCj4gIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBkcml2ZXJzL3NvYy9rZWVtYmF5L2tlZW1iYXktaW1yLmMNCj4gDQoNCkFkZGluZyBzb21lIG1v
+cmUgcGVvcGxlIChBcm5kIGFuZCBsaW51eC1hcm0ta2VybmVsIE1MKSBpbiBDQyBpbiB0aGUNCmhv
+cGUgb2YgZ2V0dGluZyBzb21lIGd1aWRhbmNlIG9uIGhvdyB0byBoYXZlIHRoaXMgcGF0Y2ggbWVy
+Z2VkLg0KDQpJJ20gYSBub3ZpY2UsIHNvIEkgd29uZGVyIGlmIHRoZSBsYWNrIG9mIGZlZWRiYWNr
+IGlzIGJlY2F1c2UgSSdtIGRvaW5nDQpzb21ldGhpbmcgd3Jvbmcgb3IgaWYgSSBqdXN0IHNlbnQg
+dGhlIGluaXRpYWwgZW1haWwgdG8gdGhlIHdyb25nIHBlb3BsZQ0KLyBNTC4NCg0KSSdkIGFwcHJl
+Y2lhdGUgYW55IGhlbHAgeW91IGNhbiBwcm92aWRlLg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSW50ZWwgUmVzZWFyY2ggYW5k
+IERldmVsb3BtZW50IElyZWxhbmQgTGltaXRlZApSZWdpc3RlcmVkIGluIElyZWxhbmQKUmVnaXN0
+ZXJlZCBPZmZpY2U6IENvbGxpbnN0b3duIEluZHVzdHJpYWwgUGFyaywgTGVpeGxpcCwgQ291bnR5
+IEtpbGRhcmUKUmVnaXN0ZXJlZCBOdW1iZXI6IDMwODI2MwoKClRoaXMgZS1tYWlsIGFuZCBhbnkg
+YXR0YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG1hdGVyaWFsIGZvciB0aGUgc29s
+ZQp1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVudChzKS4gQW55IHJldmlldyBvciBkaXN0cmli
+dXRpb24gYnkgb3RoZXJzIGlzCnN0cmljdGx5IHByb2hpYml0ZWQuIElmIHlvdSBhcmUgbm90IHRo
+ZSBpbnRlbmRlZCByZWNpcGllbnQsIHBsZWFzZSBjb250YWN0IHRoZQpzZW5kZXIgYW5kIGRlbGV0
+ZSBhbGwgY29waWVzLgo=
 
-I opted for a structure over bit fields because I thought it would be easier to
-read/understand.  Both approaches are valid and I have to particular preference
-other than, in my own view, a structure is easier to understand.  
-
-I'll wait a little to see what other people think.  If nobody objects the next
-revision will have bit fields.
-
-> 
-> Is it possible to split this patch in a different ways because difficult to understand as
-> rproc_sync_flags seems not used before 
-> [PATCH v3 09/14] remoteproc: Deal with synchronisation when crashing
-
-Certainly
-
-> 
-> Thanks
-> Arnaud  
-> 
-> >  /**
-> >   * struct rproc_ops - platform-specific device handlers
-> >   * @start:	power on the device and boot it
-> > @@ -459,6 +476,9 @@ struct rproc_dump_segment {
-> >   * @firmware: name of firmware file to be loaded
-> >   * @priv: private data which belongs to the platform-specific rproc module
-> >   * @ops: platform-specific start/stop rproc handlers
-> > + * @sync_ops: platform-specific start/stop rproc handlers when
-> > + *	      synchronising with a remote processor.
-> > + * @sync_flags: Determine the rproc_ops to choose in specific states.
-> >   * @dev: virtual device for refcounting and common remoteproc behavior
-> >   * @power: refcount of users who need this rproc powered up
-> >   * @state: state of the device
-> > @@ -482,6 +502,7 @@ struct rproc_dump_segment {
-> >   * @table_sz: size of @cached_table
-> >   * @has_iommu: flag to indicate if remote processor is behind an MMU
-> >   * @auto_boot: flag to indicate if remote processor should be auto-started
-> > + * @sync_with_rproc: true if currently synchronising with the rproc
-> >   * @dump_segments: list of segments in the firmware
-> >   * @nb_vdev: number of vdev currently handled by rproc
-> >   */
-> > @@ -492,6 +513,8 @@ struct rproc {
-> >  	const char *firmware;
-> >  	void *priv;
-> >  	struct rproc_ops *ops;
-> > +	struct rproc_ops *sync_ops;
-> > +	struct rproc_sync_flags sync_flags;
-> >  	struct device dev;
-> >  	atomic_t power;
-> >  	unsigned int state;
-> > @@ -515,6 +538,7 @@ struct rproc {
-> >  	size_t table_sz;
-> >  	bool has_iommu;
-> >  	bool auto_boot;
-> > +	bool sync_with_rproc;
-> >  	struct list_head dump_segments;
-> >  	int nb_vdev;
-> >  	u8 elf_class;
-> > 
