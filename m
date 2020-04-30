@@ -2,117 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5400F1BFC86
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DE71BFC27
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728958AbgD3OGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728525AbgD3Nwt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:52:49 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D643C035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:52:49 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x17so7006454wrt.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:52:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=5aejYnw4VSmDkXwBR2qWfZ3n0YMQYIyda8QYzwtLR08=;
-        b=Dhy5/MKRGKwJgbKg6r+CL+0eTzACExchjS2kNyKFdv45zKMI1cbGx1WFdRvlRs0/kH
-         bPtw+/LbTger2HYJHD23XA0C98R5P7qpTNMZWH6elsaWj2X4h8fjfPehyIiyIyZHfMZc
-         5JO4HLHCw5MIDDMV/pleyIhpSbllvNfQBpipFSuDyDhP7K4h8OqV3+4edD7JZQf3vpap
-         3eNF4DDnt63CTGJL/xGbJWqgWhC1hqwxLhXO/rlfdkdLZTubuky1OmGsEiWqSinmTYqF
-         TuxFhzGszj8s0vuK7XdyNDnveyKNkkwkiMrWWUAxU95bIC6f+v20chfi6XV3E1AnVawG
-         oOrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=5aejYnw4VSmDkXwBR2qWfZ3n0YMQYIyda8QYzwtLR08=;
-        b=totbv8C/i837Q7WYu6tpQ59SFFvtlACpXBbIuvnIosztBqGTcvQXz+AMCLngpmEqai
-         H8j0rcU7y5KypAtn8KJHlH7NzJqTU5Sh3uO8jW9icx4ePdcYv/5JD8OOnhOnxmgI45KV
-         9QyM5LOr88BLLFuaO4UfMPaNBKQOi5rzCzgfIDah6ERDuIOo3pycacD7Xd5+zcifATfG
-         Ric09a7wjFmJzm4zWolcsTnFC2l67CIPej+ABQdR7GzvZWW4wVRVAIR8/9Cq9+ZVfYdu
-         +IS7DaqXb33EO+vV/o+KZMgYuder0pOzGkY7UF/p46CJkn1DkCL2ak8Z2knIDvaV4By7
-         xirw==
-X-Gm-Message-State: AGi0Pua96vDWdiZgLcTtgUM+MM2u4IEE+Q3XnIxTEqWE3pKSXFnussUy
-        HpIeiwSxnT7gmqtZMTQWrWA=
-X-Google-Smtp-Source: APiQypJtsaGseH9cY5zGNMLSwHCPW5Gl7XbXjf3mWknT+/+Tk8NHTL4ckW3FCMnWsH/1EWwzuL93lw==
-X-Received: by 2002:a5d:6504:: with SMTP id x4mr4520153wru.164.1588254768408;
-        Thu, 30 Apr 2020 06:52:48 -0700 (PDT)
-Received: from akira-laptop.home ([2a01:cb19:8b28:7600:a0b9:1c6f:cfba:2b21])
-        by smtp.gmail.com with ESMTPSA id d7sm3868403wrn.78.2020.04.30.06.52.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 06:52:47 -0700 (PDT)
-Message-ID: <eae142f2141a6add4ab61f4d2d16fa590323ae3c.camel@gmail.com>
-Subject: Re: [PATCH v3 2/5] w1_therm: adding sysfs entry to check device
- power
-From:   Akira shimahara <akira215corp@gmail.com>
-To:     Greg KH <greg@kroah.com>
-Cc:     Evgeniy Polyakov <zbr@ioremap.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 30 Apr 2020 15:52:46 +0200
-In-Reply-To: <20200430112131.GA2945965@kroah.com>
-References: <20200429133204.140081-1-akira215corp@gmail.com>
-         <20200429134655.GB2132814@kroah.com> <330221588173223@mail.yandex.ru>
-         <2602d65b534fc0e9d6738d3c670bdb07fd287e5b.camel@gmail.com>
-         <20200430112131.GA2945965@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.1 (3.36.1-1.fc32) 
+        id S1729177AbgD3ODx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:03:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728515AbgD3Nx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:53:28 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3A42208DB;
+        Thu, 30 Apr 2020 13:53:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588254807;
+        bh=LnRKxRdBBHi+iOcOHrjj/xv8agSdNOIgGHqJnMpCSqM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cqpsjiMlWPxWEwf81cteVVsuSaxLtq4nI79KZK4C7Ql2rohivZaahUXrARoRDWMmW
+         VMsYItGqS7kP7PY3orWNq8dygfvTUfO/weWboFu/wlVUF9W1x8JWD1Z0Usbrb5oFXW
+         shXaSZSKyJ7kXme7ERJLzwKY2wdAaxGyqQc40k3w=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, linux-iio@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 01/30] iio:ad7797: Use correct attribute_group
+Date:   Thu, 30 Apr 2020 09:52:56 -0400
+Message-Id: <20200430135325.20762-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le jeudi 30 avril 2020 à 13:21 +0200, Greg KH a écrit :
-> On Thu, Apr 30, 2020 at 12:34:03PM +0200, Akira shimahara wrote:
-> > Hello,
-> > 
-> > Le mercredi 29 avril 2020 à 18:18 +0300, Evgeniy Polyakov a écrit :
-> > > Hi
-> > > 
-> > > 
-> > > 
-> > > 29.04.2020, 16:47, "Greg KH" <greg@kroah.com>:
-> > > 
-> > > 
-> > > 
-> > > > >  +What: /sys/bus/w1/devices/.../w1_slave
-> > > > >  +Date: Apr 2020
-> > > > >  +Contact: Akira Shimahara <akira215corp@gmail.com>
-> > > > >  +Description:
-> > > > >  + (RW) return the temperature in 1/1000 degC.
-> > > > >  + *read*: return 2 lines with the hexa output data sent on
-> > > > > the
-> > > > >  + bus, return the CRC check and temperature in 1/1000 degC
-> > > > the w1_slave file returns a temperature???
-> > > > And sysfs is 1 value-per-file, not multiple lines.
-> > > 
-> > > It was 'content crc' previously, and probably a good idea would
-> > > be to
-> > > add just one file with 'content'
-> >  
-> > That's the purpose of the new sysfs entry 'temperature'. It only
-> > content temperature. As already mentionned we have to keep the
-> > w1_slave
-> > entry for compatibility purpose, all existing user application
-> > parse
-> > this file.
-> 
-> That's fine, but the document you wrote here says the file is called
-> "w1_slave", not "temperature" :)
-> 
+From: YueHaibing <yuehaibing@huawei.com>
 
-Yes because it is the patch 2/5. At this stage, I just create the
-sysfs-driver-w1_therm doc for the old w1_slave sysfs entry. The
-temperature  sysfs entry is introduce in v3 patch 3/5 (and v4 patch
-7/9)and the sysfs-driver-w1_therm is updated accordingly.
+[ Upstream commit 28535877ac5b2b84f0d394fd67a5ec71c0c48b10 ]
 
-Akira Shimahara
+It should use ad7797_attribute_group in ad7797_info,
+according to commit ("iio:ad7793: Add support for the ad7796 and ad7797").
+
+Scale is fixed for the ad7796 and not programmable, hence
+should not have the scale_available attribute.
+
+Fixes: fd1a8b912841 ("iio:ad7793: Add support for the ad7796 and ad7797")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/iio/adc/ad7793.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/iio/adc/ad7793.c b/drivers/iio/adc/ad7793.c
+index d4bbe5b533189..23a6e7baa396b 100644
+--- a/drivers/iio/adc/ad7793.c
++++ b/drivers/iio/adc/ad7793.c
+@@ -542,7 +542,7 @@ static const struct iio_info ad7797_info = {
+ 	.read_raw = &ad7793_read_raw,
+ 	.write_raw = &ad7793_write_raw,
+ 	.write_raw_get_fmt = &ad7793_write_raw_get_fmt,
+-	.attrs = &ad7793_attribute_group,
++	.attrs = &ad7797_attribute_group,
+ 	.validate_trigger = ad_sd_validate_trigger,
+ };
+ 
+-- 
+2.20.1
 
