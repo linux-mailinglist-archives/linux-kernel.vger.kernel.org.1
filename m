@@ -2,94 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149761BF21E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E2B1BF239
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727071AbgD3IG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 04:06:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727047AbgD3IGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 04:06:54 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34D4321D91;
-        Thu, 30 Apr 2020 08:06:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588234014;
-        bh=kuyAXwOATAjORZINANy8r5DfKQd5TrKERHhwlhi4j8U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QzprLcgqDEonxaFzNfeojY+EjQDpkCWBj/1wxHIYvSOMaECE5CZRQH7oL6s6aJbSJ
-         iEuNcNWSC+6q+z2UuQxnrNRupWKQBPWG2d15oax68vthdVOIS38AyRVelouP/a4ekg
-         YsYTXeLW3Q1RrACGnl7BY6O9bNvRXsDyKukmDDUM=
-Received: by pali.im (Postfix)
-        id 60A31A19; Thu, 30 Apr 2020 10:06:52 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Remi Pommarel <repk@triplefau.lt>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <marek.behun@nic.cz>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Xogium <contact@xogium.me>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Subject: [PATCH v4 12/12] arm64: dts: marvell: armada-37xx: Move PCIe max-link-speed property
-Date:   Thu, 30 Apr 2020 10:06:25 +0200
-Message-Id: <20200430080625.26070-13-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200430080625.26070-1-pali@kernel.org>
-References: <20200430080625.26070-1-pali@kernel.org>
+        id S1727122AbgD3IHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 04:07:31 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:60506 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726689AbgD3IH3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 04:07:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588234047;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gdooSi8kzNzLUkGPoOY/gSrvbDZtHNpV4mw4hssBG2A=;
+        b=enelnxuf1qDBkgUxyCCBHrWElzbCRCNajnzy6TfCAUWcu+ziqJPAGPeopocUp5/zgoEGLf
+        nxizfwRhgvvOM9B44APg+H7NZAqxbwAlGTjwJg0VTlzoYpmMGh/9kX0BOt7MKBu0jVeGEL
+        r7kaPV+rZpLkNIehT4K9H5tT04ogN0Y=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-8Qrzqyp4PWOcug6gblnwSw-1; Thu, 30 Apr 2020 04:07:26 -0400
+X-MC-Unique: 8Qrzqyp4PWOcug6gblnwSw-1
+Received: by mail-wr1-f70.google.com with SMTP id g7so3445061wrw.18
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 01:07:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gdooSi8kzNzLUkGPoOY/gSrvbDZtHNpV4mw4hssBG2A=;
+        b=HNgpZrGt0Tp1CRfNJ83zGEa2lN85ui4RKNYCJpiqccBOT0kpfAxb1SsY9pECOjHQi9
+         h+h0uw8Wetwu/Fi6rXw33D3mswvEOMYt4bhyRLrqxTgoATHLG+1SL9vr09AN3Uw/s+yb
+         7Z0g4DcfH1RQqZUapk1BoWE2lDU0CVJdKg7CKpKE3Bhk1pi7qiOFXGciisSpjdC9fQk/
+         DW8ZZ6KNxPKMx/wgyr9IafmyJ2B07sZltn7aGEp4swJg36maVMEwh4IR2xHPEB/Dl7US
+         um9+QZq8B+VjwLgfyysI4bxfuPov5KNV2CemygoHDP9uzhkhg1xhA70WfIemoOn9sWSI
+         srbQ==
+X-Gm-Message-State: AGi0PubZAxSzXP9b3hoM9I8UXzz5XuAYpxg92mtygD0MVs65z03ExfUs
+        ak4sNfIGJP8xkVxnF0nikVv/Bchk3KIAqDQW5b6nfNry6v7IljBYIgYJMjpzDQ6nwH9MnB6z2SU
+        wfau6mBXZRFGNxtXwqdswc1vx
+X-Received: by 2002:adf:ce02:: with SMTP id p2mr2401476wrn.173.1588234045016;
+        Thu, 30 Apr 2020 01:07:25 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKz0zSjPZHjTj9qCN/S+Ro7syFoCI8JaW4cIB/I7GfLhunASC+45CCYaKVkcAeN/Q5Me5j2UQ==
+X-Received: by 2002:adf:ce02:: with SMTP id p2mr2401448wrn.173.1588234044664;
+        Thu, 30 Apr 2020 01:07:24 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.179.209])
+        by smtp.gmail.com with ESMTPSA id i17sm11338242wml.23.2020.04.30.01.07.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 01:07:23 -0700 (PDT)
+Date:   Thu, 30 Apr 2020 10:07:21 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Michel Lespinasse <walken@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Oleg Nesterov <oleg@redhat.com>, irogers@google.com,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [RFC][PATCH 1/7] rbtree: Add generic add and find helpers
+Message-ID: <20200430080721.GC68379@localhost.localdomain>
+References: <20200429153258.563269446@infradead.org>
+ <20200429153549.006661686@infradead.org>
+ <20200430072847.GA68379@localhost.localdomain>
+ <CANN689FBczsBm=bYPfs1saUEeUq+oxLWnr8xfwtOstQkvJmwOA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANN689FBczsBm=bYPfs1saUEeUq+oxLWnr8xfwtOstQkvJmwOA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the max-link-speed property of the PCIe node from board specific
-device tree files to the generic armada-37xx.dtsi.
+On 30/04/20 00:51, Michel Lespinasse wrote:
+> On Thu, Apr 30, 2020 at 12:28 AM Juri Lelli <juri.lelli@redhat.com> wrote:
+> > > --- a/include/linux/rbtree.h
+> > > +++ b/include/linux/rbtree.h
+> > > @@ -141,12 +141,18 @@ static inline void rb_insert_color_cache
+> > >       rb_insert_color(node, &root->rb_root);
+> > >  }
+> > >
+> > > -static inline void rb_erase_cached(struct rb_node *node,
+> > > +static inline bool rb_erase_cached(struct rb_node *node,
+> > >                                  struct rb_root_cached *root)
+> > >  {
+> > > -     if (root->rb_leftmost == node)
+> > > +     bool leftmost = false;
+> > > +
+> > > +     if (root->rb_leftmost == node) {
+> > >               root->rb_leftmost = rb_next(node);
+> >
+> > Think we need
+> >
+> >  if (root->rb_leftmost)
+> >
+> > > +             leftmost = true;
+> >
+> > DEADLINE crashes w/o that.
+> 
+> I think Peter's code is correct; after removing the only node in an
+> rbtree rb_leftmost should be NULL.
 
-Armada 37xx supports only PCIe gen2 speed so max-link-speed property
-should be in the genetic armada-37xx.dtsi file.
+Indeed, I've only got the idea that Peter was thinking of using
+rb_erase_cached return value as an indication that new rb_leftmost is
+not NULL (and for example perform an update in DEADLINE earliest_dl).
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
----
- arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 1 -
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi           | 1 +
- 2 files changed, 1 insertion(+), 1 deletion(-)
+I also had the impression that DEADLINE is actually the only consumer of
+that return value and so we were able to define its semantic.
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-index 15c1cf5c5b69..4cc735899c5d 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-@@ -132,7 +132,6 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pcie_reset_pins &pcie_clkreq_pins>;
- 	status = "okay";
--	max-link-speed = <2>;
- 	reset-gpios = <&gpiosb 3 GPIO_ACTIVE_LOW>;
- 
- 	/* enabled by U-Boot if PCIe module is present */
-diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-index 5aaad64a793d..2bbc69b4dc99 100644
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -493,6 +493,7 @@
- 					<0 0 0 2 &pcie_intc 1>,
- 					<0 0 0 3 &pcie_intc 2>,
- 					<0 0 0 4 &pcie_intc 3>;
-+			max-link-speed = <2>;
- 			phys = <&comphy1 0>;
- 			pcie_intc: interrupt-controller {
- 				interrupt-controller;
--- 
-2.20.1
+> The issue appears to be in dequeue_pushable_dl_task unconditionally
+> dereferencing the pointer returned by rb_first_cached(), which may be
+> NULL. I'm not sure what the correct behavior is though, i.e. what
+> dl_rq->earliest_dl.next should be set to if the rbtree ends up empty.
+> Current code (before Peter's changes) preserves the existing
+> dl_rq->earliest_dl.next value in that case, which seems very weird to
+> me (and worthy of a comment if it's correct).
+
+But, yeah. Fixing things in DEADLINE code works for me as well. We could
+reset it to 0 (initial value), but I now actually wonder if places where
+that is consumed are actually OK. Different discussion, though. :-)
+
+Thanks,
+
+Juri
 
