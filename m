@@ -2,114 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E76C1BF502
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 12:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1B91BF4F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 12:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbgD3KKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 06:10:51 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:44108 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726832AbgD3KKr (ORCPT
+        id S1726689AbgD3KJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 06:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726127AbgD3KJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 06:10:47 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03U9wtDG044025;
-        Thu, 30 Apr 2020 10:10:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=5WhGcq90rfMBRqKV0qb10Jbha9Kn+6XcelGD6TM+nHo=;
- b=jS4fO3pEbYQLmfAdBVeBEL97Vc+ySSqlzQqty9S2gK4Qdz8bU7ZTqWDfUVa3E6VAWz2u
- gAaVpz338nMUpXb1U7PZZyIZTdk7e/Oxg6Dvx+V+HMxNk6f7MzXo2FpgmK4r3Eq97ZUS
- sAdGfnpdqauMl2mP07sUtXHGUYdJgn6/c2mjyvehF3bnu7RGgBW+wqEwGMHhoQIaBAlT
- gMJjaD4siEPLuOlBuUcukGyuCGCueXATJ4YogQ4+QjDXEHEyIz5JLWoFyEKEdOAHZdjX
- zfg5c2wo8YJl1jzSih6Pm78hhwF5Fh0LnC9XDOPi6ZUdwV7IJHHVQ/PNfCHeHG721Po8 tA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 30nucgajn0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 10:10:39 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UA6XDC113255;
-        Thu, 30 Apr 2020 10:08:39 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 30qtkvykbc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 10:08:38 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03UA8bQi028097;
-        Thu, 30 Apr 2020 10:08:37 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Apr 2020 10:08:36 +0000
-Date:   Thu, 30 Apr 2020 13:08:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Rylan Dmello <mail@rylan.coffee>, devel@driverdev.osuosl.org,
-        GR-Linux-NIC-Dev@marvell.com, Manish Chopra <manishc@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] staging: qlge: Remove gotos from
- ql_set_mac_addr_reg
-Message-ID: <20200430100828.GU2014@kadam>
-References: <cover.1588209862.git.mail@rylan.coffee>
- <a6f485e43eb55e8fdc64a7a346cb0419b55c3cb6.1588209862.git.mail@rylan.coffee>
- <20200430093835.GT2014@kadam>
- <4c91091b304fc5df2a2f292a1e0c78d80217bb94.camel@perches.com>
+        Thu, 30 Apr 2020 06:09:37 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2059FC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 03:09:37 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x18so6156578wrq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 03:09:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3HsF1h0CUb6ZIwcELngTnPN65Z4Ft11y60QYjfOQPSU=;
+        b=t49vxaG1b7bhYqwwP1Xm0juuQ8u6cz2ywZMFDoUn58CPRGTL2h/Tk/zBjDHjVRLXVp
+         jO2wMYW7Enn7qCu30n1KVwjb75wHPPJzFhof7n02PoCncR2G0XaTgo6q/7MMLEZ9ULM/
+         UlrrIIDZTlYsetBI3M3kAw8OTK2TgPshgcB4rt4MwtzWF+xu4dbFQ2ZipdEO3jBGd6cm
+         WyZg1ETxIpLVq8cOsi3QmfQwnKzAeAE5iuLXc9KHQ0x4/jhJ7vKGzQFV01eI6zl3pgap
+         7vl5niDqPu9+txexT3qjlNcQGlPx2m5PaVOacNJiDbaNTUYtTk0jI4gmiqbtcs2iYer4
+         kStw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3HsF1h0CUb6ZIwcELngTnPN65Z4Ft11y60QYjfOQPSU=;
+        b=mTDv9qX+bdr7bqoYGZtEiG6NQgAXUSskxSeL35ll7L09lJdtIzJlf9vkolKHo02OMn
+         SZhezeFb2FPT8jhRPAZUlfBX7t+UoSpBvkX+UOr3u4fhTD9JWKCcHufW4ac19EKk97oV
+         HVxdzPrWstrBTrIp/foDNR0m3boDiV2UV5vt63Z1HIe35qd6r8x5HYXV5lCZbc0JSP4Q
+         qslF+cAA6K9f+c7fcvlkyf7Ze1hGz/LGm2Hqe9AcjpnnjZBBMC9gPq89d3gO8chsgcSB
+         VuXNWIxd52QNYF6sIm2pPFGTpHhpIu1Bt3D5d5vDs+5SDAWpOAy0t70W+nKvt9lRt742
+         F1SA==
+X-Gm-Message-State: AGi0PuaxJN+ZzAM0SDXt9FkWjT87fre8gbS4PP8wjGOsnqUucnLcEnhB
+        zEUsNuzqjJankf3fuLtPUyizM4U9N5w=
+X-Google-Smtp-Source: APiQypJbuuShSqw4bzCv+LyaadxHKFAIJlNvA7pIqJkPxlKX/BmHox0nLe6xR2oR++6NgjMfaeXu3w==
+X-Received: by 2002:a5d:438c:: with SMTP id i12mr3239337wrq.14.1588241375856;
+        Thu, 30 Apr 2020 03:09:35 -0700 (PDT)
+Received: from dell ([2.31.163.63])
+        by smtp.gmail.com with ESMTPSA id g186sm11889535wme.7.2020.04.30.03.09.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 03:09:35 -0700 (PDT)
+Date:   Thu, 30 Apr 2020 11:09:33 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dilip Kota <eswara.kota@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, kishon@ti.com, vkoul@kernel.org,
+        devicetree@vger.kernel.org, arnd@arndb.de, robh@kernel.org,
+        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
+        chuanhua.lei@linux.intel.com, qi-ming.wu@intel.com,
+        yixin.zhu@intel.com
+Subject: Re: [PATCH v7 0/3] Add Intel ComboPhy driver
+Message-ID: <20200430100933.GA298816@dell>
+References: <cover.1588230494.git.eswara.kota@linux.intel.com>
+ <20200430082503.GA3118@dell>
+ <cbeeda50-1ac8-7b4e-2df5-94049b1cf6b9@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4c91091b304fc5df2a2f292a1e0c78d80217bb94.camel@perches.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 mlxlogscore=991 adultscore=0 malwarescore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004300081
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300081
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cbeeda50-1ac8-7b4e-2df5-94049b1cf6b9@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 03:03:07AM -0700, Joe Perches wrote:
-> On Thu, 2020-04-30 at 12:38 +0300, Dan Carpenter wrote:
-> > On Wed, Apr 29, 2020 at 09:33:04PM -0400, Rylan Dmello wrote:
-> > > As suggested by Joe Perches, this patch removes the 'exit' label
-> > > from the ql_set_mac_addr_reg function and replaces the goto
-> > > statements with break statements.
-> []
-> > > diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
-> []
-> > > @@ -336,22 +336,20 @@ static int ql_set_mac_addr_reg(struct ql_adapter *qdev, u8 *addr, u32 type,
-> > >  
-> > >  		status = ql_wait_reg_rdy(qdev, MAC_ADDR_IDX, MAC_ADDR_MW, 0);
-> > >  		if (status)
-> > > -			goto exit;
-> > > +			break;
+On Thu, 30 Apr 2020, Dilip Kota wrote:
+
+> 
+> On 4/30/2020 4:25 PM, Lee Jones wrote:
+> > On Thu, 30 Apr 2020, Dilip Kota wrote:
 > > 
-> > Just "return status".  A direct return is immediately clear but with a
-> > break statement then you have to look down a bit and then scroll back.
-> 
-> To me, 6 of 1, half dozen of other as
-> all the case breaks could be returns.
-> 
-> So either form is fine with me.
-> 
-> The old form was poor through.
+> > > This patch series adds Intel ComboPhy driver, respective yaml schemas
+> > > 
+> > > Changes on v7:
+> > >    As per System control driver maintainer's inputs remove
+> > >      fwnode_to_regmap() definition and use device_node_get_regmap()
+> > > Changes on v6:
+> > >    Rebase patches on the latest maintainer's branch
+> > >    https://git.kernel.org/pub/scm/linux/kernel/git/kishon/linux-phy.git/?h=phy-for-5.7
+> > > Dilip Kota (3):
+> > >    dt-bindings: phy: Add PHY_TYPE_XPCS definition
+> > >    dt-bindings: phy: Add YAML schemas for Intel ComboPhy
+> > >    phy: intel: Add driver support for ComboPhy
+> > > 
+> > >   .../devicetree/bindings/phy/intel,combo-phy.yaml   | 101 ++++
+> > >   drivers/phy/intel/Kconfig                          |  14 +
+> > >   drivers/phy/intel/Makefile                         |   1 +
+> > >   drivers/phy/intel/phy-intel-combo.c                | 627 +++++++++++++++++++++
+> > >   include/dt-bindings/phy/phy.h                      |   1 +
+> > Why have you sent this to me?
 
-With a goto exit or a break you have to scroll down to exactly the same
-place.  There is no difference at all.
+> The main reason for this patch series is removing fwnode_to_regmap() and
+> using device_node_get_regmap() compared to previous patch series.
+> This has been done as per your review comments.
 
-Anyway, I'm actually fine with this patch series as-is.  It improves
-a whole lot of stuff and doesn't cause any problems which weren't
-there to begin with.
+I see.  Yes, dropping fwnode_to_regmap() was the right thing to do.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> To keep you updated that changes are done as per your review comments, sent
+> to you along with PHY maintainers.
 
-regards,
-dan carpenter
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
