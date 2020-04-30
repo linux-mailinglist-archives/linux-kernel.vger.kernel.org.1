@@ -2,79 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C37E1BF9D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7FF1BF9E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727064AbgD3Nqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
+        id S1727091AbgD3NsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726577AbgD3Nqm (ORCPT
+        with ESMTP id S1726577AbgD3NsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:46:42 -0400
+        Thu, 30 Apr 2020 09:48:02 -0400
 Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266D9C035494;
-        Thu, 30 Apr 2020 06:46:42 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id j3so6532125ljg.8;
-        Thu, 30 Apr 2020 06:46:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E78C035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:48:01 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id y4so6540220ljn.7
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:48:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gByK1hVIoGmpbKq/K564ocm27XhEcO16Cceo/NwgrXg=;
-        b=RuGyAmUMGaCUk0BaYmZOq039/HBT1+/vOb0guZKk8HpZYto9QSJffpDhsVwkdud7Rm
-         pUUtLVEGx3P6Vg19koHRdOiI1KFd9zskQU/Ja+uRB0bRu/JUPst4nE90l05qOmTjjArs
-         ma+mjM6PQvSKUqlstS3FpFkmzG1L6ZBRtIfBONiZznrmG/uowg51AwpEkkoC9dA0RFim
-         Mu4u9bcH0crF0vtG8uebFuyanz5vV3oH3bZTW84a3K6Rcr6ILGzedjQdzK+gr2TAQTPJ
-         fyxI6R7fNjaJo5WGQFN7aTH0pdPjrrTpkZkejzKoyYvoSoKNJmcL4Sxfn2AXGua8P1Q3
-         t0oQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rk+RJgrEnm0xyLamKgsXkHtAQWa4YU0qEK0UgCt3wQ4=;
+        b=C6HUgoidZojkkiLsrkTF1SEFzplNlYHLmoNQSUpoLclLDMz5MA0+rBkIeOcm/ceBHH
+         DnBRLb07lXk5/YfyPJgFQkb3RB0xRDXZDYlSMRRUQofRf0nssRwzLZxr/Wy2OLR3shaf
+         JIURR5s86YDVXB50uceDwJ6TWx9ix1Wup0nrs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gByK1hVIoGmpbKq/K564ocm27XhEcO16Cceo/NwgrXg=;
-        b=S7HCaa8SOpugdwqQ048VH3xDUMUCJISC17H2lKVP4bZB5XH5aM5WYw4ughgp3aKDqc
-         kF7/60G43LPmiOYxLjeltIGcU5YlwPS26swQwNuTjUAAEgATHTAePcralIqpZouG+uDs
-         EyLH7VAseX6KO9cb9X2kIZuQeIWi9zs0F/Qwr8GNVDJH3h9gMI2cNKqQWmzfxC/JvRfu
-         t16CvyUjzUtF/KJB1Qzd+wFecL5RYi4quYvraEyO1X9hVziAwjCO06DlyNr6YOMjvC9O
-         03y8uhgyv7hSOVaE2Eky4XAMabnwqxqVstIOMnO5qDy7yEuuAORRNsbQsEIWUhJ+PLmh
-         oEvA==
-X-Gm-Message-State: AGi0PubAotYqeDeDv7WdeJOLSfLQBlUsyKxXZDJ0sR5HiDDvefhTc5ZR
-        6WYnrpO78/Jsx4giCgaUn9z1QJqU
-X-Google-Smtp-Source: APiQypJWUwti9EK5+POHi+IzMTQqhLMiVMThh/7KFAZyecKiVMN2XH+SR2cfskeyIJ5jXd1GhXWw/w==
-X-Received: by 2002:a2e:8296:: with SMTP id y22mr2418268ljg.254.1588254400429;
-        Thu, 30 Apr 2020 06:46:40 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id a13sm4411192ljm.25.2020.04.30.06.46.39
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rk+RJgrEnm0xyLamKgsXkHtAQWa4YU0qEK0UgCt3wQ4=;
+        b=sNtfRqt8pTBAdiBIAn6jljG5CbvWI9NPaEaDpPxAIC9lmej3IOAfA1CsIFCsf87KU8
+         Rrd8lIMOUBJl3TOCKozdONivQzOpip4N7jTJYpbJrRB3rsg/JsfFwy7fJPiZ1VhzQQQH
+         S/QfPCWTxVs0H7DIM8rqtEZxKGt+VPq6rhE7rqiQtp6U6TbSed9+F0YM6Fd0F6UvL7a4
+         I4/ymOlcURI2kQYleHqABcl/6Qxr20oMPKg5h0xy8yzlsr1n13dtzZmba3y5sb4ALe+r
+         TRjEvQa6u6nu/F/P64MPDpqmuTJgl3UtfPpiJzP1+/6hFHTCahveahYlohRxRful+jeW
+         ogjg==
+X-Gm-Message-State: AGi0PuZvbXl89vxPohk0WMLERE619buzt8lj5n3432GyNuR5QM91Rr2D
+        NNmUNtdC9AW90YDCMPvEo+RUo21KWlc=
+X-Google-Smtp-Source: APiQypIr+4rfUw8hppRJdMEoCkzozEh2i3f8VCMYbXrYiXmxUi4WUxXTHELMyP+dZDRaWeCjVE52HQ==
+X-Received: by 2002:a2e:b248:: with SMTP id n8mr2199974ljm.207.1588254479134;
+        Thu, 30 Apr 2020 06:47:59 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id 1sm4557122ljw.91.2020.04.30.06.47.58
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 06:46:39 -0700 (PDT)
-Subject: Re: [RFC PATCH v11 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
-Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1588197606-32124-1-git-send-email-skomatineni@nvidia.com>
- <1588197606-32124-7-git-send-email-skomatineni@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ab3db20e-ac9d-0271-802f-dfd99899fc66@gmail.com>
-Date:   Thu, 30 Apr 2020 16:46:38 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 30 Apr 2020 06:47:58 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id w20so6594278ljj.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:47:58 -0700 (PDT)
+X-Received: by 2002:a2e:814e:: with SMTP id t14mr2243347ljg.204.1588254477655;
+ Thu, 30 Apr 2020 06:47:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1588197606-32124-7-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
+ <20200428190836.GC29960@redhat.com> <CAHk-=wi03QRcUR1DfbEr+Pw-DAMENzY-FuRcGawtj9p597=p2w@mail.gmail.com>
+ <CAG48ez03ABTa-KbCtFHqB1hOT7dgAM96c3kiw-e80B+utSEwYw@mail.gmail.com>
+ <CAHk-=wjTLnMuZmBO2foeHhsLAoUTpUi7oBVJ67F4XKB+tdEDbQ@mail.gmail.com>
+ <CAG48ez3EQOvdbzu9aO-cEAJwF_=fJzn1Cg0LMs3ruc=5r1ie5w@mail.gmail.com>
+ <CAHk-=whTgFbjGTP=CqMWs_LOkY7bWvLQGYKwKx86amdbMovAkw@mail.gmail.com>
+ <CAG48ez2-Nu2ALN6VEUZL-prtR_Kk8QYBHcnvuh0aU2e4zf37RA@mail.gmail.com>
+ <CAHk-=wh=G47oD2F1CgOrvGFbEPh2ddMKLV4_wV_bs6S=98aZ5A@mail.gmail.com>
+ <AM6PR03MB5170A6AA240D2E8F5E88B911E4AD0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wguiKq8yf11WJjgSL4ADKZ5sLe_Qbd7vHEqAkTvZJ+d+Q@mail.gmail.com>
+ <CAHk-=wjUZLybZBJgOtD2gng=FS7USrbQQ1-tn5M+UP5DbCWdzw@mail.gmail.com>
+ <CAG48ez0FL3i4eGFYryOwG2nnS+JigfKYAVSV9ogVHjmjOWzsrA@mail.gmail.com>
+ <CAHk-=wgcvn1_1kCkyourNCKeH+KrzSMRvc-ai_NLU4RGZT_XBg@mail.gmail.com> <AM6PR03MB5170CCB8D9D41904066DAFD5E4AA0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB5170CCB8D9D41904066DAFD5E4AA0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 30 Apr 2020 06:47:41 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiOdXfMa35bwCNfCNSsAndO-hFmsSNRWEEDziA1iDYGjg@mail.gmail.com>
+Message-ID: <CAHk-=wiOdXfMa35bwCNfCNSsAndO-hFmsSNRWEEDziA1iDYGjg@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc:     Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-30.04.2020 01:00, Sowjanya Komatineni пишет:
-> +/* -------------------------------------------------------------------- */
-> +
+On Thu, Apr 30, 2020 at 6:39 AM Bernd Edlinger
+<bernd.edlinger@hotmail.de> wrote:
+>
+> Excuse me, but what in my /proc folder there is no attr/something
+> is there a procfs equivalent of pthread_attach ?
+>
+> What exactly is "attr/something" ?
 
-Such comments should be unnecessary.
+Anything that uses that proc_pid_attr_write().
+
+Which you should have realized, since you wrote the patch that changed
+that function to return -EAGAIN.
+
+That's
+
+    /proc/<pid>/attr/{current,exec,fscreate,keycreate,prev,sockcreate}
+
+and some smack files.
+
+Your patch definitely made them return -EINVAL if they happen in that
+execve() black hole, instead of waiting for the execve() to just
+complete and then just work.
+
+Dropping a lock really is broken. It';s broken even if you then set a
+flag saying "I dropped the lock, now you can't use it".
+
+                  Linus
