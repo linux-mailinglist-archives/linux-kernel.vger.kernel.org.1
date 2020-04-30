@@ -2,86 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72911BFA6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97811BFC33
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728710AbgD3NxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:53:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728515AbgD3Nws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:52:48 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E13120774;
-        Thu, 30 Apr 2020 13:52:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588254768;
-        bh=Nh7gMGFbFDqRDU6KRwGLRELYcn+AP104P30Mc9SedG4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RvO9UvuDGMcoyF0KS2Kom5+J5febnliTci1KT8OAnVY5caoIIONKQ0I8EphE9Rcv2
-         X0jea446UspxsN0agHJzlz1Ybmg/OhsICgNhT2hvs7SahFZOv0MByVB3Q89QguOD/P
-         IWnszwdCMI7MrmDfCiyk/EiQNcapCzs5QensRxqk=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 26/57] wimax/i2400m: Fix potential urb refcnt leak
-Date:   Thu, 30 Apr 2020 09:51:47 -0400
-Message-Id: <20200430135218.20372-26-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200430135218.20372-1-sashal@kernel.org>
-References: <20200430135218.20372-1-sashal@kernel.org>
+        id S1728682AbgD3NxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:53:18 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:26111 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728361AbgD3Nwo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:52:44 -0400
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 03UDqPGZ032676;
+        Thu, 30 Apr 2020 22:52:25 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 03UDqPGZ032676
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1588254745;
+        bh=9ltjNZ8e4vrC7cBbZIWrYc76JCI/RhItJRQkfkK98AE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=R86dw4zvy/H/eesDgAJVTUk+Cc3K8OruRnFRIPPbqkF2uwBuu/wY+B+V4UjIWmLhN
+         BQFyZu3SzNgetMRDO4PIKfSKHbINrQWqRo3hNRs2MLPN3rFP519zMJ87heGncNA4o1
+         2BZbh2kq+XE44vTGGI1CD1F6ahvvJCL6kUuMqp+Jv8kSWC8WhxEr2FbhhY0x1eiR1y
+         Y6U1XLNZterOCcl9k5ZEgrBhTS8u/6Jq5QwrOkH8xwVn6qglGcc/Q1r25LRylvhKTB
+         z7HetM64+oxIMuFXv+euF7Q++/ouE4u8b274o+t26rFsiXltG005+jS/GUfObL905B
+         ywdYixoSH1poA==
+X-Nifty-SrcIP: [209.85.217.41]
+Received: by mail-vs1-f41.google.com with SMTP id e10so1273031vsp.12;
+        Thu, 30 Apr 2020 06:52:25 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYjcm1oxK+UPt+X8xsEf1IA2SyrBwikPi9VuZyICQ5e/0Tj+Jul
+        GA8SSD4zn6GoyHT40duoD+pdBPPjESdRfGYrbLE=
+X-Google-Smtp-Source: APiQypIy9756CPvWD3ER84r/D6PmKnL8yZmjLBInKlAqsGjqLulysxLmU7+IFcPqJmEmIY/ijlBjOyjjXpQdbOHVeZc=
+X-Received: by 2002:a05:6102:240f:: with SMTP id j15mr3325751vsi.155.1588254744247;
+ Thu, 30 Apr 2020 06:52:24 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200430131715.32c1a1f6@coco.lan>
+In-Reply-To: <20200430131715.32c1a1f6@coco.lan>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 30 Apr 2020 22:51:48 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASmVoZequqaj6MTimeZ0MG0fk7Wb5-9haFhgG03kDBpxg@mail.gmail.com>
+Message-ID: <CAK7LNASmVoZequqaj6MTimeZ0MG0fk7Wb5-9haFhgG03kDBpxg@mail.gmail.com>
+Subject: Re: bug: Kbuild seems to require "make prepare-objtool" in order to
+ use (some) new config vars
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Hi Mauro,
 
-[ Upstream commit 7717cbec172c3554d470023b4020d5781961187e ]
 
-i2400mu_bus_bm_wait_for_ack() invokes usb_get_urb(), which increases the
-refcount of the "notif_urb".
+On Thu, Apr 30, 2020 at 8:17 PM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Hi Masahiro,
+>
+> Not sure if this was already reported (or eventually fixed) upstream.
+>
+> While doing a Kconfig reorg on media, I noticed a few weird things,
+> requiring me to call, on a few situations, "make modules_prepare"
+> manually after some changes.
+>
+> I'm now working on a patchset to yet to be merged upstream aiming to
+> resurrect a driver from staging. It is currently on this tree
+> (with is based at the media development tree, on the top of 5.7-rc1):
+>
+>         https://git.linuxtv.org/mchehab/experimental.git/log/?h=atomisp_v2
+>
+> There, I was able to identify a misbehavior that it is probably
+> what forced me to need calling "make modules_prepare".
+>
+> The atomisp driver is on a very bad shape. Among its problems, it has a
+> set of header definitions that should be different for two different
+> variants of the supported devices. In order to be able to compile for
+> either one of the variants, I added a new config var:
+> CONFIG_VIDEO_ATOMISP_ISP2401.
+>
+> The problem is that calling just
+>
+>         ./scripts/config -e CONFIG_VIDEO_ATOMISP_ISP2401
+>
+> or
+>         ./scripts/config -d CONFIG_VIDEO_ATOMISP_ISP2401
 
-When i2400mu_bus_bm_wait_for_ack() returns, local variable "notif_urb"
-becomes invalid, so the refcount should be decreased to keep refcount
-balanced.
 
-The issue happens in all paths of i2400mu_bus_bm_wait_for_ack(), which
-forget to decrease the refcnt increased by usb_get_urb(), causing a
-refcnt leak.
+scripts/config does not take the dependency into consideration
+at all.
 
-Fix this issue by calling usb_put_urb() before the
-i2400mu_bus_bm_wait_for_ack() returns.
+You need to enable/disable other options that it depends on.
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wimax/i2400m/usb-fw.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wimax/i2400m/usb-fw.c b/drivers/net/wimax/i2400m/usb-fw.c
-index 529ebca1e9e13..1f7709d24f352 100644
---- a/drivers/net/wimax/i2400m/usb-fw.c
-+++ b/drivers/net/wimax/i2400m/usb-fw.c
-@@ -354,6 +354,7 @@ out:
- 		usb_autopm_put_interface(i2400mu->usb_iface);
- 	d_fnend(8, dev, "(i2400m %p ack %p size %zu) = %ld\n",
- 		i2400m, ack, ack_size, (long) result);
-+	usb_put_urb(&notif_urb);
- 	return result;
- 
- error_exceeded:
+./scripts/config -e STAGING -e STAGING_MEDIA -e MEDIA_SUPPORT -e
+MEDIA_CONTROLLER -e INTEL_ATOMISP -e VIDEOBUF_VMALLOC -e VIDEO_ATOMISP
+-d MEDIA_SUPPORT_FILTER -e VIDEO_DEV -e VIDEO_V4L2 -e
+VIDEO_ATOMISP_ISP2401
+
+allows me to enable VIDEO_ATOMISP_ISP2401.
+
+
+It is painful to debug such complicated dependency graph, though.
+
+
+>
+> is not enough anymore for the build to actually use the new config value.
+>
+> It just keeps silently using the old config value.
+>
+> I double-checked it by adding this macro at the Makefile:
+>
+>         $(info ************ ISP2401: $(CONFIG_VIDEO_ATOMISP_ISP2401) ************)
+>
+> The Makefile doesn't see the change, except if I explicitly call
+> "make modules_prepare" or "make prepare-objtool".
+>
+> Even calling "make oldconfig" doesn't make it use the new CONFIG_*
+
+
+I do not know.
+
+I cannot look into it without detailed steps to reproduce it.
+
+
+
 -- 
-2.20.1
-
+Best Regards
+Masahiro Yamada
