@@ -2,131 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D5D1BFB58
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422CF1BFB56
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:59:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729243AbgD3N70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:59:26 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:55590 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727054AbgD3N7Y (ORCPT
+        id S1729088AbgD3N7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:59:13 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:37628 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729166AbgD3N7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:59:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1588255164; x=1619791164;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=DRh1x2n81OczNTTRQAJJlAM7ugTuGaMZPhGlmvFnHbw=;
-  b=c07CBkLtiIU2OfE3LScMjZ3eI6jhuez7Tz25qRy6HHHZXph7t7WI1HZ/
-   AEOqbdw4ygaM1+CvbvGiPSlwGP+m1yPmUtuXJlLLF9XIOw8JS0R6EvMDD
-   HrhOOfWvPydSQz5qO+zgrFVRTL+2cF/aOlkH8gO0MOfDnP2f0mIksHX1D
-   w=;
-IronPort-SDR: /FFZ+ApaAE/IKWimclexhRpcmPXvkaZDR8Vq5fFEV86qB1lpyOf3+bFv904y7YWE7F0jcfFqQL
- JOF35abba7cA==
-X-IronPort-AV: E=Sophos;i="5.73,336,1583193600"; 
-   d="scan'208";a="32126486"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 30 Apr 2020 13:59:22 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-a7fdc47a.us-west-2.amazon.com (Postfix) with ESMTPS id 3F69AC5C2E;
-        Thu, 30 Apr 2020 13:59:22 +0000 (UTC)
-Received: from EX13D16EUB001.ant.amazon.com (10.43.166.28) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 30 Apr 2020 13:59:21 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.160.65) by
- EX13D16EUB001.ant.amazon.com (10.43.166.28) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 30 Apr 2020 13:59:14 +0000
-Subject: Re: [PATCH v1 00/15] Add support for Nitro Enclaves
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Alexander Graf <graf@amazon.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>, Balbir Singh <sblbir@amazon.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>
-References: <20200421184150.68011-1-andraprs@amazon.com>
- <18406322-dc58-9b59-3f94-88e6b638fe65@redhat.com>
- <ff65b1ed-a980-9ddc-ebae-996869e87308@amazon.com>
- <2a4a15c5-7adb-c574-d558-7540b95e2139@redhat.com>
- <1ee5958d-e13e-5175-faf7-a1074bd9846d@amazon.com>
- <f560aed3-a241-acbd-6d3b-d0c831234235@redhat.com>
- <80489572-72a1-dbe7-5306-60799711dae0@amazon.com>
- <0467ce02-92f3-8456-2727-c4905c98c307@redhat.com>
- <5f8de7da-9d5c-0115-04b5-9f08be0b34b0@amazon.com>
- <095e3e9d-c9e5-61d0-cdfc-2bb099f02932@redhat.com>
- <602565db-d9a6-149a-0e1a-fe9c14a90ce7@amazon.com>
- <fb0bfd95-4732-f3c6-4a59-7227cf50356c@redhat.com>
- <0a4c7a95-af86-270f-6770-0a283cec30df@amazon.com>
- <ad01ef35-9ee5-cf94-640c-4c26184946fa@redhat.com>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <60262862-8e82-608e-544d-8794ac36010e@amazon.com>
-Date:   Thu, 30 Apr 2020 16:59:03 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Thu, 30 Apr 2020 09:59:09 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E6246321;
+        Thu, 30 Apr 2020 15:59:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1588255146;
+        bh=GhmU8YETMOVIz97f3awqWGN1baPnypD27desAmZxvnM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m0nCqzOK1A1eW641+wJC9vh12s4/oo687inR7KwWAJ0KfqiiA33qRsLDxYcMx6ii6
+         nLBqmMij+oZZhbjtiWkUkW2pvzh+f/SZwuwlfKT6O9T4OqGBt/h223EPPZfeexVlUe
+         6Cgq6VmXqw2elz+zFvEkTwg+mGUak8lKvy5fWD4o=
+Date:   Thu, 30 Apr 2020 16:59:04 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Daniel Gomez <daniel@qtec.com>, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/3] media: v4l2-subdev.h: Add min and max enum
+Message-ID: <20200430135904.GI5856@pendragon.ideasonboard.com>
+References: <20200414200151.80089-1-daniel@qtec.com>
+ <20200414200151.80089-2-daniel@qtec.com>
+ <20200430094233.GE867@valkosipuli.retiisi.org.uk>
+ <20200430111014.GD5856@pendragon.ideasonboard.com>
+ <20200430133125.GL867@valkosipuli.retiisi.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <ad01ef35-9ee5-cf94-640c-4c26184946fa@redhat.com>
-Content-Language: en-US
-X-Originating-IP: [10.43.160.65]
-X-ClientProxiedBy: EX13D40UWC002.ant.amazon.com (10.43.162.191) To
- EX13D16EUB001.ant.amazon.com (10.43.166.28)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200430133125.GL867@valkosipuli.retiisi.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAyOS8wNC8yMDIwIDE2OjIwLCBQYW9sbyBCb256aW5pIHdyb3RlOgo+IE9uIDI4LzA0LzIw
-IDE3OjA3LCBBbGV4YW5kZXIgR3JhZiB3cm90ZToKPj4+IFNvIHdoeSBub3QganVzdCBzdGFydCBy
-dW5uaW5nIHRoZSBlbmNsYXZlIGF0IDB4ZmZmZmZmZjAgaW4gcmVhbCBtb2RlPwo+Pj4gWWVzIGV2
-ZXJ5Ym9keSBoYXRlcyBpdCwgYnV0IHRoYXQncyB3aGF0IE9TZXMgYXJlIHdyaXR0ZW4gYWdhaW5z
-dC4gIEluCj4+PiB0aGUgc2ltcGxlc3QgZXhhbXBsZSwgdGhlIHBhcmVudCBlbmNsYXZlIGNhbiBs
-b2FkIGJ6SW1hZ2UgYW5kIGluaXRyZCBhdAo+Pj4gMHgxMDAwMCBhbmQgcGxhY2UgZmlybXdhcmUg
-dGFibGVzIChNUFRhYmxlIGFuZCBETUkpIHNvbWV3aGVyZSBhdAo+Pj4gMHhmMDAwMDsgdGhlIGZp
-cm13YXJlIHdvdWxkIGp1c3QgYmUgYSBmZXcgbW92cyB0byBzZWdtZW50IHJlZ2lzdGVycwo+Pj4g
-Zm9sbG93ZWQgYnkgYSBsb25nIGptcC4KPj4gVGhlcmUgaXMgYSBiaXQgb2YgaW5pdGlhbCBhdHRl
-c3RhdGlvbiBmbG93IGluIHRoZSBlbmNsYXZlLCBzbyB0aGF0Cj4+IHlvdSBjYW4gYmUgc3VyZSB0
-aGF0IHRoZSBjb2RlIHRoYXQgaXMgcnVubmluZyBpcyBhY3R1YWxseSB3aGF0IHlvdSB3YW50ZWQg
-dG8KPj4gcnVuLgo+IENhbiB5b3UgZXhwbGFpbiB0aGlzLCBzaW5jZSBpdCdzIG5vdCBkb2N1bWVu
-dGVkPwoKSGFzaCB2YWx1ZXMgYXJlIGNvbXB1dGVkIGZvciB0aGUgZW50aXJlIGVuY2xhdmUgaW1h
-Z2UgKEVJRiksIHRoZSBrZXJuZWwgCmFuZCByYW1kaXNrKHMpLiBUaGF0J3MgdXNlZCwgZm9yIGV4
-YW1wbGUsIHRvIGNoZWNrdGhhdCB0aGUgZW5jbGF2ZSBpbWFnZSAKdGhhdCBpcyBsb2FkZWQgaW4g
-dGhlIGVuY2xhdmUgVk0gaXMgdGhlIG9uZSB0aGF0IHdhcyBpbnRlbmRlZCB0byBiZSBydW4uCgpU
-aGVzZSBjcnlwdG8gbWVhc3VyZW1lbnRzIGFyZSBpbmNsdWRlZCBpbiBhIHNpZ25lZCBhdHRlc3Rh
-dGlvbiBkb2N1bWVudCAKZ2VuZXJhdGVkIGJ5IHRoZSBOaXRybyBIeXBlcnZpc29yIGFuZCBmdXJ0
-aGVyIHVzZWQgdG8gcHJvdmUgdGhlIGlkZW50aXR5IApvZiB0aGUgZW5jbGF2ZS4gS01TIGlzIGFu
-IGV4YW1wbGUgb2Ygc2VydmljZSB0aGF0IE5FIGlzIGludGVncmF0ZWQgd2l0aCAKYW5kIHRoYXQg
-Y2hlY2tzIHRoZSBhdHRlc3RhdGlvbiBkb2MuCgo+Cj4+ICDCoCB2bSA9IG5lX2NyZWF0ZSh2Y3B1
-cyA9IDQpCj4+ICDCoCBuZV9zZXRfbWVtb3J5KHZtLCBodmEsIGxlbikKPj4gIMKgIG5lX2xvYWRf
-aW1hZ2Uodm0sIGFkZHIsIGxlbikKPj4gIMKgIG5lX3N0YXJ0KHZtKQo+Pgo+PiBUaGF0IHdheSB3
-ZSB3b3VsZCBnZXQgdGhlIEVJRiBsb2FkaW5nIGludG8ga2VybmVsIHNwYWNlLiAiTE9BRF9JTUFH
-RSIKPj4gd291bGQgb25seSBiZSBhdmFpbGFibGUgaW4gdGhlIHRpbWUgd2luZG93IGJldHdlZW4g
-c2V0X21lbW9yeSBhbmQgc3RhcnQuCj4+IEl0IGJhc2ljYWxseSBpbXBsZW1lbnRzIGEgbWVtY3B5
-KCksIGJ1dCBpdCB3b3VsZCBjb21wbGV0ZWx5IGhpZGUgdGhlCj4+IGhpZGRlbiBzZW1hbnRpY3Mg
-b2Ygd2hlcmUgYW4gRUlGIGhhcyB0byBnbywgc28gZnV0dXJlIGRldmljZSB2ZXJzaW9ucwo+PiAo
-b3IgZXZlbiBvdGhlciBlbmNsYXZlIGltcGxlbWVudGVycykgY291bGQgY2hhbmdlIHRoZSBsb2dp
-Yy4KPj4KPj4gSSB0aGluayBpdCBhbHNvIG1ha2VzIHNlbnNlIHRvIGp1c3QgYWxsb2NhdGUgdGhv
-c2UgNCBpb2N0bHMgZnJvbQo+PiBzY3JhdGNoLiBQYW9sbywgd291bGQgeW91IHN0aWxsIHdhbnQg
-dG8gImRvbmF0ZSIgS1ZNIGlvY3RsIHNwYWNlIGluIHRoYXQKPj4gY2FzZT8KPiBTdXJlLCB0aGF0
-J3Mgbm90IGEgcHJvYmxlbS4KCk9rLCB0aGFua3MgZm9yIGNvbmZpcm1hdGlvbi4gSSd2ZSB1cGRh
-dGVkIHRoZSBpb2N0bCBudW1iZXIgZG9jdW1lbnRhdGlvbiAKdG8gcmVmbGVjdCB0aGUgaW9jdGwg
-c3BhY2UgdXBkYXRlLCB0YWtpbmcgaW50byBhY2NvdW50IHRoZSBwcmV2aW91cyAKZGlzY3Vzc2lv
-bjsgYW5kbm93LCBnaXZlbiBhbHNvIHRoZSBwcm9wb3NhbCBhYm92ZSBmcm9tIEFsZXgsIHRoZSAK
-ZGlzY3Vzc2lvbnMgd2UgY3VycmVudGx5IGhhdmUgYW5kIGNvbnNpZGVyaW5nIGZ1cnRoZXIgZWFz
-eSBleHRlbnNpYmlsaXR5IApvZiB0aGUgdXNlciBzcGFjZSBpbnRlcmZhY2UuCgpUaGFua3MsCkFu
-ZHJhCgo+PiBPdmVyYWxsLCB0aGUgYWJvdmUgc2hvdWxkIGFkZHJlc3MgbW9zdCBvZiB0aGUgY29u
-Y2VybnMgeW91IHJhaXNlZCBpbgo+PiB0aGlzIG1haWwsIHJpZ2h0PyBJdCBzdGlsbCByZXF1aXJl
-cyBjb3B5aW5nLCBidXQgYXQgbGVhc3Qgd2UgZG9uJ3QgaGF2ZQo+PiB0byBrZWVwIHRoZSBjb3B5
-IGluIGtlcm5lbCBzcGFjZS4KCgoKCkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgKFJvbWFuaWEp
-IFMuUi5MLiByZWdpc3RlcmVkIG9mZmljZTogMjdBIFNmLiBMYXphciBTdHJlZXQsIFVCQzUsIGZs
-b29yIDIsIElhc2ksIElhc2kgQ291bnR5LCA3MDAwNDUsIFJvbWFuaWEuIFJlZ2lzdGVyZWQgaW4g
-Um9tYW5pYS4gUmVnaXN0cmF0aW9uIG51bWJlciBKMjIvMjYyMS8yMDA1Lgo=
+Hi Sakari,
 
+On Thu, Apr 30, 2020 at 04:31:25PM +0300, Sakari Ailus wrote:
+> On Thu, Apr 30, 2020 at 02:10:14PM +0300, Laurent Pinchart wrote:
+> > On Thu, Apr 30, 2020 at 12:42:33PM +0300, Sakari Ailus wrote:
+> >> On Tue, Apr 14, 2020 at 10:01:49PM +0200, Daniel Gomez wrote:
+> >>> Add min and max structures to the v4l2-subdev callback in order to allow
+> >>> the subdev to return a range of valid frame intervals.
+> >>> 
+> >>> This would operate similar to the struct v4l2_subdev_frame_size_enum and
+> >>> its max and min values for the width and the height. In this case, the
+> >>> possibility to return a frame interval range is added to the v4l2-subdev level
+> >>> whenever the v4l2 device operates in step-wise or continuous mode.
+> >> 
+> >> The current API only allows providing a list of enumerated values. That is
+> >> limiting indeed, especially on register list based sensor drivers where
+> >> vertical blanking is configurable.
+> >> 
+> >> I guess this could be extended to cover what V4L2, more or less. If we tell
+> >> it's a range, is it assumed to be contiguous? We don't have try operation
+> >> for the frame interval, but I guess set is good enough. The fraction is
+> >> probably best for TV standards but it's not what camera sensors natively
+> >> use. (But for a register list based driver, the established practice
+> >> remains to use frame interval.)
+> >> 
+> >> I'm also wondering the effect on existing user space; if a driver gives a
+> >> range, how will the existing programs work with such a driver?
+> >> 
+> >> I'd add an anonymous union with the interval field, the other field being
+> >> min_interval. Then the current applications would get the minimum interval
+> >> and still continue to function. I guess compilers are modern enough these
+> >> days we can have an anonymous union in the uAPI?
+> > 
+> > We can discuss all this, but given patch 3/3 in this series, I think
+> > this isn't the right API :-) The sensor driver should not expose the
+> > frame interval enumeration API. It should instead expose control of the
+> > frame rate through V4L2_CID_PIXEL_RATE, V4L2_CID_HBLANK and
+> > V4L2_CID_VBLANK.
+> > 
+> 
+> That would require also exposing the size of the pixel array (and the
+> analogue crop), in order to provide all the necessary information to
+> calculate the frame rate. No objections there; this is a new driver.
+> 
+> There are however existing drivers that implement s_frame_interval subdev
+> ioctl; those might benefit from this one. Or would you implement the pixel
+> rate based control as well, and effectively deprecate the s_frame_interval
+> on those?
+
+That's what I would recommend, yes. I would only keep
+.s_frame_interval() for sensors that expose that concept at the hardware
+level (for instance with an integrated ISP whose firmware exposes a
+frame interval or frame rate control).
+
+> >>> Signed-off-by: Daniel Gomez <daniel@qtec.com>
+> >>> ---
+> >>>  include/uapi/linux/v4l2-subdev.h | 6 +++++-
+> >>>  1 file changed, 5 insertions(+), 1 deletion(-)
+> >>> 
+> >>> diff --git a/include/uapi/linux/v4l2-subdev.h b/include/uapi/linux/v4l2-subdev.h
+> >>> index 03970ce30741..ee15393c58cd 100644
+> >>> --- a/include/uapi/linux/v4l2-subdev.h
+> >>> +++ b/include/uapi/linux/v4l2-subdev.h
+> >>> @@ -117,6 +117,8 @@ struct v4l2_subdev_frame_interval {
+> >>>   * @code: format code (MEDIA_BUS_FMT_ definitions)
+> >>>   * @width: frame width in pixels
+> >>>   * @height: frame height in pixels
+> >>> + * @min_interval: min frame interval in seconds
+> >>> + * @max_interval: max frame interval in seconds
+> >>>   * @interval: frame interval in seconds
+> >>>   * @which: format type (from enum v4l2_subdev_format_whence)
+> >>>   */
+> >>> @@ -126,9 +128,11 @@ struct v4l2_subdev_frame_interval_enum {
+> >>>  	__u32 code;
+> >>>  	__u32 width;
+> >>>  	__u32 height;
+> >>> +	struct v4l2_fract min_interval;
+> >>> +	struct v4l2_fract max_interval;
+> >> 
+> >> This changes the memory layout of the struct and breaks the ABI. Any new
+> >> fields in the struct may only replace reserved fields while the rest must
+> >> stay unchanged.
+> >> 
+> >>>  	struct v4l2_fract interval;
+> >>>  	__u32 which;
+> >>> -	__u32 reserved[8];
+> >>> +	__u32 reserved[4];
+> >>>  };
+> >>>  
+> >>>  /**
+
+-- 
+Regards,
+
+Laurent Pinchart
