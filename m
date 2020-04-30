@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D58E1C08BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C7E1C08C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgD3VGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38866 "EHLO
+        id S1726849AbgD3VHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725844AbgD3VGv (ORCPT
+        by vger.kernel.org with ESMTP id S1726672AbgD3VHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:06:51 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C59C035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:06:51 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id i16so2741613ils.12
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:06:51 -0700 (PDT)
+        Thu, 30 Apr 2020 17:07:16 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0813CC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:07:16 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id i3so3005338ioo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:07:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QfUVtdj2F/fUAjv2U4BdoeRjEgTMxb4ii0TSEo/+We0=;
-        b=FvHHuuiQI8npHgXbXL8v3Yik5g7NxamtUJKqEL/O2NQ2DZ9xYEIFSoWSwATpa4dgQ/
-         0AupyVzg6eZxbxj+sEbV0PP/KA7wO6mmCUMp5v8+sWVCRlR/lE60hTqVqw0c78EMGA/9
-         epbUoxIyWkqT5sXcwZ4LF0HAvWhKx7QCrmDdw=
+        bh=Sug+1qFvLm9bBsUlrglxQ4tTQcLaikV8mPVMLsh8uLY=;
+        b=Ne593S7X5trWOPqO1qPWNi0KwWh5yBz5v88HMHGG+31V7OZdsYWhmcfbVE9k9WRC8n
+         BNMa3AJ0J7z270KGDkOigSrsb2bDpu1xJnhzCvCBaqmdUFb4uVRjRXAOX3W9ssRFZoYX
+         Xmkcs7/CpNOFwAPsNgQAgzrMjAajHTVQmfUnM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QfUVtdj2F/fUAjv2U4BdoeRjEgTMxb4ii0TSEo/+We0=;
-        b=tsy0Q1SCT/SrmrrYeUt2dP+05nlrqlFL5RdP7ZssjnRYwq50S1xbdbH/s/PTFK/HNk
-         0g0Sa3ueSRRPbuNOMFOcx3UC8Gnz7RwoL827JpKQmUeWAzH3Xp//mdchrWcL2Jgtspvy
-         RRrFcwx8kkA3xVcPNmpX0557oqOGDu/ctAvbhvpH+1uvXhWlP0hhMeiR9twXtCf9c6HJ
-         IMUjkE/hRYyra0I6yjHJar4BpepRIXCv11Q4SkcZiOp/oiMaora9AJWYrQw6U5vCPUHu
-         2i3glVurbC2ai6VOpSTNnt8LsPAnpxOyH0RC5d7I8GioAO221bjXiubT3uvQrLZaGnVV
-         PwLw==
-X-Gm-Message-State: AGi0PuZEwH3huUx4Rdm4K4e8soYgDQ1eu7YVOJk3fsBEC2UoA4keY6Zv
-        W8yoZdrJgIB8csqxamyTe8FQiKQOsDg+mbH6GT/WEg==
-X-Google-Smtp-Source: APiQypJPZBLCpu8IRopT7fL4sZVO3LZlJrYhDEoeaxPINypveOXPRYCeSesyMQI9c+I0AnsTtn17tcco7LwGtVDUv9Q=
-X-Received: by 2002:a05:6e02:544:: with SMTP id i4mr328895ils.145.1588280810198;
- Thu, 30 Apr 2020 14:06:50 -0700 (PDT)
+        bh=Sug+1qFvLm9bBsUlrglxQ4tTQcLaikV8mPVMLsh8uLY=;
+        b=tfE6PV/GDoSdFJwrTna8ZCc1PxqbWk0wjokL/4dGwpv+9+jiL2MqRoZPfPTJKFKWx8
+         0mK13i9VLkBw0fl+oUKB9nMJZbu0W+QVav9pG24l9aQYEzTS8kmjbCZ4EzpNTd+veKfB
+         PTKWg1bTaOh1N+mF6nU9PlPMVssq8ZHzs5G1+JuSOgS59P7r8H4OSdVHu1cyT2IkXiTY
+         wFCe61mMNprN6rOv8kIWQpeiHYRGHmDewzJCIWJUPXRA6L7zk5pMr9U9J+odRf03lw6y
+         vvtIGCvLmuucf/stCNjPJbbYzO9amnTEBmTIoTCke4fnGj6at6mjUp/EOaMGpdWXD0sr
+         cP2w==
+X-Gm-Message-State: AGi0PuY+u5QaGbw01zYAQHzZ2s1GAaAilwU6JziLyxPdG0CIB59qhP9a
+        lzbYO5cFBZ1Vw+y3CXgZuVFEWkxGzqCfwcN+q/zzmA==
+X-Google-Smtp-Source: APiQypIUYW0Mrds8qUcN+0758REk6FqjSkFcLuj0GQrdewrRk6IqHKKcgqDBXjpd135grsi+DVZKhcRLXAOodO1wErI=
+X-Received: by 2002:a02:cd01:: with SMTP id g1mr280816jaq.131.1588280835004;
+ Thu, 30 Apr 2020 14:07:15 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200423000230.82750-1-gwendal@chromium.org> <20200423000230.82750-3-gwendal@chromium.org>
- <alpine.DEB.2.21.2004230920330.25067@vps.pmeerw.net>
-In-Reply-To: <alpine.DEB.2.21.2004230920330.25067@vps.pmeerw.net>
+ <20200425183101.531b49be@archlinux>
+In-Reply-To: <20200425183101.531b49be@archlinux>
 From:   Gwendal Grignou <gwendal@chromium.org>
-Date:   Thu, 30 Apr 2020 14:06:37 -0700
-Message-ID: <CAPUE2usJRks5NarA1GdvbT06ygWbWTmU7BRvVpWXhDHhT6EXmg@mail.gmail.com>
+Date:   Thu, 30 Apr 2020 14:07:03 -0700
+Message-ID: <CAPUE2us=1=RvJ1aQNYQSU1rnMkwjVfM_EdS7QpO8u0NPPtgsfg@mail.gmail.com>
 Subject: Re: [PATCH 2/2] iio: cros_ec_light: Add support for RGB sensor
-To:     Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+To:     Jonathan Cameron <jic23@kernel.org>
 Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Jonathan Cameron <jic23@kernel.org>,
         Benson Leung <bleung@chromium.org>,
         Guenter Roeck <groeck@chromium.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
@@ -62,12 +61,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 23, 2020 at 12:50 AM Peter Meerwald-Stadler
-<pmeerw@pmeerw.net> wrote:
+On Sat, Apr 25, 2020 at 10:31 AM Jonathan Cameron <jic23@kernel.org> wrote:
 >
-> On Wed, 22 Apr 2020, Gwendal Grignou wrote:
->
-> comments below
+> On Wed, 22 Apr 2020 17:02:30 -0700
+> Gwendal Grignou <gwendal@chromium.org> wrote:
 >
 > > Add support for color sensors behind EC like TCS3400.
 > > The color data can be presented in Red Green Blue color space (RGB) or
@@ -90,11 +87,34 @@ On Thu, Apr 23, 2020 at 12:50 AM Peter Meerwald-Stadler
 > > libiio tools can be used to gather sensor information:
 > > iio_readdev -s 10 cros-ec-light \
 > > illuminance_clear illuminance_x illuminance_y illuminance_z
+> Illuminance is not defined for color channels.  It's units are LUX which
+> is only defined wrt to a model of the human eye's response to
+> 'brightness' (kind of).
+Looking at "Calculating Color Temperature and Illuminance " from AMS
+[https://ams.com/documents/20143/80162/TCS34xx_AN000517_1-00.pdf/1efe49f7-4f92-ba88-ca7c-5121691daff7]
+page 5, equation 2, the illuminance (Y) is a derived from the vector
+(X, Y, Z) with coefficient applied. Doesn't it mean
+in_illumincance_[X,Y,Z,R,G,B,clear ...]_raw have all the same unit,
+lux?
+
+
+>
+> For RGB colour channels they are normally unit free so use intensity
+> instead.  For XYZ.. hmm not sure.
+>
+> As Peter pointed out we need some doc updates to cover this use
+> of x, y and z.
+Will also add definition for  in_illuminance_[red|green|blue]_raw.
+
+>
 > >
 > > To match IIO ABI, the clear illuminance channel has been renamed
 > > in_illuminance_clear_raw from in_illuminance_input.
 > >
 > > Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+> A few additional comments inline.
+>
+> J
 > > ---
 > >  drivers/iio/light/cros_ec_light_prox.c        | 470 +++++++++++++++---
 > >  drivers/platform/chrome/cros_ec_sensorhub.c   |   3 +
@@ -134,10 +154,6 @@ On Thu, Apr 23, 2020 at 12:50 AM Peter Meerwald-Stadler
 > > +#define CROS_EC_LIGHT_CLEAR_OR_PROXIMITY_MASK 1
 > > +#define CROS_EC_LIGHT_XYZ_SPACE_MASK (0x7 << 1)
 > > +#define CROS_EC_LIGHT_RGB_SPACE_MASK (0x7 << 4)
->
-> could use GENMASK()
-Done [in v2]
->
 > > +
 > > +/*
 > > + * We always represent one entry for light or proximity, and all
@@ -151,35 +167,20 @@ Done [in v2]
 > > +     CROS_EC_LIGHT_XYZ_SPACE_MASK | CROS_EC_LIGHT_CLEAR_OR_PROXIMITY_MASK,
 > > +     CROS_EC_LIGHT_RGB_SPACE_MASK,
 > > +     CROS_EC_LIGHT_RGB_SPACE_MASK | CROS_EC_LIGHT_CLEAR_OR_PROXIMITY_MASK,
->
-> so it's not possible to read all 7 channels in one go?
-> maybe that's not really needed
-Yes, it is not possible: the interface between the embedded controller
-(EC) and the host has been defined to send up to 3 values at a time,
-so for the color sensor, we use the vector to either send the
-measurement in RGB or XYZ space.
->
 > > +     0,
 > > +};
 > > +
 > > +#define CROS_EC_IDX_TO_CHAN(_idx) (((_idx) - 1) % CROS_EC_SENSOR_MAX_AXIS)
->
-> may CROS_EC_LIGHT_IDX_TO_CHAN for consistency
->
-> MAX_AXIS sounds more like something for an accelerometer (which also has 3
-> components by incident)
-It is what the embedded controller can do.
->
-> X, Y, Z is not documented (sysfs-bus-iio) to can represent color
-> components
-Will do.
->
 > >
 > >  /* State data for ec_sensors iio driver. */
 > >  struct cros_ec_light_prox_state {
 > >       /* Shared by all sensors */
 > >       struct cros_ec_sensors_core_state core;
 > > +     struct iio_chan_spec *channel;
+>
+> Plural?
+Removed, it was unused (iio_dev->channels is).
+>
 > >
 > > -     struct iio_chan_spec channels[CROS_EC_LIGHT_PROX_MAX_CHANNELS];
 > > +     /* Calibration information for the color channels. */
@@ -192,14 +193,14 @@ Will do.
 > > +             BIT(IIO_CHAN_INFO_SAMP_FREQ);
 > > +     channel->info_mask_shared_by_all_available =
 > > +             BIT(IIO_CHAN_INFO_SAMP_FREQ);
->
-> why is this needed, _SAMP_FREQ twice?
-..._by_all adds attribute sampling_frequency,
-..._by_all_available adds attribute sampling_frequency_available.
->
 > > +     channel->scan_type.realbits = CROS_EC_SENSOR_BITS;
 > > +     channel->scan_type.storagebits = CROS_EC_SENSOR_BITS;
 > > +     channel->scan_type.shift = 0;
+>
+> You zero the whole thing first, and this is the 'obvious' default
+> so you can skip setting shift.
+Done
+>
 > > +     channel->scan_index = 0;
 > > +     channel->ext_info = cros_ec_sensors_ext_info;
 > > +     channel->scan_type.sign = 'u';
@@ -290,6 +291,11 @@ Will do.
 > > -     s64 val64;
 > > -     int ret;
 > > +     int i, ret = IIO_VAL_INT;
+>
+> I'd rather you left this set explicitly next to where the values
+> come from.  Makes it easier to know it is correct.
+Done
+>
 > >       int idx = chan->scan_index;
 > > +     s64 val64;
 > >
@@ -470,6 +476,12 @@ Will do.
 > > +     unsigned long scan_mask;
 > > +
 > > +     if (!st || !indio_dev->active_scan_mask)
+>
+> How would you get here with st not being valid?
+> I'm fairly sure we don't sanity check iio_priv so if indio_dev
+> is valid you'll get a value that passes that check.
+Removed.
+>
 > > +             return 0;
 > > +
 > > +     scan_mask = *indio_dev->active_scan_mask;
@@ -663,6 +675,11 @@ Will do.
 > >               channel->info_mask_separate =
 > > -                     BIT(IIO_CHAN_INFO_PROCESSED) |
 > > +                     BIT(IIO_CHAN_INFO_RAW) |
+>
+> Didn't we just change the ABI by doing this?
+Yes, processed did not make sense, given illuminance is the raw value
+in lux, as specified in the iio abi documentation.
+>
 > >                       BIT(IIO_CHAN_INFO_CALIBBIAS) |
 > >                       BIT(IIO_CHAN_INFO_CALIBSCALE);
 > > +             channel->modified = 1;
@@ -771,9 +788,4 @@ Will do.
 > >       MOTIONSENSE_CHIP_MAX,
 > >  };
 > >
-> >
 >
-> --
->
-> Peter Meerwald-Stadler
-> Mobile: +43 664 24 44 418
