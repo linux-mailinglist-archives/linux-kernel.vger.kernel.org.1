@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032B21C0431
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 19:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746D61C0434
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 19:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgD3Rxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 13:53:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726285AbgD3Rxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 13:53:49 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726611AbgD3Ryn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 13:54:43 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:12442 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726285AbgD3Ryn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 13:54:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588269282; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=FKI51uuFqroC6K1jP+V4ymjqhhNecOgbOpgMi7HJAhY=; b=oDPqLSdYKYzyfBNCVZDTrAGPOOjcXC96E6UCqpP6adUIipvv2z338Kde9AEENLkfk5lQ0cb8
+ mCRoaHCK8pSKXj+8Wk53L6XCsQBBYAqlEDT8Y5bn82oSLaiM4eDJjAWNCoM9iOXykBvQk3wx
+ IixzAc5blEbL/c8rchXUi2vnYjk=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eab10be.7f84422c8228-smtp-out-n03;
+ Thu, 30 Apr 2020 17:54:06 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 25295C433BA; Thu, 30 Apr 2020 17:54:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C9B7F20836;
-        Thu, 30 Apr 2020 17:53:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588269228;
-        bh=4Xo8/1e7qaJmuQQltLTfB4vjVZPdGrjTFYT8oEPKWno=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TnzHy6V0ZH7paWMDm5JrkAHnp/DaOr3pZvhvI0vYr1381WdBJTPVhmepyRnBUiLba
-         o8thxzN3rCxTBpDBvcLfBQetKd7K7qWM3ZeU1eXq82INA7n961BxRiD4T+u1HNYwcZ
-         dpNJGdEFn0SyLaoq3c7EWRsANA/N5cp3TcBUyYss=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jUDNb-0088YE-6h; Thu, 30 Apr 2020 18:53:47 +0100
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 699F2C433CB;
+        Thu, 30 Apr 2020 17:54:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 699F2C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v3 0/6] Misc MHI fixes
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1588003153-13139-1-git-send-email-jhugo@codeaurora.org>
+ <20200430172047.GI9449@Mani-XPS-13-9360>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <d8563581-c5a9-c27a-e27a-a412daa44e55@codeaurora.org>
+Date:   Thu, 30 Apr 2020 11:54:04 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20200430172047.GI9449@Mani-XPS-13-9360>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 30 Apr 2020 18:53:47 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/15] Split off nVHE hyp code
-In-Reply-To: <20200430144831.59194-1-dbrazdil@google.com>
-References: <20200430144831.59194-1-dbrazdil@google.com>
-User-Agent: Roundcube Webmail/1.4.3
-Message-ID: <73efca41e7b955db4963ff182624107d@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, catalin.marinas@arm.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, will@kernel.org, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
-
-Thanks for posting this, looks quite interesting!
-
-On 2020-04-30 15:48, David Brazdil wrote:
-> Refactor files in arch/arm64/kvm/hyp to compile all code which runs in 
-> EL2
-> under nVHE into separate object files from the rest of KVM. This is 
-> done in
-> preparation for being able to unmap .hyp.text from EL1 but has other 
-> benefits,
-> notably:
->  * safe use of KASAN/UBSAN/GCOV instrumentation on VHE code,
->  * cleaner HVC API,
->  * no need for __hyp_text annotations.
+On 4/30/2020 11:20 AM, Manivannan Sadhasivam wrote:
+> Hi Jeff,
 > 
-> nVHE-specific code is moved to hyp/nvhe and compiled with custom build 
-> rules
-> similar to those used by EFI stub. Shared source files are compiled 
-> under both
-> VHE and nVHE build rules. Where a source file contained both VHE and 
-> nVHE code,
-> it is split into a shared header file and two C source files. This is 
-> done one
-> file per commit to make review easier.
+> On Mon, Apr 27, 2020 at 09:59:07AM -0600, Jeffrey Hugo wrote:
+>> A few (independent) fixes to the MHI bus for issues that I have come across
+>> while developing against the mainline code.
+>>
+>> v3:
+>> -reorder series to put changes which are ready, based on reviews, in front
+>> -change error from EIO to ETIMEDOUT when sync_power_up fails
+>> -add change to correct a conflict of channel device names
+>>
+>> v2:
+>> -fix syserr reset log message
+>> -fix power up error check code style
+>> -add change to remove pci assumptions for register accesses
+>> -add comment typo fix
+>>
+>>
+>> Jeffrey Hugo (6):
+>>    bus: mhi: core: Make sure to powerdown if mhi_sync_power_up fails
+>>    bus: mhi: core: Remove link_status() callback
+>>    bus: mhi: core: Offload register accesses to the controller
+>>    bus: mhi: core: Fix typo in comment
+>>    bus: mhi: core: Handle syserr during power_up
+>>    bus: mhi: core: Fix channel device name conflict
+>>
+> 
+> I'll queue all these patches except [5/6] to mhi-next branch and also send
+> them along with one of my fix to Greg to be included in upcoming RC.
 
-Do you have any figure on how much bigger the final kernel becomes once 
-this
-is applied? I guess I can find out pretty easily, but this is the kind 
-of thing
-that would be useful to make part of your cover letter.
+Sounds good.  We have a conclusion on the discussions for 5/6, so I'll 
+be respinning.  Probably in a week.
+> 
+> Thanks,
+> Mani
+> 
+>>   drivers/bus/mhi/core/init.c     |  7 +++----
+>>   drivers/bus/mhi/core/internal.h |  3 ---
+>>   drivers/bus/mhi/core/main.c     | 16 ++++------------
+>>   drivers/bus/mhi/core/pm.c       | 26 +++++++++++++++++++++++++-
+>>   include/linux/mhi.h             | 10 +++++++---
+>>   5 files changed, 39 insertions(+), 23 deletions(-)
+>>
+>> -- 
+>> Qualcomm Technologies, Inc. is a member of the
+>> Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-I'll try to review this shortly.
 
-Thanks,
-
-         M.
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
