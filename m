@@ -2,136 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394081C07CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69E11C07D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbgD3UXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 16:23:44 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40450 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726488AbgD3UXn (ORCPT
+        id S1727124AbgD3UZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 16:25:24 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42196 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726377AbgD3UZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:23:43 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UKILa9024351;
-        Thu, 30 Apr 2020 13:23:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=RCCXWDjVRlwpddUB4DfuXqXk65Tcvr+BQrgC6dU4n3Y=;
- b=DRHrq5ZeTcX9SCKsKRJolng7HMcc8vMJqdritvpAE4Iyvz36N8e2C6vBX+SixpmGqp/T
- 0N3h1E+H6RkdJDhIYEka6xP9tWeeMK9/ri1lkv1bRuxGqPw68D5elzVf5rlx5sLE+1Li
- XBoJFG8uUTvTo16YKWayP8uFfL5e8ZADTdE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 30q6y12c0q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 30 Apr 2020 13:23:34 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 30 Apr 2020 13:23:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HZKoI9RO4x3HaAg/NjVucBcwv4rIztWJunKbDaqeGOUocl9EKRImIyHHpBqHrlUSw7mOxzlhW6vkCOv8Y6297DV8iNYI8X1uXzoxBh+jpQ8L7aQKeMHVxYWabwEqb3ymFgpEmzbiC1Zlcx8wWauEVnyQLBnjMO44c+6sTnh1HMyMfiuGzZqbnQLKIv2gyEXF+Igb+GrB28cbXfCYr/qDVdvtlGnn046WK0X7M3QjM3/MrXei+2dBrJJ1GodlnqUXM19OVMiWKSH9J66xFX89iuh3jsd4FyU26/A7KG38C1GIn/z/LnS4NVTsfADT9E7PdZULZvjCuruCVhCIwD3uzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RCCXWDjVRlwpddUB4DfuXqXk65Tcvr+BQrgC6dU4n3Y=;
- b=PUmqHPpynU5iK7OmiY+5GFMYqUS/QtWvlkbwmGyMcyRileP8Ssnk77FcDdxR658xzCAtgi4zLUWFIIOqiIQPydbdU8W8azAvFcBlToCiavnYa/hk0pZBTXU76nT95Nk+93k3BPhGmtURiUIaASoUilK64Nrqo+e4oS7gxZ2PB5v43nCDjzNFGHr36MzhaSfF6Omm53FLjlWhUrVjcye8zziI1ZiYrU+1N1B/HMon6U5hRUxeNc7qI48rs3IIFiZFo+LpTJKPzjMECBn2BYLNkybYJouU0eJJV3+PGrcb6DKeKoMNcYigI+POUguP1tbpFhDRnXswFpWwvWyv50oXNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RCCXWDjVRlwpddUB4DfuXqXk65Tcvr+BQrgC6dU4n3Y=;
- b=el021WNRoYt4oU9x6jdtZmIKUSwZCUJRGK5G8Af46n9hsXTc8NmVj4bkx1KWtdFY/KUzx3afaR+pffbFNbrwFt+gjtdHQGfejdKVx57GIZA08hKLlx/EqxucCbTWPC8AqT8N4vNvyhwQTOnMGJS4etKzIdgQ3C3WOiXRT22cKIU=
-Authentication-Results: cmpxchg.org; dkim=none (message not signed)
- header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3461.namprd15.prod.outlook.com (2603:10b6:a03:109::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Thu, 30 Apr
- 2020 20:23:24 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.2937.028; Thu, 30 Apr 2020
- 20:23:23 +0000
-Date:   Thu, 30 Apr 2020 13:23:19 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-Message-ID: <20200430202319.GF339283@carbon.dhcp.thefacebook.com>
-References: <20200430182712.237526-1-shakeelb@google.com>
- <20200430190610.GD339283@carbon.dhcp.thefacebook.com>
- <20200430193049.GB2436@cmpxchg.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430193049.GB2436@cmpxchg.org>
-X-ClientProxiedBy: MWHPR14CA0008.namprd14.prod.outlook.com
- (2603:10b6:300:ae::18) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Thu, 30 Apr 2020 16:25:23 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UK3vod150475;
+        Thu, 30 Apr 2020 16:25:20 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 30r5cm8haw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Apr 2020 16:25:19 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03UKFMON004891;
+        Thu, 30 Apr 2020 20:25:18 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 30mcu5u9av-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Apr 2020 20:25:18 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03UKPGhf30671028
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 20:25:16 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 15DD7A4060;
+        Thu, 30 Apr 2020 20:25:16 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8C4B5A4054;
+        Thu, 30 Apr 2020 20:25:15 +0000 (GMT)
+Received: from oc5500677777.ibm.com (unknown [9.145.152.63])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 30 Apr 2020 20:25:15 +0000 (GMT)
+Subject: Re: [PATCH 0/1] net/mlx5: Call pci_disable_sriov() on remove
+To:     Saeed Mahameed <saeedm@mellanox.com>,
+        Roi Dayan <roid@mellanox.com>, Mark Bloch <markb@mellanox.com>,
+        Moshe Shemesh <moshe@mellanox.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>
+References: <20200430120308.92773-1-schnelle@linux.ibm.com>
+ <08d0c332f3cfa034dddc2e3321bf7649ab718701.camel@mellanox.com>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <a280da2d-b5d4-bfa2-34cd-19444612b71c@linux.ibm.com>
+Date:   Thu, 30 Apr 2020 22:25:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:f631) by MWHPR14CA0008.namprd14.prod.outlook.com (2603:10b6:300:ae::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 20:23:22 +0000
-X-Originating-IP: [2620:10d:c090:400::5:f631]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ac81bdc7-6756-458d-1aa7-08d7ed4454f8
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3461:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3461E7DB05EA67D8DEEF2479BEAA0@BYAPR15MB3461.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-Forefront-PRVS: 0389EDA07F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4J9UBUm7edt6Fbh9lykJ6258YEnEB0o6e1HqsPj6I4CEiqT17AVipQOYMciHMwzzxUl4Wk+psglXD3y7JLyuo/RgVFzpkVNO4lzMiG8q/2c5kE3eoHnwsVRjiXYWQ55OXUUpgtOEngS7aUgNe2mLFufoKVfn5pw5zMpnhbGuaGAXXAex8HeTJBXEmNapg3373XYYreuaS8dsUEVBs7jlFEXUcF3inmIL1UwvX660kWWdOO0SIQz87PfmdDO6gY/1VHRR6km+pIzNfbTauoc+vyE5POixv2I0jiHkjCiWv9hfSvBGjhctzfePA0FD9U2122pbjKo2wJZTAOPuncnbEAj/aUJpTQwfv+6DInmEfykFCHMhapZNGoLKgEkClReg97iemhkFz/zrGnEqA+9tFVEm2nTKV4D9O2r4oKW8lwQT4OfPh/mp8DoR0xlwA9Cg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39860400002)(346002)(396003)(136003)(366004)(33656002)(186003)(66556008)(66476007)(16526019)(66946007)(86362001)(2906002)(6506007)(6916009)(7696005)(52116002)(4326008)(1076003)(54906003)(478600001)(8936002)(6666004)(316002)(8676002)(55016002)(5660300002)(9686003)(4744005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: CAsk9/6Bqi+OXEEOmyZkkLINa7YEKwZ6hlhBMW9TEBoOqxaT+YZ1i86LNYikZ80TN1/xUOV4QwaMRiSLo+9fYZDp/FUkCwsMQXz9fHcOEhPkqI6rx840Tq7oSL2CRL7X1BCACs0gKuXWm7qjyMh3u36aL+j49Wb7B68EApx+eFhapcBHGAOubtIkd/WERzUTfFvQ+sQRK57NZ6S+0Jk0LvYbCtNoTddUj/ji5bIVh+DlBuHwJKffu74BC/o2eVj41CRndl7A4GfgzJrLnfLNkSRRkNFVV6bIrkvsCz/mqPAAeP54jLmSGkj7MhoqaxKR+MeT43VO97q7DhnyM2nZd8Xxhxeyye0+On959LQ8zyTGOB4GvBBrXkNciwzYqyBNJHpG+un0wXHfChghgoNb2lQYvVGsIvp3W1WjHM0e/4bRXDCKhtIfGI6csaRowK/7Qfv3UIQhncJ5VrKSd9+GEI+j5XhesxVHDSldfStE6TL+rh0/UWwtq4PbBWcljqjP3gHMoEIib/aSkWwurfbr3NRO6Hi9icW/0UHsNuPAfhKMan535Hj2EoZf1qpJlfZLo5l0th5p5LympuQr7nmt2g3oYZHFpEjf4Fkmtt8D6repe0NNQOgOH3G2GsUczj0F3z0WyVJjeAA9G4QQOG47dHZWc18nzKBELKh13jQMSDySI+q1pCPmw4SZSm7GFmEcQ53sPPEfnpJw5qAFH0nCarKEdYTyg52kn3kt831N39+6ZbHn7VFvQAx1FZvpx+apw3AKgRylA8q/+K517wgv77kjQOSuWTwq+NjLxQ8Tq0/MBOG2OzQtNOEZ2yMmRm0xBrYQiz9/i0HISmn4idaj0Q==
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac81bdc7-6756-458d-1aa7-08d7ed4454f8
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 20:23:23.7158
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PUPIB6mUrNwZHAnsSVjy7PyI4JuADWmuw+XbguQip8pAEPTdbHOKtqpFnRYdNjV/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3461
-X-OriginatorOrg: fb.com
+In-Reply-To: <08d0c332f3cfa034dddc2e3321bf7649ab718701.camel@mellanox.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-30_12:2020-04-30,2020-04-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 phishscore=0
- malwarescore=0 impostorscore=0 mlxlogscore=999 suspectscore=1
- lowpriorityscore=0 bulkscore=0 mlxscore=0 clxscore=1015 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300152
-X-FB-Internal: deliver
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300147
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 03:30:49PM -0400, Johannes Weiner wrote:
-> On Thu, Apr 30, 2020 at 12:06:10PM -0700, Roman Gushchin wrote:
-> > On Thu, Apr 30, 2020 at 11:27:12AM -0700, Shakeel Butt wrote:
-> > > @@ -6106,7 +6107,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
-> > >  		}
-> > >  
-> > >  		memcg_memory_event(memcg, MEMCG_OOM);
-> > > -		if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0))
-> > > +		if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0, true))
-> > 
-> > I wonder if we can handle it automatically from the oom_killer side?
-> > We can suppress warnings if oc->memcg is set and the cgroup scanning
-> > showed that there are no belonging processes?
-> 
-> Note that we do remote charging for certain consumers, where memory
-> gets charged from the outside of the cgroup.
-> 
-> We would want to know if these cause OOMs on an empty cgroup, rather
-> than force-charge the allocations quietly.
-> 
 
-Yeah, good point.
+
+On 4/30/20 6:13 PM, Saeed Mahameed wrote:
+> On Thu, 2020-04-30 at 14:03 +0200, Niklas Schnelle wrote:
+>> Hello,
+>>
+>> I'm currently working on improvements in PF-VF handling on s390. One
+>> thing that
+>> may be a bit special for us is that the s390 hotplug code supports
+>> shutting
+>> down a single PF of a multi-function device such as a ConnectX-5.
+>> During testing I found that the mlx5_core driver does not call
+>> pci_disable_sriov() in its remove handler which is called on the PF
+>> via
+>> pci_stop_and_remove_bus_device() on an orderly hot unplug.
+> 
+> Actually what happens if you call pci_disable_sriov() when there are
+> VFs attached to VMs ? 
+So the scenario I looked at was that the admin does a
+
+echo 0 > /sys/bus/pci/slots/<pfslot>/power
+
+for the relevant PFs (Note that on our systems
+PFs of a single card could be passed through to different LPARs).
+And then physically removes the adapter or moves the PF(s) to a different LPAR.
+In this scenario the orderly shutdown would hopefully help QEMU/libvirt to
+trigger whatever orderly shutdown it can do but that testing is still on my todo list.
+I assumed that because the pci_disable_sriov() call is basically the only
+thing the example shows for the remove case it would trigger the intended actions
+in the common code including for vfio-pci, udev events and so on.
+> 
+>>
+>> Following is a patch to fix this, I want to point out however that
+>> I'm not
+>> entirely sure about the effect of clear_vfs that distinguishes
+>> mlx5_sriov_detach() from mlx5_sriov_disable() only that the former is
+>> called
+>> from the remove handler and it doesn't call pci_disable_sriov().
+>> That however is required according to Documentation/PCI/pci-iov-
+>> howto.rst
+>>
+> 
+> The Doc doesn't say "required", so the question is, is it really
+> required ? 
+Yes but as I wrote above it is about the only thing the example shows
+for the removal procedure so there is definitely a clash between
+what the mlx5 driver does and what the documentation suggests.
+So I think even though I agree my patch definitely wasn't ready, this
+is surely worth thinking about for a second or two.
+> 
+> because the way i see it, it is the admin responsibility to clear out
+> vfs before shutting down the PF driver.
+> 
+> as explained in the patch review, mlx5 vf driver is resilient of such
+> behavior and once the device is back online the vf driver quickly
+> recovers, so it is actually a feature and not a bug :)
+> 
+> There are many reasons why the admin would want to do this:
+> 
+> 1) Fast Firmware upgrade
+> 2) Fast Hyper-visor upgrade/refresh
+> 3) PF debugging 
+> 
+> So you can quickly reset the PF driver without the need to wait for all
+> VFs or manually detach-attach them.
+So the behavior I was seeing that triggered looking into this is that the VF drivers
+weren't just spewing error messages. After hitting some relatively small timeout
+the VFs would then start to disappear (maybe 20 seconds or so) and in my testing
+I didn't manage to reactivate them.
+That might have been due to some error on my part though and I didn't try very
+hard because I did not assume that this should work. So thank you for
+pointing out that something like that is actually a scenario you have in mind.
+Now that I know that I'll definitely look into this a bit more.
+
+So thank you for your input I'm still not sure what the right approach for the
+shutdown really is but this is certainly interesting.
+> 
+> 
+>> I've only tested this on top of my currently still internal PF-VF
+>> rework so
+>> I might also be totally missing something here in that case excuse my
+>> ignorance.
+>>
+>> Best regards,
+>> Niklas Schnelle
+>>
+>> Niklas Schnelle (1):
+>>   net/mlx5: Call pci_disable_sriov() on remove
+>>
+>>  drivers/net/ethernet/mellanox/mlx5/core/sriov.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
