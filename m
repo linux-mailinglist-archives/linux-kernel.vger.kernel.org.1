@@ -2,157 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0BF1C0934
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D5D1C0960
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbgD3V1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:27:36 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63866 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726654AbgD3V1f (ORCPT
+        id S1728009AbgD3Vda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:33:30 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:45197 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726909AbgD3Vd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:27:35 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UL2uad075500;
-        Thu, 30 Apr 2020 17:27:35 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30mhqb9uyv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Apr 2020 17:27:35 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03UL35mS076513;
-        Thu, 30 Apr 2020 17:27:34 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 30mhqb9uyc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Apr 2020 17:27:34 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03ULOWTx005915;
-        Thu, 30 Apr 2020 21:27:33 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma02wdc.us.ibm.com with ESMTP id 30mcu70mty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Apr 2020 21:27:33 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03ULRWJQ18940256
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 21:27:32 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1D86278060;
-        Thu, 30 Apr 2020 21:27:32 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8096F7805C;
-        Thu, 30 Apr 2020 21:27:31 +0000 (GMT)
-Received: from localhost.localdomain.com (unknown [9.85.180.191])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 30 Apr 2020 21:27:31 +0000 (GMT)
-From:   Jared Rossi <jrossi@linux.ibm.com>
-To:     Eric Farman <farman@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/1] vfio-ccw: Enable transparent CCW IPL from DASD
-Date:   Thu, 30 Apr 2020 17:29:59 -0400
-Message-Id: <20200430212959.13070-2-jrossi@linux.ibm.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200430212959.13070-1-jrossi@linux.ibm.com>
-References: <20200430212959.13070-1-jrossi@linux.ibm.com>
+        Thu, 30 Apr 2020 17:33:29 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MmlCY-1imznH36yU-00jrwf; Thu, 30 Apr 2020 23:31:17 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        James Smart <james.smart@broadcom.com>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        Bob Copeland <me@bobcopeland.com>, Jan Kara <jack@suse.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        linux-crypto@vger.kernel.org, linux-media@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-scsi@vger.kernel.org,
+        linux-karma-devel@lists.sourceforge.net, bpf@vger.kernel.org,
+        linux-usb@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org
+Subject: [PATCH 00/15] gcc-10 warning fixes
+Date:   Thu, 30 Apr 2020 23:30:42 +0200
+Message-Id: <20200430213101.135134-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-30_12:2020-04-30,2020-04-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 phishscore=0 clxscore=1015 adultscore=0 suspectscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300156
+X-Provags-ID: V03:K1:d0r1T0atJ0fP6VC0lsoU2Nb50uVHm7+C7HFBKxo5Oh9FT7cjF4F
+ 56LFacsuF89qNSNIhAKt16YSLWAlWssvN8MtPe8NN45LaPwc/cCelzxDkHr4+0tFL6+Sa9G
+ a57V34rwqixwafD6sE/njElSMiK55+3n3WBVw4f5PpMdpEy2CNFI8yBkDaQox92MxOq478P
+ ATheht8WQuHpTQRLL5ZEQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qtjOffXScL0=:Yde/YTTIyDLV71HcVFV/g8
+ 5aCgJ4X4xNzxI3sDnVHzb+4x1iuaUyj/FDU6axm1cC5dNjOHg+8xAyvhGoryNPJJFdXCQ9E8u
+ /vBjaVgpQi6NvTWJp+z0wFIoWkqjlRGR2wCLBCvG5ImhRZo6H4jl5uiqg/TUea1BRC5KOAUug
+ NLH3+1SoQ96QZaVVmYPbql6nsHgFb4uZYdjCp8JTVI2L30Rp4+0Uw3uwnSsZJuLBGqAnsFaeh
+ k7gAnZ02jIaJcsH2V+TwomCcLBG4OX9P3yetdeZWPtDSychl7RC+/gMGRpPt2beTcJXb7Sr4/
+ wgqf3CYR6/N2vUz2MhXS9Sl+HtdkF3gKvKsNTp2mw9draDW6IVxA+E16ianBs3s2/Jj86Cp4d
+ ehuoj5P2KJYrz+9tZ+et7SchBa5i/iGqThgNGHpUmVXaAI8nZHkjO7rEce0Ctm42WVr0HLTd4
+ o1jt4fwG8tpZvziYdVKKK9x4WQWsYAq2xx0LoedsVxg8abX+ql1c1UVSezkM6FJvLsBYSOqLC
+ Wl2wmpwXK3rQEhxxX4Sh0+p7vR68f1MiX8v4GGJjHzQvAfDgNp//3vXmnFa9OfQMY1+J5Oamt
+ RKC21TWUo81CDfLbGJUutjWh36LNJfa+N4p4bSAvqbx+J8urAAoBgP4lL7BwvnjawPWVT3bQ7
+ nx782MGIljH805ldEh/1deDsyPsEUVqES3Wx9pJakt2RNm+5lKUyzj8TLjsuKM9bM+MwiaVGP
+ y3sVYv2Jji3wkCZuDo3KR4124HQta8GSeSFOnIEeWuWxcaFbOJf9loaB0IyqLaH/bv1s0C1At
+ ctEvneGxLk11FkM6cOL//qiBQ4ws+UB1hR0Fmjp4sHdhGtlvK4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the explicit prefetch check when using vfio-ccw devices.
-This check is not needed in practice as all Linux channel programs
-are intended to use prefetch.
+Here are a couple of fixes for warnings introduced with gcc-10.
+If you wish to reproduce these, you can find the compiler I used
+at [1].
 
-It is expected that all ORBs issued by Linux will request prefetch.
-Although non-prefetching ORBs are not rejected, they will prefetch
-nonetheless. A warning is issued up to once per 5 seconds when a
-forced prefetch occurs.
+If you like the fixes, please apply them directly into maintainer
+trees. I expect that we will also need them to be backported
+into stable kernels later.
 
-A non-prefetch ORB does not necessarily result in an error, however
-frequent encounters with non-prefetch ORBs indicates that channel
-programs are being executed in a way that is inconsistent with what
-the guest is requesting. While there are currently no known errors
-caused by forced prefetch, it is possible in theory that forced
-prefetch could result in an error if applied to a channel program
-that is dependent on non-prefetch.
+I disabled -Wrestrict on gcc in my local test tree, but with
+the patches from this series and the ones I have already sent,
+I see no gcc-10 specific warnings in linux-next when doing
+many randconfig builds for arm/arm64/x86.
 
-Signed-off-by: Jared Rossi <jrossi@linux.ibm.com>
----
- Documentation/s390/vfio-ccw.rst |  4 ++++
- drivers/s390/cio/vfio_ccw_cp.c  | 16 +++++++---------
- 2 files changed, 11 insertions(+), 9 deletions(-)
+      Arnd
 
-diff --git a/Documentation/s390/vfio-ccw.rst b/Documentation/s390/vfio-ccw.rst
-index fca9c4f5bd9c..8f71071f4403 100644
---- a/Documentation/s390/vfio-ccw.rst
-+++ b/Documentation/s390/vfio-ccw.rst
-@@ -335,6 +335,10 @@ device.
- The current code allows the guest to start channel programs via
- START SUBCHANNEL, and to issue HALT SUBCHANNEL and CLEAR SUBCHANNEL.
- 
-+Currently all channel programs are prefetched, regardless of the
-+p-bit setting in the ORB.  As a result, self modifying channel
-+programs are not supported (IPL is handled as a special case).
-+
- vfio-ccw supports classic (command mode) channel I/O only. Transport
- mode (HPF) is not supported.
- 
-diff --git a/drivers/s390/cio/vfio_ccw_cp.c b/drivers/s390/cio/vfio_ccw_cp.c
-index 3645d1720c4b..48802e9827b6 100644
---- a/drivers/s390/cio/vfio_ccw_cp.c
-+++ b/drivers/s390/cio/vfio_ccw_cp.c
-@@ -8,6 +8,7 @@
-  *            Xiao Feng Ren <renxiaof@linux.vnet.ibm.com>
-  */
- 
-+#include <linux/ratelimit.h>
- #include <linux/mm.h>
- #include <linux/slab.h>
- #include <linux/iommu.h>
-@@ -625,23 +626,20 @@ static int ccwchain_fetch_one(struct ccwchain *chain,
-  * the target channel program from @orb->cmd.iova to the new ccwchain(s).
-  *
-  * Limitations:
-- * 1. Supports only prefetch enabled mode.
-- * 2. Supports idal(c64) ccw chaining.
-- * 3. Supports 4k idaw.
-+ * 1. Supports idal(c64) ccw chaining.
-+ * 2. Supports 4k idaw.
-  *
-  * Returns:
-  *   %0 on success and a negative error value on failure.
-  */
- int cp_init(struct channel_program *cp, struct device *mdev, union orb *orb)
- {
-+	static DEFINE_RATELIMIT_STATE(ratelimit_state, 5 * HZ, 1);
- 	int ret;
- 
--	/*
--	 * XXX:
--	 * Only support prefetch enable mode now.
--	 */
--	if (!orb->cmd.pfch)
--		return -EOPNOTSUPP;
-+	/* All Linux channel programs are expected to support prefetching */
-+	if (!orb->cmd.pfch && __ratelimit(&ratelimit_state))
-+		printk(KERN_WARNING "vfio_ccw_cp: prefetch will be forced\n");
- 
- 	INIT_LIST_HEAD(&cp->ccwchain_list);
- 	memcpy(&cp->orb, orb, sizeof(*orb));
+Arnd Bergmann (15):
+  crypto - Avoid free() namespace collision
+  iwlwifi: mvm: fix gcc-10 zero-length-bounds warning
+  mwifiex: avoid -Wstringop-overflow warning
+  ath10k: fix gcc-10 zero-length-bounds warnings
+  bpf: avoid gcc-10 stringop-overflow warning
+  netfilter: conntrack: avoid gcc-10 zero-length-bounds warning
+  drop_monitor: work around gcc-10 stringop-overflow warning
+  usb: ehci: avoid gcc-10 zero-length-bounds warning
+  udf: avoid gcc-10 zero-length-bounds warnings
+  hpfs: avoid gcc-10 zero-length-bounds warning
+  omfs: avoid gcc-10 stringop-overflow warning
+  media: s5k5baf: avoid gcc-10 zero-length-bounds warning
+  scsi: sas: avoid gcc-10 zero-length-bounds warning
+  isci: avoid gcc-10 zero-length-bounds warning
+  nvme: avoid gcc-10 zero-length-bounds warning
+
+ crypto/lrw.c                                  |  6 +--
+ crypto/xts.c                                  |  6 +--
+ drivers/media/i2c/s5k5baf.c                   |  4 +-
+ drivers/net/wireless/ath/ath10k/htt.h         |  4 +-
+ .../net/wireless/intel/iwlwifi/fw/api/tx.h    | 14 +++----
+ .../net/wireless/marvell/mwifiex/sta_cmd.c    | 39 ++++++++-----------
+ drivers/nvme/host/fc.c                        |  2 +-
+ drivers/scsi/aic94xx/aic94xx_tmf.c            |  4 +-
+ drivers/scsi/isci/task.h                      |  7 ++--
+ drivers/scsi/libsas/sas_task.c                |  3 +-
+ fs/hpfs/anode.c                               |  7 +++-
+ fs/omfs/file.c                                | 12 +++---
+ fs/omfs/omfs_fs.h                             |  2 +-
+ fs/udf/ecma_167.h                             |  2 +-
+ fs/udf/super.c                                |  2 +-
+ include/linux/filter.h                        |  6 +--
+ include/linux/usb/ehci_def.h                  | 12 ++++--
+ include/net/netfilter/nf_conntrack.h          |  2 +-
+ net/core/drop_monitor.c                       | 11 ++++--
+ net/netfilter/nf_conntrack_core.c             |  4 +-
+ 20 files changed, 76 insertions(+), 73 deletions(-)
+
+[1] https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/10.0.20200413/
+
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: Johannes Berg <johannes.berg@intel.com>
+Cc: Intel Linux Wireless <linuxwifi@intel.com>
+Cc: Amitkumar Karwar <amitkarwar@gmail.com>
+Cc: James Smart <james.smart@broadcom.com>
+Cc: Jens Axboe <axboe@fb.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Cc: Bob Copeland <me@bobcopeland.com>
+Cc: Jan Kara <jack@suse.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-nvme@lists.infradead.org
+Cc: linux-scsi@vger.kernel.org
+Cc: linux-karma-devel@lists.sourceforge.net
+Cc: bpf@vger.kernel.org
+Cc: linux-usb@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org
+Cc: coreteam@netfilter.org
+
+
+
 -- 
-2.17.0
+2.26.0
 
