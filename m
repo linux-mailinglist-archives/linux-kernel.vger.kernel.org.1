@@ -2,94 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E7F1BF030
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BB81BF0BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgD3GVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 02:21:41 -0400
-Received: from plaes.org ([188.166.43.21]:35836 "EHLO plaes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726337AbgD3GVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 02:21:41 -0400
-Received: from plaes.org (localhost [127.0.0.1])
-        by plaes.org (Postfix) with ESMTPSA id C8C4640275;
-        Thu, 30 Apr 2020 06:21:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=plaes.org; s=mail;
-        t=1588227698; bh=5IaA8hDKqgMnJSHF6ro9Jo9eG0qGD7sBE3O2dZ7w10w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PU41HCwMPoxYMSyP8fhrzD6juPZxEfBmdlc/PKMFtE1ZPwP2er0AY9lHYRfd5IOs3
-         ww3lPC5lv8vjJLPdcnVfIoJu7rNEJRr0Lv1Buhc0bYyLzlWARFRNANnl0nlVCDQEH+
-         Y7F12KOpQ9BlyxXFUabLCBAlIDMhR06t3f5crcpIZKeMscVaFpJAmB0Hd1Xtk36JV5
-         Ug7TbNUf/+Ji5WbqHB4maeCLgNeA2fMie78EH0EFtcL2SQsL4EH5GY3/X/pg8QHISy
-         SYRK3bC5DsGaqSbiZ5AmCmw+VLptLlpjL2rl/5gMOfj5zxvd8mZ2G8rPYanR9TdXIg
-         NlKmvcIWocIiA==
-Date:   Thu, 30 Apr 2020 06:21:37 +0000
-From:   Priit Laes <plaes@plaes.org>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH 1/4] clk: sunxi-ng: a10/a20: rewrite init code to a
- platform driver
-Message-ID: <20200430062137.GA32281@plaes.org>
-References: <20200417221730.555954-1-plaes@plaes.org>
- <20200417221730.555954-2-plaes@plaes.org>
- <20200420124935.asfbgv7envb2af55@gilmour.lan>
- <20200420203228.GA4734@plaes.org>
- <20200429143510.ksi27lok2udtmfas@gilmour.lan>
+        id S1726658AbgD3HE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 03:04:28 -0400
+Received: from mail.ac.gov.br ([179.252.114.240]:38101 "EHLO
+        srvifs070.ac.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726337AbgD3HE2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 03:04:28 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id 245B131651F8;
+        Thu, 30 Apr 2020 01:23:47 -0500 (ACT)
+Received: from srvifs070.ac.gov.br ([127.0.0.1])
+        by localhost (srvifs070.ac.gov.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 8FnU-JPfmhbg; Thu, 30 Apr 2020 01:23:46 -0500 (ACT)
+Received: from srvifs070.ac.gov.br (localhost [127.0.0.1])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id 6B47D316520E;
+        Thu, 30 Apr 2020 01:23:40 -0500 (ACT)
+Received: from srvifs070.ac.gov.br (srvifs070.ac.gov.br [10.1.4.71])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id 42E5B31651E1;
+        Thu, 30 Apr 2020 01:23:36 -0500 (ACT)
+Date:   Thu, 30 Apr 2020 02:23:35 -0400 (AMT)
+From:   Morgan Stanley <angela.magalhaes@ac.gov.br>
+Reply-To: Morgan Stanley <invest-Morgan.stanley@outlook.co.id>
+Message-ID: <2044912365.553412.1588227815471.JavaMail.zimbra@ac.gov.br>
+Subject: Beantragen Sie eine dringende Gutschrift
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429143510.ksi27lok2udtmfas@gilmour.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [102.166.119.39]
+X-Mailer: Zimbra 8.0.6_GA_5922 (zclient/8.0.6_GA_5922)
+Thread-Topic: Beantragen Sie eine dringende Gutschrift
+Thread-Index: mhtK49BOMG6ib9S5BwFfWI6qcXypBA==
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 04:35:10PM +0200, Maxime Ripard wrote:
-> Hi,
-> 
-> On Mon, Apr 20, 2020 at 08:32:28PM +0000, Priit Laes wrote:
-> > On Mon, Apr 20, 2020 at 02:49:35PM +0200, Maxime Ripard wrote:
-> > > On Sat, Apr 18, 2020 at 01:17:27AM +0300, Priit Laes wrote:
-> > > > In order to register regmap for sun7i CCU, there needs to be
-> > > > a device structure already bound to the CCU device node.
-> > > > 
-> > > > Convert the sun4i/sun7i CCU setup to platform driver to use
-> > > > it later as platform device.
-> > > > 
-> > > > Signed-off-by: Priit Laes <plaes@plaes.org>
-> > > 
-> > > You can't relly do that though. We have timers that need those clocks before the
-> > > device model is initialized.
-> > 
-> > Ok, I'm somewhat lost now... are these the affected timers on sun7i following:
-> > - allwinner,sun4i-a10-timer (timer@1c20c00)
-> > - allwinner,sun7i-a20-hstimer (hstimer@1c60000)
-> 
-> Yep
-> 
-> > Any ideas on what approach I could actually use?
-> 
-> I guess you could keep the CLK_OF_DECLARE registration, and then have a
-> platform_driver probe and register the regmap?
-> 
-
-Thanks this did the trick.
-
-> > Also, similar timer dependency would affect then sun6i-a31 and sun9i-a80
-> > platforms too...
-
-I didn't check this before, but sun9i-a80 CCU is initialized currently via
-platform device. Should it be converted first to clock driver (CLK_OF_DECLARE)?
-
-I have sent out the v2 which contains sun7i/sun6i changes.
-
-> 
-> Indeed.
-> 
-> Maxime
 
 
+-- 
+Sind Sie ein Gesch&auml;ftsmann oder eine Gesch&auml;ftsfrau? Befinden Sie sich in einer Finanzkrise oder ben&ouml;tigen Sie Mittel, um ein eigenes Unternehmen zu gr&uuml;nden? Ben&ouml;tigen Sie einen Kredit, um Ihre Schulden zu begleichen, Ihre Rechnungen zu bezahlen oder ein gutes Gesch&auml;ft zu er&ouml;ffnen? Haben Sie eine niedrige Kreditw&uuml;rdigkeit und es f&auml;llt Ihnen schwer, einen Kapitalkredit von lokalen Banken und anderen Finanzinstituten zu erhalten? Hier ist Ihre Chance, einen Kredit von unserem Unternehmen zu erhalten. Wir bieten Privatpersonen Kredite f&uuml;r folgende Zwecke und mehr an. Privatkredit, Gesch&auml;ftsausweitung, Unternehmensgr&uuml;ndung, Bildung, Schuldenkonsolidierung, Hartgeldkredite. Wir bieten Darlehen zu einem niedrigen Zinssatz von 2%. Bewerben Sie sich jetzt per E-Mail: (invest-Morgan.stanley@outlook.co.id)
