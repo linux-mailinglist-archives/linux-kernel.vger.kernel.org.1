@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCD41C0990
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DCE1C0995
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbgD3VlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:41:20 -0400
-Received: from gateway33.websitewelcome.com ([192.185.146.195]:11044 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726447AbgD3VlT (ORCPT
+        id S1727832AbgD3VmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:42:18 -0400
+Received: from gateway22.websitewelcome.com ([192.185.47.228]:27507 "EHLO
+        gateway22.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726447AbgD3VmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:41:19 -0400
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id BF2549505C6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 16:41:16 -0500 (CDT)
+        Thu, 30 Apr 2020 17:42:18 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway22.websitewelcome.com (Postfix) with ESMTP id B81CC3A67
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 16:42:16 -0500 (CDT)
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with SMTP
-        id UGvkjNoCuXVkQUGvkjX4WL; Thu, 30 Apr 2020 16:41:16 -0500
+        id UGwijmIdaAGTXUGwij4RYA; Thu, 30 Apr 2020 16:42:16 -0500
 X-Authority-Reason: nr=8
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=zYUQh2Gvi8RprEPVQourN1Ie+dOYdU3IFiyEzuYKB2A=; b=uRxvsDN28v58s7zxoktMrB751p
-        9TewsaKvsSVMdsloULvjskOg5qAbNw/e29vDUeybymdULk0vVeEiXiRdFqHKcPUstzXCcBQv8iydD
-        R1II+qEVHp7gxoMzOeWUigJ1MBJ6H0Px/pcdETZ9UxsvqyPjnaCcc5DTfLwpq8d1uSoD0YBEK+VBQ
-        zYDx7zJ2l4e1UBBHh4WI20pF3NnWBZVCLU/7vVkqUz7UnkZdFUsRv7Hil/NBu+MjZMX1dj4BMn4ld
-        E7LznElKe4Nm0+AobmPkRzxL0UuqJDy4jvkDMulkU+D49uMf3qf63tmaZ+KTgSXspyh2SjP/JYWkq
-        GFqeIrjg==;
-Received: from [189.207.59.248] (port=56312 helo=[192.168.15.9])
+        bh=qsjMy7T38hExjF72AbAYAmnsKSYdgi4xV240NBm4wdc=; b=GHpzMcM97p9tjvA9yoILL9pxUr
+        XGqzqLAnobG0z4pcGyuFdJsznGUbeiqYPJ4TJY/SXcRg78wBXmTH+Mc/8bLluHEIZM05gGgFqJ5C0
+        S7amWx6i57zQX8RFlrcq5MJqgwGgLofX98kr5Fyyk2h7opgbVuTGQ3/SF3F+LmXdOi1qbh5vyZ1x7
+        JylHqgQ5cCHhXfvmB2YFcq3tNxIO0LOVduTe/pjjLa9vbBIjBuH1Vax37o92l4AAhGa+hIeKDReLI
+        XD/7Ea5h7glsMlqiCqatIiV0kEYxrko+ffL01a16/kGGMUSaTOUHg8C/1DnlSKRFVm6hDfESDI8bB
+        6P75CORA==;
+Received: from [189.207.59.248] (port=56346 helo=[192.168.15.9])
         by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1jUGvj-004Cpn-Rc; Thu, 30 Apr 2020 16:41:15 -0500
+        id 1jUGwi-004DQP-AL; Thu, 30 Apr 2020 16:42:16 -0500
+Subject: Re: [PATCH 12/15] media: s5k5baf: avoid gcc-10 zero-length-bounds
+ warning
 To:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Michal Kazior <michal.kazior@tieto.com>
-Cc:     Kalle Valo <kvalo@qca.qualcomm.com>,
-        Maharaja Kennadyrajan <mkenna@codeaurora.org>,
-        Wen Gong <wgong@codeaurora.org>,
-        Erik Stromdahl <erik.stromdahl@gmail.com>,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, Kees Cook <keescook@chromium.org>
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc:     Mauro Carvalho Chehab <m.chehab@samsung.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        linux-media@vger.kernel.org, Kees Cook <keescook@chromium.org>
 References: <20200430213101.135134-1-arnd@arndb.de>
- <20200430213101.135134-5-arnd@arndb.de>
+ <20200430213101.135134-13-arnd@arndb.de>
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Autocrypt: addr=gustavo@embeddedor.com; keydata=
  xsFNBFssHAwBEADIy3ZoPq3z5UpsUknd2v+IQud4TMJnJLTeXgTf4biSDSrXn73JQgsISBwG
@@ -92,16 +93,15 @@ Autocrypt: addr=gustavo@embeddedor.com; keydata=
  YJWH93PN+ZUh6i6Rd2U/i8jH5WvzR57UeWxE4P8bQc0hNGrUsHQH6bpHV2lbuhDdqo+cM9eh
  GZEO3+gCDFmKrjspZjkJbB5Gadzvts5fcWGOXEvuT8uQSvl+vEL0g6vczsyPBtqoBLa9SNrS
  VtSixD1uOgytAP7RWS474w==
-Subject: Re: [PATCH 04/15] ath10k: fix gcc-10 zero-length-bounds warnings
-Message-ID: <49831bca-b9cf-4b9a-1a60-f4289e9c83c0@embeddedor.com>
-Date:   Thu, 30 Apr 2020 16:45:32 -0500
+Message-ID: <9ff27422-911a-c285-108c-f29908b68d19@embeddedor.com>
+Date:   Thu, 30 Apr 2020 16:46:37 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200430213101.135134-5-arnd@arndb.de>
+In-Reply-To: <20200430213101.135134-13-arnd@arndb.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
 X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
 X-AntiAbuse: Original Domain - vger.kernel.org
@@ -110,13 +110,13 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 189.207.59.248
 X-Source-L: No
-X-Exim-ID: 1jUGvj-004Cpn-Rc
+X-Exim-ID: 1jUGwi-004DQP-AL
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: ([192.168.15.9]) [189.207.59.248]:56312
+X-Source-Sender: ([192.168.15.9]) [189.207.59.248]:56346
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
+X-Email-Count: 15
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
@@ -127,48 +127,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Hi Arnd,
 
 On 4/30/20 16:30, Arnd Bergmann wrote:
-> gcc-10 started warning about out-of-bounds access for zero-length
-> arrays:
+> gcc-10 warns about accessing a zero-length struct member:
 > 
-> In file included from drivers/net/wireless/ath/ath10k/core.h:18,
->                  from drivers/net/wireless/ath/ath10k/htt_rx.c:8:
-> drivers/net/wireless/ath/ath10k/htt_rx.c: In function 'ath10k_htt_rx_tx_fetch_ind':
-> drivers/net/wireless/ath/ath10k/htt.h:1683:17: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'struct htt_tx_fetch_record[0]' [-Wzero-length-bounds]
->  1683 |  return (void *)&ind->records[le16_to_cpu(ind->num_records)];
->       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/net/wireless/ath/ath10k/htt.h:1676:29: note: while referencing 'records'
->  1676 |  struct htt_tx_fetch_record records[0];
->       |                             ^~~~~~~
+> drivers/media/i2c/s5k5baf.c: In function 's5k5baf_load_setfile':
+> drivers/media/i2c/s5k5baf.c:390:13: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'struct <anonymous>[0]' [-Wzero-length-bounds]
+>   390 |   if (f->seq[i].offset + d <= end)
+>       |       ~~~~~~^~~
 > 
-> The structure was already converted to have a flexible-array member in
-> the past, but there are two zero-length members in the end and only
-> one of them can be a flexible-array member.
-> 
-> Swap the two around to avoid the warning, as 'resp_ids' is not accessed
-> in a way that causes a warning.
+> This should really be a flexible-array member, but the structure
+> already has one. I experimentally confirmed that swapping the two
+> avoids the warning, as the 'data[]' array is not accessed like this.
 > 
 > Fixes: 3ba225b506a2 ("treewide: Replace zero-length array with flexible-array member")
-> Fixes: 22e6b3bc5d96 ("ath10k: add new htt definitions")
+> Fixes: 7d459937dc09 ("[media] Add driver for Samsung S5K5BAF camera sensor")
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/net/wireless/ath/ath10k/htt.h | 4 ++--
+>  drivers/media/i2c/s5k5baf.c | 4 ++--
 >  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-> index e7096a73c6ca..7621f0a3dc77 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt.h
-> +++ b/drivers/net/wireless/ath/ath10k/htt.h
-> @@ -1673,8 +1673,8 @@ struct htt_tx_fetch_ind {
->  	__le32 token;
->  	__le16 num_resp_ids;
->  	__le16 num_records;
-> -	struct htt_tx_fetch_record records[0];
-> -	__le32 resp_ids[]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
-> +	__le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
-> +	struct htt_tx_fetch_record records[];
->  } __packed;
+> diff --git a/drivers/media/i2c/s5k5baf.c b/drivers/media/i2c/s5k5baf.c
+> index 42584a088273..0b1ddedcf7dc 100644
+> --- a/drivers/media/i2c/s5k5baf.c
+> +++ b/drivers/media/i2c/s5k5baf.c
+> @@ -277,11 +277,11 @@ enum {
 >  
->  static inline void *
+>  struct s5k5baf_fw {
+>  	u16 count;
+> +	u16 data[0];
+>  	struct {
+>  		u16 id;
+>  		u16 offset;
+> -	} seq[0];
+> -	u16 data[];
+> +	} seq[];
+>  };
+>  
+>  struct s5k5baf {
 > 
 
 The treewide patch is an experimental change and, as this change only applies
@@ -178,4 +172,3 @@ to worry about this at all.
 Thank you
 --
 Gustavo
-
