@@ -2,111 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D991BFFA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBEF01BFFAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbgD3PG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 11:06:57 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:45539 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726501AbgD3PG4 (ORCPT
+        id S1727969AbgD3PHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 11:07:48 -0400
+Received: from lists.gateworks.com ([108.161.130.12]:57547 "EHLO
+        lists.gateworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726619AbgD3PHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:06:56 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id AEF9C3D7;
-        Thu, 30 Apr 2020 11:06:54 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 30 Apr 2020 11:06:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=3HOldL8M8SMhSFP04OdXihjEBtT
-        HltI1ljKcZAb+nkU=; b=c9Jlcl1rGAZQZsRZokJHWuF0zB9rfxpkoH4HQ0LusyR
-        4nzRuVu05bhdqG6EeL0AK4+0TJFJr/EeRET0GCJ77nt+u1LPbsJWaTu5FzgvhI46
-        E2rCO2tfd2R7S8/kKw4YWvEhX42I+hzTTv397UEOwilQmjqqOyRWELvAbV0x8CLy
-        mSIEHlu9c5rCKsZng3/oUZsomDllS4UlRujAQtmZdb8UPqPyGw/042FzVNphKdya
-        5/90seI+WvLVSrr8fAKaFh2yyYCvY2Svq0LIZQaElMZcL7l4bgvx9ynqiOgwEP4w
-        G2rHw+hLBDwurMLmtmHOVOB2QChDH88nKBGS7nelrBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=3HOldL
-        8M8SMhSFP04OdXihjEBtTHltI1ljKcZAb+nkU=; b=rZ2vf5bZBWVwnMklpPl8Bd
-        vO4YGW/TMVENltc1XyknpsxocwyldTOFsWluFkN561NHL9YUCn70oZY/alr6SrtN
-        pFdiKHWfGtUxViftRrtmq1cYItYknbwWxhZSJFdi7eQFua0SoiXrqqojOGdGZC8t
-        M1n5892MNX0XyVW8kSMh3R377sPxR5AKTw4w8rtkKcVQTdRpM+TSLJwPr6+nL8W3
-        PXqmOuZCM7L8fJE23iupC5S9ABIxjvf7dTWts4ysvfeDgmzwYjB44iL+utgFkvwa
-        lQYFim8If+13p8gU8JFuktA725TBysPhZkLeBgtdaKuOapyYs2TrP4+d55kbKKFQ
-        ==
-X-ME-Sender: <xms:jemqXkhoKUgqmlZFMxeK0cDa90kpmrp0xhAsS7J2naiy7HyM4OgTTQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrieehgdekgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
-    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:jemqXkpnDXrjC4V69PI-XyVp3mJnYjhF-ntNPpfbLCqrGOu7a4mCKw>
-    <xmx:jemqXjeFFLdSCxpHmpzKYVvqadSK37vzz52J1EUYSByc8KglZIAsow>
-    <xmx:jemqXvwPR3RTFuBwdbZCpRNQfFY508PK6h6eWtbbnsUtt_lUSdCq0Q>
-    <xmx:jumqXgB-mzVQpjHwawS_NrFP-SQU-PYGNf_1_-qDDRQoXNpWTFuyrBItnEo>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5A3D23280069;
-        Thu, 30 Apr 2020 11:06:53 -0400 (EDT)
-Date:   Thu, 30 Apr 2020 17:06:52 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Emmanuel Vadot <manu@freebsd.org>
-Cc:     maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
-        airlied@linux.ie, daniel@ffwll.ch, matthew.d.roper@intel.com,
-        noralf@tronnes.org, kraxel@redhat.com, tglx@linutronix.de,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: Re: [RESEND 1/2] drm/client: Dual licence the header in GPL-2 and MIT
-Message-ID: <20200430150652.7rhh7zn2lqhzy4bs@gilmour.lan>
-References: <20200430145439.31257-1-manu@FreeBSD.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tjombykybepmtpey"
-Content-Disposition: inline
-In-Reply-To: <20200430145439.31257-1-manu@FreeBSD.org>
+        Thu, 30 Apr 2020 11:07:47 -0400
+Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
+        by lists.gateworks.com with esmtp (Exim 4.82)
+        (envelope-from <tharvey@gateworks.com>)
+        id 1jUAox-0007qc-UJ; Thu, 30 Apr 2020 15:09:52 +0000
+From:   Tim Harvey <tharvey@gateworks.com>
+To:     Lee Jones <lee.jones@linaro.org>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robert Jones <rjones@gateworks.com>
+Cc:     Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH v9 0/3] Add support for the Gateworks System Controller
+Date:   Thu, 30 Apr 2020 08:07:24 -0700
+Message-Id: <1588259247-15536-1-git-send-email-tharvey@gateworks.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds support for the Gateworks System Controller used on Gateworks
+Laguna, Ventana, and Newport product families.
 
---tjombykybepmtpey
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The GSC is an MSP430 I2C slave controller whose firmware embeds the following
+features:
+ - I/O expander (16 GPIO's emulating a PCA955x)
+ - EEPROM (enumating AT24)
+ - RTC (enumating DS1672)
+ - HWMON
+ - Interrupt controller with tamper detect, user pushbotton
+ - Watchdog controller capable of full board power-cycle
+ - Power Control capable of full board power-cycle
 
-On Thu, Apr 30, 2020 at 04:54:38PM +0200, Emmanuel Vadot wrote:
-> Source file was dual licenced but the header was omitted, fix that.
-> Contributors for this file are:
-> Daniel Vetter <daniel.vetter@ffwll.ch>
-> Matt Roper <matthew.d.roper@intel.com>
-> Maxime Ripard <mripard@kernel.org>
-> Noralf Tr=F8nnes <noralf@tronnes.org>
-> Thomas Zimmermann <tzimmermann@suse.de>
->=20
-> Acked-by: Noralf Tr=F8nnes <noralf@tronnes.org>
-> Acked-by: Matt Roper <matthew.d.roper@intel.com>
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Signed-off-by: Emmanuel Vadot <manu@FreeBSD.org>
+see http://trac.gateworks.com/wiki/gsc for more details
+---
+v9:
+ - rebase against 5.7-rc2
+ - dt-binding: remove allOf: see https://lkml.org/lkml/2020/4/15/1930
+ - dt-binding: encorporate Lee's review comments for item descriptions
+ - dt-binding: added Reviewed-by: Rob Herring <robh@kernel.org>
+ - mfd: cleanup gsc_powerdown() by using BIT(), put_unaligned_le32(), and
+   avoid unnecessary assignments
+ - mfd: rename GSC_CTRL_1 SLEEP related defines to simplify
+ - mfd: add better description and sub-module info to driver description
+ - mfd: whitespace changes per review
+ - mfd: remove unused irq_data pointer in ddata
+ - mfd: remove unnecesary i2c_set_clientdata
+ - mfd: use devm_i2c_new_dummy_device to avoid need of free's
+ - mfd: change regsiter definitions to enum
+ - mfd: export gsc_{read,write} instead of sharing them via ddata
+ - hwmon: use exported gsc_{read,write}
+ - hwmon: added Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+ 
+v8:
+ - mfd: whitespace fixes
+ - mfd: describe sub-devices in Kconfig
+ - mfd: add error print for invalid command
+ - mfd: update copyright
+ - mfd: use devm_of_platform_populate
+ - mfd: use probe_new
+ - mfd: move hwmon's regmap init to hwmon
+ - hwmon: move hwmon's regmap init to hwmon
+ - dt-bindings: add register to fan-controller node name
 
-Maxime
+v7:
+ - dt-bindings: change divider from mili-ohms to ohms
+ - dt-bindings: add constraints for voltage divider and offset
+ - dt-bindings: remove unnecessary ref for offset
+ - dt-bindings: renamed fan to fan-controller and changed base prop to reg
+ - mfd:  remove irq from private data struct
+ - hwmon: fix whitespace in Kconfig
+ - hwmon: remove unnecessary device pointer in private data
+ - hwmon: change divider from mili-ohms to ohms
+ - hwmon: move fan base property to reg
 
---tjombykybepmtpey
-Content-Type: application/pgp-signature; name="signature.asc"
+v6:
+ - hwmon: fix size of info field
+ - hwmon: improve pwm output control documentation
+ - hwmon: include unit suffix in divider and offset
+ - hwmon: change subnode name to gsc-adc
+ - hwmon: change to fan subnode
+ - hwmon: fix voltage offset
+ - dt-bindings: fix commit message typo
+ - dt-bindings: drop invalid description from #interrupt-cells property
+ - dt-bindings: fix adc pattern property
+ - dt-bindings: add unit suffix
+ - dt-bindings: replace hwmon/adc with adc/channel
+ - dt-bindings: changed adc type to gw,mode
+ - dt-bindings: add unit suffix and drop ref for voltage-divider
+ - dt-bindings: add unit suffix for voltage-offset
+ - dt-bindings: moved fan to its own subnode with base register
 
------BEGIN PGP SIGNATURE-----
+v5:
+ - fix checkpatch issues
+ - fix dt_binding_check issues
+ - address feedback from v4
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXqrpjAAKCRDj7w1vZxhR
-xXGwAP9Ki8H1vsg5ATj+ZH/wRTiLKXRb3PQC/kGD5BF/AvIVIgD/XC7nOwVt3iuT
-6ZFDx1vpZM6X92tW1fMSxk5/v/OIQQU=
-=yUcS
------END PGP SIGNATURE-----
+v4:
+ - hwmon: move to using pwm<n>_auto_point<m>_{pwm,temp} for FAN PWM
+ - hwmon: remove unncessary resolution/scaling properties for ADCs
+ - bindings: update to yaml Documentation
+ - removed watchdog driver
 
---tjombykybepmtpey--
+v3:
+ - removed unnecessary input driver
+ - added wdt driver
+ - bindings: encorporated feedback from mailng list
+ - hwmon:
+ - encoroprated feedback from mailng list
+ - added support for raw ADC voltage input used in newer GSC firmware
+
+v2:
+ - change license comment block style
+ - remove COMPILE_TEST
+ - fixed whitespace issues
+ - replaced a printk with dev_err
+ - remove DEBUG
+ - simplify regmap_bulk_read err check
+ - remove break after returns in switch statement
+ - fix fan setpoint buffer address
+ - remove unnecessary parens
+ - consistently use struct device *dev pointer
+ - add validation for hwmon child node props
+ - move parsing of of to own function
+ - use strlcpy to ensure null termination
+ - fix static array sizes and removed unnecessary initializers
+ - dynamically allocate channels
+ - fix fan input label
+ - support platform data
+
+Tim Harvey (3):
+  dt-bindings: mfd: Add Gateworks System Controller bindings
+  mfd: add Gateworks System Controller core driver
+  hwmon: add Gateworks System Controller support
+
+ .../devicetree/bindings/mfd/gateworks-gsc.yaml     | 196 +++++++++++
+ Documentation/hwmon/gsc-hwmon.rst                  |  53 +++
+ Documentation/hwmon/index.rst                      |   1 +
+ MAINTAINERS                                        |  11 +
+ drivers/hwmon/Kconfig                              |   9 +
+ drivers/hwmon/Makefile                             |   1 +
+ drivers/hwmon/gsc-hwmon.c                          | 390 +++++++++++++++++++++
+ drivers/mfd/Kconfig                                |  16 +
+ drivers/mfd/Makefile                               |   1 +
+ drivers/mfd/gateworks-gsc.c                        | 284 +++++++++++++++
+ include/linux/mfd/gsc.h                            |  76 ++++
+ include/linux/platform_data/gsc_hwmon.h            |  44 +++
+ 12 files changed, 1082 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml
+ create mode 100644 Documentation/hwmon/gsc-hwmon.rst
+ create mode 100644 drivers/hwmon/gsc-hwmon.c
+ create mode 100644 drivers/mfd/gateworks-gsc.c
+ create mode 100644 include/linux/mfd/gsc.h
+ create mode 100644 include/linux/platform_data/gsc_hwmon.h
+
+-- 
+2.7.4
+
