@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E171BF6EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 13:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6921BF6EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 13:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726975AbgD3LfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 07:35:11 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:46165 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726926AbgD3LfI (ORCPT
+        id S1726896AbgD3LfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 07:35:17 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:49595 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726937AbgD3LfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 07:35:08 -0400
+        Thu, 30 Apr 2020 07:35:09 -0400
 X-Originating-IP: 87.231.134.186
 Received: from localhost (87-231-134-186.rev.numericable.fr [87.231.134.186])
         (Authenticated sender: gregory.clement@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id AB8E71BF208;
-        Thu, 30 Apr 2020 11:35:04 +0000 (UTC)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 66E6B1C000A;
+        Thu, 30 Apr 2020 11:35:07 +0000 (UTC)
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jslaby@suse.com>, linux-kernel@vger.kernel.org
 Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH 3/3] tty: n_gsm: Fixe waking up upper tty layer when room available
-Date:   Thu, 30 Apr 2020 13:34:32 +0200
-Message-Id: <20200430113433.2162886-4-gregory.clement@bootlin.com>
+Subject: [PATCH 3/3] tty: n_gsm: Fix waking up upper tty layer when room available
+Date:   Thu, 30 Apr 2020 13:34:33 +0200
+Message-Id: <20200430113433.2162886-5-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200430113433.2162886-1-gregory.clement@bootlin.com>
 References: <20200430113433.2162886-1-gregory.clement@bootlin.com>
