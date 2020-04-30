@@ -2,101 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC901C09BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CCD41C0990
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727968AbgD3Vw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727878AbgD3Vwr (ORCPT
+        id S1727100AbgD3VlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:41:20 -0400
+Received: from gateway33.websitewelcome.com ([192.185.146.195]:11044 "EHLO
+        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726447AbgD3VlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:52:47 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D06C08E859
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:52:47 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id r16so5831685edw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloud.ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=sVC4XtCI51zwuXU4kfWUPmx3mXCoCkfv76JEys4qRWI=;
-        b=h2hh4ukdjcrj1rKmeKUhGkIVIjVb+CMDuH/sGucO7vCFGioyAXpgts7c4azzs0Gv7I
-         wrrOrJwzU58JHtDYO/oOtVLQCBlpEQUKurGOOWp5RON/lTp6xfIclss2781r6FT2zQjS
-         waJNn4vy45DkGKi2F57eOjNlloFB9D2TGMAF2DfeQd8ohuFn2EMA9lBw3MtHlItasTn9
-         wOTEDBE7MleC0ix9SqqkvpZrZ1sgdUaF2T+Av7FJzZBBcKhUcdAmdu9JJMmDy91e2g+Z
-         LF1NGTxFVnN7PPxwmfknLpvMMpUf8O1hq9o353eJlvR73KIYEeo13Rl69tHDdOm7Bj85
-         8f3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=sVC4XtCI51zwuXU4kfWUPmx3mXCoCkfv76JEys4qRWI=;
-        b=GVnJPwelL8yZAn9SDTh5tsnErVbfw3nTBVkkFXzxS9nbOTf46rObc3/X6rrKNKGGEr
-         9FvkptTMkl7jpIB7Gt7MfJDm0OLIyL5FT0PoCrFuVi/WZ/k/6Xnwmp1+9xfZhSnCSj8j
-         Y/6X5kmwra+B2K5orvzX6U3I/7vWeeGqZ6E/fUIerT/Bf+kxx3PgrY7RsBFTyv8U3zM+
-         mEisM3flPMlRjTKLj1wcTbXHiZZOoqa4+RdohTuSVwZpAKACyOebnTHE03bdmNK6MRJp
-         Szb9Y3rORCxmLBHYzc9E5rUXYz6pNMo6K1Reno5SvChDMAJ/pn2gJeQz72GsGUoDjM40
-         4ylw==
-X-Gm-Message-State: AGi0PuZ04Gbvjul8Mc5U9FwrXyi4zaF6y+1Yvky/NjZ7cx5bRQ/w5cgc
-        JNEqrZhz3iotCXdb8hnWjB5xqw==
-X-Google-Smtp-Source: APiQypLipNJe1CcB6DTPAa4UTwx9mH+5ihqyAcGLs5v0DbpMIgL9Cfj+7fXuU233MI38OzTIhsROgw==
-X-Received: by 2002:aa7:d481:: with SMTP id b1mr1073575edr.226.1588283565949;
-        Thu, 30 Apr 2020 14:52:45 -0700 (PDT)
-Received: from ls00508.pb.local ([2001:1438:4010:2540:b82f:dfc:5e2a:e7cc])
-        by smtp.gmail.com with ESMTPSA id f13sm92022ejd.2.2020.04.30.14.52.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 14:52:45 -0700 (PDT)
-From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     hch@infradead.org, david@fromorbit.com, willy@infradead.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Roman Gushchin <guro@fb.com>,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: [RFC PATCH V2 9/9] buffer_head.h: remove attach_page_buffers
-Date:   Thu, 30 Apr 2020 23:44:50 +0200
-Message-Id: <20200430214450.10662-10-guoqing.jiang@cloud.ionos.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200430214450.10662-1-guoqing.jiang@cloud.ionos.com>
-References: <20200430214450.10662-1-guoqing.jiang@cloud.ionos.com>
+        Thu, 30 Apr 2020 17:41:19 -0400
+Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
+        by gateway33.websitewelcome.com (Postfix) with ESMTP id BF2549505C6
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 16:41:16 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id UGvkjNoCuXVkQUGvkjX4WL; Thu, 30 Apr 2020 16:41:16 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=zYUQh2Gvi8RprEPVQourN1Ie+dOYdU3IFiyEzuYKB2A=; b=uRxvsDN28v58s7zxoktMrB751p
+        9TewsaKvsSVMdsloULvjskOg5qAbNw/e29vDUeybymdULk0vVeEiXiRdFqHKcPUstzXCcBQv8iydD
+        R1II+qEVHp7gxoMzOeWUigJ1MBJ6H0Px/pcdETZ9UxsvqyPjnaCcc5DTfLwpq8d1uSoD0YBEK+VBQ
+        zYDx7zJ2l4e1UBBHh4WI20pF3NnWBZVCLU/7vVkqUz7UnkZdFUsRv7Hil/NBu+MjZMX1dj4BMn4ld
+        E7LznElKe4Nm0+AobmPkRzxL0UuqJDy4jvkDMulkU+D49uMf3qf63tmaZ+KTgSXspyh2SjP/JYWkq
+        GFqeIrjg==;
+Received: from [189.207.59.248] (port=56312 helo=[192.168.15.9])
+        by gator4166.hostgator.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1jUGvj-004Cpn-Rc; Thu, 30 Apr 2020 16:41:15 -0500
+To:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michal Kazior <michal.kazior@tieto.com>
+Cc:     Kalle Valo <kvalo@qca.qualcomm.com>,
+        Maharaja Kennadyrajan <mkenna@codeaurora.org>,
+        Wen Gong <wgong@codeaurora.org>,
+        Erik Stromdahl <erik.stromdahl@gmail.com>,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, Kees Cook <keescook@chromium.org>
+References: <20200430213101.135134-1-arnd@arndb.de>
+ <20200430213101.135134-5-arnd@arndb.de>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Autocrypt: addr=gustavo@embeddedor.com; keydata=
+ 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
+ VtSixD1uOgytAP7RWS474w==
+Subject: Re: [PATCH 04/15] ath10k: fix gcc-10 zero-length-bounds warnings
+Message-ID: <49831bca-b9cf-4b9a-1a60-f4289e9c83c0@embeddedor.com>
+Date:   Thu, 30 Apr 2020 16:45:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200430213101.135134-5-arnd@arndb.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 189.207.59.248
+X-Source-L: No
+X-Exim-ID: 1jUGvj-004Cpn-Rc
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.9]) [189.207.59.248]:56312
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the callers have replaced attach_page_buffers with the new function
-attach_page_private, so remove it.
+Hi Arnd,
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Andreas Dilger <adilger@dilger.ca>
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
----
- include/linux/buffer_head.h | 8 --------
- 1 file changed, 8 deletions(-)
+On 4/30/20 16:30, Arnd Bergmann wrote:
+> gcc-10 started warning about out-of-bounds access for zero-length
+> arrays:
+> 
+> In file included from drivers/net/wireless/ath/ath10k/core.h:18,
+>                  from drivers/net/wireless/ath/ath10k/htt_rx.c:8:
+> drivers/net/wireless/ath/ath10k/htt_rx.c: In function 'ath10k_htt_rx_tx_fetch_ind':
+> drivers/net/wireless/ath/ath10k/htt.h:1683:17: warning: array subscript 65535 is outside the bounds of an interior zero-length array 'struct htt_tx_fetch_record[0]' [-Wzero-length-bounds]
+>  1683 |  return (void *)&ind->records[le16_to_cpu(ind->num_records)];
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/wireless/ath/ath10k/htt.h:1676:29: note: while referencing 'records'
+>  1676 |  struct htt_tx_fetch_record records[0];
+>       |                             ^~~~~~~
+> 
+> The structure was already converted to have a flexible-array member in
+> the past, but there are two zero-length members in the end and only
+> one of them can be a flexible-array member.
+> 
+> Swap the two around to avoid the warning, as 'resp_ids' is not accessed
+> in a way that causes a warning.
+> 
+> Fixes: 3ba225b506a2 ("treewide: Replace zero-length array with flexible-array member")
+> Fixes: 22e6b3bc5d96 ("ath10k: add new htt definitions")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/wireless/ath/ath10k/htt.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+> index e7096a73c6ca..7621f0a3dc77 100644
+> --- a/drivers/net/wireless/ath/ath10k/htt.h
+> +++ b/drivers/net/wireless/ath/ath10k/htt.h
+> @@ -1673,8 +1673,8 @@ struct htt_tx_fetch_ind {
+>  	__le32 token;
+>  	__le16 num_resp_ids;
+>  	__le16 num_records;
+> -	struct htt_tx_fetch_record records[0];
+> -	__le32 resp_ids[]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
+> +	__le32 resp_ids[0]; /* ath10k_htt_get_tx_fetch_ind_resp_ids() */
+> +	struct htt_tx_fetch_record records[];
+>  } __packed;
+>  
+>  static inline void *
+> 
 
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index 15b765a181b8..22fb11e2d2e0 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -272,14 +272,6 @@ void buffer_init(void);
-  * inline definitions
-  */
- 
--static inline void attach_page_buffers(struct page *page,
--		struct buffer_head *head)
--{
--	get_page(page);
--	SetPagePrivate(page);
--	set_page_private(page, (unsigned long)head);
--}
--
- static inline void get_bh(struct buffer_head *bh)
- {
-         atomic_inc(&bh->b_count);
--- 
-2.17.1
+The treewide patch is an experimental change and, as this change only applies
+to my -next tree, I will carry this patch in it, so other people don't have
+to worry about this at all.
+
+Thank you
+--
+Gustavo
 
