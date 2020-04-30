@@ -2,142 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CD21C0439
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 19:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E129D1C0442
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 19:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgD3R5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 13:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37272 "EHLO
+        id S1726761AbgD3R7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 13:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726285AbgD3R5W (ORCPT
+        by vger.kernel.org with ESMTP id S1726318AbgD3R7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 13:57:22 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAADC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 10:57:22 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id g35so2828900uad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 10:57:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TvrAoS5R4+dywx/HVADWV/k83KgwVRDG0yVQjYIscTc=;
-        b=wRdo8KS6Y+l1c2hxp4VH+FfXlu6ZsLD2nqmVGb4u9+8P2LirkkGSBo/ZLnA5yPbq6r
-         AyuByN9pocAKLZhrH8kt4swHVfsNJJ4Go1z0KRGsAwcM0CpufzSzWUP9aBDpmJdABGw5
-         mqzC2jdQ3fGEnMHWjwYTi85HVZjhJP/qT+ws4EVSemtm2dIz9OJ/NyW11EwVQ/5GKtZP
-         etseRxKhKm2yQaPtStvFkzVd1h81FdtZzEoyy8hyuZMnrO83s8Kp7GUQFyL1OVNLhqay
-         Hq4G/7XSJM+Agd76vVeoEjgzRAbA+LmGLxjtjuaOlX/QrZFrHAzGluHzAzbzJvAeQ8vs
-         jENA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TvrAoS5R4+dywx/HVADWV/k83KgwVRDG0yVQjYIscTc=;
-        b=LSWeILG78keOsFUb6HsP3AVO1dslCv3VVT+JmF+s8TPuXBHrsytagcTlKSKIiAr5wR
-         bLyndjBeTxJZSfdZz/TNUj7lYE7O4zwx3JV5JzAt+KUanDIFjrshhfSvGYVA2x8FgEBy
-         gN3RBolohkI4s+AwgeOilhFv6vhcs7YvVrlqp+zT/kEQZjdeucWHeZGBJiE0N0ubIeag
-         pBNO3fCt3jXYPHu2Fy3GOrRTlfDHwADHyzRe3+P6cyx/wOTn9uijEGc4xybfQ2eCZeCf
-         i/x+eHv7QV94dcMdqrR5dprWeEzKOGOuugLyw9NuqKaD9vGB659QPhi+zN+lZozyM56V
-         fUSA==
-X-Gm-Message-State: AGi0PuaSAkbjINh4F+mO1AmvR/Ygr6Jy486mlaYPVAaO3pT6hEkwQwMr
-        ak9GAuwPbRvKyBIIm05MgRuADjrIl1kX49/V1Hm14Q==
-X-Google-Smtp-Source: APiQypLXiEZIkfqP+FsSiGgb2p5DkYxQRinoeXOh52SxYozJF8DQ6injClmyChqjk9/JNPz4JCwCNmezWgBtOCbHzxg=
-X-Received: by 2002:ab0:1d90:: with SMTP id l16mr3927735uak.13.1588269440967;
- Thu, 30 Apr 2020 10:57:20 -0700 (PDT)
+        Thu, 30 Apr 2020 13:59:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C336BC035494;
+        Thu, 30 Apr 2020 10:59:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lPMf1Z1GFT7QUGBGKnoHwGy463ZqTcbG/VsC/8ckYeE=; b=BHla1V7kaYXJqHABxydhsXHLxN
+        KJpUGrBVjN3N38i+33Z3RkE0+PkDu1Cou4c40LcmJJtzd3fFu8BsHfPOsXW8K5Uxbyh5M75WzSQZs
+        /ltcLXK5SifCKaNrMUfLIDWwx0ET6spmr1grsBmS22VlSuu+dMxDo9IJiqNoLCKNfHwAhxB3jvmx9
+        t0JHu0lkp+ymGctsCYe2DMS5V0Ck7U7ERVX+RZ3fYnxuiJ+b2MUz7eLVYci50VqbGheSMzvqFNRGW
+        QkHlhSUlpVu4HRRtEFX1+rqw6DnLJjkl371QiBQMiIzWo1BrJa7bW663xBYInX5EaSRM6Ij4de1JL
+        QeNYk55g==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jUDSb-00050J-27; Thu, 30 Apr 2020 17:58:57 +0000
+Date:   Thu, 30 Apr 2020 10:58:56 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pipe: read/write_iter() handler should check for
+ IOCB_NOWAIT
+Message-ID: <20200430175856.GX29705@bombadil.infradead.org>
+References: <273d8294-2508-a4c2-f96e-a6a394f94166@kernel.dk>
 MIME-Version: 1.0
-References: <20200427184358.191624-1-surenb@google.com> <20200428163125.GC16910@hirez.programming.kicks-ass.net>
- <CAJuCfpGsRwJGwyny0X0APa2yCjyBttyMtTOPr3K5NqcWehtzxw@mail.gmail.com>
-In-Reply-To: <CAJuCfpGsRwJGwyny0X0APa2yCjyBttyMtTOPr3K5NqcWehtzxw@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 30 Apr 2020 10:57:10 -0700
-Message-ID: <CAJuCfpEsv4jAMimRnySFFpYmjf7tpxofnR4BzConhh_3iv-kfw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] kthread: break dependency between worker->lock and task_struct->pi_lock
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, will@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        ben.dooks@codethink.co.uk, cl@rock-chips.com, ke.wang@unisoc.com,
-        Shakeel Butt <shakeelb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <273d8294-2508-a4c2-f96e-a6a394f94166@kernel.dk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 11:04 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Tue, Apr 28, 2020 at 9:31 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Mon, Apr 27, 2020 at 11:43:58AM -0700, Suren Baghdasaryan wrote:
-> > > A number of kthread-related functions indirectly take task_struct->pi_lock
-> > > while holding worker->lock in the call chain like this:
-> > >     spin_lock(&worker->lock)
-> > >     kthread_insert_work
-> > >     wake_up_process
-> > >     try_to_wake_up
-> > >     raw_spin_lock_irqsave(&p->pi_lock, flags)
-> > >
-> > > This lock dependency exists whenever kthread_insert_work is called either
-> > > directly or indirectly via __kthread_queue_delayed_work in the following
-> > > functions:
-> > >     kthread_queue_work
-> > >     kthread_delayed_work_timer_fn
-> > >     kthread_queue_delayed_work
-> > >     kthread_flush_work
-> > >     kthread_mod_delayed_work
-> > >
-> > > This creates possibilities for circular dependencies like the one reported
-> > > at: https://lkml.org/lkml/2020/4/24/954
-> >
-> > Please, do not use lkml.org links.
->
-> Thanks for the review! Would
-> https://lore.kernel.org/lkml/CAJuCfpG4NkhpQvZjgXZ_3gm6Hf1QgN_eUOQ8iX9Cv1k9whLwSQ@mail.gmail.com
-> be better or should I just add the body of that report here? Or do not
-> mention it at all?
+On Thu, Apr 30, 2020 at 10:24:46AM -0600, Jens Axboe wrote:
+> Pipe read/write only checks for the file O_NONBLOCK flag, but we should
+> also check for IOCB_NOWAIT for whether or not we should handle this read
+> or write in a non-blocking fashion. If we don't, then we will block on
+> data or space for iocbs that explicitly asked for non-blocking
+> operation. This messes up callers that explicitly ask for non-blocking
+> operations.
+> 
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-Sorry, this time in plain text mode...
-If there are no more comments on this patch I'll post a v2 with
-lore.kernel.org instead of lkml.org link. Please let me know if there
-are more issues that you would like to be addressed.
-IMHO, taking kthread_queue_delayed_work() out from under rq->lock (if
-we can figure out how to do that cleanly) can be a separate patch and
-this one is still useful regardless of that.
-Thanks!
+Wouldn't this be better?
 
->
-> >
-> > Also, ideally, we'd pull that kthread_queue_delayed_work() out from
-> > under rq->lock.
->
-> I understand but I don't see an easy way to do that. We need to start
-> PSI polling whenever a monitored PSI state changes:
-> https://elixir.bootlin.com/linux/v5.6.7/source/kernel/sched/psi.c#L783.
-> This is happening under rq->lock because PSI accounting is done from
-> inside enqueue_task/dequeue_task - the call chain is:
->
-> enqueue_task > psi_enqueue > psi_task_change > psi_group_change >
-> psi_schedule_poll_work > psi_task_change
->
-> IIUC enqueue_task/dequeue_task are called with rq->lock taken, so
-> moving kthread_queue_delayed_work out is not trivial.
->
-> >
-> > In fact, looking at it, WTH is the delayed branch of
-> > kthread_queue_delayed_work() under that lock? That whole
-> > delayed_work_list thing smells like bong-hits.
->
-> I have the poll_scheduled atomic specifically to ensure that
-> kthread_queue_delayed_work does not block as commented here:
-> https://elixir.bootlin.com/linux/v5.7-rc3/source/kernel/sched/psi.c#L551.
-> I understand this is not ideal. If there is a better way to schedule
-> that kworker while ensuring it does not block I would be happy to
-> rework this. Any suggestions?
->
-> >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
-> >
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
+diff --git a/fs/pipe.c b/fs/pipe.c
+index 16fb72e9abf7..d4cf3ea9ad49 100644
+--- a/fs/pipe.c
++++ b/fs/pipe.c
+@@ -363,7 +363,7 @@ pipe_read(struct kiocb *iocb, struct iov_iter *to)
+ 			break;
+ 		if (ret)
+ 			break;
+-		if (filp->f_flags & O_NONBLOCK) {
++		if (iocb->ki_flags & IOCB_NOWAIT) {
+ 			ret = -EAGAIN;
+ 			break;
+ 		}
+@@ -566,7 +566,7 @@ pipe_write(struct kiocb *iocb, struct iov_iter *from)
+ 			continue;
+ 
+ 		/* Wait for buffer space to become available. */
+-		if (filp->f_flags & O_NONBLOCK) {
++		if (iocb->ki_flags & IOCB_NOWAIT) {
+ 			if (!ret)
+ 				ret = -EAGAIN;
+ 			break;
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 4f6f59b4f22a..2790c956bd4f 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3429,6 +3429,8 @@ static inline int iocb_flags(struct file *file)
+ 		res |= IOCB_DSYNC;
+ 	if (file->f_flags & __O_SYNC)
+ 		res |= IOCB_SYNC;
++	if (file->f_flags & O_NONBLOCK)
++		res |= IOCB_NOWAIT;
+ 	return res;
+ }
+ 
