@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B501BFD74
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B931BF9F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727862AbgD3NvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:51:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727798AbgD3Nuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:50:54 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41FBC208DB;
-        Thu, 30 Apr 2020 13:50:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588254654;
-        bh=wKg3mdRc7QvO4DqaiEtjwc6EMIbVoFS3vQY/Sg+NFzU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l4/PrBrnxcRrBqTBfo4gDYySKSHAvnz87UzGngk+yBUjTG1klCP9+5ioXdTcaHf3v
-         NWBGsBBtCYLV2+Um86ePCy9wG8NDl8qtJTp8+eArWieUtgiyiK+i/y4Tc6zbdQwyIe
-         QGJILX35lt8QoJ9bOZHo1mJK788zyVIr9OiDow6c=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
-        <amadeuszx.slawinski@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.6 08/79] ASoC: topology: Check return value of soc_tplg_create_tlv
-Date:   Thu, 30 Apr 2020 09:49:32 -0400
-Message-Id: <20200430135043.19851-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200430135043.19851-1-sashal@kernel.org>
-References: <20200430135043.19851-1-sashal@kernel.org>
+        id S1727114AbgD3Ntn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:49:43 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54543 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726906AbgD3Ntm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:49:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588254581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IEBaJZZn8G4VkvBwEauwJGfaJC10NnAmuAyBH5fbQnA=;
+        b=RCHbH6VrbDqs9IsoJovxZ0sJbi5CO3Hwsfp/n0Jb0Nqim2qMv/pJzLZtF3wZBvY6Yb/2tH
+        +zdDBgFFUsS2EJb/wXXfLmuVbd5aafXpR5Gfpi61SJ0lbm6dkYg0VJZtQS3Si9j2IduHpd
+        mK8hsjXBo5rmnEZ9K7cAwaz0ggITx78=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-oL5JzGQDNPOwVzUF-7r3Ww-1; Thu, 30 Apr 2020 09:49:39 -0400
+X-MC-Unique: oL5JzGQDNPOwVzUF-7r3Ww-1
+Received: by mail-wr1-f72.google.com with SMTP id r17so3882099wrg.19
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:49:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=IEBaJZZn8G4VkvBwEauwJGfaJC10NnAmuAyBH5fbQnA=;
+        b=dGXYAVsvUftzgJTyZqXaeKc6zMyL5Ii1DzTh9YyTD0r4lW8wM9+oWm1TxeMp8z4fCK
+         is+NH9B6G1dsq4ddK9Q6huLLRv9wNm8OJJR+tb5W2WSNEOYTNfjeE4waS7OrHkEiYtxr
+         bLYhYnTrVnNFJzfT6/hwJ7MzdHvtudzxfpJvWF3L8EQgQtJ6JjuUHvlmGcttBsXve6Qp
+         ev9kNmiCPnk9XSSydk5Vq9K7VNg5yaE4WcNyiDQ0vOL4fncTDJBhFih2EzE0vQRNWXtW
+         p3BhqXxM3XykI8P32scF/l66cwCmbxNs3amW2yFKYlYfvtuLmrQ/N9+190zKR6sEJk1d
+         k+MA==
+X-Gm-Message-State: AGi0PuaaL94EecAaoQUK0mVvIu9yAMdgyI1pCa/MTofY2zUro1UYczb9
+        u/69dxAXGMMfaKgeJavPRhCi0AsawauQZJxg31GwSPXINqVjcMxAG6jnc4UVXMHXHVWY9Tw5sF5
+        835+5WKhXRiB11eo+WkIvv3R+
+X-Received: by 2002:a1c:6a0b:: with SMTP id f11mr3082440wmc.123.1588254575073;
+        Thu, 30 Apr 2020 06:49:35 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKPdUBEwRbmSXCzUBZ0gX8bjI8gMw9HBoTwk6kFinzxWLo9L+OUtgiEezO+fqbN+i/GXfMCCg==
+X-Received: by 2002:a1c:6a0b:: with SMTP id f11mr3082411wmc.123.1588254574896;
+        Thu, 30 Apr 2020 06:49:34 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id 91sm4520928wra.37.2020.04.30.06.49.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 06:49:34 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>
+Subject: Re: [PATCH RFC 3/6] KVM: x86: interrupt based APF page-ready event delivery
+In-Reply-To: <20200430132805.GB40678@xz-x1>
+References: <20200429093634.1514902-1-vkuznets@redhat.com> <20200429093634.1514902-4-vkuznets@redhat.com> <20200429212708.GA40678@xz-x1> <87v9lhfk7v.fsf@vitty.brq.redhat.com> <20200430132805.GB40678@xz-x1>
+Date:   Thu, 30 Apr 2020 15:49:33 +0200
+Message-ID: <877dxxf5hu.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+Peter Xu <peterx@redhat.com> writes:
 
-[ Upstream commit 482db55ae87f3749db05810a38b1d618dfd4407c ]
+> On Thu, Apr 30, 2020 at 10:31:32AM +0200, Vitaly Kuznetsov wrote:
+>> as we need to write to two MSRs to configure the new mechanism ordering
+>> becomes important. If the guest writes to ASYNC_PF_EN first to establish
+>> the shared memory stucture the interrupt in ASYNC_PF2 is not yet set
+>> (and AFAIR '0' is a valid interrupt!) so if an async pf happens
+>> immediately after that we'll be forced to inject INT0 in the guest and
+>> it'll get confused and linkely miss the event.
+>> 
+>> We can probably mandate the reverse sequence: guest has to set up
+>> interrupt in ASYNC_PF2 first and then write to ASYNC_PF_EN (with both
+>> bit 0 and bit 3). In that case the additional 'enable' bit in ASYNC_PF2
+>> seems redundant. This protocol doesn't look too complex for guests to
+>> follow.
+>
+> Yep looks good.  We should also update the document too about the fact.
+>
 
-Function soc_tplg_create_tlv can fail, so we should check if it succeded
-or not and proceed appropriately.
+Of course. It will also mention the fact that #PF-based mechanism is
+now depreceted and unless guest opts into interrupt based delivery
+async_pf is not functional (except for APF_HALT).
 
-Signed-off-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200327204729.397-3-amadeuszx.slawinski@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/soc-topology.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 7a7c427de95d6..5d974a36cdc92 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -894,7 +894,13 @@ static int soc_tplg_dmixer_create(struct soc_tplg *tplg, unsigned int count,
- 		}
- 
- 		/* create any TLV data */
--		soc_tplg_create_tlv(tplg, &kc, &mc->hdr);
-+		err = soc_tplg_create_tlv(tplg, &kc, &mc->hdr);
-+		if (err < 0) {
-+			dev_err(tplg->dev, "ASoC: failed to create TLV %s\n",
-+				mc->hdr.name);
-+			kfree(sm);
-+			continue;
-+		}
- 
- 		/* pass control to driver for optional further init */
- 		err = soc_tplg_init_kcontrol(tplg, &kc,
-@@ -1355,7 +1361,13 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_dmixer_create(
- 		}
- 
- 		/* create any TLV data */
--		soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
-+		err = soc_tplg_create_tlv(tplg, &kc[i], &mc->hdr);
-+		if (err < 0) {
-+			dev_err(tplg->dev, "ASoC: failed to create TLV %s\n",
-+				mc->hdr.name);
-+			kfree(sm);
-+			continue;
-+		}
- 
- 		/* pass control to driver for optional further init */
- 		err = soc_tplg_init_kcontrol(tplg, &kc[i],
 -- 
-2.20.1
+Vitaly
 
