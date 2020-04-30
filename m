@@ -2,102 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69BF1C0007
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AB81BFFFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726909AbgD3PWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 11:22:16 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60248 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726411AbgD3PWQ (ORCPT
+        id S1726778AbgD3PUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 11:20:17 -0400
+Received: from mail.efficios.com ([167.114.26.124]:51162 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726468AbgD3PUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:22:16 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UFJh0b107342;
-        Thu, 30 Apr 2020 15:19:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=BlAQ+cr28c3G7QtbaaRKhxV/AvgpV2lx9FrBL1fLgEw=;
- b=LHpVGc/hSWEqEyg2SK8MhCm7H9iX9+gDrfb94BbQlA18Q05XwbIkcwaInirP4E7lzBQh
- dreySwYT2VAGG7p3q+GTOH6ZIcl3tDs6YPeJ8V4S33aQgkw+jyKrDxxBgcXo4gJnGb3M
- TA1bRfDzzLS8LpfCLm3I29zMDcegOC/2InAzgB9tzlk640UicYVNqbZ69nhiqOc3dHqX
- 7ce1+aiANeksvHKnsJ3qrXnRKtiLuxVoygJlinn3UrYGgcYY2Fbv80BA9tT3/+7QdgpD
- S+KG/go1/ZVO2C6qVZzKn2iLHGUWM2EjVDovodzouUiifkg+2H3QlvwLoIO6OnfjlgCU DQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 30p2p0hhvf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 15:19:50 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UFISuO077365;
-        Thu, 30 Apr 2020 15:19:49 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 30qtkwjy0e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Apr 2020 15:19:49 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03UFJlsc012797;
-        Thu, 30 Apr 2020 15:19:48 GMT
-Received: from char.us.oracle.com (/10.152.32.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Apr 2020 08:19:47 -0700
-Received: by char.us.oracle.com (Postfix, from userid 1000)
-        id 90C566A00FC; Thu, 30 Apr 2020 11:20:09 -0400 (EDT)
-Date:   Thu, 30 Apr 2020 11:20:08 -0400
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>, tsoni@codeaurora.org,
-        virtio-dev@lists.oasis-open.org, jan.kiszka@siemens.com,
-        jasowang@redhat.com, christoffer.dall@arm.com,
-        virtualization@lists.linux-foundation.org, alex.bennee@linaro.org,
-        iommu@lists.linux-foundation.org, stefano.stabellini@xilinx.com,
-        will@kernel.org, linux-kernel@vger.kernel.org,
-        pratikp@codeaurora.org
-Subject: Re: [PATCH 5/5] virtio: Add bounce DMA ops
-Message-ID: <20200430152008.GB872@char.us.oracle.com>
-References: <20200428174952.GA5097@quicinc.com>
- <20200428163448-mutt-send-email-mst@kernel.org>
- <275eba4b-dd35-aa95-b2e3-9c5cbf7c6d71@linux.intel.com>
- <20200429004531-mutt-send-email-mst@kernel.org>
- <b676430c-65b3-096e-ca48-ceebf10f4b28@linux.intel.com>
- <20200429023842-mutt-send-email-mst@kernel.org>
- <20200429094410.GD5097@quicinc.com>
- <20200429055125-mutt-send-email-mst@kernel.org>
- <20200429100953.GE5097@quicinc.com>
- <20200429061621-mutt-send-email-mst@kernel.org>
+        Thu, 30 Apr 2020 11:20:17 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id F36F528F2D9;
+        Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id qNbj4V80Mxgb; Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 9BC7B28F4C5;
+        Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 9BC7B28F4C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1588260015;
+        bh=Lu6W5976+YDF4QPySU4/Jni56pOvaynH+19pRZWdrr4=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=ovhxWUTIpdBc84kPQiTlr4mY6vQEJfAFOBmlZUryLQE5eHcIvkgxBr+w9HLGOFzME
+         Z3VVGGBEfLbjPsD9K2dZZclCcWhlC8ubVv2QdQKomNJGeaOfeFcbCYCbeSfCdK3RdF
+         rzURGDL2K8k7LC28VIUQMqFMdQick6ZLsVwFGcMRTpe0LopXyW2FayLpsH4B1MlA5M
+         lwca2NYHsFqnHSlQ5VUjFBGm/cSPJlHy7zMLgFbWi38N5m7h+ygfOE5C3iXaj0mnF9
+         /2ZzJJfDWMlvHpAG5A7FQZJrBKT5K0F27dq5xoERRb7H/LOOSDAgM+OJ5epo3KFDZQ
+         j8GMSrKQZ9G6g==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id rKevt2I_vHs9; Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 83C8E28F5B1;
+        Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
+Date:   Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Joerg Roedel <jroedel@suse.de>, rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Message-ID: <2026887875.77814.1588260015439.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200430145057.GB8135@suse.de>
+References: <20200429054857.66e8e333@oasis.local.home> <20200429105941.GQ30814@suse.de> <20200429082854.6e1796b5@oasis.local.home> <20200429100731.201312a9@gandalf.local.home> <20200430141120.GA8135@suse.de> <20200430145057.GB8135@suse.de>
+Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before
+ text_poke()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429061621-mutt-send-email-mst@kernel.org>
-User-Agent: Mutt/1.9.1 (2017-09-22)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004300124
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 clxscore=1011
- bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- mlxscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004300124
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3918 (ZimbraWebClient - FF75 (Linux)/8.8.15_GA_3895)
+Thread-Topic: x86/mm: Sync all vmalloc mappings before text_poke()
+Thread-Index: S3gTR+3031U2pkjEqLvIr5kkofeFSw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 06:20:48AM -0400, Michael S. Tsirkin wrote:
-> On Wed, Apr 29, 2020 at 03:39:53PM +0530, Srivatsa Vaddagiri wrote:
-> > That would still not work I think where swiotlb is used for pass-thr devices
-> > (when private memory is fine) as well as virtio devices (when shared memory is
-> > required).
-> 
-> So that is a separate question. When there are multiple untrusted
-> devices, at the moment it looks like a single bounce buffer is used.
-> 
-> Which to me seems like a security problem, I think we should protect
-> untrusted devices from each other.
+----- On Apr 30, 2020, at 10:50 AM, Joerg Roedel jroedel@suse.de wrote:
 
-There are two DMA pools code in Linux already - the TTM one for graphics
-and the mm/dmapool.c - could those be used instead? Or augmented at least?
+> On Thu, Apr 30, 2020 at 04:11:20PM +0200, Joerg Roedel wrote:
+>> The page-fault handler calls a tracing function which again ends up in
+>> trace_event_ignore_this_pid(), where it faults again. From here on the CPU is in
+>> a page-fault loop, which continues until the stack overflows (with
+>> CONFIG_VMAP_STACK).
+> 
+> Did some more testing to find out what this issue has to do with
+> 
+>	763802b53a42 x86/mm: split vmalloc_sync_all()
+> 
+> Above commit removes a call to vmalloc_sync_all() from the vmalloc
+> unmapping path, because that call caused severe performance regressions
+> on some workloads and was not needed on x86-64 anyway.
+> 
+> But that call caused vmalloc_sync_all() to be called regularily on
+> x86-64 machines, so that all page-tables were more likely to be in sync.
+> 
+> The call was introduced by commit
+> 
+>	3f8fd02b1bf1 mm/vmalloc: Sync unmappings in __purge_vmap_area_lazy()
+> 
+> to fix a correctness issue on x86-32 PAE systems, which also need
+> unmappings of large pages in the vmalloc area to be synchronized.
+> 
+> This additional call to vmalloc_sync_all() did hide the problem. I
+> verified it by reverting both of the above commits on v5.7-rc3 and
+> testing on that kernel. The problem is reproducible there too, the box
+> hangs hard.
+> 
+> So the underlying problem is that a vmalloc()'ed tracing buffer is used
+> to trace the page-fault handler, so that it has no chance of faulting in
+> the buffer address to poking_mm and maybe other PGDs.
+> 
+> The right fix is to call vmalloc_sync_mappings() right after allocating
+> tracing or perf buffers via v[zm]alloc().
+
+Either right after allocation, or right before making the vmalloc'd data
+structure visible to the instrumentation. In the case of the pid filter,
+that would be the rcu_assign_pointer() which publishes the new pid filter
+table.
+
+As long as vmalloc_sync_mappings() is performed somewhere *between* allocation
+and publishing the pointer for instrumentation, it's fine.
+
+I'll let Steven decide on which approach works best for him.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
