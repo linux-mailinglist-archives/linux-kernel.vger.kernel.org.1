@@ -2,56 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352A81C08ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD821C08C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgD3VMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:12:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727854AbgD3VMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:12:45 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8077208D6;
-        Thu, 30 Apr 2020 21:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588281164;
-        bh=BY3Hgo5t4BTs38VcTzig7+9uhGShsbCQBADRcW8MfS8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BzGmNngEM9g0/HwISElCO250AL+9P/5KZvtcVwjFIitnPlFlPOZX0Tz239VASq2k5
-         LfaBZfkUMeFGlvMhbk1vGNY+7P6Pixmjc3OCL037Cm1vb+mF+X9zS+U8FqncNJlEq3
-         LiySUpgQjPhWCwD7p23SqUFXZ8vhTrD18b4kJ9Zs=
-From:   Will Deacon <will@kernel.org>
-To:     mark.rutland@arm.com, Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     catalin.marinas@arm.com, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf:Avoid duplicate printouts
-Date:   Thu, 30 Apr 2020 22:12:27 +0100
-Message-Id: <158827969499.122898.13692306035235615025.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200402115940.4928-1-tangbin@cmss.chinamobile.com>
-References: <20200402115940.4928-1-tangbin@cmss.chinamobile.com>
+        id S1726784AbgD3VHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725844AbgD3VHJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 17:07:09 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9AEC035495
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:07:08 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id j16so916622oih.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Y0BHfY++8ymwoFsyQG3f2a5F1M5FJigDreAt8/y9wkw=;
+        b=tT/RHF/bfPnesXqFK6JRHF+/fL7TDEmxW2tMH4v+nGg1wDgnRcU5rKSFkUGLbHazAh
+         sn9+u/EMiquXspfC2UFxr9W2jqoSZSaLda3L7b3hzX+oPSu0gd8P8x1QrH3VGLm02C2C
+         +s4OMCohXuqTaeY0tssIradw6kYxEW9PsJwfBj4gPy1U66MYcQf7DncO6ljoe+lk5jvU
+         fKnVvytwK6V0wNiaFIWTLhP7C2dzeakwoRCc3lSBWMr3v2MOLe2j3gf80/t/ARVNw99j
+         on5eko7k+LRuZjwBgwTw7HxQuWXx22H4hy3vhQrNPmMiXk/Ns5dhIpdqZL0xyj8TkFQ6
+         0vow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y0BHfY++8ymwoFsyQG3f2a5F1M5FJigDreAt8/y9wkw=;
+        b=tROjKrE9L6T9MTkQpizvRCx2yr9T2bLxsg/R/BfrtPz7f2Q7sVrK/sQ9ZaVpDHyckk
+         U0A5z7PUhm4uX9N0PV2kkQYmMqFmYWIx1dL5M3jhbDlTRiKeTFhJModhSAPJl9Y3R6TY
+         EjiA8rXxurqSI1VXla0rczPHDpVbjzlJ+zsMce4PqfGBtkjGm8UKRjmvB92qNLrIFklq
+         emfSwa7QhlWUR5KES1f9bs1WZGyfVgvEVWdKAhlJRyDpYJN0Kec1Sn9u+wMlf7yhyqHO
+         CPstDn5pySAkgTKEpoeg9p5X+1SIlMEECY84yWoqyOeCh89sP4v5Majq29p+/oaVWwPE
+         LZeQ==
+X-Gm-Message-State: AGi0PuahWQesUgF71HGABJu/F/Foe5l8JqBC2eCXK7HRQvWhsZvTPB3m
+        XlWMxYkPZ7b9JlvZAjBV+nDMqQ==
+X-Google-Smtp-Source: APiQypIF07p8WMlOqZkR0BZmdYjCNv2JY6o4DDmIm1Lcv4/Fio2GvfUcSL2SHecf2CFgmirguuRxAg==
+X-Received: by 2002:aca:438b:: with SMTP id q133mr799994oia.148.1588280828409;
+        Thu, 30 Apr 2020 14:07:08 -0700 (PDT)
+Received: from [192.168.86.21] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id v9sm268330oib.56.2020.04.30.14.07.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 14:07:07 -0700 (PDT)
+Subject: Re: [PATCH v2 0/5] Fix ELF / FDPIC ELF core dumping, and use mmap_sem
+ properly in there
+To:     Rich Felker <dalias@libc.org>, Greg Ungerer <gerg@linux-m68k.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jann Horn <jannh@google.com>, Nicolas Pitre <nico@fluxnic.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        linux-c6x-dev@linux-c6x.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+References: <20200429214954.44866-1-jannh@google.com>
+ <20200429215620.GM1551@shell.armlinux.org.uk>
+ <CAHk-=wgpoEr33NJwQ+hqK1dz3Rs9jSw+BGotsSdt2Kb3HqLV7A@mail.gmail.com>
+ <31196268-2ff4-7a1d-e9df-6116e92d2190@linux-m68k.org>
+ <20200430145123.GE21576@brightrain.aerifal.cx>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <34688b36-4fdf-0c71-77cc-f98e6b9962df@landley.net>
+Date:   Thu, 30 Apr 2020 16:13:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200430145123.GE21576@brightrain.aerifal.cx>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Apr 2020 19:59:40 +0800, Tang Bin wrote:
-> Because platform_get_irq() has dev_err(),so this place
-> should be removed.
+On 4/30/20 9:51 AM, Rich Felker wrote:
+> This sounds correct. My understanding of FLAT shared library support
+> is that it's really bad and based on having preassigned slot indices
+> for each library on the system, and a global array per-process to give
+> to data base address for each library. Libraries are compiled to know
+> their own slot numbers so that they just load from fixed_reg[slot_id]
+> to get what's effectively their GOT pointer.
+> 
+> I'm not sure if anybody has actually used this in over a decade. Last
+> time I looked the tooling appeared broken, but in this domain lots of
+> users have forked private tooling that's not publicly available or at
+> least not publicly indexed, so it's hard to say for sure.
 
-Applied to arm64 (for-next/perf), thanks!
+Lots of people in this area are also still using 10 year old tools because it
+breaks every time they upgrade.
 
-[1/1] drivers/perf: arm_dsu_pmu: Avoid duplicate printouts
-      https://git.kernel.org/arm64/c/5810f00ade49
+Heck, nommu support for architectures musl doesn't support yet is _explicitly_
+the main thing keeping uClibc alive:
 
-Cheers,
--- 
-Will
+  https://www.openwall.com/lists/musl/2015/05/30/1
 
-https://fixes.arm64.dev
-https://next.arm64.dev
+Rob
