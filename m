@@ -2,108 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D8E1C06CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA0B1C06CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbgD3Tqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727073AbgD3Tqh (ORCPT
+        id S1727101AbgD3Tql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:46:41 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:26954 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726904AbgD3Tqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:46:37 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B6FC09B043
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:46:35 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z1so384446pfn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:46:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CNXt2FmO52CndewwhPBTf6I3mlSfjDZ6zV6z3LcD0VE=;
-        b=EeP8tZraylGTLmSTJH6KQFW78ibPGi/n6VR3j90ey0lht5hgmByF7Ag8EXQRMbYY57
-         IlG5tDXde2JUI0MV5tWKn0bOMGytiYol6M1pGGnhyrNAPTxlRKSNOdzzdJxAJ4f2sMAH
-         03lRzJvQy2wVsDVtMwt8z0cb7Mlulvu7VFMf4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CNXt2FmO52CndewwhPBTf6I3mlSfjDZ6zV6z3LcD0VE=;
-        b=pq3gHlkZRC1T5sdscDvpLFhJWMzjTy3qV05fbrnuerFmrrGVyu47D/MnuR1w3fNvZB
-         Co0AOMmqkXSFmN4d5Oi//PAI5/c3hU6MJ2dGvvB46XxDjQr/bDHoMx4HaaZzZT4emL5h
-         HkQyv2rxk/XrIxNzcMWwUCoYO7bnTKcICsLJuEs9RYu+w8eBln4WqupE/Ni11BzFHGhx
-         4BxF8hKX1pu+ynBdyQmTj7Kv1FdJwhTouUuQPMpalhot1g2iPCvgm4naiUnxNSSztLHb
-         DlSFp8Z4fW9lw/j0xKA9FMdxqFSjowckitGV8hbjxanwBzxoiOIsKDwU5Xz0oeJaGqKP
-         aBLQ==
-X-Gm-Message-State: AGi0Pua1GCukRYfMrvjoqWbUJlSCIdO52VhsLaHO3OzBKaGtOl+WTKRw
-        TIadEf+1ggEMg17NmraSGZ9dRg==
-X-Google-Smtp-Source: APiQypJ5w6J53xRub/aTQzetgTJoWBXw5Zybbw7vRWEji/fczl1ZvQQJUx093mXZMrARd9s0cFlHQQ==
-X-Received: by 2002:a63:8ac3:: with SMTP id y186mr506112pgd.277.1588275994930;
-        Thu, 30 Apr 2020 12:46:34 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id u3sm495993pfb.105.2020.04.30.12.46.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 12:46:34 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
-        narmstrong@baylibre.com, a.hajda@samsung.com,
-        Laurent.pinchart@ideasonboard.com, spanda@codeaurora.org
-Cc:     linux-gpio@vger.kernel.org, jonas@kwiboo.se,
-        robdclark@chromium.org, bjorn.andersson@linaro.org,
-        jeffrey.l.hugo@gmail.com, jernej.skrabec@siol.net,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, swboyd@chromium.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 6/6] arm64: dts: sdm845: Add "no-hpd" to sn65dsi86 on cheza
-Date:   Thu, 30 Apr 2020 12:46:17 -0700
-Message-Id: <20200430124442.v4.6.I89df9b6094549b8149aa8b8347f7401c678055b0@changeid>
-X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-In-Reply-To: <20200430194617.197510-1-dianders@chromium.org>
-References: <20200430194617.197510-1-dianders@chromium.org>
+        Thu, 30 Apr 2020 15:46:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588275996;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7tVzOz674GCv08lehU/753YbxFNL2OpNE+v8cho6GHc=;
+        b=NviJUGL9co2O4xQwPSBoduvcXrHDZUlWKYJ1karGyI7iikGLnedOCm9w3/2RC9RUDlxkpI
+        g7t8gYhQc1oQaXYY+blfiBeQln3v3UoQyWhwHfyiGcP3l8QMiG5sqjC6HKsUwRikQ/w7rS
+        XOzmXywEkE28EZEjAowC0ZjBBKwTZ0o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-170-ODtBXb3pONeHTeiLx_7oMg-1; Thu, 30 Apr 2020 15:46:34 -0400
+X-MC-Unique: ODtBXb3pONeHTeiLx_7oMg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75CEE102C84B;
+        Thu, 30 Apr 2020 19:46:33 +0000 (UTC)
+Received: from treble (ovpn-113-19.rdu2.redhat.com [10.10.113.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9B1EB68403;
+        Thu, 30 Apr 2020 19:46:32 +0000 (UTC)
+Date:   Thu, 30 Apr 2020 14:46:30 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: Remaining randconfig objtool warnings, linux-next-20200428
+Message-ID: <20200430194630.jkwysx6eftkaf6bu@treble>
+References: <CAK8P3a2qLJkokMGt48JRky=WUeAbJRuNmoD1oqfWdrGSC6y1LA@mail.gmail.com>
+ <20200428161044.caamvx67t2z4t6vd@treble>
+ <20200429185536.5xshpcwtn4be4llh@treble>
+ <CAK8P3a0M9qh2-_5VKx89ZsTfy5S1zhfWwnO7rN4xYhDwBBvPjw@mail.gmail.com>
+ <20200429231115.z2mo5bsmrmj4oark@treble>
+ <20200429232835.yw6ajtjyleob3lmz@treble>
+ <CAK8P3a07P49-AdHForem=V0_cfiTFSLLhHCEQk6-UDBOg3-Q_g@mail.gmail.com>
+ <20200430143350.qezebqmx2xwdxqxq@treble>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200430143350.qezebqmx2xwdxqxq@treble>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't have the HPD line hooked up to the bridge chip.  Add it as
-suggested in the patch ("dt-bindings: drm/bridge: ti-sn65dsi86:
-Document no-hpd").
+On Thu, Apr 30, 2020 at 09:33:50AM -0500, Josh Poimboeuf wrote:
+> On Thu, Apr 30, 2020 at 03:41:56PM +0200, Arnd Bergmann wrote:
+> > On Thu, Apr 30, 2020 at 1:28 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > >
+> > > On Wed, Apr 29, 2020 at 06:11:15PM -0500, Josh Poimboeuf wrote:
+> > > > > We can probably move those SYS_NI() instances to kernel/sys_ni.c,
+> > > > > which does not include the header, but it's still a bit ugly. I'll try
+> > > > > that tomorrow
+> > > > > unless you come up with a better suggestion first.
+> > > >
+> > > > Oh I guess arm32 doesn't have SYS_NI defined.  All this syscall aliasing
+> > > > stuff is a total mystery to me.
+> > >
+> > > Another idea would be to split up syscalls.h into two files: one for
+> > > SYSCALL_* macros and one for sys_*() function prototypes.  It sounds
+> > > like the latter aren't needed by most header files anyway.
+> > >
+> > >  * Please note that these prototypes here are only provided for information
+> > >  * purposes, for static analysis, and for linking from the syscall table.
+> > >  * These functions should not be called elsewhere from kernel code.
+> > 
+> > To me the main purpose of the header is to ensure the calling conventions
+> > are sane, so I'd definitely want to see the declarations included whenever
+> > a syscall is defined. I would also expect to see a warnig from sparse, or
+> > from gcc with "make W=1" when an extern function is defined with no
+> > prior declaration.
+> 
+> Yup, makes sense.  I think I've been getting confused by the syscall
+> wrappers.
+> 
+> > How hard would it be to change objtool instead of changing the sources?
+> 
+> It might be a little tricky, but I can look into it.
 
-NOTE: this patch isn't expected to have any effect but just keeps us
-cleaner for the future.  Currently the driver in Linux just assumes
-that nobody has HPD hooked up.  This change allows us to later
-implement HPD support in the driver without messing up sdm845-cheza.
+So there's an easy fix below, just define an x86-specific SYSCALL_ALIAS.
+It also requries moving the syscall alias macros to syscalls.h, but
+that's probably where they belong anyway.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
+But the objtool .cold parent alias function detection is a little
+smelly, so I might end up cleaning that up instead if I can figure out a
+good way to do it.
 
-Changes in v4: None
-Changes in v3: None
-Changes in v2:
-- ("arm64: dts: sdm845: Add "no-hpd" to sn65dsi86 on cheza") new for v2.
-
- arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-index 9070be43a309..5938f8b2aa2f 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845-cheza.dtsi
-@@ -548,6 +548,8 @@ sn65dsi86_bridge: bridge@2d {
- 		clocks = <&rpmhcc RPMH_LN_BB_CLK2>;
- 		clock-names = "refclk";
+diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+index a84333adeef2..abe6e633f8dc 100644
+--- a/arch/x86/include/asm/syscall_wrapper.h
++++ b/arch/x86/include/asm/syscall_wrapper.h
+@@ -79,6 +79,8 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+ 		return __se_##name(__VA_ARGS__);			\
+ 	}
  
-+		no-hpd;
++#define SYSCALL_ALIAS(alias, name) __alias(name) typeof(name) alias
 +
- 		ports {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--- 
-2.26.2.526.g744177e7f7-goog
+ #define __COND_SYSCALL(abi, name)					\
+ 	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
+ 	{								\
+diff --git a/include/linux/linkage.h b/include/linux/linkage.h
+index d796ec20d114..369c65d4386c 100644
+--- a/include/linux/linkage.h
++++ b/include/linux/linkage.h
+@@ -22,20 +22,6 @@
+ #define asmlinkage CPP_ASMLINKAGE
+ #endif
+ 
+-#ifndef cond_syscall
+-#define cond_syscall(x)	asm(				\
+-	".weak " __stringify(x) "\n\t"			\
+-	".set  " __stringify(x) ","			\
+-		 __stringify(sys_ni_syscall))
+-#endif
+-
+-#ifndef SYSCALL_ALIAS
+-#define SYSCALL_ALIAS(alias, name) asm(			\
+-	".globl " __stringify(alias) "\n\t"		\
+-	".set   " __stringify(alias) ","		\
+-		  __stringify(name))
+-#endif
+-
+ #define __page_aligned_data	__section(.data..page_aligned) __aligned(PAGE_SIZE)
+ #define __page_aligned_bss	__section(.bss..page_aligned) __aligned(PAGE_SIZE)
+ 
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+index 1815065d52f3..dc93d7e595af 100644
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -252,6 +252,20 @@ static inline int is_syscall_trace_event(struct trace_event_call *tp_event)
+ 	static inline long __do_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))
+ #endif /* __SYSCALL_DEFINEx */
+ 
++#ifndef SYSCALL_ALIAS
++#define SYSCALL_ALIAS(alias, name) asm(			\
++	".globl " __stringify(alias) "\n\t"		\
++	".set   " __stringify(alias) ","		\
++		  __stringify(name))
++#endif
++
++#ifndef cond_syscall
++#define cond_syscall(x)	asm(				\
++	".weak " __stringify(x) "\n\t"			\
++	".set  " __stringify(x) ","			\
++		 __stringify(sys_ni_syscall))
++#endif
++
+ /*
+  * Called before coming back to user-mode. Returning to user-mode with an
+  * address limit different than USER_DS can allow to overwrite kernel memory.
 
