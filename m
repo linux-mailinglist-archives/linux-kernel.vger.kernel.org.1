@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94051BEE70
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CB51BEE74
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgD3DAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 23:00:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:48020 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbgD3DAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 23:00:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C8F5B1063;
-        Wed, 29 Apr 2020 20:00:15 -0700 (PDT)
-Received: from [10.163.71.104] (unknown [10.163.71.104])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 56ACE3F68F;
-        Wed, 29 Apr 2020 20:00:13 -0700 (PDT)
-Subject: Re: [PATCH V2 00/16] arm64/cpufeature: Introduce ID_PFR2, ID_DFR1,
- ID_MMFR5 and other changes
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        mark.rutland@arm.com, maz@kernel.org, suzuki.poulose@arm.com,
-        James Morse <james.morse@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-References: <1586857710-17154-1-git-send-email-anshuman.khandual@arm.com>
- <6749304e-8a4d-f4b9-eb40-91f0dd13166e@arm.com>
- <20200429212614.GD8604@willie-the-truck>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <da15c0f0-f8ec-c2bc-bd5b-907a75119dc1@arm.com>
-Date:   Thu, 30 Apr 2020 08:29:44 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726486AbgD3DAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 23:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726180AbgD3DAc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 23:00:32 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A740C035494
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 20:00:32 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id u15so4875389ljd.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 20:00:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LI1gGiD+U8SlesBE4BliBLDJc/+jluNrXUyQUPdrNJc=;
+        b=dQqZHjXB2qAzxB7U2AEFSY8jqzhQa6ziKCE2j5WLRLJMSQcxXapG/+gepOLQ8l49yC
+         1m8W8Chvbzs5g7bO3RtkLUC6KKBCSkLAn3g5PFEVVF4mNNJXOM1dzpPF0SdSPBEpZ1sc
+         84r4nFuHhCEEdsKvf8MqtVQZdlHNUp3yuWa0dHlCi6MiDi+bgzpeKdQ0drEEejegjgfB
+         3yyfkLRVTEyMJGM3eO1AMl9rjg4FYxBlsOpQeJOwgGZqkhB3ar22ADYvymq+S0CLwGod
+         mlj3QK8Trik5DxvAdqeRVKcZsnwxRfp8+6A5rOwRBR3H8p6bIH+RENbM9UR+bU/LU+Pa
+         +Lhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LI1gGiD+U8SlesBE4BliBLDJc/+jluNrXUyQUPdrNJc=;
+        b=oK/HVLUuByUxmF/DBiQsS1PGR0BUYx9gHFqvQgOkL98QK4xFVMZQHvK9AemVyCv4Br
+         GhdL9Efd/XncDN1qe6SlPIu4ExoYmUEQu2omXJ2xY6ZVba/ZW7DJA70LN3fXIe5HrFN7
+         P9XEUeo2VetAejAwEKJch/ZzYsTBEeL0+AV0zUi2TAqrXH6veyfH9K+o+KsSf/Td6SBV
+         g9NRcJBMfogUzvSFLhFtkXSy/25ghCJqjHy16fqOjAk/N++WV02eqPowvzI68soHQIbR
+         Kkn4O0ZPh7jQpujL4ZoGQt2IjSWs3DYvxxKn2fLRRNjjkNuvCNAZg/3Lfj70RUD8+54A
+         qCrw==
+X-Gm-Message-State: AGi0PuaWe0/S9RSkAeotDsoP6Jt/0TFu8X52dnhCjZluBU4dL97EoAic
+        LxQxS8V1PSOhiEAbHJp92TeaM/EJxE8S+snbiWbLmw==
+X-Google-Smtp-Source: APiQypK4nfDTS24pWald3rMbn8NAq8hbBXn7T4Hnxzm19fS3+AH/v9SUxej6h18Ck9+QrJHx2EhAfzemZf8iaCtwlV0=
+X-Received: by 2002:a2e:b0c5:: with SMTP id g5mr726649ljl.203.1588215630047;
+ Wed, 29 Apr 2020 20:00:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200429212614.GD8604@willie-the-truck>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
+ <CAHk-=wi_zr9dwX3UBYvgkmm6eVQfRP50orryJ6ZVAxuFqdSG5A@mail.gmail.com>
+ <20200428190836.GC29960@redhat.com> <CAHk-=wi03QRcUR1DfbEr+Pw-DAMENzY-FuRcGawtj9p597=p2w@mail.gmail.com>
+ <CAG48ez03ABTa-KbCtFHqB1hOT7dgAM96c3kiw-e80B+utSEwYw@mail.gmail.com>
+ <CAHk-=wjTLnMuZmBO2foeHhsLAoUTpUi7oBVJ67F4XKB+tdEDbQ@mail.gmail.com>
+ <CAG48ez3EQOvdbzu9aO-cEAJwF_=fJzn1Cg0LMs3ruc=5r1ie5w@mail.gmail.com>
+ <CAHk-=whTgFbjGTP=CqMWs_LOkY7bWvLQGYKwKx86amdbMovAkw@mail.gmail.com>
+ <CAG48ez2-Nu2ALN6VEUZL-prtR_Kk8QYBHcnvuh0aU2e4zf37RA@mail.gmail.com>
+ <CAHk-=wh=G47oD2F1CgOrvGFbEPh2ddMKLV4_wV_bs6S=98aZ5A@mail.gmail.com>
+ <AM6PR03MB5170A6AA240D2E8F5E88B911E4AD0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wguiKq8yf11WJjgSL4ADKZ5sLe_Qbd7vHEqAkTvZJ+d+Q@mail.gmail.com>
+ <CAHk-=wjUZLybZBJgOtD2gng=FS7USrbQQ1-tn5M+UP5DbCWdzw@mail.gmail.com>
+ <CAG48ez0FL3i4eGFYryOwG2nnS+JigfKYAVSV9ogVHjmjOWzsrA@mail.gmail.com>
+ <AM6PR03MB5170C5D02C6FCB6D69DFE3ADE4AA0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wg6oKSLkVhY5oqOFyzCCSr9eYPGK2SHJfgCXF_QOmPKog@mail.gmail.com>
+In-Reply-To: <CAHk-=wg6oKSLkVhY5oqOFyzCCSr9eYPGK2SHJfgCXF_QOmPKog@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 30 Apr 2020 05:00:03 +0200
+Message-ID: <CAG48ez25=6qrCU51dEAV_ciyU2jvPuRFWfFOAAT22kmeAZccuQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 30, 2020 at 4:20 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Wed, Apr 29, 2020 at 6:08 PM Bernd Edlinger
+> <bernd.edlinger@hotmail.de> wrote:
+> >
+> > I added the BIG FAT WARNNIG comments as a mitigation for that.
+> > Did you like those comments?
+>
+> No.
+>
+> What's the point olf saying "THIS CODE IS GARBAGE" and then expecting
+> that to make it ok?
+>
+> No,m that doesn't make it ok. It just means that it should have been
+> done differently.
+>
+> > Yes, exactly, the point is the caller is expected to call wait in that
+> > scenario, otherwise the -EAGAIN just repeats forever, that is an API
+> > change, yes, but something unavoidable, and the patch tries hard to
+> > limit it to cases where the live-lock or pseudo-dead-lock is unavoidable
+> > anyway.
+>
+> I'm getting really fed up with your insistence on that KNOWN BROKEN
+> garbage test-case.
+>
+> It's shit. The test-case is wrong. I've told you before.
+>
+> Your patch as-is breaks other cases that are *not* wrong in the kernel
+> currently, and that don't have test-cases because they JustWork(tm).
+>
+> The livelock isn't interesting. The test-case that shows it is pure
+> garbage, and is written wrong.
+>
+> IF that test-case hadn't been buggy in the first place, it would have
+> had ignored its child (or had a handler for SIGCHLD), and not
+> livelocked.
 
+But if we go with Bernd's approach together with your restart
+suggestion, then simply doing PTRACE_ATTACH on two threads A and B
+would be enough to livelock, right?
 
-On 04/30/2020 02:56 AM, Will Deacon wrote:
-> Hi Anshuman,
-> 
-> On Wed, Apr 29, 2020 at 03:07:15PM +0530, Anshuman Khandual wrote:
->> On 04/14/2020 03:18 PM, Anshuman Khandual wrote:
->>> This series is primarily motivated from an adhoc list from Mark Rutland
->>> during our previous ID_ISAR6 discussion [1]. The current proposal also
->>> accommodates some more suggestions from Will and Suzuki.
->>>
->>> This series adds missing 32 bit system registers (ID_PFR2, ID_DFR1 and
->>> ID_MMFR5), adds missing features bits on all existing system registers
->>> (32 and 64 bit) and some other miscellaneous changes. While here it also
->>> includes a patch which does macro replacement for various open bits shift
->>> encodings for various CPU ID registers. There is a slight re-order of the
->>> patches here as compared to the previous version (V1).
->>>
->>> This series is based on v5.7-rc1. All feature bits enabled here can be
->>> referred in ARM DDI 0487F.a specification. Though I have tried to select
->>> appropriate values for each new feature being added here, there might be
->>> some inconsistencies (or mistakes). In which case, please do let me know
->>> if anything needs to change. Thank you.
->>>
->>> [1] https://patchwork.kernel.org/patch/11287805/
->>>
->>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>> Cc: Will Deacon <will@kernel.org>
->>> Cc: Mark Rutland <mark.rutland@arm.com> 
->>> Cc: Marc Zyngier <maz@kernel.org>
->>> Cc: James Morse <james.morse@arm.com>
->>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Cc: kvmarm@lists.cs.columbia.edu
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>>
->>> Changes in V2:
->>>
->>> - Added Suggested-by tag from Mark Rutland for all changes he had proposed
->>> - Added comment for SpecSEI feature on why it is HIGHER_SAFE per Suzuki
->>> - Added a patch which makes ID_AA64DFR0_DOUBLELOCK a signed feature per Suzuki
->>> - Added ID_DFR1 and ID_MMFR5 system register definitions per Will
->>> - Added remaining features bits for relevant 64 bit system registers per Will
->>> - Changed commit message on [PATCH 5/7] regarding TraceFilt feature per Suzuki
->>> - Changed ID_PFR2.CSV3 (FTR_STRICT -> FTR_NONSTRICT) as 64 bit registers per Will
->>> - Changed ID_PFR0.CSV2 (FTR_STRICT -> FTR_NONSTRICT) as 64 bit registers per Will 
->>> - Changed some commit messages
->>
->> Just a gentle ping. I am wondering if you had a chance to glance
->> through this updated series.
-> 
-> Please can you resend based on for-next/cpufeature?
+tracer: PTRACE_ATTACHes to A
+B: enters de_thread()
+tracer: attempts to PTRACE_ATTACH to B
 
-Sure, will do.
+Now the tracer will loop on PTRACE_ATTACH, right?
