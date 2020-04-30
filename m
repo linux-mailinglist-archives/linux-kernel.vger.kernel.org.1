@@ -2,114 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE891C028A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1091C028F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgD3Qai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:30:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgD3Qah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:30:37 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 260F92070B;
-        Thu, 30 Apr 2020 16:30:36 +0000 (UTC)
-Date:   Thu, 30 Apr 2020 12:30:34 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Joerg Roedel <jroedel@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
+        id S1726777AbgD3QcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:32:16 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:56113 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726405AbgD3QcQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:32:16 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200430163214euoutp013d43fb6b1be7afb8570f6d0bbcfdc832~Kpf9Pk89g2812028120euoutp01Q
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 16:32:14 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200430163214euoutp013d43fb6b1be7afb8570f6d0bbcfdc832~Kpf9Pk89g2812028120euoutp01Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1588264334;
+        bh=LFcm6V8qtVXvQexOictvz9Ik09kFXwdv4ZywOAq81Jk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mtcp7KY5VMS4x4UJFWOefyHov3F6PmCXtX8msTa4/nt7ZiBy58/0wYkhf220EcRIZ
+         vYPa0riCZyTDo5xytNtO9v/N8ojP4ZxCti9OST2C5ZetD5Gu4RwDA4e8Bevu+rOAk7
+         mb3awwPMU3dFvZnqpO6cYtYLqG76/SZhf1zdlJp0=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20200430163214eucas1p24990db031dd7172c02b98e5657f400d9~Kpf88I1RL1130811308eucas1p2l;
+        Thu, 30 Apr 2020 16:32:14 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 1D.E8.61286.E8DFAAE5; Thu, 30
+        Apr 2020 17:32:14 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200430163213eucas1p2c5c040b5d34cf2f41286b99751df7cb2~Kpf8QxehL1130811308eucas1p2k;
+        Thu, 30 Apr 2020 16:32:13 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200430163213eusmtrp2891e1d78639f1be8ecbcddc47f25776e~Kpf8QAPqO1116911169eusmtrp2f;
+        Thu, 30 Apr 2020 16:32:13 +0000 (GMT)
+X-AuditID: cbfec7f2-f0bff7000001ef66-9c-5eaafd8e4e54
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 9F.AB.07950.D8DFAAE5; Thu, 30
+        Apr 2020 17:32:13 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20200430163213eusmtip2b910e8e44cfc63999246899e531558d8~Kpf8FfHlZ1765417654eusmtip2W;
+        Thu, 30 Apr 2020 16:32:13 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before
- text_poke()
-Message-ID: <20200430123034.5705cd47@gandalf.local.home>
-In-Reply-To: <947455570.77870.1588263502669.JavaMail.zimbra@efficios.com>
-References: <20200429054857.66e8e333@oasis.local.home>
-        <20200429105941.GQ30814@suse.de>
-        <20200429082854.6e1796b5@oasis.local.home>
-        <20200429100731.201312a9@gandalf.local.home>
-        <20200430141120.GA8135@suse.de>
-        <20200430145057.GB8135@suse.de>
-        <2026887875.77814.1588260015439.JavaMail.zimbra@efficios.com>
-        <20200430121627.682061e2@gandalf.local.home>
-        <947455570.77870.1588263502669.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Thiago Jung Bauermann <bauerman@linux.vnet.ibm.com>,
+        AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        James Morse <james.morse@arm.com>,
+        Bhupesh Sharma <bhsharma@redhat.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH v2 0/2] Make memory size reporting in kexec_file_load()
+ accurate
+Date:   Thu, 30 Apr 2020 18:31:40 +0200
+Message-Id: <20200430163142.27282-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200430105034.17513-1-l.stelmach@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0hTYRjHfXcuHler1xX4ZJGx7KJQKkqcUMJBH86HPkgUQaE18zRNN2Pz
+        kpFYVpJi3ruZ1BxqNsTL1LGmqIzQmbLKUCskS41QTPOSqZi20zHq2+95nv/zf/4vvAwhH6O8
+        mThtEq/TqhIUtJS0dC69OpD3yxQVWLdIs12DVootn3xJsXP1qzQ7XZWL2HsNXuxw21MJ+95e
+        jVjz6ADFvrWV0Wzl4BsJ29dhkLAr7Usk22i+S7ADH9podnzGQbKL9aNUOOZ+3sojuZrHNYgz
+        m7JpbmigleamnE537pO9keQaKzK46bZ+mstrMiFuzryTc9ycpyI2nJaGxfAJcSm8LuDIOWls
+        syGfumQiL0/NXyevISuRgzwYwCFgX8pyF1iOqxF8+Lg3B0ldPI/gY451fTCH4N7jiL8L2eWj
+        7qLoKYIpx02JWHxFUJvlpAQVjZWQX+n4w1vxewk8MIQLTOAiCVQX+wq8BR+HHwu3/8Qg8R4w
+        vWuQCCzDoTCyYkPiNR94dL2HFtgDh0HmXdFfhj2h++EYKfBm7A81mYOk6O8DN5ofEUIgwOUM
+        GNpnXKaMqzgKQ9+VoucWmOhqchd5B6w9f7IuyYDiokPiai4CS9kiKWpCYci5TAsaAvtBnS1A
+        bCvBONJGi6ub4N03TzHBJiiy3CfEtgxuZ8lFtS/U5reuG3rDnYlqVIAUpf+9pfS//KX/bhkQ
+        YUJefLJeo+b1QVo+9aBepdEna9UHzydqzMj193pWu2at6EdftB1hBik2yhizKUpOqVL0aRo7
+        AoZQbJV9jnS1ZDGqtCu8LvGsLjmB19vRdoZUeMmCjeORcqxWJfHxPH+J1/2dShgP72vILTU1
+        bC6O8Q8peVI3ezG3pXlXfXdByUKHtjchvky5+tAvxmaMbbrgIA/tdktn1s524sCG1+nhZ35W
+        bKs7JStcUV51e7Ey/uXZsZ6hzPjJ6BrUG3xy32FllO+MerajP5CZGm45nRZler0c98m4rGwN
+        7DxhrCzMVmXsX6A1Gt5SpSD1saogf0KnV/0GD+9izXcDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJIsWRmVeSWpSXmKPExsVy+t/xe7q9f1fFGfRcl7E4fn0Hq8XCN6dY
+        LT5v+Mdm8X5ZD6PFtI3iFvf3LWeyuHloBaPFpsfXWC0u75rDZrH0+kUmi0sHFjBZ/Nn/k8Vi
+        86apzBbXbu1js3j58QSLxY8Nj1kdBDy+t/axeKyZt4bRY9OqTjaPO9f2sHm8O3eO3ePBoc0s
+        HpuX1Hu833eVzaNvyypGj8+b5DxOtHxhDeCO0rMpyi8tSVXIyC8usVWKNrQw0jO0tNAzMrHU
+        MzQ2j7UyMlXSt7NJSc3JLEst0rdL0MvYuqCftWAVS8W7L40sDYw7mLsYOTkkBEwkOhc+Zu9i
+        5OIQEljKKLF2zUyWLkYOoISUxMq56RA1whJ/rnWxQdQ8ZZR4+vEOK0iCTcBRon/pCVaQhIjA
+        YyaJpZ92gznMAtOYJA5PWwu2QlggQOL0l8tgHSwCqhKrbmxkArF5BawlHv3ZxQixQl5iduNp
+        NhCbU8BGomnqObB6IaCaxvOH2SDqBSVOznwCdh2zgLrE+nlCIGF+AS2JNU3XWUBsZqAxzVtn
+        M09gFJqFpGMWQscsJFULGJlXMYqklhbnpucWG+kVJ+YWl+al6yXn525iBEb7tmM/t+xg7HoX
+        fIhRgINRiYeXY9OqOCHWxLLiytxDjBIczEoivA9jgUK8KYmVValF+fFFpTmpxYcYTYHenMgs
+        JZqcD0xEeSXxhqaG5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1MLUotg+pg4OKUaGG0TXy/y
+        nml564TG9acNXzN/HpdL+XrFd/bSXN2lz5d/uBr97NARr1tf1T0X1DxJWCYddcPtjFiYnZ/H
+        2Q+m8VofFrOsEuOfemR/RODl1E2pglUnTK7ZvPbbVJC9Uu5PzkYfBvHGQK8HX62+1GkeKmT9
+        vpc7v+uZZOmFgAmb+G7de/m/66Pxt2dKLMUZiYZazEXFiQAjkHeDDAMAAA==
+X-CMS-MailID: 20200430163213eucas1p2c5c040b5d34cf2f41286b99751df7cb2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200430163213eucas1p2c5c040b5d34cf2f41286b99751df7cb2
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200430163213eucas1p2c5c040b5d34cf2f41286b99751df7cb2
+References: <20200430105034.17513-1-l.stelmach@samsung.com>
+        <CGME20200430163213eucas1p2c5c040b5d34cf2f41286b99751df7cb2@eucas1p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+Calling kexec_add_buffer() page-alligns the value of kbuf.memsz, so it
+is not same as the requested value. Hence both bufsz and memsz should
+after kexec_add_buffer() is called should be be reported separately.
 
-> ----- On Apr 30, 2020, at 12:16 PM, rostedt rostedt@goodmis.org wrote:
-> 
-> > On Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
-> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> >   
-> >> > The right fix is to call vmalloc_sync_mappings() right after allocating
-> >> > tracing or perf buffers via v[zm]alloc().  
-> >> 
-> >> Either right after allocation, or right before making the vmalloc'd data
-> >> structure visible to the instrumentation. In the case of the pid filter,
-> >> that would be the rcu_assign_pointer() which publishes the new pid filter
-> >> table.
-> >> 
-> >> As long as vmalloc_sync_mappings() is performed somewhere *between* allocation
-> >> and publishing the pointer for instrumentation, it's fine.
-> >> 
-> >> I'll let Steven decide on which approach works best for him.  
-> > 
-> > As stated in the other email, I don't see it having anything to do with
-> > vmalloc, but with the per_cpu() allocation. I'll test this theory out by
-> > not even allocating the pid masks and touching the per cpu data at every
-> > event to see if it crashes.  
-> 
-> As pointed out in my other email, per-cpu allocation uses vmalloc when
-> size > PAGE_SIZE.
+Łukasz Stelmach (2):
+  arm64: kexec_file: print appropriate variable
+  x86: kexec_file: print appropriate variable
 
-And as I replied:
+ arch/arm64/kernel/machine_kexec_file.c | 6 +++---
+ arch/x86/kernel/crash.c                | 2 +-
+ arch/x86/kernel/kexec-bzimage64.c      | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-	buf->data = alloc_percpu(struct trace_array_cpu);
+-- 
+2.25.0
 
-struct trace_array_cpu {
-	atomic_t		disabled;
-	void			*buffer_page;	/* ring buffer spare */
-
-	unsigned long		entries;
-	unsigned long		saved_latency;
-	unsigned long		critical_start;
-	unsigned long		critical_end;
-	unsigned long		critical_sequence;
-	unsigned long		nice;
-	unsigned long		policy;
-	unsigned long		rt_priority;
-	unsigned long		skipped_entries;
-	u64			preempt_timestamp;
-	pid_t			pid;
-	kuid_t			uid;
-	char			comm[TASK_COMM_LEN];
-
-	bool			ignore_pid;
-#ifdef CONFIG_FUNCTION_TRACER
-	bool			ftrace_ignore_pid;
-#endif
-};
-
-That doesn't look bigger than PAGE_SIZE to me.
-
--- Steve
