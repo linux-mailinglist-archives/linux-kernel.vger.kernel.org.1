@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A051C0B16
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 01:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2671C0B1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 01:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727997AbgD3XuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 19:50:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59894 "EHLO mail.kernel.org"
+        id S1728040AbgD3XuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 19:50:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727980AbgD3XuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 19:50:12 -0400
-Subject: Re: [GIT PULL] Kunit update for Linux 5.7-rc4
+        id S1728012AbgD3XuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 19:50:13 -0400
+Subject: Re: [GIT PULL] SELinux fixes for v5.7 (#2)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588290611;
-        bh=HWovgElU4hW1BKQU5J0aUpKsqfA7ezE2T/76G2IjHko=;
+        s=default; t=1588290613;
+        bh=/RxoykwLQ6LsgORNuS+1y42Y9m3kK1OucyrMWfHPLpI=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=UzhnhWOyx6EDMeadZiRcK7ZnhRrXClDXVKcb9Lxf2dxGmbihy9zmgGgIamoFqbLrN
-         mb7B7BsLLYy5oklosJNritD0xDdlfWz15W0tA3y29SWPPijWbQi8y4XllqRHuxi857
-         3HkHez3lkEqUd6qx5u2Xr3SwQ3fSL4hvX+MMCdVU=
+        b=sgHIZNOFqdlHao+qX8wf2m49aGE5Kd1UN29kKmeqv1t75XJOagWTHT1Aw+bHsJRv2
+         cdf4Dw7ULFbfmNXjgCG9sOklZ6qiL1HoOqumEiYxxciLsA/KbFua8USeC0sodwNIQX
+         9niym380IWGLs42GmYGFLcMVOf5YqZL8u/m8N3WM=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <c5edb7c4-c5ed-0209-3c7f-cace9d775d64@linuxfoundation.org>
-References: <c5edb7c4-c5ed-0209-3c7f-cace9d775d64@linuxfoundation.org>
+In-Reply-To: <CAHC9VhTu3YWPmwtA7RERHDRhQt0wAkmN4GJCmaRY7KSFRwtACQ@mail.gmail.com>
+References: <CAHC9VhTu3YWPmwtA7RERHDRhQt0wAkmN4GJCmaRY7KSFRwtACQ@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <c5edb7c4-c5ed-0209-3c7f-cace9d775d64@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
- tags/linux-kselftest-kunit-5.7-rc4
-X-PR-Tracked-Commit-Id: 6cb1818798812fe7e2c8fe3f489ad1c86adfd6c4
+X-PR-Tracked-Message-Id: <CAHC9VhTu3YWPmwtA7RERHDRhQt0wAkmN4GJCmaRY7KSFRwtACQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+ tags/selinux-pr-20200430
+X-PR-Tracked-Commit-Id: fb73974172ffaaf57a7c42f35424d9aece1a5af6
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0468915bdb7cd3160c892664a53ce320e254281e
-Message-Id: <158829061177.2910.14526058322469740978.pr-tracker-bot@kernel.org>
-Date:   Thu, 30 Apr 2020 23:50:11 +0000
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     torvalds@linux-foundation.org, skhan@linuxfoundation.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-PR-Merge-Commit-Id: 39e16d93424b61e0b5bd182e308a56d5f0e489d6
+Message-Id: <158829061335.2910.993997153559109286.pr-tracker-bot@kernel.org>
+Date:   Thu, 30 Apr 2020 23:50:13 +0000
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 30 Apr 2020 13:26:18 -0600:
+The pull request you sent on Thu, 30 Apr 2020 17:24:20 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-kunit-5.7-rc4
+> git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20200430
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0468915bdb7cd3160c892664a53ce320e254281e
+https://git.kernel.org/torvalds/c/39e16d93424b61e0b5bd182e308a56d5f0e489d6
 
 Thank you!
 
