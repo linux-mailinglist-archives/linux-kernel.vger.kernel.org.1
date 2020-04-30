@@ -2,88 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866DE1BEE09
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 04:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268291BEE10
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 04:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgD3CHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 22:07:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgD3CHC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 22:07:02 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A171C035494;
-        Wed, 29 Apr 2020 19:07:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=djVWTxQYfvvGPGVFEwE2B90kkenXlbJGcD+PszmK/2M=; b=JJMEwpVhbqEyGZO1pKvJpLnxth
-        l1dJJuerlo8k6yWXdJPNp+1kH1Oyo5kRouZLy3l789vCJ+vxL/gSEbyC4c3psSR8P804xeCogBX2M
-        VAFy1RSfIdypQziZGq1UySM3FMVxZQNei7JFpfQLE1Igoi0iJ2NA5A2aYquBMVVgSziPXEBh0Nxzh
-        ZQ1ZBIuytrhT8BzPQizoAO3nA+btm4GZ/nVBVBe4QpJL9PeIjnWfQTE2IJpOHKJIE1EEK4EtblaSf
-        Iyo2WHE0ul+UFfvw7T7QfY++MM7AdS2K1LNEiNmv6greKpZ2EmZjAmuvmMfT7lQbcW/C/mvBL8fe3
-        rZrXahig==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jTybJ-0007Az-Jf; Thu, 30 Apr 2020 02:06:57 +0000
-Subject: Re: [PATCH] dma-buf: Documentation: fix: `make htmldocs` warnings
-To:     Vitor Massaru Iha <vitor@massaru.org>,
-        dri-devel@lists.freedesktop.org
-Cc:     sumit.semwal@linaro.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        brendanhiggins@google.com, skhan@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20200430015930.32224-1-vitor@massaru.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <cb4d93a0-b967-f37d-ea01-0368c91b896e@infradead.org>
-Date:   Wed, 29 Apr 2020 19:06:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726573AbgD3CJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 22:09:03 -0400
+Received: from mga07.intel.com ([134.134.136.100]:43401 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726282AbgD3CJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 22:09:02 -0400
+IronPort-SDR: JJQalPwEsayv6UwnqOebbrTxeM+fgFr3y+HoOkUQpvPkC8jj6Vv+sEJqgd374U0/0nvhYjEKYt
+ UGrjBZGhyRMw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 19:09:01 -0700
+IronPort-SDR: zBgAtl8/TZEyl3/1bRQfDWBdxpFSgnk1pqExldm0ubv31vBu/ATCmg7epE00CadkKK/EBaWmYZ
+ mLVvSnkxADDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
+   d="scan'208";a="405242122"
+Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.7.201.21])
+  by orsmga004.jf.intel.com with ESMTP; 29 Apr 2020 19:09:01 -0700
+Received: by tassilo.localdomain (Postfix, from userid 1000)
+        id C52C8301AAA; Wed, 29 Apr 2020 19:09:01 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 19:09:01 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, mingo@elte.hu,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
+        "Liang, Kan" <kan.liang@intel.com>
+Subject: Re: [PATCH] perf/script: remove extraneous newline in
+ perf_sample__fprintf_regs()
+Message-ID: <20200430020901.GC874567@tassilo.jf.intel.com>
+References: <20200418231908.152212-1-eranian@google.com>
+ <20200428024744.GA703870@tassilo.jf.intel.com>
+ <CABPqkBQkmPOM7xRkXFbtAtcLVdoJ=XY6uG3k3FoEAWABJaSCQA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200430015930.32224-1-vitor@massaru.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABPqkBQkmPOM7xRkXFbtAtcLVdoJ=XY6uG3k3FoEAWABJaSCQA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/29/20 6:59 PM, Vitor Massaru Iha wrote:
-> Add missed ":" on kernel-doc function parameter.
-> 
-> This patch fixes this warnings from `make htmldocs`:
-> ./drivers/dma-buf/dma-buf.c:678: warning: Function parameter or member 'importer_ops' not described in 'dma_buf_dynamic_attach'
-> ./drivers/dma-buf/dma-buf.c:678: warning: Function parameter or member 'importer_priv' not described in 'dma_buf_dynamic_attach'
-> 
-> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> ---
->  drivers/dma-buf/dma-buf.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index ccc9eda1bc28..0756d2155745 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -655,8 +655,8 @@ EXPORT_SYMBOL_GPL(dma_buf_put);
->   * calls attach() of dma_buf_ops to allow device-specific attach functionality
->   * @dmabuf:		[in]	buffer to attach device to.
->   * @dev:		[in]	device to be attached.
-> - * @importer_ops	[in]	importer operations for the attachment
-> - * @importer_priv	[in]	importer private pointer for the attachment
-> + * @importer_ops:	[in]	importer operations for the attachment
-> + * @importer_priv:	[in]	importer private pointer for the attachment
->   *
->   * Returns struct dma_buf_attachment pointer for this attachment. Attachments
->   * must be cleaned up by calling dma_buf_detach().
-> 
+> I was under the impression that perf script was generating one line
+> per sample. Otherwise, seems hard to parse.
 
-Sumit said that he would be applying my patch from April 7:
-https://lore.kernel.org/linux-media/7bcbe6fe-0b4b-87da-d003-b68a26eb4cf0@infradead.org/
+That's only true for simple cases. A lot of the extended output options
+have long generated multiple lines. And of course call stacks always did.
 
-thanks.
--- 
-~Randy
+> Could you give me the cmdline options of perf script that justify the newline.
 
+e.g.  perf script -F iregs,uregs
+
+-Andi
