@@ -2,292 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795361BF336
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680E01BF33E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgD3Ine (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 04:43:34 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42491 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726797AbgD3Ind (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 04:43:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588236211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1kM0a92K8sUlr72TjTnIA2PAkVDQz3aVDeS/XY8PMQg=;
-        b=K2/K+MQyqcNfPx71wBe1jG3BIIEo5qoJ5I9hoxYPzPuV00kcG5CiYxkTUtc0JnB62jbnyH
-        sOY5P0lGBjFejtQYgHP0lNXeWefk64lv0ffc0KAtS63NMO/P5sOcCNJe+3rUMEGT6PUUYY
-        +W4dd8vTnbTMQSlr1FWq3dC4gXwe6eY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-L3sJ-jQCPPuWYQ9pIQeUPA-1; Thu, 30 Apr 2020 04:43:28 -0400
-X-MC-Unique: L3sJ-jQCPPuWYQ9pIQeUPA-1
-Received: by mail-wm1-f72.google.com with SMTP id 72so3755782wmb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 01:43:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1kM0a92K8sUlr72TjTnIA2PAkVDQz3aVDeS/XY8PMQg=;
-        b=Skjc7n4QSnm/3YeY01w3BfWab6QqsJ9zLUJzBWMHK/9PCO5s3Kz211mDDd1CN+STka
-         +01mOqrroEbrD6jlGsJlms35Y4SGiu3zxkVnZ3ZD8daYOX8udeF9VnY4gD30G51IyNkG
-         9qz01+3rSd/Nq6lbfF1KFbU108gp/XuWtNFOCAFaAQwno1q/P1DNqjWV065VhUaImc25
-         A4lSqCRhAtGohvNW9M3hymOAkA4Eqxn64nF90Nb6cnkEM+D3qxn7fO2Q4LrGe8ZkYmjv
-         7nr82wBDAAmRQMGKC7J5YgW2IS13fkQaZyRBUUGFO4PEyW2KFj4ICDrHoOD6rt2NrZqL
-         EBUw==
-X-Gm-Message-State: AGi0Pub826fxopkgWOXNgxslOFaGjAVjCxk+kAv3f2gJ2kli6QS3cm9Q
-        t3Yv/LjKDsPUDJcMTz7MB73dFgPJHhtj/QuQmn+buykV+bkCWyr5IErGmZnO0CYZYwABae01OBe
-        gr/lueLJRtqCVo/izyVms5sDr
-X-Received: by 2002:adf:f4d1:: with SMTP id h17mr2481678wrp.69.1588236207413;
-        Thu, 30 Apr 2020 01:43:27 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJw8hg1EN3eBuDG3y+jkkwakE2C8r3PVXSy4jnI3smooojJLNVd47P9FjcsLtLJYEZWpp/vOQ==
-X-Received: by 2002:adf:f4d1:: with SMTP id h17mr2481646wrp.69.1588236207089;
-        Thu, 30 Apr 2020 01:43:27 -0700 (PDT)
-Received: from steredhat (host108-207-dynamic.49-79-r.retail.telecomitalia.it. [79.49.207.108])
-        by smtp.gmail.com with ESMTPSA id l4sm2984683wrv.60.2020.04.30.01.43.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 01:43:26 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 10:43:23 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-block@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, cohuck@redhat.com,
-        Jason Wang <jasowang@redhat.com>,
-        Lance Digby <ldigby@redhat.com>
-Subject: Re: [PATCH v3] virtio-blk: handle block_device_operations callbacks
- after hot unplug
-Message-ID: <20200430084323.qts2q5ql7rkclk2h@steredhat>
-References: <20200429165345.144702-1-stefanha@redhat.com>
+        id S1727108AbgD3Iny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 04:43:54 -0400
+Received: from mail-mw2nam10on2088.outbound.protection.outlook.com ([40.107.94.88]:6064
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726420AbgD3Inx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 04:43:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bVqjhxVLtiiBbnfQg29LliWknvSO4J+YiIhSQS56UbQefzZ2DzLZyQqh5+UNwOGVRHPmussgVpKdVVkks8sOYjeiSGTm5RgtrkPPrHjfAX1RRjvkDJhuJaYvDg7KRlidFXPrqoJI1eL9BqWvNoLAqHwgsaJPsiVnzuh6SxAu13+3B2CtqS23qEAMULYs2GiisKfx5KIgKGX7jal7oLtwDNpxxi5hgmbqvzxk4dRqmjl6Eq34lnpynzj+lZIvRWa5Cgeaz0bTxS+jx1VyoCuryYNDtS+vA0GEMJIxsTYXQl6/IFXSz1wI3jJB1nK3JsFH7Vvm8VhPAu3KqF2wEoBTQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2jLb5iLrusH1EUXdHjpvbBVaxCR+QjOausPk4SriTzc=;
+ b=BVy/ksvXUBscBO4wJfgW0Ib8M4jE+ZvUh9X5sJCDvrJisclI4kw4n3h4Gib3FnYYw9i6Yy05b+JHWFTQ/AXeDCrls5anGktEW5MeKIL5KmkB18fkkZM0vcZfjDcWt/K9STdo2k8h1G/7VFhwy2KCj2rTt+aMB6iAM5kEVKRL/9IrwUi7hwrCEHsFYcMvLUeHTyySwuY75xQgeLhUJWj0oe4u/76kka3ngFDFg0v8r5qMU2B32UUyHRMzpkh2PMQYT6m5HW9UeGQh1bk0XO0/NBne1tdSkZ9zZhRRne+pdfABTqWNSIt4WF8GFsJqF/bw52ttoDl+pEcr19iC8oFVQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2jLb5iLrusH1EUXdHjpvbBVaxCR+QjOausPk4SriTzc=;
+ b=oCcIzpj+mJt7+BCj54b44gZqFRcT3wrWu50UxEptSJ1MTpX1G9AS/VmoaxhJ4Z6BAc9c6KAqNTJ0OWc3h9ffL+MlUayS9kO05eBRhk0meb2Bk6nqLHYJkhykelB4tkpmKbVm2P51v+MfB+Q84qy62Unl5SNx/PiS0/gwX4Pfi0Q=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1386.namprd12.prod.outlook.com (2603:10b6:3:77::9) by
+ DM5PR12MB1883.namprd12.prod.outlook.com (2603:10b6:3:113::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2937.13; Thu, 30 Apr 2020 08:43:50 +0000
+Received: from DM5PR12MB1386.namprd12.prod.outlook.com
+ ([fe80::969:3d4e:6f37:c33c]) by DM5PR12MB1386.namprd12.prod.outlook.com
+ ([fe80::969:3d4e:6f37:c33c%12]) with mapi id 15.20.2937.028; Thu, 30 Apr 2020
+ 08:43:50 +0000
+From:   Ashish Kalra <Ashish.Kalra@amd.com>
+To:     pbonzini@redhat.com
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        srutherford@google.com, rientjes@google.com,
+        venu.busireddy@oracle.com, brijesh.singh@amd.com
+Subject: [PATCH v7 09/18] KVM: x86: Introduce KVM_GET_PAGE_ENC_BITMAP ioctl
+Date:   Thu, 30 Apr 2020 08:43:40 +0000
+Message-Id: <4f4246c58ab1ee7e61b72b0ef0a3b023d7976803.1588234824.git.ashish.kalra@amd.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1588234824.git.ashish.kalra@amd.com>
+References: <cover.1588234824.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SN6PR08CA0032.namprd08.prod.outlook.com
+ (2603:10b6:805:66::45) To DM5PR12MB1386.namprd12.prod.outlook.com
+ (2603:10b6:3:77::9)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429165345.144702-1-stefanha@redhat.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by SN6PR08CA0032.namprd08.prod.outlook.com (2603:10b6:805:66::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 08:43:49 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 23cb389d-ad7f-4aa5-5b67-08d7ece29ae2
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1883:|DM5PR12MB1883:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB18834D5AE97A99A5654CE39E8EAA0@DM5PR12MB1883.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-Forefront-PRVS: 0389EDA07F
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1386.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(396003)(366004)(136003)(376002)(39860400002)(478600001)(86362001)(956004)(8936002)(26005)(2906002)(2616005)(6916009)(8676002)(36756003)(6486002)(7416002)(4326008)(16526019)(186003)(66574012)(7696005)(66476007)(5660300002)(66946007)(6666004)(52116002)(66556008)(316002)(136400200001);DIR:OUT;SFP:1101;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cs4ONKTSZatzbWxtrFY3cOu1H2Tloa4Be1MFBHxVGvaLK36aprlcqemPb/5r5AEQk0aHFNUtfB3jvlcvBrJ/HGvJFWXW8bP11qz4yQVkTa2rV7iXIQoXpug6fczX7R+dcuHE5hgvnxZAG7x8CiaOMkUNM3Np/rYXE1BSuA42jga/5XYzZPEdP6R7yW8+9cvAtoaxAwqgNfLOyqFQwU3VpX5OzQBxmGg4ZmkOK6xBOjhu+KAMLoXtverJ61bDO//fRKT7oiTffwKubLTqTmE6haNCo3GN5YfdkIoEKHl03HEporgqErzNaYnz+YdIfCiK7/45cyeY8F7R4yCyCNgDdxWNof5yLy7+VRqhsdpuoTNJ2Ecb7VYrYmo1Y1apDvEhr3gdVTTHAPFHN6w4ThnwIhUrSydj7jrZQExoVrTGN7UXxL6rH/F5MlUtA7sVQudPkTifkBFz/1FrOHNVbzHWTo6LB15djqE/cwwUrUbITrON3S71A38qeYRxzhCcV739
+X-MS-Exchange-AntiSpam-MessageData: C8fcHq5PcQQiLAuzeFVfKgVhArk/79Rkj8gzx7Oxh/exkIDFkjXe0hIVdVDrE87bvUbCExym7FZtaAvEPtnr7iG2Ye7x7cxecDfpztV5DFNeXU7TTNPYaonjtQLS8MI6yC1BfUIN2I/3nu+ToN7y06WY2tDytOXmmuqvoay+n4gpiGwiDL6mlPe+hH2cX923UeY4360Qcz58QPMYAcozZ2881GtOKFvs2o/v4YB0roETD5E0okPgKd9KYRLkjHzCkP1N788i8OAAA2ZTgMLaqcPiDgz45PYnTqSvDoxv/GCGXs4Po79NbZyEfRRHCgZvaWGjAbfY8EgsKXKmxxzA6l8QyMqDeOiSVTwE0sThGXb+Q85xyVN4PLvemQPNOgMr+rGaTklmvOUXHM0Sx1BjhUX9gfsYmYxoQ96e5L33zymWJ6Itf2YgTQuacTBkyH5UfuYf856ER9X9Bj4f4We8zDOtuXwYZK6cS1+vWoFdAt5TLbi45Ekm7j+J3a+4bvDJPKKTEbLLdXp7P4rDmaOh9bkGn85zqBsYBJ0wNcd6ghIZ2zcDaaQbOhf3M5T5Wzy7cZQrWiGe430WEk/faNrIzLkkIxjKhfWCHjfv06+dYGGDYuK+kg/JJNBv+wOu5niB9UtJQG13ulFyc0RDDV0KkfzXEiNZ4OtNOIMBWAf8+FCu6Qnsl6x00OwsShitcvJH0XjWxcAoKxcYK+7g+Q6OxuIlCioiUhqCpQkKynL/7CdqM9TErOBIrYIWY3N/LJDpfu1L7hfYh1yW6rGYeVGoBpFeTTRFkYwEO4nXprunOao=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 23cb389d-ad7f-4aa5-5b67-08d7ece29ae2
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 08:43:50.3253
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dtqzgzLad4FRzy77yoFc0xqbLU/tStLcdFFP5mIwnX4m2YL3Sm5EaHpOg78EbCOGH0248SzDT1urArZO+9NWnQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1883
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 05:53:45PM +0100, Stefan Hajnoczi wrote:
-> A userspace process holding a file descriptor to a virtio_blk device can
-> still invoke block_device_operations after hot unplug.  This leads to a
-> use-after-free accessing vblk->vdev in virtblk_getgeo() when
-> ioctl(HDIO_GETGEO) is invoked:
-> 
->   BUG: unable to handle kernel NULL pointer dereference at 0000000000000090
->   IP: [<ffffffffc00e5450>] virtio_check_driver_offered_feature+0x10/0x90 [virtio]
->   PGD 800000003a92f067 PUD 3a930067 PMD 0
->   Oops: 0000 [#1] SMP
->   CPU: 0 PID: 1310 Comm: hdio-getgeo Tainted: G           OE  ------------   3.10.0-1062.el7.x86_64 #1
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
->   task: ffff9be5fbfb8000 ti: ffff9be5fa890000 task.ti: ffff9be5fa890000
->   RIP: 0010:[<ffffffffc00e5450>]  [<ffffffffc00e5450>] virtio_check_driver_offered_feature+0x10/0x90 [virtio]
->   RSP: 0018:ffff9be5fa893dc8  EFLAGS: 00010246
->   RAX: ffff9be5fc3f3400 RBX: ffff9be5fa893e30 RCX: 0000000000000000
->   RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff9be5fbc10b40
->   RBP: ffff9be5fa893dc8 R08: 0000000000000301 R09: 0000000000000301
->   R10: 0000000000000000 R11: 0000000000000000 R12: ffff9be5fdc24680
->   R13: ffff9be5fbc10b40 R14: ffff9be5fbc10480 R15: 0000000000000000
->   FS:  00007f1bfb968740(0000) GS:ffff9be5ffc00000(0000) knlGS:0000000000000000
->   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 0000000000000090 CR3: 000000003a894000 CR4: 0000000000360ff0
->   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->   Call Trace:
->    [<ffffffffc016ac37>] virtblk_getgeo+0x47/0x110 [virtio_blk]
->    [<ffffffff8d3f200d>] ? handle_mm_fault+0x39d/0x9b0
->    [<ffffffff8d561265>] blkdev_ioctl+0x1f5/0xa20
->    [<ffffffff8d488771>] block_ioctl+0x41/0x50
->    [<ffffffff8d45d9e0>] do_vfs_ioctl+0x3a0/0x5a0
->    [<ffffffff8d45dc81>] SyS_ioctl+0xa1/0xc0
-> 
-> A related problem is that virtblk_remove() leaks the vd_index_ida index
-> when something still holds a reference to vblk->disk during hot unplug.
-> This causes virtio-blk device names to be lost (vda, vdb, etc).
-> 
-> Fix these issues by protecting vblk->vdev with a mutex and reference
-> counting vblk so the vd_index_ida index can be removed in all cases.
-> 
-> Fixes: 48e4043d4529523cbc7fa8dd745bd8e2c45ce1d3
->        ("virtio: add virtio disk geometry feature")
-> Reported-by: Lance Digby <ldigby@redhat.com>
-> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> ---
->  drivers/block/virtio_blk.c | 87 ++++++++++++++++++++++++++++++++++----
->  1 file changed, 79 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> index 93468b7c6701..6f7f277495f4 100644
-> --- a/drivers/block/virtio_blk.c
-> +++ b/drivers/block/virtio_blk.c
-> @@ -33,6 +33,16 @@ struct virtio_blk_vq {
->  } ____cacheline_aligned_in_smp;
->  
->  struct virtio_blk {
-> +	/*
-> +	 * vdev may be accessed without taking this mutex in blk-mq and
-> +	 * virtqueue code paths because virtblk_remove() stops them before vdev
-> +	 * is freed.
-> +	 *
-> +	 * Everything else must hold this mutex when accessing vdev and must
-> +	 * handle the case where vdev is NULL after virtblk_remove() has been
-> +	 * called.
-> +	 */
-> +	struct mutex vdev_mutex;
+From: Brijesh Singh <Brijesh.Singh@amd.com>
 
-The patch LGTM, I'm just worried about cache_type_store() and
-cache_type_show() because IIUC they aren't in blk-mq and virtqueue code
-paths, but they use vdev.
+The ioctl can be used to retrieve page encryption bitmap for a given
+gfn range.
 
-Do we have to take the mutex there too?
+Return the correct bitmap as per the number of pages being requested
+by the user. Ensure that we only copy bmap->num_pages bytes in the
+userspace buffer, if bmap->num_pages is not byte aligned we read
+the trailing bits from the userspace and copy those bits as is.
 
-Thanks,
-Stefano
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: x86@kernel.org
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
+Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+---
+ Documentation/virt/kvm/api.rst  | 27 +++++++++++++
+ arch/x86/include/asm/kvm_host.h |  2 +
+ arch/x86/kvm/svm/sev.c          | 70 +++++++++++++++++++++++++++++++++
+ arch/x86/kvm/svm/svm.c          |  1 +
+ arch/x86/kvm/svm/svm.h          |  1 +
+ arch/x86/kvm/x86.c              | 12 ++++++
+ include/uapi/linux/kvm.h        | 12 ++++++
+ 7 files changed, 125 insertions(+)
 
->  	struct virtio_device *vdev;
->  
->  	/* The disk structure for the kernel. */
-> @@ -44,6 +54,13 @@ struct virtio_blk {
->  	/* Process context for config space updates */
->  	struct work_struct config_work;
->  
-> +	/*
-> +	 * Tracks references from block_device_operations open/release and
-> +	 * virtio_driver probe/remove so this object can be freed once no
-> +	 * longer in use.
-> +	 */
-> +	refcount_t refs;
-> +
->  	/* What host tells us, plus 2 for header & tailer. */
->  	unsigned int sg_elems;
->  
-> @@ -295,10 +312,55 @@ static int virtblk_get_id(struct gendisk *disk, char *id_str)
->  	return err;
->  }
->  
-> +static void virtblk_get(struct virtio_blk *vblk)
-> +{
-> +	refcount_inc(&vblk->refs);
-> +}
-> +
-> +static void virtblk_put(struct virtio_blk *vblk)
-> +{
-> +	if (refcount_dec_and_test(&vblk->refs)) {
-> +		ida_simple_remove(&vd_index_ida, vblk->index);
-> +		mutex_destroy(&vblk->vdev_mutex);
-> +		kfree(vblk);
-> +	}
-> +}
-> +
-> +static int virtblk_open(struct block_device *bd, fmode_t mode)
-> +{
-> +	struct virtio_blk *vblk = bd->bd_disk->private_data;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&vblk->vdev_mutex);
-> +
-> +	if (vblk->vdev)
-> +		virtblk_get(vblk);
-> +	else
-> +		ret = -ENXIO;
-> +
-> +	mutex_unlock(&vblk->vdev_mutex);
-> +	return ret;
-> +}
-> +
-> +static void virtblk_release(struct gendisk *disk, fmode_t mode)
-> +{
-> +	struct virtio_blk *vblk = disk->private_data;
-> +
-> +	virtblk_put(vblk);
-> +}
-> +
->  /* We provide getgeo only to please some old bootloader/partitioning tools */
->  static int virtblk_getgeo(struct block_device *bd, struct hd_geometry *geo)
->  {
->  	struct virtio_blk *vblk = bd->bd_disk->private_data;
-> +	int ret = 0;
-> +
-> +	mutex_lock(&vblk->vdev_mutex);
-> +
-> +	if (!vblk->vdev) {
-> +		ret = -ENXIO;
-> +		goto out;
-> +	}
->  
->  	/* see if the host passed in geometry config */
->  	if (virtio_has_feature(vblk->vdev, VIRTIO_BLK_F_GEOMETRY)) {
-> @@ -314,11 +376,15 @@ static int virtblk_getgeo(struct block_device *bd, struct hd_geometry *geo)
->  		geo->sectors = 1 << 5;
->  		geo->cylinders = get_capacity(bd->bd_disk) >> 11;
->  	}
-> -	return 0;
-> +out:
-> +	mutex_unlock(&vblk->vdev_mutex);
-> +	return ret;
->  }
->  
->  static const struct block_device_operations virtblk_fops = {
->  	.owner  = THIS_MODULE,
-> +	.open = virtblk_open,
-> +	.release = virtblk_release,
->  	.getgeo = virtblk_getgeo,
->  };
->  
-> @@ -655,6 +721,10 @@ static int virtblk_probe(struct virtio_device *vdev)
->  		goto out_free_index;
->  	}
->  
-> +	/* This reference is dropped in virtblk_remove(). */
-> +	refcount_set(&vblk->refs, 1);
-> +	mutex_init(&vblk->vdev_mutex);
-> +
->  	vblk->vdev = vdev;
->  	vblk->sg_elems = sg_elems;
->  
-> @@ -820,8 +890,6 @@ static int virtblk_probe(struct virtio_device *vdev)
->  static void virtblk_remove(struct virtio_device *vdev)
->  {
->  	struct virtio_blk *vblk = vdev->priv;
-> -	int index = vblk->index;
-> -	int refc;
->  
->  	/* Make sure no work handler is accessing the device. */
->  	flush_work(&vblk->config_work);
-> @@ -831,18 +899,21 @@ static void virtblk_remove(struct virtio_device *vdev)
->  
->  	blk_mq_free_tag_set(&vblk->tag_set);
->  
-> +	mutex_lock(&vblk->vdev_mutex);
-> +
->  	/* Stop all the virtqueues. */
->  	vdev->config->reset(vdev);
->  
-> -	refc = kref_read(&disk_to_dev(vblk->disk)->kobj.kref);
-> +	/* Virtqueues are stopped, nothing can use vblk->vdev anymore. */
-> +	vblk->vdev = NULL;
-> +
->  	put_disk(vblk->disk);
->  	vdev->config->del_vqs(vdev);
->  	kfree(vblk->vqs);
-> -	kfree(vblk);
->  
-> -	/* Only free device id if we don't have any users */
-> -	if (refc == 1)
-> -		ida_simple_remove(&vd_index_ida, index);
-> +	mutex_unlock(&vblk->vdev_mutex);
-> +
-> +	virtblk_put(vblk);
->  }
->  
->  #ifdef CONFIG_PM_SLEEP
-> -- 
-> 2.25.3
-> 
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index efbbe570aa9b..e2f0dd105b5c 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -4636,6 +4636,33 @@ This ioctl resets VCPU registers and control structures according to
+ the clear cpu reset definition in the POP. However, the cpu is not put
+ into ESA mode. This reset is a superset of the initial reset.
+ 
++4.125 KVM_GET_PAGE_ENC_BITMAP (vm ioctl)
++---------------------------------------
++
++:Capability: basic
++:Architectures: x86
++:Type: vm ioctl
++:Parameters: struct kvm_page_enc_bitmap (in/out)
++:Returns: 0 on success, -1 on error
++
++/* for KVM_GET_PAGE_ENC_BITMAP */
++struct kvm_page_enc_bitmap {
++	__u64 start_gfn;
++	__u64 num_pages;
++	union {
++		void __user *enc_bitmap; /* one bit per page */
++		__u64 padding2;
++	};
++};
++
++The encrypted VMs have concept of private and shared pages. The private
++page is encrypted with the guest-specific key, while shared page may
++be encrypted with the hypervisor key. The KVM_GET_PAGE_ENC_BITMAP can
++be used to get the bitmap indicating whether the guest page is private
++or shared. The bitmap can be used during the guest migration, if the page
++is private then userspace need to use SEV migration commands to transmit
++the page.
++
+ 
+ 4.125 KVM_S390_PV_COMMAND
+ -------------------------
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 4a8ee22f4f5b..9e428befb6a4 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1256,6 +1256,8 @@ struct kvm_x86_ops {
+ 	int (*enable_direct_tlbflush)(struct kvm_vcpu *vcpu);
+ 	int (*page_enc_status_hc)(struct kvm *kvm, unsigned long gpa,
+ 				  unsigned long sz, unsigned long mode);
++	int (*get_page_enc_bitmap)(struct kvm *kvm,
++				struct kvm_page_enc_bitmap *bmap);
+ };
+ 
+ struct kvm_x86_init_ops {
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 7dc68db70405..73bbbffb3487 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -1434,6 +1434,76 @@ int svm_page_enc_status_hc(struct kvm *kvm, unsigned long gpa,
+ 	return 0;
+ }
+ 
++int svm_get_page_enc_bitmap(struct kvm *kvm,
++				   struct kvm_page_enc_bitmap *bmap)
++{
++	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
++	unsigned long gfn_start, gfn_end;
++	unsigned long sz, i, sz_bytes;
++	unsigned long *bitmap;
++	int ret, n;
++
++	if (!sev_guest(kvm))
++		return -ENOTTY;
++
++	gfn_start = bmap->start_gfn;
++	gfn_end = gfn_start + bmap->num_pages;
++
++	sz = ALIGN(bmap->num_pages, BITS_PER_LONG) / BITS_PER_BYTE;
++	bitmap = kmalloc(sz, GFP_KERNEL);
++	if (!bitmap)
++		return -ENOMEM;
++
++	/* by default all pages are marked encrypted */
++	memset(bitmap, 0xff, sz);
++
++	mutex_lock(&kvm->lock);
++	if (sev->page_enc_bmap) {
++		i = gfn_start;
++		for_each_clear_bit_from(i, sev->page_enc_bmap,
++				      min(sev->page_enc_bmap_size, gfn_end))
++			clear_bit(i - gfn_start, bitmap);
++	}
++	mutex_unlock(&kvm->lock);
++
++	ret = -EFAULT;
++
++	n = bmap->num_pages % BITS_PER_BYTE;
++	sz_bytes = ALIGN(bmap->num_pages, BITS_PER_BYTE) / BITS_PER_BYTE;
++
++	/*
++	 * Return the correct bitmap as per the number of pages being
++	 * requested by the user. Ensure that we only copy bmap->num_pages
++	 * bytes in the userspace buffer, if bmap->num_pages is not byte
++	 * aligned we read the trailing bits from the userspace and copy
++	 * those bits as is.
++	 */
++
++	if (n) {
++		unsigned char *bitmap_kernel = (unsigned char *)bitmap;
++		unsigned char bitmap_user;
++		unsigned long offset, mask;
++
++		offset = bmap->num_pages / BITS_PER_BYTE;
++		if (copy_from_user(&bitmap_user, bmap->enc_bitmap + offset,
++				sizeof(unsigned char)))
++			goto out;
++
++		mask = GENMASK(n - 1, 0);
++		bitmap_user &= ~mask;
++		bitmap_kernel[offset] &= mask;
++		bitmap_kernel[offset] |= bitmap_user;
++	}
++
++	if (copy_to_user(bmap->enc_bitmap, bitmap, sz_bytes))
++		goto out;
++
++	ret = 0;
++out:
++	kfree(bitmap);
++	return ret;
++}
++
+ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+ {
+ 	struct kvm_sev_cmd sev_cmd;
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 1013ef0f4ce2..588709a9f68e 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -4016,6 +4016,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+ 	.check_nested_events = svm_check_nested_events,
+ 
+ 	.page_enc_status_hc = svm_page_enc_status_hc,
++	.get_page_enc_bitmap = svm_get_page_enc_bitmap,
+ };
+ 
+ static struct kvm_x86_init_ops svm_init_ops __initdata = {
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 6a562f5928a2..f087fa7b380c 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -404,6 +404,7 @@ int svm_check_nested_events(struct kvm_vcpu *vcpu);
+ int nested_svm_exit_special(struct vcpu_svm *svm);
+ int svm_page_enc_status_hc(struct kvm *kvm, unsigned long gpa,
+ 				  unsigned long npages, unsigned long enc);
++int svm_get_page_enc_bitmap(struct kvm *kvm, struct kvm_page_enc_bitmap *bmap);
+ 
+ /* avic.c */
+ 
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 5f5ddb5765e2..937797cfaf9a 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5208,6 +5208,18 @@ long kvm_arch_vm_ioctl(struct file *filp,
+ 	case KVM_SET_PMU_EVENT_FILTER:
+ 		r = kvm_vm_ioctl_set_pmu_event_filter(kvm, argp);
+ 		break;
++	case KVM_GET_PAGE_ENC_BITMAP: {
++		struct kvm_page_enc_bitmap bitmap;
++
++		r = -EFAULT;
++		if (copy_from_user(&bitmap, argp, sizeof(bitmap)))
++			goto out;
++
++		r = -ENOTTY;
++		if (kvm_x86_ops.get_page_enc_bitmap)
++			r = kvm_x86_ops.get_page_enc_bitmap(kvm, &bitmap);
++		break;
++	}
+ 	default:
+ 		r = -ENOTTY;
+ 	}
+diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+index 0fe1d206d750..af62f2afaa5d 100644
+--- a/include/uapi/linux/kvm.h
++++ b/include/uapi/linux/kvm.h
+@@ -505,6 +505,16 @@ struct kvm_dirty_log {
+ 	};
+ };
+ 
++/* for KVM_GET_PAGE_ENC_BITMAP */
++struct kvm_page_enc_bitmap {
++	__u64 start_gfn;
++	__u64 num_pages;
++	union {
++		void __user *enc_bitmap; /* one bit per page */
++		__u64 padding2;
++	};
++};
++
+ /* for KVM_CLEAR_DIRTY_LOG */
+ struct kvm_clear_dirty_log {
+ 	__u32 slot;
+@@ -1518,6 +1528,8 @@ struct kvm_pv_cmd {
+ /* Available with KVM_CAP_S390_PROTECTED */
+ #define KVM_S390_PV_COMMAND		_IOWR(KVMIO, 0xc5, struct kvm_pv_cmd)
+ 
++#define KVM_GET_PAGE_ENC_BITMAP	_IOW(KVMIO, 0xc6, struct kvm_page_enc_bitmap)
++
+ /* Secure Encrypted Virtualization command */
+ enum sev_cmd_id {
+ 	/* Guest initialization commands */
+-- 
+2.17.1
 
