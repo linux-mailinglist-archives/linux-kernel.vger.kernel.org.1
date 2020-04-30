@@ -2,100 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E911BEDA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6C81BEDAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbgD3Ber (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 21:34:47 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:35951 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726338AbgD3Ber (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 21:34:47 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1D8965C0129;
-        Wed, 29 Apr 2020 21:34:46 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 29 Apr 2020 21:34:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rylan.coffee; h=
-        date:from:to:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=Ap62E9FkHJTqhnbxmGojLA3qLN5
-        +5l3/L8sbJ+VpUqE=; b=X6SEIOqcJQ55Mh1dwrloTTvvNyhEaNQDD3hUTk6m77/
-        ecgZlhseqjpwW72yvDxu3EhWvMBAgPnb8YVSGE71nFA/2lfLkfNeAcI7ak6OF3wr
-        8mJBDYUTSKVsJGcx5VxgHSuRpJOZZFwwn7yuwZdMv0cs5/tZSVpAH5oRQWMvSvcr
-        0uYPDiCEop13gRcthKd1Y8Uov2teptKsGEZyuJmwN9ZVLoF5c64iv5qE9pBF6a9m
-        JRTEGNfw0LNnSPbCEQkm5ruQ8rZCnpAg+kR4O4sT8m0JoNyaBF8AUdXHyfYt/sSI
-        3p0AYRgudLbGhUFGstXjC1kvYZapfCoh+/W3o0t22Aw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Ap62E9
-        FkHJTqhnbxmGojLA3qLN5+5l3/L8sbJ+VpUqE=; b=Ny7yhuP3FwmL9hv73Xup9A
-        1eEjDj4xCEIBL23F6cxxG0at2Zlh0R+IA443xgigNbe2jLIoZ7K5jj5o9OEb5pp3
-        1MjaQhW1bKJDh8hX69y3dl4vRst3AO9wCWWibcyJ2S6G/97VH7lWr8rfWs93XlPa
-        kdVjaQpViHEmhyMeeI6TMkIPfQEFitVlZGG3luno42ZuJdltz2IjKCqgDWCfLmlO
-        EbY+hH+qPeAbtKY9J88JY4Lmzc6oHdzBI/QU25/0g5tNxBD0l3ymbSEpG6k/YGN7
-        vRg/a69LrMTzZ+C9OoPtd5u4JsvkRvvUdIkoqDi/qTCxGC3ynmdXvQPV2kbMw3zw
-        ==
-X-ME-Sender: <xms:NSuqXiwXAqRwnfiUGH1XYR6wfhWL4EzUSxQgxI6mjWkDwBUiytUOtg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrieeggdegjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtjeenucfhrhhomheptfihlhgrnhcu
-    ffhmvghllhhouceomhgrihhlsehrhihlrghnrdgtohhffhgvvgeqnecuggftrfgrthhtvg
-    hrnhepjeffvefffeevgfdtteegudffieduveeuhfettddvueehveethfffgeetfeeghfeu
-    necukfhppedutdekrdegledrudehkedrkeegnecuvehluhhsthgvrhfuihiivgepgeenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrihhlsehrhihlrghnrdgtohhffhgvvg
-X-ME-Proxy: <xmx:NSuqXjhvREmYHmSMYi9Xg-hewnnN64042JLhRzWRY9kw70oLC4KOQg>
-    <xmx:NSuqXmBKQ57ohuHSsTGWwserAXumEvCscXfIxlSfXHWVcFxt2qZUng>
-    <xmx:NSuqXgvhQdzNOGNiLl7n-9-r6eXkuzjGovaf-CsK0JYpAnjPma2AHA>
-    <xmx:NiuqXtn4l49uXxdnDj3j5zvKx1SWE8lhBPElZquY18Qw7B1rjLIDBw>
-Received: from athena (pool-108-49-158-84.bstnma.fios.verizon.net [108.49.158.84])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A9DD43065EF9;
-        Wed, 29 Apr 2020 21:34:45 -0400 (EDT)
-Date:   Wed, 29 Apr 2020 21:34:44 -0400
-From:   Rylan Dmello <mail@rylan.coffee>
-To:     Manish Chopra <manishc@marvell.com>, GR-Linux-NIC-Dev@marvell.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>
-Subject: [PATCH v2 6/7] staging: qlge: Fix suspect code indent warning in
- ql_init_device
-Message-ID: <7c07400dbce98d0c4c84aa941da8f34e32616159.1588209862.git.mail@rylan.coffee>
-References: <cover.1588209862.git.mail@rylan.coffee>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cover.1588209862.git.mail@rylan.coffee>
+        id S1726778AbgD3Bg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 21:36:56 -0400
+Received: from mga17.intel.com ([192.55.52.151]:45049 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726309AbgD3Bg4 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 21:36:56 -0400
+IronPort-SDR: zOmC+KVZ8Nmkshj8bHa6nAMjRR7ASKnr7M2/xr+BuDn7zt/u27aEimDeUA0fqc4HIgDqJEk5Vy
+ V7HQX/TF+cSw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 18:36:55 -0700
+IronPort-SDR: B83ExK5vhkoLNMcksEGoIH/EyVRhpTqScxZhsbbMWPwm1cY7DNAhAIzjODyKLI8UrATU1gqZk+
+ ghzjcU5+c/kg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
+   d="scan'208";a="249609124"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Apr 2020 18:36:53 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf evsel: Get group fd from CPU0 for system wide event
+Date:   Thu, 30 Apr 2020 09:34:51 +0800
+Message-Id: <20200430013451.17196-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch.pl warnings:
+A metric may consist of system wide event and non system-wide event.
+The event group leader may be the system wide event.
 
-  WARNING: suspect code indent for conditional statements (16, 23)
-  WARNING: line over 80 characters
+For example, the metric "C2_Pkg_Residency" consists of
+"cstate_pkg/c2-residency" and "msr/tsc". The former counts on the first
+CPU of socket (tagged system-wide) and the latter is per CPU.
 
-Signed-off-by: Rylan Dmello <mail@rylan.coffee>
+But "C2_Pkg_Residency" hits assertion failure on cascadelakex.
+
+ # perf stat -M "C2_Pkg_Residency" -a -- sleep 1
+ perf: util/evsel.c:1464: get_group_fd: Assertion `!(fd == -1)' failed.
+ Aborted
+
+get_group_fd(evsel, cpu, thread)
+{
+	leader = evsel->leader;
+	fd = FD(leader, cpu, thread);
+	BUG_ON(fd == -1);
+}
+
+Considering this case, leader is "cstate_pkg/c2-residency", evsel is
+"msr/tsc" and cpu is 1. Because "cstate_pkg/c2-residency" is a system-wide
+event and it's processed on CPU0, so FD(leader, 1, thread) must return an
+invalid fd, then BUG_ON() may be triggered.
+
+This patch gets group fd from CPU0 for system wide event if
+FD(leader, cpu, thread) returns invalid fd.
+
+With this patch,
+
+ # perf stat -M "C2_Pkg_Residency" -a -- sleep 1
+
+ Performance counter stats for 'system wide':
+
+        1000850802      cstate_pkg/c2-residency/  #      0.5 C2_Pkg_Residency
+      201446161592      msr/tsc/
+
+       1.010637051 seconds time elapsed
+
+Fixes: 6a4bb04caacc ("perf tools: Enable grouping logic for parsed events")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
- drivers/staging/qlge/qlge_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/perf/util/evsel.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
-index 9aa62d146d97..fa708c722033 100644
---- a/drivers/staging/qlge/qlge_main.c
-+++ b/drivers/staging/qlge/qlge_main.c
-@@ -4420,7 +4420,8 @@ static int ql_init_device(struct pci_dev *pdev, struct net_device *ndev,
- 	} else {
- 		err = dma_set_mask(&pdev->dev, DMA_BIT_MASK(32));
- 		if (!err)
--		       err = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
-+			err = dma_set_coherent_mask(&pdev->dev,
-+						    DMA_BIT_MASK(32));
- 	}
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index 6a571d322bb2..cd6470f63d6f 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1461,6 +1461,9 @@ static int get_group_fd(struct evsel *evsel, int cpu, int thread)
+ 	BUG_ON(!leader->core.fd);
  
- 	if (err) {
+ 	fd = FD(leader, cpu, thread);
++	if (fd == -1 && leader->core.system_wide)
++		fd = FD(leader, 0, thread);
++
+ 	BUG_ON(fd == -1);
+ 
+ 	return fd;
 -- 
-2.26.2
+2.17.1
 
