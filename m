@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B4F1BF6E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 13:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B211BF6E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 13:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbgD3LfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 07:35:08 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:44963 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726500AbgD3LfE (ORCPT
+        id S1726960AbgD3LfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 07:35:09 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:46085 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726907AbgD3LfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Apr 2020 07:35:04 -0400
 X-Originating-IP: 87.231.134.186
 Received: from localhost (87-231-134-186.rev.numericable.fr [87.231.134.186])
         (Authenticated sender: gregory.clement@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id B963360005;
-        Thu, 30 Apr 2020 11:35:01 +0000 (UTC)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id B77BD1C000A;
+        Thu, 30 Apr 2020 11:35:02 +0000 (UTC)
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jslaby@suse.com>, linux-kernel@vger.kernel.org
 Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH 1/3] tty: n_gsm: Improve debug output
-Date:   Thu, 30 Apr 2020 13:34:30 +0200
-Message-Id: <20200430113433.2162886-2-gregory.clement@bootlin.com>
+Subject: [PATCH 2/3] tty: n_gsm: Fix SOF skipping
+Date:   Thu, 30 Apr 2020 13:34:31 +0200
+Message-Id: <20200430113433.2162886-3-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200430113433.2162886-1-gregory.clement@bootlin.com>
 References: <20200430113433.2162886-1-gregory.clement@bootlin.com>
@@ -35,49 +35,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use appropriate print helpers for debug messages.
+For at least some modems like the TELIT LE910, skipping SOF makes
+transfers blocking indefinitely after a short amount of data
+transferred.
 
+Given the small improvement provided by skipping the SOF (just one
+byte on about 100 bytes), it seems better to completely remove this
+"feature" than make it optional.
+
+Fixes: 96fd7ce58ffb ("TTY: create drivers/tty and move the tty core files there")
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- drivers/tty/n_gsm.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
+ drivers/tty/n_gsm.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
 diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index d77ed82a4840..4965e39e0223 100644
+index 4965e39e0223..58950b33e5ac 100644
 --- a/drivers/tty/n_gsm.c
 +++ b/drivers/tty/n_gsm.c
-@@ -459,7 +459,7 @@ static void gsm_print_packet(const char *hdr, int addr, int cr,
- 	if (!(debug & 1))
- 		return;
+@@ -669,7 +669,6 @@ static void gsm_data_kick(struct gsm_mux *gsm)
+ {
+ 	struct gsm_msg *msg, *nmsg;
+ 	int len;
+-	int skip_sof = 0;
  
--	pr_info("%s %d) %c: ", hdr, addr, "RC"[cr]);
-+	pr_debug("%s %d) %c: ", hdr, addr, "RC"[cr]);
+ 	list_for_each_entry_safe(msg, nmsg, &gsm->tx_list, list) {
+ 		if (gsm->constipated && msg->addr)
+@@ -691,15 +690,10 @@ static void gsm_data_kick(struct gsm_mux *gsm)
+ 			print_hex_dump_bytes("gsm_data_kick: ",
+ 					     DUMP_PREFIX_OFFSET,
+ 					     gsm->txframe, len);
+-
+-		if (gsm->output(gsm, gsm->txframe + skip_sof,
+-						len - skip_sof) < 0)
++		if (gsm->output(gsm, gsm->txframe, len) < 0)
+ 			break;
+ 		/* FIXME: Can eliminate one SOF in many more cases */
+ 		gsm->tx_bytes -= msg->len;
+-		/* For a burst of frames skip the extra SOF within the
+-		   burst */
+-		skip_sof = 1;
  
- 	switch (control & ~PF) {
- 	case SABM:
-@@ -504,18 +504,10 @@ static void gsm_print_packet(const char *hdr, int addr, int cr,
- 	else
- 		pr_cont("(F)");
- 
--	if (dlen) {
--		int ct = 0;
--		while (dlen--) {
--			if (ct % 8 == 0) {
--				pr_cont("\n");
--				pr_debug("    ");
--			}
--			pr_cont("%02X ", *data++);
--			ct++;
--		}
--	}
--	pr_cont("\n");
-+	if (dlen)
-+		print_hex_dump_bytes("", DUMP_PREFIX_NONE, data, dlen);
-+
-+	pr_debug("\n");
- }
- 
- 
+ 		list_del(&msg->list);
+ 		kfree(msg);
 -- 
 2.26.1
 
