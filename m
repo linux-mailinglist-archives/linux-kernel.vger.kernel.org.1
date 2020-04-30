@@ -2,103 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20EE41BEEB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753D71BEEB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbgD3DkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 23:40:14 -0400
-Received: from m176148.mail.qiye.163.com ([59.111.176.148]:12362 "EHLO
-        m176148.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgD3DkO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 23:40:14 -0400
-X-Greylist: delayed 390 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Apr 2020 23:40:12 EDT
-Received: from vivo.com (wm-8.qy.internal [127.0.0.1])
-        by m176148.mail.qiye.163.com (Hmail) with ESMTP id AA5181A3FD3;
-        Thu, 30 Apr 2020 11:33:07 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AMEAJAC4CHW7UjeCKaE3F4rq.3.1588217587684.Hmail.bernard@vivo.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        id S1726453AbgD3Dg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 23:36:28 -0400
+Received: from mail-bn8nam11on2125.outbound.protection.outlook.com ([40.107.236.125]:10592
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726309AbgD3Dg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 23:36:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GsW6z1TNwNgnVO8Jtm95REVlh3cXYqHa7zRLyInLUwXNwfk3lL/8C6Ok0VNDQOYnXwjiIOvYDP7LgJwDYGqgKrYZEEC4c7s24hsaFJMaifIGgFl11CuVzG5TnjbqoIwiaWUOl6WWDgnU9nrQOxDXgA8s6FqJ7DsgiDvqrQRVWmBVkmLNYOqOP0rX+UENom9clsMu9oTmZhDubUhvD9qiiOBw069EvUkDGB3+WgZMgMCJTn85RtMnin7kMsDcU90dBbdsId8nxcMYVkDsVeiwY+2ucpiZGkwO21z6BG65MQo39MKWMllP5zFwlwOiJpODpfW2Jp4u2Y9E8FZW5mok2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NobJXkBPXkhSADDNjB5Em1tDmWoTMnJuWf4RyXVOZgE=;
+ b=dX1OMnvdTc1SXjNEBXppz5bsfMIrbNOyxDT1prJFF5m6z2J0BXC865CAcnvuX0/wFsdcwgUcmH/fRYopFTBhn6zUgMO/X42xS6ulpCGT34ypZH+gOxVAxPU3iOpomeWbcgnaZEyx1i9PSFag0R3+BuANHdG0+S7ruBQHCkAcWQdfpuMZbLEqnABwwsj/VURqkiNlBtqw/FD6LJx0BH1DHOyV8gcx5SV9JYRe8a1GFx3/ZIE9UB1iWi1FNbrVsvkVgFL3xt2IK1wjiANn/St9JIg7Pg84cwsbDQ2COGCfcR453XsaBjrJLVrFDShHR73sR7OSQj1JYoZtf6Yu0RQDpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NobJXkBPXkhSADDNjB5Em1tDmWoTMnJuWf4RyXVOZgE=;
+ b=bbOosWt9g75v9D0E6bTYiFdMgK0wEKVA4hJShHWgjL8kXgPIokSE4FOCbxTwPde9VnCquaoiysowg5WQse+m/bUxC3JVmQnCMXXcbAzyolpeTUUa6Ye1c9K5Vtbaqrm9NuA11vlnzSWJuS7V8xXOse4GKzu3i7otX0OROELaFCQ=
+Authentication-Results: analogixsemi.com; dkim=none (message not signed)
+ header.d=none;analogixsemi.com; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BY5PR04MB6689.namprd04.prod.outlook.com (2603:10b6:a03:228::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.22; Thu, 30 Apr
+ 2020 03:36:21 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::4517:bcc8:a3bd:407f]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::4517:bcc8:a3bd:407f%6]) with mapi id 15.20.2958.020; Thu, 30 Apr 2020
+ 03:36:21 +0000
+Date:   Thu, 30 Apr 2020 11:36:14 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Nicolas Boichat <drinkcat@google.com>
+Cc:     devel@driverdev.osuosl.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gY2xrL21lc29uOiBmaXhlcyBtZW1sZWFrIGlzc3VlIGluIGluaXQgZXJyIGJyYW5jaA==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 157.0.31.122
-In-Reply-To: <CAFBinCA7CvBzEYMG+VmJTRF9zxajj1KOHt0F4A2hUJhKrTpmhw@mail.gmail.com>
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>,
+        Qilin Wen <qwen@analogixsemi.com>,
+        Ming Liu <mliu@analogixsemi.com>
+Subject: Re: [PATCH v7 2/2] drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to
+ DP bridge driver
+Message-ID: <20200430033614.GA6645@xin-VirtualBox>
+References: <cover.1582529411.git.xji@analogixsemi.com>
+ <a81adcf2e79d440edcb7b3989f31efcb80a6e9ff.1582529411.git.xji@analogixsemi.com>
+ <CANMq1KBfB6tXFqYGvr=8fV_bpCV5GbVHeEbRs+fuaZba65-OPw@mail.gmail.com>
+ <20200424065124.GA31922@xin-VirtualBox>
+ <CANMq1KBJ6f74aNAr8BwC3wz8MEeJzwXOQE44gv6C=DNzYmUWCQ@mail.gmail.com>
+ <20200428100508.GD3456981@phenom.ffwll.local>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428100508.GD3456981@phenom.ffwll.local>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-ClientProxiedBy: HK0PR03CA0097.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::13) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-Received: from bernard@vivo.com( [157.0.31.122) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 30 Apr 2020 11:33:07 +0800 (GMT+08:00)
-From:   =?UTF-8?B?6LW15Yab5aWO?= <bernard@vivo.com>
-Date:   Thu, 30 Apr 2020 11:33:07 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVLT0hLS0tJSUpJTklPT1lXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMTklMSU9ISk1DN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6Nj46MTo4TzgzLEwuER44MBo#SD1PCQpVSFVKTkNDSUpMTkNMTE5MVTMWGhIXVRkeCRUaCR87
-        DRINFFUYFBZFWVdZEgtZQVlKTkxVS1VISlVKSUlZV1kIAVlBTU5MSDcG
-X-HM-Tid: 0a71c92527f89394kuwsaa5181a3fd3
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xin-VirtualBox (114.247.245.254) by HK0PR03CA0097.apcprd03.prod.outlook.com (2603:1096:203:b0::13) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.2958.19 via Frontend Transport; Thu, 30 Apr 2020 03:36:21 +0000
+X-Originating-IP: [114.247.245.254]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: afd949fc-13f3-4530-db6c-08d7ecb7a696
+X-MS-TrafficTypeDiagnostic: BY5PR04MB6689:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR04MB66892C68B5FAB0B2EDBDEFC7C7AA0@BY5PR04MB6689.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 0389EDA07F
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39840400004)(376002)(396003)(366004)(136003)(346002)(54906003)(33656002)(2906002)(86362001)(33716001)(966005)(6496006)(8676002)(53546011)(478600001)(956004)(6666004)(110136005)(186003)(52116002)(16526019)(66556008)(66476007)(4326008)(5660300002)(9686003)(26005)(1076003)(8936002)(316002)(55016002)(107886003)(66946007)(83080400001)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: J8qfGlcmC+zJfoJRULtpnFIIIxLF2e9KlZcOdFy86THRh8q4gzj1wuXHjW/wbZ2BQgz2gBLV86OLd6T8sYJjhLx2AmP69spvcc9BUE+V9x5gnwFriXAn6hXTL2ATtezt5OE7CprgeBZhwNcWsha0VjCNdaG9GGT8DYU5DAFmzVaifYSxexlEZ+V9LSxlsk0wMkamns84nYTqnV0vrpZM9oMGyUfrvxk6QE89Zl3WYqJiEF4RG6nVGB95iEmPPN0cNwMZQQfrKHxekGptj5V7zxBz+VDXJeaQIQJTMdqEYDHgpkdRadVIrozW4E8yZVncZPAo1VcwGdarcR4L9SehVTSEDB1dTeTFFwLQxzjYlVU6S0bxKeqZTgX8qNigcnHIuRmF4bN48ZJDH5ClBzY1amxLGjznYEQk69ooQE9Eu7wlVDeVloHaHEhvRvcBvdBYhUwU6Jbbprbs/0eatVqw2sB84SMpiaCxNatSzYre4jntwA1KryoY/GqksELVNBjamlWyrNO8fpCv1oci+KCrew==
+X-MS-Exchange-AntiSpam-MessageData: OwR1GrqwP0B0d49LgRW34Qxp0S19hefkb47QgPvh5CGYyA0CaFkO7KQS4cHKucP15T2NuHQxRtSFcB3Hli8WWXE1L8sApcQzkwrl5es5chl8DQtNBQ9KzmYwG7DgzGA8Yv7olkUWRG8zZ3y8k081L0TnS/EytJ/zpBd3p7bbkjJ7Oo8K715N/+ntp5oJua3qh7XH//d88l+u9fXG5Nmt1mm2xng+DJ/BsCgYyWU15GXG+bYSxek2skYFtple96KK59DOemvVRyRixMw/iCFF8n4NXqIQ6Pygt3yL5eRA3QUzrQGx5lGvU+iLqCT54KjIRVhEI1HYTXOW3yZ75a7ZSUb01+HLyFHtQ7cO3sY+gWhXZbvBF3YmSuhlZYwFi03fYhmo2ot6ihptdNBQsSRMGyBM31/ZuyVujLEr+Rxl2yr3oESaVp6NXslra67FX5TSP46jlqPt+rp+051wu8NoYCRZmJJNJ4dhQCsbxTCWr7z7t8Z1Z4bmk+Qcfkb52UUdfPAUhOSNvB/jaVHt6bYpU+pURKSQy1VmgnH97SVbv282DLjpd1W6YKreTy65gXv8Db13LbSTyOeiD+bmSMc9rKpuQY5L9GizBGn7FX2tibNPO4ke4jztOCx7+mn+ULKt3AucZoH3tKxxI5ELHA1GJ1WkcuiVNtdv1+zF11AsIwl9p96PWPv4MCdb3Aihef0Lpc435lJX24vwRPApJJAEEw7SfMwYu5JS2jvo8SjL0MdL8ZmRQRZ/izv9GlhN3Evo0HFOVYyPvP9FDL8eDgScFqqjMdej29ScPTV65OBSiJ9jetkugCx/rwqRVcTlvtwJ
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: afd949fc-13f3-4530-db6c-08d7ecb7a696
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 03:36:21.8142
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MZu3UXc5OZOqfS1+eQaQojDNiqgtL/weWTK3JV8Ge9YpTbhm5R9M3GS2HhApxB7FeaMRmAUnKeIlNEzx9BtVkg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6689
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkZyb206IE1hcnRpbiBCbHVtZW5zdGluZ2wgPG1hcnRpbi5ibHVtZW5zdGluZ2xAZ29vZ2xlbWFp
-bC5jb20+CkRhdGU6IDIwMjAtMDQtMzAgMDE6NDM6NTUKVG86ICBKZXJvbWUgQnJ1bmV0IDxqYnJ1
-bmV0QGJheWxpYnJlLmNvbT4KQ2M6ICBCZXJuYXJkIFpoYW8gPGJlcm5hcmRAdml2by5jb20+LE5l
-aWwgQXJtc3Ryb25nIDxuYXJtc3Ryb25nQGJheWxpYnJlLmNvbT4sU3RlcGhlbiBCb3lkIDxzYm95
-ZEBrZXJuZWwub3JnPixLZXZpbiBIaWxtYW4gPGtoaWxtYW5AYmF5bGlicmUuY29tPixsaW51eC1h
-bWxvZ2ljQGxpc3RzLmluZnJhZGVhZC5vcmcsbGludXgtY2xrQHZnZXIua2VybmVsLm9yZyxsaW51
-eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnLG9wZW5zb3VyY2Uua2VybmVsQHZpdm8uY29tClN1Ympl
-Y3Q6IFJlOiBbUEFUQ0hdIGNsay9tZXNvbjogZml4ZXMgbWVtbGVhayBpc3N1ZSBpbiBpbml0IGVy
-ciBicmFuY2g+SGkgSmVyb21lLAo+Cj5PbiBXZWQsIEFwciAyOSwgMjAyMCBhdCAyOjM3IFBNIEpl
-cm9tZSBCcnVuZXQgPGpicnVuZXRAYmF5bGlicmUuY29tPiB3cm90ZToKPj4KPj4KPj4gT24gV2Vk
-IDI5IEFwciAyMDIwIGF0IDA1OjE0LCBCZXJuYXJkIFpoYW8gPGJlcm5hcmRAdml2by5jb20+IHdy
-b3RlOgo+Pgo+PiA+IEluIGNvbW1vbiBpbml0IGZ1bmN0aW9uLCB3aGVuIHJ1biBpbnRvIGVyciBi
-cmFuY2gsIHdlIGRpZG5gdAo+PiA+IHVzZSBrZnJlZSB0byByZWxlYXNlIGt6bWFsbG9jIGFyZWEs
-IHRoaXMgbWF5IGJyaW5nIGluIG1lbWxlYWsKPj4KPj4gVGh4IGZvciByZXBvcnRpbmcgdGhpcyBC
-ZXJuYXJkLgo+PiBJJ20gbm90IGEgZmFuIG9mIGFkZGluZyBrZnJlZSBldmVyeXdoZXJlLiBJJ2Qg
-bXVjaCBwcmVmZXIgYSBsYWJlbCBhbmQKPj4gY2xlYXIgZXJyb3IgZXhpdCBwYXRoLgo+Pgo+PiBU
-aGF0IGJlaW5nIHNhaWQsIHRoZSBhbGxvY2F0aW9uIGlzIHByb2JhYmx5IG5vdCB0aGUgb25seSB0
-aGluZyB0aGF0Cj4+IG5lZWRzIHRvIGJlIHVuZG9uZSBpbiBjYXNlIG9mIGVycm9yLiBJIGd1ZXNz
-IHRoaXMgaXMgZHVlIHRvIGNvbnZlcnNpb24KPj4gdG8gQ0xLX09GX0RFQ0xBUkVfRFJJVkVSKCkg
-d2hpY2ggZm9yY2VkIHRvIGRyb3AgYWxsIHRoZSBkZXZtXwo+PiBUaGlzIHdhcyBkb25lIGJlY2F1
-c2UgdGhlIGNsb2NrIGNvbnRyb2xsZXIgd2FzIHJlcXVpcmVkIGVhcmx5IGluIHRoZQo+PiBib290
-IHNlcXVlbmNlLgo+Pgo+PiBUaGVyZSBpcyAyIHBhdGhzIHRvIHByb3Blcmx5IHNvbHZlIHRoaXM6
-Cj4+IDEpIE9sZCBzY2hvb2w6IG1hbnVhbGx5IHVuZG8gZXZlcnl0aGluZyB3aXRoIGV2ZXJ5IGVy
-cm9yIGV4aXQgY29uZGl0aW9uCj4+ICAgIERvYWJsZSBidXQgcHJvYmFibHkgYSBiaXQgbWVzc3kK
-Pj4gMikgQ29udmVydCBiYWNrIHRoZSBkcml2ZXIgdG8gYSByZWFsIHBsYXRmb3JtIGRyaXZlciBh
-bmQgdXNlIGRldm1fLgo+PiAgICBXZSB3b3VsZCBzdGlsbCBuZWVkIHRoZSBjb250cm9sbGVyIHRv
-IHJlZ2lzdGVyIGVhcmx5IGJ1dCBJIHdvbmRlciBpZgo+PiAgICB3ZSBjb3VsZCB1c2UgdGhlIHNh
-bWUgbWV0aG9kIGFzIGRyaXZlcnMvY2xrL21lZGlhdGVrL2Nsay1tdDI3MDEuYyBhbmQKPj4gICAg
-dXNlIGFyY2hfaW5pdGNhbGwoKSA/Cj4+Cj4+IE1hcnRpbiwgeW91IGRpZCB0aGUgaW5pdGlhbCBj
-b252ZXJzaW9uLCB3aGF0IGRvIHlvdSB0aGluayBvZiBvcHRpb24gMiA/Cj5JIHRyaWVkIGl0IHdp
-dGggdGhlIGF0dGFjaGVkIHBhdGNoCj51bmZvcnR1bmF0ZWx5IG15ICJtOGJfY2xrY190ZXN0X3By
-b2JlIiBpcyBzdGlsbCBydW4gdG9vIGxhdGUKPgo+PiBXb3VsZCBpdCBzdGlsbCBhbnN3ZXIgdGhl
-IHByb2JsZW0geW91IHdlcmUgdHJ5aW5nIHRvIHNvbHZlIGJhY2sgdGhlbiA/Cj5JJ20gYWZyYWlk
-IGl0IGRvZXMgbm90Ogo+LSB0aGUgcmVzZXRzIGFyZSBuZWVkZWQgZWFybHkgZm9yIFNNUCBpbml0
-aWFsaXphdGlvbgo+LSB0aGUgY2xvY2tzIGFyZSBuZWVkZWQgZXZlbiBlYXJsaWVyIGZvciB0aW1l
-ciByZWdpc3RyYXRpb24gKHdlIGhhdmUKPmJvdGgsIHRoZSBBUk0gVFdEIHRpbWVyIGFuZCBzb21l
-IEFtbG9naWMgY3VzdG9tIHRpbWVyLiBib3RoIGhhdmUgY2xvY2sKPmlucHV0cykKPgo+PiBPbmUg
-YWRkZWQgYmVuZWZpdCBvZiBvcHRpb24gMiBpcyB3ZSBjb3VsZCBkcm9wIENMS19PRl9ERUNMQVJF
-X0RSSVZFUigpLgo+PiBXZSBjb3VsZCBldmVuIGRvIHRoZSBzYW1lIGluIGZvciB0aGUgb3RoZXIg
-U29Dcywgd2hpY2ggSSBzdXBwb3NlIHdvdWxkCj4+IGF2b2lkIGEgZmFpciBhbW91bnQgb2YgcHJv
-YmUgZGVmZXJyYWwuCj5pdCB3b3VsZCBiZSBncmVhdCwgaW5kZWVkCj5idXQgdGhpcyB3aWxsIG9u
-bHkgd29yayBvbmNlIHRpbWVyIGluaXRpYWxpemF0aW9uIGFuZCBTTVAgYm9vdCBjYW4KPmhhcHBl
-biBhdCBhIGxhdGVyIHN0YWdlCj4KPklmIHRoZSBjbG9jayBjb250cm9sbGVyIHJlZ2lzdHJhdGlv
-biBmYWlscyB0aGUgYm9hcmQgd29uJ3QgYm9vdC4gWWVzLAo+Y2xlYW5pbmcgdXAgbWVtb3J5IGlz
-IGdvb2QsIGJ1dCBpbiB0aGlzIHNwZWNpZmljIGNhc2UgaXQgd2lsbCBhZGQgYQo+Y291cGxlIG9m
-IGV4dHJhIENQVSBjeWNsZXMgYmVmb3JlIHRoZSBrZXJuZWwgaXMgZGVhZAo+U28sIGlmIHdlIHdh
-bnQgdG8gaWdub3JlIHRoYXQgZmFjdCB0aGVuIEkgYWdyZWUgd2l0aCB5b3VyIGZpcnN0IG9wdGlv
-bgo+KHVuZG9pbmcgdGhpbmdzIHRoZSAib2xkIHNjaG9vbCIgd2F5KS4KPgoKSGkKSSBhbSBub3Qg
-c3VyZSB3aGV0aGVyIG15IHVuZGVyc3RhbmRpbmcgaXMgY29ycmVjdC4gCkkgZmVlbHMgdGhhdCB0
-aGUgZmFpbHVyZSBvZiBvdXIgbW9kdWxlIGNhbiBub3QgYmxvY2sgdGhlIGVudGlyZSBrZXJuZWwg
-ZnJvbSBzdGFydGluZy4gCk1heWJlIHdlIHNob3VsZCB0aHJvdyBhbiBleGNlcHRpb24sIGNsZWFy
-IHRoZSBzdGF0dXMsIGFzICJvbGQgd2F5IiwgCmFuZCBjb250aW51ZSB0byBleGVjdXRlIHRoZSBr
-ZXJuZWwuCgpBbmQgaWYgb3VyIG1vZHVsZSByZXF1aXJlcyB0aGF0IHRoZSBrZXJuZWwgY2Fubm90
-IGNvbnRpbnVlIHRvIHJ1biB3aGVuIHRoZSBleGNlcHRpb24gb2NjdXJzLAp0aGVuIHdlIGRvIG5v
-dCBuZWVkIHRvIHJldHVybiBpbiB0aGUgZXJyb3IgYnJhbmNoLCBhbHNvIHdlIGRvIG5vdCBuZWVk
-IHRvIGtmcmVlLCBqdXN0IEJVR19PTigpLgoKUmVnYXJkcywKQmVybmFyZAoKPk1hcnRpbgoNCg0K
+On Tue, Apr 28, 2020 at 12:05:08PM +0200, Daniel Vetter wrote:
+> On Fri, Apr 24, 2020 at 08:12:04PM +0800, Nicolas Boichat wrote:
+> > On Fri, Apr 24, 2020 at 2:51 PM Xin Ji <xji@analogixsemi.com> wrote:
+> > >
+> > > On Thu, Apr 23, 2020 at 07:55:15PM +0800, Nicolas Boichat wrote:
+> > > > Hi,
+> > > >
+> > > > Just commenting on the mode_fixup function that was added in v7.
+> > > >
+> > > [snip]
+> > > > > +       /*
+> > > > > +        * once illegal timing detected, use default HFP, HSYNC, HBP
+> > > > > +        */
+> > > > > +       if (hblanking < HBLANKING_MIN || (hfp < HP_MIN && hbp < HP_MIN)) {
+> > > >
+> > > > should this be adj_hblanking/adj_hfp/adj_hbp?
+> > > NO, need check original HFP and HBP, if they are not legal, driver need
+> > > set default value to adj_hsync, adj_hfp, adj_hbp.
+> > > >
+> > > > > +               adj_hsync = SYNC_LEN_DEF;
+> > > > > +               adj_hfp = HFP_HBP_DEF;
+> > > > > +               adj_hbp = HFP_HBP_DEF;
+> > > > > +               vref = adj->clock * 1000 / (adj->htotal * adj->vtotal);
+> > > > > +               if (hblanking < HBLANKING_MIN) {
+> > > > > +                       delta_adj = HBLANKING_MIN - hblanking;
+> > > > > +                       adj_clock = vref * delta_adj * adj->vtotal;
+> > > > > +                       adj->clock += DIV_ROUND_UP(adj_clock, 1000);
+> > > > > +               } else {
+> > > > > +                       delta_adj = hblanking - HBLANKING_MIN;
+> > > > > +                       adj_clock = vref * delta_adj * adj->vtotal;
+> > > > > +                       adj->clock -= DIV_ROUND_UP(adj_clock, 1000);
+> > > > > +               }
+> > > > > +
+> > > > > +               DRM_WARN("illegal hblanking timing, use default.\n");
+> > > > > +               DRM_WARN("hfp(%d),hbp(%d),hsync(%d).\n", hfp, hbp, hsync);
+> > > >
+> > > > How likely is it that this mode is going to work? Can you just return
+> > > > false here to reject the mode?
+> > > We want to set the default minimal Hblancking value, then it may display,
+> > > otherwise. If we just return false, there is no display for sure.
+> > 
+> > Right, understand your argument. I'm pondering if it's not just better
+> > to reject the mode rather than trying a timing that is definitely
+> > quite different from what the monitor was asking for. No super strong
+> > opinion, I'll let other people on the list weigh in.
+> 
+> Yeah mode_fixup is supposed to be used to adjust the mode in intermediate
+> stages (e.g. if you go from progressive to interlaced only at the end of
+> your pipeline or something like that). It's not meant for adjusting the
+> mode yout actually put out through a hdmi or dp connector. For fixed
+> panels adjusting modes to fit the panel is also fairly common, but not for
+> external outputs.
+> 
+> Since this is a DP bridge I'd say no adjusting, just reject what doesn't
+> fit.
+We have found some panel which HBP less than 8, if we reject to adjust
+video timing, then there is no display. The customer does not accept it,
+they push us to fix it, the only resolve way is to adjust timing.
+> -Daniel
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
