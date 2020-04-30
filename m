@@ -2,173 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045FE1C056E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 20:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675EE1C0553
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 20:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726759AbgD3S6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 14:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
+        id S1726616AbgD3Sx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 14:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbgD3S6a (ORCPT
+        with ESMTP id S1726318AbgD3Sx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 14:58:30 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A268C08E859
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 11:58:30 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id s9so5587212eju.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 11:58:30 -0700 (PDT)
+        Thu, 30 Apr 2020 14:53:57 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAD1C035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 11:53:57 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id 18so266539pfv.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 11:53:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VO82Y+ddPqwVbejb8yp1YADHo+TiaduERH1aUXgFNdU=;
-        b=ftYR3vvy7y4XQUHnig2EWsnYgRjVl+CPW2em4ftSq034hx6ZoqSueCcso+RG9w8AGa
-         w0/+YALKEw0FIaP05V+9C0XKOYuOmd59KAW1siA/r09GzwZUf48N8GmxNx1dxSbliixs
-         CuBWjC2ORmo5GZgQNulH0b+ykeGy5IQzQog4ZcfdBGWxbr/kGwbKqiBi3jZCbBsGvnNW
-         Q5W2E6yv533qZlcTHc6rxcPndCCEwjOVK0cZ2rz6LGVrs0kCEepYAF9z3xs1VIBjMZtf
-         A5p7YNgqSxKHyCub+EuUXAZ2xuX50SSxRFhOGGuo9nNwQKHccsh0XWdv0oNDM0uH1ryy
-         dbvg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=tCdxst5tczlIzqff4W9H4F8TmPvPw2gnTPXXKU2ofDs=;
+        b=k942Q6I67iXZpEDFUoY2vP1Z0MQr4CFIWM41c8k6HZI0NszRzd6CMjjvwyTEV6spMf
+         eZpRvIhTtI66G3uAlRd/OS3SJxrkGODFyqCokrKBWZxnInabbAejkY+Z3UuvtIwNHM/3
+         TAoeSX8dogOXWvCVG5g5roNH9ZaGGVmvwi7K+5e7oLEzrSyRu98d2hJMa9h5Nx9Af+Yy
+         ezUv0L/4M0cwPJBAGJmRVLVwjDJ1w3lH/Sy5dCfTSF6QMDMybvJm37W/1u6zTG3oBjbP
+         vNTjcUNIJbLhJsySvKF+BUJWEJomMXcQPWVkjQVlz+I98YvYLovpe2oM1eDJHlmcmmSh
+         MXZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VO82Y+ddPqwVbejb8yp1YADHo+TiaduERH1aUXgFNdU=;
-        b=lKtwqhDlDrPt6pqGkcvIMJd47OvKpvOQghDv32WlxT3r2aBCb2UlDdkKx69IXBESHN
-         PZwyGykdXdFy6mSDomdMxkEI9TLJvcsXKkAlhDrJa5O7iTvc6Gq4X4faP88ZzNWKGgZd
-         98AUaEz3yLnPxfWPxSlSzjae8hcqSl88CTatgmnKO3Jkx7yAhrbfuIrGOxf8vR91l8M/
-         Mawass0z+cEEXzo670TaSvnm4A1yp/gf3EPp+bfmzpGCGDN5oYQyZG6PYslywQCG1DsM
-         htpNyZul0QSIQi2aZEiEIF1W8j7kxr9x3cWxVM0XwMxd5us2XN4D7nquDC8+bMIcgAlz
-         nSbA==
-X-Gm-Message-State: AGi0PubRXzgaaz70RQ1vnfRpqH2pq3Xd2kqHSahsTVW+LS15UAoOnB2A
-        GQbi83dhWtVn+hG5J9+IIr7YGICtvSJuK9k2Hx5sjw==
-X-Google-Smtp-Source: APiQypLtO6lmgP+/t4n/a1LprqtsF2znfD77bnYaqHJRks9KFzncsFlKVdj99iACRR541U4ie6ERYFDj3Eno6uEUPdw=
-X-Received: by 2002:a17:906:855a:: with SMTP id h26mr4305126ejy.56.1588273108788;
- Thu, 30 Apr 2020 11:58:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200430102908.10107-1-david@redhat.com> <20200430102908.10107-3-david@redhat.com>
- <87pnbp2dcz.fsf@x220.int.ebiederm.org> <1b49c3be-6e2f-57cb-96f7-f66a8f8a9380@redhat.com>
- <871ro52ary.fsf@x220.int.ebiederm.org> <373a6898-4020-4af1-5b3d-f827d705dd77@redhat.com>
- <875zdg26hp.fsf@x220.int.ebiederm.org> <b28c9e02-8cf2-33ae-646b-fe50a185738e@redhat.com>
-In-Reply-To: <b28c9e02-8cf2-33ae-646b-fe50a185738e@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 30 Apr 2020 11:58:16 -0700
-Message-ID: <CAPcyv4j33bwbrFMu2L0knRGRN1RDiC5kbknMNEwo-OFmPSw47w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] mm/memory_hotplug: Introduce MHP_NO_FIRMWARE_MEMMAP
-To:     David Hildenbrand <david@redhat.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, virtio-dev@lists.oasis-open.org,
-        virtualization@lists.linux-foundation.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-hyperv@vger.kernel.org,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Baoquan He <bhe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=tCdxst5tczlIzqff4W9H4F8TmPvPw2gnTPXXKU2ofDs=;
+        b=CshTRHm2dlF+CvtZn97+fmKdjoxw+M2A8QcdKAe8Gv/09En4r2+olJ3iwrb1+UWcD0
+         eik892FXnGcY8mw53GR6JE67FlLLmXw6r8nIRV44/IsF2pGcDFtSso6tEC3w3C9/3nWJ
+         BW/q95QVIgqlO3gpjUHPABE+FFGbacMAkha6OkUdil1RBArvzrmyuchPA0BIXzWF1VMn
+         YjBzPhsRqt0KBQudUsws0cjh3aLnMKZlEvpJ5TuZTUPQjNExKDkg777Zm6DHt/79lnsb
+         5b/OCwQshCUxtGSS45BUhmH1mIQhsjQ+kVa5bfLuf5xOuOuTuWayXkMrSGt45L3CYmrg
+         BZqA==
+X-Gm-Message-State: AGi0Puauh0/PZ7ACe+iLLcYni4Tsfhzopj/pJDgGsZ2bPDajsZg0sjU6
+        7Ue+iQkfcZEJBgePQ6s7suw=
+X-Google-Smtp-Source: APiQypJER8e+1f4K+e2eafBOds4s7QWdgQ8n+CkJbZ7ST7hs/yoSGxN2U2EYAeOCM1ljLV1AFCuy2Q==
+X-Received: by 2002:a63:f960:: with SMTP id q32mr295612pgk.357.1588272836781;
+        Thu, 30 Apr 2020 11:53:56 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.43.171])
+        by smtp.gmail.com with ESMTPSA id g25sm427775pfo.150.2020.04.30.11.53.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Apr 2020 11:53:56 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] mm/gup.c: Corrected document reference path
+Date:   Fri,  1 May 2020 00:31:54 +0530
+Message-Id: <1588273314-3790-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 11:44 AM David Hildenbrand <david@redhat.com> wrote:
->
->  >>> If the class of memory is different then please by all means let's mark
-> >>> it differently in struct resource so everyone knows it is different.
-> >>> But that difference needs to be more than hotplug.
-> >>>
-> >>> That difference needs to be the hypervisor loaned us memory and might
-> >>> take it back at any time, or this memory is persistent and so it has
-> >>> these different characteristics so don't use it as ordinary ram.
-> >>
-> >> Yes, and I think kmem took an excellent approach of explicitly putting
-> >> that "System RAM" into a resource hierarchy. That "System RAM" won't
-> >> show up as a root node under /proc/iomem (see patch #3), which already
-> >> results in kexec-tools to treat it in a special way. I am thinking about
-> >> doing the same for virtio-mem.
-> >
-> > Reading this and your patch cover letters again my concern is that
-> > the justification seems to be letting the tail wag the dog.
-> >
-> > You want kexec-tools to behave in a certain way so you are changing the
-> > kernel.
-> >
-> > Rather it should be change the kernel to clearly reflect reality and if
-> > you can get away without a change to kexec-tools that is a bonus.
-> >
->
-> Right, because user space has to have a way to figure out what to do.
->
-> But talking about the firmware memmap, indicating something via a "raw
-> firmware-provided memory map", that is not actually in the "raw
-> firmware-provided memory map" feels wrong to me. (below)
->
->
-> >>> That information is also useful to other people looking at the system
-> >>> and seeing what is going on.
-> >>>
-> >>> Just please don't muddle the concepts, or assume that whatever subset of
-> >>> hotplug memory you are dealing with is the only subset.
-> >>
-> >> I can certainly rephrase the subject/description/comment, stating that
-> >> this is not to be used for ordinary hotplugged DIMMs - only when the
-> >> device driver is under control to decide what to do with that memory -
-> >> especially when kexec'ing.
-> >>
-> >> (previously, I called this flag MHP_DRIVER_MANAGED, but I think
-> >> MHP_NO_FIRMWARE_MEMMAP is clearer, we just need a better description)
-> >>
-> >> Would that make it clearer?
-> >
-> > I am not certain, but Andrew Morton deliberately added that
-> > firmware_map_add_hotplug call.  Which means that there is a reason
-> > for putting hotplugged memory in the firmware map.
-> >
-> > So the justification needs to take that reason into account.  The
-> > justification can not be it is hotplugged therefore it should not belong
-> > in the firmware memory map.  Unless you can show that
-> > firmware_map_add_hotplug that was actually a bug and should be removed.
-> > But as it has been that way since 2010 that seems like a long shot.
-> >
-> > So my question is what is right for the firmware map?
->
-> We have documentation for that since 2008. Andrews patch is from 2010.
->
-> Documentation/ABI/testing/sysfs-firmware-memmap
->
-> It clearly talks about "raw firmware-provided memory map" and why the
-> interface was introduced at all ("on most architectures that
-> firmware-provided memory map is modified afterwards by the kernel itself").
->
-> >
-> > Why does the firmware map support hotplug entries?
->
-> I assume:
->
-> The firmware memmap was added primarily for x86-64 kexec (and still, is
-> mostly used on x86-64 only IIRC). There, we had ACPI hotplug. When DIMMs
-> get hotplugged on real HW, they get added to e820. Same applies to
-> memory added via HyperV balloon (unless memory is unplugged via
-> ballooning and you reboot ... the the e820 is changed as well). I assume
-> we wanted to be able to reflect that, to make kexec look like a real reboot.
+Document path Documentation/vm/pin_user_pages.rst is not a correct
+reference and it should be Documentation/core-api/pin_user_pages.rst.
 
-I can at least say that this breakdown makes sense to me. Traditional
-memory hotplug results in permanent change to the raw firmware memory
-map reported by the host at next reboot. These device-driver-owned
-memory regions really want a hotplug policy per-kernel boot instance
-and should fall back to the default reserved state at reboot (kexec or
-otherwise). When I say hotplug-policy I mean whether the current
-kernel wants to treat the device range as System RAM or leave it as
-device-managed. The intent is that the follow-on kernel needs to
-re-decide the device policy.
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+---
+ mm/gup.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
->
-> This worked for a while. Then came dax/kmem. Now comes virtio-mem.
->
+diff --git a/mm/gup.c b/mm/gup.c
+index 7ce796c..4952f12 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2864,10 +2864,10 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
+  * the arguments here are identical.
+  *
+  * FOLL_PIN means that the pages must be released via unpin_user_page(). Please
+- * see Documentation/vm/pin_user_pages.rst for further details.
++ * see Documentation/core-api/pin_user_pages.rst for further details.
+  *
+- * This is intended for Case 1 (DIO) in Documentation/vm/pin_user_pages.rst. It
+- * is NOT intended for Case 2 (RDMA: long-term pins).
++ * This is intended for Case 1 (DIO) in Documentation/core-api/pin_user_pages.rst.
++ * It is NOT intended for Case 2 (RDMA: long-term pins).
+  */
+ int pin_user_pages_fast(unsigned long start, int nr_pages,
+ 			unsigned int gup_flags, struct page **pages)
+@@ -2904,10 +2904,10 @@ int pin_user_pages_fast(unsigned long start, int nr_pages,
+  * the arguments here are identical.
+  *
+  * FOLL_PIN means that the pages must be released via unpin_user_page(). Please
+- * see Documentation/vm/pin_user_pages.rst for details.
++ * see Documentation/core-api/pin_user_pages.rst for details.
+  *
+- * This is intended for Case 1 (DIO) in Documentation/vm/pin_user_pages.rst. It
+- * is NOT intended for Case 2 (RDMA: long-term pins).
++ * This is intended for Case 1 (DIO) in Documentation/core-api/pin_user_pages.rst.
++ * It is NOT intended for Case 2 (RDMA: long-term pins).
+  */
+ long pin_user_pages_remote(struct task_struct *tsk, struct mm_struct *mm,
+ 			   unsigned long start, unsigned long nr_pages,
+@@ -2940,10 +2940,10 @@ long pin_user_pages_remote(struct task_struct *tsk, struct mm_struct *mm,
+  * FOLL_PIN is set.
+  *
+  * FOLL_PIN means that the pages must be released via unpin_user_page(). Please
+- * see Documentation/vm/pin_user_pages.rst for details.
++ * see Documentation/core-api/pin_user_pages.rst for details.
+  *
+- * This is intended for Case 1 (DIO) in Documentation/vm/pin_user_pages.rst. It
+- * is NOT intended for Case 2 (RDMA: long-term pins).
++ * This is intended for Case 1 (DIO) in Documentation/core-api/pin_user_pages.rst.
++ * It is NOT intended for Case 2 (RDMA: long-term pins).
+  */
+ long pin_user_pages(unsigned long start, unsigned long nr_pages,
+ 		    unsigned int gup_flags, struct page **pages,
+-- 
+1.9.1
+
