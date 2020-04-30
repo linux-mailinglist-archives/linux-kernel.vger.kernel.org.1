@@ -2,83 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BB31C0867
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 542691C0869
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgD3UnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 16:43:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53022 "EHLO mail.kernel.org"
+        id S1727906AbgD3UnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 16:43:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726781AbgD3Um7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:42:59 -0400
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726698AbgD3UnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 16:43:02 -0400
+Received: from localhost (mobile-166-175-184-168.mycingular.net [166.175.184.168])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F0C1207DD;
-        Thu, 30 Apr 2020 20:42:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5150206C0;
+        Thu, 30 Apr 2020 20:43:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588279379;
-        bh=PYHU3yWnPxfijaI4fsRVSiZdzHPPF4Mcu6YYWIAfZjY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SMiHBExSiQ3TqF7zKveNyETUAIf6ZRC1wdmHPIIKtJR5PfxTLo36r/1F2w7fiBGPb
-         Emebm/9Rio1ms8AGOD6guV1Y6UhymzNvIwBHNzL1GJ9+0zZr3wKF5ajc1d+cLsm8of
-         yqbRJ/4REGIKQOBlgIMGs6yV463R4QfBn1kouVUw=
-Received: by mail-il1-f173.google.com with SMTP id t12so2687356ile.9;
-        Thu, 30 Apr 2020 13:42:59 -0700 (PDT)
-X-Gm-Message-State: AGi0PubMD7ydj9q2xkEoggeBIFdzXT8ZX79GAL5adA4jBInvFXtQKVDO
-        y10GRgyZlNdieoR0tzQsa+eCdwO7SU0lWWTpSYo=
-X-Google-Smtp-Source: APiQypKHsHMjf5Qph45W1Wjt/cO7EE0uKI9BzBAqHFIrFxUi4dLejzuPuvvdf2TwBZVaQt0JUL7x08e+IgnwNaQcZUQ=
-X-Received: by 2002:a92:aa0f:: with SMTP id j15mr217863ili.211.1588279378242;
- Thu, 30 Apr 2020 13:42:58 -0700 (PDT)
+        s=default; t=1588279382;
+        bh=u75tJYVYqVgwKuxyvKak/ZmBpHgmj5uCJfAwjytROXk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Lo/oqZaXh7vcHQFfdXlnjaGTon80H4R9d/gJ3gIDroMAlE999ZPhFGt2CAgEd0l/+
+         RhvqHzdgIGpb0FfKhafe0UqCs5Chv22vRnKMSnwtUjSdupAg1L8EyzHVSOJJt44VJt
+         KJI7OV0aIbDtt8gAcJ0q0cgaWxNy4RlP1imVGnYU=
+Date:   Thu, 30 Apr 2020 15:43:00 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
+        <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/5] PCI: brcmstb: fix window register offset from 4 to 8
+Message-ID: <20200430204300.GA63206@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20200430182843.2510180-1-nivedita@alum.mit.edu>
- <091e3fc3bdbc5f480af7d3b3ac096d174a4480d0.1588273612.git.joe@perches.com>
- <CAMj1kXGMnTfYiU_vMDYG0uy7Na7wy=5DRHERTzZQeb4UBusn0g@mail.gmail.com> <20200430204041.GA2579913@rani.riverdale.lan>
-In-Reply-To: <20200430204041.GA2579913@rani.riverdale.lan>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 30 Apr 2020 22:42:47 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXF62pbmBXmW3BhGAKMG3TrR2KTNuCXcZJ2akuPJXfTrvw@mail.gmail.com>
-Message-ID: <CAMj1kXF62pbmBXmW3BhGAKMG3TrR2KTNuCXcZJ2akuPJXfTrvw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] efi/libstub: efi_info/efi_err message neatening
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Joe Perches <joe@perches.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>, X86 ML <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430185522.4116-2-james.quinlan@broadcom.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020 at 22:40, Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> On Thu, Apr 30, 2020 at 09:29:46PM +0200, Ard Biesheuvel wrote:
-> > On Thu, 30 Apr 2020 at 21:12, Joe Perches <joe@perches.com> wrote:
-> > >
-> > > Use a standard style for these output logging messages.
-> > >
-> > > Miscellanea:
-> > >
-> > > o Use more common macro #defines with fmt, ##__VA_ARGS__
-> > > 0 Remove trailing messages periods and odd ' uses
-> > > o Remove embedded function names and use %s, __func__
-> > >
-> > > Signed-off-by: Joe Perches <joe@perches.com>
-> > > ---
-> > >
-> > > Perhaps these trivialities on top of this series?
-> > >
-> >
-> > The EFI printing routines don't actually support format strings.
-> >
->
-> The x86 real-mode bootup code actually has a printf.o that clocks in at
-> under 2k. We could add it in, and it would also be nice to move it into
-> lib or something, since at least alpha and powerpc implement something
-> very similar for boot-time messages.
+On Thu, Apr 30, 2020 at 02:55:19PM -0400, Jim Quinlan wrote:
+> From: Jim Quinlan <jquinlan@broadcom.com>
+> 
+> The oubound memory window registers were being referenced
+> with an incorrect offset.  This probably wasn't noticed
+> previously as there was likely only one such outbound window.
 
-Not being able to use format strings is really quite annoying, and I
-did look into reusing the ordinary one (which is hairy), not realizing
-that there is already a cut down version available.
+If you repost these for any other reason:
 
-So yes, that does sound like a great idea!
+Capitalize the first word of all the subject lines to match history.
+s/oubound/outbound/
+
+> Signed-off-by: Jim Quinlan <jquinlan@broadcom.com>
+> ---
+>  drivers/pci/controller/pcie-brcmstb.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index 454917ee9241..5b0dec5971b8 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -54,11 +54,11 @@
+>  
+>  #define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LO		0x400c
+>  #define PCIE_MEM_WIN0_LO(win)	\
+> -		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LO + ((win) * 4)
+> +		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_LO + ((win) * 8)
+>  
+>  #define PCIE_MISC_CPU_2_PCIE_MEM_WIN0_HI		0x4010
+>  #define PCIE_MEM_WIN0_HI(win)	\
+> -		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_HI + ((win) * 4)
+> +		PCIE_MISC_CPU_2_PCIE_MEM_WIN0_HI + ((win) * 8)
+>  
+>  #define PCIE_MISC_RC_BAR1_CONFIG_LO			0x402c
+>  #define  PCIE_MISC_RC_BAR1_CONFIG_LO_SIZE_MASK		0x1f
+> -- 
+> 2.17.1
+> 
