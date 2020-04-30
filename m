@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776B91BF0E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4334C1BF0ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgD3HLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 03:11:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726337AbgD3HLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:11:41 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35B382082E;
-        Thu, 30 Apr 2020 07:11:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588230699;
-        bh=pNOXaPYGfwN5YuaFisXoPHWYOkR2bfP+m8TNT7K869U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P1/J+ume/5ZXMAGcDwEIy9ayllS5B9qL0YownC6vFIxEfPOVIMQVK+YPOxyPjTH4L
-         d0uVBHsa/3iVVcezj8FlasHzXZT82zghDjTO+//lXi61Wz3fjEOQmo8mtaigK4cSG1
-         17E0XQLBL1P/POfn4Rd0g3La+Vwl/08rx1RQYWPI=
-Date:   Thu, 30 Apr 2020 09:11:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     stable <stable@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        John Ogness <john.ogness@linutronix.de>
-Subject: Re: Please queue ubifs: Fix ubifs_tnc_lookup() usage in
- do_kill_orphans() for stable (was: Re: [PATCH] ubifs: Fix ubifs_tnc_lookup()
- usage in do_kill_orphans())
-Message-ID: <20200430071137.GA2382543@kroah.com>
-References: <20200119215233.7292-1-richard@nod.at>
- <875zdibasg.fsf@vostro.fn.ogness.net>
- <1537701093.171645.1588186266734.JavaMail.zimbra@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1537701093.171645.1588186266734.JavaMail.zimbra@nod.at>
+        id S1726661AbgD3HM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 03:12:26 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:42868 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726337AbgD3HM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 03:12:26 -0400
+Received: from ubuntu.localdomain (unknown [223.104.3.134])
+        by APP-05 (Coremail) with SMTP id zQCowADnh_FPeqpeDU+oAA--.9471S2;
+        Thu, 30 Apr 2020 15:12:16 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     linux@armlinux.org.uk, michal.simek@xilinx.com,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] ZYNQ: platsmp: fix ioremap return value
+Date:   Thu, 30 Apr 2020 15:12:15 +0800
+Message-Id: <20200430071215.13448-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: zQCowADnh_FPeqpeDU+oAA--.9471S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF48ZFWxGFyktryDZr1DJrb_yoWxurg_Aw
+        1xtanrW3sYqF1v9w4rCa18Crsrt348Cr1Fgry2yF92k3yUWr17Cryvya9aqw4xX3ZagrZ8
+        GrWxGryayw15JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbwxYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCF
+        x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+        v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+        67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2
+        IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
+        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcDDGUUUUU
+X-Originating-IP: [223.104.3.134]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgECA1z4i0Q2CAAAsf
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 08:51:06PM +0200, Richard Weinberger wrote:
-> ----- Ursprüngliche Mail -----
-> > Von: "John Ogness" <john.ogness@linutronix.de>
-> > An: "richard" <richard@nod.at>
-> > CC: "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-kernel" <linux-kernel@vger.kernel.org>
-> > Gesendet: Mittwoch, 29. April 2020 16:56:31
-> > Betreff: Re: [PATCH] ubifs: Fix ubifs_tnc_lookup() usage in do_kill_orphans()
-> 
-> > Hi Richard,
-> > 
-> > Could you CC this patch to stable? It fixes a serious problem that I am
-> > seeing on real devices (i.e. Linux not being able to mount its root
-> > filesystem after a power cut). Thanks.
-> 
-> Just checked again, better ask stable maintainers. :-)
-> 
-> Stable maintainers, can you please make sure this patch will make it
-> into stable?
-> The upstream commit is:
-> 4ab25ac8b2b5 ("ubifs: Fix ubifs_tnc_lookup() usage in do_kill_orphans()")
-> 
-> I always thought havings a Fixes-Tag is enough to make sure it will
-> get picked up. Isn't this the case?
+In ioremap we should return -ENOMEM when it reports an
+memory allocation failure.
 
-No it is not, please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ arch/arm/mach-zynq/platsmp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Our scripts are doing better to dig out stuff where maintainers mess up
-and forget to put the cc: stable tag, but you can never rely on it.
-Please stick with the above rules that have been there for 15+ years :)
+diff --git a/arch/arm/mach-zynq/platsmp.c b/arch/arm/mach-zynq/platsmp.c
+index 68ec303fa278..308f74f9b4f9 100644
+--- a/arch/arm/mach-zynq/platsmp.c
++++ b/arch/arm/mach-zynq/platsmp.c
+@@ -47,7 +47,7 @@ int zynq_cpun_start(u32 address, int cpu)
+ 				zero = ioremap(0, trampoline_code_size);
+ 				if (!zero) {
+ 					pr_warn("BOOTUP jump vectors not accessible\n");
+-					return -1;
++					return -ENOMEM;
+ 				}
+ 			} else {
+ 				zero = (__force u8 __iomem *)PAGE_OFFSET;
+-- 
+2.17.1
 
-thanks,
-
-greg k-h
