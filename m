@@ -2,144 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F3A1BF988
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2B51BF9B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbgD3Nbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726685AbgD3Nbe (ORCPT
+        id S1727824AbgD3Niw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:38:52 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:63460 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727781AbgD3Nio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:31:34 -0400
-Received: from hillosipuli.retiisi.org.uk (hillosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303DBC035494;
-        Thu, 30 Apr 2020 06:31:34 -0700 (PDT)
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id 9FB0B634C8F;
-        Thu, 30 Apr 2020 16:31:25 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1jU9Hh-0000RY-9w; Thu, 30 Apr 2020 16:31:25 +0300
-Date:   Thu, 30 Apr 2020 16:31:25 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Daniel Gomez <daniel@qtec.com>, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/3] media: v4l2-subdev.h: Add min and max enum
-Message-ID: <20200430133125.GL867@valkosipuli.retiisi.org.uk>
-References: <20200414200151.80089-1-daniel@qtec.com>
- <20200414200151.80089-2-daniel@qtec.com>
- <20200430094233.GE867@valkosipuli.retiisi.org.uk>
- <20200430111014.GD5856@pendragon.ideasonboard.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430111014.GD5856@pendragon.ideasonboard.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Thu, 30 Apr 2020 09:38:44 -0400
+X-Greylist: delayed 402 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Apr 2020 09:38:43 EDT
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 7b8e4d71;
+        Thu, 30 Apr 2020 15:31:58 +0200 (CEST)
+Date:   Thu, 30 Apr 2020 15:31:58 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+CC:     mbrugger@suse.com, u-boot@lists.denx.de, bmeng.cn@gmail.com,
+        marex@denx.de, linux-kernel@vger.kernel.org, sjg@chromium.org,
+        m.szyprowski@samsung.com, s.nawrocki@samsung.com,
+        nsaenzjulienne@suse.de
+In-reply-to: <20200430130433.11248-2-nsaenzjulienne@suse.de> (message from
+        Nicolas Saenz Julienne on Thu, 30 Apr 2020 15:04:32 +0200)
+Subject: Re: [PATCH v2 1/2] arm: rpi: Add function to trigger VL805's firmware load
+References: <20200430130433.11248-1-nsaenzjulienne@suse.de> <20200430130433.11248-2-nsaenzjulienne@suse.de>
+Message-ID: <0161a6a5254871ce@bloch.sibelius.xs4all.nl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On Thu, Apr 30, 2020 at 02:10:14PM +0300, Laurent Pinchart wrote:
-> Hello,
+> From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> Date: Thu, 30 Apr 2020 15:04:32 +0200
 > 
-> On Thu, Apr 30, 2020 at 12:42:33PM +0300, Sakari Ailus wrote:
-> > Hi Daniel,
-> > 
-> > Thanks for the patchset.
-> > 
-> > I'm also cc'ing Laurent who I think could be interested in this one.
-> > 
-> > On Tue, Apr 14, 2020 at 10:01:49PM +0200, Daniel Gomez wrote:
-> > > Add min and max structures to the v4l2-subdev callback in order to allow
-> > > the subdev to return a range of valid frame intervals.
-> > > 
-> > > This would operate similar to the struct v4l2_subdev_frame_size_enum and
-> > > its max and min values for the width and the height. In this case, the
-> > > possibility to return a frame interval range is added to the v4l2-subdev level
-> > > whenever the v4l2 device operates in step-wise or continuous mode.
-> > 
-> > The current API only allows providing a list of enumerated values. That is
-> > limiting indeed, especially on register list based sensor drivers where
-> > vertical blanking is configurable.
-> > 
-> > I guess this could be extended to cover what V4L2, more or less. If we tell
-> > it's a range, is it assumed to be contiguous? We don't have try operation
-> > for the frame interval, but I guess set is good enough. The fraction is
-> > probably best for TV standards but it's not what camera sensors natively
-> > use. (But for a register list based driver, the established practice
-> > remains to use frame interval.)
-> > 
-> > I'm also wondering the effect on existing user space; if a driver gives a
-> > range, how will the existing programs work with such a driver?
-> > 
-> > I'd add an anonymous union with the interval field, the other field being
-> > min_interval. Then the current applications would get the minimum interval
-> > and still continue to function. I guess compilers are modern enough these
-> > days we can have an anonymous union in the uAPI?
+> On the Raspberry Pi 4, after a PCI reset, VL805's (a xHCI chip) firmware
+> may either be loaded directly from an EEPROM or, if not present, by the
+> SoC's VideoCore (the SoC's co-processor). Introduce the function that
+> informs VideoCore that VL805 may need its firmware loaded.
 > 
-> We can discuss all this, but given patch 3/3 in this series, I think
-> this isn't the right API :-) The sensor driver should not expose the
-> frame interval enumeration API. It should instead expose control of the
-> frame rate through V4L2_CID_PIXEL_RATE, V4L2_CID_HBLANK and
-> V4L2_CID_VBLANK.
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 > 
-
-That would require also exposing the size of the pixel array (and the
-analogue crop), in order to provide all the necessary information to
-calculate the frame rate. No objections there; this is a new driver.
-
-There are however existing drivers that implement s_frame_interval subdev
-ioctl; those might benefit from this one. Or would you implement the pixel
-rate based control as well, and effectively deprecate the s_frame_interval
-on those?
-
-> > > Signed-off-by: Daniel Gomez <daniel@qtec.com>
-> > > ---
-> > >  include/uapi/linux/v4l2-subdev.h | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/include/uapi/linux/v4l2-subdev.h b/include/uapi/linux/v4l2-subdev.h
-> > > index 03970ce30741..ee15393c58cd 100644
-> > > --- a/include/uapi/linux/v4l2-subdev.h
-> > > +++ b/include/uapi/linux/v4l2-subdev.h
-> > > @@ -117,6 +117,8 @@ struct v4l2_subdev_frame_interval {
-> > >   * @code: format code (MEDIA_BUS_FMT_ definitions)
-> > >   * @width: frame width in pixels
-> > >   * @height: frame height in pixels
-> > > + * @min_interval: min frame interval in seconds
-> > > + * @max_interval: max frame interval in seconds
-> > >   * @interval: frame interval in seconds
-> > >   * @which: format type (from enum v4l2_subdev_format_whence)
-> > >   */
-> > > @@ -126,9 +128,11 @@ struct v4l2_subdev_frame_interval_enum {
-> > >  	__u32 code;
-> > >  	__u32 width;
-> > >  	__u32 height;
-> > > +	struct v4l2_fract min_interval;
-> > > +	struct v4l2_fract max_interval;
-> > 
-> > This changes the memory layout of the struct and breaks the ABI. Any new
-> > fields in the struct may only replace reserved fields while the rest must
-> > stay unchanged.
-> > 
-> > >  	struct v4l2_fract interval;
-> > >  	__u32 which;
-> > > -	__u32 reserved[8];
-> > > +	__u32 reserved[4];
-> > >  };
-> > >  
-> > >  /**
+> ---
+> Changes since v1:
+>  - Rename function so it's not mistaken with regular firmware loading
 > 
--- 
-Regards,
+>  arch/arm/mach-bcm283x/include/mach/mbox.h | 13 +++++++
+>  arch/arm/mach-bcm283x/include/mach/msg.h  |  7 ++++
+>  arch/arm/mach-bcm283x/msg.c               | 43 +++++++++++++++++++++++
+>  3 files changed, 63 insertions(+)
+> 
+> diff --git a/arch/arm/mach-bcm283x/include/mach/mbox.h b/arch/arm/mach-bcm283x/include/mach/mbox.h
+> index 60e226ce1d..2ae2d3d97c 100644
+> --- a/arch/arm/mach-bcm283x/include/mach/mbox.h
+> +++ b/arch/arm/mach-bcm283x/include/mach/mbox.h
+> @@ -491,6 +491,19 @@ struct bcm2835_mbox_tag_set_palette {
+>  	} body;
+>  };
+>  
+> +#define BCM2835_MBOX_TAG_NOTIFY_XHCI_RESET          0x00030058
+> +
+> +struct bcm2835_mbox_tag_pci_dev_addr {
+> +	struct bcm2835_mbox_tag_hdr tag_hdr;
+> +	union {
+> +		struct {
+> +			u32 dev_addr;
+> +		} req;
+> +		struct {
+> +		} resp;
+> +	} body;
+> +};
+> +
+>  /*
+>   * Pass a raw u32 message to the VC, and receive a raw u32 back.
+>   *
+> diff --git a/arch/arm/mach-bcm283x/include/mach/msg.h b/arch/arm/mach-bcm283x/include/mach/msg.h
+> index 4afb08631b..e45c1bf010 100644
+> --- a/arch/arm/mach-bcm283x/include/mach/msg.h
+> +++ b/arch/arm/mach-bcm283x/include/mach/msg.h
+> @@ -48,4 +48,11 @@ int bcm2835_set_video_params(int *widthp, int *heightp, int depth_bpp,
+>  			     int pixel_order, int alpha_mode, ulong *fb_basep,
+>  			     ulong *fb_sizep, int *pitchp);
+>  
+> +/**
+> + * bcm2711_load_vl805_firmware() - get vl805's firmware loaded
+> + *
+> + * @return 0 if OK, -EIO on error
+> + */
+> +int bcm2711_notify_vl805_reset(void);
 
-Sakari Ailus
+Now the comment and function prototype don't agree :(.
+
+> +
+>  #endif
+> diff --git a/arch/arm/mach-bcm283x/msg.c b/arch/arm/mach-bcm283x/msg.c
+> index 94b75283f8..a338190d33 100644
+> --- a/arch/arm/mach-bcm283x/msg.c
+> +++ b/arch/arm/mach-bcm283x/msg.c
+> @@ -40,6 +40,12 @@ struct msg_setup {
+>  	u32 end_tag;
+>  };
+>  
+> +struct msg_notify_vl805_reset {
+> +	struct bcm2835_mbox_hdr hdr;
+> +	struct bcm2835_mbox_tag_pci_dev_addr dev_addr;
+> +	u32 end_tag;
+> +};
+> +
+>  int bcm2835_power_on_module(u32 module)
+>  {
+>  	ALLOC_CACHE_ALIGN_BUFFER(struct msg_set_power_state, msg_pwr, 1);
+> @@ -151,3 +157,40 @@ int bcm2835_set_video_params(int *widthp, int *heightp, int depth_bpp,
+>  
+>  	return 0;
+>  }
+> +
+> +/*
+> + * On the Raspberry Pi 4, after a PCI reset, VL805's (the xHCI chip) firmware
+> + * may either be loaded directly from an EEPROM or, if not present, by the
+> + * SoC's VideoCore. This informs VideoCore that VL805 needs its firmware
+> + * loaded.
+> + */
+> +int bcm2711_notify_vl805_reset(void)
+> +{
+> +	ALLOC_CACHE_ALIGN_BUFFER(struct msg_notify_vl805_reset,
+> +				 msg_notify_vl805_reset, 1);
+> +	int ret;
+> +
+> +	BCM2835_MBOX_INIT_HDR(msg_notify_vl805_reset);
+> +	BCM2835_MBOX_INIT_TAG(&msg_notify_vl805_reset->dev_addr,
+> +			      NOTIFY_XHCI_RESET);
+> +
+> +	/*
+> +	 * The pci device address is expected like this:
+> +	 *
+> +	 *   PCI_BUS << 20 | PCI_SLOT << 15 | PCI_FUNC << 12
+> +	 *
+> +	 * But since RPi4's PCIe setup is hardwired, we know the address in
+> +	 * advance.
+> +	 */
+> +	msg_notify_vl805_reset->dev_addr.body.req.dev_addr = 0x100000;
+> +
+> +	ret = bcm2835_mbox_call_prop(BCM2835_MBOX_PROP_CHAN,
+> +				     &msg_notify_vl805_reset->hdr);
+> +	if (ret) {
+> +		printf("bcm2711: Faild to load vl805's firmware, %d\n", ret);
+> +		return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> -- 
+> 2.26.2
+> 
+> 
