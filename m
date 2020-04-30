@@ -2,142 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F94F1C0391
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 19:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BED1C0392
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 19:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgD3REn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 13:04:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:59262 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726440AbgD3REk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 13:04:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C355B1045;
-        Thu, 30 Apr 2020 10:04:39 -0700 (PDT)
-Received: from melchizedek.cambridge.arm.com (melchizedek.cambridge.arm.com [10.1.196.50])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 748003F73D;
-        Thu, 30 Apr 2020 10:04:38 -0700 (PDT)
-From:   James Morse <james.morse@arm.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        James Morse <james.morse@arm.com>
-Subject: [PATCH v2 10/10] cacheinfo: Move resctrl's get_cache_id() to the cacheinfo header file
-Date:   Thu, 30 Apr 2020 18:04:00 +0100
-Message-Id: <20200430170400.21501-11-james.morse@arm.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20200430170400.21501-1-james.morse@arm.com>
-References: <20200430170400.21501-1-james.morse@arm.com>
+        id S1726950AbgD3REW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 13:04:22 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:59963 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725844AbgD3REW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 13:04:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588266260;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AhnGahDqQjczcKUBCMlSkJo4Ce+ioGSLMDnlvtp40tA=;
+        b=Pi/6AqdyJMAyWoBRMUdbiymEqu1P2Au0G5CDT2HjpuKW6CWhaa0tFt32Bm3RhZoKhBuRhx
+        DfRIsf+OkBMUdfNPTMczMPGPKOpVRws6y+/RepbbIjP3aE3h4BiXsgUL/7gz5ryTDSR4Oj
+        EvfxOf47DXgHLvYoEgvvWIc2zQcx58Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-gT3uIt64M3ezpWPYQQpIXQ-1; Thu, 30 Apr 2020 13:04:16 -0400
+X-MC-Unique: gT3uIt64M3ezpWPYQQpIXQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 672131895A2F;
+        Thu, 30 Apr 2020 17:04:14 +0000 (UTC)
+Received: from [10.3.112.171] (ovpn-112-171.phx2.redhat.com [10.3.112.171])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7FC3E5D9F5;
+        Thu, 30 Apr 2020 17:04:11 +0000 (UTC)
+Subject: Re: [PATCH v2 6/9] s390/module: Use s390_kernel_write() for late
+ relocations
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>, linux-s390@vger.kernel.org,
+        heiko.carstens@de.ibm.com, Vasily Gorbik <gor@linux.ibm.com>
+References: <cover.1587131959.git.jpoimboe@redhat.com>
+ <18266eb2c2c9a2ce0033426837d89dcb363a85d3.1587131959.git.jpoimboe@redhat.com>
+ <20200422164037.7edd21ea@thinkpad> <20200422172126.743908f5@thinkpad>
+ <20200422194605.n77t2wtx5fomxpyd@treble> <20200423141834.234ed0bc@thinkpad>
+ <alpine.LSU.2.21.2004231513250.6520@pobox.suse.cz>
+ <20200423141228.sjvnxwdqlzoyqdwg@treble>
+ <20200423181030.b5mircvgc7zmqacr@treble> <20200430143821.GA10092@redhat.com>
+ <20200430164842.bvkrh5fz24ro7ye2@treble>
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+Message-ID: <691690e3-b792-bac5-2080-2abfc0beb11b@redhat.com>
+Date:   Thu, 30 Apr 2020 13:04:10 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200430164842.bvkrh5fz24ro7ye2@treble>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-resctrl/core.c defines get_cache_id() for use in its cpu-hotplug
-callbacks. This gets the id attribute of the cache at the corresponding
-level of a cpu.
+On 4/30/20 12:48 PM, Josh Poimboeuf wrote:
+> On Thu, Apr 30, 2020 at 10:38:21AM -0400, Joe Lawrence wrote:
+>> On Thu, Apr 23, 2020 at 01:10:30PM -0500, Josh Poimboeuf wrote:
+>> This is more of note for the future, but when/if we add livepatch
+>> support on arm64 we'll need to make the very same adjustment there as
+>> well.  See the following pattern:
+>>
+>> arch/arm64/kernel/module.c:
+>>
+>>    reloc_insn_movw()
+>>    reloc_insn_imm()
+>>    reloc_insn_adrp()
+>>
+>>      *place = cpu_to_le32(insn);
+>>
+>> maybe something like aarch64_insn_patch_text_nosync() could be used
+>> there, I dunno. (It looks like ftrace and jump_labels are using that
+>> interface.)
+>>
+>> This is outside the scope of the patchset, but I thought I'd mention it
+>> as I was curious to see how other arches were currently handling their
+>> relocation updates.
+> 
+> True... I suspect your klp-convert selftests will catch that?
+> 
 
-Later rework means this private function needs to be shared. Move
-it to the header file.
+Indeed.  Actually I had hacked enough livepatch code support on ARM to 
+see what happened when converting and loading the test patches :)
 
-The name conflicts with a different definition in intel_cacheinfo.c,
-name it get_cpu_cacheinfo_id() to show its relation with
-get_cpu_cacheinfo().
-
-Now this is visible on other architectures, check the id attribute
-has actually been set.
-
-Signed-off-by: James Morse <james.morse@arm.com>
----
- arch/x86/kernel/cpu/resctrl/core.c | 17 ++---------------
- include/linux/cacheinfo.h          | 21 +++++++++++++++++++++
- 2 files changed, 23 insertions(+), 15 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-index 00c88f42742c..f6458cefcac3 100644
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -350,19 +350,6 @@ static void rdt_get_cdp_l2_config(void)
- 	rdt_get_cdp_config(RDT_RESOURCE_L2, RDT_RESOURCE_L2CODE);
- }
- 
--static int get_cache_id(int cpu, int level)
--{
--	struct cpu_cacheinfo *ci = get_cpu_cacheinfo(cpu);
--	int i;
--
--	for (i = 0; i < ci->num_leaves; i++) {
--		if (ci->info_list[i].level == level)
--			return ci->info_list[i].id;
--	}
--
--	return -1;
--}
--
- static void
- mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m, struct rdt_resource *r)
- {
-@@ -560,7 +547,7 @@ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
-  */
- static void domain_add_cpu(int cpu, struct rdt_resource *r)
- {
--	int id = get_cache_id(cpu, r->cache_level);
-+	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
- 	struct list_head *add_pos = NULL;
- 	struct rdt_domain *d;
- 
-@@ -606,7 +593,7 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
- 
- static void domain_remove_cpu(int cpu, struct rdt_resource *r)
- {
--	int id = get_cache_id(cpu, r->cache_level);
-+	int id = get_cpu_cacheinfo_id(cpu, r->cache_level);
- 	struct rdt_domain *d;
- 
- 	d = rdt_find_domain(r, id, NULL);
-diff --git a/include/linux/cacheinfo.h b/include/linux/cacheinfo.h
-index 46b92cd61d0c..4f72b47973c3 100644
---- a/include/linux/cacheinfo.h
-+++ b/include/linux/cacheinfo.h
-@@ -3,6 +3,7 @@
- #define _LINUX_CACHEINFO_H
- 
- #include <linux/bitops.h>
-+#include <linux/cpu.h>
- #include <linux/cpumask.h>
- #include <linux/smp.h>
- 
-@@ -119,4 +120,24 @@ int acpi_find_last_cache_level(unsigned int cpu);
- 
- const struct attribute_group *cache_get_priv_group(struct cacheinfo *this_leaf);
- 
-+/*
-+ * Get the id of the cache associated with @cpu at level @level.
-+ * cpuhp lock must be held.
-+ */
-+static inline int get_cpu_cacheinfo_id(int cpu, int level)
-+{
-+	struct cpu_cacheinfo *ci = get_cpu_cacheinfo(cpu);
-+	int i;
-+
-+	for (i = 0; i < ci->num_leaves; i++) {
-+		if (ci->info_list[i].level == level) {
-+			if (ci->info_list[i].attributes & CACHE_ID)
-+				return ci->info_list[i].id;
-+			return -1;
-+		}
-+	}
-+
-+	return -1;
-+}
-+
- #endif /* _LINUX_CACHEINFO_H */
--- 
-2.26.1
+-- Joe
 
