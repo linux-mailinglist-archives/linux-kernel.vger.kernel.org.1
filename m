@@ -2,165 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B991BF848
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8651A1BF84C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726866AbgD3Mhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 08:37:31 -0400
-Received: from hel-mailgw-01.vaisala.com ([193.143.230.17]:46709 "EHLO
-        hel-mailgw-01.vaisala.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726799AbgD3Mh2 (ORCPT
+        id S1726935AbgD3Mid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 08:38:33 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:44506 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726511AbgD3Mic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 08:37:28 -0400
-IronPort-SDR: AmD8xpi3Hr1Az4P2E+AOh4cURl9Etk1RPPyArq46mmuuwu7i4sLyWfYaRiykmnYbGpfp/AF0zl
- Tfe6vTH4oWf5oymVw6wQMOC5nbDlw28ap/phXwMPH6I1HB/FPSkb06efWv7fElIODPRxqYncge
- vbWkq1RBYwdWmWYe2dlc0Ecl6a5AOfpsMpfPRokhFbVTmOQix0T8DRsfhXxpS/HiKcgMqNMERt
- 1EVU7aXnR0DL9zMP3IC+Ip2v7f+aS7pxQI/xuFyhq9ebVcDm31V8pD7dHbjLcCCXf1wZAc9p64
- Rjo=
-X-IronPort-AV: E=Sophos;i="5.73,334,1583186400"; 
-   d="scan'208";a="278151921"
-From:   =?UTF-8?q?Vesa=20J=C3=A4=C3=A4skel=C3=A4inen?= 
-        <vesa.jaaskelainen@vaisala.com>
-To:     op-tee@lists.trustedfirmware.org,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Rijo Thomas <Rijo-john.Thomas@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
-        Hongbo Yao <yaohongbo@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Vesa=20J=C3=A4=C3=A4skel=C3=A4inen?= 
-        <vesa.jaaskelainen@vaisala.com>
-Subject: [PATCH v2 3/3] [RFC] tee: add support for app id for client UUID generation
-Date:   Thu, 30 Apr 2020 15:37:11 +0300
-Message-Id: <20200430123711.20083-4-vesa.jaaskelainen@vaisala.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200430123711.20083-1-vesa.jaaskelainen@vaisala.com>
-References: <20200430123711.20083-1-vesa.jaaskelainen@vaisala.com>
+        Thu, 30 Apr 2020 08:38:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588250312; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=s9tiGzSDMy7NhyUbB2bWUK71xrktfp/JVsuI2n9mC8A=;
+ b=u7CR8FQpVednGb+38mOkq20bHa0egUVVxKoD9Xdp6O/pIsvCU/0pX9qlF0KNXgaQJAh6UQkG
+ PDznMJ7yJqepB6vbeBgnyn3k9SJSahzrZMfDPN/sGlV84Is9OxeXW5G0KThixrIkWB9F8HFr
+ Ui+ywX4uOFK5QSks+JjdEbGHPQE=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eaac6ba.7fdc60f4d570-smtp-out-n05;
+ Thu, 30 Apr 2020 12:38:18 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BB9F4C4478F; Thu, 30 Apr 2020 12:38:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EBE81C433D2;
+        Thu, 30 Apr 2020 12:38:17 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 30 Apr 2020 12:37:21.0677 (UTC) FILETIME=[17F0A3D0:01D61EEC]
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 30 Apr 2020 20:38:17 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        rnayak@codeaurora.org, stanley.chu@mediatek.com,
+        alim.akhtar@samsung.com, beanhuo@micron.com,
+        bjorn.andersson@linaro.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] scsi: pm: Balance pm_only counter of request queue
+ during system resume
+In-Reply-To: <BYAPR04MB462931F8DF1112CAF7F80CA4FCAA0@BYAPR04MB4629.namprd04.prod.outlook.com>
+References: <1588219805-25794-1-git-send-email-cang@codeaurora.org>
+ <9e15123e-4315-15cd-3d23-2df6144bd376@acm.org>
+ <BYAPR04MB462931F8DF1112CAF7F80CA4FCAA0@BYAPR04MB4629.namprd04.prod.outlook.com>
+Message-ID: <eb7520b6274474f4b8d803a76b85107a@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux kernel does not provide common contex for application identifier,
-instead different security frameworks provide own means to define
-application identifier for running process. Code includes place holder for
-such solutions but is left for later implementation.
+Hi Avri,
 
-Open questions:
+On 2020-04-30 17:11, Avri Altman wrote:
+>> 
+>> On 2020-04-29 21:10, Can Guo wrote:
+>> > During system resume, scsi_resume_device() decreases a request queue's
+>> > pm_only counter if the scsi device was quiesced before. But after that,
+>> > if the scsi device's RPM status is RPM_SUSPENDED, the pm_only counter is
+>> > still held (non-zero). Current scsi resume hook only sets the RPM status
+>> > of the scsi device and its request queue to RPM_ACTIVE, but leaves the
+>> > pm_only counter unchanged. This may make the request queue's pm_only
+>> > counter remain non-zero after resume hook returns, hence those who are
+>> > waiting on the mq_freeze_wq would never be woken up. Fix this by calling
+>> > blk_post_runtime_resume() if pm_only is non-zero to balance the pm_only
+>> > counter which is held by the scsi device's RPM ops.
+>> 
+>> How was this issue discovered? How has this patch been tested?
+> 
+> I think this insight was originally gained as part of commit 
+> fb276f770118
+> (scsi: ufs: Enable block layer runtime PM for well-known logical units)
+> 
+> But I will let Can reply on that.
+> 
+> Thanks,
+> Avri
+> 
 
-1. App ID source
+Thanks for pointing to that commit, but this is a different story here.
+SCSI devices, which have block layer runtime PM enabled, can hit this 
+issue
+during system resume. In the contratry, those which have block layer 
+runtime
+PM disabled are immune to this issue.
 
-How to specify what source is used for app id?
+Thanks,
 
-Does it need to be protected on runtime?
-- Should this be Kconfig setting?
-- Cnfigure once during runtime thru sysfs or so?
-- Configure from device tree?
-
-2. Formatting for App ID
-
-Should there be common format? Or common keyword id?
-
-3. How to handle custom App ID sources
-
-Android has own App ID so does Tizen.
-
-Should there be place holder for this where to make local patch?
-
-Signed-off-by: Vesa Jääskeläinen <vesa.jaaskelainen@vaisala.com>
----
- drivers/tee/tee_core.c | 58 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
-
-diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-index d5db206d6af2..35ea20a99b9e 100644
---- a/drivers/tee/tee_core.c
-+++ b/drivers/tee/tee_core.c
-@@ -125,6 +125,15 @@ static int tee_release(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
-+static const char *tee_session_get_application_id(void)
-+{
-+	return NULL;
-+}
-+
-+static void tee_session_free_application_id(const char *app_id)
-+{
-+}
-+
- /**
-  * uuid_v5() - Calculate UUIDv5
-  * @uuid: Resulting UUID
-@@ -218,6 +227,14 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 	 * For TEEC_LOGIN_GROUP:
- 	 * gid=<gid>
- 	 *
-+	 * For TEEC_LOGIN_APPLICATION:
-+	 * app=<application id>
-+	 *
-+	 * For TEEC_LOGIN_USER_APPLICATION:
-+	 * uid=<uid>:app=<application id>
-+	 *
-+	 * For TEEC_LOGIN_GROUP_APPLICATION:
-+	 * gid=<gid>:app=<application id>
- 	 */
- 
- 	name = kzalloc(TEE_UUID_NS_NAME_SIZE, GFP_KERNEL);
-@@ -250,6 +267,47 @@ int tee_session_calc_client_uuid(uuid_t *uuid, u32 connection_method,
- 		}
- 		break;
- 
-+	case TEE_IOCTL_LOGIN_APPLICATION:
-+		application_id = tee_session_get_application_id();
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE, "app=%s",
-+				    application_id);
-+		tee_session_free_application_id(application_id);
-+		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
-+			rc = -E2BIG;
-+			goto out_free_name;
-+		}
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_USER_APPLICATION:
-+		application_id = tee_session_get_application_id();
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE,
-+				    "uid=%x:app=%s", current_euid().val,
-+				    application_id);
-+		tee_session_free_application_id(application_id);
-+		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
-+			rc = -E2BIG;
-+			goto out_free_name;
-+		}
-+		break;
-+
-+	case TEE_IOCTL_LOGIN_GROUP_APPLICATION:
-+		memcpy(&ns_grp, connection_data, sizeof(gid_t));
-+		grp = make_kgid(current_user_ns(), ns_grp);
-+		if (!gid_valid(grp) || !in_egroup_p(grp)) {
-+			rc = -EPERM;
-+			goto out_free_name;
-+		}
-+
-+		application_id = tee_session_get_application_id();
-+		name_len = snprintf(name, TEE_UUID_NS_NAME_SIZE,
-+				    "gid=%x:app=%s", grp.val, application_id);
-+		tee_session_free_application_id(application_id);
-+		if (name_len >= TEE_UUID_NS_NAME_SIZE) {
-+			rc = -E2BIG;
-+			goto out_free_name;
-+		}
-+		break;
-+
- 	default:
- 		rc = -EINVAL;
- 		goto out_free_name;
--- 
-2.17.1
-
+Can Guo.
+>> 
+>> Thanks,
+>> 
+>> Bart.
