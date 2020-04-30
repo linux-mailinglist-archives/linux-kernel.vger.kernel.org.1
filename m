@@ -2,87 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D9B1C0649
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B9A1C064D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726815AbgD3TZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:25:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47066 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726272AbgD3TZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:25:16 -0400
-Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D8F52072A;
-        Thu, 30 Apr 2020 19:25:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588274715;
-        bh=+7YJ0F1f3t1J9sJB435G2DWcTRqHj08byBs/EBxxpUE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eLexogwtOcM4N+0UYjECMimdHQ1opWtbze6Dopj5VT/8YNtXib+uDpzQ+/j7L1wM7
-         gO7qJfjWBGp/EUqclA9T2dFbzn7epFKMoqif+CwAY1rvNnNdS9GaFG/7gci0ZG5mEH
-         gP89jPiJs/LD6qCbcNj9srmmHA07LUSjwbSMf6aM=
-Date:   Thu, 30 Apr 2020 21:25:11 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Subject: [PATCH RFC] Kbuild: Makefile: warn if auto.conf is obsolete
-Message-ID: <20200430212511.2115ed98@coco.lan>
-In-Reply-To: <20200430211009.3fef03f3@coco.lan>
-References: <20200430131715.32c1a1f6@coco.lan>
-        <CAK7LNASmVoZequqaj6MTimeZ0MG0fk7Wb5-9haFhgG03kDBpxg@mail.gmail.com>
-        <20200430184948.27191975@coco.lan>
-        <CAK7LNASx5qfV_6Wow-MVKsHXUX96m8yYvpeK1QVt+2i46FTMNg@mail.gmail.com>
-        <20200430211009.3fef03f3@coco.lan>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1726760AbgD3T0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgD3T0W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 15:26:22 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19CAC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:26:21 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id b18so2500256ilf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:26:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language;
+        bh=tDimjc++p9z9/I8fVMD18UCvQaoCQ2HCiBnz8f0J4aA=;
+        b=UG4RSoXfZpftFk0K6ibrWrZLY3kuW5ZJK3sZmGB4TYGYgKXOMaNF4Wwoc0loPT4+ga
+         rsh4IZF/0mLKhSXMuJBeguRe0vq1J5Tti4rx1r8pX8ofZiZjU8k3i+2+rw9A+sqBPMjD
+         ACF62ZmRvKpB7NuaLjZa5OwpyBFE1qsyd4bMs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language;
+        bh=tDimjc++p9z9/I8fVMD18UCvQaoCQ2HCiBnz8f0J4aA=;
+        b=tLjZYA+t/MfH8Mwjb4sU7F+L1JFmX9aQkdcuv8BpENKX+LKTQBjhn6YAbQeFeAfjuE
+         wGLkMk4j+N2q5XA3vBpDEDsnHvehAw5erFsalRBjG1PoAdREwJLvFVcdOcTQl3VQoGM8
+         S7vOs/knUuBUDi4jClT5dHTi3BD2APvnznbiyJ4EFou5p67WtywdBVQ+pCnCoMqnbqR9
+         JGav1DO/P4JJyuN2UE4SkxW5HGFClidTfa3VnApz8EDixamJW+aBi/o6YmfIAPptvydr
+         qJ9Nzj93hF6LWNBinrLaqvK2dfQvnzbaayToyWz2uetAU5GWAK3A4gXTcyWMU+N+OWTj
+         LfBA==
+X-Gm-Message-State: AGi0PuYAtITX8/2eZpfwwPElO2Vn2pR2g744IqTM2YLAepLoJA/Lbjek
+        jWCKMlh3OFU7Wel6TNme4rIafw==
+X-Google-Smtp-Source: APiQypJTHulW4Ghd7hjLzHKd6NORfGAafoNGBlcfV6ly5LlCzrNsdReVQvv3oC0TjTfdkHSFm7l79g==
+X-Received: by 2002:a92:b710:: with SMTP id k16mr3551743ili.270.1588274780844;
+        Thu, 30 Apr 2020 12:26:20 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id g87sm252226ile.25.2020.04.30.12.26.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 12:26:19 -0700 (PDT)
+To:     torvalds@linux-foundation.org
+Cc:     skhan@linuxfoundation.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] Kunit update for Linux 5.7-rc4
+Message-ID: <c5edb7c4-c5ed-0209-3c7f-cace9d775d64@linuxfoundation.org>
+Date:   Thu, 30 Apr 2020 13:26:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------10008E56FF95384B04969D10"
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new behavior on more recent kernels require to always call
-"make modules_prepare" after *any* Kconfig changes.
+This is a multi-part message in MIME format.
+--------------10008E56FF95384B04969D10
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This is not what a poor mortal would be expecting on a building
-system, as it should, IMHO, be able to detect and auto-run
-whatever is needed to use the newer setup.
+Hi Linus,
 
-Yet, while this is not solved, let's at least stop the build
-and produce a warning, to notify the user about that.
+Please pull the following Kunit update for Linux 5.7-rc4.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
+This Kunit update for Linux 5.7-rc4 consists of a single fix to flush
+the test summary to the console log without delay.
 
-I would still prefer to call "make modules_prepare" directly,
-on such cases, but just calling "make -C . modules_prepare" doesn't
-work. So, the next best thing would be to at least print a message
-and don't try to do a build with a broken auto.conf file.
+diff is attached.
 
- Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
+thanks,
+-- Shuah
 
-diff --git a/Makefile b/Makefile
-index 70def4907036..492ee2396ab9 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1632,6 +1632,11 @@ $(objtree)/Module.symvers:
- build-dirs := $(KBUILD_EXTMOD)
- PHONY += modules
- modules: descend $(objtree)/Module.symvers
-+	@if [ $(KCONFIG_CONFIG) -nt include/config/auto.conf ]; then \
-+		echo "  WARNING: $(KCONFIG_CONFIG) was modified. Need to run:"; \
-+		echo "           $(MAKE) modules_prepare"; \
-+		exit -1; \
-+	fi
- 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modpost
- 
- PHONY += modules_install
--- 
-2.25.4
+----------------------------------------------------------------
+The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
 
+   Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
+tags/linux-kselftest-kunit-5.7-rc4
+
+for you to fetch changes up to 6cb1818798812fe7e2c8fe3f489ad1c86adfd6c4:
+
+   kunit: Add missing newline in summary message (2020-04-23 15:42:00 -0600)
+
+----------------------------------------------------------------
+linux-kselftest-kunit-5.7-rc4
+
+This Kunit update for Linux 5.7-rc4 consists of a single fix to flush
+the test summary to the console log without delay.
+
+----------------------------------------------------------------
+Marco Elver (1):
+       kunit: Add missing newline in summary message
+
+  lib/kunit/test.c | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+
+----------------------------------------------------------------
+
+--------------10008E56FF95384B04969D10
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux-kselftest-kunit-5.7-rc4.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="linux-kselftest-kunit-5.7-rc4.diff"
+
+diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+index 7a6430a7fca0..ccb2ffad8dcf 100644
+--- a/lib/kunit/test.c
++++ b/lib/kunit/test.c
+@@ -93,7 +93,7 @@ static void kunit_print_ok_not_ok(void *test_or_suite,
+ 	 * representation.
+ 	 */
+ 	if (suite)
+-		pr_info("%s %zd - %s",
++		pr_info("%s %zd - %s\n",
+ 			kunit_status_to_string(is_ok),
+ 			test_number, description);
+ 	else
+
+--------------10008E56FF95384B04969D10--
