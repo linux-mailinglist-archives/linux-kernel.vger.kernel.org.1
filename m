@@ -2,162 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B511BFC6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E7E1BFC88
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729538AbgD3OFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728965AbgD3OFq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:05:46 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26BFC035494;
-        Thu, 30 Apr 2020 07:05:45 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id j14so1311724lfg.9;
-        Thu, 30 Apr 2020 07:05:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=j7xCCu9VuQu0HfGO2skjuS2R2CO/4T63UrJuAd/gmYA=;
-        b=TLbsdDlaakdtow4OFtE/0ekpvlLv6/nFuvtXG816d2BEb6ehtqhhfcTfqmyfiLLAoV
-         XIIB08dZb9nYnUs92wnmR0aI30oRu28+tydDM/O92gz49ePCRftk0BJDNoGteg4VZRxh
-         zP3TK3+aAzM69TejJWrr4FM8MsMEpK8C2ObWYORaNr0gLJbzL3af2HSUJmnNn9xBMxQr
-         ZGWx1zeI4aWGoIUoeDMkRk2S9vuguHOIO0wh3k9g+rSR+OBBVzru7VUK4lMM884vvFMT
-         /XzHWOY106qYz6/J01WULaqlEUqZKVvUXjNO84YYWkukT20vgmsTlVzZuvABb3hMDUVp
-         r1gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=j7xCCu9VuQu0HfGO2skjuS2R2CO/4T63UrJuAd/gmYA=;
-        b=Neh8l7SYQWfRM2M5p0+cjgTOlo50ykoY0ZrYm/h5fPICkY4w255fl6t69KdBSe6rbo
-         fOaxW8n2SqPOndaKhZywJrAL3WtHjQgeOT7kok9rajgL5JeI6wBWQdMNOErrRPo8ceVv
-         M6pi73GdLcvWYyaIEAF0jKQKOrkCxFAYZQTqAGDVikSYBA0Z6sk2y8v8WwibRclNzSJ1
-         PXMXquzeaiFgXggvN94B+aYKDweZNzMs8ladwslVnJnGMPWLeeIX91E+jv2ItARm7/1s
-         tWy9vHJmux20uES4ugVRjpetu4R+JSITKPMZEZx46xvP3+laS5KdSdt7fiHH5u3xsKds
-         GRSw==
-X-Gm-Message-State: AGi0PuYBcmz0YJ3sDP71EpBUKEaKjCz3MVgqN1pLf09+hxgV/VWlGOaw
-        0EHCtjXvj2n9C5vR+M9PbMY=
-X-Google-Smtp-Source: APiQypKMcejORSBVkOt2Y5RkeV20Y6iiGpHY/TlHCvnYcDxDGRMal4cEFSfQC4jjnhoPt1Wqp4Da/w==
-X-Received: by 2002:a05:6512:686:: with SMTP id t6mr2301585lfe.163.1588255542790;
-        Thu, 30 Apr 2020 07:05:42 -0700 (PDT)
-Received: from e123311-lin.cambridge.arm.com (static-91-225-135-18.devs.futuro.pl. [91.225.135.18])
-        by smtp.gmail.com with ESMTPSA id h24sm5034839lji.99.2020.04.30.07.05.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Apr 2020 07:05:42 -0700 (PDT)
-From:   Michal Orzel <michalorzel.eng@gmail.com>
-To:     jdelvare@suse.com, linux@roeck-us.net
-Cc:     Michal Orzel <michalorzel.eng@gmail.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Fix all coding-style warnings on lm75 driver
-Date:   Thu, 30 Apr 2020 16:05:34 +0200
-Message-Id: <1588255534-28073-1-git-send-email-michalorzel.eng@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        id S1728726AbgD3OGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:06:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:55612 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728752AbgD3OGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 10:06:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CB241063;
+        Thu, 30 Apr 2020 07:06:18 -0700 (PDT)
+Received: from [192.168.0.7] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DCE0E3F68F;
+        Thu, 30 Apr 2020 07:06:16 -0700 (PDT)
+Subject: Re: [PATCH 2/4] sched: set new prio after checking schedule policy
+To:     Hillf Danton <hdanton@sina.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Mike Galbraith <efault@gmx.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Phil Auld <pauld@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <20200424041832.11364-1-hdanton@sina.com>
+ <20200424043650.14940-1-hdanton@sina.com>
+ <20200430121301.3460-1-hdanton@sina.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <da5bf72d-1d50-5c5c-3bdb-113ed555dd10@arm.com>
+Date:   Thu, 30 Apr 2020 16:06:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20200430121301.3460-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check/fix all warnings generated by checkpatch.pl script on LM75 driver.
+On 30/04/2020 14:13, Hillf Danton wrote:
+> 
+> On Tue, 28 Apr 2020 17:32:45 Valentin Schneider wrote:
+>>
+>>> +	else if (fair_policy(policy)) {
+>>> +		if (attr->sched_nice < MIN_NICE ||
+>>> +		    attr->sched_nice > MAX_NICE)
+>>> +			return -EINVAL;
+>>
+>> We can't hit this with the syscall route, since we (silently) clamp those
+>> values in sched_copy_attr(). setpriority() does the same. There's this
+>> comment in sched_copy_attr() that asks whether we should clamp or return an
+>> error; seems like the current consensus is on clamping, but then we might
+>> want to get rid of that comment :)
+>>
+> Yes it's quite likely for me to miss the cases covered by that clamp;
+> otherwise what is added does not break that consensus.
+> 
+>>> +		newprio = NICE_TO_PRIO(attr->sched_nice);
+>>
+>> This is new, however AFAICT it doesn't change anything for CFS (or about to
+>> be) tasks since what matters is calling check_class_changed() further down.
+> 
+> Yes it's only used by rt_effective_prio(). 
+> 
 
-Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
----
- drivers/hwmon/lm75.c |  8 ++++++--
- drivers/hwmon/lm75.h | 31 +++++++++++++++++--------------
- 2 files changed, 23 insertions(+), 16 deletions(-)
+Looks like changing a SCHED_NORMAL to a SCHED_BATCH task will create a different
+queue_flags value.
 
-diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
-index 5e63922..ba0be48 100644
---- a/drivers/hwmon/lm75.c
-+++ b/drivers/hwmon/lm75.c
-@@ -797,8 +797,10 @@ static int lm75_detect(struct i2c_client *new_client,
- 
- 	/* First check for LM75A */
- 	if (i2c_smbus_read_byte_data(new_client, 7) == LM75A_ID) {
--		/* LM75A returns 0xff on unused registers so
--		   just to be sure we check for that too. */
-+		/*
-+		 * LM75A returns 0xff on unused registers so
-+		 * just to be sure we check for that too.
-+		 */
- 		if (i2c_smbus_read_byte_data(new_client, 4) != 0xff
- 		 || i2c_smbus_read_byte_data(new_client, 5) != 0xff
- 		 || i2c_smbus_read_byte_data(new_client, 6) != 0xff)
-@@ -849,6 +851,7 @@ static int lm75_suspend(struct device *dev)
- {
- 	int status;
- 	struct i2c_client *client = to_i2c_client(dev);
-+
- 	status = i2c_smbus_read_byte_data(client, LM75_REG_CONF);
- 	if (status < 0) {
- 		dev_dbg(&client->dev, "Can't read config? %d\n", status);
-@@ -863,6 +866,7 @@ static int lm75_resume(struct device *dev)
- {
- 	int status;
- 	struct i2c_client *client = to_i2c_client(dev);
-+
- 	status = i2c_smbus_read_byte_data(client, LM75_REG_CONF);
- 	if (status < 0) {
- 		dev_dbg(&client->dev, "Can't read config? %d\n", status);
-diff --git a/drivers/hwmon/lm75.h b/drivers/hwmon/lm75.h
-index b614e63..a398171 100644
---- a/drivers/hwmon/lm75.h
-+++ b/drivers/hwmon/lm75.h
-@@ -1,17 +1,15 @@
- /* SPDX-License-Identifier: GPL-2.0-or-later */
- /*
--    lm75.h - Part of lm_sensors, Linux kernel modules for hardware
--	      monitoring
--    Copyright (c) 2003 Mark M. Hoffman <mhoffman@lightlink.com>
--
--*/
-+ * lm75.h - Part of lm_sensors, Linux kernel modules for hardware monitoring
-+ * Copyright (c) 2003 Mark M. Hoffman <mhoffman@lightlink.com>
-+ */
- 
- /*
--    This file contains common code for encoding/decoding LM75 type
--    temperature readings, which are emulated by many of the chips
--    we support.  As the user is unlikely to load more than one driver
--    which contains this code, we don't worry about the wasted space.
--*/
-+ * This file contains common code for encoding/decoding LM75 type
-+ * temperature readings, which are emulated by many of the chips
-+ * we support.  As the user is unlikely to load more than one driver
-+ * which contains this code, we don't worry about the wasted space.
-+ */
- 
- #include <linux/kernel.h>
- 
-@@ -20,18 +18,23 @@
- #define LM75_TEMP_MAX 125000
- #define LM75_SHUTDOWN 0x01
- 
--/* TEMP: 0.001C/bit (-55C to +125C)
--   REG: (0.5C/bit, two's complement) << 7 */
-+/*
-+ * TEMP: 0.001C/bit (-55C to +125C)
-+ * REG: (0.5C/bit, two's complement) << 7
-+ */
- static inline u16 LM75_TEMP_TO_REG(long temp)
- {
- 	int ntemp = clamp_val(temp, LM75_TEMP_MIN, LM75_TEMP_MAX);
-+
- 	ntemp += (ntemp < 0 ? -250 : 250);
- 	return (u16)((ntemp / 500) << 7);
- }
- 
- static inline int LM75_TEMP_FROM_REG(u16 reg)
- {
--	/* use integer division instead of equivalent right shift to
--	   guarantee arithmetic shift and preserve the sign */
-+	/*
-+	 * use integer division instead of equivalent right shift to
-+	 * guarantee arithmetic shift and preserve the sign
-+	 */
- 	return ((s16)reg / 128) * 500;
- }
--- 
-2.7.4
+# chrt -p $$
+pid 2803's current scheduling policy: SCHED_OTHER
+pid 2803's current scheduling priority: 0
 
+# chrt -b -p 0 $$
+
+...
+[bash 2803] policy=3 oldprio=120 newprio=[99->120] new_effective_prio=[99->120] queue_flags=[0xe->0xa]
+[bash 2803] queued=0 running=0
+...
+
+But since in this example 'queued=0' it has no further effect here.
+
+Why is SCHED_NORMAL/SCHED_BATCH (fair_policy()) now treated differently than SCHED_IDLE?
+
+# chrt -i -p 0 $$
+
+...
+[bash 2803] policy=5 newprio=99 oldprio=120 new_effective_prio=99 queue_flags=0xe
+[bash 2803] queued=0 running=0
+...
