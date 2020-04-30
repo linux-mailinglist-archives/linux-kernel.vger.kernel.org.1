@@ -2,135 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488DF1C02AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 708291C02B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgD3QhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:37:02 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:55442 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726377AbgD3QhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:37:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588264619;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N1kujXhR0DAj22ohzNF4EmVUFABeAdXNfPVcnWuHRxo=;
-        b=KFDY+ase3naK51WgBRbCjBlmNZYfCdBzYBm51jEk3Rxhk9vEoLZd7w1vJ4cSE8jORDWT+O
-        /OotW0baUaJFps68dGevuP2MU1buGHRZY0X9x2O736t3sbLISiq6+aUhN7PIES1BCLhQtA
-        +slKPjdGIVTO2d6QMLvRpbM1nNVCb0M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-413-629V3yTBP9erMAd_WkCRDQ-1; Thu, 30 Apr 2020 12:36:55 -0400
-X-MC-Unique: 629V3yTBP9erMAd_WkCRDQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BEDC107ACF9;
-        Thu, 30 Apr 2020 16:36:53 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-113-72.ams2.redhat.com [10.36.113.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3B6F76061B;
-        Thu, 30 Apr 2020 16:36:46 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     carlos <carlos@redhat.com>, Joseph Myers <joseph@codesourcery.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ben Maurer <bmaurer@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Dave Watson <davejwatson@fb.com>, Paul Turner <pjt@google.com>,
-        Rich Felker <dalias@libc.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>
-Subject: Re: [RFC PATCH glibc 1/3] glibc: Perform rseq(2) registration at C startup and thread creation (v18)
-References: <20200428171513.22926-1-mathieu.desnoyers@efficios.com>
-        <875zdhmaft.fsf@oldenburg2.str.redhat.com>
-        <1287616647.77866.1588263099045.JavaMail.zimbra@efficios.com>
-Date:   Thu, 30 Apr 2020 18:36:44 +0200
-In-Reply-To: <1287616647.77866.1588263099045.JavaMail.zimbra@efficios.com>
-        (Mathieu Desnoyers's message of "Thu, 30 Apr 2020 12:11:39 -0400
-        (EDT)")
-Message-ID: <878sidkk0z.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1726433AbgD3QjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:39:03 -0400
+Received: from mga12.intel.com ([192.55.52.136]:30305 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726130AbgD3QjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:39:02 -0400
+IronPort-SDR: s1/X7CvdGxPyXDk8DbROCbtkFZQsR7tP9i+JAxhlmxfOtjuTX36Rqu8Iau7ay4ufZ+oaGtZa18
+ yguDMghOXyXA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 09:38:59 -0700
+IronPort-SDR: ME5Ydnoy+OAr2lFUJblXA0A6ioZNOJkRmsQr7GxyMwPdnz/fSx/zy5+Unt5y3JubqY9W4wfgY3
+ OHFKiMXFCseg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,336,1583222400"; 
+   d="scan'208";a="261836945"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006.jf.intel.com with ESMTP; 30 Apr 2020 09:38:52 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jUCD9-003x70-2a; Thu, 30 Apr 2020 19:38:55 +0300
+Date:   Thu, 30 Apr 2020 19:38:55 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     akpm@linux-foundation.org, vilhelm.gray@gmail.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        michal.simek@xilinx.com, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] gpio: xilinx: Utilize for_each_set_clump macro
+Message-ID: <20200430163855.GU185537@smile.fi.intel.com>
+References: <cover.1588112714.git.syednwaris@gmail.com>
+ <80745504d15c87aa1da0d4be3c16d1279f48615b.1588112716.git.syednwaris@gmail.com>
+ <20200429102114.GF185537@smile.fi.intel.com>
+ <20200430161514.GA7107@syed>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430161514.GA7107@syed>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mathieu Desnoyers:
+On Thu, Apr 30, 2020 at 09:45:14PM +0530, Syed Nayyar Waris wrote:
+> On Wed, Apr 29, 2020 at 01:21:14PM +0300, Andy Shevchenko wrote:
+> > On Wed, Apr 29, 2020 at 04:39:47AM +0530, Syed Nayyar Waris wrote:
 
-> @deftypevar {struct rseq} __rseq_abi
-> @standards{Linux, sys/rseq.h}
-> @Theglibc{} implements a @code{__rseq_abi} TLS symbol to interact with the
-> Restartable Sequences system call (Linux-specific).  The layout of this
-> structure is defined by the @file{sys/rseq.h} header.  Registration of each
-> thread's @code{__rseq_abi} is performed by @theglibc{} at libc library
-> initialization and thread creation.
+...
 
-s/libc library/library/
+> > > +	const unsigned long state_size = BITS_PER_TYPE(*state);
+> > 
+> > This '*state' is unneeded complication, use BITS_PER_U32.
+> > 
+> > > +#define TOTAL_BITS BITS_PER_TYPE(chip->gpio_state)
+> > 
+> > This macro makes code uglier, besides the fact of absence of #undef.
+> > And also see above.
+> 
+> Thank you for your review comments. Just want to clarify, you want
+>  a new macro to be created - 'BITS_PER_U32' ?
 
-> The main executable and shared libraries may either have an undefined
-> @code{__rseq_abi} TLS symbol, or define their own, with the same
-> declaration as the one present in @file{sys/rseq.h}.  The dynamic linker
-> will ensure that only one of those available symbols will be used at
-> runtime across the process.
->
-> If the main executable or shared libraries observe an uninitialized
-> @code{__rseq_abi.cpu_id} field (value @code{RSEQ_CPU_ID_UNINITIALIZED}), they
-> may perform rseq registration to the kernel: this means either glibc was
-> prevented from doing the registration, or an older glibc version, which does
-> not include rseq support, is in use.  When the main executable or a library
-> thus takes ownership of the registration, the memory used to hold the
-> @code{__rseq_abi} TLS variable must stay allocated, and is not re-used, until
-> the very end of the thread lifetime or until an explicit rseq unregistration
-> for that thread is performed.  It is not recommended to dlclose() libraries
-> owning the @code{__rseq_abi} TLS variable.
+It's already there (read bits.h).
 
-s/dlclose()/@code{dlclose}/ (no parentheses)
+> Also, don't you think that with BITS_PER_TYPE(), in case later the type
+> of 'state' changes, it will be reflected in this code without any code
+> change?
 
-Rest looks okay.
+If it changes the bits per type will be least issues there. The rationale
+behind is to have code readable. In proposed change it is not.
 
->>> +  if (__rseq_abi.cpu_id == RSEQ_CPU_ID_REGISTRATION_FAILED)
->>> +    return;
->>> +  ret = INTERNAL_SYSCALL_CALL (rseq, &__rseq_abi, sizeof (struct rseq),
->>> +                              0, RSEQ_SIG);
->>> +  if (INTERNAL_SYSCALL_ERROR_P (ret) &&
->>> +      INTERNAL_SYSCALL_ERRNO (ret) != EBUSY)
->>> +    __rseq_abi.cpu_id = RSEQ_CPU_ID_REGISTRATION_FAILED;
->> 
->> Sorry, I forgot: Please add a comment that the EBUSY error is ignored
->> because registration may have already happened in a legacy library.
->
-> Considering that we now disable signals across thread creation, and that
-> glibc's initialization happens before other libraries' constructors
-> (as far as I remember even before LD_PRELOADed library constructors),
-> in which scenario can we expect to have EBUSY here ?
+> Let me know if I have misunderstood something.
+> 
+> > 
+> > > +	DECLARE_BITMAP(old, TOTAL_BITS);
+> > > +	DECLARE_BITMAP(new, TOTAL_BITS);
+> > > +	DECLARE_BITMAP(changed, TOTAL_BITS);
 
-That's a good point.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> Not setting __rseq_abi.cpu_id to RSEQ_CPU_ID_REGISTRATION_FAILED in case
-> of EBUSY is more a way to handle "unforeseen" scenarios where somehow the
-> registration would already be done. But I cannot find an "expected"
-> scenario which would lead to this now.
->
-> So if EBUSY really is unexpected, how should we treat that ? I don't think
-> setting REGISTRATION_FAILED would be appropriate, because then it would
-> break assumption of the prior successful registration that have already
-> been done by this thread.
-
-You could call __libc_fatal with an error message.  ENOSYS is definitely
-an expected error code here, and EPERM (and perhaps EACCES) can happen
-with seccomp filters.
-
-Thanks,
-Florian
 
