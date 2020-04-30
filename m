@@ -2,97 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5757B1BEE59
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 04:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C748A1BEE5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 04:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgD3Ceo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 22:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726526AbgD3Ceo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 22:34:44 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4AEC035494
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 19:34:43 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49CKGQ4ZsBz9sRY;
-        Thu, 30 Apr 2020 12:34:38 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1588214078;
-        bh=BCi4c4G/ZA+9mO7Of96Qiajv3+eSTHs7JkDfkYQrlss=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=WBBHx9n9lJB5ghHEmLoQc/ndI+TE1BPqxe8vSOjeC45nb3lFf2k0AMXBBL6OQnEBX
-         h7xYd9osHiC0kFJcAf39tG76Pf8UELx65k2BDL+Oo2Tl0y05j1fiJtgHLRVASvMG7A
-         FwctvR5cuOxfITfXOsV8+w6eo558jf8H0jUk108No0lHZkAiT+Nyn/tuR7TIuKQIs3
-         XY3PbTnCEyrTEQKMFfqwRSXnK/Udph2u6EzvETGGJUNnG7OVewxdpo5QlHsYFN6JXz
-         gEWP6L/DmMUuOTnvr29OLGtVWh1qkjvpSif2RtQAD9Hg7M4zcC7PpMYTkXQARL+VRb
-         rjJPdDYfz/bFw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>
-Cc:     "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/5] Track and expose idle PURR and SPURR ticks
-In-Reply-To: <20200423100213.GA23192@in.ibm.com>
-References: <1586249263-14048-1-git-send-email-ego@linux.vnet.ibm.com> <04b5e2fa-089f-93c9-cde9-33a930455bb2@linux.ibm.com> <20200423100213.GA23192@in.ibm.com>
-Date:   Thu, 30 Apr 2020 12:34:52 +1000
-Message-ID: <871ro5g0qb.fsf@mpe.ellerman.id.au>
+        id S1726745AbgD3CjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 22:39:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:47894 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726180AbgD3CjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 22:39:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB4261063;
+        Wed, 29 Apr 2020 19:39:14 -0700 (PDT)
+Received: from [10.163.71.104] (unknown [10.163.71.104])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1F5413F68F;
+        Wed, 29 Apr 2020 19:39:07 -0700 (PDT)
+Subject: Re: [LKP] Re: [mm/debug] fa6726c1e7: kernel_BUG_at_include/linux/mm.h
+To:     Christophe Leroy <christophe.leroy@c-s.fr>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Chen, Rong A" <rong.a.chen@intel.com>
+Cc:     Qian Cai <cai@lca.pw>, kernel test robot <lkp@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+References: <9e9091b9-6918-d0af-dd92-3bdc0e29a4d5@arm.com>
+ <813D7CD3-F31C-4056-92DF-D462633E9D69@lca.pw> <20200428092105.GB3868@gaia>
+ <b62c66c8-1550-087f-f5d2-b33a18bb0edc@arm.com>
+ <07ea0efd-0145-eaaf-c628-e48957154a2c@intel.com>
+ <20200429181550.GF10651@gaia> <410b5235-bbd0-6cff-c361-c25665a854ae@c-s.fr>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <444b9424-f1e1-2587-6d46-9848478d51e2@arm.com>
+Date:   Thu, 30 Apr 2020 08:08:39 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <410b5235-bbd0-6cff-c361-c25665a854ae@c-s.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gautham R Shenoy <ego@linux.vnet.ibm.com> writes:
-> On Mon, Apr 20, 2020 at 03:46:35PM -0700, Tyrel Datwyler wrote:
->> On 4/7/20 1:47 AM, Gautham R. Shenoy wrote:
->> > From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
->> > 
->> > Hi,
->> > 
->> > This is the fifth version of the patches to track and expose idle PURR
->> > and SPURR ticks. These patches are required by tools such as lparstat
->> > to compute system utilization for capacity planning purposes.
-...
->> > 
->> > Gautham R. Shenoy (5):
->> >   powerpc: Move idle_loop_prolog()/epilog() functions to header file
->> >   powerpc/idle: Store PURR snapshot in a per-cpu global variable
->> >   powerpc/pseries: Account for SPURR ticks on idle CPUs
->> >   powerpc/sysfs: Show idle_purr and idle_spurr for every CPU
->> >   Documentation: Document sysfs interfaces purr, spurr, idle_purr,
->> >     idle_spurr
->> > 
->> >  Documentation/ABI/testing/sysfs-devices-system-cpu | 39 +++++++++
->> >  arch/powerpc/include/asm/idle.h                    | 93 ++++++++++++++++++++++
->> >  arch/powerpc/kernel/sysfs.c                        | 82 ++++++++++++++++++-
->> >  arch/powerpc/platforms/pseries/setup.c             |  8 +-
->> >  drivers/cpuidle/cpuidle-pseries.c                  | 39 ++-------
->> >  5 files changed, 224 insertions(+), 37 deletions(-)
->> >  create mode 100644 arch/powerpc/include/asm/idle.h
->> > 
->> 
->> Reviewed-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->
-> Thanks for reviewing the patches.
->
->> 
->> Any chance this is going to be merged in the near future? There is a patchset to
->> update lparstat in the powerpc-utils package to calculate PURR/SPURR cpu
->> utilization that I would like to merge, but have been holding off to make sure
->> we are synced with this proposed patchset.
->
-> Michael, could you please consider this for 5.8 ?
 
-Yes. Has it been tested on KVM at all?
 
-cheers
+On 04/30/2020 12:04 AM, Christophe Leroy wrote:
+> 
+> 
+> Le 29/04/2020 à 20:15, Catalin Marinas a écrit :
+>> On Wed, Apr 29, 2020 at 08:52:25PM +0800, Chen, Rong A wrote:
+>>> On 4/29/2020 11:28 AM, Anshuman Khandual wrote:
+>>>> On 04/28/2020 02:51 PM, Catalin Marinas wrote:
+>>>>> On Tue, Apr 28, 2020 at 04:41:11AM -0400, Qian Cai wrote:
+>>>>>> On Apr 28, 2020, at 1:54 AM, Anshuman Khandual <Anshuman.Khandual@arm.com> wrote:
+>>>>>>> That is true. There is a slight change in the rules, making it explicit yes
+>>>>>>> only when both ARCH_HAS_DEBUG_VM_PGTABLE and DEBUG_VM are enabled.
+>>>>>>>
+>>>>>>> +config DEBUG_VM_PGTABLE
+>>>>>>> +    bool "Debug arch page table for semantics compliance"
+>>>>>>> +    depends on MMU
+>>>>>>> +    depends on !IA64 && !ARM
+>>>>>>> +    depends on ARCH_HAS_DEBUG_VM_PGTABLE || EXPERT
+>>>>>>> +    default y if ARCH_HAS_DEBUG_VM_PGTABLE && DEBUG_VM
+>>>>>>> +    help
+>>>>>>>
+>>>>>>> The default is really irrelevant as the config option can be set explicitly.
+>>>>>> That could also explain. Since not long time ago, it was only “default
+>>>>>> y if DEBUG_VM”, that caused the robot saved a .config with
+>>>>>> DEBUG_VM_PGTABLE=y by default.
+>>>>>>
+>>>>>> Even though you changed the rule recently, it has no effect as the
+>>>>>> robot could “make oldconfig” from the saved config for each linux-next
+>>>>>> tree execution and the breakage will go on.
+>>>>> I'm not entirely sure that's the case. This report still points at the
+>>>>> old commit fa6726c1e7 which has:
+>>>>>
+>>>>> +       depends on ARCH_HAS_DEBUG_VM_PGTABLE || EXPERT
+>>>>> +       default n if !ARCH_HAS_DEBUG_VM_PGTABLE
+>>>>> +       default y if DEBUG_VM
+>>>>>
+>>>>> In -next we now have commit 647d9a0de34c and subsequently modified by
+>>>>> commit 0a8646638865. So hopefully with the latest -next tree we won't
+>>>>> see this report.
+>>>> Could some one from LKP test framework, please confirm if this still causes
+>>>> above problem on the latest linux-next by default ?
+>>>
+>>> The .config is a rand config, the problem is still exist if run "make
+>>> oldconfig" for the config with commit 0a8646638865.
+>>
+>> Is randconfig expected to boot? I don't think it is but I guess it
+>> should not trigger a BUG_ON during boot.
+>>
+>>> $ grep -e CONFIG_MMU= -e CONFIG_EXPERT= -e CONFIG_ARCH_HAS_DEBUG_VM_PGTABLE=
+>>> -e CONFIG_DEBUG_VM= .config
+>>> CONFIG_EXPERT=y
+>>> CONFIG_MMU=y
+>>> CONFIG_DEBUG_VM=y
+>>>
+>>> should we disable DEBUG_VM_PGTABLE by default?
+>>
+>> If that's the only case where this fails in LKP, I'd rather remove the
+>> EXPERT dependency so that it cannot be enabled. Architectures that want
+>> to experiment with this feature will have to select
+>> ARCH_HAS_DEBUG_VM_PGTABLE explicitly.
+>>
+
+Dropping the EXPERT dependency here seems like the best solution even
+though I have always tried to avoid that (many times).
+
+> 
+> But when something is not selectable, people won't even know it exists
+
+We will probably revisit this option later but for now it is really not
+an absolute necessity for the test.
+
+> 
+> Why not try and fix the problems reported by the robots instead ?
+Enabling all non-enabled platforms will be an ongoing process that will
+require support and collaboration from their respective platforms folks.
+Similar collaborative approach earlier had enabled successfully test run
+on arc, s390, ppc32, ppc64 platforms after starting with just arm64 and
+x86.
