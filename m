@@ -2,77 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17C21BFD1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A032D1BFD2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729290AbgD3OKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:10:16 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:45620 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbgD3OKN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:10:13 -0400
-Received: by mail-oo1-f67.google.com with SMTP id 190so1297688ooa.12;
-        Thu, 30 Apr 2020 07:10:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6aiOkcIgJAWhCqfCs33Rhe1wkSnQyKwXVAe/pUh2Rrw=;
-        b=tEabOy9KM9d7LRpLuowDfHa3grtUQXFhRb2NhOXb1jC+n25OcJI/CPHVJ2hoGBL0AV
-         bQZW/AEkMCJJJCJmbkLjqJSybjjF39nfoDb+1zec5tQY2YDd/+HUyVb1PL/mb8Vy6g1j
-         k3EFVdk01IO5HzTctxpG1qfP8Pm7Dc2uipe9q82d6X9Y4QKiPcXp77XC5ODDIE4KEAXT
-         byEjM2RxzePIllwIxe4Bk5jUIcELo27BI1dF9gwuR8D7SY0pK/5nqvf/kLmEKBInWM82
-         0X5jY3D2PEsJODv7obzXkopLojx4QLHNArVJVGf2lGAz9wzugmwebeYGTKC7bFTBlPfk
-         ZhcQ==
-X-Gm-Message-State: AGi0PubzrAtthmqGA7SayY2TyG7N3vGebiIiJPT3tEW3YuyDOG3CVyfw
-        zo/nZN/nKzfzwvMzoL0ez6hLSPE=
-X-Google-Smtp-Source: APiQypIlZrdNDKXt4h5JYSoYrTTeKI8v+e+CVvcep7L1dYna5MbvAQ/q4ekiXc5lL7JJyjUKWiE5Xg==
-X-Received: by 2002:a4a:390b:: with SMTP id m11mr2952624ooa.2.1588255811640;
-        Thu, 30 Apr 2020 07:10:11 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m16sm1304134oou.44.2020.04.30.07.10.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 07:10:10 -0700 (PDT)
-Received: (nullmailer pid 4677 invoked by uid 1000);
-        Thu, 30 Apr 2020 14:10:10 -0000
-Date:   Thu, 30 Apr 2020 09:10:10 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/6] of_graph: add of_graph_get_local_port()
-Message-ID: <20200430141010.GA4602@bogus>
-References: <20200418170703.1583-1-digetx@gmail.com>
- <20200418170703.1583-2-digetx@gmail.com>
+        id S1729195AbgD3OKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:10:53 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:60848 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728643AbgD3OKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 10:10:49 -0400
+Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
+        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
+        id 1jU9s8-0000qz-47; Fri, 01 May 2020 00:09:05 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 01 May 2020 00:10:11 +1000
+Date:   Fri, 1 May 2020 00:10:11 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Hadar Gat <Hadar.Gat@arm.com>
+Cc:     Matt Mackall <mpm@selenic.com>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Ofir Drang <Ofir.Drang@arm.com>, nd <nd@arm.com>
+Subject: Re: [PATCH v3 1/3] hwrng: cctrng - Add dependency on OF
+Message-ID: <20200430141011.GA13992@gondor.apana.org.au>
+References: <1587987364-4566-1-git-send-email-hadar.gat@arm.com>
+ <1587987364-4566-2-git-send-email-hadar.gat@arm.com>
+ <20200427150658.GA26305@gondor.apana.org.au>
+ <DB7PR08MB3003E1459755B853B41490D6E9AC0@DB7PR08MB3003.eurprd08.prod.outlook.com>
+ <20200428123007.GA3969@gondor.apana.org.au>
+ <AM6PR08MB2999F52B99066C321837144DE9AA0@AM6PR08MB2999.eurprd08.prod.outlook.com>
+ <20200430074941.GA12529@gondor.apana.org.au>
+ <AM6PR08MB29990D46BD6C974ACE1914F0E9AA0@AM6PR08MB2999.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200418170703.1583-2-digetx@gmail.com>
+In-Reply-To: <AM6PR08MB29990D46BD6C974ACE1914F0E9AA0@AM6PR08MB2999.eurprd08.prod.outlook.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 18 Apr 2020 20:06:58 +0300, Dmitry Osipenko wrote:
-> In some case, like a DRM display code for example, it's useful to silently
-> check whether port node exists at all in a device-tree before proceeding
-> with parsing the graph.
-> 
-> This patch adds of_graph_get_local_port() which returns pointer to a local
-> port node, or NULL if graph isn't specified in a device-tree for a given
-> device node.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/of/property.c    | 32 +++++++++++++++++++++++---------
->  include/linux/of_graph.h |  7 +++++++
->  2 files changed, 30 insertions(+), 9 deletions(-)
-> 
+On Thu, Apr 30, 2020 at 08:26:00AM +0000, Hadar Gat wrote:
+>
+> I don't understand if anything need to be fixed before this patch can be applied.
+> The patch adds dependency on OF, which was missing and is required for the cctrng driver.
+> (Indeed cctrng compilation passed also without CONFIG_OF because of the empty implementation of of_property_read*() functions that simply returns -ENOSYS.)
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Nevermind, I already have the CONFIG_OF flag on in my build test
+so it shouldn't be a problem.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
