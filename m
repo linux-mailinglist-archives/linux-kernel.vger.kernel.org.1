@@ -2,107 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1051E1C0204
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5A01C020D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgD3QS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:18:28 -0400
-Received: from mail.efficios.com ([167.114.26.124]:38972 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgD3QSX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:18:23 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 1493A28FB39;
-        Thu, 30 Apr 2020 12:18:23 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id bzyRC6oWE99D; Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id BC0A028F877;
-        Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com BC0A028F877
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1588263502;
-        bh=L55kMAHWHtClXwT3AsAHrTu4aKopstWuDvA/OyUEXfw=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=a0h2NHQD3T8P5WMYNRq/esttBzqmJ5x00gb7J/F1X1p6JpLeAsgsEjUh20DCv5pma
-         muv6+Y+WUACsdkjNSDLiDjqG5hvb6yHS6wC/GWDD2Qv4uXPq+X5GuKGUOeU8DYAU79
-         FeizHDpFWpLt7Eica3HjqwfMiPaqwuy5tDBXdfo2sYvAahVQ0yPLnPRiotbk6OgQQn
-         wCK0OGubt84svS5QivphLQZZnRkPTBLj4ZQfyFadgrMxG12mZ+idp88uglnv7LPBqK
-         nOBKkfqgqri7WE8fQALZX4/KWthxgXjAOK0+5vvtENlNMbcdJp3o5vXKaeSwSLEw5u
-         qnbLNdK4sCABA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id z-dubMsoJYa8; Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id AAA3428F79F;
-        Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
-Date:   Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     Joerg Roedel <jroedel@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Message-ID: <947455570.77870.1588263502669.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200430121627.682061e2@gandalf.local.home>
-References: <20200429054857.66e8e333@oasis.local.home> <20200429105941.GQ30814@suse.de> <20200429082854.6e1796b5@oasis.local.home> <20200429100731.201312a9@gandalf.local.home> <20200430141120.GA8135@suse.de> <20200430145057.GB8135@suse.de> <2026887875.77814.1588260015439.JavaMail.zimbra@efficios.com> <20200430121627.682061e2@gandalf.local.home>
-Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before
- text_poke()
+        id S1728212AbgD3QSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:18:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726790AbgD3QSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:18:38 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4E4424953;
+        Thu, 30 Apr 2020 16:18:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588263517;
+        bh=fDDw8CUiWiLSO3QdJj2xM8TflOXwJKfxuSuTRCHZmLI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hW8jITZN6VrKvdZ+oI070r43Rh2yWj68X3GMYffFDZBZmwMAlQai98wgclos6ywbQ
+         9ghSwzy/4xHcRjW7lx5njvgv6A77g/U3AIon97i0GwYHouULVO29XrYMhig1KYzFr7
+         OgSFVoRYnYdi55HGEqbUVSruL1+MqgfJ4vmUQsz0=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jUBtU-00AxhD-2Z; Thu, 30 Apr 2020 18:18:36 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH v4 08/19] docs: misc-devices/pci-endpoint-test.txt: convert to ReST
+Date:   Thu, 30 Apr 2020 18:18:22 +0200
+Message-Id: <6e0cbd6f37cfb6a21afdd1dcb0ed3ec3f14e64f9.1588263270.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <cover.1588263270.git.mchehab+huawei@kernel.org>
+References: <cover.1588263270.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3918 (ZimbraWebClient - FF75 (Linux)/8.8.15_GA_3895)
-Thread-Topic: x86/mm: Sync all vmalloc mappings before text_poke()
-Thread-Index: rw6BtFhk9xaOWvTrQYsbm6qr+yaRNA==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 30, 2020, at 12:16 PM, rostedt rostedt@goodmis.org wrote:
+- Use titles markups;
+- Adjust identation;
+- use literal markup;
+- Use the proper notation for footnotes.
 
-> On Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
->> > The right fix is to call vmalloc_sync_mappings() right after allocating
->> > tracing or perf buffers via v[zm]alloc().
->> 
->> Either right after allocation, or right before making the vmalloc'd data
->> structure visible to the instrumentation. In the case of the pid filter,
->> that would be the rcu_assign_pointer() which publishes the new pid filter
->> table.
->> 
->> As long as vmalloc_sync_mappings() is performed somewhere *between* allocation
->> and publishing the pointer for instrumentation, it's fine.
->> 
->> I'll let Steven decide on which approach works best for him.
-> 
-> As stated in the other email, I don't see it having anything to do with
-> vmalloc, but with the per_cpu() allocation. I'll test this theory out by
-> not even allocating the pid masks and touching the per cpu data at every
-> event to see if it crashes.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ Documentation/misc-devices/index.rst          |  1 +
+ .../misc-devices/pci-endpoint-test.rst        | 56 +++++++++++++++++++
+ .../misc-devices/pci-endpoint-test.txt        | 41 --------------
+ 3 files changed, 57 insertions(+), 41 deletions(-)
+ create mode 100644 Documentation/misc-devices/pci-endpoint-test.rst
+ delete mode 100644 Documentation/misc-devices/pci-endpoint-test.txt
 
-As pointed out in my other email, per-cpu allocation uses vmalloc when
-size > PAGE_SIZE.
-
-Thanks,
-
-Mathieu
-
-
+diff --git a/Documentation/misc-devices/index.rst b/Documentation/misc-devices/index.rst
+index a72ab89e7d1a..17e77b6aa27c 100644
+--- a/Documentation/misc-devices/index.rst
++++ b/Documentation/misc-devices/index.rst
+@@ -22,5 +22,6 @@ fit into other categories.
+    lis3lv02d
+    max6875
+    mic/index
++   pci-endpoint-test
+    spear-pcie-gadget
+    xilinx_sdfec
+diff --git a/Documentation/misc-devices/pci-endpoint-test.rst b/Documentation/misc-devices/pci-endpoint-test.rst
+new file mode 100644
+index 000000000000..26e5d9ba146b
+--- /dev/null
++++ b/Documentation/misc-devices/pci-endpoint-test.rst
+@@ -0,0 +1,56 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=====================================
++Driver for PCI Endpoint Test Function
++=====================================
++
++This driver should be used as a host side driver if the root complex is
++connected to a configurable PCI endpoint running ``pci_epf_test`` function
++driver configured according to [1]_.
++
++The "pci_endpoint_test" driver can be used to perform the following tests.
++
++The PCI driver for the test device performs the following tests:
++
++	#) verifying addresses programmed in BAR
++	#) raise legacy IRQ
++	#) raise MSI IRQ
++	#) raise MSI-X IRQ
++	#) read data
++	#) write data
++	#) copy data
++
++This misc driver creates /dev/pci-endpoint-test.<num> for every
++``pci_epf_test`` function connected to the root complex and "ioctls"
++should be used to perform the above tests.
++
++ioctl
++-----
++
++ PCITEST_BAR:
++	      Tests the BAR. The number of the BAR to be tested
++	      should be passed as argument.
++ PCITEST_LEGACY_IRQ:
++	      Tests legacy IRQ
++ PCITEST_MSI:
++	      Tests message signalled interrupts. The MSI number
++	      to be tested should be passed as argument.
++ PCITEST_MSIX:
++	      Tests message signalled interrupts. The MSI-X number
++	      to be tested should be passed as argument.
++ PCITEST_SET_IRQTYPE:
++	      Changes driver IRQ type configuration. The IRQ type
++	      should be passed as argument (0: Legacy, 1:MSI, 2:MSI-X).
++ PCITEST_GET_IRQTYPE:
++	      Gets driver IRQ type configuration.
++ PCITEST_WRITE:
++	      Perform write tests. The size of the buffer should be passed
++	      as argument.
++ PCITEST_READ:
++	      Perform read tests. The size of the buffer should be passed
++	      as argument.
++ PCITEST_COPY:
++	      Perform read tests. The size of the buffer should be passed
++	      as argument.
++
++.. [1] Documentation/PCI/endpoint/function/binding/pci-test.txt
+diff --git a/Documentation/misc-devices/pci-endpoint-test.txt b/Documentation/misc-devices/pci-endpoint-test.txt
+deleted file mode 100644
+index 58ccca4416b1..000000000000
+--- a/Documentation/misc-devices/pci-endpoint-test.txt
++++ /dev/null
+@@ -1,41 +0,0 @@
+-Driver for PCI Endpoint Test Function
+-
+-This driver should be used as a host side driver if the root complex is
+-connected to a configurable PCI endpoint running *pci_epf_test* function
+-driver configured according to [1].
+-
+-The "pci_endpoint_test" driver can be used to perform the following tests.
+-
+-The PCI driver for the test device performs the following tests
+-	*) verifying addresses programmed in BAR
+-	*) raise legacy IRQ
+-	*) raise MSI IRQ
+-	*) raise MSI-X IRQ
+-	*) read data
+-	*) write data
+-	*) copy data
+-
+-This misc driver creates /dev/pci-endpoint-test.<num> for every
+-*pci_epf_test* function connected to the root complex and "ioctls"
+-should be used to perform the above tests.
+-
+-ioctl
+------
+- PCITEST_BAR: Tests the BAR. The number of the BAR to be tested
+-	      should be passed as argument.
+- PCITEST_LEGACY_IRQ: Tests legacy IRQ
+- PCITEST_MSI: Tests message signalled interrupts. The MSI number
+-	      to be tested should be passed as argument.
+- PCITEST_MSIX: Tests message signalled interrupts. The MSI-X number
+-	      to be tested should be passed as argument.
+- PCITEST_SET_IRQTYPE: Changes driver IRQ type configuration. The IRQ type
+-	      should be passed as argument (0: Legacy, 1:MSI, 2:MSI-X).
+- PCITEST_GET_IRQTYPE: Gets driver IRQ type configuration.
+- PCITEST_WRITE: Perform write tests. The size of the buffer should be passed
+-		as argument.
+- PCITEST_READ: Perform read tests. The size of the buffer should be passed
+-	       as argument.
+- PCITEST_COPY: Perform read tests. The size of the buffer should be passed
+-	       as argument.
+-
+-[1] -> Documentation/PCI/endpoint/function/binding/pci-test.txt
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.25.4
+
