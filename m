@@ -2,135 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C89581C09C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8525E1C09CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgD3Vyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:54:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbgD3Vyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:54:53 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3354C20731;
-        Thu, 30 Apr 2020 21:54:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588283693;
-        bh=t9qnll8WvxQGsQph0bJHSahUHwx0V36v+7m8O+CgYVs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TjnUd7P2z/2BEm/0Yz5xqXL2V6zK+jGMx7In+KwxIsoGspG0DqUCDJB21zdTjGfp2
-         GgecJVXTpAbW2u6UnwoAn3OfURjtm+brB8CxDJmZXgBgZUVUSj2Y0vkpVabnz6VZZe
-         0VncMoF5KTPqUtWfkBw0K6Hn1+W1A3ShkFL59I+g=
-Received: by pali.im (Postfix)
-        id 0D223850; Thu, 30 Apr 2020 23:54:51 +0200 (CEST)
-Date:   Thu, 30 Apr 2020 23:54:50 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kernel@vger.kernel.org, Jan Kara <jack@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Steven J. Magnani" <steve@digidescorp.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 09/15] udf: avoid gcc-10 zero-length-bounds warnings
-Message-ID: <20200430215450.anfwm4zikvhy2bt5@pali>
-References: <20200430213101.135134-1-arnd@arndb.de>
- <20200430213101.135134-10-arnd@arndb.de>
+        id S1727892AbgD3Vze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbgD3Vzd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 17:55:33 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096C3C035495
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:55:33 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id v2so2847996plp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 14:55:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rYEprxh5hRkyIRk0SZJ1yYwJF2zaPFW1K1pdxuC7Zuc=;
+        b=0YJweBxdqRGXk8CKADPYZT2TDMDjlejyhecZFIP6Pdqu2Rol0vua+RkjawOc6lW+4C
+         uye8FqmbkqGQFahJuYyZ/sVkYDn8YKcognO7HZN5LGsmML6yIXlmeCxIkANnyZNQ1gTG
+         /9xSR/dOm1broZSmXWyPapxeqpe3M9DwJQedEjQkHUFGZC4OxPB9a94qfaCo8FkfLTG2
+         z4UdgSMg6xqZqbdaMkkKFbSj8MCsvkht1TJbHhLVLcwEjDr92euBMUJXifl8yCQybF3i
+         0VWB+PK6QrXPrkeZTzbIW4Ds0P1gdgZDHzx3P27ENgTnRXQIqNtK/jjJtTG7opYmGATG
+         kgeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rYEprxh5hRkyIRk0SZJ1yYwJF2zaPFW1K1pdxuC7Zuc=;
+        b=fHRPwt4ZW/lhKMJ0cPPY40CI0qEtK31hy6HpvewNt3ey8tn5EsBzPbs/UzEClHqZH1
+         3f2NjIotUWFuojABxiwyK4LvGjnbFfNv8mrk4KZ82gljz1809zCDzQJXOJQKAeCyzEBi
+         ydcRAoBP2KshS49G8+1jROAj2InD5tEddLEAtiAjsLAAbPazk4wywrE/JPhOTEo4WnYq
+         3Bb+0NXr3K8FueCfLLZBWfeWni7ExY8GkkAKG6/h0zX4nGFEPhx0Jv8BKm1+8PwvoaeB
+         Os3vebM29cA5S/T7fzFTP0iocqXb8EboY8AhKDISzPfynLets0tDh/2Igx3E1xRXtkeo
+         z5kw==
+X-Gm-Message-State: AGi0PuZeDNd+5TtSF2DGwD3Q+aG8kRXLH6DsiPb6pXRfd03pC+6ohnMV
+        ghI/NMJreePsWt9JlprqmOjqRA==
+X-Google-Smtp-Source: APiQypKZKsYx7E2CGdgFsbEsXPiGTeppVxcKMSgLFPw/aX5eOiEu/pEAX05ugbUD8BcvAoby192kSA==
+X-Received: by 2002:a17:902:7b94:: with SMTP id w20mr1140125pll.8.1588283732465;
+        Thu, 30 Apr 2020 14:55:32 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.145])
+        by smtp.gmail.com with ESMTPSA id i25sm601473pfo.196.2020.04.30.14.55.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 14:55:31 -0700 (PDT)
+Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
+ target handling
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
+        josef@toxicpanda.com, asml.silence@gmail.com, ming.lei@redhat.com,
+        bvanassche@acm.org
+References: <20200413162758.97252-1-tj@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6ee6360e-1a35-874c-2263-6fb21da66591@kernel.dk>
+Date:   Thu, 30 Apr 2020 15:55:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430213101.135134-10-arnd@arndb.de>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20200413162758.97252-1-tj@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 30 April 2020 23:30:51 Arnd Bergmann wrote:
-> gcc-10 warns about writes to the empty freeSpaceTable[] array, with
-> many instances like:
+On 4/13/20 10:27 AM, Tejun Heo wrote:
+> Changes from v1[1]
 > 
-> fs/udf/balloc.c: In function 'udf_bitmap_new_block':
-> fs/udf/balloc.c:101:36: error: array subscript 65535 is outside the bounds of an interior zero-length array '__le32[0]' {aka 'unsigned int[0]'} [-Werror=zero-length-bounds]
->   101 |  le32_add_cpu(&lvid->freeSpaceTable[partition], cnt);
->       |                ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
-> In file included from fs/udf/udfdecl.h:7,
->                  from fs/udf/balloc.c:22:
-> fs/udf/ecma_167.h:363:11: note: while referencing 'freeSpaceTable'
->   363 |  __le32   freeSpaceTable[0];
->       |           ^~~~~~~~~~~~~~
-
-Hi Arnd! This looks like a false-positive warning.
-
-> These can all be avoided by using a flexible array member instead.
+> * Dropped 0002-block-add-request-io_data_len.patch and updated to use
+>   rq->stats_sectors instead as suggested by Pavel Begunkov.
 > 
-> Another warning is a bit more obscure:
+> This patchset improves the following two iocost control behaviors.
 > 
-> fs/udf/super.c: In function 'udf_count_free':
-> fs/udf/super.c:2521:26: warning: array subscript '(<unknown>) + 4294967295' is outside the bounds of an interior zero-length array '__le32[0]' {aka 'unsigned int[0]'} [-Wzero-length-bounds]
->  2521 |      lvid->freeSpaceTable[part]);
+> * iocost was failing to punish heavy shared IO generators (file metadata, memory
+>   reclaim) through use_delay mechanism - use_delay automatically decays which
+>   works well for iolatency but doesn't match how iocost behaves. This led to
+>   e.g. memory bombs which generate a lot of swap IOs to use over their allotted
+>   amount. This is fixed by adding non-decaying use_delay mechanism.
 > 
-> Work around this one by changing the array access to equivalent
-> pointer arithmetic, as there cannot be multiple flexible-array
-> members in a single struct.
-
-Well, this code uses GNU extension for zero-length arrays because it was
-written in pre-C99 era when C99 flexible arrays did not exist yet.
-
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  fs/udf/ecma_167.h | 2 +-
->  fs/udf/super.c    | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> * The same latency targets were being applied regardless of the IO sizes. While
+>   this works fine for loose targets, it gets in the way when trying to tigthen
+>   them - a latency target adequate for a 4k IO is too short for a 1 meg IO.
+>   iocost now discounts the size portion of cost when testing whether a given IO
+>   met or missed its latency target.
 > 
-> diff --git a/fs/udf/ecma_167.h b/fs/udf/ecma_167.h
-> index 736ebc5dc441..14ffe27342bc 100644
-> --- a/fs/udf/ecma_167.h
-> +++ b/fs/udf/ecma_167.h
-> @@ -360,9 +360,9 @@ struct logicalVolIntegrityDesc {
->  	uint8_t			logicalVolContentsUse[32];
->  	__le32			numOfPartitions;
->  	__le32			lengthOfImpUse;
-> -	__le32			freeSpaceTable[0];
->  	__le32			sizeTable[0];
->  	uint8_t			impUse[0];
-> +	__le32			freeSpaceTable[];
-
-Please do not change order of members in these structures. Order is
-strictly defined by ECMA 167 standard and changing them you would just
-confuse reader. In LVID is free space table before size table.
-
-If you do not like GNU C extension for zero-length arrays then just
-replace it by standard C99 flexible arrays. I think that there is no
-reason to not use standard C99 language constructions, just nobody had
-motivation or time to change (working) code.
-
-Also this file is semi-synchronized with udftools project in which I
-already replaced all GNU C zero-length arrays by C99 flexible arrays.
-
-You can take inspiration what I did with logicalVolIntegrityDesc:
-https://github.com/pali/udftools/commit/f851d84478ce881d516a76018745fa163f803880#diff-1e1a5b89f620d380f22b973f9449aeaeL381-R384
-
-Anyway, if you have a better idea what to do with such on-disk structure
-and how to represent it in C struct syntax, let me know as it could be
-updated also in udftools project.
-
->  } __packed;
->  
->  /* Integrity Type (ECMA 167r3 3/10.10.3) */
-> diff --git a/fs/udf/super.c b/fs/udf/super.c
-> index f747bf72edbe..379867888c36 100644
-> --- a/fs/udf/super.c
-> +++ b/fs/udf/super.c
-> @@ -117,7 +117,7 @@ struct logicalVolIntegrityDescImpUse *udf_sb_lvidiu(struct super_block *sb)
->  	}
->  	/* The offset is to skip freeSpaceTable and sizeTable arrays */
->  	offset = partnum * 2 * sizeof(uint32_t);
-> -	return (struct logicalVolIntegrityDescImpUse *)&(lvid->impUse[offset]);
-> +	return (struct logicalVolIntegrityDescImpUse *)(lvid->impUse + offset);
->  }
->  
->  /* UDF filesystem type */
-> -- 
-> 2.26.0
+> While at it, it also makes minor changse to iocost_monitor.py.
 > 
+> This patchset contains the following five patches.
+> 
+>  0001-blk-iocost-switch-to-fixed-non-auto-decaying-use_del.patch
+>  0002-blk-iocost-account-for-IO-size-when-testing-latencie.patch
+>  0003-iocost_monitor-exit-successfully-if-interval-is-zero.patch
+>  0004-iocost_monitor-drop-string-wrap-around-numbers-when-.patch
+> 
+> and is also available in the following git branch.
+> 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git iocost-delay-latency-v2
+> 
+> diffstat follows. Thanks.
+> 
+>  block/Kconfig                  |    1 
+>  block/blk-cgroup.c             |    6 ++++
+>  block/blk-iocost.c             |   56 +++++++++++++++++++++++++++++------------
+>  include/linux/blk-cgroup.h     |   43 ++++++++++++++++++++++++-------
+>  tools/cgroup/iocost_monitor.py |   48 +++++++++++++++++++----------------
+>  5 files changed, 106 insertions(+), 48 deletions(-)
+
+Applied, thanks Tejun.
+
+-- 
+Jens Axboe
+
