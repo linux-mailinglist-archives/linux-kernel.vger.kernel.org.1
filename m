@@ -2,96 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DA51C074D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3544F1C079C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727047AbgD3UEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 16:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgD3UEB (ORCPT
+        id S1727864AbgD3UNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 16:13:52 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:39037 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgD3UNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:04:01 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A564C035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 13:04:01 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id v63so389055pfb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 13:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=3uYu7BNvYOGkc20ha5J/aAEuQ9mqiqPvOhd6B04IV9A=;
-        b=tGSazxkG8iYHiUGg9z3/ziD1PrpzsJN0F3Z1dORQ7Lpsim1xwidMONGsRPJ5i6TIa8
-         Ro0kGSUn6+g60gIxEx3izxAB8anYPikqtdWH/SBGq9X8ZnrV4u350g2uzSUTwwSaVMZ4
-         kq86ccSa6s/5dcVxw1c/KnatDxOlEoiqV5ylkxWYexqCNvOeTZc20y86t+0wpLoxs957
-         Kd+bU7HbT77Uz/hYbgM/rHszPt+BO8GZMK2I3sUx9HX14m8lPgTu5ZHY6dzDFGNYugtb
-         Yhpj+TDa9LnXngnK52vp1458SlM3EFEtOVFKAORfQRVHNakAzKtJynEFFx8tjNVX5IxR
-         N3NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3uYu7BNvYOGkc20ha5J/aAEuQ9mqiqPvOhd6B04IV9A=;
-        b=KszNxgyhab7vVIFASVG7fJfCEkCiC8GsH313MRk4krgjt6EjhxSrbPxIwC0hX/cbYE
-         4FFljRJCxuQhiWxRK03wP1R5bVnt8OnbGdm8gXGkiAG33tkW2GlCyW6H8vHD53aTI3qu
-         DP10dZLaOpZTgqvDA2ybcUdJUu90RUwTh+iqtqSMrnttXvPqX2kART5z91R9Bs7mSBJ9
-         58pdA5RuX4bkvwepfz7016JfsfTWQYi1ecUolJQnqPlJtsDrZtBUWEBQoJ/nbE262Lng
-         sbKKzD4f6AZNS2KHi9q6RTAw2Ne9y6wvddHfTUbYaIYuOUxZKXjjldcKGwO5N6ctahjq
-         30Kg==
-X-Gm-Message-State: AGi0PubyJHKdVu3NoUsUuMaNOZqSCqg4vlRPj4g4EuJaeaEcqaDkacJX
-        xxoh+3R4PI46vz3FDDLdBJcVXEDr170=
-X-Google-Smtp-Source: APiQypIf4/p4n46Y+IEjO+M6yY4VM/WoDWLGSGYfUACAiDEVQx5qHNSIGKtwIF+Wzsx+xE4EUoJqVQ==
-X-Received: by 2002:a63:eb15:: with SMTP id t21mr599223pgh.279.1588277041057;
-        Thu, 30 Apr 2020 13:04:01 -0700 (PDT)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.43.171])
-        by smtp.gmail.com with ESMTPSA id e5sm528000pfd.64.2020.04.30.13.03.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Apr 2020 13:04:00 -0700 (PDT)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH] mm/gup.c: Handle error at earliest for incorrect nr_pages value
-Date:   Fri,  1 May 2020 01:41:58 +0530
-Message-Id: <1588277518-21425-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 30 Apr 2020 16:13:50 -0400
+X-Originating-IP: 86.202.105.35
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 9F8B7FF80A;
+        Thu, 30 Apr 2020 20:13:45 +0000 (UTC)
+Date:   Thu, 30 Apr 2020 22:13:45 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        david@lechnology.com, felipe.balbi@linux.intel.com,
+        fabien.lahoudere@collabora.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+Subject: Re: [PATCH 0/4] Introduce the Counter character device interface
+Message-ID: <20200430201345.GX51277@piout.net>
+References: <cover.1588176662.git.vilhelm.gray@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1588176662.git.vilhelm.gray@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per documentation, pin_user_pages_fast() & get_user_pages_fast()
-will return 0, if nr_pages <= 0. But this can be figure out only after
-going inside the internal_get_user_pages_fast().
+Hi,
 
-This can be handled early. Adding a check for the same.
+On 29/04/2020 14:11:34-0400, William Breathitt Gray wrote:
+> Over the past couple years we have noticed some shortcomings with the
+> Counter sysfs interface. Although useful in the majority of situations,
+> there are certain use-cases where interacting through sysfs attributes
+> can become cumbersome and inefficient. A desire to support more advanced
+> functionality such as timestamps, multi-axis positioning tables, and
+> other such latency-sensitive applications, has motivated a reevaluation
+> of the Counter subsystem. I believe a character device interface will be
+> helpful for this more niche area of counter device use.
+> 
+> To quell any concerns from the offset: this patchset makes no changes to
+> the existing Counter sysfs userspace interface -- existing userspace
+> applications will continue to work with no modifications necessary. I
+> request that driver maintainers please test their applications to verify
+> that this is true, and report any discrepancies if they arise.
+> 
 
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
----
- mm/gup.c | 4 ++++
- 1 file changed, 4 insertions(+)
+On that topic, I'm wondering why the counter subsystem uses /sys/bus
+instead of /sys/class that would be more natural for a class of devices.
+I can't see how counters would be considered busses. I think you should
+consider moving it over to /sys/class (even if deprecating
+/sys/bus/counter will be long).
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 50681f0..a13aaa6 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -2817,6 +2817,8 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
- 	 */
- 	if (WARN_ON_ONCE(gup_flags & FOLL_PIN))
- 		return -EINVAL;
-+	if (nr_pages <= 0)
-+		return 0;
- 
- 	/*
- 	 * The caller may or may not have explicitly set FOLL_GET; either way is
-@@ -2854,6 +2856,8 @@ int pin_user_pages_fast(unsigned long start, int nr_pages,
- 	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
- 	if (WARN_ON_ONCE(gup_flags & FOLL_GET))
- 		return -EINVAL;
-+	if (nr_pages <= 0)
-+		return 0;
- 
- 	gup_flags |= FOLL_PIN;
- 	return internal_get_user_pages_fast(start, nr_pages, gup_flags, pages);
+> Interaction with Counter character devices occurs via ioctl commands.
+> This allows userspace applications to access and set counter data using
+> native C datatypes rather than working through string translations.
+> 
+
+I agree with David that you should consider using read to retrieve the
+counter data as this will simplify interrupt handling/polling and
+blocking/non-blocking reads can be used by an application. ABI wise,
+this can also be a good move as you could always consider having an
+ioctl requesting a specific format when reading the device so you are
+not stuck with the initial format you are going to choose.
+
+> 2. Should device driver callbacks return int or long? I sometimes see
+>    error values returned as long (e.g. PTR_ERR(), the file_operations
+>    structure's ioctl callbacks, etc.); when is it necessary to return
+>    long as opposed to int?
+> 
+
+You should use a long if you ever have to return a point as it is
+guaranteed to have the correct size. Else, just stick to an int if you
+are not going to overflow it.
+
+> 3. I only implemented the unlocked_ioctl callback. Should I implement a
+>    compat_ioctl callback as well?
+> 
+
+The compat_ioctl is to handle 32bit userspace running on a 64bit kernel.
+If your structures have the same size in both cases, then you don't have
+to implement compat_ioctl.
+
+Have a look at Documentation/driver-api/ioctl.rst
+
+
 -- 
-1.9.1
-
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
