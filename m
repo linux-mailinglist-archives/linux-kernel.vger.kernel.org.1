@@ -2,292 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572191BEF52
+	by mail.lfdr.de (Postfix) with ESMTP id C2F2C1BEF53
 	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 06:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgD3EhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 00:37:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726411AbgD3EhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 00:37:04 -0400
-Received: from localhost.localdomain (unknown [157.46.61.111])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A32F121D90;
-        Thu, 30 Apr 2020 04:36:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588221423;
-        bh=LyTtiMXMNVag7AEqCVal/Z5mUj3DxaJlPNb694HzvD4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qQuxXwYS1TniL+0CX70m28F1XxbCSF0/GYaazvEi1VdgAdSWVCts0vXPNSSYkfnqe
-         +QGLm7Ym7eS5GG90iFFuIsFMPCqo+ebdlubDLh8Yw7XPBbN1ajhiI9ZLyvgl/EfriO
-         RQXk9YlT1AkNiK+pvUbyTIjVtPFccuQuR9falbn0=
-From:   mani@kernel.org
-To:     johan@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patong.mxl@gmail.com, Manivannan Sadhasivam <mani@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org
-Subject: [PATCH v2 2/2] usb: serial: xr_serial: Add gpiochip support
-Date:   Thu, 30 Apr 2020 10:06:36 +0530
-Message-Id: <20200430043636.8468-3-mani@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200430043636.8468-1-mani@kernel.org>
-References: <20200430043636.8468-1-mani@kernel.org>
+        id S1727054AbgD3EhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 00:37:19 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:47158 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726411AbgD3EhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 00:37:19 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E51716A03AB502A31410;
+        Thu, 30 Apr 2020 12:37:16 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.100) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 30 Apr 2020
+ 12:37:08 +0800
+Subject: Re: [PATCH] sound:hdmi:fix without unlocked before return
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     <perex@perex.cz>, <tiwai@suse.com>, <libin.yang@linux.intel.com>,
+        <kai.vehmanen@linux.intel.com>, <nmahale@nvidia.com>,
+        <aplattner@nvidia.com>, <pierre-louis.bossart@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
+        <liuzhiqiang26@huawei.com>, <linfeilong@huawei.com>
+References: <1587907042-694161-1-git-send-email-wubo40@huawei.com>
+ <s5hees6lpja.wl-tiwai@suse.de>
+From:   Wu Bo <wubo40@huawei.com>
+Message-ID: <42f1f263-6f96-e1f2-6ecc-5a16ca6c828b@huawei.com>
+Date:   Thu, 30 Apr 2020 12:37:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <s5hees6lpja.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.100]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <mani@kernel.org>
+On 2020/4/29 15:27, Takashi Iwai wrote:
+> On Sun, 26 Apr 2020 15:17:22 +0200,
+> Wu Bo wrote:
+>>
+>> Fix the following coccicheck warning:
+>> sound/pci/hda/patch_hdmi.c:1852:2-8: preceding lock on line 1846
+>>
+>> After add sanity check to pass klockwork check,
+>> The spdif_mutex should be unlock before return true
+>> in check_non_pcm_per_cvt().
+>>
+>> Signed-off-by: Wu Bo <wubo40@huawei.com>
+> 
+> Applied now with the correction of subject and Fixes tag as well as
+> Cc-to-stable tag.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> .
+> 
 
-Add gpiochip support for Maxlinear/Exar USB to serial converter
-for controlling the available gpios.
+Thank you, I am sorry to forget to modify the V2 Patch version in time.
 
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-gpio@vger.kernel.org
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
----
- drivers/usb/serial/xr_serial.c | 197 ++++++++++++++++++++++++++++++++-
- 1 file changed, 196 insertions(+), 1 deletion(-)
+thanks,
+Wu Bo
 
-diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
-index d607906e46ad..fa99e6bfffa2 100644
---- a/drivers/usb/serial/xr_serial.c
-+++ b/drivers/usb/serial/xr_serial.c
-@@ -7,6 +7,7 @@
-  * Copyright (c) 2020 Manivannan Sadhasivam <mani@kernel.org>
-  */
- 
-+#include <linux/gpio/driver.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/slab.h>
-@@ -32,6 +33,11 @@ struct xr_uart_regs {
- };
- 
- struct xr_port_private {
-+#ifdef CONFIG_GPIOLIB
-+	struct gpio_chip gc;
-+	bool gpio_registered;
-+	u8 gpio_altfunc;
-+#endif
- 	const struct xr_uart_regs *regs;
- 	u16 idProduct;
- 	u8 reg_width;
-@@ -570,6 +576,194 @@ static void xr_break_ctl(struct tty_struct *tty, int break_state)
- 		   state);
- }
- 
-+#ifdef CONFIG_GPIOLIB
-+
-+static int xr_gpio_request(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct usb_serial_port *port = gpiochip_get_data(gc);
-+	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-+
-+	/* Check if the requested GPIO is occupied */
-+	if (port_priv->gpio_altfunc & BIT(offset))
-+		return -ENODEV;
-+
-+	return 0;
-+}
-+
-+static int xr_gpio_get(struct gpio_chip *gc, unsigned int gpio)
-+{
-+	struct usb_serial_port *port = gpiochip_get_data(gc);
-+	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-+	int ret;
-+	u8 gpio_status;
-+
-+	ret = xr_get_reg(port, XR21V141X_UART_REG_BLOCK,
-+			 port_priv->regs->gpio_status, &gpio_status);
-+	if (ret)
-+		return ret;
-+
-+	return !!(gpio_status & BIT(gpio));
-+}
-+
-+static void xr_gpio_set(struct gpio_chip *gc, unsigned int gpio, int val)
-+{
-+	struct usb_serial_port *port = gpiochip_get_data(gc);
-+	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-+
-+	if (val)
-+		xr_set_reg(port, XR21V141X_UART_REG_BLOCK,
-+			   port_priv->regs->gpio_set, BIT(gpio));
-+	else
-+		xr_set_reg(port, XR21V141X_UART_REG_BLOCK,
-+			   port_priv->regs->gpio_clr, BIT(gpio));
-+}
-+
-+static int xr_gpio_direction_get(struct gpio_chip *gc, unsigned int gpio)
-+{
-+	struct usb_serial_port *port = gpiochip_get_data(gc);
-+	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-+	int ret;
-+	u8 gpio_dir;
-+
-+	ret = xr_get_reg(port, XR21V141X_UART_REG_BLOCK,
-+			 port_priv->regs->gpio_dir, &gpio_dir);
-+	if (ret)
-+		return ret;
-+
-+	/* Logic 0 = input and Logic 1 = output */
-+	return !(gpio_dir & BIT(gpio));
-+}
-+
-+static int xr_gpio_direction_input(struct gpio_chip *gc, unsigned int gpio)
-+{
-+	struct usb_serial_port *port = gpiochip_get_data(gc);
-+	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-+	int ret;
-+	u8 gpio_dir;
-+
-+	ret = xr_get_reg(port, XR21V141X_UART_REG_BLOCK,
-+			 port_priv->regs->gpio_dir, &gpio_dir);
-+	if (ret)
-+		return ret;
-+
-+	gpio_dir &= ~BIT(gpio);
-+
-+	return xr_set_reg(port, XR21V141X_UART_REG_BLOCK,
-+			  port_priv->regs->gpio_dir, gpio_dir);
-+}
-+
-+static int xr_gpio_direction_output(struct gpio_chip *gc, unsigned int gpio,
-+				    int val)
-+{
-+	struct usb_serial_port *port = gpiochip_get_data(gc);
-+	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-+	int ret;
-+	u8 gpio_dir;
-+
-+	ret = xr_get_reg(port, XR21V141X_UART_REG_BLOCK,
-+			 port_priv->regs->gpio_dir, &gpio_dir);
-+	if (ret)
-+		return ret;
-+
-+	gpio_dir |= BIT(gpio);
-+
-+	ret = xr_set_reg(port, XR21V141X_UART_REG_BLOCK,
-+			 port_priv->regs->gpio_dir, gpio_dir);
-+	if (ret)
-+		return ret;
-+
-+	xr_gpio_set(gc, gpio, val);
-+
-+	return 0;
-+}
-+
-+static int xr21v141x_gpio_init(struct usb_serial_port *port)
-+{
-+	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-+	int ret;
-+	u8 gpio_mode;
-+
-+	port_priv->gc.ngpio = 6;
-+
-+	ret = xr_get_reg(port, XR21V141X_UART_REG_BLOCK,
-+			 port_priv->regs->gpio_mode, &gpio_mode);
-+	if (ret)
-+		return ret;
-+
-+	/* Mark all pins which are not in GPIO mode */
-+	if (gpio_mode & UART_MODE_RTS_CTS)
-+		port_priv->gpio_altfunc |= (BIT(4) | BIT(5));
-+	else if (gpio_mode & UART_MODE_DTR_DSR)
-+		port_priv->gpio_altfunc |= (BIT(2) | BIT(3));
-+	else if (gpio_mode & UART_MODE_RS485)
-+		port_priv->gpio_altfunc |= BIT(5);
-+	else if (gpio_mode & UART_MODE_RS485_ADDR)
-+		port_priv->gpio_altfunc |= BIT(5);
-+	else
-+		port_priv->gpio_altfunc = 0; /* All GPIOs are available */
-+
-+	return ret;
-+}
-+
-+static int xr_gpio_init(struct usb_serial_port *port)
-+{
-+	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-+	int ret = 0;
-+
-+	/* Don't register gpiochip for interface 0 */
-+	if (port->minor == 0)
-+		return ret;
-+
-+	if (port_priv->idProduct == XR21V141X_ID)
-+		ret = xr21v141x_gpio_init(port);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	port_priv->gc.label = devm_kasprintf(&port->dev, GFP_KERNEL, "XR%04x",
-+					     port_priv->idProduct);
-+	port_priv->gc.request = xr_gpio_request;
-+	port_priv->gc.get_direction = xr_gpio_direction_get;
-+	port_priv->gc.direction_input = xr_gpio_direction_input;
-+	port_priv->gc.direction_output = xr_gpio_direction_output;
-+	port_priv->gc.get = xr_gpio_get;
-+	port_priv->gc.set = xr_gpio_set;
-+	port_priv->gc.owner = THIS_MODULE;
-+	port_priv->gc.parent = &port->dev;
-+	port_priv->gc.base = -1;
-+	port_priv->gc.can_sleep = true;
-+
-+	ret = gpiochip_add_data(&port_priv->gc, port);
-+	if (!ret)
-+		port_priv->gpio_registered = true;
-+
-+	return ret;
-+}
-+
-+static void xr_gpio_remove(struct usb_serial_port *port)
-+{
-+	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
-+
-+	if (port_priv->gpio_registered) {
-+		gpiochip_remove(&port_priv->gc);
-+		port_priv->gpio_registered = false;
-+	}
-+}
-+
-+#else
-+
-+static int xr_gpio_init(struct usb_serial_port *port)
-+{
-+	return 0;
-+}
-+
-+static void xr_gpio_remove(struct usb_serial_port *port)
-+{
-+	/* Nothing to do */
-+}
-+
-+#endif
-+
- static int xr_port_probe(struct usb_serial_port *port)
- {
- 	struct usb_serial *serial = port->serial;
-@@ -589,13 +783,14 @@ static int xr_port_probe(struct usb_serial_port *port)
- 
- 	usb_set_serial_port_data(port, port_priv);
- 
--	return 0;
-+	return xr_gpio_init(port);
- }
- 
- static int xr_port_remove(struct usb_serial_port *port)
- {
- 	struct xr_port_private *port_priv = usb_get_serial_port_data(port);
- 
-+	xr_gpio_remove(port);
- 	kfree(port_priv);
- 
- 	return 0;
--- 
-2.17.1
+
+
 
