@@ -2,219 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52ED21BF0E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFC11BF0EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgD3HLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 03:11:36 -0400
-Received: from mail-co1nam11on2054.outbound.protection.outlook.com ([40.107.220.54]:15705
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        id S1726571AbgD3HL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 03:11:58 -0400
+Received: from mail-eopbgr760138.outbound.protection.outlook.com ([40.107.76.138]:57291
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726337AbgD3HLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:11:35 -0400
+        id S1726337AbgD3HL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 03:11:57 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U/n4xTaGFIJQV/meUUD5gHISLJ7SmlIJpUyDKCd4uyUIh4zpbquSQ6xdblW9q0Lap5ODpKMvGSsZ9THI8npPoZrxXzGpe4l8VwfWLo0wS8t9gMUUFb3QhPt9+M0U6ZUyHjAjCKvDE5feM9VLED6FqKgqk6C7nGoljR6m8IWrhP1aVrCh1+Sdbj7bDBZ7k6kXkHMaezRVM8JRpxfumtRAaljDCLWTUn60aCD6AxiLe2mpukZ3N/F73DUx170y8jD73qw+TH/2kwG59KCMKoidUJ3pgHy8A1Vvq9wHVID3oiHYJvdGGGY+l3jLTJuWXfaqLXVCP2Lkdn54AKbnXaC9MQ==
+ b=Z+8Uudeny5BNLp3Q0/P/DHldv4j45jaqps0C5i78EtlDL9p3rtsY2I8Cll5a8HmQxpX6UeSjysJQVJR/FDbdglaM7nTzmSK52KmCfeTwd2K1vU+bV4sz/AjSy8cek0NtP4aiyeDxqj6lm9V34ETAdQspsvQ36aiHFTcfwmuw74ixuiybaYp+XEdMtwDjNG7izddrTXzXYqgCwBvg9Ue4dUkcwDrxtygnoTSvl/iNhLegR0K3QnqN8dIydgy/+fvnZnZKP2+rElAK66oRthQvB33Den/gTRlmUU8EPysj5/eua9vZmLwwMWpG5ittjtJKzqxYZ6cIy2grwScqfZ+mqA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g37YLx/Tm5SRHdI3aOdu3lkfOVC+LX9a5RseocchgXk=;
- b=Yc1ud2IbDX/Y3mW5FKWtsvj33sXLAO668Qdg0JrsXlmZe8vvNyViT1pghKM8GHHpq31BGJT7d6x/Qgai4/C2Ymm1YQvAlZq/ozW+d5KzbRulLvD/fOjOVqwKcdXLRVm/Pc6SpjxjT2lNuLvJgmItEg0u8Yqo4KR8lyzHKaCjPptTEnurz16+8hu3HsgPtU41mbuQrcn5Tjy9f+YYtP8hQyBlklTP2999+q/rd0ZtBsGdo2bw2txDzjakTCIufh1CREpVK+PN4bN6oXlxz5Q0Cqm5f7A1nEEjL3QMnkRzRKjCdditaw560eZW8R/Fud/huWUke/5v3+NWv/cnFm57GA==
+ bh=7WuBUVlWgpBMUbPyjFwQhRNPabq+j8B7KhAkNtWxSmE=;
+ b=fg/8B1zDnUwXCx3569ry5U4PAavG61Lklj9c1cUAf2/Y782XA/L9jCHUdPD7zElIc5r8r/MXW4PQY5NTSvJiULOxc4SV2xHDCYvfyREIzQdDIau7ifcvQYMuMfhF71R+Stg3VOb326EWYCuTHKqsjMyhuNsfkrZbbOTgXL9jmZFCQdrbyuR5vkVkWMySEVDPnSfMb6HU+jo+FrjEMjxdxB/reoFtrafQ+RqPjYU2szLhiG4jAFjeuB0duxJPPS26l7Fg6vUyQNZLmr9Z1cWX3n6mCPUXvxG+Qcu2UmIdNmjWYNLLwr5ali8L3E1i2tIt1HPAONh28GF9qW4D+d0stQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g37YLx/Tm5SRHdI3aOdu3lkfOVC+LX9a5RseocchgXk=;
- b=pYE/2oRF3xyJ8bZHi/EiFqdKWpCp+iNOGxfady9tbtscmxXeTzPuXQS9Z0rxv8wHjrGNOH084ZcXwdHIp20Gs8E78GQZ+YYNEEHy/VMnuMgHoGTLPrGlkt/CesGSfKLKe9sUsw2LMhs3cS+yagKB+eNVZfBhQUXN0O8IotSUTAE=
-Received: from BYAPR02MB5559.namprd02.prod.outlook.com (2603:10b6:a03:a1::18)
- by BYAPR02MB4631.namprd02.prod.outlook.com (2603:10b6:a03:12::31) with
+ bh=7WuBUVlWgpBMUbPyjFwQhRNPabq+j8B7KhAkNtWxSmE=;
+ b=kUsn5DrBtLJa7urgVZCAjav8/Pl0Z4ZwNYnqzuGj9vK15G7iCilpznYhLz9/cjyQoOFSSFz5cmngEwj18ca0LqoUkEIFVecpbBW0oWdPAmsoG6vxM6V0R/CqdVzFSd0VoC7M6nXnuv18WvbESd0+AyEyNHkr3xEWya47/MbDCMw=
+Authentication-Results: analogixsemi.com; dkim=none (message not signed)
+ header.d=none;analogixsemi.com; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BY5PR04MB6898.namprd04.prod.outlook.com (2603:10b6:a03:22a::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Thu, 30 Apr
- 2020 07:11:33 +0000
-Received: from BYAPR02MB5559.namprd02.prod.outlook.com
- ([fe80::a1bc:4672:d6ab:d98b]) by BYAPR02MB5559.namprd02.prod.outlook.com
- ([fe80::a1bc:4672:d6ab:d98b%6]) with mapi id 15.20.2937.028; Thu, 30 Apr 2020
- 07:11:32 +0000
-From:   Bharat Kumar Gogada <bharatku@xilinx.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        Ravikiran Gummaluri <rgummal@xilinx.com>
-Subject: RE: [PATCH v6 1/2] PCI: xilinx-cpm: Add device tree binding for
- Versal CPM Root Port
-Thread-Topic: [PATCH v6 1/2] PCI: xilinx-cpm: Add device tree binding for
- Versal CPM Root Port
-Thread-Index: AQHWGjB+ikn3pdln6kq5oTCz9BkyqaiQey2AgADLnxA=
-Date:   Thu, 30 Apr 2020 07:11:32 +0000
-Message-ID: <BYAPR02MB555903ED7FECE191179EEE75A5AA0@BYAPR02MB5559.namprd02.prod.outlook.com>
-References: <1587729844-20798-1-git-send-email-bharat.kumar.gogada@xilinx.com>
- <1587729844-20798-2-git-send-email-bharat.kumar.gogada@xilinx.com>
- <20200429185541.atk5k4j7rgh7ipmr@bogus>
-In-Reply-To: <20200429185541.atk5k4j7rgh7ipmr@bogus>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [149.199.50.128]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 7a2d49ff-908c-4e1a-4756-08d7ecd5b678
-x-ms-traffictypediagnostic: BYAPR02MB4631:|BYAPR02MB4631:
-x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR02MB463186D929901F585AF9DD35A5AA0@BYAPR02MB4631.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 0389EDA07F
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: l8CPBlk5OmtBNlk70xbYp69m5dieOwGxsVtsfQ5Z4vnUqJTk6ucMDHREm88OICUC4rqcvR0qHYAlkkvYX01LlJoLdeT+r1w6NX4tnPpuujmbcEp/5YdTivYqw8U89fkzJF6HbgkiKhB5ooO/6WAzpruCbI3lkVhWJoZDijystc9rz3nNyHQhJr9Ue5HuEQxxpMdYoZgkJRZ2uCNVShRCoUmMTJxCNL8plAG4wKfsd4gNWViasUKDwqSfSsZWCnL/7y0QPFNPsWPMToxCvsRZAc5wGCYSwnIh9mX1GRHwFPcd8pICEtHYfIr6udbvieAST1FF2dmWLIhnbvTC+EV1gOGzl2cPU40l9ZHsi41KCqkH/rOlJ7nBuTT+B9A/txCjqdugCtkivjoAzG8HB4ZFs9NlsqLL+u0pcX5R4A/b0u4jriWRIWLvbVVTTZTm40EW
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5559.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(136003)(39860400002)(366004)(396003)(186003)(71200400001)(86362001)(2906002)(33656002)(54906003)(52536014)(478600001)(76116006)(66476007)(66556008)(64756008)(66946007)(66446008)(8676002)(7696005)(6506007)(55016002)(26005)(5660300002)(8936002)(316002)(9686003)(6916009)(107886003)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: JmieLXetybiyL3A3o03AKDQmrnKXYlybKgD7/+KQ7Y5al3SZttv0+bgQnzpFVAswPJ7hxpgdt/CHfenVRd/ExxJWUNBp+sd8s7xET/DT8d0V08agK14P1seNeYzUgZm6sqQmeKjzJgfXZa+XgquUs251h6d6Qyt/yVoBnlFzg589skSX0JTz9TNJkwf06RLWjw1RBOyQxeBTY9IUJEMIHvbHeAWIjjF8RBKW5nDDTbHZTlwmIL4AzY7g8Zj10k9TCmZaMb9cBMZRbFqn+KzrXUajh+1NGtBo232ZsY0CaEwaYffVpgDczJ9oLXkEMkTGpzw6Jadb6oPKZG0RTqPaVdIDXET0cCqbQz4toioHpn7RCGHuVumtwOq2+Nw2GCsjWCUpZx2FPMWJMIJCeNOAKf747kXtr5cb6ExwF14w4IkaQqKFUT5xB2wIqIJeYq8UthLL7JJphU0kUw7dwrDR+GBN58fzzLf03aYiVO9bZZ8Sr4RtY5oFhQ6H94d4nxIOb4hVAgxukl0H3RlHlgm1M2DanQaTmCeAudVHmIyyzfRtHjw7LzgoA1uTuTVadbk4kaFvOSHROETc1x8xx9RVcRyaTzK4gBJzvYXwC9kVMul/hzzOWE1GqPKMBIBhxSs2xpjbumIMUsQ6xL8XSYiSuZPRDJ4yEkhRfLq2Dp8vBXfIVbtWsUVSoDTfUbFHNoS7flfmTAnKzxym+j65GP37YwSHx+ZkppSREGcb3TwlxKNA7pqkCY+kBr5TpktzMVspz8vt6B3tWxJOijalJE5gOF1qWtqVUQyIJkShQFsxSpg=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ 2020 07:11:43 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::4517:bcc8:a3bd:407f]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::4517:bcc8:a3bd:407f%6]) with mapi id 15.20.2958.020; Thu, 30 Apr 2020
+ 07:11:43 +0000
+Date:   Thu, 30 Apr 2020 15:11:35 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     devel@driverdev.osuosl.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>
+Subject: Re: [PATCH v8 2/2] drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to
+ DP bridge driver
+Message-ID: <20200430071135.GA9227@xin-VirtualBox>
+References: <cover.1587880280.git.xji@analogixsemi.com>
+ <4d14400b6c19f17c28267f6ebdbce9673333c05c.1587880280.git.xji@analogixsemi.com>
+ <20200427200044.GC15880@ravnborg.org>
+ <20200430062416.GD6645@xin-VirtualBox>
+ <20200430070324.GA9545@ravnborg.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430070324.GA9545@ravnborg.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-ClientProxiedBy: HK0PR03CA0119.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::35) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a2d49ff-908c-4e1a-4756-08d7ecd5b678
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Apr 2020 07:11:32.8610
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xin-VirtualBox (114.247.245.254) by HK0PR03CA0119.apcprd03.prod.outlook.com (2603:1096:203:b0::35) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 07:11:42 +0000
+X-Originating-IP: [114.247.245.254]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5a32fb6e-4f42-4283-b494-08d7ecd5bc53
+X-MS-TrafficTypeDiagnostic: BY5PR04MB6898:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR04MB6898917B4C14CDAFE1135FE3C7AA0@BY5PR04MB6898.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-Forefront-PRVS: 0389EDA07F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l2BKUNAD/XT51yDC5exT1UY0/41zSzLzEa3T8NuqK12ZoPGkcPsglDZVrB9EDNyAlRS5SymR047E62bjqwuSJj+mjjY0DDqzguidQUHbcY66ej/M7Nszus5kHEfap4IxqzdgXmEQ/UKWhhA+1KR4JjmMAxrNIlQg75fh8YC4i6ZR/qkEVRD0EYeUqiiYflCyOZZL4DjBuq7tG9pnj4+h5xyXwXTHf5uCHhhozkvglgKcujZAWygZUvhRPMcfSHlSN9M6hT7JTrywt7iUEp9/jrFQntJ4s9jVBsSB4vJZnkjUrmJ+IRAcn4sb5y4n4YKhd+kbcPbFdUmrOD1C1m53rkUHVnyGjVG5Idyr64HV5IkvNEttBAFf7K/yhFtI6on3IT883/O/tpKlaerOE+7vI75N++0Z4Bfxv0ijWJ89UwU2JZ9cwprHWEfgfUV3gqwo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(136003)(39840400004)(366004)(346002)(396003)(6666004)(66946007)(16526019)(2906002)(33656002)(186003)(86362001)(66476007)(66556008)(6916009)(52116002)(6496006)(4326008)(33716001)(956004)(1076003)(55016002)(54906003)(26005)(478600001)(8936002)(316002)(8676002)(107886003)(5660300002)(7416002)(9686003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: EKd2MEA3/VXN/DOjZFwPxpTViFCBp06Ox/+hSS0ygJHwCuqixKBKqGO1uIUOOVviBYZnE4KQE3ynNtdSVQYVVe1LlQxoFUbUkMwvl1MFQEqzCDm9kLUjhJnsaDWz0dDWvencKm7eew609gL0LUF+HJnd3m/uI+AXv+cgOw36rjODYfxWW5j3dIPg1REa7tfP/HHAa2f+AmZTvCOQBrq/cPBuYMtv+lgP/PoGBG/IZPArMWtZmIluB45XifbNzUB0Mf0PXiJf3u9gQjla2kecYJa6N3aITPeuKsjfIigCaTRksdGes413Wo4NFxlgFPXMreSOBEioIFHWlxBz13+Zi8IL4KN4ErpwphBFQz4KNrDL4Zcmcev+Lm0MSFpVcrJp6RW4+AXPo59KFr4TALxXtavykyP7gQ4IcAOIh3PRQ6oXGm6dSzXW676/bkm8DpqSGRicVlTt6ibI9Vttxv6nVLViprUGzrEQmnAQGDUmMknh+8xGUyGHHVhb0+Anx1CS4SOGQQ8RUL4kKb1gsD0F0UC0fZIv9LCMON4/tlWxI55ZMI68H11UF7kBNLSpMpotoO62hhtXlnktE4jVLwnpsVX+S+DuytD/g72BFFbbXqADQrH2GlkP93K90+5Ozcr0U3hyKQECuTAkkrXi7DILv+rGwt2izh38+uTtYPKvmvQOlBzwr6DIii7akax4et/roVttwLykuI8g/nqnQT6kGjxC8E08ZEvdHSPVm2INGAE0VN4pFrFGXCN8p8V6VI9FhFHkIYqN4KjE0ftsv/pwM22cjGt1D5mpD08PzKjZNcy+EGlrb5M+JbxetKSF1twz
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a32fb6e-4f42-4283-b494-08d7ecd5bc53
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 07:11:43.1580
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 5rfTcJoDxyL0Zv7w7NNHw/W4wWcSu2WG88yNC+yLFc62TtKvyPU1vT9Fuvb6yPqthE4GcGTdif8JK4DIE07JNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4631
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kPugLoz4p1CPMWos7TNJhXFfK0mbBvGi5yTAu1s5rfy8ddNu8fyIlhZqP7vCpKRg/+X2EPSYFT6/ESDFCYBt+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6898
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Apr 24, 2020 at 05:34:03PM +0530, Bharat Kumar Gogada wrote:
-> > Add device tree binding documentation for Versal CPM Root Port driver.
-> >
-> > Signed-off-by: Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>
-> > ---
-> >  .../devicetree/bindings/pci/xilinx-versal-cpm.txt  | 68
-> > ++++++++++++++++++++++
-> >  1 file changed, 68 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/pci/xilinx-versal-cpm.txt
->=20
-> DT bindings need to Cc DT list to be reviewed. Bindings are now in DT sch=
-ema
-> format. See Documentation/devicetree/writing-schema.rst.
->=20
-> Sorry to tell you this on v6, but first I'm seeing it.
-
-
-Hi Rob,
-
-Thanks for the inputs, will fix this and send with schema format.
-
-Regards,
-Bharat
-
->=20
-> >
-> > diff --git
-> > a/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.txt
-> > b/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.txt
-> > new file mode 100644
-> > index 0000000..eac6144
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/pci/xilinx-versal-cpm.txt
-> > @@ -0,0 +1,68 @@
-> > +* Xilinx Versal CPM DMA Root Port Bridge DT description
-> > +
-> > +Required properties:
-> > +- #address-cells: Address representation for root ports, set to <3>
-> > +- #size-cells: Size representation for root ports, set to <2>
-> > +- #interrupt-cells: specifies the number of cells needed to encode an
-> > +	interrupt source. The value must be 1.
-> > +- compatible: Should contain "xlnx,versal-cpm-host-1.00"
-> > +- reg: Should contain configuration space (includes bridge registers) =
-and
-> > +	CPM system level control and status registers, and length
-> > +- reg-names: Must include the following entries:
-> > +	"cfg": configuration space region and bridge registers
-> > +	"cpm_slcr": CPM system level control and status registers
-> > +- interrupts: Should contain AXI PCIe interrupt
-> > +- interrupt-map-mask,
-> > +  interrupt-map: standard PCI properties to define the mapping of the
-> > +	PCI interface to interrupt numbers.
-> > +- bus-range: Range of bus numbers associated with this controller
-> > +- ranges: ranges for the PCI memory regions (I/O space region is not
-> > +	supported by hardware)
-> > +	Please refer to the standard PCI bus binding document for a more
-> > +	detailed explanation
-> > +- msi-map: Maps a Requester ID to an MSI controller and associated MSI
-> > +	sideband data
-> > +- interrupt-names: Must include the following entries:
-> > +	"misc": interrupt asserted when legacy or error interrupt is
-> > +received
->=20
-> Don't really need a name when only 1.
->=20
-> > +
-> > +Interrupt controller child node
-> > ++++++++++++++++++++++++++++++++
-> > +Required properties:
-> > +- interrupt-controller: identifies the node as an interrupt
-> > +controller
-> > +- #address-cells: specifies the number of cells needed to encode an
-> > +	address. The value must be 0.
-> > +- #interrupt-cells: specifies the number of cells needed to encode an
-> > +	interrupt source. The value must be 1.
-> > +
-> > +
-> > +Refer to the following binding document for more detailed description
-> > +on the use of 'msi-map':
-> > +	 Documentation/devicetree/bindings/pci/pci-msi.txt
-> > +
-> > +Example:
-> > +	pci@fca10000 {
->=20
-> Unit address is normally the first entry.
->=20
-> > +		#address-cells =3D <3>;
-> > +		#interrupt-cells =3D <1>;
-> > +		#size-cells =3D <2>;
-> > +		compatible =3D "xlnx,versal-cpm-host-1.00";
-> > +		interrupt-map =3D <0 0 0 1 &pcie_intc_0 0>,
-> > +				<0 0 0 2 &pcie_intc_0 1>,
-> > +				<0 0 0 3 &pcie_intc_0 2>,
-> > +				<0 0 0 4 &pcie_intc_0 3>;
-> > +		interrupt-map-mask =3D <0 0 0 7>;
-> > +		interrupt-parent =3D <&gic>;
-> > +		interrupt-names =3D "misc";
-> > +		interrupts =3D <0 72 4>;
-> > +		bus-range =3D <0x00 0xff>;
-> > +		ranges =3D <0x02000000 0x00000000 0xE0000000 0x0
-> 0xE0000000
-> > +0x00000000 0x10000000>,
->=20
-> lowercase hex please.
->=20
-> > +			 <0x43000000 0x00000080 0x00000000 0x00000080
-> 0x00000000 0x00000000 0x80000000>;
-> > +		msi-map =3D <0x0 &its_gic 0x0 0x10000>;
-> > +		reg =3D <0x6 0x00000000 0x0 0x10000000>,
-> > +		      <0x0 0xFCA10000 0x0 0x1000>;
-> > +		reg-names =3D "cfg", "cpm_slcr";
-> > +		pcie_intc_0: pci-interrupt-controller {
->=20
-> interrupt-controller {
->=20
-> > +			#address-cells =3D <0>;
-> > +			#interrupt-cells =3D <1>;
-> > +			interrupt-controller ;
-> > +		};
-> > +	};
-> > --
-> > 2.7.4
-> >
-
+On Thu, Apr 30, 2020 at 09:03:24AM +0200, Sam Ravnborg wrote:
+> Hi Xin Ji.
+> 
+> > > > +static void anx7625_power_on_init(struct anx7625_data *ctx)
+> > > > +{
+> > > > +	int retry_count, i;
+> > > > +	int ret;
+> > > > +	struct device *dev = &ctx->client->dev;
+> > > > +
+> > > > +	for (retry_count = 0; retry_count < 3; retry_count++) {
+> > > > +		anx7625_power_on(ctx);
+> > > > +		anx7625_config(ctx);
+> > > > +
+> > > > +		for (i = 0; i < OCM_LOADING_TIME; i++) {
+> > > Code in this for loop is a candidate for a helper function.
+> > I didn't find any helper function can be used, so I'll keep it.
+> I was not very clear in my way to express this, sorry.
+> 
+> > > 
+> > > > +			/* check interface workable */
+> > > > +			ret = anx7625_reg_read(ctx, ctx->i2c.rx_p0_client,
+> > > > +					       FLASH_LOAD_STA);
+> > > > +			if (ret < 0) {
+> > > > +				DRM_ERROR("IO error : access flash load.\n");
+> > > > +				return;
+> > > > +			}
+> > > > +			if ((ret & FLASH_LOAD_STA_CHK) == FLASH_LOAD_STA_CHK) {
+> > > > +				anx7625_disable_pd_protocol(ctx);
+> > > > +				DRM_DEV_DEBUG_DRIVER(dev,
+> > > > +						     "Firmware ver %02x%02x,",
+> > > > +					anx7625_reg_read(ctx,
+> > > > +							 ctx->i2c.rx_p0_client,
+> > > > +							 OCM_FW_VERSION),
+> > > > +					anx7625_reg_read(ctx,
+> > > > +							 ctx->i2c.rx_p0_client,
+> > > > +							 OCM_FW_REVERSION));
+> > > > +				DRM_DEV_DEBUG_DRIVER(dev, "Driver version %s\n",
+> > > > +						     ANX7625_DRV_VERSION);
+> > > > +
+> > > > +				return;
+> > > > +			}
+> > > > +			usleep_range(1000, 1100);
+> > > > +		}
+> What I wanted to express is that the for loop is heavily indented.
+> So create a small function like:
+> 
+> anx7625_power_on_interface(ctx)
+> {
+> 	/* check interface workable */
+> 	ret = anx7625_reg_read(ctx, ctx->i2c.rx_p0_client, FLASH_LOAD_STA);
+> 	if (ret < 0) {
+> 	        DRM_ERROR("IO error : access flash load.\n");
+> 	        return;
+> 	}
+> 	if ((ret & FLASH_LOAD_STA_CHK) == FLASH_LOAD_STA_CHK) {
+> 	        anx7625_disable_pd_protocol(ctx);
+> 	        DRM_DEV_DEBUG_DRIVER(dev, "Firmware ver %02x%02x,",
+> 	                anx7625_reg_read(ctx, ctx->i2c.rx_p0_client,
+>                                          OCM_FW_VERSION), anx7625_reg_read(ctx,
+> 	                                 ctx->i2c.rx_p0_client, OCM_FW_REVERSION));
+> 	        DRM_DEV_DEBUG_DRIVER(dev, "Driver version %s\n",
+> 	                             ANX7625_DRV_VERSION);
+> 		retunrn 1;
+> 	}
+> 	return 0;
+> }
+> 
+> and then
+> 
+> 	for (i = 0; i < OCM_LOADING_TIME; i++) {
+> 		if (anx7625_power_on_interface(ctx))
+> 			return;
+> 		else
+> 			usleep_range(1000, 1100);
+> 	}
+> 
+> Or something like that. To make it more readable.
+> I think you get the idea now.
+OK, got it, thanks.
+> 
+> 
+> > > > +		container_of(work, struct anx7625_data, extcon_wq);
+> > > > +	int state = extcon_get_state(ctx->extcon, EXTCON_DISP_DP);
+> > > > +
+> > > > +	mutex_lock(&ctx->lock);
+> > > > +	anx7625_chip_control(ctx, state);
+> > > > +	mutex_unlock(&ctx->lock);
+> > > I tried to follow the locking - but failed.
+> > > Could you check that locking seems correct.
+> > > 
+> > > A standard bridge driver do not need locking,
+> > > but this is no small bridge driver so I do not imply that
+> > > locking is not needed. Only that I would like you
+> > > to check it again as I could not follow it.
+> > OK, it seems lock is not necessary, I'll remove itA
+> It has a worker, so please be careful in you analysis.
+OK, I'll double check it.
+> 
+> > > 
+> > > > +
+> > > > +	if (pdata->panel_flags == 1)
+> > > > +		pdata->internal_panel = 1;
+> > > > +	else if (pdata->panel_flags == 2)
+> > > > +		pdata->extcon_supported = 1;
+> > > > +	DRM_DEV_DEBUG_DRIVER(dev, "%s support extcon, %s internal panel\n",
+> > > > +			     pdata->extcon_supported ? "" : "not",
+> > > > +			     pdata->internal_panel ? "has" : "no");
+> > > > +
+> > > The way the internal panel - versus external connector is modelled
+> > > looks like it could use some of the abstractions used by other bridge
+> > > drivers.
+> > > 
+> > > The connector_type shall for example for internal panels come
+> > > form the panel.
+> > > And use the panel bridge driver - see examples in patches I referenced
+> > > before.
+> > > 
+> > > And external connectors may beneft from using the
+> > > display-connector bridge driver.
+> > I'm not familiar with it, the extcon interface is Google engineer give
+> > to me, I just follow their sample driver. If you think it is not good,
+> > I'll remove the extcon support.
+> It would be better to start without, and then add it later
+> so we end up with a clean design.
+> 
+> I for one would have an easier time reviewing.
+> 
+> So please go ahead and remove it for now.
+OK
+> 
+> 
+> 	Sam
