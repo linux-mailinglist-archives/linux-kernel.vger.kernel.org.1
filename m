@@ -2,262 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FCF1BF131
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A1B1BF135
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgD3HTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 03:19:46 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:23038 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726474AbgD3HTp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:19:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588231183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=1ZVQP21/gRpjdQaiA5iEEwLdE4gKxXG18sO+uoyk77w=;
-        b=YyXKqWpmaEqbqG0mQbsp3TYTvS8Kap4mcBdi9+EIrFBzWh84U3znmfH9o6xtGBVz/Wm2qv
-        jc3YLrrjM3DiMqntWdQjbQCKBFBUqk7LjpNpcnOP+6j+FQMe360QpmANXaS7cNUF/PUQ7C
-        Cz+d01l2y2QD2eUgGH8kRwf1hIl7KUU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-331-rM1ylhAbMHiuxvT_teIprA-1; Thu, 30 Apr 2020 03:19:37 -0400
-X-MC-Unique: rM1ylhAbMHiuxvT_teIprA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16BAAEC1A7;
-        Thu, 30 Apr 2020 07:19:35 +0000 (UTC)
-Received: from [10.36.113.172] (ovpn-113-172.ams2.redhat.com [10.36.113.172])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B9F7360BF4;
-        Thu, 30 Apr 2020 07:19:27 +0000 (UTC)
-Subject: Re: [PATCH v1 2/3] mm/memory_hotplug: Introduce MHP_DRIVER_MANAGED
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, virtio-dev@lists.oasis-open.org,
-        virtualization@lists.linux-foundation.org,
-        linuxppc-dev@lists.ozlabs.org, linux-acpi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-hyperv@vger.kernel.org,
-        linux-s390@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Baoquan He <bhe@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-References: <20200429160803.109056-1-david@redhat.com>
- <20200429160803.109056-3-david@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Organization: Red Hat GmbH
-Message-ID: <a7305cd8-8b2f-1d8f-7654-ecf777c46df6@redhat.com>
-Date:   Thu, 30 Apr 2020 09:19:26 +0200
+        id S1726758AbgD3HUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 03:20:05 -0400
+Received: from mail-dm6nam10on2139.outbound.protection.outlook.com ([40.107.93.139]:64572
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726692AbgD3HUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 03:20:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ECZLtm9Lf24Ss4/O7GPzEdVeouk0TlC4fYTZC1hRQkr/jPFQEC1RZ+J0HvCspqL8NbgD1xKtXb1IgDPr4tMGGyoVjGvMEE0Ib1kKYpIino5YRBHvl2dznQ5v80i7XzeRCmQOx9fpfVcIjLevwOvKl+3TaSyijSGTE5GyE2xmRuRF9dCCpLQ3RH2UwuFqxkXlm0wAz57kKjFrQ3p5lCHIvRkLG1CmmF1bV6737X9S5BuTQFB4XMdygvSt8YCZEwZUyoWIYmwg9I5z1chVbZqhJqufzK4gFfa+WzIdm6IxV3W9iY3rDZskMBaujE2nJ/feLvXmhpaECjQA5km4Px/JaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rW3Gm1I3RNnHtHsyATEssZe6QX9sfZR7AUg57oS+8YA=;
+ b=L0khLcLcKl0mgLWeeL3ImPksbGZMw2nmkDBs14JlyH7UJEUThenQJK/dDNtXAS7hrgGDKF2ClWKn6vRA46dE1oX1Vur4oLnsBucDf+BN1UDax0FoZsB3AvO9cSCD5aKQ2p8E0RNPdgnZWGwraM125y3SdWCVRV/+aO/MWvLphR+2mBnhhvWpCt9+5A7ZKvWPH4TrbpphyjsbY4Rk7kEJXWzTj/Z+eeCTSOTdCKSPf6tuVxFS6RT0gRwQ76anFURpfRMk9NK+GlgQmHRDbJmkUmXraMG51EXaq2f4PPlatxKP8QU3YkS/WyGvRUr7UeRyM01jONvhXRVdTf7qstpEKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fortanix.com; dmarc=pass action=none header.from=fortanix.com;
+ dkim=pass header.d=fortanix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fortanix.onmicrosoft.com; s=selector2-fortanix-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rW3Gm1I3RNnHtHsyATEssZe6QX9sfZR7AUg57oS+8YA=;
+ b=fPomdM0PYbPmRUZpspoupj7iyx1zIj8+hPG8vQ9DWmJRoDCNwNDn2zFzooZx2qf4o/grT6VzV9CoEoyFBmtcvTU5xaVG5yuKISqarLmxpPp0tOpFn0CGynpBXGqFPAC6LKXyUZM0WJxlVwNFSMmDi6Z8Fxyi76jqNwuwc+Bf69M=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fortanix.com;
+Received: from BY5PR11MB4260.namprd11.prod.outlook.com (2603:10b6:a03:1ba::30)
+ by BY5PR11MB4323.namprd11.prod.outlook.com (2603:10b6:a03:1c2::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Thu, 30 Apr
+ 2020 07:19:58 +0000
+Received: from BY5PR11MB4260.namprd11.prod.outlook.com
+ ([fe80::48d6:af47:b6c8:fe6a]) by BY5PR11MB4260.namprd11.prod.outlook.com
+ ([fe80::48d6:af47:b6c8:fe6a%7]) with mapi id 15.20.2937.028; Thu, 30 Apr 2020
+ 07:19:58 +0000
+Subject: Re: [PATCH v29 00/20] Intel SGX foundations
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
+        dave.hansen@intel.com, sean.j.christopherson@intel.com,
+        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        kai.svahn@intel.com, bp@alien8.de, josh@joshtriplett.org,
+        luto@kernel.org, kai.huang@intel.com, rientjes@google.com,
+        cedric.xing@intel.com, puiterwijk@redhat.com
+References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
+ <07c1a36c-cebc-3a65-6f92-4a5498fcc369@fortanix.com>
+ <20200430034651.GB31820@linux.intel.com>
+From:   Jethro Beekman <jethro@fortanix.com>
+Message-ID: <a9ff7817-32d1-e048-af05-862ca9f8aa46@fortanix.com>
+Date:   Thu, 30 Apr 2020 09:19:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
+In-Reply-To: <20200430034651.GB31820@linux.intel.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms010702010600080702080303"
+X-ClientProxiedBy: AM6PR04CA0056.eurprd04.prod.outlook.com
+ (2603:10a6:20b:f0::33) To BY5PR11MB4260.namprd11.prod.outlook.com
+ (2603:10b6:a03:1ba::30)
 MIME-Version: 1.0
-In-Reply-To: <20200429160803.109056-3-david@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.4.219] (213.127.61.179) by AM6PR04CA0056.eurprd04.prod.outlook.com (2603:10a6:20b:f0::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 07:19:53 +0000
+X-Originating-IP: [213.127.61.179]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3e704c3e-602b-4c25-f0e4-08d7ecd6e3bf
+X-MS-TrafficTypeDiagnostic: BY5PR11MB4323:
+X-Microsoft-Antispam-PRVS: <BY5PR11MB43233746B1B7C6A04F7BEC15AAAA0@BY5PR11MB4323.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 0389EDA07F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 1wTJsVNCvf5L7Nbz5yO3abiqpBfK5DoPazyqL8ZqG1Cj+G6Tgi+GKDIIZ+nQ10M8M8S3SD2m64O/OSsJf9ShKEI01utwcK0hH1jzpJTufxjjRljDPtXVM/NlFEP5p/ZDAIT99SqPaXgQpPYr99UKcKXZgNnhyAWQIHEMhxHDaaBq5n+OWaN4FMvSFXM7JsHjPsfpTbYz0eZFFyeQj6OEwMIs+E6M6JL2Yo4+hrGBE5MTqSLWuBk0H4LIEby2MTGJXzB3moY+JpnnqLHsghKexz86TCFBf2g0V8bJHcmIDf9xXm6cKIo42uuQzt6tLjYvlK75M6m6EWpwuGbtD6ghOYDWUj+wDaW6tpN6AauBqgaSWRQnL2N+Xl/lBg9Yhy7kSFOyLG/Gsa56v5zhX6KbHe5A43JYtuAmXAH8NgIzGMs+juBO9720GLWDlbof+jdB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4260.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(366004)(136003)(346002)(396003)(39840400004)(508600001)(31696002)(7416002)(26005)(16576012)(6486002)(86362001)(5660300002)(53546011)(186003)(6916009)(956004)(33964004)(316002)(52116002)(36756003)(16526019)(235185007)(8936002)(8676002)(2906002)(66946007)(6666004)(2616005)(4326008)(66556008)(66476007)(31686004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: P+5kmTuN5No7tYs01vV7PRBxjdP7tWOPLPbt13dB8NF0vyRU4LEsoQ78mieL17TmkVZmld4i34aMkomb24UJEjJj7gf/sZTDBbZFsWbDadZAqe7IlAOSqRCljp95VuTTkRK9NQ84EYs+wTj1O1dT51erthPdM0ZO4HC3oWMBUTyEq5lcoTivqSsnsVk9hBkFQpXtIC83n26RpJCvWxJuSNIKvu1uPo6u5gEpvOIEG98Aj+AJpBsICVeTL7WVm1oUr3AlnZ/cZAMDcWe/Jtd35ez3JX/AbYOY5/IRk4/4y4dPqGQCdTtIdjHgz1uDf0Xvq36ivdULLSLeZJJJErTLJo2Oihb+QDZ0tRSWMelAVdazs5eWty1dDm67wjrzpO574NGai+iRABfvTQmKRDeN8MLgpiER3KNA8TxCFroq7/5lb8SojQe95oSn8f5dzAQMtmCR49uuhpPS9Az/puQErJidmQ2d3O1qC0EUf4IUvpiy8gxM3aK99LZYChbXumYt3Z28VDODe1q39/+ZImyXj7hlinCrtFj3Yj4vkMFqaaCGFGIbVdSy1yCIUhLUgPHw/8dMLfp2byQ/EEivcJdXpxvJFe3O5Y73bsmTnRUiZcd3vH9Ebe8lTsUH5MQcFBQCgKO+ogGLjPGt1q4FUKLYP/p1u/8h8L0AIWJOo3UNcwa7LBIfQ5o0GAgf8V5l5ZMdwrrGXmsadPLpVIXXt7pFH3opKz/3z66Jy13/8nYGKwdaAZH4qAC6v70mx1ZKGlD0ZiiJSZeBRsGZqayaNmWNj4noF/KLJuoEtmhRWIweh40=
+X-OriginatorOrg: fortanix.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3e704c3e-602b-4c25-f0e4-08d7ecd6e3bf
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 07:19:58.7806
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: de7becae-4883-43e8-82c7-7dbdbb988ae6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vLL2ESRX4/qxruYW7i15WBdWOXQMO8duyFljyOBM1A69HVJ0sP1Xp9hxV6ZLNlGvjZ75nsRl93sFwEH+Qfe9mQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4323
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.04.20 18:08, David Hildenbrand wrote:
-> Some paravirtualized devices that add memory via add_memory() and
-> friends (esp. virtio-mem) don't want to create entries in
-> /sys/firmware/memmap/ - primarily to hinder kexec from adding this
-> memory to the boot memmap of the kexec kernel.
+--------------ms010702010600080702080303
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+On 2020-04-30 05:46, Jarkko Sakkinen wrote:
+> On Wed, Apr 29, 2020 at 05:27:48PM +0200, Jethro Beekman wrote:
+>> On 2020-04-21 23:52, Jarkko Sakkinen wrote:
+>>> Intel(R) SGX is a set of CPU instructions that can be used by applica=
+tions
+>>> to set aside private regions of code and data. The code outside the e=
+nclave
+>>> is disallowed to access the memory inside the enclave by the CPU acce=
+ss
+>>> control.
+>>>
+>>> There is a new hardware unit in the processor called Memory Encryptio=
+n
+>>> Engine (MEE) starting from the Skylake microacrhitecture. BIOS can de=
+fine
+>>> one or many MEE regions that can hold enclave data by configuring the=
+m with
+>>> PRMRR registers.
+>>>
+>>> The MEE automatically encrypts the data leaving the processor package=
+ to
+>>> the MEE regions. The data is encrypted using a random key whose life-=
+time
+>>> is exactly one power cycle.
+>>>
+>>> The current implementation requires that the firmware sets
+>>> IA32_SGXLEPUBKEYHASH* MSRs as writable so that ultimately the kernel =
+can
+>>> decide what enclaves it wants run. The implementation does not create=
+
+>>> any bottlenecks to support read-only MSRs later on.
+>>>
+>>> You can tell if your CPU supports SGX by looking into /proc/cpuinfo:
+>>>
+>>> 	cat /proc/cpuinfo  | grep sgx
+>>
+>> Let's merge this.
 >=20
-> In fact, such memory is never exposed via the firmware (e.g., e820), bu=
-t
-> only via the device, so exposing this memory via /sys/firmware/memmap/ =
-is
-> wrong:
->  "kexec needs the raw firmware-provided memory map to setup the
->   parameter segment of the kernel that should be booted with
->   kexec. Also, the raw memory map is useful for debugging. For
->   that reason, /sys/firmware/memmap is an interface that provides
->   the raw memory map to userspace." [1]
->=20
-> We want to let user space know that memory which is always detected,
-> added, and managed via a (device) driver - like memory managed by
-> virtio-mem - is special. It cannot be used for placing kexec segments
-> and the (device) driver is responsible for re-adding memory that
-> (eventually shrunk/grown/defragmented) memory after a reboot/kexec. It
-> should e.g., not be added to a fixed up firmware memmap. However, it sh=
-ould
-> be dumped by kdump.
->=20
-> Also, such memory could behave differently than an ordinary DIMM - e.g.=
-,
-> memory managed by virtio-mem can have holes inside added memory resourc=
-e,
-> which should not be touched, especially for writing.
->=20
-> Let's expose that memory as "System RAM (driver managed)" e.g., via
-> /pro/iomem.
->=20
-> We don't have to worry about firmware_map_remove() on the removal path.
-> If there is no entry, it will simply return with -EINVAL.
->=20
-> [1] https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-firmware=
--memmap
->=20
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Cc: Wei Yang <richard.weiyang@gmail.com>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Eric Biederman <ebiederm@xmission.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  include/linux/memory_hotplug.h |  8 ++++++++
->  mm/memory_hotplug.c            | 20 ++++++++++++++++----
->  2 files changed, 24 insertions(+), 4 deletions(-)
->=20
-> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotp=
-lug.h
-> index bf0e3edb8688..cc538584b39e 100644
-> --- a/include/linux/memory_hotplug.h
-> +++ b/include/linux/memory_hotplug.h
-> @@ -68,6 +68,14 @@ struct mhp_params {
->  	pgprot_t pgprot;
->  };
-> =20
-> +/* Flags used for add_memory() and friends. */
-> +
-> +/*
-> + * Don't create entries in /sys/firmware/memmap/ and expose memory as
-> + * "System RAM (driver managed)" in e.g., /proc/iomem
-> + */
-> +#define MHP_DRIVER_MANAGED		1
-> +
->  /*
->   * Zone resizing functions
->   *
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index ebdf6541d074..cfa0721280aa 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -98,11 +98,11 @@ void mem_hotplug_done(void)
->  u64 max_mem_size =3D U64_MAX;
-> =20
->  /* add this memory to iomem resource */
-> -static struct resource *register_memory_resource(u64 start, u64 size)
-> +static struct resource *register_memory_resource(u64 start, u64 size,
-> +						 const char *resource_name)
->  {
->  	struct resource *res;
->  	unsigned long flags =3D  IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
-> -	char *resource_name =3D "System RAM";
-> =20
->  	/*
->  	 * Make sure value parsed from 'mem=3D' only restricts memory adding
-> @@ -1058,7 +1058,8 @@ int __ref add_memory_resource(int nid, struct res=
-ource *res,
->  	BUG_ON(ret);
-> =20
->  	/* create new memmap entry */
-> -	firmware_map_add_hotplug(start, start + size, "System RAM");
-> +	if (!(flags & MHP_DRIVER_MANAGED))
-> +		firmware_map_add_hotplug(start, start + size, "System RAM");
-> =20
->  	/* device_online() will take the lock when calling online_pages() */
->  	mem_hotplug_done();
-> @@ -1081,10 +1082,21 @@ int __ref add_memory_resource(int nid, struct r=
-esource *res,
->  /* requires device_hotplug_lock, see add_memory_resource() */
->  int __ref __add_memory(int nid, u64 start, u64 size, unsigned long fla=
-gs)
->  {
-> +	const char *resource_name =3D "System RAM";
->  	struct resource *res;
->  	int ret;
-> =20
-> -	res =3D register_memory_resource(start, size);
-> +	/*
-> +	 * Indicate that memory managed by a driver is special. It's always
-> +	 * detected and added via a driver, should not be given to the kexec
-> +	 * kernel for booting when manually crafting the firmware memmap, and
-> +	 * no kexec segments should be placed on it. However, kdump should
-> +	 * dump this memory.
-> +	 */
-> +	if (flags & MHP_DRIVER_MANAGED)
-> +		resource_name =3D "System RAM (driver managed)";
-> +
-> +	res =3D register_memory_resource(start, size, resource_name);
->  	if (IS_ERR(res))
->  		return PTR_ERR(res);
-> =20
+> So can I tag reviewed-by's?
 >=20
 
-BTW, I was wondering if this is actually also something that
-drivers/dax/kmem.c wants to use for adding memory.
+No, but you already have my tested-by's.
 
-Just because we decided to use some DAX memory in the current kernel as
-system ram, doesn't mean we should make that decision for the kexec
-kernel (e.g., using it as initial memory, placing kexec binaries onto
-it, etc.). This is also not what we would observe during a real reboot.
+If it helps I can try to review some patches, but 1) I know nothing about=
+ kernel coding guidelines and best practices and 2) I know little about m=
+ost kernel internals, so I won't be able to review every patch.
 
-I can see that the "System RAM" resource will show up as child resource
-under the device e.g., in /proc/iomem.
+--
+Jethro Beekman | Fortanix
 
-However, entries in /sys/firmware/memmap/ are created as "System RAM".
 
---=20
-Thanks,
+--------------ms010702010600080702080303
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-David / dhildenb
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+C54wggVPMIIEN6ADAgECAhAFFr+cC0ZYZTtbKgQCBwyyMA0GCSqGSIb3DQEBCwUAMIGCMQsw
+CQYDVQQGEwJJVDEPMA0GA1UECAwGTWlsYW5vMQ8wDQYDVQQHDAZNaWxhbm8xIzAhBgNVBAoM
+GkFjdGFsaXMgUy5wLkEuLzAzMzU4NTIwOTY3MSwwKgYDVQQDDCNBY3RhbGlzIENsaWVudCBB
+dXRoZW50aWNhdGlvbiBDQSBHMTAeFw0xOTA5MTYwOTQ3MDlaFw0yMDA5MTYwOTQ3MDlaMB4x
+HDAaBgNVBAMME2pldGhyb0Bmb3J0YW5peC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAw
+ggEKAoIBAQDHWEhcRGkEl1ZnImSqBt/OXNJ4AyDZ86CejuWI9jYpWbtf/gXBQO6iaaEKBDlj
+Vffk2QxH9wcifkYsvCYfxFgD15dU9TABO7YOwvHa8NtxanWr1xomufu/P1ApI336+S7ZXfSe
+qMnookNJUMHuF3Nxw2lI69LXqZLCdcVXquM4DY1lVSV+DXIwpTMtB+pMyqOWrsgmrISMZYFw
+EUJOqVDvtU8KewhpuGAYXAQSDVLcAl2nZg7C2Mex8vT8stBoslPTkRXxAgMbslDNDUiKhy8d
+E3I78P+stNHlFAgALgoYLBiVVLZkVBUPvgr2yUApR63yosztqp+jFhqfeHbjTRlLAgMBAAGj
+ggIiMIICHjAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFH5g/Phspz09166ToXkCj7N0KTv1
+MEsGCCsGAQUFBwEBBD8wPTA7BggrBgEFBQcwAoYvaHR0cDovL2NhY2VydC5hY3RhbGlzLml0
+L2NlcnRzL2FjdGFsaXMtYXV0Y2xpZzEwHgYDVR0RBBcwFYETamV0aHJvQGZvcnRhbml4LmNv
+bTBHBgNVHSAEQDA+MDwGBiuBHwEYATAyMDAGCCsGAQUFBwIBFiRodHRwczovL3d3dy5hY3Rh
+bGlzLml0L2FyZWEtZG93bmxvYWQwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMIHo
+BgNVHR8EgeAwgd0wgZuggZiggZWGgZJsZGFwOi8vbGRhcDA1LmFjdGFsaXMuaXQvY24lM2RB
+Y3RhbGlzJTIwQ2xpZW50JTIwQXV0aGVudGljYXRpb24lMjBDQSUyMEcxLG8lM2RBY3RhbGlz
+JTIwUy5wLkEuLzAzMzU4NTIwOTY3LGMlM2RJVD9jZXJ0aWZpY2F0ZVJldm9jYXRpb25MaXN0
+O2JpbmFyeTA9oDugOYY3aHR0cDovL2NybDA1LmFjdGFsaXMuaXQvUmVwb3NpdG9yeS9BVVRI
+Q0wtRzEvZ2V0TGFzdENSTDAdBgNVHQ4EFgQUAXkM7yNq6pH6j+IC/7IsDPSTMnowDgYDVR0P
+AQH/BAQDAgWgMA0GCSqGSIb3DQEBCwUAA4IBAQC8z+2tLUwep0OhTQBgMaybrxTHCxRZ4/en
+XB0zGVrry94pItE4ro4To/t86Kfcic41ZsaX8/SFVUW2NNHjEodJu94UhYqPMDUVjO6Y14s2
+jznFHyKQdXMrhIBU5lzYqyh97w6s82Z/qoMy3OuLek+8rXirwju9ATSNLsFTzt2CEoyCSRtl
+yOmR7Z9wgSvD7C7XoBdGEFVdGCXwCy1t9AT7UCIHKssnguVaMGN9vWqLPVKOVTwc4g3RAQC7
+J1Aoo6U5d6wCIX4MxEZhICxnUgAKHULxsWMGjBfQAo3QGXjJ4wDEu7O/5KCyUfn6lyhRYa+t
+YgyFAX0ZU9Upovd+aOw0MIIGRzCCBC+gAwIBAgIILNSK07EeD4kwDQYJKoZIhvcNAQELBQAw
+azELMAkGA1UEBhMCSVQxDjAMBgNVBAcMBU1pbGFuMSMwIQYDVQQKDBpBY3RhbGlzIFMucC5B
+Li8wMzM1ODUyMDk2NzEnMCUGA1UEAwweQWN0YWxpcyBBdXRoZW50aWNhdGlvbiBSb290IENB
+MB4XDTE1MDUxNDA3MTQxNVoXDTMwMDUxNDA3MTQxNVowgYIxCzAJBgNVBAYTAklUMQ8wDQYD
+VQQIDAZNaWxhbm8xDzANBgNVBAcMBk1pbGFubzEjMCEGA1UECgwaQWN0YWxpcyBTLnAuQS4v
+MDMzNTg1MjA5NjcxLDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENB
+IEcxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwPzBiVbZiOL0BGW/zQk1qygp
+MP4MyvcnqxwR7oY9XeT1bES2DFczlZfeiIqNLanbkyqTxydXZ+kxoS9071qWsZ6zS+pxSqXL
+s+RTvndEaWx5hdHZcKNWGzhy5FiO4GZvGlFInFEiaY+dOEpjjWvSeXpvcDpnYw6M9AXuHo4J
+hjC3P/OK//5QFXnztTa4iU66RpLteOTgCtiRCwZNKx8EFeqqfTpYvfEb4H91E7n+Y61jm0d2
+E8fJ2wGTaSSwjc8nTI2ApXujoczukb2kHqwaGP3q5UuedWcnRZc65XUhK/Z6K32KvrQuNP32
+F/5MxkvEDnJpUnnt9iMExvEzn31zDQIDAQABo4IB1TCCAdEwQQYIKwYBBQUHAQEENTAzMDEG
+CCsGAQUFBzABhiVodHRwOi8vb2NzcDA1LmFjdGFsaXMuaXQvVkEvQVVUSC1ST09UMB0GA1Ud
+DgQWBBR+YPz4bKc9Pdeuk6F5Ao+zdCk79TAPBgNVHRMBAf8EBTADAQH/MB8GA1UdIwQYMBaA
+FFLYiDrIn3hm7YnzezhwlMkCAjbQMEUGA1UdIAQ+MDwwOgYEVR0gADAyMDAGCCsGAQUFBwIB
+FiRodHRwczovL3d3dy5hY3RhbGlzLml0L2FyZWEtZG93bmxvYWQwgeMGA1UdHwSB2zCB2DCB
+lqCBk6CBkIaBjWxkYXA6Ly9sZGFwMDUuYWN0YWxpcy5pdC9jbiUzZEFjdGFsaXMlMjBBdXRo
+ZW50aWNhdGlvbiUyMFJvb3QlMjBDQSxvJTNkQWN0YWxpcyUyMFMucC5BLiUyZjAzMzU4NTIw
+OTY3LGMlM2RJVD9jZXJ0aWZpY2F0ZVJldm9jYXRpb25MaXN0O2JpbmFyeTA9oDugOYY3aHR0
+cDovL2NybDA1LmFjdGFsaXMuaXQvUmVwb3NpdG9yeS9BVVRILVJPT1QvZ2V0TGFzdENSTDAO
+BgNVHQ8BAf8EBAMCAQYwDQYJKoZIhvcNAQELBQADggIBAE2TztUkvkEbShZYc19lifLZej5Y
+jLzLxA/lWxZnssFLpDPySfzMmndz3F06S51ltwDe+blTwcpdzUl3M2alKH3bOr855ku9Rr6u
+edya+HGQUT0OhqDo2K2CAE9nBcfANxifjfT8XzCoC3ctf9ux3og1WuE8WTcLZKgCMuNRBmJt
+e9C4Ug0w3iXqPzq8KuRRobNKqddPjk3EiK+QA+EFCCka1xOLh/7cPGTJMNta1/0u5oLiXaOA
+HeALt/nqeZ2kZ+lizK8oTv4in5avIf3ela3oL6vrwpTca7TZxTX90e805dZQN4qRVPdPbrBl
+WtNozH7SdLeLrcoN8l2EXO6190GAJYdynTc2E6EyrLVGcDKUX91VmCSRrqEppZ7W05TbWRLi
+6+wPjAzmTq2XSmKfajq7juTKgkkw7FFJByixa0NdSZosdQb3VkLqG8EOYOamZLqH+v7ua0+u
+lg7FOviFbeZ7YR9eRO81O8FC1uLgutlyGD2+GLjgQnsvneDsbNAWfkory+qqAxvVzX5PSaQp
+2pJ52AaIH1MN1i2/geRSP83TRMrFkwuIMzDhXxKFQvpspNc19vcTryzjtwP4xq0WNS4YWPS4
+U+9mW+U0Cgnsgx9fMiJNbLflf5qSb53j3AGHnjK/qJzPa39wFTXLXB648F3w1Qf9R7eZeTRJ
+fCQY/fJUMYID9jCCA/ICAQEwgZcwgYIxCzAJBgNVBAYTAklUMQ8wDQYDVQQIDAZNaWxhbm8x
+DzANBgNVBAcMBk1pbGFubzEjMCEGA1UECgwaQWN0YWxpcyBTLnAuQS4vMDMzNTg1MjA5Njcx
+LDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEcxAhAFFr+cC0ZY
+ZTtbKgQCBwyyMA0GCWCGSAFlAwQCAQUAoIICLzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMDA0MzAwNzE5NDhaMC8GCSqGSIb3DQEJBDEiBCDprLGucF0L
+t2p2UATqEjuqNLav0KVD3I3+U0IyQtx17jBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQB
+KjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMC
+AgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMIGoBgkrBgEEAYI3EAQxgZowgZcwgYIxCzAJ
+BgNVBAYTAklUMQ8wDQYDVQQIDAZNaWxhbm8xDzANBgNVBAcMBk1pbGFubzEjMCEGA1UECgwa
+QWN0YWxpcyBTLnAuQS4vMDMzNTg1MjA5NjcxLDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1
+dGhlbnRpY2F0aW9uIENBIEcxAhAFFr+cC0ZYZTtbKgQCBwyyMIGqBgsqhkiG9w0BCRACCzGB
+mqCBlzCBgjELMAkGA1UEBhMCSVQxDzANBgNVBAgMBk1pbGFubzEPMA0GA1UEBwwGTWlsYW5v
+MSMwIQYDVQQKDBpBY3RhbGlzIFMucC5BLi8wMzM1ODUyMDk2NzEsMCoGA1UEAwwjQWN0YWxp
+cyBDbGllbnQgQXV0aGVudGljYXRpb24gQ0EgRzECEAUWv5wLRlhlO1sqBAIHDLIwDQYJKoZI
+hvcNAQEBBQAEggEAWwKEQvR6kP295ClAz0ZaAA8qBtLW9Hh/YNMrzRaVCvfVUzngF/GTw2ki
+Piy1MBbPLycVOVyMiRisU66qgcxK7JK0CAjS89uR6/TT1Y3M2IU7XkLJ8gRUWeh7xSU9j4te
+vSeOG8Uu0+WKrqLSOR62eoxuqIEl+0a2VoHrGCrnneT2aAnVux+bP7A+w70Do9rMt9urTm/M
+iaDLrGJ4H+oEZFbeiaGhiAvaSmEJqTBZLyT/rOK9Cfyfhv4JEOp7puh/TAEQqfNki/2jGOZA
+8rObP0tsRCXo3dl5i5ltlZD3WefdgLXFzLHF8SbhVyspwEKFRCPKrKeVZnvBOWpAyD6WHwAA
+AAAAAA==
 
+--------------ms010702010600080702080303--
