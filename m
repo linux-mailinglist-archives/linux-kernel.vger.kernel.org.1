@@ -2,127 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DC81BF627
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 13:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19A51BF630
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 13:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbgD3LKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 07:10:19 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:36476 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725280AbgD3LKT (ORCPT
+        id S1726917AbgD3LLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 07:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726636AbgD3LLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 07:10:19 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C30D8321;
-        Thu, 30 Apr 2020 13:10:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1588245015;
-        bh=vzoIGymqMDr4/e03h5JjVx/KZIHtnmQaHGQ9XNk5uK4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ljs9rQYOPJA0aSO47jOEwAPJoY6ZuSjAu026tsgjxuc9vkCtysBW18J5kqOZAxv72
-         be88In7eRKa+ZDqolmSVj2xqY9pmLpNNRDoXUZDFyyppR6Bo/ih1syTJl3ZwYpk/tj
-         hLxDAnk+T3/s3GvhNMjl9JNM0mr+DLiTbnP6FU+k=
-Date:   Thu, 30 Apr 2020 14:10:14 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Daniel Gomez <daniel@qtec.com>, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/3] media: v4l2-subdev.h: Add min and max enum
-Message-ID: <20200430111014.GD5856@pendragon.ideasonboard.com>
-References: <20200414200151.80089-1-daniel@qtec.com>
- <20200414200151.80089-2-daniel@qtec.com>
- <20200430094233.GE867@valkosipuli.retiisi.org.uk>
+        Thu, 30 Apr 2020 07:11:06 -0400
+Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C6EC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 04:11:04 -0700 (PDT)
+Received: by mail-ua1-x943.google.com with SMTP id g35so2192332uad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 04:11:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MGQ7HEJMPitq5k4JWES0M6ZN7loGaGKzPDJ0dzbRiD0=;
+        b=hEONr2YPgmyM7UtwlPoUd9Ry3bjW97+5NVE50dLmPT1ij4ap95JRc/P/fZ4ZSw70Zl
+         Kvs0ZEJ5Tj2RLx4xylE6ueWL3vF7EUgEUFKDqbmC9itQbWfxF2HT6TSjqcguEqI6ajtY
+         9DckUgdJPFB7OZYcoL8dqNlhqmyIcnjeefxBoRQqHYAzGizaNhggHBhjA1w2cmZYnIVO
+         CUTAixhkRhz+FGayt16gFx1KU8ysBnnaGN75X1QWkQ1WN3Wh7Ng5O85dmdLj8aQNAqjY
+         OtKGZUMGbJL2t5JlP5wRhgdpc1y2Ke4Urt8v4Dpe7WBpe3qBD/sXip8Ga6Ulf1zGENQM
+         cGJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MGQ7HEJMPitq5k4JWES0M6ZN7loGaGKzPDJ0dzbRiD0=;
+        b=QrWsfSV7OJNW5NLSqbXYFyFiuF37O2y/mPv9gtNTevnhWp9jcokIvRTZ6aQnKEiLCk
+         u1bI6J5ZfBA38NRtK0TTZe0nK3V7pdukaWIDdRAQ4S+RkJ7aAczYPiDSBxZgrBj6o4fh
+         o6BBdhYgbYqDRfozB5Rv/M3DVd1qVOZpKakOxW7H9Re/5IWyLvvmSQ6dolAE9lgR38n0
+         pKAYj1uByFqaFHNaNILcQ12dY2KLxqInYXmebblzr2n8gcl1nkZLlGUvoS/W0VRx6iZU
+         56AQ3rxxFA6ujZ8ruZbigoEuYGghJx86YSH3hD8RjeMXeMOEXFVxS7TZSE085vIfQofO
+         O73Q==
+X-Gm-Message-State: AGi0PuaPPmrPv5xTBUnz4PzPMx//MnvQ9+fhVl58c1GBS/jii6CnaX/R
+        yN5v2dLCWID4cViQzAaKwEHdMfZxvrlAIkEWC0YKvA==
+X-Google-Smtp-Source: APiQypLv/CscUPIU0JrwToIQyrb8mmx1gfyx05WoSgrVPXEwIXy143BGmgl61F4V4uPx0RRkzcsIbUxve+Xxv5Nf76I=
+X-Received: by 2002:ab0:544a:: with SMTP id o10mr1909650uaa.15.1588245063374;
+ Thu, 30 Apr 2020 04:11:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200430094233.GE867@valkosipuli.retiisi.org.uk>
+References: <20200428210229.703309-1-martin.blumenstingl@googlemail.com>
+ <20200428210229.703309-3-martin.blumenstingl@googlemail.com> <1jlfmdi9uw.fsf@starbuckisacylon.baylibre.com>
+In-Reply-To: <1jlfmdi9uw.fsf@starbuckisacylon.baylibre.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 30 Apr 2020 13:10:27 +0200
+Message-ID: <CAPDyKFoEh8qKYFONo1SHnvwhDwjUa5bMnnT1Kbu8=4rd=T-8Kg@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] mmc: host: meson-mx-sdhc: new driver for the
+ Amlogic Meson SDHC host
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jianxin Pan <jianxin.pan@amlogic.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        yinxin_1989@aliyun.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lnykww@gmail.com, Anand Moon <linux.amoon@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
++ Stephen
 
-On Thu, Apr 30, 2020 at 12:42:33PM +0300, Sakari Ailus wrote:
-> Hi Daniel,
-> 
-> Thanks for the patchset.
-> 
-> I'm also cc'ing Laurent who I think could be interested in this one.
-> 
-> On Tue, Apr 14, 2020 at 10:01:49PM +0200, Daniel Gomez wrote:
-> > Add min and max structures to the v4l2-subdev callback in order to allow
-> > the subdev to return a range of valid frame intervals.
-> > 
-> > This would operate similar to the struct v4l2_subdev_frame_size_enum and
-> > its max and min values for the width and the height. In this case, the
-> > possibility to return a frame interval range is added to the v4l2-subdev level
-> > whenever the v4l2 device operates in step-wise or continuous mode.
-> 
-> The current API only allows providing a list of enumerated values. That is
-> limiting indeed, especially on register list based sensor drivers where
-> vertical blanking is configurable.
-> 
-> I guess this could be extended to cover what V4L2, more or less. If we tell
-> it's a range, is it assumed to be contiguous? We don't have try operation
-> for the frame interval, but I guess set is good enough. The fraction is
-> probably best for TV standards but it's not what camera sensors natively
-> use. (But for a register list based driver, the established practice
-> remains to use frame interval.)
-> 
-> I'm also wondering the effect on existing user space; if a driver gives a
-> range, how will the existing programs work with such a driver?
-> 
-> I'd add an anonymous union with the interval field, the other field being
-> min_interval. Then the current applications would get the minimum interval
-> and still continue to function. I guess compilers are modern enough these
-> days we can have an anonymous union in the uAPI?
-
-We can discuss all this, but given patch 3/3 in this series, I think
-this isn't the right API :-) The sensor driver should not expose the
-frame interval enumeration API. It should instead expose control of the
-frame rate through V4L2_CID_PIXEL_RATE, V4L2_CID_HBLANK and
-V4L2_CID_VBLANK.
-
-> > Signed-off-by: Daniel Gomez <daniel@qtec.com>
+On Thu, 30 Apr 2020 at 11:47, Jerome Brunet <jbrunet@baylibre.com> wrote:
+>
+>
+> On Tue 28 Apr 2020 at 23:02, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+>
+> > The SDHC MMC host controller on Amlogic SoCs provides an eMMC and MMC
+> > card interface with 1/4/8-bit bus width.
+> > It supports eMMC spec 4.4x/4.5x including HS200 (up to 100MHz clock).
+> >
+> > The public S805 datasheet [0] contains a short documentation about the
+> > registers. Unfortunately it does not describe how to use the registers
+> > to make the hardware work. Thus this driver is based on reading (and
+> > understanding) the Amlogic 3.10 GPL kernel code.
+> >
+> > Some hardware details are not easy to see. Jianxin Pan was kind enough
+> > to answer my questions:
+> > The hardware has built-in busy timeout support. The maximum timeout is
+> > 30 seconds. This is only documented in Amlogic's internal
+> > documentation.
+> >
+> > The controller only works with very specific clock configurations. The
+> > details are not part of the public datasheet. In my own words the
+> > supported configurations are:
+> > - 399.812kHz: clkin =  850MHz div = 2126 sd_rx_phase = 63
+> > - 1MHz:               clkin =  850MHz div = 850  sd_rx_phase = 55
+> > - 5.986MHz:   clkin =  850MHz div = 142  sd_rx_phase = 24
+> > - 25MHz:      clkin =  850MHz div = 34   sd_rx_phase = 15
+> > - 47.222MHz:  clkin =  850MHz div = 18   sd_rx_phase = 11/15 (SDR50/HS)
+> > - 53.125MHz:  clkin =  850MHz div = 16   sd_rx_phase = (tuning)
+> > - 70.833MHz:  clkin =  850MHz div = 12   sd_rx_phase = (tuning)
+> > - 85MHz:      clkin =  850MHz div = 10   sd_rx_phase = (tuning)
+> > - 94.44MHz:   clkin =  850MHz div = 9    sd_rx_phase = (tuning)
+> > - 106.25MHz:  clkin =  850MHz div = 8    sd_rx_phase = (tuning)
+> > - 127.5MHz:     clkin = 1275MHz div = 10   sd_rx_phase = (tuning)
+> > - 141.667MHz:   clkin =  850MHz div = 6    sd_rx_phase = (tuning)
+> > - 159.375MHz: clkin = 1275MHz div = 8    sd_rx_phase = (tuning)
+> > - 212.5MHz:   clkin = 1275MHz div = 6    sd_rx_phase = (tuning)
+> > - (sd_tx_phase is always 1, 94.44MHz is not listed in the datasheet
+> >    but this is what the 3.10 BSP kernel on Odroid-C1 actually uses)
+> >
+> > NOTE: CMD23 support is disabled for now because it results in command
+> > timeouts and thus decreases read performance.
+> >
+> > Tested-by: Wei Wang <lnykww@gmail.com>
+> > Tested-by: Xin Yin <yinxin_1989@aliyun.com>
+> > Reviewed-by: Xin Yin <yinxin_1989@aliyun.com>
+> > Tested-by: Anand Moon <linux.amoon@gmail.com>
+> > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 > > ---
-> >  include/uapi/linux/v4l2-subdev.h | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/uapi/linux/v4l2-subdev.h b/include/uapi/linux/v4l2-subdev.h
-> > index 03970ce30741..ee15393c58cd 100644
-> > --- a/include/uapi/linux/v4l2-subdev.h
-> > +++ b/include/uapi/linux/v4l2-subdev.h
-> > @@ -117,6 +117,8 @@ struct v4l2_subdev_frame_interval {
-> >   * @code: format code (MEDIA_BUS_FMT_ definitions)
-> >   * @width: frame width in pixels
-> >   * @height: frame height in pixels
-> > + * @min_interval: min frame interval in seconds
-> > + * @max_interval: max frame interval in seconds
-> >   * @interval: frame interval in seconds
-> >   * @which: format type (from enum v4l2_subdev_format_whence)
-> >   */
-> > @@ -126,9 +128,11 @@ struct v4l2_subdev_frame_interval_enum {
-> >  	__u32 code;
-> >  	__u32 width;
-> >  	__u32 height;
-> > +	struct v4l2_fract min_interval;
-> > +	struct v4l2_fract max_interval;
-> 
-> This changes the memory layout of the struct and breaks the ABI. Any new
-> fields in the struct may only replace reserved fields while the rest must
-> stay unchanged.
-> 
-> >  	struct v4l2_fract interval;
-> >  	__u32 which;
-> > -	__u32 reserved[8];
-> > +	__u32 reserved[4];
-> >  };
-> >  
-> >  /**
+> >  drivers/mmc/host/Kconfig              |  14 +
+> >  drivers/mmc/host/Makefile             |   1 +
+> >  drivers/mmc/host/meson-mx-sdhc-clkc.c | 188 ++++++
+> >  drivers/mmc/host/meson-mx-sdhc.c      | 916 ++++++++++++++++++++++++++
+> >  drivers/mmc/host/meson-mx-sdhc.h      | 138 ++++
+> >  5 files changed, 1257 insertions(+)
+> >  create mode 100644 drivers/mmc/host/meson-mx-sdhc-clkc.c
+> >  create mode 100644 drivers/mmc/host/meson-mx-sdhc.c
+> >  create mode 100644 drivers/mmc/host/meson-mx-sdhc.h
+> >
+> > diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> > index 462b5352fea7..df3fc572f842 100644
+> > --- a/drivers/mmc/host/Kconfig
+> > +++ b/drivers/mmc/host/Kconfig
+> > @@ -405,6 +405,20 @@ config MMC_MESON_GX
+> >
+> >         If you have a controller with this interface, say Y here.
+> >
+> > +config MMC_MESON_MX_SDHC
+> > +     tristate "Amlogic Meson SDHC Host Controller support"
+> > +     depends on (ARM && ARCH_MESON) || COMPILE_TEST
+> > +     depends on COMMON_CLK
+> > +     depends on OF
+> > +     help
+> > +       This selects support for the SDHC Host Controller on
+> > +       Amlogic Meson6, Meson8, Meson8b and Meson8m2 SoCs.
+> > +       The controller supports the SD/SDIO Spec 3.x and eMMC Spec 4.5x
+> > +       with 1, 4, and 8 bit bus widths.
+> > +
+> > +       If you have a controller with this interface, say Y or M here.
+> > +       If unsure, say N.
+> > +
+> >  config MMC_MESON_MX_SDIO
+> >       tristate "Amlogic Meson6/Meson8/Meson8b SD/MMC Host Controller support"
+> >       depends on ARCH_MESON || COMPILE_TEST
+> > diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
+> > index b929ef941208..8bcb420e071c 100644
+> > --- a/drivers/mmc/host/Makefile
+> > +++ b/drivers/mmc/host/Makefile
+> > @@ -68,6 +68,7 @@ obj-$(CONFIG_MMC_VUB300)    += vub300.o
+> >  obj-$(CONFIG_MMC_USHC)               += ushc.o
+> >  obj-$(CONFIG_MMC_WMT)                += wmt-sdmmc.o
+> >  obj-$(CONFIG_MMC_MESON_GX)   += meson-gx-mmc.o
+> > +obj-$(CONFIG_MMC_MESON_MX_SDHC)      += meson-mx-sdhc-clkc.o meson-mx-sdhc.o
+> >  obj-$(CONFIG_MMC_MESON_MX_SDIO)      += meson-mx-sdio.o
+> >  obj-$(CONFIG_MMC_MOXART)     += moxart-mmc.o
+> >  obj-$(CONFIG_MMC_SUNXI)              += sunxi-mmc.o
+> > diff --git a/drivers/mmc/host/meson-mx-sdhc-clkc.c b/drivers/mmc/host/meson-mx-sdhc-clkc.c
+> > new file mode 100644
+> > index 000000000000..1e9dea94f9dc
+> > --- /dev/null
+> > +++ b/drivers/mmc/host/meson-mx-sdhc-clkc.c
+> > @@ -0,0 +1,188 @@
+> > +// SPDX-License-Identifier: GPL-2.0+
+> > +/*
+> > + * Amlogic Meson SDHC clock controller
+> > + *
+> > + * Copyright (C) 2020 Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> > + */
+> > +
+> > +#include <dt-bindings/clock/meson-mx-sdhc-clkc.h>
+> > +
+> > +#include <linux/clk-provider.h>
+> > +#include <linux/device.h>
+> > +#include <linux/platform_device.h>
+> > +
+> > +#include "meson-mx-sdhc.h"
+> > +
+> > +#define MESON_SDHC_NUM_BUILTIN_CLKS  6
+> > +
+> > +struct meson_mx_sdhc_clkc {
+> > +     struct clk_mux                  src_sel;
+> > +     struct clk_divider              div;
+> > +     struct clk_gate                 mod_clk_en;
+> > +     struct clk_gate                 tx_clk_en;
+> > +     struct clk_gate                 rx_clk_en;
+> > +     struct clk_gate                 sd_clk_en;
+> > +     struct clk_hw_onecell_data      hw_onecell_data;
+> > +};
+> > +
+> > +static const struct clk_div_table meson_mx_sdhc_div_table[] = {
+> > +     { .div = 6, .val = 5, },
+> > +     { .div = 8, .val = 7, },
+> > +     { .div = 9, .val = 8, },
+> > +     { .div = 10, .val = 9, },
+> > +     { .div = 12, .val = 11, },
+> > +     { .div = 16, .val = 15, },
+> > +     { .div = 18, .val = 17, },
+> > +     { .div = 34, .val = 33, },
+> > +     { .div = 142, .val = 141, },
+> > +     { .div = 850, .val = 849, },
+> > +     { .div = 2126, .val = 2125, },
+> > +     { .div = 4096, .val = 4095, },
+> > +     { /* sentinel */ }
+> > +};
+> > +
+> > +static const struct meson_mx_sdhc_clkc meson_mx_sdhc_clkc_data = {
+> > +     .src_sel = {
+> > +             .mask = 0x3,
+> > +             .shift = 16,
+> > +     },
+> > +     .div = {
+> > +             .shift = 0,
+> > +             .width = 12,
+> > +             .table = meson_mx_sdhc_div_table,
+> > +     },
+> > +     .mod_clk_en = {
+> > +             .bit_idx = 15,
+> > +     },
+> > +     .tx_clk_en = {
+> > +             .bit_idx = 14,
+> > +     },
+> > +     .rx_clk_en = {
+> > +             .bit_idx = 13,
+> > +     },
+> > +     .sd_clk_en = {
+> > +             .bit_idx = 12,
+> > +     },
+> > +};
+> > +
+> > +static const struct clk_init_data meson_mx_sdhc_clkc_init_data[] = {
+> > +     [SDHC_CLKID_SRC_SEL] = {
+> > +             .name = "sdhc_src_sel",
+> > +             .ops = &clk_mux_ops,
+> > +             .parent_data = (const struct clk_parent_data[]) {
+> > +                     { .fw_name = "clkin0" },
+> > +                     { .fw_name = "clkin1" },
+> > +                     { .fw_name = "clkin2" },
+> > +                     { .fw_name = "clkin3" },
+> > +             },
+> > +             .num_parents = 4,
+> > +     },
+> > +     [SDHC_CLKID_DIV] = {
+> > +             .name = "sdhc_div",
+> > +             .ops = &clk_divider_ops,
+> > +             .parent_hws = (const struct clk_hw *[]) {
+> > +                     &meson_mx_sdhc_clkc_data.src_sel.hw,
+> > +             },
+> > +             .num_parents = 1,
+> > +             .flags = CLK_SET_RATE_PARENT,
+> > +     },
+> > +     [SDHC_CLKID_MOD_CLK] = {
+> > +             .name = "sdhc_mod_clk_on",
+> > +             .ops = &clk_gate_ops,
+> > +             .parent_hws = (const struct clk_hw *[]) {
+> > +                     &meson_mx_sdhc_clkc_data.div.hw,
+> > +             },
+> > +             .num_parents = 1,
+> > +             .flags = CLK_SET_RATE_PARENT,
+> > +     },
+> > +     [SDHC_CLKID_SD_CLK] = {
+> > +             .name = "sdhc_tx_clk_on",
+> > +             .ops = &clk_gate_ops,
+> > +             .parent_hws = (const struct clk_hw *[]) {
+> > +                     &meson_mx_sdhc_clkc_data.div.hw,
+> > +             },
+> > +             .num_parents = 1,
+> > +             .flags = CLK_SET_RATE_PARENT,
+> > +     },
+> > +     [SDHC_CLKID_TX_CLK] = {
+> > +             .name = "sdhc_rx_clk_on",
+> > +             .ops = &clk_gate_ops,
+> > +             .parent_hws = (const struct clk_hw *[]) {
+> > +                     &meson_mx_sdhc_clkc_data.div.hw,
+> > +             },
+> > +             .num_parents = 1,
+> > +             .flags = CLK_SET_RATE_PARENT,
+> > +     },
+> > +     [SDHC_CLKID_RX_CLK] = {
+> > +             .name = "sdhc_sd_clk_on",
+> > +             .ops = &clk_gate_ops,
+> > +             .parent_hws = (const struct clk_hw *[]) {
+> > +                     &meson_mx_sdhc_clkc_data.div.hw,
+> > +             },
+> > +             .num_parents = 1,
+> > +             .flags = CLK_SET_RATE_PARENT,
+> > +     },
+> > +};
+>
+> That quite lot of structures.
+> The interesting information is the parent and divider table mostly, and
+> a few defines for the bit_idx.
+>
+> I feel this could be simplified so it is easier to follow.
+> Maybe something in the same fashion as meson8b-dwmac driver ?
+>
+> > +
+> > +int meson_mx_sdhc_register_clkc(struct device *dev, void __iomem *base)
+> > +{
+> > +     const struct clk_hw *div_parents[1], *gate_parents[1];
+> > +     struct clk_hw_onecell_data *onecell_data;
+> > +     struct meson_mx_sdhc_clkc *clkc_data;
+> > +     struct clk_init_data init_data;
+> > +     int i, ret;
+> > +
+> > +     clkc_data = devm_kzalloc(dev, struct_size(clkc_data,
+> > +                                               hw_onecell_data.hws,
+> > +                                               MESON_SDHC_NUM_BUILTIN_CLKS),
+> > +                              GFP_KERNEL);
+> > +     if (!clkc_data)
+> > +             return -ENOMEM;
+> > +
+> > +     memcpy(clkc_data, &meson_mx_sdhc_clkc_data,
+> > +            sizeof(meson_mx_sdhc_clkc_data));
+> > +
+> > +     div_parents[0] = &clkc_data->src_sel.hw;
+> > +     gate_parents[0] = &clkc_data->div.hw;
+> > +
+> > +     clkc_data->src_sel.reg = base + MESON_SDHC_CLKC;
+> > +     clkc_data->div.reg = base + MESON_SDHC_CLKC;
+> > +     clkc_data->mod_clk_en.reg = base + MESON_SDHC_CLKC;
+> > +     clkc_data->sd_clk_en.reg = base + MESON_SDHC_CLKC;
+> > +     clkc_data->tx_clk_en.reg = base + MESON_SDHC_CLKC;
+> > +     clkc_data->rx_clk_en.reg = base + MESON_SDHC_CLKC;
+> > +
+> > +     onecell_data = &clkc_data->hw_onecell_data;
+> > +     onecell_data->hws[SDHC_CLKID_SRC_SEL] = &clkc_data->src_sel.hw;
+> > +     onecell_data->hws[SDHC_CLKID_DIV] = &clkc_data->div.hw;
+> > +     onecell_data->hws[SDHC_CLKID_MOD_CLK] = &clkc_data->mod_clk_en.hw;
+> > +     onecell_data->hws[SDHC_CLKID_SD_CLK] = &clkc_data->sd_clk_en.hw;
+> > +     onecell_data->hws[SDHC_CLKID_TX_CLK] = &clkc_data->tx_clk_en.hw;
+> > +     onecell_data->hws[SDHC_CLKID_RX_CLK] = &clkc_data->rx_clk_en.hw;
+> > +
+> > +     for (i = 0; i < MESON_SDHC_NUM_BUILTIN_CLKS; i++) {
+> > +             init_data = meson_mx_sdhc_clkc_init_data[i];
+> > +
+> > +             if (i == SDHC_CLKID_SRC_SEL)
+> > +                     /* uses clk_parent_data instead */
+> > +                     init_data.parent_hws = NULL;
+> > +             else if (i == SDHC_CLKID_DIV)
+> > +                     init_data.parent_hws = div_parents;
+> > +             else
+> > +                     init_data.parent_hws = gate_parents;
+> > +
+> > +             onecell_data->hws[i]->init = &init_data;
+> > +
+> > +             ret = devm_clk_hw_register(dev, onecell_data->hws[i]);
+> > +             if (ret) {
+> > +                     dev_err(dev, "Registration of SDHC clock %d failed\n",
+> > +                             i);
+> > +                     return ret;
+> > +             }
+> > +     }
+> > +
+> > +     onecell_data->num = MESON_SDHC_NUM_BUILTIN_CLKS;
+> > +
+> > +     return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
+> > +                                        onecell_data);
+>
+> I think registering a provider for a module that does not provide clocks
+> to any other device is a bit overkill.
+>
+> I understand the matter is getting the per-user clk* pointer.
+> Since this is the module registering the clock, you can use clk_hw->clk
+> to get it.
+>
+> Once you have the clk* of the leaf clocks, you don't even need to keep
+> track of the clk_hw* since you are using devm_
+>
+> Afterward, we should propably discuss with Stephen if something should
+> be added in CCF to get a struct clk* from struct clk_hw*.
+>
 
--- 
-Regards,
+[...]
 
-Laurent Pinchart
+Hmm.
+
+I am not sure the above is a good idea, at all. Unless, I am
+misunderstanding your point, which may be the case.
+
+I think above "shortcuts" could lead to abuse of the clock framework
+and its internal data structures. When going forward, this could make
+it unnecessary harder to maintain the clock framework.
+
+I know, it's not my responsibility, but from my experience with MMC
+and SDIO interfaces, is that those have been too easy abuse - since
+most of the data structures and interfaces have been exported. Now,
+it's hard to roll back that, if you see what I mean.
+
+> > +}
+> > diff --git a/drivers/mmc/host/meson-mx-sdhc.c b/drivers/mmc/host/meson-mx-sdhc.c
+> > new file mode 100644
+> > index 000000000000..3c54d5f91fbc
+> > --- /dev/null
+> > +++ b/drivers/mmc/host/meson-mx-sdhc.c
+> > @@ -0,0 +1,916 @@
+> > +// SPDX-License-Identifier: GPL-2.0+
+> > +/*
+> > + * Amlogic Meson6/Meson8/Meson8b/Meson8m2 SDHC MMC host controller driver.
+> > + *
+> > + * Copyright (C) 2020 Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> > + */
+
+[...]
+
+Kind regards
+Uffe
