@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D12971C0238
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78281C021C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgD3QTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:19:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58752 "EHLO mail.kernel.org"
+        id S1726929AbgD3QSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:18:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728118AbgD3QSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728113AbgD3QSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 30 Apr 2020 12:18:39 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E525424958;
+        by mail.kernel.org (Postfix) with ESMTPSA id DE5A524957;
         Thu, 30 Apr 2020 16:18:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588263518;
-        bh=vUQJK6iUb1DSHmuLcT8V2zKM9fkwWsWsXbhGEZFJdNU=;
+        bh=QZoCtLS8vGxFXMe1dFt6/xBiiVGEl5Zx8nnYO8f1efI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ILgmivu4xQs3dGo9SH0b0gTkpmemnKFtds1UebIAhkIkQExXQydry1RXgDZzZt1ns
-         nx8iZSA62AXTHe3HyvjKu1O9bB1pE2s7udYhBegRUMtU/efFtvJvvK9DrpReKOg4uM
-         o7cIfqDvgZDtfvtxYkZcQdhGwiGSDFP3XnyznTgE=
+        b=H9OoOMPfLKL9ccdYmXdsNHV03NyOb/pVa+IhySo5mw0s7lDdxSnRk/HRvbEm8rO/x
+         tIpy4Iwcc/yAbwYL1iClCtqH3ONVtL4KfqkdV+EHkAHFe0/jLYgfZ25Ptg7oAx30er
+         dqKLIELwO1+0JYcsmvuBtft53HKwxBCuhQJaMOko=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jUBtU-00AxhS-5I; Thu, 30 Apr 2020 18:18:36 +0200
+        id 1jUBtU-00AxhX-6L; Thu, 30 Apr 2020 18:18:36 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v4 11/19] docs: misc-devices/apds990x.txt: convert to ReST format
-Date:   Thu, 30 Apr 2020 18:18:25 +0200
-Message-Id: <9b02b1e2b42e9f6b4e911802ada9b63722090398.1588263270.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
+Subject: [PATCH v4 12/19] docs: pci: endpoint/function/binding/pci-test.txt convert to ReST
+Date:   Thu, 30 Apr 2020 18:18:26 +0200
+Message-Id: <fa73d1a7fb6c4691899a110a732216bcdac75f2b.1588263270.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1588263270.git.mchehab+huawei@kernel.org>
 References: <cover.1588263270.git.mchehab+huawei@kernel.org>
@@ -43,115 +44,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Adjust title markup;
-- Adjust identation.
+Convert this file to ReST by adding a proper title to it and
+use the right markups for a table.
+
+While here, add a SPDX header.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../{apds990x.txt => apds990x.rst}            | 31 ++++++++++++++-----
- Documentation/misc-devices/index.rst          |  1 +
- 2 files changed, 25 insertions(+), 7 deletions(-)
- rename Documentation/misc-devices/{apds990x.txt => apds990x.rst} (86%)
+ .../endpoint/function/binding/pci-test.rst    | 26 +++++++++++++++++++
+ .../endpoint/function/binding/pci-test.txt    | 19 --------------
+ Documentation/PCI/endpoint/index.rst          |  2 ++
+ .../misc-devices/pci-endpoint-test.rst        |  2 +-
+ 4 files changed, 29 insertions(+), 20 deletions(-)
+ create mode 100644 Documentation/PCI/endpoint/function/binding/pci-test.rst
+ delete mode 100644 Documentation/PCI/endpoint/function/binding/pci-test.txt
 
-diff --git a/Documentation/misc-devices/apds990x.txt b/Documentation/misc-devices/apds990x.rst
-similarity index 86%
-rename from Documentation/misc-devices/apds990x.txt
-rename to Documentation/misc-devices/apds990x.rst
-index 454d95d623b3..e2f75577f731 100644
---- a/Documentation/misc-devices/apds990x.txt
-+++ b/Documentation/misc-devices/apds990x.rst
-@@ -1,3 +1,6 @@
+diff --git a/Documentation/PCI/endpoint/function/binding/pci-test.rst b/Documentation/PCI/endpoint/function/binding/pci-test.rst
+new file mode 100644
+index 000000000000..57ee866fb165
+--- /dev/null
++++ b/Documentation/PCI/endpoint/function/binding/pci-test.rst
+@@ -0,0 +1,26 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
-+======================
- Kernel driver apds990x
- ======================
- 
-@@ -50,14 +53,18 @@ chip_id
- 
- power_state
- 	RW - enable / disable chip. Uses counting logic
++==========================
++PCI Test Endpoint Function
++==========================
 +
- 	     1 enables the chip
- 	     0 disables the chip
- lux0_input
- 	RO - measured lux value
++name: Should be "pci_epf_test" to bind to the pci_epf_test driver.
 +
- 	     sysfs_notify called when threshold interrupt occurs
- 
- lux0_sensor_range
--	RO - lux0_input max value. Actually never reaches since sensor tends
-+	RO - lux0_input max value.
++Configurable Fields:
 +
-+	     Actually never reaches since sensor tends
- 	     to saturate much before that. Real max value varies depending
- 	     on the light spectrum etc.
- 
-@@ -68,7 +75,9 @@ lux0_rate_avail
- 	RO - supported measurement rates
- 
- lux0_calibscale
--	RW - calibration value. Set to neutral value by default.
-+	RW - calibration value.
++================   ===========================================================
++vendorid	   should be 0x104c
++deviceid	   should be 0xb500 for DRA74x and 0xb501 for DRA72x
++revid		   don't care
++progif_code	   don't care
++subclass_code	   don't care
++baseclass_code	   should be 0xff
++cache_line_size	   don't care
++subsys_vendor_id   don't care
++subsys_id	   don't care
++interrupt_pin	   Should be 1 - INTA, 2 - INTB, 3 - INTC, 4 -INTD
++msi_interrupts	   Should be 1 to 32 depending on the number of MSI interrupts
++		   to test
++msix_interrupts	   Should be 1 to 2048 depending on the number of MSI-X
++		   interrupts to test
++================   ===========================================================
+diff --git a/Documentation/PCI/endpoint/function/binding/pci-test.txt b/Documentation/PCI/endpoint/function/binding/pci-test.txt
+deleted file mode 100644
+index cd76ba47394b..000000000000
+--- a/Documentation/PCI/endpoint/function/binding/pci-test.txt
++++ /dev/null
+@@ -1,19 +0,0 @@
+-PCI TEST ENDPOINT FUNCTION
+-
+-name: Should be "pci_epf_test" to bind to the pci_epf_test driver.
+-
+-Configurable Fields:
+-vendorid	 : should be 0x104c
+-deviceid	 : should be 0xb500 for DRA74x and 0xb501 for DRA72x
+-revid		 : don't care
+-progif_code	 : don't care
+-subclass_code	 : don't care
+-baseclass_code	 : should be 0xff
+-cache_line_size	 : don't care
+-subsys_vendor_id : don't care
+-subsys_id	 : don't care
+-interrupt_pin	 : Should be 1 - INTA, 2 - INTB, 3 - INTC, 4 -INTD
+-msi_interrupts	 : Should be 1 to 32 depending on the number of MSI interrupts
+-		   to test
+-msix_interrupts	 : Should be 1 to 2048 depending on the number of MSI-X
+-		   interrupts to test
+diff --git a/Documentation/PCI/endpoint/index.rst b/Documentation/PCI/endpoint/index.rst
+index d114ea74b444..4ca7439fbfc9 100644
+--- a/Documentation/PCI/endpoint/index.rst
++++ b/Documentation/PCI/endpoint/index.rst
+@@ -11,3 +11,5 @@ PCI Endpoint Framework
+    pci-endpoint-cfs
+    pci-test-function
+    pci-test-howto
 +
-+	     Set to neutral value by default.
- 	     Output results are multiplied with calibscale / calibscale_default
- 	     value.
++   function/binding/pci-test
+diff --git a/Documentation/misc-devices/pci-endpoint-test.rst b/Documentation/misc-devices/pci-endpoint-test.rst
+index 26e5d9ba146b..4cf3f4433be7 100644
+--- a/Documentation/misc-devices/pci-endpoint-test.rst
++++ b/Documentation/misc-devices/pci-endpoint-test.rst
+@@ -53,4 +53,4 @@ ioctl
+ 	      Perform read tests. The size of the buffer should be passed
+ 	      as argument.
  
-@@ -76,16 +85,21 @@ lux0_calibscale_default
- 	RO - neutral calibration value
- 
- lux0_thresh_above_value
--	RW - HI level threshold value. All results above the value
-+	RW - HI level threshold value.
-+
-+	     All results above the value
- 	     trigs an interrupt. 65535 (i.e. sensor_range) disables the above
- 	     interrupt.
- 
- lux0_thresh_below_value
--	RW - LO level threshold value. All results below the value
-+	RW - LO level threshold value.
-+
-+	     All results below the value
- 	     trigs an interrupt. 0 disables the below interrupt.
- 
- prox0_raw
- 	RO - measured proximity value
-+
- 	     sysfs_notify called when threshold interrupt occurs
- 
- prox0_sensor_range
-@@ -93,11 +107,14 @@ prox0_sensor_range
- 
- prox0_raw_en
- 	RW - enable / disable proximity - uses counting logic
--	     1 enables the proximity
--	     0 disables the proximity
-+
-+	     - 1 enables the proximity
-+	     - 0 disables the proximity
- 
- prox0_reporting_mode
--	RW - trigger / periodic. In "trigger" mode the driver tells two possible
-+	RW - trigger / periodic.
-+
-+	     In "trigger" mode the driver tells two possible
- 	     values: 0 or prox0_sensor_range value. 0 means no proximity,
- 	     1023 means proximity. This causes minimal number of interrupts.
- 	     In "periodic" mode the driver reports all values above
-diff --git a/Documentation/misc-devices/index.rst b/Documentation/misc-devices/index.rst
-index d28e755a1595..a31c2ab8151f 100644
---- a/Documentation/misc-devices/index.rst
-+++ b/Documentation/misc-devices/index.rst
-@@ -15,6 +15,7 @@ fit into other categories.
-    :maxdepth: 2
- 
-    ad525x_dpot
-+   apds990x
-    bh1770glc
-    eeprom
-    c2port
+-.. [1] Documentation/PCI/endpoint/function/binding/pci-test.txt
++.. [1] Documentation/PCI/endpoint/function/binding/pci-test.rst
 -- 
 2.25.4
 
