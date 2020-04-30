@@ -2,94 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62F91BEE83
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAA11BEE9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgD3DGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 23:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726180AbgD3DGd (ORCPT
+        id S1726501AbgD3DWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 23:22:03 -0400
+Received: from mail.ac.gov.br ([179.252.114.240]:39506 "EHLO
+        srvifs070.ac.gov.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbgD3DWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 23:06:33 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49469C035494;
-        Wed, 29 Apr 2020 20:06:33 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id e26so3726876otr.2;
-        Wed, 29 Apr 2020 20:06:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ABv9ETxmWVKZEO3VSo8L3zhU3G/XlY5BsKo9f2kZ5Yk=;
-        b=mZoGzVoKLbQZAxzfUkp0A91eCDYoyBo8tHgMZV9uN7sK3XWYShi7wxaVwXbuCiN5fJ
-         NukUVJE5MHc4z8TFMm3C+6yAunEEJOpVwPE5AkNEfzDK2SkwyegmWVH8V7v/1iIBKvxw
-         qaDY7lJ8DpfUVK254Ura1XH+64gYYj02730nA4RGOQxi4LtXxctSvVj4GNcjhKxdyRPR
-         xFJAs+D/QkQPQDV23ozNTuFsZKJ3T+lyGNSYPym6wTGWh26XUKva4V74yLUeD7cHGidO
-         0kTWYjRw+2o9mYL8FohVs9oorCj/vwoAN8ZvFIOxEAyKUOIC99qtSF0Pg1w4/HS1Tc6R
-         4cCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ABv9ETxmWVKZEO3VSo8L3zhU3G/XlY5BsKo9f2kZ5Yk=;
-        b=esFK1IRmrH547eUp+n8QfXuIrh15Yio395gqVqx3xn7FyKcYmFarEULryWJE5zeZRg
-         AJaRzZdaDp3+Rj/3crotM8QSO7KNPeAmEGtNpaOcZKd+REPWvVqSRgI5Go/2pSWc3v3y
-         w24SNyhYV88aqvGUswhCWSMw8pTT3FUnc3wZloaDEps/yP/n5/pqXqi7NRHVumwQ18wO
-         QP6vyjCl8H3QZR2BrFOjjdjShhgicpAbQqqi+Yj/RstqXrlviPDJlljPChVSD+Ib92s5
-         n458tuFJjssUJ7i+hZRoMQrkKis9WdpumNyJmubL9Y6ymdEea/QoA+Tv2MlnD+i2/bmv
-         LGew==
-X-Gm-Message-State: AGi0PubXntyjEBuJZyOmv2OUBlx/xsSUAwpMWNUjbm7Cyc9YyaZvLC6Q
-        O5rn4baarwhJPnLmG9+HYm4=
-X-Google-Smtp-Source: APiQypJdF1+JvYVFI/vROWk4KVS2q/2HHbebeqzLzbQt3+P5rUWAys5TcAJJKZ41KrVgBNtXSVSrtw==
-X-Received: by 2002:a9d:2622:: with SMTP id a31mr926767otb.231.1588215992718;
-        Wed, 29 Apr 2020 20:06:32 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id 94sm878669otc.72.2020.04.29.20.06.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 20:06:32 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 20:06:30 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Dmitry Golovin <dima@golovin.in>
-Subject: Re: [PATCH v5 0/5] Allow ld.lld to link the MIPS VDSO
-Message-ID: <20200430030630.GB3546299@ubuntu-s3-xlarge-x86>
-References: <20200423171807.29713-1-natechancellor@gmail.com>
- <20200428221419.2530697-1-natechancellor@gmail.com>
- <CA+icZUVz8zYVY3rgT4hS6a11+1Pw6y_Du-hkPra1PkgtLWgRbA@mail.gmail.com>
+        Wed, 29 Apr 2020 23:22:02 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id CB86A31C9B25;
+        Wed, 29 Apr 2020 22:07:11 -0500 (ACT)
+Received: from srvifs070.ac.gov.br ([127.0.0.1])
+        by localhost (srvifs070.ac.gov.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id zTnLaEsz5DgI; Wed, 29 Apr 2020 22:07:11 -0500 (ACT)
+Received: from srvifs070.ac.gov.br (localhost [127.0.0.1])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id DECA431C9B34;
+        Wed, 29 Apr 2020 22:07:08 -0500 (ACT)
+Received: from srvifs070.ac.gov.br (srvifs070.ac.gov.br [10.1.4.71])
+        by srvifs070.ac.gov.br (Postfix) with ESMTP id D981231C9B0E;
+        Wed, 29 Apr 2020 22:07:03 -0500 (ACT)
+Date:   Wed, 29 Apr 2020 23:07:02 -0400 (AMT)
+From:   Morgan Stanley <angela.magalhaes@ac.gov.br>
+Reply-To: Morgan Stanley <invest-Morgan.stanley@outlook.co.id>
+Message-ID: <1207990856.544963.1588216022257.JavaMail.zimbra@ac.gov.br>
+Subject: Beantragen Sie eine dringende Gutschrift
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUVz8zYVY3rgT4hS6a11+1Pw6y_Du-hkPra1PkgtLWgRbA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [102.166.83.42]
+X-Mailer: Zimbra 8.0.6_GA_5922 (zclient/8.0.6_GA_5922)
+Thread-Topic: Beantragen Sie eine dringende Gutschrift
+Thread-Index: dAZW0C1qt4i+vjRL8l1nucnvbk2ICQ==
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 09:04:42AM +0200, Sedat Dilek wrote:
-> On Wed, Apr 29, 2020 at 12:14 AM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> 
-> > Patch 1 adds ld.lld support to Kconfig so that we can avoid certain
-> > ld.bfd checks.
-> >
-> 
-> Is it possible to introduce and add LD_IS_BFD Kconfig for ld.bfd in this series?
-> Most people agreed on this name AFAICS.
-> What do people think?
-> 
-> - Sedat -
 
-What is the use case for LD_IS_BFD right now? I am not sure I see a
-reason to add a CONFIG value that won't see any immediate use.
 
-Cheers,
-Nathan
+-- 
+Sind Sie ein Gesch&auml;ftsmann oder eine Gesch&auml;ftsfrau? Befinden Sie sich in einer Finanzkrise oder ben&ouml;tigen Sie Mittel, um ein eigenes Unternehmen zu gr&uuml;nden? Ben&ouml;tigen Sie einen Kredit, um Ihre Schulden zu begleichen, Ihre Rechnungen zu bezahlen oder ein gutes Gesch&auml;ft zu er&ouml;ffnen? Haben Sie eine niedrige Kreditw&uuml;rdigkeit und es f&auml;llt Ihnen schwer, einen Kapitalkredit von lokalen Banken und anderen Finanzinstituten zu erhalten? Hier ist Ihre Chance, einen Kredit von unserem Unternehmen zu erhalten. Wir bieten Privatpersonen Kredite f&uuml;r folgende Zwecke und mehr an. Privatkredit, Gesch&auml;ftsausweitung, Unternehmensgr&uuml;ndung, Bildung, Schuldenkonsolidierung, Hartgeldkredite. Wir bieten Darlehen zu einem niedrigen Zinssatz von 2%. Bewerben Sie sich jetzt per E-Mail: (invest-Morgan.stanley@outlook.co.id)
