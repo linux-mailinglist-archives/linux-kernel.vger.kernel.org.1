@@ -2,207 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FA61BF8CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF741BF8DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbgD3NDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:03:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49728 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726961AbgD3NDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:03:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5BD26AC85;
-        Thu, 30 Apr 2020 13:03:35 +0000 (UTC)
-From:   Roman Penyaev <rpenyaev@suse.de>
-Cc:     Roman Penyaev <rpenyaev@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Khazhismel Kumykov <khazhy@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, Heiher <r@hev.cc>,
-        Jason Baron <jbaron@akamai.com>, stable@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] epoll: atomically remove wait entry on wake up
-Date:   Thu, 30 Apr 2020 15:03:26 +0200
-Message-Id: <20200430130326.1368509-2-rpenyaev@suse.de>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200430130326.1368509-1-rpenyaev@suse.de>
-References: <20200430130326.1368509-1-rpenyaev@suse.de>
+        id S1727084AbgD3NES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:04:18 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42487 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726550AbgD3NER (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:04:17 -0400
+Received: by mail-ot1-f67.google.com with SMTP id m18so4786277otq.9;
+        Thu, 30 Apr 2020 06:04:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p8uSpmhwBDQ1U9t+PlYqOYkuJzr7dXp1+naCrrRJGfY=;
+        b=slOtTPldluIQvsCBZyrXip9p3qdoe/Qe6+WmHWW+5XCDnXAIatIHcrSjh/w/2DMF4s
+         HUyS/y8TR3GlnTJcy5m7z7m9UnxNz+st7KYGoN2x86fDNE+5uZdTnJf0T+VWWZff/Au0
+         vEBmr9nxd9emLIKPil7TqVYap1rwMFMPMcefelm6jdrz52zy/ZLT6bQxWebdblAo9L5i
+         GNG2Wyh/oYzab3lfdSb3jPhpNLjMOk6h1YtTLXdaa3Jg9BJ2QxFHDlG35Okr32FHY1sc
+         x4jkm15WxCkZvwNJO4y9FyfVTx+xyCDiV4Q7VrHYaXFBF3o6+G0kWbznH1MGzai2I5PY
+         0Zpw==
+X-Gm-Message-State: AGi0PuYWk4x5oc8GPgH+u77ECUzIV7MrnpEoSfOE5b0hzxwo0h4zSl2r
+        7Dd4GZ47ZZU5uGIDUVk14Q3CQXcs/mQk1w88tv0=
+X-Google-Smtp-Source: APiQypJM8NPdDbTWm6Iu7eFmwUmgJfrZdKrQ+XkEkbx+p2+b3lqy3IQKLn2ouBNMfjTTCkDtqDWWS/OEgjBAfo04W0E=
+X-Received: by 2002:a9d:564:: with SMTP id 91mr2433669otw.250.1588251856441;
+ Thu, 30 Apr 2020 06:04:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <1588197415-13747-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1588197415-13747-6-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1588197415-13747-6-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 30 Apr 2020 15:04:05 +0200
+Message-ID: <CAMuHMdWDFDEYtD6kW5x96j-fwpkxXeaoOvXZdF1Ex-zaT+zANw@mail.gmail.com>
+Subject: Re: [PATCH 05/18] dt-bindings: pinctrl: sh-pfc: Document r8a7742 PFC support
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch does two things:
+On Wed, Apr 29, 2020 at 11:58 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Document PFC support for the RZ/G1H (R8A7742) SoC.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-1. fixes lost wakeup introduced by:
-  339ddb53d373 ("fs/epoll: remove unnecessary wakeups of nested epoll")
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in sh-pfc-for-v5.8.
 
-2. improves performance for events delivery.
+Gr{oetje,eeting}s,
 
-The description of the problem is the following: if N (>1) threads
-are waiting on ep->wq for new events and M (>1) events come, it is
-quite likely that >1 wakeups hit the same wait queue entry, because
-there is quite a big window between __add_wait_queue_exclusive() and
-the following __remove_wait_queue() calls in ep_poll() function.  This
-can lead to lost wakeups, because thread, which was woken up, can
-handle not all the events in ->rdllist. (in better words the problem
-is described here: https://lkml.org/lkml/2019/10/7/905)
+                        Geert
 
-The idea of the current patch is to use init_wait() instead of
-init_waitqueue_entry(). Internally init_wait() sets
-autoremove_wake_function as a callback, which removes the wait entry
-atomically (under the wq locks) from the list, thus the next coming
-wakeup hits the next wait entry in the wait queue, thus preventing
-lost wakeups.
-
-Problem is very well reproduced by the epoll60 test case [1].
-
-Wait entry removal on wakeup has also performance benefits, because
-there is no need to take a ep->lock and remove wait entry from the
-queue after the successful wakeup. Here is the timing output of
-the epoll60 test case:
-
-  With explicit wakeup from ep_scan_ready_list() (the state of the
-  code prior 339ddb53d373):
-
-    real    0m6.970s
-    user    0m49.786s
-    sys     0m0.113s
-
- After this patch:
-
-   real    0m5.220s
-   user    0m36.879s
-   sys     0m0.019s
-
-The other testcase is the stress-epoll [2], where one thread consumes
-all the events and other threads produce many events:
-
-  With explicit wakeup from ep_scan_ready_list() (the state of the
-  code prior 339ddb53d373):
-
-    threads  events/ms  run-time ms
-          8       5427         1474
-         16       6163         2596
-         32       6824         4689
-         64       7060         9064
-        128       6991        18309
-
- After this patch:
-
-    threads  events/ms  run-time ms
-          8       5598         1429
-         16       7073         2262
-         32       7502         4265
-         64       7640         8376
-        128       7634        16767
-
- (number of "events/ms" represents event bandwidth, thus higher is
-  better; number of "run-time ms" represents overall time spent
-  doing the benchmark, thus lower is better)
-
-[1] tools/testing/selftests/filesystems/epoll/epoll_wakeup_test.c
-[2] https://github.com/rouming/test-tools/blob/master/stress-epoll.c
-
-Signed-off-by: Roman Penyaev <rpenyaev@suse.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Khazhismel Kumykov <khazhy@google.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Heiher <r@hev.cc>
-Cc: Jason Baron <jbaron@akamai.com>
-Cc: stable@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- fs/eventpoll.c | 43 ++++++++++++++++++++++++-------------------
- 1 file changed, 24 insertions(+), 19 deletions(-)
-
-diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-index d6ba0e52439b..aba03ee749f8 100644
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -1822,7 +1822,6 @@ static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
- {
- 	int res = 0, eavail, timed_out = 0;
- 	u64 slack = 0;
--	bool waiter = false;
- 	wait_queue_entry_t wait;
- 	ktime_t expires, *to = NULL;
- 
-@@ -1867,21 +1866,23 @@ static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
- 	 */
- 	ep_reset_busy_poll_napi_id(ep);
- 
--	/*
--	 * We don't have any available event to return to the caller.  We need
--	 * to sleep here, and we will be woken by ep_poll_callback() when events
--	 * become available.
--	 */
--	if (!waiter) {
--		waiter = true;
--		init_waitqueue_entry(&wait, current);
--
-+	do {
-+		/*
-+		 * Internally init_wait() uses autoremove_wake_function(),
-+		 * thus wait entry is removed from the wait queue on each
-+		 * wakeup. Why it is important? In case of several waiters
-+		 * each new wakeup will hit the next waiter, giving it the
-+		 * chance to harvest new event. Otherwise wakeup can be
-+		 * lost. This is also good performance-wise, because on
-+		 * normal wakeup path no need to call __remove_wait_queue()
-+		 * explicitly, thus ep->lock is not taken, which halts the
-+		 * event delivery.
-+		 */
-+		init_wait(&wait);
- 		write_lock_irq(&ep->lock);
- 		__add_wait_queue_exclusive(&ep->wq, &wait);
- 		write_unlock_irq(&ep->lock);
--	}
- 
--	for (;;) {
- 		/*
- 		 * We don't want to sleep if the ep_poll_callback() sends us
- 		 * a wakeup in between. That's why we set the task state
-@@ -1911,10 +1912,20 @@ static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
- 			timed_out = 1;
- 			break;
- 		}
--	}
-+
-+		/* We were woken up, thus go and try to harvest some events */
-+		eavail = 1;
-+
-+	} while (0);
- 
- 	__set_current_state(TASK_RUNNING);
- 
-+	if (!list_empty_careful(&wait.entry)) {
-+		write_lock_irq(&ep->lock);
-+		__remove_wait_queue(&ep->wq, &wait);
-+		write_unlock_irq(&ep->lock);
-+	}
-+
- send_events:
- 	/*
- 	 * Try to transfer events to user space. In case we get 0 events and
-@@ -1925,12 +1936,6 @@ static int ep_poll(struct eventpoll *ep, struct epoll_event __user *events,
- 	    !(res = ep_send_events(ep, events, maxevents)) && !timed_out)
- 		goto fetch_events;
- 
--	if (waiter) {
--		write_lock_irq(&ep->lock);
--		__remove_wait_queue(&ep->wq, &wait);
--		write_unlock_irq(&ep->lock);
--	}
--
- 	return res;
- }
- 
 -- 
-2.24.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
