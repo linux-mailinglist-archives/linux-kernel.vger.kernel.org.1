@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28871C0279
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD351C0284
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgD3Q2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:28:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59276 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726415AbgD3Q2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:28:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 69D85AC92;
-        Thu, 30 Apr 2020 16:27:59 +0000 (UTC)
-Message-ID: <affd68499ff843e8f3e0d18890699e18cde7582e.camel@suse.de>
-Subject: Re: [PATCH v2 04/91] firmware: rpi: Only create clocks device if we
- don't have a node for it
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Maxime Ripard <maxime@cerno.tech>, Eric Anholt <eric@anholt.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>
-Date:   Thu, 30 Apr 2020 18:27:58 +0200
-In-Reply-To: <b181d867cb9523e1877a3dfd258bafde2988024f.1587742492.git-series.maxime@cerno.tech>
-References: <cover.d1e741d37e43e1ba2d2ecd93fc81d42a6df99d14.1587742492.git-series.maxime@cerno.tech>
-         <b181d867cb9523e1877a3dfd258bafde2988024f.1587742492.git-series.maxime@cerno.tech>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-8iAI6Ck2SuZD2phx19xp"
-User-Agent: Evolution 3.36.2 
+        id S1726737AbgD3Qaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:30:30 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13064 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgD3Qa2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:30:28 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eaafce10000>; Thu, 30 Apr 2020 09:29:21 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 30 Apr 2020 09:30:28 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 30 Apr 2020 09:30:28 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
+ 2020 16:30:28 +0000
+Received: from [10.2.165.152] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
+ 2020 16:30:26 +0000
+Subject: Re: [RFC PATCH v11 6/9] media: tegra: Add Tegra210 Video input driver
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
+        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
+CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1588197606-32124-1-git-send-email-skomatineni@nvidia.com>
+ <1588197606-32124-7-git-send-email-skomatineni@nvidia.com>
+ <bacc4308-4b95-f566-b80e-096ff96407b5@gmail.com>
+ <4da289e6-036f-853b-beb4-379d6462adb0@gmail.com>
+ <c6d54885-6f23-f60c-a17b-3481fc4d6adf@gmail.com>
+ <b14b9dc5-7ac9-7735-d98d-eebc7e151cba@nvidia.com>
+Message-ID: <7d31d24f-f353-7e82-3ff9-cdba8b773d1e@nvidia.com>
+Date:   Thu, 30 Apr 2020 09:29:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <b14b9dc5-7ac9-7735-d98d-eebc7e151cba@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1588264161; bh=2DroO8GJPT0AtZeSQK8ueROEdYIu6Ovs1ect3MjQzPE=;
+        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=sOWMM3UKIfeFYgOV3uLGzs75tw9iBGuZFODCZwKiHiL0dCOJKwlbBZuiVacayju7e
+         27d2YHXn6JgrBPa+b3Hh61DgKBgkUmucxkOTNu8c+vgIAULPzB8dey7Yw/htsnhCCi
+         sgpgv5qzEi2Xjxe45K2l7wKPHL30bR76787qy9sYYntYjM1k3MGUtvwlC2oBaqb24e
+         T3cqJ8NssY3wetqt+VdP8KOmm25bnSyqK5rGV9hT8NdshtcuZqFpdbsfHCebZ31M2P
+         +9bqvOZCh/SYfCppuNEApgaVu0DmUSJyW0MHRm1PjX133UeOdd26rXX75kPw9uNcGz
+         6VU8iQUbmqIyA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---=-8iAI6Ck2SuZD2phx19xp
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2020-04-24 at 17:33 +0200, Maxime Ripard wrote:
-> The firmware clocks driver was previously probed through a platform_devic=
-e
-> created by the firmware driver.
->=20
-> Since we will now have a node for that clocks driver, we need to create t=
-he
-> device only in the case where there's no node for it already.
->=20
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
->  drivers/firmware/raspberrypi.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberryp=
-i.c
-> index da26a584dca0..1874f41b007c 100644
-> --- a/drivers/firmware/raspberrypi.c
-> +++ b/drivers/firmware/raspberrypi.c
-> @@ -210,6 +210,15 @@ rpi_register_hwmon_driver(struct device *dev, struct
-> rpi_firmware *fw)
-> =20
->  static void rpi_register_clk_driver(struct device *dev)
->  {
-> +	/*
-> +	 * Earlier DTs don't have a node for the firmware clocks but
-> +	 * rely on us creating a platform device by hand. If we do
-> +	 * have a node for the firmware clocks, just bail out here.
-> +	 */
-> +	if (of_get_compatible_child(dev->of_node,
-> +				    "raspberrypi,firmware-clocks"))
-
-In the case you find a compatible device node you have to decrement the
-refcount of_get_compatible_child() increased before leaving.
-
-Regards,
-Nicolas
-
-
---=-8iAI6Ck2SuZD2phx19xp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6q/I4ACgkQlfZmHno8
-x/7lFAf/ZpNeGVs0IJARqWX4JgGzfAueqaUdKpDNTfmLeklqw80t61otAkXEg88E
-4MPVJnyIQvyPVDN0mgKg34bytiAYby8jadKUe9/H2e6eCkQ4+5XL2OiJBdsDZtrO
-61TiPBWTOLY4c6Kixyx+0zGElXfcvZF+RLN37NqZVKG0JAsebwUWIbCxLKuf9cWj
-KSMYL2iNFNs6RYVctEdLh5pFAnaEtA14Gg9sJlpXO718MS+UBsa5wRmlN973IWUO
-u8PqR317lotzyFeD1U5iuaWSBPsuZKbQYLhLh2/UXoCpBbLZeV/5wp64hxpBh1vF
-XU33W6eYeOM9fRbgMKq74VUDZlf1DA==
-=+5W0
------END PGP SIGNATURE-----
-
---=-8iAI6Ck2SuZD2phx19xp--
-
+On 4/30/20 9:04 AM, Sowjanya Komatineni wrote:
+>
+> On 4/30/20 7:13 AM, Dmitry Osipenko wrote:
+>> 30.04.2020 17:02, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>> 30.04.2020 16:56, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>> 30.04.2020 01:00, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>>> +static int chan_capture_kthread_finish(void *data)
+>>>>> +{
+>>>>> +=C2=A0=C2=A0=C2=A0 struct tegra_vi_channel *chan =3D data;
+>>>>> +=C2=A0=C2=A0=C2=A0 struct tegra_channel_buffer *buf;
+>>>>> +
+>>>>> +=C2=A0=C2=A0=C2=A0 set_freezable();
+>>>>> +
+>>>>> +=C2=A0=C2=A0=C2=A0 while (1) {
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 try_to_freeze();
+>>>> I guess it won't be great to freeze in the middle of a capture=20
+>>>> process, so:
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (list_empty(&chan->done)=
+)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 try=
+_to_freeze();
+>>> And here should be some locking protection in order not race with the
+>>> chan_capture_kthread_start because kthread_finish could freeze before
+>>> kthread_start.
+>> Or maybe both start / finish threads should simply be allowed to freeze
+>> only when both capture and done lists are empty.
+>>
+>> if (list_empty(&chan->capture) &&
+>> =C2=A0=C2=A0=C2=A0=C2=A0 list_empty(&chan->done))
+>> =C2=A0=C2=A0=C2=A0=C2=A0try_to_freeze();
+>
+> good to freeze when not in middle of the frame capture but why should=20
+> we not allow freeze in between captures?
+>
+> Other drivers do allow freeze in between frame captures.
+>
+> I guess we can freeze before dequeue for capture and in finish thread=20
+> we can freeze after capture done. This also don't need to check for=20
+> list_empty with freeze to allow between frame captures.
+>
+Also if we add check for both lists empty, freeze is not allowed as long=20
+as streaming is going on and in case of continuous streaming freeze will=20
+never happen.
