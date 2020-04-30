@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90561BEE8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071771BEE96
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726550AbgD3DMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 23:12:14 -0400
-Received: from mail-pf1-f173.google.com ([209.85.210.173]:38854 "EHLO
-        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726357AbgD3DMN (ORCPT
+        id S1726684AbgD3DOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 23:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726180AbgD3DOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 23:12:13 -0400
-Received: by mail-pf1-f173.google.com with SMTP id y25so2198824pfn.5;
-        Wed, 29 Apr 2020 20:12:13 -0700 (PDT)
+        Wed, 29 Apr 2020 23:14:07 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DDE1C035494;
+        Wed, 29 Apr 2020 20:14:06 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id m13so3720110otf.6;
+        Wed, 29 Apr 2020 20:14:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Yk1qx7mYE1aZnTKQ+ngsNAgl6tNY8Bqpu8zbakapxPY=;
+        b=pfNtPjRJB+VgiWI1sFo3jsPx5ELnGl5bbTk2OiBRmTGNxm1CnegCV3D1vwO19Ihb6x
+         cJpWE4dFUB60feCcEZ5sbt+d5HK6RnuNeLYtf24lfEfk34Tn4kd+0qntQo5aWr/p+hSO
+         ZmyxwyrdegOcE2YNSoCsw6nTSmPNqySgc1IEwpPvGglbjmvFuPrxbfKGIKJdT5ly1eKm
+         RJkGgTNpW0vQesq2SMbqO5deWGupAsoy9MZvLHDYmxaDjee53w4gDUw+bSPNbP0L6kgW
+         rL1h2R9x6uFFteENfvXSC0/3489+TEU2kNXwlvFoD8fygGjxdsU3JowH5/pdBE/iWccA
+         dZPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=SMIh/7yA/TcacM5ktTGAgddafFfMiqmeZDeRLLRUZ38=;
-        b=N2mzXORPzsRrJudZJFe1GZB06YTGIF0fSTGsf1/Xur9WAeA23hlhOHaBO1APzaT+Qd
-         HuSM4tyTmxTIsEKN6rAQsyO9alCiwcyM6x1fgox5zj5sj0FP+Kr86MiiTdwYodO0bSMy
-         mRs3+hCPhs8H35EdmtGqltT4d6OVKCR0UEngFZp5U/GF2XiP4Qp+vk1iorA7r0oRkX8r
-         VWvr/bHUiaVLU7BexWuvWlvRSFWIit6SXZOMLMMJQjcdXSImQ2U1bwrgcB9YQi0dfyNI
-         yEXKOEsaT6TCQBO4TtebGpKq7haP3563aKU8QTUV6aMaZ2qeBWaX/XxxU5pPEPPD13Nz
-         A4YA==
-X-Gm-Message-State: AGi0PubGSjV5rgZM8rlT/4jHyvvYGBWEJszeq6c9r4iFii3zQk9qzExF
-        tdNLhFuKTOWR1QbgUHjDFuk=
-X-Google-Smtp-Source: APiQypImFjuz5sapmhHaxue1R17ZIKtmudlLldNmU5d8yRcooOIDtm3MCsQy/NjvrO7HHCc89emJww==
-X-Received: by 2002:a63:ce17:: with SMTP id y23mr1251673pgf.194.1588216332547;
-        Wed, 29 Apr 2020 20:12:12 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id x13sm1998429pgh.63.2020.04.29.20.12.11
+        bh=Yk1qx7mYE1aZnTKQ+ngsNAgl6tNY8Bqpu8zbakapxPY=;
+        b=T+tt8tDEZKur2PAlZPY2xZ5DEBzqtNvXYQihZyQQyqPhWmMr/mY40/OTlEdwsm6Uy1
+         ICWy3fgxTh26e4xdaIngeJyFu/CYWU7QU0QUqx3k1hiFPJJ3AT6muW9c1TVLRn7UK7HC
+         SeiUnFXCRynABPWETZPJ9wr8dbICgYREUuyYeEFFgOGk2nV8QacA65935DIsmj0sRCyG
+         LcLJVtkybzklgZXmdJOxzA+upr+qfRLTq0DT3LBf1JV7cBthttIvS1OmtIR+doR3FLAq
+         dlzQi5Et9O+SmcPV1sX//nnKOe2x6eZfy5zX+15qGL97BwXN9FBa12heqypuBNCVgt5u
+         Ef+A==
+X-Gm-Message-State: AGi0PubItbqfCx/UqEawasKrqKO45vvb99yN274xp8lbARpmD2tBEwGj
+        bx1++sP2lP8vnf8t6QQMQHU=
+X-Google-Smtp-Source: APiQypIIgBYyvGVoHuVIWd9zg2/PJZtEbMHkINz6I8nJIe9AwwaCkdpNZVH9FH/Zj7GiU25mXOaaYg==
+X-Received: by 2002:a05:6830:1188:: with SMTP id u8mr891347otq.360.1588216445527;
+        Wed, 29 Apr 2020 20:14:05 -0700 (PDT)
+Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
+        by smtp.gmail.com with ESMTPSA id t26sm914093otl.71.2020.04.29.20.14.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 20:12:11 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 20:12:10 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     matthew.gerlach@linux.intel.com
-Cc:     Xu Yilun <yilun.xu@intel.com>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mdf@kernel.org
-Subject: Re: How to update a piece of flash for FPGA firmware?
-Message-ID: <20200430031210.GA6168@epycbox.lan>
-References: <20200428050135.GA27416@yilunxu-OptiPlex-7050>
- <alpine.LFD.2.21.2004281434001.59524@psera2-dell24.ra.intel.com>
+        Wed, 29 Apr 2020 20:14:05 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 20:14:03 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Dmitry Golovin <dima@golovin.in>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: Re: [PATCH v3 3/4] MIPS: VDSO: Use $(LD) instead of $(CC) to link
+ VDSO
+Message-ID: <20200430031403.GC3546299@ubuntu-s3-xlarge-x86>
+References: <20200419202128.20571-1-natechancellor@gmail.com>
+ <20200423171807.29713-1-natechancellor@gmail.com>
+ <20200423171807.29713-3-natechancellor@gmail.com>
+ <20200426162737.GA9322@alpha.franken.de>
+ <20200427020830.GA260@Ryzen-7-3700X.localdomain>
+ <alpine.LFD.2.21.2004271712130.851719@eddie.linux-mips.org>
+ <20200427232406.GA8226@ubuntu-s3-xlarge-x86>
+ <alpine.LFD.2.21.2004291835400.851719@eddie.linux-mips.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.21.2004281434001.59524@psera2-dell24.ra.intel.com>
+In-Reply-To: <alpine.LFD.2.21.2004291835400.851719@eddie.linux-mips.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew, Yilun
-
-On Tue, Apr 28, 2020 at 03:06:07PM -0700, matthew.gerlach@linux.intel.com wrote:
-> Hi Yilun,
+On Wed, Apr 29, 2020 at 06:46:33PM +0100, Maciej W. Rozycki wrote:
+> On Mon, 27 Apr 2020, Nathan Chancellor wrote:
 > 
-> You raise some very interesting questions. Please see
-> my comments below.
-> 
-> Matthew
-> 
-> On Tue, 28 Apr 2020, Xu Yilun wrote:
-> 
-> > Hi,
+> > >  Can you actually record in the change description what the difference in 
+> > > the relevant link command is, as shown where `V=1' has been used with 
+> > > `make' invocation?
 > > 
-> > I wonder if an updating of FPGA Flash (but cannot reload) could be
-> > implemented as fpga-mgr?
-> > 
-> > I have the pcie based FPGA card. The bitstream for FPGA static region is
-> > stored on flash chip. Board will load the bitstream to FPGA on system
-> > power cycle. The flash chip could be accessed through "PCIE -> ... ->
-> > Flash update engine -> Flash". So the update of the FPGA static region is
-> > basicly updating the flash chip through PCIE and rebooting system.
+> > That will be rather unweildy to put in the commit message since
+> > currently, $(CC) + $(KBUILD_CFLAGS) is being used but I can if it is
+> > really desired. Otherwise, I can just put it where I put the changelog.
 > 
-> I think you mean power cycle when you say "rebooting system" above, but
-> your point is worth highlighting.  During this flash update the
-> FPGA is actually fully configured and running its application.  Typically,
-> during a fpga-mgr update of the static region or partial reconfiguration
-> region, the actual contents of the fpga region is "changing" during the
-> update.
+>  Umm, is the difference so huge?  I think a note along the lines of:
+> 
+> "[...] This change adds/removes[*]:
+> 
+> <part of the command affected>
+> 
+> from the invocation of [...], which is required for [...]"
+> 
+> -- only quoting what's actually changed will be sufficient.  Reword as 
+> required.  Otherwise it's hard to guess now what the change actually does, 
+> and it will be even harder for someone who comes across it and tries to 
+> understand it the future, when the context might be hard to reproduce.
+> 
+> [*] Delete as appropriate.
+> 
+>   Maciej
 
-Yeah, this sounds more like a flash driver with MTD or maybe NVMEM?
-That's probably how I'd do it. Depending on your (Q)SPI controller you
-might already have a driver for that, and you'd just have to instantiate
-it as a sub-device.
-
-> 
-> > 
-> > Should I implement the flash update engine as a fpga-mgr device? On one
-> > hand it is just a flash write, FPGA functionality is actually not
-> > changed before reboot. Does fpga-mgr requires bitstream takes function
-> > immediately after write_complete()? On the other hand, the flash write
-> > do affects FPGA static region on next boot. Operating on the
-> > corresponding fpga region makes kernel fully aware of what is being
-> > done.
-> 
-> When an fpga-mgr is used in a device tree overlay flow, one gains
-> the benefit the enumeration of the nodes in the overlay after the
-> update has completed.
-
-I'm not sure how to model 'on next reboot' part.
-> 
-> > 
-> > Actually the FPGA card do has the capability to reload bitstream at
-> > runtime. But it will cause the whole PCIE device lost, static region is
-> > also destroyed. We need to rescan PCI to get it back. So I think
-> > basically this is the same case as system reboot from FPGA's
-> > perspective.
-> 
-> Yes, on those cards that have the ability to power cycle themselves (i.e.
-> fully reconfigure the FPGA from flash), the PCIe connection to the card
-> is broken because of a surprise link down PCIe error.  As you say a PCI
-> rescan (i.e. re-enumeration of the entire card) is required.  Since
-> the card has to be re-scanned at the PCI level anyway, there may not be much
-> benefit to using the fpga-mgr in this flow.
-
-Agreed.
-> 
-> I wonder if these kinds of more disruptive updates are better suited to
-> something firmware updates rather than fpga updates?
-
-Yeah.
+I ended up figuring out a way to get the difference proper into the
+commit message in v4. Please take a look.
 
 Cheers,
-Moritz
-
+Nathan
