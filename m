@@ -2,140 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF991BF395
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886111BF39D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:59:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgD3IzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 04:55:03 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2131 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726127AbgD3IzC (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 04:55:02 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id CEC775679C5665417D60;
-        Thu, 30 Apr 2020 09:55:00 +0100 (IST)
-Received: from [127.0.0.1] (10.47.0.178) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 30 Apr
- 2020 09:54:59 +0100
-Subject: Re: [PATCH] perf parse-events: Use strcmp to compare the PMU name
-To:     Jiri Olsa <jolsa@redhat.com>, Jin Yao <yao.jin@linux.intel.com>
-CC:     <acme@kernel.org>, <jolsa@kernel.org>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <alexander.shishkin@linux.intel.com>,
-        <Linux-kernel@vger.kernel.org>, <ak@linux.intel.com>,
-        <kan.liang@intel.com>, <yao.jin@intel.com>
-References: <20200430003618.17002-1-yao.jin@linux.intel.com>
- <20200430084529.GC1681583@krava>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <66b84e3f-f7d8-bb65-616e-d159a509a439@huawei.com>
-Date:   Thu, 30 Apr 2020 09:54:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726780AbgD3I7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 04:59:09 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:44468 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726453AbgD3I7J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 04:59:09 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03U81lLM143892;
+        Thu, 30 Apr 2020 04:58:41 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30mfhgdwx4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Apr 2020 04:58:41 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03U8tf2h005040;
+        Thu, 30 Apr 2020 08:58:39 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 30mcu5t5xu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Apr 2020 08:58:38 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03U8waux35061774
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 08:58:36 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C623011C050;
+        Thu, 30 Apr 2020 08:58:36 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F4CE11C058;
+        Thu, 30 Apr 2020 08:58:35 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.201.165])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 30 Apr 2020 08:58:35 +0000 (GMT)
+Date:   Thu, 30 Apr 2020 11:58:33 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Guan Xuetao <gxt@pku.edu.cn>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will.deacon@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] initramfs: fix another section mismatch
+Message-ID: <20200430085833.GB342687@linux.ibm.com>
+References: <20200429190135.66411-1-arnd@arndb.de>
 MIME-Version: 1.0
-In-Reply-To: <20200430084529.GC1681583@krava>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.0.178]
-X-ClientProxiedBy: lhreml731-chm.china.huawei.com (10.201.108.82) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200429190135.66411-1-arnd@arndb.de>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-30_02:2020-04-30,2020-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=5
+ phishscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ malwarescore=0 impostorscore=0 clxscore=1011 priorityscore=1501
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300061
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/04/2020 09:45, Jiri Olsa wrote:
-> On Thu, Apr 30, 2020 at 08:36:18AM +0800, Jin Yao wrote:
->> A big uncore event group is split into multiple small groups which
->> only include the uncore events from the same PMU. This has been
->> supported in the commit 3cdc5c2cb924a ("perf parse-events: Handle
->> uncore event aliases in small groups properly").
->>
->> If the event's PMU name starts to repeat, it must be a new event.
->> That can be used to distinguish the leader from other members.
->> But now it only compares the pointer of pmu_name
->> (leader->pmu_name == evsel->pmu_name).
->>
->> If we use "perf stat -M LLC_MISSES.PCIE_WRITE -a" on cascadelakex,
->> the event list is:
->>
->> evsel->name					evsel->pmu_name
->> ---------------------------------------------------------------
->> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_4 (as leader)
->> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_2
->> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_0
->> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_5
->> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_3
->> unc_iio_data_req_of_cpu.mem_write.part0		uncore_iio_1
->> unc_iio_data_req_of_cpu.mem_write.part1		uncore_iio_4
->> ......
->>
->> For the event "unc_iio_data_req_of_cpu.mem_write.part1" with
->> "uncore_iio_4", it should be the event from PMU "uncore_iio_4".
->> It's not a new leader for this PMU.
->>
->> But if we use "(leader->pmu_name == evsel->pmu_name)", the check
->> would be failed and the event is stored to leaders[] as a new
->> PMU leader.
->>
->> So this patch uses strcmp to compare the PMU name between events.
->>
->> Fixes: 3cdc5c2cb924a ("perf parse-events: Handle uncore event aliases in small groups properly")
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+On Wed, Apr 29, 2020 at 09:01:29PM +0200, Arnd Bergmann wrote:
+> Building with gcc-10 causes a harmless warning, similar to the
+> gcc-4.6 warning that Geert fixed last year:
 > 
-> looks good, any chance we could have automated test
-> for this uncore leader setup logic? like maybe the way
-> John did the pmu-events tests? like test will trigger
-> only when there's the pmu/events in the system
+> WARNING: modpost: vmlinux.o(.text.unlikely+0xe69): Section mismatch in reference from the function kexec_free_initrd() to the function .init.text:free_initrd_mem()
+> The function kexec_free_initrd() references
+> the function __init free_initrd_mem().
+> This is often because kexec_free_initrd lacks a __init
+> annotation or the annotation of free_initrd_mem is wrong.
 > 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> Add the missing __init annotations.
 > 
-> thanks,
-> jirka
+> Fixes: 4ada1e810038 ("initramfs: fix populate_initrd_image() section mismatch")
+> Fixes: 23091e287355 ("initramfs: cleanup initrd freeing")
+>  Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Hi jirka,
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
 
-JFYI, this is effectively the same patch as I mentioned to you, which 
-was a fix for the same WARN:
-
-https://lore.kernel.org/linux-arm-kernel/1587120084-18990-2-git-send-email-john.garry@huawei.com/
-
-but I found that it "fixed" d4953f7ef1a2 ("perf parse-events: Fix 3 use 
-after frees found with clang ASANutil/parse-events.c"), based on bisect 
-breakage
-
-cheers
-
+> ---
+>  init/initramfs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> 
->> ---
->>   tools/perf/util/parse-events.c | 5 ++---
->>   1 file changed, 2 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
->> index 10107747b361..786eddb6a097 100644
->> --- a/tools/perf/util/parse-events.c
->> +++ b/tools/perf/util/parse-events.c
->> @@ -1629,12 +1629,11 @@ parse_events__set_leader_for_uncore_aliase(char *name, struct list_head *list,
->>   		 * event. That can be used to distinguish the leader from
->>   		 * other members, even they have the same event name.
->>   		 */
->> -		if ((leader != evsel) && (leader->pmu_name == evsel->pmu_name)) {
->> +		if ((leader != evsel) &&
->> +		    !strcmp(leader->pmu_name, evsel->pmu_name)) {
->>   			is_leader = false;
->>   			continue;
->>   		}
->> -		/* The name is always alias name */
->> -		WARN_ON(strcmp(leader->name, evsel->name));
->>   
->>   		/* Store the leader event for each PMU */
->>   		leaders[nr_pmu++] = (uintptr_t) evsel;
->> -- 
->> 2.17.1
->>
-> 
-> .
+> diff --git a/init/initramfs.c b/init/initramfs.c
+> index 8ec1be4d7d51..bda77a6c8e50 100644
+> --- a/init/initramfs.c
+> +++ b/init/initramfs.c
+> @@ -542,7 +542,7 @@ void __weak free_initrd_mem(unsigned long start, unsigned long end)
+>  }
+>  
+>  #ifdef CONFIG_KEXEC_CORE
+> -static bool kexec_free_initrd(void)
+> +static bool __init kexec_free_initrd(void)
+>  {
+>  	unsigned long crashk_start = (unsigned long)__va(crashk_res.start);
+>  	unsigned long crashk_end   = (unsigned long)__va(crashk_res.end);
+> @@ -565,7 +565,7 @@ static bool kexec_free_initrd(void)
+>  	return true;
+>  }
+>  #else
+> -static inline bool kexec_free_initrd(void)
+> +static inline bool __init kexec_free_initrd(void)
+>  {
+>  	return false;
+>  }
+> -- 
+> 2.26.0
 > 
 
+-- 
+Sincerely yours,
+Mike.
