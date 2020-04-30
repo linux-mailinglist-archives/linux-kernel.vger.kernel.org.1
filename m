@@ -2,142 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B32981BED0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 02:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92791BED13
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 02:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgD3Anh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 20:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726309AbgD3Ang (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 20:43:36 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E687C035494
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 17:43:36 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id p13so2162230qvt.12
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 17:43:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5o/Er+M3stuv2s1188l/Kps5H4ED2pxcg+ddDdjlJ8s=;
-        b=FfcNmeqWBWruARuFzkjgHZp3rrglu4upXfmDX/X6a498J/M1Mk3viO7rgpCGJ7t+4Q
-         vZGnmJY3pETS04ZqmDDAe7FUs9rLNh/pCKEiUWg9nLn+w4W6lG/ao5iziap0KeMoV62w
-         v3k8wdfAU4IsuqT3rybNFITNCePP8UlBKxdIA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5o/Er+M3stuv2s1188l/Kps5H4ED2pxcg+ddDdjlJ8s=;
-        b=VOzLXcBQUR6el8JGN6xuVu9UMY9/hU5rQ1MaJb5jLSuSirnnw021m0AURaX4lEfHr1
-         OikUdXZS5rdUwecSLNZdM6szPBn3sGsiE42OY8Q84U0mVI8nHBZDXWcUC3SNhmCwO2ZB
-         dwnlregSKkKYnspmEQR26M4m/ioz6Bx+hV4iw9G6ZUB8zGcG9YoR0lRF9/sl0I1+z0Ni
-         Mzc+zmE6hEt5eOzTd8pgvd2hV9qiLK7bYvTxdzsDnVaESQEqixYc+PN5cKxo4r9wxp4S
-         jpRqMnFsEJM76JVwqrlt+Exm4exJldBj+OkNfkPdHy7D+qtWYap6efoH5EgnnK0/PsgU
-         WIcg==
-X-Gm-Message-State: AGi0PuaxDgYPlKSBfKyOKDuAELIk0LDV07yw8Gp9LApZ6MVyKjNuTPMX
-        TmaLs+2Gj+j8oweu5WfHLWEM95tmOnZefuqrVH4RJUxU
-X-Google-Smtp-Source: APiQypJ4s+Ms/TihTztIamAJiwTfWcsAsvUL1G3pM+kBNzlXtf6SCum+EyCWC+EmJWqs7SRwAKurn/ptG+pVSka5vX0=
-X-Received: by 2002:a05:6214:150f:: with SMTP id e15mr593521qvy.18.1588207415260;
- Wed, 29 Apr 2020 17:43:35 -0700 (PDT)
+        id S1726558AbgD3Apa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 20:45:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726309AbgD3Apa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 20:45:30 -0400
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43C0E2192A
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 00:45:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588207529;
+        bh=N3ANq6sB2a8lmCCJej+V3dGn8w0n7uzbK/eRXsHO3uo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=xg+cdf9Squc1qTKUxLzUxFRpT+9TYfeljsABrROZLaiBeMCDnwDHdkQ8GsoDUi2UU
+         fIUhxPNAZh/tdtR6cOwQYlph0s2+lDL0vDKeNrE9nGoJSn9aVkoUM/3+J0lm7XTusA
+         23+gHtfzQB9p87PIZja5Ai0Bj29UxM+2OZ9iiG9o=
+Received: by mail-wr1-f46.google.com with SMTP id j2so4747215wrs.9
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 17:45:29 -0700 (PDT)
+X-Gm-Message-State: AGi0PubsKGhceiCesVro/lVnFojqX6+K1yFJ4l9NUybA8Vtzrg41+OKq
+        ukzLuzWbbrQn9T2cqzZLBUZ+9lVV+TKNDne2LEq94A==
+X-Google-Smtp-Source: APiQypJJOJY3YRF/QTUlTHF0NHfRgu9K+ytc2U5m1lBDYPfYqr3cUXh6I1WPp1YkIROgmKABgcygbJdL9Km/lxxCjH8=
+X-Received: by 2002:adf:bc05:: with SMTP id s5mr880712wrg.70.1588207527548;
+ Wed, 29 Apr 2020 17:45:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200428110253.1.I926f6741079cafb04ecb592130aef75b24ad31ae@changeid>
- <c57b0892-d68d-f0f2-3cc1-b8549983227e@collabora.com> <CAONX=-dLVBpz+p1si4cWGHEmQ_toO8kW=fCPcdUuX2KLc-o=2A@mail.gmail.com>
- <CAONX=-dDWjMQDGncSgXNf86Bt3C5OUtFqh=Pe2HToGPSv5qa4A@mail.gmail.com>
-In-Reply-To: <CAONX=-dDWjMQDGncSgXNf86Bt3C5OUtFqh=Pe2HToGPSv5qa4A@mail.gmail.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Wed, 29 Apr 2020 17:43:24 -0700
-Message-ID: <CACeCKacoEjQm0_VfZGYNEZVhKubPyqspNZupQk+7piJOsVzH+Q@mail.gmail.com>
-Subject: Re: [PATCH] platform/chrome: cros_ec_typec: Handle NULL EC pointer
- during probe.
-To:     Daniil Lunev <dlunev@chromium.org>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+References: <20200429093634.1514902-1-vkuznets@redhat.com> <20200429093634.1514902-5-vkuznets@redhat.com>
+ <CALCETrXEzpKNhNJQm+SshiEfyHjYkB7+1c+7iusZy66rRsWunA@mail.gmail.com> <0de4a809-e965-d0ad-489f-5b011aa5bf89@redhat.com>
+In-Reply-To: <0de4a809-e965-d0ad-489f-5b011aa5bf89@redhat.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 29 Apr 2020 17:45:16 -0700
+X-Gmail-Original-Message-ID: <CALCETrWQBmmVODuSXac965o29Oxqo6uo4Ujm2AN2FUMztwCnzA@mail.gmail.com>
+Message-ID: <CALCETrWQBmmVODuSXac965o29Oxqo6uo4Ujm2AN2FUMztwCnzA@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/6] KVM: x86: acknowledgment mechanism for async pf
+ page ready notifications
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        X86 ML <x86@kernel.org>, kvm list <kvm@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 5:38 PM Daniil Lunev <dlunev@chromium.org> wrote:
+On Wed, Apr 29, 2020 at 10:40 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
-> [to make it appear on the mailing list as I didn't realize I was in
-> hypertext sending mode]
+> On 29/04/20 19:28, Andy Lutomirski wrote:
+> > This seems functional, but I'm wondering if it could a bit simpler and
+> > more efficient if the data structure was a normal descriptor ring with
+> > the same number slots as whatever the maximum number of waiting pages
+> > is.  Then there would never need to be any notification from the guest
+> > back to the host, since there would always be room for a notification.
 >
-> On Thu, Apr 30, 2020 at 10:11 AM Daniil Lunev <dlunev@chromium.org> wrote=
-:
-> >
-> > Hi Enric.
-> > I encountered the issue on a Hatch device when trying running 5.4 kerne=
-l on that. After talking to Prashant it seems that any device with coreboot=
- built before a certain point (a particular fix for device hierarchy in ACP=
-I tables of Chrome devices which happened in mid-April) will not be able to=
- correctly initialize the driver and will get a kernel panic trying to do s=
-o.
+> No, it would be much more complicated code for a slow path which is
+> already order of magnitudes slower than a vmexit.  It would also use
+> much more memory.
 
-A clarifying detail here: This should not be seen in any current
-*production* device. No prod device firmware will carry the erroneous
-ACPI device entry.
+Fair enough.
 
-> > Thanks,
-> > Daniil
-> >
-> > On Thu, Apr 30, 2020 at 7:58 AM Enric Balletbo i Serra <enric.balletbo@=
-collabora.com> wrote:
-> >>
-> >> Hi Daniil,
-> >>
-> >> Thank you for the patch.
-> >>
-> >> On 28/4/20 3:02, Daniil Lunev wrote:
-> >> > Missing EC in device hierarchy causes NULL pointer to be returned to=
- the
-> >> > probe function which leads to NULL pointer dereference when trying t=
-o
-> >> > send a command to the EC. This can be the case if the device is miss=
-ing
-> >> > or incorrectly configured in the firmware blob. Even if the situatio=
-n
-> >>
-> >> There is any production device with a buggy firmware outside? Or this =
-is just
-> >> for defensive programming while developing the firmware? Which device =
-is
-> >> affected for this issue?
-> >>
-> >> Thanks,
-> >>  Enric
-> >>
-> >> > occures, the driver shall not cause a kernel panic as the condition =
-is
-> >> > not critical for the system functions.
-> >> >
-> >> > Signed-off-by: Daniil Lunev <dlunev@chromium.org>
-> >> > ---
-> >> >
-> >> >  drivers/platform/chrome/cros_ec_typec.c | 5 +++++
-> >> >  1 file changed, 5 insertions(+)
-> >> >
-> >> > diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platf=
-orm/chrome/cros_ec_typec.c
-> >> > index 874269c07073..30d99c930445 100644
-> >> > --- a/drivers/platform/chrome/cros_ec_typec.c
-> >> > +++ b/drivers/platform/chrome/cros_ec_typec.c
-> >> > @@ -301,6 +301,11 @@ static int cros_typec_probe(struct platform_dev=
-ice *pdev)
-> >> >
-> >> >       typec->dev =3D dev;
-> >> >       typec->ec =3D dev_get_drvdata(pdev->dev.parent);
-> >> > +     if (!typec->ec) {
-> >> > +             dev_err(dev, "Failed to get Cros EC data\n");
-> >> > +             return -EINVAL;
-> >> > +     }
-> >> > +
-> >> >       platform_set_drvdata(pdev, typec);
-> >> >
-> >> >       ret =3D cros_typec_get_cmd_version(typec);
-> >> >
+>
+> > It might be even better if a single unified data structure was used
+> > for both notifications.
+>
+> That's a very bad idea since one is synchronous and one is asynchronous.
+>  Part of the proposal we agreed upon was to keep "page not ready"
+> synchronous while making "page ready" an interrupt.  The data structure
+> for "page not ready" will be #VE.
+>
+
+#VE on SVM will be interesting, to say the least, and I think that a
+solution that is VMX specific doesn't make much sense.  #VE also has
+unpleasant issues involving the contexts in which it can occur.  You
+will have quite a hard time convincing me to ack the addition of a #VE
+entry handler for this.  I think a brand new vector is the right
+solution.
