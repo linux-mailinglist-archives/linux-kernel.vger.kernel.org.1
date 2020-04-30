@@ -2,164 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C151BF42A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4278A1BF431
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgD3J3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 05:29:13 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:19722 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726404AbgD3J3J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 05:29:09 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03U9SODP004608;
-        Thu, 30 Apr 2020 11:28:58 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-type; s=STMicroelectronics;
- bh=tPSl8U7fRW8ZKuW1r9MplGDa5LvBZylklxKzBDbnnZI=;
- b=PBGPAlJta4nLIzyCT6BSNzBErO+ArOOi+wPL3Ei1rlsPclCHqYG180cka8x6p7QiYh8c
- iHFcvpFK1Ev+IVC81sayWNFYFFGFyNv9onXYEdTPOWcvTpkxZ7qF86tK3BVB0Mrim1MR
- Ih0MVTpUQs7AwGf+Sma4VqpDYHztD+9fP8Zg96t47VB3skHJkszfh5yzw2yfyhr5/s0z
- zmcnHCfmMcO6f1tbR8Bw24Pz3xXekdG1Ebz35LO76fOQYQSP/HNShAw14ZyE3Nc31bm5
- pAPuIrZ4DV6GcKiA+T5GjxQlLAuZ6JQhQPPpPo9SzHx1PZlBNpinSyfbPvsu6/W2XZJ1 Zw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30n4j67guw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Apr 2020 11:28:58 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 56F9D10002A;
-        Thu, 30 Apr 2020 11:28:58 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag5node3.st.com [10.75.127.15])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 45E0D2ABF9D;
-        Thu, 30 Apr 2020 11:28:58 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG5NODE3.st.com (10.75.127.15)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr 2020 11:28:57
- +0200
-From:   Fabrice Gasnier <fabrice.gasnier@st.com>
-To:     <jic23@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@st.com>, <fabrice.gasnier@st.com>,
-        <olivier.moysan@st.com>, <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH] iio: adc: stm32-dfsdm: fix device used to request dma
-Date:   Thu, 30 Apr 2020 11:28:46 +0200
-Message-ID: <1588238926-23964-2-git-send-email-fabrice.gasnier@st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1588238926-23964-1-git-send-email-fabrice.gasnier@st.com>
-References: <1588238926-23964-1-git-send-email-fabrice.gasnier@st.com>
+        id S1726820AbgD3JbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 05:31:06 -0400
+Received: from mout.web.de ([212.227.15.3]:38027 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726565AbgD3JbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 05:31:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1588239046;
+        bh=Gowt2WfNNzEFY8LK5XA3ciQeDmvVC8xYBPqGGTuSPmo=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=E82S3s+Os6LU5No7X++XAxkzOmtMbLFcCMKYj5H9TJzRlwonLTXPAUbllHnGrXWcW
+         TrgMqDkU0pefrv/QvV+v9wfeo1CWAiO+5PoaRAJWVl9WpesGObPgmPcvlSN+kRaApX
+         nuqvDJf5fAgYODFy16Dgi81xFH0YdWEeexRZzk4U=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.175.216]) by smtp.web.de (mrweb003
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MOAmi-1jZZi531oC-005b7b; Thu, 30
+ Apr 2020 11:30:45 +0200
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH] drm/vboxvideo: Fix a NULL vs IS_ERR() check in
+ vbox_hw_init()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <32389e2b-50e8-8bd4-ee7c-5c6dfa273c00@web.de>
+Date:   Thu, 30 Apr 2020 11:30:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG7NODE1.st.com (10.75.127.19) To SFHDAG5NODE3.st.com
- (10.75.127.15)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-30_05:2020-04-30,2020-04-30 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:OOmFH7OKkOD10VY8UurnxMCvjed6yhA7Qs2jPdBp3QW2dtWjyQG
+ UVN9n6jPeeuotoUny8XgKsrDZHW8dPSZodQ83UHSjIxM3A8cpsyg2fQM2/Qu+nM+s5okSSW
+ /N7iQiWy4DLjVPqgG0UrPCiXaar4h0Ep5g20o0GVKfZXonJmWC9iLoAmnS+fDgKIerZcIs2
+ lcXOpjDsRPTqPmTxdNCqA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:e3c94EA2XWI=:LQLQ7wJ0u811Xi78nhZi1z
+ rn1yaDE5IwiWaXdB/yqYJ0M/Qu51tuIQiRnamgM30WWYZFbjqOTYCkLPdDpHdgQfQ7V5V+EGi
+ I7iN3MAORQyVV4LIkzmsxH2O6vZ2S+k5ov5SEFH07J4xHfYTvW9+LT4XfM18mOMyt7jkkQMfm
+ dw3hNUXgZUyEDpmBZizG72Q5Tb8RxE/9GVZ0BMpBt0amM9GtJpUltznNovaqq/y+2TM0cF1WZ
+ hWw4mM76Ur5fHWq5YRLrwWUyGVke2UyFtJ6Ty9T9TQzRoukCDK5jh/ho449yWJ8fIMo3yLrHL
+ /FJHqPN6GYxgyZobFhL/SoCMHia0Pgvl58B82GTP27CRZIw44Ep9oIesYcKXlN7VaoW0MBSkc
+ dcUtnCpd6irwBxGhdHefkpjMR5kfgc5TbMLNOVrUaeSHVzYKEAmd04fR5h1eePNzzMHtqRitB
+ 8dYqDHr/Lb6Q5SsILmYdcbVgRCvhBX2kvXZDjHtNDnnE1RLlymrMSfFOK+FZT+I5Bb0JfLmlC
+ hNt1pS/1s3XSoTtdZksGeTy0ZGJv05iNsz8EA7McGHJLzCsPxNw8cYG2ATLbxquCNTptSoQz/
+ B3z93SQ0SSrhekxkVhXxc6+jcSY8Hy4GDW0vn+8wuavlFqqaXHfK2xHbPY74vfp5f0DPGasZT
+ GBQebAYUFXSRin4/2KkUE5GM2d4zbqPFkX/vl9ezw0VuGpvhAxxHJg0yW7NuRQAbusqVexjwx
+ OWzOq/Xr74cCkIS8ePT5NCegw60RSmWMp0cAQsfvhdIcL20HQQBinJwQ13j8j8npRRGPyvu3o
+ XqgEir1NUzvcpEqBbZxunwtOuKAWaqXmS3piPjCo9a6GItFS4b3ppsF5KRyl3tsTDbEThz/I9
+ zjC9IRClXlnVaxZzdBF4kjxru++dw02Rc8Cpq35+s6b1I+u9nSh0ppkUhcAITb3QPxu77Ez/D
+ MZX97Al4mYjwuHfp/t+IapHIL74hxVzkoOE7HKLylU+olgPCL1xqjXdGE1Ik+SopPH5lavIxP
+ FQv33vfrcC7Vm6csYbXxDMRDp39YjqsJBzsxDFzCmwu72FZYbEH9U6HHnAEyqYnsDTVStj8L6
+ 3JID8m0KKE+exhRgmVQu2/aVIQBT7pNcPsG/NevDqIlXqtfe5/35XdifMd36oWKPtkWBnoKCG
+ adZpkvBpaSVugBzwP0NujZVxAq/xA1AHD8pRzb9U8op+5XqVCKfPjopQF/M3I40tKenL3HwsM
+ quBaCU5c8Ew7ZbIsA
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DMA channel request should use device struct from platform device struct.
-Currently it's using iio device struct. But at this stage when probing,
-device struct isn't yet registered (e.g. device_register is done in
-iio_device_register). Since commit 71723a96b8b1 ("dmaengine: Create
-symlinks between DMA channels and slaves"), a warning message is printed
-as the links in sysfs can't be created, due to device isn't yet registered:
-- Cannot create DMA slave symlink
-- Cannot create DMA dma:rx symlink
+> The devm_gen_pool_create() function returns ERR_PTR() on error, it
+> doesn't return NULL so this check doesn't work.
 
-Fix this by using device struct from platform device to request dma chan.
+How do you think about a wording variant like the following?
 
-Fixes: eca949800d2d ("IIO: ADC: add stm32 DFSDM support for PDM microphone")
+   Change description:
+   A null pointer check was performed after a call of the
+   function =E2=80=9Cdevm_gen_pool_create=E2=80=9D despite of the detail
+   that failures are indicated by error pointers instead.
+   Thus adjust a check for the failure predicate
+   and return the corresponding error code.
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
----
- drivers/iio/adc/stm32-dfsdm-adc.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/iio/adc/stm32-dfsdm-adc.c b/drivers/iio/adc/stm32-dfsdm-adc.c
-index 76a60d9..506bf51 100644
---- a/drivers/iio/adc/stm32-dfsdm-adc.c
-+++ b/drivers/iio/adc/stm32-dfsdm-adc.c
-@@ -62,7 +62,7 @@ enum sd_converter_type {
- 
- struct stm32_dfsdm_dev_data {
- 	int type;
--	int (*init)(struct iio_dev *indio_dev);
-+	int (*init)(struct device *dev, struct iio_dev *indio_dev);
- 	unsigned int num_channels;
- 	const struct regmap_config *regmap_cfg;
- };
-@@ -1365,11 +1365,12 @@ static void stm32_dfsdm_dma_release(struct iio_dev *indio_dev)
- 	}
- }
- 
--static int stm32_dfsdm_dma_request(struct iio_dev *indio_dev)
-+static int stm32_dfsdm_dma_request(struct device *dev,
-+				   struct iio_dev *indio_dev)
- {
- 	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
- 
--	adc->dma_chan = dma_request_chan(&indio_dev->dev, "rx");
-+	adc->dma_chan = dma_request_chan(dev, "rx");
- 	if (IS_ERR(adc->dma_chan)) {
- 		int ret = PTR_ERR(adc->dma_chan);
- 
-@@ -1425,7 +1426,7 @@ static int stm32_dfsdm_adc_chan_init_one(struct iio_dev *indio_dev,
- 					  &adc->dfsdm->ch_list[ch->channel]);
- }
- 
--static int stm32_dfsdm_audio_init(struct iio_dev *indio_dev)
-+static int stm32_dfsdm_audio_init(struct device *dev, struct iio_dev *indio_dev)
- {
- 	struct iio_chan_spec *ch;
- 	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-@@ -1452,10 +1453,10 @@ static int stm32_dfsdm_audio_init(struct iio_dev *indio_dev)
- 	indio_dev->num_channels = 1;
- 	indio_dev->channels = ch;
- 
--	return stm32_dfsdm_dma_request(indio_dev);
-+	return stm32_dfsdm_dma_request(dev, indio_dev);
- }
- 
--static int stm32_dfsdm_adc_init(struct iio_dev *indio_dev)
-+static int stm32_dfsdm_adc_init(struct device *dev, struct iio_dev *indio_dev)
- {
- 	struct iio_chan_spec *ch;
- 	struct stm32_dfsdm_adc *adc = iio_priv(indio_dev);
-@@ -1499,17 +1500,17 @@ static int stm32_dfsdm_adc_init(struct iio_dev *indio_dev)
- 	init_completion(&adc->completion);
- 
- 	/* Optionally request DMA */
--	ret = stm32_dfsdm_dma_request(indio_dev);
-+	ret = stm32_dfsdm_dma_request(dev, indio_dev);
- 	if (ret) {
- 		if (ret != -ENODEV) {
- 			if (ret != -EPROBE_DEFER)
--				dev_err(&indio_dev->dev,
-+				dev_err(dev,
- 					"DMA channel request failed with %d\n",
- 					ret);
- 			return ret;
- 		}
- 
--		dev_dbg(&indio_dev->dev, "No DMA support\n");
-+		dev_dbg(dev, "No DMA support\n");
- 		return 0;
- 	}
- 
-@@ -1622,7 +1623,7 @@ static int stm32_dfsdm_adc_probe(struct platform_device *pdev)
- 		adc->dfsdm->fl_list[adc->fl_id].sync_mode = val;
- 
- 	adc->dev_data = dev_data;
--	ret = dev_data->init(iio);
-+	ret = dev_data->init(dev, iio);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.7.4
-
+Regards,
+Markus
