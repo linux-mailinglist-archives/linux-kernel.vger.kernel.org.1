@@ -2,98 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900731BF0D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90E21BF0EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbgD3HGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 03:06:15 -0400
-Received: from mga02.intel.com ([134.134.136.20]:61847 "EHLO mga02.intel.com"
+        id S1726616AbgD3HMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 03:12:00 -0400
+Received: from mga17.intel.com ([192.55.52.151]:62850 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726337AbgD3HGP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:06:15 -0400
-IronPort-SDR: 0lLxilEP3MBfG6/ju6yRMgN7XfxuxR7Ij77Zvas51LFL/g+rQdlgVHKqD7iR9QmDKglOEvxYIt
- 01G48krbpJlw==
+        id S1726337AbgD3HL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 03:11:59 -0400
+IronPort-SDR: zIhMdhHpwuhMbIax0Hc/mkjk0Aa6hPeSl1PYaY2VJABA3Pxk1/4BM9ahyMzvAaAVdc8ZDzA3Yv
+ DHlmC8YuCDSg==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 00:06:14 -0700
-IronPort-SDR: djF39Bs3TB+mKFqavxnijNCI33yhlWYCDroujdcd3oTEbXyDLnhavuiHjelHtcf7sIyLtlPr6p
- oD1NJEERE8fA==
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 00:11:58 -0700
+IronPort-SDR: C0A6tRiBbpq82fp2h6tIIO/ByrLbb/xDotajYFIx7MY7VuRtVYhIhdzXbXsJEjuNjfvnXsKQQ3
+ cdhohQm9uDCg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,334,1583222400"; 
-   d="scan'208";a="248196369"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Apr 2020 00:06:13 -0700
-Received: from [10.249.229.126] (bababaya-mobl.ccr.corp.intel.com [10.249.229.126])
-        by linux.intel.com (Postfix) with ESMTP id 1C8035805EB;
-        Thu, 30 Apr 2020 00:06:10 -0700 (PDT)
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Subject: [PATCH v3 0/3] perf: make Perf tool aware of SELinux access control
-Organization: Intel Corp.
-Message-ID: <0fffd9e2-1f22-a0c2-c2e3-cb7f4bb89d66@linux.intel.com>
-Date:   Thu, 30 Apr 2020 10:06:09 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+   d="scan'208";a="261681955"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga006.jf.intel.com with ESMTP; 30 Apr 2020 00:11:56 -0700
+Date:   Thu, 30 Apr 2020 15:09:03 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     matthew.gerlach@linux.intel.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: How to update a piece of flash for FPGA firmware?
+Message-ID: <20200430070903.GA31302@yilunxu-OptiPlex-7050>
+References: <20200428050135.GA27416@yilunxu-OptiPlex-7050>
+ <alpine.LFD.2.21.2004281434001.59524@psera2-dell24.ra.intel.com>
+ <20200430031210.GA6168@epycbox.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430031210.GA6168@epycbox.lan>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Moritz & Matthew:
 
-Changes in v3:
-- mention "CAP_PERFMON or CAP_SYS_ADMIN" instead of sole CAP_PERFMON or 
-  CAP_SYS_ADMIN capability in the docs and messages to support use case
-  of newer Perf tool on kernel w/o CAP_PERFMON
-- reverted double new line in "No permission to enable %s event.\n\n"
-- updated security.txt content with new messages wording
+Thanks a lot for the comments! It helps a lot so we could keep working on
+right direction. 
 
-v2: https://lore.kernel.org/lkml/66f2975b-4a69-b428-7dc5-d9aa40b3c673@linux.intel.com/
+For "next boot" or "rescan" case, it cause rebuild the fpga-region. So
+maybe we don't have to model it in fpga class.
 
-Changes in v2:
-- implemented minor doc and code changes to substitute CAP_SYS_ADMIN
-  with CAP_PERFMON capability;
-- introduced Perf doc file with instructions on how to enable and use
-  perf_event LSM hooks for mandatory access control to perf_event_open()
-  syscall;
+Yilun
 
-v1: https://lore.kernel.org/lkml/b8a0669e-36e4-a0e8-fd35-3dbd890d2170@linux.intel.com/
-
-repo: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git perf/core
-sha1: ee097e8ee56f8867cbbf45fe2a06f6b9e660c39c
-
-
-Extend Perf tool with the check of /sys/fs/selinux/enforce value and notify 
-in case access to perf_event_open() syscall is restricted by the enforced 
-SELinux policy settings. See new added security.txt file for exact steps
-how the changes look like and how to test the patch set.
-
----
-Alexey Budankov (3):
-  perf docs: extend CAP_SYS_ADMIN with CAP_PERFMON where needed
-  perf tool: make Perf tool aware of SELinux access control
-  perf docs: introduce security.txt file to document related issues
-
- tools/perf/Documentation/perf-intel-pt.txt |   2 +-
- tools/perf/Documentation/security.txt      | 237 +++++++++++++++++++++
- tools/perf/util/cloexec.c                  |   4 +-
- tools/perf/util/evsel.c                    |  39 ++--
- 4 files changed, 264 insertions(+), 18 deletions(-)
- create mode 100644 tools/perf/Documentation/security.txt
-
--- 
-2.24.1
-
+On Wed, Apr 29, 2020 at 08:12:10PM -0700, Moritz Fischer wrote:
+> Hi Matthew, Yilun
+> 
+> On Tue, Apr 28, 2020 at 03:06:07PM -0700, matthew.gerlach@linux.intel.com wrote:
+> > Hi Yilun,
+> > 
+> > You raise some very interesting questions. Please see
+> > my comments below.
+> > 
+> > Matthew
+> > 
+> > On Tue, 28 Apr 2020, Xu Yilun wrote:
+> > 
+> > > Hi,
+> > > 
+> > > I wonder if an updating of FPGA Flash (but cannot reload) could be
+> > > implemented as fpga-mgr?
+> > > 
+> > > I have the pcie based FPGA card. The bitstream for FPGA static region is
+> > > stored on flash chip. Board will load the bitstream to FPGA on system
+> > > power cycle. The flash chip could be accessed through "PCIE -> ... ->
+> > > Flash update engine -> Flash". So the update of the FPGA static region is
+> > > basicly updating the flash chip through PCIE and rebooting system.
+> > 
+> > I think you mean power cycle when you say "rebooting system" above, but
+> > your point is worth highlighting.  During this flash update the
+> > FPGA is actually fully configured and running its application.  Typically,
+> > during a fpga-mgr update of the static region or partial reconfiguration
+> > region, the actual contents of the fpga region is "changing" during the
+> > update.
+> 
+> Yeah, this sounds more like a flash driver with MTD or maybe NVMEM?
+> That's probably how I'd do it. Depending on your (Q)SPI controller you
+> might already have a driver for that, and you'd just have to instantiate
+> it as a sub-device.
+> 
+> > 
+> > > 
+> > > Should I implement the flash update engine as a fpga-mgr device? On one
+> > > hand it is just a flash write, FPGA functionality is actually not
+> > > changed before reboot. Does fpga-mgr requires bitstream takes function
+> > > immediately after write_complete()? On the other hand, the flash write
+> > > do affects FPGA static region on next boot. Operating on the
+> > > corresponding fpga region makes kernel fully aware of what is being
+> > > done.
+> > 
+> > When an fpga-mgr is used in a device tree overlay flow, one gains
+> > the benefit the enumeration of the nodes in the overlay after the
+> > update has completed.
+> 
+> I'm not sure how to model 'on next reboot' part.
+> > 
+> > > 
+> > > Actually the FPGA card do has the capability to reload bitstream at
+> > > runtime. But it will cause the whole PCIE device lost, static region is
+> > > also destroyed. We need to rescan PCI to get it back. So I think
+> > > basically this is the same case as system reboot from FPGA's
+> > > perspective.
+> > 
+> > Yes, on those cards that have the ability to power cycle themselves (i.e.
+> > fully reconfigure the FPGA from flash), the PCIe connection to the card
+> > is broken because of a surprise link down PCIe error.  As you say a PCI
+> > rescan (i.e. re-enumeration of the entire card) is required.  Since
+> > the card has to be re-scanned at the PCI level anyway, there may not be much
+> > benefit to using the fpga-mgr in this flow.
+> 
+> Agreed.
+> > 
+> > I wonder if these kinds of more disruptive updates are better suited to
+> > something firmware updates rather than fpga updates?
+> 
+> Yeah.
+> 
+> Cheers,
+> Moritz
