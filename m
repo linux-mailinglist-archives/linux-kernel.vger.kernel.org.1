@@ -2,87 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEF81BFB1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7221BFB31
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729300AbgD3N5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729069AbgD3Nyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:54:53 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0282A20870;
-        Thu, 30 Apr 2020 13:54:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588254892;
-        bh=2BAZUgKr6EIFadk0dk+iIe6GQq5OEvXtSX8qhZSVZz4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wh4MWYYBOrR/NkEXcCfFaPpXw/OmRlVfS9Z9u/z69NIIIzgowkGT6Zm/mx6BT6l8O
-         l7gCY9Dr5r7XerpRCt7wZKk4g6L1boWuZrQIWH6CApXmFlptaOAN+rJ6WNJeB+npjW
-         4jGe9SgZ9BeecKZS1nMndTmVNtiuT5ue7bmPrDaE=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 17/17] net: systemport: suppress warnings on failed Rx SKB allocations
-Date:   Thu, 30 Apr 2020 09:54:33 -0400
-Message-Id: <20200430135433.21204-17-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200430135433.21204-1-sashal@kernel.org>
-References: <20200430135433.21204-1-sashal@kernel.org>
+        id S1728432AbgD3N6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:58:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729030AbgD3Nyn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:54:43 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58ED9C035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:54:42 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id e16so1884916wra.7
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:54:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u+gflsm0E1N7kNP6swTcdmCU1ycfD/TnmSzIqBfIgW0=;
+        b=Kx0LoMBe5ghQihGT1Jo2J2UAlwOG9CX+y68UwyKL8LPYae8p7CSY8Px4jXAaKEar0Y
+         17z6AbFokVxas/i3fryne/U9Lvw3fSMyx4YrPU/eR7jdck4MhCgDHzuyszoBMq34NRU9
+         APZX8PcHJsX8zjdxYN7ko6aDSu13EVy1Mt5DA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=u+gflsm0E1N7kNP6swTcdmCU1ycfD/TnmSzIqBfIgW0=;
+        b=Cdb6zY41R+W5FSEGg+0s/n+PWrXp/PmsDb8dIR80Y0clsGXO/jjjKCPwAMOYyNpm6e
+         dkivqDCnSthNpCkgK4rF1s/9/dikiwd4m5fiJJOh+xG4jlKPQ+yKgdUkvvGd02EESk7z
+         D9nlaIsEecgVYjfE6ewbycwAjoLH5T182zYw11B9+ky4rGsdUXlkbPtf+7HuuqsBSMI5
+         OiaPmJ0blWYk/zWgXFGYHuXZIAXxKlZ8pMspX1OTJ/1TBgvKEC++dJfN/rxRGIG+VuU4
+         1K2b9xKMbc/vnOy/KqF0AMPEI7kAGCnAE2NyDgIG09e3AzyiMyaIsp2wmCRMPH0nHqmt
+         8Rvw==
+X-Gm-Message-State: AGi0Pub5Fho/0njHwagAL07VKcJzEXoaNXJR9ZOSAK9QVehKcI//3TEX
+        5EOnd6V+W2F4ads5h3qHzQXSbw==
+X-Google-Smtp-Source: APiQypKpRyH6AWNkE252mFWsKMVhTDkMj8rAQHTSTIymRRqPa6MXjZXl/oiCR2rMvhsYUCSUYkswGQ==
+X-Received: by 2002:adf:80ee:: with SMTP id 101mr4396803wrl.156.1588254880979;
+        Thu, 30 Apr 2020 06:54:40 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id d7sm3875642wrn.78.2020.04.30.06.54.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 06:54:40 -0700 (PDT)
+Date:   Thu, 30 Apr 2020 15:54:38 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>
+Subject: Re: [PATCH v7 2/2] drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to
+ DP bridge driver
+Message-ID: <20200430135438.GD10381@phenom.ffwll.local>
+Mail-Followup-To: Xin Ji <xji@analogixsemi.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Sheng Pan <span@analogixsemi.com>
+References: <cover.1582529411.git.xji@analogixsemi.com>
+ <a81adcf2e79d440edcb7b3989f31efcb80a6e9ff.1582529411.git.xji@analogixsemi.com>
+ <CANMq1KBfB6tXFqYGvr=8fV_bpCV5GbVHeEbRs+fuaZba65-OPw@mail.gmail.com>
+ <20200424065124.GA31922@xin-VirtualBox>
+ <CANMq1KBJ6f74aNAr8BwC3wz8MEeJzwXOQE44gv6C=DNzYmUWCQ@mail.gmail.com>
+ <20200428100508.GD3456981@phenom.ffwll.local>
+ <20200430033614.GA6645@xin-VirtualBox>
+ <20200430133731.GA10381@phenom.ffwll.local>
+ <20200430133839.GB10381@phenom.ffwll.local>
+ <20200430134746.GA2188@xin-VirtualBox>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430134746.GA2188@xin-VirtualBox>
+X-Operating-System: Linux phenom 5.4.0-4-amd64 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Doug Berger <opendmb@gmail.com>
+On Thu, Apr 30, 2020 at 09:47:46PM +0800, Xin Ji wrote:
+> Hi Daniel,
+> 
+> On Thu, Apr 30, 2020 at 03:38:39PM +0200, Daniel Vetter wrote:
+> > On Thu, Apr 30, 2020 at 03:37:31PM +0200, Daniel Vetter wrote:
+> > > On Thu, Apr 30, 2020 at 11:36:14AM +0800, Xin Ji wrote:
+> > > > On Tue, Apr 28, 2020 at 12:05:08PM +0200, Daniel Vetter wrote:
+> > > > > On Fri, Apr 24, 2020 at 08:12:04PM +0800, Nicolas Boichat wrote:
+> > > > > > On Fri, Apr 24, 2020 at 2:51 PM Xin Ji <xji@analogixsemi.com> wrote:
+> > > > > > >
+> > > > > > > On Thu, Apr 23, 2020 at 07:55:15PM +0800, Nicolas Boichat wrote:
+> > > > > > > > Hi,
+> > > > > > > >
+> > > > > > > > Just commenting on the mode_fixup function that was added in v7.
+> > > > > > > >
+> > > > > > > [snip]
+> > > > > > > > > +       /*
+> > > > > > > > > +        * once illegal timing detected, use default HFP, HSYNC, HBP
+> > > > > > > > > +        */
+> > > > > > > > > +       if (hblanking < HBLANKING_MIN || (hfp < HP_MIN && hbp < HP_MIN)) {
+> > > > > > > >
+> > > > > > > > should this be adj_hblanking/adj_hfp/adj_hbp?
+> > > > > > > NO, need check original HFP and HBP, if they are not legal, driver need
+> > > > > > > set default value to adj_hsync, adj_hfp, adj_hbp.
+> > > > > > > >
+> > > > > > > > > +               adj_hsync = SYNC_LEN_DEF;
+> > > > > > > > > +               adj_hfp = HFP_HBP_DEF;
+> > > > > > > > > +               adj_hbp = HFP_HBP_DEF;
+> > > > > > > > > +               vref = adj->clock * 1000 / (adj->htotal * adj->vtotal);
+> > > > > > > > > +               if (hblanking < HBLANKING_MIN) {
+> > > > > > > > > +                       delta_adj = HBLANKING_MIN - hblanking;
+> > > > > > > > > +                       adj_clock = vref * delta_adj * adj->vtotal;
+> > > > > > > > > +                       adj->clock += DIV_ROUND_UP(adj_clock, 1000);
+> > > > > > > > > +               } else {
+> > > > > > > > > +                       delta_adj = hblanking - HBLANKING_MIN;
+> > > > > > > > > +                       adj_clock = vref * delta_adj * adj->vtotal;
+> > > > > > > > > +                       adj->clock -= DIV_ROUND_UP(adj_clock, 1000);
+> > > > > > > > > +               }
+> > > > > > > > > +
+> > > > > > > > > +               DRM_WARN("illegal hblanking timing, use default.\n");
+> > > > > > > > > +               DRM_WARN("hfp(%d),hbp(%d),hsync(%d).\n", hfp, hbp, hsync);
+> > > > > > > >
+> > > > > > > > How likely is it that this mode is going to work? Can you just return
+> > > > > > > > false here to reject the mode?
+> > > > > > > We want to set the default minimal Hblancking value, then it may display,
+> > > > > > > otherwise. If we just return false, there is no display for sure.
+> > > > > > 
+> > > > > > Right, understand your argument. I'm pondering if it's not just better
+> > > > > > to reject the mode rather than trying a timing that is definitely
+> > > > > > quite different from what the monitor was asking for. No super strong
+> > > > > > opinion, I'll let other people on the list weigh in.
+> > > > > 
+> > > > > Yeah mode_fixup is supposed to be used to adjust the mode in intermediate
+> > > > > stages (e.g. if you go from progressive to interlaced only at the end of
+> > > > > your pipeline or something like that). It's not meant for adjusting the
+> > > > > mode yout actually put out through a hdmi or dp connector. For fixed
+> > > > > panels adjusting modes to fit the panel is also fairly common, but not for
+> > > > > external outputs.
+> > > > > 
+> > > > > Since this is a DP bridge I'd say no adjusting, just reject what doesn't
+> > > > > fit.
+> > > > We have found some panel which HBP less than 8, if we reject to adjust
+> > > > video timing, then there is no display. The customer does not accept it,
+> > > > they push us to fix it, the only resolve way is to adjust timing.
+> > > 
+> > > Are we talking about external DP screen here, or some built-in panel? For
+> > > the later case we do a lot of mode adjusting in many drivers ...
+> > > 
+> > > I haven't checked, by if our connector type is eDP then this should be all
+> > > fine.
+> > 
+> > Ok I read the patch now, you seem to support both. Would it work if we
+> > make this adjustement conditional on it being an internal panel only? I
+> > think that would be perfect.
+> > -Daniel
+> > -- 
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> Based on comments of V8, only keeped eDP built-in panel in V9 version,
+> removed external DP screen support.
 
-[ Upstream commit 3554e54a46125030c534820c297ed7f6c3907e24 ]
+Ah even better. Then the above adjusting has my:
 
-The driver is designed to drop Rx packets and reclaim the buffers
-when an allocation fails, and the network interface needs to safely
-handle this packet loss. Therefore, an allocation failure of Rx
-SKBs is relatively benign.
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-However, the output of the warning message occurs with a high
-scheduling priority that can cause excessive jitter/latency for
-other high priority processing.
+Maybe add a comment to the code summarizing the discussion. Definitely
+needs to be covered in the commit message.
 
-This commit suppresses the warning messages to prevent scheduling
-problems while retaining the failure count in the statistics of
-the network interface.
-
-Signed-off-by: Doug Berger <opendmb@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/broadcom/bcmsysport.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/broadcom/bcmsysport.c b/drivers/net/ethernet/broadcom/bcmsysport.c
-index 6519dd33c7ca2..5d67dbdd943dc 100644
---- a/drivers/net/ethernet/broadcom/bcmsysport.c
-+++ b/drivers/net/ethernet/broadcom/bcmsysport.c
-@@ -504,7 +504,8 @@ static struct sk_buff *bcm_sysport_rx_refill(struct bcm_sysport_priv *priv,
- 	dma_addr_t mapping;
- 
- 	/* Allocate a new SKB for a new packet */
--	skb = netdev_alloc_skb(priv->netdev, RX_BUF_LENGTH);
-+	skb = __netdev_alloc_skb(priv->netdev, RX_BUF_LENGTH,
-+				 GFP_ATOMIC | __GFP_NOWARN);
- 	if (!skb) {
- 		priv->mib.alloc_rx_buff_failed++;
- 		netif_err(priv, rx_err, ndev, "SKB alloc failed\n");
+Thanks, Daniel
 -- 
-2.20.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
