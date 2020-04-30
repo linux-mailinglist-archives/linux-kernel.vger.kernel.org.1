@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F69A1BFC0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6056F1BFC15
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729452AbgD3ODV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728620AbgD3ODQ (ORCPT
+        id S1729471AbgD3OD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:03:29 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:38235 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729065AbgD3ODU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:03:16 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02E0C035495
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:03:15 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id f11so6648446ljp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gqs6/WoFCiYvtJs2NOyJ4iHVgMuqbT1GqHeEFPhOPPQ=;
-        b=O8t7ysvn4JbuCgfHB0iclVfyXqKjhyJMADH7fryiwgDIaikCUb2xUHFTGkfrv/kOGT
-         ChdTR92r6FB9qFSdR0QPOufTNyG3cZsWdSpf9JRI7IcOooSDszEv4yLEcFZtwKJToURL
-         x34EdQwoyAhaLyKmaBh1g7sFR+CWi6lGqj6Xo=
+        Thu, 30 Apr 2020 10:03:20 -0400
+Received: by mail-ot1-f67.google.com with SMTP id g19so4971559otk.5;
+        Thu, 30 Apr 2020 07:03:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gqs6/WoFCiYvtJs2NOyJ4iHVgMuqbT1GqHeEFPhOPPQ=;
-        b=dXDLZhckVRBa+1DHOQL9rW6RmR9SVqAP2aOFt63bJ+9Ew3wAW434OP2kwcpqXIJERP
-         sHdXVemW14PMr+ND798zQ9hqcHIcHXDO1l8eo/oOD1dB/y5ow/Ufx9H3taZdyH266HXL
-         A7rt1FcSdf4RMWBtlPfaSgLF31CrOM3/TAa+ODzWFkkwyViUzfyJTOJAVxGLYMn8gNZT
-         2S/9TR9Am2dm5ct1e5FYYHjirZOf+QqJCzdqnK2eukeoLGUtiA5Yy1eWQsBmRtUcyU8w
-         /stLpUatovVHBd4+KzG6pvUAFNbTI85+QCYNTTF3IEBd3BnAuCMDmB2XQddoK6xrZhqX
-         sjYA==
-X-Gm-Message-State: AGi0PubIfYxjb8a/Fy7s1a4EvH1gJzY0lo35oy3Hh7Fjd7U9M5bdLgxj
-        32+qAyLkE4yjm06xLcJvpmgIUHwwIOI=
-X-Google-Smtp-Source: APiQypJ88x8wx5yuj4nFsjPnKG7MasPJZHwq6GriUQ3I180xbuSCyVS6LOp1XwtDdiygaLnmz5sxqQ==
-X-Received: by 2002:a2e:9712:: with SMTP id r18mr2360319lji.225.1588255393039;
-        Thu, 30 Apr 2020 07:03:13 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id u3sm5254387lff.26.2020.04.30.07.03.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 07:03:12 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id u6so6606691ljl.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:03:11 -0700 (PDT)
-X-Received: by 2002:a2e:9a54:: with SMTP id k20mr2483575ljj.265.1588255391241;
- Thu, 30 Apr 2020 07:03:11 -0700 (PDT)
+        bh=Kz7Wj6UlhUtYyAjOVoDBpABEhXzAY8F1XL3/Z2xqUzA=;
+        b=k/hifpxip8WvfwSk64PvtfcABtuv8RJlaepsuoRFODq+LzNM7jsZy/m7vozJM7FlE1
+         8es+NHpnYCIFeHsBaSR/cHZJVQRj9X5cuMiB+sZbV71Gik//CqwD29PngIR+qpIdKNJO
+         NwbrFdEGQtQpHxPqlKOasB4pEuivsBARaRdIzqe5waOcjhq2dUhXUeE8bBXfN7dmucOC
+         3IamyNuOSBctLWtJaGqZ/CQlYjpsOFn6jKGl4NdW1mPoLhk++sO7vWSF2lgw+YzqcLIA
+         71wIxEPJYAdJY3pXSACUcudGfJALwL76xTM9XGdPtDCEAoOfeBlgUUrTRfD5M0bZ902G
+         rMgQ==
+X-Gm-Message-State: AGi0PuZtS7tXCKHB5KWLJYULNeCNYIJUS3ZymQQCDvhRIQ9pzPhSRfjK
+        xcA7ErqFg+IpJmqyT68OKiy38aKyzmSCmMIsD8I=
+X-Google-Smtp-Source: APiQypKwUUCVBWIBcqOPUBZmRRdT7JXpn2BYbxbHqquKVj0D5RpVp1Oagg3I9RqW87RaXrHEMn4Krxr5O0GVmmhdSMo=
+X-Received: by 2002:a9d:7d85:: with SMTP id j5mr2469309otn.107.1588255399560;
+ Thu, 30 Apr 2020 07:03:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <158823509800.2094061.9683997333958344535.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <158823509800.2094061.9683997333958344535.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 30 Apr 2020 07:02:55 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh6d59KAG_6t+NrCLBz-i0OUSJrqurric=m0ZG850Ddkw@mail.gmail.com>
-Message-ID: <CAHk-=wh6d59KAG_6t+NrCLBz-i0OUSJrqurric=m0ZG850Ddkw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        stable <stable@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1588197415-13747-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1588197415-13747-15-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1588197415-13747-15-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 30 Apr 2020 16:03:08 +0200
+Message-ID: <CAMuHMdU=_yAxxc7vLzRC5576TTjwjZta=fBgWQ5gmDX5rfRkVA@mail.gmail.com>
+Subject: Re: [PATCH 14/18] dt-bindings: serial: renesas,scifb: Document
+ r8a7742 bindings
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 1:41 AM Dan Williams <dan.j.williams@intel.com> wrote:
+On Wed, Apr 29, 2020 at 11:58 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> RZ/G1H (R8A7742) SoC also has the R-Car gen2 compatible SCIFB ports,
+> so document the SoC specific bindings.
 >
-> With the above realizations the name "mcsafe" is no longer accurate and
-> copy_safe() is proposed as its replacement. x86 grows a copy_safe_fast()
-> implementation as a default implementation that is independent of
-> detecting the presence of x86-MCA.
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-How is this then different from "probe_kernel_read()" and
-"probe_kernel_write()"? Other than the obvious "it does it for both
-reads and writes"?
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-IOW, wouldn't it be sensible to try to match the naming and try to
-find some unified model for all these things?
+Gr{oetje,eeting}s,
 
-"probe_kernel_copy()"?
+                        Geert
 
-              Linus
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
