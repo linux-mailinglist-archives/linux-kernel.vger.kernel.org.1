@@ -2,80 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FD31BECEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 02:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442AF1BECFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 02:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgD3AUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 20:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726279AbgD3AUi (ORCPT
+        id S1726499AbgD3Aeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 20:34:31 -0400
+Received: from pbmsgap01.intersil.com ([192.157.179.201]:48322 "EHLO
+        pbmsgap01.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726279AbgD3Aea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 20:20:38 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15350C035494
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 17:20:38 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id d25so3231338lfi.11
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 17:20:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=s598r/7kUjIC6HAMYR5ml+jwLPdPDke+4dCrGdi46QU=;
-        b=ptgD7AWHf9KfscYWvafhJgNUjANXN9zqYdVoBiNSn51Y+pdUW1CFnS0VkU1jh5Qaqx
-         HGCylIjpTzLzU3hy9ehhUnPAIY/lEiGMFpwc8fai7MlzB6bam33GTHGItyQqBM/mU1t0
-         Icz/wGGAvHZfo98fh5mP3WZcPdCRKTymzpt9hw/Ap9OOgswseV+1GtTr2N0/5mBkY3xn
-         Mb7x1nE6XFSSwQp5n9YaNvPRs0GxG+K9CHqnckLsTDySuvyL4bEQIhi4LZA/xv6pd4EE
-         JQT6RZXud6RSF/ztUx0pLXM6nGG3cIg+cE6MznK51SiacvMW55GZxXdnhVhHyGjd00Rh
-         TnHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=s598r/7kUjIC6HAMYR5ml+jwLPdPDke+4dCrGdi46QU=;
-        b=iMj8lF57xym9Nj9cX3mdYrpL7I10KzAndHryg1HDGXQnK8oj6JAWC6Iar6SKo6i08/
-         k26fGWT78T5eRlqM2QuAaxasyBmUCrH5PgJVRiXQjxXH1d5gPJx860XlOD6SS1/nTvdr
-         jrDqiT0nQqGRkeam+Pmursrf7XPsA0nTK78eVAXJpeeZePmCq8snDTMz7K9qH3hWogKc
-         VsGdEFCeEJ4Txu9JaR3YE4TjyL0Lo3FNxFGl2e6haAOjPiZKjNJpL+REZ5k26Do3OY1R
-         DUETzewFd/MnYCOTKl48SuSkmGqOKdT6kOTPzXzeRdDmy7UgiMY0VT/ur+ARhNuz4y1l
-         aGfQ==
-X-Gm-Message-State: AGi0PubgX6OyL4IjKLlgsFJ58VLysl5gwSuBE98G7Ado0Lj+xGTvXLBt
-        AJfOmqh03ZS5nmCQ8dMGn4vEr3X/YJVr8PTBsg==
-X-Google-Smtp-Source: APiQypJ+S+zWYNH1WPqxBkhn7oTtluJvxE3ShVFev3d3rO0wnqzQ20RbWn+uo0pBBTiY8CCMsr4qcGbcwImL5DKg9M0=
-X-Received: by 2002:a19:8809:: with SMTP id k9mr241010lfd.151.1588206036454;
- Wed, 29 Apr 2020 17:20:36 -0700 (PDT)
+        Wed, 29 Apr 2020 20:34:30 -0400
+X-Greylist: delayed 342 seconds by postgrey-1.27 at vger.kernel.org; Wed, 29 Apr 2020 20:34:30 EDT
+Received: from pps.filterd (pbmsgap01.intersil.com [127.0.0.1])
+        by pbmsgap01.intersil.com (8.16.0.27/8.16.0.27) with SMTP id 03U0P6iB005024;
+        Wed, 29 Apr 2020 20:28:46 -0400
+Received: from pbmxdp01.intersil.corp (pbmxdp01.pb.intersil.com [132.158.200.222])
+        by pbmsgap01.intersil.com with ESMTP id 30mgqytds5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 29 Apr 2020 20:28:46 -0400
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp01.intersil.corp (132.158.200.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1531.3; Wed, 29 Apr 2020 20:28:45 -0400
+Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.1531.3 via Frontend
+ Transport; Wed, 29 Apr 2020 20:28:44 -0400
+From:   <vincent.cheng.xh@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Vincent Cheng <vincent.cheng.xh@renesas.com>
+Subject: [PATCH net-next 0/3] ptp: Add adjust phase to support phase offset.
+Date:   Wed, 29 Apr 2020 20:28:22 -0400
+Message-ID: <1588206505-21773-1-git-send-email-vincent.cheng.xh@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-Received: by 2002:ab3:1207:0:0:0:0:0 with HTTP; Wed, 29 Apr 2020 17:20:35
- -0700 (PDT)
-From:   Mohamed Abdullah <mohabdu0011@gmail.com>
-Date:   Wed, 29 Apr 2020 17:20:35 -0700
-X-Google-Sender-Auth: RwLDP2rz9htGWuGw7MzDnjnlS7k
-Message-ID: <CAO=7yz69VgYgxaQcrN7KY5xJcvgzu+d9Zvfe4Gg8L+zHTUDGNA@mail.gmail.com>
-Subject: REPLY ME IMMEDIATELY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-29_11:2020-04-29,2020-04-29 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 suspectscore=4 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=661
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-2002250000 definitions=main-2004300000
+X-Proofpoint-Spam-Reason: mlx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QXNzYWxhbXUgYWxheWt1bSB3YSBSYWhtYXR1bGxhaGkgd2EgQmFyYWthdHVoLiwNCg0KSSBhbSBN
-b2hhbW1lZCBDb21wYW9yZSwgdGhlIG1hbmFnZXIgb2YgQmlsbCBhbmQgRXhjaGFuZ2UgYXQgdGhl
-DQpGb3JlaWduIFJlbWl0dGFuY2UgRGVwYXJ0bWVudCBpbiBteSBiYW5rIGhlcmUgaW4gQnVya2lu
-YSBGYXNvLA0KDQpBcyB5b3UgYXJlIG5vdCBhIG5hdGlvbmFsaXR5IG9mIG15IGNvdW50cnkgSSBu
-ZWVkIHlvdSB0byBoZWxwIG1lIGluDQpyZWNlaXZpbmcgdGhlIHN1bSBvZiAoJDUwLDAwMC4wMDAu
-MDApIEZpZnR5IE1pbGxpb24gVW5pdGVkIFN0YXRlDQpEb2xsYXJzIGluIHlvdXIgYmFuayBhY2Nv
-dW50LCBJZiB5b3UncmUgaW50ZXJlc3RlZCBjb250YWN0IG1lIGZvciBtb3JlDQpkZXRhaWxzLg0K
-DQpZb3VycyBmYWl0aGZ1bGx5LA0KTW9oYW1tZWQgQ29tcGFvcmUNCg0K2KfZhNiz2YTYp9mF2Ygg
-2LnZhNmK2YPZiNmFINmI2Kcg2LHYrdmF2Kkg2KfZhNmE2Ycg2YrZiCDYqNix2YPYp9iq2YcuLA0K
-DQrYo9mG2Kcg2YXYrdmF2K8g2YPZiNmF2KjYp9mI2LHZitiMINmF2K/ZitixINil2K/Yp9ix2Kkg
-2KfZhNmB2YjYp9iq2YrYsSDZiNin2YTYqNmI2LHYtdin2Kog2YHZiiDYpdiv2KfYsdipINin2YTY
-qtit2YjZitmE2KfYqg0K2KfZhNiu2KfYsdis2YrYqSDZgdmKINmF2LXYsdmB2Yog2YfZhtinINmB
-2Yog2KjZiNix2YPZitmG2Kcg2YHYp9iz2YjYjA0KDQrYqNmF2Kcg2KPZhtmDINmE2LPYqiDZhdmG
-INis2YbYs9mK2Kkg2KjZhNiv2YrYjCDYo9ix2YrYr9mDINij2YYg2KrYs9in2LnYr9mG2Yog2YHZ
-iiDYqtmE2YLZiiDZhdio2YTYug0KKDUwLDAwMC4wMDAuMDAg2K/ZiNmE2KfYsSkg2K7Zhdiz2YjZ
-hiDZhdmE2YrZiNmGINiv2YjZhNin2LEg2KPZhdix2YrZg9mKINmB2Yog2K3Ys9in2KjZgyDYp9mE
-2YXYtdix2YHZitiMINil2LDYpw0K2YPZhtiqINmF2YfYqtmF2YvYpyDYqNin2YTYp9iq2LXYp9mE
-INio2Yog2YTZhNit2LXZiNmEINi52YTZiSDZhdiy2YrYryDZhdmGINin2YTYqtmB2KfYtdmK2YQu
-DQoNCtmE2YMg2KjYo9mF2KfZhtip2IwNCtmF2K3ZhdivINmD2YjZhdio2KfZiNix2YoNCg==
+From: Vincent Cheng <vincent.cheng.xh@renesas.com>
+
+This series adds adjust phase to the PTP Hardware Clock device interface.
+
+Some PTP hardware clocks have a write phase mode that has
+a built-in hardware filtering capability.  The write phase mode
+utilizes a phase offset control word instead of a frequency offset 
+control word.  Add adjust phase function to take advantage of this
+capability.
+
+Vincent Cheng (3):
+  ptp: Add adjphase function to support phase offset control.
+  ptp: Add adjust_phase to ptp_clock_caps capability.
+  ptp: ptp_clockmatrix: Add adjphase() to support PHC write phase mode.
+
+ drivers/ptp/ptp_chardev.c             |   1 +
+ drivers/ptp/ptp_clock.c               |   2 +
+ drivers/ptp/ptp_clockmatrix.c         | 123 ++++++++++++++++++++++++++++++++++
+ drivers/ptp/ptp_clockmatrix.h         |  11 ++-
+ include/linux/ptp_clock_kernel.h      |   6 +-
+ include/uapi/linux/ptp_clock.h        |   4 +-
+ tools/testing/selftests/ptp/testptp.c |   6 +-
+ 7 files changed, 147 insertions(+), 6 deletions(-)
+
+-- 
+2.7.4
+
