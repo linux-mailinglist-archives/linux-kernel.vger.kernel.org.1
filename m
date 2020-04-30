@@ -2,315 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58F91BF106
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C625C1BF128
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgD3HQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 03:16:41 -0400
-Received: from mga09.intel.com ([134.134.136.24]:42245 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726412AbgD3HQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:16:40 -0400
-IronPort-SDR: g/j6h5NrqiF1yPgrixPDNaYkFIUq8SA3oBMeSPd72TQRj6yzTe7RUEJGcRH0iZ+u8FGShs06rs
- yQS/4EJaRZKQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 00:16:39 -0700
-IronPort-SDR: qHHWkc+9M95y1R8WPEqSsCj6qDPnk5ksoDzUPUGQX2riAcgfQiA/gRtuM3rGPIDcRoR6i3iPdd
- FiaaRu8QPCLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,334,1583222400"; 
-   d="scan'208";a="368053163"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP; 30 Apr 2020 00:16:39 -0700
-Received: from [10.249.229.126] (abudanko-mobl.ccr.corp.intel.com [10.249.229.126])
-        by linux.intel.com (Postfix) with ESMTP id 63AB4580646;
-        Thu, 30 Apr 2020 00:16:36 -0700 (PDT)
-Subject: [PATCH v3 3/3] perf docs: introduce security.txt file to document
- related issues
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-References: <0fffd9e2-1f22-a0c2-c2e3-cb7f4bb89d66@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <290ded0a-c422-3749-5180-918fed1ee30f@linux.intel.com>
-Date:   Thu, 30 Apr 2020 10:16:34 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726463AbgD3HSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 03:18:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36212 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726337AbgD3HSn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 03:18:43 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03U721bb087920;
+        Thu, 30 Apr 2020 03:18:28 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30me474bvn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Apr 2020 03:18:28 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 03U7AIWg001869;
+        Thu, 30 Apr 2020 07:18:26 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03fra.de.ibm.com with ESMTP id 30mcu5af33-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 30 Apr 2020 07:18:25 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03U7IN5349086470
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 07:18:23 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9F9CB52051;
+        Thu, 30 Apr 2020 07:18:23 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 8974252050;
+        Thu, 30 Apr 2020 07:18:21 +0000 (GMT)
+Date:   Thu, 30 Apr 2020 12:48:20 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mel Gorman <mgorman@suse.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Christopher Lameter <cl@linux.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v2 3/3] mm/page_alloc: Keep memoryless cpuless node 0
+ offline
+Message-ID: <20200430071820.GF19958@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20200428093836.27190-1-srikar@linux.vnet.ibm.com>
+ <20200428093836.27190-4-srikar@linux.vnet.ibm.com>
+ <20200428165912.ca1eadefbac56d740e6e8fd1@linux-foundation.org>
+ <20200429014145.GD19958@linux.vnet.ibm.com>
+ <20200429122211.GD28637@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <0fffd9e2-1f22-a0c2-c2e3-cb7f4bb89d66@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20200429122211.GD28637@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-30_01:2020-04-30,2020-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 impostorscore=0
+ spamscore=0 malwarescore=0 mlxlogscore=999 clxscore=1011 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300052
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Michal Hocko <mhocko@kernel.org> [2020-04-29 14:22:11]:
 
-Publish instructions on how to apply LSM hooks for access control
-to perf_event_open() syscall on Fedora distro with Targeted SELinux
-policy and then manage access to the syscall.
+> On Wed 29-04-20 07:11:45, Srikar Dronamraju wrote:
+> > > > 
+> > > > By marking, N_ONLINE as NODE_MASK_NONE, lets stop assuming that Node 0 is
+> > > > always online.
+> > > > 
+> > > > ...
+> > > >
+> > > > --- a/mm/page_alloc.c
+> > > > +++ b/mm/page_alloc.c
+> > > > @@ -116,8 +116,10 @@ EXPORT_SYMBOL(latent_entropy);
+> > > >   */
+> > > >  nodemask_t node_states[NR_NODE_STATES] __read_mostly = {
+> > > >  	[N_POSSIBLE] = NODE_MASK_ALL,
+> > > > +#ifdef CONFIG_NUMA
+> > > > +	[N_ONLINE] = NODE_MASK_NONE,
+> > > > +#else
+> > > >  	[N_ONLINE] = { { [0] = 1UL } },
+> > > > -#ifndef CONFIG_NUMA
+> > > >  	[N_NORMAL_MEMORY] = { { [0] = 1UL } },
+> > > >  #ifdef CONFIG_HIGHMEM
+> > > >  	[N_HIGH_MEMORY] = { { [0] = 1UL } },
+> > > 
+> > > So on all other NUMA machines, when does node 0 get marked online?
+> > > 
+> > > This change means that for some time during boot, such machines will
+> > > now be running with node 0 marked as offline.  What are the
+> > > implications of this?  Will something break?
+> > 
+> > Till the nodes are detected, marking Node 0 as online tends to be redundant.
+> > Because the system doesn't know if its a NUMA or a non-NUMA system.
+> > Once we detect the nodes, we online them immediately. Hence I don't see any
+> > side-effects or negative implications of this change.
+> > 
+> > However if I am missing anything, please do let me know.
+> > 
+> > >From my part, I have tested this on
+> > 1. Non-NUMA Single node but CPUs and memory coming from zero node.
+> > 2. Non-NUMA Single node but CPUs and memory coming from non-zero node.
+> > 3. NUMA Multi node but with CPUs and memory from node 0.
+> > 4. NUMA Multi node but with no CPUs and memory from node 0.
+> 
+> Have you tested on something else than ppc? Each arch does the NUMA
+> setup separately and this is a big mess. E.g. x86 marks even memory less
+> nodes (see init_memory_less_node) as online.
+> 
 
-Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
----
- tools/perf/Documentation/security.txt | 237 ++++++++++++++++++++++++++
- 1 file changed, 237 insertions(+)
- create mode 100644 tools/perf/Documentation/security.txt
+while I have predominantly tested on ppc, I did test on X86 with CONFIG_NUMA
+enabled/disabled on both single node and multi node machines.
+However, I dont have a cpuless/memoryless x86 system.
 
-diff --git a/tools/perf/Documentation/security.txt b/tools/perf/Documentation/security.txt
-new file mode 100644
-index 000000000000..4fe3b8b1958f
---- /dev/null
-+++ b/tools/perf/Documentation/security.txt
-@@ -0,0 +1,237 @@
-+Overview
-+========
-+
-+For general security related questions of perf_event_open() syscall usage,
-+performance monitoring and observability operations by Perf see here:
-+https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html
-+
-+Enabling LSM based mandatory access control (MAC) to perf_event_open() syscall
-+==============================================================================
-+
-+LSM hooks for mandatory access control for perf_event_open() syscall can be
-+used starting from Linux v5.3. Below are the steps to extend Fedora (v31) with
-+Targeted policy with perf_event_open() access control capabilities:
-+
-+1. Download selinux-policy SRPM package (e.g. selinux-policy-3.14.4-48.fc31.src.rpm on FC31)
-+   and install it so rpmbuild directory would exist in the current working directory:
-+
-+   # rpm -Uhv selinux-policy-3.14.4-48.fc31.src.rpm
-+
-+2. Get into rpmbuild/SPECS directory and unpack the source code:
-+
-+   # rpmbuild -bp selinux-policy.spec
-+
-+3. Place patch below at rpmbuild/BUILD/selinux-policy-b86eaaf4dbcf2d51dd4432df7185c0eaf3cbcc02
-+   directory and apply it:
-+
-+   # patch -p1 < selinux-policy-perf-events-perfmon.patch
-+   patching file policy/flask/access_vectors
-+   patching file policy/flask/security_classes
-+   # cat selinux-policy-perf-events-perfmon.patch
-+diff -Nura a/policy/flask/access_vectors b/policy/flask/access_vectors
-+--- a/policy/flask/access_vectors	2020-02-04 18:19:53.000000000 +0300
-++++ b/policy/flask/access_vectors	2020-02-28 23:37:25.000000000 +0300
-+@@ -174,6 +174,7 @@
-+ 	wake_alarm
-+ 	block_suspend
-+ 	audit_read
-++	perfmon
-+ }
-+ 
-+ #
-+@@ -1099,3 +1100,15 @@
-+ 
-+ class xdp_socket
-+ inherits socket
-++
-++class perf_event
-++{
-++	open
-++	cpu
-++	kernel
-++	tracepoint
-++	read
-++	write
-++}
-++
-++
-+diff -Nura a/policy/flask/security_classes b/policy/flask/security_classes
-+--- a/policy/flask/security_classes	2020-02-04 18:19:53.000000000 +0300
-++++ b/policy/flask/security_classes	2020-02-28 21:35:17.000000000 +0300
-+@@ -200,4 +200,6 @@
-+ 
-+ class xdp_socket
-+ 
-++class perf_event
-++
-+ # FLASK
-+
-+4. Get into rpmbuild/SPECS directory and build policy packages from patched sources:
-+
-+   # rpmbuild --noclean --noprep -ba selinux-policy.spec
-+
-+   so you have this:
-+
-+   # ls -alh rpmbuild/RPMS/noarch/
-+   total 33M
-+   drwxr-xr-x. 2 root root 4.0K Mar 20 12:16 .
-+   drwxr-xr-x. 3 root root 4.0K Mar 20 12:16 ..
-+   -rw-r--r--. 1 root root 112K Mar 20 12:16 selinux-policy-3.14.4-48.fc31.noarch.rpm
-+   -rw-r--r--. 1 root root 1.2M Mar 20 12:17 selinux-policy-devel-3.14.4-48.fc31.noarch.rpm
-+   -rw-r--r--. 1 root root 2.3M Mar 20 12:17 selinux-policy-doc-3.14.4-48.fc31.noarch.rpm
-+   -rw-r--r--. 1 root root  12M Mar 20 12:17 selinux-policy-minimum-3.14.4-48.fc31.noarch.rpm
-+   -rw-r--r--. 1 root root 4.5M Mar 20 12:16 selinux-policy-mls-3.14.4-48.fc31.noarch.rpm
-+   -rw-r--r--. 1 root root 111K Mar 20 12:16 selinux-policy-sandbox-3.14.4-48.fc31.noarch.rpm
-+   -rw-r--r--. 1 root root  14M Mar 20 12:17 selinux-policy-targeted-3.14.4-48.fc31.noarch.rpm
-+
-+5. Install SELinux packages from Fedora repo, if not already done so, and
-+   update with the patched rpms above:
-+
-+   # rpm -Uhv rpmbuild/RPMS/noarch/selinux-policy-*
-+
-+6. Enable SELinux Permissive mode for Targeted policy, if not already done so:
-+
-+   # cat /etc/selinux/config
-+
-+   # This file controls the state of SELinux on the system.
-+   # SELINUX= can take one of these three values:
-+   #     enforcing - SELinux security policy is enforced.
-+   #     permissive - SELinux prints warnings instead of enforcing.
-+   #     disabled - No SELinux policy is loaded.
-+   SELINUX=permissive
-+   # SELINUXTYPE= can take one of these three values:
-+   #     targeted - Targeted processes are protected,
-+   #     minimum - Modification of targeted policy. Only selected processes are protected.
-+   #     mls - Multi Level Security protection.
-+   SELINUXTYPE=targeted
-+
-+7. Enable filesystem SELinux labeling at the next reboot:
-+
-+   # touch /.autorelabel
-+
-+8. Reboot machine and it will label filesystems and load Targeted policy into the kernel;
-+
-+9. Login and check that dmesg output doesn't mention that perf_event class is unknown to SELinux subsystem;
-+
-+10. Check that SELinux is enabled and in Permissive mode
-+
-+    # getenforce
-+    Permissive
-+
-+11. Turn SELinux into Enforcing mode:
-+
-+    # setenforce 1
-+    # getenforce
-+    Enforcing
-+
-+Opening access to perf_event_open() syscall on Fedora with SELinux
-+==================================================================
-+
-+Access to performance monitoring and observability operations by Perf
-+can be limited for superuser or CAP_PERFMON or CAP_SYS_ADMIN privileged
-+processes. MAC policy settings (e.g. SELinux) can be loaded into the kernel
-+and prevent unauthorized access to perf_event_open() syscall. In such case
-+Perf tool provides a message similar to the one below:
-+
-+   # perf stat
-+   Error:
-+   Access to performance monitoring and observability operations is limited.
-+   Enforced MAC policy settings (SELinux) can limit access to performance
-+   monitoring and observability operations. Inspect system audit records for
-+   more perf_event access control information and adjusting the policy.
-+   Consider adjusting /proc/sys/kernel/perf_event_paranoid setting to open
-+   access to performance monitoring and observability operations for users
-+   without CAP_PERFMON or CAP_SYS_ADMIN Linux capability.
-+   perf_event_paranoid setting is -1:
-+     -1: Allow use of (almost) all events by all users
-+         Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
-+   >= 0: Disallow raw and ftrace function tracepoint access
-+   >= 1: Disallow CPU event access
-+   >= 2: Disallow kernel profiling
-+   To make the adjusted perf_event_paranoid setting permanent preserve it
-+   in /etc/sysctl.conf (e.g. kernel.perf_event_paranoid = <setting>)
-+
-+To make sure that access is limited by MAC policy settings inspect system
-+audit records using journalctl command or /var/log/audit/audit.log so the
-+output would contain AVC denied records related to perf_event:
-+
-+   # journalctl --reverse --no-pager | grep perf_event
-+
-+   python3[1318099]: SELinux is preventing perf from open access on the perf_event labeled unconfined_t.
-+                                         If you believe that perf should be allowed open access on perf_event labeled unconfined_t by default.
-+   setroubleshoot[1318099]: SELinux is preventing perf from open access on the perf_event labeled unconfined_t. For complete SELinux messages run: sealert -l 4595ce5b-e58f-462c-9d86-3bc2074935de
-+   audit[1318098]: AVC avc:  denied  { open } for  pid=1318098 comm="perf" scontext=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 tcontext=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 tclass=perf_event permissive=0
-+
-+In order to open access to perf_event_open() syscall MAC policy settings can
-+require to be extended. On SELinux system this can be done by loading a special
-+policy module extending base policy settings. Perf related policy module can
-+be generated using the system audit records about blocking perf_event access.
-+Run the command below to generate my-perf.te policy extension file with
-+perf_event related rules:
-+
-+   # ausearch -c 'perf' --raw | audit2allow -M my-perf && cat my-perf.te
-+
-+   module my-perf 1.0;
-+
-+   require {
-+        type unconfined_t;
-+        class perf_event { cpu kernel open read tracepoint write };
-+   }
-+
-+   #============= unconfined_t ==============
-+   allow unconfined_t self:perf_event { cpu kernel open read tracepoint write };
-+
-+Now compile, pack and load my-perf.pp extension module into the kernel:
-+
-+   # checkmodule -M -m -o my-perf.mod my-perf.te
-+   # semodule_package -o my-perf.pp -m my-perf.mod
-+   # semodule -X 300 -i my-perf.pp
-+
-+After all those taken steps above access to perf_event_open() syscall should
-+now be allowed by the policy settings. Check access running Perf like this:
-+
-+   # perf stat
-+   ^C
-+   Performance counter stats for 'system wide':
-+
-+         36,387.41 msec cpu-clock                 #    7.999 CPUs utilized
-+             2,629      context-switches          #    0.072 K/sec
-+                57      cpu-migrations            #    0.002 K/sec
-+                 1      page-faults               #    0.000 K/sec
-+       263,721,559      cycles                    #    0.007 GHz
-+       175,746,713      instructions              #    0.67  insn per cycle
-+        19,628,798      branches                  #    0.539 M/sec
-+         1,259,201      branch-misses             #    6.42% of all branches
-+
-+       4.549061439 seconds time elapsed
-+
-+The generated perf-event.pp related policy extension module can be removed
-+from the kernel using this command:
-+
-+   # semodule -X 300 -r my-perf
-+
-+Alternatively the module can be temporarily disabled and enabled back using
-+these two commands:
-+
-+   # semodule -d my-perf
-+   # semodule -e my-perf
-+
-+If something went wrong
-+=======================
-+
-+To turn SELinux into Permissive mode:
-+   # setenforce 0
-+
-+To fully disable SELinux during kernel boot [3] set kernel command line parameter selinux=0
-+
-+To remove SELinux labeling from local filesystems:
-+   # find / -mount -print0 | xargs -0 setfattr -h -x security.selinux
-+
-+To fully turn SELinux off a machine set SELINUX=disabled at /etc/selinux/config file and reboot;
-+
-+Links
-+=====
-+
-+[1] https://download-ib01.fedoraproject.org/pub/fedora/linux/updates/31/Everything/SRPMS/Packages/s/selinux-policy-3.14.4-49.fc31.src.rpm
-+[2] https://docs.fedoraproject.org/en-US/Fedora/11/html/Security-Enhanced_Linux/sect-Security-Enhanced_Linux-Working_with_SELinux-Enabling_and_Disabling_SELinux.html
-+[3] https://danwalsh.livejournal.com/10972.html
+> Honestly I have hard time to evaluate the effect of this patch. It makes
+> some sense to assume all nodes offline before they get online but this
+> is a land mine territory.
+> 
+> I am also not sure what kind of problem this is going to address. You
+> have mentioned numa balancing without many details.
+
+1. On a machine with just one node with node number not being 0,
+the current setup will end up showing 2 online nodes. And when there are
+more than one online nodes, numa_balancing gets enabled.
+
+Without patch
+$ grep numa /proc/vmstat
+numa_hit 95179
+numa_miss 0
+numa_foreign 0
+numa_interleave 3764
+numa_local 95179
+numa_other 0
+numa_pte_updates 1206973                 <----------
+numa_huge_pte_updates 4654                 <----------
+numa_hint_faults 19560                 <----------
+numa_hint_faults_local 19560                 <----------
+numa_pages_migrated 0
+
+
+With patch
+$ grep numa /proc/vmstat 
+numa_hit 322338756
+numa_miss 0
+numa_foreign 0
+numa_interleave 3790
+numa_local 322338756
+numa_other 0
+numa_pte_updates 0                 <----------
+numa_huge_pte_updates 0                 <----------
+numa_hint_faults 0                 <----------
+numa_hint_faults_local 0                 <----------
+numa_pages_migrated 0
+
+So we have a redundant page hinting numa faults which we can avoid.
+
+2. Few people have complained about existence of this dummy node when
+parsing lscpu and numactl o/p. They somehow start to think that the tools
+are reporting incorrectly or the kernel is not able to recognize resources
+connected to the node.
+
 -- 
-2.24.1
-
-
+Thanks and Regards
+Srikar Dronamraju
