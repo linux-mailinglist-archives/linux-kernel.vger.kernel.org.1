@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44781BEDAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C556E1BEDAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgD3Bgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 21:36:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47730 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726309AbgD3Bgq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 21:36:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588210605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X1gZzSto7hNc0Fves2SwneJoXyyNd5NhhVuof1lvKH8=;
-        b=YuuRNMlCJq8oFjQ0oPs6lBJBbbQGgFkXNwKF37Rx80C/AZO+tvPwlR4jTwk7wzuHCSpKQm
-        zlsfQVhYWhgAsNJUyzm06J0IDxHECcZvZPta4lfn2TMigqKBkTXb5nBQZ5cGz9w/8lVFNI
-        ovtEPD8ZPZ+GVlZFgdja3K3MVQb52dE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-133-f8b3uKY-OWu0GYdxOfHhfw-1; Wed, 29 Apr 2020 21:36:41 -0400
-X-MC-Unique: f8b3uKY-OWu0GYdxOfHhfw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 501471005510;
-        Thu, 30 Apr 2020 01:36:40 +0000 (UTC)
-Received: from ovpn-112-24.phx2.redhat.com (ovpn-112-24.phx2.redhat.com [10.3.112.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5EC481002388;
-        Thu, 30 Apr 2020 01:36:39 +0000 (UTC)
-Message-ID: <76ad9ab3684bacb2c8458678ef07b6a574384445.camel@redhat.com>
-Subject: Re: [RFC PATCH 1/3] sched/fair: Call newidle_balance() from
- finish_task_switch()
-From:   Scott Wood <swood@redhat.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Rik van Riel <riel@surriel.com>,
-        Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>
-Date:   Wed, 29 Apr 2020 20:36:38 -0500
-In-Reply-To: <CAKfTPtBsfneVVdT5UhtysUGACqPp7YUGKzSTKu4D8UYKwDbykg@mail.gmail.com>
-References: <20200428050242.17717-1-swood@redhat.com>
-         <20200428050242.17717-2-swood@redhat.com>
-         <CAKfTPtBsfneVVdT5UhtysUGACqPp7YUGKzSTKu4D8UYKwDbykg@mail.gmail.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5 (3.30.5-1.fc29) 
+        id S1726432AbgD3Bi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 21:38:27 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3343 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726180AbgD3Bi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 21:38:27 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 993BD23B206319219236;
+        Thu, 30 Apr 2020 09:38:25 +0800 (CST)
+Received: from [127.0.0.1] (10.166.212.180) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 30 Apr 2020
+ 09:38:21 +0800
+Subject: Re: [PATCH -next v2] hinic: Use ARRAY_SIZE for nic_vf_cmd_msg_handler
+To:     David Miller <davem@davemloft.net>
+CC:     <aviad.krawczyk@huawei.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1588133860-55722-1-git-send-email-zou_wei@huawei.com>
+ <20200429.114327.1585519928398105692.davem@davemloft.net>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <356fed7c-0983-4d33-df5b-e7b326a90833@huawei.com>
+Date:   Thu, 30 Apr 2020 09:38:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200429.114327.1585519928398105692.davem@davemloft.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.166.212.180]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-04-29 at 10:27 +0200, Vincent Guittot wrote:
-> On Tue, 28 Apr 2020 at 07:02, Scott Wood <swood@redhat.com> wrote:
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 02f323b85b6d..74c3c5280d6b 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -6758,8 +6758,6 @@ balance_fair(struct rq *rq, struct task_struct
-> > *prev, struct rq_flags *rf)
-> >  {
-> >         if (rq->nr_running)
-> >                 return 1;
-> > -
-> > -       return newidle_balance(rq, rf) != 0;
+
+
+On 2020/4/30 2:43, David Miller wrote:
+> From: Zou Wei <zou_wei@huawei.com>
+> Date: Wed, 29 Apr 2020 12:17:40 +0800
 > 
-> Missing return ?
-
-Yes, editing error during last minute cleanup. :-P
-
--Scott
-
+>> fix coccinelle warning, use ARRAY_SIZE
+>>
+>> drivers/net/ethernet/huawei/hinic/hinic_sriov.c:713:43-44: WARNING: Use ARRAY_SIZE
+>>
+>> ----------
+> 
+> Please don't put this "-------" here.
+> 
+>> diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+>> index b24788e..af70cca 100644
+>> --- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+>> +++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+>> @@ -704,17 +704,15 @@ int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
+>>   	struct hinic_hwdev *dev = hwdev;
+>>   	struct hinic_func_to_io *nic_io;
+>>   	struct hinic_pfhwdev *pfhwdev;
+>> -	u32 i, cmd_number;
+>> +	u32 i;
+>>   	int err = 0;
+> 
+> Please preserve the reverse christmas tree ordering of local variables.
+> 
+> .
+> 
+Thanks，I will modify and send v3 patch
 
