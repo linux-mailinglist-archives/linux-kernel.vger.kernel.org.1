@@ -2,109 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E7F1C0295
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AD51C02B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726902AbgD3Qck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726469AbgD3Qcj (ORCPT
+        id S1726754AbgD3QhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:37:16 -0400
+Received: from out02.mta.xmission.com ([166.70.13.232]:56712 "EHLO
+        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726130AbgD3QhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:32:39 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387DDC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:32:39 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id z6so2687636wml.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:32:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ugyb7Zb4Sysj1bxwGzOmKe/PaiDp8wxsBq9DmhoL44E=;
-        b=j6eTQuzQbAwpZE/KG4Vb3yRnsgDC26xftMT2jvjHHgv2Ry9OmS0pTf+OOaX89NT7xR
-         a6ye+t2bVtIHykJbMOPy5/zJM6YGO1023NU/VCkNr9A861zyXkMeCkiNnwU7yHmSKAmD
-         cBkNlVPk7QQbKMdbAd5LIvfvE3URtUsecxEIDZB9UMbeAn+lluUEzBc+m8U215//CGsG
-         Mje7KcnpQBmmm1f4M5+qYKrpGAwQ/nLtmFc4WgQbM2+oNW8Eaw4oxV8xLrOo3wkzHDDd
-         I8e3hdaH1py0yn6TeFgl1G2KLhNEZ9+QsoUQQ3PK0n6SrJ479pmtaX1QQm3DiT/LlhnY
-         wPHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ugyb7Zb4Sysj1bxwGzOmKe/PaiDp8wxsBq9DmhoL44E=;
-        b=emnxwZcJpNtJABU5WIWqWOBpq+bOurKFT7ok1ruWFiE1Vz/0AxQhhA2iDhWGTIH9XH
-         m9QJEuONZcqHMS3WjQt1+wwgnYDx2ja6v5YTHIFJt8omEJIkjlj9eYDl96oz1Z3/frFp
-         gBhWjTE1NeYe3oSQITAIHKO9JRdLPoOTUfrgDHmKmAaCds1NKMHqbytP/XsNC0gM1UWQ
-         0m5DkzqtCdsotJb2ZurwmRbMmACXXrUmKjoUWT8SjXEcaN1xdWQ10an5pz1rOaCsmo4R
-         Bw8bv3qLizND5e3LRm7raiUZoo2c8l4q+m/dPqWVY8ZXoqtc49bgaaP9GGyTF8FmW719
-         5q3A==
-X-Gm-Message-State: AGi0PubqdMm/hnxtSuw/KrQM3jcl89YEMByg+0WKaioiNDEdtpoDcm/o
-        dSTRGrTyCvEjDPyjuC+Jk28+GFzBbI0Pxc+7VDw=
-X-Google-Smtp-Source: APiQypKrZHvtErC3cKfTsi/zEKLQ6xIA3UZ+0B7fI1AaibkS6bXo92M3dum2wwZ1ZNScd8GlY0v15RO8THKXaBE6uGQ=
-X-Received: by 2002:a1c:9d8c:: with SMTP id g134mr3960280wme.79.1588264357899;
- Thu, 30 Apr 2020 09:32:37 -0700 (PDT)
+        Thu, 30 Apr 2020 12:37:15 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jUCBV-000583-GC; Thu, 30 Apr 2020 10:37:13 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jUCBT-0003Sj-B6; Thu, 30 Apr 2020 10:37:12 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        virtio-dev@lists.oasis-open.org,
+        virtualization@lists.linux-foundation.org,
+        linuxppc-dev@lists.ozlabs.org, linux-acpi@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-hyperv@vger.kernel.org,
+        linux-s390@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Baoquan He <bhe@redhat.com>
+References: <20200430102908.10107-1-david@redhat.com>
+        <20200430102908.10107-3-david@redhat.com>
+        <87pnbp2dcz.fsf@x220.int.ebiederm.org>
+        <1b49c3be-6e2f-57cb-96f7-f66a8f8a9380@redhat.com>
+Date:   Thu, 30 Apr 2020 11:33:53 -0500
+In-Reply-To: <1b49c3be-6e2f-57cb-96f7-f66a8f8a9380@redhat.com> (David
+        Hildenbrand's message of "Thu, 30 Apr 2020 17:52:35 +0200")
+Message-ID: <871ro52ary.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <1588218962-75747-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1588218962-75747-1-git-send-email-zou_wei@huawei.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 30 Apr 2020 12:32:26 -0400
-Message-ID: <CADnq5_Nawk027_tzc4WChRcPaZqJtorQTy=YrFFdKL-C7+ScKw@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/amd/display: Fix unsigned comparison to zero
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
-        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Chunming Zhou <David1.Zhou@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1jUCBT-0003Sj-B6;;;mid=<871ro52ary.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/rjTp6/iiXIJNS/hMPK4PB5d8gU9GVdPg=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        XMGappySubj_01,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;David Hildenbrand <david@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 593 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 11 (1.8%), b_tie_ro: 9 (1.6%), parse: 0.91 (0.2%),
+         extract_message_metadata: 12 (2.0%), get_uri_detail_list: 2.4 (0.4%),
+        tests_pri_-1000: 13 (2.2%), tests_pri_-950: 1.23 (0.2%),
+        tests_pri_-900: 1.02 (0.2%), tests_pri_-90: 215 (36.3%), check_bayes:
+        214 (36.0%), b_tokenize: 9 (1.6%), b_tok_get_all: 87 (14.6%),
+        b_comp_prob: 3.3 (0.6%), b_tok_touch_all: 110 (18.5%), b_finish: 0.89
+        (0.2%), tests_pri_0: 328 (55.3%), check_dkim_signature: 0.57 (0.1%),
+        check_dkim_adsp: 2.3 (0.4%), poll_dns_idle: 0.71 (0.1%), tests_pri_10:
+        2.1 (0.4%), tests_pri_500: 6 (1.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 2/3] mm/memory_hotplug: Introduce MHP_NO_FIRMWARE_MEMMAP
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+David Hildenbrand <david@redhat.com> writes:
 
-Alex
+> On 30.04.20 17:38, Eric W. Biederman wrote:
+>> David Hildenbrand <david@redhat.com> writes:
+>> 
+>>> Some devices/drivers that add memory via add_memory() and friends (e.g.,
+>>> dax/kmem, but also virtio-mem in the future) don't want to create entries
+>>> in /sys/firmware/memmap/ - primarily to hinder kexec from adding this
+>>> memory to the boot memmap of the kexec kernel.
+>>>
+>>> In fact, such memory is never exposed via the firmware memmap as System
+>>> RAM (e.g., e820), so exposing this memory via /sys/firmware/memmap/ is
+>>> wrong:
+>>>  "kexec needs the raw firmware-provided memory map to setup the
+>>>   parameter segment of the kernel that should be booted with
+>>>   kexec. Also, the raw memory map is useful for debugging. For
+>>>   that reason, /sys/firmware/memmap is an interface that provides
+>>>   the raw memory map to userspace." [1]
+>>>
+>>> We don't have to worry about firmware_map_remove() on the removal path.
+>>> If there is no entry, it will simply return with -EINVAL.
+>>>
+>>> [1]
+>>> https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-firmware-memmap
+>> 
+>> 
+>> You know what this justification is rubbish, and I have previously
+>> explained why it is rubbish.
+>
+> Actually, no, I don't think it is rubbish. See patch #3 and the cover
+> letter why this is the right thing to do *for special memory*, *not
+> ordinary DIMMs*.
+>
+> And to be quite honest, I think your response is a little harsh. I don't
+> recall you replying to my virtio-mem-related comments.
+>
+>> 
+>> Nacked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>> 
+>> This needs to be based on weather the added memory is ultimately normal
+>> ram or is something special.
+>
+> Yes, that's what the caller are expected to decide, see patch #3.
+>
+> kexec should try to be as closely as possible to a real reboot - IMHO.
 
-On Thu, Apr 30, 2020 at 3:33 AM Zou Wei <zou_wei@huawei.com> wrote:
+That is very fuzzy in terms of hotplug memory.  The kexec'd kernel
+should see the hotplugged memory assuming it is ordinary memory.
+
+But kexec is not a reboot although it is quite similar.   Kexec is
+swapping one running kernel and it's state for another kernel without
+rebooting.
+
+>> Justifying behavior by documentation that does not consider memory
+>> hotplug is bad thinking.
 >
-> Fixes coccicheck warning:
->
-> drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c:1398:60-61:
-> WARNING: Unsigned expression compared with zero: j >= 0
->
-> Fixes: 238387774232 ("drm/amd/display: fix rn soc bb update")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> index ceaf70a..419cdde 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-> @@ -1384,7 +1384,8 @@ static void update_bw_bounding_box(struct dc *dc, struct clk_bw_params *bw_param
->         struct dcn21_resource_pool *pool = TO_DCN21_RES_POOL(dc->res_pool);
->         struct clk_limit_table *clk_table = &bw_params->clk_table;
->         struct _vcs_dpi_voltage_scaling_st clock_limits[DC__VOLTAGE_STATES];
-> -       unsigned int i, j, closest_clk_lvl;
-> +       unsigned int i, closest_clk_lvl;
-> +       int j;
->
->         // Default clock levels are used for diags, which may lead to overclocking.
->         if (!IS_DIAG_DC(dc->ctx->dce_environment)) {
-> --
-> 2.6.2
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> Are you maybe confusing this patch series with the arm64 approach? This
+> is not about ordinary hotplugged DIMMs.
+
+I think I am.
+
+My challenge is that I don't see anything in the description that says
+this isn't about ordinary hotplugged DIMMs.  All I saw was hotplug
+memory.
+
+If the class of memory is different then please by all means let's mark
+it differently in struct resource so everyone knows it is different.
+But that difference needs to be more than hotplug.
+
+That difference needs to be the hypervisor loaned us memory and might
+take it back at any time, or this memory is persistent and so it has
+these different characteristics so don't use it as ordinary ram.
+
+That information is also useful to other people looking at the system
+and seeing what is going on.
+
+Just please don't muddle the concepts, or assume that whatever subset of
+hotplug memory you are dealing with is the only subset.
+
+I didn't see that flag making the distinction about the kind of memory
+it is.
+
+Eric
+
+
+
+
