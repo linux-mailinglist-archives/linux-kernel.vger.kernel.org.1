@@ -2,79 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11491BF914
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771D01BF944
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbgD3NSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:18:15 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:43915 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726743AbgD3NSO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:18:14 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-8-eqYfVa2uOue2i3Uoab9kpQ-1;
- Thu, 30 Apr 2020 14:18:10 +0100
-X-MC-Unique: eqYfVa2uOue2i3Uoab9kpQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 30 Apr 2020 14:18:10 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 30 Apr 2020 14:18:10 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Paolo Bonzini' <pbonzini@redhat.com>,
-        'Jim Mattson' <jmattson@google.com>
-CC:     'LKML' <linux-kernel@vger.kernel.org>,
-        'kvm list' <kvm@vger.kernel.org>,
-        'Sean Christopherson' <sean.j.christopherson@intel.com>,
-        'Joerg Roedel' <joro@8bytes.org>,
-        "'everdox@gmail.com'" <everdox@gmail.com>
-Subject: RE: [PATCH] KVM: x86: handle wrap around 32-bit address space
-Thread-Topic: [PATCH] KVM: x86: handle wrap around 32-bit address space
-Thread-Index: AQHWHPQJ/975q5rp/UiOQx/+1A4bJqiPy+vwgAABnFCAAcI2gIAAFr9g
-Date:   Thu, 30 Apr 2020 13:18:10 +0000
-Message-ID: <47a766451de248718d2a9bec47dda86e@AcuMS.aculab.com>
-References: <20200427165917.31799-1-pbonzini@redhat.com>
- <CALMp9eTBs=deSYu1=CMLwZcO8HTpGM2JsgDxvFR1Y220tdUQ3w@mail.gmail.com>
- <c3ac5f4c9e3a412cb57ea02df19dd2d2@AcuMS.aculab.com>
- <91c76eb0edcd4f1a9d5bc541d35f8ade@AcuMS.aculab.com>
- <2f471fbc-99fb-1a85-8f9f-c276c897f518@redhat.com>
-In-Reply-To: <2f471fbc-99fb-1a85-8f9f-c276c897f518@redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1727116AbgD3NU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:20:58 -0400
+Received: from verein.lst.de ([213.95.11.211]:40689 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726819AbgD3NU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:20:57 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6051968D07; Thu, 30 Apr 2020 15:20:54 +0200 (CEST)
+Date:   Thu, 30 Apr 2020 15:20:53 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Tim Waugh <tim@cyberelk.net>, Borislav Petkov <bp@alien8.de>,
+        Jan Kara <jack@suse.com>, linux-block@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 8/7] hfs: stop using ioctl_by_bdev
+Message-ID: <20200430132053.GA25428@lst.de>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUGFvbG8gQm9uemluaSA8cGJvbnppbmlAcmVkaGF0LmNvbT4NCj4gU2VudDogMzAgQXBy
-aWwgMjAyMCAxMzo0NQ0KPiBPbiAyOS8wNC8yMCAxMDo1NiwgRGF2aWQgTGFpZ2h0IHdyb3RlOg0K
-PiA+Pj4+ICsgICAgICAgICAgICAgICBpZiAodW5saWtlbHkoKChyaXAgXiBvcmlnX3JpcCkgPj4g
-MzEpID09IDMpICYmICFpc182NF9iaXRfbW9kZSh2Y3B1KSkNCj4gPj4gSXNuJ3QgdGhlIG1vcmUg
-b2J2aW91czoNCj4gPj4gCWlmICgoKHJpcCBeIG9yaWdfcmlwKSAmIDF1bGwgPDwgMzIpIC4uLg0K
-PiA+PiBlcXVpdmFsZW50Pw0KPiANCj4gVGhpcyBvbmUgd291bGQgbm90IChpdCB3b3VsZCBhbHNv
-IGRldGVjdCBjYXJyeSBvbiBoaWdoIG1lbW9yeSBhZGRyZXNzZXMsDQo+IG5vdCBqdXN0IDB4N2Zm
-ZmZmZmYgdG8gMHg4MDAwMDAwMCkuLi4NCg0KU28gd2lsbCB0aGUgcHJvcG9zZWQgb25lIGhhbGYg
-dGhlIHRpbWUuDQpJZiAob3JpZ19yaXAgJiAxIDw8IDMyKSBpcyB6ZXJvIHRoZSBoaWdoIGJpdHMg
-YXJlIGFsbCB1bmNoYW5nZWQNCmFuZCBjYW5jZWwgb3V0Lg0KDQo+ID4gQWN0dWFsbHkgbm90IGV2
-ZW4gYmVpbmcgY2xldmVyLCBob3cgYWJvdXQ6DQo+ID4gCWlmIChvcmlnX3JpcCA8ICgxdWxsIDw8
-IDMyKSAmJiB1bmxpa2VseShyaXAgPj0gKDF1bGwgPDwgMzIpKSAmJiAuLi4NCj4gDQo+IC4uLiBi
-dXQgeWVzIHRoaXMgb25lIHdvdWxkIGJlIGVxdWl2YWxlbnQuDQoNCklmIHN1YiA0RyBhZGRyZXNz
-ZXMgYXJlIGxpa2VseSBvbiA2NGJpdCB5b3UgbWF5IHdhbnQgdG8gZG86DQoJaWYgKHVubGlrZWx5
-KChyaXAgXiBvcmlnX3JpcCkgJiAoMXVsbCA8PCAzMikpICYmIG9yaWdfcmlwIDwgKDF1bGwgPDwg
-MzIpKSAmJiAuLi4NCm9yIHVubGlrZWx5KChyaXAgXiBvcmlnX3JpcCkgPj4gMzIpDQoNCkkgdGhp
-bmsgeW91IGFsd2F5cyB3YW50IHVubGlrZWx5KGEpICYmIGIgcmF0aGVyIHRoYW4gdW5saWtlbHko
-YSAmJiBiKS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJh
-bWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0
-cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Instead just call the CDROM layer functionality directly.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+
+This one got lost.  Basically exactly the same as hfsplus.
+
+ fs/hfs/mdb.c | 32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
+
+diff --git a/fs/hfs/mdb.c b/fs/hfs/mdb.c
+index 460281b1299eb..cdf0edeeb2781 100644
+--- a/fs/hfs/mdb.c
++++ b/fs/hfs/mdb.c
+@@ -32,29 +32,35 @@
+ static int hfs_get_last_session(struct super_block *sb,
+ 				sector_t *start, sector_t *size)
+ {
+-	struct cdrom_multisession ms_info;
+-	struct cdrom_tocentry te;
+-	int res;
++	struct cdrom_device_info *cdi = disk_to_cdi(sb->s_bdev->bd_disk);
+ 
+ 	/* default values */
+ 	*start = 0;
+ 	*size = i_size_read(sb->s_bdev->bd_inode) >> 9;
+ 
+ 	if (HFS_SB(sb)->session >= 0) {
++		struct cdrom_tocentry te;
++	
++		if (!cdi)
++			return -EINVAL;
++
+ 		te.cdte_track = HFS_SB(sb)->session;
+ 		te.cdte_format = CDROM_LBA;
+-		res = ioctl_by_bdev(sb->s_bdev, CDROMREADTOCENTRY, (unsigned long)&te);
+-		if (!res && (te.cdte_ctrl & CDROM_DATA_TRACK) == 4) {
+-			*start = (sector_t)te.cdte_addr.lba << 2;
+-			return 0;
++		if (cdrom_read_tocentry(cdi, &te) ||
++		    (te.cdte_ctrl & CDROM_DATA_TRACK) != 4) {
++			pr_err("invalid session number or type of track\n");
++			return -EINVAL;
+ 		}
+-		pr_err("invalid session number or type of track\n");
+-		return -EINVAL;
++
++		*start = (sector_t)te.cdte_addr.lba << 2;
++	} else if (cdi) {
++		struct cdrom_multisession ms_info;
++
++		ms_info.addr_format = CDROM_LBA;
++		if (cdrom_multisession(cdi, &ms_info) == 0 && ms_info.xa_flag)
++			*start = (sector_t)ms_info.addr.lba << 2;
+ 	}
+-	ms_info.addr_format = CDROM_LBA;
+-	res = ioctl_by_bdev(sb->s_bdev, CDROMMULTISESSION, (unsigned long)&ms_info);
+-	if (!res && ms_info.xa_flag)
+-		*start = (sector_t)ms_info.addr.lba << 2;
++
+ 	return 0;
+ }
+ 
+-- 
+2.26.2
 
