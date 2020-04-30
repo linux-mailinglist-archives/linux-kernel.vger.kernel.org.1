@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE3F1BF1DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D121BF1E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgD3HyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 03:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55300 "EHLO
+        id S1726669AbgD3H4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 03:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726443AbgD3Hx7 (ORCPT
+        with ESMTP id S1726572AbgD3H4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:53:59 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDD8C08E859
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 00:53:59 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id fu13so377602pjb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 00:53:59 -0700 (PDT)
+        Thu, 30 Apr 2020 03:56:03 -0400
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88342C035494;
+        Thu, 30 Apr 2020 00:56:01 -0700 (PDT)
+Received: by mail-yb1-xb41.google.com with SMTP id i16so2707501ybq.9;
+        Thu, 30 Apr 2020 00:56:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kG8gxxShO/ZQhCVTu79MXllzxxRhWUROOMH4XeWOBIo=;
-        b=PKeLiGXUA4odheuCOywjcjg5uNgODSCQFNSlQQE+92Z5Pz1kC2KBwFCBfGbS3B0AMG
-         SJR5F6Ltj/XdoVo8dxh/txZW1JV5a4dPakAC2FMBeH/ZcVMujxkY78e6MpI+bguLRJHK
-         0c0ZBndbA+al3r0fnuGeOKNwt8jM1ZIq3QpgiPD8Q30y54hmob/xloHvcTdgkv8rQEHO
-         fk7IP0s7X8uHp1Y219FGypcyMqJKNdCmWnvycsxQsaJEU9Q2fIoyNINRmitgO9ICPNw9
-         jOIIvDzq3Pele6Z+9pgP6Qsa0KzopjHntNX++q1A9mNLBySYNvZsn9i6ZwMEZy7zC7mB
-         0fsQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=niS1lYC7PeJRfKiA0LkBJ0AjWmjRNXbULNT5s9yDbmg=;
+        b=b0uFxMCcUOu+UKVq2cT5YgabZJAPo/fDcBjEXk+cSKEeRAG22tjX3jVOWO+ZroquVd
+         W9bUt5rw6VnC0eEduCX0Zzs6W90YBy7LJ0rjVk+g+GcOpiAQnkXc69wVui4Gy+dulxQO
+         H5Z5KXF4B6cpy8K7KhLSKDH0KYMcEcL+2NUrtH8JsbDCdfzgBMJML0K7OXfwPmA1FRKc
+         VITGeiylsb2lDaavq7fbUtacVTtXdduADHsYgIyt7gfdAFHiUt8UfbRUyTtefrOXG8OE
+         5uwsD+bm910DqlFmSchYMiarOTh/C0Ddrjqe9AqCfDgxbEjax5Oz2jDIxvhFfRAxHlQL
+         8RRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kG8gxxShO/ZQhCVTu79MXllzxxRhWUROOMH4XeWOBIo=;
-        b=TBJJFGBV9icmQ9Qr1WGChL0jzCG/Pg+3/Wrd8L9L416Ip2pzeARVlWY7MuJGCCGuOb
-         32Q1hgkGzJ4Afj+xaraytROtj2BIedhi3IGlDpyNV/6lCGPnYE5IeXDE2xUWwZhIYFTi
-         OGX3VKMBrMsi2ZyDIt6Cy9aLlf3L3P3bGD/P2UsfGZloVzqgCMAF+BbMUHFTGf2DBkOQ
-         U0JP59vcB8LhrDyoNcLPnqCA3UDPDqZEZeYFEP3pjX+YS0Em0uRRxSe6rNlelaEW0XiX
-         MQYeycl6b/pFqhbM4vQPmMgBUSqbnbQOsYs2yzcWqTSA18OToNnAVe+JNz/8eR6OOcQi
-         FzGw==
-X-Gm-Message-State: AGi0PuZquc3ptfme7VaVWPv7DGxMw64LKLl+Ajwuu3VLfLarHs9NObad
-        Hnz5ixzCcZIk8dDEJg/YmJBCnQ==
-X-Google-Smtp-Source: APiQypKL0XTZRutxcUdK04koig/l/oiYa+fGs3Nz3+weSHu7hACweER1oNgsKvxdySh7mi63MCLnnw==
-X-Received: by 2002:a17:90a:d808:: with SMTP id a8mr1513940pjv.6.1588233238830;
-        Thu, 30 Apr 2020 00:53:58 -0700 (PDT)
-Received: from localhost ([122.171.118.46])
-        by smtp.gmail.com with ESMTPSA id l1sm1073995pjr.17.2020.04.30.00.53.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Apr 2020 00:53:58 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 13:23:56 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Evan Green <evgreen@chromium.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 6/7] OPP: Update the bandwidth on OPP frequency changes
-Message-ID: <20200430075356.rjtctfuenirvhxgn@vireshk-i7>
-References: <20200424155404.10746-1-georgi.djakov@linaro.org>
- <20200424155404.10746-7-georgi.djakov@linaro.org>
- <CAGETcx9iAJRW9Y9orHNF-fC53nNob_vZKYUNEpwf_AeAdWCOjw@mail.gmail.com>
- <20200430060901.j7jjw6soo5h5xoul@vireshk-i7>
- <CAGETcx_zH_KJ7_A7Ofc2M5GfHKX_J__URJB127MSMcTeaqyzjw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=niS1lYC7PeJRfKiA0LkBJ0AjWmjRNXbULNT5s9yDbmg=;
+        b=KpY9Iwzjm4nfkNaB0vhRvyHtGXqpEajpJTwU28T5hH0FsXETqoKiny7zX7Z4rJizsE
+         NYnRPn4L37XLrrv7Gnl4UdcA/b/ZDruvcscM19swf5TQqKStc536BUBxkGIA8+spryGp
+         QW9opBN+nRjT1F/JixzbQadIkTnxr/uivr2zzydWBSFseBFzL14JPskDMBXHB7AXZOop
+         vt1xpKQ+6ruQbA+FR7PkrtzdqIMa2a6uZ52+qLown91EHCl795d22+agPg/ha27MX9Qf
+         /Dr3WPLHkCelUhFNGOM0bxoFrV33jvCVetOxynv1OAwktg11XXQsZI3bbC0sMI59tSZ3
+         20LA==
+X-Gm-Message-State: AGi0PuaY1i7x181+jc87eaE9Cyd2iDvyJC/FRwhnAdalXEVHSGW3aH0/
+        Ff9g8CnyepSjdmEw440vGjLpobYcO6Mwa/q11Yc=
+X-Google-Smtp-Source: APiQypJW6Wl4fp6m3eGWIxmzUP0iVI32e5m23IE4bncxZ3oeAhUC4jfaQIKSfz7yzxcYIc7LPFYDXzjybUfztGgMj68=
+X-Received: by 2002:a25:b8f:: with SMTP id 137mr3875233ybl.21.1588233360816;
+ Thu, 30 Apr 2020 00:56:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_zH_KJ7_A7Ofc2M5GfHKX_J__URJB127MSMcTeaqyzjw@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <1588227169-83237-1-git-send-email-wubo40@huawei.com>
+In-Reply-To: <1588227169-83237-1-git-send-email-wubo40@huawei.com>
+From:   "Yan, Zheng" <ukernel@gmail.com>
+Date:   Thu, 30 Apr 2020 15:55:49 +0800
+Message-ID: <CAAM7YA=BDutG7sOxHDYDcg141vsTRqQCr5pXOxqmOo9JdXjwsw@mail.gmail.com>
+Subject: Re: [PATCH V3] fs/ceph:fix double unlock in handle_cap_export()
+To:     Wu Bo <wubo40@huawei.com>
+Cc:     Jeff Layton <jlayton@kernel.org>, Sage Weil <sage@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        liuzhiqiang26@huawei.com, linfeilong@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-04-20, 00:35, Saravana Kannan wrote:
-> On Wed, Apr 29, 2020 at 11:09 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > On 24-04-20, 14:18, Saravana Kannan wrote:
-> > > My only comment is -- can we drop this patch please? I'd like to use
-> > > devfreq governors for voting on bandwidth and this will effectively
-> > > override whatever bandwidth decisions are made by the devfreq
-> > > governor.
-> >
-> > And why would that be better ? FWIW, that will have the same problem
-> > which cpufreq governors had since ages, i.e. they were not proactive
-> > and were always too late.
-> >
-> > The bw should get updated right with frequency, why shouldn't it ?
-> 
-> I didn't say the bw would be voted based on just CPUfreq. It can also
-> be based on CPU busy time and other stats. Having said that, this is
-> not just about CPUfreq. Having the bw be force changed every time a
-> device has it's OPP is changed is very inflexible. Please don't do it.
+On Thu, Apr 30, 2020 at 2:13 PM Wu Bo <wubo40@huawei.com> wrote:
+>
+> If the ceph_mdsc_open_export_target_session() return fails,
+> we should add mutex_lock(&session->s_mutex) on IS_ERR(tsession) block
+> to avoid twice unlocking. because the session->s_mutex will be unlock
+> at the out_unlock lable.
+>
+> --
+> v2 -> v3:
+>   - Rewrite solution, adding a mutex_lock(&session->s_mutex)
+>     to the IS_ERR(tsession) block.
+>   - Modify the comment more clearly.
+> v1 -> v2:
+>   - add spin_lock(&ci->i_ceph_lock) before goto out_unlock lable
+>
+>
+> Signed-off-by: Wu Bo <wubo40@huawei.com>
+> ---
+>  fs/ceph/caps.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
+> index 185db76..d27d778 100644
+> --- a/fs/ceph/caps.c
+> +++ b/fs/ceph/caps.c
+> @@ -3746,6 +3746,7 @@ static void handle_cap_export(struct inode *inode, struct ceph_mds_caps *ex,
+>                 WARN_ON(1);
+>                 tsession = NULL;
+>                 target = -1;
+> +               mutex_lock(&session->s_mutex);
+>         }
+>         goto retry;
+>
+> --
+> 1.8.3.1
+>
 
-So, the vote based on the requirements of cpufreq driver should come
-directly from the cpufreq side itself, but no one stops the others
-layers to aggregate the requests and then act on them. This is how it
-is done for other frameworks like clk, regulator, genpd, etc.
-
-You guys need to figure out who aggregates the requests from all users
-or input providers for a certain path. This was pushed into the genpd
-core in case of performance state for example.
-
--- 
-viresh
+ Reviewed-by: "Yan, Zheng" <zyan@redhat.com>
