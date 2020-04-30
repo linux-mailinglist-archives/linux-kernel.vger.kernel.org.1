@@ -2,140 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D541BECE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 02:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74FD31BECEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 02:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726413AbgD3ANM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 20:13:12 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:45181 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726180AbgD3ANL (ORCPT
+        id S1726391AbgD3AUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 20:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726279AbgD3AUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 20:13:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588205590;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g2Zuhq9wkoTTmKJmVFQegMyeSsShX7zXR1RrdrJ3tZM=;
-        b=VIi2K8RBLv02pjdezh/7PdgrfuwzQ7Mss93kiJ+JjHJ3dsU44UsXyFzaFvrUB4glu2kn5m
-        yKiqdvyWt1MqZpsf0YMPD8/p3xGXPHeEuXbaHPMxRWuniyaGDP8/5FYL+GB1yVSeqAH5DS
-        +LVbZy3/5lU6SKJdjcKx1WitZ1Ki1Mk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-BDaNqZLONMuApgCNw_ceug-1; Wed, 29 Apr 2020 20:13:07 -0400
-X-MC-Unique: BDaNqZLONMuApgCNw_ceug-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71779801503;
-        Thu, 30 Apr 2020 00:13:05 +0000 (UTC)
-Received: from treble (ovpn-113-19.rdu2.redhat.com [10.10.113.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2609066071;
-        Thu, 30 Apr 2020 00:13:03 +0000 (UTC)
-Date:   Wed, 29 Apr 2020 19:13:00 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     x86@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, hpa@zytor.com, ast@kernel.org,
-        peterz@infradead.org, rdunlap@infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, bpf@vger.kernel.org,
-        daniel@iogearbox.net
-Subject: Re: BPF vs objtool again
-Message-ID: <20200430001300.k3pgq2minrowstbs@treble>
-References: <30c3ca29ba037afcbd860a8672eef0021addf9fe.1563413318.git.jpoimboe@redhat.com>
- <tip-3193c0836f203a91bef96d88c64cccf0be090d9c@git.kernel.org>
- <20200429215159.eah6ksnxq6g5adpx@treble>
- <20200429234159.gid6ht74qqmlpuz7@ast-mbp.dhcp.thefacebook.com>
+        Wed, 29 Apr 2020 20:20:38 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15350C035494
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 17:20:38 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id d25so3231338lfi.11
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 17:20:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=s598r/7kUjIC6HAMYR5ml+jwLPdPDke+4dCrGdi46QU=;
+        b=ptgD7AWHf9KfscYWvafhJgNUjANXN9zqYdVoBiNSn51Y+pdUW1CFnS0VkU1jh5Qaqx
+         HGCylIjpTzLzU3hy9ehhUnPAIY/lEiGMFpwc8fai7MlzB6bam33GTHGItyQqBM/mU1t0
+         Icz/wGGAvHZfo98fh5mP3WZcPdCRKTymzpt9hw/Ap9OOgswseV+1GtTr2N0/5mBkY3xn
+         Mb7x1nE6XFSSwQp5n9YaNvPRs0GxG+K9CHqnckLsTDySuvyL4bEQIhi4LZA/xv6pd4EE
+         JQT6RZXud6RSF/ztUx0pLXM6nGG3cIg+cE6MznK51SiacvMW55GZxXdnhVhHyGjd00Rh
+         TnHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=s598r/7kUjIC6HAMYR5ml+jwLPdPDke+4dCrGdi46QU=;
+        b=iMj8lF57xym9Nj9cX3mdYrpL7I10KzAndHryg1HDGXQnK8oj6JAWC6Iar6SKo6i08/
+         k26fGWT78T5eRlqM2QuAaxasyBmUCrH5PgJVRiXQjxXH1d5gPJx860XlOD6SS1/nTvdr
+         jrDqiT0nQqGRkeam+Pmursrf7XPsA0nTK78eVAXJpeeZePmCq8snDTMz7K9qH3hWogKc
+         VsGdEFCeEJ4Txu9JaR3YE4TjyL0Lo3FNxFGl2e6haAOjPiZKjNJpL+REZ5k26Do3OY1R
+         DUETzewFd/MnYCOTKl48SuSkmGqOKdT6kOTPzXzeRdDmy7UgiMY0VT/ur+ARhNuz4y1l
+         aGfQ==
+X-Gm-Message-State: AGi0PubgX6OyL4IjKLlgsFJ58VLysl5gwSuBE98G7Ado0Lj+xGTvXLBt
+        AJfOmqh03ZS5nmCQ8dMGn4vEr3X/YJVr8PTBsg==
+X-Google-Smtp-Source: APiQypJ+S+zWYNH1WPqxBkhn7oTtluJvxE3ShVFev3d3rO0wnqzQ20RbWn+uo0pBBTiY8CCMsr4qcGbcwImL5DKg9M0=
+X-Received: by 2002:a19:8809:: with SMTP id k9mr241010lfd.151.1588206036454;
+ Wed, 29 Apr 2020 17:20:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200429234159.gid6ht74qqmlpuz7@ast-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Received: by 2002:ab3:1207:0:0:0:0:0 with HTTP; Wed, 29 Apr 2020 17:20:35
+ -0700 (PDT)
+From:   Mohamed Abdullah <mohabdu0011@gmail.com>
+Date:   Wed, 29 Apr 2020 17:20:35 -0700
+X-Google-Sender-Auth: RwLDP2rz9htGWuGw7MzDnjnlS7k
+Message-ID: <CAO=7yz69VgYgxaQcrN7KY5xJcvgzu+d9Zvfe4Gg8L+zHTUDGNA@mail.gmail.com>
+Subject: REPLY ME IMMEDIATELY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 04:41:59PM -0700, Alexei Starovoitov wrote:
-> On Wed, Apr 29, 2020 at 04:51:59PM -0500, Josh Poimboeuf wrote:
-> > On Thu, Jul 18, 2019 at 12:14:08PM -0700, tip-bot for Josh Poimboeuf wrote:
-> > > Commit-ID:  3193c0836f203a91bef96d88c64cccf0be090d9c
-> > > Gitweb:     https://git.kernel.org/tip/3193c0836f203a91bef96d88c64cccf0be090d9c
-> > > Author:     Josh Poimboeuf <jpoimboe@redhat.com>
-> > > AuthorDate: Wed, 17 Jul 2019 20:36:45 -0500
-> > > Committer:  Thomas Gleixner <tglx@linutronix.de>
-> > > CommitDate: Thu, 18 Jul 2019 21:01:06 +0200
-> > > 
-> > > bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()
-> > 
-> > For some reason, this
-> > 
-> >   __attribute__((optimize("-fno-gcse")))
-> > 
-> > is disabling frame pointers in ___bpf_prog_run().  If you compile with
-> > CONFIG_FRAME_POINTER it'll show something like:
-> > 
-> >   kernel/bpf/core.o: warning: objtool: ___bpf_prog_run.cold()+0x7: call without frame pointer save/setup
-> 
-> you mean it started to disable frame pointers from some version of gcc?
-> It wasn't doing this before, since objtool wasn't complaining, right?
-> Sounds like gcc bug?
-
-I actually think this warning has been around for a while.  I just only
-recently looked at it.  I don't think anything changed in GCC, it's just
-that almost nobody uses CONFIG_FRAME_POINTER, so it wasn't really
-noticed.
-
-> > Also, since GCC 9.1, the GCC docs say "The optimize attribute should be
-> > used for debugging purposes only. It is not suitable in production
-> > code."  That doesn't sound too promising.
-> > 
-> > So it seems like this commit should be reverted. But then we're back to
-> > objtool being broken again in the RETPOLINE=n case, which means no ORC
-> > coverage in this function.  (See above commit for the details)
-> > 
-> > Some ideas:
-> > 
-> > - Skip objtool checking of that func/file (at least for RETPOLINE=n) --
-> >   but then it won't have ORC coverage.
-> > 
-> > - Get rid of the "double goto" in ___bpf_prog_run(), which simplifies it
-> >   enough for objtool to understand -- but then the text explodes for
-> >   RETPOLINE=y.
-> 
-> How that will look like?
-> That could be the best option.
-
-For example:
-
-#define GOTO    ({ goto *jumptable[insn->code]; })
-
-and then replace all 'goto select_insn' with 'GOTO;'
-
-The problem is that with RETPOLINE=y, the function text size grows from
-5k to 7k, because for each of the 160+ retpoline JMPs, GCC (stupidly)
-reloads the jump table register into a scratch register.
-
-> > - Add -fno-gfcse to the Makefile for kernel/bpf/core.c -- but then that
-> >   affects the optimization of other functions in the file.  However I
-> >   don't think the impact is significant.
-> > 
-> > - Move ___bpf_prog_run() to its own file with the -fno-gfcse flag.  I'm
-> >   thinking this could be the least bad option.  Alexei?
-> 
-> I think it would be easier to move some of the hot path
-> functions out of core.c instead.
-> Like *ksym*, BPF_CALL*, bpf_jit*, bpf_prog*.
-> I think resulting churn will be less.
-> imo it's more important to keep git blame history for interpreter
-> than for the other funcs.
-> Sounds like it's a fix that needs to be sent for the next RC ?
-> Please send a patch for bpf tree then.
-
-I can make a patch, what file would you recommend moving those hot path
-functions to?
-
--- 
-Josh
-
+QXNzYWxhbXUgYWxheWt1bSB3YSBSYWhtYXR1bGxhaGkgd2EgQmFyYWthdHVoLiwNCg0KSSBhbSBN
+b2hhbW1lZCBDb21wYW9yZSwgdGhlIG1hbmFnZXIgb2YgQmlsbCBhbmQgRXhjaGFuZ2UgYXQgdGhl
+DQpGb3JlaWduIFJlbWl0dGFuY2UgRGVwYXJ0bWVudCBpbiBteSBiYW5rIGhlcmUgaW4gQnVya2lu
+YSBGYXNvLA0KDQpBcyB5b3UgYXJlIG5vdCBhIG5hdGlvbmFsaXR5IG9mIG15IGNvdW50cnkgSSBu
+ZWVkIHlvdSB0byBoZWxwIG1lIGluDQpyZWNlaXZpbmcgdGhlIHN1bSBvZiAoJDUwLDAwMC4wMDAu
+MDApIEZpZnR5IE1pbGxpb24gVW5pdGVkIFN0YXRlDQpEb2xsYXJzIGluIHlvdXIgYmFuayBhY2Nv
+dW50LCBJZiB5b3UncmUgaW50ZXJlc3RlZCBjb250YWN0IG1lIGZvciBtb3JlDQpkZXRhaWxzLg0K
+DQpZb3VycyBmYWl0aGZ1bGx5LA0KTW9oYW1tZWQgQ29tcGFvcmUNCg0K2KfZhNiz2YTYp9mF2Ygg
+2LnZhNmK2YPZiNmFINmI2Kcg2LHYrdmF2Kkg2KfZhNmE2Ycg2YrZiCDYqNix2YPYp9iq2YcuLA0K
+DQrYo9mG2Kcg2YXYrdmF2K8g2YPZiNmF2KjYp9mI2LHZitiMINmF2K/ZitixINil2K/Yp9ix2Kkg
+2KfZhNmB2YjYp9iq2YrYsSDZiNin2YTYqNmI2LHYtdin2Kog2YHZiiDYpdiv2KfYsdipINin2YTY
+qtit2YjZitmE2KfYqg0K2KfZhNiu2KfYsdis2YrYqSDZgdmKINmF2LXYsdmB2Yog2YfZhtinINmB
+2Yog2KjZiNix2YPZitmG2Kcg2YHYp9iz2YjYjA0KDQrYqNmF2Kcg2KPZhtmDINmE2LPYqiDZhdmG
+INis2YbYs9mK2Kkg2KjZhNiv2YrYjCDYo9ix2YrYr9mDINij2YYg2KrYs9in2LnYr9mG2Yog2YHZ
+iiDYqtmE2YLZiiDZhdio2YTYug0KKDUwLDAwMC4wMDAuMDAg2K/ZiNmE2KfYsSkg2K7Zhdiz2YjZ
+hiDZhdmE2YrZiNmGINiv2YjZhNin2LEg2KPZhdix2YrZg9mKINmB2Yog2K3Ys9in2KjZgyDYp9mE
+2YXYtdix2YHZitiMINil2LDYpw0K2YPZhtiqINmF2YfYqtmF2YvYpyDYqNin2YTYp9iq2LXYp9mE
+INio2Yog2YTZhNit2LXZiNmEINi52YTZiSDZhdiy2YrYryDZhdmGINin2YTYqtmB2KfYtdmK2YQu
+DQoNCtmE2YMg2KjYo9mF2KfZhtip2IwNCtmF2K3ZhdivINmD2YjZhdio2KfZiNix2YoNCg==
