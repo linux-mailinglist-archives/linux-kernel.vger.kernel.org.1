@@ -2,82 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B569B1BF7F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302341BF7DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726764AbgD3MMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 08:12:06 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:2391 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725280AbgD3MMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 08:12:06 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by rmmx-syy-dmz-app10-12010 (RichMail) with SMTP id 2eea5eaac05f2d8-cd70c; Thu, 30 Apr 2020 20:11:11 +0800 (CST)
-X-RM-TRANSID: 2eea5eaac05f2d8-cd70c
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.1.172.204])
-        by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea5eaac05a080-c9cf6;
-        Thu, 30 Apr 2020 20:11:11 +0800 (CST)
-X-RM-TRANSID: 2eea5eaac05a080-c9cf6
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     davem@davemloft.net, benh@kernel.crashing.org, andrew@lunn.ch,
-        hkallweit1@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] net: ftgmac100: Fix unused assignment
-Date:   Thu, 30 Apr 2020 20:11:23 +0800
-Message-Id: <20200430121123.25184-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1726689AbgD3MHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 08:07:20 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3401 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725280AbgD3MHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 08:07:20 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 7114C730B6E827FA4D2E;
+        Thu, 30 Apr 2020 20:07:09 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 30 Apr 2020 20:07:02 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <airlied@redhat.com>, <sean@poorly.run>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] drm/udl: Make udl_handle_damage static
+Date:   Thu, 30 Apr 2020 20:13:17 +0800
+Message-ID: <1588248797-70568-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete unused initialized value in ftgmac100.c file.
+Fix the following sparse warning:
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+drivers/gpu/drm/udl/udl_modeset.c:269:5: warning: symbol 'udl_handle_damage'
+was not declared. Should it be static?
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/net/ethernet/faraday/ftgmac100.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/udl/udl_modeset.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index 4572797f0..a00cbdf3a 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -1354,7 +1354,7 @@ static int ftgmac100_poll(struct napi_struct *napi, int budget)
+diff --git a/drivers/gpu/drm/udl/udl_modeset.c b/drivers/gpu/drm/udl/udl_modeset.c
+index 99518a8..fef43f4 100644
+--- a/drivers/gpu/drm/udl/udl_modeset.c
++++ b/drivers/gpu/drm/udl/udl_modeset.c
+@@ -266,8 +266,8 @@ static int udl_aligned_damage_clip(struct drm_rect *clip, int x, int y,
+ 	return 0;
+ }
  
- static int ftgmac100_init_all(struct ftgmac100 *priv, bool ignore_alloc_err)
+-int udl_handle_damage(struct drm_framebuffer *fb, int x, int y,
+-		      int width, int height)
++static int udl_handle_damage(struct drm_framebuffer *fb, int x, int y,
++			     int width, int height)
  {
--	int err = 0;
-+	int err;
- 
- 	/* Re-init descriptors (adjust queue sizes) */
- 	ftgmac100_init_rings(priv);
-@@ -1605,7 +1605,7 @@ static int ftgmac100_setup_mdio(struct net_device *netdev)
- 	struct platform_device *pdev = to_platform_device(priv->dev);
- 	phy_interface_t phy_intf = PHY_INTERFACE_MODE_RGMII;
- 	struct device_node *np = pdev->dev.of_node;
--	int i, err = 0;
-+	int i, err;
- 	u32 reg;
- 
- 	/* initialize mdio bus */
-@@ -1755,7 +1755,7 @@ static int ftgmac100_probe(struct platform_device *pdev)
- 	struct net_device *netdev;
- 	struct ftgmac100 *priv;
- 	struct device_node *np;
--	int err = 0;
-+	int err;
- 
- 	if (!pdev)
- 		return -ENODEV;
+ 	struct drm_device *dev = fb->dev;
+ 	struct dma_buf_attachment *import_attach = fb->obj[0]->import_attach;
 -- 
-2.20.1.windows.1
-
-
+2.6.2
 
