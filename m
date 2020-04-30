@@ -2,177 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8381C05E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BA91C05ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbgD3TK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:10:28 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:53646 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726712AbgD3TK0 (ORCPT
+        id S1726917AbgD3TKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:10:52 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11209 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgD3TKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:10:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588273825;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/G31CExp0D/v67boay0bigWI6ERnvygVLl/0mJmroU0=;
-        b=A0JDNPeHytxWVaZCdfbC0UwSWGnKTghVPu1nkkRjblAaCyzLbiMwDvetvKMqd500FJMBRf
-        0SQB8E46ptWYNdDyE2vfLHjWo0V/1Wmv7x6jEzf7ifTIamVUV6zV0ITfmD/prsbi28Rqwb
-        VorxANcMpJZTv55zPQ9yQnbLf0f09l4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-4FOHzYZaOv-IP7n1za9RVQ-1; Thu, 30 Apr 2020 15:10:21 -0400
-X-MC-Unique: 4FOHzYZaOv-IP7n1za9RVQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9115A835B43;
-        Thu, 30 Apr 2020 19:10:19 +0000 (UTC)
-Received: from treble.redhat.com (ovpn-113-19.rdu2.redhat.com [10.10.113.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 477231A922;
-        Thu, 30 Apr 2020 19:10:18 +0000 (UTC)
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] bpf: Tweak BPF jump table optimizations for objtool compatibility
-Date:   Thu, 30 Apr 2020 14:07:43 -0500
-Message-Id: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
+        Thu, 30 Apr 2020 15:10:52 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eab223f0000>; Thu, 30 Apr 2020 12:08:47 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 30 Apr 2020 12:10:51 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 30 Apr 2020 12:10:51 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
+ 2020 19:10:51 +0000
+Received: from [10.2.165.152] (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
+ 2020 19:10:50 +0000
+Subject: Re: [RFC PATCH v11 6/9] media: tegra: Add Tegra210 Video input driver
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
+        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
+CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1588197606-32124-1-git-send-email-skomatineni@nvidia.com>
+ <1588197606-32124-7-git-send-email-skomatineni@nvidia.com>
+ <bacc4308-4b95-f566-b80e-096ff96407b5@gmail.com>
+ <4da289e6-036f-853b-beb4-379d6462adb0@gmail.com>
+ <c6d54885-6f23-f60c-a17b-3481fc4d6adf@gmail.com>
+ <b14b9dc5-7ac9-7735-d98d-eebc7e151cba@nvidia.com>
+ <7d31d24f-f353-7e82-3ff9-cdba8b773d1e@nvidia.com>
+ <06a4a067-8d54-4322-b2a6-14e82eaeda29@nvidia.com>
+ <47873bbd-cf90-4595-5a99-7e9113327ecc@nvidia.com>
+Message-ID: <f6088e0f-4ac7-a6be-3ede-0233dc88ef2c@nvidia.com>
+Date:   Thu, 30 Apr 2020 12:09:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <47873bbd-cf90-4595-5a99-7e9113327ecc@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1588273727; bh=dOqhYhFFa7N2H5CvZpnGMF6qyNMlHRnVcxwPJYNk5s0=;
+        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
+         Content-Language;
+        b=WomAnelDH+mtKGSWgZPmyONNQwRSNKf0xS+2H8hQIu80Ewf1lwXxLYcs6h87wG7MW
+         sqQJVnqgdqPtq94/p1Qrk5Qr81/w6jgCh8XHOqeyAGVpUpdNMDXDktRbHvqoasqrr/
+         t/cAC/eRu4/wfZ8LvkFLzjshXGoox7NKWEHBDMU4HLYG/aOMsgdLcCYtoB0pRdcaTX
+         WNF4cQ9kLaAPE5b9J9xr6q6fKOEjLt7+Hfx+6gSqcexBwEeY8QWqeSW389SVwMlyuo
+         T9g0lqyu1wELpfEgN8uJQPPtEGbWWSPViEr8jw9iNfGtCH1i/Up+H1Nae2Ew2NEzRk
+         SJ0ncHypSsNhQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Objtool decodes instructions and follows all potential code branches
-within a function.  But it's not an emulator, so it doesn't track
-register values.  For that reason, it usually can't follow
-intra-function indirect branches, unless they're using a jump table
-which follows a certain format (e.g., GCC switch statement jump tables).
 
-In most cases, the generated code for the BPF jump table looks a lot
-like a GCC jump table, so objtool can follow it.  However, with
-RETPOLINE=3Dn, GCC keeps the jump table address in a register, and then
-does 160+ indirect jumps with it.  When objtool encounters the indirect
-jumps, it can't tell which jump table is being used (or even whether
-they might be sibling calls instead).
+On 4/30/20 11:18 AM, Sowjanya Komatineni wrote:
+>
+> On 4/30/20 10:06 AM, Sowjanya Komatineni wrote:
+>>
+>> On 4/30/20 9:29 AM, Sowjanya Komatineni wrote:
+>>>
+>>> On 4/30/20 9:04 AM, Sowjanya Komatineni wrote:
+>>>>
+>>>> On 4/30/20 7:13 AM, Dmitry Osipenko wrote:
+>>>>> 30.04.2020 17:02, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>>>> 30.04.2020 16:56, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>>>>> 30.04.2020 01:00, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=
+=82:
+>>>>>>>> +static int chan_capture_kthread_finish(void *data)
+>>>>>>>> +{
+>>>>>>>> +=C2=A0=C2=A0=C2=A0 struct tegra_vi_channel *chan =3D data;
+>>>>>>>> +=C2=A0=C2=A0=C2=A0 struct tegra_channel_buffer *buf;
+>>>>>>>> +
+>>>>>>>> +=C2=A0=C2=A0=C2=A0 set_freezable();
+>>>>>>>> +
+>>>>>>>> +=C2=A0=C2=A0=C2=A0 while (1) {
+>>>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 try_to_freeze();
+>>>>>>> I guess it won't be great to freeze in the middle of a capture=20
+>>>>>>> process, so:
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (list_empty(&chan->do=
+ne))
+>>>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+try_to_freeze();
+>>>>>> And here should be some locking protection in order not race with=20
+>>>>>> the
+>>>>>> chan_capture_kthread_start because kthread_finish could freeze=20
+>>>>>> before
+>>>>>> kthread_start.
+>>>>> Or maybe both start / finish threads should simply be allowed to=20
+>>>>> freeze
+>>>>> only when both capture and done lists are empty.
+>>>>>
+>>>>> if (list_empty(&chan->capture) &&
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0 list_empty(&chan->done))
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0try_to_freeze();
+>>>>
+>>>> good to freeze when not in middle of the frame capture but why=20
+>>>> should we not allow freeze in between captures?
+>>>>
+>>>> Other drivers do allow freeze in between frame captures.
+>>>>
+>>>> I guess we can freeze before dequeue for capture and in finish=20
+>>>> thread we can freeze after capture done. This also don't need to=20
+>>>> check for list_empty with freeze to allow between frame captures.
+>>>>
+>>> Also if we add check for both lists empty, freeze is not allowed as=20
+>>> long as streaming is going on and in case of continuous streaming=20
+>>> freeze will never happen.
+>>
+> To allow freeze b/w frames (but not in middle of a frame),
+>
+> for capture_start thread, probably we can do unconditional=20
+> try_to_freeze()
+>
+> for capture_finish thread, at end of capture done we can do=20
+> try_to_freeze() only when done list is empty
+>
+My understanding is buffer updates/release should not happen after=20
+frozen state. So we should let frame capture of outstanding buffer to=20
+finish before freezing in capture_finish thread.
 
-This was fixed before by disabling an optimization in ___bpf_prog_run(),
-using the "optimize" function attribute.  However, that attribute is bad
-news.  It doesn't append options to the command-line arguments.  Instead
-it starts from a blank slate.  And according to recent GCC documentation
-it's not recommended for production use.  So revert the previous fix:
+But for capture_start thread we can unconditionally freeze before=20
+dequeuing next buffer for capture.
 
-  3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run=
-()")
+With this when both threads are in frozen state and no buffer=20
+updates/captures will happen after frozen state.
 
-With that reverted, solve the original problem in a different way by
-getting rid of the "goto select_insn" indirection, and instead just goto
-the jump table directly.  This simplifies the code a bit and helps GCC
-generate saner code for the jump table branches, at least in the
-RETPOLINE=3Dn case.
+I think its not required to finish streaming of all frames completely to=20
+let threads to enter frozen state as streaming can be continuous as well.
 
-But, in the RETPOLINE=3Dy case, this simpler code actually causes GCC to
-generate far worse code, ballooning the function text size by +40%.  So
-leave that code the way it was.  In fact Alexei prefers to leave *all*
-the code the way it was, except where needed by objtool.  So even
-non-x86 RETPOLINE=3Dn code will continue to have "goto select_insn".
-
-This stuff is crazy voodoo, and far from ideal.  But it works for now.
-Eventually, there's a plan to create a compiler plugin for annotating
-jump tables.  That will make this a lot less fragile.
-
-Fixes: 3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_pro=
-g_run()")
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
----
- include/linux/compiler-gcc.h   |  2 --
- include/linux/compiler_types.h |  4 ----
- kernel/bpf/core.c              | 10 +++++++---
- 3 files changed, 7 insertions(+), 9 deletions(-)
-
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index cf294faec2f8..2c8583eb5de8 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -176,5 +176,3 @@
- #else
- #define __diag_GCC_8(s)
- #endif
--
--#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_type=
-s.h
-index e970f97a7fcb..58105f1deb79 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -203,10 +203,6 @@ struct ftrace_likely_data {
- #define asm_inline asm
- #endif
-=20
--#ifndef __no_fgcse
--# define __no_fgcse
--#endif
--
- /* Are two types/vars the same type (ignoring qualifiers)? */
- #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof=
-(b))
-=20
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 916f5132a984..eec470c598ad 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1364,7 +1364,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 siz=
-e, const void *unsafe_ptr)
-  *
-  * Decode and execute eBPF instructions.
-  */
--static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *=
-insn, u64 *stack)
-+static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *=
-stack)
- {
- #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] =3D &&x##_##y
- #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] =3D &&x##_=
-##y##_##z
-@@ -1384,11 +1384,15 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, =
-const struct bpf_insn *insn, u6
- #undef BPF_INSN_2_LBL
- 	u32 tail_call_cnt =3D 0;
-=20
-+#if defined(CONFIG_X86_64) && !defined(CONFIG_RETPOLINE)
-+#define CONT	 ({ insn++; goto *jumptable[insn->code]; })
-+#define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
-+#else
- #define CONT	 ({ insn++; goto select_insn; })
- #define CONT_JMP ({ insn++; goto select_insn; })
--
- select_insn:
- 	goto *jumptable[insn->code];
-+#endif
-=20
- 	/* ALU */
- #define ALU(OPCODE, OP)			\
-@@ -1547,7 +1551,7 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, co=
-nst struct bpf_insn *insn, u6
- 		 * where arg1_type is ARG_PTR_TO_CTX.
- 		 */
- 		insn =3D prog->insnsi;
--		goto select_insn;
-+		CONT;
- out:
- 		CONT;
- 	}
---=20
-2.21.1
-
+>> Hi Dmitry,
+>>
+>> Will update in v12 to not allow freeze in middle of a frame capture.
+>>
+>> Can you please confirm on above if you agree to allow freeze to=20
+>> happen in b/w frame captures?
+>>
+>> Also as most feedback has been received from you by now, appreciate=20
+>> if you can provide all in this v11 if you have anything else so we=20
+>> will not have any new changes after v12.
+>>
+>> Thanks
+>>
+>> Sowjanya
+>>
