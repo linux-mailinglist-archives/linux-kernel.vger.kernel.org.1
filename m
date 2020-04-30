@@ -2,202 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18CC1C0775
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A361C0783
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726782AbgD3ULO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 16:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726486AbgD3ULO (ORCPT
+        id S1726926AbgD3UMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 16:12:25 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:41466 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726524AbgD3UMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 16:11:14 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29E4C08E859
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 13:11:13 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ms17so1354919pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 13:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=wQDXEDWulo/QimvcAuTek4hsKx1Ft5Eqi7DzlmxTYAE=;
-        b=dHJYH8V1KS7XMRkIk7UCjoCujABCzXT3VvBcthJLyCU32cSGH3S+9errkdNRwRTMEz
-         c5jpkn1t3F0VVYcnxcGgfDbIteaCAki9LCSBhJQzOUQE1HxR07CoJ8RYD3b6MTRO/jRj
-         AOsG3MGnzZ1MXS8W3IuGmKM/cK4WIN6ErR2fzaSP3VYbMMCnXS0CMwFSE7OewqbUIlyj
-         DGXcHLqrPgJyBn3wFO/jwykKiyFlOxEWRdbV+cYd9BztgE57iW9xoYVIRH2XGnWIAFG2
-         l0hfGHqrjn9jf0p7oGcqDf5snI4ZOONuq3t13WIE57re6nfAlplgqm5hmo9KxuL213FP
-         2f8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wQDXEDWulo/QimvcAuTek4hsKx1Ft5Eqi7DzlmxTYAE=;
-        b=C7/T48t0UP29XMnfj7Ot/8R/fjFIQ/5lFVx++Zo/OImblE9IvGBKglzDpIEzSrnUuE
-         bdRwkHRcOvhOAQfi+sZB3FcWO7F2YQkxi2GdZh5qsrn2d2r7ubJUwHw/jnsi6cBFiJ5l
-         PwBrJWo/slGfXWBkhnnfAnKiHat+rKA8D0bI4WGRrkl7cFOlJJGY34JGl1ZxfYoARioP
-         aI+0qvdYwSEm6I6tFxDoMCNzUMRr4qlguTXkAJPllfojZmXVfWUvZgY+9WjZwRqPgf+H
-         h2xRG6aTqUPAg7iyGYaEEMY/FRu9TNjsH7EzjwhSUGUvIVFooUH82P04P5+2evg2sMUf
-         f5ug==
-X-Gm-Message-State: AGi0PuaxAmAHNFlsKRnHJPamLCa3HMTrSFnEBix0fvUNtAhD+DXbrg3H
-        ExVR2N3ZhgFs8o3+7NQ73Mv3yrJQXgo=
-X-Google-Smtp-Source: APiQypL6EqI9FZZIHPIXTfhE8LlwPrLFeY0DjiK4shgSSOuk2VEOSjMNEeufPu16gcaTJg5Uvbte0A==
-X-Received: by 2002:a17:90a:9f92:: with SMTP id o18mr600754pjp.180.1588277473266;
-        Thu, 30 Apr 2020 13:11:13 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id w186sm529784pff.83.2020.04.30.13.11.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 13:11:12 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 14:11:10 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     bjorn.andersson@linaro.org, ohad@wizery.com, loic.pallardy@st.com,
-        s-anna@ti.com, linux-remoteproc@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 09/14] remoteproc: Deal with synchronisation when
- crashing
-Message-ID: <20200430201110.GD17031@xps15>
-References: <20200424200135.28825-1-mathieu.poirier@linaro.org>
- <20200424200135.28825-10-mathieu.poirier@linaro.org>
- <d9df5905-ad8b-881c-5950-481722bd0f3b@st.com>
+        Thu, 30 Apr 2020 16:12:24 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK8uKo084446;
+        Thu, 30 Apr 2020 20:11:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=Tj/Vywbax7ksJzdV9zU97xcEcZuvaW8/vJFBwr0+2HY=;
+ b=J6emRK3n6GSyEW/Ez+VBqaZB2kI73fz1NgKjCoMTaNu+sd634ykdV3UamEznaT/VMELp
+ JLDp4Rn44RpioaFNFHQAilUalaiCVAaP/FjTFd4hztLBmvRI1/DgiR2t37Y5TXothwrm
+ xFlWD5yhjYkyocd82HEIRN/EdOu/uwrk70ZNL15UjmOok7/v1voc2/DMW7LGkx0j7aAT
+ 7XTjm7OcKjDKNtE+j98NWYoyEO4mOlahmE+SS9KduMyNzA6QNqP1EdAKdz/5naQHdil0
+ 9kSW5GZM7yI56BQDIHvIcGLu0pjQ/gl903ozdlpZY6vzOtZyyGf2BqFYCPDh82sSxt21 qw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 30nucgdkpj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 20:11:40 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UK7Oma095747;
+        Thu, 30 Apr 2020 20:11:39 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 30qtjy23kn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 20:11:39 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03UKBV5O026651;
+        Thu, 30 Apr 2020 20:11:31 GMT
+Received: from localhost.localdomain (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 30 Apr 2020 13:11:31 -0700
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
+        linux-crypto@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: [PATCH 0/7] padata: parallelize deferred page init
+Date:   Thu, 30 Apr 2020 16:11:18 -0400
+Message-Id: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d9df5905-ad8b-881c-5950-481722bd0f3b@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
+ malwarescore=0 bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300150
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004300150
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 09:44:02AM +0200, Arnaud POULIQUEN wrote:
-> Hi Mathieu,
-> 
-> On 4/24/20 10:01 PM, Mathieu Poirier wrote:
-> > Refactor function rproc_trigger_recovery() in order to avoid
-> > reloading the firmware image when synchronising with a remote
-> > processor rather than booting it.  Also part of the process,
-> > properly set the synchronisation flag in order to properly
-> > recover the system.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >  drivers/remoteproc/remoteproc_core.c     | 23 ++++++++++++++------
-> >  drivers/remoteproc/remoteproc_internal.h | 27 ++++++++++++++++++++++++
-> >  2 files changed, 43 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> > index ef88d3e84bfb..3a84a38ba37b 100644
-> > --- a/drivers/remoteproc/remoteproc_core.c
-> > +++ b/drivers/remoteproc/remoteproc_core.c
-> > @@ -1697,7 +1697,7 @@ static void rproc_coredump(struct rproc *rproc)
-> >   */
-> >  int rproc_trigger_recovery(struct rproc *rproc)
-> >  {
-> > -	const struct firmware *firmware_p;
-> > +	const struct firmware *firmware_p = NULL;
-> >  	struct device *dev = &rproc->dev;
-> >  	int ret;
-> >  
-> > @@ -1718,14 +1718,16 @@ int rproc_trigger_recovery(struct rproc *rproc)
-> >  	/* generate coredump */
-> >  	rproc_coredump(rproc);
-> >  
-> > -	/* load firmware */
-> > -	ret = request_firmware(&firmware_p, rproc->firmware, dev);
-> > -	if (ret < 0) {
-> > -		dev_err(dev, "request_firmware failed: %d\n", ret);
-> > -		goto unlock_mutex;
-> > +	/* load firmware if need be */
-> > +	if (!rproc_needs_syncing(rproc)) {
-> > +		ret = request_firmware(&firmware_p, rproc->firmware, dev);
-> > +		if (ret < 0) {
-> > +			dev_err(dev, "request_firmware failed: %d\n", ret);
-> > +			goto unlock_mutex;
-> > +		}
-> 
-> If we started in syncing mode then rpoc->firmware is null
-> rproc_set_sync_flag(rproc, RPROC_SYNC_STATE_CRASHED) can make rproc_needs_syncing(rproc)
-> false. 
+Sometimes the kernel doesn't take full advantage of system memory
+bandwidth, leading to a single CPU spending excessive time in
+initialization paths where the data scales with memory size.
 
-You are correct, I will add an additional check in rproc_set_machine() to
-prevent a situation where rproc_alloc() has been called without an ops and any
-of the synchronisation flags are set to false.
+Multithreading naturally addresses this problem, and this series is the
+first step.
 
-It is also possible that someone would call proc_alloc() without an ops and
-doesn't call rproc_set_state_machine(), in which case both ops and sync_ops
-would be NULL.  Adding a check in rproc_add() is probably the best location to
-catch such a condition.
+It extends padata, a framework that handles many parallel singlethreaded
+jobs, to handle multithreaded jobs as well by adding support for
+splitting up the work evenly, specifying a minimum amount of work that's
+appropriate for one helper thread to do, load balancing between helpers,
+and coordinating them.  More documentation in patches 4 and 7.
+
+The first user is deferred struct page init, a large bottleneck in
+kernel boot--actually the largest for us and likely others too.  This
+path doesn't require concurrency limits, resource control, or priority
+adjustments like future users will (vfio, hugetlb fallocate, munmap)
+because it happens during boot when the system is otherwise idle and
+waiting on page init to finish.
+
+This has been tested on a variety of x86 systems and speeds up kernel
+boot by 6% to 49% by making deferred init 63% to 91% faster.  Patch 6
+has detailed numbers.  Test results from other systems appreciated.
+
+This series is based on v5.6 plus these three from mmotm:
+
+  mm-call-touch_nmi_watchdog-on-max-order-boundaries-in-deferred-init.patch
+  mm-initialize-deferred-pages-with-interrupts-enabled.patch
+  mm-call-cond_resched-from-deferred_init_memmap.patch
+
+All of the above can be found in this branch:
+
+  git://oss.oracle.com/git/linux-dmjordan.git padata-mt-definit-v1
+  https://oss.oracle.com/git/gitweb.cgi?p=linux-dmjordan.git;a=shortlog;h=refs/heads/padata-mt-definit-v1
+
+The future users and related features are available as work-in-progress
+here:
+
+  git://oss.oracle.com/git/linux-dmjordan.git padata-mt-wip-v0.3
+  https://oss.oracle.com/git/gitweb.cgi?p=linux-dmjordan.git;a=shortlog;h=refs/heads/padata-mt-wip-v0.3
+
+Thanks to everyone who commented on the last version of this[0],
+including Alex Williamson, Jason Gunthorpe, Jonathan Corbet, Michal
+Hocko, Pavel Machek, Peter Zijlstra, Randy Dunlap, Robert Elliott, Tejun
+Heo, and Zi Yan.
+
+RFC v4 -> padata v1:
+ - merged with padata (Peter)
+ - got rid of the 'task' nomenclature (Peter, Jon)
+
+future work branch:
+ - made lockdep-aware (Jason, Peter)
+ - adjust workqueue worker priority with renice_or_cancel() (Tejun)
+ - fixed undo problem in VFIO (Alex)
+
+The remaining feedback, mainly resource control awareness (cgroup etc),
+is TODO for later series.
+
+[0] https://lore.kernel.org/linux-mm/20181105165558.11698-1-daniel.m.jordan@oracle.com/
+
+Daniel Jordan (7):
+  padata: remove exit routine
+  padata: initialize earlier
+  padata: allocate work structures for parallel jobs from a pool
+  padata: add basic support for multithreaded jobs
+  mm: move zone iterator outside of deferred_init_maxorder()
+  mm: parallelize deferred_init_memmap()
+  padata: document multithreaded jobs
+
+ Documentation/core-api/padata.rst |  41 +++--
+ include/linux/padata.h            |  43 ++++-
+ init/main.c                       |   2 +
+ kernel/padata.c                   | 277 ++++++++++++++++++++++++------
+ mm/Kconfig                        |   6 +-
+ mm/page_alloc.c                   | 118 ++++++-------
+ 6 files changed, 355 insertions(+), 132 deletions(-)
 
 
-> In this case here we fail the recovery an leave in RPROC_STOP state.
-> As you proposed in Loic RFC[1], what about adding a more explicit message to inform that the recovery
-> failed. 
+base-commit: 7111951b8d4973bda27ff663f2cf18b663d15b48
+prerequisite-patch-id: 4ad522141e1119a325a9799dad2bd982fbac8b7c
+prerequisite-patch-id: 169273327e56f5461101a71dfbd6b4cfd4570cf0
+prerequisite-patch-id: 0f34692c8a9673d4c4f6a3545cf8ec3a2abf8620
+-- 
+2.26.2
 
-Right, that's a different problem.
-
-> 
-> [1]https://lkml.org/lkml/2020/3/11/402
-> 
-> Regards,
-> Arnaud
-> >  	}
-> >  
-> > -	/* boot the remote processor up again */
-> > +	/* boot up or synchronise with the remote processor again */
-> >  	ret = rproc_start(rproc, firmware_p);
-> >  
-> >  	release_firmware(firmware_p);
-> > @@ -1761,6 +1763,13 @@ static void rproc_crash_handler_work(struct work_struct *work)
-> >  	dev_err(dev, "handling crash #%u in %s\n", ++rproc->crash_cnt,
-> >  		rproc->name);
-> >  
-> > +	/*
-> > +	 * The remote processor has crashed - tell the core what operation
-> > +	 * to use from hereon, i.e whether an external entity will reboot
-> > +	 * the MCU or it is now the remoteproc core's responsability.
-> > +	 */
-> > +	rproc_set_sync_flag(rproc, RPROC_SYNC_STATE_CRASHED);
-> > +
-> >  	mutex_unlock(&rproc->lock);
-> >  
-> >  	if (!rproc->recovery_disabled)
-> > diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
-> > index 3985c084b184..61500981155c 100644
-> > --- a/drivers/remoteproc/remoteproc_internal.h
-> > +++ b/drivers/remoteproc/remoteproc_internal.h
-> > @@ -24,6 +24,33 @@ struct rproc_debug_trace {
-> >  	struct rproc_mem_entry trace_mem;
-> >  };
-> >  
-> > +/*
-> > + * enum rproc_sync_states - remote processsor sync states
-> > + *
-> > + * @RPROC_SYNC_STATE_CRASHED	state to use after the remote processor
-> > + *				has crashed but has not been recovered by
-> > + *				the remoteproc core yet.
-> > + *
-> > + * Keeping these separate from the enum rproc_state in order to avoid
-> > + * introducing coupling between the state of the MCU and the synchronisation
-> > + * operation to use.
-> > + */
-> > +enum rproc_sync_states {
-> > +	RPROC_SYNC_STATE_CRASHED,
-> > +};
-> > +
-> > +static inline void rproc_set_sync_flag(struct rproc *rproc,
-> > +				       enum rproc_sync_states state)
-> > +{
-> > +	switch (state) {
-> > +	case RPROC_SYNC_STATE_CRASHED:
-> > +		rproc->sync_with_rproc = rproc->sync_flags.after_crash;
-> > +		break;
-> > +	default:
-> > +		break;
-> > +	}
-> > +}
-> > +
-> >  /* from remoteproc_core.c */
-> >  void rproc_release(struct kref *kref);
-> >  irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id);
-> > 
