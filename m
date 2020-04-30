@@ -2,97 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78A71BEDDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD411BEDD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726486AbgD3BuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 21:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726282AbgD3BuX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 21:50:23 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D30C035494;
-        Wed, 29 Apr 2020 18:50:23 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id i16so4412739ils.12;
-        Wed, 29 Apr 2020 18:50:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y8ASo8zpK+8qPNof8u/cHdMqtlz7+kslUfS8Oj2LKzo=;
-        b=YsKFQT3reOM6k0etzlNKatoAoB8eS3oSXg4aogSsGj+BS7hEjdMtOWVXaO77T/HQKw
-         hEHrq0ofC8VjwZ/x3c3taB/oV7KRQUk+1oNGjllLZimTrlsev1U6dhu0zYATgrIupuLp
-         q0+Pb1D18JWDP/JQ8CNbqKpSNyCWfzylUEcabcyuin1SoTDUBQOEuLVXEL1nTk/jZFS9
-         hECoJovbAA/7cRjo02LMY0G2azloJS4+2tS526YUo20DtmTdxQEvDDrFzhMO3rPMVxH4
-         xgBf93K/xt09nGnW7hloNRwre4qBtdkX5aRu425sPKLvu0HFOheQBbJp6rxIBG/dv1li
-         Tfrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y8ASo8zpK+8qPNof8u/cHdMqtlz7+kslUfS8Oj2LKzo=;
-        b=TaB1/EEomAj4KFhqMtx732zsA2V49a+RO7BtRgDVhdC0Tqgy9wYmzOCb75nnX8ZbBG
-         SZ6BNjBDaeivZ7QIFeQumPGarlw6RVKoAcj/xTjgbzKcIlRsSErMBwZt0LKuiNV5BNLe
-         HaB/qAIV9Mf24nmQXENEiuxYV6JNkzHSiBQG6M6eQoELavkXcP3wcqQhgoeIwJQVLXor
-         ooso4pmvS2xN6nj2uFJRSIWQHPpWQ/m6qPUDmTpbYXcY0lCYgxboMff304KgxA5mILlZ
-         o/kWRmi4HjXa2L8jhL0Xyv3NthfQCDPn+GIo1ninDqqG558fHIMRw+2feoObEMK7cE2/
-         zOUQ==
-X-Gm-Message-State: AGi0PuZUJ81XxwNcoypICF5MWkRarSRD6rXf3oG0cIZsVwI6stBwWDc/
-        0gTSHXwywmBP4qlbJIErHaEXcs3jj72UAv5pAqs=
-X-Google-Smtp-Source: APiQypKaO9W65Xbq6DTbEi00VBnOqfpMGUq/H4qUQG6zRhnIEl6P9hJ6oEhz+iXGRx5G3BxLEZMkw1nz0eiSb08RjA8=
-X-Received: by 2002:a92:8d9d:: with SMTP id w29mr1330029ill.168.1588211422430;
- Wed, 29 Apr 2020 18:50:22 -0700 (PDT)
+        id S1726596AbgD3BqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 21:46:20 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3387 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726329AbgD3BqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 21:46:19 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 2D2CE6078B371D528E6C;
+        Thu, 30 Apr 2020 09:46:17 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 30 Apr 2020 09:46:08 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <aviad.krawczyk@huawei.com>, <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next v3] hinic: Use ARRAY_SIZE for nic_vf_cmd_msg_handler
+Date:   Thu, 30 Apr 2020 09:51:31 +0800
+Message-ID: <1588211491-29670-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-References: <cover.1588092152.git.chris@chrisdown.name> <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
- <CALOAHbCotD1-+o_XZPU_4_i8Nn98r5F_5NpGVd=z6UG=rUcCmA@mail.gmail.com>
- <20200430011626.GA2754277@chrisdown.name> <CALOAHbCL_JJgcy9r99Kn81-o_t-fs_nQ+n7aKMHO-02QMCufEw@mail.gmail.com>
- <20200430014603.GB2754277@chrisdown.name>
-In-Reply-To: <20200430014603.GB2754277@chrisdown.name>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 30 Apr 2020 09:49:46 +0800
-Message-ID: <CALOAHbAzZUwGq3mnEtOcSetvAAm+m=X_KnQ2eS9U0QQVHggWYg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
- is above protection
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 9:46 AM Chris Down <chris@chrisdown.name> wrote:
->
-> Yafang Shao writes:
-> >My concern is why we add these barriers to memcg protection
-> >specifically but don't add these barriers to the other memebers like
-> >memcg->oom_group which has the same issue ?
-> >What is the difference between these members and that members ?
->
-> There are certainly more missing cases -- I didn't look at oom_group
-> specifically, but it sounds likely if there's not other mitigating factors.
-> Most of us have just been busy and haven't had time to comprehensively fix all
-> the potential store and load tears.
->
-> Tearing is another case of something that would be nice to fix once and for all
-> in the memcg code, but isn't causing any significant issues for the timebeing.
-> We should certainly aim to avoid introducing any new tearing opportunities,
-> though :-)
->
-> So the answer is just that improvement is incremental and we've not had the
-> time to track down and fix them all. If you find more cases, feel free to send
-> out the patches and I'll be happy to take a look.
+fix coccinelle warning, use ARRAY_SIZE
 
-Thanks for your suggestion.
-I'm planning to add these barriers all over the memory cgroup code.
+drivers/net/ethernet/huawei/hinic/hinic_sriov.c:713:43-44: WARNING: Use ARRAY_SIZE
 
+v1-->v2:
+   remove cmd_number
+
+v2-->v3:
+   preserve the reverse christmas tree ordering of local variables
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/net/ethernet/huawei/hinic/hinic_sriov.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+index b24788e..c851145 100644
+--- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
++++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
+@@ -704,17 +704,15 @@ int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
+ 	struct hinic_hwdev *dev = hwdev;
+ 	struct hinic_func_to_io *nic_io;
+ 	struct hinic_pfhwdev *pfhwdev;
+-	u32 i, cmd_number;
+ 	int err = 0;
++	u32 i;
+ 
+ 	if (!hwdev)
+ 		return -EFAULT;
+ 
+-	cmd_number = sizeof(nic_vf_cmd_msg_handler) /
+-			    sizeof(struct vf_cmd_msg_handle);
+ 	pfhwdev = container_of(dev, struct hinic_pfhwdev, hwdev);
+ 	nic_io = &dev->func_to_io;
+-	for (i = 0; i < cmd_number; i++) {
++	for (i = 0; i < ARRAY_SIZE(nic_vf_cmd_msg_handler); i++) {
+ 		vf_msg_handle = &nic_vf_cmd_msg_handler[i];
+ 		if (cmd == vf_msg_handle->cmd &&
+ 		    vf_msg_handle->cmd_msg_handler) {
+@@ -725,7 +723,7 @@ int nic_pf_mbox_handler(void *hwdev, u16 vf_id, u8 cmd, void *buf_in,
+ 			break;
+ 		}
+ 	}
+-	if (i == cmd_number)
++	if (i == ARRAY_SIZE(nic_vf_cmd_msg_handler))
+ 		err = hinic_msg_to_mgmt(&pfhwdev->pf_to_mgmt, HINIC_MOD_L2NIC,
+ 					cmd, buf_in, in_size, buf_out,
+ 					out_size, HINIC_MGMT_MSG_SYNC);
 -- 
-Thanks
-Yafang
+2.6.2
+
