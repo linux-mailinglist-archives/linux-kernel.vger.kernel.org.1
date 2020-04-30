@@ -2,115 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBEA1BF41A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487981BF41F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgD3J1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 05:27:10 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:38390 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726127AbgD3J1J (ORCPT
+        id S1726777AbgD3J1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 05:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726502AbgD3J1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 05:27:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588238828;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+vie47UJ1oW/NhA/rX/zyO/BjzssU/nJjeCxNVmVx9Q=;
-        b=VnLEXZdecQgAWz0l3vW6p/9oMt/+ZHTYGeagvboLY0EA8Kw1CCKvDyxRPY4VaMRfe9bNGI
-        +mM+Mz1ggbTXQ3aozFmtA45y/twSOcoyW7CFaOhY1+zwvyyhg7UG3dTcrleS0zS0a/pRa9
-        M5k1CZTRQJJP8t4CrKpv0rI2LNOG9lA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-298-CohHsZLVNQui3WXMAdmJLw-1; Thu, 30 Apr 2020 05:27:07 -0400
-X-MC-Unique: CohHsZLVNQui3WXMAdmJLw-1
-Received: by mail-wr1-f69.google.com with SMTP id p2so3558445wrx.12
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 02:27:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+vie47UJ1oW/NhA/rX/zyO/BjzssU/nJjeCxNVmVx9Q=;
-        b=V+z1ofzt/dLq9vIT2m+mdnYp+eBNuBRQlBqm+l6La9KepVz7f7dBGZ52EGeZbDKJcz
-         U7c8dXQxaI7I0N19MCR5Pg9XdZfp+qSTbI3UrRVAQAeyQZsXUhHV+OLpRhudKwbZKORV
-         5YpLoRoQIeRaPk/6DvVj5rdxvnmzZqx4mGwStQP1qhgQX/FYczHc4Wdq+O+SVZ//tXId
-         Bd2KcE884cURbVn8xAdLqPd05GBhnheMXjTkqE0Bxw/wUJnJViXehZNUk1qN9i0zdTyX
-         3NVwr3HGQ/dc7ZkSiTi4pMcrXdHw0rvb8CwnzNCHGhZqDiSl6amDtr3iGjCw4744FNux
-         NE8w==
-X-Gm-Message-State: AGi0Pub+mne1O2c2dFF58QDwQm17lOXcmXouRipmUvdAsQyookDZGve8
-        57nnTnCHPOFl77TBNURzcTcYQaX57rlNiG1QRXnw0Qad2vp/U5ySa1sDhqLIXdZZu409VQb7TE0
-        PxESm/SDOyTe5q3OKO2kJi4N6
-X-Received: by 2002:a7b:c456:: with SMTP id l22mr1910004wmi.148.1588238825850;
-        Thu, 30 Apr 2020 02:27:05 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIidEgYyupOkF7nL6eGUnI+MnsnTzTsxHxlSJH5y9TKoVaupD0CtacA6MBnjUdJnCD7NKs2TQ==
-X-Received: by 2002:a7b:c456:: with SMTP id l22mr1909983wmi.148.1588238825624;
-        Thu, 30 Apr 2020 02:27:05 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ac19:d1fb:3f5f:d54f? ([2001:b07:6468:f312:ac19:d1fb:3f5f:d54f])
-        by smtp.gmail.com with ESMTPSA id o6sm3109407wrw.63.2020.04.30.02.27.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 02:27:05 -0700 (PDT)
-Subject: Re: [PATCH RFC 4/6] KVM: x86: acknowledgment mechanism for async pf
- page ready notifications
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org,
-        kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>
-References: <20200429093634.1514902-1-vkuznets@redhat.com>
- <20200429093634.1514902-5-vkuznets@redhat.com>
- <b1297936-cf69-227b-d758-c3f3ca09ae5d@redhat.com>
- <87sgglfjt9.fsf@vitty.brq.redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <18b66e2e-9256-0ef0-4783-f89211eeda88@redhat.com>
-Date:   Thu, 30 Apr 2020 11:27:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 30 Apr 2020 05:27:53 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F189FC035494;
+        Thu, 30 Apr 2020 02:27:52 -0700 (PDT)
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1jU5Tk-0007ai-Hb; Thu, 30 Apr 2020 11:27:36 +0200
+Date:   Thu, 30 Apr 2020 11:27:36 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Yan-Hsuan Chuang <yhchuang@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] rtw88: fix spelling mistake "fimrware" ->
+ "firmware"
+Message-ID: <20200430092736.q7agn7u4hr2nsrov@linutronix.de>
+References: <20200424084733.7716-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <87sgglfjt9.fsf@vitty.brq.redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200424084733.7716-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/04/20 10:40, Vitaly Kuznetsov wrote:
->>  I think in that case
->> kvm_check_async_pf_completion will refuse to make progress.
->> You need to make this bit stateful (e.g. 1 = async PF in progress, 0 =
->> not in progress), and check that for page ready notifications instead of
->> EFLAGS.IF.  
->> This probably means that;
->>
->> - it might be simpler to move it to the vector MSR
-> I didn't want to merge 'ACK' with the vector MSR as it forces the guest
-> to remember the setting. It doesn't matter at all for Linux as we
-> hardcode the interrupt number but I can imaging an OS assigning IRQ
-> numbers dynamically, it'll need to keep record to avoid doing rdmsr.
+On 2020-04-24 09:47:33 [+0100], Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There are spelling mistakes in two rtw_err error messages. Fix them.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-I would expect that it needs to keep it in a global variable anyway, but
-yes this is a good point.  You can also keep the ACK MSR and store the
-pending bit in the other MSR, kind of like you have separate ISR and EOI
-registers in the LAPIC.
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
->> - it's definitely much simpler to remove the #PF-based mechanism for
->> injecting page ready notifications.
-> Yea, the logic in kvm_can_do_async_pf()/kvm_can_deliver_async_pf()
-> becomes cumbersome. If we are to drop #PF-based mechanism I'd split it
-> completely from the remaining synchronious #PF for page-not-present:
-> basically, we only need to check that the slot (which we agreed becomes
-> completely separate) is empty, interrupt/pending expception/... state
-> becomes irrelevant.
-
-Yes, that's a good point.
-
-Paolo
-
+Sebastian
