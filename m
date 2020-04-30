@@ -2,103 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF4D1C0645
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7065F1C064B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgD3TZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726272AbgD3TZE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:25:04 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C9EC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:25:04 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id z1so342528pfn.3
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:25:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LWzoBfWYBplb188JYPfec8yiO1FAiglsQQs7ha7y6zc=;
-        b=zvIhEeo6o5Oci/1eDGxIxa70cqZyoYJPXylX1Jz8dm4uPN+VdUMi5dd63F1duzrKjf
-         RbDbL4orJsgYwq7Nj0UTh3yQbN4K0xHm3MIzvy5ZD3vZU2dEZ4WTK5ZSvBz/KhNhDNRi
-         iq4ZR0E2/FCU5UX9o2YRqOluF3k9408xQAXoHNf8e9LxoECnH5HXqwOJ0rv7LjXnhyyW
-         yS/J0pcItyBpgwidW4/F9usyFm2BZPVgghgNjxRdQThOIQoH0bSYmBNCHOuxLIXuzZaE
-         8kNRwr8BxYU8I87WPqhv6VIAhcrOvoocf9qPGC8gtHNJf58mlCE62qWRAmVLrpUHxnod
-         A6ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LWzoBfWYBplb188JYPfec8yiO1FAiglsQQs7ha7y6zc=;
-        b=ZYh36Gqtnce6+4By/45rkJJo50e9ulpj+/DY667ydsYRqIEcTroya/G5qGdhEi0vHi
-         1Y7+ZxrhS4oYv6IcpvTR2AqkeZ5EutPhp6GIy3qK25D7Mtv+KqgTIm2Wyz1K+6IpVR7h
-         FsPsQtI9JDMzecK3XRIWHNU8jvyNKvQnkLxuEkkJVGUFJl1JHnjUL7jJXf1dwt8EFOtP
-         Mw4PblJYL1P33nmcmeyS1E2jpE6faCgPu1i4dQT8iG9yTgHiaVHKyTSyD4UOD0gNEep3
-         comhDP+bG9iiWF8h+zCGqKOPOd3mqFr3kfpw3NUTfiGktOarc/yiM2ZHlAb8bsu3w2no
-         XDMw==
-X-Gm-Message-State: AGi0PuaGTemGRV4wSemo9MHgaT/P12yu5ytS5FFIxYpUzBoUsFxTJAG/
-        JO5bS5breEznGpjV3ZwrYh+s8g==
-X-Google-Smtp-Source: APiQypLCsVX9Nh3B0wNo8iNCW3Dh7d+/91P/QFHKJM1aSTI3VdeXI7wM5INe9jYGfLmdFCvuIRM2Ow==
-X-Received: by 2002:aa7:8b12:: with SMTP id f18mr271949pfd.81.1588274704103;
-        Thu, 30 Apr 2020 12:25:04 -0700 (PDT)
-Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id v26sm463594pfe.121.2020.04.30.12.25.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 12:25:03 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] drm/msm: Fix undefined "rd_full" link error
-Date:   Thu, 30 Apr 2020 12:24:27 -0700
-Message-Id: <20200430192427.4104899-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.24.0
+        id S1726875AbgD3TZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:25:28 -0400
+Received: from mga09.intel.com ([134.134.136.24]:19563 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726272AbgD3TZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 15:25:27 -0400
+IronPort-SDR: CVzB62afJ40YoX5WPhmD0FU91BYPRf9zIOFp5RksPOSzjLJjHT9rer4Q+N+63+bFRtQuZl5XKP
+ hcxHBcPtPfrw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 12:25:26 -0700
+IronPort-SDR: VMIDw5bhgMZu9HMGXsoHdWnP7hI9ZIj4sQ8M9BBzlklQTLp7TqcH8pj8KxCaNBGvG4/1MDuaIY
+ WZjFhIPK5GMg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,336,1583222400"; 
+   d="scan'208";a="293667193"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Apr 2020 12:25:25 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jUEoG-0006lp-CD; Fri, 01 May 2020 03:25:24 +0800
+Date:   Fri, 01 May 2020 03:25:01 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ c4643edf3ea8353dfbab5ab397789c87b40da810
+Message-ID: <5eab260d.pCLF6TKC2yTj57Vg%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rd_full should be defined outside the CONFIG_DEBUG_FS region, in order
-to be able to link the msm driver even when CONFIG_DEBUG_FS is disabled.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
+branch HEAD: c4643edf3ea8353dfbab5ab397789c87b40da810  Merge branch 'linus'
 
-Fixes: e515af8d4a6f ("drm/msm: devcoredump should dump MSM_SUBMIT_BO_DUMP buffers")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+elapsed time: 698m
+
+configs tested: 168
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+sparc                            allyesconfig
+sh                               allmodconfig
+ia64                             allyesconfig
+powerpc                      chrp32_defconfig
+c6x                        evmc6678_defconfig
+xtensa                       common_defconfig
+ia64                             alldefconfig
+nds32                             allnoconfig
+mips                      fuloong2e_defconfig
+mips                          ath79_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                             alldefconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                        generic_defconfig
+ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+m68k                       bvme6000_defconfig
+m68k                           sun3_defconfig
+m68k                          multi_defconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                              allyesconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+xtensa                          iss_defconfig
+h8300                    h8300h-sim_defconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+mips                      malta_kvm_defconfig
+mips                            ar7_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                              allnoconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+mips                malta_kvm_guest_defconfig
+mips                         tb0287_defconfig
+mips                       capcella_defconfig
+mips                           ip32_defconfig
+mips                  decstation_64_defconfig
+mips                      loongson3_defconfig
+mips                        bcm63xx_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                             defconfig
+powerpc                       holly_defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                    amigaone_defconfig
+powerpc                    adder875_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                          g5_defconfig
+powerpc                     mpc512x_defconfig
+parisc               randconfig-a001-20200430
+mips                 randconfig-a001-20200430
+m68k                 randconfig-a001-20200430
+riscv                randconfig-a001-20200430
+alpha                randconfig-a001-20200430
+nds32                randconfig-a001-20200430
+microblaze           randconfig-a001-20200430
+nios2                randconfig-a001-20200430
+h8300                randconfig-a001-20200430
+c6x                  randconfig-a001-20200430
+sparc64              randconfig-a001-20200430
+s390                 randconfig-a001-20200430
+xtensa               randconfig-a001-20200430
+csky                 randconfig-a001-20200430
+openrisc             randconfig-a001-20200430
+sh                   randconfig-a001-20200430
+i386                 randconfig-b001-20200430
+i386                 randconfig-b002-20200430
+x86_64               randconfig-b001-20200430
+i386                 randconfig-b003-20200430
+x86_64               randconfig-b002-20200430
+x86_64               randconfig-b003-20200430
+x86_64               randconfig-c001-20200430
+i386                 randconfig-c001-20200430
+i386                 randconfig-c002-20200430
+x86_64               randconfig-c002-20200430
+x86_64               randconfig-c003-20200430
+i386                 randconfig-c003-20200430
+x86_64               randconfig-d002-20200430
+x86_64               randconfig-d001-20200430
+i386                 randconfig-d001-20200430
+i386                 randconfig-d003-20200430
+i386                 randconfig-d002-20200430
+x86_64               randconfig-d003-20200430
+x86_64               randconfig-e002-20200430
+i386                 randconfig-e003-20200430
+x86_64               randconfig-e003-20200430
+i386                 randconfig-e002-20200430
+x86_64               randconfig-e001-20200430
+i386                 randconfig-e001-20200430
+i386                 randconfig-h002-20200430
+i386                 randconfig-h003-20200430
+x86_64               randconfig-h001-20200430
+x86_64               randconfig-h003-20200430
+i386                 randconfig-h001-20200430
+sparc                randconfig-a001-20200430
+arc                  randconfig-a001-20200430
+ia64                 randconfig-a001-20200430
+powerpc              randconfig-a001-20200430
+arm                  randconfig-a001-20200430
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
+sh                          rsk7269_defconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc                               defconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
+
 ---
- drivers/gpu/drm/msm/msm_rd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_rd.c b/drivers/gpu/drm/msm/msm_rd.c
-index 732f65df5c4f..fea30e7aa9e8 100644
---- a/drivers/gpu/drm/msm/msm_rd.c
-+++ b/drivers/gpu/drm/msm/msm_rd.c
-@@ -29,8 +29,6 @@
-  * or shader programs (if not emitted inline in cmdstream).
-  */
- 
--#ifdef CONFIG_DEBUG_FS
--
- #include <linux/circ_buf.h>
- #include <linux/debugfs.h>
- #include <linux/kfifo.h>
-@@ -47,6 +45,8 @@ bool rd_full = false;
- MODULE_PARM_DESC(rd_full, "If true, $debugfs/.../rd will snapshot all buffer contents");
- module_param_named(rd_full, rd_full, bool, 0600);
- 
-+#ifdef CONFIG_DEBUG_FS
-+
- enum rd_sect_type {
- 	RD_NONE,
- 	RD_TEST,       /* ascii text */
--- 
-2.24.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
