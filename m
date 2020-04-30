@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209C31BFB4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7C51BFB5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729168AbgD3N7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728992AbgD3Nyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:54:33 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB60724959;
-        Thu, 30 Apr 2020 13:54:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588254872;
-        bh=8JRo0BwlFzZ5rDWV4zsiKnnD3Xyq+9giUvYtHt65Wq0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kfj+2LHPzFWRnpUMvKxjs7n336HQPG1aYmvW+rfIYvCG8SttOYKNgtlY7c+w4zyWW
-         9usqLIcdHpdasTdwGohenpqAOK2FC90dY9627J2NEDmDg2gnUofU5aqVbrKoNSAJgA
-         wVu2sC9oMIFWy0He5DjIAoy4pOsroCGVZTwRkIV8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 27/27] net: systemport: suppress warnings on failed Rx SKB allocations
-Date:   Thu, 30 Apr 2020 09:54:02 -0400
-Message-Id: <20200430135402.20994-27-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200430135402.20994-1-sashal@kernel.org>
-References: <20200430135402.20994-1-sashal@kernel.org>
+        id S1729353AbgD3N7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:59:31 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:32982 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728977AbgD3Ny3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:54:29 -0400
+Received: by mail-oi1-f195.google.com with SMTP id o24so5296725oic.0;
+        Thu, 30 Apr 2020 06:54:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lq5yotINN5KYJUar62+nHe1UVAWw3VsyL3e2P7YS8BU=;
+        b=Fs+x95REPD9EfTrmtAphxUuSWdnK4AewafFukG28gjw6/cMXJ7SPw+K/JRXaEzDI+Q
+         xCxdviGuWsdNW5oaM6ZLrEja3DMcTLx0A0xIZiXgLz/DLhqIcJGVkRUXWEvxRNIeSEg2
+         TfitgjACuqffMU4eUtex6dZMOL2j4LyQs3zP4diaw7khFVR1wuugEk9/cPZpGKx/u3pa
+         yglXxryic2X+Y7Q7xaYhznG9EcQMB2g+wDsUwyZLo4IVmHeonmeAVY1HXPq47qqOO285
+         D61MdmfgHNdhBGk7ShmxPsM4xxThulaCyjlbwt3xbKr5muFXsUyPsRGHJBwJJJrUz9bb
+         i5Sw==
+X-Gm-Message-State: AGi0PubPicM6FM9kH8G6Eeu7uYJJpPynry7GYQ1lIHq/ZpyBkDd2fLwc
+        Mmh3CH/FwvwazzCeLcQlhgSPFQstOmPt5/x6OKE=
+X-Google-Smtp-Source: APiQypKSH2mk4TQbA0Ak5zrv/RbXfwp1aRhXDsLXfDfpPXjbsGxuhUfYCkid+vwSbm4NVFRKEn9DNNlyvrMRml/YzRI=
+X-Received: by 2002:aca:f541:: with SMTP id t62mr1735443oih.148.1588254868374;
+ Thu, 30 Apr 2020 06:54:28 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <1588197415-13747-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1588197415-13747-10-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1588197415-13747-10-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 30 Apr 2020 15:54:16 +0200
+Message-ID: <CAMuHMdWUYU6-S+EhzTKE4JeS2ExLQcsg_Bpy7RKD+cwhg55M8g@mail.gmail.com>
+Subject: Re: [PATCH 09/18] ARM: dts: r8a7742: Add IRQC support
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dmaengine <dmaengine@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Doug Berger <opendmb@gmail.com>
+On Wed, Apr 29, 2020 at 11:58 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Describe the IRQC interrupt controller in the r8a7742 device tree.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
 
-[ Upstream commit 3554e54a46125030c534820c297ed7f6c3907e24 ]
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-The driver is designed to drop Rx packets and reclaim the buffers
-when an allocation fails, and the network interface needs to safely
-handle this packet loss. Therefore, an allocation failure of Rx
-SKBs is relatively benign.
+Gr{oetje,eeting}s,
 
-However, the output of the warning message occurs with a high
-scheduling priority that can cause excessive jitter/latency for
-other high priority processing.
+                        Geert
 
-This commit suppresses the warning messages to prevent scheduling
-problems while retaining the failure count in the statistics of
-the network interface.
-
-Signed-off-by: Doug Berger <opendmb@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/broadcom/bcmsysport.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/broadcom/bcmsysport.c b/drivers/net/ethernet/broadcom/bcmsysport.c
-index f48f7d104af21..123ee5c11bc0c 100644
---- a/drivers/net/ethernet/broadcom/bcmsysport.c
-+++ b/drivers/net/ethernet/broadcom/bcmsysport.c
-@@ -645,7 +645,8 @@ static struct sk_buff *bcm_sysport_rx_refill(struct bcm_sysport_priv *priv,
- 	dma_addr_t mapping;
- 
- 	/* Allocate a new SKB for a new packet */
--	skb = netdev_alloc_skb(priv->netdev, RX_BUF_LENGTH);
-+	skb = __netdev_alloc_skb(priv->netdev, RX_BUF_LENGTH,
-+				 GFP_ATOMIC | __GFP_NOWARN);
- 	if (!skb) {
- 		priv->mib.alloc_rx_buff_failed++;
- 		netif_err(priv, rx_err, ndev, "SKB alloc failed\n");
 -- 
-2.20.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
