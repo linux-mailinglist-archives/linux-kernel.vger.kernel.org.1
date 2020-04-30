@@ -2,167 +2,458 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E8A1BEFF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0F11BF00A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 08:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbgD3GBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 02:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726180AbgD3GBy (ORCPT
+        id S1726508AbgD3GJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 02:09:31 -0400
+Received: from ma-dnext03.denso.co.jp ([133.192.181.78]:46713 "EHLO
+        ma-dnext03.denso.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726358AbgD3GJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 02:01:54 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B3BC035494;
-        Wed, 29 Apr 2020 23:01:54 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id 72so3991864otu.1;
-        Wed, 29 Apr 2020 23:01:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Aa3UitXCFbuTJBux4KS46nQWRa1PCa2MQgyHix6wDug=;
-        b=kZgnKradh+4gpoJwCp1MJ3tB7TuolRMw9SwiW7nibfo44Tv9PAsB2xns1+L2Wny7VP
-         U5ohBtK306N5Qr5pbHNRlQzHfZL6sCjqd8WS+IkMeKkYuEGEjd9zyWZW8LTb9quPYAg+
-         H+Qd3eXvxn5midIIHrT5Du22c9gxboErvMUtsuybABTXCuYN6phvJr20LkfUmUE3IpAS
-         56qpB7x4OHUkj4bd1iC1UvVpGfiY1OwB1i/BjYLTP7owSrOmey+7fB7wqMKo0TB6v5iw
-         /YFQyqD2pkVBxaVhzxjvOtb2Fqpkl9rWv6h+sX8Ha5exq3nNv47MYsme3sPzrKdqO9Fe
-         +B0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Aa3UitXCFbuTJBux4KS46nQWRa1PCa2MQgyHix6wDug=;
-        b=VSY3jiF/X8fgHYfmca8X3SPsOHi3W++wfFuy2xSe7N8xVDEJfTHhn5p6oaDUg36Rmr
-         9UVW1QKHhy5HI6/udVi9qB+q/MNJ6nFejIYyx4KnCQWYQ5PCD0WlWPyvGiIeyG17fnOa
-         W//TPuFuDb3ZW9MhNzyuxHMt24WrmV8lw35Urkh6qkqO5GftLzsy4uk1mlw4q/hv2Sye
-         zTeHXzR/BjPCZPMWaeXRTcv/rtFIWHG5AZTelRfciL9WDUuhRf0RTEWJ4TFkiZYJsxSz
-         WDkS5+XoaYOqLq7noNOJ6tqo3nkf6N4TXz/1wJ/p6mwMCl54NNUbk9W+ZBiMZfG27+Z3
-         AGvQ==
-X-Gm-Message-State: AGi0PuaqrWupxMeCLw4TPlQgLYSc0duzrgXQOQATA5gNKQ5Pf+jLXs2Y
-        HJrR/f8Tyc2p4pzZL3am4cw=
-X-Google-Smtp-Source: APiQypJA8lwMHREZR1z8guvVKGBGiHBDYRIAPZ3As+ejNU4wSQHxBl8S78vLQZNAcJrVqvEK+o6ZGA==
-X-Received: by 2002:a9d:6391:: with SMTP id w17mr1276881otk.325.1588226513591;
-        Wed, 29 Apr 2020 23:01:53 -0700 (PDT)
-Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id 10sm993958oto.80.2020.04.29.23.01.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 23:01:53 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 23:01:51 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH v2] hv_netvsc: Fix netvsc_start_xmit's return type
-Message-ID: <20200430060151.GA3548130@ubuntu-s3-xlarge-x86>
-References: <20200428100828.aslw3pn5nhwtlsnt@liuwe-devbox-debian-v2.j3c5onc20sse1dnehy4noqpfcg.zx.internal.cloudapp.net>
- <20200428175455.2109973-1-natechancellor@gmail.com>
- <MW2PR2101MB10522D4D5EBAB469FE5B4D8BD7AA0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+        Thu, 30 Apr 2020 02:09:30 -0400
+X-Greylist: delayed 361 seconds by postgrey-1.27 at vger.kernel.org; Thu, 30 Apr 2020 02:09:30 EDT
+Received: from grdma01h.denso.co.jp (unknown [133.192.24.24])
+        by ma-dnext03.denso.co.jp (Postfix) with ESMTP id 666B75D03EF;
+        Thu, 30 Apr 2020 15:03:26 +0900 (JST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=adit-jv.com;
+        s=jpadit-jvmail2011; t=1588226606;
+        bh=ZeJ0n3mFa3I3V/WBLZg289RUPJ/IhtwFt9AWO99ElJw=;
+        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=MYETUzqxXvoa++8QP3c4aodxnd98UILhqtOcl6GZho+qrpuWcLnaDM5Vk9z2jQWi+
+         r7ELeVmLOw/OHmzE4P+1N2wUjVqSB1fFGLPeD6r4t0/lq9LJcyXGCV2u9XhfzzqbXn
+         w5G4V/5j554r8FrFcRRtBkdRKRVuoSUCT8y2URfzcppOXdTCyKgfkqbZoVi14brUHQ
+         Wu1kYUYlfrl/f9fu8vPXQVKThMihVybiO7kWo8fPzamDemLVMPzoBdFSNZQuPM5yJO
+         FMcbVlR08A+hyGWB4IvhjxPiS7pRt8COURrPM1jE+nOEi9YHWWyIauhIp5waf8QWKR
+         Rf87OJQs+bsng==
+Received: by grdma01h.denso.co.jp (Postfix, from userid 0)
+        id 6353AC04E09; Thu, 30 Apr 2020 15:03:26 +0900 (JST)
+Received: from smtp1.denso.co.jp [133.192.24.88] 
+         by grdma01h. with ESMTP id RAA07492;
+         Thu, 30 Apr 2020 15:03:26 +0900
+Received: from ky0exch01.adit-jv.com ([10.71.113.8])
+        by smtp01.denso.co.jp (MOS 4.4.7-GA)
+        with ESMTP id FSY86413;
+        Thu, 30 Apr 2020 15:03:24 +0900
+Received: from jp-u0004.adit-jv.com (10.71.112.120) by ky0exch01.adit-jv.com
+ (10.71.113.8) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 30 Apr
+ 2020 15:03:23 +0900
+From:   Suresh Udipi <sudipi@jp.adit-jv.com>
+To:     <niklas.soderlund@ragnatech.se>
+CC:     <akiyama@nds-osk.co.jp>, <efriedrich@de.adit-jv.com.denso.co.jp>,
+        <erosca@de.adit-jv.com.denso.co.jp>, <hverkuil-cisco@xs4all.nl>,
+        <jacopo+renesas@jmondi.org>, <laurent.pinchart@ideasonboard.com>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <mrodin@de.adit-jv.com.denso.co.jp>, <securitycheck@denso.co.jp>,
+        <sudipi@jp.adit-jv.com>
+Subject: [PATCH v5] media: rcar-csi2: Correct the selection of hsfreqrange
+Date:   Thu, 30 Apr 2020 15:03:10 +0900
+Message-ID: <1588226590-12880-1-git-send-email-sudipi@jp.adit-jv.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <20200414115600.GB285053@oden.dyn.berto.se>
+References: <20200414115600.GB285053@oden.dyn.berto.se>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB10522D4D5EBAB469FE5B4D8BD7AA0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+Content-Type: text/plain
+X-Originating-IP: [10.71.112.120]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+hsfreqrange should be chosen based on the calculated mbps which
+is within the range as per table[1]. But current calculation
+always selects first value which is greater than or equal to the
+calculated mbps which may lead to chosing a wrong range in some cases.
 
-On Thu, Apr 30, 2020 at 12:06:09AM +0000, Michael Kelley wrote:
-> From: Nathan Chancellor <natechancellor@gmail.com> Sent: Tuesday, April 28, 2020 10:55 AM
-> > 
-> > Do note that netvsc_xmit still returns int because netvsc_xmit has a
-> > potential return from netvsc_vf_xmit, which does not return netdev_tx_t
-> > because of the call to dev_queue_xmit.
-> > 
-> > I am not sure if that is an oversight that was introduced by
-> > commit 0c195567a8f6e ("netvsc: transparent VF management") or if
-> > everything works properly as it is now.
-> > 
-> > My patch is purely concerned with making the definition match the
-> > prototype so it should be NFC aside from avoiding the CFI panic.
-> > 
-> 
-> While it probably works correctly now, I'm not too keen on just
-> changing the return type for netvsc_start_xmit() and assuming the
-> 'int' that is returned from netvsc_xmit() will be correctly mapped to
-> the netdev_tx_t enum type.  While that mapping probably happens
-> correctly at the moment, this really should have a more holistic fix.
+For example for 360 mbps for H3/M3N
+Existing logic selects
+Calculated value 360Mbps : Default 400Mbps Range [368.125 -433.125 mbps]
 
-While it might work correctly, I am not sure that the mapping is
-correct, hence that comment.
+This hsfreqrange is out of range.
 
-netdev_tx_t is an enum with two acceptable types, 0x00 and 0x10. Up
-until commit 0c195567a8f6e ("netvsc: transparent VF management"),
-netvsc_xmit was guaranteed to return something of type netdev_tx_t.
+The logic is changed to select the first hsfreqrange whose max range[1] is
+greater than the calculated bit rate.
 
-However, after said commit, we could return anything from
-netvsc_vf_xmit, which in turn calls dev_queue_xmit then
-__dev_queue_xmit which will return either an error code (-ENOMEM or
--ENETDOWN) or something from __dev_xmit_skb, which appears to be
-NET_XMIT_SUCCESS, NET_XMIT_DROP, or NET_XMIT_CN.
+Calculated value 360Mbps : max range 380.625 mbps is selected
+ i.e Default 350Mbps  Range [320.625 -380.625 mpbs]
 
-It does not look like netvsc_xmit or netvsc_vf_xmit try to convert those
-returns to netdev_tx_t in some way; netvsc_vf_xmit just passes the
-return value up to netvsc_xmit, which is the part that I am unsure
-about...
+[1] specs r19uh0105ej0200-r-car-3rd-generation.pdf [Table 25.9]
 
-> Nathan -- are you willing to look at doing the more holistic fix?  Or
-> should we see about asking Haiyang Zhang to do it?
+Fixes: 769afd212b16 ("media: rcar-csi2: add Renesas R-Car MIPI CSI-2 receiver driver")
 
-I would be fine trying to look at a more holistic fix but I know
-basically nothing about this subsystem. I am unsure if something like
-this would be acceptable or if something else needs to happen.
-Otherwise, I'd be fine with you guys taking a look and just giving me
-reported-by credit.
+Signed-off-by: Suresh Udipi <sudipi@jp.adit-jv.com>
+Signed-off-by: Kazuyoshi Akiyama <akiyama@nds-osk.co.jp>
+---
+ Changes in v2:
+  - Added the boundary check for the maximum bit rate.
 
-Cheers,
-Nathan
+  - Simplified the logic by remmoving range check
+    as only the closest default value covers most
+    of the use cases.
 
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index d8e86bdbfba1e..a39480cfb8fa7 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -520,7 +520,8 @@ static int netvsc_vf_xmit(struct net_device *net, struct net_device *vf_netdev,
- 	return rc;
- }
+  - Aligning the commit message based on the above change
+
+
+ Changes in v3:
+    - Added max member from struct rcsi2_mbps_reg.
+      mbps varialbe cannot be removed from rcsi2_mbps_reg,
+      since this structure is reused for
+      phtw_mbps_h3_v3h_m3n/phtw_mbps_v3m_e3 where mbps is
+      used.
+
+
+   -  Update the walk of the array in rcsi2_set_phypll() so that it finds
+      the first entry where the calculated bit rate is less than the max.
+
+   - Support lower bit rates less than 80Mbps like 48Mbps
+     (Raspberry pi camera 640x480 connected to Kingfisher)
+     can also be supported by selecting the lowest default bit rate 80Mbps
+     as done before this fix
+
+   - Alignement of the commit message based on above changes.
+
+ Changes in v4:
+   - Remove unncessary braces.
  
--static int netvsc_xmit(struct sk_buff *skb, struct net_device *net, bool xdp_tx)
-+static netdev_tx_t netvsc_xmit(struct sk_buff *skb, struct net_device *net,
-+			       bool xdp_tx)
+ Changes in v5:
+   - Removed mbps variable in rcsi2_mbps_reg and aligned all 
+     tables accordingly
+
+ drivers/media/platform/rcar-vin/rcar-csi2.c | 282 ++++++++++++++--------------
+ 1 file changed, 141 insertions(+), 141 deletions(-)
+
+diff --git a/drivers/media/platform/rcar-vin/rcar-csi2.c b/drivers/media/platform/rcar-vin/rcar-csi2.c
+index faa9fb2..d45bf80 100644
+--- a/drivers/media/platform/rcar-vin/rcar-csi2.c
++++ b/drivers/media/platform/rcar-vin/rcar-csi2.c
+@@ -132,63 +132,63 @@ struct phtw_value {
+ };
+ 
+ struct rcsi2_mbps_reg {
+-	u16 mbps;
+ 	u16 reg;
++	u16 max;
+ };
+ 
+ static const struct rcsi2_mbps_reg phtw_mbps_h3_v3h_m3n[] = {
+-	{ .mbps =   80, .reg = 0x86 },
+-	{ .mbps =   90, .reg = 0x86 },
+-	{ .mbps =  100, .reg = 0x87 },
+-	{ .mbps =  110, .reg = 0x87 },
+-	{ .mbps =  120, .reg = 0x88 },
+-	{ .mbps =  130, .reg = 0x88 },
+-	{ .mbps =  140, .reg = 0x89 },
+-	{ .mbps =  150, .reg = 0x89 },
+-	{ .mbps =  160, .reg = 0x8a },
+-	{ .mbps =  170, .reg = 0x8a },
+-	{ .mbps =  180, .reg = 0x8b },
+-	{ .mbps =  190, .reg = 0x8b },
+-	{ .mbps =  205, .reg = 0x8c },
+-	{ .mbps =  220, .reg = 0x8d },
+-	{ .mbps =  235, .reg = 0x8e },
+-	{ .mbps =  250, .reg = 0x8e },
++	{ .reg = 0x86, .max =  80  },
++	{ .reg = 0x86, .max =  90  },
++	{ .reg = 0x87, .max =  100 },
++	{ .reg = 0x87, .max =  110 },
++	{ .reg = 0x88, .max =  120 },
++	{ .reg = 0x88, .max =  130 },
++	{ .reg = 0x89, .max =  140 },
++	{ .reg = 0x89, .max =  150 },
++	{ .reg = 0x8a, .max =  160 },
++	{ .reg = 0x8a, .max =  170 },
++	{ .reg = 0x8b, .max =  180 },
++	{ .reg = 0x8b, .max =  190 },
++	{ .reg = 0x8c, .max =  205 },
++	{ .reg = 0x8d, .max =  220 },
++	{ .reg = 0x8e, .max =  235 },
++	{ .reg = 0x8e, .max =  250 },
+ 	{ /* sentinel */ },
+ };
+ 
+ static const struct rcsi2_mbps_reg phtw_mbps_v3m_e3[] = {
+-	{ .mbps =   80, .reg = 0x00 },
+-	{ .mbps =   90, .reg = 0x20 },
+-	{ .mbps =  100, .reg = 0x40 },
+-	{ .mbps =  110, .reg = 0x02 },
+-	{ .mbps =  130, .reg = 0x22 },
+-	{ .mbps =  140, .reg = 0x42 },
+-	{ .mbps =  150, .reg = 0x04 },
+-	{ .mbps =  170, .reg = 0x24 },
+-	{ .mbps =  180, .reg = 0x44 },
+-	{ .mbps =  200, .reg = 0x06 },
+-	{ .mbps =  220, .reg = 0x26 },
+-	{ .mbps =  240, .reg = 0x46 },
+-	{ .mbps =  250, .reg = 0x08 },
+-	{ .mbps =  270, .reg = 0x28 },
+-	{ .mbps =  300, .reg = 0x0a },
+-	{ .mbps =  330, .reg = 0x2a },
+-	{ .mbps =  360, .reg = 0x4a },
+-	{ .mbps =  400, .reg = 0x0c },
+-	{ .mbps =  450, .reg = 0x2c },
+-	{ .mbps =  500, .reg = 0x0e },
+-	{ .mbps =  550, .reg = 0x2e },
+-	{ .mbps =  600, .reg = 0x10 },
+-	{ .mbps =  650, .reg = 0x30 },
+-	{ .mbps =  700, .reg = 0x12 },
+-	{ .mbps =  750, .reg = 0x32 },
+-	{ .mbps =  800, .reg = 0x52 },
+-	{ .mbps =  850, .reg = 0x72 },
+-	{ .mbps =  900, .reg = 0x14 },
+-	{ .mbps =  950, .reg = 0x34 },
+-	{ .mbps = 1000, .reg = 0x54 },
+-	{ .mbps = 1050, .reg = 0x74 },
+-	{ .mbps = 1125, .reg = 0x16 },
++	{ .reg = 0x00, .max = 80   },
++	{ .reg = 0x20, .max = 90   },
++	{ .reg = 0x40, .max = 100  },
++	{ .reg = 0x02, .max = 110  },
++	{ .reg = 0x22, .max = 130  },
++	{ .reg = 0x42, .max = 140  },
++	{ .reg = 0x04, .max = 150  },
++	{ .reg = 0x24, .max = 170  },
++	{ .reg = 0x44, .max = 180  },
++	{ .reg = 0x06, .max = 200  },
++	{ .reg = 0x26, .max = 220  },
++	{ .reg = 0x46, .max = 240  },
++	{ .reg = 0x08, .max = 250  },
++	{ .reg = 0x28, .max = 270  },
++	{ .reg = 0x0a, .max = 300  },
++	{ .reg = 0x2a, .max = 330  },
++	{ .reg = 0x4a, .max = 360  },
++	{ .reg = 0x0c, .max = 400  },
++	{ .reg = 0x2c, .max = 450  },
++	{ .reg = 0x0e, .max = 500  },
++	{ .reg = 0x2e, .max = 550  },
++	{ .reg = 0x10, .max = 600  },
++	{ .reg = 0x30, .max = 650  },
++	{ .reg = 0x12, .max = 700  },
++	{ .reg = 0x32, .max = 750  },
++	{ .reg = 0x52, .max = 800  },
++	{ .reg = 0x72, .max = 850  },
++	{ .reg = 0x14, .max = 900  },
++	{ .reg = 0x34, .max = 950  },
++	{ .reg = 0x54, .max = 1000 },
++	{ .reg = 0x74, .max = 1050 },
++	{ .reg = 0x16, .max = 1125 },
+ 	{ /* sentinel */ },
+ };
+ 
+@@ -201,96 +201,96 @@ static const struct rcsi2_mbps_reg phtw_mbps_v3m_e3[] = {
+ #define PHYPLL_HSFREQRANGE(n)		((n) << 16)
+ 
+ static const struct rcsi2_mbps_reg hsfreqrange_h3_v3h_m3n[] = {
+-	{ .mbps =   80, .reg = 0x00 },
+-	{ .mbps =   90, .reg = 0x10 },
+-	{ .mbps =  100, .reg = 0x20 },
+-	{ .mbps =  110, .reg = 0x30 },
+-	{ .mbps =  120, .reg = 0x01 },
+-	{ .mbps =  130, .reg = 0x11 },
+-	{ .mbps =  140, .reg = 0x21 },
+-	{ .mbps =  150, .reg = 0x31 },
+-	{ .mbps =  160, .reg = 0x02 },
+-	{ .mbps =  170, .reg = 0x12 },
+-	{ .mbps =  180, .reg = 0x22 },
+-	{ .mbps =  190, .reg = 0x32 },
+-	{ .mbps =  205, .reg = 0x03 },
+-	{ .mbps =  220, .reg = 0x13 },
+-	{ .mbps =  235, .reg = 0x23 },
+-	{ .mbps =  250, .reg = 0x33 },
+-	{ .mbps =  275, .reg = 0x04 },
+-	{ .mbps =  300, .reg = 0x14 },
+-	{ .mbps =  325, .reg = 0x25 },
+-	{ .mbps =  350, .reg = 0x35 },
+-	{ .mbps =  400, .reg = 0x05 },
+-	{ .mbps =  450, .reg = 0x16 },
+-	{ .mbps =  500, .reg = 0x26 },
+-	{ .mbps =  550, .reg = 0x37 },
+-	{ .mbps =  600, .reg = 0x07 },
+-	{ .mbps =  650, .reg = 0x18 },
+-	{ .mbps =  700, .reg = 0x28 },
+-	{ .mbps =  750, .reg = 0x39 },
+-	{ .mbps =  800, .reg = 0x09 },
+-	{ .mbps =  850, .reg = 0x19 },
+-	{ .mbps =  900, .reg = 0x29 },
+-	{ .mbps =  950, .reg = 0x3a },
+-	{ .mbps = 1000, .reg = 0x0a },
+-	{ .mbps = 1050, .reg = 0x1a },
+-	{ .mbps = 1100, .reg = 0x2a },
+-	{ .mbps = 1150, .reg = 0x3b },
+-	{ .mbps = 1200, .reg = 0x0b },
+-	{ .mbps = 1250, .reg = 0x1b },
+-	{ .mbps = 1300, .reg = 0x2b },
+-	{ .mbps = 1350, .reg = 0x3c },
+-	{ .mbps = 1400, .reg = 0x0c },
+-	{ .mbps = 1450, .reg = 0x1c },
+-	{ .mbps = 1500, .reg = 0x2c },
++	{ .reg = 0x00, .max =   97 },
++	{ .reg = 0x10, .max =  107 },
++	{ .reg = 0x20, .max =  118 },
++	{ .reg = 0x30, .max =  128 },
++	{ .reg = 0x01, .max =  139 },
++	{ .reg = 0x11, .max =  149 },
++	{ .reg = 0x21, .max =  160 },
++	{ .reg = 0x31, .max =  170 },
++	{ .reg = 0x02, .max =  181 },
++	{ .reg = 0x12, .max =  191 },
++	{ .reg = 0x22, .max =  202 },
++	{ .reg = 0x32, .max =  212 },
++	{ .reg = 0x03, .max =  228 },
++	{ .reg = 0x13, .max =  224 },
++	{ .reg = 0x23, .max =  259 },
++	{ .reg = 0x33, .max =  275 },
++	{ .reg = 0x04, .max =  301 },
++	{ .reg = 0x14, .max =  328 },
++	{ .reg = 0x25, .max =  354 },
++	{ .reg = 0x35, .max =  380 },
++	{ .reg = 0x05, .max =  433 },
++	{ .reg = 0x16, .max =  485 },
++	{ .reg = 0x26, .max =  538 },
++	{ .reg = 0x37, .max =  590 },
++	{ .reg = 0x07, .max =  643 },
++	{ .reg = 0x18, .max =  695 },
++	{ .reg = 0x28, .max =  748 },
++	{ .reg = 0x39, .max =  800 },
++	{ .reg = 0x09, .max =  853 },
++	{ .reg = 0x19, .max =  905 },
++	{ .reg = 0x29, .max =  958 },
++	{ .reg = 0x3a, .max = 1010 },
++	{ .reg = 0x0a, .max = 1063 },
++	{ .reg = 0x1a, .max = 1115 },
++	{ .reg = 0x2a, .max = 1168 },
++	{ .reg = 0x3b, .max = 1220 },
++	{ .reg = 0x0b, .max = 1273 },
++	{ .reg = 0x1b, .max = 1325 },
++	{ .reg = 0x2b, .max = 1378 },
++	{ .reg = 0x3c, .max = 1430 },
++	{ .reg = 0x0c, .max = 1483 },
++	{ .reg = 0x1c, .max = 1500 },
++	{ .reg = 0x2c, .max = 1500 },
+ 	{ /* sentinel */ },
+ };
+ 
+ static const struct rcsi2_mbps_reg hsfreqrange_m3w_h3es1[] = {
+-	{ .mbps =   80,	.reg = 0x00 },
+-	{ .mbps =   90,	.reg = 0x10 },
+-	{ .mbps =  100,	.reg = 0x20 },
+-	{ .mbps =  110,	.reg = 0x30 },
+-	{ .mbps =  120,	.reg = 0x01 },
+-	{ .mbps =  130,	.reg = 0x11 },
+-	{ .mbps =  140,	.reg = 0x21 },
+-	{ .mbps =  150,	.reg = 0x31 },
+-	{ .mbps =  160,	.reg = 0x02 },
+-	{ .mbps =  170,	.reg = 0x12 },
+-	{ .mbps =  180,	.reg = 0x22 },
+-	{ .mbps =  190,	.reg = 0x32 },
+-	{ .mbps =  205,	.reg = 0x03 },
+-	{ .mbps =  220,	.reg = 0x13 },
+-	{ .mbps =  235,	.reg = 0x23 },
+-	{ .mbps =  250,	.reg = 0x33 },
+-	{ .mbps =  275,	.reg = 0x04 },
+-	{ .mbps =  300,	.reg = 0x14 },
+-	{ .mbps =  325,	.reg = 0x05 },
+-	{ .mbps =  350,	.reg = 0x15 },
+-	{ .mbps =  400,	.reg = 0x25 },
+-	{ .mbps =  450,	.reg = 0x06 },
+-	{ .mbps =  500,	.reg = 0x16 },
+-	{ .mbps =  550,	.reg = 0x07 },
+-	{ .mbps =  600,	.reg = 0x17 },
+-	{ .mbps =  650,	.reg = 0x08 },
+-	{ .mbps =  700,	.reg = 0x18 },
+-	{ .mbps =  750,	.reg = 0x09 },
+-	{ .mbps =  800,	.reg = 0x19 },
+-	{ .mbps =  850,	.reg = 0x29 },
+-	{ .mbps =  900,	.reg = 0x39 },
+-	{ .mbps =  950,	.reg = 0x0a },
+-	{ .mbps = 1000,	.reg = 0x1a },
+-	{ .mbps = 1050,	.reg = 0x2a },
+-	{ .mbps = 1100,	.reg = 0x3a },
+-	{ .mbps = 1150,	.reg = 0x0b },
+-	{ .mbps = 1200,	.reg = 0x1b },
+-	{ .mbps = 1250,	.reg = 0x2b },
+-	{ .mbps = 1300,	.reg = 0x3b },
+-	{ .mbps = 1350,	.reg = 0x0c },
+-	{ .mbps = 1400,	.reg = 0x1c },
+-	{ .mbps = 1450,	.reg = 0x2c },
+-	{ .mbps = 1500,	.reg = 0x3c },
++	{ .reg = 0x00, .max =  110 },
++	{ .reg = 0x10, .max =  120 },
++	{ .reg = 0x20, .max =  131 },
++	{ .reg = 0x30, .max =  141 },
++	{ .reg = 0x01, .max =  152 },
++	{ .reg = 0x11, .max =  162 },
++	{ .reg = 0x21, .max =  173 },
++	{ .reg = 0x31, .max =  183 },
++	{ .reg = 0x02, .max =  194 },
++	{ .reg = 0x12, .max =  204 },
++	{ .reg = 0x22, .max =  215 },
++	{ .reg = 0x32, .max =  225 },
++	{ .reg = 0x03, .max =  241 },
++	{ .reg = 0x13, .max =  257 },
++	{ .reg = 0x23, .max =  273 },
++	{ .reg = 0x33, .max =  275 },
++	{ .reg = 0x04, .max =  301 },
++	{ .reg = 0x14, .max =  328 },
++	{ .reg = 0x05, .max =  354 },
++	{ .reg = 0x15, .max =  393 },
++	{ .reg = 0x25, .max =  446 },
++	{ .reg = 0x06, .max =  498 },
++	{ .reg = 0x16, .max =  551 },
++	{ .reg = 0x07, .max =  603 },
++	{ .reg = 0x17, .max =  656 },
++	{ .reg = 0x08, .max =  708 },
++	{ .reg = 0x18, .max =  761 },
++	{ .reg = 0x09, .max =  813 },
++	{ .reg = 0x19, .max =  866 },
++	{ .reg = 0x29, .max =  918 },
++	{ .reg = 0x39, .max =  971 },
++	{ .reg = 0x0a, .max = 1023 },
++	{ .reg = 0x1a, .max = 1076 },
++	{ .reg = 0x2a, .max = 1128 },
++	{ .reg = 0x3a, .max = 1181 },
++	{ .reg = 0x0b, .max = 1233 },
++	{ .reg = 0x1b, .max = 1286 },
++	{ .reg = 0x2b, .max = 1338 },
++	{ .reg = 0x3b, .max = 1391 },
++	{ .reg = 0x0c, .max = 1443 },
++	{ .reg = 0x1c, .max = 1496 },
++	{ .reg = 0x2c, .max = 1500 },
++	{ .reg = 0x3c, .max = 1500 },
+ 	{ /* sentinel */ },
+ };
+ 
+@@ -432,11 +432,11 @@ static int rcsi2_set_phypll(struct rcar_csi2 *priv, unsigned int mbps)
  {
- 	struct net_device_context *net_device_ctx = netdev_priv(net);
- 	struct hv_netvsc_packet *packet = NULL;
-@@ -537,8 +538,11 @@ static int netvsc_xmit(struct sk_buff *skb, struct net_device *net, bool xdp_tx)
- 	 */
- 	vf_netdev = rcu_dereference_bh(net_device_ctx->vf_netdev);
- 	if (vf_netdev && netif_running(vf_netdev) &&
--	    !netpoll_tx_running(net))
--		return netvsc_vf_xmit(net, vf_netdev, skb);
-+	    !netpoll_tx_running(net)) {
-+		if (!netvsc_vf_xmit(net, vf_netdev, skb))
-+			return NETDEV_TX_OK;
-+		goto drop;
-+	}
+ 	const struct rcsi2_mbps_reg *hsfreq;
  
- 	/* We will atmost need two pages to describe the rndis
- 	 * header. We can only transmit MAX_PAGE_BUFFER_COUNT number
-@@ -707,7 +711,8 @@ static int netvsc_xmit(struct sk_buff *skb, struct net_device *net, bool xdp_tx)
- 	goto drop;
- }
+-	for (hsfreq = priv->info->hsfreqrange; hsfreq->mbps != 0; hsfreq++)
+-		if (hsfreq->mbps >= mbps)
++	for (hsfreq = priv->info->hsfreqrange; hsfreq->max != 0; hsfreq++)
++		if (hsfreq->max >= mbps)
+ 			break;
  
--static int netvsc_start_xmit(struct sk_buff *skb, struct net_device *ndev)
-+static netdev_tx_t netvsc_start_xmit(struct sk_buff *skb,
-+				     struct net_device *ndev)
+-	if (!hsfreq->mbps) {
++	if (!hsfreq->max) {
+ 		dev_err(priv->dev, "Unsupported PHY speed (%u Mbps)", mbps);
+ 		return -ERANGE;
+ 	}
+@@ -907,11 +907,11 @@ static int rcsi2_phtw_write_mbps(struct rcar_csi2 *priv, unsigned int mbps,
  {
- 	return netvsc_xmit(skb, ndev, false);
- }
+ 	const struct rcsi2_mbps_reg *value;
+ 
+-	for (value = values; value->mbps; value++)
+-		if (value->mbps >= mbps)
++	for (value = values; value->max; value++)
++		if (value->max >= mbps)
+ 			break;
+ 
+-	if (!value->mbps) {
++	if (!value->max) {
+ 		dev_err(priv->dev, "Unsupported PHY speed (%u Mbps)", mbps);
+ 		return -ERANGE;
+ 	}
+-- 
+2.7.4
+
