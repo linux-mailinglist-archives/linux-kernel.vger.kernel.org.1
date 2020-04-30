@@ -2,132 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AED71BEECB
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0601BEEEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 06:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgD3D6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 23:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726453AbgD3D6u (ORCPT
+        id S1726491AbgD3EHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 00:07:07 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48336 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725280AbgD3EHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 23:58:50 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB40C035494;
-        Wed, 29 Apr 2020 20:58:48 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id c18so31940ile.5;
-        Wed, 29 Apr 2020 20:58:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M+itFqMzz7ThWZKcLuQWzep+uBywhDgUdjtSyvWir0A=;
-        b=K6t4uqKhlLiVCOvHHnfn7uZCyC9NoNl1R56rKLl3c07k3kmUAiZwjvxwt4Qnq37WF7
-         VNgH3/oIiiHYRsbErGlPq2MX4f3T9V59jYn57yNqp3raQY8UYD93+7D9KP6xQjiklK+S
-         Qi4FAXQibliGyxBG9BvvYRntYZRoFOW7K+VFthODpKip1kWfFSAVDMiiHuOXR3dRb3lW
-         D/OxmFfMZg6PZ1xkFQX1ZmteVUKZO8Yt8C/jyoxPgaBv2ON4Qxg2j3apH6yVnjmhi7lP
-         dPH8MeSGv7QcWDP2b0vInXiS21WlWazeaJMniNVqQkhOG7GgWcvlC5Tlvbdw0a63gAF5
-         us9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M+itFqMzz7ThWZKcLuQWzep+uBywhDgUdjtSyvWir0A=;
-        b=F6pxMFf584FFuO8c3WhZcHUejF7Mle4rBZXNlG48ZuJ9bZdYXH8SwB8Ur7fXGhOO6p
-         mQXAWlCXTfNk13vom1W+G7FUBHF1B9rSSRvI4kJsCf+1NFHiqE3qSH5klA/AI+/75sl/
-         k2ijOJoy36DQZ0QyE8AlGHBFvWBAzSVrEryhZ05+FywBYt7PibuS30jexnByP4s5s+iI
-         ks6wvnlisKdYfhZH5y4r3S0XjIHDmA+xSZcktcez6lg/WwhuiFRJEQAyBeIb3pu1fl2O
-         cmVgO6tvH1/9XC2j+7COLNg3B8xnTWvSYJpZvJNb/ZFaivO9lzf1AP3bgp1pn0bIEC77
-         aLrg==
-X-Gm-Message-State: AGi0PuZoPjrQLcdhGDHdVKra7F4W2ovv81KbUIxsP+eVNequvEeYQxVB
-        RZCDHG5hMo3y0+IDGRg8s5qr6NraA42cqfyyQA8=
-X-Google-Smtp-Source: APiQypJfj+2iP12ImL8Uqdjbw9c8nGy6u7ienyamsjDBxjC1bY7xoUznZGmMTlOrrsIfe3VT2sIUeWH8r3og68HqXio=
-X-Received: by 2002:a92:cece:: with SMTP id z14mr36110ilq.147.1588219128264;
- Wed, 29 Apr 2020 20:58:48 -0700 (PDT)
+        Thu, 30 Apr 2020 00:07:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588219625;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h7QUeZ/EJElyYuNor3snWfkrLaig19pbSNuuubX2yxM=;
+        b=CWnLrK8tlOJNvnDXEi6Iy9mYfBS00tTqyDwOVj4ry3fVrVlPL55R6hq0tS1IyZdgOOQLnb
+        nDftawNu62bmyR6FD3QskYJIreCu7Fg1tvAnUcKcSAkwb+2PRuG/9foMOTVNO9aRfo5z2n
+        dgVDsATdszjNax+DjCWlpyjmWHKPtgE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-347-yWGoOVZrOmWZAMeAV7qolQ-1; Thu, 30 Apr 2020 00:07:00 -0400
+X-MC-Unique: yWGoOVZrOmWZAMeAV7qolQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 582B980B70A;
+        Thu, 30 Apr 2020 04:06:58 +0000 (UTC)
+Received: from treble (ovpn-113-19.rdu2.redhat.com [10.10.113.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 739BF605E1;
+        Thu, 30 Apr 2020 04:06:56 +0000 (UTC)
+Date:   Wed, 29 Apr 2020 23:06:54 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     changhuaixin <changhuaixin@linux.alibaba.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        bp@alien8.de, hpa@zytor.com, luto@amacapital.net,
+        michal.lkml@markovi.net, mingo@redhat.com, tglx@linutronix.de,
+        x86@kernel.org, yamada.masahiro@socionext.com
+Subject: Re: [PATCH 0/2] Build ORC fast lookup table in scripts/sorttable tool
+Message-ID: <20200430040654.mnkcfmj32tr6m3mg@treble>
+References: <20200429064626.16389-1-changhuaixin@linux.alibaba.com>
+ <20200429084933.GF13592@hirez.programming.kicks-ass.net>
+ <1CACF61E-FA7C-4986-AAD2-20A3B2BAC425@linux.alibaba.com>
 MIME-Version: 1.0
-References: <1588216490-60282-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1588216490-60282-1-git-send-email-zou_wei@huawei.com>
-From:   Huacai Chen <chenhuacai@gmail.com>
-Date:   Thu, 30 Apr 2020 12:06:19 +0800
-Message-ID: <CAAhV-H4Zh60bLLVkhZ7fJTRkBvqxiCuogHyQv-S9rC_e0+HZNw@mail.gmail.com>
-Subject: Re: [PATCH -next] KVM: MIPS/VZ: Remove unneeded semicolon
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1CACF61E-FA7C-4986-AAD2-20A3B2BAC425@linux.alibaba.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Huacai Chen <chenhc@lemote.com>
+On Thu, Apr 30, 2020 at 10:32:17AM +0800, changhuaixin wrote:
+> 
+> 
+> > On Apr 29, 2020, at 4:49 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > On Wed, Apr 29, 2020 at 02:46:24PM +0800, Huaixin Chang wrote:
+> >> Move building of fast lookup table from boot to sorttable tool. This saves us
+> >> 6380us boot time on Intel(R) Xeon(R) CPU E5-2682 v4 @ 2.50GHz with cores.
+> > 
+> > And what does it add to the build time?
+> 
+> It takes a little more than 7ms to build fast lookup table in
+> sorttable on the same CPU. And it is on the critical path.
 
-On Thu, Apr 30, 2020 at 11:08 AM Zou Wei <zou_wei@huawei.com> wrote:
->
-> Fixes coccicheck warnings:
->
-> arch/mips/kvm/vz.c:1186:4-5: Unneeded semicolon
-> arch/mips/kvm/vz.c:1195:3-4: Unneeded semicolon
-> arch/mips/kvm/vz.c:1949:3-4: Unneeded semicolon
-> arch/mips/kvm/vz.c:1121:2-3: Unneeded semicolon
-> arch/mips/kvm/vz.c:2188:3-4: Unneeded semicolon
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  arch/mips/kvm/vz.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/mips/kvm/vz.c b/arch/mips/kvm/vz.c
-> index dde2088..389dd0f 100644
-> --- a/arch/mips/kvm/vz.c
-> +++ b/arch/mips/kvm/vz.c
-> @@ -1118,7 +1118,7 @@ static enum emulation_result kvm_vz_gpsi_cache(union mips_instruction inst,
->                 break;
->         default:
->                 break;
-> -       };
-> +       }
->
->         kvm_err("@ %#lx/%#lx CACHE (cache: %#x, op: %#x, base[%d]: %#lx, offset: %#x\n",
->                 curr_pc, vcpu->arch.gprs[31], cache, op, base, arch->gprs[base],
-> @@ -1183,7 +1183,7 @@ static enum emulation_result kvm_trap_vz_handle_gpsi(u32 cause, u32 *opc,
->                                 trace_kvm_hwr(vcpu, KVM_TRACE_RDHWR,
->                                               KVM_TRACE_HWR(rd, sel), 0);
->                                 goto unknown;
-> -                       };
-> +                       }
->
->                         trace_kvm_hwr(vcpu, KVM_TRACE_RDHWR,
->                                       KVM_TRACE_HWR(rd, sel), arch->gprs[rt]);
-> @@ -1192,7 +1192,7 @@ static enum emulation_result kvm_trap_vz_handle_gpsi(u32 cause, u32 *opc,
->                         break;
->                 default:
->                         goto unknown;
-> -               };
-> +               }
->                 break;
->  unknown:
->
-> @@ -1946,7 +1946,7 @@ static int kvm_vz_get_one_reg(struct kvm_vcpu *vcpu,
->                 default:
->                         *v = (long)kvm_read_c0_guest_prid(cop0);
->                         break;
-> -               };
-> +               }
->                 break;
->         case KVM_REG_MIPS_CP0_EBASE:
->                 *v = kvm_vz_read_gc0_ebase();
-> @@ -2185,7 +2185,7 @@ static int kvm_vz_set_one_reg(struct kvm_vcpu *vcpu,
->                 default:
->                         kvm_write_c0_guest_prid(cop0, v);
->                         break;
-> -               };
-> +               }
->                 break;
->         case KVM_REG_MIPS_CP0_EBASE:
->                 kvm_vz_write_gc0_ebase(v);
-> --
-> 2.6.2
->
+Thanks, I like it.  It will help make the in-kernel unwinder even
+simpler.  And it will enable unwinding from early boot.
+
+Maybe someday we can move all the table sorting code into objtool, once
+we have objtool running on vmlinux.o.
+
+I'll try to review the patches soon.
+
+-- 
+Josh
+
