@@ -2,272 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D981BF47C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBE01BF482
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726688AbgD3Jti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 05:49:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41270 "EHLO mx2.suse.de"
+        id S1726817AbgD3Ju2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 05:50:28 -0400
+Received: from mga02.intel.com ([134.134.136.20]:6309 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726404AbgD3Jti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 05:49:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C02DBADB3;
-        Thu, 30 Apr 2020 09:49:33 +0000 (UTC)
-Subject: Re: [PATCH v7 11/18] mm: x86: Invoke hypercall when page encryption
- status is changed
-To:     Ashish Kalra <Ashish.Kalra@amd.com>, pbonzini@redhat.com
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, rientjes@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-References: <cover.1588234824.git.ashish.kalra@amd.com>
- <c167e7191cb8f9c7635f5d8cfecb1157cc96cf6b.1588234824.git.ashish.kalra@amd.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <486fe740-0c2d-9d2b-d490-bdb3215a120c@suse.com>
-Date:   Thu, 30 Apr 2020 11:49:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726378AbgD3Ju2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 05:50:28 -0400
+IronPort-SDR: m9DvF+N3jTfqbqdnzXjbd/+jWt/czFfr9u67q49sisTL3rVh2hVLpENRhyWaYcd1+SrEWQ0A+y
+ usjoNadBVAEQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 02:50:27 -0700
+IronPort-SDR: EP6pmb3dErZZCkOnDi1dhtPjBwnfH1ItmQXvX7PuT8Z0xon4ulIDPM8YIxdd2s5keaPHDwrkmv
+ Y7tvWSPyfl+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,334,1583222400"; 
+   d="scan'208";a="405349041"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 30 Apr 2020 02:50:26 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jU5pp-000DpI-Pe; Thu, 30 Apr 2020 17:50:25 +0800
+Date:   Thu, 30 Apr 2020 17:50:07 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.04.27c] BUILD SUCCESS
+ e8bd4ec759de6b8d4bd417c16cca1f57919a4365
+Message-ID: <5eaa9f4f.5Il+0mTSAUnJwqYV%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <c167e7191cb8f9c7635f5d8cfecb1157cc96cf6b.1588234824.git.ashish.kalra@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.04.20 10:45, Ashish Kalra wrote:
-> From: Brijesh Singh <Brijesh.Singh@amd.com>
-> 
-> Invoke a hypercall when a memory region is changed from encrypted ->
-> decrypted and vice versa. Hypervisor needs to know the page encryption
-> status during the guest migration.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: "Radim Krčmář" <rkrcmar@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->   arch/x86/include/asm/paravirt.h       | 10 +++++
->   arch/x86/include/asm/paravirt_types.h |  2 +
->   arch/x86/kernel/paravirt.c            |  1 +
->   arch/x86/mm/mem_encrypt.c             | 58 ++++++++++++++++++++++++++-
->   arch/x86/mm/pat/set_memory.c          |  7 ++++
->   5 files changed, 77 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-> index 694d8daf4983..8127b9c141bf 100644
-> --- a/arch/x86/include/asm/paravirt.h
-> +++ b/arch/x86/include/asm/paravirt.h
-> @@ -78,6 +78,12 @@ static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
->   	PVOP_VCALL1(mmu.exit_mmap, mm);
->   }
->   
-> +static inline void page_encryption_changed(unsigned long vaddr, int npages,
-> +						bool enc)
-> +{
-> +	PVOP_VCALL3(mmu.page_encryption_changed, vaddr, npages, enc);
-> +}
-> +
->   #ifdef CONFIG_PARAVIRT_XXL
->   static inline void load_sp0(unsigned long sp0)
->   {
-> @@ -946,6 +952,10 @@ static inline void paravirt_arch_dup_mmap(struct mm_struct *oldmm,
->   static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
->   {
->   }
-> +
-> +static inline void page_encryption_changed(unsigned long vaddr, int npages, bool enc)
-> +{
-> +}
->   #endif
->   #endif /* __ASSEMBLY__ */
->   #endif /* _ASM_X86_PARAVIRT_H */
-> diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-> index 732f62e04ddb..03bfd515c59c 100644
-> --- a/arch/x86/include/asm/paravirt_types.h
-> +++ b/arch/x86/include/asm/paravirt_types.h
-> @@ -215,6 +215,8 @@ struct pv_mmu_ops {
->   
->   	/* Hook for intercepting the destruction of an mm_struct. */
->   	void (*exit_mmap)(struct mm_struct *mm);
-> +	void (*page_encryption_changed)(unsigned long vaddr, int npages,
-> +					bool enc);
->   
->   #ifdef CONFIG_PARAVIRT_XXL
->   	struct paravirt_callee_save read_cr2;
-> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-> index c131ba4e70ef..840c02b23aeb 100644
-> --- a/arch/x86/kernel/paravirt.c
-> +++ b/arch/x86/kernel/paravirt.c
-> @@ -367,6 +367,7 @@ struct paravirt_patch_template pv_ops = {
->   			(void (*)(struct mmu_gather *, void *))tlb_remove_page,
->   
->   	.mmu.exit_mmap		= paravirt_nop,
-> +	.mmu.page_encryption_changed	= paravirt_nop,
->   
->   #ifdef CONFIG_PARAVIRT_XXL
->   	.mmu.read_cr2		= __PV_IS_CALLEE_SAVE(native_read_cr2),
-> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> index f4bd4b431ba1..603f5abf8a78 100644
-> --- a/arch/x86/mm/mem_encrypt.c
-> +++ b/arch/x86/mm/mem_encrypt.c
-> @@ -19,6 +19,7 @@
->   #include <linux/kernel.h>
->   #include <linux/bitops.h>
->   #include <linux/dma-mapping.h>
-> +#include <linux/kvm_para.h>
->   
->   #include <asm/tlbflush.h>
->   #include <asm/fixmap.h>
-> @@ -29,6 +30,7 @@
->   #include <asm/processor-flags.h>
->   #include <asm/msr.h>
->   #include <asm/cmdline.h>
-> +#include <asm/kvm_para.h>
->   
->   #include "mm_internal.h"
->   
-> @@ -196,6 +198,48 @@ void __init sme_early_init(void)
->   		swiotlb_force = SWIOTLB_FORCE;
->   }
->   
-> +static void set_memory_enc_dec_hypercall(unsigned long vaddr, int npages,
-> +					bool enc)
-> +{
-> +	unsigned long sz = npages << PAGE_SHIFT;
-> +	unsigned long vaddr_end, vaddr_next;
-> +
-> +	vaddr_end = vaddr + sz;
-> +
-> +	for (; vaddr < vaddr_end; vaddr = vaddr_next) {
-> +		int psize, pmask, level;
-> +		unsigned long pfn;
-> +		pte_t *kpte;
-> +
-> +		kpte = lookup_address(vaddr, &level);
-> +		if (!kpte || pte_none(*kpte))
-> +			return;
-> +
-> +		switch (level) {
-> +		case PG_LEVEL_4K:
-> +			pfn = pte_pfn(*kpte);
-> +			break;
-> +		case PG_LEVEL_2M:
-> +			pfn = pmd_pfn(*(pmd_t *)kpte);
-> +			break;
-> +		case PG_LEVEL_1G:
-> +			pfn = pud_pfn(*(pud_t *)kpte);
-> +			break;
-> +		default:
-> +			return;
-> +		}
-> +
-> +		psize = page_level_size(level);
-> +		pmask = page_level_mask(level);
-> +
-> +		if (x86_platform.hyper.sev_migration_hcall)
-> +			x86_platform.hyper.sev_migration_hcall(pfn << PAGE_SHIFT,
-> +							       psize >> PAGE_SHIFT,
-> +							       enc);
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.04.27c
+branch HEAD: e8bd4ec759de6b8d4bd417c16cca1f57919a4365  squash! rcutorture: Add races with task-exit processing
 
-Why do you need two indirections? One via pv.mmu_ops and then another
-via x86_platform.hyper? Isn't one enough?
+elapsed time: 951m
 
-And if x86_platform.hyper.sev_migration_hcall isn't set the whole loop
-is basically a nop.
+configs tested: 195
+configs skipped: 0
 
-> +		vaddr_next = (vaddr & pmask) + psize;
-> +	}
-> +}
-> +
->   static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
->   {
->   	pgprot_t old_prot, new_prot;
-> @@ -253,12 +297,13 @@ static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
->   static int __init early_set_memory_enc_dec(unsigned long vaddr,
->   					   unsigned long size, bool enc)
->   {
-> -	unsigned long vaddr_end, vaddr_next;
-> +	unsigned long vaddr_end, vaddr_next, start;
->   	unsigned long psize, pmask;
->   	int split_page_size_mask;
->   	int level, ret;
->   	pte_t *kpte;
->   
-> +	start = vaddr;
->   	vaddr_next = vaddr;
->   	vaddr_end = vaddr + size;
->   
-> @@ -313,6 +358,8 @@ static int __init early_set_memory_enc_dec(unsigned long vaddr,
->   
->   	ret = 0;
->   
-> +	set_memory_enc_dec_hypercall(start, PAGE_ALIGN(size) >> PAGE_SHIFT,
-> +					enc);
->   out:
->   	__flush_tlb_all();
->   	return ret;
-> @@ -451,6 +498,15 @@ void __init mem_encrypt_init(void)
->   	if (sev_active())
->   		static_branch_enable(&sev_enable_key);
->   
-> +#ifdef CONFIG_PARAVIRT
-> +	/*
-> +	 * With SEV, we need to make a hypercall when page encryption state is
-> +	 * changed.
-> +	 */
-> +	if (sev_active())
-> +		pv_ops.mmu.page_encryption_changed = set_memory_enc_dec_hypercall;
-> +#endif
-> +
->   	pr_info("AMD %s active\n",
->   		sev_active() ? "Secure Encrypted Virtualization (SEV)"
->   			     : "Secure Memory Encryption (SME)");
-> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> index 59eca6a94ce7..9aaf1b6f5a1b 100644
-> --- a/arch/x86/mm/pat/set_memory.c
-> +++ b/arch/x86/mm/pat/set_memory.c
-> @@ -27,6 +27,7 @@
->   #include <asm/proto.h>
->   #include <asm/memtype.h>
->   #include <asm/set_memory.h>
-> +#include <asm/paravirt.h>
->   
->   #include "../mm_internal.h"
->   
-> @@ -2003,6 +2004,12 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
->   	 */
->   	cpa_flush(&cpa, 0);
->   
-> +	/* Notify hypervisor that a given memory range is mapped encrypted
-> +	 * or decrypted. The hypervisor will use this information during the
-> +	 * VM migration.
-> +	 */
-> +	page_encryption_changed(addr, numpages, enc);
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Is this operation really so performance critical that a pv-op is
-needed? Wouldn't a static key be sufficient here?
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm                              allmodconfig
+arm64                             allnoconfig
+arm                               allnoconfig
+sparc                            allyesconfig
+powerpc                       ppc64_defconfig
+m68k                           sun3_defconfig
+mips                      fuloong2e_defconfig
+i386                             alldefconfig
+riscv                               defconfig
+ia64                             allmodconfig
+mips                       capcella_defconfig
+xtensa                       common_defconfig
+powerpc                             defconfig
+ia64                                defconfig
+sparc                               defconfig
+mips                              allnoconfig
+mips                      loongson3_defconfig
+i386                              allnoconfig
+i386                             allyesconfig
+i386                                defconfig
+i386                              debian-10.3
+ia64                              allnoconfig
+ia64                        generic_defconfig
+ia64                          tiger_defconfig
+ia64                         bigsur_defconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+m68k                       m5475evb_defconfig
+m68k                             allmodconfig
+m68k                       bvme6000_defconfig
+m68k                          multi_defconfig
+nios2                         3c120_defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+c6x                              allyesconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                       h8s-sim_defconfig
+h8300                     edosk2674_defconfig
+xtensa                          iss_defconfig
+h8300                    h8300h-sim_defconfig
+arc                                 defconfig
+arc                              allyesconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+mips                      malta_kvm_defconfig
+mips                            ar7_defconfig
+mips                             allyesconfig
+mips                         64r6el_defconfig
+mips                           32r2_defconfig
+mips                             allmodconfig
+mips                malta_kvm_guest_defconfig
+mips                         tb0287_defconfig
+mips                           ip32_defconfig
+mips                  decstation_64_defconfig
+mips                          ath79_defconfig
+mips                        bcm63xx_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+parisc                           allmodconfig
+powerpc                      chrp32_defconfig
+powerpc                       holly_defconfig
+powerpc                          rhel-kconfig
+powerpc                           allnoconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                    amigaone_defconfig
+powerpc                    adder875_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                          g5_defconfig
+powerpc                     mpc512x_defconfig
+parisc               randconfig-a001-20200430
+mips                 randconfig-a001-20200430
+m68k                 randconfig-a001-20200430
+riscv                randconfig-a001-20200430
+alpha                randconfig-a001-20200430
+nds32                randconfig-a001-20200430
+parisc               randconfig-a001-20200429
+m68k                 randconfig-a001-20200429
+alpha                randconfig-a001-20200429
+mips                 randconfig-a001-20200429
+nds32                randconfig-a001-20200429
+riscv                randconfig-a001-20200429
+microblaze           randconfig-a001-20200430
+nios2                randconfig-a001-20200430
+h8300                randconfig-a001-20200430
+c6x                  randconfig-a001-20200430
+sparc64              randconfig-a001-20200430
+nios2                randconfig-a001-20200429
+h8300                randconfig-a001-20200429
+c6x                  randconfig-a001-20200429
+sparc64              randconfig-a001-20200429
+microblaze           randconfig-a001-20200429
+sh                   randconfig-a001-20200429
+csky                 randconfig-a001-20200429
+s390                 randconfig-a001-20200429
+xtensa               randconfig-a001-20200429
+openrisc             randconfig-a001-20200429
+s390                 randconfig-a001-20200430
+xtensa               randconfig-a001-20200430
+csky                 randconfig-a001-20200430
+openrisc             randconfig-a001-20200430
+sh                   randconfig-a001-20200430
+i386                 randconfig-b001-20200430
+i386                 randconfig-b002-20200430
+x86_64               randconfig-b001-20200430
+i386                 randconfig-b003-20200430
+x86_64               randconfig-b002-20200430
+x86_64               randconfig-b003-20200430
+i386                 randconfig-c002-20200429
+i386                 randconfig-c001-20200429
+x86_64               randconfig-c002-20200429
+x86_64               randconfig-c001-20200429
+i386                 randconfig-c003-20200429
+x86_64               randconfig-c003-20200429
+x86_64               randconfig-c001-20200430
+i386                 randconfig-c001-20200430
+i386                 randconfig-c002-20200430
+x86_64               randconfig-c002-20200430
+x86_64               randconfig-c003-20200430
+i386                 randconfig-c003-20200430
+x86_64               randconfig-d002-20200430
+x86_64               randconfig-d001-20200430
+i386                 randconfig-d001-20200430
+i386                 randconfig-d003-20200430
+i386                 randconfig-d002-20200430
+x86_64               randconfig-d003-20200430
+x86_64               randconfig-e002-20200430
+i386                 randconfig-e003-20200430
+x86_64               randconfig-e003-20200430
+i386                 randconfig-e002-20200430
+x86_64               randconfig-e001-20200430
+i386                 randconfig-e001-20200430
+i386                 randconfig-f002-20200429
+i386                 randconfig-f003-20200429
+x86_64               randconfig-f003-20200429
+i386                 randconfig-f001-20200429
+x86_64               randconfig-f001-20200429
+i386                 randconfig-h002-20200430
+i386                 randconfig-h003-20200430
+x86_64               randconfig-h001-20200430
+x86_64               randconfig-h003-20200430
+i386                 randconfig-h001-20200430
+sparc                randconfig-a001-20200429
+ia64                 randconfig-a001-20200429
+powerpc              randconfig-a001-20200429
+arm                  randconfig-a001-20200429
+arc                  randconfig-a001-20200429
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+s390                       zfcpdump_defconfig
+s390                          debug_defconfig
+s390                             allyesconfig
+s390                              allnoconfig
+s390                             allmodconfig
+s390                             alldefconfig
+s390                                defconfig
+sh                          rsk7269_defconfig
+sh                               allmodconfig
+sh                            titan_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                                allnoconfig
+sparc64                             defconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                          allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                    rhel-7.6-kselftests
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-> +
->   	return ret;
->   }
->   
-> 
-
-
-Juergen
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
