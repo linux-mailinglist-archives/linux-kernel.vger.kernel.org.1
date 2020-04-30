@@ -2,150 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966E71C0267
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3961C027B
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgD3Q0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:26:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726515AbgD3Q0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:26:02 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1727831AbgD3Q2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726130AbgD3Q2S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:28:18 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35237C035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1Vw+wahdjvF1L9WwGFComL+FFo9pmOmCPd10LrNq9mc=; b=ZzX7LHCyyRLB8grDlh2YaL6iZX
+        YDBbj8zLivla/97BDbCy04qYZQnWj1cmxAEC3C5X9RX0hawZAD1nFHaPqizwf3Cwoq3pC0JDd3SLt
+        5D3pS2RmdrUP55DKtBpPl05B2W31iTk2zcWq2V0FD8vVnlSsosluA0M1X8Xj4+qOydqUvz/Brcq/b
+        5uoPSbIhO/MqXH7xVtjD2Lcr2rmqjxjU9SOAnYAzFardJnARybbMe83TuMaohsOYjO7UkUMBejJ+P
+        2DFITMArkRnJUGx/0qV5FsUxAH0wqLa0GDk/aM5ywB3twmCQk2BdS78P10dCMX8N2WYbtnIGwTRah
+        7KcUMFxA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jUC2S-0005Av-Dh; Thu, 30 Apr 2020 16:27:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C13E20873;
-        Thu, 30 Apr 2020 16:26:00 +0000 (UTC)
-Date:   Thu, 30 Apr 2020 12:25:58 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Joerg Roedel <jroedel@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
-Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before
- text_poke()
-Message-ID: <20200430122558.406c9755@gandalf.local.home>
-In-Reply-To: <505666080.77869.1588263380070.JavaMail.zimbra@efficios.com>
-References: <20200429054857.66e8e333@oasis.local.home>
-        <20200429105941.GQ30814@suse.de>
-        <20200429082854.6e1796b5@oasis.local.home>
-        <20200429100731.201312a9@gandalf.local.home>
-        <20200430141120.GA8135@suse.de>
-        <20200430121136.6d7aeb22@gandalf.local.home>
-        <505666080.77869.1588263380070.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 960AF30275A;
+        Thu, 30 Apr 2020 18:27:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5C55D203B5613; Thu, 30 Apr 2020 18:27:50 +0200 (CEST)
+Date:   Thu, 30 Apr 2020 18:27:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Leo Yan <leo.yan@linaro.org>, Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Al Grant <Al.Grant@arm.com>, James Clark <James.Clark@arm.com>,
+        maz@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH] arm64: perf_event: Fix time_offset for arch timer
+Message-ID: <20200430162750.GD13575@hirez.programming.kicks-ass.net>
+References: <20200320093545.28227-1-leo.yan@linaro.org>
+ <20200430145823.GA25258@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430145823.GA25258@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020 12:16:20 -0400 (EDT)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+On Thu, Apr 30, 2020 at 03:58:24PM +0100, Will Deacon wrote:
+> On Fri, Mar 20, 2020 at 05:35:45PM +0800, Leo Yan wrote:
 
-> ----- On Apr 30, 2020, at 12:11 PM, rostedt rostedt@goodmis.org wrote:
+> > @@ -1164,5 +1165,21 @@ void arch_perf_update_userpage(struct perf_event *event,
+> >  		userpg->time_mult >>= 1;
+> >  	}
+> >  	userpg->time_shift = (u16)shift;
+> > -	userpg->time_offset = -now;
+> > +
+> > +	/*
+> > +	 * Since arch timer is enabled ealier than sched clock registration,
+> > +	 * compuate the delta (in nanosecond unit) between the arch timer
+> > +	 * counter and sched clock, assign the delta to time_offset and
+> > +	 * perf tool can use it for timestamp calculation.
+> > +	 *
+> > +	 * The formula for conversion arch timer cycle to ns is:
+> > +	 *   quot = (cyc >> time_shift);
+> > +	 *   rem  = cyc & ((1 << time_shift) - 1);
+> > +	 *   ns   = quot * time_mult + ((rem * time_mult) >> time_shift);
+> > +	 */
+> > +	count = arch_timer_read_counter();
+> > +	quot = count >> shift;
+> > +	rem = count & ((1 << shift) - 1);
+> > +	ns = quot * userpg->time_mult + ((rem * userpg->time_mult) >> shift);
+> > +	userpg->time_offset = now - ns;
 > 
-> > On Thu, 30 Apr 2020 16:11:21 +0200
-> > Joerg Roedel <jroedel@suse.de> wrote:
-> >   
-> >> Hi,
-> >> 
-> >> On Wed, Apr 29, 2020 at 10:07:31AM -0400, Steven Rostedt wrote:  
-> >> > Talking with Mathieu about this on IRC, he pointed out that my code does
-> >> > have a vzalloc() that is called:
-> >> > 
-> >> > in trace_pid_write()
-> >> > 
-> >> > 	pid_list->pids = vzalloc((pid_list->pid_max + 7) >> 3);
-> >> > 
-> >> > This is done when -P1,2 is on the trace-cmd command line.  
-> >> 
-> >> Okay, tracked it down, some instrumentation in the page-fault and
-> >> double-fault handler gave me the stack-traces. Here is what happens:
-> >> 
-> >> As already pointed out, it all happens because of page-faults on the
-> >> vzalloc'ed pid bitmap. It starts with this stack-trace:
-> >> 
-> >>  RIP: 0010:trace_event_ignore_this_pid+0x23/0x30  
-> > 
-> > Interesting. Because that function is this:
-> > 
-> > bool trace_event_ignore_this_pid(struct trace_event_file *trace_file)
-> > {
-> >	struct trace_array *tr = trace_file->tr;
-> >	struct trace_array_cpu *data;
-> >	struct trace_pid_list *no_pid_list;
-> >	struct trace_pid_list *pid_list;
-> > 
-> >	pid_list = rcu_dereference_raw(tr->filtered_pids);
-> >	no_pid_list = rcu_dereference_raw(tr->filtered_no_pids);
-> > 
-> >	if (!pid_list && !no_pid_list)
-> >		return false;
-> > 
-> >	data = this_cpu_ptr(tr->array_buffer.data);
-> > 
-> >	return data->ignore_pid;
-> > }
-> > 
-> > Where it only sees if the pid masks exist. That is, it looks to see if
-> > there's pointers to them, it doesn't actually touch the vmalloc'd area.
-> > This check is to handle a race between allocating and deallocating the
-> > buffers and setting the ignore_pid bit. The reading of these arrays is done
-> > at sched_switch time, which sets or clears the ignore_pid field.
-> > 
-> > That said, since this only happens on buffer instances (it does not trigger
-> > on the top level instance, which uses the same code for the pid masks)
-> > 
-> > Could this possibly be for the tr->array_buffer.data, which is allocated
-> > with:
-> > 
-> > allocate_trace_buffer() {
-> >	[..]
-> >	buf->data = alloc_percpu(struct trace_array_cpu);
-> > 
-> > That is, the bug isn't the vmalloc being a problem, but perhaps the per_cpu
-> > allocation. This would explain why this crashes with the buffer instance
-> > and not with the top level instance. If it was related to the pid masks,
-> > then it would trigger for either (because they act the same in allocating
-> > at time of use). But when an instance is made, the tr->array_buffer.data is
-> > created. Which for the top level happens at boot up and the pages would
-> > have been synced long ago. But for a newly created instance, this happens
-> > just before its used. This could possibly explain why it's not a problem
-> > when doing it manually by hand, because the time between creating the
-> > instance, and the time to start and stop the tracing, is long enough for
-> > something to sync them page tables.
-> > 
-> > tl;dr; It's not an issue with the vmalloc, it's an issue with per_cpu
-> > allocations!  
+> Hmm, reading the counter and calculating the delta feels horribly
+> approximate to me. It would be much better if we could get hold of the
+> initial epoch cycles from the point at which sched_clock was initialised
+> using the counter. This represents the true cycle delta between the counter
+> and what sched_clock uses for 0 ns.
 > 
-> Did I mention that alloc_percpu uses:
-> 
-> static void *pcpu_mem_zalloc(size_t size, gfp_t gfp)
-> {
->         if (WARN_ON_ONCE(!slab_is_available()))
->                 return NULL;
-> 
->         if (size <= PAGE_SIZE)
->                 return kzalloc(size, gfp);
->         else
->                 return __vmalloc(size, gfp | __GFP_ZERO, PAGE_KERNEL);
-> }
-> 
-> So yeah, it's vmalloc'd memory when size > PAGE_SIZE.
-> 
+> Unfortunately, I can't see a straightforward way to grab that information.
+> It looks like x86 pulls this directly from the TSC driver.
 
-I certainly hope that struct trace_array_cpu is not bigger than PAGE_SIZE!
+Yeah, and I'm thinking you should do the same. IIRC ARM uses this
+kernel/time/sched_clock.c thing, and if I read that right, the struct
+clock_data there has all the bits you need here.
 
--- Steve
+So I'm thinking that you might want to add a helper function here to get
+you the good stuff.
