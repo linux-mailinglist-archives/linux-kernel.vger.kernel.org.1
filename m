@@ -2,121 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E4A1BEEC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3721BEECE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbgD3D6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 23:58:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726596AbgD3D6m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 23:58:42 -0400
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09615C035494
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 20:58:42 -0700 (PDT)
-Received: by mail-yb1-xb44.google.com with SMTP id e16so248556ybn.7
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 20:58:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FIwWvB1bcjrgfWAykQ5flP8M3l3Y++aqvhNqkjaW3S0=;
-        b=UV5kIo0TX3CL2ps98HTMoWP2CHG35rrpWPzCa2GHvD4ZHX0OROJ+ZjBaoaQ03y2wfE
-         ICe259ObbpcaEUu36lI9FuwzwFuVVkbL+AuQVVaeCubRw0OGxf6acQJ2+nD0TjKLr2n7
-         Y+T10Oyh7V7GrEG5fKI7fGvHkI+eJrcmjpUg4xGXlbTN9CDCOw3/Jw6mKQiagFzCaBN8
-         Rpk3VMXlOK4uZuj4N6d1RQSsHjaUt/Imi3vC3hSBMlojJJgjQQCSBcKXeFPfcvNSxIva
-         P0FklL5JIkB6IhEZNE+XfaA8yiyATrbEqZzPhqp/vIy2u2PGTq8JJTNn9yay5+aL3ksm
-         9JLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FIwWvB1bcjrgfWAykQ5flP8M3l3Y++aqvhNqkjaW3S0=;
-        b=gTP3tBiYlWE6M+9qaTxV/VBE2kGIM7RG2erEJ+GbPgDVoh1tti44xLWSXo6cU9W6js
-         zzxIo0J763G+1HUvTPZ6dXvg6lhDb8VA81mgaK+wxPFCM2uq6QRiIT5oiL6aykagOe5T
-         mt5kFe8a2XACy+GUxw/oWcPC+UCuRPT517bz04xhF9B0Dm+QW5cIg/gIRNzUJXFXD6RN
-         K3LqxJ1IB9hIp7XW6Pl8L+aX4ntQoetlOq0XuIGgtQ2t7N/IZHR/eaf4sr5x/nXLlZLW
-         l4xT5ioxJHpYQJuihyPXrtJvlPFReZF03gCO5JcsgdgBTsNCI7maqzP4+PJ57XgRcZyc
-         9+jA==
-X-Gm-Message-State: AGi0PuYlp9FFs/VbGYQ5xzvCinpUFpM3cxbBPyyM5y/ckldud6y1UADP
-        gGmPWz9wWILErLKxN0LVvRw+S8xZjMStw7gi8515TFsc
-X-Google-Smtp-Source: APiQypIAwfcTkBjD11IKPHp/L8eLblpfs6T06DURXindp+KMXfmopDU1wbJDpZp657G9gL+SloE/f2+ROCQSt7U6bVU=
-X-Received: by 2002:a25:12c1:: with SMTP id 184mr2644186ybs.162.1588219121198;
- Wed, 29 Apr 2020 20:58:41 -0700 (PDT)
+        id S1726752AbgD3D7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 23:59:23 -0400
+Received: from mga17.intel.com ([192.55.52.151]:52651 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726474AbgD3D7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 23:59:22 -0400
+IronPort-SDR: ZJhZhyHehvW/g29fNP4/8+w3qqlrmaEUq+zFfrn4MeCLpcq/Syf43iClscJoKJsC7JfeQrOxVy
+ 3gvxA9SUjQag==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 20:59:22 -0700
+IronPort-SDR: VOTVsbRJbD49pzQSkQdPM+6nI5c9fCzBN6AfdleYJKGnsaDNaYTIURnGp+qAn2J48BV80oxTue
+ xpdDqzPZtADw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
+   d="scan'208";a="432812461"
+Received: from aanderso-mobl3.amr.corp.intel.com (HELO localhost) ([10.252.52.101])
+  by orsmga005.jf.intel.com with ESMTP; 29 Apr 2020 20:59:12 -0700
+Date:   Thu, 30 Apr 2020 06:59:11 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     "Dr. Greg" <greg@enjellic.com>, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-sgx@vger.kernel.org, akpm@linux-foundation.org,
+        dave.hansen@intel.com, nhorman@redhat.com, npmccallum@redhat.com,
+        haitao.huang@intel.com, andriy.shevchenko@linux.intel.com,
+        tglx@linutronix.de, kai.svahn@intel.com, bp@alien8.de,
+        josh@joshtriplett.org, luto@kernel.org, kai.huang@intel.com,
+        rientjes@google.com, cedric.xing@intel.com, puiterwijk@redhat.com
+Subject: Re: [PATCH v29 00/20] Intel SGX foundations
+Message-ID: <20200430035850.GC31820@linux.intel.com>
+References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com>
+ <20200426165753.GA11046@wind.enjellic.com>
+ <20200429052329.GD8452@linux.intel.com>
+ <20200429151459.GC15992@linux.intel.com>
 MIME-Version: 1.0
-References: <1587472651-105308-1-git-send-email-zou_wei@huawei.com>
-In-Reply-To: <1587472651-105308-1-git-send-email-zou_wei@huawei.com>
-From:   Ben Skeggs <skeggsb@gmail.com>
-Date:   Thu, 30 Apr 2020 13:58:30 +1000
-Message-ID: <CACAvsv5qXhLkspF0==z36xY1R1Uv=-XUHEwnH52GDurivbF5Tw@mail.gmail.com>
-Subject: Re: [PATCH -next] drm/nouveau/acr: Use kmemdup instead of kmalloc and memcpy
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        ML nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200429151459.GC15992@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks!
+On Wed, Apr 29, 2020 at 08:14:59AM -0700, Sean Christopherson wrote:
+> On Wed, Apr 29, 2020 at 08:23:29AM +0300, Jarkko Sakkinen wrote:
+> > On Sun, Apr 26, 2020 at 11:57:53AM -0500, Dr. Greg wrote:
+> > > On Wed, Apr 22, 2020 at 12:52:56AM +0300, Jarkko Sakkinen wrote:
+> > > 
+> > > Good day, I hope the weekend is going well for everyone.
+> > > 
+> > > > Intel(R) SGX is a set of CPU instructions that can be used by applications
+> > > > to set aside private regions of code and data. The code outside the enclave
+> > > > is disallowed to access the memory inside the enclave by the CPU access
+> > > > control.
+> > > >
+> > > > ... [ elided ] ..
+> > > > 
+> > > > The current implementation requires that the firmware sets
+> > > > IA32_SGXLEPUBKEYHASH* MSRs as writable so that ultimately the kernel can
+> > > > decide what enclaves it wants run. The implementation does not create
+> > > > any bottlenecks to support read-only MSRs later on.
+> > > 
+> > > It seems highly unlikely that a driver implementation with any type of
+> > > support for read-only launch control registers would ever get into the
+> > > kernel.  All one needs to do is review the conversations that Matthew
+> > > Garrett's lockdown patches engender to get a sense of that, ie:
+> > > 
+> > > https://lwn.net/Articles/818277/
+> > 
+> > We do not require read-only MSRs.
+> 
+> Greg is pointing out the opposite, that supporting read-only MSRs is highly
+> unlikely to ever be supported in the mainline kernel.
 
-On Wed, 22 Apr 2020 at 16:56, Zou Wei <zou_wei@huawei.com> wrote:
->
-> Fixes coccicheck warning:
->
-> drivers/gpu/drm/nouveau/nvkm/subdev/acr/hsfw.c:103:23-30: WARNING opportunity for kmemdup
-> drivers/gpu/drm/nouveau/nvkm/subdev/acr/hsfw.c:113:22-29: WARNING opportunity for kmemdup
->
-> Fixes: 22dcda45a3d1 ("drm/nouveau/acr: implement new subdev to replace "secure boot"")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
-> ---
->  drivers/gpu/drm/nouveau/nvkm/subdev/acr/hsfw.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/hsfw.c b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/hsfw.c
-> index aecce2d..667fa01 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/acr/hsfw.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/acr/hsfw.c
-> @@ -100,25 +100,21 @@ nvkm_acr_hsfw_load_image(struct nvkm_acr *acr, const char *name, int ver,
->         hsfw->data_size = lhdr->data_size;
->
->         hsfw->sig.prod.size = fwhdr->sig_prod_size;
-> -       hsfw->sig.prod.data = kmalloc(hsfw->sig.prod.size, GFP_KERNEL);
-> +       hsfw->sig.prod.data = kmemdup(fw->data + fwhdr->sig_prod_offset + sig,
-> +                                     hsfw->sig.prod.size, GFP_KERNEL);
->         if (!hsfw->sig.prod.data) {
->                 ret = -ENOMEM;
->                 goto done;
->         }
->
-> -       memcpy(hsfw->sig.prod.data, fw->data + fwhdr->sig_prod_offset + sig,
-> -              hsfw->sig.prod.size);
-> -
->         hsfw->sig.dbg.size = fwhdr->sig_dbg_size;
-> -       hsfw->sig.dbg.data = kmalloc(hsfw->sig.dbg.size, GFP_KERNEL);
-> +       hsfw->sig.dbg.data = kmemdup(fw->data + fwhdr->sig_dbg_offset + sig,
-> +                                    hsfw->sig.dbg.size, GFP_KERNEL);
->         if (!hsfw->sig.dbg.data) {
->                 ret = -ENOMEM;
->                 goto done;
->         }
->
-> -       memcpy(hsfw->sig.dbg.data, fw->data + fwhdr->sig_dbg_offset + sig,
-> -              hsfw->sig.dbg.size);
-> -
->         hsfw->sig.patch_loc = loc;
->  done:
->         nvkm_firmware_put(fw);
-> --
-> 2.6.2
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+In a nutshell, what is wrong in the current code changes and what
+*exactly* should we change? This is way too high level at the moment at
+least for my limited brain capacity.
+
+/Jarkko
