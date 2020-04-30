@@ -2,142 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6A91C04C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 20:29:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818761C04D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 20:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgD3S3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 14:29:07 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:37217 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726787AbgD3S2z (ORCPT
+        id S1726477AbgD3SbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 14:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725844AbgD3SbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 14:28:55 -0400
-Received: by mail-qk1-f195.google.com with SMTP id s63so6781334qke.4;
-        Thu, 30 Apr 2020 11:28:54 -0700 (PDT)
+        Thu, 30 Apr 2020 14:31:09 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE68EC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 11:31:07 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id g14so358462otg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 11:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iMCD+Jo7E8IZbBxHKMYz3Qb/9HJIoY2bae742xpPUjY=;
+        b=aua11ZHUyJrWxfH/6aP8CrbZcJDCWjioXF2XxEBLB2ngHWepZw1xBuSZfnzrNfwzta
+         xUjumh+rBT00oWNzWYG66IRDKD4J8zWQqYylpHeFPUpc9QvQbSsyHakHoEu+dyjLRUc4
+         SFxbpETHruDT3zVej0CEUaXZc0FXxgtLEXrYU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YaTlpZTdOGwOAmOlYM6QocHZMIAZdayZgSPeQ/GyX0w=;
-        b=bNBFS0IpxhG39ftQz/LLaz5gSPDrJVu09s0hcybCUr/pDpS9ZLRHk1h5w8qq2iAuBv
-         o87YhMbUpwIC1h134UzvZWjjknMd06cjNqz2RpL35PrOOGWi1BgvdFYQUX64lC6FnNoi
-         GkTSjht0myptHnm1pXuDtBpLWwAHvOmEhz4OVTYjG9VlOGb8i3CoEnfZkJkPhLE4ms5c
-         KKXcdG8wAnly8541Ah/pFVm8lmZdFmJedFPvEPraZ0LyEdB8VH7Nw4jih5X3YGwD7jjl
-         wqqyzuybwIZ7sDzpr36BQp1MNKrCGFSvkdpf8mz7/1iHL3fqHn9seFKS5pfZKeiZUC8X
-         VV0g==
-X-Gm-Message-State: AGi0PuZyol9rvgHHXfVppeTzHqGoyWKQcw+xKP7t0UenoYnT3x6tGYW1
-        to38qkQKvaaiFYBOR7GbASE=
-X-Google-Smtp-Source: APiQypIWFscbdbXQU8hwcGQyOL2j0mYsOZluvds19Sk40KtsjdDFtV1aN52tYBeThUjGkE6rJJBcKw==
-X-Received: by 2002:a05:620a:a07:: with SMTP id i7mr4609694qka.98.1588271334327;
-        Thu, 30 Apr 2020 11:28:54 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id v27sm449785qtb.35.2020.04.30.11.28.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 11:28:53 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 11/11] efi/libstub: Check return value of efi_parse_options
-Date:   Thu, 30 Apr 2020 14:28:43 -0400
-Message-Id: <20200430182843.2510180-12-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200430182843.2510180-1-nivedita@alum.mit.edu>
-References: <20200429174120.1497212-1-nivedita@alum.mit.edu>
- <20200430182843.2510180-1-nivedita@alum.mit.edu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iMCD+Jo7E8IZbBxHKMYz3Qb/9HJIoY2bae742xpPUjY=;
+        b=s5K+5D4UPb1mxxTiKqVRfh4WcvOH6i06ugSFk2h6csMcyR1uCYBJEMoyTdgVYJpymh
+         4MJTyq/iN8tILG12uV0iRmxKvAKLdln6R1tRFfsKfFHsx0wW7L8YcqVo3074a5fMNDjh
+         tRCStF2sm0mIZweYlfXooHcImeEvoMJKlEnniuTm4kop7/iAXcbpEf/u1nKWravGKE4L
+         2RfgoxXqNPAUMBXwK3y/MGLd+86qce26/hffHdBgz6tq2ir3DToTOdVspVdtXEgSA0HT
+         NOE+sXrr1Gr/ivMcV4XpzHT0sKZK5+CoElD9DuoGuvW2SJA+zo3cSmmRmM+Gpi17K8m1
+         24Ag==
+X-Gm-Message-State: AGi0PuY6EIfJIbGvw8HHm1ktHo+FLgPfXEDhoS5D9EX3KHA76dcGH/T4
+        BuKqLQeo2kqdpwIYSMVV6TCyLAnTiIcZ/w7UAQIhCw==
+X-Google-Smtp-Source: APiQypKyYOqC4tEmwwTS7QE+OtDLiAeWnwyyRNPl/roowM0owcKKaIbR2jDNbxulnsFh0+v9ggay3MC+vnWMcWGOKEk=
+X-Received: by 2002:a9d:d06:: with SMTP id 6mr405884oti.188.1588271466950;
+ Thu, 30 Apr 2020 11:31:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1588093804-30446-1-git-send-email-michalorzel.eng@gmail.com>
+ <875zdiacv2.fsf@intel.com> <CAOw6vbK69aWzti9a7MXNmAfVfJXzzC5g74p4ukSE49MhaV_b3g@mail.gmail.com>
+In-Reply-To: <CAOw6vbK69aWzti9a7MXNmAfVfJXzzC5g74p4ukSE49MhaV_b3g@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 30 Apr 2020 20:30:53 +0200
+Message-ID: <CAKMK7uEzTn2nKyEaxMcd6602tprwkdnBrmrFYO+_Hi7FY39jAw@mail.gmail.com>
+Subject: Re: [PATCH] drm: Replace drm_modeset_lock/unlock_all with
+ DRM_MODESET_LOCK_ALL_* helpers
+To:     Sean Paul <seanpaul@chromium.org>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Michal Orzel <michalorzel.eng@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-efi_parse_options can fail if it is unable to allocate space for a copy
-of the command line. Check the return value to make sure it succeeded.
+On Thu, Apr 30, 2020 at 5:38 PM Sean Paul <seanpaul@chromium.org> wrote:
+>
+> On Wed, Apr 29, 2020 at 4:57 AM Jani Nikula <jani.nikula@linux.intel.com> wrote:
+> >
+> > On Tue, 28 Apr 2020, Michal Orzel <michalorzel.eng@gmail.com> wrote:
+> > > As suggested by the TODO list for the kernel DRM subsystem, replace
+> > > the deprecated functions that take/drop modeset locks with new helpers.
+> > >
+> > > Signed-off-by: Michal Orzel <michalorzel.eng@gmail.com>
+> > > ---
+> > >  drivers/gpu/drm/drm_mode_object.c | 10 ++++++----
+> > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/drm_mode_object.c b/drivers/gpu/drm/drm_mode_object.c
+> > > index 35c2719..901b078 100644
+> > > --- a/drivers/gpu/drm/drm_mode_object.c
+> > > +++ b/drivers/gpu/drm/drm_mode_object.c
+> > > @@ -402,12 +402,13 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
+> > >  {
+> > >       struct drm_mode_obj_get_properties *arg = data;
+> > >       struct drm_mode_object *obj;
+> > > +     struct drm_modeset_acquire_ctx ctx;
+> > >       int ret = 0;
+> > >
+> > >       if (!drm_core_check_feature(dev, DRIVER_MODESET))
+> > >               return -EOPNOTSUPP;
+> > >
+> > > -     drm_modeset_lock_all(dev);
+> > > +     DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+> >
+> > I cry a little every time I look at the DRM_MODESET_LOCK_ALL_BEGIN and
+> > DRM_MODESET_LOCK_ALL_END macros. :(
+> >
+> > Currently only six users... but there are ~60 calls to
+> > drm_modeset_lock_all{,_ctx} that I presume are to be replaced. I wonder
+> > if this will come back and haunt us.
+> >
+>
+> What's the alternative? Seems like the options without the macros is
+> to use incorrect scope or have a bunch of retry/backoff cargo-cult
+> everywhere (and hope the copy source is done correctly).
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
----
- drivers/firmware/efi/libstub/efi-stub.c | 23 +++++++++++++++++------
- drivers/firmware/efi/libstub/x86-stub.c | 12 ++++++++++--
- 2 files changed, 27 insertions(+), 8 deletions(-)
+Yeah Sean & me had a bunch of bikesheds and this is the least worst
+option we could come up with. You can't make it a function because of
+the control flow. You don't want to open code this because it's tricky
+to get right, if all you want is to just grab all locks. But it is
+magic hidden behind a macro, which occasionally ends up hurting.
+-Daniel
 
-diff --git a/drivers/firmware/efi/libstub/efi-stub.c b/drivers/firmware/efi/libstub/efi-stub.c
-index 63541c2440ef..c2484bf75c5d 100644
---- a/drivers/firmware/efi/libstub/efi-stub.c
-+++ b/drivers/firmware/efi/libstub/efi-stub.c
-@@ -207,11 +207,21 @@ efi_status_t efi_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg)
- 
- 	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
- 	    IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
--	    cmdline_size == 0)
--		efi_parse_options(CONFIG_CMDLINE);
-+	    cmdline_size == 0) {
-+		status = efi_parse_options(CONFIG_CMDLINE);
-+		if (status != EFI_SUCCESS) {
-+			efi_err("Failed to parse options\n");
-+			goto fail_free_cmdline;
-+		}
-+	}
- 
--	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && cmdline_size > 0)
--		efi_parse_options(cmdline_ptr);
-+	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && cmdline_size > 0) {
-+		status = efi_parse_options(cmdline_ptr);
-+		if (status != EFI_SUCCESS) {
-+			efi_err("Failed to parse options\n");
-+			goto fail_free_cmdline;
-+		}
-+	}
- 
- 	efi_info("Booting Linux Kernel...\n");
- 
-@@ -223,7 +233,7 @@ efi_status_t efi_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg)
- 				     dram_base, image);
- 	if (status != EFI_SUCCESS) {
- 		efi_err("Failed to relocate kernel\n");
--		goto fail_free_cmdline;
-+		goto fail_free_screeninfo;
- 	}
- 
- 	efi_retrieve_tpm2_eventlog();
-@@ -326,8 +336,9 @@ efi_status_t efi_entry(efi_handle_t handle, efi_system_table_t *sys_table_arg)
- fail_free_image:
- 	efi_free(image_size, image_addr);
- 	efi_free(reserve_size, reserve_addr);
--fail_free_cmdline:
-+fail_free_screeninfo:
- 	free_screen_info(si);
-+fail_free_cmdline:
- 	efi_free(cmdline_size, (unsigned long)cmdline_ptr);
- fail:
- 	return status;
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index c84c5678e3e1..37154bb93c59 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -739,12 +739,20 @@ unsigned long efi_main(efi_handle_t handle,
- 	}
- 
- #ifdef CONFIG_CMDLINE_BOOL
--	efi_parse_options(CONFIG_CMDLINE);
-+	status = efi_parse_options(CONFIG_CMDLINE);
-+	if (status != EFI_SUCCESS) {
-+		efi_err("Failed to parse options\n");
-+		goto fail;
-+	}
- #endif
- 	if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE)) {
- 		unsigned long cmdline_paddr = ((u64)hdr->cmd_line_ptr |
- 					       ((u64)boot_params->ext_cmd_line_ptr << 32));
--		efi_parse_options((char *)cmdline_paddr);
-+		status = efi_parse_options((char *)cmdline_paddr);
-+		if (status != EFI_SUCCESS) {
-+			efi_err("Failed to parse options\n");
-+			goto fail;
-+		}
- 	}
- 
- 	/*
+> Sean
+>
+> > BR,
+> > Jani.
+> >
+> >
+> > >
+> > >       obj = drm_mode_object_find(dev, file_priv, arg->obj_id, arg->obj_type);
+> > >       if (!obj) {
+> > > @@ -427,7 +428,7 @@ int drm_mode_obj_get_properties_ioctl(struct drm_device *dev, void *data,
+> > >  out_unref:
+> > >       drm_mode_object_put(obj);
+> > >  out:
+> > > -     drm_modeset_unlock_all(dev);
+> > > +     DRM_MODESET_LOCK_ALL_END(ctx, ret);
+> > >       return ret;
+> > >  }
+> > >
+> > > @@ -449,12 +450,13 @@ static int set_property_legacy(struct drm_mode_object *obj,
+> > >  {
+> > >       struct drm_device *dev = prop->dev;
+> > >       struct drm_mode_object *ref;
+> > > +     struct drm_modeset_acquire_ctx ctx;
+> > >       int ret = -EINVAL;
+> > >
+> > >       if (!drm_property_change_valid_get(prop, prop_value, &ref))
+> > >               return -EINVAL;
+> > >
+> > > -     drm_modeset_lock_all(dev);
+> > > +     DRM_MODESET_LOCK_ALL_BEGIN(dev, ctx, 0, ret);
+> > >       switch (obj->type) {
+> > >       case DRM_MODE_OBJECT_CONNECTOR:
+> > >               ret = drm_connector_set_obj_prop(obj, prop, prop_value);
+> > > @@ -468,7 +470,7 @@ static int set_property_legacy(struct drm_mode_object *obj,
+> > >               break;
+> > >       }
+> > >       drm_property_change_valid_put(prop, ref);
+> > > -     drm_modeset_unlock_all(dev);
+> > > +     DRM_MODESET_LOCK_ALL_END(ctx, ret);
+> > >
+> > >       return ret;
+> > >  }
+> >
+> > --
+> > Jani Nikula, Intel Open Source Graphics Center
+
+
+
 -- 
-2.26.2
-
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
