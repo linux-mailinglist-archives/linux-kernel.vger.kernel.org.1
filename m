@@ -2,140 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D411C02A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E61071C02A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgD3QfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:35:06 -0400
-Received: from sauhun.de ([88.99.104.3]:53466 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726336AbgD3QfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:35:06 -0400
-Received: from localhost (p5486CDDB.dip0.t-ipconnect.de [84.134.205.219])
-        by pokefinder.org (Postfix) with ESMTPSA id A47D92C08FC;
-        Thu, 30 Apr 2020 18:35:03 +0200 (CEST)
-Date:   Thu, 30 Apr 2020 18:35:03 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Alain Volmat <alain.volmat@st.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc:     robh+dt@kernel.org, mark.rutland@arm.com,
-        pierre-yves.mordret@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@st.com
-Subject: Re: [PATCH] i2c: fix missing pm_runtime_put_sync in i2c_device_probe
-Message-ID: <20200430163503.GA15047@ninjato>
-References: <1588261401-11914-1-git-send-email-alain.volmat@st.com>
+        id S1726599AbgD3Qfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726336AbgD3Qfw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:35:52 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF7FC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:35:52 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id b12so2134493ion.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:35:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JHOM9ScIACBAlj+EOQQZskvxADzU4dEs6BpxOZoTWCg=;
+        b=DKOnI1/+M5kE4JIw2Yp+nF/RAd2KxfFdck3bIvzB9AlctHyy+RL1/A4oFRifDlFDEi
+         0HGkvP4KvdCdEiWI0FOxU1i/5oaMPU9AQ604Ft4OEZSfP6sSdZMBMFR3ppk0v8YSwefO
+         lOIJjZR+alCUq3QcUCj+hoKzU3y8Oq/vJ6riI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JHOM9ScIACBAlj+EOQQZskvxADzU4dEs6BpxOZoTWCg=;
+        b=AC32CITGmgsGN7Wv/DDJ2K4I9k+Xjm1tEVfrr+6U/pQ+82BsF1DYRA5Pa/fgBR4feD
+         Wts4IyQkDjDhIK1oKTMELcBpEV7jl1gWAsXeiM/mp6pc451KgZhWiybV2EyBCS1uf7AM
+         13MyHRDW4K8qqQl/roQe/7RJx4XqDKZG1uN0bFvT3wAOtKDAyZ1XaZyAw366fvUSwdtj
+         hLpQ6OdxXzCUM47zWjf8IGdGuBPej3TGiQltPpuBApKZsXzxRb5MozfZtqp9BfJkab06
+         /QhcRYQaA3w6aVWrSHYVG4rHLq2hUAfPuu7i5Ph7Hma2Ov3fIlHt4kSPG7x3UjkShn0F
+         XlWg==
+X-Gm-Message-State: AGi0PuZsxCJjraQID1UAj6TPSQkxu9vnfJmXZpBXqv2ItrvdvOpK27Km
+        ZsEXZ1A3oH+wzy1bBGLAbYgLNjOn2Tw=
+X-Google-Smtp-Source: APiQypIpS6n3oxNtmpOMu5Ddm4IVYYVOfiXKKuagiYYK4/u8tsASTQTTbQk3A55jjgGFgcvTcTJMKg==
+X-Received: by 2002:a6b:6c0a:: with SMTP id a10mr2820947ioh.140.1588264551712;
+        Thu, 30 Apr 2020 09:35:51 -0700 (PDT)
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com. [209.85.166.169])
+        by smtp.gmail.com with ESMTPSA id q29sm108171ill.65.2020.04.30.09.35.50
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 09:35:50 -0700 (PDT)
+Received: by mail-il1-f169.google.com with SMTP id x2so1930465ilp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 09:35:50 -0700 (PDT)
+X-Received: by 2002:a92:ca81:: with SMTP id t1mr2769977ilo.187.1588264549492;
+ Thu, 30 Apr 2020 09:35:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
-Content-Disposition: inline
-In-Reply-To: <1588261401-11914-1-git-send-email-alain.volmat@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200428211351.85055-1-dianders@chromium.org> <20200428141218.v3.4.I3113aea1b08d8ce36dc3720209392ae8b815201b@changeid>
+ <20200430154927.vhkhoffqwirb2fmm@holly.lan>
+In-Reply-To: <20200430154927.vhkhoffqwirb2fmm@holly.lan>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 30 Apr 2020 09:35:30 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Ut7kHr+V_+Yyk=+NC5qBrKEQ+O6Ra4HRHs5XoAHFcWeA@mail.gmail.com>
+Message-ID: <CAD=FV=Ut7kHr+V_+Yyk=+NC5qBrKEQ+O6Ra4HRHs5XoAHFcWeA@mail.gmail.com>
+Subject: Re: [PATCH v3 04/11] kgdb: Delay "kgdbwait" to dbg_late_init() by default
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-serial@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Frank Rowand <frowand.list@gmail.com>, bp@alien8.de,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---zYM0uCDKw75PZbzx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Apr 30, 2020 at 05:43:21PM +0200, Alain Volmat wrote:
-> In case of the I2C client exposes the flag I2C_CLIENT_HOST_NOTIFY,
-> pm_runtime_get_sync is called in order to always keep active the
-> adapter. However later on, pm_runtime_put_sync is never called
-> within the function in case of an error. This commit add this
-> error handling.
->=20
-> Fixes: 72bfcee11cf8 ("i2c: Prevent runtime suspend of adapter when Host N=
-otify is required")
-
-Adding the patch author to CC.
-
-> Signed-off-by: Alain Volmat <alain.volmat@st.com>
+On Thu, Apr 30, 2020 at 8:49 AM Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Tue, Apr 28, 2020 at 02:13:44PM -0700, Douglas Anderson wrote:
+> > Using kgdb requires at least some level of architecture-level
+> > initialization.  If nothing else, it relies on the architecture to
+> > pass breakpoints / crashes onto kgdb.
+> >
+> > On some architectures this all works super early, specifically it
+> > starts working at some point in time before Linux parses
+> > early_params's.  On other architectures it doesn't.  A survey of a few
+> > platforms:
+> >
+> > a) x86: Presumably it all works early since "ekgdboc" is documented to
+> >    work here.
+> > b) arm64: Catching crashes works; with a simple patch breakpoints can
+> >    also be made to work.
+> > c) arm: Nothing in kgdb works until
+> >    paging_init() -> devicemaps_init() -> early_trap_init()
+> >
+> > Let's be conservative and, by default, process "kgdbwait" (which tells
+> > the kernel to drop into the debugger ASAP at boot) a bit later at
+> > dbg_late_init() time.  If an architecture has tested it and wants to
+> > re-enable super early debugging, they can select the
+> > ARCH_HAS_EARLY_DEBUG KConfig option.  We'll do this for x86 to start.
+> > It should be noted that dbg_late_init() is still called quite early in
+> > the system.
+> >
+> > Note that this patch doesn't affect when kgdb runs its init.  If kgdb
+> > is set to initialize early it will still initialize when parsing
+> > early_param's.  This patch _only_ inhibits the initial breakpoint from
+> > "kgdbwait".  This means:
+> >
+> > * Without any extra patches arm64 platforms will at least catch
+> >   crashes after kgdb inits.
+> > * arm platforms will catch crashes (and could handle a hardcoded
+> >   kgdb_breakpoint()) any time after early_trap_init() runs, even
+> >   before dbg_late_init().
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> It looks like this patch is triggering some warnings from the existing
+> defconfigs (both x86 and arm64). It looks like this:
+>
 > ---
->  drivers/i2c/i2c-core-base.c | 22 ++++++++++++++++------
->  1 file changed, 16 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-> index 139aea351ffb..2e4560671183 100644
-> --- a/drivers/i2c/i2c-core-base.c
-> +++ b/drivers/i2c/i2c-core-base.c
-> @@ -338,8 +338,10 @@ static int i2c_device_probe(struct device *dev)
->  		} else if (ACPI_COMPANION(dev)) {
->  			irq =3D i2c_acpi_get_irq(client);
->  		}
-> -		if (irq =3D=3D -EPROBE_DEFER)
-> -			return irq;
-> +		if (irq =3D=3D -EPROBE_DEFER) {
-> +			status =3D irq;
-> +			goto put_sync_adapter;
-> +		}
-> =20
->  		if (irq < 0)
->  			irq =3D 0;
-> @@ -353,15 +355,19 @@ static int i2c_device_probe(struct device *dev)
->  	 */
->  	if (!driver->id_table &&
->  	    !i2c_acpi_match_device(dev->driver->acpi_match_table, client) &&
-> -	    !i2c_of_match_device(dev->driver->of_match_table, client))
-> -		return -ENODEV;
-> +	    !i2c_of_match_device(dev->driver->of_match_table, client)) {
-> +		status =3D -ENODEV;
-> +		goto put_sync_adapter;
-> +	}
-> =20
->  	if (client->flags & I2C_CLIENT_WAKE) {
->  		int wakeirq;
-> =20
->  		wakeirq =3D of_irq_get_byname(dev->of_node, "wakeup");
-> -		if (wakeirq =3D=3D -EPROBE_DEFER)
-> -			return wakeirq;
-> +		if (wakeirq =3D=3D -EPROBE_DEFER) {
-> +			status =3D wakeirq;
-> +			goto put_sync_adapter;
-> +		}
-> =20
->  		device_init_wakeup(&client->dev, true);
-> =20
-> @@ -408,6 +414,10 @@ static int i2c_device_probe(struct device *dev)
->  err_clear_wakeup_irq:
->  	dev_pm_clear_wake_irq(&client->dev);
->  	device_init_wakeup(&client->dev, false);
-> +put_sync_adapter:
-> +	if (client->flags & I2C_CLIENT_HOST_NOTIFY)
-> +		pm_runtime_put_sync(&client->adapter->dev);
-> +
->  	return status;
->  }
-> =20
-> --=20
-> 2.17.1
->=20
+> wychelm$ make defconfig
+>   GEN     Makefile
+> *** Default configuration is based on 'x86_64_defconfig'
+>
+> WARNING: unmet direct dependencies detected for ARCH_HAS_EARLY_DEBUG
+>   Depends on [n]: KGDB [=n]
+>   Selected by [y]:
+>   - X86 [=y]
+>
+> WARNING: unmet direct dependencies detected for ARCH_HAS_EARLY_DEBUG
+>   Depends on [n]: KGDB [=n]
+>   Selected by [y]:
+>   - X86 [=y]
 
---zYM0uCDKw75PZbzx
-Content-Type: application/pgp-signature; name="signature.asc"
+Ah, thanks!  I hadn't noticed those.  I think it'd be easy to just
+change the relevant patches to just "select ARCH_HAS_EARLY_DEBUG if
+KGDB".  If you agree that's a good fix and are willing, I'd be happy
+if you just added it to the relevant patches when applying.  If not, I
+can post a v4.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6q/jMACgkQFA3kzBSg
-KbbwFBAAhtQzzNeB/GCaKLSF1bZD7pXmWBQHwK11H0kJO7UkmEVuRuLNCn250MMa
-AOmgf8Y27Ij/cb5xcnLfWYpf/c8EKB68QnOawPIpu7P2loT3VwEOcbn3to8yi0WU
-42ZJmWshB26DyiqaH6IWbqRNVL5t6qhPtnIbOU84pO5FExppXlB63kShSUKO2gXi
-kehrRerP6h8hZFYlz0wYSVgBpL/2B4BOydkCGlK4INoGtgIVGPwcrqP557ulqXe4
-kTlu3uCeo3aZFfzmoeui+SoXvBPA1PdHOT4HZRs6Pcw1FFOed95JyrVJxSSiKK35
-zGBOFjDTA9ZbfROzK3YHZR525uEQkceqGJHrRSpxqrM3o02sZXO/W2j359TbEHB2
-PQncp1GAXNePayRakxrd9q8MpBoFRtiRiaGPZVuF9lCof+DERo27cpnINOc4E+Te
-WnW7QRxjyDguqkDdUZEdDGJ9nX6BO+Yg1OhoBQdjZ9vvnqrYMmRZZCDYNAU13ZLi
-lzR3mLPoyJMIj2c251mWUaNrm0nHZrw2PAmrNwygyu4MTmaZGxECu725lRNajqeu
-1SuXby3l59NU+yKTze5oOhRvsjTP55mgDRVxzTbtnmZNDkE6EgKLsSvHG3PX6wAB
-YMBYlbSH6QxZ338/XA0Cvkbc4zn5vScALsa0lT6l69wtPPP6obk=
-=lXSI
------END PGP SIGNATURE-----
-
---zYM0uCDKw75PZbzx--
+-Doug
