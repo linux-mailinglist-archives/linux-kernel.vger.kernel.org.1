@@ -2,114 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1190C1BF199
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1079C1BF1A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 09:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgD3Hfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 03:35:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726412AbgD3Hfb (ORCPT
+        id S1726526AbgD3Hhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 03:37:45 -0400
+Received: from mout-p-101.mailbox.org ([80.241.56.151]:15326 "EHLO
+        mout-p-101.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbgD3Hhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 03:35:31 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8419BC035495
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 00:35:31 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id f8so1944290plt.2
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 00:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5j98N+kyJG3HhZ4ROV8U2tYLoi9tRHcX6NSDJJqOtoY=;
-        b=JcS/Ek/NLrw/zFeQFXDMsRv+5b8YkJqFapKIbmYbIZu5J8iCGJTnzZY5Kqyur+MqLb
-         3wAb08uh1nT/TKJnarFdg+XtedtgdBRvQicEA1Y50ks4OnXdWf+1Y0iPIqyGdfyGtvyc
-         aIP5z7Jvmlg99b1csm7TSxBu7ZFykOLUyWUL5nd+CqRIZdDIThkW2VKeB+60QIxKzxQn
-         lIk/011ysKrrUE5C030fw6vhwb0ITUM591bkMUNTHqdU9ptmCo9Pziq72LqfMzBH+jzH
-         rXkRIejqbUbmsn2zQ63x+9VebYys11Rql0axMptefkvwJBGm3m3NADDiVyX2EMgfjgFy
-         qqgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5j98N+kyJG3HhZ4ROV8U2tYLoi9tRHcX6NSDJJqOtoY=;
-        b=HyaSv49rOnDHqlSgGgXoowLNwRsY9Zu8ZQyHSOYWweNEp9aGgQXfb2njWJvEh0ZCE6
-         IphbBVhE02HbLuCOZIm40lcyztRAnAKYfbN/a7dxcOHUQ6tfDHG8A3xlnVL3/sZ6oHRI
-         t4D51gsZKddUbxI0qb4P0l9XmfiZyYRcpZ/3W6VofIPWQp5MUEpT9NZ5MGf64Mv16zsZ
-         TGe6c5qpg/CsLyz45cIwgUPzyqG3MfNtJT+S2NRXJ++IchoU10IgfvwKlxowOnuJYRbU
-         ZMuvJaA1l8W5UjdLgCAVsd7gxVJc/R43zj1qwzGweOvu0k0UL38JlajjDfKNf8IXGRZb
-         itAw==
-X-Gm-Message-State: AGi0Pubejb9MdOnNaVRLCUJf3sRO0Q4LykYjJTdwOZGw1FXCofWaX60+
-        KhbWkoRfNH8dtb3lpsITzJ/K
-X-Google-Smtp-Source: APiQypKA2FTVHA3mAFE6sqMc81pOC0XsYAaj9CrcJzQecfjqc0mWYdEfh70BzUrTtAC2r3utgvRp2g==
-X-Received: by 2002:a17:902:aa88:: with SMTP id d8mr2524821plr.213.1588232130776;
-        Thu, 30 Apr 2020 00:35:30 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:6081:946c:419e:a71:7237:1613])
-        by smtp.gmail.com with ESMTPSA id t3sm2703551pfq.110.2020.04.30.00.35.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 30 Apr 2020 00:35:29 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 13:05:21 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     rananta@codeaurora.org
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        jassisinghbrar@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>
-Subject: Re: [PATCH 2/2] soc: qcom: ipcc: Add support for IPCC controller
-Message-ID: <20200430073521.GB9449@Mani-XPS-13-9360>
-References: <20200430063054.18879-1-manivannan.sadhasivam@linaro.org>
- <20200430063054.18879-2-manivannan.sadhasivam@linaro.org>
- <93afcf6810308580a299905da2b8dad0@codeaurora.org>
+        Thu, 30 Apr 2020 03:37:45 -0400
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 49CS064LPwzKmtQ;
+        Thu, 30 Apr 2020 09:37:42 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
+        with ESMTP id 81pM1XsQLRWv; Thu, 30 Apr 2020 09:37:39 +0200 (CEST)
+Date:   Thu, 30 Apr 2020 17:37:28 +1000
+From:   Aleksa Sarai <cyphar@cyphar.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Jiri Slaby <jslaby@suse.cz>, Arseny Maslennikov <ar@cs.msu.ru>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Landley <rob@landley.net>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Pavel Machek <pavel@ucw.cz>, linux-api@vger.kernel.org,
+        "Vladimir D. Seleznev" <vseleznv@altlinux.org>
+Subject: Re: [PATCH v3 4/7] linux/signal.h: Ignore SIGINFO by default in new
+ tasks
+Message-ID: <20200430073728.36zehjhqmcllglbu@yavin.dot.cyphar.com>
+References: <20200430064301.1099452-1-ar@cs.msu.ru>
+ <20200430064301.1099452-5-ar@cs.msu.ru>
+ <780cb05e-a749-77a0-dabc-bd09982aa028@suse.cz>
+ <20200430071437.x3ilwkh3lyf4iq6u@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="v3ogqyuov3acrw6t"
 Content-Disposition: inline
-In-Reply-To: <93afcf6810308580a299905da2b8dad0@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200430071437.x3ilwkh3lyf4iq6u@wittgenstein>
+X-Rspamd-Queue-Id: 0D1FC1788
+X-Rspamd-Score: -9.47 / 15.00 / 15.00
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Wed, Apr 29, 2020 at 11:45:27PM -0700, rananta@codeaurora.org wrote:
-> On 2020-04-29 23:30, Manivannan Sadhasivam wrote:
-> > +static int qcom_ipcc_probe(struct platform_device *pdev)
-> > +{
-> > +	struct qcom_ipcc_proto_data *proto_data;
-> > +	int ret;
-> > +
-> > +	proto_data = devm_kzalloc(&pdev->dev, sizeof(*proto_data),
-> > GFP_KERNEL);
-> > +	if (!proto_data)
-> > +		return -ENOMEM;
-> > +
-> > +	ipcc_proto_data = proto_data;
-> > +	proto_data->dev = &pdev->dev;
-> > +
-> > +	proto_data->base = devm_platform_ioremap_resource(pdev, 0);
-> > +	if (IS_ERR(proto_data->base)) {
-> > +		dev_err(&pdev->dev, "Failed to ioremap the ipcc base addr\n");
-> > +		return PTR_ERR(proto_data->base);
-> > +	}
-> > +
-> > +	proto_data->irq = platform_get_irq(pdev, 0);
-> > +	if (proto_data->irq < 0) {
-> > +		dev_err(&pdev->dev, "Failed to get the IRQ\n");
-> > +		return proto_data->irq;
-> > +	}
-> > +
-> > +	/* Perform a SW reset on this client's protocol state */
-> > +	writel(0x1, proto_data->base + IPCC_REG_CLIENT_CLEAR);
-> We can skip doing a SW reset here. Few of the subsystems may be brought out
-> of reset via the bootloader and the interrupts from them might be pending.
-> Doing a SW reset here would clear those interrupts.
-> 
+--v3ogqyuov3acrw6t
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Okay, will remove it.
+On 2020-04-30, Christian Brauner <christian.brauner@ubuntu.com> wrote:
+> On Thu, Apr 30, 2020 at 08:53:56AM +0200, Jiri Slaby wrote:
+> > On 30. 04. 20, 8:42, Arseny Maslennikov wrote:
+> > > This matches the behaviour of other Unix-like systems that have SIGIN=
+FO
+> > > and causes less harm to processes that do not install handlers for th=
+is
+> > > signal, making the keyboard status character non-fatal for them.
+> > >=20
+> > > This is implemented with the assumption that SIGINFO is defined
+> > > to be equivalent to SIGPWR; still, there is no reason for PWR to
+> > > result in termination of the signal recipient anyway =E2=80=94 it doe=
+s not
+> > > indicate there is a fatal problem with the recipient's execution
+> > > context (like e.g. FPE/ILL do), and we have TERM/KILL for explicit
+> > > termination requests.
+> > >=20
+> > > To put it another way:
+> > > The only scenario where system behaviour actually changes is when the
+> > > signal recipient has default disposition for SIGPWR. If a process
+> > > chose to interpret a SIGPWR as an incentive to cleanly terminate, it
+> > > would supply its own handler =E2=80=94 and this commit does not affec=
+t processes
+> > > with non-default handlers.
+> > >=20
+> > > Signed-off-by: Arseny Maslennikov <ar@cs.msu.ru>
+> > > ---
+> > >  include/linux/signal.h | 5 +++--
+> > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/include/linux/signal.h b/include/linux/signal.h
+> > > index 05bacd2ab..dc31da8fc 100644
+> > > --- a/include/linux/signal.h
+> > > +++ b/include/linux/signal.h
+> > > @@ -369,7 +369,7 @@ extern bool unhandled_signal(struct task_struct *=
+tsk, int sig);
+> > >   *	|  SIGSYS/SIGUNUSED  |	coredump 	|
+> > >   *	|  SIGSTKFLT         |	terminate	|
+> > >   *	|  SIGWINCH          |	ignore   	|
+> > > - *	|  SIGPWR            |	terminate	|
+> > > + *	|  SIGPWR            |	ignore   	|
+> >=20
+> > You need to update signal.7 too:
+> > https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/man7/s=
+ignal.7#n285
+>=20
+> (I fail this whole thread via b4 and it appears that a bunch of messages
+> are missing on lore. Might just be delay though.)
+>=20
+> How this is this not going to break userspace? Just for a start,
+> SIGPWR (for better or worse) was used for a long time by some
+> sandboxing/container runtimes to shutdown a process and still is.
 
-Thanks,
-Mani
+To play Devil's advocate -- pid1 has also always had a default-ignore
+signal mask (which included SIGPWR), so any pid1 that obeyed SIGPWR
+already had a non-default signal mask (and thus wouldn't be affected by
+this patch).
 
-> Thank you.
-> Raghavendra
+But I do agree that this seems like a strange change to make (SIGPWR
+seems like a signal you don't want to ignore by default). Unfortunately
+the fact that it appears to always be equal to SIGINFO means that while
+SIGINFO (to me at least) seems like it should be a no-op, the necessary
+SIGPWR change makes it harder to justify IMHO.
+
+--=20
+Aleksa Sarai
+Senior Software Engineer (Containers)
+SUSE Linux GmbH
+<https://www.cyphar.com/>
+
+--v3ogqyuov3acrw6t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCXqqANgAKCRCdlLljIbnQ
+Eub2AQCluzOxSj+tvwJotIXGcOQKLxQUkinBm2PLac1iqBa8FgD9Gura/pVR8Oqi
+RNyo5p3+mxhBzhlOrn6o3DjEbYe3FA0=
+=lC9X
+-----END PGP SIGNATURE-----
+
+--v3ogqyuov3acrw6t--
