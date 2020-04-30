@@ -2,69 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3591C027E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE891C028A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgD3Q3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:29:51 -0400
-Received: from gentwo.org ([3.19.106.255]:55834 "EHLO gentwo.org"
+        id S1726766AbgD3Qai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:30:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726130AbgD3Q3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:29:51 -0400
-Received: by gentwo.org (Postfix, from userid 1002)
-        id 8B6B13EEE2; Thu, 30 Apr 2020 16:29:50 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 8A3B03E998;
-        Thu, 30 Apr 2020 16:29:50 +0000 (UTC)
-Date:   Thu, 30 Apr 2020 16:29:50 +0000 (UTC)
-From:   Christopher Lameter <cl@linux.com>
-X-X-Sender: cl@www.lameter.com
-To:     Roman Gushchin <guro@fb.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 04/19] mm: slub: implement SLUB version of
- obj_to_index()
-In-Reply-To: <20200427164638.GC114719@carbon.DHCP.thefacebook.com>
-Message-ID: <alpine.DEB.2.21.2004301625490.1693@www.lameter.com>
-References: <20200422204708.2176080-1-guro@fb.com> <20200422204708.2176080-5-guro@fb.com> <alpine.DEB.2.21.2004222349280.20021@www.lameter.com> <20200423000530.GA63356@carbon.lan> <alpine.DEB.2.21.2004250208500.7624@www.lameter.com> <20200425024625.GA107755@carbon.lan>
- <alpine.DEB.2.21.2004271618340.27701@www.lameter.com> <20200427164638.GC114719@carbon.DHCP.thefacebook.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1726130AbgD3Qah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 12:30:37 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 260F92070B;
+        Thu, 30 Apr 2020 16:30:36 +0000 (UTC)
+Date:   Thu, 30 Apr 2020 12:30:34 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Joerg Roedel <jroedel@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>
+Subject: Re: [RFC][PATCH] x86/mm: Sync all vmalloc mappings before
+ text_poke()
+Message-ID: <20200430123034.5705cd47@gandalf.local.home>
+In-Reply-To: <947455570.77870.1588263502669.JavaMail.zimbra@efficios.com>
+References: <20200429054857.66e8e333@oasis.local.home>
+        <20200429105941.GQ30814@suse.de>
+        <20200429082854.6e1796b5@oasis.local.home>
+        <20200429100731.201312a9@gandalf.local.home>
+        <20200430141120.GA8135@suse.de>
+        <20200430145057.GB8135@suse.de>
+        <2026887875.77814.1588260015439.JavaMail.zimbra@efficios.com>
+        <20200430121627.682061e2@gandalf.local.home>
+        <947455570.77870.1588263502669.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Apr 2020, Roman Gushchin wrote:
+On Thu, 30 Apr 2020 12:18:22 -0400 (EDT)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-> > Why do you need this? Just slap a pointer to the cgroup as additional
-> > metadata onto the slab object. Is that not much simpler, safer and faster?
-> >
->
-> So, the problem is that not all slab objects are accounted, and sometimes
-> we don't know if advance if they are accounted or not (with the current semantics
-> of __GFP_ACCOUNT and SLAB_ACCOUNT flags). So we either have to increase
-> the size of ALL slab objects, either create a pair of slab caches for each size.
+> ----- On Apr 30, 2020, at 12:16 PM, rostedt rostedt@goodmis.org wrote:
+> 
+> > On Thu, 30 Apr 2020 11:20:15 -0400 (EDT)
+> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> >   
+> >> > The right fix is to call vmalloc_sync_mappings() right after allocating
+> >> > tracing or perf buffers via v[zm]alloc().  
+> >> 
+> >> Either right after allocation, or right before making the vmalloc'd data
+> >> structure visible to the instrumentation. In the case of the pid filter,
+> >> that would be the rcu_assign_pointer() which publishes the new pid filter
+> >> table.
+> >> 
+> >> As long as vmalloc_sync_mappings() is performed somewhere *between* allocation
+> >> and publishing the pointer for instrumentation, it's fine.
+> >> 
+> >> I'll let Steven decide on which approach works best for him.  
+> > 
+> > As stated in the other email, I don't see it having anything to do with
+> > vmalloc, but with the per_cpu() allocation. I'll test this theory out by
+> > not even allocating the pid masks and touching the per cpu data at every
+> > event to see if it crashes.  
+> 
+> As pointed out in my other email, per-cpu allocation uses vmalloc when
+> size > PAGE_SIZE.
 
->
-> The first option is not that cheap in terms of the memory overhead. Especially
-> for those who disable cgroups using a boot-time option.
+And as I replied:
 
+	buf->data = alloc_percpu(struct trace_array_cpu);
 
-If the cgroups are disabled on boot time then you can switch back to the
-compact version. Otherwise just add a pointer to each object. It will make
-it consistent and there is not much memory wastage.
+struct trace_array_cpu {
+	atomic_t		disabled;
+	void			*buffer_page;	/* ring buffer spare */
 
-The problem comes about with the power of 2 caches in the kmalloc array.
-If one keeps the "natural alignment" instead of going for the normal
-alignment of slab caches then the alignment will cause a lot of memory
-wastage and thus the scheme of off slab metadata is likely going to be
-unavoidable.
+	unsigned long		entries;
+	unsigned long		saved_latency;
+	unsigned long		critical_start;
+	unsigned long		critical_end;
+	unsigned long		critical_sequence;
+	unsigned long		nice;
+	unsigned long		policy;
+	unsigned long		rt_priority;
+	unsigned long		skipped_entries;
+	u64			preempt_timestamp;
+	pid_t			pid;
+	kuid_t			uid;
+	char			comm[TASK_COMM_LEN];
 
-But I think we are just stacking one bad idea onto another here making
-things much more complex than they could be. Well at least this justifies
-all our jobs .... (not mine I am out of work... hehehe)
+	bool			ignore_pid;
+#ifdef CONFIG_FUNCTION_TRACER
+	bool			ftrace_ignore_pid;
+#endif
+};
 
+That doesn't look bigger than PAGE_SIZE to me.
+
+-- Steve
