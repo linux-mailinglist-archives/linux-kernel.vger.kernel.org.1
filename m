@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8501BFF29
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4DE1BFF26
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbgD3Ot2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35676 "EHLO
+        id S1728279AbgD3OtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727808AbgD3OtI (ORCPT
+        by vger.kernel.org with ESMTP id S1726640AbgD3OtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:49:08 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C131AC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:49:07 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id x25so2194282wmc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:49:07 -0700 (PDT)
+        Thu, 30 Apr 2020 10:49:09 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5005BC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:49:09 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id d17so7241796wrg.11
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 07:49:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Bjfw6WLtQLu18dtBBq50BIhl44h6PIVIcyoJvF8/xYs=;
-        b=qzxBdMMyCAD6o0fFfCMZFFwj9xWxiTwC89TTNDeEy0DERNz4Vs3+r1AMfBGsifCJNd
-         1OcFJ9BYuJln9feFG9CWrpr+rGLRdA6uYTNFGx3XtzZDHwmf6LX/Zdh+SKqW+gdBOHlU
-         HSVNIKcxgLgVuuYctvVXgDY6Mn3BtmLZp4tIFp/NH6Y1VIcziWGLfJpt8TAoFP3W/+YU
-         Dn5DRVltXjzGqK7t71RPCVpwEcUABZQNxIj73WTbVnPlH1rB95CEBTvqR/5zeIsgpkBj
-         aWD+5uGPboEh0RrIh1wRNQWwyW/c6SBYBElpYfuRnJZcWX2ssUv//XyH9JF4yOXRD7KB
-         JJEw==
+        bh=umkbm5KRG1N3np5zJ4HE1sftpuuUyazttPbykboHAm8=;
+        b=efC8vkYgvNM1vKeVr2o1KyvheFweWQLdJEpfuO35sBECfVZWnRqYWwF651X3tv7WUl
+         y7foAr0R0XqqiZFBrmI42yS1Ovwh7dWqJWSGU7t2oFv+doT6ZnA2r5ymHwPFZD2OBVPT
+         pMw0DH9qc39RJ/JvzQIbUxJASJN7ZxUpMhrKoubW3zdb3umhK9O7VKPc1aDoQUlJyVMx
+         O+Ei/SA4/M9+HqIx1BrLA84FsSF9Zm4hUlUT/C6/Qx4J7F1lhqzW5VbWxfHgrTX0eWjE
+         Nzs6eMyZqIpzGWPgODgpMKn5JoW7WpNAATr3jAtV9DoXK0zChwiEWhVhc5aN3uSgaXwW
+         91Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Bjfw6WLtQLu18dtBBq50BIhl44h6PIVIcyoJvF8/xYs=;
-        b=HMm2BVkycwdzWC7WQUQOICGLRUjApxo+KykbOT3JJ7wKwrbgYpNStYLS0Vb88IuACC
-         J2gfJWSZPX1OOYUJeiL1q+9DkuR8TimtlfejpdyFaFKuok3bcayDVDQ7irjYQEbvVI0w
-         ZBW55HrFDdBBsUcaX6P+K9hLTPX9+zMGKQK4tANGtCKTwKGLqYGaW3ObBUeWEU172pVm
-         ZQsO4LtXrFO3W22uZLovX1q9v3ll1RTEDufqrZW8fTRaZUgun15aq7wHT61+352oGRAP
-         qRwS5kjd8QL3C6+WTJGhHtmebHc+m4J2eIL+yu5KX1JTaVOMiWbVyz3DYzbKjjOVcHAE
-         9wCg==
-X-Gm-Message-State: AGi0PuZlvtqj6MHG4iYTMlt0D+s191rtuVGp9rfKbjFdinma0M/mPXCU
-        kpTpr4yeiGd3UCa/1hY/mKQsvA==
-X-Google-Smtp-Source: APiQypInlMtemBSxgprrtZ1Db2OkJJ+L2RoycVH9DSN6tmY9cQoEWe6neeG85fag/QDQ6Uvh0JBf+A==
-X-Received: by 2002:a05:600c:2046:: with SMTP id p6mr3391158wmg.177.1588258146104;
-        Thu, 30 Apr 2020 07:49:06 -0700 (PDT)
+        bh=umkbm5KRG1N3np5zJ4HE1sftpuuUyazttPbykboHAm8=;
+        b=tLJORck0KxWZneQTR87zuigqG3OZiL5sVWIobzcdfpU8OXGHzs/5ayOc4SNbRqgqSf
+         mXDL/v9cDXyC3xO8ilBEVqG2vWNFuhoZdI6UIdjAKLPsThT6fouciYo+iYAZAEADVwoQ
+         eSbE9NYQhdWJyTBLwW0/+GcD0E8wVWcg5DcRi5CVOgosjX109uQiYvkDrasOfWHQgp7z
+         5pIFQosU4YnCGChBqxpXog6rwxAy21LHegzZ5hskS3MoqFcAU0ZaliD0TKkhuaUj4sI1
+         08aKaQC8p+VRL4N55iRm9G6TiSlBsrQZosszHQQ84aWTQmJPdq3GjIM54WpyrfuZk3r2
+         h3vQ==
+X-Gm-Message-State: AGi0PuYWh+O2jSPS+MPkUYdxK74hKF5sJfIBEQj5hrTk6ggnnEN/ohWv
+        SYNFw5wtxt2+ZmMI4kFTdHXkJw==
+X-Google-Smtp-Source: APiQypIpmxrWfSEem32pw/VDQBnv+MYBdsOIVLgK9Hym1JocNQpMrPcTj2RTIrgFipnFVqbek+O/ww==
+X-Received: by 2002:a5d:6841:: with SMTP id o1mr4321497wrw.412.1588258147736;
+        Thu, 30 Apr 2020 07:49:07 -0700 (PDT)
 Received: from localhost ([2a01:4b00:8523:2d03:d4b6:9828:8bd2:ce6f])
-        by smtp.gmail.com with ESMTPSA id l15sm12182667wmi.48.2020.04.30.07.49.04
+        by smtp.gmail.com with ESMTPSA id s14sm12054954wmh.18.2020.04.30.07.49.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 07:49:05 -0700 (PDT)
+        Thu, 30 Apr 2020 07:49:07 -0700 (PDT)
 From:   David Brazdil <dbrazdil@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         James Morse <james.morse@arm.com>,
@@ -57,9 +57,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>
 Cc:     kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, David Brazdil <dbrazdil@google.com>
-Subject: [PATCH 11/15] arm64: kvm: Split hyp/timer-sr.c to VHE/nVHE
-Date:   Thu, 30 Apr 2020 15:48:27 +0100
-Message-Id: <20200430144831.59194-12-dbrazdil@google.com>
+Subject: [PATCH 12/15] arm64: kvm: Compile remaining hyp/ files for both VHE/nVHE
+Date:   Thu, 30 Apr 2020 15:48:28 +0100
+Message-Id: <20200430144831.59194-13-dbrazdil@google.com>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200430144831.59194-1-dbrazdil@google.com>
 References: <20200430144831.59194-1-dbrazdil@google.com>
@@ -73,164 +73,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 This patch is part of a series which builds KVM's non-VHE hyp code separately
 from VHE and the rest of the kernel.
 
-timer-sr.c contains a HVC handler for setting CNTVOFF_EL2 and two helper
-functions for controlling access to physical counter. The former is shared
-between VHE/nVHE and is kept in timer-sr.c but compiled under both configs.
-The latter are nVHE-specific and are moved to nvhe/timer-sr.c.
+The following files in hyp/ contain only code shared by VHE/nVHE:
+  vgic-v3-sr.c, aarch32.c, vgic-v2-cpuif-proxy.c, entry.S, fpsimd.S
+Compile them under both configurations. Deletions in image-vars.h reflect
+eliminated dependencies of nVHE code on the rest of the kernel.
 
 Signed-off-by: David Brazdil <dbrazdil@google.com>
 ---
- arch/arm64/include/asm/kvm_hyp.h   |  2 ++
- arch/arm64/kernel/image-vars.h     |  3 ---
- arch/arm64/kvm/hyp/nvhe/Makefile   |  3 ++-
- arch/arm64/kvm/hyp/nvhe/timer-sr.c | 43 ++++++++++++++++++++++++++++++
- arch/arm64/kvm/hyp/timer-sr.c      | 36 -------------------------
- 5 files changed, 47 insertions(+), 40 deletions(-)
- create mode 100644 arch/arm64/kvm/hyp/nvhe/timer-sr.c
+ arch/arm64/kernel/image-vars.h   | 19 -------------------
+ arch/arm64/kvm/hyp/nvhe/Makefile |  5 +++--
+ 2 files changed, 3 insertions(+), 21 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
-index c2bcd5dea030..3320a22a5fb1 100644
---- a/arch/arm64/include/asm/kvm_hyp.h
-+++ b/arch/arm64/include/asm/kvm_hyp.h
-@@ -64,8 +64,10 @@ void __vgic_v3_save_aprs(struct kvm_vcpu *vcpu);
- void __vgic_v3_restore_aprs(struct kvm_vcpu *vcpu);
- int __vgic_v3_perform_cpuif_access(struct kvm_vcpu *vcpu);
- 
-+#ifdef __HYPERVISOR__
- void __timer_enable_traps(struct kvm_vcpu *vcpu);
- void __timer_disable_traps(struct kvm_vcpu *vcpu);
-+#endif
- 
- #ifdef __HYPERVISOR__
- void __sysreg_save_state_nvhe(struct kvm_cpu_context *ctxt);
 diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
-index c4ff4a61eb5d..b3de24d7ecd1 100644
+index b3de24d7ecd1..e272eedfe19a 100644
 --- a/arch/arm64/kernel/image-vars.h
 +++ b/arch/arm64/kernel/image-vars.h
-@@ -67,9 +67,6 @@ __hyp_text___guest_enter = __guest_enter;
- __hyp_text___guest_exit = __guest_exit;
+@@ -61,26 +61,8 @@ __efistub__ctype		= _ctype;
+  * memory mappings.
+  */
+ 
+-__hyp_text___fpsimd_restore_state = __fpsimd_restore_state;
+-__hyp_text___fpsimd_save_state = __fpsimd_save_state;
+-__hyp_text___guest_enter = __guest_enter;
+-__hyp_text___guest_exit = __guest_exit;
  __hyp_text___icache_flags = __icache_flags;
  __hyp_text___kvm_handle_stub_hvc = __kvm_handle_stub_hvc;
--__hyp_text___kvm_timer_set_cntvoff = __kvm_timer_set_cntvoff;
--__hyp_text___timer_disable_traps = __timer_disable_traps;
--__hyp_text___timer_enable_traps = __timer_enable_traps;
- __hyp_text___vgic_v2_perform_cpuif_access = __vgic_v2_perform_cpuif_access;
- __hyp_text___vgic_v3_activate_traps = __vgic_v3_activate_traps;
- __hyp_text___vgic_v3_deactivate_traps = __vgic_v3_deactivate_traps;
+-__hyp_text___vgic_v2_perform_cpuif_access = __vgic_v2_perform_cpuif_access;
+-__hyp_text___vgic_v3_activate_traps = __vgic_v3_activate_traps;
+-__hyp_text___vgic_v3_deactivate_traps = __vgic_v3_deactivate_traps;
+-__hyp_text___vgic_v3_get_ich_vtr_el2 = __vgic_v3_get_ich_vtr_el2;
+-__hyp_text___vgic_v3_init_lrs = __vgic_v3_init_lrs;
+-__hyp_text___vgic_v3_perform_cpuif_access = __vgic_v3_perform_cpuif_access;
+-__hyp_text___vgic_v3_read_vmcr = __vgic_v3_read_vmcr;
+-__hyp_text___vgic_v3_restore_aprs = __vgic_v3_restore_aprs;
+-__hyp_text___vgic_v3_restore_state = __vgic_v3_restore_state;
+-__hyp_text___vgic_v3_save_aprs = __vgic_v3_save_aprs;
+-__hyp_text___vgic_v3_save_state = __vgic_v3_save_state;
+-__hyp_text___vgic_v3_write_vmcr = __vgic_v3_write_vmcr;
+-__hyp_text_abort_guest_exit_end = abort_guest_exit_end;
+-__hyp_text_abort_guest_exit_start = abort_guest_exit_start;
+ __hyp_text_arm64_const_caps_ready = arm64_const_caps_ready;
+ __hyp_text_arm64_enable_wa2_handling = arm64_enable_wa2_handling;
+ __hyp_text_arm64_ssbd_callback_required = arm64_ssbd_callback_required;
+@@ -89,7 +71,6 @@ __hyp_text_cpu_hwcaps = cpu_hwcaps;
+ __hyp_text_kimage_voffset = kimage_voffset;
+ __hyp_text_kvm_host_data = kvm_host_data;
+ __hyp_text_kvm_patch_vector_branch = kvm_patch_vector_branch;
+-__hyp_text_kvm_skip_instr32 = kvm_skip_instr32;
+ __hyp_text_kvm_update_va_mask = kvm_update_va_mask;
+ __hyp_text_kvm_vgic_global_state = kvm_vgic_global_state;
+ __hyp_text_panic = panic;
 diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-index cfb55c01b3ff..2b8286ee8138 100644
+index 2b8286ee8138..41018d25118c 100644
 --- a/arch/arm64/kvm/hyp/nvhe/Makefile
 +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-@@ -7,7 +7,8 @@ asflags-y := -D__HYPERVISOR__
+@@ -7,8 +7,9 @@ asflags-y := -D__HYPERVISOR__
  ccflags-y := -D__HYPERVISOR__ -fno-stack-protector -DDISABLE_BRANCH_PROFILING \
  	     $(DISABLE_STACKLEAK_PLUGIN)
  
--obj-y := sysreg-sr.o debug-sr.o switch.o tlb.o host_hypercall.o ../hyp-entry.o
-+obj-y := ../timer-sr.o timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o \
-+	 host_hypercall.o ../hyp-entry.o
+-obj-y := ../timer-sr.o timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o \
+-	 host_hypercall.o ../hyp-entry.o
++obj-y := ../vgic-v3-sr.o ../timer-sr.o timer-sr.o ../aarch32.o \
++	 ../vgic-v2-cpuif-proxy.o sysreg-sr.o debug-sr.o ../entry.o switch.o \
++	 ../fpsimd.o tlb.o host_hypercall.o ../hyp-entry.o
  
  obj-y := $(patsubst %.o,%.hyp.o,$(obj-y))
  extra-y := $(patsubst %.hyp.o,%.hyp.tmp.o,$(obj-y))
-diff --git a/arch/arm64/kvm/hyp/nvhe/timer-sr.c b/arch/arm64/kvm/hyp/nvhe/timer-sr.c
-new file mode 100644
-index 000000000000..f0e694743883
---- /dev/null
-+++ b/arch/arm64/kvm/hyp/nvhe/timer-sr.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2012-2015 - ARM Ltd
-+ * Author: Marc Zyngier <marc.zyngier@arm.com>
-+ */
-+
-+#include <clocksource/arm_arch_timer.h>
-+#include <linux/compiler.h>
-+#include <linux/kvm_host.h>
-+
-+#include <asm/kvm_hyp.h>
-+
-+/*
-+ * Should only be called on non-VHE systems.
-+ * VHE systems use EL2 timers and configure EL1 timers in kvm_timer_init_vhe().
-+ */
-+void __hyp_text __timer_disable_traps(struct kvm_vcpu *vcpu)
-+{
-+	u64 val;
-+
-+	/* Allow physical timer/counter access for the host */
-+	val = read_sysreg(cnthctl_el2);
-+	val |= CNTHCTL_EL1PCTEN | CNTHCTL_EL1PCEN;
-+	write_sysreg(val, cnthctl_el2);
-+}
-+
-+/*
-+ * Should only be called on non-VHE systems.
-+ * VHE systems use EL2 timers and configure EL1 timers in kvm_timer_init_vhe().
-+ */
-+void __hyp_text __timer_enable_traps(struct kvm_vcpu *vcpu)
-+{
-+	u64 val;
-+
-+	/*
-+	 * Disallow physical timer access for the guest
-+	 * Physical counter access is allowed
-+	 */
-+	val = read_sysreg(cnthctl_el2);
-+	val &= ~CNTHCTL_EL1PCEN;
-+	val |= CNTHCTL_EL1PCTEN;
-+	write_sysreg(val, cnthctl_el2);
-+}
-diff --git a/arch/arm64/kvm/hyp/timer-sr.c b/arch/arm64/kvm/hyp/timer-sr.c
-index ff76e6845fe4..46e303281a2c 100644
---- a/arch/arm64/kvm/hyp/timer-sr.c
-+++ b/arch/arm64/kvm/hyp/timer-sr.c
-@@ -4,10 +4,6 @@
-  * Author: Marc Zyngier <marc.zyngier@arm.com>
-  */
- 
--#include <clocksource/arm_arch_timer.h>
--#include <linux/compiler.h>
--#include <linux/kvm_host.h>
--
- #include <asm/kvm_hyp.h>
- 
- void __hyp_text __kvm_timer_set_cntvoff(u32 cntvoff_low, u32 cntvoff_high)
-@@ -15,35 +11,3 @@ void __hyp_text __kvm_timer_set_cntvoff(u32 cntvoff_low, u32 cntvoff_high)
- 	u64 cntvoff = (u64)cntvoff_high << 32 | cntvoff_low;
- 	write_sysreg(cntvoff, cntvoff_el2);
- }
--
--/*
-- * Should only be called on non-VHE systems.
-- * VHE systems use EL2 timers and configure EL1 timers in kvm_timer_init_vhe().
-- */
--void __hyp_text __timer_disable_traps(struct kvm_vcpu *vcpu)
--{
--	u64 val;
--
--	/* Allow physical timer/counter access for the host */
--	val = read_sysreg(cnthctl_el2);
--	val |= CNTHCTL_EL1PCTEN | CNTHCTL_EL1PCEN;
--	write_sysreg(val, cnthctl_el2);
--}
--
--/*
-- * Should only be called on non-VHE systems.
-- * VHE systems use EL2 timers and configure EL1 timers in kvm_timer_init_vhe().
-- */
--void __hyp_text __timer_enable_traps(struct kvm_vcpu *vcpu)
--{
--	u64 val;
--
--	/*
--	 * Disallow physical timer access for the guest
--	 * Physical counter access is allowed
--	 */
--	val = read_sysreg(cnthctl_el2);
--	val &= ~CNTHCTL_EL1PCEN;
--	val |= CNTHCTL_EL1PCTEN;
--	write_sysreg(val, cnthctl_el2);
--}
 -- 
 2.26.1
 
