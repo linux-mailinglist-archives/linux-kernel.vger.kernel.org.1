@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310DA1BF808
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0591BF816
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgD3MSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 08:18:07 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:54772 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726677AbgD3MSF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 08:18:05 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 03UCHfEm094635;
-        Thu, 30 Apr 2020 07:17:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588249061;
-        bh=2760Yo1AKc3mP3fvGFHPMjiwBzw8xIguNCDLvnnh1ms=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Fba1VIoUSzAO9O42yqqZqnx8s6p68o3IbJPWB7DQ7+oM1uWdB4owDcI1J5tZiyXBE
-         XdmsYQZF38oDYcRdVkv5335936BRJ+D0wl7UsWhzIzVZTbDPi21mxjhn2WxH/zec39
-         GH6wnA1J8G80tKugvOqd7CNHci5UV5GfdWMtzVgw=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 03UCHeMZ126557
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 30 Apr 2020 07:17:40 -0500
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 30
- Apr 2020 07:17:40 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 30 Apr 2020 07:17:40 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 03UCHdgn101368;
-        Thu, 30 Apr 2020 07:17:40 -0500
-Date:   Thu, 30 Apr 2020 17:47:39 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH v4 02/16] spi: atmel-quadspi: reject DTR ops
-Message-ID: <20200430121737.37dghomlluzqcxxi@ti.com>
-References: <20200424184410.8578-1-p.yadav@ti.com>
- <20200424184410.8578-3-p.yadav@ti.com>
- <20200430113243.GB4633@sirena.org.uk>
+        id S1727047AbgD3MSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 08:18:38 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3402 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726053AbgD3MSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 08:18:37 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id CE7CA85C2F6A35573474;
+        Thu, 30 Apr 2020 20:18:34 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 30 Apr 2020
+ 20:18:26 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <njavali@marvell.com>, <GR-QLogic-Storage-Upstream@marvell.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <himanshu.madhani@oracle.com>, <aeasi@marvell.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH] scsi: qla2xxx: use true,false for need_mpi_reset
+Date:   Thu, 30 Apr 2020 20:17:51 +0800
+Message-ID: <20200430121751.15232-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200430113243.GB4633@sirena.org.uk>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/04/20 12:32PM, Mark Brown wrote:
-> On Sat, Apr 25, 2020 at 12:13:56AM +0530, Pratyush Yadav wrote:
-> 
-> > Double Transfer Rate (DTR) ops are added in spi-mem. But this controller
-> > doesn't support DTR transactions. Since we don't use the default
-> > supports_op(), which rejects all DTR ops, do that explicitly in our
-> > supports_op().
-> 
-> It's not ideal that we'd need to explicitly add checks in individual
-> controller drivers - are we sure that all the others do?
+Fix the following coccicheck warning:
 
-Most other controllers either don't specify a supports_op function at 
-all, in which case spi_mem_default_supports_op() is called, or do their 
-custom logic and then call spi_mem_default_supports_op(). In both those 
-cases, DTR ops would get rejected because of the call to 
-spi_mem_default_supports_op(). So they do not need to add the check 
-explicitly there.
+drivers/scsi/qla2xxx/qla_tmpl.c:1031:6-20: WARNING: Assignment of 0/1 to
+bool variable
+drivers/scsi/qla2xxx/qla_tmpl.c:1062:3-17: WARNING: Assignment of 0/1 to
+bool variable
 
-The two exceptions are atmel-quadspi and spi-mtk-nor (which I missed 
-updating). They don't call the default supports_op, so they need to be 
-updated to explicitly to reject DTR ops.
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/scsi/qla2xxx/qla_tmpl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Earlier versions of this series discovered the DTR capability from 
-devicetree. In that case, no change would be required at all, but review 
-comments suggested I drop those changes. Instead, the controllers should 
-accept/reject DTR ops in their supports_op hooks.
-
+diff --git a/drivers/scsi/qla2xxx/qla_tmpl.c b/drivers/scsi/qla2xxx/qla_tmpl.c
+index 819c46f31c05..281973b317a8 100644
+--- a/drivers/scsi/qla2xxx/qla_tmpl.c
++++ b/drivers/scsi/qla2xxx/qla_tmpl.c
+@@ -1028,7 +1028,7 @@ void
+ qla27xx_mpi_fwdump(scsi_qla_host_t *vha, int hardware_locked)
+ {
+ 	ulong flags = 0;
+-	bool need_mpi_reset = 1;
++	bool need_mpi_reset = true;
+ 
+ #ifndef __CHECKER__
+ 	if (!hardware_locked)
+@@ -1059,7 +1059,7 @@ qla27xx_mpi_fwdump(scsi_qla_host_t *vha, int hardware_locked)
+ 			       "-> fwdt1 fwdump residual=%+ld\n",
+ 			       fwdt->dump_size - len);
+ 		} else {
+-			need_mpi_reset = 0;
++			need_mpi_reset = false;
+ 		}
+ 
+ 		vha->hw->mpi_fw_dump_len = len;
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+2.21.1
+
