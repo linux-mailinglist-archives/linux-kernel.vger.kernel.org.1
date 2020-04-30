@@ -2,94 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0F01C0976
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C621C0942
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbgD3VeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:34:24 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:37219 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgD3VeX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:34:23 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1M9FX5-1jYxeY344d-006SWG; Thu, 30 Apr 2020 23:34:01 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Israel Rukshin <israelr@mellanox.com>,
-        Max Gurtovoy <maxg@mellanox.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Ming Lei <ming.lei@redhat.com>,
-        Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org
-Subject: [PATCH 15/15] nvme: avoid gcc-10 zero-length-bounds warning
-Date:   Thu, 30 Apr 2020 23:30:57 +0200
-Message-Id: <20200430213101.135134-16-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200430213101.135134-1-arnd@arndb.de>
-References: <20200430213101.135134-1-arnd@arndb.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:ZiRf4NHy8XQdJ0MYFrHfnPlaQWVkKn55groeh3SGJDg2G6j+ai/
- I0pcRNLPA3tssWEBLLaFPtsMonAIEX+vxcub9bDblZMmmYc7zUnxGsOX+9b6bExxaOmrvgw
- W4obT5PWbdarZi4z3cPFQUdI+MLKaL6Xv/pqI9q9NCY4AohwRyFmyph2p/E9//3zJ+w96Wh
- ptEV1jb5JkCC6T5O0OoCg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:v95riZ+TqS8=:150R5/f64arOjLP8fwFubM
- XwtgizIru2CUgqiEo6TeHDdrDXTqak3HMJHdQi9qoENwknwnEC9yzONOL2F9dIvxRmvG/IkB8
- ImMfUITMtswMe06/Kub/Zvkk95YC/WGw3YUEzZA2c20iKeVQ70yY6akO48/g3QodSXiWbVyTG
- zgF7KowdpC+QdD901XFJ+Nh5//wH0OEBE0fmDPho31nw/OEJuRXaNQWgNsRN+ZU3HImyIilvI
- gciKoBi2g8eqGVWasqNyuj6WOk9Fg9dEdUPMoFp5ELMvwYMs7mhetALQvvA4Fw5jyOgn9W7rn
- jccJ/pRe5t/VxIa3oA1haWYaFnt65Ff2FWuRg6RzMoAPFmNWBtj1X8krj+FqZXH9dcW41KKi4
- nj8hgaNGKa6e87952Yx2HfKkHauWQNw0EoGMzSWhO9iFm//nXBTWC35SVm4a835kbI/niuV9m
- tKfeZdF391OlPDiYBY1x6dntZwouHEkafrbz91js5ngyUGTIm8JEAYKW/rc12yfNls4s2mREf
- jTuLMQuUFxjX+vp7gH8OE0uL5GX7TKoiEhz36Gd2i7EFmGg7bGweHauvO3eLizFwBMto7rXQq
- k40wZv0F4sAuX1rxzbOxn2aDczG/tqbS55BpnM+CLcBoMTTLVTs6FZ4KldDq8rDa0SSinVYAS
- cnd2E5Rd3XOsVja0GabkD7FMnbkR0uNYbM++CUhoixmRGodgQ3D8v0ltbrSaNgeABdyGY3SRs
- GpK/5YszJDnpSMQzKLffITtvmeZ30/a8Y+wXTgIJ6I1eIvAktpM0Cks7jbDP+8eOiODXsIeqA
- PkVL43RsxXAswxvb3fiP77OZhJmbrf97sjeybX9KAiRIaZ/IeQ=
+        id S1726736AbgD3Vbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:31:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726336AbgD3Vbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 17:31:33 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07C8820870;
+        Thu, 30 Apr 2020 21:31:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588282292;
+        bh=Bkl834xA9CcEf8hJwN2hSps66VvWfQ0obMpJUC2DhsI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=n3v24GDLU0OAacwQ8azR4ZyAH5L3zSqPATNrbvEhpRTC9Q9/nuG17Q0Cck8wscapG
+         Y1g5a4dTXh/93Ig5fF8vwETzF+pKorxdKNJqO2MqxYSJq/wQZy7YVk8PNlgT7rWxht
+         JJU7Zj83UBZFTuWnzZGeHq02EE6uLPPSRoKVL7Qg=
+Date:   Thu, 30 Apr 2020 14:31:31 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
+        linux-crypto@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/7] padata: parallelize deferred page init
+Message-Id: <20200430143131.7b8ff07f022ed879305de82f@linux-foundation.org>
+In-Reply-To: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
+References: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_ARCH_NO_SG_CHAIN is set, op->sgl[0] cannot be dereferenced,
-as gcc-10 now points out:
+On Thu, 30 Apr 2020 16:11:18 -0400 Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
 
-drivers/nvme/host/fc.c: In function 'nvme_fc_init_request':
-drivers/nvme/host/fc.c:1774:29: warning: array subscript 0 is outside the bounds of an interior zero-length array 'struct scatterlist[0]' [-Wzero-length-bounds]
- 1774 |  op->op.fcp_req.first_sgl = &op->sgl[0];
-      |                             ^~~~~~~~~~~
-drivers/nvme/host/fc.c:98:21: note: while referencing 'sgl'
-   98 |  struct scatterlist sgl[NVME_INLINE_SG_CNT];
-      |                     ^~~
+> Sometimes the kernel doesn't take full advantage of system memory
+> bandwidth, leading to a single CPU spending excessive time in
+> initialization paths where the data scales with memory size.
+> 
+> Multithreading naturally addresses this problem, and this series is the
+> first step.
+> 
+> It extends padata, a framework that handles many parallel singlethreaded
+> jobs, to handle multithreaded jobs as well by adding support for
+> splitting up the work evenly, specifying a minimum amount of work that's
+> appropriate for one helper thread to do, load balancing between helpers,
+> and coordinating them.  More documentation in patches 4 and 7.
+> 
+> The first user is deferred struct page init, a large bottleneck in
+> kernel boot--actually the largest for us and likely others too.  This
+> path doesn't require concurrency limits, resource control, or priority
+> adjustments like future users will (vfio, hugetlb fallocate, munmap)
+> because it happens during boot when the system is otherwise idle and
+> waiting on page init to finish.
+> 
+> This has been tested on a variety of x86 systems and speeds up kernel
+> boot by 6% to 49% by making deferred init 63% to 91% faster.
 
-I don't know if this is a legitimate warning or a false-positive.
-If this is just a false alarm, the warning is easily suppressed
-by interpreting the array as a pointer.
+How long is this up-to-91% in seconds?  If it's 91% of a millisecond
+then not impressed.  If it's 91% of two weeks then better :)
 
-Fixes: b1ae1a238900 ("nvme-fc: Avoid preallocating big SGL for data")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/nvme/host/fc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Relatedly, how important is boot time on these large machines anyway? 
+They presumably have lengthy uptimes so boot time is relatively
+unimportant?
 
-diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index 887537d1243f..b7ecda48d597 100644
---- a/drivers/nvme/host/fc.c
-+++ b/drivers/nvme/host/fc.c
-@@ -1771,7 +1771,7 @@ nvme_fc_init_request(struct blk_mq_tag_set *set, struct request *rq,
- 	res = __nvme_fc_init_request(ctrl, queue, &op->op, rq, queue->rqcnt++);
- 	if (res)
- 		return res;
--	op->op.fcp_req.first_sgl = &op->sgl[0];
-+	op->op.fcp_req.first_sgl = op->sgl;
- 	op->op.fcp_req.private = &op->priv[0];
- 	nvme_req(rq)->ctrl = &ctrl->ctrl;
- 	return res;
--- 
-2.26.0
-
+IOW, can you please explain more fully why this patchset is valuable to
+our users?
