@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CFB1BFFB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76321BFFC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbgD3PJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 11:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726350AbgD3PJK (ORCPT
+        id S1726930AbgD3PL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 11:11:57 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:34861 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726620AbgD3PL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:09:10 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090F0C035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 08:09:10 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id 19so5474377oiy.8
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 08:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5zQi7r9M2LfUopK89C3EkicnA25N+tRTfqcQYXwGa4Q=;
-        b=GnYrsaN6NEU0QrNKTsi1gIN/yJe1TNR5CQCeXl9rdFJBLOEmWeZUNENU3rOJ3FSWsu
-         qT8FH1y2B/G4LzYSg5SbCtR7kirzz51BW/b7P9XMFnKufdGhmqHT7mXstdf34kryWalf
-         HfWcFuC1VUhCy/FePn/HmAx9/c3r7M9xMRFAE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5zQi7r9M2LfUopK89C3EkicnA25N+tRTfqcQYXwGa4Q=;
-        b=EWsO9XhaxQf9uwHteYqXLSMaN2HRfWTzh+oEqKaBghInYZP4YaC0/uS+dPZuXXQKWs
-         pRNObXP1SxIO6OymMybL4GNKFkIm0nYLo771cnLWkdIDoLFXUXJ4++2b9SAoEh59UJZ6
-         ReThdtEWQGm8Ib+NCQ3wIZQafgENrMONHmGNX+/D+MAMb+2RJtWxH+oEtJzFi6ZUApUp
-         NwTbETv5QRi6MVm7bh8o6MaSgY2VNLvfc/jUbwVepEYnnuSvb5tWMfSpmppYFExKaOxp
-         hg+dH7BkDq0lNZ3BwESVs4yiik5kFcCBngCCC/YmxV0FFg7ugoILrkGm4tsMuY30n5ql
-         6EMA==
-X-Gm-Message-State: AGi0PuZhZkZgjRXs4bq0lbWinHE/tluvcpr0kJxqBuaZk9XozYNxcnPM
-        ggUEjsPeyRmhhjfqU5iDG2Kxu64cppyRlECuFzxM9Q==
-X-Google-Smtp-Source: APiQypK116kyr5jlTbWU6tuCGp85AedUXlIu2BotcPBsyOWDWrXsYR7fZz/xZgi6gNwZzZIxNbnanEsgIscjJj+VMQg=
-X-Received: by 2002:aca:52d5:: with SMTP id g204mr2123371oib.14.1588259349392;
- Thu, 30 Apr 2020 08:09:09 -0700 (PDT)
+        Thu, 30 Apr 2020 11:11:56 -0400
+Received: (qmail 1363 invoked by uid 500); 30 Apr 2020 11:11:55 -0400
+Received: from localhost (sendmail-bs@127.0.0.1)
+  by localhost with SMTP; 30 Apr 2020 11:11:55 -0400
+Date:   Thu, 30 Apr 2020 11:11:55 -0400 (EDT)
+From:   Alan Stern <stern@rowland.harvard.edu>
+X-X-Sender: stern@netrider.rowland.org
+To:     Oliver Neukum <oneukum@suse.com>
+cc:     syzbot <syzbot+be5b5f86a162a6c281e6@syzkaller.appspotmail.com>,
+        <andreyknvl@google.com>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <syzkaller-bugs@googlegroups.com>, <zaitcev@redhat.com>
+Subject: Re: KASAN: use-after-free Read in usblp_bulk_read
+In-Reply-To: <1588238283.16510.11.camel@suse.com>
+Message-ID: <Pine.LNX.4.44L0.2004301103500.27217-100000@netrider.rowland.org>
 MIME-Version: 1.0
-References: <20200430145439.31257-1-manu@FreeBSD.org>
-In-Reply-To: <20200430145439.31257-1-manu@FreeBSD.org>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 30 Apr 2020 17:08:58 +0200
-Message-ID: <CAKMK7uHqFhd69Y7TM64ZHyi9-O0ka3h9dWG8mmiMQV5ZVBWWcA@mail.gmail.com>
-Subject: Re: [RESEND 1/2] drm/client: Dual licence the header in GPL-2 and MIT
-To:     Emmanuel Vadot <manu@freebsd.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@linux.ie>,
-        Matthew D Roper <matthew.d.roper@intel.com>,
-        =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 4:54 PM Emmanuel Vadot <manu@freebsd.org> wrote:
->
-> Source file was dual licenced but the header was omitted, fix that.
-> Contributors for this file are:
-> Daniel Vetter <daniel.vetter@ffwll.ch>
-> Matt Roper <matthew.d.roper@intel.com>
-> Maxime Ripard <mripard@kernel.org>
-> Noralf Tr=C3=B8nnes <noralf@tronnes.org>
-> Thomas Zimmermann <tzimmermann@suse.de>
->
-> Acked-by: Noralf Tr=C3=B8nnes <noralf@tronnes.org>
-> Acked-by: Matt Roper <matthew.d.roper@intel.com>
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Signed-off-by: Emmanuel Vadot <manu@FreeBSD.org>
+On Thu, 30 Apr 2020, Oliver Neukum wrote:
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> ---
->  include/drm/drm_client.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/drm/drm_client.h b/include/drm/drm_client.h
-> index 7402f852d3c4..eb259c2547af 100644
-> --- a/include/drm/drm_client.h
-> +++ b/include/drm/drm_client.h
-> @@ -1,4 +1,4 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> +/* SPDX-License-Identifier: GPL-2.0 or MIT */
->
->  #ifndef _DRM_CLIENT_H_
->  #define _DRM_CLIENT_H_
-> --
-> 2.25.1
->
+> Am Dienstag, den 21.04.2020, 08:35 -0700 schrieb syzbot:
+> > Hello,
+> > 
+> > syzbot found the following crash on:
+> > 
+> > HEAD commit:    0fa84af8 Merge tag 'usb-serial-5.7-rc1' of https://git.ker..
+> > git tree:       https://github.com/google/kasan.git usb-fuzzer
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=126f75d7e00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6b9c154b0c23aecf
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=be5b5f86a162a6c281e6
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > 
+> > Unfortunately, I don't have any reproducer for this crash yet.
+> > 
+> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > Reported-by: syzbot+be5b5f86a162a6c281e6@syzkaller.appspotmail.com
+> > 
+> > usblp0: nonzero read bulk status received: -71
+> 
+> OK, we have this report and nobody understands it. If I may summarize:
+> 
+> 1. We do not conclusively know how the URB was submitted
+> 2. We are clear about which memory was freed and accessed
+> 3. We agree that the URB should have been unlinked
 
+Or should not have been submitted.
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+> Do we agree on what we agree on?
+> 
+> Theories:
+> 
+> A. There is a race that would allow disconnect() and resume() to run
+> concurrently
+> 
+> B. There is a race in usblp which affects 'used'
+> 
+> C. There is a bug in the virtual driver that can make unlinking an URB
+> fail
+> 
+> What do you think? How to investigate this further and is it worth it?
+> Do we have documentation on what KASAN does?
+
+KASAN is documented.  The difficulty is that this race is obviously 
+hard to trigger, and without the ability to reproduce it we can't run 
+diagnostics to find the underlying cause.
+
+We can't even ask syzbot to try running tests for us; without a valid 
+reproducer it won't agree to rerun the original test program.
+
+Alan Stern
+
