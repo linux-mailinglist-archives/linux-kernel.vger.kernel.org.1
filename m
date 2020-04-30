@@ -2,118 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FF31BF910
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E48B1BF926
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgD3NR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726520AbgD3NR0 (ORCPT
+        id S1726962AbgD3NUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:20:17 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:57372 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726917AbgD3NUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:17:26 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13DFC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:17:25 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id u6so6432234ljl.6
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=V+fhiGMWXvrFT59CT1ihId3ZiqpjXsQYR8v/4F83/q8=;
-        b=o56zb6GlbouKCLbb5m0nGOJ3cqQru384VPYgr8/VyrCkbAhWnLv7zr5bAVVJNEkr4e
-         ESbokYk5Tg2ubsW6RYgRNLUy0/qKAi3TGzTzq+JzRO98OPBkjvMOCPVNOVzr+dQeAkLi
-         htAPQCRn8VQ/pGVyh445PNB+62hgkOj4S2PKi7p0dEaBF80aRQD/6uzWeqLjCRn/Nmf3
-         gJSlKBDDlFSJfhUm2NZYqweBH6lKnT2n27iC9sTfO6f8eTWKlS7R6QGYtU8VJqfsxAim
-         xb/rbbbdGtAJQp3f18CDd+dcJiZX2urrLKBcx58Xw17ZdJGlaYu9fNP/9wM8RWmeAYVV
-         k2Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=V+fhiGMWXvrFT59CT1ihId3ZiqpjXsQYR8v/4F83/q8=;
-        b=TXuO2/lCMx4rPGHt3muFUxpcnXj7sahdGzSBOPm7hiduJnWY9tbI3Ch3pkuqC7rQSY
-         0lKC9EHc0dkkmCSafz4ncsIn1TH+j7tWWxL190fvZ9QAcbT42XFQxSmqaTejKDFRdYQ+
-         maf7u8Uo+p05Ru6dpYVWSWcieCXtj4UODGSYB2y8tzm9y0RERacOw1Ce7dwtaXTuThFy
-         ciXnHno1QRu1fZybLHtFooZEyDDqIU+lYQ3wNc17+7EVovKF1WYnuwx6LiVTY5smJmQS
-         BgCiXXx9EoC08bzrqFXtUq7VQgyKRAxY6tsZ1laQWTO69VQ97e+ZrYzx/P61xRWBajby
-         VLPQ==
-X-Gm-Message-State: AGi0PuZpzVfuKjN063q7cf6oM6fTs5ODmGCzDN52n88hWgW/3Yo04JJN
-        le7L7FAm8qfP7cRp6Tcc8T0=
-X-Google-Smtp-Source: APiQypKA/qrPlrZLglJd7F4eO2uj+xhCOewn903PevHnYFKc9s7h1LzTk6l8wCp7XjJ1PHQ6KCqWkA==
-X-Received: by 2002:a2e:b17a:: with SMTP id a26mr2083581ljm.215.1588252644295;
-        Thu, 30 Apr 2020 06:17:24 -0700 (PDT)
-Received: from neopili.qtec.com (cpe.xe-3-0-1-778.vbrnqe10.dk.customer.tdc.net. [80.197.57.18])
-        by smtp.gmail.com with ESMTPSA id l9sm4286771lje.57.2020.04.30.06.17.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 06:17:23 -0700 (PDT)
-From:   Ricardo Ribalda Delgado <ricardo@ribalda.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Alban Bedel <albeu@free.fr>
-Cc:     Ricardo Ribalda Delgado <ribalda@kernel.org>
-Subject: [PATCH] mtd: Fix mtd not registered due to nvmem name collision
-Date:   Thu, 30 Apr 2020 15:17:21 +0200
-Message-Id: <20200430131721.360064-1-ricardo@ribalda.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 30 Apr 2020 09:20:08 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UDJLxg114097;
+        Thu, 30 Apr 2020 13:19:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=xy/1qwI9qxwIfg0g+daxb1BAP6f5f0orcFwzrnuEKeM=;
+ b=R+EyU5hQ6Z1iWZncsaPASQfN7CjWDX0os5GShUuFAO4ielQ3zlmcKTKbnhOGV8PTp+CP
+ J50h9B5SGMPy13rBnRGmCxQ6UWpwoziRlUCUmkju51eERgS2+hhGj6lRieycPyLA6usY
+ lF2Z8ly7anYyuvfDHk834tdaWulES4AZn8xcnwjhmIS0FPRiqhELeK4VUqJYArvMN1Hv
+ /KhXIERtNBVnmGWgYScuSQ+Gm6GrvduxBvMfxL/U/fnB7Fgk0PLle1cLFKnuOX/IpuDu
+ ygvFQ0swGAGNNrxybQ0v9h4hwWh9TFHOktQ/3o35Cc48RIq3xS/7S/r49GTuc+Z4JZAZ iA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30p01p1x7h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 13:19:55 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UDGsYb038508;
+        Thu, 30 Apr 2020 13:17:54 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 30qtf775gf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 13:17:54 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03UDHqoS020254;
+        Thu, 30 Apr 2020 13:17:53 GMT
+Received: from [10.154.112.177] (/10.154.112.177)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 30 Apr 2020 06:17:52 -0700
+Subject: Re: [PATCH] scsi: qla2xxx: use true,false for need_mpi_reset
+To:     Jason Yan <yanaijie@huawei.com>, njavali@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, aeasi@marvell.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200430121751.15232-1-yanaijie@huawei.com>
+From:   himanshu.madhani@oracle.com
+Organization: Oracle Corporation
+Message-ID: <59d50953-cebe-3dd4-e48e-d3283da923f5@oracle.com>
+Date:   Thu, 30 Apr 2020 08:17:51 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200430121751.15232-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004300108
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9606 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 clxscore=1011
+ phishscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004300108
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Ribalda Delgado <ribalda@kernel.org>
 
-When the nvmem framework is enabled, a nvmem device is created per mtd
-device/partition.
 
-It is not uncommon that a device can have multiple mtd devices with
-partitions that have the same name. Eg, when there DT overlay is allowed
-and the same device with mtd is attached twice.
+On 4/30/20 7:17 AM, Jason Yan wrote:
+> Fix the following coccicheck warning:
+> 
+> drivers/scsi/qla2xxx/qla_tmpl.c:1031:6-20: WARNING: Assignment of 0/1 to
+> bool variable
+> drivers/scsi/qla2xxx/qla_tmpl.c:1062:3-17: WARNING: Assignment of 0/1 to
+> bool variable
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>   drivers/scsi/qla2xxx/qla_tmpl.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/qla2xxx/qla_tmpl.c b/drivers/scsi/qla2xxx/qla_tmpl.c
+> index 819c46f31c05..281973b317a8 100644
+> --- a/drivers/scsi/qla2xxx/qla_tmpl.c
+> +++ b/drivers/scsi/qla2xxx/qla_tmpl.c
+> @@ -1028,7 +1028,7 @@ void
+>   qla27xx_mpi_fwdump(scsi_qla_host_t *vha, int hardware_locked)
+>   {
+>   	ulong flags = 0;
+> -	bool need_mpi_reset = 1;
+> +	bool need_mpi_reset = true;
+>   
+>   #ifndef __CHECKER__
+>   	if (!hardware_locked)
+> @@ -1059,7 +1059,7 @@ qla27xx_mpi_fwdump(scsi_qla_host_t *vha, int hardware_locked)
+>   			       "-> fwdt1 fwdump residual=%+ld\n",
+>   			       fwdt->dump_size - len);
+>   		} else {
+> -			need_mpi_reset = 0;
+> +			need_mpi_reset = false;
+>   		}
+>   
+>   		vha->hw->mpi_fw_dump_len = len;
+> 
 
-Under that circumstances, the mtd fails to register due to a name
-duplication on the nvmem framework.
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
 
-With this patch we use the mtdX name instead of the partition name,
-which is unique.
-
-[    8.948991] sysfs: cannot create duplicate filename '/bus/nvmem/devices/Production Data'
-[    8.948992] CPU: 7 PID: 246 Comm: systemd-udevd Not tainted 5.5.0-qtec-standard #13
-[    8.948993] Hardware name: AMD Dibbler/Dibbler, BIOS 05.22.04.0019 10/26/2019
-[    8.948994] Call Trace:
-[    8.948996]  dump_stack+0x50/0x70
-[    8.948998]  sysfs_warn_dup.cold+0x17/0x2d
-[    8.949000]  sysfs_do_create_link_sd.isra.0+0xc2/0xd0
-[    8.949002]  bus_add_device+0x74/0x140
-[    8.949004]  device_add+0x34b/0x850
-[    8.949006]  nvmem_register.part.0+0x1bf/0x640
-...
-[    8.948926] mtd mtd8: Failed to register NVMEM device
-
-Fixes: c4dfa25ab307 ("mtd: add support for reading MTD devices via the nvmem API")
-Signed-off-by: Ricardo Ribalda Delgado <ribalda@kernel.org>
----
- drivers/mtd/mtdcore.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 2916674208b3..29d41003d6e0 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -555,7 +555,7 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 
- 	config.id = -1;
- 	config.dev = &mtd->dev;
--	config.name = mtd->name;
-+	config.name = dev_name(&mtd->dev);
- 	config.owner = THIS_MODULE;
- 	config.reg_read = mtd_nvmem_reg_read;
- 	config.size = mtd->size;
 -- 
-2.26.2
-
+Himanshu Madhani
+Oracle Linux Engineering
