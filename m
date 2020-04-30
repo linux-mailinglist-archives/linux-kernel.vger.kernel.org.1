@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069481BED8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF701BED91
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbgD3B1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 21:27:55 -0400
-Received: from pb-smtp20.pobox.com ([173.228.157.52]:62518 "EHLO
-        pb-smtp20.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgD3B1y (ORCPT
+        id S1726561AbgD3BcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 21:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbgD3BcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 21:27:54 -0400
-Received: from pb-smtp20.pobox.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id AD832CBCCA;
-        Wed, 29 Apr 2020 21:27:52 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=/7UUNjs0jgjJL33kO744X1Zmsy8=; b=t5ZUcU
-        ULXz5TupELg+YI8bqonlpbi0vz/LeyzsjvgtaMd2YwOiqeHDtfJreis57QLu/KfQ
-        R0XPOT4qFmVPwcEpNeJX0e1W+L2NeObuh0h4x+hvZA7WsV1BuxtZXT5Aqs1PN2/K
-        FQ2KxlNR30C9bzZNezSrAlR7cBo8U4UUuU+Ns=
-Received: from pb-smtp20.sea.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp20.pobox.com (Postfix) with ESMTP id A459FCBCC9;
-        Wed, 29 Apr 2020 21:27:52 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=CI/jtc3Zlelxj2BQukubtHMMJfB/+tA0KmygluxhJbA=; b=YQPb/gU/LhzfRx6zMbu+Zs1tlnMbPkPQGX+ngmjhwPGtUwYM7btvMITtaQqrB98Z4ol/vCX1ILq1cCfEPen/73hE+/Q5vml/duNEdm+ERBtA/8OI7IRyCtowoXWqN2OSzf/o//OSZh3+yrpf+HoBGWDKoxtfstaneOjI26SXqwk=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp20.pobox.com (Postfix) with ESMTPSA id 992BECBCC8;
-        Wed, 29 Apr 2020 21:27:49 -0400 (EDT)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id B79A62DA0403;
-        Wed, 29 Apr 2020 21:27:47 -0400 (EDT)
-Date:   Wed, 29 Apr 2020 21:27:47 -0400 (EDT)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        linux-c6x-dev@linux-c6x.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Subject: Re: [PATCH v2 0/5] Fix ELF / FDPIC ELF core dumping, and use mmap_sem
- properly in there
-In-Reply-To: <CAHk-=wgpoEr33NJwQ+hqK1dz3Rs9jSw+BGotsSdt2Kb3HqLV7A@mail.gmail.com>
-Message-ID: <nycvar.YSQ.7.76.2004292115050.2671@knanqh.ubzr>
-References: <20200429214954.44866-1-jannh@google.com> <20200429215620.GM1551@shell.armlinux.org.uk> <CAHk-=wgpoEr33NJwQ+hqK1dz3Rs9jSw+BGotsSdt2Kb3HqLV7A@mail.gmail.com>
-User-Agent: Alpine 2.21 (LFD 202 2017-01-01)
+        Wed, 29 Apr 2020 21:32:00 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89986C035494;
+        Wed, 29 Apr 2020 18:32:00 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id k18so3568639ion.0;
+        Wed, 29 Apr 2020 18:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0w8kJY9j/FEki6CAhMOKe13kIgQ0o8hCyo6pGzmOYdc=;
+        b=MPwVE+Bkz9CcDJalk+jgqmR3yxPIKUJC9RYNqy7zduk8OZljggsMW54Iu0DIGQxaKG
+         fdbwsrCCpogT+InOFKVy82EoAxMwVggL1RJOkUH2Q02y1wlfKbCrlNbt5CcaVv20Z+FL
+         vtJXW1aC5Aw5Wz4IGBUkzIkcsn6XtJeWsA8S0Z8MAX9Zv5uI6T42mM0xogcGR76LyuCH
+         2geNetHgdjA7o06cI3ZjVvsDPq/TlwcYzBJL9HfhiTot/9NI/D+pT2RhoTnJblRugKJo
+         kqomD+/oVM6lCXM4NUSGp/oVrh5MHBenNP42ujYcZQF7JDZ/4qmFgrnvvnD4lCrrwxyd
+         J1kQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0w8kJY9j/FEki6CAhMOKe13kIgQ0o8hCyo6pGzmOYdc=;
+        b=aujRmef9ltzCJaHiqw/F2B1KHkjvVlk75X8kmKlFmpvyrca3ktFa5Zj3TLV/rkDR3k
+         3rEaUOKgp2k76JDN3Y/Dzgw5m8pj0SMk/wqo+OraEcb/5Ns7Y0Yzii8zPIHW1zXmA7TJ
+         QXsYU6luczLXiQNBdvzJ5STZ0mCXcJCwZ9M/v5xNfEUdkpuSA5vN1K/XP6kd8onHhXmf
+         9Dvp/zue2svPauAqD+u9We+GP6KsVLvwpdvgkxhcEWDZlqimaCqtQsZ5uvHMNkx8Y7KE
+         p7KsssPwLuNMguWHUuFBug6mU8MfXMGmRrB9MrA58vVyAMzNAAYtxO/xInes2hjtxC6t
+         wrUg==
+X-Gm-Message-State: AGi0PubrWQjzcwaTnzcj3X+XC9FOl5ZIRscgaQIqitZkRtZUptK06HwM
+        JyrUOgAsSjFNCq2lbcuxEq5gBNg5+ZSrXlH9Bu8=
+X-Google-Smtp-Source: APiQypLz8FaqWq2KOraprYF34ICk96Epr8NTd6xyOTTliXByvTRhVsnLYttoWEeIb2tqNvg6vtoysi3FjHUndN+hZtw=
+X-Received: by 2002:a6b:3c0a:: with SMTP id k10mr1002541iob.10.1588210319908;
+ Wed, 29 Apr 2020 18:31:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: CDCE5890-8A81-11EA-B000-B0405B776F7B-78420484!pb-smtp20.pobox.com
+References: <cover.1588092152.git.chris@chrisdown.name> <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
+ <CALOAHbCotD1-+o_XZPU_4_i8Nn98r5F_5NpGVd=z6UG=rUcCmA@mail.gmail.com> <20200430011626.GA2754277@chrisdown.name>
+In-Reply-To: <20200430011626.GA2754277@chrisdown.name>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 30 Apr 2020 09:31:23 +0800
+Message-ID: <CALOAHbCL_JJgcy9r99Kn81-o_t-fs_nQ+n7aKMHO-02QMCufEw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
+ is above protection
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Apr 2020, Linus Torvalds wrote:
+On Thu, Apr 30, 2020 at 9:16 AM Chris Down <chris@chrisdown.name> wrote:
+>
+> Hi Yafang,
+>
+> Yafang Shao writes:
+> >Would you pls. add some comments above these newly added WRITE_ONCE() ?
+> >E.g.
+> >What does them mean to fix ?
+> >Why do we must add WRITE_ONCE() and READ_ONCE here and there all over
+> >the memcg protection ?
+> >Otherwise, it may be harder to understand by the others.
+>
+> There is already discussion in the changelogs for previous store tear
+> improvements. For example, b3a7822e5e75 ("mm, memcg: prevent
+> mem_cgroup_protected store tearing").
+>
 
-> While we're at it, is there anybody who knows binfmt_flat?
+I'm sorry that I missed the changelog in the other one.
+So you'd better add these commit log or comment to this one again.
 
-I'd say Greg Ungerer.
+> WRITE_ONCE and READ_ONCE are standard compiler barriers, in this case, to avoid
+> store tears from writes in another thread (effective protection caching is
+> designed by its very nature to permit racing, but tearing is non-ideal).
+>
+> You can find out more about them in the "COMPILER BARRIER" section in
+> Documentation/memory-barriers.txt. I'm not really seeing the value of adding an
+> extra comment about this specific use of them, unless you have some more
+> explicit concern.
 
-> It might be Nicolas too.
-
-I only contributed the necessary changes to make it work on targets with 
-a MMU. Once fdpic started to worked I used that instead.
-
-FWIW I couldn't find a toolchain that would produce FLAT binaries with 
-dynamic libs on ARM so I only used static binaries.
+My concern is why we add these barriers to memcg protection
+specifically but don't add these barriers to the other memebers like
+memcg->oom_group which has the same issue ?
+What is the difference between these members and that members ?
 
 
-Nicolas
+-- 
+Thanks
+Yafang
