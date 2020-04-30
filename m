@@ -2,82 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8437D1C065B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD1E1C0663
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbgD3T3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51670 "EHLO
+        id S1726961AbgD3T3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgD3T3T (ORCPT
+        with ESMTP id S1726415AbgD3T3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:29:19 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F8AC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:29:19 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id b1so6088088qtt.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:29:19 -0700 (PDT)
+        Thu, 30 Apr 2020 15:29:49 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8965C035494;
+        Thu, 30 Apr 2020 12:29:48 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id t9so1233344pjw.0;
+        Thu, 30 Apr 2020 12:29:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/eq6aHDyq4eplML2a4cRLGlwq126IAji+Fvgv3MjJ3w=;
-        b=b4OU7wwbA3wxPurcG9pIX2GntI2Xn9noV/RldtqK/ry2Aih34RZFyG37mvEUhqPgUJ
-         FZuolZ4rblAdaMTfLS/iPurKZ2F/6LgIKXT/SPaEjMRd+QYwp0iY0BM+tlLBA7fvDX0b
-         PoKDmL7E0sHYEdt3HL88joyXkVl1giGBlW/wGc0A4Z+11ui4tXTZR9v+/zrk6N9GA6vQ
-         haEP1z4FLxKtLHf0Jh1JXqAuHFmIlunGDsdbG4opwBuPEkRLvy8YZ6HWRP9GmVpISVqB
-         FH581z7KqQk9BGUSOLm3k9zUxr+9oN1hYP+uY2Iia++2Azdeu1TiYpS2K1o6nZxcsaMj
-         dT1A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=S56vvjgUJgJIcs0iI3orpY7ejPb7V1V+KfOnIEgpemg=;
+        b=oAOyVMbSFrTgrrXodp1aN7KVZh+59xE1YaGOAh56d1EC+I4gcm1UjNeI3p6/8+hOgz
+         2i5s2bjByfGsW01ml/aHEdaRd6QMQb65ef4L1x3R+8Z0+tV6gA1tugOZkpG4hujd3F2r
+         Uac4rrNRFI6dI2LsjxLXJEMUySVo8PN254L95aFVxbCN9Dg4IM81ws7Jkn7yhtZ4blTc
+         fi8d6VgtOrxaL/fcC9qDPkwCkGFlncx/GTj6uDsN+gnU7fMsaJgz6t1xYsdW6feHEfUw
+         ZWLFaCIYqIAtoUjGxBFLhY/4JIXbnLgCfZ9r7ZERjmZzVE7k+vVchNrCAoQRgXS/3200
+         iBBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/eq6aHDyq4eplML2a4cRLGlwq126IAji+Fvgv3MjJ3w=;
-        b=B0+9ypvBAXJXAlq0FMLy5gsbskxn1+/BBgQvT/dOb1aI2jDrqln27Yc4rTccCEE6z5
-         jr14O9rRnuVjJFiZy9NmhVqdAcaGYvZwt/DekCQVLKFqD0N57udHhmr3HSw+sF0Jq4n6
-         1edwuy8dXl7l12adWqRb+UNc3ZSlWXEjhU9AuE1lqOLWB66g7fUvJ9xKDGT7DWvYqwkM
-         1h5c+NNdkh86XS6RHuHXHNDEe865a1IMT4LenBZ9sxgy/hIkOlmsD0bjlCQy+Ywg+jDD
-         s8X7rEmCsQS/8YW/YmdwfYtl4i5XVo6HTR9mY/jyRVOFthdiPR9sPojQ2mTaOdvZpeT9
-         aRfQ==
-X-Gm-Message-State: AGi0PuZZCeN4NV1b1pQM2mBBKsfiUsRf6/EeXoNd+spBCzK/eyq2HcHi
-        vQh8UYmKtQx99fnYdM+eUHKfQQ==
-X-Google-Smtp-Source: APiQypJkMljmJVrYuqw1/FA/joYSeHchiIXs0+3QO3JPks1R2xxvo8ZkpSGPuQBznRyTzHv3YCWvFw==
-X-Received: by 2002:ac8:1885:: with SMTP id s5mr2430qtj.253.1588274958913;
-        Thu, 30 Apr 2020 12:29:18 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:63a7])
-        by smtp.gmail.com with ESMTPSA id u27sm543996qtc.73.2020.04.30.12.29.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=S56vvjgUJgJIcs0iI3orpY7ejPb7V1V+KfOnIEgpemg=;
+        b=LcZbhikXDV0hR4MnNepW6Mp/pKdmHfnsNpS1145Jdez5IS3Dj4SJYJ0xmXtbX04GOT
+         /bMmL4G2xtCqdk+/s7LSbNHCQJWJFhcq7i6HQnjpdIK2qDBXTAh08r9HexVU6oLYssrg
+         3VPWkO63qm02qWh4rIMCslJEjoS4+rLSBkfn2EY0jqxnEYAAeWWQXwTcClRmvny8rT3C
+         AhORxarfsB5iC3Cw5Ie3OvwrhJfTMiNjKutiulouHw/SvXOLyLq6TKigbl8vC0+bgcG7
+         qnXcOnqi5ruvGpMbtSmsrqIYJvKP5Du2Dv2zpRMwqL0Zw8sNULhpVhuuh0a8BNZh+9dw
+         wLSw==
+X-Gm-Message-State: AGi0PuZp9kup1fDlyTanCYU78Ep8PfjAo77Hb/MikJvmGon5XlGm47i6
+        tLiarpY87Fob3ybPIiqRTg==
+X-Google-Smtp-Source: APiQypJ7Vu9QFxwaGegbDs+zHeszCr6lN9AOoLWTdbcpuof9RCZcoh1RtagVlKoWgPy1jwwJ8NQDRg==
+X-Received: by 2002:a17:902:261:: with SMTP id 88mr537590plc.308.1588274988360;
+        Thu, 30 Apr 2020 12:29:48 -0700 (PDT)
+Received: from localhost.localdomain ([2402:3a80:d32:dd79:dd81:b49d:fd6a:d165])
+        by smtp.gmail.com with ESMTPSA id e4sm461038pge.45.2020.04.30.12.29.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 12:29:18 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 15:29:07 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-Message-ID: <20200430192907.GA2436@cmpxchg.org>
-References: <20200430182712.237526-1-shakeelb@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430182712.237526-1-shakeelb@google.com>
+        Thu, 30 Apr 2020 12:29:47 -0700 (PDT)
+From:   madhuparnabhowmik10@gmail.com
+To:     mingo@redhat.com, pbonzini@redhat.com, bp@alien8.de
+Cc:     x86@kernel.org, bhelgaas@google.com,
+        sean.j.christopherson@intel.com, cai@lca.pw, paulmck@kernel.org,
+        joel@joelfernandes.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        frextrite@gmail.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-pci@vger.kernel.org,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Subject: [PATCH] x86: Fix RCU list usage to avoid false positive warnings
+Date:   Fri,  1 May 2020 00:59:32 +0530
+Message-Id: <20200430192932.13371-1-madhuparnabhowmik10@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 11:27:12AM -0700, Shakeel Butt wrote:
-> Lowering memory.max can trigger an oom-kill if the reclaim does not
-> succeed. However if oom-killer does not find a process for killing, it
-> dumps a lot of warnings.
-> 
-> Deleting a memcg does not reclaim memory from it and the memory can
-> linger till there is a memory pressure. One normal way to proactively
-> reclaim such memory is to set memory.max to 0 just before deleting the
-> memcg. However if some of the memcg's memory is pinned by others, this
-> operation can trigger an oom-kill without any process and thus can log a
-> lot un-needed warnings. So, ignore all such warnings from memory.max.
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-Can't you set memory.high=0 instead? It does the reclaim portion of
-memory.max, without the actual OOM killing that causes you problems.
+Use list_for_each_entry() instead of list_for_each_entry_rcu() whenever
+spinlock or mutex is always held.
+Otherwise, pass cond to list_for_each_entry_rcu().
+
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+---
+ arch/x86/kernel/nmi.c          | 2 +-
+ arch/x86/kvm/irq_comm.c        | 3 ++-
+ arch/x86/pci/mmconfig-shared.c | 2 +-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
+index 6407ea21fa1b..999dc6c134d2 100644
+--- a/arch/x86/kernel/nmi.c
++++ b/arch/x86/kernel/nmi.c
+@@ -195,7 +195,7 @@ void unregister_nmi_handler(unsigned int type, const char *name)
+ 
+ 	raw_spin_lock_irqsave(&desc->lock, flags);
+ 
+-	list_for_each_entry_rcu(n, &desc->head, list) {
++	list_for_each_entry(n, &desc->head, list) {
+ 		/*
+ 		 * the name passed in to describe the nmi handler
+ 		 * is used as the lookup key
+diff --git a/arch/x86/kvm/irq_comm.c b/arch/x86/kvm/irq_comm.c
+index c47d2acec529..5b88a648e079 100644
+--- a/arch/x86/kvm/irq_comm.c
++++ b/arch/x86/kvm/irq_comm.c
+@@ -258,7 +258,8 @@ void kvm_fire_mask_notifiers(struct kvm *kvm, unsigned irqchip, unsigned pin,
+ 	idx = srcu_read_lock(&kvm->irq_srcu);
+ 	gsi = kvm_irq_map_chip_pin(kvm, irqchip, pin);
+ 	if (gsi != -1)
+-		hlist_for_each_entry_rcu(kimn, &kvm->arch.mask_notifier_list, link)
++		hlist_for_each_entry_rcu(kimn, &kvm->arch.mask_notifier_list, link,
++					srcu_read_lock_held(&kvm->irq_srcu))
+ 			if (kimn->irq == gsi)
+ 				kimn->func(kimn, mask);
+ 	srcu_read_unlock(&kvm->irq_srcu, idx);
+diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+index 6fa42e9c4e6f..a096942690bd 100644
+--- a/arch/x86/pci/mmconfig-shared.c
++++ b/arch/x86/pci/mmconfig-shared.c
+@@ -797,7 +797,7 @@ int pci_mmconfig_delete(u16 seg, u8 start, u8 end)
+ 	struct pci_mmcfg_region *cfg;
+ 
+ 	mutex_lock(&pci_mmcfg_lock);
+-	list_for_each_entry_rcu(cfg, &pci_mmcfg_list, list)
++	list_for_each_entry(cfg, &pci_mmcfg_list, list)
+ 		if (cfg->segment == seg && cfg->start_bus == start &&
+ 		    cfg->end_bus == end) {
+ 			list_del_rcu(&cfg->list);
+-- 
+2.17.1
+
