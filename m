@@ -2,55 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F5E1C0917
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA411C091E
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 23:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgD3VXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 17:23:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40378 "EHLO mail.kernel.org"
+        id S1727100AbgD3VYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 17:24:14 -0400
+Received: from mga12.intel.com ([192.55.52.136]:51418 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbgD3VXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 17:23:12 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 302412166E;
-        Thu, 30 Apr 2020 21:23:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588281792;
-        bh=64VkPdoiN0OePS1AJNJImnN0TBSj5RZkl5WHr7pH2zc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QAitjNdyFZAKZsl9w/HSamjjGQ43tPG20k8YV2BhA6BAzLoL8vXNaWoF9UMgfQlOl
-         pz18SKiCyaRhywDfyy1jCV0/LK15E/q4uBqFP8Tx1y3f51UjeysrNXGr/bRGdaLgLN
-         gix2QWqIln1sTlUAN7qwXwkBNh3ycqNJqvImuaK4=
-Date:   Thu, 30 Apr 2020 14:23:11 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
+        id S1726818AbgD3VYO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 17:24:14 -0400
+IronPort-SDR: ojCHCygKZP267MKtt84Z2Ed6iGkr0lVqWQmLWntTVLOlCFnhVTyGwRkXVsbFx9+GcBY3ZaeDrw
+ kYMgG4kBUnqA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 14:24:12 -0700
+IronPort-SDR: Df7fajOEj/tSyneF9JgWSfkmFSgTUO/AJCWyEyuqP4sIDUhH2Gh1ZRARhBNSCthaiL+g72hSEZ
+ RN8wUzEqy0qw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,337,1583222400"; 
+   d="scan'208";a="405551477"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by orsmga004.jf.intel.com with ESMTP; 30 Apr 2020 14:24:12 -0700
+Date:   Thu, 30 Apr 2020 14:24:12 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
 To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] mm/gup.c: Handle error at earliest for incorrect
  nr_pages value
-Message-Id: <20200430142311.091b82235141ca47b9c6475a@linux-foundation.org>
-In-Reply-To: <1588277518-21425-1-git-send-email-jrdr.linux@gmail.com>
+Message-ID: <20200430212411.GB582335@iweiny-DESK2.sc.intel.com>
 References: <1588277518-21425-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1588277518-21425-1-git-send-email-jrdr.linux@gmail.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  1 May 2020 01:41:58 +0530 Souptick Joarder <jrdr.linux@gmail.com> wrote:
-
+On Fri, May 01, 2020 at 01:41:58AM +0530, Souptick Joarder wrote:
 > As per documentation, pin_user_pages_fast() & get_user_pages_fast()
 > will return 0, if nr_pages <= 0. But this can be figure out only after
 > going inside the internal_get_user_pages_fast().
+
+Why is nr_pages not unsigned?  I seem to have convinced myself before that
+there was a good reason for it but really what is the point of calling either
+of these functions with nr_pages not > 0?
+
 > 
 > This can be handled early. Adding a check for the same.
+> 
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> ---
+>  mm/gup.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 50681f0..a13aaa6 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2817,6 +2817,8 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
+>  	 */
+>  	if (WARN_ON_ONCE(gup_flags & FOLL_PIN))
+>  		return -EINVAL;
+> +	if (nr_pages <= 0)
+> +		return 0;
 
-Calling get_user_pages() for (nrpages <= 0) is a nonsensical thing to
-do so it isn't a thing we should care to optimize.  Adding new checks
-will actually slow down the use cases which we *do* care about.  And it
-adds more code.
+I think the documentation may be wrong here...  Is there a caller who expects a
+return of 0 for this behavior?
 
+It seems like these should be a warn on and return -EINVAL.  I just don't see
+the use case here.
+
+Ira
+
+>  
+>  	/*
+>  	 * The caller may or may not have explicitly set FOLL_GET; either way is
+> @@ -2854,6 +2856,8 @@ int pin_user_pages_fast(unsigned long start, int nr_pages,
+>  	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
+>  	if (WARN_ON_ONCE(gup_flags & FOLL_GET))
+>  		return -EINVAL;
+> +	if (nr_pages <= 0)
+> +		return 0;
+>  
+>  	gup_flags |= FOLL_PIN;
+>  	return internal_get_user_pages_fast(start, nr_pages, gup_flags, pages);
+> -- 
+> 1.9.1
+> 
+> 
