@@ -2,183 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0864D1C0095
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:41:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112B51C008C
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 17:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgD3Pl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 11:41:27 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:50172 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726745AbgD3Pl0 (ORCPT
+        id S1726635AbgD3Pj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 11:39:58 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:49484 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbgD3Pj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 11:41:26 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jUBJT-0008Qi-7v; Thu, 30 Apr 2020 09:41:23 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jUBJS-0002Fp-2k; Thu, 30 Apr 2020 09:41:22 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        virtio-dev@lists.oasis-open.org,
-        virtualization@lists.linux-foundation.org,
-        linuxppc-dev@lists.ozlabs.org, linux-acpi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-hyperv@vger.kernel.org,
-        linux-s390@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Baoquan He <bhe@redhat.com>
-References: <20200430102908.10107-1-david@redhat.com>
-        <20200430102908.10107-3-david@redhat.com>
-Date:   Thu, 30 Apr 2020 10:38:04 -0500
-In-Reply-To: <20200430102908.10107-3-david@redhat.com> (David Hildenbrand's
-        message of "Thu, 30 Apr 2020 12:29:07 +0200")
-Message-ID: <87pnbp2dcz.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 30 Apr 2020 11:39:57 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 2A4432A29C3
+Subject: Re: [PATCH] platform: chrome: Allocate sensorhub resource before
+ claiming sensors
+To:     Gwendal Grignou <gwendal@chromium.org>, dianders@chromium.org
+Cc:     bleung@chromium.org, groeck@chromium.org,
+        linux-kernel@vger.kernel.org
+References: <20200427225902.30404-1-gwendal@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <721e938c-9ef3-a01d-3e3e-98dd97172ba4@collabora.com>
+Date:   Thu, 30 Apr 2020 17:39:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jUBJS-0002Fp-2k;;;mid=<87pnbp2dcz.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18EJxut0ZMAzA6GiTlXjw55Di06eL/sNkE=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        XMGappySubj_01,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.5 XMGappySubj_01 Very gappy subject
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;David Hildenbrand <david@redhat.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 643 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 11 (1.7%), b_tie_ro: 10 (1.5%), parse: 1.37
-        (0.2%), extract_message_metadata: 29 (4.4%), get_uri_detail_list: 4.7
-        (0.7%), tests_pri_-1000: 50 (7.8%), tests_pri_-950: 1.81 (0.3%),
-        tests_pri_-900: 1.57 (0.2%), tests_pri_-90: 188 (29.3%), check_bayes:
-        186 (28.9%), b_tokenize: 11 (1.7%), b_tok_get_all: 91 (14.2%),
-        b_comp_prob: 3.8 (0.6%), b_tok_touch_all: 76 (11.8%), b_finish: 0.97
-        (0.2%), tests_pri_0: 346 (53.9%), check_dkim_signature: 0.82 (0.1%),
-        check_dkim_adsp: 2.4 (0.4%), poll_dns_idle: 0.54 (0.1%), tests_pri_10:
-        2.3 (0.4%), tests_pri_500: 7 (1.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2 2/3] mm/memory_hotplug: Introduce MHP_NO_FIRMWARE_MEMMAP
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <20200427225902.30404-1-gwendal@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Hildenbrand <david@redhat.com> writes:
+Hi Gwendal,
 
-> Some devices/drivers that add memory via add_memory() and friends (e.g.,
-> dax/kmem, but also virtio-mem in the future) don't want to create entries
-> in /sys/firmware/memmap/ - primarily to hinder kexec from adding this
-> memory to the boot memmap of the kexec kernel.
->
-> In fact, such memory is never exposed via the firmware memmap as System
-> RAM (e.g., e820), so exposing this memory via /sys/firmware/memmap/ is
-> wrong:
->  "kexec needs the raw firmware-provided memory map to setup the
->   parameter segment of the kernel that should be booted with
->   kexec. Also, the raw memory map is useful for debugging. For
->   that reason, /sys/firmware/memmap is an interface that provides
->   the raw memory map to userspace." [1]
->
-> We don't have to worry about firmware_map_remove() on the removal path.
-> If there is no entry, it will simply return with -EINVAL.
->
-> [1]
-> https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-firmware-memmap
+Thank you for your patch.
 
+On 28/4/20 0:59, Gwendal Grignou wrote:
+> Allocate callbacks array before enumerating the sensors:
+> The probe routine for these sensors (for instance cros_ec_sensors_probe)
+> can be called within the sensorhub probe routine
+> (cros_ec_sensors_probe())
+> 
+> Fixes: 145d59baff594 ("platform/chrome: cros_ec_sensorhub: Add FIFO support")
+> 
+> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
 
-You know what this justification is rubbish, and I have previously
-explained why it is rubbish.
+Applied as a fix for 5.7
 
-Nacked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-
-This needs to be based on weather the added memory is ultimately normal
-ram or is something special.
-
-At least when we are talking memory resources.  Keeping it out of the
-firmware map that is fine.
-
-If the hotplugged memory is the result of plugging a stick of ram
-into the kernel and can and should used be like any other memory
-it should be treated like any normal memory.
-
-If the hotplugged memory is something special it should be treated as
-something special.
-
-Justifying behavior by documentation that does not consider memory
-hotplug is bad thinking.
-
-
-
-
-
-
-
-
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Cc: Wei Yang <richard.weiyang@gmail.com>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Eric Biederman <ebiederm@xmission.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
->  include/linux/memory_hotplug.h | 8 ++++++++
->  mm/memory_hotplug.c            | 3 ++-
->  2 files changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-> index 0151fb935c09..4ca418a731eb 100644
-> --- a/include/linux/memory_hotplug.h
-> +++ b/include/linux/memory_hotplug.h
-> @@ -68,6 +68,14 @@ struct mhp_params {
->  	pgprot_t pgprot;
->  };
+>  drivers/platform/chrome/cros_ec_sensorhub.c   | 80 +++++++++++--------
+>  .../platform/chrome/cros_ec_sensorhub_ring.c  | 73 ++++++++++-------
+>  .../linux/platform_data/cros_ec_sensorhub.h   |  1 +
+>  3 files changed, 93 insertions(+), 61 deletions(-)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_sensorhub.c b/drivers/platform/chrome/cros_ec_sensorhub.c
+> index b7f2c00db5e1e..9c4af76a9956e 100644
+> --- a/drivers/platform/chrome/cros_ec_sensorhub.c
+> +++ b/drivers/platform/chrome/cros_ec_sensorhub.c
+> @@ -52,28 +52,15 @@ static int cros_ec_sensorhub_register(struct device *dev,
+>  	int sensor_type[MOTIONSENSE_TYPE_MAX] = { 0 };
+>  	struct cros_ec_command *msg = sensorhub->msg;
+>  	struct cros_ec_dev *ec = sensorhub->ec;
+> -	int ret, i, sensor_num;
+> +	int ret, i;
+>  	char *name;
 >  
-> +/* Flags used for add_memory() and friends. */
+> -	sensor_num = cros_ec_get_sensor_count(ec);
+> -	if (sensor_num < 0) {
+> -		dev_err(dev,
+> -			"Unable to retrieve sensor information (err:%d)\n",
+> -			sensor_num);
+> -		return sensor_num;
+> -	}
+> -
+> -	sensorhub->sensor_num = sensor_num;
+> -	if (sensor_num == 0) {
+> -		dev_err(dev, "Zero sensors reported.\n");
+> -		return -EINVAL;
+> -	}
+>  
+>  	msg->version = 1;
+>  	msg->insize = sizeof(struct ec_response_motion_sense);
+>  	msg->outsize = sizeof(struct ec_params_motion_sense);
+>  
+> -	for (i = 0; i < sensor_num; i++) {
+> +	for (i = 0; i < sensorhub->sensor_num; i++) {
+>  		sensorhub->params->cmd = MOTIONSENSE_CMD_INFO;
+>  		sensorhub->params->info.sensor_num = i;
+>  
+> @@ -140,8 +127,7 @@ static int cros_ec_sensorhub_probe(struct platform_device *pdev)
+>  	struct cros_ec_dev *ec = dev_get_drvdata(dev->parent);
+>  	struct cros_ec_sensorhub *data;
+>  	struct cros_ec_command *msg;
+> -	int ret;
+> -	int i;
+> +	int ret, i, sensor_num;
+>  
+>  	msg = devm_kzalloc(dev, sizeof(struct cros_ec_command) +
+>  			   max((u16)sizeof(struct ec_params_motion_sense),
+> @@ -166,10 +152,52 @@ static int cros_ec_sensorhub_probe(struct platform_device *pdev)
+>  	dev_set_drvdata(dev, data);
+>  
+>  	/* Check whether this EC is a sensor hub. */
+> -	if (cros_ec_check_features(data->ec, EC_FEATURE_MOTION_SENSE)) {
+> +	if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE)) {
+> +		sensor_num = cros_ec_get_sensor_count(ec);
+> +		if (sensor_num < 0) {
+> +			dev_err(dev,
+> +				"Unable to retrieve sensor information (err:%d)\n",
+> +				sensor_num);
+> +			return sensor_num;
+> +		}
+> +		if (sensor_num == 0) {
+> +			dev_err(dev, "Zero sensors reported.\n");
+> +			return -EINVAL;
+> +		}
+> +		data->sensor_num = sensor_num;
 > +
-> +/*
-> + * Don't create entries in /sys/firmware/memmap/. The memory is detected and
-> + * added via a device driver, not via the initial (firmware) memmap.
-> + */
-> +#define MHP_NO_FIRMWARE_MEMMAP		1
+> +		/*
+> +		 * Prepare the ring handler before enumering the
+> +		 * sensors.
+> +		 */
+> +		if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
+> +			ret = cros_ec_sensorhub_ring_allocate(data);
+> +			if (ret)
+> +				return ret;
+> +		}
 > +
->  /*
->   * Zone resizing functions
+> +		/* Enumerate the sensors.*/
+>  		ret = cros_ec_sensorhub_register(dev, data);
+>  		if (ret)
+>  			return ret;
+> +
+> +		/*
+> +		 * When the EC does not have a FIFO, the sensors will query
+> +		 * their data themselves via sysfs or a software trigger.
+> +		 */
+> +		if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
+> +			ret = cros_ec_sensorhub_ring_add(data);
+> +			if (ret)
+> +				return ret;
+> +			/*
+> +			 * The msg and its data is not under the control of the
+> +			 * ring handler.
+> +			 */
+> +			return devm_add_action_or_reset(dev,
+> +					cros_ec_sensorhub_ring_remove,
+> +					data);
+> +		}
+> +
+>  	} else {
+>  		/*
+>  		 * If the device has sensors but does not claim to
+> @@ -184,22 +212,6 @@ static int cros_ec_sensorhub_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> -	/*
+> -	 * If the EC does not have a FIFO, the sensors will query their data
+> -	 * themselves via sysfs or a software trigger.
+> -	 */
+> -	if (cros_ec_check_features(ec, EC_FEATURE_MOTION_SENSE_FIFO)) {
+> -		ret = cros_ec_sensorhub_ring_add(data);
+> -		if (ret)
+> -			return ret;
+> -		/*
+> -		 * The msg and its data is not under the control of the ring
+> -		 * handler.
+> -		 */
+> -		return devm_add_action_or_reset(dev,
+> -						cros_ec_sensorhub_ring_remove,
+> -						data);
+> -	}
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/platform/chrome/cros_ec_sensorhub_ring.c b/drivers/platform/chrome/cros_ec_sensorhub_ring.c
+> index c48e5b38a4417..24e48d96ed766 100644
+> --- a/drivers/platform/chrome/cros_ec_sensorhub_ring.c
+> +++ b/drivers/platform/chrome/cros_ec_sensorhub_ring.c
+> @@ -957,17 +957,15 @@ static int cros_ec_sensorhub_event(struct notifier_block *nb,
+>  }
+>  
+>  /**
+> - * cros_ec_sensorhub_ring_add() - Add the FIFO functionality if the EC
+> - *				  supports it.
+> + * cros_ec_sensorhub_ring_allocate() - Prepare the FIFO functionality if the EC
+> + *				       supports it.
 >   *
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index c01be92693e3..e94ede9cad00 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -1062,7 +1062,8 @@ int __ref add_memory_resource(int nid, struct resource *res,
->  	BUG_ON(ret);
+>   * @sensorhub : Sensor Hub object.
+>   *
+>   * Return: 0 on success.
+>   */
+> -int cros_ec_sensorhub_ring_add(struct cros_ec_sensorhub *sensorhub)
+> +int cros_ec_sensorhub_ring_allocate(struct cros_ec_sensorhub *sensorhub)
+>  {
+> -	struct cros_ec_dev *ec = sensorhub->ec;
+> -	int ret;
+>  	int fifo_info_length =
+>  		sizeof(struct ec_response_motion_sense_fifo_info) +
+>  		sizeof(u16) * sensorhub->sensor_num;
+> @@ -978,6 +976,49 @@ int cros_ec_sensorhub_ring_add(struct cros_ec_sensorhub *sensorhub)
+>  	if (!sensorhub->fifo_info)
+>  		return -ENOMEM;
 >  
->  	/* create new memmap entry */
-> -	firmware_map_add_hotplug(start, start + size, "System RAM");
-> +	if (!(flags & MHP_NO_FIRMWARE_MEMMAP))
-> +		firmware_map_add_hotplug(start, start + size, "System RAM");
+> +	/*
+> +	 * Allocate the callback area based on the number of sensors.
+> +	 * Add one for the sensor ring.
+> +	 */
+> +	sensorhub->push_data = devm_kcalloc(sensorhub->dev,
+> +			sensorhub->sensor_num,
+> +			sizeof(*sensorhub->push_data),
+> +			GFP_KERNEL);
+> +	if (!sensorhub->push_data)
+> +		return -ENOMEM;
+> +
+> +	sensorhub->tight_timestamps = cros_ec_check_features(
+> +			sensorhub->ec,
+> +			EC_FEATURE_MOTION_SENSE_TIGHT_TIMESTAMPS);
+> +
+> +	if (sensorhub->tight_timestamps) {
+> +		sensorhub->batch_state = devm_kcalloc(sensorhub->dev,
+> +				sensorhub->sensor_num,
+> +				sizeof(*sensorhub->batch_state),
+> +				GFP_KERNEL);
+> +		if (!sensorhub->batch_state)
+> +			return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * cros_ec_sensorhub_ring_add() - Add the FIFO functionality if the EC
+> + *				  supports it.
+> + *
+> + * @sensorhub : Sensor Hub object.
+> + *
+> + * Return: 0 on success.
+> + */
+> +int cros_ec_sensorhub_ring_add(struct cros_ec_sensorhub *sensorhub)
+> +{
+> +	struct cros_ec_dev *ec = sensorhub->ec;
+> +	int ret;
+> +	int fifo_info_length =
+> +		sizeof(struct ec_response_motion_sense_fifo_info) +
+> +		sizeof(u16) * sensorhub->sensor_num;
+> +
+>  	/* Retrieve FIFO information */
+>  	sensorhub->msg->version = 2;
+>  	sensorhub->params->cmd = MOTIONSENSE_CMD_FIFO_INFO;
+> @@ -998,31 +1039,9 @@ int cros_ec_sensorhub_ring_add(struct cros_ec_sensorhub *sensorhub)
+>  	if (!sensorhub->ring)
+>  		return -ENOMEM;
 >  
->  	/* device_online() will take the lock when calling online_pages() */
->  	mem_hotplug_done();
+> -	/*
+> -	 * Allocate the callback area based on the number of sensors.
+> -	 */
+> -	sensorhub->push_data = devm_kcalloc(
+> -			sensorhub->dev, sensorhub->sensor_num,
+> -			sizeof(*sensorhub->push_data),
+> -			GFP_KERNEL);
+> -	if (!sensorhub->push_data)
+> -		return -ENOMEM;
+> -
+>  	sensorhub->fifo_timestamp[CROS_EC_SENSOR_LAST_TS] =
+>  		cros_ec_get_time_ns();
+>  
+> -	sensorhub->tight_timestamps = cros_ec_check_features(
+> -			ec, EC_FEATURE_MOTION_SENSE_TIGHT_TIMESTAMPS);
+> -
+> -	if (sensorhub->tight_timestamps) {
+> -		sensorhub->batch_state = devm_kcalloc(sensorhub->dev,
+> -				sensorhub->sensor_num,
+> -				sizeof(*sensorhub->batch_state),
+> -				GFP_KERNEL);
+> -		if (!sensorhub->batch_state)
+> -			return -ENOMEM;
+> -	}
+> -
+>  	/* Register the notifier that will act as a top half interrupt. */
+>  	sensorhub->notifier.notifier_call = cros_ec_sensorhub_event;
+>  	ret = blocking_notifier_chain_register(&ec->ec_dev->event_notifier,
+> diff --git a/include/linux/platform_data/cros_ec_sensorhub.h b/include/linux/platform_data/cros_ec_sensorhub.h
+> index c588be843f61b..0ecce6aa69d5e 100644
+> --- a/include/linux/platform_data/cros_ec_sensorhub.h
+> +++ b/include/linux/platform_data/cros_ec_sensorhub.h
+> @@ -185,6 +185,7 @@ int cros_ec_sensorhub_register_push_data(struct cros_ec_sensorhub *sensorhub,
+>  void cros_ec_sensorhub_unregister_push_data(struct cros_ec_sensorhub *sensorhub,
+>  					    u8 sensor_num);
+>  
+> +int cros_ec_sensorhub_ring_allocate(struct cros_ec_sensorhub *sensorhub);
+>  int cros_ec_sensorhub_ring_add(struct cros_ec_sensorhub *sensorhub);
+>  void cros_ec_sensorhub_ring_remove(void *arg);
+>  int cros_ec_sensorhub_ring_fifo_enable(struct cros_ec_sensorhub *sensorhub,
+> 
