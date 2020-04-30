@@ -2,215 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E675D1C0728
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F381C073D
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 22:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726817AbgD3T5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgD3T5x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:57:53 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC67FC08E859
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:57:52 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id s10so2713423plr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:57:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ara67cN5iki3Ojktfn4ur4orVePchyu4PeOXIZf30Mg=;
-        b=d1eBggrtVzvxL+4jQ5qW1PCGyTkhmVC2jWhtfOxi09Fah64Hfo9QDWrK5wcaQL7kaS
-         VCY6nJVuOAnNMSPTrr3tfribxfPfH9zUEIKuhaZPyEtT+HEyXhSjOBqIB8+nAlbAZ0OJ
-         hPJGn5cvFnZgMLvwzuNfZ0dCiQhXwSwwg4GjxKSDgj7lGVg142DIRyRs3K0cJfmHqfAy
-         Vsb5eYy2v9doTOF02Spr+vxNEdYqzVTVGZRcToF7AfC6veZilcm7gp6Rbbc4uaZ3R/fS
-         0aMc1b3U5gcI85zHYom6rjYy/tXIKaYrvpXn0LxfHYmu2qd0FNa/WCil414gsv3OnfQZ
-         Y04Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ara67cN5iki3Ojktfn4ur4orVePchyu4PeOXIZf30Mg=;
-        b=bAt7E+BGJQNsMR4gKojmV4ntTkofq+CFJTUr4oUUuzM7j8KeZ294hRGnTam5nqLcon
-         LxyjR6rR5Sb8VnUTAOZaZ/UxGqYkOZZIFBpiLfJzooEYdWsXcrSiGttZCrxfB2R26XUb
-         PnfovLWkzk6PGpNn4wmnCWg3FSaVopiCo/rZ8GCykDGa4EhtUe7SXyrDYZNRGldUoGGN
-         0SJbQ3Do7sKIeX4zga8PdnoYCXJXzNELRGOK31xloS5iWCpkAM6ccml5WZi3+IqCYHQV
-         NU7gc8gZvkHbmc4j7FNmxOXU/E7QcXQPcN9h2ZZusmBlUpDxEYa+ytieelGqP1OJEzrR
-         vL9g==
-X-Gm-Message-State: AGi0PuZQX4sx6/ioLRewKvF7CTVdHHdbdV20xGI1r9YnCcWYRLd73v1D
-        HUTAaaSGn9CuGetjMnwOFvCFzw==
-X-Google-Smtp-Source: APiQypL6jZ39gXeEW4b2DwBMoz5wCVMdp0O9pLgfSwbPCw/1uJ2G9zdRMWtd4H1ZLuSmHgVxyFGiNQ==
-X-Received: by 2002:a17:90a:718c:: with SMTP id i12mr565196pjk.58.1588276672231;
-        Thu, 30 Apr 2020 12:57:52 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id z1sm503182pjn.43.2020.04.30.12.57.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 12:57:51 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 13:57:49 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     bjorn.andersson@linaro.org, ohad@wizery.com, loic.pallardy@st.com,
-        s-anna@ti.com, linux-remoteproc@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 08/14] remoteproc: Call core functions based on
- synchronisation flag
-Message-ID: <20200430195749.GC17031@xps15>
-References: <20200424200135.28825-1-mathieu.poirier@linaro.org>
- <20200424200135.28825-9-mathieu.poirier@linaro.org>
- <a17d871a-3b3f-a462-9b2c-f9183f80a533@st.com>
+        id S1726770AbgD3UBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 16:01:41 -0400
+Received: from mga12.intel.com ([192.55.52.136]:46024 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726272AbgD3UBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 16:01:41 -0400
+IronPort-SDR: JAy74jXcLui/Squ79xZDXcyyBpU21gKzsaAg9YZZmB0ycGNAVErMVCi3unOHOpadH/4mmMbzVs
+ LJmWZ7XRMKsQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 13:01:40 -0700
+IronPort-SDR: Upk1DYOonbh9vpZzbFkQqkQP+XWtpRM+4qaWOcKCEZv31LmaoqvkgUggnv5Pzs7dQOeLmQm0f/
+ bzz4/5EHLIYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,337,1583222400"; 
+   d="scan'208";a="261892202"
+Received: from dnlloyd-mobl.amr.corp.intel.com (HELO [10.255.231.251]) ([10.255.231.251])
+  by orsmga006.jf.intel.com with ESMTP; 30 Apr 2020 13:01:39 -0700
+Subject: Re: [PATCH v1 1/1] fs/splice: add missing callback for inaccessible
+ pages
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        akpm@linux-foundation.org, jack@suse.cz, kirill@shutemov.name
+Cc:     david@redhat.com, aarcange@redhat.com, linux-mm@kvack.org,
+        frankja@linux.ibm.com, sfr@canb.auug.org.au, jhubbard@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        peterz@infradead.org, sean.j.christopherson@intel.com
+References: <20200428225043.3091359-1-imbrenda@linux.ibm.com>
+ <2a1abf38-d321-e3c7-c3b1-53b6db6da310@intel.com>
+ <d77d1e86-ac99-8c18-658c-d8150a71b11e@de.ibm.com>
+ <540f483f-5e58-f342-e771-9d90c4d3fb6a@intel.com>
+ <f32fa7f8-a259-80cc-ec70-d9cd690a8430@de.ibm.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <fe1a2ecd-78ff-9bc6-717c-bdb55479b703@intel.com>
+Date:   Thu, 30 Apr 2020 13:01:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a17d871a-3b3f-a462-9b2c-f9183f80a533@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <f32fa7f8-a259-80cc-ec70-d9cd690a8430@de.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 07:27:27PM +0200, Arnaud POULIQUEN wrote:
-> 
-> 
-> On 4/24/20 10:01 PM, Mathieu Poirier wrote:
-> > Call the right core function based on whether we should synchronise
-> > with a remote processor or boot it from scratch.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >  drivers/remoteproc/remoteproc_internal.h | 50 ++++++++++++++++++++++++
-> >  1 file changed, 50 insertions(+)
-> > 
-> > diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
-> > index dda7044c4b3e..3985c084b184 100644
-> > --- a/drivers/remoteproc/remoteproc_internal.h
-> > +++ b/drivers/remoteproc/remoteproc_internal.h
-> > @@ -72,6 +72,12 @@ static inline bool rproc_needs_syncing(struct rproc *rproc)
-> >  static inline
-> >  int rproc_fw_sanity_check(struct rproc *rproc, const struct firmware *fw)
-> >  {
-> > +	if (rproc_needs_syncing(rproc)) {
-> > +		if (rproc->sync_ops && rproc->sync_ops->sanity_check)
-> > +			return rproc->sync_ops->sanity_check(rproc, fw);
-> > +		return 0;
-> > +	}
-> > +
-> >  	if (rproc->ops && rproc->ops->sanity_check)
-> >  		return rproc->ops->sanity_check(rproc, fw);
-> 
-> Regarding this patch I'm trying to determine whether it makes sense to have ops or
-> sync_ops set to null. Your[v3 01/14]  patch commit explains that ops can be null in case of
-> synchronisation.
-> But it seems deprecated with the sync_ops introduction...
+On 4/30/20 12:38 PM, Christian Borntraeger wrote:
+>>
+>>> What do you see when you also do the  SetPageAccessible(page);
+>>> in the else page of prep_new_page (order == 0).
+>>> (I do get > 10000 of these non compound page allocs just during boot).
+>> Yes, I see the same thing.
+>>
+>> I updated the patch and double-checked that it triggers properly with a
+>> socket-based sendfile().
+> Do you have a calltrace? 
 
-Your comment made me go over the logic again...  If rproc_needs_syncing() is
-true then we necessarily have a sync_ops.  If rproc_needs_syncing() is false,
-there too we automatically have an ops.  As such and as you point out, checking
-for rproc->sync_ops and rproc-ops is probably useless.
+It triggers with the thread from this patch _not_ applied.  I just
+wanted to point out that it was able to find the real bug and that the
+patch in question squashed this instance.
 
-> 
-> And if sync_ops is null, is it still necessary to define a remoteproc device?
+Here's the call trace I see:
 
-Not sure I understand your point here but with the reasonning from above it
-is probably moot anyway. 
-
-> 
-> Regards
-> Arnad
-> 
-> >  
-> > @@ -81,6 +87,12 @@ int rproc_fw_sanity_check(struct rproc *rproc, const struct firmware *fw)
-> >  static inline
-> >  u64 rproc_get_boot_addr(struct rproc *rproc, const struct firmware *fw)
-> >  {
-> > +	if (rproc_needs_syncing(rproc)) {
-> > +		if (rproc->sync_ops && rproc->sync_ops->get_boot_addr)
-> > +			return rproc->sync_ops->get_boot_addr(rproc, fw);
-> > +		return 0;
-> > +	}
-> > +
-> >  	if (rproc->ops && rproc->ops->get_boot_addr)
-> >  		return rproc->ops->get_boot_addr(rproc, fw);
-> >  
-> > @@ -90,6 +102,12 @@ u64 rproc_get_boot_addr(struct rproc *rproc, const struct firmware *fw)
-> >  static inline
-> >  int rproc_load_segments(struct rproc *rproc, const struct firmware *fw)
-> >  {
-> > +	if (rproc_needs_syncing(rproc)) {
-> > +		if (rproc->sync_ops && rproc->sync_ops->load)
-> > +			return rproc->sync_ops->load(rproc, fw);
-> > +		return 0;
-> > +	}
-> > +
-> >  	if (rproc->ops && rproc->ops->load)
-> >  		return rproc->ops->load(rproc, fw);
-> >  
-> > @@ -98,6 +116,12 @@ int rproc_load_segments(struct rproc *rproc, const struct firmware *fw)
-> >  
-> >  static inline int rproc_parse_fw(struct rproc *rproc, const struct firmware *fw)
-> >  {
-> > +	if (rproc_needs_syncing(rproc)) {
-> > +		if (rproc->sync_ops && rproc->sync_ops->parse_fw)
-> > +			return rproc->sync_ops->parse_fw(rproc, fw);
-> > +		return 0;
-> > +	}
-> > +
-> >  	if (rproc->ops && rproc->ops->parse_fw)
-> >  		return rproc->ops->parse_fw(rproc, fw);
-> >  
-> > @@ -108,6 +132,13 @@ static inline
-> >  int rproc_handle_rsc(struct rproc *rproc, u32 rsc_type, void *rsc, int offset,
-> >  		     int avail)
-> >  {
-> > +	if (rproc_needs_syncing(rproc)) {
-> > +		if (rproc->sync_ops && rproc->sync_ops->handle_rsc)
-> > +			return rproc->sync_ops->handle_rsc(rproc, rsc_type,
-> > +							   rsc, offset, avail);
-> > +		return 0;
-> > +	}
-> > +
-> >  	if (rproc->ops && rproc->ops->handle_rsc)
-> >  		return rproc->ops->handle_rsc(rproc, rsc_type, rsc, offset,
-> >  					      avail);
-> > @@ -119,6 +150,13 @@ static inline
-> >  struct resource_table *rproc_find_loaded_rsc_table(struct rproc *rproc,
-> >  						   const struct firmware *fw)
-> >  {
-> > +	if (rproc_needs_syncing(rproc)) {
-> > +		if (rproc->sync_ops && rproc->sync_ops->find_loaded_rsc_table)
-> > +			return rproc->sync_ops->find_loaded_rsc_table(rproc,
-> > +								      fw);
-> > +		return NULL;
-> > +	}
-> > +
-> >  	if (rproc->ops && rproc->ops->find_loaded_rsc_table)
-> >  		return rproc->ops->find_loaded_rsc_table(rproc, fw);
-> >  
-> > @@ -127,6 +165,12 @@ struct resource_table *rproc_find_loaded_rsc_table(struct rproc *rproc,
-> >  
-> >  static inline int rproc_start_device(struct rproc *rproc)
-> >  {
-> > +	if (rproc_needs_syncing(rproc)) {
-> > +		if (rproc->sync_ops && rproc->sync_ops->start)
-> > +			return rproc->sync_ops->start(rproc);
-> > +		return 0;
-> > +	}
-> > +
-> >  	if (rproc->ops && rproc->ops->start)
-> >  		return rproc->ops->start(rproc);
-> >  
-> > @@ -135,6 +179,12 @@ static inline int rproc_start_device(struct rproc *rproc)
-> >  
-> >  static inline int rproc_stop_device(struct rproc *rproc)
-> >  {
-> > +	if (rproc_needs_syncing(rproc)) {
-> > +		if (rproc->sync_ops && rproc->sync_ops->stop)
-> > +			return rproc->sync_ops->stop(rproc);
-> > +		return 0;
-> > +	}
-> > +
-> >  	if (rproc->ops && rproc->ops->stop)
-> >  		return rproc->ops->stop(rproc);
-> >  
-> > 
+> [  199.566150] WARNING: CPU: 0 PID: 878 at mm/page_alloc.c:8860 check_page_accessible+0x5f/0xb0
+> [  199.567813] Modules linked in:
+> [  199.568447] CPU: 0 PID: 878 Comm: server Not tainted 5.7.0-rc3-dirty #6544
+> [  199.569948] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Ubuntu-1.8.2-1ubuntu1 04/01/2014
+> [  199.571980] RIP: 0010:check_page_accessible+0x5f/0xb0
+> [  199.572737] Code: 4c 01 48 85 db 74 18 48 8b 03 48 8b 7b 08 48 83 c3 18 48 89 ee ff d0 48 8b 03 48 85 c0 75 eb 48 8b 45 00 a9 00 00 20 00 75 bb <0f> 0b 0f 1f 44 00 00 3e 80 4d 02 20 5b 5d c3 65 8b 05 db 72 d3 7e
+> [  199.576514] RSP: 0018:ffffc900003f7810 EFLAGS: 00010246
+> [  199.577556] RAX: 000ffff800020016 RBX: ffff88800ff5b068 RCX: 0000000000000000
+> [  199.578964] RDX: 0000000000000003 RSI: 0000000000000008 RDI: ffff88800fc18400
+> [  199.580352] RBP: ffffea0001d5ca40 R08: 00000000000001b5 R09: ffff88800fe74000
+> [  199.581784] R10: ffff88800fe74170 R11: ffff88800fc18400 R12: 0000000000001000
+> [  199.583179] R13: 0000000000000000 R14: 0000000000000000 R15: ffffc900005e52d0
+> [  199.584587] FS:  00007ffff7fe8700(0000) GS:ffff88807ce00000(0000) knlGS:0000000000000000
+> [  199.586045] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  199.587200] CR2: 00007ffff7b042b0 CR3: 000000007ab5a000 CR4: 00000000003406f0
+> [  199.588655] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [  199.591784] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [  199.593217] Call Trace:
+> [  199.593755]  ? e1000_xmit_frame+0x50c/0x1040
+> [  199.594626]  ? dev_hard_start_xmit+0x8d/0x1e0
+> [  199.596126]  ? sch_direct_xmit+0xe8/0x220
+> [  199.597676]  ? __qdisc_run+0x13a/0x4e0
+> [  199.598476]  ? __dev_queue_xmit+0x2d7/0x710
+> [  199.599767]  ? ip_finish_output2+0x2a8/0x550
+> [  199.601195]  ? skb_gso_validate_network_len+0x11/0x70
+> [  199.602272]  ? ip_output+0x6d/0xe0
+> [  199.602955]  ? ip_forward_options.cold.9+0x27/0x27
+> [  199.603918]  ? __ip_queue_xmit+0x14f/0x370
+> [  199.604734]  ? __tcp_transmit_skb+0x54b/0xad0
+> [  199.605608]  ? tcp_write_xmit+0x379/0x10c0
+> [  199.606354]  ? do_tcp_sendpages+0x2bc/0x5f0
+> [  199.607206]  ? tcp_sendpage_locked+0x44/0x60
+> [  199.608066]  ? tcp_sendpage+0x37/0x50
+> [  199.608801]  ? inet_sendpage+0x4f/0x80
+> [  199.609554]  ? kernel_sendpage+0x17/0x20
+> [  199.610341]  ? sock_sendpage+0x20/0x30
+> [  199.610989]  ? pipe_to_sendpage+0x60/0xa0
+> [  199.611658]  ? __splice_from_pipe+0x9f/0x180
+> [  199.612567]  ? generic_pipe_buf_nosteal+0x10/0x10
+> [  199.613509]  ? generic_pipe_buf_nosteal+0x10/0x10
+> [  199.614452]  ? splice_from_pipe+0x5d/0x90
+> [  199.615258]  ? direct_splice_actor+0x32/0x40
+> [  199.616102]  ? splice_direct_to_actor+0x101/0x220
+> [  199.617054]  ? pipe_to_sendpage+0xa0/0xa0
+> [  199.617858]  ? do_splice_direct+0x9a/0xd0
+> [  199.618660]  ? do_sendfile+0x1ce/0x3d0
+> [  199.619411]  ? __x64_sys_sendfile64+0x5c/0xc0
+> [  199.620343]  ? do_syscall_64+0x4a/0x130
+> [  199.621042]  ? entry_SYSCALL_64_after_hwframe+0x49/0xb3
+> [  199.622119] ---[ end trace 19796ac5d41cc1f4 ]---
