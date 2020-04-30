@@ -2,123 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDC41C071B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AFC1C0725
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgD3T47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56116 "EHLO
+        id S1726930AbgD3T5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbgD3T46 (ORCPT
+        with ESMTP id S1726366AbgD3T53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:56:58 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFADC08E859
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:56:58 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id f7so381951pfa.9
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:56:58 -0700 (PDT)
+        Thu, 30 Apr 2020 15:57:29 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52402C035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:57:29 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id 71so6111003qtc.12
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:57:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kPzmBEkauB3ZxlWoeL0oahZoxKT2pd5/ATvEYXXQ2xc=;
-        b=cDz9M1OIiYUZDQy3cKKmDRnnZGONTni4S2ZJmbWsXQswsF3MB7iZ+K3PywbHI2cWbR
-         Mf+XxDVUPKnyap5PXRKDqhPWc+/EwhWy6fZ8gUzzuRfmafcNZHlfXmJMNJPwQxVI6Bfg
-         FCIoaX7FhQ+08qxE1xXh3e3gsMJ/niq0fcsb71m4Zqes5WHpzuG5w2aBQqkzMZXH7UBa
-         KL30k1EahReJwjOt4M95T/dXETNQsy4A91l5/w+UKSYVkEgWNlSd0qxCviBLmgso/VVN
-         aOyLbNNAbCghJ4VXC1lPu7rjzDYGWNO30XQuVsOWwxQESN5qpOewu37dyuqtrr1oPDRH
-         X2wA==
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=LQzvuTiDzxPg8UH93cWpbzSYrqHmgu+qFCbwAwEqzrw=;
+        b=XqTNUK6OjR2wnrjL1ekQ59FruO/L9hC7avESb1TAex4GM8KYVyffZ4+yeO3rgDBoUD
+         2JM7qmOtjmkqyIbqGgDTxKdj5aKTTJrwcU2x+hGF68kCCaX1o+7t6EjfKZLsbCSKeyi/
+         dQ37o9HIVVPZfBhMBhSOAOf3H+zo6qz7bd/Bkc8SWtEUNLvc8F8e6AQAX5CaQouOqCU+
+         W1at4ORGUGKKdS6YPURLv15trAp09e+ejrSOJV3YzgCUzRS0zVOUOGVjXAk1yqsJ5q8O
+         8OAtOt19hNTrv9zqMmpE7gQlUN9IC7CQpFeBjFDh661QROIIOSonPON3ipKsxtySNr/F
+         2IQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kPzmBEkauB3ZxlWoeL0oahZoxKT2pd5/ATvEYXXQ2xc=;
-        b=XjMKZK+RQWR4JQNZj+1WwRgO7Xm1fRblURnouUTvIDtBNM4+PkoaTk6HBYWOSRcZCG
-         JDtexFwcLFh3zRT8mguztj6gnFqVhSr6deSEzbF3uBPBtNMQ3qeMGamtFWkXVnIPETHd
-         VjOFY1WcFPxa0PxDwi7CdjDy7Kjo2nWtY05F3gEjeO6jZTb791wyJqML2oBC9LKMAIx+
-         YTRlKKAdEnQN6XCHNqrAHR9hF/z/Pzpl00zosNJE9FZ9e7OAD/jELAjjShThXUSeSxIE
-         PIBClfE4aAXVG/Mk1sL6p3iPS7x40uaa2Na9Tm26xYFJ8JF4+R5SKwdw2A9jomsEY0JL
-         IrXA==
-X-Gm-Message-State: AGi0PuZ+MOabY4WYJ2d0QVGA+n8yvImfS87I7GmTSnULIz0V6/Tpg5pC
-        hjYY8LyJzPB2N3y6Ixh68WPpKvhV4ajnnA==
-X-Google-Smtp-Source: APiQypKdj0QpDYDUfAC9z2RZ/9tolDELVk/9HhdYUHTHTaYPn+2ATTJzAJWy/9EnPJ3YrN00rHSs8A==
-X-Received: by 2002:a62:3006:: with SMTP id w6mr391270pfw.29.1588276617468;
-        Thu, 30 Apr 2020 12:56:57 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.145])
-        by smtp.gmail.com with ESMTPSA id z1sm502198pjn.43.2020.04.30.12.56.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 12:56:56 -0700 (PDT)
-Subject: Re: [PATCH] pipe: read/write_iter() handler should check for
- IOCB_NOWAIT
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <273d8294-2508-a4c2-f96e-a6a394f94166@kernel.dk>
- <20200430175856.GX29705@bombadil.infradead.org>
- <d00f0ead-2782-06b3-6e21-559d8c86c461@kernel.dk>
- <bb78a400-8af5-aae8-8049-fd37e1a4db07@kernel.dk>
-Message-ID: <82433793-07ed-ea65-5962-86c8e4c59afb@kernel.dk>
-Date:   Thu, 30 Apr 2020 13:56:55 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=LQzvuTiDzxPg8UH93cWpbzSYrqHmgu+qFCbwAwEqzrw=;
+        b=WGg86HG5GX3t/flRFzzLhPuCCJcySR6M38sr9/C2yAx58+4z1xta3d15nKg/+bJZFq
+         PqySUa6RdbLuxdXfp2W2rkI5JB3VN0FYQG4g0RQsXo6cTt5N5e5SMAStjlbI291W/vjK
+         7Nqjv+/Iowo7itEWJKL7htidQi8EK6HLd+g8QHbX6OehHL4oF20JoqP4Gg02QxAZiHfZ
+         obtnmApKvM7Q9g7ox+FKxtaVRWcgmGCv9DcQgHjvhBShYQXufzNc76iY5wIOzG0s+GiB
+         LxXpCH/7DzmhObY15zIfkk6G56jCohbh/dasvpXTyY29XmFfCx7U8uet1DuJrtlsYFbI
+         vpdA==
+X-Gm-Message-State: AGi0PuZ0/9la5J/SRdgG/pzFUQYf8VN4oizY8SKhrfNpQA4L1ZKxoTVa
+        o51dxO4I2gEkVJMLcDSt2B+quA==
+X-Google-Smtp-Source: APiQypLeHtVRo31TWgHmb+0zDjdx4VCsPKzmGa+gDrrI/ELs5FpHmKX0AdnqBHMTMiWGBPap150b5Q==
+X-Received: by 2002:ac8:470e:: with SMTP id f14mr151315qtp.87.1588276648462;
+        Thu, 30 Apr 2020 12:57:28 -0700 (PDT)
+Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
+        by smtp.gmail.com with ESMTPSA id b19sm861386qkg.72.2020.04.30.12.57.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 12:57:28 -0700 (PDT)
+Message-ID: <07d33cf9937c89519bafc9210a98dab42579e681.camel@massaru.org>
+Subject: Re: [PATCH] docs: filesystems: fix `make htmldocs` warning
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, hubcap@omnibond.com,
+        martin@omnibond.com, devel@lists.orangefs.org,
+        linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Date:   Thu, 30 Apr 2020 16:57:24 -0300
+In-Reply-To: <20200430134704.236c612b@lwn.net>
+References: <20200430190737.80950-1-vitor@massaru.org>
+         <20200430134704.236c612b@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <bb78a400-8af5-aae8-8049-fd37e1a4db07@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/30/20 1:51 PM, Jens Axboe wrote:
-> On 4/30/20 12:47 PM, Jens Axboe wrote:
->> On 4/30/20 11:58 AM, Matthew Wilcox wrote:
->>> On Thu, Apr 30, 2020 at 10:24:46AM -0600, Jens Axboe wrote:
->>>> Pipe read/write only checks for the file O_NONBLOCK flag, but we should
->>>> also check for IOCB_NOWAIT for whether or not we should handle this read
->>>> or write in a non-blocking fashion. If we don't, then we will block on
->>>> data or space for iocbs that explicitly asked for non-blocking
->>>> operation. This messes up callers that explicitly ask for non-blocking
->>>> operations.
->>>>
->>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>
->>> Wouldn't this be better?
->>
->> Yeah, that's probably a better idea. Care to send a "proper" patch?
-> 
-> I take that back, running into issues going with a whole-sale conversion
-> like that:
-> 
-> mkdir("/run/dhcpcd", 0755)              = -1 EEXIST (File exists)
-> openat(AT_FDCWD, "/run/dhcpcd/ens7.pid", O_WRONLY|O_CREAT|O_NONBLOCK|O_CLOEXEC, 0644) = 4
-> flock(4, LOCK_EX|LOCK_NB)               = 0
-> getpid()                                = 214
-> ftruncate(4, 0)                         = 0
-> lseek(4, 0, SEEK_SET)                   = 0
-> fstat(4, {st_mode=S_IFREG|0644, st_size=0, ...}) = 0
-> lseek(4, 0, SEEK_CUR)                   = 0
-> write(4, "214\n", 4)                    = -1 EINVAL (Invalid argument)
-> 
-> which I don't know where is coming from yet, but it's definitely
-> breakage by auto setting IOCB_NOWAIT if O_NONBLOCK is set.
-> 
-> I'd prefer to go your route, but I also would like this fixed for pipes
-> for 5.7. So I'd suggest we go with mine, and then investigate why this
-> is breaking stuff and go with the all-in approach for 5.8 if feasible.
+Hi Jon,
 
-OK, it's the old classic in generic_write_checks(), is my guess:
+On Thu, 2020-04-30 at 13:47 -0600, Jonathan Corbet wrote:
+> On Thu, 30 Apr 2020 16:07:37 -0300
+> Vitor Massaru Iha <vitor@massaru.org> wrote:
+> 
+> > make htmldocs
+> > Documentation/filesystems/orangefs.rst:124: WARNING: Literal block
+> > expected; none found.
+> > 
+> > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> > ---
+> >  Documentation/filesystems/orangefs.rst | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > 
+> > diff --git a/Documentation/filesystems/orangefs.rst
+> > b/Documentation/filesystems/orangefs.rst
+> > index e41369709c5b..628dc220567e 100644
+> > --- a/Documentation/filesystems/orangefs.rst
+> > +++ b/Documentation/filesystems/orangefs.rst
+> > @@ -119,9 +119,7 @@ it comes to that question::
+> >  
+> >      /opt/ofs/bin/pvfs2-genconfig /etc/pvfs2.conf
+> >  
+> > -Create an /etc/pvfs2tab file::
+> > -
+> > -Localhost is fine for your pvfs2tab file:
+> > +Create an /etc/pvfs2tab file. Localhost is fine for your pvfs2tab
+> > file::
+> >  
+> >      echo tcp://localhost:3334/orangefs /pvfsmnt pvfs2
+> > defaults,noauto 0 0 > \
+> >  	/etc/pvfs2tab
+> 
+> Thanks, but this has already been fixed in docs-next.
 
-        if ((iocb->ki_flags & IOCB_NOWAIT) && !(iocb->ki_flags & IOCB_DIRECT))  
-                return -EINVAL;
+Sorry about that. I searched but I didn't find the documentation tree.
+Could you point me to the git url?
 
-so we definitely can't just flip the switch on O_NONBLOCK -> IOCB_NOWAIT
-in general, at least not for writes.
-
--- 
-Jens Axboe
+Thanks,
+Vitor
 
