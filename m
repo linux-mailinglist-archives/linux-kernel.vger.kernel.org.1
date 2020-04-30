@@ -2,138 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAC31BEEBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178121BEEBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 05:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgD3Dx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 23:53:26 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:54880 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726405AbgD3DxZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 23:53:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588218804;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZufJCVAcrddU2HlFIrpCmkEVQ7zG0wH3RUMx2nRv1lg=;
-        b=Dj4GjnwtYEgLaTu6eCM13Nfk2jQUFwfvuia3vXa69KKeQ+n0YR5aVIA0zKhH4xDg4zG3ew
-        8lD68Q3jlPTtz6Nmt0reZO3MGFepHxStOJkFBllhPRXnNwFIVVR5frp6l5/D6WWsKa5jhQ
-        PuPP3VPu05qXperMMO6FnTpdDwi+PZ4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-40-40vepxlRNWyw2n7pMye9iA-1; Wed, 29 Apr 2020 23:53:21 -0400
-X-MC-Unique: 40vepxlRNWyw2n7pMye9iA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8148A45F;
-        Thu, 30 Apr 2020 03:53:19 +0000 (UTC)
-Received: from treble (ovpn-113-19.rdu2.redhat.com [10.10.113.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7436E6606B;
-        Thu, 30 Apr 2020 03:53:17 +0000 (UTC)
-Date:   Wed, 29 Apr 2020 22:53:15 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     x86@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, hpa@zytor.com, ast@kernel.org,
-        peterz@infradead.org, rdunlap@infradead.org,
-        Arnd Bergmann <arnd@arndb.de>, bpf@vger.kernel.org,
-        daniel@iogearbox.net
-Subject: Re: BPF vs objtool again
-Message-ID: <20200430035315.tc74v5twfdxv2goh@treble>
-References: <30c3ca29ba037afcbd860a8672eef0021addf9fe.1563413318.git.jpoimboe@redhat.com>
- <tip-3193c0836f203a91bef96d88c64cccf0be090d9c@git.kernel.org>
- <20200429215159.eah6ksnxq6g5adpx@treble>
- <20200429234159.gid6ht74qqmlpuz7@ast-mbp.dhcp.thefacebook.com>
- <20200430001300.k3pgq2minrowstbs@treble>
- <20200430021052.k47qzm63kpcn32pg@ast-mbp.dhcp.thefacebook.com>
+        id S1726481AbgD3DuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 23:50:23 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:51262 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726180AbgD3DuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 23:50:23 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id D8BB2F8D3830183161C6;
+        Thu, 30 Apr 2020 11:50:20 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 30 Apr 2020 11:49:49 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <harry.wentland@amd.com>, <sunpeng.li@amd.com>,
+        <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
+        <David1.Zhou@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>
+CC:     <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] drm/amd/display: Fix unsigned comparison to zero
+Date:   Thu, 30 Apr 2020 11:56:02 +0800
+Message-ID: <1588218962-75747-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200430021052.k47qzm63kpcn32pg@ast-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 07:10:52PM -0700, Alexei Starovoitov wrote:
-> > For example:
-> > 
-> > #define GOTO    ({ goto *jumptable[insn->code]; })
-> > 
-> > and then replace all 'goto select_insn' with 'GOTO;'
-> > 
-> > The problem is that with RETPOLINE=y, the function text size grows from
-> > 5k to 7k, because for each of the 160+ retpoline JMPs, GCC (stupidly)
-> > reloads the jump table register into a scratch register.
-> 
-> that would be a tiny change, right?
-> I'd rather go with that and gate it with 'ifdef CONFIG_FRAME_POINTER'
-> Like:
-> #ifndef CONFIG_FRAME_POINTER
-> #define CONT     ({ insn++; goto select_insn; })
-> #define CONT_JMP ({ insn++; goto select_insn; })
-> #else
-> #define CONT     ({ insn++; goto *jumptable[insn->code]; })
-> #define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
-> #endif
-> 
-> The reason this CONT and CONT_JMP macros are there because a combination
-> of different gcc versions together with different cpus make branch predictor
-> behave 'unpredictably'.
-> 
-> I've played with CONT and CONT_JMP either both doing direct goto or
-> indirect goto and observed quite different performance characteristics
-> from the interpreter.
-> What you see right now was the best tune I could get from a set of cpus
-> I had to play with and compilers. If I did the same tuning today the outcome
-> could have been different.
-> So I think it's totally fine to use above code. I think some cpus may actually
-> see performance gains with certain versions of gcc.
-> The retpoline text increase is unfortunate but when retpoline is on
-> other security knobs should be on too. In particular CONFIG_BPF_JIT_ALWAYS_ON
-> should be on as well. Which will remove interpreter from .text completely.
+Fixes coccicheck warning:
 
-This would actually be contingent on RETPOLINE, not FRAME_POINTER.
+drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c:1398:60-61:
+WARNING: Unsigned expression compared with zero: j >= 0
 
-(FRAME_POINTER was the other issue with the "optimize" attribute, which
-we're reverting so it'll no longer be a problem.)
+Fixes: 238387774232 ("drm/amd/display: fix rn soc bb update")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-So if you're not concerned about the retpoline text growth, it could be
-as simple as:
-
-#define CONT     ({ insn++; goto *jumptable[insn->code]; })
-#define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
-
-
-Or, if you wanted to avoid the text growth, it could be:
-
-#ifdef CONFIG_RETPOLINE
-/*
- * Avoid a 40% increase in function text size by getting GCC to generate a
- * single retpoline jump instead of 160+.
- */
-#define CONT	 ({ insn++; goto select_insn; })
-#define CONT_JMP ({ insn++; goto select_insn; })
-
-select_insn:
-	goto *jumptable[insn->code];
-
-#else /* !CONFIG_RETPOLINE */
-#define CONT	 ({ insn++; goto *jumptable[insn->code]; })
-#define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
-#endif /* CONFIG_RETPOLINE */
-
-
-But since this is legacy path, I think the first one is much nicer.
-
-
-Also, JMP_TAIL_CALL has a "goto select_insn", is it ok to convert that
-to CONT?
-
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
+index ceaf70a..419cdde 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
+@@ -1384,7 +1384,8 @@ static void update_bw_bounding_box(struct dc *dc, struct clk_bw_params *bw_param
+ 	struct dcn21_resource_pool *pool = TO_DCN21_RES_POOL(dc->res_pool);
+ 	struct clk_limit_table *clk_table = &bw_params->clk_table;
+ 	struct _vcs_dpi_voltage_scaling_st clock_limits[DC__VOLTAGE_STATES];
+-	unsigned int i, j, closest_clk_lvl;
++	unsigned int i, closest_clk_lvl;
++	int j;
+ 
+ 	// Default clock levels are used for diags, which may lead to overclocking.
+ 	if (!IS_DIAG_DC(dc->ctx->dce_environment)) {
 -- 
-Josh
+2.6.2
 
