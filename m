@@ -2,195 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEE61C067E
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84711C0670
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727784AbgD3Tcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:32:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        id S1726616AbgD3Tbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:31:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727053AbgD3Tca (ORCPT
+        with ESMTP id S1726377AbgD3Tbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:32:30 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CC6C035494;
-        Thu, 30 Apr 2020 12:32:29 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id u127so3459283wmg.1;
-        Thu, 30 Apr 2020 12:32:29 -0700 (PDT)
+        Thu, 30 Apr 2020 15:31:47 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67EEDC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:31:47 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id g10so2196731lfj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=0z3bz8GHGPa78UwshxZhNUFF/6aFNBbBGeFVwVNQDYY=;
-        b=ppGdVqJBXbLSpIrQCY1ozvroDp4TLSqgyQS2NNqnXYHJhb9g4jfrHBqFNAC/XOvRND
-         i3kt0M5496nR+kVLiPtrUk3rl+XBQQtbr8jnGb84DS2o4Lg7rxwBgV+GJGHpR9WW5WfA
-         dJ6SSns3+SeH2vRW5E5Md6GHM9uQrD9t7VBJF8TqpFR0NKukcGVyTq9RRltyGodKMgMy
-         LK1C84brXRB5uJvMzQ/Izr1GsXq1eeCLZtGpqBoamd+GAF/Al84FMfYBbNXParRx+zIc
-         RNPUaVWr7p3n8d4q7Uo9OAsoWycIs4PE6N9k4TeWrx0hIWXPqbaaMc5mxfSmh6UlSf27
-         FdoQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cpNuhLG27M2LY+OOiLxKTk8CvH0axJBvq+gwTXFPBUw=;
+        b=H7PU8veVNF+gc5hrBF2gDUfDMOVuiQ465ISM3u5O9VOlsXrR95GB0x08wFhDWOEG8d
+         LMhX3dmPirJkEZf6LCI8kLisP5w0SesJa7YUTb2Jy4oizvDR/2f+kwoa1UGQ+tgllXv5
+         rpRXjfhU5HUxOBwREgWybDRSXv3MDbdYnILoNZ7InA5Gwy7NMCiw0yUQvTcCzpwhdVgq
+         S6GXQKKzziEhSL3ltV/MksxJBz2Dvyak7tZTx+s3Tolw5HqsgAoseH2NVGDTibNmEZ5w
+         +UquDn6daGjrVzFocqQSgiQ8+dDTf4FKgYOOWmd5oszy6er0CJ3vQaow6En/aaXYbEcJ
+         pusA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0z3bz8GHGPa78UwshxZhNUFF/6aFNBbBGeFVwVNQDYY=;
-        b=EqOzkeElmJ2KoKLERURXugGI4UlQHLjtECC0SrBFrXy/j3CokXw4XSTBfsovgomZgL
-         bkqnjI0ZE9F8YwDzUOzn2LMJjuUbkgcConH8L5oGWY/Cndid3WZUsm1dTu/dK9HUgpnZ
-         fC8OgnOkZNhjDUlyHC55+ONK/8dqbBI7g4aNLVn0T+fj2ztwaL0+Nz2LtwX+xxQj6Ayw
-         yofHx+LA7EdOxTHuRQcdnu4q1MSyk4dardvP+m6ZLodm6PySRnqCr02IeifHLdALUlvS
-         Dd5+Cpl0djJBtfeg2Xjz+ePzE8o+As8cfYENWAKi0TxjalfgJyF4dCNXj7ClzU0LmXVG
-         8m6w==
-X-Gm-Message-State: AGi0PuZp3a87D9qd1di45eb+G7/lC11toPTflTZQgz0VmtlO7fryKTUa
-        mOb5w2Lluv4vFS7ZEbxefozj1LED
-X-Google-Smtp-Source: APiQypK1EufViVhFCNKpk8QsjwkuUSJw9M6vbScfidJsn1IbQ+H9ejtcjMcaMLUmlUYDt8UVWRrDDA==
-X-Received: by 2002:a05:600c:2c47:: with SMTP id r7mr181396wmg.50.1588275148619;
-        Thu, 30 Apr 2020 12:32:28 -0700 (PDT)
-Received: from localhost.localdomain ([109.126.131.64])
-        by smtp.gmail.com with ESMTPSA id h188sm917002wme.8.2020.04.30.12.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 12:32:28 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] io_uring: fix timeout offset with batch CQ commit
-Date:   Thu, 30 Apr 2020 22:31:10 +0300
-Message-Id: <c0c123dffee3ddf01d120d311cd21fc0271d52d6.1588253029.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1588253029.git.asml.silence@gmail.com>
-References: <cover.1588253029.git.asml.silence@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cpNuhLG27M2LY+OOiLxKTk8CvH0axJBvq+gwTXFPBUw=;
+        b=F5hG7QWDvg44UOs3XxGAXOOOREB5Kv2qp9q7CsdpG316j0smYYRS7nfYEtjwMQrgvL
+         Lfe2dTKBDp40h5UZctBbbZuTVp5rOgTyL+akejfeMFhRejBkF1BnV/s+XZ9UrnWzZlUa
+         JG2IwP5Vf9R34x64G2w1CtOecPXeM/KlYya/DG0oWTbkKinMn6D3UkeOa/XJK5hvJWBM
+         63YMVE5SMKnVkt5hn9c9+IMUXHIhm6+xUqIaQW2uYEBktHNNX2MCobHMIoDKq9ke6Tft
+         HjpOoKAfdQWdPHcH/R+egITDofww1fF+dC5YJ5unISvUWKJgakWcm05TlLxiUkul7qbc
+         rT/w==
+X-Gm-Message-State: AGi0PuYcKCT6tgjkScxE0LnMsRMWlhOPCzeJ/kO8RdghJqIvZBX83L9c
+        x1z5XV57cE+Lu7ETcJUrrsCqEWIU3pLEw+9aNMALnA==
+X-Google-Smtp-Source: APiQypJ/2ALFHyQQbXJQTtf9kYNFCkkm+177kv0LkXgl8aL1VWKHvEh5rbHJmHJlkQIJTUSmxKnzQi37hH2FPRkWI3w=
+X-Received: by 2002:ac2:5e65:: with SMTP id a5mr110232lfr.189.1588275105505;
+ Thu, 30 Apr 2020 12:31:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200430182712.237526-1-shakeelb@google.com> <20200430190610.GD339283@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20200430190610.GD339283@carbon.dhcp.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 30 Apr 2020 12:31:32 -0700
+Message-ID: <CALvZod7yvqx8X8XFu7YtE5a1DmtSU-6FcQULiCeCi_fd9Axs4w@mail.gmail.com>
+Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Completions may be done in batches, where io_commit_cqring() is called
-only once at the end. It means, that timeout sequence checks are done
-only once and don't consider events in between, so potentially failing
-to trigger some timeouts.
+On Thu, Apr 30, 2020 at 12:06 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> Hello, Shakeel!
+>
+> On Thu, Apr 30, 2020 at 11:27:12AM -0700, Shakeel Butt wrote:
+> > Lowering memory.max can trigger an oom-kill if the reclaim does not
+> > succeed. However if oom-killer does not find a process for killing, it
+> > dumps a lot of warnings.
+>
+> Makes total sense to me.
+>
+> >
+> > Deleting a memcg does not reclaim memory from it and the memory can
+> > linger till there is a memory pressure. One normal way to proactively
+> > reclaim such memory is to set memory.max to 0 just before deleting the
+> > memcg. However if some of the memcg's memory is pinned by others, this
+> > operation can trigger an oom-kill without any process and thus can log a
+> > lot un-needed warnings. So, ignore all such warnings from memory.max.
+> >
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > ---
+> >  include/linux/oom.h | 3 +++
+> >  mm/memcontrol.c     | 9 +++++----
+> >  mm/oom_kill.c       | 2 +-
+> >  3 files changed, 9 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/include/linux/oom.h b/include/linux/oom.h
+> > index c696c265f019..6345dc55df64 100644
+> > --- a/include/linux/oom.h
+> > +++ b/include/linux/oom.h
+> > @@ -52,6 +52,9 @@ struct oom_control {
+> >
+> >       /* Used to print the constraint info. */
+> >       enum oom_constraint constraint;
+> > +
+> > +     /* Do not warn even if there is no process to be killed. */
+> > +     bool no_warn;
+>
+> I'd invert it to warn. Or maybe even warn_on_no_proc?
+>
 
-Do a separate CQ sequence accounting in u64. On timeout sequence
-checking look up to UINT_MAX sequence behind, which it could have
-missed. It's safe to do, because sqe->off is u32 and so can't wrap
-around to used [seq - UINT_MAX, seq] window.
+Sure.
 
-It's also necessary to decouple CQ timeout sequences from
-ctx->cq_cached_tail for implementing "single CQE per link" feature and
-others.
+> >  };
+> >
+> >  extern struct mutex oom_lock;
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 317dbbaac603..a1f00d9b9bb0 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -1571,7 +1571,7 @@ unsigned long mem_cgroup_size(struct mem_cgroup *memcg)
+> >  }
+> >
+> >  static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> > -                                  int order)
+> > +                                  int order, bool no_warn)
+> >  {
+> >       struct oom_control oc = {
+> >               .zonelist = NULL,
+> > @@ -1579,6 +1579,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> >               .memcg = memcg,
+> >               .gfp_mask = gfp_mask,
+> >               .order = order,
+> > +             .no_warn = no_warn,
+> >       };
+> >       bool ret;
+> >
+> > @@ -1821,7 +1822,7 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
+> >               mem_cgroup_oom_notify(memcg);
+> >
+> >       mem_cgroup_unmark_under_oom(memcg);
+> > -     if (mem_cgroup_out_of_memory(memcg, mask, order))
+> > +     if (mem_cgroup_out_of_memory(memcg, mask, order, false))
+> >               ret = OOM_SUCCESS;
+> >       else
+> >               ret = OOM_FAILED;
+> > @@ -1880,7 +1881,7 @@ bool mem_cgroup_oom_synchronize(bool handle)
+> >               mem_cgroup_unmark_under_oom(memcg);
+> >               finish_wait(&memcg_oom_waitq, &owait.wait);
+> >               mem_cgroup_out_of_memory(memcg, current->memcg_oom_gfp_mask,
+> > -                                      current->memcg_oom_order);
+> > +                                      current->memcg_oom_order, false);
+> >       } else {
+> >               schedule();
+> >               mem_cgroup_unmark_under_oom(memcg);
+> > @@ -6106,7 +6107,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
+> >               }
+> >
+> >               memcg_memory_event(memcg, MEMCG_OOM);
+> > -             if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0))
+> > +             if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0, true))
+>
+> I wonder if we can handle it automatically from the oom_killer side?
+> We can suppress warnings if oc->memcg is set and the cgroup scanning
+> showed that there are no belonging processes?
+>
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io_uring.c | 33 ++++++++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 7 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index fb8ec4b00375..f09c1d3a7e63 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -298,6 +298,7 @@ struct io_ring_ctx {
- 		unsigned		cq_entries;
- 		unsigned		cq_mask;
- 		atomic_t		cq_timeouts;
-+		u64			cq_seq;
- 		unsigned long		cq_check_overflow;
- 		struct wait_queue_head	cq_wait;
- 		struct fasync_struct	*cq_fasync;
-@@ -385,7 +386,7 @@ struct io_timeout {
- 	u64				addr;
- 	int				flags;
- 	u32				off;
--	u32				target_seq;
-+	u64				target_seq;
- };
- 
- struct io_rw {
-@@ -1081,6 +1082,7 @@ static void io_kill_timeout(struct io_kiocb *req)
- 	ret = hrtimer_try_to_cancel(&req->io->timeout.timer);
- 	if (ret != -1) {
- 		atomic_inc(&req->ctx->cq_timeouts);
-+		req->ctx->cq_seq--;
- 		list_del_init(&req->list);
- 		req->flags |= REQ_F_COMP_LOCKED;
- 		io_cqring_fill_event(req, 0);
-@@ -1098,16 +1100,31 @@ static void io_kill_timeouts(struct io_ring_ctx *ctx)
- 	spin_unlock_irq(&ctx->completion_lock);
- }
- 
-+static inline bool io_check_in_range(u64 pos, u64 start, u64 end)
-+{
-+	/* if @end < @start, check for [end, MAX_U64] + [MAX_U64, start] */
-+	return (pos - start) <= (end - start);
-+}
-+
- static void __io_flush_timeouts(struct io_ring_ctx *ctx)
- {
-+	u64 start_seq = ctx->cq_seq;
-+
-+
-+	/*
-+	 * Batched CQ commit may have left some pending timeouts sequences
-+	 * behind @cq_sqe. Look back to find them. Note, that sqe->off is u32,
-+	 * and it uses u64 to not falsely trigger timeouts with large off.
-+	 */
-+	start_seq -= UINT_MAX;
- 	do {
- 		struct io_kiocb *req = list_first_entry(&ctx->timeout_list,
- 							struct io_kiocb, list);
- 
- 		if (req->flags & REQ_F_TIMEOUT_NOSEQ)
- 			break;
--		if (req->timeout.target_seq != ctx->cached_cq_tail
--					- atomic_read(&ctx->cq_timeouts))
-+		if (!io_check_in_range(req->timeout.target_seq, start_seq,
-+					ctx->cq_seq))
- 			break;
- 
- 		list_del_init(&req->list);
-@@ -1143,6 +1160,7 @@ static struct io_uring_cqe *io_get_cqring(struct io_ring_ctx *ctx)
- 		return NULL;
- 
- 	ctx->cached_cq_tail++;
-+	ctx->cq_seq++;
- 	return &rings->cqes[tail & ctx->cq_mask];
- }
- 
-@@ -4537,6 +4555,8 @@ static enum hrtimer_restart io_timeout_fn(struct hrtimer *timer)
- 	atomic_inc(&ctx->cq_timeouts);
- 
- 	spin_lock_irqsave(&ctx->completion_lock, flags);
-+	ctx->cq_seq--;
-+
- 	/*
- 	 * We could be racing with timeout deletion. If the list is empty,
- 	 * then timeout lookup already found it and will be handling it.
-@@ -4660,7 +4680,7 @@ static int io_timeout(struct io_kiocb *req)
- 	struct io_ring_ctx *ctx = req->ctx;
- 	struct io_timeout_data *data = &req->io->timeout;
- 	struct list_head *entry;
--	u32 tail, off = req->timeout.off;
-+	u32 off = req->timeout.off;
- 
- 	spin_lock_irq(&ctx->completion_lock);
- 
-@@ -4675,8 +4695,7 @@ static int io_timeout(struct io_kiocb *req)
- 		goto add;
- 	}
- 
--	tail = ctx->cached_cq_tail - atomic_read(&ctx->cq_timeouts);
--	req->timeout.target_seq = tail + off;
-+	req->timeout.target_seq = ctx->cq_seq + off;
- 
- 	/*
- 	 * Insertion sort, ensuring the first entry in the list is always
-@@ -4684,7 +4703,7 @@ static int io_timeout(struct io_kiocb *req)
- 	 */
- 	list_for_each_prev(entry, &ctx->timeout_list) {
- 		struct io_kiocb *nxt = list_entry(entry, struct io_kiocb, list);
--		u32 nxt_off = nxt->timeout.target_seq - tail;
-+		u32 nxt_off = (u32)(nxt->timeout.target_seq - ctx->cq_seq);
- 
- 		if (!(nxt->flags & REQ_F_TIMEOUT_NOSEQ) && (off >= nxt_off))
- 			break;
--- 
-2.24.0
-
+What about the charging path? Do we not want such warnings from
+charging paths? It might be due to some misconfiguration.
