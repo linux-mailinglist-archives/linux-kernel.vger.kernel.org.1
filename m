@@ -2,64 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847001BEE60
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 04:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CF11BEE5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 04:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726850AbgD3Clv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 22:41:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:47946 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbgD3Clv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 22:41:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 742771063;
-        Wed, 29 Apr 2020 19:41:50 -0700 (PDT)
-Received: from localhost.localdomain (entos-thunderx2-02.shanghai.arm.com [10.169.138.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D915F3F68F;
-        Wed, 29 Apr 2020 19:41:47 -0700 (PDT)
-From:   Jia He <justin.he@arm.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kaly.Xin@arm.com, Jia He <justin.he@arm.com>
-Subject: [PATCH] vhost: add mutex_lock/unlock for vhost_vq_reset
-Date:   Thu, 30 Apr 2020 10:41:40 +0800
-Message-Id: <20200430024140.42065-1-justin.he@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726757AbgD3CgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 22:36:21 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:45646 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726180AbgD3CgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 22:36:20 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 65A9DB828E74352F72E2
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 10:36:18 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 30 Apr 2020 10:36:10 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <mikulas@artax.karlin.mff.cuni.cz>
+CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] hpfs: Remove unneeded semicolon
+Date:   Thu, 30 Apr 2020 10:42:25 +0800
+Message-ID: <1588214545-47958-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vq->mutex is to protect any vq accessing, hence adding mutex_lock/unlock
-makes sense to avoid potential race condition.
+Fixes coccicheck warning:
 
-Signed-off-by: Jia He <justin.he@arm.com>
+fs/hpfs/buffer.c:56:2-3: Unneeded semicolon
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/vhost/vhost.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/hpfs/buffer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index d450e16c5c25..622bfba2e5ab 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -297,6 +297,7 @@ static void vhost_vq_meta_reset(struct vhost_dev *d)
- static void vhost_vq_reset(struct vhost_dev *dev,
- 			   struct vhost_virtqueue *vq)
- {
-+	mutex_lock(&vq->mutex);
- 	vq->num = 1;
- 	vq->desc = NULL;
- 	vq->avail = NULL;
-@@ -323,6 +324,7 @@ static void vhost_vq_reset(struct vhost_dev *dev,
- 	vq->umem = NULL;
- 	vq->iotlb = NULL;
- 	__vhost_vq_meta_reset(vq);
-+	mutex_unlock(&vq->mutex);
- }
+diff --git a/fs/hpfs/buffer.c b/fs/hpfs/buffer.c
+index e285d6b..d392468 100644
+--- a/fs/hpfs/buffer.c
++++ b/fs/hpfs/buffer.c
+@@ -53,7 +53,7 @@ void hpfs_prefetch_sectors(struct super_block *s, unsigned secno, int n)
+ 			return;
+ 		}
+ 		brelse(bh);
+-	};
++	}
  
- static int vhost_worker(void *data)
+ 	blk_start_plug(&plug);
+ 	while (n > 0) {
 -- 
-2.17.1
+2.6.2
 
