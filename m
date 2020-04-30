@@ -2,171 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7C61C0672
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD971C0680
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726745AbgD3TcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726338AbgD3TcP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:32:15 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4EAC035494;
-        Thu, 30 Apr 2020 12:32:14 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id z22so2057832lfd.0;
-        Thu, 30 Apr 2020 12:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IEqqDal1b2CMBBj1J/IhZlw32+Sg+2HPFFmYoJNFiUw=;
-        b=DOWHisTWeBeZBVUEitPME/auY93uAUAgxG6PVUvbHoOc73Sf/iGaOTv49ntHPEtDvD
-         N6Cx3OojCejqvLe4o6E9hTqAlmIXN9IKjCBGwAojzTGoRTxhPlEeaxB8hX+NCRBsbnjR
-         F+Cm7Ljm2cx7hQof0ILpa+VZV6AbpDx30VM1RD32IIjO2EyCvwZOTF2sLN0ftsLiqEeA
-         t3MdhNA3Wamo7wuambjqq5Ow2XfHfE0nzQhnxpOmuckaMZTMpOjWij1o6Eyvaty9gYqP
-         /vhzKP3kik+a1rjRP86OqQ6JSbtALthq0PHjWtic9Mz6H1I2kC/Hu6arE2bFmulALd+E
-         Q3bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IEqqDal1b2CMBBj1J/IhZlw32+Sg+2HPFFmYoJNFiUw=;
-        b=mzpLgTpyW6G+hUE4GeuraTFulZMzTTMxmKmcyRMa+iHpDCTTyl1b8i3L7h+XtofOFT
-         3lySeRVp1iwA+Cs7xkww7IIAzMLssZFE+MBuy8aDfJ9ZxvlYEtC3e2TaLLHusp/6jcT2
-         Y9xy3OHxDEKsCAx0czAQIvyxara/61eYjKmSaDDxPAz6SlMFcoqluVHP2Uy33fE6GxfZ
-         Opk4dP49BokHa2FFdE0SoXRSzwAtnVpSFJJXHvcbH9scfbUQ5AIiJi9f/XZxrDszn8jN
-         +3nzCk0tyXPc8FSCH3ZGFIdqRE035k+RPicSnns2cyY4ZkqimHqS5rZFIbpZZ7h2Ruk4
-         g2jQ==
-X-Gm-Message-State: AGi0PubhnliPnIssgcfauEiKeUoywlIHs8LBRnxGfK/LihyXfQzGe5Ne
-        BLKyuzBPxwpfj/rlr+7y4nE=
-X-Google-Smtp-Source: APiQypJNFgSpmaFuLg/GY6Gie6VDzGSq5Rv1WOKs4ZofBix+8BkRN2sAbFhFcYeWgtk6CQXKyG8dyw==
-X-Received: by 2002:a19:d:: with SMTP id 13mr114417lfa.167.1588275132329;
-        Thu, 30 Apr 2020 12:32:12 -0700 (PDT)
-Received: from [192.168.0.74] ([178.233.178.9])
-        by smtp.gmail.com with ESMTPSA id i124sm429538lji.95.2020.04.30.12.32.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 12:32:11 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 0/3] Prefer working VT console over SPCR and
- device-tree chosen stdout-path
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-serial@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Grzegorz Halat <ghalat@redhat.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-References: <20200430161438.17640-1-alpernebiyasak@gmail.com>
- <20200430164413.GV185537@smile.fi.intel.com>
-From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
-Message-ID: <f332a19b-e8d1-d2b0-37c8-08381563f41b@gmail.com>
-Date:   Thu, 30 Apr 2020 22:32:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:68.0) Gecko/20100101
+        id S1726746AbgD3Tcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:32:35 -0400
+Received: from mga04.intel.com ([192.55.52.120]:34003 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727778AbgD3Tcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 15:32:32 -0400
+IronPort-SDR: YfyNnwlponU4ZvqqFUk/m6OOaiTxL4hz8aA/64v9W4sETkGje64d9HAkQtks0Rov30DhBAgaqn
+ ee+0a8S2azig==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2020 12:32:31 -0700
+IronPort-SDR: qbP7bELUd3YdDmIK7rpWTWGP1m6vZ2Kt5/t96FsE4n1qznI4O1qEUj9ImpwE9T8bs8tB+Xt11A
+ jLBGEA/DXQYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,336,1583222400"; 
+   d="scan'208";a="261884344"
+Received: from dnlloyd-mobl.amr.corp.intel.com (HELO [10.255.231.251]) ([10.255.231.251])
+  by orsmga006.jf.intel.com with ESMTP; 30 Apr 2020 12:32:31 -0700
+From:   Dave Hansen <dave.hansen@intel.com>
+Subject: Re: [PATCH v1 1/1] fs/splice: add missing callback for inaccessible
+ pages
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        akpm@linux-foundation.org, jack@suse.cz, kirill@shutemov.name
+Cc:     david@redhat.com, aarcange@redhat.com, linux-mm@kvack.org,
+        frankja@linux.ibm.com, sfr@canb.auug.org.au, jhubbard@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        peterz@infradead.org, sean.j.christopherson@intel.com
+References: <20200428225043.3091359-1-imbrenda@linux.ibm.com>
+ <2a1abf38-d321-e3c7-c3b1-53b6db6da310@intel.com>
+ <d77d1e86-ac99-8c18-658c-d8150a71b11e@de.ibm.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <540f483f-5e58-f342-e771-9d90c4d3fb6a@intel.com>
+Date:   Thu, 30 Apr 2020 12:32:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200430164413.GV185537@smile.fi.intel.com>
+In-Reply-To: <d77d1e86-ac99-8c18-658c-d8150a71b11e@de.ibm.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/04/2020 19:44, Andy Shevchenko wrote:
-> First of all I see only cover letter and one out of 3 patches.
+On 4/30/20 11:12 AM, Christian Borntraeger wrote:
+> On 29.04.20 18:07, Dave Hansen wrote:
+>> On 4/28/20 3:50 PM, Claudio Imbrenda wrote:
+>>> If a page is inaccesible and it is used for things like sendfile, then
+>>> the content of the page is not always touched, and can be passed
+>>> directly to a driver, causing issues.
+>>>
+>>> This patch fixes the issue by adding a call to arch_make_page_accessible
+>>> in page_cache_pipe_buf_confirm; this fixes the issue.
+>> I spent about 5 minutes putting together a patch:
+>>
+>> 	https://sr71.net/~dave/intel/accessible.patch
+> You only set the page flag for compound pages. that of course leaves a big pile
+> of pages marked a not accessible, thus explaining the sendto trace and all kind
+> of other random traces.
 
-Apologies, the tool I've used to send the patches (U-Boot's patman)
-Cc-ed the scripts/get_maintainer.pl output per-patch, instead of
-per-series as I had assumed it would. This was the first time I tried
-it, I'll keep that in mind.
+Ahh, nice catch!  That does explain an oddity or two that I saw.
 
-Here are links to all four emails:
+> What do you see when you also do the  SetPageAccessible(page);
+> in the else page of prep_new_page (order == 0).
+> (I do get > 10000 of these non compound page allocs just during boot).
 
-https://lore.kernel.org/linux-serial/20200430161438.17640-1-alpernebiyasak@gmail.com/
-https://lore.kernel.org/linux-serial/20200430161438.17640-2-alpernebiyasak@gmail.com/
-https://lore.kernel.org/linux-serial/20200430161438.17640-3-alpernebiyasak@gmail.com/
-https://lore.kernel.org/linux-serial/20200430161438.17640-4-alpernebiyasak@gmail.com/
+Yes, I see the same thing.
 
-Or I can resend the last two patches to you, or resend all the parts to
-everyone again.
-
->> eventually figured out that the kernel preferred the serial port
->> (inaccessible to me) over the built-in working display/keyboard and was
->> probably asking there.
-> 
-> "probably". Please, confirm that first.
-> Also, without command line it's hard to say what you have asked kernel to do.
-
-I was trying to boot a Debian userspace with cryptsetup, with the kernel
-command line:
-
-	root=/dev/mapper/sda3_crypt quiet splash
-
-The Debian initramfs handles most of the work (the password prompt,
-device mounts, etc.).
-
-When I used the same kernel/initramfs/rootfs on a QEMU aarch64 VM, it
-only prompted on the serial console instead the framebuffer. I'm
-assuming the same thing happens on my hardware as well.
-
-I can also ask the Debian initramfs to launch a shell by adding "break"
-to the command line, which won't be printed on my device's screen unless
-I also add "console=tty0". That shell also only appears on the serial
-console on the QEMU aarch64 VM, unless I again add "console=tty0".
-
-This is my primary computer and I'd prefer not dismantling it, so my
-findings above are the best I believe I can do to confirm it now. I'm 
-hoping other people would be interested in this, and would test more 
-than I can.
-
->> Running plymouth in the initramfs solves that specific problem, but
-> 
-> What is plymouth?
-
-Plymouth is a userspace program that's famous for showing a splash
-animation during boot, but in this context: it handles user-interaction
-that might need to happen while the initramfs is running, by printing
-messages and prompts and reading user input to/from all consoles.
-
->>    ------------------+-----------------------+-----------------------+
->>    Chromebook Plus   | tty0     -WU (EC p  ) | tty0     -WU (EC p  ) |
->>    (w/o either)      |                       |                       |
->>    ------------------+-----------------------+-----------------------+
-> 
-> either == SPCR or stdout-path?
-
-As in "When the device has no SPCR _and_ no chosen stdout-path".
-
->> This patchset tries to ensure that VT is preferred in those conditions
->> even in the presence of firmware-mandated serial consoles.
-> 
-> This sounds completely wrong. serial should be preferred over vt due to very
-> debugging on early stages and SPCR is exactly for that.
-
-I'm saying that from a userspace perspective, and the patches explicitly
-try to switch to the vt only after a real framebuffer is initialized. So
-if I did it right, it would still use SPCR/stdout-path's console during
-the early stages. (I admit I haven't adjusted to talking within a kernel 
-context yet).
-
-In all honesty, I'm not sure if this is even considered a kernel bug,
-let alone my patches a correct solution; hence the RFC PATCH as an
-attempt at demonstrating this can be "fixed" in kernel.
-
-> Maybe you should figure out the real root cause?
-
-Thanks for the reply. Any ideas on what else could be causing this 
-behaviour?
+I updated the patch and double-checked that it triggers properly with a
+socket-based sendfile().
