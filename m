@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACEE1C03D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 19:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B03281C03D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 19:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgD3RW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 13:22:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57790 "EHLO mx2.suse.de"
+        id S1727111AbgD3RWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 13:22:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58002 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726809AbgD3RW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 13:22:27 -0400
+        id S1726620AbgD3RWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 13:22:46 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 91D27ABC2;
-        Thu, 30 Apr 2020 17:22:25 +0000 (UTC)
-Date:   Thu, 30 Apr 2020 19:22:25 +0200
-Message-ID: <s5hbln8khwu.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 25C96AC64;
+        Thu, 30 Apr 2020 17:22:44 +0000 (UTC)
+Date:   Thu, 30 Apr 2020 19:22:44 +0200
+Message-ID: <s5ha72skhwb.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
 Cc:     <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
@@ -28,10 +28,10 @@ Cc:     <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
         =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
         "moderated list:SOUND" <alsa-devel@alsa-project.org>,
         open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/3] ALSA: hda/realtek - Enable micmute LED on and HP system
-In-Reply-To: <20200430083255.5093-2-kai.heng.feng@canonical.com>
-References: <20200430083255.5093-1-kai.heng.feng@canonical.com>
-        <20200430083255.5093-2-kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v2 3/3] ALSA: hda/realtek - Add LED class support for micmute LED
+In-Reply-To: <20200430135209.14703-1-kai.heng.feng@canonical.com>
+References: <20200430083255.5093-3-kai.heng.feng@canonical.com>
+        <20200430135209.14703-1-kai.heng.feng@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -42,16 +42,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020 10:32:52 +0200,
+On Thu, 30 Apr 2020 15:52:07 +0200,
 Kai-Heng Feng wrote:
 > 
-> Though the system uses DMIC, headset mic still uses the HDA, let's use
-> GPIO 0x1 to control the micmute LED.
+> Currently DMIC controls micmute LED via "audio mute LED trigger".
 > 
-> The micmute LED GPIO has a different polarity to the mute LED GPIO, we
-> can use the newly added micmute_led_polarity to indicate that.
+> However, unlike Dell and Lenovo platforms, HP platforms don't provide a
+> way to control micmute LED via ACPI, it's controlled by HDA codec
+> instead.
+> 
+> So let's register an LED class for micmute so other subsystems like DMIC
+> can facilitate the codec-controlled LED.
 > 
 > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v2:
+>  - Only compile the code when CONFIG_LEDS_TRIGGER_AUDIO is reachable.
 
 Applied to for-next branch.  Thanks.
 
