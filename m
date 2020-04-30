@@ -2,156 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72DC1BED6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3171BED72
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbgD3BHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 21:07:39 -0400
-Received: from mga01.intel.com ([192.55.52.88]:22543 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726357AbgD3BHi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 21:07:38 -0400
-IronPort-SDR: N6aGNfBSFSFKe129VMQf37hhDS7jZ9hBOYnBF4AqPYo1u2e1QDbSNNrT0g45q7dTxIz3FLoPn5
- La63eicm1NAw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2020 18:07:38 -0700
-IronPort-SDR: 8Q4gkOhp1ZUnE+RQpm1R4hBRrAC7b/3Ppd8uLI++yOdz/XX8f7mTAIc0o5U6zNpv7sk6HtOVAe
- 6Lvw49YJsJkA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,333,1583222400"; 
-   d="scan'208";a="432763015"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 29 Apr 2020 18:07:38 -0700
-Received: from [10.215.170.136] (vramuthx-mobl1.gar.corp.intel.com [10.215.170.136])
-        by linux.intel.com (Postfix) with ESMTP id E824D5805EB;
-        Wed, 29 Apr 2020 18:07:33 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v4 1/2] dt-bindings: mtd: Add YAML for Nand Flash
- Controller support
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, arnd@arndb.de,
-        brendanhiggins@google.com, tglx@linutronix.de,
-        anders.roxell@linaro.org, masonccyang@mxic.com.tw,
-        robh+dt@kernel.org, linux-mips@vger.kernel.org,
-        hauke.mehrtens@intel.com, andriy.shevchenko@intel.com,
-        qi-ming.wu@intel.com, cheol.yong.kim@intel.com
-References: <20200429104205.18780-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200429104205.18780-2-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20200429173446.6682dfb8@collabora.com>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <04423b9c-f70c-d461-05ac-9a4815af105c@linux.intel.com>
-Date:   Thu, 30 Apr 2020 09:07:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <20200429173446.6682dfb8@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726755AbgD3BID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 21:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726684AbgD3BIB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 21:08:01 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63912C035495
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 18:08:01 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 186so5887728ybq.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Apr 2020 18:08:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=bDQ0mN4+QtjESwDiT+8KEwDYky6Yk4tgT9MYtQqBwao=;
+        b=ps/a2k5XkrO8WuE9Vf539ADlhvPlCtx0Cvhg4D+9gxFiZKc3Pb1SwuOYhc3kODEPBh
+         8yASzLLmwDTyZt2/hwD6pbwhGMVbqp4bkI2j2AV/k6JDjXay1UD7PplihnvVtigFiuJF
+         qUgI8KrgjeM5SjsHOpXmFkTiGFHKpI99Tx7cJmWyiNWoC4KG8pzwIqcLH5yb3TT8gRBZ
+         HjrbhLk9uaaGGnxBhVjxlhBGfTkSqxdvM/IOCc+3Sl5rK+ChZiLmFxNN8pQl6NzZiRDN
+         EUpA/898t7w6W6cqK7I4924GgQNPwuBLilX5VamXgfuvz54hhH11GsLNkV+IdZB5sDT3
+         S/3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=bDQ0mN4+QtjESwDiT+8KEwDYky6Yk4tgT9MYtQqBwao=;
+        b=ge5rqZWbVSnax+h/KDIUVKptZpQm5CV/OABjKKDsPORQE630ecy2MwwL61FdSwJFyK
+         Ar5+9ZfLgo2x8UPkrfyf+7a/7hHybEilujIAFFpb/VDQjFcfa6UM8F8MkagaoyErfBN+
+         c/2cLjIsLuiAPAa5DJPFEP6zzyAHSQ0VJ/bWRB5e9N6sW9paAVKKKbJzgQo4DGGK3TMV
+         yDZzksR3b83W+typvEu9epGhkq9fUQnzGP8BVto3ULVsxkIxNIKmpTrlCJFGxDB4Piox
+         WkHsmbpTtJHc3hNqXBiHtRV08cBwIhig6aXdWXkS0YPIzupeVIHiujkRCo8kaUma1hPy
+         GCRQ==
+X-Gm-Message-State: AGi0PuaGzG/m/JJ2uDbfS2acsqPK5/M+jY2GVCkkCzvy8SwUfC4B2OCe
+        sGi5r85rF+u1dGog0wH06BaB2gOqfIaoMbLt
+X-Google-Smtp-Source: APiQypKNfsynmAFob/BZ61tu/G5Bb6u6uhP0nNjHZDHMY16ql0THzID2BDtPKiY1K+pv3tTBLfKFZGfF7nPkBXJE
+X-Received: by 2002:a25:80cd:: with SMTP id c13mr1790473ybm.335.1588208880442;
+ Wed, 29 Apr 2020 18:08:00 -0700 (PDT)
+Date:   Thu, 30 Apr 2020 03:07:52 +0200
+Message-Id: <68e7b62aa7439e3346742b1153d18f65f3e8e388.1588208726.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.303.gf8c07b1a785-goog
+Subject: [PATCH USB] usb: raw-gadget: support stalling/halting/wedging endpoints
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
+Raw Gadget is currently unable to stall/halt/wedge gadget endpoints,
+which is required for proper emulation of certain USB classes.
 
-  Thank you very much for the review comments and your time...
+This patch adds a few more ioctls:
 
-On 29/4/2020 11:34 pm, Boris Brezillon wrote:
-> On Wed, 29 Apr 2020 18:42:04 +0800
-> "Ramuthevar,Vadivel MuruganX"
-> <vadivel.muruganx.ramuthevar@linux.intel.com> wrote:
-> 
->> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>
->> Add YAML file for dt-bindings to support NAND Flash Controller
->> on Intel's Lightning Mountain SoC.
->>
->> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> ---
->>   .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 61 ++++++++++++++++++++++
->>   1 file changed, 61 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
->> new file mode 100644
->> index 000000000000..6dd899d367b4
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
->> @@ -0,0 +1,61 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Intel LGM SoC NAND Controller Device Tree Bindings
->> +
->> +allOf:
->> +  - $ref: "nand-controller.yaml"
->> +
->> +maintainers:
->> +  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->> +
->> +properties:
->> +  compatible:
->> +    const: intel,lgm-nand-controller
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +  dmas:
->> +    maxItems: 2
->> +
->> +  dma-names:
->> +    enum:
->> +      - rx
->> +      - tx
->> +
->> +  pinctrl-names: true
->> +
->> +patternProperties:
->> +  "^pinctrl-[0-9]+$": true
->> +
->> +  "^nand@[a-f0-9]+$":
->> +    type: object
->> +    properties:
->> +      reg:
->> +        minimum: 0
->> +        maximum: 7
->> +
->> +      nand-ecc-mode: true
->> +
->> +      nand-ecc-algo:
->> +        const: hw
->> +
->> +    additionalProperties: false
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - clocks
->> +  - clock-names
->> +  - dmas
->> +
->> +additionalProperties: false
->> +
->> +...
-> 
-> Can you provide an example? I'd like to make sure the binding looks
-> good.
+- USB_RAW_IOCTL_EP0_STALL allows to stall control endpoint #0 when
+  there's a pending setup request for it.
+- USB_RAW_IOCTL_SET/CLEAR_HALT/WEDGE allow to set/clear halt/wedge status
+  on non-control non-isochronous endpoints.
 
-Noted, will update with example. Thanks!
+Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface")
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+---
 
-Regards
-Vadivel
+This goes on top of:
 
-> 
+[PATCH v2] usb: raw-gadget: fix gadget endpoint selection
+
+which in turns goes on top of:
+
+[PATCH USB v2 1/2] usb: raw-gadget: fix return value of ep read ioctls
+[PATCH USB v2 2/2] usb: raw-gadget: fix typo in uapi headers
+
+---
+ Documentation/usb/raw-gadget.rst       |   2 -
+ drivers/usb/gadget/legacy/raw_gadget.c | 131 ++++++++++++++++++++++++-
+ include/uapi/linux/usb/raw_gadget.h    |  15 +++
+ 3 files changed, 144 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/usb/raw-gadget.rst b/Documentation/usb/raw-gadget.rst
+index 42bd446d72b2..f70aa635e11d 100644
+--- a/Documentation/usb/raw-gadget.rst
++++ b/Documentation/usb/raw-gadget.rst
+@@ -49,8 +49,6 @@ The typical usage of Raw Gadget looks like:
+ Potential future improvements
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+-- Implement ioctl's for setting/clearing halt status on endpoints.
+-
+ - Reporting more events (suspend, resume, etc.) through
+   USB_RAW_IOCTL_EVENT_FETCH.
+ 
+diff --git a/drivers/usb/gadget/legacy/raw_gadget.c b/drivers/usb/gadget/legacy/raw_gadget.c
+index e6abbc15341a..9ceeecac5ee0 100644
+--- a/drivers/usb/gadget/legacy/raw_gadget.c
++++ b/drivers/usb/gadget/legacy/raw_gadget.c
+@@ -204,7 +204,7 @@ static void dev_free(struct kref *kref)
+ 	}
+ 	raw_event_queue_destroy(&dev->queue);
+ 	for (i = 0; i < dev->eps_num; i++) {
+-		if (dev->eps[i].state != STATE_EP_ENABLED)
++		if (dev->eps[i].state == STATE_EP_DISABLED)
+ 			continue;
+ 		usb_ep_disable(dev->eps[i].ep);
+ 		usb_ep_free_request(dev->eps[i].ep, dev->eps[i].req);
+@@ -704,6 +704,50 @@ static int raw_ioctl_ep0_read(struct raw_dev *dev, unsigned long value)
+ 	return ret;
+ }
+ 
++static int raw_ioctl_ep0_stall(struct raw_dev *dev, unsigned long value)
++{
++	int ret = 0;
++	unsigned long flags;
++
++	if (value)
++		return -EINVAL;
++	spin_lock_irqsave(&dev->lock, flags);
++	if (dev->state != STATE_DEV_RUNNING) {
++		dev_dbg(dev->dev, "fail, device is not running\n");
++		ret = -EINVAL;
++		goto out_unlock;
++	}
++	if (!dev->gadget) {
++		dev_dbg(dev->dev, "fail, gadget is not bound\n");
++		ret = -EBUSY;
++		goto out_unlock;
++	}
++	if (dev->ep0_urb_queued) {
++		dev_dbg(&dev->gadget->dev, "fail, urb already queued\n");
++		ret = -EBUSY;
++		goto out_unlock;
++	}
++	if (!dev->ep0_in_pending && !dev->ep0_out_pending) {
++		dev_dbg(&dev->gadget->dev, "fail, no request pending\n");
++		ret = -EBUSY;
++		goto out_unlock;
++	}
++
++	ret = usb_ep_set_halt(dev->gadget->ep0);
++	if (ret < 0)
++		dev_err(&dev->gadget->dev,
++				"fail, usb_ep_set_halt returned %d\n", ret);
++
++	if (dev->ep0_in_pending)
++		dev->ep0_in_pending = false;
++	else
++		dev->ep0_out_pending = false;
++
++out_unlock:
++	spin_unlock_irqrestore(&dev->lock, flags);
++	return ret;
++}
++
+ static int raw_ioctl_ep_enable(struct raw_dev *dev, unsigned long value)
+ {
+ 	int ret = 0, i;
+@@ -810,7 +854,7 @@ static int raw_ioctl_ep_disable(struct raw_dev *dev, unsigned long value)
+ 		ret = -EBUSY;
+ 		goto out_unlock;
+ 	}
+-	if (dev->eps[i].state != STATE_EP_ENABLED) {
++	if (dev->eps[i].state == STATE_EP_DISABLED) {
+ 		dev_dbg(&dev->gadget->dev, "fail, endpoint is not enabled\n");
+ 		ret = -EINVAL;
+ 		goto out_unlock;
+@@ -848,6 +892,74 @@ static int raw_ioctl_ep_disable(struct raw_dev *dev, unsigned long value)
+ 	return ret;
+ }
+ 
++static int raw_ioctl_ep_set_clear_halt_wedge(struct raw_dev *dev,
++		unsigned long value, bool set, bool halt)
++{
++	int ret = 0, i = value;
++	unsigned long flags;
++
++	spin_lock_irqsave(&dev->lock, flags);
++	if (dev->state != STATE_DEV_RUNNING) {
++		dev_dbg(dev->dev, "fail, device is not running\n");
++		ret = -EINVAL;
++		goto out_unlock;
++	}
++	if (!dev->gadget) {
++		dev_dbg(dev->dev, "fail, gadget is not bound\n");
++		ret = -EBUSY;
++		goto out_unlock;
++	}
++	if (i < 0 || i >= dev->eps_num) {
++		dev_dbg(dev->dev, "fail, invalid endpoint\n");
++		ret = -EBUSY;
++		goto out_unlock;
++	}
++	if (dev->eps[i].state == STATE_EP_DISABLED) {
++		dev_dbg(&dev->gadget->dev, "fail, endpoint is not enabled\n");
++		ret = -EINVAL;
++		goto out_unlock;
++	}
++	if (dev->eps[i].disabling) {
++		dev_dbg(&dev->gadget->dev,
++				"fail, disable is in progress\n");
++		ret = -EINVAL;
++		goto out_unlock;
++	}
++	if (dev->eps[i].urb_queued) {
++		dev_dbg(&dev->gadget->dev,
++				"fail, waiting for urb completion\n");
++		ret = -EINVAL;
++		goto out_unlock;
++	}
++	if (usb_endpoint_xfer_isoc(dev->eps[i].ep->desc)) {
++		dev_dbg(&dev->gadget->dev,
++				"fail, can't halt/wedge ISO endpoint\n");
++		ret = -EINVAL;
++		goto out_unlock;
++	}
++
++	if (set && halt) {
++		ret = usb_ep_set_halt(dev->eps[i].ep);
++		if (ret < 0)
++			dev_err(&dev->gadget->dev,
++				"fail, usb_ep_set_halt returned %d\n", ret);
++	} else if (!set && halt) {
++		ret = usb_ep_clear_halt(dev->eps[i].ep);
++		if (ret < 0)
++			dev_err(&dev->gadget->dev,
++				"fail, usb_ep_clear_halt returned %d\n", ret);
++	} else if (set && !halt) {
++		ret = usb_ep_set_wedge(dev->eps[i].ep);
++		if (ret < 0)
++			dev_err(&dev->gadget->dev,
++				"fail, usb_ep_set_wedge returned %d\n", ret);
++	}
++
++out_unlock:
++	spin_unlock_irqrestore(&dev->lock, flags);
++	return ret;
++}
++
+ static void gadget_ep_complete(struct usb_ep *ep, struct usb_request *req)
+ {
+ 	struct raw_ep *r_ep = (struct raw_ep *)ep->driver_data;
+@@ -1144,6 +1256,21 @@ static long raw_ioctl(struct file *fd, unsigned int cmd, unsigned long value)
+ 	case USB_RAW_IOCTL_EPS_INFO:
+ 		ret = raw_ioctl_eps_info(dev, value);
+ 		break;
++	case USB_RAW_IOCTL_EP0_STALL:
++		ret = raw_ioctl_ep0_stall(dev, value);
++		break;
++	case USB_RAW_IOCTL_EP_SET_HALT:
++		ret = raw_ioctl_ep_set_clear_halt_wedge(
++					dev, value, true, true);
++		break;
++	case USB_RAW_IOCTL_EP_CLEAR_HALT:
++		ret = raw_ioctl_ep_set_clear_halt_wedge(
++					dev, value, false, true);
++		break;
++	case USB_RAW_IOCTL_EP_SET_WEDGE:
++		ret = raw_ioctl_ep_set_clear_halt_wedge(
++					dev, value, true, false);
++		break;
+ 	default:
+ 		ret = -EINVAL;
+ 	}
+diff --git a/include/uapi/linux/usb/raw_gadget.h b/include/uapi/linux/usb/raw_gadget.h
+index 722124fff290..12ed9fa9ad97 100644
+--- a/include/uapi/linux/usb/raw_gadget.h
++++ b/include/uapi/linux/usb/raw_gadget.h
+@@ -244,4 +244,19 @@ struct usb_raw_eps_info {
+  */
+ #define USB_RAW_IOCTL_EPS_INFO		_IOR('U', 11, struct usb_raw_eps_info)
+ 
++/*
++ * Stalls a pending control request on endpoint 0.
++ * Returns 0 on success or negative error code on failure.
++ */
++#define USB_RAW_IOCTL_EP0_STALL		_IO('U', 12)
++
++/*
++ * Sets or clears halt or wedge status of the endpoint.
++ * Accepts endpoint handle as an argument.
++ * Returns 0 on success or negative error code on failure.
++ */
++#define USB_RAW_IOCTL_EP_SET_HALT	_IOW('U', 12, __u32)
++#define USB_RAW_IOCTL_EP_CLEAR_HALT	_IOW('U', 13, __u32)
++#define USB_RAW_IOCTL_EP_SET_WEDGE	_IOW('U', 14, __u32)
++
+ #endif /* _UAPI__LINUX_USB_RAW_GADGET_H */
+-- 
+2.26.2.303.gf8c07b1a785-goog
+
