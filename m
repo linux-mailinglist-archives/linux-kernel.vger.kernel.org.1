@@ -2,294 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326B71BEDCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 03:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D871BEDFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 04:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgD3BoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 21:44:07 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:42707 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726180AbgD3BoG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 21:44:06 -0400
-Received: by mail-ot1-f65.google.com with SMTP id m18so3551503otq.9;
-        Wed, 29 Apr 2020 18:44:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=kFOY9LBT7oRxXs+9HBZXsCqB/74byVIkRhIK2w5gsqU=;
-        b=Ta282Fq6bv40GNFwjNn/cooxiVObXeMXzIWkei5CSqUj56uJH1TGEaPAaqYj6HrAeM
-         KLZJBH/SOQeXg67P2Z5AJK53g+G1eFW+feNGG2cXGhIPg7pZ7xy8D7b7kg5kLpw2NRg8
-         LRuQ0Eq77NI3luLmylbh7bsav1whBV94HlOILyGsX9gF1YOoIro6srSevfV9Y8E4pSt6
-         2R9uLmKeoDChbovbiLO3JB9+n/zdKnXWO9i5HecyJ4LdRfi9xsgqAyyRq7OQ7SkR8Aam
-         QarQfaq7Ywx6TcHoIYHJ0fN9HpecMDgyRqrMZ6WYm59Y6+9zABfnv/4U8sC5RDSKjvzM
-         fJEg==
-X-Gm-Message-State: AGi0PuZqmH7oJrvJm7uQQeP2aUgW3cYzq1hzucTGsh5QxHJWo0H7oUL1
-        WnQbb6kfo877OVbKjq7+SA==
-X-Google-Smtp-Source: APiQypLeXWVNTM/kAh0IfxfyEeLbDd3n3glnfR2APAbNu1iLMd8dVDVz7bMK/hmFQ5E4taHp1lRB/g==
-X-Received: by 2002:a9d:694e:: with SMTP id p14mr650572oto.237.1588211045159;
-        Wed, 29 Apr 2020 18:44:05 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s10sm846379otd.69.2020.04.29.18.44.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 18:44:04 -0700 (PDT)
-Received: (nullmailer pid 6061 invoked by uid 1000);
-        Thu, 30 Apr 2020 01:44:03 -0000
-Date:   Wed, 29 Apr 2020 20:44:03 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Niklas =?iso-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>, sakari.ailus@iki.fi,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>
-Subject: Re: [PATCH v8 3/4] dt-bindings: media: i2c: Add bindings for IMI
- RDACM2x
-Message-ID: <20200430014403.GA18465@bogus>
-References: <20200417103424.5875-1-kieran.bingham+renesas@ideasonboard.com>
- <20200417103424.5875-4-kieran.bingham+renesas@ideasonboard.com>
+        id S1726583AbgD3CBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Apr 2020 22:01:31 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:38918 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726282AbgD3CBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 29 Apr 2020 22:01:30 -0400
+Received: from BC-Mail-Ex16.internal.baidu.com (unknown [172.31.51.56])
+        by Forcepoint Email with ESMTPS id 7AD7E984D2F571FACB69;
+        Thu, 30 Apr 2020 09:45:30 +0800 (CST)
+Received: from BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) by
+ BC-Mail-Ex16.internal.baidu.com (172.31.51.56) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1531.3; Thu, 30 Apr 2020 09:45:30 +0800
+Received: from BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) by
+ BJHW-Mail-Ex13.internal.baidu.com ([100.100.100.36]) with mapi id
+ 15.01.1713.004; Thu, 30 Apr 2020 09:45:30 +0800
+From:   "Li,Rongqing" <lirongqing@baidu.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdW3YyXSBrdm06IHg4NjogZW11bGF0ZSBBUEVSRi9N?=
+ =?utf-8?Q?PERF_registers?=
+Thread-Topic: [PATCH][v2] kvm: x86: emulate APERF/MPERF registers
+Thread-Index: AQHWHgPRaxq7VoyE2kqvmC7wjQtzhaiPXbuAgAGG2mA=
+Date:   Thu, 30 Apr 2020 01:45:30 +0000
+Message-ID: <bea20279850d48848e0b21f7cbb39bdb@baidu.com>
+References: <1588139196-23802-1-git-send-email-lirongqing@baidu.com>
+ <20200429085440.GG13592@hirez.programming.kicks-ass.net>
+ <201824a4-6b0f-9061-ec21-26d71fa11bc4@redhat.com>
+In-Reply-To: <201824a4-6b0f-9061-ec21-26d71fa11bc4@redhat.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.198.11]
+x-baidu-bdmsfe-datecheck: 1_BC-Mail-Ex16_2020-04-30 09:45:30:295
+x-baidu-bdmsfe-viruscheck: BC-Mail-Ex16_GRAY_Inside_WithoutAtta_2020-04-30
+ 09:45:30:186
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200417103424.5875-4-kieran.bingham+renesas@ideasonboard.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 17, 2020 at 11:34:23AM +0100, Kieran Bingham wrote:
-> From: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> 
-> The IMI RDACM20 and IMI RDACM21 are Gigabit Multimedia Serial Link (GMSL) camera
-> capable of transmitting video and I2C control messages on a coax cable
-> physical link for automotive applications.
-> 
-> Document their device tree bindings.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> ---
-> v2:
->  - Provide imi vendor prefix
->  - Fix minor spelling
-> 
-> v3:
->  - update binding descriptions
-> 
-> v4:
->  - No change
-> 
-> v5:
->  - Specify optional third reg address for the MCU
-> 
-> v7:
->  [Jacopo]
->  - Rename to imi,rdacm2x-gmsl.yaml
->  - Exand bindings to describe RDACM21
-> ---
->  .../bindings/media/i2c/imi,rdacm2x-gmsl.yaml  | 161 ++++++++++++++++++
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->  2 files changed, 163 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/imi,rdacm2x-gmsl.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/imi,rdacm2x-gmsl.yaml b/Documentation/devicetree/bindings/media/i2c/imi,rdacm2x-gmsl.yaml
-> new file mode 100644
-> index 000000000000..8476e99b46b5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/imi,rdacm2x-gmsl.yaml
-> @@ -0,0 +1,161 @@
-> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
-> +# Copyright (C) 2019 Renesas Electronics Corp.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/imi,rdacm2x-gmsl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title:  IMI D&D RDACM20 and RDACM21 Automotive Camera Platforms
-> +
-> +maintainers:
-> +  - Jacopo Mondi <jacopo+renesas@jmondi.org>
-> +  - Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> +  - Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> +  - Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-> +
-> +description: -|
-> +  The IMI D&D RDACM20 and RDACM21 are GMSL-compatible camera designed for
-> +  automotive applications.
-> +
-> +  The RDACM20 camera module encloses a Maxim Integrated MAX9271 GMSL serializer,
-> +  coupled with an OV10635 image sensor and an embedded MCU. Both the MCU and
-> +  the image sensor are connected to the serializer local I2C bus and are
-> +  accessible by the host SoC by direct addressing.
-> +
-> +  The RDACM21 camera module encloses the same serializer, coupled with an
-> +  OV10640 image sensor and an OV490 ISP. Only the OV490 ISP is interfaced to
-> +  the serializer local I2C bus while the image sensor is not accessible from
-> +  the host SoC.
-> +
-> +  They both connect to a remote GMSL endpoint through a coaxial cable.
-> +
-> +                                                   IMI RDACM20
-> +  +---------------+                        +--------------------------------+
-> +  |      GMSL     |   <- Video Stream      |       <- Video--------\        |
-> +  |               |< === GMSL Link ====== >|MAX9271<- I2C bus-> <-->OV10635 |
-> +  | de-serializer |   <- I2C messages ->   |                   \<-->MCU     |
-> +  +---------------+                        +--------------------------------+
-> +
-> +                                                   IMI RDACM21
-> +  +---------------+                        +--------------------------------+
-> +  |      GMSL     |   <- Video Stream      |       <- Video--------\        |
-> +  |               |< === GMSL Link ====== >|MAX9271<- I2C bus-> <-->OV490   |
-> +  |               |   <- I2C messages ->   |                          |     |
-> +  | de-serializer |                        |          OV10640 <-------|     |
-> +  +---------------+                        +--------------------------------+
-> +
-> +  Both camera modules serialize video data generated by the embedded camera
-> +  sensor on the GMSL serial channel to a remote GMSL de-serializer. They also
-> +  receive and transmit I2C messages encapsulated and transmitted on the GMSL
-> +  bidirectional control channel.
-> +
-> +  All I2C traffic received on the GMSL link not directed to the serializer is
-> +  propagated on the local I2C bus to the remote device there connected. All the
-> +  I2C traffic generated on the local I2C bus not directed to the serializer is
-> +  propagated to the remote de-serializer encapsulated in the GMSL control
-> +  channel.
-> +
-> +  The RDACM20 and RDACM21 DT node should be a direct child of the GMSL
-> +  deserializer's I2C bus corresponding to the GMSL link that the camera is
-> +  attached to.
-> +
-> +properties:
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +        - enum:
-
-You can drop oneOf and items.
-
-> +          - imi,rdacm20
-> +          - imi,rdacm21
-> +
-> +  reg:
-> +    description: -|
-> +      I2C device addresses, the first to be assigned to the serializer, the
-> +      following ones to be assigned to the remote devices.
-> +
-> +      For RDACM20 the second entry of the property is assigned to the
-> +      OV10635 image sensor and the optional third one to the embedded MCU.
-> +
-> +      For RDACM21 the second entry is assigned to the OV490 ISP and the optional
-> +      third one ignored.
-> +
-> +    minItems: 2
-> +    maxItems: 3
-> +
-> +  port:
-> +    type: object
-> +    additionalProperties: false
-> +    description: -|
-> +      Connection to the remote GMSL endpoint are modelled using the OF graph
-> +      bindings in accordance with the video interface bindings defined in
-> +      Documentation/devicetree/bindings/media/video-interfaces.txt.
-> +
-> +      The device node contains a single "port" child node with a single
-> +      "endpoint" sub-device.
-> +
-> +    properties:
-> +      endpoint:
-> +        type: object
-> +        additionalProperties: false
-> +
-> +        properties:
-> +          remote-endpoint:
-> +            description: -|
-> +              phandle to the remote GMSL endpoint sub-node in the remote node
-> +              port.
-> +            maxItems: 1
-> +
-> +        required:
-> +          - remote-endpoint
-> +
-> +    required:
-> +      - endpoint
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - port
-> +
-> +examples:
-> +  - |
-> +    i2c@e66d8000 {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      reg = <0 0xe66d8000 0 0x40>;
-> +
-> +      camera@31 {
-> +        compatible = "imi,rdacm20";
-> +        reg = <0x31>, <0x41>, <0x51>;
-> +
-> +        port {
-> +          rdacm20_out0: endpoint {
-> +            remote-endpoint = <&max9286_in0>;
-> +          };
-> +        };
-> +      };
-> +    };
-> +
-> +  - |
-> +    i2c@e66d8000 {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      reg = <0 0xe66d8000 0 0x40>;
-> +
-> +      camera@31 {
-> +        compatible = "imi,rdacm21";
-> +        reg = <0x31>, <0x41>;
-> +
-> +        port {
-> +          rdacm21_out0: endpoint {
-> +            remote-endpoint = <&max9286_in0>;
-> +          };
-> +        };
-> +      };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index d3891386d671..dcbecdc58731 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -453,6 +453,8 @@ patternProperties:
->      description: Ingenieurburo Fur Ic-Technologie (I/F/I)
->    "^ilitek,.*":
->      description: ILI Technology Corporation (ILITEK)
-> +  "^imi,.*":
-> +    description: Integrated Micro-Electronics Inc.
->    "^img,.*":
-
-Alphabetical order...
-
-With those fixes,
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
+DQoNCj4gLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0KPiDlj5Hku7bkuro6IFBhb2xvIEJvbnppbmkg
+W21haWx0bzpwYm9uemluaUByZWRoYXQuY29tXQ0KPiDlj5HpgIHml7bpl7Q6IDIwMjDlubQ05pyI
+Mjnml6UgMTg6MjENCj4g5pS25Lu25Lq6OiBQZXRlciBaaWpsc3RyYSA8cGV0ZXJ6QGluZnJhZGVh
+ZC5vcmc+OyBMaSxSb25ncWluZw0KPiA8bGlyb25ncWluZ0BiYWlkdS5jb20+DQo+IOaKhOmAgTog
+bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsga3ZtQHZnZXIua2VybmVsLm9yZzsgeDg2QGtl
+cm5lbC5vcmc7DQo+IGhwYUB6eXRvci5jb207IGJwQGFsaWVuOC5kZTsgbWluZ29AcmVkaGF0LmNv
+bTsgdGdseEBsaW51dHJvbml4LmRlOw0KPiBqb3JvQDhieXRlcy5vcmc7IGptYXR0c29uQGdvb2ds
+ZS5jb207IHdhbnBlbmdsaUB0ZW5jZW50LmNvbTsNCj4gdmt1em5ldHNAcmVkaGF0LmNvbTsgc2Vh
+bi5qLmNocmlzdG9waGVyc29uQGludGVsLmNvbQ0KPiDkuLvpopg6IFJlOiBbUEFUQ0hdW3YyXSBr
+dm06IHg4NjogZW11bGF0ZSBBUEVSRi9NUEVSRiByZWdpc3RlcnMNCj4gDQo+IE9uIDI5LzA0LzIw
+IDEwOjU0LCBQZXRlciBaaWpsc3RyYSB3cm90ZToNCj4gPiBPbiBXZWQsIEFwciAyOSwgMjAyMCBh
+dCAwMTo0NjozNlBNICswODAwLCBMaSBSb25nUWluZyB3cm90ZToNCj4gPj4gR3Vlc3Qga2VybmVs
+IHJlcG9ydHMgYSBmaXhlZCBjcHUgZnJlcXVlbmN5IGluIC9wcm9jL2NwdWluZm8sIHRoaXMgaXMN
+Cj4gPj4gY29uZnVzZWQgdG8gdXNlciB3aGVuIHR1cmJvIGlzIGVuYWJsZSwgYW5kIGFwZXJmL21w
+ZXJmIGNhbiBiZSB1c2VkIHRvDQo+ID4+IHNob3cgY3VycmVudCBjcHUgZnJlcXVlbmN5IGFmdGVy
+IDdkNTkwNWRjMTRhDQo+ID4+ICIoeDg2IC8gQ1BVOiBBbHdheXMgc2hvdyBjdXJyZW50IENQVSBm
+cmVxdWVuY3kgaW4gL3Byb2MvY3B1aW5mbykiDQo+ID4+IHNvIHdlIHNob3VsZCBlbXVsYXRlIGFw
+ZXJmIG1wZXJmIHRvIGFjaGlldmUgaXQNCj4gPj4NCj4gPj4gdGhlIHBlcmlvZCBvZiBhcGVyZi9t
+cGVyZiBpbiBndWVzdCBtb2RlIGFyZSBhY2N1bXVsYXRlZCBhcyBlbXVsYXRlZA0KPiA+PiB2YWx1
+ZSwgYW5kIGFkZCBwZXItVk0ga25vZCB0byBlbmFibGUgZW11bGF0ZSBtcGVyZmFwZXJmDQo+ID4+
+DQo+ID4+IGRpZmYgdjE6DQo+ID4+IDEuIHN1cHBvcnQgQU1EDQo+ID4+IDIuIHN1cHBvcnQgcGVy
+LXZtIGNhcGFiaWxpdHkgdG8gZW5hYmxlDQo+ID4gV291bGQgaXQgbWFrZSBzZW5zZSB0byBwcm92
+aWRlIGEgcGFzcy10aHJvdWdoIEFQRVJGL01QRVJGIGZvcg0KPiA+IEtWTV9ISU5UU19SRUFMVElN
+RSA/IEJlY2F1c2UgdGhhdCBoaW50IGd1YXJhbnRlZXMgd2UgaGF2ZSBhIDE6MQ0KPiA+IHZDUFU6
+Q1BVIGJpbmRpbmcgYW5kIGd1YXJhbnRlZWQgbm8gb3Zlci1jb21taXQuDQo+ID4NCj4gDQo+IFll
+cyBidXQgdGhhdCdzIHVwIHRvIHVzZXJzcGFjZS4NCj4gDQo+IFBhb2xvDQoNClNlZW0ga2VybmVs
+IHNob3VsZCBnaXZlIHRoZSBjYXBhYmlsaXR5IHRvIHVzZXJzcGFjZSB0byBkaXNhYmxlIHRoZSBp
+bnRlcmNlcHQgbXBlcmYvYXBlcmYgZm9yIEtWTV9ISU5UU19SRUFMVElNRQ0KDQpTbyBJIHdpbGwg
+Y2hhbmdlIHRoaXMgcGF0Y2ggdG8gc3VwcG9ydCB0aHJlZSBtb2RlIG1wZXJmYXBlcmY6ICBub25l
+LCBzb2Z0d2FyZSBlbXVsYXRlLCBhbmQgcHQNCg0KDQpkaWZmIC0tZ2l0IGEvYXJjaC94ODYva3Zt
+L3N2bS5jIGIvYXJjaC94ODYva3ZtL3N2bS5jDQppbmRleCAxZDE1N2E4ZGJhNDYuLjZiMDVmNzhi
+ZGU3OCAxMDA2NDQNCi0tLSBhL2FyY2gveDg2L2t2bS9zdm0uYw0KKysrIGIvYXJjaC94ODYva3Zt
+L3N2bS5jDQpAQCAtMTY1Nyw5ICsxNjU3LDExIEBAIHN0YXRpYyB2b2lkIGluaXRfdm1jYihzdHJ1
+Y3QgdmNwdV9zdm0gKnN2bSkNCiAgICAgICAgc2V0X2ludGVyY2VwdChzdm0sIElOVEVSQ0VQVF9T
+S0lOSVQpOw0KICAgICAgICBzZXRfaW50ZXJjZXB0KHN2bSwgSU5URVJDRVBUX1dCSU5WRCk7DQog
+ICAgICAgIHNldF9pbnRlcmNlcHQoc3ZtLCBJTlRFUkNFUFRfWFNFVEJWKTsNCi0gICAgICAgc2V0
+X2ludGVyY2VwdChzdm0sIElOVEVSQ0VQVF9SRFBSVSk7DQogICAgICAgIHNldF9pbnRlcmNlcHQo
+c3ZtLCBJTlRFUkNFUFRfUlNNKTsNCiANCisgICAgICAgaWYgKCFndWVzdF9tcGVyZmFwZXJmX3B0
+KHN2bS0+dmNwdS5rdm0pKQ0KKyAgICAgICAgICAgICAgIHNldF9pbnRlcmNlcHQoc3ZtLCBJTlRF
+UkNFUFRfUkRQUlUpOw0KKw0KICAgICAgICBpZiAoIWt2bV9td2FpdF9pbl9ndWVzdChzdm0tPnZj
+cHUua3ZtKSkgew0KICAgICAgICAgICAgICAgIHNldF9pbnRlcmNlcHQoc3ZtLCBJTlRFUkNFUFRf
+TU9OSVRPUik7DQogICAgICAgICAgICAgICAgc2V0X2ludGVyY2VwdChzdm0sIElOVEVSQ0VQVF9N
+V0FJVCk7DQpkaWZmIC0tZ2l0IGEvYXJjaC94ODYva3ZtL3ZteC92bXguYyBiL2FyY2gveDg2L2t2
+bS92bXgvdm14LmMNCmluZGV4IGIwNWUyNzZlMjYyYi4uMjMxNzMyOTI0YzUwIDEwMDY0NA0KLS0t
+IGEvYXJjaC94ODYva3ZtL3ZteC92bXguYw0KKysrIGIvYXJjaC94ODYva3ZtL3ZteC92bXguYw0K
+QEAgLTY3NjUsNiArNjc2NSwxMiBAQCBzdGF0aWMgaW50IHZteF9jcmVhdGVfdmNwdShzdHJ1Y3Qg
+a3ZtX3ZjcHUgKnZjcHUpDQogICAgICAgICAgICAgICAgdm14X2Rpc2FibGVfaW50ZXJjZXB0X2Zv
+cl9tc3IobXNyX2JpdG1hcCwgTVNSX0NPUkVfQzZfUkVTSURFTkNZLCBNU1JfVFlQRV9SKTsNCiAg
+ICAgICAgICAgICAgICB2bXhfZGlzYWJsZV9pbnRlcmNlcHRfZm9yX21zcihtc3JfYml0bWFwLCBN
+U1JfQ09SRV9DN19SRVNJREVOQ1ksIE1TUl9UWVBFX1IpOw0KICAgICAgICB9DQorDQorICAgICAg
+IGlmIChndWVzdF9tcGVyZmFwZXJmX3B0KHZjcHUtPmt2bSkpIHsNCisgICAgICAgICAgICAgICB2
+bXhfZGlzYWJsZV9pbnRlcmNlcHRfZm9yX21zcihtc3JfYml0bWFwLCBNU1JfSUEzMl9NUEVSRiwg
+TVNSX1RZUEVfUik7DQorICAgICAgICAgICAgICAgdm14X2Rpc2FibGVfaW50ZXJjZXB0X2Zvcl9t
+c3IobXNyX2JpdG1hcCwgTVNSX0lBMzJfQVBFUkYsIE1TUl9UWVBFX1IpOw0KKyAgICAgICB9DQor
+DQogICAgICAgIHZteC0+bXNyX2JpdG1hcF9tb2RlID0gMDsNCiANCiAgICAgICAgdm14LT5sb2Fk
+ZWRfdm1jcyA9ICZ2bXgtPnZtY3MwMTsNCg0KDQotTGkNCg==
