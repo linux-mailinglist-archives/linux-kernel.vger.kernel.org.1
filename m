@@ -2,106 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19631C016B
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9A81C01C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 18:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728320AbgD3QGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 12:06:10 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10786 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727813AbgD3QGJ (ORCPT
+        id S1727053AbgD3QLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 12:11:00 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:48824 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726473AbgD3QLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 12:06:09 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5eaaf72c0002>; Thu, 30 Apr 2020 09:05:00 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 30 Apr 2020 09:06:07 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 30 Apr 2020 09:06:07 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
- 2020 16:06:07 +0000
-Received: from [10.2.165.152] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
- 2020 16:06:06 +0000
-Subject: Re: [RFC PATCH v11 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1588197606-32124-1-git-send-email-skomatineni@nvidia.com>
- <1588197606-32124-7-git-send-email-skomatineni@nvidia.com>
- <bacc4308-4b95-f566-b80e-096ff96407b5@gmail.com>
- <4da289e6-036f-853b-beb4-379d6462adb0@gmail.com>
- <c6d54885-6f23-f60c-a17b-3481fc4d6adf@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <b14b9dc5-7ac9-7735-d98d-eebc7e151cba@nvidia.com>
-Date:   Thu, 30 Apr 2020 09:04:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 30 Apr 2020 12:11:00 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UG9P7i018332;
+        Thu, 30 Apr 2020 16:10:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=cGBuAWcMSJuK2HC9O6Fm+m3T13l5AKHSgVbckXcZcws=;
+ b=X+Sn+ll5H98DPvH7VO7oG3aYaZVmj8JKTknXpDbnFeO3k0GpQkGIg4cqwL7XrTCEt9Vt
+ xa8JggswfIUaz2bVM7OZBz1mVTDARGX/fwas8lZMZIYHcvXapo7WCNp3XQgFeM3EqCbP
+ 7gw4vmHzHnlKoeUggE18jdHpc6WTkofF+g7AI4BJdz3DZPNOaqIQn4L05ctekAtou3rx
+ PqvngvS78QAY0vAfrTRWJZmXi1poDS0Hhl9+gzzJnogYDWnuBBGcW1v/Nc04T5n7ab9o
+ 2pSe1VhnH37+jTnJvYc1gkXp4w6Jsp7GDCjGvd7kFqljOhIcK1SmYbvnwmrPl/KW/CJe cg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 30p01p2y1e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 16:10:53 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03UG8RaZ075430;
+        Thu, 30 Apr 2020 16:08:53 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 30qtkwpg1y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 30 Apr 2020 16:08:53 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 03UG8qd9077324;
+        Thu, 30 Apr 2020 16:08:52 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 30qtkwpg1c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 30 Apr 2020 16:08:52 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03UG8oep011597;
+        Thu, 30 Apr 2020 16:08:51 GMT
+Received: from [10.159.147.146] (/10.159.147.146)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 30 Apr 2020 09:08:50 -0700
+Subject: Re: [PATCH 24/37] docs: networking: convert rds.txt to ReST
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
+References: <cover.1588261997.git.mchehab+huawei@kernel.org>
+ <6c2adf3f895bea317c2f69cb14e2cf0eb203ac64.1588261997.git.mchehab+huawei@kernel.org>
+From:   santosh.shilimkar@oracle.com
+Organization: Oracle Corporation
+Message-ID: <871049f9-9d40-8fcd-f525-d30facd757d4@oracle.com>
+Date:   Thu, 30 Apr 2020 09:08:49 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <c6d54885-6f23-f60c-a17b-3481fc4d6adf@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <6c2adf3f895bea317c2f69cb14e2cf0eb203ac64.1588261997.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1588262700; bh=eWajUdI0iXeAXeqVD5ZpEmRaSpEhM1U8KfCosqzO194=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=kP9ln9IFyG1CyD2zYD6UBRJU+3nqtrfnnZ+cS/JlbzMx3B5faTPLBdCdqyTod9yo1
-         Z0Z2LBvNwQOpWFZIlo0fsv987r878bT2zeUtFfUToRuBf1Lh/HgCJgU7bLrKBMWn3Q
-         7EPPKclFWEMjk0R/r47l9T1m3+0SRS07OY7Pci/cE1nIgNUWDe6tk+Kayl8v2RJ0Rk
-         3nt0YCCT4XfBt1BFf++ZQhEXx6KRIn9v+noVua6ZqWw5Skg8oeWfj68av04Fza1i/d
-         F7E8EIRMAtO/MowkXFoanRyv6lWSbQx/oMz+9gxgwUq+u9RKO8pXG3cOzg4ztuNvIk
-         5iYSGa7WbeIhA==
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 clxscore=1011
+ phishscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501 mlxscore=0
+ suspectscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004300128
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 4/30/20 7:13 AM, Dmitry Osipenko wrote:
-> 30.04.2020 17:02, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> 30.04.2020 16:56, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> 30.04.2020 01:00, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>> +static int chan_capture_kthread_finish(void *data)
->>>> +{
->>>> +	struct tegra_vi_channel *chan =3D data;
->>>> +	struct tegra_channel_buffer *buf;
->>>> +
->>>> +	set_freezable();
->>>> +
->>>> +	while (1) {
->>>> +		try_to_freeze();
->>> I guess it won't be great to freeze in the middle of a capture process,=
- so:
->>> 		if (list_empty(&chan->done))
->>> 			try_to_freeze();
->> And here should be some locking protection in order not race with the
->> chan_capture_kthread_start because kthread_finish could freeze before
->> kthread_start.
-> Or maybe both start / finish threads should simply be allowed to freeze
-> only when both capture and done lists are empty.
->
-> if (list_empty(&chan->capture) &&
->      list_empty(&chan->done))
-> 	try_to_freeze();
-
-good to freeze when not in middle of the frame capture but why should we=20
-not allow freeze in between captures?
-
-Other drivers do allow freeze in between frame captures.
-
-I guess we can freeze before dequeue for capture and in finish thread we=20
-can freeze after capture done. This also don't need to check for=20
-list_empty with freeze to allow between frame captures.
-
-
+On 4/30/20 9:04 AM, Mauro Carvalho Chehab wrote:
+> - add SPDX header;
+> - add a document title;
+> - mark code blocks and literals as such;
+> - mark tables as such;
+> - mark lists as such;
+> - adjust identation, whitespaces and blank lines where needed;
+> - add to networking/index.rst.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
