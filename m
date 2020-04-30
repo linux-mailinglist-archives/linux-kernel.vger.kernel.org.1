@@ -2,77 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0181BE89C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Apr 2020 22:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F35F1BEEFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 06:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727774AbgD2Udu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Apr 2020 16:33:50 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:32289 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727095AbgD2Uds (ORCPT
+        id S1726395AbgD3EYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 00:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725280AbgD3EYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Apr 2020 16:33:48 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Wed, 29 Apr 2020 13:33:44 -0700
-Received: from localhost.localdomain (ashwinh-vm-1.vmware.com [10.110.19.225])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id D3B1240F60;
-        Wed, 29 Apr 2020 13:33:43 -0700 (PDT)
-From:   ashwin-h <ashwinh@vmware.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stable@kernel.org>, <srivatsab@vmware.com>,
-        <srivatsa@csail.mit.edu>, <rostedt@goodmis.org>,
-        <srostedt@vmware.com>, <gregkh@linuxfoundation.org>,
-        <ashwin.hiranniah@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Ashwin H <ashwinh@vmware.com>
-Subject: [PATCH 5/5] ext4: unsigned int compared against zero
-Date:   Thu, 30 Apr 2020 09:52:07 +0530
-Message-ID: <7467cc4a8a1fcb2cf1d3de1c12ed1c8b1d86d47e.1588189373.git.ashwinh@vmware.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1588189373.git.ashwinh@vmware.com>
-References: <cover.1588189373.git.ashwinh@vmware.com>
+        Thu, 30 Apr 2020 00:24:05 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F92C035494;
+        Wed, 29 Apr 2020 21:24:04 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x15so2295711pfa.1;
+        Wed, 29 Apr 2020 21:24:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KhvM5Pbwqp4GHCCKH1JQ77gi57Z5QMqOiW7fGw8B1mk=;
+        b=ougCJz6naTbrpT5mDHZs3oj9O89lX1RVKtVzjutjexVrgQFKbXfrr3g7/aG2ZhQg9P
+         8HLm1eP/clniAjyoanFTKE1ucc+f16h2oe2g0bHr8UrhTJlyUX3jkrjITRFef3foN45z
+         EeNdIeApf5gtXGvcR2jPNPJgegRYTrCdDbD22zLGTyFL/KnCsJ6Q17GIrESmFl1i5Bpf
+         bRB6RRTNfVcAdNdsIN6RO3F/sPmGbfVxlfW3AakD7MXJlA0xNFVk1wvV0OOJbsJLafih
+         wzB3xpV0cnyn7HxZ+MwkLk1TT1xw4Y1LUZOI4vxBuliIaCYcs+U2mTkF9HeWw8pkTUmr
+         4uMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KhvM5Pbwqp4GHCCKH1JQ77gi57Z5QMqOiW7fGw8B1mk=;
+        b=LLmZ/6NQlOq+OBundSmZ6wFvMl5IAT6l3rMEP9sVgaLFXlGjnheKFdHVRuYZqJvJkY
+         JDUJs+5jyvUcoVZNGgy+UmE1WdlW8o8vjalK6/vOfAKu/R+0GDJeZIBnqGhBPgVuwjaz
+         sK4c2h4k5caID7cDCOWkh5f6/6qyBUWC06kI4oQ8cWAXqXymi5HrusALqR0HGh4EHmWq
+         u1s/DUGZgeJBlZUKMrYKL71VAdf+BibKWvq+5S+TR/gRGQOk61xhbU98Hy0HqapZxAkL
+         bHGOrTXKhd5Oe1VxNbArsRYch0oqE//eF9oJJP3tVfEd0/UO0HLWl0C/vO6nuFXhxZcC
+         j18w==
+X-Gm-Message-State: AGi0PubkO+1N3oPRqZEHfmBmic2IdcoJpqvPKKP0eKNj/1Oap0+qGof4
+        dvGrNXmR00gkzC7D19+AFeQ=
+X-Google-Smtp-Source: APiQypKlNI45ZENLkeN/qowZIMetyD/iTF9kI3byHgLbMxnedtufJ3lV/pnskfqTkAx9mA76FUvslg==
+X-Received: by 2002:a62:aa04:: with SMTP id e4mr219156pff.317.1588220644254;
+        Wed, 29 Apr 2020 21:24:04 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:c108])
+        by smtp.gmail.com with ESMTPSA id j23sm614197pjz.13.2020.04.29.21.24.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 21:24:03 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 21:24:00 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, hpa@zytor.com, ast@kernel.org,
+        peterz@infradead.org, rdunlap@infradead.org,
+        Arnd Bergmann <arnd@arndb.de>, bpf@vger.kernel.org,
+        daniel@iogearbox.net
+Subject: Re: BPF vs objtool again
+Message-ID: <20200430042400.45vvqx4ocwwogp3j@ast-mbp.dhcp.thefacebook.com>
+References: <30c3ca29ba037afcbd860a8672eef0021addf9fe.1563413318.git.jpoimboe@redhat.com>
+ <tip-3193c0836f203a91bef96d88c64cccf0be090d9c@git.kernel.org>
+ <20200429215159.eah6ksnxq6g5adpx@treble>
+ <20200429234159.gid6ht74qqmlpuz7@ast-mbp.dhcp.thefacebook.com>
+ <20200430001300.k3pgq2minrowstbs@treble>
+ <20200430021052.k47qzm63kpcn32pg@ast-mbp.dhcp.thefacebook.com>
+ <20200430035315.tc74v5twfdxv2goh@treble>
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: ashwinh@vmware.com does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430035315.tc74v5twfdxv2goh@treble>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Apr 29, 2020 at 10:53:15PM -0500, Josh Poimboeuf wrote:
+> On Wed, Apr 29, 2020 at 07:10:52PM -0700, Alexei Starovoitov wrote:
+> > > For example:
+> > > 
+> > > #define GOTO    ({ goto *jumptable[insn->code]; })
+> > > 
+> > > and then replace all 'goto select_insn' with 'GOTO;'
+> > > 
+> > > The problem is that with RETPOLINE=y, the function text size grows from
+> > > 5k to 7k, because for each of the 160+ retpoline JMPs, GCC (stupidly)
+> > > reloads the jump table register into a scratch register.
+> > 
+> > that would be a tiny change, right?
+> > I'd rather go with that and gate it with 'ifdef CONFIG_FRAME_POINTER'
+> > Like:
+> > #ifndef CONFIG_FRAME_POINTER
+> > #define CONT     ({ insn++; goto select_insn; })
+> > #define CONT_JMP ({ insn++; goto select_insn; })
+> > #else
+> > #define CONT     ({ insn++; goto *jumptable[insn->code]; })
+> > #define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
+> > #endif
+> > 
+> > The reason this CONT and CONT_JMP macros are there because a combination
+> > of different gcc versions together with different cpus make branch predictor
+> > behave 'unpredictably'.
+> > 
+> > I've played with CONT and CONT_JMP either both doing direct goto or
+> > indirect goto and observed quite different performance characteristics
+> > from the interpreter.
+> > What you see right now was the best tune I could get from a set of cpus
+> > I had to play with and compilers. If I did the same tuning today the outcome
+> > could have been different.
+> > So I think it's totally fine to use above code. I think some cpus may actually
+> > see performance gains with certain versions of gcc.
+> > The retpoline text increase is unfortunate but when retpoline is on
+> > other security knobs should be on too. In particular CONFIG_BPF_JIT_ALWAYS_ON
+> > should be on as well. Which will remove interpreter from .text completely.
+> 
+> This would actually be contingent on RETPOLINE, not FRAME_POINTER.
+> 
+> (FRAME_POINTER was the other issue with the "optimize" attribute, which
+> we're reverting so it'll no longer be a problem.)
+> 
+> So if you're not concerned about the retpoline text growth, it could be
+> as simple as:
+> 
+> #define CONT     ({ insn++; goto *jumptable[insn->code]; })
+> #define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
+> 
+> 
+> Or, if you wanted to avoid the text growth, it could be:
+> 
+> #ifdef CONFIG_RETPOLINE
 
-commit fbbbbd2f28aec991f3fbc248df211550fbdfd58c upstream.
+I'm a bit lost. So objtool is fine with the asm when retpoline is on?
+Then pls do:
+#if defined(CONFIG_RETPOLINE) || !defined(CONFIG_X86)
 
-There are two cases where u32 variables n and err are being checked
-for less than zero error values, the checks is always false because
-the variables are not signed. Fix this by making the variables ints.
+since there is no need to mess with other archs.
 
-Addresses-Coverity: ("Unsigned compared against 0")
-Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using block_validity")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Ashwin H <ashwinh@vmware.com>
----
- fs/ext4/block_validity.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> /*
+>  * Avoid a 40% increase in function text size by getting GCC to generate a
+>  * single retpoline jump instead of 160+.
+>  */
+> #define CONT	 ({ insn++; goto select_insn; })
+> #define CONT_JMP ({ insn++; goto select_insn; })
+> 
+> select_insn:
+> 	goto *jumptable[insn->code];
+> 
+> #else /* !CONFIG_RETPOLINE */
+> #define CONT	 ({ insn++; goto *jumptable[insn->code]; })
+> #define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
+> #endif /* CONFIG_RETPOLINE */
+> 
+> 
+> But since this is legacy path, I think the first one is much nicer.
+> 
+> 
+> Also, JMP_TAIL_CALL has a "goto select_insn", is it ok to convert that
+> to CONT?
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index 7ba8920..13eb028 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -142,7 +142,8 @@ static int ext4_protect_reserved_inode(struct super_block *sb, u32 ino)
- 	struct inode *inode;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_map_blocks map;
--	u32 i = 0, err = 0, num, n;
-+	u32 i = 0, num;
-+	int err = 0, n;
- 
- 	if ((ino < EXT4_ROOT_INO) ||
- 	    (ino > le32_to_cpu(sbi->s_es->s_inodes_count)))
--- 
-2.7.4
-
+yep
