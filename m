@@ -2,171 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DAEB1BF9B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2C11BF9B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 15:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgD3Nir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 09:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727789AbgD3Nio (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 09:38:44 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C0FC035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:38:42 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id v4so7492974wme.1
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 06:38:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KnR7bkdv4N1Nq9MuZiNtgrfGxSJ17VM7ueK9N7RTvfw=;
-        b=XLnBFQL5UUro9alKKy0D0DfX9qkXZAq/iO+O/1OXTpBDq+W8EbPNOI96gbJrDL1z+8
-         zLmHUj7VCkJG4KEqGmUU+quv2A2YiGLWJpEhqNnfg1KYU3NVeFD1YDO9jY8cBwTC991M
-         YOc88uX9Z8DS1xDqBUFQzgrkK/I5XnhgZliHM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=KnR7bkdv4N1Nq9MuZiNtgrfGxSJ17VM7ueK9N7RTvfw=;
-        b=Q2N7H6wNFetVzBBCSkUN9KC1geeP0dQ9qWAbTmIrSfDISYBDSIhy0ZGNctd1S364FX
-         QUfhSQaNjGz/Dsze6hdpjWM7895G9UD1u2O85h0jcejT1lYCwV/YbhDdT2HBg6DLJoqW
-         ILWyOM3dOcuWeDaLUd14rYcwLaYUUoMKRi4y2NCXqnzzyWvd/wAB+17/5SzXmpaHZ82p
-         gAle9k9wPdMHwG6g80qwPqdS3DwXtCNHa/SZbULh8kfbqZ3WS6S+qKSYvd9VgEcpAlNA
-         nz3zBCP18fM9Lv+Fa9dq0uYFADxNl6zltlOai5Z0JVv1WHQKQD2L/M5jmq9IP224jjdN
-         2kxw==
-X-Gm-Message-State: AGi0PuY8WGqKpBRlyV0wxA1q6321hc+dw+H2g4YeKo2iiX+R/Chm24Zq
-        9lkEmeBxc4XI/h5IxkIwlRbMkg==
-X-Google-Smtp-Source: APiQypL+QGXvyVhP/QeAHVWOyWEduq4cr+Jqf1PzGKDCYktsJpNMQ7Lne/j1S3qXZBUt6Kmx+2hfrw==
-X-Received: by 2002:a7b:c84f:: with SMTP id c15mr2905324wml.166.1588253921689;
-        Thu, 30 Apr 2020 06:38:41 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id u127sm12408532wme.8.2020.04.30.06.38.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 06:38:41 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 15:38:39 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Xin Ji <xji@analogixsemi.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        devel@driverdev.osuosl.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Sheng Pan <span@analogixsemi.com>,
-        Qilin Wen <qwen@analogixsemi.com>,
-        Ming Liu <mliu@analogixsemi.com>
-Subject: Re: [PATCH v7 2/2] drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to
- DP bridge driver
-Message-ID: <20200430133839.GB10381@phenom.ffwll.local>
-Mail-Followup-To: Xin Ji <xji@analogixsemi.com>,
-        Nicolas Boichat <drinkcat@google.com>, devel@driverdev.osuosl.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Pi-Hsun Shih <pihsun@chromium.org>,
-        Sheng Pan <span@analogixsemi.com>,
-        Qilin Wen <qwen@analogixsemi.com>, Ming Liu <mliu@analogixsemi.com>
-References: <cover.1582529411.git.xji@analogixsemi.com>
- <a81adcf2e79d440edcb7b3989f31efcb80a6e9ff.1582529411.git.xji@analogixsemi.com>
- <CANMq1KBfB6tXFqYGvr=8fV_bpCV5GbVHeEbRs+fuaZba65-OPw@mail.gmail.com>
- <20200424065124.GA31922@xin-VirtualBox>
- <CANMq1KBJ6f74aNAr8BwC3wz8MEeJzwXOQE44gv6C=DNzYmUWCQ@mail.gmail.com>
- <20200428100508.GD3456981@phenom.ffwll.local>
- <20200430033614.GA6645@xin-VirtualBox>
- <20200430133731.GA10381@phenom.ffwll.local>
+        id S1727828AbgD3Nj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 09:39:29 -0400
+Received: from mail-oln040092072082.outbound.protection.outlook.com ([40.92.72.82]:31514
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726809AbgD3Nj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 09:39:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UXNlBvf2h24FO6uYFg9AXtj3hX6Fc6a0vRXBehZ5yhFR0/KSTGWw/HoBF0/NAqbTRSuh1iAH/wSPkKLNpuvjmOoaG2BMsqBYlAr2yQoB2d9iu5X8arZ6X3yDrtLpkghuwdYMklRFAxNfvl3qub+D6y3q0Jr32GQxf2h1uO8QdpU6zAO5j2ieUJglllESodzEDddKveWTAgD0V6umvzKD/xCxTL1FeoTXLCVkPhHfKo+SKqgVxkZvdgp2PolGZjVt/j+U4h3+t0Xya8CFmcj5g56unEQSRdAyp60qw1zOtlIqNdMR7nV66GWMIO/0zIXWxsUGybTEVofRb6UlwJcFEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wMU5XsSberkXpZeuJ1JPAgEfAms9XaCh9X1Ck6UtX2g=;
+ b=YWg6HdXUyqK1LYsoEoU6a+CFZ+EdMErChoBpRLLf+23NJnO6pwSUKTTGPTZhrOQk+XKtX/Ydk2F056N+70R7/qk9MqTHkH5Q4m8Bkr5BWBm7QsBEULQGEyIr8KfgPB+G7Xux4PYXiq4PdEKiXzlh9r3JOTJWJbhNcYZ33K9CCKwCxCmfYIVSL44HNuQlRDaT1cWVF71+dJHA3tioISwaFJP7T8sU+fPH1reI8eGvxYBH3cslxL4lsIpkjmqrZjqcGtas0DmCxp4Wgb/r6OmvQQ78ZAMpdLVtfSYycF4cOat/OMKmbVEtSoWh48yywtoRtCLZm2kjYoBnGlc16cBhZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hotmail.de; dmarc=pass action=none header.from=hotmail.de;
+ dkim=pass header.d=hotmail.de; arc=none
+Received: from VE1EUR03FT047.eop-EUR03.prod.protection.outlook.com
+ (2a01:111:e400:7e09::41) by
+ VE1EUR03HT154.eop-EUR03.prod.protection.outlook.com (2a01:111:e400:7e09::315)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.19; Thu, 30 Apr
+ 2020 13:39:25 +0000
+Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
+ (2a01:111:e400:7e09::44) by VE1EUR03FT047.mail.protection.outlook.com
+ (2a01:111:e400:7e09::474) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend
+ Transport; Thu, 30 Apr 2020 13:39:25 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:0B8753FDC9238C80C40FC1DB4969620CBEC59B6CA7D3EE1E658CBBEA9502C6FC;UpperCasedChecksum:45E114EFC0B33536A462182860C7A9440D2CCFD2C28B700743EDDBBDCC7F17F6;SizeAsReceived:10019;Count:50
+Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
+ ([fe80::d57:5853:a396:969d]) by AM6PR03MB5170.eurprd03.prod.outlook.com
+ ([fe80::d57:5853:a396:969d%7]) with mapi id 15.20.2958.019; Thu, 30 Apr 2020
+ 13:39:25 +0000
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+References: <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
+ <20200428190836.GC29960@redhat.com>
+ <CAHk-=wi03QRcUR1DfbEr+Pw-DAMENzY-FuRcGawtj9p597=p2w@mail.gmail.com>
+ <CAG48ez03ABTa-KbCtFHqB1hOT7dgAM96c3kiw-e80B+utSEwYw@mail.gmail.com>
+ <CAHk-=wjTLnMuZmBO2foeHhsLAoUTpUi7oBVJ67F4XKB+tdEDbQ@mail.gmail.com>
+ <CAG48ez3EQOvdbzu9aO-cEAJwF_=fJzn1Cg0LMs3ruc=5r1ie5w@mail.gmail.com>
+ <CAHk-=whTgFbjGTP=CqMWs_LOkY7bWvLQGYKwKx86amdbMovAkw@mail.gmail.com>
+ <CAG48ez2-Nu2ALN6VEUZL-prtR_Kk8QYBHcnvuh0aU2e4zf37RA@mail.gmail.com>
+ <CAHk-=wh=G47oD2F1CgOrvGFbEPh2ddMKLV4_wV_bs6S=98aZ5A@mail.gmail.com>
+ <AM6PR03MB5170A6AA240D2E8F5E88B911E4AD0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wguiKq8yf11WJjgSL4ADKZ5sLe_Qbd7vHEqAkTvZJ+d+Q@mail.gmail.com>
+ <CAHk-=wjUZLybZBJgOtD2gng=FS7USrbQQ1-tn5M+UP5DbCWdzw@mail.gmail.com>
+ <CAG48ez0FL3i4eGFYryOwG2nnS+JigfKYAVSV9ogVHjmjOWzsrA@mail.gmail.com>
+ <CAHk-=wgcvn1_1kCkyourNCKeH+KrzSMRvc-ai_NLU4RGZT_XBg@mail.gmail.com>
+From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
+Message-ID: <AM6PR03MB5170CCB8D9D41904066DAFD5E4AA0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+Date:   Thu, 30 Apr 2020 15:39:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+In-Reply-To: <CAHk-=wgcvn1_1kCkyourNCKeH+KrzSMRvc-ai_NLU4RGZT_XBg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR07CA0027.eurprd07.prod.outlook.com
+ (2603:10a6:208:ac::40) To AM6PR03MB5170.eurprd03.prod.outlook.com
+ (2603:10a6:20b:ca::23)
+X-Microsoft-Original-Message-ID: <9dc2a7f8-d7e0-a8fc-7457-610934a297c6@hotmail.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430133731.GA10381@phenom.ffwll.local>
-X-Operating-System: Linux phenom 5.4.0-4-amd64 
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.101] (84.57.60.225) by AM0PR07CA0027.eurprd07.prod.outlook.com (2603:10a6:208:ac::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.16 via Frontend Transport; Thu, 30 Apr 2020 13:39:24 +0000
+X-Microsoft-Original-Message-ID: <9dc2a7f8-d7e0-a8fc-7457-610934a297c6@hotmail.de>
+X-TMN:  [/OoXc6tcW1uHCxkH62kbzDtaVhiT99Xv]
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 50
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: d2d9a64c-3920-40ba-f1f1-08d7ed0be5c3
+X-MS-TrafficTypeDiagnostic: VE1EUR03HT154:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mdhLTR8e6lEktJycq0A+DSr69begC3mdKmiue7AoMV/c/xEEv+r2CeEz6JAMkiGD3RRGXG74t5W2ok/sqzA+Lnw/6mi6D2gROj/qvcFNFzHiWmfd5xIxW0Op/J4njhV1DB+qssjbK6Gl11AIXycOSGgLHdNcDNbCtYTg8f/kHEZEsHym0WfWUGK/cQZhgbktrLvIHmHDbClKClWpKCfx+w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB5170.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
+X-MS-Exchange-AntiSpam-MessageData: QL/J+onD810hzOolRk3oh3153GDPdz6L2bUMz8MZhajlFjaZvIyjsV01RDrbn+0s4G/2sdnDO10xS9DLggt663V3O43UeyH+WYdYUXBuJ7J7sXJ2fvOgQDxQ9THPW5Up6vlY8AZ5Q3HjEX9Hd65j2w==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2d9a64c-3920-40ba-f1f1-08d7ed0be5c3
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 13:39:25.5839
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1EUR03HT154
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 03:37:31PM +0200, Daniel Vetter wrote:
-> On Thu, Apr 30, 2020 at 11:36:14AM +0800, Xin Ji wrote:
-> > On Tue, Apr 28, 2020 at 12:05:08PM +0200, Daniel Vetter wrote:
-> > > On Fri, Apr 24, 2020 at 08:12:04PM +0800, Nicolas Boichat wrote:
-> > > > On Fri, Apr 24, 2020 at 2:51 PM Xin Ji <xji@analogixsemi.com> wrote:
-> > > > >
-> > > > > On Thu, Apr 23, 2020 at 07:55:15PM +0800, Nicolas Boichat wrote:
-> > > > > > Hi,
-> > > > > >
-> > > > > > Just commenting on the mode_fixup function that was added in v7.
-> > > > > >
-> > > > > [snip]
-> > > > > > > +       /*
-> > > > > > > +        * once illegal timing detected, use default HFP, HSYNC, HBP
-> > > > > > > +        */
-> > > > > > > +       if (hblanking < HBLANKING_MIN || (hfp < HP_MIN && hbp < HP_MIN)) {
-> > > > > >
-> > > > > > should this be adj_hblanking/adj_hfp/adj_hbp?
-> > > > > NO, need check original HFP and HBP, if they are not legal, driver need
-> > > > > set default value to adj_hsync, adj_hfp, adj_hbp.
-> > > > > >
-> > > > > > > +               adj_hsync = SYNC_LEN_DEF;
-> > > > > > > +               adj_hfp = HFP_HBP_DEF;
-> > > > > > > +               adj_hbp = HFP_HBP_DEF;
-> > > > > > > +               vref = adj->clock * 1000 / (adj->htotal * adj->vtotal);
-> > > > > > > +               if (hblanking < HBLANKING_MIN) {
-> > > > > > > +                       delta_adj = HBLANKING_MIN - hblanking;
-> > > > > > > +                       adj_clock = vref * delta_adj * adj->vtotal;
-> > > > > > > +                       adj->clock += DIV_ROUND_UP(adj_clock, 1000);
-> > > > > > > +               } else {
-> > > > > > > +                       delta_adj = hblanking - HBLANKING_MIN;
-> > > > > > > +                       adj_clock = vref * delta_adj * adj->vtotal;
-> > > > > > > +                       adj->clock -= DIV_ROUND_UP(adj_clock, 1000);
-> > > > > > > +               }
-> > > > > > > +
-> > > > > > > +               DRM_WARN("illegal hblanking timing, use default.\n");
-> > > > > > > +               DRM_WARN("hfp(%d),hbp(%d),hsync(%d).\n", hfp, hbp, hsync);
-> > > > > >
-> > > > > > How likely is it that this mode is going to work? Can you just return
-> > > > > > false here to reject the mode?
-> > > > > We want to set the default minimal Hblancking value, then it may display,
-> > > > > otherwise. If we just return false, there is no display for sure.
-> > > > 
-> > > > Right, understand your argument. I'm pondering if it's not just better
-> > > > to reject the mode rather than trying a timing that is definitely
-> > > > quite different from what the monitor was asking for. No super strong
-> > > > opinion, I'll let other people on the list weigh in.
-> > > 
-> > > Yeah mode_fixup is supposed to be used to adjust the mode in intermediate
-> > > stages (e.g. if you go from progressive to interlaced only at the end of
-> > > your pipeline or something like that). It's not meant for adjusting the
-> > > mode yout actually put out through a hdmi or dp connector. For fixed
-> > > panels adjusting modes to fit the panel is also fairly common, but not for
-> > > external outputs.
-> > > 
-> > > Since this is a DP bridge I'd say no adjusting, just reject what doesn't
-> > > fit.
-> > We have found some panel which HBP less than 8, if we reject to adjust
-> > video timing, then there is no display. The customer does not accept it,
-> > they push us to fix it, the only resolve way is to adjust timing.
+On 4/30/20 4:16 AM, Linus Torvalds wrote:
+> On Wed, Apr 29, 2020 at 5:00 PM Jann Horn <jannh@google.com> wrote:
+>>
+>> Wouldn't you end up livelocked in the scenario that currently deadlocks?
 > 
-> Are we talking about external DP screen here, or some built-in panel? For
-> the later case we do a lot of mode adjusting in many drivers ...
+> The test case that we already know is broken, and any fix will have to
+> change anyway?
 > 
-> I haven't checked, by if our connector type is eDP then this should be all
-> fine.
 
-Ok I read the patch now, you seem to support both. Would it work if we
-make this adjustement conditional on it being an internal panel only? I
-think that would be perfect.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+The purpose of the test case was only to test the behaviour of my
+later patch.  The test case _must_ be adjusted to the follow-up
+patch, I have no problem with that.  Anybody may change the test case
+when we know how to fix the API.  I did just not anticipate that Eric
+would only apply 14 of 16 patches = 87.5% of the patch series. Now that
+causes some tension, but it is not really a problem IMHO.
+
+> Let's just say that I don't care in the least.
+> 
+> But Bernd's patch as-is breaks a test-case that currently *works*,
+> namely something as simple as
+> 
+>   echo xyz > /proc/<pid>/attr/something
+> 
+
+Excuse me, but what in my /proc folder there is no attr/something
+is there a procfs equivalent of pthread_attach ?
+
+What exactly is "attr/something" ?
+
+> and honestly, breaking something that _works_ and may be used in
+> reality, in orderf to make a known buggy user testcase work?
+> 
+> Because no, "write()" returning -EAGAIN isn't ok.
+> 
+
+write can return -EAGAIN if the file is non-blocking, it is
+never the case for a disk file, but for a NFS that is not at all
+clear, depends on a mount option, and once I had a deadlock in
+one of my test systems after OOM-stress, but I never was able
+to reproduce, the umount deadlocked, then I was not able to
+reboot, could be an alpha-particle of course, who knows...
+
+
+Hmmm.. maybe a stupid idea:
+
+We could keep the old deadlock-capable API,
+and add a new _flag_ somewhere to the PTHREAD_ATTACH call,
+that _enables_ the non-blocking behavior, how about that.
+
+
+
+Thanks
+Bernd.
+
+>             Linus
+> 
