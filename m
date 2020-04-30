@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DAE1C0704
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9050D1C06FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 21:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgD3TxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 15:53:14 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:10134 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgD3TxO (ORCPT
+        id S1726736AbgD3Tvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 15:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726455AbgD3Tvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 15:53:14 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5eab2c660003>; Thu, 30 Apr 2020 12:52:06 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Thu, 30 Apr 2020 12:53:13 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Thu, 30 Apr 2020 12:53:13 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
- 2020 19:53:04 +0000
-Received: from [10.2.165.152] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 30 Apr
- 2020 19:53:03 +0000
-Subject: Re: [RFC PATCH v11 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1588197606-32124-1-git-send-email-skomatineni@nvidia.com>
- <1588197606-32124-7-git-send-email-skomatineni@nvidia.com>
- <34a49a30-71f2-5b24-20a4-7d98ae37cefa@gmail.com>
- <1b23178b-0e5c-c97e-434c-f9cc3c02805b@nvidia.com>
- <ebfb532b-bcd2-f356-49e0-e4d72d0db933@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <9b2b36ad-82cb-bcf6-24d6-3533b51918c8@nvidia.com>
-Date:   Thu, 30 Apr 2020 12:51:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 30 Apr 2020 15:51:50 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C43C035495
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:51:50 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id d16so5553393edv.8
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 12:51:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D+FwAVJSyrEXzkxSrmCS02v7oMdKUwO+F0o4wshx4Ek=;
+        b=vVUQtbBBW2Z6/5fnVMc/CHaP+nmdWUZ9QxTg9U+zXdocuJvECmz2ZYNIGKPPz6wnQ8
+         Y/blY8yPzeccGFk3m1sEppcnDb2DSh0FgHkCsa362EpoiStkcCEFl/jvgV3GTQCJGqIR
+         1F5ZNP+5RAyCH89lA/zS+VK58cK0uw0HhqVN63Enq4YTlK6yQyXV4DIfnL10P+OqgGw/
+         HCg5266Eh5MmmWWOvAC6lE6/rve3bHhcEcgVc+Td4DD9a+Td1zEyKuOO0czcYWrzhCcT
+         tvoeMJf89WE0O/M4IxIXqvfJwcRgTiFBEmYdGzxdktpJKukTKOFi25Kns4jm5Sm2dyAU
+         yc4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D+FwAVJSyrEXzkxSrmCS02v7oMdKUwO+F0o4wshx4Ek=;
+        b=aft6zDHMVdvBd6O1LqIudGiZGL+1XQzm8SAt1Er6PPPYqKjq7dRACvf51j03ZDuQWN
+         NKAcm2fLsYaq5uJE5b+F500rFUO7pzwo4dkmoxXysH6JvvLqzt4zp2uFZcqZNm9TP15e
+         /sgQ5MblkCpo+v7GrCxzQ0BNpAg2n/bnsmMzcxfByu5SRYAHgtemnPem2aLS+Ms5k2tA
+         I9IO5SyK3JuQUU5yHeqZPZ22++UpocgTd598OMysDZA0GyyhwwB+e13A+iC25gAIEASg
+         asdG5LGo0nbPQsyGFBAfGOlFIZdANTnNk+iQmFzXiPaq7EDLGQxzuoH7SZEMzdN06NGq
+         zysg==
+X-Gm-Message-State: AGi0PuZR+N02a4rqQSl4G8B2NHCq8UbQOtqcMSbxSO+l2kb0h4Ege/ZM
+        YszTCIqXftEgowPEjiJ2LP6Dl0/98cmrEuYXdKeS4w==
+X-Google-Smtp-Source: APiQypKSjYZOD7xk1KJYIgeWWnr+Sy7zH5f3yAinfHlnQz1vSgERtk1La4XpoWwZWcsoyFjvzfAAP5KPRwAA/g7JUtg=
+X-Received: by 2002:aa7:c643:: with SMTP id z3mr620607edr.154.1588276309142;
+ Thu, 30 Apr 2020 12:51:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ebfb532b-bcd2-f356-49e0-e4d72d0db933@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1588276326; bh=YGHHf9FqhJUSc/izYrsM7kJipcRMrjm3r41ZO5HxE7U=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=A3x0Mf4xuUyXXBzN+BVHVOzIlC/+1KQzA9+TVaNB6MZFEzC3+TPfBBFd+7IsoZvHi
-         EIsASEXuAQTh6ITQDAaPM+fRL+OGqmdHflmV/P0PoL/ade0a5twYh5s4EITIYrTGQG
-         WSWzU692tZGgVXd6C6Lr9YXjUnjxnH8gGmIColYdDY/nwJ/MNwo6MMyk6wkTqOAmeK
-         BipjTt+MBuPqcbEm+qadPkCj+k6iUP6pviCMfqZ5w4lQbKNwWlGE0dERmKjtZN9uOT
-         v1MRDttwZvhCWXd55KZdIlDCTXsjJxRAa1h5NzCxix/6tgVUgaYZ2OY9IwAFu7SJxj
-         Ian0977At6n7Q==
+References: <158823509800.2094061.9683997333958344535.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <CAHk-=wh6d59KAG_6t+NrCLBz-i0OUSJrqurric=m0ZG850Ddkw@mail.gmail.com>
+ <CALCETrVP5k25yCfknEPJm=XX0or4o2b2mnzmevnVHGNLNOXJ2g@mail.gmail.com>
+ <CAHk-=widQfxhWMUN3bGxM_zg3az0fRKYvFoP8bEhqsCtaEDVAA@mail.gmail.com>
+ <CALCETrVq11YVqGZH7J6A=tkHB1AZUWXnKwAfPUQ-m9qXjWfZtg@mail.gmail.com> <20200430192258.GA24749@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <20200430192258.GA24749@agluck-desk2.amr.corp.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 30 Apr 2020 12:51:38 -0700
+Message-ID: <CAPcyv4g8rA2TRvoFHqEjs5Xn74gdZx8uF0PXFYCjTcx56yA=Jw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        stable <stable@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Erwin Tsaur <erwin.tsaur@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 4/30/20 12:47 PM, Dmitry Osipenko wrote:
-> 30.04.2020 22:32, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> On 4/30/20 6:38 AM, Dmitry Osipenko wrote:
->>> 30.04.2020 01:00, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>> +/**
->>>> + * struct tegra_csi_ops - Tegra CSI operations
->>>> + *
->>>> + * @csi_streaming: programs csi hardware to enable or disable
->>>> streaming.
->>>> + * @csi_err_recover: csi hardware block recovery in case of any
->>>> capture errors
->>>> + *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 due to missing source st=
-ream or due to improper csi input
->>>> from
->>>> + *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 the external source.
->>>> + */
->>>> +struct tegra_csi_ops {
->>>> +=C2=A0=C2=A0=C2=A0 int (*csi_streaming)(struct tegra_csi_channel *csi=
-_chan, u8
->>>> pg_mode,
->>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 int enable);
->>> What about to split csi_streaming() into csi_start_streaming() /
->>> csi_stop_streaming()?
->>>
->>> This will make tegra_csi_ops to be consistent with the tegra_ve_ops. A
->>> separated start/stop operations are somewhat more natural to have in
->>> general.
->> vi ops is for vb2_ops which has separate start/stop so has seperate
->> start/stop for vi ops.
->>
->> csi is subdev and csi ops is for v4l2_subdev_ops which as s_stream
->> callback only.
->>
->> So, created single stream function for csi to match same as subdev_ops.
-> It will be nicer to have separate ops for CSI, regardless of the
-> subdev_ops. It should be okay to have a single-combined ops if CSI
-> start/stop was trivial, but it's not the case here.
+On Thu, Apr 30, 2020 at 12:23 PM Luck, Tony <tony.luck@intel.com> wrote:
 >
-> For example, the pm_runtime_put() shouldn't be invoked if stream's
-> stopping fails. The stopping can't fail for the current code, but this
-> could change in the future.
+> On Thu, Apr 30, 2020 at 11:42:20AM -0700, Andy Lutomirski wrote:
+> > I suppose there could be a consistent naming like this:
+> >
+> > copy_from_user()
+> > copy_to_user()
+> >
+> > copy_from_unchecked_kernel_address() [what probe_kernel_read() is]
+> > copy_to_unchecked_kernel_address() [what probe_kernel_write() is]
+> >
+> > copy_from_fallible() [from a kernel address that can fail to a kernel
+> > address that can't fail]
+> > copy_to_fallible() [the opposite, but hopefully identical to memcpy() on x86]
+> >
+> > copy_from_fallible_to_user()
+> > copy_from_user_to_fallible()
+> >
+> > These names are fairly verbose and could probably be improved.
 >
-> You could make csi_streaming to return void, telling explicitly that
-> this code can't fail. Then the combined OPS should be okay to have.
+> How about
+>
+>         try_copy_catch(void *dst, void *src, size_t count, int *fault)
+>
+> returns number of bytes not-copied (like copy_to_user etc).
+>
+> if return is not zero, "fault" tells you what type of fault
+> cause the early stop (#PF, #MC).
 
-we don't return anything for stop stream. OK can make it split to=20
-explicitly specify no return code during stop stream.
+I do like try_copy_catch() for the case when neither of the buffers
+are __user (like in the pmem driver) and _copy_to_iter_fallible()
+(plus all the helpers it implies) for the other cases.
 
-will split this in v12
+copy_to_user_fallible
+copy_fallible_to_page
+copy_pipe_to_iter_fallible
 
+...because the mmu-fault handling is an aspect of "_user" and fallible
+implies other source fault reasons. It does leave a gap if an
+architecture has a concept of a fallible write, but that seems like
+something that will be handled asynchronously and not subject to this
+interface.
