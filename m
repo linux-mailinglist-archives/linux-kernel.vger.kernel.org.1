@@ -2,372 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FACF1BF4A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 807BD1BF4AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 11:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgD3J6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 05:58:20 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:60152 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726404AbgD3J6T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 05:58:19 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03U9qeKs000841;
-        Thu, 30 Apr 2020 11:57:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=KI2AtPyJLvrsFvH8h/qo1asrr1uW5LJxQpJkGaRznVE=;
- b=GaOlqtsELyMr/+7rGu414BfW6XhtkUr2Y1ImtOwm0WNi5hRk4ERUs61pdsp8bf2FPeyU
- yOnOKmvq/63F8lZLFFZZNr1XJy1MdA4rwwGZT3Q9q/0te3ukYFBKp57EXupvhe4bLSvf
- 7fSFgXrWMfZa23dUJ5bMPDlq5JuAa7W97PV0iIsh2m1YzQiZSTqM+3505GuoiGUlw7ly
- yiNRlED4+rXqSJwz57Ea4YSu4PBhHbP68u3SDnhRtMo4RpERd3dyhRh9zaworeJEXPSN
- XoSO0mpF4FmiYasNUf71JbUB1nGekHvc4XbnftoiNdFLkauiU5heHekMuYflwJ8SwcAw oQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 30mhjx3grd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 30 Apr 2020 11:57:54 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 28DE410002A;
-        Thu, 30 Apr 2020 11:57:54 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 126CA2B3BB8;
-        Thu, 30 Apr 2020 11:57:54 +0200 (CEST)
-Received: from lmecxl0912.tpe.st.com (10.75.127.44) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Thu, 30 Apr
- 2020 11:57:47 +0200
-Subject: Re: [PATCH 1/4] add dts node for drm panel driver ili9341 add dts
- i2c3 for stmpe touch add dts spi5 for gyro & ili9341
-To:     <dillon.minfei@gmail.com>
-CC:     <sam@ravnborg.org>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <robh+dt@kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mcoquelin.stm32@gmail.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <thierry.reding@gmail.com>
-References: <1588239802-11442-1-git-send-email-dillon.minfei@gmail.com>
-From:   Alexandre Torgue <alexandre.torgue@st.com>
-Message-ID: <33f928e7-3fde-99a2-b84d-d74a2d3f1186@st.com>
-Date:   Thu, 30 Apr 2020 11:57:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726841AbgD3J7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 05:59:21 -0400
+Received: from mail-co1nam11on2066.outbound.protection.outlook.com ([40.107.220.66]:37818
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726378AbgD3J7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 05:59:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=modYXQGQcyDQ2xfFapaVudJriEnKSztlssxbG2mRLZA5mNykI843NQZdqqlBbj67Tv+XZKn28up87aU85up0pMHljJQUXCkFdoMDtPS1p3q0G60spZA2JAm602nC9gDr5Z3Y3th3HL0bcN2fh4X3Y8XUHYyHRwAz309XZ4XWlVzOSjbCZNcheEi3mfLLpK/93aaDQQIqhmeLT9mTsUtDMsIVgOz7b4638gyw/A27M+S4Z8zph06fdd98cb96osRuJA2/cARRofO/gFz57nVGn2II+WBHxJY0UdDCkAJPB4MPhG1LpVUK8qPwUnJOrfYGfksraT6vJWePnN646s8AxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zO5KEr/c0V47cntzr6VM8XYrvXQmDezAE3ACOoAylNo=;
+ b=WKK2bD1xozB//Iof4LgxtH7Kh3Y41XvByD4S8WwvhpZZSopVeRcts9wivFsK6WRmqAOq6OR6JAW831G6JucKn7nKrGnpucYAZGMlMfoM8WT6aVjTsXXZthlPREAfsRdBXib+HUlMvXFdmKlzUGfWd7ajXaD1otYVtdwWiQMqsJG5W0nMn0Dpw3wAWU+ictVp6NruYz1QY/s1mrPDyMknU3lJ/UqyXmqGiD45T0uA1uMzCVI/q9zAZ6S6lx5LIOLo2rGOjLuGC6QCWWbJJg4SXAs+0xVHCPzdn7izLt/rgw4Rrlih4ezuDlwCRR4GrngfWZ9IuosoEZzV7lupa3JClw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sifive.com; dmarc=pass action=none header.from=sifive.com;
+ dkim=pass header.d=sifive.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sifive.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zO5KEr/c0V47cntzr6VM8XYrvXQmDezAE3ACOoAylNo=;
+ b=V94lJhhIYF7dsKLMmVZ/SJx+BN0lN6M1uYMcHKPZpn7YbLh3dCJJHYscOAXsJESgyfjynUEZlVPP3lYs7sCECh7m9vIPLniazJIQ56SL9H2DGbDxr5pIx2bUq0ReWxjsQ24LRdG/WpKU1R2s6/3iudPH9fy/LXs405rDu5di4IU=
+Authentication-Results: microchip.com; dkim=none (message not signed)
+ header.d=none;microchip.com; dmarc=none action=none header.from=sifive.com;
+Received: from BN8PR13MB2611.namprd13.prod.outlook.com (2603:10b6:408:81::17)
+ by BN8PR13MB2884.namprd13.prod.outlook.com (2603:10b6:408:85::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.14; Thu, 30 Apr
+ 2020 09:59:15 +0000
+Received: from BN8PR13MB2611.namprd13.prod.outlook.com
+ ([fe80::c129:8fca:5ed:8929]) by BN8PR13MB2611.namprd13.prod.outlook.com
+ ([fe80::c129:8fca:5ed:8929%6]) with mapi id 15.20.2958.020; Thu, 30 Apr 2020
+ 09:59:15 +0000
+From:   Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+To:     tudor.ambarus@microchip.com, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Sagar Shrikant Kadam <sagar.kadam@sifive.com>
+Subject: [PATCH 0/2] update is25wp256d page write capabilities
+Date:   Thu, 30 Apr 2020 02:58:50 -0700
+Message-Id: <1588240732-13905-1-git-send-email-sagar.kadam@sifive.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR08CA0027.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::40) To BN8PR13MB2611.namprd13.prod.outlook.com
+ (2603:10b6:408:81::17)
 MIME-Version: 1.0
-In-Reply-To: <1588239802-11442-1-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG8NODE2.st.com (10.75.127.23) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-30_05:2020-04-30,2020-04-30 signatures=0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from gamma07.internal.sifive.com (64.62.193.194) by BYAPR08CA0027.namprd08.prod.outlook.com (2603:10b6:a03:100::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 09:59:13 +0000
+X-Mailer: git-send-email 2.7.4
+X-Originating-IP: [64.62.193.194]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1f194c6f-10a8-4a0f-10b3-08d7eced2372
+X-MS-TrafficTypeDiagnostic: BN8PR13MB2884:
+X-LD-Processed: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN8PR13MB28844AFF04000F500A5F6BF099AA0@BN8PR13MB2884.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-Forefront-PRVS: 0389EDA07F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4MLehkgPkdJOeopcQ5DInrJdPpBpzTm9wqLhZroxLVHda4Xe3cClvQlAAh9+JrrOvWSIVR6R2E7H2X+l1y1iVCXshdJG0E6dEo5LmYISOHTppGezXUcPnavuwovA7HuNGbHOaIg7YPR59Iw3U0fHaFSLUsn8JTJA2pcle3iW23I0Ie4/RNJ4gzbhwyKUV7ATKqT5nB6PLcnoEeygaIY6zEXNuhfeHSpGHpJPourywBUL0nNb1RAmEgmFvcg5PZkOU7hA5mksWHIcpu5NYFY8RmErfQSmPYtglJMZxLQalE37woFys/0P+/9w/E2JiS/ybg0xa2MSrdXJH2SGcNtJHQ5gdjTz/KRrO8NzHiNGTCoxRs11X+PHIbcz2QdM1H0bZd3MnIOWiZw0ZSAhhALUGP83otyhFgdgXhz7UVeN1IJrqX5GaP0icZLm/7RmYKxz
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR13MB2611.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(39850400004)(396003)(366004)(7696005)(52116002)(8676002)(8936002)(16526019)(186003)(26005)(5660300002)(4744005)(956004)(478600001)(2906002)(2616005)(316002)(6666004)(66476007)(66556008)(66946007)(86362001)(15650500001)(36756003)(107886003)(4326008)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: DHrcdylyOx4qjkqpiFsp8JI4sGtnPjIfZeVf9QSsxAyZaOLM6U3DaA2nRihFvUjNM78RNyIvBqci0ZXMF+JMG0R6idQGeIcMJaxHe0jpIiOx3VJWnLpm8Kqev1HLaRtTshbzJHnoh01tt8WP16SvACPAJHWW0oym08R5J/T0eFEth10mEPAplG8oDlIfmDy+RDA7dfbsDuORvXDt8nJV3OxkZOLyHKYEMPrCnq0TUGGX30ETepqBif2MpRWu+PfWn/lbVO8TinS7eVEGzJ4BHk2eEzo3a+rfoVR9qJL86V8UfKekegNb/Kgpaulzp8wpzIaltC0/5Ri+WJCwKGRHBqgAT17zt2gfZ6ppo7J6z4BDL9XPMJngEwc8b/oHBmCjcppQQ1gIRW6cbjDzcfwYuFoTZyjEQMHsux/KdGuUE2rmU7Hjn2KZwFVmo/UOdejU1yaaMlN66TKZmn53asJrLd8HAsIVe24QmHiMfgV8oh15i+HrPx11/T4cJPofTJKbrNKep/XHEG48YnWPII+mETbjdDiOyhcXnkgffr6PGTutE81hie/lcwMDOLQHII5wz9oF06v9CqZEQoRVORfFDwKYfymwzGdybNb6m0+rrC3H6I6U6F5B3Crp/PMTnhBV5njBlwv8dLEQGWMxuGws86gtjtYeDn9JThnvB2DMaIS0U57PZ9tyjxupD/QKHhIN5c+joRcJHg4RW+XIRbE1ND/DWB9AVA8c2MCNcJxeMD8zsEKPzg9YveFVY7PRMYbL/bjt3jP266z/UZRNPXJs1/uxd12G8stAbivkhjyCBsU=
+X-OriginatorOrg: sifive.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f194c6f-10a8-4a0f-10b3-08d7eced2372
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 09:59:14.8153
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 22f88e9d-ae0d-4ed9-b984-cdc9be1529f1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +/iHnhN6rfjPAiU4XYNXWuSRwg175f0Z9QaDt7cH2VCLUI1FHSgc0RoNwes5Ll6UC6YzdmhBjqZdKCo0o4ACIw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR13MB2884
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+HiFive Unleashed A00 board has is25wp256d snor chip. It is observed
+that it gets configured with Serial Input Page program by the end
+of spi_nor_scan. Using the post bfpt fixup hook we prioritize the
+page program settings to use quad input page program (opcode:0x34)
+over serial input page program (opcode: 0x12).
 
-On 4/30/20 11:43 AM, dillon.minfei@gmail.com wrote:
-> From: dillon min <dillon.minfei@gmail.com>
-> 
-> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+The patchset is tested on Linux 5.7-rc3.
 
-Commit title should be ARM: dts: stm32: bla bla on stm32f429 and please 
-a commit message.
+Sagar Shrikant Kadam (2):
+  riscv: defconfig: enable spi nor on Hifive Unleashed A00 board.
+  spi: nor: update page program settings for is25wp256 using post bfpt
+    fixup
 
-> ---
->   .../bindings/display/panel/ilitek,ili9341.txt      | 42 +++++++++++
->   arch/arm/boot/dts/stm32f4-pinctrl.dtsi             | 79 +++++++++++++++++++
->   arch/arm/boot/dts/stm32f429-disco.dts              | 88 ++++++++++++++++++++++
->   arch/arm/boot/dts/stm32f429.dtsi                   | 12 +++
->   4 files changed, 221 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/display/panel/ilitek,ili9341.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.txt b/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.txt
+ arch/riscv/configs/defconfig |  2 ++
+ drivers/mtd/spi-nor/issi.c   | 16 ++++++++++++++++
+ 2 files changed, 18 insertions(+)
 
-This binding description should be in a separate patch and you have to 
-write in YAML format.
+-- 
+2.7.4
 
-
-> new file mode 100644
-> index 0000000..f5a4e55
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/panel/ilitek,ili9341.txt
-> @@ -0,0 +1,42 @@
-> +Ilitek ILI9341 TFT panel driver with SPI control bus
-> +
-> +This is a driver for 240x320 TFT panels, accepting a rgb input
-> +streams that get adapted and scaled to the panel.
-> +
-> +Required properties:
-> +  - compatible: "stm32f429-disco,ltdc-panel", "ilitek,ili9341"
-> +    (full system-specific compatible is always required to look up configuration)
-> +  - reg: address of the panel on the SPI bus
-> +
-> +Optional properties:
-> +  - reset-gpios: a GPIO spec for the reset pin, see gpio/gpio.txt
-> +  - dc-gpios: a GPIO spec for the dc pin, see gpio/gpio.txt
-> +
-> +  The following optional properties only apply to RGB input mode:
-> +
-> +  - pixelclk-active: see display/panel/display-timing.txt
-> +  - de-active: see display/panel/display-timing.txt
-> +  - hsync-active: see display/panel/display-timing.txt
-> +  - vsync-active: see display/panel/display-timing.txt
-> +
-> +The panel must obey the rules for a SPI slave device as specified in
-> +spi/spi-bus.txt
-> +
-> +The device node can contain one 'port' child node with one child
-> +'endpoint' node, according to the bindings defined in
-> +media/video-interfaces.txt. This node should describe panel's video bus.
-> +
-> +Example:
-> +
-> +panel: display@0 {
-> +	compatible = "stm32f429-disco,ltdc-panel", "ilitek,ili9341";
-> +	reg = <0>;
-> +	spi-3wire;
-> +	spi-max-frequency = <10000000>;
-> +	dc-gpios = <&gpiod 13 0>;
-> +	port {
-> +		panel_in: endpoint {
-> +			remote-endpoint = <&display_out>;
-> +		};
-> +	};
-> +};
-> diff --git a/arch/arm/boot/dts/stm32f4-pinctrl.dtsi b/arch/arm/boot/dts/stm32f4-pinctrl.dtsi
-> index 392fa14..45b68f4 100644
-> --- a/arch/arm/boot/dts/stm32f4-pinctrl.dtsi
-> +++ b/arch/arm/boot/dts/stm32f4-pinctrl.dtsi
-> @@ -316,6 +316,85 @@
->   				};
->   			};
->   
-> +			ltdc_pins_f429_disco: ltdc-1 {
-> +				pins {
-> +					pinmux = <STM32_PINMUX('C', 6,  AF14)>,
-> +						/* LCD_HSYNC */
-> +						 <STM32_PINMUX('A', 4,  AF14)>,
-> +						 /* LCD_VSYNC */
-> +						 <STM32_PINMUX('G', 7,  AF14)>,
-> +						 /* LCD_CLK */
-> +						 <STM32_PINMUX('C', 10, AF14)>,
-> +						 /* LCD_R2 */
-> +						 <STM32_PINMUX('B', 0,  AF9)>,
-> +						 /* LCD_R3 */
-> +						 <STM32_PINMUX('A', 11, AF14)>,
-> +						 /* LCD_R4 */
-> +						 <STM32_PINMUX('A', 12, AF14)>,
-> +						 /* LCD_R5 */
-> +						 <STM32_PINMUX('B', 1,  AF9)>,
-> +						 /* LCD_R6*/
-> +						 <STM32_PINMUX('G', 6,  AF14)>,
-> +						 /* LCD_R7 */
-> +						 <STM32_PINMUX('A', 6,  AF14)>,
-> +						 /* LCD_G2 */
-> +						 <STM32_PINMUX('G', 10, AF9)>,
-> +						 /* LCD_G3 */
-> +						 <STM32_PINMUX('B', 10, AF14)>,
-> +						 /* LCD_G4 */
-> +						 <STM32_PINMUX('D', 6,  AF14)>,
-> +						 /* LCD_B2 */
-> +						 <STM32_PINMUX('G', 11, AF14)>,
-> +						 /* LCD_B3*/
-> +						 <STM32_PINMUX('B', 11, AF14)>,
-> +						 /* LCD_G5 */
-> +						 <STM32_PINMUX('C', 7,  AF14)>,
-> +						 /* LCD_G6 */
-> +						 <STM32_PINMUX('D', 3,  AF14)>,
-> +						 /* LCD_G7 */
-> +						 <STM32_PINMUX('G', 12, AF9)>,
-> +						 /* LCD_B4 */
-> +						 <STM32_PINMUX('A', 3,  AF14)>,
-> +						 /* LCD_B5 */
-> +						 <STM32_PINMUX('B', 8,  AF14)>,
-> +						 /* LCD_B6 */
-> +						 <STM32_PINMUX('B', 9,  AF14)>,
-> +						 /* LCD_B7 */
-> +						 <STM32_PINMUX('F', 10, AF14)>;
-> +						 /* LCD_DE */
-> +					slew-rate = <2>;
-> +				};
-> +			};
-> +
-> +			i2c3_pins: i2c3-0 {
-> +				pins {
-> +					pinmux = <STM32_PINMUX('C', 9, AF4)>,
-> +						/* I2C3_SDA */
-> +						 <STM32_PINMUX('A', 8, AF4)>;
-> +						/* I2C3_SCL */
-> +					bias-disable;
-> +					drive-open-drain;
-> +					slew-rate = <3>;
-> +				};
-> +			};
-> +
-> +			spi5_pins: spi5-0 {
-> +				pins1 {
-> +					pinmux = <STM32_PINMUX('F', 7, AF5)>,
-> +						/* SPI5_CLK */
-> +						 <STM32_PINMUX('F', 9, AF5)>;
-> +						/* SPI5_MOSI */
-> +					bias-disable;
-> +					drive-push-pull;
-> +					slew-rate = <0>;
-> +				};
-> +				pins2 {
-> +					pinmux = <STM32_PINMUX('F', 8, AF5)>;
-> +						/* SPI5_MISO */
-> +					bias-disable;
-> +				};
-> +			};
-> +
->   			dcmi_pins: dcmi-0 {
->   				pins {
->   					pinmux = <STM32_PINMUX('A', 4, AF13)>, /* DCMI_HSYNC */
-> diff --git a/arch/arm/boot/dts/stm32f429-disco.dts b/arch/arm/boot/dts/stm32f429-disco.dts
-> index 30c0f67..55eed05 100644
-> --- a/arch/arm/boot/dts/stm32f429-disco.dts
-> +++ b/arch/arm/boot/dts/stm32f429-disco.dts
-> @@ -49,6 +49,8 @@
->   #include "stm32f429.dtsi"
->   #include "stm32f429-pinctrl.dtsi"
->   #include <dt-bindings/input/input.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/gpio/gpio.h>
->   
->   / {
->   	model = "STMicroelectronics STM32F429i-DISCO board";
-> @@ -98,6 +100,14 @@
->   		regulator-name = "vcc5_host1";
->   		regulator-always-on;
->   	};
-> +
-> +	reg_3p3v: regulator-3p3v {
-
-3p3 ?
-
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "3P3V";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-always-on;
-> +	};
->   };
->   
->   &clk_hse {
-> @@ -127,3 +137,81 @@
->   	pinctrl-names = "default";
->   	status = "okay";
->   };
-> +
-> +&ltdc {
-> +	status = "okay";
-> +	pinctrl-0 = <&ltdc_pins_f429_disco>;
-> +	pinctrl-names = "default";
-> +
-> +	port {
-> +		ltdc_out_rgb: endpoint {
-> +			remote-endpoint = <&panel_in_rgb>;
-> +		};
-> +	};
-> +};
-> +
-> +&spi5 {
-> +	status = "okay";
-> +	pinctrl-0 = <&spi5_pins>;
-> +	pinctrl-names = "default";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	cs-gpios = <&gpioc 1 GPIO_ACTIVE_LOW>,<&gpioc 2 GPIO_ACTIVE_LOW>;
-> +	dmas = <&dma2 3 2 0x400 0x0>,
-> +	       <&dma2 4 2 0x400 0x0>;
-> +	dma-names = "rx", "tx";
-> +	l3gd20: l3gd20@0 {
-> +		compatible = "st,l3gd20-gyro";
-> +		spi-max-frequency = <10000000>;
-> +		st,drdy-int-pin = <2>;
-> +		interrupt-parent = <&gpioa>;
-> +		interrupts = <1 IRQ_TYPE_EDGE_RISING>,
-> +				<2 IRQ_TYPE_EDGE_RISING>;
-> +		reg = <0>;
-> +		vddio = <&reg_3p3v>;
-> +		vdd = <&reg_3p3v>;
-> +		status = "okay";
-> +	};
-> +	display: display@1{
-> +		/* Connect panel-ilitek-9341 to ltdc */
-> +		compatible = "stm32f429-disco,ltdc-panel", "ilitek,ili9341";
-> +		reg = <1>;
-> +		spi-3wire;
-> +		spi-max-frequency = <10000000>;
-> +		dc-gpios = <&gpiod 13 0>;
-> +		port {
-> +			panel_in_rgb: endpoint {
-> +			remote-endpoint = <&ltdc_out_rgb>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&i2c3 {
-
-Nodes are have to be ordered
-
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c3_pins>;
-> +	status = "okay";
-> +
-> +	touch: stmpe811@41 {
-> +		compatible = "st,stmpe811";
-> +		reg = <0x41>;
-> +		interrupts = <15 IRQ_TYPE_EDGE_FALLING>;
-> +		interrupt-parent = <&gpioa>;
-> +		vio = <&reg_3p3v>;
-> +		vcc = <&reg_3p3v>;
-> +		status = "okay";
-> +
-> +		stmpe_touchscreen {
-> +			compatible = "st,stmpe-ts";
-> +			st,sample-time = <4>;
-> +			st,mod-12b = <1>;
-> +			st,ref-sel = <0>;
-> +			st,adc-freq = <1>;
-> +			st,ave-ctrl = <1>;
-> +			st,touch-det-delay = <2>;
-> +			st,settling = <2>;
-> +			st,fraction-z = <7>;
-> +			st,i-drive = <1>;
-> +		};
-> +	};
-> +};
-> diff --git a/arch/arm/boot/dts/stm32f429.dtsi b/arch/arm/boot/dts/stm32f429.dtsi
-> index d777069..257b843 100644
-> --- a/arch/arm/boot/dts/stm32f429.dtsi
-> +++ b/arch/arm/boot/dts/stm32f429.dtsi
-> @@ -402,6 +402,18 @@
-
-Split Soc updates in a separate patch
-
->   			status = "disabled";
->   		};
->   
-> +		i2c3: i2c@40005c00 {
-> +			compatible = "st,stm32f4-i2c";
-> +			reg = <0x40005c00 0x400>;
-> +			interrupts = <72>,
-> +				     <73>;
-> +			resets = <&rcc STM32F4_APB1_RESET(I2C3)>;
-> +			clocks = <&rcc 0 STM32F4_APB1_CLOCK(I2C3)>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			status = "disabled";
-> +		};
-> +
->   		dac: dac@40007400 {
->   			compatible = "st,stm32f4-dac-core";
->   			reg = <0x40007400 0x400>;
-> 
