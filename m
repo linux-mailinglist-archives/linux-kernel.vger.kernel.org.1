@@ -2,140 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3CB1BFB89
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B082C1BFB8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 16:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728629AbgD3OAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 10:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728169AbgD3OA0 (ORCPT
+        id S1728635AbgD3OAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 10:00:47 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:35035 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729397AbgD3OAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 10:00:26 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2413CC035494;
-        Thu, 30 Apr 2020 07:00:26 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id u11so1553494iow.4;
-        Thu, 30 Apr 2020 07:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nz4EYudAGnRAka2sLpxAUHkI/tIzbc4FpKMb2iD2HGI=;
-        b=WxsmkjonITcLJ97YhEvjgmBobJxYhdcS0FMYbI0ha9eAYIbOvVa++0B/N61OFuA+vq
-         TZYJoOOK1ZCNtDRuUb0+F6GjgICAVNM5rw4vEuVnM80xd3VkxSFGCpu0bX2tf4mdswgH
-         D8T/Hct4kccVa1z5uGmKgC3cbV8W5/BGPIlISHzo6yjyI6Yd84kp1sl1eFHyPTD6GGmH
-         0Q1F1IZODwzZhcHFUAcQpScBz+tK/gV6IwRa2pAu8aiuKxSgJ9XM9CrOeEgOUpJR6Mg0
-         6oYATFOQutPCYugnCrV+5/HZ8KiRd7lgTda3lkj13rjmdcAeGR16UBPZIBdRZZnJts6f
-         Vuww==
+        Thu, 30 Apr 2020 10:00:43 -0400
+Received: by mail-oi1-f193.google.com with SMTP id o7so5292733oif.2;
+        Thu, 30 Apr 2020 07:00:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nz4EYudAGnRAka2sLpxAUHkI/tIzbc4FpKMb2iD2HGI=;
-        b=CiwWFwshQdvP92w7Gq4UFxS8dWY/QB4VLzrv/Fv5WzUuF1H2+udlUzzN0oNB5PrCp5
-         JDfW7qpXlB1CfLHp3qNnE4cvwmmsuBlkxpaQVoO8+yZRBwn06HweZtXwQqgFq9wn+BAw
-         OhlJrMN9hF7/l6YD7tafQx4xByBQiOIoMRE6cjfAS/r1pvKjWSINoPOxc6oQDceCvuWR
-         mzcLvzCjGCZiIARbyWCnPwKK9atKLl/idujJjghzNVZCL8hRNNt6Omnqr52iP9zwSK/K
-         XOKHuBDj+D/1LFSFE6rGaoGYK0Ffhf2HLrwX0zc5KLKIYjOwtnCbmhDbmSgKltqJmQMm
-         slBw==
-X-Gm-Message-State: AGi0Pub3N2Cxo4L39iufmf9A8KhU1QiVU9tQA3+2VW80YrTnnsM9sWK7
-        +RvhIB1Z0Vo2Rng1TbwF4efWg3ph+A6IJRbcZk4=
-X-Google-Smtp-Source: APiQypL/hGXbUxNw4AVM3ITxY+bWgZQNGgI8BdvnXtQMrcBmjvMtXdgrG7Lhm8mMQi0TVyWgoYz+zdbaXKGpRu9prEA=
-X-Received: by 2002:a6b:b8d6:: with SMTP id i205mr2058871iof.123.1588255225316;
- Thu, 30 Apr 2020 07:00:25 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4SqKDcgFBHx1L7Er/7o6lUHlh3wWzthDwvJZwo5hrJU=;
+        b=QyHss8qcgQyLccmUxMGK7EApLeAiW3/3iykKdJiIOU3pytBtLQreG1zD8jJ/osRaD1
+         OWi7ggHOWxUnCKRUStcWiCp3YU2h4RLn+K/afjcbEAwT0BoPDqfXOI/GqIfeC542vLS4
+         hFNDlBn2oe/4WqL9tEk8xWMn1qMxKYECNJMjIHPmKsj9l7JnLiHJ/8DEdZOPxYHctfjh
+         NW1jlrZzQJAmt5XHzD6WXnICdzRdU+XU8uCdXJju0eQgZNJGbNxRJiZjLozars3rVELi
+         Hr1qn+7431iZ5bRbzjdaZVrFoE9uROl4/S2hzHbzjllvm4lfb7veQyczd+Shv9MmnrY9
+         XTgQ==
+X-Gm-Message-State: AGi0PuaPA9FSTj3JLI/HqpvsxzbRoFDsDSrtYwsxW3pw74BYgtOH6h+F
+        UV+4l2aVqGYNdyrkKtBJlg==
+X-Google-Smtp-Source: APiQypK+NEro6nmq5Ju0kr11u0dYdZk562OwLmfEc6Rdsg37blDy9Pox4kBxZ7K1FWgojRgFDGj0HA==
+X-Received: by 2002:aca:d684:: with SMTP id n126mr1810974oig.173.1588255242401;
+        Thu, 30 Apr 2020 07:00:42 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h137sm2698oib.33.2020.04.30.07.00.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Apr 2020 07:00:41 -0700 (PDT)
+Received: (nullmailer pid 20979 invoked by uid 1000);
+        Thu, 30 Apr 2020 14:00:40 -0000
+Date:   Thu, 30 Apr 2020 09:00:40 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Keerthy <j-keerthy@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Tero Kristo <t-kristo@ti.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Adam Ford <aford173@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH 02/14] clocksource/drivers/timer-ti-dm: Add clockevent
+ and clocksource support
+Message-ID: <20200430140040.GA8363@bogus>
+References: <20200417165519.4979-1-tony@atomide.com>
+ <20200417165519.4979-3-tony@atomide.com>
+ <62be90e2-7dbe-410d-4171-c0ad0cddc7a3@linaro.org>
+ <20200427143144.GQ37466@atomide.com>
+ <29f39839-b3ed-cac3-1dea-c137286320b1@linaro.org>
+ <20200427152329.GR37466@atomide.com>
 MIME-Version: 1.0
-References: <20200426104115.22630-1-peron.clem@gmail.com> <20200426104115.22630-4-peron.clem@gmail.com>
- <20200428081321.ht3el26yqhsnyfm4@gilmour.lan> <CAJiuCcdVs_drs40Q6537BYfz24F7NmC6B8S5-Lt4V4ggs-FXWA@mail.gmail.com>
- <20200429123529.y24dpy63wxq7uvkt@gilmour.lan> <CAJiuCcfXqizcq_JuXRCsqEqM2562cr1SGJ0pmy07jcJxAXojOw@mail.gmail.com>
- <20200430084600.samghw4zxb5zdbez@gilmour.lan>
-In-Reply-To: <20200430084600.samghw4zxb5zdbez@gilmour.lan>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Thu, 30 Apr 2020 16:00:14 +0200
-Message-ID: <CAJiuCcf_LHrJ6QdZgH8HyN6TRiT+GiD+t4UggFCrz-VwVHXV6w@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] ASoC: sun4i-i2s: Add support for H6 I2S
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Marcus Cooper <codekipper@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427152329.GR37466@atomide.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+On Mon, Apr 27, 2020 at 08:23:29AM -0700, Tony Lindgren wrote:
+> * Daniel Lezcano <daniel.lezcano@linaro.org> [200427 15:03]:
+> > On 27/04/2020 16:31, Tony Lindgren wrote:
+> > > Hi,
+> > > 
+> > > * Daniel Lezcano <daniel.lezcano@linaro.org> [200427 09:19]:
+> > >> On 17/04/2020 18:55, Tony Lindgren wrote:
+> > >>> --- a/Documentation/devicetree/bindings/timer/ti,timer.txt
+> > >>> +++ b/Documentation/devicetree/bindings/timer/ti,timer.txt
+> > >>> @@ -14,6 +14,8 @@ Required properties:
+> > >>>  			ti,omap5430-timer (applicable to OMAP543x devices)
+> > >>>  			ti,am335x-timer	(applicable to AM335x devices)
+> > >>>  			ti,am335x-timer-1ms (applicable to AM335x devices)
+> > >>> +			ti,dmtimer-clockevent (when used as for clockevent)
+> > >>> +			ti,dmtimer-clocksource (when used as for clocksource)
+> > >>
+> > >> Please, submit a separate patch for this.
+> > >>
+> > >> Before you resend as is, this will be nacked as clocksource / clockevent
+> > >> is not a hardware description but a Linux thing.
+> > >>
+> > >> Finding a way to characterize that from the DT is an endless discussion
+> > >> since years, so I suggest to use a single property for the timer eg
+> > >> <ti,dmtimer> and initialize the clocksource and the clockevent in the
+> > >> driver.
+> > > 
+> > > Hmm good point. We still need to specify which timer is a clocksource
+> > > and which one a clockevent somehow.
+> > > 
+> > > Maybe we could have a generic properties like the clock framework such as:
+> > > 
+> > > assigned-system-clocksource
+> > > assigned-system-clockevent
+> > 
+> > I think that will be the same problem :/
+> 
+> Seems like other SoCs have the same issue too with multiple timers
+> to configure.
+> 
+> > Is it possible to check the interrupt for the clockevent ? A timer node
+> > with the interrrupt is the clockevent, without it is a clocksource.
+> 
+> OK let's try that. So the configuration would become then:
+> 
+> compatible = "ti,dmtimer;	/* reserved for system timers */
+> /delete-property/interrupts;	/* ok so it's a clocksource */
+> /delete-property/interrupts-extended;
 
-On Thu, 30 Apr 2020 at 10:46, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Hi,
->
-> On Wed, Apr 29, 2020 at 06:33:00PM +0200, Cl=C3=A9ment P=C3=A9ron wrote:
-> > On Wed, 29 Apr 2020 at 14:35, Maxime Ripard <maxime@cerno.tech> wrote:
-> > >
-> > > On Tue, Apr 28, 2020 at 10:55:47AM +0200, Cl=C3=A9ment P=C3=A9ron wro=
-te:
-> > > > > > +static int sun50i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
-> > > > > > +                              unsigned int fmt)
-> > > > >
-> > > > > The alignment is off here
-> > > > >
-> > > > > > +{
-> > > > > > +     u32 mode, val;
-> > > > > > +     u8 offset;
-> > > > > > +
-> > > > > > +     /*
-> > > > > > +      * DAI clock polarity
-> > > > > > +      *
-> > > > > > +      * The setup for LRCK contradicts the datasheet, but unde=
-r a
-> > > > > > +      * scope it's clear that the LRCK polarity is reversed
-> > > > > > +      * compared to the expected polarity on the bus.
-> > > > > > +      */
-> > > > >
-> > > > > Did you check this or has it been copy-pasted?
-> > > >
-> > > > copy-pasted, I will check this.
-> > >
-> > > It's not going to be easy to do this if you only have a board with HD=
-MI. If you
-> > > can't test that easily, just remove the comment (or make it explicit =
-that you
-> > > copy pasted it?), no comment is better than a wrong one.
-> >
-> > I have talked with Marcus Cooper it may be able to test this this week-=
-end.
-> > Also this can explain why we need the "
-> > simple-audio-card,frame-inversion;" in the device-tree.
-> >
-> > If think this fix has been introduced by you, correct? Could you say
-> > on which SoC did you see this issue?
->
-> This was seen on an H3
+That's not really what was meant.
 
-Just two more questions:
-- Did you observe this issue on both TDM and I2S mode?
-- On which DAI node?
+Let's say you have N timers. Either every timer is exactly the same and 
+the OS can just assign them however it wants or there is some difference 
+in the h/w making certain timer better for certain functions. Describe 
+that difference. It could be clock rate, number of counter bits, always 
+on, secure mode access only, has or doesn't have output compare or input 
+capture, etc.
 
-Since recent change in sun4i-i2s.c, we had to introduce the
-"simple-audio-card,frame-inversion" in LibreElec tree.
-H3 boards are quite common in LibreElec community so I think:
- - This fix is only needed in TDM mode
- - Or this fix is not required for the HDMI DAI node (HDMI DAI is a
-little bit different compare to other DAI but I think the first guess
-is more likely)
-
-Regards,
-Clement
-
->
-> Maxime
+Rob
