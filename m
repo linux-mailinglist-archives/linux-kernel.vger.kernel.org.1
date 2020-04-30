@@ -2,66 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2301BF7F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AA01BF800
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 14:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgD3MPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 08:15:35 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:5142 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725280AbgD3MPf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 08:15:35 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.9]) by rmmx-syy-dmz-app12-12012 (RichMail) with SMTP id 2eec5eaac1463c3-cd75d; Thu, 30 Apr 2020 20:15:04 +0800 (CST)
-X-RM-TRANSID: 2eec5eaac1463c3-cd75d
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.1.172.204])
-        by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee55eaac146994-cdc8f;
-        Thu, 30 Apr 2020 20:15:04 +0800 (CST)
-X-RM-TRANSID: 2ee55eaac146994-cdc8f
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] net/faraday: Fix unnecessary check in ftmac100_probe()
-Date:   Thu, 30 Apr 2020 20:15:31 +0800
-Message-Id: <20200430121532.22768-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1726809AbgD3MRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 08:17:53 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:49804 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725280AbgD3MRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 30 Apr 2020 08:17:52 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 2EB592BA704D9C0DA4C8;
+        Thu, 30 Apr 2020 20:17:49 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 30 Apr 2020
+ 20:17:41 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <QLogic-Storage-Upstream@cavium.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <mrangankar@marvell.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH] scsi: qedi: remove Comparison of 0/1 to bool variable
+Date:   Thu, 30 Apr 2020 20:17:06 +0800
+Message-ID: <20200430121706.14879-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function ftmac100_probe() is only called with an openfirmware
-platform device. Therefore there is no need to check that the passed
-in device is NULL.
+Fix the following coccicheck warning:
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+drivers/scsi/qedi/qedi_main.c:1309:5-25: WARNING: Comparison of 0/1 to
+bool variable
+drivers/scsi/qedi/qedi_main.c:1315:5-25: WARNING: Comparison of 0/1 to
+bool variable
+
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/net/ethernet/faraday/ftmac100.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/scsi/qedi/qedi_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/faraday/ftmac100.c b/drivers/net/ethernet/faraday/ftmac100.c
-index 6c247cbbd..2be173b03 100644
---- a/drivers/net/ethernet/faraday/ftmac100.c
-+++ b/drivers/net/ethernet/faraday/ftmac100.c
-@@ -1059,9 +1059,6 @@ static int ftmac100_probe(struct platform_device *pdev)
- 	struct ftmac100 *priv;
- 	int err;
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index 4dd965860c98..46584e16d635 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -1306,13 +1306,13 @@ static irqreturn_t qedi_msix_handler(int irq, void *dev_id)
+ 			  "process already running\n");
+ 	}
  
--	if (!pdev)
--		return -ENODEV;
--
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!res)
- 		return -ENXIO;
+-	if (qedi_fp_has_work(fp) == 0)
++	if (!qedi_fp_has_work(fp))
+ 		qed_sb_update_sb_idx(fp->sb_info);
+ 
+ 	/* Check for more work */
+ 	rmb();
+ 
+-	if (qedi_fp_has_work(fp) == 0)
++	if (!qedi_fp_has_work(fp))
+ 		qed_sb_ack(fp->sb_info, IGU_INT_ENABLE, 1);
+ 	else
+ 		goto process_again;
 -- 
-2.20.1.windows.1
-
-
+2.21.1
 
