@@ -2,181 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8391BF2B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FFD1BF2C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Apr 2020 10:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgD3I0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 04:26:19 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48181 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726531AbgD3I0S (ORCPT
+        id S1726754AbgD3I1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 04:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726543AbgD3I1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 04:26:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588235176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YGyRDtb4bigS4OJJzosmGsfyXf9UuewqBG5sz68PxEc=;
-        b=XD4+LjTR67qMiJunq9cF1ctpi5eWEO1IxZjj904vBOR9NTSrzkz9rnVY4l5fm684p4FtUe
-        lo53d4oVFvaL+3rFdvIGx3E4/7bbuuJeG8iU7Yn2me8kn+6RINWv4K/X4DI7B1+T0vVJfD
-        YYthciY3/DHq5OJ51ihV+R7xOUp7HpA=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-JBFxwJdWOUuzqvSYhM5_XQ-1; Thu, 30 Apr 2020 04:26:14 -0400
-X-MC-Unique: JBFxwJdWOUuzqvSYhM5_XQ-1
-Received: by mail-wr1-f70.google.com with SMTP id p2so3474342wrx.12
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 01:26:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YGyRDtb4bigS4OJJzosmGsfyXf9UuewqBG5sz68PxEc=;
-        b=cbmroXd+p3/lvdv4AqeNVOIG02mRg3fuDyA+pzezT6tAJZXv6be6z+QRdYzP7RZSfd
-         qcvMV8LN54uHwWXK6d0M9+QZy777tVBONES1wX5ImI8UPNSumWXeKZAlQPQjf6R9DXxh
-         DYLm2q/DXqneGVTcRdYCTVH1g6+oUNbEMNkDpvhLGdxFw6lbMGP2uXEc/uYJznGYPSdR
-         fX5Y0ME6uhuzNmzWhLkL309rCpxzgeXybJFuhQpFCP633mZhBrqnTZSxP3pw5cD6woWl
-         DqRgpTe33qVz1Iy1SZ8D956+zMn+g8hBjvWCImt9NtOP14oJbN+6oSsJGbbk6XbLVyY8
-         jBYQ==
-X-Gm-Message-State: AGi0PubCOv9cYbrHX0KgZQMMMxC69s4ya8kgk3dD+kZKYGV0BD7rQ8eX
-        ExLPFN53ZvaZNFlEnaeUlen8SnxlD4CZE+OBMC+6R4OWh69BPiN73OVidbEIvJ1YU7HRDHq7bFw
-        jryMBa2X3ZrnVmNvNwVzDVIQA
-X-Received: by 2002:adf:f781:: with SMTP id q1mr2361217wrp.323.1588235172031;
-        Thu, 30 Apr 2020 01:26:12 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJoi4cvRWNuIpuOzpMBz+IGc+hNuGVeAAtdk4bhTz0tRoJTi6UyA0vRsxW70RBXtjBsbtVC5Q==
-X-Received: by 2002:adf:f781:: with SMTP id q1mr2361196wrp.323.1588235171773;
-        Thu, 30 Apr 2020 01:26:11 -0700 (PDT)
-Received: from steredhat (host108-207-dynamic.49-79-r.retail.telecomitalia.it. [79.49.207.108])
-        by smtp.gmail.com with ESMTPSA id z8sm2874873wrr.40.2020.04.30.01.26.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Apr 2020 01:26:11 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 10:26:08 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kaly.Xin@arm.com
-Subject: Re: [PATCH] vhost: vsock: don't send pkt when vq is not started
-Message-ID: <20200430082608.wbtqgglmtnd7e5ci@steredhat>
-References: <20200430021314.6425-1-justin.he@arm.com>
+        Thu, 30 Apr 2020 04:27:41 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B8AC035494
+        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 01:27:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=B/DD4SwkH4dIKud6UgQC7/3WcU8JrYSfWRgnUCQdVtY=; b=roT+p3ewK+JSVtLy4iBWyzQ9zA
+        VWIpvFAOMCg8lGWrw9jw/agjv34+Z2ZL36EAfiVCYAcPHhImLhl7IcwtiDSHXLQ6Y9XRMC9z9vEO6
+        dL9acsSjpkXK5AIfYtXI9wrgeAUN5xpNUEZ8h36l2Sbn8oHWgOh/1xK/pGeeTb/qABuk3Wzlp/GKi
+        geRvFKk9DO95HJeNzGTMsVikVEh/5spoEYMPqMala5Q0hOdweVfDRew1LK20xlNCInP4BOadpZZdU
+        oe9WpeekexrNvAE2/0S0OcYSBt8kzqWnyl/hEgA4RqiIwuGCyVfBfnZwS1BIS32jDBOfHGEvi871t
+        SAmH3u9g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jU4Xa-0007cs-0d; Thu, 30 Apr 2020 08:27:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A44F8301224;
+        Thu, 30 Apr 2020 10:27:27 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8F7C9213923B9; Thu, 30 Apr 2020 10:27:27 +0200 (CEST)
+Date:   Thu, 30 Apr 2020 10:27:27 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Michel Lespinasse <walken@google.com>
+Cc:     Juri Lelli <juri.lelli@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Oleg Nesterov <oleg@redhat.com>, irogers@google.com,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [RFC][PATCH 1/7] rbtree: Add generic add and find helpers
+Message-ID: <20200430082727.GP13592@hirez.programming.kicks-ass.net>
+References: <20200429153258.563269446@infradead.org>
+ <20200429153549.006661686@infradead.org>
+ <20200430072847.GA68379@localhost.localdomain>
+ <CANN689FBczsBm=bYPfs1saUEeUq+oxLWnr8xfwtOstQkvJmwOA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200430021314.6425-1-justin.he@arm.com>
+In-Reply-To: <CANN689FBczsBm=bYPfs1saUEeUq+oxLWnr8xfwtOstQkvJmwOA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jia,
-thanks for the patch, some comments below:
+On Thu, Apr 30, 2020 at 12:51:02AM -0700, Michel Lespinasse wrote:
+> On Thu, Apr 30, 2020 at 12:28 AM Juri Lelli <juri.lelli@redhat.com> wrote:
+> > > --- a/include/linux/rbtree.h
+> > > +++ b/include/linux/rbtree.h
+> > > @@ -141,12 +141,18 @@ static inline void rb_insert_color_cache
+> > >       rb_insert_color(node, &root->rb_root);
+> > >  }
+> > >
+> > > -static inline void rb_erase_cached(struct rb_node *node,
+> > > +static inline bool rb_erase_cached(struct rb_node *node,
+> > >                                  struct rb_root_cached *root)
+> > >  {
+> > > -     if (root->rb_leftmost == node)
+> > > +     bool leftmost = false;
+> > > +
+> > > +     if (root->rb_leftmost == node) {
+> > >               root->rb_leftmost = rb_next(node);
+> >
+> > Think we need
+> >
+> >  if (root->rb_leftmost)
+> >
+> > > +             leftmost = true;
+> >
+> > DEADLINE crashes w/o that.
 
-On Thu, Apr 30, 2020 at 10:13:14AM +0800, Jia He wrote:
-> Ning Bo reported an abnormal 2-second gap when booting Kata container [1].
-> The unconditional timeout is caused by VSOCK_DEFAULT_CONNECT_TIMEOUT of
-> connect at client side. The vhost vsock client tries to connect an
-> initlizing virtio vsock server.
+Clearly boot testing doesn't cover that..
+
+> I think Peter's code is correct; after removing the only node in an
+> rbtree rb_leftmost should be NULL.
 > 
-> The abnormal flow looks like:
-> host-userspace           vhost vsock                       guest vsock
-> ==============           ===========                       ============
-> connect()     -------->  vhost_transport_send_pkt_work()   initializing
->    |                     vq->private_data==NULL
->    |                     will not be queued
->    V
-> schedule_timeout(2s)
->                          vhost_vsock_start()  <---------   device ready
->                          set vq->private_data
-> 
-> wait for 2s and failed
-> 
-> connect() again          vq->private_data!=NULL          recv connecting pkt
-> 
-> 1. host userspace sends a connect pkt, at that time, guest vsock is under
-> initializing, hence the vhost_vsock_start has not been called. So
-> vq->private_data==NULL, and the pkt is not been queued to send to guest.
-> 2. then it sleeps for 2s
-> 3. after guest vsock finishes initializing, vq->private_data is set.
-> 4. When host userspace wakes up after 2s, send connecting pkt again,
-> everything is fine.
-> 
-> This fixes it by checking vq->private_data in vhost_transport_send_pkt,
-> and return at once if !vq->private_data. This makes user connect()
-> be returned with ECONNREFUSED.
-> 
-> After this patch, kata-runtime (with vsock enabled) boottime reduces from
-> 3s to 1s on ThunderX2 arm64 server.
-> 
-> [1] https://github.com/kata-containers/runtime/issues/1917
-> 
-> Reported-by: Ning Bo <n.b@live.com>
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
->  drivers/vhost/vsock.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-> index e36aaf9ba7bd..67474334dd88 100644
-> --- a/drivers/vhost/vsock.c
-> +++ b/drivers/vhost/vsock.c
-> @@ -241,6 +241,7 @@ vhost_transport_send_pkt(struct virtio_vsock_pkt *pkt)
->  {
->  	struct vhost_vsock *vsock;
->  	int len = pkt->len;
-> +	struct vhost_virtqueue *vq;
->  
->  	rcu_read_lock();
->  
-> @@ -252,6 +253,13 @@ vhost_transport_send_pkt(struct virtio_vsock_pkt *pkt)
->  		return -ENODEV;
->  	}
->  
-> +	vq = &vsock->vqs[VSOCK_VQ_RX];
-> +	if (!vq->private_data) {
+> The issue appears to be in dequeue_pushable_dl_task unconditionally
+> dereferencing the pointer returned by rb_first_cached(), which may be
+> NULL.
 
-I think is better to use vhost_vq_get_backend():
+Oh right.. silly me.
 
-	if (!vhost_vq_get_backend(&vsock->vqs[VSOCK_VQ_RX])) {
-		...
+So yes, those rb_add_cached() / rb_erase_cached() return values are
+(currently) only used by deadline. Deadline keeps a leftmost based value
+cache and 'needs' this signal to update it; I can imagine there being
+others, I didn't look at the many (~70) other users of
+rb_erase_cached().
 
-This function should be called with 'vq->mutex' acquired as explained in
-the comment, but here we can avoid that, because we are not using the vq,
-so it is safe, because in vhost_transport_do_send_pkt() we check it again.
+I briefly considered having rb_erase_cached() return the 'struct rb_node
+*' of the new leftmost; that would naturally return NULL for the empty
+tree. Maybe I should still do that -- see below.
 
-Please add a comment explaining that.
+Another thing I noticed is that I'm inconsistend with argument order;
+rb_erase_cached(node, tree) vs rb_add_cached(tree, node). I'll go make
+the new stuff use the 'wrong' order stuff too.
 
 
-As an alternative to this patch, should we kick the send worker when the
-device is ready?
-
-IIUC we reach the timeout because the send worker (that runs
-vhost_transport_do_send_pkt()) exits immediately since 'vq->private_data'
-is NULL, and no one will requeue it.
-
-Let's do it when we know the device is ready:
-
-diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-index e36aaf9ba7bd..295b5867944f 100644
---- a/drivers/vhost/vsock.c
-+++ b/drivers/vhost/vsock.c
-@@ -543,6 +543,11 @@ static int vhost_vsock_start(struct vhost_vsock *vsock)
-                mutex_unlock(&vq->mutex);
-        }
+---
+--- a/include/linux/rbtree.h
++++ b/include/linux/rbtree.h
+@@ -141,8 +141,8 @@ static inline void rb_insert_color_cache
+ 	rb_insert_color(node, &root->rb_root);
+ }
  
-+       /* Some packets may have been queued before the device was started,
-+        * let's kick the send worker to send them.
-+        */
-+       vhost_work_queue(&vsock->dev, &vsock->send_pkt_work);
+-static inline bool rb_erase_cached(struct rb_node *node,
+-				   struct rb_root_cached *root)
++static inline struct rb_node *
++rb_erase_cached(struct rb_node *node, struct rb_root_cached *root)
+ {
+ 	bool leftmost = false;
+ 
+@@ -152,7 +152,7 @@ static inline bool rb_erase_cached(struc
+ 	}
+ 	rb_erase(node, &root->rb_root);
+ 
+-	return leftmost;
++	return leftmost ? root->rb_leftmost : NULL;
+ }
+ 
+ static inline void rb_replace_node_cached(struct rb_node *victim,
+@@ -164,8 +164,9 @@ static inline void rb_replace_node_cache
+ 	rb_replace_node(victim, new, &root->rb_root);
+ }
+ 
+-static inline bool rb_add_cached(struct rb_root_cached *tree, struct rb_node *node,
+-				 bool (*less)(struct rb_node *, const struct rb_node *))
++static inline struct rb_node *
++rb_add_cached(struct rb_root_cached *tree, struct rb_node *node, bool
++	      (*less)(struct rb_node *, const struct rb_node *))
+ {
+ 	struct rb_node **link = &tree->rb_root.rb_node;
+ 	struct rb_node *parent = NULL;
+@@ -184,7 +185,7 @@ static inline bool rb_add_cached(struct
+ 	rb_link_node(node, parent, link);
+ 	rb_insert_color_cached(node, tree, leftmost);
+ 
+-	return leftmost;
++	return leftmost ? node : NULL;
+ }
+ 
+ static inline void rb_add(struct rb_root *tree, struct rb_node *node,
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -454,10 +454,14 @@ static inline bool __pushable_less(struc
+  */
+ static void enqueue_pushable_dl_task(struct rq *rq, struct task_struct *p)
+ {
++	struct rb_node *leftmost;
 +
-        mutex_unlock(&vsock->dev.mutex);
-        return 0;
-
-I didn't test it, can you try if it fixes the issue?
-
-I'm not sure which is better...
-
-Thanks,
-Stefano
-
+ 	BUG_ON(!RB_EMPTY_NODE(&p->pushable_dl_tasks));
+ 
+-	if (rb_add_cached(&rq->dl.pushable_dl_tasks_root, &p->pushable_dl_tasks,
+-			  __pushable_less))
++	leftmost = rb_add_cached(&rq->dl.pushable_dl_tasks_root,
++				 &p->pushable_dl_tasks,
++				 __pushable_less);
++	if (leftmost)
+ 		rq->dl.earliest_dl.next = p->dl.deadline;
+ }
+ 
+@@ -465,12 +469,14 @@ static void dequeue_pushable_dl_task(str
+ {
+ 	struct dl_rq *dl_rq = &rq->dl;
+ 	struct rb_root_cached *root = &dl_rq->pushable_dl_tasks_root;
++	struct rb_node *leftmost;
+ 
+ 	if (RB_EMPTY_NODE(&p->pushable_dl_tasks))
+ 		return;
+ 
+-	if (rb_erase_cached(&p->pushable_dl_tasks, root))
+-		dl_rq->earliest_dl.next = __node_2_pdl(rb_first_cached(root))->dl.deadline;
++	leftmost = rb_erase_cached(&p->pushable_dl_tasks, root);
++	if (leftmost)
++		dl_rq->earliest_dl.next = __node_2_pdl(leftmost)->dl.deadline;
+ 
+ 	RB_CLEAR_NODE(&p->pushable_dl_tasks);
+ }
