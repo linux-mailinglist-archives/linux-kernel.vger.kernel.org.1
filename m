@@ -2,139 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381211C1778
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4331C1C1799
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729350AbgEAOMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:12:01 -0400
-Received: from mga05.intel.com ([192.55.52.43]:42374 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728895AbgEAOMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 10:12:00 -0400
-IronPort-SDR: 7ak20+LFPjtInjHjoJcmymWKJLLS+kdVN7UR7UsBUeT6igxfqMVFF2JDvXv085hs0EOyeRSJY7
- Hn4uz74Fq9kA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 07:12:00 -0700
-IronPort-SDR: YfhOjwW3GA/XOJajdFbOtW1gpR+Ya8ypFpVT5wxq9f//dPzLOLk8a4rEO2PthVyP3bCFFbkmNf
- w4dFnmBlv73w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,339,1583222400"; 
-   d="scan'208";a="433322782"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by orsmga005.jf.intel.com with ESMTP; 01 May 2020 07:11:59 -0700
-Date:   Fri, 1 May 2020 07:11:59 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei@tencent.com>
-Subject: Re: [PATCH v4 1/7] KVM: VMX: Introduce generic fastpath handler
-Message-ID: <20200501141159.GC3798@linux.intel.com>
-References: <1588055009-12677-1-git-send-email-wanpengli@tencent.com>
- <1588055009-12677-2-git-send-email-wanpengli@tencent.com>
- <87ees5f6gh.fsf@vitty.brq.redhat.com>
+        id S1729539AbgEAOUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:20:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728839AbgEAOUc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 10:20:32 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45CFC061A0C;
+        Fri,  1 May 2020 07:20:32 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id a32so2343644pje.5;
+        Fri, 01 May 2020 07:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition:content-transfer-encoding:user-agent;
+        bh=193/NI27mySpCAh+KIdjYzAM7oxeG6cz6/eob21DaRo=;
+        b=A5m67fmSBEIu5hZjxOQ8YzHEgytFHmGf87v6I9J+L9B8TcomiIT/4rg+on+l9ZQC6h
+         8uyxO8slRVMWKksaxlPjQYT1SCfcIuIYjfD/vF6b2iVJxs/ZARx+xtjxhvKZHmAD7jA3
+         6sTa411e9piBXEWrZ0/cpmEfuvEoVM+wz+9rE7Dg9DitVap9F9Ydjxzmay+fISd4ksDY
+         ICsgADrudDavbcH4Gwr2vQaQ5YPLKUl5NlyOv8DT1XZFHnCpPUhCfSc9wwJp5mEozmU1
+         /zD51xxlJnUygl73bAn3VXELet49W6ye9qrh9yIOIpYhbhWUPefNDChYiknQQOyBbB3k
+         a3rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition
+         :content-transfer-encoding:user-agent;
+        bh=193/NI27mySpCAh+KIdjYzAM7oxeG6cz6/eob21DaRo=;
+        b=OuxX9jVhWZOx5KPdw3E2vdm2lkYjHu6STKGVs77ZOWYZ2stjhQ+myz40r/YaU2F/iY
+         m3DcMTZnqeo8Nq+geRKHSNPxjAf9h2HP1WoqwJF8KaXG6HM1VwTbsxB92c0kLxNw+QD/
+         60kXcDbAWGtIhZgks6ePUskgiwx7LRU/fnlfgzav5RJfHutAOft6gkqn0PMMWOddq7mi
+         IidY2oTbTfplcLNyYkI1xml2XJ89wVYYTvnVWeVraph4bx45wUc0rBXGL4wrCga6RjWU
+         vZkpHAsz22SJfuQf7eYG5DqAXtt/SeHZiL6fIVRDEsQnJG2XF47rkG2Gdb8KkzGLLgU0
+         1O6g==
+X-Gm-Message-State: AGi0PuYp7ArCG86NZFFwcUObhdPq/IeODyB0/1SmELJMI3o5KSJtp36b
+        XDeAm5ewnFP7QCD/y9i8xus=
+X-Google-Smtp-Source: APiQypI1a2t5ZsdligSOX64uMop1D8qtuO4O9jzzoSUe9OeRRqspFZxxxrK+kdfPQm3AeD8JyPciTQ==
+X-Received: by 2002:a17:90a:24ea:: with SMTP id i97mr4907371pje.189.1588342831707;
+        Fri, 01 May 2020 07:20:31 -0700 (PDT)
+Received: from udknight.localhost ([59.57.158.27])
+        by smtp.gmail.com with ESMTPSA id u5sm2411417pfu.198.2020.05.01.07.20.30
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 01 May 2020 07:20:31 -0700 (PDT)
+Received: from udknight.localhost (localhost [127.0.0.1])
+        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 041ECKll029106;
+        Fri, 1 May 2020 22:12:20 +0800
+Received: (from root@localhost)
+        by udknight.localhost (8.14.9/8.14.9/Submit) id 041EC313029090;
+        Fri, 1 May 2020 22:12:03 +0800
+Date:   Fri, 1 May 2020 22:12:03 +0800
+From:   Wang YanQing <udknight@gmail.com>
+To:     joe@perches.com
+Cc:     Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>, Markus.Elfring@web.de,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] checkpatch: add support to check 'Fixes:' tag format
+Message-ID: <20200501141203.GE28404@udknight>
+Mail-Followup-To: Wang YanQing <udknight@gmail.com>, joe@perches.com,
+        Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>, Markus.Elfring@web.de,
+        kernel-janitors@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87ees5f6gh.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.7.1 (2016-10-04)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 03:28:46PM +0200, Vitaly Kuznetsov wrote:
-> Wanpeng Li <kernellwp@gmail.com> writes:
-> 
-> > From: Wanpeng Li <wanpengli@tencent.com>
-> >
-> > Introduce generic fastpath handler to handle MSR fastpath, VMX-preemption
-> > timer fastpath etc, move it after vmx_complete_interrupts() in order that
-> > later patch can catch the case vmexit occurred while another event was
-> > being delivered to guest. There is no obversed performance difference for
-> > IPI fastpath testing after this move.
-> >
-> > Tested-by: Haiwei Li <lihaiwei@tencent.com>
-> > Cc: Haiwei Li <lihaiwei@tencent.com>
-> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> > ---
-> >  arch/x86/kvm/vmx/vmx.c | 21 ++++++++++++++++-----
-> >  1 file changed, 16 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 3ab6ca6..9b5adb4 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -6583,6 +6583,20 @@ void vmx_update_host_rsp(struct vcpu_vmx *vmx, unsigned long host_rsp)
-> >  	}
-> >  }
-> >  
-> > +static enum exit_fastpath_completion vmx_exit_handlers_fastpath(struct kvm_vcpu *vcpu)
-> > +{
-> > +	if (!is_guest_mode(vcpu)) {
-> 
-> Nitpick: do we actually expect to have any fastpath handlers anytime
-> soon? If not, we could've written this as
-> 
-> 	if (is_guest_mode(vcpu))
-> 		return EXIT_FASTPATH_NONE;
-> 
-> and save on identation)
+According to submitting-patches.rst, 'Fixes:' tag has a little
+stricter condition about the one line summary than normal git
+commit description:
+“...
+Do not split the tag across multiple lines, tags are exempt from
+the "wrap at 75 columns" rule in order to simplify parsing scripts
+...”
 
-Agreed.  An alternative approach would be to do the check in the caller, e.g.
+And there is no sanity check for 'Fixes:' tag format in checkpatch
+the same as GIT_COMMIT_ID for git commit description, so let's expand
+the GIT_COMMIT_ID to add 'Fixes:' tag format check support.
 
-	if (is_guest_mode(vcpu))
-		return EXIT_FASTPATH_NONE;
+The check supports below formats:
+Fixes: 54a4f0239f2e ("KVM: MMU: make kvm_mmu_zap_page() return the number of pages it actually freed")
+Fixes: 85f7cd3a2aad ("Revert "media: Kconfig: better support hybrid TV devices"")
+Fixes: 878520ac45f9 ("ext4: save the error code which triggered...")
+Fixes: 878520ac45f9 ("ext4: save the error code which triggered")
+Fixes: 277f27e2f277 ("SUNRPC/cache: Allow garbage collection ... ")
 
-	return vmx_exit_handlers_fastpath(vcpu);
+The check doesn't support below formats:
+Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface"
+Fixes: 6c73698904aa pinctrl: qcom: Introduce readl/writel accessors
+Fixes: 3fd6e7d9a146 (ASoC: tas571x: New driver for TI TAS571x power amplifiers)
+Fixes: 55697cbb44e4 ("arm64: dts: renesas: r8a779{65,80,90}: Add IPMMU devices nodes)
+Fixes: ba35f8588f47 (“ipvlan: Defer multicast / broadcast processing to a work-queue”)
+Fixes: cd758a9b57ee "KVM: PPC: Book3S HV: Use __gfn_to_pfn_memslot in HPT page fault handler"
+Fixes:      9b1640686470 ("scsi: lpfc: Fix use-after-free mailbox cmd completion")
+Fixes: 03f6fc6de919 ('ASoC: rt5682: Add the soundwire support')
 
-I don't have a strong preference either way.
+Note: this patch also fixes double quotation mark issue for normal git
+      commit description, and now it supports double quotation mark in
+      title line, for example:
+      Commit e33e2241e272 ("Revert "cfg80211: Use 5MHz bandwidth by default
+      when checking usable channels"")
 
-> > +		switch (to_vmx(vcpu)->exit_reason) {
-> > +		case EXIT_REASON_MSR_WRITE:
-> > +			return handle_fastpath_set_msr_irqoff(vcpu);
-> > +		default:
-> > +			return EXIT_FASTPATH_NONE;
-> > +		}
-> > +	}
-> > +
-> > +	return EXIT_FASTPATH_NONE;
-> > +}
-> > +
-> >  bool __vmx_vcpu_run(struct vcpu_vmx *vmx, unsigned long *regs, bool launched);
-> >  
-> >  static enum exit_fastpath_completion vmx_vcpu_run(struct kvm_vcpu *vcpu)
-> > @@ -6757,17 +6771,14 @@ static enum exit_fastpath_completion vmx_vcpu_run(struct kvm_vcpu *vcpu)
-> >  	if (unlikely(vmx->exit_reason & VMX_EXIT_REASONS_FAILED_VMENTRY))
-> >  		return EXIT_FASTPATH_NONE;
-> >  
-> > -	if (!is_guest_mode(vcpu) && vmx->exit_reason == EXIT_REASON_MSR_WRITE)
-> > -		exit_fastpath = handle_fastpath_set_msr_irqoff(vcpu);
-> > -	else
-> > -		exit_fastpath = EXIT_FASTPATH_NONE;
-> > -
-> >  	vmx->loaded_vmcs->launched = 1;
-> >  	vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
-> >  
-> >  	vmx_recover_nmi_blocking(vmx);
-> >  	vmx_complete_interrupts(vmx);
-> >  
-> > +	exit_fastpath = vmx_exit_handlers_fastpath(vcpu);
+Based on original patch by Joe Perches <joe@perches.com>
 
-No need for capturing the result in a local variable, just return the function
-call.
+Link: https://lore.kernel.org/lkml/40bfc40958fca6e2cc9b86101153aa0715fac4f7.camel@perches.com/
+Signed-off-by: Wang YanQing <udknight@gmail.com>
+---
+ If we really need to support for another quotation character, I think it is the single
+ quotation mark, we could do it in next patch.
 
-> > +
-> >  	return exit_fastpath;
-> >  }
-> 
-> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> 
-> -- 
-> Vitaly
-> 
+ v2:
+ 1: Add support for double quotation mark in title line, suggested by Markus Elfring.
+ 2: Add support for shorter title line with/without ellipsis.
+ 3: Add supported format examples and unsupported format examples in changelog.
+ 4: Fix a little wording issue in changelog , suggested by Markus Elfring.
+
+ scripts/checkpatch.pl | 64 ++++++++++++++++++++++++++++++-------------
+ 1 file changed, 45 insertions(+), 19 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 23a001a66006..d9c95f1de025 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2818,57 +2818,83 @@ sub process {
+ 		    $line !~ /^\s*(?:Link|Patchwork|http|https|BugLink|base-commit):/i &&
+ 		    $line !~ /^This reverts commit [0-9a-f]{7,40}/ &&
+ 		    ($line =~ /\bcommit\s+[0-9a-f]{5,}\b/i ||
++		     $line =~ /\bfixes:\s+[0-9a-f]{5,}\b/i ||
+ 		     ($line =~ /(?:\s|^)[0-9a-f]{12,40}(?:[\s"'\(\[]|$)/i &&
+-		      $line !~ /[\<\[][0-9a-f]{12,40}[\>\]]/i &&
+-		      $line !~ /\bfixes:\s*[0-9a-f]{12,40}/i))) {
++		      $line !~ /[\<\[][0-9a-f]{12,40}[\>\]]/i))) {
+ 			my $init_char = "c";
+ 			my $orig_commit = "";
++			my $prefix = "commit";
++			my $prefix_case = "[Cc]ommit";
+ 			my $short = 1;
+ 			my $long = 0;
+ 			my $case = 1;
+ 			my $space = 1;
+ 			my $hasdesc = 0;
+-			my $hasparens = 0;
++			my $has_parens_and_dqm = 0; # Double quotation mark
+ 			my $id = '0123456789ab';
+ 			my $orig_desc = "commit description";
+ 			my $description = "";
++			my $acrosslines = 0;
++			my $title = "title line";
++			my $desc_mismatch = 0;
+ 
+-			if ($line =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
++			if ($line =~ /\b(f)ixes:\s+([0-9a-f]{5,})\b/i) {
++				$init_char = $1;
++				$orig_commit = lc($2);
++				$prefix = "Fixes:";
++				$prefix_case = "Fixes:";
++				$init_char = "F";
++				$title = "a single line title (without line breaks but ellipsis is fine!)";
++			} elsif ($line =~ /\b(c)ommit\s+([0-9a-f]{5,})\b/i) {
+ 				$init_char = $1;
+ 				$orig_commit = lc($2);
+ 			} elsif ($line =~ /\b([0-9a-f]{12,40})\b/i) {
+ 				$orig_commit = lc($1);
+ 			}
+ 
+-			$short = 0 if ($line =~ /\bcommit\s+[0-9a-f]{12,40}/i);
+-			$long = 1 if ($line =~ /\bcommit\s+[0-9a-f]{41,}/i);
+-			$space = 0 if ($line =~ /\bcommit [0-9a-f]/i);
+-			$case = 0 if ($line =~ /\b[Cc]ommit\s+[0-9a-f]{5,40}[^A-F]/);
+-			if ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)"\)/i) {
++			$short = 0 if ($line =~ /\b$prefix\s+[0-9a-f]{12,40}/i);
++			$long = 1 if ($line =~ /\b$prefix\s+[0-9a-f]{41,}/i);
++			$space = 0 if ($line =~ /\b$prefix [0-9a-f]/i);
++			$case = 0 if ($line =~ /\b$prefix_case\s+[0-9a-f]{5,40}[^A-F]/);
++			if ($line =~ /\b$prefix\s+[0-9a-f]{5,}\s+\("(.+)"\)/i) {
+ 				$orig_desc = $1;
+-				$hasparens = 1;
++				$has_parens_and_dqm = 1;
++				# Drop the ellipsis
++				if ($prefix eq "Fixes:" && $orig_desc =~ /(\s*\.{3}\s*$)/) {
++				    $orig_desc = substr($orig_desc, 0, length($orig_desc) - length($1));
++				}
+ 			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s*$/i &&
+ 				 defined $rawlines[$linenr] &&
+-				 $rawlines[$linenr] =~ /^\s*\("([^"]+)"\)/) {
++				 $rawlines[$linenr] =~ /^\s*\("(.+)"\)/) {
+ 				$orig_desc = $1;
+-				$hasparens = 1;
+-			} elsif ($line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("[^"]+$/i &&
++				$has_parens_and_dqm = 1;
++			} elsif ($line =~ /\b$prefix\s+[0-9a-f]{5,}\s+\(".+$/i &&
+ 				 defined $rawlines[$linenr] &&
+-				 $rawlines[$linenr] =~ /^\s*[^"]+"\)/) {
+-				$line =~ /\bcommit\s+[0-9a-f]{5,}\s+\("([^"]+)$/i;
++				 $rawlines[$linenr] =~ /^\s*.+"\)/) {
++				$line =~ /\b$prefix\s+[0-9a-f]{5,}\s+\("(.+)$/i;
+ 				$orig_desc = $1;
+-				$rawlines[$linenr] =~ /^\s*([^"]+)"\)/;
++				$rawlines[$linenr] =~ /^\s*(.+)"\)/;
+ 				$orig_desc .= " " . $1;
+-				$hasparens = 1;
++				$has_parens_and_dqm = 1;
++				$acrosslines = 1 if ($prefix eq "Fixes:");
+ 			}
+ 
+ 			($id, $description) = git_commit_info($orig_commit,
+ 							      $id, $orig_desc);
+ 
++			if (defined($id) && ($orig_desc ne $description)) {
++			    # Allow short description without too short!
++			    if ($prefix eq "Fixes:" && $has_parens_and_dqm  && length($orig_desc) >= length($description)/2) {
++				$description = substr($description, 0, length($orig_desc));
++			    } else {
++				$desc_mismatch = 1;
++			    }
++			}
++
+ 			if (defined($id) &&
+-			   ($short || $long || $space || $case || ($orig_desc ne $description) || !$hasparens)) {
++			   ($short || $long || $space || $case || $desc_mismatch || !$has_parens_and_dqm || $acrosslines)) {
+ 				ERROR("GIT_COMMIT_ID",
+-				      "Please use git commit description style 'commit <12+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herecurr);
++				      "Please use git commit description style '$prefix <12+ chars of sha1> (\"<$title>\")' - ie: '${init_char}" . substr($prefix, 1) . " $id (\"$description\")'\n" . $herecurr);
+ 			}
+ 		}
+ 
+-- 
+2.17.1
