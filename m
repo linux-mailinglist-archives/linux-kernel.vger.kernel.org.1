@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC641C165D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C19F1C14E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731870AbgEANrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:47:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44712 "EHLO mail.kernel.org"
+        id S1731671AbgEANnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:43:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731426AbgEANnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:43:45 -0400
+        id S1731670AbgEANns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:43:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C42F208C3;
-        Fri,  1 May 2020 13:43:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B89820757;
+        Fri,  1 May 2020 13:43:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340625;
-        bh=KIPoBk7K8wgI48MMKiOmelRUYbArjb3GQ1nhKoUkKeg=;
+        s=default; t=1588340627;
+        bh=vHcalEBLMutUMRD2FIfDoqpmbNja+3/JedzvGyfkonk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zJyQlTcJuyjOuiEtCibJJ+/aRcvo2EcTxNGdMca8a3N6DzT0TePCI08eYwp9WmKFc
-         f8cNPBRzNzE+jxM3Oe0OpZkbzLmA53b54HC9fXQ4XFxTBQpjPR+rhzI7rK05Z3j9t/
-         XKJgWCIpYsp2AMTN6Qc3GDDUkJfl+GnNvyQxpgWo=
+        b=R7Q8LUABIV83YW+3S6ZPJvw3cqPok3lNTkv8vCnhohBtd8VocNxNetAn6ng92nvnk
+         WUUvcOfwBQDdW6opWvJVuSigwhn80QFIixBefUuO0bWN1G9K73w68m1uB+oErxGVfI
+         34dE6gUppV2mQd50phb8puQ5aYh+R8sLbtahHkTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Theodore Tso <tytso@mit.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Vitor Massaru Iha <vitor@massaru.org>,
-        Brendan Higgins <brendanhiggins@google.com>
-Subject: [PATCH 5.6 058/106] um: ensure `make ARCH=um mrproper` removes arch/$(SUBARCH)/include/generated/
-Date:   Fri,  1 May 2020 15:23:31 +0200
-Message-Id: <20200501131550.592783609@linuxfoundation.org>
+        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH 5.6 059/106] bpf: Fix handling of XADD on BTF memory
+Date:   Fri,  1 May 2020 15:23:32 +0200
+Message-Id: <20200501131550.708315300@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
 References: <20200501131543.421333643@linuxfoundation.org>
@@ -45,58 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitor Massaru Iha <vitor@massaru.org>
+From: Jann Horn <jannh@google.com>
 
-commit 63ec90f18204f2fe072df108de8a021b28b1b173 upstream.
+commit 8ff3571f7e1bf3f293cc5e3dc14f2943f4fa7fcf upstream.
 
-In this workflow:
+check_xadd() can cause check_ptr_to_btf_access() to be executed with
+atype==BPF_READ and value_regno==-1 (meaning "just check whether the access
+is okay, don't tell me what type it will result in").
+Handle that case properly and skip writing type information, instead of
+indexing into the registers at index -1 and writing into out-of-bounds
+memory.
 
-$ make ARCH=um defconfig && make ARCH=um -j8
-  [snip]
-$ make ARCH=um mrproper
-  [snip]
-$ make ARCH=um defconfig O=./build_um && make ARCH=um -j8 O=./build_um
-  [snip]
-  CC      scripts/mod/empty.o
-In file included from ../include/linux/types.h:6,
-                 from ../include/linux/mod_devicetable.h:12,
-                 from ../scripts/mod/devicetable-offsets.c:3:
-../include/uapi/linux/types.h:5:10: fatal error: asm/types.h: No such file or directory
-    5 | #include <asm/types.h>
-      |          ^~~~~~~~~~~~~
-compilation terminated.
-make[2]: *** [../scripts/Makefile.build:100: scripts/mod/devicetable-offsets.s] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/home/iha/sdb/opensource/lkmp/linux-kselftest.git/Makefile:1140: prepare0] Error 2
-make[1]: Leaving directory '/home/iha/sdb/opensource/lkmp/linux-kselftest.git/build_um'
-make: *** [Makefile:180: sub-make] Error 2
+Note that at least at the moment, you can't actually write through a BTF
+pointer, so check_xadd() will reject the program after calling
+check_ptr_to_btf_access with atype==BPF_WRITE; but that's after the
+verifier has already corrupted memory.
 
-The cause of the error was because arch/$(SUBARCH)/include/generated files
-weren't properly cleaned by `make ARCH=um mrproper`.
+This patch assumes that BTF pointers are not available in unprivileged
+programs.
 
-Fixes: a788b2ed81ab ("kbuild: check arch/$(SRCARCH)/include/generated before out-of-tree build")
-Reported-by: Theodore Ts'o <tytso@mit.edu>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
-Link: https://groups.google.com/forum/#!msg/kunit-dev/QmA27YEgEgI/hvS1kiz2CwAJ
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Fixes: 9e15db66136a ("bpf: Implement accurate raw_tp context access via BTF")
+Signed-off-by: Jann Horn <jannh@google.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200417000007.10734-2-jannh@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/um/Makefile |    1 +
- 1 file changed, 1 insertion(+)
+ kernel/bpf/verifier.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -140,6 +140,7 @@ export CFLAGS_vmlinux := $(LINK-y) $(LIN
- # When cleaning we don't include .config, so we don't include
- # TT or skas makefiles and don't clean skas_ptregs.h.
- CLEAN_FILES += linux x.i gmon.out
-+MRPROPER_DIRS += arch/$(SUBARCH)/include/generated
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2885,7 +2885,7 @@ static int check_ptr_to_btf_access(struc
+ 	if (ret < 0)
+ 		return ret;
  
- archclean:
- 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
+-	if (atype == BPF_READ) {
++	if (atype == BPF_READ && value_regno >= 0) {
+ 		if (ret == SCALAR_VALUE) {
+ 			mark_reg_unknown(env, regs, value_regno);
+ 			return 0;
 
 
