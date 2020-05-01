@@ -2,176 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3661C1C76
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EA01C1C7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730288AbgEASA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 14:00:56 -0400
-Received: from mx01-sz.bfs.de ([194.94.69.67]:11485 "EHLO mx01-sz.bfs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729138AbgEASAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 14:00:55 -0400
-Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
-        by mx01-sz.bfs.de (Postfix) with ESMTPS id 2FB59203B2;
-        Fri,  1 May 2020 20:00:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
-        t=1588356053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iuIPWKHuf1mWWetzWvXNH4rEJK532/abC6YDrHnRli4=;
-        b=z4T0Zz1SrWOItrjcZrEGxVJ6Mx3vjPAPeK3vRAZHHfO5yIsU4RKmvJHkt5o/cwLL4ZMqgu
-        fnsH86UbYGVpTAnhlyhUwLH49LVTjLItzwLmN6l5Q0wP+rUFF0HUZTBh1CWpe9/68ITlN8
-        WfupTHpyPOQR6AxMfvzqf8sVEK/kN4JQqmA+XuDnoL9qK/kKeN5H9h6cSI0NJmMJyol+UH
-        eklDtlOCCu/l25jaUNOwHoJJ6Adajt6fZx8b6IQh2uQCqSk7207StMcq70U3655ORDpUVd
-        lVmfS4Uu3OWkI2n0b3Uw9hhGF8R8X96Wj57QsyaUqGLg14m+Z9DjZbKUucCCKg==
-Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
- (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.1913.5; Fri, 1 May 2020
- 20:00:52 +0200
-Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
- SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%6]) with mapi id
- 15.01.1913.005; Fri, 1 May 2020 20:00:52 +0200
-From:   Walter Harms <wharms@bfs.de>
-To:     Colin King <colin.king@canonical.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: AW: [PATCH] net: dsa: sja1105: fix speed setting for 10 MBPS
-Thread-Topic: [PATCH] net: dsa: sja1105: fix speed setting for 10 MBPS
-Thread-Index: AQHWH8IGUD+3Kyn8J0mCBAQgeQXDbqiTgu1i
-Date:   Fri, 1 May 2020 18:00:52 +0000
-Message-ID: <9018be0b7dc441cd8aad625c6cc44e1c@bfs.de>
-References: <20200501134310.289561-1-colin.king@canonical.com>
-In-Reply-To: <20200501134310.289561-1-colin.king@canonical.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.137.16.39]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1730310AbgEASCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 14:02:34 -0400
+Received: from smtprelay0054.hostedemail.com ([216.40.44.54]:54194 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729161AbgEASCe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 14:02:34 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 8770B182CF66B;
+        Fri,  1 May 2020 18:02:33 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2904:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3868:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6119:7903:9025:10004:10400:10848:11026:11232:11473:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:13439:13972:14181:14659:14721:21080:21433:21451:21627:21660:21740:21788:21987:21990:30003:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: dust01_1634cf6994e20
+X-Filterd-Recvd-Size: 2968
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  1 May 2020 18:02:32 +0000 (UTC)
+Message-ID: <c05138cb12f43498299d2b438173d082be2ebf17.camel@perches.com>
+Subject: Re: [PATCH v3 0/4] floppy: suppress UBSAN warning in
+ setup_rw_floppy()
+From:   Joe Perches <joe@perches.com>
+To:     Denis Efremov <efremov@linux.com>, linux-block@vger.kernel.org
+Cc:     Willy Tarreau <w@1wt.eu>, Christoph Hellwig <hch@infradead.org>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 01 May 2020 11:02:31 -0700
+In-Reply-To: <20200501134416.72248-1-efremov@linux.com>
+References: <20200501134416.72248-1-efremov@linux.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.37
-Authentication-Results: mx01-sz.bfs.de;
-        none
-X-Spamd-Result: default: False [-1.37 / 7.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         HAS_XOIP(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TAGGED_RCPT(0.00)[kernel];
-         MIME_GOOD(-0.10)[text/plain];
-         BAYES_HAM(-2.87)[99.42%];
-         DKIM_SIGNED(0.00)[];
-         RCPT_COUNT_SEVEN(0.00)[10];
-         NEURAL_HAM(-0.00)[-0.901];
-         FREEMAIL_TO(0.00)[canonical.com,gmail.com,lunn.ch,davemloft.net,armlinux.org.uk,vger.kernel.org];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMHO it would be better to use switch case here to improve readability.
+On Fri, 2020-05-01 at 16:44 +0300, Denis Efremov wrote:
+> These patches are based on Willy's cleanup patches
+> https://lkml.org/lkml/2020/3/31/609.
 
-switch (bmcr & mask) {
+Maybe add pr_fmt and clean up a few messages so
+all the logging output is prefixed too.
 
-case  BMCR_SPEED1000:
-                                 speed =3D SPEED_1000;
-                                 break;
-case  BMCR_SPEED100:
-                                 speed =3D SPEED_100;
-                                 break;
-case  BMCR_SPEED10:
-                                 speed =3D SPEED_10;
-                                 break;
-default:
-                                speed =3D SPEED_UNKNOWN
-}
-
-jm2c,
- wh
-
-btw: an_enabled ? why not !enabled, mich more easy to read
-
-
-________________________________________
-Von: kernel-janitors-owner@vger.kernel.org <kernel-janitors-owner@vger.kern=
-el.org> im Auftrag von Colin King <colin.king@canonical.com>
-Gesendet: Freitag, 1. Mai 2020 15:43:10
-An: Vladimir Oltean; Andrew Lunn; Vivien Didelot; Florian Fainelli; David S=
- . Miller; Russell King; linux-kernel@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org; netdev@vger.kernel.org
-Betreff: [PATCH] net: dsa: sja1105: fix speed setting for 10 MBPS
-
-From: Colin Ian King <colin.king@canonical.com>
-
-The current logic for speed checking will never set the speed to 10 MBPS
-because bmcr & BMCR_SPEED10 is always 0 since BMCR_SPEED10 is 0. Also
-the erroneous setting where BMCR_SPEED1000 and BMCR_SPEED100 are both
-set causes the speed to be 1000 MBS.  Fix this by masking bps and checking
-for just the expected settings of BMCR_SPEED1000, BMCR_SPEED100 and
-BMCR_SPEED10 and defaulting to the unknown speed otherwise.
-
-Addresses-Coverity: ("Logically dead code")
-Fixes: ffe10e679cec ("net: dsa: sja1105: Add support for the SGMII port")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/net/dsa/sja1105/sja1105_main.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/block/floppy.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja11=
-05/sja1105_main.c
-index 472f4eb20c49..59a9038cdc4e 100644
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -1600,6 +1600,7 @@ static const char * const sja1105_reset_reasons[] =3D=
- {
- int sja1105_static_config_reload(struct sja1105_private *priv,
-                                 enum sja1105_reset_reason reason)
- {
-+       const int mask =3D (BMCR_SPEED1000 | BMCR_SPEED100 | BMCR_SPEED10);
-        struct ptp_system_timestamp ptp_sts_before;
-        struct ptp_system_timestamp ptp_sts_after;
-        struct sja1105_mac_config_entry *mac;
-@@ -1684,14 +1685,16 @@ int sja1105_static_config_reload(struct sja1105_pri=
-vate *priv,
-                sja1105_sgmii_pcs_config(priv, an_enabled, false);
+diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+index c3daa64..b26bb1 100644
+--- a/drivers/block/floppy.c
++++ b/drivers/block/floppy.c
+@@ -145,6 +145,8 @@
+  * Better audit of register_blkdev.
+  */
+ 
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
+ #undef  FLOPPY_SILENT_DCL_CLEAR
+ 
+ #define REALLY_SLOW_IO
+@@ -1724,7 +1726,7 @@ irqreturn_t floppy_interrupt(int irq, void *dev_id)
+ 	if (current_fdc >= N_FDC || fdc_state[current_fdc].address == -1) {
+ 		/* we don't even know which FDC is the culprit */
+ 		pr_info("DOR0=%x\n", fdc_state[0].dor);
+-		pr_info("floppy interrupt on bizarre fdc %d\n", current_fdc);
++		pr_info("interrupt on bizarre fdc %d\n", current_fdc);
+ 		pr_info("handler=%ps\n", handler);
+ 		is_alive(__func__, "bizarre fdc");
+ 		return IRQ_NONE;
+@@ -2276,7 +2278,7 @@ static void request_done(int uptodate)
+ 	reschedule_timeout(MAXTIMEOUT, msg);
+ 
+ 	if (!req) {
+-		pr_info("floppy.c: no request in request_done\n");
++		pr_info("no request in request_done\n");
+ 		return;
+ 	}
+ 
+@@ -4181,8 +4183,7 @@ static void floppy_rb0_cb(struct bio *bio)
+ 	int drive = cbdata->drive;
+ 
+ 	if (bio->bi_status) {
+-		pr_info("floppy: error %d while reading block 0\n",
+-			bio->bi_status);
++		pr_info("error %d while reading block 0\n", bio->bi_status);
+ 		set_bit(FD_OPEN_SHOULD_FAIL_BIT, &drive_state[drive].flags);
+ 	}
+ 	complete(&cbdata->complete);
+@@ -4954,7 +4955,7 @@ static void floppy_release_irq_and_dma(void)
+ #endif
+ 
+ 	if (delayed_work_pending(&fd_timeout))
+-		pr_info("floppy timer still active:%s\n", timeout_message);
++		pr_info("timer still active:%s\n", timeout_message);
+ 	if (delayed_work_pending(&fd_timer))
+ 		pr_info("auxiliary floppy timer still active\n");
+ 	if (work_pending(&floppy_work))
 
-                if (!an_enabled) {
--                       int speed =3D SPEED_UNKNOWN;
-+                       int speed;
-
--                       if (bmcr & BMCR_SPEED1000)
-+                       if ((bmcr & mask) =3D=3D BMCR_SPEED1000)
-                                speed =3D SPEED_1000;
--                       else if (bmcr & BMCR_SPEED100)
-+                       else if ((bmcr & mask) =3D=3D BMCR_SPEED100)
-                                speed =3D SPEED_100;
--                       else if (bmcr & BMCR_SPEED10)
-+                       else if ((bmcr & mask) =3D=3D BMCR_SPEED10)
-                                speed =3D SPEED_10;
-+                       else
-+                               speed =3D SPEED_UNKNOWN;
-
-                        sja1105_sgmii_pcs_force_speed(priv, speed);
-                }
---
-2.25.1
 
