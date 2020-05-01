@@ -2,55 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EEB1C20AD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 00:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 481561C20C6
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 00:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbgEAWci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 18:32:38 -0400
-Received: from mga06.intel.com ([134.134.136.31]:10101 "EHLO mga06.intel.com"
+        id S1726788AbgEAWfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 18:35:31 -0400
+Received: from mga12.intel.com ([192.55.52.136]:19389 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726973AbgEAWci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 18:32:38 -0400
-IronPort-SDR: 6XhZMxwOSrHnnVV+pXaZzoh111Ac1a3Fbrxa02BKsw9ff8RikcZJyGGMryLo0Yg+Zby1PzciCn
- 37BotaS1XHew==
+        id S1726377AbgEAWfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 18:35:31 -0400
+IronPort-SDR: EIP4cVNGmzGNIJSn9wjxmL4DVRTFEA6Vt0vwHsE3U/lRGevqMUnXZbs2zUXNRBk26Ug7jkV9G/
+ NMyHJ1d63/MA==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 15:32:36 -0700
-IronPort-SDR: h0HDG6WOzMAx9Acn3e9Yz1/5hX+L6Tr04sNiBrKkZCQp2bg2OM3da5SAXcNd1kQG999b8gqGSy
- xxtLW+ogCo9w==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 15:35:30 -0700
+IronPort-SDR: UNgRkzx638fo1l4ebhI3DztWLWC8sss7yytwj3kuQf5HvXKhrllpZBjTnxH9XKYdo/j53vHHsz
+ T0g92LcC0P0A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.73,341,1583222400"; 
-   d="scan'208";a="248657143"
-Received: from meghadey-mobl1.amr.corp.intel.com (HELO [10.251.135.85]) ([10.251.135.85])
-  by fmsmga007.fm.intel.com with ESMTP; 01 May 2020 15:32:35 -0700
-Subject: Re: [PATCH RFC 00/15] Add VFIO mediated device support and IMS
- support for the idxd driver.
-To:     Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
-        maz@kernel.org, bhelgaas@google.com, rafael@kernel.org,
-        gregkh@linuxfoundation.org, tglx@linutronix.de, hpa@zytor.com,
-        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
-        ashok.raj@intel.com, yi.l.liu@intel.com, baolu.lu@intel.com,
-        kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
-        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
-References: <158751095889.36773.6009825070990637468.stgit@djiang5-desk3.ch.intel.com>
- <20200421235442.GO11945@mellanox.com>
- <d6b3c133-ac19-21af-b7a7-b9e7166b8166@linux.intel.com>
- <20200423194447.GF13640@mellanox.com>
-From:   "Dey, Megha" <megha.dey@linux.intel.com>
-Message-ID: <30dadd7a-bac2-d658-c2e4-77592de6118d@linux.intel.com>
-Date:   Fri, 1 May 2020 15:32:35 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+   d="scan'208";a="283310281"
+Received: from schen9-mobl.amr.corp.intel.com ([10.254.53.33])
+  by fmsmga004.fm.intel.com with ESMTP; 01 May 2020 15:35:28 -0700
+Subject: Re: [PATCH 3/3] mm/swap: remove redundant check for
+ swap_slot_cache_initialized
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200430061143.450-1-thunder.leizhen@huawei.com>
+ <20200430061143.450-4-thunder.leizhen@huawei.com>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <9b45c120-e369-d436-a369-6c80e3d6ee2e@linux.intel.com>
+Date:   Fri, 1 May 2020 15:35:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200423194447.GF13640@mellanox.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200430061143.450-4-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -58,86 +49,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 4/23/2020 12:44 PM, Jason Gunthorpe wrote:
->>>> The mdev utilizes Interrupt Message Store or IMS[3] instead of MSIX for
->>>> interrupts for the guest. This preserves MSIX for host usages and also allows a
->>>> significantly larger number of interrupt vectors for guest usage.
->>>
->>> I never did get a reply to my earlier remarks on the IMS patches.
->>>
->>> The concept of a device specific addr/data table format for MSI is not
->>> Intel specific. This should be general code. We have a device that can
->>> use this kind of kernel capability today.
->>
->> I am sorry if I did not address your comments earlier.
+On 4/29/20 11:11 PM, Zhen Lei wrote:
+> Because enable_swap_slots_cache can only become true in
+> enable_swap_slots_cache(), and depends on swap_slot_cache_initialized is
+> true before. That means, when enable_swap_slots_cache is true,
+> swap_slot_cache_initialized is true also.
 > 
-> It appears noboy from Intel bothered to answer anyone else on that RFC
-> thread:
+> So the condition:
+> "swap_slot_cache_enabled && swap_slot_cache_initialized"
+> can be reduced to "swap_slot_cache_enabled"
 > 
-> https://lore.kernel.org/lkml/1568338328-22458-1-git-send-email-megha.dey@linux.intel.com/
+> And in mathematics:
+> "!swap_slot_cache_enabled || !swap_slot_cache_initialized"
+> is equal to "!(swap_slot_cache_enabled && swap_slot_cache_initialized)"
 > 
-> However, it seems kind of moot as I see now that this verion of IMS
-> bears almost no resemblance to the original RFC.
+> So no functional change.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  mm/swap_slots.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+> index b40394473a3c..3e6453573a89 100644
+> --- a/mm/swap_slots.c
+> +++ b/mm/swap_slots.c
+> @@ -46,8 +46,7 @@ static void __drain_swap_slots_cache(unsigned int type);
+>  static void deactivate_swap_slots_cache(void);
+>  static void reactivate_swap_slots_cache(void);
+>  
+> -#define use_swap_slot_cache (swap_slot_cache_active && \
+> -		swap_slot_cache_enabled && swap_slot_cache_initialized)
+> +#define use_swap_slot_cache (swap_slot_cache_active && swap_slot_cache_enabled)
 
-hmm yeah, we changed most of the code after getting a lot of feedback 
-from you and folks at plumbers. But yes, I should have replied to all 
-the feedback, lesson learnt :)
+Yes, swap_slot_cache_enabled does imply swap_slot_cache_initialized
+in current code.  So checking swap_slot_cache_enabled is
+enough here.
 
-> 
-> That said, the similiarity to platform-msi was striking, does this new
-> version harmonize with that?
+>  #define SLOTS_CACHE 0x1
+>  #define SLOTS_CACHE_RET 0x2
+>  
+> @@ -94,7 +93,7 @@ static bool check_cache_active(void)
+>  {
+>  	long pages;
+>  
+> -	if (!swap_slot_cache_enabled || !swap_slot_cache_initialized)
+> +	if (!swap_slot_cache_enabled)
 
-yes!
-> 
->> The present IMS code is quite generic, most of the code is in the drivers/
->> folder. We basically introduce 2 APIS: allocate and free IMS interrupts and
->> a IMS IRQ domain to allocate these interrupts from. These APIs are
->> architecture agnostic.
->>
->> We also introduce a new IMS IRQ domain which is architecture specific. This
->> is because IMS generates interrupts only in the remappable format, hence
->> interrupt remapping should be enabled for IMS. Currently, the interrupt
->> remapping code is only available for Intel and AMD and I don’t see anything
->> for ARM.
-> 
-> I don't understand these remarks though - IMS is simply the mapping of
-> a MemWr addr/data pair to a Linux IRQ number? Why does this intersect
-> with remapping?
+This simplification is okay.   !swap_slot_cache_initialize implies !swap_slot_cache_enabled.
+So only !swap_slot_cache_enabled needs to be checked.
+
+>  		return false;
+>  
+>  	pages = get_nr_swap_pages();
 > 
 
- From your comments so far, I think your requirement is a subset of what 
-IMS is trying to do.
-
-What you want:
-have a dynamic means of allocating platform-msi interrupts
-
-On top of this IMS has a requirement that all of the interrupts should 
-be remapped.
-
-So we can have tiered code: generic dynamic platform-msi infrastructure
-and add the IMS specific bits (Intel specific) on top of this.
-
-The generic code will have no reference to IMS.
-
-> AFAIK, any platform that supports MSI today should have the inherent
-> HW capability to support IMS.
-> 
->> Also, could you give more details on the device that could use IMS? Do you
->> have some driver code already? We could then see if and how the current IMS
->> code could be made more generic.
-> 
-> We have several devices of interest, our NICs have very flexible PCI,
-> so it is no problem to take the MemWR addr/data from someplace other
-> than the MSI tables.
-> 
-> For this we want to have some way to allocate Linux IRQs dynamically
-> and get a addr/data pair to trigger them.
-> 
-> Our NIC devices are also linked to our ARM SOC family, so I'd expect
-> our ARM's to also be able to provide these APIs as the platform.
-
-cool, so I will hope that you can test out the generic APIs from the ARM 
-side!
-> 
-> Jason
-> 
+Acked-by: Tim Chen <tim.c.chen@linux.intel.com>
