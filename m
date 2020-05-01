@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B302A1C13E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C6F1C136C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730510AbgEANd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:33:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59768 "EHLO mail.kernel.org"
+        id S1729775AbgEAN3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:29:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730501AbgEANdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:33:54 -0400
+        id S1729766AbgEAN3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:29:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1934B2051A;
-        Fri,  1 May 2020 13:33:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B977208D6;
+        Fri,  1 May 2020 13:29:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340033;
-        bh=lBlvo2JLinn+xJftezxS3qAHZEyExem1Y2iGhZCX2BM=;
+        s=default; t=1588339761;
+        bh=L9W7ToVGh3TEgwhLmqWCC2AlIbFT2re0QaNSwcakZus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yDC+ftYnfvhYOtwNDfi1Av9P409b1hQetCJOoW8TmTJ0w5Bg4AZK9eVLJcVhH/DLV
-         osErWWFMOgT0xXSVhj85iaC/GwZjvnV53m3KtR89Llt0uO1UJHXSeMTCc2jTu3bV8D
-         AMj4CRcbnJj9yUJmhyqGZYq8p2vOzcpu5pyHsym4=
+        b=urVSD1gKwjKZNNJUIhPWcruwZdLBVNDfT96vxJZkaUT1ThvPIxkBsHWzmsk5DSTTV
+         o3+Dluz84Y7DLAixXqBFrkxAtyt0adF/c6f1N5K4PDTTHYUlCwYvoyRSPHnLjuxcrP
+         AtVxKdAPdCwAA6xXa7MAExKtpIkCA6m0KWSuYq04=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Clemens Gruber <clemens.gruber@pqgruber.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Roland Hieber <rhi@pengutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 4.14 067/117] ARM: imx: provide v7_cpu_resume() only on ARM_CPU_SUSPEND=y
+        syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com,
+        Paul Moore <paul@paul-moore.com>
+Subject: [PATCH 4.9 49/80] audit: check the length of userspace generated audit records
 Date:   Fri,  1 May 2020 15:21:43 +0200
-Message-Id: <20200501131553.150920438@linuxfoundation.org>
+Message-Id: <20200501131528.800691245@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,46 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+From: Paul Moore <paul@paul-moore.com>
 
-commit f1baca8896ae18e12c45552a4c4ae2086aa7e02c upstream.
+commit 763dafc520add02a1f4639b500c509acc0ea8e5b upstream.
 
-512a928affd5 ("ARM: imx: build v7_cpu_resume() unconditionally")
-introduced an unintended linker error for i.MX6 configurations that have
-ARM_CPU_SUSPEND=n which can happen if neither CONFIG_PM, CONFIG_CPU_IDLE,
-nor ARM_PSCI_FW are selected.
+Commit 756125289285 ("audit: always check the netlink payload length
+in audit_receive_msg()") fixed a number of missing message length
+checks, but forgot to check the length of userspace generated audit
+records.  The good news is that you need CAP_AUDIT_WRITE to submit
+userspace audit records, which is generally only given to trusted
+processes, so the impact should be limited.
 
-Fix this by having v7_cpu_resume() compiled only when cpu_resume() it
-calls is available as well.
-
-The C declaration for the function remains unguarded to avoid future code
-inadvertently using a stub and introducing a regression to the bug the
-original commit fixed.
-
-Cc: <stable@vger.kernel.org>
-Fixes: 512a928affd5 ("ARM: imx: build v7_cpu_resume() unconditionally")
-Reported-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Tested-by: Roland Hieber <rhi@pengutronix.de>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: stable@vger.kernel.org
+Fixes: 756125289285 ("audit: always check the netlink payload length in audit_receive_msg()")
+Reported-by: syzbot+49e69b4d71a420ceda3e@syzkaller.appspotmail.com
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/mach-imx/Makefile |    2 ++
- 1 file changed, 2 insertions(+)
+ kernel/audit.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/arm/mach-imx/Makefile
-+++ b/arch/arm/mach-imx/Makefile
-@@ -87,8 +87,10 @@ AFLAGS_suspend-imx6.o :=-Wa,-march=armv7
- obj-$(CONFIG_SOC_IMX6) += suspend-imx6.o
- obj-$(CONFIG_SOC_IMX53) += suspend-imx53.o
- endif
-+ifeq ($(CONFIG_ARM_CPU_SUSPEND),y)
- AFLAGS_resume-imx6.o :=-Wa,-march=armv7-a
- obj-$(CONFIG_SOC_IMX6) += resume-imx6.o
-+endif
- obj-$(CONFIG_SOC_IMX6) += pm-imx6.o
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -941,6 +941,9 @@ static int audit_receive_msg(struct sk_b
+ 	case AUDIT_FIRST_USER_MSG2 ... AUDIT_LAST_USER_MSG2:
+ 		if (!audit_enabled && msg_type != AUDIT_USER_AVC)
+ 			return 0;
++		/* exit early if there isn't at least one character to print */
++		if (data_len < 2)
++			return -EINVAL;
  
- obj-$(CONFIG_SOC_IMX1) += mach-imx1.o
+ 		err = audit_filter(msg_type, AUDIT_FILTER_USER);
+ 		if (err == 1) { /* match or error */
 
 
