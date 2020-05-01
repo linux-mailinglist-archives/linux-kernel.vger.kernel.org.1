@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBDD1C1D03
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249971C1CE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730844AbgEASWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 14:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
+        id S1730826AbgEASWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 14:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730764AbgEASWg (ORCPT
+        by vger.kernel.org with ESMTP id S1730802AbgEASWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 14:22:36 -0400
+        Fri, 1 May 2020 14:22:40 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76941C061A0C;
-        Fri,  1 May 2020 11:22:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E96DC061A0C;
+        Fri,  1 May 2020 11:22:40 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jUaIv-0003gY-SQ; Fri, 01 May 2020 20:22:30 +0200
+        id 1jUaIx-0003iW-Qz; Fri, 01 May 2020 20:22:31 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 72DA51C04CD;
-        Fri,  1 May 2020 20:22:22 +0200 (CEST)
-Date:   Fri, 01 May 2020 18:22:22 -0000
-From:   "tip-bot2 for Alexandre Chartre" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id F36C31C0821;
+        Fri,  1 May 2020 20:22:23 +0200 (CEST)
+Date:   Fri, 01 May 2020 18:22:23 -0000
+From:   "tip-bot2 for Julien Thierry" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: is_fentry_call() crashes if call has no
- destination
-Cc:     Alexandre Chartre <alexandre.chartre@oracle.com>,
+Subject: [tip: objtool/core] objtool: Remove check preventing branches within
+ alternative
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Julien Thierry <jthierry@redhat.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86 <x86@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200414103618.12657-2-alexandre.chartre@oracle.com>
-References: <20200414103618.12657-2-alexandre.chartre@oracle.com>
+In-Reply-To: <20200327152847.15294-6-jthierry@redhat.com>
+References: <20200327152847.15294-6-jthierry@redhat.com>
 MIME-Version: 1.0
-Message-ID: <158835734240.8414.17237610568387147837.tip-bot2@tip-bot2>
+Message-ID: <158835734388.8414.6672993165516861011.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -53,38 +53,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the objtool/core branch of tip:
 
-Commit-ID:     87cf61fe848ca8ddf091548671e168f52e8a718e
-Gitweb:        https://git.kernel.org/tip/87cf61fe848ca8ddf091548671e168f52e8a718e
-Author:        Alexandre Chartre <alexandre.chartre@oracle.com>
-AuthorDate:    Tue, 14 Apr 2020 12:36:10 +02:00
+Commit-ID:     9e98d62aa7ea1375052895650f3e6d362336c5c9
+Gitweb:        https://git.kernel.org/tip/9e98d62aa7ea1375052895650f3e6d362336c5c9
+Author:        Julien Thierry <jthierry@redhat.com>
+AuthorDate:    Fri, 27 Mar 2020 15:28:42 
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 30 Apr 2020 20:14:32 +02:00
+CommitterDate: Thu, 30 Apr 2020 20:14:31 +02:00
 
-objtool: is_fentry_call() crashes if call has no destination
+objtool: Remove check preventing branches within alternative
 
-Fix is_fentry_call() so that it works if a call has no destination
-set (call_dest). This needs to be done in order to support intra-
-function calls.
+While jumping from outside an alternative region to the middle of an
+alternative region is very likely wrong, jumping from an alternative
+region into the same region is valid. It is a common pattern on arm64.
 
-Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+The first pattern is unlikely to happen in practice and checking only
+for this adds a lot of complexity.
+
+Just remove the current check.
+
+Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Julien Thierry <jthierry@redhat.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lkml.kernel.org/r/20200414103618.12657-2-alexandre.chartre@oracle.com
+Link: https://lkml.kernel.org/r/20200327152847.15294-6-jthierry@redhat.com
 ---
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/objtool/check.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index fa9bf36..8af8de2 100644
+index 12e2aea..cc52da6 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -1484,7 +1484,7 @@ static int decode_sections(struct objtool_file *file)
+@@ -2162,12 +2162,6 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
  
- static bool is_fentry_call(struct instruction *insn)
- {
--	if (insn->type == INSN_CALL &&
-+	if (insn->type == INSN_CALL && insn->call_dest &&
- 	    insn->call_dest->type == STT_NOTYPE &&
- 	    !strcmp(insn->call_dest->name, "__fentry__"))
- 		return true;
+ 	sec = insn->sec;
+ 
+-	if (insn->alt_group && list_empty(&insn->alts)) {
+-		WARN_FUNC("don't know how to handle branch to middle of alternative instruction group",
+-			  sec, insn->offset);
+-		return 1;
+-	}
+-
+ 	while (1) {
+ 		next_insn = next_insn_same_sec(file, insn);
+ 
