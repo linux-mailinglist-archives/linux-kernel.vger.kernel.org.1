@@ -2,80 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D521C1146
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 12:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67451C114B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 13:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728623AbgEAKzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 06:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728352AbgEAKzv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 06:55:51 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3F8C08E859
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 03:55:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=K4EvlvZJ7sfeaanlJ/LRWp5eylv34i1As4UZqRMOABw=; b=I0/bGlBitnCCFx6DOtfBMHHrR2
-        HIq5lUyjpiMWHo7whePAxr5+W4Vv/pg0XuBxeEZb38RUsg5O2/LRe8c2ZkjcNVd+UrVOmSr4KnBb3
-        OCab3mFcsTlCr9Q/hs+NGP0rwU+vGIpl+2AUDHxUM2p0aJb1XJsQ1MO6capHFDYpuJX8ANpMJ06+Z
-        9TYDFpG1PQkODYsOq8GlRNDvrMxPr7ECsiVWrfEnN2OXFgAf4XxlO4VccTiSxB56K/0CrGIMpqN4a
-        9Cl6le1pGZ+dUSVAGtkZxS2EdqoD2kvbcGtbrRxIVcGqRLKAoVg6uFX2v8CG2mnElRt8RTX7UxADR
-        NmkUDrqA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jUTKb-0002ee-Mk; Fri, 01 May 2020 10:55:45 +0000
-Date:   Fri, 1 May 2020 03:55:45 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Joonsoo Kim <js1304@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Laura Abbott <labbott@redhat.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Minchan Kim <minchan@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, kernel-team@lge.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v2 00/10] change the implementation of the PageHighMem()
-Message-ID: <20200501105545.GA29460@infradead.org>
-References: <1588130803-20527-1-git-send-email-iamjoonsoo.kim@lge.com>
- <20200429184711.9d603da097fdea80f574f1f1@linux-foundation.org>
- <CAAmzW4NC4LHXSoU8r6Jrh7WP8fouuaSkM--0gQVWf8G4wkDupg@mail.gmail.com>
+        id S1728595AbgEALBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 07:01:02 -0400
+Received: from mga18.intel.com ([134.134.136.126]:17502 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728480AbgEALBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 07:01:02 -0400
+IronPort-SDR: BAAmdjLwB/3zBJWsQVSBKntfL0jO/7kp2/BYcjWSrYJq0UT10HNakLVlKVSyf3H+LBckqi6Zzn
+ o3FRHM4EUXJw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 04:01:01 -0700
+IronPort-SDR: 7thJX6Mk0VKlOqLk4+hB4Kpm2nsLgUTfJ8kc6DOkHWiWyxqjaCETOzZ1vx4VCCUY7rlBQXfXJV
+ lNMlFXnL9Kqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,339,1583222400"; 
+   d="scan'208";a="368415955"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 01 May 2020 04:00:58 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jUTPe-0003D5-8P; Fri, 01 May 2020 19:00:58 +0800
+Date:   Fri, 1 May 2020 19:00:36 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>, pbonzini@redhat.com
+Cc:     kbuild-all@lists.01.org, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, joro@8bytes.org, bp@suse.de,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 10/18] x86/paravirt: Add hypervisor specific hypercall
+ for SEV live migration.
+Message-ID: <202005011844.3MBRacmG%lkp@intel.com>
+References: <d0e5e3227e24272ec5f277e6732c5e0a1276d4e1.1588234824.git.ashish.kalra@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAmzW4NC4LHXSoU8r6Jrh7WP8fouuaSkM--0gQVWf8G4wkDupg@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <d0e5e3227e24272ec5f277e6732c5e0a1276d4e1.1588234824.git.ashish.kalra@amd.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 07:52:35PM +0900, Joonsoo Kim wrote:
-> > - New code will pop up which gets it wrong and nobody will notice for
-> >   a long time.
-> 
-> Hmm... I think that it's not that hard to decide correct macro. If we rename
-> PageHighMem() with PageDirectMapped(), they, PageDirectMapped() and
-> PageHighMemZone(), are self-explanation macro. There would be no
-> confusion to use.
+Hi Ashish,
 
-What confuses me is why we even need PageHighMemZone - mostly code
-should not care about particular zones.  Maybe just open coding
-PageHighMemZone makes more sense - it is a little more cumersome, but
-at least it makes it explicit what we check for.  I already sent you
-an incremental diff for one obvious place, but maybe we need to look
-through the remaining ones if we can kill them or open code them in an
-obvious way.
+Thank you for the patch! Perhaps something to improve:
+
+[auto build test WARNING on v5.7-rc3]
+[cannot apply to kvm/linux-next tip/x86/mm tip/x86/core next-20200501]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+
+url:    https://github.com/0day-ci/linux/commits/Ashish-Kalra/Add-AMD-SEV-guest-live-migration-support/20200430-202702
+base:    6a8b55ed4056ea5559ebe4f6a4b247f627870d4c
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-191-gc51a0382-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> arch/x86/kernel/kvm.c:733:6: sparse: sparse: symbol 'kvm_sev_migration_hcall' was not declared. Should it be static?
+
+Please review and possibly fold the followup patch.
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
