@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844311C16A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3DE1C163B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731417AbgEANvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:51:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38058 "EHLO mail.kernel.org"
+        id S1731496AbgEANmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730772AbgEANic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:38:32 -0400
+        id S1731487AbgEANmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:42:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C17912173E;
-        Fri,  1 May 2020 13:38:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16AE82173E;
+        Fri,  1 May 2020 13:42:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340312;
-        bh=CKIMJQM3BUgv/kNo+zVhPYPGAjCSUM4KvYD2NODQKhk=;
+        s=default; t=1588340531;
+        bh=9NNJsc9JOP3hU8LNhjS2NaJS8yNIq1mysN+ebg5cZJU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yYOinUR7FAYWBey5qBSmlaXl/AUJ0gJiHnl35mjtV2rtuZ0xUpYqrPxyIhAEIb+O4
-         FRf+2S2zeyNN1CyiDVFR5mMOCmfZI1Jjeoae3Y+z2jK0X+Fzuh7cYbfVXwbh9BSqGP
-         RrSFH4qGrFhaRA/Q7AvnLjcJFFdU0HlgWWe69W/s=
+        b=OEDBimgnyTYEKjPh+GQw1vdx+N4/xzkieq894mi6mboW4PQFqRdESwpa4bzcOqDhR
+         x3YEsgkUrcqC8QzYhP1xQ9GPUdBSbPqgjhOrNvFMBz/UzfI2mcmn9k8lcYstBskUB4
+         jwX51UBZBmjXLQohy5lLAI5PCU+Mj1CAViq55gCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philipp Rudo <prudo@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.4 14/83] s390/ftrace: fix potential crashes when switching tracers
+        stable@vger.kernel.org, Philipp Puschmann <p.puschmann@pironex.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.6 020/106] ASoC: tas571x: disable regulators on failed probe
 Date:   Fri,  1 May 2020 15:22:53 +0200
-Message-Id: <20200501131527.389876682@linuxfoundation.org>
+Message-Id: <20200501131546.542657061@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,70 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Rudo <prudo@linux.ibm.com>
+From: Philipp Puschmann <p.puschmann@pironex.de>
 
-commit 8ebf6da9db1b2a20bb86cc1bee2552e894d03308 upstream.
+commit 9df8ba7c63073508e5aa677dade48fcab6a6773e upstream.
 
-Switching tracers include instruction patching. To prevent that a
-instruction is patched while it's read the instruction patching is done
-in stop_machine 'context'. This also means that any function called
-during stop_machine must not be traced. Thus add 'notrace' to all
-functions called within stop_machine.
+If probe fails after enabling the regulators regulator_put is called for
+each supply without having them disabled before. This produces some
+warnings like
 
-Fixes: 1ec2772e0c3c ("s390/diag: add a statistic for diagnose calls")
-Fixes: 38f2c691a4b3 ("s390: improve wait logic of stop_machine")
-Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
-Signed-off-by: Philipp Rudo <prudo@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+WARNING: CPU: 0 PID: 90 at drivers/regulator/core.c:2044 _regulator_put.part.0+0x154/0x15c
+[<c010f7a8>] (unwind_backtrace) from [<c010c544>] (show_stack+0x10/0x14)
+[<c010c544>] (show_stack) from [<c012b640>] (__warn+0xd0/0xf4)
+[<c012b640>] (__warn) from [<c012b9b4>] (warn_slowpath_fmt+0x64/0xc4)
+[<c012b9b4>] (warn_slowpath_fmt) from [<c04c4064>] (_regulator_put.part.0+0x154/0x15c)
+[<c04c4064>] (_regulator_put.part.0) from [<c04c4094>] (regulator_put+0x28/0x38)
+[<c04c4094>] (regulator_put) from [<c04c40cc>] (regulator_bulk_free+0x28/0x38)
+[<c04c40cc>] (regulator_bulk_free) from [<c0579b2c>] (release_nodes+0x1d0/0x22c)
+[<c0579b2c>] (release_nodes) from [<c05756dc>] (really_probe+0x108/0x34c)
+[<c05756dc>] (really_probe) from [<c0575aec>] (driver_probe_device+0xb8/0x16c)
+[<c0575aec>] (driver_probe_device) from [<c0575d40>] (device_driver_attach+0x58/0x60)
+[<c0575d40>] (device_driver_attach) from [<c0575da0>] (__driver_attach+0x58/0xcc)
+[<c0575da0>] (__driver_attach) from [<c0573978>] (bus_for_each_dev+0x78/0xc0)
+[<c0573978>] (bus_for_each_dev) from [<c0574b5c>] (bus_add_driver+0x188/0x1e0)
+[<c0574b5c>] (bus_add_driver) from [<c05768b0>] (driver_register+0x74/0x108)
+[<c05768b0>] (driver_register) from [<c061ab7c>] (i2c_register_driver+0x3c/0x88)
+[<c061ab7c>] (i2c_register_driver) from [<c0102df8>] (do_one_initcall+0x58/0x250)
+[<c0102df8>] (do_one_initcall) from [<c01a91bc>] (do_init_module+0x60/0x244)
+[<c01a91bc>] (do_init_module) from [<c01ab5a4>] (load_module+0x2180/0x2540)
+[<c01ab5a4>] (load_module) from [<c01abbd4>] (sys_finit_module+0xd0/0xe8)
+[<c01abbd4>] (sys_finit_module) from [<c01011e0>] (__sys_trace_return+0x0/0x20)
+
+Fixes: 3fd6e7d9a146 (ASoC: tas571x: New driver for TI TAS571x power amplifiers)
+Signed-off-by: Philipp Puschmann <p.puschmann@pironex.de>
+Link: https://lore.kernel.org/r/20200414112754.3365406-1-p.puschmann@pironex.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/s390/kernel/diag.c  |    2 +-
- arch/s390/kernel/smp.c   |    4 ++--
- arch/s390/kernel/trace.c |    2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/tas571x.c |   20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
---- a/arch/s390/kernel/diag.c
-+++ b/arch/s390/kernel/diag.c
-@@ -133,7 +133,7 @@ void diag_stat_inc(enum diag_stat_enum n
+--- a/sound/soc/codecs/tas571x.c
++++ b/sound/soc/codecs/tas571x.c
+@@ -820,8 +820,10 @@ static int tas571x_i2c_probe(struct i2c_
+ 
+ 	priv->regmap = devm_regmap_init(dev, NULL, client,
+ 					priv->chip->regmap_config);
+-	if (IS_ERR(priv->regmap))
+-		return PTR_ERR(priv->regmap);
++	if (IS_ERR(priv->regmap)) {
++		ret = PTR_ERR(priv->regmap);
++		goto disable_regs;
++	}
+ 
+ 	priv->pdn_gpio = devm_gpiod_get_optional(dev, "pdn", GPIOD_OUT_LOW);
+ 	if (IS_ERR(priv->pdn_gpio)) {
+@@ -845,7 +847,7 @@ static int tas571x_i2c_probe(struct i2c_
+ 
+ 	ret = regmap_write(priv->regmap, TAS571X_OSC_TRIM_REG, 0);
+ 	if (ret)
+-		return ret;
++		goto disable_regs;
+ 
+ 	usleep_range(50000, 60000);
+ 
+@@ -861,12 +863,20 @@ static int tas571x_i2c_probe(struct i2c_
+ 		 */
+ 		ret = regmap_update_bits(priv->regmap, TAS571X_MVOL_REG, 1, 0);
+ 		if (ret)
+-			return ret;
++			goto disable_regs;
+ 	}
+ 
+-	return devm_snd_soc_register_component(&client->dev,
++	ret = devm_snd_soc_register_component(&client->dev,
+ 				      &priv->component_driver,
+ 				      &tas571x_dai, 1);
++	if (ret)
++		goto disable_regs;
++
++	return ret;
++
++disable_regs:
++	regulator_bulk_disable(priv->chip->num_supply_names, priv->supplies);
++	return ret;
  }
- EXPORT_SYMBOL(diag_stat_inc);
  
--void diag_stat_inc_norecursion(enum diag_stat_enum nr)
-+void notrace diag_stat_inc_norecursion(enum diag_stat_enum nr)
- {
- 	this_cpu_inc(diag_stat.counter[nr]);
- 	trace_s390_diagnose_norecursion(diag_map[nr].code);
---- a/arch/s390/kernel/smp.c
-+++ b/arch/s390/kernel/smp.c
-@@ -403,7 +403,7 @@ int smp_find_processor_id(u16 address)
- 	return -1;
- }
- 
--bool arch_vcpu_is_preempted(int cpu)
-+bool notrace arch_vcpu_is_preempted(int cpu)
- {
- 	if (test_cpu_flag_of(CIF_ENABLED_WAIT, cpu))
- 		return false;
-@@ -413,7 +413,7 @@ bool arch_vcpu_is_preempted(int cpu)
- }
- EXPORT_SYMBOL(arch_vcpu_is_preempted);
- 
--void smp_yield_cpu(int cpu)
-+void notrace smp_yield_cpu(int cpu)
- {
- 	if (MACHINE_HAS_DIAG9C) {
- 		diag_stat_inc_norecursion(DIAG_STAT_X09C);
---- a/arch/s390/kernel/trace.c
-+++ b/arch/s390/kernel/trace.c
-@@ -14,7 +14,7 @@ EXPORT_TRACEPOINT_SYMBOL(s390_diagnose);
- 
- static DEFINE_PER_CPU(unsigned int, diagnose_trace_depth);
- 
--void trace_s390_diagnose_norecursion(int diag_nr)
-+void notrace trace_s390_diagnose_norecursion(int diag_nr)
- {
- 	unsigned long flags;
- 	unsigned int *depth;
+ static int tas571x_i2c_remove(struct i2c_client *client)
 
 
