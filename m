@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A131C170F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873351C134F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731123AbgEAN4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:56:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57094 "EHLO mail.kernel.org"
+        id S1729094AbgEAN2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:28:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730270AbgEANcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:32:13 -0400
+        id S1729600AbgEAN23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:28:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D0E3208C3;
-        Fri,  1 May 2020 13:32:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF4D424953;
+        Fri,  1 May 2020 13:28:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339933;
-        bh=yLAGhYGGTaE/aZWvbpapAKvvx1vDiFdDP466LI3iGdU=;
+        s=default; t=1588339709;
+        bh=RTn+kV+lIHQIsGh0H3v5uQledyZ87fbiPFxJRLw6Yfo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w5RRsDe7gtaCKaHPJHUICUYa3R19EwB4YiOK9TF7wZCjawIdJ0a2QTi/bby/fV2q2
-         0qgyUrPOAAeGWVY4+OVU0NTpqZ9ctH7PKocv7UnQ5RJVbGOKfcBozKMGm0DFISFs81
-         X4ghkbWQTemxKvb/5h/grMgDpuuljJzbsCM731EQ=
+        b=AyEYSHRLNNuE1RGAeN+ni3dPbbYTvrtP0M6vmHypMHB7iExAEfEcVAwIm9bZMstxp
+         9XORlbhYUjYzo6wd6ZWRnrH78YMFAR6bx5QBYd2jQ6g/7nAA9xLfs1UE7MZJkkZESp
+         mra4/T/tyuRIWZ46jacntdKeYOKfGCSUIcBxiJKs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Haxby <john.haxby@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 025/117] ipv6: fix restrict IPV6_ADDRFORM operation
+        stable@vger.kernel.org, Tero Kristo <t-kristo@ti.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 07/80] watchdog: reset last_hw_keepalive time at start
 Date:   Fri,  1 May 2020 15:21:01 +0200
-Message-Id: <20200501131547.945359951@linuxfoundation.org>
+Message-Id: <20200501131515.244885263@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Haxby <john.haxby@oracle.com>
+From: Tero Kristo <t-kristo@ti.com>
 
-[ Upstream commit 82c9ae440857840c56e05d4fb1427ee032531346 ]
+[ Upstream commit 982bb70517aef2225bad1d802887b733db492cc0 ]
 
-Commit b6f6118901d1 ("ipv6: restrict IPV6_ADDRFORM operation") fixed a
-problem found by syzbot an unfortunate logic error meant that it
-also broke IPV6_ADDRFORM.
+Currently the watchdog core does not initialize the last_hw_keepalive
+time during watchdog startup. This will cause the watchdog to be pinged
+immediately if enough time has passed from the system boot-up time, and
+some types of watchdogs like K3 RTI does not like this.
 
-Rearrange the checks so that the earlier test is just one of the series
-of checks made before moving the socket from IPv6 to IPv4.
+To avoid the issue, setup the last_hw_keepalive time during watchdog
+startup.
 
-Fixes: b6f6118901d1 ("ipv6: restrict IPV6_ADDRFORM operation")
-Signed-off-by: John Haxby <john.haxby@oracle.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20200302200426.6492-3-t-kristo@ti.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/ipv6_sockglue.c |   13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/watchdog/watchdog_dev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/ipv6/ipv6_sockglue.c
-+++ b/net/ipv6/ipv6_sockglue.c
-@@ -185,15 +185,14 @@ static int do_ipv6_setsockopt(struct soc
- 					retv = -EBUSY;
- 					break;
- 				}
--			} else if (sk->sk_protocol == IPPROTO_TCP) {
--				if (sk->sk_prot != &tcpv6_prot) {
--					retv = -EBUSY;
--					break;
--				}
--				break;
--			} else {
-+			}
-+			if (sk->sk_protocol == IPPROTO_TCP &&
-+			    sk->sk_prot != &tcpv6_prot) {
-+				retv = -EBUSY;
- 				break;
- 			}
-+			if (sk->sk_protocol != IPPROTO_TCP)
-+				break;
- 			if (sk->sk_state != TCP_ESTABLISHED) {
- 				retv = -ENOTCONN;
- 				break;
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index 977fe74e5abe2..9e17d933ea941 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -237,6 +237,7 @@ static int watchdog_start(struct watchdog_device *wdd)
+ 	if (err == 0) {
+ 		set_bit(WDOG_ACTIVE, &wdd->status);
+ 		wd_data->last_keepalive = started_at;
++		wd_data->last_hw_keepalive = started_at;
+ 		watchdog_update_worker(wdd);
+ 	}
+ 
+-- 
+2.20.1
+
 
 
