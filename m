@@ -2,190 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2D41C1E72
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 22:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D17151C1E7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 22:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbgEAUas convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 May 2020 16:30:48 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:35637 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgEAUar (ORCPT
+        id S1726845AbgEAUb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 16:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726778AbgEAUbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 16:30:47 -0400
-Received: from mail-qt1-f178.google.com ([209.85.160.178]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MXY6b-1jfSqQ0kut-00Z0q4 for <linux-kernel@vger.kernel.org>; Fri, 01 May
- 2020 22:30:45 +0200
-Received: by mail-qt1-f178.google.com with SMTP id g16so4929286qtp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 13:30:44 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYZ13p8LsNIz+DtlLaSE1jJTwY2lAynRkrVaK0sj80GjIk4De8K
-        o3pITe3m9DFQvAfxkGTn5xfiI897zy/hRqTgzXI=
-X-Google-Smtp-Source: APiQypJtprYFko430qql/hXdVN4hcrw6bhVhXNdrigj1vMHLkxccdqpReLVKoRWzl0oGcVculKuhoTuniXqtw1le3a0=
-X-Received: by 2002:ac8:4c8d:: with SMTP id j13mr5652562qtv.142.1588365043964;
- Fri, 01 May 2020 13:30:43 -0700 (PDT)
+        Fri, 1 May 2020 16:31:23 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C79C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 13:31:23 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id a21so447689pls.4
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 13:31:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DVZsHO3B+82ZVvSvwD+6L84uL6YCwy6wqP9DD2caeKY=;
+        b=Zc3KuQRuQy2OoPJPM+d+PnQiWTvDwpVtt8Zs/O3P2xKcWz2OpXBRQHO7c7IRb3Svou
+         7tdEiY8sRnRcjQKcq5Zj+0PlJ3VLXU+3aiTRKJ5MlWhFdkPfkoa8RKmQKcnL+YtrFDPP
+         AoyAhLCPYp/Bscc03FLzyMRL/p9YsUHnOlTHVDrPdG/xFXwkBqT1eusZGZHPZcMORFnJ
+         XUnONPMgBLe3uBUsDaF4ihYyjghwSsIq+4toZYrsvYog8R/WKxPl/CIP6xrmB3iChGu+
+         IP/ZvPS61IFkPnLMCnS1V56OJBpUCNYtLWaCzdi/NkjLIM7PXCLaVmPYfH/gNTtPYD9V
+         IZCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DVZsHO3B+82ZVvSvwD+6L84uL6YCwy6wqP9DD2caeKY=;
+        b=i1KMBRopzdUswV24IOCTzCXQSaRDxD2Gen6HiZpp70u84JJlCPUqcJxL4FKVhOiv6S
+         hho7v72crGXRIVuanOeTOKGmHraUPRoSrgR6S5+XvNX5r5vgL1IyJJOIDucKYOhEAGs+
+         hJD1tAy33Siukqo+y2JEzq2K9kuljIltTB9ycCCdj37eZXID+dB7rOzAhqSjvGLuO/18
+         Top6lSzlrQAywDPh4fGyNQ7VNVdDAX52qIeplO6qnhB3X50edTpx+acsvVK7ZRxTGJSX
+         wV7TObONnwVf4OGbuE4c+M1BXj4BjVOPxZTuMnGn56FMJC90XkhDseJSTdX2UnUuvV6+
+         GoNg==
+X-Gm-Message-State: AGi0PubF71wrpFDIXst8pO59cvjiyJaXvz290r3WFAsfLiQJT0t197tv
+        A9RUQMKYrAxWNDUpYxUIxMN0/dV1Jt8ob9xwTWiLWA==
+X-Google-Smtp-Source: APiQypJ9b4QRn/GrVn+RH4LsZdGv7V2jtr2OO/8zkSxd5QcIuJPpD3L0aOdJL8jy19OYg1HSleGSA99rMnX4I9DcZ7s=
+X-Received: by 2002:a17:902:a40e:: with SMTP id p14mr5817749plq.297.1588365082975;
+ Fri, 01 May 2020 13:31:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200430213101.135134-1-arnd@arndb.de> <20200430213101.135134-10-arnd@arndb.de>
- <20200430215450.anfwm4zikvhy2bt5@pali>
-In-Reply-To: <20200430215450.anfwm4zikvhy2bt5@pali>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 1 May 2020 22:30:27 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0_BuKDK7X8dTHyx7t++CGjy3jhDVvL=Jo5=kcUxmtobg@mail.gmail.com>
-Message-ID: <CAK8P3a0_BuKDK7X8dTHyx7t++CGjy3jhDVvL=Jo5=kcUxmtobg@mail.gmail.com>
-Subject: Re: [PATCH 09/15] udf: avoid gcc-10 zero-length-bounds warnings
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Steven J. Magnani" <steve@digidescorp.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
+References: <20200501083510.1413-1-anders.roxell@linaro.org>
+In-Reply-To: <20200501083510.1413-1-anders.roxell@linaro.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 1 May 2020 13:31:11 -0700
+Message-ID: <CAFd5g45C98_70Utp=QBWg_tKxaUMJ-ArQvjWbG9q6=dixfHBxw@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        Marco Elver <elver@google.com>,
+        John Johansen <john.johansen@canonical.com>, jmorris@namei.org,
+        serge@hallyn.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, kasan-dev <kasan-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        linux-security-module@vger.kernel.org,
+        David Gow <davidgow@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Provags-ID: V03:K1:hyYHBsnCjTw2RsqXW0udu3soGToIo8aCsKt5tPa+Z384npvvaUU
- 0HqAxJMCRma9tqyEPgxdd7qT4P1hSbQ1pRnaORRScMYZ2m4YB6WMvDI4jM7dWoGDSys0mZ3
- JDMQInd+KKiBGtJvlcQ8KD1bcESxbXQfGt82yWoTGHnDJSmk+IhH33A9j57j28f1lupFbry
- jzG2Va/Iebfm3qjJ0TLsw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1dVNIjVhzy0=:4srgdZGaY/dgKexA0AHZhN
- ZWHxnYf/BpmnU7y7EKqW5gs9SAZ/UuXmkBdACuX9fHxSoIP3XnDRep3UMsOnmMlVwISTEmiV0
- +q3x+Vzh9cPUdZzw3g/CKFca9ITXGEq/WQDl88JdFz6n0XYg0he/vBy3aZIG+PSHEnu4XMWUu
- 9yT0n6RkIbbOP0S8wBgPuVoE0djFl7nz5GQfSCy85w3V0dPFkAZ0hTEl7cnluk+ZWdpOa6JAW
- olxoSKkJnTU0b7Xu2BWruL0NFNkXyFfhBAenyqwp7pNYC0+VYtkqpoifLzY+nbZAZesSl6KYk
- gDRIWqnsi1KAhxqhnUtTysEzwMwji3lxE+/gL07WeauStEK0BHGsbzB2sumRdLvIpq6mT1GXC
- O8Kvw8Hz1j5GN0vUfGuhA/7sEK9rkl3CMnwskqpK5L+ewLR+BDKxjs8Ob63yhr2AHuAS/XlAg
- zswJ5nIqZkgdlIgwGgz+CHYToAAKGRo9rq6X8xcCE+ceMwsy/k3rWbIP0aYd8vwlDFvIcBgQ4
- UkzdDM841ktTroF/rBNzYvlrQm+BQypLa7ZxuvtFCE8FlgJY8LVpdA1WQZRcZzFQrZFcMtOsr
- QovoJn90NIMSW0kJfzXF1TPia4fsuqZENmh9P/c7l38RNMFjPG294lJ82EgISUkbrBvcE+k8h
- d5im1GDY8NHPxA65qLXcnCOTl6BciRfO/dX7r+7oR/QWNQ3ueLIiRNmCAlO840HDpxbxkQukq
- E/jkfUyJzTh6L+ls6ITljE2wS/LoUiCaGhfUzeGcJIguXP0YrlJZppo5r/7MZ7/KWsv8NvTfB
- Nio1sbhqGIWAIwU1ucWD5XZWYvwZ7+1HaiAt4KZQRpKeF4yXtU=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 11:54 PM Pali Rohár <pali@kernel.org> wrote:
+On Fri, May 1, 2020 at 1:35 AM Anders Roxell <anders.roxell@linaro.org> wrote:
 >
-> On Thursday 30 April 2020 23:30:51 Arnd Bergmann wrote:
-> > gcc-10 warns about writes to the empty freeSpaceTable[] array, with
-> > many instances like:
-> >
-> > fs/udf/balloc.c: In function 'udf_bitmap_new_block':
-> > fs/udf/balloc.c:101:36: error: array subscript 65535 is outside the bounds of an interior zero-length array '__le32[0]' {aka 'unsigned int[0]'} [-Werror=zero-length-bounds]
-> >   101 |  le32_add_cpu(&lvid->freeSpaceTable[partition], cnt);
-> >       |                ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
-> > In file included from fs/udf/udfdecl.h:7,
-> >                  from fs/udf/balloc.c:22:
-> > fs/udf/ecma_167.h:363:11: note: while referencing 'freeSpaceTable'
-> >   363 |  __le32   freeSpaceTable[0];
-> >       |           ^~~~~~~~~~~~~~
+> Make it easier to enable all KUnit fragments.  This is needed for kernel
+> test-systems, so its easy to get all KUnit tests enabled and if new gets
+> added they will be enabled as well.  Fragments that has to be builtin
+> will be missed if CONFIG_KUNIT_RUN_ALL is set as a module.
 >
-> Hi Arnd! This looks like a false-positive warning.
+> Adding 'if !KUNIT_RUN_ALL' so individual test can be turned of if
+> someone wants that even though KUNIT_RUN_ALL is enabled.
 
-Right, sorry for not making that clearer in the changelog.
+I would LOVE IT, if you could make this work! I have been trying to
+figure out the best way to run all KUnit tests for a long time now.
 
-> > These can all be avoided by using a flexible array member instead.
-> >
-> > Another warning is a bit more obscure:
-> >
-> > fs/udf/super.c: In function 'udf_count_free':
-> > fs/udf/super.c:2521:26: warning: array subscript '(<unknown>) + 4294967295' is outside the bounds of an interior zero-length array '__le32[0]' {aka 'unsigned int[0]'} [-Wzero-length-bounds]
-> >  2521 |      lvid->freeSpaceTable[part]);
-> >
-> > Work around this one by changing the array access to equivalent
-> > pointer arithmetic, as there cannot be multiple flexible-array
-> > members in a single struct.
->
+That being said, I am a bit skeptical that this approach will be much
+more successful than just using allyesconfig. Either way, there are
+tests coming down the pipeline that are incompatible with each other
+(the KASAN test and the KCSAN test will be incompatible). Even so,
+tests like the apparmor test require a lot of non-default
+configuration to compile. In the end, I am not sure how many tests we
+will really be able to turn on this way.
 
-> > @@ -360,9 +360,9 @@ struct logicalVolIntegrityDesc {
-> >       uint8_t                 logicalVolContentsUse[32];
-> >       __le32                  numOfPartitions;
-> >       __le32                  lengthOfImpUse;
-> > -     __le32                  freeSpaceTable[0];
-> >       __le32                  sizeTable[0];
-> >       uint8_t                 impUse[0];
-> > +     __le32                  freeSpaceTable[];
->
-> Please do not change order of members in these structures. Order is
-> strictly defined by ECMA 167 standard and changing them you would just
-> confuse reader. In LVID is free space table before size table.
-
-Ok
-
-> If you do not like GNU C extension for zero-length arrays then just
-> replace it by standard C99 flexible arrays. I think that there is no
-> reason to not use standard C99 language constructions, just nobody had
-> motivation or time to change (working) code.
-
-No, the problem is that only the last member can be a flexible array,
-so when impUse[] is the last member, freeSpaceTable has to be a zero
-length array.
-
-[]> Also this file is semi-synchronized with udftools project in which I
-> already replaced all GNU C zero-length arrays by C99 flexible arrays.
->
-> You can take inspiration what I did with logicalVolIntegrityDesc:
-> https://github.com/pali/udftools/commit/f851d84478ce881d516a76018745fa163f803880#diff-1e1a5b89f620d380f22b973f9449aeaeL381-R384
-
-Right, this is likely the best workaround.
-
-> Anyway, if you have a better idea what to do with such on-disk structure
-> and how to represent it in C struct syntax, let me know as it could be
-> updated also in udftools project.
-
-The trick I used for impUse[] would also work for freeSpaceTable[] to avoid
-the gcc warning, it's still not great, but maybe you like this better:
-
-arnd@threadripper:~/arm-soc$ git diff
-diff --git a/fs/udf/balloc.c b/fs/udf/balloc.c
-index 02f03fadb75b..666d022eb00b 100644
---- a/fs/udf/balloc.c
-+++ b/fs/udf/balloc.c
-@@ -98,7 +98,7 @@ static void udf_add_free_space(struct super_block
-*sb, u16 partition, u32 cnt)
-                return;
-
-        lvid = (struct logicalVolIntegrityDesc *)sbi->s_lvid_bh->b_data;
--       le32_add_cpu(&lvid->freeSpaceTable[partition], cnt);
-+       le32_add_cpu(lvid->freeSpaceTable + partition, cnt);
-        udf_updated_lvid(sb);
- }
-
-diff --git a/fs/udf/ecma_167.h b/fs/udf/ecma_167.h
-index 14ffe27342bc..215d97d7edc4 100644
---- a/fs/udf/ecma_167.h
-+++ b/fs/udf/ecma_167.h
-@@ -360,9 +360,9 @@ struct logicalVolIntegrityDesc {
-        uint8_t                 logicalVolContentsUse[32];
-        __le32                  numOfPartitions;
-        __le32                  lengthOfImpUse;
-        __le32                  freeSpaceTable[0];
-        __le32                  sizeTable[0];
--       uint8_t                 impUse[0];
-+       uint8_t                 impUse[];
- } __packed;
-
- /* Integrity Type (ECMA 167r3 3/10.10.3) */
-diff --git a/fs/udf/super.c b/fs/udf/super.c
-index 379867888c36..a1fc51c2261e 100644
---- a/fs/udf/super.c
-+++ b/fs/udf/super.c
-@@ -2517,8 +2517,8 @@ static unsigned int udf_count_free(struct super_block *sb)
-                        (struct logicalVolIntegrityDesc *)
-                        sbi->s_lvid_bh->b_data;
-                if (le32_to_cpu(lvid->numOfPartitions) > part) {
--                       accum = le32_to_cpu(
--                                       lvid->freeSpaceTable[part]);
-+                       accum = le32_to_cpup(
-+                                       (lvid->freeSpaceTable + part));
-                        if (accum == 0xFFFFFFFF)
-                                accum = 0;
-                }
-
-
-
-This version could easily be backported to stable kernels to let them be
-compiled with gcc-10, and then synchronizing with the udftools version of
-the header needs additional changes on top, which do not need to be
-backported.
-
-       Arnd
+Thoughts?
