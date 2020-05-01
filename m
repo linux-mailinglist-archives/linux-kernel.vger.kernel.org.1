@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0361C13C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A58F1C157C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730364AbgEANc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58124 "EHLO mail.kernel.org"
+        id S1729657AbgEAN2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:28:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729798AbgEANcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:32:55 -0400
+        id S1729636AbgEAN2e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:28:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7068D208C3;
-        Fri,  1 May 2020 13:32:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A677524954;
+        Fri,  1 May 2020 13:28:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339974;
-        bh=LmpQIxXgd4sQZVcscMsOXJbFpiz8wPrmMdzRd9rSilo=;
+        s=default; t=1588339714;
+        bh=zUCiPF1saQAniHcWkEVbc4jYJQ/5z6kvlySYJdaGaC8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YoOLAE8vF861FbZYqKgDE2ksN+vbIqT0Go5hX2PPx63FVAEpNJTUZYjjzXS9bww7Q
-         u0wDPDCjLEDLKMyTZ6eSx4tnbjHOho4FPKrXEELxnzYyMfG07PA79lImYkGZ+1i9qm
-         ji0Kj9+4J9q9twwihx5HBfatMY4gRiBu6VJxOsvQ=
+        b=k0PETdxpnjjKI/Bryk0K2Sxb4917oc00+ypd/psSAcmlDTKp+RNhiwRYzLhWlACNp
+         f5KJ5YZ8r0rHpHxHbFTj/eoSepTzJcS616/bTx6yBul3XQi8q4/Y9wVnr3QCSrFoJT
+         efm6jgU7uI/l2q/1YGKowe3F1p+V1Wdvn4bpXgMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Paul Zimmerman <pauldzim@gmail.com>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 4.14 047/117] USB: hub: Fix handling of connect changes during sleep
-Date:   Fri,  1 May 2020 15:21:23 +0200
-Message-Id: <20200501131550.361609021@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.9 30/80] iio: xilinx-xadc: Fix ADC-B powerdown
+Date:   Fri,  1 May 2020 15:21:24 +0200
+Message-Id: <20200501131523.911972888@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,78 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-commit 9f952e26295d977dbfc6fedeaf8c4f112c818d37 upstream.
+commit e44ec7794d88f918805d700240211a9ec05ed89d upstream.
 
-Commit 8099f58f1ecd ("USB: hub: Don't record a connect-change event
-during reset-resume") wasn't very well conceived.  The problem it
-tried to fix was that if a connect-change event occurred while the
-system was asleep (such as a device disconnecting itself from the bus
-when it is suspended and then reconnecting when it resumes)
-requiring a reset-resume during the system wakeup transition, the hub
-port's change_bit entry would remain set afterward.  This would cause
-the hub driver to believe another connect-change event had occurred
-after the reset-resume, which was wrong and would lead the driver to
-send unnecessary requests to the device (which could interfere with a
-firmware update).
+The check for shutting down the second ADC is inverted. This causes it to
+be powered down when it should be enabled. As a result channels that are
+supposed to be handled by the second ADC return invalid conversion results.
 
-The commit tried to fix this by not setting the change_bit during the
-wakeup.  But this was the wrong thing to do; it means that when a
-device is unplugged while the system is asleep, the hub driver doesn't
-realize anything has happened: The change_bit flag which would tell it
-to handle the disconnect event is clear.
-
-The commit needs to be reverted and the problem fixed in a different
-way.  Fortunately an alternative solution was noted in the commit's
-Changelog: We can continue to set the change_bit entry in
-hub_activate() but then clear it when a reset-resume occurs.  That way
-the the hub driver will see the change_bit when a device is
-disconnected but won't see it when the device is still present.
-
-That's what this patch does.
-
-Reported-and-tested-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Fixes: 8099f58f1ecd ("USB: hub: Don't record a connect-change event during reset-resume")
-Tested-by: Paul Zimmerman <pauldzim@gmail.com>
-CC: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/Pine.LNX.4.44L0.2004221602480.11262-100000@iolanthe.rowland.org
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Fixes: bdc8cda1d010 ("iio:adc: Add Xilinx XADC driver")
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/core/hub.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/iio/adc/xilinx-xadc-core.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -1195,6 +1195,11 @@ static void hub_activate(struct usb_hub
- #ifdef CONFIG_PM
- 			udev->reset_resume = 1;
- #endif
-+			/* Don't set the change_bits when the device
-+			 * was powered off.
-+			 */
-+			if (test_bit(port1, hub->power_bits))
-+				set_bit(port1, hub->change_bits);
+--- a/drivers/iio/adc/xilinx-xadc-core.c
++++ b/drivers/iio/adc/xilinx-xadc-core.c
+@@ -709,13 +709,14 @@ static int xadc_power_adc_b(struct xadc
+ {
+ 	uint16_t val;
  
- 		} else {
- 			/* The power session is gone; tell hub_wq */
-@@ -3008,6 +3013,15 @@ static int check_port_resume_type(struct
- 		if (portchange & USB_PORT_STAT_C_ENABLE)
- 			usb_clear_port_feature(hub->hdev, port1,
- 					USB_PORT_FEAT_C_ENABLE);
-+
-+		/*
-+		 * Whatever made this reset-resume necessary may have
-+		 * turned on the port1 bit in hub->change_bits.  But after
-+		 * a successful reset-resume we want the bit to be clear;
-+		 * if it was on it would indicate that something happened
-+		 * following the reset-resume.
-+		 */
-+		clear_bit(port1, hub->change_bits);
++	/* Powerdown the ADC-B when it is not needed. */
+ 	switch (seq_mode) {
+ 	case XADC_CONF1_SEQ_SIMULTANEOUS:
+ 	case XADC_CONF1_SEQ_INDEPENDENT:
+-		val = XADC_CONF2_PD_ADC_B;
++		val = 0;
+ 		break;
+ 	default:
+-		val = 0;
++		val = XADC_CONF2_PD_ADC_B;
+ 		break;
  	}
  
- 	return status;
 
 
