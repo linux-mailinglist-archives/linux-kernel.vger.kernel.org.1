@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A725B1C1BC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B96B1C1BC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730244AbgEARdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:33:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60866 "EHLO
+        id S1730264AbgEARdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 13:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730224AbgEARdu (ORCPT
+        by vger.kernel.org with ESMTP id S1730228AbgEARdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 May 2020 13:33:50 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD90DC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:33:48 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id 30so10798983qkp.21
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:33:48 -0700 (PDT)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0A3C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:33:50 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id t2so12892327ybq.11
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:33:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=+ot4xu8P2SexJM6MGXYbzzq/GQaqN2BkLb72ro0O34w=;
-        b=oa3VQjz/hQ8JVeQoeFDTwpiphtQMkijWONyG6GmOuXFW3ds02LZMZe8sGmRnRmRqNk
-         YXktmXjXrO/KW8P2frmIfG2Vx5hJpcHMvlEnKf5qfGOVeyNya510us4XsbmGC3tMiuYs
-         Jue3JcF/rOP4ICiOPciTtktngmOCwr1iLturZuJA6FxeDvie49FXwmEaSm2ar6zReBfo
-         tk9MsJyl2gvEX1G21Jlm0Z2UaPZOL17TsMyS7H328Q/zvbOX+OWajOfGVu8w6d4r0Vo5
-         Z10hyhHAw9QS6+Ey2+eLq2n8+VPOU00a1e8+Y9Iws5ssQ6eZDCI+98Ge/i8svHC88xTW
-         lD+Q==
+        bh=kaPuV4QeaPOgBS5KpMFoLQOvshqKxuzG67jCzUS9Y1Y=;
+        b=sbkFQJBCqgE+woRVVpeo+0KJ++czny488UOeAt88SxIWBZ1gH2z9WMIHrqwaz0FRyE
+         wVGmNPiqAXD4LozzOJo0U/CuPvK5KLdhI6fzv47BEL9qs0r0G0Boy2CztgYqK/HU8axg
+         RZUMbkBFV8fhQWz18pS6FwiPcpRi2C3lx1xsq76ME4tJIoIq/23wKNSw/yla2J77nNXd
+         qqYiiwdbVOHs2zyaSbALTawZihHCxzTq5IFcpXT1Q6Pt0d49Y9CfTKiMhqyzTy91U32v
+         tyOjK3x0nYI/aS5X0rQEmEocBAkTwZeFCZKNp/KDppYIXzXcN9cgm1Vpfgq2mtOu3Q7K
+         qPJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=+ot4xu8P2SexJM6MGXYbzzq/GQaqN2BkLb72ro0O34w=;
-        b=EHdOFguijhZmsHWWGioL1N1UUkRnxgORIl7mRcM/M1ikp3MapcbYqo1H3Qn8YbSbqk
-         GECqj0T1D6uURe9iZdXwVdj6Jj4s5ST7pBEntmIC+DgJNWZKO1N4WY+pe90+kwbWLiJe
-         V7WnJDXUcaktMFE+r/MxDeLYbSC2b8MpEKg7MCqX3XqcM/SPuyhKjQWw/1g7rjYN7Rvs
-         p3ntoqtds7MQq0D8RXwvdaMmODWeDuWLyb/eWOZ63lbWb69bPEznWdG1ZVdSJhriJNiG
-         +bJvungCuL9xDunuJO9kAQjuEFeh4tPImSN58rkIT9aejRMNTyhcu00OIQjWJMLWgKCk
-         vZyA==
-X-Gm-Message-State: AGi0PubRrkv1DfuKRPwLtu2VX49HiyS6l8rrXaWiwa61qyaJ8pVOUKn3
-        XPxfuUXZauupr56Knx8Zwj6eBUO70M7W
-X-Google-Smtp-Source: APiQypJlMNs5rZHFzHZO3E7RFv+oHfdk4YlMMjXOjqVGkOXfpHxetqHFnS6e1NFpRKdTGjUgbOV9OZ+4Bh2n
-X-Received: by 2002:a0c:f8c4:: with SMTP id h4mr5170957qvo.15.1588354427865;
- Fri, 01 May 2020 10:33:47 -0700 (PDT)
-Date:   Fri,  1 May 2020 10:33:27 -0700
+        bh=kaPuV4QeaPOgBS5KpMFoLQOvshqKxuzG67jCzUS9Y1Y=;
+        b=QiHHSoKp5e98J+sbCwXi8yV76iOxeXGH0Y/xzY3C2XXB1GK81ejciRGBHkHrHcnO5t
+         6a0MCYSabg7fWcC8iGa3Tlz3gBH6chzTmjXN6sGIyhbdR7apxAMW5fx8z0/ecgmO3JF7
+         Vy6IVjY3RO+X7Nq2mqkNu6P1BmEreEJccUBoktum7M4cqMDaLFD/NkTzK8YQc8D8IZYl
+         kIsiIMKAF48NdgDmmCgeAFqzVWPbGC3Kl1MQ93IsKNXWLLVpL63sNOkGCbhLZvVORU5F
+         5B+va7bbiDAPxVeBQAJnhNMRC4JClAjvcbaYE2OSDTLPRrW6HlQt7Dvpor82aj6Bh0sM
+         V8hw==
+X-Gm-Message-State: AGi0PubmIOTgWv01EFbv+r37F7wkMNMRZ41Mtqvqb6aY1mV96cyVGTGf
+        b6RhzY2eu2yREgAjJNaRIGFTYNxSsrAX
+X-Google-Smtp-Source: APiQypJXJ/2ea57hphP/4ScjpQLK7GQGVBjHVbaelmREdAvsrj4EtURAHdwq93MLmPzwdCaEw8LgxmqvWhxd
+X-Received: by 2002:a25:9707:: with SMTP id d7mr5213507ybo.336.1588354429803;
+ Fri, 01 May 2020 10:33:49 -0700 (PDT)
+Date:   Fri,  1 May 2020 10:33:28 -0700
 In-Reply-To: <20200501173333.227162-1-irogers@google.com>
-Message-Id: <20200501173333.227162-7-irogers@google.com>
+Message-Id: <20200501173333.227162-8-irogers@google.com>
 Mime-Version: 1.0
 References: <20200501173333.227162-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [PATCH v4 06/12] perf expr: parse numbers as doubles
+Subject: [PATCH v4 07/12] perf expr: debug lex if debugging yacc
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -78,68 +78,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is expected in expr.y and metrics use floating point values such as
-x86 broadwell IFetch_Line_Utilization.
+Only effects parser debugging (disabled by default). Enables displaying
+'--accepting rule at line .. ("...").
 
-Fixes: 26226a97724d (perf expr: Move expr lexer to flex)
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/expr.l | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ tools/perf/util/expr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/util/expr.l b/tools/perf/util/expr.l
-index 73db6a9ef97e..ceab11bea6f9 100644
---- a/tools/perf/util/expr.l
-+++ b/tools/perf/util/expr.l
-@@ -10,12 +10,12 @@
- char *expr_get_text(yyscan_t yyscanner);
- YYSTYPE *expr_get_lval(yyscan_t yyscanner);
+diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
+index aa631e37ad1e..8b4ce704a68d 100644
+--- a/tools/perf/util/expr.c
++++ b/tools/perf/util/expr.c
+@@ -45,6 +45,7 @@ __expr__parse(double *val, struct expr_parse_ctx *ctx, const char *expr,
  
--static int __value(YYSTYPE *yylval, char *str, int base, int token)
-+static double __value(YYSTYPE *yylval, char *str, int token)
- {
--	u64 num;
-+	double num;
+ #ifdef PARSER_DEBUG
+ 	expr_debug = 1;
++	expr_set_debug(1, scanner);
+ #endif
  
- 	errno = 0;
--	num = strtoull(str, NULL, base);
-+	num = strtod(str, NULL);
- 	if (errno)
- 		return EXPR_ERROR;
- 
-@@ -23,12 +23,12 @@ static int __value(YYSTYPE *yylval, char *str, int base, int token)
- 	return token;
- }
- 
--static int value(yyscan_t scanner, int base)
-+static int value(yyscan_t scanner)
- {
- 	YYSTYPE *yylval = expr_get_lval(scanner);
- 	char *text = expr_get_text(scanner);
- 
--	return __value(yylval, text, base, NUMBER);
-+	return __value(yylval, text, NUMBER);
- }
- 
- /*
-@@ -81,7 +81,7 @@ static int str(yyscan_t scanner, int token, int runtime)
- }
- %}
- 
--number		[0-9]+
-+number		[0-9]*\.?[0-9]+
- 
- sch		[-,=]
- spec		\\{sch}
-@@ -105,7 +105,7 @@ min		{ return MIN; }
- if		{ return IF; }
- else		{ return ELSE; }
- #smt_on		{ return SMT_ON; }
--{number}	{ return value(yyscanner, 10); }
-+{number}	{ return value(yyscanner); }
- {symbol}	{ return str(yyscanner, ID, sctx->runtime); }
- "|"		{ return '|'; }
- "^"		{ return '^'; }
+ 	ret = expr_parse(val, ctx, scanner);
 -- 
 2.26.2.526.g744177e7f7-goog
 
