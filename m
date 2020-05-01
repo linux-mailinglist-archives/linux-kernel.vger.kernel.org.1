@@ -2,139 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892E11C0C43
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 04:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA40D1C0C3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 04:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728118AbgEACpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 22:45:23 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:42492 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728012AbgEACpW (ORCPT
+        id S1728109AbgEACl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 22:41:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728012AbgEACl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 22:45:22 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0412dV1l016832;
-        Fri, 1 May 2020 02:39:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=amGI2EKz7GGva1xtOY99+AbL2BZTFlckdCPX0cEjQl4=;
- b=R/Uh7AqVaKevL2Ck3pCGur1QzlL+hEdzg5KEzVOfvonzIWVE4ZqZD2cvqET0X09bw43W
- IlWY0GsjoSKrvZS0VupcRskPM/6ZcrcPgJ+yskR5ONnbkAyPmoTumG8RJDedoaYr37Ip
- YigkseXqa/MSMkhMxqRPWD6nwZLBpFevbHfGK2JwJX0hIvFrSVCfJu/plAS6ksRPRtQ4
- VSvQFsnrA6ksJYl7E3UCDLTILl/ol7MguGC7SVnmZ9jx0sKPrdz9oj7Q9VnLZ8b42+ub
- O9i5O0SfhakbrQXdBdmuWwi7SmbUtPgc9X+4CIdpSUBYnH+ZnGX0mnn91Pca+c8RDBGk TQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 30r7f80hrx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 01 May 2020 02:39:51 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0412ZXkn024150;
-        Fri, 1 May 2020 02:39:51 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 30r7ff5jmd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 01 May 2020 02:39:51 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0412dfxm032165;
-        Fri, 1 May 2020 02:39:42 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 30 Apr 2020 19:39:41 -0700
-Date:   Thu, 30 Apr 2020 22:40:02 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
-        linux-crypto@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/7] padata: parallelize deferred page init
-Message-ID: <20200501024002.h7vpf4fxu6elmddn@ca-dmjordan1.us.oracle.com>
-References: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
- <20200430143131.7b8ff07f022ed879305de82f@linux-foundation.org>
- <CA+CK2bDwg=s6RbTCirm4U5gvRsnCMred-pnrW=WzN9hfGuBsiQ@mail.gmail.com>
+        Thu, 30 Apr 2020 22:41:57 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD18C035494;
+        Thu, 30 Apr 2020 19:41:56 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49CxNJ3jFWz9sRY;
+        Fri,  1 May 2020 12:41:52 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588300913;
+        bh=vUF1fXtpIoKJqTpWNPfnW5x1ycGQaYIW4GV4pb93qXc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eYQGDTA5bAn1VyClZ0fNAx5OdZYWL7oQpEyFqoVf4TzPe0s5C/c/tCTWzlMGq2a9e
+         cNOndxGtbxPmcYFP25SMc2377uPhkYmFeqGFm6+7NvdofhFgTM/d0e5lYsPkhRZb+/
+         xm3LjcNaawsUFIZenbrosq2BpotdqnBmzmdp1tysxHGOd49PbB0qV7L1qfRcG8WCFg
+         /j2dqeLZ6fjlv/PkYZtviUjgAiOYwwn4japLnJepnvsnHQiOM57oBHa8OuKzo62H36
+         x0ulcWE3Pm37QeBDX70AFic6q1T4mrYL3OiFimNwyc1NIyuyhhSPCD7C07D8TShmcz
+         lhlYB61z6GvKw==
+Date:   Fri, 1 May 2020 12:41:16 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Westphal <fw@strlen.de>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20200501124116.794c82ee@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bDwg=s6RbTCirm4U5gvRsnCMred-pnrW=WzN9hfGuBsiQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 bulkscore=0
- mlxlogscore=999 phishscore=0 suspectscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2005010017
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
- spamscore=0 malwarescore=0 clxscore=1015 phishscore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2005010017
+Content-Type: multipart/signed; boundary="Sig_/hudxFM=ID.usjgK48nTX2ne";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 05:40:59PM -0400, Pavel Tatashin wrote:
-> On Thu, Apr 30, 2020 at 5:31 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > On Thu, 30 Apr 2020 16:11:18 -0400 Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
-> >
-> > > Sometimes the kernel doesn't take full advantage of system memory
-> > > bandwidth, leading to a single CPU spending excessive time in
-> > > initialization paths where the data scales with memory size.
-> > >
-> > > Multithreading naturally addresses this problem, and this series is the
-> > > first step.
-> > >
-> > > It extends padata, a framework that handles many parallel singlethreaded
-> > > jobs, to handle multithreaded jobs as well by adding support for
-> > > splitting up the work evenly, specifying a minimum amount of work that's
-> > > appropriate for one helper thread to do, load balancing between helpers,
-> > > and coordinating them.  More documentation in patches 4 and 7.
-> > >
-> > > The first user is deferred struct page init, a large bottleneck in
-> > > kernel boot--actually the largest for us and likely others too.  This
-> > > path doesn't require concurrency limits, resource control, or priority
-> > > adjustments like future users will (vfio, hugetlb fallocate, munmap)
-> > > because it happens during boot when the system is otherwise idle and
-> > > waiting on page init to finish.
-> > >
-> > > This has been tested on a variety of x86 systems and speeds up kernel
-> > > boot by 6% to 49% by making deferred init 63% to 91% faster.
-> >
-> > How long is this up-to-91% in seconds?  If it's 91% of a millisecond
-> > then not impressed.  If it's 91% of two weeks then better :)
+--Sig_/hudxFM=ID.usjgK48nTX2ne
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The largest system I could test had 384G per node and saved 1.5 out of 4
-seconds.
+Hi all,
 
-> > Relatedly, how important is boot time on these large machines anyway?
-> > They presumably have lengthy uptimes so boot time is relatively
-> > unimportant?
-> 
-> Large machines indeed have a lengthy uptime, but they also can host a
-> large number of VMs meaning that downtime of the host increases the
-> downtime of VMs in cloud environments. Some VMs might be very sensible
-> to downtime: game servers, traders, etc.
->
-> > IOW, can you please explain more fully why this patchset is valuable to
-> > our users?
+Today's linux-next merge of the net-next tree got a conflict in:
 
-I'll let the users speak for themselves, but I have a similar use case to Pavel
-of limiting the downtime of VMs running on these large systems, and spinning up
-instances as fast as possible is also desirable for our cloud users.
+  include/net/mptcp.h
+
+between commit:
+
+  cfde141ea3fa ("mptcp: move option parsing into mptcp_incoming_options()")
+
+from the net tree and commit:
+
+  071c8ed6e88d ("tcp: mptcp: use mptcp receive buffer space to select rcv w=
+indow")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/net/mptcp.h
+index 3bce2019e4da,5288fba56e55..000000000000
+--- a/include/net/mptcp.h
++++ b/include/net/mptcp.h
+@@@ -68,8 -68,13 +68,10 @@@ static inline bool rsk_is_mptcp(const s
+  	return tcp_rsk(req)->is_mptcp;
+  }
+ =20
++ void mptcp_space(const struct sock *ssk, int *space, int *full_space);
++=20
+ -void mptcp_parse_option(const struct sk_buff *skb, const unsigned char *p=
+tr,
+ -			int opsize, struct tcp_options_received *opt_rx);
+  bool mptcp_syn_options(struct sock *sk, const struct sk_buff *skb,
+  		       unsigned int *size, struct mptcp_out_options *opts);
+ -void mptcp_rcv_synsent(struct sock *sk);
+  bool mptcp_synack_options(const struct request_sock *req, unsigned int *s=
+ize,
+  			  struct mptcp_out_options *opts);
+  bool mptcp_established_options(struct sock *sk, struct sk_buff *skb,
+
+--Sig_/hudxFM=ID.usjgK48nTX2ne
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6rjEwACgkQAVBC80lX
+0GyeTwgAkps7ZAfwWEf59WesPtHVUi1cy4pZ/UwKctzDHiMSKSM7I7/mKbVNrCdn
+EdYo1zRxM6tbmXXdWxAA8Q3ab/3DPq10z6BiBuI9/qift1fZ3k2G8ZS0JYl6sE2s
+rf83xx1SPB2ls1f+tif7ZG+tXzMLI8NszDBYjd4w/gsVDtE/OJ+3dykl5Z1pr2M4
+1OLHb+c5h0MdFJAlbFwVs/xKFeabQn1CViBpIsW6khv4sm4TLVhgUjUvj3WRw1zO
+ICvFfNtGDe7H9LTv3LNqOPSTTHaCgJ092VrMZWnUR83J7lHMM6q69Kz7OUkEDT/M
+P+Xo6QFhk1mUsEScoh49jKwPhJ+d4Q==
+=90ZQ
+-----END PGP SIGNATURE-----
+
+--Sig_/hudxFM=ID.usjgK48nTX2ne--
