@@ -2,132 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13CE1C0EF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 09:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B151C0EFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 09:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbgEAHkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 03:40:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
+        id S1728385AbgEAHqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 03:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728383AbgEAHkN (ORCPT
+        with ESMTP id S1728311AbgEAHqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 03:40:13 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA75DC035495
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 00:40:13 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o185so4250153pgo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 00:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=QD+OM/IPa9x7hJvHclwxEGNJ9gIn9LRrmuc2cMqM+jk=;
-        b=uHgfP9cWbKjgsICCn22DXY5E8YVkK4lR5mSH38oijVyLq+WDsYAckO411+fCRx4fSG
-         92T98KiXWYh/Veuu9k4mILrjo6zo4M8S4hPIn1pjXH4afDJRgMkF3HIHomYHPtbJ2CIT
-         oHO3AozrS69KPbj/CTUAtS0sIYMkdKaiEqIvnSOR5NCG1ZOjYGvWsRTbWlGF2X+swrpU
-         pF1SZxSAvCiYlvGEZHBmQuMPgM/YMkwvPoLMwh2SWAo7qUkc5ifkQoPpgJfJmVVL5VBG
-         jEdBB2/STxwoSAR6Dj/ZZDJ0PZXyVaXxiFVJoKoWWEDCYQLst2EN08W0fE9yARqfug+f
-         NI7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=QD+OM/IPa9x7hJvHclwxEGNJ9gIn9LRrmuc2cMqM+jk=;
-        b=et8tJTQswvwQaxnzrZCDlsTr/FN/PZjhEkBn5w+pwVYrFKD8tqO3te5Z012xlwhxhQ
-         sIxcitKRtdlX2BtFshmjIoYkFzKClkHlc0fJXD3oSHqW3gRyL2+wXfqkSngJ92+H3mbi
-         qGUKxh2RWp0CEEfU9nBplrhvAUgWPROc1FPswf2YO976f81jn/9itf0G5Y3yFAnv3ahn
-         seIbBRcZJSXHS89Jx1JrpvQ8P2QhqynlN0sDrS4vBdE4XHl35qF87YKCrSifWU4d01+5
-         gNkYZ2VZUV+0YU56B43KAH6dhCWy6agv2qc5TLhmo+dktWDUBHJtS6kfavy0Lndcgr3P
-         80Ig==
-X-Gm-Message-State: AGi0PublD/IM3oZaxfM5nfS4Em7XgAlQ5aP2f76dGo97xZxmfHWQHgFA
-        UbpQhnkQhGr8jW2bIub3L/9DZY/9cbY=
-X-Google-Smtp-Source: APiQypIe0OyaYrak6ULk6jy1juCWPHfm+627JYy+N9jmFW5Ppc7wa4zxgW6OTSiIq3XBtubeLxsMWQ==
-X-Received: by 2002:a62:e113:: with SMTP id q19mr2839382pfh.107.1588318813249;
-        Fri, 01 May 2020 00:40:13 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id w12sm1557841pfq.133.2020.05.01.00.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 00:40:12 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Andrew F. Davis" <afd@ti.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Pratik Patel <pratikp@codeaurora.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Chenbo Feng <fengc@google.com>,
-        Alistair Strachan <astrachan@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org
-Subject: [RFC][PATCH 4/4] example: dts: hi3660-hikey960: Add dts entries to test cma heap binding
-Date:   Fri,  1 May 2020 07:39:49 +0000
-Message-Id: <20200501073949.120396-5-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200501073949.120396-1-john.stultz@linaro.org>
-References: <20200501073949.120396-1-john.stultz@linaro.org>
+        Fri, 1 May 2020 03:46:49 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADB0C08E859
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 00:46:48 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jUQNa-0001Z0-Cr; Fri, 01 May 2020 09:46:38 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1jUQNW-0006Mu-Is; Fri, 01 May 2020 09:46:34 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Kubecek <mkubecek@suse.cz>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>,
+        Christian Herber <christian.herber@nxp.com>
+Subject: [PATCH net-next v4 0/2] provide support for PHY master/slave configuration
+Date:   Fri,  1 May 2020 09:46:31 +0200
+Message-Id: <20200501074633.24421-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds example test entry to create and expose a dummy "camera"
-cma region via the dmabuf heaps interface
+changes v3:
+- rename port_mode to master_slave 
+- move validation code to net/ethtool/linkmodes.c 
+- add UNSUPPORTED state and avoid sending unsupported fields
+- more formatting and naming fixes
+- tja11xx: support only force mode
+- tja11xx: mark state as unsupported
 
-This isn't a patch I'm submitting to merge, but just an example
-of how this functionality can be used, which I've used for
-testing.
+changes v3:
+- provide separate field for config and state.
+- make state rejected on set
+- add validation
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Andrew F. Davis" <afd@ti.com>
-Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Pratik Patel <pratikp@codeaurora.org>
-Cc: Laura Abbott <labbott@redhat.com>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Chenbo Feng <fengc@google.com>
-Cc: Alistair Strachan <astrachan@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: devicetree@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-mm@kvack.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
+changes v2:
+- change names. Use MASTER_PREFERRED instead of MULTIPORT
+- configure master/slave only on request. Default configuration can be
+  provided by PHY or eeprom
+- status and configuration to the user space.
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-index c0a6aad9593f..5eef1a76d51a 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-@@ -81,6 +81,13 @@
- 			reusable;
- 			linux,cma-default;
- 		};
-+
-+		cma_camera: cma-camera {
-+			compatible = "shared-dma-pool";
-+			reg = <0x0 0x24C00000 0x0 0x4000000>;
-+			reusable;
-+			linux,cma-heap;
-+		};
- 	};
- 
- 	reboot-mode-syscon@32100000 {
+Oleksij Rempel (2):
+  ethtool: provide UAPI for PHY master/slave configuration.
+  net: phy: tja11xx: add support for master-slave configuration
+
+ Documentation/networking/ethtool-netlink.rst | 35 ++++----
+ drivers/net/phy/nxp-tja11xx.c                | 47 +++++++++-
+ drivers/net/phy/phy.c                        |  4 +-
+ drivers/net/phy/phy_device.c                 | 95 ++++++++++++++++++++
+ include/linux/phy.h                          |  3 +
+ include/uapi/linux/ethtool.h                 | 16 +++-
+ include/uapi/linux/ethtool_netlink.h         |  2 +
+ include/uapi/linux/mii.h                     |  2 +
+ net/ethtool/linkmodes.c                      | 48 ++++++++++
+ 9 files changed, 233 insertions(+), 19 deletions(-)
+
 -- 
-2.17.1
+2.26.2
 
