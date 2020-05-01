@@ -2,199 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707A21C1F21
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119B61C1F30
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbgEAU5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 16:57:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57462 "EHLO mail.kernel.org"
+        id S1726933AbgEAU6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 16:58:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726272AbgEAU5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 16:57:40 -0400
-Received: from pali.im (pali.im [31.31.79.79])
+        id S1726272AbgEAU6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 16:58:07 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F52C208DB;
-        Fri,  1 May 2020 20:57:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A53E3216FD;
+        Fri,  1 May 2020 20:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588366659;
-        bh=zQmw8TbV6rcDNsLeJ9F8FOdkMTGIKtNq4ynWn7aeG6w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rJrOsfG54lH/5iT4LJGsZVvBobr/BVhEDqwOCe0/S5MOBZSKNYFyrxyUHWYUrsfcC
-         McZLRJYs9dVMs92X+SmecC1U0Ym7h3sK4u9sTi6n3ufcRYkRTHYkdrHyZCSUzmbvDg
-         egc92ej29iM0zVZH4TUEGfCkIc/aL354VLXA5j5s=
-Received: by pali.im (Postfix)
-        id D011FA55; Fri,  1 May 2020 22:57:36 +0200 (CEST)
-Date:   Fri, 1 May 2020 22:57:36 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jan Kara <jack@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Steven J. Magnani" <steve@digidescorp.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH 09/15] udf: avoid gcc-10 zero-length-bounds warnings
-Message-ID: <20200501205736.uztnq4wlr4ckkhvm@pali>
-References: <20200430213101.135134-1-arnd@arndb.de>
- <20200430213101.135134-10-arnd@arndb.de>
- <20200430215450.anfwm4zikvhy2bt5@pali>
- <CAK8P3a0_BuKDK7X8dTHyx7t++CGjy3jhDVvL=Jo5=kcUxmtobg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK8P3a0_BuKDK7X8dTHyx7t++CGjy3jhDVvL=Jo5=kcUxmtobg@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+        s=default; t=1588366687;
+        bh=PHAeuAjto7YSPUcW9IpDpIz6jTr+6+rE49PpUYBb17o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iBbqAgH/8G5kCVKRHKmsayQJh12Ske4yDZYyRWiSbMac1qjEi90aavUHh0afBsqR2
+         9b2wMVEluTKDUehCxsaBSkmWlBZUqA3R2Tgc4CVEM8Y4zm0ooqXv/G256MzCeXWp/V
+         sn5RY0Y6djNBT/M7VKJ6c65X4E7PnY5aH0OcUQz8=
+Date:   Fri, 1 May 2020 13:58:06 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-Id: <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
+In-Reply-To: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
+References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 01 May 2020 22:30:27 Arnd Bergmann wrote:
-> On Thu, Apr 30, 2020 at 11:54 PM Pali Rohár <pali@kernel.org> wrote:
-> >
-> > On Thursday 30 April 2020 23:30:51 Arnd Bergmann wrote:
-> > > gcc-10 warns about writes to the empty freeSpaceTable[] array, with
-> > > many instances like:
-> > >
-> > > fs/udf/balloc.c: In function 'udf_bitmap_new_block':
-> > > fs/udf/balloc.c:101:36: error: array subscript 65535 is outside the bounds of an interior zero-length array '__le32[0]' {aka 'unsigned int[0]'} [-Werror=zero-length-bounds]
-> > >   101 |  le32_add_cpu(&lvid->freeSpaceTable[partition], cnt);
-> > >       |                ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
-> > > In file included from fs/udf/udfdecl.h:7,
-> > >                  from fs/udf/balloc.c:22:
-> > > fs/udf/ecma_167.h:363:11: note: while referencing 'freeSpaceTable'
-> > >   363 |  __le32   freeSpaceTable[0];
-> > >       |           ^~~~~~~~~~~~~~
-> >
-> > Hi Arnd! This looks like a false-positive warning.
-> 
-> Right, sorry for not making that clearer in the changelog.
-> 
-> > > These can all be avoided by using a flexible array member instead.
-> > >
-> > > Another warning is a bit more obscure:
-> > >
-> > > fs/udf/super.c: In function 'udf_count_free':
-> > > fs/udf/super.c:2521:26: warning: array subscript '(<unknown>) + 4294967295' is outside the bounds of an interior zero-length array '__le32[0]' {aka 'unsigned int[0]'} [-Wzero-length-bounds]
-> > >  2521 |      lvid->freeSpaceTable[part]);
-> > >
-> > > Work around this one by changing the array access to equivalent
-> > > pointer arithmetic, as there cannot be multiple flexible-array
-> > > members in a single struct.
-> >
-> 
-> > > @@ -360,9 +360,9 @@ struct logicalVolIntegrityDesc {
-> > >       uint8_t                 logicalVolContentsUse[32];
-> > >       __le32                  numOfPartitions;
-> > >       __le32                  lengthOfImpUse;
-> > > -     __le32                  freeSpaceTable[0];
-> > >       __le32                  sizeTable[0];
-> > >       uint8_t                 impUse[0];
-> > > +     __le32                  freeSpaceTable[];
-> >
-> > Please do not change order of members in these structures. Order is
-> > strictly defined by ECMA 167 standard and changing them you would just
-> > confuse reader. In LVID is free space table before size table.
-> 
-> Ok
-> 
-> > If you do not like GNU C extension for zero-length arrays then just
-> > replace it by standard C99 flexible arrays. I think that there is no
-> > reason to not use standard C99 language constructions, just nobody had
-> > motivation or time to change (working) code.
-> 
-> No, the problem is that only the last member can be a flexible array,
+On Fri, 1 May 2020 18:08:28 +0530 Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 
-I know, that is why I replaced those 3 zero-length arrays by just one
-flexible array in udftools project.
+> mkfs -t ext4 invoked oom-killer on i386 kernel running on x86_64 device
+> and started happening on linux -next master branch kernel tag next-20200430
+> and next-20200501. We did not bisect this problem.
 
-> so when impUse[] is the last member, freeSpaceTable has to be a zero
-> length array.
-> 
-> > Also this file is semi-synchronized with udftools project in which I
-> > already replaced all GNU C zero-length arrays by C99 flexible arrays.
-> >
-> > You can take inspiration what I did with logicalVolIntegrityDesc:
-> > https://github.com/pali/udftools/commit/f851d84478ce881d516a76018745fa163f803880#diff-1e1a5b89f620d380f22b973f9449aeaeL381-R384
-> 
-> Right, this is likely the best workaround.
-> 
-> > Anyway, if you have a better idea what to do with such on-disk structure
-> > and how to represent it in C struct syntax, let me know as it could be
-> > updated also in udftools project.
-> 
-> The trick I used for impUse[] would also work for freeSpaceTable[] to avoid
-> the gcc warning, it's still not great, but maybe you like this better:
-> 
-> arnd@threadripper:~/arm-soc$ git diff
-> diff --git a/fs/udf/balloc.c b/fs/udf/balloc.c
-> index 02f03fadb75b..666d022eb00b 100644
-> --- a/fs/udf/balloc.c
-> +++ b/fs/udf/balloc.c
-> @@ -98,7 +98,7 @@ static void udf_add_free_space(struct super_block
-> *sb, u16 partition, u32 cnt)
->                 return;
-> 
->         lvid = (struct logicalVolIntegrityDesc *)sbi->s_lvid_bh->b_data;
-> -       le32_add_cpu(&lvid->freeSpaceTable[partition], cnt);
-> +       le32_add_cpu(lvid->freeSpaceTable + partition, cnt);
->         udf_updated_lvid(sb);
->  }
-> 
-> diff --git a/fs/udf/ecma_167.h b/fs/udf/ecma_167.h
-> index 14ffe27342bc..215d97d7edc4 100644
-> --- a/fs/udf/ecma_167.h
-> +++ b/fs/udf/ecma_167.h
-> @@ -360,9 +360,9 @@ struct logicalVolIntegrityDesc {
->         uint8_t                 logicalVolContentsUse[32];
->         __le32                  numOfPartitions;
->         __le32                  lengthOfImpUse;
->         __le32                  freeSpaceTable[0];
->         __le32                  sizeTable[0];
-> -       uint8_t                 impUse[0];
-> +       uint8_t                 impUse[];
->  } __packed;
-> 
->  /* Integrity Type (ECMA 167r3 3/10.10.3) */
-> diff --git a/fs/udf/super.c b/fs/udf/super.c
-> index 379867888c36..a1fc51c2261e 100644
-> --- a/fs/udf/super.c
-> +++ b/fs/udf/super.c
-> @@ -2517,8 +2517,8 @@ static unsigned int udf_count_free(struct super_block *sb)
->                         (struct logicalVolIntegrityDesc *)
->                         sbi->s_lvid_bh->b_data;
->                 if (le32_to_cpu(lvid->numOfPartitions) > part) {
-> -                       accum = le32_to_cpu(
-> -                                       lvid->freeSpaceTable[part]);
-> +                       accum = le32_to_cpup(
-> +                                       (lvid->freeSpaceTable + part));
->                         if (accum == 0xFFFFFFFF)
->                                 accum = 0;
->                 }
-> 
+It would be wonderful if you could do so, please.  I can't immediately see
+any MM change in this area which might cause this.
 
-This is much better as it does not change order of members in LVID
-structure. I'm fine with it.
+> metadata
+>   git branch: master
+>   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>   git commit: e4a08b64261ab411b15580c369a3b8fbed28bbc1
+>   git describe: next-20200430
+>   make_kernelversion: 5.7.0-rc3
+>   kernel-config:
+> https://builds.tuxbuild.com/1YrE_XUQ6odA52tSBM919w/kernel.config
+> 
+> Steps to reproduce: (always reproducible)
 
-> This version could easily be backported to stable kernels to let them be
-> compiled with gcc-10
+Reproducibility helps!
 
-I do not know what triggers that false-positive warning. But if you
-think that this change is enough to "hide" that warning, you can add my
-Acked-by: Pali Rohár <pali@kernel.org>
+> oom-killer: gfp_mask=0x101cc0(GFP_USER|__GFP_WRITE), order=0,
 
-For sure it is better to have just small changes needed for backporting.
+> [   34.793430]  pagecache_get_page+0xae/0x260
 
-> and then synchronizing with the udftools version of
-> the header needs additional changes on top, which do not need to be
-> backported.
+> [   34.897923] active_anon:5366 inactive_anon:2172 isolated_anon:0
+> [   34.897923]  active_file:4151 inactive_file:212494 isolated_file:0
+> [   34.897923]  unevictable:0 dirty:16505 writeback:6520 unstable:0
 
-Both header files (ECMA and OSTA) should be in-sync with udftools since
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=614644676394951e73194ea96b3f026c1adf5443
-Differences in kernel code are: usage of zero-length array members,
-usage of integer types and usage of structure attributes.
+> [ 34.987678] Normal free:3948kB min:7732kB low:8640kB high:9548kB
+> reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+> active_file:1096kB inactive_file:786400kB unevictable:0kB
+> writepending:65432kB present:884728kB managed:845576kB mlocked:0kB
+> kernel_stack:1112kB pagetables:0kB bounce:0kB free_pcp:2908kB
+> local_pcp:500kB free_cma:0kB
 
-If you are planning in future to do some changes in those ECMA or OSTA
-header files, please send updates also for udftools. So we will have
-header files synchronized as much as possible.
+ZONE_NORMAL has a huge amount of clean pagecache stuck on the
+inactive list, not being reclaimed.
