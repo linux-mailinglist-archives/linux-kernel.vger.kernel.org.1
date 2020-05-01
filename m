@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF45A1C15D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19901C1396
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730602AbgEANel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:34:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60750 "EHLO mail.kernel.org"
+        id S1730079AbgEANbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:31:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730125AbgEANea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:34:30 -0400
+        id S1730059AbgEANa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:30:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB0D5216FD;
-        Fri,  1 May 2020 13:34:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A7816208C3;
+        Fri,  1 May 2020 13:30:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340070;
-        bh=8/jvWTH7Ty71d4g0gKGv0ead6LT7K7fwbgRdZrWWT8U=;
+        s=default; t=1588339857;
+        bh=+ONsByQjosCqxU9ehFEMvDwxrPv9dLGz5S8YJ76OkgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=frDv065EG9lK2jKPUmn5cAbhAh28MaV48G5QUrXdAMZabNkbipeRG9xgDW/N6Fodi
-         BMzwNiTZmWYOUXtC+EmZMbt0xoaw0ruD/Bzab4dVeEqOQW8sXuwTqWFP/5gyPGfCkq
-         z+O4FbmzCKot9+ODZClsslw434cQ72Bxok+Fx4Vk=
+        b=otuQSc7x9QEIqI9BOiUQbxNuXhk5JC7E/abkLAybls6guhibSsBWgCknNiF41jO58
+         3kZSL1PwOKN5jkyDSv34+ceD6DFM9CS1ta2IhfUuk7uD+j3+mmErYTzIHKjF6SF2ug
+         U8tWneOydy96d/hd7cVuoCwjpGWtVagkXjksXXIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kazuhiro Fujita <kazuhiro.fujita.jg@renesas.com>,
-        Hao Bui <hao.bui.yg@renesas.com>,
-        KAZUMI HARADA <kazumi.harada.rh@renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 4.14 082/117] serial: sh-sci: Make sure status register SCxSR is read in correct sequence
-Date:   Fri,  1 May 2020 15:21:58 +0200
-Message-Id: <20200501131554.552812283@linuxfoundation.org>
+        stable@vger.kernel.org, KP Singh <kpsingh@google.com>,
+        Ian Rogers <irogers@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 4.9 65/80] perf/core: fix parent pid/tid in task exit events
+Date:   Fri,  1 May 2020 15:21:59 +0200
+Message-Id: <20200501131533.235703039@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,51 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kazuhiro Fujita <kazuhiro.fujita.jg@renesas.com>
+From: Ian Rogers <irogers@google.com>
 
-commit 3dc4db3662366306e54ddcbda4804acb1258e4ba upstream.
+commit f3bed55e850926614b9898fe982f66d2541a36a5 upstream.
 
-For SCIF and HSCIF interfaces the SCxSR register holds the status of
-data that is to be read next from SCxRDR register, But where as for
-SCIFA and SCIFB interfaces SCxSR register holds status of data that is
-previously read from SCxRDR register.
+Current logic yields the child task as the parent.
 
-This patch makes sure the status register is read depending on the port
-types so that errors are caught accordingly.
+Before:
+$ perf record bash -c "perf list > /dev/null"
+$ perf script -D |grep 'FORK\|EXIT'
+4387036190981094 0x5a70 [0x30]: PERF_RECORD_FORK(10472:10472):(10470:10470)
+4387036606207580 0xf050 [0x30]: PERF_RECORD_EXIT(10472:10472):(10472:10472)
+4387036607103839 0x17150 [0x30]: PERF_RECORD_EXIT(10470:10470):(10470:10470)
+                                                   ^
+  Note the repeated values here -------------------/
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Kazuhiro Fujita <kazuhiro.fujita.jg@renesas.com>
-Signed-off-by: Hao Bui <hao.bui.yg@renesas.com>
-Signed-off-by: KAZUMI HARADA <kazumi.harada.rh@renesas.com>
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/1585333048-31828-1-git-send-email-kazuhiro.fujita.jg@renesas.com
+After:
+383281514043 0x9d8 [0x30]: PERF_RECORD_FORK(2268:2268):(2266:2266)
+383442003996 0x2180 [0x30]: PERF_RECORD_EXIT(2268:2268):(2266:2266)
+383451297778 0xb70 [0x30]: PERF_RECORD_EXIT(2266:2266):(2265:2265)
+
+Fixes: 94d5d1b2d891 ("perf_counter: Report the cloning task as parent on perf_counter_fork()")
+Reported-by: KP Singh <kpsingh@google.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20200417182842.12522-1-irogers@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/sh-sci.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ kernel/events/core.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -841,9 +841,16 @@ static void sci_receive_chars(struct uar
- 				tty_insert_flip_char(tport, c, TTY_NORMAL);
- 		} else {
- 			for (i = 0; i < count; i++) {
--				char c = serial_port_in(port, SCxRDR);
-+				char c;
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -6431,10 +6431,17 @@ static void perf_event_task_output(struc
+ 		goto out;
  
--				status = serial_port_in(port, SCxSR);
-+				if (port->type == PORT_SCIF ||
-+				    port->type == PORT_HSCIF) {
-+					status = serial_port_in(port, SCxSR);
-+					c = serial_port_in(port, SCxRDR);
-+				} else {
-+					c = serial_port_in(port, SCxRDR);
-+					status = serial_port_in(port, SCxSR);
-+				}
- 				if (uart_handle_sysrq_char(port, c)) {
- 					count--; i--;
- 					continue;
+ 	task_event->event_id.pid = perf_event_pid(event, task);
+-	task_event->event_id.ppid = perf_event_pid(event, current);
+-
+ 	task_event->event_id.tid = perf_event_tid(event, task);
+-	task_event->event_id.ptid = perf_event_tid(event, current);
++
++	if (task_event->event_id.header.type == PERF_RECORD_EXIT) {
++		task_event->event_id.ppid = perf_event_pid(event,
++							task->real_parent);
++		task_event->event_id.ptid = perf_event_pid(event,
++							task->real_parent);
++	} else {  /* PERF_RECORD_FORK */
++		task_event->event_id.ppid = perf_event_pid(event, current);
++		task_event->event_id.ptid = perf_event_tid(event, current);
++	}
+ 
+ 	task_event->event_id.time = perf_event_clock(event);
+ 
 
 
