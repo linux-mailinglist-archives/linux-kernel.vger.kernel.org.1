@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0AA1C18BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0473F1C18C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729003AbgEAOta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730591AbgEAOtW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 10:49:22 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A122C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 07:49:21 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id c16so4645282ilr.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 07:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=x8PLshh029JFfraDINPFYaqpVRTVLoh0xA2vag76VgU=;
-        b=vxEfLCTH7Nfxiz/d41M22feQyHk4l3tlyaCNLOv6T1fKQdSeNDrbCLS6eNnGqHVhbh
-         6ApTEFX3Wz8cNujDJ4T3JDlFpqKvn55GEy0NwGKXU2oXvAVoLr6rYtX83gJTQNEOXysP
-         GcUsze7xAEmat3U1O2mU14fW4buR0xIeUS2pH3KNwqCI5aLmZ4c+vHNpK5fOCQHOQ4ni
-         4vB/IsXHNGfcSJUCqwwXmdkbT3Yhis8V3NVRu4I2T8YkVdIP+Co/YOEwU2XdlfuO0dgv
-         5lCprRhSsRv3vuPsX45tP2XmfOHQxFtLj28e2dqatilMymm5DlkAmHZtrhFB8Map2qZD
-         w4sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x8PLshh029JFfraDINPFYaqpVRTVLoh0xA2vag76VgU=;
-        b=gjSudwqsLjmOAz5ivTxGVBlr7bT0svZodWBbuSXsI1aPbOO4DxEmJmGcpyj+sHX25O
-         +1hYHpVPLIlKZsr63rbcS7YGzKfYj5C8qOWJezz2TXKwO6TaXgUNk0wRjYPMHHa+Pqek
-         ehG2PJVD/2kwYe1XHcrjVXftQauK41ElBh0H6ZX0IDWZBSc3N7/YImhbEOiweGZlUBfT
-         wp9AfqoZtZT4CM7kbxZEtfzY6Dw59FltjZfcBzAPPsSS002FshkXd0jgqAzlrID8DDVE
-         dYjWDJEO/XEpQ2jNVzqCQPU+nq1FCRVn7RL6/AXuYC41aLVjZ4BtHZI+pBhMJoVUEjTl
-         aghw==
-X-Gm-Message-State: AGi0PuaBQIAm2h+YDQXw9vuYanEbkVEtpU2x/Abqm4UuEvEkRnhCJ7xH
-        24fr66eI+Zo8HhGzU5k53HTLCAuynlchVg==
-X-Google-Smtp-Source: APiQypKn+TEanh98F99uq96FudsPyLXSW6MEPEmMn6erLQrIwYFY6+FIDdMf1z5efsEtucHKAzzGKQ==
-X-Received: by 2002:a92:c6ca:: with SMTP id v10mr3870302ilm.181.1588344560532;
-        Fri, 01 May 2020 07:49:20 -0700 (PDT)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id u21sm1018966iot.5.2020.05.01.07.49.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 May 2020 07:49:19 -0700 (PDT)
-Subject: Re: [PATCH liburing] test/sfr: basic test for sync_file_range
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <9a85a351b8a06108260fee1dfcbd901b8055b9a8.1588343872.git.asml.silence@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <6fdbccd8-80ed-1e5a-cbe8-2785967fd210@kernel.dk>
-Date:   Fri, 1 May 2020 08:49:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729613AbgEAOuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:50:22 -0400
+Received: from sauhun.de ([88.99.104.3]:36084 "EHLO pokefinder.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728737AbgEAOuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 10:50:21 -0400
+Received: from localhost (p5486CE11.dip0.t-ipconnect.de [84.134.206.17])
+        by pokefinder.org (Postfix) with ESMTPSA id B4CEC2C1EC4;
+        Fri,  1 May 2020 16:50:18 +0200 (CEST)
+Date:   Fri, 1 May 2020 16:50:18 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PULL REQUEST] i2c for v5.7
+Message-ID: <20200501145014.GA24395@ninjato>
 MIME-Version: 1.0
-In-Reply-To: <9a85a351b8a06108260fee1dfcbd901b8055b9a8.1588343872.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/1/20 8:38 AM, Pavel Begunkov wrote:
-> Just call it and check that it doesn't hang and returns success.
 
-Applied, thanks.
+--wRRV7LY7NUeQGEoC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Jens Axboe
+Linus,
 
+I2C has three driver bugfixes this time, and two reverts because the
+original patches revealed underlying problems which the Tegra guys are
+now working on.
+
+Please pull.
+
+Thanks,
+
+   Wolfram
+
+
+The following changes since commit 6a8b55ed4056ea5559ebe4f6a4b247f627870d4c:
+
+  Linux 5.7-rc3 (2020-04-26 13:51:02 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current-fixed
+
+for you to fetch changes up to c926c87b8e36dcc0ea5c2a0a0227ed4f32d0516a:
+
+  i2c: aspeed: Avoid i2c interrupt status clear race condition. (2020-04-30 16:12:33 +0200)
+
+----------------------------------------------------------------
+Dan Carpenter (1):
+      i2c: amd-mp2-pci: Fix Oops in amd_mp2_pci_init() error handling
+
+Rayagonda Kokatanur (1):
+      i2c: iproc: generate stop event for slave writes
+
+Wolfram Sang (2):
+      Revert "i2c: tegra: Synchronize DMA before termination"
+      Revert "i2c: tegra: Better handle case where CPU0 is busy for a long time"
+
+ryan_chen (1):
+      i2c: aspeed: Avoid i2c interrupt status clear race condition.
+
+ drivers/i2c/busses/i2c-amd-mp2-pci.c |  2 +-
+ drivers/i2c/busses/i2c-aspeed.c      |  5 ++++-
+ drivers/i2c/busses/i2c-bcm-iproc.c   |  3 +++
+ drivers/i2c/busses/i2c-tegra.c       | 36 ++++++++++++------------------------
+ 4 files changed, 20 insertions(+), 26 deletions(-)
+
+--wRRV7LY7NUeQGEoC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6sNyIACgkQFA3kzBSg
+KbavUw//aoMIcqOloHs5DFPahlp5mPAHKmyshtsyXMPo9qUkk5qrjjqQiAhJoA6f
+2Uc2FsY7trL3KOfJBjpsVShcoozGmlgtXlpq3wnMrujFNl6l8k5vagsgvgbuJUwl
+YCgCA1e0lXRELURhWcNX8Splc6xERwR7qpsK5jBzz/Ly2aocU27pzN/TWFiE+Jk3
+r3o716nVqt5fwbiGwseC+lbfF4n6vOQlF1mSkty4QMxxMglgFBJKpX5c3u4KxmlX
+HSHgYeLkV56PR/ysNey3zW8x6SWg4LvgDQOZ36reZP5ICDcjXmC2Q+B6B75g+tAo
+bgHDmW+RDC66LgbUwo51z4h7WqpWeCQriJ3Y27XUnSsbvyymxs5FUHjbg+wP1Cwf
+0mgonT46C6hvUgnf/NvwjG9ueYrt3HaiLXn0dUgypMRLtckZX4xR/0qEtS2gUDua
+RiUOY4zyOBxNZkNt2wAeQ+/SD5ZsRrYc6yMLpxBh3gbbtxnnwrPrbavZ3WQ3B3fZ
+aIGZ3NhtSxbB8FLt/yi9NmMIybNcSlUDh7IvmlCg3Db24yBS+ZawUeB9jU6OMxPN
+bouYzDrhVQN70LxBVkoxsu+KJYGD8x7EmDQ8U0Anfgrv7zpqMjPL92h0UsLE5/ca
+HpompTh5AHAKxreS2aNs/DS4Oe4ZOyUSgdxBHs+jarwy+VLmlJk=
+=oh0R
+-----END PGP SIGNATURE-----
+
+--wRRV7LY7NUeQGEoC--
