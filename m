@@ -2,93 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704211C2015
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375591C201B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgEAVxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 17:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726660AbgEAVxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 17:53:33 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE0FC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 14:53:33 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id m13so3709225otf.6
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 14:53:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=EWncX+N49z8/LJ3Toy75hPTrlF0kg1hkIZWrB6qH04g=;
-        b=K9U9d8h4dRKmmmDPaMAartgFPvE/ns7OpMq16iiWQRs0fUl2GldkVxy7/tUXqYj71u
-         V00fAKVyiyc6FlF5D394pdhsQRdRd6zD/tMkBoc8Hsdz2xuP5UTa7bCE1ajqg9uA2FWz
-         /4kyf/8xdD0z55YiiCPJrmTV/eP3kbhvhUBv20hHSWmd3wnz/T57K6wo2Vkhue9KKOE9
-         TzNm0wI4DtcaceQhO3VV0MnmPGJ2u9uKsl3kFAQoZZXv+cBp3oDayWjefweEmkpOhXpU
-         jK5sUW0ReEcmF7uZOPoAjrUW0xn/7V9EWuLt3Cui/NWxD/nHYaEnISsZFBwuNL0ZWn0c
-         GdcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=EWncX+N49z8/LJ3Toy75hPTrlF0kg1hkIZWrB6qH04g=;
-        b=V54Y2m/5Pcy8N3ihtpqhwtwUf1Da4BOa6aFF7hAIJo4I63Xu9n/vqAkGaEzT3X72RY
-         AxemCRKPWPJz4e9l/urkNjbiXDGDvJHMhDGaegNYFtRW45Zh9B9IqprJCgqz0NakwrtR
-         HGwpCmPV2r8fELeMPksqmWwdYOZP2HsIJPgJgmGGMIC/0a/9YGs79jmHHolm8NVIoWx3
-         p2KtSygkFQgcugUXwDMg8skEg3YoaLwI4B13AWCa5R3PRzRwcQJfiYxKo/ULxzeTx9R0
-         eg0kNdokLSbWXcSdaResyOtu3RKb2S/ELHWC5OOPp6cBjADX/YINhbKpriDYw+Nk2CzA
-         loEw==
-X-Gm-Message-State: AGi0PuZwlOhsLd09IgL0W4z//ZVGSw7e264wFVG4JZAhBR1iHugs6PEW
-        V+3MeR1RbijqHXWCiz0NeOPSbcvJC2+Sj65dwhc=
-X-Google-Smtp-Source: APiQypJOhI7HcRnkz5v5i7usfSCFMiCoQwkOdzy5pHHSJhkJAO3WMqP/6BFDgnTgyzB8qSgcr3S2IR2LO+/m92MAiO0=
-X-Received: by 2002:a9d:6ac8:: with SMTP id m8mr5336355otq.262.1588370012482;
- Fri, 01 May 2020 14:53:32 -0700 (PDT)
+        id S1726790AbgEAVyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 17:54:33 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:57327 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726045AbgEAVyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 17:54:33 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 697688e6;
+        Fri, 1 May 2020 21:42:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=58S7gafTvCyAaihiGAJkt1yLd6Y=; b=uEMjOf
+        vaAoQm6Md4vl1zLH4e384tV3WtBAWLlgCo+K5pEl80lJ/GvpGM7c9fZDyOTsAkmv
+        cuKynBhaCqSRHqZBzqTqWXv6Z4HbPF3NqtVfde1VMOZHGonxruz94B6y8j3TcIsU
+        uMZdOgcG077zI+WnCV+P65QbA9sYgpXGtdgY65bj5PTj75+rbbisf87/GmQ91cZQ
+        JKagWB9eEWX77XQ8c2TM5CYF9dNqiKFdiQQYRHI2ADz7Hzq/L2X0R66E2It3cZ/G
+        U0lvdu8uQf4ysuexTDsNGdp569KlEKabIVY9ZUebiQQBot72XKZie2s2vflviruB
+        QmdrxR8gpZsEXDxg==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 9ab6eb77 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Fri, 1 May 2020 21:42:27 +0000 (UTC)
+Received: by mail-il1-f182.google.com with SMTP id w6so5722552ilg.1;
+        Fri, 01 May 2020 14:54:31 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZ2GNJJnpYDquv7xOZERTgYP9JgGeX/WqSkomrtz2kOdYBrBKZr
+        qX1jxcTgSaN7zwft8k826ph+7CbwSej1MKn2GDU=
+X-Google-Smtp-Source: APiQypKi8VgL32io/YMf/TnAiuoD4oQjdoDdZRV4jk7+CgfAceJlLxx1gZqoTLRU71ehr0skb3Rw0hz+zCqa+vWKwOI=
+X-Received: by 2002:a92:d98c:: with SMTP id r12mr5878280iln.224.1588370070637;
+ Fri, 01 May 2020 14:54:30 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ac9:5d09:0:0:0:0:0 with HTTP; Fri, 1 May 2020 14:53:32 -0700 (PDT)
-Reply-To: mrs.monicmartinez@gmail.com
-From:   "Mrs.MARTINEZ MONICA" <makuo.komme@gmail.com>
-Date:   Fri, 1 May 2020 21:53:32 +0000
-Message-ID: <CAB+39rU4Ag=+h_KoOWA9GQ1G8VE7QWVktV1FPtUQJ7fP3QGE_w@mail.gmail.com>
-Subject: AN OPPORTUNITY FOR YOU
-To:     undisclosed-recipients:;
+References: <20200430221016.3866-1-Jason@zx2c4.com> <20200501104215.s2eftchxm66lmbvj@linutronix.de>
+In-Reply-To: <20200501104215.s2eftchxm66lmbvj@linutronix.de>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Fri, 1 May 2020 15:54:19 -0600
+X-Gmail-Original-Message-ID: <CAHmME9othY=_3szXKh-+4uAgcLpuvgXm4HX2-SU+Hg7KztXTFw@mail.gmail.com>
+Message-ID: <CAHmME9othY=_3szXKh-+4uAgcLpuvgXm4HX2-SU+Hg7KztXTFw@mail.gmail.com>
+Subject: Re: [PATCH] drm/i915: check to see if SIMD registers are available
+ before using SIMD
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        intel-gfx@lists.freedesktop.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-Good Day,
+On Fri, May 1, 2020 at 4:42 AM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
+>    Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-I know that this mail might be a surprise to you, but i plead that you
-take a little time to read this it,  if it is something you can
-handle, then you reply me.
+Thanks.
 
-I work with one of the leading banks in my country, and i have worked
-with this bank for more than 11yrs, There is an abandoned sums of
-money in an account belonging to one of our customers, i tried to
-investigate to know why the account is dormant for years without any
-finacial operation with the account, then i found out that the owner
-of the said account was involved in a motor accident which claimed his
-life and the life of his wife and two children leaving no one to claim
-the fund as next of kin, this make the account open to any one that
-can come with a vitel information to claim the fund.
+>
+> May I ask how large the memcpy can be? I'm asking in case it is large
+> and an explicit rescheduling point might be needed.
 
-I know much about the existence of this fund and the secrets
-urrounding this money. But before I disclose the full details to you,I
-will like to know your interest and willingness to assist me in
-claiming this fund, if you are willing then revert back to me with
-your:
+Yea I was worried about that too. I'm not an i915 developer, but so
+far as I can tell:
 
-Private Email ID............
-Age.........
-Private Phone no..........
+- The path from intel_engine_cmd_parser is  <= 256 KiB for "known
+users", so that's rather large.
+- The path from perf_memcpy is either 4k, 64k, or 4M, depending on the
+type of object, so that seems gigantic, but I think that might be
+selftest code.
+- The path from compress_page appears to be PAGE_SIZE, so 4k, which
+meshes with the limits we set agreed on few weeks ago for the crypto
+stuff.
+- The path from guc_read_update_log_buffer appears to be 8k, 32k, 2M,
+or 8M, depending on the type of object, so that seems absurdly huge
+and doesn't appear to be selftest code either like the other case.
 
-for further confidential details about the said fund. Thanks and hope
-to hear from you soon, note that this is risky free, trouble free and
-problem free.
-
-Reply me with my private email id for onward process
-(mrs.monicmartinez@gmail.com)
-
-Mrs.MARTINEZ MONICA
+I have no doubt the i915 developers will jump in here waving their
+arms, but either way, it sure seems to me like you might have a point.
