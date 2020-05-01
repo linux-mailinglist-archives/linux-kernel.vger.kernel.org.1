@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD141C1684
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0561C14F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731856AbgEANth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41264 "EHLO mail.kernel.org"
+        id S1731742AbgEANoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:44:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731064AbgEANlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:41:03 -0400
+        id S1731286AbgEANoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:44:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8E7C24955;
-        Fri,  1 May 2020 13:41:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 134CA20836;
+        Fri,  1 May 2020 13:44:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340462;
-        bh=0VFc2qRc5hjTtbBiwOHfPCBNfs1qHbsn1ia/UKcpAtM=;
+        s=default; t=1588340659;
+        bh=gQAWuW39xI8mn+xgNei4VJx/ZoOFJOfZegmSKlqk98g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s20LBfh/Scg1nJtbPFCAwsqxT6dnKA7USaDeiHbgti4ec7hNHDWgXuH8k1Pw9bVpe
-         heW8HJgI8TNXARph4yoCYrPO5Ne4zW7bA66EIW+poRUEeHik3yT4ImRf2SSxxg1kSh
-         on/cbnnbxXmHq2jrNsZfopSm9J2tCcGWixWHWJhE=
+        b=OPOJEp4NhpbACQ02hSyniSm8oAf8lK77ISNlZWRyssJ6xa7v/s+ptw6PK9ALsc2DB
+         oQeSwraR9cruKCCQvhQgXYqHQswzkq/ZHlLGIRQJa84gx66RkB/rLG0HXrc/2rGDyD
+         sJEWGIBm5EkwOuZKr8uO30NgReicsl5E/NHaVXuw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Denis Bolotin <dbolotin@marvell.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Yuval Basson <ybason@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 77/83] qed: Fix race condition between scheduling and destroying the slowpath workqueue
-Date:   Fri,  1 May 2020 15:23:56 +0200
-Message-Id: <20200501131542.391490975@linuxfoundation.org>
+        stable@vger.kernel.org, Atsushi Nemoto <atsushi.nemoto@sord.co.jp>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 084/106] net: stmmac: socfpga: Allow all RGMII modes
+Date:   Fri,  1 May 2020 15:23:57 +0200
+Message-Id: <20200501131553.749935441@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,63 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuval Basson <ybason@marvell.com>
+From: Atsushi Nemoto <atsushi.nemoto@sord.co.jp>
 
-commit 3b85720d3fd72e6ef4de252cd2f67548eb645eb4 upstream.
+[ Upstream commit a7a0d6269652846671312b29992143f56e2866b8 ]
 
-Calling queue_delayed_work concurrently with
-destroy_workqueue might race to an unexpected outcome -
-scheduled task after wq is destroyed or other resources
-(like ptt_pool) are freed (yields NULL pointer dereference).
-cancel_delayed_work prevents the race by cancelling
-the timer triggered for scheduling a new task.
+Allow all the RGMII modes to be used.  (Not only "rgmii", "rgmii-id"
+but "rgmii-txid", "rgmii-rxid")
 
-Fixes: 59ccf86fe ("qed: Add driver infrastucture for handling mfw requests")
-Signed-off-by: Denis Bolotin <dbolotin@marvell.com>
-Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
-Signed-off-by: Yuval Basson <ybason@marvell.com>
+Signed-off-by: Atsushi Nemoto <atsushi.nemoto@sord.co.jp>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_main.c |   13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/ethernet/qlogic/qed/qed_main.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
-@@ -1087,9 +1087,6 @@ static void qed_update_pf_params(struct
- #define QED_PERIODIC_DB_REC_INTERVAL_MS		100
- #define QED_PERIODIC_DB_REC_INTERVAL \
- 	msecs_to_jiffies(QED_PERIODIC_DB_REC_INTERVAL_MS)
--#define QED_PERIODIC_DB_REC_WAIT_COUNT		10
--#define QED_PERIODIC_DB_REC_WAIT_INTERVAL \
--	(QED_PERIODIC_DB_REC_INTERVAL_MS / QED_PERIODIC_DB_REC_WAIT_COUNT)
- 
- static int qed_slowpath_delayed_work(struct qed_hwfn *hwfn,
- 				     enum qed_slowpath_wq_flag wq_flag,
-@@ -1123,7 +1120,7 @@ void qed_periodic_db_rec_start(struct qe
- 
- static void qed_slowpath_wq_stop(struct qed_dev *cdev)
- {
--	int i, sleep_count = QED_PERIODIC_DB_REC_WAIT_COUNT;
-+	int i;
- 
- 	if (IS_VF(cdev))
- 		return;
-@@ -1135,13 +1132,7 @@ static void qed_slowpath_wq_stop(struct
- 		/* Stop queuing new delayed works */
- 		cdev->hwfns[i].slowpath_wq_active = false;
- 
--		/* Wait until the last periodic doorbell recovery is executed */
--		while (test_bit(QED_SLOWPATH_PERIODIC_DB_REC,
--				&cdev->hwfns[i].slowpath_task_flags) &&
--		       sleep_count--)
--			msleep(QED_PERIODIC_DB_REC_WAIT_INTERVAL);
--
--		flush_workqueue(cdev->hwfns[i].slowpath_wq);
-+		cancel_delayed_work(&cdev->hwfns[i].slowpath_task);
- 		destroy_workqueue(cdev->hwfns[i].slowpath_wq);
- 	}
- }
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
+index e0212d2fc2a12..fa32cd5b418ef 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-socfpga.c
+@@ -241,6 +241,8 @@ static int socfpga_set_phy_mode_common(int phymode, u32 *val)
+ 	switch (phymode) {
+ 	case PHY_INTERFACE_MODE_RGMII:
+ 	case PHY_INTERFACE_MODE_RGMII_ID:
++	case PHY_INTERFACE_MODE_RGMII_RXID:
++	case PHY_INTERFACE_MODE_RGMII_TXID:
+ 		*val = SYSMGR_EMACGRP_CTRL_PHYSEL_ENUM_RGMII;
+ 		break;
+ 	case PHY_INTERFACE_MODE_MII:
+-- 
+2.20.1
+
 
 
