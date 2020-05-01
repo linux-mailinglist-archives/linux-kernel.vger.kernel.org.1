@@ -2,126 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B2E1C0F54
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 10:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107001C0F67
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 10:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgEAIUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 04:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728277AbgEAIUV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 04:20:21 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BFBC035494;
-        Fri,  1 May 2020 01:20:21 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id x16so560686oop.13;
-        Fri, 01 May 2020 01:20:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4xmDrknoIK7bXjgHNUmPbIHsbFNrCtpw+rgXposQwms=;
-        b=O5Bdg7qQzAnlPhD7xVJhnqshnj7xNmXBKRGbWbhp2T9vzzM1MpFW+E+RYCzOknKpj8
-         ky8+dFqN4sKrq5u57LLjx7VY+/3/WsZskllAALIAtybnzNJR5vjiggO1UpC+6aDbbu9t
-         kydHSvKLXU7sGWkz9y9RVKviHgYZWyYOdg2x61aI7Ws5OUMZX6mszoJOTXjCYgE1kCG3
-         YxX1fPKMUR1N/tfPH7XlGmuqZdaT3kJbh6CaQQU6+twLEmxTOFlPMFYj1ocjQyMHVXpF
-         B5EvjhnHPr8btv+Tyz5UgmMlUf682frU/Xa8+Ff2S6K0/HOvwKzJmdLj2aYf5auUrllc
-         1zXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4xmDrknoIK7bXjgHNUmPbIHsbFNrCtpw+rgXposQwms=;
-        b=hYWFBVCawSjWwMhj3q/lDfMxofxhjOEbIkJWVjFwEUC3insRhZQlVlRhYkGkLwlyku
-         TYFA93a1l4kwHrkLn1mZj5Y8v77RiURD6hILCtu/PXILTTzLzP6xYcuoC3N8xX0LqOv9
-         LKGC7lAwIPw/rlWIFWLPYNWHspWuLfqL/hgjDY+X3n+EECC7LoNjFoctbhNLhlPZ929u
-         bXQefpc3OyzoMNazJ0b/lr7QIlG30yOMVC0IASBdofqtVnduRrTxGjWHLb3+40hErQIe
-         BS0KkLFJZL88gjEPQ1RCGDcgjBW8ugTV2RkDoaBncQA4ixsGcbsdgivaZ7ampn5v1PJ4
-         AhOQ==
-X-Gm-Message-State: AGi0PuYl1v3NaMJ6XKl2nDoyJu7I3FGlF55ANp+dcz+b0xI8dQapIZY3
-        Uo8wyOeYhi1NST9m3fq106ZzpgIcwlknfJI/xhfLJMpQoZw=
-X-Google-Smtp-Source: APiQypKWRZyPptVG5tDacv48mYRSDp6n8y852TNesK+NocS5PxHwyt2eSwaWJhO2Yzy3GzH7tq6UeX5cCu+1f17mElg=
-X-Received: by 2002:a4a:a209:: with SMTP id m9mr2850194ool.62.1588321221043;
- Fri, 01 May 2020 01:20:21 -0700 (PDT)
+        id S1728491AbgEAIVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 04:21:23 -0400
+Received: from mga11.intel.com ([192.55.52.93]:3634 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728479AbgEAIVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 04:21:20 -0400
+IronPort-SDR: aa9Ufm9iTi6VlAaaE3FPfY9C9J6z9ygfOfRAVPlmScpTYbXWMaoW5K8HILZXwjYL44WZaF6I/W
+ hnnfO3oMpAsA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 01:21:19 -0700
+IronPort-SDR: h77IynNGJak8oRRpCu0/PkUFI8Q4PTPXFuZ2UUgOQ7BD+jdUT2aXj3GtymILU6WoX7nDj2vxcZ
+ 9fitF+xCkE5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,339,1583222400"; 
+   d="scan'208";a="247445165"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 01 May 2020 01:21:11 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jUQv0-0008Y7-W1; Fri, 01 May 2020 16:21:10 +0800
+Date:   Fri, 1 May 2020 16:20:57 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
+Cc:     kbuild-all@lists.01.org, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, felipe.balbi@linux.intel.com,
+        fabien.lahoudere@collabora.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH 1/4] counter: Internalize sysfs interface code
+Message-ID: <202005011619.Tn2f4rMl%lkp@intel.com>
+References: <d84f0bb3258d1664e90da64d75f787829c50a9bd.1588176662.git.vilhelm.gray@gmail.com>
 MIME-Version: 1.0
-References: <1588197415-13747-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1588197415-13747-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXEu0i8APM+g3TWbkfkLbYtCzi7uJABvMscS0a_j030tg@mail.gmail.com>
-In-Reply-To: <CAMuHMdXEu0i8APM+g3TWbkfkLbYtCzi7uJABvMscS0a_j030tg@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 1 May 2020 09:19:54 +0100
-Message-ID: <CA+V-a8u8r+zT-HSHqPQdRfCKOmx=-a_GrTTM1ZQueOwnvT8xeg@mail.gmail.com>
-Subject: Re: [PATCH 04/18] ARM: debug-ll: Add support for r8a7742
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d84f0bb3258d1664e90da64d75f787829c50a9bd.1588176662.git.vilhelm.gray@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Hi William,
 
-On Thu, Apr 30, 2020 at 2:03 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Wed, Apr 29, 2020 at 11:58 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Enable low-level debugging support for RZ/G1H (R8A7742). RZ/G1H uses
-> > SCIFA2 for the debug console.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- a/arch/arm/Kconfig.debug
-> > +++ b/arch/arm/Kconfig.debug
-> > @@ -976,6 +976,13 @@ choice
-> >                   Say Y here if you want kernel low-level debugging support
-> >                   via SCIF4 on Renesas RZ/G1E (R8A7745).
-> >
-> > +       config DEBUG_RCAR_GEN2_SCIFA2
-> > +               bool "Kernel low-level debugging messages via SCIFA2 on ARCH_R8A7742"
->
-> R8A7742 (without "ARCH_"-prefix)
->
-> I can fix that (and the sorting issue) while applying, so
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> i.e. will queue in renesas-devel for v5.8.
->
-Thank you for taking care of that.
+I love your patch! Perhaps something to improve:
 
-Cheers,
---Prabhakar
+[auto build test WARNING on stm32/stm32-next]
+[cannot apply to linus/master linux/master v5.7-rc3 next-20200430]
+[if your patch is applied to the wrong git tree, please drop us a note to help
+improve the system. BTW, we also suggest to use '--base' option to specify the
+base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
 
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+url:    https://github.com/0day-ci/linux/commits/William-Breathitt-Gray/Introduce-the-Counter-character-device-interface/20200430-051734
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/atorgue/stm32.git stm32-next
+reproduce:
+        # apt-get install sparse
+        # sparse version: v0.6.1-191-gc51a0382-dirty
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> drivers/counter/104-quad-8.c:700:56: sparse: sparse: mixing different enum types:
+>> drivers/counter/104-quad-8.c:700:56: sparse:    unsigned int enum counter_count_function
+>> drivers/counter/104-quad-8.c:700:56: sparse:    unsigned int enum quad8_count_function
+--
+>> drivers/counter/stm32-lptimer-cnt.c:573:24: sparse: sparse: mixing different enum types:
+>> drivers/counter/stm32-lptimer-cnt.c:573:24: sparse:    unsigned int enum counter_count_function
+>> drivers/counter/stm32-lptimer-cnt.c:573:24: sparse:    unsigned int enum stm32_lptim_cnt_function
+
+vim +700 drivers/counter/104-quad-8.c
+
+   693	
+   694	static int quad8_function_write(struct counter_device *counter,
+   695					struct counter_count *count,
+   696					enum counter_count_function function)
+   697	{
+   698		struct quad8_iio *const priv = counter->priv;
+   699		const int id = count->id;
+ > 700		const enum quad8_count_function cnt_function = function;
+   701		unsigned int *const quadrature_mode = priv->quadrature_mode + id;
+   702		unsigned int *const scale = priv->quadrature_scale + id;
+   703		unsigned int mode_cfg = priv->count_mode[id] << 1;
+   704		unsigned int *const synchronous_mode = priv->synchronous_mode + id;
+   705		const unsigned int idr_cfg = priv->index_polarity[id] << 1;
+   706		const int base_offset = priv->base + 2 * id + 1;
+   707	
+   708		if (cnt_function == QUAD8_COUNT_FUNCTION_PULSE_DIRECTION) {
+   709			*quadrature_mode = 0;
+   710	
+   711			/* Quadrature scaling only available in quadrature mode */
+   712			*scale = 0;
+   713	
+   714			/* Synchronous function not supported in non-quadrature mode */
+   715			if (*synchronous_mode) {
+   716				*synchronous_mode = 0;
+   717				/* Disable synchronous function mode */
+   718				outb(QUAD8_CTR_IDR | idr_cfg, base_offset);
+   719			}
+   720		} else {
+   721			*quadrature_mode = 1;
+   722	
+   723			switch (cnt_function) {
+   724			case QUAD8_COUNT_FUNCTION_QUADRATURE_X1:
+   725				*scale = 0;
+   726				mode_cfg |= QUAD8_CMR_QUADRATURE_X1;
+   727				break;
+   728			case QUAD8_COUNT_FUNCTION_QUADRATURE_X2:
+   729				*scale = 1;
+   730				mode_cfg |= QUAD8_CMR_QUADRATURE_X2;
+   731				break;
+   732			case QUAD8_COUNT_FUNCTION_QUADRATURE_X4:
+   733				*scale = 2;
+   734				mode_cfg |= QUAD8_CMR_QUADRATURE_X4;
+   735				break;
+   736			default: return -EINVAL;
+   737			}
+   738		}
+   739	
+   740		/* Load mode configuration to Counter Mode Register */
+   741		outb(QUAD8_CTR_CMR | mode_cfg, base_offset);
+   742	
+   743		return 0;
+   744	}
+   745	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
