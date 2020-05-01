@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A115F1C12E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3B21C132F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728988AbgEANZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:25:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45922 "EHLO mail.kernel.org"
+        id S1729534AbgEAN1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:27:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728969AbgEANZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:25:10 -0400
+        id S1729524AbgEAN1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:27:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A13920757;
-        Fri,  1 May 2020 13:25:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 219DD20757;
+        Fri,  1 May 2020 13:27:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339509;
-        bh=x2nQX49DejcTSMkqKDh8blNT4ob6Yff8fCJ441kAin0=;
+        s=default; t=1588339667;
+        bh=XMuA9rMJ/mUO09Xunuab3qn9TuUgvQQ5WmIVH/TUMYw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IMiz5EtC8gflX1pFyl0HKdrxaOldzt8ihKRGvrCJe3zUL+foni6mF96mp4epmS2H4
-         vj6uYwHUsUfUVW+EvCBeMv3g7rlf8nDPEMlf9RJq51yNXZ9T8dJHV0nM5byCOL5VOP
-         xZB/BjLIL04lCqiWnBUGQwKQiY8DwpkenxruFzdk=
+        b=0Iz3PZc/1jCgnPcm17AFsY5bjKIdTGcJZYDsD0N2dwM3XSIBrxCWNbR66zP2LoQqn
+         emIScGEmNmsI76MM/31qG0ddWppX81Sg3Xn2O8AxNJa9mNb63yGEbMAC1Gpm5/W8+6
+         j0b61TPTg4Skwlirxm9JMlzouZsb2Df+0+7gfs04=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 08/70] ceph: return ceph_mdsc_do_request() errors from __get_parent()
-Date:   Fri,  1 May 2020 15:20:56 +0200
-Message-Id: <20200501131515.096286832@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Sabrina Dubroca <sd@queasysnail.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.9 03/80] net: ipv4: avoid unused variable warning for sysctl
+Date:   Fri,  1 May 2020 15:20:57 +0200
+Message-Id: <20200501131514.590273014@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
-References: <20200501131513.302599262@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,40 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiujun Huang <hqjagain@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit c6d50296032f0b97473eb2e274dc7cc5d0173847 ]
+commit 773daa3caf5d3f87fdb1ab43e9c1b367a38fa394 upstream.
 
-Return the error returned by ceph_mdsc_do_request(). Otherwise,
-r_target_inode ends up being NULL this ends up returning ENOENT
-regardless of the error.
+The newly introudced ip_min_valid_pmtu variable is only used when
+CONFIG_SYSCTL is set:
 
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+net/ipv4/route.c:135:12: error: 'ip_min_valid_pmtu' defined but not used [-Werror=unused-variable]
+
+This moves it to the other variables like it, to avoid the harmless
+warning.
+
+Fixes: c7272c2f1229 ("net: ipv4: don't allow setting net.ipv4.route.min_pmtu below 68")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Sabrina Dubroca <sd@queasysnail.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/ceph/export.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ net/ipv4/route.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/ceph/export.c b/fs/ceph/export.c
-index fe02ae7f056a3..ff9e60daf086b 100644
---- a/fs/ceph/export.c
-+++ b/fs/ceph/export.c
-@@ -146,6 +146,11 @@ static struct dentry *__get_parent(struct super_block *sb,
- 	}
- 	req->r_num_caps = 1;
- 	err = ceph_mdsc_do_request(mdsc, NULL, req);
-+	if (err) {
-+		ceph_mdsc_put_request(req);
-+		return ERR_PTR(err);
-+	}
-+
- 	inode = req->r_target_inode;
- 	if (inode)
- 		ihold(inode);
--- 
-2.20.1
-
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -131,8 +131,6 @@ static int ip_rt_min_advmss __read_mostl
+ 
+ static int ip_rt_gc_timeout __read_mostly	= RT_GC_TIMEOUT;
+ 
+-static int ip_min_valid_pmtu __read_mostly	= IPV4_MIN_MTU;
+-
+ /*
+  *	Interface to generic destination cache.
+  */
+@@ -2712,6 +2710,7 @@ void ip_rt_multicast_event(struct in_dev
+ static int ip_rt_gc_interval __read_mostly  = 60 * HZ;
+ static int ip_rt_gc_min_interval __read_mostly	= HZ / 2;
+ static int ip_rt_gc_elasticity __read_mostly	= 8;
++static int ip_min_valid_pmtu __read_mostly	= IPV4_MIN_MTU;
+ 
+ static int ipv4_sysctl_rtcache_flush(struct ctl_table *__ctl, int write,
+ 					void __user *buffer,
 
 
