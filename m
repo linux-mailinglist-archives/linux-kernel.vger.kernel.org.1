@@ -2,69 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5F81C1BAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1CC1C1BF1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729329AbgEAR3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728933AbgEAR3r (ORCPT
+        id S1730321AbgEARhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 13:37:55 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:47060 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729040AbgEARhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 13:29:47 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1C4BC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rUGXi06MLSLZmPXKsPRzx5D4SfH1VEHWsmE2/iYzOLY=; b=zVbYz8ZdzE2w1Cm57VztaRKX+i
-        kaVo24QVe7VVbkqbIh3ZMTQ3eGK3fxymbLOSLoXSy48dIPXvzcb4jNuWOH1jipzfyK4ADAEnrV9pW
-        km4STbKOdQu2pS8BJ7k9oRPv10xt7jlwtq/zhSqct58JeMKVwtv8XrbrxV/W57/Vh7I18QEoINTsG
-        Py4LMqpAlRUuw0Mbn4vh9+1RyuAdSK9Z8AR+1c6HW7p9/0i5RvOVb2lJb/HRN07kNIdwdZOhT+XaD
-        HnlZRcVFgdK96nkWta/qyaVM+xhcIM8WgoU+lEv4AzzzW8x8cgAQRvQlsayD+Iec7cLHzhiY9hSGe
-        frrbXN4w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jUZTM-0003Q4-2s; Fri, 01 May 2020 17:29:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4F56D300739;
-        Fri,  1 May 2020 19:29:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2C14229D9C0A7; Fri,  1 May 2020 19:29:10 +0200 (CEST)
-Date:   Fri, 1 May 2020 19:29:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [RFC][PATCH] x86/ftrace: Have ftrace trampolines turn read-only
- at the end of system boot up
-Message-ID: <20200501172910.GH3762@hirez.programming.kicks-ass.net>
-References: <20200430202147.4dc6e2de@oasis.local.home>
- <20200501044733.eqf6hc6erucsd43x@treble>
- <20200501051706.4wkrqwovybt2p6hr@treble>
- <20200501092404.06d1adcb@gandalf.local.home>
- <20200501151310.zo5bhnxpu5gubofj@treble>
- <20200501121916.310942b8@gandalf.local.home>
+        Fri, 1 May 2020 13:37:55 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 041Hbsiw029531;
+        Fri, 1 May 2020 12:37:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588354674;
+        bh=kl6qxjXpK8WjVJ4rxTSpNCEet+Pn0TlP5V/ouUJcsA0=;
+        h=From:To:CC:Subject:Date;
+        b=tSnPkGiYiB4BbC7Jl6xNHDULDeETvYTe2x6bX3D5mABtgKNdko8nLjffJspd/1F6s
+         ambWdSFwAohmPmtGrGQAcGN3xzYiMVM/vWT984qu2ipFIhzI0HpsnSBaMvHdSL8aV7
+         zdvPejHxeF8DqcvH9UFOoVsEqRV7g6gEhjcsqXds=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 041HbsU7046998
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 1 May 2020 12:37:54 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 1 May
+ 2020 12:37:53 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 1 May 2020 12:37:54 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 041Hbr8J087346;
+        Fri, 1 May 2020 12:37:53 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <sre@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v2] dt-bindings: power: Convert power_supply text to yaml
+Date:   Fri, 1 May 2020 12:29:13 -0500
+Message-ID: <20200501172913.23537-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200501121916.310942b8@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 12:19:16PM -0400, Steven Rostedt wrote:
-> 
-> Peter, what about you?
+Convert the power_supply.txt to power-supply.yaml.
+This conversion entailed fixing up the binding to being yaml and dt
+checker compliant.
 
-It's all a bit unfortunate, but yeah, seems reasonable. Ack.
+Added a note in the power_supply.txt to reference the power-supply.yaml
+
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ .../bindings/power/supply/power-supply.yaml   | 40 +++++++++++++++++++
+ .../bindings/power/supply/power_supply.txt    | 25 +-----------
+ 2 files changed, 42 insertions(+), 23 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/power-supply.yaml
+
+diff --git a/Documentation/devicetree/bindings/power/supply/power-supply.yaml b/Documentation/devicetree/bindings/power/supply/power-supply.yaml
+new file mode 100644
+index 000000000000..3bb02bb3a2d8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/supply/power-supply.yaml
+@@ -0,0 +1,40 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/power/supply/power-supply.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Power Supply Core Support
++
++maintainers:
++  - Sebastian Reichel <sre@kernel.org>
++
++properties:
++  power-supplies:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    description:
++      This property is added to a supply in order to list the devices which
++      supply it power, referenced by their phandles.
++
++examples:
++  - |
++    power {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      usb_charger:charger@e {
++        compatible = "some,usb-charger";
++        reg = <0xe>;
++      };
++
++      ac_charger:charger@c {
++        compatible = "some,ac-charger";
++        reg = <0xc>;
++      };
++
++      battery:battery@b {
++        compatible = "some,battery";
++        reg = <0xb>;
++        power-supplies = <&usb_charger>, <&ac_charger>;
++      };
++    };
+diff --git a/Documentation/devicetree/bindings/power/supply/power_supply.txt b/Documentation/devicetree/bindings/power/supply/power_supply.txt
+index 8391bfa0edac..d9693e054509 100644
+--- a/Documentation/devicetree/bindings/power/supply/power_supply.txt
++++ b/Documentation/devicetree/bindings/power/supply/power_supply.txt
+@@ -1,23 +1,2 @@
+-Power Supply Core Support
+-
+-Optional Properties:
+- - power-supplies : This property is added to a supply in order to list the
+-   devices which supply it power, referenced by their phandles.
+-
+-Example:
+-
+-	usb-charger: power@e {
+-		compatible = "some,usb-charger";
+-		...
+-	};
+-
+-	ac-charger: power@c {
+-		compatible = "some,ac-charger";
+-		...
+-	};
+-
+-	battery@b {
+-		compatible = "some,battery";
+-		...
+-		power-supplies = <&usb-charger>, <&ac-charger>;
+-	};
++This binding has been converted to yaml please see power-supply.yaml in this
++directory.
+-- 
+2.25.1
+
