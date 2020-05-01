@@ -2,139 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B243B1C1C5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B09251C1C6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730234AbgEAR4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:56:04 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:39360 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729612AbgEAR4E (ORCPT
+        id S1730040AbgEAR7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 13:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729918AbgEAR7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 13:56:04 -0400
-Received: by mail-pl1-f194.google.com with SMTP id s20so3882495plp.6;
-        Fri, 01 May 2020 10:56:03 -0700 (PDT)
+        Fri, 1 May 2020 13:59:45 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F012C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:59:43 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id d25so4449116lfi.11
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IXn4r+MPXVyQgD4o3lQqxkPpG/DsRtiXml/AiVaSQ7U=;
+        b=WDGjF9aBE/SCwrRF0wdMLKxLM+QBOED6GjGnh6yXS7IP9HNxSxs21YXx3b3eIWkRI+
+         /iNXc1c8XqN+ZOv5RPZgMGtVWgGn1/M1GJiDFUpCwhOvhhQ2k3vHVaVXg71Yqenb+sMH
+         3GKDp4UGgBZCrrhROjcIpyZllnUqK4vi18uQ4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=1aqquKGO2wHWbUexSvjMjT6g8z9HBOodi6i/dl3yEfk=;
-        b=cQexM/kYFYJpXn6aS1izW2XzHWcS6NIZp3yX/iYwfjesflUlXNwEBP0VzUb6d6cGTC
-         npa1SoRQprM5fKyjcHgUbxwMi4fH+oYi4fU9bp3djO4xEDuJdWaq38hZk4Sdp9+eow3G
-         ElsbczAfvUhpeVJ+k0XgnaFlrmX6mJ8NxPuGPVJ8Pwo+YwD69MYVaIfTlUplOm5ZEc5T
-         lJTNSG6WRmXrUchstmHApfMI11r7h7E/TtS+Oh5vi87Nki1zBG1nV3nxTiE7q73P/iv+
-         MScnsYGIksWgIlO2bnuQrTkIZo/cmBjjrU5aLNRZZM43EvvKHwZoKQqi8wQALQTEiLHZ
-         XRMA==
-X-Gm-Message-State: AGi0PubKu09CnpWV2A5fie44HWOEJRPh1z34uVtKPPF7q+xyRFwyh3AF
-        FU0A77zZvq0KVa1AeepTfT0SIaiI5Yc=
-X-Google-Smtp-Source: APiQypIT3opjLOUaHJ3jc4/L/Xy850luB3XjovfnMiVpHV7k3y4Xa8smFGSFG2H3Tp3fwi3Jrnu5zA==
-X-Received: by 2002:a17:90a:e2c1:: with SMTP id fr1mr910145pjb.124.1588355762840;
-        Fri, 01 May 2020 10:56:02 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:81bd:8aa3:a8d:a322? ([2601:647:4000:d7:81bd:8aa3:a8d:a322])
-        by smtp.gmail.com with ESMTPSA id kb10sm297454pjb.6.2020.05.01.10.56.01
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IXn4r+MPXVyQgD4o3lQqxkPpG/DsRtiXml/AiVaSQ7U=;
+        b=T/vKkHty8P5GhrfIrqJUhsktg+HkM1/nQqUipJjCr0HGOFj6+4WvRPhq//o0eu2aXN
+         ilTGmOsmBUECAPk6+3yX4fkzpX2tjo3dqN+0/zdFHlsG1i2ChhcqFzThtNfP+1nyZJHH
+         xrHaIntTtIvpDlxGX3Zs0zkgFve4Y81P7d0NVRnC2JtFZkHlmMpD9QkNQwiR11vU12d4
+         h5tubwOcgK18+0b3T+AUrma+qOebQ5b3luQSLBrS9kN8ABno0gOir3eBI0vH4cbCStBm
+         Y3UkS1Y8qzi2CjaewIWYyKI8Q75y+09ijrxv4E9misn3YPxQyntTTeiCSRN59RZLyaJy
+         FdOA==
+X-Gm-Message-State: AGi0PuZVMjZ4HOP0WkFHNnFn0rcaBL2Qt9IpyoC/ZbVgLZ8ZzI0Hn8Bk
+        e7eYRGkR/6DkjuXkomCejLxsFx61Vgc=
+X-Google-Smtp-Source: APiQypKThfpBS2sbPLWsfM+Yc/uEbEK6lPvgpH1IFt6z68A+iRHt/Ra/EPG4M8kw4ZrcqP2j4tmcHg==
+X-Received: by 2002:a19:4843:: with SMTP id v64mr3219345lfa.155.1588355981488;
+        Fri, 01 May 2020 10:59:41 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id n14sm2657265lfe.31.2020.05.01.10.59.40
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 May 2020 10:56:01 -0700 (PDT)
-Subject: Re: [PATCH v3 1/1] scsi: pm: Balance pm_only counter of request queue
- during system resume
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        stanley.chu@mediatek.com, alim.akhtar@samsung.com,
-        beanhuo@micron.com, Avri.Altman@wdc.com,
-        bjorn.andersson@linaro.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1588219805-25794-1-git-send-email-cang@codeaurora.org>
- <9e15123e-4315-15cd-3d23-2df6144bd376@acm.org>
- <1ef85ee212bee679f7b2927cbbc79cba@codeaurora.org>
- <ef23a815-118a-52fe-4880-19e7fc4fcd10@acm.org>
- <1e2a2e39dbb3a0f06fe95bbfd66e1648@codeaurora.org>
- <226048f7-6ad3-a625-c2ed-d9d13e096803@acm.org>
- <3bfa692ce706c5c198f565e674afb56f@codeaurora.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <2356ab42-bbdd-d214-30f5-a533fe978dcb@acm.org>
-Date:   Fri, 1 May 2020 10:56:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 01 May 2020 10:59:40 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id e25so3339748ljg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:59:40 -0700 (PDT)
+X-Received: by 2002:a2e:814e:: with SMTP id t14mr2962897ljg.204.1588355980014;
+ Fri, 01 May 2020 10:59:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3bfa692ce706c5c198f565e674afb56f@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1588348912-24781-1-git-send-email-bfields@redhat.com>
+In-Reply-To: <1588348912-24781-1-git-send-email-bfields@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 1 May 2020 10:59:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiGhZ_5xCRyUN+yMFdneKMQ-S8fBvdBp8o-JWPV4v+nVw@mail.gmail.com>
+Message-ID: <CAHk-=wiGhZ_5xCRyUN+yMFdneKMQ-S8fBvdBp8o-JWPV4v+nVw@mail.gmail.com>
+Subject: Re: [PATCH 0/4] allow multiple kthreadd's
+To:     "J. Bruce Fields" <bfields@redhat.com>
+Cc:     "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Howells <dhowells@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Shaohua Li <shli@fb.com>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-30 22:12, Can Guo wrote:
-> diff --git a/drivers/scsi/scsi_pm.c b/drivers/scsi/scsi_pm.c
-> index 3717eea..d18271d 100644
-> --- a/drivers/scsi/scsi_pm.c
-> +++ b/drivers/scsi/scsi_pm.c
-> @@ -74,12 +74,15 @@ static int scsi_dev_type_resume(struct device *dev,
->  {
->         const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
->         int err = 0;
-> +       bool was_rpm_suspended = false;
-> 
->         err = cb(dev, pm);
->         scsi_device_resume(to_scsi_device(dev));
->         dev_dbg(dev, "scsi resume: %d\n", err);
-> 
->         if (err == 0) {
-> +               was_rpm_suspended = pm_runtime_suspended(dev);
-> +
+On Fri, May 1, 2020 at 9:02 AM J. Bruce Fields <bfields@redhat.com> wrote:
+>
+> Anyway, does this multiple kthreadd approach look reasonable?
 
-How about renaming this variable into "was_runtime_suspended"? How about
-moving the declaration of that variable inside the if-statement?
+I don't see anything that looks alarming.
 
->                 pm_runtime_disable(dev);
->                 err = pm_runtime_set_active(dev);
->                 pm_runtime_enable(dev);
-> @@ -93,8 +96,10 @@ static int scsi_dev_type_resume(struct device *dev,
->                  */
->                 if (!err && scsi_is_sdev_device(dev)) {
->                         struct scsi_device *sdev = to_scsi_device(dev);
-> -
-> -                       blk_set_runtime_active(sdev->request_queue);
-> +                       if (was_rpm_suspended)
-> +                              blk_post_runtime_resume(sdev->request_queue, 0);
-> +                       else
-> +                              blk_set_runtime_active(sdev->request_queue);
->                 }
->         }
+My main reaction was that I don't like the "kthreadd" name, but that's
+because for some reason I always read it as "kthre add". That may be
+just me. It normally doesn't bother me (this code doesn't get all that
+much work on it, it's been very stable), but it was very obvious when
+reading your patches.
 
-Does other code always call both blk_pre_runtime_resume() and
-blk_post_runtime_resume() upon runtime resume? How about adding a
-blk_pre_runtime_resume() call before the blk_post_runtime_resume() call?
+In fact, I liked _your_ naming better, to the point where I was going
+"'kthread_group' is a much better name than 'kthreadd', and that
+'kthreadd()' function would read better as 'kthread_group_run()' or
+something".
 
-Thanks,
+But that may just be a personal quirk of mine, and isn't a big deal.
+On the whole the patches looked all sane to me.
 
-Bart.
+> (If so, who should handle the patches?)
 
+We have had _very_ little work in this area, probably because most of
+the kthread work has been subsumed by workqueues.
+
+Which kind of makes me want to point a finger at Tejun. But it's been
+mostly PeterZ touching this file lately..
+
+                Linus
