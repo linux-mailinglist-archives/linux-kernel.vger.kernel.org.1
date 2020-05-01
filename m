@@ -2,55 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8A11C1D45
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15491C1D4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730356AbgEASfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 14:35:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730189AbgEASfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 14:35:12 -0400
-Subject: Re: [PULL REQUEST] i2c for v5.7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588358112;
-        bh=2WT6aiHZPuq2kVjyUjT09gDN6JPwEFNG4Npx11qayos=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=mfa9OwJn4J8fmDWRwxqqB8DMAgF7rxMBwwDT8OsDEHjdW+bqrWJtmsdXckMGAYedy
-         3aF24rA8yRIbpYkLwteciHiPnemGzCKqvSb0J4Yk5WAOpbpnD3Nf/pzf3qUnDV+qBT
-         1MiO0vohmQPcKWlJUP/zMDlUYnToSZXmNrm/GZ1A=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200501145014.GA24395@ninjato>
-References: <20200501145014.GA24395@ninjato>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200501145014.GA24395@ninjato>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git
- i2c/for-current-fixed
-X-PR-Tracked-Commit-Id: c926c87b8e36dcc0ea5c2a0a0227ed4f32d0516a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ab386c46e44eae70e2c23f27fea70014758cbbac
-Message-Id: <158835811239.18489.9681586703398147281.pr-tracker-bot@kernel.org>
-Date:   Fri, 01 May 2020 18:35:12 +0000
-To:     Wolfram Sang <wsa@the-dreams.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        id S1730389AbgEASh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 14:37:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729721AbgEASh0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 14:37:26 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:3201:214:fdff:fe10:1be6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9B7C061A0C;
+        Fri,  1 May 2020 11:37:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=hMV97MmaX97miftrzqjeu0TBXLmOOMvlA9imPuzqGGI=; b=mSjUL5OMxeQvBqqi4Ta3hO1Gj
+        UFl50vipSDu80044GX0Ev8w8ZYe5iRWjD9JffxVeJ7YUwr+hJgZVcfEfDvLNNyMmhZKmJpnQ1hlyS
+        7Zle1gxsil4uQgR81WFUtXrSqmY6ODdbHXSIumbYWfYRnWC54p+obQpFAKPnAiJ2QE3/mG0F1TWv5
+        jdPs+/CqSxJ35MCVQuN1jkCRr2Jf6h9dwJn3EKrieehni90AlqkB9cKN1GSvmtW1zW0p1esgLvFgp
+        L7LzB3LEMIbMLJNhs/PGBmj6WpRxOBE/GYw9J41hNrlXl9sm2QyhLjrdgQAmR706dfHqZhSPApkWy
+        3cyL+BsiA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54906)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jUaX5-0005cR-LV; Fri, 01 May 2020 19:37:07 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jUaX1-0003KM-F2; Fri, 01 May 2020 19:37:03 +0100
+Date:   Fri, 1 May 2020 19:37:03 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Walter Harms <wharms@bfs.de>
+Cc:     Colin King <colin.king@canonical.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] net: dsa: sja1105: fix speed setting for 10 MBPS
+Message-ID: <20200501183703.GS1551@shell.armlinux.org.uk>
+References: <20200501134310.289561-1-colin.king@canonical.com>
+ <9018be0b7dc441cd8aad625c6cc44e1c@bfs.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9018be0b7dc441cd8aad625c6cc44e1c@bfs.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 1 May 2020 16:50:18 +0200:
+On Fri, May 01, 2020 at 06:00:52PM +0000, Walter Harms wrote:
+> IMHO it would be better to use switch case here to improve readability.
+> 
+> switch (bmcr & mask) {
+> 
+> case  BMCR_SPEED1000:
+>                                  speed = SPEED_1000;
+>                                  break;
+> case  BMCR_SPEED100:
+>                                  speed = SPEED_100;
+>                                  break;
+> case  BMCR_SPEED10:
+>                                  speed = SPEED_10;
+>                                  break;
+> default:
+>                                 speed = SPEED_UNKNOWN
+> }
+> 
+> jm2c,
+>  wh
+> 
+> btw: an_enabled ? why not !enabled, mich more easy to read
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current-fixed
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ab386c46e44eae70e2c23f27fea70014758cbbac
-
-Thank you!
+You misinterpret "an_enabled".  It's not "negated enabled".  It's not
+even "disabled".  It's short for "autonegotiation enabled".  It's
+positive logic too.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
