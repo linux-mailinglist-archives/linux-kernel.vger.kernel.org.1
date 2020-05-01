@@ -2,81 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7261C10C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 12:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06681C10C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 12:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728560AbgEAKWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 06:22:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38674 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728430AbgEAKWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 06:22:02 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728583AbgEAKXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 06:23:50 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:32585 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728229AbgEAKXt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 06:23:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588328628;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=byxFlKeuowY0yc0XBoCAz1C2pz8gQc7fx1kR9pv0BaE=;
+        b=aYrUs1iTCJo4lBsYPa08wa3Ba1cjvW3F/ao/oqupTMszljmLHM2Pb/K8laY5oj1brwS+n5
+        M796zJMV1e/Sdmq3MTn1utSL4ZxE0noUkktIVfEuo/aAGc/gMYGgXHhlM7oeLeAYjT3CkQ
+        hJ2R4cm9uoCNFhlLSVY9RMBw5t87z18=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-7TQAXia3Oi295juXPFoMqQ-1; Fri, 01 May 2020 06:23:44 -0400
+X-MC-Unique: 7TQAXia3Oi295juXPFoMqQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD15820787;
-        Fri,  1 May 2020 10:22:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588328521;
-        bh=8PiUkTNj8dS4j695LU0tBOc5dYcnMnyHpPrN0SZQOK8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cOTspiVozJzNRZAUtA9SvU4tVEBPMFtj4vbtNeG6j7iIG8fu+SN9CPpX/usVudhHG
-         90faFkROucGSYAftqdqz1jipFHOZFG+o8VAZDRm/Jo7UklZnQenp4mycxHsoLer497
-         xxaJqhb+0gcSkrvvWXRSjHALoZq3IzqGO6NMEZMU=
-Date:   Fri, 1 May 2020 11:21:58 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] ASoC: fsl_esai: Add support for imx8qm
-Message-ID: <20200501102158.GA5276@sirena.org.uk>
-References: <cover.1588320655.git.shengjiu.wang@nxp.com>
- <a933bafd2d6a60a69f840d9d4b613337efcf2816.1588320656.git.shengjiu.wang@nxp.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6284C80183C;
+        Fri,  1 May 2020 10:23:42 +0000 (UTC)
+Received: from krava (unknown [10.40.192.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 33AAD5C1B0;
+        Fri,  1 May 2020 10:23:40 +0000 (UTC)
+Date:   Fri, 1 May 2020 12:23:37 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH] perf evsel: Get group fd from CPU0 for system wide event
+Message-ID: <20200501102337.GA1761222@krava>
+References: <20200430013451.17196-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dDRMvlgZJXvWKvBx"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a933bafd2d6a60a69f840d9d4b613337efcf2816.1588320656.git.shengjiu.wang@nxp.com>
-X-Cookie: Think honk if you're a telepath.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200430013451.17196-1-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 30, 2020 at 09:34:51AM +0800, Jin Yao wrote:
+> A metric may consist of system wide event and non system-wide event.
+> The event group leader may be the system wide event.
+> 
+> For example, the metric "C2_Pkg_Residency" consists of
+> "cstate_pkg/c2-residency" and "msr/tsc". The former counts on the first
+> CPU of socket (tagged system-wide) and the latter is per CPU.
+> 
+> But "C2_Pkg_Residency" hits assertion failure on cascadelakex.
+> 
+>  # perf stat -M "C2_Pkg_Residency" -a -- sleep 1
+>  perf: util/evsel.c:1464: get_group_fd: Assertion `!(fd == -1)' failed.
+>  Aborted
+> 
+> get_group_fd(evsel, cpu, thread)
+> {
+> 	leader = evsel->leader;
+> 	fd = FD(leader, cpu, thread);
+> 	BUG_ON(fd == -1);
+> }
+> 
+> Considering this case, leader is "cstate_pkg/c2-residency", evsel is
+> "msr/tsc" and cpu is 1. Because "cstate_pkg/c2-residency" is a system-wide
+> event and it's processed on CPU0, so FD(leader, 1, thread) must return an
+> invalid fd, then BUG_ON() may be triggered.
+> 
+> This patch gets group fd from CPU0 for system wide event if
+> FD(leader, cpu, thread) returns invalid fd.
+> 
+> With this patch,
+> 
+>  # perf stat -M "C2_Pkg_Residency" -a -- sleep 1
+> 
+>  Performance counter stats for 'system wide':
+> 
+>         1000850802      cstate_pkg/c2-residency/  #      0.5 C2_Pkg_Residency
+>       201446161592      msr/tsc/
+> 
+>        1.010637051 seconds time elapsed
+> 
+> Fixes: 6a4bb04caacc ("perf tools: Enable grouping logic for parsed events")
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+>  tools/perf/util/evsel.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index 6a571d322bb2..cd6470f63d6f 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -1461,6 +1461,9 @@ static int get_group_fd(struct evsel *evsel, int cpu, int thread)
+>  	BUG_ON(!leader->core.fd);
+>  
+>  	fd = FD(leader, cpu, thread);
+> +	if (fd == -1 && leader->core.system_wide)
 
---dDRMvlgZJXvWKvBx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+fd does not need to be -1 in here.. in my setup cstate_pkg/c2-residency/
+has cpumask 0, so other cpus never get open and are 0, and the whole thing
+ends up with:
 
-On Fri, May 01, 2020 at 04:12:05PM +0800, Shengjiu Wang wrote:
-> The difference for esai on imx8qm is that DMA device is EDMA.
->=20
-> EDMA requires the period size to be multiple of maxburst. Otherwise
-> the remaining bytes are not transferred and thus noise is produced.
+	sys_perf_event_open: pid -1  cpu 1  group_fd 0  flags 0
+	sys_perf_event_open failed, error -9
 
-If this constraint comes from the DMA controller then normally you'd
-expect the DMA controller integration to be enforcing this - is there no
-information in the DMA API that lets us know that this constraint is
-there?
+I actualy thought we put -1 to fd array but couldn't find it.. perhaps we should od that
 
---dDRMvlgZJXvWKvBx
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+> +		fd = FD(leader, 0, thread);
+> +
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6r+EIACgkQJNaLcl1U
-h9DfFQf/TcF/ZY/a5ix0r9s1n6xwh2QMqCs8szfQsOfEi3yLY75x5EptEuWovv0O
-f0qx5o8tPjQNc6Ta+xw5OLLyOOTRSq5Gh703vik1g4SHjBWt6+Yn3SXovi9Y0j4V
-ldBR/b2hTetKB3kxy5Ye0zimM1m/ifUuixaPTe5tfugJDWTAFaC2ZWFBlF1mveIb
-5elPV0W1IYhCLo73wQa3Y/5evQCBv/uVMjWQAs44wt0LR/IVENEtBx/C4xkjgfrz
-97uSY2xEEUsWDP/xi1fLlI5bU24PGepYE0cfN4N8hKNJGuL16WXZxnZRaN4LBk/A
-n0v9+0DGJjzdrSsDZq/KxIk0QOQtsQ==
-=RLMk
------END PGP SIGNATURE-----
+so how do we group following events?
 
---dDRMvlgZJXvWKvBx--
+  cstate_pkg/c2-residency/ - cpumask 0
+  msr/tsc/                 - all cpus
+
+cpu 0 is fine.. the rest I have no idea ;-)
+
+that's why metrics use the :W, that disables grouping on failure
+
+jirka
+
+>  	BUG_ON(fd == -1);
+>  
+>  	return fd;
+> -- 
+> 2.17.1
+> 
+
