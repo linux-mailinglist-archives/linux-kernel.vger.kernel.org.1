@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 734141C14BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33AF11C16C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731516AbgEANma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:42:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43040 "EHLO mail.kernel.org"
+        id S1731925AbgEANwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:52:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730592AbgEANmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:42:25 -0400
+        id S1730691AbgEANhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:37:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81627205C9;
-        Fri,  1 May 2020 13:42:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D25E924953;
+        Fri,  1 May 2020 13:37:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340544;
-        bh=9qMdGIHBfu8UAL3/kDkX7rnO57gJouswbtIyHkb7wmw=;
+        s=default; t=1588340242;
+        bh=NqVhar92cV8vxqKYSbx41FF4jkYwAr8PFeRL29yDkkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZCAWu7kjEzJ/2fLgogIat95n5rvZmKQ4hgQ5vVUL/AfllmXwYg4xpldpSVo12ooBo
-         o5dXIiXyh+AZds8nIW3zp3SCp6qGTnVCSP+Ch4I9pnvAp+ge6vuYhUpctdOuMtmuNt
-         QAt2M1VytE3uDuepCvBAnH+rv+0ZQbpuF431xDpo=
+        b=R8Py8zWNwZKYp6toU0ujZlWDn0Lbu/zpHQeOLzr1n8d0b8n6fPgGq5cyF5e52zTYy
+         nMDAurMiGWcqUbDwxL7xEq2/RxRceAA9XWb842B83Cc+LMjoV+RsnwbnYQA3CHwkDg
+         d5DziWy9rPDLcc6D0/BkaAGN0AUjHdMxAuVDhnHs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ann T Ropea <bedhanger@gmx.de>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 5.6 029/106] hwmon: (drivetemp) Use drivetemps true module name in Kconfig section
-Date:   Fri,  1 May 2020 15:23:02 +0200
-Message-Id: <20200501131547.479111909@linuxfoundation.org>
+        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 38/46] ALSA: hda: call runtime_allow() for all hda controllers
+Date:   Fri,  1 May 2020 15:23:03 +0200
+Message-Id: <20200501131512.083772503@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
-References: <20200501131543.421333643@linuxfoundation.org>
+In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
+References: <20200501131457.023036302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,65 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ann T Ropea <bedhanger@gmx.de>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit 6bdf8f3efe867c5893e27431a555e41f54ed7f9a upstream.
+[ Upstream commit 9a6418487b566503c772cb6e7d3d44e652b019b0 ]
 
-The addition of the support for reading the temperature of ATA drives as
-per commit 5b46903d8bf3 ("hwmon: Driver for disk and solid state drives
-with temperature sensors") lists in the respective Kconfig section the
-name of the module to be optionally built as "satatemp".
+Before the pci_driver->probe() is called, the pci subsystem calls
+runtime_forbid() and runtime_get_sync() on this pci dev, so only call
+runtime_put_autosuspend() is not enough to enable the runtime_pm on
+this device.
 
-However, building the kernel modules with "CONFIG_SENSORS_DRIVETEMP=m",
-does not generate a file named "satatemp.ko".
+For controllers with vgaswitcheroo feature, the pci/quirks.c will call
+runtime_allow() for this dev, then the controllers could enter
+rt_idle/suspend/resume, but for non-vgaswitcheroo controllers like
+Intel hda controllers, the runtime_pm is not enabled because the
+runtime_allow() is not called.
 
-Instead, the rest of the original commit uses the term "drivetemp" and
-a file named "drivetemp.ko" ends up in the kernel's modules directory.
-This file has the right ingredients:
+Since it is no harm calling runtime_allow() twice, here let hda
+driver call runtime_allow() for all controllers. Then the runtime_pm
+is enabled on all controllers after the put_autosuspend() is called.
 
-	$ strings /path/to/drivetemp.ko | grep ^description
-	description=Hard drive temperature monitor
-
-and modprobing it produces the expected result:
-
-	# drivetemp is not loaded
-	$ sensors -u drivetemp-scsi-4-0
-	Specified sensor(s) not found!
-	$ sudo modprobe drivetemp
-	$ sensors -u drivetemp-scsi-4-0
-	drivetemp-scsi-4-0
-	Adapter: SCSI adapter
-	temp1:
-	  temp1_input: 35.000
-	  temp1_max: 60.000
-	  temp1_min: 0.000
-	  temp1_crit: 70.000
-	  temp1_lcrit: -40.000
-	  temp1_lowest: 20.000
-	  temp1_highest: 36.000
-
-Fix Kconfig by referring to the true name of the module.
-
-Fixes: 5b46903d8bf3 ("hwmon: Driver for disk and solid state drives with temperature sensors")
-Signed-off-by: Ann T Ropea <bedhanger@gmx.de>
-Link: https://lore.kernel.org/r/20200406235521.185309-1-bedhanger@gmx.de
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20200414142725.6020-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/hda_intel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -403,7 +403,7 @@ config SENSORS_DRIVETEMP
- 	  hard disk drives.
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index ff448abb5449f..0d7981eda2c4f 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2477,6 +2477,7 @@ static int azx_probe_continue(struct azx *chip)
  
- 	  This driver can also be built as a module. If so, the module
--	  will be called satatemp.
-+	  will be called drivetemp.
+ 	if (azx_has_pm_runtime(chip)) {
+ 		pm_runtime_use_autosuspend(&pci->dev);
++		pm_runtime_allow(&pci->dev);
+ 		pm_runtime_put_autosuspend(&pci->dev);
+ 	}
  
- config SENSORS_DS620
- 	tristate "Dallas Semiconductor DS620"
+-- 
+2.20.1
+
 
 
