@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7F61C1570
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D271C13DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729467AbgEAN13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:27:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49712 "EHLO mail.kernel.org"
+        id S1730468AbgEANdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:33:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729459AbgEAN10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:27:26 -0400
+        id S1730459AbgEANdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:33:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC2492166E;
-        Fri,  1 May 2020 13:27:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B78D2051A;
+        Fri,  1 May 2020 13:33:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339645;
-        bh=yYfJxDnvPVkR9PzRvTIdkeEKVa31+EMlDurBTgDDglY=;
+        s=default; t=1588340018;
+        bh=c9hoQVH2Pap3NOwVtdbW/8gK18tfEPHhdYF7KSndtZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Min8Meh2l8laFNi6ErhjqzqQQy9s0EIJ6UfqQy/PwYJBp2hjPUhnueZLu6iZ88AaH
-         O/MxSWumzVmIct4SolWIfXS+Mn11mECWaQTkb7RvIOfdHca3Rrox/U5UQR0l1hywuW
-         UN1kn0mtHcPQaABsu2R4+lko5FP6M28MgqhIiv68=
+        b=nKyFhKbuvjJAS/AfgIg/aFi0TceXnYhMP6V5OuNVrt5+kaDQqKJKO/00jOq5j/Ghv
+         cTIweXPUloZ5Xr5LkVtl0UJtODNFBhn6KX/HuAj0Ecx8v5wfhuSWVIb3viV6O1DG/0
+         a113pQlwMxHldxXRqnHNvdgyG3z/6m/u1QoETu+k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xi Wang <xi.wang@gmail.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 61/70] bpf, x86: Fix encoding for lower 8-bit registers in BPF_STX BPF_B
+        stable@vger.kernel.org, Malcolm Priestley <tvboxspy@gmail.com>
+Subject: [PATCH 4.14 073/117] staging: vt6656: Fix calling conditions of vnt_set_bss_mode
 Date:   Fri,  1 May 2020 15:21:49 +0200
-Message-Id: <20200501131531.427749444@linuxfoundation.org>
+Message-Id: <20200501131553.720832035@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
-References: <20200501131513.302599262@linuxfoundation.org>
+In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
+References: <20200501131544.291247695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,79 +42,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luke Nelson <lukenels@cs.washington.edu>
+From: Malcolm Priestley <tvboxspy@gmail.com>
 
-[ Upstream commit aee194b14dd2b2bde6252b3acf57d36dccfc743a ]
+commit 664ba5180234593b4b8517530e8198bf2f7359e2 upstream.
 
-This patch fixes an encoding bug in emit_stx for BPF_B when the source
-register is BPF_REG_FP.
+vnt_set_bss_mode needs to be called on all changes to BSS_CHANGED_BASIC_RATES,
+BSS_CHANGED_ERP_PREAMBLE and BSS_CHANGED_ERP_SLOT
 
-The current implementation for BPF_STX BPF_B in emit_stx saves one REX
-byte when the operands can be encoded using Mod-R/M alone. The lower 8
-bits of registers %rax, %rbx, %rcx, and %rdx can be accessed without using
-a REX prefix via %al, %bl, %cl, and %dl, respectively. Other registers,
-(e.g., %rsi, %rdi, %rbp, %rsp) require a REX prefix to use their 8-bit
-equivalents (%sil, %dil, %bpl, %spl).
+Remove all other calls and vnt_update_ifs which is called in vnt_set_bss_mode.
 
-The current code checks if the source for BPF_STX BPF_B is BPF_REG_1
-or BPF_REG_2 (which map to %rdi and %rsi), in which case it emits the
-required REX prefix. However, it misses the case when the source is
-BPF_REG_FP (mapped to %rbp).
+Fixes an issue that preamble mode is not being updated correctly.
 
-The result is that BPF_STX BPF_B with BPF_REG_FP as the source operand
-will read from register %ch instead of the correct %bpl. This patch fixes
-the problem by fixing and refactoring the check on which registers need
-the extra REX byte. Since no BPF registers map to %rsp, there is no need
-to handle %spl.
+Fixes: c12603576e06 ("staging: vt6656: Only call vnt_set_bss_mode on basic rates change.")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Malcolm Priestley <tvboxspy@gmail.com>
+Link: https://lore.kernel.org/r/44110801-6234-50d8-c583-9388f04b486c@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 622582786c9e0 ("net: filter: x86: internal BPF JIT")
-Signed-off-by: Xi Wang <xi.wang@gmail.com>
-Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200418232655.23870-1-luke.r.nels@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/net/bpf_jit_comp.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ drivers/staging/vt6656/main_usb.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index dd9a861fd5264..bea13c35979e5 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -145,6 +145,19 @@ static bool is_ereg(u32 reg)
- 			     BIT(BPF_REG_9));
- }
+--- a/drivers/staging/vt6656/main_usb.c
++++ b/drivers/staging/vt6656/main_usb.c
+@@ -594,8 +594,6 @@ static int vnt_add_interface(struct ieee
  
-+/*
-+ * is_ereg_8l() == true if BPF register 'reg' is mapped to access x86-64
-+ * lower 8-bit registers dil,sil,bpl,spl,r8b..r15b, which need extra byte
-+ * of encoding. al,cl,dl,bl have simpler encoding.
-+ */
-+static bool is_ereg_8l(u32 reg)
-+{
-+	return is_ereg(reg) ||
-+	    (1 << reg) & (BIT(BPF_REG_1) |
-+			  BIT(BPF_REG_2) |
-+			  BIT(BPF_REG_FP));
-+}
+ 	priv->op_mode = vif->type;
+ 
+-	vnt_set_bss_mode(priv);
+-
+ 	/* LED blink on TX */
+ 	vnt_mac_set_led(priv, LEDSTS_STS, LEDSTS_INTER);
+ 
+@@ -682,7 +680,6 @@ static void vnt_bss_info_changed(struct
+ 		priv->basic_rates = conf->basic_rates;
+ 
+ 		vnt_update_top_rates(priv);
+-		vnt_set_bss_mode(priv);
+ 
+ 		dev_dbg(&priv->usb->dev, "basic rates %x\n", conf->basic_rates);
+ 	}
+@@ -711,11 +708,14 @@ static void vnt_bss_info_changed(struct
+ 			priv->short_slot_time = false;
+ 
+ 		vnt_set_short_slot_time(priv);
+-		vnt_update_ifs(priv);
+ 		vnt_set_vga_gain_offset(priv, priv->bb_vga[0]);
+ 		vnt_update_pre_ed_threshold(priv, false);
+ 	}
+ 
++	if (changed & (BSS_CHANGED_BASIC_RATES | BSS_CHANGED_ERP_PREAMBLE |
++		       BSS_CHANGED_ERP_SLOT))
++		vnt_set_bss_mode(priv);
 +
- /* add modifiers if 'reg' maps to x64 registers r8..r15 */
- static u8 add_1mod(u8 byte, u32 reg)
- {
-@@ -731,9 +744,8 @@ st:			if (is_imm8(insn->off))
- 			/* STX: *(u8*)(dst_reg + off) = src_reg */
- 		case BPF_STX | BPF_MEM | BPF_B:
- 			/* emit 'mov byte ptr [rax + off], al' */
--			if (is_ereg(dst_reg) || is_ereg(src_reg) ||
--			    /* have to add extra byte for x86 SIL, DIL regs */
--			    src_reg == BPF_REG_1 || src_reg == BPF_REG_2)
-+			if (is_ereg(dst_reg) || is_ereg_8l(src_reg))
-+				/* Add extra byte for eregs or SIL,DIL,BPL in src_reg */
- 				EMIT2(add_2mod(0x40, dst_reg, src_reg), 0x88);
- 			else
- 				EMIT1(0x88);
--- 
-2.20.1
-
+ 	if (changed & BSS_CHANGED_TXPOWER)
+ 		vnt_rf_setpower(priv, priv->current_rate,
+ 				conf->chandef.chan->hw_value);
 
 
