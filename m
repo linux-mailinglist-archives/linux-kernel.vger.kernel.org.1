@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCF61C14DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259C01C1467
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731646AbgEANne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:43:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44438 "EHLO mail.kernel.org"
+        id S1731117AbgEANi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:38:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731622AbgEANna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:43:30 -0400
+        id S1730124AbgEANiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:38:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DAE5120757;
-        Fri,  1 May 2020 13:43:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE07A20757;
+        Fri,  1 May 2020 13:38:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340610;
-        bh=hk0WlGJZ3FM21rY1vHjVkvu11UIxCb9M8FMJ1iwQL5M=;
+        s=default; t=1588340334;
+        bh=jFhxEbxTazybuTw45lIzIMfPyX8tm7JcOfLlE+K26I8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WWaVnc782immaCoARWmDb7T+3GvPSXNmRMnexaTMT0atgHk5iv0jP9CQMNZ/xY0DC
-         ynzlc7yZSEcOO0qvyxAV/8dld45x5GEyDAJM1fsq8rsU+1KYH5zfmiWl/V0DrIOK72
-         q2pVQimbLd2maMqPXDU4GWYxmBUOsKNfZHirjsN8=
+        b=FdS2+uVPWFUELwfoLN6yg2PABh9955rejKzLi9LUpL8L3ORCatkoUA52moNUnXXfW
+         I3zXcHX8ZIcAp0hTObZEj9rMuNF+2kLEOHyqBRSdOHj5UgQ2pu2W3cwfMNFeomD7BZ
+         y24nvx+zEUtRZNGqpZgSxNYJMPdMiBWXOq0FqsDw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhu Yanjun <yanjunz@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Subject: [PATCH 5.6 042/106] net/mlx5e: Get the latest values from counters in switchdev mode
+        stable@vger.kernel.org,
+        =?UTF-8?q?Lu=C3=ADs=20Mendes?= <luis.p.mendes@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Todd Poynor <toddpoynor@google.com>
+Subject: [PATCH 5.4 36/83] PCI: Move Apex Edge TPU class quirk to fix BAR assignment
 Date:   Fri,  1 May 2020 15:23:15 +0200
-Message-Id: <20200501131548.781414143@linuxfoundation.org>
+Message-Id: <20200501131534.840715251@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
-References: <20200501131543.421333643@linuxfoundation.org>
+In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
+References: <20200501131524.004332640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +45,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhu Yanjun <yanjunz@mellanox.com>
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-commit dcdf4ce0ff4ba206fc362e149c8ae81d6a2f849c upstream.
+commit 0a8f41023e8a3c100b3dc458ed2da651bf961ead upstream.
 
-In the switchdev mode, when running "cat
-/sys/class/net/NIC/statistics/tx_packets", the ppcnt register is
-accessed to get the latest values. But currently this command can
-not get the correct values from ppcnt.
+Some Google Apex Edge TPU devices have a class code of 0
+(PCI_CLASS_NOT_DEFINED).  This prevents the PCI core from assigning
+resources for the Apex BARs because __dev_sort_resources() ignores
+classless devices, host bridges, and IOAPICs.
 
->From firmware manual, before getting the 802_3 counters, the 802_3
-data layout should be set to the ppcnt register.
+On x86, firmware typically assigns those resources, so this was not a
+problem.  But on some architectures, firmware does *not* assign BARs, and
+since the PCI core didn't do it either, the Apex device didn't work
+correctly:
 
-When the command "cat /sys/class/net/NIC/statistics/tx_packets" is
-run, before updating 802_3 data layout with ppcnt register, the
-monitor counters are tested. The test result will decide the
-802_3 data layout is updated or not.
+  apex 0000:01:00.0: can't enable device: BAR 0 [mem 0x00000000-0x00003fff 64bit pref] not claimed
+  apex 0000:01:00.0: error enabling PCI device
 
-Actually the monitor counters do not support to monitor rx/tx
-stats of 802_3 in switchdev mode. So the rx/tx counters change
-will not trigger monitor counters. So the 802_3 data layout will
-not be updated in ppcnt register. Finally this command can not get
-the latest values from ppcnt register with 802_3 data layout.
+f390d08d8b87 ("staging: gasket: apex: fixup undefined PCI class") added a
+quirk to fix the class code, but it was in the apex driver, and if the
+driver was built as a module, it was too late to help.
 
-Fixes: 5c7e8bbb0257 ("net/mlx5e: Use monitor counters for update stats")
-Signed-off-by: Zhu Yanjun <yanjunz@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+Move the quirk to the PCI core, where it will always run early enough that
+the PCI core will assign resources if necessary.
+
+Link: https://lore.kernel.org/r/CAEzXK1r0Er039iERnc2KJ4jn7ySNUOG9H=Ha8TD8XroVqiZjgg@mail.gmail.com
+Fixes: f390d08d8b87 ("staging: gasket: apex: fixup undefined PCI class")
+Reported-by: Luís Mendes <luis.p.mendes@gmail.com>
+Debugged-by: Luís Mendes <luis.p.mendes@gmail.com>
+Tested-by: Luis Mendes <luis.p.mendes@gmail.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Todd Poynor <toddpoynor@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/pci/quirks.c                 |    7 +++++++
+ drivers/staging/gasket/apex_driver.c |    7 -------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -3568,7 +3568,12 @@ mlx5e_get_stats(struct net_device *dev,
- 	struct mlx5e_vport_stats *vstats = &priv->stats.vport;
- 	struct mlx5e_pport_stats *pstats = &priv->stats.pport;
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -5550,3 +5550,10 @@ static void pci_fixup_no_d0_pme(struct p
+ 	dev->pme_support &= ~(PCI_PM_CAP_PME_D0 >> PCI_PM_CAP_PME_SHIFT);
+ }
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ASMEDIA, 0x2142, pci_fixup_no_d0_pme);
++
++static void apex_pci_fixup_class(struct pci_dev *pdev)
++{
++	pdev->class = (PCI_CLASS_SYSTEM_OTHER << 8) | pdev->class;
++}
++DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
++			       PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
+--- a/drivers/staging/gasket/apex_driver.c
++++ b/drivers/staging/gasket/apex_driver.c
+@@ -570,13 +570,6 @@ static const struct pci_device_id apex_p
+ 	{ PCI_DEVICE(APEX_PCI_VENDOR_ID, APEX_PCI_DEVICE_ID) }, { 0 }
+ };
  
--	if (!mlx5e_monitor_counter_supported(priv)) {
-+	/* In switchdev mode, monitor counters doesn't monitor
-+	 * rx/tx stats of 802_3. The update stats mechanism
-+	 * should keep the 802_3 layout counters updated
-+	 */
-+	if (!mlx5e_monitor_counter_supported(priv) ||
-+	    mlx5e_is_uplink_rep(priv)) {
- 		/* update HW stats in background for next time */
- 		mlx5e_queue_update_stats(priv);
- 	}
+-static void apex_pci_fixup_class(struct pci_dev *pdev)
+-{
+-	pdev->class = (PCI_CLASS_SYSTEM_OTHER << 8) | pdev->class;
+-}
+-DECLARE_PCI_FIXUP_CLASS_HEADER(APEX_PCI_VENDOR_ID, APEX_PCI_DEVICE_ID,
+-			       PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
+-
+ static int apex_pci_probe(struct pci_dev *pci_dev,
+ 			  const struct pci_device_id *id)
+ {
 
 
