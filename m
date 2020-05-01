@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381861C1409
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F38F31C159B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730641AbgEANfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:35:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33140 "EHLO mail.kernel.org"
+        id S1730069AbgEANa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:30:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730624AbgEANe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:34:57 -0400
+        id S1730047AbgEANaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:30:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1B7124953;
-        Fri,  1 May 2020 13:34:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A93D20757;
+        Fri,  1 May 2020 13:30:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340097;
-        bh=QpvCLsMVUmPNvhbcAdhLPAMk2bdjVhQBVqFvBHaLzLw=;
+        s=default; t=1588339854;
+        bh=+n5qFEQ/Xd8deP6tXrs9aUSdt1QkCsV0ln5IyBLOgZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cEENiLfpX8RHTS2tI3ePqDjt57LOa/3Xgmf57HoqreXwXRbB0Yp+9JCTaGy8GtFkz
-         HVVLO0AyFMlzHHQw9pfVeaXap7rmWaFHoFQqMPQcRYJV0Z2zDftdVt2UlrW0tlvZXr
-         VW2rRkbRMT48oq8JFKL6pOMNrTNnRWHo+7QJkgZ4=
+        b=BTLKfzNyUdO2FCcHYuFWtM7jcNjds0CUPYqw82biv4nP7kWa/WTCLfKXGp0TP1/WJ
+         bImPBaQgA6whP0O3y5cubAZvyVcOvWG159zq/P3AboCEcrbcS7up8nCTmBFE7H2f7S
+         +/u5h8yV+4VfWchKdOeOWoMpdvmhikd+3FHqSgjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 4.14 092/117] nfsd: memory corruption in nfsd4_lock()
+        stable@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 74/80] hwmon: (jc42) Fix name to have no illegal characters
 Date:   Fri,  1 May 2020 15:22:08 +0200
-Message-Id: <20200501131555.482963497@linuxfoundation.org>
+Message-Id: <20200501131536.553568258@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
 
-commit e1e8399eee72e9d5246d4d1bcacd793debe34dd3 upstream.
+[ Upstream commit c843b382e61b5f28a3d917712c69a344f632387c ]
 
-New struct nfsd4_blocked_lock allocated in find_or_allocate_block()
-does not initialized nbl_list and nbl_lru.
-If conflock allocation fails rollback can call list_del_init()
-access uninitialized fields and corrupt memory.
+The jc42 driver passes I2C client's name as hwmon device name. In case
+of device tree probed devices this ends up being part of the compatible
+string, "jc-42.4-temp". This name contains hyphens and the hwmon core
+doesn't like this:
 
-v2: just initialize nbl_list and nbl_lru right after nbl allocation.
+jc42 2-0018: hwmon: 'jc-42.4-temp' is not a valid name attribute, please fix
 
-Fixes: 76d348fadff5 ("nfsd: have nfsd4_lock use blocking locks for v4.1+ lock")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This changes the name to "jc42" which doesn't have any illegal
+characters.
 
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Link: https://lore.kernel.org/r/20200417092853.31206-1-s.hauer@pengutronix.de
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfs4state.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/hwmon/jc42.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -246,6 +246,8 @@ find_or_allocate_block(struct nfs4_locko
- 	if (!nbl) {
- 		nbl= kmalloc(sizeof(*nbl), GFP_KERNEL);
- 		if (nbl) {
-+			INIT_LIST_HEAD(&nbl->nbl_list);
-+			INIT_LIST_HEAD(&nbl->nbl_lru);
- 			fh_copy_shallow(&nbl->nbl_fh, fh);
- 			locks_init_lock(&nbl->nbl_lock);
- 			nfsd4_init_cb(&nbl->nbl_cb, lo->lo_owner.so_client,
+diff --git a/drivers/hwmon/jc42.c b/drivers/hwmon/jc42.c
+index 0f1f6421845fd..85435e110ecd9 100644
+--- a/drivers/hwmon/jc42.c
++++ b/drivers/hwmon/jc42.c
+@@ -508,7 +508,7 @@ static int jc42_probe(struct i2c_client *client, const struct i2c_device_id *id)
+ 	}
+ 	data->config = config;
+ 
+-	hwmon_dev = devm_hwmon_device_register_with_info(dev, client->name,
++	hwmon_dev = devm_hwmon_device_register_with_info(dev, "jc42",
+ 							 data, &jc42_chip_info,
+ 							 NULL);
+ 	return PTR_ERR_OR_ZERO(hwmon_dev);
+-- 
+2.20.1
+
 
 
