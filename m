@@ -2,129 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C451C18C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7907C1C18BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730629AbgEAOtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:49:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:42062 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730034AbgEAOtc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 10:49:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7BC51FB;
-        Fri,  1 May 2020 07:49:31 -0700 (PDT)
-Received: from [192.168.1.84] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D57543F68F;
-        Fri,  1 May 2020 07:49:28 -0700 (PDT)
-Subject: Re: [PATCH 3/5] arm/arm64: smccc: Drop smccc_version enum and use
- ARM_SMCCC_VERSION_1_x instead
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-kernel@vger.kernel.org, harb@amperecomputing.com
-References: <20200430114814.14116-1-sudeep.holla@arm.com>
- <20200430114814.14116-4-sudeep.holla@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <e3878c66-3767-1208-a2e7-4219d9cb7c0c@arm.com>
-Date:   Fri, 1 May 2020 15:48:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730588AbgEAOtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:49:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729114AbgEAOtO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 10:49:14 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56563C061A0C;
+        Fri,  1 May 2020 07:49:14 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id x1so7637246ejd.8;
+        Fri, 01 May 2020 07:49:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fxPFkW3QxOmRfYj2h3nMtAxuro0T/xEXMFbcE0LTrVU=;
+        b=W3eBxkRVCUkRmVjaeZxdY0eWXI1WeV14Y3GZ6cGG6qX2rTNYODG/BhL8vEpRBcwaX8
+         5zyBVQI+Panp/tiEK/dymKhhil24IaILyAaTbA3+8a3McJf9tacA3Zc7rwjq5i0wWM3R
+         kNZhVSx8yndKHndGwo7LMgJt+4oODm4bGQ7Xu4rUIJQYPUR40Ev/Jg4FjzSM5/gEV5+x
+         oQPS5n4+5GFiF2LMJceZVHlRYcpEj/Q9OldY0p8kPupcGJLxLMkoKGeFEXfmjNy1T8g+
+         5HfzjwGCytspb5OaBLFNKMcAUGG9Oz5jmvrc5BifLpcq/oGghD/DAsv+kcGzitsc9hJ8
+         702w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fxPFkW3QxOmRfYj2h3nMtAxuro0T/xEXMFbcE0LTrVU=;
+        b=PNu1Nk0KoaPPBBdpL15G3DrF3oKx7knlcPdqKvJrROP4L3RoNZyItdDd9YPp/r0I2D
+         7j6jMW/llYz4qfhYl6SqUQulWD87ryJzWhYyMxqDiH+mB9t05ZGAvXsGHDP7q/+G1Kjm
+         urWA5bAGtKuHEg0SP629ogsnJcHmAFO6BvZ1lVBD2lsE2leAof1If7Twk+ez+sEj46Fd
+         Y1BvXOvZGDL6RAPM6FiaPbwkdhGwFtKtMnke6T2bBxlRgb7GC8HS1YRedYc0WTM0wiA7
+         ni7pgnKYvHLulHca7oL1IsWPATHTjzbQ5Kt7aKJ7YG2SfMJtXeHfwl2AYNDQCNr+GWZr
+         h31w==
+X-Gm-Message-State: AGi0PuaZq3OMGmiFun309hY8LSRPsgeHOyrB3vX53DEDXJMspXgWGBZP
+        rF6Zz035nYW23sydtvQaDrBXffl6oGnG/spslyQ=
+X-Google-Smtp-Source: APiQypI+1+VQOUh4IFgtlgbygkJrSop4NKMEXZUd+7VOMUopczAN+iZLGHuyibbdAMVPCjuSWytmI5hAyJGDHqrKplU=
+X-Received: by 2002:a17:906:4048:: with SMTP id y8mr3549075ejj.258.1588344553010;
+ Fri, 01 May 2020 07:49:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200430114814.14116-4-sudeep.holla@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200429201644.1144546-1-martin.blumenstingl@googlemail.com> <20200429212933.GA76972@lunn.ch>
+In-Reply-To: <20200429212933.GA76972@lunn.ch>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 1 May 2020 16:49:02 +0200
+Message-ID: <CAFBinCDAz48BKjvLHOmuHk6nME+vpCueFW14UWP1b8Ae_D1j5w@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 00/11] dwmac-meson8b Ethernet RX delay configuration
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     robh+dt@kernel.org, f.fainelli@gmail.com,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        jianxin.pan@amlogic.com, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/04/2020 12:48, Sudeep Holla wrote:
-> Instead of maintaining 2 sets of enums/macros for tracking SMCCC version,
-> let us drop smccc_version enum and use ARM_SMCCC_VERSION_1_x directly
-> instead.
-> 
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Hi Andrew,
 
-Reviewed-by: Steven Price <steven.price@arm.com>
+On Wed, Apr 29, 2020 at 11:29 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > - Khadas VIM2 seems to have the RX delay built into the PCB trace
+> >   length. When I enable the RX delay on the PHY or MAC I can't get any
+> >   data through. I expect that we will have the same situation on all
+> >   GXBB, GXM, AXG, G12A, G12B and SM1 boards
+>
+> Hi Martin
+>
+> Can you actually see this on the PCB? The other possibility is that
+> the bootloader is configuring something, which is not getting
+> overridden when linux starts up.
+at least it doesn't jump straight into my eye.
+I checked in u-boot and Linux, and for both the RX delay is disabled
+in the PHY as well as in the MAC.
 
-> ---
->   arch/arm64/kernel/paravirt.c | 2 +-
->   drivers/firmware/psci/psci.c | 8 ++++----
->   include/linux/psci.h         | 7 +------
->   3 files changed, 6 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/paravirt.c b/arch/arm64/kernel/paravirt.c
-> index 1ef702b0be2d..295d66490584 100644
-> --- a/arch/arm64/kernel/paravirt.c
-> +++ b/arch/arm64/kernel/paravirt.c
-> @@ -120,7 +120,7 @@ static bool has_pv_steal_clock(void)
->   	struct arm_smccc_res res;
->   
->   	/* To detect the presence of PV time support we require SMCCC 1.1+ */
-> -	if (psci_ops.smccc_version < SMCCC_VERSION_1_1)
-> +	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
->   		return false;
->   
->   	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
-> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-> index 2937d44b5df4..6a56d7196697 100644
-> --- a/drivers/firmware/psci/psci.c
-> +++ b/drivers/firmware/psci/psci.c
-> @@ -54,12 +54,12 @@ bool psci_tos_resident_on(int cpu)
->   
->   struct psci_operations psci_ops = {
->   	.conduit = SMCCC_CONDUIT_NONE,
-> -	.smccc_version = SMCCC_VERSION_1_0,
-> +	.smccc_version = ARM_SMCCC_VERSION_1_0,
->   };
->   
->   enum arm_smccc_conduit arm_smccc_1_1_get_conduit(void)
->   {
-> -	if (psci_ops.smccc_version < SMCCC_VERSION_1_1)
-> +	if (psci_ops.smccc_version < ARM_SMCCC_VERSION_1_1)
->   		return SMCCC_CONDUIT_NONE;
->   
->   	return psci_ops.conduit;
-> @@ -411,8 +411,8 @@ static void __init psci_init_smccc(void)
->   	if (feature != PSCI_RET_NOT_SUPPORTED) {
->   		u32 ret;
->   		ret = invoke_psci_fn(ARM_SMCCC_VERSION_FUNC_ID, 0, 0, 0);
-> -		if (ret == ARM_SMCCC_VERSION_1_1) {
-> -			psci_ops.smccc_version = SMCCC_VERSION_1_1;
-> +		if (ret >= ARM_SMCCC_VERSION_1_1) {
-> +			psci_ops.smccc_version = ret;
->   			ver = ret;
->   		}
->   	}
-> diff --git a/include/linux/psci.h b/include/linux/psci.h
-> index a67712b73b6c..29bd0671e5bb 100644
-> --- a/include/linux/psci.h
-> +++ b/include/linux/psci.h
-> @@ -21,11 +21,6 @@ bool psci_power_state_is_valid(u32 state);
->   int psci_set_osi_mode(void);
->   bool psci_has_osi_support(void);
->   
-> -enum smccc_version {
-> -	SMCCC_VERSION_1_0,
-> -	SMCCC_VERSION_1_1,
-> -};
-> -
->   struct psci_operations {
->   	u32 (*get_version)(void);
->   	int (*cpu_suspend)(u32 state, unsigned long entry_point);
-> @@ -36,7 +31,7 @@ struct psci_operations {
->   			unsigned long lowest_affinity_level);
->   	int (*migrate_info_type)(void);
->   	enum arm_smccc_conduit conduit;
-> -	enum smccc_version smccc_version;
-> +	u32 smccc_version;
->   };
->   
->   extern struct psci_operations psci_ops;
-> 
+The schematics of the Khadas VIM2 also show the the RX delay in the
+PHY is turned off by pin-strapping, see page 7 on the right: [0]
+It's the same for the Khadas VIM3 schematics, also on page 7: [1]
+There are also high resolution images of the Khadas VIM3 online so you
+can look at it yourself (I couldn't find any for the Khadas VIM2 which
+is what I have): [2]
 
+I agree that we need to get an answer to the RX delay question on the
+arm64 SoCs.
+If there's no way to find out from the existing resources then I can
+contact Khadas and ask them about the PCB trace length on VIM2, VIM3
+and VIM3L (these are the ones with RGMII PHYs).
+
+For the older SoCs the RX delay has to be provided by either the MAC
+or the PHY and right now we're not configuring it.
+We cannot simply enable the RX delay at the PHY level because the
+bootloader enables it in the MAC (so we have to turn it off there).
+So it would be great if you could still review this series.
+
+
+Martin
+
+
+[0] https://dl.khadas.com/Hardware/VIM2/Schematic/VIM2_V12_Sch.pdf
+[1] https://dl.khadas.com/Hardware/VIM3/Schematic/VIM3_V12_Sch.pdf
+[2] https://forum.khadas.com/t/khadas-vim3-is-launching-on-24-june/4103
