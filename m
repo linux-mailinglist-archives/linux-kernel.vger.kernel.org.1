@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA2A1C1708
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C771C12EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731584AbgEAN41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57724 "EHLO mail.kernel.org"
+        id S1729052AbgEANZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:25:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728867AbgEANcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:32:43 -0400
+        id S1729023AbgEANZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:25:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A124208DB;
-        Fri,  1 May 2020 13:32:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9395D208D6;
+        Fri,  1 May 2020 13:25:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339962;
-        bh=SPUAimYWK6VqhccesxSl0hV+O0yKfpd79FZoWPQ1uGE=;
+        s=default; t=1588339527;
+        bh=ZaolymePEi9YN4pYSwp3fniWhkkwp1vSbCFUxaZWuFY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AZ0kA+wxi/ddjrLADW9cSeRkbFfLFXwCekkhU0Aw+O8Oe+JxKER+KWiAgmEkuwzhK
-         O5m+2tuTnUHf1g8IUGv0spabVvYKKe1Y7oF7oy2fkhlwbClYliWOOyVDMG65pKQhuM
-         gUsRR+Wc33yZH1IKvOHcGRU6ZcIkmZEcv83Ttljk=
+        b=uWrAjzL5ohNKu8Sfpiz2OwGNeIv+3HmjYowQHFsB+hifDI/SFgDdmMLb1xfWTK53u
+         yFHEMkIwvJW0DLBIKGDOU6pJ2D6RxmfYJuYaL+/rU+V6Min2JDlNoIxKHq7MCK61tT
+         TLvvGwVd4szB0S0+lAeLVFuL2FUv1umGw7740NU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Johnathan Smithinovic <johnathan.smithinovic@gmx.at>,
         Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 037/117] ALSA: hda: Remove ASUS ROG Zenith from the blacklist
+Subject: [PATCH 4.4 25/70] ALSA: hda: Remove ASUS ROG Zenith from the blacklist
 Date:   Fri,  1 May 2020 15:21:13 +0200
-Message-Id: <20200501131549.179095142@linuxfoundation.org>
+Message-Id: <20200501131522.222176485@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
+References: <20200501131513.302599262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -73,10 +73,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 deletion(-)
 
 diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index d392c1ec0b282..46670da047074 100644
+index faf2554397021..da9f6749b3be2 100644
 --- a/sound/pci/hda/hda_intel.c
 +++ b/sound/pci/hda/hda_intel.c
-@@ -2173,7 +2173,6 @@ static const struct hdac_io_ops pci_hda_io_ops = {
+@@ -1978,7 +1978,6 @@ static const struct hdac_io_ops pci_hda_io_ops = {
   * should be ignored from the beginning.
   */
  static const struct snd_pci_quirk driver_blacklist[] = {
