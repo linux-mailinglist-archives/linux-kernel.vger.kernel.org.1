@@ -2,130 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF871C12D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86E61C158D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgEANYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:24:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
+        id S1729904AbgEANaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:30:16 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:9192 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728586AbgEANYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:24:50 -0400
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8FBB924962
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 13:24:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339489;
-        bh=d8OPxjX6yuJbdOTlfUXM7Zvc614YcSXkktA7q5/FxRY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oRiwD0Q+jvvpP6sMUM7uXKK++I/eOZnt6Ikrp6rtJBAPD/6vZl/OFq4Uxzqg573dr
-         HXTT0bMxoz2GibxZPq00kqvlqfP1GYpMyc+LbA3Tf2Ofs9mJFJf4NsfNvEueN0i/ZY
-         ldEXuawf8h0p2ODo+BCBInJ2O4GxSh/bcIMpNLxQ=
-Received: by mail-ed1-f48.google.com with SMTP id d16so7243606edq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 06:24:49 -0700 (PDT)
-X-Gm-Message-State: AGi0PuasxmQsQBR9LCu9jSA8Z5VWB85Yu4U60lUafAeVWEGt3KMD0npZ
-        fN+Y0kwW/oPsCyfLXXnTYIe/KIPcuglQCbYD+g==
-X-Google-Smtp-Source: APiQypKel2U1e5MRHXKLL7Rnuz1U41FBCv2Ii6mcl2FuZrvIApbgp6jSgjZ93cS0z2rzE3pcCu/kvy2F5YvYBuZXTp0=
-X-Received: by 2002:aa7:dd95:: with SMTP id g21mr3461314edv.148.1588339487975;
- Fri, 01 May 2020 06:24:47 -0700 (PDT)
+        id S1729897AbgEANaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:30:13 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 49DCmL4hYwz7N;
+        Fri,  1 May 2020 15:30:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1588339811; bh=df1zMSo857OmD6bMwuGX0U3QsXa2EYWws/vLhmRKD5I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HVR74c+TgNmjXzHbHgAf8zUizG6qUVh2yQtlEpfUuorGlirN04XEI/Xkt+C3HFnUU
+         08uYs/Ld7bZdjV5O84mbKhVCZp4zzKNBCo0qhqVplbXhl5IetrUc5uY8oasWazxWTE
+         usDHiLz3W49Xmu0+oHXX2eNCy6xAJih94CiSy5sUg7jZQuMPrqRGW6MgEvM1UeWLts
+         zue5D0xdSWakcXYlGEgkaDuT4CDWZ/UEC+QDDAjY1lxeVtLGkuELiOLYGwUS0PWBzR
+         WKXVx+1IAVix88Mck3SlhyMeSYlmxnZ/NaFHIcMczrZ4Lt/jjOpuS6MEWwfuN58m9c
+         YBFkWWhuSrT5Q==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+Date:   Fri, 1 May 2020 15:30:08 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 02/11] power: charger-manager: don't write through
+ desc->properties
+Message-ID: <20200501133008.GA8927@qmqm.qmqm.pl>
+References: <cover.1585944770.git.mirq-linux@rere.qmqm.pl>
+ <a529e64edb81a4795fe0b6480f1e4051bed1b099.1585944770.git.mirq-linux@rere.qmqm.pl>
+ <20200501123849.ws2a5ybeeej6phyr@earth.universe>
 MIME-Version: 1.0
-References: <20200417150614.2631786-1-enric.balletbo@collabora.com> <20200417150614.2631786-6-enric.balletbo@collabora.com>
-In-Reply-To: <20200417150614.2631786-6-enric.balletbo@collabora.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 1 May 2020 21:24:34 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9Gc9uCtfcp+qo=KnVOYfyjw4rDpe15A1q6G2A-iXpSow@mail.gmail.com>
-Message-ID: <CAAOTY_9Gc9uCtfcp+qo=KnVOYfyjw4rDpe15A1q6G2A-iXpSow@mail.gmail.com>
-Subject: Re: [PATCH v3 5/7] drm/mediatek: mtk_dsi: Use simple encoder
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200501123849.ws2a5ybeeej6phyr@earth.universe>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Enric:
+On Fri, May 01, 2020 at 02:38:49PM +0200, Sebastian Reichel wrote:
+> Hi,
+> 
+> On Fri, Apr 03, 2020 at 10:20:31PM +0200, Micha³ Miros³aw wrote:
+> > psy_desc->properties will become pointer to const.  Avoid writing
+> > through the pointer to enable constification of the tables elsewhere.
+> > 
+> > Signed-off-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
+> For patches 1-3 I used my version, that I wrote in parallel while
+> reviewing a different patch series. It is slightly different, but
+> achieves the same goal.
 
-Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2020=E5=B9=
-=B44=E6=9C=8817=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=8811:06=E5=AF=
-=AB=E9=81=93=EF=BC=9A
->
-> The mtk_dsi driver uses an empty implementation for its encoder. Replace
-> the code with the generic simple encoder.
+There is a bug in the tree now regarding use of num_properties
+in charger-manager.  Following patch should fix it.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Best Regards,
+Micha³ Miros³aw
 
->
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> ---
->
-> Changes in v3: None
-> Changes in v2: None
->
->  drivers/gpu/drm/mediatek/mtk_dsi.c | 14 +++-----------
->  1 file changed, 3 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
-k/mtk_dsi.c
-> index 869ae0a2e9f8..d68694ff00dc 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-> @@ -22,6 +22,7 @@
->  #include <drm/drm_panel.h>
->  #include <drm/drm_print.h>
->  #include <drm/drm_probe_helper.h>
-> +#include <drm/drm_simple_kms_helper.h>
->
->  #include "mtk_drm_ddp_comp.h"
->
-> @@ -788,15 +789,6 @@ static void mtk_output_dsi_disable(struct mtk_dsi *d=
-si)
->         dsi->enabled =3D false;
->  }
->
-> -static void mtk_dsi_encoder_destroy(struct drm_encoder *encoder)
-> -{
-> -       drm_encoder_cleanup(encoder);
-> -}
-> -
-> -static const struct drm_encoder_funcs mtk_dsi_encoder_funcs =3D {
-> -       .destroy =3D mtk_dsi_encoder_destroy,
-> -};
-> -
->  static int mtk_dsi_create_conn_enc(struct drm_device *drm, struct mtk_ds=
-i *dsi);
->  static void mtk_dsi_destroy_conn_enc(struct mtk_dsi *dsi);
->
-> @@ -1140,8 +1132,8 @@ static int mtk_dsi_encoder_init(struct drm_device *=
-drm, struct mtk_dsi *dsi)
->  {
->         int ret;
->
-> -       ret =3D drm_encoder_init(drm, &dsi->encoder, &mtk_dsi_encoder_fun=
-cs,
-> -                              DRM_MODE_ENCODER_DSI, NULL);
-> +       ret =3D drm_simple_encoder_init(drm, &dsi->encoder,
-> +                                     DRM_MODE_ENCODER_DSI);
->         if (ret) {
->                 DRM_ERROR("Failed to encoder init to drm\n");
->                 return ret;
-> --
-> 2.25.1
->
+diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
+index a71e2ee81423..2ef53dc1f2fb 100644
+--- a/drivers/power/supply/charger-manager.c
++++ b/drivers/power/supply/charger-manager.c
+@@ -1740,14 +1740,14 @@ static int charger_manager_probe(struct platform_device *pdev)
+ 	}
+ 	if (!power_supply_get_property(fuel_gauge,
+ 					  POWER_SUPPLY_PROP_CHARGE_NOW, &val)) {
+-		properties[cm->charger_psy_desc.num_properties] =
++		properties[num_properties] =
+ 				POWER_SUPPLY_PROP_CHARGE_NOW;
+ 		num_properties++;
+ 	}
+ 	if (!power_supply_get_property(fuel_gauge,
+ 					  POWER_SUPPLY_PROP_CURRENT_NOW,
+ 					  &val)) {
+-		properties[cm->charger_psy_desc.num_properties] =
++		properties[num_properties] =
+ 				POWER_SUPPLY_PROP_CURRENT_NOW;
+ 		num_properties++;
+ 	}
