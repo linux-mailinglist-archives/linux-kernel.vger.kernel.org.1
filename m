@@ -2,208 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4241C1A32
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745891C1A34
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729965AbgEAP5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 11:57:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:43150 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729008AbgEAP5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 11:57:42 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16D2D30E;
-        Fri,  1 May 2020 08:57:42 -0700 (PDT)
-Received: from bogus (unknown [10.37.12.80])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B90543F68F;
-        Fri,  1 May 2020 08:57:39 -0700 (PDT)
-Date:   Fri, 1 May 2020 16:57:29 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Harb Abdulhamid (harb@amperecomputing.com)" 
-        <harb@amperecomputing.com>
-Subject: Re: [PATCH 5/5] arm/arm64: smccc: Add ARCH_SOC_ID support
-Message-ID: <20200501155717.GA24840@bogus>
-References: <20200430114814.14116-1-sudeep.holla@arm.com>
- <20200430114814.14116-6-sudeep.holla@arm.com>
- <241f0a4b-e5bb-f3d9-40ff-b2f088129a0c@arm.com>
+        id S1730017AbgEAP5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 11:57:48 -0400
+Received: from smtprelay0007.hostedemail.com ([216.40.44.7]:43472 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729008AbgEAP5r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 11:57:47 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id B28FB182CF666;
+        Fri,  1 May 2020 15:57:46 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:966:973:981:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2196:2198:2199:2200:2393:2559:2562:2731:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:4250:4321:4385:4605:5007:6119:7903:8957:10004:10400:10848:11026:11232:11473:11658:11914:12295:12297:12438:12555:12740:12895:12986:13071:13870:13894:14093:14097:14180:14181:14659:14721:21060:21080:21220:21451:21627:21740:21990:30012:30034:30054:30070:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:4,LUA_SUMMARY:none
+X-HE-Tag: word42_60d7cded7bb3e
+X-Filterd-Recvd-Size: 3042
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  1 May 2020 15:57:45 +0000 (UTC)
+Message-ID: <3aeb6ab5059ec753d922051d7732e13322188e7c.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: add support to check 'Fixes:' tag format
+From:   Joe Perches <joe@perches.com>
+To:     Wang YanQing <udknight@gmail.com>
+Cc:     Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>, Markus.Elfring@web.de,
+        kernel-janitors@vger.kernel.org
+Date:   Fri, 01 May 2020 08:57:42 -0700
+In-Reply-To: <20200501154033.GA25730@udknight>
+References: <20200501154033.GA25730@udknight>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <241f0a4b-e5bb-f3d9-40ff-b2f088129a0c@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+On Fri, 2020-05-01 at 23:40 +0800, Wang YanQing wrote:
+> According to submitting-patches.rst, 'Fixes:' tag has a little
+> stricter condition about the one line summary than normal git
+> commit description:
+> “...
+> Do not split the tag across multiple lines, tags are exempt from
+> the "wrap at 75 columns" rule in order to simplify parsing scripts
+> ...”
+> 
+> And there is no sanity check for 'Fixes:' tag format in checkpatch
+> the same as GIT_COMMIT_ID for git commit description, so let's expand
+> the GIT_COMMIT_ID to add 'Fixes:' tag format check support.
+> 
+> The check supports below formats:
+> Fixes: 54a4f0239f2e ("KVM: MMU: make kvm_mmu_zap_page() return the number of pages it actually freed")
+> Fixes: 85f7cd3a2aad ("Revert "media: Kconfig: better support hybrid TV devices"")
+> Fixes: 878520ac45f9 ("ext4: save the error code which triggered...")
+> Fixes: 878520ac45f9 ("ext4: save the error code which triggered")
+> Fixes: 277f27e2f277 ("SUNRPC/cache: Allow garbage collection ... ")
 
-Thanks for taking a reviewing these patches.
+Hi again YanQing.
 
-On Fri, May 01, 2020 at 04:07:39PM +0100, Steven Price wrote:
-> On 30/04/2020 12:48, Sudeep Holla wrote:
-> > SMCCC v1.2 adds a new optional function SMCCC_ARCH_SOC_ID to obtain a
-> > SiP defined SoC identification value. Add support for the same.
-> >
-> > Also using the SoC bus infrastructure, let us expose the platform
-> > specific SoC atrributes under sysfs. We also provide custom sysfs for
-> > the vendor ID as JEP-106 bank and identification code.
-> >
-> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > ---
-> >   drivers/firmware/psci/Makefile |   2 +-
-> >   drivers/firmware/psci/soc_id.c | 148 +++++++++++++++++++++++++++++++++
-> >   include/linux/arm-smccc.h      |   5 ++
-> >   3 files changed, 154 insertions(+), 1 deletion(-)
-> >   create mode 100644 drivers/firmware/psci/soc_id.c
-> >
-> > diff --git a/drivers/firmware/psci/Makefile b/drivers/firmware/psci/Makefile
-> > index 1956b882470f..c0b0c9ca57e4 100644
-> > --- a/drivers/firmware/psci/Makefile
-> > +++ b/drivers/firmware/psci/Makefile
-> > @@ -1,4 +1,4 @@
-> >   # SPDX-License-Identifier: GPL-2.0
-> >   #
-> > -obj-$(CONFIG_ARM_PSCI_FW)	+= psci.o
-> > +obj-$(CONFIG_ARM_PSCI_FW)	+= psci.o soc_id.o
-> >   obj-$(CONFIG_ARM_PSCI_CHECKER)	+= psci_checker.o
-> > diff --git a/drivers/firmware/psci/soc_id.c b/drivers/firmware/psci/soc_id.c
-> > new file mode 100644
-> > index 000000000000..820f69dad7f5
-> > --- /dev/null
-> > +++ b/drivers/firmware/psci/soc_id.c
-> > @@ -0,0 +1,148 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright 2020 Arm Limited
-> > + */
-> > +
-> > +#include <linux/arm-smccc.h>
-> > +#include <linux/bitfield.h>
-> > +#include <linux/device.h>
-> > +#include <linux/module.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/sys_soc.h>
-> > +
-> > +#define SOCID_JEP106_BANK_IDX_MASK	GENMASK(30, 24)
-> > +#define SOCID_JEP106_ID_CODE_MASK	GENMASK(23, 16)
-> > +#define SOCID_IMP_DEF_SOC_ID_MASK	GENMASK(15, 0)
-> > +#define JEP106_BANK_IDX(x)	(u8)(FIELD_GET(SOCID_JEP106_BANK_IDX_MASK, (x)))
-> > +#define JEP106_ID_CODE(x)	(u8)(FIELD_GET(SOCID_JEP106_ID_CODE_MASK, (x)))
-> > +#define IMP_DEF_SOC_ID(x)	(u16)(FIELD_GET(SOCID_IMP_DEF_SOC_ID_MASK, (x)))
-> > +
-> > +static int soc_id_version;
-> > +static struct soc_device *soc_dev;
-> > +static struct soc_device_attribute *soc_dev_attr;
-> > +
-> > +static int smccc_map_error_codes(unsigned long a0)
-> > +{
-> > +	if (a0 == SMCCC_RET_INVALID_PARAMETER)
-> > +		return -EINVAL;
-> > +	if (a0 == SMCCC_RET_NOT_SUPPORTED)
-> > +		return -EOPNOTSUPP;
-> > +	return 0;
->
-> It seems odd to special case just those errors. While they are the only
-> errors we expect, any result with the high bit set is an error (arguably a
-> bug in the firmware) so should really cause an error return.
->
+I think all the non-standard and incomplete forms
+should have a warning emitted.
 
-I agree and happy to change it. I too thought about the same for a while and
-they left it for review time to finalise 😄 
+> The check doesn't support below formats:
+> Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface"
+> Fixes: 6c73698904aa pinctrl: qcom: Introduce readl/writel accessors
+> Fixes: 3fd6e7d9a146 (ASoC: tas571x: New driver for TI TAS571x power amplifiers)
+> Fixes: 55697cbb44e4 ("arm64: dts: renesas: r8a779{65,80,90}: Add IPMMU devices nodes)
+> Fixes: ba35f8588f47 (“ipvlan: Defer multicast / broadcast processing to a work-queue”)
+> Fixes: cd758a9b57ee "KVM: PPC: Book3S HV: Use __gfn_to_pfn_memslot in HPT page fault handler"
+> Fixes:      9b1640686470 ("scsi: lpfc: Fix use-after-free mailbox cmd completion")
+> Fixes: 03f6fc6de919 ('ASoC: rt5682: Add the soundwire support')
 
-> > +}
-> > +
-> > +static int smccc_soc_id_support_check(void)
-> > +{
-> > +	struct arm_smccc_res res;
-> > +
-> > +	if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE) {
-> > +		pr_err("%s: invalid SMCCC conduit\n", __func__);
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +
-> > +	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_FEATURES_FUNC_ID,
-> > +			     ARM_SMCCC_ARCH_SOC_ID, &res);
-> > +
-> > +	return smccc_map_error_codes(res.a0);
-> > +}
-> > +
-> > +static ssize_t
-> > +jep106_cont_bank_code_show(struct device *dev, struct device_attribute *attr,
-> > +			   char *buf)
-> > +{
-> > +	return sprintf(buf, "%02x\n", JEP106_BANK_IDX(soc_id_version) + 1);
-> > +}
-> > +
-> > +static DEVICE_ATTR_RO(jep106_cont_bank_code);
-> > +
-> > +static ssize_t
-> > +jep106_identification_code_show(struct device *dev,
-> > +				struct device_attribute *attr, char *buf)
-> > +{
-> > +	return sprintf(buf, "%02x\n", JEP106_ID_CODE(soc_id_version) & 0x7F);
->
-> It seems odd to have the mask defined to include a bit that is then always
-> masked off. From the spec I presume this is a parity bit, but it would be
-> good to have a comment explaining this.
->
 
-Sure, actually I can to make it part of the macro itself and add a note
-there.
+> Note: this patch also fixes double quotation mark issue for normal git
+>       commit description, and now it supports double quotation mark in
+>       title line, for example:
+>       Commit e33e2241e272 ("Revert "cfg80211: Use 5MHz bandwidth by default
+>       when checking usable channels"")
 
-> > +}
-> > +
-> > +static DEVICE_ATTR_RO(jep106_identification_code);
-> > +
-> > +static struct attribute *jep106_id_attrs[] = {
-> > +	&dev_attr_jep106_cont_bank_code.attr,
-> > +	&dev_attr_jep106_identification_code.attr,
-> > +	NULL
-> > +};
-> > +
-> > +ATTRIBUTE_GROUPS(jep106_id);
-> > +
-> > +static int __init smccc_soc_init(void)
-> > +{
-> > +	struct device *dev;
-> > +	int ret, soc_id_rev;
-> > +	struct arm_smccc_res res;
-> > +	static char soc_id_str[8], soc_id_rev_str[12];
-> > +
-> > +	if (arm_smccc_get_version() < ARM_SMCCC_VERSION_1_2)
-> > +		return 0;
->
-> NIT: Do we actually need to check the version here - or would probing
-> ARM_SMCCC_ARCH_FEATURES_FUNC_ID as is done below sufficient? I'm not aware
-> of this relying on any new semantics that v1.2 added.
->
+Nice.
 
-It should be sufficient, but I am trying to avoid raising error if it is
-not SMCCC v1.2+, hence the return 0.
 
-> > +
-> > +	ret = smccc_soc_id_support_check();
-> > +	if (ret)
-> > +		return ret;
->
-> This seems odd - if the version is <v1.2 then we return 0. But if it's >=1.2
-> but doesn't support SOC_ID then it's an error return?
->
-
-You are right, I see that now. I can flag a note/info and return 0.
-
---
-Regards,
-Sudeep
