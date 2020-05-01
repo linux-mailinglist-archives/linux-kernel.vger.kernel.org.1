@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B8C1C175E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6591C176C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbgEAOJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:09:23 -0400
-Received: from mga18.intel.com ([134.134.136.126]:26239 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728840AbgEAOJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 10:09:22 -0400
-IronPort-SDR: oqzMxGezNetHf1zVxqo1/37tdvdP2zOc1I7Md452rwzg+SLJ+2CtM0qmkejT7Ki6QfLGAgWa//
- Rg9ap2dNWnSQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 07:09:21 -0700
-IronPort-SDR: T8F0QqIQVBxO8n19+0hE/vGhvzYePOPeBHTI9gbaOnHqLw9nF12kUm+ibLM91YufzG0lEtO7Jh
- TDHwScBUPBRQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,339,1583222400"; 
-   d="scan'208";a="460272134"
-Received: from orsmsx109.amr.corp.intel.com ([10.22.240.7])
-  by fmsmga006.fm.intel.com with ESMTP; 01 May 2020 07:09:21 -0700
-Received: from orsmsx160.amr.corp.intel.com (10.22.226.43) by
- ORSMSX109.amr.corp.intel.com (10.22.240.7) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Fri, 1 May 2020 07:09:20 -0700
-Received: from orsmsx115.amr.corp.intel.com ([169.254.4.83]) by
- ORSMSX160.amr.corp.intel.com ([169.254.13.187]) with mapi id 14.03.0439.000;
- Fri, 1 May 2020 07:09:20 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Andy Lutomirski <luto@amacapital.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        stable <stable@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "Tsaur, Erwin" <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
-Thread-Topic: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
-Thread-Index: AQHWHsst2+7frPAw9kCYaqQsGNEgp6iSJ9mAgAAvKwCAAAcmgIAAF8EA//+WBACAAH0TAIAAQ4gAgAAE/4CAAAO1gIAAb4YQ
-Date:   Fri, 1 May 2020 14:09:20 +0000
-Message-ID: <3908561D78D1C84285E8C5FCA982C28F7F60EBB6@ORSMSX115.amr.corp.intel.com>
-References: <CAHk-=wiMs=A90np0Hv5WjHY8HXQWpgtuq-xrrJvyk7_pNB4meg@mail.gmail.com>
- <1962EE67-8AD1-409D-963A-4F1E1AB3B865@amacapital.net>
-In-Reply-To: <1962EE67-8AD1-409D-963A-4F1E1AB3B865@amacapital.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.22.254.140]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1729145AbgEAOKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728840AbgEAOKw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 10:10:52 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC50C061A0C;
+        Fri,  1 May 2020 07:10:51 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id x17so11658434wrt.5;
+        Fri, 01 May 2020 07:10:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8v3kVI4yLmXq/VIVZwurKp05HhbRXPIJFuU6oZF2NPM=;
+        b=jOHWzx9BhQ4y8ZGz0PWAWBQ2u6f3ts0FjGwtdsiTWqULyIFsmvDcGqroerFHny9RFD
+         od6tzLLbejqoaVOTh9BlQUtOVLUNeSusPasRvGSIP3REroL/32aTrBfo7uC7RUxTVq/b
+         FTD7J6lUxNX8QxEz1scF/nMAYV+vsNLFLI+n1PwpI70d2TEWh4aqFg8+Hz09ApHA94lN
+         x6ZLS9zAfSfUFsGolxnFmXrX7pw1OLZq1sQ8KLCgwO6TGdylQToQ6G856CZCknZ+4xD3
+         aDZs41cSEEBL6wobgF0YtE8WkITIThOzcVQuNjGEEYL4kJLgB+sHxd1CgXhF2ecySs+t
+         gGiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8v3kVI4yLmXq/VIVZwurKp05HhbRXPIJFuU6oZF2NPM=;
+        b=FeNAUNAKL0kVHip8bC7hCqmDEeNAKMLq0O9DX8fjKOvYnCy2PtcxMOCHTKI30+xHJq
+         f2KNTpIb1Zu8GpGLq7Fpd2jZntzsW/vlHbk+MXpJFlmmH4i+EOQ6uQDXIk3dDWeMl+le
+         Q+/t50746RxvwtN5GNNR1Al4foHQ72D8zXun1yxst/xmYZTabUSKh1dEcvKZwqJdPWFL
+         Mg1/6nr7NHg4Edco7YKvC+owoulqPpCvP4jlmiIpg1WhKkDjpg8SLhgoch0aXtLf/Fyd
+         Ph4sqCPIo0j7pbq+eVXuzCKe8Osf8qkYYhCVf3layslmVIYFTo1mjmR/LpfTUPgxxmzo
+         DYgA==
+X-Gm-Message-State: AGi0PuZaGxSrz4831kwz0tw8NY/sgJ7/D+XDHcqCkeuUicGu/m5t6Bvw
+        wfYE2IuIiQYTJJJlSlythx0=
+X-Google-Smtp-Source: APiQypIiZxYqL0xDav+nSqLdWkN2TrUAx4mxObBQYgpVo4Bmyb35Do6Re75IAp97MY1niDRgjBM/3w==
+X-Received: by 2002:adf:9d83:: with SMTP id p3mr4566152wre.142.1588342250199;
+        Fri, 01 May 2020 07:10:50 -0700 (PDT)
+Received: from localhost.localdomain ([109.126.133.135])
+        by smtp.gmail.com with ESMTPSA id j17sm4837390wrb.46.2020.05.01.07.10.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 May 2020 07:10:49 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] small fixes for-5.7
+Date:   Fri,  1 May 2020 17:09:35 +0300
+Message-Id: <cover.1588341674.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBOb3cgbWF5YmUgY29weV90b191c2VyKCkgc2hvdWxkICphbHdheXMqIHdvcmsgdGhpcyB3YXks
-IGJ1dCBJ4oCZbSBub3QgY29udmluY2VkLg0KPiBDZXJ0YWlubHkgcHV0X3VzZXIoKSBzaG91bGRu
-4oCZdCDigJQgdGhlIHJlc3VsdCB3b3VsZG7igJl0IGV2ZW4gYmUgd2VsbCBkZWZpbmVkLiBBbmQg
-SeKAmW0NCj4gIHVuY29udmluY2VkIHRoYXQgaXQgbWFrZXMgbXVjaCBzZW5zZSBmb3IgdGhlIG1h
-am9yaXR5IG9mIGNvcHlfdG9fdXNlcigpIGNhbGxlcnMNCj4gIHRoYXQgYXJlIGFsc28gZGlyZWN0
-bHkgYWNjZXNzaW5nIHRoZSBzb3VyY2Ugc3RydWN0dXJlLg0KDQpPbmUgY2FzZSB0aGF0IG1pZ2h0
-IHdvcmsgaXMgY29weV90b191c2VyKCkgdGhhdCdzIGNvcHlpbmcgZnJvbSB0aGUga2VybmVsIHBh
-Z2UgY2FjaGUNCnRvIHRoZSB1c2VyIGluIHJlc3BvbnNlIHRvIGEgcmVhZCgyKSBzeXN0ZW0gY2Fs
-bC4gIEFjdGlvbiB3b3VsZCBiZSB0byBjaGVjayBpZiB3ZSBjb3VsZA0KcmUtcmVhZCBmcm9tIHRo
-ZSBmaWxlIHN5c3RlbSB0byBhIGRpZmZlcmVudCBwYWdlLiBJZiBub3QsIHJldHVybiAtRUlPLiBF
-aXRoZXIgd2F5IGRpdGNoIHRoZQ0KcG9pc29uIHBhZ2UgZnJvbSB0aGUgcGFnZSBjYWNoZS4NCg0K
-LVRvbnkNCg==
+I split the sent patchset, please consider this part for current.
+
+I'll send a test for [1] in a day or so.
+
+Regarding [3], Jens, I haven't looked properly yet, how long
+splice can wait on a inode mutex, but it can be problematic,
+especially for latencies. How about go safe for-5.7, and
+maybe think something out for next?
+
+
+Pavel Begunkov (3):
+  io_uring: fix extra put in sync_file_range()
+  io_uring: check non-sync defer_list carefully
+  io_uring: punt splice async because of inode mtx
+
+ fs/io_uring.c | 20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
+
+-- 
+2.24.0
+
