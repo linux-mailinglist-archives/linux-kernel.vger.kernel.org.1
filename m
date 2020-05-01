@@ -2,96 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E5DD1C190F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A991C190C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729462AbgEAPKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 11:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728856AbgEAPKu (ORCPT
+        id S1729276AbgEAPKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 11:10:48 -0400
+Received: from sonic315-13.consmr.mail.bf2.yahoo.com ([74.6.134.123]:34533
+        "EHLO sonic315-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728856AbgEAPKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 11:10:50 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3EEC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 08:10:50 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id u12so3473786vsq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 08:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=knTG2gmvtoT22+XOsX7dmFpVAGO3ao9zwsfFiTXURTg=;
-        b=i5JF31iiDLo6z171lTJxhjapmVJS9gqP3xgHzEmURWBZ9ZrO+wXla6ynAK3ki/7XPX
-         sRwv80rlH6ndWj4Gju7PPJfTN9R8SjAgNB8Ev4Z37QlaoWQGa2up1QK2IwuGgWTxfCp1
-         86gjvyWw9Ih0xsuuDS86kOVoOpHcVaXBZSNjQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=knTG2gmvtoT22+XOsX7dmFpVAGO3ao9zwsfFiTXURTg=;
-        b=dhCQykJ816+8DF+XiVtlA+28LjjS0G8U6kZAVNAGtSv3otmLCZTqaY9dQ4GiC00Tur
-         Q10m7xy3BijR/+0/nF/Xbqqv7M75ZyrBKV9ErP3dz7qEVMtg85LNalINAQFBn/PK62qr
-         WO9aqtoqW96zokhAofYMDV1WB+k1235yEsKEgbr86h4D3Fbu5TCCSwRhP94M83N6nJXB
-         zK+V9EG/KLq9KXN2wtCHPUTQQ/yK2n0yulNkkXybgw6ezrLoZOmFXKbP4/bx97GmBSQB
-         rmBrg+uQJ12r/34jWKGaEdZONlzvTxuhdHujhijgYWaf83tmPWp7K4bjawBLCBZn8c35
-         NHIQ==
-X-Gm-Message-State: AGi0PuaBUF35voowkhSXa2Y3GBhjRknyIwV7Ajm28MyWNd70cFvLnWgs
-        IgIUdI+3QWFQ/8SCa9gLuEirnKoguA0=
-X-Google-Smtp-Source: APiQypJQa73SrUYdqvanDKEOFYozR65Thd99RGmIL+07KSJ56t756XnZZf0tdu0oCUmEOhPdFbG4pw==
-X-Received: by 2002:a05:6102:30a7:: with SMTP id y7mr3438610vsd.118.1588345849280;
-        Fri, 01 May 2020 08:10:49 -0700 (PDT)
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
-        by smtp.gmail.com with ESMTPSA id 189sm776541vsu.3.2020.05.01.08.10.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 May 2020 08:10:48 -0700 (PDT)
-Received: by mail-vs1-f46.google.com with SMTP id x136so6441623vsx.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 08:10:48 -0700 (PDT)
-X-Received: by 2002:a67:bd07:: with SMTP id y7mr3622452vsq.109.1588345847717;
- Fri, 01 May 2020 08:10:47 -0700 (PDT)
+        Fri, 1 May 2020 11:10:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1588345846; bh=lMwnL/6WltFrTd0TmVnY+7WY/Sq+3khHK9hYAyAunB4=; h=Date:From:Reply-To:Subject:References:From:Subject; b=kfOWk3DgScGQUzmPvlVHNs1bEmZ3sfXlHKng0dewImkQutsigeqf1s/SpJD+Ew2fbV1tnd+wrWUV59IKIlcQlu3+kvzVHfpZ041nhkgxRuYWsjzp8q33xkFr3ULhDu/W0H95pyCNSfXhx+LAqw/34dxeOS7p2+LeHWSApDVflK8f8udLmWST1Ug7nOhsaxZzjuDQWVhsB+49r43qISW8ckqEQYGNNRT41r6Dz+FLS4hjZ2MsUgLvCSvfw6YsxIoIRZZA/EG8lACcROESn7X5LLKxGkTrVTgPrR3z1PQBuFMRuAyixbQgQjsXfk2pr1o3x1M+AFIEKt5ggoNV7lAQEA==
+X-YMail-OSG: sgZnPHoVM1kcLQ_CD4ACrvyaDHOR723LXG6MRClNZkrc6PnL7FrObgae483n5fm
+ GiKTmsKKhqOzGp2q527Is1C53OcpSBL69Q4lZR1VN_BTjHqWEo_kYWvNa6lj59.uCI0sZUgJytCz
+ 7JJkjIFhvfAFbURy7oYr1cSNrT7YZiZH0TDFp9Lh7FZEp_KSdJskD0g0dEmkCgZtxj_2NmMTn.C8
+ U8o_PAVdNMDxtBrBY72ZWUoEFs7QyuAuD16yhf0xoAdDHoO4Fb9yStKBuQKCP2OCRgzNcwHMLctS
+ 5hUy0uF7tT6iGd6eJSoiEqanYGrVsyF6_frK4UlUsFrWNkElku_p72xQvzQ_MZ9jLTuT9EoVZLWz
+ ugUfa7ObhqbXUdySDsdreQaZMR.WmY3_KMXUtcTmAPq.9hcIAn_dFxdbypFJJDglTKfNYvTjaigT
+ 0gbXKswAQHpaxgx3xXrdAJnjVkTsBZwLUivYFnciVmN2qkmN3pIWWuiRKKfRb0gZS8QJNmUMrrKK
+ 67X1guSbeSbeOBXh0evChFnGl1vdeY3oQGumm_bXwBdl3.ZQq.kIsq7dDSMxiFawxfNFffrCYSFf
+ 4H3vfTBbAdJAW.NdIXZEJCz8pPS_DokIXBWGdldq6.i8sioWynPmVbJWUy6lrQ9_M8nwjW_UIBlv
+ Ba.hQwUrZlQN2etw2TUsjRRjA.sfxcHVa4XqSdt0vRdc9wdSoYXxeb11lcXjls0I_AhDMpvROlNq
+ .NfGLWGfHQ0maQ_UuXgYtItF5jy8EcgTl.PAlJX2jFQivm9KnVbrJdVjjRMqYPRdBbXkAtkiRAgX
+ nKvrqscMYDAJfqHNf2_2dmHb2vcul2LJ1_1fBUkglEm_.I0mUaWLXczh.WpZK7gfYXSq6pjqyUok
+ a1TZT7F2ysPsI1.FfKhPb.HI_72GAYgnma2YKvnYyY1ouUiAEoq3xMb.jywjhvPSkwVK43LiY1xu
+ iCAqzMnMubZuM.a3zaCO3KJ_0PRwk4NcOHFK9FgqIeOpXQdP.6hEV2IZJPg1bldBmcGG2VaZYmGU
+ 2rrfksTDNzJJFezmHkM74hODYmZjRyq9dN057qGPGhy5nhxdYwD6kGu9D.mM9Uvs8XOjmS20wSSb
+ IMfeY9cLs8VA55fpre8aoOOd7GnSYFaTCgwuxrqIodvc9MHkTDEq2MWV5uo9I0xiObhMllFdKt9t
+ NXiDWWY1NnsXURGMOurEOsVTZlk.XWcsduq0.sBXhGJYItL4LD7uRu6U1BXQvt8564A9unh13Rlp
+ eViDELzrW9LauN9HywO8hSJO8jHD5FgDzmHGfOZf3yoJpDN1XQlj3yIMPj03VN3nOfPpuT3AMOA-
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Fri, 1 May 2020 15:10:46 +0000
+Date:   Fri, 1 May 2020 15:10:44 +0000 (UTC)
+From:   Rose Gordon <rosegordonor@gmail.com>
+Reply-To: rosegordonor@gmail.com
+Message-ID: <541367390.265417.1588345844952@mail.yahoo.com>
+Subject:  Greetings to you
 MIME-Version: 1.0
-References: <1588314617-4556-1-git-send-email-mkshah@codeaurora.org>
-In-Reply-To: <1588314617-4556-1-git-send-email-mkshah@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 1 May 2020 08:10:36 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V8phQsc5SSUdqw-HRPYzW5QoEc8NoVJ+ZXQz72FgEPug@mail.gmail.com>
-Message-ID: <CAD=FV=V8phQsc5SSUdqw-HRPYzW5QoEc8NoVJ+ZXQz72FgEPug@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: qcom: Add affinity callbacks to msmgpio IRQ chip
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     Andy Gross <andy.gross@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        LinusW <linus.walleij@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Srinivas Rao L <lsrao@codeaurora.org>,
-        Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <541367390.265417.1588345844952.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15820 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Greetings to you,
+I hope that this letter finds you in the best of health and spirit. My name is Rose Gordan, Please I kindly request for your attention, I have a very important business to discuss with you privately and in a much matured manner but i will give the details upon receipt of your response,
 
-On Thu, Apr 30, 2020 at 11:31 PM Maulik Shah <mkshah@codeaurora.org> wrote:
->
-> From: Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>
->
-> Wakeup capable GPIO IRQs routed via PDC are not being migrated when a CPU
-> is hotplugged. Add affinity callbacks to msmgpio IRQ chip to update the
-> affinity of wakeup capable IRQs.
->
-> Fixes: e35a6ae0eb3a ("pinctrl/msm: Setup GPIO chip in hierarchy")
-> Signed-off-by: Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>
-> [mkshah: updated commit text and minor code fixes]
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> ---
->  drivers/pinctrl/qcom/pinctrl-msm.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
+Thank you in advance!
 
-Tested-by: Douglas Anderson <dianders@chromium.org>
+Yours sincerely,
+Rose.
