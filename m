@@ -2,243 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4147E1C1C2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B267A1C1C3D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729941AbgEARpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:45:25 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:37744 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729772AbgEARpZ (ORCPT
+        id S1730024AbgEARtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 13:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729697AbgEARtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 13:45:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588355123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=3erjJ6PUj0+kTbH6WM4sv87u+V7N5mk0eIrgDOfdhPg=;
-        b=dpXdnK0HidpvX5Hh5H75j9sj+9JD0r3X4Dy+sP3HLxnFkA6KUCY45R+y4GD7PRrM/UKDs2
-        h8HLbj+tsnx6r0H4DVdD4fgRjbzB4NL6YNjbFgaHgKF5tTVcy2DNLGj18n647btc69kRQF
-        892wHm8FwItYC1EYgZy7+Xh14ax7CXU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-247-RMUFCZcdPIaCTt6gBqiHfA-1; Fri, 01 May 2020 13:45:19 -0400
-X-MC-Unique: RMUFCZcdPIaCTt6gBqiHfA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B00D835B8E;
-        Fri,  1 May 2020 17:45:17 +0000 (UTC)
-Received: from [10.36.112.180] (ovpn-112-180.ams2.redhat.com [10.36.112.180])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 69C445C1D2;
-        Fri,  1 May 2020 17:45:08 +0000 (UTC)
-Subject: Re: [PATCH v2 2/3] mm/memory_hotplug: Introduce
- MHP_NO_FIRMWARE_MEMMAP
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, virtio-dev@lists.oasis-open.org,
-        virtualization@lists.linux-foundation.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-hyperv@vger.kernel.org,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        xen-devel <xen-devel@lists.xenproject.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Baoquan He <bhe@redhat.com>
-References: <20200430102908.10107-1-david@redhat.com>
- <20200430102908.10107-3-david@redhat.com>
- <87pnbp2dcz.fsf@x220.int.ebiederm.org>
- <1b49c3be-6e2f-57cb-96f7-f66a8f8a9380@redhat.com>
- <871ro52ary.fsf@x220.int.ebiederm.org>
- <373a6898-4020-4af1-5b3d-f827d705dd77@redhat.com>
- <875zdg26hp.fsf@x220.int.ebiederm.org>
- <b28c9e02-8cf2-33ae-646b-fe50a185738e@redhat.com>
- <20200430152403.e0d6da5eb1cad06411ac6d46@linux-foundation.org>
- <5c908ec3-9495-531e-9291-cbab24f292d6@redhat.com>
- <CAPcyv4j=YKnr1HW4OhAmpzbuKjtfP7FdAn4-V7uA=b-Tcpfu+A@mail.gmail.com>
- <2d019c11-a478-9d70-abd5-4fd2ebf4bc1d@redhat.com>
- <CAPcyv4iOqS0Wbfa2KPfE1axQFGXoRB4mmPRP__Lmqpw6Qpr_ig@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Organization: Red Hat GmbH
-Message-ID: <62dd4ce2-86cc-5b85-734f-ec8766528a1b@redhat.com>
-Date:   Fri, 1 May 2020 19:45:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 1 May 2020 13:49:20 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB559C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:49:18 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id b17so5309473ybq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:49:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Vr7i4KBzRAJaxFRYhCEC2mVKHkt5/69Cvw0YZLzHCkI=;
+        b=PsVh7QRveASnS9mQbzIV54P0vEmP87capTD8KvpENmUfjmXbCnci0GT90owMQxvORd
+         3mpwwpY+o3GxItma7tH2B2oc9+foqqtSJ0V1Pu6144iLPjzT4xLT4q9GnJEetWNKUzgU
+         K6D1UEk2LbOuE/iPnIhD5D00s1uAeI1jU3vvcpf4PtzlWhYcpTl8uv4mTZU9onHfWDQk
+         7LQNzkytaXi/vwuxxxVJ7xnJdib4Kt9oInZH+sQk9VVsKXli++rv6CwOcrdHlm76u/Z/
+         U58xhqjkfgwL0MuD25Vz2b7YpSRuPg59Bn9uG0tsAyuEIbAQ6vMdRGcV57cfg0Bw4QYk
+         mFWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Vr7i4KBzRAJaxFRYhCEC2mVKHkt5/69Cvw0YZLzHCkI=;
+        b=c9Kv+thVsTQ44KvFdFoyWuxqmXOGQNdYSylAKhcpIVr2AEU5hied1W42yn2E/3yL4J
+         HY6IcU64XALiO5oaV263LEWJQI2Rch1f2/1oqf3/UwCiom09u9SBHV7oZazcbixPEC9+
+         1HdoSvXkAnIvgRHXPpCN6tI9rPJybF4h6514lzf58cNoT2RDw4JaYfUaWeuKGwCBt7Fv
+         sRnpFGa0aVIp4xGzV+oR2sj5OjPzS0t/Vhgr0Jw5zWWJB6rRFejX68nSK9YuorMEAgJ0
+         8GeG3PVUcfmrtIjpDzTusJnKG5eq44YI7XCWCrWeT96z0Rzc3GSZl1My9avu52cy75oo
+         Euig==
+X-Gm-Message-State: AGi0PuYhxWeRBIW5Q9jlEBVw8U51zCHdjDGEJ9wGh/1uXN0w+TyOxV0f
+        IagHyUJ9B0/K6wGzAYPPMbWnMnOStKn8+ik/ZhGzkg==
+X-Google-Smtp-Source: APiQypLVTKFhOiWfbcYQxrLnlEljDpT8buG+pzGvryeq4wTccpcCURS59rQbR8fqWP/X/WKvrSXFbSorBFD6L1zzZxc=
+X-Received: by 2002:a5b:9cb:: with SMTP id y11mr8303374ybq.177.1588355357976;
+ Fri, 01 May 2020 10:49:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4iOqS0Wbfa2KPfE1axQFGXoRB4mmPRP__Lmqpw6Qpr_ig@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20200501113448.1809037-1-jolsa@kernel.org>
+In-Reply-To: <20200501113448.1809037-1-jolsa@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 1 May 2020 10:49:06 -0700
+Message-ID: <CAP-5=fVCTDoQ--gwjo3rqp6FxiMqiJHoNxtP+b8AMZChhQ5dtg@mail.gmail.com>
+Subject: Re: [PATCH] perf session: Try to read pipe data from file
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Michael Petlan <mpetlan@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.05.20 19:39, Dan Williams wrote:
-> On Fri, May 1, 2020 at 10:21 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 01.05.20 18:56, Dan Williams wrote:
->>> On Fri, May 1, 2020 at 2:34 AM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 01.05.20 00:24, Andrew Morton wrote:
->>>>> On Thu, 30 Apr 2020 20:43:39 +0200 David Hildenbrand <david@redhat.com> wrote:
->>>>>
->>>>>>>
->>>>>>> Why does the firmware map support hotplug entries?
->>>>>>
->>>>>> I assume:
->>>>>>
->>>>>> The firmware memmap was added primarily for x86-64 kexec (and still, is
->>>>>> mostly used on x86-64 only IIRC). There, we had ACPI hotplug. When DIMMs
->>>>>> get hotplugged on real HW, they get added to e820. Same applies to
->>>>>> memory added via HyperV balloon (unless memory is unplugged via
->>>>>> ballooning and you reboot ... the the e820 is changed as well). I assume
->>>>>> we wanted to be able to reflect that, to make kexec look like a real reboot.
->>>>>>
->>>>>> This worked for a while. Then came dax/kmem. Now comes virtio-mem.
->>>>>>
->>>>>>
->>>>>> But I assume only Andrew can enlighten us.
->>>>>>
->>>>>> @Andrew, any guidance here? Should we really add all memory to the
->>>>>> firmware memmap, even if this contradicts with the existing
->>>>>> documentation? (especially, if the actual firmware memmap will *not*
->>>>>> contain that memory after a reboot)
->>>>>
->>>>> For some reason that patch is misattributed - it was authored by
->>>>> Shaohui Zheng <shaohui.zheng@intel.com>, who hasn't been heard from in
->>>>> a decade.  I looked through the email discussion from that time and I'm
->>>>> not seeing anything useful.  But I wasn't able to locate Dave Hansen's
->>>>> review comments.
->>>>
->>>> Okay, thanks for checking. I think the documentation from 2008 is pretty
->>>> clear what has to be done here. I will add some of these details to the
->>>> patch description.
->>>>
->>>> Also, now that I know that esp. kexec-tools already don't consider
->>>> dax/kmem memory properly (memory will not get dumped via kdump) and
->>>> won't really suffer from a name change in /proc/iomem, I will go back to
->>>> the MHP_DRIVER_MANAGED approach and
->>>> 1. Don't create firmware memmap entries
->>>> 2. Name the resource "System RAM (driver managed)"
->>>> 3. Flag the resource via something like IORESOURCE_MEM_DRIVER_MANAGED.
->>>>
->>>> This way, kernel users and user space can figure out that this memory
->>>> has different semantics and handle it accordingly - I think that was
->>>> what Eric was asking for.
->>>>
->>>> Of course, open for suggestions.
->>>
->>> I'm still more of a fan of this being communicated by "System RAM"
->>
->> I was mentioning somewhere in this thread that "System RAM" inside a
->> hierarchy (like dax/kmem) will already be basically ignored by
->> kexec-tools. So, placing it inside a hierarchy already makes it look
->> special already.
->>
->> But after all, as we have to change kexec-tools either way, we can
->> directly go ahead and flag it properly as special (in case there will
->> ever be other cases where we could no longer distinguish it).
->>
->>> being parented especially because that tells you something about how
->>> the memory is driver-managed and which mechanism might be in play.
->>
->> The could be communicated to some degree via the resource hierarchy.
->>
->> E.g.,
->>
->>             [root@localhost ~]# cat /proc/iomem
->>             ...
->>             140000000-33fffffff : Persistent Memory
->>               140000000-1481fffff : namespace0.0
->>               150000000-33fffffff : dax0.0
->>                 150000000-33fffffff : System RAM (driver managed)
->>
->> vs.
->>
->>            :/# cat /proc/iomem
->>             [...]
->>             140000000-333ffffff : virtio-mem (virtio0)
->>               140000000-147ffffff : System RAM (driver managed)
->>               148000000-14fffffff : System RAM (driver managed)
->>               150000000-157ffffff : System RAM (driver managed)
->>
->> Good enough for my taste.
->>
->>> What about adding an optional /sys/firmware/memmap/X/parent attribute.
->>
->> I really don't want any firmware memmap entries for something that is
->> not part of the firmware provided memmap. In addition,
->> /sys/firmware/memmap/ is still a fairly x86_64 specific thing. Only mips
->> and two arm configs enable it at all.
->>
->> So, IMHO, /sys/firmware/memmap/ is definitely not the way to go.
-> 
-> I think that's a policy decision and policy decisions do not belong in
-> the kernel. Give the tooling the opportunity to decide whether System
-> RAM stays that way over a kexec. The parenthetical reference otherwise
-> looks out of place to me in the /proc/iomem output. What makes it
-> "driver managed" is how the kernel handles it, not how the kernel
-> names it.
+On Fri, May 1, 2020 at 4:35 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> From: Jiri Olsa <jolsa@redhat.com>
+>
+> Ian came with the idea of having support to read the pipe
+> data also from file [1]. Currently pipe mode files fails
+> like:
+>
+>   $ perf record -o - sleep 1 > /tmp/perf.pipe.data
+>   $ perf report -i /tmp/perf.pipe.data
+>   incompatible file format (rerun with -v to learn more)
+>
+> This patch adds the support to do that by trying the pipe
+> header first, and if its successfully detected, switching
 
-At least, virtio-mem is different. It really *has to be handled* by the
-driver. This is not a policy. It's how it works.
+nit: s/its/it's/
 
--- 
+> the perf data to pipe mode.
+>
+> [1] https://lore.kernel.org/lkml/20200409185744.255881-1-irogers@google.com/
+> Original-patch-by: Ian Rogers <irogers@google.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+
+Tested and works great, thanks!
+Reviewed-by: Ian Rogers <irogers@google.com>
+
 Thanks,
+Ian
 
-David / dhildenb
-
+> ---
+>  tools/perf/util/header.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index 0ce47283a8a1..8ca709f938b8 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -3574,7 +3574,7 @@ static int perf_header__read_pipe(struct perf_session *session)
+>                 return -EINVAL;
+>         }
+>
+> -       return 0;
+> +       return f_header.size == sizeof(f_header) ? 0 : -1;
+>  }
+>
+>  static int read_attr(int fd, struct perf_header *ph,
+> @@ -3676,7 +3676,7 @@ int perf_session__read_header(struct perf_session *session)
+>         struct perf_file_header f_header;
+>         struct perf_file_attr   f_attr;
+>         u64                     f_id;
+> -       int nr_attrs, nr_ids, i, j;
+> +       int nr_attrs, nr_ids, i, j, err;
+>         int fd = perf_data__fd(data);
+>
+>         session->evlist = evlist__new();
+> @@ -3685,8 +3685,16 @@ int perf_session__read_header(struct perf_session *session)
+>
+>         session->evlist->env = &header->env;
+>         session->machines.host.env = &header->env;
+> -       if (perf_data__is_pipe(data))
+> -               return perf_header__read_pipe(session);
+> +
+> +       /*
+> +        * We can read 'pipe' data event from regular file,
+> +        * check for the pipe header regardless of source.
+> +        */
+> +       err = perf_header__read_pipe(session);
+> +       if (!err || (err && perf_data__is_pipe(data))) {
+> +               data->is_pipe = true;
+> +               return err;
+> +       }
+>
+>         if (perf_file_header__read(&f_header, header, fd) < 0)
+>                 return -EINVAL;
+> --
+> 2.25.4
+>
