@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8215A1C1332
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A131C170F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729553AbgEAN2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:28:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50564 "EHLO mail.kernel.org"
+        id S1731123AbgEAN4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:56:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729546AbgEAN1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:27:55 -0400
+        id S1730270AbgEANcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:32:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68AE02166E;
-        Fri,  1 May 2020 13:27:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D0E3208C3;
+        Fri,  1 May 2020 13:32:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339674;
-        bh=t389B+7YVRykBZ82jpfWstK+R1RrjTgZegRMYVczFts=;
+        s=default; t=1588339933;
+        bh=yLAGhYGGTaE/aZWvbpapAKvvx1vDiFdDP466LI3iGdU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kedpyLis1MTixOliKfrPKSZozk0eBisds9FxD8lsTUoquWixZ9qUdyS90zkzPHW/E
-         80AoQ6FIiJvRf7ahZZH2MN9rnoBayP77jWIfrI2+edhm5qyLfznsRA0mu4tPRTYBuo
-         dWV2HkpB0rF6aolclB0tAjpgt1IxESRa0nqMUiIQ=
+        b=w5RRsDe7gtaCKaHPJHUICUYa3R19EwB4YiOK9TF7wZCjawIdJ0a2QTi/bby/fV2q2
+         0qgyUrPOAAeGWVY4+OVU0NTpqZ9ctH7PKocv7UnQ5RJVbGOKfcBozKMGm0DFISFs81
+         X4ghkbWQTemxKvb/5h/grMgDpuuljJzbsCM731EQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Sowden <jeremy@azazel.net>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.9 06/80] vti4: removed duplicate log message.
-Date:   Fri,  1 May 2020 15:21:00 +0200
-Message-Id: <20200501131515.061082404@linuxfoundation.org>
+        stable@vger.kernel.org, John Haxby <john.haxby@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 025/117] ipv6: fix restrict IPV6_ADDRFORM operation
+Date:   Fri,  1 May 2020 15:21:01 +0200
+Message-Id: <20200501131547.945359951@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
-References: <20200501131513.810761598@linuxfoundation.org>
+In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
+References: <20200501131544.291247695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Sowden <jeremy@azazel.net>
+From: John Haxby <john.haxby@oracle.com>
 
-commit 01ce31c57b3f07c91c9d45bbaf126124cce83a5d upstream.
+[ Upstream commit 82c9ae440857840c56e05d4fb1427ee032531346 ]
 
-Removed info log-message if ipip tunnel registration fails during
-module-initialization: it adds nothing to the error message that is
-written on all failures.
+Commit b6f6118901d1 ("ipv6: restrict IPV6_ADDRFORM operation") fixed a
+problem found by syzbot an unfortunate logic error meant that it
+also broke IPV6_ADDRFORM.
 
-Fixes: dd9ee3444014e ("vti4: Fix a ipip packet processing bug in 'IPCOMP' virtual tunnel")
-Signed-off-by: Jeremy Sowden <jeremy@azazel.net>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
+Rearrange the checks so that the earlier test is just one of the series
+of checks made before moving the socket from IPv6 to IPv4.
+
+Fixes: b6f6118901d1 ("ipv6: restrict IPV6_ADDRFORM operation")
+Signed-off-by: John Haxby <john.haxby@oracle.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- net/ipv4/ip_vti.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ net/ipv6/ipv6_sockglue.c |   13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
---- a/net/ipv4/ip_vti.c
-+++ b/net/ipv4/ip_vti.c
-@@ -696,10 +696,8 @@ static int __init vti_init(void)
- 
- 	msg = "ipip tunnel";
- 	err = xfrm4_tunnel_register(&ipip_handler, AF_INET);
--	if (err < 0) {
--		pr_info("%s: cant't register tunnel\n",__func__);
-+	if (err < 0)
- 		goto xfrm_tunnel_failed;
--	}
- 
- 	msg = "netlink interface";
- 	err = rtnl_link_register(&vti_link_ops);
+--- a/net/ipv6/ipv6_sockglue.c
++++ b/net/ipv6/ipv6_sockglue.c
+@@ -185,15 +185,14 @@ static int do_ipv6_setsockopt(struct soc
+ 					retv = -EBUSY;
+ 					break;
+ 				}
+-			} else if (sk->sk_protocol == IPPROTO_TCP) {
+-				if (sk->sk_prot != &tcpv6_prot) {
+-					retv = -EBUSY;
+-					break;
+-				}
+-				break;
+-			} else {
++			}
++			if (sk->sk_protocol == IPPROTO_TCP &&
++			    sk->sk_prot != &tcpv6_prot) {
++				retv = -EBUSY;
+ 				break;
+ 			}
++			if (sk->sk_protocol != IPPROTO_TCP)
++				break;
+ 			if (sk->sk_state != TCP_ESTABLISHED) {
+ 				retv = -ENOTCONN;
+ 				break;
 
 
