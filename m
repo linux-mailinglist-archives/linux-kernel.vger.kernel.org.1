@@ -2,99 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8BA1C1413
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE2E1C12CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730247AbgEANfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:35:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33516 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730747AbgEANfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:35:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4FF0F24953;
-        Fri,  1 May 2020 13:35:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340116;
-        bh=RnHZ55ZQd+oFxIjGZK85Q+Q5EPPSaa4vig9BLZFgBww=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CQOVd1xL2/iyHHMpugEYNQnTIort+BwF40JlSPHs7h3yVvDWADee3oWFS26dB/CfX
-         B1ROaF7R6WjRXWVKlMSBSZcRMLN0guTyAnsWotLWG9cqle4CgUOUxPsxmPtF2wf20r
-         PpX0e+qSlcWnaAmT+X+4bKOWJEzEOhJXccb6yzK8=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Rue <dan.rue@linaro.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Ashwin H <ashwinh@vmware.com>
-Subject: [PATCH 4.14 113/117] ext4: dont perform block validity checks on the journal inode
-Date:   Fri,  1 May 2020 15:22:29 +0200
-Message-Id: <20200501131558.445362488@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728850AbgEANWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728586AbgEANWd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:22:33 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC86C061A0C;
+        Fri,  1 May 2020 06:22:33 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 036C72A0C36
+Received: by earth.universe (Postfix, from userid 1000)
+        id E3C473C08C7; Fri,  1 May 2020 15:22:29 +0200 (CEST)
+Date:   Fri, 1 May 2020 15:22:29 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v3 08/11] power: supply: core: hide unused HWMON labels
+Message-ID: <20200501132229.aeg44zi635ktfuap@earth.universe>
+References: <cover.1585944770.git.mirq-linux@rere.qmqm.pl>
+ <7ac1176497a246b59316efecef9912dcf9b1e48a.1585944770.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wcqqnkkh7dhow3c4"
+Content-Disposition: inline
+In-Reply-To: <7ac1176497a246b59316efecef9912dcf9b1e48a.1585944770.git.mirq-linux@rere.qmqm.pl>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
 
-commit 0a944e8a6c66ca04c7afbaa17e22bf208a8b37f0 upstream.
+--wcqqnkkh7dhow3c4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Since the journal inode is already checked when we added it to the
-block validity's system zone, if we check it again, we'll just trigger
-a failure.
+Hi,
 
-This was causing failures like this:
+On Fri, Apr 03, 2020 at 10:20:34PM +0200, Micha=C5=82 Miros=C5=82aw wrote:
+> Currently HWMON emulation shows all labels (temp and ambient temp)
+> regardless if power supply supports reading the values. Check that at
+> least one property is enabled for each label.
+>=20
+> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+> ---
 
-[   53.897001] EXT4-fs error (device sda): ext4_find_extent:909: inode
-#8: comm jbd2/sda-8: pblk 121667583 bad header/extent: invalid extent entries - magic f30a, entries 8, max 340(340), depth 0(0)
-[   53.931430] jbd2_journal_bmap: journal block not found at offset 49 on sda-8
-[   53.938480] Aborting journal on device sda-8.
+Thanks, queued.
 
-... but only if the system was under enough memory pressure that
-logical->physical mapping for the journal inode gets pushed out of the
-extent cache.  (This is why it wasn't noticed earlier.)
+-- Sebastian
 
-Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using block_validity")
-Reported-by: Dan Rue <dan.rue@linaro.org>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Ashwin H <ashwinh@vmware.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> v3: use a tabule for type checking instead of switch() sequence
+> ---
+>  drivers/power/supply/power_supply_hwmon.c | 42 +++++++++++++++++++++--
+>  1 file changed, 39 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/power_supply_hwmon.c b/drivers/power/su=
+pply/power_supply_hwmon.c
+> index 5621e72a39f0..1b473deaf391 100644
+> --- a/drivers/power/supply/power_supply_hwmon.c
+> +++ b/drivers/power/supply/power_supply_hwmon.c
+> @@ -103,6 +103,39 @@ static bool power_supply_hwmon_is_a_label(enum hwmon=
+_sensor_types type,
+>  	return type =3D=3D hwmon_temp && attr =3D=3D hwmon_temp_label;
+>  }
+> =20
+> +struct hwmon_type_attr_list {
+> +	const u32 *attrs;
+> +	size_t n_attrs;
+> +};
+> +
+> +static const u32 ps_temp_attrs[] =3D {
+> +	hwmon_temp_input,
+> +	hwmon_temp_min, hwmon_temp_max,
+> +	hwmon_temp_min_alarm, hwmon_temp_max_alarm,
+> +};
+> +
+> +static const struct hwmon_type_attr_list ps_type_attrs[hwmon_max] =3D {
+> +	[hwmon_temp] =3D { ps_temp_attrs, ARRAY_SIZE(ps_temp_attrs) },
+> +};
+> +
+> +static bool power_supply_hwmon_has_input(
+> +	const struct power_supply_hwmon *psyhw,
+> +	enum hwmon_sensor_types type, int channel)
+> +{
+> +	const struct hwmon_type_attr_list *attr_list =3D &ps_type_attrs[type];
+> +	size_t i;
+> +
+> +	for (i =3D 0; i < attr_list->n_attrs; ++i) {
+> +		int prop =3D power_supply_hwmon_to_property(type,
+> +			attr_list->attrs[i], channel);
+> +
+> +		if (prop >=3D 0 && test_bit(prop, psyhw->props))
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  static bool power_supply_hwmon_is_writable(enum hwmon_sensor_types type,
+>  					   u32 attr)
+>  {
+> @@ -129,9 +162,12 @@ static umode_t power_supply_hwmon_is_visible(const v=
+oid *data,
+>  	const struct power_supply_hwmon *psyhw =3D data;
+>  	int prop;
+> =20
+> -
+> -	if (power_supply_hwmon_is_a_label(type, attr))
+> -		return 0444;
+> +	if (power_supply_hwmon_is_a_label(type, attr)) {
+> +		if (power_supply_hwmon_has_input(psyhw, type, channel))
+> +			return 0444;
+> +		else
+> +			return 0;
+> +	}
+> =20
+>  	prop =3D power_supply_hwmon_to_property(type, attr, channel);
+>  	if (prop < 0 || !test_bit(prop, psyhw->props))
+> --=20
+> 2.20.1
+>=20
 
----
- fs/ext4/extents.c |   12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+--wcqqnkkh7dhow3c4
+Content-Type: application/pgp-signature; name="signature.asc"
 
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -554,10 +554,14 @@ __read_extent_tree_block(const char *fun
- 	}
- 	if (buffer_verified(bh) && !(flags & EXT4_EX_FORCE_CACHE))
- 		return bh;
--	err = __ext4_ext_check(function, line, inode,
--			       ext_block_hdr(bh), depth, pblk);
--	if (err)
--		goto errout;
-+	if (!ext4_has_feature_journal(inode->i_sb) ||
-+	    (inode->i_ino !=
-+	     le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum))) {
-+		err = __ext4_ext_check(function, line, inode,
-+				       ext_block_hdr(bh), depth, pblk);
-+		if (err)
-+			goto errout;
-+	}
- 	set_buffer_verified(bh);
- 	/*
- 	 * If this is a leaf block, cache all of its entries
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl6sIpAACgkQ2O7X88g7
++pr0lBAAg/bEnt2yXctWBRB2ixT9sZwNldl0hoRkVakYnSCpp6XUgayUx10PU8Jy
+b2lars/pNd0pD+PjbXFqG4iSoUd+h9JkR3ZyeWBmwidQJumy9wGuGGmeMhoNrFGW
+KKFEW4tdZD1uLUUIKUE740cas3gG8hcZS5dLfZY+F84b1Fk4hZDnb6pXpzW9LcNK
+8ISybTVWSjISSliIHwxRfzPAeuqmqWFvo3K/peXwbwlD2JWYuvkMK05Ju8M/X7+a
+KFIm8QLUqrOPRaEy97mChRaBE5wZXJOJLWlXeNw/OqlLF9Rfp/bqMdq74VL4UUnl
+QT8lYI/wpd6Qf+/RcOuz9qwYen4a8uxxd0H6M7dG+UzClYApenEXK4ntMGk2hQi1
+Ggo3shGxIcU4lGsLFN2unfmSPjO57MSPmRUiiXBox2j0IEpuOay1tEDFCKQzw65Z
+rQFroG5GzWzLILhtM+D+/5yYVpyZFqT1sxIrB481zFvBtEnmgWOILtdNmV0xYpOl
++hKA3/EkWaCO8y4ulcONPMhPxoUfegkpKFGloYKFrgIwPre11WL6C2yENiI21cRV
+mWx69b/Lfkpc3apf2Rq0aAeYgUhRm/2utjb5Qsjng/cifn74yMj9Pv8kzpR46DPs
+fK+kGaBcpwQywUrjAMeA/DMGyO+W/v4xWy9tB1olsNvQOKXhx+A=
+=iMAn
+-----END PGP SIGNATURE-----
 
+--wcqqnkkh7dhow3c4--
