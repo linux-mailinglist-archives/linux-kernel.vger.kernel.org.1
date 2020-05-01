@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA001C1E88
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 22:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F5C1C1E76
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 22:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgEAUb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 16:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        id S1726672AbgEAUbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 16:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726917AbgEAUbh (ORCPT
+        with ESMTP id S1726501AbgEAUbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 16:31:37 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87278C08E859
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 13:31:37 -0700 (PDT)
+        Fri, 1 May 2020 16:31:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F1BC08E934
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 13:31:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=gUkb4NfOmtdTDe5bvKVmr/K+ksa8BJ32JLleyTZU4QM=; b=hLOEG5PHJQKLQRsUoKRo2RO4BR
-        xF+zOxgaz4V2nGEVE9p8HFCkgPRDivl6itQW/OiWX2s+BOV972ycJws4twcsC2kVxRT74KhZNRHK4
-        ZHbOW5pLtz292UC+FJLf+dksEyqMUSFa3YpNZzbr1QYAFJRmmzdCRtw7dxeJQO+cRc4roIIxYIMsk
-        OWhIklr2uGxFQ55qB8/aeLaBhpR7+xQDJ1kQ50FpAZMMxx7HNJHl4/JRGFK2WbjkT4UOwK+wGDLUH
-        7SQjXEScVmWqNosAw6QKny/SLEerWfkU5LZswzXLEHorXAdYRyuiBhQkUXOniIWUw6ZqgYfBIVZz4
-        C+qkL0BQ==;
+        bh=wjlQuu5IaKf/RJGmJMEw5KWBV/kPvPOZCeA7wx4rUZs=; b=LMNWM7Y6J4zJyHQTBJvU6Yks9w
+        qQ8qy3j1Uqo9BnIVEKOLn18MZDXMR6LQzdGWvNINVet6tKm9biEu+/XL8fa95qCIATGwNUQRquvAc
+        tMuweeYuFug/zeHbPZ40uyjb8pTScy1EBFgLRQpRqR4mTBK1cuGYBAoLmQCYLXp2wVbOHOsOhp6Qg
+        3ceFfhg5Nf/bGzq0tvbE4tmTz6YjwPwREV3ui+8Xk49tlgxy1yTjogIN1VH1m2QP09DUF2OHQSBBP
+        HgktyBqbo8tDSMNLebVex6ddiKlnLMM44hopLJ36Uwh3yVd6VGxRoY02068nK4zcpnIyojSHAj9bW
+        +vzLHtbQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jUcJO-0007RJ-Sk; Fri, 01 May 2020 20:31:07 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jUcJP-0002lt-81; Fri, 01 May 2020 20:31:07 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A1749307632;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A14F8307623;
         Fri,  1 May 2020 22:31:01 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 0EBE629BF626A; Fri,  1 May 2020 22:31:01 +0200 (CEST)
-Message-Id: <20200501202944.763303401@infradead.org>
+        id 14C2629BF626C; Fri,  1 May 2020 22:31:01 +0200 (CEST)
+Message-Id: <20200501202944.820414787@infradead.org>
 User-Agent: quilt/0.65
-Date:   Fri, 01 May 2020 22:29:06 +0200
+Date:   Fri, 01 May 2020 22:29:07 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
@@ -47,7 +47,7 @@ Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
         hpa@zytor.com, luto@kernel.org, ard.biesheuvel@linaro.org,
         jpoimboe@redhat.com, pbonzini@redhat.com,
         mathieu.desnoyers@efficios.com
-Subject: [PATCH v4 17/18] x86/perf, static_call: Optimize x86_pmu methods
+Subject: [PATCH v4 18/18] objtool: Clean up elf_write() condition
 References: <20200501202849.647891881@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,307 +56,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace many of the indirect calls with static_call().
-
-XXX run performance numbers
+With there being multiple ways to change the ELF data, let's more
+concisely track modification.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/events/core.c |  140 +++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 100 insertions(+), 40 deletions(-)
+ tools/objtool/check.c |    2 +-
+ tools/objtool/elf.c   |    8 +++++++-
+ tools/objtool/elf.h   |    3 ++-
+ 3 files changed, 10 insertions(+), 3 deletions(-)
 
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -28,6 +28,7 @@
- #include <linux/bitops.h>
- #include <linux/device.h>
- #include <linux/nospec.h>
-+#include <linux/static_call.h>
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2904,7 +2904,7 @@ int check(const char *_objname, bool orc
+ 			goto out;
+ 	}
  
- #include <asm/apic.h>
- #include <asm/stacktrace.h>
-@@ -52,6 +53,40 @@ DEFINE_PER_CPU(struct cpu_hw_events, cpu
- DEFINE_STATIC_KEY_FALSE(rdpmc_never_available_key);
- DEFINE_STATIC_KEY_FALSE(rdpmc_always_available_key);
+-	if (orc || !list_empty(&file.static_call_list)) {
++	if (file.elf->changed) {
+ 		ret = elf_write(file.elf);
+ 		if (ret < 0)
+ 			goto out;
+--- a/tools/objtool/elf.c
++++ b/tools/objtool/elf.c
+@@ -703,6 +703,8 @@ struct section *elf_create_section(struc
+ 	elf_hash_add(elf->section_hash, &sec->hash, sec->idx);
+ 	elf_hash_add(elf->section_name_hash, &sec->name_hash, str_hash(sec->name));
  
-+/*
-+ * This here 'abuses' DEFINE_STATIC_COND_CALL() to get a static_call defined
-+ * from just a typename, as opposed to an actual function. While some of these
-+ * will indeed be used with static_cond_call(), many of them will not.
-+ *
-+ * Just like you can unconditionally call a function pointer that's initialized
-+ * to NULL, as long as you make sure to set it to a valid function _before_
-+ * use, so too can you use static_call() on a DEFINE_STATIC_COND_CALL(), as
-+ * long as you use static_call_update() to set it before use.
-+ */
-+DEFINE_STATIC_COND_CALL(x86_pmu_handle_irq,  *x86_pmu.handle_irq);
-+DEFINE_STATIC_COND_CALL(x86_pmu_disable_all, *x86_pmu.disable_all);
-+DEFINE_STATIC_COND_CALL(x86_pmu_enable_all,  *x86_pmu.enable_all);
-+DEFINE_STATIC_COND_CALL(x86_pmu_enable,	     *x86_pmu.enable);
-+DEFINE_STATIC_COND_CALL(x86_pmu_disable,     *x86_pmu.disable);
++	elf->changed = true;
 +
-+DEFINE_STATIC_COND_CALL(x86_pmu_add,  *x86_pmu.add);
-+DEFINE_STATIC_COND_CALL(x86_pmu_del,  *x86_pmu.del);
-+DEFINE_STATIC_COND_CALL(x86_pmu_read, *x86_pmu.read);
-+
-+DEFINE_STATIC_COND_CALL(x86_pmu_schedule_events,       *x86_pmu.schedule_events);
-+DEFINE_STATIC_COND_CALL(x86_pmu_get_event_constraints, *x86_pmu.get_event_constraints);
-+DEFINE_STATIC_COND_CALL(x86_pmu_put_event_constraints, *x86_pmu.put_event_constraints);
-+
-+DEFINE_STATIC_COND_CALL(x86_pmu_start_scheduling,  *x86_pmu.start_scheduling);
-+DEFINE_STATIC_COND_CALL(x86_pmu_commit_scheduling, *x86_pmu.commit_scheduling);
-+DEFINE_STATIC_COND_CALL(x86_pmu_stop_scheduling,   *x86_pmu.stop_scheduling);
-+
-+DEFINE_STATIC_COND_CALL(x86_pmu_sched_task,    *x86_pmu.sched_task);
-+DEFINE_STATIC_COND_CALL(x86_pmu_swap_task_ctx, *x86_pmu.swap_task_ctx);
-+
-+DEFINE_STATIC_COND_CALL(x86_pmu_drain_pebs,   *x86_pmu.drain_pebs);
-+DEFINE_STATIC_COND_CALL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
-+
- u64 __read_mostly hw_cache_event_ids
- 				[PERF_COUNT_HW_CACHE_MAX]
- 				[PERF_COUNT_HW_CACHE_OP_MAX]
-@@ -660,7 +695,7 @@ static void x86_pmu_disable(struct pmu *
- 	cpuc->enabled = 0;
- 	barrier();
- 
--	x86_pmu.disable_all();
-+	static_call(x86_pmu_disable_all)();
+ 	return sec;
  }
  
- void x86_pmu_enable_all(int added)
-@@ -907,8 +942,7 @@ int x86_schedule_events(struct cpu_hw_ev
- 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
- 		n0 -= cpuc->n_txn;
+@@ -769,7 +771,7 @@ int elf_rebuild_rela_section(struct sect
+ 	return 0;
+ }
  
--	if (x86_pmu.start_scheduling)
--		x86_pmu.start_scheduling(cpuc);
-+	static_cond_call(x86_pmu_start_scheduling)(cpuc);
- 
- 	for (i = 0, wmin = X86_PMC_IDX_MAX, wmax = 0; i < n; i++) {
- 		c = cpuc->event_constraint[i];
-@@ -925,7 +959,7 @@ int x86_schedule_events(struct cpu_hw_ev
- 		 * change due to external factors (sibling state, allow_tfa).
- 		 */
- 		if (!c || (c->flags & PERF_X86_EVENT_DYNAMIC)) {
--			c = x86_pmu.get_event_constraints(cpuc, i, cpuc->event_list[i]);
-+			c = static_call(x86_pmu_get_event_constraints)(cpuc, i, cpuc->event_list[i]);
- 			cpuc->event_constraint[i] = c;
- 		}
- 
-@@ -1008,8 +1042,7 @@ int x86_schedule_events(struct cpu_hw_ev
- 	if (!unsched && assign) {
- 		for (i = 0; i < n; i++) {
- 			e = cpuc->event_list[i];
--			if (x86_pmu.commit_scheduling)
--				x86_pmu.commit_scheduling(cpuc, i, assign[i]);
-+			static_cond_call(x86_pmu_commit_scheduling)(cpuc, i, assign[i]);
- 		}
- 	} else {
- 		for (i = n0; i < n; i++) {
-@@ -1018,15 +1051,13 @@ int x86_schedule_events(struct cpu_hw_ev
- 			/*
- 			 * release events that failed scheduling
- 			 */
--			if (x86_pmu.put_event_constraints)
--				x86_pmu.put_event_constraints(cpuc, e);
-+			static_cond_call(x86_pmu_put_event_constraints)(cpuc, e);
- 
- 			cpuc->event_constraint[i] = NULL;
+-int elf_write(const struct elf *elf)
++int elf_write(struct elf *elf)
+ {
+ 	struct section *sec;
+ 	Elf_Scn *s;
+@@ -786,6 +788,8 @@ int elf_write(const struct elf *elf)
+ 				WARN_ELF("gelf_update_shdr");
+ 				return -1;
+ 			}
++
++			sec->changed = false;
  		}
  	}
  
--	if (x86_pmu.stop_scheduling)
--		x86_pmu.stop_scheduling(cpuc);
-+	static_cond_call(x86_pmu_stop_scheduling)(cpuc);
+@@ -798,6 +802,8 @@ int elf_write(const struct elf *elf)
+ 		return -1;
+ 	}
  
- 	return unsched ? -EINVAL : 0;
- }
-@@ -1217,7 +1248,7 @@ static void x86_pmu_enable(struct pmu *p
- 	cpuc->enabled = 1;
- 	barrier();
- 
--	x86_pmu.enable_all(added);
-+	static_call(x86_pmu_enable_all)(added);
++	elf->changed = false;
++
+ 	return 0;
  }
  
- static DEFINE_PER_CPU(u64 [X86_PMC_IDX_MAX], pmc_prev_left);
-@@ -1338,7 +1369,7 @@ static int x86_pmu_add(struct perf_event
- 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
- 		goto done_collect;
+--- a/tools/objtool/elf.h
++++ b/tools/objtool/elf.h
+@@ -77,6 +77,7 @@ struct elf {
+ 	Elf *elf;
+ 	GElf_Ehdr ehdr;
+ 	int fd;
++	bool changed;
+ 	char *name;
+ 	struct list_head sections;
+ 	DECLARE_HASHTABLE(symbol_hash, ELF_HASH_BITS);
+@@ -118,7 +119,7 @@ struct elf *elf_open_read(const char *na
+ struct section *elf_create_section(struct elf *elf, const char *name, unsigned int sh_flags, size_t entsize, int nr);
+ struct section *elf_create_rela_section(struct elf *elf, struct section *base);
+ void elf_add_rela(struct elf *elf, struct rela *rela);
+-int elf_write(const struct elf *elf);
++int elf_write(struct elf *elf);
+ void elf_close(struct elf *elf);
  
--	ret = x86_pmu.schedule_events(cpuc, n, assign);
-+	ret = static_call(x86_pmu_schedule_events)(cpuc, n, assign);
- 	if (ret)
- 		goto out;
- 	/*
-@@ -1356,13 +1387,11 @@ static int x86_pmu_add(struct perf_event
- 	cpuc->n_added += n - n0;
- 	cpuc->n_txn += n - n0;
- 
--	if (x86_pmu.add) {
--		/*
--		 * This is before x86_pmu_enable() will call x86_pmu_start(),
--		 * so we enable LBRs before an event needs them etc..
--		 */
--		x86_pmu.add(event);
--	}
-+	/*
-+	 * This is before x86_pmu_enable() will call x86_pmu_start(),
-+	 * so we enable LBRs before an event needs them etc..
-+	 */
-+	static_cond_call(x86_pmu_add)(event);
- 
- 	ret = 0;
- out:
-@@ -1390,7 +1419,7 @@ static void x86_pmu_start(struct perf_ev
- 	cpuc->events[idx] = event;
- 	__set_bit(idx, cpuc->active_mask);
- 	__set_bit(idx, cpuc->running);
--	x86_pmu.enable(event);
-+	static_call(x86_pmu_enable)(event);
- 	perf_event_update_userpage(event);
- }
- 
-@@ -1460,7 +1489,7 @@ void x86_pmu_stop(struct perf_event *eve
- 	struct hw_perf_event *hwc = &event->hw;
- 
- 	if (test_bit(hwc->idx, cpuc->active_mask)) {
--		x86_pmu.disable(event);
-+		static_call(x86_pmu_disable)(event);
- 		__clear_bit(hwc->idx, cpuc->active_mask);
- 		cpuc->events[hwc->idx] = NULL;
- 		WARN_ON_ONCE(hwc->state & PERF_HES_STOPPED);
-@@ -1510,8 +1539,7 @@ static void x86_pmu_del(struct perf_even
- 	if (i >= cpuc->n_events - cpuc->n_added)
- 		--cpuc->n_added;
- 
--	if (x86_pmu.put_event_constraints)
--		x86_pmu.put_event_constraints(cpuc, event);
-+	static_cond_call(x86_pmu_put_event_constraints)(cpuc, event);
- 
- 	/* Delete the array entry. */
- 	while (++i < cpuc->n_events) {
-@@ -1524,13 +1552,12 @@ static void x86_pmu_del(struct perf_even
- 	perf_event_update_userpage(event);
- 
- do_del:
--	if (x86_pmu.del) {
--		/*
--		 * This is after x86_pmu_stop(); so we disable LBRs after any
--		 * event can need them etc..
--		 */
--		x86_pmu.del(event);
--	}
-+
-+	/*
-+	 * This is after x86_pmu_stop(); so we disable LBRs after any
-+	 * event can need them etc..
-+	 */
-+	static_cond_call(x86_pmu_del)(event);
- }
- 
- int x86_pmu_handle_irq(struct pt_regs *regs)
-@@ -1608,7 +1635,7 @@ perf_event_nmi_handler(unsigned int cmd,
- 		return NMI_DONE;
- 
- 	start_clock = sched_clock();
--	ret = x86_pmu.handle_irq(regs);
-+	ret = static_call(x86_pmu_handle_irq)(regs);
- 	finish_clock = sched_clock();
- 
- 	perf_sample_event_took(finish_clock - start_clock);
-@@ -1821,6 +1848,38 @@ ssize_t x86_event_sysfs_show(char *page,
- static struct attribute_group x86_pmu_attr_group;
- static struct attribute_group x86_pmu_caps_group;
- 
-+static void x86_pmu_static_call_update(void)
-+{
-+	static_call_update(x86_pmu_handle_irq, x86_pmu.handle_irq);
-+	static_call_update(x86_pmu_disable_all, x86_pmu.disable_all);
-+	static_call_update(x86_pmu_enable_all, x86_pmu.enable_all);
-+	static_call_update(x86_pmu_enable, x86_pmu.enable);
-+	static_call_update(x86_pmu_disable, x86_pmu.disable);
-+
-+	static_call_update(x86_pmu_add, x86_pmu.add);
-+	static_call_update(x86_pmu_del, x86_pmu.del);
-+	static_call_update(x86_pmu_read, x86_pmu.read);
-+
-+	static_call_update(x86_pmu_schedule_events, x86_pmu.schedule_events);
-+	static_call_update(x86_pmu_get_event_constraints, x86_pmu.get_event_constraints);
-+	static_call_update(x86_pmu_put_event_constraints, x86_pmu.put_event_constraints);
-+
-+	static_call_update(x86_pmu_start_scheduling, x86_pmu.start_scheduling);
-+	static_call_update(x86_pmu_commit_scheduling, x86_pmu.commit_scheduling);
-+	static_call_update(x86_pmu_stop_scheduling, x86_pmu.stop_scheduling);
-+
-+	static_call_update(x86_pmu_sched_task, x86_pmu.sched_task);
-+	static_call_update(x86_pmu_swap_task_ctx, x86_pmu.swap_task_ctx);
-+
-+	static_call_update(x86_pmu_drain_pebs, x86_pmu.drain_pebs);
-+	static_call_update(x86_pmu_pebs_aliases, x86_pmu.pebs_aliases);
-+}
-+
-+static void _x86_pmu_read(struct perf_event *event)
-+{
-+	x86_perf_event_update(event);
-+}
-+
- static int __init init_hw_perf_events(void)
- {
- 	struct x86_pmu_quirk *quirk;
-@@ -1889,6 +1948,11 @@ static int __init init_hw_perf_events(vo
- 	pr_info("... fixed-purpose events:   %d\n",     x86_pmu.num_counters_fixed);
- 	pr_info("... event mask:             %016Lx\n", x86_pmu.intel_ctrl);
- 
-+	if (!x86_pmu.read)
-+		x86_pmu.read = _x86_pmu_read;
-+
-+	x86_pmu_static_call_update();
-+
- 	/*
- 	 * Install callbacks. Core will call them for each online
- 	 * cpu.
-@@ -1925,11 +1989,9 @@ static int __init init_hw_perf_events(vo
- }
- early_initcall(init_hw_perf_events);
- 
--static inline void x86_pmu_read(struct perf_event *event)
-+static void x86_pmu_read(struct perf_event *event)
- {
--	if (x86_pmu.read)
--		return x86_pmu.read(event);
--	x86_perf_event_update(event);
-+	static_call(x86_pmu_read)(event);
- }
- 
- /*
-@@ -2006,7 +2068,7 @@ static int x86_pmu_commit_txn(struct pmu
- 	if (!x86_pmu_initialized())
- 		return -EAGAIN;
- 
--	ret = x86_pmu.schedule_events(cpuc, n, assign);
-+	ret = static_call(x86_pmu_schedule_events)(cpuc, n, assign);
- 	if (ret)
- 		return ret;
- 
-@@ -2299,15 +2361,13 @@ static const struct attribute_group *x86
- 
- static void x86_pmu_sched_task(struct perf_event_context *ctx, bool sched_in)
- {
--	if (x86_pmu.sched_task)
--		x86_pmu.sched_task(ctx, sched_in);
-+	static_cond_call(x86_pmu_sched_task)(ctx, sched_in);
- }
- 
- static void x86_pmu_swap_task_ctx(struct perf_event_context *prev,
- 				  struct perf_event_context *next)
- {
--	if (x86_pmu.swap_task_ctx)
--		x86_pmu.swap_task_ctx(prev, next);
-+	static_cond_call(x86_pmu_swap_task_ctx)(prev, next);
- }
- 
- void perf_check_microcode(void)
+ struct section *find_section_by_name(const struct elf *elf, const char *name);
 
 
