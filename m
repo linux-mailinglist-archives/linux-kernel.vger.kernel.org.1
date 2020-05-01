@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE4A1C1384
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EBB1C13EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729912AbgEANaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:30:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54098 "EHLO mail.kernel.org"
+        id S1730534AbgEANeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:34:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729898AbgEANaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:30:13 -0400
+        id S1729669AbgEANeD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:34:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B6ED208C3;
-        Fri,  1 May 2020 13:30:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD99B216FD;
+        Fri,  1 May 2020 13:34:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339812;
-        bh=PfmHYvVYYPHRR8l7nqz1iLpSdLhmCb4oaAshHsMMEv0=;
+        s=default; t=1588340043;
+        bh=44V4MZP//wPpF5aDYqpd6uzdLF+uO13EexkIAoMvYOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L+1lbP5DUt4pzWSY7nIrGpsLmCjCUcPfKkuLj6iFlZA8MGAMZMY6uEQfdeSw25XGv
-         SXXNuyU21BrbxzsNbfQ/4bV/moO3Q2MBRpd/wRAZg4ns2ijv4ntKiaN5ihLsEVAkQD
-         sVqsjSjPUObl0FH7/1k67bAKV09X0IbkjmTqRuIo=
+        b=V3NCLNIH9trs3F+RLJ4lveHmvakOAn5x5LrMPZFSVZIgKqepdNjCpJGKW7tNizWTb
+         tZhg1wRRFcRj4BjmfCubz4puqoV/WRsMOzzyaSBph5w9+5Y9aBT7IWrT7fOL7Wt9pD
+         BiNCJ2DTtXegWHdWtVHx9My4MkUNe8WTYgLNKLbk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH 4.9 57/80] UAS: fix deadlock in error handling and PM flushing work
+        stable@vger.kernel.org, Malcolm Priestley <tvboxspy@gmail.com>
+Subject: [PATCH 4.14 075/117] staging: vt6656: Fix pairwise key entry save.
 Date:   Fri,  1 May 2020 15:21:51 +0200
-Message-Id: <20200501131530.792275212@linuxfoundation.org>
+Message-Id: <20200501131553.897491653@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
-References: <20200501131513.810761598@linuxfoundation.org>
+In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
+References: <20200501131544.291247695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,99 +42,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Malcolm Priestley <tvboxspy@gmail.com>
 
-commit f6cc6093a729ede1ff5658b493237c42b82ba107 upstream.
+commit 0b59f10b1d8fe8d50944f21f5d403df9303095a8 upstream.
 
-A SCSI error handler and block runtime PM must not allocate
-memory with GFP_KERNEL. Furthermore they must not wait for
-tasks allocating memory with GFP_KERNEL.
-That means that they cannot share a workqueue with arbitrary tasks.
+The problem is that the group key was saved as VNT_KEY_DEFAULTKEY
+was over written by the VNT_KEY_GROUP_ADDRESS index.
 
-Fix this for UAS using a private workqueue.
+mac80211 could not clear the mac_addr in the default key.
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Fixes: f9dc024a2da1f ("uas: pre_reset and suspend: Fix a few races")
+The VNT_KEY_DEFAULTKEY is not necesscary so remove it and set as
+VNT_KEY_GROUP_ADDRESS.
+
+mac80211 can clear any key using vnt_mac_disable_keyentry.
+
+Fixes: f9ef05ce13e4 ("staging: vt6656: Fix pairwise key for non station modes")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200415141750.811-2-oneukum@suse.com
+Signed-off-by: Malcolm Priestley <tvboxspy@gmail.com>
+Link: https://lore.kernel.org/r/da2f7e7f-1658-1320-6eee-0f55770ca391@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/storage/uas.c |   43 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 40 insertions(+), 3 deletions(-)
+ drivers/staging/vt6656/key.c      |   14 +++-----------
+ drivers/staging/vt6656/main_usb.c |    6 +++++-
+ 2 files changed, 8 insertions(+), 12 deletions(-)
 
---- a/drivers/usb/storage/uas.c
-+++ b/drivers/usb/storage/uas.c
-@@ -82,6 +82,19 @@ static void uas_free_streams(struct uas_
- static void uas_log_cmd_state(struct scsi_cmnd *cmnd, const char *prefix,
- 				int status);
- 
-+/*
-+ * This driver needs its own workqueue, as we need to control memory allocation.
-+ *
-+ * In the course of error handling and power management uas_wait_for_pending_cmnds()
-+ * needs to flush pending work items. In these contexts we cannot allocate memory
-+ * by doing block IO as we would deadlock. For the same reason we cannot wait
-+ * for anything allocating memory not heeding these constraints.
-+ *
-+ * So we have to control all work items that can be on the workqueue we flush.
-+ * Hence we cannot share a queue and need our own.
-+ */
-+static struct workqueue_struct *workqueue;
-+
- static void uas_do_work(struct work_struct *work)
+--- a/drivers/staging/vt6656/key.c
++++ b/drivers/staging/vt6656/key.c
+@@ -91,9 +91,6 @@ static int vnt_set_keymode(struct ieee80
+ 	case  VNT_KEY_PAIRWISE:
+ 		key_mode |= mode;
+ 		key_inx = 4;
+-		/* Don't save entry for pairwise key for station mode */
+-		if (priv->op_mode == NL80211_IFTYPE_STATION)
+-			clear_bit(entry, &priv->key_entry_inuse);
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -117,7 +114,6 @@ static int vnt_set_keymode(struct ieee80
+ int vnt_set_keys(struct ieee80211_hw *hw, struct ieee80211_sta *sta,
+ 		 struct ieee80211_vif *vif, struct ieee80211_key_conf *key)
  {
- 	struct uas_dev_info *devinfo =
-@@ -110,7 +123,7 @@ static void uas_do_work(struct work_stru
- 		if (!err)
- 			cmdinfo->state &= ~IS_IN_WORK_LIST;
- 		else
--			schedule_work(&devinfo->work);
-+			queue_work(workqueue, &devinfo->work);
+-	struct ieee80211_bss_conf *conf = &vif->bss_conf;
+ 	struct vnt_private *priv = hw->priv;
+ 	u8 *mac_addr = NULL;
+ 	u8 key_dec_mode = 0;
+@@ -159,16 +155,12 @@ int vnt_set_keys(struct ieee80211_hw *hw
+ 		key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV;
  	}
- out:
- 	spin_unlock_irqrestore(&devinfo->lock, flags);
-@@ -135,7 +148,7 @@ static void uas_add_work(struct uas_cmd_
  
- 	lockdep_assert_held(&devinfo->lock);
- 	cmdinfo->state |= IS_IN_WORK_LIST;
--	schedule_work(&devinfo->work);
-+	queue_work(workqueue, &devinfo->work);
+-	if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE) {
++	if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE)
+ 		vnt_set_keymode(hw, mac_addr, key, VNT_KEY_PAIRWISE,
+ 				key_dec_mode, true);
+-	} else {
+-		vnt_set_keymode(hw, mac_addr, key, VNT_KEY_DEFAULTKEY,
++	else
++		vnt_set_keymode(hw, mac_addr, key, VNT_KEY_GROUP_ADDRESS,
+ 				key_dec_mode, true);
+ 
+-		vnt_set_keymode(hw, (u8 *)conf->bssid, key,
+-				VNT_KEY_GROUP_ADDRESS, key_dec_mode, true);
+-	}
+-
+ 	return 0;
  }
- 
- static void uas_zap_pending(struct uas_dev_info *devinfo, int result)
-@@ -1236,7 +1249,31 @@ static struct usb_driver uas_driver = {
- 	.id_table = uas_usb_ids,
- };
- 
--module_usb_driver(uas_driver);
-+static int __init uas_init(void)
-+{
-+	int rv;
+--- a/drivers/staging/vt6656/main_usb.c
++++ b/drivers/staging/vt6656/main_usb.c
+@@ -827,8 +827,12 @@ static int vnt_set_key(struct ieee80211_
+ 			return -EOPNOTSUPP;
+ 		break;
+ 	case DISABLE_KEY:
+-		if (test_bit(key->hw_key_idx, &priv->key_entry_inuse))
++		if (test_bit(key->hw_key_idx, &priv->key_entry_inuse)) {
+ 			clear_bit(key->hw_key_idx, &priv->key_entry_inuse);
 +
-+	workqueue = alloc_workqueue("uas", WQ_MEM_RECLAIM, 0);
-+	if (!workqueue)
-+		return -ENOMEM;
++			vnt_mac_disable_keyentry(priv, key->hw_key_idx);
++		}
 +
-+	rv = usb_register(&uas_driver);
-+	if (rv) {
-+		destroy_workqueue(workqueue);
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
-+}
-+
-+static void __exit uas_exit(void)
-+{
-+	usb_deregister(&uas_driver);
-+	destroy_workqueue(workqueue);
-+}
-+
-+module_init(uas_init);
-+module_exit(uas_exit);
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR(
+ 	default:
+ 		break;
+ 	}
 
 
