@@ -2,64 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404F31C12CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90251C1520
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgEANYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:24:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44760 "EHLO mail.kernel.org"
+        id S1731896AbgEANpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:45:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728586AbgEANYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:24:06 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1731840AbgEANpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:45:09 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5BE920757;
-        Fri,  1 May 2020 13:24:05 +0000 (UTC)
-Date:   Fri, 1 May 2020 09:24:04 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [RFC][PATCH] x86/ftrace: Have ftrace trampolines turn read-only
- at the end of system boot up
-Message-ID: <20200501092404.06d1adcb@gandalf.local.home>
-In-Reply-To: <20200501051706.4wkrqwovybt2p6hr@treble>
-References: <20200430202147.4dc6e2de@oasis.local.home>
-        <20200501044733.eqf6hc6erucsd43x@treble>
-        <20200501051706.4wkrqwovybt2p6hr@treble>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F9832051A;
+        Fri,  1 May 2020 13:45:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588340708;
+        bh=Luh2oDm0c16s04E5rrPEUu/9f/1cE33qOtpVkfApk8g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=B0Jn4hyU1dFG17z+4zQjDCzcA33ps1O77bnYBmd/ETdTLzkNE0t/TrtTfIcuWKt9a
+         zEE5ajLjpa0TpSdOLLzXONHNaHfxvu6MAP2+SqhzmoEHFNmlibPcD36rubjq7PBRce
+         mAo2wiFOtjFlKE5KskoQucKVWB5idlApYcNah8DE=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Zenghui Yu <yuzenghui@huawei.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 092/106] irqchip/gic-v4.1: Add support for VPENDBASERs Dirty+Valid signaling
+Date:   Fri,  1 May 2020 15:24:05 +0200
+Message-Id: <20200501131554.494458105@linuxfoundation.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 May 2020 00:17:06 -0500
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+From: Marc Zyngier <maz@kernel.org>
 
-> > Would it be easier to just call a new __text_poke_bp() which skips the
-> > SYSTEM_BOOTING check, since you know the trampoline will always be
-> > read-only?
-> > 
-> > Like:  
-> 
-> early_trace_init() is called after mm_init(), so I thought it might
-> work, but I guess not:
+[ Upstream commit 96806229ca033f85310bc5c203410189f8a1d2ee ]
 
-Yeah, I was about to say that this happens before mm_init() ;-)
+When a vPE is made resident, the GIC starts parsing the virtual pending
+table to deliver pending interrupts. This takes place asynchronously,
+and can at times take a long while. Long enough that the vcpu enters
+the guest and hits WFI before any interrupt has been signaled yet.
+The vcpu then exits, blocks, and now gets a doorbell. Rince, repeat.
 
-It's why we already have magic for enabling function tracing the first time.
+In order to avoid the above, a (optional on GICv4, mandatory on v4.1)
+feature allows the GIC to feedback to the hypervisor whether it is
+done parsing the VPT by clearing the GICR_VPENDBASER.Dirty bit.
+The hypervisor can then wait until the GIC is ready before actually
+running the vPE.
 
-Do you see anything wrong with this current solution? It probably needs
-more comments, but I wanted to get acceptance on the logic before I go and
-pretty it up and send a non RFC patch.
+Plug the detection code as well as polling on vPE schedule. While
+at it, tidy-up the kernel message that displays the GICv4 optional
+features.
 
--- Steve
+Reviewed-by: Zenghui Yu <yuzenghui@huawei.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/irqchip/irq-gic-v3-its.c   | 19 +++++++++++++++++++
+ drivers/irqchip/irq-gic-v3.c       | 11 +++++++----
+ include/linux/irqchip/arm-gic-v3.h |  2 ++
+ 3 files changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index 7c8f65c9c32de..381513e053029 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -14,6 +14,7 @@
+ #include <linux/dma-iommu.h>
+ #include <linux/efi.h>
+ #include <linux/interrupt.h>
++#include <linux/iopoll.h>
+ #include <linux/irqdomain.h>
+ #include <linux/list.h>
+ #include <linux/log2.h>
+@@ -3516,6 +3517,20 @@ out:
+ 	return IRQ_SET_MASK_OK_DONE;
+ }
+ 
++static void its_wait_vpt_parse_complete(void)
++{
++	void __iomem *vlpi_base = gic_data_rdist_vlpi_base();
++	u64 val;
++
++	if (!gic_rdists->has_vpend_valid_dirty)
++		return;
++
++	WARN_ON_ONCE(readq_relaxed_poll_timeout(vlpi_base + GICR_VPENDBASER,
++						val,
++						!(val & GICR_VPENDBASER_Dirty),
++						10, 500));
++}
++
+ static void its_vpe_schedule(struct its_vpe *vpe)
+ {
+ 	void __iomem *vlpi_base = gic_data_rdist_vlpi_base();
+@@ -3546,6 +3561,8 @@ static void its_vpe_schedule(struct its_vpe *vpe)
+ 	val |= vpe->idai ? GICR_VPENDBASER_IDAI : 0;
+ 	val |= GICR_VPENDBASER_Valid;
+ 	gicr_write_vpendbaser(val, vlpi_base + GICR_VPENDBASER);
++
++	its_wait_vpt_parse_complete();
+ }
+ 
+ static void its_vpe_deschedule(struct its_vpe *vpe)
+@@ -3752,6 +3769,8 @@ static void its_vpe_4_1_schedule(struct its_vpe *vpe,
+ 	val |= FIELD_PREP(GICR_VPENDBASER_4_1_VPEID, vpe->vpe_id);
+ 
+ 	gicr_write_vpendbaser(val, vlpi_base + GICR_VPENDBASER);
++
++	its_wait_vpt_parse_complete();
+ }
+ 
+ static void its_vpe_4_1_deschedule(struct its_vpe *vpe,
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index 1eec9d4649d51..71a84f9c56965 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -866,6 +866,7 @@ static int __gic_update_rdist_properties(struct redist_region *region,
+ 	gic_data.rdists.has_rvpeid &= !!(typer & GICR_TYPER_RVPEID);
+ 	gic_data.rdists.has_direct_lpi &= (!!(typer & GICR_TYPER_DirectLPIS) |
+ 					   gic_data.rdists.has_rvpeid);
++	gic_data.rdists.has_vpend_valid_dirty &= !!(typer & GICR_TYPER_DIRTY);
+ 
+ 	/* Detect non-sensical configurations */
+ 	if (WARN_ON_ONCE(gic_data.rdists.has_rvpeid && !gic_data.rdists.has_vlpis)) {
+@@ -886,10 +887,11 @@ static void gic_update_rdist_properties(void)
+ 	if (WARN_ON(gic_data.ppi_nr == UINT_MAX))
+ 		gic_data.ppi_nr = 0;
+ 	pr_info("%d PPIs implemented\n", gic_data.ppi_nr);
+-	pr_info("%sVLPI support, %sdirect LPI support, %sRVPEID support\n",
+-		!gic_data.rdists.has_vlpis ? "no " : "",
+-		!gic_data.rdists.has_direct_lpi ? "no " : "",
+-		!gic_data.rdists.has_rvpeid ? "no " : "");
++	if (gic_data.rdists.has_vlpis)
++		pr_info("GICv4 features: %s%s%s\n",
++			gic_data.rdists.has_direct_lpi ? "DirectLPI " : "",
++			gic_data.rdists.has_rvpeid ? "RVPEID " : "",
++			gic_data.rdists.has_vpend_valid_dirty ? "Valid+Dirty " : "");
+ }
+ 
+ /* Check whether it's single security state view */
+@@ -1614,6 +1616,7 @@ static int __init gic_init_bases(void __iomem *dist_base,
+ 	gic_data.rdists.has_rvpeid = true;
+ 	gic_data.rdists.has_vlpis = true;
+ 	gic_data.rdists.has_direct_lpi = true;
++	gic_data.rdists.has_vpend_valid_dirty = true;
+ 
+ 	if (WARN_ON(!gic_data.domain) || WARN_ON(!gic_data.rdists.rdist)) {
+ 		err = -ENOMEM;
+diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
+index 83439bfb6c5b0..7613a84a2466b 100644
+--- a/include/linux/irqchip/arm-gic-v3.h
++++ b/include/linux/irqchip/arm-gic-v3.h
+@@ -241,6 +241,7 @@
+ 
+ #define GICR_TYPER_PLPIS		(1U << 0)
+ #define GICR_TYPER_VLPIS		(1U << 1)
++#define GICR_TYPER_DIRTY		(1U << 2)
+ #define GICR_TYPER_DirectLPIS		(1U << 3)
+ #define GICR_TYPER_LAST			(1U << 4)
+ #define GICR_TYPER_RVPEID		(1U << 7)
+@@ -665,6 +666,7 @@ struct rdists {
+ 	bool			has_vlpis;
+ 	bool			has_rvpeid;
+ 	bool			has_direct_lpi;
++	bool			has_vpend_valid_dirty;
+ };
+ 
+ struct irq_domain;
+-- 
+2.20.1
+
+
+
