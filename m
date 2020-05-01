@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FD61C1E89
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 22:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C47D1C1E84
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 22:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727839AbgEAUb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 16:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60684 "EHLO
+        id S1727092AbgEAUbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 16:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726926AbgEAUbi (ORCPT
+        with ESMTP id S1726778AbgEAUbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 16:31:38 -0400
+        Fri, 1 May 2020 16:31:42 -0400
 Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391B7C08ED7D
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 13:31:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FA5C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 13:31:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=YCNRxVdwXiAUVSTcLJEk+raGgN9RNB/RFHzydfwKP+4=; b=LXXvbpGB/O/++jsrrBJgMh5c1F
-        FwItOmgwGdVkX65Ba15lVqs1iIQQmRmN+l2CasJvpFJgwI35R2aTXQDxm5XiLF+jx5GspOruHxpx3
-        5DHjBwKHO6sViZRotklFF2GlvOn7xwFEwM6GDO7XDHe8rjGe0DRuXQ76yxwljGJVWWQB1iT97p4kv
-        oW4aGjDQgfA4X1lo0YT5yG5osJtubfNwZ7qqJiAiApOWUsvyC6ex5W01h5uLDuLakzjF51Jov3i3D
-        poSaCkLGF5CWla3iWxmBTUow3Fsx/3YT0w8ddAQHFIGIAPq7gPnKIvJYueyFN2WrlkY5HeH1NRZRy
-        KcVzmrTg==;
+        bh=iXfBC10z2guuYoMIFO27yM0olz1TLRsDuJVoFNKxfeg=; b=s0zqCEop0L9n8zRx8urcabu+oz
+        XkpAJDWMkgqZQee9TMnxoQg9l13GMW+me44JE4l5cRJzk1g2ZIaoe+ovs9FfqSZrm2Kjb45aDuLFR
+        MXFxG9V8mvwg/hJZEm3NZZgYUxImx8QEYU7TMOKqpi3066+Ze5HJKqdWxhT9PV6nTwZcYjaM1dUE9
+        PElTPQczP0g8XFPeZ4qHWpLKJHRHKOFsRgXicOL2JLaaNtZRthwJuzIE0vvybJ0jY7Fj48V/3uZzz
+        mZ1MyK0QWNDHzsErzYQbQB5oM7Ab3yqItx73o4+xWjweA8z03pzBw+Z2mAbAx3Ic7QifPtevvB4N1
+        bkRkni/Q==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jUcJO-0007RK-TC; Fri, 01 May 2020 20:31:07 +0000
+        id 1jUcJL-0007R2-L9; Fri, 01 May 2020 20:31:03 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D37D5303DA8;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D2A3B30377D;
         Fri,  1 May 2020 22:31:00 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B521C25BAEC03; Fri,  1 May 2020 22:31:00 +0200 (CEST)
-Message-Id: <20200501202943.894447111@infradead.org>
+        id B7E0525BAEC04; Fri,  1 May 2020 22:31:00 +0200 (CEST)
+Message-Id: <20200501202943.951742836@infradead.org>
 User-Agent: quilt/0.65
-Date:   Fri, 01 May 2020 22:28:51 +0200
+Date:   Fri, 01 May 2020 22:28:52 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
@@ -46,10 +46,9 @@ Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
         tglx@linutronix.de, mingo@kernel.org, namit@vmware.com,
         hpa@zytor.com, luto@kernel.org, ard.biesheuvel@linaro.org,
         jpoimboe@redhat.com, pbonzini@redhat.com,
-        mathieu.desnoyers@efficios.com,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Robert Richter <rric@kernel.org>
-Subject: [PATCH v4 02/18] module: Fix up module_notifier return values
+        mathieu.desnoyers@efficios.com, Miroslav Benes <mbenes@suse.cz>,
+        Jessica Yu <jeyu@kernel.org>
+Subject: [PATCH v4 03/18] module: Properly propagate MODULE_STATE_COMING failure
 References: <20200501202849.647891881@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,136 +57,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While auditing all module notifiers I noticed a whole bunch of fail
-wrt the return value. Notifiers have a 'special' return semantics.
+Now that notifiers got unbroken; use the proper interface to handle
+notifier errors and propagate them.
 
-As is; NOTIFY_DONE vs NOTIFY_OK is a bit vague; but
-notifier_from_errno(0) results in NOTIFY_OK and NOTIFY_DONE has a
-comment that says "Don't care".
+There were already MODULE_STATE_COMING notifiers that failed; notably:
 
->From this I've used NOTIFY_DONE when the function completely ignores
-the callback and notifier_to_error() isn't used.
+ - jump_label_module_notifier()
+ - tracepoint_module_notify()
+ - bpf_event_notify()
+
+By propagating this error, we fix those users.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Reviewed-by: Robert Richter <rric@kernel.org>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Acked-by: Jessica Yu <jeyu@kernel.org>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- drivers/oprofile/buffer_sync.c |    4 ++--
- kernel/trace/bpf_trace.c       |    8 ++++++--
- kernel/trace/trace.c           |    2 +-
- kernel/trace/trace_events.c    |    2 +-
- kernel/trace/trace_printk.c    |    4 ++--
- kernel/tracepoint.c            |    2 +-
- 6 files changed, 13 insertions(+), 9 deletions(-)
+ kernel/module.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/drivers/oprofile/buffer_sync.c
-+++ b/drivers/oprofile/buffer_sync.c
-@@ -116,7 +116,7 @@ module_load_notify(struct notifier_block
- {
- #ifdef CONFIG_MODULES
- 	if (val != MODULE_STATE_COMING)
--		return 0;
-+		return NOTIFY_DONE;
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -3751,9 +3751,13 @@ static int prepare_coming_module(struct
+ 	if (err)
+ 		return err;
  
- 	/* FIXME: should we process all CPU buffers ? */
- 	mutex_lock(&buffer_mutex);
-@@ -124,7 +124,7 @@ module_load_notify(struct notifier_block
- 	add_event_entry(MODULE_LOADED_CODE);
- 	mutex_unlock(&buffer_mutex);
- #endif
+-	blocking_notifier_call_chain(&module_notify_list,
+-				     MODULE_STATE_COMING, mod);
 -	return 0;
-+	return NOTIFY_OK;
++	err = blocking_notifier_call_chain_robust(&module_notify_list,
++			MODULE_STATE_COMING, MODULE_STATE_GOING, mod);
++	err = notifier_to_errno(err);
++	if (err)
++		klp_module_going(mod);
++
++	return err;
  }
  
- 
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1451,10 +1451,11 @@ static int bpf_event_notify(struct notif
- {
- 	struct bpf_trace_module *btm, *tmp;
- 	struct module *mod = module;
-+	int ret = 0;
- 
- 	if (mod->num_bpf_raw_events == 0 ||
- 	    (op != MODULE_STATE_COMING && op != MODULE_STATE_GOING))
--		return 0;
-+		goto out;
- 
- 	mutex_lock(&bpf_module_mutex);
- 
-@@ -1464,6 +1465,8 @@ static int bpf_event_notify(struct notif
- 		if (btm) {
- 			btm->module = module;
- 			list_add(&btm->list, &bpf_trace_modules);
-+		} else {
-+			ret = -ENOMEM;
- 		}
- 		break;
- 	case MODULE_STATE_GOING:
-@@ -1479,7 +1482,8 @@ static int bpf_event_notify(struct notif
- 
- 	mutex_unlock(&bpf_module_mutex);
- 
--	return 0;
-+out:
-+	return notifier_from_errno(ret);
- }
- 
- static struct notifier_block bpf_module_nb = {
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -8696,7 +8696,7 @@ static int trace_module_notify(struct no
- 		break;
- 	}
- 
--	return 0;
-+	return NOTIFY_OK;
- }
- 
- static struct notifier_block trace_module_nb = {
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -2442,7 +2442,7 @@ static int trace_module_notify(struct no
- 	mutex_unlock(&trace_types_lock);
- 	mutex_unlock(&event_mutex);
- 
--	return 0;
-+	return NOTIFY_OK;
- }
- 
- static struct notifier_block trace_module_nb = {
---- a/kernel/trace/trace_printk.c
-+++ b/kernel/trace/trace_printk.c
-@@ -95,7 +95,7 @@ static int module_trace_bprintk_format_n
- 		if (val == MODULE_STATE_COMING)
- 			hold_module_trace_bprintk_format(start, end);
- 	}
--	return 0;
-+	return NOTIFY_OK;
- }
- 
- /*
-@@ -173,7 +173,7 @@ __init static int
- module_trace_bprintk_format_notify(struct notifier_block *self,
- 		unsigned long val, void *data)
- {
--	return 0;
-+	return NOTIFY_OK;
- }
- static inline const char **
- find_next_mod_format(int start_index, void *v, const char **fmt, loff_t *pos)
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -521,7 +521,7 @@ static int tracepoint_module_notify(stru
- 	case MODULE_STATE_UNFORMED:
- 		break;
- 	}
--	return ret;
-+	return notifier_from_errno(ret);
- }
- 
- static struct notifier_block tracepoint_module_nb = {
+ static int unknown_module_param_cb(char *param, char *val, const char *modname,
 
 
