@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40961C147C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 424021C14CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731232AbgEANjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:39:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39590 "EHLO mail.kernel.org"
+        id S1731595AbgEANnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:43:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731219AbgEANjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:39:47 -0400
+        id S1731078AbgEANnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:43:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7E05208DB;
-        Fri,  1 May 2020 13:39:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6453120757;
+        Fri,  1 May 2020 13:43:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340386;
-        bh=ldTvqhRkqM+nR/J0XJ6ZzNqIValUnJ/esBZKHmivZsA=;
+        s=default; t=1588340580;
+        bh=JIjDI1yWmotW1ixclDVHEKfcxGRhfZ1evqCSWr+9Ni4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vMNr9Q/P0a6s/MBcPThGlA1G3qBOlV0ygPfehE8WP43Co90zrD2R4SXnuRK02fbMp
-         eB0p6zoc2/3qy2D9ciaNdqfX4Wk19GdL0GkFieEzFdeNZzCzALGaGcNZzu+cjG4Y+2
-         WSW29VrMcJ8+pqAiaygI0w/J1kzOUi2y3k1z3i+I=
+        b=FEf8r1AOOP4SmyUd5b4YXTbjSV7te6olWNJ8YpsZdoAltPq9339sL6v84pvq+Xo9f
+         GXSyrk4+JAbDGU+Qyu5r5XJvUZStzeMYrskqNJ7a3l2w5P45ggyqDjTOmMUwry7V3d
+         siAcmGVW3yU0CvMiy2djnvsJSoU0cSWnmnekl06Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>, Waiman Long <longman@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 45/83] blk-iocost: Fix error on iocost_ioc_vrate_adj
-Date:   Fri,  1 May 2020 15:23:24 +0200
-Message-Id: <20200501131536.767658378@linuxfoundation.org>
+        stable@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: [PATCH 5.6 052/106] net/mlx5: Fix failing fw tracer allocation on s390
+Date:   Fri,  1 May 2020 15:23:25 +0200
+Message-Id: <20200501131549.901718824@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,76 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Waiman Long <longman@redhat.com>
+From: Niklas Schnelle <schnelle@linux.ibm.com>
 
-commit d6c8e949a35d6906d6c03a50e9a9cdf4e494528a upstream.
+commit a019b36123aec9700b21ae0724710f62928a8bc1 upstream.
 
-Systemtap 4.2 is unable to correctly interpret the "u32 (*missed_ppm)[2]"
-argument of the iocost_ioc_vrate_adj trace entry defined in
-include/trace/events/iocost.h leading to the following error:
+On s390 FORCE_MAX_ZONEORDER is 9 instead of 11, thus a larger kzalloc()
+allocation as done for the firmware tracer will always fail.
 
-  /tmp/stapAcz0G0/stap_c89c58b83cea1724e26395efa9ed4939_6321_aux_6.c:78:8:
-  error: expected ‘;’, ‘,’ or ‘)’ before ‘*’ token
-   , u32[]* __tracepoint_arg_missed_ppm
+Looking at mlx5_fw_tracer_save_trace(), it is actually the driver itself
+that copies the debug data into the trace array and there is no need for
+the allocation to be contiguous in physical memory. We can therefor use
+kvzalloc() instead of kzalloc() and get rid of the large contiguous
+allcoation.
 
-That argument type is indeed rather complex and hard to read. Looking
-at block/blk-iocost.c. It is just a 2-entry u32 array. By simplifying
-the argument to a simple "u32 *missed_ppm" and adjusting the trace
-entry accordingly, the compilation error was gone.
-
-Fixes: 7caa47151ab2 ("blkcg: implement blk-iocost")
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Acked-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: f53aaa31cce7 ("net/mlx5: FW tracer, implement tracer logic")
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- block/blk-iocost.c            |    4 ++--
- include/trace/events/iocost.h |    6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -1594,7 +1594,7 @@ skip_surplus_transfers:
- 				      vrate_min, vrate_max);
- 		}
- 
--		trace_iocost_ioc_vrate_adj(ioc, vrate, &missed_ppm, rq_wait_pct,
-+		trace_iocost_ioc_vrate_adj(ioc, vrate, missed_ppm, rq_wait_pct,
- 					   nr_lagging, nr_shortages,
- 					   nr_surpluses);
- 
-@@ -1603,7 +1603,7 @@ skip_surplus_transfers:
- 			ioc->period_us * vrate * INUSE_MARGIN_PCT, 100);
- 	} else if (ioc->busy_level != prev_busy_level || nr_lagging) {
- 		trace_iocost_ioc_vrate_adj(ioc, atomic64_read(&ioc->vtime_rate),
--					   &missed_ppm, rq_wait_pct, nr_lagging,
-+					   missed_ppm, rq_wait_pct, nr_lagging,
- 					   nr_shortages, nr_surpluses);
+--- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+@@ -935,7 +935,7 @@ struct mlx5_fw_tracer *mlx5_fw_tracer_cr
+ 		return NULL;
  	}
  
---- a/include/trace/events/iocost.h
-+++ b/include/trace/events/iocost.h
-@@ -130,7 +130,7 @@ DEFINE_EVENT(iocg_inuse_update, iocost_i
+-	tracer = kzalloc(sizeof(*tracer), GFP_KERNEL);
++	tracer = kvzalloc(sizeof(*tracer), GFP_KERNEL);
+ 	if (!tracer)
+ 		return ERR_PTR(-ENOMEM);
  
- TRACE_EVENT(iocost_ioc_vrate_adj,
+@@ -982,7 +982,7 @@ destroy_workqueue:
+ 	tracer->dev = NULL;
+ 	destroy_workqueue(tracer->work_queue);
+ free_tracer:
+-	kfree(tracer);
++	kvfree(tracer);
+ 	return ERR_PTR(err);
+ }
  
--	TP_PROTO(struct ioc *ioc, u64 new_vrate, u32 (*missed_ppm)[2],
-+	TP_PROTO(struct ioc *ioc, u64 new_vrate, u32 *missed_ppm,
- 		u32 rq_wait_pct, int nr_lagging, int nr_shortages,
- 		int nr_surpluses),
+@@ -1061,7 +1061,7 @@ void mlx5_fw_tracer_destroy(struct mlx5_
+ 	mlx5_fw_tracer_destroy_log_buf(tracer);
+ 	flush_workqueue(tracer->work_queue);
+ 	destroy_workqueue(tracer->work_queue);
+-	kfree(tracer);
++	kvfree(tracer);
+ }
  
-@@ -155,8 +155,8 @@ TRACE_EVENT(iocost_ioc_vrate_adj,
- 		__entry->old_vrate = atomic64_read(&ioc->vtime_rate);;
- 		__entry->new_vrate = new_vrate;
- 		__entry->busy_level = ioc->busy_level;
--		__entry->read_missed_ppm = (*missed_ppm)[READ];
--		__entry->write_missed_ppm = (*missed_ppm)[WRITE];
-+		__entry->read_missed_ppm = missed_ppm[READ];
-+		__entry->write_missed_ppm = missed_ppm[WRITE];
- 		__entry->rq_wait_pct = rq_wait_pct;
- 		__entry->nr_lagging = nr_lagging;
- 		__entry->nr_shortages = nr_shortages;
+ static int fw_tracer_event(struct notifier_block *nb, unsigned long action, void *data)
 
 
