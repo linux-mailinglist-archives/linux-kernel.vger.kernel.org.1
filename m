@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6541C1C3C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:49:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1AF1C1C40
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729917AbgEARtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729776AbgEARtL (ORCPT
+        id S1730115AbgEARuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 13:50:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53633 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729393AbgEARub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 13:49:11 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40296C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:49:11 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id b18so5155821ilf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:49:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FAkF2yaKZTirBIt4k8vbrMCWa7L6IDgN4q10kaek3iU=;
-        b=Nu25g7pInQqg92NCuHrYmayuvi3zj47l19mKYK+v6nZ4geQuwZmiJFA0Ii0QRLaf2k
-         xhcszlyfj33HWh3Xi5E56xHj2YdoWvAna+nzO5duPolVZHd5AwqU1VwJvEYWiKV5tNrZ
-         VVgz6Z8ZDZ1dlDXalq4Xzu5DlrcSogG11QqcmPgyBYcPsqY6QlxwCN7+yTLiZ4xKCo7Z
-         5wN4N3ChX/WfdltfWQ01AVZeB/vbq6zulX6fFL5caZZSbqoWdenu5DmZNr0JSsR6zNnz
-         7S4JvLkRqEBK1s7dysopowoExTk3x8svJXpsW2HZgqPm4pLLRFkJUqVbqHncgDwv96sp
-         7gbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FAkF2yaKZTirBIt4k8vbrMCWa7L6IDgN4q10kaek3iU=;
-        b=Q7fC6263ouwNFgHdb7C3B2iiSCOmPRhiwcfbsrZfyYLQhz9NcVbwMhV9VcoxdgCwsh
-         1darm8Yl7zaJzQ5TsTU2njTGx/IPAwx/wJmRyD1I0QN1oUGJObWh/BV+ISkJyACfvUC2
-         NJAnpiEX1TWfcgEoT2rc/os4VLz5yhG61CszfGZD5Y2ixMMSyHK3kaLHVyEG5sVTRAhp
-         hQymu0spBTIbz+eCNsvC1q4zW1nFV5uJukW7sZDJ3t7aMbQXJxPXfm5teH03D0kS2p7E
-         oh2uXD9jWpV5AiICaVxwrYc+79ZvZmSIlz2Y7fr65BbZ4ExNS0hiEJJqrux6N054TSBD
-         bZKw==
-X-Gm-Message-State: AGi0PuZjI+/bWqlxXi1AFzEkU3hmfNqaaOsh/Gsf435SOJWLA7l3NvBm
-        LUAxYMpdxazS3v4f7V9uDa7SdcJ6iZfqjw==
-X-Google-Smtp-Source: APiQypIjzlOj0z/RyQ2dh1il3B4WXx3fOLCltjGmV8lOFrB8LH4cwP0bYXdcjZVDSR+f+bbE+SWviQ==
-X-Received: by 2002:a92:4952:: with SMTP id w79mr4374379ila.15.1588355349738;
-        Fri, 01 May 2020 10:49:09 -0700 (PDT)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id d23sm1130687ioc.48.2020.05.01.10.49.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 May 2020 10:49:08 -0700 (PDT)
-Subject: Re: [PATCH v2] eventfd: convert to f_op->read_iter()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <c71b2091-a86e-cc81-056d-de2f1e839f50@kernel.dk>
- <20200501174306.GM23230@ZenIV.linux.org.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2fa3e8dc-172e-2ac6-bc5e-a8fea5491e22@kernel.dk>
-Date:   Fri, 1 May 2020 11:49:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 1 May 2020 13:50:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588355429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ucsSzBpiK2ssiDfbxZQQI4SWzJTSeJKTe65zvN75TBE=;
+        b=TntHSw7X46jcYNQVw/VACPmckN+RqKvUvmirs34AeZGDFw9uF9GuPyzCljJnJRV3i8wCVu
+        6PupF0u30afATKEIc8BQQqjTsgV5cCrpB3AvrN2BktgXcMo2wmU8joMDuI80KVKRXY5+z4
+        e+s44Rcn75fyjECILeZHclTkAw1gGhs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-431-GTX5sAw_MO-B9Pq1twleUg-1; Fri, 01 May 2020 13:50:26 -0400
+X-MC-Unique: GTX5sAw_MO-B9Pq1twleUg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0EEED108BD16;
+        Fri,  1 May 2020 17:50:25 +0000 (UTC)
+Received: from treble (ovpn-114-104.rdu2.redhat.com [10.10.114.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 636845EE10;
+        Fri,  1 May 2020 17:50:24 +0000 (UTC)
+Date:   Fri, 1 May 2020 12:50:22 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Remaining randconfig objtool warnings, linux-next-20200428
+Message-ID: <20200501175022.yf3a34lu3ufui5ag@treble>
+References: <CAK8P3a2qLJkokMGt48JRky=WUeAbJRuNmoD1oqfWdrGSC6y1LA@mail.gmail.com>
+ <CAK8P3a2Gzj9SVZSGo+PxWR0cMJb1sFwv+ii9J6jEGE-Z41Fr+A@mail.gmail.com>
+ <CAK8P3a3exNWHzv7pyV4yvn2hPxUswzSF=G3UJ=evykT5bjfEsw@mail.gmail.com>
+ <20200501172616.GG3762@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200501174306.GM23230@ZenIV.linux.org.uk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200501172616.GG3762@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/1/20 11:43 AM, Al Viro wrote:
-> On Fri, May 01, 2020 at 11:18:05AM -0600, Jens Axboe wrote:
+On Fri, May 01, 2020 at 07:26:16PM +0200, Peter Zijlstra wrote:
+> On Fri, May 01, 2020 at 07:21:31PM +0200, Arnd Bergmann wrote:
+> > On Thu, Apr 30, 2020 at 4:05 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > it gets into undefined behavior and stops emitting code after the call to
 > 
->> -	if (res > 0 && put_user(ucnt, (__u64 __user *)buf))
->> +	if (res > 0 && copy_to_iter(&ucnt, res, iov) < res)
+> > Do we consider this expected behavior on gcc's side, or is it something
+> > that should not happen and needs a gcc bug report?
 > 
-> *whoa*
+> When it hits UB it is of course free to do whatever it damn well
+> pleases, but just stopping code gen seems a little extreme, at least
+> issue a WARN that something is up or so.
 > 
-> It is correct, but only because here res > 0 <=> res == 8.
-> And that's not trivial at the first glance.
-> 
-> Please, turn that into something like
+> Not sure how the GCC folks feel about this though.
 
-Looks good to me, just one minor edit:
+When we've seen truncated code flow like this in the past, it's either
+been a code bug (undefined behavior) or a GCC bug.  So this is new.
 
-> 	if (iov_iter_count(to) < sizeof(ucnt))
-> 		return -EINVAL;
-> 	spin_lock_irq(&ctx->wqh.lock);
-> 	if (!ctx->count) {
-> 		if (unlikely(file->f_flags & O_NONBLOCK) {
-> 			spin_unlock_irq(&ctx->wqh.lock)
-> 			return -EAGAIN;
-> 		}
-> 		__add_wait_queue(&ctx->wqh, &wait);
-> 		for (;;) {
-> 			set_current_state(TASK_INTERRUPTIBLE);
-> 			if (ctx->count)
-> 				break;
-> 			if (signal_pending(current)) {
-> 				spin_unlock_irq(&ctx->wqh.lock)
-> 				return -ERESTARTSYS;
-> 			}
-
-We need to remove waitq and re-set task state here. I'll run a sanity
-check on that and send out a v3.
+Is it only seen with GCC_PLUGIN_SANCOV enabled?  Maybe (hopefully) it's
+an issue with the plugin and how it interacts with GCC 10.
 
 -- 
-Jens Axboe
+Josh
 
