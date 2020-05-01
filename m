@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1DF1C1725
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877421C140E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730021AbgEAN6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:58:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54642 "EHLO mail.kernel.org"
+        id S1730742AbgEANfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:35:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729481AbgEANac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:30:32 -0400
+        id S1730679AbgEANfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:35:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1AAD20757;
-        Fri,  1 May 2020 13:30:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED19C24953;
+        Fri,  1 May 2020 13:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339832;
-        bh=0bmmoobu5JO6/P+JWnOrpzSDyd+b/gmKezvE5yBlgME=;
+        s=default; t=1588340109;
+        bh=kkYlaCzeAPTBAZUCrEwg/VKcVhWrWErN3+we1EYbLZU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J2cXFu5C14nqwQjuEgp98LYViXiU3pRpUToCyd+Zv+WEgzlEPxo/gUmsDl+8SYZhx
-         qFRjSRx+uQVGds59DxYX2iEFe32nOpJtNf+n5hLLhk1odsb3iyVIOU/0y6R4SkAene
-         xQGKYbMi6DzS/lCrjxK+ebNqUhIP7bNRk3XCHzDE=
+        b=bvto7ViGFlBawLGKeURGIMud73vw+l15DuvoVd74EUb3q3dcsolMhGgmW/jXyWnXR
+         xehWmeM6AzFA5Ojti6s1O79p1MkxuG4q13cJQdxxHNqt1GRDFY99dScn5XgYCyuDY5
+         cshjvPnoW+KpDS0FOZWgT1pC6/xc9pBYlnUMELkI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Arthur Marsh <arthur.marsh@internode.on.net>,
-        Theodore Tso <tytso@mit.edu>, Ashwin H <ashwinh@vmware.com>
-Subject: [PATCH 4.9 78/80] ext4: fix block validity checks for journal inodes using indirect blocks
-Date:   Fri,  1 May 2020 15:22:12 +0200
-Message-Id: <20200501131537.532578814@linuxfoundation.org>
+        syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 097/117] mm: shmem: disable interrupt when acquiring info->lock in userfaultfd_copy path
+Date:   Fri,  1 May 2020 15:22:13 +0200
+Message-Id: <20200501131556.737155505@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
-References: <20200501131513.810761598@linuxfoundation.org>
+In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
+References: <20200501131544.291247695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +48,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Yang Shi <yang.shi@linux.alibaba.com>
 
-commit 170417c8c7bb2cbbdd949bf5c443c0c8f24a203b upstream.
+commit 94b7cc01da5a3cc4f3da5e0ff492ef008bb555d6 upstream.
 
-Commit 345c0dbf3a30 ("ext4: protect journal inode's blocks using
-block_validity") failed to add an exception for the journal inode in
-ext4_check_blockref(), which is the function used by ext4_get_branch()
-for indirect blocks.  This caused attempts to read from the ext3-style
-journals to fail with:
+Syzbot reported the below lockdep splat:
 
-[  848.968550] EXT4-fs error (device sdb7): ext4_get_branch:171: inode #8: block 30343695: comm jbd2/sdb7-8: invalid block
+    WARNING: possible irq lock inversion dependency detected
+    5.6.0-rc7-syzkaller #0 Not tainted
+    --------------------------------------------------------
+    syz-executor.0/10317 just changed the state of lock:
+    ffff888021d16568 (&(&info->lock)->rlock){+.+.}, at: spin_lock include/linux/spinlock.h:338 [inline]
+    ffff888021d16568 (&(&info->lock)->rlock){+.+.}, at: shmem_mfill_atomic_pte+0x1012/0x21c0 mm/shmem.c:2407
+    but this lock was taken by another, SOFTIRQ-safe lock in the past:
+     (&(&xa->xa_lock)->rlock#5){..-.}
 
-Fix this by adding the missing exception check.
+    and interrupts could create inverse lock ordering between them.
 
-Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using block_validity")
-Reported-by: Arthur Marsh <arthur.marsh@internode.on.net>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Ashwin H <ashwinh@vmware.com>
+    other info that might help us debug this:
+     Possible interrupt unsafe locking scenario:
+
+           CPU0                    CPU1
+           ----                    ----
+      lock(&(&info->lock)->rlock);
+                                   local_irq_disable();
+                                   lock(&(&xa->xa_lock)->rlock#5);
+                                   lock(&(&info->lock)->rlock);
+      <Interrupt>
+        lock(&(&xa->xa_lock)->rlock#5);
+
+     *** DEADLOCK ***
+
+The full report is quite lengthy, please see:
+
+  https://lore.kernel.org/linux-mm/alpine.LSU.2.11.2004152007370.13597@eggly.anvils/T/#m813b412c5f78e25ca8c6c7734886ed4de43f241d
+
+It is because CPU 0 held info->lock with IRQ enabled in userfaultfd_copy
+path, then CPU 1 is splitting a THP which held xa_lock and info->lock in
+IRQ disabled context at the same time.  If softirq comes in to acquire
+xa_lock, the deadlock would be triggered.
+
+The fix is to acquire/release info->lock with *_irq version instead of
+plain spin_{lock,unlock} to make it softirq safe.
+
+Fixes: 4c27fe4c4c84 ("userfaultfd: shmem: add shmem_mcopy_atomic_pte for userfaultfd support")
+Reported-by: syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com
+Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Tested-by: syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com
+Acked-by: Hugh Dickins <hughd@google.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Link: http://lkml.kernel.org/r/1587061357-122619-1-git-send-email-yang.shi@linux.alibaba.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/block_validity.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ mm/shmem.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -274,6 +274,11 @@ int ext4_check_blockref(const char *func
- 	__le32 *bref = p;
- 	unsigned int blk;
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2330,11 +2330,11 @@ static int shmem_mfill_atomic_pte(struct
  
-+	if (ext4_has_feature_journal(inode->i_sb) &&
-+	    (inode->i_ino ==
-+	     le32_to_cpu(EXT4_SB(inode->i_sb)->s_es->s_journal_inum)))
-+		return 0;
-+
- 	while (bref < p+max) {
- 		blk = le32_to_cpu(*bref++);
- 		if (blk &&
+ 	lru_cache_add_anon(page);
+ 
+-	spin_lock(&info->lock);
++	spin_lock_irq(&info->lock);
+ 	info->alloced++;
+ 	inode->i_blocks += BLOCKS_PER_PAGE;
+ 	shmem_recalc_inode(inode);
+-	spin_unlock(&info->lock);
++	spin_unlock_irq(&info->lock);
+ 
+ 	inc_mm_counter(dst_mm, mm_counter_file(page));
+ 	page_add_file_rmap(page, false);
 
 
