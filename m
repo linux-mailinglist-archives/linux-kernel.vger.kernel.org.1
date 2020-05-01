@@ -2,46 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C221C19E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE821C1960
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgEAPjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 11:39:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53754 "EHLO mail.kernel.org"
+        id S1729742AbgEAPYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 11:24:10 -0400
+Received: from mga11.intel.com ([192.55.52.93]:25819 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728893AbgEAPjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 11:39:03 -0400
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FE0724958;
-        Fri,  1 May 2020 15:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588347543;
-        bh=XipnPd5rd2M5w8iTqFjOmWhstavs032S5pyhbIG9/UM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=wbdP/MH9AxBlALdz6uIDyNQCScm1mDXLUX94+vwX4Ws/3t29JSUBUesuuqO0E90Zq
-         pZR+1LICO8k27qfVnpJu4OPDJKnzKEIdMiJHcE2dOB//YZs4NyiPKRmXKa5VWbeuB1
-         /AJyzP0YHu0kG/y6Qt++Ijb3Y1T/RVfs9NN3kfdw=
-Subject: Re: [PATCH 2/3] selftests/ftrace: Pick only the first kprobe event to
- test
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Li Philip <philip.li@intel.com>,
-        Liu Yiding <yidingx.liu@intel.com>, skhan@linuxfoundation.org,
-        shuah <shuah@kernel.org>
-References: <158834025077.28357.15141584656220094821.stgit@devnote2>
- <158834027133.28357.11196486193798517250.stgit@devnote2>
- <20200501101718.5a15e557@gandalf.local.home>
-From:   shuah <shuah@kernel.org>
-Message-ID: <7751734b-83f1-bf14-9d8e-9092b0b7be3e@kernel.org>
-Date:   Fri, 1 May 2020 09:38:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729623AbgEAPYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 11:24:02 -0400
+IronPort-SDR: ntsT+1LZcKEMJjSji8aS+k0L1KfS4d4hlSpbSQyq1EJJ3cADn9UzjTqZzySEiwy66/2J6BSWdn
+ kecTv0q7ETIw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 08:24:02 -0700
+IronPort-SDR: 47tymbPfl9qbTTlfysUzknikXccfyXgrbod4kYl4O78cywd5rglwBV6HBEZ8t3NQ+M9AjVwqUQ
+ n7VPmxEa4G+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,339,1583222400"; 
+   d="scan'208";a="433341664"
+Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
+  by orsmga005.jf.intel.com with ESMTP; 01 May 2020 08:24:01 -0700
+Subject: Re: [PATCH 4/4 v2] firmware: stratix10-svc: Slightly simplify code
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        gregkh@linuxfoundation.org, atull@kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <cover.1588142343.git.christophe.jaillet@wanadoo.fr>
+ <8c505c686438c54da61ad4fe15e1eae722011153.1588142343.git.christophe.jaillet@wanadoo.fr>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <1f8ae50d-6830-7fbb-e999-3e8110fe7cd6@linux.intel.com>
+Date:   Fri, 1 May 2020 10:40:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200501101718.5a15e557@gandalf.local.home>
+In-Reply-To: <8c505c686438c54da61ad4fe15e1eae722011153.1588142343.git.christophe.jaillet@wanadoo.fr>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -50,71 +45,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/1/20 8:17 AM, Steven Rostedt wrote:
-> On Fri,  1 May 2020 22:37:51 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Hi,
+
+On 4/29/20 1:52 AM, Christophe JAILLET wrote:
+> Replace 'devm_kmalloc_array(... | __GFP_ZERO)' with the equivalent and
+> shorter 'devm_kcalloc(...)'.
 > 
->> Since the kprobe/kprobe_args_type.tc reads out all event logs
->> from the trace buffer, the test can fail if there is another
->> fork event happens.
->> Use head command to pick only the first kprobe event from
->> the trace buffer to test the argument types.
->>
->> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
->> ---
->>   .../ftrace/test.d/kprobe/kprobe_args_type.tc       |    2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
->> index 1bcb67dcae26..81490ecaaa92 100644
->> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
->> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
->> @@ -38,7 +38,7 @@ for width in 64 32 16 8; do
->>     echo 0 > events/kprobes/testprobe/enable
->>   
->>     : "Confirm the arguments is recorded in given types correctly"
->> -  ARGS=`grep "testprobe" trace | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
->> +  ARGS=`grep "testprobe" trace | head -n 1 | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
->>     check_types $ARGS $width
->>   
->>     : "Clear event for next loop"
+It doesn't make much sense.
+Actually devm_kcalloc returns devm_kmalloc_array(.., flag | __GFP_ZERO).
+
+> 'ctrl->genpool' can not be NULL, so axe a useless test in the remove
+> function.
 > 
-> I think I've manually added this exact change to my tests to keep it from
-> failing.
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>   drivers/firmware/stratix10-svc.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
+> index 739004398877..c228337cb0a1 100644
+> --- a/drivers/firmware/stratix10-svc.c
+> +++ b/drivers/firmware/stratix10-svc.c
+> @@ -1002,8 +1002,7 @@ static int stratix10_svc_drv_probe(struct platform_device *pdev)
+>   	if (!controller)
+>   		return -ENOMEM;
+>   
+> -	chans = devm_kmalloc_array(dev, SVC_NUM_CHANNEL,
+> -				   sizeof(*chans), GFP_KERNEL | __GFP_ZERO);
+> +	chans = devm_kcalloc(dev, SVC_NUM_CHANNEL, sizeof(*chans), GFP_KERNEL);
+>   	if (!chans)
+>   		return -ENOMEM;
+>   
+> @@ -1086,8 +1085,7 @@ static int stratix10_svc_drv_remove(struct platform_device *pdev)
+>   		kthread_stop(ctrl->task);
+>   		ctrl->task = NULL;
+>   	}
+> -	if (ctrl->genpool)
+> -		gen_pool_destroy(ctrl->genpool);
+> +	gen_pool_destroy(ctrl->genpool);
+>   	list_del(&ctrl->node);
+>   
+>   	return 0;
 > 
 
-Does this conflict with:
-
-Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date:   Tue Apr 7 14:34:19 2020 +0800
-
-     selftests/ftrace: Check the first record for kprobe_args_type.tc
-
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=next&id=f0c0d0cf590f71b2213b29a7ded2cde3d0a1a0ba
-
-I went into mainline yesterday in my rc4 pull request.
-
-Exact change it appears.
-
-diff --git 
-a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc 
-b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-index 1bcb67dcae26..81490ecaaa92 100644
---- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-+++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-@@ -38,7 +38,7 @@ for width in 64 32 16 8; do
-    echo 0 > events/kprobes/testprobe/enable
-
-    : "Confirm the arguments is recorded in given types correctly"
--  ARGS=`grep "testprobe" trace | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) 
-arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
-+  ARGS=`grep "testprobe" trace | head -n 1 | sed -e 's/.* arg1=\(.*\) 
-arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
-    check_types $ARGS $width
-
-    : "Clear event for next loop"
-
-thanks,
--- Shuah
+Regards,
+Richard
