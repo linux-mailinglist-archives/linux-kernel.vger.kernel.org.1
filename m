@@ -2,314 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE6C1C1FF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795351C1FE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727791AbgEAVqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 17:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727057AbgEAVqh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 17:46:37 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A2B6C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 14:46:37 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id i136so6533149qke.10
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 14:46:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+uxv+I2/FTJBYBAjECwblv3RDhMku6JWKomQ4Y91nmM=;
-        b=H9yanSPsA+U88jyPGN8QJqxFiCaATOffIamOYA9dkOpALy1hywuSZ/TWenPYX8PMNM
-         anb/N3lQdk9pZpqEFzxvnRQposoGWTNe67oqlD2iSdC+6gT5Ai5oIfDu499JZ2xx4gJ2
-         8nEC/w4qflEzXH2gXnCDZlT8x+T9o8Wm+bh1B4Gi6z2PXKFd645NV8U2jr1SBvcT+Syr
-         qgfhJbEVZuEJ0crACS3qw4GXlbnzfp87n1Et9LCoNqbDKdeQi/860Z4b5b8TEHNut7Hs
-         oqS7hcuM+ZvTlm7P0vnVfvsby1IK9P5izSHs1fwJ4lDGKQ+TWOC7VXgBkpxF4kTMIMQ3
-         BOLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+uxv+I2/FTJBYBAjECwblv3RDhMku6JWKomQ4Y91nmM=;
-        b=DsEK3JWF0tEP/jaAYr8q0lK2K1durAVjOXNKsgd+BCrArfKd2NbnLC4Kt/LAg04+d6
-         YxJ0wuFNXZNaFpr/FFlUnSJJP9o5vHWhGFUaqLV+VRY4tyjAzn/xtFU2JWE3whsa3Tyt
-         gyjz9ycMuEdX5pUN8npmPtfYnL0tr1UzWnJO+1E1ZhU7zr/vS6RcnvBc8yYK2AF79GEy
-         Dr5c/BVC7n53ZkswEKQ1Ow4ASWvfcHhp8SqD6oYMe/U8VNBOSVHlpqoQKp5elLZWD4eE
-         jtj9hNR9Il9LsbG+0tEzPnXUxDvpgsfthgU3zWQYtCKF7kuF95t5N0jADQ7oWCoB+09/
-         iZmQ==
-X-Gm-Message-State: AGi0PuYFp0VnGv+6hiyimjfHRkv8Q7sXSD0eyYlkrpoA5RnoXGvWj6mC
-        clHmGfTR+64cJaI6kHhe2cchYA==
-X-Google-Smtp-Source: APiQypIEH50rTxi7c1REIzQ2SLaIQV+QqAPGJNKDWYIxjk6iX1MKO2VQNt4z85V+Pgl+EVP6OFQfRQ==
-X-Received: by 2002:ae9:edce:: with SMTP id c197mr5807335qkg.454.1588369596430;
-        Fri, 01 May 2020 14:46:36 -0700 (PDT)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id z18sm3470982qti.47.2020.05.01.14.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 14:46:36 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net
-Cc:     evgreen@chromium.org.net, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net-next 4/4] net: ipa: define SMEM memory region for IPA
-Date:   Fri,  1 May 2020 16:46:25 -0500
-Message-Id: <20200501214625.31539-5-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200501214625.31539-1-elder@linaro.org>
-References: <20200501214625.31539-1-elder@linaro.org>
+        id S1726896AbgEAVqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 17:46:35 -0400
+Received: from mga17.intel.com ([192.55.52.151]:43989 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726736AbgEAVqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 17:46:33 -0400
+IronPort-SDR: ki46bCnj3Z61G2GrH4aPO5nPF0Y97S6ek3H97z/shZHjwXexJwS/Su8gtDORcKDroO5KZUkp1t
+ NKCnkRamlksQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 14:46:32 -0700
+IronPort-SDR: APjvBuXoDHn2cvvuqaTFzkW4bnzIv2ckBl9UrbjPwTaOG32LjX6/6R80UAf8oYx2P+D8I4JkWh
+ gEGfjESfaKWA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,341,1583222400"; 
+   d="scan'208";a="283301037"
+Received: from schen9-mobl.amr.corp.intel.com ([10.254.53.33])
+  by fmsmga004.fm.intel.com with ESMTP; 01 May 2020 14:46:32 -0700
+Subject: Re: [PATCH 1/3] mm/swap: simplify alloc_swap_slot_cache()
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200430061143.450-1-thunder.leizhen@huawei.com>
+ <20200430061143.450-2-thunder.leizhen@huawei.com>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <34318e00-fd1a-f8d7-14d4-0efa84b151d2@linux.intel.com>
+Date:   Fri, 1 May 2020 14:46:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200430061143.450-2-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arrange to use an item from SMEM memory for IPA.  SMEM item number
-497 is designated to be used by the IPA.  Specify the item ID and
-size of the region in platform configuration data.  Allocate and get
-a pointer to this region from ipa_mem_init().  The memory must be
-mapped for access through an SMMU.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa.h             |   5 ++
- drivers/net/ipa/ipa_data-sc7180.c |   2 +
- drivers/net/ipa/ipa_data-sdm845.c |   2 +
- drivers/net/ipa/ipa_data.h        |   4 ++
- drivers/net/ipa/ipa_mem.c         | 116 ++++++++++++++++++++++++++++++
- 5 files changed, 129 insertions(+)
 
-diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
-index 32f6dfafdb05..b10a85392952 100644
---- a/drivers/net/ipa/ipa.h
-+++ b/drivers/net/ipa/ipa.h
-@@ -49,6 +49,8 @@ struct ipa_interrupt;
-  * @mem:		Array of IPA-local memory region descriptors
-  * @imem_iova:		I/O virtual address of IPA region in IMEM
-  * @imem_size;		Size of IMEM region
-+ * @smem_iova:		I/O virtual address of IPA region in SMEM
-+ * @smem_size;		Size of SMEM region
-  * @zero_addr:		DMA address of preallocated zero-filled memory
-  * @zero_virt:		Virtual address of preallocated zero-filled memory
-  * @zero_size:		Size (bytes) of preallocated zero-filled memory
-@@ -93,6 +95,9 @@ struct ipa {
- 	unsigned long imem_iova;
- 	size_t imem_size;
- 
-+	unsigned long smem_iova;
-+	size_t smem_size;
-+
- 	dma_addr_t zero_addr;
- 	void *zero_virt;
- 	size_t zero_size;
-diff --git a/drivers/net/ipa/ipa_data-sc7180.c b/drivers/net/ipa/ipa_data-sc7180.c
-index e9007d151c68..43faa35ae726 100644
---- a/drivers/net/ipa/ipa_data-sc7180.c
-+++ b/drivers/net/ipa/ipa_data-sc7180.c
-@@ -301,6 +301,8 @@ static struct ipa_mem_data ipa_mem_data = {
- 	.local		= ipa_mem_local_data,
- 	.imem_addr	= 0x146a8000,
- 	.imem_size	= 0x00002000,
-+	.smem_id	= 497,
-+	.smem_size	= 0x00002000,
- };
- 
- /* Configuration data for the SC7180 SoC. */
-diff --git a/drivers/net/ipa/ipa_data-sdm845.c b/drivers/net/ipa/ipa_data-sdm845.c
-index c0e207085550..f7ba85717edf 100644
---- a/drivers/net/ipa/ipa_data-sdm845.c
-+++ b/drivers/net/ipa/ipa_data-sdm845.c
-@@ -323,6 +323,8 @@ static struct ipa_mem_data ipa_mem_data = {
- 	.local		= ipa_mem_local_data,
- 	.imem_addr	= 0x146bd000,
- 	.imem_size	= 0x00002000,
-+	.smem_id	= 497,
-+	.smem_size	= 0x00002000,
- };
- 
- /* Configuration data for the SDM845 SoC. */
-diff --git a/drivers/net/ipa/ipa_data.h b/drivers/net/ipa/ipa_data.h
-index 69957af56ccd..16dfd74717b1 100644
---- a/drivers/net/ipa/ipa_data.h
-+++ b/drivers/net/ipa/ipa_data.h
-@@ -250,12 +250,16 @@ struct ipa_resource_data {
-  * @local:		array of IPA-local memory region descriptors
-  * @imem_addr:		physical address of IPA region within IMEM
-  * @imem_size:		size in bytes of IPA IMEM region
-+ * @smem_id:		item identifier for IPA region within SMEM memory
-+ * @imem_size:		size in bytes of the IPA SMEM region
-  */
- struct ipa_mem_data {
- 	u32 local_count;
- 	const struct ipa_mem *local;
- 	u32 imem_addr;
- 	u32 imem_size;
-+	u32 smem_id;
-+	u32 smem_size;
- };
- 
- /**
-diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
-index 3c0916597fe1..aa8f6b0f3d50 100644
---- a/drivers/net/ipa/ipa_mem.c
-+++ b/drivers/net/ipa/ipa_mem.c
-@@ -10,6 +10,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/iommu.h>
- #include <linux/io.h>
-+#include <linux/soc/qcom/smem.h>
- 
- #include "ipa.h"
- #include "ipa_reg.h"
-@@ -23,6 +24,9 @@
- /* "Canary" value placed between memory regions to detect overflow */
- #define IPA_MEM_CANARY_VAL		cpu_to_le32(0xdeadbeef)
- 
-+/* SMEM host id representing the modem. */
-+#define QCOM_SMEM_HOST_MODEM	1
-+
- /* Add an immediate command to a transaction that zeroes a memory region */
- static void
- ipa_mem_zero_region_add(struct gsi_trans *trans, const struct ipa_mem *mem)
-@@ -340,6 +344,111 @@ static void ipa_imem_exit(struct ipa *ipa)
- 	ipa->imem_iova = 0;
- }
- 
-+/**
-+ * ipa_smem_init() - Initialize SMEM memory used by the IPA
-+ * @ipa:	IPA pointer
-+ * @item:	Item ID of SMEM memory
-+ * @size:	Size (bytes) of SMEM memory region
-+ *
-+ * SMEM is a managed block of shared DRAM, from which numbered "items"
-+ * can be allocated.  One item is designated for use by the IPA.
-+ *
-+ * The modem accesses SMEM memory directly, but the IPA accesses it
-+ * via the IOMMU, using the AP's credentials.
-+ *
-+ * If size provided is non-zero, we allocate it and map it for
-+ * access through the IOMMU.
-+ *
-+ * Note: @size and the item address are is not guaranteed to be page-aligned.
-+ */
-+static int ipa_smem_init(struct ipa *ipa, u32 item, size_t size)
-+{
-+	struct device *dev = &ipa->pdev->dev;
-+	struct iommu_domain *domain;
-+	unsigned long iova;
-+	phys_addr_t phys;
-+	phys_addr_t addr;
-+	size_t actual;
-+	void *virt;
-+	int ret;
-+
-+	if (!size)
-+		return 0;	/* SMEM memory not used */
-+
-+	/* SMEM is memory shared between the AP and another system entity
-+	 * (in this case, the modem).  An allocation from SMEM is persistent
-+	 * until the AP reboots; there is no way to free an allocated SMEM
-+	 * region.  Allocation only reserves the space; to use it you need
-+	 * to "get" a pointer it (this implies no reference counting).
-+	 * The item might have already been allocated, in which case we
-+	 * use it unless the size isn't what we expect.
-+	 */
-+	ret = qcom_smem_alloc(QCOM_SMEM_HOST_MODEM, item, size);
-+	if (ret && ret != -EEXIST) {
-+		dev_err(dev, "error %d allocating size %zu SMEM item %u\n",
-+			ret, size, item);
-+		return ret;
-+	}
-+
-+	/* Now get the address of the SMEM memory region */
-+	virt = qcom_smem_get(QCOM_SMEM_HOST_MODEM, item, &actual);
-+	if (IS_ERR(virt)) {
-+		ret = PTR_ERR(virt);
-+		dev_err(dev, "error %d getting SMEM item %u\n", ret, item);
-+		return ret;
-+	}
-+
-+	/* In case the region was already allocated, verify the size */
-+	if (ret && actual != size) {
-+		dev_err(dev, "SMEM item %u has size %zu, expected %zu\n",
-+			item, actual, size);
-+		return -EINVAL;
-+	}
-+
-+	domain = iommu_get_domain_for_dev(dev);
-+	if (!domain) {
-+		dev_err(dev, "no IOMMU domain found for SMEM\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Align the address down and the size up to a page boundary */
-+	addr = qcom_smem_virt_to_phys(virt) & PAGE_MASK;
-+	phys = addr & PAGE_MASK;
-+	size = PAGE_ALIGN(size + addr - phys);
-+	iova = phys;	/* We just want a direct mapping */
-+
-+	ret = iommu_map(domain, iova, phys, size, IOMMU_READ | IOMMU_WRITE);
-+	if (ret)
-+		return ret;
-+
-+	ipa->smem_iova = iova;
-+	ipa->smem_size = size;
-+
-+	return 0;
-+}
-+
-+static void ipa_smem_exit(struct ipa *ipa)
-+{
-+	struct device *dev = &ipa->pdev->dev;
-+	struct iommu_domain *domain;
-+
-+	domain = iommu_get_domain_for_dev(dev);
-+	if (domain) {
-+		size_t size;
-+
-+		size = iommu_unmap(domain, ipa->smem_iova, ipa->smem_size);
-+		if (size != ipa->smem_size)
-+			dev_warn(dev, "unmapped %zu SMEM bytes, expected %lu\n",
-+				 size, ipa->smem_size);
-+
-+	} else {
-+		dev_err(dev, "couldn't get IPA IOMMU domain for SMEM\n");
-+	}
-+
-+	ipa->smem_size = 0;
-+	ipa->smem_iova = 0;
-+}
-+
- /* Perform memory region-related initialization */
- int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
- {
-@@ -383,8 +492,14 @@ int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
- 	if (ret)
- 		goto err_unmap;
- 
-+	ret = ipa_smem_init(ipa, mem_data->smem_id, mem_data->smem_size);
-+	if (ret)
-+		goto err_imem_exit;
-+
- 	return 0;
- 
-+err_imem_exit:
-+	ipa_imem_exit(ipa);
- err_unmap:
- 	memunmap(ipa->mem_virt);
- 
-@@ -394,6 +509,7 @@ int ipa_mem_init(struct ipa *ipa, const struct ipa_mem_data *mem_data)
- /* Inverse of ipa_mem_init() */
- void ipa_mem_exit(struct ipa *ipa)
- {
-+	ipa_smem_exit(ipa);
- 	ipa_imem_exit(ipa);
- 	memunmap(ipa->mem_virt);
- }
--- 
-2.20.1
+On 4/29/20 11:11 PM, Zhen Lei wrote:
+> Both "slots" and "slots_ret" are only need to be freed when cache already
+> allocated. Make them closer, seems more clear.
+> 
+> No functional change.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  mm/swap_slots.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+> index 0975adc72253..01609b5f0c55 100644
+> --- a/mm/swap_slots.c
+> +++ b/mm/swap_slots.c
+> @@ -136,9 +136,16 @@ static int alloc_swap_slot_cache(unsigned int cpu)
+>  
+>  	mutex_lock(&swap_slots_cache_mutex);
+>  	cache = &per_cpu(swp_slots, cpu);
+> -	if (cache->slots || cache->slots_ret)
+> +	if (cache->slots || cache->slots_ret) {
+>  		/* cache already allocated */
+> -		goto out;
+> +		mutex_unlock(&swap_slots_cache_mutex);
+> +
+> +		kvfree(slots);
+> +		kvfree(slots_ret);
+> +
+> +		return 0;
+> +	}
+> +
+>  	if (!cache->lock_initialized) {
+>  		mutex_init(&cache->alloc_lock);
+>  		spin_lock_init(&cache->free_lock);
+> @@ -155,15 +162,8 @@ static int alloc_swap_slot_cache(unsigned int cpu)
+>  	 */
+>  	mb();
+>  	cache->slots = slots;
+> -	slots = NULL;
+>  	cache->slots_ret = slots_ret;
+> -	slots_ret = NULL;
+> -out:
+>  	mutex_unlock(&swap_slots_cache_mutex);
+> -	if (slots)
+> -		kvfree(slots);
+> -	if (slots_ret)
+> -		kvfree(slots_ret);
+>  	return 0;
+>  }
+>  
+> 
 
+Acked-by: Tim Chen <tim.c.chen@linux.intel.com>
