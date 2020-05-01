@@ -2,227 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFEC1C1F70
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1D41C1F41
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgEAVQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 17:16:01 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:32587 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726045AbgEAVQA (ORCPT
+        id S1726430AbgEAVJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 17:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbgEAVJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 17:16:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588367758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TwVeJRda5LXDJE4kjcBYfmqq13SV7B4dqiJ51LZW9+E=;
-        b=ch+ZzZ5EcP9fFNlbrX17tAGR8CkMCzKusCqP8LzQhPEeuCUmJcIzOtl68MN8UGLLvird1P
-        DA3HWsE3ZGP91hLlniGeTqfAP8PFri7vXgGZRRo894bCK5Rd5t6XdBV/yqHXLAY/gHBFOS
-        zWHK1dGm501pj/ZmG2zLATyhxijbNsk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-370-hRavvBV7MceEKvU9Y_G19A-1; Fri, 01 May 2020 17:15:54 -0400
-X-MC-Unique: hRavvBV7MceEKvU9Y_G19A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7011B100CCC0;
-        Fri,  1 May 2020 21:15:53 +0000 (UTC)
-Received: from optiplex-lnx.redhat.com (unknown [10.3.128.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B966927072;
-        Fri,  1 May 2020 21:15:50 +0000 (UTC)
-From:   Rafael Aquini <aquini@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        iamjoonsoo.kim@lge.com, rientjes@google.com, penberg@kernel.org,
-        cl@linux.com
-Subject: [PATCH] mm: slub: add panic_on_error to the debug facilities
-Date:   Fri,  1 May 2020 17:15:40 -0400
-Message-Id: <20200501211540.71216-1-aquini@redhat.com>
+        Fri, 1 May 2020 17:09:09 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D3BC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 14:09:08 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id l19so3770845lje.10
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 14:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x04P+zjFpwy+CE+LmGmypRV0DXrC/67SUR0cWlYpuzo=;
+        b=Sl1JL0Aq3kvwbS6AivuUGYJxWK4VdCD06bIWO3mLHQ0kGy2VWJvb7B0sajmZIoN1g5
+         iBm3hANHeRbiMYsE56oMVuIU9PKRzwrzDWTuNMbBts7k3hvgXmNErUGRE2AD7AIYB1Ks
+         thFE/+VFgp77SYMC8Z6Ex/5bGYoxpKR+3m5y7rknt9fE5fAA1CYJvvetCjdASAQbevqP
+         33k9JWJ2MtsFFblUfMGrezhg1io0B1UVod8DSQ85xCU7J81Qdd9VMzC3K5iIqJ9k9km7
+         obrKgB7T41NMc+nfM2R2vpRWOjHJLVwGy/gFilSYkEGx1Fe4+p+xOJpzZvi5WWOk0eoJ
+         8M7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x04P+zjFpwy+CE+LmGmypRV0DXrC/67SUR0cWlYpuzo=;
+        b=XacxG2c0HTfc1INKHb/sru4YuR9FErzitIMXfBtkst+ovvFNuMapv69fwLFCx8/V7S
+         v7K17ZD89GyA9V7zSCi5drnOzW07Ef1KnAtzPOozaPCTgkRXL//oa32Npl6S9u2JvTtw
+         9mS7QA0BpsvnmHtszqLLfAwoVCanlgB8OVvVrh2xD2YFWuE715VuzaIfrQgOv7EqLktF
+         7lENlHbndpNnZWbIomtOoWsALkGS8n3yT/mFuJBP7ny1R294PLVH7wavCsegO6imbL3e
+         dh5EB2WRR8Hm1DwhpzNII5CRERnQzWgfwKqTL6+CF8365M0HKbXbeKERk26YNGoaCT6+
+         kJNg==
+X-Gm-Message-State: AGi0PuZcfKx93KO9PWptUSe1AAfjDRLPJoMml4HHQu8WJpHU6GdqNuee
+        NcWoN1XQUyvqp3fBfC3991MlMxWURiHhl0mu5SU=
+X-Google-Smtp-Source: APiQypISFMZYh6/WnwoE4zYIYRZ6W4TIsYZUVBUabxADDAgmg5ZG5QTesER3BzYBdsXOGwh5AlYiIukHvENIaq39S9M=
+X-Received: by 2002:a2e:3012:: with SMTP id w18mr3498996ljw.55.1588367346623;
+ Fri, 01 May 2020 14:09:06 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Content-Transfer-Encoding: quoted-printable
+References: <1588277518-21425-1-git-send-email-jrdr.linux@gmail.com> <20200430212411.GB582335@iweiny-DESK2.sc.intel.com>
+In-Reply-To: <20200430212411.GB582335@iweiny-DESK2.sc.intel.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Sat, 2 May 2020 02:46:59 +0530
+Message-ID: <CAFqt6zZ0w+i-Chc7_MCvjbMjWmC78+T+E+5RwGF=pc7ouMnHBA@mail.gmail.com>
+Subject: Re: [PATCH] mm/gup.c: Handle error at earliest for incorrect nr_pages value
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes it is desirable to override SLUB's debug facilities
-default behavior upon stumbling on a cache or object error
-and just stop the execution in order to grab a coredump, at
-the error-spotting time, instead of trying to fix the issue
-and report in an attempt to keep the system rolling.
+On Fri, May 1, 2020 at 2:54 AM Ira Weiny <ira.weiny@intel.com> wrote:
+>
+> On Fri, May 01, 2020 at 01:41:58AM +0530, Souptick Joarder wrote:
+> > As per documentation, pin_user_pages_fast() & get_user_pages_fast()
+> > will return 0, if nr_pages <= 0. But this can be figure out only after
+> > going inside the internal_get_user_pages_fast().
+>
+> Why is nr_pages not unsigned?
 
-This patch introduces a new debug flag SLAB_PANIC_ON_ERROR,
-along with its related SLUB-machinery, in order to extend
-current slub_debug facilites and provide the aforementioned
-behavior override.
+Not sure of why but it can be unsigned.
 
-Signed-off-by: Rafael Aquini <aquini@redhat.com>
----
- Documentation/vm/slub.rst |  2 ++
- include/linux/slab.h      |  2 ++
- mm/slab.h                 |  3 ++-
- mm/slub.c                 | 44 ++++++++++++++++++++++++++++++---------
- 4 files changed, 40 insertions(+), 11 deletions(-)
+>
+> >
+> > This can be handled early. Adding a check for the same.
+> >
+> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > ---
+> >  mm/gup.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/mm/gup.c b/mm/gup.c
+> > index 50681f0..a13aaa6 100644
+> > --- a/mm/gup.c
+> > +++ b/mm/gup.c
+> > @@ -2817,6 +2817,8 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
+> >        */
+> >       if (WARN_ON_ONCE(gup_flags & FOLL_PIN))
+> >               return -EINVAL;
+> > +     if (nr_pages <= 0)
+> > +             return 0;
+>
+> I think the documentation may be wrong here...  Is there a caller who expects a
+> return of 0 for this behavior?
+>
 
-diff --git a/Documentation/vm/slub.rst b/Documentation/vm/slub.rst
-index 933ada4368ff..51b18c28ec78 100644
---- a/Documentation/vm/slub.rst
-+++ b/Documentation/vm/slub.rst
-@@ -54,6 +54,8 @@ Possible debug options are::
- 			caused higher minimum slab orders
- 	-		Switch all debugging off (useful if the kernel is
- 			configured with CONFIG_SLUB_DEBUG_ON)
-+	C		Toggle panic on error (crash) to allow for post-mortem
-+			analysis of a coredump taken at the error-spotting time
-=20
- F.e. in order to boot just with sanity checks and red zoning one would s=
-pecify::
-=20
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 6d454886bcaf..e3496ad7859f 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -25,6 +25,8 @@
-  */
- /* DEBUG: Perform (expensive) checks on alloc/free */
- #define SLAB_CONSISTENCY_CHECKS	((slab_flags_t __force)0x00000100U)
-+/* DEBUG: panic on error (forced crash) */
-+#define SLAB_PANIC_ON_ERROR	((slab_flags_t __force)0x00000200U)
- /* DEBUG: Red zone objs in a cache */
- #define SLAB_RED_ZONE		((slab_flags_t __force)0x00000400U)
- /* DEBUG: Poison objects */
-diff --git a/mm/slab.h b/mm/slab.h
-index 207c83ef6e06..27116f8683a1 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -198,7 +198,8 @@ static inline slab_flags_t kmem_cache_flags(unsigned =
-int object_size,
- #define SLAB_DEBUG_FLAGS (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER)
- #elif defined(CONFIG_SLUB_DEBUG)
- #define SLAB_DEBUG_FLAGS (SLAB_RED_ZONE | SLAB_POISON | SLAB_STORE_USER =
-| \
--			  SLAB_TRACE | SLAB_CONSISTENCY_CHECKS)
-+			  SLAB_TRACE | SLAB_CONSISTENCY_CHECKS | \
-+			  SLAB_PANIC_ON_ERROR)
- #else
- #define SLAB_DEBUG_FLAGS (0)
- #endif
-diff --git a/mm/slub.c b/mm/slub.c
-index 9bf44955c4f1..8b4fc002b865 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -700,8 +700,6 @@ static void print_trailer(struct kmem_cache *s, struc=
-t page *page, u8 *p)
- 		/* Beginning of the filler is the free pointer */
- 		print_section(KERN_ERR, "Padding ", p + off,
- 			      size_from_object(s) - off);
--
--	dump_stack();
- }
-=20
- void object_err(struct kmem_cache *s, struct page *page,
-@@ -709,6 +707,9 @@ void object_err(struct kmem_cache *s, struct page *pa=
-ge,
- {
- 	slab_bug(s, "%s", reason);
- 	print_trailer(s, page, object);
-+	if (unlikely(s->flags & SLAB_PANIC_ON_ERROR))
-+		panic("BUG: %s: %s", s->name, reason);
-+	dump_stack();
- }
-=20
- static __printf(3, 4) void slab_err(struct kmem_cache *s, struct page *p=
-age,
-@@ -722,6 +723,8 @@ static __printf(3, 4) void slab_err(struct kmem_cache=
- *s, struct page *page,
- 	va_end(args);
- 	slab_bug(s, "%s", buf);
- 	print_page_info(page);
-+	if (unlikely(s->flags & SLAB_PANIC_ON_ERROR))
-+		panic("BUG: %s: %s", s->name, buf);
- 	dump_stack();
- }
-=20
-@@ -771,7 +774,7 @@ static int check_bytes_and_report(struct kmem_cache *=
-s, struct page *page,
- 					fault, end - 1, fault - addr,
- 					fault[0], value);
- 	print_trailer(s, page, object);
--
-+	dump_stack();
- 	restore_bytes(s, what, value, fault, end);
- 	return 0;
- }
-@@ -1173,13 +1176,14 @@ static inline int free_consistency_checks(struct =
-kmem_cache *s,
- 		if (!PageSlab(page)) {
- 			slab_err(s, page, "Attempt to free object(0x%p) outside of slab",
- 				 object);
--		} else if (!page->slab_cache) {
--			pr_err("SLUB <none>: no slab for object 0x%p.\n",
--			       object);
--			dump_stack();
--		} else
--			object_err(s, page, object,
--					"page slab pointer corrupt.");
-+		} else {
-+			char reason[80];
-+
-+			snprintf(reason, sizeof(reason),
-+				 "page slab pointer corruption: 0x%p (0x%p expected)",
-+				 page->slab_cache, s);
-+			object_err(s, page, object, reason);
-+		}
- 		return 0;
- 	}
- 	return 1;
-@@ -1291,6 +1295,9 @@ static int __init setup_slub_debug(char *str)
- 			 */
- 			disable_higher_order_debug =3D 1;
- 			break;
-+		case 'c':
-+			slub_debug |=3D SLAB_PANIC_ON_ERROR;
-+			break;
- 		default:
- 			pr_err("slub_debug option '%c' unknown. skipped\n",
- 			       *str);
-@@ -5312,6 +5319,22 @@ static ssize_t free_calls_show(struct kmem_cache *=
-s, char *buf)
- 	return list_locations(s, buf, TRACK_FREE);
- }
- SLAB_ATTR_RO(free_calls);
-+
-+static ssize_t
-+panic_on_error_show(struct kmem_cache *s, char *buf)
-+{
-+	return sprintf(buf, "%d\n", !!(s->flags & SLAB_PANIC_ON_ERROR));
-+}
-+
-+static ssize_t
-+panic_on_error_store(struct kmem_cache *s, const char *buf, size_t lengt=
-h)
-+{
-+	s->flags &=3D ~SLAB_PANIC_ON_ERROR;
-+	if (buf[0] =3D=3D '1')
-+		s->flags |=3D SLAB_PANIC_ON_ERROR;
-+	return length;
-+}
-+SLAB_ATTR(panic_on_error);
- #endif /* CONFIG_SLUB_DEBUG */
-=20
- #ifdef CONFIG_FAILSLAB
-@@ -5486,6 +5509,7 @@ static struct attribute *slab_attrs[] =3D {
- 	&validate_attr.attr,
- 	&alloc_calls_attr.attr,
- 	&free_calls_attr.attr,
-+	&panic_on_error_attr.attr,
- #endif
- #ifdef CONFIG_ZONE_DMA
- 	&cache_dma_attr.attr,
---=20
-2.25.4
+My understanding is -
+{get/pin}_user_pages_fast() -> internal_get_user_pages_fast()
 
+Inside internal_get_user_pages_fast()
+...
+start = untagged_addr(start) & PAGE_MASK;
+addr = start;
+len = (unsigned long) nr_pages << PAGE_SHIFT;
+end = start + len;
+
+if (end <= start)
+return 0;
+...
+This is the only place where {get/pin}_user_pages_fast() returns 0 which
+indirectly checks for nr_pages <= 0. For each call to
+{get/pin}_user_pages_fast()
+we end up checking *nr_pages <= 0* anyway.
+
+There are some instances where caller of these APIs handles return
+value 0 as well. Example -
+arch/ia64/kernel/err_inject.c#L145
+arch/powerpc/kvm/book3s_64_mmu_hv.c#L582
+arch/powerpc/kvm/book3s_64_mmu_hv.c#L1174
+drivers/staging/gasket/gasket_page_table.c#L489
+drivers/rapidio/devices/rio_mport_cdev.c#L865
+drivers/platform/goldfish/goldfish_pipe.c#L277
+drivers/gpu/drm/via/via_dmablit.c#L242
+(some of the error handling looks incorrect)
+
+If we end up checking *nr_pages <= 0* inside  internal_get_user_pages_fast(),
+then why not at first place like this patch does ?
+
+2nd opinion is, inside internal_get_user_pages_fast(), for *nr_pages
+<= 0* better
+to return -ERRNO rather than 0 ?
