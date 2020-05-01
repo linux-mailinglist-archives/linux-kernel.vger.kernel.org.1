@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDE31C1493
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48561C149D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731363AbgEANky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:40:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40908 "EHLO mail.kernel.org"
+        id S1731409AbgEANlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:41:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731055AbgEANkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:40:45 -0400
+        id S1728833AbgEANlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:41:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91C3F205C9;
-        Fri,  1 May 2020 13:40:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC7FF2173E;
+        Fri,  1 May 2020 13:41:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340445;
-        bh=iw5HLB9RKg4btKlq30kLQfhmRxj+DSaKAkyxmYcdXJ8=;
+        s=default; t=1588340472;
+        bh=tNbHRXvQVRQnm7qv6Y3bHuOuLUu/Gt2nW45E8Gy/QLs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q4AGu4nYkx4cixvlK5zQ4NvWBJcI6+/ZM2n/hSG/oNE0jjWIhDSwM3g3WAaz1Utx3
-         SN1E3rQHi14u6BrHCJ8WBev2XDQNtqYtiO/ByXWfWlyIuaVCugOGelySVr4QWB1hg2
-         sY0aSCYMIoqlgt3/jlAsY2vMMxHMV7P6VkFXZm6k=
+        b=NQIok6k8Es+yACvJ+Hy+sv3vI0cNtLwW5rb8hh/x4ayk9J+HlNKxgHT6jsMobQffL
+         yLhXcBgsPMwuxbbaKgm1ge4LZCNbCNONg9TmGjUW1kDNGGPTZ8oDDj13bgQMw5XZ6B
+         Abc+C0dK1sgYu9lxTgVcIi2aYQnDVQ0/hSD0R57k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Harish Sriram <harish@linux.ibm.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.4 81/83] ext4: check for non-zero journal inum in ext4_calculate_overhead
-Date:   Fri,  1 May 2020 15:24:00 +0200
-Message-Id: <20200501131543.077383714@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 82/83] ASoC: soc-core: disable route checks for legacy devices
+Date:   Fri,  1 May 2020 15:24:01 +0200
+Message-Id: <20200501131543.210193855@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
 References: <20200501131524.004332640@linuxfoundation.org>
@@ -44,73 +45,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ritesh Harjani <riteshh@linux.ibm.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-commit f1eec3b0d0a849996ebee733b053efa71803dad5 upstream.
+commit a22ae72b86a4f754e8d25fbf9ea5a8f77365e531 upstream.
 
-While calculating overhead for internal journal, also check
-that j_inum shouldn't be 0. Otherwise we get below error with
-xfstests generic/050 with external journal (XXX_LOGDEV config) enabled.
+v5.4 changes in soc-core tightened the checks on soc_dapm_add_routes,
+which results in the ASoC card probe failing.
 
-It could be simply reproduced with loop device with an external journal
-and marking blockdev as RO before mounting.
+Introduce a flag to be set in machine drivers to prevent the probe
+from stopping in case of incomplete topologies or missing routes. This
+flag is for backwards compatibility only and shall not be used for
+newer machine drivers.
 
-[ 3337.146838] EXT4-fs error (device pmem1p2): ext4_get_journal_inode:4634: comm mount: inode #0: comm mount: iget: illegal inode #
-------------[ cut here ]------------
-generic_make_request: Trying to write to read-only block-device pmem1p2 (partno 2)
-WARNING: CPU: 107 PID: 115347 at block/blk-core.c:788 generic_make_request_checks+0x6b4/0x7d0
-CPU: 107 PID: 115347 Comm: mount Tainted: G             L   --------- -t - 4.18.0-167.el8.ppc64le #1
-NIP:  c0000000006f6d44 LR: c0000000006f6d40 CTR: 0000000030041dd4
-<...>
-NIP [c0000000006f6d44] generic_make_request_checks+0x6b4/0x7d0
-LR [c0000000006f6d40] generic_make_request_checks+0x6b0/0x7d0
-<...>
-Call Trace:
-generic_make_request_checks+0x6b0/0x7d0 (unreliable)
-generic_make_request+0x3c/0x420
-submit_bio+0xd8/0x200
-submit_bh_wbc+0x1e8/0x250
-__sync_dirty_buffer+0xd0/0x210
-ext4_commit_super+0x310/0x420 [ext4]
-__ext4_error+0xa4/0x1e0 [ext4]
-__ext4_iget+0x388/0xe10 [ext4]
-ext4_get_journal_inode+0x40/0x150 [ext4]
-ext4_calculate_overhead+0x5a8/0x610 [ext4]
-ext4_fill_super+0x3188/0x3260 [ext4]
-mount_bdev+0x778/0x8f0
-ext4_mount+0x28/0x50 [ext4]
-mount_fs+0x74/0x230
-vfs_kern_mount.part.6+0x6c/0x250
-do_mount+0x2fc/0x1280
-sys_mount+0x158/0x180
-system_call+0x5c/0x70
-EXT4-fs (pmem1p2): no journal found
-EXT4-fs (pmem1p2): can't get journal size
-EXT4-fs (pmem1p2): mounted filesystem without journal. Opts: dax,norecovery
+Example with an HDaudio card with a bad topology:
 
-Fixes: 3c816ded78bb ("ext4: use journal inode to determine journal overhead")
-Reported-by: Harish Sriram <harish@linux.ibm.com>
-Signed-off-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20200316093038.25485-1-riteshh@linux.ibm.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+[ 236.177898] skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: Failed to
+add route iDisp1_out -> direct -> iDisp1 Tx
+
+[ 236.177902] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_soc_bind_card: snd_soc_dapm_add_routes failed: -19
+
+with the disable_route_checks set:
+
+[ 64.031657] skl_hda_dsp_generic skl_hda_dsp_generic: ASoC: Failed to
+add route iDisp1_out -> direct -> iDisp1 Tx
+
+[ 64.031661] skl_hda_dsp_generic skl_hda_dsp_generic:
+snd_soc_bind_card: disable_route_checks set, ignoring errors on
+add_routes
+
+Fixes: daa480bde6b3a9 ("ASoC: soc-core: tidyup for snd_soc_dapm_add_routes()")
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20200309192744.18380-2-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/super.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/sound/soc.h  |    1 +
+ sound/soc/soc-core.c |   28 ++++++++++++++++++++++++----
+ 2 files changed, 25 insertions(+), 4 deletions(-)
 
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3562,7 +3562,8 @@ int ext4_calculate_overhead(struct super
- 	 */
- 	if (sbi->s_journal && !sbi->journal_bdev)
- 		overhead += EXT4_NUM_B2C(sbi, sbi->s_journal->j_maxlen);
--	else if (ext4_has_feature_journal(sb) && !sbi->s_journal) {
-+	else if (ext4_has_feature_journal(sb) && !sbi->s_journal && j_inum) {
-+		/* j_inum for internal journal is non-zero */
- 		j_inode = ext4_get_journal_inode(sb, j_inum);
- 		if (j_inode) {
- 			j_blocks = j_inode->i_size >> sb->s_blocksize_bits;
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1059,6 +1059,7 @@ struct snd_soc_card {
+ 	const struct snd_soc_dapm_route *of_dapm_routes;
+ 	int num_of_dapm_routes;
+ 	bool fully_routed;
++	bool disable_route_checks;
+ 
+ 	/* lists of probed devices belonging to this card */
+ 	struct list_head component_dev_list;
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1076,8 +1076,18 @@ static int soc_probe_component(struct sn
+ 	ret = snd_soc_dapm_add_routes(dapm,
+ 				      component->driver->dapm_routes,
+ 				      component->driver->num_dapm_routes);
+-	if (ret < 0)
+-		goto err_probe;
++	if (ret < 0) {
++		if (card->disable_route_checks) {
++			dev_info(card->dev,
++				 "%s: disable_route_checks set, ignoring errors on add_routes\n",
++				 __func__);
++		} else {
++			dev_err(card->dev,
++				"%s: snd_soc_dapm_add_routes failed: %d\n",
++				__func__, ret);
++			goto err_probe;
++		}
++	}
+ 
+ 	/* see for_each_card_components */
+ 	list_add(&component->card_list, &card->component_dev_list);
+@@ -2067,8 +2077,18 @@ static int snd_soc_instantiate_card(stru
+ 
+ 	ret = snd_soc_dapm_add_routes(&card->dapm, card->dapm_routes,
+ 				      card->num_dapm_routes);
+-	if (ret < 0)
+-		goto probe_end;
++	if (ret < 0) {
++		if (card->disable_route_checks) {
++			dev_info(card->dev,
++				 "%s: disable_route_checks set, ignoring errors on add_routes\n",
++				 __func__);
++		} else {
++			dev_err(card->dev,
++				 "%s: snd_soc_dapm_add_routes failed: %d\n",
++				 __func__, ret);
++			goto probe_end;
++		}
++	}
+ 
+ 	ret = snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
+ 				      card->num_of_dapm_routes);
 
 
