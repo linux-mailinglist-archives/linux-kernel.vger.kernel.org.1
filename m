@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CE11C15D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543BA1C1395
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729607AbgEANet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:34:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60904 "EHLO mail.kernel.org"
+        id S1730050AbgEANaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:30:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730595AbgEANeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:34:37 -0400
+        id S1730031AbgEANau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:30:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D304208DB;
-        Fri,  1 May 2020 13:34:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23BE2208C3;
+        Fri,  1 May 2020 13:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340077;
-        bh=6X1mfxyBzWDLUUEJceQpc3dqqqTe+U+Zq76vP098AX4=;
+        s=default; t=1588339849;
+        bh=0d+S0c9RGNFepIOls681etkyqAWB3Nn4eFH348tKhX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nA4meTVccMGjAcELpRc/YAVdzc373E35aETc0SfITx3suZJj7vZX6AEDd4F/51+1r
-         jLucoub0iErsgVBi2y1xGiIzryxZlC6xh+XVGGE76QOxnjUVWt42L3jwq2mzlVfgyG
-         2dRMRUE2XOiSzqyfLxuDAixeLfa3e2LdXqwwzl80=
+        b=WpOMGUCdXhx7yZeDyxhfTJRbcqACjzAv9MzQODfZkcVBhAzecOrt4C1P2zwXMl3sU
+         ZvbH9WuVB6y9iP8GeGBtjFm5aZD/p7v2MaIxZMpDhWCQWi84zlw1jtVGYpdxQfxcBJ
+         HPxjlITVgcpOZxqwHcofXbtGY43HAVup4s6ETKoA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.14 089/117] usb: dwc3: gadget: Do link recovery for SS and SSP
-Date:   Fri,  1 May 2020 15:22:05 +0200
-Message-Id: <20200501131555.202889321@linuxfoundation.org>
+        stable@vger.kernel.org, Theodore Tso <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 72/80] ext4: convert BUG_ONs to WARN_ONs in mballoc.c
+Date:   Fri,  1 May 2020 15:22:06 +0200
+Message-Id: <20200501131536.058141813@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Theodore Ts'o <tytso@mit.edu>
 
-commit d0550cd20e52558ecf6847a0f96ebd5d944c17e4 upstream.
+[ Upstream commit 907ea529fc4c3296701d2bfc8b831dd2a8121a34 ]
 
-The controller always supports link recovery for device in SS and SSP.
-Remove the speed limit check. Also, when the device is in RESUME or
-RESET state, it means the controller received the resume/reset request.
-The driver must send the link recovery to acknowledge the request. They
-are valid states for the driver to send link recovery.
+If the in-core buddy bitmap gets corrupted (or out of sync with the
+block bitmap), issue a WARN_ON and try to recover.  In most cases this
+involves skipping trying to allocate out of a particular block group.
+We can end up declaring the file system corrupted, which is fair,
+since the file system probably should be checked before we proceed any
+further.
 
-Fixes: 72246da40f37 ("usb: Introduce DesignWare USB3 DRD Driver")
-Fixes: ee5cd41c9117 ("usb: dwc3: Update speed checks for SuperSpeedPlus")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20200414035649.293164-1-tytso@mit.edu
+Google-Bug-Id: 34811296
+Google-Bug-Id: 34639169
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/gadget.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ fs/ext4/mballoc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1641,7 +1641,6 @@ static int __dwc3_gadget_wakeup(struct d
- 	u32			reg;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index c18668e3135e8..ac13de1a7e420 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -1944,7 +1944,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
+ 	int free;
  
- 	u8			link_state;
--	u8			speed;
+ 	free = e4b->bd_info->bb_free;
+-	BUG_ON(free <= 0);
++	if (WARN_ON(free <= 0))
++		return;
  
- 	/*
- 	 * According to the Databook Remote wakeup request should
-@@ -1651,16 +1650,13 @@ static int __dwc3_gadget_wakeup(struct d
- 	 */
- 	reg = dwc3_readl(dwc->regs, DWC3_DSTS);
+ 	i = e4b->bd_info->bb_first_free;
  
--	speed = reg & DWC3_DSTS_CONNECTSPD;
--	if ((speed == DWC3_DSTS_SUPERSPEED) ||
--	    (speed == DWC3_DSTS_SUPERSPEED_PLUS))
--		return 0;
--
- 	link_state = DWC3_DSTS_USBLNKST(reg);
+@@ -1965,7 +1966,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
+ 		}
  
- 	switch (link_state) {
-+	case DWC3_LINK_STATE_RESET:
- 	case DWC3_LINK_STATE_RX_DET:	/* in HS, means Early Suspend */
- 	case DWC3_LINK_STATE_U3:	/* in HS, means SUSPEND */
-+	case DWC3_LINK_STATE_RESUME:
- 		break;
- 	default:
- 		return -EINVAL;
+ 		mb_find_extent(e4b, i, ac->ac_g_ex.fe_len, &ex);
+-		BUG_ON(ex.fe_len <= 0);
++		if (WARN_ON(ex.fe_len <= 0))
++			break;
+ 		if (free < ex.fe_len) {
+ 			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
+ 					"%d free clusters as per "
+-- 
+2.20.1
+
 
 
