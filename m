@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26AA1C14FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8561C1494
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731783AbgEANou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:44:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45970 "EHLO mail.kernel.org"
+        id S1730622AbgEANk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:40:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731764AbgEANoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:44:39 -0400
+        id S1731055AbgEANkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:40:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE3E220757;
-        Fri,  1 May 2020 13:44:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69C90205C9;
+        Fri,  1 May 2020 13:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340679;
-        bh=nYV0G6EkJ94yM3KWpVtyeNfmNdgWB3s/ofgybmqmjF8=;
+        s=default; t=1588340454;
+        bh=FNO5HnRA8S9+d8oyUQAZzI9nV37VP+FJrNUT5nn94nw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=czb/P3ZXKxdp9emqCEyigoHE6b2b6F3fDDOTgtuE7hPzXfF8IhO848s9liNBsF6Iy
-         iWFXJO6EIt/dXUgg1iHvFCLdmtpEh5ViadZ2SquEJmd9NxCYxK2+2xEMDPzGU+kzq3
-         wd/CKPUDyA4DLeI2XS1OIO1QeYwZSSCYXJ18dnQc=
+        b=JripMCSSRyb1MYo7pT1CLc2LsI4ZKUc4MLSEw+vmoLd09CMm9A6M+jFBDKDOw3SLx
+         YGCSW3UJQ5hJAZoyKBrWpmksKB4eBhYgnEEu3P/FFAjIZWjZW14yuwmeyQ9WXS6pSJ
+         N3KlDw4pmYnEN1l/6EE1jrwwk4uJ610xfkpBrI/U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Christie <mchristi@redhat.com>,
-        Bodo Stroesser <bstroesser@ts.fujitsu.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 079/106] scsi: target: tcmu: reset_ring should reset TCMU_DEV_BIT_BROKEN
-Date:   Fri,  1 May 2020 15:23:52 +0200
-Message-Id: <20200501131553.305030404@linuxfoundation.org>
+        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        John Garry <john.garry@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 74/83] blk-mq: Put driver tag in blk_mq_dispatch_rq_list() when no budget
+Date:   Fri,  1 May 2020 15:23:53 +0200
+Message-Id: <20200501131541.865621289@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
-References: <20200501131543.421333643@linuxfoundation.org>
+In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
+References: <20200501131524.004332640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bodo Stroesser <bstroesser@ts.fujitsu.com>
+From: John Garry <john.garry@huawei.com>
 
-[ Upstream commit 066f79a5fd6d1b9a5cc57b5cd445b3e4bb68a5b2 ]
+[ Upstream commit 5fe56de799ad03e92d794c7936bf363922b571df ]
 
-In case command ring buffer becomes inconsistent, tcmu sets device flag
-TCMU_DEV_BIT_BROKEN.  If the bit is set, tcmu rejects new commands from LIO
-core with TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE, and no longer processes
-completions from the ring.  The reset_ring attribute can be used to
-completely clean up the command ring, so after reset_ring the ring no
-longer is inconsistent.
+If in blk_mq_dispatch_rq_list() we find no budget, then we break of the
+dispatch loop, but the request may keep the driver tag, evaulated
+in 'nxt' in the previous loop iteration.
 
-Therefore reset_ring also should reset bit TCMU_DEV_BIT_BROKEN to allow
-normal processing.
+Fix by putting the driver tag for that request.
 
-Link: https://lore.kernel.org/r/20200409101026.17872-1-bstroesser@ts.fujitsu.com
-Acked-by: Mike Christie <mchristi@redhat.com>
-Signed-off-by: Bodo Stroesser <bstroesser@ts.fujitsu.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_user.c | 1 +
- 1 file changed, 1 insertion(+)
+ block/blk-mq.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
-index 0b9dfa6b17bc7..f769bb1e37356 100644
---- a/drivers/target/target_core_user.c
-+++ b/drivers/target/target_core_user.c
-@@ -2073,6 +2073,7 @@ static void tcmu_reset_ring(struct tcmu_dev *udev, u8 err_level)
- 	mb->cmd_tail = 0;
- 	mb->cmd_head = 0;
- 	tcmu_flush_dcache_range(mb, sizeof(*mb));
-+	clear_bit(TCMU_DEV_BIT_BROKEN, &udev->flags);
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index a8c1a45cedde0..757c0fd9f0cc2 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -1232,8 +1232,10 @@ bool blk_mq_dispatch_rq_list(struct request_queue *q, struct list_head *list,
+ 		rq = list_first_entry(list, struct request, queuelist);
  
- 	del_timer(&udev->cmd_timer);
+ 		hctx = rq->mq_hctx;
+-		if (!got_budget && !blk_mq_get_dispatch_budget(hctx))
++		if (!got_budget && !blk_mq_get_dispatch_budget(hctx)) {
++			blk_mq_put_driver_tag(rq);
+ 			break;
++		}
  
+ 		if (!blk_mq_get_driver_tag(rq)) {
+ 			/*
 -- 
 2.20.1
 
