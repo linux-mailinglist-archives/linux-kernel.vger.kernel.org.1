@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368811C188A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7CE1C1850
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730311AbgEAOrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:47:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52822 "EHLO mail.kernel.org"
+        id S1730029AbgEAOq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729548AbgEAOpJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 10:45:09 -0400
+        id S1729580AbgEAOpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 10:45:10 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9EDF208DB;
+        by mail.kernel.org (Postfix) with ESMTPSA id DCA642499B;
         Fri,  1 May 2020 14:45:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588344307;
-        bh=kznbsqrC35NeTiD+j3a7mVjUjRkxxuXMvy7Q1cN6UyY=;
+        bh=zye3w0+bBHDbYAfggdapQ1VOTj27wEtBgshSU5GQVG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xhR8LZQY4D/9iEsG/vjW5EyAnXjY6byZQUYUUuaegr6ZRHvQ2aWx/G6yfm6wuo5ZF
-         /Yx2g292pPjpwvikGZhnD8/ByY9oGIn7rhxnwpZT2PWiIELEqkTXRhYoz9G11pU2Nw
-         yboa27+IQva9+MCkRR4Qpvbvs5HnKtKWZsEOA0SA=
+        b=xP3FawV1193TIdgfoaoQVg/t2Q7sTTo01O1wvnLNOurpYt0yYi6yHZqhpAlFEerMz
+         WwiadHENSnW7CyXmfHu/x/MV5VLwmuSYfGodOPCuyHw95QJYC4E6tgB9rAHfjsLg3v
+         sUaNnevlkbnUxJzYhF2B2t/vYqgFLnSxrxcx5c7k=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jUWuT-00FCeb-TJ; Fri, 01 May 2020 16:45:01 +0200
+        id 1jUWuT-00FCeg-U7; Fri, 01 May 2020 16:45:01 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, netdev@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: [PATCH 26/37] docs: networking: device drivers: convert microsoft/netvsc.txt to ReST
-Date:   Fri,  1 May 2020 16:44:48 +0200
-Message-Id: <0f4b68dd901fe915980395a595bc6cced6b4530f.1588344146.git.mchehab+huawei@kernel.org>
+        Jakub Kicinski <kuba@kernel.org>, Jon Mason <jdmason@kudzu.us>,
+        netdev@vger.kernel.org
+Subject: [PATCH 27/37] docs: networking: device drivers: convert neterion/s2io.txt to ReST
+Date:   Fri,  1 May 2020 16:44:49 +0200
+Message-Id: <bda8a022bee4e7aead15c32728aca47a35291c2e.1588344146.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1588344146.git.mchehab+huawei@kernel.org>
 References: <cover.1588344146.git.mchehab+huawei@kernel.org>
@@ -51,162 +47,410 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 - add SPDX header;
-- adjust titles and chapters, adding proper markups;
+- add a document title;
+- comment out text-only TOC from html/pdf output;
 - mark code blocks and literals as such;
 - adjust identation, whitespaces and blank lines where needed;
 - add to networking/index.rst.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../networking/device_drivers/index.rst       |  1 +
- .../microsoft/{netvsc.txt => netvsc.rst}      | 57 +++++++++++--------
- MAINTAINERS                                   |  2 +-
- 3 files changed, 36 insertions(+), 24 deletions(-)
- rename Documentation/networking/device_drivers/microsoft/{netvsc.txt => netvsc.rst} (83%)
+ .../networking/device_drivers/index.rst       |   1 +
+ .../device_drivers/neterion/s2io.rst          | 196 ++++++++++++++++++
+ .../device_drivers/neterion/s2io.txt          | 141 -------------
+ MAINTAINERS                                   |   2 +-
+ drivers/net/ethernet/neterion/Kconfig         |   2 +-
+ 5 files changed, 199 insertions(+), 143 deletions(-)
+ create mode 100644 Documentation/networking/device_drivers/neterion/s2io.rst
+ delete mode 100644 Documentation/networking/device_drivers/neterion/s2io.txt
 
 diff --git a/Documentation/networking/device_drivers/index.rst b/Documentation/networking/device_drivers/index.rst
-index f9ce0089ec7d..575f0043b03e 100644
+index 575f0043b03e..da1f8438d4ea 100644
 --- a/Documentation/networking/device_drivers/index.rst
 +++ b/Documentation/networking/device_drivers/index.rst
-@@ -41,6 +41,7 @@ Contents:
-    freescale/gianfar
+@@ -42,6 +42,7 @@ Contents:
     intel/ipw2100
     intel/ipw2200
-+   microsoft/netvsc
+    microsoft/netvsc
++   neterion/s2io
  
  .. only::  subproject and html
  
-diff --git a/Documentation/networking/device_drivers/microsoft/netvsc.txt b/Documentation/networking/device_drivers/microsoft/netvsc.rst
-similarity index 83%
-rename from Documentation/networking/device_drivers/microsoft/netvsc.txt
-rename to Documentation/networking/device_drivers/microsoft/netvsc.rst
-index cd63556b27a0..c3f51c672a68 100644
---- a/Documentation/networking/device_drivers/microsoft/netvsc.txt
-+++ b/Documentation/networking/device_drivers/microsoft/netvsc.rst
-@@ -1,3 +1,6 @@
+diff --git a/Documentation/networking/device_drivers/neterion/s2io.rst b/Documentation/networking/device_drivers/neterion/s2io.rst
+new file mode 100644
+index 000000000000..c5673ec4559b
+--- /dev/null
++++ b/Documentation/networking/device_drivers/neterion/s2io.rst
+@@ -0,0 +1,196 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
-+======================
- Hyper-V network driver
- ======================
- 
-@@ -10,15 +13,15 @@ Windows 10.
- Features
- ========
- 
--  Checksum offload
--  ----------------
-+Checksum offload
-+----------------
-   The netvsc driver supports checksum offload as long as the
-   Hyper-V host version does. Windows Server 2016 and Azure
-   support checksum offload for TCP and UDP for both IPv4 and
-   IPv6. Windows Server 2012 only supports checksum offload for TCP.
- 
--  Receive Side Scaling
--  --------------------
-+Receive Side Scaling
-+--------------------
-   Hyper-V supports receive side scaling. For TCP & UDP, packets can
-   be distributed among available queues based on IP address and port
-   number.
-@@ -32,30 +35,37 @@ Features
-   hashing. Using L3 hashing is recommended in this case.
- 
-   For example, for UDP over IPv4 on eth0:
--  To include UDP port numbers in hashing:
--        ethtool -N eth0 rx-flow-hash udp4 sdfn
--  To exclude UDP port numbers in hashing:
--        ethtool -N eth0 rx-flow-hash udp4 sd
--  To show UDP hash level:
--        ethtool -n eth0 rx-flow-hash udp4
++=========================================================
++Neterion's (Formerly S2io) Xframe I/II PCI-X 10GbE driver
++=========================================================
++
++Release notes for Neterion's (Formerly S2io) Xframe I/II PCI-X 10GbE driver.
++
++.. Contents
++  - 1.  Introduction
++  - 2.  Identifying the adapter/interface
++  - 3.  Features supported
++  - 4.  Command line parameters
++  - 5.  Performance suggestions
++  - 6.  Available Downloads
++
++
++1. Introduction
++===============
++This Linux driver supports Neterion's Xframe I PCI-X 1.0 and
++Xframe II PCI-X 2.0 adapters. It supports several features
++such as jumbo frames, MSI/MSI-X, checksum offloads, TSO, UFO and so on.
++See below for complete list of features.
++
++All features are supported for both IPv4 and IPv6.
++
++2. Identifying the adapter/interface
++====================================
++
++a. Insert the adapter(s) in your system.
++b. Build and load driver::
++
++	# insmod s2io.ko
++
++c. View log messages::
++
++	# dmesg | tail -40
++
++You will see messages similar to::
++
++	eth3: Neterion Xframe I 10GbE adapter (rev 3), Version 2.0.9.1, Intr type INTA
++	eth4: Neterion Xframe II 10GbE adapter (rev 2), Version 2.0.9.1, Intr type INTA
++	eth4: Device is on 64 bit 133MHz PCIX(M1) bus
++
++The above messages identify the adapter type(Xframe I/II), adapter revision,
++driver version, interface name(eth3, eth4), Interrupt type(INTA, MSI, MSI-X).
++In case of Xframe II, the PCI/PCI-X bus width and frequency are displayed
++as well.
++
++To associate an interface with a physical adapter use "ethtool -p <ethX>".
++The corresponding adapter's LED will blink multiple times.
++
++3. Features supported
++=====================
++a. Jumbo frames. Xframe I/II supports MTU up to 9600 bytes,
++   modifiable using ip command.
++
++b. Offloads. Supports checksum offload(TCP/UDP/IP) on transmit
++   and receive, TSO.
++
++c. Multi-buffer receive mode. Scattering of packet across multiple
++   buffers. Currently driver supports 2-buffer mode which yields
++   significant performance improvement on certain platforms(SGI Altix,
++   IBM xSeries).
++
++d. MSI/MSI-X. Can be enabled on platforms which support this feature
++   (IA64, Xeon) resulting in noticeable performance improvement(up to 7%
++   on certain platforms).
++
++e. Statistics. Comprehensive MAC-level and software statistics displayed
++   using "ethtool -S" option.
++
++f. Multi-FIFO/Ring. Supports up to 8 transmit queues and receive rings,
++   with multiple steering options.
++
++4. Command line parameters
++==========================
++
++a. tx_fifo_num
++	Number of transmit queues
++
++Valid range: 1-8
++
++Default: 1
++
++b. rx_ring_num
++	Number of receive rings
++
++Valid range: 1-8
++
++Default: 1
++
++c. tx_fifo_len
++	Size of each transmit queue
++
++Valid range: Total length of all queues should not exceed 8192
++
++Default: 4096
++
++d. rx_ring_sz
++	Size of each receive ring(in 4K blocks)
++
++Valid range: Limited by memory on system
++
++Default: 30
++
++e. intr_type
++	Specifies interrupt type. Possible values 0(INTA), 2(MSI-X)
++
++Valid values: 0, 2
++
++Default: 2
++
++5. Performance suggestions
++==========================
++
++General:
++
++a. Set MTU to maximum(9000 for switch setup, 9600 in back-to-back configuration)
++b. Set TCP windows size to optimal value.
++
++For instance, for MTU=1500 a value of 210K has been observed to result in
++good performance::
++
++	# sysctl -w net.ipv4.tcp_rmem="210000 210000 210000"
++	# sysctl -w net.ipv4.tcp_wmem="210000 210000 210000"
++
++For MTU=9000, TCP window size of 10 MB is recommended::
++
++	# sysctl -w net.ipv4.tcp_rmem="10000000 10000000 10000000"
++	# sysctl -w net.ipv4.tcp_wmem="10000000 10000000 10000000"
++
++Transmit performance:
++
++a. By default, the driver respects BIOS settings for PCI bus parameters.
++   However, you may want to experiment with PCI bus parameters
++   max-split-transactions(MOST) and MMRBC (use setpci command).
++
++   A MOST value of 2 has been found optimal for Opterons and 3 for Itanium.
++
++   It could be different for your hardware.
++
++   Set MMRBC to 4K**.
++
++   For example you can set
++
++   For opteron::
++
++	#setpci -d 17d5:* 62=1d
++
++   For Itanium::
++
++	#setpci -d 17d5:* 62=3d
++
++   For detailed description of the PCI registers, please see Xframe User Guide.
++
++b. Ensure Transmit Checksum offload is enabled. Use ethtool to set/verify this
++   parameter.
++
++c. Turn on TSO(using "ethtool -K")::
++
++	# ethtool -K <ethX> tso on
++
++Receive performance:
++
++a. By default, the driver respects BIOS settings for PCI bus parameters.
++   However, you may want to set PCI latency timer to 248::
++
++	#setpci -d 17d5:* LATENCY_TIMER=f8
++
++   For detailed description of the PCI registers, please see Xframe User Guide.
++
++b. Use 2-buffer mode. This results in large performance boost on
++   certain platforms(eg. SGI Altix, IBM xSeries).
++
++c. Ensure Receive Checksum offload is enabled. Use "ethtool -K ethX" command to
++   set/verify this option.
++
++d. Enable NAPI feature(in kernel configuration Device Drivers ---> Network
++   device support --->  Ethernet (10000 Mbit) ---> S2IO 10Gbe Xframe NIC) to
++   bring down CPU utilization.
++
++.. note::
++
++   For AMD opteron platforms with 8131 chipset, MMRBC=1 and MOST=1 are
++   recommended as safe parameters.
++
++For more information, please review the AMD8131 errata at
++http://vip.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/
++26310_AMD-8131_HyperTransport_PCI-X_Tunnel_Revision_Guide_rev_3_18.pdf
++
++6. Support
++==========
++
++For further support please contact either your 10GbE Xframe NIC vendor (IBM,
++HP, SGI etc.)
+diff --git a/Documentation/networking/device_drivers/neterion/s2io.txt b/Documentation/networking/device_drivers/neterion/s2io.txt
+deleted file mode 100644
+index 0362a42f7cf4..000000000000
+--- a/Documentation/networking/device_drivers/neterion/s2io.txt
++++ /dev/null
+@@ -1,141 +0,0 @@
+-Release notes for Neterion's (Formerly S2io) Xframe I/II PCI-X 10GbE driver.
 -
--  Generic Receive Offload, aka GRO
--  --------------------------------
-+
-+  To include UDP port numbers in hashing::
-+
-+	ethtool -N eth0 rx-flow-hash udp4 sdfn
-+
-+  To exclude UDP port numbers in hashing::
-+
-+	ethtool -N eth0 rx-flow-hash udp4 sd
-+
-+  To show UDP hash level::
-+
-+	ethtool -n eth0 rx-flow-hash udp4
-+
-+Generic Receive Offload, aka GRO
-+--------------------------------
-   The driver supports GRO and it is enabled by default. GRO coalesces
-   like packets and significantly reduces CPU usage under heavy Rx
-   load.
- 
--  Large Receive Offload (LRO), or Receive Side Coalescing (RSC)
--  -------------------------------------------------------------
-+Large Receive Offload (LRO), or Receive Side Coalescing (RSC)
-+-------------------------------------------------------------
-   The driver supports LRO/RSC in the vSwitch feature. It reduces the per packet
-   processing overhead by coalescing multiple TCP segments when possible. The
-   feature is enabled by default on VMs running on Windows Server 2019 and
--  later. It may be changed by ethtool command:
-+  later. It may be changed by ethtool command::
-+
- 	ethtool -K eth0 lro on
- 	ethtool -K eth0 lro off
- 
--  SR-IOV support
--  --------------
-+SR-IOV support
-+--------------
-   Hyper-V supports SR-IOV as a hardware acceleration option. If SR-IOV
-   is enabled in both the vSwitch and the guest configuration, then the
-   Virtual Function (VF) device is passed to the guest as a PCI
-@@ -70,8 +80,8 @@ Features
-   flow direction is desired, these should be applied directly to the
-   VF slave device.
- 
--  Receive Buffer
--  --------------
-+Receive Buffer
-+--------------
-   Packets are received into a receive area which is created when device
-   is probed. The receive area is broken into MTU sized chunks and each may
-   contain one or more packets. The number of receive sections may be changed
-@@ -83,8 +93,8 @@ Features
-   will use slower method to handle very large packets or if the send buffer
-   area is exhausted.
- 
--  XDP support
--  -----------
-+XDP support
-+-----------
-   XDP (eXpress Data Path) is a feature that runs eBPF bytecode at the early
-   stage when packets arrive at a NIC card. The goal is to increase performance
-   for packet processing, reducing the overhead of SKB allocation and other
-@@ -99,7 +109,8 @@ Features
-   overwritten by setting of synthetic NIC.
- 
-   XDP program cannot run with LRO (RSC) enabled, so you need to disable LRO
--  before running XDP:
-+  before running XDP::
-+
- 	ethtool -K eth0 lro off
- 
-   XDP_REDIRECT action is not yet supported.
+-Contents
+-=======
+-- 1.  Introduction
+-- 2.  Identifying the adapter/interface
+-- 3.  Features supported
+-- 4.  Command line parameters
+-- 5.  Performance suggestions
+-- 6.  Available Downloads 
+-
+-
+-1.	Introduction:
+-This Linux driver supports Neterion's Xframe I PCI-X 1.0 and
+-Xframe II PCI-X 2.0 adapters. It supports several features 
+-such as jumbo frames, MSI/MSI-X, checksum offloads, TSO, UFO and so on.
+-See below for complete list of features.
+-All features are supported for both IPv4 and IPv6.
+-
+-2.	Identifying the adapter/interface:
+-a. Insert the adapter(s) in your system.
+-b. Build and load driver 
+-# insmod s2io.ko
+-c. View log messages
+-# dmesg | tail -40
+-You will see messages similar to:
+-eth3: Neterion Xframe I 10GbE adapter (rev 3), Version 2.0.9.1, Intr type INTA
+-eth4: Neterion Xframe II 10GbE adapter (rev 2), Version 2.0.9.1, Intr type INTA
+-eth4: Device is on 64 bit 133MHz PCIX(M1) bus
+-
+-The above messages identify the adapter type(Xframe I/II), adapter revision,
+-driver version, interface name(eth3, eth4), Interrupt type(INTA, MSI, MSI-X).
+-In case of Xframe II, the PCI/PCI-X bus width and frequency are displayed
+-as well.
+-
+-To associate an interface with a physical adapter use "ethtool -p <ethX>".
+-The corresponding adapter's LED will blink multiple times.
+-
+-3.	Features supported:
+-a. Jumbo frames. Xframe I/II supports MTU up to 9600 bytes,
+-modifiable using ip command.
+-
+-b. Offloads. Supports checksum offload(TCP/UDP/IP) on transmit
+-and receive, TSO.
+-
+-c. Multi-buffer receive mode. Scattering of packet across multiple
+-buffers. Currently driver supports 2-buffer mode which yields
+-significant performance improvement on certain platforms(SGI Altix,
+-IBM xSeries).
+-
+-d. MSI/MSI-X. Can be enabled on platforms which support this feature
+-(IA64, Xeon) resulting in noticeable performance improvement(up to 7%
+-on certain platforms).
+-
+-e. Statistics. Comprehensive MAC-level and software statistics displayed
+-using "ethtool -S" option.
+-
+-f. Multi-FIFO/Ring. Supports up to 8 transmit queues and receive rings,
+-with multiple steering options.
+-
+-4.  Command line parameters
+-a. tx_fifo_num
+-Number of transmit queues
+-Valid range: 1-8
+-Default: 1
+-
+-b. rx_ring_num
+-Number of receive rings
+-Valid range: 1-8
+-Default: 1
+-
+-c. tx_fifo_len
+-Size of each transmit queue
+-Valid range: Total length of all queues should not exceed 8192
+-Default: 4096
+-
+-d. rx_ring_sz 
+-Size of each receive ring(in 4K blocks)
+-Valid range: Limited by memory on system
+-Default: 30 
+-
+-e. intr_type
+-Specifies interrupt type. Possible values 0(INTA), 2(MSI-X)
+-Valid values: 0, 2
+-Default: 2
+-
+-5.  Performance suggestions
+-General:
+-a. Set MTU to maximum(9000 for switch setup, 9600 in back-to-back configuration)
+-b. Set TCP windows size to optimal value. 
+-For instance, for MTU=1500 a value of 210K has been observed to result in 
+-good performance.
+-# sysctl -w net.ipv4.tcp_rmem="210000 210000 210000"
+-# sysctl -w net.ipv4.tcp_wmem="210000 210000 210000"
+-For MTU=9000, TCP window size of 10 MB is recommended.
+-# sysctl -w net.ipv4.tcp_rmem="10000000 10000000 10000000"
+-# sysctl -w net.ipv4.tcp_wmem="10000000 10000000 10000000"
+-
+-Transmit performance:
+-a. By default, the driver respects BIOS settings for PCI bus parameters. 
+-However, you may want to experiment with PCI bus parameters 
+-max-split-transactions(MOST) and MMRBC (use setpci command). 
+-A MOST value of 2 has been found optimal for Opterons and 3 for Itanium.  
+-It could be different for your hardware.  
+-Set MMRBC to 4K**.
+-
+-For example you can set 
+-For opteron
+-#setpci -d 17d5:* 62=1d 
+-For Itanium
+-#setpci -d 17d5:* 62=3d 
+-
+-For detailed description of the PCI registers, please see Xframe User Guide.
+-
+-b. Ensure Transmit Checksum offload is enabled. Use ethtool to set/verify this 
+-parameter.
+-c. Turn on TSO(using "ethtool -K")
+-# ethtool -K <ethX> tso on
+-
+-Receive performance:
+-a. By default, the driver respects BIOS settings for PCI bus parameters. 
+-However, you may want to set PCI latency timer to 248.
+-#setpci -d 17d5:* LATENCY_TIMER=f8
+-For detailed description of the PCI registers, please see Xframe User Guide.
+-b. Use 2-buffer mode. This results in large performance boost on
+-certain platforms(eg. SGI Altix, IBM xSeries).
+-c. Ensure Receive Checksum offload is enabled. Use "ethtool -K ethX" command to 
+-set/verify this option.
+-d. Enable NAPI feature(in kernel configuration Device Drivers ---> Network 
+-device support --->  Ethernet (10000 Mbit) ---> S2IO 10Gbe Xframe NIC) to 
+-bring down CPU utilization.
+-
+-** For AMD opteron platforms with 8131 chipset, MMRBC=1 and MOST=1 are 
+-recommended as safe parameters.
+-For more information, please review the AMD8131 errata at
+-http://vip.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/
+-26310_AMD-8131_HyperTransport_PCI-X_Tunnel_Revision_Guide_rev_3_18.pdf
+-
+-6. Support
+-For further support please contact either your 10GbE Xframe NIC vendor (IBM, 
+-HP, SGI etc.)
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 62c654308bc8..ef6bd3be1bb5 100644
+index ef6bd3be1bb5..122a684d522b 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -7881,7 +7881,7 @@ S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git
- F:	Documentation/ABI/stable/sysfs-bus-vmbus
- F:	Documentation/ABI/testing/debugfs-hyperv
--F:	Documentation/networking/device_drivers/microsoft/netvsc.txt
-+F:	Documentation/networking/device_drivers/microsoft/netvsc.rst
- F:	arch/x86/hyperv
- F:	arch/x86/include/asm/hyperv-tlfs.h
- F:	arch/x86/include/asm/mshyperv.h
+@@ -11691,7 +11691,7 @@ NETERION 10GbE DRIVERS (s2io/vxge)
+ M:	Jon Mason <jdmason@kudzu.us>
+ L:	netdev@vger.kernel.org
+ S:	Supported
+-F:	Documentation/networking/device_drivers/neterion/s2io.txt
++F:	Documentation/networking/device_drivers/neterion/s2io.rst
+ F:	Documentation/networking/device_drivers/neterion/vxge.txt
+ F:	drivers/net/ethernet/neterion/
+ 
+diff --git a/drivers/net/ethernet/neterion/Kconfig b/drivers/net/ethernet/neterion/Kconfig
+index 5e630f3a0189..c375ee08f6ea 100644
+--- a/drivers/net/ethernet/neterion/Kconfig
++++ b/drivers/net/ethernet/neterion/Kconfig
+@@ -27,7 +27,7 @@ config S2IO
+ 	  on its age.
+ 
+ 	  More specific information on configuring the driver is in
+-	  <file:Documentation/networking/device_drivers/neterion/s2io.txt>.
++	  <file:Documentation/networking/device_drivers/neterion/s2io.rst>.
+ 
+ 	  To compile this driver as a module, choose M here. The module
+ 	  will be called s2io.
 -- 
 2.25.4
 
