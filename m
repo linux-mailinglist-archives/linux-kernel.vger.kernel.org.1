@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10ADF1C1CEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6110F1C1CF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730486AbgEASWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 14:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40304 "EHLO
+        id S1730537AbgEASWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 14:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730459AbgEASWM (ORCPT
+        by vger.kernel.org with ESMTP id S1730463AbgEASWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 May 2020 14:22:12 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CA5C061A0C;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F05FC08ED7D;
         Fri,  1 May 2020 11:22:12 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jUaIZ-0003Wa-9N; Fri, 01 May 2020 20:22:07 +0200
+        id 1jUaIZ-0003Wq-PZ; Fri, 01 May 2020 20:22:07 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id E2FD31C0085;
-        Fri,  1 May 2020 20:22:06 +0200 (CEST)
-Date:   Fri, 01 May 2020 18:22:06 -0000
-From:   "tip-bot2 for Wei Yang" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5833B1C0330;
+        Fri,  1 May 2020 20:22:07 +0200 (CEST)
+Date:   Fri, 01 May 2020 18:22:07 -0000
+From:   "tip-bot2 for Davidlohr Bueso" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/core: Simplify sched_init()
-Cc:     Wei Yang <richard.weiyang@gmail.com>,
+Subject: [tip: sched/core] sched/swait: Reword some of the main description
+Cc:     Davidlohr Bueso <dbueso@suse.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200423214443.29994-1-richard.weiyang@gmail.com>
-References: <20200423214443.29994-1-richard.weiyang@gmail.com>
+In-Reply-To: <20200422040739.18601-6-dave@stgolabs.net>
+References: <20200422040739.18601-6-dave@stgolabs.net>
 MIME-Version: 1.0
-Message-ID: <158835732689.8414.17699467590439220013.tip-bot2@tip-bot2>
+Message-ID: <158835732731.8414.566665538600308266.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -50,53 +50,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     b1d1779e5ef7a60b192b61fd97201f322e1e9303
-Gitweb:        https://git.kernel.org/tip/b1d1779e5ef7a60b192b61fd97201f322e1e9303
-Author:        Wei Yang <richard.weiyang@gmail.com>
-AuthorDate:    Thu, 23 Apr 2020 21:44:43 
+Commit-ID:     12ac6782a40ad7636b6ef45680741825b64ab221
+Gitweb:        https://git.kernel.org/tip/12ac6782a40ad7636b6ef45680741825b64ab221
+Author:        Davidlohr Bueso <dave@stgolabs.net>
+AuthorDate:    Tue, 21 Apr 2020 21:07:39 -07:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 30 Apr 2020 20:14:42 +02:00
+CommitterDate: Thu, 30 Apr 2020 20:14:41 +02:00
 
-sched/core: Simplify sched_init()
+sched/swait: Reword some of the main description
 
-Currently root_task_group.shares and cfs_bandwidth are initialized for
-each online cpu, which not necessary.
+With both the increased use of swait and kvm no longer using
+it, we can reword some of the comments. While removing Linus'
+valid rant, I've also cared to explicitly mention that swait
+is very different than regular wait. In addition it is
+mentioned against using swait in favor of the regular flavor.
 
-Let's take it out to do it only once.
-
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200423214443.29994-1-richard.weiyang@gmail.com
+Link: https://lkml.kernel.org/r/20200422040739.18601-6-dave@stgolabs.net
 ---
- kernel/sched/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/swait.h | 23 +++++------------------
+ 1 file changed, 5 insertions(+), 18 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index f6ae262..b58efb1 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6597,6 +6597,8 @@ void __init sched_init(void)
- 		root_task_group.cfs_rq = (struct cfs_rq **)ptr;
- 		ptr += nr_cpu_ids * sizeof(void **);
+diff --git a/include/linux/swait.h b/include/linux/swait.h
+index 73e06e9..6a8c22b 100644
+--- a/include/linux/swait.h
++++ b/include/linux/swait.h
+@@ -9,23 +9,10 @@
+ #include <asm/current.h>
  
-+		root_task_group.shares = ROOT_TASK_GROUP_LOAD;
-+		init_cfs_bandwidth(&root_task_group.cfs_bandwidth);
- #endif /* CONFIG_FAIR_GROUP_SCHED */
- #ifdef CONFIG_RT_GROUP_SCHED
- 		root_task_group.rt_se = (struct sched_rt_entity **)ptr;
-@@ -6649,7 +6651,6 @@ void __init sched_init(void)
- 		init_rt_rq(&rq->rt);
- 		init_dl_rq(&rq->dl);
- #ifdef CONFIG_FAIR_GROUP_SCHED
--		root_task_group.shares = ROOT_TASK_GROUP_LOAD;
- 		INIT_LIST_HEAD(&rq->leaf_cfs_rq_list);
- 		rq->tmp_alone_branch = &rq->leaf_cfs_rq_list;
- 		/*
-@@ -6671,7 +6672,6 @@ void __init sched_init(void)
- 		 * We achieve this by letting root_task_group's tasks sit
- 		 * directly in rq->cfs (i.e root_task_group->se[] = NULL).
- 		 */
--		init_cfs_bandwidth(&root_task_group.cfs_bandwidth);
- 		init_tg_cfs_entry(&root_task_group, &rq->cfs, NULL, i, NULL);
- #endif /* CONFIG_FAIR_GROUP_SCHED */
- 
+ /*
+- * BROKEN wait-queues.
+- *
+- * These "simple" wait-queues are broken garbage, and should never be
+- * used. The comments below claim that they are "similar" to regular
+- * wait-queues, but the semantics are actually completely different, and
+- * every single user we have ever had has been buggy (or pointless).
+- *
+- * A "swake_up_one()" only wakes up _one_ waiter, which is not at all what
+- * "wake_up()" does, and has led to problems. In other cases, it has
+- * been fine, because there's only ever one waiter (kvm), but in that
+- * case gthe whole "simple" wait-queue is just pointless to begin with,
+- * since there is no "queue". Use "wake_up_process()" with a direct
+- * pointer instead.
+- *
+- * While these are very similar to regular wait queues (wait.h) the most
+- * important difference is that the simple waitqueue allows for deterministic
+- * behaviour -- IOW it has strictly bounded IRQ and lock hold times.
++ * Simple waitqueues are semantically very different to regular wait queues
++ * (wait.h). The most important difference is that the simple waitqueue allows
++ * for deterministic behaviour -- IOW it has strictly bounded IRQ and lock hold
++ * times.
+  *
+  * Mainly, this is accomplished by two things. Firstly not allowing swake_up_all
+  * from IRQ disabled, and dropping the lock upon every wakeup, giving a higher
+@@ -39,7 +26,7 @@
+  *    sleeper state.
+  *
+  *  - the !exclusive mode; because that leads to O(n) wakeups, everything is
+- *    exclusive.
++ *    exclusive. As such swake_up_one will only ever awake _one_ waiter.
+  *
+  *  - custom wake callback functions; because you cannot give any guarantees
+  *    about random code. This also allows swait to be used in RT, such that
