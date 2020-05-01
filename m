@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CB91C1597
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338751C13F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbgEANak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:30:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54720 "EHLO mail.kernel.org"
+        id S1730549AbgEANeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:34:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729974AbgEANah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:30:37 -0400
+        id S1729669AbgEANeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:34:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE13220757;
-        Fri,  1 May 2020 13:30:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E413216FD;
+        Fri,  1 May 2020 13:34:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339837;
-        bh=JcTR8buJrcrSvAWGM4jhzwvVThj9pWLXakvE+Oissvo=;
+        s=default; t=1588340050;
+        bh=cnL9i4QD9VSaNR2UsO45mXpYGTQ8qPnpMveOLtulI1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sHCQ2hFdgA1xw2kgIHd1Iw5pbyfYideIM+0U20VAejp/4UO2abWL8HOsMAnlvBMj0
-         bwKxgab8R7A/Haeu49pf3c6W7M4t7B9diXxhiveIKsYo2BZjmiUqMj0dR9kCNpsa8j
-         qFB7lEgho/Tu+KmATy6kFZZDf3i1FEHc22yYWgL0=
+        b=nQbeoRN9ZoJiYIJ9wCouADrfG4pElq8F7UP5czWW7SFX7lcrUghCCh7IUOBjs6G3c
+         eNovKJg3BRe4fCRSrXBM08cYoeDO3Vg3Vr7v8aAaHlXnf/yqaiPUxJa5Osmxls6flk
+         WI7uAhWKjhj5YbPkIghf2FaaQ2Js5Dmh2SGX3y+o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Brian Foster <bfoster@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 67/80] xfs: fix partially uninitialized structure in xfs_reflink_remap_extent
-Date:   Fri,  1 May 2020 15:22:01 +0200
-Message-Id: <20200501131534.974029037@linuxfoundation.org>
+        stable@vger.kernel.org, Yi Huaijie <yihuaijie@huawei.com>,
+        Liu Jian <liujian56@huawei.com>,
+        Tokunori Ikegami <ikegami_to@yahoo.co.jp>,
+        Richard Weinberger <richard@nod.at>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.14 086/117] mtd: cfi: fix deadloop in cfi_cmdset_0002.c do_write_buffer
+Date:   Fri,  1 May 2020 15:22:02 +0200
+Message-Id: <20200501131554.917192410@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
-References: <20200501131513.810761598@linuxfoundation.org>
+In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
+References: <20200501131544.291247695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Liu Jian <liujian56@huawei.com>
 
-[ Upstream commit c142932c29e533ee892f87b44d8abc5719edceec ]
+commit d9b8a67b3b95a5c5aae6422b8113adc1c2485f2b upstream.
 
-In the reflink extent remap function, it turns out that uirec (the block
-mapping corresponding only to the part of the passed-in mapping that got
-unmapped) was not fully initialized.  Specifically, br_state was not
-being copied from the passed-in struct to the uirec.  This could lead to
-unpredictable results such as the reflinked mapping being marked
-unwritten in the destination file.
+In function do_write_buffer(), in the for loop, there is a case
+chip_ready() returns 1 while chip_good() returns 0, so it never
+break the loop.
+To fix this, chip_good() is enough and it should timeout if it stay
+bad for a while.
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Brian Foster <bfoster@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: dfeae1073583("mtd: cfi_cmdset_0002: Change write buffer to check correct value")
+Signed-off-by: Yi Huaijie <yihuaijie@huawei.com>
+Signed-off-by: Liu Jian <liujian56@huawei.com>
+Reviewed-by: Tokunori Ikegami <ikegami_to@yahoo.co.jp>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/xfs/xfs_reflink.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/chips/cfi_cmdset_0002.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index 17d3c964a2a23..6b753b969f7b8 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -1162,6 +1162,7 @@ xfs_reflink_remap_extent(
- 		uirec.br_startblock = irec->br_startblock + rlen;
- 		uirec.br_startoff = irec->br_startoff + rlen;
- 		uirec.br_blockcount = unmap_len - rlen;
-+		uirec.br_state = irec->br_state;
- 		unmap_len = rlen;
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1883,7 +1883,11 @@ static int __xipram do_write_buffer(stru
+ 			continue;
+ 		}
  
- 		/* If this isn't a real mapping, we're done. */
--- 
-2.20.1
-
+-		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
++		/*
++		 * We check "time_after" and "!chip_good" before checking "chip_good" to avoid
++		 * the failure due to scheduling.
++		 */
++		if (time_after(jiffies, timeo) && !chip_good(map, adr, datum))
+ 			break;
+ 
+ 		if (chip_good(map, adr, datum)) {
 
 
