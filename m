@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63C21C146D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A261C14CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731165AbgEANjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:39:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38818 "EHLO mail.kernel.org"
+        id S1731571AbgEANm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:42:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730856AbgEANjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:39:12 -0400
+        id S1731559AbgEANmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:42:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CC22208DB;
-        Fri,  1 May 2020 13:39:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D96D205C9;
+        Fri,  1 May 2020 13:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340351;
-        bh=e7spcapCw09yWb/xBhsKXLncxrnPQacqV3xX+cpc1f4=;
+        s=default; t=1588340571;
+        bh=fmdMka6r2wpgXnVMGeFqUxtEH2GK2lsEyeancMPq7LE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V+E928I3Ndi2ttS2ZZ7LCzh7qlDrgDV+QzYyY+iCDmuCQ/JKHbao9V3biTX+DX+xn
-         Jw5RkOAAnwof+LUhxULi64uHZ2X5aCS+c6jMfWNC7F9me0bT/0OctK2enSFfDkkmdI
-         6+rc7fFWEUhecOriktYkVGsm8K6dAu7oO3fX93kY=
+        b=OP1OrJglb83veVYw+Bt4SN2tiBhlLzdMIkeSmoAcBbmkaYABudvqUWaWLmdr6oLnv
+         FsjyB3JDxtGfKOfNt8Dm7iN8YRdxZ74pGyIfTZjWttZrmAF3ZXUZb8OAdH192GRvWL
+         iHC5cPNtpsNpZwI51zCwLrehD0IGuZeEt0+YJx18=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.4 30/83] PCI: Avoid ASMedia XHCI USB PME# from D0 defect
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 036/106] net/cxgb4: Check the return from t4_query_params properly
 Date:   Fri,  1 May 2020 15:23:09 +0200
-Message-Id: <20200501131531.459830348@linuxfoundation.org>
+Message-Id: <20200501131548.228399062@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-commit 2880325bda8d53566dcb9725abc929eec871608e upstream.
+commit c799fca8baf18d1bbbbad6c3b736eefbde8bdb90 upstream.
 
-The ASMedia USB XHCI Controller claims to support generating PME# while
-in D0:
+Positive return values are also failures that don't set val,
+although this probably can't happen. Fixes gcc 10 warning:
 
-  01:00.0 USB controller: ASMedia Technology Inc. Device 2142 (prog-if 30 [XHCI])
-    Subsystem: SUNIX Co., Ltd. Device 312b
-    Capabilities: [78] Power Management version 3
-      Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot-,D3cold-)
-      Status: D0 NoSoftRst+ PME-Enable+ DSel=0 DScale=0 PME-
+drivers/net/ethernet/chelsio/cxgb4/t4_hw.c: In function ‘t4_phy_fw_ver’:
+drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:3747:14: warning: ‘val’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 3747 |  *phy_fw_ver = val;
 
-However PME# only gets asserted when plugging USB 2.0 or USB 1.1 devices,
-but not for USB 3.0 devices.
-
-Remove PCI_PM_CAP_PME_D0 to avoid using PME under D0.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205919
-Link: https://lore.kernel.org/r/20191219192006.16270-1-kai.heng.feng@canonical.com
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Fixes: 01b6961410b7 ("cxgb4: Add PHY firmware support for T420-BT cards")
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/quirks.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/net/ethernet/chelsio/cxgb4/t4_hw.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5490,3 +5490,14 @@ out_disable:
- DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_NVIDIA, 0x13b1,
- 			      PCI_CLASS_DISPLAY_VGA, 8,
- 			      quirk_reset_lenovo_thinkpad_p50_nvgpu);
-+
-+/*
-+ * Device [1b21:2142]
-+ * When in D0, PME# doesn't get asserted when plugging USB 3.0 device.
-+ */
-+static void pci_fixup_no_d0_pme(struct pci_dev *dev)
-+{
-+	pci_info(dev, "PME# does not work under D0, disabling it\n");
-+	dev->pme_support &= ~(PCI_PM_CAP_PME_D0 >> PCI_PM_CAP_PME_SHIFT);
-+}
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ASMEDIA, 0x2142, pci_fixup_no_d0_pme);
+--- a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
+@@ -3748,7 +3748,7 @@ int t4_phy_fw_ver(struct adapter *adap,
+ 		 FW_PARAMS_PARAM_Z_V(FW_PARAMS_PARAM_DEV_PHYFW_VERSION));
+ 	ret = t4_query_params(adap, adap->mbox, adap->pf, 0, 1,
+ 			      &param, &val);
+-	if (ret < 0)
++	if (ret)
+ 		return ret;
+ 	*phy_fw_ver = val;
+ 	return 0;
 
 
