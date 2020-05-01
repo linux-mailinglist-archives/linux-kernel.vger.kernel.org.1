@@ -2,162 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04CC1C0C04
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 04:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C20A1C0C07
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 04:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728083AbgEACOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 22:14:53 -0400
-Received: from mail.efficios.com ([167.114.26.124]:37534 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728029AbgEACOx (ORCPT
+        id S1728119AbgEACPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 22:15:37 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:58038 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728009AbgEACPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 22:14:53 -0400
+        Thu, 30 Apr 2020 22:15:37 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id A11D0294168;
-        Thu, 30 Apr 2020 22:14:51 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id pfpxW8W8kRsn; Thu, 30 Apr 2020 22:14:51 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 3D69A294595;
-        Thu, 30 Apr 2020 22:14:51 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3D69A294595
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1588299291;
-        bh=0smAkb6cp0p+RuLi71ihxVXx+NcGlOLwapAddILSwQ4=;
-        h=From:To:Date:Message-Id;
-        b=uiYrwNaLaQSi0yvBcpghTE8u0RKlmi9zj2hl+AbLfNKVr3ROEErLC4GvCmY6yd/YP
-         0RHkDQKgl5PKy3TFakb0sn0FTUhTQ5lzwVeE19PW2Zc3Hyhe0SzvFiyJwkkIiNPxME
-         GT1NSygDlfIEASsCZi0bvXmFh2A2ZIFi74onh/XN+JGc4pZgroKE47mIpGsiVO+cca
-         K46lOKJ2r5JyHK00794VOEJ8RJ1eSwim5ixHZ4sqslzSHD5RPkr7cY42jxJCsjLadq
-         AVXMdh0uCMTxyaxlwydthovF8KDGrAX0zC9Zf2TgJdtxXr/wf0FGa7K6rJd15Sxpor
-         N9iXBolxuPRpQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id DGHr5DzkxDIs; Thu, 30 Apr 2020 22:14:51 -0400 (EDT)
-Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id F0D44294518;
-        Thu, 30 Apr 2020 22:14:50 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Carlos O'Donell <carlos@redhat.com>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        libc-alpha@sourceware.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ben Maurer <bmaurer@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Paul Turner <pjt@google.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: [PATCH glibc 2/3] glibc: sched_getcpu(): use rseq cpu_id TLS on Linux (v7)
-Date:   Thu, 30 Apr 2020 22:14:38 -0400
-Message-Id: <20200501021439.2456-3-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200501021439.2456-1-mathieu.desnoyers@efficios.com>
-References: <20200501021439.2456-1-mathieu.desnoyers@efficios.com>
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id E50C78EE105;
+        Thu, 30 Apr 2020 19:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1588299336;
+        bh=12uN4iRrl7yWx582rVDDYLfsEquyL2jowDW9sfgfRXw=;
+        h=Subject:From:To:Cc:Date:From;
+        b=rNSg13nuV5PT92uBKBWV85D+TOdi/saZpD+nYgDBdaLr/9dgeUQ0ZDas/t7r4kAuX
+         woWSK4NoZxJkBUDuyvL8sBA2ADhk/+/5Dju0sSNdcfx8cwyvAFnhdjX3i1M67kPJ7h
+         xDjItO1lYUqztxnPFYXF1bIh0pjPZaXSto3fIto0=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id U7Fzxe3Dq2Bk; Thu, 30 Apr 2020 19:15:36 -0700 (PDT)
+Received: from [153.66.254.194] (unknown [50.35.76.230])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 6C1698EE0EA;
+        Thu, 30 Apr 2020 19:15:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1588299336;
+        bh=12uN4iRrl7yWx582rVDDYLfsEquyL2jowDW9sfgfRXw=;
+        h=Subject:From:To:Cc:Date:From;
+        b=rNSg13nuV5PT92uBKBWV85D+TOdi/saZpD+nYgDBdaLr/9dgeUQ0ZDas/t7r4kAuX
+         woWSK4NoZxJkBUDuyvL8sBA2ADhk/+/5Dju0sSNdcfx8cwyvAFnhdjX3i1M67kPJ7h
+         xDjItO1lYUqztxnPFYXF1bIh0pjPZaXSto3fIto0=
+Message-ID: <1588299335.6654.7.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.7-rc3
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Thu, 30 Apr 2020 19:15:35 -0700
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When available, use the cpu_id field from __rseq_abi on Linux to
-implement sched_getcpu().  Fall-back on the vgetcpu vDSO if unavailable.
+Four minor fixes: three in drivers and one in the core.  The core one
+allows an additional state change that fixes a regression introduced by
+an update to the aacraid driver in the previous merge window.
 
-Benchmarks:
+The patch is available here:
 
-x86-64: Intel E5-2630 v3@2.40GHz, 16-core, hyperthreading
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-glibc sched_getcpu():                     13.7 ns (baseline)
-glibc sched_getcpu() using rseq:           2.5 ns (speedup:  5.5x)
-inline load cpuid from __rseq_abi TLS:     0.8 ns (speedup: 17.1x)
+The short changelog is:
 
-CC: Carlos O'Donell <carlos@redhat.com>
-CC: Florian Weimer <fweimer@redhat.com>
-CC: Joseph Myers <joseph@codesourcery.com>
-CC: Szabolcs Nagy <szabolcs.nagy@arm.com>
-CC: Thomas Gleixner <tglx@linutronix.de>
-CC: Ben Maurer <bmaurer@fb.com>
-CC: Peter Zijlstra <peterz@infradead.org>
-CC: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-CC: Boqun Feng <boqun.feng@gmail.com>
-CC: Will Deacon <will.deacon@arm.com>
-CC: Paul Turner <pjt@google.com>
-CC: libc-alpha@sourceware.org
-CC: linux-kernel@vger.kernel.org
-CC: linux-api@vger.kernel.org
+David Disseldorp (1):
+      scsi: target/iblock: fix WRITE SAME zeroing
+
+Dexuan Cui (1):
+      scsi: core: Allow the state change from SDEV_QUIESCE to SDEV_BLOCK
+
+Martin Wilck (2):
+      scsi: qla2xxx: check UNLOADING before posting async work
+      scsi: qla2xxx: set UNLOADING before waiting for session deletion
+
+And the diffstat
+
+ drivers/scsi/qla2xxx/qla_os.c       | 35 +++++++++++++++++------------------
+ drivers/scsi/scsi_lib.c             |  1 +
+ drivers/target/target_core_iblock.c |  2 +-
+ 3 files changed, 19 insertions(+), 19 deletions(-)
+
+With full diff below.
+
+James
+
 ---
-Changes since v1:
-- rseq is only used if both __NR_rseq and RSEQ_SIG are defined.
 
-Changes since v2:
-- remove duplicated __rseq_abi extern declaration.
-
-Changes since v3:
-- update ChangeLog.
-
-Changes since v4:
-- Use atomic_load_relaxed to load the __rseq_abi.cpu_id field, a
-  consequence of the fact that __rseq_abi is not volatile anymore.
-- Include atomic.h which provides atomic_load_relaxed.
-
-Changes since v5:
-- Use __ASSUME_RSEQ to detect rseq availability.
-
-Changes since v6:
-- Remove use of __ASSUME_RSEQ.
----
- sysdeps/unix/sysv/linux/sched_getcpu.c | 27 ++++++++++++++++++++++++--
- 1 file changed, 25 insertions(+), 2 deletions(-)
-
-diff --git a/sysdeps/unix/sysv/linux/sched_getcpu.c b/sysdeps/unix/sysv/linux/sched_getcpu.c
-index c019cfb3cf..2269c4f2bd 100644
---- a/sysdeps/unix/sysv/linux/sched_getcpu.c
-+++ b/sysdeps/unix/sysv/linux/sched_getcpu.c
-@@ -18,10 +18,15 @@
- #include <errno.h>
- #include <sched.h>
- #include <sysdep.h>
-+#include <atomic.h>
- #include <sysdep-vdso.h>
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index d190db5ea7d9..1d9a4866f9a7 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -3732,6 +3732,13 @@ qla2x00_remove_one(struct pci_dev *pdev)
+ 	}
+ 	qla2x00_wait_for_hba_ready(base_vha);
  
--int
--sched_getcpu (void)
-+#ifdef HAVE_GETCPU_VSYSCALL
-+# define HAVE_VSYSCALL
-+#endif
++	/*
++	 * if UNLOADING flag is already set, then continue unload,
++	 * where it was set first.
++	 */
++	if (test_and_set_bit(UNLOADING, &base_vha->dpc_flags))
++		return;
 +
-+static int
-+vsyscall_sched_getcpu (void)
- {
-   unsigned int cpu;
-   int r = -1;
-@@ -32,3 +37,21 @@ sched_getcpu (void)
- #endif
-   return r == -1 ? r : cpu;
- }
+ 	if (IS_QLA25XX(ha) || IS_QLA2031(ha) || IS_QLA27XX(ha) ||
+ 	    IS_QLA28XX(ha)) {
+ 		if (ha->flags.fw_started)
+@@ -3750,15 +3757,6 @@ qla2x00_remove_one(struct pci_dev *pdev)
+ 
+ 	qla2x00_wait_for_sess_deletion(base_vha);
+ 
+-	/*
+-	 * if UNLOAD flag is already set, then continue unload,
+-	 * where it was set first.
+-	 */
+-	if (test_bit(UNLOADING, &base_vha->dpc_flags))
+-		return;
+-
+-	set_bit(UNLOADING, &base_vha->dpc_flags);
+-
+ 	qla_nvme_delete(base_vha);
+ 
+ 	dma_free_coherent(&ha->pdev->dev,
+@@ -4864,6 +4862,9 @@ qla2x00_alloc_work(struct scsi_qla_host *vha, enum qla_work_type type)
+ 	struct qla_work_evt *e;
+ 	uint8_t bail;
+ 
++	if (test_bit(UNLOADING, &vha->dpc_flags))
++		return NULL;
 +
-+#include <sys/rseq.h>
-+
-+#ifdef RSEQ_SIG
-+int
-+sched_getcpu (void)
-+{
-+  int cpu_id = atomic_load_relaxed (&__rseq_abi.cpu_id);
-+
-+  return cpu_id >= 0 ? cpu_id : vsyscall_sched_getcpu ();
-+}
-+#else
-+int
-+sched_getcpu (void)
-+{
-+  return vsyscall_sched_getcpu ();
-+}
-+#endif
--- 
-2.17.1
-
+ 	QLA_VHA_MARK_BUSY(vha, bail);
+ 	if (bail)
+ 		return NULL;
+@@ -6628,13 +6629,6 @@ qla2x00_disable_board_on_pci_error(struct work_struct *work)
+ 	struct pci_dev *pdev = ha->pdev;
+ 	scsi_qla_host_t *base_vha = pci_get_drvdata(ha->pdev);
+ 
+-	/*
+-	 * if UNLOAD flag is already set, then continue unload,
+-	 * where it was set first.
+-	 */
+-	if (test_bit(UNLOADING, &base_vha->dpc_flags))
+-		return;
+-
+ 	ql_log(ql_log_warn, base_vha, 0x015b,
+ 	    "Disabling adapter.\n");
+ 
+@@ -6645,9 +6639,14 @@ qla2x00_disable_board_on_pci_error(struct work_struct *work)
+ 		return;
+ 	}
+ 
+-	qla2x00_wait_for_sess_deletion(base_vha);
++	/*
++	 * if UNLOADING flag is already set, then continue unload,
++	 * where it was set first.
++	 */
++	if (test_and_set_bit(UNLOADING, &base_vha->dpc_flags))
++		return;
+ 
+-	set_bit(UNLOADING, &base_vha->dpc_flags);
++	qla2x00_wait_for_sess_deletion(base_vha);
+ 
+ 	qla2x00_delete_all_vps(ha, base_vha);
+ 
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index 47835c4b4ee0..06c260f6cdae 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -2284,6 +2284,7 @@ scsi_device_set_state(struct scsi_device *sdev, enum scsi_device_state state)
+ 		switch (oldstate) {
+ 		case SDEV_RUNNING:
+ 		case SDEV_CREATED_BLOCK:
++		case SDEV_QUIESCE:
+ 		case SDEV_OFFLINE:
+ 			break;
+ 		default:
+diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
+index 51ffd5c002de..1c181d31f4c8 100644
+--- a/drivers/target/target_core_iblock.c
++++ b/drivers/target/target_core_iblock.c
+@@ -432,7 +432,7 @@ iblock_execute_zero_out(struct block_device *bdev, struct se_cmd *cmd)
+ 				target_to_linux_sector(dev, cmd->t_task_lba),
+ 				target_to_linux_sector(dev,
+ 					sbc_get_write_same_sectors(cmd)),
+-				GFP_KERNEL, false);
++				GFP_KERNEL, BLKDEV_ZERO_NOUNMAP);
+ 	if (ret)
+ 		return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+ 
