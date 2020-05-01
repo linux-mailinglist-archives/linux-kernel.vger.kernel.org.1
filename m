@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65D61C2189
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 01:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8881C218A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 01:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbgEAXvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 19:51:32 -0400
-Received: from mail-dm6nam12olkn2090.outbound.protection.outlook.com ([40.92.22.90]:58177
+        id S1728028AbgEAXve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 19:51:34 -0400
+Received: from mail-dm6nam12olkn2095.outbound.protection.outlook.com ([40.92.22.95]:16121
         "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727943AbgEAXv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 19:51:28 -0400
+        id S1727963AbgEAXva (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 19:51:30 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vax2wX3ZhSN+9gETAWlXxSZX/CBDqOPDXZyxZpT+TwOOFmz6VepDMU1N00U9LJ4FN93TwLhnhPrm6PEfc/6sRMZ1yYRiKisqx1IAZfbt27qu5hMud9Qz4ypAT5BNWR6eTWDVk81QMdM+i4UhcwM4hppTUwu3jYviFbyTn4+op39qL5h3TFIn0sb3InicLr12BTxI1pt/2ZDVUrCM1Yy38Tqe7KOJtLjNICkSqH+xHwcvDp+EQsCkNGyg9XGY/ESaVX89XV04CSlRlE+LXm7qKbluE6UIE+VTH2BsDwdqEKPwfeq9muS6ZGgbs7YfGls4ST2cerbkNePX3hBg4+oVbg==
+ b=lMB9AyTJVYlZZwXN1BCn1Bdx5mvBUdZKoLA/LwEGXB5MicmbAzMHw9IlXPjX/pG2hcNa0rEkkNvVTioHEInyZUTLXQsz8erlVRgJoevOZHXHLQTvopQClk/bAcSHynw+Q5QCaGgN4ldyJaL39i6pUpLJwYygTTQkzfRm6GfaitSq+978HqTAKG3noUM7OaA6X3gnOgGRWG2Ed7GOCFbXAYoTitV0kxUzAgSnEjo1SVUwICUK1FjX3UkoaEjsi5PgSxJL75Kryy7vfJ0zj8gy70dt0kI42KnrKVrialuiBvU/QEW/V/RWOZHMVTwvoRTuH5/6GH9aMnHUznJvSWig+Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uvnkUJXJ9Z/1kTZ8tmmShARYljmKJcMNKDCi4pA43QY=;
- b=OiTIMvqZvikutYn57546s9ghH2CPAsrMrlATFleLchpZkLkH0ZIh7gcXxnNncOYzTLpcyyYqKR9mRYRlVeQJnC9j05Fr8a98yBJAYxPi4qtBGNFtIcBuUvZxKHVDqtkPTypljpkpbwgFLwGqDvUPMEqlYUHbdGyqtqVRBNCNYRN1Xhf0emSbo4uqPdHfKyuknDAUtkHK5YH0a3isrjOwrRgM4nNZhu68mU2x6qxl47nb4YE+qkiqF+CW7ViUZLCUa2W8HkL4vJGfzlbbECWWVFqqqSmh3XvnEO5lxis9j6GmqoIT70DGhUkGqF84lffQWkcVc4Fv3FvpNW9T+ewoEw==
+ bh=3MDUkQ2dTjod1xk/8rLC43jTcn9lJdoxoad9bhahzOw=;
+ b=dO8l+87pRbo3jh1/MuGYaNNj4EI3BXVCj6kPTpVud8Q1FdSUN5wjUefTu1aIOgnbkSMiz4mbTh7sOF7h1KYy7pk/L2W5VBRuYToWMJharGW/mKUQVsg3BGYV1PSOW3D4UmCxdec8jJ6C51pIb1Cb1VEDduev7jMmxCrANbksCQF0zNDCDaryoezZ7gmqYmQl57SfwCQMcmSS7Cop58TXMj0Ghj0jA3mqY1945O8LsR9S+YmWTUJKmd4cPr8R8+QzFTWD/VwPRcGL3tjUDLZik4xk+l/kyR1213t1+M8fq2WqYdZg/5Hc4oZyXvsUi3LjZwOODtLYTmgC9XKmBKD1zQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=live.ca; dmarc=pass action=none header.from=live.ca; dkim=pass
  header.d=live.ca; arc=none
 Received: from DM6NAM12FT056.eop-nam12.prod.protection.outlook.com
- (2a01:111:e400:fc64::4b) by
- DM6NAM12HT076.eop-nam12.prod.protection.outlook.com (2a01:111:e400:fc64::378)
+ (2a01:111:e400:fc64::46) by
+ DM6NAM12HT200.eop-nam12.prod.protection.outlook.com (2a01:111:e400:fc64::74)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.12; Fri, 1 May
- 2020 23:51:26 +0000
+ 2020 23:51:27 +0000
 Received: from BN6PR04MB0660.namprd04.prod.outlook.com
  (2a01:111:e400:fc64::46) by DM6NAM12FT056.mail.protection.outlook.com
  (2a01:111:e400:fc64::460) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.12 via Frontend
- Transport; Fri, 1 May 2020 23:51:26 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:66ECCB6A98B1CA83001D2D364CB1B4750420FEC79B16D4528E2F1D1B8B53CF50;UpperCasedChecksum:8FD865E3A472666087EC0EFF3B4320394C0557F8CD1B336740335B6FC3AC71FA;SizeAsReceived:7874;Count:50
+ Transport; Fri, 1 May 2020 23:51:27 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:7B8FB2A95B641A94B2893361021141BA26A1A074922B8EF1389B40ED794C0699;UpperCasedChecksum:9CFC7257941493FD6A1F2557DC4F7F6BD660A071B6583183981E4773F8BA7602;SizeAsReceived:7866;Count:50
 Received: from BN6PR04MB0660.namprd04.prod.outlook.com
  ([fe80::ad10:4127:4bc8:76fc]) by BN6PR04MB0660.namprd04.prod.outlook.com
  ([fe80::ad10:4127:4bc8:76fc%6]) with mapi id 15.20.2958.027; Fri, 1 May 2020
- 23:51:26 +0000
+ 23:51:27 +0000
 From:   Jonathan Bakker <xc-racer2@live.ca>
 To:     kgene@kernel.org, krzk@kernel.org, robh+dt@kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Jonathan Bakker <xc-racer2@live.ca>
-Subject: [PATCH v2 09/18] ARM: dts: s5pv210: Add panel support to aries boards
-Date:   Fri,  1 May 2020 16:50:10 -0700
-Message-ID: <BN6PR04MB066048BB0BE7A2F52C809D1EA3AB0@BN6PR04MB0660.namprd04.prod.outlook.com>
+Subject: [PATCH v2 10/18] ARM: dts: s5pv210: Add remaining i2c-gpio adapters to aries
+Date:   Fri,  1 May 2020 16:50:11 -0700
+Message-ID: <BN6PR04MB0660BC97F0946E50B75309E7A3AB0@BN6PR04MB0660.namprd04.prod.outlook.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200501235019.24022-1-xc-racer2@live.ca>
 References: <20200426183604.28494-1-xc-racer2@live.ca>
@@ -56,157 +56,164 @@ Content-Type:   text/plain; charset=US-ASCII
 X-ClientProxiedBy: MWHPR17CA0058.namprd17.prod.outlook.com
  (2603:10b6:300:93::20) To BN6PR04MB0660.namprd04.prod.outlook.com
  (2603:10b6:404:d9::21)
-X-Microsoft-Original-Message-ID: <20200501235019.24022-10-xc-racer2@live.ca>
+X-Microsoft-Original-Message-ID: <20200501235019.24022-11-xc-racer2@live.ca>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from jon-hp-6570b.telus (2001:569:fb68:9c00:8067:f823:1e15:7520) by MWHPR17CA0058.namprd17.prod.outlook.com (2603:10b6:300:93::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Fri, 1 May 2020 23:51:24 +0000
+Received: from jon-hp-6570b.telus (2001:569:fb68:9c00:8067:f823:1e15:7520) by MWHPR17CA0058.namprd17.prod.outlook.com (2603:10b6:300:93::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Fri, 1 May 2020 23:51:26 +0000
 X-Mailer: git-send-email 2.20.1
-X-Microsoft-Original-Message-ID: <20200501235019.24022-10-xc-racer2@live.ca>
-X-TMN:  [Ytgf6yKrP6rrqyB3dnaR5yJdnjjZgW4jhPrGe3IBPj4GoKgEPLrTP2m/63NU5HXB]
+X-Microsoft-Original-Message-ID: <20200501235019.24022-11-xc-racer2@live.ca>
+X-TMN:  [WIqVT9i6m7B9rblWchqbVR9EmRyruzCkXD2rRB2oEDeEFSqI29EzXZYx8WLqsbUj]
 X-MS-PublicTrafficType: Email
 X-IncomingHeaderCount: 50
 X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 90b6a710-ac17-490e-fbf2-08d7ee2a8f2e
-X-MS-TrafficTypeDiagnostic: DM6NAM12HT076:
+X-MS-Office365-Filtering-Correlation-Id: 597a8baa-984a-4610-6a67-08d7ee2a9034
+X-MS-TrafficTypeDiagnostic: DM6NAM12HT200:
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fRXS0Jn3NSEbR3qScY0fMJgEVn35upX1azXmj3R/vmWx7g868PyI0vjYeyifwq/ZtyCsYK4k/pKazVd7BmkUpXqViFPTnoJSkInAfjz1hTSLO7bpNQxpx7MHTRu0gub6iSNQkdwt/jeWWXK3OM3sud3SyL9qkZjRfUhjgY4MsWtS7T79KlJvYEi7bJCZLyrPUXcfE8St6zJTsqnkO6TryQ==
+X-Microsoft-Antispam-Message-Info: o9xYEOsxatyo7CuQMQP57iwnEaaJpsk4k3h2hV3c77Y1FKOZKSGxIdD7mc6wMdPekrRLaQDJM+JlAuj6tahb93oSt2PlnsQeQZqvEFwmILPEHVX7FK9IdEZ26rQCTkCF8KBSr4SAhzHPbY3/H1SJSH/xUwQxOyJIW9nEiyMO/d0l2b4LflTzHBKm8VlagpGQLETLYuKDL5O1VFKyGsVnWg==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR04MB0660.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
-X-MS-Exchange-AntiSpam-MessageData: BC5fIQ7BZgiuoQDPEuqxXV1Nv+JZW24iaUlFe7bxDJ6d4z8N/FfHkRg2xzeQScuPurJcBXP2gPAKA/JiBzf19hbesftbBVM9+UJldb9rGriviBGg2zpSQ2Lr+SIZ/94UvgT9u6ReuFFEjNvAZUZ2U305e7+Ng5BCk2JVDWuoLIbWBGR7EjqulBkTglUiR2G/UilSXGkxoJ+TI27f7jKatw==
+X-MS-Exchange-AntiSpam-MessageData: RFo0M/d/YpnhJGZiSbymtdxVy7w+aTYtInu/6WrTrNr83o/La3vAkZM6cW1ICakYWe+IDrB9WRT+3FI2VNXKB8fvlZ9sjGhag9Yl9OmuUn7iXrOcdbn5Md+VlRnq6PmuPm7/OSzqr292KdE1CmeBEclTlFKf2OhgDtHOyBKrKa5Hb+5zZvESvqULuj5SuL28kz3B8BbpD1lhIYJxyi3t1Q==
 X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 90b6a710-ac17-490e-fbf2-08d7ee2a8f2e
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2020 23:51:25.9460
+X-MS-Exchange-CrossTenant-Network-Message-Id: 597a8baa-984a-4610-6a67-08d7ee2a9034
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2020 23:51:27.6633
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
 X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
 X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6NAM12HT076
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6NAM12HT200
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aries boards have an s6e63m0 AMOLED panel connected over i2c-spi.
+The remaining i2c-gpio adapters that are common to all aries boards
+have devices without mainline bindings attachted to them.  Add them
+here for documentation.
 
 Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
 ---
- arch/arm/boot/dts/s5pv210-aries.dtsi | 68 +++++++++++++++++++++-------
- 1 file changed, 52 insertions(+), 16 deletions(-)
+ arch/arm/boot/dts/s5pv210-aries.dtsi | 69 ++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
 diff --git a/arch/arm/boot/dts/s5pv210-aries.dtsi b/arch/arm/boot/dts/s5pv210-aries.dtsi
-index 6683ecec905a..046366d58aa0 100644
+index 046366d58aa0..a3748705dce8 100644
 --- a/arch/arm/boot/dts/s5pv210-aries.dtsi
 +++ b/arch/arm/boot/dts/s5pv210-aries.dtsi
-@@ -200,8 +200,6 @@
- 					regulator-name = "VLCD_1.8V";
- 					regulator-min-microvolt = <1800000>;
- 					regulator-max-microvolt = <1800000>;
--					/* Till we get panel driver */
--					regulator-always-on;
+@@ -13,10 +13,13 @@
  
- 					regulator-state-mem {
- 						regulator-off-in-suspend;
-@@ -300,8 +298,6 @@
- 					regulator-name = "VCC_3.0V_LCD";
- 					regulator-min-microvolt = <3000000>;
- 					regulator-max-microvolt = <3000000>;
--					/* Till we get panel driver */
--					regulator-always-on;
- 
- 					regulator-state-mem {
- 						regulator-off-in-suspend;
-@@ -454,6 +450,39 @@
- 		offset = <0x681c>; /* PS_HOLD_CONTROL */
- 		value = <0x5200>;
+ 	aliases {
+ 		i2c4 = &i2c_sound;
++		i2c5 = &i2c_accel;
+ 		i2c6 = &i2c_pmic;
+ 		i2c7 = &i2c_musb;
+ 		i2c9 = &i2c_fuel;
+ 		i2c10 = &i2c_touchkey;
++		i2c11 = &i2c_prox;
++		i2c12 = &i2c_magnetometer;
  	};
-+
-+	spi_lcd: spi-gpio-0 {
-+		compatible = "spi-gpio";
+ 
+ 	memory@30000000 {
+@@ -120,6 +123,22 @@
+ 		};
+ 	};
+ 
++	i2c_accel: i2c-gpio-1 {
++		compatible = "i2c-gpio";
++		sda-gpios = <&gpj3 6 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++		scl-gpios = <&gpj3 7 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++		i2c-gpio,delay-us = <2>;
 +		#address-cells = <1>;
 +		#size-cells = <0>;
 +
-+		sck-gpios = <&mp04 1 GPIO_ACTIVE_HIGH>;
-+		mosi-gpios = <&mp04 3 GPIO_ACTIVE_HIGH>;
-+		cs-gpios = <&mp01 1 GPIO_ACTIVE_HIGH>;
-+		num-chipselects = <1>;
-+
 +		pinctrl-names = "default";
-+		pinctrl-0 = <&lcd_spi_pins>;
++		pinctrl-0 = <&accel_i2c_pins>;
 +
-+		panel@0 {
-+			compatible = "samsung,s6e63m0";
-+			reg = <0>;
-+			reset-gpios = <&mp05 5 GPIO_ACTIVE_LOW>;
-+			vdd3-supply = <&ldo7_reg>;
-+			vci-supply = <&ldo17_reg>;
-+			spi-cs-high;
-+			spi-max-frequency = <1200000>;
++		status = "disabled";
 +
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&panel_rst>;
-+
-+			port {
-+				lcd_ep: endpoint {
-+					remote-endpoint = <&fimd_ep>;
-+				};
-+			};
-+		};
++		/* bma023 accelerometer, no mainline binding */
 +	};
- };
- 
- &fimd {
-@@ -464,18 +493,13 @@
- 	samsung,invert-vden;
- 	samsung,invert-vclk;
- 
--	display-timings {
--		timing-0 {
--			/* 480x800@60Hz */
--			clock-frequency = <25628040>;
--			hactive = <480>;
--			vactive = <800>;
--			hfront-porch = <16>;
--			hback-porch = <16>;
--			hsync-len = <2>;
--			vfront-porch = <28>;
--			vback-porch = <1>;
--			vsync-len = <2>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
 +
-+	port@3 {
-+		reg = <3>;
-+		fimd_ep: endpoint {
-+			remote-endpoint = <&lcd_ep>;
+ 	i2c_pmic: i2c-gpio-2 {
+ 		compatible = "i2c-gpio";
+ 		sda-gpios = <&gpj4 0 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
+@@ -435,6 +454,38 @@
  		};
  	};
- };
-@@ -600,6 +624,12 @@
- 		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
+ 
++	i2c_prox: i2c-gpio-6 {
++		compatible = "i2c-gpio";
++		sda-gpios = <&gpg2 2 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++		scl-gpios = <&gpg0 2 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++		i2c-gpio,delay-us = <2>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&prox_i2c_pins>;
++
++		status = "disabled";
++
++		/* Sharp gp2a prox/light sensor, incomplete mainline binding */
++	};
++
++	i2c_magnetometer: i2c-gpio-7 {
++		compatible = "i2c-gpio";
++		sda-gpios = <&gpj0 1 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++		scl-gpios = <&gpj0 0 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++		i2c-gpio,delay-us = <2>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&magnetometer_i2c_pins>;
++
++		status = "disabled";
++
++		/* Yamaha yas529 magnetometer, no mainline binding */
++	};
++
+ 	vibrator: pwm-vibrator {
+ 		compatible = "pwm-vibrator";
+ 		pwms = <&pwm 1 44642 0>;
+@@ -546,6 +597,12 @@
+ 		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
  	};
  
-+	lcd_spi_pins: spi-lcd-pins {
-+		samsung,pins = "mp01-1", "mp04-1", "mp04-3";
++	prox_i2c_pins: gp2a-i2c-pins {
++		samsung,pins = "gpg0-2", "gpg2-2";
 +		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
 +		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
 +	};
 +
- 	fg_i2c_pins: fg-i2c-pins {
- 		samsung,pins = "mp05-0", "mp05-1";
+ 	wlan_gpio_rst: wlan-gpio-rst {
+ 		samsung,pins = "gpg1-2";
+ 		samsung,pin-function = <EXYNOS_PIN_FUNC_OUTPUT>;
+@@ -586,6 +643,12 @@
  		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
-@@ -611,6 +641,12 @@
- 		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
- 		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
  	};
-+
-+	panel_rst: panel-rst {
-+		samsung,pins = "mp05-5";
+ 
++	magnetometer_i2c_pins: yas529-i2c-pins {
++		samsung,pins = "gpj0-0", "gpj0-1";
 +		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
 +		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
 +	};
- };
++
+ 	ts_irq: ts-irq {
+ 		samsung,pins = "gpj0-5";
+ 		samsung,pin-function = <EXYNOS_PIN_FUNC_INPUT>;
+@@ -611,6 +674,12 @@
+ 		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
+ 	};
  
- &pwm {
++	accel_i2c_pins: accel-i2c-pins {
++		samsung,pins = "gpj3-6", "gpj3-7";
++		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
++		samsung,pin-drv = <EXYNOS4_PIN_DRV_LV1>;
++	};
++
+ 	pmic_i2c_pins: pmic-i2c-pins {
+ 		samsung,pins = "gpj4-0", "gpj4-3";
+ 		samsung,pin-pud = <S3C64XX_PIN_PULL_NONE>;
 -- 
 2.20.1
 
