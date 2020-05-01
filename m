@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224CE1C12EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60E51C1756
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729030AbgEANZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:25:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46232 "EHLO mail.kernel.org"
+        id S1730038AbgEAOBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:01:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728979AbgEANZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:25:22 -0400
+        id S1728854AbgEANZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:25:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 999682166E;
-        Fri,  1 May 2020 13:25:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1607E2166E;
+        Fri,  1 May 2020 13:25:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339522;
-        bh=JKQ6wz+eGWo5hdvREwLll1q2jrhw56Idnov0rBRloPM=;
+        s=default; t=1588339524;
+        bh=Qs78r1hJQ7eIwNzO01q2Oa9PHG7c6wH58tUjB1MxkYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yb+6MVoS5vynx6bU5r5SMelNVDLIaP4ogOq+TNOkCsI27vC2ns8hp49jTAde8o4DS
-         gcmrVs6KMSkojCZHCYUtpXJdZvIKZPCkofhSLkQnAJRJp0BtGlabU1geCIwuS4DR+D
-         qZEPq6yR51WRLeteAoNT8FHqEp9T1KWKrpc3YeT4=
+        b=mj4OlbWmWcK+FcSqEKPsDvYEq2j4o1ORl+XrFdDO0dmO5BJNThducBtkEvIJzF6kC
+         b2w0kkW1de/lGwo1uH7DxE05lMaK+Ctc8umspVqttEMoFYs07nr3RtjsRAQKp4nVcl
+         KIH+PlD1kfnQkBk5GZkMeWwrLqpr/Hza73MwIMtA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
-        Jiri Pirko <jiri@mellanox.com>,
+        stable@vger.kernel.org, David Ahern <dsahern@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 23/70] team: fix hang in team_mode_get()
-Date:   Fri,  1 May 2020 15:21:11 +0200
-Message-Id: <20200501131521.510712054@linuxfoundation.org>
+Subject: [PATCH 4.4 24/70] xfrm: Always set XFRM_TRANSFORMED in xfrm{4,6}_output_finish
+Date:   Fri,  1 May 2020 15:21:12 +0200
+Message-Id: <20200501131521.946706660@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
 References: <20200501131513.302599262@linuxfoundation.org>
@@ -44,90 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: David Ahern <dsahern@gmail.com>
 
-[ Upstream commit 1c30fbc76b8f0c07c92a8ca4cd7c456612e17eb5 ]
+[ Upstream commit 0c922a4850eba2e668f73a3f1153196e09abb251 ]
 
-When team mode is changed or set, the team_mode_get() is called to check
-whether the mode module is inserted or not. If the mode module is not
-inserted, it calls the request_module().
-In the request_module(), it creates a child process, which is
-the "modprobe" process and waits for the done of the child process.
-At this point, the following locks were used.
-down_read(&cb_lock()); by genl_rcv()
-    genl_lock(); by genl_rcv_msc()
-        rtnl_lock(); by team_nl_cmd_options_set()
-            mutex_lock(&team->lock); by team_nl_team_get()
+IPSKB_XFRM_TRANSFORMED and IP6SKB_XFRM_TRANSFORMED are skb flags set by
+xfrm code to tell other skb handlers that the packet has been passed
+through the xfrm output functions. Simplify the code and just always
+set them rather than conditionally based on netfilter enabled thus
+making the flag available for other users.
 
-Concurrently, the team module could be removed by rmmod or "modprobe -r"
-The __exit function of team module is team_module_exit(), which calls
-team_nl_fini() and it tries to acquire following locks.
-down_write(&cb_lock);
-    genl_lock();
-Because of the genl_lock() and cb_lock, this process can't be finished
-earlier than request_module() routine.
-
-The problem secenario.
-CPU0                                     CPU1
-team_mode_get
-    request_module()
-                                         modprobe -r team_mode_roundrobin
-                                                     team <--(B)
-        modprobe team <--(A)
-            team_mode_roundrobin
-
-By request_module(), the "modprobe team_mode_roundrobin" command
-will be executed. At this point, the modprobe process will decide
-that the team module should be inserted before team_mode_roundrobin.
-Because the team module is being removed.
-
-By the module infrastructure, the same module insert/remove operations
-can't be executed concurrently.
-So, (A) waits for (B) but (B) also waits for (A) because of locks.
-So that the hang occurs at this point.
-
-Test commands:
-    while :
-    do
-        teamd -d &
-	killall teamd &
-	modprobe -rv team_mode_roundrobin &
-    done
-
-The approach of this patch is to hold the reference count of the team
-module if the team module is compiled as a module. If the reference count
-of the team module is not zero while request_module() is being called,
-the team module will not be removed at that moment.
-So that the above scenario could not occur.
-
-Fixes: 3d249d4ca7d0 ("net: introduce ethernet teaming device")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
-Reviewed-by: Jiri Pirko <jiri@mellanox.com>
+Signed-off-by: David Ahern <dsahern@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/team/team.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ net/ipv4/xfrm4_output.c |    2 --
+ net/ipv6/xfrm6_output.c |    2 --
+ 2 files changed, 4 deletions(-)
 
---- a/drivers/net/team/team.c
-+++ b/drivers/net/team/team.c
-@@ -466,6 +466,9 @@ static const struct team_mode *team_mode
- 	struct team_mode_item *mitem;
- 	const struct team_mode *mode = NULL;
+--- a/net/ipv4/xfrm4_output.c
++++ b/net/ipv4/xfrm4_output.c
+@@ -75,9 +75,7 @@ int xfrm4_output_finish(struct sock *sk,
+ {
+ 	memset(IPCB(skb), 0, sizeof(*IPCB(skb)));
  
-+	if (!try_module_get(THIS_MODULE))
-+		return NULL;
-+
- 	spin_lock(&mode_list_lock);
- 	mitem = __find_mode(kind);
- 	if (!mitem) {
-@@ -481,6 +484,7 @@ static const struct team_mode *team_mode
- 	}
+-#ifdef CONFIG_NETFILTER
+ 	IPCB(skb)->flags |= IPSKB_XFRM_TRANSFORMED;
+-#endif
  
- 	spin_unlock(&mode_list_lock);
-+	module_put(THIS_MODULE);
- 	return mode;
+ 	return xfrm_output(sk, skb);
  }
+--- a/net/ipv6/xfrm6_output.c
++++ b/net/ipv6/xfrm6_output.c
+@@ -125,9 +125,7 @@ int xfrm6_output_finish(struct sock *sk,
+ {
+ 	memset(IP6CB(skb), 0, sizeof(*IP6CB(skb)));
  
+-#ifdef CONFIG_NETFILTER
+ 	IP6CB(skb)->flags |= IP6SKB_XFRM_TRANSFORMED;
+-#endif
+ 
+ 	return xfrm_output(sk, skb);
+ }
 
 
