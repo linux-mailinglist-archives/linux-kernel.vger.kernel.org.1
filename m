@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AD61C1326
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA6A1C158E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729485AbgEAN1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:27:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49864 "EHLO mail.kernel.org"
+        id S1729454AbgEANaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:30:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728947AbgEAN1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:27:30 -0400
+        id S1728916AbgEANaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:30:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9ED9424953;
-        Fri,  1 May 2020 13:27:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B738D20757;
+        Fri,  1 May 2020 13:30:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339650;
-        bh=GqiAjsB0umloZVqaiehWJl9SaeTz4QMV4YkOimw4U6U=;
+        s=default; t=1588339815;
+        bh=nGTL1wh7egZT7n+lqj36JrU0NugYFFSPPXaJzaJsVU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f5agDgExmrnhM8rqsa2yW2N64bej4DJMXB5TQOu5/0wQMP8hLq3Ony39CGLXkfLJD
-         zJQQE1r7/wrFHmej3hrAQbf1v4SC8ZcJLVison8BAm3artvws2zRzYZVkK1mxjkEWF
-         tqxgIpK53aCgzNqWp+ds+D2cl0ATyxNNT3UDkg0g=
+        b=uMOZT6zOfGxeSbhEKVWcwLDmB3DakeuP9hKNxKq2O3VkZDqjbtAp1NTla533XpOAB
+         fxJx3e4apras6mI0UzNEWAIvZDvp1rUnuyz5e99R0Q5ozeupSESW3qyt+S4vf3XnLH
+         jykflUaYLs2aSEY+pbzxkKwN1LHuhdQ9eiApuR5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Wei Liu <wl@xen.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 63/70] xen/xenbus: ensure xenbus_map_ring_valloc() returns proper grant status
-Date:   Fri,  1 May 2020 15:21:51 +0200
-Message-Id: <20200501131531.787932427@linuxfoundation.org>
+        stable@vger.kernel.org, Udipto Goswami <ugoswami@codeaurora.org>,
+        Sriharsha Allenki <sallenki@codeaurora.org>,
+        Manu Gautam <mgautam@codeaurora.org>
+Subject: [PATCH 4.9 58/80] usb: f_fs: Clear OS Extended descriptor counts to zero in ffs_data_reset()
+Date:   Fri,  1 May 2020 15:21:52 +0200
+Message-Id: <20200501131531.023129637@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
-References: <20200501131513.302599262@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Udipto Goswami <ugoswami@codeaurora.org>
 
-[ Upstream commit 6b51fd3f65a22e3d1471b18a1d56247e246edd46 ]
+commit 1c2e54fbf1da5e5445a0ab132c862b02ccd8d230 upstream.
 
-xenbus_map_ring_valloc() maps a ring page and returns the status of the
-used grant (0 meaning success).
+For userspace functions using OS Descriptors, if a function also supplies
+Extended Property descriptors currently the counts and lengths stored in
+the ms_os_descs_ext_prop_{count,name_len,data_len} variables are not
+getting reset to 0 during an unbind or when the epfiles are closed. If
+the same function is re-bound and the descriptors are re-written, this
+results in those count/length variables to monotonically increase
+causing the VLA allocation in _ffs_func_bind() to grow larger and larger
+at each bind/unbind cycle and eventually fail to allocate.
 
-There are Xen hypervisors which might return the value 1 for the status
-of a failed grant mapping due to a bug. Some callers of
-xenbus_map_ring_valloc() test for errors by testing the returned status
-to be less than zero, resulting in no error detected and crashing later
-due to a not available ring page.
+Fix this by clearing the ms_os_descs_ext_prop count & lengths to 0 in
+ffs_data_reset().
 
-Set the return value of xenbus_map_ring_valloc() to GNTST_general_error
-in case the grant status reported by Xen is greater than zero.
+Fixes: f0175ab51993 ("usb: gadget: f_fs: OS descriptors support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Udipto Goswami <ugoswami@codeaurora.org>
+Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
+Reviewed-by: Manu Gautam <mgautam@codeaurora.org>
+Link: https://lore.kernel.org/r/20200402044521.9312-1-sallenki@codeaurora.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This is part of XSA-316.
-
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Wei Liu <wl@xen.org>
-Link: https://lore.kernel.org/r/20200326080358.1018-1-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/xenbus/xenbus_client.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/f_fs.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/xen/xenbus/xenbus_client.c b/drivers/xen/xenbus/xenbus_client.c
-index 056da6ee1a357..df27cefb2fa35 100644
---- a/drivers/xen/xenbus/xenbus_client.c
-+++ b/drivers/xen/xenbus/xenbus_client.c
-@@ -469,7 +469,14 @@ EXPORT_SYMBOL_GPL(xenbus_free_evtchn);
- int xenbus_map_ring_valloc(struct xenbus_device *dev, grant_ref_t *gnt_refs,
- 			   unsigned int nr_grefs, void **vaddr)
- {
--	return ring_ops->map(dev, gnt_refs, nr_grefs, vaddr);
-+	int err;
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -1701,6 +1701,10 @@ static void ffs_data_reset(struct ffs_da
+ 	ffs->state = FFS_READ_DESCRIPTORS;
+ 	ffs->setup_state = FFS_NO_SETUP;
+ 	ffs->flags = 0;
 +
-+	err = ring_ops->map(dev, gnt_refs, nr_grefs, vaddr);
-+	/* Some hypervisors are buggy and can return 1. */
-+	if (err > 0)
-+		err = GNTST_general_error;
-+
-+	return err;
++	ffs->ms_os_descs_ext_prop_count = 0;
++	ffs->ms_os_descs_ext_prop_name_len = 0;
++	ffs->ms_os_descs_ext_prop_data_len = 0;
  }
- EXPORT_SYMBOL_GPL(xenbus_map_ring_valloc);
  
--- 
-2.20.1
-
+ 
 
 
