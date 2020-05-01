@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3DE1C163B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A16091C16A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731496AbgEANmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:42:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42730 "EHLO mail.kernel.org"
+        id S1731585AbgEANv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:51:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731487AbgEANmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:42:13 -0400
+        id S1731065AbgEANif (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:38:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16AE82173E;
-        Fri,  1 May 2020 13:42:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3ACFA205C9;
+        Fri,  1 May 2020 13:38:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340531;
-        bh=9NNJsc9JOP3hU8LNhjS2NaJS8yNIq1mysN+ebg5cZJU=;
+        s=default; t=1588340314;
+        bh=QtraSO/KBfOH6GBWPZ9xnZquO0Vf93a/M99u/hbLZRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OEDBimgnyTYEKjPh+GQw1vdx+N4/xzkieq894mi6mboW4PQFqRdESwpa4bzcOqDhR
-         x3YEsgkUrcqC8QzYhP1xQ9GPUdBSbPqgjhOrNvFMBz/UzfI2mcmn9k8lcYstBskUB4
-         jwX51UBZBmjXLQohy5lLAI5PCU+Mj1CAViq55gCs=
+        b=c+NLmu/g/UH8XkeudmVfNIXnvW/i+LhJM09ArJUnIXLP4qRhVBuCbZMkHjhXj0AFh
+         PfLf12pNcxfCNI6VUyrHaIEVmoXE04p4itaQ+ZjOdRZBM2FS5tHFg3Ysds9gTyiyY0
+         BA8RvSN/RS7xMKq9jbl5SqumqGBpaNWLepCohFeg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philipp Puschmann <p.puschmann@pironex.de>,
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.6 020/106] ASoC: tas571x: disable regulators on failed probe
-Date:   Fri,  1 May 2020 15:22:53 +0200
-Message-Id: <20200501131546.542657061@linuxfoundation.org>
+Subject: [PATCH 5.4 15/83] ASoC: q6dsp6: q6afe-dai: add missing channels to MI2S DAIs
+Date:   Fri,  1 May 2020 15:22:54 +0200
+Message-Id: <20200501131527.908472952@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
-References: <20200501131543.421333643@linuxfoundation.org>
+In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
+References: <20200501131524.004332640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,92 +44,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Puschmann <p.puschmann@pironex.de>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-commit 9df8ba7c63073508e5aa677dade48fcab6a6773e upstream.
+commit 0c824ec094b5cda766c80d88c2036e28c24a4cb1 upstream.
 
-If probe fails after enabling the regulators regulator_put is called for
-each supply without having them disabled before. This produces some
-warnings like
+For some reason, the MI2S DAIs do not have channels_min/max defined.
+This means that snd_soc_dai_stream_valid() returns false,
+i.e. the DAIs have neither valid playback nor capture stream.
 
-WARNING: CPU: 0 PID: 90 at drivers/regulator/core.c:2044 _regulator_put.part.0+0x154/0x15c
-[<c010f7a8>] (unwind_backtrace) from [<c010c544>] (show_stack+0x10/0x14)
-[<c010c544>] (show_stack) from [<c012b640>] (__warn+0xd0/0xf4)
-[<c012b640>] (__warn) from [<c012b9b4>] (warn_slowpath_fmt+0x64/0xc4)
-[<c012b9b4>] (warn_slowpath_fmt) from [<c04c4064>] (_regulator_put.part.0+0x154/0x15c)
-[<c04c4064>] (_regulator_put.part.0) from [<c04c4094>] (regulator_put+0x28/0x38)
-[<c04c4094>] (regulator_put) from [<c04c40cc>] (regulator_bulk_free+0x28/0x38)
-[<c04c40cc>] (regulator_bulk_free) from [<c0579b2c>] (release_nodes+0x1d0/0x22c)
-[<c0579b2c>] (release_nodes) from [<c05756dc>] (really_probe+0x108/0x34c)
-[<c05756dc>] (really_probe) from [<c0575aec>] (driver_probe_device+0xb8/0x16c)
-[<c0575aec>] (driver_probe_device) from [<c0575d40>] (device_driver_attach+0x58/0x60)
-[<c0575d40>] (device_driver_attach) from [<c0575da0>] (__driver_attach+0x58/0xcc)
-[<c0575da0>] (__driver_attach) from [<c0573978>] (bus_for_each_dev+0x78/0xc0)
-[<c0573978>] (bus_for_each_dev) from [<c0574b5c>] (bus_add_driver+0x188/0x1e0)
-[<c0574b5c>] (bus_add_driver) from [<c05768b0>] (driver_register+0x74/0x108)
-[<c05768b0>] (driver_register) from [<c061ab7c>] (i2c_register_driver+0x3c/0x88)
-[<c061ab7c>] (i2c_register_driver) from [<c0102df8>] (do_one_initcall+0x58/0x250)
-[<c0102df8>] (do_one_initcall) from [<c01a91bc>] (do_init_module+0x60/0x244)
-[<c01a91bc>] (do_init_module) from [<c01ab5a4>] (load_module+0x2180/0x2540)
-[<c01ab5a4>] (load_module) from [<c01abbd4>] (sys_finit_module+0xd0/0xe8)
-[<c01abbd4>] (sys_finit_module) from [<c01011e0>] (__sys_trace_return+0x0/0x20)
+It's quite surprising that this ever worked correctly,
+but in 5.7-rc1 this is now failing badly: :)
 
-Fixes: 3fd6e7d9a146 (ASoC: tas571x: New driver for TI TAS571x power amplifiers)
-Signed-off-by: Philipp Puschmann <p.puschmann@pironex.de>
-Link: https://lore.kernel.org/r/20200414112754.3365406-1-p.puschmann@pironex.de
+Commit 0e9cf4c452ad ("ASoC: pcm: check if cpu-dai supports a given stream")
+introduced a check for snd_soc_dai_stream_valid() before calling
+hw_params(), which means that the q6i2s_hw_params() function
+was never called, eventually resulting in:
+
+    qcom-q6afe aprsvc:q6afe:4:4: no line is assigned
+
+... even though "qcom,sd-lines" is set in the device tree.
+
+Commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow playback/capture if supported")
+now even avoids creating PCM devices if the stream is not supported,
+which means that it is failing even earlier with e.g.:
+
+    Primary MI2S: ASoC: no backend playback stream
+
+Avoid all that trouble by adding channels_min/max for the MI2S DAIs.
+
+Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200415150050.616392-1-stephan@gerhold.net
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/codecs/tas571x.c |   20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe-dai.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -820,8 +820,10 @@ static int tas571x_i2c_probe(struct i2c_
- 
- 	priv->regmap = devm_regmap_init(dev, NULL, client,
- 					priv->chip->regmap_config);
--	if (IS_ERR(priv->regmap))
--		return PTR_ERR(priv->regmap);
-+	if (IS_ERR(priv->regmap)) {
-+		ret = PTR_ERR(priv->regmap);
-+		goto disable_regs;
-+	}
- 
- 	priv->pdn_gpio = devm_gpiod_get_optional(dev, "pdn", GPIOD_OUT_LOW);
- 	if (IS_ERR(priv->pdn_gpio)) {
-@@ -845,7 +847,7 @@ static int tas571x_i2c_probe(struct i2c_
- 
- 	ret = regmap_write(priv->regmap, TAS571X_OSC_TRIM_REG, 0);
- 	if (ret)
--		return ret;
-+		goto disable_regs;
- 
- 	usleep_range(50000, 60000);
- 
-@@ -861,12 +863,20 @@ static int tas571x_i2c_probe(struct i2c_
- 		 */
- 		ret = regmap_update_bits(priv->regmap, TAS571X_MVOL_REG, 1, 0);
- 		if (ret)
--			return ret;
-+			goto disable_regs;
- 	}
- 
--	return devm_snd_soc_register_component(&client->dev,
-+	ret = devm_snd_soc_register_component(&client->dev,
- 				      &priv->component_driver,
- 				      &tas571x_dai, 1);
-+	if (ret)
-+		goto disable_regs;
-+
-+	return ret;
-+
-+disable_regs:
-+	regulator_bulk_disable(priv->chip->num_supply_names, priv->supplies);
-+	return ret;
- }
- 
- static int tas571x_i2c_remove(struct i2c_client *client)
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -902,6 +902,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -917,6 +919,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -931,6 +935,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -946,6 +952,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -960,6 +968,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -975,6 +985,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -989,6 +1001,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -1004,6 +1018,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
 
 
