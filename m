@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375591C201B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BFC1C201E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726790AbgEAVyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 17:54:33 -0400
-Received: from mail.zx2c4.com ([192.95.5.64]:57327 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726045AbgEAVyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 17:54:33 -0400
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 697688e6;
-        Fri, 1 May 2020 21:42:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=58S7gafTvCyAaihiGAJkt1yLd6Y=; b=uEMjOf
-        vaAoQm6Md4vl1zLH4e384tV3WtBAWLlgCo+K5pEl80lJ/GvpGM7c9fZDyOTsAkmv
-        cuKynBhaCqSRHqZBzqTqWXv6Z4HbPF3NqtVfde1VMOZHGonxruz94B6y8j3TcIsU
-        uMZdOgcG077zI+WnCV+P65QbA9sYgpXGtdgY65bj5PTj75+rbbisf87/GmQ91cZQ
-        JKagWB9eEWX77XQ8c2TM5CYF9dNqiKFdiQQYRHI2ADz7Hzq/L2X0R66E2It3cZ/G
-        U0lvdu8uQf4ysuexTDsNGdp569KlEKabIVY9ZUebiQQBot72XKZie2s2vflviruB
-        QmdrxR8gpZsEXDxg==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 9ab6eb77 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Fri, 1 May 2020 21:42:27 +0000 (UTC)
-Received: by mail-il1-f182.google.com with SMTP id w6so5722552ilg.1;
-        Fri, 01 May 2020 14:54:31 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZ2GNJJnpYDquv7xOZERTgYP9JgGeX/WqSkomrtz2kOdYBrBKZr
-        qX1jxcTgSaN7zwft8k826ph+7CbwSej1MKn2GDU=
-X-Google-Smtp-Source: APiQypKi8VgL32io/YMf/TnAiuoD4oQjdoDdZRV4jk7+CgfAceJlLxx1gZqoTLRU71ehr0skb3Rw0hz+zCqa+vWKwOI=
-X-Received: by 2002:a92:d98c:: with SMTP id r12mr5878280iln.224.1588370070637;
- Fri, 01 May 2020 14:54:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200430221016.3866-1-Jason@zx2c4.com> <20200501104215.s2eftchxm66lmbvj@linutronix.de>
-In-Reply-To: <20200501104215.s2eftchxm66lmbvj@linutronix.de>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Fri, 1 May 2020 15:54:19 -0600
-X-Gmail-Original-Message-ID: <CAHmME9othY=_3szXKh-+4uAgcLpuvgXm4HX2-SU+Hg7KztXTFw@mail.gmail.com>
-Message-ID: <CAHmME9othY=_3szXKh-+4uAgcLpuvgXm4HX2-SU+Hg7KztXTFw@mail.gmail.com>
-Subject: Re: [PATCH] drm/i915: check to see if SIMD registers are available
- before using SIMD
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        intel-gfx@lists.freedesktop.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726900AbgEAVzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 17:55:00 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:58310 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726045AbgEAVy7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 17:54:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1588370099; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=AQ70akaLPnIqMlM4CmJJfg3Ty/uXQB6hVv/IyZfwri4=; b=puZHq1iHgFyM/8BXyXTTlRnFLtvdplFxBhrcg/86dNIwFKeBIcKo6+idq8aAPjKq/D3V77mE
+ CLqVS7vzfKomiWkXAA7qnR1BXaZeyawb64SX3ZaqEsBfvY/7Nvx8UexKgH7qGrzCCR9C31Jl
+ oXeFERr/w8dEwIlXDIEufYOM3MY=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5eac9a9d.7f3115b200a0-smtp-out-n01;
+ Fri, 01 May 2020 21:54:37 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 39FE3C43637; Fri,  1 May 2020 21:54:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 86360C433F2;
+        Fri,  1 May 2020 21:54:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 86360C433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sidgup@codeaurora.org
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+To:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts: headers_install: Exit with error on config leak
+Date:   Fri,  1 May 2020 14:54:25 -0700
+Message-Id: <1588370065-30312-1-git-send-email-sidgup@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 1, 2020 at 4:42 AM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->    Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Misuse of CONFIG_* in UAPI headers should result in an error as it exposes
+configuration of different targets to userspace.
 
-Thanks.
+Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+---
+ scripts/headers_install.sh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->
-> May I ask how large the memcpy can be? I'm asking in case it is large
-> and an explicit rescheduling point might be needed.
-
-Yea I was worried about that too. I'm not an i915 developer, but so
-far as I can tell:
-
-- The path from intel_engine_cmd_parser is  <= 256 KiB for "known
-users", so that's rather large.
-- The path from perf_memcpy is either 4k, 64k, or 4M, depending on the
-type of object, so that seems gigantic, but I think that might be
-selftest code.
-- The path from compress_page appears to be PAGE_SIZE, so 4k, which
-meshes with the limits we set agreed on few weeks ago for the crypto
-stuff.
-- The path from guc_read_update_log_buffer appears to be 8k, 32k, 2M,
-or 8M, depending on the type of object, so that seems absurdly huge
-and doesn't appear to be selftest code either like the other case.
-
-I have no doubt the i915 developers will jump in here waving their
-arms, but either way, it sure seems to me like you might have a point.
+diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
+index a07668a..bd6c93a 100755
+--- a/scripts/headers_install.sh
++++ b/scripts/headers_install.sh
+@@ -109,7 +109,8 @@ do
+ 	done
+ 
+ 	if [ "$warn" = 1 ]; then
+-		echo "warning: $INFILE: leak $c to user-space" >&2
++		echo "error: $INFILE: leak $c to user-space" >&2
++		exit 1
+ 	fi
+ done
+ 
+-- 
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
