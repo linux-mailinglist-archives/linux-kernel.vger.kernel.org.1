@@ -2,313 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2A41C1F1D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5308C1C1F23
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgEAU4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 16:56:05 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:37326 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726272AbgEAU4D (ORCPT
+        id S1726760AbgEAU57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 16:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgEAU56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 16:56:03 -0400
-Received: by mail-oi1-f196.google.com with SMTP id r25so860820oij.4;
-        Fri, 01 May 2020 13:56:01 -0700 (PDT)
+        Fri, 1 May 2020 16:57:58 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DD1C061A0C;
+        Fri,  1 May 2020 13:57:58 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id g13so12966522wrb.8;
+        Fri, 01 May 2020 13:57:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s46Pums7160hDMRHz4lcI0wKlc3rbqTgaKkrnlbOBuA=;
+        b=RcG701duKjGztCPmMJi6pENCMoCBn+L6THrkNZymKbb5c/AZsV86c1g9Cgql0yn5DR
+         Vmrx7hNpD9vsmBjFQ1yEzNX2u3HquDJOyseNp73KAw2dU9O+g8f7LXp+JZypSOhTpq2b
+         I9wvltZuQqln8NgGKbMNoD7iIGG8px/0uKXHDuSmJXYohTjPFvKHCaSYJq0DKcYkD40R
+         iqeSLn5UkHMwdpR+Tm0ghr04es9sGH6XsPkUzoPJoK/u1V5YobpuazvL/s1i/mKzBBrv
+         VEOCxJQ8I/KDRawTuf9dK/dQeC9DccG+2z5wdQf5krrySQludEdQ4U+lN1bTucamsXRU
+         dzJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=z6IC17tZW6vqT9CmLTlwRsx4notXDh7Wwch+6E+uiiM=;
-        b=tkaC0Za+0bCuTNoJJmN47yZsff7osoJ3aTXl7VsFcLRWYazlX/JkD0vpTaLz7hHz9Z
-         6mP3cnvOso+JnqRQ2Pzb+awsAOixfAHiZq3CCQ1Se9E8HpJhHvOKChdLmL+dHwFEiFIw
-         wGsKF2dLo8heqdKDPske2MJVUoPn6rMaWLOzNw0liJPQplonhjBaFb2iZ9K+hXQHjnRu
-         gJ5X/u8U6pIBlngfZ123VBSHrChlmSZHCvgIsbvbmdVrgGlEAhQWC0h0uaSsaHZ+O3t5
-         izc2KFxR/cSmkjwLLpXwqWjbV5MxnvudLcW03jA2MLmM6peMyRCilHN+TDtNhP3y9w7h
-         B8MA==
-X-Gm-Message-State: AGi0PuafLBsnOpnXJHz3uj8KVtnMkPnPhJ0FmOQev1MaZ5H0AB/dIdOh
-        6gYLCDjb/BaXOSEsv+wQ5Q==
-X-Google-Smtp-Source: APiQypKwloeYWVQME9YEttq2mIKBrICEUzFbLarsog4cs4kj61sUK0KRhbHf2yiUjkS9hilRLwofdQ==
-X-Received: by 2002:aca:895:: with SMTP id 143mr1072960oii.153.1588366560856;
-        Fri, 01 May 2020 13:56:00 -0700 (PDT)
-Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id r6sm1093672oom.26.2020.05.01.13.55.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s46Pums7160hDMRHz4lcI0wKlc3rbqTgaKkrnlbOBuA=;
+        b=cCffW32u6obbWiKa3vdH0ycNmZRXWsT0QRzvrV6lYycefAhEavmSkpF0z9v5OFmosE
+         h1JBbbCiZI6XuVw/ljV52tSDrRR5ZN4+QmIzc5DV3blGofzYCwsJun/Blzl8hgATiSQF
+         Jaq5gPuRn6jQir4bmYnVyVJmmYDk2+IOVVfuca449Xv+TqRzmyIVE/YuuTP7fktxGoHJ
+         nkhMEnDSrkdIw1HXWz1I2hkHirXz0xr3ynK/tDfm3QZCzhBqeysfhg1p1SGXPFGJEqmb
+         Fu/KIvsYu3XzOZnrtpYoxdQYz3aZwEDixS0onpl5etYM6WxJAtBXjRKDWYQj5n8Bl5y0
+         NSzg==
+X-Gm-Message-State: AGi0Pua1ZkZOqY58d2q/jASZeVytMR0E0ooZ1Zdwf/TTGQICrHT2Go+C
+        nN5lW8GHznFvRGLTgCm/am3FLwqKpZdFqg==
+X-Google-Smtp-Source: APiQypL6Hwl66LoJR1CXVn0JrzHRhsrU2/hv46W1qXtjdKAn0COb1rqSPWBv+qbJLFAahBi7PD8ucA==
+X-Received: by 2002:a5d:5646:: with SMTP id j6mr6361494wrw.207.1588366676984;
+        Fri, 01 May 2020 13:57:56 -0700 (PDT)
+Received: from localhost.localdomain (abag125.neoplus.adsl.tpnet.pl. [83.6.170.125])
+        by smtp.googlemail.com with ESMTPSA id k14sm5970446wrp.53.2020.05.01.13.57.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 13:56:00 -0700 (PDT)
-Received: (nullmailer pid 8107 invoked by uid 1000);
-        Fri, 01 May 2020 20:55:59 -0000
-Date:   Fri, 1 May 2020 15:55:59 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     lee.jones@linaro.org, broonie@kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-        linus.walleij@linaro.org, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [PATCH 6/6] mfd: lochnagar: Move binding over to dtschema
-Message-ID: <20200501205559.GB24163@bogus>
-References: <20200427102812.23251-1-ckeepax@opensource.cirrus.com>
- <20200427102812.23251-6-ckeepax@opensource.cirrus.com>
+        Fri, 01 May 2020 13:57:56 -0700 (PDT)
+From:   Konrad Dybcio <konradybcio@gmail.com>
+To:     skrzynka@konradybcio.pl
+Cc:     Vincent Knecht <vincent.knecht@mailoo.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] clk: qcom: smd: Add support for MSM8936 rpm clocks
+Date:   Fri,  1 May 2020 22:57:26 +0200
+Message-Id: <20200501205728.152048-1-konradybcio@gmail.com>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200427102812.23251-6-ckeepax@opensource.cirrus.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 11:28:12AM +0100, Charles Keepax wrote:
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
->  .../devicetree/bindings/mfd/cirrus,lochnagar.txt   |  85 ----------
->  .../devicetree/bindings/mfd/cirrus,lochnagar.yaml  | 183 +++++++++++++++++++++
->  MAINTAINERS                                        |  12 +-
->  3 files changed, 189 insertions(+), 91 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mfd/cirrus,lochnagar.txt
->  create mode 100644 Documentation/devicetree/bindings/mfd/cirrus,lochnagar.yaml
+From: Vincent Knecht <vincent.knecht@mailoo.org>
 
-> diff --git a/Documentation/devicetree/bindings/mfd/cirrus,lochnagar.yaml b/Documentation/devicetree/bindings/mfd/cirrus,lochnagar.yaml
-> new file mode 100644
-> index 0000000000000..b2967f141b2af
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/cirrus,lochnagar.yaml
-> @@ -0,0 +1,183 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/cirrus,lochnagar.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cirrus Logic Lochnagar Audio Development Board
-> +
-> +maintainers:
-> +  - patches@opensource.cirrus.com
-> +
-> +description: |
-> +  Lochnagar is an evaluation and development board for Cirrus Logic
-> +  Smart CODEC and Amp devices. It allows the connection of most Cirrus
-> +  Logic devices on mini-cards, as well as allowing connection of
-> +  various application processor systems to provide a full evaluation
-> +  platform.  Audio system topology, clocking and power can all be
-> +  controlled through the Lochnagar, allowing the device under test
-> +  to be used in a variety of possible use cases.
-> +
-> +  Also see these documents for generic binding information:
-> +    [1] GPIO : ../gpio/gpio.txt
-> +
-> +  And these for relevant defines:
-> +    [2] include/dt-bindings/pinctrl/lochnagar.h
-> +    [3] include/dt-bindings/clock/lochnagar.h
-> +
-> +  And these documents for the required sub-node binding details:
-> +    [4] Clock: ../clock/cirrus,lochnagar.yaml
-> +    [5] Pinctrl: ../pinctrl/cirrus,lochnagar.yaml
-> +    [6] Regulator: ../regulator/cirrus,lochnagar.yaml
-> +    [7] Sound: ../sound/cirrus,lochnagar.yaml
-> +    [8] Hardware Monitor: ../hwmon/cirrus,lochnagar.yaml
-> +
-> +allOf:
-> +  - $ref: /schemas/clock/cirrus,lochnagar.yaml#
-> +  - $ref: /schemas/pinctrl/cirrus,lochnagar.yaml#
-> +  - $ref: /schemas/regulator/cirrus,lochnagar.yaml#
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+---
+ drivers/clk/qcom/clk-smd-rpm.c | 50 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-The preferred form is to define the child nodes in this schema and then 
-reference the child schema:
+diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
+index 52f63ad787ba9..4ac80d8ac6c25 100644
+--- a/drivers/clk/qcom/clk-smd-rpm.c
++++ b/drivers/clk/qcom/clk-smd-rpm.c
+@@ -452,6 +452,55 @@ static const struct rpm_smd_clk_desc rpm_clk_msm8916 = {
+ 	.num_clks = ARRAY_SIZE(msm8916_clks),
+ };
+ 
++/* msm8936 */
++DEFINE_CLK_SMD_RPM(msm8936, pcnoc_clk, pcnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 0);
++DEFINE_CLK_SMD_RPM(msm8936, snoc_clk, snoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 1);
++DEFINE_CLK_SMD_RPM(msm8936, bimc_clk, bimc_a_clk, QCOM_SMD_RPM_MEM_CLK, 0);
++DEFINE_CLK_SMD_RPM(msm8936, sysmmnoc_clk, sysmmnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 2);
++DEFINE_CLK_SMD_RPM_QDSS(msm8936, qdss_clk, qdss_a_clk, QCOM_SMD_RPM_MISC_CLK, 1);
++DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8936, bb_clk1, bb_clk1_a, 1);
++DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8936, bb_clk2, bb_clk2_a, 2);
++DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8936, rf_clk1, rf_clk1_a, 4);
++DEFINE_CLK_SMD_RPM_XO_BUFFER(msm8936, rf_clk2, rf_clk2_a, 5);
++DEFINE_CLK_SMD_RPM_XO_BUFFER_PINCTRL(msm8936, bb_clk1_pin, bb_clk1_a_pin, 1);
++DEFINE_CLK_SMD_RPM_XO_BUFFER_PINCTRL(msm8936, bb_clk2_pin, bb_clk2_a_pin, 2);
++DEFINE_CLK_SMD_RPM_XO_BUFFER_PINCTRL(msm8936, rf_clk1_pin, rf_clk1_a_pin, 4);
++DEFINE_CLK_SMD_RPM_XO_BUFFER_PINCTRL(msm8936, rf_clk2_pin, rf_clk2_a_pin, 5);
++
++static struct clk_smd_rpm *msm8936_clks[] = {
++		[RPM_SMD_PCNOC_CLK]		     = &msm8936_pcnoc_clk,
++		[RPM_SMD_PCNOC_A_CLK]		   = &msm8936_pcnoc_a_clk,
++		[RPM_SMD_SNOC_CLK]		      = &msm8936_snoc_clk,
++		[RPM_SMD_SNOC_A_CLK]		    = &msm8936_snoc_a_clk,
++		[RPM_SMD_BIMC_CLK]		      = &msm8936_bimc_clk,
++		[RPM_SMD_BIMC_A_CLK]		    = &msm8936_bimc_a_clk,
++		[RPM_SMD_SYSMMNOC_CLK]		  = &msm8936_sysmmnoc_clk,
++		[RPM_SMD_SYSMMNOC_A_CLK]		= &msm8936_sysmmnoc_a_clk,
++		[RPM_SMD_QDSS_CLK]		      = &msm8936_qdss_clk,
++		[RPM_SMD_QDSS_A_CLK]		    = &msm8936_qdss_a_clk,
++		[RPM_SMD_BB_CLK1]		       = &msm8936_bb_clk1,
++		[RPM_SMD_BB_CLK1_A]		     = &msm8936_bb_clk1_a,
++		[RPM_SMD_BB_CLK2]		       = &msm8936_bb_clk2,
++		[RPM_SMD_BB_CLK2_A]		     = &msm8936_bb_clk2_a,
++		[RPM_SMD_RF_CLK1]		       = &msm8936_rf_clk1,
++		[RPM_SMD_RF_CLK1_A]		     = &msm8936_rf_clk1_a,
++		[RPM_SMD_RF_CLK2]		       = &msm8936_rf_clk2,
++		[RPM_SMD_RF_CLK2_A]		     = &msm8936_rf_clk2_a,
++		[RPM_SMD_BB_CLK1_PIN]		   = &msm8936_bb_clk1_pin,
++		[RPM_SMD_BB_CLK1_A_PIN]		 = &msm8936_bb_clk1_a_pin,
++		[RPM_SMD_BB_CLK2_PIN]		   = &msm8936_bb_clk2_pin,
++		[RPM_SMD_BB_CLK2_A_PIN]		 = &msm8936_bb_clk2_a_pin,
++		[RPM_SMD_RF_CLK1_PIN]		   = &msm8936_rf_clk1_pin,
++		[RPM_SMD_RF_CLK1_A_PIN]		 = &msm8936_rf_clk1_a_pin,
++		[RPM_SMD_RF_CLK2_PIN]		   = &msm8936_rf_clk2_pin,
++		[RPM_SMD_RF_CLK2_A_PIN]		 = &msm8936_rf_clk2_a_pin,
++};
++
++static const struct rpm_smd_clk_desc rpm_clk_msm8936 = {
++		.clks = msm8936_clks,
++		.num_clks = ARRAY_SIZE(msm8936_clks),
++};
++
+ /* msm8974 */
+ DEFINE_CLK_SMD_RPM(msm8974, pnoc_clk, pnoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 0);
+ DEFINE_CLK_SMD_RPM(msm8974, snoc_clk, snoc_a_clk, QCOM_SMD_RPM_BUS_CLK, 1);
+@@ -768,6 +817,7 @@ static const struct rpm_smd_clk_desc rpm_clk_msm8998 = {
+ 
+ static const struct of_device_id rpm_smd_clk_match_table[] = {
+ 	{ .compatible = "qcom,rpmcc-msm8916", .data = &rpm_clk_msm8916 },
++	{ .compatible = "qcom,rpmcc-msm8936", .data = &rpm_clk_msm8936 },
+ 	{ .compatible = "qcom,rpmcc-msm8974", .data = &rpm_clk_msm8974 },
+ 	{ .compatible = "qcom,rpmcc-msm8976", .data = &rpm_clk_msm8976 },
+ 	{ .compatible = "qcom,rpmcc-msm8996", .data = &rpm_clk_msm8996 },
+-- 
+2.26.1
 
-lochnagar-clk:
-  type: object
-  $ref: /schemas/clock/cirrus,lochnagar.yaml#
-
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - cirrus,lochnagar2
-> +    then:
-> +      allOf:
-> +        - $ref: /schemas/sound/cirrus,lochnagar.yaml#
-> +        - $ref: /schemas/hwmon/cirrus,lochnagar.yaml#
-
-That makes this part a bit more challenging:
-
-then:
-  required:
-    - lochnagar-sc
-else:
-  not:
-    required:
-      - lochnagar-sc
-
-> +
-> +properties:
-> +  compatible:
-> +    contains:
-
-So this is valid?
-
-"foo", "cirrus,lochnagar1"
-
-I think you just want to drop 'contains'.
-
-> +      enum:
-> +        - cirrus,lochnagar1
-> +        - cirrus,lochnagar2
-> +
-> +  reg:
-> +    description:
-> +      I2C slave address.
-
-No need for generic descriptions of common properties.
-
-> +    const: 0x22
-> +
-> +  reset-gpios:
-> +    description: |
-> +      Reset line to the Lochnagar, see [1].
-> +    maxItems: 1
-> +
-> +  present-gpios:
-> +    description: |
-> +      Host present line, indicating the presence of a
-> +      host system, see [1]. This can be omitted if the present line is
-> +      tied in hardware.
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reset-gpios
-> +  - lochnagar-clk
-> +  - lochnagar-pinctrl
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clk/lochnagar.h>
-> +    #include <dt-bindings/pinctrl/lochnagar.h>
-> +    i2c@e0004000 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        reg = <0xe0004000 0x1000>;
-> +
-> +        lochnagar: lochnagar@22 {
-> +            compatible = "cirrus,lochnagar2";
-> +            reg = <0x22>;
-> +
-> +            reset-gpios = <&gpio0 55 0>;
-> +            present-gpios = <&gpio0 60 0>;
-> +
-> +            lochnagarclk: lochnagar-clk {
-> +                compatible = "cirrus,lochnagar2-clk";
-> +
-> +                #clock-cells = <1>;
-> +                clocks = <&clkaudio>, <&clkpmic>;
-> +                clock-names = "ln-gf-mclk2", "ln-pmic-32k";
-> +
-> +                assigned-clocks = <&lochnagarclk LOCHNAGAR_CDC_MCLK1>,
-> +                                  <&lochnagarclk LOCHNAGAR_CDC_MCLK2>;
-> +                assigned-clock-parents = <&clkaudio>, <&clkpmic>;
-> +            };
-> +
-> +            clkpmic: lochnagar-pmic32k {
-> +                compatible = "fixed-clock";
-> +                #clock-cells = <0>;
-> +                clock-frequency = <32768>;
-> +            };
-> +
-> +            lochnagar-pinctrl {
-> +                compatible = "cirrus,lochnagar-pinctrl";
-> +
-> +                gpio-controller;
-> +                #gpio-cells = <2>;
-> +                gpio-ranges = <&lochnagar 0 0 LOCHNAGAR2_PIN_NUM_GPIOS>;
-> +
-> +                pinctrl-names = "default";
-> +                pinctrl-0 = <&pinsettings>;
-> +
-> +                pinsettings: pin-settings {
-> +                    ap2aif {
-> +                        input-enable;
-> +                        groups = "gf-aif1";
-> +                        function = "codec-aif3";
-> +                    };
-> +                    codec2aif {
-> +                        output-enable;
-> +                        groups = "codec-aif3";
-> +                        function = "gf-aif1";
-> +                    };
-> +                };
-> +            };
-> +
-> +            lochnagar-sc {
-> +                compatible = "cirrus,lochnagar2-soundcard";
-> +
-> +                #sound-dai-cells = <1>;
-> +
-> +                clocks = <&lochnagarclk LOCHNAGAR_SOUNDCARD_MCLK>;
-> +                clock-names = "mclk";
-> +            };
-> +
-> +            lochnagar-hwmon {
-> +                compatible = "cirrus,lochnagar2-hwmon";
-> +            };
-> +
-> +            MIC1VDD {
-> +                compatible = "cirrus,lochnagar2-mic1vdd";
-> +
-> +                MICBIAS1-supply = <&eric>;
-> +
-> +                cirrus,micbias-input = <3>;
-> +            };
-> +
-> +            MICVDD {
-> +                compatible = "cirrus,lochnagar2-micvdd";
-> +
-> +                SYSVDD-supply = <&wallvdd>;
-> +
-> +                regulator-min-microvolt = <3300000>;
-> +                regulator-max-microvolt = <3300000>;
-> +            };
-> +
-> +            VDD1V8 {
-> +                compatible = "regulator-fixed";
-> +
-> +                regulator-name = "VDD1V8";
-> +                regulator-min-microvolt = <1800000>;
-> +                regulator-max-microvolt = <1800000>;
-> +                regulator-boot-on;
-> +                regulator-always-on;
-> +
-> +                vin-supply = <&wallvdd>;
-> +            };
-> +        };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e64e5db314976..a2b94e8cf585c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4062,12 +4062,12 @@ M:	Charles Keepax <ckeepax@opensource.cirrus.com>
->  M:	Richard Fitzgerald <rf@opensource.cirrus.com>
->  L:	patches@opensource.cirrus.com
->  S:	Supported
-> -F:	Documentation/devicetree/bindings/clock/cirrus,lochnagar.txt
-> -F:	Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.txt
-> -F:	Documentation/devicetree/bindings/mfd/cirrus,lochnagar.txt
-> -F:	Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.txt
-> -F:	Documentation/devicetree/bindings/regulator/cirrus,lochnagar.txt
-> -F:	Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
-> +F:	Documentation/devicetree/bindings/clock/cirrus,lochnagar.yaml
-> +F:	Documentation/devicetree/bindings/hwmon/cirrus,lochnagar.yaml
-> +F:	Documentation/devicetree/bindings/mfd/cirrus,lochnagar.yaml
-> +F:	Documentation/devicetree/bindings/pinctrl/cirrus,lochnagar.yaml
-> +F:	Documentation/devicetree/bindings/regulator/cirrus,lochnagar.yaml
-> +F:	Documentation/devicetree/bindings/sound/cirrus,lochnagar.yaml
->  F:	Documentation/hwmon/lochnagar.rst
->  F:	drivers/clk/clk-lochnagar.c
->  F:	drivers/hwmon/lochnagar-hwmon.c
-> -- 
-> 2.11.0
-> 
