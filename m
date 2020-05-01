@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDBA1C1380
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F091C1745
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729883AbgEANaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53880 "EHLO mail.kernel.org"
+        id S1730720AbgEAOAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:00:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728765AbgEANaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:30:03 -0400
+        id S1728917AbgEAN1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:27:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5868A208D6;
-        Fri,  1 May 2020 13:30:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CAB802166E;
+        Fri,  1 May 2020 13:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339802;
-        bh=JyKPbUi+7fIQGEbYVTLY+DWyPmwJghq8tvGOTZssA5A=;
+        s=default; t=1588339640;
+        bh=iCbh3q6xWJn/RtDfI77FmGLwgX0MhGfofN7ZmqcW6tg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SoVFvO+TnTVLVUv6MrRqPXL8iiwGTQfO/z9my/byXWtbifYLMx1LwGXc1wrWEj8KJ
-         hqEOv8NBFtb8GdBdvwWh6shQWbn6gtFairNKhsxa8CuWFGx/0ckaaOnfZIafXxtf10
-         VX+pk7hABgm7/OduK5g0L34QRaEKWkhRDDDDy7ZU=
+        b=Zsw8pFb7FmTUjzW0Q0PlajvE2waaT/GdLzwvwHuCEng8GkBh+2A5axW3qrwj3ZfKO
+         zTHXnfl4tTJnE/hVw38OQ+Jto5Zwwu6y6kV7c3rSfCROXn8O5wOMpai2qQ/fvZhQVI
+         moxPJqthLoqzEnnkzkaOqNip31ke1xwuzWfl8GIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 4.9 53/80] staging: comedi: Fix comedi_device refcnt leak in comedi_open
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 59/70] net/cxgb4: Check the return from t4_query_params properly
 Date:   Fri,  1 May 2020 15:21:47 +0200
-Message-Id: <20200501131529.847405021@linuxfoundation.org>
+Message-Id: <20200501131531.132718575@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
-References: <20200501131513.810761598@linuxfoundation.org>
+In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
+References: <20200501131513.302599262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Jason Gunthorpe <jgg@mellanox.com>
 
-commit 332e0e17ad49e084b7db670ef43b5eb59abd9e34 upstream.
+commit c799fca8baf18d1bbbbad6c3b736eefbde8bdb90 upstream.
 
-comedi_open() invokes comedi_dev_get_from_minor(), which returns a
-reference of the COMEDI device to "dev" with increased refcount.
+Positive return values are also failures that don't set val,
+although this probably can't happen. Fixes gcc 10 warning:
 
-When comedi_open() returns, "dev" becomes invalid, so the refcount
-should be decreased to keep refcount balanced.
+drivers/net/ethernet/chelsio/cxgb4/t4_hw.c: In function ‘t4_phy_fw_ver’:
+drivers/net/ethernet/chelsio/cxgb4/t4_hw.c:3747:14: warning: ‘val’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+ 3747 |  *phy_fw_ver = val;
 
-The reference counting issue happens in one exception handling path of
-comedi_open(). When "cfp" allocation is failed, the refcnt increased by
-comedi_dev_get_from_minor() is not decreased, causing a refcnt leak.
-
-Fix this issue by calling comedi_dev_put() on this error path when "cfp"
-allocation is failed.
-
-Fixes: 20f083c07565 ("staging: comedi: prepare support for per-file read and write subdevices")
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/1587361459-83622-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 01b6961410b7 ("cxgb4: Add PHY firmware support for T420-BT cards")
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/comedi/comedi_fops.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/chelsio/cxgb4/t4_hw.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/comedi_fops.c
-+++ b/drivers/staging/comedi/comedi_fops.c
-@@ -2592,8 +2592,10 @@ static int comedi_open(struct inode *ino
- 	}
- 
- 	cfp = kzalloc(sizeof(*cfp), GFP_KERNEL);
--	if (!cfp)
-+	if (!cfp) {
-+		comedi_dev_put(dev);
- 		return -ENOMEM;
-+	}
- 
- 	cfp->dev = dev;
- 
+--- a/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/t4_hw.c
+@@ -3341,7 +3341,7 @@ int t4_phy_fw_ver(struct adapter *adap,
+ 		 FW_PARAMS_PARAM_Z_V(FW_PARAMS_PARAM_DEV_PHYFW_VERSION));
+ 	ret = t4_query_params(adap, adap->mbox, adap->pf, 0, 1,
+ 			      &param, &val);
+-	if (ret < 0)
++	if (ret)
+ 		return ret;
+ 	*phy_fw_ver = val;
+ 	return 0;
 
 
