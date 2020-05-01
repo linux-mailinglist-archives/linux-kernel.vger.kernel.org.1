@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223FE1C13C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3371C16D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730355AbgEANcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729504AbgEANco (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:32:44 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7F7C061A0E;
-        Fri,  1 May 2020 06:32:44 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id y6so2296262pjc.4;
-        Fri, 01 May 2020 06:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eXZUCfdK7gY+Kv1hYGPVu4uc+SR+yxwik4zzcFw4aa4=;
-        b=jy9nd5+8sIX4f67XLtJU1Ddc2S7xNmy0kmwE4u2l/biJGftOorp9LiZnPJqgqOqxpD
-         MVOF+gGbJ8ESScoLQJqUwnl1QmhCxlN3A0NTpar+HqR1kb6Z6/B1Hdw2tgn3HsxiNTHd
-         llkmOe547clbhmtHU5qt7cWhkNthcT99c8qyYROUE0bqjI+wJv/Y3dIxGa8tHKZzzPax
-         hN/p1T6pH/YyQjNRJzkrYUFkwaXvABudC6P2hZ5Bbc6j1W0I2lpRALAzt1PC0bvr84EA
-         STiy+EAQCVDzmwnW9RCuCgFgxOC3WWWjnhAVnTxEkzwA9+DTRCD99FtWPz+nYhwEv3A8
-         0PZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eXZUCfdK7gY+Kv1hYGPVu4uc+SR+yxwik4zzcFw4aa4=;
-        b=deWI9zVaPvEKOKl4mpq7PbByQ75dAzi7+lJ0zmcXkhLyZXGm8iJjAa8ThPNdeZa2eq
-         r6mczsG/KOXB8iC8xmZwku5T2xLKUJhmlEc3esCzX47YSdPz8C47DAtzfeY60P1SXxI7
-         J3mI2pubF6bVqPhhpG+R0LqlYYdG7yKjapYzdKXAZwNj/yXwRF09ez/0pJkHx4SOOB8W
-         uNHNnnDSjtWnx0pzlvctntlbuH/otmGVvBklpmYveHqqmQtFv9oMwBMfmOp8XbkcIxAI
-         MvM0KysyeRMHV1d1MsUMLDfYSWceI8CV2DVv9uQie/W4h6Bl50APisKYJOcVQu7BahXR
-         kLOA==
-X-Gm-Message-State: AGi0PubO2KzKQKUCeQJSun0u6Q5UYqEaSe8SOYTJlMHc3iPFQ4qnSFGL
-        1DP8X/WvQE0QxFu6WQ4V4r/XP94z3qCgeHFAQ6E=
-X-Google-Smtp-Source: APiQypI8YEF8TTFE0Xwx5h22aMqoXNhDREmgnyQi2I4fBaKHdsodV0zVauc4cwXsBohGC996GmyF9VbvXUF28vo6jqw=
-X-Received: by 2002:a17:902:9306:: with SMTP id bc6mr4487958plb.255.1588339963862;
- Fri, 01 May 2020 06:32:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1588112714.git.syednwaris@gmail.com> <80745504d15c87aa1da0d4be3c16d1279f48615b.1588112716.git.syednwaris@gmail.com>
- <20200429102114.GF185537@smile.fi.intel.com> <20200430161514.GA7107@syed>
- <20200430163855.GU185537@smile.fi.intel.com> <20200430233227.GA15963@icarus>
-In-Reply-To: <20200430233227.GA15963@icarus>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 1 May 2020 16:32:32 +0300
-Message-ID: <CAHp75VfCC_E9uB1eq2EVK_nLe=Oo1zqO=Dmm8kX6y-9YoosDqA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] gpio: xilinx: Utilize for_each_set_clump macro
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731293AbgEANxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:53:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730332AbgEANfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:35:54 -0400
+Received: from localhost.localdomain (unknown [194.230.155.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB44C208DB;
+        Fri,  1 May 2020 13:35:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588340153;
+        bh=Kh/msCxwRgXFSdlIX3Qt+SXVL5MK1dVNY6zwm0oleMc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ee6qUgJzQ6b+ci43bqqzMHTmf0+xPNmN7L9D6usB9g9aRax8uiOnTUpADzEicObyN
+         dKcdpe9WJnwe8I7z+D5GUsfTDv1XN+L0SvEpGJgOBZ6hn6c6M+BmIlN4H7jC57vN5N
+         rdl51T06Pc1CcE9/HRor9YfRQ9ArTGiT2tG9wBtc=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     patches@opensource.cirrus.com, Lee Jones <lee.jones@linaro.org>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] dt-bindings: sound: wm8994: Correct required supplies based on actual implementaion
+Date:   Fri,  1 May 2020 15:35:34 +0200
+Message-Id: <20200501133534.6706-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 1, 2020 at 2:38 AM William Breathitt Gray
-<vilhelm.gray@gmail.com> wrote:
-> On Thu, Apr 30, 2020 at 07:38:55PM +0300, Andy Shevchenko wrote:
-> > On Thu, Apr 30, 2020 at 09:45:14PM +0530, Syed Nayyar Waris wrote:
-> > > On Wed, Apr 29, 2020 at 01:21:14PM +0300, Andy Shevchenko wrote:
-> > > > On Wed, Apr 29, 2020 at 04:39:47AM +0530, Syed Nayyar Waris wrote:
-> >
-> > ...
-> >
-> > > > > +       const unsigned long state_size = BITS_PER_TYPE(*state);
-> > > >
-> > > > This '*state' is unneeded complication, use BITS_PER_U32.
-> > > >
-> > > > > +#define TOTAL_BITS BITS_PER_TYPE(chip->gpio_state)
-> > > >
-> > > > This macro makes code uglier, besides the fact of absence of #undef.
-> > > > And also see above.
-> > >
-> > > Thank you for your review comments. Just want to clarify, you want
-> > >  a new macro to be created - 'BITS_PER_U32' ?
-> >
-> > It's already there (read bits.h).
->
-> I'm having trouble finding the BITS_PER_U32 macro; are you thinking of
-> BITS_PER_LONG?
+The required supplies in bindings were actually not matching
+implementation making the bindings incorrect and misleading.  The Linux
+kernel driver requires all supplies to be present.  Also for wlf,wm8994
+uses just DBVDD-supply instead of DBVDDn-supply (n: <1,3>).
 
-Oh, my bad. I messed above with BITS_TO_U32() which is not what we want here.
+Reported-by: Jonathan Bakker <xc-racer2@live.ca>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ .../devicetree/bindings/sound/wm8994.txt       | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-> I don't think there are any cases where u32 is not 32
-> bits wide, so perhaps it'll be better to just hardcode 32 directly in
-> the code here to make it easier to read.
-
-Yes, would work!
-
+diff --git a/Documentation/devicetree/bindings/sound/wm8994.txt b/Documentation/devicetree/bindings/sound/wm8994.txt
+index 68cccc4653ba..367b58ce1bb9 100644
+--- a/Documentation/devicetree/bindings/sound/wm8994.txt
++++ b/Documentation/devicetree/bindings/sound/wm8994.txt
+@@ -14,9 +14,15 @@ Required properties:
+   - #gpio-cells : Must be 2. The first cell is the pin number and the
+     second cell is used to specify optional parameters (currently unused).
+ 
+-  - AVDD2-supply, DBVDD1-supply, DBVDD2-supply, DBVDD3-supply, CPVDD-supply,
+-    SPKVDD1-supply, SPKVDD2-supply : power supplies for the device, as covered
+-    in Documentation/devicetree/bindings/regulator/regulator.txt
++  - power supplies for the device, as covered in
++    Documentation/devicetree/bindings/regulator/regulator.txt, depending
++    on compatible:
++    - for wlf,wm1811 and wlf,wm8958:
++      AVDD1-supply, AVDD2-supply, DBVDD1-supply, DBVDD2-supply, DBVDD3-supply,
++      DCVDD-supply, CPVDD-supply, SPKVDD1-supply, SPKVDD2-supply
++    - for wlf,wm8994:
++      AVDD1-supply, AVDD2-supply, DBVDD-supply, DCVDD-supply, CPVDD-supply,
++      SPKVDD1-supply, SPKVDD2-supply
+ 
+ Optional properties:
+ 
+@@ -73,11 +79,11 @@ wm8994: codec@1a {
+ 
+ 	lineout1-se;
+ 
++	AVDD1-supply = <&regulator>;
+ 	AVDD2-supply = <&regulator>;
+ 	CPVDD-supply = <&regulator>;
+-	DBVDD1-supply = <&regulator>;
+-	DBVDD2-supply = <&regulator>;
+-	DBVDD3-supply = <&regulator>;
++	DBVDD-supply = <&regulator>;
++	DCVDD-supply = <&regulator>;
+ 	SPKVDD1-supply = <&regulator>;
+ 	SPKVDD2-supply = <&regulator>;
+ };
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
