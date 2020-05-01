@@ -2,93 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E961C1653
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 404F31C12CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731853AbgEANpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:45:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46570 "EHLO mail.kernel.org"
+        id S1728874AbgEANYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:24:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731559AbgEANpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:45:07 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1728586AbgEANYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:24:06 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4D9C2051A;
-        Fri,  1 May 2020 13:45:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340706;
-        bh=ZFamFEIyxLFqoZps+iwlPUAC68uaCGU+cjB/GQ1R06U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c3EUXcBdsPODNoMmvw2JhkGRnvkRr1NvD3lViVIXhQLxFMksdK0FtEqJypUeEAX4j
-         oSPccDVFOnXuHMiFzMjK3T4AdjWZm65fhCySXUEnWpSiVusPHCjRkFNh8qaqasBii1
-         O746fQdvekUn7rY+Yq2q+PwX40kBWr4wStwU4l4I=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Theodore Tso <tytso@mit.edu>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 091/106] ext4: convert BUG_ONs to WARN_ONs in mballoc.c
-Date:   Fri,  1 May 2020 15:24:04 +0200
-Message-Id: <20200501131554.397558897@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
-References: <20200501131543.421333643@linuxfoundation.org>
-User-Agent: quilt/0.66
+        by mail.kernel.org (Postfix) with ESMTPSA id B5BE920757;
+        Fri,  1 May 2020 13:24:05 +0000 (UTC)
+Date:   Fri, 1 May 2020 09:24:04 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [RFC][PATCH] x86/ftrace: Have ftrace trampolines turn read-only
+ at the end of system boot up
+Message-ID: <20200501092404.06d1adcb@gandalf.local.home>
+In-Reply-To: <20200501051706.4wkrqwovybt2p6hr@treble>
+References: <20200430202147.4dc6e2de@oasis.local.home>
+        <20200501044733.eqf6hc6erucsd43x@treble>
+        <20200501051706.4wkrqwovybt2p6hr@treble>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+On Fri, 1 May 2020 00:17:06 -0500
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-[ Upstream commit 907ea529fc4c3296701d2bfc8b831dd2a8121a34 ]
+> > Would it be easier to just call a new __text_poke_bp() which skips the
+> > SYSTEM_BOOTING check, since you know the trampoline will always be
+> > read-only?
+> > 
+> > Like:  
+> 
+> early_trace_init() is called after mm_init(), so I thought it might
+> work, but I guess not:
 
-If the in-core buddy bitmap gets corrupted (or out of sync with the
-block bitmap), issue a WARN_ON and try to recover.  In most cases this
-involves skipping trying to allocate out of a particular block group.
-We can end up declaring the file system corrupted, which is fair,
-since the file system probably should be checked before we proceed any
-further.
+Yeah, I was about to say that this happens before mm_init() ;-)
 
-Link: https://lore.kernel.org/r/20200414035649.293164-1-tytso@mit.edu
-Google-Bug-Id: 34811296
-Google-Bug-Id: 34639169
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/mballoc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+It's why we already have magic for enabling function tracing the first time.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 51a78eb65f3cf..2f7aebee1a7b4 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1936,7 +1936,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 	int free;
- 
- 	free = e4b->bd_info->bb_free;
--	BUG_ON(free <= 0);
-+	if (WARN_ON(free <= 0))
-+		return;
- 
- 	i = e4b->bd_info->bb_first_free;
- 
-@@ -1959,7 +1960,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 		}
- 
- 		mb_find_extent(e4b, i, ac->ac_g_ex.fe_len, &ex);
--		BUG_ON(ex.fe_len <= 0);
-+		if (WARN_ON(ex.fe_len <= 0))
-+			break;
- 		if (free < ex.fe_len) {
- 			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
- 					"%d free clusters as per "
--- 
-2.20.1
+Do you see anything wrong with this current solution? It probably needs
+more comments, but I wanted to get acceptance on the logic before I go and
+pretty it up and send a non RFC patch.
 
-
-
+-- Steve
