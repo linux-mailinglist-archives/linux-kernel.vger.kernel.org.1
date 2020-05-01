@@ -2,61 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC161C20F7
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 00:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8931C276C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 20:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgEAWyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 18:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726336AbgEAWyq (ORCPT
+        id S1728419AbgEBSE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 14:04:29 -0400
+Received: from libre.maxnod.net ([46.227.16.189]:46962 "EHLO
+        svm-lin-web62.com6-interactive.fr" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728118AbgEBSE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 18:54:46 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACED5C061A0C;
-        Fri,  1 May 2020 15:54:46 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 5757215009FA5;
-        Fri,  1 May 2020 15:54:46 -0700 (PDT)
-Date:   Fri, 01 May 2020 15:54:45 -0700 (PDT)
-Message-Id: <20200501.155445.1145592921900948285.davem@davemloft.net>
-To:     opendmb@gmail.com
-Cc:     f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next] net: bcmgenet: Move wake-up event out of side
- band ISR
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1588289211-26190-1-git-send-email-opendmb@gmail.com>
-References: <1588289211-26190-1-git-send-email-opendmb@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Fri, 01 May 2020 15:54:46 -0700 (PDT)
+        Sat, 2 May 2020 14:04:27 -0400
+Received: from Shop01 (localhost [127.0.0.1])
+        by svm-lin-web62.com6-interactive.fr (Postfix) with SMTP id 50B3515BE39;
+        Fri,  1 May 2020 17:55:14 +0200 (CEST)
+Received: from [104.20.232.197] by Shop01 with SMTP; Fri, 01 May 2020 22:56:21 +0600
+Message-ID: <290ff8p816$-$q7w41$-i--lp$604@qs4l.l.j9>
+From:   "JEAN MARIE" <fkinneyofd@tampabay.rr.com>
+Reply-To: "JEAN MARIE" <fkinneyofd@tampabay.rr.com>
+To:     linute.zilinskaite@gmail.com
+Subject: Kindly Acknowledge Receipt
+Date:   Fri, 01 May 20 22:56:21 GMT
+X-Mailer: MIME-tools 5.503 (Entity 5.501)
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+        boundary="1F96F9E71D"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Doug Berger <opendmb@gmail.com>
-Date: Thu, 30 Apr 2020 16:26:51 -0700
 
-> The side band interrupt service routine is not available on chips
-> like 7211, or rather, it does not permit the signaling of wake-up
-> events due to the complex interrupt hierarchy.
-> 
-> Move the wake-up event accounting into a .resume_noirq function,
-> account for possible wake-up events and clear the MPD/HFB interrupts
-> from there, while leaving the hardware untouched until the resume
-> function proceeds with doing its usual business.
-> 
-> Because bcmgenet_wol_power_down_cfg() now enables the MPD and HFB
-> interrupts, it is invoked by a .suspend_noirq function to prevent
-> the servicing of interrupts after the clocks have been disabled.
-> 
-> Signed-off-by: Doug Berger <opendmb@gmail.com>
+--1F96F9E71D
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thank you.
+I 'm a Financial Consultant.  under my network as a financial consultant, =
+there are few private investors offering capital injection as project fund=
+ing or business expansion in critical areas of Investment placements such =
+as Real Estate, Healthcare, Transportation and Agriculture. 
+Get back to me for more details as you express your interest areas of spec=
+ialization.
+
+Regards.
+Mr. J. Marie
+fkinneyofd Consulting
+
+--1F96F9E71D--
+
