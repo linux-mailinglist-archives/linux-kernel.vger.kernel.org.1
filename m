@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67BC1C18B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0AA1C18BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730548AbgEAOtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:49:10 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:40757 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729114AbgEAOtG (ORCPT
+        id S1729003AbgEAOta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730591AbgEAOtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 10:49:06 -0400
-Received: by mail-il1-f198.google.com with SMTP id k5so5036190ilg.7
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 07:49:04 -0700 (PDT)
+        Fri, 1 May 2020 10:49:22 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A122C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 07:49:21 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id c16so4645282ilr.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 07:49:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=x8PLshh029JFfraDINPFYaqpVRTVLoh0xA2vag76VgU=;
+        b=vxEfLCTH7Nfxiz/d41M22feQyHk4l3tlyaCNLOv6T1fKQdSeNDrbCLS6eNnGqHVhbh
+         6ApTEFX3Wz8cNujDJ4T3JDlFpqKvn55GEy0NwGKXU2oXvAVoLr6rYtX83gJTQNEOXysP
+         GcUsze7xAEmat3U1O2mU14fW4buR0xIeUS2pH3KNwqCI5aLmZ4c+vHNpK5fOCQHOQ4ni
+         4vB/IsXHNGfcSJUCqwwXmdkbT3Yhis8V3NVRu4I2T8YkVdIP+Co/YOEwU2XdlfuO0dgv
+         5lCprRhSsRv3vuPsX45tP2XmfOHQxFtLj28e2dqatilMymm5DlkAmHZtrhFB8Map2qZD
+         w4sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Jh5jVpDHfQplZhcaNyu6KjtSKvR1Mtv8UVWG8cYmvgs=;
-        b=MTUqMFpJ6PgdZgxVhGvJcEJeXVfnjdFKXI1LbIUKQ+kwCb2c8uyngl4ORJaZGrz+4d
-         o8fq1zxVNhtTwBmQiqfCXLoY/N5HiXWST0+Yzymewr+gPoX4u2alXiRVHJDF8k11Y4FC
-         SYbBaBnCIcz4RiCt/t4gA9w/uIxisBjnQIDGIJD4090CQ6750+khEqqGdWdIC5pSbT4G
-         txW9CT8U40kpQ1LWZdpQDM1XtgB0gKjnnfzckd3U0DubjRVeA4buNPLvntzEhwA0KCee
-         FUwf0WxYQaCUk+KDfeoPNFvXqMnfQoFiA4C4WQrt2puyl2HlC07oUXzq4gIo3fV082sg
-         ULZQ==
-X-Gm-Message-State: AGi0PuZPSZtoUphuTxqEvie5CYgGye/SNGuCuimSe0BQaky3JGK3yGEP
-        HGqikXzSYzqV0uVDbfOkmIcts6dtzduRj1pQ6XyQfuhamKtB
-X-Google-Smtp-Source: APiQypLK1R32YygzKw6o+zrjKt0GIokFgX8oowRX0+5I/s/40LhWT/hwtwkehxiJ47ijw4bdIgcKya/AdAIK2f7+ZiLlGEbjeIlX
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x8PLshh029JFfraDINPFYaqpVRTVLoh0xA2vag76VgU=;
+        b=gjSudwqsLjmOAz5ivTxGVBlr7bT0svZodWBbuSXsI1aPbOO4DxEmJmGcpyj+sHX25O
+         +1hYHpVPLIlKZsr63rbcS7YGzKfYj5C8qOWJezz2TXKwO6TaXgUNk0wRjYPMHHa+Pqek
+         ehG2PJVD/2kwYe1XHcrjVXftQauK41ElBh0H6ZX0IDWZBSc3N7/YImhbEOiweGZlUBfT
+         wp9AfqoZtZT4CM7kbxZEtfzY6Dw59FltjZfcBzAPPsSS002FshkXd0jgqAzlrID8DDVE
+         dYjWDJEO/XEpQ2jNVzqCQPU+nq1FCRVn7RL6/AXuYC41aLVjZ4BtHZI+pBhMJoVUEjTl
+         aghw==
+X-Gm-Message-State: AGi0PuaBQIAm2h+YDQXw9vuYanEbkVEtpU2x/Abqm4UuEvEkRnhCJ7xH
+        24fr66eI+Zo8HhGzU5k53HTLCAuynlchVg==
+X-Google-Smtp-Source: APiQypKn+TEanh98F99uq96FudsPyLXSW6MEPEmMn6erLQrIwYFY6+FIDdMf1z5efsEtucHKAzzGKQ==
+X-Received: by 2002:a92:c6ca:: with SMTP id v10mr3870302ilm.181.1588344560532;
+        Fri, 01 May 2020 07:49:20 -0700 (PDT)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id u21sm1018966iot.5.2020.05.01.07.49.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 May 2020 07:49:19 -0700 (PDT)
+Subject: Re: [PATCH liburing] test/sfr: basic test for sync_file_range
+To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <9a85a351b8a06108260fee1dfcbd901b8055b9a8.1588343872.git.asml.silence@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6fdbccd8-80ed-1e5a-cbe8-2785967fd210@kernel.dk>
+Date:   Fri, 1 May 2020 08:49:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:dc3:: with SMTP id l3mr3777413ilj.149.1588344543764;
- Fri, 01 May 2020 07:49:03 -0700 (PDT)
-Date:   Fri, 01 May 2020 07:49:03 -0700
-In-Reply-To: <00000000000052913105a4943655@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004fe61505a49748ee@google.com>
-Subject: Re: KASAN: use-after-free Read in inet_diag_bc_sk
-From:   syzbot <syzbot+13bef047dbfffa5cd1af@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, khlebnikov@yandex-team.ru,
-        kpsingh@chromium.org, kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org, zeil@yandex-team.ru
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9a85a351b8a06108260fee1dfcbd901b8055b9a8.1588343872.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this bug to:
+On 5/1/20 8:38 AM, Pavel Begunkov wrote:
+> Just call it and check that it doesn't hang and returns success.
 
-commit b1f3e43dbfacfcd95296b0f80f84b186add9ef54
-Author: Dmitry Yakunin <zeil@yandex-team.ru>
-Date:   Thu Apr 30 15:51:15 2020 +0000
+Applied, thanks.
 
-    inet_diag: add support for cgroup filter
+-- 
+Jens Axboe
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=106b15f8100000
-start commit:   37ecb5b8 hinic: Use kmemdup instead of kzalloc and memcpy
-git tree:       net-next
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=126b15f8100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=146b15f8100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b1494ce3fbc02154
-dashboard link: https://syzkaller.appspot.com/bug?extid=13bef047dbfffa5cd1af
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12296e60100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150c6f02100000
-
-Reported-by: syzbot+13bef047dbfffa5cd1af@syzkaller.appspotmail.com
-Fixes: b1f3e43dbfac ("inet_diag: add support for cgroup filter")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
