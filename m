@@ -2,52 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F8931C276C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 20:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 566DB1C2101
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 00:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728419AbgEBSE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 14:04:29 -0400
-Received: from libre.maxnod.net ([46.227.16.189]:46962 "EHLO
-        svm-lin-web62.com6-interactive.fr" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728118AbgEBSE1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 14:04:27 -0400
-Received: from Shop01 (localhost [127.0.0.1])
-        by svm-lin-web62.com6-interactive.fr (Postfix) with SMTP id 50B3515BE39;
-        Fri,  1 May 2020 17:55:14 +0200 (CEST)
-Received: from [104.20.232.197] by Shop01 with SMTP; Fri, 01 May 2020 22:56:21 +0600
-Message-ID: <290ff8p816$-$q7w41$-i--lp$604@qs4l.l.j9>
-From:   "JEAN MARIE" <fkinneyofd@tampabay.rr.com>
-Reply-To: "JEAN MARIE" <fkinneyofd@tampabay.rr.com>
-To:     linute.zilinskaite@gmail.com
-Subject: Kindly Acknowledge Receipt
-Date:   Fri, 01 May 20 22:56:21 GMT
-X-Mailer: MIME-tools 5.503 (Entity 5.501)
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="1F96F9E71D"
-X-Priority: 3
-X-MSMail-Priority: Normal
+        id S1726782AbgEAW5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 18:57:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726045AbgEAW5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 18:57:31 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47BA9206B8;
+        Fri,  1 May 2020 22:57:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588373850;
+        bh=LXBvB44SCeNdj+HATb89++1mLFiPdFO5sDwPGdqjuAU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DlknOgeXeqcbZa1OyVRl65XfKUT1u5FqObkKr7/qhywD2d/0whjATnUElZ1L4S3ay
+         +aRbeywfmDA2mpCO3qyD9rztfbyGP0dZB99vFMkOddoW9KKqwu+U3J8KEuSAA1BvXS
+         4NeZ9sLPOreeHinYU9kNjCYPmlkQLlDDJrJ6aqQM=
+Date:   Fri, 1 May 2020 15:57:29 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Henry Willard <henry.willard@oracle.com>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [PATCH] mm: Limit boost_watermark on small zones.
+Message-Id: <20200501155729.a479c4b27f127d9aa866bd8e@linux-foundation.org>
+In-Reply-To: <1588294148-6586-1-git-send-email-henry.willard@oracle.com>
+References: <1588294148-6586-1-git-send-email-henry.willard@oracle.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 30 Apr 2020 17:49:08 -0700 Henry Willard <henry.willard@oracle.com> wrote:
 
---1F96F9E71D
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+> Commit 1c30844d2dfe ("mm: reclaim small amounts of memory when an external
+> fragmentation event occurs") adds a boost_watermark() function which
+> increases the min watermark in a zone by at least pageblock_nr_pages or
+> the number of pages in a page block. On Arm64, with 64K pages and 512M
+> huge pages, this is 8192 pages or 512M. It does this regardless of the
+> number of managed pages managed in the zone or the likelihood of success.
+> This can put the zone immediately under water in terms of allocating pages
+> from the zone, and can cause a small machine to fail immediately due to
+> OoM. Unlike set_recommended_min_free_kbytes(), which substantially
+> increases min_free_kbytes and is tied to THP, boost_watermark() can be
+> called even if THP is not active. The problem is most likely to appear
+> on architectures such as Arm64 where pageblock_nr_pages is very large.
+> 
+> It is desirable to run the kdump capture kernel in as small a space as
+> possible to avoid wasting memory. In some architectures, such as Arm64,
+> there are restrictions on where the capture kernel can run, and therefore,
+> the space available. A capture kernel running in 768M can fail due to OoM
+> immediately after boost_watermark() sets the min in zone DMA32, where
+> most of the memory is, to 512M. It fails even though there is over 500M of
+> free memory. With boost_watermark() suppressed, the capture kernel can run
+> successfully in 448M.
+> 
+> This patch limits boost_watermark() to boosting a zone's min watermark only
+> when there are enough pages that the boost will produce positive results.
+> In this case that is estimated to be four times as many pages as
+> pageblock_nr_pages.
+> 
 
-I 'm a Financial Consultant.  under my network as a financial consultant, =
-there are few private investors offering capital injection as project fund=
-ing or business expansion in critical areas of Investment placements such =
-as Real Estate, Healthcare, Transportation and Agriculture. 
-Get back to me for more details as you express your interest areas of spec=
-ialization.
+Let's Cc Mel.
 
-Regards.
-Mr. J. Marie
-fkinneyofd Consulting
-
---1F96F9E71D--
-
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -2400,6 +2400,14 @@ static inline void boost_watermark(struct zone *zone)
+>  
+>  	if (!watermark_boost_factor)
+>  		return;
+> +	/*
+> +	 * Don't bother in zones that are unlikely to produce results.
+> +	 * On small machines, including kdump capture kernels running
+> +	 * in a small area, boosting the watermark can cause an out of
+> +	 * memory situation immediately.
+> +	 */
+> +	if ((pageblock_nr_pages * 4) > zone_managed_pages(zone))
+> +		return;
+>  
+>  	max_boost = mult_frac(zone->_watermark[WMARK_HIGH],
+>  			watermark_boost_factor, 10000);
+> -- 
+> 1.8.3.1
