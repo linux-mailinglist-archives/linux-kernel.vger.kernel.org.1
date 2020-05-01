@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C131C143B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D8A1C1676
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730045AbgEANhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:37:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35764 "EHLO mail.kernel.org"
+        id S1731765AbgEANsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:48:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730516AbgEANhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:37:02 -0400
+        id S1731468AbgEANmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:42:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B055824959;
-        Fri,  1 May 2020 13:36:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99626205C9;
+        Fri,  1 May 2020 13:42:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340220;
-        bh=aT5MDR+kkB0/oWTzJRyOuO0Fi5po4xdtnGXGXqPWHmI=;
+        s=default; t=1588340529;
+        bh=P2FPlNLwFu1BCj1FNepdbv+lSCP7PjbV+bjvFbzBD9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ikOOfx5+AUvo90hn8EfnYBXN4veiYDpT+22fbS1mHSq+bUO4/rpsvv1BgiPiFScyj
-         cyCNbMu4zN9tBPx1T/252Q7EGXQyCmJWETR1qXdle/k5Wrt/2PTTZWH25gOzOXAvs9
-         j65TfSVdl/6c5m6G1/LWxfK2J0cu/dcGcZG0O+z8=
+        b=tJxdBPhyPOZwbqPlVZOio4p/yaSSvM8mtnF7K76L6sMFwTqQQd7ffUosMZusza9ov
+         aWwbQV8ni7VdzsPVXFR+y47lcPRtJ5BJmoS+yS7i35tSaXmGQZkzqhy3WHRAG8D8xX
+         kRYdNUGqPPmcwZBohWdyzF7D0n1/jSx3ObW3Y4z4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+1f9dc49e8de2582d90c2@syzkaller.appspotmail.com,
-        Eric Biggers <ebiggers@google.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 4.19 26/46] xfs: clear PF_MEMALLOC before exiting xfsaild thread
-Date:   Fri,  1 May 2020 15:22:51 +0200
-Message-Id: <20200501131507.913994050@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.6 019/106] ASoC: samsung: s3c24xx-i2s: Fix build after removal of DAI suspend/resume
+Date:   Fri,  1 May 2020 15:22:52 +0200
+Message-Id: <20200501131546.455042594@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
-References: <20200501131457.023036302@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,98 +44,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-commit 10a98cb16d80be3595fdb165fad898bb28b8b6d2 upstream.
+commit ec21bdc6dd16d74b3674ef1fd12ae8e4e7418603 upstream.
 
-Leaving PF_MEMALLOC set when exiting a kthread causes it to remain set
-during do_exit().  That can confuse things.  In particular, if BSD
-process accounting is enabled, then do_exit() writes data to an
-accounting file.  If that file has FS_SYNC_FL set, then this write
-occurs synchronously and can misbehave if PF_MEMALLOC is set.
+Commit 450312b640f9 ("ASoC: soc-core: remove DAI suspend/resume")
+removed the DAI side suspend/resume hooks and switched entirely to
+component suspend/resume.  However the Samsung SoC s3c-i2s-v2 driver was
+not updated.
 
-For example, if the accounting file is located on an XFS filesystem,
-then a WARN_ON_ONCE() in iomap_do_writepage() is triggered and the data
-doesn't get written when it should.  Or if the accounting file is
-located on an ext4 filesystem without a journal, then a WARN_ON_ONCE()
-in ext4_write_inode() is triggered and the inode doesn't get written.
+Move the suspend/resume hooks from s3c-i2s-v2.c to s3c2412-i2s.c while
+changing dai to component which allows to keep the struct
+snd_soc_component_driver const.
 
-Fix this in xfsaild() by using the helper functions to save and restore
-PF_MEMALLOC.
+This fixes build errors:
 
-This can be reproduced as follows in the kvm-xfstests test appliance
-modified to add the 'acct' Debian package, and with kvm-xfstests's
-recommended kconfig modified to add CONFIG_BSD_PROCESS_ACCT=y:
+    sound/soc/samsung/s3c-i2s-v2.c: In function ‘s3c_i2sv2_register_component’:
+    sound/soc/samsung/s3c-i2s-v2.c:730:9: error: ‘struct snd_soc_dai_driver’ has no member named ‘suspend’
+      dai_drv->suspend = s3c2412_i2s_suspend;
 
-        mkfs.xfs -f /dev/vdb
-        mount /vdb
-        touch /vdb/file
-        chattr +S /vdb/file
-        accton /vdb/file
-        mkfs.xfs -f /dev/vdc
-        mount /vdc
-        umount /vdc
-
-It causes:
-	WARNING: CPU: 1 PID: 336 at fs/iomap/buffered-io.c:1534
-	CPU: 1 PID: 336 Comm: xfsaild/vdc Not tainted 5.6.0-rc5 #3
-	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20191223_100556-anatol 04/01/2014
-	RIP: 0010:iomap_do_writepage+0x16b/0x1f0 fs/iomap/buffered-io.c:1534
-	[...]
-	Call Trace:
-	 write_cache_pages+0x189/0x4d0 mm/page-writeback.c:2238
-	 iomap_writepages+0x1c/0x33 fs/iomap/buffered-io.c:1642
-	 xfs_vm_writepages+0x65/0x90 fs/xfs/xfs_aops.c:578
-	 do_writepages+0x41/0xe0 mm/page-writeback.c:2344
-	 __filemap_fdatawrite_range+0xd2/0x120 mm/filemap.c:421
-	 file_write_and_wait_range+0x71/0xc0 mm/filemap.c:760
-	 xfs_file_fsync+0x7a/0x2b0 fs/xfs/xfs_file.c:114
-	 generic_write_sync include/linux/fs.h:2867 [inline]
-	 xfs_file_buffered_aio_write+0x379/0x3b0 fs/xfs/xfs_file.c:691
-	 call_write_iter include/linux/fs.h:1901 [inline]
-	 new_sync_write+0x130/0x1d0 fs/read_write.c:483
-	 __kernel_write+0x54/0xe0 fs/read_write.c:515
-	 do_acct_process+0x122/0x170 kernel/acct.c:522
-	 slow_acct_process kernel/acct.c:581 [inline]
-	 acct_process+0x1d4/0x27c kernel/acct.c:607
-	 do_exit+0x83d/0xbc0 kernel/exit.c:791
-	 kthread+0xf1/0x140 kernel/kthread.c:257
-	 ret_from_fork+0x27/0x50 arch/x86/entry/entry_64.S:352
-
-This bug was originally reported by syzbot at
-https://lore.kernel.org/r/0000000000000e7156059f751d7b@google.com.
-
-Reported-by: syzbot+1f9dc49e8de2582d90c2@syzkaller.appspotmail.com
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 450312b640f9 ("ASoC: soc-core: remove DAI suspend/resume")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- fs/xfs/xfs_trans_ail.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Link: https://lore.kernel.org/r/20200413124548.28197-1-krzk@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 
---- a/fs/xfs/xfs_trans_ail.c
-+++ b/fs/xfs/xfs_trans_ail.c
-@@ -520,8 +520,9 @@ xfsaild(
- {
- 	struct xfs_ail	*ailp = data;
- 	long		tout = 0;	/* milliseconds */
-+	unsigned int	noreclaim_flag;
+---
+ sound/soc/samsung/s3c-i2s-v2.c  |   57 ----------------------------------------
+ sound/soc/samsung/s3c2412-i2s.c |   56 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 56 insertions(+), 57 deletions(-)
+
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -656,60 +656,6 @@ void s3c_i2sv2_cleanup(struct snd_soc_da
+ }
+ EXPORT_SYMBOL_GPL(s3c_i2sv2_cleanup);
  
--	current->flags |= PF_MEMALLOC;
-+	noreclaim_flag = memalloc_noreclaim_save();
- 	set_freezable();
+-#ifdef CONFIG_PM
+-static int s3c2412_i2s_suspend(struct snd_soc_dai *dai)
+-{
+-	struct s3c_i2sv2_info *i2s = to_info(dai);
+-	u32 iismod;
+-
+-	if (dai->active) {
+-		i2s->suspend_iismod = readl(i2s->regs + S3C2412_IISMOD);
+-		i2s->suspend_iiscon = readl(i2s->regs + S3C2412_IISCON);
+-		i2s->suspend_iispsr = readl(i2s->regs + S3C2412_IISPSR);
+-
+-		/* some basic suspend checks */
+-
+-		iismod = readl(i2s->regs + S3C2412_IISMOD);
+-
+-		if (iismod & S3C2412_IISCON_RXDMA_ACTIVE)
+-			pr_warn("%s: RXDMA active?\n", __func__);
+-
+-		if (iismod & S3C2412_IISCON_TXDMA_ACTIVE)
+-			pr_warn("%s: TXDMA active?\n", __func__);
+-
+-		if (iismod & S3C2412_IISCON_IIS_ACTIVE)
+-			pr_warn("%s: IIS active\n", __func__);
+-	}
+-
+-	return 0;
+-}
+-
+-static int s3c2412_i2s_resume(struct snd_soc_dai *dai)
+-{
+-	struct s3c_i2sv2_info *i2s = to_info(dai);
+-
+-	pr_info("dai_active %d, IISMOD %08x, IISCON %08x\n",
+-		dai->active, i2s->suspend_iismod, i2s->suspend_iiscon);
+-
+-	if (dai->active) {
+-		writel(i2s->suspend_iiscon, i2s->regs + S3C2412_IISCON);
+-		writel(i2s->suspend_iismod, i2s->regs + S3C2412_IISMOD);
+-		writel(i2s->suspend_iispsr, i2s->regs + S3C2412_IISPSR);
+-
+-		writel(S3C2412_IISFIC_RXFLUSH | S3C2412_IISFIC_TXFLUSH,
+-		       i2s->regs + S3C2412_IISFIC);
+-
+-		ndelay(250);
+-		writel(0x0, i2s->regs + S3C2412_IISFIC);
+-	}
+-
+-	return 0;
+-}
+-#else
+-#define s3c2412_i2s_suspend NULL
+-#define s3c2412_i2s_resume  NULL
+-#endif
+-
+ int s3c_i2sv2_register_component(struct device *dev, int id,
+ 			   const struct snd_soc_component_driver *cmp_drv,
+ 			   struct snd_soc_dai_driver *dai_drv)
+@@ -727,9 +673,6 @@ int s3c_i2sv2_register_component(struct
+ 	if (!ops->delay)
+ 		ops->delay = s3c2412_i2s_delay;
  
- 	while (1) {
-@@ -592,6 +593,7 @@ xfsaild(
- 		tout = xfsaild_push(ailp);
- 	}
- 
-+	memalloc_noreclaim_restore(noreclaim_flag);
+-	dai_drv->suspend = s3c2412_i2s_suspend;
+-	dai_drv->resume = s3c2412_i2s_resume;
+-
+ 	return devm_snd_soc_register_component(dev, cmp_drv, dai_drv, 1);
+ }
+ EXPORT_SYMBOL_GPL(s3c_i2sv2_register_component);
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -117,6 +117,60 @@ static int s3c2412_i2s_hw_params(struct
  	return 0;
  }
  
++#ifdef CONFIG_PM
++static int s3c2412_i2s_suspend(struct snd_soc_component *component)
++{
++	struct s3c_i2sv2_info *i2s = snd_soc_component_get_drvdata(component);
++	u32 iismod;
++
++	if (component->active) {
++		i2s->suspend_iismod = readl(i2s->regs + S3C2412_IISMOD);
++		i2s->suspend_iiscon = readl(i2s->regs + S3C2412_IISCON);
++		i2s->suspend_iispsr = readl(i2s->regs + S3C2412_IISPSR);
++
++		/* some basic suspend checks */
++
++		iismod = readl(i2s->regs + S3C2412_IISMOD);
++
++		if (iismod & S3C2412_IISCON_RXDMA_ACTIVE)
++			pr_warn("%s: RXDMA active?\n", __func__);
++
++		if (iismod & S3C2412_IISCON_TXDMA_ACTIVE)
++			pr_warn("%s: TXDMA active?\n", __func__);
++
++		if (iismod & S3C2412_IISCON_IIS_ACTIVE)
++			pr_warn("%s: IIS active\n", __func__);
++	}
++
++	return 0;
++}
++
++static int s3c2412_i2s_resume(struct snd_soc_component *component)
++{
++	struct s3c_i2sv2_info *i2s = snd_soc_component_get_drvdata(component);
++
++	pr_info("component_active %d, IISMOD %08x, IISCON %08x\n",
++		component->active, i2s->suspend_iismod, i2s->suspend_iiscon);
++
++	if (component->active) {
++		writel(i2s->suspend_iiscon, i2s->regs + S3C2412_IISCON);
++		writel(i2s->suspend_iismod, i2s->regs + S3C2412_IISMOD);
++		writel(i2s->suspend_iispsr, i2s->regs + S3C2412_IISPSR);
++
++		writel(S3C2412_IISFIC_RXFLUSH | S3C2412_IISFIC_TXFLUSH,
++		       i2s->regs + S3C2412_IISFIC);
++
++		ndelay(250);
++		writel(0x0, i2s->regs + S3C2412_IISFIC);
++	}
++
++	return 0;
++}
++#else
++#define s3c2412_i2s_suspend NULL
++#define s3c2412_i2s_resume  NULL
++#endif
++
+ #define S3C2412_I2S_RATES \
+ 	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
+ 	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+@@ -146,6 +200,8 @@ static struct snd_soc_dai_driver s3c2412
+ 
+ static const struct snd_soc_component_driver s3c2412_i2s_component = {
+ 	.name		= "s3c2412-i2s",
++	.suspend	= s3c2412_i2s_suspend,
++	.resume		= s3c2412_i2s_resume,
+ };
+ 
+ static int s3c2412_iis_dev_probe(struct platform_device *pdev)
 
 
