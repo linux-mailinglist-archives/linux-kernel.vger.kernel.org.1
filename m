@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B3D1C1721
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7CC1C175A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730018AbgEAN6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:58:10 -0400
-Received: from mga02.intel.com ([134.134.136.20]:36124 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729056AbgEAN6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:58:08 -0400
-IronPort-SDR: RX3DI9x4mD/fhpQ3WD4U8cFbrGgp9RbFDm91AkRJzEVpG0HzYadB2kUey+h5oulT8YRAF3jenK
- V6fGXNkWL+jg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 06:58:08 -0700
-IronPort-SDR: knsFNte1Ij/9pahofbnrAp9hjTgz3vSsDOZ/0cHq9olR4r9VJn5PrEntWcf/J7/oTOdZ93Rvzu
- PwskZe3XyjOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,339,1583222400"; 
-   d="scan'208";a="250024208"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
-  by fmsmga008.fm.intel.com with ESMTP; 01 May 2020 06:58:07 -0700
-Date:   Fri, 1 May 2020 06:58:06 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Alexander Graf <graf@amazon.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        KarimAllah Raslan <karahmed@amazon.de>
-Subject: Re: [PATCH] KVM: nVMX: Skip IBPB when switching between vmcs01 and
- vmcs02
-Message-ID: <20200501135806.GA3798@linux.intel.com>
-References: <20200430204123.2608-1-sean.j.christopherson@intel.com>
- <853bea8c-41b8-ba3e-0a7c-c5df3b5dac9e@amazon.com>
+        id S1729244AbgEAOCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:02:01 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:37228 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729529AbgEAOB7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 10:01:59 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 041DvKvJ019635;
+        Fri, 1 May 2020 08:58:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=JzGqBIQszLu//+K3RgyjRVgYmCjC0eyp591kUihnjjw=;
+ b=olcDTUG5L43shFMXwWoSRFqQCJ6rf1+sS+6IfQRtknWZEMgse4JyCVol2dlyaQO1dIv3
+ RQULtVHb2mFr206A4+M5+MSZboaPSOn9ZUfJbCzr9QwLSdwQ5iRx5kZM+rBXEiHzNgFp
+ 8+Z5hugcGI4IqKPTkTm87Q5ZSMmDLVsdDxtzofu1+7H/02MFrvjasK/iQrXOedjyeMsi
+ g8el1KSP2qOywMzH5jghwuTGMECa+5WGZTli4q+e4p/Hdg3zFpJWgmB1RfBfYaZ6CjKL
+ lnmF2xi/prlkvUACK0OOKRyi05H13n/3ynoD/vqIWskgGdGB6/m18LskVeX9xSPiZcwJ Tw== 
+Authentication-Results: ppops.net;
+        spf=fail smtp.mailfrom=ckeepax@opensource.cirrus.com
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 30r7eg91ky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 01 May 2020 08:58:54 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 1 May 2020
+ 14:58:51 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 1 May 2020 14:58:51 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CD583448;
+        Fri,  1 May 2020 13:58:51 +0000 (UTC)
+Date:   Fri, 1 May 2020 13:58:51 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jonathan Bakker <xc-racer2@live.ca>
+Subject: Re: [PATCH] dt-bindings: sound: wm8994: Correct required supplies
+ based on actual implementaion
+Message-ID: <20200501135851.GP44490@ediswmail.ad.cirrus.com>
+References: <20200501133534.6706-1-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <853bea8c-41b8-ba3e-0a7c-c5df3b5dac9e@amazon.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200501133534.6706-1-krzk@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-SPF-Result: fail
+X-Proofpoint-SPF-Record: v=spf1 include:spf-001ae601.pphosted.com include:spf.protection.outlook.com
+ ip4:5.172.152.52 -all
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 clxscore=1011 suspectscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 mlxlogscore=757 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005010109
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 11:22:20PM +0200, Alexander Graf wrote:
+On Fri, May 01, 2020 at 03:35:34PM +0200, Krzysztof Kozlowski wrote:
+> The required supplies in bindings were actually not matching
+> implementation making the bindings incorrect and misleading.  The Linux
+> kernel driver requires all supplies to be present.  Also for wlf,wm8994
+> uses just DBVDD-supply instead of DBVDDn-supply (n: <1,3>).
 > 
-> On 30.04.20 22:41, Sean Christopherson wrote:
-> >
-> >diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> >index 3ab6ca6062ce..818dd8ba5e9f 100644
-> >--- a/arch/x86/kvm/vmx/vmx.c
-> >+++ b/arch/x86/kvm/vmx/vmx.c
-> >@@ -1311,10 +1311,12 @@ static void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
-> >                 pi_set_on(pi_desc);
-> >  }
-> >
-> >-void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu)
-> >+void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
-> >+                       struct loaded_vmcs *buddy)
-> >  {
-> >         struct vcpu_vmx *vmx = to_vmx(vcpu);
-> >         bool already_loaded = vmx->loaded_vmcs->cpu == cpu;
-> >+       struct vmcs *prev;
-> >
-> >         if (!already_loaded) {
-> >                 loaded_vmcs_clear(vmx->loaded_vmcs);
-> >@@ -1333,10 +1335,12 @@ void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu)
-> >                 local_irq_enable();
-> >         }
-> >
-> >-       if (per_cpu(current_vmcs, cpu) != vmx->loaded_vmcs->vmcs) {
-> >+       prev = per_cpu(current_vmcs, cpu);
-> >+       if (prev != vmx->loaded_vmcs->vmcs) {
-> >                 per_cpu(current_vmcs, cpu) = vmx->loaded_vmcs->vmcs;
-> >                 vmcs_load(vmx->loaded_vmcs->vmcs);
-> >-               indirect_branch_prediction_barrier();
-> >+               if (!buddy || buddy->vmcs != prev)
-> >+                       indirect_branch_prediction_barrier();
-> 
-> I fail to understand the logic here though. What exactly are you trying to
-> catch? We only do the barrier when the current_vmcs as loaded by
-> vmx_vcpu_load_vmcs is different from the vmcs of the context that was
-> issuing the vmcs load.
-> 
-> Isn't this a really complicated way to say "Don't flush for nested"? Why not
-> just make it explicit and pass in a bool that says "nested = true" from
-> vmx_switch_vmcs()? Is there any case I'm missing where that would be unsafe?o
+> Reported-by: Jonathan Bakker <xc-racer2@live.ca>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
 
-I don't think so, the 'buddy' check was added out of paranoia, and partly
-because I was rushing.  I originally had a 'bool nested_switch' as well.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-I think I like the boolean approach better, the above check should never
-fail in the nested switch case.  I'll add a WARN in vmx_switch_vmcs() with
-a note in the patch to let Paolo know it's likely paranoia and can be
-ripped out at his discretion.
+Thanks,
+Charles
