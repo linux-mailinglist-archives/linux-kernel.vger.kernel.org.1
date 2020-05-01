@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724741C16D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4058D1C167C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731934AbgEANxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:53:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34934 "EHLO mail.kernel.org"
+        id S1731751AbgEANtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:49:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729602AbgEANg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:36:28 -0400
+        id S1729765AbgEANlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:41:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1CBD216FD;
-        Fri,  1 May 2020 13:36:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5FCF420757;
+        Fri,  1 May 2020 13:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340188;
-        bh=ZcR8fE72NMSdoevTFV4ONDhJoo0/JXowIl78uaXJIYs=;
+        s=default; t=1588340491;
+        bh=OjR8h7N5ftFb4/Z9Ego9JsTtJSIyUIZxeTJX+rOmBi0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lcQqKk3WZVk8qMTk+tsXM9BpglU3k+kRi/B9BYeL1Wr2xSORXsd8OdMUsl+i2h1gQ
-         LfUSUc69eo+JHMSQxVwilAg5f5j0IOFHYbs0APLMB8VKUeikNrPS5fLNnM5z6hOgxw
-         yEhLj2Gr+TNW6wkOZ2TyG7DfE2RoP/k+/CmySAXA=
+        b=EJXGwytIibJP1sznECwp6wWbklwXdaa8wWcZJiZR+quI1bDSAggLJM2qxswy5J2wt
+         LTZnKk4xNmLai01OEp28xaDFBrBFmKHHqb2rUpfYmIyPiZtrXkKbG1Yz5TvIKb5Flu
+         CY2+Qf1z8DzmhhNZ6nqi3BrPPHTWCBCr/zsocfKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 4.19 11/46] nfsd: memory corruption in nfsd4_lock()
-Date:   Fri,  1 May 2020 15:22:36 +0200
-Message-Id: <20200501131502.909739035@linuxfoundation.org>
+        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 5.6 004/106] usb: dwc3: gadget: Do link recovery for SS and SSP
+Date:   Fri,  1 May 2020 15:22:37 +0200
+Message-Id: <20200501131543.985322480@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
-References: <20200501131457.023036302@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-commit e1e8399eee72e9d5246d4d1bcacd793debe34dd3 upstream.
+commit d0550cd20e52558ecf6847a0f96ebd5d944c17e4 upstream.
 
-New struct nfsd4_blocked_lock allocated in find_or_allocate_block()
-does not initialized nbl_list and nbl_lru.
-If conflock allocation fails rollback can call list_del_init()
-access uninitialized fields and corrupt memory.
+The controller always supports link recovery for device in SS and SSP.
+Remove the speed limit check. Also, when the device is in RESUME or
+RESET state, it means the controller received the resume/reset request.
+The driver must send the link recovery to acknowledge the request. They
+are valid states for the driver to send link recovery.
 
-v2: just initialize nbl_list and nbl_lru right after nbl allocation.
-
-Fixes: 76d348fadff5 ("nfsd: have nfsd4_lock use blocking locks for v4.1+ lock")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: 72246da40f37 ("usb: Introduce DesignWare USB3 DRD Driver")
+Fixes: ee5cd41c9117 ("usb: dwc3: Update speed checks for SuperSpeedPlus")
+Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfsd/nfs4state.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/dwc3/gadget.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -252,6 +252,8 @@ find_or_allocate_block(struct nfs4_locko
- 	if (!nbl) {
- 		nbl= kmalloc(sizeof(*nbl), GFP_KERNEL);
- 		if (nbl) {
-+			INIT_LIST_HEAD(&nbl->nbl_list);
-+			INIT_LIST_HEAD(&nbl->nbl_lru);
- 			fh_copy_shallow(&nbl->nbl_fh, fh);
- 			locks_init_lock(&nbl->nbl_lock);
- 			nfsd4_init_cb(&nbl->nbl_cb, lo->lo_owner.so_client,
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1728,7 +1728,6 @@ static int __dwc3_gadget_wakeup(struct d
+ 	u32			reg;
+ 
+ 	u8			link_state;
+-	u8			speed;
+ 
+ 	/*
+ 	 * According to the Databook Remote wakeup request should
+@@ -1738,16 +1737,13 @@ static int __dwc3_gadget_wakeup(struct d
+ 	 */
+ 	reg = dwc3_readl(dwc->regs, DWC3_DSTS);
+ 
+-	speed = reg & DWC3_DSTS_CONNECTSPD;
+-	if ((speed == DWC3_DSTS_SUPERSPEED) ||
+-	    (speed == DWC3_DSTS_SUPERSPEED_PLUS))
+-		return 0;
+-
+ 	link_state = DWC3_DSTS_USBLNKST(reg);
+ 
+ 	switch (link_state) {
++	case DWC3_LINK_STATE_RESET:
+ 	case DWC3_LINK_STATE_RX_DET:	/* in HS, means Early Suspend */
+ 	case DWC3_LINK_STATE_U3:	/* in HS, means SUSPEND */
++	case DWC3_LINK_STATE_RESUME:
+ 		break;
+ 	default:
+ 		return -EINVAL;
 
 
