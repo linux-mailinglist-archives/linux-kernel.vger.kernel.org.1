@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31AA1C1754
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 043051C173B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729944AbgEAOBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:01:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46544 "EHLO mail.kernel.org"
+        id S1729872AbgEAN77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:59:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728979AbgEANZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:25:32 -0400
+        id S1729039AbgEAN2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:28:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56367208D6;
-        Fri,  1 May 2020 13:25:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BB3024956;
+        Fri,  1 May 2020 13:28:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339531;
-        bh=sD6kM9YtnGhI/BuVDPhEHnyPkH8B8ivMCVvFiSdy2nM=;
+        s=default; t=1588339689;
+        bh=+7j9GFWXunKNP2Ttv6Fhq8oqYAqAHsbaixIo/ARYwLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kzavyevKkDIurxbSkwkERpZ0C2RvC7S4VgKvdHOXiXV6L20J3qUdmX4yXdN6dgaNm
-         opYzYfkq3n+zZR31ikcSZnOw50cKnbp96wx7KP/s4qtjG0WRdluqcIY2ntXL64UF3k
-         uDn7Yqe6/ONAewgtrpWllTMWPdemIa7sefdSe6M4=
+        b=SauzXynpors7nsmpTvYOAupugk4aIUi7JI7o7jYxYZBsNxu2hiFLYSkyXKjUvMe+6
+         9C6R1Y1VII38Gr9PfE8S9dZ+PE0Q6nkCnjZ2bSztePdwAHlqJAtUsisPY+fV7jTxDf
+         X22Um5XVtDdXl1ZRwLcWf8BaMn07EQ4Zv8ESSro0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boris Fiuczynski <fiuczy@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 15/70] s390/cio: avoid duplicated ADD uevents
+Subject: [PATCH 4.9 09/80] ceph: return ceph_mdsc_do_request() errors from __get_parent()
 Date:   Fri,  1 May 2020 15:21:03 +0200
-Message-Id: <20200501131518.278040171@linuxfoundation.org>
+Message-Id: <20200501131516.255207683@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
-References: <20200501131513.302599262@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,63 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cornelia Huck <cohuck@redhat.com>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-[ Upstream commit 05ce3e53f375295c2940390b2b429e506e07655c ]
+[ Upstream commit c6d50296032f0b97473eb2e274dc7cc5d0173847 ]
 
-The common I/O layer delays the ADD uevent for subchannels and
-delegates generating this uevent to the individual subchannel
-drivers. The io_subchannel driver will do so when the associated
-ccw_device has been registered -- but unconditionally, so more
-ADD uevents will be generated if a subchannel has been unbound
-from the io_subchannel driver and later rebound.
+Return the error returned by ceph_mdsc_do_request(). Otherwise,
+r_target_inode ends up being NULL this ends up returning ENOENT
+regardless of the error.
 
-To fix this, only generate the ADD event if uevents were still
-suppressed for the device.
-
-Fixes: fa1a8c23eb7d ("s390: cio: Delay uevents for subchannels")
-Message-Id: <20200327124503.9794-2-cohuck@redhat.com>
-Reported-by: Boris Fiuczynski <fiuczy@linux.ibm.com>
-Reviewed-by: Peter Oberparleiter <oberpar@linux.ibm.com>
-Reviewed-by: Boris Fiuczynski <fiuczy@linux.ibm.com>
-Signed-off-by: Cornelia Huck <cohuck@redhat.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/cio/device.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ fs/ceph/export.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/s390/cio/device.c b/drivers/s390/cio/device.c
-index 6aae684128021..2389a1dc6d300 100644
---- a/drivers/s390/cio/device.c
-+++ b/drivers/s390/cio/device.c
-@@ -872,8 +872,10 @@ static void io_subchannel_register(struct ccw_device *cdev)
- 	 * Now we know this subchannel will stay, we can throw
- 	 * our delayed uevent.
- 	 */
--	dev_set_uevent_suppress(&sch->dev, 0);
--	kobject_uevent(&sch->dev.kobj, KOBJ_ADD);
-+	if (dev_get_uevent_suppress(&sch->dev)) {
-+		dev_set_uevent_suppress(&sch->dev, 0);
-+		kobject_uevent(&sch->dev.kobj, KOBJ_ADD);
+diff --git a/fs/ceph/export.c b/fs/ceph/export.c
+index 1780218a48f08..f8e1f31e46439 100644
+--- a/fs/ceph/export.c
++++ b/fs/ceph/export.c
+@@ -157,6 +157,11 @@ static struct dentry *__get_parent(struct super_block *sb,
+ 
+ 	req->r_num_caps = 1;
+ 	err = ceph_mdsc_do_request(mdsc, NULL, req);
++	if (err) {
++		ceph_mdsc_put_request(req);
++		return ERR_PTR(err);
 +	}
- 	/* make it known to the system */
- 	ret = ccw_device_add(cdev);
- 	if (ret) {
-@@ -1082,8 +1084,11 @@ static int io_subchannel_probe(struct subchannel *sch)
- 		 * Throw the delayed uevent for the subchannel, register
- 		 * the ccw_device and exit.
- 		 */
--		dev_set_uevent_suppress(&sch->dev, 0);
--		kobject_uevent(&sch->dev.kobj, KOBJ_ADD);
-+		if (dev_get_uevent_suppress(&sch->dev)) {
-+			/* should always be the case for the console */
-+			dev_set_uevent_suppress(&sch->dev, 0);
-+			kobject_uevent(&sch->dev.kobj, KOBJ_ADD);
-+		}
- 		cdev = sch_get_cdev(sch);
- 		rc = ccw_device_add(cdev);
- 		if (rc) {
++
+ 	inode = req->r_target_inode;
+ 	if (inode)
+ 		ihold(inode);
 -- 
 2.20.1
 
