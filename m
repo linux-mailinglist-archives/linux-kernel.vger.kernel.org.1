@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131BB1C171E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 381861C1409
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730044AbgEAN56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:57:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55096 "EHLO mail.kernel.org"
+        id S1730641AbgEANfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:35:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730042AbgEANaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:30:52 -0400
+        id S1730624AbgEANe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:34:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98A77208D6;
-        Fri,  1 May 2020 13:30:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1B7124953;
+        Fri,  1 May 2020 13:34:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339852;
-        bh=IvnIlFMbhj0nrYkNzgTz4tdNuMiJpw3099iWLQmHY7g=;
+        s=default; t=1588340097;
+        bh=QpvCLsMVUmPNvhbcAdhLPAMk2bdjVhQBVqFvBHaLzLw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q8NUBnj3Wg3alJyo/6Im9xqDAuKteg5Z78ljgcp4yPhIOkIxFE9eTNLhsqls1vAXh
-         ctXIv1NI1o2K9Nd85/vzNsEr/vY+ULtZ3fowr/VCghfpWSsANVNH8UEDnDVYrJZxDJ
-         ZicmN9htN0PN7QFUjbV9cQRudgJ0iVFy9OBKvzJo=
+        b=cEENiLfpX8RHTS2tI3ePqDjt57LOa/3Xgmf57HoqreXwXRbB0Yp+9JCTaGy8GtFkz
+         HVVLO0AyFMlzHHQw9pfVeaXap7rmWaFHoFQqMPQcRYJV0Z2zDftdVt2UlrW0tlvZXr
+         VW2rRkbRMT48oq8JFKL6pOMNrTNnRWHo+7QJkgZ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
-        Frank Rowand <frank.rowand@sony.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 73/80] of: unittest: kmemleak on changeset destroy
-Date:   Fri,  1 May 2020 15:22:07 +0200
-Message-Id: <20200501131536.264804356@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH 4.14 092/117] nfsd: memory corruption in nfsd4_lock()
+Date:   Fri,  1 May 2020 15:22:08 +0200
+Message-Id: <20200501131555.482963497@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
-References: <20200501131513.810761598@linuxfoundation.org>
+In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
+References: <20200501131544.291247695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit b3fb36ed694b05738d45218ea72cf7feb10ce2b1 ]
+commit e1e8399eee72e9d5246d4d1bcacd793debe34dd3 upstream.
 
-kmemleak reports several memory leaks from devicetree unittest.
-This is the fix for problem 1 of 5.
+New struct nfsd4_blocked_lock allocated in find_or_allocate_block()
+does not initialized nbl_list and nbl_lru.
+If conflock allocation fails rollback can call list_del_init()
+access uninitialized fields and corrupt memory.
 
-of_unittest_changeset() reaches deeply into the dynamic devicetree
-functions.  Several nodes were left with an elevated reference
-count and thus were not properly cleaned up.  Fix the reference
-counts so that the memory will be freed.
+v2: just initialize nbl_list and nbl_lru right after nbl allocation.
 
-Fixes: 201c910bd689 ("of: Transactional DT support.")
-Reported-by: Erhard F. <erhard_f@mailbox.org>
-Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 76d348fadff5 ("nfsd: have nfsd4_lock use blocking locks for v4.1+ lock")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/of/unittest.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ fs/nfsd/nfs4state.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index aeb6d3009ae92..144d123f6ea4f 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -539,6 +539,10 @@ static void __init of_unittest_changeset(void)
- 	unittest(!of_changeset_revert(&chgset), "revert failed\n");
- 
- 	of_changeset_destroy(&chgset);
-+
-+	of_node_put(n1);
-+	of_node_put(n2);
-+	of_node_put(n21);
- #endif
- }
- 
--- 
-2.20.1
-
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -246,6 +246,8 @@ find_or_allocate_block(struct nfs4_locko
+ 	if (!nbl) {
+ 		nbl= kmalloc(sizeof(*nbl), GFP_KERNEL);
+ 		if (nbl) {
++			INIT_LIST_HEAD(&nbl->nbl_list);
++			INIT_LIST_HEAD(&nbl->nbl_lru);
+ 			fh_copy_shallow(&nbl->nbl_fh, fh);
+ 			locks_init_lock(&nbl->nbl_lock);
+ 			nfsd4_init_cb(&nbl->nbl_cb, lo->lo_owner.so_client,
 
 
