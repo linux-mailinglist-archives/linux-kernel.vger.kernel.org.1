@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461CE1C21AD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 01:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B418B1C21BD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 01:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgEAXyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 19:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36008 "EHLO
+        id S1727864AbgEAXzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 19:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726951AbgEAXyM (ORCPT
+        with ESMTP id S1727818AbgEAXzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 19:54:12 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D64C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 16:54:12 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id a21so615172pls.4
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 16:54:12 -0700 (PDT)
+        Fri, 1 May 2020 19:55:38 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B24C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 16:55:38 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id w4so6431944ioc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 16:55:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9p0uqSd3tkiiC3VkHU4yGoSUEHdyAJcrn6CCtmMfaBI=;
-        b=XOR4Tt12afi10eez0qYXbuaTt4fYjIk5MtVw9+kThNvwqhylSJ4ehnFJoyr4fZb39i
-         FzPCfWF3H3mkE3wj1l4r6Zbj6vBV0Tyux09TLOmAVG9sw9Bc/y189DXLXjUq6DYRZ8zh
-         S+3256E7FU9MYHBnj0tz8ms3Cd5PfJPIuwcHzztyG/10PQfqVs3720gr/xDXM4qdrWAY
-         9TRLWr1nEVcm1WnqZgFtTTvn9uCdxd63mPSHEjZsgIoURQEOAglQXs6DOM3LP3EUImZw
-         ovpJQn1Ce7aLqO7ncvJal1xBeQc1GkH0xg2nKQAVBrMYFL+5voYVPTusuU7dyBe/w1A5
-         Urdw==
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=sHKDXXFmKLefk7ouUJEbUpV3R1SbP7mtwMpt76UA+DA=;
+        b=JNV2KVg1ZH+8EVBLolWII0BBHpQRuVLIWEb9kPDgdGCwzf8qfK4vQ3GNbhpIOekDCg
+         Bh3cpZ8jriaDTrBfXUgtbxvrppvxK9lvcILx7uGOIs4FaiQxLg05CJYdhy7bjs7RNkHv
+         p177PYQTNycPEjE+MWmUEm0t7zG2cNPtb5rTw8DanQqayscBQ9E/vUIfnZKEyFjdVmrd
+         xUYQpZUIEDOfom/Jj2QkyHj2809QGOIkpqoofsxm7Zm4l79+NPJNIkdlQUZTcbyDKInr
+         jQO9buQlreaiB+3m1XgTQRpY+V+ggg1wdZItHPJ1mdW/etqg3EdnnFWIIKPU+UNEA1aX
+         zsdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9p0uqSd3tkiiC3VkHU4yGoSUEHdyAJcrn6CCtmMfaBI=;
-        b=M4RzfmE80UZBZcaoNvG9wlU/9XW9dQbq0fxAyfMYLQwt7+uJJBTjRB/J2NwsOW7Lah
-         Qa7EnSDh0dilvhPGkhILAHVMqXawymbYxnamJ8NMLY9frdzB4Ti7RY3V8tpNL1wfFUPM
-         yUzu0mbX+Eu4TG+//TFDctNpx0zepOa0Nd2mx27N4P1XUE8jWFLYUjhMUYxnMiZbAPee
-         hSA6NGguaA5vQSAFCv4mNQep2ZOnD2hnxJ8A8NQcjo377JJN9CyWoiXhdOZU/BoVn0LT
-         CaJLS00N2Nq0JBgJPd+df35vnMdT22TJMjOLvGxMXutNW26spaHW1bUGsPCpD6kZMs02
-         4DMA==
-X-Gm-Message-State: AGi0PuaelZ3tKFi7SQsb1vzdfzx+FYDu6CVE9M8rJsUToUbiIsHtMCyz
-        jhqxzTOvqiJD7K60SlZnuV19s7IrCONCZw==
-X-Google-Smtp-Source: APiQypLVJOUETmGHOLwQntBbJj/tXXB80caG5i2Y/6TIb1wVeQy8sXj58WCZr9w3lAXgYzdJT4ee8g==
-X-Received: by 2002:a17:90a:8d02:: with SMTP id c2mr2434921pjo.113.1588377251513;
-        Fri, 01 May 2020 16:54:11 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.145])
-        by smtp.gmail.com with ESMTPSA id u188sm3116062pfu.33.2020.05.01.16.54.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 May 2020 16:54:10 -0700 (PDT)
-Subject: Re: [PATCH v4] eventfd: convert to f_op->read_iter()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <6b29f015-bd7c-0601-cf94-2c077285b933@kernel.dk>
- <20200501231231.GR23230@ZenIV.linux.org.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <03867cf3-d5e7-cc29-37d2-1a417a58af45@kernel.dk>
-Date:   Fri, 1 May 2020 17:54:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=sHKDXXFmKLefk7ouUJEbUpV3R1SbP7mtwMpt76UA+DA=;
+        b=buq6Y9Us6weXomT2pafejGdaA/z2koJnxtUcORQnso419s8+O3fr4+ZYVyKjWk++BW
+         uoj3xGLHARkKaGGsixLb/ChJ+rV7I+EX0qeVr0ysTRyF6VTygIyYZQbXfMskQfROIQ9L
+         6As0fwe5NSjBOqgF0NGwQmfPkN9mslUf/al0iawkncGzShX/nGvJK0hfnrlNNytoQ057
+         NMI5zaruPuBBxxY7s7BWRBPzfrhWl3FIIBcxp1ussdVwfTsR7LWjWsugMxbnqIWMXQYF
+         wZDLkLn8RemKN96PWWxue8pW0M0c8FYrjn4XW/2ninof23schfpzFGCHQFm3srFgpjPh
+         DbtA==
+X-Gm-Message-State: AGi0PubtAf18DYNOOAyFTczeIuMLyIQ+GOTJH/ADQtBGMTIAmSIz2d55
+        cDkRMRzTg6Zx2iwc1QUdAcaIOypatBIzMpPRdrk=
+X-Google-Smtp-Source: APiQypIGlVULBs5tCuA4hHN1IggMjizQp2EZlqIIfFahOGemxzIxM7l3gApqQ2MDk0AcnnE1xwxcMGGfRWlxNYWgij0=
+X-Received: by 2002:a6b:3e0a:: with SMTP id l10mr6145741ioa.112.1588377337438;
+ Fri, 01 May 2020 16:55:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200501231231.GR23230@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6638:1b0:0:0:0:0 with HTTP; Fri, 1 May 2020 16:55:37
+ -0700 (PDT)
+From:   Hannah Wilson <hannahwilson192@gmail.com>
+Date:   Fri, 1 May 2020 23:55:37 +0000
+X-Google-Sender-Auth: 9dJptXKUo8GMc5DTDWdI9ZqIQTM
+Message-ID: <CAEB4Lwsc6BTAN_Dd=475tWhqXG7y3qmEN3w580eXUVG4vWjEPg@mail.gmail.com>
+Subject: GREETINGS MY DEAR,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/1/20 5:12 PM, Al Viro wrote:
-> On Fri, May 01, 2020 at 01:11:09PM -0600, Jens Axboe wrote:
->> +	flags &= EFD_SHARED_FCNTL_FLAGS;
->> +	flags |= O_RDWR;
->> +	fd = get_unused_fd_flags(flags);
->>  	if (fd < 0)
->> -		eventfd_free_ctx(ctx);
->> +		goto err;
->> +
->> +	file = anon_inode_getfile("[eventfd]", &eventfd_fops, ctx, flags);
->> +	if (IS_ERR(file)) {
->> +		put_unused_fd(fd);
->> +		fd = PTR_ERR(file);
->> +		goto err;
->> +	}
->>  
->> +	file->f_mode |= FMODE_NOWAIT;
->> +	fd_install(fd, file);
->> +	return fd;
->> +err:
->> +	eventfd_free_ctx(ctx);
->>  	return fd;
->>  }
-> 
-> Looks sane...  I can take it via vfs.git, or leave it for you if you
-> have other stuff in the same area...
+Hello My Dear.
 
-Would be great if you can queue it up in vfs.git, thanks! Don't have
-anything else that'd conflict with this.
+Please do not feel disturbed for contacting =C2=A0you in this regards, It
+was based on the critical health condition I find mine self. =C2=A0My names
+ are Mrs. Hannah Wilson David, a widow and I=E2=80=99m suffering from brain
+tumor disease and this illness has gotten to a very bad stage, I
+ married my husband for Ten years without any family members and no
+child. =C2=A0My husband died after a brief illness that lasted for few
+days.
 
--- 
-Jens Axboe
+Since the death of my husband, I decided not to remarry again, When my
+late husband was alive he deposited the sum of =C2=A0($  11,450,000.00,
+Nine Million Four Hundred and Fifty Thousand Dollars) with the Bank.
+Presently this money is still in bank. And My  Doctor told me that I
+don't have much time to live because my illness has gotten to a very
+bad stage, Having known my condition I  decided to entrust over the
+deposited fund under your custody to take care of the less-privileged
+ones therein your country or position,
+which i believe that you will utilize this money the way I am going to
+instruct herein.
 
+However all I need and required from you is your sincerity and ability
+to carry out the transaction successfully and fulfill my final wish in
+implementing the charitable project as it requires absolute trust and
+devotion without any failure and I will be glad to see that the bank
+finally release and transfer the fund into your bank account in your
+country even before I die here in the hospital, because my present
+health condition is very critical at the moment everything needs to be
+process rapidly as soon as possible.
+
+It will be my pleasure to compensate you as my Investment
+Manager/Partner with 35 % percent of the total fund for your effort in
+ handling the transaction, 5 % percent for any expenses or processing
+charges fee that will involve during this process while 60% of the
+fund will be Invested into the charity project there in your country
+for the mutual benefit of the orphans and the less privileges ones.
+
+Meanwhile I am waiting for your prompt respond, if only you are
+interested for further details of the transaction and execution of
+this  humanitarian project for the glory and honor of God the merciful
+compassionate.
+
+May bless you and your family.
+Regards,
+Mrs. Hannah Wilson David.
+written from Hospital.
