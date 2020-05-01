@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5E81C1405
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE4A1C1384
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730157AbgEANeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:34:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60848 "EHLO mail.kernel.org"
+        id S1729912AbgEANaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:30:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730586AbgEANef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:34:35 -0400
+        id S1729898AbgEANaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:30:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA991208DB;
-        Fri,  1 May 2020 13:34:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B6ED208C3;
+        Fri,  1 May 2020 13:30:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340075;
-        bh=0w8PVJr8+NNOQecU/YV1JfnyPX2mTWZey+/TOljFZWI=;
+        s=default; t=1588339812;
+        bh=PfmHYvVYYPHRR8l7nqz1iLpSdLhmCb4oaAshHsMMEv0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AOEVemgXgug0Ss0jABInf1wW57JSh4Uz/2O7ubJRBK9CGxd61ThhUvKC9ORFjsrQ5
-         Fl0Sr+ZCHqouAxBMDGgb7M6HUhPbq2AYlheIamjpXbrcb0VJcnvP4E3k3p/xwedOiL
-         6Ccl7hhORXaCXZ6JXyo9zjzkfNEM+wbZ/UMXFBUg=
+        b=L+1lbP5DUt4pzWSY7nIrGpsLmCjCUcPfKkuLj6iFlZA8MGAMZMY6uEQfdeSw25XGv
+         SXXNuyU21BrbxzsNbfQ/4bV/moO3Q2MBRpd/wRAZg4ns2ijv4ntKiaN5ihLsEVAkQD
+         sVqsjSjPUObl0FH7/1k67bAKV09X0IbkjmTqRuIo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Malcolm Priestley <tvboxspy@gmail.com>
-Subject: [PATCH 4.14 074/117] staging: vt6656: Fix drivers TBTT timing counter.
-Date:   Fri,  1 May 2020 15:21:50 +0200
-Message-Id: <20200501131553.808718905@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 4.9 57/80] UAS: fix deadlock in error handling and PM flushing work
+Date:   Fri,  1 May 2020 15:21:51 +0200
+Message-Id: <20200501131530.792275212@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +42,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Malcolm Priestley <tvboxspy@gmail.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit 09057742af98a39ebffa27fac4f889dc873132de upstream.
+commit f6cc6093a729ede1ff5658b493237c42b82ba107 upstream.
 
-The drivers TBTT counter is not synchronized with mac80211 timestamp.
+A SCSI error handler and block runtime PM must not allocate
+memory with GFP_KERNEL. Furthermore they must not wait for
+tasks allocating memory with GFP_KERNEL.
+That means that they cannot share a workqueue with arbitrary tasks.
 
-Reorder the functions and use vnt_update_next_tbtt to do the final
-synchronize.
+Fix this for UAS using a private workqueue.
 
-Fixes: c15158797df6 ("staging: vt6656: implement TSF counter")
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Fixes: f9dc024a2da1f ("uas: pre_reset and suspend: Fix a few races")
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Malcolm Priestley <tvboxspy@gmail.com>
-Link: https://lore.kernel.org/r/375d0b25-e8bc-c8f7-9b10-6cc705d486ee@gmail.com
+Link: https://lore.kernel.org/r/20200415141750.811-2-oneukum@suse.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/vt6656/main_usb.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/usb/storage/uas.c |   43 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 40 insertions(+), 3 deletions(-)
 
---- a/drivers/staging/vt6656/main_usb.c
-+++ b/drivers/staging/vt6656/main_usb.c
-@@ -739,12 +739,15 @@ static void vnt_bss_info_changed(struct
- 			vnt_mac_reg_bits_on(priv, MAC_REG_TFTCTL,
- 					    TFTCTL_TSFCNTREN);
+--- a/drivers/usb/storage/uas.c
++++ b/drivers/usb/storage/uas.c
+@@ -82,6 +82,19 @@ static void uas_free_streams(struct uas_
+ static void uas_log_cmd_state(struct scsi_cmnd *cmnd, const char *prefix,
+ 				int status);
  
--			vnt_adjust_tsf(priv, conf->beacon_rate->hw_value,
--				       conf->sync_tsf, priv->current_tsf);
--
- 			vnt_mac_set_beacon_interval(priv, conf->beacon_int);
- 
- 			vnt_reset_next_tbtt(priv, conf->beacon_int);
++/*
++ * This driver needs its own workqueue, as we need to control memory allocation.
++ *
++ * In the course of error handling and power management uas_wait_for_pending_cmnds()
++ * needs to flush pending work items. In these contexts we cannot allocate memory
++ * by doing block IO as we would deadlock. For the same reason we cannot wait
++ * for anything allocating memory not heeding these constraints.
++ *
++ * So we have to control all work items that can be on the workqueue we flush.
++ * Hence we cannot share a queue and need our own.
++ */
++static struct workqueue_struct *workqueue;
 +
-+			vnt_adjust_tsf(priv, conf->beacon_rate->hw_value,
-+				       conf->sync_tsf, priv->current_tsf);
-+
-+			vnt_update_next_tbtt(priv,
-+					     conf->sync_tsf, conf->beacon_int);
- 		} else {
- 			vnt_clear_current_tsf(priv);
+ static void uas_do_work(struct work_struct *work)
+ {
+ 	struct uas_dev_info *devinfo =
+@@ -110,7 +123,7 @@ static void uas_do_work(struct work_stru
+ 		if (!err)
+ 			cmdinfo->state &= ~IS_IN_WORK_LIST;
+ 		else
+-			schedule_work(&devinfo->work);
++			queue_work(workqueue, &devinfo->work);
+ 	}
+ out:
+ 	spin_unlock_irqrestore(&devinfo->lock, flags);
+@@ -135,7 +148,7 @@ static void uas_add_work(struct uas_cmd_
  
+ 	lockdep_assert_held(&devinfo->lock);
+ 	cmdinfo->state |= IS_IN_WORK_LIST;
+-	schedule_work(&devinfo->work);
++	queue_work(workqueue, &devinfo->work);
+ }
+ 
+ static void uas_zap_pending(struct uas_dev_info *devinfo, int result)
+@@ -1236,7 +1249,31 @@ static struct usb_driver uas_driver = {
+ 	.id_table = uas_usb_ids,
+ };
+ 
+-module_usb_driver(uas_driver);
++static int __init uas_init(void)
++{
++	int rv;
++
++	workqueue = alloc_workqueue("uas", WQ_MEM_RECLAIM, 0);
++	if (!workqueue)
++		return -ENOMEM;
++
++	rv = usb_register(&uas_driver);
++	if (rv) {
++		destroy_workqueue(workqueue);
++		return -ENOMEM;
++	}
++
++	return 0;
++}
++
++static void __exit uas_exit(void)
++{
++	usb_deregister(&uas_driver);
++	destroy_workqueue(workqueue);
++}
++
++module_init(uas_init);
++module_exit(uas_exit);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR(
 
 
