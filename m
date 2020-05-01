@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED841C16B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB821C14AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730985AbgEANwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:52:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37046 "EHLO mail.kernel.org"
+        id S1730125AbgEANlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:41:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729601AbgEANhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:37:47 -0400
+        id S1730909AbgEANlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:41:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F30BA24956;
-        Fri,  1 May 2020 13:37:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E9BC524954;
+        Fri,  1 May 2020 13:41:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340267;
-        bh=XukTGRUrtvKB6T6Dx7YJG9irS2u0oNYCp9zrre1bP/U=;
+        s=default; t=1588340499;
+        bh=EJ6dlQJyvFOAXUfsGqol6Wmqc66jE3hiFMMygdlxfTk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=abNaf4Br8ZxLrXqKp+Prb/PkktfHrL6At8xL3j0MRu7lJPMuTfvQXip1RBl60DlRP
-         ktrB1FG3Ffb0xOkr9Q0Tjsq+H3l4mfgZVZyTK26ORg5jaVEIE2nZwea50VzioHei1E
-         905vOBfGHh9JLjz4bnavyvXcnDu3iAh58Q1Nk7io=
+        b=kuf/lwxCJTjB/oD581RzCYofwJgS907B7AHCirQAt/a1nVeqQIv5SsKUatcO5fJJV
+         koXqU3V0z005jZtj6ROpBh/Y53ZuUnamzdHiqA/pHZMRvXg63s9uvx7CfTK5NmWzuE
+         OHthLHBF431mz7d46lBmp0X6eM1lIe4MryM/gdE8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Clement Leger <cleger@kalray.eu>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Doug Anderson <dianders@chromium.org>
-Subject: [PATCH 5.4 01/83] remoteproc: Fix wrong rvring index computation
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>
+Subject: [PATCH 5.6 007/106] usb: gadget: udc: bdc: Remove unnecessary NULL checks in bdc_req_complete
 Date:   Fri,  1 May 2020 15:22:40 +0200
-Message-Id: <20200501131524.384742556@linuxfoundation.org>
+Message-Id: <20200501131544.396838062@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,35 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Clement Leger <cleger@kalray.eu>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-commit 00a0eec59ddbb1ce966b19097d8a8d2f777e726a upstream.
+commit 09b04abb70f096333bef6bc95fa600b662e7ee13 upstream.
 
-Index of rvring is computed using pointer arithmetic. However, since
-rvring->rvdev->vring is the base of the vring array, computation
-of rvring idx should be reversed. It previously lead to writing at negative
-indices in the resource table.
+When building with Clang + -Wtautological-pointer-compare:
 
-Signed-off-by: Clement Leger <cleger@kalray.eu>
-Link: https://lore.kernel.org/r/20191004073736.8327-1-cleger@kalray.eu
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Doug Anderson <dianders@chromium.org>
+drivers/usb/gadget/udc/bdc/bdc_ep.c:543:28: warning: comparison of
+address of 'req->queue' equal to a null pointer is always false
+[-Wtautological-pointer-compare]
+        if (req == NULL  || &req->queue == NULL || &req->usb_req == NULL)
+                             ~~~~~^~~~~    ~~~~
+drivers/usb/gadget/udc/bdc/bdc_ep.c:543:51: warning: comparison of
+address of 'req->usb_req' equal to a null pointer is always false
+[-Wtautological-pointer-compare]
+        if (req == NULL  || &req->queue == NULL || &req->usb_req == NULL)
+                                                    ~~~~~^~~~~~~    ~~~~
+2 warnings generated.
+
+As it notes, these statements will always evaluate to false so remove
+them.
+
+Fixes: efed421a94e6 ("usb: gadget: Add UDC driver for Broadcom USB3.0 device controller IP BDC")
+Link: https://github.com/ClangBuiltLinux/linux/issues/749
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/remoteproc/remoteproc_core.c |    2 +-
+ drivers/usb/gadget/udc/bdc/bdc_ep.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -400,7 +400,7 @@ rproc_parse_vring(struct rproc_vdev *rvd
- void rproc_free_vring(struct rproc_vring *rvring)
+--- a/drivers/usb/gadget/udc/bdc/bdc_ep.c
++++ b/drivers/usb/gadget/udc/bdc/bdc_ep.c
+@@ -540,7 +540,7 @@ static void bdc_req_complete(struct bdc_
  {
- 	struct rproc *rproc = rvring->rvdev->rproc;
--	int idx = rvring->rvdev->vring - rvring;
-+	int idx = rvring - rvring->rvdev->vring;
- 	struct fw_rsc_vdev *rsc;
+ 	struct bdc *bdc = ep->bdc;
  
- 	idr_remove(&rproc->notifyids, rvring->notifyid);
+-	if (req == NULL  || &req->queue == NULL || &req->usb_req == NULL)
++	if (req == NULL)
+ 		return;
+ 
+ 	dev_dbg(bdc->dev, "%s ep:%s status:%d\n", __func__, ep->name, status);
 
 
