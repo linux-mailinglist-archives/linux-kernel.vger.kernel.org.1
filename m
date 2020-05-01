@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF661C16D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBF931C16E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730491AbgEANxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:53:18 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:60231 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729727AbgEANxN (ORCPT
+        id S1731953AbgEANyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:54:08 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:13148 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730661AbgEANyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:53:13 -0400
-X-Originating-IP: 86.202.105.35
-Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 3553820003;
-        Fri,  1 May 2020 13:53:10 +0000 (UTC)
-Date:   Fri, 1 May 2020 15:53:09 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Jon Hunter <jonathanh@nvidia.com>, devicetree@vger.kernel.org,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] dt-bindings: mfd: Document the RTC present on
- MAX77620
-Message-ID: <20200501135309.GC51277@piout.net>
-References: <20200417170825.2551367-1-thierry.reding@gmail.com>
- <20200430140701.GA21776@bogus>
- <20200430141520.GA101194@piout.net>
- <CAL_Jsq+HzG8QT+kHUjqC8joDxfm1WM+N_F1ZwYXg7cL5faGxVA@mail.gmail.com>
+        Fri, 1 May 2020 09:54:05 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.7]) by rmmx-syy-dmz-app07-12007 (RichMail) with SMTP id 2ee75eac29d8f34-dc397; Fri, 01 May 2020 21:53:31 +0800 (CST)
+X-RM-TRANSID: 2ee75eac29d8f34-dc397
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.0.104] (unknown[112.1.172.204])
+        by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee45eac29d99fd-e9ba9;
+        Fri, 01 May 2020 21:53:31 +0800 (CST)
+X-RM-TRANSID: 2ee45eac29d99fd-e9ba9
+Subject: Re: [PATCH v2]iommu/qcom:fix local_base status check
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20200418134703.1760-1-tangbin@cmss.chinamobile.com>
+ <20200501113745.GE18423@8bytes.org>
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <f59a9807-e804-5331-4ba6-ddcc8cc78f8b@cmss.chinamobile.com>
+Date:   Fri, 1 May 2020 21:54:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+HzG8QT+kHUjqC8joDxfm1WM+N_F1ZwYXg7cL5faGxVA@mail.gmail.com>
+In-Reply-To: <20200501113745.GE18423@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/05/2020 08:00:11-0500, Rob Herring wrote:
-> > I don't think this is true because in the case of a discrete RTC, its
-> > interrupt pin can be connected directly to a PMIC to power up a board
-> > instead of being connected to the SoC. In that case we don't have an
-> > interrupt property but the RTC is still a wakeup source. This is the
-> > usual use case for wakeup-source in the RTC subsystem. Else, if there is
-> > an interrupt, then we assume the RTC is a wakeup source and there is no
-> > need to have the wakeup-source property.
-> 
-> Yes, that would be an example of "unless the wakeup mechanism is
-> somehow not an interrupt". I guess I should add not an interrupt from
-> the perspective of the OS.
-> 
-> So if the wakeup is self contained within the PMIC, why do we need a
-> DT property? The capability is always there and enabling/disabling
-> wakeup from it is userspace policy.
-> 
 
-Yes, for this particular case, I'm not sure wakeup-source is actually
-necessary. If the interrupt line is used to wakeup the SoC, then the
-presence of the interrupts property is enough to enable wakeup.
+On 2020/5/1 19:37, Joerg Roedel wrote:
+> On Sat, Apr 18, 2020 at 09:47:03PM +0800, Tang Bin wrote:
+>> The function qcom_iommu_device_probe() does not perform sufficient
+>> error checking after executing devm_ioremap_resource(), which can
+>> result in crashes if a critical error path is encountered.
+>>
+>> Fixes: 0ae349a0f33f ("iommu/qcom: Add qcom_iommu")
+>>
+>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+>> ---
+>> v2:
+>>   - fix commit message and add fixed tag
+>> ---
+>>   drivers/iommu/qcom_iommu.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+> Applied for v5.7, thanks.
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Thank you very much.
+
+Tang Bin
+
+>
+
+
