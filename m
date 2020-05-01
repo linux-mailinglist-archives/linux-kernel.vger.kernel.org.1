@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51041C1751
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB061C13B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730448AbgEAOB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:01:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47014 "EHLO mail.kernel.org"
+        id S1729441AbgEANcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:32:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729092AbgEANZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:25:49 -0400
+        id S1730257AbgEANcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:32:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A17D1208DB;
-        Fri,  1 May 2020 13:25:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19134208C3;
+        Fri,  1 May 2020 13:32:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339549;
-        bh=FNhRyMpSGvDcWL+FkiSO+CoSo19v+u5k7e/iOZoQyfk=;
+        s=default; t=1588339930;
+        bh=FsjARDXTygae6jd46EpiQsq5YldIFMZaxWZiKkMxT2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nCtys+aLBD6QqMbJvll2HjfNFWVApCdHzruYpRse7GxZWdso5MIvdLOdpeU3Jj3JA
-         Q0wXR3zB7ip0x1SLAkhYH5Rt7ts/DPNznrKGiDwa+D6Bkou/uZW8RiHDYLnBCDopzX
-         3XbwvJt8kIs9aF79RHIr/SCAXQiH400FapT0lf2Q=
+        b=l14Lu3fOTsHNGzc9XyZPi4XTH1zzZrvD15bPOnrZnV5qZwT9lAZi4yw6K8NXn3U/T
+         i4O7sd16L2lAYbvfd/h1rj3ZGn28OTvqMwSNJs1A23P7XfP13y9sU94H8mVOV/xuXc
+         dd5+MkplDxb5fzZZGs0ZG/YDmTyeoCQ81MqjyIqs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 12/70] ASoC: Intel: atom: Take the drv->lock mutex before calling sst_send_slot_map()
+        stable@vger.kernel.org, Manoj Malviya <manojmalviya@chelsio.com>,
+        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 024/117] cxgb4: fix large delays in PTP synchronization
 Date:   Fri,  1 May 2020 15:21:00 +0200
-Message-Id: <20200501131517.423153311@linuxfoundation.org>
+Message-Id: <20200501131547.847864178@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
-References: <20200501131513.302599262@linuxfoundation.org>
+In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
+References: <20200501131544.291247695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
 
-[ Upstream commit 81630dc042af998b9f58cd8e2c29dab9777ea176 ]
+[ Upstream commit bd019427bf3623ee3c7d2845cf921bbf4c14846c ]
 
-sst_send_slot_map() uses sst_fill_and_send_cmd_unlocked() because in some
-places it is called with the drv->lock mutex already held.
+Fetching PTP sync information from mailbox is slow and can take
+up to 10 milliseconds. Reduce this unnecessary delay by directly
+reading the information from the corresponding registers.
 
-So it must always be called with the mutex locked. This commit adds missing
-locking in the sst_set_be_modules() code-path.
-
-Fixes: 24c8d14192cc ("ASoC: Intel: mrfld: add DSP core controls")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200402185359.3424-1-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9c33e4208bce ("cxgb4: Add PTP Hardware Clock (PHC) support")
+Signed-off-by: Manoj Malviya <manojmalviya@chelsio.com>
+Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/intel/atom/sst-atom-controls.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c |   27 +++++--------------------
+ drivers/net/ethernet/chelsio/cxgb4/t4_regs.h   |    3 ++
+ 2 files changed, 9 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index b070d47547450..067cee92d333b 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -963,7 +963,9 @@ static int sst_set_be_modules(struct snd_soc_dapm_widget *w,
- 	dev_dbg(c->dev, "Enter: widget=%s\n", w->name);
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_ptp.c
+@@ -311,32 +311,17 @@ static int cxgb4_ptp_adjtime(struct ptp_
+  */
+ static int cxgb4_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
+ {
+-	struct adapter *adapter = (struct adapter *)container_of(ptp,
+-				   struct adapter, ptp_clock_info);
+-	struct fw_ptp_cmd c;
++	struct adapter *adapter = container_of(ptp, struct adapter,
++					       ptp_clock_info);
+ 	u64 ns;
+-	int err;
  
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		mutex_lock(&drv->lock);
- 		ret = sst_send_slot_map(drv);
-+		mutex_unlock(&drv->lock);
- 		if (ret)
- 			return ret;
- 		ret = sst_send_pipe_module_params(w, k);
--- 
-2.20.1
-
+-	memset(&c, 0, sizeof(c));
+-	c.op_to_portid = cpu_to_be32(FW_CMD_OP_V(FW_PTP_CMD) |
+-				     FW_CMD_REQUEST_F |
+-				     FW_CMD_READ_F |
+-				     FW_PTP_CMD_PORTID_V(0));
+-	c.retval_len16 = cpu_to_be32(FW_CMD_LEN16_V(sizeof(c) / 16));
+-	c.u.ts.sc = FW_PTP_SC_GET_TIME;
+-
+-	err = t4_wr_mbox(adapter, adapter->mbox, &c, sizeof(c), &c);
+-	if (err < 0) {
+-		dev_err(adapter->pdev_dev,
+-			"PTP: %s error %d\n", __func__, -err);
+-		return err;
+-	}
++	ns = t4_read_reg(adapter, T5_PORT_REG(0, MAC_PORT_PTP_SUM_LO_A));
++	ns |= (u64)t4_read_reg(adapter,
++			       T5_PORT_REG(0, MAC_PORT_PTP_SUM_HI_A)) << 32;
+ 
+ 	/* convert to timespec*/
+-	ns = be64_to_cpu(c.u.ts.tm);
+ 	*ts = ns_to_timespec64(ns);
+-
+-	return err;
++	return 0;
+ }
+ 
+ /**
+--- a/drivers/net/ethernet/chelsio/cxgb4/t4_regs.h
++++ b/drivers/net/ethernet/chelsio/cxgb4/t4_regs.h
+@@ -1810,6 +1810,9 @@
+ 
+ #define MAC_PORT_CFG2_A 0x818
+ 
++#define MAC_PORT_PTP_SUM_LO_A 0x990
++#define MAC_PORT_PTP_SUM_HI_A 0x994
++
+ #define MPS_CMN_CTL_A	0x9000
+ 
+ #define COUNTPAUSEMCRX_S    5
 
 
