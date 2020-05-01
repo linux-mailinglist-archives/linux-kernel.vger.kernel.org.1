@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033AA1C16CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9702C1C14A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730469AbgEANxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:53:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35448 "EHLO mail.kernel.org"
+        id S1731413AbgEANld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:41:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730897AbgEANgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:36:48 -0400
+        id S1730785AbgEANl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:41:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72CFD216FD;
-        Fri,  1 May 2020 13:36:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EA2B2173E;
+        Fri,  1 May 2020 13:41:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340207;
-        bh=VzIi27zHtCFvQBF4AgI2T1BoOw7V/A9AHibylt2E0mE=;
+        s=default; t=1588340486;
+        bh=YdeKDp1S9xYSdO6SLjwTBfOnXBIYB8gyo/4DqfWJ088=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HSBHTtJ40GcbLtOzYrTmWqCy0zYXukWIA/f10CGuh6jO3aDon34FuJvnYxMNNULSa
-         tg1H3ZTAXYrnFOjcA2nKZKvIOE5zQQ64w3OWxsFkWvefH3W+M6WysgU5d1WDJYC/uU
-         FtAlKnYnQdTywoT5gJq1LWDvxg7jLB8XMzqppnUc=
+        b=YO4Rh/Lvx5pt3/ZOcKfg//LP4nJsPuny6qGVXJM+FZualVh82PHSobqaqiiPYDmtZ
+         Td3oGGSFi79xXe9th5UxZhRvMOFP+ArMCqf1rLFiyWkhNbwMMdTmutDABTUFiXgmB2
+         UTj8aYJZlsI55fxquw4jvaFr65wldnWWt6bjZGmo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philipp Puschmann <p.puschmann@pironex.de>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 09/46] ASoC: tas571x: disable regulators on failed probe
-Date:   Fri,  1 May 2020 15:22:34 +0200
-Message-Id: <20200501131502.366728597@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Lech Perczak <l.perczak@camlintechnologies.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Jann Horn <jannh@google.com>, Petr Mladek <pmladek@suse.com>,
+        Theodore Tso <tytso@mit.edu>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.6 002/106] printk: queue wake_up_klogd irq_work only if per-CPU areas are ready
+Date:   Fri,  1 May 2020 15:22:35 +0200
+Message-Id: <20200501131543.727103454@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
-References: <20200501131457.023036302@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,92 +49,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Puschmann <p.puschmann@pironex.de>
+From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 
-commit 9df8ba7c63073508e5aa677dade48fcab6a6773e upstream.
+commit ab6f762f0f53162d41497708b33c9a3236d3609e upstream.
 
-If probe fails after enabling the regulators regulator_put is called for
-each supply without having them disabled before. This produces some
-warnings like
+printk_deferred(), similarly to printk_safe/printk_nmi, does not
+immediately attempt to print a new message on the consoles, avoiding
+calls into non-reentrant kernel paths, e.g. scheduler or timekeeping,
+which potentially can deadlock the system.
 
-WARNING: CPU: 0 PID: 90 at drivers/regulator/core.c:2044 _regulator_put.part.0+0x154/0x15c
-[<c010f7a8>] (unwind_backtrace) from [<c010c544>] (show_stack+0x10/0x14)
-[<c010c544>] (show_stack) from [<c012b640>] (__warn+0xd0/0xf4)
-[<c012b640>] (__warn) from [<c012b9b4>] (warn_slowpath_fmt+0x64/0xc4)
-[<c012b9b4>] (warn_slowpath_fmt) from [<c04c4064>] (_regulator_put.part.0+0x154/0x15c)
-[<c04c4064>] (_regulator_put.part.0) from [<c04c4094>] (regulator_put+0x28/0x38)
-[<c04c4094>] (regulator_put) from [<c04c40cc>] (regulator_bulk_free+0x28/0x38)
-[<c04c40cc>] (regulator_bulk_free) from [<c0579b2c>] (release_nodes+0x1d0/0x22c)
-[<c0579b2c>] (release_nodes) from [<c05756dc>] (really_probe+0x108/0x34c)
-[<c05756dc>] (really_probe) from [<c0575aec>] (driver_probe_device+0xb8/0x16c)
-[<c0575aec>] (driver_probe_device) from [<c0575d40>] (device_driver_attach+0x58/0x60)
-[<c0575d40>] (device_driver_attach) from [<c0575da0>] (__driver_attach+0x58/0xcc)
-[<c0575da0>] (__driver_attach) from [<c0573978>] (bus_for_each_dev+0x78/0xc0)
-[<c0573978>] (bus_for_each_dev) from [<c0574b5c>] (bus_add_driver+0x188/0x1e0)
-[<c0574b5c>] (bus_add_driver) from [<c05768b0>] (driver_register+0x74/0x108)
-[<c05768b0>] (driver_register) from [<c061ab7c>] (i2c_register_driver+0x3c/0x88)
-[<c061ab7c>] (i2c_register_driver) from [<c0102df8>] (do_one_initcall+0x58/0x250)
-[<c0102df8>] (do_one_initcall) from [<c01a91bc>] (do_init_module+0x60/0x244)
-[<c01a91bc>] (do_init_module) from [<c01ab5a4>] (load_module+0x2180/0x2540)
-[<c01ab5a4>] (load_module) from [<c01abbd4>] (sys_finit_module+0xd0/0xe8)
-[<c01abbd4>] (sys_finit_module) from [<c01011e0>] (__sys_trace_return+0x0/0x20)
+Those printk() flavors, instead, rely on per-CPU flush irq_work to print
+messages from safer contexts.  For same reasons (recursive scheduler or
+timekeeping calls) printk() uses per-CPU irq_work in order to wake up
+user space syslog/kmsg readers.
 
-Fixes: 3fd6e7d9a146 (ASoC: tas571x: New driver for TI TAS571x power amplifiers)
-Signed-off-by: Philipp Puschmann <p.puschmann@pironex.de>
-Link: https://lore.kernel.org/r/20200414112754.3365406-1-p.puschmann@pironex.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+However, only printk_safe/printk_nmi do make sure that per-CPU areas
+have been initialised and that it's safe to modify per-CPU irq_work.
+This means that, for instance, should printk_deferred() be invoked "too
+early", that is before per-CPU areas are initialised, printk_deferred()
+will perform illegal per-CPU access.
+
+Lech Perczak [0] reports that after commit 1b710b1b10ef ("char/random:
+silence a lockdep splat with printk()") user-space syslog/kmsg readers
+are not able to read new kernel messages.
+
+The reason is printk_deferred() being called too early (as was pointed
+out by Petr and John).
+
+Fix printk_deferred() and do not queue per-CPU irq_work before per-CPU
+areas are initialized.
+
+Link: https://lore.kernel.org/lkml/aa0732c6-5c4e-8a8b-a1c1-75ebe3dca05b@camlintechnologies.com/
+Reported-by: Lech Perczak <l.perczak@camlintechnologies.com>
+Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Tested-by: Jann Horn <jannh@google.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: John Ogness <john.ogness@linutronix.de>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/soc/codecs/tas571x.c |   20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ include/linux/printk.h      |    5 -----
+ init/main.c                 |    1 -
+ kernel/printk/internal.h    |    5 +++++
+ kernel/printk/printk.c      |   34 ++++++++++++++++++++++++++++++++++
+ kernel/printk/printk_safe.c |   11 +----------
+ 5 files changed, 40 insertions(+), 16 deletions(-)
 
---- a/sound/soc/codecs/tas571x.c
-+++ b/sound/soc/codecs/tas571x.c
-@@ -824,8 +824,10 @@ static int tas571x_i2c_probe(struct i2c_
- 
- 	priv->regmap = devm_regmap_init(dev, NULL, client,
- 					priv->chip->regmap_config);
--	if (IS_ERR(priv->regmap))
--		return PTR_ERR(priv->regmap);
-+	if (IS_ERR(priv->regmap)) {
-+		ret = PTR_ERR(priv->regmap);
-+		goto disable_regs;
-+	}
- 
- 	priv->pdn_gpio = devm_gpiod_get_optional(dev, "pdn", GPIOD_OUT_LOW);
- 	if (IS_ERR(priv->pdn_gpio)) {
-@@ -849,7 +851,7 @@ static int tas571x_i2c_probe(struct i2c_
- 
- 	ret = regmap_write(priv->regmap, TAS571X_OSC_TRIM_REG, 0);
- 	if (ret)
--		return ret;
-+		goto disable_regs;
- 
- 	usleep_range(50000, 60000);
- 
-@@ -865,12 +867,20 @@ static int tas571x_i2c_probe(struct i2c_
- 		 */
- 		ret = regmap_update_bits(priv->regmap, TAS571X_MVOL_REG, 1, 0);
- 		if (ret)
--			return ret;
-+			goto disable_regs;
- 	}
- 
--	return devm_snd_soc_register_component(&client->dev,
-+	ret = devm_snd_soc_register_component(&client->dev,
- 				      &priv->component_driver,
- 				      &tas571x_dai, 1);
-+	if (ret)
-+		goto disable_regs;
-+
-+	return ret;
-+
-+disable_regs:
-+	regulator_bulk_disable(priv->chip->num_supply_names, priv->supplies);
-+	return ret;
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -202,7 +202,6 @@ __printf(1, 2) void dump_stack_set_arch_
+ void dump_stack_print_info(const char *log_lvl);
+ void show_regs_print_info(const char *log_lvl);
+ extern asmlinkage void dump_stack(void) __cold;
+-extern void printk_safe_init(void);
+ extern void printk_safe_flush(void);
+ extern void printk_safe_flush_on_panic(void);
+ #else
+@@ -269,10 +268,6 @@ static inline void dump_stack(void)
+ {
  }
  
- static int tas571x_i2c_remove(struct i2c_client *client)
+-static inline void printk_safe_init(void)
+-{
+-}
+-
+ static inline void printk_safe_flush(void)
+ {
+ }
+--- a/init/main.c
++++ b/init/main.c
+@@ -907,7 +907,6 @@ asmlinkage __visible void __init start_k
+ 	boot_init_stack_canary();
+ 
+ 	time_init();
+-	printk_safe_init();
+ 	perf_event_init();
+ 	profile_init();
+ 	call_function_init();
+--- a/kernel/printk/internal.h
++++ b/kernel/printk/internal.h
+@@ -23,6 +23,9 @@ __printf(1, 0) int vprintk_func(const ch
+ void __printk_safe_enter(void);
+ void __printk_safe_exit(void);
+ 
++void printk_safe_init(void);
++bool printk_percpu_data_ready(void);
++
+ #define printk_safe_enter_irqsave(flags)	\
+ 	do {					\
+ 		local_irq_save(flags);		\
+@@ -64,4 +67,6 @@ __printf(1, 0) int vprintk_func(const ch
+ #define printk_safe_enter_irq() local_irq_disable()
+ #define printk_safe_exit_irq() local_irq_enable()
+ 
++static inline void printk_safe_init(void) { }
++static inline bool printk_percpu_data_ready(void) { return false; }
+ #endif /* CONFIG_PRINTK */
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -460,6 +460,18 @@ static char __log_buf[__LOG_BUF_LEN] __a
+ static char *log_buf = __log_buf;
+ static u32 log_buf_len = __LOG_BUF_LEN;
+ 
++/*
++ * We cannot access per-CPU data (e.g. per-CPU flush irq_work) before
++ * per_cpu_areas are initialised. This variable is set to true when
++ * it's safe to access per-CPU data.
++ */
++static bool __printk_percpu_data_ready __read_mostly;
++
++bool printk_percpu_data_ready(void)
++{
++	return __printk_percpu_data_ready;
++}
++
+ /* Return log buffer address */
+ char *log_buf_addr_get(void)
+ {
+@@ -1146,12 +1158,28 @@ static void __init log_buf_add_cpu(void)
+ static inline void log_buf_add_cpu(void) {}
+ #endif /* CONFIG_SMP */
+ 
++static void __init set_percpu_data_ready(void)
++{
++	printk_safe_init();
++	/* Make sure we set this flag only after printk_safe() init is done */
++	barrier();
++	__printk_percpu_data_ready = true;
++}
++
+ void __init setup_log_buf(int early)
+ {
+ 	unsigned long flags;
+ 	char *new_log_buf;
+ 	unsigned int free;
+ 
++	/*
++	 * Some archs call setup_log_buf() multiple times - first is very
++	 * early, e.g. from setup_arch(), and second - when percpu_areas
++	 * are initialised.
++	 */
++	if (!early)
++		set_percpu_data_ready();
++
+ 	if (log_buf != __log_buf)
+ 		return;
+ 
+@@ -2966,6 +2994,9 @@ static DEFINE_PER_CPU(struct irq_work, w
+ 
+ void wake_up_klogd(void)
+ {
++	if (!printk_percpu_data_ready())
++		return;
++
+ 	preempt_disable();
+ 	if (waitqueue_active(&log_wait)) {
+ 		this_cpu_or(printk_pending, PRINTK_PENDING_WAKEUP);
+@@ -2976,6 +3007,9 @@ void wake_up_klogd(void)
+ 
+ void defer_console_output(void)
+ {
++	if (!printk_percpu_data_ready())
++		return;
++
+ 	preempt_disable();
+ 	__this_cpu_or(printk_pending, PRINTK_PENDING_OUTPUT);
+ 	irq_work_queue(this_cpu_ptr(&wake_up_klogd_work));
+--- a/kernel/printk/printk_safe.c
++++ b/kernel/printk/printk_safe.c
+@@ -27,7 +27,6 @@
+  * There are situations when we want to make sure that all buffers
+  * were handled or when IRQs are blocked.
+  */
+-static int printk_safe_irq_ready __read_mostly;
+ 
+ #define SAFE_LOG_BUF_LEN ((1 << CONFIG_PRINTK_SAFE_LOG_BUF_SHIFT) -	\
+ 				sizeof(atomic_t) -			\
+@@ -51,7 +50,7 @@ static DEFINE_PER_CPU(struct printk_safe
+ /* Get flushed in a more safe context. */
+ static void queue_flush_work(struct printk_safe_seq_buf *s)
+ {
+-	if (printk_safe_irq_ready)
++	if (printk_percpu_data_ready())
+ 		irq_work_queue(&s->work);
+ }
+ 
+@@ -402,14 +401,6 @@ void __init printk_safe_init(void)
+ #endif
+ 	}
+ 
+-	/*
+-	 * In the highly unlikely event that a NMI were to trigger at
+-	 * this moment. Make sure IRQ work is set up before this
+-	 * variable is set.
+-	 */
+-	barrier();
+-	printk_safe_irq_ready = 1;
+-
+ 	/* Flush pending messages that did not have scheduled IRQ works. */
+ 	printk_safe_flush();
+ }
 
 
