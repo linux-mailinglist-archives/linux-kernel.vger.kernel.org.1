@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87CB1C135B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F121C13B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbgEAN2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:28:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52162 "EHLO mail.kernel.org"
+        id S1730281AbgEANc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:32:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729158AbgEAN2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:28:51 -0400
+        id S1730284AbgEANcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:32:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD1DE20757;
-        Fri,  1 May 2020 13:28:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 03A1C208C3;
+        Fri,  1 May 2020 13:32:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339731;
-        bh=tTsw+yYwD3xrXKCecdUfo4izDlAh6sniyrh8KljU0Nc=;
+        s=default; t=1588339940;
+        bh=U+U2iYpx0DbAp2Qok+ROLY7JqeDXOVnqZQgUxYD8ArQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l9bzwdduGath70yNY6H6qOM91yEH+fSl58Ff28SVrGkzlnxD5am97y7RpNVYR0tiK
-         OJ8JV/nn/9CooZU/Ar+HtYQHdbE0gTL/7ffN2ReBA9qmT+MWU6vH5UVE5T3ESs9l8D
-         /hy25I9RRkT0uYYXUsixcKUCczZLXCcRSBd5HE3k=
+        b=inCfDtXgbmtZX+CWvvwK/mPgB75l32AYigvDVo9xNKk/7/bal2zG85OzgVm8hln7B
+         x25ReZ5eyJowYisTZhvyD0v4C4KpAKLD4bVYBasFF95nnR1UXZaBXVHDpgG0cirRdz
+         Sq5SG17OGSQo/jK4CdfK5fWMn6lVvBKC+gDmL4Qo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 23/80] net: netrom: Fix potential nr_neigh refcnt leak in nr_add_node
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.14 041/117] iio: xilinx-xadc: Fix sequencer configuration for aux channels in simultaneous mode
 Date:   Fri,  1 May 2020 15:21:17 +0200
-Message-Id: <20200501131521.948479586@linuxfoundation.org>
+Message-Id: <20200501131549.670465445@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
-References: <20200501131513.810761598@linuxfoundation.org>
+In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
+References: <20200501131544.291247695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +44,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-[ Upstream commit d03f228470a8c0a22b774d1f8d47071e0de4f6dd ]
+commit 8bef455c8b1694547ee59e8b1939205ed9d901a6 upstream.
 
-nr_add_node() invokes nr_neigh_get_dev(), which returns a local
-reference of the nr_neigh object to "nr_neigh" with increased refcnt.
+The XADC has two internal ADCs. Depending on the mode it is operating in
+either one or both of them are used. The device manual calls this
+continuous (one ADC) and simultaneous (both ADCs) mode.
 
-When nr_add_node() returns, "nr_neigh" becomes invalid, so the refcount
-should be decreased to keep refcount balanced.
+The meaning of the sequencing register for the aux channels changes
+depending on the mode.
 
-The issue happens in one normal path of nr_add_node(), which forgets to
-decrease the refcnt increased by nr_neigh_get_dev() and causes a refcnt
-leak. It should decrease the refcnt before the function returns like
-other normal paths do.
+In continuous mode each bit corresponds to one of the 16 aux channels. And
+the single ADC will convert them one by one in order.
 
-Fix this issue by calling nr_neigh_put() before the nr_add_node()
-returns.
+In simultaneous mode the aux channels are split into two groups the first 8
+channels are assigned to the first ADC and the other 8 channels to the
+second ADC. The upper 8 bits of the sequencing register are unused and the
+lower 8 bits control both ADCs. This means a bit needs to be set if either
+the corresponding channel from the first group or the second group (or
+both) are set.
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Currently the driver does not have the special handling required for
+simultaneous mode. Add it.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Fixes: bdc8cda1d010 ("iio:adc: Add Xilinx XADC driver")
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/netrom/nr_route.c |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/net/netrom/nr_route.c
-+++ b/net/netrom/nr_route.c
-@@ -199,6 +199,7 @@ static int __must_check nr_add_node(ax25
- 		/* refcount initialized at 1 */
- 		spin_unlock_bh(&nr_node_list_lock);
+---
+ drivers/iio/adc/xilinx-xadc-core.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+--- a/drivers/iio/adc/xilinx-xadc-core.c
++++ b/drivers/iio/adc/xilinx-xadc-core.c
+@@ -785,6 +785,16 @@ static int xadc_preenable(struct iio_dev
+ 	if (ret)
+ 		goto err;
  
-+		nr_neigh_put(nr_neigh);
- 		return 0;
- 	}
- 	nr_node_lock(nr_node);
++	/*
++	 * In simultaneous mode the upper and lower aux channels are samples at
++	 * the same time. In this mode the upper 8 bits in the sequencer
++	 * register are don't care and the lower 8 bits control two channels
++	 * each. As such we must set the bit if either the channel in the lower
++	 * group or the upper group is enabled.
++	 */
++	if (seq_mode == XADC_CONF1_SEQ_SIMULTANEOUS)
++		scan_mask = ((scan_mask >> 8) | scan_mask) & 0xff0000;
++
+ 	ret = xadc_write_adc_reg(xadc, XADC_REG_SEQ(1), scan_mask >> 16);
+ 	if (ret)
+ 		goto err;
 
 
