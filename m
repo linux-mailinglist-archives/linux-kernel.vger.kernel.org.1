@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1F51C1255
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 14:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056B71C10C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 12:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgEAMlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 08:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
+        id S1728578AbgEAKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 06:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728712AbgEAMlr (ORCPT
+        by vger.kernel.org with ESMTP id S1728229AbgEAKWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 08:41:47 -0400
-X-Greylist: delayed 4393 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 May 2020 05:41:47 PDT
-Received: from smtp.tuxdriver.com (tunnel92311-pt.tunnel.tserv13.ash1.ipv6.he.net [IPv6:2001:470:7:9c9::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C41CC061A0C;
-        Fri,  1 May 2020 05:41:47 -0700 (PDT)
-Received: from [107.15.85.130] (helo=localhost)
-        by smtp.tuxdriver.com with esmtpsa (TLSv1:AES256-SHA:256)
-        (Exim 4.63)
-        (envelope-from <nhorman@tuxdriver.com>)
-        id 1jUTq8-0005B2-96; Fri, 01 May 2020 07:28:26 -0400
-Date:   Fri, 1 May 2020 07:28:14 -0400
-From:   Neil Horman <nhorman@tuxdriver.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>, Joe Perches <joe@perches.com>,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 07/15] drop_monitor: work around gcc-10 stringop-overflow
- warning
-Message-ID: <20200501112814.GA2175875@hmswarspite.think-freely.org>
-References: <20200430213101.135134-1-arnd@arndb.de>
- <20200430213101.135134-8-arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430213101.135134-8-arnd@arndb.de>
-X-Spam-Score: -2.9 (--)
-X-Spam-Status: No
+        Fri, 1 May 2020 06:22:38 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46760C08E859
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 03:22:37 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x17so11018740wrt.5
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 03:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=RdVIC3YIQFyu8urT7zjdWEwHBVKl2OyL0ZV9zzoG76c=;
+        b=opcW+SygN2MlxXFPpvkL1LawTKos+FIxVumGnJRRers9BpyMFpHuFnf7COK9b7mhs7
+         KRMDNhrTckGyvj5U+cUMa/euYs3uhEHEAKsr9wv9T4msIqxSXTr1ETLKwbK5vJCTC1VM
+         jjEaKdJ6G/gjJKU9we0oDpgyxe2vdzUtrUlO3V8XqI14JmB/VBhpSJyvxm/o1xwSB6tj
+         iJUzaFB0io6r8CWEeafysWDwHnkYSzRQJK7kIRyncuLafU3cVOQAjnIZYuULolZJ3FZe
+         uaHbtkHvWygr0KQ7P/qY54tY9MfkSU88Cv8HctcVUzGqY9NMWdmxGaDeFt319S6aT3sx
+         SEgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=RdVIC3YIQFyu8urT7zjdWEwHBVKl2OyL0ZV9zzoG76c=;
+        b=phUI/6TAtu7uGzQTYaT/RELELsc9IIS5NYurV/34NZIxrgdo2mvCVo9t44IrlpEbC4
+         NudNzaRHdAdSqlsqxQHz6zIHchHClGsN1nlRzGk9/j1CmHGB0trgFbdwDjwdibiKhRvg
+         kWpkZyo82lapmXfvjs4asumavRAwPiFU1Z7EKxSMmeG14+y3buBJeEjQAtQQGN5Fxhj0
+         vzCu1mHOlmqIRANhezOm1PaYsCGmHy5mxmaqOF1ITHbu6BuNV+EBOfrlfaqSLxCrYUvC
+         kYPjavsSzAtPbWCWgtiaTm1vQ7OErSvR3e5shzBDqxZB4gfm+55tmzd2+0zKdZW8tyuo
+         xTRg==
+X-Gm-Message-State: AGi0PuZNfzOJeHFUrqutPVieODrp2kRX32r9Uxt8y7H6mdY/iDLEG3BR
+        1c5pR94IWhYcrl06vCuwF2+vcLkn
+X-Google-Smtp-Source: APiQypKxSZ1Qs4jIf235zrEuXMlpoFqM8GksJvjrfSUuXD49l3PleXxRL4rVkLTLopYkRgnrz9V3ew==
+X-Received: by 2002:a05:6000:1242:: with SMTP id j2mr3377369wrx.274.1588328555570;
+        Fri, 01 May 2020 03:22:35 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([31.154.190.6])
+        by smtp.gmail.com with ESMTPSA id u3sm3528121wrt.93.2020.05.01.03.22.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 May 2020 03:22:34 -0700 (PDT)
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     linux-kernel@vger.kernel.org, oshpigelman@habana.ai,
+        ttayar@habana.ai
+Cc:     gregkh@linuxfoundation.org, Dotan Barak <dbarak@habana.ai>
+Subject: [PATCH] habanalabs: print all CB handles as hex numbers
+Date:   Fri,  1 May 2020 14:28:19 +0300
+Message-Id: <20200501112819.5466-1-oded.gabbay@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 11:30:49PM +0200, Arnd Bergmann wrote:
-> The current gcc-10 snapshot produces a false-positive warning:
-> 
-> net/core/drop_monitor.c: In function 'trace_drop_common.constprop':
-> cc1: error: writing 8 bytes into a region of size 0 [-Werror=stringop-overflow=]
-> In file included from net/core/drop_monitor.c:23:
-> include/uapi/linux/net_dropmon.h:36:8: note: at offset 0 to object 'entries' with size 4 declared here
->    36 |  __u32 entries;
->       |        ^~~~~~~
-> 
-> I reported this in the gcc bugzilla, but in case it does not get
-> fixed in the release, work around it by using a temporary variable.
-> 
-> Fixes: 9a8afc8d3962 ("Network Drop Monitor: Adding drop monitor implementation & Netlink protocol")
-> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94881
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  net/core/drop_monitor.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/core/drop_monitor.c b/net/core/drop_monitor.c
-> index 8e33cec9fc4e..2ee7bc4c9e03 100644
-> --- a/net/core/drop_monitor.c
-> +++ b/net/core/drop_monitor.c
-> @@ -213,6 +213,7 @@ static void sched_send_work(struct timer_list *t)
->  static void trace_drop_common(struct sk_buff *skb, void *location)
->  {
->  	struct net_dm_alert_msg *msg;
-> +	struct net_dm_drop_point *point;
->  	struct nlmsghdr *nlh;
->  	struct nlattr *nla;
->  	int i;
-> @@ -231,11 +232,13 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
->  	nlh = (struct nlmsghdr *)dskb->data;
->  	nla = genlmsg_data(nlmsg_data(nlh));
->  	msg = nla_data(nla);
-> +	point = msg->points;
->  	for (i = 0; i < msg->entries; i++) {
-> -		if (!memcmp(&location, msg->points[i].pc, sizeof(void *))) {
-> -			msg->points[i].count++;
-> +		if (!memcmp(&location, &point->pc, sizeof(void *))) {
-> +			point->count++;
->  			goto out;
->  		}
-> +		point++;
->  	}
->  	if (msg->entries == dm_hit_limit)
->  		goto out;
-> @@ -244,8 +247,8 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
->  	 */
->  	__nla_reserve_nohdr(dskb, sizeof(struct net_dm_drop_point));
->  	nla->nla_len += NLA_ALIGN(sizeof(struct net_dm_drop_point));
-> -	memcpy(msg->points[msg->entries].pc, &location, sizeof(void *));
-> -	msg->points[msg->entries].count = 1;
-> +	memcpy(point->pc, &location, sizeof(void *));
-> +	point->count = 1;
->  	msg->entries++;
->  
->  	if (!timer_pending(&data->send_timer)) {
-Acked-by: Neil Horman <nhorman@tuxdriver.com>
+From: Dotan Barak <dbarak@habana.ai>
+
+Make all the CB handles printed in the same way and not some as decimal and
+some as hex numbers.
+
+Signed-off-by: Dotan Barak <dbarak@habana.ai>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+---
+ drivers/misc/habanalabs/command_buffer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/misc/habanalabs/command_buffer.c b/drivers/misc/habanalabs/command_buffer.c
+index 6cb92efce4d9..02d13f71b1df 100644
+--- a/drivers/misc/habanalabs/command_buffer.c
++++ b/drivers/misc/habanalabs/command_buffer.c
+@@ -288,7 +288,7 @@ int hl_cb_mmap(struct hl_fpriv *hpriv, struct vm_area_struct *vma)
+ 	cb = hl_cb_get(hdev, &hpriv->cb_mgr, handle);
+ 	if (!cb) {
+ 		dev_err(hdev->dev,
+-			"CB mmap failed, no match to handle %d\n", handle);
++			"CB mmap failed, no match to handle 0x%x\n", handle);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -357,7 +357,7 @@ struct hl_cb *hl_cb_get(struct hl_device *hdev, struct hl_cb_mgr *mgr,
+ 	if (!cb) {
+ 		spin_unlock(&mgr->cb_lock);
+ 		dev_warn(hdev->dev,
+-			"CB get failed, no match to handle %d\n", handle);
++			"CB get failed, no match to handle 0x%x\n", handle);
+ 		return NULL;
+ 	}
+ 
+-- 
+2.17.1
+
