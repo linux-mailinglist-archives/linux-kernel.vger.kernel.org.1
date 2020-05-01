@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C561C19DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C221C19E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730103AbgEAPiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 11:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52474 "EHLO mail.kernel.org"
+        id S1730142AbgEAPjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 11:39:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729836AbgEAPiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 11:38:04 -0400
-Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728893AbgEAPjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 11:39:03 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1601424965;
-        Fri,  1 May 2020 15:38:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FE0724958;
+        Fri,  1 May 2020 15:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588347483;
-        bh=yq71fZecRFuBE9pJTufX7whCpOlACPLvJF4nfyHNyI8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tTa9EunYvRlUJSyIwE9HfhS8C+Cdr9eRbE85TGd2h0Ft6l2dBRP+bE/amdq/BeA2M
-         ywyWiKM9Qg+lJsUbDyoyZ77ByyxABCjv1n/H32yyWjEvRZMXFnMGwKnfLLTGFJolPU
-         8EANNlm5i6gvYg8GRosO/b5xjWAX44b6OLKIwB24=
-Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
-        (envelope-from <mchehab@kernel.org>)
-        id 1jUXjl-00FE5N-AM; Fri, 01 May 2020 17:38:01 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 14/14] docs: staging: use small font for literal includes
-Date:   Fri,  1 May 2020 17:37:58 +0200
-Message-Id: <f0dd118559a49c1a8c1e248382f48d5a07c0751d.1588345503.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <cover.1588345503.git.mchehab+huawei@kernel.org>
-References: <cover.1588345503.git.mchehab+huawei@kernel.org>
+        s=default; t=1588347543;
+        bh=XipnPd5rd2M5w8iTqFjOmWhstavs032S5pyhbIG9/UM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=wbdP/MH9AxBlALdz6uIDyNQCScm1mDXLUX94+vwX4Ws/3t29JSUBUesuuqO0E90Zq
+         pZR+1LICO8k27qfVnpJu4OPDJKnzKEIdMiJHcE2dOB//YZs4NyiPKRmXKa5VWbeuB1
+         /AJyzP0YHu0kG/y6Qt++Ijb3Y1T/RVfs9NN3kfdw=
+Subject: Re: [PATCH 2/3] selftests/ftrace: Pick only the first kprobe event to
+ test
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        Li Philip <philip.li@intel.com>,
+        Liu Yiding <yidingx.liu@intel.com>, skhan@linuxfoundation.org,
+        shuah <shuah@kernel.org>
+References: <158834025077.28357.15141584656220094821.stgit@devnote2>
+ <158834027133.28357.11196486193798517250.stgit@devnote2>
+ <20200501101718.5a15e557@gandalf.local.home>
+From:   shuah <shuah@kernel.org>
+Message-ID: <7751734b-83f1-bf14-9d8e-9092b0b7be3e@kernel.org>
+Date:   Fri, 1 May 2020 09:38:59 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200501101718.5a15e557@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The normal font is too big to display 80 columns, causing extra
-breaks to be added at weird places.
+On 5/1/20 8:17 AM, Steven Rostedt wrote:
+> On Fri,  1 May 2020 22:37:51 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+>> Since the kprobe/kprobe_args_type.tc reads out all event logs
+>> from the trace buffer, the test can fail if there is another
+>> fork event happens.
+>> Use head command to pick only the first kprobe event from
+>> the trace buffer to test the argument types.
+>>
+>> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+>> ---
+>>   .../ftrace/test.d/kprobe/kprobe_args_type.tc       |    2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
+>> index 1bcb67dcae26..81490ecaaa92 100644
+>> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
+>> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
+>> @@ -38,7 +38,7 @@ for width in 64 32 16 8; do
+>>     echo 0 > events/kprobes/testprobe/enable
+>>   
+>>     : "Confirm the arguments is recorded in given types correctly"
+>> -  ARGS=`grep "testprobe" trace | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
+>> +  ARGS=`grep "testprobe" trace | head -n 1 | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
+>>     check_types $ARGS $width
+>>   
+>>     : "Clear event for next loop"
+> 
+> I think I've manually added this exact change to my tests to keep it from
+> failing.
+> 
+> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> 
 
-change to the footnotesize, as this would fit a little bit
-better.
+Does this conflict with:
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- Documentation/staging/index.rst | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date:   Tue Apr 7 14:34:19 2020 +0800
 
-diff --git a/Documentation/staging/index.rst b/Documentation/staging/index.rst
-index 8cc9d94b0a13..184e6aece0a7 100644
---- a/Documentation/staging/index.rst
-+++ b/Documentation/staging/index.rst
-@@ -19,17 +19,41 @@ Unsorted Documentation
- Atomic Types
- ============
- 
-+.. raw:: latex
-+
-+    \footnotesize
-+
- .. include:: ../atomic_t.txt
-    :literal:
- 
-+.. raw:: latex
-+
-+    \normalsize
-+
- Atomic bitops
- =============
- 
-+.. raw:: latex
-+
-+    \footnotesize
-+
- .. include:: ../atomic_bitops.txt
-    :literal:
- 
-+.. raw:: latex
-+
-+    \normalsize
-+
- Memory Barriers
- ===============
- 
-+.. raw:: latex
-+
-+    \footnotesize
-+
- .. include:: ../memory-barriers.txt
-    :literal:
-+
-+.. raw:: latex
-+
-+    \normalsize
--- 
-2.25.4
+     selftests/ftrace: Check the first record for kprobe_args_type.tc
 
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=next&id=f0c0d0cf590f71b2213b29a7ded2cde3d0a1a0ba
+
+I went into mainline yesterday in my rc4 pull request.
+
+Exact change it appears.
+
+diff --git 
+a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc 
+b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
+index 1bcb67dcae26..81490ecaaa92 100644
+--- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
++++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
+@@ -38,7 +38,7 @@ for width in 64 32 16 8; do
+    echo 0 > events/kprobes/testprobe/enable
+
+    : "Confirm the arguments is recorded in given types correctly"
+-  ARGS=`grep "testprobe" trace | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) 
+arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
++  ARGS=`grep "testprobe" trace | head -n 1 | sed -e 's/.* arg1=\(.*\) 
+arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
+    check_types $ARGS $width
+
+    : "Clear event for next loop"
+
+thanks,
+-- Shuah
