@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C67371C1309
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE79B1C1375
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729261AbgEAN03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:26:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48126 "EHLO mail.kernel.org"
+        id S1729778AbgEAN3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:29:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729248AbgEAN00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:26:26 -0400
+        id S1729302AbgEAN3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:29:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4C652166E;
-        Fri,  1 May 2020 13:26:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC928208DB;
+        Fri,  1 May 2020 13:29:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339586;
-        bh=M45ArbKlZ4EsHTyDzyqRLKYdnTh/3Q0IedxNGk/ZHcI=;
+        s=default; t=1588339778;
+        bh=74iTO465UoUa8Ze5YwNrtetiBHOrvZsrEsFg1HbTjFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IYyA1EIAg4vi1/S/HmgRXFFbT2ynBKAZDmcsp1GVQoZ6b7xiW6fnF7OkrLd1O+iVA
-         E7/YvhoqFhdMej4FWVlQheNQ7657CxHmPrwrOMRxVYDIxpla2P1xO1QE4JO2RovKpD
-         mGuffaOtHK8UCF9JTdOt74Nm8aX+J8OqhSm6S0cg=
+        b=c/cxlIA/DwAnUActfiSs/idlbkRCmZ5ZmjewzcgcUTjtA9aVx9yWW2uTLtf7T38+a
+         PIi7k3EvlJ+b0STtxVykCMvIM5ESZaMx792qe2KeTrVRTZ3NoIGVH38zvpkpOHi1Y1
+         Lgfh9Cg0dvUgyr2hiS4hi2NJeLAM8Jhk0kgCdfx8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Malcolm Priestley <tvboxspy@gmail.com>
-Subject: [PATCH 4.4 49/70] staging: vt6656: Fix drivers TBTT timing counter.
-Date:   Fri,  1 May 2020 15:21:37 +0200
-Message-Id: <20200501131528.435193611@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+d889b59b2bb87d4047a2@syzkaller.appspotmail.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.9 44/80] KVM: Check validity of resolved slot when searching memslots
+Date:   Fri,  1 May 2020 15:21:38 +0200
+Message-Id: <20200501131527.509549308@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
-References: <20200501131513.302599262@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Malcolm Priestley <tvboxspy@gmail.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit 09057742af98a39ebffa27fac4f889dc873132de upstream.
+commit b6467ab142b708dd076f6186ca274f14af379c72 upstream.
 
-The drivers TBTT counter is not synchronized with mac80211 timestamp.
+Check that the resolved slot (somewhat confusingly named 'start') is a
+valid/allocated slot before doing the final comparison to see if the
+specified gfn resides in the associated slot.  The resolved slot can be
+invalid if the binary search loop terminated because the search index
+was incremented beyond the number of used slots.
 
-Reorder the functions and use vnt_update_next_tbtt to do the final
-synchronize.
+This bug has existed since the binary search algorithm was introduced,
+but went unnoticed because KVM statically allocated memory for the max
+number of slots, i.e. the access would only be truly out-of-bounds if
+all possible slots were allocated and the specified gfn was less than
+the base of the lowest memslot.  Commit 36947254e5f98 ("KVM: Dynamically
+size memslot array based on number of used slots") eliminated the "all
+possible slots allocated" condition and made the bug embarrasingly easy
+to hit.
 
-Fixes: c15158797df6 ("staging: vt6656: implement TSF counter")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Malcolm Priestley <tvboxspy@gmail.com>
-Link: https://lore.kernel.org/r/375d0b25-e8bc-c8f7-9b10-6cc705d486ee@gmail.com
+Fixes: 9c1a5d38780e6 ("kvm: optimize GFN to memslot lookup with large slots amount")
+Reported-by: syzbot+d889b59b2bb87d4047a2@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200408064059.8957-2-sean.j.christopherson@intel.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/vt6656/main_usb.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ include/linux/kvm_host.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/staging/vt6656/main_usb.c
-+++ b/drivers/staging/vt6656/main_usb.c
-@@ -762,12 +762,15 @@ static void vnt_bss_info_changed(struct
- 			vnt_mac_reg_bits_on(priv, MAC_REG_TFTCTL,
- 					    TFTCTL_TSFCNTREN);
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -914,7 +914,7 @@ search_memslots(struct kvm_memslots *slo
+ 			start = slot + 1;
+ 	}
  
--			vnt_adjust_tsf(priv, conf->beacon_rate->hw_value,
--				       conf->sync_tsf, priv->current_tsf);
--
- 			vnt_mac_set_beacon_interval(priv, conf->beacon_int);
- 
- 			vnt_reset_next_tbtt(priv, conf->beacon_int);
-+
-+			vnt_adjust_tsf(priv, conf->beacon_rate->hw_value,
-+				       conf->sync_tsf, priv->current_tsf);
-+
-+			vnt_update_next_tbtt(priv,
-+					     conf->sync_tsf, conf->beacon_int);
- 		} else {
- 			vnt_clear_current_tsf(priv);
- 
+-	if (gfn >= memslots[start].base_gfn &&
++	if (start < slots->used_slots && gfn >= memslots[start].base_gfn &&
+ 	    gfn < memslots[start].base_gfn + memslots[start].npages) {
+ 		atomic_set(&slots->lru_slot, start);
+ 		return &memslots[start];
 
 
