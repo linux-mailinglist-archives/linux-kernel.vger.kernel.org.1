@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349D41C16FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25461C1748
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730977AbgEANz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:55:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58544 "EHLO mail.kernel.org"
+        id S1729943AbgEAOAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:00:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730392AbgEANdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:33:12 -0400
+        id S1728933AbgEAN06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:26:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94490208C3;
-        Fri,  1 May 2020 13:33:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCE50208D6;
+        Fri,  1 May 2020 13:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339992;
-        bh=zUGitAkhB8RDiv7/HMq0FogI1jM8ADbhJB8eP1+L2C0=;
+        s=default; t=1588339618;
+        bh=vE4sw5pXGrs+jUPMxqzbdGisJdgJaBReRiGMoZcKJXw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1zpk45CKhaj89k9QwcTtR9shz2PbJJklrAoYbvR5ZQLR5Fo18D1NTAwCpVdyDmbX3
-         SRWLaDUkB60D7/xBZkVyISUHreIvevr3o5rGyriLNPdEPzgq3AzacLIAtcdGS7HAzp
-         9t4bijjt/vkt6ijx9m4tfiOpHPp3J9KeJShJvNxw=
+        b=nUoZaNG9/BX5DKHfbWdFjxbAvR7Czu3epjTfwmLLPrcs+CJBy6ZdSWCRCmcyRLJf1
+         NDs3tk7h2dWmLuyZ1seY+DxEPx2K/kMKLX4NvGPx25B4/qPkYhqL6akjtks1wl5Xc7
+         7GfKLlFC3yjPVx4Zt44r27ybpcFWKaO5Ovgv5p5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Longpeng <longpeng2@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Matthew Wilcox <willy@infradead.org>,
+        stable@vger.kernel.org,
+        syzbot+d889b59b2bb87d4047a2@syzkaller.appspotmail.com,
         Sean Christopherson <sean.j.christopherson@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.14 050/117] mm/hugetlb: fix a addressing exception caused by huge_pte_offset
-Date:   Fri,  1 May 2020 15:21:26 +0200
-Message-Id: <20200501131550.709834572@linuxfoundation.org>
+        Cornelia Huck <cohuck@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.4 39/70] KVM: Check validity of resolved slot when searching memslots
+Date:   Fri,  1 May 2020 15:21:27 +0200
+Message-Id: <20200501131525.781677076@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
+References: <20200501131513.302599262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,122 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longpeng <longpeng2@huawei.com>
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-commit 3c1d7e6ccb644d517a12f73a7ff200870926f865 upstream.
+commit b6467ab142b708dd076f6186ca274f14af379c72 upstream.
 
-Our machine encountered a panic(addressing exception) after run for a
-long time and the calltrace is:
+Check that the resolved slot (somewhat confusingly named 'start') is a
+valid/allocated slot before doing the final comparison to see if the
+specified gfn resides in the associated slot.  The resolved slot can be
+invalid if the binary search loop terminated because the search index
+was incremented beyond the number of used slots.
 
-    RIP: hugetlb_fault+0x307/0xbe0
-    RSP: 0018:ffff9567fc27f808  EFLAGS: 00010286
-    RAX: e800c03ff1258d48 RBX: ffffd3bb003b69c0 RCX: e800c03ff1258d48
-    RDX: 17ff3fc00eda72b7 RSI: 00003ffffffff000 RDI: e800c03ff1258d48
-    RBP: ffff9567fc27f8c8 R08: e800c03ff1258d48 R09: 0000000000000080
-    R10: ffffaba0704c22a8 R11: 0000000000000001 R12: ffff95c87b4b60d8
-    R13: 00005fff00000000 R14: 0000000000000000 R15: ffff9567face8074
-    FS:  00007fe2d9ffb700(0000) GS:ffff956900e40000(0000) knlGS:0000000000000000
-    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-    CR2: ffffd3bb003b69c0 CR3: 000000be67374000 CR4: 00000000003627e0
-    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-    Call Trace:
-      follow_hugetlb_page+0x175/0x540
-      __get_user_pages+0x2a0/0x7e0
-      __get_user_pages_unlocked+0x15d/0x210
-      __gfn_to_pfn_memslot+0x3c5/0x460 [kvm]
-      try_async_pf+0x6e/0x2a0 [kvm]
-      tdp_page_fault+0x151/0x2d0 [kvm]
-     ...
-      kvm_arch_vcpu_ioctl_run+0x330/0x490 [kvm]
-      kvm_vcpu_ioctl+0x309/0x6d0 [kvm]
-      do_vfs_ioctl+0x3f0/0x540
-      SyS_ioctl+0xa1/0xc0
-      system_call_fastpath+0x22/0x27
+This bug has existed since the binary search algorithm was introduced,
+but went unnoticed because KVM statically allocated memory for the max
+number of slots, i.e. the access would only be truly out-of-bounds if
+all possible slots were allocated and the specified gfn was less than
+the base of the lowest memslot.  Commit 36947254e5f98 ("KVM: Dynamically
+size memslot array based on number of used slots") eliminated the "all
+possible slots allocated" condition and made the bug embarrasingly easy
+to hit.
 
-For 1G hugepages, huge_pte_offset() wants to return NULL or pudp, but it
-may return a wrong 'pmdp' if there is a race.  Please look at the
-following code snippet:
-
-    ...
-    pud = pud_offset(p4d, addr);
-    if (sz != PUD_SIZE && pud_none(*pud))
-        return NULL;
-    /* hugepage or swap? */
-    if (pud_huge(*pud) || !pud_present(*pud))
-        return (pte_t *)pud;
-
-    pmd = pmd_offset(pud, addr);
-    if (sz != PMD_SIZE && pmd_none(*pmd))
-        return NULL;
-    /* hugepage or swap? */
-    if (pmd_huge(*pmd) || !pmd_present(*pmd))
-        return (pte_t *)pmd;
-    ...
-
-The following sequence would trigger this bug:
-
- - CPU0: sz = PUD_SIZE and *pud = 0 , continue
- - CPU0: "pud_huge(*pud)" is false
- - CPU1: calling hugetlb_no_page and set *pud to xxxx8e7(PRESENT)
- - CPU0: "!pud_present(*pud)" is false, continue
- - CPU0: pmd = pmd_offset(pud, addr) and maybe return a wrong pmdp
-
-However, we want CPU0 to return NULL or pudp in this case.
-
-We must make sure there is exactly one dereference of pud and pmd.
-
-Signed-off-by: Longpeng <longpeng2@huawei.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reviewed-by: Jason Gunthorpe <jgg@mellanox.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200413010342.771-1-longpeng2@huawei.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 9c1a5d38780e6 ("kvm: optimize GFN to memslot lookup with large slots amount")
+Reported-by: syzbot+d889b59b2bb87d4047a2@syzkaller.appspotmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Message-Id: <20200408064059.8957-2-sean.j.christopherson@intel.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/hugetlb.c |   14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ include/linux/kvm_host.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4745,8 +4745,8 @@ pte_t *huge_pte_offset(struct mm_struct
- {
- 	pgd_t *pgd;
- 	p4d_t *p4d;
--	pud_t *pud;
--	pmd_t *pmd;
-+	pud_t *pud, pud_entry;
-+	pmd_t *pmd, pmd_entry;
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -934,7 +934,7 @@ search_memslots(struct kvm_memslots *slo
+ 			start = slot + 1;
+ 	}
  
- 	pgd = pgd_offset(mm, addr);
- 	if (!pgd_present(*pgd))
-@@ -4756,17 +4756,19 @@ pte_t *huge_pte_offset(struct mm_struct
- 		return NULL;
- 
- 	pud = pud_offset(p4d, addr);
--	if (sz != PUD_SIZE && pud_none(*pud))
-+	pud_entry = READ_ONCE(*pud);
-+	if (sz != PUD_SIZE && pud_none(pud_entry))
- 		return NULL;
- 	/* hugepage or swap? */
--	if (pud_huge(*pud) || !pud_present(*pud))
-+	if (pud_huge(pud_entry) || !pud_present(pud_entry))
- 		return (pte_t *)pud;
- 
- 	pmd = pmd_offset(pud, addr);
--	if (sz != PMD_SIZE && pmd_none(*pmd))
-+	pmd_entry = READ_ONCE(*pmd);
-+	if (sz != PMD_SIZE && pmd_none(pmd_entry))
- 		return NULL;
- 	/* hugepage or swap? */
--	if (pmd_huge(*pmd) || !pmd_present(*pmd))
-+	if (pmd_huge(pmd_entry) || !pmd_present(pmd_entry))
- 		return (pte_t *)pmd;
- 
- 	return NULL;
+-	if (gfn >= memslots[start].base_gfn &&
++	if (start < slots->used_slots && gfn >= memslots[start].base_gfn &&
+ 	    gfn < memslots[start].base_gfn + memslots[start].npages) {
+ 		atomic_set(&slots->lru_slot, start);
+ 		return &memslots[start];
 
 
