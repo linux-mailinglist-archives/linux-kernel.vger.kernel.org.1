@@ -2,68 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFA81C1BA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24D71C1BA2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729701AbgEAR0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728933AbgEAR0h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729618AbgEAR0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 13:26:41 -0400
+Received: from verein.lst.de ([213.95.11.211]:47955 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728972AbgEAR0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 May 2020 13:26:37 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A733FC061A0E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4s9Kc9podEipbVFwf7RgdQ5NU0qdM7rKVGMYPDm9ajc=; b=D5N0gekygXT6+UctiNnGtkNDsp
-        QwzkvVAZSO/re5pJZgmFWCOLINt/3indQe534GOZBCt6N6RbtzC/76f3I9/C+PcyiOfbsJBYWh/vC
-        2aTabmU6VYmcTVKID15b6GdfwVRuaPJasIdqhMB8S2ZpyG85SZcNi8Rs6LS5DlR+3dAGpJvIH0zc+
-        1/8yDG82nfnjIti7ECmTV/dRIRSkEnPhZol4CPio5d81OfAnUFvJAGwN9fMgPd8vwzqNgs59kyJly
-        36bMi2gm7fDG2p5EDUR8+bZpN9WSdLO/E/t6BFzepvmIu+0oSJsA9onwhZ78ZnaibgFu+jxmUiamo
-        oAZNOKBQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jUZQY-0003Lj-FX; Fri, 01 May 2020 17:26:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 005CC300130;
-        Fri,  1 May 2020 19:26:17 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E027A29D9C091; Fri,  1 May 2020 19:26:16 +0200 (CEST)
-Date:   Fri, 1 May 2020 19:26:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Remaining randconfig objtool warnings, linux-next-20200428
-Message-ID: <20200501172616.GG3762@hirez.programming.kicks-ass.net>
-References: <CAK8P3a2qLJkokMGt48JRky=WUeAbJRuNmoD1oqfWdrGSC6y1LA@mail.gmail.com>
- <CAK8P3a2Gzj9SVZSGo+PxWR0cMJb1sFwv+ii9J6jEGE-Z41Fr+A@mail.gmail.com>
- <CAK8P3a3exNWHzv7pyV4yvn2hPxUswzSF=G3UJ=evykT5bjfEsw@mail.gmail.com>
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 0A45C68C65; Fri,  1 May 2020 19:26:35 +0200 (CEST)
+Date:   Fri, 1 May 2020 19:26:34 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Martijn Coenen <maco@android.com>, axboe@kernel.dk, hch@lst.de,
+        narayan@google.com, zezeozue@google.com, kernel-team@android.com,
+        maco@google.com, bvanassche@acm.org, Chaitanya.Kulkarni@wdc.com,
+        jaegeuk@kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 01/10] loop: Factor out loop size validation
+Message-ID: <20200501172634.GA22792@lst.de>
+References: <20200429140341.13294-1-maco@android.com> <20200429140341.13294-2-maco@android.com> <20200429141229.GE700644@T590>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a3exNWHzv7pyV4yvn2hPxUswzSF=G3UJ=evykT5bjfEsw@mail.gmail.com>
+In-Reply-To: <20200429141229.GE700644@T590>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 07:21:31PM +0200, Arnd Bergmann wrote:
-> On Thu, Apr 30, 2020 at 4:05 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> it gets into undefined behavior and stops emitting code after the call to
+On Wed, Apr 29, 2020 at 10:12:29PM +0800, Ming Lei wrote:
+> > +static int
+> > +loop_validate_size(loff_t size)
+> > +{
+> > +	if ((loff_t)(sector_t)size != size)
+> > +		return -EFBIG;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> 
+> Now sector_t has been switched to u64 unconditionally, do we still need such
+> validation?
 
-> Do we consider this expected behavior on gcc's side, or is it something
-> that should not happen and needs a gcc bug report?
-
-When it hits UB it is of course free to do whatever it damn well
-pleases, but just stopping code gen seems a little extreme, at least
-issue a WARN that something is up or so.
-
-Not sure how the GCC folks feel about this though.
+Oops, completely forgot about that.  Yes, we can just kill the
+checks.
