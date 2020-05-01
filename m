@@ -2,96 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6951C0F01
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 09:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFD51C0F06
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 09:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728418AbgEAHq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 03:46:57 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:24646 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728406AbgEAHqy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 03:46:54 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-236-crWB7YfiO5yLJYsQLeM4Tg-1; Fri, 01 May 2020 08:46:50 +0100
-X-MC-Unique: crWB7YfiO5yLJYsQLeM4Tg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 1 May 2020 08:46:49 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 1 May 2020 08:46:49 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Andy Lutomirski' <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        stable <stable@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "Erwin Tsaur" <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
-Thread-Topic: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
-Thread-Index: AQHWHx8fSK33XHL44ESHjM2jwgOtw6iS1wyw
-Date:   Fri, 1 May 2020 07:46:48 +0000
-Message-ID: <6c0ca300a3b54b86abac79d6549a0a40@AcuMS.aculab.com>
-References: <158823509800.2094061.9683997333958344535.stgit@dwillia2-desk3.amr.corp.intel.com>
- <CAHk-=wh6d59KAG_6t+NrCLBz-i0OUSJrqurric=m0ZG850Ddkw@mail.gmail.com>
- <CALCETrVP5k25yCfknEPJm=XX0or4o2b2mnzmevnVHGNLNOXJ2g@mail.gmail.com>
- <CAHk-=widQfxhWMUN3bGxM_zg3az0fRKYvFoP8bEhqsCtaEDVAA@mail.gmail.com>
- <CALCETrVq11YVqGZH7J6A=tkHB1AZUWXnKwAfPUQ-m9qXjWfZtg@mail.gmail.com>
-In-Reply-To: <CALCETrVq11YVqGZH7J6A=tkHB1AZUWXnKwAfPUQ-m9qXjWfZtg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1728428AbgEAHse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 03:48:34 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2139 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728380AbgEAHsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 03:48:33 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 2ACBDF1F7EACDF2BC6BB;
+        Fri,  1 May 2020 08:48:32 +0100 (IST)
+Received: from [127.0.0.1] (10.47.3.165) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 1 May 2020
+ 08:48:31 +0100
+Subject: Re: [PATCH 13/15] scsi: sas: avoid gcc-10 zero-length-bounds warning
+To:     Arnd Bergmann <arnd@arndb.de>, <linux-kernel@vger.kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        James Bottomley <James.Bottomley@SteelEye.com>
+CC:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Hannes Reinecke <hare@suse.com>, <linux-scsi@vger.kernel.org>
+References: <20200430213101.135134-1-arnd@arndb.de>
+ <20200430213101.135134-14-arnd@arndb.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <b5e6ef12-c2ac-d0ce-b7a1-a58d4c8de300@huawei.com>
+Date:   Fri, 1 May 2020 08:47:49 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200430213101.135134-14-arnd@arndb.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.3.165]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQW5keSBMdXRvbWlyc2tpDQo+IFNlbnQ6IDMwIEFwcmlsIDIwMjAgMTk6NDINCi4uLg0K
-PiBJIHN1cHBvc2UgdGhlcmUgY291bGQgYmUgYSBjb25zaXN0ZW50IG5hbWluZyBsaWtlIHRoaXM6
-DQo+IA0KPiBjb3B5X2Zyb21fdXNlcigpDQo+IGNvcHlfdG9fdXNlcigpDQo+IA0KPiBjb3B5X2Zy
-b21fdW5jaGVja2VkX2tlcm5lbF9hZGRyZXNzKCkgW3doYXQgcHJvYmVfa2VybmVsX3JlYWQoKSBp
-c10NCj4gY29weV90b191bmNoZWNrZWRfa2VybmVsX2FkZHJlc3MoKSBbd2hhdCBwcm9iZV9rZXJu
-ZWxfd3JpdGUoKSBpc10NCj4gDQo+IGNvcHlfZnJvbV9mYWxsaWJsZSgpIFtmcm9tIGEga2VybmVs
-IGFkZHJlc3MgdGhhdCBjYW4gZmFpbCB0byBhIGtlcm5lbA0KPiBhZGRyZXNzIHRoYXQgY2FuJ3Qg
-ZmFpbF0NCj4gY29weV90b19mYWxsaWJsZSgpIFt0aGUgb3Bwb3NpdGUsIGJ1dCBob3BlZnVsbHkg
-aWRlbnRpY2FsIHRvIG1lbWNweSgpIG9uIHg4Nl0NCj4gDQo+IGNvcHlfZnJvbV9mYWxsaWJsZV90
-b191c2VyKCkNCj4gY29weV9mcm9tX3VzZXJfdG9fZmFsbGlibGUoKQ0KDQpZb3UgbWlzc2VkIG91
-dDoNCmNvcHlfdG8vZnJvbV9pbygpDQpjb3B5X3RvX2lvX2Zyb21fdXNlcigpDQpjb3B5X2Zyb21f
-aW9fdG9fdXNlcigpDQpBbGwgb2Ygd2hpY2ggd2FudCBhbGlnbmVkIGFkZHJlc3NlcyBvbiB0aGUg
-J2lvJyBzaWRlLg0KDQpJdCBtaWdodCBldmVuIGJlIHdvcnRoIHNheWluZyB0aGF0IHRoZSBjb3B5
-X3RvL2Zyb21faW8oKSBjYW4NCmZhaWwgZHVlIHRvIGJhZCBJTyBhY2Nlc3NlcyAocmF0aGVyIHRo
-YW4gYmFkIGFkZHJlc3NlcykuDQpUaGlzIGlzIG5vdCBlbnRpcmVseSB1bmV4cGVjdGVkIHNpbmNl
-IGFsbCBQQ0llIGFjY2Vzc2VzDQpjYW4gZmFpbCB1bmV4cGVjdGVkbHkgKHVzdWFsbHkgd2l0aG91
-dCBhIHRyYXAgYW5kIHJldHVybmluZyAtMSkuDQpCdXQgYSBzeXN0ZW0gY291bGQgYXJyYW5nZSB0
-byBnZW5lcmF0ZSBhIHN5bmNocm9ub3VzIGZhdWx0Lg0KDQpJZiB5b3UgYXJlIGNvcHlpbmcgZGly
-ZWN0bHkgZnJvbSBpbyB0byB1c2VyIHlvdSBuZWVkIHRvDQpkaWZmZXJlbnRpYXRlIGJldHdlZW4g
-YSB1c2VyIHBhZ2UgZmF1bHQgYW5kIGFuIGlvIGFjY2Vzcw0KZXJyb3IuIFRoZSBsYXR0ZXIgc2hv
-dWxkbid0IGdlbmVyYXRlIFNJR1NFR1YuDQpQb3NzaWJseSByZXR1cm4gLUVGQVVMVCBvbiB1c2Vy
-IHBhZ2UgZmF1bHQgYW5kICd0cmFuc2Zlcg0KbGVuZ3RoIHJlbWFpbmluZycgb24gaW8gYWNjZXNz
-IGVycm9yLg0KQWx0aG91Z2ggZmlsbGluZyB0aGUgcmVzdCBvZiB0aGUgYnVmZmVyIHdpdGggMHhm
-ZiBtaWdodCBiZQ0KYXBwcm9wcmlhdGUuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJl
-c3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsx
-IDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On 30/04/2020 22:30, Arnd Bergmann wrote:
+> Two files access the zero-length resp_data[] array, which now
+> causes a compiler warning:
+> 
+> drivers/scsi/aic94xx/aic94xx_tmf.c: In function 'asd_get_tmf_resp_tasklet':
+> drivers/scsi/aic94xx/aic94xx_tmf.c:291:22: warning: array subscript 3 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[0]'} [-Wzero-length-bounds]
+>    291 |   res = ru->resp_data[3];
+>        |         ~~~~~~~~~~~~~^~~
+> In file included from include/scsi/libsas.h:15,
+>                   from drivers/scsi/aic94xx/aic94xx.h:16,
+>                   from drivers/scsi/aic94xx/aic94xx_tmf.c:11:
+> include/scsi/sas.h:557:9: note: while referencing 'resp_data'
+>    557 |  u8     resp_data[0];
+>        |         ^~~~~~~~~
+> drivers/scsi/libsas/sas_task.c: In function 'sas_ssp_task_response':
+> drivers/scsi/libsas/sas_task.c:21:30: warning: array subscript 3 is outside the bounds of an interior zero-length array 'u8[0]' {aka 'unsigned char[0]'} [-Wzero-length-bounds]
+>     21 |   tstat->stat = iu->resp_data[3];
+>        |                 ~~~~~~~~~~~~~^~~
+> In file included from include/scsi/scsi_transport_sas.h:8,
+>                   from drivers/scsi/libsas/sas_internal.h:14,
+>                   from drivers/scsi/libsas/sas_task.c:3:
+> include/scsi/sas.h:557:9: note: while referencing 'resp_data'
+>    557 |  u8     resp_data[0];
+>        |         ^~~~~~~~~
+> 
+> This should really be a flexible-array member, but the structure
+> already has such a member, swapping it out with sense_data[] would
+> cause many more warnings elsewhere.
+> 
+
+
+Hi Arnd,
+
+If we really prefer flexible-array members over zero-length array 
+members, then could we have a union of flexible-array members? I'm not 
+sure if that's a good idea TBH (or even permitted), as these structures 
+are defined by the SAS spec and good practice to keep as consistent as 
+possible, but just wondering.
+
+Apart from that:
+
+Reviewed-by: John Garry <john.garry@huawei.com>
+
+> As a workaround, add a temporary pointer that can be accessed without
+> a warning.
+> 
+> Fixes: 2908d778ab3e ("[SCSI] aic94xx: new driver")
+> Fixes: 366ca51f30de ("[SCSI] libsas: abstract STP task status into a function")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/scsi/aic94xx/aic94xx_tmf.c | 4 +++-
+>   drivers/scsi/libsas/sas_task.c     | 3 ++-
+>   2 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/aic94xx/aic94xx_tmf.c b/drivers/scsi/aic94xx/aic94xx_tmf.c
+> index f814026f26fa..a3139f9766c8 100644
+> --- a/drivers/scsi/aic94xx/aic94xx_tmf.c
+> +++ b/drivers/scsi/aic94xx/aic94xx_tmf.c
+> @@ -269,6 +269,7 @@ static int asd_get_tmf_resp_tasklet(struct asd_ascb *ascb,
+>   	struct ssp_frame_hdr *fh;
+>   	struct ssp_response_iu   *ru;
+>   	int res = TMF_RESP_FUNC_FAILED;
+> +	u8 *resp;
+>   
+>   	ASD_DPRINTK("tmf resp tasklet\n");
+>   
+> @@ -287,8 +288,9 @@ static int asd_get_tmf_resp_tasklet(struct asd_ascb *ascb,
+>   	fh = edb->vaddr + 16;
+>   	ru = edb->vaddr + 16 + sizeof(*fh);
+>   	res = ru->status;
+> +	resp = ru->resp_data;
+>   	if (ru->datapres == 1)	  /* Response data present */
+> -		res = ru->resp_data[3];
+> +		res = resp[3];
+>   #if 0
+>   	ascb->tag = fh->tag;
+>   #endif
+> diff --git a/drivers/scsi/libsas/sas_task.c b/drivers/scsi/libsas/sas_task.c
+> index e2d42593ce52..4cd2f9611c4a 100644
+> --- a/drivers/scsi/libsas/sas_task.c
+> +++ b/drivers/scsi/libsas/sas_task.c
+> @@ -12,13 +12,14 @@ void sas_ssp_task_response(struct device *dev, struct sas_task *task,
+>   			   struct ssp_response_iu *iu)
+>   {
+>   	struct task_status_struct *tstat = &task->task_status;
+> +	u8 *resp = iu->resp_data;
+>   
+>   	tstat->resp = SAS_TASK_COMPLETE;
+>   
+>   	if (iu->datapres == 0)
+>   		tstat->stat = iu->status;
+>   	else if (iu->datapres == 1)
+> -		tstat->stat = iu->resp_data[3];
+> +		tstat->stat = resp[3];
+>   	else if (iu->datapres == 2) {
+>   		tstat->stat = SAM_STAT_CHECK_CONDITION;
+>   		tstat->buf_valid_size =
+> 
 
