@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F8F1C1516
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87BAF1C1524
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731861AbgEANpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46826 "EHLO mail.kernel.org"
+        id S1731804AbgEANo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:44:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731904AbgEANpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:45:16 -0400
+        id S1731332AbgEANoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:44:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B9C920757;
-        Fri,  1 May 2020 13:45:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 999C720757;
+        Fri,  1 May 2020 13:44:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340716;
-        bh=t6QrlUuqm7H12f/LEkP2lMqOz6UI8P+PkX2WkGbdVLQ=;
+        s=default; t=1588340684;
+        bh=XJaNe5pXks9bL5KapSdiW5O2hhPV6fdgJmwFmiAry0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BG/obyQfqY0I6wy2glMBa9lP5/Br6rXRIy4IKQGb417h4OUFgRCmALOq5tdfIrNAz
-         23+Kmbq8aR0PxQ939q+WwU86IH2TpkojBQ0kqM2hHPNk8i4ndzRCYyeChM/ssU0BRr
-         /28W3yrHXt22y8OKcQfA/lNJPw2tf/khKagp9WXI=
+        b=Nt4JXX8lHBWL+ULYvj6ZK63tmlpWw4RyjwX75WMb4cZAnIQwBxvcKZs7LlkfCUKuE
+         4vdmKM2SyIXFKMQVkMXx7yKV825osH7xuwR0oHt/WCDepVAn0hWqDT/237QeqCIs8F
+         iQ8CmBMFCpRjLnExAtM/fg6Y6FD2FIqJLqLLJOvU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tamizh chelvam <tamizhr@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 085/106] mac80211: fix channel switch trigger from unknown mesh peer
-Date:   Fri,  1 May 2020 15:23:58 +0200
-Message-Id: <20200501131553.836958250@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Peter Xu <peterx@redhat.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 086/106] sched/isolation: Allow "isolcpus=" to skip unknown sub-parameters
+Date:   Fri,  1 May 2020 15:23:59 +0200
+Message-Id: <20200501131553.927400371@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
 References: <20200501131543.421333643@linuxfoundation.org>
@@ -44,59 +43,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tamizh chelvam <tamizhr@codeaurora.org>
+From: Peter Xu <peterx@redhat.com>
 
-[ Upstream commit 93e2d04a1888668183f3fb48666e90b9b31d29e6 ]
+[ Upstream commit 3662daf023500dc084fa3b96f68a6f46179ddc73 ]
 
-Previously mesh channel switch happens if beacon contains
-CSA IE without checking the mesh peer info. Due to that
-channel switch happens even if the beacon is not from
-its own mesh peer. Fixing that by checking if the CSA
-originated from the same mesh network before proceeding
-for channel switch.
+The "isolcpus=" parameter allows sub-parameters before the cpulist is
+specified, and if the parser detects an unknown sub-parameters the whole
+parameter will be ignored.
 
-Signed-off-by: Tamizh chelvam <tamizhr@codeaurora.org>
-Link: https://lore.kernel.org/r/1585403604-29274-1-git-send-email-tamizhr@codeaurora.org
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+This design is incompatible with itself when new sub-parameters are added.
+An older kernel will not recognize the new sub-parameter and will
+invalidate the whole parameter so the CPU isolation will not take
+effect. It emits a warning:
+
+    isolcpus: Error, unknown flag
+
+The better and compatible way is to allow "isolcpus=" to skip unknown
+sub-parameters, so that even if new sub-parameters are added an older
+kernel will still be able to behave as usual even if with the new
+sub-parameter specified on the command line.
+
+Ideally this should have been there when the first sub-parameter for
+"isolcpus=" was introduced.
+
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lkml.kernel.org/r/20200403223517.406353-1-peterx@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mesh.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ kernel/sched/isolation.c | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/net/mac80211/mesh.c b/net/mac80211/mesh.c
-index d09b3c789314d..36978a0e50001 100644
---- a/net/mac80211/mesh.c
-+++ b/net/mac80211/mesh.c
-@@ -1257,15 +1257,15 @@ static void ieee80211_mesh_rx_bcn_presp(struct ieee80211_sub_if_data *sdata,
- 		    sdata->u.mesh.mshcfg.rssi_threshold < rx_status->signal)
- 			mesh_neighbour_update(sdata, mgmt->sa, &elems,
- 					      rx_status);
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 008d6ac2342b7..808244f3ddd98 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -149,6 +149,9 @@ __setup("nohz_full=", housekeeping_nohz_full_setup);
+ static int __init housekeeping_isolcpus_setup(char *str)
+ {
+ 	unsigned int flags = 0;
++	bool illegal = false;
++	char *par;
++	int len;
+ 
+ 	while (isalpha(*str)) {
+ 		if (!strncmp(str, "nohz,", 5)) {
+@@ -169,8 +172,22 @@ static int __init housekeeping_isolcpus_setup(char *str)
+ 			continue;
+ 		}
+ 
+-		pr_warn("isolcpus: Error, unknown flag\n");
+-		return 0;
++		/*
++		 * Skip unknown sub-parameter and validate that it is not
++		 * containing an invalid character.
++		 */
++		for (par = str, len = 0; *str && *str != ','; str++, len++) {
++			if (!isalpha(*str) && *str != '_')
++				illegal = true;
++		}
 +
-+		if (ifmsh->csa_role != IEEE80211_MESH_CSA_ROLE_INIT &&
-+		    !sdata->vif.csa_active)
-+			ieee80211_mesh_process_chnswitch(sdata, &elems, true);
++		if (illegal) {
++			pr_warn("isolcpus: Invalid flag %.*s\n", len, par);
++			return 0;
++		}
++
++		pr_info("isolcpus: Skipped unknown flag %.*s\n", len, par);
++		str++;
  	}
  
- 	if (ifmsh->sync_ops)
- 		ifmsh->sync_ops->rx_bcn_presp(sdata,
- 			stype, mgmt, &elems, rx_status);
--
--	if (ifmsh->csa_role != IEEE80211_MESH_CSA_ROLE_INIT &&
--	    !sdata->vif.csa_active)
--		ieee80211_mesh_process_chnswitch(sdata, &elems, true);
- }
- 
- int ieee80211_mesh_finish_csa(struct ieee80211_sub_if_data *sdata)
-@@ -1373,6 +1373,9 @@ static void mesh_rx_csa_frame(struct ieee80211_sub_if_data *sdata,
- 	ieee802_11_parse_elems(pos, len - baselen, true, &elems,
- 			       mgmt->bssid, NULL);
- 
-+	if (!mesh_matches_local(sdata, &elems))
-+		return;
-+
- 	ifmsh->chsw_ttl = elems.mesh_chansw_params_ie->mesh_ttl;
- 	if (!--ifmsh->chsw_ttl)
- 		fwd_csa = false;
+ 	/* Default behaviour for isolcpus without flags */
 -- 
 2.20.1
 
