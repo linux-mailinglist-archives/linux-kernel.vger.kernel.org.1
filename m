@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDB51C1279
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 14:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE1E1C1274
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 14:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgEAM4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 08:56:04 -0400
-Received: from mga04.intel.com ([192.55.52.120]:6076 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728443AbgEAM4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 08:56:04 -0400
-IronPort-SDR: wsEfjivoHtQiaXrgPWugWUD2CEUEw6YaVlrcqgoBPHj7uUXy4fwG6sKgmG57jOiibH9DbcXDyC
- qiZHBDW373Yg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 05:56:03 -0700
-IronPort-SDR: O1sHduvFuwfKtaL4uz4pw1IBSDCYH9a0CZOcFxZ+onPDZCl2PtAWDmbITI5Pah1hopL9FkkfJN
- zVv5v1bQqW/Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,339,1583222400"; 
-   d="scan'208";a="258606958"
-Received: from ssp-jcv-cdi286.jf.intel.com ([10.54.39.33])
-  by orsmga003.jf.intel.com with ESMTP; 01 May 2020 05:56:03 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, eranian@google.com,
-        Kan Liang <kan.liang@linux.intel.com>, stable@vger.kernel.org
-Subject: [RESEND PATCH] perf/x86/intel: Add more available bits for OFFCORE_RESPONSE of Intel Tremont
-Date:   Fri,  1 May 2020 05:54:42 -0700
-Message-Id: <20200501125442.7030-1-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.21.1
+        id S1728803AbgEAMz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 08:55:28 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:48768 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728443AbgEAMz2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 08:55:28 -0400
+Received: from localhost.localdomain ([92.148.198.27])
+        by mwinf5d51 with ME
+        id ZQvK2200L0bxQ9003QvKEZ; Fri, 01 May 2020 14:55:26 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 01 May 2020 14:55:26 +0200
+X-ME-IP: 92.148.198.27
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     yannick.fertre@st.com, philippe.cornu@st.com,
+        benjamin.gaignard@linaro.org, vincent.abriou@st.com,
+        airlied@linux.ie, daniel@ffwll.ch, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, eric@anholt.net, narmstrong@baylibre.com
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] drm/stm: Fix an error handling path in 'stm_drm_platform_probe()'
+Date:   Fri,  1 May 2020 14:55:11 +0200
+Message-Id: <20200501125511.132029-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -40,36 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+If 'drm_dev_register()' fails, a call to 'drv_load()' must be undone, as
+already done in the remove function.
 
-The mask in the extra_regs for Intel Tremont need to be extended to
-allow more defined bits.
-
-"Outstanding Requests" (bit 63) is only available on MSR_OFFCORE_RSP0;
-
-Fixes: 6daeb8737f8a ("perf/x86/intel: Add Tremont core PMU support")
-Reported-by: Stephane Eranian <eranian@google.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Cc: stable@vger.kernel.org
+Fixes: b759012c5fa7 ("drm/stm: Add STM32 LTDC driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- arch/x86/events/intel/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/stm/drv.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 3be51aa06e67..ba08ad1f560b 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -1892,8 +1892,8 @@ static __initconst const u64 tnt_hw_cache_extra_regs
+diff --git a/drivers/gpu/drm/stm/drv.c b/drivers/gpu/drm/stm/drv.c
+index ea9fcbdc68b3..9a66e350abd5 100644
+--- a/drivers/gpu/drm/stm/drv.c
++++ b/drivers/gpu/drm/stm/drv.c
+@@ -206,12 +206,14 @@ static int stm_drm_platform_probe(struct platform_device *pdev)
  
- static struct extra_reg intel_tnt_extra_regs[] __read_mostly = {
- 	/* must define OFFCORE_RSP_X first, see intel_fixup_er() */
--	INTEL_UEVENT_EXTRA_REG(0x01b7, MSR_OFFCORE_RSP_0, 0xffffff9fffull, RSP_0),
--	INTEL_UEVENT_EXTRA_REG(0x02b7, MSR_OFFCORE_RSP_1, 0xffffff9fffull, RSP_1),
-+	INTEL_UEVENT_EXTRA_REG(0x01b7, MSR_OFFCORE_RSP_0, 0x800ff0ffffff9fffull, RSP_0),
-+	INTEL_UEVENT_EXTRA_REG(0x02b7, MSR_OFFCORE_RSP_1, 0xff0ffffff9fffull, RSP_1),
- 	EVENT_EXTRA_END
- };
+ 	ret = drm_dev_register(ddev, 0);
+ 	if (ret)
+-		goto err_put;
++		goto err_unload;
+ 
+ 	drm_fbdev_generic_setup(ddev, 16);
+ 
+ 	return 0;
+ 
++err_unload:
++	drv_unload(ddev);
+ err_put:
+ 	drm_dev_put(ddev);
  
 -- 
-2.21.1
+2.25.1
 
