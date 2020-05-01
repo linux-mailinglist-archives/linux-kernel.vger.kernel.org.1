@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D271C13DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881541C1381
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730468AbgEANdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:33:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59366 "EHLO mail.kernel.org"
+        id S1729900AbgEANaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:30:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730459AbgEANdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:33:39 -0400
+        id S1729032AbgEANaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:30:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B78D2051A;
-        Fri,  1 May 2020 13:33:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B781A208D6;
+        Fri,  1 May 2020 13:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340018;
-        bh=c9hoQVH2Pap3NOwVtdbW/8gK18tfEPHhdYF7KSndtZ0=;
+        s=default; t=1588339810;
+        bh=2C+zaXH0NcVwovhzxCpIT+U1m1TU7namuJZfIR6ant8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nKyFhKbuvjJAS/AfgIg/aFi0TceXnYhMP6V5OuNVrt5+kaDQqKJKO/00jOq5j/Ghv
-         cTIweXPUloZ5Xr5LkVtl0UJtODNFBhn6KX/HuAj0Ecx8v5wfhuSWVIb3viV6O1DG/0
-         a113pQlwMxHldxXRqnHNvdgyG3z/6m/u1QoETu+k=
+        b=SDmIlfpybFALJLGUvkP7SNyg3QSA5vtqMT4wWwTIrL62oHEDqhZqupPog75S7JsKJ
+         OnMWfSchb4jO/wHmEKuSgtiXfJIL02oiZame6R74hiLHpZUsrAhykM0rbf56d7XmiX
+         G8YnAPzbyFMqwZNItpUT81LDg62qaFYENNpzO0Lc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Malcolm Priestley <tvboxspy@gmail.com>
-Subject: [PATCH 4.14 073/117] staging: vt6656: Fix calling conditions of vnt_set_bss_mode
-Date:   Fri,  1 May 2020 15:21:49 +0200
-Message-Id: <20200501131553.720832035@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 4.9 56/80] UAS: no use logging any details in case of ENODEV
+Date:   Fri,  1 May 2020 15:21:50 +0200
+Message-Id: <20200501131530.483623421@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,61 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Malcolm Priestley <tvboxspy@gmail.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit 664ba5180234593b4b8517530e8198bf2f7359e2 upstream.
+commit 5963dec98dc52d52476390485f07a29c30c6a582 upstream.
 
-vnt_set_bss_mode needs to be called on all changes to BSS_CHANGED_BASIC_RATES,
-BSS_CHANGED_ERP_PREAMBLE and BSS_CHANGED_ERP_SLOT
+Once a device is gone, the internal state does not matter anymore.
+There is no need to spam the logs.
 
-Remove all other calls and vnt_update_ifs which is called in vnt_set_bss_mode.
-
-Fixes an issue that preamble mode is not being updated correctly.
-
-Fixes: c12603576e06 ("staging: vt6656: Only call vnt_set_bss_mode on basic rates change.")
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Malcolm Priestley <tvboxspy@gmail.com>
-Link: https://lore.kernel.org/r/44110801-6234-50d8-c583-9388f04b486c@gmail.com
+Fixes: 326349f824619 ("uas: add dead request list")
+Link: https://lore.kernel.org/r/20200415141750.811-1-oneukum@suse.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/staging/vt6656/main_usb.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/storage/uas.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/staging/vt6656/main_usb.c
-+++ b/drivers/staging/vt6656/main_usb.c
-@@ -594,8 +594,6 @@ static int vnt_add_interface(struct ieee
+--- a/drivers/usb/storage/uas.c
++++ b/drivers/usb/storage/uas.c
+@@ -191,6 +191,9 @@ static void uas_log_cmd_state(struct scs
+ 	struct uas_cmd_info *ci = (void *)&cmnd->SCp;
+ 	struct uas_cmd_info *cmdinfo = (void *)&cmnd->SCp;
  
- 	priv->op_mode = vif->type;
- 
--	vnt_set_bss_mode(priv);
--
- 	/* LED blink on TX */
- 	vnt_mac_set_led(priv, LEDSTS_STS, LEDSTS_INTER);
- 
-@@ -682,7 +680,6 @@ static void vnt_bss_info_changed(struct
- 		priv->basic_rates = conf->basic_rates;
- 
- 		vnt_update_top_rates(priv);
--		vnt_set_bss_mode(priv);
- 
- 		dev_dbg(&priv->usb->dev, "basic rates %x\n", conf->basic_rates);
- 	}
-@@ -711,11 +708,14 @@ static void vnt_bss_info_changed(struct
- 			priv->short_slot_time = false;
- 
- 		vnt_set_short_slot_time(priv);
--		vnt_update_ifs(priv);
- 		vnt_set_vga_gain_offset(priv, priv->bb_vga[0]);
- 		vnt_update_pre_ed_threshold(priv, false);
- 	}
- 
-+	if (changed & (BSS_CHANGED_BASIC_RATES | BSS_CHANGED_ERP_PREAMBLE |
-+		       BSS_CHANGED_ERP_SLOT))
-+		vnt_set_bss_mode(priv);
++	if (status == -ENODEV) /* too late */
++		return;
 +
- 	if (changed & BSS_CHANGED_TXPOWER)
- 		vnt_rf_setpower(priv, priv->current_rate,
- 				conf->chandef.chan->hw_value);
+ 	scmd_printk(KERN_INFO, cmnd,
+ 		    "%s %d uas-tag %d inflight:%s%s%s%s%s%s%s%s%s%s%s%s ",
+ 		    prefix, status, cmdinfo->uas_tag,
 
 
