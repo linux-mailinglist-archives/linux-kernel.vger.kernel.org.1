@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A64B1C1461
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405C41C15FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730782AbgEANiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:38:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38272 "EHLO mail.kernel.org"
+        id S1730694AbgEANh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:37:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731084AbgEANim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:38:42 -0400
+        id S1730947AbgEANhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:37:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A053E205C9;
-        Fri,  1 May 2020 13:38:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EBFB24953;
+        Fri,  1 May 2020 13:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340322;
-        bh=kccyWggFbCwVoneumpdT1HwbogboBp2y4gZSkk5jbJM=;
+        s=default; t=1588340234;
+        bh=gvoPlAhdeERC2Ip4BdBniTET9ciqTQp2T1LuscGhOMw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZlKz1+MCjs3kSxnou/pDVGv7nItJ1gvMO7beTntZpf+U9RA7NxFiX4itSIDxzHvV0
-         jPbWEy+XXiBWG/YEZpx0yV5wLa/XVQYE6F5yAHzZfacDVFV+uZPVrqGmluDZLLA0DM
-         Ua+W32cFD0ZWCL0g+lnm8PKbEySTMmtN+z8v2BiY=
+        b=vdFpihOH+teqpNk6I7IinVDDmKX9T194as/3z8wu6ax0PbBfIQzDEGhK0oLv6sNod
+         euEqi6UI8DJYkjnXuMvK4aXnUI9ulDrKj+DqM+p0/DcO+ABT5wzGx+PdhmtsMTdtVC
+         VynwwMeLnZdVMr75zHl8MDpTN4y8i84GsAHakwlE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 18/83] ASoC: wm8960: Fix wrong clock after suspend & resume
+        stable@vger.kernel.org, Roy Spliet <nouveau@spliet.org>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 32/46] ALSA: hda: Explicitly permit using autosuspend if runtime PM is supported
 Date:   Fri,  1 May 2020 15:22:57 +0200
-Message-Id: <20200501131528.700589060@linuxfoundation.org>
+Message-Id: <20200501131510.016049966@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
+References: <20200501131457.023036302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Roy Spliet <nouveau@spliet.org>
 
-commit 1e060a453c8604311fb45ae2f84f67ed673329b4 upstream.
+[ Upstream commit 3ba21113bd33d49f3c300a23fc08cf114c434995 ]
 
-After suspend & resume, wm8960_hw_params may be called when
-bias_level is not SND_SOC_BIAS_ON, then wm8960_configure_clocking
-is not called. But if sample rate is changed at that time, then
-the output clock rate will be not correct.
+This fixes runtime PM not working after a suspend-to-RAM cycle at least for
+the codec-less HDA device found on NVIDIA GPUs.
 
-So judgement of bias_level is SND_SOC_BIAS_ON in wm8960_hw_params
-is not necessary and it causes above issue.
-
-Fixes: 3176bf2d7ccd ("ASoC: wm8960: update pll and clock setting function")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/1587468525-27514-1-git-send-email-shengjiu.wang@nxp.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
+Signed-off-by: Roy Spliet <nouveau@spliet.org>
+Link: https://lore.kernel.org/r/20200413082034.25166-7-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm8960.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/pci/hda/hda_intel.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -860,8 +860,7 @@ static int wm8960_hw_params(struct snd_p
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 72c268e887e55..ff448abb5449f 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2475,8 +2475,10 @@ static int azx_probe_continue(struct azx *chip)
  
- 	wm8960->is_stream_in_use[tx] = true;
+ 	set_default_power_save(chip);
  
--	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_ON &&
--	    !wm8960->is_stream_in_use[!tx])
-+	if (!wm8960->is_stream_in_use[!tx])
- 		return wm8960_configure_clocking(component);
+-	if (azx_has_pm_runtime(chip))
++	if (azx_has_pm_runtime(chip)) {
++		pm_runtime_use_autosuspend(&pci->dev);
+ 		pm_runtime_put_autosuspend(&pci->dev);
++	}
  
- 	return 0;
+ out_free:
+ 	if ((chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+-- 
+2.20.1
+
 
 
