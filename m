@@ -2,105 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36531C1F3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F061C1F3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgEAVHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 17:07:01 -0400
-Received: from mga17.intel.com ([192.55.52.151]:41968 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726045AbgEAVG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 17:06:59 -0400
-IronPort-SDR: MX5d6yeunNxsVI22BgDOvlnp4Slhvr8XNbPOIDfNgLJsLsOTocBnL102tXO2rV6hK4CVsb2cxW
- bzb9lgKQEE0g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 14:06:59 -0700
-IronPort-SDR: ndrAxZLEU5/DjQqA4yIL2o6b5+ROOEw6B1BXjG7cT6PX4yclHY8sdrTh2h5rSxX9mxT64XJeEI
- pGW4vEMquB+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,341,1583222400"; 
-   d="scan'208";a="405849459"
-Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by orsmga004.jf.intel.com with ESMTP; 01 May 2020 14:06:59 -0700
-Subject: [RFC][PATCH 2/2] mm/migrate: annotate possible unnecessary xas_load()
-To:     linux-kernel@vger.kernel.org
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>, npiggin@gmail.com,
-        akpm@linux-foundation.org, willy@infradead.org,
-        yang.shi@linux.alibaba.com, linux-mm@kvack.org
-From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Fri, 01 May 2020 14:05:20 -0700
-References: <20200501210516.DFAFF456@viggo.jf.intel.com>
-In-Reply-To: <20200501210516.DFAFF456@viggo.jf.intel.com>
-Message-Id: <20200501210520.6B29706C@viggo.jf.intel.com>
+        id S1726450AbgEAVGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 17:06:16 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:43617 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbgEAVGQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 17:06:16 -0400
+Received: by mail-oi1-f194.google.com with SMTP id j16so854802oih.10;
+        Fri, 01 May 2020 14:06:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OpLIzM5fC6RDjXcWC7jSJGMnm6huXsAlVMRW1uHqv9w=;
+        b=XPg/Z544xe34RsIaQy3mTC9ubaIaf/WwuAihC9ZqjI7PRbbQdzut9Mj6VQQ7wyiSa/
+         zs8ZgxxFKivTrB4VtxSLp2QefinpHQNyRyajvr0c53EFzsc52VOuds6IDnf/IoXv7+q6
+         yknUdDcWQ2XdBH5Nx5XDGvbEIyrcb8zLOPfQMGQ0lOBQQypfZavAqjZfht1jhO2y+DCl
+         v6cCieXS9EZNIj5mDbbVAr3X8DduQlp1DQpvgwzJBMB1/wRjBSRw1NRkHou++iWd5gcp
+         99Jp47NYhUJYnkz0itz4f6LL7FmCiUN1NpBsqvKp9DR5DNfXw9XT3/BHE7R3kuQgBhTD
+         b1xA==
+X-Gm-Message-State: AGi0Pub9+U/GB/6oyK2zk9LJqwXDXEBOeTe6QP703Y7AyW0QWPf+VIE8
+        JcFA7UcZlLPvMBsdKkOn/g==
+X-Google-Smtp-Source: APiQypJ/+wF6VeKI4dobpnCRZchBnXTFHQ2LsIvG1ifgcaL31NE9ZM/VHZ3b1R7TKwE4A59yzL0yEQ==
+X-Received: by 2002:aca:ecce:: with SMTP id k197mr1138036oih.127.1588367175211;
+        Fri, 01 May 2020 14:06:15 -0700 (PDT)
+Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 60sm1101352ott.17.2020.05.01.14.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 May 2020 14:06:14 -0700 (PDT)
+Received: (nullmailer pid 24617 invoked by uid 1000);
+        Fri, 01 May 2020 21:06:13 -0000
+Date:   Fri, 1 May 2020 16:06:13 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     lee.jones@linaro.org, broonie@kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        linus.walleij@linaro.org, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH 2/6] ASoC: lochnagar: Move binding over to dtschema
+Message-ID: <20200501210613.GD24163@bogus>
+References: <20200427102812.23251-1-ckeepax@opensource.cirrus.com>
+ <20200427102812.23251-2-ckeepax@opensource.cirrus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200427102812.23251-2-ckeepax@opensource.cirrus.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 27, 2020 at 11:28:08AM +0100, Charles Keepax wrote:
+> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> ---
+>  .../devicetree/bindings/sound/cirrus,lochnagar.txt | 39 ---------------
+>  .../bindings/sound/cirrus,lochnagar.yaml           | 58 ++++++++++++++++++++++
+>  2 files changed, 58 insertions(+), 39 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/cirrus,lochnagar.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
+> deleted file mode 100644
+> index 41ae2699f07a9..0000000000000
+> --- a/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
+> +++ /dev/null
+> @@ -1,39 +0,0 @@
+> -Cirrus Logic Lochnagar Audio Development Board
+> -
+> -Lochnagar is an evaluation and development board for Cirrus Logic
+> -Smart CODEC and Amp devices. It allows the connection of most Cirrus
+> -Logic devices on mini-cards, as well as allowing connection of
+> -various application processor systems to provide a full evaluation
+> -platform.  Audio system topology, clocking and power can all be
+> -controlled through the Lochnagar, allowing the device under test
+> -to be used in a variety of possible use cases.
+> -
+> -This binding document describes the binding for the audio portion
+> -of the driver.
+> -
+> -This binding must be part of the Lochnagar MFD binding:
+> -  [4] ../mfd/cirrus,lochnagar.txt
+> -
+> -Required properties:
+> -
+> -  - compatible : One of the following strings:
+> -                 "cirrus,lochnagar2-soundcard"
+> -
+> -  - #sound-dai-cells : Must be set to 1.
+> -
+> -  - clocks : Contains an entry for each entry in clock-names.
+> -  - clock-names : Must include the following clocks:
+> -      "mclk" Master clock source for the sound card, should normally
+> -      be set to LOCHNAGAR_SOUNDCARD_MCLK provided by the Lochnagar
+> -      clock driver.
+> -
+> -Example:
+> -
+> -lochnagar-sc {
+> -	compatible = "cirrus,lochnagar2-soundcard";
+> -
+> -	#sound-dai-cells = <1>;
+> -
+> -	clocks = <&lochnagar_clk LOCHNAGAR_SOUNDCARD_MCLK>;
+> -	clock-names = "mclk";
+> -};
+> diff --git a/Documentation/devicetree/bindings/sound/cirrus,lochnagar.yaml b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.yaml
+> new file mode 100644
+> index 0000000000000..6a266793ebd16
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.yaml
+> @@ -0,0 +1,58 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/cirrus,lochnagar.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Cirrus Logic Lochnagar Audio Development Board
+> +
+> +maintainers:
+> +  - patches@opensource.cirrus.com
+> +
+> +description: |
+> +  Lochnagar is an evaluation and development board for Cirrus Logic
+> +  Smart CODEC and Amp devices. It allows the connection of most Cirrus
+> +  Logic devices on mini-cards, as well as allowing connection of various
+> +  application processor systems to provide a full evaluation platform.
+> +  Audio system topology, clocking and power can all be controlled through
+> +  the Lochnagar, allowing the device under test to be used in a variety of
+> +  possible use cases.
+> +
+> +  This binding document describes the binding for the audio portion of the
+> +  driver.
+> +
+> +  This binding must be part of the Lochnagar MFD binding:
+> +    [1] ../mfd/cirrus,lochnagar.yaml
+> +
+> +properties:
+> +  lochnagar-sc:
+> +    type: object
+> +
+> +    properties:
+> +      compatible:
+> +        contains:
+> +          enum:
+> +            - cirrus,lochnagar2-soundcard
+> +
+> +      '#sound-dai-cells':
+> +        description:
+> +          Must be 1. The first cell indicating the audio interface.
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+'Must be 1' is what the constraint says.
 
-The xas_load() in question also originated in "e286781: mm:
-speculative page references" as a radix_tree_deref_slot(), the
-only one in the tree at the time.
+> +        const: 1
+> +
+> +      clocks:
+> +        maxItems: 1
+> +        description:
+> +          Master clock source for the sound card, should normally be set to
+> +          LOCHNAGAR_SOUNDCARD_MCLK provided by the Lochnagar clock driver.
 
-I'm thoroughly confused why it is needed, though.  A page's
-slot in the page cache should be stabilized by lock_page()
-being held.
+blank line.
 
-So, first of all, add a VM_BUG_ON_ONCE() to make it totally
-clear that the page is locked.
+> +      clock-names:
+> +        const: mclk
+> +        description:
+> +          Must contain the string mclk.
 
-But, even if the page was truncated, we normally check:
+That's what the constraint says already.
 
-	page_mapping(page) != mapping
-
-to check for truncation.  This would seem to imply that we
-are looking for some kind of state change that can happen
-to the xarray slot for a page, but without changing
-page->mapping.
-
-I'm at a loss for that that might be.  Stick a WARN_ON_ONCE()
-in there to see if we ever actually hit this.
-
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Yang Shi <yang.shi@linux.alibaba.com>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
----
-
- b/mm/migrate.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff -puN mm/migrate.c~remove_extra_xas_load_check mm/migrate.c
---- a/mm/migrate.c~remove_extra_xas_load_check	2020-05-01 14:00:43.377525921 -0700
-+++ b/mm/migrate.c	2020-05-01 14:00:43.381525921 -0700
-@@ -407,6 +407,8 @@ int migrate_page_move_mapping(struct add
- 	int dirty;
- 	int expected_count = expected_page_refs(mapping, page) + extra_count;
- 
-+	VM_WARN_ONCE(!PageLocked(page));
-+
- 	if (!mapping) {
- 		/* Anonymous page without mapping */
- 		if (page_count(page) != expected_count)
-@@ -425,7 +427,13 @@ int migrate_page_move_mapping(struct add
- 	newzone = page_zone(newpage);
- 
- 	xas_lock_irq(&xas);
-+	/*
-+	 * 'mapping' was established under the page lock, which
-+	 * prevents the xarray slot for 'page' from being changed.
-+	 * Thus, xas_load() failure here is unexpected.
-+	 */
- 	if (xas_load(&xas) != page) {
-+		WARN_ON_ONCE(1);
- 		xas_unlock_irq(&xas);
- 		return -EAGAIN;
- 	}
-_
+> +
+> +    required:
+> +      - compatible
+> +      - '#sound-dai-cells'
+> +      - clocks
+> +      - clock-names
+> +
+> +    additionalProperties: false
+> -- 
+> 2.11.0
+> 
