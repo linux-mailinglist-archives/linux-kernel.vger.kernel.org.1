@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB821C14AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7FF1C167A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730125AbgEANlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:41:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42010 "EHLO mail.kernel.org"
+        id S1731468AbgEANtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:49:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730909AbgEANlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:41:40 -0400
+        id S1731415AbgEANlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:41:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9BC524954;
-        Fri,  1 May 2020 13:41:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 809F320757;
+        Fri,  1 May 2020 13:41:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340499;
-        bh=EJ6dlQJyvFOAXUfsGqol6Wmqc66jE3hiFMMygdlxfTk=;
+        s=default; t=1588340502;
+        bh=YMHgFr6fxhlVJn3HMme0Cl0WS0IrJyx0JqUcOr2TVQo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kuf/lwxCJTjB/oD581RzCYofwJgS907B7AHCirQAt/a1nVeqQIv5SsKUatcO5fJJV
-         koXqU3V0z005jZtj6ROpBh/Y53ZuUnamzdHiqA/pHZMRvXg63s9uvx7CfTK5NmWzuE
-         OHthLHBF431mz7d46lBmp0X6eM1lIe4MryM/gdE8=
+        b=XgC9mYvILGIpF7KOawmltmWtx4l5Cq3c6g2VZkphEnjgv/TwFrE8N3xNpuO0oTXrf
+         Yj/BKOVM1JKFXnED9x7p2NbHkqGTl/tlfRv9pI5NyAqCNu+k80Kvaxpbt5GlBU7rTx
+         BeLHe1wfzEUDMu4Gdl0dfzNpS7qxW1AH0kyRDQAw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
+        Cristian Birsan <cristian.birsan@microchip.com>,
         Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.6 007/106] usb: gadget: udc: bdc: Remove unnecessary NULL checks in bdc_req_complete
-Date:   Fri,  1 May 2020 15:22:40 +0200
-Message-Id: <20200501131544.396838062@linuxfoundation.org>
+Subject: [PATCH 5.6 008/106] usb: gadget: udc: atmel: Fix vbus disconnect handling
+Date:   Fri,  1 May 2020 15:22:41 +0200
+Message-Id: <20200501131544.536767439@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
 References: <20200501131543.421333643@linuxfoundation.org>
@@ -44,47 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Cristian Birsan <cristian.birsan@microchip.com>
 
-commit 09b04abb70f096333bef6bc95fa600b662e7ee13 upstream.
+commit 12b94da411f9c6d950beb067d913024fd5617a61 upstream.
 
-When building with Clang + -Wtautological-pointer-compare:
+A DMA transfer can be in progress while vbus is lost due to a cable
+disconnect. For endpoints that use DMA, this condition can lead to
+peripheral hang. The patch ensures that endpoints are disabled before
+the clocks are stopped to prevent this issue.
 
-drivers/usb/gadget/udc/bdc/bdc_ep.c:543:28: warning: comparison of
-address of 'req->queue' equal to a null pointer is always false
-[-Wtautological-pointer-compare]
-        if (req == NULL  || &req->queue == NULL || &req->usb_req == NULL)
-                             ~~~~~^~~~~    ~~~~
-drivers/usb/gadget/udc/bdc/bdc_ep.c:543:51: warning: comparison of
-address of 'req->usb_req' equal to a null pointer is always false
-[-Wtautological-pointer-compare]
-        if (req == NULL  || &req->queue == NULL || &req->usb_req == NULL)
-                                                    ~~~~~^~~~~~~    ~~~~
-2 warnings generated.
-
-As it notes, these statements will always evaluate to false so remove
-them.
-
-Fixes: efed421a94e6 ("usb: gadget: Add UDC driver for Broadcom USB3.0 device controller IP BDC")
-Link: https://github.com/ClangBuiltLinux/linux/issues/749
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Fixes: a64ef71ddc13 ("usb: gadget: atmel_usba_udc: condition clocks to vbus state")
+Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
 Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/udc/bdc/bdc_ep.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/gadget/udc/atmel_usba_udc.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/gadget/udc/bdc/bdc_ep.c
-+++ b/drivers/usb/gadget/udc/bdc/bdc_ep.c
-@@ -540,7 +540,7 @@ static void bdc_req_complete(struct bdc_
- {
- 	struct bdc *bdc = ep->bdc;
- 
--	if (req == NULL  || &req->queue == NULL || &req->usb_req == NULL)
-+	if (req == NULL)
- 		return;
- 
- 	dev_dbg(bdc->dev, "%s ep:%s status:%d\n", __func__, ep->name, status);
+--- a/drivers/usb/gadget/udc/atmel_usba_udc.c
++++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
+@@ -1951,10 +1951,10 @@ static irqreturn_t usba_vbus_irq_thread(
+ 			usba_start(udc);
+ 		} else {
+ 			udc->suspended = false;
+-			usba_stop(udc);
+-
+ 			if (udc->driver->disconnect)
+ 				udc->driver->disconnect(&udc->gadget);
++
++			usba_stop(udc);
+ 		}
+ 		udc->vbus_prev = vbus;
+ 	}
 
 
