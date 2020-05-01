@@ -2,122 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD381C1FBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2364B1C1FFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgEAVit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 17:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
+        id S1726475AbgEAVtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 17:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgEAVis (ORCPT
+        with ESMTP id S1726045AbgEAVty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 17:38:48 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72367C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 14:38:48 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id f18so3811617lja.13
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 14:38:48 -0700 (PDT)
+        Fri, 1 May 2020 17:49:54 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5738DC061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 14:49:54 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id l11so4899752lfc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 14:49:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lmcdipzgY1Nm1KXrImEVFcXHk9g8rdDKWZCNtxFitno=;
-        b=FGlzSNtxTM+Pacz+O/M9t0vRdXoDnTsFtPa7jbcIqF34jEjXmAxn+k/Sd0TI8nkvas
-         0eTH8/sQlFcmK9KtbHE6QbEslIvvYRvcP417Js4Gt9zc1QBLalx6s1nU57/nai9FIxZZ
-         Fd2tGphBTKPMiRmuErFAlderCbJaRiqEuXzLVoX7K00NXnznk4eSMnISP3agPakhuA8R
-         VuprJMSY31APUe1S+hOlQZQGW1SOlv7apQ6SB93/JtZGr7S8HPRcoQy/p6dcZ8k34EZK
-         9YMjTe8f9VPCJF7wQ0a1KTnpbgBRRBI1pxTSRIUzfEKU9XTkI1j//j3L/uIBeUb+x6h0
-         DY2g==
+         :cc:content-transfer-encoding;
+        bh=ppgaHl6cSgNWAC/eU/OoA0QTmOCWQ6geVBF21oFi/iU=;
+        b=c2RRApqWRYey+5q+fGhivtgpZLBoNYYVSxsgYqDukBcT1pC+X1l3QiEIU+npLlu8Km
+         sZmlrIrtLYAy158atE7AiqJwC7WsI0zUvtiWtZiwKtzHbKLd8fZ4JQwyaweWWeXQKG7L
+         WZg2hHNlEQgRxMu51oPmydWLeYKGwBZ4d8gUoHzDOmcNJeMwCA89L/UHHrldbI3SKawv
+         xGFvoSeZeEHRZsIoBLAG0emC7vdYc37Hp9OrODT0goJwdP2L331VqB+SNhk/U80nDUOV
+         LdRD12m8rhrswcVa0869pGgj2jIxCja9zFLC3nDZalLFWwp0OiCgiQA824N2wwpynW6U
+         DgCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lmcdipzgY1Nm1KXrImEVFcXHk9g8rdDKWZCNtxFitno=;
-        b=J0/SVrO4O4K8tLYRAxjbZDjGkv+TsWC2ZcI79OB+Pg4XbraxbMrONt/vCkVnVAtKe9
-         UpnnPSeBcr+e5/1bN7rObFLwBf65U6Xfkcg7y2tuI+bl69qmLVDE2WNTgVqbexPXI3fB
-         nw3q0fHLLD+sPmggW30syCfu+GLYFBNQBcoStl5oVOKXErmpFkfMSe8xZgSOKkBpGnsl
-         oVMD4DKiIehXuuNoieYQ5hau2EdH0OUieT3Fk6hk63nlexHSkXAM8Rlm2QRPy7yh0yLm
-         MGzstD6AjmxZd+kKD6J00E3d/TUBeX2Vk9tl5WE/PyEL9cfRZwajy0LT9aTxnfpgxOM5
-         /YJw==
-X-Gm-Message-State: AGi0Pub5ucgnS0FMH4/7P10YMLmOttmR+3+torFnr+yNCrhDk8+VFLIc
-        QpmZZH4f9of/8dIqe99iyoQZlN58u0R8+EukoFE=
-X-Google-Smtp-Source: APiQypJT8Fb0if/6Vo7PhY7i0k2oxLsCFkb/XsjaemmIsbxtxAN552H3CqOFxI+Y8FQ3twLOF7lrwV5j2DuHUbGSr3k=
-X-Received: by 2002:a2e:7815:: with SMTP id t21mr3504664ljc.146.1588369126880;
- Fri, 01 May 2020 14:38:46 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ppgaHl6cSgNWAC/eU/OoA0QTmOCWQ6geVBF21oFi/iU=;
+        b=IGMCptB6St4IMFh5wvhAualXbt/I7mwa421n1etcVlxdXaJv8d8FzBz0vBZmGvcCd2
+         Xu5v7AlrzbEt9AlLRLekj8e67tjP55b/vV1m3urHFFfnr1L2NoJCArPJVHgv2qTkn3sI
+         aDoVa8kvlXGUbIzR0waaI3YJ6CueztDYBAjxZCrWJLf/9whlh31+/kMbnoaTyXhsK1mK
+         Xu5ReQM08ZBgqdHw+IRzxWX3o+o/UT3YkWIv51NUiVZ9YTipJ02dG0bPqhRtwHVqnIgZ
+         RzQhx0Eiw8YOzwSjvwxU956x0Nudz9cqIHwKIHqA9YKHjPHZW4xc/gRYJMLYaFQixZwv
+         9vzw==
+X-Gm-Message-State: AGi0PubE4la2NmGtYmfEG8TfTsEZROQ9yizm9ykhkDz3SRw3ycjY3qb9
+        V7lvu5J4ne446SQeSSecJ8rWJs4cKS5fSGLRtHswTVTcZ0xhGA==
+X-Google-Smtp-Source: APiQypLowFKPTc8b0ADJ+W6+ScqnSj9D8IkjQm01RGC+zP/cUNAk+b7iBtMPM4oIYlaPgd8tmQ9M4XmTb/mI3GYR5Fw=
+X-Received: by 2002:a19:40d2:: with SMTP id n201mr3327092lfa.82.1588369792597;
+ Fri, 01 May 2020 14:49:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <1588277518-21425-1-git-send-email-jrdr.linux@gmail.com> <c25cf212-8684-a107-bc9c-c7067dea7447@nvidia.com>
-In-Reply-To: <c25cf212-8684-a107-bc9c-c7067dea7447@nvidia.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat, 2 May 2020 03:16:40 +0530
-Message-ID: <CAFqt6zaZcTeh+-ZQCanpu-tQL7zD7-iQ0DFvHLJ6Bdwkr9ZXrg@mail.gmail.com>
-Subject: Re: [PATCH] mm/gup.c: Handle error at earliest for incorrect nr_pages value
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
+References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 2 May 2020 03:19:40 +0530
+Message-ID: <CA+G9fYtikBkBLyV0_yZua7GDpZCmTooZOCuE9xdkE62J_Gtk2A@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/83] 5.4.37-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 2, 2020 at 3:03 AM John Hubbard <jhubbard@nvidia.com> wrote:
+On Fri, 1 May 2020 at 19:08, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On 2020-04-30 13:11, Souptick Joarder wrote:
-> > As per documentation, pin_user_pages_fast() & get_user_pages_fast()
-> > will return 0, if nr_pages <= 0. But this can be figure out only after
-> > going inside the internal_get_user_pages_fast().
-> >
-> > This can be handled early. Adding a check for the same.
+> This is the start of the stable review cycle for the 5.4.37 release.
+> There are 83 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
+> Responses should be made by Sun, 03 May 2020 13:12:02 +0000.
+> Anything received after that time might be too late.
 >
-> Please, no. For precisely the reasons that Andrew gave: you are
-> attempting to optimize for a case that doesn't matter other than
-> for error handling, and which is already handled adequately. And
-> as he also pointed out, it very slightly UN-optimizes the path that
-> we *do* care about. So why are you still advocating for this?
->
-> If you want to change the gup/pup API so that asking for zero pages
-> means -EINVAL, then fine, go for it. That's a large thing, and a
-> tree-wide audit, but if you feel it's worth pursuing then it's at
-> least consistent.
->
-> But this patch here needs to be abandoned.
-
-Sure, will drop this patch.
->
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.37-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
 >
 > thanks,
-> --
-> John Hubbard
-> NVIDIA
 >
-> >
-> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> > ---
-> >   mm/gup.c | 4 ++++
-> >   1 file changed, 4 insertions(+)
-> >
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index 50681f0..a13aaa6 100644
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -2817,6 +2817,8 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
-> >        */
-> >       if (WARN_ON_ONCE(gup_flags & FOLL_PIN))
-> >               return -EINVAL;
-> > +     if (nr_pages <= 0)
-> > +             return 0;
-> >
-> >       /*
-> >        * The caller may or may not have explicitly set FOLL_GET; either way is
-> > @@ -2854,6 +2856,8 @@ int pin_user_pages_fast(unsigned long start, int nr_pages,
-> >       /* FOLL_GET and FOLL_PIN are mutually exclusive. */
-> >       if (WARN_ON_ONCE(gup_flags & FOLL_GET))
-> >               return -EINVAL;
-> > +     if (nr_pages <= 0)
-> > +             return 0;
-> >
-> >       gup_flags |= FOLL_PIN;
-> >       return internal_get_user_pages_fast(start, nr_pages, gup_flags, pages);
-> >
->
+> greg k-h
+
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.4.37-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: becd7d89321d9b96617ee5a99498213c703be541
+git describe: v5.4.36-84-gbecd7d89321d
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/bui=
+ld/v5.4.36-84-gbecd7d89321d
+
+No regressions (compared to build v5.4.36)
+
+No fixes (compared to build v5.4.36)
+
+
+Ran 28653 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* libgpiod
+* linux-log-parser
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-math-tests
+* perf
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* network-basic-tests
+* v4l2-compliance
+* kselftest/net
+* kselftest/networking
+* ltp-fs-tests
+* ltp-open-posix-tests
+* ltp-syscalls-tests
+* kvm-unit-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-native/networking
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+* kselftest-vsyscall-mode-none/networking
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
