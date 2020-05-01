@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9681C15CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE821C131A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730528AbgEANeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:34:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59962 "EHLO mail.kernel.org"
+        id S1729385AbgEAN1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:27:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730521AbgEANeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:34:01 -0400
+        id S1729363AbgEAN04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:26:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 60B03208D6;
-        Fri,  1 May 2020 13:34:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6BC8E24958;
+        Fri,  1 May 2020 13:26:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340040;
-        bh=M1Uw2oN3BhKp4keHsbQLTDAyrYEGICjGNJp73s1thXY=;
+        s=default; t=1588339615;
+        bh=JyKPbUi+7fIQGEbYVTLY+DWyPmwJghq8tvGOTZssA5A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1I20ynFwN9Vxdn5KaQcJlovWpDuROoDKyEx5Oxbo/0v1t1MMlRfnJ52q6T/6eljx0
-         jQ2Rbzlvnff/gj/l7guo7Tg8XzxLBIQCnZKwVdpyoOvQt48BzTUCrjBR+85QKH7SXd
-         kE+ZPr/DKI2AcWP5SyQTzaswv/NMznl5vwt3wXhE=
+        b=c7PkdTamkMVJ84t/YR8QiMAKPVbht6MeK8SEHyUP4y/Q0xNbLhfxULJjM26k6pz+C
+         MHQReCFtBheWHzk5QCzJCcG9R5x2iqM0fU6ZeXvEc0PwPEe+ygjmUlIg49lw1zEF8l
+         GdqtMtVbo74whETwAkB85RlkWBR9cbnHd9E4bsRg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Uros Bizjak <ubizjak@gmail.com>
-Subject: [PATCH 4.14 060/117] KVM: VMX: Enable machine check support for 32bit targets
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.4 48/70] staging: comedi: Fix comedi_device refcnt leak in comedi_open
 Date:   Fri,  1 May 2020 15:21:36 +0200
-Message-Id: <20200501131552.572128466@linuxfoundation.org>
+Message-Id: <20200501131528.111031752@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
+References: <20200501131513.302599262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uros Bizjak <ubizjak@gmail.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-commit fb56baae5ea509e63c2a068d66a4d8ea91969fca upstream.
+commit 332e0e17ad49e084b7db670ef43b5eb59abd9e34 upstream.
 
-There is no reason to limit the use of do_machine_check
-to 64bit targets. MCE handling works for both target familes.
+comedi_open() invokes comedi_dev_get_from_minor(), which returns a
+reference of the COMEDI device to "dev" with increased refcount.
 
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-Cc: stable@vger.kernel.org
-Fixes: a0861c02a981 ("KVM: Add VT-x machine check support")
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Message-Id: <20200414071414.45636-1-ubizjak@gmail.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+When comedi_open() returns, "dev" becomes invalid, so the refcount
+should be decreased to keep refcount balanced.
+
+The reference counting issue happens in one exception handling path of
+comedi_open(). When "cfp" allocation is failed, the refcnt increased by
+comedi_dev_get_from_minor() is not decreased, causing a refcnt leak.
+
+Fix this issue by calling comedi_dev_put() on this error path when "cfp"
+allocation is failed.
+
+Fixes: 20f083c07565 ("staging: comedi: prepare support for per-file read and write subdevices")
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/1587361459-83622-1-git-send-email-xiyuyang19@fudan.edu.cn
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/vmx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/comedi/comedi_fops.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kvm/vmx.c
-+++ b/arch/x86/kvm/vmx.c
-@@ -6250,7 +6250,7 @@ static int handle_rmode_exception(struct
-  */
- static void kvm_machine_check(void)
- {
--#if defined(CONFIG_X86_MCE) && defined(CONFIG_X86_64)
-+#if defined(CONFIG_X86_MCE)
- 	struct pt_regs regs = {
- 		.cs = 3, /* Fake ring 3 no matter what the guest ran on */
- 		.flags = X86_EFLAGS_IF,
+--- a/drivers/staging/comedi/comedi_fops.c
++++ b/drivers/staging/comedi/comedi_fops.c
+@@ -2592,8 +2592,10 @@ static int comedi_open(struct inode *ino
+ 	}
+ 
+ 	cfp = kzalloc(sizeof(*cfp), GFP_KERNEL);
+-	if (!cfp)
++	if (!cfp) {
++		comedi_dev_put(dev);
+ 		return -ENOMEM;
++	}
+ 
+ 	cfp->dev = dev;
+ 
 
 
