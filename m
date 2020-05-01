@@ -2,189 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F061C1F3C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89FD31C1F46
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726450AbgEAVGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 17:06:16 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:43617 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgEAVGQ (ORCPT
+        id S1726483AbgEAVJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 17:09:47 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:36903 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbgEAVJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 17:06:16 -0400
-Received: by mail-oi1-f194.google.com with SMTP id j16so854802oih.10;
-        Fri, 01 May 2020 14:06:15 -0700 (PDT)
+        Fri, 1 May 2020 17:09:46 -0400
+Received: by mail-ot1-f66.google.com with SMTP id z17so3639467oto.4;
+        Fri, 01 May 2020 14:09:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OpLIzM5fC6RDjXcWC7jSJGMnm6huXsAlVMRW1uHqv9w=;
-        b=XPg/Z544xe34RsIaQy3mTC9ubaIaf/WwuAihC9ZqjI7PRbbQdzut9Mj6VQQ7wyiSa/
-         zs8ZgxxFKivTrB4VtxSLp2QefinpHQNyRyajvr0c53EFzsc52VOuds6IDnf/IoXv7+q6
-         yknUdDcWQ2XdBH5Nx5XDGvbEIyrcb8zLOPfQMGQ0lOBQQypfZavAqjZfht1jhO2y+DCl
-         v6cCieXS9EZNIj5mDbbVAr3X8DduQlp1DQpvgwzJBMB1/wRjBSRw1NRkHou++iWd5gcp
-         99Jp47NYhUJYnkz0itz4f6LL7FmCiUN1NpBsqvKp9DR5DNfXw9XT3/BHE7R3kuQgBhTD
-         b1xA==
-X-Gm-Message-State: AGi0Pub9+U/GB/6oyK2zk9LJqwXDXEBOeTe6QP703Y7AyW0QWPf+VIE8
-        JcFA7UcZlLPvMBsdKkOn/g==
-X-Google-Smtp-Source: APiQypJ/+wF6VeKI4dobpnCRZchBnXTFHQ2LsIvG1ifgcaL31NE9ZM/VHZ3b1R7TKwE4A59yzL0yEQ==
-X-Received: by 2002:aca:ecce:: with SMTP id k197mr1138036oih.127.1588367175211;
-        Fri, 01 May 2020 14:06:15 -0700 (PDT)
+        bh=azaNq8gnek7T+A7rdK17PV/xQfKmjBVg34Ma1l/t8qw=;
+        b=MJ3obAPF0yxWvXBcvhMFx2QBlijy/sSZWh3nuYjF5xbzSDNPvALMXSMlcvujd6ODVJ
+         MaNyRiPrew1QsoSOo3GP8NZr9gHrBFH3Xvluis5OEnWDSQdCEg0T1tBdZQVrkSeC2yoQ
+         iupfiS/1sVIpEYBWR/1n0U6bmtOXCdjK55xUJe5htQ3aAPzGuoYeuvFtdqs7NES+eYks
+         vaK6a7SSajCGNISteF+DYqFAiIU8RWKbtAIFPiWJpNJG+RA2/VzfSW5Qe5gJ1f/+TBds
+         +aCzvUYumgGbKCfcCcuh+t499f//UmNpnCmZfT2r/z3tRboNPz66i6lCli66d0oTLhcB
+         +rTg==
+X-Gm-Message-State: AGi0PubdifZrD3afr3L6k1YDeY6T82shRfyScZcwbKZSfWgt+4vTI7df
+        57CRqcz7aAzGEzmmtphoZA==
+X-Google-Smtp-Source: APiQypLECOBaRa68pLT9OXVtC6bUt86y91nQBnNKSvn0KMAG/61MoBxyIwqFEkO/eNcHjZD1+jP0MQ==
+X-Received: by 2002:a05:6830:20d8:: with SMTP id z24mr5338741otq.74.1588367384402;
+        Fri, 01 May 2020 14:09:44 -0700 (PDT)
 Received: from rob-hp-laptop (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 60sm1101352ott.17.2020.05.01.14.06.13
+        by smtp.gmail.com with ESMTPSA id h24sm1105171otj.25.2020.05.01.14.09.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 14:06:14 -0700 (PDT)
-Received: (nullmailer pid 24617 invoked by uid 1000);
-        Fri, 01 May 2020 21:06:13 -0000
-Date:   Fri, 1 May 2020 16:06:13 -0500
+        Fri, 01 May 2020 14:09:43 -0700 (PDT)
+Received: (nullmailer pid 30822 invoked by uid 1000);
+        Fri, 01 May 2020 21:09:42 -0000
+Date:   Fri, 1 May 2020 16:09:42 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     lee.jones@linaro.org, broonie@kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-        linus.walleij@linaro.org, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        patches@opensource.cirrus.com
-Subject: Re: [PATCH 2/6] ASoC: lochnagar: Move binding over to dtschema
-Message-ID: <20200501210613.GD24163@bogus>
-References: <20200427102812.23251-1-ckeepax@opensource.cirrus.com>
- <20200427102812.23251-2-ckeepax@opensource.cirrus.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     robh+dt@kernel.org, andrew@lunn.ch, f.fainelli@gmail.com,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        jianxin.pan@amlogic.com, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: Re: [PATCH RFC v2 02/11] dt-bindings: net: dwmac-meson: Document the
+ "timing-adjustment" clock
+Message-ID: <20200501210942.GA27082@bogus>
+References: <20200429201644.1144546-1-martin.blumenstingl@googlemail.com>
+ <20200429201644.1144546-3-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200427102812.23251-2-ckeepax@opensource.cirrus.com>
+In-Reply-To: <20200429201644.1144546-3-martin.blumenstingl@googlemail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 11:28:08AM +0100, Charles Keepax wrote:
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+On Wed, 29 Apr 2020 22:16:35 +0200, Martin Blumenstingl wrote:
+> The PRG_ETHERNET registers can add an RX delay in RGMII mode. This
+> requires an internal re-timing circuit whose input clock is called
+> "timing adjustment clock". Document this clock input so the clock can be
+> enabled as needed.
+> 
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 > ---
->  .../devicetree/bindings/sound/cirrus,lochnagar.txt | 39 ---------------
->  .../bindings/sound/cirrus,lochnagar.yaml           | 58 ++++++++++++++++++++++
->  2 files changed, 58 insertions(+), 39 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/cirrus,lochnagar.yaml
+>  .../devicetree/bindings/net/amlogic,meson-dwmac.yaml   | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
-> deleted file mode 100644
-> index 41ae2699f07a9..0000000000000
-> --- a/Documentation/devicetree/bindings/sound/cirrus,lochnagar.txt
-> +++ /dev/null
-> @@ -1,39 +0,0 @@
-> -Cirrus Logic Lochnagar Audio Development Board
-> -
-> -Lochnagar is an evaluation and development board for Cirrus Logic
-> -Smart CODEC and Amp devices. It allows the connection of most Cirrus
-> -Logic devices on mini-cards, as well as allowing connection of
-> -various application processor systems to provide a full evaluation
-> -platform.  Audio system topology, clocking and power can all be
-> -controlled through the Lochnagar, allowing the device under test
-> -to be used in a variety of possible use cases.
-> -
-> -This binding document describes the binding for the audio portion
-> -of the driver.
-> -
-> -This binding must be part of the Lochnagar MFD binding:
-> -  [4] ../mfd/cirrus,lochnagar.txt
-> -
-> -Required properties:
-> -
-> -  - compatible : One of the following strings:
-> -                 "cirrus,lochnagar2-soundcard"
-> -
-> -  - #sound-dai-cells : Must be set to 1.
-> -
-> -  - clocks : Contains an entry for each entry in clock-names.
-> -  - clock-names : Must include the following clocks:
-> -      "mclk" Master clock source for the sound card, should normally
-> -      be set to LOCHNAGAR_SOUNDCARD_MCLK provided by the Lochnagar
-> -      clock driver.
-> -
-> -Example:
-> -
-> -lochnagar-sc {
-> -	compatible = "cirrus,lochnagar2-soundcard";
-> -
-> -	#sound-dai-cells = <1>;
-> -
-> -	clocks = <&lochnagar_clk LOCHNAGAR_SOUNDCARD_MCLK>;
-> -	clock-names = "mclk";
-> -};
-> diff --git a/Documentation/devicetree/bindings/sound/cirrus,lochnagar.yaml b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.yaml
-> new file mode 100644
-> index 0000000000000..6a266793ebd16
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/cirrus,lochnagar.yaml
-> @@ -0,0 +1,58 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/cirrus,lochnagar.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cirrus Logic Lochnagar Audio Development Board
-> +
-> +maintainers:
-> +  - patches@opensource.cirrus.com
-> +
-> +description: |
-> +  Lochnagar is an evaluation and development board for Cirrus Logic
-> +  Smart CODEC and Amp devices. It allows the connection of most Cirrus
-> +  Logic devices on mini-cards, as well as allowing connection of various
-> +  application processor systems to provide a full evaluation platform.
-> +  Audio system topology, clocking and power can all be controlled through
-> +  the Lochnagar, allowing the device under test to be used in a variety of
-> +  possible use cases.
-> +
-> +  This binding document describes the binding for the audio portion of the
-> +  driver.
-> +
-> +  This binding must be part of the Lochnagar MFD binding:
-> +    [1] ../mfd/cirrus,lochnagar.yaml
-> +
-> +properties:
-> +  lochnagar-sc:
-> +    type: object
-> +
-> +    properties:
-> +      compatible:
-> +        contains:
-> +          enum:
-> +            - cirrus,lochnagar2-soundcard
-> +
-> +      '#sound-dai-cells':
-> +        description:
-> +          Must be 1. The first cell indicating the audio interface.
 
-'Must be 1' is what the constraint says.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-> +        const: 1
-> +
-> +      clocks:
-> +        maxItems: 1
-> +        description:
-> +          Master clock source for the sound card, should normally be set to
-> +          LOCHNAGAR_SOUNDCARD_MCLK provided by the Lochnagar clock driver.
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.example.dt.yaml: ethernet@c9410000: clocks: Additional items are not allowed ([4294967295] was unexpected)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.example.dt.yaml: ethernet@c9410000: clocks: [[4294967295], [4294967295], [4294967295], [4294967295]] is too long
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.example.dt.yaml: ethernet@c9410000: clocks: Additional items are not allowed ([4294967295] was unexpected)
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/amlogic,meson-dwmac.example.dt.yaml: ethernet@c9410000: clocks: [[4294967295], [4294967295], [4294967295], [4294967295]] is too long
 
-blank line.
+See https://patchwork.ozlabs.org/patch/1279646
 
-> +      clock-names:
-> +        const: mclk
-> +        description:
-> +          Must contain the string mclk.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
 
-That's what the constraint says already.
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
 
-> +
-> +    required:
-> +      - compatible
-> +      - '#sound-dai-cells'
-> +      - clocks
-> +      - clock-names
-> +
-> +    additionalProperties: false
-> -- 
-> 2.11.0
-> 
+Please check and re-submit.
