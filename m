@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7051C1416
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0781C1422
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730709AbgEANfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:35:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33616 "EHLO mail.kernel.org"
+        id S1730833AbgEANgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:36:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730670AbgEANfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:35:22 -0400
+        id S1730341AbgEANgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:36:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 360A7208DB;
-        Fri,  1 May 2020 13:35:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86194216FD;
+        Fri,  1 May 2020 13:36:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340121;
-        bh=8+Z3bPY/+ATKg0yxbbKyU/p0SR7a96PJKqFB9MHvaBk=;
+        s=default; t=1588340166;
+        bh=nB7gP91EFe3d08JibxkrjH5bmM8vd9VvuEXyswdD+/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ytYrQA9g+h2XjnLLC1fBi3UyYBmF4nuO8G2U3+KY9KD8uVn8stCmNcG0zPGxreXjI
-         1ydjZYIaQczAvSzJCcgmTPybmGEGckZAfXqc3PnoUFvopfsQVcxLM/NDcjRE+FeMo1
-         e0S6Pg6JZCAQ3pOlUqUJjjQfB35BHh2ll2JcXuQg=
+        b=jw7VxrtAMgBZCNGWJoA5FrIPWZa5S5Myf7nqtwNIc1kb0w8RYyhmg4LhE9POfeNPO
+         DGoq7Tm7fTmRlbY+fBoJkvnI5F4S2EUxvEsFzymysX0nq0tsscoSGeQa0fHJYlSLc0
+         PF+3vpGMg98H7WQXcWes75tTeIVI7PWCRxytr6/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Theodore Tso <tytso@mit.edu>, Ashwin H <ashwinh@vmware.com>
-Subject: [PATCH 4.14 115/117] ext4: unsigned int compared against zero
-Date:   Fri,  1 May 2020 15:22:31 +0200
-Message-Id: <20200501131558.583083940@linuxfoundation.org>
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 07/46] iio:ad7797: Use correct attribute_group
+Date:   Fri,  1 May 2020 15:22:32 +0200
+Message-Id: <20200501131501.554087477@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
+References: <20200501131457.023036302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-commit fbbbbd2f28aec991f3fbc248df211550fbdfd58c upstream.
+commit 28535877ac5b2b84f0d394fd67a5ec71c0c48b10 upstream.
 
-There are two cases where u32 variables n and err are being checked
-for less than zero error values, the checks is always false because
-the variables are not signed. Fix this by making the variables ints.
+It should use ad7797_attribute_group in ad7797_info,
+according to commit ("iio:ad7793: Add support for the ad7796 and ad7797").
 
-Addresses-Coverity: ("Unsigned compared against 0")
-Fixes: 345c0dbf3a30 ("ext4: protect journal inode's blocks using block_validity")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Ashwin H <ashwinh@vmware.com>
+Scale is fixed for the ad7796 and not programmable, hence
+should not have the scale_available attribute.
+
+Fixes: fd1a8b912841 ("iio:ad7793: Add support for the ad7796 and ad7797")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/block_validity.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/iio/adc/ad7793.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -142,7 +142,8 @@ static int ext4_protect_reserved_inode(s
- 	struct inode *inode;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_map_blocks map;
--	u32 i = 0, err = 0, num, n;
-+	u32 i = 0, num;
-+	int err = 0, n;
+--- a/drivers/iio/adc/ad7793.c
++++ b/drivers/iio/adc/ad7793.c
+@@ -542,7 +542,7 @@ static const struct iio_info ad7797_info
+ 	.read_raw = &ad7793_read_raw,
+ 	.write_raw = &ad7793_write_raw,
+ 	.write_raw_get_fmt = &ad7793_write_raw_get_fmt,
+-	.attrs = &ad7793_attribute_group,
++	.attrs = &ad7797_attribute_group,
+ 	.validate_trigger = ad_sd_validate_trigger,
+ };
  
- 	if ((ino < EXT4_ROOT_INO) ||
- 	    (ino > le32_to_cpu(sbi->s_es->s_inodes_count)))
 
 
