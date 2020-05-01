@@ -2,121 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D7D1C2172
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 01:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB851C216D
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 01:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgEAXuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 19:50:44 -0400
-Received: from mail-dm6nam12on2074.outbound.protection.outlook.com ([40.107.243.74]:54881
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726352AbgEAXum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 19:50:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DJWGAU2voGvQIPpOYhtpgavc/7/5TtU+45ikSE/x46ib2gY2TuWjskAEdp0urgaFozy0xcWp1DAnXMx5Fk2x1jvR0rRgkMHLLdrvC5VLo7PMxaQBhmzGKRgTgKNuxbcr+EvypR4DPOMY/SRqy8ZeaxSQ13UDxQXZj3cBnIF9U52Y6Q/QlDTXCkvhkhevIKPBsc91dsg5tR1AjX9egrOQ/zMEe7AQr3Fty6VS2XbXjyYaW0lduF9JzfwqjbWbbFDqztbv1TwQubrmdZsUmWZdqiTWeMSy/cBpqekts70jKbkEenQWfmGe0zwSgIFV7+30kLT0bz/8DhTsOtnUH9Ix6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CbJ4qK27uhND1oU9/fRFifd03ygQULiJawNe9Z+Ae5Y=;
- b=RnRALClocXLSlsBpXWwE8X22yG4iCoxNPhU1XDKnnp3QBpB7Wk+iuHSk5cSNSHmhdedrF2Sf6mY7Mcw+yYeK0/SgbgeP7ZdSzmmR77Y6Eq782OQDWR98orcvxGnyjNukuP4J6iuru1nvqnEcQSoAux76iq9LKUn766OrXDG5bD70hlC9caakKGbDKDGWXNfG1ski35x0M0usqjrWsGbzkCNnhMf0K2n5VF04wA0gEz/ZmLwjTlocQQ04LHPnXgeP8WPNSc9FGksokfo8iJG51CS2vwcJvkfEYWeSTXQ8ZW/D9dMgjmS3RfgSr+Scmyb9i2mr6CSwaPisGLBPqUkkSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1727776AbgEAXug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 19:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726352AbgEAXuf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 19:50:35 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7738C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 16:50:34 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id v26so9295452qto.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 16:50:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CbJ4qK27uhND1oU9/fRFifd03ygQULiJawNe9Z+Ae5Y=;
- b=O+NqE5y6UyCG16TkCaIob/0uzkcTsiTrMNwL6b/XXZSkNxIFUEqk7je3e4PtINSBw5zXWavoN9AMEIkrIzvnHdbBmm3/cmAF0PYs4bqpOynEKC0UeUjx1/p8Hqzni0DvJXa7uJKX7tpQouQu8eLvwIoW1VOs8+4QeREqhCuJegA=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
- DM5PR12MB1801.namprd12.prod.outlook.com (2603:10b6:3:113::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2937.22; Fri, 1 May 2020 23:50:40 +0000
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::d061:4c5:954e:4744]) by DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::d061:4c5:954e:4744%4]) with mapi id 15.20.2937.034; Fri, 1 May 2020
- 23:50:39 +0000
-Subject: Re: AMD / Memory Protection Keys
-To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        jon.grimm@amd.com,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Lendacky <Thomas.Lendacky@amd.com>
-References: <1575363688-36727-1-git-send-email-suravee.suthikulpanit@amd.com>
- <b63e2111-b0c6-a716-3d99-88f91ad64e1d@intel.com>
- <68bdd6f0-a229-433a-9234-303a3b02b092@amd.com>
- <4b20cff5-6e16-3599-4fc1-4f51d7c18d1d@intel.com>
- <178377ad-efd6-d473-e10d-2928c171437e@intel.com>
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Message-ID: <01f3cf52-bb1e-f6a0-5810-c5e62ce5f302@amd.com>
-Date:   Sat, 2 May 2020 06:50:25 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
-In-Reply-To: <178377ad-efd6-d473-e10d-2928c171437e@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR06CA0126.apcprd06.prod.outlook.com
- (2603:1096:1:1d::28) To DM5PR12MB1163.namprd12.prod.outlook.com
- (2603:10b6:3:7a::18)
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=SVjVQDn0bfQKipgWAWViUU9wfzrIQi3Sg9RKS8Emo3Y=;
+        b=duGxTfRuSNX9fF3Iz58VWaJHAjOH0aZ5CbGe2i6jVrybPtIEtmVWZrUcMn1jVE1TsH
+         c7l5bWxXh+4LUk7KchdkcRT9AtJqdc6hJJomLtXXFnoZBR6uw7KcYAqPKb/JL1U0/+xf
+         Nx8eLBrS2pHDyM3UbaHzMdu9YdPfABjGXLSu0vuSAlbDCPD9yOopsgYJz38tLynB3giW
+         NLlsBo50OH7i2Wqhbf+M2zjVVwooGIToUmPnO4LvwR37W6FHYpiULXDRFQ+x42u4DkHb
+         1SMBcxLWG0ej39z9W9dNDwPa0coXZ/Kz2UWkZJdwSirg+LKgSEW5910EA+UDUAPCfkeR
+         WnRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=SVjVQDn0bfQKipgWAWViUU9wfzrIQi3Sg9RKS8Emo3Y=;
+        b=g+SAekGL1mz/XSnOumB0SM983hi2KL2XwvomKaNO2bfqR0OsUrx+zcHop8HthFM0vT
+         sETIunFQFFB1GUN/yVKiYEQEfkbQ6Ea6cQD+ism9sBKnhX9aSMrSBAZOhFZiQ0k3rxnt
+         F/drDwEMTbKeWiqxTL7sJvEz7KFyo1H8b6RgAUknv6BaWKhrw5406lPchEf99TCAVMYw
+         wRCFusJ3eV1ZaNUvA0F5Pce66qtfb9T21g98M2Rmxs2/Ky7l7QO115qgseabWAqgcr4T
+         qBWp8GQ/1bcfnB4+ilXO6YJp8sNEf10B5Nptw8Ga7tCpxjeb5xWj982snDIrdGpePiDG
+         RJUg==
+X-Gm-Message-State: AGi0Pub+sTgonNYE8+lD88FZbQoE3n8lU7auQ4ZcJUzrZ/faZZPQjnmv
+        AXvczNcbUVoL21USfX/KASxV6Q==
+X-Google-Smtp-Source: APiQypLpDSv73N6lzAdYh64o7wePUptTyDJylee4LveyxcCPdcx2qXfBiakHgR0S2eQb2haAd+2U9w==
+X-Received: by 2002:aed:2468:: with SMTP id s37mr6495973qtc.305.1588377034097;
+        Fri, 01 May 2020 16:50:34 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id p24sm4155246qtp.59.2020.05.01.16.50.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 01 May 2020 16:50:33 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jUfQP-0005ur-3f; Fri, 01 May 2020 20:50:33 -0300
+Date:   Fri, 1 May 2020 20:50:33 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cohuck@redhat.com, peterx@redhat.com
+Subject: Re: [PATCH 1/3] vfio/type1: Support faulting PFNMAP vmas
+Message-ID: <20200501235033.GA19929@ziepe.ca>
+References: <158836742096.8433.685478071796941103.stgit@gimli.home>
+ <158836914801.8433.9711545991918184183.stgit@gimli.home>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Suravees-MacBook-Pro.local (2403:6200:8862:99e1:2c36:925:db67:65ba) by SG2PR06CA0126.apcprd06.prod.outlook.com (2603:1096:1:1d::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Fri, 1 May 2020 23:50:35 +0000
-X-Originating-IP: [2403:6200:8862:99e1:2c36:925:db67:65ba]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c5237802-a3f6-48c4-552e-08d7ee2a735d
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1801:|DM5PR12MB1801:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1801897521309D166E7F3F2BF3AB0@DM5PR12MB1801.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 0390DB4BDA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(396003)(136003)(39860400002)(366004)(52116002)(31696002)(86362001)(6486002)(2616005)(186003)(6512007)(54906003)(6506007)(53546011)(2906002)(36756003)(4326008)(66556008)(316002)(6666004)(8936002)(8676002)(66946007)(66476007)(44832011)(31686004)(16526019)(478600001)(45080400002)(966005)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6viCYpv/eI8EeDcXyH4NAgfZ/VJipmevMACPqN9EAI2w8TDnw6p384tV8szwVa6J6b/3LTwXohFT0s+m2I+ugT5neTzbpI3h5/y7U1Tvl+zYC4cUArWwDDK+61n5FQuZqwmy3TjoHgIaKbwCFPYhLMmg5fz6vqePSJQb0DsXkdRbAQCswja6yvZwpSRZyNNiFFTLKKbKWLkGqOA0SNYlsyAuNV8FOVni8AcPqrBCZ8RtLM9LXDZOpc4L/k2Xr2zIttSfBoX/fQ2aN59DmF2hLhPXu0M8q/322CAN4I7oAQy6LJrtUTcGoYTX/I+Ic14u8N9R1urOx0MToaVV/oBZgVEEpzic4iKdsQEcKI8wBkx0wTwY5P00WVtXdgldtgn22V8B9+7VvDiw5FrG/XjQASzVQVdZf1ZP032PBk+hTS6YwrV9cmHeAk7/nTXDvySMze7QJcwtsJHTvlP9eyGFWqr1X2hEcSTAOfoyqpm4xzwsyU//BeanwBvNGruVj4VFT0X5Oybvx0kE0/yR4texpQ==
-X-MS-Exchange-AntiSpam-MessageData: 8/1sSo54dqNMtYu5ceCegw3FsS3gn+irKtPe8kcjcopYrgnKKO0lHlrsj8awflqqnuZ6oNr0+EqPuHCQWHXbVSDxIVln6BDAIeTpDhEg9L8g2dVm+R1ekTP9LulkNspkzIXc6K7eN1QpDWnDGw4lNgb2a7QeRo0dFzYfdNd1CGem6O2VajZGOAlxQTQjwqJ/y2yrfz7iqfNKZ2OmHSqqSCjRWsjcMP9Nl/DRr8SjGOXpsrmM/pZXhxZmbF9drwCPS7UplCnxf7rPamVSS/AfaDnOmAykiNlwADum+7irr31KlWjCEPY6/GJzleAhsTZ8gsfIgcN1wv6XNmcKySIh1i/CjLO0moldAVyB3DTAvKONOtMHPjhDVkyvKmM15YnCzCJqPh6tKdPRz1yDkQZ7oiOpdFbqdQUq79ki0DSOFZrJoqInyTpju+7L9MuYvCAsny+3laEMgwVJOHdd7lZtCKOnYmdMMkje+ZLHyG+ZBZG9Yf+rOgLjbktkFNHMW6AUGFVkYbrvjDWT20BkfB1i32g8LYPDTiFueT9g4TUD6ichR0IhTzr9jPL5+eUbn2+7c0j70I2WV+hwR3DFS6LgT8vWIKImhASSno8MEySL6XJqXWRPLn/GsuPR77mnIDL3FIqfPN9ntexThRC6XOo9Vzd6hX99xcp5UE552FabRzEJJ2TZrMJYwX1LFwpKTLOUNGS20CEVC5Ad1nUn2xEj4ZvAd2O0bOKI+5ux5J8r6OHdGqVj7L9I8tk+4PB76bU9ew0uXui5hAyT1R/nmdPPLmDh+zEK6c/cX3U3uZuXSILV9VArkFbip6Nv37EcEzfTAQJlw8+7HzmAwerQ/IqqVFHHLXPFQXXDZxHxmjD7o1w=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5237802-a3f6-48c4-552e-08d7ee2a735d
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2020 23:50:39.5044
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1gdkTAFKenM9+O9b/p1sz/+tmIdQEsST2HNP7z04IYZL8pWKvB3SrjdOpaW2cektcqDVvYiDmy90o6Zsg13zoQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1801
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <158836914801.8433.9711545991918184183.stgit@gimli.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave,
+On Fri, May 01, 2020 at 03:39:08PM -0600, Alex Williamson wrote:
+> With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
+> the range being faulted into the vma.  Add support to manually provide
+> that, in the same way as done on KVM with hva_to_pfn_remapped().
+> 
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+>  drivers/vfio/vfio_iommu_type1.c |   36 +++++++++++++++++++++++++++++++++---
+>  1 file changed, 33 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index cc1d64765ce7..4a4cb7cd86b2 100644
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -317,6 +317,32 @@ static int put_pfn(unsigned long pfn, int prot)
+>  	return 0;
+>  }
+>  
+> +static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
+> +			    unsigned long vaddr, unsigned long *pfn,
+> +			    bool write_fault)
+> +{
+> +	int ret;
+> +
+> +	ret = follow_pfn(vma, vaddr, pfn);
+> +	if (ret) {
+> +		bool unlocked = false;
+> +
+> +		ret = fixup_user_fault(NULL, mm, vaddr,
+> +				       FAULT_FLAG_REMOTE |
+> +				       (write_fault ?  FAULT_FLAG_WRITE : 0),
+> +				       &unlocked);
+> +		if (unlocked)
+> +			return -EAGAIN;
+> +
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = follow_pfn(vma, vaddr, pfn);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+>  			 int prot, unsigned long *pfn)
+>  {
+> @@ -339,12 +365,16 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
+>  
+>  	vaddr = untagged_addr(vaddr);
+>  
+> +retry:
+>  	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
+>  
+>  	if (vma && vma->vm_flags & VM_PFNMAP) {
+> -		if (!follow_pfn(vma, vaddr, pfn) &&
+> -		    is_invalid_reserved_pfn(*pfn))
+> -			ret = 0;
+> +		ret = follow_fault_pfn(vma, mm, vaddr, pfn, prot & IOMMU_WRITE);
+> +		if (ret == -EAGAIN)
+> +			goto retry;
+> +
+> +		if (!ret && !is_invalid_reserved_pfn(*pfn))
+> +			ret = -EFAULT;
 
-On 4/30/20 2:18 AM, Dave Hansen wrote:
-> The docs for AMD's implementation of protection keys showed up[1].
-> Welcome to the party!
-> 
-> It all looks fine, except for this nugget:
-> 
-> 	The MPK mechanism is ignored in the following cases:
-> 	... for pages marked in the paging structures as read-only
-> 	(R/W=0) or as supervisor addresses (U/S=0)
-> 
-> That R/W=0 would mean that you can't access-disable read-only pages,
-> which seems a bit goofy.  It's certainly a feature that I could imagine
-> folks wanting to have.  Read-only pages might happen in unexpected
-> places for things like mmap(PROT_WRITE)'d files or even CoW pages after
-> fork().
-> 
-> Is this an error in the docs?
-> 
-> 1. https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.amd.com%2Fsystem%2Ffiles%2FTechDocs%2F24593.pdf&amp;data=02%7C01%7Csuravee.suthikulpanit%40amd.com%7C9ea21438bce6488589a308d7ec720d0d%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637237847630823928&amp;sdata=LZLQjvlVT5xSnjyRt0alN0lHleh8VD7Sxx53RL1UrX0%3D&amp;reserved=0
-> 
+I suggest checking vma->vm_ops == &vfio_pci_mmap_ops and adding a
+comment that this is racy and needs to be fixed up. The ops check
+makes this only used by other vfio bars and should prevent some
+abuses of this hacky thing
 
-Yes, we have checked with the hardware team and this is a mistake in the documentation.
-The access disable bit (ADi) bit does apply to read-only pages. We will be correcting
-the documentation. Thanks for pointing it out :)
+However, I wonder if this chould just link itself into the
+vma->private data so that when the vfio that owns the bar goes away,
+so does the iommu mapping?
 
-Suravee
+I feel like this patch set is not complete unless it also handles the
+shootdown of this path too?
+
+Jason
