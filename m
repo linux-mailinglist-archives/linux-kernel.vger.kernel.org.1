@@ -2,105 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490621C1252
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 14:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB3F1C125C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 14:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgEAMj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 08:39:26 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60040 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728712AbgEAMjZ (ORCPT
+        id S1728770AbgEAMps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 08:45:48 -0400
+Received: from mail1.protonmail.ch ([185.70.40.18]:28335 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728443AbgEAMpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 08:39:25 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 007712A2E1D
-Received: by earth.universe (Postfix, from userid 1000)
-        id D91B73C08C7; Fri,  1 May 2020 14:39:21 +0200 (CEST)
-Date:   Fri, 1 May 2020 14:39:21 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 06/11] power: supply: core: fix HWMON temperature
- labels
-Message-ID: <20200501123921.k4vgng7ggcjoe6ux@earth.universe>
-References: <cover.1585944770.git.mirq-linux@rere.qmqm.pl>
- <4c33741ba56d3c7830827c140bccf13621e59232.1585944770.git.mirq-linux@rere.qmqm.pl>
+        Fri, 1 May 2020 08:45:47 -0400
+Date:   Fri, 01 May 2020 12:45:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1588337141;
+        bh=ISx5BmR3vZGoKhJj7Hq5Oyt/vvFDUjNxUpcAaTJTGMU=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=lDrSe4WH5vrkE9vxngTiXBo9jvGpBBF6iK5PlHrHopzzqZ0iv+CwYLnEBzspBYZqz
+         62LNFZWK9Tq/wh8w4E8hYQv47U7Ilx34n6tc1PreGfqHDHWB55u82Qqs5vLobniAtC
+         2UBd+5LwzoZ8i2HGk3mw83+P9YQb+cb3hs6x5dCg=
+To:     Helen Koike <helen@koikeco.de>
+From:   =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+        <nfraprado@protonmail.com>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Helen Koike <helen.koike@collabora.com>,
+        lkcamp@lists.libreplanetbr.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Reply-To: =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+          <nfraprado@protonmail.com>
+Subject: Re: [Lkcamp] [PATCH v3 3/3] media: vimc: deb: Add support for {RGB, BGR, GBR}888 bus formats on source pad
+Message-ID: <20200501124513.pruy45zh6wezs32g@ArchWay.local>
+In-Reply-To: <cd585b72-067f-88d6-7ec6-30044101db38@koikeco.de>
+References: <20200427230234.3114565-4-nfraprado@protonmail.com>
+ <1fcbe67e-db71-7841-6165-e62b74d82994@collabora.com>
+ <cd585b72-067f-88d6-7ec6-30044101db38@koikeco.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5wm5ps46dek33h7p"
-Content-Disposition: inline
-In-Reply-To: <4c33741ba56d3c7830827c140bccf13621e59232.1585944770.git.mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---5wm5ps46dek33h7p
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Apr 03, 2020 at 10:20:33PM +0200, Micha=C5=82 Miros=C5=82aw wrote:
-> tempX_label files are swapped compared to what
-> power_supply_hwmon_temp_to_property() uses. Make them match.
+On Tue, Apr 28, 2020 at 09:25:25AM -0300, Helen Koike wrote:
 >=20
-> Cc: stable@vger.kernel.org
-> Fixes: e67d4dfc9ff1 ("power: supply: Add HWMON compatibility layer")
-> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> ---
-> v2: split parameter checking to separate patch
-> ---
-
-Thanks, queued.
-
--- Sebastian
-
->  drivers/power/supply/power_supply_hwmon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Hello,
 >=20
-> diff --git a/drivers/power/supply/power_supply_hwmon.c b/drivers/power/su=
-pply/power_supply_hwmon.c
-> index 75cf861ba492..67b6ee60085e 100644
-> --- a/drivers/power/supply/power_supply_hwmon.c
-> +++ b/drivers/power/supply/power_supply_hwmon.c
-> @@ -144,7 +144,7 @@ static int power_supply_hwmon_read_string(struct devi=
-ce *dev,
->  					  u32 attr, int channel,
->  					  const char **str)
->  {
-> -	*str =3D channel ? "temp" : "temp ambient";
-> +	*str =3D channel ? "temp ambient" : "temp";
->  	return 0;
->  }
-> =20
-> --=20
-> 2.20.1
+> On 4/28/20 4:46 AM, Dafna Hirschfeld wrote:
+> > hi,
+> > Thanks for the patches!
+> >
+> > On 28.04.20 01:03, N=C3=ADcolas F. R. A. Prado wrote:
+> >> Add support for RGB888_*, BGR888_* and GBR888_* media bus formats on
+> >> the source pad of debayer subdevices.
+> >>
+> >> Co-developed-by: Vitor Massaru Iha <vitor@massaru.org>
+> >> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> >> Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
+> >> ---
+> >>
+> >> Changes in v3:
+> >> - Rename vimc_deb_is_src_code_invalid() to vimc_deb_src_code_is_valid(=
+)
+> >> - Change vimc_deb_src_code_is_valid() to return bool
+> >>
+> >> Changes in v2:
+> >> - Change commit message to reflect v2 changes
+> >> - Rename variables
+> >> - Fix array formatting
+> >> - Add vimc_deb_is_src_code_valid function
+> >> - Add other BGR888 and RGB888 formats to debayer source pad supported
+> >> =C2=A0=C2=A0 formats
+> >>
+> >> =C2=A0 .../media/test-drivers/vimc/vimc-debayer.c=C2=A0=C2=A0=C2=A0 | =
+61 +++++++++++++++----
+> >> =C2=A0 1 file changed, 49 insertions(+), 12 deletions(-)
+> >>
+> >> diff --git a/drivers/media/test-drivers/vimc/vimc-debayer.c b/drivers/=
+media/test-drivers/vimc/vimc-debayer.c
+> >> index d10aee9f84c4..7e87706d417e 100644
+> >> --- a/drivers/media/test-drivers/vimc/vimc-debayer.c
+> >> +++ b/drivers/media/test-drivers/vimc/vimc-debayer.c
+> >> @@ -51,6 +51,19 @@ static const struct v4l2_mbus_framefmt sink_fmt_def=
+ault =3D {
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .colorspace =3D V4L2_COLORSPACE_DEFAULT=
+,
+> >> =C2=A0 };
+> >> =C2=A0 +static const u32 vimc_deb_src_mbus_codes[] =3D {
+> >> +=C2=A0=C2=A0=C2=A0 MEDIA_BUS_FMT_GBR888_1X24,
+> >> +=C2=A0=C2=A0=C2=A0 MEDIA_BUS_FMT_BGR888_1X24,
+> >> +=C2=A0=C2=A0=C2=A0 MEDIA_BUS_FMT_BGR888_3X8,
+> >> +=C2=A0=C2=A0=C2=A0 MEDIA_BUS_FMT_RGB888_1X24,
+> >> +=C2=A0=C2=A0=C2=A0 MEDIA_BUS_FMT_RGB888_2X12_BE,
+> >> +=C2=A0=C2=A0=C2=A0 MEDIA_BUS_FMT_RGB888_2X12_LE,
+> >> +=C2=A0=C2=A0=C2=A0 MEDIA_BUS_FMT_RGB888_3X8,
+> >> +=C2=A0=C2=A0=C2=A0 MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
+> >> +=C2=A0=C2=A0=C2=A0 MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA,
+> >> +=C2=A0=C2=A0=C2=A0 MEDIA_BUS_FMT_RGB888_1X32_PADHI,
+> >> +};
+> >> +
+> >> =C2=A0 static const struct vimc_deb_pix_map vimc_deb_pix_map_list[] =
+=3D {
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 {
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .code =3D MEDIA=
+_BUS_FMT_SBGGR8_1X8,
+> >> @@ -125,6 +138,17 @@ static const struct vimc_deb_pix_map *vimc_deb_pi=
+x_map_by_code(u32 code)
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return NULL;
+> >> =C2=A0 }
+> >> =C2=A0 +static bool vimc_deb_src_code_is_valid(u32 code)
+> >> +{
+> >> +=C2=A0=C2=A0=C2=A0 unsigned int i;
+> >> +
+> >> +=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < ARRAY_SIZE(vimc_deb_src_mbus_cod=
+es); i++)
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (vimc_deb_src_mbus_code=
+s[i] =3D=3D code)
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 re=
+turn true;
+> >> +
+> >> +=C2=A0=C2=A0=C2=A0 return false;
+> >> +}
+> >> +
+> >> =C2=A0 static int vimc_deb_init_cfg(struct v4l2_subdev *sd,
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct v4l2_subdev_pad_config *c=
+fg)
+> >> =C2=A0 {
+> >> @@ -148,14 +172,11 @@ static int vimc_deb_enum_mbus_code(struct v4l2_s=
+ubdev *sd,
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct v4l2_subdev_p=
+ad_config *cfg,
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct v4l2_subdev_m=
+bus_code_enum *code)
+> >> =C2=A0 {
+> >> -=C2=A0=C2=A0=C2=A0 /* We only support one format for source pads */
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (VIMC_IS_SRC(code->pad)) {
+> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct vimc_deb_device *vd=
+eb =3D v4l2_get_subdevdata(sd);
+> >> -
+> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (code->index)
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (code->index >=3D ARRAY=
+_SIZE(vimc_deb_src_mbus_codes))
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 return -EINVAL;
+> >> =C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 code->code =3D vdeb=
+->src_code;
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 code->code =3D vimc_deb_sr=
+c_mbus_codes[code->index];
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (code->index=
+ >=3D ARRAY_SIZE(vimc_deb_pix_map_list))
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 return -EINVAL;
+> >> @@ -170,8 +191,6 @@ static int vimc_deb_enum_frame_size(struct v4l2_su=
+bdev *sd,
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct v4l2_su=
+bdev_pad_config *cfg,
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct v4l2_su=
+bdev_frame_size_enum *fse)
+> >> =C2=A0 {
+> >> -=C2=A0=C2=A0=C2=A0 struct vimc_deb_device *vdeb =3D v4l2_get_subdevda=
+ta(sd);
+> >> -
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (fse->index)
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+> >> =C2=A0 @@ -181,7 +200,7 @@ static int vimc_deb_enum_frame_size(struct =
+v4l2_subdev *sd,
+> >> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!vpi=
+x)
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 return -EINVAL;
+> >> -=C2=A0=C2=A0=C2=A0 } else if (fse->code !=3D vdeb->src_code) {
+> >> +=C2=A0=C2=A0=C2=A0 } else if (!vimc_deb_src_code_is_valid(fse->code))=
+ {
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> >> =C2=A0 @@ -237,6 +256,7 @@ static int vimc_deb_set_fmt(struct v4l2_sub=
+dev *sd,
+> >> =C2=A0 {
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct vimc_deb_device *vdeb =3D v4l2_g=
+et_subdevdata(sd);
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct v4l2_mbus_framefmt *sink_fmt;
+> >> +=C2=A0=C2=A0=C2=A0 u32 *src_code;
+> >> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (fmt->which =3D=3D V4L2_SUBDE=
+V_FORMAT_ACTIVE) {
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Do not chang=
+e the format while stream is on */
+> >> @@ -244,8 +264,10 @@ static int vimc_deb_set_fmt(struct v4l2_subdev *s=
+d,
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 return -EBUSY;
+> >> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sink_fmt=
+ =3D &vdeb->sink_fmt;
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 src_code =3D &vdeb->src_co=
+de;
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sink_fmt =3D v4=
+l2_subdev_get_try_format(sd, cfg, 0);
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 src_code =3D &v4l2_subdev_=
+get_try_format(sd, cfg, 1)->code;
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> >> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> >> @@ -253,9 +275,14 @@ static int vimc_deb_set_fmt(struct v4l2_subdev *s=
+d,
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * it is propagated from the sink
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (VIMC_IS_SRC(fmt->pad)) {
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u32 code =3D fmt->format.c=
+ode;
+> >> +
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fmt->format =3D=
+ *sink_fmt;
+> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* TODO: Add support for o=
+ther formats */
+> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fmt->format.code =3D vdeb-=
+>src_code;
+> >> +
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (vimc_deb_src_code_is_v=
+alid(code))
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *s=
+rc_code =3D code;
+> >> +
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fmt->format.code =3D *src_=
+code;
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Set the new =
+format in the sink pad */
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vimc_deb_adjust=
+_sink_fmt(&fmt->format);
+> >> @@ -291,11 +318,21 @@ static void vimc_deb_set_rgb_mbus_fmt_rgb888_1x2=
+4(struct vimc_deb_device *vdeb,
+> > I guess the name of the function should now change to vimc_deb_set_rgb_=
+mbus_fmt ?
+> > Or better vimc_deb_process_rgb_frame.
+> > Also, it seems that it is a assigned as a callback so that each src_fmt=
+ have a different callback
+> > but you already did it with a switch case. So maybe you can add a patch=
+ to call it directly
 >=20
+> Agreed that it should be renamed. Removing the callback could be done lat=
+er (up to you N=C3=ADcolas).
+>=20
+> With the rename, and with or without the callback removal:
+> Acked-by: Helen Koike <helen.koike@collabora.com>
 
---5wm5ps46dek33h7p
-Content-Type: application/pgp-signature; name="signature.asc"
+Okay, I'd rather do that later as a separate patch.
+I'll send the v4 with the rename, then.
 
------BEGIN PGP SIGNATURE-----
+Thank you both for the review.
 
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl6sGHkACgkQ2O7X88g7
-+pofYg/8CYre6kxA2y2v+h3U9Em6zL/Y3RQ0ulhetV5MBKzguQjQJ6hMPl/gB+pF
-/NeyPJ5ba3NDaUumtiQBfhGZ/3w3GEh0JTjd9ddOIFymYhKlh//zTHfWprxwnkmc
-bcikO700CUG9YepsMODt19onA7WDjYVfzTcKprpQi9QN1+zWNZF2vh6KhJ8nysg8
-tv1ctbPK3k5fm0YGDyEJnv/JVzvcRacA/LhG18RbE15HyFsUyMoXpGSChBK5bH6e
-1rnao3RBzDKeV/W0JG2OKqMU+KPHPerSBHs8j0+k5+JGvF79ZVmBWaxTfYdyn956
-a/3bu0ugd/FbbB6pgJcRqSuPY8rbb9pmhycyvlhJdyuijlqIcUUvyD0IXXAsEqyK
-+HCPxAQp1dVfhs3mA2Q2aZIpM2M29aj4gMjv2fvo0dRwWXe7fH5EBdsxRiuAoF19
-51Gek3OgD2vIWqcyrEc47L5jclPzsR9IpnZJN8N14B1FfiVq++W7TZeN91KuPm9b
-9dIUnfoEoWAi1IIROsdwFECQ50d01Ql5WSF46l/x2YGNPmayY+DjCcJ8O4YzpYS2
-8E5gdSxqGDvxaTz3aECmDuXkaqVdeyeKWJJL2hbyIB45trw9bkdDqTStNoxetHCZ
-opBGn5DoOHP0YIT/avfHGsKxxArh9vFQso1c0k8wiZXEDlEpGvs=
-=kCn8
------END PGP SIGNATURE-----
+N=C3=ADcolas
 
---5wm5ps46dek33h7p--
+>=20
+> >
+> > Thanks,
+> > Dafna
+> >
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int col,
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int rgb[3])
+> >> =C2=A0 {
+> >> +=C2=A0=C2=A0=C2=A0 const struct vimc_pix_map *vpix;
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int i, index;
+> >> =C2=A0 +=C2=A0=C2=A0=C2=A0 vpix =3D vimc_pix_map_by_code(vdeb->src_cod=
+e);
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 index =3D VIMC_FRAME_INDEX(lin, col, vd=
+eb->sink_fmt.width, 3);
+> >> -=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < 3; i++)
+> >> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vdeb->src_frame[index + i]=
+ =3D rgb[i];
+> >> +=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < 3; i++) {
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 switch (vpix->pixelformat)=
+ {
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case V4L2_PIX_FMT_RGB24:
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vd=
+eb->src_frame[index + i] =3D rgb[i];
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 br=
+eak;
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case V4L2_PIX_FMT_BGR24:
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vd=
+eb->src_frame[index + i] =3D rgb[2-i];
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 br=
+eak;
+> >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> >> +=C2=A0=C2=A0=C2=A0 }
+> >> =C2=A0 }
+> >> =C2=A0 =C2=A0 static int vimc_deb_s_stream(struct v4l2_subdev *sd, int=
+ enable)
+> >>
+> >
+> > _______________________________________________
+> > Lkcamp mailing list
+> > Lkcamp@lists.libreplanetbr.org
+> > https://lists.libreplanetbr.org/mailman/listinfo/lkcamp
+
