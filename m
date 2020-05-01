@@ -2,39 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7211C12DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DB91C13A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728952AbgEANZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:25:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45710 "EHLO mail.kernel.org"
+        id S1730192AbgEANbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:31:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728942AbgEANZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:25:02 -0400
+        id S1729610AbgEANbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:31:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8BB72166E;
-        Fri,  1 May 2020 13:25:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A757720757;
+        Fri,  1 May 2020 13:31:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339502;
-        bh=9RzJxy4Upa/s9eKqiIKMjlPo8dJwUDtbafz0tltfjg4=;
+        s=default; t=1588339901;
+        bh=zlv96CrJzDmIqQ0algpSshTJ33jycy2ZeT8jmRg3rNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EBLtRvvF5g7/SpW6IujDX+Z+fNhwkX7Ax55D1Rcv3guM+xWZeNWJd5aIKu4pUlsIC
-         9pCkfFsOcL6L7gldiHA83XUIJu3bOUzGC+FFRA34XXEf8PqUC0WlnpgYCaXlGBjUKm
-         juT0f1NxwgjN8Wnw4Lo6Knm51g7R6VkMXkmvF7HQ=
+        b=Ydjd8p7vL2gRd+N7nxtVNbXLYd7RcROV4eXFlEcZlzP60SVrwonDz862oEx67Zuy+
+         +20to1CsG7Jd3r684G246Z8KazsC7NJsT5cpDBB4nN4j2iYY5/Ua8uyz2OOc74aj8v
+         AXJZMqECynWQ/ClsO2wNSnB50yBe8QvUbqmb2hQE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.4 05/70] crypto: mxs-dcp - make symbols sha1_null_hash and sha256_null_hash static
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Waiman Long <longman@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Manfred Spraul <manfred@colorfullife.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>, NeilBrown <neilb@suse.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 017/117] ipc/util.c: sysvipc_find_ipc() should increase position index
 Date:   Fri,  1 May 2020 15:20:53 +0200
-Message-Id: <20200501131514.617601793@linuxfoundation.org>
+Message-Id: <20200501131547.111481851@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
-References: <20200501131513.302599262@linuxfoundation.org>
+In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
+References: <20200501131544.291247695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +52,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit ce4e45842de3eb54b8dd6e081765d741f5b92b56 upstream.
+[ Upstream commit 89163f93c6f969da5811af5377cc10173583123b ]
 
-Fixes the following sparse warnings:
+If seq_file .next function does not change position index, read after
+some lseek can generate unexpected output.
 
-drivers/crypto/mxs-dcp.c:39:15: warning:
- symbol 'sha1_null_hash' was not declared. Should it be static?
-drivers/crypto/mxs-dcp.c:43:15: warning:
- symbol 'sha256_null_hash' was not declared. Should it be static?
-
-Fixes: c709eebaf5c5 ("crypto: mxs-dcp - Fix SHA null hashes and output length")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+https://bugzilla.kernel.org/show_bug.cgi?id=206283
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Waiman Long <longman@redhat.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>
+Cc: Manfred Spraul <manfred@colorfullife.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: NeilBrown <neilb@suse.com>
+Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Link: http://lkml.kernel.org/r/b7a20945-e315-8bb0-21e6-3875c14a8494@virtuozzo.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/mxs-dcp.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ ipc/util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/crypto/mxs-dcp.c
-+++ b/drivers/crypto/mxs-dcp.c
-@@ -37,11 +37,11 @@
-  * Null hashes to align with hw behavior on imx6sl and ull
-  * these are flipped for consistency with hw output
-  */
--const uint8_t sha1_null_hash[] =
-+static const uint8_t sha1_null_hash[] =
- 	"\x09\x07\xd8\xaf\x90\x18\x60\x95\xef\xbf"
- 	"\x55\x32\x0d\x4b\x6b\x5e\xee\xa3\x39\xda";
+diff --git a/ipc/util.c b/ipc/util.c
+index 79b30eee32cd8..7989f5e532198 100644
+--- a/ipc/util.c
++++ b/ipc/util.c
+@@ -750,13 +750,13 @@ static struct kern_ipc_perm *sysvipc_find_ipc(struct ipc_ids *ids, loff_t pos,
+ 			total++;
+ 	}
  
--const uint8_t sha256_null_hash[] =
-+static const uint8_t sha256_null_hash[] =
- 	"\x55\xb8\x52\x78\x1b\x99\x95\xa4"
- 	"\x4c\x93\x9b\x64\xe4\x41\xae\x27"
- 	"\x24\xb9\x6f\x99\xc8\xf4\xfb\x9a"
++	*new_pos = pos + 1;
+ 	if (total >= ids->in_use)
+ 		return NULL;
+ 
+ 	for (; pos < IPCMNI; pos++) {
+ 		ipc = idr_find(&ids->ipcs_idr, pos);
+ 		if (ipc != NULL) {
+-			*new_pos = pos + 1;
+ 			rcu_read_lock();
+ 			ipc_lock_object(ipc);
+ 			return ipc;
+-- 
+2.20.1
+
 
 
