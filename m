@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEB51C15EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 427411C16B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729849AbgEANga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:36:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34744 "EHLO mail.kernel.org"
+        id S1731014AbgEANwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:52:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730847AbgEANgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:36:18 -0400
+        id S1730447AbgEANiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:38:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D27B1208DB;
-        Fri,  1 May 2020 13:36:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72AC32173E;
+        Fri,  1 May 2020 13:37:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340178;
-        bh=jjzL8dEOpPjDZCYBJmZBJB+Z4r3Jm7DlFgVrJSvOJBk=;
+        s=default; t=1588340279;
+        bh=IxfNikbsqk3Bz7Xb54p/LMUBJJZQxxJ67uGYBUBEZrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c2ZJLpGZ0qV4fkfsMPgZiq/fRLh7SCyUEL5xWTiRibbC62fgOems73WEPbqKYPzIO
-         /u9xXHVuDLqU5fiI+uQ8ZlF1YA/2w5Aizflygfg2fv+/RBOIVARAal4G3bbwXmb7JF
-         hUsQLk+bAfxBhtn8ED6UoHZDA9xss4E3Av/gpBgY=
+        b=M5sLWbPhsUzFSAAY79cjbR1xVtAefKqPywbkyn6+hW8Fmi6/9N165h1RRckn4sc6+
+         4EeC6wzUcN+5jKkTnef5QzmFGOKTOIroyIBB0/MXyT0SqlLvBjbVpNxF2PDv8Wl8mW
+         HLkyv4nA3XWoqGqsDWVMi/YRtPQW/ujMQcxaLjkQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Eric Anholt <eric@anholt.net>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: [PATCH 4.19 20/46] ARM: dts: bcm283x: Disable dsi0 node
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 5.4 06/83] kbuild: fix DT binding schema rule again to avoid needless rebuilds
 Date:   Fri,  1 May 2020 15:22:45 +0200
-Message-Id: <20200501131505.878175580@linuxfoundation.org>
+Message-Id: <20200501131525.585194480@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
-References: <20200501131457.023036302@linuxfoundation.org>
+In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
+References: <20200501131524.004332640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,32 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-commit 90444b958461a5f8fc299ece0fe17eab15cba1e1 upstream.
+commit 3d4b2238684ac919394eba7fb51bb7eeeec6ab57 upstream.
 
-Since its inception the module was meant to be disabled by default, but
-the original commit failed to add the relevant property.
+Since commit 7a0496056064 ("kbuild: fix DT binding schema rule to detect
+command line changes"), this rule is every time re-run even if you change
+nothing.
 
-Fixes: 4aba4cf82054 ("ARM: dts: bcm2835: Add the DSI module nodes and clocks")
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Reviewed-by: Eric Anholt <eric@anholt.net>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+cmd_dtc takes one additional parameter to pass to the -O option of dtc.
+
+We need to pass 'yaml' to if_changed_rule. Otherwise, cmd-check invoked
+from if_changed_rule is false positive.
+
+Fixes: 7a0496056064 ("kbuild: fix DT binding schema rule to detect command line changes")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/bcm283x.dtsi |    1 +
- 1 file changed, 1 insertion(+)
+ scripts/Makefile.lib |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/boot/dts/bcm283x.dtsi
-+++ b/arch/arm/boot/dts/bcm283x.dtsi
-@@ -476,6 +476,7 @@
- 					     "dsi0_ddr2",
- 					     "dsi0_ddr";
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -297,7 +297,7 @@ define rule_dtc
+ endef
  
-+			status = "disabled";
- 		};
+ $(obj)/%.dt.yaml: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
+-	$(call if_changed_rule,dtc)
++	$(call if_changed_rule,dtc,yaml)
  
- 		thermal: thermal@7e212000 {
+ dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
+ 
 
 
