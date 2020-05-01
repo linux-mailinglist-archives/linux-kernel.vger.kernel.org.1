@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90DBE1C1689
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26AA1C14FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731199AbgEANtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:49:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41050 "EHLO mail.kernel.org"
+        id S1731783AbgEANou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:44:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731329AbgEANkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:40:53 -0400
+        id S1731764AbgEANoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:44:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 034D5205C9;
-        Fri,  1 May 2020 13:40:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE3E220757;
+        Fri,  1 May 2020 13:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340452;
-        bh=0u6wEzb76ncdT0z6fHVNlCKNH9+f7uchnCCQjeDtbPU=;
+        s=default; t=1588340679;
+        bh=nYV0G6EkJ94yM3KWpVtyeNfmNdgWB3s/ofgybmqmjF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ws2DQa1vZn3xI8OzjJ+TpdwqAsmDiBICibMonZFNM6SxjGlTJErNeEtyg6SjdD0tl
-         QxLeNROEanBry2kfR/Nlldo3j/JvV0lTFhjQ55adhpUIS78PKPTAnvcBCjkEu1FJAl
-         /azPOPI4OyFnVIl2EuY9ou/UjTrALIYyq7elo/xE=
+        b=czb/P3ZXKxdp9emqCEyigoHE6b2b6F3fDDOTgtuE7hPzXfF8IhO848s9liNBsF6Iy
+         iWFXJO6EIt/dXUgg1iHvFCLdmtpEh5ViadZ2SquEJmd9NxCYxK2+2xEMDPzGU+kzq3
+         wd/CKPUDyA4DLeI2XS1OIO1QeYwZSSCYXJ18dnQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Theodore Tso <tytso@mit.edu>,
+        stable@vger.kernel.org, Mike Christie <mchristi@redhat.com>,
+        Bodo Stroesser <bstroesser@ts.fujitsu.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 73/83] ext4: convert BUG_ONs to WARN_ONs in mballoc.c
+Subject: [PATCH 5.6 079/106] scsi: target: tcmu: reset_ring should reset TCMU_DEV_BIT_BROKEN
 Date:   Fri,  1 May 2020 15:23:52 +0200
-Message-Id: <20200501131541.749303750@linuxfoundation.org>
+Message-Id: <20200501131553.305030404@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,50 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Bodo Stroesser <bstroesser@ts.fujitsu.com>
 
-[ Upstream commit 907ea529fc4c3296701d2bfc8b831dd2a8121a34 ]
+[ Upstream commit 066f79a5fd6d1b9a5cc57b5cd445b3e4bb68a5b2 ]
 
-If the in-core buddy bitmap gets corrupted (or out of sync with the
-block bitmap), issue a WARN_ON and try to recover.  In most cases this
-involves skipping trying to allocate out of a particular block group.
-We can end up declaring the file system corrupted, which is fair,
-since the file system probably should be checked before we proceed any
-further.
+In case command ring buffer becomes inconsistent, tcmu sets device flag
+TCMU_DEV_BIT_BROKEN.  If the bit is set, tcmu rejects new commands from LIO
+core with TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE, and no longer processes
+completions from the ring.  The reset_ring attribute can be used to
+completely clean up the command ring, so after reset_ring the ring no
+longer is inconsistent.
 
-Link: https://lore.kernel.org/r/20200414035649.293164-1-tytso@mit.edu
-Google-Bug-Id: 34811296
-Google-Bug-Id: 34639169
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Therefore reset_ring also should reset bit TCMU_DEV_BIT_BROKEN to allow
+normal processing.
+
+Link: https://lore.kernel.org/r/20200409101026.17872-1-bstroesser@ts.fujitsu.com
+Acked-by: Mike Christie <mchristi@redhat.com>
+Signed-off-by: Bodo Stroesser <bstroesser@ts.fujitsu.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/mballoc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/target/target_core_user.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index c76ffc259d197..e1782b2e2e2dd 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -1936,7 +1936,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 	int free;
+diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
+index 0b9dfa6b17bc7..f769bb1e37356 100644
+--- a/drivers/target/target_core_user.c
++++ b/drivers/target/target_core_user.c
+@@ -2073,6 +2073,7 @@ static void tcmu_reset_ring(struct tcmu_dev *udev, u8 err_level)
+ 	mb->cmd_tail = 0;
+ 	mb->cmd_head = 0;
+ 	tcmu_flush_dcache_range(mb, sizeof(*mb));
++	clear_bit(TCMU_DEV_BIT_BROKEN, &udev->flags);
  
- 	free = e4b->bd_info->bb_free;
--	BUG_ON(free <= 0);
-+	if (WARN_ON(free <= 0))
-+		return;
+ 	del_timer(&udev->cmd_timer);
  
- 	i = e4b->bd_info->bb_first_free;
- 
-@@ -1959,7 +1960,8 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 		}
- 
- 		mb_find_extent(e4b, i, ac->ac_g_ex.fe_len, &ex);
--		BUG_ON(ex.fe_len <= 0);
-+		if (WARN_ON(ex.fe_len <= 0))
-+			break;
- 		if (free < ex.fe_len) {
- 			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
- 					"%d free clusters as per "
 -- 
 2.20.1
 
