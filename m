@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C9F1C1C98
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938F61C1C9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgEASHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 14:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729138AbgEASH3 (ORCPT
+        id S1730167AbgEASJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 14:09:16 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34270 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729138AbgEASJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 14:07:29 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9D5C061A0C;
-        Fri,  1 May 2020 11:07:29 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id re23so8145908ejb.4;
-        Fri, 01 May 2020 11:07:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u7uWdnXzReMILuWMuJCMVWJ56cZtnobswX6oBH/1+LI=;
-        b=vekpM1d56g5fDbCG1IleQHXSiKBdPaYjvbDBn8cEraD0huZTUU0MxRbSdEavQx1Cw6
-         EfJ1ajFUGwUjFXkD1gx6qod2jw0GuCJt+K/gaLGFmOmikqEmXlXKAIVA9vZcK0mFbTh8
-         yFZyTENfGNSgrpjh0/iLYg3NfLkd7DC/BlT9PotgkO9H6qyhIIgAA3O/vj7dr3oFpyP9
-         /GG4sdRG/BtNvbeZokPrWxkUFJF0xSXcU/KH2ys2+PjRGFIgS9gY2wPSXDEIewMNPHFh
-         Eg0rDnSqahbXmyU0i/FwPAdU4WNkffDNX0IugVwNMGQhQn/RXBLXvpDHafy6WGRTwWT6
-         k2hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u7uWdnXzReMILuWMuJCMVWJ56cZtnobswX6oBH/1+LI=;
-        b=tJyny85eRSHkH6wJ+5PQ2YMJojLAI5X7zqaxTn3NiwZJbkrRziCPYqaxpLcEdRzMlI
-         SX35jySeG5Y21b/WbI+bJ/op8Cb6lte937rYxyjX4n+mSlWuNrdwLvsVDgkdQO5UBsfM
-         TG3T+lg5rnIdaCLnDfrx7F42ttJqdS4yiP1D+Ejo1JbZKDp+RcnXxolNdti9mxT05z4g
-         fiMBlZ8VLKJ8OYldGXClUI2mrGym2iInmb9+hrimaKUP627ORUrnZK9hu1Tz4XnqCjzO
-         ZEBgl2t6S7rsq0afpbK/beDO+RCAF1NwP90kiVqVUdne3l/rVn7c+9WJtMXMQxqZAqmh
-         pcpw==
-X-Gm-Message-State: AGi0PuaYC9bgZ5Q2ieZNVBPoiNGY0bhLTu+MHJZsy74yHwSOtj8RnJ4B
-        kqIn0NrO2yDqTIyhhCeo4FAHssJQO+HvXj9f1bk=
-X-Google-Smtp-Source: APiQypKGvYoGXVQMOaMMGuLG6ZVr8NMMUDLLVypjF+0BH0k/Zjptcxe8gMGO+JVPHbaw6NNSXzHRZRexKuHsnVIIv94=
-X-Received: by 2002:a17:906:970e:: with SMTP id k14mr4444610ejx.202.1588356447735;
- Fri, 01 May 2020 11:07:27 -0700 (PDT)
+        Fri, 1 May 2020 14:09:16 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 041I9EmU044486;
+        Fri, 1 May 2020 13:09:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588356554;
+        bh=/fJ9cUbckunoyP/q6SgWpllpclV8rGM29oEsu3Qpm7U=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=cqgnEPosxzRpln2RxdwTjQBwAWVjM0Fg457BilvJuB3FQM6LajOH1qKdCh8nAV6Cl
+         3FMYc13lYCryQVdneIN3X5AE/OOn/zM0E2K8DtDHU12flwnCqkfjyCHIOKLUwsZ8Nz
+         wPXZzBUqq+mDyQg5nih/5TjtKKpnzHJToWh96WHA=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 041I9EM2052767;
+        Fri, 1 May 2020 13:09:14 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 1 May
+ 2020 13:09:13 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 1 May 2020 13:09:13 -0500
+Received: from [10.250.79.122] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 041I9D64086046;
+        Fri, 1 May 2020 13:09:13 -0500
+Subject: Re: [RESEND PATCH v5 0/3] BQ25150/155 Charger
+To:     Dan Murphy <dmurphy@ti.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200304174025.31655-1-r-rivera-matos@ti.com>
+ <eb5f0818-21c7-1b84-b0c9-904bce9721be@ti.com>
+ <20200501172445.diiccfzbh7kzkxdl@earth.universe>
+ <a83b5728-2896-3ec9-00f1-dc611c3aa471@ti.com>
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Message-ID: <5e50e9f1-9f5f-cc0b-8df5-fbc7dc09e0cf@ti.com>
+Date:   Fri, 1 May 2020 13:09:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200430192427.4104899-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20200430192427.4104899-1-bjorn.andersson@linaro.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 1 May 2020 11:07:32 -0700
-Message-ID: <CAF6AEGsq8RPX7ttqdMh1rXFUqCmVKWNVfez12sV+5PRaz2X8Uw@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Fix undefined "rd_full" link error
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a83b5728-2896-3ec9-00f1-dc611c3aa471@ti.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 12:25 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> rd_full should be defined outside the CONFIG_DEBUG_FS region, in order
-> to be able to link the msm driver even when CONFIG_DEBUG_FS is disabled.
->
-> Fixes: e515af8d4a6f ("drm/msm: devcoredump should dump MSM_SUBMIT_BO_DUMP buffers")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-thanks,
+On 5/1/20 12:55 PM, Dan Murphy wrote:
+> Sebastian
+>
+> On 5/1/20 12:24 PM, Sebastian Reichel wrote:
+>> Hi,
+>>
+>> I don't see any PATCHv5 (with or without RESEND) for bq25150 and
+>> lore does not see anything either:
+>>
+>> https://lore.kernel.org/linux-pm/?q=PATCH+v5+0%2F3%5D+BQ25150%2F155+Charger 
+>>
+>
+> I posted them for Ricardo.  Maybe he need a lore account.
 
-Reviewed-by: Rob Clark <robdclark@gmail.com>
-
-> ---
->  drivers/gpu/drm/msm/msm_rd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+That is most likely the issue. Sorry for the confusion, all. I am 
+setting one up now.
 >
-> diff --git a/drivers/gpu/drm/msm/msm_rd.c b/drivers/gpu/drm/msm/msm_rd.c
-> index 732f65df5c4f..fea30e7aa9e8 100644
-> --- a/drivers/gpu/drm/msm/msm_rd.c
-> +++ b/drivers/gpu/drm/msm/msm_rd.c
-> @@ -29,8 +29,6 @@
->   * or shader programs (if not emitted inline in cmdstream).
->   */
+> https://lore.kernel.org/patchwork/project/lkml/list/?series=441577
 >
-> -#ifdef CONFIG_DEBUG_FS
-> -
->  #include <linux/circ_buf.h>
->  #include <linux/debugfs.h>
->  #include <linux/kfifo.h>
-> @@ -47,6 +45,8 @@ bool rd_full = false;
->  MODULE_PARM_DESC(rd_full, "If true, $debugfs/.../rd will snapshot all buffer contents");
->  module_param_named(rd_full, rd_full, bool, 0600);
+> Not sure why his patches did not go through.
 >
-> +#ifdef CONFIG_DEBUG_FS
-> +
->  enum rd_sect_type {
->         RD_NONE,
->         RD_TEST,       /* ascii text */
-> --
-> 2.24.0
+> Dan
 >
