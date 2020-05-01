@@ -2,143 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9454D1C1BE2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C70E1C1BE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730176AbgEARg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729659AbgEARg2 (ORCPT
+        id S1730249AbgEARhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 13:37:15 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:49037 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729705AbgEARhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 13:36:28 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6EBDC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:36:28 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id g129so2852088vkh.9
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:36:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TA6stwlQtMs0s5sdi3+tZ1ygYla8dV/bmC8ohmequGA=;
-        b=KBM/6NPcoPyp2XNp6JUEX0Xt3PKjJ4OeWDSYAI2ClnarZon9yxFPFl0VQ1Z9H+zyGX
-         7H7FRh2pe/8P19+PEzHcCgj2mDQkmWTZTnHkastnytPBWT6e2Zv/spgFa23CPQY0iA4z
-         tkPgdfzL0pxE3paW1H2UbOMPQjNB308rhBS6E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TA6stwlQtMs0s5sdi3+tZ1ygYla8dV/bmC8ohmequGA=;
-        b=DluubVNxhkxExWIKwOTGLcpN/U6NehrYuDD6DEOfJUNlzXpM9VzuEbYWAuYmvCE2oo
-         DOokd5vX888MHKFqPpRvEXJRZZGtARMg0TVw/p8fec61B3YMRVKIAHnAHBk0cWzDEqbu
-         nCd7hpzAFHxtlT3N7yM1928UQTrCgzY6vklppCvVnhglb6cmndiQzBkHwIPvEu0Ian3D
-         Ar4L/HDtLOufUh2kkkyvLp8qG4gktoOucnsSyttuL8K96oHHYxYMFmZlF8NFFOmv1fDH
-         wGh3/Fd28Ph9YfUXXYcykw1e5BIzt/MZ5ePGhq11lP+xzXD+U27Wy5RmvjTDR+SUKI9y
-         1uYg==
-X-Gm-Message-State: AGi0PuZPfhYhWjc5kTYHr2xzjGFyVuoDfhPm+6gjCDVH2MRY7d0STtIW
-        jmu5RPgp/deGLCTPMxYJGXy+dQ3GYws=
-X-Google-Smtp-Source: APiQypKD2M/ETNeOaiQV1O5ERUHYupBwZglrItBtzYP1tRCIqFMpFKO8AmO5QvpEDr4LzH80r1Rxcw==
-X-Received: by 2002:a1f:8dcd:: with SMTP id p196mr3680151vkd.64.1588354587398;
-        Fri, 01 May 2020 10:36:27 -0700 (PDT)
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com. [209.85.222.45])
-        by smtp.gmail.com with ESMTPSA id b204sm950183vkb.17.2020.05.01.10.36.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 May 2020 10:36:26 -0700 (PDT)
-Received: by mail-ua1-f45.google.com with SMTP id s5so3997598uad.4
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:36:26 -0700 (PDT)
-X-Received: by 2002:a9f:27ca:: with SMTP id b68mr3831812uab.8.1588354586095;
- Fri, 01 May 2020 10:36:26 -0700 (PDT)
+        Fri, 1 May 2020 13:37:14 -0400
+Received: from mail-qv1-f41.google.com ([209.85.219.41]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MrhLw-1iq1jJ1XPg-00nhip; Fri, 01 May 2020 19:37:13 +0200
+Received: by mail-qv1-f41.google.com with SMTP id ck5so5044288qvb.11;
+        Fri, 01 May 2020 10:37:13 -0700 (PDT)
+X-Gm-Message-State: AGi0PuauzeuCKuBoOTcwGnIyEL/8FOQS54WSVUIh+iKKthAW5UxVYlGa
+        uaMl4eCZVlGTzx66w4ycNaXK0miWHVBQHyAvpZo=
+X-Google-Smtp-Source: APiQypJ76OecAT4JRkELVMGL7nVDYe5c/NgtmrMhJvbU+ti51agb2oCYWekUuVifbHUREw/ttX5+H+Iorlemv8zo2vg=
+X-Received: by 2002:a0c:eb11:: with SMTP id j17mr5062637qvp.197.1588354632183;
+ Fri, 01 May 2020 10:37:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200430095819.1.Id37f71c69eb21747b9d9e2c7c242be130814b362@changeid>
- <20200501114943.ioetuxe24gi27bll@holly.lan> <20200501133202.GA2402281@wychelm.lan>
-In-Reply-To: <20200501133202.GA2402281@wychelm.lan>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 1 May 2020 10:36:14 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WKKCkr1va9S+ygL7XuOvSm12-qw4dCSo=FBtyXx4JvhQ@mail.gmail.com>
-Message-ID: <CAD=FV=WKKCkr1va9S+ygL7XuOvSm12-qw4dCSo=FBtyXx4JvhQ@mail.gmail.com>
-Subject: Re: [PATCH] kgdboc: Be a bit more robust about handling earlycon leaving
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Jason Wessel <jason.wessel@windriver.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        LKML <linux-kernel@vger.kernel.org>, linux-serial@vger.kernel.org
+References: <20200430213101.135134-1-arnd@arndb.de> <20200430213101.135134-14-arnd@arndb.de>
+ <b5e6ef12-c2ac-d0ce-b7a1-a58d4c8de300@huawei.com> <CAK8P3a1=5dmgB+k9B_jk2qBhBPnMSFMWrByP4jRvyvaJwBo94A@mail.gmail.com>
+ <1588344818.3428.18.camel@linux.ibm.com>
+In-Reply-To: <1588344818.3428.18.camel@linux.ibm.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 1 May 2020 19:36:55 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2nTi6AOf-4xJN3wurCXC52mLPBVbjgvcv6Cz=8A05X0A@mail.gmail.com>
+Message-ID: <CAK8P3a2nTi6AOf-4xJN3wurCXC52mLPBVbjgvcv6Cz=8A05X0A@mail.gmail.com>
+Subject: Re: [PATCH 13/15] scsi: sas: avoid gcc-10 zero-length-bounds warning
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     John Garry <john.garry@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        James Bottomley <James.Bottomley@steeleye.com>,
+        Hannes Reinecke <hare@suse.com>,
+        linux-scsi <linux-scsi@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Yn9pe+bgLmCVwhi7YwwfmpuvUlqqpff2IqM+sqv9UcQqCE0MCRj
+ xwBd3kzBm3yKaBlRux5yWaSmhRhTW+l+OU52aCfL1kiTsApwDFcL77r9/GQVwg/uPiI9FPb
+ nV/CJNC0Z66KWcRrBib2OtMl83Z6Aduy91K5zi4KMi6hrShRGRyQLhOC+x07ZxAqMuxuast
+ 6f+MXpqKJTyPL6p3un5Jg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oQxc4oroxpI=:ehXWVPLIDHEnyVyg50sJeB
+ R+c0m6Q41X1oFype8KF9PcW/sOYmRr71EDmAs/He7/IizuC188qiCGfhg5WbmjdTEf6VbiMZU
+ A2NP9EHOLGWtBVXgpt3Ak6HxYW3ahGumyazRUV58M0v/6wobDcT2Jq/n77TWlDs28/GVFF6t9
+ iabc23ua5ZscDUXnYBrBbhQ2zEfu3QVlA7YvCiHhLA7oNwHKfGjIu5kOCJYl8RjNvbDJpMMFn
+ cIhCfIc6TXcLiywnmepX4Hrohtw9NH9Sw3cdJ1hfakzxjwkUZiuxJ2QclPNz3nxo8IQQZRvdl
+ 5vrRM0V2vAgwDWNImu4qUmm5EqJ5aIaF+u5MMDnNvqNCV5d9DPEwybLesedFicCyRIt1ZGo+J
+ QNVGcIuMKv4mujvS9PJv/CPdTO5tmXM2SEOLFzeyba+pCS4QJL1SC3ks8iiusCANS9beTo4U1
+ qlfKJT/11A47h1Xe88y1VoE+Zk7A1cmzjL7AciqSA6p+ec6ddtaoKnzMysTYcHVXZDKKHFeZk
+ Ia/IKIQ45PjWhC7pF4CPjK2ELjRMpcEjqYtc1ItQ5oE0olBUGLgh7LfATAfbTnfVRmJnWB+A1
+ BKejFi8mcOAvGB58t7QyvEcCRzn5te2G0K2uWgN3CK/3/TviNDo3w2EeX6gwFZK7t/gP+sM+Y
+ aq8+LLZAOFsSxBB0vjNBNFY8xdFlYKErjOTagdO8dmBIt+AOwr7jGLbnGbHbCclt/8IZKeOSh
+ oiDHvnXt/JZixtFu7bIDDmQSNCE9SAU4u1ICySd+kVzT42e6/lQC93nZRAqCKETWWrJy7m7KD
+ /XhUN8P/YMrgkBS8zNZVKi1Z1x79SeRasEbfUETN5uVAhf+aRc=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, May 1, 2020 at 6:32 AM Daniel Thompson
-<daniel.thompson@linaro.org> wrote:
+On Fri, May 1, 2020 at 4:53 PM James Bottomley <jejb@linux.ibm.com> wrote:
+> On Fri, 2020-05-01 at 09:54 +0200, Arnd Bergmann wrote:
+> > On Fri, May 1, 2020 at 9:48 AM John Garry <john.garry@huawei.com>
+> > wrote:
+> > I found one hack that would work, but I think it's too ugly and
+> > likely not well-defined either:
+> >
+> > struct ssp_response_iu {
+> > ...
+> >         struct {
+> >                 u8      dummy[0]; /* a struct must have at least one
+> > non-flexible member */
 >
-> On Fri, May 01, 2020 at 12:49:43PM +0100, Daniel Thompson wrote:
-> > On Thu, Apr 30, 2020 at 09:59:09AM -0700, Douglas Anderson wrote:
-> > > The original implementation of kgdboc_earlycon included a comment
-> > > about how it was impossible to get notified about the boot console
-> > > going away without making changes to the Linux core.  Since folks
-> > > often don't want to change the Linux core for kgdb's purposes, the
-> > > kgdboc_earlycon implementation did a bit of polling to figure out when
-> > > the boot console went away.
-> > >
-> > > It turns out, though, that it is possible to get notified about the
-> > > boot console going away.  The solution is either clever or a hack
-> > > depending on your viewpoint.  ...or, perhaps, a clever hack.  All we
-> > > need to do is head-patch the "exit" routine of the boot console.  We
-> > > know that "struct console" must be writable because it has a "next"
-> > > pointer in it, so we can just put our own exit routine in, do our
-> > > stuff, and then call back to the original.
-> >
-> > I think I'm in the hack camp on this one!
-> >
-> >
-> > > This works great to get notified about the boot console going away.
-> > > The (slight) problem is that in the context of the boot console's exit
-> > > routine we can't call tty_find_polling_driver().
-> >
-> > I presume this is something to do with the tty_mutex?
-> > > We solve this by
-> > > kicking off some work on the system_wq when we get notified and this
-> > > works pretty well.
-> >
-> > There are some problems with the workqueue approach.
+> If gcc is now warning about zero length members, why isn't it warning
+> about this one ... are unions temporarily excluded?
+
+It does not warn about all zero-length arrays, but it does warn when you
+try to access an array with an out-of-range index, and this apparently
+got extended in gcc-10 to any index for zero-length arrays.
+
+> >                 u8      resp_data[]; /* allowed here because it's at
+> > the one of a struct */
+> >         };
+> >         u8     sense_data[];
+> > } __attribute__ ((packed));
 >
-> ... so did a couple of experiments to avoid the workqueue.
->
-> It occured to me that, since we have interfered with deinit() then the
-> console hasn't actually been uninitialized meaning we could still use it.
-> This does exposes us to risks similar to keep_bootcon but in exchange
-> there is no window where kgdb is broken (and no need to panic).
->
-> My prototype is minimal but I did wonder about ripping out all the
-> code to defend against removal of the earlycon and simply keep the
-> earlycon around until a new kgdbio handler is installed.
+> Let's go back to what the standard says:  we want the data beyond the
+> ssp_response_iu to be addressable either as sense_data if it's an error
+> return or resp_data if it's a real response.  What about trying to use
+> an alias attribute inside the structure ... will that work on gcc-10?
 
-It took me a little while, but I finally see what you're saying.
-You're saying that we keep calling into the boot console even though
-it's no longer in the list of consoles.  Then we temporarily disable
-the boot console's exit routine until kgdb_earlycon() is done.  (side
-note: the exit routine was recently added and probably most consoles
-don't use it).
+I think alias attributes only work for functions and variables, but not
+for struct members.
 
-OK, that doesn't seem totally insane.  It actually works OK for you?
+A "#define sense_data resp_data" would obviously work, but it's
+rather error-prone when other code uses the same identifiers.
 
-It's probably at least worth a warning in the log if we detect that
-we're using the boot console and it's not in the console list anymore.
-Then if kgdb starts misbehaving someone might have a clue.
+Another option would be an inline helper like
 
-If your solution is OK we might also want to remove the call to
-cleanup_earlycon_if_invalid() in configure_kgdboc() too.
+static inline u8 *ssp_response_data(struct ssp_response_iu *iu)
+{
+      return iu.resp_data;
+}
 
-I think you might win the "hackiest solution" prize, but your solution
-definitely does seem better because I can't think of any other good
-way to handle people whose consoles register a long time before their
-tty.  ;-)
-
-
--Doug
+      Arnd
