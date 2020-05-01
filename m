@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47C71C2C7E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 14:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7823E1C0BF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 04:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgECMvv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 3 May 2020 08:51:51 -0400
-Received: from mail.30tageserver.de ([46.38.251.90]:51484 "EHLO
-        v220120211527745399.yourvserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728378AbgECMvu (ORCPT
+        id S1728074AbgEACJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 22:09:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727889AbgEACJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 08:51:50 -0400
-Received: from localhost (ip6-localhost [127.0.0.1])
-        by v220120211527745399.yourvserver.net (Postfix) with ESMTP id 2432713B755;
-        Fri,  1 May 2020 11:53:14 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at v220120211527745399.yourvserver.net
-X-Spam-Flag: NO
-X-Spam-Score: 1.589
-X-Spam-Level: *
-X-Spam-Status: No, score=1.589 required=6.31 tests=[ALL_TRUSTED=-1,
-        DNS_FROM_AHBL_RHSBL=2.438, LOTS_OF_MONEY=0.001, MISSING_MID=0.14,
-        T_HK_NAME_MR_MRS=0.01] autolearn=unavailable
-Received: from v220120211527745399.yourvserver.net ([127.0.0.1])
-        by localhost (v220120211527745399.yourvserver.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xMzt9RqUAC2m; Fri,  1 May 2020 11:53:13 +0200 (CEST)
-Received: from DMTESTv7-10.northeurope.cloudapp.azure.com (unknown [40.113.89.2])
-        by v220120211527745399.yourvserver.net (Postfix) with ESMTPA id B7BF674705;
-        Fri,  1 May 2020 04:08:14 +0200 (CEST)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 30 Apr 2020 22:09:24 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC428C035494;
+        Thu, 30 Apr 2020 19:09:24 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jUL72-00FWOz-Ta; Fri, 01 May 2020 02:09:13 +0000
+Date:   Fri, 1 May 2020 03:09:12 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH V1 05/10] arch/kmap_atomic: Consolidate duplicate code
+Message-ID: <20200501020912.GD23230@ZenIV.linux.org.uk>
+References: <20200430203845.582900-1-ira.weiny@intel.com>
+ <20200430203845.582900-6-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Grant(info)
-To:     Recipients <noreply@dbz.com>
-From:   "Mr. X" <noreply@dbz.com>
-Date:   Fri, 01 May 2020 02:08:13 +0000
-Reply-To: info1@dbzmail.com
-Message-Id: <20200501095314.2432713B755@v220120211527745399.yourvserver.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430203845.582900-6-ira.weiny@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lieber Bewohner, lieber
+On Thu, Apr 30, 2020 at 01:38:40PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> Every arch has the same code to ensure atomic operations and a check for
+> !HIGHMEM page.
+> 
+> Remove the duplicate code by defining a core kmap_atomic() which only
+> calls the arch specific kmap_atomic_high() when the page is high memory.
 
-Die DBZ Project Foundation hat 25 Millionen US-Dollar für Notfallzuschüsse für kleine Unternehmen und einzelne Projekte bereitgestellt.
-Der Betrag variiert zwischen 300.000,00 USD und 800.000,00 USD pro Antragsteller.
+Err....  AFAICS, you've just silently changed the semantics for
+kmap_atomic_prot() here.  And while most of the callers are converted,
+drivers/gpu/drm/ttm/ttm_bo_util.c one is not, so at the very least it's
+a bisect hazard...
 
-Die Bewerbung beginnt am 27. April unter folgender E-Mail-Adresse: info47@dbzmail.com
-
-Sie finden Details in mehreren Sprachen, die erforderlichen Bewerbungsunterlagen und ein Bewerbungsformular.
-
-HINWEIS: Diese Spende gilt für die ersten 30 Bewerber.
-
-Vielen Dank,
-
-DBZ-Projektteam (Weltstiftungsgruppe).
-E-Mail: info47@dbzmail.com.
-E-Mail: donationbudgetzonefoundation@gmail.com.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Policy Disclaimer for Donation Budget Zone Foundation.  Corporacion:
-
-This message contains information that may be privileged or confidential and is the property of Donation Budget Zone Foundation. 
-It is only intended for the person to whom it is addressed. If you are not the intended recipient, you are not authorized to read, print, retain, copy, disseminate, distribute, or use this message or any part thereof. 
-If you receive this message in error, please notify the sender immediately and delete all copies of this message.
+And I would argue that having kmap_atomic() differ from kmap_atomic_prot()
+wrt disabling preempt is asking for trouble.
