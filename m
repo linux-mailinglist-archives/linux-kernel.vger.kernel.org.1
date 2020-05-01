@@ -2,199 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009871C1DA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 21:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8681C1D8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 21:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730519AbgEATJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 15:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
+        id S1730495AbgEATD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 15:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729766AbgEATJe (ORCPT
+        by vger.kernel.org with ESMTP id S1729953AbgEATDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 15:09:34 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5F8C061A0C;
-        Fri,  1 May 2020 12:09:34 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id v63so1950000pfb.10;
-        Fri, 01 May 2020 12:09:34 -0700 (PDT)
+        Fri, 1 May 2020 15:03:54 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9289C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 12:03:54 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id b13so3351949oti.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 12:03:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3jiAPaFiQIwup5Rl6bkdApLMWC+g3p/Kt1dCChwBGvU=;
-        b=HYqlOnF6xR6P3tL0oO/ZOqArCr8YiLqKR4ycbsI5PMe3b5gDjQkRgVRsbYe3Kv3H3+
-         dXtnOI8X8c2MGLulvZM72mVH6ibte2GRWWFNyciyYoXoXh+rXm6wqWvV5rNCJCPUopdm
-         ISIf/vnLr2f7BzTpAy+c+79V1cciunTnlLDKhmrvAu/OwhpyrS5UPfBvaO/czF8EPEWq
-         DdfSq4C4qjpR9VjB/lk0qizsNTNH9H8Wq9OFsc3UPtg08wDYJHCXqikvNZ5wr05PJApm
-         FiT9QFCi8o7XGYx/LTjCTltXKCM/KFbNS2nPDp4Cd1vES1hnsfUtx/mf79t5c7ckVfnT
-         ItvQ==
+        d=landley-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dV5C6Mdo+d2z1U4ixXFwa14iL+t03v6nPukDTsNC/Pw=;
+        b=rZ0wZNpFKPj00rZsGXQ/OEy65W5RTZI1U2mldKOKzrK3O8YxNmuwVKAmgNGlrMSPJh
+         dQ3h/11zRchfbBtSsQytLXthXnqjbswFFdOTKhvnJz2vylobGQeZ+LFvJofa3n+r2q6h
+         dCWQyfMflvlzhIlaKHECXHUiyMqYb5bOSgYxPZbKUIJ6kUtcquH4lk62KWBOPOZ0l2ly
+         3GJhN0ZjLbVF5/vkNCtpBlDafYpeOL+d8ft0arZhky+HvLzbqIp0tD5btouJClcvo4hf
+         7MIo2rkjDqc6lk3WUSAmT2r4xYoI+Vso+T69h2J6g+m95bxiajkPrGm0RbCSU1AKatT5
+         HKQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3jiAPaFiQIwup5Rl6bkdApLMWC+g3p/Kt1dCChwBGvU=;
-        b=ix4Q/15qdRUxKFiCNYvT2bTADGj5pvYSXddROrbkvS5Q+aWTVFla8w2pRjqshPR9kJ
-         FNcK624y/iyu9xkIvcrVneWGLTjqkaJnqFw+ju23P8xcuDRycYpCSP4Js+x8ifAOB5gz
-         7FGCKf+1IFyXdExqc43pOIsUyPDXvEvmcp5VuHIKpXUPV+9XDO0kp/o5ahR644NT+ELX
-         cKwbw/4zp0mU7OOmDSJC9wvL1SOvCVm89yZ44LgwjVQqYiHkVJ53uEBBzN8/Vm+BETEh
-         L1Mp3BYGSVm+GbRECPQKSaynRs+Uku5x9L6JNlXAQzFMpuCCQ1gJbLDlhCI7xMuriCYH
-         eGFQ==
-X-Gm-Message-State: AGi0PubceWZrYORAp0cXltrI1yrLV7n5PzorYlryL/bhphQyv9qLLC5d
-        1qbnRmtYWFZvKjwbGP9v4EM=
-X-Google-Smtp-Source: APiQypIBl1/RFUI1dVmI7MYjTIw4oUr1NcTWvPch+Z2udtILKSBl834zc6fvAKWhOD4ilquX0Pj6eg==
-X-Received: by 2002:a62:e803:: with SMTP id c3mr5338940pfi.228.1588360173626;
-        Fri, 01 May 2020 12:09:33 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8cd4])
-        by smtp.gmail.com with ESMTPSA id r4sm2609313pgi.6.2020.05.01.12.09.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 12:09:32 -0700 (PDT)
-Date:   Fri, 1 May 2020 12:09:30 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] bpf: Tweak BPF jump table optimizations for objtool
- compatibility
-Message-ID: <20200501190930.ptxyml5o4rviyo26@ast-mbp.dhcp.thefacebook.com>
-References: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dV5C6Mdo+d2z1U4ixXFwa14iL+t03v6nPukDTsNC/Pw=;
+        b=guOZP1lLJl4fZwHjGw1EiaJ4KS9wEM+3d6b6AmWUArv/Tc1PRRkhDSUP6Djgggibry
+         8rm0amlTYLCG7MmjwB5djjQeEG82zmJQ9LsIS2l2k1uBabObAiFcY6pFPocHJU1Nss/f
+         PqOvM25/L53SwElGDhWaooPsSgFW3nC7COSUBi1KwTgaZ8aCXZgIqak3SQOpCVUO8lcI
+         /d593qdAc+AGEYAIxbYc9Mz7eaHXnLyJOMocOFAtUMRfq5fsJeXzV6e8JRIgjXLBiRFF
+         lVJLUET20/u3+0XX0UbtDLkzSIQwMW2gLiUiBt5RFHdwdCAO2SubHoLmM+0smjaNeUdj
+         66fA==
+X-Gm-Message-State: AGi0Pub9chn63GL++96W+QbbtK4v2gAXQeRzVzKA+kEEs6ydG7GIS/i2
+        zTL6a6lWMO2SfjdcU3e7CaDNeg==
+X-Google-Smtp-Source: APiQypLpF0Ox0IO/qISGXS4LdidPlSkHRJysHJEBrOjiMzScpLoC5A3dEhhOSPrJ9hvlNYHsOmtChQ==
+X-Received: by 2002:a05:6830:20d9:: with SMTP id z25mr4236191otq.254.1588359834043;
+        Fri, 01 May 2020 12:03:54 -0700 (PDT)
+Received: from [192.168.86.21] ([136.62.4.88])
+        by smtp.gmail.com with ESMTPSA id c26sm1024801otl.49.2020.05.01.12.03.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 May 2020 12:03:53 -0700 (PDT)
+Subject: Re: [PATCH v2 0/5] Fix ELF / FDPIC ELF core dumping, and use mmap_sem
+ properly in there
+To:     Greg Ungerer <gerg@linux-m68k.org>, Rich Felker <dalias@libc.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jann Horn <jannh@google.com>, Nicolas Pitre <nico@fluxnic.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        linux-c6x-dev@linux-c6x.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+References: <20200429214954.44866-1-jannh@google.com>
+ <20200429215620.GM1551@shell.armlinux.org.uk>
+ <CAHk-=wgpoEr33NJwQ+hqK1dz3Rs9jSw+BGotsSdt2Kb3HqLV7A@mail.gmail.com>
+ <31196268-2ff4-7a1d-e9df-6116e92d2190@linux-m68k.org>
+ <20200430145123.GE21576@brightrain.aerifal.cx>
+ <6dd187b4-1958-fc40-73c4-3de53ed69a1e@linux-m68k.org>
+From:   Rob Landley <rob@landley.net>
+Message-ID: <cff13fb7-5045-4afd-e1d3-58af99d81d5a@landley.net>
+Date:   Fri, 1 May 2020 14:09:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b581438a16e78559b4cea28cf8bc74158791a9b3.1588273491.git.jpoimboe@redhat.com>
+In-Reply-To: <6dd187b4-1958-fc40-73c4-3de53ed69a1e@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 02:07:43PM -0500, Josh Poimboeuf wrote:
-> Objtool decodes instructions and follows all potential code branches
-> within a function.  But it's not an emulator, so it doesn't track
-> register values.  For that reason, it usually can't follow
-> intra-function indirect branches, unless they're using a jump table
-> which follows a certain format (e.g., GCC switch statement jump tables).
-> 
-> In most cases, the generated code for the BPF jump table looks a lot
-> like a GCC jump table, so objtool can follow it.  However, with
-> RETPOLINE=n, GCC keeps the jump table address in a register, and then
-> does 160+ indirect jumps with it.  When objtool encounters the indirect
-> jumps, it can't tell which jump table is being used (or even whether
-> they might be sibling calls instead).
-> 
-> This was fixed before by disabling an optimization in ___bpf_prog_run(),
-> using the "optimize" function attribute.  However, that attribute is bad
-> news.  It doesn't append options to the command-line arguments.  Instead
-> it starts from a blank slate.  And according to recent GCC documentation
-> it's not recommended for production use.  So revert the previous fix:
-> 
->   3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> 
-> With that reverted, solve the original problem in a different way by
-> getting rid of the "goto select_insn" indirection, and instead just goto
-> the jump table directly.  This simplifies the code a bit and helps GCC
-> generate saner code for the jump table branches, at least in the
-> RETPOLINE=n case.
-> 
-> But, in the RETPOLINE=y case, this simpler code actually causes GCC to
-> generate far worse code, ballooning the function text size by +40%.  So
-> leave that code the way it was.  In fact Alexei prefers to leave *all*
-> the code the way it was, except where needed by objtool.  So even
-> non-x86 RETPOLINE=n code will continue to have "goto select_insn".
-> 
-> This stuff is crazy voodoo, and far from ideal.  But it works for now.
-> Eventually, there's a plan to create a compiler plugin for annotating
-> jump tables.  That will make this a lot less fragile.
+On 5/1/20 1:00 AM, Greg Ungerer wrote:
+>> This sounds correct. My understanding of FLAT shared library support
+>> is that it's really bad and based on having preassigned slot indices
+>> for each library on the system, and a global array per-process to give
+>> to data base address for each library. Libraries are compiled to know
+>> their own slot numbers so that they just load from fixed_reg[slot_id]
+>> to get what's effectively their GOT pointer.
 
-I don't like this commit log.
-Here you're saying that the code recognized by objtool is sane and good
-whereas well optimized gcc code is somehow voodoo and bad.
-That is just wrong.
-goto select_insn; vs goto *jumptable[insn->code]; is not a contract that
-compiler has to follow. The compiler is free to convert direct goto
-into indirect and the other way around.
-For all practical purposes this patch is a band aid for objtool that will fall
-apart in the future. Just like the previous patch that survived less than a year.
-It's not clear whether old one worked for clang.
-It's not clear whether new one will work for clang.
-retpoline=y causing code bloat is a different issue that can be investigated
-separately. gcc/clang have different modes of generating retpoline thunks.
-May be one of those flags can help.
+fdpic is to elf what binflt is to a.out, and a.out shared libraries were never
+pretty. Or easy.
 
-In other words I'm ok with the patch, but commit log needs to be reworded.
-
-> Fixes: 3193c0836f20 ("bpf: Disable GCC -fgcse optimization for ___bpf_prog_run()")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> ---
->  include/linux/compiler-gcc.h   |  2 --
->  include/linux/compiler_types.h |  4 ----
->  kernel/bpf/core.c              | 10 +++++++---
->  3 files changed, 7 insertions(+), 9 deletions(-)
+>> I'm not sure if anybody has actually used this in over a decade. Last
+>> time I looked the tooling appeared broken, but in this domain lots of
+>> users have forked private tooling that's not publicly available or at
+>> least not publicly indexed, so it's hard to say for sure.
 > 
-> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-> index cf294faec2f8..2c8583eb5de8 100644
-> --- a/include/linux/compiler-gcc.h
-> +++ b/include/linux/compiler-gcc.h
-> @@ -176,5 +176,3 @@
->  #else
->  #define __diag_GCC_8(s)
->  #endif
-> -
-> -#define __no_fgcse __attribute__((optimize("-fno-gcse")))
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index e970f97a7fcb..58105f1deb79 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -203,10 +203,6 @@ struct ftrace_likely_data {
->  #define asm_inline asm
->  #endif
->  
-> -#ifndef __no_fgcse
-> -# define __no_fgcse
-> -#endif
-> -
->  /* Are two types/vars the same type (ignoring qualifiers)? */
->  #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
->  
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 916f5132a984..eec470c598ad 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1364,7 +1364,7 @@ u64 __weak bpf_probe_read_kernel(void *dst, u32 size, const void *unsafe_ptr)
->   *
->   * Decode and execute eBPF instructions.
->   */
-> -static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
-> +static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
->  {
->  #define BPF_INSN_2_LBL(x, y)    [BPF_##x | BPF_##y] = &&x##_##y
->  #define BPF_INSN_3_LBL(x, y, z) [BPF_##x | BPF_##y | BPF_##z] = &&x##_##y##_##z
-> @@ -1384,11 +1384,15 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u6
->  #undef BPF_INSN_2_LBL
->  	u32 tail_call_cnt = 0;
->  
-> +#if defined(CONFIG_X86_64) && !defined(CONFIG_RETPOLINE)
-> +#define CONT	 ({ insn++; goto *jumptable[insn->code]; })
-> +#define CONT_JMP ({ insn++; goto *jumptable[insn->code]; })
-> +#else
->  #define CONT	 ({ insn++; goto select_insn; })
->  #define CONT_JMP ({ insn++; goto select_insn; })
-> -
->  select_insn:
->  	goto *jumptable[insn->code];
-> +#endif
->  
->  	/* ALU */
->  #define ALU(OPCODE, OP)			\
-> @@ -1547,7 +1551,7 @@ static u64 __no_fgcse ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u6
->  		 * where arg1_type is ARG_PTR_TO_CTX.
->  		 */
->  		insn = prog->insnsi;
-> -		goto select_insn;
-> +		CONT;
+> Be at least 12 or 13 years since I last had a working shared library
+> build for m68knommu. I have not bothered with it since then, not that I
+> even used it much when it worked. Seemed more pain than it was worth.
 
-This is broken. I don't think you've run basic tests with this patch.
+Shared libraries worked fine with fdpic on sh2 last I checked, it's basically
+just ELF PIC with the ability to move the 4 segments (text/rodata/bss/data)
+independently of each other. (4 base pointers, no waiting.)
+
+I don't think I've _ever_ used shared binflt libraries. I left myself
+breadcrumbs back when I was wrestling with that stuff:
+
+  https://landley.net/notes-2014.html#07-12-2014
+
+But it looks like that last time I touched anything using elf2flt was:
+
+  https://landley.net/notes-2018.html#08-05-2018
+
+And that was just because arm's fdpic support stayed out of tree for years so I
+dug up binflt and gave it another go. (It sucked so much I wound up building
+static pie for cortex-m, taking the efficiency hit, and moving on. Running pie
+binaries on nommu _works_, it's just incredibly inefficient. Since the writeable
+and readable segments of the ELF are all relative to the same single base
+pointer, you can't share the read-only parts of the binaries without address
+remapping, so if you launch 4 instances of PIE bash on nommu you've loaded 4
+instances of the bash text and rodata, and of course none of it can even be
+demand faulted. In theory shared libraries _do_ help there but I hit some ld.so
+bug and didn't want to debug a half-assed solution, so big hammer and moved on
+until arm fdpic got merged and fixed it _properly_...)
+
+Rob
+
+P.S. The reason for binflt is bare metal hardware engineers who are conceptually
+uncomfortable with software love them, because it's as close to "objcopy -O
+binary" as they can get. Meanwhile on j-core we've had an 8k ROM boot loader
+that loads vmlinux images and does the ELF relocations for 5 years now, and ever
+since the switch to device tree that's our _only_ way to feed a dtb to the
+kernel without statically linking it in, so it's ELF all the way down for us.
