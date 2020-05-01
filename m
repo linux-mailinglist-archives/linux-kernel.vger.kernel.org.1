@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24AA1C1D06
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2221C1D0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730854AbgEASWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 14:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40440 "EHLO
+        id S1730893AbgEASXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 14:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730771AbgEASWg (ORCPT
+        by vger.kernel.org with ESMTP id S1730703AbgEASWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 14:22:36 -0400
+        Fri, 1 May 2020 14:22:31 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB17C08E859;
-        Fri,  1 May 2020 11:22:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7418CC061A0E;
+        Fri,  1 May 2020 11:22:31 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jUaIx-0003iC-P5; Fri, 01 May 2020 20:22:31 +0200
+        id 1jUaIu-0003jK-2s; Fri, 01 May 2020 20:22:28 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 95F1A1C0820;
-        Fri,  1 May 2020 20:22:23 +0200 (CEST)
-Date:   Fri, 01 May 2020 18:22:23 -0000
-From:   "tip-bot2 for Alexandre Chartre" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id CF7781C04DD;
+        Fri,  1 May 2020 20:22:24 +0200 (CEST)
+Date:   Fri, 01 May 2020 18:22:24 -0000
+From:   "tip-bot2 for Konstantin Khlebnikov" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/core] objtool: Uniquely identify alternative instruction groups
-Cc:     Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+Subject: [tip: x86/urgent] ftrace/x86: Fix trace event registration for
+ syscalls without arguments
+Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <158636958997.7900.16485049455470033557.stgit@buzz>
+References: <158636958997.7900.16485049455470033557.stgit@buzz>
 MIME-Version: 1.0
-Message-ID: <158835734357.8414.168402690817847729.tip-bot2@tip-bot2>
+Message-ID: <158835734479.8414.1154640678275011655.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -47,85 +50,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/core branch of tip:
+The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     13fab06d9a3ad3afdfd51c7f8f87f2ae28444648
-Gitweb:        https://git.kernel.org/tip/13fab06d9a3ad3afdfd51c7f8f87f2ae28444648
-Author:        Alexandre Chartre <alexandre.chartre@oracle.com>
-AuthorDate:    Tue, 14 Apr 2020 12:36:11 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 30 Apr 2020 20:14:31 +02:00
+Commit-ID:     fdc63ff0e49c588884992b4b2656345a5e878b32
+Gitweb:        https://git.kernel.org/tip/fdc63ff0e49c588884992b4b2656345a5e878b32
+Author:        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+AuthorDate:    Wed, 08 Apr 2020 21:13:10 +03:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 01 May 2020 19:15:40 +02:00
 
-objtool: Uniquely identify alternative instruction groups
+ftrace/x86: Fix trace event registration for syscalls without arguments
 
-Assign a unique identifier to every alternative instruction group in
-order to be able to tell which instructions belong to what
-alternative.
+The refactoring of SYSCALL_DEFINE0() macros removed the ABI stubs and
+simply defines __abi_sys_$NAME as alias of __do_sys_$NAME.
 
-[peterz: extracted from a larger patch]
-Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+As a result kallsyms_lookup() returns "__do_sys_$NAME" which does not match
+with the declared trace event name.
+
+See also commit 1c758a2202a6 ("tracing/x86: Update syscall trace events to
+handle new prefixed syscall func names").
+
+Add __do_sys_ to the valid prefixes which are checked in
+arch_syscall_match_sym_name().
+
+Fixes: d2b5de495ee9 ("x86/entry: Refactor SYSCALL_DEFINE0 macros")
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://lkml.kernel.org/r/158636958997.7900.16485049455470033557.stgit@buzz
+
 ---
- tools/objtool/check.c | 6 +++++-
- tools/objtool/check.h | 3 ++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/ftrace.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index cc52da6..4da6bfb 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -752,7 +752,9 @@ static int handle_group_alt(struct objtool_file *file,
- 			    struct instruction *orig_insn,
- 			    struct instruction **new_insn)
+diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+index 85be2f5..70b96ca 100644
+--- a/arch/x86/include/asm/ftrace.h
++++ b/arch/x86/include/asm/ftrace.h
+@@ -61,11 +61,12 @@ static inline bool arch_syscall_match_sym_name(const char *sym, const char *name
  {
-+	static unsigned int alt_group_next_index = 1;
- 	struct instruction *last_orig_insn, *last_new_insn, *insn, *fake_jump = NULL;
-+	unsigned int alt_group = alt_group_next_index++;
- 	unsigned long dest_off;
+ 	/*
+ 	 * Compare the symbol name with the system call name. Skip the
+-	 * "__x64_sys", "__ia32_sys" or simple "sys" prefix.
++	 * "__x64_sys", "__ia32_sys", "__do_sys" or simple "sys" prefix.
+ 	 */
+ 	return !strcmp(sym + 3, name + 3) ||
+ 		(!strncmp(sym, "__x64_", 6) && !strcmp(sym + 9, name + 3)) ||
+-		(!strncmp(sym, "__ia32_", 7) && !strcmp(sym + 10, name + 3));
++		(!strncmp(sym, "__ia32_", 7) && !strcmp(sym + 10, name + 3)) ||
++		(!strncmp(sym, "__do_sys", 8) && !strcmp(sym + 8, name + 3));
+ }
  
- 	last_orig_insn = NULL;
-@@ -761,7 +763,7 @@ static int handle_group_alt(struct objtool_file *file,
- 		if (insn->offset >= special_alt->orig_off + special_alt->orig_len)
- 			break;
- 
--		insn->alt_group = true;
-+		insn->alt_group = alt_group;
- 		last_orig_insn = insn;
- 	}
- 
-@@ -795,6 +797,7 @@ static int handle_group_alt(struct objtool_file *file,
- 	}
- 
- 	last_new_insn = NULL;
-+	alt_group = alt_group_next_index++;
- 	insn = *new_insn;
- 	sec_for_each_insn_from(file, insn) {
- 		if (insn->offset >= special_alt->new_off + special_alt->new_len)
-@@ -804,6 +807,7 @@ static int handle_group_alt(struct objtool_file *file,
- 
- 		insn->ignore = orig_insn->ignore_alts;
- 		insn->func = orig_insn->func;
-+		insn->alt_group = alt_group;
- 
- 		/*
- 		 * Since alternative replacement code is copy/pasted by the
-diff --git a/tools/objtool/check.h b/tools/objtool/check.h
-index 12a9660..2428022 100644
---- a/tools/objtool/check.h
-+++ b/tools/objtool/check.h
-@@ -30,12 +30,13 @@ struct instruction {
- 	unsigned int len;
- 	enum insn_type type;
- 	unsigned long immediate;
--	bool alt_group, dead_end, ignore, ignore_alts;
-+	bool dead_end, ignore, ignore_alts;
- 	bool hint;
- 	bool retpoline_safe;
- 	s8 instr;
- 	u8 visited;
- 	u8 ret_offset;
-+	int alt_group;
- 	struct symbol *call_dest;
- 	struct instruction *jump_dest;
- 	struct instruction *first_jump_src;
+ #ifndef COMPILE_OFFSETS
