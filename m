@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA141C19B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF431C19BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729833AbgEAPhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 11:37:32 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:36520 "EHLO vps0.lunn.ch"
+        id S1729952AbgEAPiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 11:38:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728865AbgEAPhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 11:37:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=CCW9t2Lcf3ESlVkJ4RGqmi6BmFZgD63tWCVuekoIumU=; b=TtzgkSzrEtfblR+H1wVwLbiwig
-        C8qarQ6oBZtfxDOULpsjFye+/KFqIcIkpqUOeMILNA//s3bR50E1daGGhbT5ptwh1DDApdNwbcOo5
-        sBLN/MpQUJSTzfYQgIEc4qimo/sF9UbZcCWJ9oL3Pg0y09HfCU4f0DqqOiHsHPtyZEJU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jUXjB-000YJL-8M; Fri, 01 May 2020 17:37:25 +0200
-Date:   Fri, 1 May 2020 17:37:25 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     robh+dt@kernel.org, f.fainelli@gmail.com,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        jianxin.pan@amlogic.com, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH RFC v2 07/11] net: stmmac: dwmac-meson8b: Make the clock
- enabling code re-usable
-Message-ID: <20200501153725.GG128733@lunn.ch>
-References: <20200429201644.1144546-1-martin.blumenstingl@googlemail.com>
- <20200429201644.1144546-8-martin.blumenstingl@googlemail.com>
+        id S1729011AbgEAPiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 11:38:03 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A73AD24958;
+        Fri,  1 May 2020 15:38:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588347482;
+        bh=D+5zg6wcy9IbyWytXdOtfMKjQXROS1kd20OBUZcVkJ0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=tSSk2/PByk5qV7u4IiRjxJ8CYS0efJiXDGJ5qYBh15QUub4XdHyHobvTflENla3p2
+         Pmcz+7WAujdlR03PRgcI8EbTADvuHD6ESbQQCEwW6yugioxLn29Tqe0gaWTewjrY8O
+         zpjC+pby2Nbx23iYe0/RNXhIzmvN11GspFc/qM00=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jUXjk-00FE4Q-Us; Fri, 01 May 2020 17:38:00 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: [PATCH 01/14] docs: move DMA kAPI to Documentation/core-api
+Date:   Fri,  1 May 2020 17:37:45 +0200
+Message-Id: <a1517185418cb9d987f566ef85a5dd5c7c99f34e.1588345503.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.4
+In-Reply-To: <cover.1588345503.git.mchehab+huawei@kernel.org>
+References: <cover.1588345503.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200429201644.1144546-8-martin.blumenstingl@googlemail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 10:16:40PM +0200, Martin Blumenstingl wrote:
-> The timing adjustment clock will need similar logic as the RGMII clock:
-> It has to be enabled in the driver conditionally and when the driver is
-> unloaded it should be disabled again. Extract the existing code for the
-> RGMII clock into a new function so it can be re-used.
-> 
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  .../ethernet/stmicro/stmmac/dwmac-meson8b.c   | 23 +++++++++++++++----
->  1 file changed, 18 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-> index 41f3ef6bea66..d31f79c455de 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-> @@ -266,6 +266,22 @@ static int meson_axg_set_phy_mode(struct meson8b_dwmac *dwmac)
->  	return 0;
->  }
->  
-> +static int meson8b_devm_clk_prepare_enable(struct meson8b_dwmac *dwmac,
-> +					   struct clk *clk)
-> +{
-> +	int ret;
-> +
-> +	ret = clk_prepare_enable(clk);
-> +	if (ret)
-> +		return ret;
-> +
-> +	devm_add_action_or_reset(dwmac->dev,
-> +				 (void(*)(void *))clk_disable_unprepare,
-> +				 dwmac->rgmii_tx_clk);
-> +
-> +	return 0;
-> +}
+Move those files to the core-api, where they belong, renaming
+them to ReST and adding to the core API index file.
 
-I'm surprised this does not exist in the core. It looks like there was
-some discussion about this, but nothing merged.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ .../{DMA-API-HOWTO.txt => core-api/dma-api-howto.rst}         | 0
+ Documentation/{DMA-API.txt => core-api/dma-api.rst}           | 0
+ .../{DMA-attributes.txt => core-api/dma-attributes.rst}       | 0
+ Documentation/{DMA-ISA-LPC.txt => core-api/dma-isa-lpc.rst}   | 0
+ Documentation/core-api/index.rst                              | 4 ++++
+ 5 files changed, 4 insertions(+)
+ rename Documentation/{DMA-API-HOWTO.txt => core-api/dma-api-howto.rst} (100%)
+ rename Documentation/{DMA-API.txt => core-api/dma-api.rst} (100%)
+ rename Documentation/{DMA-attributes.txt => core-api/dma-attributes.rst} (100%)
+ rename Documentation/{DMA-ISA-LPC.txt => core-api/dma-isa-lpc.rst} (100%)
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+diff --git a/Documentation/DMA-API-HOWTO.txt b/Documentation/core-api/dma-api-howto.rst
+similarity index 100%
+rename from Documentation/DMA-API-HOWTO.txt
+rename to Documentation/core-api/dma-api-howto.rst
+diff --git a/Documentation/DMA-API.txt b/Documentation/core-api/dma-api.rst
+similarity index 100%
+rename from Documentation/DMA-API.txt
+rename to Documentation/core-api/dma-api.rst
+diff --git a/Documentation/DMA-attributes.txt b/Documentation/core-api/dma-attributes.rst
+similarity index 100%
+rename from Documentation/DMA-attributes.txt
+rename to Documentation/core-api/dma-attributes.rst
+diff --git a/Documentation/DMA-ISA-LPC.txt b/Documentation/core-api/dma-isa-lpc.rst
+similarity index 100%
+rename from Documentation/DMA-ISA-LPC.txt
+rename to Documentation/core-api/dma-isa-lpc.rst
+diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
+index b29c4a07beda..c00aef843341 100644
+--- a/Documentation/core-api/index.rst
++++ b/Documentation/core-api/index.rst
+@@ -80,6 +80,10 @@ more memory-management documentation in :doc:`/vm/index`.
+    :maxdepth: 1
+ 
+    memory-allocation
++   dma-api
++   dma-api-howto
++   dma-attributes
++   dma-isa-lpc
+    mm-api
+    genalloc
+    pin_user_pages
+-- 
+2.25.4
 
-    Andrew
