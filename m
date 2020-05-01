@@ -2,137 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3001C0C3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 04:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FDB1C0C44
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 04:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgEACmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 22:42:07 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:51521 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1728107AbgEACmH (ORCPT
+        id S1728148AbgEACp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 22:45:57 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:46528 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728012AbgEACp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 22:42:07 -0400
-Received: (qmail 21059 invoked by uid 500); 30 Apr 2020 22:42:05 -0400
-Received: from localhost (sendmail-bs@127.0.0.1)
-  by localhost with SMTP; 30 Apr 2020 22:42:05 -0400
-Date:   Thu, 30 Apr 2020 22:42:05 -0400 (EDT)
-From:   Alan Stern <stern@rowland.harvard.edu>
-X-X-Sender: stern@netrider.rowland.org
-To:     Arnd Bergmann <arnd@arndb.de>
-cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH 08/15] usb: ehci: avoid gcc-10 zero-length-bounds warning
-In-Reply-To: <20200430213101.135134-9-arnd@arndb.de>
-Message-ID: <Pine.LNX.4.44L0.2004302231290.19755-100000@netrider.rowland.org>
+        Thu, 30 Apr 2020 22:45:57 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0412gvmu090502;
+        Fri, 1 May 2020 02:45:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=jm7TsAjBWi4GDN0ha1K1yz1GP8ie4jzQj6poP7e8Y10=;
+ b=SteZFnyjUZpdxBmafcRKm5ibk+Hu+WbQ9Pk8k0P0V8q+4kkHMW2NMYZ9G24Jd4VIZ7jy
+ MVx5mmKcx8g2GWufcxbfLprYaficCFCcupj9sufnzOTmD1doYkDifXzvdZAj6eZT04V6
+ 2FdgeRmjeseqcuw7PQNoqvlxb6/Z8g78doKc7GJyZvSl0hJ8XXk/193kwnKesj4xUeBH
+ ZXqf3yr3ERQApsVagVYjgf5LKfUBvsUvSlPxVtmSjhGMT+QtecysnVRAIg1XVhdjDzEQ
+ MCuHI2qpOmrXZWslSs1zFJcC0c7NlVCJQs4LizeRsMUU1EA5PSv2jGWPGw3UlUBdhGZ8 Sg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 30r7f3ghx3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 01 May 2020 02:45:23 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0412gTBi063787;
+        Fri, 1 May 2020 02:45:23 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 30r7f2mx74-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 01 May 2020 02:45:22 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0412jIiv021097;
+        Fri, 1 May 2020 02:45:18 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 30 Apr 2020 19:45:18 -0700
+Date:   Thu, 30 Apr 2020 22:45:39 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>, Zi Yan <ziy@nvidia.com>,
+        linux-crypto@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/7] mm: move zone iterator outside of
+ deferred_init_maxorder()
+Message-ID: <20200501024539.tnjuybydwe3r4u2x@ca-dmjordan1.us.oracle.com>
+References: <20200430201125.532129-1-daniel.m.jordan@oracle.com>
+ <20200430201125.532129-6-daniel.m.jordan@oracle.com>
+ <deadac9a-fbef-6c66-207c-83d251d2ef50@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <deadac9a-fbef-6c66-207c-83d251d2ef50@linux.intel.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 phishscore=0
+ adultscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005010018
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=2
+ phishscore=0 mlxlogscore=999 impostorscore=0 spamscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005010018
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020, Arnd Bergmann wrote:
+Hi Alex,
 
-> Building ehci drivers with gcc-10 results in a number of warnings like
-> when an zero-length array is accessed:
+On Thu, Apr 30, 2020 at 02:43:28PM -0700, Alexander Duyck wrote:
+> On 4/30/2020 1:11 PM, Daniel Jordan wrote:
+> > padata will soon divide up pfn ranges between threads when parallelizing
+> > deferred init, and deferred_init_maxorder() complicates that by using an
+> > opaque index in addition to start and end pfns.  Move the index outside
+> > the function to make splitting the job easier, and simplify the code
+> > while at it.
+> > 
+> > deferred_init_maxorder() now always iterates within a single pfn range
+> > instead of potentially multiple ranges, and advances start_pfn to the
+> > end of that range instead of the max-order block so partial pfn ranges
+> > in the block aren't skipped in a later iteration.  The section alignment
+> > check in deferred_grow_zone() is removed as well since this alignment is
+> > no longer guaranteed.  It's not clear what value the alignment provided
+> > originally.
+> > 
+> > Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 > 
-> drivers/usb/host/ehci-hub.c: In function 'ehci_bus_suspend':
-> drivers/usb/host/ehci-hub.c:320:30: error: array subscript 14 is outside the bounds of an interior zero-length array 'u32[0]' {aka 'unsigned int[0]'} [-Werror=zero-length-bounds]
->   320 |    u32 __iomem *hostpc_reg = &ehci->regs->hostpc[port];
->       |                              ^~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/usb/host/ehci.h:273,
->                  from drivers/usb/host/ehci-hcd.c:96:
-> include/linux/usb/ehci_def.h:186:7: note: while referencing 'hostpc'
->   186 |  u32  hostpc[0]; /* HOSTPC extension */
->       |       ^~~~~~
-> In file included from drivers/usb/host/ehci-hcd.c:305:
-> drivers/usb/host/ehci-hub.c: In function 'ehci_hub_control':
-> drivers/usb/host/ehci-hub.c:892:15: error: array subscript 256 is outside the bounds of an interior zero-length array 'u32[0]' {aka 'unsigned int[0]'} [-Werror=zero-length-bounds]
->   892 |  hostpc_reg = &ehci->regs->hostpc[temp];
->       |               ^~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from drivers/usb/host/ehci.h:273,
->                  from drivers/usb/host/ehci-hcd.c:96:
-> include/linux/usb/ehci_def.h:186:7: note: while referencing 'hostpc'
->   186 |  u32  hostpc[0]; /* HOSTPC extension */
->       |       ^~~~~~
-> 
-> All these fields are colocated with reserved fields that I guess
-> refer to the correct field length.
+> So part of the reason for splitting it up along section aligned boundaries
+> was because we already had an existing functionality in deferred_grow_zone
+> that was going in and pulling out a section aligned chunk and processing it
+> to prepare enough memory for other threads to keep running. I suspect that
+> the section alignment was done because normally I believe that is also the
+> alignment for memory onlining.
 
-No, they don't.
+I think Pavel added that functionality, maybe he could confirm.
 
-> Change the two struct definition to use an unnamed union to define
-> both of these fields at the same location as the corresponding
-> reserved fields.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/linux/usb/ehci_def.h | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/usb/ehci_def.h b/include/linux/usb/ehci_def.h
-> index 78e006355557..8777d8e56ef2 100644
-> --- a/include/linux/usb/ehci_def.h
-> +++ b/include/linux/usb/ehci_def.h
-> @@ -127,7 +127,8 @@ struct ehci_regs {
->  #define FLAG_CF		(1<<0)		/* true: we'll support "high speed" */
->  
->  	/* PORTSC: offset 0x44 */
-> -	u32		port_status[0];	/* up to N_PORTS */
-> +	union {
-> +		u32		port_status[9];	/* up to N_PORTS */
+My impression was that the reason deferred_grow_zone aligned the requested
+order up to a section was to make enough memory available to avoid being called
+on every allocation.
 
-This array can have up to 15 elements, meaning that it can extend out
-to offset 0x80.
+> With this already breaking things up over multiple threads how does this
+> work with deferred_grow_zone? Which thread is it trying to allocate from if
+> it needs to allocate some memory for itself?
 
->  /* EHCI 1.1 addendum */
->  #define PORTSC_SUSPEND_STS_ACK 0
->  #define PORTSC_SUSPEND_STS_NYET 1
-> @@ -165,7 +166,8 @@ struct ehci_regs {
->  #define PORT_CONNECT	(1<<0)		/* device connected */
->  #define PORT_RWC_BITS   (PORT_CSC | PORT_PEC | PORT_OCC)
->  
-> -	u32		reserved3[9];
-> +		u32		reserved3[9];
-> +	};
->  
->  	/* USBMODE: offset 0x68 */
->  	u32		usbmode;	/* USB Device mode */
+I may not be following your question, but deferred_grow_zone doesn't allocate
+memory during the multithreading in deferred_init_memmap because the latter
+sets first_deferred_pfn so that deferred_grow_zone bails early.
 
-As you see, this next field actually lies inside the preceding array.  
-It's not a real conflict; any hardware which supports the usbmode field 
-uses only the first element of the port_status array.
+> Also what is to prevent a worker from stop deferred_grow_zone from bailing
+> out in the middle of a max order page block if there is a hole in the middle
+> of the block?
 
-I don't know how you want to handle this.  Doing
-
-#define usbmode port_status[9]
-
-doesn't seem like a very good approach, but I can't think of anything 
-better at the moment.  Maybe just set the array size to 9, as you did, 
-but with a comment explaining what's really going on.
-
-> @@ -181,11 +183,13 @@ struct ehci_regs {
->   * PORTSCx
->   */
->  	/* HOSTPC: offset 0x84 */
-> -	u32		hostpc[0];	/* HOSTPC extension */
-> +	union {
-> +		u32		hostpc[17];	/* HOSTPC extension */
-
-Likewise, this array can have up to 15 elements.  In fact, it's the 
-same size as the port_status array.
-
->  #define HOSTPC_PHCD	(1<<22)		/* Phy clock disable */
->  #define HOSTPC_PSPD	(3<<25)		/* Port speed detection */
->  
-> -	u32		reserved5[17];
-> +		u32		reserved5[17];
-> +	};
->  
->  	/* USBMODE_EX: offset 0xc8 */
->  	u32		usbmode_ex;	/* USB Device mode extension */
-
-Alan Stern
-
+deferred_grow_zone remains singlethreaded.  It could stop in the middle of a
+max order block, but it can't run concurrently with deferred_init_memmap, as
+per above, so if deferred_init_memmap were to init 'n free the remaining part
+of the block, the previous portion would have already been initialized.
