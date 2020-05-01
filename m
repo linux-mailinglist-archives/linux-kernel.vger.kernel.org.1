@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52451C201D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E361C2020
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgEAVyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 17:54:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59358 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726045AbgEAVyz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 17:54:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588370093;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vqe/h5bIx8Xwds5+Doaeo5m4e7NAmlXMvCMv86v34rc=;
-        b=IwDhz8qFqZ3P8Ga2hQugrbtYcW+J78pfO9cvPbMOkT2rAZinNz/4xtIRQ0uvgOVXePAlsA
-        Wdc9HX4DAUvE1T2BQqcWU6n0nH3f9fywqbfq2ZQPg09/bLMNlYOESYitMALTiCT3167M/z
-        YpXBLjdbXE42RAXUEiHQJcqqrIGHsnU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-443-Qwf3zUiVOfaeAGW9G-6Xxg-1; Fri, 01 May 2020 17:54:49 -0400
-X-MC-Unique: Qwf3zUiVOfaeAGW9G-6Xxg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F0EA545F;
-        Fri,  1 May 2020 21:54:46 +0000 (UTC)
-Received: from optiplex-lnx (unknown [10.3.128.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8BDE36A954;
-        Fri,  1 May 2020 21:54:44 +0000 (UTC)
-Date:   Fri, 1 May 2020 17:54:41 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
-        rientjes@google.com, penberg@kernel.org, cl@linux.com
-Subject: Re: [PATCH] mm: slub: add panic_on_error to the debug facilities
-Message-ID: <20200501215441.GE27720@optiplex-lnx>
-References: <20200501211540.71216-1-aquini@redhat.com>
- <21CF143C-B9D1-4D3F-A875-370924265593@lca.pw>
+        id S1726937AbgEAVz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 17:55:27 -0400
+Received: from mail.zx2c4.com ([192.95.5.64]:36525 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726045AbgEAVz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 17:55:26 -0400
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id d7bce547;
+        Fri, 1 May 2020 21:43:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=GBwk1frAmvPVyRR7LTO6C8+MPwQ=; b=FyD4yn
+        lg5FFrDdIgRqTVyQvuCQd/D6b31eNZG4cR1WZKbuwF32UJbTtB/x2AqwZ5I5n4MV
+        5bvz9LTBEX3Yen66cNtuT55VKbYvwcTzXuQpvbd41fhdtUs4mMCGVRmYaN1YDWeE
+        xBBnnknz7WUQAzEcuPoYFdGYJ6+8NSNf++PFkb04Eic9CaXmVY8pCvBLDTwv2M9V
+        AWBl8U4EuO2db51kl2qL2XJxVd96n/XO+gjoOFpMpgfki/kia3FL2GIZqbG7rKVJ
+        P90laXF4vjMfMg/SEaqN7xWkk3sKhYTUqCkUgFYGMXmyqICkllPSbJqGJZbrT0pM
+        1kjwQf1Dok2GOteQ==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id bd97f9f9 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Fri, 1 May 2020 21:43:21 +0000 (UTC)
+Received: by mail-io1-f53.google.com with SMTP id e9so6201571iok.9;
+        Fri, 01 May 2020 14:55:25 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaefE46slkOVt0YwFGquJZIkU2WSmUslgQwTATfmnyJxioCTVME
+        zY8G8ciaHP4kjNg8yBXrIqeH2BgFT3aLGYgM/eg=
+X-Google-Smtp-Source: APiQypJtn0r3d2QBtiNDkHKo54/QKsvUWyvhMz7w+JkvaOeex9CkkeH4YNxWwVM/8W8LRE48ClMQgV+DndrosQN46FA=
+X-Received: by 2002:a6b:7114:: with SMTP id q20mr5626475iog.79.1588370124889;
+ Fri, 01 May 2020 14:55:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <21CF143C-B9D1-4D3F-A875-370924265593@lca.pw>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20200430221016.3866-1-Jason@zx2c4.com> <20200501180731.GA2485@infradead.org>
+In-Reply-To: <20200501180731.GA2485@infradead.org>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Fri, 1 May 2020 15:55:14 -0600
+X-Gmail-Original-Message-ID: <CAHmME9pDtoPOwMGZuFAyYyWpOs8cnVO8t3FeOTR+YTeKL6PETg@mail.gmail.com>
+Message-ID: <CAHmME9pDtoPOwMGZuFAyYyWpOs8cnVO8t3FeOTR+YTeKL6PETg@mail.gmail.com>
+Subject: Re: [PATCH] drm/i915: check to see if SIMD registers are available
+ before using SIMD
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        intel-gfx@lists.freedesktop.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sebastian Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 05:29:19PM -0400, Qian Cai wrote:
-> 
-> 
-> > On May 1, 2020, at 5:15 PM, Rafael Aquini <aquini@redhat.com> wrote:
-> > 
-> > Sometimes it is desirable to override SLUB's debug facilities
-> > default behavior upon stumbling on a cache or object error
-> > and just stop the execution in order to grab a coredump, at
-> > the error-spotting time, instead of trying to fix the issue
-> > and report in an attempt to keep the system rolling.
-> > 
-> > This patch introduces a new debug flag SLAB_PANIC_ON_ERROR,
-> > along with its related SLUB-machinery, in order to extend
-> > current slub_debug facilites and provide the aforementioned
-> > behavior override.
-> 
-> Instead of adding those things everywhere. How about adding something like panic_on_taint? Then, you could write specific taint flags you are interested in to that file because slab_bug() will taint it TAINT_BAD_PAGE.
+On Fri, May 1, 2020 at 12:07 PM Christoph Hellwig <hch@infradead.org> wrote:
 >
-It seems like a good idea which also would required "adding things"
-elsewhere, but doesn't look mutually exclusive with the approach here.
+> On Thu, Apr 30, 2020 at 04:10:16PM -0600, Jason A. Donenfeld wrote:
+> > Sometimes it's not okay to use SIMD registers, the conditions for which
+> > have changed subtly from kernel release to kernel release. Usually the
+> > pattern is to check for may_use_simd() and then fallback to using
+> > something slower in the unlikely case SIMD registers aren't available.
+> > So, this patch fixes up i915's accelerated memcpy routines to fallback
+> > to boring memcpy if may_use_simd() is false.
+>
+> Err, why does i915 implements its own uncached memcpy instead of relying
+> on core functionality to start with?
 
-Thanks
--- Rafael  
-
+I was wondering the same. It sure does seem like this ought to be more
+generalized functionality, with a name that represents the type of
+transfer it's optimized for (wc or similar).
