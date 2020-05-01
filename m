@@ -2,131 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1D41C1F41
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4FE1C1F73
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbgEAVJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 17:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgEAVJJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 17:09:09 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D3BC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 14:09:08 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id l19so3770845lje.10
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 14:09:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x04P+zjFpwy+CE+LmGmypRV0DXrC/67SUR0cWlYpuzo=;
-        b=Sl1JL0Aq3kvwbS6AivuUGYJxWK4VdCD06bIWO3mLHQ0kGy2VWJvb7B0sajmZIoN1g5
-         iBm3hANHeRbiMYsE56oMVuIU9PKRzwrzDWTuNMbBts7k3hvgXmNErUGRE2AD7AIYB1Ks
-         thFE/+VFgp77SYMC8Z6Ex/5bGYoxpKR+3m5y7rknt9fE5fAA1CYJvvetCjdASAQbevqP
-         33k9JWJ2MtsFFblUfMGrezhg1io0B1UVod8DSQ85xCU7J81Qdd9VMzC3K5iIqJ9k9km7
-         obrKgB7T41NMc+nfM2R2vpRWOjHJLVwGy/gFilSYkEGx1Fe4+p+xOJpzZvi5WWOk0eoJ
-         8M7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x04P+zjFpwy+CE+LmGmypRV0DXrC/67SUR0cWlYpuzo=;
-        b=XacxG2c0HTfc1INKHb/sru4YuR9FErzitIMXfBtkst+ovvFNuMapv69fwLFCx8/V7S
-         v7K17ZD89GyA9V7zSCi5drnOzW07Ef1KnAtzPOozaPCTgkRXL//oa32Npl6S9u2JvTtw
-         9mS7QA0BpsvnmHtszqLLfAwoVCanlgB8OVvVrh2xD2YFWuE715VuzaIfrQgOv7EqLktF
-         7lENlHbndpNnZWbIomtOoWsALkGS8n3yT/mFuJBP7ny1R294PLVH7wavCsegO6imbL3e
-         dh5EB2WRR8Hm1DwhpzNII5CRERnQzWgfwKqTL6+CF8365M0HKbXbeKERk26YNGoaCT6+
-         kJNg==
-X-Gm-Message-State: AGi0PuZcfKx93KO9PWptUSe1AAfjDRLPJoMml4HHQu8WJpHU6GdqNuee
-        NcWoN1XQUyvqp3fBfC3991MlMxWURiHhl0mu5SU=
-X-Google-Smtp-Source: APiQypISFMZYh6/WnwoE4zYIYRZ6W4TIsYZUVBUabxADDAgmg5ZG5QTesER3BzYBdsXOGwh5AlYiIukHvENIaq39S9M=
-X-Received: by 2002:a2e:3012:: with SMTP id w18mr3498996ljw.55.1588367346623;
- Fri, 01 May 2020 14:09:06 -0700 (PDT)
+        id S1726452AbgEAVRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 17:17:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726045AbgEAVRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 17:17:04 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF8A22073E;
+        Fri,  1 May 2020 21:17:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588367823;
+        bh=gcWqVApgJs+BB978Fby692FvXoFwUlGeY+pFd8nhOMY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bH738pactjRZOPIK/6+Eo1lOB7GMdmeQ8itFo5KMUOx6C55Y4n5/hvcRJRpZEhOcy
+         oKilnMUoRczmYFwKycghRDoRcQ6yI/ww+82eqziDVZunSRhtiOLvtld0N/34+o9YHA
+         l0CK/CfLUvzXsZwSMYH+jOpcKiTG6d74tOAX8VlA=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 94DA63522B72; Fri,  1 May 2020 14:17:03 -0700 (PDT)
+Date:   Fri, 1 May 2020 14:17:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Matthew Wilcox <willy@infradead.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        RCU <rcu@vger.kernel.org>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 08/24] rcu/tree: Use static initializer for krc.lock
+Message-ID: <20200501211703.GC7560@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200428205903.61704-1-urezki@gmail.com>
+ <20200428205903.61704-9-urezki@gmail.com>
 MIME-Version: 1.0
-References: <1588277518-21425-1-git-send-email-jrdr.linux@gmail.com> <20200430212411.GB582335@iweiny-DESK2.sc.intel.com>
-In-Reply-To: <20200430212411.GB582335@iweiny-DESK2.sc.intel.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat, 2 May 2020 02:46:59 +0530
-Message-ID: <CAFqt6zZ0w+i-Chc7_MCvjbMjWmC78+T+E+5RwGF=pc7ouMnHBA@mail.gmail.com>
-Subject: Re: [PATCH] mm/gup.c: Handle error at earliest for incorrect nr_pages value
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200428205903.61704-9-urezki@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 1, 2020 at 2:54 AM Ira Weiny <ira.weiny@intel.com> wrote:
->
-> On Fri, May 01, 2020 at 01:41:58AM +0530, Souptick Joarder wrote:
-> > As per documentation, pin_user_pages_fast() & get_user_pages_fast()
-> > will return 0, if nr_pages <= 0. But this can be figure out only after
-> > going inside the internal_get_user_pages_fast().
->
-> Why is nr_pages not unsigned?
+On Tue, Apr 28, 2020 at 10:58:47PM +0200, Uladzislau Rezki (Sony) wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> 
+> The per-CPU variable is initialized at runtime in
+> kfree_rcu_batch_init(). This function is invoked before
+> 'rcu_scheduler_active' is set to 'RCU_SCHEDULER_RUNNING'.
+> After the initialisation, '->initialized' is to true.
+> 
+> The raw_spin_lock is only acquired if '->initialized' is
+> set to true. The worqueue item is only used if 'rcu_scheduler_active'
+> set to RCU_SCHEDULER_RUNNING which happens after initialisation.
+> 
+> Use a static initializer for krc.lock and remove the runtime
+> initialisation of the lock. Since the lock can now be always
+> acquired, remove the '->initialized' check.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> ---
+>  kernel/rcu/tree.c | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index bc6c2bc8fa32..89e9ca3f4e3e 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2892,7 +2892,7 @@ struct kfree_rcu_cpu_work {
+>   * @lock: Synchronize access to this structure
+>   * @monitor_work: Promote @head to @head_free after KFREE_DRAIN_JIFFIES
+>   * @monitor_todo: Tracks whether a @monitor_work delayed work is pending
+> - * @initialized: The @lock and @rcu_work fields have been initialized
+> + * @initialized: The @rcu_work fields have been initialized
+>   *
+>   * This is a per-CPU structure.  The reason that it is not included in
+>   * the rcu_data structure is to permit this code to be extracted from
+> @@ -2912,7 +2912,9 @@ struct kfree_rcu_cpu {
+>  	int count;
+>  };
+>  
+> -static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
+> +static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc) = {
+> +	.lock = __RAW_SPIN_LOCK_UNLOCKED(krc.lock),
+> +};
+>  
+>  static __always_inline void
+>  debug_rcu_bhead_unqueue(struct kfree_rcu_bulk_data *bhead)
+> @@ -2930,10 +2932,9 @@ krc_this_cpu_lock(unsigned long *flags)
+>  {
+>  	struct kfree_rcu_cpu *krcp;
+>  
+> -	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
+> +	local_irq_save(*flags);	/* For safely calling this_cpu_ptr(). */
 
-Not sure of why but it can be unsigned.
+And here as well.  ;-)
 
->
-> >
-> > This can be handled early. Adding a check for the same.
-> >
-> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> > ---
-> >  mm/gup.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index 50681f0..a13aaa6 100644
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -2817,6 +2817,8 @@ int get_user_pages_fast(unsigned long start, int nr_pages,
-> >        */
-> >       if (WARN_ON_ONCE(gup_flags & FOLL_PIN))
-> >               return -EINVAL;
-> > +     if (nr_pages <= 0)
-> > +             return 0;
->
-> I think the documentation may be wrong here...  Is there a caller who expects a
-> return of 0 for this behavior?
->
+							Thanx, Paul
 
-My understanding is -
-{get/pin}_user_pages_fast() -> internal_get_user_pages_fast()
-
-Inside internal_get_user_pages_fast()
-...
-start = untagged_addr(start) & PAGE_MASK;
-addr = start;
-len = (unsigned long) nr_pages << PAGE_SHIFT;
-end = start + len;
-
-if (end <= start)
-return 0;
-...
-This is the only place where {get/pin}_user_pages_fast() returns 0 which
-indirectly checks for nr_pages <= 0. For each call to
-{get/pin}_user_pages_fast()
-we end up checking *nr_pages <= 0* anyway.
-
-There are some instances where caller of these APIs handles return
-value 0 as well. Example -
-arch/ia64/kernel/err_inject.c#L145
-arch/powerpc/kvm/book3s_64_mmu_hv.c#L582
-arch/powerpc/kvm/book3s_64_mmu_hv.c#L1174
-drivers/staging/gasket/gasket_page_table.c#L489
-drivers/rapidio/devices/rio_mport_cdev.c#L865
-drivers/platform/goldfish/goldfish_pipe.c#L277
-drivers/gpu/drm/via/via_dmablit.c#L242
-(some of the error handling looks incorrect)
-
-If we end up checking *nr_pages <= 0* inside  internal_get_user_pages_fast(),
-then why not at first place like this patch does ?
-
-2nd opinion is, inside internal_get_user_pages_fast(), for *nr_pages
-<= 0* better
-to return -ERRNO rather than 0 ?
+>  	krcp = this_cpu_ptr(&krc);
+> -	if (likely(krcp->initialized))
+> -		raw_spin_lock(&krcp->lock);
+> +	raw_spin_lock(&krcp->lock);
+>  
+>  	return krcp;
+>  }
+> @@ -2941,8 +2942,7 @@ krc_this_cpu_lock(unsigned long *flags)
+>  static inline void
+>  krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
+>  {
+> -	if (likely(krcp->initialized))
+> -		raw_spin_unlock(&krcp->lock);
+> +	raw_spin_unlock(&krcp->lock);
+>  	local_irq_restore(flags);
+>  }
+>  
+> @@ -4168,7 +4168,6 @@ static void __init kfree_rcu_batch_init(void)
+>  	for_each_possible_cpu(cpu) {
+>  		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+>  
+> -		raw_spin_lock_init(&krcp->lock);
+>  		for (i = 0; i < KFREE_N_BATCHES; i++) {
+>  			INIT_RCU_WORK(&krcp->krw_arr[i].rcu_work, kfree_rcu_work);
+>  			krcp->krw_arr[i].krcp = krcp;
+> -- 
+> 2.20.1
+> 
