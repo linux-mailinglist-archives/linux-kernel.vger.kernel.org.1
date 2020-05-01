@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4038E1C13B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8ADF1C173F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730245AbgEANcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:32:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56846 "EHLO mail.kernel.org"
+        id S1730185AbgEAOAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:00:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729353AbgEANcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:32:03 -0400
+        id S1729515AbgEAN1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:27:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9D3E208C3;
-        Fri,  1 May 2020 13:32:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88C1024956;
+        Fri,  1 May 2020 13:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339923;
-        bh=8TbDRuEl7SW/hnCTYxbSPFoal6+jcufVGTTSkOU1tjg=;
+        s=default; t=1588339670;
+        bh=67WXkKjdYpBnKVKwbZIkicrEvVjnlaHwfQXx5oM+XE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xzxi6t11NgSMGFU0p++M3v/gre/XdDiHpKmhUqPSIrTANwGJUJc7AURnDeFJyoCEf
-         QKcH32Q3fFWdpuLPYFBUVBu5KCmeDoHU+4SOxjtQ6qGM/25wow9ppbgIfomy3vjrtJ
-         nM9zT38rQcwV7P07nOlJGKAtblygqqklNR8LtgHE=
+        b=I3Yb7yCwWqYoaGf2L28Rcet0I47cVlyrCYCiQNCp5cYXevWE+nWgCppOk3gd1AqXE
+         aUf6vaBRN8ItOWdYhWfqPi8mhoqK+OGB7lpa6XCXXl5iFUuQlph4LUIcjn5Wz5rdRq
+         ZwXsZTQqRgaD1gELgn/0FS8JFDSocetrT8YFOUsM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 021/117] perf/core: Disable page faults when getting phys address
-Date:   Fri,  1 May 2020 15:20:57 +0200
-Message-Id: <20200501131547.532803973@linuxfoundation.org>
+        stable@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.9 04/80] drm/msm: Use the correct dma_sync calls harder
+Date:   Fri,  1 May 2020 15:20:58 +0200
+Message-Id: <20200501131514.679157241@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,71 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+From: Rob Clark <robdclark@chromium.org>
 
-[ Upstream commit d3296fb372bf7497b0e5d0478c4e7a677ec6f6e9 ]
+commit 9f614197c744002f9968e82c649fdf7fe778e1e7 upstream.
 
-We hit following warning when running tests on kernel
-compiled with CONFIG_DEBUG_ATOMIC_SLEEP=y:
+Looks like the dma_sync calls don't do what we want on armv7 either.
+Fixes:
 
- WARNING: CPU: 19 PID: 4472 at mm/gup.c:2381 __get_user_pages_fast+0x1a4/0x200
- CPU: 19 PID: 4472 Comm: dummy Not tainted 5.6.0-rc6+ #3
- RIP: 0010:__get_user_pages_fast+0x1a4/0x200
- ...
- Call Trace:
-  perf_prepare_sample+0xff1/0x1d90
-  perf_event_output_forward+0xe8/0x210
-  __perf_event_overflow+0x11a/0x310
-  __intel_pmu_pebs_event+0x657/0x850
-  intel_pmu_drain_pebs_nhm+0x7de/0x11d0
-  handle_pmi_common+0x1b2/0x650
-  intel_pmu_handle_irq+0x17b/0x370
-  perf_event_nmi_handler+0x40/0x60
-  nmi_handle+0x192/0x590
-  default_do_nmi+0x6d/0x150
-  do_nmi+0x2f9/0x3c0
-  nmi+0x8e/0xd7
+  Unable to handle kernel paging request at virtual address 50001000
+  pgd = (ptrval)
+  [50001000] *pgd=00000000
+  Internal error: Oops: 805 [#1] SMP ARM
+  Modules linked in:
+  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.3.0-rc6-00271-g9f159ae07f07 #4
+  Hardware name: Freescale i.MX53 (Device Tree Support)
+  PC is at v7_dma_clean_range+0x20/0x38
+  LR is at __dma_page_cpu_to_dev+0x28/0x90
+  pc : [<c011c76c>]    lr : [<c01181c4>]    psr: 20000013
+  sp : d80b5a88  ip : de96c000  fp : d840ce6c
+  r10: 00000000  r9 : 00000001  r8 : d843e010
+  r7 : 00000000  r6 : 00008000  r5 : ddb6c000  r4 : 00000000
+  r3 : 0000003f  r2 : 00000040  r1 : 50008000  r0 : 50001000
+  Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+  Control: 10c5387d  Table: 70004019  DAC: 00000051
+  Process swapper/0 (pid: 1, stack limit = 0x(ptrval))
 
-While __get_user_pages_fast() is IRQ-safe, it calls access_ok(),
-which warns on:
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: 3de433c5b38a ("drm/msm: Use the correct dma_sync calls in msm_gem")
+Tested-by: Fabio Estevam <festevam@gmail.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-  WARN_ON_ONCE(!in_task() && !pagefault_disabled())
-
-Peter suggested disabling page faults around __get_user_pages_fast(),
-which gets rid of the warning in access_ok() call.
-
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20200407141427.3184722-1-jolsa@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/events/core.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/msm/msm_gem.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 845c8a1a9d30a..c16ce11049de3 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -6119,9 +6119,12 @@ static u64 perf_virt_to_phys(u64 virt)
- 		 * Try IRQ-safe __get_user_pages_fast first.
- 		 * If failed, leave phys_addr as 0.
- 		 */
--		if ((current->mm != NULL) &&
--		    (__get_user_pages_fast(virt, 1, 0, &p) == 1))
--			phys_addr = page_to_phys(p) + virt % PAGE_SIZE;
-+		if (current->mm != NULL) {
-+			pagefault_disable();
-+			if (__get_user_pages_fast(virt, 1, 0, &p) == 1)
-+				phys_addr = page_to_phys(p) + virt % PAGE_SIZE;
-+			pagefault_enable();
-+		}
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -58,7 +58,7 @@ static void sync_for_device(struct msm_g
+ {
+ 	struct device *dev = msm_obj->base.dev->dev;
  
- 		if (p)
- 			put_page(p);
--- 
-2.20.1
-
+-	if (get_dma_ops(dev)) {
++	if (get_dma_ops(dev) && IS_ENABLED(CONFIG_ARM64)) {
+ 		dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
+ 			msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
+ 	} else {
+@@ -71,7 +71,7 @@ static void sync_for_cpu(struct msm_gem_
+ {
+ 	struct device *dev = msm_obj->base.dev->dev;
+ 
+-	if (get_dma_ops(dev)) {
++	if (get_dma_ops(dev) && IS_ENABLED(CONFIG_ARM64)) {
+ 		dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
+ 			msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
+ 	} else {
 
 
