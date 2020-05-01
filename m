@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACE71C1322
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9860F1C1728
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729458AbgEAN1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:27:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49644 "EHLO mail.kernel.org"
+        id S1729983AbgEAN6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:58:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729449AbgEAN1X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:27:23 -0400
+        id S1729880AbgEANaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:30:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E8972173E;
-        Fri,  1 May 2020 13:27:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45BC2208DB;
+        Fri,  1 May 2020 13:30:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339642;
-        bh=0zLG5dH1Rq1JDFb29VFSxBmi70aNXp5rUQ2OyGRCB7c=;
+        s=default; t=1588339807;
+        bh=GGWQ67jdRD0wSmMauQa4FV3WSwv4RIz4968TpQMGWfU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uIZpRBQu25m9yJMkd/44X/y+qb6aQoHuXx0xPveRlGaSHvySYwXR9DTE/9CE32vK1
-         3Dk4gxBf8gP6sn4t9RcMPuD44BBjfSNfrTDI74rAgcDHZIeAH+PZ2oDTMkF5/G0szZ
-         y0ZeW9dke2KHK65KN11wfavhvrwqMUsMUVW5gEGs=
+        b=crYn1M2bqoD/YU7gzHMGhfyG2iLHhfZGpcdDPUt5M2JA09qjVR4+nVtG84nJ3AmBq
+         CD4C+1cjwrBbHoPTMYIS4TrOCyAq7AoDYYoNhQeH9jYiQPxwjHFGLLru2U1gOdnpyZ
+         9W7XBCpjhofRIiItBZBBwv2PPXW2NiQhZcFFWxI4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, KP Singh <kpsingh@google.com>,
-        Ian Rogers <irogers@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.4 60/70] perf/core: fix parent pid/tid in task exit events
-Date:   Fri,  1 May 2020 15:21:48 +0200
-Message-Id: <20200501131531.275176682@linuxfoundation.org>
+        stable@vger.kernel.org, Malcolm Priestley <tvboxspy@gmail.com>
+Subject: [PATCH 4.9 55/80] staging: vt6656: Power save stop wake_up_count wrap around.
+Date:   Fri,  1 May 2020 15:21:49 +0200
+Message-Id: <20200501131530.323188055@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
-References: <20200501131513.302599262@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Rogers <irogers@google.com>
+From: Malcolm Priestley <tvboxspy@gmail.com>
 
-commit f3bed55e850926614b9898fe982f66d2541a36a5 upstream.
+commit ea81c3486442f4643fc9825a2bb1b430b829bccd upstream.
 
-Current logic yields the child task as the parent.
+conf.listen_interval can sometimes be zero causing wake_up_count
+to wrap around up to many beacons too late causing
+CTRL-EVENT-BEACON-LOSS as in.
 
-Before:
-$ perf record bash -c "perf list > /dev/null"
-$ perf script -D |grep 'FORK\|EXIT'
-4387036190981094 0x5a70 [0x30]: PERF_RECORD_FORK(10472:10472):(10470:10470)
-4387036606207580 0xf050 [0x30]: PERF_RECORD_EXIT(10472:10472):(10472:10472)
-4387036607103839 0x17150 [0x30]: PERF_RECORD_EXIT(10470:10470):(10470:10470)
-                                                   ^
-  Note the repeated values here -------------------/
+wpa_supplicant[795]: message repeated 45 times: [..CTRL-EVENT-BEACON-LOSS ]
 
-After:
-383281514043 0x9d8 [0x30]: PERF_RECORD_FORK(2268:2268):(2266:2266)
-383442003996 0x2180 [0x30]: PERF_RECORD_EXIT(2268:2268):(2266:2266)
-383451297778 0xb70 [0x30]: PERF_RECORD_EXIT(2266:2266):(2265:2265)
-
-Fixes: 94d5d1b2d891 ("perf_counter: Report the cloning task as parent on perf_counter_fork()")
-Reported-by: KP Singh <kpsingh@google.com>
-Signed-off-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200417182842.12522-1-irogers@google.com
+Fixes: 43c93d9bf5e2 ("staging: vt6656: implement power saving code.")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Malcolm Priestley <tvboxspy@gmail.com>
+Link: https://lore.kernel.org/r/fce47bb5-7ca6-7671-5094-5c6107302f2b@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- kernel/events/core.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/staging/vt6656/int.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -5810,10 +5810,17 @@ static void perf_event_task_output(struc
- 		goto out;
+--- a/drivers/staging/vt6656/int.c
++++ b/drivers/staging/vt6656/int.c
+@@ -153,7 +153,8 @@ void vnt_int_process_data(struct vnt_pri
+ 				priv->wake_up_count =
+ 					priv->hw->conf.listen_interval;
  
- 	task_event->event_id.pid = perf_event_pid(event, task);
--	task_event->event_id.ppid = perf_event_pid(event, current);
--
- 	task_event->event_id.tid = perf_event_tid(event, task);
--	task_event->event_id.ptid = perf_event_tid(event, current);
-+
-+	if (task_event->event_id.header.type == PERF_RECORD_EXIT) {
-+		task_event->event_id.ppid = perf_event_pid(event,
-+							task->real_parent);
-+		task_event->event_id.ptid = perf_event_pid(event,
-+							task->real_parent);
-+	} else {  /* PERF_RECORD_FORK */
-+		task_event->event_id.ppid = perf_event_pid(event, current);
-+		task_event->event_id.ptid = perf_event_tid(event, current);
-+	}
+-			--priv->wake_up_count;
++			if (priv->wake_up_count)
++				--priv->wake_up_count;
  
- 	task_event->event_id.time = perf_event_clock(event);
- 
+ 			/* Turn on wake up to listen next beacon */
+ 			if (priv->wake_up_count == 1)
 
 
