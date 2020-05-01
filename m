@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADE11C14E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E07C1C14DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731715AbgEANoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:44:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45072 "EHLO mail.kernel.org"
+        id S1731660AbgEANnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:43:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731439AbgEANoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:44:03 -0400
+        id S1731649AbgEANng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:43:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7D4C208C3;
-        Fri,  1 May 2020 13:44:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C90C02051A;
+        Fri,  1 May 2020 13:43:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340642;
-        bh=5o0zRSAvwZRdOYeiofGfqH+LgAyYpwIqYsvA446TR9Q=;
+        s=default; t=1588340615;
+        bh=J+KZe/suznauq3ZHo3mA50DpeQvlYKXq7uje+Hpxzuc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dDxY/97HSmi9aMN6nRW28BPG+RaZK26pOwQ6enZBMp42pYuSOOJdcs/O1ilrdb/MA
-         4BBtyJk0VvpsQWQ4Xo1Ipv7Osgng3fvODo5BUJ1LJbYbzyfdm/Bi/KhQ/qWBCxqWYV
-         KqkLY65LUZJfqflIE+QQ9bVL72d86q9xR5HnOMQk=
+        b=G5Ok4mR23f67uZSBDlMQW8o2zCl6Q4mxjVk1AHythlimHeadkAbeUZdUkdNZRbAg+
+         UqVMctC7b1Dxz3kPyn0zTuwvrtasiu8IE3H11SrZ6prqvyyEG11yGNJGn5j0l5zxsi
+         odQve2dGKsuodp9GyqIm8ymml0Qml4Yb1HVHDwv8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 5.6 065/106] selftests/bpf: Fix a couple of broken test_btf cases
-Date:   Fri,  1 May 2020 15:23:38 +0200
-Message-Id: <20200501131552.174620192@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.6 066/106] mm: shmem: disable interrupt when acquiring info->lock in userfaultfd_copy path
+Date:   Fri,  1 May 2020 15:23:39 +0200
+Message-Id: <20200501131552.337110609@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
 References: <20200501131543.421333643@linuxfoundation.org>
@@ -43,231 +48,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanislav Fomichev <sdf@google.com>
+From: Yang Shi <yang.shi@linux.alibaba.com>
 
-commit e1cebd841b0aa1ceda771706d54a0501986a3c88 upstream.
+commit 94b7cc01da5a3cc4f3da5e0ff492ef008bb555d6 upstream.
 
-Commit 51c39bb1d5d1 ("bpf: Introduce function-by-function verification")
-introduced function linkage flag and changed the error message from
-"vlen != 0" to "Invalid func linkage" and broke some fake BPF programs.
+Syzbot reported the below lockdep splat:
 
-Adjust the test accordingly.
+    WARNING: possible irq lock inversion dependency detected
+    5.6.0-rc7-syzkaller #0 Not tainted
+    --------------------------------------------------------
+    syz-executor.0/10317 just changed the state of lock:
+    ffff888021d16568 (&(&info->lock)->rlock){+.+.}, at: spin_lock include/linux/spinlock.h:338 [inline]
+    ffff888021d16568 (&(&info->lock)->rlock){+.+.}, at: shmem_mfill_atomic_pte+0x1012/0x21c0 mm/shmem.c:2407
+    but this lock was taken by another, SOFTIRQ-safe lock in the past:
+     (&(&xa->xa_lock)->rlock#5){..-.}
 
-AFACT, the programs don't really need any arguments and only look
-at BTF for maps, so let's drop the args altogether.
+    and interrupts could create inverse lock ordering between them.
 
-Before:
-BTF raw test[103] (func (Non zero vlen)): do_test_raw:3703:FAIL expected
-err_str:vlen != 0
-magic: 0xeb9f
-version: 1
-flags: 0x0
-hdr_len: 24
-type_off: 0
-type_len: 72
-str_off: 72
-str_len: 10
-btf_total_size: 106
-[1] INT (anon) size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-[2] INT (anon) size=4 bits_offset=0 nr_bits=32 encoding=(none)
-[3] FUNC_PROTO (anon) return=0 args=(1 a, 2 b)
-[4] FUNC func type_id=3 Invalid func linkage
+    other info that might help us debug this:
+     Possible interrupt unsafe locking scenario:
 
-BTF libbpf test[1] (test_btf_haskv.o): libbpf: load bpf program failed:
-Invalid argument
-libbpf: -- BEGIN DUMP LOG ---
-libbpf:
-Validating test_long_fname_2() func#1...
-Arg#0 type PTR in test_long_fname_2() is not supported yet.
-processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
+           CPU0                    CPU1
+           ----                    ----
+      lock(&(&info->lock)->rlock);
+                                   local_irq_disable();
+                                   lock(&(&xa->xa_lock)->rlock#5);
+                                   lock(&(&info->lock)->rlock);
+      <Interrupt>
+        lock(&(&xa->xa_lock)->rlock#5);
 
-libbpf: -- END LOG --
-libbpf: failed to load program 'dummy_tracepoint'
-libbpf: failed to load object 'test_btf_haskv.o'
-do_test_file:4201:FAIL bpf_object__load: -4007
-BTF libbpf test[2] (test_btf_newkv.o): libbpf: load bpf program failed:
-Invalid argument
-libbpf: -- BEGIN DUMP LOG ---
-libbpf:
-Validating test_long_fname_2() func#1...
-Arg#0 type PTR in test_long_fname_2() is not supported yet.
-processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
+     *** DEADLOCK ***
 
-libbpf: -- END LOG --
-libbpf: failed to load program 'dummy_tracepoint'
-libbpf: failed to load object 'test_btf_newkv.o'
-do_test_file:4201:FAIL bpf_object__load: -4007
-BTF libbpf test[3] (test_btf_nokv.o): libbpf: load bpf program failed:
-Invalid argument
-libbpf: -- BEGIN DUMP LOG ---
-libbpf:
-Validating test_long_fname_2() func#1...
-Arg#0 type PTR in test_long_fname_2() is not supported yet.
-processed 0 insns (limit 1000000) max_states_per_insn 0 total_states 0
-peak_states 0 mark_read 0
+The full report is quite lengthy, please see:
 
-libbpf: -- END LOG --
-libbpf: failed to load program 'dummy_tracepoint'
-libbpf: failed to load object 'test_btf_nokv.o'
-do_test_file:4201:FAIL bpf_object__load: -4007
+  https://lore.kernel.org/linux-mm/alpine.LSU.2.11.2004152007370.13597@eggly.anvils/T/#m813b412c5f78e25ca8c6c7734886ed4de43f241d
 
-Fixes: 51c39bb1d5d1 ("bpf: Introduce function-by-function verification")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200422003753.124921-1-sdf@google.com
+It is because CPU 0 held info->lock with IRQ enabled in userfaultfd_copy
+path, then CPU 1 is splitting a THP which held xa_lock and info->lock in
+IRQ disabled context at the same time.  If softirq comes in to acquire
+xa_lock, the deadlock would be triggered.
+
+The fix is to acquire/release info->lock with *_irq version instead of
+plain spin_{lock,unlock} to make it softirq safe.
+
+Fixes: 4c27fe4c4c84 ("userfaultfd: shmem: add shmem_mcopy_atomic_pte for userfaultfd support")
+Reported-by: syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com
+Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Tested-by: syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com
+Acked-by: Hugh Dickins <hughd@google.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Link: http://lkml.kernel.org/r/1587061357-122619-1-git-send-email-yang.shi@linux.alibaba.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/testing/selftests/bpf/progs/test_btf_haskv.c |   18 +++++-------------
- tools/testing/selftests/bpf/progs/test_btf_newkv.c |   18 +++++-------------
- tools/testing/selftests/bpf/progs/test_btf_nokv.c  |   18 +++++-------------
- tools/testing/selftests/bpf/test_btf.c             |    2 +-
- 4 files changed, 16 insertions(+), 40 deletions(-)
+ mm/shmem.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/tools/testing/selftests/bpf/progs/test_btf_haskv.c
-+++ b/tools/testing/selftests/bpf/progs/test_btf_haskv.c
-@@ -20,20 +20,12 @@ struct bpf_map_def SEC("maps") btf_map =
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2404,11 +2404,11 @@ static int shmem_mfill_atomic_pte(struct
  
- BPF_ANNOTATE_KV_PAIR(btf_map, int, struct ipv_counts);
+ 	lru_cache_add_anon(page);
  
--struct dummy_tracepoint_args {
--	unsigned long long pad;
--	struct sock *sock;
--};
--
- __attribute__((noinline))
--int test_long_fname_2(struct dummy_tracepoint_args *arg)
-+int test_long_fname_2(void)
- {
- 	struct ipv_counts *counts;
- 	int key = 0;
+-	spin_lock(&info->lock);
++	spin_lock_irq(&info->lock);
+ 	info->alloced++;
+ 	inode->i_blocks += BLOCKS_PER_PAGE;
+ 	shmem_recalc_inode(inode);
+-	spin_unlock(&info->lock);
++	spin_unlock_irq(&info->lock);
  
--	if (!arg->sock)
--		return 0;
--
- 	counts = bpf_map_lookup_elem(&btf_map, &key);
- 	if (!counts)
- 		return 0;
-@@ -44,15 +36,15 @@ int test_long_fname_2(struct dummy_trace
- }
- 
- __attribute__((noinline))
--int test_long_fname_1(struct dummy_tracepoint_args *arg)
-+int test_long_fname_1(void)
- {
--	return test_long_fname_2(arg);
-+	return test_long_fname_2();
- }
- 
- SEC("dummy_tracepoint")
--int _dummy_tracepoint(struct dummy_tracepoint_args *arg)
-+int _dummy_tracepoint(void *arg)
- {
--	return test_long_fname_1(arg);
-+	return test_long_fname_1();
- }
- 
- char _license[] SEC("license") = "GPL";
---- a/tools/testing/selftests/bpf/progs/test_btf_newkv.c
-+++ b/tools/testing/selftests/bpf/progs/test_btf_newkv.c
-@@ -28,20 +28,12 @@ struct {
- 	__type(value, struct ipv_counts);
- } btf_map SEC(".maps");
- 
--struct dummy_tracepoint_args {
--	unsigned long long pad;
--	struct sock *sock;
--};
--
- __attribute__((noinline))
--int test_long_fname_2(struct dummy_tracepoint_args *arg)
-+int test_long_fname_2(void)
- {
- 	struct ipv_counts *counts;
- 	int key = 0;
- 
--	if (!arg->sock)
--		return 0;
--
- 	counts = bpf_map_lookup_elem(&btf_map, &key);
- 	if (!counts)
- 		return 0;
-@@ -57,15 +49,15 @@ int test_long_fname_2(struct dummy_trace
- }
- 
- __attribute__((noinline))
--int test_long_fname_1(struct dummy_tracepoint_args *arg)
-+int test_long_fname_1(void)
- {
--	return test_long_fname_2(arg);
-+	return test_long_fname_2();
- }
- 
- SEC("dummy_tracepoint")
--int _dummy_tracepoint(struct dummy_tracepoint_args *arg)
-+int _dummy_tracepoint(void *arg)
- {
--	return test_long_fname_1(arg);
-+	return test_long_fname_1();
- }
- 
- char _license[] SEC("license") = "GPL";
---- a/tools/testing/selftests/bpf/progs/test_btf_nokv.c
-+++ b/tools/testing/selftests/bpf/progs/test_btf_nokv.c
-@@ -17,20 +17,12 @@ struct bpf_map_def SEC("maps") btf_map =
- 	.max_entries = 4,
- };
- 
--struct dummy_tracepoint_args {
--	unsigned long long pad;
--	struct sock *sock;
--};
--
- __attribute__((noinline))
--int test_long_fname_2(struct dummy_tracepoint_args *arg)
-+int test_long_fname_2(void)
- {
- 	struct ipv_counts *counts;
- 	int key = 0;
- 
--	if (!arg->sock)
--		return 0;
--
- 	counts = bpf_map_lookup_elem(&btf_map, &key);
- 	if (!counts)
- 		return 0;
-@@ -41,15 +33,15 @@ int test_long_fname_2(struct dummy_trace
- }
- 
- __attribute__((noinline))
--int test_long_fname_1(struct dummy_tracepoint_args *arg)
-+int test_long_fname_1(void)
- {
--	return test_long_fname_2(arg);
-+	return test_long_fname_2();
- }
- 
- SEC("dummy_tracepoint")
--int _dummy_tracepoint(struct dummy_tracepoint_args *arg)
-+int _dummy_tracepoint(void *arg)
- {
--	return test_long_fname_1(arg);
-+	return test_long_fname_1();
- }
- 
- char _license[] SEC("license") = "GPL";
---- a/tools/testing/selftests/bpf/test_btf.c
-+++ b/tools/testing/selftests/bpf/test_btf.c
-@@ -2854,7 +2854,7 @@ static struct btf_raw_test raw_tests[] =
- 	.value_type_id = 1,
- 	.max_entries = 4,
- 	.btf_load_err = true,
--	.err_str = "vlen != 0",
-+	.err_str = "Invalid func linkage",
- },
- 
- {
+ 	inc_mm_counter(dst_mm, mm_counter_file(page));
+ 	page_add_file_rmap(page, false);
 
 
