@@ -2,270 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E9B1C1805
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCD01C189E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729533AbgEAOlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:41:05 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:33048 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729078AbgEAOlD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 10:41:03 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id E17FF2A0BDB
-Subject: Re: [PATCH v3 4/7] drm/mediatek: mtk_dsi: Convert to bridge driver
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-References: <20200417150614.2631786-1-enric.balletbo@collabora.com>
- <20200417150614.2631786-5-enric.balletbo@collabora.com>
- <CAAOTY_-nzdS-jg2pgpM1ksrsQVewB2AEB8TihHcCB-MJd+qFfw@mail.gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <72511ddc-c94d-3c20-14cb-e971b000fc48@collabora.com>
-Date:   Fri, 1 May 2020 16:40:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1730294AbgEAOsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:48:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729352AbgEAOpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 10:45:08 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 13CC324959;
+        Fri,  1 May 2020 14:45:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1588344305;
+        bh=pgEeloihUJtDW9NEkL6jmFDK/ZInSPDNQO7niKknL3E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SVEs1VMhjyuHELBkXcF4/1fWlbsaS7MgiAohJ3ePux485XSRhFIw+LT9CMyjWvZFi
+         ihz7fPrKmb/CyIscv5iZo1ghZ6L6por1RndA5qbcxiN/hqpCEtOv80OoyKzd7LfsEg
+         e5L/qaobT9VXcglAQbs4CKkx5QoFsFVnzoG5mfmc=
+Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
+        (envelope-from <mchehab@kernel.org>)
+        id 1jUWuT-00FCcS-77; Fri, 01 May 2020 16:45:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Samuel Chessman <chessman@tux.org>, netdev@vger.kernel.org,
+        Andrew Hendry <andrew.hendry@gmail.com>,
+        Zorik Machulsky <zorik@amazon.com>,
+        Sean Tranchetti <stranche@codeaurora.org>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Jon Mason <jdmason@kudzu.us>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        linux-x25@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+        linux-hyperv@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        David Ahern <dsahern@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
+        Joerg Reuter <jreuter@yaina.de>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Guy Tzalik <gtzalik@amazon.com>,
+        Maxim Krasnyansky <maxk@qti.qualcomm.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        linux-wireless@vger.kernel.org, linux-hams@vger.kernel.org,
+        linux-parisc@vger.kernel.org,
+        Steffen Klassert <klassert@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stephen Hemminger <sthemmin@microsoft.com>
+Subject: [PATCH 00/37]net: manually convert files to ReST format - part 3 (final)
+Date:   Fri,  1 May 2020 16:44:22 +0200
+Message-Id: <cover.1588344146.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <CAAOTY_-nzdS-jg2pgpM1ksrsQVewB2AEB8TihHcCB-MJd+qFfw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chun-Kuang,
+That's the third part (and the final one) of my work to convert the networking
+text files into ReST. it is based on linux-next next-20200430 branch.
 
-Thank you for the review.
+The full series (including those ones) are at:
 
-On 1/5/20 15:21, Chun-Kuang Hu wrote:
-> Hi, Enric:
-> 
-> Enric Balletbo i Serra <enric.balletbo@collabora.com> 於 2020年4月17日 週五 下午11:06寫道：
->>
->> Convert mtk_dsi to a bridge driver with built-in encoder support for
->> compatibility with existing component drivers.
->>
->> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->> ---
->>
->> Changes in v3:
->> - Add the bridge.type. (Laurent Pinchart)
->>
->> Changes in v2: None
->>
->>  drivers/gpu/drm/mediatek/mtk_dsi.c | 93 ++++++++++++++++++++++--------
->>  1 file changed, 69 insertions(+), 24 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
->> index 37b8d7ffd835..869ae0a2e9f8 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
->> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
->> @@ -180,6 +180,7 @@ struct mtk_dsi {
->>         struct device *dev;
->>         struct mipi_dsi_host host;
->>         struct drm_encoder encoder;
->> +       struct drm_bridge bridge;
->>         struct drm_connector conn;
->>         struct drm_panel *panel;
->>         struct drm_bridge *next_bridge;
->> @@ -205,9 +206,9 @@ struct mtk_dsi {
->>         const struct mtk_dsi_driver_data *driver_data;
->>  };
->>
->> -static inline struct mtk_dsi *encoder_to_dsi(struct drm_encoder *e)
->> +static inline struct mtk_dsi *bridge_to_dsi(struct drm_bridge *b)
->>  {
->> -       return container_of(e, struct mtk_dsi, encoder);
->> +       return container_of(b, struct mtk_dsi, bridge);
->>  }
->>
->>  static inline struct mtk_dsi *connector_to_dsi(struct drm_connector *c)
->> @@ -796,32 +797,43 @@ static const struct drm_encoder_funcs mtk_dsi_encoder_funcs = {
->>         .destroy = mtk_dsi_encoder_destroy,
->>  };
->>
->> -static bool mtk_dsi_encoder_mode_fixup(struct drm_encoder *encoder,
->> -                                      const struct drm_display_mode *mode,
->> -                                      struct drm_display_mode *adjusted_mode)
->> +static int mtk_dsi_create_conn_enc(struct drm_device *drm, struct mtk_dsi *dsi);
->> +static void mtk_dsi_destroy_conn_enc(struct mtk_dsi *dsi);
->> +
->> +static int mtk_dsi_bridge_attach(struct drm_bridge *bridge,
->> +                                enum drm_bridge_attach_flags flags)
->> +{
->> +       struct mtk_dsi *dsi = bridge_to_dsi(bridge);
->> +
->> +       return mtk_dsi_create_conn_enc(bridge->dev, dsi);
->> +}
->> +
->> +static void mtk_dsi_bridge_detach(struct drm_bridge *bridge)
->>  {
->> -       return true;
->> +       struct mtk_dsi *dsi = bridge_to_dsi(bridge);
->> +
->> +       mtk_dsi_destroy_conn_enc(dsi);
->>  }
->>
->> -static void mtk_dsi_encoder_mode_set(struct drm_encoder *encoder,
->> -                                    struct drm_display_mode *mode,
->> -                                    struct drm_display_mode *adjusted)
->> +static void mtk_dsi_bridge_mode_set(struct drm_bridge *bridge,
->> +                                   const struct drm_display_mode *mode,
->> +                                   const struct drm_display_mode *adjusted)
->>  {
->> -       struct mtk_dsi *dsi = encoder_to_dsi(encoder);
->> +       struct mtk_dsi *dsi = bridge_to_dsi(bridge);
->>
->>         drm_display_mode_to_videomode(adjusted, &dsi->vm);
->>  }
->>
->> -static void mtk_dsi_encoder_disable(struct drm_encoder *encoder)
->> +static void mtk_dsi_bridge_disable(struct drm_bridge *bridge)
->>  {
->> -       struct mtk_dsi *dsi = encoder_to_dsi(encoder);
->> +       struct mtk_dsi *dsi = bridge_to_dsi(bridge);
->>
->>         mtk_output_dsi_disable(dsi);
->>  }
->>
->> -static void mtk_dsi_encoder_enable(struct drm_encoder *encoder)
->> +static void mtk_dsi_bridge_enable(struct drm_bridge *bridge)
->>  {
->> -       struct mtk_dsi *dsi = encoder_to_dsi(encoder);
->> +       struct mtk_dsi *dsi = bridge_to_dsi(bridge);
->>
->>         mtk_output_dsi_enable(dsi);
->>  }
->> @@ -833,11 +845,12 @@ static int mtk_dsi_connector_get_modes(struct drm_connector *connector)
->>         return drm_panel_get_modes(dsi->panel, connector);
->>  }
->>
->> -static const struct drm_encoder_helper_funcs mtk_dsi_encoder_helper_funcs = {
->> -       .mode_fixup = mtk_dsi_encoder_mode_fixup,
->> -       .mode_set = mtk_dsi_encoder_mode_set,
->> -       .disable = mtk_dsi_encoder_disable,
->> -       .enable = mtk_dsi_encoder_enable,
->> +static const struct drm_bridge_funcs mtk_dsi_bridge_funcs = {
->> +       .attach = mtk_dsi_bridge_attach,
->> +       .detach = mtk_dsi_bridge_detach,
->> +       .disable = mtk_dsi_bridge_disable,
->> +       .enable = mtk_dsi_bridge_enable,
->> +       .mode_set = mtk_dsi_bridge_mode_set,
->>  };
->>
->>  static const struct drm_connector_funcs mtk_dsi_connector_funcs = {
->> @@ -1123,6 +1136,34 @@ static const struct mipi_dsi_host_ops mtk_dsi_ops = {
->>         .transfer = mtk_dsi_host_transfer,
->>  };
->>
->> +static int mtk_dsi_encoder_init(struct drm_device *drm, struct mtk_dsi *dsi)
->> +{
->> +       int ret;
->> +
->> +       ret = drm_encoder_init(drm, &dsi->encoder, &mtk_dsi_encoder_funcs,
->> +                              DRM_MODE_ENCODER_DSI, NULL);
-> 
-> I'm a bit confused here. drm_encoder_init() exist here and in
-> mtk_dsi_create_conn_enc(). Do you plan to init encodr twice?
-> 
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=net-docs
 
-Right, it should be removed from mtk_dsi_create_conn_enc(). I will do in next
-version.
+The  built output documents, on html format is at:
 
->> +       if (ret) {
->> +               DRM_ERROR("Failed to encoder init to drm\n");
->> +               return ret;
->> +       }
->> +
->> +       /*
->> +        * Currently display data paths are statically assigned to a crtc each.
->> +        * crtc 0 is OVL0 -> COLOR0 -> AAL -> OD -> RDMA0 -> UFOE -> DSI0
->> +        */
->> +       dsi->encoder.possible_crtcs = 1;
->> +
->> +       ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL, 0);
->> +       if (ret)
->> +               goto err_cleanup_encoder;
->> +
->> +       return 0;
->> +
->> +err_cleanup_encoder:
->> +       drm_encoder_cleanup(&dsi->encoder);
->> +       return ret;
->> +}
->> +
->>  static int mtk_dsi_bind(struct device *dev, struct device *master, void *data)
->>  {
->>         int ret;
->> @@ -1136,11 +1177,9 @@ static int mtk_dsi_bind(struct device *dev, struct device *master, void *data)
->>                 return ret;
->>         }
->>
->> -       ret = mtk_dsi_create_conn_enc(drm, dsi);
->> -       if (ret) {
->> -               DRM_ERROR("Encoder create failed with %d\n", ret);
->> +       ret = mtk_dsi_encoder_init(drm, dsi);
->> +       if (ret)
->>                 goto err_unregister;
->> -       }
->>
->>         return 0;
->>
->> @@ -1155,7 +1194,6 @@ static void mtk_dsi_unbind(struct device *dev, struct device *master,
->>         struct drm_device *drm = data;
->>         struct mtk_dsi *dsi = dev_get_drvdata(dev);
->>
->> -       mtk_dsi_destroy_conn_enc(dsi);
-> 
-> There is mtk_dsi_encoder_init() in bind(), why no mtk_dsi_encoder_uninit() here?
-> 
+	https://www.infradead.org/~mchehab/kernel_docs/networking/
 
-Right, I need uninit the encoder but a simple call to drm_encoder_cleanup should
-be enough. I don't think is needed create a new function for that. I'll do in
-next version.
 
-> Regards,
-> Chun-Kuang.
-> 
->>         mtk_ddp_comp_unregister(drm, &dsi->ddp_comp);
->>  }
->>
->> @@ -1265,6 +1303,12 @@ static int mtk_dsi_probe(struct platform_device *pdev)
->>
->>         platform_set_drvdata(pdev, dsi);
->>
->> +       dsi->bridge.funcs = &mtk_dsi_bridge_funcs;
->> +       dsi->bridge.of_node = dev->of_node;
->> +       dsi->bridge.type = DRM_MODE_CONNECTOR_DSI;
->> +
->> +       drm_bridge_add(&dsi->bridge);
->> +
->>         ret = component_add(&pdev->dev, &mtk_dsi_component_ops);
->>         if (ret) {
->>                 dev_err(&pdev->dev, "failed to add component: %d\n", ret);
->> @@ -1283,6 +1327,7 @@ static int mtk_dsi_remove(struct platform_device *pdev)
->>         struct mtk_dsi *dsi = platform_get_drvdata(pdev);
->>
->>         mtk_output_dsi_disable(dsi);
->> +       drm_bridge_remove(&dsi->bridge);
->>         component_del(&pdev->dev, &mtk_dsi_component_ops);
->>         mipi_dsi_host_unregister(&dsi->host);
->>
->> --
->> 2.25.1
->>
+Mauro Carvalho Chehab (37):
+  docs: networking: convert tuntap.txt to ReST
+  docs: networking: convert udplite.txt to ReST
+  docs: networking: convert vrf.txt to ReST
+  docs: networking: convert vxlan.txt to ReST
+  docs: networking: convert x25-iface.txt to ReST
+  docs: networking: convert x25.txt to ReST
+  docs: networking: convert xfrm_device.txt to ReST
+  docs: networking: convert xfrm_proc.txt to ReST
+  docs: networking: convert xfrm_sync.txt to ReST
+  docs: networking: convert xfrm_sysctl.txt to ReST
+  docs: networking: convert z8530drv.txt to ReST
+  docs: networking: device drivers: convert 3com/3c509.txt to ReST
+  docs: networking: device drivers: convert 3com/vortex.txt to ReST
+  docs: networking: device drivers: convert amazon/ena.txt to ReST
+  docs: networking: device drivers: convert aquantia/atlantic.txt to
+    ReST
+  docs: networking: device drivers: convert chelsio/cxgb.txt to ReST
+  docs: networking: device drivers: convert cirrus/cs89x0.txt to ReST
+  docs: networking: device drivers: convert davicom/dm9000.txt to ReST
+  docs: networking: device drivers: convert dec/de4x5.txt to ReST
+  docs: networking: device drivers: convert dec/dmfe.txt to ReST
+  docs: networking: device drivers: convert dlink/dl2k.txt to ReST
+  docs: networking: device drivers: convert freescale/dpaa.txt to ReST
+  docs: networking: device drivers: convert freescale/gianfar.txt to
+    ReST
+  docs: networking: device drivers: convert intel/ipw2100.txt to ReST
+  docs: networking: device drivers: convert intel/ipw2200.txt to ReST
+  docs: networking: device drivers: convert microsoft/netvsc.txt to ReST
+  docs: networking: device drivers: convert neterion/s2io.txt to ReST
+  docs: networking: device drivers: convert neterion/vxge.txt to ReST
+  docs: networking: device drivers: convert qualcomm/rmnet.txt to ReST
+  docs: networking: device drivers: convert sb1000.txt to ReST
+  docs: networking: device drivers: convert smsc/smc9.txt to ReST
+  docs: networking: device drivers: convert ti/cpsw_switchdev.txt to
+    ReST
+  docs: networking: device drivers: convert ti/cpsw.txt to ReST
+  docs: networking: device drivers: convert ti/tlan.txt to ReST
+  docs: networking: device drivers: convert toshiba/spider_net.txt to
+    ReST
+  net: docs: add page_pool.rst to index.rst
+  docs: networking: arcnet-hardware.rst: don't duplicate chapter names
+
+ Documentation/networking/arcnet-hardware.rst  |   8 +-
+ .../3com/{3c509.txt => 3c509.rst}             | 158 +++--
+ .../3com/{vortex.txt => vortex.rst}           | 223 ++++---
+ .../amazon/{ena.txt => ena.rst}               | 142 ++--
+ .../aquantia/{atlantic.txt => atlantic.rst}   | 373 ++++++-----
+ .../chelsio/{cxgb.txt => cxgb.rst}            | 183 ++++--
+ .../cirrus/{cs89x0.txt => cs89x0.rst}         | 557 ++++++++--------
+ .../davicom/{dm9000.txt => dm9000.rst}        |  24 +-
+ .../dec/{de4x5.txt => de4x5.rst}              | 105 +--
+ .../device_drivers/dec/{dmfe.txt => dmfe.rst} |  35 +-
+ .../dlink/{dl2k.txt => dl2k.rst}              | 228 ++++---
+ .../freescale/{dpaa.txt => dpaa.rst}          | 139 ++--
+ .../freescale/{gianfar.txt => gianfar.rst}    |  21 +-
+ .../networking/device_drivers/index.rst       |  24 +
+ .../intel/{ipw2100.txt => ipw2100.rst}        | 242 ++++---
+ .../intel/{ipw2200.txt => ipw2200.rst}        | 410 +++++++-----
+ .../microsoft/{netvsc.txt => netvsc.rst}      |  57 +-
+ .../device_drivers/neterion/s2io.rst          | 196 ++++++
+ .../device_drivers/neterion/s2io.txt          | 141 ----
+ .../neterion/{vxge.txt => vxge.rst}           |  60 +-
+ .../qualcomm/{rmnet.txt => rmnet.rst}         |  43 +-
+ .../networking/device_drivers/sb1000.rst      | 222 +++++++
+ .../networking/device_drivers/sb1000.txt      | 207 ------
+ .../networking/device_drivers/smsc/smc9.rst   |  49 ++
+ .../networking/device_drivers/smsc/smc9.txt   |  42 --
+ .../networking/device_drivers/ti/cpsw.rst     | 587 +++++++++++++++++
+ .../networking/device_drivers/ti/cpsw.txt     | 541 ----------------
+ ...{cpsw_switchdev.txt => cpsw_switchdev.rst} | 239 ++++---
+ .../device_drivers/ti/{tlan.txt => tlan.rst}  |  73 ++-
+ .../{spider_net.txt => spider_net.rst}        |  58 +-
+ Documentation/networking/index.rst            |  12 +
+ .../networking/{tuntap.txt => tuntap.rst}     | 200 +++---
+ .../networking/{udplite.txt => udplite.rst}   | 175 ++---
+ Documentation/networking/vrf.rst              | 451 +++++++++++++
+ Documentation/networking/vrf.txt              | 418 ------------
+ .../networking/{vxlan.txt => vxlan.rst}       |  33 +-
+ .../{x25-iface.txt => x25-iface.rst}          |  10 +-
+ Documentation/networking/{x25.txt => x25.rst} |   4 +
+ .../{xfrm_device.txt => xfrm_device.rst}      |  33 +-
+ .../{xfrm_proc.txt => xfrm_proc.rst}          |  31 +
+ .../{xfrm_sync.txt => xfrm_sync.rst}          |  66 +-
+ .../{xfrm_sysctl.txt => xfrm_sysctl.rst}      |   7 +
+ .../networking/{z8530drv.txt => z8530drv.rst} | 609 +++++++++---------
+ MAINTAINERS                                   |  30 +-
+ drivers/net/Kconfig                           |   4 +-
+ drivers/net/ethernet/3com/3c59x.c             |   4 +-
+ drivers/net/ethernet/3com/Kconfig             |   2 +-
+ drivers/net/ethernet/chelsio/Kconfig          |   2 +-
+ drivers/net/ethernet/cirrus/Kconfig           |   2 +-
+ drivers/net/ethernet/dec/tulip/Kconfig        |   4 +-
+ drivers/net/ethernet/dlink/dl2k.c             |   2 +-
+ drivers/net/ethernet/neterion/Kconfig         |   4 +-
+ drivers/net/ethernet/smsc/Kconfig             |   4 +-
+ drivers/net/ethernet/ti/Kconfig               |   2 +-
+ drivers/net/ethernet/ti/tlan.c                |   2 +-
+ drivers/net/hamradio/Kconfig                  |   4 +-
+ drivers/net/hamradio/scc.c                    |   2 +-
+ drivers/net/wireless/intel/ipw2x00/Kconfig    |   4 +-
+ drivers/net/wireless/intel/ipw2x00/ipw2100.c  |   2 +-
+ include/uapi/linux/if_x25.h                   |   2 +-
+ net/x25/Kconfig                               |   4 +-
+ 61 files changed, 4175 insertions(+), 3341 deletions(-)
+ rename Documentation/networking/device_drivers/3com/{3c509.txt => 3c509.rst} (68%)
+ rename Documentation/networking/device_drivers/3com/{vortex.txt => vortex.rst} (72%)
+ rename Documentation/networking/device_drivers/amazon/{ena.txt => ena.rst} (86%)
+ rename Documentation/networking/device_drivers/aquantia/{atlantic.txt => atlantic.rst} (63%)
+ rename Documentation/networking/device_drivers/chelsio/{cxgb.txt => cxgb.rst} (81%)
+ rename Documentation/networking/device_drivers/cirrus/{cs89x0.txt => cs89x0.rst} (61%)
+ rename Documentation/networking/device_drivers/davicom/{dm9000.txt => dm9000.rst} (92%)
+ rename Documentation/networking/device_drivers/dec/{de4x5.txt => de4x5.rst} (78%)
+ rename Documentation/networking/device_drivers/dec/{dmfe.txt => dmfe.rst} (68%)
+ rename Documentation/networking/device_drivers/dlink/{dl2k.txt => dl2k.rst} (59%)
+ rename Documentation/networking/device_drivers/freescale/{dpaa.txt => dpaa.rst} (79%)
+ rename Documentation/networking/device_drivers/freescale/{gianfar.txt => gianfar.rst} (82%)
+ rename Documentation/networking/device_drivers/intel/{ipw2100.txt => ipw2100.rst} (70%)
+ rename Documentation/networking/device_drivers/intel/{ipw2200.txt => ipw2200.rst} (64%)
+ rename Documentation/networking/device_drivers/microsoft/{netvsc.txt => netvsc.rst} (83%)
+ create mode 100644 Documentation/networking/device_drivers/neterion/s2io.rst
+ delete mode 100644 Documentation/networking/device_drivers/neterion/s2io.txt
+ rename Documentation/networking/device_drivers/neterion/{vxge.txt => vxge.rst} (80%)
+ rename Documentation/networking/device_drivers/qualcomm/{rmnet.txt => rmnet.rst} (73%)
+ create mode 100644 Documentation/networking/device_drivers/sb1000.rst
+ delete mode 100644 Documentation/networking/device_drivers/sb1000.txt
+ create mode 100644 Documentation/networking/device_drivers/smsc/smc9.rst
+ delete mode 100644 Documentation/networking/device_drivers/smsc/smc9.txt
+ create mode 100644 Documentation/networking/device_drivers/ti/cpsw.rst
+ delete mode 100644 Documentation/networking/device_drivers/ti/cpsw.txt
+ rename Documentation/networking/device_drivers/ti/{cpsw_switchdev.txt => cpsw_switchdev.rst} (51%)
+ rename Documentation/networking/device_drivers/ti/{tlan.txt => tlan.rst} (73%)
+ rename Documentation/networking/device_drivers/toshiba/{spider_net.txt => spider_net.rst} (88%)
+ rename Documentation/networking/{tuntap.txt => tuntap.rst} (58%)
+ rename Documentation/networking/{udplite.txt => udplite.rst} (65%)
+ create mode 100644 Documentation/networking/vrf.rst
+ delete mode 100644 Documentation/networking/vrf.txt
+ rename Documentation/networking/{vxlan.txt => vxlan.rst} (73%)
+ rename Documentation/networking/{x25-iface.txt => x25-iface.rst} (96%)
+ rename Documentation/networking/{x25.txt => x25.rst} (96%)
+ rename Documentation/networking/{xfrm_device.txt => xfrm_device.rst} (92%)
+ rename Documentation/networking/{xfrm_proc.txt => xfrm_proc.rst} (95%)
+ rename Documentation/networking/{xfrm_sync.txt => xfrm_sync.rst} (82%)
+ rename Documentation/networking/{xfrm_sysctl.txt => xfrm_sysctl.rst} (52%)
+ rename Documentation/networking/{z8530drv.txt => z8530drv.rst} (57%)
+
+-- 
+2.25.4
+
+
