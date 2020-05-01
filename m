@@ -2,138 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C68B1C1AA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 18:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1CB1C1AB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 18:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbgEAQhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 12:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728443AbgEAQhG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 12:37:06 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FB5C061A0C;
-        Fri,  1 May 2020 09:37:05 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id l12so1909420pgr.10;
-        Fri, 01 May 2020 09:37:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=LOCLhxjzGT7WvTJ7KJtjfQrNcETlh804e30Mz9BMbJ0=;
-        b=LmIjQHAouDZBqRO2Z7NupCQgXGSaK5rRAwDV045S6iNq+K4F818cYyiaoUReiRS125
-         a46Uy0rJjbP9qz/pGk3GKffWewVFeHR71gjLcOBqbum+ZYmS1LoUsangw62aiG0iLv3z
-         9mVjfmWPZJEaImoOpcvcdJVJjxtJeGFbkRQK0tcLZwvzPgPz1R9CuM8dXnxc2T5pgSBn
-         TMnyModlWTHULd/QB0UJTX3TRXRNfaTCaRtzKlh+XKOgqA8WZblWpC8AqUq6l1kpBbU8
-         qc9/n4ZPCwvju98KyNxQiMFu/o30PaBVT+66JDGho9s3+7m54CZ2dQ1aUx+/ginzciOI
-         x32w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=LOCLhxjzGT7WvTJ7KJtjfQrNcETlh804e30Mz9BMbJ0=;
-        b=q1C8sRTldkVt1GP3ehCrPc8evXFGzS1VamJ+F3lniIgyuX5sf7FDFPFoD2pZD2SthM
-         f++2OnDeliTFDixvEz1dMJ9cn9dJec+69csT7hkrrwgVHrwGdTyzEGDle5bvQVmHYxQ+
-         +DAnO0J4SQvLdk/PN9lsE0r5zr/4PJnituBj3HU4gowxZW/rjOrPRIs3hI0DtVzOO1gp
-         ow3d7u3UxqVDy5lQtbTaf97+/HQQpxSF+GDHlGFtkzB+2xiQ4h9DJJqmxDF4c53TGuR4
-         xeKpz4bA2/FG7PTechdO/wvCibT17vCA4FIit+fH0yWOFHFFU4WPwvFo4jNIen65Y5Aw
-         ze+w==
-X-Gm-Message-State: AGi0PuamjrdgeVqtueHE/M6X68+PZHJxREznBl8HCuuvp4DDz9j2J0Od
-        xoamCSFRIg3sWueR+KirLmQ=
-X-Google-Smtp-Source: APiQypJzWKKak8PbW+kZIdR7/TVsm2rivJyOhaM0wST//Mq0DDvkBNHskkneZWNWP5wgUMeouJLGDA==
-X-Received: by 2002:a62:15c5:: with SMTP id 188mr4592641pfv.66.1588351025385;
-        Fri, 01 May 2020 09:37:05 -0700 (PDT)
-Received: from udknight.localhost ([59.57.158.27])
-        by smtp.gmail.com with ESMTPSA id c2sm2683258pfp.118.2020.05.01.09.37.03
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 01 May 2020 09:37:04 -0700 (PDT)
-Received: from udknight.localhost (localhost [127.0.0.1])
-        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 041GYn38026961;
-        Sat, 2 May 2020 00:34:49 +0800
-Received: (from root@localhost)
-        by udknight.localhost (8.14.9/8.14.9/Submit) id 041GYe1E026958;
-        Sat, 2 May 2020 00:34:40 +0800
-Date:   Sat, 2 May 2020 00:34:40 +0800
-From:   Wang YanQing <udknight@gmail.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Matteo Croce <mcroce@redhat.com>, Markus.Elfring@web.de,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v3] checkpatch: add support to check 'Fixes:' tag format
-Message-ID: <20200501163440.GA19874@udknight>
-Mail-Followup-To: Wang YanQing <udknight@gmail.com>,
-        Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
-        linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Matteo Croce <mcroce@redhat.com>, Markus.Elfring@web.de,
-        kernel-janitors@vger.kernel.org
-References: <20200501154033.GA25730@udknight>
- <3aeb6ab5059ec753d922051d7732e13322188e7c.camel@perches.com>
+        id S1730028AbgEAQky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 12:40:54 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2146 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728443AbgEAQkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 12:40:53 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id C1CF8C4B4B34BF9888AE;
+        Fri,  1 May 2020 17:40:51 +0100 (IST)
+Received: from [127.0.0.1] (10.47.3.165) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 1 May 2020
+ 17:40:50 +0100
+Subject: Re: [PATCH 5/5] arm/arm64: smccc: Add ARCH_SOC_ID support
+To:     Sudeep Holla <sudeep.holla@arm.com>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        "harb@amperecomputing.com" <harb@amperecomputing.com>,
+        Will Deacon <will@kernel.org>
+References: <20200430114814.14116-1-sudeep.holla@arm.com>
+ <20200430114814.14116-6-sudeep.holla@arm.com>
+ <426ff8ab-9c13-4301-a91e-989c19c4ff58@huawei.com>
+ <20200501160521.GB24840@bogus>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <b5657cc3-a162-742f-f1cb-02c2d80631c9@huawei.com>
+Date:   Fri, 1 May 2020 17:40:08 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3aeb6ab5059ec753d922051d7732e13322188e7c.camel@perches.com>
-User-Agent: Mutt/1.7.1 (2016-10-04)
+In-Reply-To: <20200501160521.GB24840@bogus>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.3.165]
+X-ClientProxiedBy: lhreml727-chm.china.huawei.com (10.201.108.78) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 08:57:42AM -0700, Joe Perches wrote:
-> On Fri, 2020-05-01 at 23:40 +0800, Wang YanQing wrote:
-> > According to submitting-patches.rst, 'Fixes:' tag has a little
-> > stricter condition about the one line summary than normal git
-> > commit description:
-> > “...
-> > Do not split the tag across multiple lines, tags are exempt from
-> > the "wrap at 75 columns" rule in order to simplify parsing scripts
-> > ...”
-> > 
-> > And there is no sanity check for 'Fixes:' tag format in checkpatch
-> > the same as GIT_COMMIT_ID for git commit description, so let's expand
-> > the GIT_COMMIT_ID to add 'Fixes:' tag format check support.
-> > 
-> > The check supports below formats:
-> > Fixes: 54a4f0239f2e ("KVM: MMU: make kvm_mmu_zap_page() return the number of pages it actually freed")
-> > Fixes: 85f7cd3a2aad ("Revert "media: Kconfig: better support hybrid TV devices"")
-> > Fixes: 878520ac45f9 ("ext4: save the error code which triggered...")
-> > Fixes: 878520ac45f9 ("ext4: save the error code which triggered")
-> > Fixes: 277f27e2f277 ("SUNRPC/cache: Allow garbage collection ... ")
+On 01/05/2020 17:05, Sudeep Holla wrote:
+> On Fri, May 01, 2020 at 04:25:27PM +0100, John Garry wrote:
+>> On 30/04/2020 12:48, Sudeep Holla wrote:
+>>> +static int __init smccc_soc_init(void)
+>>> +{
+>>> +	struct device *dev;
+>>> +	int ret, soc_id_rev;
+>>> +	struct arm_smccc_res res;
+>>> +	static char soc_id_str[8], soc_id_rev_str[12];
+>>> +
+>>> +	if (arm_smccc_get_version() < ARM_SMCCC_VERSION_1_2)
+>>> +		return 0;
+>>> +
+>>> +	ret = smccc_soc_id_support_check();
+>>> +	if (ret)
+>>> +		return ret;
+>>> +
+>>> +	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_SOC_ID, 0, &res);
+>>> +
+>>> +	ret = smccc_map_error_codes(res.a0);
+>>> +	if (ret)
+>>> +		return ret;
+>>> +
+>>> +	soc_id_version = res.a0;
+>>> +
+>>> +	arm_smccc_1_1_invoke(ARM_SMCCC_ARCH_SOC_ID, 1, &res);
+>>> +
+>>> +	ret = smccc_map_error_codes(res.a0);
+>>> +	if (ret)
+>>> +		return ret;
+>>> +
+>>> +	soc_id_rev = res.a0;
+>>> +
+>>> +	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
+>>> +	if (!soc_dev_attr)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	sprintf(soc_id_str, "0x%04x", IMP_DEF_SOC_ID(soc_id_version));
+>>> +	sprintf(soc_id_rev_str, "0x%08x", soc_id_rev);
+>>> +
+>>> +	soc_dev_attr->soc_id = soc_id_str;
+>>> +	soc_dev_attr->revision = soc_id_rev_str;
+>>> +
+>>> +	soc_dev = soc_device_register(soc_dev_attr);
+>>> +	if (IS_ERR(soc_dev)) {
+>>> +		ret = PTR_ERR(soc_dev);
+>>> +		goto free_soc;
+>>> +	}
+>>> +
+>>> +	dev = soc_device_to_device(soc_dev);
+>>> +
+>>
+>> Just wondering, what about if the platform already had a SoC driver - now it
+>> could have another one, such that we may have multiple sysfs soc devices,
+>> right?
+>>
 > 
-> Hi again YanQing.
+> Yes I had a quick look at that.
 > 
-> I think all the non-standard and incomplete forms
-> should have a warning emitted.
+> 1. Such platform has option not to implement this SOC_ID if it doesn't
+>     really require it.
 
-Hi Joe Perches
-I am not sure whether I get your words, you mean we need to emit warning
-for incomplete title line format? For example:
-Fixes: 277f27e2f277 ("SUNRPC/cache: Allow garbage collection ... ")
+True
 
+> 
+> 2. If the firmware starts implementing it on some variants, then we can
+>     distinguish them with compatibles and blacklist them from the other
+>     SoC driver if having both is an issue
+> 
+> 3. SoC bus layer supports adding multiple SoC ID driver and it may show
+>     up as /sys/devices/soc<n> which may or may not be fine.
 
-Thanks.
-> 
-> > The check doesn't support below formats:
-> > Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface"
-> > Fixes: 6c73698904aa pinctrl: qcom: Introduce readl/writel accessors
-> > Fixes: 3fd6e7d9a146 (ASoC: tas571x: New driver for TI TAS571x power amplifiers)
-> > Fixes: 55697cbb44e4 ("arm64: dts: renesas: r8a779{65,80,90}: Add IPMMU devices nodes)
-> > Fixes: ba35f8588f47 (“ipvlan: Defer multicast / broadcast processing to a work-queue”)
-> > Fixes: cd758a9b57ee "KVM: PPC: Book3S HV: Use __gfn_to_pfn_memslot in HPT page fault handler"
-> > Fixes:      9b1640686470 ("scsi: lpfc: Fix use-after-free mailbox cmd completion")
-> > Fixes: 03f6fc6de919 ('ASoC: rt5682: Add the soundwire support')
-> 
-> 
-> > Note: this patch also fixes double quotation mark issue for normal git
-> >       commit description, and now it supports double quotation mark in
-> >       title line, for example:
-> >       Commit e33e2241e272 ("Revert "cfg80211: Use 5MHz bandwidth by default
-> >       when checking usable channels"")
-> 
-> Nice.
-> 
+Yeah, it's this scenario which I'm concerned about, where some userspace 
+expects, for example, soc0 to have a soc id from a known, expected list, 
+and now may get something else. However it could be argued then that 
+userspace is just too fragile then and there is no read problem here.
+
+  But this
+>     happens only if neither [1] nor [2] is done. I am happy to see if there's
+>     any solution for this. Any suggestions ?
+
+Not sure, but taking a slight deviation, maybe a way could be found to 
+supplement this dev attribute info to other ARM soc drivers.
+
+Cheers,
+John
