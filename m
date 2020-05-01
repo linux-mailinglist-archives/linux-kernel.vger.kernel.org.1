@@ -2,214 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D36F1C1DA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 21:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC621C1DCA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 21:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730381AbgEATLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 15:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729930AbgEATLL (ORCPT
+        id S1726548AbgEATVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 15:21:52 -0400
+Received: from mx0a-00190b01.pphosted.com ([67.231.149.131]:33370 "EHLO
+        mx0a-00190b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726045AbgEATVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 15:11:11 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE94C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 12:11:11 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id n11so4932176pgl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 12:11:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=c5dK1AbklroYAW5CprN7zWLQ3v0LEJ5QJui3W0lSbjE=;
-        b=hEYy9ALwvpi9Nj7vjZM+2BujSPtzR7pr1xzZJ2wJNrUpJf+DBpkALWi7IJBWqTRRz3
-         WAnthuChCJjH3p/TbVwJcXhanIYwAWdWqXur31qbmlShzOpg5tI8+GPn6ou4uN/7ciL+
-         6A+Cs2qHOD4QYfz5nxFJbSvVLoEetDLQ1pCeHREsZiOHNNpV4LmOTtDS5vWuvbe2653o
-         S84nBsCeciVYi4O67ejhg4ZacLv2GXwS2RFei7TDB8clqsltDIWndq/zDDE3k/PQ23sg
-         P9OramRl01XAkPPSHlXGR4kYN2ZX35KLRR3VgvjTdY3K+f6aEzWSxdZnxLIRkMQ4Xbg/
-         vFXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=c5dK1AbklroYAW5CprN7zWLQ3v0LEJ5QJui3W0lSbjE=;
-        b=PnaPXNp0mib3Q727lx61jH0QFbCrOwyVZ/uU4FWG2veo7MdbsCpallm1WCJyrXfIDD
-         f89BVPp2NUqL7yJAQ3FDP3xciFzLwbvkl41ypkcPCHvtComaJXmICeAOHvHs9YTtbiE9
-         4RwkVnSh0+oxCQYcOHe40Ivnak1BleemLDCbzo5qLYVM9L94nE6hrq4KP0CAdtarXvBG
-         sM/wm6QbYjSka0XBcMkpQH4/z3cvThkHdUBWRcdTFq4bvulltMZUcCX6tZoqfyZBUp3Q
-         t1IP4yZ5OLUjiqRuVgvoQ0/eg4QeIRnYiUdPzBLWXngNwMUpgB0lm+yfqj1PmDzhlNta
-         NSsA==
-X-Gm-Message-State: AGi0Pua13x6jvor96xELPo9OyoobSeyUFTMYxn/VeLFlzUuhxx+IVxXY
-        qOLJMSDYXl6mxINDz+MGUfJXhuC29fdGIw==
-X-Google-Smtp-Source: APiQypIAx3VymjxsbJHLkIAf8je/YP4wuBkmjFG4kuKUKvKBJlTDGqNf340O0aYdczkAG3AgttR0Lw==
-X-Received: by 2002:a62:be0c:: with SMTP id l12mr5465435pff.95.1588360270684;
-        Fri, 01 May 2020 12:11:10 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.145])
-        by smtp.gmail.com with ESMTPSA id v64sm2865008pfb.20.2020.05.01.12.11.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 May 2020 12:11:10 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH v4] eventfd: convert to f_op->read_iter()
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <6b29f015-bd7c-0601-cf94-2c077285b933@kernel.dk>
-Date:   Fri, 1 May 2020 13:11:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 1 May 2020 15:21:52 -0400
+Received: from pps.filterd (m0050095.ppops.net [127.0.0.1])
+        by m0050095.ppops.net-00190b01. (8.16.0.42/8.16.0.42) with SMTP id 041J4F3d018035;
+        Fri, 1 May 2020 20:20:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=from : to : cc :
+ subject : date : message-id; s=jan2016.eng;
+ bh=xi2XwmEmO17lonRkhoOFjRCCYjvN8J3PUPNEZ5GSX4s=;
+ b=cyUJfV0InaOm7AW4O/Dy9q+Evu5X1k7j0GLfKeY/0BzLliFRLq3Q17OOD2/d1kp1Q9IF
+ kr5fk31dF0StAPKOw8GT6Tpk3NUytm7fN5RK76fbJeSr7+EcwfdbIJTARwDSDPV+ackx
+ PA484vk2bDeRsv8fPU5Ck5h1sTULrGmb80ep0/KdqinfPq9CaS1N6sN2oRlByyGURTwc
+ 5eALAwGmArazIZDDvxkzFZ9oo0CKrFbEu7lQiVMib0cifVLRngAXk6XNTQ5DXbPODjGm
+ xdEz/4xV99Dq3b5ikazFBMMCB+6YEOETs3dgglVIFbDcfpZNabpPTpi7PDOHruPkalVz Rw== 
+Received: from prod-mail-ppoint7 (a72-247-45-33.deploy.static.akamaitechnologies.com [72.247.45.33] (may be forged))
+        by m0050095.ppops.net-00190b01. with ESMTP id 30r7j1kr2t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 May 2020 20:20:47 +0100
+Received: from pps.filterd (prod-mail-ppoint7.akamai.com [127.0.0.1])
+        by prod-mail-ppoint7.akamai.com (8.16.0.27/8.16.0.27) with SMTP id 041JIi2a003912;
+        Fri, 1 May 2020 15:20:46 -0400
+Received: from prod-mail-relay15.akamai.com ([172.27.17.40])
+        by prod-mail-ppoint7.akamai.com with ESMTP id 30rs31r4jm-3;
+        Fri, 01 May 2020 15:20:46 -0400
+Received: from bos-lpjec.145bw.corp.akamai.com (bos-lpjec.145bw.corp.akamai.com [172.28.3.71])
+        by prod-mail-relay15.akamai.com (Postfix) with ESMTP id C284022024;
+        Fri,  1 May 2020 19:20:45 +0000 (GMT)
+From:   Jason Baron <jbaron@akamai.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>, Heiher <r@hev.cc>,
+        Roman Penyaev <rpenyaev@suse.de>,
+        Khazhismel Kumykov <khazhy@google.com>,
+        Davidlohr Bueso <dbueso@suse.de>, stable@vger.kernel.org
+Subject: [PATCH] epoll: ensure ep_poll() doesn't miss wakeup events
+Date:   Fri,  1 May 2020 15:15:33 -0400
+Message-Id: <1588360533-11828-1-git-send-email-jbaron@akamai.com>
+X-Mailer: git-send-email 2.7.4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-01_14:2020-05-01,2020-05-01 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-2002250000 definitions=main-2005010143
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-01_11:2020-05-01,2020-05-01 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 impostorscore=0
+ suspectscore=1 bulkscore=0 clxscore=1011 phishscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 priorityscore=1501 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005010142
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-eventfd is using ->read() as it's file_operations read handler, but
-this prevents passing in information about whether a given IO operation
-is blocking or not. We can only use the file flags for that. To support
-async (-EAGAIN/poll based) retries for io_uring, we need ->read_iter()
-support. Convert eventfd to using ->read_iter().
+Now that the ep_events_available() check is done in a lockless way, and
+we no longer perform wakeups from ep_scan_ready_list(), we need to ensure
+that either ep->rdllist has items or the overflow list is active. Prior to:
+commit 339ddb53d373 ("fs/epoll: remove unnecessary wakeups of nested
+epoll"), we did wake_up(&ep->wq) after manipulating the ep->rdllist and the
+overflow list. Thus, any waiters would observe the correct state. However,
+with that wake_up() now removed we need to be more careful to ensure that
+condition.
 
-With ->read_iter(), we can support IOCB_NOWAIT. Ensure the fd setup
-is done such that we set file->f_mode with FMODE_NOWAIT.
+Here's an example of what could go wrong:
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+We have epoll fds: epfd1, epfd2. And epfd1 is added to epfd2 and epfd2 is
+added to a socket: epfd1->epfd2->socket. Thread a is doing epoll_wait() on
+epfd1, and thread b is doing epoll_wait on epfd2. Then:
 
+1) data comes in on socket
+
+ep_poll_callback() wakes up threads a and b
+
+2) thread a runs
+
+ep_poll()
+ ep_scan_ready_list()
+  ep_send_events_proc()
+   ep_item_poll()
+     ep_scan_ready_list()
+       list_splice_init(&ep->rdllist, &txlist);
+
+3) now thread b is running
+
+ep_poll()
+ ep_events_available()
+   returns false
+ schedule_hrtimeout_range()
+
+Thus, thread b has now scheduled and missed the wakeup.
+
+Fixes: 339ddb53d373 ("fs/epoll: remove unnecessary wakeups of nested epoll")
+Signed-off-by: Jason Baron <jbaron@akamai.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Heiher <r@hev.cc>
+Cc: Roman Penyaev <rpenyaev@suse.de>
+Cc: Khazhismel Kumykov <khazhy@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Davidlohr Bueso <dbueso@suse.de>
+Cc: <stable@vger.kernel.org>
 ---
+ fs/eventpoll.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
-Since v3:
-
-- Ensure we fiddle ->f_mode before doing fd_install() on the fd
-
-Since v2:
-
-- Cleanup eventfd_read() as per Al's suggestions
-
-Since v1:
-
-- Add FMODE_NOWAIT to the eventfd file
-
-diff --git a/fs/eventfd.c b/fs/eventfd.c
-index 78e41c7c3d05..20f0fd4d56e1 100644
---- a/fs/eventfd.c
-+++ b/fs/eventfd.c
-@@ -216,32 +216,32 @@ int eventfd_ctx_remove_wait_queue(struct eventfd_ctx *ctx, wait_queue_entry_t *w
- }
- EXPORT_SYMBOL_GPL(eventfd_ctx_remove_wait_queue);
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index aba03ee749f8..4af2d020f548 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -704,8 +704,14 @@ static __poll_t ep_scan_ready_list(struct eventpoll *ep,
+ 	 * in a lockless way.
+ 	 */
+ 	write_lock_irq(&ep->lock);
+-	list_splice_init(&ep->rdllist, &txlist);
+ 	WRITE_ONCE(ep->ovflist, NULL);
++	/*
++	 * In ep_poll() we use ep_events_available() in a lockless way to decide
++	 * if events are available. So we need to preserve that either
++	 * ep->oflist != EP_UNACTIVE_PTR or there are events on the ep->rdllist.
++	 */
++	smp_wmb();
++	list_splice_init(&ep->rdllist, &txlist);
+ 	write_unlock_irq(&ep->lock);
  
--static ssize_t eventfd_read(struct file *file, char __user *buf, size_t count,
--			    loff_t *ppos)
-+static ssize_t eventfd_read(struct kiocb *iocb, struct iov_iter *to)
- {
-+	struct file *file = iocb->ki_filp;
- 	struct eventfd_ctx *ctx = file->private_data;
--	ssize_t res;
- 	__u64 ucnt = 0;
- 	DECLARE_WAITQUEUE(wait, current);
- 
--	if (count < sizeof(ucnt))
-+	if (iov_iter_count(to) < sizeof(ucnt))
- 		return -EINVAL;
--
- 	spin_lock_irq(&ctx->wqh.lock);
--	res = -EAGAIN;
--	if (ctx->count > 0)
--		res = sizeof(ucnt);
--	else if (!(file->f_flags & O_NONBLOCK)) {
-+	if (!ctx->count) {
-+		if ((file->f_flags & O_NONBLOCK) ||
-+		    (iocb->ki_flags & IOCB_NOWAIT)) {
-+			spin_unlock_irq(&ctx->wqh.lock);
-+			return -EAGAIN;
-+		}
- 		__add_wait_queue(&ctx->wqh, &wait);
- 		for (;;) {
- 			set_current_state(TASK_INTERRUPTIBLE);
--			if (ctx->count > 0) {
--				res = sizeof(ucnt);
-+			if (ctx->count)
- 				break;
--			}
- 			if (signal_pending(current)) {
--				res = -ERESTARTSYS;
--				break;
-+				__remove_wait_queue(&ctx->wqh, &wait);
-+				__set_current_state(TASK_RUNNING);
-+				spin_unlock_irq(&ctx->wqh.lock);
-+				return -ERESTARTSYS;
- 			}
- 			spin_unlock_irq(&ctx->wqh.lock);
- 			schedule();
-@@ -250,17 +250,14 @@ static ssize_t eventfd_read(struct file *file, char __user *buf, size_t count,
- 		__remove_wait_queue(&ctx->wqh, &wait);
- 		__set_current_state(TASK_RUNNING);
+ 	/*
+@@ -737,16 +743,21 @@ static __poll_t ep_scan_ready_list(struct eventpoll *ep,
+ 		}
  	}
--	if (likely(res > 0)) {
--		eventfd_ctx_do_read(ctx, &ucnt);
--		if (waitqueue_active(&ctx->wqh))
--			wake_up_locked_poll(&ctx->wqh, EPOLLOUT);
--	}
-+	eventfd_ctx_do_read(ctx, &ucnt);
-+	if (waitqueue_active(&ctx->wqh))
-+		wake_up_locked_poll(&ctx->wqh, EPOLLOUT);
- 	spin_unlock_irq(&ctx->wqh.lock);
+ 	/*
++	 * Quickly re-inject items left on "txlist".
++	 */
++	list_splice(&txlist, &ep->rdllist);
++	/*
++	 * In ep_poll() we use ep_events_available() in a lockless way to decide
++	 * if events are available. So we need to preserve that either
++	 * ep->oflist != EP_UNACTIVE_PTR or there are events on the ep->rdllist.
++	 */
++	smp_wmb();
++	/*
+ 	 * We need to set back ep->ovflist to EP_UNACTIVE_PTR, so that after
+ 	 * releasing the lock, events will be queued in the normal way inside
+ 	 * ep->rdllist.
+ 	 */
+ 	WRITE_ONCE(ep->ovflist, EP_UNACTIVE_PTR);
 -
--	if (res > 0 && put_user(ucnt, (__u64 __user *)buf))
-+	if (unlikely(copy_to_iter(&ucnt, sizeof(ucnt), to) != sizeof(ucnt)))
- 		return -EFAULT;
- 
--	return res;
-+	return sizeof(ucnt);
- }
- 
- static ssize_t eventfd_write(struct file *file, const char __user *buf, size_t count,
-@@ -329,7 +326,7 @@ static const struct file_operations eventfd_fops = {
- #endif
- 	.release	= eventfd_release,
- 	.poll		= eventfd_poll,
--	.read		= eventfd_read,
-+	.read_iter	= eventfd_read,
- 	.write		= eventfd_write,
- 	.llseek		= noop_llseek,
- };
-@@ -406,6 +403,7 @@ EXPORT_SYMBOL_GPL(eventfd_ctx_fileget);
- static int do_eventfd(unsigned int count, int flags)
- {
- 	struct eventfd_ctx *ctx;
-+	struct file *file;
- 	int fd;
- 
- 	/* Check the EFD_* constants for consistency.  */
-@@ -425,11 +423,24 @@ static int do_eventfd(unsigned int count, int flags)
- 	ctx->flags = flags;
- 	ctx->id = ida_simple_get(&eventfd_ida, 0, 0, GFP_KERNEL);
- 
--	fd = anon_inode_getfd("[eventfd]", &eventfd_fops, ctx,
--			      O_RDWR | (flags & EFD_SHARED_FCNTL_FLAGS));
-+	flags &= EFD_SHARED_FCNTL_FLAGS;
-+	flags |= O_RDWR;
-+	fd = get_unused_fd_flags(flags);
- 	if (fd < 0)
--		eventfd_free_ctx(ctx);
-+		goto err;
-+
-+	file = anon_inode_getfile("[eventfd]", &eventfd_fops, ctx, flags);
-+	if (IS_ERR(file)) {
-+		put_unused_fd(fd);
-+		fd = PTR_ERR(file);
-+		goto err;
-+	}
- 
-+	file->f_mode |= FMODE_NOWAIT;
-+	fd_install(fd, file);
-+	return fd;
-+err:
-+	eventfd_free_ctx(ctx);
- 	return fd;
- }
+-	/*
+-	 * Quickly re-inject items left on "txlist".
+-	 */
+-	list_splice(&txlist, &ep->rdllist);
+ 	__pm_relax(ep->ws);
+ 	write_unlock_irq(&ep->lock);
  
 -- 
-Jens Axboe
+2.7.4
 
