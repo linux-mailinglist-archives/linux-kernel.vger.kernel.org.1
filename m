@@ -2,114 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053431C197A
+	by mail.lfdr.de (Postfix) with ESMTP id DE4411C197C
 	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbgEAP0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 11:26:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46580 "EHLO mail.kernel.org"
+        id S1729679AbgEAP0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 11:26:47 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:36388 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728443AbgEAP0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 11:26:15 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB1A2206D9;
-        Fri,  1 May 2020 15:26:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588346775;
-        bh=MjFoLfW1BtT4NUArrsrbntaI0HBfUeoxnqplpyIMRUo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L0SfJ+alaXKR7XR5Dihir9MiOm2Hi4aU+G0JXpiTBiaO9Ew7PVCEagmNYyU6Hu6qg
-         HJj5JDXmw+/gw2RoEeBL0eosOv7znVbanO7VUo2KKIQ4SJ84fkrT5UUmPGBlH5i8Bb
-         34UZKOAUJA0SICP6gdqhKOMoThIaC4tZM+OUXxt0=
-Date:   Fri, 1 May 2020 16:26:09 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Al Grant <Al.Grant@arm.com>, James Clark <James.Clark@arm.com>,
-        tglx@linutronix.de
-Subject: Re: [PATCH] arm64: perf_event: Fix time_offset for arch timer
-Message-ID: <20200501152609.GA17646@willie-the-truck>
-References: <20200320093545.28227-1-leo.yan@linaro.org>
- <20200430145823.GA25258@willie-the-truck>
- <4d924f705245c797a19d3a73eb0c1ba0@kernel.org>
- <20200430160436.GC13575@hirez.programming.kicks-ass.net>
- <20200430161815.GE25258@willie-the-truck>
- <20200501151448.GA9650@leoy-ThinkPad-X240s>
+        id S1728812AbgEAP0r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 11:26:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=SCMVQXjgnG5zxzmUYaFL9czDFrjlPmwomTiVGPqNcMM=; b=AclZSoKi8H/2w54RH0t42p62PL
+        x6eyXSndWpcrLxeO9NMyVsraXH+IHB4ilYTqkJPFqSSj9Cq/T+uDG49tY5jMmfuB7uFrvbVohJaKE
+        IKpVl9NywwkDGpSMxKceW35xXA6GhgGuZ0CR0GX/8l728M7W9IFzP5xkFNd8o2YUVlrY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jUXYg-000YB1-9w; Fri, 01 May 2020 17:26:34 +0200
+Date:   Fri, 1 May 2020 17:26:34 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     robh+dt@kernel.org, f.fainelli@gmail.com,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        jianxin.pan@amlogic.com, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH RFC v2 01/11] dt-bindings: net: meson-dwmac: Add the
+ amlogic,rx-delay-ns property
+Message-ID: <20200501152634.GA128733@lunn.ch>
+References: <20200429201644.1144546-1-martin.blumenstingl@googlemail.com>
+ <20200429201644.1144546-2-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200501151448.GA9650@leoy-ThinkPad-X240s>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200429201644.1144546-2-martin.blumenstingl@googlemail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 11:14:48PM +0800, Leo Yan wrote:
-> On Thu, Apr 30, 2020 at 05:18:15PM +0100, Will Deacon wrote:
-> > On Thu, Apr 30, 2020 at 06:04:36PM +0200, Peter Zijlstra wrote:
-> > > On Thu, Apr 30, 2020 at 04:29:23PM +0100, Marc Zyngier wrote:
-> > > 
-> > > > I wonder if we could/should make __sched_clock_offset available even when
-> > > > CONFIG_HAVE_UNSTABLE_SCHED_CLOCK isn't defined. It feels like it would
-> > > > help with this particular can or worm...
-> > > 
-> > > Errrgh. __sched_clock_offset is only needed on x86 because we transition
-> > > from one clock device to another on boot. It really shouldn't exist on
-> > > anything sane.
-> > 
-> > I think we still transition from jiffies on arm64, because we don't register
-> > with sched_clock until the timer driver probes. Marc, is that right?
-> > 
-> > > Let me try and understand your particular problem better.
-> > 
-> > I think the long and short of it is that userspace needs a way to convert
-> > the raw counter cycles into a ns value that can be compared against values
-> > coming out of sched_clock. To do this accurately, I think it needs the
-> > cycles value at the point when sched_clock was initialised.
+On Wed, Apr 29, 2020 at 10:16:34PM +0200, Martin Blumenstingl wrote:
+> The PRG_ETHERNET registers on Meson8b and newer SoCs can add an RX
+> delay. Add a property with the known supported values so it can be
+> configured according to the board layout.
 > 
-> Will's understanding is exactly what I want to resolve in this patch.
-> 
-> The background info is for the ARM SPE [1] decoding with perf tool, if
-> the timestamp is enabled, it uses the generic timer's counter as
-> timestamp source.  SPE trace data only contains the raw counter cycles,
-> as Will mentioned, the perf tool needs to convert it to a coordinate
-> value with sched_clock.  This is why this patch tries to calculate the
-> offset between the raw counter's ns value and sched_clock, eventually
-> this offset value will be used by SPE's decoding code in Perf tool to
-> calibrate a 'correct' timestamp.
-> 
-> Based on your suggestions, I will use __sched_clock_offset to resolve
-> the accuracy issue in patch v2.  (I noticed Peter suggested to use a
-> new API for wrapping clock_data structure, IIUC, __sched_clock_offset
-> is more straightforward for this case).
-> 
-> Please correct if I miss anything.  Thank you for reviewing and
-> suggestions!
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-I don't think you can use __sched_clock_offset without selecting
-HAVE_UNSTABLE_SCHED_CLOCK, and we really don't want to do that just
-for this. So Peter's idea about exposing what we need is better, although
-you'll probably need to take care with the switch-over from jiffies.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-It needs some thought, but one possibility would be to introduce a new
-variant of sthe ched_clock_register() function that returns the cycle
-offset, and then we could fish that out of the timer driver. If we're
-crossing all the 'i's and dotting all the 't's then we'd want to disable the
-perf userpage if sched_clock changes clocksource too (a bit like we do for
-the vDSO).
-
-Will
+    Andrew
