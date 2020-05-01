@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DDA1C1436
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0776E1C14B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730906AbgEANgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:36:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35508 "EHLO mail.kernel.org"
+        id S1731482AbgEANmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:42:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730902AbgEANgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:36:51 -0400
+        id S1730719AbgEANmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:42:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E240324953;
-        Fri,  1 May 2020 13:36:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80C25208DB;
+        Fri,  1 May 2020 13:42:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340210;
-        bh=tU8TJhxBIWcjE1Am1/vlBCvgrjTH7SCZbgZ7JE4Qicw=;
+        s=default; t=1588340524;
+        bh=QtraSO/KBfOH6GBWPZ9xnZquO0Vf93a/M99u/hbLZRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s6+aJyfNSzN0zAlBMG4e+mpxV/FIXW1hMmFPC02Qy+5CuPWYFd5iAeuBc+lJxIkLF
-         2d3deSTjJza4AeR3s7U5yEag28XdM/lYxSfjmpIH0R6ZU2C8aXMB7nNmJ3ASYjp99P
-         XSjZdmUANVCBBB6ttlmhqOX8iflJ5xBFyUkt+muU=
+        b=Gj/XbsvhFvfZB/uOdr90TF4YP+6vzEpVy1hv/xqKEyPexXzTp6f35GF7chAqVjIXX
+         h1EuY83C/jm9KTxlWsQrxUHE4bOU5Wa5Jy9pUh0zOEo74+JguCl/DUA4TY7bZCBeTo
+         N9nY13Y/DO0Da3OIqzVTZW2hjKqu8ZzmWM1qZT/U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 25/46] mm: shmem: disable interrupt when acquiring info->lock in userfaultfd_copy path
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.6 017/106] ASoC: q6dsp6: q6afe-dai: add missing channels to MI2S DAIs
 Date:   Fri,  1 May 2020 15:22:50 +0200
-Message-Id: <20200501131507.682072631@linuxfoundation.org>
+Message-Id: <20200501131546.256043432@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
-References: <20200501131457.023036302@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,79 +44,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Shi <yang.shi@linux.alibaba.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-commit 94b7cc01da5a3cc4f3da5e0ff492ef008bb555d6 upstream.
+commit 0c824ec094b5cda766c80d88c2036e28c24a4cb1 upstream.
 
-Syzbot reported the below lockdep splat:
+For some reason, the MI2S DAIs do not have channels_min/max defined.
+This means that snd_soc_dai_stream_valid() returns false,
+i.e. the DAIs have neither valid playback nor capture stream.
 
-    WARNING: possible irq lock inversion dependency detected
-    5.6.0-rc7-syzkaller #0 Not tainted
-    --------------------------------------------------------
-    syz-executor.0/10317 just changed the state of lock:
-    ffff888021d16568 (&(&info->lock)->rlock){+.+.}, at: spin_lock include/linux/spinlock.h:338 [inline]
-    ffff888021d16568 (&(&info->lock)->rlock){+.+.}, at: shmem_mfill_atomic_pte+0x1012/0x21c0 mm/shmem.c:2407
-    but this lock was taken by another, SOFTIRQ-safe lock in the past:
-     (&(&xa->xa_lock)->rlock#5){..-.}
+It's quite surprising that this ever worked correctly,
+but in 5.7-rc1 this is now failing badly: :)
 
-    and interrupts could create inverse lock ordering between them.
+Commit 0e9cf4c452ad ("ASoC: pcm: check if cpu-dai supports a given stream")
+introduced a check for snd_soc_dai_stream_valid() before calling
+hw_params(), which means that the q6i2s_hw_params() function
+was never called, eventually resulting in:
 
-    other info that might help us debug this:
-     Possible interrupt unsafe locking scenario:
+    qcom-q6afe aprsvc:q6afe:4:4: no line is assigned
 
-           CPU0                    CPU1
-           ----                    ----
-      lock(&(&info->lock)->rlock);
-                                   local_irq_disable();
-                                   lock(&(&xa->xa_lock)->rlock#5);
-                                   lock(&(&info->lock)->rlock);
-      <Interrupt>
-        lock(&(&xa->xa_lock)->rlock#5);
+... even though "qcom,sd-lines" is set in the device tree.
 
-     *** DEADLOCK ***
+Commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow playback/capture if supported")
+now even avoids creating PCM devices if the stream is not supported,
+which means that it is failing even earlier with e.g.:
 
-The full report is quite lengthy, please see:
+    Primary MI2S: ASoC: no backend playback stream
 
-  https://lore.kernel.org/linux-mm/alpine.LSU.2.11.2004152007370.13597@eggly.anvils/T/#m813b412c5f78e25ca8c6c7734886ed4de43f241d
+Avoid all that trouble by adding channels_min/max for the MI2S DAIs.
 
-It is because CPU 0 held info->lock with IRQ enabled in userfaultfd_copy
-path, then CPU 1 is splitting a THP which held xa_lock and info->lock in
-IRQ disabled context at the same time.  If softirq comes in to acquire
-xa_lock, the deadlock would be triggered.
-
-The fix is to acquire/release info->lock with *_irq version instead of
-plain spin_{lock,unlock} to make it softirq safe.
-
-Fixes: 4c27fe4c4c84 ("userfaultfd: shmem: add shmem_mcopy_atomic_pte for userfaultfd support")
-Reported-by: syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com
-Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: syzbot+e27980339d305f2dbfd9@syzkaller.appspotmail.com
-Acked-by: Hugh Dickins <hughd@google.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Link: http://lkml.kernel.org/r/1587061357-122619-1-git-send-email-yang.shi@linux.alibaba.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200415150050.616392-1-stephan@gerhold.net
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- mm/shmem.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe-dai.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -2350,11 +2350,11 @@ static int shmem_mfill_atomic_pte(struct
- 
- 	lru_cache_add_anon(page);
- 
--	spin_lock(&info->lock);
-+	spin_lock_irq(&info->lock);
- 	info->alloced++;
- 	inode->i_blocks += BLOCKS_PER_PAGE;
- 	shmem_recalc_inode(inode);
--	spin_unlock(&info->lock);
-+	spin_unlock_irq(&info->lock);
- 
- 	inc_mm_counter(dst_mm, mm_counter_file(page));
- 	page_add_file_rmap(page, false);
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -902,6 +902,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -917,6 +919,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -931,6 +935,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -946,6 +952,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -960,6 +968,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -975,6 +985,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -989,6 +1001,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 			.rates = SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_8000 |
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
+@@ -1004,6 +1018,8 @@ static struct snd_soc_dai_driver q6afe_d
+ 				 SNDRV_PCM_RATE_16000,
+ 			.formats = SNDRV_PCM_FMTBIT_S16_LE |
+ 				   SNDRV_PCM_FMTBIT_S24_LE,
++			.channels_min = 1,
++			.channels_max = 8,
+ 			.rate_min =     8000,
+ 			.rate_max =     48000,
+ 		},
 
 
