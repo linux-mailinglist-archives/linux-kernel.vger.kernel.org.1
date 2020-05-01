@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0473F1C18C4
+	by mail.lfdr.de (Postfix) with ESMTP id 79EE81C18C5
 	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729613AbgEAOuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:50:22 -0400
-Received: from sauhun.de ([88.99.104.3]:36084 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728737AbgEAOuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 10:50:21 -0400
-Received: from localhost (p5486CE11.dip0.t-ipconnect.de [84.134.206.17])
-        by pokefinder.org (Postfix) with ESMTPSA id B4CEC2C1EC4;
-        Fri,  1 May 2020 16:50:18 +0200 (CEST)
-Date:   Fri, 1 May 2020 16:50:18 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PULL REQUEST] i2c for v5.7
-Message-ID: <20200501145014.GA24395@ninjato>
+        id S1729603AbgEAOvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728737AbgEAOvb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 10:51:31 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AAAC061A0C;
+        Fri,  1 May 2020 07:51:31 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id q7so9450583qkf.3;
+        Fri, 01 May 2020 07:51:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iSF8qkyzOWCTJWVtIv/KwIUFYxZnWd76ArT3iSBhPAs=;
+        b=aBwfdaI5kzqFOE6foEl5YSlIVohmWNm0VSsIsIyw4DoiMSb3trTNF6MW5I/8i38nBr
+         7o+sjRUrSMrqPTvIszk/NBk8VotsDFZEVWbCiifR1tjPOyo/m2+yvRcU5Op9+yISUm4O
+         1CLZuOpLy5YmuwieyEqX6DA9nnC5t4Cu4G+NtqYdW+k+m9tyPhkabzK2Lic6avfSwS/+
+         LMQBUFFVgOGppTRBj5i4IBwBh3Bdz8WycXWW26g5Zi8n1M9vK05NzB1f/Jd4QqUF8qLu
+         rz8HnO5ev46glsYThvSyfInERjfIS4ANRphIDFSyerbzu1KHQvTORObBZOa97jgf1TKD
+         7fdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iSF8qkyzOWCTJWVtIv/KwIUFYxZnWd76ArT3iSBhPAs=;
+        b=jtiN3ntbh1vqUGkrSkktC3jeRD3Sn0Ds5PPq5cRTygL74nWUdg1PrGAnF63Dl0mjcg
+         K9h+6yTAqkfKFNAr2Z6kAzPNLLxOtiIp0IAE6PV57j1j8lfFmilEtN9roBm7gI292H6Q
+         n2AAddEmzn9xvRnkkFZIt87pF7Ebs8lWGSj3D7UQ+JXje+0dqUAE5Ia7EufmBle8k160
+         MCELoKilg9jckB1AZeiWjhbl4tkGTTS1dbxCbIIFnTTh4fMPkzUm6uCSD++x80io6424
+         5IB/vAutjHAzQkatFcz4EL/4BibrpvPC1o6ZtXt+hCBeW6w3sE/X2Tgb25Yub8pNcRTf
+         TrrQ==
+X-Gm-Message-State: AGi0PuYAB5h9QeXz3Ue3qmxREPboQNoOPpm/J0qHdNxTGS3UNza8m8+N
+        pKoMaLuO16SCBUWUpG+YBVTJkWiy
+X-Google-Smtp-Source: APiQypJIa6cdu+IKsx/LXE513SnU1kaYCk/ynYtFDjRz9LKo3QE4dI5s32VnrTFjrTGNvTQVBn7okw==
+X-Received: by 2002:a37:b185:: with SMTP id a127mr3829339qkf.87.1588344690768;
+        Fri, 01 May 2020 07:51:30 -0700 (PDT)
+Received: from ?IPv6:2601:282:803:7700:b01c:ec8e:d8ff:35b1? ([2601:282:803:7700:b01c:ec8e:d8ff:35b1])
+        by smtp.googlemail.com with ESMTPSA id i2sm2791303qki.54.2020.05.01.07.51.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 May 2020 07:51:30 -0700 (PDT)
+Subject: Re: [PATCH 03/37] docs: networking: convert vrf.txt to ReST
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>, netdev@vger.kernel.org
+References: <cover.1588344146.git.mchehab+huawei@kernel.org>
+ <af2ba2c29e8dfa9fb66dda16311a28a9f7c8cf43.1588344146.git.mchehab+huawei@kernel.org>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <5e6de21b-c26d-8d76-901d-f588575c3b0d@gmail.com>
+Date:   Fri, 1 May 2020 08:51:27 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <af2ba2c29e8dfa9fb66dda16311a28a9f7c8cf43.1588344146.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/1/20 8:44 AM, Mauro Carvalho Chehab wrote:
+> - add SPDX header;
+> - adjust title markup;
+> - Add a subtitle for the first section;
+> - mark code blocks and literals as such;
+> - adjust identation, whitespaces and blank lines;
+> - add to networking/index.rst.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/networking/index.rst |   1 +
+>  Documentation/networking/vrf.rst   | 451 +++++++++++++++++++++++++++++
+>  Documentation/networking/vrf.txt   | 418 --------------------------
+>  MAINTAINERS                        |   2 +-
+>  4 files changed, 453 insertions(+), 419 deletions(-)
+>  create mode 100644 Documentation/networking/vrf.rst
+>  delete mode 100644 Documentation/networking/vrf.txt
+> 
 
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Linus,
-
-I2C has three driver bugfixes this time, and two reverts because the
-original patches revealed underlying problems which the Tegra guys are
-now working on.
-
-Please pull.
-
-Thanks,
-
-   Wolfram
+Acked-by: David Ahern <dsahern@gmail.com>
 
 
-The following changes since commit 6a8b55ed4056ea5559ebe4f6a4b247f627870d4c:
-
-  Linux 5.7-rc3 (2020-04-26 13:51:02 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current-fixed
-
-for you to fetch changes up to c926c87b8e36dcc0ea5c2a0a0227ed4f32d0516a:
-
-  i2c: aspeed: Avoid i2c interrupt status clear race condition. (2020-04-30 16:12:33 +0200)
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      i2c: amd-mp2-pci: Fix Oops in amd_mp2_pci_init() error handling
-
-Rayagonda Kokatanur (1):
-      i2c: iproc: generate stop event for slave writes
-
-Wolfram Sang (2):
-      Revert "i2c: tegra: Synchronize DMA before termination"
-      Revert "i2c: tegra: Better handle case where CPU0 is busy for a long time"
-
-ryan_chen (1):
-      i2c: aspeed: Avoid i2c interrupt status clear race condition.
-
- drivers/i2c/busses/i2c-amd-mp2-pci.c |  2 +-
- drivers/i2c/busses/i2c-aspeed.c      |  5 ++++-
- drivers/i2c/busses/i2c-bcm-iproc.c   |  3 +++
- drivers/i2c/busses/i2c-tegra.c       | 36 ++++++++++++------------------------
- 4 files changed, 20 insertions(+), 26 deletions(-)
-
---wRRV7LY7NUeQGEoC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6sNyIACgkQFA3kzBSg
-KbavUw//aoMIcqOloHs5DFPahlp5mPAHKmyshtsyXMPo9qUkk5qrjjqQiAhJoA6f
-2Uc2FsY7trL3KOfJBjpsVShcoozGmlgtXlpq3wnMrujFNl6l8k5vagsgvgbuJUwl
-YCgCA1e0lXRELURhWcNX8Splc6xERwR7qpsK5jBzz/Ly2aocU27pzN/TWFiE+Jk3
-r3o716nVqt5fwbiGwseC+lbfF4n6vOQlF1mSkty4QMxxMglgFBJKpX5c3u4KxmlX
-HSHgYeLkV56PR/ysNey3zW8x6SWg4LvgDQOZ36reZP5ICDcjXmC2Q+B6B75g+tAo
-bgHDmW+RDC66LgbUwo51z4h7WqpWeCQriJ3Y27XUnSsbvyymxs5FUHjbg+wP1Cwf
-0mgonT46C6hvUgnf/NvwjG9ueYrt3HaiLXn0dUgypMRLtckZX4xR/0qEtS2gUDua
-RiUOY4zyOBxNZkNt2wAeQ+/SD5ZsRrYc6yMLpxBh3gbbtxnnwrPrbavZ3WQ3B3fZ
-aIGZ3NhtSxbB8FLt/yi9NmMIybNcSlUDh7IvmlCg3Db24yBS+ZawUeB9jU6OMxPN
-bouYzDrhVQN70LxBVkoxsu+KJYGD8x7EmDQ8U0Anfgrv7zpqMjPL92h0UsLE5/ca
-HpompTh5AHAKxreS2aNs/DS4Oe4ZOyUSgdxBHs+jarwy+VLmlJk=
-=oh0R
------END PGP SIGNATURE-----
-
---wRRV7LY7NUeQGEoC--
