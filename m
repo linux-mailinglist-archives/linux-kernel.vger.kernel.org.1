@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2065D1C14D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D621C1666
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731128AbgEANnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:43:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44070 "EHLO mail.kernel.org"
+        id S1731888AbgEANru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:47:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731598AbgEANnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:43:11 -0400
+        id S1731607AbgEANnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:43:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55EB820757;
-        Fri,  1 May 2020 13:43:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8315208DB;
+        Fri,  1 May 2020 13:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340590;
-        bh=PSaJ1BEBQU3mfy6N4+Y8OwifRG6WIWfcHfx4ODH8A0g=;
+        s=default; t=1588340593;
+        bh=BUGZ/+RII62MViYkx/XiviL/cx9e/eDbNIIw0pTyWgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=udB9CA1H2+t5DZ2vOPkMH3tPRTF8NjzOo/8E27I9aj3ECPBDz9w/v9Hh8Xwoi6bua
-         9zBOMl0+9pRscwCNWRdBFZVgYTJT9BmydP9ICw30ljecXpvRFVSXSDqWnf4NeKIFUY
-         Hpys9esUuDklzafANu9Hib/brL6/X6Wi1P6IAAlg=
+        b=fSPeU1GWApFg2F4C1txieFaDGvG8kCnkBg7i+yYn5wj2O1myZdonsRDJ4iSRwN+Zs
+         y6qOoZ5G7An7PPkcP3m2zJNCiqQiEEwHLGPSUq/+c+ErvO9C0RDElGFEdrpNNOjeP5
+         a6ntBdlRyKR0XA1WLjsmsS4GFs4t5HDvE+F55ohE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Raymond Pang <RaymondPang-oc@zhaoxin.com>,
         Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.6 044/106] PCI: Add Zhaoxin Vendor ID
-Date:   Fri,  1 May 2020 15:23:17 +0200
-Message-Id: <20200501131549.008314812@linuxfoundation.org>
+Subject: [PATCH 5.6 045/106] PCI: Add ACS quirk for Zhaoxin multi-function devices
+Date:   Fri,  1 May 2020 15:23:18 +0200
+Message-Id: <20200501131549.104771513@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
 References: <20200501131543.421333643@linuxfoundation.org>
@@ -45,29 +45,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Raymond Pang <RaymondPang-oc@zhaoxin.com>
 
-commit 3375590623e4a132b19a8740512f4deb95728933 upstream.
+commit 0325837c51cb7c9a5bd3e354ac0c0cda0667d50e upstream.
 
-Add Zhaoxin Vendor ID to pci_ids.h
+Some Zhaoxin endpoints are implemented as multi-function devices without an
+ACS capability, but they actually don't support peer-to-peer transactions.
+Add ACS quirks to declare DMA isolation.
 
-Link: https://lore.kernel.org/r/20200327091148.5190-2-RaymondPang-oc@zhaoxin.com
+Link: https://lore.kernel.org/r/20200327091148.5190-3-RaymondPang-oc@zhaoxin.com
 Signed-off-by: Raymond Pang <RaymondPang-oc@zhaoxin.com>
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/pci_ids.h |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pci/quirks.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -2583,6 +2583,8 @@
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4767,6 +4767,10 @@ static const struct pci_dev_acs_enabled
+ 	{ PCI_VENDOR_ID_BROADCOM, 0xD714, pci_quirk_brcm_acs },
+ 	/* Amazon Annapurna Labs */
+ 	{ PCI_VENDOR_ID_AMAZON_ANNAPURNA_LABS, 0x0031, pci_quirk_al_acs },
++	/* Zhaoxin multi-function devices */
++	{ PCI_VENDOR_ID_ZHAOXIN, 0x3038, pci_quirk_mf_endpoint_acs },
++	{ PCI_VENDOR_ID_ZHAOXIN, 0x3104, pci_quirk_mf_endpoint_acs },
++	{ PCI_VENDOR_ID_ZHAOXIN, 0x9083, pci_quirk_mf_endpoint_acs },
+ 	{ 0 }
+ };
  
- #define PCI_VENDOR_ID_AMAZON		0x1d0f
- 
-+#define PCI_VENDOR_ID_ZHAOXIN		0x1d17
-+
- #define PCI_VENDOR_ID_HYGON		0x1d94
- 
- #define PCI_VENDOR_ID_HXT		0x1dbf
 
 
