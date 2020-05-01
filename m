@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBD31C1BD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D541C1BC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730401AbgEAReW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
+        id S1730205AbgEARdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 13:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729807AbgEARdn (ORCPT
+        by vger.kernel.org with ESMTP id S1730146AbgEARdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 13:33:43 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201BBC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:33:43 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id y73so12912456ybe.22
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:33:43 -0700 (PDT)
+        Fri, 1 May 2020 13:33:46 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4D2C061A0C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:33:45 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id 11so10839700qkh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:33:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=T1oY202fZuRBk7edtCBgt9wERwBLTlqKZ66WoSf5lZY=;
-        b=cr8Q2UQm9Y1sHTsGcnZ9c1YBt5RmFHyx38WBHWc0yPruZgsiv1dKNzMdN9U3iSQP8p
-         xN8wl38PVn+kSesh1RzRXrfX71OBoCGNp3xDQNGDqIx/iPc9syKXiyghfCzGbkCNdoFr
-         UY0EuhwozvmHgEiZGwEZrtGaEYaSFVQJ+DBDQdWzskFHLh2nqjyNaw0JddoGjxBMeNv3
-         wM/JKSi9Ylcgc2Z9frpp6w7Mi2CbmGSbsEmZVte9+pa4WizsNJe5T34wskZJJFsAYH/p
-         fGofY7NbMUoYmChRs3iuoFU/ju2F96tqq3rmaLPLO3RSMGKZZywtuSXIJEcGo1lL0fWA
-         qdtw==
+        bh=GWDC0G8zdjTIbAQzpkGDW81gGtVpMcQxDDRhUTLRxU0=;
+        b=U/cR320k6vLaiczVFbMpcbz2AiJ7tUav2C3g/C7++Gr6hAYFgzw95LdTkG6/6H873/
+         EEPfBNkgfWeuXr2l6a03Ci/b5k2jmCF+ioS7rO7QFdyGsQk9xfMXiV8+R6BKXnrvoGjL
+         pP910yMK1PurVdmmUDe0IbkR7TVUs+AtjhHNdvn+JvhqK7jMoC21wlVr66fLpq4oKosi
+         YjVSPlKEevAjBtj7Ac1ZXHHB2VBLA3ymuynw21LrqBsSGFHXJi8ZQhx+DGLQhZ2Pmbde
+         eTWGna1vHXtQhwwcEOFkh7+4v0tiCxwTj6o0eaUc7MxnDkDm6szkVyleZW30D3fIMpVP
+         g6/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=T1oY202fZuRBk7edtCBgt9wERwBLTlqKZ66WoSf5lZY=;
-        b=MB3Euxld2iEwEOZkq66BDWZKGUlYLn0saU0K6P42nusVG0xwtB4TPHKyoDfcFYauOW
-         9LnGnSxLe7Wz04CjR9ArrOKA74lzRp32p02B22i3Q+u4ki39aq4ECPOruMwi9ySmjzcD
-         rE/Dumql/52bhFvTJRNDiFcynjGx8UhFWTC7W5tLl/AGSf9w2tDfFD72mgk2xcqUCRwz
-         k2KSLvXZyPGdts+9CgzS4rOYrtIvDxVK3+Ayoj0jYvKwkk34Ll2DywvEhds1wm3xX4Pn
-         TjpX37jr15ZPrab9ElCUI3kPzYSy5dmacP8IjMDccH3XEoZudPMBNiBAHOdzQ/qHb36l
-         UZKQ==
-X-Gm-Message-State: AGi0Pub1qvDFMZIpFbHMkFGkZgXF4pjIdGZYYBxtILwSva/BbBLMP6YQ
-        RFUExHcG6XbquMXw2yd2EIp1V09ZEU3G
-X-Google-Smtp-Source: APiQypL+yOApOWdJ9AZ+SBKLU/ZrzM3seiilyrGEn9HMYRmkpsieN4BKlxhRm7UIF7BvqZyh+Hrumx39eQJz
-X-Received: by 2002:a25:44c5:: with SMTP id r188mr7882881yba.514.1588354422213;
- Fri, 01 May 2020 10:33:42 -0700 (PDT)
-Date:   Fri,  1 May 2020 10:33:24 -0700
+        bh=GWDC0G8zdjTIbAQzpkGDW81gGtVpMcQxDDRhUTLRxU0=;
+        b=M9UUOOMNV//7nIVH3WxkznSLJq5jVDr/kNoMRLy4Ir8u1khzgjhqfSkg38e9cs7X0k
+         rnuMm9cwW0hXD3nkHlEosRhLs4d+LVBJeeQwBGVRYe2iEnQB8lUY6j5JWrcWD3AVpOCl
+         jXFQ6gOMu1Dz5J5Q3dI5UOA2BbQ0GRsezo/m4A7XP2W1mvpFraUJ3S0a9aIRPSi2EgUE
+         1g0RiiZVVEuTp/KrrtHn4QuipYQyiD/PGkgYnb3cuunXe4L1wgcQraSF+cU6IcSYP3If
+         DkklCjNCkI/rXJbhuR6mv3wxAI+0U9Udidq67cjsMvSvfPRBC6mmKrn/sKtE6BKyZPHx
+         aniQ==
+X-Gm-Message-State: AGi0PuY0Cs7/6u8zRPNFPzVP9qtd45gpCKZtWM58gjA88msvgwpiXK/k
+        QD/47/Gnr46wJ0vgyGoOX/phiNBndofs
+X-Google-Smtp-Source: APiQypJWI+W29LdVBGa/2+bauhGlIdoqAbs5375miNO9D8xIDvGf+DDMksMeeAmrwmmT3PolvRPDNvYPySVe
+X-Received: by 2002:ad4:5a06:: with SMTP id ei6mr5129839qvb.70.1588354424082;
+ Fri, 01 May 2020 10:33:44 -0700 (PDT)
+Date:   Fri,  1 May 2020 10:33:25 -0700
 In-Reply-To: <20200501173333.227162-1-irogers@google.com>
-Message-Id: <20200501173333.227162-4-irogers@google.com>
+Message-Id: <20200501173333.227162-5-irogers@google.com>
 Mime-Version: 1.0
 References: <20200501173333.227162-1-irogers@google.com>
 X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
-Subject: [PATCH v4 03/12] perf metrics: fix parse errors in skylake metrics
+Subject: [PATCH v4 04/12] perf expr: allow ',' to be an other token
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -78,34 +78,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove over escaping with \\.
+Corrects parse errors in expr__find_other of expressions with min.
 
-Fixes: fd5500989c8f (perf vendor events intel: Update metrics from TMAM 3.5)
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/util/expr.y | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json b/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
-index b4f91137f40c..390bdab1be9d 100644
---- a/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
-+++ b/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
-@@ -328,13 +328,13 @@
-     },
-     {
-         "BriefDescription": "Average latency of data read request to external memory (in nanoseconds). Accounts for demand loads and L1/L2 prefetches",
--        "MetricExpr": "1000000000 * ( cha@event\\=0x36\\\\\\,umask\\=0x21@ / cha@event\\=0x35\\\\\\,umask\\=0x21@ ) / ( cha_0@event\\=0x0@ / duration_time )",
-+        "MetricExpr": "1000000000 * ( cha@event\\=0x36\\,umask\\=0x21@ / cha@event\\=0x35\\,umask\\=0x21@ ) / ( cha_0@event\\=0x0@ / duration_time )",
-         "MetricGroup": "Memory_Lat",
-         "MetricName": "DRAM_Read_Latency"
-     },
-     {
-         "BriefDescription": "Average number of parallel data read requests to external memory. Accounts for demand loads and L1/L2 prefetches",
--        "MetricExpr": "cha@event\\=0x36\\\\\\,umask\\=0x21@ / cha@event\\=0x36\\\\\\,umask\\=0x21\\\\\\,thresh\\=1@",
-+        "MetricExpr": "cha@event\\=0x36\\,umask\\=0x21@ / cha@event\\=0x36\\,umask\\=0x21\\,thresh\\=1@",
-         "MetricGroup": "Memory_BW",
-         "MetricName": "DRAM_Parallel_Reads"
-     },
+diff --git a/tools/perf/util/expr.y b/tools/perf/util/expr.y
+index cd17486c1c5d..54260094b947 100644
+--- a/tools/perf/util/expr.y
++++ b/tools/perf/util/expr.y
+@@ -80,7 +80,7 @@ other: ID
+ 	ctx->ids[ctx->num_ids++].name = $1;
+ }
+ |
+-MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')'
++MIN | MAX | IF | ELSE | SMT_ON | NUMBER | '|' | '^' | '&' | '-' | '+' | '*' | '/' | '%' | '(' | ')' | ','
+ 
+ 
+ all_expr: if_expr			{ *final_val = $1; }
 -- 
 2.26.2.526.g744177e7f7-goog
 
