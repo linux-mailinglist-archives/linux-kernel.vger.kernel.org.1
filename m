@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345851C1632
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A601C142A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730195AbgEANlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:41:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41652 "EHLO mail.kernel.org"
+        id S1730106AbgEANgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:36:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730881AbgEANlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:41:22 -0400
+        id S1730843AbgEANgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:36:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F83C208DB;
-        Fri,  1 May 2020 13:41:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4819F208DB;
+        Fri,  1 May 2020 13:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340482;
-        bh=JyuC2SMawCNg6QZoDdmws0T5tZw/DSIWVRs30SIqjm8=;
+        s=default; t=1588340180;
+        bh=QCPBsekKWJ4K6wC5MBeuGg8o/U7gwULdIjSVndodX98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g+KcjRGGl0IfVq0n7g+z3uxhevgRrQrKfiXMdkFgGaRR1DtJGugncikllY+tuxlqC
-         D3OgmMQIV0Qe5X0wDhCLa/XNsjMkbHLj5q6/HfW2xZnEveblzqfh9KyCuJpx+FAuj3
-         VKvRDBRzR5cGPGCsa8Rznc3jjX17rSotJ9uguEx4=
+        b=KRtR2N+Y252G09DxowrFWfrOA8POdnBKKOYJbI8oveOJbIaVKoXKiWkUNHcFbgdOF
+         Kmr1MHWoIxJ+1OgLTAIGGjw1SRmo/nWWqDPTR7Xq0UOddrNPKlny/52Wb3IKZHAo0M
+         ruZKbU+A+D2+NzTuX1ubWd5zMgYW3k8XXBK6JbCM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 5.6 012/106] iio: imu: st_lsm6dsx: fix read misalignment on untagged FIFO
-Date:   Fri,  1 May 2020 15:22:45 +0200
-Message-Id: <20200501131545.903895328@linuxfoundation.org>
+        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH 4.19 21/46] cpumap: Avoid warning when CONFIG_DEBUG_PER_CPU_MAPS is enabled
+Date:   Fri,  1 May 2020 15:22:46 +0200
+Message-Id: <20200501131506.189325050@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
-References: <20200501131543.421333643@linuxfoundation.org>
+In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
+References: <20200501131457.023036302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,116 +46,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-commit 7762902c89c4c78d32ec562f1ada44d02039104b upstream.
+commit bc23d0e3f717ced21fbfacab3ab887d55e5ba367 upstream.
 
-st_lsm6dsx suffers of a read misalignment on untagged FIFO when
-all 3 supported sensors (accel, gyro and ext device) are running
-at different ODRs (the use-case is reported in the LSM6DSM Application
-Note at pag 100).
-Fix the issue taking into account decimation factor reading the FIFO
-pattern.
+When the kernel is built with CONFIG_DEBUG_PER_CPU_MAPS, the cpumap code
+can trigger a spurious warning if CONFIG_CPUMASK_OFFSTACK is also set. This
+happens because in this configuration, NR_CPUS can be larger than
+nr_cpumask_bits, so the initial check in cpu_map_alloc() is not sufficient
+to guard against hitting the warning in cpumask_check().
 
-Fixes: e485e2a2cfd6 ("iio: imu: st_lsm6dsx: enable sensor-hub support for lsm6dsm")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fix this by explicitly checking the supplied key against the
+nr_cpumask_bits variable before calling cpu_possible().
+
+Fixes: 6710e1126934 ("bpf: introduce new bpf cpu map type BPF_MAP_TYPE_CPUMAP")
+Reported-by: Xiumei Mu <xmu@redhat.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Tested-by: Xiumei Mu <xmu@redhat.com>
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20200416083120.453718-1-toke@redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx.h        |    2 ++
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c |   23 ++++++++++++++++-------
- 2 files changed, 18 insertions(+), 7 deletions(-)
+ kernel/bpf/cpumap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx.h
-+++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx.h
-@@ -337,6 +337,7 @@ enum st_lsm6dsx_fifo_mode {
-  * @gain: Configured sensor sensitivity.
-  * @odr: Output data rate of the sensor [Hz].
-  * @watermark: Sensor watermark level.
-+ * @decimator: Sensor decimation factor.
-  * @sip: Number of samples in a given pattern.
-  * @ts_ref: Sensor timestamp reference for hw one.
-  * @ext_info: Sensor settings if it is connected to i2c controller
-@@ -350,6 +351,7 @@ struct st_lsm6dsx_sensor {
- 	u32 odr;
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -455,7 +455,7 @@ static int cpu_map_update_elem(struct bp
+ 		return -EOVERFLOW;
  
- 	u16 watermark;
-+	u8 decimator;
- 	u8 sip;
- 	s64 ts_ref;
+ 	/* Make sure CPU is a valid possible cpu */
+-	if (!cpu_possible(key_cpu))
++	if (key_cpu >= nr_cpumask_bits || !cpu_possible(key_cpu))
+ 		return -ENODEV;
  
---- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-+++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c
-@@ -93,6 +93,7 @@ st_lsm6dsx_get_decimator_val(struct st_l
- 			break;
- 	}
- 
-+	sensor->decimator = decimator;
- 	return i == max_size ? 0 : st_lsm6dsx_decimator_table[i].val;
- }
- 
-@@ -337,7 +338,7 @@ static inline int st_lsm6dsx_read_block(
- int st_lsm6dsx_read_fifo(struct st_lsm6dsx_hw *hw)
- {
- 	struct st_lsm6dsx_sensor *acc_sensor, *gyro_sensor, *ext_sensor = NULL;
--	int err, acc_sip, gyro_sip, ts_sip, ext_sip, read_len, offset;
-+	int err, sip, acc_sip, gyro_sip, ts_sip, ext_sip, read_len, offset;
- 	u16 fifo_len, pattern_len = hw->sip * ST_LSM6DSX_SAMPLE_SIZE;
- 	u16 fifo_diff_mask = hw->settings->fifo_ops.fifo_diff.mask;
- 	u8 gyro_buff[ST_LSM6DSX_IIO_BUFF_SIZE];
-@@ -399,19 +400,20 @@ int st_lsm6dsx_read_fifo(struct st_lsm6d
- 		acc_sip = acc_sensor->sip;
- 		ts_sip = hw->ts_sip;
- 		offset = 0;
-+		sip = 0;
- 
- 		while (acc_sip > 0 || gyro_sip > 0 || ext_sip > 0) {
--			if (gyro_sip > 0) {
-+			if (gyro_sip > 0 && !(sip % gyro_sensor->decimator)) {
- 				memcpy(gyro_buff, &hw->buff[offset],
- 				       ST_LSM6DSX_SAMPLE_SIZE);
- 				offset += ST_LSM6DSX_SAMPLE_SIZE;
- 			}
--			if (acc_sip > 0) {
-+			if (acc_sip > 0 && !(sip % acc_sensor->decimator)) {
- 				memcpy(acc_buff, &hw->buff[offset],
- 				       ST_LSM6DSX_SAMPLE_SIZE);
- 				offset += ST_LSM6DSX_SAMPLE_SIZE;
- 			}
--			if (ext_sip > 0) {
-+			if (ext_sip > 0 && !(sip % ext_sensor->decimator)) {
- 				memcpy(ext_buff, &hw->buff[offset],
- 				       ST_LSM6DSX_SAMPLE_SIZE);
- 				offset += ST_LSM6DSX_SAMPLE_SIZE;
-@@ -441,18 +443,25 @@ int st_lsm6dsx_read_fifo(struct st_lsm6d
- 				offset += ST_LSM6DSX_SAMPLE_SIZE;
- 			}
- 
--			if (gyro_sip-- > 0)
-+			if (gyro_sip > 0 && !(sip % gyro_sensor->decimator)) {
- 				iio_push_to_buffers_with_timestamp(
- 					hw->iio_devs[ST_LSM6DSX_ID_GYRO],
- 					gyro_buff, gyro_sensor->ts_ref + ts);
--			if (acc_sip-- > 0)
-+				gyro_sip--;
-+			}
-+			if (acc_sip > 0 && !(sip % acc_sensor->decimator)) {
- 				iio_push_to_buffers_with_timestamp(
- 					hw->iio_devs[ST_LSM6DSX_ID_ACC],
- 					acc_buff, acc_sensor->ts_ref + ts);
--			if (ext_sip-- > 0)
-+				acc_sip--;
-+			}
-+			if (ext_sip > 0 && !(sip % ext_sensor->decimator)) {
- 				iio_push_to_buffers_with_timestamp(
- 					hw->iio_devs[ST_LSM6DSX_ID_EXT0],
- 					ext_buff, ext_sensor->ts_ref + ts);
-+				ext_sip--;
-+			}
-+			sip++;
- 		}
- 	}
- 
+ 	if (qsize == 0) {
 
 
