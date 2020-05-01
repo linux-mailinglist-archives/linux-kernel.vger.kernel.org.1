@@ -2,141 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6111C1B45
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033141C1B53
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730083AbgEARKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:10:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51860 "EHLO mail.kernel.org"
+        id S1730088AbgEARLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 13:11:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728495AbgEARKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 13:10:13 -0400
-Received: from localhost (mobile-166-175-184-168.mycingular.net [166.175.184.168])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728970AbgEARLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 13:11:42 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1C6C2137B;
-        Fri,  1 May 2020 17:10:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4D0520857;
+        Fri,  1 May 2020 17:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588353013;
-        bh=AZtGupY3KVT174f6mc/9Z29DqA2plgz5WC6ENyZ6TPE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PBt0yxaZV/zHBhSkjLZbx2e68r1SeWS0rIaOCYIyY1T/juir9wkfAEotoNf0Pv7UG
-         YFlTN1FA2MgY60VvWQWC71/qkgHXC1qnlNlFjaZyxujhRhRp++Suc5WqQQlYztBHIl
-         HT1CeSIrQedVZhkaX1SyQLwHwRRv+9ec8VC8Vo1c=
-Date:   Fri, 1 May 2020 12:10:11 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v4 12/19] docs: pci:
- endpoint/function/binding/pci-test.txt convert to ReST
-Message-ID: <20200501171011.GA116051@bjorn-Precision-5520>
+        s=default; t=1588353101;
+        bh=WacCN/Oz3FfWXAtl9ZPGc7vScq7nB5CuG218xrDN1ec=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=wUGrqrGuByK8Iq+aQhf5BTao7flxposRXqEmjYSGNiTh9u4Ku8B4qzg2sxzELZd94
+         jX0Mt2N18gmRpeTr6N+UQxCGVGyQu2aULcnknFKEEs2fu6atnjc9w8WYurDab0dDa1
+         O9JWXPdm3WpXF1+nkDjuRTl6+6hq0Mdv3hK64/w4=
+Subject: Re: [RFC v3 0/3] Fix errors when try to build kvm selftests on
+ specified output
+To:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shuah <shuah@kernel.org>
+References: <20200326030750.173972-1-xiaoyao.li@intel.com>
+ <41d5d89e-79c2-6f7d-de3e-ca3255e910e8@kernel.org>
+ <cb445047-ab84-0c49-cfba-ec6933971dc7@intel.com>
+ <71a5abdf-07b5-d927-1a08-de8019b3f39f@kernel.org>
+ <77ad35cf-6332-9381-200e-40b6a3d18070@intel.com>
+From:   shuah <shuah@kernel.org>
+Message-ID: <920ea28b-5c36-75dc-ec51-d501a0322f50@kernel.org>
+Date:   Fri, 1 May 2020 11:11:39 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fa73d1a7fb6c4691899a110a732216bcdac75f2b.1588263270.git.mchehab+huawei@kernel.org>
+In-Reply-To: <77ad35cf-6332-9381-200e-40b6a3d18070@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 06:18:26PM +0200, Mauro Carvalho Chehab wrote:
-> Convert this file to ReST by adding a proper title to it and
-> use the right markups for a table.
+On 3/28/20 2:51 AM, Xiaoyao Li wrote:
+> On 3/28/2020 12:03 AM, shuah wrote:
+>> On 3/27/20 7:31 AM, Xiaoyao Li wrote:
+>>> On 3/27/2020 4:57 AM, shuah wrote:
+>>>> On 3/25/20 9:07 PM, Xiaoyao Li wrote:
+>> The patches you sent are based on running the command with OUTPUT
+>> set. 
 > 
-> While here, add a SPDX header.
+> The issues are also there when I use
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>    make O=/somewher TARGETS=kvm
+> 
+> from tools/testing/selftests/ directory,
+> 
+> Is it the right usecase?
+> 
+>> That is why I am asking you start with the right use-cases,
+>> and gave you pointers on tests to refer to that have sub-dirs
+>> and handle relocatable builds:
+>>
+>> futex
+>> arm64
+>> android
+> 
+> I have read the Makefile in futex, arm64, android to learn how they
+> deal with subdir, they have Makefile in subdir but kvm doesn't.
+> 
+> I just want to create the subdir as easy as possible, so I follow the 
+> method how to create subdir for LIBKVM_OBJ in kvm.
+> 
+> If you dislike it way you can reply it Patch 1 to disclaim clear what 
+> you want to fix the subdir.
+> 
+>>>> Also, just build isn't sufficient for you to be able to run the
+>>>> tests.
+>>>>
+>>>> make kselftest-install O=/path/to/mydir TARGETS=kvm will generate
+>>>> run script.
+>>>
+>>> This command also has the x86_64 directory not created issue.
+>>> Since it generates header files in kernel_src/usr/include, it doesn't 
+>>> have headers path issue. But as result, the kernel_src directory is 
+>>> not clean, this requires me to run "make mrproper", I *really* don't 
+>>> like it.
+>>>
+>>>
+>>
+>> If the test leverages lib.mk headers install logic correctly, you
+>> shouldn't see this problem.
+>>
+>> Yes. It does make the source directory dirty. That is the problem we
+>> have to fix. I am seeing issues the issue of x86_64 not being created
+>> in the case of relocatable builds.
+>>
+>> Thanks for working on this by the way. It is one of the tests that
+>> identified as the one doesn't support relocatable builds.
+>>
+>> You will see fixes to others I already fixed in
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=next 
+>>
+>>
+>> Start withe the following use0-cases to fix and then test your fixes
+>> for these use-cases. The goal is to be able to run kvm from target
+>> directory and source directory staying clean.
+>>
+>> You will have to build the kernel first in all of these cases.
+>> Let's use kselftest-install which is what you would need if you
+>> want build and then run tests later. Also assuming you are doing
+>> native build on x86_64.
+>>
+>>  From main kernel Makefile: (from kernel source root dir)
+>>
+>> Builds in the same source directory:
+>> make kselftest-install TARGETS=kvm
+>>
+>> Relocatable build: (from kernel source root dir)
+>>
+>> make O=/path/objdir  - build kernel
+>> make kselftest-install O=/path/objdir TARGETS=kvm
+> 
+> I don't want to build kernel at all.
+> 
+>>  From tools/testing/selftests/kvm directory:
+>> make O=/path/objdir install
+> 
+> Oh no. This needs to define INSTALL_PATH, and I don't want to install.
+> I just want to build the testcase of kvm to anywhere else to make srcdir 
+> clean.
+> 
+> Besides this command make both kernel src and selftest/kvm dirty.
+> 
+>> Install step is important especially for relocatable builds,
+>> as it makes sure all run-time dependencies are copied to the
+>> target directory.
+>>
+> 
+> OK.
+> 
+> So, again.
+> 
+> is
+> 
+>    make O=/tmp/kvm-selftest -C tools/testing/selftests \
+>         TARGETS=kvm install INSTALL_PATH=/home/lxy/kvm-selftest
+> 
+> the right command for me to start on?
+> 
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Sorry for the delay. Yes the above command will work. Please check
 
-> ---
->  .../endpoint/function/binding/pci-test.rst    | 26 +++++++++++++++++++
->  .../endpoint/function/binding/pci-test.txt    | 19 --------------
->  Documentation/PCI/endpoint/index.rst          |  2 ++
->  .../misc-devices/pci-endpoint-test.rst        |  2 +-
->  4 files changed, 29 insertions(+), 20 deletions(-)
->  create mode 100644 Documentation/PCI/endpoint/function/binding/pci-test.rst
->  delete mode 100644 Documentation/PCI/endpoint/function/binding/pci-test.txt
-> 
-> diff --git a/Documentation/PCI/endpoint/function/binding/pci-test.rst b/Documentation/PCI/endpoint/function/binding/pci-test.rst
-> new file mode 100644
-> index 000000000000..57ee866fb165
-> --- /dev/null
-> +++ b/Documentation/PCI/endpoint/function/binding/pci-test.rst
-> @@ -0,0 +1,26 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==========================
-> +PCI Test Endpoint Function
-> +==========================
-> +
-> +name: Should be "pci_epf_test" to bind to the pci_epf_test driver.
-> +
-> +Configurable Fields:
-> +
-> +================   ===========================================================
-> +vendorid	   should be 0x104c
-> +deviceid	   should be 0xb500 for DRA74x and 0xb501 for DRA72x
-> +revid		   don't care
-> +progif_code	   don't care
-> +subclass_code	   don't care
-> +baseclass_code	   should be 0xff
-> +cache_line_size	   don't care
-> +subsys_vendor_id   don't care
-> +subsys_id	   don't care
-> +interrupt_pin	   Should be 1 - INTA, 2 - INTB, 3 - INTC, 4 -INTD
-> +msi_interrupts	   Should be 1 to 32 depending on the number of MSI interrupts
-> +		   to test
-> +msix_interrupts	   Should be 1 to 2048 depending on the number of MSI-X
-> +		   interrupts to test
-> +================   ===========================================================
-> diff --git a/Documentation/PCI/endpoint/function/binding/pci-test.txt b/Documentation/PCI/endpoint/function/binding/pci-test.txt
-> deleted file mode 100644
-> index cd76ba47394b..000000000000
-> --- a/Documentation/PCI/endpoint/function/binding/pci-test.txt
-> +++ /dev/null
-> @@ -1,19 +0,0 @@
-> -PCI TEST ENDPOINT FUNCTION
-> -
-> -name: Should be "pci_epf_test" to bind to the pci_epf_test driver.
-> -
-> -Configurable Fields:
-> -vendorid	 : should be 0x104c
-> -deviceid	 : should be 0xb500 for DRA74x and 0xb501 for DRA72x
-> -revid		 : don't care
-> -progif_code	 : don't care
-> -subclass_code	 : don't care
-> -baseclass_code	 : should be 0xff
-> -cache_line_size	 : don't care
-> -subsys_vendor_id : don't care
-> -subsys_id	 : don't care
-> -interrupt_pin	 : Should be 1 - INTA, 2 - INTB, 3 - INTC, 4 -INTD
-> -msi_interrupts	 : Should be 1 to 32 depending on the number of MSI interrupts
-> -		   to test
-> -msix_interrupts	 : Should be 1 to 2048 depending on the number of MSI-X
-> -		   interrupts to test
-> diff --git a/Documentation/PCI/endpoint/index.rst b/Documentation/PCI/endpoint/index.rst
-> index d114ea74b444..4ca7439fbfc9 100644
-> --- a/Documentation/PCI/endpoint/index.rst
-> +++ b/Documentation/PCI/endpoint/index.rst
-> @@ -11,3 +11,5 @@ PCI Endpoint Framework
->     pci-endpoint-cfs
->     pci-test-function
->     pci-test-howto
-> +
-> +   function/binding/pci-test
-> diff --git a/Documentation/misc-devices/pci-endpoint-test.rst b/Documentation/misc-devices/pci-endpoint-test.rst
-> index 26e5d9ba146b..4cf3f4433be7 100644
-> --- a/Documentation/misc-devices/pci-endpoint-test.rst
-> +++ b/Documentation/misc-devices/pci-endpoint-test.rst
-> @@ -53,4 +53,4 @@ ioctl
->  	      Perform read tests. The size of the buffer should be passed
->  	      as argument.
->  
-> -.. [1] Documentation/PCI/endpoint/function/binding/pci-test.txt
-> +.. [1] Documentation/PCI/endpoint/function/binding/pci-test.rst
-> -- 
-> 2.25.4
-> 
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git 
+next branch
+
+I fixed kvm build/cross-build problems and applied it to next for
+testing.
+
+https://patchwork.kernel.org/patch/11513471/
+
+thanks,
+-- Shuah
