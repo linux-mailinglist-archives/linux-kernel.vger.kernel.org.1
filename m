@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B6E1C1AB1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 18:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C69691C1AEA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 18:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbgEAQjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 12:39:04 -0400
-Received: from mga12.intel.com ([192.55.52.136]:62857 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728443AbgEAQjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 12:39:04 -0400
-IronPort-SDR: Y7J3bu9ocWgXIqCSfEeBwOW15jgzYc+o8/HSqFKMenQOUiILZI599PYUkeJrRBewuoUPHUPmbt
- N9ahBaQ8LR8g==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 09:39:04 -0700
-IronPort-SDR: zrMjFlI5GKlH4TXYRDlrYH+y4RvFi9JUquNOINeYDvbyd/TY7ET9xA71XSATxJF2sHZhBcsczD
- AIYY9EdWJ68A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,340,1583222400"; 
-   d="scan'208";a="433362656"
-Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
-  by orsmga005.jf.intel.com with ESMTP; 01 May 2020 09:39:03 -0700
-Subject: Re: [PATCH 4/4 v2] firmware: stratix10-svc: Slightly simplify code
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        gregkh@linuxfoundation.org, atull@kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <cover.1588142343.git.christophe.jaillet@wanadoo.fr>
- <8c505c686438c54da61ad4fe15e1eae722011153.1588142343.git.christophe.jaillet@wanadoo.fr>
- <1f8ae50d-6830-7fbb-e999-3e8110fe7cd6@linux.intel.com>
- <c7ac6b7c-a1d5-e001-964b-0881707c41b1@wanadoo.fr>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <2a1de0d5-444a-2680-10b5-8578c2670d54@linux.intel.com>
-Date:   Fri, 1 May 2020 11:55:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729128AbgEAQ4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 12:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728841AbgEAQ43 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 12:56:29 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3D1C061A0C;
+        Fri,  1 May 2020 09:56:28 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id 1so6630369vsl.9;
+        Fri, 01 May 2020 09:56:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bnSnMv8XzmfxgR0vO6m5ur1+/cJdg2NiZ0ZLBo2dLag=;
+        b=U+ZT+oVZn5PeeGbL8HgwsYh978Ogq1KjKGD2pSFgOpkDX3foYRdIiaQN0l3DgvNeSg
+         4puZ1YF8Ka33KoUlY161JoGdrXXYsclYcVchPE6MLtsUF9T41KfR8UcGgBtm+yZ58Ymb
+         sN3Cvc1vtx5jdZSjqQuUR4CHkaIZPFSkS/n97O3MPMSByuRb7d9CzedGyIRitTU6SLjQ
+         X56IG2+397mjNEuhhv+WJgsHOh3o7uL/b6Hb8b2JroZqP+VCDUZx6X61yCrR9mvlk0av
+         PYYvRrgG7GLj6oaRcb8J4VnkNDqYkVjHIAysR3vqV5wliLW1pcSz5jOBx9jIP749ba0r
+         g5bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bnSnMv8XzmfxgR0vO6m5ur1+/cJdg2NiZ0ZLBo2dLag=;
+        b=G8wT5UtArk1/MTVcAkATcdtCIwqDj80SJffEM0VBc1ypuWUxucJMLHnu4l7sp+C5Nu
+         tPt2qylG0v1Py+YGesnnuJHzZ+of3VPEtLZtegPqm2T0TZdkh0Etgmj2UlX8BLSEHI8p
+         md0tYhBHUZbJucirH8fdQ/17FAeut/mvmaDt43ArEwcUMdFjvEUmgvRgRmiUKON+vHNO
+         vpoNBeJDcYszP4BgrPzppvKIMnLog4puA3VIOnQOat+y7Vui3tJr4wBIlXjtFGUvhSXT
+         gqj4zAy7GyXmUzNobh7m0jR7MoWPEHxZnlEuCfSlF21YDp0fcDQWxbmBEg2H/uOAX+J1
+         A+nA==
+X-Gm-Message-State: AGi0PuYMBkpIkWDpw1LBBZu0OlrDknmPB88FYkq48g3U0H/kqc3YVTIq
+        B4RaMoLAD6WwvGEyEBLrEt6rmeh7Lar4g4c8yx3iBNNW
+X-Google-Smtp-Source: APiQypLX+MNk2MVsI90CjjX+XQgqi69d/zhYAFCmA4/I/aageL0f1auEd0W3hC9qQSVN2zR/r+kMScRCKk6jrVMtWt0=
+X-Received: by 2002:a67:7913:: with SMTP id u19mr4045503vsc.6.1588352187352;
+ Fri, 01 May 2020 09:56:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c7ac6b7c-a1d5-e001-964b-0881707c41b1@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200430080619.67ff0ac0@canb.auug.org.au>
+In-Reply-To: <20200430080619.67ff0ac0@canb.auug.org.au>
+From:   Jason Gerecke <killertofu@gmail.com>
+Date:   Fri, 1 May 2020 09:56:15 -0700
+Message-ID: <CANRwn3QB+3DH94rzm24H8kCqmbwZr7p1XUdMK81tBFEnpvRSzw@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the hid tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+My apologies. I copied the wrong commit SHA when generating this
+commit. Commit cd47de45b855 is the reference to this commit in our
+input-wacom tree, not upstream. The correct Fixes tag should indeed
+be:
 
-On 5/1/20 10:48 AM, Christophe JAILLET wrote:
-> Le 01/05/2020 à 17:40, Richard Gong a écrit :
->> Hi,
->>
->> On 4/29/20 1:52 AM, Christophe JAILLET wrote:
->>> Replace 'devm_kmalloc_array(... | __GFP_ZERO)' with the equivalent and
->>> shorter 'devm_kcalloc(...)'.
->>>
->> It doesn't make much sense.
->> Actually devm_kcalloc returns devm_kmalloc_array(.., flag | __GFP_ZERO).
->>
-> The only goal is to have a sightly less verbose code.
-> This saves one line of code and there is no need to wonder why we 
-> explicitly pass __GFP_ZERO to kmalloc_array.
-> 
-> Mostly a matter of taste.
-I prefer this part remain unchanged.
+Fixes: 912c6aa67ad4 ("HID: wacom: Add 2nd gen Intuos Pro Small support")
 
-Regards,
-Richard
+Thanks,
+Jason
+---
+Now instead of four in the eights place /
+you=E2=80=99ve got three, =E2=80=98Cause you added one  /
+(That is to say, eight) to the two,     /
+But you can=E2=80=99t take seven from three,    /
+So you look at the sixty-fours....
 
-> 
-> 'devm_kcalloc' is inlined, so the binary should be exactly the same. >
-> CJ
-> 
->>> 'ctrl->genpool' can not be NULL, so axe a useless test in the remove
->>> function.
->>>
->>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->>> ---
->>>   drivers/firmware/stratix10-svc.c | 6 ++----
->>>   1 file changed, 2 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/firmware/stratix10-svc.c 
->>> b/drivers/firmware/stratix10-svc.c
->>> index 739004398877..c228337cb0a1 100644
->>> --- a/drivers/firmware/stratix10-svc.c
->>> +++ b/drivers/firmware/stratix10-svc.c
->>> @@ -1002,8 +1002,7 @@ static int stratix10_svc_drv_probe(struct 
->>> platform_device *pdev)
->>>       if (!controller)
->>>           return -ENOMEM;
->>>   -    chans = devm_kmalloc_array(dev, SVC_NUM_CHANNEL,
->>> -                   sizeof(*chans), GFP_KERNEL | __GFP_ZERO);
->>> +    chans = devm_kcalloc(dev, SVC_NUM_CHANNEL, sizeof(*chans), 
->>> GFP_KERNEL);
->>>       if (!chans)
->>>           return -ENOMEM;
->>>   @@ -1086,8 +1085,7 @@ static int stratix10_svc_drv_remove(struct 
->>> platform_device *pdev)
->>>           kthread_stop(ctrl->task);
->>>           ctrl->task = NULL;
->>>       }
->>> -    if (ctrl->genpool)
->>> -        gen_pool_destroy(ctrl->genpool);
->>> +    gen_pool_destroy(ctrl->genpool);
->>>       list_del(&ctrl->node);
->>>         return 0;
->>>
->>
->> Regards,
->> Richard
->>
-> 
+On Wed, Apr 29, 2020 at 3:06 PM Stephen Rothwell <sfr@canb.auug.org.au> wro=
+te:
+>
+> Hi all,
+>
+> In commit
+>
+>   dcce8ef8f70a ("HID: wacom: Report 2nd-gen Intuos Pro S center button st=
+atus over BT")
+>
+> Fixes tag
+>
+>   Fixes: cd47de45b855 ("HID: wacom: Add 2nd gen Intuos Pro Small support"=
+)
+>
+> has these problem(s):
+>
+>   - Target SHA1 does not exist
+>
+> Maybe you meant
+>
+> Fixes: 912c6aa67ad4 ("HID: wacom: Add 2nd gen Intuos Pro Small support")
+>
+> --
+> Cheers,
+> Stephen Rothwell
