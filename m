@@ -2,57 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A991C190C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9041C191E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729276AbgEAPKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 11:10:48 -0400
-Received: from sonic315-13.consmr.mail.bf2.yahoo.com ([74.6.134.123]:34533
-        "EHLO sonic315-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728856AbgEAPKr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 11:10:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1588345846; bh=lMwnL/6WltFrTd0TmVnY+7WY/Sq+3khHK9hYAyAunB4=; h=Date:From:Reply-To:Subject:References:From:Subject; b=kfOWk3DgScGQUzmPvlVHNs1bEmZ3sfXlHKng0dewImkQutsigeqf1s/SpJD+Ew2fbV1tnd+wrWUV59IKIlcQlu3+kvzVHfpZ041nhkgxRuYWsjzp8q33xkFr3ULhDu/W0H95pyCNSfXhx+LAqw/34dxeOS7p2+LeHWSApDVflK8f8udLmWST1Ug7nOhsaxZzjuDQWVhsB+49r43qISW8ckqEQYGNNRT41r6Dz+FLS4hjZ2MsUgLvCSvfw6YsxIoIRZZA/EG8lACcROESn7X5LLKxGkTrVTgPrR3z1PQBuFMRuAyixbQgQjsXfk2pr1o3x1M+AFIEKt5ggoNV7lAQEA==
-X-YMail-OSG: sgZnPHoVM1kcLQ_CD4ACrvyaDHOR723LXG6MRClNZkrc6PnL7FrObgae483n5fm
- GiKTmsKKhqOzGp2q527Is1C53OcpSBL69Q4lZR1VN_BTjHqWEo_kYWvNa6lj59.uCI0sZUgJytCz
- 7JJkjIFhvfAFbURy7oYr1cSNrT7YZiZH0TDFp9Lh7FZEp_KSdJskD0g0dEmkCgZtxj_2NmMTn.C8
- U8o_PAVdNMDxtBrBY72ZWUoEFs7QyuAuD16yhf0xoAdDHoO4Fb9yStKBuQKCP2OCRgzNcwHMLctS
- 5hUy0uF7tT6iGd6eJSoiEqanYGrVsyF6_frK4UlUsFrWNkElku_p72xQvzQ_MZ9jLTuT9EoVZLWz
- ugUfa7ObhqbXUdySDsdreQaZMR.WmY3_KMXUtcTmAPq.9hcIAn_dFxdbypFJJDglTKfNYvTjaigT
- 0gbXKswAQHpaxgx3xXrdAJnjVkTsBZwLUivYFnciVmN2qkmN3pIWWuiRKKfRb0gZS8QJNmUMrrKK
- 67X1guSbeSbeOBXh0evChFnGl1vdeY3oQGumm_bXwBdl3.ZQq.kIsq7dDSMxiFawxfNFffrCYSFf
- 4H3vfTBbAdJAW.NdIXZEJCz8pPS_DokIXBWGdldq6.i8sioWynPmVbJWUy6lrQ9_M8nwjW_UIBlv
- Ba.hQwUrZlQN2etw2TUsjRRjA.sfxcHVa4XqSdt0vRdc9wdSoYXxeb11lcXjls0I_AhDMpvROlNq
- .NfGLWGfHQ0maQ_UuXgYtItF5jy8EcgTl.PAlJX2jFQivm9KnVbrJdVjjRMqYPRdBbXkAtkiRAgX
- nKvrqscMYDAJfqHNf2_2dmHb2vcul2LJ1_1fBUkglEm_.I0mUaWLXczh.WpZK7gfYXSq6pjqyUok
- a1TZT7F2ysPsI1.FfKhPb.HI_72GAYgnma2YKvnYyY1ouUiAEoq3xMb.jywjhvPSkwVK43LiY1xu
- iCAqzMnMubZuM.a3zaCO3KJ_0PRwk4NcOHFK9FgqIeOpXQdP.6hEV2IZJPg1bldBmcGG2VaZYmGU
- 2rrfksTDNzJJFezmHkM74hODYmZjRyq9dN057qGPGhy5nhxdYwD6kGu9D.mM9Uvs8XOjmS20wSSb
- IMfeY9cLs8VA55fpre8aoOOd7GnSYFaTCgwuxrqIodvc9MHkTDEq2MWV5uo9I0xiObhMllFdKt9t
- NXiDWWY1NnsXURGMOurEOsVTZlk.XWcsduq0.sBXhGJYItL4LD7uRu6U1BXQvt8564A9unh13Rlp
- eViDELzrW9LauN9HywO8hSJO8jHD5FgDzmHGfOZf3yoJpDN1XQlj3yIMPj03VN3nOfPpuT3AMOA-
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.bf2.yahoo.com with HTTP; Fri, 1 May 2020 15:10:46 +0000
-Date:   Fri, 1 May 2020 15:10:44 +0000 (UTC)
-From:   Rose Gordon <rosegordonor@gmail.com>
-Reply-To: rosegordonor@gmail.com
-Message-ID: <541367390.265417.1588345844952@mail.yahoo.com>
-Subject:  Greetings to you
+        id S1729523AbgEAPLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 11:11:20 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:62052 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728856AbgEAPLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 11:11:20 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 49DG1238SPz7N;
+        Fri,  1 May 2020 17:11:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1588345878; bh=cdEPjXnsn5z8U7feR9uktwJxgwGG0ztxZgZbcfEtYks=;
+        h=Date:From:Subject:To:Cc:From;
+        b=jL4fRjRpYzfcA9Nv12xAeNOFmBtEmxww0u+tL3y2bOYqE2ds7pjoFYO/XGFHTahFc
+         opp/YGBwgz2PhAsEL1pxDapBHfJT4hSojWGf/OlkjFec3FX8h+FVlEAMa79XGExzQt
+         leRLTj14QRP2cmay8emfx13+2unibV6wSNlT+kZdgModSuonJBii3PQPUGiemT1zFD
+         aluCyky8t3e5KnAzuowtF7b8TlIKKsjgGiGF6D/ulby1Ja8okxTrlg6QwNcnPieB3d
+         QEnuxJ25yykh1vHnVSHA4bsNEXnTiENF1dG35s67jY/xCOk13UkwsE83nDVJAlyGb8
+         yGrFjMgDzrtHQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+Date:   Fri, 01 May 2020 17:11:18 +0200
+Message-Id: <cover.1588345420.git.mirq-linux@rere.qmqm.pl>
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH v4 0/4] power: supply: core: extend with new properties
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <541367390.265417.1588345844952.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15820 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings to you,
-I hope that this letter finds you in the best of health and spirit. My name is Rose Gordan, Please I kindly request for your attention, I have a very important business to discuss with you privately and in a much matured manner but i will give the details upon receipt of your response,
+This series extend power supply class core with additional properties
+for measurements of power supply input and output power.
 
-Thank you in advance!
+v4 is a rebase on top of recently applied first part of v3, including
+patch 1 workaround for gcc and clang bugs.
 
-Yours sincerely,
-Rose.
+Michał Mirosław (4):
+  power: supply: core: tabularize HWMON temperature labels
+  power: supply: core: add input voltage/current measurements
+  power: supply: core: add output voltage measurements
+  power: supply: core: document measurement points
+
+ Documentation/power/power_supply_class.rst |   6 +
+ drivers/power/supply/power_supply_hwmon.c  | 142 ++++++++++++++++++++-
+ drivers/power/supply/power_supply_sysfs.c  |   5 +
+ include/linux/power_supply.h               |   5 +
+ 4 files changed, 152 insertions(+), 6 deletions(-)
+
+-- 
+2.20.1
+
