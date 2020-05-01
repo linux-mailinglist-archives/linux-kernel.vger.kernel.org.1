@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CDB1C171A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924EA1C12D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730506AbgEAN5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:57:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55662 "EHLO mail.kernel.org"
+        id S1728920AbgEANY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:24:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730097AbgEANbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:31:12 -0400
+        id S1728907AbgEANYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:24:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 757B824953;
-        Fri,  1 May 2020 13:31:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9751E24953;
+        Fri,  1 May 2020 13:24:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339871;
-        bh=FtfC7Z9l+PF/gQBBs9jNp4cGmr4oyYE08j4RqK3c2XQ=;
+        s=default; t=1588339495;
+        bh=oQ7B0AkpzBHnU7WHZ3slnVmqyOaWkKR6y1mZf8UXi78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EW1jG9dwXUCeI4oxJudhwBlVsRW6UTGwo5v3uKWpAsmGFzZnaU8LRXPGrK/5mFRmj
-         0Wo0O0BRXH6Fm1sbGRtl3bdHlEUIYAdvPVQwzR+jx3+PJkjyo6enqR1QIDWHJv0hy5
-         eI1B3cWQo4U/l6nE0ytodKMeZys4x7IPHILZXpx0=
+        b=nVh85VqiKKfmoQLL4b/XXpbjsYzzxNmBC8hHicOzAh2n5EXm7aSox7yBcnDprTDi3
+         3ngSqHrlFNSKGMuvLuSoITucHKflqCI6l9CJ7ua1VF9+9P0K9KQTAYqVuYIsYeDUCJ
+         ezxAgEzu6KAebuQuvOrqfxWV974vFrs7v0BCoczA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
-        Wu Bo <wubo40@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 013/117] scsi: iscsi: Report unbind session event when the target has been removed
-Date:   Fri,  1 May 2020 15:20:49 +0200
-Message-Id: <20200501131546.658345368@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 02/70] ALSA: hda - Fix incorrect usage of IS_REACHABLE()
+Date:   Fri,  1 May 2020 15:20:50 +0200
+Message-Id: <20200501131513.978773721@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
+References: <20200501131513.302599262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,60 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wu Bo <wubo40@huawei.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 13e60d3ba287d96eeaf1deaadba51f71578119a3 ]
+commit 6a30abaa40b62aed46ef12ea4c16c48565bdb376 upstream.
 
-If the daemon is restarted or crashes while logging out of a session, the
-unbind session event sent by the kernel is not processed and is lost.  When
-the daemon starts again, the session can't be unbound because the daemon is
-waiting for the event message. However, the kernel has already logged out
-and the event will not be resent.
+The commit c469652bb5e8 ("ALSA: hda - Use IS_REACHABLE() for
+dependency on input") simplified the dependencies with IS_REACHABLE()
+macro, but it broke due to its incorrect usage: it should have been
+IS_REACHABLE(CONFIG_INPUT) instead of IS_REACHABLE(INPUT).
 
-When iscsid restart is complete, logout session reports error:
+Fixes: c469652bb5e8 ("ALSA: hda - Use IS_REACHABLE() for dependency on input")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Logging out of session [sid: 6, target: iqn.xxxxx, portal: xx.xx.xx.xx,3260]
-iscsiadm: Could not logout of [sid: 6, target: iscsiadm -m node iqn.xxxxx, portal: xx.xx.xx.xx,3260].
-iscsiadm: initiator reported error (9 - internal error)
-iscsiadm: Could not logout of all requested sessions
-
-Make sure the unbind event is emitted.
-
-[mkp: commit desc and applied by hand since patch was mangled]
-
-Link: https://lore.kernel.org/r/4eab1771-2cb3-8e79-b31c-923652340e99@huawei.com
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Wu Bo <wubo40@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_transport_iscsi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index aecb563a2b4e3..9589015234693 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -2010,7 +2010,7 @@ static void __iscsi_unbind_session(struct work_struct *work)
- 	if (session->target_id == ISCSI_MAX_TARGET) {
- 		spin_unlock_irqrestore(&session->lock, flags);
- 		mutex_unlock(&ihost->mutex);
--		return;
-+		goto unbind_session_exit;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3500,7 +3500,7 @@ static void alc280_fixup_hp_gpio4(struct
  	}
- 
- 	target_id = session->target_id;
-@@ -2022,6 +2022,8 @@ static void __iscsi_unbind_session(struct work_struct *work)
- 		ida_simple_remove(&iscsi_sess_ida, target_id);
- 
- 	scsi_remove_target(&session->dev);
-+
-+unbind_session_exit:
- 	iscsi_session_event(session, ISCSI_KEVENT_UNBIND_SESSION);
- 	ISCSI_DBG_TRANS_SESSION(session, "Completed target removal\n");
  }
--- 
-2.20.1
-
+ 
+-#if IS_REACHABLE(INPUT)
++#if IS_REACHABLE(CONFIG_INPUT)
+ static void gpio2_mic_hotkey_event(struct hda_codec *codec,
+ 				   struct hda_jack_callback *event)
+ {
 
 
