@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8561C1494
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7971C14EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730622AbgEANk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41072 "EHLO mail.kernel.org"
+        id S1731716AbgEANoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:44:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731055AbgEANkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:40:55 -0400
+        id S1731439AbgEANoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:44:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69C90205C9;
-        Fri,  1 May 2020 13:40:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DCC420836;
+        Fri,  1 May 2020 13:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340454;
-        bh=FNO5HnRA8S9+d8oyUQAZzI9nV37VP+FJrNUT5nn94nw=;
+        s=default; t=1588340649;
+        bh=f5gA1/aIFeOtSaG/MyaRYS8peF9JIhvDtG2xbcm4O/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JripMCSSRyb1MYo7pT1CLc2LsI4ZKUc4MLSEw+vmoLd09CMm9A6M+jFBDKDOw3SLx
-         YGCSW3UJQ5hJAZoyKBrWpmksKB4eBhYgnEEu3P/FFAjIZWjZW14yuwmeyQ9WXS6pSJ
-         N3KlDw4pmYnEN1l/6EE1jrwwk4uJ610xfkpBrI/U=
+        b=UemDTjWZVRneklzZpJ3Tts22BaUJEhU/xtR4vwXFIasaXJ/wg+d4+GdC7ec8g06LP
+         zwYptXUui5YJyVDoG41T322ENveBqd2xPYjEfSjHALY4Ly/nWIVfKEzKjPhncAHRlM
+         jygrXEghTGwFAikODdcyAP6EeQ4B5V4csD+UGcH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        John Garry <john.garry@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 74/83] blk-mq: Put driver tag in blk_mq_dispatch_rq_list() when no budget
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 080/106] objtool: Fix CONFIG_UBSAN_TRAP unreachable warnings
 Date:   Fri,  1 May 2020 15:23:53 +0200
-Message-Id: <20200501131541.865621289@linuxfoundation.org>
+Message-Id: <20200501131553.390611987@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,40 +48,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Garry <john.garry@huawei.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit 5fe56de799ad03e92d794c7936bf363922b571df ]
+[ Upstream commit bd841d6154f5f41f8a32d3c1b0bc229e326e640a ]
 
-If in blk_mq_dispatch_rq_list() we find no budget, then we break of the
-dispatch loop, but the request may keep the driver tag, evaulated
-in 'nxt' in the previous loop iteration.
+CONFIG_UBSAN_TRAP causes GCC to emit a UD2 whenever it encounters an
+unreachable code path.  This includes __builtin_unreachable().  Because
+the BUG() macro uses __builtin_unreachable() after it emits its own UD2,
+this results in a double UD2.  In this case objtool rightfully detects
+that the second UD2 is unreachable:
 
-Fix by putting the driver tag for that request.
+  init/main.o: warning: objtool: repair_env_string()+0x1c8: unreachable instruction
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+We weren't able to figure out a way to get rid of the double UD2s, so
+just silence the warning.
+
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/6653ad73c6b59c049211bd7c11ed3809c20ee9f5.1585761021.git.jpoimboe@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/objtool/check.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index a8c1a45cedde0..757c0fd9f0cc2 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1232,8 +1232,10 @@ bool blk_mq_dispatch_rq_list(struct request_queue *q, struct list_head *list,
- 		rq = list_first_entry(list, struct request, queuelist);
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 2b765bbbef922..95c485d3d4d83 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2307,14 +2307,27 @@ static bool ignore_unreachable_insn(struct instruction *insn)
+ 	    !strcmp(insn->sec->name, ".altinstr_aux"))
+ 		return true;
  
- 		hctx = rq->mq_hctx;
--		if (!got_budget && !blk_mq_get_dispatch_budget(hctx))
-+		if (!got_budget && !blk_mq_get_dispatch_budget(hctx)) {
-+			blk_mq_put_driver_tag(rq);
- 			break;
-+		}
++	if (!insn->func)
++		return false;
++
++	/*
++	 * CONFIG_UBSAN_TRAP inserts a UD2 when it sees
++	 * __builtin_unreachable().  The BUG() macro has an unreachable() after
++	 * the UD2, which causes GCC's undefined trap logic to emit another UD2
++	 * (or occasionally a JMP to UD2).
++	 */
++	if (list_prev_entry(insn, list)->dead_end &&
++	    (insn->type == INSN_BUG ||
++	     (insn->type == INSN_JUMP_UNCONDITIONAL &&
++	      insn->jump_dest && insn->jump_dest->type == INSN_BUG)))
++		return true;
++
+ 	/*
+ 	 * Check if this (or a subsequent) instruction is related to
+ 	 * CONFIG_UBSAN or CONFIG_KASAN.
+ 	 *
+ 	 * End the search at 5 instructions to avoid going into the weeds.
+ 	 */
+-	if (!insn->func)
+-		return false;
+ 	for (i = 0; i < 5; i++) {
  
- 		if (!blk_mq_get_driver_tag(rq)) {
- 			/*
+ 		if (is_kasan_insn(insn) || is_ubsan_insn(insn))
 -- 
 2.20.1
 
