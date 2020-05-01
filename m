@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EEC1C19DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246161C19BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 17:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730067AbgEAPil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 11:38:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52416 "EHLO mail.kernel.org"
+        id S1729916AbgEAPiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 11:38:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729695AbgEAPiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 11:38:04 -0400
+        id S1729403AbgEAPiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 11:38:03 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDC402495F;
+        by mail.kernel.org (Postfix) with ESMTPSA id EAC9E2495D;
         Fri,  1 May 2020 15:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1588347483;
-        bh=Wxx2oZbffutV8kZPE3MJgAW1A6mvkVwLXA6qbKHYI+k=;
+        bh=LESantMRD/g+tNw9iqgwwJwDazwNEShsTCm1Vmpbw1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rfM8V6Z4PW8OsyUOKTiP1boqw/qb2pGyw9a/n5oSNBoMicxJILMs0dg5b48RThhuE
-         f8qpHXy21M+N77Z18ZVQLlBtFXJpsOZtU6bs758LQyNpMhLpfsY6aeOAPZY0yncal1
-         nTObY1IwE1yllaBMKBfwUFE5AfEWGEMsmRiNM8KM=
+        b=pGtvnsTPMvymcRmYffBI4H9iKuw9Un9+D9EBzD0u7KVPEA81wNn6ltVs6CixDpPL4
+         0SpBT6HZ9DHjd/5k7YjiXcpbkhe3c8BESuyvCM/YVMWE5/5rM9fJ07ltRtOz8puiPT
+         ZgJvKhhK6LlleF/LtIF+05ORNuYO69M5O1jD9ZRg=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jUXjl-00FE4v-5Q; Fri, 01 May 2020 17:38:01 +0200
+        id 1jUXjl-00FE4z-6C; Fri, 01 May 2020 17:38:01 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 08/14] docs: move kobject and kref docs into the core-api book
-Date:   Fri,  1 May 2020 17:37:52 +0200
-Message-Id: <f385af13b4a6d3ff8c89beedd4506900e79ca72e.1588345503.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 09/14] docs: move digsig docs to the security book
+Date:   Fri,  1 May 2020 17:37:53 +0200
+Message-Id: <6af5365404c7bd9d008e7e3a77ba83587fd33012.1588345503.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <cover.1588345503.git.mchehab+huawei@kernel.org>
 References: <cover.1588345503.git.mchehab+huawei@kernel.org>
@@ -49,46 +43,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both documents are documenting Kernel core objects. So, add
-them into the core-api book.
-
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/core-api/index.rst              | 1 +
- Documentation/core-api/kobject.rst            | 2 +-
- Documentation/{kref.txt => core-api/kref.rst} | 0
- 3 files changed, 2 insertions(+), 1 deletion(-)
- rename Documentation/{kref.txt => core-api/kref.rst} (100%)
+ Documentation/{digsig.txt => security/digsig.rst} | 0
+ Documentation/security/index.rst                  | 1 +
+ 2 files changed, 1 insertion(+)
+ rename Documentation/{digsig.txt => security/digsig.rst} (100%)
 
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index 49a885e83a55..eeac63ba17c3 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -31,6 +31,7 @@ Library functionality that is used throughout the kernel.
-    :maxdepth: 1
- 
-    kobject
-+   kref
-    assoc_array
-    xarray
-    idr
-diff --git a/Documentation/core-api/kobject.rst b/Documentation/core-api/kobject.rst
-index 1f62d4d7d966..44c02be65475 100644
---- a/Documentation/core-api/kobject.rst
-+++ b/Documentation/core-api/kobject.rst
-@@ -210,7 +210,7 @@ statically and will warn the developer of this improper usage.
- If all that you want to use a kobject for is to provide a reference counter
- for your structure, please use the struct kref instead; a kobject would be
- overkill.  For more information on how to use struct kref, please see the
--file Documentation/kref.txt in the Linux kernel source tree.
-+file Documentation/core-api/kref.rst in the Linux kernel source tree.
- 
- 
- Creating "simple" kobjects
-diff --git a/Documentation/kref.txt b/Documentation/core-api/kref.rst
+diff --git a/Documentation/digsig.txt b/Documentation/security/digsig.rst
 similarity index 100%
-rename from Documentation/kref.txt
-rename to Documentation/core-api/kref.rst
+rename from Documentation/digsig.txt
+rename to Documentation/security/digsig.rst
+diff --git a/Documentation/security/index.rst b/Documentation/security/index.rst
+index fc503dd689a7..8129405eb2cc 100644
+--- a/Documentation/security/index.rst
++++ b/Documentation/security/index.rst
+@@ -15,3 +15,4 @@ Security Documentation
+    self-protection
+    siphash
+    tpm/index
++   digsig
 -- 
 2.25.4
 
