@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179881C12F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B711C174F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729130AbgEANZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:25:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47084 "EHLO mail.kernel.org"
+        id S1730174AbgEAOBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:01:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729120AbgEANZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:25:52 -0400
+        id S1729149AbgEAN0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:26:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1D24B2166E;
-        Fri,  1 May 2020 13:25:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8362208D6;
+        Fri,  1 May 2020 13:26:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339551;
-        bh=Z/zPxkWe2fRUFC3yfV2DUN3dnKzbzDiP4hZZYzjw2t0=;
+        s=default; t=1588339561;
+        bh=U+U2iYpx0DbAp2Qok+ROLY7JqeDXOVnqZQgUxYD8ArQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EDf/a/M3KOgwgC0Usxqj5jZHSlKZEf5FH8lA5gmAObEbzGh9LYiTndtAnB1Az0BlP
-         VmMq2Ml3ZV9l5aq2R68O+kDzdSXzWz/hOTklsZJVsRS+VlTjVktf9LlEnslJudLNqE
-         /nLNyaq5YW6eva4IMZTXvB8Vh17C0T48J6K55Vrg=
+        b=1IkHQ4plDP+GTX49uu/HvY0JgA0z4l9BZ5+rPYv1GgAKIhoMqEzBUyqzCkXK4iPtc
+         wqRjyxWqSNRVpZE8l8E9wW6IQxgUW8MQX3dM5WgmRTNinYmO7llh6wlsopegsmY4x+
+         Qno4j55guaHRT0iOYgRSj9KqR8V9qmu6HCwYNedY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
         Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.4 27/70] iio: xilinx-xadc: Fix clearing interrupt when enabling trigger
-Date:   Fri,  1 May 2020 15:21:15 +0200
-Message-Id: <20200501131522.993587194@linuxfoundation.org>
+Subject: [PATCH 4.4 28/70] iio: xilinx-xadc: Fix sequencer configuration for aux channels in simultaneous mode
+Date:   Fri,  1 May 2020 15:21:16 +0200
+Message-Id: <20200501131523.072180588@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
 References: <20200501131513.302599262@linuxfoundation.org>
@@ -46,19 +46,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lars-Peter Clausen <lars@metafoo.de>
 
-commit f954b098fbac4d183219ce5b42d76d6df2aed50a upstream.
+commit 8bef455c8b1694547ee59e8b1939205ed9d901a6 upstream.
 
-When enabling the trigger and unmasking the end-of-sequence (EOS) interrupt
-the EOS interrupt should be cleared from the status register. Otherwise it
-is possible that it was still set from a previous capture. If that is the
-case the interrupt would fire immediately even though no conversion has
-been done yet and stale data is being read from the device.
+The XADC has two internal ADCs. Depending on the mode it is operating in
+either one or both of them are used. The device manual calls this
+continuous (one ADC) and simultaneous (both ADCs) mode.
 
-The old code only clears the interrupt if the interrupt was previously
-unmasked. Which does not make much sense since the interrupt is always
-masked at this point and in addition masking the interrupt does not clear
-the interrupt from the status register. So the clearing needs to be done
-unconditionally.
+The meaning of the sequencing register for the aux channels changes
+depending on the mode.
+
+In continuous mode each bit corresponds to one of the 16 aux channels. And
+the single ADC will convert them one by one in order.
+
+In simultaneous mode the aux channels are split into two groups the first 8
+channels are assigned to the first ADC and the other 8 channels to the
+second ADC. The upper 8 bits of the sequencing register are unused and the
+lower 8 bits control both ADCs. This means a bit needs to be set if either
+the corresponding channel from the first group or the second group (or
+both) are set.
+
+Currently the driver does not have the special handling required for
+simultaneous mode. Add it.
 
 Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 Fixes: bdc8cda1d010 ("iio:adc: Add Xilinx XADC driver")
@@ -67,19 +75,27 @@ Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/xilinx-xadc-core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/adc/xilinx-xadc-core.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 --- a/drivers/iio/adc/xilinx-xadc-core.c
 +++ b/drivers/iio/adc/xilinx-xadc-core.c
-@@ -660,7 +660,7 @@ static int xadc_trigger_set_state(struct
+@@ -785,6 +785,16 @@ static int xadc_preenable(struct iio_dev
+ 	if (ret)
+ 		goto err;
  
- 	spin_lock_irqsave(&xadc->lock, flags);
- 	xadc_read_reg(xadc, XADC_AXI_REG_IPIER, &val);
--	xadc_write_reg(xadc, XADC_AXI_REG_IPISR, val & XADC_AXI_INT_EOS);
-+	xadc_write_reg(xadc, XADC_AXI_REG_IPISR, XADC_AXI_INT_EOS);
- 	if (state)
- 		val |= XADC_AXI_INT_EOS;
- 	else
++	/*
++	 * In simultaneous mode the upper and lower aux channels are samples at
++	 * the same time. In this mode the upper 8 bits in the sequencer
++	 * register are don't care and the lower 8 bits control two channels
++	 * each. As such we must set the bit if either the channel in the lower
++	 * group or the upper group is enabled.
++	 */
++	if (seq_mode == XADC_CONF1_SEQ_SIMULTANEOUS)
++		scan_mask = ((scan_mask >> 8) | scan_mask) & 0xff0000;
++
+ 	ret = xadc_write_adc_reg(xadc, XADC_REG_SEQ(1), scan_mask >> 16);
+ 	if (ret)
+ 		goto err;
 
 
