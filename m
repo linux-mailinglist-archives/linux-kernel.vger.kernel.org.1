@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CBC1C139F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 138FA1C12DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729573AbgEANbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:31:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55746 "EHLO mail.kernel.org"
+        id S1728930AbgEANZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:25:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729551AbgEANbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:31:14 -0400
+        id S1728919AbgEANY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:24:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB48C20757;
-        Fri,  1 May 2020 13:31:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 109AF216FD;
+        Fri,  1 May 2020 13:24:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339874;
-        bh=KvoUL5xcNE7fQQSeTKHhSEZ9Y7/6EBtFNGEhTkUrHfM=;
+        s=default; t=1588339497;
+        bh=MPS1oniKcLpHTYJf5xEFeeb2N3GF+OU8Rj9Q5VoItQs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RWQulS3Qiqlvn0S4+0IZ3/3k79NpNyEX6aoGRBomogd2FFD9Vs7AtZr2eNr2PcjZ/
-         OIg1U2yjFWw6P4VBacFwGigzHf0FKCjYwReHKNkoN9bULEIOfeADLLMSkvjay+9o5m
-         RY0vhuZZBs2RYfeO+U0nDhIZCQl7d4P08IaHIhK8=
+        b=VyXJPc81rVXSBvHjpCI0D+BNxjdavELG7YrC+G0Iedl51HRgqQZRdfT2bfTzfnJk9
+         AX60wBoip3m50JGmDPkyRHKdqI10bvXemvR/oX9Zx+9ZA0d7creT3PxBLoA57DCLGY
+         8TjAnsGE4azQ99q627o0iUCcFks9TUDjzasdCloQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 014/117] ASoC: Intel: atom: Take the drv->lock mutex before calling sst_send_slot_map()
-Date:   Fri,  1 May 2020 15:20:50 +0200
-Message-Id: <20200501131546.751570895@linuxfoundation.org>
+        stable@vger.kernel.org, Nicolai Stange <nstange@suse.de>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.4 03/70] net: ipv4: emulate READ_ONCE() on ->hdrincl bit-field in raw_sendmsg()
+Date:   Fri,  1 May 2020 15:20:51 +0200
+Message-Id: <20200501131514.209892874@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
+References: <20200501131513.302599262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,42 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Nicolai Stange <nstange@suse.de>
 
-[ Upstream commit 81630dc042af998b9f58cd8e2c29dab9777ea176 ]
+commit 20b50d79974ea3192e8c3ab7faf4e536e5f14d8f upstream.
 
-sst_send_slot_map() uses sst_fill_and_send_cmd_unlocked() because in some
-places it is called with the drv->lock mutex already held.
+Commit 8f659a03a0ba ("net: ipv4: fix for a race condition in
+raw_sendmsg") fixed the issue of possibly inconsistent ->hdrincl handling
+due to concurrent updates by reading this bit-field member into a local
+variable and using the thus stabilized value in subsequent tests.
 
-So it must always be called with the mutex locked. This commit adds missing
-locking in the sst_set_be_modules() code-path.
+However, aforementioned commit also adds the (correct) comment that
 
-Fixes: 24c8d14192cc ("ASoC: Intel: mrfld: add DSP core controls")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200402185359.3424-1-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  /* hdrincl should be READ_ONCE(inet->hdrincl)
+   * but READ_ONCE() doesn't work with bit fields
+   */
+
+because as it stands, the compiler is free to shortcut or even eliminate
+the local variable at its will.
+
+Note that I have not seen anything like this happening in reality and thus,
+the concern is a theoretical one.
+
+However, in order to be on the safe side, emulate a READ_ONCE() on the
+bit-field by doing it on the local 'hdrincl' variable itself:
+
+	int hdrincl = inet->hdrincl;
+	hdrincl = READ_ONCE(hdrincl);
+
+This breaks the chain in the sense that the compiler is not allowed
+to replace subsequent reads from hdrincl with reloads from inet->hdrincl.
+
+Fixes: 8f659a03a0ba ("net: ipv4: fix for a race condition in raw_sendmsg")
+Signed-off-by: Nicolai Stange <nstange@suse.de>
+Reviewed-by: Stefano Brivio <sbrivio@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/soc/intel/atom/sst-atom-controls.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/ipv4/raw.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index 6044b3bbb1211..999eb3ba78672 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -974,7 +974,9 @@ static int sst_set_be_modules(struct snd_soc_dapm_widget *w,
- 	dev_dbg(c->dev, "Enter: widget=%s\n", w->name);
+--- a/net/ipv4/raw.c
++++ b/net/ipv4/raw.c
+@@ -507,9 +507,11 @@ static int raw_sendmsg(struct sock *sk,
+ 		goto out;
  
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		mutex_lock(&drv->lock);
- 		ret = sst_send_slot_map(drv);
-+		mutex_unlock(&drv->lock);
- 		if (ret)
- 			return ret;
- 		ret = sst_send_pipe_module_params(w, k);
--- 
-2.20.1
-
+ 	/* hdrincl should be READ_ONCE(inet->hdrincl)
+-	 * but READ_ONCE() doesn't work with bit fields
++	 * but READ_ONCE() doesn't work with bit fields.
++	 * Doing this indirectly yields the same result.
+ 	 */
+ 	hdrincl = inet->hdrincl;
++	hdrincl = READ_ONCE(hdrincl);
+ 	/*
+ 	 *	Check the flags.
+ 	 */
 
 
