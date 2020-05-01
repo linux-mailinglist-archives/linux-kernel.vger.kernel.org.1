@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB851C216D
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 01:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461CE1C21AD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 01:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbgEAXug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 19:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
+        id S1727121AbgEAXyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 19:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726352AbgEAXuf (ORCPT
+        with ESMTP id S1726951AbgEAXyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 19:50:35 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7738C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 16:50:34 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id v26so9295452qto.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 16:50:34 -0700 (PDT)
+        Fri, 1 May 2020 19:54:12 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D64C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 16:54:12 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id a21so615172pls.4
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 16:54:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SVjVQDn0bfQKipgWAWViUU9wfzrIQi3Sg9RKS8Emo3Y=;
-        b=duGxTfRuSNX9fF3Iz58VWaJHAjOH0aZ5CbGe2i6jVrybPtIEtmVWZrUcMn1jVE1TsH
-         c7l5bWxXh+4LUk7KchdkcRT9AtJqdc6hJJomLtXXFnoZBR6uw7KcYAqPKb/JL1U0/+xf
-         Nx8eLBrS2pHDyM3UbaHzMdu9YdPfABjGXLSu0vuSAlbDCPD9yOopsgYJz38tLynB3giW
-         NLlsBo50OH7i2Wqhbf+M2zjVVwooGIToUmPnO4LvwR37W6FHYpiULXDRFQ+x42u4DkHb
-         1SMBcxLWG0ej39z9W9dNDwPa0coXZ/Kz2UWkZJdwSirg+LKgSEW5910EA+UDUAPCfkeR
-         WnRw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9p0uqSd3tkiiC3VkHU4yGoSUEHdyAJcrn6CCtmMfaBI=;
+        b=XOR4Tt12afi10eez0qYXbuaTt4fYjIk5MtVw9+kThNvwqhylSJ4ehnFJoyr4fZb39i
+         FzPCfWF3H3mkE3wj1l4r6Zbj6vBV0Tyux09TLOmAVG9sw9Bc/y189DXLXjUq6DYRZ8zh
+         S+3256E7FU9MYHBnj0tz8ms3Cd5PfJPIuwcHzztyG/10PQfqVs3720gr/xDXM4qdrWAY
+         9TRLWr1nEVcm1WnqZgFtTTvn9uCdxd63mPSHEjZsgIoURQEOAglQXs6DOM3LP3EUImZw
+         ovpJQn1Ce7aLqO7ncvJal1xBeQc1GkH0xg2nKQAVBrMYFL+5voYVPTusuU7dyBe/w1A5
+         Urdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SVjVQDn0bfQKipgWAWViUU9wfzrIQi3Sg9RKS8Emo3Y=;
-        b=g+SAekGL1mz/XSnOumB0SM983hi2KL2XwvomKaNO2bfqR0OsUrx+zcHop8HthFM0vT
-         sETIunFQFFB1GUN/yVKiYEQEfkbQ6Ea6cQD+ism9sBKnhX9aSMrSBAZOhFZiQ0k3rxnt
-         F/drDwEMTbKeWiqxTL7sJvEz7KFyo1H8b6RgAUknv6BaWKhrw5406lPchEf99TCAVMYw
-         wRCFusJ3eV1ZaNUvA0F5Pce66qtfb9T21g98M2Rmxs2/Ky7l7QO115qgseabWAqgcr4T
-         qBWp8GQ/1bcfnB4+ilXO6YJp8sNEf10B5Nptw8Ga7tCpxjeb5xWj982snDIrdGpePiDG
-         RJUg==
-X-Gm-Message-State: AGi0Pub+sTgonNYE8+lD88FZbQoE3n8lU7auQ4ZcJUzrZ/faZZPQjnmv
-        AXvczNcbUVoL21USfX/KASxV6Q==
-X-Google-Smtp-Source: APiQypLpDSv73N6lzAdYh64o7wePUptTyDJylee4LveyxcCPdcx2qXfBiakHgR0S2eQb2haAd+2U9w==
-X-Received: by 2002:aed:2468:: with SMTP id s37mr6495973qtc.305.1588377034097;
-        Fri, 01 May 2020 16:50:34 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id p24sm4155246qtp.59.2020.05.01.16.50.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 01 May 2020 16:50:33 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jUfQP-0005ur-3f; Fri, 01 May 2020 20:50:33 -0300
-Date:   Fri, 1 May 2020 20:50:33 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cohuck@redhat.com, peterx@redhat.com
-Subject: Re: [PATCH 1/3] vfio/type1: Support faulting PFNMAP vmas
-Message-ID: <20200501235033.GA19929@ziepe.ca>
-References: <158836742096.8433.685478071796941103.stgit@gimli.home>
- <158836914801.8433.9711545991918184183.stgit@gimli.home>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9p0uqSd3tkiiC3VkHU4yGoSUEHdyAJcrn6CCtmMfaBI=;
+        b=M4RzfmE80UZBZcaoNvG9wlU/9XW9dQbq0fxAyfMYLQwt7+uJJBTjRB/J2NwsOW7Lah
+         Qa7EnSDh0dilvhPGkhILAHVMqXawymbYxnamJ8NMLY9frdzB4Ti7RY3V8tpNL1wfFUPM
+         yUzu0mbX+Eu4TG+//TFDctNpx0zepOa0Nd2mx27N4P1XUE8jWFLYUjhMUYxnMiZbAPee
+         hSA6NGguaA5vQSAFCv4mNQep2ZOnD2hnxJ8A8NQcjo377JJN9CyWoiXhdOZU/BoVn0LT
+         CaJLS00N2Nq0JBgJPd+df35vnMdT22TJMjOLvGxMXutNW26spaHW1bUGsPCpD6kZMs02
+         4DMA==
+X-Gm-Message-State: AGi0PuaelZ3tKFi7SQsb1vzdfzx+FYDu6CVE9M8rJsUToUbiIsHtMCyz
+        jhqxzTOvqiJD7K60SlZnuV19s7IrCONCZw==
+X-Google-Smtp-Source: APiQypLVJOUETmGHOLwQntBbJj/tXXB80caG5i2Y/6TIb1wVeQy8sXj58WCZr9w3lAXgYzdJT4ee8g==
+X-Received: by 2002:a17:90a:8d02:: with SMTP id c2mr2434921pjo.113.1588377251513;
+        Fri, 01 May 2020 16:54:11 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.145])
+        by smtp.gmail.com with ESMTPSA id u188sm3116062pfu.33.2020.05.01.16.54.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 May 2020 16:54:10 -0700 (PDT)
+Subject: Re: [PATCH v4] eventfd: convert to f_op->read_iter()
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <6b29f015-bd7c-0601-cf94-2c077285b933@kernel.dk>
+ <20200501231231.GR23230@ZenIV.linux.org.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <03867cf3-d5e7-cc29-37d2-1a417a58af45@kernel.dk>
+Date:   Fri, 1 May 2020 17:54:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <158836914801.8433.9711545991918184183.stgit@gimli.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200501231231.GR23230@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 01, 2020 at 03:39:08PM -0600, Alex Williamson wrote:
-> With conversion to follow_pfn(), DMA mapping a PFNMAP range depends on
-> the range being faulted into the vma.  Add support to manually provide
-> that, in the same way as done on KVM with hva_to_pfn_remapped().
+On 5/1/20 5:12 PM, Al Viro wrote:
+> On Fri, May 01, 2020 at 01:11:09PM -0600, Jens Axboe wrote:
+>> +	flags &= EFD_SHARED_FCNTL_FLAGS;
+>> +	flags |= O_RDWR;
+>> +	fd = get_unused_fd_flags(flags);
+>>  	if (fd < 0)
+>> -		eventfd_free_ctx(ctx);
+>> +		goto err;
+>> +
+>> +	file = anon_inode_getfile("[eventfd]", &eventfd_fops, ctx, flags);
+>> +	if (IS_ERR(file)) {
+>> +		put_unused_fd(fd);
+>> +		fd = PTR_ERR(file);
+>> +		goto err;
+>> +	}
+>>  
+>> +	file->f_mode |= FMODE_NOWAIT;
+>> +	fd_install(fd, file);
+>> +	return fd;
+>> +err:
+>> +	eventfd_free_ctx(ctx);
+>>  	return fd;
+>>  }
 > 
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
->  drivers/vfio/vfio_iommu_type1.c |   36 +++++++++++++++++++++++++++++++++---
->  1 file changed, 33 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index cc1d64765ce7..4a4cb7cd86b2 100644
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -317,6 +317,32 @@ static int put_pfn(unsigned long pfn, int prot)
->  	return 0;
->  }
->  
-> +static int follow_fault_pfn(struct vm_area_struct *vma, struct mm_struct *mm,
-> +			    unsigned long vaddr, unsigned long *pfn,
-> +			    bool write_fault)
-> +{
-> +	int ret;
-> +
-> +	ret = follow_pfn(vma, vaddr, pfn);
-> +	if (ret) {
-> +		bool unlocked = false;
-> +
-> +		ret = fixup_user_fault(NULL, mm, vaddr,
-> +				       FAULT_FLAG_REMOTE |
-> +				       (write_fault ?  FAULT_FLAG_WRITE : 0),
-> +				       &unlocked);
-> +		if (unlocked)
-> +			return -EAGAIN;
-> +
-> +		if (ret)
-> +			return ret;
-> +
-> +		ret = follow_pfn(vma, vaddr, pfn);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
->  			 int prot, unsigned long *pfn)
->  {
-> @@ -339,12 +365,16 @@ static int vaddr_get_pfn(struct mm_struct *mm, unsigned long vaddr,
->  
->  	vaddr = untagged_addr(vaddr);
->  
-> +retry:
->  	vma = find_vma_intersection(mm, vaddr, vaddr + 1);
->  
->  	if (vma && vma->vm_flags & VM_PFNMAP) {
-> -		if (!follow_pfn(vma, vaddr, pfn) &&
-> -		    is_invalid_reserved_pfn(*pfn))
-> -			ret = 0;
-> +		ret = follow_fault_pfn(vma, mm, vaddr, pfn, prot & IOMMU_WRITE);
-> +		if (ret == -EAGAIN)
-> +			goto retry;
-> +
-> +		if (!ret && !is_invalid_reserved_pfn(*pfn))
-> +			ret = -EFAULT;
+> Looks sane...  I can take it via vfs.git, or leave it for you if you
+> have other stuff in the same area...
 
-I suggest checking vma->vm_ops == &vfio_pci_mmap_ops and adding a
-comment that this is racy and needs to be fixed up. The ops check
-makes this only used by other vfio bars and should prevent some
-abuses of this hacky thing
+Would be great if you can queue it up in vfs.git, thanks! Don't have
+anything else that'd conflict with this.
 
-However, I wonder if this chould just link itself into the
-vma->private data so that when the vfio that owns the bar goes away,
-so does the iommu mapping?
+-- 
+Jens Axboe
 
-I feel like this patch set is not complete unless it also handles the
-shootdown of this path too?
-
-Jason
