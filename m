@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1821C16AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93DF1C14CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731746AbgEANvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:51:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37830 "EHLO mail.kernel.org"
+        id S1731029AbgEANnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:43:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729909AbgEANiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:38:20 -0400
+        id S1730759AbgEANm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:42:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69AEB216FD;
-        Fri,  1 May 2020 13:38:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75B73216FD;
+        Fri,  1 May 2020 13:42:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340299;
+        s=default; t=1588340575;
         bh=jPVKI2qaxo/7QA2XlOawIZ/frg4b+VSJVx+26PioqTY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z9G6JF9haWDj8TYY4QK1rW9/iblInE5ljIqHpmNjQP2rzDs8b5yr10WdpoVwyk14d
-         v19NgTdyAs3oKXQrt9rc7kbK64jDrNndObt8c/phUiVsGCry9CGvp0Sbsl3JCo7YeN
-         P5MxcHT+qQEjWycRqycXLL8i8epuQKqz6jGMTnQs=
+        b=BkGsUL1pn/cBYXBaWU3Ukkw648v4/ns2lyzrYr2Wv4BOJMll04SSnDLtS/Svj9vj+
+         /iKXziaTFqEcelKce+YINlDIVPbeC3HshsFFaP3ZeXfdqlf3HZmwsZdh0ERLoYn192
+         g0K75XtBHV8PI7Hy6K6q+wgIRYzu9WapwHyfKWPU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Thor Thayer <thor.thayer@linux.intel.com>,
         Wolfram Sang <wsa@the-dreams.de>
-Subject: [PATCH 5.4 22/83] i2c: altera: use proper variable to hold errno
+Subject: [PATCH 5.6 028/106] i2c: altera: use proper variable to hold errno
 Date:   Fri,  1 May 2020 15:23:01 +0200
-Message-Id: <20200501131529.721767120@linuxfoundation.org>
+Message-Id: <20200501131547.384550439@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
