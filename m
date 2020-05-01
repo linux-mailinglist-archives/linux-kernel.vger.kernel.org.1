@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62571C1377
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11241C174B
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729828AbgEAN3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:29:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53390 "EHLO mail.kernel.org"
+        id S1729359AbgEAOA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:00:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729821AbgEAN3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:29:43 -0400
+        id S1729311AbgEAN0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:26:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BFE64208DB;
-        Fri,  1 May 2020 13:29:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8F7C208D6;
+        Fri,  1 May 2020 13:26:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339783;
-        bh=fAeSOCyDZWHZwB1xapsOFAfJK2fFtww/H82lacETJ7U=;
+        s=default; t=1588339603;
+        bh=Cb4pOtpFiJMGeNeMZz3zSExR2RBZRcF80/NhwP3pBJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K0fWZb29nILJjx9d5xiu8AMRU9KL+WBCxiNTqBXSXe+Zeo5+zhn3v0UYWpj7sWHLT
-         fhAK6xAjict5FAfIEi4sXyWabPbvvKcojm9nch1/CZndUIy99zoIhTlF2+rsEbcueH
-         AexUb+5Q6RdIS5LUZAcBPYmm6UvQKwkE2FwQ9En8=
+        b=dxGDkRiZjEZRB1RIDoIj7a8GubQy6Uu2om32/nhorTCEB6KyCK8c5zgf1BT9nc7GB
+         /siRfDMy6UbajJ6ePn+EOswz8xCFuVc7n7ZlTsu2C16ACBA6NL00lR6zSzN3c7S8Mn
+         bIvYMAJGtQ3hncuMd6FHukdBnVdXG2wAGEpnQ7QQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Kyungtae Kim <kt0755@gmail.com>
-Subject: [PATCH 4.9 36/80] USB: core: Fix free-while-in-use bug in the USB S-Glibrary
-Date:   Fri,  1 May 2020 15:21:30 +0200
-Message-Id: <20200501131525.462585701@linuxfoundation.org>
+        Cyril Roelandt <tipecaml@gmail.com>
+Subject: [PATCH 4.4 43/70] usb-storage: Add unusual_devs entry for JMicron JMS566
+Date:   Fri,  1 May 2020 15:21:31 +0200
+Message-Id: <20200501131526.783857983@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
-References: <20200501131513.810761598@linuxfoundation.org>
+In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
+References: <20200501131513.302599262@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,88 +45,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alan Stern <stern@rowland.harvard.edu>
 
-commit 056ad39ee9253873522f6469c3364964a322912b upstream.
+commit 94f9c8c3c404ee1f7aaff81ad4f24aec4e34a78b upstream.
 
-FuzzUSB (a variant of syzkaller) found a free-while-still-in-use bug
-in the USB scatter-gather library:
+Cyril Roelandt reports that his JMicron JMS566 USB-SATA bridge fails
+to handle WRITE commands with the FUA bit set, even though it claims
+to support FUA.  (Oddly enough, a later version of the same bridge,
+version 2.03 as opposed to 1.14, doesn't claim to support FUA.  Also
+oddly, the bridge _does_ support FUA when using the UAS transport
+instead of the Bulk-Only transport -- but this device was blacklisted
+for uas in commit bc3bdb12bbb3 ("usb-storage: Disable UAS on JMicron
+SATA enclosure") for apparently unrelated reasons.)
 
-BUG: KASAN: use-after-free in atomic_read
-include/asm-generic/atomic-instrumented.h:26 [inline]
-BUG: KASAN: use-after-free in usb_hcd_unlink_urb+0x5f/0x170
-drivers/usb/core/hcd.c:1607
-Read of size 4 at addr ffff888065379610 by task kworker/u4:1/27
+This patch adds a usb-storage unusual_devs entry with the BROKEN_FUA
+flag.  This allows the bridge to work properly with usb-storage.
 
-CPU: 1 PID: 27 Comm: kworker/u4:1 Not tainted 5.5.11 #2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.10.2-1ubuntu1 04/01/2014
-Workqueue: scsi_tmf_2 scmd_eh_abort_handler
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xce/0x128 lib/dump_stack.c:118
- print_address_description.constprop.4+0x21/0x3c0 mm/kasan/report.c:374
- __kasan_report+0x153/0x1cb mm/kasan/report.c:506
- kasan_report+0x12/0x20 mm/kasan/common.c:639
- check_memory_region_inline mm/kasan/generic.c:185 [inline]
- check_memory_region+0x152/0x1b0 mm/kasan/generic.c:192
- __kasan_check_read+0x11/0x20 mm/kasan/common.c:95
- atomic_read include/asm-generic/atomic-instrumented.h:26 [inline]
- usb_hcd_unlink_urb+0x5f/0x170 drivers/usb/core/hcd.c:1607
- usb_unlink_urb+0x72/0xb0 drivers/usb/core/urb.c:657
- usb_sg_cancel+0x14e/0x290 drivers/usb/core/message.c:602
- usb_stor_stop_transport+0x5e/0xa0 drivers/usb/storage/transport.c:937
-
-This bug occurs when cancellation of the S-G transfer races with
-transfer completion.  When that happens, usb_sg_cancel() may continue
-to access the transfer's URBs after usb_sg_wait() has freed them.
-
-The bug is caused by the fact that usb_sg_cancel() does not take any
-sort of reference to the transfer, and so there is nothing to prevent
-the URBs from being deallocated while the routine is trying to use
-them.  The fix is to take such a reference by incrementing the
-transfer's io->count field while the cancellation is in progres and
-decrementing it afterward.  The transfer's URBs are not deallocated
-until io->complete is triggered, which happens when io->count reaches
-zero.
-
+Reported-and-tested-by: Cyril Roelandt <tipecaml@gmail.com>
 Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Reported-and-tested-by: Kyungtae Kim <kt0755@gmail.com>
 CC: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/Pine.LNX.4.44L0.2003281615140.14837-100000@netrider.rowland.org
+Link: https://lore.kernel.org/r/Pine.LNX.4.44L0.2004221613110.11262-100000@iolanthe.rowland.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/core/message.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/usb/storage/unusual_devs.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -585,12 +585,13 @@ void usb_sg_cancel(struct usb_sg_request
- 	int i, retval;
+--- a/drivers/usb/storage/unusual_devs.h
++++ b/drivers/usb/storage/unusual_devs.h
+@@ -2208,6 +2208,13 @@ UNUSUAL_DEV(  0x3340, 0xffff, 0x0000, 0x
+ 		USB_SC_DEVICE,USB_PR_DEVICE,NULL,
+ 		US_FL_MAX_SECTORS_64 ),
  
- 	spin_lock_irqsave(&io->lock, flags);
--	if (io->status) {
-+	if (io->status || io->count == 0) {
- 		spin_unlock_irqrestore(&io->lock, flags);
- 		return;
- 	}
- 	/* shut everything down */
- 	io->status = -ECONNRESET;
-+	io->count++;		/* Keep the request alive until we're done */
- 	spin_unlock_irqrestore(&io->lock, flags);
- 
- 	for (i = io->entries - 1; i >= 0; --i) {
-@@ -604,6 +605,12 @@ void usb_sg_cancel(struct usb_sg_request
- 			dev_warn(&io->dev->dev, "%s, unlink --> %d\n",
- 				 __func__, retval);
- 	}
++/* Reported by Cyril Roelandt <tipecaml@gmail.com> */
++UNUSUAL_DEV(  0x357d, 0x7788, 0x0114, 0x0114,
++		"JMicron",
++		"USB to ATA/ATAPI Bridge",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_BROKEN_FUA ),
 +
-+	spin_lock_irqsave(&io->lock, flags);
-+	io->count--;
-+	if (!io->count)
-+		complete(&io->complete);
-+	spin_unlock_irqrestore(&io->lock, flags);
- }
- EXPORT_SYMBOL_GPL(usb_sg_cancel);
- 
+ /* Reported by Andrey Rahmatullin <wrar@altlinux.org> */
+ UNUSUAL_DEV(  0x4102, 0x1020, 0x0100,  0x0100,
+ 		"iRiver",
 
 
