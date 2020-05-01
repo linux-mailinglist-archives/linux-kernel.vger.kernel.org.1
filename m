@@ -2,74 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5CC1C1513
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF871C12D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731929AbgEANpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:45:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47222 "EHLO mail.kernel.org"
+        id S1728899AbgEANYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:24:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731904AbgEANpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:45:33 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728586AbgEANYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:24:50 -0400
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B58F5205C9;
-        Fri,  1 May 2020 13:45:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FBB924962
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 13:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340733;
-        bh=7LKbcNOeMfJvvihIn8Zf8wY1Mxerk0ixgZDeR0vUWv8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nA5BKrHwxfzdNI4JzcyVDr0WxmpH1hlAlF++Maw78msZG6EuOXCiSn0OorNRGeERG
-         +rlgwrAZIuE6jMTBJAVxx/D13uPmaJJjxaTxW6DPshRUK6aNotEfYBYzrM3UZoTF7b
-         U0/M9kBm/fVdYgIetohIO/fipVqN407eN7mt+fkU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olivier Moysan <olivier.moysan@st.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.6 106/106] ASoC: stm32: spdifrx: fix regmap status check
-Date:   Fri,  1 May 2020 15:24:19 +0200
-Message-Id: <20200501131556.095329590@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
-References: <20200501131543.421333643@linuxfoundation.org>
-User-Agent: quilt/0.66
+        s=default; t=1588339489;
+        bh=d8OPxjX6yuJbdOTlfUXM7Zvc614YcSXkktA7q5/FxRY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oRiwD0Q+jvvpP6sMUM7uXKK++I/eOZnt6Ikrp6rtJBAPD/6vZl/OFq4Uxzqg573dr
+         HXTT0bMxoz2GibxZPq00kqvlqfP1GYpMyc+LbA3Tf2Ofs9mJFJf4NsfNvEueN0i/ZY
+         ldEXuawf8h0p2ODo+BCBInJ2O4GxSh/bcIMpNLxQ=
+Received: by mail-ed1-f48.google.com with SMTP id d16so7243606edq.7
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 06:24:49 -0700 (PDT)
+X-Gm-Message-State: AGi0PuasxmQsQBR9LCu9jSA8Z5VWB85Yu4U60lUafAeVWEGt3KMD0npZ
+        fN+Y0kwW/oPsCyfLXXnTYIe/KIPcuglQCbYD+g==
+X-Google-Smtp-Source: APiQypKel2U1e5MRHXKLL7Rnuz1U41FBCv2Ii6mcl2FuZrvIApbgp6jSgjZ93cS0z2rzE3pcCu/kvy2F5YvYBuZXTp0=
+X-Received: by 2002:aa7:dd95:: with SMTP id g21mr3461314edv.148.1588339487975;
+ Fri, 01 May 2020 06:24:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200417150614.2631786-1-enric.balletbo@collabora.com> <20200417150614.2631786-6-enric.balletbo@collabora.com>
+In-Reply-To: <20200417150614.2631786-6-enric.balletbo@collabora.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 1 May 2020 21:24:34 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9Gc9uCtfcp+qo=KnVOYfyjw4rDpe15A1q6G2A-iXpSow@mail.gmail.com>
+Message-ID: <CAAOTY_9Gc9uCtfcp+qo=KnVOYfyjw4rDpe15A1q6G2A-iXpSow@mail.gmail.com>
+Subject: Re: [PATCH v3 5/7] drm/mediatek: mtk_dsi: Use simple encoder
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olivier Moysan <olivier.moysan@st.com>
+Hi, Enric:
 
-commit a168dae5ea14283e8992d5282237bb0d6a3e1c06 upstream.
+Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2020=E5=B9=
+=B44=E6=9C=8817=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=8811:06=E5=AF=
+=AB=E9=81=93=EF=BC=9A
+>
+> The mtk_dsi driver uses an empty implementation for its encoder. Replace
+> the code with the generic simple encoder.
 
-Release resources when exiting on error.
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-Fixes: 1a5c0b28fc56 ("ASoC: stm32: spdifrx: manage identification registers")
-
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
-Link: https://lore.kernel.org/r/20200318144125.9163-2-olivier.moysan@st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- sound/soc/stm/stm32_spdifrx.c |    2 ++
- 1 file changed, 2 insertions(+)
-
---- a/sound/soc/stm/stm32_spdifrx.c
-+++ b/sound/soc/stm/stm32_spdifrx.c
-@@ -1009,6 +1009,8 @@ static int stm32_spdifrx_probe(struct pl
- 
- 	if (idr == SPDIFRX_IPIDR_NUMBER) {
- 		ret = regmap_read(spdifrx->regmap, STM32_SPDIFRX_VERR, &ver);
-+		if (ret)
-+			goto error;
- 
- 		dev_dbg(&pdev->dev, "SPDIFRX version: %lu.%lu registered\n",
- 			FIELD_GET(SPDIFRX_VERR_MAJ_MASK, ver),
-
-
+>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> ---
+>
+> Changes in v3: None
+> Changes in v2: None
+>
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 14 +++-----------
+>  1 file changed, 3 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
+k/mtk_dsi.c
+> index 869ae0a2e9f8..d68694ff00dc 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -22,6 +22,7 @@
+>  #include <drm/drm_panel.h>
+>  #include <drm/drm_print.h>
+>  #include <drm/drm_probe_helper.h>
+> +#include <drm/drm_simple_kms_helper.h>
+>
+>  #include "mtk_drm_ddp_comp.h"
+>
+> @@ -788,15 +789,6 @@ static void mtk_output_dsi_disable(struct mtk_dsi *d=
+si)
+>         dsi->enabled =3D false;
+>  }
+>
+> -static void mtk_dsi_encoder_destroy(struct drm_encoder *encoder)
+> -{
+> -       drm_encoder_cleanup(encoder);
+> -}
+> -
+> -static const struct drm_encoder_funcs mtk_dsi_encoder_funcs =3D {
+> -       .destroy =3D mtk_dsi_encoder_destroy,
+> -};
+> -
+>  static int mtk_dsi_create_conn_enc(struct drm_device *drm, struct mtk_ds=
+i *dsi);
+>  static void mtk_dsi_destroy_conn_enc(struct mtk_dsi *dsi);
+>
+> @@ -1140,8 +1132,8 @@ static int mtk_dsi_encoder_init(struct drm_device *=
+drm, struct mtk_dsi *dsi)
+>  {
+>         int ret;
+>
+> -       ret =3D drm_encoder_init(drm, &dsi->encoder, &mtk_dsi_encoder_fun=
+cs,
+> -                              DRM_MODE_ENCODER_DSI, NULL);
+> +       ret =3D drm_simple_encoder_init(drm, &dsi->encoder,
+> +                                     DRM_MODE_ENCODER_DSI);
+>         if (ret) {
+>                 DRM_ERROR("Failed to encoder init to drm\n");
+>                 return ret;
+> --
+> 2.25.1
+>
