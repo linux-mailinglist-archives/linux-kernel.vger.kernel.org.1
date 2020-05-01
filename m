@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B5F1C14A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FDD1C1432
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729846AbgEANll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:41:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41958 "EHLO mail.kernel.org"
+        id S1730377AbgEANgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:36:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729426AbgEANlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:41:37 -0400
+        id S1730877AbgEANgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:36:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7494A20757;
-        Fri,  1 May 2020 13:41:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7734E208DB;
+        Fri,  1 May 2020 13:36:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340496;
-        bh=GMXiiPQKHX1FTn0hWKLhX1Whtb//R682Rms0uUbCt50=;
+        s=default; t=1588340197;
+        bh=DEKOV80S+EgZGm5x0oH/1MuU21eybiRSXazP2DjWCGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cpomy3zLwclqGx6TLqkzowSp41YzkplC4+ARhqGmNyc9JVWKUUkNbnx9/BlZxRiFv
-         jctezUT3GImsTM9WV7FIYkzUiMnvhx1gfg+52S8/iR7IIgbqAFSczBi/YqmVDIIVVJ
-         i2815iZfnqSZVcEJmXWfy4RJETouuonm2hNNk3Vo=
+        b=vw+kNrV62uLWJ/fZfXCe4CCxeqd6aAUxm0oRtIJCUupGyMlm7vbfA1XHXAI1N+X9S
+         YcRm7XIHEEzE6sGY5Pqr2TwYweFpZYWypZ8TgeVSEzZrm8BI9gYV5AvBPkWriuCB1N
+         b/NQcpqwlrUAsSzXyI7VsiiEGIuvekoUbXLfbaaU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 5.6 006/106] kbuild: fix DT binding schema rule again to avoid needless rebuilds
-Date:   Fri,  1 May 2020 15:22:39 +0200
-Message-Id: <20200501131544.262669852@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Furtado <paulfurtado91@gmail.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Chandan Rajendra <chandanrlinux@gmail.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Allison Collins <allison.henderson@oracle.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Subject: [PATCH 4.19 15/46] xfs: acquire superblock freeze protection on eofblocks scans
+Date:   Fri,  1 May 2020 15:22:40 +0200
+Message-Id: <20200501131503.899313616@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
-References: <20200501131543.421333643@linuxfoundation.org>
+In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
+References: <20200501131457.023036302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +47,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Brian Foster <bfoster@redhat.com>
 
-commit 3d4b2238684ac919394eba7fb51bb7eeeec6ab57 upstream.
+commit 4b674b9ac852937af1f8c62f730c325fb6eadcdb upstream.
 
-Since commit 7a0496056064 ("kbuild: fix DT binding schema rule to detect
-command line changes"), this rule is every time re-run even if you change
-nothing.
+The filesystem freeze sequence in XFS waits on any background
+eofblocks or cowblocks scans to complete before the filesystem is
+quiesced. At this point, the freezer has already stopped the
+transaction subsystem, however, which means a truncate or cowblock
+cancellation in progress is likely blocked in transaction
+allocation. This results in a deadlock between freeze and the
+associated scanner.
 
-cmd_dtc takes one additional parameter to pass to the -O option of dtc.
+Fix this problem by holding superblock write protection across calls
+into the block reapers. Since protection for background scans is
+acquired from the workqueue task context, trylock to avoid a similar
+deadlock between freeze and blocking on the write lock.
 
-We need to pass 'yaml' to if_changed_rule. Otherwise, cmd-check invoked
-from if_changed_rule is false positive.
-
-Fixes: 7a0496056064 ("kbuild: fix DT binding schema rule to detect command line changes")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Fixes: d6b636ebb1c9f ("xfs: halt auto-reclamation activities while rebuilding rmap")
+Reported-by: Paul Furtado <paulfurtado91@gmail.com>
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+Reviewed-by: Chandan Rajendra <chandanrlinux@gmail.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Allison Collins <allison.henderson@oracle.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- scripts/Makefile.lib |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/xfs/xfs_icache.c |   10 ++++++++++
+ fs/xfs/xfs_ioctl.c  |    5 ++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -308,7 +308,7 @@ define rule_dtc
- endef
+--- a/fs/xfs/xfs_icache.c
++++ b/fs/xfs/xfs_icache.c
+@@ -902,7 +902,12 @@ xfs_eofblocks_worker(
+ {
+ 	struct xfs_mount *mp = container_of(to_delayed_work(work),
+ 				struct xfs_mount, m_eofblocks_work);
++
++	if (!sb_start_write_trylock(mp->m_super))
++		return;
+ 	xfs_icache_free_eofblocks(mp, NULL);
++	sb_end_write(mp->m_super);
++
+ 	xfs_queue_eofblocks(mp);
+ }
  
- $(obj)/%.dt.yaml: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
--	$(call if_changed_rule,dtc)
-+	$(call if_changed_rule,dtc,yaml)
+@@ -929,7 +934,12 @@ xfs_cowblocks_worker(
+ {
+ 	struct xfs_mount *mp = container_of(to_delayed_work(work),
+ 				struct xfs_mount, m_cowblocks_work);
++
++	if (!sb_start_write_trylock(mp->m_super))
++		return;
+ 	xfs_icache_free_cowblocks(mp, NULL);
++	sb_end_write(mp->m_super);
++
+ 	xfs_queue_cowblocks(mp);
+ }
  
- dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
+--- a/fs/xfs/xfs_ioctl.c
++++ b/fs/xfs/xfs_ioctl.c
+@@ -2182,7 +2182,10 @@ xfs_file_ioctl(
+ 		if (error)
+ 			return error;
  
+-		return xfs_icache_free_eofblocks(mp, &keofb);
++		sb_start_write(mp->m_super);
++		error = xfs_icache_free_eofblocks(mp, &keofb);
++		sb_end_write(mp->m_super);
++		return error;
+ 	}
+ 
+ 	default:
 
 
