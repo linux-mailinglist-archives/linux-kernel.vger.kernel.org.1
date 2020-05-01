@@ -2,95 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890061C20C4
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 00:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EEB1C20AD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 00:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727889AbgEAWdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 18:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726495AbgEAWdN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 18:33:13 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52231C061A0E;
-        Fri,  1 May 2020 15:33:13 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x18so13419974wrq.2;
-        Fri, 01 May 2020 15:33:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=l1iUiHlCX8vszl1pLIMm9oBcP0m3wLHIgAhR3pi1/gc=;
-        b=FH3toebpbf24518LoXwizU5siw7UX9ZFwKGT403KZIQm2SvyJ7yhnbuCTH+b9Cdiby
-         BVrCXsCnUg8FaC7EbSKQ5BHRfSdOv8ir1KMGfWAf8obOX0+YuusFIzRpV/+szPHmoh4g
-         5Aa0pYbgJ/nWOrgJ51XRQ4afVtNUEfHi/XIAsnwigwa98Ih5RXfGJNUXv/gUT+Xc0Qot
-         wWdyNNA7bioMvVMBJsrt1Q0aJxJWNiggmb6c4AysLnLEBSuaqi2egQegOqwP5VeR1W9X
-         QyOtagSG06RUGlqDqsyOw39Cmd0wvfFNULupiApQOzG4mzvxZ+4bFGW7f+isnJ5cAdzb
-         cflQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=l1iUiHlCX8vszl1pLIMm9oBcP0m3wLHIgAhR3pi1/gc=;
-        b=L+7wqiobhFJWWoHfT3gP8Ijh3KTP79seXP3hO030taA4yJJ0KUJuG9d2Ntazvmj1wa
-         akLghKGXJa0gAKojtoPgL4+3DEtuHfABV5RT4GwcHc0DabvAxgip59qmARZhWP+r6w9d
-         IfGzzoWBrton5lmFv/THv4BXuVevp4g3LiZ7p3LHH2eqgncUiXOVS1sIg/WuNBY0ZnoS
-         LEW2b2gSxG48sXrlXMWtezbjRJh4ILbkLLU5RUw5F+P3qJzD0VJ7kTOYsuH77bHeOIxK
-         Xm3waGUxZXopd8s11zyWZmwQoPi3hqSAUrq4KNiQxgozzSr2QZ67eElxqyFPHBclCnfJ
-         Ne6w==
-X-Gm-Message-State: AGi0PuZrlp0Pkbeeg4C8rnIbJlAg9jqDnozZeev0DiN5ErxXVQh/+KC8
-        7BskMmRlWAXIRGRGBQGG5uE=
-X-Google-Smtp-Source: APiQypISQnXBlkEKKggPdILRkZOQxcjW44onLqbEjhVTrQWmpR/UBmzyUGw5aatNiTX+ohW4DBSw9w==
-X-Received: by 2002:a5d:4905:: with SMTP id x5mr6995455wrq.158.1588372392144;
-        Fri, 01 May 2020 15:33:12 -0700 (PDT)
-Received: from localhost.localdomain (abag125.neoplus.adsl.tpnet.pl. [83.6.170.125])
-        by smtp.googlemail.com with ESMTPSA id n9sm6237750wrx.61.2020.05.01.15.33.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 15:33:11 -0700 (PDT)
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Cc:     Konrad Dybcio <konradybcio@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Knecht <vincent.knecht@mailoo.org>
-Subject: [PATCH 4/4] dt-bindings: soc: qcom: Document MSM8936 SMD RPM compatible
-Date:   Sat,  2 May 2020 00:32:32 +0200
-Message-Id: <20200501223232.275800-5-konradybcio@gmail.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200501223232.275800-1-konradybcio@gmail.com>
-References: <20200501223232.275800-1-konradybcio@gmail.com>
+        id S1727065AbgEAWci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 18:32:38 -0400
+Received: from mga06.intel.com ([134.134.136.31]:10101 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726973AbgEAWci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 18:32:38 -0400
+IronPort-SDR: 6XhZMxwOSrHnnVV+pXaZzoh111Ac1a3Fbrxa02BKsw9ff8RikcZJyGGMryLo0Yg+Zby1PzciCn
+ 37BotaS1XHew==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 15:32:36 -0700
+IronPort-SDR: h0HDG6WOzMAx9Acn3e9Yz1/5hX+L6Tr04sNiBrKkZCQp2bg2OM3da5SAXcNd1kQG999b8gqGSy
+ xxtLW+ogCo9w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.73,341,1583222400"; 
+   d="scan'208";a="248657143"
+Received: from meghadey-mobl1.amr.corp.intel.com (HELO [10.251.135.85]) ([10.251.135.85])
+  by fmsmga007.fm.intel.com with ESMTP; 01 May 2020 15:32:35 -0700
+Subject: Re: [PATCH RFC 00/15] Add VFIO mediated device support and IMS
+ support for the idxd driver.
+To:     Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Dave Jiang <dave.jiang@intel.com>, vkoul@kernel.org,
+        maz@kernel.org, bhelgaas@google.com, rafael@kernel.org,
+        gregkh@linuxfoundation.org, tglx@linutronix.de, hpa@zytor.com,
+        alex.williamson@redhat.com, jacob.jun.pan@intel.com,
+        ashok.raj@intel.com, yi.l.liu@intel.com, baolu.lu@intel.com,
+        kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, jing.lin@intel.com, dan.j.williams@intel.com,
+        kwankhede@nvidia.com, eric.auger@redhat.com, parav@mellanox.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-pci@vger.kernel.org, kvm@vger.kernel.org
+References: <158751095889.36773.6009825070990637468.stgit@djiang5-desk3.ch.intel.com>
+ <20200421235442.GO11945@mellanox.com>
+ <d6b3c133-ac19-21af-b7a7-b9e7166b8166@linux.intel.com>
+ <20200423194447.GF13640@mellanox.com>
+From:   "Dey, Megha" <megha.dey@linux.intel.com>
+Message-ID: <30dadd7a-bac2-d658-c2e4-77592de6118d@linux.intel.com>
+Date:   Fri, 1 May 2020 15:32:35 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20200423194447.GF13640@mellanox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Knecht <vincent.knecht@mailoo.org>
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
----
- Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.txt | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.txt
-index 616fddcd09fd8..55f8abd845a7e 100644
---- a/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.txt
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.txt
-@@ -21,6 +21,7 @@ resources.
- 	Definition: must be one of:
- 		    "qcom,rpm-apq8084"
- 		    "qcom,rpm-msm8916"
-+		    "qcom,rpm-msm8936"
- 		    "qcom,rpm-msm8974"
- 		    "qcom,rpm-msm8976"
- 		    "qcom,rpm-msm8998"
--- 
-2.26.1
+On 4/23/2020 12:44 PM, Jason Gunthorpe wrote:
+>>>> The mdev utilizes Interrupt Message Store or IMS[3] instead of MSIX for
+>>>> interrupts for the guest. This preserves MSIX for host usages and also allows a
+>>>> significantly larger number of interrupt vectors for guest usage.
+>>>
+>>> I never did get a reply to my earlier remarks on the IMS patches.
+>>>
+>>> The concept of a device specific addr/data table format for MSI is not
+>>> Intel specific. This should be general code. We have a device that can
+>>> use this kind of kernel capability today.
+>>
+>> I am sorry if I did not address your comments earlier.
+> 
+> It appears noboy from Intel bothered to answer anyone else on that RFC
+> thread:
+> 
+> https://lore.kernel.org/lkml/1568338328-22458-1-git-send-email-megha.dey@linux.intel.com/
+> 
+> However, it seems kind of moot as I see now that this verion of IMS
+> bears almost no resemblance to the original RFC.
 
+hmm yeah, we changed most of the code after getting a lot of feedback 
+from you and folks at plumbers. But yes, I should have replied to all 
+the feedback, lesson learnt :)
+
+> 
+> That said, the similiarity to platform-msi was striking, does this new
+> version harmonize with that?
+
+yes!
+> 
+>> The present IMS code is quite generic, most of the code is in the drivers/
+>> folder. We basically introduce 2 APIS: allocate and free IMS interrupts and
+>> a IMS IRQ domain to allocate these interrupts from. These APIs are
+>> architecture agnostic.
+>>
+>> We also introduce a new IMS IRQ domain which is architecture specific. This
+>> is because IMS generates interrupts only in the remappable format, hence
+>> interrupt remapping should be enabled for IMS. Currently, the interrupt
+>> remapping code is only available for Intel and AMD and I don’t see anything
+>> for ARM.
+> 
+> I don't understand these remarks though - IMS is simply the mapping of
+> a MemWr addr/data pair to a Linux IRQ number? Why does this intersect
+> with remapping?
+> 
+
+ From your comments so far, I think your requirement is a subset of what 
+IMS is trying to do.
+
+What you want:
+have a dynamic means of allocating platform-msi interrupts
+
+On top of this IMS has a requirement that all of the interrupts should 
+be remapped.
+
+So we can have tiered code: generic dynamic platform-msi infrastructure
+and add the IMS specific bits (Intel specific) on top of this.
+
+The generic code will have no reference to IMS.
+
+> AFAIK, any platform that supports MSI today should have the inherent
+> HW capability to support IMS.
+> 
+>> Also, could you give more details on the device that could use IMS? Do you
+>> have some driver code already? We could then see if and how the current IMS
+>> code could be made more generic.
+> 
+> We have several devices of interest, our NICs have very flexible PCI,
+> so it is no problem to take the MemWR addr/data from someplace other
+> than the MSI tables.
+> 
+> For this we want to have some way to allocate Linux IRQs dynamically
+> and get a addr/data pair to trigger them.
+> 
+> Our NIC devices are also linked to our ARM SOC family, so I'd expect
+> our ARM's to also be able to provide these APIs as the platform.
+
+cool, so I will hope that you can test out the generic APIs from the ARM 
+side!
+> 
+> Jason
+> 
