@@ -2,128 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635B61C11AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 13:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7F51C11BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 13:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgEALum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 07:50:42 -0400
-Received: from mga17.intel.com ([192.55.52.151]:9550 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728480AbgEALum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 07:50:42 -0400
-IronPort-SDR: S/o9RZ/p10+pZqi0HsN1eP9VzAzdwnT1emvlc4GaiZ+QIlgmRpzULP+jt2JfTQeLYMmphgLeFI
- YqEAoYUcvYlA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 04:50:41 -0700
-IronPort-SDR: hqMFSgZLASAlQcWYW03TkQ8qd5QH8tn9pkeAZ/ID7QSH+bipk8LG6FD5/VeMX0DgUY+ve0j0sI
- PSX0HFj6mddA==
-X-IronPort-AV: E=Sophos;i="5.73,339,1583222400"; 
-   d="scan'208";a="433292060"
-Received: from dalessan-mobl1.ir.intel.com ([10.252.13.41])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2020 04:50:39 -0700
-Message-ID: <f60aece195cd0700728fc38b0398949a82b72fc3.camel@linux.intel.com>
-Subject: Re: [PATCH 1/1] soc: keembay: Add Keem Bay IMR driver
-From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Paul J Murphy <paul.j.murphy@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 01 May 2020 12:50:36 +0100
-In-Reply-To: <20200501081002.GA1055721@kroah.com>
-References: <cover.1587485099.git.daniele.alessandrelli@intel.com>
-         <13ca92165fab2827b6d439661e75f5b91ef083c2.1587485099.git.daniele.alessandrelli@intel.com>
-         <20200501081002.GA1055721@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.5 (3.32.5-1.fc30) 
+        id S1728741AbgEAL5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 07:57:34 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59674 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728570AbgEAL5e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 07:57:34 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id DD19F2A2F63
+Subject: Re: stable-rc/linux-5.4.y bisection: baseline.dmesg.alert on
+ meson-g12a-x96-max
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>
+References: <5eabecbf.1c69fb81.2c617.628f@mx.google.com>
+Cc:     kernelci@groups.io, Kevin Hilman <khilman@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, stable@vger.kernel.org
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <cc10812b-19bd-6bd1-75da-32082241640a@collabora.com>
+Date:   Fri, 1 May 2020 12:57:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <5eabecbf.1c69fb81.2c617.628f@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your feedback.
+Please see the bisection report below about a kernel Oops.
 
+Reports aren't automatically sent to the public while we're
+trialing new bisection features on kernelci.org but this one
+looks valid.
+
+The log shows a kernel NULL pointer dereference:
+
+  https://storage.kernelci.org/stable-rc/linux-5.4.y/v5.4.36-52-g35bbc55d9e29/arm64/defconfig/gcc-8/lab-baylibre/baseline-meson-g12a-x96-max.html#L1113
+
+The call stack is not the same as in the commit message found by
+the bisection, so maybe it only fixed part of the problem:
+
+<1>[   16.007376] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000010
+<1>[   16.016300] Mem abort info:
+<1>[   16.019269]   ESR = 0x96000006
+<1>[   16.022571]   EC = 0x25: DABT (current EL), IL = 32 bits
+<1>[   16.028075]   SET = 0, FnV = 0
+<1>[   16.031356]   EA = 0, S1PTW = 0
+<1>[   16.034705] Data abort info:
+<1>[   16.037837]   ISV = 0, ISS = 0x00000006
+<1>[   16.041876]   CM = 0, WnR = 0
+<1>[   16.045128] user pgtable: 4k pages, 48-bit VAs, pgdp=00000000be0f0000
+<1>[   16.051702] [0000000000000010] pgd=00000000be117003, pud=00000000be118003, pmd=0000000000000000
+<0>[   16.051709] Internal error: Oops: 96000006 [#1] PREEMPT SMP
+<4>[   16.133466] CPU: 2 PID: 33 Comm: kworker/2:1 Tainted: G        W         5.4.37-rc1 #1
+<4>[   16.141566] Hardware name: Shenzhen Amediatech Technology Co., Ltd X96 Max (DT)
+<4>[   16.149087] Workqueue: events deferred_probe_work_func
+<4>[   16.154419] pstate: 20000005 (nzCv daif -PAN -UAO)
+<4>[   16.159428] pc : snd_soc_dapm_new_dai+0x3c/0x1b0
+<4>[   16.164252] lr : snd_soc_dapm_connect_dai_link_widgets+0x114/0x268
+<4>[   16.256970] Call trace:
+<4>[   16.259647]  snd_soc_dapm_new_dai+0x3c/0x1b0
+<4>[   16.264129]  snd_soc_dapm_connect_dai_link_widgets+0x114/0x268
+<4>[   16.270167]  snd_soc_instantiate_card+0x858/0xb88
+<4>[   16.275083]  snd_soc_register_card+0xf8/0x120
+<4>[   16.279656]  devm_snd_soc_register_card+0x40/0x90
+<4>[   16.284575]  axg_card_probe+0x9dc/0xaf0 [snd_soc_meson_axg_sound_card]
+<4>[   16.291299]  platform_drv_probe+0x50/0xa0
+<4>[   16.295524]  really_probe+0xd4/0x328
+<4>[   16.299319]  driver_probe_device+0x54/0xe8
+...
+
+
+Guillaume
+
+
+On 01/05/2020 10:32, kernelci.org bot wrote:
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> * This automated bisection report was sent to you on the basis  *
+> * that you may be involved with the breaking commit it has      *
+> * found.  No manual investigation has been done to verify it,   *
+> * and the root cause of the problem may be somewhere else.      *
+> *                                                               *
+> * If you do send a fix, please include this trailer:            *
+> *   Reported-by: "kernelci.org bot" <bot@kernelci.org>          *
+> *                                                               *
+> * Hope this helps!                                              *
+> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 > 
-> First off, there is a "proper" way to send patches to the kernel
-> community that Intel has that I do not think you are
-> following.  Please
-> work with the Intel "Linux group" to do that first, as odds are they
-> would have caught all of these issues beforehand (hint, which is why
-> that process is in place...)
+> stable-rc/linux-5.4.y bisection: baseline.dmesg.alert on meson-g12a-x96-max
 > 
-
-I actually followed that process and got the OK to try to upstream.
-
-I think the issues you identified went uncaught mainly due to the
-limited Linux ARM expertise within that group (and Intel in general).
-
-Anyway, I'll keep working with our Linux Kernel people to try to reduce
-the burden on you and the other kernel maintainers.
-
-> > diff --git a/drivers/soc/keembay/Kconfig
-> > b/drivers/soc/keembay/Kconfig
-> > new file mode 100644
-> > index 000000000000..2161bce131b3
-> > --- /dev/null
-> > +++ b/drivers/soc/keembay/Kconfig
-> > @@ -0,0 +1,22 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only
-> > +#
-> > +# Keem Bay SoC drivers.
-> > +#
-> > +
-> > +menu "Keem Bay SoC drivers"
-> > +
-> > +config KEEMBAY_IMR
-> > +	bool "Clean-up Keem Bay bootloader IMR at boot"
-> > +	depends on ARM64
-> > +	help
-> > +	  This option makes the Kernel clean up the Isolated Memory
-> > Region
-> > +	  (IMR) set up by Keem Bay bootloader (U-boot) to protect
-> > itself during
-> > +	  early boot.
-> > +
-> > +	  The IMR number to be cleaned up is taken from the device tree
-> > +	  (property 'u-boot-imr' of the 'chosen' node).
-> > +
-> > +	  If you are compiling the Kernel for a Keem Bay SoC select Y,
-> > +	  otherwise select N.
+> Summary:
+>   Start:      35bbc55d9e296 Linux 5.4.37-rc1
+>   Plain log:  https://storage.kernelci.org/stable-rc/linux-5.4.y/v5.4.36-52-g35bbc55d9e29/arm64/defconfig/gcc-8/lab-baylibre/baseline-meson-g12a-x96-max.txt
+>   HTML log:   https://storage.kernelci.org/stable-rc/linux-5.4.y/v5.4.36-52-g35bbc55d9e29/arm64/defconfig/gcc-8/lab-baylibre/baseline-meson-g12a-x96-max.html
+>   Result:     09f4294793bd3 ASoC: meson: axg-card: fix codec-to-codec link setup
 > 
-> No module support?
+> Checks:
+>   revert:     PASS
+>   verify:     PASS
 > 
-> What about kernels that support more than one ARM device in the same
-> kernel, you just broke that :(
+> Parameters:
+>   Tree:       stable-rc
+>   URL:        https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+>   Branch:     linux-5.4.y
+>   Target:     meson-g12a-x96-max
+>   CPU arch:   arm64
+>   Lab:        lab-baylibre
+>   Compiler:   gcc-8
+>   Config:     defconfig
+>   Test case:  baseline.dmesg.alert
 > 
-
-<cut>
-
+> Breaking commit found:
 > 
-> > +}
-> > +early_initcall(kmb_imr_init);
+> -------------------------------------------------------------------------------
+> commit 09f4294793bd3e70d68fdab5b392dff18bff62ca
+> Author: Jerome Brunet <jbrunet@baylibre.com>
+> Date:   Mon Apr 20 13:45:10 2020 +0200
 > 
-> Like I said above, you just broke multi-system kernels by always
-> trying
-> to do this.  Trigger off of a hardware device that only your platform
-> has in order to properly load and run.  As-is, you don't want to do
-> this.
-
-My bad, I didn't consider the issue of multi-platform ARM kernels.
-
-The problem is that I need this code to be run early at boot, so I
-don't think I can make this a module.
-
-But I'm sure there is a proper way to achieve what I need without
-breaking multi-system kernels. I'll do my homework and try to find it.
-
+>     ASoC: meson: axg-card: fix codec-to-codec link setup
+>     
+>     commit 1164284270779e1865cc2046a2a01b58a1e858a9 upstream.
+>     
+>     Since the addition of commit 9b5db059366a ("ASoC: soc-pcm: dpcm: Only allow
+>     playback/capture if supported"), meson-axg cards which have codec-to-codec
+>     links fail to init and Oops:
+>     
+>       Unable to handle kernel NULL pointer dereference at virtual address 0000000000000128
+>       Internal error: Oops: 96000044 [#1] PREEMPT SMP
+>       CPU: 3 PID: 1582 Comm: arecord Not tainted 5.7.0-rc1
+>       pc : invalidate_paths_ep+0x30/0xe0
+>       lr : snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
+>       Call trace:
+>        invalidate_paths_ep+0x30/0xe0
+>        snd_soc_dapm_dai_get_connected_widgets+0x170/0x1a8
+>        dpcm_path_get+0x38/0xd0
+>        dpcm_fe_dai_open+0x70/0x920
+>        snd_pcm_open_substream+0x564/0x840
+>        snd_pcm_open+0xfc/0x228
+>        snd_pcm_capture_open+0x4c/0x78
+>        snd_open+0xac/0x1a8
+>        ...
+>     
+>     While initiliazing the links, ASoC treats the codec-to-codec links of this
+>     card type as a DPCM backend. This error eventually leads to the Oops.
+>     
+>     Most of the card driver code is shared between DPCM backends and
+>     codec-to-codec links. The property "no_pcm" marking DCPM BE was left set on
+>     codec-to-codec links, leading to this problem. This commit fixes that.
+>     
+>     Fixes: 0a8f1117a680 ("ASoC: meson: axg-card: add basic codec-to-codec link support")
+>     Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>     Link: https://lore.kernel.org/r/20200420114511.450560-2-jbrunet@baylibre.com
+>     Signed-off-by: Mark Brown <broonie@kernel.org>
+>     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> Anyway, Intel owes me more liquor for this review as the resources
-> you
-> had to get review of this were obviously not taken advantage of.
+> diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
+> index 1f698adde506c..2b04ac3d8fd3b 100644
+> --- a/sound/soc/meson/axg-card.c
+> +++ b/sound/soc/meson/axg-card.c
+> @@ -586,8 +586,10 @@ static int axg_card_add_link(struct snd_soc_card *card, struct device_node *np,
+>  
+>  	if (axg_card_cpu_is_tdm_iface(dai_link->cpus->of_node))
+>  		ret = axg_card_parse_tdm(card, np, index);
+> -	else if (axg_card_cpu_is_codec(dai_link->cpus->of_node))
+> +	else if (axg_card_cpu_is_codec(dai_link->cpus->of_node)) {
+>  		dai_link->params = &codec_params;
+> +		dai_link->no_pcm = 0; /* link is not a DPCM BE */
+> +	}
+>  
+>  	return ret;
+>  }
+> -------------------------------------------------------------------------------
 > 
-> greg k-h
+> 
+> Git bisection log:
+> 
+> -------------------------------------------------------------------------------
+> git bisect start
+> # good: [aa73bcc376865c23e61dcebd467697b527901be8] Linux 5.4.36
+> git bisect good aa73bcc376865c23e61dcebd467697b527901be8
+> # bad: [35bbc55d9e296d37cf01555d415338b84a70d4c5] Linux 5.4.37-rc1
+> git bisect bad 35bbc55d9e296d37cf01555d415338b84a70d4c5
+> # bad: [924f1d37852ff357658c205dd114c70862865fc9] svcrdma: Fix trace point use-after-free race
+> git bisect bad 924f1d37852ff357658c205dd114c70862865fc9
+> # good: [b848f65436665b5fe675fd3f645c1a458e49f60a] counter: 104-quad-8: Add lock guards - generic interface
+> git bisect good b848f65436665b5fe675fd3f645c1a458e49f60a
+> # bad: [04b53ed855129c1703d00d8494e4c61309714a99] drivers: soc: xilinx: fix firmware driver Kconfig dependency
+> git bisect bad 04b53ed855129c1703d00d8494e4c61309714a99
+> # good: [ae886eae0318c71a6125347d6810a1578a83d262] ASoC: tas571x: disable regulators on failed probe
+> git bisect good ae886eae0318c71a6125347d6810a1578a83d262
+> # bad: [2c0990070379284dda0b51304ce19c2b96e083a2] ASoC: wm8960: Fix wrong clock after suspend & resume
+> git bisect bad 2c0990070379284dda0b51304ce19c2b96e083a2
+> # bad: [09f4294793bd3e70d68fdab5b392dff18bff62ca] ASoC: meson: axg-card: fix codec-to-codec link setup
+> git bisect bad 09f4294793bd3e70d68fdab5b392dff18bff62ca
+> # first bad commit: [09f4294793bd3e70d68fdab5b392dff18bff62ca] ASoC: meson: axg-card: fix codec-to-codec link setup
+> -------------------------------------------------------------------------------
+> 
 
