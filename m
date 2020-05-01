@@ -2,140 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6401C1C68
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3661C1C76
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729889AbgEAR7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729373AbgEAR7l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 13:59:41 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDDC4C061A0E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:59:40 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id d3so4865122pgj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:59:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SrJ+suZtBWr1oaesi/k2ktaEJnaAc56s/fpYYwm6YkQ=;
-        b=rtUe86ofD35Jm4kswBmEsEiDvYps/sFLvc+ucRqtIMN6Wg3XEGcRYzZyWhpnEWffql
-         I3cAVYkpNiJg9tmvu7bXzxraGLxCbRGRO4ZxtZkJohoMaBUoJdbTCyYKximei2dOynJ3
-         hxG6dZLTt74LX5VnwHPk1A1McsjT/SzfbUN1AkGAUJMPYcY8CHlx5nZ5z7wEiqkT4tU6
-         ArTfBHszH1/lrdfolV+z/4bLsFO7PgN+KXYar26fPiH2TFLda7soTzqU5Ks1iXxpQ7Xl
-         lhRMVyBkTCHNR9RhjR++rAN8EYAFapQFr+yPZ2+hm8nhAtuoAAUy1pE5YWIx7KXTNgj1
-         Q2bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SrJ+suZtBWr1oaesi/k2ktaEJnaAc56s/fpYYwm6YkQ=;
-        b=CA1TCxzI1ttsuU+Zwjyo2fjANn0hHNuxMPcM3DqF6b6y2B9NelusLdC4CqbY5LyegD
-         zFjlX/39tZLbjuu9J49DasJ3Zc8UMP/s2VtHLFG1YJS+zLznkh6f5u1CYHKfo1Kz1auz
-         AMctO8iEEVyJ55/A0EbbdhlIOhkFLiBvntdsgjn1t2uRzNequ4QOu19VtXioHSoNDXBV
-         CyruuvlHARGa9nfug65dumbWdm9iq0d5gwT53rSkjoZejjJ0phOAkj5ZZ7KDYIcZcZ+T
-         MNRLR0Gba268JKG+gplM1CD5iUQD1Ohlm5SpR1Mm/fOym6gPXAyLEjbrYpzEjD24HZBh
-         cfzw==
-X-Gm-Message-State: AGi0PuYF+S/79Ll32VKiH8ySnWcCKvsBIVGa8jNgEeSHZuJyDAu7KZJv
-        R/9vKbzjEGzzCfodRNu5h5B9rQ==
-X-Google-Smtp-Source: APiQypKSvb3juH8yufYz3pZtYJr5I7jYwQqi+KNzHP8QMg+pl6CzWIz0QI5ety/mLdAJyEKbW8lq+w==
-X-Received: by 2002:a65:62ce:: with SMTP id m14mr5189526pgv.174.1588355980303;
-        Fri, 01 May 2020 10:59:40 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id e16sm2510386pgg.8.2020.05.01.10.59.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 10:59:39 -0700 (PDT)
-Date:   Fri, 1 May 2020 11:59:37 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        loic.pallardy@st.com, linux-remoteproc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] remoteproc: stm32: Add support for
- synchronising with M4
-Message-ID: <20200501175937.GG18004@xps15>
-References: <20200424202505.29562-1-mathieu.poirier@linaro.org>
- <219771d3-b0a5-0ec7-7f20-d2055bcb0217@st.com>
+        id S1730288AbgEASA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 14:00:56 -0400
+Received: from mx01-sz.bfs.de ([194.94.69.67]:11485 "EHLO mx01-sz.bfs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729138AbgEASAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 14:00:55 -0400
+Received: from SRVEX01-SZ.bfs.intern (exchange-sz.bfs.de [10.129.90.31])
+        by mx01-sz.bfs.de (Postfix) with ESMTPS id 2FB59203B2;
+        Fri,  1 May 2020 20:00:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bfs.de; s=dkim201901;
+        t=1588356053;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iuIPWKHuf1mWWetzWvXNH4rEJK532/abC6YDrHnRli4=;
+        b=z4T0Zz1SrWOItrjcZrEGxVJ6Mx3vjPAPeK3vRAZHHfO5yIsU4RKmvJHkt5o/cwLL4ZMqgu
+        fnsH86UbYGVpTAnhlyhUwLH49LVTjLItzwLmN6l5Q0wP+rUFF0HUZTBh1CWpe9/68ITlN8
+        WfupTHpyPOQR6AxMfvzqf8sVEK/kN4JQqmA+XuDnoL9qK/kKeN5H9h6cSI0NJmMJyol+UH
+        eklDtlOCCu/l25jaUNOwHoJJ6Adajt6fZx8b6IQh2uQCqSk7207StMcq70U3655ORDpUVd
+        lVmfS4Uu3OWkI2n0b3Uw9hhGF8R8X96Wj57QsyaUqGLg14m+Z9DjZbKUucCCKg==
+Received: from SRVEX01-SZ.bfs.intern (10.129.90.31) by SRVEX01-SZ.bfs.intern
+ (10.129.90.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.1913.5; Fri, 1 May 2020
+ 20:00:52 +0200
+Received: from SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a]) by
+ SRVEX01-SZ.bfs.intern ([fe80::7d2d:f9cb:2761:d24a%6]) with mapi id
+ 15.01.1913.005; Fri, 1 May 2020 20:00:52 +0200
+From:   Walter Harms <wharms@bfs.de>
+To:     Colin King <colin.king@canonical.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: AW: [PATCH] net: dsa: sja1105: fix speed setting for 10 MBPS
+Thread-Topic: [PATCH] net: dsa: sja1105: fix speed setting for 10 MBPS
+Thread-Index: AQHWH8IGUD+3Kyn8J0mCBAQgeQXDbqiTgu1i
+Date:   Fri, 1 May 2020 18:00:52 +0000
+Message-ID: <9018be0b7dc441cd8aad625c6cc44e1c@bfs.de>
+References: <20200501134310.289561-1-colin.king@canonical.com>
+In-Reply-To: <20200501134310.289561-1-colin.king@canonical.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.137.16.39]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <219771d3-b0a5-0ec7-7f20-d2055bcb0217@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.37
+Authentication-Results: mx01-sz.bfs.de;
+        none
+X-Spamd-Result: default: False [-1.37 / 7.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         HAS_XOIP(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[kernel];
+         MIME_GOOD(-0.10)[text/plain];
+         BAYES_HAM(-2.87)[99.42%];
+         DKIM_SIGNED(0.00)[];
+         RCPT_COUNT_SEVEN(0.00)[10];
+         NEURAL_HAM(-0.00)[-0.901];
+         FREEMAIL_TO(0.00)[canonical.com,gmail.com,lunn.ch,davemloft.net,armlinux.org.uk,vger.kernel.org];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 05:08:32PM +0200, Arnaud POULIQUEN wrote:
-> Hi Mathieu,
-> 
-> On 4/24/20 10:24 PM, Mathieu Poirier wrote:
-> > This patchset needs to be applied on top of this one [1].
-> > 
-> > It refactors the STM32 platform code in order to introduce support for
-> > synchronising with the M4 remote processor that would have been started by
-> > the boot loader or another entity.
-> > 
-> > It carries the same functionatlity as the previeous revision but account
-> > for changes in the remoteproc core to support synchronisation scenarios.
-> > Some RB tags have been removed when the content of the patch has strayed 
-> > too far from the original version. See patch 3, 8, 9 and 12 for more
-> > details.
-> 
-> I reviewed the series, and made some tests on my side.
-> FYI, I do not answer to patches when tagged "Reviewed-by: Loic Pallardy" 
-> and with no extra remark. So consider them as Reviewed-by me but not
-> necessary to add the tag in commit, Reviewed-by: loic in commit is sufficient. 
+IMHO it would be better to use switch case here to improve readability.
 
-Well, if you spent all this time reviewing the code might as well get credit for
-it...  And it also helps maintainers get a feel for how many eyes have looked
-at the code.
+switch (bmcr & mask) {
 
-> 
-> Concerning tests, it works find except the crash recovery from a sync start.
-> But i suppose that you know the limitation, waiting Loic patches[1] update :)
+case  BMCR_SPEED1000:
+                                 speed =3D SPEED_1000;
+                                 break;
+case  BMCR_SPEED100:
+                                 speed =3D SPEED_100;
+                                 break;
+case  BMCR_SPEED10:
+                                 speed =3D SPEED_10;
+                                 break;
+default:
+                                speed =3D SPEED_UNKNOWN
+}
 
-As I commented in the patch itself, I'll fix this so that the condition leading
-to the recovery limbo can't happen.
+jm2c,
+ wh
 
-Thanks,
-Mathieu
+btw: an_enabled ? why not !enabled, mich more easy to read
 
-> 
-> [1]: https://lkml.org/lkml/2020/3/11/403
-> 
-> Thanks a lot for your work!
-> Arnaud
->  
-> 
-> > 
-> > Tested on ST's mp157c board.
-> > 
-> > Thanks,
-> > Mathieu
-> > 
-> > [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=277049
-> > [2]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=239877
-> > 
-> > Mathieu Poirier (12):
-> >   remoteproc: stm32: Decouple rproc from memory translation
-> >   remoteproc: stm32: Request IRQ with platform device
-> >   remoteproc: stm32: Decouple rproc from DT parsing
-> >   remoteproc: stm32: Remove memory translation from DT parsing
-> >   remoteproc: stm32: Parse syscon that will manage M4 synchronisation
-> >   remoteproc: stm32: Get coprocessor state
-> >   remoteproc: stm32: Get loaded resource table for synchronisation
-> >   remoteproc: stm32: Introduce new start ops for synchronisation
-> >   remoteproc: stm32: Update M4 state in stm32_rproc_stop()
-> >   remoteproc: stm32: Introduce new parse fw ops for synchronisation
-> >   remoteproc: stm32: Introduce new loaded rsc ops for synchronisation
-> >   remoteproc: stm32: Set synchronisation state machine if needed
-> > 
-> >  drivers/remoteproc/stm32_rproc.c | 262 ++++++++++++++++++++++++++++---
-> >  1 file changed, 244 insertions(+), 18 deletions(-)
-> > 
+
+________________________________________
+Von: kernel-janitors-owner@vger.kernel.org <kernel-janitors-owner@vger.kern=
+el.org> im Auftrag von Colin King <colin.king@canonical.com>
+Gesendet: Freitag, 1. Mai 2020 15:43:10
+An: Vladimir Oltean; Andrew Lunn; Vivien Didelot; Florian Fainelli; David S=
+ . Miller; Russell King; linux-kernel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org; netdev@vger.kernel.org
+Betreff: [PATCH] net: dsa: sja1105: fix speed setting for 10 MBPS
+
+From: Colin Ian King <colin.king@canonical.com>
+
+The current logic for speed checking will never set the speed to 10 MBPS
+because bmcr & BMCR_SPEED10 is always 0 since BMCR_SPEED10 is 0. Also
+the erroneous setting where BMCR_SPEED1000 and BMCR_SPEED100 are both
+set causes the speed to be 1000 MBS.  Fix this by masking bps and checking
+for just the expected settings of BMCR_SPEED1000, BMCR_SPEED100 and
+BMCR_SPEED10 and defaulting to the unknown speed otherwise.
+
+Addresses-Coverity: ("Logically dead code")
+Fixes: ffe10e679cec ("net: dsa: sja1105: Add support for the SGMII port")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/dsa/sja1105/sja1105_main.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja11=
+05/sja1105_main.c
+index 472f4eb20c49..59a9038cdc4e 100644
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -1600,6 +1600,7 @@ static const char * const sja1105_reset_reasons[] =3D=
+ {
+ int sja1105_static_config_reload(struct sja1105_private *priv,
+                                 enum sja1105_reset_reason reason)
+ {
++       const int mask =3D (BMCR_SPEED1000 | BMCR_SPEED100 | BMCR_SPEED10);
+        struct ptp_system_timestamp ptp_sts_before;
+        struct ptp_system_timestamp ptp_sts_after;
+        struct sja1105_mac_config_entry *mac;
+@@ -1684,14 +1685,16 @@ int sja1105_static_config_reload(struct sja1105_pri=
+vate *priv,
+                sja1105_sgmii_pcs_config(priv, an_enabled, false);
+
+                if (!an_enabled) {
+-                       int speed =3D SPEED_UNKNOWN;
++                       int speed;
+
+-                       if (bmcr & BMCR_SPEED1000)
++                       if ((bmcr & mask) =3D=3D BMCR_SPEED1000)
+                                speed =3D SPEED_1000;
+-                       else if (bmcr & BMCR_SPEED100)
++                       else if ((bmcr & mask) =3D=3D BMCR_SPEED100)
+                                speed =3D SPEED_100;
+-                       else if (bmcr & BMCR_SPEED10)
++                       else if ((bmcr & mask) =3D=3D BMCR_SPEED10)
+                                speed =3D SPEED_10;
++                       else
++                               speed =3D SPEED_UNKNOWN;
+
+                        sja1105_sgmii_pcs_force_speed(priv, speed);
+                }
+--
+2.25.1
+
