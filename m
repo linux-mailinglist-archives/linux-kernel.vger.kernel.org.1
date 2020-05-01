@@ -2,165 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FB51C1C59
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389521C1C8C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730229AbgEARyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 13:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729973AbgEARyt (ORCPT
+        id S1730384AbgEASDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 14:03:53 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:49070 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729384AbgEASDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 13:54:49 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959ECC061A0E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 10:54:49 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id l20so4846972pgb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 10:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=DRg3zcbdwJvHwwdmWPDqLT8eUhyWI38G+2e6Y0MIzuw=;
-        b=AjM7yFpPFJFc/Xp09RqIRFsPyXCGYSShJyQBSCnCAyE+7w0uxt38ym2oxCXiPcXovx
-         Q/VYY+Ad7CH5P3WyBOeGS99Gdjk8IzNpvQltN/LRSZn/sTMubaTznSKXIxSKFFacj5il
-         FaBkG5E3ASrBNabkNSKuWq3L8ENPNZ3qHMXlcXhdGhiV9b7UZAb2guXey8knRe3/cXsc
-         ahnapvrVM0moMOfekNoNbIoNxB4q5i/KZLK9r1TJrfDu7ZYbV9qYNod8IdCEnAuw+GQz
-         POEKAE5o/gcllW5kSLgV85yXbaJt99SohMDdSB6PkngnJ998oezxGG0uRjzsnrf/qmmI
-         yA3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=DRg3zcbdwJvHwwdmWPDqLT8eUhyWI38G+2e6Y0MIzuw=;
-        b=KbM0olXvXvB04emZ0A5zVFFjsN0mXAIgmNkA6riWqBOnM1NJPGodS5dGf0V/h6aA5u
-         Gu2dsEd/JcASMcdilBrTxr+BqSOvuCNo8NCgI5tSYlk1lxIID5f0hGdOcHI0Sfu2fMtZ
-         V5YJDhpHwHEJvBPlGMPjTVfEEmEmo6wgjkKCqxS8/8IBJmm533/bWD4uEcqyb921D4a2
-         XQ6U2Cq4g3i0GqMkzN0gxKjJq0ZjnsPlwrTXPaQ6Bjl6s45yLTlS+mLhWc+YgySUY2k9
-         M0DO6VcDzIoTI4YeRqJMCmcyUhZvenhxVIov4F7uVseiPWu1HbNQQpTq4Ldmow3AYjwc
-         x7QQ==
-X-Gm-Message-State: AGi0PuZJaZCMsveah6ihZ5IQVRFFJz9YazuM4ruuPNgMhpTJit/Ml6vk
-        tgNdGqOOo/bGa8/OmOQpxfVtvw==
-X-Google-Smtp-Source: APiQypKinFwjLxwudUbIQPJSzcgT/R+sN9xYkeIHLb7Ej4S4Zq5Bpmiy+iZT5kj2ZM3AoMThjH03xA==
-X-Received: by 2002:a63:564e:: with SMTP id g14mr5324203pgm.63.1588355689010;
-        Fri, 01 May 2020 10:54:49 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id s38sm2528104pgk.31.2020.05.01.10.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 10:54:48 -0700 (PDT)
-Date:   Fri, 1 May 2020 11:54:46 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     bjorn.andersson@linaro.org, ohad@wizery.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        loic.pallardy@st.com, linux-remoteproc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] remoteproc: stm32: Set synchronisation state
- machine if needed
-Message-ID: <20200501175446.GF18004@xps15>
-References: <20200424202505.29562-1-mathieu.poirier@linaro.org>
- <20200424202505.29562-13-mathieu.poirier@linaro.org>
- <defc59b2-4d64-a108-2e5e-ecc579f70a8b@st.com>
+        Fri, 1 May 2020 14:03:52 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 041I3nol035250;
+        Fri, 1 May 2020 13:03:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588356229;
+        bh=/f2T/5gGoekOKSGJbuC7wezyx3Dx6eGpqW3pvT7eCDA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=KGfQLrW5yPv/O/Fv58gSO4YkgdZw9Q0JTEi9jc3luGH7v15kxrnhF6Hn5t5cH3Unl
+         g7DQ1pjP0n0WVZep/LmV7LTDteTMYOW4k2zfbGMhyitxPupdvKBhAZoD4hXw6vlaq9
+         I8pXYGjaT3AxLX33VM5lyNJC57UGb/xsxiuiTZIs=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 041I3nqZ067883
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 1 May 2020 13:03:49 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 1 May
+ 2020 13:03:49 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 1 May 2020 13:03:49 -0500
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 041I3nE7003992;
+        Fri, 1 May 2020 13:03:49 -0500
+Subject: Re: [RESEND PATCH v5 0/3] BQ25150/155 Charger
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200304174025.31655-1-r-rivera-matos@ti.com>
+ <eb5f0818-21c7-1b84-b0c9-904bce9721be@ti.com>
+ <20200501172445.diiccfzbh7kzkxdl@earth.universe>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <a83b5728-2896-3ec9-00f1-dc611c3aa471@ti.com>
+Date:   Fri, 1 May 2020 12:55:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <defc59b2-4d64-a108-2e5e-ecc579f70a8b@st.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200501172445.diiccfzbh7kzkxdl@earth.universe>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 04:47:19PM +0200, Arnaud POULIQUEN wrote:
-> 
-> 
-> On 4/24/20 10:25 PM, Mathieu Poirier wrote:
-> > Set the flags and operations to use if the M4 has been started
-> > by another entity than the remoteproc core.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >  drivers/remoteproc/stm32_rproc.c | 16 +++++++++++++++-
-> >  1 file changed, 15 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
-> > index dcae6103e3df..02dad3f51c7a 100644
-> > --- a/drivers/remoteproc/stm32_rproc.c
-> > +++ b/drivers/remoteproc/stm32_rproc.c
-> > @@ -598,13 +598,20 @@ static struct rproc_ops st_rproc_ops = {
-> >  	.get_boot_addr	= rproc_elf_get_boot_addr,
-> >  };
-> >  
-> > -static __maybe_unused struct rproc_ops st_rproc_sync_ops = {
-> > +static struct rproc_ops st_rproc_sync_ops = {
-> >  	.start		= stm32_rproc_sync_start,
-> >  	.stop		= stm32_rproc_stop,
-> > +	.kick		= stm32_rproc_kick,
-> 
-> Seems independent of the path.
+Sebastian
 
-I agree - on the flip side I didn't find a better place to put it.  Had I did a
-one line patch someone would have asked me to stuff it somewhere.  I'll have
-another look to see if I can find something decent.
+On 5/1/20 12:24 PM, Sebastian Reichel wrote:
+> Hi,
+>
+> I don't see any PATCHv5 (with or without RESEND) for bq25150 and
+> lore does not see anything either:
+>
+> https://lore.kernel.org/linux-pm/?q=PATCH+v5+0%2F3%5D+BQ25150%2F155+Charger
 
-> 
-> >  	.parse_fw       = stm32_rproc_sync_parse_fw,
-> >  	.find_loaded_rsc_table = stm32_rproc_sync_elf_find_loaded_rsc_table,
-> >  };
-> >  
-> > +static struct rproc_sync_flags st_sync_flags = {
-> > +	.on_init = true, /* sync with MCU when the kernel boots */
-> > +	.after_stop = false, /* don't resync with MCU if stopped from sysfs */
-> > +	.after_crash = false, /* don't resync with MCU after a crash */
-> > +};
-> > +
-> could be const
+I posted them for Ricardo.  Maybe he need a lore account.
 
-If I do make this a const I'll have to move the call to
-rproc_set_state_machine() inside the "if (state == M4_STATE_CRUN)".  It also
-means that people won't be able to make dynamic adjustment to the
-synchronisation states based on specifics discovered at probe() time.  They will
-need to declare different synchronisation ops for all the potential scenarios.
+https://lore.kernel.org/patchwork/project/lkml/list/?series=441577
 
-I don't have a strong opinion on any of this.  I'll wait a little to see what
-other people think.  If nobody chimes in I'll make this a const in the next
-revision.
+Not sure why his patches did not go through.
 
-> 
-> >  static const struct of_device_id stm32_rproc_match[] = {
-> >  	{ .compatible = "st,stm32mp1-m4" },
-> >  	{},
-> > @@ -803,6 +810,7 @@ static int stm32_rproc_probe(struct platform_device *pdev)
-> >  	struct stm32_rproc *ddata;
-> >  	struct device_node *np = dev->of_node;
-> >  	struct rproc *rproc;
-> > +	struct rproc_sync_flags sync_flags = {0};
-> >  	unsigned int state;
-> >  	bool auto_boot = false;
-> >  	int ret;
-> > @@ -837,11 +845,17 @@ static int stm32_rproc_probe(struct platform_device *pdev)
-> >  	}
-> >  
-> >  	if (state == M4_STATE_CRUN) {
-> > +		auto_boot = true;
-> > +		sync_flags = st_sync_flags;
-> 
-> seems an useless copy 
-> 
-> Regards,
-> Arnaud
-> 
-> >  		ret = stm32_rproc_get_loaded_rsc_table(pdev, ddata);
-> >  		if (ret)
-> >  			goto free_rproc;
-> >  	}
-> >  
-> > +	ret = rproc_set_state_machine(rproc, &st_rproc_sync_ops, sync_flags);
-> > +	if (ret)
-> > +		goto free_rproc;
-> > +
-> >  	rproc->auto_boot = auto_boot;
-> >  	rproc->has_iommu = false;
-> >  	ddata->workqueue = create_workqueue(dev_name(dev));
-> > 
+Dan
+
