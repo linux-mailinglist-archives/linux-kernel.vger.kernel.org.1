@@ -2,241 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AAD1C2035
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B590E1C2002
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 23:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbgEAV6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 17:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46000 "EHLO
+        id S1726672AbgEAVuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 17:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726272AbgEAV6X (ORCPT
+        with ESMTP id S1726307AbgEAVuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 17:58:23 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1316BC061A0C;
-        Fri,  1 May 2020 14:58:22 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id n4so8609629ejs.11;
-        Fri, 01 May 2020 14:58:22 -0700 (PDT)
+        Fri, 1 May 2020 17:50:14 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC4FC061A0C;
+        Fri,  1 May 2020 14:50:14 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id t16so4080417plo.7;
+        Fri, 01 May 2020 14:50:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+dwJLdu/AUk/G86mjwzD+ysAOGq1CMd9Bn28OzWKnDA=;
-        b=bzVOZs7Sy9eIjlfjP3sSyICDo5GQjI3QfRTJq+W0+jA7sz03eV6ZT/9wQ9DWelLdMa
-         8wFjPxrWssw2A+z1+fHfWu+HHGmpUUJjJws5jYCFYD3VZ2jhUV1Z04gqDuXH6jsfXjvw
-         +fDSdSWeI5aWeFoTV8gni6TWoKzwMG+pOyizR0ds+t0ZK3S+n9ccJZhRirErCyZOQ2G0
-         EamtxIXxbfdJ9tjx2hgzqt7hAPtcxZf6n5yh06lSXF3/f3+THWAQhIWTDf3ipjlC+nkz
-         6NJvUo0lVcL99ZtQ54rXT0UjhjmrLXsOIZSNise3fkCn0v5fLxcVI49n0ZQQULsZEr/E
-         rmVA==
+        h=from:to:cc:subject:date:message-id;
+        bh=sCwnL9j5tuq9C/zCfZk+GBElwtsC97H/4kGQxJh9yoE=;
+        b=kq+6SN7e26oYWrvqvD/PA/9Es8QwBjsr2gG4NxFyAibz89l3IQti445oA24zTob1RZ
+         YJ/2OTzeKhsphayq+l15QLDGwz4yZc5aCC8b6e8weZjIhZPPuA5aecfJB25MypwQMqbY
+         YDLddZW+q4yqko3e3hjvXTgJYlTXgSknrXim/jyUys1ZGpTd3fsinQ/5k1CkDVTbwGaz
+         NQKYIu3rjI94Z7ES2rMcYybAaOx4lEtnFiAchY41w47dRuRNrH6HoYoh26iiC2W/wZtX
+         nY02lCNJRhV7LgBYPaIFkZ62BNAM/eeDcvjf1b9mv5HB3iQXTzU0Lrn3yBE0cO08cIs3
+         N+Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+dwJLdu/AUk/G86mjwzD+ysAOGq1CMd9Bn28OzWKnDA=;
-        b=bJsHDoOU56JjNFz5y2P0H17mdKc4PLIiMx6ZYpEgOMVOJ5fAWGkRp+ves2yGePpzR3
-         UikWgvkBPTF1hz4nkZA5vibCBJl7F6ftprBa1+FLp7EqFv4iP3POErhtjBbydWqFN5G6
-         IazbRjgX+Cs/w/54hW/WtpKc9PUPbVKSEr2UMatI/TPrsdrmaJ8PB23hA5vigpWK59d/
-         lFQ9zqcuJY7A5PpK7xq0fPZLfVncMLNrDSwa2Q88f099HFUXKjMHWL3CKn6rQcNoxLg+
-         yASwzPQoTz15zOSukMVlLmpYw7vTHzbOfs15P7T+Xv/FcSXM2cpQRpC0GfPekmiS6Mss
-         D+nA==
-X-Gm-Message-State: AGi0PuaAp4YU4TDC96ifKjc1z3zSP9kSwHKjCg2vsUkH6rZSB6QAuqkg
-        E10eZvwdR3Rrj62NT3DsvjM=
-X-Google-Smtp-Source: APiQypLHh4Na+gcbT1f57HiSPQIsGHc0U249ls5RhZMfwhSGUYhYwJW12/LWCove81eHc5QvP/7Ogw==
-X-Received: by 2002:a17:906:1751:: with SMTP id d17mr5158104eje.314.1588370300668;
-        Fri, 01 May 2020 14:58:20 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain ([79.37.253.240])
-        by smtp.googlemail.com with ESMTPSA id s5sm444934ejj.77.2020.05.01.14.58.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 14:58:20 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andy Gross <agross@kernel.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v5 2/2] devicetree: bindings: phy: Document ipq806x dwc3 qcom phy
-Date:   Fri,  1 May 2020 23:58:05 +0200
-Message-Id: <20200501215807.11175-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200501215807.11175-1-ansuelsmth@gmail.com>
-References: <20200501215807.11175-1-ansuelsmth@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=sCwnL9j5tuq9C/zCfZk+GBElwtsC97H/4kGQxJh9yoE=;
+        b=MDbRLuU3SWXVJy31MknFyzVdBj4zDScZhRNIxIE4z67fQoKHFLLfVyPuh0pjuZ+IrZ
+         5AXhMIMWDVNQcvnr7eCwi/uMQT9suYYK4s6VqWhZDvK5e9m43V+etcAfTebiEN/MZMws
+         QW3DMC6sKGNTSdJpy5FgZFmaFY9U759ealt4YjpD98y/2E4gBFaDqVZ6Rdc8hVLTQ/da
+         IVYtabxHmMpX+0Gd5uIS/UjT1LqYQDxF5e/ZoAgoGl8Iv9ubC4BAfTU7v3KNOtZ43vlq
+         K5WXUrWB5wOkm22jiq5YzbBbA3xvy9uAOWxZhXUa59LWLl0VroBAIVL1xwRuubQUumsA
+         M77A==
+X-Gm-Message-State: AGi0PubEQQ59Kcxz1ylR25afElZQsWjA/jamsE+rVdLeoAE8g4w4r1zI
+        Azi1tKMWuFrqj8GQ78n0Id9uk8BK
+X-Google-Smtp-Source: APiQypJQ7Nfrbks03oaOCxMJQ3OHB+u/pNUinmspXJ8F4Pe3OkpqRQo9et58+4EuthMBfNUZtngURw==
+X-Received: by 2002:a17:90a:1f4b:: with SMTP id y11mr2015936pjy.136.1588369814033;
+        Fri, 01 May 2020 14:50:14 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([171.48.31.149])
+        by smtp.gmail.com with ESMTPSA id h26sm2088769pfk.35.2020.05.01.14.50.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 01 May 2020 14:50:13 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     b.zolnierkie@samsung.com, tglx@linutronix.de,
+        gregkh@linuxfoundation.org
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] video/fbdev/matroxfb: Remove dead code
+Date:   Sat,  2 May 2020 03:28:11 +0530
+Message-Id: <1588370291-7746-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document dwc3 qcom phy hs and ss phy bindings needed to correctly
-inizialize and use usb on ipq806x SoC.
+These are dead code since 3.15. If there is no plan to use it further
+it can be removed forever.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 ---
-v5:
-* Fix dt_binding_check error
-v4:
-* Add qcom to specific bindings
-v3:
-* Use explicit reg instead of regmap
+ drivers/video/fbdev/matrox/matroxfb_DAC1064.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
- .../bindings/phy/qcom,ipq806x-usb-phy-hs.yaml | 58 ++++++++++++++
- .../bindings/phy/qcom,ipq806x-usb-phy-ss.yaml | 79 +++++++++++++++++++
- 2 files changed, 137 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-hs.yaml
- create mode 100644 Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-ss.yaml
-
-diff --git a/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-hs.yaml b/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-hs.yaml
-new file mode 100644
-index 000000000000..c019de7478e3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-hs.yaml
-@@ -0,0 +1,58 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/qcom,ipq806x-usb-phy-hs.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm ipq806x usb DWC3 HS PHY CONTROLLER
-+
-+maintainers:
-+  - Ansuel Smith <ansuelsmth@gmail.com>
-+
-+description:
-+  DWC3 PHY nodes are defined to describe on-chip Synopsis Physical layer
-+  controllers used in ipq806x. Each DWC3 PHY controller should have its
-+  own node.
-+
-+properties:
-+  compatible:
-+    const: qcom,ipq806x-usb-phy-hs
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 1
-+    maxItems: 2
-+
-+  clock-names:
-+    minItems: 1
-+    maxItems: 2
-+    description: |
-+      - "ref" Is required
-+      - "xo"	Optional external reference clock
-+    items:
-+      - const: ref
-+      - const: xo
-+
-+required:
-+  - compatible
-+  - "#phy-cells"
-+  - reg
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
-+
-+    hs_phy_0: phy@110f8800 {
-+      compatible = "qcom,ipq806x-usb-phy-hs";
-+      reg = <0x110f8800 0x30>;
-+      clocks = <&gcc USB30_0_UTMI_CLK>;
-+      clock-names = "ref";
-+      #phy-cells = <0>;
-+    };
-diff --git a/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-ss.yaml b/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-ss.yaml
-new file mode 100644
-index 000000000000..fa10a1c51cf0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/qcom,ipq806x-usb-phy-ss.yaml
-@@ -0,0 +1,79 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/qcom,ipq806x-usb-phy-ss.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm ipq806x usb DWC3 SS PHY CONTROLLER
-+
-+maintainers:
-+  - Ansuel Smith <ansuelsmth@gmail.com>
-+
-+description:
-+  DWC3 PHY nodes are defined to describe on-chip Synopsis Physical layer
-+  controllers used in ipq806x. Each DWC3 PHY controller should have its
-+  own node.
-+
-+properties:
-+  compatible:
-+    const: qcom,ipq806x-usb-phy-ss
-+
-+  "#phy-cells":
-+    const: 0
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 1
-+    maxItems: 2
-+
-+  clock-names:
-+    minItems: 1
-+    maxItems: 2
-+    description: |
-+      - "ref" Required.
-+      - "xo"	Optional external reference clock.
-+    items:
-+      - const: ref
-+      - const: xo
-+
-+  qcom,rx_eq:
-+    maxItems: 1
-+    description: Override value for rx_eq.
-+    default: 4
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+
-+  qcom,tx_deamp_3_5db:
-+    maxItems: 1
-+    description: Override value for transmit preemphasis.
-+    default: 23
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+
-+  qcom,mpll:
-+    maxItems: 1
-+    description: Override value for mpll.
-+    default: 0
-+    allOf:
-+      - $ref: /schemas/types.yaml#/definitions/uint32
-+
-+required:
-+  - compatible
-+  - "#phy-cells"
-+  - reg
-+  - clocks
-+  - clock-names
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,gcc-ipq806x.h>
-+
-+    ss_phy_0: phy@110f8830 {
-+      compatible = "qcom,ipq806x-usb-phy-ss";
-+      reg = <0x110f8830 0x30>;
-+      clocks = <&gcc USB30_0_MASTER_CLK>;
-+      clock-names = "ref";
-+      #phy-cells = <0>;
-+    };
+diff --git a/drivers/video/fbdev/matrox/matroxfb_DAC1064.c b/drivers/video/fbdev/matrox/matroxfb_DAC1064.c
+index 765e805..9c2a2c0 100644
+--- a/drivers/video/fbdev/matrox/matroxfb_DAC1064.c
++++ b/drivers/video/fbdev/matrox/matroxfb_DAC1064.c
+@@ -603,9 +603,6 @@ static void MGA1064_ramdac_init(struct matrox_fb_info *minfo)
+ /* BIOS environ */
+ static int x7AF4 = 0x10;	/* flags, maybe 0x10 = SDRAM, 0x00 = SGRAM??? */
+ 				/* G100 wants 0x10, G200 SGRAM does not care... */
+-#if 0
+-static int def50 = 0;	/* reg50, & 0x0F, & 0x3000 (only 0x0000, 0x1000, 0x2000 (0x3000 disallowed and treated as 0) */
+-#endif
+ 
+ static void MGAG100_progPixClock(const struct matrox_fb_info *minfo, int flags,
+ 				 int m, int n, int p)
+@@ -843,9 +840,6 @@ static int MGAG100_preinit(struct matrox_fb_info *minfo)
+ 	struct matrox_hw_state *hw = &minfo->hw;
+ 
+         u_int32_t reg50;
+-#if 0
+-	u_int32_t q;
+-#endif
+ 
+ 	DBG(__func__)
+ 
+@@ -927,11 +921,6 @@ static int MGAG100_preinit(struct matrox_fb_info *minfo)
+ 		mga_writeb(minfo->video.vbase, 0x0000, 0xAA);
+ 		mga_writeb(minfo->video.vbase, 0x0800, 0x55);
+ 		mga_writeb(minfo->video.vbase, 0x4000, 0x55);
+-#if 0
+-		if (mga_readb(minfo->video.vbase, 0x0000) != 0xAA) {
+-			hw->MXoptionReg &= ~0x1000;
+-		}
+-#endif
+ 		hw->MXoptionReg |= 0x00078020;
+ 	} else if (minfo->devflags.accelerator == FB_ACCEL_MATROX_MGAG200) {
+ 		pci_read_config_dword(minfo->pcidev, PCI_OPTION2_REG, &reg50);
 -- 
-2.25.1
+1.9.1
 
