@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17151C1E7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 22:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178841C1E81
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 22:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbgEAUb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 16:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726778AbgEAUbX (ORCPT
+        id S1726900AbgEAUbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 16:31:34 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:56608 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726778AbgEAUbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 16:31:23 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C79C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 13:31:23 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id a21so447689pls.4
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 13:31:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DVZsHO3B+82ZVvSvwD+6L84uL6YCwy6wqP9DD2caeKY=;
-        b=Zc3KuQRuQy2OoPJPM+d+PnQiWTvDwpVtt8Zs/O3P2xKcWz2OpXBRQHO7c7IRb3Svou
-         7tdEiY8sRnRcjQKcq5Zj+0PlJ3VLXU+3aiTRKJ5MlWhFdkPfkoa8RKmQKcnL+YtrFDPP
-         AoyAhLCPYp/Bscc03FLzyMRL/p9YsUHnOlTHVDrPdG/xFXwkBqT1eusZGZHPZcMORFnJ
-         XUnONPMgBLe3uBUsDaF4ihYyjghwSsIq+4toZYrsvYog8R/WKxPl/CIP6xrmB3iChGu+
-         IP/ZvPS61IFkPnLMCnS1V56OJBpUCNYtLWaCzdi/NkjLIM7PXCLaVmPYfH/gNTtPYD9V
-         IZCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DVZsHO3B+82ZVvSvwD+6L84uL6YCwy6wqP9DD2caeKY=;
-        b=i1KMBRopzdUswV24IOCTzCXQSaRDxD2Gen6HiZpp70u84JJlCPUqcJxL4FKVhOiv6S
-         hho7v72crGXRIVuanOeTOKGmHraUPRoSrgR6S5+XvNX5r5vgL1IyJJOIDucKYOhEAGs+
-         hJD1tAy33Siukqo+y2JEzq2K9kuljIltTB9ycCCdj37eZXID+dB7rOzAhqSjvGLuO/18
-         Top6lSzlrQAywDPh4fGyNQ7VNVdDAX52qIeplO6qnhB3X50edTpx+acsvVK7ZRxTGJSX
-         wV7TObONnwVf4OGbuE4c+M1BXj4BjVOPxZTuMnGn56FMJC90XkhDseJSTdX2UnUuvV6+
-         GoNg==
-X-Gm-Message-State: AGi0PubF71wrpFDIXst8pO59cvjiyJaXvz290r3WFAsfLiQJT0t197tv
-        A9RUQMKYrAxWNDUpYxUIxMN0/dV1Jt8ob9xwTWiLWA==
-X-Google-Smtp-Source: APiQypJ9b4QRn/GrVn+RH4LsZdGv7V2jtr2OO/8zkSxd5QcIuJPpD3L0aOdJL8jy19OYg1HSleGSA99rMnX4I9DcZ7s=
-X-Received: by 2002:a17:902:a40e:: with SMTP id p14mr5817749plq.297.1588365082975;
- Fri, 01 May 2020 13:31:22 -0700 (PDT)
+        Fri, 1 May 2020 16:31:32 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 7D4641C020C; Fri,  1 May 2020 22:31:30 +0200 (CEST)
+Date:   Fri, 1 May 2020 22:31:30 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>, Rob Herring <robh@kernel.org>,
+        Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
+        Lee Jones <lee.jones@linaro.org>, Jiri Slaby <jslaby@suse.cz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH 1/6] tty: n_gsm: Add support for serdev drivers
+Message-ID: <20200501203130.GC6043@duo.ucw.cz>
+References: <20200430174615.41185-1-tony@atomide.com>
+ <20200430174615.41185-2-tony@atomide.com>
 MIME-Version: 1.0
-References: <20200501083510.1413-1-anders.roxell@linaro.org>
-In-Reply-To: <20200501083510.1413-1-anders.roxell@linaro.org>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 1 May 2020 13:31:11 -0700
-Message-ID: <CAFd5g45C98_70Utp=QBWg_tKxaUMJ-ArQvjWbG9q6=dixfHBxw@mail.gmail.com>
-Subject: Re: [PATCH] kunit: Kconfig: enable a KUNIT_RUN_ALL fragment
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
-        Marco Elver <elver@google.com>,
-        John Johansen <john.johansen@canonical.com>, jmorris@namei.org,
-        serge@hallyn.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, kasan-dev <kasan-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        linux-security-module@vger.kernel.org,
-        David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="JgQwtEuHJzHdouWu"
+Content-Disposition: inline
+In-Reply-To: <20200430174615.41185-2-tony@atomide.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 1, 2020 at 1:35 AM Anders Roxell <anders.roxell@linaro.org> wrote:
->
-> Make it easier to enable all KUnit fragments.  This is needed for kernel
-> test-systems, so its easy to get all KUnit tests enabled and if new gets
-> added they will be enabled as well.  Fragments that has to be builtin
-> will be missed if CONFIG_KUNIT_RUN_ALL is set as a module.
->
-> Adding 'if !KUNIT_RUN_ALL' so individual test can be turned of if
-> someone wants that even though KUNIT_RUN_ALL is enabled.
 
-I would LOVE IT, if you could make this work! I have been trying to
-figure out the best way to run all KUnit tests for a long time now.
+--JgQwtEuHJzHdouWu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-That being said, I am a bit skeptical that this approach will be much
-more successful than just using allyesconfig. Either way, there are
-tests coming down the pipeline that are incompatible with each other
-(the KASAN test and the KCSAN test will be incompatible). Even so,
-tests like the apparmor test require a lot of non-default
-configuration to compile. In the end, I am not sure how many tests we
-will really be able to turn on this way.
+Hi!
 
-Thoughts?
+> We can make use of serdev drivers to do simple device drivers for
+> TS 27.010 chanels, and we can handle vendor specific protocols on top
+> of TS 27.010 with serdev drivers.
+>=20
+> So far this has been tested with Motorola droid4 where there is a custom
+> packet numbering protocol on top of TS 27.010 for the MDM6600 modem.
+>=20
+> I initially though about adding the serdev support into a separate file,
+> but that will take some refactoring of n_gsm.c. And I'd like to have
+> things working first. Then later on we might want to consider splitting
+> n_gsm.c into three pieces for core, tty and serdev parts. And then maybe
+> the serdev related parts can be just moved to live under something like
+> drivers/tty/serdev/protocol/ngsm.c.
+>=20
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+
+If you fix error path below, you can add:
+
+Reviewed-by: Pavel Machek <pavel@ucw.cz>=20
+
+> +static struct gsm_dlci *gsd_dlci_get(struct gsm_serdev *gsd, int line,
+> +				     bool allocate)
+> +{
+> +	struct gsm_mux *gsm;
+> +	struct gsm_dlci *dlci;
+> +
+> +	if (!gsd || !gsd->gsm)
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	gsm =3D gsd->gsm;
+> +
+> +	if (line < 1 || line >=3D 63)
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	mutex_lock(&gsm->mutex);
+=2E..
+> +	dlci =3D gsm_dlci_alloc(gsm, line);
+> +	if (!dlci) {
+> +		gsm =3D ERR_PTR(-ENOMEM);
+> +		goto unlock;
+
+dlci =3D , or you get nice crash.
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--JgQwtEuHJzHdouWu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXqyHIgAKCRAw5/Bqldv6
+8tffAJoCv6I/fBC26aNMvJ+2rQ6jVnpbLQCdHCxcWTrGsw8RYmyf01oZGWmp7wM=
+=DG9n
+-----END PGP SIGNATURE-----
+
+--JgQwtEuHJzHdouWu--
