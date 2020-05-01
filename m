@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E026A1C17E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4891C17F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729152AbgEAOio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:38:44 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:2235 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728898AbgEAOin (ORCPT
+        id S1729421AbgEAOj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:39:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728929AbgEAOj0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 10:38:43 -0400
-X-UUID: d1914d0961214355a183b758f3134b1d-20200501
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=8VIPLSkqrglgjQeSr66OR8BmnSuUsZPHpl18x7zMDIc=;
-        b=IZU8/YvOIE9a4e01gZpZ8v+vYpYTDojkZ9miupSb6dyc+8Ax0NLRdOw6khuHppd98ALoToetflJkAEaB5Udib70P5K5bpcRfw4ETIPYEb9L5HqD1xsQIumRgA/LO664kg+PYFlB0A2eJ08UVTN2ALYBBJLDRx8T0I8ebm6uJHnE=;
-X-UUID: d1914d0961214355a183b758f3134b1d-20200501
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 918446; Fri, 01 May 2020 22:38:38 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 1 May 2020 22:38:34 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 1 May 2020 22:38:34 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>
-CC:     <beanhuo@micron.com>, <cang@codeaurora.org>,
-        <matthias.bgg@gmail.com>, <bvanassche@acm.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v3 5/5] scsi: ufs: cleanup WriteBooster feature
-Date:   Fri, 1 May 2020 22:38:35 +0800
-Message-ID: <20200501143835.26032-6-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20200501143835.26032-1-stanley.chu@mediatek.com>
-References: <20200501143835.26032-1-stanley.chu@mediatek.com>
+        Fri, 1 May 2020 10:39:26 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E38EC061A0E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 07:39:25 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id b6so3783869uak.6
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 07:39:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=URjoa0IPAuVJrJzf1GzsjjCJgtImSI4fVU++g+IJyuo=;
+        b=SMxlHq5r/xlgb1aFLRF6VaIP1+SWFfbYQhAXjYZD4COiPW8KJ+YqJlOeUxHxCY5DlG
+         Idx1WYR1HxdMRSDeEA2FIMDrtrlxs+zIzz57nuJsVPdb23kkRR6vDORPdekV6cr8T2ey
+         XFPCDrZn+jfp9p8SrvmZa/jauPbMy65QXIIZs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=URjoa0IPAuVJrJzf1GzsjjCJgtImSI4fVU++g+IJyuo=;
+        b=DGYexVEod1VTNv72mqVlRHYKi8y7Tiu3q/inJyMKCvmlv0TmIkwcXyJj1C+d4LYPIr
+         0sKNenz4TkXXNARjHM+dQW8QoKS4yFHDm0mSQEfoo7xxdxGLEGDZ/sN4u78mZna/oPfI
+         zWehYeGb0J2M9H2UxR/QkVPxV7fsffC0Mqa4Hm/QrLJAOmJebmyWuIFQ/GVX8jdMZEd8
+         /BZHLVeF/hbh8rlh0+Ka1SIAy+FuPqsg3nbOn4tKMT2Ef1MnPq5wz9wRSMuuHsO1UvsF
+         DWu5fCii7j8UyjLL3pgg2dhRyiGsibgmiJfVkvJqXOv11mamKQpmw1uXhVQBUE8xtJju
+         ceZg==
+X-Gm-Message-State: AGi0Pub0DqxbcfnBx8AvvQHIlOHSGeadnUN/P8bxp4zMPnGOEsd/AE3S
+        kZKjyvuqVf8pIDPDhUcGgHJURlOeHtg=
+X-Google-Smtp-Source: APiQypIm0+UoKR8vddQO0kfES5sqXt4yXi+ruIbRTeazNuttRvvQxILDoKp28MrvrxIT9Bfd8RnBnA==
+X-Received: by 2002:ab0:544a:: with SMTP id o10mr3138701uaa.15.1588343964484;
+        Fri, 01 May 2020 07:39:24 -0700 (PDT)
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com. [209.85.217.48])
+        by smtp.gmail.com with ESMTPSA id u25sm854243vkn.22.2020.05.01.07.39.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 May 2020 07:39:23 -0700 (PDT)
+Received: by mail-vs1-f48.google.com with SMTP id y185so6392492vsy.8
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 07:39:23 -0700 (PDT)
+X-Received: by 2002:a67:bd07:: with SMTP id y7mr3484487vsq.109.1588343962687;
+ Fri, 01 May 2020 07:39:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <1588329036-18732-1-git-send-email-smasetty@codeaurora.org>
+In-Reply-To: <1588329036-18732-1-git-send-email-smasetty@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 1 May 2020 07:39:11 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=W+uaPTZHKXq6WYgx-ZDL1QTedEpNw9T747UBD_g1O8CQ@mail.gmail.com>
+Message-ID: <CAD=FV=W+uaPTZHKXq6WYgx-ZDL1QTedEpNw9T747UBD_g1O8CQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: sc7180: Add A618 gpu dt blob
+To:     Sharat Masetty <smasetty@codeaurora.org>
+Cc:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@freedesktop.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U21hbGwgY2xlYW51cCBhcyBiZWxvdyBpdGVtcywNCg0KMS4gVXNlIHVmc2hjZF9pc193Yl9hbGxv
-d2VkKCkgZGlyZWN0bHkgaW5zdGVhZCBvZiB1ZnNoY2Rfd2Jfc3VwKCkNCiAgIHNpbmNlIHVmc2hj
-ZF93Yl9zdXAoKSBqdXN0IHJldHVybnMgdGhlIHJlc3VsdCBvZg0KICAgdWZzaGNkX2lzX3diX2Fs
-bG93ZWQoKS4NCg0KMi4gSW4gdWZzaGNkX3N1c3BlbmQoKSwgImVsc2UgaWYgKCF1ZnNoY2RfaXNf
-cnVudGltZV9wbShwbV9vcCkpDQogICBjYW4gYmUgc2ltcGxpZmllZCB0byAiZWxzZSIgc2luY2Ug
-Ym90aCBoYXZlIHRoZSBzYW1lIG1lYW5pbmcuDQoNClRoaXMgcGF0Y2ggZG9lcyBub3QgY2hhbmdl
-IGFueSBmdW5jdGlvbmFsaXR5Lg0KDQpTaWduZWQtb2ZmLWJ5OiBTdGFubGV5IENodSA8c3Rhbmxl
-eS5jaHVAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyB8IDIw
-ICsrKysrKystLS0tLS0tLS0tLS0tDQogMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwg
-MTMgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5j
-IGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KaW5kZXggOGMyNTZmNmY0YTY1Li40MjBkMTQ3
-NmIzZTEgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQorKysgYi9kcml2
-ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQpAQCAtMjU1LDcgKzI1NSw2IEBAIHN0YXRpYyBpbnQgdWZz
-aGNkX3NjYWxlX2Nsa3Moc3RydWN0IHVmc19oYmEgKmhiYSwgYm9vbCBzY2FsZV91cCk7DQogc3Rh
-dGljIGlycXJldHVybl90IHVmc2hjZF9pbnRyKGludCBpcnEsIHZvaWQgKl9faGJhKTsNCiBzdGF0
-aWMgaW50IHVmc2hjZF9jaGFuZ2VfcG93ZXJfbW9kZShzdHJ1Y3QgdWZzX2hiYSAqaGJhLA0KIAkJ
-CSAgICAgc3RydWN0IHVmc19wYV9sYXllcl9hdHRyICpwd3JfbW9kZSk7DQotc3RhdGljIGJvb2wg
-dWZzaGNkX3diX3N1cChzdHJ1Y3QgdWZzX2hiYSAqaGJhKTsNCiBzdGF0aWMgaW50IHVmc2hjZF93
-Yl9idWZfZmx1c2hfZW5hYmxlKHN0cnVjdCB1ZnNfaGJhICpoYmEpOw0KIHN0YXRpYyBpbnQgdWZz
-aGNkX3diX2J1Zl9mbHVzaF9kaXNhYmxlKHN0cnVjdCB1ZnNfaGJhICpoYmEpOw0KIHN0YXRpYyBp
-bnQgdWZzaGNkX3diX2N0cmwoc3RydWN0IHVmc19oYmEgKmhiYSwgYm9vbCBlbmFibGUpOw0KQEAg
-LTI4Nyw3ICsyODYsNyBAQCBzdGF0aWMgaW5saW5lIHZvaWQgdWZzaGNkX3diX2NvbmZpZyhzdHJ1
-Y3QgdWZzX2hiYSAqaGJhKQ0KIHsNCiAJaW50IHJldDsNCiANCi0JaWYgKCF1ZnNoY2Rfd2Jfc3Vw
-KGhiYSkpDQorCWlmICghdWZzaGNkX2lzX3diX2FsbG93ZWQoaGJhKSkNCiAJCXJldHVybjsNCiAN
-CiAJcmV0ID0gdWZzaGNkX3diX2N0cmwoaGJhLCB0cnVlKTsNCkBAIC01MTk5LDExICs1MTk4LDYg
-QEAgc3RhdGljIHZvaWQgdWZzaGNkX2Jrb3BzX2V4Y2VwdGlvbl9ldmVudF9oYW5kbGVyKHN0cnVj
-dCB1ZnNfaGJhICpoYmEpDQogCQkJCV9fZnVuY19fLCBlcnIpOw0KIH0NCiANCi1zdGF0aWMgYm9v
-bCB1ZnNoY2Rfd2Jfc3VwKHN0cnVjdCB1ZnNfaGJhICpoYmEpDQotew0KLQlyZXR1cm4gdWZzaGNk
-X2lzX3diX2FsbG93ZWQoaGJhKTsNCi19DQotDQogaW50IHVmc2hjZF93Yl9nZXRfZmxhZ19pbmRl
-eChzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KIHsNCiAJaWYgKGhiYS0+ZGV2X2luZm8uYl93Yl9idWZm
-ZXJfdHlwZSA9PSBXQl9CVUZfTU9ERV9MVV9ERURJQ0FURUQpDQpAQCAtNTIxOCw3ICs1MjEyLDcg
-QEAgc3RhdGljIGludCB1ZnNoY2Rfd2JfY3RybChzdHJ1Y3QgdWZzX2hiYSAqaGJhLCBib29sIGVu
-YWJsZSkNCiAJdTggaW5kZXg7DQogCWVudW0gcXVlcnlfb3Bjb2RlIG9wY29kZTsNCiANCi0JaWYg
-KCF1ZnNoY2Rfd2Jfc3VwKGhiYSkpDQorCWlmICghdWZzaGNkX2lzX3diX2FsbG93ZWQoaGJhKSkN
-CiAJCXJldHVybiAwOw0KIA0KIAlpZiAoIShlbmFibGUgXiBoYmEtPndiX2VuYWJsZWQpKQ0KQEAg
-LTUyNzQsNyArNTI2OCw3IEBAIHN0YXRpYyBpbnQgdWZzaGNkX3diX2J1Zl9mbHVzaF9lbmFibGUo
-c3RydWN0IHVmc19oYmEgKmhiYSkNCiAJaW50IHJldDsNCiAJdTggaW5kZXg7DQogDQotCWlmICgh
-dWZzaGNkX3diX3N1cChoYmEpIHx8IGhiYS0+d2JfYnVmX2ZsdXNoX2VuYWJsZWQpDQorCWlmICgh
-dWZzaGNkX2lzX3diX2FsbG93ZWQoaGJhKSB8fCBoYmEtPndiX2J1Zl9mbHVzaF9lbmFibGVkKQ0K
-IAkJcmV0dXJuIDA7DQogDQogCWluZGV4ID0gdWZzaGNkX3diX2dldF9mbGFnX2luZGV4KGhiYSk7
-DQpAQCAtNTI5Niw3ICs1MjkwLDcgQEAgc3RhdGljIGludCB1ZnNoY2Rfd2JfYnVmX2ZsdXNoX2Rp
-c2FibGUoc3RydWN0IHVmc19oYmEgKmhiYSkNCiAJaW50IHJldDsNCiAJdTggaW5kZXg7DQogDQot
-CWlmICghdWZzaGNkX3diX3N1cChoYmEpIHx8ICFoYmEtPndiX2J1Zl9mbHVzaF9lbmFibGVkKQ0K
-KwlpZiAoIXVmc2hjZF9pc193Yl9hbGxvd2VkKGhiYSkgfHwgIWhiYS0+d2JfYnVmX2ZsdXNoX2Vu
-YWJsZWQpDQogCQlyZXR1cm4gMDsNCiANCiAJaW5kZXggPSB1ZnNoY2Rfd2JfZ2V0X2ZsYWdfaW5k
-ZXgoaGJhKTsNCkBAIC01MzQ2LDcgKzUzNDAsNyBAQCBzdGF0aWMgYm9vbCB1ZnNoY2Rfd2Jfa2Vl
-cF92Y2Nfb24oc3RydWN0IHVmc19oYmEgKmhiYSkNCiAJaW50IHJldDsNCiAJdTMyIGF2YWlsX2J1
-ZjsNCiANCi0JaWYgKCF1ZnNoY2Rfd2Jfc3VwKGhiYSkpDQorCWlmICghdWZzaGNkX2lzX3diX2Fs
-bG93ZWQoaGJhKSkNCiAJCXJldHVybiBmYWxzZTsNCiAJLyoNCiAJICogVGhlIHVmcyBkZXZpY2Ug
-bmVlZHMgdGhlIHZjYyB0byBiZSBPTiB0byBmbHVzaC4NCkBAIC04MjMxLDEyICs4MjI1LDEyIEBA
-IHN0YXRpYyBpbnQgdWZzaGNkX3N1c3BlbmQoc3RydWN0IHVmc19oYmEgKmhiYSwgZW51bSB1ZnNf
-cG1fb3AgcG1fb3ApDQogCQkgKiBjb25maWd1cmVkIFdCIHR5cGUgaXMgNzAlIGZ1bGwsIGtlZXAg
-dmNjIE9ODQogCQkgKiBmb3IgdGhlIGRldmljZSB0byBmbHVzaCB0aGUgd2IgYnVmZmVyDQogCQkg
-Ki8NCi0JCWlmICgoaGJhLT5hdXRvX2Jrb3BzX2VuYWJsZWQgJiYgdWZzaGNkX3diX3N1cChoYmEp
-KSB8fA0KKwkJaWYgKChoYmEtPmF1dG9fYmtvcHNfZW5hYmxlZCAmJiB1ZnNoY2RfaXNfd2JfYWxs
-b3dlZChoYmEpKSB8fA0KIAkJICAgIHVmc2hjZF93Yl9rZWVwX3ZjY19vbihoYmEpKQ0KIAkJCWhi
-YS0+ZGV2X2luZm8ua2VlcF92Y2Nfb24gPSB0cnVlOw0KIAkJZWxzZQ0KIAkJCWhiYS0+ZGV2X2lu
-Zm8ua2VlcF92Y2Nfb24gPSBmYWxzZTsNCi0JfSBlbHNlIGlmICghdWZzaGNkX2lzX3J1bnRpbWVf
-cG0ocG1fb3ApKSB7DQorCX0gZWxzZSB7DQogCQloYmEtPmRldl9pbmZvLmtlZXBfdmNjX29uID0g
-ZmFsc2U7DQogCX0NCiANCi0tIA0KMi4xOC4wDQo=
+Hi,
 
+On Fri, May 1, 2020 at 3:30 AM Sharat Masetty <smasetty@codeaurora.org> wrote:
+>
+> This patch adds the required dt nodes and properties
+> to enabled A618 GPU.
+>
+> Signed-off-by: Sharat Masetty <smasetty@codeaurora.org>
+> ---
+> * Remove GCC_DDRSS_GPU_AXI_CLK clock reference from gpu smmu node.
+>
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 102 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 102 insertions(+)
+
+This is the newer version of the patch:
+
+https://lore.kernel.org/r/1581320465-15854-2-git-send-email-smasetty@codeaurora.org
+
+The change to remove the extra IOMMU clock matches our discussions and
+there's no longer anything blocking this from landing.
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Tested-by: Douglas Anderson <dianders@chromium.org>
