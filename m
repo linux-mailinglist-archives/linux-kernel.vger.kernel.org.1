@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645301C161E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675921C1664
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731254AbgEANkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:40:03 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:23304 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731236AbgEANj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:39:56 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 49DCzY6Xj4z7N;
-        Fri,  1 May 2020 15:39:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1588340394; bh=/jLlputangsPP+b55RSTFIHnXSnuLA7C91+qL92JlCs=;
-        h=Date:From:Subject:In-Reply-To:To:Cc:From;
-        b=d4UrYz7eA6oL6JT7nGH+GCCO5ILfvvFRR4THomwkN1imzCtf8Xu1ZTum5nuTNbskC
-         s/y9NJ0vIGFTKXXHQzBY3vK0JfegKRTMzr+ian5OHuuW8MfOpl4AJdt93kApnwEUyt
-         CKR5T5tPokGTpX+ceptKT4UZPmzgMGbTXE6o2e7iSFfqCeYtLiSw0SiqKZE4PIAdEk
-         wODz178taLb/kqGH0iWeFO3T465dW7j2TUy7I4OsyyW8PKP83MzaaYRyjlYBggyd67
-         so0epaXCFiWpSquBFDLprlJPdQiwi5+fa7HlOp0/MJmre0xhaPwPK1eSZF/TEQ9y+d
-         NXfFCtuEZjdWw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Fri, 01 May 2020 15:39:53 +0200
-Message-Id: <995cf2c7d41d4895c319b60ea4ea83e858c34cef.1588340276.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH] power: charger-manager: fix adding of optional properties
-In-Reply-To: <20200501133008.GA8927@qmqm.qmqm.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-pm@vger.kernel.org,
+        id S1731657AbgEANrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:47:43 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59409 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731613AbgEANnS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:43:18 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jUVwd-00067j-4A; Fri, 01 May 2020 13:43:11 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         linux-kernel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH] net: dsa: sja1105: fix speed setting for 10 MBPS
+Date:   Fri,  1 May 2020 14:43:10 +0100
+Message-Id: <20200501134310.289561-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use num_properties to index added property.
-This will prevent overwriting POWER_SUPPLY_PROP_CHARGE_NOW with
-POWER_SUPPLY_PROP_CURRENT_NOW and leaving the latter entry
-uninitialized.
+From: Colin Ian King <colin.king@canonical.com>
 
-For clarity, num_properties is initialized with length of the copied
-array instead of relying on previously memcpy'd value.
+The current logic for speed checking will never set the speed to 10 MBPS
+because bmcr & BMCR_SPEED10 is always 0 since BMCR_SPEED10 is 0. Also
+the erroneous setting where BMCR_SPEED1000 and BMCR_SPEED100 are both
+set causes the speed to be 1000 MBS.  Fix this by masking bps and checking
+for just the expected settings of BMCR_SPEED1000, BMCR_SPEED100 and
+BMCR_SPEED10 and defaulting to the unknown speed otherwise.
 
-Fixes: 0a46510addc7 ("power: supply: charger-manager: Prepare for const properties")
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Addresses-Coverity: ("Logically dead code")
+Fixes: ffe10e679cec ("net: dsa: sja1105: Add support for the SGMII port")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/power/supply/charger-manager.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/dsa/sja1105/sja1105_main.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/power/supply/charger-manager.c b/drivers/power/supply/charger-manager.c
-index a71e2ee81423..2ef53dc1f2fb 100644
---- a/drivers/power/supply/charger-manager.c
-+++ b/drivers/power/supply/charger-manager.c
-@@ -1729,7 +1729,7 @@ static int charger_manager_probe(struct platform_device *pdev)
- 	memcpy(properties, default_charger_props,
- 		sizeof(enum power_supply_property) *
- 		ARRAY_SIZE(default_charger_props));
--	num_properties = psy_default.num_properties;
-+	num_properties = ARRAY_SIZE(default_charger_props);
+diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
+index 472f4eb20c49..59a9038cdc4e 100644
+--- a/drivers/net/dsa/sja1105/sja1105_main.c
++++ b/drivers/net/dsa/sja1105/sja1105_main.c
+@@ -1600,6 +1600,7 @@ static const char * const sja1105_reset_reasons[] = {
+ int sja1105_static_config_reload(struct sja1105_private *priv,
+ 				 enum sja1105_reset_reason reason)
+ {
++	const int mask = (BMCR_SPEED1000 | BMCR_SPEED100 | BMCR_SPEED10);
+ 	struct ptp_system_timestamp ptp_sts_before;
+ 	struct ptp_system_timestamp ptp_sts_after;
+ 	struct sja1105_mac_config_entry *mac;
+@@ -1684,14 +1685,16 @@ int sja1105_static_config_reload(struct sja1105_private *priv,
+ 		sja1105_sgmii_pcs_config(priv, an_enabled, false);
  
- 	/* Find which optional psy-properties are available */
- 	fuel_gauge = power_supply_get_by_name(desc->psy_fuel_gauge);
-@@ -1740,14 +1740,14 @@ static int charger_manager_probe(struct platform_device *pdev)
- 	}
- 	if (!power_supply_get_property(fuel_gauge,
- 					  POWER_SUPPLY_PROP_CHARGE_NOW, &val)) {
--		properties[cm->charger_psy_desc.num_properties] =
-+		properties[num_properties] =
- 				POWER_SUPPLY_PROP_CHARGE_NOW;
- 		num_properties++;
- 	}
- 	if (!power_supply_get_property(fuel_gauge,
- 					  POWER_SUPPLY_PROP_CURRENT_NOW,
- 					  &val)) {
--		properties[cm->charger_psy_desc.num_properties] =
-+		properties[num_properties] =
- 				POWER_SUPPLY_PROP_CURRENT_NOW;
- 		num_properties++;
- 	}
+ 		if (!an_enabled) {
+-			int speed = SPEED_UNKNOWN;
++			int speed;
+ 
+-			if (bmcr & BMCR_SPEED1000)
++			if ((bmcr & mask) == BMCR_SPEED1000)
+ 				speed = SPEED_1000;
+-			else if (bmcr & BMCR_SPEED100)
++			else if ((bmcr & mask) == BMCR_SPEED100)
+ 				speed = SPEED_100;
+-			else if (bmcr & BMCR_SPEED10)
++			else if ((bmcr & mask) == BMCR_SPEED10)
+ 				speed = SPEED_10;
++			else
++				speed = SPEED_UNKNOWN;
+ 
+ 			sja1105_sgmii_pcs_force_speed(priv, speed);
+ 		}
 -- 
-2.20.1
+2.25.1
 
