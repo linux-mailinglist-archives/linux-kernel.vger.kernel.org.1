@@ -2,272 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9966A1C17E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131181C17EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729098AbgEAOha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 10:37:30 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23730 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728894AbgEAOh2 (ORCPT
+        id S1729377AbgEAOjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 10:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729319AbgEAOjW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 10:37:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588343847;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I+pSfuYwc07hQQ9dsDKJcYfTJmTKhIXhBIr9mDnsaJ8=;
-        b=V/vELu92n/llXKABrwdcbvZVQa2U0QuCDqaM+T2xpi/p4xI32Ui1Gv6D8skYLnAz47Akt1
-        9gs0TId5z2f/MbuWuNARbKwlmdBJ8CnfH2i9WpziCD1dBPQjhv8Hfmvau7Tuhrsbx5/9Lv
-        8xOVtxpND+jTrDLBsk6AzR+Mkw3WdMo=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-390-nN46WyfNNZ-zHl2ISgAVZw-1; Fri, 01 May 2020 10:37:22 -0400
-X-MC-Unique: nN46WyfNNZ-zHl2ISgAVZw-1
-Received: by mail-wm1-f69.google.com with SMTP id v185so2124020wmg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 07:37:22 -0700 (PDT)
+        Fri, 1 May 2020 10:39:22 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327DDC061A0C;
+        Fri,  1 May 2020 07:39:22 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id x18so11766696wrq.2;
+        Fri, 01 May 2020 07:39:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W39olwyD1ZhzcIxfsnVceKE9Xw0rG7gkUI5YYAf7G2U=;
+        b=TuRWt3ltfoi+VgnoGf26Fj0cEAwnYiLpqvU2VDrM3zaI0Nwx5a/o7dqdcF9jBxKvnX
+         N2DqG7tMBh1cqp5PYA0lsDmZG9aCRdXmq9GUtb7Ezrv7FeKUzUUKgohTF1atEO2pqCvR
+         4oj05zpw+4cQncyMdrgbeD0OrqtbxD9oE7CjcbX/iDJaoxy3wEflO0Fpgi8IY1rznpjz
+         roX0y12SSNR+KzYolIZrFcYcBqFbxmzrl8njZy8MCtyknaGOMvIFuaaY63Akw2w1DaPd
+         NuaymtYAIxFyFVp21sNpPKKrwbjM41fr8Gu0PUaWwadkOcbLicg59xxgFRhaVwMPlgXi
+         +BNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=I+pSfuYwc07hQQ9dsDKJcYfTJmTKhIXhBIr9mDnsaJ8=;
-        b=XBFENZyOCZCkvgpoIZb7ekzQD3eMmq33LsO/QuvTq/0KBWV07Xnru9chWfyL6wbQbl
-         O9yDBEEw5/r1Obl2ktvcA/oanX0FsTcxtUBmAgF69n588orJ2bTItBVAEFl9b3Mg7BLZ
-         XBcAAiWeNqZHLG7HoPnxhZh/sLYLfapdC2GlerIYcqKvMvCKCTSfFFSoTjIQhvs0kyR+
-         kKKoQ+NTSVkiNtD+TWEQ/bzErGAIYhQgYjDzzrWvVE1zOeM2d1i1V1xyqzLKo5rrC7Y3
-         iQwZAthS7zfmhzvEWLH7YPOe+l96Gj3OG4KMqgAVD2peCe3dDwE22k1SNfbjEJnpqSrw
-         o5Og==
-X-Gm-Message-State: AGi0PubfcAhhFxqaUJ7Q6YKHyvh7r0aN+tJP0ajtz1xo83ftGFUxP0+C
-        f7nFZaavlMaNyoswI37e0g1MmKVNVG6qHIVLm1I9OdZivA7fZC14Xgx5BAq05LFixLGquaEioev
-        mdFLDWH5BZK9u4jxzEBRM2uTj
-X-Received: by 2002:a1c:1d4b:: with SMTP id d72mr4150357wmd.19.1588343840465;
-        Fri, 01 May 2020 07:37:20 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKHqBQQRlsc1K8bjThQcoW9mKD/VyXIIHA6zpDxxO2WCF7VUxpGnsPXDB+8huVAz76rKrLJPQ==
-X-Received: by 2002:a1c:1d4b:: with SMTP id d72mr4150333wmd.19.1588343840150;
-        Fri, 01 May 2020 07:37:20 -0700 (PDT)
-Received: from steredhat (host108-207-dynamic.49-79-r.retail.telecomitalia.it. [79.49.207.108])
-        by smtp.gmail.com with ESMTPSA id r20sm4024126wmh.26.2020.05.01.07.37.18
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W39olwyD1ZhzcIxfsnVceKE9Xw0rG7gkUI5YYAf7G2U=;
+        b=b405vDWt+b/LEVoq1OtbvXwqCLfC8421YtHbjVFvAphrtNRf71EjhFvlxxSCaOiSbh
+         kYgEEPnXnwOvmAjLyzH3SeJFP2yCLDJrf4At50qkurJ3JsxxTExBm4luTocZSNyQnvTR
+         23W5cfDQ0t5GExtQDrOj2evs9uicMoNNDIEZllYSDOHIo1K+aot1+dlaTqpop6S6dRTt
+         PBjSu1UESCYOQD82g09gn9qUt6f50IBqIcDd7AzYF97qpiYwLUpqw6bx+2udrNIbE8TB
+         FvDwEyzH6xQ+6+F46NGSYQOwkaGvHp2JqMs8HAvmmBhrIwEwPLnleIV8miHjBtI2EtcI
+         twOw==
+X-Gm-Message-State: AGi0PubmQoKb/rQruNvxd5wfsdr9EtzvM4JsNG1Tz35TyR3lKe+hIYNv
+        /TRQuxB5u7JCe6qdP2gWXSU=
+X-Google-Smtp-Source: APiQypK9mdZCXdIzpDfEjHs4j3UvzcmIDXn55ON1zdREUbbhw1jhML6XTzyH72SjApGOVBUCdNH5mQ==
+X-Received: by 2002:a5d:420a:: with SMTP id n10mr4284992wrq.235.1588343960936;
+        Fri, 01 May 2020 07:39:20 -0700 (PDT)
+Received: from localhost.localdomain ([109.126.133.135])
+        by smtp.gmail.com with ESMTPSA id k184sm4087673wmf.9.2020.05.01.07.39.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 May 2020 07:37:19 -0700 (PDT)
-Date:   Fri, 1 May 2020 16:37:16 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Justin He <Justin.He@arm.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kaly Xin <Kaly.Xin@arm.com>
-Subject: Re: [PATCH] vhost: vsock: don't send pkt when vq is not started
-Message-ID: <20200501143716.ln7hjh3vn77ng43i@steredhat>
-References: <20200430021314.6425-1-justin.he@arm.com>
- <20200430082608.wbtqgglmtnd7e5ci@steredhat>
- <AM6PR08MB4069D4AB611B8C8180DC4B9CF7AA0@AM6PR08MB4069.eurprd08.prod.outlook.com>
- <20200430162521.k4b4t3vttfabgqal@steredhat>
- <20200430153929-mutt-send-email-mst@kernel.org>
+        Fri, 01 May 2020 07:39:20 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH liburing] test/sfr: basic test for sync_file_range
+Date:   Fri,  1 May 2020 17:38:11 +0300
+Message-Id: <9a85a351b8a06108260fee1dfcbd901b8055b9a8.1588343872.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200430153929-mutt-send-email-mst@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 03:43:00PM -0400, Michael S. Tsirkin wrote:
-> On Thu, Apr 30, 2020 at 06:25:21PM +0200, Stefano Garzarella wrote:
-> > On Thu, Apr 30, 2020 at 10:06:26AM +0000, Justin He wrote:
-> > > Hi Stefano
-> > > 
-> > > > -----Original Message-----
-> > > > From: Stefano Garzarella <sgarzare@redhat.com>
-> > > > Sent: Thursday, April 30, 2020 4:26 PM
-> > > > To: Justin He <Justin.He@arm.com>
-> > > > Cc: Stefan Hajnoczi <stefanha@redhat.com>; Michael S. Tsirkin
-> > > > <mst@redhat.com>; Jason Wang <jasowang@redhat.com>;
-> > > > kvm@vger.kernel.org; virtualization@lists.linux-foundation.org;
-> > > > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Kaly Xin
-> > > > <Kaly.Xin@arm.com>
-> > > > Subject: Re: [PATCH] vhost: vsock: don't send pkt when vq is not started
-> > > >
-> > > > Hi Jia,
-> > > > thanks for the patch, some comments below:
-> > > >
-> > > > On Thu, Apr 30, 2020 at 10:13:14AM +0800, Jia He wrote:
-> > > > > Ning Bo reported an abnormal 2-second gap when booting Kata container
-> > > > [1].
-> > > > > The unconditional timeout is caused by
-> > > > VSOCK_DEFAULT_CONNECT_TIMEOUT of
-> > > > > connect at client side. The vhost vsock client tries to connect an
-> > > > > initlizing virtio vsock server.
-> > > > >
-> > > > > The abnormal flow looks like:
-> > > > > host-userspace           vhost vsock                       guest vsock
-> > > > > ==============           ===========                       ============
-> > > > > connect()     -------->  vhost_transport_send_pkt_work()   initializing
-> > > > >    |                     vq->private_data==NULL
-> > > > >    |                     will not be queued
-> > > > >    V
-> > > > > schedule_timeout(2s)
-> > > > >                          vhost_vsock_start()  <---------   device ready
-> > > > >                          set vq->private_data
-> > > > >
-> > > > > wait for 2s and failed
-> > > > >
-> > > > > connect() again          vq->private_data!=NULL          recv connecting pkt
-> > > > >
-> > > > > 1. host userspace sends a connect pkt, at that time, guest vsock is under
-> > > > > initializing, hence the vhost_vsock_start has not been called. So
-> > > > > vq->private_data==NULL, and the pkt is not been queued to send to guest.
-> > > > > 2. then it sleeps for 2s
-> > > > > 3. after guest vsock finishes initializing, vq->private_data is set.
-> > > > > 4. When host userspace wakes up after 2s, send connecting pkt again,
-> > > > > everything is fine.
-> > > > >
-> > > > > This fixes it by checking vq->private_data in vhost_transport_send_pkt,
-> > > > > and return at once if !vq->private_data. This makes user connect()
-> > > > > be returned with ECONNREFUSED.
-> > > > >
-> > > > > After this patch, kata-runtime (with vsock enabled) boottime reduces from
-> > > > > 3s to 1s on ThunderX2 arm64 server.
-> > > > >
-> > > > > [1] https://github.com/kata-containers/runtime/issues/1917
-> > > > >
-> > > > > Reported-by: Ning Bo <n.b@live.com>
-> > > > > Signed-off-by: Jia He <justin.he@arm.com>
-> > > > > ---
-> > > > >  drivers/vhost/vsock.c | 8 ++++++++
-> > > > >  1 file changed, 8 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-> > > > > index e36aaf9ba7bd..67474334dd88 100644
-> > > > > --- a/drivers/vhost/vsock.c
-> > > > > +++ b/drivers/vhost/vsock.c
-> > > > > @@ -241,6 +241,7 @@ vhost_transport_send_pkt(struct virtio_vsock_pkt
-> > > > *pkt)
-> > > > >  {
-> > > > >  struct vhost_vsock *vsock;
-> > > > >  int len = pkt->len;
-> > > > > +struct vhost_virtqueue *vq;
-> > > > >
-> > > > >  rcu_read_lock();
-> > > > >
-> > > > > @@ -252,6 +253,13 @@ vhost_transport_send_pkt(struct virtio_vsock_pkt
-> > > > *pkt)
-> > > > >  return -ENODEV;
-> > > > >  }
-> > > > >
-> > > > > +vq = &vsock->vqs[VSOCK_VQ_RX];
-> > > > > +if (!vq->private_data) {
-> > > >
-> > > > I think is better to use vhost_vq_get_backend():
-> > > >
-> > > > if (!vhost_vq_get_backend(&vsock->vqs[VSOCK_VQ_RX])) {
-> > > > ...
-> > > >
-> > > > This function should be called with 'vq->mutex' acquired as explained in
-> > > > the comment, but here we can avoid that, because we are not using the vq,
-> > > > so it is safe, because in vhost_transport_do_send_pkt() we check it again.
-> > > >
-> > > > Please add a comment explaining that.
-> > > >
-> > > 
-> > > Thanks, vhost_vq_get_backend is better. I chose a 5.3 kernel to develop
-> > > and missed this helper.
-> > 
-> > :-)
-> > 
-> > > >
-> > > > As an alternative to this patch, should we kick the send worker when the
-> > > > device is ready?
-> > > >
-> > > > IIUC we reach the timeout because the send worker (that runs
-> > > > vhost_transport_do_send_pkt()) exits immediately since 'vq->private_data'
-> > > > is NULL, and no one will requeue it.
-> > > >
-> > > > Let's do it when we know the device is ready:
-> > > >
-> > > > diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-> > > > index e36aaf9ba7bd..295b5867944f 100644
-> > > > --- a/drivers/vhost/vsock.c
-> > > > +++ b/drivers/vhost/vsock.c
-> > > > @@ -543,6 +543,11 @@ static int vhost_vsock_start(struct vhost_vsock
-> > > > *vsock)
-> > > >                 mutex_unlock(&vq->mutex);
-> > > >         }
-> > > >
-> > > > +       /* Some packets may have been queued before the device was started,
-> > > > +        * let's kick the send worker to send them.
-> > > > +        */
-> > > > +       vhost_work_queue(&vsock->dev, &vsock->send_pkt_work);
-> > > > +
-> > > Yes, it works.
-> > > But do you think a threshold should be set here to prevent the queue
-> > > from being too long? E.g. the client user sends too many connect pkts
-> > > in a short time before the server is completely ready.
-> > 
-> > When the user call the connect() the socket status is moved to
-> > SS_CONNECTING (see net/vmw_vsock/af_vsock.c), so another connect() on
-> > the same socket will receive EALREADY error.
-> > 
-> > If the user uses multiple sockets, the socket layer already check for
-> > any limits, so I don't think we should put a threshold here.
-> > 
-> > > 
-> > > >         mutex_unlock(&vsock->dev.mutex);
-> > > >         return 0;
-> > > >
-> > > > I didn't test it, can you try if it fixes the issue?
-> > > >
-> > > > I'm not sure which is better...
-> > > I don't know, either. Wait for more comments 😊
-> > 
-> > I prefer the second option, because the device is in a transitional
-> > state and a connect can block (for at most two seconds) until the device is
-> > started.
-> > 
-> > For the first option, I'm also not sure if ECONNREFUSED is the right error
-> > to return, maybe is better ENETUNREACH.
-> > 
-> > Cheers,
-> > Stefano
-> 
-> IIRC:
-> 
-> ECONNREFUSED is what one gets when connecting to remote a port which does not
-> yet have a listening socket, so remote sends back RST.
-> ENETUNREACH is when local network's down, so you can't even send a
-> connection request.
-> EHOSTUNREACH is remote network is down.
+Just call it and check that it doesn't hang and returns success.
 
-Thanks for the clarification!
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+---
+ test/fsync.c | 79 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
 
-I was looking at connect(2) man page and there isn't EHOSTUNREACH in the
-ERRORS section :-(
-
-But connect(3p) contains the following that match what you said:
-       ECONNRESET
-              Remote host reset the connection request.
-       ENETUNREACH
-              No route to the network is present.
-       EHOSTUNREACH
-              The  destination host cannot be reached (probably because
-              the host is down or a remote router cannot reach it).
-
-So in this case, I think ENETUNREACH should be the best one, since the
-device is down and we can't send the connection request, but also
-EHOSTUNREACH should fit...
-
-In af_vsock.c we already return ENETUNREACH when the stream is not allowed
-or we don't have a transport to use.
-
-Thanks,
-Stefano
+diff --git a/test/fsync.c b/test/fsync.c
+index 839716a..ee60e0f 100644
+--- a/test/fsync.c
++++ b/test/fsync.c
+@@ -135,6 +135,79 @@ err:
+ 	return 1;
+ }
+ 
++#define FILE_SIZE 1024
++
++static int create_file(const char *file)
++{
++	ssize_t ret;
++	char *buf;
++	int fd;
++
++	buf = malloc(FILE_SIZE);
++	memset(buf, 0xaa, FILE_SIZE);
++
++	fd = open(file, O_WRONLY | O_CREAT, 0644);
++	if (fd < 0) {
++		perror("open file");
++		return 1;
++	}
++	ret = write(fd, buf, FILE_SIZE);
++	close(fd);
++	return ret != FILE_SIZE;
++}
++
++static int test_sync_file_range(struct io_uring *ring)
++{
++	int ret, fd, save_errno;
++	struct io_uring_sqe *sqe;
++	struct io_uring_cqe *cqe;
++
++	if (create_file(".sync_file_range")) {
++		fprintf(stderr, "file creation failed\n");
++		return 1;
++	}
++
++	fd = open(".sync_file_range", O_RDWR);
++	save_errno = errno;
++	unlink(".sync_file_range");
++	errno = save_errno;
++	if (fd < 0) {
++		perror("file open");
++		return 1;
++	}
++
++	sqe = io_uring_get_sqe(ring);
++	if (!sqe) {
++		fprintf(stderr, "sqe get failed\n");
++		return 1;
++	}
++	memset(sqe, 0, sizeof(*sqe));
++	sqe->opcode = IORING_OP_SYNC_FILE_RANGE;
++	sqe->off = 0;
++	sqe->len = 0;
++	sqe->sync_range_flags = 0;
++	sqe->user_data = 1;
++	sqe->fd = fd;
++
++	ret = io_uring_submit(ring);
++	if (ret != 1) {
++		fprintf(stderr, "submit failed: %d\n", ret);
++		return 1;
++	}
++	ret = io_uring_wait_cqe(ring, &cqe);
++	if (ret) {
++		fprintf(stderr, "wait_cqe failed: %d\n", ret);
++		return 1;
++	}
++	if (cqe->res) {
++		fprintf(stderr, "sfr failed: %d\n", cqe->res);
++		return 1;
++	}
++
++	io_uring_cqe_seen(ring, cqe);
++	return 0;
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	struct io_uring ring;
+@@ -159,5 +232,11 @@ int main(int argc, char *argv[])
+ 		return ret;
+ 	}
+ 
++	ret = test_sync_file_range(&ring);
++	if (ret) {
++		fprintf(stderr, "test_sync_file_range failed\n");
++		return ret;
++	}
++
+ 	return 0;
+ }
+-- 
+2.24.0
 
