@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC451C1497
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC121C14F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731088AbgEANlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:41:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41202 "EHLO mail.kernel.org"
+        id S1731735AbgEANoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:44:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731378AbgEANlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:41:00 -0400
+        id S1730973AbgEANoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:44:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79410208DB;
-        Fri,  1 May 2020 13:40:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F4F5216FD;
+        Fri,  1 May 2020 13:44:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340459;
-        bh=vvE3TtarqiqFcQ9034O6c6gzuzlgyDUK67pLiVR1O8U=;
+        s=default; t=1588340657;
+        bh=LHTo9DvQW6BxdBodV8TTM9gnOIZGXIo1XYPR6CZ17V8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FuG2KULItIJE4NP05L+Uz/53dk5bRbGb0oKh3aIFFNpRuef+Qz74HiODfcYI/G3L3
-         szPWvV1sWY8bZL0EilLiybLvrTsM4gn/z8xgolQiItErSs6IRE4xZILABdzKjrFZPV
-         B18zutP+10PX21GnqwcKGKV8bW6YSFIiLr3cdrtc=
+        b=LlDlgSeE3TL31ZwYhajbSe717eatPh/o+mAlWI2cAERXoOCfvBHi5fHcqLhIJ3bvp
+         IobA9BtQrFKBviPAeVFUlPcTBdeg4CMRGj1oHcBqi9Hk0WHXg95fN/CcWJi6q11ZzN
+         4K9sOFODBJ9N4io8Wvf4LxgQhI9bi7wDKLAfRrbE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eugene Syromiatnikov <esyr@redhat.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 76/83] taprio: do not use BIT() in TCA_TAPRIO_ATTR_FLAG_* definitions
-Date:   Fri,  1 May 2020 15:23:55 +0200
-Message-Id: <20200501131542.110508340@linuxfoundation.org>
+        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 083/106] ALSA: hda: call runtime_allow() for all hda controllers
+Date:   Fri,  1 May 2020 15:23:56 +0200
+Message-Id: <20200501131553.663916801@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eugene Syromiatnikov <esyr@redhat.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit 673040c3a82a7564423e09c791e242a846591e30 upstream.
+[ Upstream commit 9a6418487b566503c772cb6e7d3d44e652b019b0 ]
 
-BIT() macro definition is internal to the Linux kernel and is not
-to be used in UAPI headers; replace its usage with the _BITUL() macro
-that is already used elsewhere in the header.
+Before the pci_driver->probe() is called, the pci subsystem calls
+runtime_forbid() and runtime_get_sync() on this pci dev, so only call
+runtime_put_autosuspend() is not enough to enable the runtime_pm on
+this device.
 
-Fixes: 9c66d1564676 ("taprio: Add support for hardware offloading")
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
-Acked-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+For controllers with vgaswitcheroo feature, the pci/quirks.c will call
+runtime_allow() for this dev, then the controllers could enter
+rt_idle/suspend/resume, but for non-vgaswitcheroo controllers like
+Intel hda controllers, the runtime_pm is not enabled because the
+runtime_allow() is not called.
 
+Since it is no harm calling runtime_allow() twice, here let hda
+driver call runtime_allow() for all controllers. Then the runtime_pm
+is enabled on all controllers after the put_autosuspend() is called.
+
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20200414142725.6020-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/uapi/linux/pkt_sched.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/hda_intel.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/include/uapi/linux/pkt_sched.h
-+++ b/include/uapi/linux/pkt_sched.h
-@@ -1160,8 +1160,8 @@ enum {
-  *       [TCA_TAPRIO_ATTR_SCHED_ENTRY_INTERVAL]
-  */
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 4f6d8a4b38452..59b60b1f26f80 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2339,6 +2339,7 @@ static int azx_probe_continue(struct azx *chip)
  
--#define TCA_TAPRIO_ATTR_FLAG_TXTIME_ASSIST	BIT(0)
--#define TCA_TAPRIO_ATTR_FLAG_FULL_OFFLOAD	BIT(1)
-+#define TCA_TAPRIO_ATTR_FLAG_TXTIME_ASSIST	_BITUL(0)
-+#define TCA_TAPRIO_ATTR_FLAG_FULL_OFFLOAD	_BITUL(1)
+ 	if (azx_has_pm_runtime(chip)) {
+ 		pm_runtime_use_autosuspend(&pci->dev);
++		pm_runtime_allow(&pci->dev);
+ 		pm_runtime_put_autosuspend(&pci->dev);
+ 	}
  
- enum {
- 	TCA_TAPRIO_ATTR_UNSPEC,
+-- 
+2.20.1
+
 
 
