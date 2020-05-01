@@ -2,144 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532591C0B4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 02:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584021C0B5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 02:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgEAAkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 30 Apr 2020 20:40:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726384AbgEAAkH (ORCPT
+        id S1727970AbgEAAt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 30 Apr 2020 20:49:28 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40104 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726384AbgEAAt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 30 Apr 2020 20:40:07 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A59C035494
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 17:40:06 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id t11so2797989lfe.4
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 17:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sRFJfZwHnsJQqFJepe+LvPqS40H3J51FnSnbFsYaAJM=;
-        b=AvUgqN7PB/2m6j6r3ChFqht9nBGFMbV8AKa9u30SyVlVrTUy+Tv1TOIg+df2atuDm9
-         mrQr9/kg7XzvTBlUGO0QByBQRaSsjKRXNdddPP7Y9Z8zjn9Nh1TKQSTFhhdcbHFIGZAm
-         23fUYndzjvvhniZu8dhlkJL4EDHoYqfSv1iW0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sRFJfZwHnsJQqFJepe+LvPqS40H3J51FnSnbFsYaAJM=;
-        b=hYOH9Tm5u6lBXd53ot5IKTZFkP//ikh/jGJF2EHv2YTBrEighdJXCOt8WPzjgjl+xp
-         +G9gCuoY7bXlpW7QXzf7O/c8HvhdLeH4TnOIhUbbEDbPbp2r0UIR7m2mzofwYF6RAaPw
-         vfuK0as242Rngu6cIy31OWkgAi5mRaCxGDK+EMPsN1NCLc3uxwTvoDmrwbVF9+7eim8d
-         EuYtORzvCpL1eQ+5t1fYNcmCDZigV/3Pv25++8va9IZt4dn4Pqg2DLVhGr7mDo0oL9em
-         VglLTMToX3iJz6kte+R0VVFcFWyXNPqtUz6K49Tp9ezj9MhdvEOXHiwfXFfXdSeCjhdH
-         lCuA==
-X-Gm-Message-State: AGi0PuYIV7FqsxwqGCMRsnci1ndUPctdbDKuxWXwZf4ty2ntggT3djP0
-        ri1cjZfcEqIN1dhQyy2FqTSz+QTOOjc=
-X-Google-Smtp-Source: APiQypJZzW3czjSpgLtrvhayHcYwjJ8IepcX1vk8L0GQqqvG1sppDQYvz02PGcnLYPJf/mqmLF7xIQ==
-X-Received: by 2002:ac2:4304:: with SMTP id l4mr818589lfh.87.1588293604399;
-        Thu, 30 Apr 2020 17:40:04 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id p14sm970206lfe.87.2020.04.30.17.40.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 17:40:03 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id w20so1351071ljj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 30 Apr 2020 17:40:02 -0700 (PDT)
-X-Received: by 2002:a2e:814e:: with SMTP id t14mr886854ljg.204.1588293602471;
- Thu, 30 Apr 2020 17:40:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wiMs=A90np0Hv5WjHY8HXQWpgtuq-xrrJvyk7_pNB4meg@mail.gmail.com>
- <1962EE67-8AD1-409D-963A-4F1E1AB3B865@amacapital.net>
-In-Reply-To: <1962EE67-8AD1-409D-963A-4F1E1AB3B865@amacapital.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 30 Apr 2020 17:39:46 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgeMRm_yhb_fwvmgdaPMYzgXY01cYvw5htHUCTwSzswqg@mail.gmail.com>
-Message-ID: <CAHk-=wgeMRm_yhb_fwvmgdaPMYzgXY01cYvw5htHUCTwSzswqg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Replace and improve "mcsafe" with copy_safe()
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        stable <stable@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Erwin Tsaur <erwin.tsaur@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 30 Apr 2020 20:49:26 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0410nMRJ030314;
+        Fri, 1 May 2020 00:49:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=7kqQDAeQl0l0aYzQ7rQfhAPkIJYa5BicloGh5FRHiGU=;
+ b=BxdaX6Bchfr+lWkpaYeHMXzelXRozRs9ExpYJAWpqJC4MgBjM/XlteJ8p65v2J65f9Uz
+ p+X8mTBltQNx87IwIO+iUucdJOInyIlxIJePP4Cbvia/wlZM9ZftbG06u4VfSoEOZbwU
+ wOCyh7JbIA3e6pshngCuQOyLw1X9xSwqCzibgo6mmHRAA9DKeE301rTZGUeKFuLnRzSP
+ MiD/8k64LTI2+v1tlISZWx1/v3vNe92sZvHes0fYeu83qbQRgfpaJhJakMrY5dfI9QdL
+ mDUjBRmeDSZdcBITD1Us30xvBTm5gmthFenzPAyT5kr9W7ClsLyeGX/zzDdJTdYg2eAO 2Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 30r7f5rb4p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 01 May 2020 00:49:22 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0410mGOL115929;
+        Fri, 1 May 2020 00:49:19 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 30qtg29hbt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 01 May 2020 00:49:18 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0410nH6I014270;
+        Fri, 1 May 2020 00:49:17 GMT
+Received: from ca-dev-arm29.us.oracle.com (/10.129.136.23)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 30 Apr 2020 17:49:17 -0700
+From:   Henry Willard <henry.willard@oracle.com>
+To:     <akpm@linux-foundation.org>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mm: Limit boost_watermark on small zones.
+Date:   Thu, 30 Apr 2020 17:49:08 -0700
+Message-Id: <1588294148-6586-1-git-send-email-henry.willard@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 adultscore=0
+ mlxlogscore=999 phishscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2005010001
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9607 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 priorityscore=1501 adultscore=0 mlxlogscore=999
+ clxscore=1011 phishscore=0 impostorscore=0 suspectscore=3 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2005010001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 5:23 PM Andy Lutomirski <luto@amacapital.net> wrote=
-:
->
-> > But anyway, I don't hate something like "copy_to_user_fallible()"
-> > conceptually. The naming needs to be fixed, in that "user" can always
-> > take a fault, so it's the _source_ that can fault, not the "user"
-> > part.
->
-> I don=E2=80=99t like this.  =E2=80=9Cuser=E2=80=9D already implied that b=
-asically anything can be wrong with the memory
+Commit 1c30844d2dfe ("mm: reclaim small amounts of memory when an external
+fragmentation event occurs") adds a boost_watermark() function which
+increases the min watermark in a zone by at least pageblock_nr_pages or
+the number of pages in a page block. On Arm64, with 64K pages and 512M
+huge pages, this is 8192 pages or 512M. It does this regardless of the
+number of managed pages managed in the zone or the likelihood of success.
+This can put the zone immediately under water in terms of allocating pages
+from the zone, and can cause a small machine to fail immediately due to
+OoM. Unlike set_recommended_min_free_kbytes(), which substantially
+increases min_free_kbytes and is tied to THP, boost_watermark() can be
+called even if THP is not active. The problem is most likely to appear
+on architectures such as Arm64 where pageblock_nr_pages is very large.
 
-Maybe I didn't explain.
+It is desirable to run the kdump capture kernel in as small a space as
+possible to avoid wasting memory. In some architectures, such as Arm64,
+there are restrictions on where the capture kernel can run, and therefore,
+the space available. A capture kernel running in 768M can fail due to OoM
+immediately after boost_watermark() sets the min in zone DMA32, where
+most of the memory is, to 512M. It fails even though there is over 500M of
+free memory. With boost_watermark() suppressed, the capture kernel can run
+successfully in 448M.
 
-"user" already implies faulting. We agree.
+This patch limits boost_watermark() to boosting a zone's min watermark only
+when there are enough pages that the boost will produce positive results.
+In this case that is estimated to be four times as many pages as
+pageblock_nr_pages.
 
-And since we by definition cannot know what the user has mapped into
-user space, *every* normal copy_to_user() has to be able to handle
-whatever faults that throws at us.
+Signed-off-by: Henry Willard <henry.willard@oracle.com>
+---
+ mm/page_alloc.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-The reason I dislike "copy_to_user_fallible()" is that the user side
-already has that 'fallible".
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 69827d4fa052..67805e794660 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2400,6 +2400,14 @@ static inline void boost_watermark(struct zone *zone)
+ 
+ 	if (!watermark_boost_factor)
+ 		return;
++	/*
++	 * Don't bother in zones that are unlikely to produce results.
++	 * On small machines, including kdump capture kernels running
++	 * in a small area, boosting the watermark can cause an out of
++	 * memory situation immediately.
++	 */
++	if ((pageblock_nr_pages * 4) > zone_managed_pages(zone))
++		return;
+ 
+ 	max_boost = mult_frac(zone->_watermark[WMARK_HIGH],
+ 			watermark_boost_factor, 10000);
+-- 
+1.8.3.1
 
-If it's the _source_ being "fallible" (it really needs a better name -
-I will not call it just "f") then it should be "copy_f_to_user()".
-
-That would be ok.
-
-So "copy_f_to_user()" makes sense. But "copy_to_user_f()" does not.
-That puts the "f" on the "user", which we already know can fault.
-
-See what I want in the name? I want the name to say which side can
-cause problems!
-
-If you are copying memory from some f source, it must not be
-"copy_safe()". That doesn't say if the _source_ is f, or the
-destination is f.
-
-So "copy_to_f()" makes sense (we don't say "copy_kernel_to_user()" -
-the "normal" case is silent), and "copy_from_f()" makes sense.
-"copy_in_f()" makes sense too.
-
-But not this "randomly copy some randomly f memory area that I don't
-know if it's the source or the destination".
-
-Sometimes you may then use a common implementation for the different
-directions - if that works on the architecture.
-
-For example, "copy_to_user()" and "copy_from_user()" on x86 both end
-up internally using a shared "copy_user_generic()" implementation. I
-wish that wasn't the case (when I asked for what was to become
-STAC/CLAC, I asked for one that could determine which direction of a
-"rep movs" could touch user space), but it so happens that the
-implementations end up being symmetric on x86.
-
-But that's a pure implementation issue, and it very much is not going
-to be true in general, and it shouldn't be exposed to users as such
-(and we obviously don't).
-
-                Linus
