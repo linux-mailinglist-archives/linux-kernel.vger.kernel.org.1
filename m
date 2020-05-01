@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB43C1C1CF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557C41C1D18
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730507AbgEASWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 14:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        id S1730946AbgEASX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 14:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730460AbgEASWM (ORCPT
+        by vger.kernel.org with ESMTP id S1730655AbgEASWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 14:22:12 -0400
+        Fri, 1 May 2020 14:22:25 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722A1C08E859;
-        Fri,  1 May 2020 11:22:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E2FC08E934;
+        Fri,  1 May 2020 11:22:25 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jUaIa-0003X6-73; Fri, 01 May 2020 20:22:08 +0200
+        id 1jUaIa-0003XS-P2; Fri, 01 May 2020 20:22:08 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id AD8C21C0085;
-        Fri,  1 May 2020 20:22:07 +0200 (CEST)
-Date:   Fri, 01 May 2020 18:22:07 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 6C4B81C0450;
+        Fri,  1 May 2020 20:22:08 +0200 (CEST)
+Date:   Fri, 01 May 2020 18:22:08 -0000
 From:   "tip-bot2 for Muchun Song" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Use __this_cpu_read() in wake_wide()
+Subject: [tip: sched/core] sched/fair: Mark sched_init_granularity __init
 Cc:     Muchun Song <songmuchun@bytedance.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200421144123.33580-1-songmuchun@bytedance.com>
-References: <20200421144123.33580-1-songmuchun@bytedance.com>
+In-Reply-To: <20200406074750.56533-1-songmuchun@bytedance.com>
+References: <20200406074750.56533-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Message-ID: <158835732766.8414.17788678090839078001.tip-bot2@tip-bot2>
+Message-ID: <158835732841.8414.7492668002654800060.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -50,35 +51,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     17c891ab349138e8d8a59ca2700f42ce8af96f4e
-Gitweb:        https://git.kernel.org/tip/17c891ab349138e8d8a59ca2700f42ce8af96f4e
+Commit-ID:     f38f12d1e0811c0ee59260b2bdadedf99e16c4af
+Gitweb:        https://git.kernel.org/tip/f38f12d1e0811c0ee59260b2bdadedf99e16c4af
 Author:        Muchun Song <songmuchun@bytedance.com>
-AuthorDate:    Tue, 21 Apr 2020 22:41:23 +08:00
+AuthorDate:    Mon, 06 Apr 2020 15:47:50 +08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Thu, 30 Apr 2020 20:14:41 +02:00
 
-sched/fair: Use __this_cpu_read() in wake_wide()
+sched/fair: Mark sched_init_granularity __init
 
-The code is executed with preemption(and interrupts) disabled,
-so it's safe to use __this_cpu_write().
+Function sched_init_granularity() is only called from __init
+functions, so mark it __init as well.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200421144123.33580-1-songmuchun@bytedance.com
+Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://lkml.kernel.org/r/20200406074750.56533-1-songmuchun@bytedance.com
 ---
  kernel/sched/fair.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index cd7fd7e..46b7bd4 100644
+index fac5b2f..cd7fd7e 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -5718,7 +5718,7 @@ static int wake_wide(struct task_struct *p)
- {
- 	unsigned int master = current->wakee_flips;
- 	unsigned int slave = p->wakee_flips;
--	int factor = this_cpu_read(sd_llc_size);
-+	int factor = __this_cpu_read(sd_llc_size);
+@@ -191,7 +191,7 @@ static void update_sysctl(void)
+ #undef SET_SYSCTL
+ }
  
- 	if (master < slave)
- 		swap(master, slave);
+-void sched_init_granularity(void)
++void __init sched_init_granularity(void)
+ {
+ 	update_sysctl();
+ }
