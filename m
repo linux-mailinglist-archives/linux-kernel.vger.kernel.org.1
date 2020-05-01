@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95A01C16DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE471C16DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731937AbgEANyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:54:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33966 "EHLO mail.kernel.org"
+        id S1731115AbgEANxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:53:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729683AbgEANfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:35:39 -0400
+        id S1730791AbgEANfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:35:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C965208DB;
-        Fri,  1 May 2020 13:35:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B84FD24954;
+        Fri,  1 May 2020 13:35:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340138;
-        bh=UqhS9hHQWgitHhDrsu7ZAJsA5DU3n0Sh+/M/qt600UU=;
+        s=default; t=1588340151;
+        bh=Mcz1s08FCgfrrpakRyvfiHZc58gglHOpp4TXO1Or6+0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WRapGDqqtvSZd1hKkdp88Mueo22xo6gaazxM2x3zgypHYuzo0vZd1ixWKchLQhFxN
-         S3NVvurmgX+0+QlNkhthi/6NFHZaS15h4VcGswqiiH0O1ZY5bN1ESvWmaNQbUDLTmG
-         As4LhTy0JkaLSuLOli2gHCAu8Y5I25pYLcI00rig=
+        b=trNTNP0xxTIToT/czb4S9mSm5MaS0zRABdxl26TV262Mh1tcHPmq3bgVAD8q0n9Dw
+         AkFaCEaPC0zVUVUolLa42h+HAa++Cs1PRwKbifOVikoRfIcg6UJiwtOdd1Tq3JUsLn
+         Pe3lgg6Lc8thlSuZ5zT9/Gbw/9xYKSe6tTwR1LLc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
-        Frank Rowand <frank.rowand@sony.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 109/117] of: unittest: kmemleak on changeset destroy
-Date:   Fri,  1 May 2020 15:22:25 +0200
-Message-Id: <20200501131558.164939029@linuxfoundation.org>
+        stable@vger.kernel.org, Clement Leger <cleger@kalray.eu>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Doug Anderson <dianders@chromium.org>
+Subject: [PATCH 4.19 01/46] remoteproc: Fix wrong rvring index computation
+Date:   Fri,  1 May 2020 15:22:26 +0200
+Message-Id: <20200501131459.150148012@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
+References: <20200501131457.023036302@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,44 +46,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+From: Clement Leger <cleger@kalray.eu>
 
-[ Upstream commit b3fb36ed694b05738d45218ea72cf7feb10ce2b1 ]
+commit 00a0eec59ddbb1ce966b19097d8a8d2f777e726a upstream.
 
-kmemleak reports several memory leaks from devicetree unittest.
-This is the fix for problem 1 of 5.
+Index of rvring is computed using pointer arithmetic. However, since
+rvring->rvdev->vring is the base of the vring array, computation
+of rvring idx should be reversed. It previously lead to writing at negative
+indices in the resource table.
 
-of_unittest_changeset() reaches deeply into the dynamic devicetree
-functions.  Several nodes were left with an elevated reference
-count and thus were not properly cleaned up.  Fix the reference
-counts so that the memory will be freed.
+Signed-off-by: Clement Leger <cleger@kalray.eu>
+Link: https://lore.kernel.org/r/20191004073736.8327-1-cleger@kalray.eu
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Doug Anderson <dianders@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 201c910bd689 ("of: Transactional DT support.")
-Reported-by: Erhard F. <erhard_f@mailbox.org>
-Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/unittest.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/remoteproc/remoteproc_core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index 55c98f119df22..e7e6dd07f2150 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -605,6 +605,10 @@ static void __init of_unittest_changeset(void)
- 	unittest(!of_changeset_revert(&chgset), "revert failed\n");
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -289,7 +289,7 @@ void rproc_free_vring(struct rproc_vring
+ {
+ 	int size = PAGE_ALIGN(vring_size(rvring->len, rvring->align));
+ 	struct rproc *rproc = rvring->rvdev->rproc;
+-	int idx = rvring->rvdev->vring - rvring;
++	int idx = rvring - rvring->rvdev->vring;
+ 	struct fw_rsc_vdev *rsc;
  
- 	of_changeset_destroy(&chgset);
-+
-+	of_node_put(n1);
-+	of_node_put(n2);
-+	of_node_put(n21);
- #endif
- }
- 
--- 
-2.20.1
-
+ 	dma_free_coherent(rproc->dev.parent, size, rvring->va, rvring->dma);
 
 
