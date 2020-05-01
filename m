@@ -2,173 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8B01C15B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F5E1C13B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730282AbgEANcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:32:19 -0400
-Received: from alexa-out-blr-01.qualcomm.com ([103.229.18.197]:23307 "EHLO
-        alexa-out-blr-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730254AbgEANcM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730263AbgEANcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 1 May 2020 09:32:12 -0400
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by alexa-out-blr-01.qualcomm.com with ESMTP/TLS/AES256-SHA; 01 May 2020 19:01:32 +0530
-Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 01 May 2020 19:01:09 +0530
-Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
-        id EEBE4487F; Fri,  1 May 2020 19:01:07 +0530 (IST)
-From:   Kalyan Thota <kalyan_t@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
-Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
-        linux-kernel@vger.kernel.org, robdclark@gmail.com,
-        seanpaul@chromium.org, hoegsberg@chromium.org,
-        dianders@chromium.org, jsanka@codeaurora.org,
-        mkrishn@codeaurora.org, travitej@codeaurora.org,
-        nganji@codeaurora.org
-Subject: [PATCH] drm/msm/dpu: ensure device suspend happens during PM sleep
-Date:   Fri,  1 May 2020 19:01:03 +0530
-Message-Id: <1588339863-1322-1-git-send-email-kalyan_t@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729353AbgEANcG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:32:06 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40510C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 06:32:06 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id z6so6342715wml.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 06:32:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CwB8SxSSgbYRqBwwUAkIWpdYejHT7kvKRjFIv7ghtlc=;
+        b=Zv2DUkeX0KLYIj51PZCGPiis13gH28irsAEo3T69bAM2sws/ALOnM9thSDsY6gT3V1
+         oVXhXrxAjKRN23sgEFKZQ9pz9KA6bEthwgNAWdgX60GselC+r04QNerVpTnj14R9aODI
+         raczwgYvDHF4z015qXs+dQh0HxLXopjDOY4daNDxMu6eJBsgMuwyBLAiAIgBPGhWVDCQ
+         SMY3gVjIB4jSDTYghOJjk+nD6RFc0vycq9GbTlZUmtICrD/ImCajAjuHnoBMuTWeS0Ld
+         /CasZuOzbRVvH4grnHn8i1jSu8PJWpkg12tu0QVgVg0Z/2PBSa0Bwa3VxQ0kBxd8zj0p
+         rR+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CwB8SxSSgbYRqBwwUAkIWpdYejHT7kvKRjFIv7ghtlc=;
+        b=QooiAFL3zxhW3IMW9vuTSWjLbuUk8EBbNBYFfsApxc2dt6AFVGXAbvMQ1RA2ZY9gpr
+         3fBZI14ONG4tXSTnF9xYPNr1X5Dl+4iLDf0QJahDNnED6+bSV7skNlr22SIF5UY/Qavr
+         oa3rdJPx2/9F0YnMiQ9a2l+Nq72YcREyliySql4KXnFg1Hcg8fcmKzY4QFLtQhZFTdqF
+         UXeJxqrqi6+yPWb6xYLB4EoG0lr+M8c1KMMBE7gHV2lbPMlrYYw38KS0aVQnfq4WYXAk
+         Na83ci02oTW+8CkinRJYudwBTy0cfIGdBzoJeHBSSmwU+W1xNHdBWu3XmaJqK3XU1YNm
+         mlAA==
+X-Gm-Message-State: AGi0Pubp54OwWeeA170Q04PwK0P9bZUuvXuLKQm8Dqh0Hm8vtoO3UpD9
+        sKQrnGX52UmGzNUK8619lO5gmQ==
+X-Google-Smtp-Source: APiQypIM0zV3rCKxAnet9INB91hMWd5nvcSwEEe+HmDOGq2ZyIDIQqa7aRKUbOPSlWCxsUu5rhOjfA==
+X-Received: by 2002:a1c:9d0d:: with SMTP id g13mr4251299wme.102.1588339924824;
+        Fri, 01 May 2020 06:32:04 -0700 (PDT)
+Received: from wychelm.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id t17sm4293272wro.2.2020.05.01.06.32.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 May 2020 06:32:03 -0700 (PDT)
+Date:   Fri, 1 May 2020 14:32:02 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>, sumit.garg@linaro.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: Re: [PATCH] kgdboc: Be a bit more robust about handling earlycon
+ leaving
+Message-ID: <20200501133202.GA2402281@wychelm.lan>
+References: <20200430095819.1.Id37f71c69eb21747b9d9e2c7c242be130814b362@changeid>
+ <20200501114943.ioetuxe24gi27bll@holly.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200501114943.ioetuxe24gi27bll@holly.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"The PM core always increments the runtime usage counter
-before calling the ->suspend() callback and decrements it
-after calling the ->resume() callback"
+On Fri, May 01, 2020 at 12:49:43PM +0100, Daniel Thompson wrote:
+> On Thu, Apr 30, 2020 at 09:59:09AM -0700, Douglas Anderson wrote:
+> > The original implementation of kgdboc_earlycon included a comment
+> > about how it was impossible to get notified about the boot console
+> > going away without making changes to the Linux core.  Since folks
+> > often don't want to change the Linux core for kgdb's purposes, the
+> > kgdboc_earlycon implementation did a bit of polling to figure out when
+> > the boot console went away.
+> > 
+> > It turns out, though, that it is possible to get notified about the
+> > boot console going away.  The solution is either clever or a hack
+> > depending on your viewpoint.  ...or, perhaps, a clever hack.  All we
+> > need to do is head-patch the "exit" routine of the boot console.  We
+> > know that "struct console" must be writable because it has a "next"
+> > pointer in it, so we can just put our own exit routine in, do our
+> > stuff, and then call back to the original.
+> 
+> I think I'm in the hack camp on this one!
+> 
+>  
+> > This works great to get notified about the boot console going away.
+> > The (slight) problem is that in the context of the boot console's exit
+> > routine we can't call tty_find_polling_driver().
+> 
+> I presume this is something to do with the tty_mutex?
+> 
+> 
+> > We solve this by
+> > kicking off some work on the system_wq when we get notified and this
+> > works pretty well.
+> 
+> There are some problems with the workqueue approach.
 
-DPU and DSI are managed as runtime devices. When
-suspend is triggered, PM core adds a refcount on all the
-devices and calls device suspend, since usage count is
-already incremented, runtime suspend was not getting called
-and it kept the clocks on which resulted in target not
-entering into XO shutdown.
+... so did a couple of experiments to avoid the workqueue.
 
-Add changes to force suspend on runtime devices during pm sleep.
+It occured to me that, since we have interfered with deinit() then the
+console hasn't actually been uninitialized meaning we could still use it.
+This does exposes us to risks similar to keep_bootcon but in exchange
+there is no window where kgdb is broken (and no need to panic). 
 
-Changes in v1:
- - Remove unnecessary checks in the function
-    _dpu_kms_disable_dpu (Rob Clark).
+My prototype is minimal but I did wonder about ripping out all the
+code to defend against removal of the earlycon and simply keep the
+earlycon around until a new kgdbio handler is installed.
 
-Changes in v2:
- - Avoid using suspend_late to reset the usagecount
-   as suspend_late might not be called during suspend
-   call failures (Doug).
 
-Changes in v3:
- - Use force suspend instead of managing device usage_count
-   via runtime put and get API's to trigger callbacks (Doug).
+Daniel.
 
-Changes in v4:
- - Check the return values of pm_runtime_force_suspend and
-   pm_runtime_force_resume API's and pass appropriately (Doug).
 
-Changes in v5:
- - With v4 patch, test cycle has uncovered issues in device resume.
-
-   On bubs: cmd tx failures were seen as SW is sending panel off
-   commands when the dsi resources are turned off.
-
-   Upon suspend, DRM driver will issue a NULL composition to the
-   dpu, followed by turning off all the HW blocks.
-
-   v5 changes will serialize the NULL commit and resource unwinding
-   by handling them under PM prepare and PM complete phases there by
-   ensuring that clks are on when panel off commands are being
-   processed.
-
-Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c |  2 ++
- drivers/gpu/drm/msm/dsi/dsi.c           |  2 ++
- drivers/gpu/drm/msm/msm_drv.c           | 20 ++++++++++++++++----
- 3 files changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-index ce19f1d..b886d9d 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-@@ -1123,6 +1123,8 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
+diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+index 596213272ec3..05d58f9f38b1 100644
+--- a/drivers/tty/serial/kgdboc.c
++++ b/drivers/tty/serial/kgdboc.c
+@@ -46,6 +46,7 @@ static struct platform_device *kgdboc_pdev;
+ #ifdef CONFIG_KGDB_SERIAL_CONSOLE
+ static struct kgdb_io		kgdboc_earlycon_io_ops;
+ struct console			*earlycon;
++static int                      (*earlycon_orig_exit)(struct console *con);
+ #else /* ! CONFIG_KGDB_SERIAL_CONSOLE */
+ #define earlycon NULL
+ #endif /* ! CONFIG_KGDB_SERIAL_CONSOLE */
+@@ -478,25 +479,28 @@ static void kgdboc_earlycon_put_char(u8 chr)
+ 	earlycon->write(earlycon, &chr, 1);
+ }
  
- static const struct dev_pm_ops dpu_pm_ops = {
- 	SET_RUNTIME_PM_OPS(dpu_runtime_suspend, dpu_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- };
- 
- static const struct of_device_id dpu_dt_match[] = {
-diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
-index 55ea4bc2..62704885 100644
---- a/drivers/gpu/drm/msm/dsi/dsi.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi.c
-@@ -161,6 +161,8 @@ static int dsi_dev_remove(struct platform_device *pdev)
- 
- static const struct dev_pm_ops dsi_pm_ops = {
- 	SET_RUNTIME_PM_OPS(msm_dsi_runtime_suspend, msm_dsi_runtime_resume, NULL)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
- };
- 
- static struct platform_driver dsi_driver = {
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 7d985f8..47d492b 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -1036,7 +1036,7 @@ static int msm_ioctl_submitqueue_close(struct drm_device *dev, void *data,
- };
- 
- #ifdef CONFIG_PM_SLEEP
--static int msm_pm_suspend(struct device *dev)
-+static int msm_pm_prepare(struct device *dev)
+-static void kgdboc_earlycon_pre_exp_handler(void)
++static int kgdboc_earlycon_deferred_exit(struct console *con)
  {
- 	struct drm_device *ddev = dev_get_drvdata(dev);
- 	struct msm_drm_private *priv = ddev->dev_private;
-@@ -1054,18 +1054,28 @@ static int msm_pm_suspend(struct device *dev)
+ 	/*
+-	 * We don't get notified when the boot console is unregistered.
+-	 * Double-check when we enter the debugger.  Unfortunately we
+-	 * can't really unregister ourselves now, so we panic.  We rely
+-	 * on kgdb's ability to detect re-entrancy to make the panic
+-	 * take effect.
+-	 *
+-	 * NOTE: if you're here in the lull when the real console has
+-	 * replaced the boot console but our init hasn't run yet it's
+-	 * possible that the "keep_bootcon" argument may help.
++	 * restoring the exit function ensures the earlycon is
++	 * deinitialized when/if we find a suitable tty
+ 	 */
+-	if (earlycon && !is_earlycon_still_valid())
+-		panic("KGDB earlycon vanished and nothing replaced it\n");
++	con->exit = earlycon_orig_exit;
++
++	return 0;
+ }
+ 
+ static void kgdboc_earlycon_deinit(void)
+ {
++	if (!earlycon)
++		return;
++
++	if (earlycon->exit == kgdboc_earlycon_deferred_exit) {
++		earlycon->exit = earlycon_orig_exit;
++	} else if (earlycon->exit) {
++		earlycon->exit(earlycon);
++	}
++
+ 	earlycon = NULL;
+ }
+ 
+@@ -504,7 +508,6 @@ static struct kgdb_io kgdboc_earlycon_io_ops = {
+ 	.name			= "kgdboc_earlycon",
+ 	.read_char		= kgdboc_earlycon_get_char,
+ 	.write_char		= kgdboc_earlycon_put_char,
+-	.pre_exception		= kgdboc_earlycon_pre_exp_handler,
+ 	.deinit			= kgdboc_earlycon_deinit,
+ 	.is_console		= true,
+ };
+@@ -562,6 +565,9 @@ static int __init kgdboc_earlycon_init(char *opt)
+ 		return 0;
+ 	}
+ 
++	earlycon_orig_exit = con->exit;
++	con->exit = kgdboc_earlycon_deferred_exit;
++
  	return 0;
  }
- 
--static int msm_pm_resume(struct device *dev)
-+static void msm_pm_complete(struct device *dev)
- {
- 	struct drm_device *ddev = dev_get_drvdata(dev);
- 	struct msm_drm_private *priv = ddev->dev_private;
- 	int ret;
- 
- 	if (WARN_ON(!priv->pm_state))
--		return -ENOENT;
-+		return;
- 
- 	ret = drm_atomic_helper_resume(ddev, priv->pm_state);
- 	if (!ret)
- 		priv->pm_state = NULL;
-+}
-+
-+static int msm_pm_resume(struct device *dev)
-+{
-+	int ret;
-+
-+	/* unwind runtime_disable called by force suspend */
-+	pm_runtime_enable(dev);
-+
-+	ret = pm_runtime_resume(dev);
- 
- 	return ret;
- }
-@@ -1102,8 +1112,10 @@ static int msm_runtime_resume(struct device *dev)
- #endif
- 
- static const struct dev_pm_ops msm_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(msm_pm_suspend, msm_pm_resume)
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, msm_pm_resume)
- 	SET_RUNTIME_PM_OPS(msm_runtime_suspend, msm_runtime_resume, NULL)
-+	.prepare = msm_pm_prepare,
-+	.complete = msm_pm_complete,
- };
- 
- /*
--- 
-1.9.1
-
+ early_param("kgdboc_earlycon", kgdboc_earlycon_init);
