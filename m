@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AEC61C166B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8553C1C1446
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729593AbgEANsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:48:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43440 "EHLO mail.kernel.org"
+        id S1730400AbgEANhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:37:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729169AbgEANml (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:42:41 -0400
+        id S1730704AbgEANha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:37:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC6B2208DB;
-        Fri,  1 May 2020 13:42:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 34F7024953;
+        Fri,  1 May 2020 13:37:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340561;
-        bh=I4wRL5poyl2fmkwPf1N4wKbUFGDbAZST9yu47/9xtN0=;
+        s=default; t=1588340249;
+        bh=21jnwet0trPW2Kv3E6ihRnckW6TR5od8KkJAPHwPeqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HiMPLvNSatZzDunN2V39jKaJ9LPX/u1EG9Iq/q9YtVHAbDm83iGsLQzCBBNj3yQCe
-         f7lEci4/dBBBh5s0usxLRlXnf+3hZgPQCAxzjsTR+wqKmMqB4iyZuNaZtB2tL5uWql
-         kpFvteZVwyaHbDyXT4m5RM2n9x/QaQHCYiC5zm0I=
+        b=T/u/k+BlKCXwgMdzKiz/2GtDmsF6atN3Xuu8g1HJDdwvGXGwxMCi7nPjA5Trn1/vW
+         WPe69Gnj2lAJc2mr9R3hygH769MWVX7id8UK/DhJFjm0bBxAwYZ7Pg+0Ds43JTzFuW
+         YoDaiRq00oaY2/jIAWDZIe36A/8b69gz5+X6wkEo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Holger=20Hoffst=C3=A4tte?= 
-        <holger@applied-asynchrony.com>, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 5.6 032/106] hwmon: (drivetemp) Return -ENODATA for invalid temperatures
-Date:   Fri,  1 May 2020 15:23:05 +0200
-Message-Id: <20200501131547.822255949@linuxfoundation.org>
+        stable@vger.kernel.org, Theodore Tso <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 41/46] ext4: increase wait time needed before reuse of deleted inode numbers
+Date:   Fri,  1 May 2020 15:23:06 +0200
+Message-Id: <20200501131513.092895370@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
-References: <20200501131543.421333643@linuxfoundation.org>
+In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
+References: <20200501131457.023036302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Theodore Ts'o <tytso@mit.edu>
 
-commit ed08ebb7124e90a99420bb913d602907d377d03d upstream.
+[ Upstream commit a17a9d935dc4a50acefaf319d58030f1da7f115a ]
 
-Holger Hoffstätte observed that Samsung 850 Pro may return invalid
-temperatures for a short period of time after resume. Return -ENODATA
-to userspace if this is observed.
+Current wait times have proven to be too short to protect against inode
+reuses that lead to metadata inconsistencies.
 
-Fixes:  5b46903d8bf3 ("hwmon: Driver for disk and solid state drives with temperature sensors")
-Reported-by: Holger Hoffstätte <holger@applied-asynchrony.com>
-Cc: Holger Hoffstätte <holger@applied-asynchrony.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Now that we will retry the inode allocation if we can't find any
+recently deleted inodes, it's a lot safer to increase the recently
+deleted time from 5 seconds to a minute.
 
+Link: https://lore.kernel.org/r/20200414023925.273867-1-tytso@mit.edu
+Google-Bug-Id: 36602237
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwmon/drivetemp.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/ext4/ialloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/hwmon/drivetemp.c
-+++ b/drivers/hwmon/drivetemp.c
-@@ -264,12 +264,18 @@ static int drivetemp_get_scttemp(struct
- 		return err;
- 	switch (attr) {
- 	case hwmon_temp_input:
-+		if (!temp_is_valid(buf[SCT_STATUS_TEMP]))
-+			return -ENODATA;
- 		*val = temp_from_sct(buf[SCT_STATUS_TEMP]);
- 		break;
- 	case hwmon_temp_lowest:
-+		if (!temp_is_valid(buf[SCT_STATUS_TEMP_LOWEST]))
-+			return -ENODATA;
- 		*val = temp_from_sct(buf[SCT_STATUS_TEMP_LOWEST]);
- 		break;
- 	case hwmon_temp_highest:
-+		if (!temp_is_valid(buf[SCT_STATUS_TEMP_HIGHEST]))
-+			return -ENODATA;
- 		*val = temp_from_sct(buf[SCT_STATUS_TEMP_HIGHEST]);
- 		break;
- 	default:
+diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+index dafa7e4aaecb9..8876eaad10f68 100644
+--- a/fs/ext4/ialloc.c
++++ b/fs/ext4/ialloc.c
+@@ -665,7 +665,7 @@ static int find_group_other(struct super_block *sb, struct inode *parent,
+  * block has been written back to disk.  (Yes, these values are
+  * somewhat arbitrary...)
+  */
+-#define RECENTCY_MIN	5
++#define RECENTCY_MIN	60
+ #define RECENTCY_DIRTY	300
+ 
+ static int recently_deleted(struct super_block *sb, ext4_group_t group, int ino)
+-- 
+2.20.1
+
 
 
