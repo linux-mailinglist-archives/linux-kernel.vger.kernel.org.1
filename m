@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF1B1C15D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131BB1C171E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730631AbgEANe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:34:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33086 "EHLO mail.kernel.org"
+        id S1730044AbgEAN56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:57:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730621AbgEANez (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:34:55 -0400
+        id S1730042AbgEANaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:30:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5FC44216FD;
-        Fri,  1 May 2020 13:34:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98A77208D6;
+        Fri,  1 May 2020 13:30:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340094;
-        bh=mwgaAzo1QNE7/vkAE3k8Ip6r2zQF3Jx8/e1hmyCNIBs=;
+        s=default; t=1588339852;
+        bh=IvnIlFMbhj0nrYkNzgTz4tdNuMiJpw3099iWLQmHY7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qfSS0ORyTbtfrUCcWT4yHbVXSV8rwkpy45Islf1zmb5MllPj4ZBlKjkItQcVeMLMX
-         w+ZzFRDtNmHAlcCGoKa8t8uJ9wDLEnJLYTHq9kUFm9Pu5VzlyYEg09FiV/PxbTazzG
-         co+hraIHI7mg7xUojhZXuAscazb5FSewMdLGg85I=
+        b=q8NUBnj3Wg3alJyo/6Im9xqDAuKteg5Z78ljgcp4yPhIOkIxFE9eTNLhsqls1vAXh
+         ctXIv1NI1o2K9Nd85/vzNsEr/vY+ULtZ3fowr/VCghfpWSsANVNH8UEDnDVYrJZxDJ
+         ZicmN9htN0PN7QFUjbV9cQRudgJ0iVFy9OBKvzJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.14 091/117] iio:ad7797: Use correct attribute_group
+        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
+        Frank Rowand <frank.rowand@sony.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 73/80] of: unittest: kmemleak on changeset destroy
 Date:   Fri,  1 May 2020 15:22:07 +0200
-Message-Id: <20200501131555.389982024@linuxfoundation.org>
+Message-Id: <20200501131536.264804356@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
-References: <20200501131544.291247695@linuxfoundation.org>
+In-Reply-To: <20200501131513.810761598@linuxfoundation.org>
+References: <20200501131513.810761598@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Frank Rowand <frank.rowand@sony.com>
 
-commit 28535877ac5b2b84f0d394fd67a5ec71c0c48b10 upstream.
+[ Upstream commit b3fb36ed694b05738d45218ea72cf7feb10ce2b1 ]
 
-It should use ad7797_attribute_group in ad7797_info,
-according to commit ("iio:ad7793: Add support for the ad7796 and ad7797").
+kmemleak reports several memory leaks from devicetree unittest.
+This is the fix for problem 1 of 5.
 
-Scale is fixed for the ad7796 and not programmable, hence
-should not have the scale_available attribute.
+of_unittest_changeset() reaches deeply into the dynamic devicetree
+functions.  Several nodes were left with an elevated reference
+count and thus were not properly cleaned up.  Fix the reference
+counts so that the memory will be freed.
 
-Fixes: fd1a8b912841 ("iio:ad7793: Add support for the ad7796 and ad7797")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 201c910bd689 ("of: Transactional DT support.")
+Reported-by: Erhard F. <erhard_f@mailbox.org>
+Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/adc/ad7793.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/of/unittest.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/iio/adc/ad7793.c
-+++ b/drivers/iio/adc/ad7793.c
-@@ -543,7 +543,7 @@ static const struct iio_info ad7797_info
- 	.read_raw = &ad7793_read_raw,
- 	.write_raw = &ad7793_write_raw,
- 	.write_raw_get_fmt = &ad7793_write_raw_get_fmt,
--	.attrs = &ad7793_attribute_group,
-+	.attrs = &ad7797_attribute_group,
- 	.validate_trigger = ad_sd_validate_trigger,
- 	.driver_module = THIS_MODULE,
- };
+diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+index aeb6d3009ae92..144d123f6ea4f 100644
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -539,6 +539,10 @@ static void __init of_unittest_changeset(void)
+ 	unittest(!of_changeset_revert(&chgset), "revert failed\n");
+ 
+ 	of_changeset_destroy(&chgset);
++
++	of_node_put(n1);
++	of_node_put(n2);
++	of_node_put(n21);
+ #endif
+ }
+ 
+-- 
+2.20.1
+
 
 
