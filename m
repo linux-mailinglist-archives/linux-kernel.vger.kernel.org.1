@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8324A1C1635
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A64B1C1461
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728866AbgEANlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:41:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42288 "EHLO mail.kernel.org"
+        id S1730782AbgEANiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:38:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731440AbgEANlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:41:53 -0400
+        id S1731084AbgEANim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:38:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49DA520757;
-        Fri,  1 May 2020 13:41:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A053E205C9;
+        Fri,  1 May 2020 13:38:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340511;
-        bh=44hdycj57AvKGtsmoTNAZ6yda52kBOkJ8+59JoTSlaM=;
+        s=default; t=1588340322;
+        bh=kccyWggFbCwVoneumpdT1HwbogboBp2y4gZSkk5jbJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XbOair3WFl8oWEmdW/IgQboyxnh/CxAfnv92vh/CyUzFGTQsp4PwO2xJDXIZWCGaw
-         b5nh1sP9aOr/nh2fR7i4iKjcR7FQsWrZ69frrZXQ5imxQjo4VAuH7Bvd1sLtg2OV9P
-         bHaBF1HEcgLc6ZYfMeo3Wz6TQafH7BzK6BtISRRA=
+        b=ZlKz1+MCjs3kSxnou/pDVGv7nItJ1gvMO7beTntZpf+U9RA7NxFiX4itSIDxzHvV0
+         jPbWEy+XXiBWG/YEZpx0yV5wLa/XVQYE6F5yAHzZfacDVFV+uZPVrqGmluDZLLA0DM
+         Ua+W32cFD0ZWCL0g+lnm8PKbEySTMmtN+z8v2BiY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 5.6 024/106] nfsd: memory corruption in nfsd4_lock()
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 18/83] ASoC: wm8960: Fix wrong clock after suspend & resume
 Date:   Fri,  1 May 2020 15:22:57 +0200
-Message-Id: <20200501131546.966151031@linuxfoundation.org>
+Message-Id: <20200501131528.700589060@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
-References: <20200501131543.421333643@linuxfoundation.org>
+In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
+References: <20200501131524.004332640@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-commit e1e8399eee72e9d5246d4d1bcacd793debe34dd3 upstream.
+commit 1e060a453c8604311fb45ae2f84f67ed673329b4 upstream.
 
-New struct nfsd4_blocked_lock allocated in find_or_allocate_block()
-does not initialized nbl_list and nbl_lru.
-If conflock allocation fails rollback can call list_del_init()
-access uninitialized fields and corrupt memory.
+After suspend & resume, wm8960_hw_params may be called when
+bias_level is not SND_SOC_BIAS_ON, then wm8960_configure_clocking
+is not called. But if sample rate is changed at that time, then
+the output clock rate will be not correct.
 
-v2: just initialize nbl_list and nbl_lru right after nbl allocation.
+So judgement of bias_level is SND_SOC_BIAS_ON in wm8960_hw_params
+is not necessary and it causes above issue.
 
-Fixes: 76d348fadff5 ("nfsd: have nfsd4_lock use blocking locks for v4.1+ lock")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: 3176bf2d7ccd ("ASoC: wm8960: update pll and clock setting function")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/1587468525-27514-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/nfsd/nfs4state.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/wm8960.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -267,6 +267,8 @@ find_or_allocate_block(struct nfs4_locko
- 	if (!nbl) {
- 		nbl= kmalloc(sizeof(*nbl), GFP_KERNEL);
- 		if (nbl) {
-+			INIT_LIST_HEAD(&nbl->nbl_list);
-+			INIT_LIST_HEAD(&nbl->nbl_lru);
- 			fh_copy_shallow(&nbl->nbl_fh, fh);
- 			locks_init_lock(&nbl->nbl_lock);
- 			nfsd4_init_cb(&nbl->nbl_cb, lo->lo_owner.so_client,
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -860,8 +860,7 @@ static int wm8960_hw_params(struct snd_p
+ 
+ 	wm8960->is_stream_in_use[tx] = true;
+ 
+-	if (snd_soc_component_get_bias_level(component) == SND_SOC_BIAS_ON &&
+-	    !wm8960->is_stream_in_use[!tx])
++	if (!wm8960->is_stream_in_use[!tx])
+ 		return wm8960_configure_clocking(component);
+ 
+ 	return 0;
 
 
