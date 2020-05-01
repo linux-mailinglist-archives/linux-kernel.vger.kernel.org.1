@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51D71C16BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734141C14BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731647AbgEANwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:52:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36972 "EHLO mail.kernel.org"
+        id S1731516AbgEANma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:42:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730979AbgEANhq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:37:46 -0400
+        id S1730592AbgEANmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:42:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7720B24957;
-        Fri,  1 May 2020 13:37:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81627205C9;
+        Fri,  1 May 2020 13:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340264;
-        bh=IN3dBcosvKC2QUoeyRI6B2svCXNsLO997YBPPyyQJAs=;
+        s=default; t=1588340544;
+        bh=9qMdGIHBfu8UAL3/kDkX7rnO57gJouswbtIyHkb7wmw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v090XWm5ipUm0ypRTmUjmDqQJfypChijEz1gZuOZggCRi7Xy18Mka4b8uKWrLRNWY
-         4bmCFwXz3GV+QzyKCtYird8I9jsJiQzYxgF1gjPc/FXfjTCcuL/YC4RyKIskf/m6lc
-         07E5lJDnygT5CNuA0xfJhBDaf+IzFJAwjfPSR3Vo=
+        b=ZCAWu7kjEzJ/2fLgogIat95n5rvZmKQ4hgQ5vVUL/AfllmXwYg4xpldpSVo12ooBo
+         o5dXIiXyh+AZds8nIW3zp3SCp6qGTnVCSP+Ch4I9pnvAp+ge6vuYhUpctdOuMtmuNt
+         QAt2M1VytE3uDuepCvBAnH+rv+0ZQbpuF431xDpo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Wei Liu <wl@xen.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 37/46] xen/xenbus: ensure xenbus_map_ring_valloc() returns proper grant status
+        stable@vger.kernel.org, Ann T Ropea <bedhanger@gmx.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 5.6 029/106] hwmon: (drivetemp) Use drivetemps true module name in Kconfig section
 Date:   Fri,  1 May 2020 15:23:02 +0200
-Message-Id: <20200501131511.871004246@linuxfoundation.org>
+Message-Id: <20200501131547.479111909@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
-References: <20200501131457.023036302@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Ann T Ropea <bedhanger@gmx.de>
 
-[ Upstream commit 6b51fd3f65a22e3d1471b18a1d56247e246edd46 ]
+commit 6bdf8f3efe867c5893e27431a555e41f54ed7f9a upstream.
 
-xenbus_map_ring_valloc() maps a ring page and returns the status of the
-used grant (0 meaning success).
+The addition of the support for reading the temperature of ATA drives as
+per commit 5b46903d8bf3 ("hwmon: Driver for disk and solid state drives
+with temperature sensors") lists in the respective Kconfig section the
+name of the module to be optionally built as "satatemp".
 
-There are Xen hypervisors which might return the value 1 for the status
-of a failed grant mapping due to a bug. Some callers of
-xenbus_map_ring_valloc() test for errors by testing the returned status
-to be less than zero, resulting in no error detected and crashing later
-due to a not available ring page.
+However, building the kernel modules with "CONFIG_SENSORS_DRIVETEMP=m",
+does not generate a file named "satatemp.ko".
 
-Set the return value of xenbus_map_ring_valloc() to GNTST_general_error
-in case the grant status reported by Xen is greater than zero.
+Instead, the rest of the original commit uses the term "drivetemp" and
+a file named "drivetemp.ko" ends up in the kernel's modules directory.
+This file has the right ingredients:
 
-This is part of XSA-316.
+	$ strings /path/to/drivetemp.ko | grep ^description
+	description=Hard drive temperature monitor
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Wei Liu <wl@xen.org>
-Link: https://lore.kernel.org/r/20200326080358.1018-1-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+and modprobing it produces the expected result:
+
+	# drivetemp is not loaded
+	$ sensors -u drivetemp-scsi-4-0
+	Specified sensor(s) not found!
+	$ sudo modprobe drivetemp
+	$ sensors -u drivetemp-scsi-4-0
+	drivetemp-scsi-4-0
+	Adapter: SCSI adapter
+	temp1:
+	  temp1_input: 35.000
+	  temp1_max: 60.000
+	  temp1_min: 0.000
+	  temp1_crit: 70.000
+	  temp1_lcrit: -40.000
+	  temp1_lowest: 20.000
+	  temp1_highest: 36.000
+
+Fix Kconfig by referring to the true name of the module.
+
+Fixes: 5b46903d8bf3 ("hwmon: Driver for disk and solid state drives with temperature sensors")
+Signed-off-by: Ann T Ropea <bedhanger@gmx.de>
+Link: https://lore.kernel.org/r/20200406235521.185309-1-bedhanger@gmx.de
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/xen/xenbus/xenbus_client.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/hwmon/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/xen/xenbus/xenbus_client.c b/drivers/xen/xenbus/xenbus_client.c
-index a1c17000129ba..e94a61eaeceb0 100644
---- a/drivers/xen/xenbus/xenbus_client.c
-+++ b/drivers/xen/xenbus/xenbus_client.c
-@@ -450,7 +450,14 @@ EXPORT_SYMBOL_GPL(xenbus_free_evtchn);
- int xenbus_map_ring_valloc(struct xenbus_device *dev, grant_ref_t *gnt_refs,
- 			   unsigned int nr_grefs, void **vaddr)
- {
--	return ring_ops->map(dev, gnt_refs, nr_grefs, vaddr);
-+	int err;
-+
-+	err = ring_ops->map(dev, gnt_refs, nr_grefs, vaddr);
-+	/* Some hypervisors are buggy and can return 1. */
-+	if (err > 0)
-+		err = GNTST_general_error;
-+
-+	return err;
- }
- EXPORT_SYMBOL_GPL(xenbus_map_ring_valloc);
+--- a/drivers/hwmon/Kconfig
++++ b/drivers/hwmon/Kconfig
+@@ -403,7 +403,7 @@ config SENSORS_DRIVETEMP
+ 	  hard disk drives.
  
--- 
-2.20.1
-
+ 	  This driver can also be built as a module. If so, the module
+-	  will be called satatemp.
++	  will be called drivetemp.
+ 
+ config SENSORS_DS620
+ 	tristate "Dallas Semiconductor DS620"
 
 
