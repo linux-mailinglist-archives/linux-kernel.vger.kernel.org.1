@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C311C1458
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993961C1439
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729117AbgEANi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:38:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37772 "EHLO mail.kernel.org"
+        id S1730923AbgEANhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:37:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731049AbgEANiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:38:18 -0400
+        id S1730913AbgEANgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:36:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1CD124953;
-        Fri,  1 May 2020 13:38:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C92152173E;
+        Fri,  1 May 2020 13:36:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340297;
-        bh=lcefXzZ4EzHhJc4wmjHG3oX6zptAVUI00YV1nUfJzRg=;
+        s=default; t=1588340215;
+        bh=Mi2EeL3jHCWIbg8Moz3TNZ/gICusH4EaR9zxNVDG98U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z56XA2E/WI09KSNUKOwiqwK+d40xSsIRcmnAM7MsUtBn1sRBzpc0B5jlMEB5duoXB
-         5q7jC84JqzpFILL2E+p7nrBRBTzKiBHb3GyqHBYv67QP2k2NeFs4qUvMbPnFnWzl+G
-         mKf1dkADZIUIiXKvCr2y3OgHNFtGarlFA5/5x5YE=
+        b=A704BlUBxms2tvuOuWIFHQOED2tuGIjqUEt0oih7YI1FsV/T00NXh5JsbCSY668Vq
+         2m733FO1xaOiVkO4b1klgL11YNAF0RYt+aff3lfLT1Skd69trwdLpZ+29JFIVLI6Nz
+         ZcO1YUOgIx40VSYKSHHogmuaXrjMhdjgHClBJ7Ag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 5.4 21/83] bpf: Forbid XADD on spilled pointers for unprivileged users
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Borislav Petkov <bp@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 35/46] objtool: Fix CONFIG_UBSAN_TRAP unreachable warnings
 Date:   Fri,  1 May 2020 15:23:00 +0200
-Message-Id: <20200501131529.491727486@linuxfoundation.org>
+Message-Id: <20200501131511.262749709@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
+References: <20200501131457.023036302@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,139 +48,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jann Horn <jannh@google.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-commit 6e7e63cbb023976d828cdb22422606bf77baa8a9 upstream.
+[ Upstream commit bd841d6154f5f41f8a32d3c1b0bc229e326e640a ]
 
-When check_xadd() verifies an XADD operation on a pointer to a stack slot
-containing a spilled pointer, check_stack_read() verifies that the read,
-which is part of XADD, is valid. However, since the placeholder value -1 is
-passed as `value_regno`, check_stack_read() can only return a binary
-decision and can't return the type of the value that was read. The intent
-here is to verify whether the value read from the stack slot may be used as
-a SCALAR_VALUE; but since check_stack_read() doesn't check the type, and
-the type information is lost when check_stack_read() returns, this is not
-enforced, and a malicious user can abuse XADD to leak spilled kernel
-pointers.
+CONFIG_UBSAN_TRAP causes GCC to emit a UD2 whenever it encounters an
+unreachable code path.  This includes __builtin_unreachable().  Because
+the BUG() macro uses __builtin_unreachable() after it emits its own UD2,
+this results in a double UD2.  In this case objtool rightfully detects
+that the second UD2 is unreachable:
 
-Fix it by letting check_stack_read() verify that the value is usable as a
-SCALAR_VALUE if no type information is passed to the caller.
+  init/main.o: warning: objtool: repair_env_string()+0x1c8: unreachable instruction
 
-To be able to use __is_pointer_value() in check_stack_read(), move it up.
+We weren't able to figure out a way to get rid of the double UD2s, so
+just silence the warning.
 
-Fix up the expected unprivileged error message for a BPF selftest that,
-until now, assumed that unprivileged users can use XADD on stack-spilled
-pointers. This also gives us a test for the behavior introduced in this
-patch for free.
-
-In theory, this could also be fixed by forbidding XADD on stack spills
-entirely, since XADD is a locked operation (for operations on memory with
-concurrency) and there can't be any concurrency on the BPF stack; but
-Alexei has said that he wants to keep XADD on stack slots working to avoid
-changes to the test suite [1].
-
-The following BPF program demonstrates how to leak a BPF map pointer as an
-unprivileged user using this bug:
-
-    // r7 = map_pointer
-    BPF_LD_MAP_FD(BPF_REG_7, small_map),
-    // r8 = launder(map_pointer)
-    BPF_STX_MEM(BPF_DW, BPF_REG_FP, BPF_REG_7, -8),
-    BPF_MOV64_IMM(BPF_REG_1, 0),
-    ((struct bpf_insn) {
-      .code  = BPF_STX | BPF_DW | BPF_XADD,
-      .dst_reg = BPF_REG_FP,
-      .src_reg = BPF_REG_1,
-      .off = -8
-    }),
-    BPF_LDX_MEM(BPF_DW, BPF_REG_8, BPF_REG_FP, -8),
-
-    // store r8 into map
-    BPF_MOV64_REG(BPF_REG_ARG1, BPF_REG_7),
-    BPF_MOV64_REG(BPF_REG_ARG2, BPF_REG_FP),
-    BPF_ALU64_IMM(BPF_ADD, BPF_REG_ARG2, -4),
-    BPF_ST_MEM(BPF_W, BPF_REG_ARG2, 0, 0),
-    BPF_EMIT_CALL(BPF_FUNC_map_lookup_elem),
-    BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-    BPF_EXIT_INSN(),
-    BPF_STX_MEM(BPF_DW, BPF_REG_0, BPF_REG_8, 0),
-
-    BPF_MOV64_IMM(BPF_REG_0, 0),
-    BPF_EXIT_INSN()
-
-[1] https://lore.kernel.org/bpf/20200416211116.qxqcza5vo2ddnkdq@ast-mbp.dhcp.thefacebook.com/
-
-Fixes: 17a5267067f3 ("bpf: verifier (add verifier core)")
-Signed-off-by: Jann Horn <jannh@google.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200417000007.10734-1-jannh@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/6653ad73c6b59c049211bd7c11ed3809c20ee9f5.1585761021.git.jpoimboe@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c                                    |   28 ++++++++++-----
- tools/testing/selftests/bpf/verifier/value_illegal_alu.c |    1 
- 2 files changed, 20 insertions(+), 9 deletions(-)
+ tools/objtool/check.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1866,6 +1866,15 @@ static bool register_is_const(struct bpf
- 	return reg->type == SCALAR_VALUE && tnum_is_const(reg->var_off);
- }
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 9479c74af9baf..4613d796492ab 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2086,14 +2086,27 @@ static bool ignore_unreachable_insn(struct instruction *insn)
+ 	    !strcmp(insn->sec->name, ".altinstr_aux"))
+ 		return true;
  
-+static bool __is_pointer_value(bool allow_ptr_leaks,
-+			       const struct bpf_reg_state *reg)
-+{
-+	if (allow_ptr_leaks)
++	if (!insn->func)
 +		return false;
 +
-+	return reg->type != SCALAR_VALUE;
-+}
++	/*
++	 * CONFIG_UBSAN_TRAP inserts a UD2 when it sees
++	 * __builtin_unreachable().  The BUG() macro has an unreachable() after
++	 * the UD2, which causes GCC's undefined trap logic to emit another UD2
++	 * (or occasionally a JMP to UD2).
++	 */
++	if (list_prev_entry(insn, list)->dead_end &&
++	    (insn->type == INSN_BUG ||
++	     (insn->type == INSN_JUMP_UNCONDITIONAL &&
++	      insn->jump_dest && insn->jump_dest->type == INSN_BUG)))
++		return true;
 +
- static void save_register_state(struct bpf_func_state *state,
- 				int spi, struct bpf_reg_state *reg)
- {
-@@ -2056,6 +2065,16 @@ static int check_stack_read(struct bpf_v
- 			 * which resets stack/reg liveness for state transitions
- 			 */
- 			state->regs[value_regno].live |= REG_LIVE_WRITTEN;
-+		} else if (__is_pointer_value(env->allow_ptr_leaks, reg)) {
-+			/* If value_regno==-1, the caller is asking us whether
-+			 * it is acceptable to use this value as a SCALAR_VALUE
-+			 * (e.g. for XADD).
-+			 * We must not allow unprivileged callers to do that
-+			 * with spilled pointers.
-+			 */
-+			verbose(env, "leaking pointer from stack off %d\n",
-+				off);
-+			return -EACCES;
- 		}
- 		mark_reg_read(env, reg, reg->parent, REG_LIVE_READ64);
- 	} else {
-@@ -2416,15 +2435,6 @@ static int check_sock_access(struct bpf_
- 	return -EACCES;
- }
- 
--static bool __is_pointer_value(bool allow_ptr_leaks,
--			       const struct bpf_reg_state *reg)
--{
--	if (allow_ptr_leaks)
+ 	/*
+ 	 * Check if this (or a subsequent) instruction is related to
+ 	 * CONFIG_UBSAN or CONFIG_KASAN.
+ 	 *
+ 	 * End the search at 5 instructions to avoid going into the weeds.
+ 	 */
+-	if (!insn->func)
 -		return false;
--
--	return reg->type != SCALAR_VALUE;
--}
--
- static struct bpf_reg_state *reg_state(struct bpf_verifier_env *env, int regno)
- {
- 	return cur_regs(env) + regno;
---- a/tools/testing/selftests/bpf/verifier/value_illegal_alu.c
-+++ b/tools/testing/selftests/bpf/verifier/value_illegal_alu.c
-@@ -88,6 +88,7 @@
- 	BPF_EXIT_INSN(),
- 	},
- 	.fixup_map_hash_48b = { 3 },
-+	.errstr_unpriv = "leaking pointer from stack off -8",
- 	.errstr = "R0 invalid mem access 'inv'",
- 	.result = REJECT,
- 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ 	for (i = 0; i < 5; i++) {
+ 
+ 		if (is_kasan_insn(insn) || is_ubsan_insn(insn))
+-- 
+2.20.1
+
 
 
