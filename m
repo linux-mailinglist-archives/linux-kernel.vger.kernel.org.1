@@ -2,82 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFDF41C117C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 13:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1F51C1255
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 14:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728714AbgEAL12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 07:27:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728585AbgEAL11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 07:27:27 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A167120787;
-        Fri,  1 May 2020 11:27:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588332447;
-        bh=UH6cTiMh0sv5Uy7J2+m2eO6ibhJIWZOkBT9Uo7gNtjE=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=elpgVYOXj6j3U2dToXz5PGIE7ixbJugnDAw13DbcaZMBI/kD8DsbeurAAFxgyu9eU
-         YKyW7NlKD+rX/Mw9nMAt5n8nIsgXxfh3Sv/v9yU26hx80y+JsXJ/Rk+YGG4VyzuUVY
-         mv5ej7bWO0eJUo/RUJ/bjJSNYOzloYCBrGUrFhY4=
-Date:   Fri, 01 May 2020 12:27:23 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com,
-        daniel.baluta@nxp.com, kai.vehmanen@linux.intel.com,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        ranjani.sridharan@linux.intel.com
-Cc:     "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaska Uimonen <jaska.uimonen@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:SOUND - SOUND OPEN FIRMWARE SOF DRIVERS" 
-        <sound-open-firmware@alsa-project.org>
-In-Reply-To: <20200430091139.7003-1-kai.heng.feng@canonical.com>
-References: <20200430091139.7003-1-kai.heng.feng@canonical.com>
-Subject: Re: [PATCH] ASoC: SOF: Update correct LED status at the first time usage of update_mute_led()
-Message-Id: <158833244366.11565.11159142364410757346.b4-ty@kernel.org>
+        id S1728789AbgEAMlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 08:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728712AbgEAMlr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 08:41:47 -0400
+X-Greylist: delayed 4393 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 May 2020 05:41:47 PDT
+Received: from smtp.tuxdriver.com (tunnel92311-pt.tunnel.tserv13.ash1.ipv6.he.net [IPv6:2001:470:7:9c9::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C41CC061A0C;
+        Fri,  1 May 2020 05:41:47 -0700 (PDT)
+Received: from [107.15.85.130] (helo=localhost)
+        by smtp.tuxdriver.com with esmtpsa (TLSv1:AES256-SHA:256)
+        (Exim 4.63)
+        (envelope-from <nhorman@tuxdriver.com>)
+        id 1jUTq8-0005B2-96; Fri, 01 May 2020 07:28:26 -0400
+Date:   Fri, 1 May 2020 07:28:14 -0400
+From:   Neil Horman <nhorman@tuxdriver.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@mellanox.com>,
+        Jiri Pirko <jiri@mellanox.com>, Joe Perches <joe@perches.com>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 07/15] drop_monitor: work around gcc-10 stringop-overflow
+ warning
+Message-ID: <20200501112814.GA2175875@hmswarspite.think-freely.org>
+References: <20200430213101.135134-1-arnd@arndb.de>
+ <20200430213101.135134-8-arnd@arndb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430213101.135134-8-arnd@arndb.de>
+X-Spam-Score: -2.9 (--)
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Apr 2020 17:11:39 +0800, Kai-Heng Feng wrote:
-> At the first time update_mute_led() gets called, if channels are already
-> muted, the temp value equals to led_value as 0, skipping the following
-> LED setting.
+On Thu, Apr 30, 2020 at 11:30:49PM +0200, Arnd Bergmann wrote:
+> The current gcc-10 snapshot produces a false-positive warning:
 > 
-> So set led_value to -1 as an uninitialized state, to update the correct
-> LED status at first time usage.
+> net/core/drop_monitor.c: In function 'trace_drop_common.constprop':
+> cc1: error: writing 8 bytes into a region of size 0 [-Werror=stringop-overflow=]
+> In file included from net/core/drop_monitor.c:23:
+> include/uapi/linux/net_dropmon.h:36:8: note: at offset 0 to object 'entries' with size 4 declared here
+>    36 |  __u32 entries;
+>       |        ^~~~~~~
 > 
-> [...]
-
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-5.7
-
-Thanks!
-
-[1/1] ASoC: SOF: Update correct LED status at the first time usage of update_mute_led()
-      commit: 49c22696348d6e7c8a2ecfd7e60fddfe188ded82
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> I reported this in the gcc bugzilla, but in case it does not get
+> fixed in the release, work around it by using a temporary variable.
+> 
+> Fixes: 9a8afc8d3962 ("Network Drop Monitor: Adding drop monitor implementation & Netlink protocol")
+> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94881
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  net/core/drop_monitor.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/net/core/drop_monitor.c b/net/core/drop_monitor.c
+> index 8e33cec9fc4e..2ee7bc4c9e03 100644
+> --- a/net/core/drop_monitor.c
+> +++ b/net/core/drop_monitor.c
+> @@ -213,6 +213,7 @@ static void sched_send_work(struct timer_list *t)
+>  static void trace_drop_common(struct sk_buff *skb, void *location)
+>  {
+>  	struct net_dm_alert_msg *msg;
+> +	struct net_dm_drop_point *point;
+>  	struct nlmsghdr *nlh;
+>  	struct nlattr *nla;
+>  	int i;
+> @@ -231,11 +232,13 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
+>  	nlh = (struct nlmsghdr *)dskb->data;
+>  	nla = genlmsg_data(nlmsg_data(nlh));
+>  	msg = nla_data(nla);
+> +	point = msg->points;
+>  	for (i = 0; i < msg->entries; i++) {
+> -		if (!memcmp(&location, msg->points[i].pc, sizeof(void *))) {
+> -			msg->points[i].count++;
+> +		if (!memcmp(&location, &point->pc, sizeof(void *))) {
+> +			point->count++;
+>  			goto out;
+>  		}
+> +		point++;
+>  	}
+>  	if (msg->entries == dm_hit_limit)
+>  		goto out;
+> @@ -244,8 +247,8 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
+>  	 */
+>  	__nla_reserve_nohdr(dskb, sizeof(struct net_dm_drop_point));
+>  	nla->nla_len += NLA_ALIGN(sizeof(struct net_dm_drop_point));
+> -	memcpy(msg->points[msg->entries].pc, &location, sizeof(void *));
+> -	msg->points[msg->entries].count = 1;
+> +	memcpy(point->pc, &location, sizeof(void *));
+> +	point->count = 1;
+>  	msg->entries++;
+>  
+>  	if (!timer_pending(&data->send_timer)) {
+Acked-by: Neil Horman <nhorman@tuxdriver.com>
