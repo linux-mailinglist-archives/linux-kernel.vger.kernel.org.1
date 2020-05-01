@@ -2,114 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCCA1C0D2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 06:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470131C16F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728222AbgEAEXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 00:23:25 -0400
-Received: from namei.org ([65.99.196.166]:56544 "EHLO namei.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726153AbgEAEXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 00:23:25 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by namei.org (8.14.4/8.14.4) with ESMTP id 0414MTSS031613;
-        Fri, 1 May 2020 04:22:29 GMT
-Date:   Fri, 1 May 2020 14:22:29 +1000 (AEST)
-From:   James Morris <jmorris@namei.org>
-To:     =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-cc:     linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Heimes <christian@python.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Eric Chiang <ericchiang@google.com>,
-        Florian Weimer <fweimer@redhat.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Garrett <mjg59@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mickael.salaun@ssi.gouv.fr>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        =?ISO-8859-15?Q?Philippe_Tr=E9buchet?= 
-        <philippe.trebuchet@ssi.gouv.fr>,
-        Scott Shell <scottsh@microsoft.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Steve Dower <steve.dower@python.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
-        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 3/5] fs: Enable to enforce noexec mounts or file exec
- through RESOLVE_MAYEXEC
-In-Reply-To: <20200428175129.634352-4-mic@digikod.net>
-Message-ID: <alpine.LRH.2.21.2005011409570.29679@namei.org>
-References: <20200428175129.634352-1-mic@digikod.net> <20200428175129.634352-4-mic@digikod.net>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        id S1730736AbgEANzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730569AbgEANe2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:34:28 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D42C061A0E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 06:34:27 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id a5so2303726pjh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 06:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=+bmrtSHAyFI7P6ziJ3xGe8cTwBT8YOneJTOxmYdhGZc=;
+        b=sWO4PNY9YAPlMcmQTFYRy58u3AGk/QRym0idM1ioVic2+sgGTcaVvxbRjP529xqfKo
+         QIY5xGGj0avqcE8fEdZEcmZttXUyjQhoKQFJR8zc9ocM8keWbLpJ0KDLD+j8WjDDtsdI
+         dhgVsmF0w2V2wqVrSe1MY711Uebu0smXDe3nolZ7UvkpSYjcA29No4nXX1zShE5IrBmO
+         uZcnPFpxjsowt25d6A/HMu+4gw5oTHDNekrJ6CNLntaDKePyVY0pXPTh1+kG2osYMl+H
+         B+RXPJVdTonCU3tSlVFljHkrXOVfL+OHrakrJolGC6ifg5LdN24VKGVbQyp3In3GQjpl
+         TvPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+bmrtSHAyFI7P6ziJ3xGe8cTwBT8YOneJTOxmYdhGZc=;
+        b=EGMsIORxhW8rie8tnrtTW2clcbVSTJyewCxzDp6HeaQITM0bIpZyX3tP4sd/w4dnA7
+         H3edfX1UrjJt9uJesG+fYKZ9Rbxb2I/vX9Q13vDHSO6UtO1MIkb8MV5kKD/NIq6rlI4q
+         Mhpan5n8umqaizFhlmsHapRlaycEbj2aYzF8ufa4jnjAewpm4HVhRdDYcyxhR3Cv5J+z
+         bSaoSzkE10yfuTWYFtwU/CCTzrcSO+Zzhg5Jl6EpC19Vm3ZG2yV3bjPUwv6QiDOv+qA2
+         a6ny39fg7ObRKs1JK9e5ZQWzqvL5+vsVG5MEnmSsHxLUGXLOs8fs4OOf9iIkpFF+mJQo
+         l7aQ==
+X-Gm-Message-State: AGi0PuY+jlxBUFoBbt9yXrUkExY6Vey8ebV8Z2RigRxGlttq6hyWLO7V
+        70Yb8/rI5yRINNZHkuwmI5xSC6wCDdrAaQ==
+X-Google-Smtp-Source: APiQypLxg0DxSuXSZ6n95JDcUikNRX6xaAN5w06xsc1r2DmCej7hLmZ2BDXQTy8ezdmV4N/JvVd9Ag==
+X-Received: by 2002:a17:902:20b:: with SMTP id 11mr4070767plc.209.1588340067042;
+        Fri, 01 May 2020 06:34:27 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.145])
+        by smtp.gmail.com with ESMTPSA id i190sm2323153pfe.114.2020.05.01.06.34.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 May 2020 06:34:26 -0700 (PDT)
+Subject: Re: [PATCH 0/5] timeout fixes
+To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1588253029.git.asml.silence@gmail.com>
+ <8665e87d-98f8-5973-d11a-03cca3fdf66f@gmail.com>
+ <8d9b5e06-4100-c49a-c9ca-0efc389edaf3@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c7aefe37-d740-5324-905f-1b095cfb4ea7@kernel.dk>
+Date:   Thu, 30 Apr 2020 22:26:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="1665246916-573384471-1588306338=:29679"
-Content-ID: <alpine.LRH.2.21.2005011412230.29679@namei.org>
+In-Reply-To: <8d9b5e06-4100-c49a-c9ca-0efc389edaf3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 5/1/20 3:38 AM, Pavel Begunkov wrote:
+> On 01/05/2020 11:21, Pavel Begunkov wrote:
+>> On 30/04/2020 22:31, Pavel Begunkov wrote:
+>>> [1,2] are small random patches.
+>>> [3,4] are the last 2 timeout patches, but with 1 var renamed.
+>>> [5] fixes a timeout problem related to batched CQ commits. From
+>>> what I see, this should be the last fixing timeouts.
+>>
+>> Something gone wrong with testing or rebasing. Never mind this.
+> 
+> io_uring-5.7 hangs the first test in link_timeout.c. I'll debug it today,
+> but by any chance, does anyone happen to know something?
 
---1665246916-573384471-1588306338=:29679
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <alpine.LRH.2.21.2005011412231.29679@namei.org>
+That's not your stuff, see:
 
-On Tue, 28 Apr 2020, Mickaël Salaün wrote:
+https://lore.kernel.org/linux-fsdevel/269ef3a5-e30f-ceeb-5f5e-58563e7c5367@kernel.dk/T/#ma61d47f59eaaa7f04ae686c117fab69c957e0d7d
 
-> Enable to either propagate the mount options from the underlying VFS
-> mount to prevent execution, or to propagate the file execute permission.
-> This may allow a script interpreter to check execution permissions
-> before reading commands from a file.
-
-I'm finding the description of this patch difficult to understand.
-
-In the first case, this seems to mean: if you open a file with 
-RESOLVE_MAYEXEC from a noexec mount, then it will fail. Correct?
-
-In the second case, do you mean a RESOLVE_MAYEXEC open will fail if the 
-file does not have +x set for the user?
-
-
-> The main goal is to be able to protect the kernel by restricting
-> arbitrary syscalls that an attacker could perform with a crafted binary
-> or certain script languages.
-
-This sounds like the job of seccomp. Why is this part of MAYEXEC?
-
->  It also improves multilevel isolation
-> by reducing the ability of an attacker to use side channels with
-> specific code.  These restrictions can natively be enforced for ELF
-> binaries (with the noexec mount option) but require this kernel
-> extension to properly handle scripts (e.g., Python, Perl).
-
-Again, not sure why you're talking about side channels and MAYEXEC and 
-mount options. Are you more generally talking about being able to prevent 
-execution of arbitrary script files included by an interpreter?
-
-> Add a new sysctl fs.open_mayexec_enforce to control this behavior.
-> Indeed, because of compatibility with installed systems, only the system
-> administrator is able to check that this new enforcement is in line with
-> the system mount points and file permissions.  A following patch adds
-> documentation.
-
-I don't like the idea of any of this feature set being configurable. 
-RESOLVE_MAYEXEC as a new flag should have well-defined, stable semantics.
-
+which then just turned into a modification to a patch in io_uring-5.7
+instead. Just force rebase that branch and it should work fine.
 
 -- 
-James Morris
-<jmorris@namei.org>
---1665246916-573384471-1588306338=:29679--
+Jens Axboe
+
