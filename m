@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE9F1C144E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BBD1C14A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731025AbgEANiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:38:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37332 "EHLO mail.kernel.org"
+        id S1731127AbgEANl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:41:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731000AbgEANh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:37:58 -0400
+        id S1731301AbgEANlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:41:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0B96C2495E;
-        Fri,  1 May 2020 13:37:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B51720757;
+        Fri,  1 May 2020 13:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340277;
-        bh=utsCfuWAYLZpKVlPrFWY0Hxq69c7Gb7mBIKGNiK+O94=;
+        s=default; t=1588340479;
+        bh=nB7gP91EFe3d08JibxkrjH5bmM8vd9VvuEXyswdD+/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SG0XHYdwFuRZ27L1TgovFIqDWYkZqPs7Wjpif1nXYtDc9TKllBqc1zGaGAY4IKAud
-         RXFe8JBTqLRO5UOGj+ub3K/U2QpJqbtunUvF2xpo3+ASn9hNV2YgjivAeuWVEyq+IY
-         zlc69TuE2tSfIpEApl5TmLkeJnCc3vvcX9ydA/xY=
+        b=zZ0+iBC1EN+6pVoR7bKTUYzl6eiEKiZxX/YPIhkm4LGZJXC97sOsQAKsC39s9oOMh
+         Qs2ePCZACZduKKpp9nGXY7rTJ5sGY9CFitX4FOnRRmJ41SEq4x+FgQdvnBMNnPlJmv
+         TW5pcd88uETCwXWOccOSRbXioeA23ZsNSAd4goIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.4 05/83] usb: dwc3: gadget: Do link recovery for SS and SSP
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 5.6 011/106] iio:ad7797: Use correct attribute_group
 Date:   Fri,  1 May 2020 15:22:44 +0200
-Message-Id: <20200501131525.450506908@linuxfoundation.org>
+Message-Id: <20200501131545.830643862@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131524.004332640@linuxfoundation.org>
-References: <20200501131524.004332640@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-commit d0550cd20e52558ecf6847a0f96ebd5d944c17e4 upstream.
+commit 28535877ac5b2b84f0d394fd67a5ec71c0c48b10 upstream.
 
-The controller always supports link recovery for device in SS and SSP.
-Remove the speed limit check. Also, when the device is in RESUME or
-RESET state, it means the controller received the resume/reset request.
-The driver must send the link recovery to acknowledge the request. They
-are valid states for the driver to send link recovery.
+It should use ad7797_attribute_group in ad7797_info,
+according to commit ("iio:ad7793: Add support for the ad7796 and ad7797").
 
-Fixes: 72246da40f37 ("usb: Introduce DesignWare USB3 DRD Driver")
-Fixes: ee5cd41c9117 ("usb: dwc3: Update speed checks for SuperSpeedPlus")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Scale is fixed for the ad7796 and not programmable, hence
+should not have the scale_available attribute.
+
+Fixes: fd1a8b912841 ("iio:ad7793: Add support for the ad7796 and ad7797")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/dwc3/gadget.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/iio/adc/ad7793.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1725,7 +1725,6 @@ static int __dwc3_gadget_wakeup(struct d
- 	u32			reg;
+--- a/drivers/iio/adc/ad7793.c
++++ b/drivers/iio/adc/ad7793.c
+@@ -542,7 +542,7 @@ static const struct iio_info ad7797_info
+ 	.read_raw = &ad7793_read_raw,
+ 	.write_raw = &ad7793_write_raw,
+ 	.write_raw_get_fmt = &ad7793_write_raw_get_fmt,
+-	.attrs = &ad7793_attribute_group,
++	.attrs = &ad7797_attribute_group,
+ 	.validate_trigger = ad_sd_validate_trigger,
+ };
  
- 	u8			link_state;
--	u8			speed;
- 
- 	/*
- 	 * According to the Databook Remote wakeup request should
-@@ -1735,16 +1734,13 @@ static int __dwc3_gadget_wakeup(struct d
- 	 */
- 	reg = dwc3_readl(dwc->regs, DWC3_DSTS);
- 
--	speed = reg & DWC3_DSTS_CONNECTSPD;
--	if ((speed == DWC3_DSTS_SUPERSPEED) ||
--	    (speed == DWC3_DSTS_SUPERSPEED_PLUS))
--		return 0;
--
- 	link_state = DWC3_DSTS_USBLNKST(reg);
- 
- 	switch (link_state) {
-+	case DWC3_LINK_STATE_RESET:
- 	case DWC3_LINK_STATE_RX_DET:	/* in HS, means Early Suspend */
- 	case DWC3_LINK_STATE_U3:	/* in HS, means SUSPEND */
-+	case DWC3_LINK_STATE_RESUME:
- 		break;
- 	default:
- 		return -EINVAL;
 
 
