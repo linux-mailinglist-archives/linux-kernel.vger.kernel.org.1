@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305181C1443
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8324A1C1635
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730677AbgEANhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:37:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36082 "EHLO mail.kernel.org"
+        id S1728866AbgEANlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:41:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729200AbgEANhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:37:13 -0400
+        id S1731440AbgEANlx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:41:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED8192173E;
-        Fri,  1 May 2020 13:37:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49DA520757;
+        Fri,  1 May 2020 13:41:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588340232;
-        bh=GZCl39VIH5zDp0nkCodPTNaCNT1yMG52x4YMPziwtFk=;
+        s=default; t=1588340511;
+        bh=44hdycj57AvKGtsmoTNAZ6yda52kBOkJ8+59JoTSlaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fzZ5RzRnNahSawy7uphFwacxRbxRfO0hVrOk0szcTajZk9vpa8/gx73FXd7hNfHo6
-         2PmTRYKebLhrfSzZzpH5qImTY3Uqbea996s8BAWgjlz8qf16/na8sOwsqdRmhTWXZ0
-         6Y7HQNjwNXF1DECqo47VjgjHGR9xASD+x8B9Sy0w=
+        b=XbOair3WFl8oWEmdW/IgQboyxnh/CxAfnv92vh/CyUzFGTQsp4PwO2xJDXIZWCGaw
+         b5nh1sP9aOr/nh2fR7i4iKjcR7FQsWrZ69frrZXQ5imxQjo4VAuH7Bvd1sLtg2OV9P
+         bHaBF1HEcgLc6ZYfMeo3Wz6TQafH7BzK6BtISRRA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roy Spliet <nouveau@spliet.org>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 31/46] ALSA: hda: Keep the controller initialization even if no codecs found
-Date:   Fri,  1 May 2020 15:22:56 +0200
-Message-Id: <20200501131509.715298157@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH 5.6 024/106] nfsd: memory corruption in nfsd4_lock()
+Date:   Fri,  1 May 2020 15:22:57 +0200
+Message-Id: <20200501131546.966151031@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131457.023036302@linuxfoundation.org>
-References: <20200501131457.023036302@linuxfoundation.org>
+In-Reply-To: <20200501131543.421333643@linuxfoundation.org>
+References: <20200501131543.421333643@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,71 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-[ Upstream commit 9479e75fca370a5220784f7596bf598c4dad0b9b ]
+commit e1e8399eee72e9d5246d4d1bcacd793debe34dd3 upstream.
 
-Currently, when the HD-audio controller driver doesn't detect any
-codecs, it tries to abort the probe.  But this abort happens at the
-delayed probe, i.e. the primary probe call already returned success,
-hence the driver is never unbound until user does so explicitly.
-As a result, it may leave the HD-audio device in the running state
-without the runtime PM.  More badly, if the device is a HD-audio bus
-that is tied with a GPU, GPU cannot reach to the full power down and
-consumes unnecessarily much power.
+New struct nfsd4_blocked_lock allocated in find_or_allocate_block()
+does not initialized nbl_list and nbl_lru.
+If conflock allocation fails rollback can call list_del_init()
+access uninitialized fields and corrupt memory.
 
-This patch changes the logic after no-codec situation; it continues
-probing without the further codec initialization but keep the
-controller driver running normally.
+v2: just initialize nbl_list and nbl_lru right after nbl allocation.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207043
-Tested-by: Roy Spliet <nouveau@spliet.org>
-Link: https://lore.kernel.org/r/20200413082034.25166-5-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 76d348fadff5 ("nfsd: have nfsd4_lock use blocking locks for v4.1+ lock")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- sound/pci/hda/hda_intel.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ fs/nfsd/nfs4state.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 0502042c16163..72c268e887e55 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2054,7 +2054,7 @@ static int azx_first_init(struct azx *chip)
- 	/* codec detection */
- 	if (!azx_bus(chip)->codec_mask) {
- 		dev_err(card->dev, "no codecs found!\n");
--		return -ENODEV;
-+		/* keep running the rest for the runtime PM */
- 	}
- 
- 	if (azx_acquire_irq(chip, 0) < 0)
-@@ -2440,9 +2440,11 @@ static int azx_probe_continue(struct azx *chip)
- #endif
- 
- 	/* create codec instances */
--	err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
--	if (err < 0)
--		goto out_free;
-+	if (bus->codec_mask) {
-+		err = azx_probe_codecs(chip, azx_max_codecs[chip->driver_type]);
-+		if (err < 0)
-+			goto out_free;
-+	}
- 
- #ifdef CONFIG_SND_HDA_PATCH_LOADER
- 	if (chip->fw) {
-@@ -2456,7 +2458,7 @@ static int azx_probe_continue(struct azx *chip)
- #endif
- 	}
- #endif
--	if ((probe_only[dev] & 1) == 0) {
-+	if (bus->codec_mask && !(probe_only[dev] & 1)) {
- 		err = azx_codec_configure(chip);
- 		if (err < 0)
- 			goto out_free;
--- 
-2.20.1
-
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -267,6 +267,8 @@ find_or_allocate_block(struct nfs4_locko
+ 	if (!nbl) {
+ 		nbl= kmalloc(sizeof(*nbl), GFP_KERNEL);
+ 		if (nbl) {
++			INIT_LIST_HEAD(&nbl->nbl_list);
++			INIT_LIST_HEAD(&nbl->nbl_lru);
+ 			fh_copy_shallow(&nbl->nbl_fh, fh);
+ 			locks_init_lock(&nbl->nbl_lock);
+ 			nfsd4_init_cb(&nbl->nbl_cb, lo->lo_owner.so_client,
 
 
