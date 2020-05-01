@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BD31C131C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0551A1C13F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 15:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729415AbgEAN1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 09:27:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49188 "EHLO mail.kernel.org"
+        id S1730561AbgEANe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:34:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729392AbgEAN1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:27:06 -0400
+        id S1730553AbgEANeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 09:34:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FD37208D6;
-        Fri,  1 May 2020 13:27:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CDD824954;
+        Fri,  1 May 2020 13:34:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588339625;
-        bh=6ztxaQqiGIA1m1sIcnvYH1NX9Mz0deoFS5BI/XcdXkY=;
+        s=default; t=1588340058;
+        bh=BL+iUwzCf3163pq7lcS691f60h7nMcprI631MupoxuI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hnemTW6dVImfZ+WDfFb+iZR264K/4CMfNpohGbUD5S6n0vJEPYn2oW0wTEj49Qm1O
-         IKuZAtZewe4iU+bTmN8gYuPwddNG38LyxPtXnfThjvMSnrebgvBHNEicKWqdRefS0z
-         4Tk/08rvJNmuNkX0IU0XLNm876UePZR2z/hzRZCE=
+        b=0jB18A/2V7mpy02WKQlQLCvdIFF4NdSU5bRpyWFeZAMNtZhZlC5mB8YlCkUHHB7iI
+         B83SeVG1rvnMmlGKGQnMx/1TqOmT6MIeppjh36IcEF5kJgzhU+Qj9OzKabF6yST0Xi
+         UglaTwamuLH//LnmjfOkpDYfL3YYz6e5lrgleb6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Erhard F." <erhard_f@mailbox.org>,
-        Frank Rowand <frank.rowand@sony.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 65/70] of: unittest: kmemleak on changeset destroy
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Jonas Karlsson <jonas.karlsson@actia.se>
+Subject: [PATCH 4.14 077/117] cdc-acm: close race betrween suspend() and acm_softint
 Date:   Fri,  1 May 2020 15:21:53 +0200
-Message-Id: <20200501131532.508180734@linuxfoundation.org>
+Message-Id: <20200501131554.085402615@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200501131513.302599262@linuxfoundation.org>
-References: <20200501131513.302599262@linuxfoundation.org>
+In-Reply-To: <20200501131544.291247695@linuxfoundation.org>
+References: <20200501131544.291247695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit b3fb36ed694b05738d45218ea72cf7feb10ce2b1 ]
+commit 0afccd7601514c4b83d8cc58c740089cc447051d upstream.
 
-kmemleak reports several memory leaks from devicetree unittest.
-This is the fix for problem 1 of 5.
+Suspend increments a counter, then kills the URBs,
+then kills the scheduled work. The scheduled work, however,
+may reschedule the URBs. Fix this by having the work
+check the counter.
 
-of_unittest_changeset() reaches deeply into the dynamic devicetree
-functions.  Several nodes were left with an elevated reference
-count and thus were not properly cleaned up.  Fix the reference
-counts so that the memory will be freed.
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Cc: stable <stable@vger.kernel.org>
+Tested-by: Jonas Karlsson <jonas.karlsson@actia.se>
+Link: https://lore.kernel.org/r/20200415151358.32664-1-oneukum@suse.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 201c910bd689 ("of: Transactional DT support.")
-Reported-by: Erhard F. <erhard_f@mailbox.org>
-Signed-off-by: Frank Rowand <frank.rowand@sony.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/unittest.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/class/cdc-acm.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index 91e6891b777b6..109497dbfba08 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -544,6 +544,10 @@ static void __init of_unittest_changeset(void)
- 	mutex_unlock(&of_mutex);
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -575,14 +575,14 @@ static void acm_softint(struct work_stru
+ 	struct acm *acm = container_of(work, struct acm, work);
  
- 	of_changeset_destroy(&chgset);
-+
-+	of_node_put(n1);
-+	of_node_put(n2);
-+	of_node_put(n21);
- #endif
- }
+ 	if (test_bit(EVENT_RX_STALL, &acm->flags)) {
+-		if (!(usb_autopm_get_interface(acm->data))) {
++		smp_mb(); /* against acm_suspend() */
++		if (!acm->susp_count) {
+ 			for (i = 0; i < acm->rx_buflimit; i++)
+ 				usb_kill_urb(acm->read_urbs[i]);
+ 			usb_clear_halt(acm->dev, acm->in);
+ 			acm_submit_read_urbs(acm, GFP_KERNEL);
+-			usb_autopm_put_interface(acm->data);
++			clear_bit(EVENT_RX_STALL, &acm->flags);
+ 		}
+-		clear_bit(EVENT_RX_STALL, &acm->flags);
+ 	}
  
--- 
-2.20.1
-
+ 	if (test_and_clear_bit(EVENT_TTY_WAKEUP, &acm->flags))
 
 
