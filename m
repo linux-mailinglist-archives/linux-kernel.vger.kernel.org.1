@@ -2,79 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389521C1C8C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 20:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B243B1C1C5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 19:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730384AbgEASDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 14:03:53 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:49070 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729384AbgEASDw (ORCPT
+        id S1730234AbgEAR4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 13:56:04 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:39360 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729612AbgEAR4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 14:03:52 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 041I3nol035250;
-        Fri, 1 May 2020 13:03:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588356229;
-        bh=/f2T/5gGoekOKSGJbuC7wezyx3Dx6eGpqW3pvT7eCDA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=KGfQLrW5yPv/O/Fv58gSO4YkgdZw9Q0JTEi9jc3luGH7v15kxrnhF6Hn5t5cH3Unl
-         g7DQ1pjP0n0WVZep/LmV7LTDteTMYOW4k2zfbGMhyitxPupdvKBhAZoD4hXw6vlaq9
-         I8pXYGjaT3AxLX33VM5lyNJC57UGb/xsxiuiTZIs=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 041I3nqZ067883
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 1 May 2020 13:03:49 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 1 May
- 2020 13:03:49 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 1 May 2020 13:03:49 -0500
-Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 041I3nE7003992;
-        Fri, 1 May 2020 13:03:49 -0500
-Subject: Re: [RESEND PATCH v5 0/3] BQ25150/155 Charger
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200304174025.31655-1-r-rivera-matos@ti.com>
- <eb5f0818-21c7-1b84-b0c9-904bce9721be@ti.com>
- <20200501172445.diiccfzbh7kzkxdl@earth.universe>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <a83b5728-2896-3ec9-00f1-dc611c3aa471@ti.com>
-Date:   Fri, 1 May 2020 12:55:10 -0500
+        Fri, 1 May 2020 13:56:04 -0400
+Received: by mail-pl1-f194.google.com with SMTP id s20so3882495plp.6;
+        Fri, 01 May 2020 10:56:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=1aqquKGO2wHWbUexSvjMjT6g8z9HBOodi6i/dl3yEfk=;
+        b=cQexM/kYFYJpXn6aS1izW2XzHWcS6NIZp3yX/iYwfjesflUlXNwEBP0VzUb6d6cGTC
+         npa1SoRQprM5fKyjcHgUbxwMi4fH+oYi4fU9bp3djO4xEDuJdWaq38hZk4Sdp9+eow3G
+         ElsbczAfvUhpeVJ+k0XgnaFlrmX6mJ8NxPuGPVJ8Pwo+YwD69MYVaIfTlUplOm5ZEc5T
+         lJTNSG6WRmXrUchstmHApfMI11r7h7E/TtS+Oh5vi87Nki1zBG1nV3nxTiE7q73P/iv+
+         MScnsYGIksWgIlO2bnuQrTkIZo/cmBjjrU5aLNRZZM43EvvKHwZoKQqi8wQALQTEiLHZ
+         XRMA==
+X-Gm-Message-State: AGi0PubKu09CnpWV2A5fie44HWOEJRPh1z34uVtKPPF7q+xyRFwyh3AF
+        FU0A77zZvq0KVa1AeepTfT0SIaiI5Yc=
+X-Google-Smtp-Source: APiQypIT3opjLOUaHJ3jc4/L/Xy850luB3XjovfnMiVpHV7k3y4Xa8smFGSFG2H3Tp3fwi3Jrnu5zA==
+X-Received: by 2002:a17:90a:e2c1:: with SMTP id fr1mr910145pjb.124.1588355762840;
+        Fri, 01 May 2020 10:56:02 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:81bd:8aa3:a8d:a322? ([2601:647:4000:d7:81bd:8aa3:a8d:a322])
+        by smtp.gmail.com with ESMTPSA id kb10sm297454pjb.6.2020.05.01.10.56.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 May 2020 10:56:01 -0700 (PDT)
+Subject: Re: [PATCH v3 1/1] scsi: pm: Balance pm_only counter of request queue
+ during system resume
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        stanley.chu@mediatek.com, alim.akhtar@samsung.com,
+        beanhuo@micron.com, Avri.Altman@wdc.com,
+        bjorn.andersson@linaro.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1588219805-25794-1-git-send-email-cang@codeaurora.org>
+ <9e15123e-4315-15cd-3d23-2df6144bd376@acm.org>
+ <1ef85ee212bee679f7b2927cbbc79cba@codeaurora.org>
+ <ef23a815-118a-52fe-4880-19e7fc4fcd10@acm.org>
+ <1e2a2e39dbb3a0f06fe95bbfd66e1648@codeaurora.org>
+ <226048f7-6ad3-a625-c2ed-d9d13e096803@acm.org>
+ <3bfa692ce706c5c198f565e674afb56f@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <2356ab42-bbdd-d214-30f5-a533fe978dcb@acm.org>
+Date:   Fri, 1 May 2020 10:56:00 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200501172445.diiccfzbh7kzkxdl@earth.universe>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3bfa692ce706c5c198f565e674afb56f@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian
+On 2020-04-30 22:12, Can Guo wrote:
+> diff --git a/drivers/scsi/scsi_pm.c b/drivers/scsi/scsi_pm.c
+> index 3717eea..d18271d 100644
+> --- a/drivers/scsi/scsi_pm.c
+> +++ b/drivers/scsi/scsi_pm.c
+> @@ -74,12 +74,15 @@ static int scsi_dev_type_resume(struct device *dev,
+>  {
+>         const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+>         int err = 0;
+> +       bool was_rpm_suspended = false;
+> 
+>         err = cb(dev, pm);
+>         scsi_device_resume(to_scsi_device(dev));
+>         dev_dbg(dev, "scsi resume: %d\n", err);
+> 
+>         if (err == 0) {
+> +               was_rpm_suspended = pm_runtime_suspended(dev);
+> +
 
-On 5/1/20 12:24 PM, Sebastian Reichel wrote:
-> Hi,
->
-> I don't see any PATCHv5 (with or without RESEND) for bq25150 and
-> lore does not see anything either:
->
-> https://lore.kernel.org/linux-pm/?q=PATCH+v5+0%2F3%5D+BQ25150%2F155+Charger
+How about renaming this variable into "was_runtime_suspended"? How about
+moving the declaration of that variable inside the if-statement?
 
-I posted them for Ricardo.� Maybe he need a lore account.
+>                 pm_runtime_disable(dev);
+>                 err = pm_runtime_set_active(dev);
+>                 pm_runtime_enable(dev);
+> @@ -93,8 +96,10 @@ static int scsi_dev_type_resume(struct device *dev,
+>                  */
+>                 if (!err && scsi_is_sdev_device(dev)) {
+>                         struct scsi_device *sdev = to_scsi_device(dev);
+> -
+> -                       blk_set_runtime_active(sdev->request_queue);
+> +                       if (was_rpm_suspended)
+> +                              blk_post_runtime_resume(sdev->request_queue, 0);
+> +                       else
+> +                              blk_set_runtime_active(sdev->request_queue);
+>                 }
+>         }
 
-https://lore.kernel.org/patchwork/project/lkml/list/?series=441577
+Does other code always call both blk_pre_runtime_resume() and
+blk_post_runtime_resume() upon runtime resume? How about adding a
+blk_pre_runtime_resume() call before the blk_post_runtime_resume() call?
 
-Not sure why his patches did not go through.
+Thanks,
 
-Dan
+Bart.
 
