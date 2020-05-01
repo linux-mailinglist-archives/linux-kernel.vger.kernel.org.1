@@ -2,221 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B973B1C159F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8B01C15B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 May 2020 16:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730095AbgEANbL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 May 2020 09:31:11 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:38934 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730080AbgEANbH (ORCPT
+        id S1730282AbgEANcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 09:32:19 -0400
+Received: from alexa-out-blr-01.qualcomm.com ([103.229.18.197]:23307 "EHLO
+        alexa-out-blr-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730254AbgEANcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 09:31:07 -0400
-Received: by mail-ej1-f65.google.com with SMTP id s3so7483120eji.6;
-        Fri, 01 May 2020 06:31:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=OvExKVABn65NYbhAsLzBIznCBsp6S8fN5fVcOGh1uUs=;
-        b=K2NA6sZ/RcTB+yqUhPhaqpL4nkmTl8T0fAV0/4EeetYfNGkW0lBxRmQ3Lc7GXN8Oy6
-         LCi1QIm6gXs1ombVdE8RyIYDssMotNK+pLMShOkXBJZwLFiYO7MGDJQm0c5H3M1dbxXW
-         N/hLCmyBmvCXry8TTJNrOifvmpalXsN619wLCdSXM1O+t31jtD5sgnMLfopQQqlUfa9Q
-         5e/hij9hKiITu9VZBp9aVvSsNHzTyNxZIKouDSJb7Wh7LcIG2sRAM+hWgP8LkioB1lyB
-         1zMpfhCQF+gl+wnVtoRGr45VjnVBvsLKRl0eXF8X1XkV3C5CTo4E0ffWy34Nj8XSLaQZ
-         EhBA==
-X-Gm-Message-State: AGi0Puac48fzC0NOiwdnhB3R2yA+v6GMjhFvLShPGBnyGFmom41SAWBD
-        h/uQX1pL0PecYsJivcEAsjWOaexb
-X-Google-Smtp-Source: APiQypKISGOX7qOFt8o4ShYMxr/Bdy48MbYE+T4EfJCwSM93IitpN69Eij32vrIU58PdDpQhnaRZ/Q==
-X-Received: by 2002:a17:906:f0d9:: with SMTP id dk25mr3113128ejb.266.1588339864014;
-        Fri, 01 May 2020 06:31:04 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.237])
-        by smtp.googlemail.com with ESMTPSA id u13sm304929edi.82.2020.05.01.06.31.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 01 May 2020 06:31:03 -0700 (PDT)
-Date:   Fri, 1 May 2020 15:31:00 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jonathan Bakker <xc-racer2@live.ca>
-Cc:     kgene@kernel.org, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>
-Subject: Re: [PATCH 06/13] arm: dts: s5pv210: aries: Add support for more
- devices
-Message-ID: <20200501133100.GB5154@kozik-lap>
-References: <20200426183604.28494-1-xc-racer2@live.ca>
- <BN6PR04MB0660563639D091548BFCCFF2A3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
- <20200428102026.GB23963@kozik-lap>
- <BN6PR04MB0660776A38353DBDF0E2E3F9A3AC0@BN6PR04MB0660.namprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <BN6PR04MB0660776A38353DBDF0E2E3F9A3AC0@BN6PR04MB0660.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Fri, 1 May 2020 09:32:12 -0400
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by alexa-out-blr-01.qualcomm.com with ESMTP/TLS/AES256-SHA; 01 May 2020 19:01:32 +0530
+Received: from kalyant-linux.qualcomm.com ([10.204.66.210])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 01 May 2020 19:01:09 +0530
+Received: by kalyant-linux.qualcomm.com (Postfix, from userid 94428)
+        id EEBE4487F; Fri,  1 May 2020 19:01:07 +0530 (IST)
+From:   Kalyan Thota <kalyan_t@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org
+Cc:     Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com,
+        seanpaul@chromium.org, hoegsberg@chromium.org,
+        dianders@chromium.org, jsanka@codeaurora.org,
+        mkrishn@codeaurora.org, travitej@codeaurora.org,
+        nganji@codeaurora.org
+Subject: [PATCH] drm/msm/dpu: ensure device suspend happens during PM sleep
+Date:   Fri,  1 May 2020 19:01:03 +0530
+Message-Id: <1588339863-1322-1-git-send-email-kalyan_t@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 04:32:56PM -0700, Jonathan Bakker wrote:
-> Hi Krzysztof,
-> 
-> On 2020-04-28 3:20 a.m., Krzysztof Kozlowski wrote:
-> > On Sun, Apr 26, 2020 at 11:35:57AM -0700, Jonathan Bakker wrote:
-> >> Add support for following devices:
-> >>   - touchkeys connected over i2c-gpio
-> >>   - s6e63m0 panel connected over spi-gpio
-> >>   - fsa9480 microusb switch over i2c-gpio
-> >>   - wm8994 over i2c-gpio (no machine driver yet)
-> >>   - all common i2c-gpio devices
-> > 
-> > Please split it per functionality, e.g.:
-> > 1. Add sound,
-> > 2. Add panel,
-> > 3. Add touchkeys (unless part of panel),
-> > 4. The remaining i2c-gpio devices without bindings could go as one.
-> 
-> Ok, will do.
-> 
-> > 
-> >>
-> >> Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
-> >> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
-> >> ---
-> >>  arch/arm/boot/dts/s5pv210-aries.dtsi      | 282 ++++++++++++++++++++--
-> >>  arch/arm/boot/dts/s5pv210-fascinate4g.dts |   6 +
-> >>  2 files changed, 270 insertions(+), 18 deletions(-)
-> >>
-> >> diff --git a/arch/arm/boot/dts/s5pv210-aries.dtsi b/arch/arm/boot/dts/s5pv210-aries.dtsi
-> >> index f83df426f2b6..ef966d13d83d 100644
-> >> --- a/arch/arm/boot/dts/s5pv210-aries.dtsi
-> >> +++ b/arch/arm/boot/dts/s5pv210-aries.dtsi
-> >> @@ -12,8 +12,14 @@
-> >>  	compatible = "samsung,aries", "samsung,s5pv210";
-> >>  
-> >>  	aliases {
-> >> +		i2c4 = &i2c_sound;
-> >> +		i2c5 = &i2c_accel;
-> >>  		i2c6 = &i2c_pmic;
-> >> +		i2c7 = &i2c_musb;
-> >>  		i2c9 = &i2c_fuel;
-> >> +		i2c10 = &i2c_touchkey;
-> >> +		i2c11 = &i2c_prox;
-> >> +		i2c12 = &i2c_magnetometer;
-> >>  	};
-> >>  
-> >>  	memory@30000000 {
-> >> @@ -48,6 +54,18 @@
-> >>  		gpio = <&gpj1 1 GPIO_ACTIVE_HIGH>;
-> >>  	};
-> >>  
-> >> +	touchkey_vdd: regulator-fixed-1 {
-> >> +		compatible = "regulator-fixed";
-> >> +		regulator-name = "VTOUCH_3.3V";
-> >> +		regulator-min-microvolt = <3300000>;
-> >> +		regulator-max-microvolt = <3300000>;
-> >> +		enable-active-high;
-> >> +		gpio = <&gpj3 2 GPIO_ACTIVE_HIGH>;
-> >> +
-> >> +		pinctrl-names = "default";
-> >> +		pinctrl-0 = <&touchkey_vdd_ena>;
-> >> +	};
-> >> +
-> >>  	wifi_pwrseq: wifi-pwrseq {
-> >>  		compatible = "mmc-pwrseq-simple";
-> >>  		reset-gpios = <&gpg1 2 GPIO_ACTIVE_LOW>;
-> >> @@ -57,7 +75,69 @@
-> >>  		power-off-delay-us = <500>;
-> >>  	};
-> >>  
-> >> -	i2c_pmic: i2c-gpio-0 {
-> >> +	i2c_sound: i2c-gpio-0 {
-> >> +		compatible = "i2c-gpio";
-> >> +		sda-gpios = <&mp05 3 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-> >> +		scl-gpios = <&mp05 2 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-> >> +		i2c-gpio,delay-us = <2>;
-> >> +		#address-cells = <1>;
-> >> +		#size-cells = <0>;
-> >> +
-> >> +		pinctrl-names = "default";
-> >> +		pinctrl-0 = <&sound_i2c_pins>;
-> >> +
-> >> +		wm8994: wm8994@1a {
-> >> +			compatible = "wlf,wm8994";
-> >> +			reg = <0x1a>;
-> >> +
-> >> +			#sound-dai-cells = <0>;
-> >> +
-> >> +			gpio-controller;
-> >> +			#gpio-cells = <2>;
-> >> +
-> >> +			clocks = <&clocks MOUT_CLKOUT>;
-> >> +			clock-names = "MCLK1";
-> >> +
-> >> +			AVDD2-supply = <&buck3_reg>;
-> >> +			DBVDD-supply = <&buck3_reg>;
-> > 
-> > No such supply, check the bindings.
-> > 
-> 
-> Well, it may not be in the bindings, but the driver definitely requires it :) See drivers/mfd/wm8994-core.c
-> 
-> What's the best way of dealing with this situation?
+"The PM core always increments the runtime usage counter
+before calling the ->suspend() callback and decrements it
+after calling the ->resume() callback"
 
-I'll send a patch fixing the bindings. However don't you miss the
-AVDD1-supply in such case? Driver should report error.
+DPU and DSI are managed as runtime devices. When
+suspend is triggered, PM core adds a refcount on all the
+devices and calls device suspend, since usage count is
+already incremented, runtime suspend was not getting called
+and it kept the clocks on which resulted in target not
+entering into XO shutdown.
 
-> 
-> >> +			CPVDD-supply = <&buck3_reg>;
-> >> +			SPKVDD1-supply = <&buck3_reg>;
-> >> +			SPKVDD2-supply = <&buck3_reg>;
-> >> +
-> >> +			wlf,gpio-cfg = <0xa101 0x8100 0x0100 0x0100 0x8100
-> >> +					0xa101 0x0100 0x8100 0x0100 0x0100
-> >> +					0x0100>;
-> >> +
-> >> +			wlf,ldo1ena = <&gpf3 4 GPIO_ACTIVE_HIGH>;
-> >> +			wlf,ldo2ena = <&gpf3 4 GPIO_ACTIVE_HIGH>;
-> >> +
-> >> +			wlf,lineout1-se;
-> >> +			wlf,lineout2-se;
-> >> +
-> >> +			assigned-clocks = <&clocks MOUT_CLKOUT>;
-> >> +			assigned-clock-rates = <0>;
-> >> +			assigned-clock-parents = <&xusbxti>;
-> >> +
-> >> +			pinctrl-names = "default";
-> >> +			pinctrl-0 = <&codec_ldo>;
-> >> +		};
-> >> +	};
-> >> +
-> >> +	i2c_accel: i2c-gpio-1 {
-> >> +		compatible = "i2c-gpio";
-> >> +		sda-gpios = <&gpj3 6 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-> >> +		scl-gpios = <&gpj3 7 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-> >> +		i2c-gpio,delay-us = <2>;
-> >> +		#address-cells = <1>;
-> >> +		#size-cells = <0>;
-> >> +
-> >> +		pinctrl-names = "default";
-> >> +		pinctrl-0 = <&accel_i2c_pins>;
-> >> +
-> >> +		/* bma023 accelerometer, no mainline binding */
-> > 
-> > status disabled ... unless you need it for user-space I2C tools?
-> > 
-> 
-> Nope, but wanted to add them all in due to adding the si4709 in galaxys.  I was having
-> issues with accidentally overwriting previously named nodes (ie having i2c-gpio-0 in
-> both the common dtsi and the device specific dts) so I wanted to get the numbers
-> nailed down.
+Add changes to force suspend on runtime devices during pm sleep.
 
-So add them with status disabled. This will document the HW without
-enabling empty I2C GPIO bus.
+Changes in v1:
+ - Remove unnecessary checks in the function
+    _dpu_kms_disable_dpu (Rob Clark).
 
-Best regards,
-Krzysztof
+Changes in v2:
+ - Avoid using suspend_late to reset the usagecount
+   as suspend_late might not be called during suspend
+   call failures (Doug).
+
+Changes in v3:
+ - Use force suspend instead of managing device usage_count
+   via runtime put and get API's to trigger callbacks (Doug).
+
+Changes in v4:
+ - Check the return values of pm_runtime_force_suspend and
+   pm_runtime_force_resume API's and pass appropriately (Doug).
+
+Changes in v5:
+ - With v4 patch, test cycle has uncovered issues in device resume.
+
+   On bubs: cmd tx failures were seen as SW is sending panel off
+   commands when the dsi resources are turned off.
+
+   Upon suspend, DRM driver will issue a NULL composition to the
+   dpu, followed by turning off all the HW blocks.
+
+   v5 changes will serialize the NULL commit and resource unwinding
+   by handling them under PM prepare and PM complete phases there by
+   ensuring that clks are on when panel off commands are being
+   processed.
+
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c |  2 ++
+ drivers/gpu/drm/msm/dsi/dsi.c           |  2 ++
+ drivers/gpu/drm/msm/msm_drv.c           | 20 ++++++++++++++++----
+ 3 files changed, 20 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+index ce19f1d..b886d9d 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
+@@ -1123,6 +1123,8 @@ static int __maybe_unused dpu_runtime_resume(struct device *dev)
+ 
+ static const struct dev_pm_ops dpu_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(dpu_runtime_suspend, dpu_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
+ };
+ 
+ static const struct of_device_id dpu_dt_match[] = {
+diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
+index 55ea4bc2..62704885 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi.c
++++ b/drivers/gpu/drm/msm/dsi/dsi.c
+@@ -161,6 +161,8 @@ static int dsi_dev_remove(struct platform_device *pdev)
+ 
+ static const struct dev_pm_ops dsi_pm_ops = {
+ 	SET_RUNTIME_PM_OPS(msm_dsi_runtime_suspend, msm_dsi_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
+ };
+ 
+ static struct platform_driver dsi_driver = {
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 7d985f8..47d492b 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -1036,7 +1036,7 @@ static int msm_ioctl_submitqueue_close(struct drm_device *dev, void *data,
+ };
+ 
+ #ifdef CONFIG_PM_SLEEP
+-static int msm_pm_suspend(struct device *dev)
++static int msm_pm_prepare(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+ 	struct msm_drm_private *priv = ddev->dev_private;
+@@ -1054,18 +1054,28 @@ static int msm_pm_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int msm_pm_resume(struct device *dev)
++static void msm_pm_complete(struct device *dev)
+ {
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+ 	struct msm_drm_private *priv = ddev->dev_private;
+ 	int ret;
+ 
+ 	if (WARN_ON(!priv->pm_state))
+-		return -ENOENT;
++		return;
+ 
+ 	ret = drm_atomic_helper_resume(ddev, priv->pm_state);
+ 	if (!ret)
+ 		priv->pm_state = NULL;
++}
++
++static int msm_pm_resume(struct device *dev)
++{
++	int ret;
++
++	/* unwind runtime_disable called by force suspend */
++	pm_runtime_enable(dev);
++
++	ret = pm_runtime_resume(dev);
+ 
+ 	return ret;
+ }
+@@ -1102,8 +1112,10 @@ static int msm_runtime_resume(struct device *dev)
+ #endif
+ 
+ static const struct dev_pm_ops msm_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(msm_pm_suspend, msm_pm_resume)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, msm_pm_resume)
+ 	SET_RUNTIME_PM_OPS(msm_runtime_suspend, msm_runtime_resume, NULL)
++	.prepare = msm_pm_prepare,
++	.complete = msm_pm_complete,
+ };
+ 
+ /*
+-- 
+1.9.1
 
