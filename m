@@ -2,55 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A711C27CB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 20:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FBC1C27CE
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 20:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728499AbgEBSpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 14:45:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59938 "EHLO mail.kernel.org"
+        id S1728513AbgEBSpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 14:45:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728411AbgEBSpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 14:45:02 -0400
-Subject: Re: [GIT PULL] iomap: bug fix for 5.7-rc3
+        id S1728411AbgEBSpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 May 2020 14:45:07 -0400
+Subject: Re: [GIT PULL]: dmaengine fixes for v5.7-rc4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588445102;
-        bh=s0z1+Ustle/5LPDXfg8sKPJ5kKTcNvfSNnMWHuEwuuU=;
+        s=default; t=1588445107;
+        bh=mtYF0ENJLtrJn3/8qT2aJaeuQRMsZn+PB7dSIaTEsmI=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=i0mBLSUMC3B9vy3S+iQqaYTjH6CEA1GVLEXSCN8WSiGxKKzM8TJCIOwz+7jKmS08S
-         hpQoRNGDFZ1CY4poq2blHx5GPpxzWf2UAlbFZxdnjzLFomL3LmZY08J8p43RRts2iY
-         w9wWrXzXlRYjJge2H7wK2OQtcStXNbx3o3PctmbQ=
+        b=dDbFoC7hH/v5RtQlLrsYHsL+eqrnQWKu4NRu+IR1/Lcso9YSXu4+vAzVABjGF4b/c
+         SprGTtgDoT57EyQTyr/pJHgE7sYh2aqnHhZHN7iy7V7xf7OF6fjjSGCYTr8ozxaoa+
+         2ucBa3ktE8n6Oq+O+VX5XyIhWvzRAyTXhn1u6CwE=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200502170801.GB6742@magnolia>
-References: <20200502170801.GB6742@magnolia>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200502170801.GB6742@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
- tags/iomap-5.7-fixes-1
-X-PR-Tracked-Commit-Id: b75dfde1212991b24b220c3995101c60a7b8ae74
+In-Reply-To: <20200502110348.GM948789@vkoul-mobl.Dlink>
+References: <20200502110348.GM948789@vkoul-mobl.Dlink>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200502110348.GM948789@vkoul-mobl.Dlink>
+X-PR-Tracked-Remote: git://git.infradead.org/users/vkoul/slave-dma.git
+ tags/dmaengine-fix-5.7-rc4
+X-PR-Tracked-Commit-Id: aa72f1d20ee973d68f26d46fce5e1cf6f9b7e1ca
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f66ed1ebbfde37631fba289f7c399eaa70632abf
-Message-Id: <158844510226.26966.830662685597317444.pr-tracker-bot@kernel.org>
-Date:   Sat, 02 May 2020 18:45:02 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
+X-PR-Merge-Commit-Id: ed6889db63d24600e523ac28fbece33201906611
+Message-Id: <158844510730.26966.6166803935500363489.pr-tracker-bot@kernel.org>
+Date:   Sat, 02 May 2020 18:45:07 +0000
+To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, riteshh@linux.ibm.com
+        dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 2 May 2020 10:08:01 -0700:
+The pull request you sent on Sat, 2 May 2020 16:33:48 +0530:
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.7-fixes-1
+> git://git.infradead.org/users/vkoul/slave-dma.git tags/dmaengine-fix-5.7-rc4
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f66ed1ebbfde37631fba289f7c399eaa70632abf
+https://git.kernel.org/torvalds/c/ed6889db63d24600e523ac28fbece33201906611
 
 Thank you!
 
