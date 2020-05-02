@@ -2,120 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C521C27DA
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 20:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9FD1C27DE
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 20:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbgEBSvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 14:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42420 "EHLO
+        id S1728495AbgEBSyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 14:54:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726306AbgEBSvB (ORCPT
+        by vger.kernel.org with ESMTP id S1728343AbgEBSyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 14:51:01 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30348C061A0C;
-        Sat,  2 May 2020 11:51:01 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id e6so1646408pjt.4;
-        Sat, 02 May 2020 11:51:01 -0700 (PDT)
+        Sat, 2 May 2020 14:54:11 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB650C061A0C;
+        Sat,  2 May 2020 11:54:09 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id h12so5445767pjz.1;
+        Sat, 02 May 2020 11:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0Bb7PtBYoHDbA/mpUbo2nXY/JQvmpzOFkDnjMfbrWXA=;
-        b=qtbYHy9M2JJj41Q6gHOMrFwz53q6qmySLPbrFhZlK4cSWDA2UJrFPpudPGmWRC3V+o
-         7HY6SNSWriVjT1G4tLna6aPPeL3NL2acZKiHWAoI/oQMblftgjwG/TPYZ2jab9Mlglk6
-         8ah2CUCjzJUIp+aHyVCtN7XDLwdVx9JBGSUNqCYMcTv1OLJnHWRkwrb+OP1wCv6IdUjO
-         HKuQuPL7Psn7vbbZw5YJbC0xogFsF4Ovvb/scFrTUeQECCkRF/R9n9IktR9JZZggtToj
-         Sur/QMeqmNXmWRTw1KsKM7pBgZuABZOyDGi+k2Ud7azI/jVRN9fTsv/1bzPnAWvr8ogD
-         LHXw==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition:user-agent;
+        bh=2r+1yVPOglt4gj5XLUdHS7cxi4oqb67JRmvdg4JUpMs=;
+        b=iE9qi38Iu6GH1F7xZ9HHUiU/kJXeyzOqk+2gyFZg2F+GkePgCBKPIcmnYfhYqrgWiv
+         9dcrrkrP+kneqozsqiEu7UDNFm1Vcr4qCSG5tdQK11QMGeGHB7A/GQ87qkWeolCePbyd
+         pg6LMDmOO3KUXdzmDhTB80BNetDwX5TEatu8gczuCKWLLuPv16e0wPGRhsQ+ws2OaQGl
+         kQiR6ToxoSL0tEZCgFfY0sLhjW+mu6ZWSjNQ4ExFuPspYvcwPLQAgeU33EWwKJ9Aedj6
+         SMpOt9yQVEYKGYaXstv8oYjZZTEq6hgBCcFq9uWUX0d27IqXKrrLj52l4BY6itw3iptV
+         WycQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0Bb7PtBYoHDbA/mpUbo2nXY/JQvmpzOFkDnjMfbrWXA=;
-        b=OjUqEvckq5K9Pe4tlzQkA1CuGf/JkjJ/DOB6usU8FytjxPDLaMYvUfM1n9SXYHsADA
-         FvBF2lsmt0jeOAxgmkoPjBsTY+uGIZqwS0bcWumISLybj2kKGyr5Au82FZ2EZmWshWIE
-         pAikx4IJO4nr6V64dSk20b8dSmIXPuyHFwtzyXg7g3OMo7O2NXbkQCqWvV+ueuuQTq3Y
-         DsOv9AaNFEqeAKRQi/5c778iHzEwEM+dYv3JVQDlsFwXF1l3oa7Cuo2lD65x1BxlWd+2
-         No1wJPzqbR26tkRo8RsrJ+3Xf7Hun/tiAzOOexMM5Mw9XzbFmquRophBro7dkJCsKssz
-         Ov/g==
-X-Gm-Message-State: AGi0PuYtFtkylQ6NnDsgWqV8t9VC9PdiWxgHZRzcmFzUc1XxowKCwL/q
-        ZmIEe0qAtGvx4BSGnllsrj4=
-X-Google-Smtp-Source: APiQypIFp17uarCygL6paSR9nOrtF+l7q9tek8umEYX/cuWhlObTzsbXQaJkeTFuX2CKPb8M4YO+ow==
-X-Received: by 2002:a17:90b:128d:: with SMTP id fw13mr7554273pjb.23.1588445460798;
-        Sat, 02 May 2020 11:51:00 -0700 (PDT)
-Received: from syed ([106.210.101.167])
-        by smtp.gmail.com with ESMTPSA id d12sm2758907pjx.1.2020.05.02.11.50.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition:user-agent;
+        bh=2r+1yVPOglt4gj5XLUdHS7cxi4oqb67JRmvdg4JUpMs=;
+        b=UKJaQh5cQ350MHkbMlXxYjtG9fUBBCJIXxjZySrCQR9kqVMlDx1Awy9JA33kuz7Swi
+         IUE/mp/HsmkG9V66Qlar2FC1H+PU+UIDDLaPCG43XDQuPTxFCWdTGCEgYAmpdN2VP8J/
+         77sN+tb2hCyGT27dAuBdoVlg4GlFbEsDytgd06YmXe//bBRQG+w/7PUmPHdNAEWb++Ww
+         3uBZCUgET0Ezmq5VvwE76WaHVCHzLy3kUr9ZCCEDaLwbjZPZN6VfGEzbBDXWjYxImw68
+         UUcovb/TOB/LV3Alb4MXHN9ElgXqhHabzaaIRtlTfkapaqvztG5xse3Dvy9Hc3W+w8W6
+         q4xA==
+X-Gm-Message-State: AGi0PubSOtFFXFyWEmPf3pgIiqiMEKkQS3ZGFViUclBnlaFVOss0z2Kk
+        kMgTiT3qOVUpRicsyxzNrPLUTrcd
+X-Google-Smtp-Source: APiQypIs4e+TkMq35dY62ktGP/u5qteJzEQbZIICyeh7FwBPWfse3gYTpcN+mJXkdgMk413Ugr9NYQ==
+X-Received: by 2002:a17:90a:1464:: with SMTP id j91mr7121807pja.87.1588445649250;
+        Sat, 02 May 2020 11:54:09 -0700 (PDT)
+Received: from udknight.localhost ([59.57.158.27])
+        by smtp.gmail.com with ESMTPSA id bo19sm2694712pjb.26.2020.05.02.11.54.07
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 02 May 2020 11:51:00 -0700 (PDT)
-Date:   Sun, 3 May 2020 00:20:38 +0530
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
-        rrichter@marvell.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/4] gpio: thunderx: Utilize for_each_set_clump macro
-Message-ID: <652dcbc32326bc0dce095863f51d8adaad960e09.1588443578.git.syednwaris@gmail.com>
-References: <cover.1588443578.git.syednwaris@gmail.com>
+        Sat, 02 May 2020 11:54:08 -0700 (PDT)
+Received: from udknight.localhost (localhost [127.0.0.1])
+        by udknight.localhost (8.14.9/8.14.4) with ESMTP id 042IontN009203;
+        Sun, 3 May 2020 02:50:49 +0800
+Received: (from root@localhost)
+        by udknight.localhost (8.14.9/8.14.9/Submit) id 042IofgZ009202;
+        Sun, 3 May 2020 02:50:41 +0800
+Date:   Sun, 3 May 2020 02:50:41 +0800
+From:   Wang YanQing <udknight@gmail.com>
+To:     joe@perches.com
+Cc:     Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>, Markus.Elfring@web.de,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] checkpatch: fix can't check for too long invalid commit id
+Message-ID: <20200502185041.GA9082@udknight>
+Mail-Followup-To: Wang YanQing <udknight@gmail.com>, joe@perches.com,
+        Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>, Markus.Elfring@web.de,
+        kernel-janitors@vger.kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1588443578.git.syednwaris@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+User-Agent: Mutt/1.7.1 (2016-10-04)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch reimplements the thunderx_gpio_set_multiple function in
-drivers/gpio/gpio-thunderx.c to use the new for_each_set_clump macro.
-Instead of looping for each bank in thunderx_gpio_set_multiple
-function, now we can skip bank which is not set and save cycles.
+The current UNKNOWN_COMMIT_ID doesn't check for 41+ length commit id,
+and although GIT_COMMIT_ID will check for 41+ length commit id, but
+it willn't warn anything about it due to 41+ length commit will never
+be defined.
 
-Cc: Robert Richter <rrichter@marvell.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+This patch moves the unknown commit id check for normal commit description
+to GIT_COMMIT_ID, and uses ERROR instead of WARN, because unknown commit
+id is total useless to track change history in changelog, it deserves the
+ERROR.
+
+Signed-off-by: Wang YanQing <udknight@gmail.com>
 ---
-Changes in v4:
- - Minor change: Hardcode value for better code readability.
+ After this patch, in another patch 'checkpatch: add support to check 'Fixes:' tag format',
+ I will delete UNKNOWN_COMMIT_ID, because we don't need it anymore after GIT_COMMIT_ID could
+ do the same check as UNKNOWN_COMMIT_ID for 'Fixes:' tag.
 
-Changes in v3:
- - Change datatype of some variables from u64 to unsigned long
-   in function thunderx_gpio_set_multiple.
+ scripts/checkpatch.pl | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-CHanges in v2:
- - No change.
-
- drivers/gpio/gpio-thunderx.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpio/gpio-thunderx.c b/drivers/gpio/gpio-thunderx.c
-index 9f66deab46ea..58c9bb25a377 100644
---- a/drivers/gpio/gpio-thunderx.c
-+++ b/drivers/gpio/gpio-thunderx.c
-@@ -275,12 +275,15 @@ static void thunderx_gpio_set_multiple(struct gpio_chip *chip,
- 				       unsigned long *bits)
- {
- 	int bank;
--	u64 set_bits, clear_bits;
-+	unsigned long set_bits, clear_bits, gpio_mask;
-+	unsigned long offset;
-+
- 	struct thunderx_gpio *txgpio = gpiochip_get_data(chip);
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 23a001a..143bb43 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -2865,8 +2865,18 @@ sub process {
+ 			($id, $description) = git_commit_info($orig_commit,
+ 							      $id, $orig_desc);
  
--	for (bank = 0; bank <= chip->ngpio / 64; bank++) {
--		set_bits = bits[bank] & mask[bank];
--		clear_bits = ~bits[bank] & mask[bank];
-+	for_each_set_clump(offset, gpio_mask, mask, chip->ngpio, 64) {
-+		bank = offset / 64;
-+		set_bits = bits[bank] & gpio_mask;
-+		clear_bits = ~bits[bank] & gpio_mask;
- 		writeq(set_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO_TX_SET);
- 		writeq(clear_bits, txgpio->register_base + (bank * GPIO_2ND_BANK) + GPIO_TX_CLR);
- 	}
++			if (!defined($id)) {
++			    if ($long) {
++				ERROR("GIT_COMMIT_ID",
++				      "Unknown commit id '$orig_commit' is too long, maybe misspelled?\n" . $herecurr);
++			    } else {
++				ERROR("GIT_COMMIT_ID",
++				      "Unknown commit id '$orig_commit', maybe rebased or not pulled?\n" . $herecurr);
++			    }
++			}
++
+ 			if (defined($id) &&
+-			   ($short || $long || $space || $case || ($orig_desc ne $description) || !$hasparens)) {
++			   ($short || $space || $case || ($orig_desc ne $description) || !$hasparens)) {
+ 				ERROR("GIT_COMMIT_ID",
+ 				      "Please use git commit description style 'commit <12+ chars of sha1> (\"<title line>\")' - ie: '${init_char}ommit $id (\"$description\")'\n" . $herecurr);
+ 			}
+@@ -2969,7 +2979,7 @@ sub process {
+ 		}
+ 
+ # check for invalid commit id
+-		if ($in_commit_log && $line =~ /(^fixes:|\bcommit)\s+([0-9a-f]{6,40})\b/i) {
++		if ($in_commit_log && $line =~ /(^fixes:)\s+([0-9a-f]{6,40})\b/i) {
+ 			my $id;
+ 			my $description;
+ 			($id, $description) = git_commit_info($2, undef, undef);
 -- 
-2.26.2
-
+1.8.5.6.2.g3d8a54e.dirty
