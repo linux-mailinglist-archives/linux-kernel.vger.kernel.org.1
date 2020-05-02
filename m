@@ -2,150 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F68D1C2492
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 13:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B72981C2496
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 13:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727828AbgEBLEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 07:04:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726764AbgEBLEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 07:04:01 -0400
-Received: from localhost (unknown [117.99.89.89])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AF9D216FD;
-        Sat,  2 May 2020 11:03:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588417440;
-        bh=Pg5WQCD32iVLP/ezBlUn7r2Q1U1atV4LE5nchd33Huk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=WWvPzYScb1Lp93W/bugKq64qeNjtJWcZBf/HRhBPdHmNNyf28/uSRDDPX/UnD49FJ
-         8mAn9gxHLhTftbFEvG6tRbUV20wRAeYmkI76Nss7oyzsGk5HWdf/bggBzHoVhuhvsw
-         BY7gUuU9mkS50ejPQBeTA/D26JXvlV8HCGWRM4hU=
-Date:   Sat, 2 May 2020 16:33:48 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dma <dmaengine@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: dmaengine fixes for v5.7-rc4
-Message-ID: <20200502110348.GM948789@vkoul-mobl.Dlink>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ibTvN161/egqYuK8"
-Content-Disposition: inline
+        id S1727843AbgEBLE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 07:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726741AbgEBLE5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 May 2020 07:04:57 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08EBC061A0C;
+        Sat,  2 May 2020 04:04:57 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id a21so1112883pls.4;
+        Sat, 02 May 2020 04:04:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=F/St9SVY06UhgDIr+fGsnpTEDexQ9xY9XDidakHbAGc=;
+        b=n2Rys0El4nQ2GshyQRp27+5szQWwRK9RsmyopPVicyo4O82oGANPNKMhPu/ezNCgox
+         MUO91zN6kcME6FE+R8GG0hmal/3y5+KNqTNxYdbzuhKzvjrZBeA0bloforsFLZtkyiZt
+         FMOtE1ce0OvgvTLV92qBwelqzHygNezZncPr1j6dX6tI+SCocNpCpOCd4G7uhylxsFNM
+         tzElunO6q+kp1TDVR6ChRLom8EcEagBqcD/E/XJ9GRPVod2luY8SdmvNcnQhC9v9eYZc
+         1XvtPY0AbD3aCTNBtD6qa3yVqFIdoqJ/mTQTLKpQpzlUzb0lTZucQmOCcXvq7b12ewXg
+         bD3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=F/St9SVY06UhgDIr+fGsnpTEDexQ9xY9XDidakHbAGc=;
+        b=I3nCw61SKSdDjcWJLranwOHodDBE2EVZnvtd9c8UHq4SOKfbOGU37xOExcpgpa8h4e
+         GkkO5UhxW9V+QkgFsd2CUUsyr0wOsOcQoJiY1ukJZxrInWWIkz9MazKg/yILoVoAXnKA
+         oPAfN/yRKogESH2S68xOn/m3hEhEF5qTfeAIXmpk8L7EXVd4SxAbYdyvFmxbVZLuHFvL
+         W/v8zm6Q/IU2RAMOE+DPGSRqX+Df9loEF97SOZi6Zewz8HkLVnpBIgeMi/X/ISIyFGhV
+         zucgNW9FFzXvMrgvCup8DySVUHJgS5pRQIlhe+OkMUen8v3MjF79BD+by26S9dw1i2J1
+         coMg==
+X-Gm-Message-State: AGi0Puah/h3t8mjwmnv8dQ/VvFc3JPciUZMvJVxIdLU3WECY0J5ose2C
+        yCo19iSocKV9cpx0iu6HH4GqM7wI
+X-Google-Smtp-Source: APiQypI5l/kQFMQpC5/Ls6LwpVHL7qLrDPNMJXU4hhF00kOOBA+w68vDC26dSIZiRl/P/cRySNtt/w==
+X-Received: by 2002:a17:902:7593:: with SMTP id j19mr9044216pll.62.1588417497096;
+        Sat, 02 May 2020 04:04:57 -0700 (PDT)
+Received: from localhost.localdomain (unknown-224-80.windriver.com. [147.11.224.80])
+        by smtp.gmail.com with ESMTPSA id w11sm4301133pfq.100.2020.05.02.04.04.56
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Sat, 02 May 2020 04:04:56 -0700 (PDT)
+From:   Bin Meng <bmeng.cn@gmail.com>
+To:     linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bin Meng <bin.meng@windriver.com>
+Subject: [PATCH v2] sh: Replace CONFIG_MTD_M25P80 with CONFIG_MTD_SPI_NOR in sh7757lcr_defconfig
+Date:   Sat,  2 May 2020 04:04:43 -0700
+Message-Id: <1588417483-30987-1-git-send-email-bmeng.cn@gmail.com>
+X-Mailer: git-send-email 1.7.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Bin Meng <bin.meng@windriver.com>
 
---ibTvN161/egqYuK8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+CONFIG_MTD_M25P80 was removed and replaced by CONFIG_MTD_SPI_NOR in
+commit b35b9a10362d ("mtd: spi-nor: Move m25p80 code in spi-nor.c")
 
-Hello Linus,
+Signed-off-by: Bin Meng <bin.meng@windriver.com>
 
-Please pull to recived few fixes for dmaengine. A core fix, with
-documentation fixes as well as driver fixes:
+---
 
-The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f3136:
+Changes in v2:
+- add CONFIG_MTD_SPI_NOR=y
 
-  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
+ arch/sh/configs/sh7757lcr_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-are available in the Git repository at:
+diff --git a/arch/sh/configs/sh7757lcr_defconfig b/arch/sh/configs/sh7757lcr_defconfig
+index 9f2aed0..d0933a9 100644
+--- a/arch/sh/configs/sh7757lcr_defconfig
++++ b/arch/sh/configs/sh7757lcr_defconfig
+@@ -36,7 +36,7 @@ CONFIG_IPV6=y
+ # CONFIG_FW_LOADER is not set
+ CONFIG_MTD=y
+ CONFIG_MTD_BLOCK=y
+-CONFIG_MTD_M25P80=y
++CONFIG_MTD_SPI_NOR=y
+ CONFIG_BLK_DEV_RAM=y
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+-- 
+2.7.4
 
-  git://git.infradead.org/users/vkoul/slave-dma.git tags/dmaengine-fix-5.7-=
-rc4
-
-for you to fetch changes up to aa72f1d20ee973d68f26d46fce5e1cf6f9b7e1ca:
-
-  dmaengine: dmatest: Fix process hang when reading 'wait' parameter (2020-=
-04-28 21:46:35 +0530)
-
-----------------------------------------------------------------
-dmaengine fixes for v5.7-rc4
-
-Core:
- - Documentation typo fixes
- - fix the channel indexes
- - Dmatest: fixes for process hang and iterations
-Drivers:
- - hisilicon: build error fix without PCI_MSI
- - ti-k3: deadlock fix
- - uniphier-xdmac: fix for reg region
- - pch: fix data race
- - tegra: fix clock state
-
-----------------------------------------------------------------
-Andy Shevchenko (2):
-      dmaengine: dmatest: Fix iteration non-stop logic
-      dmaengine: dmatest: Fix process hang when reading 'wait' parameter
-
-Dave Jiang (1):
-      dmaengine: fix channel index enumeration
-
-Dmitry Osipenko (1):
-      dmaengine: tegra-apb: Ensure that clock is enabled during of DMA sync=
-hronization
-
-Grygorii Strashko (1):
-      dmaengine: ti: k3-psil: fix deadlock on error path
-
-Lubomir Rintel (2):
-      dmaengine: mmp_tdma: Do not ignore slave config validation errors
-      dmaengine: mmp_tdma: Reset channel error on release
-
-Maciej Grochowski (1):
-      include/linux/dmaengine: Typos fixes in API documentation
-
-Madhuparna Bhowmik (1):
-      dmaengine: pch_dma.c: Avoid data race between probe and irq handler
-
-Masahiro Yamada (1):
-      dt-bindings: dma: uniphier-xdmac: switch to single reg region
-
-Sebastian von Ohr (1):
-      dmaengine: xilinx_dma: Add missing check for empty list
-
-YueHaibing (1):
-      dmaengine: hisilicon: Fix build error without PCI_MSI
-
- .../bindings/dma/socionext,uniphier-xdmac.yaml     |  7 ++-
- drivers/dma/Kconfig                                |  3 +-
- drivers/dma/dmaengine.c                            | 60 ++++++++++--------=
-----
- drivers/dma/dmatest.c                              |  6 +--
- drivers/dma/mmp_tdma.c                             |  5 +-
- drivers/dma/pch_dma.c                              |  2 +-
- drivers/dma/tegra20-apb-dma.c                      |  9 ++++
- drivers/dma/ti/k3-psil.c                           |  1 +
- drivers/dma/xilinx/xilinx_dma.c                    | 20 ++++----
- include/linux/dmaengine.h                          | 12 ++---
- 10 files changed, 65 insertions(+), 60 deletions(-)
-
---=20
-~Vinod
-
---ibTvN161/egqYuK8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl6tU5QACgkQfBQHDyUj
-g0dPQRAAsR4mNVNv1eCt4LScsDT16pXID511hiFa1VIbsmA02SZBK5+RsKjGJ3bh
-pAgIvPYjbg1ijbxeE8xWlXVOgYb4jtbd4B/tbmkwT53VRhgYNiWuxC+3NtGTmobN
-XijkOpt2c0ulb8derWp4VOjcjdEzMoqVvfUE/2ENq3b7XE3ZN//JXiT9VIFGwsJv
-SjkTu4e9WDnQ+WT3kHpl+vxJmCLSxKnZ3xYE+dHFCg2decw29VT67C5MMddMEbQu
-SUI4ed20BfKF4d1R3aneHr7Hj40fa2r1Vyu+0jKDs2fNDuMIwxcVDI6V9anDDOA6
-1OnjYtnIOub4ZalVgpTvh5q5wsmnmn/KZFECcytbtgIjRYZlAtcN9JGmbuxe5tx1
-kqTsDqjqkI0pVY6B39VOMvQk52GZezXv+kJhiy88UjXjUqto1gOd3KGKGAYlCAo/
-5VlDbRWOkli6es8EgspwvHWElKS4quhNOzhkkggZb2LX7A2a55lI1YDsUVtsbFcd
-jW4Y7Gi//VEefPwcWwmGGfvHbBOQ3w54kZw5SF6g2e8nstUP2FeWSASPBCtEHgrI
-v0tguCMOYnWnX4MFgCLE9z4bmafGlye1priIQmpQ1lf8r6vQlxE4dAEHAj1Zld1E
-Ah/EUyFwQQyPihlAWTNt6QiXz10hgRSgGkp8Wbb8g29iI7qzU5E=
-=9jS/
------END PGP SIGNATURE-----
-
---ibTvN161/egqYuK8--
