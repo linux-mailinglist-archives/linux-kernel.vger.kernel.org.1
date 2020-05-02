@@ -2,145 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF9E1C26E4
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 18:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369521C26EB
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 18:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgEBQTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 12:19:25 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:1211 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728235AbgEBQTW (ORCPT
+        id S1728418AbgEBQVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 12:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728361AbgEBQVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 12:19:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1588436362; x=1619972362;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=3zEhew9gWJTYChTkmuNoXs9KyrWOfZV3SNtd+IY8FZU=;
-  b=bAALQSS6nWBTR9UO3Lv+cblGL3GiOVD7vV8ED1yv7x630WAsLqjCUHwP
-   rJUoBSxahjlwvF56YgotxN2fKmW3anSQxXeOTNs6t7PVkBadfkOJMoDk4
-   vYvdln+/9xJH/OO1CvTonQtK/fdWJ6knikFEFda+J/YxqjwqM1rpdUieM
-   Bn70EN1XEqoyEwon8w9OTs0qkHgRlzvPacbz6KbmcfyEua5TYx/26jfK3
-   jj2fyo8IBR+g7m4+rP5qfHhHO839vjQHUUkEOcpoCVrMF8c57wT58Fxov
-   DoDWbUMZtGij7Arzv7JmNeJT1mN44QCn5KYssiEJym0MFvNQZLAD/dVnk
-   A==;
-IronPort-SDR: hyEhjHp4cUIoiSXVk0WXDPm/5YkRA1Rcf18PQ+kY1Df0mE0vHyYuGuRR2hycCwd5FQ+Kn89bUq
- +oiYlcur3neGWu5ysQa+eRh49NfpafcwnIF0fO6T/+utE4akiewsD/3ZcO4HKOZEhddXpZrffl
- nCXek5mbD4SKHpxr1JV5Zuy5XJxlQMCosQlr4Mww+g6D9ZbACAZ+WyB8qlmCiTSLXoSpOHfSeW
- hFYg0pUfLxchI7TJnhKl8ckuXuRG6V+9AadOylk7cuqxUmqtfZhO4xgS4eTdjqoMj0NuRqMUSS
- Zvg=
-X-IronPort-AV: E=Sophos;i="5.73,343,1583164800"; 
-   d="scan'208";a="245566020"
-Received: from mail-bn7nam10lp2106.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.106])
-  by ob1.hgst.iphmx.com with ESMTP; 03 May 2020 00:19:20 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XlCO7nmCiLErRB8tdmy7sQYcZ7Db9+Lbz5UN/yJHRFy2EXKQudfMmbvcObXgFIWB1zkyY3DqPrJ3C+qH3GHBsH8S/cW9eBbzk+VZLhhHvpiXoedgVkREfwwUGKbgQlxj/6nwvo2HpdUmses/jUM/31sfEazyuT9MB6Lat0NBHtlqop++FPH5I0gstaBSKyQXEEqlkBJgGqVIBd7b4XcxZoMOxaOUBBQhJ33BxNO+vbssPmSqQyH+mS5dFncRgGRqfcNCRc8XgR9Uc0AsA6/VkqT/gSDVQc5c5xpu4dv+u+g1+G6m5rvkJ2hNonrNZeNp1JMOA9Pl3KAhwe2nteVi7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3zEhew9gWJTYChTkmuNoXs9KyrWOfZV3SNtd+IY8FZU=;
- b=amcrrEhOO7SEWC8xjLiNoRROW/I7DAc5syooEwv5posUf/4hXIKE8Rrn9bg64pntSIZ+3afPh9vDf+QIuS8O9lhIMQaBJh/37Llc4/z4fSEHNPxYQn2M3+W7dUcqi9wrd0wl530MyLxyU/++8V3Ab/N1EKyDQWD0Zl2M741Bj9YwQPVHJWelTjK+lwx5+YQu3OBWlJ5lbQ55HG6wr2ccrsn0RE0ZEwNjkpQzCWETKAifmaZ68denWZUOE8rtKV5LX2NPerLi1jEdNlngddgR/4708u3XuFaVKidaAA2FurCWch7UvN5tbSR3SiFQvidzxcU5ch/cK09Xi3fLdQxIrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Sat, 2 May 2020 12:21:17 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6640CC061A0C
+        for <linux-kernel@vger.kernel.org>; Sat,  2 May 2020 09:21:15 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id t11so6140657lfe.4
+        for <linux-kernel@vger.kernel.org>; Sat, 02 May 2020 09:21:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3zEhew9gWJTYChTkmuNoXs9KyrWOfZV3SNtd+IY8FZU=;
- b=xQvujg5HYS+3nGFD8jichPHlTm45Thcj4zYeLKBEpS3gW8bonH2p05s8hevJeurbfc7swdjQZqUL2wiSePlPNbY5wo3hNzi2oyBINR7mSXUMtu5Ex/E0pNlmb+xalqhZlRfqNcXx9/fpRaGWOUkuAhTDXrASmZElwtqi2EMyio0=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB5200.namprd04.prod.outlook.com (2603:10b6:805:103::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Sat, 2 May
- 2020 16:19:17 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288%6]) with mapi id 15.20.2958.027; Sat, 2 May 2020
- 16:19:17 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Bean Huo <huobean@gmail.com>, Bart Van Assche <bvanassche@acm.org>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 5/5] scsi: ufs: UFS Host Performance Booster(HPB)
- driver
-Thread-Topic: [PATCH v2 5/5] scsi: ufs: UFS Host Performance Booster(HPB)
- driver
-Thread-Index: AQHWFC4dSn/DnOroKESaR41iHFfp4qiF2/SAgAK+MnCAAPi+kIAAmSYAgAJemjCAAWl4gIAASG8QgABD6oCAAtOb8IAAXhUAgANcvzA=
-Date:   Sat, 2 May 2020 16:19:17 +0000
-Message-ID: <SN6PR04MB46409E525B4AA66C428122EEFCA80@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200416203126.1210-1-beanhuo@micron.com>
-         <20200416203126.1210-6-beanhuo@micron.com>
-         <8921adc3-0c1e-eb16-4a22-1a2a583fc8b3@acm.org>
-         <SN6PR04MB4640851C163648C54EB274C5FCD00@SN6PR04MB4640.namprd04.prod.outlook.com>
-         <SN6PR04MB4640ABB2BB5D2CE5AA2C3778FCD10@SN6PR04MB4640.namprd04.prod.outlook.com>
-         <12e8ad61-caa4-3d28-c1d7-febe99a488fb@acm.org>
-         <SN6PR04MB4640A33BBE0CD58107D7FC69FCAF0@SN6PR04MB4640.namprd04.prod.outlook.com>
-         <b2584ba8-3542-1aae-5802-e59d218e1553@acm.org>
-         <SN6PR04MB464009AFAC8F7EFC04184826FCAC0@SN6PR04MB4640.namprd04.prod.outlook.com>
-         <15eca4dd2ec8a4ba210ce0844e9f5027251fa6f2.camel@gmail.com>
-         <BYAPR04MB4629393BA60AF5E5898FB304FCAA0@BYAPR04MB4629.namprd04.prod.outlook.com>
- <79278fe0f4e0ce820484386a72bc6044d3c66822.camel@gmail.com>
-In-Reply-To: <79278fe0f4e0ce820484386a72bc6044d3c66822.camel@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2a00:a040:188:8f6c:c15d:86e6:9e1d:ec73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5a327671-840c-43ec-2f3b-08d7eeb49028
-x-ms-traffictypediagnostic: SN6PR04MB5200:
-x-microsoft-antispam-prvs: <SN6PR04MB5200786A6CA4B81EF03D93D4FCA80@SN6PR04MB5200.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 039178EF4A
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wzsyQ/t+3Dtu0eq4vY57N5KhEe1aNtozWxkdHBz/hQWInPGO1SLf2cX3mFqn+yCt+LOtlh17QgoiN3ZPoEJM5UdPsw+1QX7wb6/ZNRbaZeZModETyY0AeAu28YxplCrkorWGrLcxQAQH8tt/W1WcCiOlfVNw0IYNMhYxe4r9ggFS72MOPfK847rZZE519gccoZedEfF5AP66rYlnJyuKKaNwWkiV2bXWqZiJuxCxeeJIykMD27RyJM2Vl40wNFpM65x6iLqmlWr/LwbC9JN8Ik8C+TXFDNENOrtOzfnYJ+ZYUfOeiR9M3vTh9W2KtNoBhCxITa6t3utkK6jd3OQI4Z5MR7xriuGyMJwHo5e2m6VnI77ripGMIf5sG5kSKaABdXEBc3p47NOCLq7DmmRkMXgYf3LoGl206Lh6m1TSKt3H2Ug8kUd1mMCWLVyXL1PS3/11gchaGefN02jYkuFf+HrDpuuzr9/J+GCNx0Fx7wY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(39860400002)(136003)(396003)(376002)(346002)(9686003)(55016002)(6506007)(4326008)(66476007)(64756008)(76116006)(66446008)(66556008)(66946007)(5660300002)(4744005)(186003)(71200400001)(8676002)(52536014)(8936002)(110136005)(54906003)(7696005)(7416002)(33656002)(2906002)(478600001)(316002)(86362001)(921003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: MyaxCIhwfAh8sjb7Q0rPAVOY9Htq/I1WHl0IQng128prNPXgG9Lm414xxN7CR9Myp/k1yckaztOcnIoQx7Qt9ypMGNYuTszDWPpWRchgs/s6jatlRb1EVhcaQts52VGtkF8jCTkjNKYrc9gtBMQWW1UvN8oNHRAGgpw3wmuZnlNvEherP8jza0CkQ0/VLnGgBdxrwoAhFxUvxaIRIcyR4sSYDuOzApAJjeNv+MTEpPNkOcRc1jEXAMhj7gDKJC+4nx390e4ETQ9sO3CFfEMEWl9r5uwzdGeVtCAyiIrFg2G9ZcAzOGQ/vJHytLt9MAwG8G0HROI77aSxVFuVG+F/3PmGVClAjNPGJWD6GNfIj3CE+DNHKY5iY3KPwHzqOLqBUoZlJJiVB7ie9CHSjNcOku04rotTwh4C/MINUkzYC+R5f8y+yWNe3EO3DqdnzWAadc6vl7ysROnSNVXCjU5sQ0hZ/EA3MdBG+nR7CfCXnLTVspFkuIIGioRQxxjL6cRMKkuCmqHgzZ7HlQGAmK9H7NFztXf5EV5o+ClYKc1t7cFf1UOxzjpQez7E4bqH7Gso61TWURkhC1P7e8NOB4tlBFoimwnb1psJ5cA5JotDJ31nVWDW3CsK+DNELGwQoNP7lPRVLS29ZpN0W4XYQLuDKNtR7xbPK+wmX7TJOoRjbIpeQoVKKpJeGkiaPqbd6VRk27f5jb6VkIPWJVCco68+OwGv/xiWQF3SGSnUSNxcsG3wF/bjFn0J42IrZpv7G6puIbE6TbB3B081k/Cp6ZKh51lm+UpmYmKP5k4TKwBlBYkWs1tp++VILly5WnPsUBEfoBJOl90GJLFkC0ZMDDDuaGGtdQuYExS/WQzPnGvVZrU=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RX8j+eMX7l/I4yu6EXxXCXjENTwEgKOL12QRsPeepnk=;
+        b=Ca5x4+lL0TXL6rtdMD8M/5G0NMMGqc2U0q37cm6ZSEjzNCyzaMDeQ7JWTllA54Veel
+         qB4EieDr7AnAjIOaomrfPamq0HySp+xlvdKQy1DBnuFEkncwLWGDxLRtW7e2E2FtMF6F
+         q6i2uLDIShE9/htg9NtUhQcg9KrUk1WL3k3A14pY8f1TJZQTcDbqibrDkyhzW7W8nSvS
+         lL0G52OOxBr2Akgleu+Q+8IoiwY5VOWHYWGbahe4Y3UDiFgzPTlLWu5x22yOrxThawDo
+         iaYxKTUfpFUzD8YX6ouri+KwSlp7Z0d0zbPR9Z/i/yBvB2z2s8kQsFKa73FXkVk90bDA
+         2TSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RX8j+eMX7l/I4yu6EXxXCXjENTwEgKOL12QRsPeepnk=;
+        b=oXJ9kXNyOlVhsEJgrNeSXhmqhnPwwSTl+as4/QPe2FKP/3mIJ2g0PT7TGA4vb8p/8F
+         W14jkfjUSEKnCmR1UkaotYM+hlqqauZ59+YRa+S1HtZk76ddtHmMHDqe1MMkHFnFTBmw
+         iP76mz5j5zJiYzed4s0ouUE2qHmf65ELKD9oxJoWRmcjkO1b2KkxqPR/dEog5Hi/m8Jr
+         LPV3GiCydLfFGowJGiTQz3BurevKzjONaJl7Un/XiQk+47Z32JvjMTMPvgIMTe2+wI2U
+         MQVJ9NFBvD1tei1EE1/9zYLeEo6o7KdSoDEC/Lnfny4Te53fZN4ycTRH7OPJztv5FEB8
+         6REw==
+X-Gm-Message-State: AGi0PuarPdk1fgopnar469U5rVsNeU3kjUMgsaWJQ05aHdvMMCP0RW0N
+        JLgptzpsyxUccbo5BrfiibOL13PKqjLe24aNwPne2w==
+X-Google-Smtp-Source: APiQypIoY+z7MsrMDeF3c5PUJ3mNeNxQdXYhWlIEBCpY43BaMe0NNUp3Ai81VzjDhtXxECbeCNsTZuUe8J4P8lIQlAQ=
+X-Received: by 2002:a19:4883:: with SMTP id v125mr5911231lfa.95.1588436473656;
+ Sat, 02 May 2020 09:21:13 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a327671-840c-43ec-2f3b-08d7eeb49028
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 May 2020 16:19:17.5231
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9D7bSFmfVeALU9EnRpDJua/j2TzVbs257/ZJhnbSmstIpJuI65HYEw0KxdtyH29RLeoiQGlWrxBKEEcN6dSniA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5200
+References: <20200502064240.568495432@linuxfoundation.org>
+In-Reply-To: <20200502064240.568495432@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 2 May 2020 21:51:01 +0530
+Message-ID: <CA+G9fYs2Cpkiy2EWnmjWfitCXJOzEDztBRFt9UY+O4=KgtvrzA@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/70] 4.4.221-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmVhbiwNCg0KPiBUbyBtZSwgaGllcmFyY2hpY2FsIGRlc2lnbiBzb3VuZHMgZ29vZCwgYW5k
-IG1vdmUgdGhlIGltcGxlbWVudGF0aW9uIG9mDQo+IEhQQiBtYW5hZ2VyIG1vZHVsZSB0byBTQ1NJ
-IGxheWVyIGlzIG5pY2UuIGJ1dCB3aGF0IGlzIG9waW5pb24gb2YNCj4gb3RoZXJzPyBhbmQgd2hp
-Y2ggd2F5IHRoZXkgcHJlZmVyLiBvciB0aGV5IHdhbnQgdXMgdG8gY29udGludWUgY3VycmVudA0K
-PiBTYW1zdW5nIGFwcHJvYWNoIGFuZCBzb2x2ZSBpdHMgY29ucyBmdXJ0aGVyLg0KSSBjYW4gcHV0
-IGFuIFJGQyB0b2dldGhlciBpbiBmZXcgZGF5cy4NCk15IHBsYW4gaXMgdG8gYm9ycm93IGFzIG11
-Y2ggYXMgcG9zc2libGUgZnJvbSBTYW1zdW5nIGRyaXZlciwNCkJ1dCB0byBtb3ZlIHRoZSBMMlAg
-Y2FjaGUgbWFuYWdlbWVudCBhbmQgSFBCLVJFQUQgY29tbWFuZCBzZXR1cCB0byB0aGUgc2NzaSBt
-aWQtbGF5ZXIuDQpBbHNvIG1heWJlIGVsYWJvcmF0ZSB0aGUgaG9zdC1tYW5hZ2VkIG1vZGUgbG9n
-aWMgdG8gc29tZSBleHRlbnQuDQpUaGlzIHdpbGwgbm90IGJlIGEgZnVsbC1mbGVkZ2VkIGRyaXZl
-ciwgYnV0IG1vcmUgb2YgYSBza2VsZXRvbiAtIA0KVGhlIGdvcnkgZGV0YWlscyBjYW4gY29tZSBh
-ZnRlciwgb25jZSB3ZSdsbCBhZ3JlZSBvbiB0aGUgZ2VuZXJhbCBjb25jZXB0Lg0KDQpMZXQncyB3
-YWl0IGZldyAgZGF5cyBtb3JlIHRvIGFsbG93IHNvbWUgbW9yZSBwZW9wbGUgdG8gY29tbWVudC4N
-CklkZWFsbHksIHRoaXMgc2hvdWxkIGJlIGEgam9pbnQgZWZmb3J0IG9mIHRoZSB1ZnMgY29tbXVu
-aXR5LA0KR2l2ZW4gdGhlIHNpemUgb2YgdGhpcyBkcml2ZXIsIGFuZCB0aGUgIGluZHVzdHJ5J3Mg
-aW50ZXJlc3QgYW5kIGZvY3VzLg0KDQpUaGFua3MsDQpBdnJpDQo=
+On Sat, 2 May 2020 at 12:16, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.221 release.
+> There are 70 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 04 May 2020 06:40:34 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.221-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.221-rc2
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: f63f49c39d5187cb67e54f3f76dfa7b985ecee90
+git describe: v4.4.220-71-gf63f49c39d51
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.4-oe/bui=
+ld/v4.4.220-71-gf63f49c39d51
+
+No regressions (compared to build v4.4.220)
+
+No fixes (compared to build v4.4.220)
+
+Ran 16978 total tests in the following environments and test suites.
+
+Environments
+--------------
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* v4l2-compliance
+* kvm-unit-tests
+* install-android-platform-tools-r2800
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.221-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.221-rc1-hikey-20200501-708
+git commit: 6875f6cda49cc47e389b07560d3d140972014da5
+git describe: 4.4.221-rc1-hikey-20200501-708
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.221-rc1-hikey-20200501-708
+
+
+No regressions (compared to build 4.4.221-rc1-hikey-20200430-707)
+
+No fixes (compared to build 4.4.221-rc1-hikey-20200430-707)
+
+Ran 1677 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
