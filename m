@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC891C2296
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 05:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DE51C22B2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 06:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgEBDdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 23:33:23 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36864 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726439AbgEBDdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 23:33:22 -0400
-Received: from [10.130.0.52] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx32r36axeZjIvAA--.3S3;
-        Sat, 02 May 2020 11:33:13 +0800 (CST)
-Subject: Re: [PATCH] MIPS: tools: Show result for loongson3-llsc-check
-To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1588250184-18730-1-git-send-email-yangtiezhu@loongson.cn>
- <b53aef0a-2441-3c4b-ebf0-74d0203eeda0@cogentembedded.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <4b113657-5d79-4896-58f2-8d73d37dc892@loongson.cn>
-Date:   Sat, 2 May 2020 11:33:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1726809AbgEBEL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 00:11:27 -0400
+Received: from pbmsgap01.intersil.com ([192.157.179.201]:33542 "EHLO
+        pbmsgap01.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726435AbgEBEL0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 May 2020 00:11:26 -0400
+Received: from pps.filterd (pbmsgap01.intersil.com [127.0.0.1])
+        by pbmsgap01.intersil.com (8.16.0.27/8.16.0.27) with SMTP id 0423WbBg030627;
+        Fri, 1 May 2020 23:36:17 -0400
+Received: from pbmxdp02.intersil.corp (pbmxdp02.pb.intersil.com [132.158.200.223])
+        by pbmsgap01.intersil.com with ESMTP id 30mgqyuxy4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 01 May 2020 23:36:17 -0400
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp02.intersil.corp (132.158.200.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1531.3; Fri, 1 May 2020 23:36:16 -0400
+Received: from localhost (132.158.202.109) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.1531.3 via Frontend
+ Transport; Fri, 1 May 2020 23:36:15 -0400
+From:   <vincent.cheng.xh@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>,
+        Vincent Cheng <vincent.cheng.xh@renesas.com>
+Subject: [PATCH v2 net-next 0/3] ptp: Add adjust phase to support phase offset.
+Date:   Fri, 1 May 2020 23:35:35 -0400
+Message-ID: <1588390538-24589-1-git-send-email-vincent.cheng.xh@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-In-Reply-To: <b53aef0a-2441-3c4b-ebf0-74d0203eeda0@cogentembedded.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dx32r36axeZjIvAA--.3S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw13WFWktF4DKrWxGrW7urg_yoW8GFy3pr
-        90kayUGr4rWr95JFnagrW5GrySkrZxCF1DArZ2yF1UAr9rX3W3ZryfG3WFvanrAF1DG3WI
-        9Fy8GFWUA3W8CaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
-        6r4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
-        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUywZ7UUU
-        UU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-05-01_18:2020-05-01,2020-05-01 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 suspectscore=4 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=672
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-2002250000 definitions=main-2005020027
+X-Proofpoint-Spam-Reason: mlx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Vincent Cheng <vincent.cheng.xh@renesas.com>
 
+This series adds adjust phase to the PTP Hardware Clock device interface.
 
-On 05/01/2020 05:48 PM, Sergei Shtylyov wrote:
-> Hello!
->
-> On 30.04.2020 15:36, Tiezhu Yang wrote:
->
->> It is better to show the result before loongson3-llsc-check exit,
->> otherwise we can see nothing if the return status is EXIT_SUCCESS,
->> it seems confusing.
->>
->> E.g. without this patch:
->>
->> [loongson@localhost tools]$ ./loongson3-llsc-check ../../../vmlinux
->> [loongson@localhost tools]$
->>
->> With this patch:
->>
->> [loongson@localhost tools]$ ./loongson3-llsc-check ../../../vmlinux
->> loongson3-llsc-check returns success
->> [loongson@localhost tools]$
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   arch/mips/tools/loongson3-llsc-check.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/mips/tools/loongson3-llsc-check.c 
->> b/arch/mips/tools/loongson3-llsc-check.c
->> index 0ebddd0..facd016 100644
->> --- a/arch/mips/tools/loongson3-llsc-check.c
->> +++ b/arch/mips/tools/loongson3-llsc-check.c
->> @@ -303,5 +303,7 @@ int main(int argc, char *argv[])
->>   out_close:
->>       close(vmlinux_fd);
->>   out_ret:
->> +    fprintf(stdout, "loongson3-llsc-check %s\n",
->> +        status ? "returns failure" : "returns success");
->
->    Why not "loongson3-llsc-check returns %s\n"?
+Some PTP hardware clocks have a write phase mode that has
+a built-in hardware filtering capability.  The write phase mode
+utilizes a phase offset control word instead of a frequency offset 
+control word.  Add adjust phase function to take advantage of this
+capability.
 
-Hi Sergei,
+Changes since v1:
+- As suggested by Richard Cochran:
+  1. ops->adjphase is new so need to check for non-null function pointer.
+  2. Kernel coding style uses lower_case_underscores.
+  3. Use existing PTP clock API for delayed worker.
 
-Sorry for the late reply, thanks for your review, I will send v2.
+Vincent Cheng (3):
+  ptp: Add adjphase function to support phase offset control.
+  ptp: Add adjust_phase to ptp_clock_caps capability.
+  ptp: ptp_clockmatrix: Add adjphase() to support PHC write phase mode.
 
-Thanks,
-Tiezhu Yang
+ drivers/ptp/ptp_chardev.c             |  1 +
+ drivers/ptp/ptp_clock.c               |  3 ++
+ drivers/ptp/ptp_clockmatrix.c         | 92 +++++++++++++++++++++++++++++++++++
+ drivers/ptp/ptp_clockmatrix.h         |  8 ++-
+ include/linux/ptp_clock_kernel.h      |  6 ++-
+ include/uapi/linux/ptp_clock.h        |  4 +-
+ tools/testing/selftests/ptp/testptp.c |  6 ++-
+ 7 files changed, 114 insertions(+), 6 deletions(-)
 
->
->>       return status;
->>   }
->>
->
-> MBR, Sergei
+-- 
+2.7.4
 
