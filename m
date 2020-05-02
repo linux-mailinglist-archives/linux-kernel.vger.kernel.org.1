@@ -2,144 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA711C27B7
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 20:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BD91C27AB
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 20:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728614AbgEBSaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 14:30:12 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47884 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728430AbgEBSaL (ORCPT
+        id S1728571AbgEBSaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 14:30:01 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:45940 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728437AbgEBS37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 14:30:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588444210;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=letQVDOo3V2j1mmTVFw1o6et9y8zvcG1xCoXp2K/63E=;
-        b=as4e889PPucEyfypNvRN0Jh8Wwf3Vqm18baryWZ92N5WVAFganiSv79yukX/sYC2B2nZzA
-        q15NcZapUCbsKD/51j6NG4FpBnvYyOBtryRQvvuXdhgsQkQfwA7C/0uW6CivlBeVZVRmh0
-        nVctK+xyzWcyFuVtXU+gLSI393jLf9M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-ubq-5E0lNFWza9zgE-YR_w-1; Sat, 02 May 2020 14:30:08 -0400
-X-MC-Unique: ubq-5E0lNFWza9zgE-YR_w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07EFE8005B7;
-        Sat,  2 May 2020 18:30:07 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-112-4.ams2.redhat.com [10.36.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 82A30600E5;
-        Sat,  2 May 2020 18:30:05 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mario Limonciello <mario.limonciello@dell.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] platform/x86: intel-vbtn: Fix probe failure on devices with only switches
-Date:   Sat,  2 May 2020 20:29:51 +0200
-Message-Id: <20200502182951.114231-6-hdegoede@redhat.com>
-In-Reply-To: <20200502182951.114231-1-hdegoede@redhat.com>
-References: <20200502182951.114231-1-hdegoede@redhat.com>
+        Sat, 2 May 2020 14:29:59 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 042ITsJZ010357;
+        Sat, 2 May 2020 13:29:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1588444194;
+        bh=6Q3yiR2XRiJ8kTEZnUqEqO28fw1ZlmPhXIq8d15/v34=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=YvyzDSf1idXJAUrEd22hGo0xf2Iphgvq3YscDCYaQ9YIor/9NCQJ3HaBj5pcDsOIH
+         sWOpPM21vStVVsOSOPXFgkP6nk3wm63Tfs9Ih6B1auT9qGm1F1ohMxqHDZEcg7iXgR
+         /maCgPMomHeUe/yT22HAXxoiwL328vD8xkDXqbTI=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 042ITspx096198
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 2 May 2020 13:29:54 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sat, 2 May
+ 2020 13:29:54 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sat, 2 May 2020 13:29:54 -0500
+Received: from [10.250.48.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 042ITr6B018688;
+        Sat, 2 May 2020 13:29:54 -0500
+Subject: Re: [PATCH v3 0/2] Misc. rproc fixes around fixed memory region
+ support
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Loic Pallardy <loic.pallardy@st.com>,
+        Tero Kristo <t-kristo@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20200420160600.10467-1-s-anna@ti.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <181b6c56-420c-f306-f2cf-53380ad1f37b@ti.com>
+Date:   Sat, 2 May 2020 13:29:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200420160600.10467-1-s-anna@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On some devices the INT33D6 vbtn device is only used to report
-tablet-mode / docked status (switches) and there are no vbtn managed
-buttons.
+Hi Bjorn,
 
-On these devices there is no VBDL object.
+On 4/20/20 11:05 AM, Suman Anna wrote:
+> Hi Bjorn,
+> 
+> This is another minor revision of the fixes around fixed memory region
+> support [1] series. Patch 1 is revised to go back to the logic used in v1
+> after a long discussion on the v2 version [2]. The other suggestions can
+> be future improvments as they would require corresponding platform driver
+> changes. Please look through the discussion there and let us know your
+> preference. Patches are based on v5.7-rc1.
+> 
+> I really appreciate it if you can target the series for the current 5.7 -rc's.
+> The fixes would apply for all 5.1+ kernels.
 
-Move the VBDL check to a intel_vbtn_has_buttons() helper and only exit
-from intel_vbtn_probe() with -ENODEV when there are both no buttons and
-no switches. Also only report the buttons being present to userspace if
-the has_buttons check has succeeded.
+Ping on these.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/platform/x86/intel-vbtn.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+regards
+Suman
 
-diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/int=
-el-vbtn.c
-index 4921fc15dc6c..4efc70b693a7 100644
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel-vbtn.c
-@@ -55,6 +55,7 @@ static const struct key_entry intel_vbtn_switchmap[] =3D=
- {
- struct intel_vbtn_priv {
- 	struct key_entry keymap[KEYMAP_LEN];
- 	struct input_dev *input_dev;
-+	bool has_buttons;
- 	bool has_switches;
- 	bool wakeup_mode;
- };
-@@ -64,7 +65,7 @@ static int intel_vbtn_input_setup(struct platform_devic=
-e *device)
- 	struct intel_vbtn_priv *priv =3D dev_get_drvdata(&device->dev);
- 	int ret, keymap_len =3D 0;
-=20
--	if (true) {
-+	if (priv->has_buttons) {
- 		memcpy(&priv->keymap[keymap_len], intel_vbtn_keymap,
- 		       ARRAY_SIZE(intel_vbtn_keymap) *
- 		       sizeof(struct key_entry));
-@@ -155,6 +156,14 @@ static void detect_tablet_mode(struct platform_devic=
-e *device)
- 	input_report_switch(priv->input_dev, SW_DOCK, m);
- }
-=20
-+static bool intel_vbtn_has_buttons(acpi_handle handle)
-+{
-+	acpi_status status;
-+
-+	status =3D acpi_evaluate_object(handle, "VBDL", NULL, NULL);
-+	return ACPI_SUCCESS(status);
-+}
-+
- static bool intel_vbtn_has_switches(acpi_handle handle)
- {
- 	const char *chassis_type =3D dmi_get_system_info(DMI_CHASSIS_TYPE);
-@@ -181,12 +190,15 @@ static bool intel_vbtn_has_switches(acpi_handle han=
-dle)
- static int intel_vbtn_probe(struct platform_device *device)
- {
- 	acpi_handle handle =3D ACPI_HANDLE(&device->dev);
-+	bool has_buttons, has_switches;
- 	struct intel_vbtn_priv *priv;
- 	acpi_status status;
- 	int err;
-=20
--	status =3D acpi_evaluate_object(handle, "VBDL", NULL, NULL);
--	if (ACPI_FAILURE(status)) {
-+	has_buttons =3D intel_vbtn_has_buttons(handle);
-+	has_switches =3D intel_vbtn_has_switches(handle);
-+
-+	if (!has_buttons && !has_switches) {
- 		dev_warn(&device->dev, "failed to read Intel Virtual Button driver\n")=
-;
- 		return -ENODEV;
- 	}
-@@ -196,7 +208,8 @@ static int intel_vbtn_probe(struct platform_device *d=
-evice)
- 		return -ENOMEM;
- 	dev_set_drvdata(&device->dev, priv);
-=20
--	priv->has_switches =3D intel_vbtn_has_switches(handle);
-+	priv->has_buttons =3D has_buttons;
-+	priv->has_switches =3D has_switches;
-=20
- 	err =3D intel_vbtn_input_setup(device);
- 	if (err) {
---=20
-2.26.0
+> 
+> Please see the v1 cover-letter [1] for the details on the issues.
+> 
+> regards
+> Suman
+> 
+> [1] https://patchwork.kernel.org/cover/11422723/
+> [2] https://patchwork.kernel.org/comment/23274389/
+> 
+> Suman Anna (1):
+>    remoteproc: Fix and restore the parenting hierarchy for vdev
+> 
+> Tero Kristo (1):
+>    remoteproc: Fall back to using parent memory pool if no dedicated
+>      available
+> 
+>   drivers/remoteproc/remoteproc_core.c   |  2 +-
+>   drivers/remoteproc/remoteproc_virtio.c | 12 ++++++++++++
+>   2 files changed, 13 insertions(+), 1 deletion(-)
+> 
 
