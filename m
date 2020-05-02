@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50C81C2598
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 15:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A20B1C25A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 15:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728023AbgEBNQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 09:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        id S1727988AbgEBNU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 09:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727972AbgEBNQB (ORCPT
+        with ESMTP id S1727818AbgEBNU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 09:16:01 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0A2C061A0F
-        for <linux-kernel@vger.kernel.org>; Sat,  2 May 2020 06:16:01 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id s202so2354266oih.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 May 2020 06:16:01 -0700 (PDT)
+        Sat, 2 May 2020 09:20:27 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C02AC061A0C;
+        Sat,  2 May 2020 06:20:25 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id q7so11971282qkf.3;
+        Sat, 02 May 2020 06:20:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=S3RbHQf/lz16sGIFdkG5ro7r7VnQo1GE/iR1VoyCwlzMbnjCXA3bBRnvmwXNT3qjuU
-         DiQV/mmOGdbxRFED3q9fuupI9nLlCRIVwfMMsCd5B2E5+mh82V8HrpRtFbicmcKA5Gb6
-         lASk1wJLV1DrTLrVU+4/EV6P2rRPZuUDBDqHBQ7V1jp+EtwEIWj1Hv2OTTdR9D5zCQRl
-         WZi7C7Nht1B3mM5f7EOhEtBgxoXs+/BfGy0taOvvrVc6AdswYmZLcDop8VlZv94k0T14
-         9s16HegjycN/gGzUILZ7sKXjAYX1YwVGD82DWa9+2gwGoBkI+HmkthuJW4Dwoyk6OXjA
-         EKtA==
+        bh=7gO/I+IvtkIZFC4jw7d1M58LLH0WJEijQ4nefSivFRc=;
+        b=JsqzSO7Dl9DvRNtQn+Xqsi0073bQnPRngcl3vh8Ds9GolrE5Mt+TLnU06QkC42yTwN
+         sEqExDuwAzZbXJCkaK6GH3vg/4wiZ+Mnsk1/e/s9G08but0mNpuZqdVDhd7aVatrJiEl
+         ZzUE+gkm/GBRRZX025AzF5kb3ddznbv6vlnlPA0ja2CFsGhnRVbUkzh0DNLwBml4pCAO
+         9fF7Jc7rjf0rqzj5dmMSOpjaKNqZ170sAJvRxSDAo9fMxARxlI0oOvXW6h1adZ02uMnw
+         fNSU+2I/cpALkmgg3iQA3GgJay57/3F0Z9DA9AYUxIK8kpZicDEVEvA0lM8OlZ0341Ll
+         qFxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=Y+SgRwi/g03KMGCDkqHL9Lu0xJputpHw9JIhBPvVfhx2hVO/80AYXg3WIv5to4l88v
-         qh+fMVQ4Jte5LeaTEBD1T0pp1N/ZhdS+jUwyG6xEBaei9lSchQyefYZizQrvsipOloMJ
-         kVSeFbvRtpShdmnGzJzfgpTTp3ifZZmjZXSSxYGDxpOzv+r5/YD44VKQgv2gu4q9LIt8
-         bwWzxlKAdXOdwWW4v37lRm4RRBGcz3cfSPfb3AMzt5SLyCX4FnrEPDbOSxn8PaZZPxIc
-         ThTrPYF/sXHlKMNUep8WLjdSS0tKGVLya6TVvDNz8kiidXgQcMODktlBjrWTLhYBIYAK
-         i3Lw==
-X-Gm-Message-State: AGi0PuYVupDp+yMswwATVyR05rf7cSzQHDXIoTPu8oIfnIXEB9nTEhIM
-        Zb8aJQSlsuhHp4uDFlWJt5VpL6P6xZUieim19do=
-X-Google-Smtp-Source: APiQypLWMPcUf10pMnydJEDKjV3hYgO/l0Pd65TU8LeNoRd9Rc3r56jfP3Gb1j3p5wLYCKScBG5gYNkHLxfzKuxnjHs=
-X-Received: by 2002:aca:31ce:: with SMTP id x197mr3091059oix.157.1588425360610;
- Sat, 02 May 2020 06:16:00 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7gO/I+IvtkIZFC4jw7d1M58LLH0WJEijQ4nefSivFRc=;
+        b=kIjslJ6fceLUXx8MG9Ci/jOXK0mODUKGNcYmga3t8g+2pWdk5GVdhoAk3Fa+fDXTU+
+         Yoq2I1UlBTFNMOxZduNwZ3RlrUvELlsDFLb6xg2qFsxAGAQkcEkz5d3TBvxmvDnciErz
+         3Dzs6qPN2LnAI7kbi9/iqyR99g8nmLcAC/eXKvzNwdtJnMdOWn/mzMzGvr7CKkvz71Qq
+         KrlfFlcFcjy7erMl0rm4VPk8YNaCq3Hn+uzjsV/GhOb6xD/4tYcNwe5rs1QkfyQkSiqZ
+         8K4UgiZFF/lTpbFUjr6F1v9K+U/rRwkKqOch22dMy3+LiuPQ4G9iBt0Gb/yFgou8rujS
+         9nkA==
+X-Gm-Message-State: AGi0PuYM8q62OUV78JJfK2qCqpqI5/BY0ntdmTLDDY4O/Ksb3Q3ZQ8Ma
+        f6W7w/0uSVQo+Txf7bnqPDw=
+X-Google-Smtp-Source: APiQypIxNQBmn7ptFgUIwXN+1StR7LK8a8epow3LnVkDsEZEU4dvMKVcbgvYqHbyRSla4AZJ9YYZTQ==
+X-Received: by 2002:a05:620a:39b:: with SMTP id q27mr8260387qkm.94.1588425624565;
+        Sat, 02 May 2020 06:20:24 -0700 (PDT)
+Received: from localhost.localdomain (c-73-37-219-234.hsd1.mn.comcast.net. [73.37.219.234])
+        by smtp.gmail.com with ESMTPSA id o6sm4975385qkj.126.2020.05.02.06.20.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 May 2020 06:20:23 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mm: Add node for SPDIF
+Date:   Sat,  2 May 2020 08:20:11 -0500
+Message-Id: <20200502132011.196045-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:ac9:5e4c:0:0:0:0:0 with HTTP; Sat, 2 May 2020 06:16:00 -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <evangelicalurtheranchurch@gmail.com>
-Date:   Sat, 2 May 2020 06:16:00 -0700
-Message-ID: <CAB+rQNy0qThGAi8FPY680HqDSN+fOpwJS=-BTP+_Jv1XtRVeuQ@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+The i.MX8M Mini can support SPIDF which is very similar to the
+IP used on the i.MX35.
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+This patch adds the SPIF node.
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+index d46e727fc362..00aad55ece65 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+@@ -358,6 +358,29 @@ micfil: micfil@30080000 {
+ 				status = "disabled";
+ 			};
+ 
++			spdif1: spdif@30090000 {
++				compatible = "fsl,imx8mm-spdif", "fsl,imx35-spdif";
++				reg = <0x30090000 0x10000>;
++				interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk IMX8MM_CLK_AUDIO_AHB>, /* core */
++					 <&clk IMX8MM_CLK_24M>, /* rxtx0 */
++					 <&clk IMX8MM_CLK_SPDIF1>, /* rxtx1 */
++					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx2 */
++					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx3 */
++					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx4 */
++					 <&clk IMX8MM_CLK_AUDIO_AHB>, /* rxtx5 */
++					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx6 */
++					 <&clk IMX8MM_CLK_DUMMY>, /* rxtx7 */
++					 <&clk IMX8MM_CLK_DUMMY>; /* spba */
++				clock-names = "core", "rxtx0",
++					      "rxtx1", "rxtx2",
++					      "rxtx3", "rxtx4",
++					      "rxtx5", "rxtx6",
++					      "rxtx7", "spba";
++				dmas = <&sdma2 28 18 0>, <&sdma2 29 18 0>;
++				dma-names = "rx", "tx";
++				status = "disabled";
++			};
+ 			gpio1: gpio@30200000 {
+ 				compatible = "fsl,imx8mm-gpio", "fsl,imx35-gpio";
+ 				reg = <0x30200000 0x10000>;
+-- 
+2.25.1
 
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
-
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
-
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
