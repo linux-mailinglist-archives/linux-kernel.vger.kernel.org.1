@@ -2,62 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B3F1C28EE
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 01:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A02E1C28F4
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 01:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbgEBXcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 19:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726375AbgEBXcF (ORCPT
+        id S1726645AbgEBXd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 19:33:57 -0400
+Received: from mta-p7.oit.umn.edu ([134.84.196.207]:45888 "EHLO
+        mta-p7.oit.umn.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726375AbgEBXdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 19:32:05 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA571C061A0C;
-        Sat,  2 May 2020 16:32:04 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 0DD051513DD3F;
-        Sat,  2 May 2020 16:32:02 -0700 (PDT)
-Date:   Sat, 02 May 2020 16:31:59 -0700 (PDT)
-Message-Id: <20200502.163159.1994318394817516336.davem@davemloft.net>
-To:     vincent.cheng.xh@renesas.com
-Cc:     richardcochran@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 net-next 0/3] ptp: Add adjust phase to support phase
- offset.
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1588390538-24589-1-git-send-email-vincent.cheng.xh@renesas.com>
-References: <1588390538-24589-1-git-send-email-vincent.cheng.xh@renesas.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sat, 02 May 2020 16:32:02 -0700 (PDT)
+        Sat, 2 May 2020 19:33:55 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-p7.oit.umn.edu (Postfix) with ESMTP id 49F56V5jcVz9vJsC
+        for <linux-kernel@vger.kernel.org>; Sat,  2 May 2020 23:33:54 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p7.oit.umn.edu ([127.0.0.1])
+        by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id L8IkDPPKyX7L for <linux-kernel@vger.kernel.org>;
+        Sat,  2 May 2020 18:33:54 -0500 (CDT)
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 49F56V4fTYz9vJrf
+        for <linux-kernel@vger.kernel.org>; Sat,  2 May 2020 18:33:54 -0500 (CDT)
+Received: by mail-qt1-f197.google.com with SMTP id q43so15985186qtj.11
+        for <linux-kernel@vger.kernel.org>; Sat, 02 May 2020 16:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umn.edu; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=5Ok6v3QTS7jskLU7bXRb5zaNyLJwMRDHy874gWet09s=;
+        b=DsWF8qvZsx5RG9xuqF3JePeNDEacJrPwkOZyQswTfIjPVYFTsuAOC9Fjvz4d5Hkq6L
+         9YnvkpVqcSo7VISqviBMZ9tw1gh1BFLBSaOVGqgzpSF9sOBgsQCgXtfAxSyw57jey6At
+         u+zqXyCC8GdmAFOrtl2lsIH2CbWWL28yN46ZXvgCxzDM5ceGaZPGdCUiO+Hua/yof0vb
+         QVUVuxycX/oUpwrI3vZCAnDCvDgdhUAziu7Lch0nnOG+pHCLs9g55WEpw4j6Svcz1ifp
+         cmQqHT4k8jMDVTRbuHOzqcqiazsAIyt/th0LmxuvIRZjLrHAqtWHL7+Szv/MdmVXPApG
+         c2Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5Ok6v3QTS7jskLU7bXRb5zaNyLJwMRDHy874gWet09s=;
+        b=Z797+YC0tTpAX8etGUFkIGQTQ05I+lNwwwRt9djaPu+9cIK8LcuOka1kfxF3/iWjeG
+         iKXk220bt9W47q8YccsjuWlj2yYK5aJlM0LiswXbAc4Zx5BkGnog6yjAleP+TLPHH2Xv
+         sDcH4rDmn2DBtGhW3xeW8eE6g96lGUvoT080mzJSOOsFEMu7fwjjSudBDY1GpvSEBLz6
+         z/Hzcxsc9LQs8gnJaZQY0vo3ueSVUelnXrMzSGw4gaD9HjyvHSz86oOYT3U/XyXgF1/Q
+         C885/UqcZw1U0gMNmbh4OC2UaeGseFY3m4/wYuhTr2CiigPJW8iGchEw3lu9dDyo6+9w
+         tKgQ==
+X-Gm-Message-State: AGi0PuZjfJBWprWIWTvY/VsUtYq/lmCrKDDQT90JGFnCfAPHadng8lqz
+        dtNAnuXojhwKKJEnY7FRlCwoMUlwJ6LYJVCxjramN8fCKJxnX+5LmasL2alJr/hCIqxMNZBN3Gg
+        JRILseA4sBI+5ynFlPXEJqIsSKraB
+X-Received: by 2002:a05:620a:8da:: with SMTP id z26mr9951154qkz.182.1588462434008;
+        Sat, 02 May 2020 16:33:54 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIp6mvb+J23R0t0JtGB8uh+DMZjcNiEF5oMT/5zh8Qusv1Wa3sgrkzYFNCQpRU3ptC4oHe+7g==
+X-Received: by 2002:a05:620a:8da:: with SMTP id z26mr9951138qkz.182.1588462433574;
+        Sat, 02 May 2020 16:33:53 -0700 (PDT)
+Received: from qiushi.dtc.umn.edu (cs-kh5248-02-umh.cs.umn.edu. [128.101.106.4])
+        by smtp.gmail.com with ESMTPSA id u11sm6708645qtj.10.2020.05.02.16.33.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 May 2020 16:33:52 -0700 (PDT)
+From:   wu000273@umn.edu
+To:     sre@kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kjlu@umn.edu, wu000273@umn.edu
+Subject: [PATCH] power: supply: fix memory leaks (v2)
+Date:   Sat,  2 May 2020 18:33:38 -0500
+Message-Id: <20200502233338.9188-1-wu000273@umn.edu>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: <vincent.cheng.xh@renesas.com>
-Date: Fri, 1 May 2020 23:35:35 -0400
+From: Qiushi Wu <wu000273@umn.edu>
 
-> From: Vincent Cheng <vincent.cheng.xh@renesas.com>
-> 
-> This series adds adjust phase to the PTP Hardware Clock device interface.
-> 
-> Some PTP hardware clocks have a write phase mode that has
-> a built-in hardware filtering capability.  The write phase mode
-> utilizes a phase offset control word instead of a frequency offset 
-> control word.  Add adjust phase function to take advantage of this
-> capability.
-> 
-> Changes since v1:
-> - As suggested by Richard Cochran:
->   1. ops->adjphase is new so need to check for non-null function pointer.
->   2. Kernel coding style uses lower_case_underscores.
->   3. Use existing PTP clock API for delayed worker.
+In function power_supply_add_hwmon_sysfs(), psyhw->props is
+allocated by bitmap_zalloc(). But this pointer is not deallocated
+when devm_add_action fail,  which lead to a memory leak bug. To fix
+this, we replace devm_add_action with devm_add_action_or_reset.
 
-Series applied.
+v2:
+  - Prevent introducing double-free.
+  - Added fixes tag
+
+Fixes: e67d4dfc9ff19 ("power: supply: Add HWMON compatibility layer")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+---
+ drivers/power/supply/power_supply_hwmon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/power/supply/power_supply_hwmon.c b/drivers/power/supply/power_supply_hwmon.c
+index 75cf861ba492..7c8296ea0c34 100644
+--- a/drivers/power/supply/power_supply_hwmon.c
++++ b/drivers/power/supply/power_supply_hwmon.c
+@@ -304,7 +304,7 @@ int power_supply_add_hwmon_sysfs(struct power_supply *psy)
+ 		goto error;
+ 	}
+ 
+-	ret = devm_add_action(dev, power_supply_hwmon_bitmap_free,
++	ret = devm_add_action_or_reset(dev, power_supply_hwmon_bitmap_free,
+ 			      psyhw->props);
+ 	if (ret)
+ 		goto error;
+-- 
+2.17.1
+
