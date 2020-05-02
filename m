@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A211C258F
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 15:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8295C1C2594
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 15:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727974AbgEBNIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 09:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727818AbgEBNIF (ORCPT
+        id S1727947AbgEBNNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 09:13:19 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:55499 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727818AbgEBNNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 09:08:05 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68EEC061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  2 May 2020 06:08:03 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j1so15185198wrt.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 May 2020 06:08:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FRw4ueRoXO+hQ6IkGlh7zfZgNzWt7O37UhFRQytFfPs=;
-        b=aASxuV+umOVcQ7vMpj+gVDY+qsWNknGusCOUsELV9/dOd33gSVwnenJoVoljbHbxAl
-         tY1DB4MVg6wWWtequq0Mc8w5cVKCCC0sVdSDToDDQ5eTk9rcg4t3eRMG1evknUa51JI2
-         SoHzMfGxXc0U/SEqRpT57CcHcRsQudsxjVxRA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FRw4ueRoXO+hQ6IkGlh7zfZgNzWt7O37UhFRQytFfPs=;
-        b=sz039JdWRv5NpkSYI1nFn0GrGgCHcIt4YMKBiHwXCQAqa3Hf+/uUcLXFV/7U+9jIZw
-         oDLkwC1QEAiV36nYlORQHFpJC4tD/ALqZfgKmDLrYypLIuJUkTf6BfCHZGWTWXdrh901
-         khI7KiBWoeRxkNoaQ2ho1qBurchtXY2BG/GylejjpqH7UWSdgW7ojVhglfmzCf0CueWc
-         6eo0rheNulQUsF9p7gFNe27v+uaoVeo3em4D4eWgocUvHqlr5lHOYx5uZoBby89pnMd6
-         ikt3+oRlKppiddUQVI5Hqt1jUjRroZ0HmoiEsjkSn1eOvcAEduChgHft6umwIakP/9G3
-         aw5w==
-X-Gm-Message-State: AGi0PubCRVBY6CbItuIKl0FH7Q2WjXNKrSB4ISzjzKDZs4LK+N75b0N7
-        IBmRkoqunDmNUgdUFFelPATWFg==
-X-Google-Smtp-Source: APiQypI/Ei5aFzx5kOA21hIPcoKa3UNXIdrj1cU5PniUmhgQbn6GnQia53MexJYFg8LL9het5O8YUg==
-X-Received: by 2002:adf:d0ce:: with SMTP id z14mr9871752wrh.179.1588424882718;
-        Sat, 02 May 2020 06:08:02 -0700 (PDT)
-Received: from [192.168.1.149] (ip-5-186-116-45.cgn.fibianet.dk. [5.186.116.45])
-        by smtp.gmail.com with ESMTPSA id d7sm9123809wrn.78.2020.05.02.06.08.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 May 2020 06:08:02 -0700 (PDT)
-Subject: Re: [PATCH v4 14/18] static_call: Add static_cond_call()
-To:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, bristot@redhat.com, jbaron@akamai.com,
-        torvalds@linux-foundation.org, tglx@linutronix.de,
-        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
-        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
-        pbonzini@redhat.com, mathieu.desnoyers@efficios.com
-References: <20200501202849.647891881@infradead.org>
- <20200501202944.593400184@infradead.org>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <1238787e-d97d-f09b-d76d-2df2dc273f4b@rasmusvillemoes.dk>
-Date:   Sat, 2 May 2020 15:08:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Sat, 2 May 2020 09:13:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1588425197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9jh53eKwLaSENNrS5+URLLbE0XH5d1BcS8Oj4M+VZ1g=;
+        b=CA1Y4hyCkWggchrptZ2QImqjGiiZ4RuYHy5AKp5t71KGH0PlkITBx11v5qq65w8JopBlB8
+        kFRepCVbN7BFpTUkrTIw2YQiKNx/e2ycCUSnIQfCDN3vkyO5L3eIoCU80hMCZUP6DsQd/o
+        DHfQQ2SzpkHYQWgL/XNegOsE9YZ/94Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-142-Cperd1PLO-ey5Nl2NvZz3Q-1; Sat, 02 May 2020 09:13:14 -0400
+X-MC-Unique: Cperd1PLO-ey5Nl2NvZz3Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86F041895A29;
+        Sat,  2 May 2020 13:13:12 +0000 (UTC)
+Received: from starship (unknown [10.35.206.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1FB0660BE1;
+        Sat,  2 May 2020 13:13:09 +0000 (UTC)
+Message-ID: <35c7c404406729dc05d0977c9d322655f2b1c4a9.camel@redhat.com>
+Subject: Re: [PATCH] KVM: x86: Fixes posted interrupt check for IRQs
+ delivery modes
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     pbonzini@redhat.com, joro@8bytes.org, jon.grimm@amd.com,
+        Alexander Graf <graf@amazon.com>
+Date:   Sat, 02 May 2020 16:13:08 +0300
+In-Reply-To: <1586239989-58305-1-git-send-email-suravee.suthikulpanit@amd.com>
+References: <1586239989-58305-1-git-send-email-suravee.suthikulpanit@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20200501202944.593400184@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/05/2020 22.29, Peter Zijlstra wrote:
-> Extend the static_call infrastructure to optimize the following common
-> pattern:
+On Tue, 2020-04-07 at 01:13 -0500, Suravee Suthikulpanit wrote:
+> Current logic incorrectly uses the enum ioapic_irq_destination_types
+> to check the posted interrupt destination types. However, the value
+> was
+> set using APIC_DM_XXX macros, which are left-shifted by 8 bits.
 > 
-> 	if (func_ptr)
-> 		func_ptr(args...)
+> Fixes by using the APIC_DM_FIXED and APIC_DM_LOWEST instead.
 > 
-> +
->  #define static_call(name)	__static_call(name)
-> +#define static_cond_call(name)	(void)__static_call(name)
+> Fixes: (fdcf75621375 'KVM: x86: Disable posted interrupts for non-
+> standard IRQs delivery modes')
+> Cc: Alexander Graf <graf@amazon.com>
+> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h
+> b/arch/x86/include/asm/kvm_host.h
+> index 98959e8..f15e5b3 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1664,8 +1664,8 @@ void kvm_set_msi_irq(struct kvm *kvm, struct
+> kvm_kernel_irq_routing_entry *e,
+>  static inline bool kvm_irq_is_postable(struct kvm_lapic_irq *irq)
+>  {
+>  	/* We can only post Fixed and LowPrio IRQs */
+> -	return (irq->delivery_mode == dest_Fixed ||
+> -		irq->delivery_mode == dest_LowestPrio);
+> +	return (irq->delivery_mode == APIC_DM_FIXED ||
+> +		irq->delivery_mode == APIC_DM_LOWEST);
+>  }
 >  
-> +
->  #define static_call(name)	__static_call(name)
-> +#define static_cond_call(name)	(void)__static_call(name)
->  
+>  static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu)
 
-> +#define static_cond_call(name)						\
-> +	if (STATIC_CALL_KEY(name).func)					\
-> +		((typeof(STATIC_CALL_TRAMP(name))*)(STATIC_CALL_KEY(name).func))
-> +
+I confirm that this patch fixes AVIC posted interrupts on my 3970X.
+Low byte of the delivery mode is the vector, while high byte is the
+delivery mode, and the vector is masked in 
+kvm_set_msi_irq, thus indeed the delivery mode is in high 8 bytes.
 
-This addresses neither the READ_ONCE issue nor the fact that, AFAICT,
-the semantics of
 
-  static_cond_call(foo)(i++)
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+Tested-by: Maxim Levitsky <mlevitsk@redhat.com>
 
-will depend on CONFIG_HAVE_STATIC_CALL. Also, I'd have appreciated being
-cc'ed on new revisions instead of stumbling on it by chance.
+Best regards,
+	Maxim Levitsky
 
-Rasmus
