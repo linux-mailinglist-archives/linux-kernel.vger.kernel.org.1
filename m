@@ -2,107 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B418B1C21BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 01:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 345E31C21C1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 02:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbgEAXzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 19:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
+        id S1726736AbgEBAB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 20:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727818AbgEAXzi (ORCPT
+        with ESMTP id S1726437AbgEBAB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 19:55:38 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B24C061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 16:55:38 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id w4so6431944ioc.6
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 16:55:38 -0700 (PDT)
+        Fri, 1 May 2020 20:01:57 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F107FC061A0E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 17:01:56 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id h9so3407051wrt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 17:01:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=sHKDXXFmKLefk7ouUJEbUpV3R1SbP7mtwMpt76UA+DA=;
-        b=JNV2KVg1ZH+8EVBLolWII0BBHpQRuVLIWEb9kPDgdGCwzf8qfK4vQ3GNbhpIOekDCg
-         Bh3cpZ8jriaDTrBfXUgtbxvrppvxK9lvcILx7uGOIs4FaiQxLg05CJYdhy7bjs7RNkHv
-         p177PYQTNycPEjE+MWmUEm0t7zG2cNPtb5rTw8DanQqayscBQ9E/vUIfnZKEyFjdVmrd
-         xUYQpZUIEDOfom/Jj2QkyHj2809QGOIkpqoofsxm7Zm4l79+NPJNIkdlQUZTcbyDKInr
-         jQO9buQlreaiB+3m1XgTQRpY+V+ggg1wdZItHPJ1mdW/etqg3EdnnFWIIKPU+UNEA1aX
-         zsdQ==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=mnpsimwuy1HsCYdnivLxUTPWGJ+CV1JI9EBiJoWcRMA=;
+        b=TLRUgGZlzXDwbdGjCQKtFdsgwYIYywxs6IL2aaocBIxiHaukVw6K6LresyCp6t4BIr
+         FTTqJD0TWaAqQ2cKqNfZCrGdiVU2fCHPQMSCdmbAEe0y4PHtHyhEWhvURKhanRCb1hVR
+         kLuKs6W7wbYYvOLdaGsw24wZJs61iX329BFV267Vdr8wcbvzrQFRC/+J428L9qnwZi1T
+         oPEz5vYKrQR6JTs4y3wBPMagXasiimuMJ6TsOukYAb75lv58yhPH5QSXAaxWsB3WmNrk
+         vJjh89QVZWYh3QkCxQn2vVvnhG5PoD9c3EF/g4L8f4HsuNYe2dpvatNA2XZyCPqoUgTE
+         2aoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=sHKDXXFmKLefk7ouUJEbUpV3R1SbP7mtwMpt76UA+DA=;
-        b=buq6Y9Us6weXomT2pafejGdaA/z2koJnxtUcORQnso419s8+O3fr4+ZYVyKjWk++BW
-         uoj3xGLHARkKaGGsixLb/ChJ+rV7I+EX0qeVr0ysTRyF6VTygIyYZQbXfMskQfROIQ9L
-         6As0fwe5NSjBOqgF0NGwQmfPkN9mslUf/al0iawkncGzShX/nGvJK0hfnrlNNytoQ057
-         NMI5zaruPuBBxxY7s7BWRBPzfrhWl3FIIBcxp1ussdVwfTsR7LWjWsugMxbnqIWMXQYF
-         wZDLkLn8RemKN96PWWxue8pW0M0c8FYrjn4XW/2ninof23schfpzFGCHQFm3srFgpjPh
-         DbtA==
-X-Gm-Message-State: AGi0PubtAf18DYNOOAyFTczeIuMLyIQ+GOTJH/ADQtBGMTIAmSIz2d55
-        cDkRMRzTg6Zx2iwc1QUdAcaIOypatBIzMpPRdrk=
-X-Google-Smtp-Source: APiQypIGlVULBs5tCuA4hHN1IggMjizQp2EZlqIIfFahOGemxzIxM7l3gApqQ2MDk0AcnnE1xwxcMGGfRWlxNYWgij0=
-X-Received: by 2002:a6b:3e0a:: with SMTP id l10mr6145741ioa.112.1588377337438;
- Fri, 01 May 2020 16:55:37 -0700 (PDT)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=mnpsimwuy1HsCYdnivLxUTPWGJ+CV1JI9EBiJoWcRMA=;
+        b=qyaRJ5mxvf7Ie3H/fAOI69dRGuCwDTQIR/GckA1C/a4MoA/B1RWvN4dbNWJrp3YCd7
+         aY71Y3Q/7uu5BVSpFzEMr6me7+NKaGW/duEn82B+xasV5DCC4g/MVak1afwdgujMdtUb
+         XJL12ECGRJQL/YU1202GIZsvSQvVYptfRl5OyQJVh7ehbFBmZAKTU4bvgwSeX9anuLb0
+         Vnq/bbFWI/O1cNrVKJKyXPiCvIt7g30+1PoDZeN9OX2gOtzXIxeTHnuAQacN92OUa1Jb
+         Fak9Urjtl5RCarVOzcee8pkmwHTeP9LrxxYKrj3DQ7WwcbQJUTiMdMu0zteXdQyv7Ndm
+         92Tg==
+X-Gm-Message-State: AGi0PuYpdm50igcBXpabaIenpfSxzAKIAsifn8RlKSz00xGgbeb+ll1O
+        afWUBIhJ0IQTcAAV5mkGOc582A==
+X-Google-Smtp-Source: APiQypIC1GGFwHeCAXP+xnmsMVu4bX6+mXS0f6uQUk++cUTQ7edzDBG/oInezxMVoP8L2WvMnSlbPQ==
+X-Received: by 2002:a5d:498b:: with SMTP id r11mr6556110wrq.368.1588377713218;
+        Fri, 01 May 2020 17:01:53 -0700 (PDT)
+Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
+        by smtp.gmail.com with ESMTPSA id s9sm7330900wrg.27.2020.05.01.17.01.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 May 2020 17:01:52 -0700 (PDT)
+References: <20200501215717.735393-1-martin.blumenstingl@googlemail.com>
+User-agent: mu4e 1.3.3; emacs 26.3
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-amlogic@lists.infradead.org
+Cc:     narmstrong@baylibre.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: meson: meson8b: Don't rely on u-boot to init all GP_PLL registers
+In-reply-to: <20200501215717.735393-1-martin.blumenstingl@googlemail.com>
+Date:   Sat, 02 May 2020 02:01:50 +0200
+Message-ID: <1jees3i4r5.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6638:1b0:0:0:0:0 with HTTP; Fri, 1 May 2020 16:55:37
- -0700 (PDT)
-From:   Hannah Wilson <hannahwilson192@gmail.com>
-Date:   Fri, 1 May 2020 23:55:37 +0000
-X-Google-Sender-Auth: 9dJptXKUo8GMc5DTDWdI9ZqIQTM
-Message-ID: <CAEB4Lwsc6BTAN_Dd=475tWhqXG7y3qmEN3w580eXUVG4vWjEPg@mail.gmail.com>
-Subject: GREETINGS MY DEAR,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello My Dear.
 
-Please do not feel disturbed for contacting =C2=A0you in this regards, It
-was based on the critical health condition I find mine self. =C2=A0My names
- are Mrs. Hannah Wilson David, a widow and I=E2=80=99m suffering from brain
-tumor disease and this illness has gotten to a very bad stage, I
- married my husband for Ten years without any family members and no
-child. =C2=A0My husband died after a brief illness that lasted for few
-days.
+On Fri 01 May 2020 at 23:57, Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
 
-Since the death of my husband, I decided not to remarry again, When my
-late husband was alive he deposited the sum of =C2=A0($  11,450,000.00,
-Nine Million Four Hundred and Fifty Thousand Dollars) with the Bank.
-Presently this money is still in bank. And My  Doctor told me that I
-don't have much time to live because my illness has gotten to a very
-bad stage, Having known my condition I  decided to entrust over the
-deposited fund under your custody to take care of the less-privileged
-ones therein your country or position,
-which i believe that you will utilize this money the way I am going to
-instruct herein.
+> Not all u-boot versions initialize the HHI_GP_PLL_CNTL[2-5] registers.
+> In that case all HHI_GPLL_PLL_CNTL[1-5] registers are 0x0 and when
+> booting Linux the PLL fails to lock.
+> The initialization sequence from u-boot is:
+> - put the PLL into reset
+> - write 0x59C88000 to HHI_GP_PLL_CNTL2
+> - write 0xCA463823 to HHI_GP_PLL_CNTL3
+> - write 0x0286A027 to HHI_GP_PLL_CNTL4
+> - write 0x00003000 to HHI_GP_PLL_CNTL5
+> - set M, N, OD and the enable bit
+> - take the PLL out of reset
+> - check if it has locked
+> - disable the PLL
+>
+> In Linux we already initialize M, N, OD, the enable and the reset bits.
+> Also the HHI_GP_PLL_CNTL[2-5] registers with these magic values (the
+> exact meaning is unknown) so the PLL can lock when the vendor u-boot did
+> not initialize these registers yet.
+>
+> Fixes: b882964b376f21 ("clk: meson: meson8b: add support for the GP_PLL clock on Meson8m2")
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+> Jerome, this one is also not critical because we don't enable the VPU
+> yet. So I based this on commit 16afd70af5b21b ("clk: meson: meson8b:
+> Make the CCF use the glitch-free VPU mux").
+>
+>
+>  drivers/clk/meson/meson8b.c | 9 +++++++++
+>  drivers/clk/meson/meson8b.h | 4 ++++
+>  2 files changed, 13 insertions(+)
 
-However all I need and required from you is your sincerity and ability
-to carry out the transaction successfully and fulfill my final wish in
-implementing the charitable project as it requires absolute trust and
-devotion without any failure and I will be glad to see that the bank
-finally release and transfer the fund into your bank account in your
-country even before I die here in the hospital, because my present
-health condition is very critical at the moment everything needs to be
-process rapidly as soon as possible.
+Applied, Thx
 
-It will be my pleasure to compensate you as my Investment
-Manager/Partner with 35 % percent of the total fund for your effort in
- handling the transaction, 5 % percent for any expenses or processing
-charges fee that will involve during this process while 60% of the
-fund will be Invested into the charity project there in your country
-for the mutual benefit of the orphans and the less privileges ones.
+>
+> diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
+> index 811af1c11456..edc09d050ecf 100644
+> --- a/drivers/clk/meson/meson8b.c
+> +++ b/drivers/clk/meson/meson8b.c
+> @@ -1918,6 +1918,13 @@ static struct clk_regmap meson8b_mali = {
+>  	},
+>  };
+>  
+> +static const struct reg_sequence meson8m2_gp_pll_init_regs[] = {
+> +	{ .reg = HHI_GP_PLL_CNTL2,	.def = 0x59c88000 },
+> +	{ .reg = HHI_GP_PLL_CNTL3,	.def = 0xca463823 },
+> +	{ .reg = HHI_GP_PLL_CNTL4,	.def = 0x0286a027 },
+> +	{ .reg = HHI_GP_PLL_CNTL5,	.def = 0x00003000 },
+> +};
+> +
+>  static const struct pll_params_table meson8m2_gp_pll_params_table[] = {
+>  	PLL_PARAMS(182, 3),
+>  	{ /* sentinel */ },
+> @@ -1951,6 +1958,8 @@ static struct clk_regmap meson8m2_gp_pll_dco = {
+>  			.width   = 1,
+>  		},
+>  		.table = meson8m2_gp_pll_params_table,
+> +		.init_regs = meson8m2_gp_pll_init_regs,
+> +		.init_count = ARRAY_SIZE(meson8m2_gp_pll_init_regs),
+>  	},
+>  	.hw.init = &(struct clk_init_data){
+>  		.name = "gp_pll_dco",
+> diff --git a/drivers/clk/meson/meson8b.h b/drivers/clk/meson/meson8b.h
+> index 94ce3ef0c1d5..cd38ae2a9cb5 100644
+> --- a/drivers/clk/meson/meson8b.h
+> +++ b/drivers/clk/meson/meson8b.h
+> @@ -20,6 +20,10 @@
+>   * [0] http://dn.odroid.com/S805/Datasheet/S805_Datasheet%20V0.8%2020150126.pdf
+>   */
+>  #define HHI_GP_PLL_CNTL			0x40  /* 0x10 offset in data sheet */
+> +#define HHI_GP_PLL_CNTL2		0x44  /* 0x11 offset in data sheet */
+> +#define HHI_GP_PLL_CNTL3		0x48  /* 0x12 offset in data sheet */
+> +#define HHI_GP_PLL_CNTL4		0x4C  /* 0x13 offset in data sheet */
+> +#define HHI_GP_PLL_CNTL5		0x50  /* 0x14 offset in data sheet */
+>  #define HHI_VIID_CLK_DIV		0x128 /* 0x4a offset in data sheet */
+>  #define HHI_VIID_CLK_CNTL		0x12c /* 0x4b offset in data sheet */
+>  #define HHI_GCLK_MPEG0			0x140 /* 0x50 offset in data sheet */
 
-Meanwhile I am waiting for your prompt respond, if only you are
-interested for further details of the transaction and execution of
-this  humanitarian project for the glory and honor of God the merciful
-compassionate.
-
-May bless you and your family.
-Regards,
-Mrs. Hannah Wilson David.
-written from Hospital.
