@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E821C23F1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 09:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9D91C2429
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 10:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727092AbgEBHxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 03:53:54 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:51096 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbgEBHxx (ORCPT
+        id S1726782AbgEBIjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 04:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726468AbgEBIjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 03:53:53 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 15CE820034;
-        Sat,  2 May 2020 09:53:47 +0200 (CEST)
-Date:   Sat, 2 May 2020 09:53:40 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     allen <allen.chen@ite.com.tw>
-Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
-        Jau-Chih Tseng <Jau-Chih.Tseng@ite.com.tw>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Subject: Re: [PATCH v9 0/3] IT6505 cover letter
-Message-ID: <20200502075340.GA15420@ravnborg.org>
-References: <1587979103-5630-1-git-send-email-allen.chen@ite.com.tw>
+        Sat, 2 May 2020 04:39:42 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1A7C061A0C
+        for <linux-kernel@vger.kernel.org>; Sat,  2 May 2020 01:39:42 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id a2so1973251oia.11
+        for <linux-kernel@vger.kernel.org>; Sat, 02 May 2020 01:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=f1JfsNRiU9CPiPWIvBjcsKVKQf1l0VHF1PLTYDvT8K8=;
+        b=RSQ0JmyaeOJB/kGZUl2vuEwDWnb//KPrQJoYAy26cvEndaClD9WuO9nXE+KZ8wp24O
+         UqfMAj97Mdzw0lL2Z4J+wxtyfccRwbmJqxDP45M/Wqsr777Y1ITJUufb8CMRXAnDscVj
+         QxEvhWnXXyWiFIkhVj/Ddk9kQwiFZF7t5zgQy3S6qwHROjVxRja5hiZRJrri8rWginBS
+         5mUSrq4ujeqc3JGvslDWyWaYOKzxhQ2L7bvnY7nigj3Y7y8v8GIkiZCM/Em8yYxEMIU0
+         Q8iriA8AE2rJdU/z1oD//cB/EbW2jXCLoOycFvxhawrwhhEDcOocS1BMWjpqn+updXM2
+         ZkpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=f1JfsNRiU9CPiPWIvBjcsKVKQf1l0VHF1PLTYDvT8K8=;
+        b=mOInhh75d3lJSe+TKovdY/PnCJsuIAYvVlTmdkaADfiS+4fJ52jMMpyqo3XmRIzgXH
+         2idFlyFQljSddPs5rn79K0SqaqGBsSJN52GmwuwrtCIgbK9R5B+PF63EN48RsZmXSY41
+         GgWOP1VPzKmUKOLb84uM0VGGg8a07L1h/pztM6iYSuuZ+LQZBiOj5GKOGawCcdQOu4Oo
+         Yoy4gkxsFGZz4rJhJCD+4M8Gb6a/F8g5f0QExzxwtyQOb9JMF6/n7J7Z89aN5sbF+qNW
+         Nk/eTOOaIbbNDxZ8kjalnK0BMSNeZeoG7PMRDHYf7BbF5TKgIIxYCgehpUcSpIPty6u3
+         OD8w==
+X-Gm-Message-State: AGi0Pub3/2pk4Wi1AxtMXjhSdkaDbEQTBYCpzHF5FI2ArarCINhx93Ja
+        iSX1nkJkgiR0NsVF/OV5WRhEL5EMMV6gM3Q4urE=
+X-Google-Smtp-Source: APiQypLvdUr/2eK+sinZolvW2gRmYQt7RfFSQJatdWMVIXC570OlRW327OekUM+QH4+3UZJ3fzzBL8LRhWYb71UIGvs=
+X-Received: by 2002:aca:4d5:: with SMTP id 204mr2360437oie.120.1588408780844;
+ Sat, 02 May 2020 01:39:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1587979103-5630-1-git-send-email-allen.chen@ite.com.tw>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=ULXz4hXy c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=kj9zAlcOel0A:10 a=bHKA5wnqmxRAZF-cxx8A:9 a=CjuIK1q_8ugA:10
+Received: by 2002:a4a:d2d5:0:0:0:0:0 with HTTP; Sat, 2 May 2020 01:39:40 -0700 (PDT)
+Reply-To: mrsfatimakargbo@outlook.com
+From:   Mr Suleman Bello <curtismichael74@gmail.com>
+Date:   Sat, 2 May 2020 01:39:40 -0700
+Message-ID: <CA+A+bzfXiW0g7yeFCh0Y7KUQXqbSH4HhbT9gHLxEXhpWdDKPrQ@mail.gmail.com>
+Subject: Can i trust you?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Allen.
+Dear Friend,
 
-On Mon, Apr 27, 2020 at 05:16:51PM +0800, allen wrote:
-> The IT6505 is a high-performance DisplayPort 1.1a transmitter, fully compliant with DisplayPort 1.1a, HDCP 1.3 specifications. The IT6505 supports color depth of up to 36 bits (12 bits/color) and ensures robust transmission of high-quality uncompressed video content, along with uncompressed and compressed digital audio content.
-> 
-> This series contains document bindings, revert commit, add vendor prefix, Kconfig to control the function enable or not.
+Please i want you to read this letter very carefully and i must
+apologize for berging this message into your mail box without any
+formal introduction due to the urgency and confidential of this issue
+and i know that this message will come to you as a surprise, Please
+this is not a joke and i will not like you to joke with it.I am
+Mr.Suleman Bello, a staff in African Development Bank (A.D.B)
+Ouagadougou, Burkina faso West Africa.I discovered existing dormant
+account for years. When I discovered that there had been neither
+continuation nor withdrawals from this account for this long period
+and according to the laws and constitution guiding this banking
+institution, any unserviceable account for more than (7) seven years,
+that fund will be transferred to national treasury as unclaimed fund.
 
-Applied the fix for ITE vendor prefix and the binding to drm-misc-next.
-Did a few edits before pushing out.
+I Hoped that you will not expose or betray this trust and confident
+that i am about to extablish with you for the mutual benefit of you
+and i.I need your urgent assistance in transferring the sum of $10.5
+)million usd into your account within 7 banking days. This money has
+been dormant for years in our Bank, and The request of foreigner in
+this transaction is necessary because our late customer was a
+foreigner and a burkinabe cannot stand as next of kin to a
+foreigner.Because of the static of this transaction I want you to
+stand as the next of kin so that our bank will accord you the
+recognition and have the fund transferred to your account.
 
-	Sam
+Upon your response, I shall then provide you with further information
+and more deities that will help you understand the transaction. I am
+expecting your urgent response to enable me inform you on how the
+business will be executed. Please I would like you to keep this
+transaction confidential and as a top secret or delete if you are not
+interested.
 
-> 
-> Allen Chen (1):
->   WIP: drm/bridge: add it6505 driver
-> 
-> allen (2):
->   dt-bindings: Add vendor prefix for ITE Tech. Inc.
->   WIP: dt-bindings: Add binding for IT6505.
-> 
->  .../bindings/display/bridge/ite,it6505.yaml        |   91 +
->  .../devicetree/bindings/vendor-prefixes.yaml       |    2 +-
->  drivers/gpu/drm/bridge/Kconfig                     |    7 +
->  drivers/gpu/drm/bridge/Makefile                    |    1 +
->  drivers/gpu/drm/bridge/ite-it6505.c                | 3136 ++++++++++++++++++++
->  5 files changed, 3236 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
->  create mode 100644 drivers/gpu/drm/bridge/ite-it6505.c
-> 
-> -- 
-> 1.9.1
+Thanks
+Mr.Suleman Bello.
+N.B: PLEASE CONTACT ME THROUGH MY PRIVATE EMAIL
+( suleman_bello@yahoo.com ) SO WE CAN COMMENCE ALL ARRANGEMENTS AS
+SOON AS POSSIBLE.
