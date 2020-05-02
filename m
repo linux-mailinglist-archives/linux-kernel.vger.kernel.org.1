@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0E61C28B8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 00:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3DB1C28C0
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 01:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbgEBWzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 18:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728611AbgEBWzy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 18:55:54 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42E7C061A0C;
-        Sat,  2 May 2020 15:55:53 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 7A72E264D42
-Message-ID: <db9fa91be8084fe9c87f263a4a97dc38d46f9bd1.camel@collabora.com>
-Subject: Re: [PATCH v2 2/3] media: uapi: Add VP9 stateless decoder controls
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Jeffrey Kardatzke <jkardatzke@chromium.org>
-Date:   Sat, 02 May 2020 19:55:39 -0300
-In-Reply-To: <20200502203707.402ea3cd@collabora.com>
-References: <20200410115113.31728-1-ezequiel@collabora.com>
-         <20200410115113.31728-3-ezequiel@collabora.com>
-         <9126475c-275d-71ab-0308-6ae85e22446b@xs4all.nl>
-         <bf475e70cca6f9ebf645aed51276e57668eaf43b.camel@collabora.com>
-         <20200502203707.402ea3cd@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.0-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1728637AbgEBXF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 19:05:56 -0400
+Received: from wind.enjellic.com ([76.10.64.91]:42802 "EHLO wind.enjellic.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728587AbgEBXFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 May 2020 19:05:55 -0400
+Received: from wind.enjellic.com (localhost [127.0.0.1])
+        by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 042N5BfG028543;
+        Sat, 2 May 2020 18:05:11 -0500
+Received: (from greg@localhost)
+        by wind.enjellic.com (8.15.2/8.15.2/Submit) id 042N5AKR028542;
+        Sat, 2 May 2020 18:05:10 -0500
+Date:   Sat, 2 May 2020 18:05:10 -0500
+From:   "Dr. Greg" <greg@enjellic.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        akpm@linux-foundation.org, dave.hansen@intel.com,
+        nhorman@redhat.com, npmccallum@redhat.com, haitao.huang@intel.com,
+        andriy.shevchenko@linux.intel.com, tglx@linutronix.de,
+        kai.svahn@intel.com, bp@alien8.de, josh@joshtriplett.org,
+        luto@kernel.org, kai.huang@intel.com, rientjes@google.com,
+        cedric.xing@intel.com, puiterwijk@redhat.com
+Subject: Re: [PATCH v29 00/20] Intel SGX foundations
+Message-ID: <20200502230510.GA28470@wind.enjellic.com>
+Reply-To: "Dr. Greg" <greg@enjellic.com>
+References: <20200421215316.56503-1-jarkko.sakkinen@linux.intel.com> <20200426165753.GA11046@wind.enjellic.com> <20200429052329.GD8452@linux.intel.com> <20200429151459.GC15992@linux.intel.com> <20200430035850.GC31820@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430035850.GC31820@linux.intel.com>
+User-Agent: Mutt/1.4i
+X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Sat, 02 May 2020 18:05:11 -0500 (CDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Nicolas
+On Thu, Apr 30, 2020 at 06:59:11AM +0300, Jarkko Sakkinen wrote:
 
-On Sat, 2020-05-02 at 20:37 +0200, Boris Brezillon wrote:
-> On Fri, 01 May 2020 13:57:49 -0300
-> Ezequiel Garcia <ezequiel@collabora.com> wrote:
-> 
-> > > > +
-> > > > +.. tabularcolumns:: |p{1.5cm}|p{6.3cm}|p{9.4cm}|
-> > > > +
-> > > > +.. flat-table:: enum v4l2_vp9_reset_frame_context
-> > > > +    :header-rows:  0
-> > > > +    :stub-columns: 0
-> > > > +    :widths:       1 2
-> > > > +
-> > > > +    * - ``V4L2_VP9_RESET_FRAME_CTX_NONE``
-> > > > +      - Do not reset any frame context.
-> > > > +    * - ``V4L2_VP9_RESET_FRAME_CTX_NONE_ALT``
-> > > > +      - Do not reset any frame context. This is an alternative value for
-> > > > +        V4L2_VP9_RESET_FRAME_CTX_NONE.  
-> > > 
-> > > Add `` around V4L2_VP9_RESET_FRAME_CTX_NONE.
-> > >   
-> > 
-> > Hm, now that I look closer, what's the point
-> > of having the NONE_ALT in our uAPI if it
-> > has same meaning as NONE?
-> > 
-> > I think it can be removed.
-> 
-> The intent was to match the spec so that one can pass the value
-> extracted from the bitstream directly.
-> 
-> > > I got several smatch warnings:
-> > > 
-> > > smatch: ERRORS
-> > > drivers/media/v4l2-core/v4l2-ctrls.c:1880 validate_vp9_frame_decode_params() warn: was && intended here instead of ||?
-> > > 
-> > > (Commented on this ^^^ one above)
-> > > 
-> > > drivers/staging/media/rkvdec/rkvdec-vp9.c:426 init_intra_only_probs() error: buffer overflow 'ptr' 9 <= 69
-> > > drivers/staging/media/rkvdec/rkvdec-vp9.c:1478 rkvdec_vp9_done() error: potentially dereferencing uninitialized 'ctrl'.
-> > > drivers/staging/media/rkvdec/rkvdec-vp9.c:1483 rkvdec_vp9_done() error: uninitialized symbol 'dec_dst_buf'.
-> > > drivers/staging/media/rkvdec/rkvdec-vp9.c:941:6: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
-> > > drivers/staging/media/rkvdec/rkvdec-vp9.c:1466:40: warning: variable 'fctx' set but not used [-Wunused-but-set-variable]
-> > >   
-> > 
-> > Oh, I'll run smatch and fix them all.
-> 
-> Oops!
+Good afternoon, I hope the weekend is going well for everyone.
 
+> On Wed, Apr 29, 2020 at 08:14:59AM -0700, Sean Christopherson wrote:
+> > On Wed, Apr 29, 2020 at 08:23:29AM +0300, Jarkko Sakkinen wrote:
+> > > On Sun, Apr 26, 2020 at 11:57:53AM -0500, Dr. Greg wrote:
+> > > > On Wed, Apr 22, 2020 at 12:52:56AM +0300, Jarkko Sakkinen wrote:
+> > >
+> > > > > The current implementation requires that the firmware sets
+> > > > > IA32_SGXLEPUBKEYHASH* MSRs as writable so that ultimately
+> > > > > the kernel can decide what enclaves it wants run. The
+> > > > > implementation does not create any bottlenecks to support
+> > > > > read-only MSRs later on.
+> > >
+> > > > It seems highly unlikely that a driver implementation with any type of
+> > > > support for read-only launch control registers would ever get into the
+> > > > kernel.  All one needs to do is review the conversations that Matthew
+> > > > Garrett's lockdown patches engender to get a sense of that, ie:
+> > > > 
+> > > > https://lwn.net/Articles/818277/
+> > > 
+> > > We do not require read-only MSRs.
+> > 
+> > Greg is pointing out the opposite, that supporting read-only MSRs is highly
+> > unlikely to ever be supported in the mainline kernel.
 
+> In a nutshell, what is wrong in the current code changes and what
+> *exactly* should we change? This is way too high level at the moment
+> at least for my limited brain capacity.
+
+In a nutshell, the driver needs our patch that implements
+cryptographic policy management.
+
+A patch that:
+
+1.) Does not change the default behavior of the driver.
+
+2.) Implements capabilities that are consistent with what the hardware
+was designed to do, but only at the discretion of the platform owner.
+
+3.) Has no impact on the driver architecture.
+
+The only consumer for this driver are SGX runtimes.  To our knowledge,
+there exist only two complete runtime implementations, Intel's and
+ours.  It us unclear why our approach to the use of the technology
+should be discriminated against when it doesn't impact the other user
+community.
+
+The Linux kernel that I have worked on and supported since 1992 has
+always focused on technical rationale and meritocracy rather then
+politics.  We would be interested in why our proposal for the driver
+fails on the former grounds rather then the latter.
+
+> /Jarkko
+
+Best wishes for a productive week.
+
+Dr. Greg
+
+As always,
+Dr. Greg Wettstein, Ph.D, Worker      Artisans in autonomously
+Enjellic Systems Development, LLC     self-defensive IOT platforms
+4206 N. 19th Ave.                     and edge devices.
+Fargo, ND  58102
+PH: 701-281-1686                      EMAIL: greg@enjellic.com
+------------------------------------------------------------------------------
+"The best way to predict the future is to invent it."
+                                -- Alan Kay
