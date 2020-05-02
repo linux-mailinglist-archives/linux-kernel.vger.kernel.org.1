@@ -2,67 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27ECF1C28B7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 00:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0E61C28B8
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 00:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgEBWzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 18:55:17 -0400
-Received: from gentwo.org ([3.19.106.255]:55930 "EHLO gentwo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728576AbgEBWzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 18:55:17 -0400
-Received: by gentwo.org (Postfix, from userid 1002)
-        id 28E4C3ED19; Sat,  2 May 2020 22:55:16 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 2680B3ED18;
-        Sat,  2 May 2020 22:55:16 +0000 (UTC)
-Date:   Sat, 2 May 2020 22:55:16 +0000 (UTC)
-From:   Christopher Lameter <cl@linux.com>
-X-X-Sender: cl@www.lameter.com
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Subject: Re: [PATCH v3 1/3] powerpc/numa: Set numa_node for all possible
- cpus
-In-Reply-To: <20200501031128.19584-2-srikar@linux.vnet.ibm.com>
-Message-ID: <alpine.DEB.2.21.2005022254170.28355@www.lameter.com>
-References: <20200501031128.19584-1-srikar@linux.vnet.ibm.com> <20200501031128.19584-2-srikar@linux.vnet.ibm.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1728625AbgEBWzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 18:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728611AbgEBWzy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 May 2020 18:55:54 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42E7C061A0C;
+        Sat,  2 May 2020 15:55:53 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 7A72E264D42
+Message-ID: <db9fa91be8084fe9c87f263a4a97dc38d46f9bd1.camel@collabora.com>
+Subject: Re: [PATCH v2 2/3] media: uapi: Add VP9 stateless decoder controls
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>
+Date:   Sat, 02 May 2020 19:55:39 -0300
+In-Reply-To: <20200502203707.402ea3cd@collabora.com>
+References: <20200410115113.31728-1-ezequiel@collabora.com>
+         <20200410115113.31728-3-ezequiel@collabora.com>
+         <9126475c-275d-71ab-0308-6ae85e22446b@xs4all.nl>
+         <bf475e70cca6f9ebf645aed51276e57668eaf43b.camel@collabora.com>
+         <20200502203707.402ea3cd@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 May 2020, Srikar Dronamraju wrote:
++Nicolas
 
-> -	for_each_present_cpu(cpu)
-> -		numa_setup_cpu(cpu);
-> +	for_each_possible_cpu(cpu) {
-> +		/*
-> +		 * Powerpc with CONFIG_NUMA always used to have a node 0,
-> +		 * even if it was memoryless or cpuless. For all cpus that
-> +		 * are possible but not present, cpu_to_node() would point
-> +		 * to node 0. To remove a cpuless, memoryless dummy node,
-> +		 * powerpc need to make sure all possible but not present
-> +		 * cpu_to_node are set to a proper node.
-> +		 */
-> +		if (cpu_present(cpu))
-> +			numa_setup_cpu(cpu);
-> +		else
-> +			set_cpu_numa_node(cpu, first_online_node);
-> +	}
->  }
+On Sat, 2020-05-02 at 20:37 +0200, Boris Brezillon wrote:
+> On Fri, 01 May 2020 13:57:49 -0300
+> Ezequiel Garcia <ezequiel@collabora.com> wrote:
+> 
+> > > > +
+> > > > +.. tabularcolumns:: |p{1.5cm}|p{6.3cm}|p{9.4cm}|
+> > > > +
+> > > > +.. flat-table:: enum v4l2_vp9_reset_frame_context
+> > > > +    :header-rows:  0
+> > > > +    :stub-columns: 0
+> > > > +    :widths:       1 2
+> > > > +
+> > > > +    * - ``V4L2_VP9_RESET_FRAME_CTX_NONE``
+> > > > +      - Do not reset any frame context.
+> > > > +    * - ``V4L2_VP9_RESET_FRAME_CTX_NONE_ALT``
+> > > > +      - Do not reset any frame context. This is an alternative value for
+> > > > +        V4L2_VP9_RESET_FRAME_CTX_NONE.  
+> > > 
+> > > Add `` around V4L2_VP9_RESET_FRAME_CTX_NONE.
+> > >   
+> > 
+> > Hm, now that I look closer, what's the point
+> > of having the NONE_ALT in our uAPI if it
+> > has same meaning as NONE?
+> > 
+> > I think it can be removed.
+> 
+> The intent was to match the spec so that one can pass the value
+> extracted from the bitstream directly.
+> 
+> > > I got several smatch warnings:
+> > > 
+> > > smatch: ERRORS
+> > > drivers/media/v4l2-core/v4l2-ctrls.c:1880 validate_vp9_frame_decode_params() warn: was && intended here instead of ||?
+> > > 
+> > > (Commented on this ^^^ one above)
+> > > 
+> > > drivers/staging/media/rkvdec/rkvdec-vp9.c:426 init_intra_only_probs() error: buffer overflow 'ptr' 9 <= 69
+> > > drivers/staging/media/rkvdec/rkvdec-vp9.c:1478 rkvdec_vp9_done() error: potentially dereferencing uninitialized 'ctrl'.
+> > > drivers/staging/media/rkvdec/rkvdec-vp9.c:1483 rkvdec_vp9_done() error: uninitialized symbol 'dec_dst_buf'.
+> > > drivers/staging/media/rkvdec/rkvdec-vp9.c:941:6: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
+> > > drivers/staging/media/rkvdec/rkvdec-vp9.c:1466:40: warning: variable 'fctx' set but not used [-Wunused-but-set-variable]
+> > >   
+> > 
+> > Oh, I'll run smatch and fix them all.
+> 
+> Oops!
 
-
-Can this be folded into numa_setup_cpu?
-
-This looks more like numa_setup_cpu needs to change?
 
