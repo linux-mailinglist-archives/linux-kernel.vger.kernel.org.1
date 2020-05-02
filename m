@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC191C226C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 05:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4B141C2272
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 05:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbgEBDFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 23:05:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60560 "EHLO mail.kernel.org"
+        id S1726951AbgEBDKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 23:10:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51888 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726463AbgEBDFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 23:05:43 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A7A8720857;
-        Sat,  2 May 2020 03:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588388742;
-        bh=whnRbEL8VMPFploT9OMFbLOr5/cBg0hfDQ+sF+5UN/k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tu+idBLfSXLHIdDePFtX9lmD55VCxnpVkMnzmWd5K5D+NHWFseCDotsWOyw+ieSOI
-         sa9Yu3ipnEbPQgyA4qsUMXNa1M7v0v7Ft+xx7Wcuk8nG1A4ndb8MA+2n8o1ziElyMH
-         IreWuCtd6Q76feVs/WmHHIn/jKYD6cGBPUZU5sFc=
-Date:   Sat, 2 May 2020 12:05:37 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     shuah <shuah@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Li Philip <philip.li@intel.com>,
-        Liu Yiding <yidingx.liu@intel.com>, skhan@linuxfoundation.org
-Subject: Re: [PATCH 2/3] selftests/ftrace: Pick only the first kprobe event
- to test
-Message-Id: <20200502120537.cfa3cdc1d898a12dc0c15471@kernel.org>
-In-Reply-To: <7751734b-83f1-bf14-9d8e-9092b0b7be3e@kernel.org>
-References: <158834025077.28357.15141584656220094821.stgit@devnote2>
-        <158834027133.28357.11196486193798517250.stgit@devnote2>
-        <20200501101718.5a15e557@gandalf.local.home>
-        <7751734b-83f1-bf14-9d8e-9092b0b7be3e@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726439AbgEBDKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 1 May 2020 23:10:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D5398AEA2;
+        Sat,  2 May 2020 03:09:59 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     akpm@linux-foundation.org
+Cc:     tglx@linutronix.de, peterz@infradead.org, mingo@kernel.org,
+        mgorman@techsingularity.net, bp@suse.de, dave@stgolabs.net,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH] kernel/sys: do not use tasklist_lock to set/get scheduling priorities
+Date:   Fri,  1 May 2020 20:05:39 -0700
+Message-Id: <20200502030539.32581-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 May 2020 09:38:59 -0600
-shuah <shuah@kernel.org> wrote:
+For both setpriority(2) and getpriority(2) there's really no need
+to be taking the tasklist_lock at all - for which both share it
+for the entirety of the syscall. The tasklist_lock does not protect
+reading/writing the p->static_prio and task lookups are already rcu
+safe, providing a stable pointer.
 
-> On 5/1/20 8:17 AM, Steven Rostedt wrote:
-> > On Fri,  1 May 2020 22:37:51 +0900
-> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > 
-> >> Since the kprobe/kprobe_args_type.tc reads out all event logs
-> >> from the trace buffer, the test can fail if there is another
-> >> fork event happens.
-> >> Use head command to pick only the first kprobe event from
-> >> the trace buffer to test the argument types.
-> >>
-> >> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> >> ---
-> >>   .../ftrace/test.d/kprobe/kprobe_args_type.tc       |    2 +-
-> >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-> >> index 1bcb67dcae26..81490ecaaa92 100644
-> >> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-> >> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-> >> @@ -38,7 +38,7 @@ for width in 64 32 16 8; do
-> >>     echo 0 > events/kprobes/testprobe/enable
-> >>   
-> >>     : "Confirm the arguments is recorded in given types correctly"
-> >> -  ARGS=`grep "testprobe" trace | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
-> >> +  ARGS=`grep "testprobe" trace | head -n 1 | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
-> >>     check_types $ARGS $width
-> >>   
-> >>     : "Clear event for next loop"
-> > 
-> > I think I've manually added this exact change to my tests to keep it from
-> > failing.
-> > 
-> > Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > 
-> 
-> Does this conflict with:
-> 
-> Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> Date:   Tue Apr 7 14:34:19 2020 +0800
-> 
->      selftests/ftrace: Check the first record for kprobe_args_type.tc
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/commit/?h=next&id=f0c0d0cf590f71b2213b29a7ded2cde3d0a1a0ba
-> 
-> I went into mainline yesterday in my rc4 pull request.
-> 
-> Exact change it appears.
-> 
-> diff --git 
-> a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc 
-> b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-> index 1bcb67dcae26..81490ecaaa92 100644
-> --- a/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-> +++ b/tools/testing/selftests/ftrace/test.d/kprobe/kprobe_args_type.tc
-> @@ -38,7 +38,7 @@ for width in 64 32 16 8; do
->     echo 0 > events/kprobes/testprobe/enable
-> 
->     : "Confirm the arguments is recorded in given types correctly"
-> -  ARGS=`grep "testprobe" trace | sed -e 's/.* arg1=\(.*\) arg2=\(.*\) 
-> arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
-> +  ARGS=`grep "testprobe" trace | head -n 1 | sed -e 's/.* arg1=\(.*\) 
-> arg2=\(.*\) arg3=\(.*\) arg4=\(.*\)/\1 \2 \3 \4/'`
->     check_types $ARGS $width
-> 
->     : "Clear event for next loop"
+The following raw microbenchmark improvements on a 40-core box
+were seen running the stressng-get workload, which pathologically
+pounds on various syscalls that get information from the kernel.
+Increasing thread counts of course shows more wins, albeit probably
+not something that would be seen in a real workload.
 
-Oops, yes, please drop this patch.
+			      5.7.0-rc3              5.7.0-rc3
+						getpriority-v1
+Hmean     get-1      3443.65 (   0.00%)     3314.08 *  -3.76%*
+Hmean     get-2      7809.99 (   0.00%)     8547.60 *   9.44%*
+Hmean     get-4     15498.01 (   0.00%)    17396.85 *  12.25%*
+Hmean     get-8     28001.37 (   0.00%)    31137.53 *  11.20%*
+Hmean     get-16    31460.88 (   0.00%)    40284.35 *  28.05%*
+Hmean     get-32    30036.64 (   0.00%)    40657.88 *  35.36%*
+Hmean     get-64    31429.86 (   0.00%)    41021.73 *  30.52%*
+Hmean     get-80    31804.13 (   0.00%)    39188.55 *  23.22%*
 
-Thank you,
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+---
+ kernel/sys.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-> 
-> thanks,
-> -- Shuah
-
-
+diff --git a/kernel/sys.c b/kernel/sys.c
+index d325f3ab624a..12ade1a00a18 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -214,7 +214,6 @@ SYSCALL_DEFINE3(setpriority, int, which, int, who, int, niceval)
+ 		niceval = MAX_NICE;
+ 
+ 	rcu_read_lock();
+-	read_lock(&tasklist_lock);
+ 	switch (which) {
+ 	case PRIO_PROCESS:
+ 		if (who)
+@@ -252,7 +251,6 @@ SYSCALL_DEFINE3(setpriority, int, which, int, who, int, niceval)
+ 		break;
+ 	}
+ out_unlock:
+-	read_unlock(&tasklist_lock);
+ 	rcu_read_unlock();
+ out:
+ 	return error;
+@@ -277,7 +275,6 @@ SYSCALL_DEFINE2(getpriority, int, which, int, who)
+ 		return -EINVAL;
+ 
+ 	rcu_read_lock();
+-	read_lock(&tasklist_lock);
+ 	switch (which) {
+ 	case PRIO_PROCESS:
+ 		if (who)
+@@ -323,7 +320,6 @@ SYSCALL_DEFINE2(getpriority, int, which, int, who)
+ 		break;
+ 	}
+ out_unlock:
+-	read_unlock(&tasklist_lock);
+ 	rcu_read_unlock();
+ 
+ 	return retval;
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.16.4
+
