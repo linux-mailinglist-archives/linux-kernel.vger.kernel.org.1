@@ -2,34 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA1F1C2617
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 16:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 467021C2619
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 16:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgEBO0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 10:26:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57908 "EHLO mail.kernel.org"
+        id S1728251AbgEBO05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 10:26:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728204AbgEBO0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 10:26:53 -0400
+        id S1728020AbgEBO04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 May 2020 10:26:56 -0400
 Received: from localhost (p5486C608.dip0.t-ipconnect.de [84.134.198.8])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F82924957;
-        Sat,  2 May 2020 14:26:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DC2724957;
+        Sat,  2 May 2020 14:26:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588429612;
-        bh=GXv+rUTMKqJw2Z4X+ex6dinlnBTVNkG6IA7d6C96ae4=;
+        s=default; t=1588429616;
+        bh=CB2qIt0YCg9YgJ9w+bsz7dbW1Jd2EWMmQ+Y4nnyAh2Q=;
         h=From:To:Cc:Subject:Date:From;
-        b=t9aYOTIbpkZFFsc+wcm78KfOhgKDptNcZhJbOjkjQWdC+A8/FiaEuYT3weRiRD9Vz
-         DsIXhXf2wTm+HXADEvkeVhzjXOMEottVpNAwP2Q7H9JfiafR/86W7+vFsTGHkL8qdl
-         MiKK0xgKGW31ZxMkAvMVw+H9Z28wiAwQyRC12qGg=
+        b=LUbyz7VZinr56lxLh69WLjCpZJL3uX7m/udTre8cgjcLU5NU9vvAgTkjzIoNAZcPd
+         hwrOzm9whdu4cfAW4a8h2c2vDmwYg0a81ZuXzhNmLECwedwZZoUjAEXUj5EF23UUQt
+         Tk0TzZJslz46Oufr4azQvVG+hK7aYkjK8ADHxSWo=
 From:   Wolfram Sang <wsa@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     kernel@pengutronix.de, Wolfram Sang <wsa@kernel.org>,
-        linux-i2c@vger.kernel.org
-Subject: [PATCH] i2c: algo-pca: update contact email
-Date:   Sat,  2 May 2020 16:26:49 +0200
-Message-Id: <20200502142650.19089-1-wsa@kernel.org>
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] watchdog: imx2_wdt: update contact email
+Date:   Sat,  2 May 2020 16:26:53 +0200
+Message-Id: <20200502142653.19144-1-wsa@kernel.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -43,22 +50,22 @@ address.
 
 Signed-off-by: Wolfram Sang <wsa@kernel.org>
 ---
- drivers/i2c/algos/i2c-algo-pca.c | 2 +-
+ drivers/watchdog/imx2_wdt.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/algos/i2c-algo-pca.c b/drivers/i2c/algos/i2c-algo-pca.c
-index dff4e178c732..7f10312d1b88 100644
---- a/drivers/i2c/algos/i2c-algo-pca.c
-+++ b/drivers/i2c/algos/i2c-algo-pca.c
-@@ -542,7 +542,7 @@ int i2c_pca_add_numbered_bus(struct i2c_adapter *adap)
- EXPORT_SYMBOL(i2c_pca_add_numbered_bus);
- 
- MODULE_AUTHOR("Ian Campbell <icampbell@arcom.com>, "
--	"Wolfram Sang <w.sang@pengutronix.de>");
-+	"Wolfram Sang <kernel@pengutronix.de>");
- MODULE_DESCRIPTION("I2C-Bus PCA9564/PCA9665 algorithm");
- MODULE_LICENSE("GPL");
- 
+diff --git a/drivers/watchdog/imx2_wdt.c b/drivers/watchdog/imx2_wdt.c
+index 1fe472f56cb3..b84f80f7d342 100644
+--- a/drivers/watchdog/imx2_wdt.c
++++ b/drivers/watchdog/imx2_wdt.c
+@@ -2,7 +2,7 @@
+ /*
+  * Watchdog driver for IMX2 and later processors
+  *
+- *  Copyright (C) 2010 Wolfram Sang, Pengutronix e.K. <w.sang@pengutronix.de>
++ *  Copyright (C) 2010 Wolfram Sang, Pengutronix e.K. <kernel@pengutronix.de>
+  *  Copyright (C) 2014 Freescale Semiconductor, Inc.
+  *
+  * some parts adapted by similar drivers from Darius Augulis and Vladimir
 -- 
 2.20.1
 
