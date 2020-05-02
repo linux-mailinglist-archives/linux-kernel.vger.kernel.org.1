@@ -2,278 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8896C1C21F0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 02:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24481C21F8
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 02:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbgEBA3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 May 2020 20:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
+        id S1727092AbgEBAa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 May 2020 20:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbgEBA3Y (ORCPT
+        with ESMTP id S1726352AbgEBAaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 May 2020 20:29:24 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6755FC061A0C
-        for <linux-kernel@vger.kernel.org>; Fri,  1 May 2020 17:29:24 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id b6so931289plz.13
-        for <linux-kernel@vger.kernel.org>; Fri, 01 May 2020 17:29:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=0gEckujgYO5yEgZCIWnLgeYgKfcc2TLCCkDUoH39Yyk=;
-        b=Iw9jkJxwdpW8o7T3GhJeC2RS98jno3xBpIyuVU3DTq5SZ4c2+A+pUpk+CdFvgjObZY
-         igMkXyRu4Qg9jR3GpjcBJ+btxk93gBsLxwR6GQ0KkyYlvYFNY48hgrf5Pkmf7WHCrMp7
-         hLTXbnh/4wm/MjRlXsVBydzkswSdPZeSlkVP+j/aOZiUbRIWItaSk+/At8gd/ecWTd8x
-         A3WuqYXYT9hsFTQ8nn7nI3vs1beW2NWk3w0nwTic98VhHK8Wz4I7hrav1Pi0gqvIYbHd
-         IZagS9+Pd3+kEOi5WaevvGjnm6pJLgxR12NjKSfKnPwEefTtc3fLObiX4aDbCN6Pop73
-         H13A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=0gEckujgYO5yEgZCIWnLgeYgKfcc2TLCCkDUoH39Yyk=;
-        b=mgCKMgtwv7OE+fqfMJfTORbHwXJwBEPIT5t0DnBI64it4aHPNvLNEN0Ddw3Pv3wGMQ
-         YCdyadepCmWJ1dAxO7r4HJeqqkfAEZdwxqL2AiYvWpUnigl35IewPHsyAtsMmW64PFVw
-         4OskrcoskAe+w9TmsJxiuAu/pHBeny5D0t+ieZRM303ro7u8LC6HIIafmWNzUfC/YbGe
-         rVReRzwHwvukwA0Vncli9uJoj8K59kMcKkSsIVOWNoxc+N9AwOEPkpp5MONB2vxtn4rU
-         rirpYjVgrj6CjAGQ5ueucs6ErR1ZAdmr0W8RWP+ZXjND1EJ5HQsMPNW23R4vs08QaoQ+
-         HXCg==
-X-Gm-Message-State: AGi0PuY42rLN1vMROwaTOcO1zHcbqwL8APkYfkBKQge9EVbcwPvbY3pS
-        vaZXSKDuz6tz9gwFH45eHRWYIg==
-X-Google-Smtp-Source: APiQypLOLqV0XKekjW6KMWr52IZeMs+tDmi2j90i1b0ur90p7W77rGfVXzy357A55biEWRxB+URsEQ==
-X-Received: by 2002:a17:902:8b82:: with SMTP id ay2mr6829624plb.153.1588379363760;
-        Fri, 01 May 2020 17:29:23 -0700 (PDT)
-Received: from nuc7.sifive.com (c-24-5-48-146.hsd1.ca.comcast.net. [24.5.48.146])
-        by smtp.gmail.com with ESMTPSA id u188sm3143644pfu.33.2020.05.01.17.29.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 01 May 2020 17:29:23 -0700 (PDT)
-From:   Alan Mikhak <alan.mikhak@sifive.com>
-X-Google-Original-From: Alan Mikhak < alan.mikhak@sifive.com >
-To:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        efremov@linux.com, b.zolnierkie@samsung.com, vidyas@nvidia.com,
-        paul.walmsley@sifive.com
-Cc:     Alan Mikhak <alan.mikhak@sifive.com>
-Subject: [PATCH] PCI: endpoint: functions/pci-epf-test: Support slave DMA transfer
-Date:   Fri,  1 May 2020 17:29:12 -0700
-Message-Id: <1588379352-22550-1-git-send-email-alan.mikhak@sifive.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 1 May 2020 20:30:24 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE986C061A0C;
+        Fri,  1 May 2020 17:30:23 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49DVQ44S6Kz9sRY;
+        Sat,  2 May 2020 10:30:20 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1588379420;
+        bh=fYxS9M3q6OMWjxgrlaKJf0bhnQHnnvVCJ96++Kf9K3o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Li0uakGM1x+Oz2k9uqY2JBrPbk0a3pCluAHpeEQtD8aDZWZSW42aXQYxNzk4rzQR/
+         R3moIUr06CidltZMSl2Wwng9fIawbiRW9PRHtWBgWWlUTsoe0trhIaqjdQZxey26VK
+         SoFWLN+yUSBG4Na0X6JFZkg9iPGfWhNbR6Wqz6/gAithZkdEKvuKjj7kyxgobTr6ju
+         MvlZgldpFyd+T6LNMD3/EY6QaHm0RY76Xc+avCRm/ZgZeVd1FJwsn89XHw/XZCpGOx
+         p3qwr5iZsAIQOK/+i1L1CUlMnRFjcp0TYKbUkOZUtmLYAHoMqvlODzQNATabYgIcW2
+         ghVfDkNTYnmtg==
+Date:   Sat, 2 May 2020 10:30:18 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: linux-next: Fixes tag needs some work in the vhost tree
+Message-ID: <20200502103018.07774059@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/cFdCRGvZF2BYZ5Gr31EMEcd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Mikhak <alan.mikhak@sifive.com>
+--Sig_/cFdCRGvZF2BYZ5Gr31EMEcd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Modify pci_epf_test_data_transfer() to also support slave DMA transfers.
-Adds a direction parameter so caller can specify one of the supported DMA
-transfer directions: DMA_MEM_TO_MEM, DMA_MEM_TO_DEV, and DMA_DEV_TO_MEM.
-For DMA_MEM_TO_MEM, the function calls dmaengine_prep_dma_memcpy() as it
-did before. For DMA_MEM_TO_DEV or DMA_DEV_TO_MEM direction, the function
-calls dmaengine_slave_config() to configure the slave channel before it
-calls dmaengine_prep_slave_single().
+Hi all,
 
-Modify existing callers to specify DMA_MEM_TO_MEM since that is the only
-possible option so far. Rename the phys_addr local variable in some of the
-callers for more readability. Tighten some of the timing function calls to
-avoid counting error print time in case of error.
+In commit
 
-Signed-off-by: Alan Mikhak <alan.mikhak@sifive.com>
----
- drivers/pci/endpoint/functions/pci-epf-test.c | 67 ++++++++++++++++++---------
- 1 file changed, 44 insertions(+), 23 deletions(-)
+  ab8be610c87d ("virtio-blk: handle block_device_operations callbacks after=
+ hot unplug")
 
-diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-index 60330f3e3751..1d026682febb 100644
---- a/drivers/pci/endpoint/functions/pci-epf-test.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-@@ -104,25 +104,41 @@ static void pci_epf_test_dma_callback(void *param)
-  * The function returns '0' on success and negative value on failure.
-  */
- static int pci_epf_test_data_transfer(struct pci_epf_test *epf_test,
--				      dma_addr_t dma_dst, dma_addr_t dma_src,
--				      size_t len)
-+				      dma_addr_t dma_dst,
-+				      dma_addr_t dma_src,
-+				      size_t len,
-+				      enum dma_transfer_direction dir)
- {
- 	enum dma_ctrl_flags flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
- 	struct dma_chan *chan = epf_test->dma_chan;
- 	struct pci_epf *epf = epf_test->epf;
-+	struct dma_slave_config sconf;
- 	struct dma_async_tx_descriptor *tx;
- 	struct device *dev = &epf->dev;
- 	dma_cookie_t cookie;
-+	dma_addr_t buf;
- 	int ret;
- 
- 	if (IS_ERR_OR_NULL(chan)) {
--		dev_err(dev, "Invalid DMA memcpy channel\n");
-+		dev_err(dev, "Invalid DMA channel\n");
- 		return -EINVAL;
- 	}
- 
--	tx = dmaengine_prep_dma_memcpy(chan, dma_dst, dma_src, len, flags);
-+	if (dir == DMA_MEM_TO_MEM) {
-+		tx = dmaengine_prep_dma_memcpy(chan, dma_dst, dma_src,
-+					       len, flags);
-+	} else {
-+		memset(&sconf, 0, sizeof(sconf));
-+		sconf.direction = dir;
-+		sconf.dst_addr = dma_dst;
-+		sconf.src_addr = dma_src;
-+		dmaengine_slave_config(chan, &sconf);
-+
-+		buf = (dir == DMA_MEM_TO_DEV) ? dma_dst : dma_src;
-+		tx = dmaengine_prep_slave_single(chan, buf, len, dir, flags);
-+	}
- 	if (!tx) {
--		dev_err(dev, "Failed to prepare DMA memcpy\n");
-+		dev_err(dev, "Failed to prepare DMA transfer\n");
- 		return -EIO;
- 	}
- 
-@@ -268,7 +284,6 @@ static int pci_epf_test_copy(struct pci_epf_test *epf_test)
- 		goto err_dst_addr;
- 	}
- 
--	ktime_get_ts64(&start);
- 	use_dma = !!(reg->flags & FLAG_USE_DMA);
- 	if (use_dma) {
- 		if (!epf_test->dma_supported) {
-@@ -277,14 +292,18 @@ static int pci_epf_test_copy(struct pci_epf_test *epf_test)
- 			goto err_map_addr;
- 		}
- 
-+		ktime_get_ts64(&start);
- 		ret = pci_epf_test_data_transfer(epf_test, dst_phys_addr,
--						 src_phys_addr, reg->size);
-+						 src_phys_addr, reg->size,
-+						 DMA_MEM_TO_MEM);
-+		ktime_get_ts64(&end);
- 		if (ret)
- 			dev_err(dev, "Data transfer failed\n");
- 	} else {
-+		ktime_get_ts64(&start);
- 		memcpy(dst_addr, src_addr, reg->size);
-+		ktime_get_ts64(&end);
- 	}
--	ktime_get_ts64(&end);
- 	pci_epf_test_print_rate("COPY", reg->size, &start, &end, use_dma);
- 
- err_map_addr:
-@@ -310,7 +329,7 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
- 	void *buf;
- 	u32 crc32;
- 	bool use_dma;
--	phys_addr_t phys_addr;
-+	phys_addr_t src_phys_addr;
- 	phys_addr_t dst_phys_addr;
- 	struct timespec64 start, end;
- 	struct pci_epf *epf = epf_test->epf;
-@@ -319,8 +338,9 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
- 	struct device *dma_dev = epf->epc->dev.parent;
- 	enum pci_barno test_reg_bar = epf_test->test_reg_bar;
- 	struct pci_epf_test_reg *reg = epf_test->reg[test_reg_bar];
-+	enum dma_transfer_direction dir = DMA_MEM_TO_MEM;
- 
--	src_addr = pci_epc_mem_alloc_addr(epc, &phys_addr, reg->size);
-+	src_addr = pci_epc_mem_alloc_addr(epc, &src_phys_addr, reg->size);
- 	if (!src_addr) {
- 		dev_err(dev, "Failed to allocate address\n");
- 		reg->status = STATUS_SRC_ADDR_INVALID;
-@@ -328,7 +348,7 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
- 		goto err;
- 	}
- 
--	ret = pci_epc_map_addr(epc, epf->func_no, phys_addr, reg->src_addr,
-+	ret = pci_epc_map_addr(epc, epf->func_no, src_phys_addr, reg->src_addr,
- 			       reg->size);
- 	if (ret) {
- 		dev_err(dev, "Failed to map address\n");
-@@ -360,10 +380,10 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
- 
- 		ktime_get_ts64(&start);
- 		ret = pci_epf_test_data_transfer(epf_test, dst_phys_addr,
--						 phys_addr, reg->size);
-+						 src_phys_addr, reg->size, dir);
-+		ktime_get_ts64(&end);
- 		if (ret)
- 			dev_err(dev, "Data transfer failed\n");
--		ktime_get_ts64(&end);
- 
- 		dma_unmap_single(dma_dev, dst_phys_addr, reg->size,
- 				 DMA_FROM_DEVICE);
-@@ -383,10 +403,10 @@ static int pci_epf_test_read(struct pci_epf_test *epf_test)
- 	kfree(buf);
- 
- err_map_addr:
--	pci_epc_unmap_addr(epc, epf->func_no, phys_addr);
-+	pci_epc_unmap_addr(epc, epf->func_no, src_phys_addr);
- 
- err_addr:
--	pci_epc_mem_free_addr(epc, phys_addr, src_addr, reg->size);
-+	pci_epc_mem_free_addr(epc, src_phys_addr, src_addr, reg->size);
- 
- err:
- 	return ret;
-@@ -398,7 +418,7 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
- 	void __iomem *dst_addr;
- 	void *buf;
- 	bool use_dma;
--	phys_addr_t phys_addr;
-+	phys_addr_t dst_phys_addr;
- 	phys_addr_t src_phys_addr;
- 	struct timespec64 start, end;
- 	struct pci_epf *epf = epf_test->epf;
-@@ -407,8 +427,9 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
- 	struct device *dma_dev = epf->epc->dev.parent;
- 	enum pci_barno test_reg_bar = epf_test->test_reg_bar;
- 	struct pci_epf_test_reg *reg = epf_test->reg[test_reg_bar];
-+	enum dma_transfer_direction dir = DMA_MEM_TO_MEM;
- 
--	dst_addr = pci_epc_mem_alloc_addr(epc, &phys_addr, reg->size);
-+	dst_addr = pci_epc_mem_alloc_addr(epc, &dst_phys_addr, reg->size);
- 	if (!dst_addr) {
- 		dev_err(dev, "Failed to allocate address\n");
- 		reg->status = STATUS_DST_ADDR_INVALID;
-@@ -416,7 +437,7 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
- 		goto err;
- 	}
- 
--	ret = pci_epc_map_addr(epc, epf->func_no, phys_addr, reg->dst_addr,
-+	ret = pci_epc_map_addr(epc, epf->func_no, dst_phys_addr, reg->dst_addr,
- 			       reg->size);
- 	if (ret) {
- 		dev_err(dev, "Failed to map address\n");
-@@ -450,11 +471,11 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
- 		}
- 
- 		ktime_get_ts64(&start);
--		ret = pci_epf_test_data_transfer(epf_test, phys_addr,
--						 src_phys_addr, reg->size);
-+		ret = pci_epf_test_data_transfer(epf_test, dst_phys_addr,
-+						 src_phys_addr,	reg->size, dir);
-+		ktime_get_ts64(&end);
- 		if (ret)
- 			dev_err(dev, "Data transfer failed\n");
--		ktime_get_ts64(&end);
- 
- 		dma_unmap_single(dma_dev, src_phys_addr, reg->size,
- 				 DMA_TO_DEVICE);
-@@ -476,10 +497,10 @@ static int pci_epf_test_write(struct pci_epf_test *epf_test)
- 	kfree(buf);
- 
- err_map_addr:
--	pci_epc_unmap_addr(epc, epf->func_no, phys_addr);
-+	pci_epc_unmap_addr(epc, epf->func_no, dst_phys_addr);
- 
- err_addr:
--	pci_epc_mem_free_addr(epc, phys_addr, dst_addr, reg->size);
-+	pci_epc_mem_free_addr(epc, dst_phys_addr, dst_addr, reg->size);
- 
- err:
- 	return ret;
--- 
-2.7.4
+Fixes tag
 
+  Fixes: 48e4043d4529523cbc7fa8dd745bd8e2c45ce1d3
+
+has these problem(s):
+
+  - missing subject
+
+Should be
+
+Fixes: 48e4043d4529 ("virtio: add virtio disk geometry feature")
+
+Please don't split Fixes tags over more than one line.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/cFdCRGvZF2BYZ5Gr31EMEcd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6svxoACgkQAVBC80lX
+0GypJQf5AVeTqJ/E937Sk6kaOgBSLGfztmr+PjeCLdXvMoFcJhypdFFkfVCtuwWf
+y/1CoWFCO+i1NYbOk9vzhtHkadhXYwh8mf+UkasBk33q6cLV9Bra0xLyyRLivoff
+Qg3VCdUygyjApeUd88Rldbd/MsUQISbZ/b/ERpdc5CTCvqRfWXj+TVZTPpKHtsQd
+W0qzYLdRyz4V07/N3lpahBo9Pg0P7XAY29/75O4fzBP2n/Ybdm6nvYza2vDHMbka
+n0KQ4b9Uox4z8eUM/qF7hYW5/dG5AbcJkd16+ZwLfo1PBbwP/hFGblGnGlu3lBxq
+RDel1WiYzRjP00BaEU9AtDaEM/98Fg==
+=byE5
+-----END PGP SIGNATURE-----
+
+--Sig_/cFdCRGvZF2BYZ5Gr31EMEcd--
