@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9D91C2429
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 10:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 987C81C2431
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 10:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726782AbgEBIjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 04:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726468AbgEBIjm (ORCPT
+        id S1727118AbgEBItn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 04:49:43 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:30878 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727088AbgEBItm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 04:39:42 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1A7C061A0C
-        for <linux-kernel@vger.kernel.org>; Sat,  2 May 2020 01:39:42 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id a2so1973251oia.11
-        for <linux-kernel@vger.kernel.org>; Sat, 02 May 2020 01:39:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=f1JfsNRiU9CPiPWIvBjcsKVKQf1l0VHF1PLTYDvT8K8=;
-        b=RSQ0JmyaeOJB/kGZUl2vuEwDWnb//KPrQJoYAy26cvEndaClD9WuO9nXE+KZ8wp24O
-         UqfMAj97Mdzw0lL2Z4J+wxtyfccRwbmJqxDP45M/Wqsr777Y1ITJUufb8CMRXAnDscVj
-         QxEvhWnXXyWiFIkhVj/Ddk9kQwiFZF7t5zgQy3S6qwHROjVxRja5hiZRJrri8rWginBS
-         5mUSrq4ujeqc3JGvslDWyWaYOKzxhQ2L7bvnY7nigj3Y7y8v8GIkiZCM/Em8yYxEMIU0
-         Q8iriA8AE2rJdU/z1oD//cB/EbW2jXCLoOycFvxhawrwhhEDcOocS1BMWjpqn+updXM2
-         ZkpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=f1JfsNRiU9CPiPWIvBjcsKVKQf1l0VHF1PLTYDvT8K8=;
-        b=mOInhh75d3lJSe+TKovdY/PnCJsuIAYvVlTmdkaADfiS+4fJ52jMMpyqo3XmRIzgXH
-         2idFlyFQljSddPs5rn79K0SqaqGBsSJN52GmwuwrtCIgbK9R5B+PF63EN48RsZmXSY41
-         GgWOP1VPzKmUKOLb84uM0VGGg8a07L1h/pztM6iYSuuZ+LQZBiOj5GKOGawCcdQOu4Oo
-         Yoy4gkxsFGZz4rJhJCD+4M8Gb6a/F8g5f0QExzxwtyQOb9JMF6/n7J7Z89aN5sbF+qNW
-         Nk/eTOOaIbbNDxZ8kjalnK0BMSNeZeoG7PMRDHYf7BbF5TKgIIxYCgehpUcSpIPty6u3
-         OD8w==
-X-Gm-Message-State: AGi0Pub3/2pk4Wi1AxtMXjhSdkaDbEQTBYCpzHF5FI2ArarCINhx93Ja
-        iSX1nkJkgiR0NsVF/OV5WRhEL5EMMV6gM3Q4urE=
-X-Google-Smtp-Source: APiQypLvdUr/2eK+sinZolvW2gRmYQt7RfFSQJatdWMVIXC570OlRW327OekUM+QH4+3UZJ3fzzBL8LRhWYb71UIGvs=
-X-Received: by 2002:aca:4d5:: with SMTP id 204mr2360437oie.120.1588408780844;
- Sat, 02 May 2020 01:39:40 -0700 (PDT)
+        Sat, 2 May 2020 04:49:42 -0400
+Received: from [192.168.1.41] ([92.140.215.114])
+        by mwinf5d26 with ME
+        id ZkpB2200V2Ug2Sc03kpK1y; Sat, 02 May 2020 10:49:36 +0200
+X-ME-Helo: [192.168.1.41]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 02 May 2020 10:49:36 +0200
+X-ME-IP: 92.140.215.114
+Subject: Re: [PATCH 4/4 v2] firmware: stratix10-svc: Slightly simplify code
+To:     Richard Gong <richard.gong@linux.intel.com>,
+        gregkh@linuxfoundation.org, atull@kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <cover.1588142343.git.christophe.jaillet@wanadoo.fr>
+ <8c505c686438c54da61ad4fe15e1eae722011153.1588142343.git.christophe.jaillet@wanadoo.fr>
+ <1f8ae50d-6830-7fbb-e999-3e8110fe7cd6@linux.intel.com>
+ <c7ac6b7c-a1d5-e001-964b-0881707c41b1@wanadoo.fr>
+ <2a1de0d5-444a-2680-10b5-8578c2670d54@linux.intel.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <dab419d3-5942-fa89-a352-e8917ced0744@wanadoo.fr>
+Date:   Sat, 2 May 2020 10:49:05 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: by 2002:a4a:d2d5:0:0:0:0:0 with HTTP; Sat, 2 May 2020 01:39:40 -0700 (PDT)
-Reply-To: mrsfatimakargbo@outlook.com
-From:   Mr Suleman Bello <curtismichael74@gmail.com>
-Date:   Sat, 2 May 2020 01:39:40 -0700
-Message-ID: <CA+A+bzfXiW0g7yeFCh0Y7KUQXqbSH4HhbT9gHLxEXhpWdDKPrQ@mail.gmail.com>
-Subject: Can i trust you?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2a1de0d5-444a-2680-10b5-8578c2670d54@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+Le 01/05/2020 à 18:55, Richard Gong a écrit :
+> Hi,
+>
+> On 5/1/20 10:48 AM, Christophe JAILLET wrote:
+>> Le 01/05/2020 à 17:40, Richard Gong a écrit :
+>>> Hi,
+>>>
+>>> On 4/29/20 1:52 AM, Christophe JAILLET wrote:
+>>>> Replace 'devm_kmalloc_array(... | __GFP_ZERO)' with the equivalent and
+>>>> shorter 'devm_kcalloc(...)'.
+>>>>
+>>> It doesn't make much sense.
+>>> Actually devm_kcalloc returns devm_kmalloc_array(.., flag | 
+>>> __GFP_ZERO).
+>>>
+>> The only goal is to have a sightly less verbose code.
+>> This saves one line of code and there is no need to wonder why we 
+>> explicitly pass __GFP_ZERO to kmalloc_array.
+>>
+>> Mostly a matter of taste.
+> I prefer this part remain unchanged.
+>
 
-Please i want you to read this letter very carefully and i must
-apologize for berging this message into your mail box without any
-formal introduction due to the urgency and confidential of this issue
-and i know that this message will come to you as a surprise, Please
-this is not a joke and i will not like you to joke with it.I am
-Mr.Suleman Bello, a staff in African Development Bank (A.D.B)
-Ouagadougou, Burkina faso West Africa.I discovered existing dormant
-account for years. When I discovered that there had been neither
-continuation nor withdrawals from this account for this long period
-and according to the laws and constitution guiding this banking
-institution, any unserviceable account for more than (7) seven years,
-that fund will be transferred to national treasury as unclaimed fund.
+The easiest would be just to ignore this patch entirely but if you need 
+a v3 for the series, could you tell me if you have any comments on the 3 
+other patches?
 
-I Hoped that you will not expose or betray this trust and confident
-that i am about to extablish with you for the mutual benefit of you
-and i.I need your urgent assistance in transferring the sum of $10.5
-)million usd into your account within 7 banking days. This money has
-been dormant for years in our Bank, and The request of foreigner in
-this transaction is necessary because our late customer was a
-foreigner and a burkinabe cannot stand as next of kin to a
-foreigner.Because of the static of this transaction I want you to
-stand as the next of kin so that our bank will accord you the
-recognition and have the fund transferred to your account.
+CJ
 
-Upon your response, I shall then provide you with further information
-and more deities that will help you understand the transaction. I am
-expecting your urgent response to enable me inform you on how the
-business will be executed. Please I would like you to keep this
-transaction confidential and as a top secret or delete if you are not
-interested.
 
-Thanks
-Mr.Suleman Bello.
-N.B: PLEASE CONTACT ME THROUGH MY PRIVATE EMAIL
-( suleman_bello@yahoo.com ) SO WE CAN COMMENCE ALL ARRANGEMENTS AS
-SOON AS POSSIBLE.
+> Regards,
+> Richard
+>
+>>
+>> 'devm_kcalloc' is inlined, so the binary should be exactly the same. >
+>> CJ
+>>
+>>>> 'ctrl->genpool' can not be NULL, so axe a useless test in the remove
+>>>> function.
+>>>>
+>>>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>>>> ---
+>>>>   drivers/firmware/stratix10-svc.c | 6 ++----
+>>>>   1 file changed, 2 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/firmware/stratix10-svc.c 
+>>>> b/drivers/firmware/stratix10-svc.c
+>>>> index 739004398877..c228337cb0a1 100644
+>>>> --- a/drivers/firmware/stratix10-svc.c
+>>>> +++ b/drivers/firmware/stratix10-svc.c
+>>>> @@ -1002,8 +1002,7 @@ static int stratix10_svc_drv_probe(struct 
+>>>> platform_device *pdev)
+>>>>       if (!controller)
+>>>>           return -ENOMEM;
+>>>>   -    chans = devm_kmalloc_array(dev, SVC_NUM_CHANNEL,
+>>>> -                   sizeof(*chans), GFP_KERNEL | __GFP_ZERO);
+>>>> +    chans = devm_kcalloc(dev, SVC_NUM_CHANNEL, sizeof(*chans), 
+>>>> GFP_KERNEL);
+>>>>       if (!chans)
+>>>>           return -ENOMEM;
+>>>>   @@ -1086,8 +1085,7 @@ static int stratix10_svc_drv_remove(struct 
+>>>> platform_device *pdev)
+>>>>           kthread_stop(ctrl->task);
+>>>>           ctrl->task = NULL;
+>>>>       }
+>>>> -    if (ctrl->genpool)
+>>>> -        gen_pool_destroy(ctrl->genpool);
+>>>> +    gen_pool_destroy(ctrl->genpool);
+>>>>       list_del(&ctrl->node);
+>>>>         return 0;
+>>>>
+>>>
+>>> Regards,
+>>> Richard
+>>>
+>>
+>
+
