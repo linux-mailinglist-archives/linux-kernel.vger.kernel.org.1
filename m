@@ -2,83 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FC51C247C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 12:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C52B1C2484
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 12:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbgEBK1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 06:27:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726654AbgEBK1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 06:27:32 -0400
-Received: from coco.lan (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3B542137B;
-        Sat,  2 May 2020 10:27:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1588415251;
-        bh=meuNEm4QtlNCEOLrnXFslBa0+yQ+8Q4cBxs2ezZnL/Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JkKzpdbeJDz1UlMXttpOk48NjTdtFgiaaUwJF8eteIL3RbCgmdqnTj5jOQ4nCIfAD
-         4ujWBrU0pGb7Ds3rBuG+KhBpoB5cGg2dPpiibtxp0uyx2562z5xjOGVn7vnSxoPZeZ
-         U+qk34pgdmDZyZFjiWV3fyb5SezTxhpY0j2BrsLs=
-Date:   Sat, 2 May 2020 12:27:28 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 14/14] docs: staging: use small font for literal
- includes
-Message-ID: <20200502122728.36eb231b@coco.lan>
-In-Reply-To: <3aac8d7e3f11d7df5b8155c93beee447cf8f064b.camel@perches.com>
-References: <cover.1588345503.git.mchehab+huawei@kernel.org>
-        <f0dd118559a49c1a8c1e248382f48d5a07c0751d.1588345503.git.mchehab+huawei@kernel.org>
-        <3aac8d7e3f11d7df5b8155c93beee447cf8f064b.camel@perches.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726900AbgEBKpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 06:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726654AbgEBKpy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 2 May 2020 06:45:54 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E404C061A0C
+        for <linux-kernel@vger.kernel.org>; Sat,  2 May 2020 03:45:54 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 207so227864pgc.6
+        for <linux-kernel@vger.kernel.org>; Sat, 02 May 2020 03:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/mr7Ffa+L3f2qDc6iFPpXCwdaYNWdfHaCGafzkJl+HY=;
+        b=CR3eRBM/9Up3tE43xLs9pJKD2faQJ0j0SQZO6zOUQv7uwUvtuIGyow0aICUGRYKLI9
+         ZkgNZzeWdk6IH5gJRsoeYBZgCmdvr9T8xoH1VRmzCm6tEqTZ0S2ITkFlXJZACi3ISbVo
+         67wc+g8qdmkJgCUHJ8YiKv9bJe6q4kQ31PH39p3t1CecosCl0/rloxpvdzIcG4jSdX+i
+         BhLjIROzZmrmRJFu3KDvv3ekWP1fKNGlYzfxfSi66X80v2Uakha2N/FnviUb6ExsAp/M
+         MtRYHlCWoKHf0TmwNMgEacq6s1exkeeecBo1P9M2jZgqpWnkgtwoG2TJhcOXsbv7mzG3
+         068Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/mr7Ffa+L3f2qDc6iFPpXCwdaYNWdfHaCGafzkJl+HY=;
+        b=cqN9Hac//STuoP7noBZeo3jScItZgOVnN0UoTuJjdGxTNz6BCwDdL2WXKVfO+GHzJz
+         hBc7bxX2TUTNZqgACoqhb6VpTSumu5AZf++qfC0Qv3QeHi8AVBcB4Cnskpj1/WSAGGBj
+         GVZtmXWlFSBzeCZGOeubBJqgQJ0RLRiCpzMgBqcQFiK24PnNoAsMYYNxqj0bunyAUznC
+         DZwW9qvWwM9zKRp9uNSDuZwNA8PIJh5JbSDBqJLJ5wjdz751IWFLshanZ7/3/1mhqS2k
+         7DpbsZEpjgMimofy891UNJv+K2cNEYOFdDR+J9+2iNcP4h/qjIourJlfUr7GnGZtQJiU
+         iTxQ==
+X-Gm-Message-State: AGi0PuajubbHQxpB5EIxmmhwi1KvGRfmKMxY2y6b5f7iR6qFfqAbxMEr
+        TefNhm+YSNqMXOY9qMGvjyM=
+X-Google-Smtp-Source: APiQypLbrHiEEMUdFeLbTnaUHmlRIO1dnbF20vmXFp7YATEqr8WYEyNAGD1Y+yACVDSb8J2OLKrHuw==
+X-Received: by 2002:a63:ad08:: with SMTP id g8mr8688888pgf.40.1588416353777;
+        Sat, 02 May 2020 03:45:53 -0700 (PDT)
+Received: from localhost.localdomain (unknown-224-80.windriver.com. [147.11.224.80])
+        by smtp.gmail.com with ESMTPSA id 202sm3854029pgf.41.2020.05.02.03.45.52
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Sat, 02 May 2020 03:45:53 -0700 (PDT)
+From:   Bin Meng <bmeng.cn@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Bin Meng <bin.meng@windriver.com>
+Subject: [PATCH v2] arm: Drop CONFIG_MTD_M25P80 in various defconfig files
+Date:   Sat,  2 May 2020 03:45:47 -0700
+Message-Id: <1588416347-30217-1-git-send-email-bmeng.cn@gmail.com>
+X-Mailer: git-send-email 1.7.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 01 May 2020 17:10:00 -0700
-Joe Perches <joe@perches.com> escreveu:
+From: Bin Meng <bin.meng@windriver.com>
 
-> On Fri, 2020-05-01 at 17:37 +0200, Mauro Carvalho Chehab wrote:
-> > The normal font is too big to display 80 columns, causing extra
-> > breaks to be added at weird places.
-> > 
-> > change to the footnotesize, as this would fit a little bit
-> > better.  
-> []
-> > diff --git a/Documentation/staging/index.rst b/Documentation/staging/index.rst  
-> []
-> > @@ -19,17 +19,41 @@ Unsorted Documentation
-> >  Atomic Types
-> >  ============
-> >  
-> > +.. raw:: latex
-> > +
-> > +    \footnotesize  
-> 
-> Please don't make the markup too invasive.
+Drop CONFIG_MTD_M25P80 that was removed in
+commit b35b9a10362d ("mtd: spi-nor: Move m25p80 code in spi-nor.c")
 
-With the current status, this is unavoidable.
+Signed-off-by: Bin Meng <bin.meng@windriver.com>
 
-The only way to avoid those would be to convert the document itself
-to ReST, but the document writer was not convinced yet to even minimal
-ReST markups on 3 files.
+---
 
-The problem with a text file is that the lines produced at the PDF output 
-with a mono-spaced font, on LaTeX have lot less than 80 colums. So, 
-some markups should tell Sphinx to use a reduced font for those includes.
+Changes in v2:
+- add CONFIG_MTD_SPI_NOR=y in axm55xx_defconfig
 
-However, there's no "fontsize" directive (nor any other directive that 
-would allow adjusting font parameters on an included file) on Sphinx. 
-So, we need to use the above.
+ arch/arm/configs/axm55xx_defconfig     | 2 +-
+ arch/arm/configs/davinci_all_defconfig | 1 -
+ arch/arm/configs/dove_defconfig        | 1 -
+ arch/arm/configs/imx_v6_v7_defconfig   | 1 -
+ arch/arm/configs/keystone_defconfig    | 1 -
+ arch/arm/configs/mvebu_v5_defconfig    | 1 -
+ arch/arm/configs/mvebu_v7_defconfig    | 1 -
+ arch/arm/configs/mxs_defconfig         | 1 -
+ arch/arm/configs/pxa_defconfig         | 1 -
+ arch/arm/configs/qcom_defconfig        | 1 -
+ arch/arm/configs/sama5_defconfig       | 1 -
+ arch/arm/configs/socfpga_defconfig     | 1 -
+ arch/arm/configs/tegra_defconfig       | 1 -
+ 13 files changed, 1 insertion(+), 13 deletions(-)
 
-Thanks,
-Mauro
+diff --git a/arch/arm/configs/axm55xx_defconfig b/arch/arm/configs/axm55xx_defconfig
+index 4607521..a7a0635 100644
+--- a/arch/arm/configs/axm55xx_defconfig
++++ b/arch/arm/configs/axm55xx_defconfig
+@@ -88,7 +88,7 @@ CONFIG_MTD_CFI_AMDSTD=y
+ CONFIG_MTD_CFI_STAA=y
+ CONFIG_MTD_PHYSMAP=y
+ CONFIG_MTD_PHYSMAP_OF=y
+-CONFIG_MTD_M25P80=y
++CONFIG_MTD_SPI_NOR=y
+ CONFIG_PROC_DEVICETREE=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_RAM=y
+diff --git a/arch/arm/configs/davinci_all_defconfig b/arch/arm/configs/davinci_all_defconfig
+index e849367..4d8f6f6 100644
+--- a/arch/arm/configs/davinci_all_defconfig
++++ b/arch/arm/configs/davinci_all_defconfig
+@@ -75,7 +75,6 @@ CONFIG_MTD_CFI=m
+ CONFIG_MTD_CFI_INTELEXT=m
+ CONFIG_MTD_CFI_AMDSTD=m
+ CONFIG_MTD_PHYSMAP=m
+-CONFIG_MTD_M25P80=m
+ CONFIG_MTD_RAW_NAND=m
+ CONFIG_MTD_NAND_DAVINCI=m
+ CONFIG_MTD_SPI_NOR=m
+diff --git a/arch/arm/configs/dove_defconfig b/arch/arm/configs/dove_defconfig
+index e70c997..546afaf 100644
+--- a/arch/arm/configs/dove_defconfig
++++ b/arch/arm/configs/dove_defconfig
+@@ -44,7 +44,6 @@ CONFIG_MTD_CFI_GEOMETRY=y
+ CONFIG_MTD_CFI_INTELEXT=y
+ CONFIG_MTD_CFI_STAA=y
+ CONFIG_MTD_PHYSMAP=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_SPI_NOR=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_RAM=y
+diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+index 5a20d12..308de35 100644
+--- a/arch/arm/configs/imx_v6_v7_defconfig
++++ b/arch/arm/configs/imx_v6_v7_defconfig
+@@ -110,7 +110,6 @@ CONFIG_MTD_CFI_AMDSTD=y
+ CONFIG_MTD_CFI_STAA=y
+ CONFIG_MTD_PHYSMAP_OF=y
+ CONFIG_MTD_DATAFLASH=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_SST25L=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_GPMI_NAND=y
+diff --git a/arch/arm/configs/keystone_defconfig b/arch/arm/configs/keystone_defconfig
+index 11e2211..eeaa140 100644
+--- a/arch/arm/configs/keystone_defconfig
++++ b/arch/arm/configs/keystone_defconfig
+@@ -121,7 +121,6 @@ CONFIG_MTD=y
+ CONFIG_MTD_CMDLINE_PARTS=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_PLATRAM=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_DAVINCI=y
+ CONFIG_MTD_SPI_NOR=y
+diff --git a/arch/arm/configs/mvebu_v5_defconfig b/arch/arm/configs/mvebu_v5_defconfig
+index 226f2e9..1859097 100644
+--- a/arch/arm/configs/mvebu_v5_defconfig
++++ b/arch/arm/configs/mvebu_v5_defconfig
+@@ -75,7 +75,6 @@ CONFIG_MTD_CFI_GEOMETRY=y
+ CONFIG_MTD_CFI_INTELEXT=y
+ CONFIG_MTD_CFI_STAA=y
+ CONFIG_MTD_PHYSMAP=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_ORION=y
+ CONFIG_MTD_SPI_NOR=y
+diff --git a/arch/arm/configs/mvebu_v7_defconfig b/arch/arm/configs/mvebu_v7_defconfig
+index cddce57..c8f4723 100644
+--- a/arch/arm/configs/mvebu_v7_defconfig
++++ b/arch/arm/configs/mvebu_v7_defconfig
+@@ -50,7 +50,6 @@ CONFIG_MTD_CFI_INTELEXT=y
+ CONFIG_MTD_CFI_AMDSTD=y
+ CONFIG_MTD_CFI_STAA=y
+ CONFIG_MTD_PHYSMAP_OF=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_MARVELL=y
+ CONFIG_MTD_SPI_NOR=y
+diff --git a/arch/arm/configs/mxs_defconfig b/arch/arm/configs/mxs_defconfig
+index a9c6f32..1322ebd 100644
+--- a/arch/arm/configs/mxs_defconfig
++++ b/arch/arm/configs/mxs_defconfig
+@@ -46,7 +46,6 @@ CONFIG_MTD=y
+ CONFIG_MTD_CMDLINE_PARTS=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_DATAFLASH=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_SST25L=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_GPMI_NAND=y
+diff --git a/arch/arm/configs/pxa_defconfig b/arch/arm/configs/pxa_defconfig
+index b817c57..50bbfdd 100644
+--- a/arch/arm/configs/pxa_defconfig
++++ b/arch/arm/configs/pxa_defconfig
+@@ -181,7 +181,6 @@ CONFIG_MTD_RAM=m
+ CONFIG_MTD_ROM=m
+ CONFIG_MTD_COMPLEX_MAPPINGS=y
+ CONFIG_MTD_PXA2XX=m
+-CONFIG_MTD_M25P80=m
+ CONFIG_MTD_BLOCK2MTD=y
+ CONFIG_MTD_DOCG3=m
+ CONFIG_MTD_RAW_NAND=m
+diff --git a/arch/arm/configs/qcom_defconfig b/arch/arm/configs/qcom_defconfig
+index c882167..0a90c8d 100644
+--- a/arch/arm/configs/qcom_defconfig
++++ b/arch/arm/configs/qcom_defconfig
+@@ -62,7 +62,6 @@ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_MTD=y
+ CONFIG_MTD_BLOCK=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_QCOM=y
+ CONFIG_MTD_SPI_NOR=y
+diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
+index bab7861..7e9ec6f 100644
+--- a/arch/arm/configs/sama5_defconfig
++++ b/arch/arm/configs/sama5_defconfig
+@@ -63,7 +63,6 @@ CONFIG_MTD=y
+ CONFIG_MTD_CMDLINE_PARTS=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_CFI=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_ATMEL=y
+ CONFIG_MTD_SPI_NOR=y
+diff --git a/arch/arm/configs/socfpga_defconfig b/arch/arm/configs/socfpga_defconfig
+index e73c97b..04c8bd3 100644
+--- a/arch/arm/configs/socfpga_defconfig
++++ b/arch/arm/configs/socfpga_defconfig
+@@ -48,7 +48,6 @@ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_MTD=y
+ CONFIG_MTD_BLOCK=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_DENALI_DT=y
+ CONFIG_MTD_SPI_NOR=y
+diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
+index aa94369..6a7988a 100644
+--- a/arch/arm/configs/tegra_defconfig
++++ b/arch/arm/configs/tegra_defconfig
+@@ -76,7 +76,6 @@ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_TEGRA_GMI=y
+ CONFIG_MTD=y
+-CONFIG_MTD_M25P80=y
+ CONFIG_MTD_SPI_NOR=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_AD525X_DPOT=y
+-- 
+2.7.4
+
