@@ -2,175 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03C61C2730
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 19:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71C11C2736
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 May 2020 19:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728411AbgEBRQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 May 2020 13:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728342AbgEBRQA (ORCPT
+        id S1728431AbgEBRSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 May 2020 13:18:07 -0400
+Received: from sonic313-21.consmr.mail.ir2.yahoo.com ([77.238.179.188]:37469
+        "EHLO sonic313-21.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728363AbgEBRSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 May 2020 13:16:00 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3CDC061A0C;
-        Sat,  2 May 2020 10:16:00 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k1so15696290wrx.4;
-        Sat, 02 May 2020 10:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3PIv3g2HbrGzdAz/fXXsONdZmu8F6RevQt0D1oDmLho=;
-        b=gV2H5xW2mTm8uTHZxOra8ob6JuAmi+h8HkRMipd8wXZ39Cl03adTXtuChzdjwVBSqF
-         T7DTCpK499L13ogQPCODo8zyTDIWQ76Tz5oqsTfbpYK6PG9lo7kHlb2q9swyz2N8HdXU
-         I/91hszWw5NKt63LjSaIHT+1bKVHdthB2Gh+gAJKYd8BaDK5sVG32omy1ajV5qdQu1jR
-         pSOTekjzBaOHFNJJGxQgRiP2Kv7YSXmGmDNTZ0XouvsoW9j755qByUUsKtTm82DtFs3+
-         WJGEXXPvnnhguH+LqS0Lk/X7kFXITvV9HJMXY11u/TvpixyqRllu2AnH4NxUpFNqt8HN
-         F/sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3PIv3g2HbrGzdAz/fXXsONdZmu8F6RevQt0D1oDmLho=;
-        b=r8MK6SM/943HCYeOoEMPzfRNZaVnBqA2dPBaYm7gYgyhYzQIZ61yQdbX0CjsQ/JMw6
-         Gk1RaMd9gmtfjn+x23QgGSypRU9viV6cFnnt3Saky4up8NGZyQzGmfjqCqtMYtsqKB9z
-         5CVZ56+zVQ6VoxevXTzo2AI3/FAfI33ZQkg7RdpqMxD4yg7pU+eEPVHMe84+nl261Q2k
-         mNeYlS9P2Z72NziwrLEcZ5B6f3Di8GcdJ0LmvX8hb8zAf4n54R7/ZtB69NwMmIZUgHqy
-         qAdEUwV2QWZ2t97Yjqo7/Lx2bX4zxjf4nOC03cK8/zMjTXxdwOjYBo9csiZ4wIhB0mjt
-         tXWA==
-X-Gm-Message-State: AGi0PubWyG2GXjBDryUJG4G0IT3k0J3680KaTUVzbfXG38sL49w2CrOj
-        YBvmtW8TAJwBqtRC5gPS8F4=
-X-Google-Smtp-Source: APiQypJbj1yl/89EsQl/nrkDrS2TuUaoAtTtpOQQOr9z/uF7PiIxOkiRtxQr8HtZ77MS6EtBt2jRAA==
-X-Received: by 2002:a5d:6a8b:: with SMTP id s11mr9916966wru.258.1588439753785;
-        Sat, 02 May 2020 10:15:53 -0700 (PDT)
-Received: from localhost.localdomain ([188.24.130.199])
-        by smtp.gmail.com with ESMTPSA id k14sm10142090wrp.53.2020.05.02.10.15.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 May 2020 10:15:53 -0700 (PDT)
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
-        linux-actions@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/1] dmaengine: owl: Use correct lock in owl_dma_get_pchan()
-Date:   Sat,  2 May 2020 20:15:51 +0300
-Message-Id: <c6e6cdaca252b5364bd294093673951036488cf0.1588439073.git.cristian.ciocaltea@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Sat, 2 May 2020 13:18:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1588439884; bh=+NKq2YP/4c3bLm2HmGhxa/KCZOXr0NIUKHs/ECuC0yk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=qBP2lcjSr8q7TgpLQLiuz97xVGP2/Z7qiZFuoll9UYBZPqQEGCmI5TYmRsjDebluGFxObWhzJDJwtqv8TrEl924CRjX9djR9BsSdvJHBdX5r5IoYws7c1VfnEwTxxuRsB+XqLaFU6s3HP6p5xag9pFos8eJSZzQd+grUoXUMaUxHtr/oSucTp7Wqfr6gvvwwuCOYNfUd7piYH9vTUXlSrCGyDMdfzeRk3rCAPRxsOOpWAE+XKFkVtWqbM7PAtLOmgKxdmu8nKQwcQw1UPbDwWFDr09OGlswiTs6JQakIArYjAptSX8ceMxTpsP1cTiXZ+BHacRDnP//xrxww5JTSsQ==
+X-YMail-OSG: 2ZbRMtcVM1nsAfGKsl6cKABpw5JZCCLY9VCQTJDTj_j2nR5wZQaONxBw7xVqyPo
+ n377WWssMESuxsLR4RyuYV7ja6Xr4T.SvXMHSSSVpmF_QR.BW.5CgH8oGlCs8ECSC35OpTU3uWPb
+ HwOxpsPe5m9qld6Gg8vhmg9UQ668SbIYkvtoTjTFkMKcJ15M9AvbVxlMF.Kud2iX5hSEWjds75Gj
+ VBxoe5dWa9hJ7J6IgaL_2tuogM92jM.LxFQWotObxO833anoUlkg.gHaWtzbUotaCDh1pC6V9_um
+ U7sVUy2HNQ3lgWXt5WgTGNOdO5vkNimQ4xDPeVkiLZ3P_tIiU1rIK6aOlDznbWHPpkVX8jURwBIN
+ c11DtbtPlevp4BRTJr2egwFUo9Xjt1VeqoeKzAizl4i_zJ4bSVq5R3Izm1xh6AKUmv9q4VSpvj3u
+ GkdR8oXgVCHVnEkEWws87xDV1tLKHmavaX9vonm_txawplevwe3EQ6nGlUHLzbxJYQsmzr5Rhs4H
+ m.uZCglC2_vvVlJCyLqn.HrA5f0UQqEg5vXKp05JqJRF4opOijJ6JHQbkr2RiyQ9m9PUfpY2yMpj
+ 86T8He8j0Susl_Ib0DBhbJLBicI8LAih3vt21xL8sKKmROPZ4mxKS_zH0vqEwJH1G2ROu0Qqm2G9
+ 6H9f3xlFxo5pPXW8qW1Pb58F_mGol_1MZkoJ.oOAaecrL0637sZ6kfOSuE7r8HhxP0ys7tCfw5hU
+ gqx54BbPnfy7oZmfhf6jXcd5DlxRiwbNbYyspbWK81eGJcH.6v2whDP0lGNPvfVVcy.X.TuK_fFX
+ zYVyQDxfdVlmBwr53gYW.XrGzBzuh3Xh8uVEKvMgSemZ5EWEtZetiCySWaQo.2mVKMRCTRCDl6gO
+ P0Nj5wn1kZYxeNmtDUa440oZm1P0tEcUJ19N2WliHWuDwXIQZMLspxLQQOVWwtNh_uUkeRDcz4vy
+ IyDDe2E0HKxmS86Fg1ulrTk7cHWQNYCyofSlmzGaruPORxHMme5n_BHa7VivCjCsLtz1Y6eReaLw
+ zXOUpOyECNOvzxJ40f5E9JlfqaxiicdqJDWM_MkV11kyLXv6VOkrWcN9d9Ro5Ysk_Tuo4gkw88TW
+ zdhnGQJ81IS7COSXYyaxc6VNCA2iMqC1BzYzsCj_WvNqpwnrzVE1FFWuFczSu6AIDkB3tuXzB73j
+ TOIE60LYAvFYRlxSBIkJwrwBdkwCsUYn8vkdGkLpZgcN_isPIDR0K2X7FFob1yQolG8vs5zWmmtp
+ rOhCtsJSexPpnl49pYTq.EzlmtZwyPY2GuBY0T92wa.eKp.9cMb_DqX3.QRQFMpsr7OSinGk1g1g
+ DtAJbC3.k1jI-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ir2.yahoo.com with HTTP; Sat, 2 May 2020 17:18:04 +0000
+Date:   Sat, 2 May 2020 17:18:01 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrs.minaabrunel209@gmail.com>
+Reply-To: mrs.minaabrunel30@gmail.com
+Message-ID: <570800982.467049.1588439881918@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+References: <570800982.467049.1588439881918.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15756 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:75.0) Gecko/20100101 Firefox/75.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the kernel is built with lockdep support and the owl-dma driver is
-used, the following message is shown:
 
-[    2.496939] INFO: trying to register non-static key.
-[    2.501889] the code is fine but needs lockdep annotation.
-[    2.507357] turning off the locking correctness validator.
-[    2.512834] CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.6.3+ #15
-[    2.519084] Hardware name: Generic DT based system
-[    2.523878] Workqueue: events_freezable mmc_rescan
-[    2.528681] [<801127f0>] (unwind_backtrace) from [<8010da58>] (show_stack+0x10/0x14)
-[    2.536420] [<8010da58>] (show_stack) from [<8080fbe8>] (dump_stack+0xb4/0xe0)
-[    2.543645] [<8080fbe8>] (dump_stack) from [<8017efa4>] (register_lock_class+0x6f0/0x718)
-[    2.551816] [<8017efa4>] (register_lock_class) from [<8017b7d0>] (__lock_acquire+0x78/0x25f0)
-[    2.560330] [<8017b7d0>] (__lock_acquire) from [<8017e5e4>] (lock_acquire+0xd8/0x1f4)
-[    2.568159] [<8017e5e4>] (lock_acquire) from [<80831fb0>] (_raw_spin_lock_irqsave+0x3c/0x50)
-[    2.576589] [<80831fb0>] (_raw_spin_lock_irqsave) from [<8051b5fc>] (owl_dma_issue_pending+0xbc/0x120)
-[    2.585884] [<8051b5fc>] (owl_dma_issue_pending) from [<80668cbc>] (owl_mmc_request+0x1b0/0x390)
-[    2.594655] [<80668cbc>] (owl_mmc_request) from [<80650ce0>] (mmc_start_request+0x94/0xbc)
-[    2.602906] [<80650ce0>] (mmc_start_request) from [<80650ec0>] (mmc_wait_for_req+0x64/0xd0)
-[    2.611245] [<80650ec0>] (mmc_wait_for_req) from [<8065aa10>] (mmc_app_send_scr+0x10c/0x144)
-[    2.619669] [<8065aa10>] (mmc_app_send_scr) from [<80659b3c>] (mmc_sd_setup_card+0x4c/0x318)
-[    2.628092] [<80659b3c>] (mmc_sd_setup_card) from [<80659f0c>] (mmc_sd_init_card+0x104/0x430)
-[    2.636601] [<80659f0c>] (mmc_sd_init_card) from [<8065a3e0>] (mmc_attach_sd+0xcc/0x16c)
-[    2.644678] [<8065a3e0>] (mmc_attach_sd) from [<8065301c>] (mmc_rescan+0x3ac/0x40c)
-[    2.652332] [<8065301c>] (mmc_rescan) from [<80143244>] (process_one_work+0x2d8/0x780)
-[    2.660239] [<80143244>] (process_one_work) from [<80143730>] (worker_thread+0x44/0x598)
-[    2.668323] [<80143730>] (worker_thread) from [<8014b5f8>] (kthread+0x148/0x150)
-[    2.675708] [<8014b5f8>] (kthread) from [<801010b4>] (ret_from_fork+0x14/0x20)
-[    2.682912] Exception stack(0xee8fdfb0 to 0xee8fdff8)
-[    2.687954] dfa0:                                     00000000 00000000 00000000 00000000
-[    2.696118] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[    2.704277] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
 
-The obvious fix would be to use 'spin_lock_init()' on 'pchan->lock'
-before attempting to call 'spin_lock_irqsave()' in 'owl_dma_get_pchan()'.
+My Dear in the lord
 
-However, according to Manivannan Sadhasivam, 'pchan->lock' was supposed
-to only protect 'pchan->vchan' while 'od->lock' does a similar job in
-'owl_dma_terminate_pchan()'.
 
-Therefore, this patch substitutes 'pchan->lock' with 'od->lock' and
-removes the 'lock' attribute in 'owl_dma_pchan' struct.
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Ouagado=
+ugou the capital city of Burkina Faso in West Africa. The money was from th=
+e sale of his company and death benefits payment and entitlements of my dec=
+eased husband by his company.
 
-Fixes: 47e20577c24d ("dmaengine: Add Actions Semi Owl family S900 DMA
-driver")
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Acked-by: Andreas Färber <afaerber@suse.de>
----
-Changes in v4:
-* Change patch title from 'dma: actions: Fix lockdep splat for owl-dma'
-  to 'dmaengine: owl: Use correct lock in owl_dma_get_pchan()'
-* Add Fixes and Acked-by tags in the commit message
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
 
-Changes in v3:
-* Get rid of the kerneldoc comment for the removed struct attribute
-* Add the Reviewed-by tag in the commit message
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
 
-Changes in v2:
-* Improve the fix as suggested by Manivannan Sadhasivam: substitute
-  'pchan->lock' with 'od->lock' and get rid of the 'lock' attribute in
-  'owl_dma_pchan' struct
-* Update the commit message to reflect the changes
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
 
- drivers/dma/owl-dma.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/dma/owl-dma.c b/drivers/dma/owl-dma.c
-index c683051257fd..66ef70b00ec0 100644
---- a/drivers/dma/owl-dma.c
-+++ b/drivers/dma/owl-dma.c
-@@ -175,13 +175,11 @@ struct owl_dma_txd {
-  * @id: physical index to this channel
-  * @base: virtual memory base for the dma channel
-  * @vchan: the virtual channel currently being served by this physical channel
-- * @lock: a lock to use when altering an instance of this struct
-  */
- struct owl_dma_pchan {
- 	u32			id;
- 	void __iomem		*base;
- 	struct owl_dma_vchan	*vchan;
--	spinlock_t		lock;
- };
- 
- /**
-@@ -437,14 +435,14 @@ static struct owl_dma_pchan *owl_dma_get_pchan(struct owl_dma *od,
- 	for (i = 0; i < od->nr_pchans; i++) {
- 		pchan = &od->pchans[i];
- 
--		spin_lock_irqsave(&pchan->lock, flags);
-+		spin_lock_irqsave(&od->lock, flags);
- 		if (!pchan->vchan) {
- 			pchan->vchan = vchan;
--			spin_unlock_irqrestore(&pchan->lock, flags);
-+			spin_unlock_irqrestore(&od->lock, flags);
- 			break;
- 		}
- 
--		spin_unlock_irqrestore(&pchan->lock, flags);
-+		spin_unlock_irqrestore(&od->lock, flags);
- 	}
- 
- 	return pchan;
--- 
-2.26.2
-
+Thanks
+Mrs. Mina A. Brunel
