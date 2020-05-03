@@ -2,196 +2,784 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BB51C2A5E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 08:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0631C2A6F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 08:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726942AbgECGNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 02:13:36 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:42419 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726884AbgECGNg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 02:13:36 -0400
-X-UUID: 5018c5b0461f42448e1f128fc452b77d-20200503
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=WxlCRNEd3K/12hGIoH5QpJli1A1K5IiKT1/saoJU2XE=;
-        b=tiYAj+gyvHuwMN6XeJ4cFi0Iw/NDVukQug5t3UkgYaZnrkjjngYxq83IAivwCOaDLkzo8LcF2U+qNYmR5kPz4A/GJw1v8b/KIIGXAUQXzeTs5ZjBq7d6J6xAEyfszXKLVz+yN1sBMRNA6lRGN4c4SuhhwuatdHPD42Gm+xflrsw=;
-X-UUID: 5018c5b0461f42448e1f128fc452b77d-20200503
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1763318559; Sun, 03 May 2020 14:13:28 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 3 May 2020 14:13:26 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 3 May 2020 14:13:26 +0800
-Message-ID: <1588486406.3197.13.camel@mtkswgap22>
-Subject: Re: [PATCH v3 1/5] scsi: ufs: enable WriteBooster on some pre-3.1
- UFS devices
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <asutoshd@codeaurora.org>,
-        <beanhuo@micron.com>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>
-Date:   Sun, 3 May 2020 14:13:26 +0800
-In-Reply-To: <1d471d07084d7323f0ef021e2c1b9d4e@codeaurora.org>
-References: <20200501143835.26032-1-stanley.chu@mediatek.com>
-         <20200501143835.26032-2-stanley.chu@mediatek.com>
-         <1d471d07084d7323f0ef021e2c1b9d4e@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1727788AbgECGyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 02:54:00 -0400
+Received: from mail-eopbgr10085.outbound.protection.outlook.com ([40.107.1.85]:50502
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727085AbgECGx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 May 2020 02:53:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nqhBBxUm0AAZJvCcepjHNrpEI3eR57v6byv0pGiNPsvX/946hB1GxkdieO92C2nnooUnOi4CcO1yBhMR2EgNlB+f0r0QFZlCrCSJtAlkr8TYvss2rkL/XkOXOjHQwoJejHkCn14jp1TPjSr2zQy8VH0o/NeS+XwNja3jSzthkOglmGaAVgZB6+dZbz6lpN0LA6nSsG5yRDSavKaY+cPbRh8CRI+0e36TJzrIcBkJ2SS7HuGgnea19C65HuwAwpyrrp0EMofKUpSWICZlJvtkoO14SdGbmVYEpljty5p9H2vWkhQk5RQZ/g/aacBIMBibnUods35r6Ss+hkFkvUWRqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BacXHbOCsy+spYjPHMSpQfzL1G0VEYI1gtmxCUhQQlQ=;
+ b=M0az/FNErKRM0eqGTMdwzzi1OJwRJN2bQtdUC/qgaMILMzV99vN9285vtsIxbWaHWR7XeWUzS+mEkAcgqB8vObwPlteRA9ncAxQrTLfeLFO0ihb17Wda2DWyZFTPmi81Ji5GcE7QKp8lkT7LhyVzAXCWXLeI9mqfCQNtChTzdudl47d1zWDNxLdEFuaJ91V/Hm7lIz0R0HniPAUr7fejI7hz7KK4Be9+RgvkBOCcCAox0esxiqmywf2mPonBsAfj9fdrGeJAjAKa6zwQF9MnEAKLi+8LV5wsPAAoVQVZAnbzUK5LQxCCCSH90yPPRqxcFXrgJKpKtBu7B9jiXvBpMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BacXHbOCsy+spYjPHMSpQfzL1G0VEYI1gtmxCUhQQlQ=;
+ b=lRS/1eJaDWqfv8pQIzuLiMyqfrxwygAqpYt9L0+VtZUNzACiP1lgbPFieRKfL8tepiicrH743iuragsQhXIGQ0ZesilZANAoNMd9t37/kFJiBN431rvWjspEetiEDXGOQydoozF1lJaz/pHnwzuAaUbtaQpML2KHwX31IDLaQdc=
+Authentication-Results: networkplumber.org; dkim=none (message not signed)
+ header.d=none;networkplumber.org; dmarc=none action=none header.from=nxp.com;
+Received: from VE1PR04MB6496.eurprd04.prod.outlook.com (2603:10a6:803:11c::29)
+ by VE1PR04MB6640.eurprd04.prod.outlook.com (2603:10a6:803:122::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.29; Sun, 3 May
+ 2020 06:53:49 +0000
+Received: from VE1PR04MB6496.eurprd04.prod.outlook.com
+ ([fe80::1479:38ea:d4f7:a173]) by VE1PR04MB6496.eurprd04.prod.outlook.com
+ ([fe80::1479:38ea:d4f7:a173%7]) with mapi id 15.20.2958.029; Sun, 3 May 2020
+ 06:53:49 +0000
+From:   Po Liu <Po.Liu@nxp.com>
+To:     stephen@networkplumber.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc:     vinicius.gomes@intel.com, vlad@buslov.dev, po.liu@nxp.com,
+        claudiu.manoil@nxp.com, vladimir.oltean@nxp.com,
+        alexandru.marginean@nxp.com, michael.chan@broadcom.com,
+        vishal@chelsio.com, saeedm@mellanox.com, leon@kernel.org,
+        jiri@mellanox.com, idosch@mellanox.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        kuba@kernel.org, xiyou.wangcong@gmail.com,
+        simon.horman@netronome.com, pablo@netfilter.org,
+        moshe@mellanox.com, m-karicheri2@ti.com,
+        andre.guedes@linux.intel.com, Po Liu <Po.Liu@nxp.com>
+Subject: [v3,iproute2 1/2] iproute2:tc:action: add a gate control action
+Date:   Sun,  3 May 2020 14:32:50 +0800
+Message-Id: <20200503063251.10915-1-Po.Liu@nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200501005318.21334-5-Po.Liu@nxp.com>
+References: <20200501005318.21334-5-Po.Liu@nxp.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR03CA0121.apcprd03.prod.outlook.com
+ (2603:1096:4:91::25) To VE1PR04MB6496.eurprd04.prod.outlook.com
+ (2603:10a6:803:11c::29)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: C3A9AF1BAE99385AD8A90B9EA8391ECD9F3FF53468BCA1C1D23609DCEDBDBD612000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.73) by SG2PR03CA0121.apcprd03.prod.outlook.com (2603:1096:4:91::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.14 via Frontend Transport; Sun, 3 May 2020 06:53:42 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [119.31.174.73]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 6d963797-1246-47bd-8ffc-08d7ef2ebb83
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6640:|VE1PR04MB6640:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB664038383F0C72BADADB0D9B92A90@VE1PR04MB6640.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-Forefront-PRVS: 0392679D18
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: C37J1P/Sah7aapuzcjbKckFPrm2aGXEyGb70nGx7oKDjMiTnUf2Nkx6EK3f8FH6djwFFkacbyHljEwurEh177mo7R6slwNQMKM0TMo6fRQn/mVD34+7Ma0x0gepG3+LEUVYmPtd4ZWlTuP5aOazbie12Sp0Ln+fCQrQSgxyYFw0qBW868LIgEnBp8FJ2BX7SBbuNMCi4Hd/Qssznq1vG9clSoA3fggKeOxeco+nhG1MXfwEoCtx7p4Wz0dlmVsbgDynhuGpFECS4QplyJs5SyduyyD1/NxJwJ4aq9y6I0VejexKiENdeOzdo78442purhNhtxY82BtN/y2TB2IsidkkHu4KiME1Z96XWV9UTP9xPYpN/X5jjctL96Mw1sb1uNi5badlPgXGPB9ib+UuluDseTCF5SajueDPg/1r5p7PlTEdSbU3mn4FvmPLiUqNSqDT5lcWiGF/DaIHIbdxgLQPbR9s/B2WRs/QB0Wl23TvVu6iRclzUZ2cdiRf8r+7N
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6496.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(366004)(396003)(346002)(136003)(376002)(66476007)(66556008)(66946007)(52116002)(8676002)(316002)(6486002)(478600001)(69590400007)(16526019)(36756003)(186003)(8936002)(26005)(6506007)(6666004)(5660300002)(7416002)(30864003)(6512007)(956004)(2616005)(1076003)(2906002)(4326008)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: zYH8D2VCUQbEFId2mRcLseS/IFxu6Ee41EyMzez+3F1E0BgBwD/+1+EDP9Ji0qf5vhO0fN+zRsf/AhcemFGdhUCOF0crlALzsoINgQkPvHuicWzpfS5ozI1lKbnhlQeq4fsNgjOKrY+NMLzEamdpEI5O+joveFqHbI2C9G1UD4/Fy+offeukQ3hHN9BvGs9I/OJqsS1ixfFldrSUO2qU8ed5uOgeWgLAe7WlyUuipBtemNOqIT+epyYy0gNmxlAXKFmZbhXCpsMu8nlMYDVCUNzGhw/KGTlCR7NvWNu4c00S70cT+/3G+prswBtJIVdBc0qHyksFqFB2kM8Pc1AwpPjhsukxwfboh+RN+NRYGjDI8UNP9X7vsQUb19bqk0psDlkQRNNWV6XAchfNIt8+QmexpyO3mvib5vS/G22cS90jJlOKeXYSez6B7FCXtxZSmeju49H8bvaH9PH2n1wPnSfnnOqiqvrheYQ6a83P3az7a9KOcnD31CukbcjW9agIhcCBxQe1ZLeeZuH5eEIS4gSZyRLzpNjl+Y8g3w/G1BdMHpdWgpuhUMH5mo3tjan3FeCJzU5MMQoVwLkvIGckzLFxXF/Tb2EKwkkuS9zEHzZeDvmtFwM9TjejarHk2SB3qY7KlyLMy2UNloxIZy6hciEigYHoqhZDrfDXKVQtafABGumMDpttdHpzc2QbX+SmGjwv0ndH2IdEwWAiGaiKw2yWWhanjnlsCCGWKVjjr23g5Eu875o/Galwi0IOnOPlWgLvwDKTf4BrTRWRL/7wS6e02pMK+yKlRgWdRGVtWDU=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d963797-1246-47bd-8ffc-08d7ef2ebb83
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 May 2020 06:53:49.6995
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IfBxodrLuBMtWnua2etM7jpJUPdY5v/FXZbUlhHNUe3MGZ9IgRl0Nw0SDZOt/Y33
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6640
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2FuLA0KDQpPbiBTYXQsIDIwMjAtMDUtMDIgYXQgMTU6NDcgKzA4MDAsIENhbiBHdW8gd3Jv
-dGU6DQo+IEhpIFN0YW5sZXksDQo+IE9uIDIwMjAtMDUtMDEgMjI6MzgsIFN0YW5sZXkgQ2h1IHdy
-b3RlOg0KPiA+IFdyaXRlQm9vc3RlciBmZWF0dXJlIGNhbiBiZSBzdXBwb3J0ZWQgYnkgc29tZSBw
-cmUtMy4xIFVGUyBkZXZpY2VzDQo+ID4gYnkgdXBncmFkaW5nIGZpcm13YXJlLg0KPiA+IA0KPiA+
-IFRvIGVuYWJsZSBXcml0ZUJvb3N0ZXIgZmVhdHVyZSBpbiBzdWNoIGRldmljZXMsIGludHJvZHVj
-ZSBhIGRldmljZQ0KPiA+IHF1aXJrIHRvIHJlbGF4IHRoZSBlbnRyYW5jZSBjb25kaXRpb24gb2Yg
-dWZzaGNkX3diX3Byb2JlKCkgdG8gYWxsb3cNCj4gPiBob3N0IGRyaXZlciB0byBjaGVjayB0aG9z
-ZSBkZXZpY2VzJyBXcml0ZUJvb3N0ZXIgY2FwYWJpbGl0eS4NCj4gPiANCj4gPiBXcml0ZUJvb3N0
-ZXIgZmVhdHVyZSBjYW4gYmUgYXZhaWxhYmxlIGlmIGJlbG93IGFsbCBjb25kaXRpb25zIGFyZQ0K
-PiA+IHNhdGlzZmllZCwNCj4gPiANCj4gPiAxLiBIb3N0IGVuYWJsZXMgV3JpdGVCb29zdGVyIGNh
-cGFiaWxpdHkNCj4gPiAyLiBVRlMgMy4xIGRldmljZSBvciBVRlMgcHJlLTMuMSBkZXZpY2Ugd2l0
-aCBxdWlyaw0KPiA+ICAgIFVGU19ERVZJQ0VfUVVJUktfU1VQUE9SVF9FWFRFTkRFRF9GRUFUVVJF
-UyBlbmFibGVkDQo+ID4gMy4gRGV2aWNlIGRlc2NyaXB0b3IgaGFzIGRFeHRlbmRlZFVGU0ZlYXR1
-cmVzU3VwcG9ydCBmaWVsZA0KPiA+IDQuIFdyaXRlQm9vc3RlciBzdXBwb3J0IGlzIHNwZWNpZmll
-ZCBpbiBhYm92ZSBmaWVsZA0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFN0YW5sZXkgQ2h1IDxz
-dGFubGV5LmNodUBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvc2NzaS91ZnMv
-dWZzX3F1aXJrcy5oIHwgIDcgKysrKw0KPiA+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jICAg
-ICB8IDY2ICsrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tDQo+ID4gIDIgZmlsZXMg
-Y2hhbmdlZCwgNDggaW5zZXJ0aW9ucygrKSwgMjUgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzX3F1aXJrcy5oIA0KPiA+IGIvZHJpdmVycy9z
-Y3NpL3Vmcy91ZnNfcXVpcmtzLmgNCj4gPiBpbmRleCBkZjdhMWU2ODA1YTMuLmUzMTc1YTYzYzY3
-NiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc19xdWlya3MuaA0KPiA+ICsr
-KyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzX3F1aXJrcy5oDQo+ID4gQEAgLTEwMSw0ICsxMDEsMTEg
-QEAgc3RydWN0IHVmc19kZXZfZml4IHsNCj4gPiAgICovDQo+ID4gICNkZWZpbmUgVUZTX0RFVklD
-RV9RVUlSS19IT1NUX1ZTX0RFQlVHU0FWRUNPTkZJR1RJTUUJKDEgPDwgOSkNCj4gPiANCj4gPiAr
-LyoNCj4gPiArICogU29tZSBwcmUtMy4xIFVGUyBkZXZpY2VzIGNhbiBzdXBwb3J0IGV4dGVuZGVk
-IGZlYXR1cmVzIGJ5IHVwZ3JhZGluZw0KPiA+ICsgKiB0aGUgZmlybXdhcmUuIEVuYWJsZSB0aGlz
-IHF1aXJrIHRvIG1ha2UgVUZTIGNvcmUgZHJpdmVyIHByb2JlIGFuZCANCj4gPiBlbmFibGUNCj4g
-PiArICogc3VwcG9ydGVkIGZlYXR1cmVzIG9uIHN1Y2ggZGV2aWNlcy4NCj4gPiArICovDQo+ID4g
-KyNkZWZpbmUgVUZTX0RFVklDRV9RVUlSS19TVVBQT1JUX0VYVEVOREVEX0ZFQVRVUkVTICgxIDw8
-IDEwKQ0KPiA+ICsNCj4gPiAgI2VuZGlmIC8qIFVGU19RVUlSS1NfSF8gKi8NCj4gPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNk
-LmMNCj4gPiBpbmRleCA5MTVlOTYzMzk4YzQuLmM2NjY4Nzk5ZDk1NiAxMDA2NDQNCj4gPiAtLS0g
-YS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ID4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91
-ZnNoY2QuYw0KPiA+IEBAIC0yMjksNiArMjI5LDggQEAgc3RhdGljIHN0cnVjdCB1ZnNfZGV2X2Zp
-eCB1ZnNfZml4dXBzW10gPSB7DQo+ID4gIAkJVUZTX0RFVklDRV9RVUlSS19IT1NUX1BBX1NBVkVD
-T05GSUdUSU1FKSwNCj4gPiAgCVVGU19GSVgoVUZTX1ZFTkRPUl9TS0hZTklYLCAiaEI4YUwxIiAv
-KkgyOFU2MjMwMUFNUiovLA0KPiA+ICAJCVVGU19ERVZJQ0VfUVVJUktfSE9TVF9WU19ERUJVR1NB
-VkVDT05GSUdUSU1FKSwNCj4gPiArCVVGU19GSVgoVUZTX1ZFTkRPUl9TS0hZTklYLCAiSDlIUTIx
-QUZBTVpEQVIiLA0KPiA+ICsJCVVGU19ERVZJQ0VfUVVJUktfU1VQUE9SVF9FWFRFTkRFRF9GRUFU
-VVJFUyksDQo+ID4gDQo+ID4gIAlFTkRfRklYDQo+ID4gIH07DQo+ID4gQEAgLTY4MDAsOSArNjgw
-MiwxOSBAQCBzdGF0aWMgaW50IHVmc2hjZF9zY3NpX2FkZF93bHVzKHN0cnVjdCB1ZnNfaGJhIA0K
-PiA+ICpoYmEpDQo+ID4gDQo+ID4gIHN0YXRpYyB2b2lkIHVmc2hjZF93Yl9wcm9iZShzdHJ1Y3Qg
-dWZzX2hiYSAqaGJhLCB1OCAqZGVzY19idWYpDQo+ID4gIHsNCj4gPiArCWlmICghdWZzaGNkX2lz
-X3diX2FsbG93ZWQoaGJhKSkNCj4gPiArCQlyZXR1cm47DQo+ID4gKw0KPiA+ICsJaWYgKGhiYS0+
-ZGVzY19zaXplLmRldl9kZXNjIDw9IERFVklDRV9ERVNDX1BBUkFNX0VYVF9VRlNfRkVBVFVSRV9T
-VVApDQo+ID4gKwkJZ290byB3Yl9kaXNhYmxlZDsNCj4gPiArDQo+ID4gIAloYmEtPmRldl9pbmZv
-LmRfZXh0X3Vmc19mZWF0dXJlX3N1cCA9DQo+ID4gIAkJZ2V0X3VuYWxpZ25lZF9iZTMyKGRlc2Nf
-YnVmICsNCj4gPiAgCQkJCSAgIERFVklDRV9ERVNDX1BBUkFNX0VYVF9VRlNfRkVBVFVSRV9TVVAp
-Ow0KPiA+ICsNCj4gPiArCWlmICghKGhiYS0+ZGV2X2luZm8uZF9leHRfdWZzX2ZlYXR1cmVfc3Vw
-ICYgDQo+ID4gVUZTX0RFVl9XUklURV9CT09TVEVSX1NVUCkpDQo+ID4gKwkJZ290byB3Yl9kaXNh
-YmxlZDsNCj4gPiArDQo+ID4gIAkvKg0KPiA+ICAJICogV0IgbWF5IGJlIHN1cHBvcnRlZCBidXQg
-bm90IGNvbmZpZ3VyZWQgd2hpbGUgcHJvdmlzaW9uaW5nLg0KPiA+ICAJICogVGhlIHNwZWMgc2F5
-cywgaW4gZGVkaWNhdGVkIHdiIGJ1ZmZlciBtb2RlLA0KPiA+IEBAIC02ODE4LDExICs2ODMwLDI5
-IEBAIHN0YXRpYyB2b2lkIHVmc2hjZF93Yl9wcm9iZShzdHJ1Y3QgdWZzX2hiYQ0KPiA+ICpoYmEs
-IHU4ICpkZXNjX2J1ZikNCj4gPiAgCWhiYS0+ZGV2X2luZm8uYl9wcmVzcnZfdXNwY19lbiA9DQo+
-ID4gIAkJZGVzY19idWZbREVWSUNFX0RFU0NfUEFSQU1fV0JfUFJFU1JWX1VTUlNQQ19FTl07DQo+
-ID4gDQo+ID4gLQlpZiAoISgoaGJhLT5kZXZfaW5mby5kX2V4dF91ZnNfZmVhdHVyZV9zdXAgJg0K
-PiA+IC0JCSBVRlNfREVWX1dSSVRFX0JPT1NURVJfU1VQKSAmJg0KPiA+IC0JCWhiYS0+ZGV2X2lu
-Zm8uYl93Yl9idWZmZXJfdHlwZSAmJg0KPiA+ICsJaWYgKCEoaGJhLT5kZXZfaW5mby5iX3diX2J1
-ZmZlcl90eXBlICYmDQo+ID4gIAkgICAgICBoYmEtPmRldl9pbmZvLmRfd2JfYWxsb2NfdW5pdHMp
-KQ0KPiA+IC0JCWhiYS0+Y2FwcyAmPSB+VUZTSENEX0NBUF9XQl9FTjsNCj4gPiArCQlnb3RvIHdi
-X2Rpc2FibGVkOw0KPiA+ICsNCj4gPiArCXJldHVybjsNCj4gPiArDQo+ID4gK3diX2Rpc2FibGVk
-Og0KPiA+ICsJaGJhLT5jYXBzICY9IH5VRlNIQ0RfQ0FQX1dCX0VOOw0KPiA+ICt9DQo+ID4gKw0K
-PiA+ICtzdGF0aWMgdm9pZCB1ZnNfZml4dXBfZGV2aWNlX3NldHVwKHN0cnVjdCB1ZnNfaGJhICpo
-YmEpDQo+ID4gK3sNCj4gPiArCXN0cnVjdCB1ZnNfZGV2X2ZpeCAqZjsNCj4gPiArCXN0cnVjdCB1
-ZnNfZGV2X2luZm8gKmRldl9pbmZvID0gJmhiYS0+ZGV2X2luZm87DQo+ID4gKw0KPiA+ICsJZm9y
-IChmID0gdWZzX2ZpeHVwczsgZi0+cXVpcms7IGYrKykgew0KPiA+ICsJCWlmICgoZi0+d21hbnVm
-YWN0dXJlcmlkID09IGRldl9pbmZvLT53bWFudWZhY3R1cmVyaWQgfHwNCj4gPiArCQkgICAgIGYt
-PndtYW51ZmFjdHVyZXJpZCA9PSBVRlNfQU5ZX1ZFTkRPUikgJiYNCj4gPiArCQkgICAgICgoZGV2
-X2luZm8tPm1vZGVsICYmDQo+ID4gKwkJICAgICAgIFNUUl9QUkZYX0VRVUFMKGYtPm1vZGVsLCBk
-ZXZfaW5mby0+bW9kZWwpKSB8fA0KPiA+ICsJCSAgICAgICFzdHJjbXAoZi0+bW9kZWwsIFVGU19B
-TllfTU9ERUwpKSkNCj4gPiArCQkJaGJhLT5kZXZfcXVpcmtzIHw9IGYtPnF1aXJrOw0KPiA+ICsJ
-fQ0KPiA+ICB9DQo+ID4gDQo+ID4gIHN0YXRpYyBpbnQgdWZzX2dldF9kZXZpY2VfZGVzYyhzdHJ1
-Y3QgdWZzX2hiYSAqaGJhKQ0KPiA+IEBAIC02ODYyLDEwICs2ODkyLDYgQEAgc3RhdGljIGludCB1
-ZnNfZ2V0X2RldmljZV9kZXNjKHN0cnVjdCB1ZnNfaGJhIA0KPiA+ICpoYmEpDQo+ID4gDQo+ID4g
-IAltb2RlbF9pbmRleCA9IGRlc2NfYnVmW0RFVklDRV9ERVNDX1BBUkFNX1BSRENUX05BTUVdOw0K
-PiA+IA0KPiA+IC0JLyogRW5hYmxlIFdCIG9ubHkgZm9yIFVGUy0zLjEgKi8NCj4gPiAtCWlmIChk
-ZXZfaW5mby0+d3NwZWN2ZXJzaW9uID49IDB4MzEwKQ0KPiA+IC0JCXVmc2hjZF93Yl9wcm9iZSho
-YmEsIGRlc2NfYnVmKTsNCj4gPiAtDQo+ID4gIAllcnIgPSB1ZnNoY2RfcmVhZF9zdHJpbmdfZGVz
-YyhoYmEsIG1vZGVsX2luZGV4LA0KPiA+ICAJCQkJICAgICAgJmRldl9pbmZvLT5tb2RlbCwgU0Rf
-QVNDSUlfU1REKTsNCj4gPiAgCWlmIChlcnIgPCAwKSB7DQo+ID4gQEAgLTY4NzQsNiArNjkwMCwx
-MyBAQCBzdGF0aWMgaW50IHVmc19nZXRfZGV2aWNlX2Rlc2Moc3RydWN0IHVmc19oYmEgDQo+ID4g
-KmhiYSkNCj4gPiAgCQlnb3RvIG91dDsNCj4gPiAgCX0NCj4gPiANCj4gPiArCXVmc19maXh1cF9k
-ZXZpY2Vfc2V0dXAoaGJhKTsNCj4gPiArDQo+ID4gKwkvKiBFbmFibGUgV0Igb25seSBmb3IgVUZT
-LTMuMSAqLw0KPiANCj4gQWxzbyB1cGRhdGUgdGhpcyBjb21tZW50IHRvIHJlZmxlY3QgeW91ciBj
-aGFuZ2U/DQo+IA0KPiA+ICsJaWYgKGRldl9pbmZvLT53c3BlY3ZlcnNpb24gPj0gMHgzMTAgfHwN
-Cj4gPiArCSAgICAoaGJhLT5kZXZfcXVpcmtzICYgVUZTX0RFVklDRV9RVUlSS19TVVBQT1JUX0VY
-VEVOREVEX0ZFQVRVUkVTKSkNCj4gPiArCQl1ZnNoY2Rfd2JfcHJvYmUoaGJhLCBkZXNjX2J1Zik7
-DQo+ID4gKw0KPiANCj4gQ2FuIHdlIHNvbWVob3cgbW92ZSB0aGlzIGFmdGVyIHVmc2hjZF90dW5l
-X3VuaXByb19wYXJhbXMoKSBvciBjb21lIHVwIA0KPiB3aXRoDQo+IGEgYmV0dGVyIHdheSB0byBs
-ZXZlcmFnZSB1ZnNoY2Rfdm9wc19hcHBseV9kZXZfcXVpcmtzKCk/IEkgYW0gYXNraW5nIA0KPiB0
-aGlzDQo+IGJlY2F1c2UgaWYgd2Ugb25seSByZWx5IG9uIGFkZGluZyBxdWlya3MgdG8gdWZzX2Zp
-eHVwcyBpbiB1ZnNoY2QuYywgdGhlDQo+IHRhYmxlIHdpbGwga2VlcCBncm93aW5nIGFuZCBJIGFt
-IHN1cmUgaXQgd2lsbCAtIGFzIGZsYXNoIHZlbmRvcnMgYXJlIA0KPiB0cnlpbmcNCj4gdG8gbWFr
-ZSB0aGVpciBVRlMyLjEgcHJvZHVjdHMgdG8gYmUgY2FwYWJsZSBvZiBXQiAoZGlmZmVyZW50IGRl
-bnNpdGllcyANCj4gYW5kDQo+IGRpZmZlcmVudCBOQU5EIHByb2Nlc3NlcyBmcm9tIGRpZmZlcmVu
-dCB2ZW5kb3JzLCB0aGUgY29tYm9zIGNhbiBiZSBxdWl0ZSANCj4gYQ0KPiBmZXcpLiBNZWFud2hp
-bGUsIHNvbWUgbW9kZWxzIGFyZSBzcGVjaWZpY2FsbHkgbWFkZSBmb3Igc29tZSBjdXN0b21lcnMg
-dG8NCj4gc3VwcG9ydCBXQiwgbWVhbmluZyBoYXZpbmcgdGhlbSBpbiB0aGUgdGFibGUgbWF5IG5v
-dCBoZWxwIGluIGEgDQo+IGdlbmVyYWxpemVkDQo+IHdheSwgYW5kIGl0IGlzIG5vdCBsaWtlIHNv
-bWUgaG90IGZpeGVzIHRoYXQgd2UgaGF2ZSB0byB0YWtlLCBpdCBpcyBqdXN0IA0KPiBmb3INCj4g
-YSBub24tc3RhbmRhcmQgZmVhdHVyZS4gSWYgd2UgY2FuIGxldmVyYWdlIA0KPiB1ZnNoY2Rfdm9w
-c19hcHBseV9kZXZfcXVpcmtzKCksDQo+IFNvQyB2ZW5kb3JzIGNhbiBmcmVlbHkgYWRkIHRoZSBx
-dWlyayB3aXRob3V0IHRvdWNoaW5nIHVmc19maXh1cHMgdGFibGUsDQo+IHdoaWNoIG1lYW5zIHlv
-dSBkb24ndCBuZWVkIHRvIHVwZGF0ZSB1ZnNfZml4dXBzIGV2ZXJ5IHRpbWUganVzdCBmb3IgDQo+
-IGFkZGluZw0KPiBhIG5ldyBtb2RlbCAoR0tJIHJ1bGVzKSwgeW91IGNhbiBoYXZlIHlvdXIgb3du
-IFdCIHdoaXRlIGxpc3QgaW4gdmVuZG9yDQo+IGRyaXZlci4gV2hhdCBkbyB5b3UgdGhpbms/DQo+
-IA0KPiBUaGFua3MsDQo+IA0KPiBDYW4gR3VvLg0KDQpWZXJ5IGFwcHJlY2lhdGUgeW91ciB1c2Vm
-dWwgYW5kIGNvbnN0cnVjdGl2ZSBjb21tZW50cyA6ICkNCg0KUGxlYXNlIHRha2UgYSBsb29rIGF0
-IHY0LiBJbiB2NCwgSSBpbnRyb2R1Y2UgYSAiZml4dXBfZGV2X3F1aXJrcyIgdm9wIHRvDQphbGxv
-dyB2ZW5kb3JzIHRvICJmaXgiIGRldmljZSBxdWlya3Mgd2hpY2ggY2FuIGJlIGEgZ2VuZXJhbCBz
-b2x1dGlvbiBub3QNCm9ubHkgZm9yIG5ld2x5IGludHJvZHVjZWQgVUZTX0RFVklDRV9RVUlSS19T
-VVBQT1JUX0VYVEVOREVEX0ZFQVRVUkVTIGJ1dA0KYWxzbyBmb3Igb3RoZXIgcXVpcmtzLg0KDQpU
-aGFua3MsDQpTdGFubGV5IENodQ0KDQo+IA0KPiA+ICAJLyoNCj4gPiAgCSAqIHVmc2hjZF9yZWFk
-X3N0cmluZ19kZXNjIHJldHVybnMgc2l6ZSBvZiB0aGUgc3RyaW5nDQo+ID4gIAkgKiByZXNldCB0
-aGUgZXJyb3IgdmFsdWUNCj4gPiBAQCAtNjg5MywyMSArNjkyNiw2IEBAIHN0YXRpYyB2b2lkIHVm
-c19wdXRfZGV2aWNlX2Rlc2Moc3RydWN0IHVmc19oYmEgDQo+ID4gKmhiYSkNCj4gPiAgCWRldl9p
-bmZvLT5tb2RlbCA9IE5VTEw7DQo+ID4gIH0NCj4gPiANCj4gPiAtc3RhdGljIHZvaWQgdWZzX2Zp
-eHVwX2RldmljZV9zZXR1cChzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KPiA+IC17DQo+ID4gLQlzdHJ1
-Y3QgdWZzX2Rldl9maXggKmY7DQo+ID4gLQlzdHJ1Y3QgdWZzX2Rldl9pbmZvICpkZXZfaW5mbyA9
-ICZoYmEtPmRldl9pbmZvOw0KPiA+IC0NCj4gPiAtCWZvciAoZiA9IHVmc19maXh1cHM7IGYtPnF1
-aXJrOyBmKyspIHsNCj4gPiAtCQlpZiAoKGYtPndtYW51ZmFjdHVyZXJpZCA9PSBkZXZfaW5mby0+
-d21hbnVmYWN0dXJlcmlkIHx8DQo+ID4gLQkJICAgICBmLT53bWFudWZhY3R1cmVyaWQgPT0gVUZT
-X0FOWV9WRU5ET1IpICYmDQo+ID4gLQkJICAgICAoKGRldl9pbmZvLT5tb2RlbCAmJg0KPiA+IC0J
-CSAgICAgICBTVFJfUFJGWF9FUVVBTChmLT5tb2RlbCwgZGV2X2luZm8tPm1vZGVsKSkgfHwNCj4g
-PiAtCQkgICAgICAhc3RyY21wKGYtPm1vZGVsLCBVRlNfQU5ZX01PREVMKSkpDQo+ID4gLQkJCWhi
-YS0+ZGV2X3F1aXJrcyB8PSBmLT5xdWlyazsNCj4gPiAtCX0NCj4gPiAtfQ0KPiA+IC0NCj4gPiAg
-LyoqDQo+ID4gICAqIHVmc2hjZF90dW5lX3BhX3RhY3RpdmF0ZSAtIFR1bmVzIFBBX1RBY3RpdmF0
-ZSBvZiBsb2NhbCBVbmlQcm8NCj4gPiAgICogQGhiYTogcGVyLWFkYXB0ZXIgaW5zdGFuY2UNCj4g
-PiBAQCAtNzI0NCw4ICs3MjYyLDYgQEAgc3RhdGljIGludCB1ZnNoY2RfZGV2aWNlX3BhcmFtc19p
-bml0KHN0cnVjdCANCj4gPiB1ZnNfaGJhICpoYmEpDQo+ID4gDQo+ID4gIAl1ZnNoY2RfZ2V0X3Jl
-Zl9jbGtfZ2F0aW5nX3dhaXQoaGJhKTsNCj4gPiANCj4gPiAtCXVmc19maXh1cF9kZXZpY2Vfc2V0
-dXAoaGJhKTsNCj4gPiAtDQo+ID4gIAlpZiAoIXVmc2hjZF9xdWVyeV9mbGFnX3JldHJ5KGhiYSwg
-VVBJVV9RVUVSWV9PUENPREVfUkVBRF9GTEFHLA0KPiA+ICAJCQlRVUVSWV9GTEFHX0lETl9QV1Jf
-T05fV1BFLCAmZmxhZykpDQo+ID4gIAkJaGJhLT5kZXZfaW5mby5mX3Bvd2VyX29uX3dwX2VuID0g
-ZmxhZzsNCg0K
+Introduce a ingress frame gate control flow action.
+Tc gate action does the work like this:
+Assume there is a gate allow specified ingress frames can pass at
+specific time slot, and also drop at specific time slot. Tc filter
+chooses the ingress frames, and tc gate action would specify what slot
+does these frames can be passed to device and what time slot would be
+dropped.
+Tc gate action would provide an entry list to tell how much time gate
+keep open and how much time gate keep state close. Gate action also
+assign a start time to tell when the entry list start. Then driver would
+repeat the gate entry list cyclically.
+For the software simulation, gate action require the user assign a time
+clock type.
+
+Below is the setting example in user space. Tc filter a stream source ip
+address is 192.168.0.20 and gate action own two time slots. One is last
+200ms gate open let frame pass another is last 100ms gate close let
+frames dropped.
+
+ # tc qdisc add dev eth0 ingress
+ # tc filter add dev eth0 parent ffff: protocol ip \
+
+            flower src_ip 192.168.0.20 \
+            action gate index 2 clockid CLOCK_TAI \
+            sched-entry open 200000000 -1 -1 \
+            sched-entry close 100000000
+
+ # tc chain del dev eth0 ingress chain 0
+
+"sched-entry" follow the name taprio style. Gate state is
+"open"/"close". Follow the period nanosecond. Then next -1 is internal
+priority value means which ingress queue should put to. "-1" means
+wildcard. The last value optional specifies the maximum number of
+MSDU octets that are permitted to pass the gate during the specified
+time interval.
+
+Below example shows filtering a stream with destination mac address is
+10:00:80:00:00:00 and ip type is ICMP, follow the action gate. The gate
+action would run with one close time slot which means always keep close.
+The time cycle is total 200000000ns. The base-time would calculate by:
+
+     1357000000000 + (N + 1) * cycletime
+
+When the total value is the future time, it will be the start time.
+The cycletime here would be 200000000ns for this case.
+
+ #tc filter add dev eth0 parent ffff:  protocol ip \
+           flower skip_hw ip_proto icmp dst_mac 10:00:80:00:00:00 \
+           action gate index 12 base-time 1357000000000 \
+           sched-entry CLOSE 200000000 \
+           clockid CLOCK_TAI
+
+Signed-off-by: Po Liu <Po.Liu@nxp.com>
+---
+These patches continue request for support iprout2 tc command input gate
+action since kernel patch applied (a51c328df310 net: qos: introduce a
+gate control flow action).
+Continue the version 3.
+Changes from v2:
+Fix flexible input for a time slot - sched-entry suggested by Vladimir
+Oltean and Vinicius Gomes:
+- ipv and maxoctets in a sched-entry can be ignore input default to be
+wildcard(values are -1).
+
+ include/uapi/linux/pkt_cls.h        |   1 +
+ include/uapi/linux/tc_act/tc_gate.h |  47 +++
+ tc/Makefile                         |   1 +
+ tc/m_gate.c                         | 533 ++++++++++++++++++++++++++++
+ 4 files changed, 582 insertions(+)
+ create mode 100644 include/uapi/linux/tc_act/tc_gate.h
+ create mode 100644 tc/m_gate.c
+
+diff --git a/include/uapi/linux/pkt_cls.h b/include/uapi/linux/pkt_cls.h
+index 9f06d29c..fc672b23 100644
+--- a/include/uapi/linux/pkt_cls.h
++++ b/include/uapi/linux/pkt_cls.h
+@@ -134,6 +134,7 @@ enum tca_id {
+ 	TCA_ID_CTINFO,
+ 	TCA_ID_MPLS,
+ 	TCA_ID_CT,
++	TCA_ID_GATE,
+ 	/* other actions go here */
+ 	__TCA_ID_MAX = 255
+ };
+diff --git a/include/uapi/linux/tc_act/tc_gate.h b/include/uapi/linux/tc_act/tc_gate.h
+new file mode 100644
+index 00000000..f214b3a6
+--- /dev/null
++++ b/include/uapi/linux/tc_act/tc_gate.h
+@@ -0,0 +1,47 @@
++/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
++/* Copyright 2020 NXP */
++
++#ifndef __LINUX_TC_GATE_H
++#define __LINUX_TC_GATE_H
++
++#include <linux/pkt_cls.h>
++
++struct tc_gate {
++	tc_gen;
++};
++
++enum {
++	TCA_GATE_ENTRY_UNSPEC,
++	TCA_GATE_ENTRY_INDEX,
++	TCA_GATE_ENTRY_GATE,
++	TCA_GATE_ENTRY_INTERVAL,
++	TCA_GATE_ENTRY_IPV,
++	TCA_GATE_ENTRY_MAX_OCTETS,
++	__TCA_GATE_ENTRY_MAX,
++};
++#define TCA_GATE_ENTRY_MAX (__TCA_GATE_ENTRY_MAX - 1)
++
++enum {
++	TCA_GATE_ONE_ENTRY_UNSPEC,
++	TCA_GATE_ONE_ENTRY,
++	__TCA_GATE_ONE_ENTRY_MAX,
++};
++#define TCA_GATE_ONE_ENTRY_MAX (__TCA_GATE_ONE_ENTRY_MAX - 1)
++
++enum {
++	TCA_GATE_UNSPEC,
++	TCA_GATE_TM,
++	TCA_GATE_PARMS,
++	TCA_GATE_PAD,
++	TCA_GATE_PRIORITY,
++	TCA_GATE_ENTRY_LIST,
++	TCA_GATE_BASE_TIME,
++	TCA_GATE_CYCLE_TIME,
++	TCA_GATE_CYCLE_TIME_EXT,
++	TCA_GATE_FLAGS,
++	TCA_GATE_CLOCKID,
++	__TCA_GATE_MAX,
++};
++#define TCA_GATE_MAX (__TCA_GATE_MAX - 1)
++
++#endif
+diff --git a/tc/Makefile b/tc/Makefile
+index e31cbc12..79c9c1dd 100644
+--- a/tc/Makefile
++++ b/tc/Makefile
+@@ -54,6 +54,7 @@ TCMODULES += m_bpf.o
+ TCMODULES += m_tunnel_key.o
+ TCMODULES += m_sample.o
+ TCMODULES += m_ct.o
++TCMODULES += m_gate.o
+ TCMODULES += p_ip.o
+ TCMODULES += p_ip6.o
+ TCMODULES += p_icmp.o
+diff --git a/tc/m_gate.c b/tc/m_gate.c
+new file mode 100644
+index 00000000..8e0211f5
+--- /dev/null
++++ b/tc/m_gate.c
+@@ -0,0 +1,533 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
++/* Copyright 2020 NXP */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <linux/if_ether.h>
++#include "utils.h"
++#include "rt_names.h"
++#include "tc_util.h"
++#include "list.h"
++#include <linux/tc_act/tc_gate.h>
++
++struct gate_entry {
++	struct list_head list;
++	uint8_t	gate_state;
++	uint32_t interval;
++	int32_t ipv;
++	int32_t maxoctets;
++};
++
++#define CLOCKID_INVALID (-1)
++static const struct clockid_table {
++	const char *name;
++	clockid_t clockid;
++} clockt_map[] = {
++	{ "REALTIME", CLOCK_REALTIME },
++	{ "TAI", CLOCK_TAI },
++	{ "BOOTTIME", CLOCK_BOOTTIME },
++	{ "MONOTONIC", CLOCK_MONOTONIC },
++	{ NULL }
++};
++
++static void explain(void)
++{
++	fprintf(stderr,
++		"Usage: gate [ priority PRIO-SPEC ] [ base-time BASE-TIME ]\n"
++		"       [ cycle-time CYCLE-TIME ]\n"
++		"       [ cycle-time-ext CYCLE-TIME-EXT ]\n"
++		"       [ clockid CLOCKID ] [flags FLAGS]\n"
++		"       [ sched-entry GATE0 INTERVAL [ INTERNAL-PRIO-VALUE MAX-OCTETS ] ]\n"
++		"       [ sched-entry GATE1 INTERVAL [ INTERNAL-PRIO-VALUE MAX-OCTETS ] ]\n"
++		"       ......\n"
++		"       [ sched-entry GATEn INTERVAL [ INTERNAL-PRIO-VALUE MAX-OCTETS ] ]\n"
++		"       [ CONTROL ]\n"
++		"       GATEn := open | close\n"
++		"       INTERVAL : nanoseconds period of gate slot\n"
++		"       INTERNAL-PRIO-VALUE : internal priority decide which\n"
++		"                             rx queue number direct to.\n"
++		"                             default to be -1 which means wildcard.\n"
++		"       MAX-OCTETS : maximum number of MSDU octets that are\n"
++		"                    permitted to pas the gate during the\n"
++		"                    specified TimeInterval.\n"
++		"                    default to be -1 which means wildcard.\n"
++		"       CONTROL := pipe | drop | continue | pass |\n"
++		"                  goto chain <CHAIN_INDEX>\n");
++}
++
++static void usage(void)
++{
++	explain();
++	exit(-1);
++}
++
++static void explain_entry_format(void)
++{
++	fprintf(stderr, "Usage: sched-entry <open | close> <interval> [ <interval ipv> <octets max bytes> ]\n");
++}
++
++static int parse_gate(struct action_util *a, int *argc_p, char ***argv_p,
++		      int tca_id, struct nlmsghdr *n);
++static int print_gate(struct action_util *au, FILE *f, struct rtattr *arg);
++
++struct action_util gate_action_util = {
++	.id = "gate",
++	.parse_aopt = parse_gate,
++	.print_aopt = print_gate,
++};
++
++static int get_clockid(__s32 *val, const char *arg)
++{
++	const struct clockid_table *c;
++
++	if (strcasestr(arg, "CLOCK_") != NULL)
++		arg += sizeof("CLOCK_") - 1;
++
++	for (c = clockt_map; c->name; c++) {
++		if (strcasecmp(c->name, arg) == 0) {
++			*val = c->clockid;
++			return 0;
++		}
++	}
++
++	return -1;
++}
++
++static const char *get_clock_name(clockid_t clockid)
++{
++	const struct clockid_table *c;
++
++	for (c = clockt_map; c->name; c++) {
++		if (clockid == c->clockid)
++			return c->name;
++	}
++
++	return "invalid";
++}
++
++static int get_gate_state(__u8 *val, const char *arg)
++{
++	if (!strcasecmp("OPEN", arg)) {
++		*val = 1;
++		return 0;
++	}
++
++	if (!strcasecmp("CLOSE", arg)) {
++		*val = 0;
++		return 0;
++	}
++
++	return -1;
++}
++
++static struct gate_entry *create_gate_entry(uint8_t gate_state,
++					    uint32_t interval,
++					    int32_t ipv,
++					    int32_t maxoctets)
++{
++	struct gate_entry *e;
++
++	e = calloc(1, sizeof(*e));
++	if (!e)
++		return NULL;
++
++	e->gate_state = gate_state;
++	e->interval = interval;
++	e->ipv = ipv;
++	e->maxoctets = maxoctets;
++
++	return e;
++}
++
++static int add_gate_list(struct list_head *gate_entries, struct nlmsghdr *n)
++{
++	struct gate_entry *e;
++
++	list_for_each_entry(e, gate_entries, list) {
++		struct rtattr *a;
++
++		a = addattr_nest(n, 1024, TCA_GATE_ONE_ENTRY | NLA_F_NESTED);
++
++		if (e->gate_state)
++			addattr(n, MAX_MSG, TCA_GATE_ENTRY_GATE);
++
++		addattr_l(n, MAX_MSG, TCA_GATE_ENTRY_INTERVAL,
++			  &e->interval, sizeof(e->interval));
++		addattr_l(n, MAX_MSG, TCA_GATE_ENTRY_IPV,
++			  &e->ipv, sizeof(e->ipv));
++		addattr_l(n, MAX_MSG, TCA_GATE_ENTRY_MAX_OCTETS,
++			  &e->maxoctets, sizeof(e->maxoctets));
++
++		addattr_nest_end(n, a);
++	}
++
++	return 0;
++}
++
++static void free_entries(struct list_head *gate_entries)
++{
++	struct gate_entry *e, *n;
++
++	list_for_each_entry_safe(e, n, gate_entries, list) {
++		list_del(&e->list);
++		free(e);
++	}
++}
++
++static int parse_gate(struct action_util *a, int *argc_p, char ***argv_p,
++		      int tca_id, struct nlmsghdr *n)
++{
++	struct tc_gate parm = {.action = TC_ACT_PIPE};
++	struct list_head gate_entries;
++	__s32 clockid = CLOCKID_INVALID;
++	struct rtattr *tail, *nle;
++	char **argv = *argv_p;
++	int argc = *argc_p;
++	__u64 base_time = 0;
++	__u64 cycle_time = 0;
++	__u64 cycle_time_ext = 0;
++	int entry_num = 0;
++	char *invalidarg;
++	__u32 flags = 0;
++	int prio = -1;
++
++	int err;
++
++	if (matches(*argv, "gate") != 0)
++		return -1;
++
++	NEXT_ARG();
++	if (argc <= 0)
++		return -1;
++
++	INIT_LIST_HEAD(&gate_entries);
++
++	while (argc > 0) {
++		if (matches(*argv, "index") == 0) {
++			NEXT_ARG();
++			if (get_u32(&parm.index, *argv, 10)) {
++				invalidarg = "index";
++				goto err_arg;
++			}
++		} else if (matches(*argv, "priority") == 0) {
++			NEXT_ARG();
++			if (get_s32(&prio, *argv, 0)) {
++				invalidarg = "priority";
++				goto err_arg;
++			}
++		} else if (matches(*argv, "base-time") == 0) {
++			NEXT_ARG();
++			if (get_u64(&base_time, *argv, 10)) {
++				invalidarg = "base-time";
++				goto err_arg;
++			}
++		} else if (matches(*argv, "cycle-time") == 0) {
++			NEXT_ARG();
++			if (get_u64(&cycle_time, *argv, 10)) {
++				invalidarg = "cycle-time";
++				goto err_arg;
++			}
++		} else if (matches(*argv, "cycle-time-ext") == 0) {
++			NEXT_ARG();
++			if (get_u64(&cycle_time_ext, *argv, 10)) {
++				invalidarg = "cycle-time-ext";
++				goto err_arg;
++			}
++		} else if (matches(*argv, "clockid") == 0) {
++			NEXT_ARG();
++			if (get_clockid(&clockid, *argv)) {
++				invalidarg = "clockid";
++				goto err_arg;
++			}
++		} else if (matches(*argv, "flags") == 0) {
++			NEXT_ARG();
++			if (get_u32(&flags, *argv, 0)) {
++				invalidarg = "flags";
++				goto err_arg;
++			}
++		} else if (matches(*argv, "sched-entry") == 0) {
++			struct gate_entry *e;
++			uint8_t gate_state = 0;
++			uint32_t interval = 0;
++			int32_t ipv = -1;
++			int32_t maxoctets = -1;
++			uint8_t backarg = 0;
++
++			NEXT_ARG();
++
++			if (get_gate_state(&gate_state, *argv)) {
++				explain_entry_format();
++				invalidarg = "sched-entry";
++				goto err_arg;
++			}
++
++			NEXT_ARG();
++
++			if (get_u32(&interval, *argv, 0)) {
++				explain_entry_format();
++				invalidarg = "sched-entry";
++				goto err_arg;
++			}
++
++			if (!NEXT_ARG_OK())
++				goto create_entry;
++
++			NEXT_ARG();
++
++			if (get_s32(&ipv, *argv, 0)) {
++				backarg++;
++				goto create_entry;
++			}
++
++			if (!gate_state)
++				ipv = -1;
++
++			if (!NEXT_ARG_OK())
++				goto create_entry;
++
++			NEXT_ARG();
++
++			if (get_s32(&maxoctets, *argv, 0))
++				backarg++;
++
++			if (!gate_state)
++				maxoctets = -1;
++
++create_entry:
++			e = create_gate_entry(gate_state, interval,
++					      ipv, maxoctets);
++			if (!e) {
++				fprintf(stderr, "gate: not enough memory\n");
++				free_entries(&gate_entries);
++				exit(-1);
++			}
++
++			list_add_tail(&e->list, &gate_entries);
++			entry_num++;
++
++			while (backarg) {
++				PREV_ARG();
++				backarg--;
++			}
++
++		} else if (matches(*argv, "reclassify") == 0 ||
++			   matches(*argv, "drop") == 0 ||
++			   matches(*argv, "shot") == 0 ||
++			   matches(*argv, "continue") == 0 ||
++			   matches(*argv, "pass") == 0 ||
++			   matches(*argv, "ok") == 0 ||
++			   matches(*argv, "pipe") == 0 ||
++			   matches(*argv, "goto") == 0) {
++			if (parse_action_control(&argc, &argv,
++						 &parm.action, false)) {
++				free_entries(&gate_entries);
++				return -1;
++			}
++		} else if (matches(*argv, "help") == 0) {
++			usage();
++		} else {
++			break;
++		}
++
++		argc--;
++		argv++;
++	}
++
++	parse_action_control_dflt(&argc, &argv, &parm.action,
++				  false, TC_ACT_PIPE);
++
++	if (!entry_num && !parm.index) {
++		fprintf(stderr, "gate: must add at least one entry\n");
++		exit(-1);
++	}
++
++	tail = addattr_nest(n, MAX_MSG, tca_id | NLA_F_NESTED);
++	addattr_l(n, MAX_MSG, TCA_GATE_PARMS, &parm, sizeof(parm));
++
++	if (prio != -1)
++		addattr_l(n, MAX_MSG, TCA_GATE_PRIORITY, &prio, sizeof(prio));
++
++	if (flags)
++		addattr_l(n, MAX_MSG, TCA_GATE_FLAGS, &flags, sizeof(flags));
++
++	if (base_time)
++		addattr_l(n, MAX_MSG, TCA_GATE_BASE_TIME,
++			  &base_time, sizeof(base_time));
++
++	if (cycle_time)
++		addattr_l(n, MAX_MSG, TCA_GATE_CYCLE_TIME,
++			  &cycle_time, sizeof(cycle_time));
++
++	if (cycle_time_ext)
++		addattr_l(n, MAX_MSG, TCA_GATE_CYCLE_TIME_EXT,
++			  &cycle_time_ext, sizeof(cycle_time_ext));
++
++	if (clockid != CLOCKID_INVALID)
++		addattr_l(n, MAX_MSG, TCA_GATE_CLOCKID,
++			  &clockid, sizeof(clockid));
++
++	nle = addattr_nest(n, MAX_MSG, TCA_GATE_ENTRY_LIST | NLA_F_NESTED);
++	err = add_gate_list(&gate_entries, n);
++	if (err < 0) {
++		fprintf(stderr, "Could not add entries to netlink message\n");
++		free_entries(&gate_entries);
++		return -1;
++	}
++
++	addattr_nest_end(n, nle);
++	addattr_nest_end(n, tail);
++	free_entries(&gate_entries);
++	*argc_p = argc;
++	*argv_p = argv;
++
++	return 0;
++err_arg:
++	invarg(invalidarg, *argv);
++	free_entries(&gate_entries);
++
++	exit(-1);
++}
++
++static int print_gate_list(struct rtattr *list)
++{
++	struct rtattr *item;
++	int rem;
++
++	rem = RTA_PAYLOAD(list);
++	print_string(PRINT_FP, NULL, "%s", _SL_);
++
++	for (item = RTA_DATA(list);
++	     RTA_OK(item, rem);
++	     item = RTA_NEXT(item, rem)) {
++		struct rtattr *tb[TCA_GATE_ENTRY_MAX + 1];
++		__u32 index = 0, interval = 0;
++		__u8 gate_state = 0;
++		__s32 ipv = -1, maxoctets = -1;
++
++		parse_rtattr_nested(tb, TCA_GATE_ENTRY_MAX, item);
++
++		if (tb[TCA_GATE_ENTRY_INDEX])
++			index = rta_getattr_u32(tb[TCA_GATE_ENTRY_INDEX]);
++
++		if (tb[TCA_GATE_ENTRY_GATE])
++			gate_state = 1;
++
++		if (tb[TCA_GATE_ENTRY_INTERVAL])
++			interval = rta_getattr_u32(tb[TCA_GATE_ENTRY_INTERVAL]);
++
++		if (tb[TCA_GATE_ENTRY_IPV])
++			ipv = rta_getattr_s32(tb[TCA_GATE_ENTRY_IPV]);
++
++		if (tb[TCA_GATE_ENTRY_MAX_OCTETS])
++			maxoctets = rta_getattr_s32(tb[TCA_GATE_ENTRY_MAX_OCTETS]);
++
++		print_uint(PRINT_ANY, "number", "\t number %4u", index);
++		print_string(PRINT_ANY, "gate state", "\tgate-state %-8s",
++			     gate_state ? "open" : "close");
++
++		print_uint(PRINT_ANY, "interval", "\tinterval %-16u", interval);
++
++		if (ipv != -1)
++			print_uint(PRINT_ANY, "ipv", "\tipv %-8u", ipv);
++		else
++			print_string(PRINT_FP, "ipv", "\tipv %s", "wildcard");
++
++		if (maxoctets != -1)
++			print_uint(PRINT_ANY, "max_octets",
++				   "\tmax-octets %-8u", maxoctets);
++		else
++			print_string(PRINT_FP, "max_octets",
++				     "\tmax-octets %s", "wildcard");
++
++		print_string(PRINT_FP, NULL, "%s", _SL_);
++	}
++
++	return 0;
++}
++
++static int print_gate(struct action_util *au, FILE *f, struct rtattr *arg)
++{
++	struct tc_gate *parm;
++	struct rtattr *tb[TCA_GATE_MAX + 1];
++	__s32 clockid = CLOCKID_INVALID;
++	__u64 base_time = 0;
++	__u64 cycle_time = 0;
++	__u64 cycle_time_ext = 0;
++	int prio = -1;
++
++	if (arg == NULL)
++		return -1;
++
++	parse_rtattr_nested(tb, TCA_GATE_MAX, arg);
++
++	if (!tb[TCA_GATE_PARMS]) {
++		fprintf(stderr, "Missing gate parameters\n");
++		return -1;
++	}
++
++	print_string(PRINT_FP, NULL, "%s", "\n");
++
++	parm = RTA_DATA(tb[TCA_GATE_PARMS]);
++
++	if (tb[TCA_GATE_PRIORITY])
++		prio = rta_getattr_s32(tb[TCA_GATE_PRIORITY]);
++
++	if (prio != -1)
++		print_int(PRINT_ANY, "priority", "\tpriority %-8d", prio);
++	else
++		print_string(PRINT_FP, "priority", "\tpriority %s", "wildcard");
++
++	if (tb[TCA_GATE_CLOCKID])
++		clockid = rta_getattr_s32(tb[TCA_GATE_CLOCKID]);
++	print_string(PRINT_ANY, "clockid", "\tclockid %s",
++		     get_clock_name(clockid));
++
++	if (tb[TCA_GATE_FLAGS]) {
++		__u32 flags;
++
++		flags = rta_getattr_u32(tb[TCA_GATE_FLAGS]);
++		print_0xhex(PRINT_ANY, "flags", "\tflags %#x", flags);
++	}
++
++	print_string(PRINT_FP, NULL, "%s", "\n");
++
++	if (tb[TCA_GATE_BASE_TIME])
++		base_time = rta_getattr_u64(tb[TCA_GATE_BASE_TIME]);
++
++	print_lluint(PRINT_ANY, "base_time", "\tbase-time %-22lld", base_time);
++
++	if (tb[TCA_GATE_CYCLE_TIME])
++		cycle_time = rta_getattr_u64(tb[TCA_GATE_CYCLE_TIME]);
++
++	print_lluint(PRINT_ANY, "cycle_time",
++		     "\tcycle-time %-16lld", cycle_time);
++
++	if (tb[TCA_GATE_CYCLE_TIME_EXT])
++		cycle_time = rta_getattr_u64(tb[TCA_GATE_CYCLE_TIME_EXT]);
++
++	print_lluint(PRINT_ANY, "cycle_time_ext", "\tcycle-time-ext %-16lld",
++		     cycle_time_ext);
++
++	if (tb[TCA_GATE_ENTRY_LIST])
++		print_gate_list(tb[TCA_GATE_ENTRY_LIST]);
++
++	print_action_control(f, "\t", parm->action, "");
++
++	print_uint(PRINT_ANY, "index", "\n\t index %u", parm->index);
++	print_int(PRINT_ANY, "ref", " ref %d", parm->refcnt);
++	print_int(PRINT_ANY, "bind", " bind %d", parm->bindcnt);
++
++	if (show_stats) {
++		if (tb[TCA_GATE_TM]) {
++			struct tcf_t *tm = RTA_DATA(tb[TCA_GATE_TM]);
++
++			print_tm(f, tm);
++		}
++	}
++
++	print_string(PRINT_FP, NULL, "%s", "\n");
++
++	return 0;
++}
+-- 
+2.17.1
 
