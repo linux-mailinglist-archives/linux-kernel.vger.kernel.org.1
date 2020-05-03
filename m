@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1AD1C2D50
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 17:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E502A1C2D55
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 17:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728817AbgECPVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 11:21:20 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:43470 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728750AbgECPVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 11:21:17 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 49FV7b2wbnzJf;
-        Sun,  3 May 2020 17:21:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1588519275; bh=rwQPTtI5SrLLx7al4xEZLcCbcFpzh7q3OF29uJmCBXM=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=bRJdo6Ib3Hpm9fjQMuEmZBteOxSzjW+AlVOeHGGqX6CVdZpmsmCuU7qCPHRL6DR3b
-         0+Gyn4nFKdeCgoQtJDkdMblMKEBbkuu6gf1zOyBXgY5JAQ9xl6WLvlD//EUcK0ML+5
-         nrTTvhF7+mGvqxrrVIUISc+3kw6tk8wtueygHYAI/bu600tk34wazgrkXeUX8+YyHW
-         QpUH7gqmUypvdIw/fIvEYTpiY1sz9BbyIV2DYnxyzKK6HfU7XtC4AF/o0eKaruVR69
-         CMHfd04taneRHIaVRiZyCsroIBSp1EjGTeuVxFUC1eD/3Yrm1hIlS16TwTxlLqJxc9
-         LYh9XDLwds9vA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Sun, 03 May 2020 17:21:14 +0200
-Message-Id: <2ec86a0c610f9d75e47ebd8a356be1b35d6ba910.1588517058.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1588517058.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1588517058.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2 11/11] power: bq25890: document IBAT compensation DT
- properties
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1728832AbgECPVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 11:21:34 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:29357 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728345AbgECPV3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 May 2020 11:21:29 -0400
+X-IronPort-AV: E=Sophos;i="5.73,347,1583161200"; 
+   d="scan'208";a="46006153"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 04 May 2020 00:21:27 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 15C184007F56;
+        Mon,  4 May 2020 00:21:24 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Simon Horman <horms+renesas@verge.net.au>
+Cc:     Lad Prabhakar <prabhakar.csengg@gmail.com>, netdev@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v2] dt-bindings: net: renesas,ether: Sort compatible string in increasing number of the SoC
+Date:   Sun,  3 May 2020 16:21:19 +0100
+Message-Id: <1588519279-13364-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document newly introduced IBAT compensation settings.
+Sort the items in the compatible string list in increasing number of SoC.
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-v2: initial version
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- Documentation/devicetree/bindings/power/supply/bq25890.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+ Changes for v2:
+ * Included renesas,ether in subject instead of sh_eth.
+ * Included Reviewed-by tags.
 
-diff --git a/Documentation/devicetree/bindings/power/supply/bq25890.txt b/Documentation/devicetree/bindings/power/supply/bq25890.txt
-index dc9c8f76e06c..bd214945d9dc 100644
---- a/Documentation/devicetree/bindings/power/supply/bq25890.txt
-+++ b/Documentation/devicetree/bindings/power/supply/bq25890.txt
-@@ -32,6 +32,10 @@ Optional properties:
- - ti,thermal-regulation-threshold: integer, temperature above which the charge
-     current is lowered, to avoid overheating (in degrees Celsius). If omitted,
-     the default setting will be used (120 degrees);
-+- ti,ibatcomp-resistance: integer, value of a resistor in series with
-+    the battery (in uOhm);
-+- ti,ibatcomp-clamp-voltage: integer, maximum charging voltage adjustment due
-+    to expected voltage drop on in-series resistor (in uV);
- 
- Example:
- 
+ Documentation/devicetree/bindings/net/renesas,ether.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/net/renesas,ether.yaml b/Documentation/devicetree/bindings/net/renesas,ether.yaml
+index 2eaa879..005a3ae 100644
+--- a/Documentation/devicetree/bindings/net/renesas,ether.yaml
++++ b/Documentation/devicetree/bindings/net/renesas,ether.yaml
+@@ -29,8 +29,8 @@ properties:
+               - renesas,rcar-gen1-ether  # a generic R-Car Gen1 device
+       - items:
+           - enum:
+-              - renesas,ether-r8a7745    # device is a part of R8A7745 SoC
+               - renesas,ether-r8a7743    # device is a part of R8A7743 SoC
++              - renesas,ether-r8a7745    # device is a part of R8A7745 SoC
+               - renesas,ether-r8a7790    # device is a part of R8A7790 SoC
+               - renesas,ether-r8a7791    # device is a part of R8A7791 SoC
+               - renesas,ether-r8a7793    # device is a part of R8A7793 SoC
 -- 
-2.20.1
+2.7.4
 
