@@ -2,328 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6678C1C2C70
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 14:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723C41C2C2D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 May 2020 14:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728781AbgECMmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 May 2020 08:42:09 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56916 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728774AbgECMmF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 May 2020 08:42:05 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 043Cfqps108863;
-        Sun, 3 May 2020 07:41:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1588509712;
-        bh=l5RB1BFBNGs53h/lFYd+NbwK21SIGQnFwb+EHjWJYqg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=mhVMsQGUrh+axaQ9zapVRmqu1+439WNgvYaTVNRBue0TPqBrNv+JLLm0KlibjrTen
-         1QG3nTQcSjwAI6P7P2+7LzwwV62u6v/+RCtQgCpOEO2IPVYXH5rgOv8tl13AeFzvPU
-         YjTiRi6QTiBH58oVaANJlTCbJSZnzdlf36Wdyx5I=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 043CfqSX062010
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 3 May 2020 07:41:52 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 3 May
- 2020 07:41:51 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sun, 3 May 2020 07:41:51 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 043Cfp7n043955;
-        Sun, 3 May 2020 07:41:51 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH v24 16/16] dt: bindings: Update lp55xx binding to recommended LED naming
-Date:   Sun, 3 May 2020 07:32:15 -0500
-Message-ID: <20200503123215.6449-17-dmurphy@ti.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200503123215.6449-1-dmurphy@ti.com>
-References: <20200503123215.6449-1-dmurphy@ti.com>
+        id S1728326AbgECMci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 May 2020 08:32:38 -0400
+Received: from mout.web.de ([212.227.15.14]:35345 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728122AbgECMcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 May 2020 08:32:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1588509147;
+        bh=CESW9uzXd86XV2AIcjWhiGbs6GMfhTN1+g5Sybprzq8=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Cc:Date:In-Reply-To;
+        b=aDSI/zhonE9VOWZ3tVDyW832AxhJoqbVnCCA+osZx3l02c51v2Mkce1X/XAn08nDE
+         ebcK9Eyi+e32IO/pFloeaD+cDdkW5TzDpzJ1hxMAaCw6dDkXC4Wrg17L9x2Dr3ayyx
+         ySZlyZXwN3AqDpzggGAgPMPMmMDr8hESQ9a0zQlM=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.26.31]) by smtp.web.de (mrweb003
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MNcHy-1jWqcD1MaI-007Fer; Sun, 03
+ May 2020 14:32:27 +0200
+Subject: Re: [v4] checkpatch: add support to check 'Fixes:' tag format
+To:     Wang YanQing <udknight@gmail.com>, Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        kernel-janitors@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20200502185421.GB9082@udknight>
+ <6a3a6f8d-e8be-0002-780d-1991f6152c8f@web.de>
+ <20200503114557.GA10332@udknight>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Cc:     linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Matteo Croce <mcroce@redhat.com>
+Message-ID: <975e6172-b333-37ab-ccc7-9e9a85986dfe@web.de>
+Date:   Sun, 3 May 2020 14:32:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20200503114557.GA10332@udknight>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mPEkw1o0ozQn9s8Xl478J6S/giYtPx8RmnsSAo8BqmU9Pa/GNHv
+ YZjCb++9zurPhqKT7eMXugs77h9EYl8SDeWhssPPxB7hqJN/N1Qz0gc3q8MjyFHJgZlb1Te
+ EdXHJg4gCpxXvKiQJfGt52aIf25RII2cPKsamPhiruK05uubTSNgbUdE8kkOgVmWJTzRIxT
+ hWJQzbXYg6IDgB7Co3Lsg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bck9WKT1DCE=:qsAIpURQeJYzaf3jdXdYb1
+ hAGHwLHsI/tgd9cFctV7lry2eZS5D2CWSJtsVnHc/k3sckZIX7tzLdeB4sGebeVjZ6sLZ+1JS
+ ARgYVVkc5qSd3AFe52q0PNKre2uLdjSpAYXb0qgx8r1GroPxkKfJc7DvhSkAOrgaatvhlL+cb
+ 3sa7gHjbadnB9OdjGJGypPlzdFqWlP/Z8TBkAQ4sjvXkh9Jiol0qnkoS09NMzH3e82GKZYD4R
+ UPp7uvWHC+U0C/5aXZCTxtn/QCNajK48Sg/19rYB6vWEQAOfZyp3XLc3X0tjvKVBqtcaOllLO
+ v7toI6LkLSOMj0ZS1+3HnVtaZPv2qfVgsV3bEup/cwKPLdw4Na0lOygziwhuxaJPiH3oTld21
+ RO6gUhYwcISQ/yKcFMcRXd7Xxe0oAoIl4OFYoJFs/icgLDQd6T36qs7M5ta2XdAk6BH+Y1Joc
+ tb0yYakjJ/wCjtIXG804F8SXenUnZEEGYymZvtmaIXqrdecLjTn2IqXuB4SzUTfJEC8AKGXRm
+ W/uE0jb3JIMeWKcqxzuwRJx7SaLZkoN4dpmVxMAp86heactBKakdIwQ65KvrWCA/47ibAIlpU
+ U4lZIDcpOB7yGgEpYLZjJ9w1cIvPYgd0kRzpyiLpFWSiG6BKLcIViaZt63PaG1pEWgsWhg+Js
+ tx8KHPKI+11UEJB0aY1a4EAsJudX+xhl76DftDrnFKnK/RBAkXsvLh4UwClDLlEXS/1vSd2aL
+ llSVVTp2cnnuLBbYplRS6ZQkdJifDG1uw3cpmAGB3NgkFR7w+C3Erz1KfDMnvlcaH+/KT8z/b
+ oOklfv9bRI+j46KZ0Sou+HcOCo/XQcrxCJd2Izo0SXjhcmfe84C5uEywwYFOY4gsulVAA1TB7
+ +2rp41Zp1BVNL/vdtDXge1JvbxlKelyS4b3XPteLD41KAJQrS1SKSUR/mYiwRuu8vZBO7a82M
+ d7QJXQsJoV6/Ln4fTjdzxvL+xgf974Bu4zT8+CcSo6uHCCnrO3VmSsnpk0Huwe5N6vvhHhVuV
+ G+kB/NCtkyFS/YUU2vlpHCoW0ojsp64xUzyW+HcwPWq57JjA6F+yio/BCIX6+cqqN5jqooUrQ
+ pNrGz+IqfcyX+B9EaE671gkdRqjjRHN0PTzrm4iP4uyAC/LdazJ77SEQpP1+iZwOb/h+MQM2u
+ g8ElYpolTz0VdK54p5NpEDahKyewrNknmsgOoAXyEmxMS66VyHMAJKGpvm2/XFHIzlwLyOkPc
+ u5hYdni6FHRSCzLCq
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the LP55xx DT binding examples to the recommended node
-naming convention.  There are no changes to the DT properties.
+>>> +				$diagnostics .=3D "Missing a pair of parentheses '()' or a pair o=
+f double quotation marks (\"\").\n";
+>>
+>> Can such a message trigger any more thoughts and development ideas?
+>
+> No, I don't think so. '(" ... ")' is the minimum interface between analy=
+ser
+> (checkpatch) and commit id description (normal commit id and 'Fixes:' ta=
+g)
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
-CC: Rob Herring <robh+dt@kernel.org>
-CC: Tony Lindgren <tony@atomide.com>
-CC: "Benoît Cousson" <bcousson@baylibre.com>
-CC: Linus Walleij <linus.walleij@linaro.org>
-CC: Shawn Guo <shawnguo@kernel.org>
-CC: Sascha Hauer <s.hauer@pengutronix.de>
-CC: Pengutronix Kernel Team <kernel@pengutronix.de>
-CC: Fabio Estevam <festevam@gmail.com>
-CC: NXP Linux Team <linux-imx@nxp.com>
----
- .../devicetree/bindings/leds/leds-lp55xx.txt  | 58 +++++++++----------
- 1 file changed, 29 insertions(+), 29 deletions(-)
+* I am proposing to recheck the influence of quotation character alternati=
+ves
+  also at this place.
 
-diff --git a/Documentation/devicetree/bindings/leds/leds-lp55xx.txt b/Documentation/devicetree/bindings/leds/leds-lp55xx.txt
-index 0ccc1efc2499..5475f45ef51f 100644
---- a/Documentation/devicetree/bindings/leds/leds-lp55xx.txt
-+++ b/Documentation/devicetree/bindings/leds/leds-lp55xx.txt
-@@ -48,7 +48,7 @@ example 1) LP5521
- 'lp5521_pri:channel1' and 'lp5521_pri:channel2', with a heartbeat trigger
- on channel 0.
- 
--lp5521@32 {
-+led-controller@32 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 	compatible = "national,lp5521";
-@@ -56,20 +56,20 @@ lp5521@32 {
- 	label = "lp5521_pri";
- 	clock-mode = /bits/ 8 <2>;
- 
--	chan@0 {
-+	led@0 {
- 		reg = <0>;
- 		led-cur = /bits/ 8 <0x2f>;
- 		max-cur = /bits/ 8 <0x5f>;
- 		linux,default-trigger = "heartbeat";
- 	};
- 
--	chan@1 {
-+	led@1 {
- 		reg = <1>;
- 		led-cur = /bits/ 8 <0x2f>;
- 		max-cur = /bits/ 8 <0x5f>;
- 	};
- 
--	chan@2 {
-+	led@2 {
- 		reg = <2>;
- 		led-cur = /bits/ 8 <0x2f>;
- 		max-cur = /bits/ 8 <0x5f>;
-@@ -88,70 +88,70 @@ ASEL1    ASEL0    Address
-  VEN      GND       34h
-  VEN      VEN       35h
- 
--lp5523@32 {
-+led-controller@32 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 	compatible = "national,lp5523";
- 	reg = <0x32>;
- 	clock-mode = /bits/ 8 <1>;
- 
--	chan@0 {
-+	led@0 {
- 		reg = <0>;
- 		chan-name = "d1";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@1 {
-+	led@1 {
- 		reg = <1>;
- 		chan-name = "d2";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@2 {
-+	led@2 {
- 		reg = <2>;
- 		chan-name = "d3";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@3 {
-+	led@3 {
- 		reg = <3>;
- 		chan-name = "d4";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@4 {
-+	led@4 {
- 		reg = <4>;
- 		chan-name = "d5";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@5 {
-+	led@5 {
- 		reg = <5>;
- 		chan-name = "d6";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@6 {
-+	led@6 {
- 		reg = <6>;
- 		chan-name = "d7";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@7 {
-+	led@7 {
- 		reg = <7>;
- 		chan-name = "d8";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@8 {
-+	led@8 {
- 		reg = <8>;
- 		chan-name = "d9";
- 		led-cur = /bits/ 8 <0x14>;
-@@ -162,35 +162,35 @@ lp5523@32 {
- example 3) LP5562
- 4 channels are defined.
- 
--lp5562@30 {
-+led-controller@30 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 	compatible = "ti,lp5562";
- 	reg = <0x30>;
- 	clock-mode = /bits/8 <2>;
- 
--	chan@0 {
-+	led@0 {
- 		reg = <0>;
- 		chan-name = "R";
- 		led-cur = /bits/ 8 <0x20>;
- 		max-cur = /bits/ 8 <0x60>;
- 	};
- 
--	chan@1 {
-+	led@1 {
- 		reg = <1>;
- 		chan-name = "G";
- 		led-cur = /bits/ 8 <0x20>;
- 		max-cur = /bits/ 8 <0x60>;
- 	};
- 
--	chan@2 {
-+	led@2 {
- 		reg = <2>;
- 		chan-name = "B";
- 		led-cur = /bits/ 8 <0x20>;
- 		max-cur = /bits/ 8 <0x60>;
- 	};
- 
--	chan@3 {
-+	led@3 {
- 		reg = <3>;
- 		chan-name = "W";
- 		led-cur = /bits/ 8 <0x20>;
-@@ -202,7 +202,7 @@ example 4) LP8501
- 9 channels are defined. The 'pwr-sel' is LP8501 specific property.
- Others are same as LP5523.
- 
--lp8501@32 {
-+led-controller@32 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
- 	compatible = "ti,lp8501";
-@@ -210,63 +210,63 @@ lp8501@32 {
- 	clock-mode = /bits/ 8 <2>;
- 	pwr-sel = /bits/ 8 <3>;	/* D1~9 connected to VOUT */
- 
--	chan@0 {
-+	led@0 {
- 		reg = <0>;
- 		chan-name = "d1";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@1 {
-+	led@1 {
- 		reg = <1>;
- 		chan-name = "d2";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@2 {
-+	led@2 {
- 		reg = <2>;
- 		chan-name = "d3";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@3 {
-+	led@3 {
- 		reg = <3>;
- 		chan-name = "d4";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@4 {
-+	led@4 {
- 		reg = <4>;
- 		chan-name = "d5";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@5 {
-+	led@5 {
- 		reg = <5>;
- 		chan-name = "d6";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@6 {
-+	led@6 {
- 		reg = <6>;
- 		chan-name = "d7";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@7 {
-+	led@7 {
- 		reg = <7>;
- 		chan-name = "d8";
- 		led-cur = /bits/ 8 <0x14>;
- 		max-cur = /bits/ 8 <0x20>;
- 	};
- 
--	chan@8 {
-+	led@8 {
- 		reg = <8>;
- 		chan-name = "d9";
- 		led-cur = /bits/ 8 <0x14>;
--- 
-2.25.1
+* How do you think about to provide an information without the word =E2=80=
+=9Cor=E2=80=9D
+  in error messages?
 
+
+> about the title, it is very difficult if not impossible to guess the tit=
+le
+> boundary and whether it is the *REAL* title that folllow the SHA1 withou=
+t
+> this precondition,
+
+I find this concern reasonable.
+
+
+> and it is more difficult to do it when we need to support
+> title which across lines in the normal commit id description.
+
+I imagine that further software design options can be considered.
+
+
+> At last I really doubt the benefit it brings deserves the complexity and=
+ the
+> current diagnostics info is enough clear for most situation.
+
+* Will a safer data format description trigger corresponding efforts?
+
+* Will the structure of the commit title matter?
+
+* Would you like to improve checks (and program organisation) besides
+  the application of regular expressions?
+
+Regards,
+Markus
